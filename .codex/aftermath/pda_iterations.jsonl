@@ -151,3 +151,9 @@
 {"type": "session", "session": "S293-pytest", "pr": 0, "summary": "all tests passed", "commit": "abc1234", "ts": "2026-05-17T20-06Z"}
 {"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-QUERY-FILTER-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-17T20-06Z"}
 {"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-PYTEST-SKILL-TEST", "workflow": "", "workflow_run": "", "error_text": "unit test error", "root_cause": "", "fix_template": "", "ts": "2026-05-17T20-06Z"}
+{"type": "session", "session": "S293-pytest", "pr": 0, "summary": "all tests passed", "commit": "abc1234", "ts": "2026-05-17T21-10Z"}
+{"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-PYTEST-SKILL-TEST", "workflow": "", "workflow_run": "", "error_text": "unit test error", "root_cause": "", "fix_template": "", "ts": "2026-05-17T21-10Z"}
+{"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-QUERY-FILTER-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-17T21-10Z"}
+{"type": "failure", "session": "S293", "pr": 0, "branch": "", "pattern_id": "RP-SUCCESS-RATE-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-17T21-10Z"}
+{"type": "fix", "session": "S293", "pr": 0, "pattern_id": "RP-SUCCESS-RATE-TEST", "fix_applied": "", "verification_cmd": "", "verification_passed": true, "ts": "2026-05-17T21-10Z"}
+{"type": "fix", "session": "S293-pytest", "pr": 0, "pattern_id": "RP-PYTEST-SKILL-TEST", "fix_applied": "pytest fix", "verification_cmd": "", "verification_passed": true, "ts": "2026-05-17T21-10Z"}

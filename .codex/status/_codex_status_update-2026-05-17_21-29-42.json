@@ -1,0 +1,434 @@
+{
+  "metadata": {
+    "title": "\ud83d\udccd `_codex_` : Status Update 2026-05-17",
+    "timestamp_utc": "2026-05-17T21:28:16.390569+00:00",
+    "report_version": "1.0.0",
+    "template_version": "v1.2",
+    "authors": [
+      "Codex Automation"
+    ],
+    "reviewers": [],
+    "previous_report_path": ".codex/status/_codex_status_update-2026-05-17_21-28-14.json",
+    "git_context": {
+      "branch": "copilot/review-codebase-and-next-changes",
+      "commit_sha": "97d52f011c105b5007b56ac1e027b222e213a9ab",
+      "commit_sha_short": "97d52f0"
+    },
+    "environment": {
+      "python_version": "3.12.10",
+      "os": "Linux 6.17.0-1013-azure",
+      "runtime_hash": "298be6fd95538827",
+      "platform": "Linux-6.17.0-1013-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64"
+    }
+  },
+  "snapshot": {
+    "repo_map": "# Repository Map\n\n## src/codex/\n  - README.md\n  - __init__.py\n  - __pycache__/\n  - _version.py\n  - agents/\n  - analysis/\n  - analyze/\n  - api/\n  - archive/\n  - ast/\n  - ast_adapters/\n  - audit/\n  - auth/\n  - autonomy/\n  - chat.py\n  - ci/\n  - cli/\n  - cli.py\n  - cli_archive.py\n  - cli_github_logs.py\n\n## src/codex_ml/\n  - __init__.py\n  - __main__.py\n  - __pycache__/\n  - _package_main.py\n  - analysis/\n  - ast/\n  - backends/\n  - batching/\n  - callbacks/\n  - checkpointing/\n  - cli/\n  - codex_data.py\n  - codex_model.py\n  - codex_script.py\n  - codex_structured_logging.py\n  - config/\n  - config_schema.py\n  - configs/\n  - connectors/\n  - data/\n\n## tests/\n  - README.md\n  - __init__.py\n  - __pycache__/\n  - _bootstrap_determinism.py\n  - _codex_introspect.py\n  - _workflow_trigger.py\n  - addons/\n  - agent/\n  - agents/\n  - analysis/\n  - api/\n  - architecture/\n  - archival/\n  - archive/\n  - assets/\n  - ast/\n  - ast_adapters/\n  - asyncio/\n  - atomic_diffs/\n  - audit/\n\n## tools/\n  - README.md\n  - README_status_update.md\n  - __init__.py\n  - __pycache__/\n  - actions_cli.py\n  - actions_server.py\n  - allowlist_args.py\n  - analysis/\n  - analyze_code_entropy.py\n  - analyze_import_paths.py\n  - answer_codex_questions.py\n  - apply_branchA_all.py\n  - apply_ci_precommit.py\n  - apply_codex_audit_tasks.py\n  - apply_container_api.py\n  - apply_data_loaders.py\n  - apply_docs.py\n  - apply_hydra_scaffold.py\n  - apply_interfaces.py\n  - apply_ml_metrics.py\n\n## cli/\n  - README.md\n  - __init__.py\n  - __pycache__/\n  - ast_upgrade.py\n  - audit_runner_root.py\n  - brain_cli.py\n  - inference.py\n  - patch_runner.py\n  - script_polish.py\n  - setup.cfg\n  - setup.py\n  - status_audit.py\n  - task_sequence.py\n  - train_codex.py\n  - train_schema_demo.py\n  - update_runner.py\n  - workflow.py\n\n## configs/\n  - CONFIGURATION_STRUCTURE.md\n  - Makefile.ml\n  - Makefile.status\n  - PROMOTION_READINESS_PR2205.yaml\n  - README.md\n  - __init__.py\n  - __pycache__/\n  - alertmanager/\n  - bandit.yaml\n  - base/\n  - base_config.py\n  - bridge/\n  - code_quality.yaml\n  - codex_capability_map.yaml\n  - codex_gap_registry.yaml\n  - codex_hardship.yaml\n  - codex_ml_test_map.yaml\n  - codex_ready_task_sequence.yaml\n  - codex_task_sequence.yaml\n  - data/\n\n## schemas/\n  - archive_evidence_schema_v1.json\n  - archive_evidence_schema_v2.json\n  - cli/\n  - codex_archive.sql\n  - codex_eval_rules.v3.schema.json\n  - codex_status_update.schema.json\n  - ingest-manifest.schema.yaml\n  - intent.schema.yaml\n  - metrics-ndjson-v0.3.json\n  - metrics.ndjson.schema.json\n  - run_metrics.schema.json\n  - run_params.schema.json\n  - selection_guard_rules.schema.json\n  - static-report.schema.json\n\n## docs/\n  - .nojekyll\n  - ADMIN_DECISIONS_README.md\n  - ADMIN_FAQ.md\n  - ADMIN_IMPLEMENTATION_GUIDE.md\n  - ADMIN_QUICKSTART.md\n  - ADVANCED_PHYSICS_GUIDE.md\n  - AGENTIC_REPO_SYSTEM_GUIDE.md\n  - AI_AGENT_INTUITIVENESS_SCORE_V2.md\n  - AI_ASSISTANT_TERMINOLOGY_AUDIT.md\n  - AI_TURN_ANALYSIS_PR2462.md\n  - API_REFERENCE.md\n  - ARCHITECTURE.md\n  - ARCHITECTURE_BLUEPRINT.md\n  - AUTONOMOUS_CONTINUATION_PROMPT_PHASE_1_2.md\n  - Architecture.md\n  - BUNDLE_BUILDER_INTEGRATION_PLAN.md\n  - CHANGELOG/\n  - CHANGELOG.md\n  - CHATGPT_ASSISTANT_GUIDE.md\n  - CHECKPOINTS.md\n\n## .codex/\n  - .gitignore\n  - 0D_BASE_MAIN_MERGE_READINESS_ASSESSMENT.md\n  - AAIS_COMPLIANCE_REPORT.md\n  - ACCOUNTABILITY_REPORT_2026_02_16.md\n  - ACCOUNTABILITY_REPORT_2026_02_18_PR3328.md\n  - ACCOUNTABILITY_REPORT_S81_CI_MISS.md\n  - ACCURACY_IMPROVEMENT_IMPLEMENTATION_PLAN.md\n  - ADVANCED_ACCURACY_ANALYSIS.md\n  - AGENTIC_REPO_STATE.md\n  - AGENTS_GUIDE.md\n  - AGENT_DESIGNS.md\n  - AGENT_MISTAKE_ANALYSIS.md\n  - AGENT_NAVIGATION.md\n  - AI_AGENCY_POLICY_COMPLIANCE_FINAL_SUMMARY.md\n  - AI_AGENCY_POLICY_COMPLIANCE_REPORT.md\n  - AI_AGENCY_POLICY_COMPLIANCE_REPORT_PR3178.md\n  - AI_AGENCY_POLICY_COMPLIANCE_UPDATE.md\n  - AI_AGENT_FOLLOWUP_AFTER_TOKEN_SETUP.md\n  - AI_AGENT_NEXT_PHASE_PR2765.md\n  - AI_AGENT_UTILITIES_REGISTRY.md\n",
+    "capabilities": [
+      {
+        "id": "cap-001",
+        "name": "Tokenization",
+        "category": "Core ML",
+        "status": "Implemented",
+        "artifacts": "src/codex_ml/tokenization/, src/tokenization/",
+        "gaps": "Dry-run and streaming toggles need regression tests",
+        "risks": "Silent failures if dependencies drift",
+        "severity": 2,
+        "confidence": 4,
+        "tags": [
+          "ml",
+          "nlp",
+          "core"
+        ],
+        "patch_plan": "Add pytest coverage for tokenization pipeline",
+        "rollback": "Skip new tests if they fail",
+        "owner": "ML Team"
+      },
+      {
+        "id": "cap-002",
+        "name": "Training Engine",
+        "category": "Core ML",
+        "status": "Partially Implemented",
+        "artifacts": "src/codex_ml/training/",
+        "gaps": "Fallback metrics not persisted, resume needs manifest audit",
+        "risks": "Offline runs lose provenance",
+        "severity": 3,
+        "confidence": 4,
+        "tags": [
+          "ml",
+          "training",
+          "core"
+        ],
+        "patch_plan": "Persist fallback metrics to NDJSON, add resume manifests",
+        "rollback": "Feature flag to disable persistence",
+        "owner": "ML Team"
+      },
+      {
+        "id": "cap-003",
+        "name": "Configuration Management",
+        "category": "Infrastructure",
+        "status": "Implemented",
+        "artifacts": "configs/, src/codex_ml/cli/",
+        "gaps": "Sweep orchestration manual, needs CLI helper",
+        "risks": "Config duplication, missed seeds",
+        "severity": 2,
+        "confidence": 4,
+        "tags": [
+          "config",
+          "hydra",
+          "infrastructure"
+        ],
+        "patch_plan": "Add 'codex config sweep' command",
+        "rollback": "Remove CLI helper command",
+        "owner": "Platform Team"
+      },
+      {
+        "id": "cap-004",
+        "name": "Evaluation & Metrics",
+        "category": "Core ML",
+        "status": "Implemented",
+        "artifacts": "src/codex_ml/eval/",
+        "gaps": "Training fallback doesn't emit NDJSON",
+        "risks": "Hard to correlate fallback training with dashboards",
+        "severity": 2,
+        "confidence": 4,
+        "tags": [
+          "ml",
+          "metrics",
+          "evaluation"
+        ],
+        "patch_plan": "Share evaluation writer with training fallback",
+        "rollback": "Toggle writer off via config",
+        "owner": "ML Team"
+      },
+      {
+        "id": "cap-005",
+        "name": "Logging & Monitoring",
+        "category": "Infrastructure",
+        "status": "Partially Implemented",
+        "artifacts": "src/codex_ml/monitoring/, src/codex/logging/",
+        "gaps": "CLI lacks toggle for background sampler",
+        "risks": "Background threads can leak",
+        "severity": 2,
+        "confidence": 4,
+        "tags": [
+          "monitoring",
+          "logging",
+          "infrastructure"
+        ],
+        "patch_plan": "Add --system-metrics flag to CLI",
+        "rollback": "Default flag to off",
+        "owner": "Platform Team"
+      },
+      {
+        "id": "cap-006",
+        "name": "Security & Safety",
+        "category": "Security",
+        "status": "Partially Implemented",
+        "artifacts": "src/codex_ml/safety/, src/security/",
+        "gaps": "Secrets scanning optional, policy tests absent",
+        "risks": "Policy drift undermines guardrails",
+        "severity": 3,
+        "confidence": 4,
+        "tags": [
+          "security",
+          "safety",
+          "compliance"
+        ],
+        "patch_plan": "Add policy parsing tests, integrate secret scan",
+        "rollback": "Skip new tests",
+        "owner": "Security Team"
+      },
+      {
+        "id": "cap-007",
+        "name": "CI & Testing",
+        "category": "Infrastructure",
+        "status": "Implemented",
+        "artifacts": "tests/, noxfile.py, pytest.ini",
+        "gaps": "GPU smoke tests absent, docs build non-strict",
+        "risks": "Latent GPU regressions, silent doc drift",
+        "severity": 2,
+        "confidence": 5,
+        "tags": [
+          "ci",
+          "testing",
+          "quality"
+        ],
+        "patch_plan": "Add CPU checkpoint test, strict docs session",
+        "rollback": "Keep tests optional",
+        "owner": "Platform Team"
+      },
+      {
+        "id": "cap-008",
+        "name": "Documentation",
+        "category": "Documentation",
+        "status": "Partially Implemented",
+        "artifacts": "docs/, README.md",
+        "gaps": "Stale gap reports, repo-map CLI stub",
+        "risks": "Outdated audit catalogs",
+        "severity": 2,
+        "confidence": 4,
+        "tags": [
+          "docs",
+          "documentation"
+        ],
+        "patch_plan": "Regenerate gap report, implement repo_map CLI",
+        "rollback": "Revert CLI change, restore prior report",
+        "owner": "Documentation Team"
+      }
+    ],
+    "findings": [
+      {
+        "id": "find-001",
+        "title": "codex repo_map CLI command is stubbed",
+        "evidence": "Found at src/codex_ml/cli/codex_cli.py",
+        "impact": "Auditors must use helper scripts instead of primary CLI",
+        "proposed_action": "Implement repo_map command with JSON output",
+        "severity": 2,
+        "confidence": 5,
+        "owner": "Platform Team",
+        "reported_utc": "2026-05-17T21:28:16.466794+00:00",
+        "status": "Open"
+      }
+    ],
+    "tests_gates": {
+      "tests_summary": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 0.0,
+        "note": "Static analysis - run 'nox -s tests' for live results"
+      },
+      "coverage_percent": 0.0,
+      "coverage_threshold": 70.0,
+      "coverage_by_module": [],
+      "quality_gates": {
+        "nox_configured": true,
+        "pytest_configured": true
+      },
+      "reproducibility": "Unknown"
+    },
+    "repro": {
+      "core_controls": "Dependency pinning, lockfiles, deterministic seeding, provenance tracking",
+      "registry": [
+        {
+          "id": "repro-001",
+          "category": "Dependencies",
+          "control": "Dependency pinning in pyproject.toml",
+          "status": "PASS",
+          "severity": 1,
+          "confidence": 5,
+          "evidence": "pyproject.toml",
+          "owner": "Platform Team",
+          "next_audit_utc": "2026-05-17T21:29:42.221453+00:00",
+          "notes": "Dependencies declared in pyproject.toml"
+        },
+        {
+          "id": "repro-002",
+          "category": "Dependencies",
+          "control": "Lockfile for reproducible installs",
+          "status": "PASS",
+          "severity": 1,
+          "confidence": 5,
+          "evidence": "Found: uv.lock, requirements.txt",
+          "owner": "Platform Team",
+          "next_audit_utc": "2026-05-17T21:29:42.221453+00:00",
+          "notes": "Lockfiles ensure deterministic dependency resolution"
+        },
+        {
+          "id": "repro-003",
+          "category": "Training",
+          "control": "Deterministic RNG seeding",
+          "status": "PASS",
+          "severity": 2,
+          "confidence": 4,
+          "evidence": "src/codex_ml/training/__init__.py",
+          "owner": "ML Team",
+          "next_audit_utc": "2026-05-17T21:29:42.221453+00:00",
+          "notes": "Training should seed RNG for reproducibility"
+        },
+        {
+          "id": "repro-004",
+          "category": "Provenance",
+          "control": "Experiment provenance tracking",
+          "status": "PARTIAL",
+          "severity": 2,
+          "confidence": 4,
+          "evidence": "Provenance summary generation exists in CLI",
+          "owner": "ML Team",
+          "next_audit_utc": "2026-05-17T21:29:42.221453+00:00",
+          "notes": "Training exports provenance summaries"
+        }
+      ]
+    },
+    "deferred": [
+      {
+        "item": "GPU-specific smoke tests",
+        "rationale": "No GPU hardware in CI environment",
+        "risk": 3,
+        "review_date_utc": "2026-05-17T21:29:42.222004+00:00"
+      },
+      {
+        "item": "Strict mode docs build",
+        "rationale": "Many docs pages need backfilling",
+        "risk": 2,
+        "review_date_utc": "2026-05-17T21:29:42.222004+00:00"
+      },
+      {
+        "item": "Secrets scanning automation",
+        "rationale": "git-secrets optional, needs integration",
+        "risk": 3,
+        "review_date_utc": "2026-05-17T21:29:42.222004+00:00"
+      }
+    ],
+    "audit_integrity": {
+      "manifest_path": "",
+      "manifest_sha256": "",
+      "artifacts": [
+        {
+          "path": "pyproject.toml",
+          "sha256": "a57b18551d3e6a790e74321a0d654f45475fb90ce6411ef67c9f36793799b19a"
+        },
+        {
+          "path": "noxfile.py",
+          "sha256": "e4fa4b90c7bbe02ff2bc6247f7e66380ee7ff58f510a2091403492da6a4614cc"
+        },
+        {
+          "path": "pytest.ini",
+          "sha256": "302217797f578b1e49a69b73dfb395490e00d713496b88543832afee5b9739d9"
+        },
+        {
+          "path": ".coveragerc",
+          "sha256": "e9163eaaec104c1131d24f3bf0292fb3129025f2a44293f566b996100c2fb09e"
+        }
+      ]
+    },
+    "schema_validation": [
+      {
+        "data_path": "schemas/codex_status_update.schema.json",
+        "schema_path": "https://json-schema.org/draft/2020-12/schema",
+        "status": "PASS",
+        "errors_count": 0,
+        "notes": "Schema file created successfully"
+      }
+    ],
+    "performance": {
+      "training_steps_per_sec": 0.0,
+      "epoch_time_sec": 0.0,
+      "latency_ms_p50": 0.0,
+      "latency_ms_p95": 0.0,
+      "note": "Performance metrics available after training runs"
+    },
+    "connectors": {
+      "github": {
+        "status": "OFFLINE",
+        "core_remaining": 0,
+        "search_remaining": 0,
+        "graphql_remaining": 0,
+        "note": "GitHub connector not configured in this environment"
+      }
+    }
+  },
+  "delta": {
+    "code_changes": "Initial status update implementation",
+    "tests_coverage_delta": {
+      "previous_percent": 0.0,
+      "current_percent": 0.0,
+      "delta_percent": 0.0
+    },
+    "risks_delta": "No changes - baseline report",
+    "performance_delta": "No changes - baseline report",
+    "issues_prs_delta": "No changes - baseline report"
+  },
+  "patches": [],
+  "automation": {
+    "issues": [],
+    "pull_requests": [],
+    "coverage": 0.0,
+    "coverage_modules": [],
+    "dependency_audit": "Dependencies declared in pyproject.toml with version pins",
+    "security_scan": "No automated security scan configured yet",
+    "performance": "No performance benchmarks configured yet",
+    "capability_autodiscovery": "Discovered 8 capabilities",
+    "schema_validation": [],
+    "connectors": {
+      "github": {
+        "captured_utc": "2026-05-17T21:28:16.390569+00:00",
+        "status": "OFFLINE",
+        "endpoint": "https://api.github.com",
+        "resources": {}
+      }
+    },
+    "tiles": {}
+  },
+  "audit": {
+    "audit_run_manifest": {
+      "path": "audit_run_manifest.json",
+      "sha256": "",
+      "timestamp_utc": "2026-05-17T21:28:16.390569+00:00"
+    },
+    "artifacts": [],
+    "capabilities_raw": "See snapshot.capabilities for detailed capability analysis",
+    "capabilities_scored": "Total capabilities: 8",
+    "gaps_analysis": "See snapshot.findings for gap analysis"
+  },
+  "security": {
+    "masking_applied": false,
+    "redactions_count": 0,
+    "patterns_detected": [],
+    "notes": "No sensitive data detected in this automated report"
+  },
+  "questions": [
+    {
+      "id": "q-001",
+      "category": "Infrastructure",
+      "priority": "P1",
+      "owner": "Platform Team",
+      "asked_utc": "2026-05-17T21:28:16.390569+00:00",
+      "status": "Open",
+      "question": "Should we enable GPU-specific tests in CI?",
+      "answer": "",
+      "confidence": 3
+    },
+    {
+      "id": "q-002",
+      "category": "Security",
+      "priority": "P2",
+      "owner": "Security Team",
+      "asked_utc": "2026-05-17T21:28:16.390569+00:00",
+      "status": "Open",
+      "question": "What secret scanning tool should be integrated?",
+      "answer": "",
+      "confidence": 3
+    }
+  ],
+  "decisions": [
+    {
+      "title": "Use JSON schema for status updates",
+      "context": "Need structured, validatable status reports",
+      "options": "Markdown only, JSON only, JSON with markdown rendering",
+      "chosen": "JSON schema with optional markdown rendering",
+      "owner": "Platform Team",
+      "date_utc": "2026-05-17T21:28:16.390569+00:00",
+      "impact": "Enables automated validation and processing of status updates"
+    }
+  ],
+  "tokenization": {
+    "summary": "Tokenization module exists with SentencePiece support",
+    "settings": "Configured via YAML pipelines",
+    "caching_parity": "Dataset caching with checksum manifests",
+    "offline_considerations": "Supports offline model loading",
+    "recommendations": "Add streaming toggle tests"
+  },
+  "visual": {
+    "html_templates": []
+  },
+  "dashboard_tiles": [
+    {
+      "name": "Status Update Schema",
+      "url": "file:///home/runner/work/_codex_/_codex_/schemas/codex_status_update.schema.json",
+      "generated_utc": "2026-05-17T21:28:16.390569+00:00"
+    }
+  ]
+}
