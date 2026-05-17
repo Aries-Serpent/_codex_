@@ -43,7 +43,7 @@ flowchart TD
 \[
 \Psi_{CI} = \alpha_1 \cdot TVAR\_CODEX\_CI\_FAILURE\_RATE
           + \alpha_2 \cdot \mathbb{I}(ERR\_STREAM\_PATHS)
-          + \alpha_3 \cdot TVAR\_CODEX\_CI\_LAST\_GREEN\_SHA
+          + \alpha_3 \cdot METRIC\_COMMITS\_SINCE\_LAST\_GREEN
 \]
 
 \[
@@ -59,13 +59,19 @@ U_{next} = \gamma_1 \cdot FIX_{stream\_paths}
          - \gamma_4 \cdot R_{session}
 \]
 
+Coefficient interpretation (normalized scoring model):
+- \(\alpha_1,\alpha_2,\alpha_3 \in [0,1]\), \(\sum \alpha_i = 1\): CI instability weighting.
+- \(\beta_1,\beta_2,\beta_3 \in [0,1]\), \(\sum \beta_i = 1\): session risk weighting.
+- \(\gamma_1,\gamma_2,\gamma_3,\gamma_4 \in [0,1]\), \(\sum \gamma_i = 1\): utility tradeoff weighting.
+- If no calibrated data is available, initialize as uniform weights and tune per session evidence.
+
 ### Token/Variable Descriptions
 
 | Token | Meaning |
 |---|---|
 | `TVAR_CODEX_CI_FAILURE_RATE` | Current CI instability pressure signal |
 | `ERR_STREAM_PATHS` | Indicator that collection failures contain `stream_paths` attribute errors |
-| `TVAR_CODEX_CI_LAST_GREEN_SHA` | Last known all-green commit baseline |
+| `METRIC_COMMITS_SINCE_LAST_GREEN` | Numeric distance from latest commit to `TVAR_CODEX_CI_LAST_GREEN_SHA` baseline |
 | `DRIFT_branch` | Branch divergence pressure from moving base |
 | `TVAR_CODEX_SWEEP_SKIP_MAIN` | Main-branch sweep conflict mitigation switch |
 | `WEC_nonactive` | Count of WEC-checked workflows in non-active states |
