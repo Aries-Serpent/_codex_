@@ -1,1 +1,0 @@
-{"timestamp": "2026-03-13T16:09:36.316704Z", "session_id": "4c4e05b1-efd4-4f7c-ae74-d9022f464c9a", "role": "system", "event_type": "cli.exit", "data": {"event.name": "cli.exit", "exit_status": "success", "code": 0, "session.id": "4c4e05b1-efd4-4f7c-ae74-d9022f464c9a"}}
