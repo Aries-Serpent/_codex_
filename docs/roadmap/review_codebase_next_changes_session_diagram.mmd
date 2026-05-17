@@ -1,0 +1,19 @@
+flowchart TD
+    A["Session start\nreview-codebase-and-next-changes"] --> B["Mandatory preload + policy/accountability context"]
+    B --> C["Baseline checks\nnox -l / nox -s precommit / nox -s tests"]
+    C --> D["Create 48-hour next-change report\nmermaid + expected results + equations + promptset"]
+    D --> E["Address review refinements\ncoefficient semantics + numeric metric replacement"]
+    E --> F["Lay groundwork package\nstartup checklist + guardrails + prompt pack"]
+    F --> G["Update living docs\nwhats_next + session_diagram"]
+    G --> H["Update accountability + changelog"]
+    H --> I["Reserve final 5 min wrap-up\nhandoff continuation prompt"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#1b4332,color:#fff
+    style D fill:#2a9d8f,color:#fff
+    style E fill:#2d6a4f,color:#fff
+    style F fill:#2a9d8f,color:#fff
+    style G fill:#457b9d,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#f4a261,color:#000

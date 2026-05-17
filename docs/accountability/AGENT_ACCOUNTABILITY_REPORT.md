@@ -1,3 +1,31 @@
+## SESSION SUMMARY — 2026-05-17T08:00Z [S1041-review-codebase-next-changes]
+
+**Session:** S1041-review-codebase-next-changes | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (pending)
+
+### Completed
+- ✅ Added `docs/reporting/next_expected_codebase_change_48h.md` with a 48-hour aligned review and next expected change package.
+- ✅ Included required sections: mermaid mapping outline, expected results, quantum-inspired tokenized equations, token descriptions, and iterative promptset.
+- ✅ Extended the report with concrete groundwork artifacts for the next session: startup checklist, execution guardrails, and prompt pack.
+- ✅ Added branch living docs:
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+- ✅ Applied review refinement: replaced SHA arithmetic with numeric `METRIC_COMMITS_SINCE_LAST_GREEN` and documented coefficient semantics.
+
+### Validation
+- ✅ Baseline checks executed before edits:
+  - `nox -l`
+  - `nox -s precommit` (completed)
+  - `nox -s tests` (fails during collection with existing `stream_paths` signature)
+- ⚠️ Targeted `pre-commit run --files docs/reporting/next_expected_codebase_change_48h.md` still reports existing repository-wide hooks unrelated to this doc-only change (environment package scans, doc-metrics freshness, tracked-file drift checks).
+- ✅ `parallel_validation` run completed:
+  - CodeQL skipped as trivial docs-only change.
+  - Code review feedback addressed (coefficient semantics + metric correction).
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability/changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-17T00:16Z [S1040-branch-consolidation-pages-reliability]
 
 **Session:** S1040-branch-consolidation-pages-reliability | **Branch:** `copilot/analyze-workflows-data-again` | **PR:** #4470

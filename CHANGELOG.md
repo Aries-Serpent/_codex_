@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1041-review-codebase-next-changes — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:00Z)
+- Added `docs/reporting/next_expected_codebase_change_48h.md` with:
+  - 48-hour aligned change review,
+  - mermaid next-change mapping,
+  - expected outcomes,
+  - quantum-inspired tokenized equations,
+  - iterative promptset and next-session groundwork package.
+- Added living-doc groundwork for this branch:
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+- Updated living docs with explicit session time tracking, a final 5-minute wrap-up reserve, and a continuation prompt for the next session.
+
 ### Fixed (S1040-branch-consolidation-pages-reliability — `copilot/analyze-workflows-data-again` — 2026-05-17T00:16Z)
 - Cherry-picked the missing commit from `copilot/analyze-workflows-data` so the working branch contains all source-branch changes before closure.
 - Fixed GitHub Pages deployment resolution by replacing invalid `actions/deploy-pages` SHA in `.github/workflows/pages-mkdocs.yml` with `actions/deploy-pages@v4`.
