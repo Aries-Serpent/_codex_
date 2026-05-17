@@ -99,3 +99,36 @@ Coefficient interpretation (normalized scoring model):
    - Verify Pages deploy/health telemetry remains stable with latest changes.
    - Confirm reporting docs/nav reflect current operational status.
    - Publish final continuation prompt for the next 48-hour cycle.
+
+## 7) Groundwork Package for the Next Session
+
+### A. Startup Checklist (Ready-to-Run)
+
+1. Load policy/accountability/session context packet.
+2. Run `nox -s precommit` and `nox -s tests` to capture current baseline.
+3. Confirm current `stream_paths` failure count from pytest collection output.
+4. Identify top import/export callsites tied to `codex_ml.data._core_loaders`.
+5. Define minimal remediation scope and expected regression tests.
+6. Execute fix + targeted tests first, then broader validation pass.
+7. Refresh accountability/changelog/reporting artifacts with measured deltas.
+
+### B. Execution Guardrails
+
+- Keep remediation scoped to loader contract compatibility and direct downstream callsites.
+- Prefer additive/backward-compatible fixes over broad refactors.
+- Re-check WEC non-active workflow state before final handoff notes.
+- Preserve token-chain assumptions (`CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`) in workflow-related commentary.
+
+### C. Promptset Pack (Iterative)
+
+**Prompt 1 — Baseline Capture**
+> “Run baseline checks, quantify current `stream_paths` collection failures, and return a ranked remediation shortlist with exact impacted modules.”
+
+**Prompt 2 — Minimal Remediation**
+> “Apply the smallest compatible fix for the `stream_paths` contract break, then run targeted regression tests and summarize before/after failure deltas.”
+
+**Prompt 3 — Stability Verification**
+> “Re-run broad validation, separate remaining pre-existing failures from fixed signatures, and update reporting/accountability artifacts with evidence.”
+
+**Prompt 4 — Handoff Closure**
+> “Produce next-session continuation notes: unresolved risks, required workflow checks, and a prioritized follow-up matrix for the next 48-hour window.”
