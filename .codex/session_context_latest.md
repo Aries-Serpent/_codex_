@@ -1,10 +1,10 @@
-# Session Context — 2026-05-17T08:09:33Z
+# Session Context — 2026-05-17T08:38:10Z
 **Branch:** `copilot/review-codebase-and-next-changes`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4831` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4983` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-17)
 
 ## 📝 Recent Commits
+- `107cbe16` fix(tests): remove deprecated pytest_plugins from quantum conftest; update repor — copilot-swe-agent[bot] (2026-05-17)
+- `8dd3ca83` chore: baseline evidence — plan stream_paths/quantum-conftest remediation — copilot-swe-agent[bot] (2026-05-17)
 - `9183f0cd` docs: update living docs and session wrap-up continuity artifacts — copilot-swe-agent[bot] (2026-05-17)
 - `89520680` docs(reporting): add next-session groundwork package — copilot-swe-agent[bot] (2026-05-17)
 - `1b19325d` docs(reporting): refine equations and prep next-session groundwork — copilot-swe-agent[bot] (2026-05-17)
 - `be7754d6` docs(reporting): add next expected codebase change 48h outlook — copilot-swe-agent[bot] (2026-05-17)
 - `2dadb544` chore: plan next expected codebase change report — copilot-swe-agent[bot] (2026-05-17)
 - `8c25a432` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-17)
-- `d94820fd` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-17)
-- `9d303a9e` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
