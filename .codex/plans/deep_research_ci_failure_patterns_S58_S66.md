@@ -292,3 +292,27 @@ insufficient — they need to check output *content*, not just exit code.
 **Next Step**: Submit the patterns tagged `DRQ-001` through `DRQ-007` to the
 ChatGPT-5 Deep Research pipeline via `scripts/deep_research_task_process.py` for
 authoritative root-cause analysis and long-term prevention strategies.
+
+---
+
+## S1043 Addendum — DRQ-S1043-001
+
+### Pattern: `codex_ml.data._core_loaders.stream_paths` collection cascade in baseline nox env
+
+**Observed in**: S1036, S1037, S1038, S1039, S1041, S1042 follow-up, S1043  
+**Current signal**: `nox -s tests` stops with 143 collection errors after the quantum conftest fix, all dominated by `_core_loaders.stream_paths` import failure.
+
+**Working hypothesis**:
+1. `src/codex_ml/data/__init__.py` eagerly imports `.loaders`, exposing recursive import order to a partially initialized `_core_loaders` module.
+2. `src/codex_ml/connectors/remote.py` couples loader importability to optional monitoring dependencies (`pydantic` via `codex_ml.monitoring.health`), which are absent in the baseline nox session.
+
+**Interim remediation**:
+- Remove eager `.loaders` package import from `src/codex_ml/data/__init__.py`
+- Make `record_health_event` optional in `src/codex_ml/connectors/remote.py`
+- Keep the interim-fix tag in code: `# DRQ-S1043-001: interim fix pending research`
+
+**Research target**:
+Determine whether the long-term correction should be:
+- a package/file rename (`loaders.py` vs `loaders/`),
+- a loader-bootstrap helper with explicit completion markers,
+- or a broader optional-dependency boundary cleanup for connectors/monitoring.

@@ -10,11 +10,11 @@ The most recent sessions concentrated on:
 - GitHub Pages reliability hardening (`pages-mkdocs.yml` deploy action fix, `pages-health-guard.yml` telemetry directory creation).
 - WEC/workflow governance tightening (`wec_enforcer.py` active-state validation, token-chain usage hardening).
 - Reporting expansion (`workflow_portfolio_7d_{table,analysis}` and session SOP updates with tokenized mapping and mermaid flows).
-- Persistent baseline test instability (`nox -s tests` collection failures centered on `codex_ml.data._core_loaders.stream_paths`).
+- Baseline test stabilization work: the quantum conftest hard-stop was removed in S1042, and S1043 reduced baseline `nox -s tests` collection failures from **143 → 56** by repairing the loader import contract behind `codex_ml.data._core_loaders.stream_paths`.
 
 ## 2) Next Expected Codebase Change
 
-**Expected next change:** implement and validate a focused remediation path for the recurring `stream_paths` collection failure class, then reflect the fix status in workflow/reporting docs so WEC validation and session handoffs operate on cleaner CI signals.
+**Expected next change:** normalize the baseline nox dependency contract now that the `stream_paths` collection cascade is repaired — specifically, either install or gate tests requiring `pydantic`, `click`, `fastapi.testclient`, `httpx`, and `cryptography` so baseline CI collects cleanly and runtime failures are no longer masked by import-time dependency gaps.
 
 ## 3) Mermaid Mapping Outline
 
@@ -33,7 +33,8 @@ flowchart TD
 
 ## 4) Expected Results
 
-- Reduced or eliminated `stream_paths`-driven pytest collection errors.
+- Eliminated the `stream_paths` collection cascade in the baseline nox environment.
+- Reduced baseline nox collection errors from **143 → 56**.
 - Cleaner differentiation between infra/workflow issues vs. Python runtime/import issues.
 - More reliable signal for WEC merge-required workflow selection and session planning.
 - Updated reporting artifacts capturing post-fix risk posture and next operational priorities.
@@ -87,13 +88,29 @@ Coefficient interpretation (normalized scoring model):
    - After: **0 collection errors — 16,373 tests collected**.
    - Targeted suite: 95/95 quantum tests pass; 105/106 in broader targeted set (1 pre-existing flaky isolation-dependent test unrelated to this fix).
 
-2. **Session B — CI Signal Stabilization**
-   - Re-run `nox -s tests` full suite and confirm zero collection errors in CI.
-   - Characterize any remaining runtime test failures separate from collection gate.
-   - Update accountability + reporting with measured outcomes.
+2. **Session B — CI Signal Stabilization** ✅ COMPLETE (S1043-2026-05-17)
+   - Re-ran `nox -s tests`: quantum conftest fix held, but collection did **not** reach zero.
+   - Applied minimal loader/import remediation:
+     - removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`
+     - added optional monitoring fallback in `src/codex_ml/connectors/remote.py`
+   - Post-fix baseline `nox -s tests` delta:
+     - **143 → 56** collection errors
+     - **340 → 349** skipped
+     - **1 → 12** deselected
+     - runtime never reached because collection still stopped
+   - Remaining collection blockers are now dominated by missing optional dependencies in the baseline nox environment:
+     - `pydantic`: 26
+     - `click`: 23
+     - `fastapi.testclient`: 2
+     - `httpx`: 1
+     - `cryptography`: 1
+     - plus pydantic symbol imports (`ConfigDict`, `ValidationError`): 3
+   - Targeted regression validation passed in the nox environment:
+     - `tests/test_loaders.py tests/data/test_loaders.py tests/safety/test_safety_filter_integration.py` → **16 passed**
+     - `tests/quantum/test_quantum_testing.py` → **14 passed**
 
 3. **Session C — Workflow/WEC Follow-Through**
-   - Reassess merge-required workflow set post-stabilization.
+   - Reassess merge-required workflow set after baseline dependency-gating cleanup.
    - Validate active-state and token-chain assumptions.
    - Refresh handoff prompt and next priority matrix.
 
@@ -108,10 +125,13 @@ Coefficient interpretation (normalized scoring model):
 
 1. Load policy/accountability/session context packet.
 2. Run `nox -s precommit` and `nox -s tests` to capture current baseline.
-3. Confirm zero collection errors — quantum conftest fix in `tests/quantum/conftest.py` is applied.
-4. If any new collection errors surface, identify impacted modules and scope minimal fix.
-5. Run targeted test set for any changed area.
-6. Refresh accountability/changelog/reporting artifacts with measured deltas.
+3. Confirm the loader import fix remains in place:
+   - `src/codex_ml/data/__init__.py` no longer eagerly imports `.loaders`
+   - `src/codex_ml/connectors/remote.py` degrades without monitoring extras
+4. Baseline `nox -s tests` should now fail on dependency-gating gaps, not `_core_loaders.stream_paths`.
+5. Decide the next minimal action for the remaining 56 collection blockers: install baseline deps vs. add import guards / markers.
+6. Run targeted test set for any changed area.
+7. Refresh accountability/changelog/reporting artifacts with measured deltas.
 
 ### B. Execution Guardrails
 
@@ -126,10 +146,10 @@ Coefficient interpretation (normalized scoring model):
 > Baseline captured: `pytest_plugins` in `tests/quantum/conftest.py` caused hard collection interrupt (0/16,373 tests collected).
 
 **Prompt 2 — Minimal Remediation** ✅ DONE
-> Fix applied: replaced `pytest_plugins` with direct import. After: 0 errors, 16,373 collected. 95/95 quantum pass.
+> Fixes applied: replaced `pytest_plugins` with direct quantum fixture import, then repaired the loader import contract in `src/codex_ml/data/__init__.py` and `src/codex_ml/connectors/remote.py`. Post-fix nox collection delta: 143 → 56.
 
-**Prompt 3 — Stability Verification**
-> “Re-run broad validation, separate remaining pre-existing failures from fixed signatures, and update reporting/accountability artifacts with evidence.”
+**Prompt 3 — Stability Verification** ✅ DONE
+> `nox -s tests` rerun after the import-contract fix: `_core_loaders.stream_paths` collection cascade is gone; remaining collection blockers are baseline dependency gaps (`pydantic`, `click`, `fastapi.testclient`, `httpx`, `cryptography`). Reporting/accountability updated with exact counts and targeted-pass evidence.
 
 **Prompt 4 — Handoff Closure**
-> “Produce next-session continuation notes: unresolved risks, required workflow checks, and a prioritized follow-up matrix for the next 48-hour window.”
+> “Normalize the baseline nox dependency contract (install or gate `pydantic` / `click` / `fastapi.testclient` / `httpx` / `cryptography` requirements), then re-run `nox -s tests` and update reporting/accountability with the next collection delta.”

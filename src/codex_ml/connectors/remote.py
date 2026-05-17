@@ -27,7 +27,12 @@ from collections.abc import Iterable  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 
-from codex_ml.monitoring.health import record_health_event  # noqa: E402
+# DRQ-S1043-001: interim fix pending research
+try:  # noqa: E402
+    from codex_ml.monitoring.health import record_health_event
+except Exception:  # pragma: no cover - optional monitoring dependency
+    def record_health_event(*_args, **_kwargs):
+        return None
 
 from .base import Connector, ConnectorError, LocalConnector  # noqa: E402
 

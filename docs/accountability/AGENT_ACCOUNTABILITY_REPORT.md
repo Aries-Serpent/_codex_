@@ -1,3 +1,47 @@
+## SESSION SUMMARY — 2026-05-17T08:42Z [S1043-loader-import-contract-stabilization]
+
+**Session:** S1043-loader-import-contract-stabilization | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (pending)
+
+### Completed
+- ✅ Re-ran baseline `nox -s tests` after the quantum conftest fix.
+- ✅ Confirmed the quantum conftest fix holds, but baseline collection still stopped on the recurring `_core_loaders.stream_paths` failure class.
+- ✅ Applied minimal import-contract remediation:
+  - removed eager `.loaders` package import from `src/codex_ml/data/__init__.py`
+  - added optional monitoring fallback in `src/codex_ml/connectors/remote.py`
+- ✅ Added required deep-research tracking for the recurring systemic pattern:
+  - `docs/tech_debt/research_queue/questions_for_research.md` → `DRQ-S1043-001`
+  - `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md` → S1043 addendum
+
+### Measured Deltas
+| Metric | Before S1043 | After S1043 |
+|---|---|---|
+| `nox -s tests` collection errors | 143 | 56 |
+| Dominant failure class | `_core_loaders.stream_paths` import cascade | Missing baseline deps (`pydantic`, `click`, `fastapi.testclient`, `httpx`, `cryptography`) |
+| Skipped tests | 340 | 349 |
+| Deselected tests | 1 | 12 |
+| Runtime phase reached | No | No |
+
+### Validation
+- ✅ `python -m ruff check src/codex_ml/data/__init__.py src/codex_ml/connectors/remote.py tests/quantum/conftest.py`
+- ✅ `./.nox/tests-3-12/bin/python -c "import codex_ml.data.loaders"` now succeeds; `_core_loaders.stream_paths` present
+- ✅ `./.nox/tests-3-12/bin/pytest --collect-only -q -m 'not requires_torch'` now stops at 56 errors instead of 143
+- ✅ `./.nox/tests-3-12/bin/pytest tests/test_loaders.py tests/data/test_loaders.py tests/safety/test_safety_filter_integration.py -v` → **16 passed**
+- ✅ `./.nox/tests-3-12/bin/pytest tests/quantum/test_quantum_testing.py -v` → **14 passed**
+- ✅ `nox -s tests` rerun recorded the same 56-error collection ceiling in the full session
+
+### Remaining Failure Buckets
+- `pydantic`: 26
+- `click`: 23
+- `fastapi.testclient`: 2
+- `httpx`: 1
+- `cryptography`: 1
+- pydantic symbol imports (`ConfigDict`, `ValidationError`): 3
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability/changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-17T08:12Z [S1042-quantum-conftest-remediation]
 
 **Session:** S1042-quantum-conftest-remediation | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (pending)

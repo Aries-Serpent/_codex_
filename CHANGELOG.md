@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1043-loader-import-contract-stabilization — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:42Z)
+- Ran baseline `nox -s tests` after the quantum conftest fix and confirmed the suite still stopped during collection, but the dominant failure class moved from the quantum conftest hard-stop to `codex_ml.data._core_loaders.stream_paths`.
+- Fixed the loader/import contract so the baseline nox environment no longer fails on `_core_loaders.stream_paths`:
+  - removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`
+  - added an optional monitoring fallback for `record_health_event` in `src/codex_ml/connectors/remote.py`
+- Measured post-fix nox delta: **143 → 56** collection errors (`349 skipped`, `12 deselected`, `5 warnings`).
+- Characterized the remaining blockers as baseline dependency gaps, led by `pydantic` (26), `click` (23), `fastapi.testclient` (2), `httpx` (1), and `cryptography` (1).
+- Added DRQ tracking for this recurring systemic pattern:
+  - `docs/tech_debt/research_queue/questions_for_research.md` (`DRQ-S1043-001`)
+  - `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md` (S1043 addendum)
+
 ### Added (S1042-quantum-conftest-remediation — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:12Z)
 - Fixed `tests/quantum/conftest.py`: removed deprecated `pytest_plugins = ("tests.utils.quantum_helpers",)` which pytest 8+ rejects in non-root conftest files, causing a hard collection interrupt that blocked all 16,373 tests.
 - Replaced with a direct import: `from tests.utils.quantum_helpers import quantum_plugin_fixture`.
