@@ -1,29 +1,29 @@
-# Session Context — 2026-05-15T16:22:33Z
-**Branch:** `copilot/analyze-workflows-data`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-17T00:37:59Z
+**Branch:** `copilot/analyze-workflows-data-again`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4998` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4838` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-15)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-17)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-17)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-17)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
 
 ## 📝 Recent Commits
-- `a3352cdf` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
-- `c3da4627` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-15)
-- `1a9fb0cc` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
-- `ddf428d3` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-15)
-- `29cc723d` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-15)
-- `2cfb1ef8` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-15)
-- `0abaa4e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
-- `06aa3686` Merge pull request #4470 from Aries-Serpent/0D_base_ — Statix (2026-05-14)
+- `2d49f901` Merge remote-tracking branch 'origin/copilot/analyze-workflows-data' into copilo — copilot-swe-agent[bot] (2026-05-17)
+- `c92bc67e` fix: consolidate source branch changes and repair pages deployment reliability — copilot-swe-agent[bot] (2026-05-17)
+- `21bf7938` Changes before error encountered — copilot-swe-agent[bot] (2026-05-15)
+- `af907d4a` Restore GitHub Pages publish path and include workflow HTML report in docs site — copilot-swe-agent[bot] (2026-05-16)
+- `0364ebdb` docs: include workflow console in GitHub Pages navigation — copilot-swe-agent[bot] (2026-05-16)
+- `81554e61` chore: plan include workflow console in pages docs — copilot-swe-agent[bot] (2026-05-16)
+- `2384542c` feat: add copilot_workflow_report_console.html — live workflow control panel — copilot-swe-agent[bot] (2026-05-16)
+- `fc742769` chore: begin copilot_workflow_report_console HTML build — copilot-swe-agent[bot] (2026-05-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -34,9 +34,9 @@
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-QUERY-FILTER-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
+- [] `?`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
