@@ -1,10 +1,10 @@
-# Session Context — 2026-05-17T04:45:54Z
+# Session Context — 2026-05-17T05:12:27Z
 **Branch:** `copilot/analyze-workflows-data-again`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4904` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-17)
 
 ## 📝 Recent Commits
+- `9c6598c9` fix(pages): make pages hotfix merge-ready — copilot-swe-agent[bot] (2026-05-17)
+- `7266b640` chore: start main pages hotfix promotion — copilot-swe-agent[bot] (2026-05-17)
 - `9780ec3c` fix(pages): allow branch-triggered pages republish — copilot-swe-agent[bot] (2026-05-17)
 - `01e4818b` chore: start pages 404 repair iteration — copilot-swe-agent[bot] (2026-05-17)
 - `9f18c661` fix(pages): replace broken deploy-pages SHA with @v4, add self-healing health gu — copilot-swe-agent[bot] (2026-05-17)
 - `2d49f901` Merge remote-tracking branch 'origin/copilot/analyze-workflows-data' into copilo — copilot-swe-agent[bot] (2026-05-17)
 - `c92bc67e` fix: consolidate source branch changes and repair pages deployment reliability — copilot-swe-agent[bot] (2026-05-17)
 - `21bf7938` Changes before error encountered — copilot-swe-agent[bot] (2026-05-15)
-- `af907d4a` Restore GitHub Pages publish path and include workflow HTML report in docs site — copilot-swe-agent[bot] (2026-05-16)
-- `0364ebdb` docs: include workflow console in GitHub Pages navigation — copilot-swe-agent[bot] (2026-05-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
