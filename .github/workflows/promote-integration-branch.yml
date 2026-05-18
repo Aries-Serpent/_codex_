@@ -1,8 +1,7 @@
-name: "🚀 Promote Integration Branch (0D_base_ → main)"
+name: "🚀 Promote Commit SHA to Target Branch"
 
-# Creates or recreates the 0D_base_ staging integration branch from a given
-# source SHA, then opens a new promotion PR (or updates the title/body of an
-# existing open PR) targeting main.
+# Creates or recreates a target branch from a given source SHA, then optionally
+# opens/updates a PR from that target branch to a configured base branch.
 #
 # Update behaviour: when an existing open PR is found, its title and body are
 # patched via `gh pr edit` so the description stays current after each push.
@@ -12,7 +11,7 @@ name: "🚀 Promote Integration Branch (0D_base_ → main)"
 #
 # Requires: CODEX_MASTER_KEY secret (contents:write + pull-requests:write)
 #
-# Architecture:
+# Default architecture:
 #   copilot/session-*  ──►  0D_base_  ──►  main
 #   (agent sessions)         (staging)    (production)
 #   Each session sub-PR                   This promotion PR
@@ -23,23 +22,36 @@ on:
   workflow_dispatch:
     inputs:
       source_sha:
-        description: "Commit SHA to create 0D_base_ from (default: latest copilot session branch)"
+        description: "Commit SHA to push to the target branch (default: resolve from source_branch)"
         required: false
         default: ""
       source_branch:
-        description: "Source branch name to use as SHA origin (used when source_sha is empty)"
+        description: "Source branch used to resolve SHA when source_sha is empty"
         required: false
         default: "copilot/update-ci-failure-rate-and-confirm-transition"
+      target_branch:
+        description: "Branch to create/update from source SHA"
+        required: false
+        default: "0D_base_"
+      pr_base_branch:
+        description: "Base branch for optional PR creation/update"
+        required: false
+        default: "main"
       pr_title:
-        description: "Promotion PR title"
+        description: "PR title (used when create_or_update_pr=true)"
         required: false
         default: "promote(S174): 0D_base_ → main — S174 consolidation + Agent Token Delegation"
       session_label:
         description: "Session label for PR body (e.g. 'S174', 'S137'). Defaults to 'S174' for backward compatibility."
         required: false
         default: "S174"
+      create_or_update_pr:
+        description: "Create or update a PR from target_branch to pr_base_branch"
+        required: false
+        default: true
+        type: boolean
       force_recreate:
-        description: "Delete and recreate 0D_base_ if it already exists"
+        description: "Delete and recreate target_branch if it already exists"
         required: false
         default: false
         type: boolean
@@ -49,12 +61,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: promote-integration-branch
+  group: promote-target-branch-${{ inputs.target_branch || '0D_base_' }}
   cancel-in-progress: false
 
 jobs:
   promote:
-    name: "Create 0D_base_ and open promotion PR"
+    name: "Create/update target branch and optional PR"
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -96,19 +108,20 @@ jobs:
             echo "✅ Resolved ${SOURCE_BRANCH} → ${SHA}"
           fi
 
-      - name: Delete existing 0D_base_ (force recreate)
+      - name: Delete existing target branch (force recreate)
         if: inputs.force_recreate
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
-          if gh api "repos/${{ github.repository }}/git/ref/heads/0D_base_" > /dev/null 2>&1; then
-            gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
-              --method DELETE && echo "✅ Deleted existing 0D_base_"
+          TARGET_BRANCH="${{ inputs.target_branch }}"
+          if gh api "repos/${{ github.repository }}/git/ref/heads/${TARGET_BRANCH}" > /dev/null 2>&1; then
+            gh api "repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}" \
+              --method DELETE && echo "✅ Deleted existing ${TARGET_BRANCH}"
           else
-            echo "ℹ️  0D_base_ does not exist — nothing to delete"
+            echo "ℹ️  ${TARGET_BRANCH} does not exist — nothing to delete"
           fi
 
-      - name: Create or update 0D_base_ branch
+      - name: Create or update target branch
         id: create_branch
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -132,38 +145,42 @@ jobs:
             return 1
           }
 
+          TARGET_BRANCH="${{ inputs.target_branch }}"
           # Try to create the branch; if it already exists, update it via PATCH
           python -m codex.github.mcp_poster create-branch \
             --repo "${{ github.repository }}" \
-            --ref "refs/heads/0D_base_" \
+            --ref "refs/heads/${TARGET_BRANCH}" \
             --sha "${SHA}" 2>&1 || {
             EXIT=$?
             echo "create-branch returned $EXIT — branch may already exist"
             # Fall back to force-update via gh api PATCH (with retry)
             if [ "$EXIT" -ne 0 ]; then
-              if _api_with_retry gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
+              if _api_with_retry gh api "repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}" \
                 --method PATCH \
                 -H "Accept: application/vnd.github+json" \
                 -f sha="${SHA}" \
                 -f force=true; then
-                echo "✅ Force-updated 0D_base_ → ${SHA}"
+                echo "✅ Force-updated ${TARGET_BRANCH} → ${SHA}"
               else
-                echo "❌ Failed to create or update 0D_base_ after retries" >&2
+                echo "❌ Failed to create or update ${TARGET_BRANCH} after retries" >&2
                 exit 1
               fi
             fi
           }
           echo "branch_sha=${SHA}" >> "$GITHUB_OUTPUT"
 
-      - name: Check for existing promotion PR
+      - name: Check for existing PR
         id: check_pr
+        if: inputs.create_or_update_pr
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
+          TARGET_BRANCH="${{ inputs.target_branch }}"
+          BASE_BRANCH="${{ inputs.pr_base_branch }}"
           EXISTING=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "0D_base_" \
-            --base "main" \
+            --head "${TARGET_BRANCH}" \
+            --base "${BASE_BRANCH}" \
             --state open \
             --json number \
             --jq '.[0].number' 2>/dev/null || echo "")
@@ -174,8 +191,8 @@ jobs:
             echo "ℹ️  No existing promotion PR — will create one"
           fi
 
-      - name: Open promotion PR (0D_base_ → main)
-        if: steps.check_pr.outputs.existing_pr == ''
+      - name: Open promotion PR
+        if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr == ''
         id: create_pr
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -185,9 +202,11 @@ jobs:
         run: |
           # Build PR body with variable concatenation to avoid shellcheck SC2215
           # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).
-          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion: \`0D_base_\` → \`main\`"$'\n'
+          TARGET_BRANCH="${{ inputs.target_branch }}"
+          BASE_BRANCH="${{ inputs.pr_base_branch }}"
+          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion: \`${TARGET_BRANCH}\` → \`${BASE_BRANCH}\`"$'\n'
           PR_BODY+=""$'\n'
-          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`."$'\n'
+          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`${TARGET_BRANCH}\`) into \`${BASE_BRANCH}\`."$'\n'
           PR_BODY+=""$'\n'
           PR_BODY+="### Contents"$'\n'
           PR_BODY+="- See PR title and session notes for ${SESSION_LABEL} contents"$'\n'
@@ -197,8 +216,8 @@ jobs:
           PR_BODY+=""$'\n'
           PR_BODY+="### Architecture"$'\n'
           PR_BODY+="\`\`\`"$'\n'
-          PR_BODY+="${{ inputs.source_branch }}  ──►  0D_base_  ──►  main"$'\n'
-          PR_BODY+="              (${SESSION_LABEL} session)          (this PR)"$'\n'
+          PR_BODY+="${{ inputs.source_branch }}  ──►  ${TARGET_BRANCH}  ──►  ${BASE_BRANCH}"$'\n'
+          PR_BODY+="              (${SESSION_LABEL} session)            (this PR)"$'\n'
           PR_BODY+="\`\`\`"$'\n'
           PR_BODY+=""$'\n'
           PR_BODY+="---"$'\n'
@@ -218,11 +237,11 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
-            --head "0D_base_" \
-            --base "main"
+            --head "${TARGET_BRANCH}" \
+            --base "${BASE_BRANCH}"
 
       - name: Update existing promotion PR (title + body)
-        if: steps.check_pr.outputs.existing_pr != ''
+        if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr != ''
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
           SHA: ${{ steps.resolve_sha.outputs.sha }}
@@ -230,11 +249,13 @@ jobs:
           SESSION_LABEL: ${{ inputs.session_label }}
         run: |
           PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
+          TARGET_BRANCH="${{ inputs.target_branch }}"
+          BASE_BRANCH="${{ inputs.pr_base_branch }}"
           # Build PR body with variable concatenation to avoid shellcheck SC2215.
-          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion (updated): \`0D_base_\` → \`main\`"$'\n'
+          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion (updated): \`${TARGET_BRANCH}\` → \`${BASE_BRANCH}\`"$'\n'
           PR_BODY+=""$'\n'
-          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`."$'\n'
-          PR_BODY+="PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`."$'\n'
+          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`${TARGET_BRANCH}\`) into \`${BASE_BRANCH}\`."$'\n'
+          PR_BODY+="PR updated automatically — latest ${TARGET_BRANCH} SHA: \`${SHA}\`."$'\n'
           PR_BODY+=""$'\n'
           PR_BODY+="---"$'\n'
           PR_BODY+=""$'\n'
@@ -254,15 +275,17 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## 🚀 Integration Branch Promotion" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 🚀 Commit SHA Branch Promotion" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
           echo "|------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| \`0D_base_\` SHA | \`${{ steps.resolve_sha.outputs.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Target branch | \`${{ inputs.target_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Target SHA | \`${{ steps.resolve_sha.outputs.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Base branch | \`${{ inputs.pr_base_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Source branch | \`${{ inputs.source_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Existing PR | \`${{ steps.check_pr.outputs.existing_pr || 'none' }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Next Steps" >> "$GITHUB_STEP_SUMMARY"
-          echo "1. Owner reviews the promotion PR" >> "$GITHUB_STEP_SUMMARY"
-          echo "2. Merge \`0D_base_\` → \`main\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "1. Confirm target branch update result" >> "$GITHUB_STEP_SUMMARY"
+          echo "2. If PR mode enabled, review and merge \`${{ inputs.target_branch }}\` → \`${{ inputs.pr_base_branch }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "3. Agent Token Delegation activates automatically after PR description triggers \`agent-auth-delegation.yml\`" >> "$GITHUB_STEP_SUMMARY"

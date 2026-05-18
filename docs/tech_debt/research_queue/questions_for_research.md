@@ -1288,3 +1288,41 @@ the test suite to catch any newly-broken imports. Likely 2–3 CI iterations to 
 1. Pattern 19 reports 0 files affected
 2. All existing tests pass after the rewrite
 3. `pip install -e .` followed by `python -c "import codex"` succeeds
+
+---
+
+### DRQ-S1043-001: `codex_ml.data._core_loaders.stream_paths` collection cascade in baseline nox environment
+
+**ID**: DRQ-S1043-001
+**Category**: Integration test environment
+**Priority**: HIGH
+**Impact**: HIGH — `nox -s tests` stops at 143 collection errors, blocking baseline CI signal
+**Created**: 2026-05-17
+**Status**: ✅ Interim fix applied
+
+#### Context
+**Where discovered**: Session S1043 / `/home/runner/work/_codex_/_codex_` baseline `nox -s tests` run.  
+**Failure pattern**: pytest collection stops with 143 errors headed by `AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'`. The failure is triggered in the baseline nox environment, while direct host-environment collection is clean after the quantum conftest fix. Investigation showed two coupled mechanisms:
+1. `src/codex_ml/data/__init__.py` eagerly imported `.loaders` during package initialization, allowing recursive import of `codex_ml.data.loaders` to observe a partially initialized `codex_ml.data._core_loaders`.
+2. `src/codex_ml/connectors/remote.py` required `codex_ml.monitoring.health`, which imports `pydantic`; `pydantic` is absent in the baseline nox session, so optional monitoring support should not block loader imports.
+
+#### The Question
+What is the correct long-term package layout and optional-dependency boundary for `codex_ml.data.loaders` so that file/package shadowing (`loaders.py` + `loaders/` package) and optional monitoring imports cannot cause re-entrant partial module state in minimal environments?
+
+#### Why This Needs Research
+- The issue has recurred across multiple sessions and only manifests under certain import orders / environments.
+- The codebase currently uses both `src/codex_ml/data/loaders.py` and `src/codex_ml/data/loaders/`, which is structurally fragile.
+- A minimal interim fix can restore CI signal, but the long-term answer likely requires a clearer import contract or file/package rename plan.
+
+#### Current Hypothesis
+The immediate failure is caused by eager package imports exposing `_core_loaders` before `loaders.py` finishes executing. A durable fix likely requires both lazy package imports and a future elimination of the `loaders.py` vs `loaders/` naming collision.
+
+#### Interim Fix Applied
+- Removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`.
+- Added an optional-dependency fallback for `record_health_event` in `src/codex_ml/connectors/remote.py`.
+- Interim fix tag: `# DRQ-S1043-001: interim fix pending research`
+
+#### Acceptance Criteria
+1. `nox -s tests` no longer fails during collection with `_core_loaders.stream_paths` errors
+2. `python -m pytest --collect-only` inside the nox baseline environment completes without collection errors
+3. Loader/connector imports work without requiring optional monitoring dependencies

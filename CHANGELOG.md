@@ -7,6 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1054-ci-rescue-sync-tracked-files-cleanup — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:51Z)
+- Reverted unintended `.codex/session_context_latest.md` drift from a planning-only progress update commit so PR scope returns to intended Session D/rescue files.
+- Applied accountability freshness remediation for Pattern 25 and re-synced tracked-file state to clear the auto-fix rescue gate conditions observed on `Auto-Fix Common CI Issues` run `26019821327`.
+
+### Added (S1054-priority1-checklist-append — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:39Z)
+- Appended maintainer-requested Priority 1 continuation checklist items to both living continuation docs and the active PR follow-up prompt.
+- Included explicit review-thread action IDs, stale old-SHA run cancellation retry, and workflow-misfire prevention process continuity in the Priority 1 list.
+
+### Added (S1054-pending-session-review-and-timebox-refresh — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:13Z)
+- Updated Session D living docs with current timebox checkpoint (`~29/60 minutes used`) and explicit final 5-minute wrap-up reserve.
+- Recorded pending-session/workflow review result: no queued runs, one stale in-progress old-SHA run identified (`26017787233`).
+- Recorded cancellation attempt status for stale run: blocked in-session by GitHub API rate limit (`HTTP 403 API rate limit exceeded` with current token scope/rate state).
+
+### Added (S1054-followup-prompt-thread-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:56Z)
+- Appended maintainer-requested review-thread action items to `.github/copilot-prompts/active/PR-4478-followup.md`:
+  - `#pullrequestreview-4307843777`
+  - `#pullrequestreview-4307833235`
+- Updated Session D living docs with explicit time-budget checkpoint (`~16/60 used`) and reserved final 5-minute wrap-up requirement.
+
+### Fixed (S1054-runtime-triage-continuation-and-doc-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:47Z)
+- Restored accidental regressions introduced in timeout progress commit chain:
+  - reverted `a.py`, `b.py`, `test_a.py`, `test_b.py` to pre-regression content
+  - restored `configs/synonyms/test_synonyms.json`
+- Re-synced living continuation docs for Session D (`whats_next` + `session_diagram`) with explicit Priority-1 numbered objectives and wrap-up continuation guidance.
+- Refreshed CI rescue status documentation to reflect current gate signal (REQ-10 branch-divergence/rebase gate on failing `Agent Token Delegation` runs).
+
+### Fixed (S1051-wec-merge-required-alignment — `copilot/review-codebase-and-next-changes` — 2026-05-18T03:44Z)
+- Removed `nox_gates.yml` from `_MERGE_REQUIRED_WORKFLOWS` in `scripts/ci/session_wrapup_autofix.py` so WEC template integrity no longer hard-fails when that optional workflow is manually disabled in GitHub Actions.
+- Re-ran CI rescue validation commands:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+
+### Fixed (S1050-comment-gate-and-wec-recovery — `copilot/review-codebase-and-next-changes` — 2026-05-18T02:50Z)
+- Re-ran CI rescue validation chain and confirmed clean local gates:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- Restored canonical WEC checklist block in PR body using `session_wrapup_autofix.py --print-wec-block` output to recover from template-integrity drift.
+- Confirmed current comment-review-gate failure root cause is unresolved blocking comment replies; next push is expected to clear it after replies are posted.
+
+### Added (S1048-next-objectives-continuation — `copilot/review-codebase-and-next-changes` — 2026-05-18T01:29Z)
+- Updated living continuation docs:
+  - `/home/runner/work/_codex_/_codex_/docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `/home/runner/work/_codex_/_codex_/docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+  with current Session D continuation status, promotion-SHA tracking, and explicit final 5-minute wrap-up handoff guidance.
+- Added report-console-driven workflow monitoring guidance for continuation sessions:
+  - `docs/reporting/copilot_workflow_report_console.html`
+  - keep WEC checklist state wired in the PR body while validating workflow dispatch outcomes.
+- Captured current promotion SHA chain for `promote-integration-branch.yml` handoff:
+  - previously shared: `97d52f011c105b5007b56ac1e027b222e213a9ab`
+  - handoff commit: `c722310db1ed0fe50a7c2575af819a98c66011e5`
+  - latest branch planning tip at update time: `ab6d12dee6904d03d114935c0f577fbdacac6f80`
+  - operational rule: use **current branch HEAD** as `source_sha` when dispatching to `target_branch=main`.
+
+### Fixed (S1044-baseline-dep-normalization — `copilot/review-codebase-and-next-changes` — 2026-05-17T10:27Z)
+- Added 5 missing baseline test dependencies to `requirements-dev.txt`:
+  - `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`
+- Post-normalization `nox -s tests --collect-only`: **0 `ModuleNotFoundError` instances** — nox session marked successful.
+  - Previous S1043 measured collection error bucket eliminated: `pydantic` (26), `click` (23), `fastapi.testclient` (2), `httpx` (1), `cryptography` (1) → **all resolved**.
+- Extended `.github/workflows/promote-integration-branch.yml` to support UI-triggered SHA→branch promotion:
+  - Added `target_branch` input (default `0D_base_`) — branch to update from source SHA.
+  - Added `pr_base_branch` input (default `main`) — base for optional PR creation.
+  - Added `create_or_update_pr` boolean input (default `true`).
+  - Existing 0D_base_→main behavior preserved as defaults; generic SHA→branch dispatch now supported.
+  - YAML syntax validated clean.
+
+
+- Ran baseline `nox -s tests` after the quantum conftest fix and confirmed the suite still stopped during collection, but the dominant failure class moved from the quantum conftest hard-stop to `codex_ml.data._core_loaders.stream_paths`.
+- Fixed the loader/import contract so the baseline nox environment no longer fails on `_core_loaders.stream_paths`:
+  - removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`
+  - added an optional monitoring fallback for `record_health_event` in `src/codex_ml/connectors/remote.py`
+- Measured post-fix nox delta: **143 → 56** collection errors (`349 skipped`, `12 deselected`, `5 warnings`).
+- Characterized the remaining blockers as baseline dependency gaps, led by `pydantic` (26), `click` (23), `fastapi.testclient` (2), `httpx` (1), and `cryptography` (1).
+- Added DRQ tracking for this recurring systemic pattern:
+  - `docs/tech_debt/research_queue/questions_for_research.md` (`DRQ-S1043-001`)
+  - `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md` (S1043 addendum)
+
+### Added (S1042-quantum-conftest-remediation — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:12Z)
+- Fixed `tests/quantum/conftest.py`: removed deprecated `pytest_plugins = ("tests.utils.quantum_helpers",)` which pytest 8+ rejects in non-root conftest files, causing a hard collection interrupt that blocked all 16,373 tests.
+- Replaced with a direct import: `from tests.utils.quantum_helpers import quantum_plugin_fixture`.
+- Collection gate: **0 errors, 16,373 tests collected** (was: `Interrupted: 1 error during collection`, 0 tests collected).
+- Targeted validation: 95/95 quantum tests pass; 105/106 in quantum + loaders targeted set (1 pre-existing flaky test unrelated to this fix).
+- Updated `docs/reporting/next_expected_codebase_change_48h.md`, `docs/roadmap/review_codebase_next_changes_whats_next.md`, CHANGELOG, and accountability with measured deltas.
+
+### Added (S1041-review-codebase-next-changes — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:00Z)
+- Added `docs/reporting/next_expected_codebase_change_48h.md` with:
+  - 48-hour aligned change review,
+  - mermaid next-change mapping,
+  - expected outcomes,
+  - quantum-inspired tokenized equations,
+  - iterative promptset and next-session groundwork package.
+- Added living-doc groundwork for this branch:
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+- Updated living docs with explicit session time tracking, a final 5-minute wrap-up reserve, and a continuation prompt for the next session.
+
 ### Fixed (S1040-branch-consolidation-pages-reliability — `copilot/analyze-workflows-data-again` — 2026-05-17T00:16Z)
 - Cherry-picked the missing commit from `copilot/analyze-workflows-data` so the working branch contains all source-branch changes before closure.
 - Fixed GitHub Pages deployment resolution by replacing invalid `actions/deploy-pages` SHA in `.github/workflows/pages-mkdocs.yml` with `actions/deploy-pages@v4`.
