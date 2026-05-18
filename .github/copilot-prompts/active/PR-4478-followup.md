@@ -41,6 +41,9 @@ No files modified
   - Re-check branch divergence (`origin/main...HEAD`) before starting agent edits.
   - If behind/diverged, rebase first so `REQ-10` pre-flight gate cannot fail on stale branch state.
   - Re-validate WEC block from live PR body before each `report_progress`.
+- [ ] Apply changes based on review feedback in:
+  - https://github.com/Aries-Serpent/_codex_/pull/4478#pullrequestreview-4307843777
+  - https://github.com/Aries-Serpent/_codex_/pull/4478#pullrequestreview-4307833235
 
 ### Current CI rescue blocker snapshot (latest observed)
 - [ ] `Agent Token Delegation` run `26017125733` failed `REQ-10` branch rebase/divergence gate (`status=diverged, behind_by=1` for `main...head` at failing commit context).
