@@ -12,6 +12,9 @@
 - ✅ Follow-up monitor pass after maintainer-approved pending workflows:
   - current PR head now `f9bd48639a93add5a1fb33547bb21dffc818e436` (`MERGEABLE`).
   - approval-dispatched queue is active on this head with multiple runs in progress; one observed early `startup_failure` (`Progressive Validation Suite`) is under continued monitoring.
+- ✅ Applied prompt quality cleanup from validation feedback:
+  - removed stale `PR #4479` references and obsolete `#4478` review links from `.github/copilot-prompts/active/PR-4497-followup.md`.
+  - removed duplicate checklist/self-review block and kept a single canonical self-review protocol section.
 - ✅ Refreshed continuation artifacts for this phase:
   - `docs/roadmap/review_codebase_next_changes_whats_next.md`
   - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`

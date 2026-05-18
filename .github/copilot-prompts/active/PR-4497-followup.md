@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4497
 
-**PR**: #4497 - PR #4497  
+**PR**: #4497  
 **Branch**: `copilot/gather-active-dependabots`  
 **Author**: @Copilot  
 **Date**: 2026-05-18  
@@ -47,22 +47,10 @@ No files modified
   - If behind/diverged, rebase first so `REQ-10` pre-flight gate cannot fail on stale branch state.
   - Re-validate WEC block from live PR body before each `report_progress`.
 - [ ] Apply changes based on review feedback in:
-  - https://github.com/Aries-Serpent/_codex_/pull/4478#pullrequestreview-4307843777
-  - https://github.com/Aries-Serpent/_codex_/pull/4478#pullrequestreview-4307833235
+  - https://github.com/Aries-Serpent/_codex_/pull/4497#pullrequestreview-4312820254
 
 ### Current CI rescue blocker snapshot (latest observed)
 - [ ] `Agent Token Delegation` run `26017125733` failed `REQ-10` branch rebase/divergence gate (`status=diverged, behind_by=1` for `main...head` at failing commit context).
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
 
 ---
 
