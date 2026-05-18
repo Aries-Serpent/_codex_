@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1050-comment-gate-and-wec-recovery — `copilot/review-codebase-and-next-changes` — 2026-05-18T02:50Z)
+- Re-ran CI rescue validation chain and confirmed clean local gates:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- Restored canonical WEC checklist block in PR body using `session_wrapup_autofix.py --print-wec-block` output to recover from template-integrity drift.
+- Confirmed current comment-review-gate failure root cause is unresolved blocking comment replies; next push is expected to clear it after replies are posted.
+
 ### Added (S1048-next-objectives-continuation — `copilot/review-codebase-and-next-changes` — 2026-05-18T01:29Z)
 - Updated living continuation docs:
   - `/home/runner/work/_codex_/_codex_/docs/roadmap/review_codebase_next_changes_whats_next.md`

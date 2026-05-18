@@ -1,3 +1,35 @@
+## SESSION SUMMARY — 2026-05-18T02:50Z [S1050-comment-gate-and-wec-recovery]
+
+**Session:** S1050-comment-gate-and-wec-recovery | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** #4478
+
+### Completed
+- ✅ Loaded mandatory pre-session policy/context files and inspected current PR check state.
+- ✅ Pulled CI evidence via GitHub MCP for failing `PR Comment Review Gate` runs:
+  - run `26009789163` / job `76448093300`
+  - run `26008876635` / job `76445507413`
+- ✅ Verified gate failure cause: blocking unaddressed comments count, not code/test regression.
+- ✅ Re-ran required CI rescue commands:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- ✅ Restored PR-body WEC block using canonical CLI output (`session_wrapup_autofix.py --print-wec-block --pr-number 4478`) and updated PR description via `report_progress`.
+
+### Measured Deltas
+| Metric | Before | After |
+|---|---|---|
+| Comment-review gate failing reason | unclear in PR UI | explicit: blocking unaddressed comments (`BLOCKING>0`) |
+| Local rescue validation chain | not rerun this session | rerun complete; no blocking local auto-fix issues |
+| WEC block integrity in PR body | drifted to non-canonical checklist-only body | canonical WEC block restored |
+
+### Remaining Open Items
+- Post explicit `reply_to_comment` responses for actionable `comment_new` entries, then push commit to trigger gate re-scan.
+- Continue Session D runtime terminal summary + failure bucketing workstream after comment-gate unblock.
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T01:29Z [S1048-next-objectives-continuation]
 
 **Session:** S1048-next-objectives-continuation | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (open)
