@@ -1,14 +1,8 @@
 #!/usr/bin/env python3
 """Tests for scripts/validate_table_spacing.py"""
 
-import sys
-from pathlib import Path
 
 import pytest
-
-# Add scripts directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
-
 from validate_table_spacing import check_table_spacing, fix_table_spacing
 
 

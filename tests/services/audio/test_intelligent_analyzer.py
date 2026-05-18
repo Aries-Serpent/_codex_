@@ -22,7 +22,11 @@ The current approach prioritizes fast unit tests over format validation.
 
 import pytest
 
-from services.audio.analysis.intelligent_analyzer import (
+# numpy is a transitive dependency of the intelligent_analyzer module;
+# skip at collection time when it is not installed rather than failing.
+pytest.importorskip("numpy")
+
+from services.audio.analysis.intelligent_analyzer import (  # noqa: E402
     AudioAnalysis,
     IntelligentAudioAnalyzer,
     ProfileMatch,

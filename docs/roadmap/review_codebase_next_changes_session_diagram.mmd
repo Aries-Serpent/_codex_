@@ -18,6 +18,8 @@ flowchart TD
     Q --> R["Review pending copilot sessions/workflow runs\ncancel stale queued/in-progress old-SHA runs"]
     R --> S["Session D continuation\nrerun full runtime to terminal summary + targeted fix"]
     S --> T["Priority 1 list expanded\nreview-thread actions + stale-run retry + misfire-prevention continuity"]
+    T --> U["S1055 — Session D runtime bucket fixes\n✅ Bucket A: scripts/metrics __init__ re-export\n✅ Bucket B: numpy importorskip ×2\n✅ sync_tracked_files baseline hash updated\n✅ Secrets Baseline: archive_ops.jsonl false positives added\n✅ sys.path.insert → conftest.py fixture migration\n(PR #4479 opened)"]
+    U --> V["S1055 follow-up — code review applied\n✅ except ImportError → ModuleNotFoundError\n✅ PR-4479-followup.md wrong PR ref fixed\n✅ duplicate checklist block removed\n✅ Living docs + CHANGELOG + accountability updated"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -39,3 +41,5 @@ flowchart TD
     style R fill:#457b9d,color:#fff
     style S fill:#9d4edd,color:#fff
     style T fill:#9d4edd,color:#fff
+    style U fill:#1b4332,color:#fff
+    style V fill:#1b4332,color:#fff
