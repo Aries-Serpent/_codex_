@@ -2,9 +2,9 @@
 # Source: requirements-eval.txt
 lm-eval==0.4.9.2
 nltk==3.9.4
-pandas==3.0.2
+pandas==2.3.3
 rouge-score==0.1.2
-sacrebleu==2.5.1
+sacrebleu==2.6.0
 scikit-learn==1.8.0
 scipy==1.17.1
 statsmodels==0.14.6

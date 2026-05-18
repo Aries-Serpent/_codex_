@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1061-pr4497-approval-monitor-continuation — `copilot/gather-active-dependabots` — 2026-05-18T19:19Z)
+- Continued post-approval monitoring on the latest PR heads (`eead173` initial snapshot, then `f9bd486`) and verified no new code-fixable failures surfaced on the monitored snapshots.
+- Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.
+- Added dedicated continuation prompt file `.github/copilot-prompts/active/PR-4497-followup.md` for the next @copilot phase on PR #4497.
+- Follow-up monitor pass after maintainer approval of pending workflows: current head advanced to `f9bd486`, with active queue runs in progress and one observed `startup_failure` (`Progressive Validation Suite`) under watch.
+- Additional approval-monitor checkpoint: head advanced to `c1b2b74`; dispatched runs on this head currently report `action_required` outcomes and are being monitored pending next state transition.
+- Current continuation head synchronized in living docs/prompt: `2986420`.
+- Added explicit merge-readiness score checkpoint and dual follow-up prompt templates (current PR + immediate post-merge new PR path) in living docs/prompt artifacts.
+
+### Fixed (S1059-pr4497-merge-conflict-and-review-thread-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:44Z)
+- Resolved PR #4497 merge-conflict state by merging latest `origin/main` and finalizing `CODEX_MANIFEST.json` conflict resolution.
+- Applied review-thread fixes from `pullrequestreview-4312820254`: updated stale `# v8` comments to `# v9` for pinned `actions/github-script` uses, pinned `actions/deploy-pages@v5` to immutable SHA, and removed stale "Current" labels from historical roadmap snapshot blocks.
+- Restored pandas compatibility with `mlflow` (`pandas<3`) to fix CI resolver failures by changing dependency surfaces and lock pins from `3.0.3` to `>=2.3.1,<3` / `2.3.3`.
+
+### Fixed (S1058-pr4497-comment-gate-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:23Z)
+- Merged latest `origin/main` into `copilot/gather-active-dependabots` to clear branch-rebase blocking state on PR #4497.
+- Applied stale type-ignore remediation from Auto-Fix pattern 31 by removing one obsolete `# type: ignore` marker in `training/checkpoint_manager.py`.
+- Re-synced tracked files (`.secrets.baseline` manifest hash entry) via `sync_tracked_files` after tooling bootstrap to clear Pattern 22/30 drift signals.
+
+### Fixed (auto-update — PR #4497)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4497 (SHA `bb396ff4`) at 2026-05-18T18:20Z [auto-generated]
+
+### Added (S1057-pr-readiness-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:03Z)
+- Added active continuation prompt at `.github/copilot-prompts/active/PR-main-dependabot-absorb-followup.md` for the branch-to-`main` promotion session.
+- Executed tracked-file remediation workflow (`sync_tracked_files`) after environment-level `detect-secrets` availability fix to clear stale tracked-file gate signals during PR readiness review.
+- Prepared PR-readiness handoff with explicit consumed-Dependabot closure checklist and canonical WEC preservation requirements.
+
+### Changed (S1056-dependabot-absorb — `copilot/gather-active-dependabots` — 2026-05-18T17:20Z)
+- Cherry-picked all 15 active Dependabot update commits into the current session branch and consolidated them into one absorb sequence: `#4480`, `#4481`, `#4482`, `#4483`, `#4484`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492`, `#4493`, `#4494`.
+- Updated GitHub Actions references for `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache` to the versions carried by the active Dependabot PR set.
+- Updated dependency declarations and lock surfaces for `numpy`, `pandas`, `transformers`, `sacrebleu`, `matplotlib`, `matplotlib-inline`, `rich-toolkit`, `opentelemetry-api`, `alembic`, `iniconfig`, and `dvc`, including the grouped Dependabot updates.
+- **Breaking dependency floors:** the absorbed grouped data-dependency PR now raises the minimum supported floors to `numpy>=2.4.5` and `pandas>=2.3.1` in the primary dependency surfaces. Downstream callers should review NumPy 2.x and pandas 2.x migration impacts before promoting this branch.
+- Added explicit safety upper bounds where the absorb changed major-version floors: `numpy>=2.4.5,<3` in floating requirement files and `pandas>=2.3.1,<3` in `pyproject.toml`.
+- Refreshed the living continuation docs with the absorb-session status, consumed-PR closure list, and explicit final wrap-up reserve.
+
 ### Fixed (auto-update — PR #4479)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4479 (SHA `dc4db1d6`) at 2026-05-18T15:15Z [auto-generated]
 

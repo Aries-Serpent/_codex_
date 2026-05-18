@@ -20,6 +20,12 @@ flowchart TD
     S --> T["Priority 1 list expanded\nreview-thread actions + stale-run retry + misfire-prevention continuity"]
     T --> U["S1055 — Session D runtime bucket fixes\n✅ Bucket A: scripts/metrics __init__ re-export\n✅ Bucket B: numpy importorskip ×2\n✅ sync_tracked_files baseline hash updated\n✅ Secrets Baseline: archive_ops.jsonl false positives added\n✅ sys.path.insert → conftest.py fixture migration\n(PR #4479 opened)"]
     U --> V["S1055 follow-up — code review applied\n✅ except ImportError → ModuleNotFoundError\n✅ PR-4479-followup.md wrong PR ref fixed\n✅ duplicate checklist block removed\n✅ Living docs + CHANGELOG + accountability updated"]
+    V --> W["S1056 — Dependabot absorb session\n✅ 15 active Dependabot PR update commits cherry-picked\n✅ Actions bumps absorbed: create-github-app-token/github-script/download-artifact/deploy-pages/cache\n✅ Python dep bumps absorbed: numpy+pandas, transformers, sacrebleu, matplotlib, rich-toolkit, opentelemetry-api, alembic, iniconfig, matplotlib-inline, dvc"]
+    W --> X["Current sync pass\nupdate whats_next + session_diagram\nupdate CHANGELOG + AGENT_ACCOUNTABILITY_REPORT\nprepare consumed-PR closure list (#4480-#4494)"]
+    X --> Z["S1059 — PR #4497 remediation\n✅ merge conflicts cleared (main merge)\n✅ review-thread fixes applied\n✅ pandas/mlflow resolver conflict fixed"]
+    Z --> AA["S1060 — Approval monitoring window\ntrack post-approval workflow queue on HEAD e0fee31\n(no new code-fixable failures in current snapshot)"]
+    AA --> AB["S1061 — Post-approval continuation\n✅ head: 2986420 (mergeable)\n🔄 queue active; monitor outcomes"]
+    AB --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -43,3 +49,9 @@ flowchart TD
     style T fill:#9d4edd,color:#fff
     style U fill:#1b4332,color:#fff
     style V fill:#1b4332,color:#fff
+    style W fill:#1b4332,color:#fff
+    style X fill:#457b9d,color:#fff
+    style Z fill:#1b4332,color:#fff
+    style AA fill:#457b9d,color:#fff
+    style AB fill:#457b9d,color:#fff
+    style Y fill:#f4a261,color:#000

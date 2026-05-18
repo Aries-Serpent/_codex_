@@ -44,7 +44,7 @@ if "CheckpointManager" not in globals():
         try:  # numpy is optional for RNG capture
             import numpy as _np
         except Exception:  # pragma: no cover - optional dependency
-            _np = None  # type: ignore
+            _np = None
 
         try:  # torch may be absent in lightweight environments
             import torch as _torch

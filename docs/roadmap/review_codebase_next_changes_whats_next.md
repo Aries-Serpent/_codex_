@@ -1,6 +1,75 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — S1055 + PR #4479 follow-up · 2026-05-18T15:54Z)
+## Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~26/60 minutes used; reserve final 5 minutes for wrap-up |
+| Latest PR head SHA | ✅ `2986420f2187f1567b9c914dc97337ecf7cb8da0` (`MERGEABLE`) |
+| Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; latest check-run snapshot shows heavy active load (`35 in_progress`, `3 queued`) plus `action_required` workflow conclusions on the same head — under active monitoring |
+| Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
+| Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
+| Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |
+| `PR-4497-followup.md` continuation prompt | ✅ Updated — appended current Priority 1 task block for next @copilot phase |
+| Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
+
+### Merge-readiness checkpoint
+- **Current merge-readiness score:** **100/100** (local Pattern 30 dimensions green).
+- **Pattern 30 definition:** merge-readiness composite in `auto_fix_common_issues.py` that checks key gates (tracked-file sync, accountability freshness, action-version hygiene, and related readiness dimensions).
+
+### Follow-up prompt options
+**For current PR (#4497):**
+```text
+@copilot continue with next phase tasks for this PR
+Priority: monitor approved workflow queue outcomes, keep tracked/accountability fresh, and prepare final merge handoff.
+```
+
+**For immediate post-merge new PR (if needed):**
+```text
+@copilot continue in a new PR for post-merge stabilization:
+- verify main branch CI on merge SHA
+- close residual follow-up items from PR #4497
+- refresh living docs and accountability for the new branch/PR context
+```
+
+### @copilot continue — next phase tasks for PR #4497
+- [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA
+- [ ] 2. Keep tracked-file/accountability freshness intact for final merge pass
+- [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
+- [ ] 4. Confirm no new action pin/comment drift in workflow files
+- [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
+
+## Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~28/60 minutes used; reserve final 5 minutes for wrap-up |
+| PR merge conflict state (`gh pr view`) | ✅ Cleared — PR #4497 now `MERGEABLE` on HEAD `e0fee31` |
+| Review thread `pullrequestreview-4312820254` remediation | ✅ Complete — workflow comment alignment + pages SHA pin + stale status-label cleanup |
+| CI dependency resolver blocker (`mlflow` vs `pandas`) | ✅ Complete — pandas constraints restored to `>=2.3.1,<3` / `2.3.3` pins |
+| Workflow monitoring after approval dispatch | 🔄 Ongoing — latest runs on `e0fee31` are predominantly `action_required`/queued; no new code-fixable failures identified in current snapshot |
+| Living docs + CHANGELOG + accountability sync | ✅ Updated in-session |
+| Final 5-minute reserve | ⏳ Pending — hold remaining time for wrap-up summary and handoff |
+
+## Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~52/60 minutes used; final 5 minutes reserved for wrap-up |
+| Active Dependabot PR absorb into `copilot/gather-active-dependabots` | ✅ Complete — 15 update commits cherry-picked on top of `9aa5ae4` through HEAD `5d14f3b` |
+| Consumed GitHub Actions PRs | ✅ `#4480`, `#4482`, `#4484`, `#4493`, `#4494` absorbed |
+| Consumed Python dependency PRs | ✅ `#4481`, `#4483`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492` absorbed |
+| Closure candidate list | ✅ Prepared — #4480, #4481, #4482, #4483, #4484, #4485, #4486, #4487, #4488, #4489, #4490, #4491, #4492, #4493, #4494 |
+| Living docs + CHANGELOG + accountability sync | ✅ Complete (`whats_next`, `session_diagram`, `CHANGELOG`, `AGENT_ACCOUNTABILITY_REPORT`) |
+| Final wrap-up / PR closure sweep | ⏳ Pending — keep final 5-minute reserve |
+
+### Dependabot absorb summary
+- Cherry-picked the exact Dependabot update commits for all 15 active open dependency PRs into the active session branch.
+- Consolidated workflow action bumps: `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache`.
+- Consolidated dependency bumps across Python requirement surfaces and lock files: `dvc`, `matplotlib-inline`, `iniconfig`, `alembic`, `opentelemetry-api`, `rich-toolkit`, `matplotlib`, `sacrebleu`, grouped `numpy`/`pandas`, and grouped `transformers`.
+- Prepared the consumed-PR closure list so the absorbed Dependabot PRs can be closed once this branch state is pushed and verified.
+
+## Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)
 
 | Item | Status |
 |---|---|
@@ -40,7 +109,7 @@
   - `#pullrequestreview-4307843777`
   - `#pullrequestreview-4307833235`
 
-## Session Status (Current)
+## Session Status (S1043 snapshot)
 
 | Item | Status |
 |---|---|

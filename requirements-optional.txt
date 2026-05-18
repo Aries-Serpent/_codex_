@@ -9,7 +9,7 @@
 # Generative metrics (BLEU, ROUGE)
 nltk>=3.9.3  # Security: Fixes CVE-2025-14009 (ZIP extraction RCE), path traversal in corpus readers
 rouge-score>=0.1.2
-sacrebleu>=2.3.0
+sacrebleu>=2.6.0
 
 # LoRA/PEFT adapters
 peft>=0.7.0
@@ -19,7 +19,7 @@ accelerate>=0.20.0
 torch-distributed>=2.0.0  # Usually bundled with pytorch
 
 # Advanced model features
-transformers>=5.8.0  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
+transformers>=5.8.1  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
 sentencepiece>=0.1.99
 
 # Vector stores (stubbed - see docs/data/VectorStores.md)
