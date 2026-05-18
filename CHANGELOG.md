@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4484)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4484 (SHA `f64070a4`) at 2026-05-18T16:31Z [auto-generated]
+
 ### Fixed (S1054-ci-rescue-sync-tracked-files-cleanup — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:51Z)
 - Reverted unintended `.codex/session_context_latest.md` drift from a planning-only progress update commit so PR scope returns to intended Session D/rescue files.
 - Applied accountability freshness remediation for Pattern 25 and re-synced tracked-file state to clear the auto-fix rescue gate conditions observed on `Auto-Fix Common CI Issues` run `26019821327`.
