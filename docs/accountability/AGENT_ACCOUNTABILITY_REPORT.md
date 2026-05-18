@@ -20,6 +20,9 @@
 - ✅ Added merge-readiness + follow-up prompt guidance:
   - documented current merge-readiness checkpoint (`100/100`) in living docs.
   - added explicit follow-up prompt templates for both current PR continuation and immediate post-merge new PR continuation.
+- ✅ Clarified merge-readiness metadata:
+  - documented Pattern 30 definition in living docs/prompt context.
+  - replaced hardcoded prompt commit SHA with a session-update instruction (`gh pr view ... headRefOid`).
 - ✅ Applied prompt quality cleanup from validation feedback:
   - removed stale `PR #4479` references and obsolete `#4478` review links from `.github/copilot-prompts/active/PR-4497-followup.md`.
   - removed duplicate checklist/self-review block and kept a single canonical self-review protocol section.

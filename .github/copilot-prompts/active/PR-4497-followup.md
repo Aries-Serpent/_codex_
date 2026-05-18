@@ -4,7 +4,7 @@
 **Branch**: `copilot/gather-active-dependabots`  
 **Author**: @Copilot  
 **Date**: 2026-05-18  
-**Commit**: `2986420f2187f1567b9c914dc97337ecf7cb8da0`  
+**Head SHA**: update per session (`gh pr view 4497 --json headRefOid`)  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -134,6 +134,7 @@ No files modified
 ## Merge readiness + immediate follow-up prompt
 
 - Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
+- Pattern 30 = merge-readiness composite in `python scripts/ci/auto_fix_common_issues.py --check-only` (sync-tracked, accountability freshness, action/version hygiene, and related readiness dimensions).
 
 **Prompt for current PR #4497:**
 ```text

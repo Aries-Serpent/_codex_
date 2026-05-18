@@ -14,7 +14,8 @@
 | Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
 
 ### Merge-readiness checkpoint
-- **Current merge-readiness score:** **100/100** (local Pattern 30 merge-readiness dimensions green)
+- **Current merge-readiness score:** **100/100** (local Pattern 30 dimensions green).
+- **Pattern 30 definition:** merge-readiness composite in `auto_fix_common_issues.py` that checks key gates (tracked-file sync, accountability freshness, action-version hygiene, and related readiness dimensions).
 
 ### Follow-up prompt options
 **For current PR (#4497):**
