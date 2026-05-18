@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1062 checkpoint-manager-and-artifact-remediation · 2026-05-18T20:28Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~10/60 minutes used; preserve final 5 minutes for wrap-up |
+| Artifact ingestion (`run 26058314535`) | ✅ Downloaded and SHA256-verified (`dependency-scan-results`, `sbom-reports`) |
+| Dependency scan remediation status | ✅ Explicitly reviewed — 2 known CVEs (`diskcache`, `sqlitedict`) still no fix versions; existing `pip-audit` ignore policy in `pyproject.toml` remains current |
+| SBOM remediation status | ✅ `sbom.json` reviewed: 326 components, 0 vulnerabilities |
+| Requested code diffs application | ✅ Complete — requested checkpoint manager and test diffs applied |
+| Targeted validation status | ✅ `pytest` target set, `ruff` (changed files), and `nox -s tests` target run all passing |
+| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
 ## Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
 
 | Item | Status |

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1062-checkpoint-manager-and-artifact-remediation — `copilot/fix-pep263-issues` — 2026-05-18T20:28Z)
+- Applied targeted test/docs cleanup requested in review feedback:
+  - removed misplaced shebang and simplified `except KeyError` no-op handling in `tests/scripts/test_generate_audit_dashboard.py`.
+  - improved module docstring clarity in `tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py`.
+- Applied checkpoint manager logic fixes in `training/checkpoint_manager.py`:
+  - extracted reusable CUDA RNG-availability helper,
+  - made periodic save guard explicit (`save_steps > 0`),
+  - allowed callback checkpointing when `global_step == 0`,
+  - normalized protected best-checkpoint paths to filenames during prune.
+- Added focused regression tests for the updated checkpoint behavior:
+  - zero-step callback save path (`step-0.pt`),
+  - `maybe_save(..., save_steps=0)` no-save guard,
+  - prune protection when legacy `best.json` stores absolute paths.
+- Ingested security artifacts from `Security Scanning Suite` run `26058314535` and verified digests:
+  - `dependency-scan-results` sha256 `894c6301c349d6c745b9769b6a967608b99b96d7de8edfc605f33a1ca45e094f`
+  - `sbom-reports` sha256 `b0ddea1118f8affce591faa9f3418026d7d195183c959816c1f224afcd7f08fa`
+- Explicit remediation resolution from artifacts:
+  - pip-audit report contains 2 known no-fix CVEs (`diskcache` CVE-2025-69872, `sqlitedict` CVE-2024-35515), already covered by the existing documented `tool.pip-audit.ignore-vulns` policy in `pyproject.toml`.
+  - SBOM report reviewed (`326` components, `0` vulnerabilities).
+
 ### Fixed (S1061-pr4497-approval-monitor-continuation — `copilot/gather-active-dependabots` — 2026-05-18T19:19Z)
 - Continued post-approval monitoring on the latest PR heads (`eead173` initial snapshot, then `f9bd486`) and verified no new code-fixable failures surfaced on the monitored snapshots.
 - Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.
