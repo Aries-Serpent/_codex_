@@ -1,3 +1,29 @@
+## SESSION SUMMARY — 2026-05-18T22:27Z [S1064-pr4498-approval-hook-copilot-queue-hygiene]
+
+**Session:** S1064-pr4498-approval-hook-copilot-queue-hygiene | **Branch:** `copilot/fix-pep263-issues` | **PR:** #4498
+
+### Completed
+- ✅ Implemented approval-coupled Copilot queue-hygiene in `scripts/ci/approve_pending_runs.py`:
+  - added PR-comment + reaction enumeration helpers;
+  - added stale Copilot `👀` reaction cleanup path (`Copilot`, `github-copilot[bot]`, `copilot-swe-agent[bot]`) tied to PR-targeted approval runs;
+  - added non-fatal handling for permission-restricted deletes (logs status and continues).
+- ✅ Wired approval workflow integration in `.github/workflows/trigger-on-approval.yml`:
+  - approval step now explicitly runs "auto-approve pending workflow runs + clear stale Copilot 👀";
+  - sets `CLEANUP_COPILOT_EYES=true` for approval dispatch runs.
+- ✅ Re-validated required CI-rescue command chain:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python -m ruff check scripts/ci/approve_pending_runs.py`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- ✅ Verified rescue-comment commit context (`64cca281`) via MCP run history:
+  - fail-like signals there remain startup-level (`startup_failure`) with zero jobs for affected workflows (non-code-fixable from in-repo job logic).
+
+### Remaining Open Items
+- Continue monitoring active approval-dispatched runs on latest head and respond only to code-fixable job failures.
+- Preserve final 5-minute reserve for concise wrap-up/handoff.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T22:00Z [S1063-pr4498-review-thread-closure-and-workflow-monitor]
 
 **Session:** S1063-pr4498-review-thread-closure-and-workflow-monitor | **Branch:** `copilot/fix-pep263-issues` | **PR:** #4498

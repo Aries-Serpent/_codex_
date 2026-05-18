@@ -27,7 +27,8 @@ flowchart TD
     AA --> AB["S1061 — Post-approval continuation\n✅ head: 2986420 (mergeable)\n🔄 queue active; monitor outcomes"]
     AB --> AC["S1062 — checkpoint manager + artifact remediation\n✅ artifact digests verified (run 26058314535)\n✅ dependency-scan + SBOM findings reviewed\n🔄 apply targeted code/test fixes + docs/changelog/accountability sync"]
     AC --> AD["S1063 — PR #4498 review-thread closure + monitoring\n✅ address 4/4 review-thread items\n✅ sync src/training parity (save-step guard, step-0 callback, prune protection, CUDA RNG helper)\n🔄 monitor HEAD 0cdaf740 workflows (2 startup_failure runs, both 0-job startup-level)\n✅ verify 👀 queued-comment hygiene process (owner check done; delete blocked by token scope 403)"]
-    AD --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
+    AD --> AE["S1064 — approval-hook queue hygiene + CI rescue continuation\n✅ tie Copilot 👀 cleanup to approval workflow path\n✅ implement stale reaction cleanup in approve_pending_runs.py\n✅ non-fatal permission fallback logging\n🔄 monitor latest runs; act only on code-fixable job failures"]
+    AE --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -58,4 +59,5 @@ flowchart TD
     style AB fill:#457b9d,color:#fff
     style AC fill:#457b9d,color:#fff
     style AD fill:#457b9d,color:#fff
+    style AE fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000

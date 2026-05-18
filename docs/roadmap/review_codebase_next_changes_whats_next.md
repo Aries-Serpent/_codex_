@@ -1,5 +1,17 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1064 approval-hook queue hygiene + CI rescue continuation · 2026-05-18T22:27Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~42/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval-coupled Copilot queue hygiene | ✅ Implemented in `approve_pending_runs.py` and wired in `trigger-on-approval.yml` |
+| `👀` cleanup behavior | ✅ Removes stale Copilot `eyes` reactions during approval pass when token scope permits; non-fatal logging on permission blocks |
+| CI rescue comment context (`64cca281`) | ✅ Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs) |
+| Required validation chain | ✅ `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` all green |
+| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
 ## Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)
 
 | Item | Status |

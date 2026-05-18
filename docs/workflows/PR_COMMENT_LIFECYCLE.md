@@ -94,6 +94,7 @@ flowchart TD
 
     SESDONE --> AUTOAPPROVE{auto-approve-workflows\nchecked in WEC?}
     AUTOAPPROVE --> |"Yes"| APPROVEAPI[GET pending runs for HEAD SHA\nPOST /approve for each\nStatus to GITHUB_STEP_SUMMARY]
+    APPROVEAPI --> QUEUEHYGIENE[PR-targeted queue hygiene\nRemove stale Copilot 👀 reactions\nwhen elevated token permits]
     AUTOAPPROVE --> |"No"| NOAPPROVE[Skip approval]
 
     AGENTFILESIZE[agent-file-size-gate.yml\nNo HTML marker ⚠️] --> FSGATE{File > 30,000 chars?}

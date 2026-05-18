@@ -111,6 +111,9 @@
 > `pull_request_review` event. Filenames must match exactly (including underscores vs hyphens).
 > **Always required** items fire automatically and cannot be skipped. **Opt-in** items are
 > enabled by ticking `[x]`; unchecked items are reported as SKIPPED in the gate summary.
+> Privileged queued operations (repo/org secrets, variables, webhooks, Copilot queued-session
+> reaction cleanup) MUST run only through approval-gated workflows using elevated token chain
+> (`CODEX_MASTER_KEY || CODEX_BACKUP_KEY || app token`) and must remain wired to this WEC process.
 
 ### ✅ Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
@@ -126,7 +129,7 @@
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
 ### ⚡ Auto-Approve
-- [ ] auto-approve-workflows.yml — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+- [ ] auto-approve-workflows.yml — Auto-Approve workflow to run (approves pending runs and executes queued Copilot 👀 cleanup on PR head when permissions allow)
 
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)

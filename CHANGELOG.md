@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1064-pr4498-approval-hook-for-copilot-queue-hygiene — `copilot/fix-pep263-issues` — 2026-05-18T22:27Z)
+- Wired Copilot queued-session 👀 cleanup directly into approval-triggered automation:
+  - extended `scripts/ci/approve_pending_runs.py` to remove stale Copilot `eyes` reactions on PR comments when a PR target is known;
+  - tied this cleanup into `trigger-on-approval.yml` so the same approval pass that unblocks `action_required` runs also attempts queued-session reaction cleanup.
+- Added safe fallback behavior for restricted tokens:
+  - reaction cleanup failures are non-fatal and logged with HTTP status (for example `403 Resource not accessible by integration`) without blocking workflow approval dispatch.
+- This follows the fast-forward-style approval path: once maintainer approval dispatches workflows, queued Copilot session markers are cleaned in the same automated pass when permissions allow.
+- Updated PR template WEC guidance (`.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) so privileged queued operations (secrets/variables/webhooks/reaction hygiene) are explicitly tied to approval-gated WEC workflow orchestration under elevated token chain.
+
 ### Fixed (S1063-pr4498-review-thread-closure-and-monitoring — `copilot/fix-pep263-issues` — 2026-05-18T22:00Z)
 - Addressed requested review-thread follow-ups for PR #4498:
   - updated `.github/copilot-prompts/active/PR-4498-followup.md` to replace stale `Files Modified: No files modified` with concrete touched files.

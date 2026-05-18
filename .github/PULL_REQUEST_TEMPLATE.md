@@ -184,6 +184,11 @@ _For Copilot / AI-assisted PRs:_
 > **must never be unchecked**. Preserve all previously-checked `[x]` maintainer
 > selections across every `report_progress` call.
 >
+> **E→D maintainer rule:** Copilot agent operates as codebase maintainer in active E→D logic.
+> Deployment-orchestration actions (including privileged queued operations for repo/org
+> secrets, variables, webhooks, and Copilot queued-session reaction cleanup) must be
+> executed through approval-gated workflows using elevated token chain only.
+>
 > **Rate-limit note:** Opt-in workflows consume REST quota. Avoid checking more than
 > 10 opt-in workflows per session when `GH_TRICKLE_MIN_REMAINING` is below 100.
 >
@@ -205,7 +210,7 @@ _For Copilot / AI-assisted PRs:_
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
 ### ⚡ Auto-Approve
-- [x] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+- [x] auto-approve-workflows — Auto-Approve workflow to run (approves pending runs and processes queued Copilot 👀 cleanup on PR head when permissions allow)
 
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
