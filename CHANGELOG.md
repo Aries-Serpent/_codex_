@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1057-pr-readiness-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:03Z)
+- Added active continuation prompt at `.github/copilot-prompts/active/PR-main-dependabot-absorb-followup.md` for the branch-to-`main` promotion session.
+- Executed tracked-file remediation workflow (`sync_tracked_files`) after environment-level `detect-secrets` availability fix to clear stale tracked-file gate signals during PR readiness review.
+- Prepared PR-readiness handoff with explicit consumed-Dependabot closure checklist and canonical WEC preservation requirements.
+
 ### Changed (S1056-dependabot-absorb — `copilot/gather-active-dependabots` — 2026-05-18T17:20Z)
 - Cherry-picked all 15 active Dependabot update commits into the current session branch and consolidated them into one absorb sequence: `#4480`, `#4481`, `#4482`, `#4483`, `#4484`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492`, `#4493`, `#4494`.
 - Updated GitHub Actions references for `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache` to the versions carried by the active Dependabot PR set.

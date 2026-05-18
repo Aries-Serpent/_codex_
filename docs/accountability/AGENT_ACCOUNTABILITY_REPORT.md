@@ -1,3 +1,27 @@
+## SESSION SUMMARY — 2026-05-18T18:03Z [S1057-pr-readiness-remediation]
+
+**Session:** S1057-pr-readiness-remediation | **Branch:** `copilot/gather-active-dependabots` | **PR:** (to be opened against `main`)
+
+### Completed
+- ✅ Reviewed current branch delta against `origin/main` and verified the full Dependabot absorb surface remains present.
+- ✅ Cleared tracked-file integrity gate drift by running `sync_tracked_files` after provisioning `detect-secrets` in the session environment (Pattern 22 remediation path).
+- ✅ Added active continuation prompt for this promotion PR path:
+  - `.github/copilot-prompts/active/PR-main-dependabot-absorb-followup.md`
+- ✅ Re-validated local readiness signals:
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` (post-remediation)
+  - `sync_tracked_files` summary shows manifest/baseline/docs/accountability consistency.
+
+### Remaining Open Items
+- Open the branch PR to `main` with canonical WEC block preserved.
+- Close consumed Dependabot PRs after merge-readiness confirmation on this branch tip.
+- Run collect-only tests in an environment where `nox` executable is available (current shell lacked `nox` on PATH).
+
+### Pattern Compliance
+- Pattern 22 ✅ — tracked-file consistency restored.
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T15:54Z [S1055-followup-review-fixes]
 
 **Session:** S1055-followup-review-fixes | **Branch:** `copilot/finish-session-d-runtime-rerun` | **PR:** #4479
