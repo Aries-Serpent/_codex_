@@ -4,11 +4,11 @@
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~24/60 minutes used at latest maintainer checkpoint; preserve final 5 minutes for wrap-up |
+| Session budget tracking | 🔄 ~29/60 minutes used at latest maintainer checkpoint; preserve final 5 minutes for wrap-up |
 | Approval-coupled Copilot queue hygiene | ✅ Implemented in `approve_pending_runs.py` and wired in `trigger-on-approval.yml` |
 | `👀` cleanup behavior | ✅ Removes stale Copilot `eyes` reactions during approval pass when token scope permits; non-fatal logging on permission blocks |
 | CI rescue comment context (`64cca281`) | ✅ Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs) |
-| Latest PR-head workflow monitor (`2b6d298b`) | 🔄 Active — three startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) all report **0 jobs** (non-code-fixable at job layer) |
+| Latest PR-head workflow monitor (`153e43b0`) | 🔄 Active — three startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) all report **0 jobs** (non-code-fixable at job layer) |
 | Required validation chain | ✅ `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` all green |
 | Living docs + changelog + accountability | ✅ Updated in this pass |
 | Final 5-minute reserve | ⏳ Pending |

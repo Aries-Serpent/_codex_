@@ -24,6 +24,12 @@
 - ✅ Continued PR-head monitoring on latest head (`2b6d298b`) via MCP:
   - observed startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`);
   - each currently reports zero jobs (`total_count: 0`) → no in-job code remediation path available.
+- ✅ Applied review-followup polish in `approve_pending_runs.py`:
+  - renamed reaction/comment fetch helpers for clearer behavior semantics;
+  - removed duplicated `reaction.get("user")` lookups.
+- ✅ Continued monitoring on newer head (`153e43b0`) via MCP:
+  - same three startup-level fail-like runs still present (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`);
+  - each remains `total_count: 0` jobs (startup-level, non-code-fixable from repository changes).
 
 ### Remaining Open Items
 - Continue monitoring active approval-dispatched runs on latest head and respond only to code-fixable job failures.

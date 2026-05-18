@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - paginated PR comments and reactions (`per_page=100&page=N`);
   - promoted Copilot bot identity list to module-level constant;
   - added per-PR one-pass guard to avoid repeated cleanup loops.
+- Applied final readability follow-up in the same script:
+  - renamed fetch helpers for clearer semantics (`_fetch_pr_comments`, `_fetch_comment_reactions`);
+  - removed duplicated reaction-user lookups.
 - Updated workflow mermaid mapping in `docs/workflows/PR_COMMENT_LIFECYCLE.md` to include approval-path Copilot queue-hygiene stage.
 
 ### Fixed (S1063-pr4498-review-thread-closure-and-monitoring — `copilot/fix-pep263-issues` — 2026-05-18T22:00Z)

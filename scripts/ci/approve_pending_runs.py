@@ -249,7 +249,7 @@ def _get_open_pr_shas(token: str, repo: str) -> list[tuple[str, str]]:
     return pairs
 
 
-def _iter_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, Any]]:
+def _fetch_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, Any]]:
     """Return all issue comments for a PR."""
     comments: list[dict[str, Any]] = []
     page = 1
@@ -269,7 +269,7 @@ def _iter_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, A
     return comments
 
 
-def _iter_comment_reactions(token: str, repo: str, comment_id: int) -> list[dict[str, Any]]:
+def _fetch_comment_reactions(token: str, repo: str, comment_id: int) -> list[dict[str, Any]]:
     """Return reactions for a single issue comment."""
     reactions: list[dict[str, Any]] = []
     page = 1
@@ -305,17 +305,18 @@ def _cleanup_copilot_eyes_reactions(
     """
     removed = 0
     blocked = 0
-    comments = _iter_pr_comments(token, repo, pr_number)
+    comments = _fetch_pr_comments(token, repo, pr_number)
 
     for comment in comments:
         comment_id = int(comment.get("id", 0) or 0)
         if not comment_id:
             continue
-        reactions = _iter_comment_reactions(token, repo, comment_id)
+        reactions = _fetch_comment_reactions(token, repo, comment_id)
         for reaction in reactions:
             if reaction.get("content") != "eyes":
                 continue
-            user = reaction.get("user", {}) if isinstance(reaction.get("user"), dict) else {}
+            user_data = reaction.get("user", {})
+            user = user_data if isinstance(user_data, dict) else {}
             login = str(user.get("login", ""))
             if login not in COPILOT_BOT_LOGINS:
                 continue
