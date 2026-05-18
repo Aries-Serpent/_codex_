@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1055-session-d-runtime-bucket-fix — `copilot/finish-session-d-runtime-rerun` — 2026-05-18T14:25Z)
+- **Session D runtime rerun complete.** Ran pytest across all 177 non-ML test directories; identified 3 collection errors bucketed as:
+  - **Bucket A (path-shadow, no heavy deps):** `tests/scripts/` — `scripts/metrics/__init__.py` (empty) shadowed `src/metrics.py` when test files in `tests/scripts/` added `scripts/` to `sys.path[0]` at module level. Fix: re-export `accuracy`, `append_ndjson`, `write_ndjson` from `src.metrics` in `scripts/metrics/__init__.py`. Result: 216 tests now pass (was 0 collectible).
+  - **Bucket B (missing heavy deps, numpy/torch):** `tests/services/audio/test_intelligent_analyzer.py` and `tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py` — added `pytest.importorskip("numpy")` guards before transitive numpy imports to skip cleanly rather than crash at collection. Result: 137 skipped cleanly.
+- All 3 collection errors resolved; no new failures introduced.
+
 ### Fixed (S1054-ci-rescue-sync-tracked-files-cleanup — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:51Z)
 - Reverted unintended `.codex/session_context_latest.md` drift from a planning-only progress update commit so PR scope returns to intended Session D/rescue files.
 - Applied accountability freshness remediation for Pattern 25 and re-synced tracked-file state to clear the auto-fix rescue gate conditions observed on `Auto-Fix Common CI Issues` run `26019821327`.

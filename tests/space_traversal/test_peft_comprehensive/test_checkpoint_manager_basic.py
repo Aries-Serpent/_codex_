@@ -8,7 +8,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from training.checkpoint_manager import CheckpointManager
+# numpy is pulled in transitively by training/__init__.py → functional_training.py;
+# skip at collection time rather than crashing with an ImportError.
+pytest.importorskip("numpy")
+
+from training.checkpoint_manager import CheckpointManager  # noqa: E402
 
 pytestmark = pytest.mark.requires_torch
 
