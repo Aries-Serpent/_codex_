@@ -15588,6 +15588,12 @@ Absorb every active open Dependabot dependency PR into the active session branch
 - Grouped Dependabot PRs (`data-dependencies`, `ml-dependencies`) still require downstream lockfile verification after absorb.
 - The living docs are the right place to publish the consumed-PR closure list so the wrap-up step has one authoritative checklist.
 
+### Follow-up Adjustment — 2026-05-18T17:20Z
+- Added explicit upper bounds alongside the new major-version dependency floors introduced by the absorbed grouped updates:
+  - `numpy>=2.4.5,<3` in floating requirement files
+  - `pandas>=3.0.3,<4` in `pyproject.toml`
+- Reason: keep the Dependabot absorb aligned with the repository's existing major-version guardrail pattern and avoid unbounded future major-version jumps.
+
 ## [auto-generated] Session 27 — 2026-03-14
 
 **Agent:** copilot-swe-agent[bot]

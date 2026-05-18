@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated GitHub Actions references for `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache` to the versions carried by the active Dependabot PR set.
 - Updated dependency declarations and lock surfaces for `numpy`, `pandas`, `transformers`, `sacrebleu`, `matplotlib`, `matplotlib-inline`, `rich-toolkit`, `opentelemetry-api`, `alembic`, `iniconfig`, and `dvc`, including the grouped Dependabot updates.
 - **Breaking dependency floors:** the absorbed grouped data-dependency PR now raises the minimum supported floors to `numpy>=2.4.5` and `pandas>=3.0.3` in the primary dependency surfaces. Downstream callers should review NumPy 2.x and pandas 3.x migration impacts before promoting this branch.
+- Added explicit safety upper bounds where the absorb changed major-version floors: `numpy>=2.4.5,<3` in floating requirement files and `pandas>=3.0.3,<4` in `pyproject.toml`.
 - Refreshed the living continuation docs with the absorb-session status, consumed-PR closure list, and explicit final wrap-up reserve.
 
 ### Fixed (auto-update — PR #4479)
