@@ -1,1 +1,0 @@
-{"timestamp": "2026-03-13T16:08:56.374108Z", "session_id": "a2d7a85d-7f53-4ecb-83c9-dd97a365d9ec", "role": "system", "event_type": "cli.start", "data": {"event.name": "cli.start", "prog": "infer.py", "args": [], "session.id": "a2d7a85d-7f53-4ecb-83c9-dd97a365d9ec"}}
