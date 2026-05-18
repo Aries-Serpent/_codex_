@@ -4,12 +4,13 @@
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~8/60 minutes used; reserve final 5 minutes for wrap-up |
-| Latest PR head SHA | ✅ `eead173e065d5fc1724f0c2bb5bc297354bc1862` (`MERGEABLE`) |
-| Approval-dispatched workflow monitoring | ✅ Current snapshot on latest head shows `Automatic Dependency Submission (Python)` completed `success`; no new code-fixable failures surfaced on latest SHA |
+| Session budget tracking | 🔄 ~15/60 minutes used; reserve final 5 minutes for wrap-up |
+| Latest PR head SHA | ✅ `f9bd48639a93add5a1fb33547bb21dffc818e436` (`MERGEABLE`) |
+| Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; queue is now active on latest head (`in_progress` set with one observed `startup_failure` on Progressive Validation Suite) |
 | Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
 | Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
 | Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |
+| `PR-4497-followup.md` continuation prompt | ✅ Updated — appended current Priority 1 task block for next @copilot phase |
 | Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
 
 ### @copilot continue — next phase tasks for PR #4497
