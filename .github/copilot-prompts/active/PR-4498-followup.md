@@ -257,3 +257,21 @@ python scripts/ci/sync_tracked_files.py --fix
 - [ ] 4. Re-run targeted checkpoint parity tests and CI triage command set on latest head
 - [ ] 5. Confirm merge-readiness dimensions remain green
 - [ ] 6. Improve workflow/change-scoped scanning to skip unchanged/superseded file scans and reduce redundant CI bandwidth
+
+---
+
+## S1066 appended continuation tasks (2026-05-18T23:21Z)
+
+@copilot continue
+
+**🔴 Priority 1 - Immediate**:
+- [ ] 1. Continue monitoring approval-dispatched runs on latest head and act only on code-fixable failures with job logs
+- [ ] 2. Maintain queued-session 👀 reaction hygiene process (detect owner, remove stale Copilot queue marks when permitted)
+- [ ] 3. Keep approval-gated queue operations aligned with WEC and elevated token-chain governance
+- [ ] 4. Re-run targeted checkpoint parity tests and CI triage command set on latest head
+- [ ] 5. Confirm merge-readiness dimensions remain green
+- [ ] 6. Improve workflow/change-scoped scanning to skip unchanged/superseded file scans and reduce redundant CI bandwidth
+- [ ] 7. Re-run required local validation chain and compare with CI outcomes
+- [ ] 8. Keep accountability/changelog freshness passing Pattern 25 checks
+- [ ] 9. Continue reducing redundant workflow scans and stale-run noise
+- [ ] 10. Maintain workflow mermaid/living-doc parity with current automation behavior

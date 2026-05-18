@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~42/60 minutes used; preserve final 5 minutes for wrap-up |
+| New blocking maintainer continuation comment (`#4483007895`) | ✅ Triaged and continuation resumed |
+| Latest PR-head monitor snapshot (`fa43f721`) | 🔄 Approval-dispatched runs currently in progress/queued; no failed jobs captured yet for in-job remediation |
+| Job-log triage on latest head | ✅ inspected run jobs for `Secrets Baseline Enforcer`, `CodeQL`, `Security Scanning Suite`, `Agent Vars Bootstrap`, `Resilient Dependency Submission`, `Documentation Link Checker`; none currently failed |
+| Continuation prompt alignment | ✅ Appended expanded 10-item Priority 1 checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
+| Required validation + targeted checkpoint parity reruns | 🔄 Running in this pass |
+| Living docs + changelog + accountability | 🔄 Updating in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
 ## Session Status (Current — S1065 approval-dispatch continuation + prompt append · 2026-05-18T23:08Z)
 
 | Item | Status |
