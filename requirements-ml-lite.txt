@@ -17,7 +17,7 @@ transformers>=5.8.0
 sentencepiece>=0.1.99
 
 # Deterministic numeric kernels
-numpy>=1.26
+numpy>=2.4.5
 
 # Note: Do NOT include:
 # - accelerate (pulls CUDA dependencies)
