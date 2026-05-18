@@ -49,4 +49,8 @@ def test_callback_can_save_at_step_zero(tmp_path):
     state.global_step = 0
     state.epoch = 0
     cb.on_step_end(None, state, control)
-    assert (tmp_path / "step-0.pt").exists()
+    checkpoint_path = tmp_path / "step-0.pt"
+    assert checkpoint_path.exists()
+    payload = torch.load(checkpoint_path, map_location="cpu")
+    assert "model" in payload
+    assert "optimizer" in payload
