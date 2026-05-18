@@ -14,8 +14,11 @@ try:
     from src.metrics import accuracy, append_ndjson, write_ndjson
 
     __all__ = ["accuracy", "append_ndjson", "write_ndjson"]
-except ImportError:
-    # Graceful fallback: if src.metrics is not resolvable in this context
+except ModuleNotFoundError:
+    # Graceful fallback: if the ``src`` package itself is not on sys.path
     # (e.g. when scripts/ is used as a standalone tool outside the repo),
     # leave the package importable but without re-exports.
+    # NOTE: We catch only ModuleNotFoundError (a subclass of ImportError) so
+    # that ImportErrors raised *inside* src.metrics (e.g. a broken import in
+    # that module) still propagate and are visible to the developer.
     __all__ = []
