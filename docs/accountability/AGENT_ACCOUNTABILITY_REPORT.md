@@ -17,6 +17,13 @@
   - `python scripts/ci/auto_fix_common_issues.py --check-only`
 - ✅ Verified rescue-comment commit context (`64cca281`) via MCP run history:
   - fail-like signals there remain startup-level (`startup_failure`) with zero jobs for affected workflows (non-code-fixable from in-repo job logic).
+- ✅ Applied reviewer hardening feedback to approval-hook cleanup logic:
+  - added pagination for PR comments and reactions;
+  - moved Copilot bot identities to a module-level constant;
+  - added per-PR one-pass guard to prevent repeated cleanup passes in multi-target runs.
+- ✅ Continued PR-head monitoring on latest head (`2b6d298b`) via MCP:
+  - observed startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`);
+  - each currently reports zero jobs (`total_count: 0`) → no in-job code remediation path available.
 
 ### Remaining Open Items
 - Continue monitoring active approval-dispatched runs on latest head and respond only to code-fixable job failures.

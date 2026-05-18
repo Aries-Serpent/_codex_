@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - reaction cleanup failures are non-fatal and logged with HTTP status (for example `403 Resource not accessible by integration`) without blocking workflow approval dispatch.
 - This follows the fast-forward-style approval path: once maintainer approval dispatches workflows, queued Copilot session markers are cleaned in the same automated pass when permissions allow.
 - Updated PR template WEC guidance (`.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) so privileged queued operations (secrets/variables/webhooks/reaction hygiene) are explicitly tied to approval-gated WEC workflow orchestration under elevated token chain.
+- Hardened reaction cleanup implementation in `approve_pending_runs.py` based on review feedback:
+  - paginated PR comments and reactions (`per_page=100&page=N`);
+  - promoted Copilot bot identity list to module-level constant;
+  - added per-PR one-pass guard to avoid repeated cleanup loops.
+- Updated workflow mermaid mapping in `docs/workflows/PR_COMMENT_LIFECYCLE.md` to include approval-path Copilot queue-hygiene stage.
 
 ### Fixed (S1063-pr4498-review-thread-closure-and-monitoring — `copilot/fix-pep263-issues` — 2026-05-18T22:00Z)
 - Addressed requested review-thread follow-ups for PR #4498:

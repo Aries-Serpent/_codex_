@@ -64,6 +64,8 @@ from typing import Any
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+COPILOT_BOT_LOGINS = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
+
 def _gh(
     method: str,
     path: str,
@@ -249,31 +251,45 @@ def _get_open_pr_shas(token: str, repo: str) -> list[tuple[str, str]]:
 
 def _iter_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, Any]]:
     """Return all issue comments for a PR."""
-    status, data = _gh(
-        "GET",
-        f"/repos/{repo}/issues/{pr_number}/comments?per_page=100",
-        token,
-    )
-    if status != 200 or not isinstance(data, list):
-        print(f"⚠️  Could not list PR comments (HTTP {status}): {data}", file=sys.stderr)
-        return []
-    return data
+    comments: list[dict[str, Any]] = []
+    page = 1
+    while True:
+        status, data = _gh(
+            "GET",
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+            token,
+        )
+        if status != 200 or not isinstance(data, list):
+            print(f"⚠️  Could not list PR comments (HTTP {status}): {data}", file=sys.stderr)
+            break
+        comments.extend(data)
+        if len(data) < 100:
+            break
+        page += 1
+    return comments
 
 
 def _iter_comment_reactions(token: str, repo: str, comment_id: int) -> list[dict[str, Any]]:
     """Return reactions for a single issue comment."""
-    status, data = _gh(
-        "GET",
-        f"/repos/{repo}/issues/comments/{comment_id}/reactions?per_page=100",
-        token,
-    )
-    if status != 200 or not isinstance(data, list):
-        print(
-            f"⚠️  Could not list reactions for comment {comment_id} (HTTP {status}): {data}",
-            file=sys.stderr,
+    reactions: list[dict[str, Any]] = []
+    page = 1
+    while True:
+        status, data = _gh(
+            "GET",
+            f"/repos/{repo}/issues/comments/{comment_id}/reactions?per_page=100&page={page}",
+            token,
         )
-        return []
-    return data
+        if status != 200 or not isinstance(data, list):
+            print(
+                f"⚠️  Could not list reactions for comment {comment_id} (HTTP {status}): {data}",
+                file=sys.stderr,
+            )
+            break
+        reactions.extend(data)
+        if len(data) < 100:
+            break
+        page += 1
+    return reactions
 
 
 def _cleanup_copilot_eyes_reactions(
@@ -287,7 +303,6 @@ def _cleanup_copilot_eyes_reactions(
 
     Returns (removed_count, blocked_count). blocked_count tracks permission/HTTP errors.
     """
-    copilot_logins = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
     removed = 0
     blocked = 0
     comments = _iter_pr_comments(token, repo, pr_number)
@@ -302,7 +317,7 @@ def _cleanup_copilot_eyes_reactions(
                 continue
             user = reaction.get("user", {}) if isinstance(reaction.get("user"), dict) else {}
             login = str(user.get("login", ""))
-            if login not in copilot_logins:
+            if login not in COPILOT_BOT_LOGINS:
                 continue
             reaction_id = int(reaction.get("id", 0) or 0)
             if not reaction_id:
@@ -370,6 +385,7 @@ def main() -> int:
     # Wait briefly for runs to register after a fresh push ────────────────────
     total_approved = total_skipped = total_errors = 0
     waited = 0
+    cleaned_prs: set[str] = set()
 
     for pr_num, sha in targets:
         print(f"\n── PR #{pr_num} @ {sha[:12]} ──────────────────────────────")
@@ -400,7 +416,7 @@ def main() -> int:
             else:
                 total_errors += 1
 
-        if cleanup_eyes and pr_num not in {"", "?"}:
+        if cleanup_eyes and pr_num not in {"", "?"} and pr_num not in cleaned_prs:
             print(f"   🧹 Copilot queue hygiene for PR #{pr_num} (remove stale 👀)…")
             removed, blocked = _cleanup_copilot_eyes_reactions(
                 token,
@@ -408,6 +424,7 @@ def main() -> int:
                 pr_num,
                 dry_run=dry_run,
             )
+            cleaned_prs.add(pr_num)
             if removed:
                 print(f"   ✅ Removed {removed} stale Copilot 👀 reaction(s)")
             if blocked:
