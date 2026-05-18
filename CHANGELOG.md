@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S1061-pr4497-approval-monitor-continuation — `copilot/gather-active-dependabots` — 2026-05-18T19:19Z)
-- Continued post-approval monitoring on current PR head (`eead173`) and verified no new code-fixable failures surfaced on the latest SHA snapshot.
+- Continued post-approval monitoring on the latest PR heads (`eead173` initial snapshot, then `f9bd486`) and verified no new code-fixable failures surfaced on the monitored snapshots.
 - Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.
 - Added dedicated continuation prompt file `.github/copilot-prompts/active/PR-4497-followup.md` for the next @copilot phase on PR #4497.
 - Follow-up monitor pass after maintainer approval of pending workflows: current head advanced to `f9bd486`, with active queue runs in progress and one observed `startup_failure` (`Progressive Validation Suite`) under watch.
