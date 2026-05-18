@@ -9,7 +9,7 @@
 # Generative metrics (BLEU, ROUGE)
 nltk>=3.9.3  # Security: Fixes CVE-2025-14009 (ZIP extraction RCE), path traversal in corpus readers
 rouge-score>=0.1.2
-sacrebleu>=2.3.0
+sacrebleu>=2.6.0
 
 # LoRA/PEFT adapters
 peft>=0.7.0

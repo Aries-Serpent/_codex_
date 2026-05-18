@@ -139,7 +139,7 @@ logging = [
 metrics = [
   "nltk>=3.8",
   "rouge-score>=0.1.2",
-  "sacrebleu>=2.4",
+  "sacrebleu>=2.6.0",
 ]
 ml = [
   "datasets>=4.8.5,<5",

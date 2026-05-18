@@ -1012,7 +1012,7 @@ ruamel-yaml==0.19.1
     #   great-expectations
 ruff==0.15.4
     # via codex-ml (pyproject.toml)
-sacrebleu==2.5.1
+sacrebleu==2.6.0
     # via lm-eval
 safetensors==0.6.2
     # via
