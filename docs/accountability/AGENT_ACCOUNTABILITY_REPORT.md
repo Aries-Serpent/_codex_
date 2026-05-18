@@ -15,6 +15,11 @@
 - ✅ Continued monitoring after additional maintainer approvals:
   - current PR head now `c1b2b746646312652114adabba8afd3d0dd3a80d` (`MERGEABLE`).
   - latest-head run fan-out currently reports `action_required` conclusions; latest check-run snapshot shows `35 in_progress` + `3 queued` (high active load). No direct code-level regression signature identified yet, monitoring continues.
+- ✅ Current documentation synchronization checkpoint:
+  - continuation references now aligned to head `2986420f2187f1567b9c914dc97337ecf7cb8da0` across `whats_next`, `session_diagram`, and `PR-4497-followup.md`.
+- ✅ Added merge-readiness + follow-up prompt guidance:
+  - documented current merge-readiness checkpoint (`100/100`) in living docs.
+  - added explicit follow-up prompt templates for both current PR continuation and immediate post-merge new PR continuation.
 - ✅ Applied prompt quality cleanup from validation feedback:
   - removed stale `PR #4479` references and obsolete `#4478` review links from `.github/copilot-prompts/active/PR-4497-followup.md`.
   - removed duplicate checklist/self-review block and kept a single canonical self-review protocol section.

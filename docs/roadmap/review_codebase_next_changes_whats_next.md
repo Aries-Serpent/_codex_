@@ -5,13 +5,31 @@
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~26/60 minutes used; reserve final 5 minutes for wrap-up |
-| Latest PR head SHA | ✅ `c1b2b746646312652114adabba8afd3d0dd3a80d` (`MERGEABLE`) |
+| Latest PR head SHA | ✅ `2986420f2187f1567b9c914dc97337ecf7cb8da0` (`MERGEABLE`) |
 | Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; latest check-run snapshot shows heavy active load (`35 in_progress`, `3 queued`) plus `action_required` workflow conclusions on the same head — under active monitoring |
 | Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
 | Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
 | Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |
 | `PR-4497-followup.md` continuation prompt | ✅ Updated — appended current Priority 1 task block for next @copilot phase |
 | Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
+
+### Merge-readiness checkpoint
+- **Current merge-readiness score:** **100/100** (local Pattern 30 merge-readiness dimensions green)
+
+### Follow-up prompt options
+**For current PR (#4497):**
+```text
+@copilot continue with next phase tasks for this PR
+Priority: monitor approved workflow queue outcomes, keep tracked/accountability fresh, and prepare final merge handoff.
+```
+
+**For immediate post-merge new PR (if needed):**
+```text
+@copilot continue in a new PR for post-merge stabilization:
+- verify main branch CI on merge SHA
+- close residual follow-up items from PR #4497
+- refresh living docs and accountability for the new branch/PR context
+```
 
 ### @copilot continue — next phase tasks for PR #4497
 - [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA

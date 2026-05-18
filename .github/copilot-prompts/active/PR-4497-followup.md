@@ -4,7 +4,7 @@
 **Branch**: `copilot/gather-active-dependabots`  
 **Author**: @Copilot  
 **Date**: 2026-05-18  
-**Commit**: `f9bd48639a93add5a1fb33547bb21dffc818e436`  
+**Commit**: `2986420f2187f1567b9c914dc97337ecf7cb8da0`  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -128,3 +128,25 @@ No files modified
 - [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
 - [ ] 4. Confirm no new action pin/comment drift in workflow files
 - [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
+
+---
+
+## Merge readiness + immediate follow-up prompt
+
+- Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
+
+**Prompt for current PR #4497:**
+```text
+@copilot continue with next phase tasks for this PR:
+- monitor approval-dispatched queue outcomes
+- keep tracked-file/accountability freshness intact
+- reserve final 5 minutes for wrap-up and handoff
+```
+
+**Prompt for immediate post-merge new PR (if required):**
+```text
+@copilot continue in a new PR for post-merge stabilization:
+- verify main-branch CI on the merge SHA
+- close residual follow-up tasks from PR #4497
+- refresh living docs + accountability in the new PR context
+```
