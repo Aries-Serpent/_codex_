@@ -72,7 +72,22 @@
 - The dominant non-skip runtime signals are now assertion failures (`F`) plus a smaller error/setup bucket (`E`) and one worker termination event.
 - Session was closed under time guard after collecting sufficient runtime evidence for targeted follow-up.
 
-## Session Status (Current — S1045)
+## Evidence Summary (S1048-2026-05-18)
+
+| Metric | Last confirmed | Current continuation state |
+|---|---|---|
+| Branch tip used for latest handoff commit | `c722310db1ed0fe50a7c2575af819a98c66011e5` | preserved in branch history |
+| Current branch tip (latest session-planning push) | N/A | `ab6d12dee6904d03d114935c0f577fbdacac6f80` |
+| Promotion workflow `source_sha` (previously shared) | `97d52f011c105b5007b56ac1e027b222e213a9ab` | superseded by current branch tip at dispatch time |
+| Runtime log path continuity | `/tmp/codex_s1045/...` and `/tmp/codex_s1047/...` | requires fresh rerun in this session environment |
+| WEC + workflow monitoring surface | available | use report console: `docs/reporting/copilot_workflow_report_console.html` |
+
+**S1048 notes:**
+- Continued next-objective handoff and prepared PR-ready continuation context with explicit promotion SHA tracking.
+- Confirmed that final `source_sha` for `promote-integration-branch.yml` should be the current branch tip at dispatch time.
+- Anchored workflow monitoring to the report console so WEC/state checks can be observed from one place.
+
+## Session Status (Current — S1048)
 
 | Item | Status |
 |---|---|
@@ -85,21 +100,25 @@
 | **S1043 — Loader import-contract stabilization** | ✅ Complete |
 | **S1044 — Baseline dep normalization** | ✅ Complete (`requirements-dev.txt` +5 deps, 0 collection errors) |
 | **S1044 — SHA→branch promotion workflow** | ✅ Complete (`promote-integration-branch.yml` generalized) |
-| Full `nox -s tests` runtime failure triage | 🔄 In progress (S1045 reached 98%) |
+| Full `nox -s tests` runtime failure triage | 🔄 In progress (S1045 reached 98%; rerun required for terminal summary in current session env) |
 | Runtime failure marker inventory (`F/E/node-down`) | ✅ Captured |
-| `promote-integration-branch.yml` Actions-tab dispatch validation (`target_branch=main`) | 🔄 Pending verification |
+| `promote-integration-branch.yml` Actions-tab dispatch validation (`target_branch=main`) | 🔄 Pending verification (use current branch tip SHA) |
+| WEC/template-aligned PR preparation + report console alignment | ✅ In progress |
 
 ## Next Objectives (Session D continuation)
 
 1. Complete one full runtime pass to terminal pytest summary and extract exact failing test module counts.
 2. Group failures into buckets: assertion/runtime vs setup/import/worker termination.
 3. Triage the highest-frequency non-heavy-dependency bucket and land minimal corrective fix(es).
-4. Validate `promote-integration-branch.yml` workflow_dispatch from Actions with `target_branch=main` and current branch head SHA.
-5. Refresh reporting/accountability artifacts with post-fix runtime deltas.
+4. Validate `promote-integration-branch.yml` workflow_dispatch from Actions with `target_branch=main` and **current branch head SHA**.
+5. Validate WEC state/checklist alignment in the PR body and monitor workflow outcomes from `docs/reporting/copilot_workflow_report_console.html`.
+6. Refresh reporting/accountability artifacts with post-fix runtime deltas.
+7. Reserve final 5 minutes for wrap-up and publish the next continuation prompt.
 
 ## Follow-Up Continuation Prompt
 
 > Continue from `docs/roadmap/review_codebase_next_changes_whats_next.md` and `docs/reporting/next_expected_codebase_change_48h.md` (Session D continuation).
-> Collection is clean (S1044), and S1045 runtime evidence captured `F=47`, `E=5`, `node down=1` with test progress reaching 98% under xdist (`/tmp/codex_s1045/nox_tests_full_xdist.log`).
-> Finish one full runtime pass to final pytest summary, group failures by module/error type, fix top non-heavy-dependency runtime bucket, then update CHANGELOG/accountability/docs.
-> Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<tip of copilot/review-codebase-and-next-changes>`), and record run id + result in accountability.
+> Collection is clean (S1044), and prior runtime evidence captured `F=47`, `E=5`, `node down=1` with progress reaching 98% under xdist.
+> Re-run full runtime in the current session environment to reach terminal pytest summary, then group failures by module/error type and fix the top non-heavy-dependency runtime bucket.
+> Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<current branch tip>`), keep WEC checklist wired in PR body, and monitor outcomes through `docs/reporting/copilot_workflow_report_console.html`.
+> Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, then leave final 5-minute wrap-up notes with the next continuation prompt.

@@ -7,10 +7,13 @@ flowchart TD
     F --> G["S1042 — Quantum conftest remediation\n✅ 143→56 collection errors"]
     G --> H["S1043 — Loader import-contract stabilization\n✅ 143→56 collection errors; dep bucket identified"]
     H --> I["S1044 — Baseline dep normalization + SHA-branch workflow\n✅ pydantic/click/fastapi/httpx/crypto added to requirements-dev\n✅ promote-integration-branch.yml generalized\n✅ collect-only: 0 ModuleNotFoundError"]
-    I --> J["Update living docs\nwhats_next + session_diagram"]
-    J --> K["Update accountability + changelog"]
-    K --> L["Reserve final 5 min wrap-up\nhandoff continuation prompt"]
-    L --> M["Session D — Full nox -s tests runtime triage\ncharacterize remaining failures after clean collection"]
+    I --> J["S1045 — Runtime triage evidence\n98% progress, F/E/node-down markers captured"]
+    J --> K["S1047/S1048 — Promotion SHA handoff\ntrack source_sha for target_branch=main dispatch"]
+    K --> L["Update living docs\nwhats_next + session_diagram (current state)"]
+    L --> M["Update accountability + changelog\nPattern 25 freshness maintained"]
+    M --> N["WEC + PR prep\nkeep checklist wired; monitor via report console"]
+    N --> O["Reserve final 5 min wrap-up\npublish continuation prompt"]
+    O --> P["Session D continuation\nrerun full runtime to terminal summary + targeted fix"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -21,7 +24,10 @@ flowchart TD
     style G fill:#1b4332,color:#fff
     style H fill:#1b4332,color:#fff
     style I fill:#1b4332,color:#fff
-    style J fill:#457b9d,color:#fff
-    style K fill:#457b9d,color:#fff
-    style L fill:#f4a261,color:#000
-    style M fill:#9d4edd,color:#fff
+    style J fill:#1b4332,color:#fff
+    style K fill:#1b4332,color:#fff
+    style L fill:#457b9d,color:#fff
+    style M fill:#457b9d,color:#fff
+    style N fill:#2a9d8f,color:#fff
+    style O fill:#f4a261,color:#000
+    style P fill:#9d4edd,color:#fff

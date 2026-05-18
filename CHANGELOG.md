@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1048-next-objectives-continuation — `copilot/review-codebase-and-next-changes` — 2026-05-18T01:29Z)
+- Updated living continuation docs:
+  - `/home/runner/work/_codex_/_codex_/docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `/home/runner/work/_codex_/_codex_/docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+  with current Session D continuation status, promotion-SHA tracking, and explicit final 5-minute wrap-up handoff guidance.
+- Added report-console-driven workflow monitoring guidance for continuation sessions:
+  - `docs/reporting/copilot_workflow_report_console.html`
+  - keep WEC checklist state wired in the PR body while validating workflow dispatch outcomes.
+- Captured current promotion SHA chain for `promote-integration-branch.yml` handoff:
+  - previously shared: `97d52f011c105b5007b56ac1e027b222e213a9ab`
+  - handoff commit: `c722310db1ed0fe50a7c2575af819a98c66011e5`
+  - latest branch planning tip at update time: `ab6d12dee6904d03d114935c0f577fbdacac6f80`
+  - operational rule: use **current branch HEAD** as `source_sha` when dispatching to `target_branch=main`.
+
 ### Fixed (S1044-baseline-dep-normalization — `copilot/review-codebase-and-next-changes` — 2026-05-17T10:27Z)
 - Added 5 missing baseline test dependencies to `requirements-dev.txt`:
   - `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`
