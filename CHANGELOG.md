@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4497)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4497 (SHA `bb396ff4`) at 2026-05-18T18:20Z [auto-generated]
+
 ### Added (S1057-pr-readiness-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:03Z)
 - Added active continuation prompt at `.github/copilot-prompts/active/PR-main-dependabot-absorb-followup.md` for the branch-to-`main` promotion session.
 - Executed tracked-file remediation workflow (`sync_tracked_files`) after environment-level `detect-secrets` availability fix to clear stale tracked-file gate signals during PR readiness review.
