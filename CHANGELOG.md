@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - simplified `training/checkpoint_manager.py::maybe_save()` save-step guard to `save_steps > 0` for type/intent consistency.
   - synced parity fixes in `src/training/checkpoint_manager.py` (save-step guard, step-0 callback handling, prune protection filename normalization, and CUDA RNG availability helper extraction in fallback RNG capture).
 - Monitored PR-head (`64cca281`) workflow state: startup-failure workflows (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) currently report 0 jobs (startup-level, non-code-fixable in-repo signal).
+- Follow-up monitor snapshot after approval dispatch on newer head (`caa754cf`): `Progressive Validation Suite` and `Data Quality & Determinism Suite` remain `startup_failure` with 0 jobs while other approval-dispatched runs are still progressing.
 
 ### Fixed (auto-update — PR #4498)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4498 (SHA `1f87429d`) at 2026-05-18T20:40Z [auto-generated]

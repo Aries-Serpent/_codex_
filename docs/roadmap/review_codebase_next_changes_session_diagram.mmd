@@ -26,7 +26,7 @@ flowchart TD
     Z --> AA["S1060 — Approval monitoring window\ntrack post-approval workflow queue on HEAD e0fee31\n(no new code-fixable failures in current snapshot)"]
     AA --> AB["S1061 — Post-approval continuation\n✅ head: 2986420 (mergeable)\n🔄 queue active; monitor outcomes"]
     AB --> AC["S1062 — checkpoint manager + artifact remediation\n✅ artifact digests verified (run 26058314535)\n✅ dependency-scan + SBOM findings reviewed\n🔄 apply targeted code/test fixes + docs/changelog/accountability sync"]
-    AC --> AD["S1063 — PR #4498 review-thread closure + monitoring\n✅ address 4/4 review-thread items\n✅ sync src/training parity (save-step guard, step-0 callback, prune protection, CUDA RNG helper)\n🔄 monitor HEAD 64cca281 workflows (startup_failure runs currently 0-job startup-level)"]
+    AC --> AD["S1063 — PR #4498 review-thread closure + monitoring\n✅ address 4/4 review-thread items\n✅ sync src/training parity (save-step guard, step-0 callback, prune protection, CUDA RNG helper)\n🔄 monitor HEAD caa754cf workflows (2 startup_failure runs, both 0-job startup-level)"]
     AD --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff

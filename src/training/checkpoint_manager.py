@@ -138,8 +138,7 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
-            # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
-            import pickle as _stdlib_pickle
+            import pickle as _stdlib_pickle  # nosec B403
 
             buffer = io.BytesIO()
             try:
@@ -367,7 +366,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
         protected = {
-            Path(str(path)).name
+            Path(path).name
             for rec in self._best_records
             if (path := rec.get("path")) is not None
         }
