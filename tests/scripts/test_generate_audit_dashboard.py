@@ -17,12 +17,7 @@ Tests cover core functionality including:
 """
 
 import json
-import sys
 from datetime import datetime
-from pathlib import Path
-
-# Add scripts directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
 from generate_audit_dashboard import (
     SUPPORTED_EXTENSIONS,

@@ -2,16 +2,9 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-
-# Add scripts directory to path for direct import
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "scripts"))
-
 from zendesk_docs_fetch import _fetch
 
 
