@@ -138,7 +138,8 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
-            import pickle as _stdlib_pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
+            # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
+            import pickle as _stdlib_pickle
 
             buffer = io.BytesIO()
             try:
@@ -334,6 +335,7 @@ class CheckpointManager:  # type: ignore[no-redef]
 
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
+                # Keep explicit None handling for test/legacy state shims.
                 if step is not None and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
@@ -364,7 +366,11 @@ class CheckpointManager:  # type: ignore[no-redef]
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {Path(rec["path"]).name for rec in self._best_records}
+        protected = {
+            Path(str(path)).name
+            for rec in self._best_records
+            if (path := rec.get("path")) is not None
+        }
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
