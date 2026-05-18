@@ -1,6 +1,6 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — Dependabot absorb session · 2026-05-18T17:20Z)
+## Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)
 
 | Item | Status |
 |---|---|
@@ -18,7 +18,7 @@
 - Consolidated dependency bumps across Python requirement surfaces and lock files: `dvc`, `matplotlib-inline`, `iniconfig`, `alembic`, `opentelemetry-api`, `rich-toolkit`, `matplotlib`, `sacrebleu`, grouped `numpy`/`pandas`, and grouped `transformers`.
 - Prepared the consumed-PR closure list so the absorbed Dependabot PRs can be closed once this branch state is pushed and verified.
 
-## Session Status (Current — S1055 + PR #4479 follow-up · 2026-05-18T15:54Z)
+## Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)
 
 | Item | Status |
 |---|---|
@@ -58,7 +58,7 @@
   - `#pullrequestreview-4307843777`
   - `#pullrequestreview-4307833235`
 
-## Session Status (Current)
+## Session Status (S1043 snapshot)
 
 | Item | Status |
 |---|---|

@@ -110,7 +110,7 @@ jobs:
 
       # ── 3. Dispatch validate.yml (Validation Pipeline — fast mode) ───────────
       - name: Dispatch Validation Pipeline (validate.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -133,7 +133,7 @@ jobs:
 
       # ── 4. Dispatch pre-merge-validation.yml ────────────────────────────────
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -158,7 +158,7 @@ jobs:
       # Requires CODEX_MASTER_KEY (security_events scope). Produces fresh CodeQL
       # artifact for the agent session to review. Non-fatal if token is unavailable.
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -191,7 +191,7 @@ jobs:
       # wake the Copilot cloud agent so it can pick up the approved PR and implement
       # any remaining changes as a maintainer (elevated via CODEX_MASTER_KEY chain).
       - name: Post @copilot continue (resume agent session)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |

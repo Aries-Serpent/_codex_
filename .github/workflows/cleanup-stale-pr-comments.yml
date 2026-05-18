@@ -114,7 +114,7 @@ jobs:
       # -----------------------------------------------------------------------
       - name: React to slash command
         if: github.event_name == 'issue_comment'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           script: |
             await github.rest.reactions.createForIssueComment({
@@ -152,7 +152,7 @@ jobs:
         if: |
           github.event_name != 'pull_request' &&
           always()
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
           script: |
             const fs = require('fs');
