@@ -385,7 +385,7 @@ importlib-metadata==8.7.1
     # via
     #   mlflow-skinny
     #   opentelemetry-api
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via pytest
 ipykernel==7.1.0
     # via jupyterlab
