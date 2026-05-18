@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1058-pr4497-comment-gate-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:23Z)
+- Merged latest `origin/main` into `copilot/gather-active-dependabots` to clear branch-rebase blocking state on PR #4497.
+- Applied stale type-ignore remediation from Auto-Fix pattern 31 by removing one obsolete `# type: ignore` marker in `training/checkpoint_manager.py`.
+- Re-synced tracked files (`.secrets.baseline` manifest hash entry) via `sync_tracked_files` after tooling bootstrap to clear Pattern 22/30 drift signals.
+
 ### Fixed (auto-update — PR #4497)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4497 (SHA `bb396ff4`) at 2026-05-18T18:20Z [auto-generated]
 

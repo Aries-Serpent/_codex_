@@ -1,3 +1,27 @@
+## SESSION SUMMARY — 2026-05-18T18:23Z [S1058-pr4497-comment-gate-remediation]
+
+**Session:** S1058-pr4497-comment-gate-remediation | **Branch:** `copilot/gather-active-dependabots` | **PR:** #4497
+
+### Completed
+- ✅ Investigated blocking CI checks from PR comments using GitHub MCP logs:
+  - `PR Comment Review Gate` run `26052096670` failed on unaddressed blocking comments.
+  - `Workflow Execution Gate` run `26052132834` failed WEC integrity because `pr-checks.yml` was checked while workflow state was `disabled_manually`.
+- ✅ Merged latest `origin/main` into branch (merge commit `9b558f85e`) after unshallowing repository to address branch-rebase blocking condition.
+- ✅ Applied auto-fix Pattern 31 stale-type-ignore correction:
+  - removed obsolete `# type: ignore` on `_np = None` in `training/checkpoint_manager.py`.
+- ✅ Restored tracked-file consistency by running `sync_tracked_files --fix` after provisioning `detect-secrets`; `.secrets.baseline` manifest hash entry refreshed.
+
+### Remaining Open Items
+- Update PR body WEC to uncheck `pr-checks.yml` (while it remains disabled) and preserve all other maintainer selections.
+- Reply to new maintainer comments with remediation commit reference.
+- Re-run post-push validation checks on latest SHA.
+
+### Pattern Compliance
+- Pattern 22 ✅ — tracked-file consistency restored.
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T18:03Z [S1057-pr-readiness-remediation]
 
 **Session:** S1057-pr-readiness-remediation | **Branch:** `copilot/gather-active-dependabots` | **PR:** (to be opened against `main`)
