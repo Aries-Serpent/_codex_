@@ -72,6 +72,7 @@ reports/
 .dvc/cache/
 # Coverage & reports
 .coverage
+.coverage.*
 htmlcov/
 # Notebooks
 *.ipynb_checkpoints
