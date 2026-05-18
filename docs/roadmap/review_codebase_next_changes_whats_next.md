@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval state | ✅ Maintainer confirms pending workflows approved |
+| Latest completed-head snapshot (`e35c2520`) | 🔄 Most critical checks now green/cancelled/skipped; three startup-level fail-like runs observed (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) |
+| Startup-failure job triage | ✅ `list_workflow_jobs` for runs `26066450670`, `26066450659`, `26066450700` each returned `total_count: 0` (no in-job logs/code-fix path) |
+| In-progress run monitor (`e35c2520`) | 🔄 Active queue includes docs/registry/audit/security/pre-flight flows; continue monitor-only until concrete failed job logs exist |
+| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
+
 ## Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)
 
 | Item | Status |

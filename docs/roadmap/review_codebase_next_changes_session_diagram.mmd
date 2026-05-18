@@ -31,7 +31,8 @@ flowchart TD
     AE --> AF["S1065 — approval dispatch continuation\n✅ process @copilot continue from comment #4482756378\n✅ append requested Priority 1 checklist to PR-4498-followup prompt\n✅ monitor latest head a1ace279 (automatic-dependency-submission success)\n🔄 retain watch on b31f0d5 startup-level 0-job failures only"]
     AF --> AG["S1066 — approval dispatch continuation (expanded)\n✅ process @copilot continue from comment #4483007895\n✅ append expanded 10-item Priority 1 checklist to PR-4498-followup prompt\n🔄 monitor latest head fa43f721 approval-dispatched runs (no failed jobs yet)\n🔄 run targeted checkpoint parity + required validation chain"]
     AG --> AH["S1067 — approval-confirmed monitor pass\n✅ maintainer confirms pending workflows approved\n✅ monitor heads 5dbd9410/fa43f721 via MCP run+job snapshots\n✅ no completed failed job logs yet (monitor-only)\n✅ refresh living docs + changelog + accountability"]
-    AH --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
+    AH --> AI["S1068 — approved workflow monitor continuation\n✅ maintainer confirms ~12/60 minutes used\n✅ monitor latest completed head e35c2520\n⚠ startup_failure runs seen (progressive/data-quality/rust-swarm)\n✅ jobs API for those runs returns 0 jobs (no code-fixable logs)\n✅ refresh living docs + changelog + accountability"]
+    AI --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -66,4 +67,5 @@ flowchart TD
     style AF fill:#457b9d,color:#fff
     style AG fill:#457b9d,color:#fff
     style AH fill:#457b9d,color:#fff
+    style AI fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000
