@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1054-runtime-triage-continuation-and-doc-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:47Z)
+- Restored accidental regressions introduced in timeout progress commit chain:
+  - reverted `a.py`, `b.py`, `test_a.py`, `test_b.py` to pre-regression content
+  - restored `configs/synonyms/test_synonyms.json`
+- Re-synced living continuation docs for Session D (`whats_next` + `session_diagram`) with explicit Priority-1 numbered objectives and wrap-up continuation guidance.
+- Refreshed CI rescue status documentation to reflect current gate signal (REQ-10 branch-divergence/rebase gate on failing `Agent Token Delegation` runs).
+
 ### Fixed (S1051-wec-merge-required-alignment — `copilot/review-codebase-and-next-changes` — 2026-05-18T03:44Z)
 - Removed `nox_gates.yml` from `_MERGE_REQUIRED_WORKFLOWS` in `scripts/ci/session_wrapup_autofix.py` so WEC template integrity no longer hard-fails when that optional workflow is manually disabled in GitHub Actions.
 - Re-ran CI rescue validation commands:

@@ -24,47 +24,26 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Align WEC execution with iterative plan path:
-  1. Parse PR WEC block
-  2. Validate always-required checks
-  3. Validate workflow active/non-active state integrity
-  4. Dispatch newly checked workflows
-  5. Approve pending `action_required` runs
-  6. Post execution-plan summary comment
-- [ ] Identify and track merge-required WEC workflows that are currently non-active in Actions.
-- [ ] Verify WEC is hardened for Copilot selection-by-checkbox on PR approval flow.
-- [ ] Prepare a general tailored operator prompt for repeatable Copilot WEC sessions.
+- [ ] 1. Finish full Session D runtime rerun to terminal pytest summary and bucket failures
+- [ ] 2. Land minimal fix for highest-frequency non-heavy-dependency runtime bucket
+- [ ] 3. Re-check CI after S1051 fix (`70359ee`) and clear remaining blocking gates
+- [ ] 4. Re-run CI rescue command set and confirm clean status
+- [ ] 5. Validate `promote-integration-branch.yml` dispatch to `main` with current `source_sha` (token-scope dependent)
+- [ ] 6. Verify WEC-driven automation/checks via report console with SHA correlation
+- [ ] 7. Worker-stability follow-up after runtime fixes
+- [ ] 8. Keep continuation docs/changelog/accountability synchronized per session
 
-**Current non-active WEC workflows requiring enablement in Actions (live audit):**
-- [ ] `nox_gates.yml` (`disabled_manually`)
-- [ ] `pr-checks.yml` (`disabled_manually`)
-- [ ] `docker-build-push.yml` (`disabled_manually`)
-- [ ] `html_visual_regression.yml` (`disabled_manually`)
-- [ ] `template_lint.yml` (`disabled_manually`)
-- [ ] `codeql-alert-fetcher.yml` (`disabled_manually`)
-- [ ] `copilot-iterative-self-healing.yml` (`disabled_manually`)
+### Additional Session Requirements
+- [ ] Update living docs (`whats_next` and `session_diagram`) with current status.
+- [ ] Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+- [ ] Leave final 5 minutes for wrap-up and include the follow-up continuation prompt.
+- [ ] Prevent workflow-misfire regressions in future sessions:
+  - Re-check branch divergence (`origin/main...HEAD`) before starting agent edits.
+  - If behind/diverged, rebase first so `REQ-10` pre-flight gate cannot fail on stale branch state.
+  - Re-validate WEC block from live PR body before each `report_progress`.
 
-**Enable command (requires token with `actions:write`, e.g. `CODEX_MASTER_KEY`):**
-```bash
-GH_TOKEN="$CODEX_MASTER_KEY" gh api --method PUT repos/Aries-Serpent/_codex_/actions/workflows/<workflow_id>/enable
-```
-
-**General tailored prompt (WEC iterative execution):**
-> "Run WEC execution in strict iterative order: parse current PR checklist, validate always-required checks, validate selected + merge-required workflow active states, stop on non-active workflow findings with explicit list, dispatch newly checked workflows only, approve pending action_required runs, and post/update one gate summary comment with run/skip and remediation actions."
-
-**Validation**:
-```bash
-GH_TOKEN="$CODEX_MASTER_KEY" gh api --method PUT repos/Aries-Serpent/_codex_/actions/workflows/<workflow_id>/enable
-```
-
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] Confirm WEC summary comment stays single-anchor (upsert behavior).
-- [ ] Confirm token chain uses `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` for checklist parsing and summary posting.
-- [ ] Re-audit non-active workflow set after any manual workflow enablement action.
-
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] Add automated daily report artifact for `merge-required but non-active` workflows.
-- [ ] Add optional WEC mermaid map in PR summary comments for rapid operator understanding.
+### Current CI rescue blocker snapshot (latest observed)
+- [ ] `Agent Token Delegation` run `26017125733` failed `REQ-10` branch rebase/divergence gate (`status=diverged, behind_by=1` for `main...head` at failing commit context).
 
 ---
 
@@ -138,4 +117,4 @@ GH_TOKEN="$CODEX_MASTER_KEY" gh api --method PUT repos/Aries-Serpent/_codex_/act
 
 **Generated**: 2026-05-18  
 **Template Version**: 2.0.0  
-**Last Updated**: 2026-05-18 01:35:06
+**Last Updated**: 2026-05-18 06:47:00

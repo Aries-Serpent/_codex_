@@ -1,5 +1,33 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1054)
+
+| Item | Status |
+|---|---|
+| Session D runtime rerun to terminal summary | 🔄 In progress (prior run reached ~99% without terminal summary) |
+| Highest-frequency non-heavy-dependency runtime bucket fix | 🔄 In progress |
+| CI re-check after S1051 (`70359ee`) | ✅ Investigated; primary hard-fail pattern was REQ-10 branch-divergence gate |
+| CI rescue command set (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | ✅ Rerun locally |
+| `promote-integration-branch.yml` dispatch validation (`target_branch=main`) | ✅ Attempted; blocked by token scope (`HTTP 403 Resource not accessible by integration`) |
+| WEC/report-console SHA correlation verification | 🔄 In progress |
+| Living docs + CHANGELOG + accountability sync | 🔄 In progress (this update batch) |
+| Final 5-minute wrap-up + continuation prompt | ⏳ Pending (reserve at end of session) |
+
+### Priority 1 (Maintainer-directed checklist)
+1. Finish full Session D runtime rerun to terminal pytest summary and bucket failures.
+2. Land minimal fix for highest-frequency non-heavy-dependency runtime bucket.
+3. Re-check CI after S1051 fix (`70359ee`) and clear remaining blocking gates.
+4. Re-run CI rescue command set and confirm clean status.
+5. Validate `promote-integration-branch.yml` dispatch to `main` with current `source_sha` (token-scope dependent).
+6. Verify WEC-driven automation/checks via report console with SHA correlation.
+7. Worker-stability follow-up after runtime fixes.
+8. Keep continuation docs/changelog/accountability synchronized per session.
+
+### Workflow/Process hardening (regression prevention)
+- Add an explicit pre-edit branch-divergence check (`origin/main...HEAD`) in each continuation start.
+- If behind/diverged, rebase before edits to avoid `REQ-10` pre-flight gate regressions.
+- Keep WEC block sourced from live PR body for every progress update (no manual reconstruction).
+
 ## Session Status (Current)
 
 | Item | Status |
@@ -118,7 +146,7 @@
 ## Follow-Up Continuation Prompt
 
 > Continue from `docs/roadmap/review_codebase_next_changes_whats_next.md` and `docs/reporting/next_expected_codebase_change_48h.md` (Session D continuation).
-> Collection is clean (S1044), and prior runtime evidence captured `F=47`, `E=5`, `node down=1` with progress reaching 98% under xdist.
+> Collection is clean (S1044), and prior runtime evidence captured `F=47`, `E=5`, `node down=1` with progress reaching 98% under xdist (with a later rerun reaching ~99% but still missing terminal summary in-session).
 > Re-run full runtime in the current session environment to reach terminal pytest summary, then group failures by module/error type and fix the top non-heavy-dependency runtime bucket.
 > Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<current branch tip>`), keep WEC checklist wired in PR body, and monitor outcomes through `docs/reporting/copilot_workflow_report_console.html`.
 > Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, then leave final 5-minute wrap-up notes with the next continuation prompt.
