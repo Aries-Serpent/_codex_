@@ -25,6 +25,11 @@
 6. Verify WEC-driven automation/checks via report console with SHA correlation.
 7. Worker-stability follow-up after runtime fixes.
 8. Keep continuation docs/changelog/accountability synchronized per session.
+9. Apply changes requested in review threads:
+   - `#pullrequestreview-4307843777`
+   - `#pullrequestreview-4307833235`
+10. Re-attempt cancellation of stale old-SHA in-progress comment-triggered run once API rate budget is available.
+11. Keep workflow-misfire prevention process active (pre-edit divergence check + rebase-first + live WEC sourcing).
 
 ### Workflow/Process hardening (regression prevention)
 - Add an explicit pre-edit branch-divergence check (`origin/main...HEAD`) in each continuation start.

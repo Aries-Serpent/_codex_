@@ -1,3 +1,26 @@
+## SESSION SUMMARY — 2026-05-18T07:39Z [S1054-priority1-checklist-append]
+
+**Session:** S1054-priority1-checklist-append | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** #4478
+
+### Completed
+- ✅ Appended requested Priority 1 continuation tasks in:
+  - `.github/copilot-prompts/active/PR-4478-followup.md`
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+- ✅ Added explicit items for:
+  - review-thread application (`#pullrequestreview-4307843777`, `#pullrequestreview-4307833235`)
+  - stale old-SHA run cancellation retry
+  - workflow-misfire prevention process continuity
+- ✅ Updated `CHANGELOG.md` and accountability report in the same session.
+
+### Remaining Open Items
+- Complete Session D runtime rerun to terminal summary and apply top runtime bucket fix.
+- Re-check CI and close current rescue thread on latest head after next push.
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T07:13Z [S1054-pending-session-review-and-timebox-refresh]
 
 **Session:** S1054-pending-session-review-and-timebox-refresh | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** #4478
