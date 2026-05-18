@@ -4,9 +4,9 @@
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~15/60 minutes used; reserve final 5 minutes for wrap-up |
-| Latest PR head SHA | ✅ `f9bd48639a93add5a1fb33547bb21dffc818e436` (`MERGEABLE`) |
-| Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; queue is now active on latest head (`in_progress` set with one observed `startup_failure` on Progressive Validation Suite) |
+| Session budget tracking | 🔄 ~26/60 minutes used; reserve final 5 minutes for wrap-up |
+| Latest PR head SHA | ✅ `c1b2b746646312652114adabba8afd3d0dd3a80d` (`MERGEABLE`) |
+| Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; latest check-run snapshot shows heavy active load (`35 in_progress`, `3 queued`) plus `action_required` workflow conclusions on the same head — under active monitoring |
 | Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
 | Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
 | Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |

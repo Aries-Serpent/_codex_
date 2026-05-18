@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.
 - Added dedicated continuation prompt file `.github/copilot-prompts/active/PR-4497-followup.md` for the next @copilot phase on PR #4497.
 - Follow-up monitor pass after maintainer approval of pending workflows: current head advanced to `f9bd486`, with active queue runs in progress and one observed `startup_failure` (`Progressive Validation Suite`) under watch.
+- Additional approval-monitor checkpoint: head advanced to `c1b2b74`; dispatched runs on this head currently report `action_required` outcomes and are being monitored pending next state transition.
 
 ### Fixed (S1059-pr4497-merge-conflict-and-review-thread-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:44Z)
 - Resolved PR #4497 merge-conflict state by merging latest `origin/main` and finalizing `CODEX_MANIFEST.json` conflict resolution.
