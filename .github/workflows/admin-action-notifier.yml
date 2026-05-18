@@ -134,7 +134,7 @@ jobs:
       - name: Create or update issue for ${{ inputs.gap_id }}
         id: notify
         if: steps.probe.outputs.scope_ok == 'false'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
         env:
           GAP_ID:       ${{ inputs.gap_id }}
           ISSUE_TITLE:  ${{ inputs.issue_title }}
@@ -194,7 +194,7 @@ jobs:
       # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
       - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
         if: steps.probe.outputs.scope_ok == 'true'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v8
         env:
           ISSUE_TITLE: ${{ inputs.issue_title }}
           ISSUE_LABEL: ${{ inputs.issue_label }}
