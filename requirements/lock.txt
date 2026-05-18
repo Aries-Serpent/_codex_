@@ -229,7 +229,7 @@ dulwich==1.2.1
     # via
     #   dvc-studio-client
     #   scmrepo
-dvc==3.67.0
+dvc==3.67.1
     # via codex-ml (pyproject.toml)
 dvc-data==3.18.3
     # via dvc
