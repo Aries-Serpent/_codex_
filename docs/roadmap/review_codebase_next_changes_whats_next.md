@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~10/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval state | ✅ Maintainer confirmed pending workflows approved for current PR |
+| Latest completed-head snapshot (`5dbd9410`) | 🔄 Predominantly `action_required`/queued workflow states tied to approval-gated execution; no failed job logs captured yet for code remediation |
+| Latest in-progress head snapshot (`fa43f721`) | 🔄 Active queue on validation/security/code-quality flows; continue monitor-only until concrete failed job logs appear |
+| Current job-level triage | ✅ Sampled current jobs via MCP (`Auto-Fix Common CI Issues`, `Workflow Execution Gate`, `CI Checkpoint Validation`) and found no completed failed jobs requiring code fixes |
+| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity | ✅ Updating in this pass |
+| Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
+
 ## Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)
 
 | Item | Status |
