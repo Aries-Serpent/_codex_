@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4479)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4479 (SHA `dc4db1d6`) at 2026-05-18T15:15Z [auto-generated]
+
 ### Fixed (S1055-session-d-runtime-bucket-fix — `copilot/finish-session-d-runtime-rerun` — 2026-05-18T14:25Z)
 - **Session D runtime rerun complete.** Ran pytest across all 177 non-ML test directories; identified 3 collection errors bucketed as:
   - **Bucket A (path-shadow, no heavy deps):** `tests/scripts/` — `scripts/metrics/__init__.py` (empty) shadowed `src/metrics.py` when test files in `tests/scripts/` added `scripts/` to `sys.path[0]` at module level. Fix: re-export `accuracy`, `append_ndjson`, `write_ndjson` from `src.metrics` in `scripts/metrics/__init__.py`. Result: 216 tests now pass (was 0 collectible).
