@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1061-pr4497-approval-monitor-continuation — `copilot/gather-active-dependabots` — 2026-05-18T19:19Z)
+- Continued post-approval monitoring on current PR head (`eead173`) and verified no new code-fixable failures surfaced on the latest SHA snapshot.
+- Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.
+- Added dedicated continuation prompt file `.github/copilot-prompts/active/PR-4497-followup.md` for the next @copilot phase on PR #4497.
+
 ### Fixed (S1059-pr4497-merge-conflict-and-review-thread-remediation — `copilot/gather-active-dependabots` — 2026-05-18T18:44Z)
 - Resolved PR #4497 merge-conflict state by merging latest `origin/main` and finalizing `CODEX_MANIFEST.json` conflict resolution.
 - Applied review-thread fixes from `pullrequestreview-4312820254`: updated stale `# v8` comments to `# v9` for pinned `actions/github-script` uses, pinned `actions/deploy-pages@v5` to immutable SHA, and removed stale "Current" labels from historical roadmap snapshot blocks.

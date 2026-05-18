@@ -24,7 +24,8 @@ flowchart TD
     W --> X["Current sync pass\nupdate whats_next + session_diagram\nupdate CHANGELOG + AGENT_ACCOUNTABILITY_REPORT\nprepare consumed-PR closure list (#4480-#4494)"]
     X --> Z["S1059 — PR #4497 remediation\n✅ merge conflicts cleared (main merge)\n✅ review-thread fixes applied\n✅ pandas/mlflow resolver conflict fixed"]
     Z --> AA["S1060 — Approval monitoring window\ntrack post-approval workflow queue on HEAD e0fee31\n(no new code-fixable failures in current snapshot)"]
-    AA --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
+    AA --> AB["S1061 — Continuation after new approvals\n✅ latest head advanced to eead173 (mergeable)\n✅ approval-dispatched queue monitored on current SHA\n🔄 run local validation parity + drift checks"]
+    AB --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -52,4 +53,5 @@ flowchart TD
     style X fill:#457b9d,color:#fff
     style Z fill:#1b4332,color:#fff
     style AA fill:#457b9d,color:#fff
+    style AB fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000

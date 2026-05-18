@@ -1,5 +1,24 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~8/60 minutes used; reserve final 5 minutes for wrap-up |
+| Latest PR head SHA | ✅ `eead173e065d5fc1724f0c2bb5bc297354bc1862` (`MERGEABLE`) |
+| Approval-dispatched workflow monitoring | ✅ Current snapshot on latest head shows `Automatic Dependency Submission (Python)` completed `success`; no new code-fixable failures surfaced on latest SHA |
+| Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
+| Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
+| Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |
+| Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
+
+### @copilot continue — next phase tasks for PR #4497
+- [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA
+- [ ] 2. Keep tracked-file/accountability freshness intact for final merge pass
+- [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
+- [ ] 4. Confirm no new action pin/comment drift in workflow files
+- [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
+
 ## Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)
 
 | Item | Status |
