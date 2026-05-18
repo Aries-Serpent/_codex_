@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1054-ci-rescue-sync-tracked-files-cleanup — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:51Z)
+- Reverted unintended `.codex/session_context_latest.md` drift from a planning-only progress update commit so PR scope returns to intended Session D/rescue files.
+- Applied accountability freshness remediation for Pattern 25 and re-synced tracked-file state to clear the auto-fix rescue gate conditions observed on `Auto-Fix Common CI Issues` run `26019821327`.
+
 ### Added (S1054-priority1-checklist-append — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:39Z)
 - Appended maintainer-requested Priority 1 continuation checklist items to both living continuation docs and the active PR follow-up prompt.
 - Included explicit review-thread action IDs, stale old-SHA run cancellation retry, and workflow-misfire prevention process continuity in the Priority 1 list.

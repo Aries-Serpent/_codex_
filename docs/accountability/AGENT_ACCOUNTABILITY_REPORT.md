@@ -1,3 +1,24 @@
+## SESSION SUMMARY — 2026-05-18T07:51Z [S1054-ci-rescue-sync-tracked-files-cleanup]
+
+**Session:** S1054-ci-rescue-sync-tracked-files-cleanup | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** #4478
+
+### Completed
+- ✅ Investigated failing rescue evidence for commit `bdb12be`:
+  - `Auto-Fix Common CI Issues` run `26019821327` (job `76478728161`).
+  - Confirmed failure cause: tracked-file/accountability drift patterns (`Pattern 22` + `Pattern 25`) rather than runtime code regressions.
+- ✅ Reverted unintended tracked file drift:
+  - restored `.codex/session_context_latest.md` to prior branch state to remove accidental scope expansion.
+- ✅ Applied Pattern 25 auto-fix remediation and refreshed accountability/changelog synchronization for this session.
+
+### Remaining Open Items
+- Complete Session D runtime rerun to terminal summary and apply the top non-heavy-dependency runtime bucket fix.
+- Re-check latest-head CI after this cleanup push and close the active rescue thread.
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-18T07:39Z [S1054-priority1-checklist-append]
 
 **Session:** S1054-priority1-checklist-append | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** #4478
@@ -11175,6 +11196,13 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+## SESSION SUMMARY — 2026-05-18T07:55Z [auto-generated]
+
+**Session:** auto-20260518T0755-run3751 | **Run:** 26020365152 | **Date:** 2026-05-18
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-05-17T03:25Z [auto-generated]
 
 **Session:** auto-20260517T0325-run3655 | **Run:** 25980139712 | **Date:** 2026-05-17
