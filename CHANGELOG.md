@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1054-pending-session-review-and-timebox-refresh — `copilot/review-codebase-and-next-changes` — 2026-05-18T07:13Z)
+- Updated Session D living docs with current timebox checkpoint (`~29/60 minutes used`) and explicit final 5-minute wrap-up reserve.
+- Recorded pending-session/workflow review result: no queued runs, one stale in-progress old-SHA run identified (`26017787233`).
+- Recorded cancellation attempt status for stale run: blocked in-session by GitHub API rate limit (`HTTP 403 API rate limit exceeded` with current token scope/rate state).
+
 ### Added (S1054-followup-prompt-thread-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:56Z)
 - Appended maintainer-requested review-thread action items to `.github/copilot-prompts/active/PR-4478-followup.md`:
   - `#pullrequestreview-4307843777`

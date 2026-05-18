@@ -14,8 +14,9 @@ flowchart TD
     M --> N["WEC + PR prep\nkeep checklist wired; monitor via report console"]
     N --> O["S1051/S1053\nWEC merge-required alignment + coverage-shard hygiene"]
     O --> P["S1054 current loop\nruntime rerun + CI rescue + docs/accountability sync"]
-    P --> Q["Timebox checkpoint\n~16/60 min used; reserve final 5 min wrap-up"]
-    Q --> R["Session D continuation\nrerun full runtime to terminal summary + targeted fix"]
+    P --> Q["Timebox checkpoint\n~29/60 min used; reserve final 5 min wrap-up"]
+    Q --> R["Review pending copilot sessions/workflow runs\ncancel stale queued/in-progress old-SHA runs"]
+    R --> S["Session D continuation\nrerun full runtime to terminal summary + targeted fix"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -34,4 +35,5 @@ flowchart TD
     style O fill:#1b4332,color:#fff
     style P fill:#457b9d,color:#fff
     style Q fill:#f4a261,color:#000
-    style R fill:#9d4edd,color:#fff
+    style R fill:#457b9d,color:#fff
+    style S fill:#9d4edd,color:#fff

@@ -4,7 +4,7 @@
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~16/60 minutes used; reserve final 5 minutes for wrap-up |
+| Session budget tracking | 🔄 ~29/60 minutes used; reserve final 5 minutes for wrap-up |
 | Session D runtime rerun to terminal summary | 🔄 In progress (prior run reached ~99% without terminal summary) |
 | Highest-frequency non-heavy-dependency runtime bucket fix | 🔄 In progress |
 | CI re-check after S1051 (`70359ee`) | ✅ Investigated; primary hard-fail pattern was REQ-10 branch-divergence gate |
@@ -13,6 +13,8 @@
 | WEC/report-console SHA correlation verification | 🔄 In progress |
 | Living docs + CHANGELOG + accountability sync | 🔄 In progress (this update batch) |
 | Final 5-minute wrap-up + continuation prompt | ⏳ Pending (reserve at end of session) |
+| Pending Copilot-session/workflow review | 🔄 Reviewed: no queued runs; 1 stale in-progress old-SHA run identified |
+| Cancel unneeded stale run | ⚠️ Cancel attempt blocked by GitHub API rate limit in-session (`HTTP 403 API rate limit exceeded`) |
 
 ### Priority 1 (Maintainer-directed checklist)
 1. Finish full Session D runtime rerun to terminal pytest summary and bucket failures.
