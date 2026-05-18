@@ -7,7 +7,7 @@ pytest>=9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required
 pytest-cov==5.0.0
 pytest-xdist>=3.5.0,<4.0.0
 nox
-numpy>=1.26
+numpy>=2.4.5
 # Pin torch to stable CPU-only versions to avoid pulling CUDA/NVIDIA stacks during P0.
 # - torchvision/torchaudio compatibility matrix
 # - Dependabot update failures on bleeding edge versions

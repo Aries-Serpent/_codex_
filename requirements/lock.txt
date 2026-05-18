@@ -600,7 +600,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.4
+numpy==2.4.5
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -726,7 +726,7 @@ packaging==26.1
     #   transformers
     #   typepy
     #   wandb
-pandas==3.0.2
+pandas==3.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   altair
