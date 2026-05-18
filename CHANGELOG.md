@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4479)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4479 (SHA `dc4db1d6`) at 2026-05-18T15:15Z [auto-generated]
 
+### Fixed (S1055-followup-review-fixes — `copilot/finish-session-d-runtime-rerun` — 2026-05-18T15:54Z)
+- **Code review: `scripts/metrics/__init__.py`** — narrowed `except ImportError` to `except ModuleNotFoundError` so ImportErrors raised *inside* `src.metrics` (e.g. a broken import in that module) are not silently swallowed. Added explanatory comment. (commit `b588342`)
+- **Code review: `PR-4479-followup.md`** — corrected stale `PR #4478` / `PR-4478-followup.md` references in the COPILOT AGENT INSTRUCTIONS section to point at `PR #4479` / `PR-4479-followup.md`. Removed duplicate EXECUTION CHECKLIST + SELF-REVIEW PROTOCOL + COPILOT AGENT INSTRUCTIONS block that had been appended by a second prompt-generation run. (commit `b588342`)
+- **Secrets baseline: `archive_ops.jsonl` false positives** — added 4 missing entries for SHA-256 file hashes on lines 95, 98, 117, 139 of `.codex/evidence/archive_ops.jsonl` that `detect-secrets` flagged as `Hex High Entropy String`; all 15 existing entries preserved. `sync_tracked_files --check` passes. (commit `1bf43ed`)
+- **`sys.path.insert` fixture migration** — removed module-level `sys.path.insert(0, .../scripts)` calls from 5 files in `tests/scripts/` and 1 in `tests/checkpointing/`; centralised path management in new `tests/scripts/conftest.py` and `tests/checkpointing/conftest.py`. (commit `1bf43ed`)
+
 ### Fixed (S1055-session-d-runtime-bucket-fix — `copilot/finish-session-d-runtime-rerun` — 2026-05-18T14:25Z)
 - **Session D runtime rerun complete.** Ran pytest across all 177 non-ML test directories; identified 3 collection errors bucketed as:
   - **Bucket A (path-shadow, no heavy deps):** `tests/scripts/` — `scripts/metrics/__init__.py` (empty) shadowed `src/metrics.py` when test files in `tests/scripts/` added `scripts/` to `sys.path[0]` at module level. Fix: re-export `accuracy`, `append_ndjson`, `write_ndjson` from `src.metrics` in `scripts/metrics/__init__.py`. Result: 216 tests now pass (was 0 collectible).

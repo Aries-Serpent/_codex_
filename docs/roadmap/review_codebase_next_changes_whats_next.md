@@ -1,20 +1,21 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — S1054)
+## Session Status (Current — S1055 + PR #4479 follow-up · 2026-05-18T15:54Z)
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~29/60 minutes used; reserve final 5 minutes for wrap-up |
-| Session D runtime rerun to terminal summary | 🔄 In progress (prior run reached ~99% without terminal summary) |
-| Highest-frequency non-heavy-dependency runtime bucket fix | 🔄 In progress |
-| CI re-check after S1051 (`70359ee`) | ✅ Investigated; primary hard-fail pattern was REQ-10 branch-divergence gate |
-| CI rescue command set (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | ✅ Rerun locally |
-| `promote-integration-branch.yml` dispatch validation (`target_branch=main`) | ✅ Attempted; blocked by token scope (`HTTP 403 Resource not accessible by integration`) |
-| WEC/report-console SHA correlation verification | 🔄 In progress |
-| Living docs + CHANGELOG + accountability sync | 🔄 In progress (this update batch) |
+| Session budget tracking | 🔄 ~25/60 minutes used; reserve final 5 minutes for wrap-up |
+| Session D runtime rerun — 3 collection errors fixed | ✅ Complete (Bucket A: path-shadow; Bucket B ×2: numpy importorskip) |
+| CI: `sync_tracked_files` stale hash | ✅ Fixed (`sync_tracked_files.py --fix`) |
+| CI: Secrets Baseline Enforcer (archive_ops.jsonl false positives) | ✅ Fixed (4 new entries added to `.secrets.baseline`) |
+| `sys.path.insert` module-level calls audit + fixture migration | ✅ Complete (`conftest.py` created in `tests/scripts/` and `tests/checkpointing/`) |
+| Code review: narrow `except ImportError` → `ModuleNotFoundError` | ✅ Fixed (commit `b588342`) |
+| Code review: fix wrong PR #4478 reference in `PR-4479-followup.md` | ✅ Fixed (commit `b588342`) |
+| Code review: remove duplicate checklist block in `PR-4479-followup.md` | ✅ Fixed (commit `b588342`) |
+| CI: Auto-Fix PR Check on commit `173a5ad` (superseded) | ✅ Superseded — current HEAD passes `Auto-Fix Common CI Issues` |
+| CI rescue command set (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | ✅ All pass on current HEAD |
+| Living docs + CHANGELOG + accountability sync | 🔄 In progress (this update) |
 | Final 5-minute wrap-up + continuation prompt | ⏳ Pending (reserve at end of session) |
-| Pending Copilot-session/workflow review | 🔄 Reviewed: no queued runs; 1 stale in-progress old-SHA run identified |
-| Cancel unneeded stale run | ⚠️ Cancel attempt blocked by GitHub API rate limit in-session (`HTTP 403 API rate limit exceeded`) |
 
 ### Priority 1 (Maintainer-directed checklist)
 1. Finish full Session D runtime rerun to terminal pytest summary and bucket failures.
