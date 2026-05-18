@@ -34,7 +34,7 @@ dependencies = [
   "pandas>=2.1",
   "marshmallow>=3.7.1,<5",  # Widened to allow ge extra (GE requires <4); use [marshmallow-v4] extra to pin >=4
   "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 43+ vulnerabilities (RCE, auth bypass, path traversal)
-  "transformers>=5.8.0,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
+  "transformers>=5.8.1,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
   "peft>=0.19.1,<1",
   "accelerate>=0.31,<2",
   "datasets>=4.8.5,<5",
@@ -146,7 +146,7 @@ ml = [
   "peft>=0.19.1,<1",
   "sentencepiece>=0.1.99",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.8.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.8.1,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
 ]
 monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
@@ -190,7 +190,7 @@ test = [
   "pytest-randomly>=3.10",
   "hypothesis>=6.152.4,<7.0.0",
   "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
-  "transformers>=5.8.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.8.1,<6",  # Security: updated from 4.41 to fix deserialization
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
   "datasets>=4.8.5,<5",
   "accelerate>=0.31,<2",
@@ -207,7 +207,7 @@ tracking = [
 ]
 train = [
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.8.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.8.1,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
   "peft>=0.19.1,<1",
   "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
@@ -252,7 +252,7 @@ all = [
   "tokenizers>=0.15",
   "tomli>=2.0; python_version < '3.11'",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.8.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.8.1,<6",  # Security: updated from 4.41 to fix deserialization
   "wandb>=0.16",
 ]
 

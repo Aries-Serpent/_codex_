@@ -11,7 +11,7 @@
 torch>=2.6.0
 
 # Transformers (without model downloads)
-transformers>=5.8.0
+transformers>=5.8.1
 
 # Tokenization
 sentencepiece>=0.1.99
