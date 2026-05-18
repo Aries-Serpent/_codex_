@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4498)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4498 (SHA `1f87429d`) at 2026-05-18T20:40Z [auto-generated]
+
 ### Fixed (S1062-checkpoint-manager-and-artifact-remediation — `copilot/fix-pep263-issues` — 2026-05-18T20:28Z)
 - Applied targeted test/docs cleanup requested in review feedback:
   - removed misplaced shebang and simplified `except KeyError` no-op handling in `tests/scripts/test_generate_audit_dashboard.py`.
