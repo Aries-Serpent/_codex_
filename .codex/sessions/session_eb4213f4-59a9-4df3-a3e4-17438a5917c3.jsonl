@@ -1,0 +1,2 @@
+{"timestamp": "2026-05-18T06:37:19.341330Z", "session_id": "eb4213f4-59a9-4df3-a3e4-17438a5917c3", "role": "system", "event_type": "training_start", "data": {"epochs": 1, "grad_accum": 1, "steps_per_epoch": 1, "telemetry_enabled": false, "dp": {"enabled": false}, "dataset_files": 0}}
+{"timestamp": "2026-05-18T06:37:19.348869Z", "session_id": "eb4213f4-59a9-4df3-a3e4-17438a5917c3", "role": "system", "event_type": "training_end", "data": {"epochs_completed": 1, "optimizer_steps": 0, "wall_time_sec": 0.0428166389465332, "dp": {"enabled": false}, "metrics_enabled": false}}
