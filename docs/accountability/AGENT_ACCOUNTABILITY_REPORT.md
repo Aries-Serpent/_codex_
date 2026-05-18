@@ -21,6 +21,12 @@
   - active queue remains in progress across multiple workflows;
   - current fail-like signals are `startup_failure` on `Progressive Validation Suite` and `Data Quality & Determinism Suite`;
   - both runs still report zero jobs (startup-level signal, no actionable job-log remediation path from repository code edits).
+- ✅ Continued monitoring on newest head (`0cdaf740`) after additional approvals:
+  - startup-level fail-like signals remain limited to `Progressive Validation Suite` and `Data Quality & Determinism Suite` (both `total_count: 0` jobs).
+  - several older control runs show `cancelled` because newer runs superseded them (non-code-fixable).
+- ✅ Verified queued Copilot `👀` comment-hygiene process requested by maintainer:
+  - listed PR comments with `eyes` reactions and inspected owner for reaction `358870127` (`Copilot`);
+  - attempted removal via GitHub API but hit token-scope restriction (`403 Resource not accessible by integration`), so direct in-session cleanup is currently blocked.
 
 ### Remaining Open Items
 - Keep monitoring in-progress approval-dispatched workflows until final state settles.

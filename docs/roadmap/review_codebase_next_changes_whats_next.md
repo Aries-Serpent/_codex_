@@ -4,11 +4,12 @@
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 ~26/60 minutes used; preserve final 5 minutes for wrap-up |
+| Session budget tracking | 🔄 ~35/60 minutes used; preserve final 5 minutes for wrap-up |
 | Review thread `pullrequestreview-4313843683` closure | ✅ Addressed all requested items (`PR-4498-followup.md`, accountability PR field, `training/checkpoint_manager.py`, `src/training/checkpoint_manager.py` parity) |
 | Checkpoint parity fixes (legacy `training/` vs `src/training/`) | ✅ Applied and validated (save guard, step-0 callback guard, prune-path protection, CUDA RNG helper extraction in src fallback) |
 | Required validation chain | ✅ `pytest` targeted set + `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` |
-| Current PR-head workflow monitor (`caa754cf`) | 🔄 Active — many runs in progress; currently observed `startup_failure` on `Progressive Validation Suite` and `Data Quality & Determinism Suite` with **0 jobs** each (startup-level, non-code-fixable from repo code) |
+| Current PR-head workflow monitor (`0cdaf740`) | 🔄 Active — many runs in progress; currently observed `startup_failure` on `Progressive Validation Suite` and `Data Quality & Determinism Suite` with **0 jobs** each (startup-level, non-code-fixable from repo code). A few earlier control runs show `cancelled` due superseding pushes. |
+| Copilot queued 👀 reaction hygiene | ✅ Verified process: detect comments with `eyes` reactions and inspect reaction owners; delete attempt for reaction `358870127` currently blocked by token scope (`403 Resource not accessible by integration`) |
 | Living docs + changelog + accountability | 🔄 Updating in this pass |
 | Final 5-minute reserve | ⏳ Pending |
 

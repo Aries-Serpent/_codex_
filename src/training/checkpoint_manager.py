@@ -138,6 +138,7 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
+            # Trusted local ML checkpoint payloads only; justify B403 suppression.
             import pickle as _stdlib_pickle  # nosec B403
 
             buffer = io.BytesIO()
@@ -334,7 +335,8 @@ class CheckpointManager:  # type: ignore[no-redef]
 
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
-                # Keep explicit None handling for test/legacy state shims.
+                # Keep explicit None handling because some legacy/test state shims
+                # initialize global_step lazily before first step.
                 if step is not None and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
