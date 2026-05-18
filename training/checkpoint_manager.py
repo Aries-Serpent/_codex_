@@ -274,7 +274,7 @@ class CheckpointManager:
         *,
         rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
-        if save_steps is not None and save_steps > 0 and step % save_steps == 0:
+        if save_steps > 0 and step % save_steps == 0:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 

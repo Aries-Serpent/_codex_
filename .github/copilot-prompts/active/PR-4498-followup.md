@@ -17,7 +17,11 @@
 - [`be4031b0`] chore: initialize remediation plan (copilot-swe-agent[bot], 2026-05-18)
 
 ### Files Modified
-No files modified
+- tests/scripts/test_generate_audit_dashboard.py
+- tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py
+- training/checkpoint_manager.py
+- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- CHANGELOG.md
 
 ---
 

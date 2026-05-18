@@ -1,6 +1,6 @@
 ## SESSION SUMMARY — 2026-05-18T20:28Z [S1062-checkpoint-manager-and-artifact-remediation]
 
-**Session:** S1062-checkpoint-manager-and-artifact-remediation | **Branch:** `copilot/fix-pep263-issues` | **PR:** (active)
+**Session:** S1062-checkpoint-manager-and-artifact-remediation | **Branch:** `copilot/fix-pep263-issues` | **PR:** #4498
 
 ### Completed
 - ✅ Ingested requested Security Scanning Suite artifacts from run `26058314535` and verified exact SHA-256 digests:

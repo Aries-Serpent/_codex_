@@ -295,7 +295,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         *,
         rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
-        if save_steps and step % save_steps == 0:
+        if save_steps > 0 and step % save_steps == 0:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
@@ -331,7 +331,7 @@ class CheckpointManager:  # type: ignore[no-redef]
 
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
-                if step and save_every and step % save_every == 0:
+                if step is not None and save_every and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -361,7 +361,7 @@ class CheckpointManager:  # type: ignore[no-redef]
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {rec["path"] for rec in self._best_records}
+        protected = {Path(str(rec["path"])).name for rec in self._best_records}
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
