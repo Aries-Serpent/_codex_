@@ -1,5 +1,23 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — Dependabot absorb session · 2026-05-18T17:20Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~52/60 minutes used; final 5 minutes reserved for wrap-up |
+| Active Dependabot PR absorb into `copilot/gather-active-dependabots` | ✅ Complete — 15 update commits cherry-picked on top of `9aa5ae4` through HEAD `5d14f3b` |
+| Consumed GitHub Actions PRs | ✅ `#4480`, `#4482`, `#4484`, `#4493`, `#4494` absorbed |
+| Consumed Python dependency PRs | ✅ `#4481`, `#4483`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492` absorbed |
+| Closure candidate list | ✅ Prepared — #4480, #4481, #4482, #4483, #4484, #4485, #4486, #4487, #4488, #4489, #4490, #4491, #4492, #4493, #4494 |
+| Living docs + CHANGELOG + accountability sync | ✅ Complete (`whats_next`, `session_diagram`, `CHANGELOG`, `AGENT_ACCOUNTABILITY_REPORT`) |
+| Final wrap-up / PR closure sweep | ⏳ Pending — keep final 5-minute reserve |
+
+### Dependabot absorb summary
+- Cherry-picked the exact Dependabot update commits for all 15 active open dependency PRs into the active session branch.
+- Consolidated workflow action bumps: `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache`.
+- Consolidated dependency bumps across Python requirement surfaces and lock files: `dvc`, `matplotlib-inline`, `iniconfig`, `alembic`, `opentelemetry-api`, `rich-toolkit`, `matplotlib`, `sacrebleu`, grouped `numpy`/`pandas`, and grouped `transformers`.
+- Prepared the consumed-PR closure list so the absorbed Dependabot PRs can be closed once this branch state is pushed and verified.
+
 ## Session Status (Current — S1055 + PR #4479 follow-up · 2026-05-18T15:54Z)
 
 | Item | Status |

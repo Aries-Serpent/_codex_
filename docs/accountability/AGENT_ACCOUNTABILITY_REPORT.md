@@ -15562,6 +15562,32 @@ and the CI gate requirement.
 
 ---
 
+## SESSION SUMMARY — 2026-05-18T17:20Z S1056 DEPENDABOT ABSORB (`copilot/gather-active-dependabots`)
+
+### Objective
+Absorb every active open Dependabot dependency PR into the active session branch, update living docs and audit artifacts, and prepare the consumed PRs for closure.
+
+### Work Completed
+1. Cherry-picked the exact Dependabot update commits for all 15 active PRs: `#4480`, `#4481`, `#4482`, `#4483`, `#4484`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492`, `#4493`, `#4494`.
+2. Consolidated workflow dependency bumps for `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache`.
+3. Consolidated grouped and single-package Python dependency bumps across `pyproject.toml`, requirements files, and lock files (`numpy`, `pandas`, `transformers`, `sacrebleu`, `matplotlib`, `matplotlib-inline`, `rich-toolkit`, `opentelemetry-api`, `alembic`, `iniconfig`, `dvc`).
+4. Updated the living continuation docs to show the absorb-session state, current time budget, and consumed-PR closure list.
+5. Reserved the final 5-minute window for validation, wrap-up, and PR-closure follow-through.
+
+### Current Branch State
+- Branch: `copilot/gather-active-dependabots`
+- HEAD after Dependabot absorb: `5d14f3b`
+- Consumed PR closure candidates: `#4480`, `#4481`, `#4482`, `#4483`, `#4484`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492`, `#4493`, `#4494`
+
+### Validation Plan
+- Run existing repo validation on the absorbed dependency/workflow changes.
+- Re-run code review and security validation before wrap-up.
+
+### Lessons Learned
+- When absorbing a wave of Dependabot PRs, fetched PR refs must be deep enough to cherry-pick the exact Dependabot update commit rather than the later prompt/manifest follow-up commit.
+- Grouped Dependabot PRs (`data-dependencies`, `ml-dependencies`) still require downstream lockfile verification after absorb.
+- The living docs are the right place to publish the consumed-PR closure list so the wrap-up step has one authoritative checklist.
+
 ## [auto-generated] Session 27 — 2026-03-14
 
 **Agent:** copilot-swe-agent[bot]

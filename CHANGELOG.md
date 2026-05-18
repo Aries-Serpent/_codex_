@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S1056-dependabot-absorb — `copilot/gather-active-dependabots` — 2026-05-18T17:20Z)
+- Cherry-picked all 15 active Dependabot update commits into the current session branch and consolidated them into one absorb sequence: `#4480`, `#4481`, `#4482`, `#4483`, `#4484`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492`, `#4493`, `#4494`.
+- Updated GitHub Actions references for `actions/create-github-app-token`, `actions/github-script`, `actions/download-artifact`, `actions/deploy-pages`, and `actions/cache` to the versions carried by the active Dependabot PR set.
+- Updated dependency declarations and lock surfaces for `numpy`, `pandas`, `transformers`, `sacrebleu`, `matplotlib`, `matplotlib-inline`, `rich-toolkit`, `opentelemetry-api`, `alembic`, `iniconfig`, and `dvc`, including the grouped Dependabot updates.
+- Refreshed the living continuation docs with the absorb-session status, consumed-PR closure list, and explicit final wrap-up reserve.
+
 ### Fixed (auto-update — PR #4479)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4479 (SHA `dc4db1d6`) at 2026-05-18T15:15Z [auto-generated]
 
