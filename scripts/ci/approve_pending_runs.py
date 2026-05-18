@@ -308,7 +308,7 @@ def _cleanup_copilot_eyes_reactions(
     comments = _fetch_pr_comments(token, repo, pr_number)
 
     for comment in comments:
-        comment_id = int(comment.get("id", 0) or 0)
+        comment_id = int(comment.get("id", 0))
         if not comment_id:
             continue
         reactions = _fetch_comment_reactions(token, repo, comment_id)
@@ -316,11 +316,10 @@ def _cleanup_copilot_eyes_reactions(
             if reaction.get("content") != "eyes":
                 continue
             user_data = reaction.get("user", {})
-            user = user_data if isinstance(user_data, dict) else {}
-            login = str(user.get("login", ""))
+            login = str(user_data.get("login", "")) if isinstance(user_data, dict) else ""
             if login not in COPILOT_BOT_LOGINS:
                 continue
-            reaction_id = int(reaction.get("id", 0) or 0)
+            reaction_id = int(reaction.get("id", 0))
             if not reaction_id:
                 continue
             label = f"comment {comment_id} reaction {reaction_id} by {login}"
