@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1051-wec-merge-required-alignment — `copilot/review-codebase-and-next-changes` — 2026-05-18T03:44Z)
+- Removed `nox_gates.yml` from `_MERGE_REQUIRED_WORKFLOWS` in `scripts/ci/session_wrapup_autofix.py` so WEC template integrity no longer hard-fails when that optional workflow is manually disabled in GitHub Actions.
+- Re-ran CI rescue validation commands:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+
 ### Fixed (S1050-comment-gate-and-wec-recovery — `copilot/review-codebase-and-next-changes` — 2026-05-18T02:50Z)
 - Re-ran CI rescue validation chain and confirmed clean local gates:
   - `python -m ruff check src/ tests/ --fix`

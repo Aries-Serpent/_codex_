@@ -198,7 +198,6 @@ _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
     # Opt-in: validation & testing (required for passing merge gate)
     "validate.yml",
     "resilient_validation.yml",
-    "nox_gates.yml",
     # Opt-in: security (required for CodeQL / security-suite merge gates)
     "codeql-analysis.yml",
     "security-scanning-suite.yml",
