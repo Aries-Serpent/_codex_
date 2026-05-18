@@ -996,7 +996,7 @@ rich==14.3.3
     #   typer
 rich-click==1.9.7
     # via litestar
-rich-toolkit==0.19.7
+rich-toolkit==0.19.9
     # via fastapi-cli
 rouge-score==0.1.2
     # via lm-eval
