@@ -1,5 +1,17 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~28/60 minutes used; reserve final 5 minutes for wrap-up |
+| PR merge conflict state (`gh pr view`) | ✅ Cleared — PR #4497 now `MERGEABLE` on HEAD `e0fee31` |
+| Review thread `pullrequestreview-4312820254` remediation | ✅ Complete — workflow comment alignment + pages SHA pin + stale status-label cleanup |
+| CI dependency resolver blocker (`mlflow` vs `pandas`) | ✅ Complete — pandas constraints restored to `>=2.3.1,<3` / `2.3.3` pins |
+| Workflow monitoring after approval dispatch | 🔄 Ongoing — latest runs on `e0fee31` are predominantly `action_required`/queued; no new code-fixable failures identified in current snapshot |
+| Living docs + CHANGELOG + accountability sync | ✅ Updated in-session |
+| Final 5-minute reserve | ⏳ Pending — hold remaining time for wrap-up summary and handoff |
+
 ## Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)
 
 | Item | Status |
