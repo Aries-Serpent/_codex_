@@ -4,6 +4,7 @@
 
 | Item | Status |
 |---|---|
+| Session budget tracking | 🔄 ~16/60 minutes used; reserve final 5 minutes for wrap-up |
 | Session D runtime rerun to terminal summary | 🔄 In progress (prior run reached ~99% without terminal summary) |
 | Highest-frequency non-heavy-dependency runtime bucket fix | 🔄 In progress |
 | CI re-check after S1051 (`70359ee`) | ✅ Investigated; primary hard-fail pattern was REQ-10 branch-divergence gate |
@@ -27,6 +28,9 @@
 - Add an explicit pre-edit branch-divergence check (`origin/main...HEAD`) in each continuation start.
 - If behind/diverged, rebase before edits to avoid `REQ-10` pre-flight gate regressions.
 - Keep WEC block sourced from live PR body for every progress update (no manual reconstruction).
+- Apply comment-driven fixes from review threads:
+  - `#pullrequestreview-4307843777`
+  - `#pullrequestreview-4307833235`
 
 ## Session Status (Current)
 
@@ -150,3 +154,4 @@
 > Re-run full runtime in the current session environment to reach terminal pytest summary, then group failures by module/error type and fix the top non-heavy-dependency runtime bucket.
 > Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<current branch tip>`), keep WEC checklist wired in PR body, and monitor outcomes through `docs/reporting/copilot_workflow_report_console.html`.
 > Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, then leave final 5-minute wrap-up notes with the next continuation prompt.
+> Ensure review-thread tasks are appended and tracked in `.github/copilot-prompts/active/PR-4478-followup.md`.

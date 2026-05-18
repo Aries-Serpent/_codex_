@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1054-followup-prompt-thread-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:56Z)
+- Appended maintainer-requested review-thread action items to `.github/copilot-prompts/active/PR-4478-followup.md`:
+  - `#pullrequestreview-4307843777`
+  - `#pullrequestreview-4307833235`
+- Updated Session D living docs with explicit time-budget checkpoint (`~16/60 used`) and reserved final 5-minute wrap-up requirement.
+
 ### Fixed (S1054-runtime-triage-continuation-and-doc-sync — `copilot/review-codebase-and-next-changes` — 2026-05-18T06:47Z)
 - Restored accidental regressions introduced in timeout progress commit chain:
   - reverted `a.py`, `b.py`, `test_a.py`, `test_b.py` to pre-regression content
