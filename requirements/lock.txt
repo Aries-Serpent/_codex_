@@ -516,7 +516,7 @@ markupsafe==3.0.3
     #   werkzeug
 marshmallow==4.2.2
     # via codex-ml (core dependency)
-matplotlib==3.10.8
+matplotlib==3.10.9
     # via mlflow
 matplotlib-inline==0.2.1
     # via
