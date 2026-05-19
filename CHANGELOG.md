@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4511)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4511 (SHA `e3d37062`) at 2026-05-19T23:38Z [auto-generated]
+
 ### Fixed (PR-4510-speaker-timeout-follow-up — `copilot/update-speaker-name-timeout` — 2026-05-19T22:35Z)
 - Made interactive speaker naming timeout configurable in `apps/dev/audio_transcriber_ui.py` by accepting `speaker_name_timeout_seconds` in `AudioTranscriberUI.__init__()` and using that value in `_gui_input_func()` instead of a hardcoded 30-second wait.
 - Updated `tests/services/audio/test_transcription_workflow.py` so media-discovery assertions go through the public `process_path()` API with a stubbed `process_file()` helper rather than calling `_discover_media_files()` directly.
