@@ -96,9 +96,9 @@ No files modified
 
 ## 🤖 COPILOT AGENT INSTRUCTIONS
 
-**When you see `@copilot continue` in PR #4504:**
+**When you see `@copilot continue` in PR #4510:**
 
-1. Load this prompt from `.github/copilot-prompts/active/PR-4504-followup.md`
+1. Load this prompt from `.github/copilot-prompts/active/PR-4510-followup.md`
 2. Execute Priority 1 tasks in order, validating each
 3. Then execute Priority 2 tasks
 4. Review Priority 3 tasks
@@ -127,7 +127,7 @@ No files modified
 - Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
 - Pattern 30 = merge-readiness composite in `python scripts/ci/auto_fix_common_issues.py --check-only` (sync-tracked, accountability freshness, action/version hygiene, and related readiness dimensions).
 
-**Prompt for current PR #4504:**
+**Prompt for current PR #4510:**
 ```text
 @copilot continue with next phase tasks for this PR:
 - monitor approval-dispatched queue outcomes
@@ -139,7 +139,7 @@ No files modified
 ```text
 @copilot continue in a new PR for post-merge stabilization:
 - verify main-branch CI on the merge SHA
-- close residual follow-up tasks from PR #4504
+- close residual follow-up tasks from PR #4510
 - refresh living docs + accountability in the new PR context
 ```
 

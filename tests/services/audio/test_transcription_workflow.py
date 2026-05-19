@@ -37,6 +37,13 @@ def fake_successful_process_file(self, input_path: str | Path, output_dir: str |
     return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
 
 
+class _FakePyannoteSegment:
+    def __init__(self, start: float, end: float, speaker_id: str):
+        self.start = start
+        self.end = end
+        self.speaker_id = speaker_id
+
+
 def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path, monkeypatch):
     media_dir = tmp_path / "media"
     media_dir.mkdir()
@@ -205,12 +212,6 @@ def test_process_file_with_pyannote_backend_uses_pyannote_path(tmp_path: Path, m
     _write_test_wav(wav_path, seconds=1.0)
 
     monkeypatch.setenv("PYANNOTE_AUTH_TOKEN", "token")
-
-    class _FakePyannoteSegment:
-        def __init__(self, start: float, end: float, speaker_id: str):
-            self.start = start
-            self.end = end
-            self.speaker_id = speaker_id
 
     def _fake_pyannote(self, _wav_path: Path):
         return [_FakePyannoteSegment(0.0, 1.0, "SPEAKER_00")]
