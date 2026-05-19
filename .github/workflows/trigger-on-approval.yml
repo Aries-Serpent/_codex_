@@ -94,7 +94,7 @@ jobs:
       # Mirrors agent-auth-delegation.yml "Approve action_required runs" step.
       # approve_pending_runs.py uses CODEX_MASTER_KEY (actions:write) to call
       # POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve for each pending run.
-      - name: Auto-approve pending workflow runs for PR HEAD
+      - name: Auto-approve pending workflow runs + clear stale Copilot 👀
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
@@ -103,6 +103,7 @@ jobs:
           REPO: ${{ github.repository }}
           HEAD_SHA: ${{ steps.ctx.outputs.pr_sha }}
           PR_NUMBER: ${{ steps.ctx.outputs.pr_num }}
+          CLEANUP_COPILOT_EYES: "true"
         run: |
           echo "Approving action_required runs for SHA $HEAD_SHA (PR #$PR_NUMBER)..."
           python scripts/ci/approve_pending_runs.py

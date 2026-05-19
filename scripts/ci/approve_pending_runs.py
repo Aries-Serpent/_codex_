@@ -28,6 +28,9 @@ HEAD_SHA     40-char commit SHA to scan   (default: all open PRs)
 PR_NUMBER    PR number                    (used when HEAD_SHA also given)
 DRY_RUN      "true" to preview only
 MAX_WAIT_SEC Seconds to poll until runs appear (default 30)
+CLEANUP_COPILOT_EYES
+            "true" (default) to remove stale Copilot 👀 reactions from
+            PR comments after approval handling when PR number is known
 
 App-token env vars (all optional — enables the highest-privilege path)
 ------------------------------------------------------------------------
@@ -60,6 +63,8 @@ import urllib.request
 from typing import Any
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
+COPILOT_BOT_LOGINS = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
 
 def _gh(
     method: str,
@@ -244,6 +249,100 @@ def _get_open_pr_shas(token: str, repo: str) -> list[tuple[str, str]]:
     return pairs
 
 
+def _fetch_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, Any]]:
+    """Return all issue comments for a PR."""
+    comments: list[dict[str, Any]] = []
+    page = 1
+    while True:
+        status, data = _gh(
+            "GET",
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+            token,
+        )
+        if status != 200 or not isinstance(data, list):
+            print(f"⚠️  Could not list PR comments (HTTP {status}): {data}", file=sys.stderr)
+            break
+        comments.extend(data)
+        if len(data) < 100:
+            break
+        page += 1
+    return comments
+
+
+def _fetch_comment_reactions(token: str, repo: str, comment_id: int) -> list[dict[str, Any]]:
+    """Return reactions for a single issue comment."""
+    reactions: list[dict[str, Any]] = []
+    page = 1
+    while True:
+        status, data = _gh(
+            "GET",
+            f"/repos/{repo}/issues/comments/{comment_id}/reactions?per_page=100&page={page}",
+            token,
+        )
+        if status != 200 or not isinstance(data, list):
+            print(
+                f"⚠️  Could not list reactions for comment {comment_id} (HTTP {status}): {data}",
+                file=sys.stderr,
+            )
+            break
+        reactions.extend(data)
+        if len(data) < 100:
+            break
+        page += 1
+    return reactions
+
+
+def _cleanup_copilot_eyes_reactions(
+    token: str,
+    repo: str,
+    pr_number: str,
+    *,
+    dry_run: bool = False,
+) -> tuple[int, int]:
+    """Remove stale Copilot 👀 reactions from PR comments.
+
+    Returns (removed_count, blocked_count). blocked_count tracks permission/HTTP errors.
+    """
+    removed = 0
+    blocked = 0
+    comments = _fetch_pr_comments(token, repo, pr_number)
+
+    for comment in comments:
+        comment_id = int(comment.get("id", 0))
+        if not comment_id:
+            continue
+        reactions = _fetch_comment_reactions(token, repo, comment_id)
+        for reaction in reactions:
+            if reaction.get("content") != "eyes":
+                continue
+            user_data = reaction.get("user", {})
+            login = str(user_data.get("login", "")) if isinstance(user_data, dict) else ""
+            if login not in COPILOT_BOT_LOGINS:
+                continue
+            reaction_id = int(reaction.get("id", 0))
+            if not reaction_id:
+                continue
+            label = f"comment {comment_id} reaction {reaction_id} by {login}"
+            if dry_run:
+                print(f"  [DRY] Would remove stale 👀: {label}")
+                removed += 1
+                continue
+            status, body = _gh(
+                "DELETE",
+                f"/repos/{repo}/issues/comments/{comment_id}/reactions/{reaction_id}",
+                token,
+            )
+            if status == 204:
+                print(f"  ✅ Removed stale 👀: {label}")
+                removed += 1
+                continue
+            msg = body.get("message", "") if isinstance(body, dict) else str(body)
+            print(f"  ⚠️  Could not remove stale 👀 ({label}) — HTTP {status}: {msg}")
+            blocked += 1
+
+    return removed, blocked
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -252,6 +351,7 @@ def main() -> int:
     pr_number = os.environ.get("PR_NUMBER", "").strip()
     dry_run   = os.environ.get("DRY_RUN", "false").lower() == "true"
     max_wait  = int(os.environ.get("MAX_WAIT_SEC", "30"))
+    cleanup_eyes = os.environ.get("CLEANUP_COPILOT_EYES", "true").lower() != "false"
 
     if not repo:
         print("❌ REPO env var required (owner/repo)", file=sys.stderr)
@@ -285,6 +385,7 @@ def main() -> int:
     # Wait briefly for runs to register after a fresh push ────────────────────
     total_approved = total_skipped = total_errors = 0
     waited = 0
+    cleaned_prs: set[str] = set()
 
     for pr_num, sha in targets:
         print(f"\n── PR #{pr_num} @ {sha[:12]} ──────────────────────────────")
@@ -314,6 +415,20 @@ def main() -> int:
                 total_skipped += 1
             else:
                 total_errors += 1
+
+        if cleanup_eyes and pr_num not in {"", "?"} and pr_num not in cleaned_prs:
+            print(f"   🧹 Copilot queue hygiene for PR #{pr_num} (remove stale 👀)…")
+            removed, blocked = _cleanup_copilot_eyes_reactions(
+                token,
+                repo,
+                pr_num,
+                dry_run=dry_run,
+            )
+            cleaned_prs.add(pr_num)
+            if removed:
+                print(f"   ✅ Removed {removed} stale Copilot 👀 reaction(s)")
+            if blocked:
+                print(f"   ⚠️  {blocked} reaction cleanup operation(s) blocked")
 
     # Summary ─────────────────────────────────────────────────────────────────
     print(f"\n{'─'*60}")

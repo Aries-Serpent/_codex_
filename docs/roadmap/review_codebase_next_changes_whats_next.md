@@ -1,5 +1,95 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval state | ✅ Maintainer confirms pending workflows approved |
+| Latest completed-head snapshot (`e35c2520`) | 🔄 Most critical checks now green/cancelled/skipped; three startup-level fail-like runs observed (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) |
+| Startup-failure job triage | ✅ `list_workflow_jobs` for runs `26066450670`, `26066450659`, `26066450700` each returned `total_count: 0` (no in-job logs/code-fix path) |
+| In-progress run monitor (`e35c2520`) | 🔄 Active queue includes docs/registry/audit/security/pre-flight flows; continue monitor-only until concrete failed job logs exist |
+| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
+
+## Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~10/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval state | ✅ Maintainer confirmed pending workflows approved for current PR |
+| Latest completed-head snapshot (`5dbd9410`) | 🔄 Predominantly `action_required`/queued workflow states tied to approval-gated execution; no failed job logs captured yet for code remediation |
+| Latest in-progress head snapshot (`fa43f721`) | 🔄 Active queue on validation/security/code-quality flows; continue monitor-only until concrete failed job logs appear |
+| Current job-level triage | ✅ Sampled current jobs via MCP (`Auto-Fix Common CI Issues`, `Workflow Execution Gate`, `CI Checkpoint Validation`) and found no completed failed jobs requiring code fixes |
+| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity | ✅ Updating in this pass |
+| Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
+
+## Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~42/60 minutes used; preserve final 5 minutes for wrap-up |
+| New blocking maintainer continuation comment (`#4483007895`) | ✅ Triaged and continuation resumed |
+| Latest PR-head monitor snapshot (`fa43f721`) | 🔄 Approval-dispatched runs currently in progress/queued; no failed jobs captured yet for in-job remediation |
+| Job-log triage on latest head | ✅ inspected run jobs for `Secrets Baseline Enforcer`, `CodeQL`, `Security Scanning Suite`, `Agent Vars Bootstrap`, `Resilient Dependency Submission`, `Documentation Link Checker`; none currently failed |
+| Continuation prompt alignment | ✅ Appended expanded 10-item Priority 1 checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
+| Required validation + targeted checkpoint parity reruns | 🔄 Running in this pass |
+| Living docs + changelog + accountability | 🔄 Updating in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
+## Session Status (Current — S1065 approval-dispatch continuation + prompt append · 2026-05-18T23:08Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~34/60 minutes used; preserve final 5 minutes for wrap-up |
+| New approval-dispatch comment (`#4482756378`) | ✅ Triaged and continuation flow resumed |
+| Latest run monitor snapshot | ✅ Head `a1ace279` currently shows `Automatic Dependency Submission (Python)` completed success |
+| Prior active-head monitor snapshot (`b31f0d5`) | 🔄 Startup-level fail-like runs observed (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) with **0 jobs** each; no in-job code remediation path |
+| Continuation prompt alignment | ✅ Appended requested `@copilot continue` Priority 1 six-task checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
+| Living docs + changelog + accountability | 🔄 Updating in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
+## Session Status (Current — S1064 approval-hook queue hygiene + CI rescue continuation · 2026-05-18T22:27Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~29/60 minutes used at latest maintainer checkpoint; preserve final 5 minutes for wrap-up |
+| Approval-coupled Copilot queue hygiene | ✅ Implemented in `approve_pending_runs.py` and wired in `trigger-on-approval.yml` |
+| `👀` cleanup behavior | ✅ Removes stale Copilot `eyes` reactions during approval pass when token scope permits; non-fatal logging on permission blocks |
+| CI rescue comment context (`64cca281`) | ✅ Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs) |
+| Latest PR-head workflow monitor (`153e43b0`) | 🔄 Active — three startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) all report **0 jobs** (non-code-fixable at job layer) |
+| Required validation chain | ✅ `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` all green |
+| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
+## Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~35/60 minutes used; preserve final 5 minutes for wrap-up |
+| Review thread `pullrequestreview-4313843683` closure | ✅ Addressed all requested items (`PR-4498-followup.md`, accountability PR field, `training/checkpoint_manager.py`, `src/training/checkpoint_manager.py` parity) |
+| Checkpoint parity fixes (legacy `training/` vs `src/training/`) | ✅ Applied and validated (save guard, step-0 callback guard, prune-path protection, CUDA RNG helper extraction in src fallback) |
+| Required validation chain | ✅ `pytest` targeted set + `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` |
+| Current PR-head workflow monitor (`0cdaf740`) | 🔄 Active — many runs in progress; currently observed `startup_failure` on `Progressive Validation Suite` and `Data Quality & Determinism Suite` with **0 jobs** each (startup-level, non-code-fixable from repo code). A few earlier control runs show `cancelled` due superseding pushes. |
+| Copilot queued 👀 reaction hygiene | ✅ Verified process: detect comments with `eyes` reactions and inspect reaction owners; delete attempt for reaction `358870127` currently blocked by token scope (`403 Resource not accessible by integration`) |
+| Living docs + changelog + accountability | 🔄 Updating in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
+## Session Status (Current — S1062 checkpoint-manager-and-artifact-remediation · 2026-05-18T20:28Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~10/60 minutes used; preserve final 5 minutes for wrap-up |
+| Artifact ingestion (`run 26058314535`) | ✅ Downloaded and SHA256-verified (`dependency-scan-results`, `sbom-reports`) |
+| Dependency scan remediation status | ✅ Explicitly reviewed — 2 known CVEs (`diskcache`, `sqlitedict`) still no fix versions; existing `pip-audit` ignore policy in `pyproject.toml` remains current |
+| SBOM remediation status | ✅ `sbom.json` reviewed: 326 components, 0 vulnerabilities |
+| Requested code diffs application | ✅ Complete — requested checkpoint manager and test diffs applied |
+| Targeted validation status | ✅ `pytest` target set, `ruff` (changed files), and `nox -s tests` target run all passing |
+| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Pending |
+
 ## Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
 
 | Item | Status |

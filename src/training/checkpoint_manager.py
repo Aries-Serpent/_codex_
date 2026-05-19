@@ -68,6 +68,14 @@ if "CheckpointManager" not in globals():
                 raw_state[4],
             ]
 
+        def _torch_cuda_rng_available(torch_module: Any) -> bool:
+            return (
+                hasattr(torch_module, "cuda")
+                and hasattr(torch_module.cuda, "is_available")
+                and torch_module.cuda.is_available()
+                and hasattr(torch_module.cuda, "get_rng_state_all")
+            )
+
         def dump_rng_state() -> dict[str, Any]:
             state: dict[str, Any] = {}
             try:
@@ -95,12 +103,7 @@ if "CheckpointManager" not in globals():
                 except Exception as exc:  # pragma: no cover - torch optional
                     logger.debug("Failed to capture torch CPU random state: %s", exc)
                 try:
-                    if (
-                        hasattr(_torch, "cuda")
-                        and hasattr(_torch.cuda, "is_available")
-                        and _torch.cuda.is_available()
-                        and hasattr(_torch.cuda, "get_rng_state_all")
-                    ):
+                    if _torch_cuda_rng_available(_torch):
                         torch_state["cuda"] = [
                             tensor.tolist() for tensor in _torch.cuda.get_rng_state_all()
                         ]
@@ -135,7 +138,8 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
-            import pickle as _stdlib_pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
+            # Trusted local ML checkpoint payloads only; justify B403 suppression.
+            import pickle as _stdlib_pickle  # nosec B403
 
             buffer = io.BytesIO()
             try:
@@ -295,7 +299,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         *,
         rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
-        if save_steps and step % save_steps == 0:
+        if save_steps > 0 and step % save_steps == 0:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
@@ -331,7 +335,9 @@ class CheckpointManager:  # type: ignore[no-redef]
 
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
-                if step and save_every and step % save_every == 0:
+                # Keep explicit None handling because some legacy/test state shims
+                # initialize global_step lazily before first step.
+                if step is not None and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -361,7 +367,11 @@ class CheckpointManager:  # type: ignore[no-redef]
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {rec["path"] for rec in self._best_records}
+        protected = {
+            Path(path).name
+            for rec in self._best_records
+            if (path := rec.get("path")) is not None
+        }
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue

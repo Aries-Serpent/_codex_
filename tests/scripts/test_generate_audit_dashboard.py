@@ -4,7 +4,6 @@ Test Generate Audit Dashboard
 Test module for generate audit dashboard.
 """
 
-#!/usr/bin/env python3
 """
 Tests for generate_audit_dashboard.py script.
 
@@ -363,4 +362,4 @@ class TestEdgeCases:
             )
         except KeyError:
             # Expected if fields are required
-            _ = None  # suppressed: no action needed
+            pass

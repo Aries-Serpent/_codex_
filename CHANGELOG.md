@@ -7,6 +7,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1068-pr4498-approved-workflow-monitoring-continuation — `copilot/fix-pep263-issues` — 2026-05-18T23:21Z)
+- Continued monitoring after maintainer confirmation of approved pending workflows with updated time-budget guidance (~12/60 used; preserve final 5 minutes).
+- Captured latest completed/in-progress snapshots centered on head `e35c2520` and validated startup-failure triage for:
+  - `Progressive Validation Suite` (`26066450670`)
+  - `Data Quality & Determinism Suite` (`26066450659`)
+  - `Rust-Python Hybrid Swarm CI/CD` (`26066450700`)
+- Verified all three startup-failure runs currently expose `0` jobs via MCP jobs API, leaving no actionable in-job code remediation path in this snapshot.
+- Updated living docs and accountability tracking to reflect current monitoring status and wrap-up reserve objective.
+
+### Fixed (S1067-pr4498-approved-workflow-monitoring-and-wrapup-reserve — `copilot/fix-pep263-issues` — 2026-05-18T23:21Z)
+- Continued approval-dispatched monitoring after maintainer confirmation that pending workflows were approved.
+- Captured current MCP run/job status snapshots on latest heads (`5dbd9410` completed-page, `fa43f721` in-progress-page):
+  - current observed states remain queued/in-progress/action-required gating paths;
+  - no completed failed job logs were available in this snapshot for code-level remediation.
+- Refreshed living status docs (`whats_next`, `session_diagram`) and accountability tracking with this approved-monitor continuation pass.
+- Preserved final 5-minute session reserve for concise wrap-up/handoff.
+
+### Fixed (S1066-pr4498-approval-dispatch-continuation-expanded — `copilot/fix-pep263-issues` — 2026-05-18T23:21Z)
+- Processed new blocking maintainer continuation comment (`#4483007895`) and resumed approval-dispatch monitoring on latest head `fa43f721`.
+- Performed MCP job-level triage for current latest-head runs (`Secrets Baseline Enforcer`, `CodeQL`, `Security Scanning Suite`, `Agent Vars Bootstrap`, `Resilient Dependency Submission`, `Documentation Link Checker`):
+  - no failed jobs captured at this snapshot; runs are in-progress/queued, so no code-fixable job-log remediation was available yet.
+- Appended expanded `@copilot continue` Priority 1 checklist (10 items) to `.github/copilot-prompts/active/PR-4498-followup.md` to align next continuation pass with current requirements.
+- Refreshed living roadmap artifacts and accountability state for S1066 continuation.
+
+### Fixed (S1065-pr4498-approval-dispatch-continuation — `copilot/fix-pep263-issues` — 2026-05-18T23:08Z)
+- Processed new approval-dispatch continuation comment (`#4482756378`) and refreshed monitoring snapshots:
+  - latest observed head `a1ace279` currently shows `Automatic Dependency Submission (Python)` success;
+  - prior active head `b31f0d5` retains three startup-level fail-like runs with `0` jobs (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`), leaving no in-job code log remediation path.
+- Appended requested `@copilot continue` Priority 1 six-task checklist to `.github/copilot-prompts/active/PR-4498-followup.md` for next continuation phase alignment.
+- Updated living roadmap artifacts (`whats_next`, `session_diagram`) and accountability status for this approval-dispatch continuation pass.
+
+### Fixed (S1064-pr4498-approval-hook-for-copilot-queue-hygiene — `copilot/fix-pep263-issues` — 2026-05-18T22:27Z)
+- Wired Copilot queued-session 👀 cleanup directly into approval-triggered automation:
+  - extended `scripts/ci/approve_pending_runs.py` to remove stale Copilot `eyes` reactions on PR comments when a PR target is known;
+  - tied this cleanup into `trigger-on-approval.yml` so the same approval pass that unblocks `action_required` runs also attempts queued-session reaction cleanup.
+- Added safe fallback behavior for restricted tokens:
+  - reaction cleanup failures are non-fatal and logged with HTTP status (for example `403 Resource not accessible by integration`) without blocking workflow approval dispatch.
+- This follows the fast-forward-style approval path: once maintainer approval dispatches workflows, queued Copilot session markers are cleaned in the same automated pass when permissions allow.
+- Updated PR template WEC guidance (`.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) so privileged queued operations (secrets/variables/webhooks/reaction hygiene) are explicitly tied to approval-gated WEC workflow orchestration under elevated token chain.
+- Hardened reaction cleanup implementation in `approve_pending_runs.py` based on review feedback:
+  - paginated PR comments and reactions (`per_page=100&page=N`);
+  - promoted Copilot bot identity list to module-level constant;
+  - added per-PR one-pass guard to avoid repeated cleanup loops.
+- Applied final readability follow-up in the same script:
+  - renamed fetch helpers for clearer semantics (`_fetch_pr_comments`, `_fetch_comment_reactions`);
+  - removed duplicated reaction-user lookups.
+- Updated workflow mermaid mapping in `docs/workflows/PR_COMMENT_LIFECYCLE.md` to include approval-path Copilot queue-hygiene stage.
+
+### Fixed (S1063-pr4498-review-thread-closure-and-monitoring — `copilot/fix-pep263-issues` — 2026-05-18T22:00Z)
+- Addressed requested review-thread follow-ups for PR #4498:
+  - updated `.github/copilot-prompts/active/PR-4498-followup.md` to replace stale `Files Modified: No files modified` with concrete touched files.
+  - updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` session header to reference concrete PR `#4498`.
+  - simplified `training/checkpoint_manager.py::maybe_save()` save-step guard to `save_steps > 0` for type/intent consistency.
+  - synced parity fixes in `src/training/checkpoint_manager.py` (save-step guard, step-0 callback handling, prune protection filename normalization, and CUDA RNG availability helper extraction in fallback RNG capture).
+- Monitored PR-head (`64cca281`) workflow state: startup-failure workflows (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) currently report 0 jobs (startup-level, non-code-fixable in-repo signal).
+- Follow-up monitor snapshot after approval dispatch on newer head (`caa754cf`): `Progressive Validation Suite` and `Data Quality & Determinism Suite` remain `startup_failure` with 0 jobs while other approval-dispatched runs are still progressing.
+- Current monitor snapshot on latest head (`0cdaf740`): same two startup-level failures remain 0-job (`Progressive Validation Suite`, `Data Quality & Determinism Suite`), and a subset of older control runs are now `cancelled` after newer pushes superseded them.
+- Added/verified queue-hygiene process for Copilot `👀` reactions on PR comments:
+  - detect `eyes` reactions on PR comments and inspect reaction owners;
+  - attempted delete on reaction `358870127` (owner `Copilot`) currently returns `403 Resource not accessible by integration` with current token scope.
+
+### Fixed (auto-update — PR #4498)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4498 (SHA `1f87429d`) at 2026-05-18T20:40Z [auto-generated]
+
+### Fixed (S1062-checkpoint-manager-and-artifact-remediation — `copilot/fix-pep263-issues` — 2026-05-18T20:28Z)
+- Applied targeted test/docs cleanup requested in review feedback:
+  - removed misplaced shebang and simplified `except KeyError` no-op handling in `tests/scripts/test_generate_audit_dashboard.py`.
+  - improved module docstring clarity in `tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py`.
+- Applied checkpoint manager logic fixes in `training/checkpoint_manager.py`:
+  - extracted reusable CUDA RNG-availability helper,
+  - made periodic save guard explicit (`save_steps > 0`),
+  - allowed callback checkpointing when `global_step == 0`,
+  - normalized protected best-checkpoint paths to filenames during prune.
+- Added focused regression tests for the updated checkpoint behavior:
+  - zero-step callback save path (`step-0.pt`),
+  - `maybe_save(..., save_steps=0)` no-save guard,
+  - prune protection when legacy `best.json` stores absolute paths.
+- Ingested security artifacts from `Security Scanning Suite` run `26058314535` and verified digests:
+  - `dependency-scan-results` sha256 `894c6301c349d6c745b9769b6a967608b99b96d7de8edfc605f33a1ca45e094f`
+  - `sbom-reports` sha256 `b0ddea1118f8affce591faa9f3418026d7d195183c959816c1f224afcd7f08fa`
+- Explicit remediation resolution from artifacts:
+  - pip-audit report contains 2 known no-fix CVEs (`diskcache` CVE-2025-69872, `sqlitedict` CVE-2024-35515), already covered by the existing documented `tool.pip-audit.ignore-vulns` policy in `pyproject.toml`.
+  - SBOM report reviewed (`326` components, `0` vulnerabilities).
+
 ### Fixed (S1061-pr4497-approval-monitor-continuation — `copilot/gather-active-dependabots` — 2026-05-18T19:19Z)
 - Continued post-approval monitoring on the latest PR heads (`eead173` initial snapshot, then `f9bd486`) and verified no new code-fixable failures surfaced on the monitored snapshots.
 - Refreshed living continuation docs (`whats_next`, `session_diagram`) with updated timebox, latest-head status, and explicit next-phase task checklist.

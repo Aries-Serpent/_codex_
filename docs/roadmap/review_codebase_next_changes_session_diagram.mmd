@@ -25,7 +25,14 @@ flowchart TD
     X --> Z["S1059 — PR #4497 remediation\n✅ merge conflicts cleared (main merge)\n✅ review-thread fixes applied\n✅ pandas/mlflow resolver conflict fixed"]
     Z --> AA["S1060 — Approval monitoring window\ntrack post-approval workflow queue on HEAD e0fee31\n(no new code-fixable failures in current snapshot)"]
     AA --> AB["S1061 — Post-approval continuation\n✅ head: 2986420 (mergeable)\n🔄 queue active; monitor outcomes"]
-    AB --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
+    AB --> AC["S1062 — checkpoint manager + artifact remediation\n✅ artifact digests verified (run 26058314535)\n✅ dependency-scan + SBOM findings reviewed\n🔄 apply targeted code/test fixes + docs/changelog/accountability sync"]
+    AC --> AD["S1063 — PR #4498 review-thread closure + monitoring\n✅ address 4/4 review-thread items\n✅ sync src/training parity (save-step guard, step-0 callback, prune protection, CUDA RNG helper)\n🔄 monitor HEAD 0cdaf740 workflows (2 startup_failure runs, both 0-job startup-level)\n✅ verify 👀 queued-comment hygiene process (owner check done; delete blocked by token scope 403)"]
+    AD --> AE["S1064 — approval-hook queue hygiene + CI rescue continuation\n✅ tie Copilot 👀 cleanup to approval workflow path\n✅ implement stale reaction cleanup in approve_pending_runs.py (pagination + one-pass guard + reviewer feedback cleanup)\n✅ wire privileged queue operations to WEC template process\n🔄 monitor latest runs on HEAD 153e43b0 (3 startup_failure runs, all 0-job startup-level)"]
+    AE --> AF["S1065 — approval dispatch continuation\n✅ process @copilot continue from comment #4482756378\n✅ append requested Priority 1 checklist to PR-4498-followup prompt\n✅ monitor latest head a1ace279 (automatic-dependency-submission success)\n🔄 retain watch on b31f0d5 startup-level 0-job failures only"]
+    AF --> AG["S1066 — approval dispatch continuation (expanded)\n✅ process @copilot continue from comment #4483007895\n✅ append expanded 10-item Priority 1 checklist to PR-4498-followup prompt\n🔄 monitor latest head fa43f721 approval-dispatched runs (no failed jobs yet)\n🔄 run targeted checkpoint parity + required validation chain"]
+    AG --> AH["S1067 — approval-confirmed monitor pass\n✅ maintainer confirms pending workflows approved\n✅ monitor heads 5dbd9410/fa43f721 via MCP run+job snapshots\n✅ no completed failed job logs yet (monitor-only)\n✅ refresh living docs + changelog + accountability"]
+    AH --> AI["S1068 — approved workflow monitor continuation\n✅ maintainer confirms ~12/60 minutes used\n✅ monitor latest completed head e35c2520\n⚠ startup_failure runs seen (progressive/data-quality/rust-swarm)\n✅ jobs API for those runs returns 0 jobs (no code-fixable logs)\n✅ refresh living docs + changelog + accountability"]
+    AI --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -54,4 +61,11 @@ flowchart TD
     style Z fill:#1b4332,color:#fff
     style AA fill:#457b9d,color:#fff
     style AB fill:#457b9d,color:#fff
+    style AC fill:#457b9d,color:#fff
+    style AD fill:#457b9d,color:#fff
+    style AE fill:#457b9d,color:#fff
+    style AF fill:#457b9d,color:#fff
+    style AG fill:#457b9d,color:#fff
+    style AH fill:#457b9d,color:#fff
+    style AI fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000
