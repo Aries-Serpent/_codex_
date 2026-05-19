@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-19T04:56Z [PR-4504-codeql-security-fix]
+
+**Session:** PR-4504-codeql-security-fix | **Branch:** `agents/codebase-review-top-5-quick-wins` | **PR:** #4504
+
+### Completed
+- ✅ Fixed CodeQL security alert "Clear-text logging of sensitive information" in `scripts/ci/fetch_security_snapshot.py:886`
+- ✅ Refactored summary printing logic to properly redact secret-scanning data:
+  - Safe keys (`total`, `active_confirmed`) are printed with values
+  - Sensitive keys (`by_type`, `by_validity`) are printed as `[REDACTED]`
+  - Avoided accessing sensitive values in the iteration to prevent potential logging
+- ✅ Verified fix passes `ruff` and `mypy` validation
+
+### Security Impact
+- Prevents potential exposure of secret type information in logs
+- Ensures compliance with secure logging practices for sensitive data
+
+---
+
 ## SESSION SUMMARY — 2026-05-19T03:58Z [PR-4504-comment-remediation]
 
 **Session:** PR-4504-comment-remediation | **Branch:** `agents/codebase-review-top-5-quick-wins` | **PR:** #4504
