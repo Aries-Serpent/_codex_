@@ -86,6 +86,7 @@ def apply_backward_compatible_default_command(argv: list[str]) -> list[str]:
     return argv
 
 
+# Backward-compatibility alias used by existing tests and downstream imports.
 _apply_backward_compatible_default_command = apply_backward_compatible_default_command
 
 

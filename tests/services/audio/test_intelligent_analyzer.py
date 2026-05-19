@@ -86,7 +86,6 @@ class TestIntelligentAudioAnalyzer:
         assert (
             aggressive_match.confidence > normal_match.confidence
             or aggressive_match.profile.name != normal_match.profile.name
-            or aggressive_match.reason != normal_match.reason
         )
 
 

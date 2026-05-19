@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (add-transcription-application — `copilot/add-transcription-application` — 2026-05-19T17:23Z)
+- Extended the existing audio app structure with a dedicated transcription workflow at `src/services/audio/workflow/transcription_workflow.py`:
+  - MP3/MP4/M4A/WAV ingest + normalization path (ffmpeg-backed for non-WAV),
+  - lightweight speaker diarization with stable IDs,
+  - pre-transcription speaker naming (JSON map + interactive fallback),
+  - transcript export in TXT/JSON/SRT/VTT formats.
+- Extended `src/services/audio/cli/smart_cli.py` with a new `transcribe` command while preserving backward-compatible `tune` invocation behavior.
+- Added standalone desktop UI app `apps/dev/audio_transcriber_ui.py` for local transcription operations.
+- Added optional dependency manifest `requirements-audio-transcription.txt` and transcription defaults in `configs/services/default.yaml`.
+- Added standalone packaging template `apps/dev/templates/audio_workflow_init.py`.
+
+### Fixed (add-transcription-application — `copilot/add-transcription-application` — 2026-05-19T17:23Z)
+- Updated `.github/workflows/app-package-download.yml` to support `app_name=audio_transcriber_ui` and produce a runnable standalone package artifact.
+- Updated app-package workflow docs (`app-package-download.md`, `app-package-download-quick-ref.md`) for the new downloadable transcription app path.
+- Applied AI findings in `tests/services/audio/test_intelligent_analyzer.py`:
+  - consolidated redundant module docstrings into one,
+  - strengthened profile initialization validation across all expected profiles,
+  - strengthened aggressive-mode assertions for distinguishable behavior.
+
 ### Fixed (PR-4504-dependabot-absorb — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T15:37Z)
 - Absorbed Dependabot PRs #4505, #4506, #4507: bumped `idna` from `3.11`/`3.7` to `3.15` across `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock` — fixes CVE-2024-3651 (DoS via quadratic complexity).
 - Updated `uv.lock` with upstream package refreshes: `dvc 3.67.0→3.67.1`, `idna 3.13→3.15`, `librt 0.9.0→0.11.0`, `mypy 1.20.2→2.1.0`, `numpy`, `pydantic-settings 2.14.0→2.14.1`, `transformers 5.8.0→5.8.1`, and `ast-serialize 0.5.0` (new).

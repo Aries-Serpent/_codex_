@@ -81,7 +81,7 @@ def test_process_mp4_without_ffmpeg_returns_clear_error(tmp_path: Path, monkeypa
     mp4_path = tmp_path / "clip.mp4"
     mp4_path.write_bytes(b"fake-video")
 
-    monkeypatch.setattr("src.services.audio.workflow.transcription_workflow.shutil.which", lambda _: None)
+    monkeypatch.setattr("services.audio.workflow.transcription_workflow.shutil.which", lambda _: None)
 
     workflow = AudioTranscriptionWorkflow()
     result = workflow.process_file(input_path=mp4_path, output_dir=tmp_path)
@@ -101,3 +101,22 @@ def test_load_speaker_map_and_cli_compatibility(tmp_path: Path):
     argv = ["smart_cli.py", "input.mp3", "--preview"]
     converted = apply_backward_compatible_default_command(argv)
     assert converted[1] == "tune"
+
+
+def test_faster_whisper_backend_reports_missing_dependency(tmp_path: Path, monkeypatch):
+    wav_path = tmp_path / "sample.wav"
+    _write_test_wav(wav_path, seconds=1.0)
+
+    monkeypatch.setattr(
+        "services.audio.workflow.transcription_workflow.importlib.util.find_spec",
+        lambda _: None,
+    )
+
+    workflow = AudioTranscriptionWorkflow(
+        config=TranscriptionConfig(transcription_backend="faster-whisper")
+    )
+    result = workflow.process_file(input_path=wav_path, output_dir=tmp_path)
+
+    assert result.success is False
+    assert result.error is not None
+    assert "faster-whisper" in result.error

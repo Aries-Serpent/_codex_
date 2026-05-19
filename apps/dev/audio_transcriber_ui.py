@@ -22,11 +22,19 @@ from tkinter import (
     messagebox,
 )
 
-from services.audio.workflow.transcription_workflow import (
-    AudioTranscriptionWorkflow,
-    TranscriptionConfig,
-    load_speaker_map,
-)
+try:
+    # Preferred path for standalone packaged app.
+    from services.audio.workflow.transcription_workflow import (
+        AudioTranscriptionWorkflow,
+        TranscriptionConfig,
+        load_speaker_map,
+    )
+except ImportError:  # pragma: no cover - fallback path for src-layout execution
+    from src.services.audio.workflow.transcription_workflow import (
+        AudioTranscriptionWorkflow,
+        TranscriptionConfig,
+        load_speaker_map,
+    )
 
 
 class AudioTranscriberUI:

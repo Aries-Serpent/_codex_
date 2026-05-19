@@ -1,3 +1,30 @@
+## SESSION SUMMARY — 2026-05-19T17:23Z [add-transcription-application-standalone-packaging]
+
+**Session:** add-transcription-application-standalone-packaging | **Branch:** `copilot/add-transcription-application` | **PR:** (active)
+
+### Completed
+- ✅ Extended existing audio app (`src/services/audio`) with a new transcription pipeline module covering ingest → diarize → label mapping → transcript assembly/export.
+- ✅ Added CLI `transcribe` command in `src/services/audio/cli/smart_cli.py` while preserving backward-compatible tune behavior for existing usage.
+- ✅ Added output format support (TXT/JSON/SRT/VTT), speaker-map loading, interactive speaker naming fallback, and runtime guardrails (unsupported format, ffmpeg missing, duration limits).
+- ✅ Added standalone desktop UI app `apps/dev/audio_transcriber_ui.py` with adequate UI controls (path selection, format selection, backend/model settings, run status log).
+- ✅ Updated `app-package-download.yml` and related workflow docs so the transcription app can be downloaded as a standalone artifact via:
+  - `https://github.com/Aries-Serpent/_codex_/actions/workflows/app-package-download.yml`
+  - `app_name=audio_transcriber_ui`.
+- ✅ Added transcription tests and applied AI findings on audio tests:
+  - removed redundant module docstring duplication,
+  - strengthened profile membership validation,
+  - strengthened aggressive-mode behavioral assertion.
+
+### Validation
+- ✅ `python -m ruff check apps/dev/audio_transcriber_ui.py src/services/audio services/audio tests/services/audio apps/dev/templates/audio_workflow_init.py`
+- ✅ `python -m pytest -q tests/services/audio`
+- ✅ Workflow syntax check: `yaml.safe_load(.github/workflows/app-package-download.yml)`
+
+### Remaining Open Items
+- Run final wrap-up progress update and provide concise handoff with known validation caveat (CodeQL timeout in parallel validation run).
+
+---
+
 ## SESSION SUMMARY — 2026-05-19T06:24Z [PR-4504-codeql-console-redaction]
 
 **Session:** PR-4504-codeql-console-redaction | **Branch:** `agents/codebase-review-top-5-quick-wins` | **PR:** #4504

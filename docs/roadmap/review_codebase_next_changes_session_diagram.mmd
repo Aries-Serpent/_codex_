@@ -33,6 +33,9 @@ flowchart TD
     AG --> AH["S1067 — approval-confirmed monitor pass\n✅ maintainer confirms pending workflows approved\n✅ monitor heads 5dbd9410/fa43f721 via MCP run+job snapshots\n✅ no completed failed job logs yet (monitor-only)\n✅ refresh living docs + changelog + accountability"]
     AH --> AI["S1068 — approved workflow monitor continuation\n✅ maintainer confirms ~12/60 minutes used\n✅ monitor latest completed head e35c2520\n⚠ startup_failure runs seen (progressive/data-quality/rust-swarm)\n✅ jobs API for those runs returns 0 jobs (no code-fixable logs)\n✅ refresh living docs + changelog + accountability"]
     AI --> Y["Final 5-minute reserve\nrun wrap-up summary + handoff\nkeep remaining time budget protected"]
+    AI --> AIT1["S1072-S1074 add-transcription-application pass\n✅ transcription workflow + CLI + tests\n✅ standalone audio_transcriber_ui desktop app\n✅ app-package-download workflow support for audio_transcriber_ui"]
+    AIT1 --> AIT2["AI findings follow-up\n✅ test docstring dedupe\n✅ stronger profile-membership and aggressive-mode assertions"]
+    AIT2 --> Y
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -68,6 +71,8 @@ flowchart TD
     style AG fill:#457b9d,color:#fff
     style AH fill:#457b9d,color:#fff
     style AI fill:#457b9d,color:#fff
+    style AIT1 fill:#1b4332,color:#fff
+    style AIT2 fill:#1b4332,color:#fff
     style Y fill:#f4a261,color:#000
 
     style AJ fill:#457b9d,color:#fff
