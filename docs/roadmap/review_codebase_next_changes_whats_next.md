@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — PR #4510 speaker-timeout follow-up + approved-workflow monitoring · 2026-05-19T22:35Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up |
+| PR review comments applied | ✅ Interactive speaker naming timeout is now configurable via `AudioTranscriberUI(speaker_name_timeout_seconds=...)`; audio workflow tests now use public `process_path()` coverage with a stubbed `process_file()` helper; pyannote test fixture now uses a named fake segment class |
+| Targeted validation | ✅ `python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py`; ✅ `python -m pytest -q tests/services/audio/test_transcription_workflow.py`; ✅ `python -m pytest -q tests/services/audio` |
+| Manual verification | ✅ `_gui_input_func()` verified with a stubbed root and `speaker_name_timeout_seconds=0.01`, returning the expected empty-string timeout fallback |
+| Approved-workflow monitor (`f0185d1e`) | 🔄 Active fan-out confirmed via MCP: validation/security/QA workflows are in progress; control workflows (`Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, `Generate PR Follow-Up Prompt`) are currently `action_required` |
+| Startup-level fail-like runs | ✅ `Rust-Python Hybrid Swarm CI/CD` (`26129073147`), `Progressive Validation Suite` (`26129073150`), and `Data Quality & Determinism Suite` (`26129073148`) each currently expose `0` jobs via MCP in this snapshot |
+| Living docs / accountability parity | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
+| Final 5-minute reserve | ⏳ Preserve for final validation + wrap-up |
+
 ## Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)
 
 | Item | Status |

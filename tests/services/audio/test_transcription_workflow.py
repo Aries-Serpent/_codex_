@@ -12,7 +12,9 @@ from pathlib import Path
 from src.services.audio.cli.smart_cli import apply_backward_compatible_default_command
 from src.services.audio.workflow.transcription_workflow import (
     AudioTranscriptionWorkflow,
+    BatchTranscriptionResult,
     TranscriptionConfig,
+    TranscriptionResult,
     load_speaker_map,
 )
 
@@ -31,7 +33,18 @@ def _write_test_wav(path: Path, *, seconds: float = 1.0, sample_rate: int = 1600
         wav_file.writeframes(bytes(audio))
 
 
-def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path):
+def stub_process_file_method(self, input_path: str | Path, output_dir: str | Path, **_kwargs):
+    return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
+
+
+class _FakePyannoteSegment:
+    def __init__(self, start: float, end: float, speaker_id: str):
+        self.start = start
+        self.end = end
+        self.speaker_id = speaker_id
+
+
+def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path, monkeypatch):
     media_dir = tmp_path / "media"
     media_dir.mkdir()
     (media_dir / "a.mp3").write_bytes(b"fake")
@@ -39,12 +52,20 @@ def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path):
     (media_dir / "c.txt").write_text("not media")
 
     workflow = AudioTranscriptionWorkflow()
-    files = workflow._discover_media_files(str(media_dir))
+    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", stub_process_file_method)
+    results = workflow.process_path(
+        input_path=str(media_dir),
+        output_dir=str(tmp_path / "out"),
+        output_formats=["txt"],
+    )
 
-    assert [f.name for f in files] == ["a.mp3", "b.mp4"]
+    assert isinstance(results, BatchTranscriptionResult)
+    assert results.success is True
+    assert results.processed_files == 2
+    assert [result.input_path.name for result in results.results] == ["a.mp3", "b.mp4"]
 
 
-def test_discover_media_files_handles_uppercase_extensions(tmp_path: Path):
+def test_discover_media_files_handles_uppercase_extensions(tmp_path: Path, monkeypatch):
     """Directories containing files with uppercase extensions must be discovered."""
     media_dir = tmp_path / "media"
     media_dir.mkdir()
@@ -53,9 +74,17 @@ def test_discover_media_files_handles_uppercase_extensions(tmp_path: Path):
     (media_dir / "note.TXT").write_text("not media")
 
     workflow = AudioTranscriptionWorkflow()
-    files = workflow._discover_media_files(str(media_dir))
+    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", stub_process_file_method)
+    results = workflow.process_path(
+        input_path=str(media_dir),
+        output_dir=str(tmp_path / "out"),
+        output_formats=["txt"],
+    )
 
-    assert {f.name for f in files} == {"MEETING.MP3", "VIDEO.MP4"}
+    assert isinstance(results, BatchTranscriptionResult)
+    assert results.success is True
+    assert results.processed_files == 2
+    assert {result.input_path.name for result in results.results} == {"MEETING.MP3", "VIDEO.MP4"}
 
 
 def test_process_file_wav_writes_txt_json_srt(tmp_path: Path):
@@ -183,8 +212,9 @@ def test_process_file_with_pyannote_backend_uses_pyannote_path(tmp_path: Path, m
     _write_test_wav(wav_path, seconds=1.0)
 
     monkeypatch.setenv("PYANNOTE_AUTH_TOKEN", "token")
+
     def _fake_pyannote(self, _wav_path: Path):
-        return [type("Seg", (), {"start": 0.0, "end": 1.0, "speaker_id": "SPEAKER_00"})()]
+        return [_FakePyannoteSegment(0.0, 1.0, "SPEAKER_00")]
 
     monkeypatch.setattr(
         AudioTranscriptionWorkflow,
