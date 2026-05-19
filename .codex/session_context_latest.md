@@ -1,32 +1,32 @@
-# Session Context — 2026-05-19T21:34:26Z
-**Branch:** `copilot/add-transcription-application`  **PR:** #4509  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-19T22:18:01Z
+**Branch:** `copilot/update-speaker-name-timeout`  **PR:** #4510  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4843` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4695` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4509 — Add standalone multi-speaker transcription app with packaging workflow, production docs, and correctness fixes
-State: `open`  Draft: `False`  Branch: `copilot/add-transcription-application` → `main`
+## 📋 PR #4510 — [WIP] Update speaker name timeout documentation or configuration
+State: `open`  Draft: `True`  Branch: `copilot/update-speaker-name-timeout` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
 
 ## 📝 Recent Commits
+- `0c60bc03` Initial plan — copilot-swe-agent[bot] (2026-05-19)
+- `f4402ad7` Merge pull request #4509 from Aries-Serpent/copilot/add-transcription-applicatio — Statix (2026-05-19)
+- `4eb611bf` perf(audio): cache whisper/pyannote runtime objects and finalize workflow tests — copilot-swe-agent[bot] (2026-05-19)
+- `ff7c321e` feat(audio): wire faster-whisper + pyannote backends and add UI progress streami — copilot-swe-agent[bot] (2026-05-19)
+- `a1f264dc` Merge origin/main into copilot/add-transcription-application — copilot-swe-agent[bot] (2026-05-19)
+- `4697e874` chore: plan final merge-readiness work for transcription PR — copilot-swe-agent[bot] (2026-05-19)
 - `7e31cdc1` fix: remove unused private alias _apply_backward_compatible_default_command from — copilot-swe-agent[bot] (2026-05-19)
 - `f99db0c5` fix: struct.unpack for PCM decoding, add 30s timeout to _gui_input_func — copilot-swe-agent[bot] (2026-05-19)
-- `f4c540c0` fix: apply all 9 review-comment fixes — thread-safety, streaming, uppercase ext, — copilot-swe-agent[bot] (2026-05-19)
-- `2bde699b` Merge branch 'copilot/add-transcription-application' of https://github.com/Aries — copilot-swe-agent[bot] (2026-05-19)
-- `2fc1eedc` chore: plan all 9 review-comment fixes — copilot-swe-agent[bot] (2026-05-19)
-- `41e9c6a2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-19)
-- `6d1b3dbb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-19)
-- `6744d2ec` chore: Generate follow-up prompt for PR #4509 [skip ci] — github-actions[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
