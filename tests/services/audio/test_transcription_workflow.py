@@ -107,8 +107,9 @@ def test_faster_whisper_backend_reports_missing_dependency(tmp_path: Path, monke
     wav_path = tmp_path / "sample.wav"
     _write_test_wav(wav_path, seconds=1.0)
 
+    # Patch inside the real implementation module (src layout), not the re-export wrapper.
     monkeypatch.setattr(
-        "services.audio.workflow.transcription_workflow.importlib.util.find_spec",
+        "src.services.audio.workflow.transcription_workflow.importlib.util.find_spec",
         lambda _: None,
     )
 

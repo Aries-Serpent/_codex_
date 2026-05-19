@@ -1,3 +1,33 @@
+## SESSION SUMMARY — 2026-05-19T17:54Z [add-transcription-verification-pass]
+
+**Session:** add-transcription-verification-pass | **Branch:** `copilot/add-transcription-application` | **PR:** (active)
+
+### Objective
+Review all recent transcription changes, verify functionality, ensure standalone packaging is production-ready.
+
+### Findings & Fixes Applied
+- ✅ **Test monkeypatch bug fixed** — `test_faster_whisper_backend_reports_missing_dependency` was patching `services.audio.workflow.transcription_workflow.importlib.util.find_spec` (the thin re-export wrapper which has no `importlib` binding). The test passed by coincidence only because `faster-whisper` is not installed in CI. Fixed to correctly patch `src.services.audio.workflow.transcription_workflow.importlib.util.find_spec`. Test now verifies the intended code path deterministically.
+- ✅ **Workflow final-summary bug fixed** — `app-package-download.yml` last step hardcoded `python zd_voice_lines.py` regardless of selected app. Updated to dynamically set `APP_ENTRY` from `app_name` input so the summary shows the correct run command for `audio_transcriber_ui`.
+- ✅ **User guide created** — `apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md` written from scratch as a production-ready guide covering: installation, Quick Start, full UI field reference, speaker labeling (JSON map / interactive / default IDs), all output format examples, CLI usage, troubleshooting for all known failure modes, FAQ, and package contents reference.
+- ✅ **Packaging updated** — `app-package-download.yml` now promotes `AUDIO_TRANSCRIBER_USER_GUIDE.md` to `USER_GUIDE.md` at the package root so users see it immediately after extracting the artifact.
+
+### Validation
+- ✅ `python -m pytest -q tests/services/audio/` — 8 passed, 1 skipped, 0 failures
+- ✅ `python -m ruff check apps/dev/ src/services/audio/ services/audio/ tests/services/audio/` — All checks passed
+- ✅ `python -c "from src.services.audio.workflow.transcription_workflow import AudioTranscriptionWorkflow, load_speaker_map; print('imports OK')"` — imports OK
+
+### Standalone App Download Path (verified)
+```
+URL:    https://github.com/Aries-Serpent/_codex_/actions/workflows/app-package-download.yml
+Input:  app_name = audio_transcriber_ui
+Input:  branch   = copilot/add-transcription-application  (or main after merge)
+Output: ZIP artifact containing all required files for standalone execution
+```
+
+Extracted package is fully self-contained — no `src/` path manipulation, no repo clone required.
+
+---
+
 ## SESSION SUMMARY — 2026-05-19T17:23Z [add-transcription-application-standalone-packaging]
 
 **Session:** add-transcription-application-standalone-packaging | **Branch:** `copilot/add-transcription-application` | **PR:** (active)

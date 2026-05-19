@@ -197,6 +197,10 @@ jobs:
             if [ -d "apps/dev/docs" ]; then
               mkdir -p package_staging/docs
               cp -r apps/dev/docs/* package_staging/docs/
+              # Promote the audio-specific guide to package root for quick access
+              if [ -f "apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md" ]; then
+                cp apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md package_staging/USER_GUIDE.md
+              fi
             fi
 
             for file in apps/dev/*.md; do
@@ -480,6 +484,14 @@ jobs:
 
       - name: Final summary
         run: |
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_ENTRY="zd_voice_lines.py"
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            APP_ENTRY="audio_transcriber_ui.py"
+          elif [ "$APP_NAME" = "all" ]; then
+            APP_ENTRY="<selected_app>.py"
+          fi
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## ✅ Packaging Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -491,4 +503,4 @@ jobs:
           echo "2. Extract the package contents" >> $GITHUB_STEP_SUMMARY
           echo "3. Follow the instructions in \`PACKAGE_INFO.md\`" >> $GITHUB_STEP_SUMMARY
           echo "4. Install dependencies with \`pip install -r requirements.txt\`" >> $GITHUB_STEP_SUMMARY
-          echo "5. Run the application with \`python zd_voice_lines.py\`" >> $GITHUB_STEP_SUMMARY
+          echo "5. Run the application with \`python ${APP_ENTRY}\`" >> $GITHUB_STEP_SUMMARY

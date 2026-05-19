@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (add-transcription-verification-pass — `copilot/add-transcription-application` — 2026-05-19T17:54Z)
+- Fixed `test_faster_whisper_backend_reports_missing_dependency` monkeypatch path to correctly target `src.services.audio.workflow.transcription_workflow.importlib.util.find_spec`; the previous path (`services.audio.workflow...`) targeted the re-export wrapper where `importlib` has no binding, so the monkeypatch was silently a no-op.
+- Fixed `.github/workflows/app-package-download.yml` final-summary step: replaced hardcoded `python zd_voice_lines.py` with a dynamic `$APP_ENTRY` variable so the download instructions match the selected app.
+- Updated packaging step for `audio_transcriber_ui`: the `AUDIO_TRANSCRIBER_USER_GUIDE.md` is now promoted to `USER_GUIDE.md` at the package root so users see it immediately after extracting the artifact.
+- Added `apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md` — production-ready user guide covering installation, UI walkthrough, speaker labeling workflow (JSON map / interactive / default), all output formats (TXT/JSON/SRT/VTT), CLI usage, troubleshooting for all known error conditions (ffmpeg missing, duration limit, faster-whisper missing, unsupported codec, tkinter missing), FAQ, and package contents reference.
+
 ### Added (add-transcription-application — `copilot/add-transcription-application` — 2026-05-19T17:23Z)
 - Extended the existing audio app structure with a dedicated transcription workflow at `src/services/audio/workflow/transcription_workflow.py`:
   - MP3/MP4/M4A/WAV ingest + normalization path (ffmpeg-backed for non-WAV),
