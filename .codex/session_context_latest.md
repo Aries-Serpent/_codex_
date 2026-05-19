@@ -1,10 +1,10 @@
-# Session Context — 2026-05-19T18:42:43Z
+# Session Context — 2026-05-19T21:34:26Z
 **Branch:** `copilot/add-transcription-application`  **PR:** #4509  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4981` (✅)
+- REST remaining: `4843` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `copilot/add-transcription-application` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-19)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-19)
-- **PR Auto-Fix Check** — `failure` on `copilot/add-transcription-application` (2026-05-19)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
 
 ## 📝 Recent Commits
+- `7e31cdc1` fix: remove unused private alias _apply_backward_compatible_default_command from — copilot-swe-agent[bot] (2026-05-19)
 - `f99db0c5` fix: struct.unpack for PCM decoding, add 30s timeout to _gui_input_func — copilot-swe-agent[bot] (2026-05-19)
 - `f4c540c0` fix: apply all 9 review-comment fixes — thread-safety, streaming, uppercase ext, — copilot-swe-agent[bot] (2026-05-19)
 - `2bde699b` Merge branch 'copilot/add-transcription-application' of https://github.com/Aries — copilot-swe-agent[bot] (2026-05-19)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/add-transcription-application` �
 - `41e9c6a2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-19)
 - `6d1b3dbb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-19)
 - `6744d2ec` chore: Generate follow-up prompt for PR #4509 [skip ci] — github-actions[bot] (2026-05-19)
-- `6d62b0e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
