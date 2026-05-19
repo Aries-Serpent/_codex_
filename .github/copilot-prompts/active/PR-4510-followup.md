@@ -1,10 +1,11 @@
 # 🎯 PR Follow-Up Tasks - #4510
 
-**PR**: #4510 - PR #4510  
+**PR**: #4510  
+**Title**: [WIP] Update speaker name timeout documentation or configuration  
 **Branch**: `copilot/update-speaker-name-timeout`  
 **Author**: @Copilot  
 **Date**: 2026-05-19  
-**Commit**: `f0185d1e2a5a7fd552e8cfb063853827e74aad26`  
+**Commit**: `e798347`  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -12,201 +13,88 @@
 ## 📋 PREVIOUS SESSION SUMMARY
 
 ### Completed Work
-- [`f0185d1e`] fix audio transcription timeout config and workflow tests (copilot-swe-agent[bot], 2026-05-19)
-- [`03b3326f`] chore: start audio transcription follow-up fixes (copilot-swe-agent[bot], 2026-05-19)
-- [`0c60bc03`] Initial plan (copilot-swe-agent[bot], 2026-05-19)
+- [`e798347`] fix prompt references and pyannote test helper scope
+- [`6dc7742`] test: rename shared audio workflow helper
+- [`3c3333f`] fix audio timeout follow-up and refresh living docs
+- [`f0185d1`] fix audio transcription timeout config and workflow tests
+- [`03b3326`] chore: start audio transcription follow-up fixes
 
 ### Files Modified
-No files modified
+- `apps/dev/audio_transcriber_ui.py`
+- `tests/services/audio/test_transcription_workflow.py`
+- `docs/roadmap/review_codebase_next_changes_whats_next.md`
+- `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+- `CHANGELOG.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `.github/copilot-prompts/active/PR-4510-followup.md`
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] 1. Finish full Session D runtime rerun to terminal pytest summary and bucket failures
-- [ ] 2. Land minimal fix for highest-frequency non-heavy-dependency runtime bucket
-- [ ] 3. Re-check CI after S1051 fix (`70359ee`) and clear remaining blocking gates
-- [ ] 4. Re-run CI rescue command set and confirm clean status
-- [ ] 5. Validate `promote-integration-branch.yml` dispatch to `main` with current `source_sha` (token-scope dependent)
-- [ ] 6. Verify WEC-driven automation/checks via report console with SHA correlation
-- [ ] 7. Worker-stability follow-up after runtime fixes
-- [ ] 8. Keep continuation docs/changelog/accountability synchronized per session
-- [ ] 9. Apply changes requested in review threads:
-  - `#pullrequestreview-4307843777`
-  - `#pullrequestreview-4307833235`
-- [ ] 10. Re-attempt cancellation of stale old-SHA in-progress comment-triggered run once API rate budget is available
-- [ ] 11. Keep workflow-misfire prevention process active (pre-edit divergence check + rebase-first + live WEC sourcing)
+- [ ] Monitor the latest approved workflow fan-out on the current PR head and capture any actionable failed jobs with logs.
+- [ ] Re-check `PR Auto-Fix Check`, validation, and security workflows after the latest push.
+- [ ] Keep `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` aligned with any new workflow findings.
+- [ ] Preserve the final 5 minutes of the session for concise wrap-up and handoff.
 
 ### Additional Session Requirements
-- [ ] Update living docs (`whats_next` and `session_diagram`) with current status.
-- [ ] Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
-- [ ] Leave final 5 minutes for wrap-up and include the follow-up continuation prompt.
-- [ ] Prevent workflow-misfire regressions in future sessions:
-  - Re-check branch divergence (`origin/main...HEAD`) before starting agent edits.
-  - If behind/diverged, rebase first so `REQ-10` pre-flight gate cannot fail on stale branch state.
-  - Re-validate WEC block from live PR body before each `report_progress`.
-- [ ] Apply changes based on review feedback in:
-  - #4504
+- [ ] Re-run focused validation if any additional code or test edits are made.
+- [ ] Keep the PR follow-up prompt in sync with the actual branch head and PR state.
 
-### Current CI rescue blocker snapshot (latest observed)
-- [ ] `Agent Token Delegation` run `26017125733` failed `REQ-10` branch rebase/divergence gate (`status=diverged, behind_by=1` for `main...head` at failing commit context).
+### Current workflow monitor snapshot
+- Current reviewed head during this session: `f0185d1e` / later continuation commits on PR #4510.
+- Approved workflow fan-out observed in progress: `Validation Pipeline`, `CodeQL Advanced`, `QA Walkthrough Agent`, `Semgrep SAST (SARIF Upload)`, `PR Auto-Fix Check`, `Audit & QA Suite (Unified)`, `Coverage with Timeout Guards`, `Resilient Dependency Submission`, `Secrets Baseline Enforcer`, `Workflow Documentation Link Validation`, and dependency submission workflows.
+- Control workflows observed as `action_required`: `Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, `Generate PR Follow-Up Prompt`.
+- Startup-level fail-like runs observed with zero jobs via MCP: `Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`.
 
 ---
 
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
+## ✅ VALIDATION SNAPSHOT
 
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
-- [ ] No regressions introduced
-
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
-
----
-
-## 🤖 COPILOT AGENT INSTRUCTIONS
-
-**When you see `@copilot continue` in PR #4510:**
-
-1. Load this prompt from `.github/copilot-prompts/active/PR-4510-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
-
-## S1061 appended continuation tasks (2026-05-18T19:19Z)
-
-@copilot continue with next phase tasks for this PR
-
-**🔴 Priority 1 - Immediate**:
-- [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA
-- [ ] 2. Keep tracked-file/accountability freshness intact for final merge pass
-- [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
-- [ ] 4. Confirm no new action pin/comment drift in workflow files
-- [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
-
----
-
-## Merge readiness + immediate follow-up prompt
-
-- Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
-- Pattern 30 = merge-readiness composite in `python scripts/ci/auto_fix_common_issues.py --check-only` (sync-tracked, accountability freshness, action/version hygiene, and related readiness dimensions).
-
-**Prompt for current PR #4510:**
-```text
-@copilot continue with next phase tasks for this PR:
-- monitor approval-dispatched queue outcomes
-- keep tracked-file/accountability freshness intact
-- reserve final 5 minutes for wrap-up and handoff
-```
-
-**Prompt for immediate post-merge new PR (if required):**
-```text
-@copilot continue in a new PR for post-merge stabilization:
-- verify main-branch CI on the merge SHA
-- close residual follow-up tasks from PR #4510
-- refresh living docs + accountability in the new PR context
-```
-
-**Validation**:
 ```bash
-python -m ruff check src/ tests/ --output-format=concise
-python scripts/ci/mypy_baseline.py --require-baseline
-python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
+python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py
+python -m pytest -q tests/services/audio/test_transcription_workflow.py
+python -m pytest -q tests/services/audio
 ```
 
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
-
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
+Manual verification completed in-session:
+- `_gui_input_func()` was exercised with a stubbed root and `speaker_name_timeout_seconds=0.01`, confirming the timeout fallback returns `""`.
 
 ---
 
 ## 🔍 MANDATORY SELF-REVIEW PROTOCOL
 
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
+**CRITICAL**: Perform 5 comprehensive self-review passes before concluding.
 
 ### Pass 1: Code Quality & Correctness
 - [ ] All syntax errors resolved
 - [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
+- [ ] Error handling remains correct
 - [ ] Edge cases covered
 
 ### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
+- [ ] Focused tests passing locally
+- [ ] Relevant workflow checks reviewed
 - [ ] No regressions introduced
 
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
+### Pass 3: Documentation & Communication
+- [ ] Living docs updated
+- [ ] Accountability updated
+- [ ] CHANGELOG updated
+- [ ] Follow-up prompt updated
+
+### Pass 4: Security & Safety
+- [ ] No secrets introduced
+- [ ] No unsafe new code paths introduced
+- [ ] Validation feedback reviewed
+
+### Pass 5: Integration & Dependencies
+- [ ] PR remains internally consistent
+- [ ] Workflow monitor status recorded accurately
+- [ ] Backward compatibility maintained
+
+**Failure Protocol**: If any checkpoint fails, fix it in the current session and re-run validation.
 
 ---
 
@@ -215,18 +103,13 @@ python scripts/ci/sync_tracked_files.py --fix
 **When you see `@copilot continue` in PR #4510:**
 
 1. Load this prompt from `.github/copilot-prompts/active/PR-4510-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+2. Monitor the latest workflow state on the PR head
+3. Fix any actionable review or CI findings found on that head
+4. Update living docs and accountability artifacts with the new status
+5. Preserve the final 5 minutes for wrap-up
 
 ---
 
 **Generated**: 2026-05-19  
 **Template Version**: 2.0.0  
-**Last Updated**: 2026-05-19 22:28:55
+**Last Updated**: 2026-05-19 22:40:00
