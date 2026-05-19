@@ -880,7 +880,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {stage}:")
         for k, v in summary.items():
             if k not in ("results", "generated_at"):
-                print(f"    {k:<30} {_safe_summary_value(k, v)}")
+                if stage == "secrets":
+                    print(f"    {'<redacted>':<30} <redacted>")
+                else:
+                    print(f"    {k:<30} {_safe_summary_value(k, v)}")
     print(f"  Output dir : {out_dir.resolve()}")
     print(f"{'='*62}\n")
 
