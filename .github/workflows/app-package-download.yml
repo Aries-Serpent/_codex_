@@ -128,14 +128,17 @@ jobs:
           echo "📦 Packaging application: $APP_NAME"
           echo "📍 From branch: $BRANCH"
 
-          if [ "$APP_NAME" = "all" ]; then
-            # Package all applications
-            PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
-            cp -r apps/* package_staging/
-            # Include transcription workflow so audio_transcriber_ui is launchable standalone
-            if [ -f "apps/dev/audio_transcriber_ui.py" ] && [ -f "src/services/audio/workflow/transcription_workflow.py" ]; then
-              mkdir -p package_staging/services/audio/workflow
-              cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
+            if [ "$APP_NAME" = "all" ]; then
+              # Package all applications
+              PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
+              cp -r apps/* package_staging/
+              if [ -f "requirements-audio-transcription.txt" ]; then
+                cp requirements-audio-transcription.txt package_staging/
+              fi
+              # Include transcription workflow so audio_transcriber_ui is launchable standalone
+              if [ -f "apps/dev/audio_transcriber_ui.py" ] && [ -f "src/services/audio/workflow/transcription_workflow.py" ]; then
+                mkdir -p package_staging/services/audio/workflow
+                cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
               touch package_staging/services/__init__.py
               touch package_staging/services/audio/__init__.py
               if [ -f "apps/dev/templates/audio_workflow_init.py" ]; then

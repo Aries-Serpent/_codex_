@@ -43,6 +43,13 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Comma-separated output formats: txt,json,srt,vtt",
     )
     transcribe_parser.add_argument(
+        "--diarization-backend",
+        type=str,
+        default="acoustic-clustering",
+        choices=["acoustic-clustering", "pyannote"],
+        help="Speaker diarization backend",
+    )
+    transcribe_parser.add_argument(
         "--backend",
         type=str,
         default="mock",
@@ -128,6 +135,7 @@ def _run_transcribe(args: argparse.Namespace) -> int:
         config=TranscriptionConfig(
             max_speakers=args.max_speakers,
             max_duration_seconds=args.max_duration_seconds,
+            diarization_backend=args.diarization_backend,
             model_size=args.model_size,
             transcription_backend=args.backend,
         )

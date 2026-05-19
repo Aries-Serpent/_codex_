@@ -13,6 +13,7 @@ from tkinter import (
     RIGHT,
     Button,
     Checkbutton,
+    DoubleVar,
     Entry,
     Frame,
     IntVar,
@@ -24,6 +25,7 @@ from tkinter import (
     messagebox,
     simpledialog,
 )
+from tkinter.ttk import Progressbar
 
 # ---------------------------------------------------------------------------
 # Resolve import search paths so the app works in both execution layouts:
@@ -61,12 +63,13 @@ class AudioTranscriberUI:
         self.root.title("Audio Transcriber UI")
         self.root.geometry("980x700")
         self.worker_thread: threading.Thread | None = None
-        self._log_queue: queue.Queue[str] = queue.Queue()
+        self._ui_queue: queue.Queue[tuple[str, str | float]] = queue.Queue()
 
         self.input_path = StringVar()
         self.output_dir = StringVar()
         self.speaker_map_path = StringVar()
         self.backend = StringVar(value="mock")
+        self.diarization_backend = StringVar(value="acoustic-clustering")
         self.model_size = StringVar(value="small")
         self.max_speakers = StringVar(value="4")
         self.max_duration_seconds = StringVar(value=str(4 * 60 * 60))
@@ -75,6 +78,8 @@ class AudioTranscriberUI:
         self.format_json = IntVar(value=1)
         self.format_srt = IntVar(value=0)
         self.format_vtt = IntVar(value=0)
+        self.progress_value = DoubleVar(value=0.0)
+        self.progress_status = StringVar(value="Idle")
 
         self._build_layout()
         self._start_log_poll()
@@ -92,6 +97,8 @@ class AudioTranscriberUI:
         config_row.pack(fill=BOTH, pady=4)
         Label(config_row, text="Backend").pack(side=LEFT)
         Entry(config_row, textvariable=self.backend, width=18).pack(side=LEFT, padx=8)
+        Label(config_row, text="Diarization").pack(side=LEFT)
+        Entry(config_row, textvariable=self.diarization_backend, width=18).pack(side=LEFT, padx=8)
         Label(config_row, text="Model size").pack(side=LEFT)
         Entry(config_row, textvariable=self.model_size, width=12).pack(side=LEFT, padx=8)
         Label(config_row, text="Max speakers").pack(side=LEFT)
@@ -121,6 +128,19 @@ class AudioTranscriberUI:
             side=LEFT, padx=4
         )
         Button(action_row, text="Clear Log", command=self._clear_log).pack(side=LEFT, padx=4)
+
+        progress_row = Frame(main)
+        progress_row.pack(fill=BOTH, pady=4)
+        Label(progress_row, textvariable=self.progress_status, width=28, anchor="w").pack(
+            side=LEFT, padx=4
+        )
+        Progressbar(
+            progress_row,
+            variable=self.progress_value,
+            maximum=100.0,
+            mode="determinate",
+            length=520,
+        ).pack(side=LEFT, fill=BOTH, expand=True, padx=4)
 
         self.log = Text(main, wrap="word", height=25)
         self.log.pack(fill=BOTH, expand=True)
@@ -173,6 +193,7 @@ class AudioTranscriberUI:
         if self.worker_thread and self.worker_thread.is_alive():
             messagebox.showinfo("Transcription in progress", "Please wait for the current job to finish.")
             return
+        self._set_progress(0.0, "Starting…")
         self.worker_thread = threading.Thread(target=self._run_transcription)
         self.worker_thread.start()
 
@@ -192,6 +213,7 @@ class AudioTranscriberUI:
             speaker_map = load_speaker_map(self.speaker_map_path.get().strip() or None)
             config = TranscriptionConfig(
                 transcription_backend=self.backend.get().strip(),
+                diarization_backend=self.diarization_backend.get().strip(),
                 model_size=self.model_size.get().strip(),
                 max_speakers=int(self.max_speakers.get()),
                 max_duration_seconds=int(self.max_duration_seconds.get()),
@@ -202,6 +224,14 @@ class AudioTranscriberUI:
             use_interactive = bool(self.interactive_speakers.get())
             input_func = self._gui_input_func if use_interactive else input
 
+            def _progress_callback(payload: dict[str, object]) -> None:
+                progress = payload.get("progress")
+                message = str(payload.get("message", "")).strip()
+                if isinstance(progress, (int, float)):
+                    self._set_progress(float(progress) * 100.0, message or "Working…")
+                if message:
+                    self._append_log(message)
+
             workflow = AudioTranscriptionWorkflow(config=config)
             result = workflow.process_path(
                 input_path=input_path,
@@ -210,6 +240,7 @@ class AudioTranscriberUI:
                 interactive_speakers=use_interactive,
                 output_formats=output_formats,
                 input_func=input_func,
+                progress_callback=_progress_callback,
             )
 
             self._append_log("=" * 70)
@@ -227,6 +258,7 @@ class AudioTranscriberUI:
                     self._append_log(f"❌ {item.input_path.name} | Error: {item.error}")
 
             if result.failed_files == 0:
+                self._set_progress(100.0, "Completed")
                 self.root.after(
                     0,
                     lambda: messagebox.showinfo(
@@ -234,6 +266,7 @@ class AudioTranscriberUI:
                     ),
                 )
             else:
+                self._set_progress(100.0, "Completed with errors")
                 msg = f"{result.failed_files} file(s) failed. Check log output for details."
                 self.root.after(
                     0,
@@ -241,12 +274,18 @@ class AudioTranscriberUI:
                 )
         except Exception as exc:
             err = str(exc)
+            self._set_progress(100.0, "Failed")
             self._append_log(f"❌ {err}")
             self.root.after(0, lambda e=err: messagebox.showerror("Transcription failed", e))
 
     def _append_log(self, text: str) -> None:
         """Thread-safe: enqueue message; the main-thread poll loop drains it."""
-        self._log_queue.put(text)
+        self._ui_queue.put(("log", text))
+
+    def _set_progress(self, percent: float, status: str) -> None:
+        bounded = min(max(percent, 0.0), 100.0)
+        self._ui_queue.put(("progress", bounded))
+        self._ui_queue.put(("status", status))
 
     def _clear_log(self) -> None:
         # Called from the Clear Log button (main thread only) — direct write is safe.
@@ -260,9 +299,14 @@ class AudioTranscriberUI:
         """Drain all pending log messages and reschedule itself every 50 ms."""
         try:
             while True:
-                msg = self._log_queue.get_nowait()
-                self.log.insert("end", msg + "\n")
-                self.log.see("end")
+                item_type, payload = self._ui_queue.get_nowait()
+                if item_type == "log":
+                    self.log.insert("end", str(payload) + "\n")
+                    self.log.see("end")
+                elif item_type == "progress":
+                    self.progress_value.set(float(payload))
+                elif item_type == "status":
+                    self.progress_status.set(str(payload))
         except queue.Empty:
             pass
         self.root.after(50, self._poll_log_queue)

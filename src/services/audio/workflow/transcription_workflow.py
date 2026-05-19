@@ -7,6 +7,7 @@ import importlib.util
 import json
 import logging
 import math
+import os
 import shutil
 import struct
 import subprocess
@@ -30,6 +31,7 @@ class TranscriptionConfig:
     max_duration_seconds: int = 4 * 60 * 60
     diarization_window_seconds: float = 2.0
     diarization_threshold: float = 0.18
+    diarization_backend: str = "acoustic-clustering"
     model_size: str = "small"
     transcription_backend: str = "mock"
 
@@ -96,6 +98,7 @@ class AudioTranscriptionWorkflow:
         interactive_speakers: bool = False,
         output_formats: list[str] | None = None,
         input_func: Callable[[str], str] = input,
+        progress_callback: Callable[[dict[str, object]], None] | None = None,
     ) -> BatchTranscriptionResult:
         """Process a file or directory for transcription."""
         files = self._discover_media_files(input_path)
@@ -109,9 +112,29 @@ class AudioTranscriptionWorkflow:
 
         result_list: list[TranscriptionResult] = []
         failures = 0
-        for media_file in files:
+        total_files = len(files)
+        self._emit_progress(
+            progress_callback,
+            phase="batch_start",
+            progress=0.0,
+            message=f"Starting transcription batch for {total_files} file(s)",
+            total_files=total_files,
+        )
+
+        for file_index, media_file in enumerate(files, start=1):
             file_output_dir = Path(output_dir).resolve() if output_dir else media_file.parent
             file_output_dir.mkdir(parents=True, exist_ok=True)
+            file_start = (file_index - 1) / max(total_files, 1)
+            file_end = file_index / max(total_files, 1)
+            self._emit_progress(
+                progress_callback,
+                phase="file_start",
+                progress=file_start,
+                message=f"[{file_index}/{total_files}] Processing {media_file.name}",
+                file_name=media_file.name,
+                file_index=file_index,
+                total_files=total_files,
+            )
             result = self.process_file(
                 media_file,
                 output_dir=file_output_dir,
@@ -119,10 +142,35 @@ class AudioTranscriptionWorkflow:
                 interactive_speakers=interactive_speakers,
                 output_formats=output_formats,
                 input_func=input_func,
+                progress_callback=progress_callback,
+                progress_range=(file_start, file_end),
+                file_index=file_index,
+                total_files=total_files,
             )
             result_list.append(result)
             if not result.success:
                 failures += 1
+            status_icon = "✅" if result.success else "❌"
+            self._emit_progress(
+                progress_callback,
+                phase="file_done",
+                progress=file_end,
+                message=f"{status_icon} [{file_index}/{total_files}] {media_file.name}",
+                file_name=media_file.name,
+                success=result.success,
+                file_index=file_index,
+                total_files=total_files,
+            )
+
+        self._emit_progress(
+            progress_callback,
+            phase="batch_done",
+            progress=1.0,
+            message=f"Batch complete: {len(files) - failures} succeeded, {failures} failed",
+            processed_files=len(files) - failures,
+            failed_files=failures,
+            total_files=total_files,
+        )
 
         return BatchTranscriptionResult(
             success=failures == 0,
@@ -139,15 +187,43 @@ class AudioTranscriptionWorkflow:
         interactive_speakers: bool = False,
         output_formats: list[str] | None = None,
         input_func: Callable[[str], str] = input,
+        progress_callback: Callable[[dict[str, object]], None] | None = None,
+        progress_range: tuple[float, float] = (0.0, 1.0),
+        file_index: int | None = None,
+        total_files: int | None = None,
     ) -> TranscriptionResult:
         """Process one media file for transcription."""
         media_path = Path(input_path).resolve()
         output_path = Path(output_dir).resolve()
         output_path.mkdir(parents=True, exist_ok=True)
 
+        start_progress, end_progress = progress_range
+
+        def _file_progress(step_ratio: float) -> float:
+            bounded = min(max(step_ratio, 0.0), 1.0)
+            return start_progress + (end_progress - start_progress) * bounded
+
         try:
             normalized_wav = self._normalize_to_wav(media_path, output_path)
+            self._emit_progress(
+                progress_callback,
+                phase="normalized",
+                progress=_file_progress(0.25),
+                message=f"Normalized audio: {media_path.name}",
+                file_name=media_path.name,
+                file_index=file_index,
+                total_files=total_files,
+            )
             diarized = self._run_speaker_diarization(normalized_wav)
+            self._emit_progress(
+                progress_callback,
+                phase="diarized",
+                progress=_file_progress(0.50),
+                message=f"Diarized {media_path.name}: {len(diarized)} segment(s)",
+                file_name=media_path.name,
+                file_index=file_index,
+                total_files=total_files,
+            )
             detected_speakers = sorted({segment.speaker_id for segment in diarized})
             names = self._resolve_speaker_names(
                 detected_speakers=detected_speakers,
@@ -156,11 +232,30 @@ class AudioTranscriptionWorkflow:
                 input_func=input_func,
             )
             transcripts = self._transcribe_segments(normalized_wav, diarized, names)
+            self._emit_progress(
+                progress_callback,
+                phase="transcribed",
+                progress=_file_progress(0.75),
+                message=f"Transcribed {media_path.name}: {len(transcripts)} segment(s)",
+                file_name=media_path.name,
+                file_index=file_index,
+                total_files=total_files,
+            )
             output_files = self._write_outputs(
                 transcripts,
                 normalized_wav,
                 output_path,
                 output_formats=output_formats or ["txt", "json"],
+            )
+            self._emit_progress(
+                progress_callback,
+                phase="outputs_written",
+                progress=_file_progress(1.0),
+                message=f"Wrote outputs for {media_path.name}",
+                file_name=media_path.name,
+                file_index=file_index,
+                total_files=total_files,
+                output_files=output_files,
             )
             return TranscriptionResult(
                 success=True,
@@ -250,6 +345,16 @@ class AudioTranscriptionWorkflow:
             )
 
     def _run_speaker_diarization(self, wav_path: Path) -> list[DiarizedSegment]:
+        backend = self.config.diarization_backend.strip().lower()
+        if backend == "pyannote":
+            return self._run_pyannote_diarization(wav_path)
+        if backend not in {"acoustic-clustering", "acoustic", "mock"}:
+            raise ValueError(
+                f"Unsupported diarization backend: {self.config.diarization_backend}"
+            )
+        return self._run_acoustic_clustering_diarization(wav_path)
+
+    def _run_acoustic_clustering_diarization(self, wav_path: Path) -> list[DiarizedSegment]:
         """Naive speaker diarization based on lightweight acoustic clustering.
 
         Reads the WAV file in diarization-window-sized chunks to avoid
@@ -313,6 +418,53 @@ class AudioTranscriptionWorkflow:
             for i in range(len(features))
         ]
         return self._merge_adjacent_segments(raw_segments)
+
+    def _run_pyannote_diarization(self, wav_path: Path) -> list[DiarizedSegment]:
+        """Higher-accuracy diarization using pyannote.audio (optional)."""
+        token = (
+            os.getenv("PYANNOTE_AUTH_TOKEN")
+            or os.getenv("HUGGINGFACE_TOKEN")
+            or os.getenv("HF_TOKEN")
+        )
+        if not token:
+            raise MissingDependencyError(
+                "diarization_backend='pyannote' requires PYANNOTE_AUTH_TOKEN "
+                "(or HUGGINGFACE_TOKEN/HF_TOKEN) in the environment."
+            )
+
+        try:
+            from pyannote.audio import Pipeline
+        except ModuleNotFoundError as exc:
+            raise MissingDependencyError(
+                "diarization_backend='pyannote' requires pyannote.audio. "
+                "Install optional transcription dependencies and retry."
+            ) from exc
+
+        try:
+            pipeline = Pipeline.from_pretrained(
+                "pyannote/speaker-diarization-3.1",
+                use_auth_token=token,
+            )
+            annotation = pipeline(str(wav_path))
+        except Exception as exc:
+            raise RuntimeError(f"pyannote diarization failed: {exc}") from exc
+
+        raw: list[tuple[float, float, str]] = []
+        for turn, _, label in annotation.itertracks(yield_label=True):
+            start = max(0.0, float(turn.start))
+            end = max(start, float(turn.end))
+            raw.append((start, end, str(label)))
+
+        if not raw:
+            return [DiarizedSegment(start=0.0, end=0.0, speaker_id="SPEAKER_00")]
+
+        unique_labels = sorted({label for _, _, label in raw})
+        stable_map = {label: f"SPEAKER_{index:02d}" for index, label in enumerate(unique_labels)}
+        segments = [
+            DiarizedSegment(start=start, end=end, speaker_id=stable_map[label])
+            for start, end, label in sorted(raw, key=lambda item: item[0])
+        ]
+        return self._merge_adjacent_segments(segments)
 
     def _feature_vector(self, chunk: list[float], sample_rate: int) -> tuple[float, float, float]:
         if not chunk:
@@ -412,11 +564,7 @@ class AudioTranscriptionWorkflow:
         """Transcribe diarized segments using configured backend."""
         if self.config.transcription_backend == "faster-whisper":
             self._validate_faster_whisper_available()
-            raise NotImplementedError(
-                "faster-whisper transcription backend is not yet wired into the segment "
-                "inference loop. Install the dependency and use a future version, or set "
-                "transcription_backend='mock' for layout testing."
-            )
+            return self._transcribe_segments_faster_whisper(wav_path, diarized, speaker_names)
 
         transcript_segments: list[TranscriptSegment] = []
         for segment in diarized:
@@ -430,6 +578,83 @@ class AudioTranscriptionWorkflow:
                 )
             )
         return transcript_segments
+
+    def _transcribe_segments_faster_whisper(
+        self,
+        wav_path: Path,
+        diarized: list[DiarizedSegment],
+        speaker_names: dict[str, str],
+    ) -> list[TranscriptSegment]:
+        from faster_whisper import WhisperModel
+
+        model = WhisperModel(self.config.model_size, device="cpu", compute_type="int8")
+        decoded_segments, _ = model.transcribe(
+            str(wav_path),
+            vad_filter=True,
+            beam_size=5,
+            condition_on_previous_text=False,
+        )
+
+        whisper_segments: list[tuple[float, float, str]] = []
+        for part in decoded_segments:
+            start = float(getattr(part, "start", 0.0))
+            end = float(getattr(part, "end", start))
+            text = str(getattr(part, "text", "")).strip()
+            whisper_segments.append((start, end, text))
+
+        transcripts: list[TranscriptSegment] = []
+        for diarized_segment in diarized:
+            text_chunks = [
+                text
+                for start, end, text in whisper_segments
+                if self._overlap_seconds(
+                    diarized_segment.start,
+                    diarized_segment.end,
+                    start,
+                    end,
+                )
+                > 0.0
+                and text
+            ]
+            joined_text = " ".join(text_chunks).strip()
+            if not joined_text:
+                joined_text = self._mock_segment_text(
+                    wav_path,
+                    diarized_segment.start,
+                    diarized_segment.end,
+                )
+
+            transcripts.append(
+                TranscriptSegment(
+                    start=diarized_segment.start,
+                    end=diarized_segment.end,
+                    speaker_id=diarized_segment.speaker_id,
+                    speaker_name=speaker_names.get(
+                        diarized_segment.speaker_id,
+                        diarized_segment.speaker_id,
+                    ),
+                    text=joined_text,
+                )
+            )
+        return transcripts
+
+    def _overlap_seconds(
+        self,
+        a_start: float,
+        a_end: float,
+        b_start: float,
+        b_end: float,
+    ) -> float:
+        return max(0.0, min(a_end, b_end) - max(a_start, b_start))
+
+    def _emit_progress(
+        self,
+        progress_callback: Callable[[dict[str, object]], None] | None,
+        **payload: object,
+    ) -> None:
+        if progress_callback is None:
+            return
+        progress_callback(payload)
 
     def _validate_faster_whisper_available(self) -> None:
         if importlib.util.find_spec("faster_whisper") is None:

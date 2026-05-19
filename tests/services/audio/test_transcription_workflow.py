@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import math
+import sys
+import types
 import wave
 from pathlib import Path
 
@@ -137,23 +139,62 @@ def test_faster_whisper_backend_reports_missing_dependency(tmp_path: Path, monke
     assert "faster-whisper" in result.error
 
 
-def test_faster_whisper_backend_raises_when_dependency_present(tmp_path: Path, monkeypatch):
-    """When faster-whisper is installed the backend raises NotImplementedError
-    to prevent callers from silently receiving placeholder mock text."""
+def test_faster_whisper_backend_runs_real_inference_when_dependency_present(
+    tmp_path: Path,
+    monkeypatch,
+):
+    """When faster-whisper is installed, the workflow should use it for segment text."""
     wav_path = tmp_path / "sample.wav"
     _write_test_wav(wav_path, seconds=1.0)
 
-    # Pretend faster-whisper is installed by returning a truthy sentinel.
     monkeypatch.setattr(
         "src.services.audio.workflow.transcription_workflow.importlib.util.find_spec",
         lambda _: "present",
     )
+
+    class _FakeSegment:
+        def __init__(self, start: float, end: float, text: str):
+            self.start = start
+            self.end = end
+            self.text = text
+
+    class _FakeWhisperModel:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def transcribe(self, *args, **kwargs):
+            return iter([_FakeSegment(0.0, 1.0, "hello from whisper")]), {"language": "en"}
+
+    fake_module = types.SimpleNamespace(WhisperModel=_FakeWhisperModel)
+    monkeypatch.setitem(sys.modules, "faster_whisper", fake_module)
 
     workflow = AudioTranscriptionWorkflow(
         config=TranscriptionConfig(transcription_backend="faster-whisper")
     )
     result = workflow.process_file(input_path=wav_path, output_dir=tmp_path)
 
-    assert result.success is False
-    assert result.error is not None
-    assert "not yet wired" in result.error or "NotImplementedError" in result.error
+    assert result.success is True
+    assert result.segments
+    assert any("hello from whisper" in segment.text for segment in result.segments)
+
+
+def test_process_file_with_pyannote_backend_uses_pyannote_path(tmp_path: Path, monkeypatch):
+    wav_path = tmp_path / "sample.wav"
+    _write_test_wav(wav_path, seconds=1.0)
+
+    monkeypatch.setenv("PYANNOTE_AUTH_TOKEN", "token")
+    monkeypatch.setattr(
+        AudioTranscriptionWorkflow,
+        "_run_pyannote_diarization",
+        lambda self, _: [  # noqa: ARG005
+            type("Seg", (), {"start": 0.0, "end": 1.0, "speaker_id": "SPEAKER_00"})()
+        ],
+    )
+
+    workflow = AudioTranscriptionWorkflow(
+        config=TranscriptionConfig(diarization_backend="pyannote")
+    )
+    result = workflow.process_file(input_path=wav_path, output_dir=tmp_path)
+
+    assert result.success is True
+    assert result.detected_speakers == ["SPEAKER_00"]
