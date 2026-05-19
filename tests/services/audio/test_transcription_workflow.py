@@ -183,12 +183,13 @@ def test_process_file_with_pyannote_backend_uses_pyannote_path(tmp_path: Path, m
     _write_test_wav(wav_path, seconds=1.0)
 
     monkeypatch.setenv("PYANNOTE_AUTH_TOKEN", "token")
+    def _fake_pyannote(self, _wav_path: Path):
+        return [type("Seg", (), {"start": 0.0, "end": 1.0, "speaker_id": "SPEAKER_00"})()]
+
     monkeypatch.setattr(
         AudioTranscriptionWorkflow,
         "_run_pyannote_diarization",
-        lambda self, _: [  # noqa: ARG005
-            type("Seg", (), {"start": 0.0, "end": 1.0, "speaker_id": "SPEAKER_00"})()
-        ],
+        _fake_pyannote,
     )
 
     workflow = AudioTranscriptionWorkflow(

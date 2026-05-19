@@ -89,6 +89,9 @@ class AudioTranscriptionWorkflow:
 
     def __init__(self, config: TranscriptionConfig | None = None):
         self.config = config or TranscriptionConfig()
+        self._whisper_models: dict[str, object] = {}
+        self._pyannote_pipeline: object | None = None
+        self._pyannote_pipeline_token: str | None = None
 
     def process_path(
         self,
@@ -199,16 +202,12 @@ class AudioTranscriptionWorkflow:
 
         start_progress, end_progress = progress_range
 
-        def _file_progress(step_ratio: float) -> float:
-            bounded = min(max(step_ratio, 0.0), 1.0)
-            return start_progress + (end_progress - start_progress) * bounded
-
         try:
             normalized_wav = self._normalize_to_wav(media_path, output_path)
             self._emit_progress(
                 progress_callback,
                 phase="normalized",
-                progress=_file_progress(0.25),
+                progress=self._interpolate_progress(0.25, start_progress, end_progress),
                 message=f"Normalized audio: {media_path.name}",
                 file_name=media_path.name,
                 file_index=file_index,
@@ -218,7 +217,7 @@ class AudioTranscriptionWorkflow:
             self._emit_progress(
                 progress_callback,
                 phase="diarized",
-                progress=_file_progress(0.50),
+                progress=self._interpolate_progress(0.50, start_progress, end_progress),
                 message=f"Diarized {media_path.name}: {len(diarized)} segment(s)",
                 file_name=media_path.name,
                 file_index=file_index,
@@ -235,7 +234,7 @@ class AudioTranscriptionWorkflow:
             self._emit_progress(
                 progress_callback,
                 phase="transcribed",
-                progress=_file_progress(0.75),
+                progress=self._interpolate_progress(0.75, start_progress, end_progress),
                 message=f"Transcribed {media_path.name}: {len(transcripts)} segment(s)",
                 file_name=media_path.name,
                 file_index=file_index,
@@ -250,7 +249,7 @@ class AudioTranscriptionWorkflow:
             self._emit_progress(
                 progress_callback,
                 phase="outputs_written",
-                progress=_file_progress(1.0),
+                progress=self._interpolate_progress(1.0, start_progress, end_progress),
                 message=f"Wrote outputs for {media_path.name}",
                 file_name=media_path.name,
                 file_index=file_index,
@@ -441,10 +440,7 @@ class AudioTranscriptionWorkflow:
             ) from exc
 
         try:
-            pipeline = Pipeline.from_pretrained(
-                "pyannote/speaker-diarization-3.1",
-                use_auth_token=token,
-            )
+            pipeline = self._get_pyannote_pipeline(Pipeline, token)
             annotation = pipeline(str(wav_path))
         except Exception as exc:
             raise RuntimeError(f"pyannote diarization failed: {exc}") from exc
@@ -587,7 +583,7 @@ class AudioTranscriptionWorkflow:
     ) -> list[TranscriptSegment]:
         from faster_whisper import WhisperModel
 
-        model = WhisperModel(self.config.model_size, device="cpu", compute_type="int8")
+        model = self._get_whisper_model(WhisperModel)
         decoded_segments, _ = model.transcribe(
             str(wav_path),
             vad_filter=True,
@@ -655,6 +651,31 @@ class AudioTranscriptionWorkflow:
         if progress_callback is None:
             return
         progress_callback(payload)
+
+    @staticmethod
+    def _interpolate_progress(step_ratio: float, start: float, end: float) -> float:
+        bounded = min(max(step_ratio, 0.0), 1.0)
+        return start + (end - start) * bounded
+
+    def _get_whisper_model(self, whisper_model_class: object) -> object:
+        cache_key = self.config.model_size
+        cached = self._whisper_models.get(cache_key)
+        if cached is not None:
+            return cached
+        model = whisper_model_class(cache_key, device="cpu", compute_type="int8")
+        self._whisper_models[cache_key] = model
+        return model
+
+    def _get_pyannote_pipeline(self, pipeline_class: object, token: str) -> object:
+        if self._pyannote_pipeline is not None and self._pyannote_pipeline_token == token:
+            return self._pyannote_pipeline
+        pipeline = pipeline_class.from_pretrained(
+            "pyannote/speaker-diarization-3.1",
+            use_auth_token=token,
+        )
+        self._pyannote_pipeline = pipeline
+        self._pyannote_pipeline_token = token
+        return pipeline
 
     def _validate_faster_whisper_available(self) -> None:
         if importlib.util.find_spec("faster_whisper") is None:
