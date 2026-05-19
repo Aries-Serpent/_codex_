@@ -42,6 +42,20 @@ def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path):
     assert [f.name for f in files] == ["a.mp3", "b.mp4"]
 
 
+def test_discover_media_files_handles_uppercase_extensions(tmp_path: Path):
+    """Directories containing files with uppercase extensions must be discovered."""
+    media_dir = tmp_path / "media"
+    media_dir.mkdir()
+    (media_dir / "MEETING.MP3").write_bytes(b"fake")
+    (media_dir / "VIDEO.MP4").write_bytes(b"fake")
+    (media_dir / "note.TXT").write_text("not media")
+
+    workflow = AudioTranscriptionWorkflow()
+    files = workflow._discover_media_files(str(media_dir))
+
+    assert {f.name for f in files} == {"MEETING.MP3", "VIDEO.MP4"}
+
+
 def test_process_file_wav_writes_txt_json_srt(tmp_path: Path):
     wav_path = tmp_path / "sample.wav"
     output_dir = tmp_path / "out"
@@ -121,3 +135,25 @@ def test_faster_whisper_backend_reports_missing_dependency(tmp_path: Path, monke
     assert result.success is False
     assert result.error is not None
     assert "faster-whisper" in result.error
+
+
+def test_faster_whisper_backend_raises_when_dependency_present(tmp_path: Path, monkeypatch):
+    """When faster-whisper is installed the backend raises NotImplementedError
+    to prevent callers from silently receiving placeholder mock text."""
+    wav_path = tmp_path / "sample.wav"
+    _write_test_wav(wav_path, seconds=1.0)
+
+    # Pretend faster-whisper is installed by returning a truthy sentinel.
+    monkeypatch.setattr(
+        "src.services.audio.workflow.transcription_workflow.importlib.util.find_spec",
+        lambda _: "present",
+    )
+
+    workflow = AudioTranscriptionWorkflow(
+        config=TranscriptionConfig(transcription_backend="faster-whisper")
+    )
+    result = workflow.process_file(input_path=wav_path, output_dir=tmp_path)
+
+    assert result.success is False
+    assert result.error is not None
+    assert "not yet wired" in result.error or "NotImplementedError" in result.error

@@ -284,12 +284,12 @@ python -m src.services.audio.cli.smart_cli transcribe meeting.mp3
 # With a speaker map and multiple output formats
 python -m src.services.audio.cli.smart_cli transcribe meeting.mp4 \
   --speaker-map speakers.json \
-  --formats txt json srt \
-  --output-dir ./transcripts
+  --formats txt,json,srt \
+  -o ./transcripts
 
 # Batch mode (directory)
 python -m src.services.audio.cli.smart_cli transcribe ./recordings/ \
-  --output-dir ./out
+  -o ./out
 
 # Using faster-whisper backend
 python -m src.services.audio.cli.smart_cli transcribe meeting.wav \

@@ -58,24 +58,6 @@ For branches not in the list, use the `custom_branch` input field.
 When you select `zd_voice_lines`, the package includes:
 
 ```
-
-### Audio Transcriber UI Package
-
-When you select `audio_transcriber_ui`, the package includes:
-
-```
-audio_transcriber_ui_<branch>_<timestamp>/
-├── audio_transcriber_ui.py               # Main desktop transcription UI
-├── requirements.txt                      # Runtime deps
-├── requirements-audio-transcription.txt  # Optional model deps
-├── PACKAGE_INFO.md                       # Installation and run guide
-├── README.md                             # App documentation
-└── services/
-    └── audio/
-        └── workflow/
-            ├── __init__.py
-            └── transcription_workflow.py
-```
 zendesk_voice_lines_<branch>_<timestamp>/
 ├── zd_voice_lines.py          # Main application (950 LOC)
 ├── test_api_client.py         # Component tests (7 tests)
@@ -90,6 +72,25 @@ zendesk_voice_lines_<branch>_<timestamp>/
 └── docs/
     ├── USER_GUIDE.md          # Complete user manual
     └── DEVELOPMENT.md         # Developer documentation
+```
+
+### Audio Transcriber UI Package
+
+When you select `audio_transcriber_ui`, the package includes:
+
+```
+audio_transcriber_ui_<branch>_<timestamp>/
+├── audio_transcriber_ui.py               # Main desktop transcription UI
+├── requirements.txt                      # Runtime deps
+├── requirements-audio-transcription.txt  # Optional model deps
+├── PACKAGE_INFO.md                       # Installation and run guide
+├── USER_GUIDE.md                         # Full production user guide (promoted from docs/)
+├── README.md                             # App documentation
+└── services/
+    └── audio/
+        └── workflow/
+            ├── __init__.py
+            └── transcription_workflow.py
 ```
 
 ### Package Manifest

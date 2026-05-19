@@ -188,9 +188,10 @@ class AudioTranscriptionWorkflow:
             return [root]
 
         files: list[Path] = []
-        for suffix in SUPPORTED_INPUT_SUFFIXES:
-            files.extend(root.rglob(f"*{suffix}"))
-        return sorted(files)
+        for path in sorted(root.rglob("*")):
+            if path.is_file() and path.suffix.lower() in SUPPORTED_INPUT_SUFFIXES:
+                files.append(path)
+        return files
 
     def _normalize_to_wav(self, input_path: Path, output_dir: Path) -> Path:
         """Normalize input media into mono PCM WAV for downstream processing."""
@@ -248,24 +249,63 @@ class AudioTranscriptionWorkflow:
             )
 
     def _run_speaker_diarization(self, wav_path: Path) -> list[DiarizedSegment]:
-        """Naive speaker diarization based on lightweight acoustic clustering."""
-        samples, sample_rate = self._load_wav_samples(wav_path)
-        if not samples:
+        """Naive speaker diarization based on lightweight acoustic clustering.
+
+        Reads the WAV file in diarization-window-sized chunks to avoid
+        materialising the entire audio file in memory.
+        """
+        with wave.open(str(wav_path), "rb") as wav_file:
+            sample_rate = wav_file.getframerate()
+            channels = wav_file.getnchannels()
+            sample_width = wav_file.getsampwidth()
+            total_frames = wav_file.getnframes()
+
+            if sample_width != 2:
+                raise ValueError(
+                    f"Unsupported WAV sample width ({sample_width * 8}-bit): {wav_path}"
+                )
+
+            if total_frames == 0:
+                return [DiarizedSegment(start=0.0, end=0.0, speaker_id="SPEAKER_00")]
+
+            window_frames = max(1, int(sample_rate * self.config.diarization_window_seconds))
+            features: list[tuple[float, float, float]] = []
+            starts: list[float] = []
+            ends: list[float] = []
+
+            offset = 0
+            while offset < total_frames:
+                chunk_size = min(window_frames, total_frames - offset)
+                raw_chunk = wav_file.readframes(chunk_size)
+
+                sample_count = len(raw_chunk) // sample_width
+                int_samples = [
+                    int.from_bytes(
+                        raw_chunk[i * sample_width : (i + 1) * sample_width],
+                        "little",
+                        signed=True,
+                    )
+                    for i in range(sample_count)
+                ]
+
+                if channels > 1:
+                    mono: list[int] = []
+                    for i in range(0, len(int_samples), channels):
+                        frame = int_samples[i : i + channels]
+                        if frame:
+                            mono.append(int(sum(frame) / len(frame)))
+                    int_samples = mono
+
+                chunk_float = [s / 32768.0 for s in int_samples]
+                if chunk_float:
+                    starts.append(offset / sample_rate)
+                    ends.append(min(total_frames, offset + chunk_size) / sample_rate)
+                    features.append(self._feature_vector(chunk_float, sample_rate))
+
+                offset += chunk_size
+
+        if not features:
             return [DiarizedSegment(start=0.0, end=0.0, speaker_id="SPEAKER_00")]
-
-        window_size = max(1, int(sample_rate * self.config.diarization_window_seconds))
-        features: list[tuple[float, float, float]] = []
-        starts: list[float] = []
-        ends: list[float] = []
-
-        for start_idx in range(0, len(samples), window_size):
-            end_idx = min(len(samples), start_idx + window_size)
-            chunk = samples[start_idx:end_idx]
-            if not chunk:
-                continue
-            starts.append(start_idx / sample_rate)
-            ends.append(end_idx / sample_rate)
-            features.append(self._feature_vector(chunk, sample_rate))
 
         speaker_indices = self._cluster_features(features)
         raw_segments = [
@@ -277,33 +317,6 @@ class AudioTranscriptionWorkflow:
             for i in range(len(features))
         ]
         return self._merge_adjacent_segments(raw_segments)
-
-    def _load_wav_samples(self, wav_path: Path) -> tuple[list[float], int]:
-        with wave.open(str(wav_path), "rb") as wav_file:
-            sample_rate = wav_file.getframerate()
-            channels = wav_file.getnchannels()
-            sample_width = wav_file.getsampwidth()
-            raw_data = wav_file.readframes(wav_file.getnframes())
-
-        if sample_width != 2:
-            raise ValueError(f"Unsupported WAV sample width ({sample_width * 8}-bit): {wav_path}")
-
-        sample_count = len(raw_data) // sample_width
-        values: list[int] = []
-        for idx in range(sample_count):
-            offset = idx * sample_width
-            values.append(int.from_bytes(raw_data[offset : offset + sample_width], "little", signed=True))
-
-        if channels > 1:
-            mono: list[int] = []
-            for i in range(0, len(values), channels):
-                frame = values[i : i + channels]
-                if frame:
-                    mono.append(int(sum(frame) / len(frame)))
-            values = mono
-
-        normalized = [sample / 32768.0 for sample in values]
-        return normalized, sample_rate
 
     def _feature_vector(self, chunk: list[float], sample_rate: int) -> tuple[float, float, float]:
         if not chunk:
@@ -403,6 +416,11 @@ class AudioTranscriptionWorkflow:
         """Transcribe diarized segments using configured backend."""
         if self.config.transcription_backend == "faster-whisper":
             self._validate_faster_whisper_available()
+            raise NotImplementedError(
+                "faster-whisper transcription backend is not yet wired into the segment "
+                "inference loop. Install the dependency and use a future version, or set "
+                "transcription_backend='mock' for layout testing."
+            )
 
         transcript_segments: list[TranscriptSegment] = []
         for segment in diarized:

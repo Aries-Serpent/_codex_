@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import queue
+import sys
 import threading
 from pathlib import Path
 from tkinter import (
@@ -20,7 +22,21 @@ from tkinter import (
     Tk,
     filedialog,
     messagebox,
+    simpledialog,
 )
+
+# ---------------------------------------------------------------------------
+# Resolve import search paths so the app works in both execution layouts:
+#   1. Standalone package (extracted artifact):
+#      services/ is a direct sibling of this file → importable by default.
+#   2. Repository layout (apps/dev/audio_transcriber_ui.py):
+#      src/ and root-level services/ live two directories above apps/dev/.
+# ---------------------------------------------------------------------------
+_here = Path(__file__).resolve().parent          # directory containing this file
+_repo_root = _here.parent.parent                 # _codex_/ root when run from apps/dev/
+for _candidate in (str(_here), str(_repo_root)):
+    if _candidate not in sys.path:
+        sys.path.insert(0, _candidate)
 
 try:
     # Preferred path for standalone packaged app.
@@ -30,7 +46,7 @@ try:
         load_speaker_map,
     )
 except ImportError:  # pragma: no cover - fallback path for src-layout execution
-    from src.services.audio.workflow.transcription_workflow import (
+    from src.services.audio.workflow.transcription_workflow import (  # type: ignore[no-redef]
         AudioTranscriptionWorkflow,
         TranscriptionConfig,
         load_speaker_map,
@@ -45,6 +61,7 @@ class AudioTranscriberUI:
         self.root.title("Audio Transcriber UI")
         self.root.geometry("980x700")
         self.worker_thread: threading.Thread | None = None
+        self._log_queue: queue.Queue[str] = queue.Queue()
 
         self.input_path = StringVar()
         self.output_dir = StringVar()
@@ -60,6 +77,7 @@ class AudioTranscriberUI:
         self.format_vtt = IntVar(value=0)
 
         self._build_layout()
+        self._start_log_poll()
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _build_layout(self) -> None:
@@ -179,13 +197,19 @@ class AudioTranscriberUI:
                 max_duration_seconds=int(self.max_duration_seconds.get()),
             )
 
+            # Use a GUI-backed input function so interactive speaker naming shows
+            # a dialog on the main thread instead of blocking stdin.
+            use_interactive = bool(self.interactive_speakers.get())
+            input_func = self._gui_input_func if use_interactive else input
+
             workflow = AudioTranscriptionWorkflow(config=config)
             result = workflow.process_path(
                 input_path=input_path,
                 output_dir=output_dir,
                 speaker_map=speaker_map,
-                interactive_speakers=bool(self.interactive_speakers.get()),
+                interactive_speakers=use_interactive,
                 output_formats=output_formats,
+                input_func=input_func,
             )
 
             self._append_log("=" * 70)
@@ -203,22 +227,64 @@ class AudioTranscriberUI:
                     self._append_log(f"❌ {item.input_path.name} | Error: {item.error}")
 
             if result.failed_files == 0:
-                messagebox.showinfo("Transcription complete", "All files were processed successfully.")
+                self.root.after(
+                    0,
+                    lambda: messagebox.showinfo(
+                        "Transcription complete", "All files were processed successfully."
+                    ),
+                )
             else:
-                messagebox.showwarning(
-                    "Transcription completed with errors",
-                    f"{result.failed_files} file(s) failed. Check log output for details.",
+                msg = f"{result.failed_files} file(s) failed. Check log output for details."
+                self.root.after(
+                    0,
+                    lambda m=msg: messagebox.showwarning("Transcription completed with errors", m),
                 )
         except Exception as exc:
-            self._append_log(f"❌ {exc}")
-            messagebox.showerror("Transcription failed", str(exc))
+            err = str(exc)
+            self._append_log(f"❌ {err}")
+            self.root.after(0, lambda e=err: messagebox.showerror("Transcription failed", e))
 
     def _append_log(self, text: str) -> None:
-        self.log.insert("end", text + "\n")
-        self.log.see("end")
+        """Thread-safe: enqueue message; the main-thread poll loop drains it."""
+        self._log_queue.put(text)
 
     def _clear_log(self) -> None:
+        # Called from the Clear Log button (main thread only) — direct write is safe.
         self.log.delete("1.0", "end")
+
+    def _start_log_poll(self) -> None:
+        """Kick off the periodic log-queue drain loop on the main thread."""
+        self._poll_log_queue()
+
+    def _poll_log_queue(self) -> None:
+        """Drain all pending log messages and reschedule itself every 50 ms."""
+        try:
+            while True:
+                msg = self._log_queue.get_nowait()
+                self.log.insert("end", msg + "\n")
+                self.log.see("end")
+        except queue.Empty:
+            pass
+        self.root.after(50, self._poll_log_queue)
+
+    def _gui_input_func(self, prompt: str) -> str:
+        """Thread-safe input callback for interactive speaker naming in the GUI.
+
+        The worker thread blocks here while the main thread shows a dialog.
+        The caller provides a prompt string; this method returns the user's
+        answer (empty string if the dialog is cancelled).
+        """
+        result: list[str] = []
+        done = threading.Event()
+
+        def ask_on_main_thread() -> None:
+            answer = simpledialog.askstring("Speaker Name", prompt, parent=self.root)
+            result.append(answer or "")
+            done.set()
+
+        self.root.after(0, ask_on_main_thread)
+        done.wait()
+        return result[0] if result else ""
 
     def _on_close(self) -> None:
         if self.worker_thread and self.worker_thread.is_alive():
