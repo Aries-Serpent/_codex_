@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4504
 
-**PR**: #4504 - PR #4504  
+**PR**: #4504  
 **Branch**: `agents/codebase-review-top-5-quick-wins`  
 **Author**: @mbaetiong  
 **Date**: 2026-05-19  
@@ -47,135 +47,10 @@ No files modified
   - If behind/diverged, rebase first so `REQ-10` pre-flight gate cannot fail on stale branch state.
   - Re-validate WEC block from live PR body before each `report_progress`.
 - [ ] Apply changes based on review feedback in:
-  - https://github.com/Aries-Serpent/_codex_/pull/4497#pullrequestreview-4312820254
+  - #4504
 
 ### Current CI rescue blocker snapshot (latest observed)
 - [ ] `Agent Token Delegation` run `26017125733` failed `REQ-10` branch rebase/divergence gate (`status=diverged, behind_by=1` for `main...head` at failing commit context).
-
----
-
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
-
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
-- [ ] No regressions introduced
-
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
-
----
-
-## 🤖 COPILOT AGENT INSTRUCTIONS
-
-**When you see `@copilot continue` in PR #4501:**
-
-1. Load this prompt from `.github/copilot-prompts/active/PR-4501-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
-
----
-
-**Generated**: 2026-05-18  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-18 19:27:10
-
-
----
-
-## S1061 appended continuation tasks (2026-05-18T19:19Z)
-
-@copilot continue with next phase tasks for this PR
-
-**🔴 Priority 1 - Immediate**:
-- [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA
-- [ ] 2. Keep tracked-file/accountability freshness intact for final merge pass
-- [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
-- [ ] 4. Confirm no new action pin/comment drift in workflow files
-- [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
-
----
-
-## Merge readiness + immediate follow-up prompt
-
-- Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
-- Pattern 30 = merge-readiness composite in `python scripts/ci/auto_fix_common_issues.py --check-only` (sync-tracked, accountability freshness, action/version hygiene, and related readiness dimensions).
-
-**Prompt for current PR #4497:**
-```text
-@copilot continue with next phase tasks for this PR:
-- monitor approval-dispatched queue outcomes
-- keep tracked-file/accountability freshness intact
-- reserve final 5 minutes for wrap-up and handoff
-```
-
-**Prompt for immediate post-merge new PR (if required):**
-```text
-@copilot continue in a new PR for post-merge stabilization:
-- verify main-branch CI on the merge SHA
-- close residual follow-up tasks from PR #4497
-- refresh living docs + accountability in the new PR context
-```
-
-**Validation**:
-```bash
-python -m ruff check src/ tests/ --output-format=concise
-python scripts/ci/mypy_baseline.py --require-baseline
-python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
-```
-
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
-
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
 
 ---
 
@@ -233,6 +108,65 @@ python scripts/ci/sync_tracked_files.py --fix
 8. Generate new continuation if work remains
 
 **Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+
+## S1061 appended continuation tasks (2026-05-18T19:19Z)
+
+@copilot continue with next phase tasks for this PR
+
+**🔴 Priority 1 - Immediate**:
+- [ ] 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA
+- [ ] 2. Keep tracked-file/accountability freshness intact for final merge pass
+- [ ] 3. Re-run required local validation chain in a clean environment and confirm CI parity
+- [ ] 4. Confirm no new action pin/comment drift in workflow files
+- [ ] 5. Continue consolidated Dependabot absorb workflow for subsequent update waves
+
+---
+
+## Merge readiness + immediate follow-up prompt
+
+- Merge-readiness score target before merge: **100/100** (Pattern 30 green, tracked/accountability fresh).
+- Pattern 30 = merge-readiness composite in `python scripts/ci/auto_fix_common_issues.py --check-only` (sync-tracked, accountability freshness, action/version hygiene, and related readiness dimensions).
+
+**Prompt for current PR #4504:**
+```text
+@copilot continue with next phase tasks for this PR:
+- monitor approval-dispatched queue outcomes
+- keep tracked-file/accountability freshness intact
+- reserve final 5 minutes for wrap-up and handoff
+```
+
+**Prompt for immediate post-merge new PR (if required):**
+```text
+@copilot continue in a new PR for post-merge stabilization:
+- verify main-branch CI on the merge SHA
+- close residual follow-up tasks from PR #4504
+- refresh living docs + accountability in the new PR context
+```
+
+**Validation**:
+```bash
+python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/mypy_baseline.py --require-baseline
+python scripts/ci/auto_fix_common_issues.py --check-only
+python scripts/ci/sync_tracked_files.py --fix
+```
+
+### Priority 2: Follow-Up Validation 🟡 HIGH
+- [ ] No tasks specified
+
+### Priority 3: Future Enhancements 🟢 MEDIUM
+- [ ] No tasks specified
+
+---
+
+## ✅ EXECUTION CHECKLIST
+
+- [ ] All Priority 1 tasks completed and validated
+- [ ] All Priority 2 tasks completed or documented
+- [ ] Priority 3 tasks reviewed and prioritized
+- [ ] All validation checks passed
+- [ ] Documentation updated
+- [ ] Self-review completed (5 passes, 0 concerns)
 
 ---
 
