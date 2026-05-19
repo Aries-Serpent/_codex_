@@ -45,8 +45,8 @@
 ### Current workflow monitor snapshot
 - Current reviewed head during this session: `f0185d1e` / later continuation commits on PR #4510.
 - Approved workflow fan-out observed in progress: `Validation Pipeline`, `CodeQL Advanced`, `QA Walkthrough Agent`, `Semgrep SAST (SARIF Upload)`, `PR Auto-Fix Check`, `Audit & QA Suite (Unified)`, `Coverage with Timeout Guards`, `Resilient Dependency Submission`, `Secrets Baseline Enforcer`, `Workflow Documentation Link Validation`, and dependency submission workflows.
-- Control workflows observed as `action_required`: `Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, `Generate PR Follow-Up Prompt`.
-- Startup-level fail-like runs observed with zero jobs via MCP: `Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`.
+- Current control-workflow state: `Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, and `Generate PR Follow-Up Prompt` are `action_required`.
+- Current startup-level fail-like runs with zero jobs via MCP: `Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`.
 
 ---
 

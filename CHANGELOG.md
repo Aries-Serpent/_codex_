@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made interactive speaker naming timeout configurable in `apps/dev/audio_transcriber_ui.py` by accepting `speaker_name_timeout_seconds` in `AudioTranscriberUI.__init__()` and using that value in `_gui_input_func()` instead of a hardcoded 30-second wait.
 - Updated `tests/services/audio/test_transcription_workflow.py` so media-discovery assertions go through the public `process_path()` API with a stubbed `process_file()` helper rather than calling `_discover_media_files()` directly.
 - Replaced the anonymous `type()` pyannote test fixture with a named `_FakePyannoteSegment` helper for readability and maintainability.
-- Monitored the current approved PR workflow fan-out on head `f0185d1e`; the only fail-like runs in the snapshot (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) each expose `0` jobs via MCP, so there is no actionable in-job code-fix path in this pass.
+- Monitored the current approved PR workflow fan-out on head `f0185d1e`; the startup-level fail-like runs in the snapshot (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) each expose `0` jobs via MCP.
 
 ### Fixed (auto-update — PR #4509)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4509 (SHA `46941522`) at 2026-05-19T18:25Z [auto-generated]
