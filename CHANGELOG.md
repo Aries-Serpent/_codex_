@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4509)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4509 (SHA `46941522`) at 2026-05-19T18:25Z [auto-generated]
+
 ### Fixed (add-transcription-verification-pass — `copilot/add-transcription-application` — 2026-05-19T17:54Z)
 - Fixed `test_faster_whisper_backend_reports_missing_dependency` monkeypatch path to correctly target `src.services.audio.workflow.transcription_workflow.importlib.util.find_spec`; the previous path (`services.audio.workflow...`) targeted the re-export wrapper where `importlib` has no binding, so the monkeypatch was silently a no-op.
 - Fixed `.github/workflows/app-package-download.yml` final-summary step: replaced hardcoded `python zd_voice_lines.py` with a dynamic `$APP_ENTRY` variable so the download instructions match the selected app.
