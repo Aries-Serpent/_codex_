@@ -12,7 +12,7 @@ from services.audio.workflow.transcription_workflow import (
     TranscriptionConfig,
     load_speaker_map,
 )
-from src.services.audio.cli.smart_cli import _apply_backward_compatible_default_command
+from src.services.audio.cli.smart_cli import apply_backward_compatible_default_command
 
 
 def _write_test_wav(path: Path, *, seconds: float = 1.0, sample_rate: int = 16000) -> None:
@@ -99,5 +99,5 @@ def test_load_speaker_map_and_cli_compatibility(tmp_path: Path):
     assert speaker_map["SPEAKER_00"] == "Alice"
 
     argv = ["smart_cli.py", "input.mp3", "--preview"]
-    converted = _apply_backward_compatible_default_command(argv)
+    converted = apply_backward_compatible_default_command(argv)
     assert converted[1] == "tune"

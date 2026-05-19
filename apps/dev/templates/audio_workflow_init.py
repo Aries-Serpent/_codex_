@@ -1,6 +1,6 @@
-"""Compatibility wrapper for transcription workflow."""
+"""Standalone workflow package for audio transcription."""
 
-from src.services.audio.workflow.transcription_workflow import (
+from .transcription_workflow import (
     AudioTranscriptionWorkflow,
     BatchTranscriptionResult,
     DiarizedSegment,

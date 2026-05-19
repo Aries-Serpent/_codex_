@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import logging
 import math
@@ -417,13 +418,11 @@ class AudioTranscriptionWorkflow:
         return transcript_segments
 
     def _validate_faster_whisper_available(self) -> None:
-        try:
-            import faster_whisper  # noqa: F401
-        except Exception as exc:  # pragma: no cover - depends on optional install
+        if importlib.util.find_spec("faster_whisper") is None:  # pragma: no cover
             raise MissingDependencyError(
                 "transcription_backend='faster-whisper' requires installing faster-whisper. "
                 "Install optional transcription dependencies and retry."
-            ) from exc
+            )
 
     def _mock_segment_text(self, wav_path: Path, start: float, end: float) -> str:
         return f"[{wav_path.stem}] segment {start:.2f}s-{end:.2f}s"

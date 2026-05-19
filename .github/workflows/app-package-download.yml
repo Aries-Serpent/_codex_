@@ -192,31 +192,7 @@ jobs:
             mkdir -p package_staging/services
             touch package_staging/services/__init__.py
             touch package_staging/services/audio/__init__.py
-            cat > package_staging/services/audio/workflow/__init__.py << 'EOF'
-          """Standalone workflow package for audio transcription."""
-
-          from .transcription_workflow import (
-              AudioTranscriptionWorkflow,
-              BatchTranscriptionResult,
-              DiarizedSegment,
-              MissingDependencyError,
-              TranscriptSegment,
-              TranscriptionConfig,
-              TranscriptionResult,
-              load_speaker_map,
-          )
-
-          __all__ = [
-              "AudioTranscriptionWorkflow",
-              "BatchTranscriptionResult",
-              "DiarizedSegment",
-              "MissingDependencyError",
-              "TranscriptSegment",
-              "TranscriptionConfig",
-              "TranscriptionResult",
-              "load_speaker_map",
-          ]
-          EOF
+            cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py
 
             if [ -d "apps/dev/docs" ]; then
               mkdir -p package_staging/docs
@@ -293,6 +269,20 @@ jobs:
           PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
           BRANCH="${{ steps.branch.outputs.branch }}"
           TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_ENTRY="zd_voice_lines.py"
+          APP_DESCRIPTION="Zendesk Voice Lines GUI application"
+          QUICK_TEST_NOTE="python test_api_client.py"
+
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            APP_ENTRY="audio_transcriber_ui.py"
+            APP_DESCRIPTION="Audio Transcriber desktop UI application"
+            QUICK_TEST_NOTE="python audio_transcriber_ui.py"
+          elif [ "$APP_NAME" = "all" ]; then
+            APP_ENTRY="(multiple apps)"
+            APP_DESCRIPTION="all applications under apps/"
+            QUICK_TEST_NOTE="python <selected_app>.py"
+          fi
 
           cat > package_staging/PACKAGE_INFO.md << EOF
           # Codex Application Package
@@ -304,11 +294,11 @@ jobs:
 
           ## 📦 Contents
 
-          This package contains the selected application and supporting documentation.
+          This package contains the ${APP_DESCRIPTION} and supporting documentation.
 
           ### Main Application
 
-          - \`${{ github.event.inputs.app_name == 'audio_transcriber_ui' && 'audio_transcriber_ui.py' || 'zd_voice_lines.py' }}\` - Main application entrypoint
+          - \`${APP_ENTRY}\` - Main application entrypoint
 
           ### Documentation
 
@@ -347,16 +337,16 @@ jobs:
 
            3. Run the application:
               \`\`\`bash
-              python ${{ github.event.inputs.app_name == 'audio_transcriber_ui' && 'audio_transcriber_ui.py' || 'zd_voice_lines.py' }}
+              python ${APP_ENTRY}
               \`\`\`
 
           ### Quick Test
 
           Run component tests to verify installation:
 
-          \`\`\`bash
-          python test_api_client.py
-          \`\`\`
+           \`\`\`bash
+           ${QUICK_TEST_NOTE}
+           \`\`\`
 
            Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
 

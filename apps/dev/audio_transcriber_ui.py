@@ -36,6 +36,7 @@ class AudioTranscriberUI:
         self.root = Tk()
         self.root.title("Audio Transcriber UI")
         self.root.geometry("980x700")
+        self.worker_thread: threading.Thread | None = None
 
         self.input_path = StringVar()
         self.output_dir = StringVar()
@@ -51,6 +52,7 @@ class AudioTranscriberUI:
         self.format_vtt = IntVar(value=0)
 
         self._build_layout()
+        self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _build_layout(self) -> None:
         main = Frame(self.root)
@@ -142,8 +144,11 @@ class AudioTranscriberUI:
         return formats
 
     def _run_transcription_async(self) -> None:
-        thread = threading.Thread(target=self._run_transcription, daemon=True)
-        thread.start()
+        if self.worker_thread and self.worker_thread.is_alive():
+            messagebox.showinfo("Transcription in progress", "Please wait for the current job to finish.")
+            return
+        self.worker_thread = threading.Thread(target=self._run_transcription)
+        self.worker_thread.start()
 
     def _run_transcription(self) -> None:
         try:
@@ -206,6 +211,15 @@ class AudioTranscriberUI:
 
     def _clear_log(self) -> None:
         self.log.delete("1.0", "end")
+
+    def _on_close(self) -> None:
+        if self.worker_thread and self.worker_thread.is_alive():
+            messagebox.showwarning(
+                "Transcription running",
+                "A transcription job is still running. Please wait for it to finish before closing.",
+            )
+            return
+        self.root.destroy()
 
     def run(self) -> None:
         self.root.mainloop()

@@ -71,7 +71,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _apply_backward_compatible_default_command(argv: list[str]) -> list[str]:
+def apply_backward_compatible_default_command(argv: list[str]) -> list[str]:
     if len(argv) <= 1:
         return argv
 
@@ -84,6 +84,9 @@ def _apply_backward_compatible_default_command(argv: list[str]) -> list[str]:
         return [argv[0], "tune", *argv[1:]]
 
     return argv
+
+
+_apply_backward_compatible_default_command = apply_backward_compatible_default_command
 
 
 def _run_tune(args: argparse.Namespace) -> int:
@@ -164,7 +167,7 @@ def _run_transcribe(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    argv = _apply_backward_compatible_default_command(sys.argv)
+    argv = apply_backward_compatible_default_command(sys.argv)
     parser = _build_parser()
     args = parser.parse_args(argv[1:])
 
