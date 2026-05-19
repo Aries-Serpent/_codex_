@@ -1,8 +1,8 @@
 # 🎯 PR Follow-Up Tasks - #4501
 
-**PR**: #4501 - PR #4501  
+**PR**: #4501  
 **Branch**: `copilot/fix-tracing-function-reference`  
-**Author**: @Copilot  
+**Author**: @mbaetiong  
 **Date**: 2026-05-19  
 **Commit**: `f6d749c69fb056e559bb2fbb8443a1111b20e952`  
 **Status**: 🔄 ACTIVE
@@ -96,9 +96,9 @@ No files modified
 
 ## 🤖 COPILOT AGENT INSTRUCTIONS
 
-**When you see `@copilot continue` in PR #4497:**
+**When you see `@copilot continue` in PR #4501:**
 
-1. Load this prompt from `.github/copilot-prompts/active/PR-4497-followup.md`
+1. Load this prompt from `.github/copilot-prompts/active/PR-4501-followup.md`
 2. Execute Priority 1 tasks in order, validating each
 3. Then execute Priority 2 tasks
 4. Review Priority 3 tasks
