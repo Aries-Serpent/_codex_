@@ -1,5 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer guidance: ~20/60 minutes used; preserve final 5 minutes for wrap-up |
+| Approval state | ✅ Maintainer confirms pending workflows approved for current PR |
+| Current-head in-progress snapshot (`f6d749c6`) | 🔄 30 runs currently in progress (validation/security/qa/auto-fix fan-out active) |
+| Current-head completed snapshot (`f6d749c6`) | ✅ Multiple control gates succeeded (`cost`, `comment-review`, `deferral`, `rebase-gate`, `auto-approve`) |
+| Startup-level triage on completed fail-like runs | ✅ `Rust-Python Hybrid Swarm CI/CD` (`26070028902`), `Data Quality & Determinism Suite` (`26070028991`), and `Progressive Validation Suite` (`26070028955`) each report `total_count: 0` jobs (no in-job remediation path) |
+| Living docs parity | ✅ `whats_next` + `session_diagram` refreshed in this pass |
+| Changelog/accountability parity | ✅ Updated in this pass |
+| Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
+
 ## Session Status (Current — S1069 PR #4501 comment-thread + CI rescue remediation · 2026-05-19T01:00Z)
 
 | Item | Status |
