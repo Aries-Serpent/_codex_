@@ -1,0 +1,6 @@
+# Optional dependencies for multi-speaker transcription workflow
+# Install with: pip install -r requirements-audio-transcription.txt
+
+faster-whisper==1.1.1
+pyannote.audio==3.3.2
+ffmpeg-python==0.2.0

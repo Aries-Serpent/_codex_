@@ -1,7 +1,6 @@
-"""Services audio workflow package."""
+"""Compatibility wrapper for transcription workflow."""
 
-from .auto_tune_workflow import AutoTuneWorkflow, TuneResult, WorkflowConfig, WorkflowResult
-from .transcription_workflow import (
+from src.services.audio.workflow.transcription_workflow import (
     AudioTranscriptionWorkflow,
     BatchTranscriptionResult,
     DiarizedSegment,
@@ -13,10 +12,6 @@ from .transcription_workflow import (
 )
 
 __all__ = [
-    "AutoTuneWorkflow",
-    "TuneResult",
-    "WorkflowConfig",
-    "WorkflowResult",
     "AudioTranscriptionWorkflow",
     "BatchTranscriptionResult",
     "DiarizedSegment",

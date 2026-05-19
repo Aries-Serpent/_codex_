@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - 'zd_voice_lines'
+          - 'audio_transcriber_ui'
           - 'all'
         default: 'zd_voice_lines'
       branch:
@@ -127,10 +128,23 @@ jobs:
           echo "📦 Packaging application: $APP_NAME"
           echo "📍 From branch: $BRANCH"
 
-          if [ "$APP_NAME" = "all" ]; then
-            # Package all applications
-            PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
-            cp -r apps/* package_staging/
+            if [ "$APP_NAME" = "all" ]; then
+              # Package all applications
+              PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
+              cp -r apps/* package_staging/
+              if [ -f "requirements-audio-transcription.txt" ]; then
+                cp requirements-audio-transcription.txt package_staging/
+              fi
+              # Include transcription workflow so audio_transcriber_ui is launchable standalone
+              if [ -f "apps/dev/audio_transcriber_ui.py" ] && [ -f "src/services/audio/workflow/transcription_workflow.py" ]; then
+                mkdir -p package_staging/services/audio/workflow
+                cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
+              touch package_staging/services/__init__.py
+              touch package_staging/services/audio/__init__.py
+              if [ -f "apps/dev/templates/audio_workflow_init.py" ]; then
+                cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py
+              fi
+            fi
             echo "Packaged all applications"
           elif [ "$APP_NAME" = "zd_voice_lines" ]; then
             # Package Zendesk Voice Lines app
@@ -168,6 +182,47 @@ jobs:
             fi
 
             echo "Packaged Zendesk Voice Lines application"
+          elif [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            # Package Audio Transcriber UI app
+            PACKAGE_NAME="audio_transcriber_ui_${BRANCH//\//_}_${TIMESTAMP}"
+
+            if [ ! -f "apps/dev/audio_transcriber_ui.py" ]; then
+              echo "❌ Error: apps/dev/audio_transcriber_ui.py not found"
+              exit 1
+            fi
+
+            cp apps/dev/audio_transcriber_ui.py package_staging/
+
+            if [ -f "requirements-audio-transcription.txt" ]; then
+              cp requirements-audio-transcription.txt package_staging/
+            fi
+
+            # Copy shared audio workflow module needed by the UI
+            mkdir -p package_staging/services/audio/workflow
+            cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
+
+            # Add package markers for portable execution
+            mkdir -p package_staging/services
+            touch package_staging/services/__init__.py
+            touch package_staging/services/audio/__init__.py
+            cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py
+
+            if [ -d "apps/dev/docs" ]; then
+              mkdir -p package_staging/docs
+              cp -r apps/dev/docs/* package_staging/docs/
+              # Promote the audio-specific guide to package root for quick access
+              if [ -f "apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md" ]; then
+                cp apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md package_staging/USER_GUIDE.md
+              fi
+            fi
+
+            for file in apps/dev/*.md; do
+              if [ -f "$file" ]; then
+                cp "$file" package_staging/
+              fi
+            done
+
+            echo "Packaged Audio Transcriber UI application"
           else
             echo "❌ Error: Unknown application name: $APP_NAME"
             exit 1
@@ -185,6 +240,22 @@ jobs:
       - name: Generate requirements.txt
         if: ${{ github.event.inputs.include_dependencies == 'true' }}
         run: |
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            cat > package_staging/requirements.txt << 'EOF'
+          # Audio Transcriber UI dependencies
+          # Python 3.12+ required
+          numpy>=2.4.5,<3
+
+          # Optional transcription backends (recommended)
+          faster-whisper==1.1.1
+          pyannote.audio==3.3.2
+          ffmpeg-python==0.2.0
+          EOF
+            echo "✅ Generated requirements.txt for Audio Transcriber UI" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
           cat > package_staging/requirements.txt << 'EOF'
           # Zendesk Voice Lines Application Dependencies
           # Python 3.12+ required
@@ -215,6 +286,20 @@ jobs:
           PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
           BRANCH="${{ steps.branch.outputs.branch }}"
           TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_ENTRY="zd_voice_lines.py"
+          APP_DESCRIPTION="Zendesk Voice Lines GUI application"
+          QUICK_TEST_NOTE="python test_api_client.py"
+
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            APP_ENTRY="audio_transcriber_ui.py"
+            APP_DESCRIPTION="Audio Transcriber desktop UI application"
+            QUICK_TEST_NOTE="python audio_transcriber_ui.py"
+          elif [ "$APP_NAME" = "all" ]; then
+            APP_ENTRY="(multiple apps)"
+            APP_DESCRIPTION="all applications under apps/"
+            QUICK_TEST_NOTE="python <selected_app>.py"
+          fi
 
           cat > package_staging/PACKAGE_INFO.md << EOF
           # Codex Application Package
@@ -226,11 +311,11 @@ jobs:
 
           ## 📦 Contents
 
-          This package contains the Zendesk Voice Lines GUI application and supporting documentation.
+          This package contains the ${APP_DESCRIPTION} and supporting documentation.
 
           ### Main Application
 
-          - \`zd_voice_lines.py\` - Main GUI application (950 LOC)
+          - \`${APP_ENTRY}\` - Main application entrypoint
 
           ### Documentation
 
@@ -244,14 +329,15 @@ jobs:
 
           ### Testing
 
-          - \`test_api_client.py\` - Component tests (7 tests)
+           - \`test_api_client.py\` - Component tests (when packaging zd_voice_lines)
 
           ## 🚀 Quick Start
 
           ### Prerequisites
 
-          - Python 3.12 or higher
-          - tkinter (usually included with Python)
+           - Python 3.12 or higher
+           - tkinter (usually included with Python)
+           - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription workflows)
 
           ### Installation
 
@@ -266,26 +352,26 @@ jobs:
              pip install -r requirements.txt
              \`\`\`
 
-          3. Run the application:
-             \`\`\`bash
-             python zd_voice_lines.py
-             \`\`\`
+           3. Run the application:
+              \`\`\`bash
+              python ${APP_ENTRY}
+              \`\`\`
 
           ### Quick Test
 
           Run component tests to verify installation:
 
-          \`\`\`bash
-          python test_api_client.py
-          \`\`\`
+           \`\`\`bash
+           ${QUICK_TEST_NOTE}
+           \`\`\`
 
-          Expected output: \`7 passed, 0 failed\`
+           Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
 
           ## 📚 Documentation
 
-          - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
-          - For development information, see \`docs/DEVELOPMENT.md\`
-          - For API reference, see \`APPLICATION_SPEC.md\`
+           - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
+           - For development information, see \`docs/DEVELOPMENT.md\`
+           - For API reference, see \`APPLICATION_SPEC.md\`
 
           ## 🔗 Resources
 
@@ -411,6 +497,14 @@ jobs:
 
       - name: Final summary
         run: |
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_ENTRY="zd_voice_lines.py"
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            APP_ENTRY="audio_transcriber_ui.py"
+          elif [ "$APP_NAME" = "all" ]; then
+            APP_ENTRY="<selected_app>.py"
+          fi
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## ✅ Packaging Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -422,4 +516,4 @@ jobs:
           echo "2. Extract the package contents" >> $GITHUB_STEP_SUMMARY
           echo "3. Follow the instructions in \`PACKAGE_INFO.md\`" >> $GITHUB_STEP_SUMMARY
           echo "4. Install dependencies with \`pip install -r requirements.txt\`" >> $GITHUB_STEP_SUMMARY
-          echo "5. Run the application with \`python zd_voice_lines.py\`" >> $GITHUB_STEP_SUMMARY
+          echo "5. Run the application with \`python ${APP_ENTRY}\`" >> $GITHUB_STEP_SUMMARY

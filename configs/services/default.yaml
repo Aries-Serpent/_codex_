@@ -28,3 +28,14 @@ output:
   format: "wav"
   bitrate: 320  # kbps for MP3
   sample_rate: 44100  # Hz
+
+# Transcription defaults
+transcription:
+  sample_rate: 16000
+  max_speakers: 4
+  max_duration_seconds: 14400
+  diarization_window_seconds: 2.0
+  diarization_threshold: 0.18
+  backend: "mock"  # switch to "faster-whisper" after optional deps install
+  model_size: "small"
+

@@ -38,6 +38,7 @@ The **App Package Download** workflow provides a convenient way to download pack
 Current applications available for packaging:
 
 - **zd_voice_lines**: Zendesk Voice Lines GUI application
+- **audio_transcriber_ui**: Multi-speaker MP3/MP4 transcription desktop UI
 - **all**: Package all applications in the `apps/` directory
 
 ### Available Branches
@@ -71,6 +72,25 @@ zendesk_voice_lines_<branch>_<timestamp>/
 └── docs/
     ├── USER_GUIDE.md          # Complete user manual
     └── DEVELOPMENT.md         # Developer documentation
+```
+
+### Audio Transcriber UI Package
+
+When you select `audio_transcriber_ui`, the package includes:
+
+```
+audio_transcriber_ui_<branch>_<timestamp>/
+├── audio_transcriber_ui.py               # Main desktop transcription UI
+├── requirements.txt                      # Runtime deps
+├── requirements-audio-transcription.txt  # Optional model deps
+├── PACKAGE_INFO.md                       # Installation and run guide
+├── USER_GUIDE.md                         # Full production user guide (promoted from docs/)
+├── README.md                             # App documentation
+└── services/
+    └── audio/
+        └── workflow/
+            ├── __init__.py
+            └── transcription_workflow.py
 ```
 
 ### Package Manifest

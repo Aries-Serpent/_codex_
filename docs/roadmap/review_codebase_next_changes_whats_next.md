@@ -1,5 +1,20 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~20/60 minutes consumed; preserve final 5 minutes for wrap-up |
+| Transcription workflow extension (`src/services/audio`) | ✅ Added ingest → diarize → speaker-label map → transcribe → output merge pipeline |
+| CLI extension (`smart_cli.py`) | ✅ Added `transcribe` command with backward-compatible tune default |
+| Speaker labeling + mapping | ✅ JSON speaker-map support + interactive fallback + stable IDs (`SPEAKER_00+`) |
+| Output formats | ✅ TXT + JSON + SRT + VTT generation |
+| Standalone desktop UI | ✅ Added `apps/dev/audio_transcriber_ui.py` with browse/run/status UX |
+| Downloadable packaging path | ✅ Updated `app-package-download.yml` with `app_name=audio_transcriber_ui` packaging flow |
+| Standalone runtime hardening | ✅ Packaged local `services/audio/workflow/transcription_workflow.py` + package markers |
+| AI Findings follow-up (tests) | ✅ Consolidated redundant docstrings + strengthened profile/aggressive assertions |
+| Validation snapshot | ✅ `ruff` and `pytest -q tests/services/audio` passing |
+
 ## Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)
 
 | Item | Status |
