@@ -1,42 +1,32 @@
-# Session Context — 2026-05-19T15:56:24Z
+# Session Context — 2026-05-19T16:16:25Z
 **Branch:** `agents/codebase-review-top-5-quick-wins`  **PR:** #4504  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4827` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `4724` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4504 — Fix for Unreachable code
 State: `open`  Draft: `False`  Branch: `agents/codebase-review-top-5-quick-wins` → `main`
 
-### ❌ 12 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-19)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
+- **Workflow Execution Gate** — `failure` on `agents/codebase-review-top-5-quick-wins` (2026-05-19)
 - **PR Auto-Fix Check** — `failure` on `agents/codebase-review-top-5-quick-wins` (2026-05-19)
 - **Auto-Fix Common CI Issues** — `failure` on `agents/codebase-review-top-5-quick-wins` (2026-05-19)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-19)
 
 ## 📝 Recent Commits
+- `b20443be` fix(tools): clean up misleading comment in generated _ts() snippet; update accou — copilot-swe-agent[bot] (2026-05-19)
+- `e8899f7c` chore: initial plan for dependabot cherry-pick and CI rescue — copilot-swe-agent[bot] (2026-05-19)
+- `3aef3668` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-19)
 - `90dd5ff5` fix: address code-review feedback — add comment in _ts(), fix stale commit refs  — copilot-swe-agent[bot] (2026-05-19)
 - `73347d39` deps: absorb dependabot PRs 4505/4506/4507 — idna 3.15, uv.lock refresh; fix rev — copilot-swe-agent[bot] (2026-05-19)
 - `37e11d61` plan: cherry-pick dependabot PRs 4505/4506/4507 + fix review comments — copilot-swe-agent[bot] (2026-05-19)
 - `9ca4b700` chore: merge main into branch — resolve CODEX_MANIFEST.json conflict — copilot-swe-agent[bot] (2026-05-19)
 - `9235e2f3` fix: standardise UTC timestamp format across 10 tool/script files (isoformat→str — copilot-swe-agent[bot] (2026-05-19)
-- `56ad9cdc` plan: fix isoformat+Z timestamp pattern in 15 flagged files — copilot-swe-agent[bot] (2026-05-19)
-- `2def52a3` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-19)
-- `b333573e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
