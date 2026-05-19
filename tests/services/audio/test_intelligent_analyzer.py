@@ -1,9 +1,3 @@
-"""
-Test Intelligent Analyzer
-
-Test module for intelligent analyzer.
-"""
-
 """Test suite for intelligent audio analyzer.
 
 Test Data Strategy:
@@ -42,8 +36,12 @@ class TestIntelligentAudioAnalyzer:
     def test_analyzer_initialization(self):
         """Test analyzer initializes with profiles."""
         analyzer = IntelligentAudioAnalyzer()
-        assert len(analyzer.profiles) > 0
-        assert analyzer.profiles[0].name in ['speech', 'music', 'ambient']
+        expected_names = {"speech", "music", "ambient"}
+        profile_names = [profile.name for profile in analyzer.profiles]
+
+        assert len(profile_names) > 0
+        assert all(name in expected_names for name in profile_names)
+        assert expected_names.issubset(set(profile_names))
 
     def test_analyze_file(self, tmp_path):
         """Test file analysis with mock audio file."""
@@ -85,6 +83,11 @@ class TestIntelligentAudioAnalyzer:
         aggressive_match = analyzer.select_profile(analysis, aggressive=True)
 
         assert aggressive_match.confidence >= normal_match.confidence
+        assert (
+            aggressive_match.confidence > normal_match.confidence
+            or aggressive_match.profile.name != normal_match.profile.name
+            or aggressive_match.reason != normal_match.reason
+        )
 
 
 if __name__ == "__main__":
