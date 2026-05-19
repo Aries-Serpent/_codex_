@@ -323,7 +323,7 @@ Examples:
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     catalog = {
-        "generated_at": datetime.now(timezone.utc).isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "repository": args.repo,
         "state_filter": args.state,
         "total_alerts": len(simplified),

@@ -245,7 +245,7 @@ def generate_inventory():
 
     inventory = {
         "metadata": {
-            "generated_at": datetime.now(timezone.utc).isoformat() + "Z",
+            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_workflows": len(workflow_files),
             "active_count": 0,
             "disabled_count": 0,

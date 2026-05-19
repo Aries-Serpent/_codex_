@@ -23,7 +23,7 @@ CODEX_TO_COPILOT_TEMPLATE = TEMPLATE_DIR / "codex_to_copilot_template.md"
 
 def generate_timestamp() -> str:
     """Generate ISO 8601 timestamp."""
-    return datetime.now(timezone.utc).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def load_template(template_name: str) -> str:

@@ -30,7 +30,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def append(path: Path, text: str) -> None:

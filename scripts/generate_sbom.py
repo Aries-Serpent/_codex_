@@ -103,7 +103,7 @@ def generate_sbom_cyclonedx(output_path: Path, packages: list[dict[str, str]]) -
         "serialNumber": f"urn:uuid:codex-{output_path.stem}",
         "version": 1,
         "metadata": {
-            "timestamp": None,  # Would use datetime.now(timezone.utc).isoformat() + "Z"
+            "timestamp": None,  # Would use datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             "tools": [
                 {"vendor": "Aries-Serpent", "name": "codex-sbom-generator", "version": "1.0.0"}
             ],

@@ -267,7 +267,7 @@ class WorkflowAnalyzer:
     def export_json(self, output_path: Path) -> None:
         """Export analysis to JSON."""
         data = {
-            'analysis_date': datetime.now(timezone.utc).isoformat() + 'Z',
+            'analysis_date': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'repository': 'Aries-Serpent/_codex_',
             'summary': self.generate_summary(),
             'failure_patterns': self.failure_patterns,

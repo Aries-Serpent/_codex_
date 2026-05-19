@@ -217,7 +217,7 @@ class AlertCloser:
 
         entry = {
             "alert_number": alert_number,
-            "closed_at": datetime.now(timezone.utc).isoformat() + "Z",
+            "closed_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "reason": reason,
             "comment": comment,
             "repository": f"{self.owner}/{self.repo}",

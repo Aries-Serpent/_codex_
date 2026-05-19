@@ -88,7 +88,7 @@ class WorkflowConsolidator:
         metadata_file = destination.with_suffix(".yml.meta")
         with open(metadata_file, "w") as f:
             yaml.dump({
-                "disabled_at": datetime.now(timezone.utc).isoformat() + "Z",
+                "disabled_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "reason": reason,
                 "backed_up_to": str(backup_dir / workflow_file),
                 "backup_sha256": self._calculate_sha256(backup_dir / workflow_file),

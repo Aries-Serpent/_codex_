@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR-4504-comment-remediation — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T05:59Z)
+- Replaced remaining non-standard UTC timestamp formatting (`.isoformat() + "Z"`) across affected `cli/`, `scripts/`, and `tools/` files with RFC3339-safe `strftime("%Y-%m-%dT%H:%M:%SZ")` output so review-thread findings no longer emit `+00:00Z`.
+- Updated `scripts/archive_files.py` to emit true UTC `Z` timestamps via `timezone.utc` instead of naive local timestamps labeled as UTC.
+- Rewrote `.github/copilot-prompts/active/PR-4502-followup.md` to remove duplicated sections and stale cross-PR references.
+
 ### Fixed (auto-update — PR #4504)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4504 (SHA `539ed15f`) at 2026-05-19T03:33Z [auto-generated]
 

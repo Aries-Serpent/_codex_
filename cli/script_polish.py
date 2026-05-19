@@ -86,7 +86,7 @@ def _init_determinism_from_env():
 
 
 def ts() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:

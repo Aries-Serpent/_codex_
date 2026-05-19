@@ -23,7 +23,7 @@ ERROR_LOG = REPO_ROOT / ".codex" / "errors.ndjson"
 
 
 def _timestamp() -> str:
-    return datetime.now(timezone.utc).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def log_change(message: str) -> None:
@@ -359,7 +359,7 @@ def run_functional_training(
     state = {
         "seed": seed,
         "resume": bool(resume),
-        "timestamp": datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "config_keys": sorted(str(key) for key in config.keys()),
     }
     state_path.write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")

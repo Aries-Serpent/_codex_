@@ -110,7 +110,7 @@ def check_cli_version(tool: str, *args: str) -> dict:
 
 
 def now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _posix_append_bytes(path: Path, data: bytes) -> None:

@@ -264,7 +264,7 @@ class WorkflowMonitor:
     def generate_report(self, metrics: dict[str, Any], comparisons: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Generate comprehensive performance report."""
         report = {
-            'generated_at': datetime.now(timezone.utc).isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'analysis_period_days': self.days,
             'repository': self.repo,
             'consolidated_workflows': {},

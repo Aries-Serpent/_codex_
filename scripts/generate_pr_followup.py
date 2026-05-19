@@ -188,7 +188,7 @@ class PromptGenerator:
             'pr_author': os.environ.get('GITHUB_ACTOR', 'unknown'),
             'pr_title': os.environ.get('PR_TITLE', f'PR #{pr_number}'),
             'date': datetime.now().strftime('%Y-%m-%d'),
-            'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
+            'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
 

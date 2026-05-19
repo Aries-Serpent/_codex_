@@ -37,7 +37,7 @@ RESULTS = CODEX / "results.md"
 
 
 def now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def log_change(title: str, details: str) -> None:

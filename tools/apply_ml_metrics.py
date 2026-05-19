@@ -40,7 +40,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def append(path: Path, txt: str) -> None:
@@ -259,7 +259,7 @@ ART_DIR.mkdir(parents=True, exist_ok=True)
 
 def _ts() -> str:
     from datetime import datetime
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def record_metrics(phase: str, epoch: int, metrics: Dict[str, Any], cfg_hash: str, notes: str = "toy-eval") -> None:
     payload = {{

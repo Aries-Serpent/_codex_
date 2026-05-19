@@ -48,7 +48,7 @@ def _log_error(step: str, err: Exception, ctx: str) -> None:
     from datetime import datetime, timezone
     from pathlib import Path
 
-    ts = datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     msg = textwrap.dedent(
         f"""\
         Question for ChatGPT @codex {ts}:

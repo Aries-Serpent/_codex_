@@ -183,7 +183,7 @@ What are the possible causes, and how can this be resolved while preserving inte
         fh.write(
             json.dumps(
                 {
-                    "ts": datetime.now(timezone.utc).isoformat() + "Z",
+                    "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "step": step,
                     "error": err,
                     "context": ctx,

@@ -117,7 +117,7 @@ class TaskContext:
 
 
 def _timestamp() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _ensure_dir(path: Path) -> None:
@@ -664,7 +664,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> list[str]:
                             "files": sorted(str(item) for item in files),
                         }
                         timestamp_key = "created_at" if created else "updated_at"
-                        payload[timestamp_key] = datetime.now(timezone.utc).isoformat() + "Z"
+                        payload[timestamp_key] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
                         self._manifest_path.write_text(
                             json.dumps(payload, indent=2, sort_keys=True),
                             encoding="utf-8",
@@ -699,7 +699,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> list[str]:
 
 
                 def _timestamp() -> str:
-                    return datetime.now(timezone.utc).isoformat() + "Z"
+                    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
                 def _resolve_output_dir(output_dir: str | Path | None) -> Path | None:

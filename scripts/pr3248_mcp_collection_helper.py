@@ -94,7 +94,7 @@ def main() -> None:
         "repository": f"{OWNER}/{REPO}",
         "head_sha": HEAD_SHA,
         "total_commits": len(results),
-        "generated_at": datetime.now(timezone.utc).isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "collection_status": "partial_template",
         "api_access_issue": "403 Forbidden - DNS monitoring proxy or token scope limitation",
         "required_token_scopes": ["repo", "actions:read", "checks:read"],

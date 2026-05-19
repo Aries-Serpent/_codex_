@@ -143,7 +143,7 @@ class WorkflowMonitorReport:
         """Save report to JSON file."""
         data = {
             "commit_sha": self.commit_sha,
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "summary": {
                 "total_workflows": self.total_workflows,
                 "completed": self.completed,

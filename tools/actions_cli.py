@@ -72,7 +72,7 @@ def _write_citation(path: str, ref: str, note: str) -> pathlib.Path:
     with fname.open("a", encoding="utf-8") as f:
         if header_needed:
             f.write("# DeepResearch Citations\n\n")
-        ts = now.isoformat() + "Z"
+        ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         f.write(f"- {ts} | `{ref}` | `{path}` — {note}\n")
     return fname
 

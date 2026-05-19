@@ -28,8 +28,8 @@ def init_tracking_file() -> dict:
     """Initialize empty tracking file with structure."""
     data = {
         "pr_number": PR_NUMBER,
-        "created": datetime.now(timezone.utc).isoformat() + "Z",
-        "last_updated": datetime.now(timezone.utc).isoformat() + "Z",
+        "created": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "last_updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "handoffs": [
             {
                 "id": "HO-001",
@@ -231,7 +231,7 @@ def load_tracking_data() -> dict:
 
 def save_tracking_data(data: dict):
     """Save tracking data to JSON file."""
-    data["last_updated"] = datetime.now(timezone.utc).isoformat() + "Z"
+    data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     with open(TRACKING_FILE, 'w') as f:
         json.dump(data, f, indent=2)
 
@@ -349,7 +349,7 @@ def update_handoff(data: dict, handoff_id: str, status: str,
     if timestamp:
         handoff["timestamp"] = timestamp
     elif status in ["complete", "in_progress"]:
-        handoff["timestamp"] = datetime.now(timezone.utc).isoformat() + "Z"
+        handoff["timestamp"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     if response_time:
         handoff["response_time"] = response_time

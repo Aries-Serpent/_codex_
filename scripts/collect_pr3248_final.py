@@ -173,7 +173,7 @@ def main():
 
     # Save collection status
     status = {
-        'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'total_commits': len(all_targets),
         'commits_with_data': len(collection_data),
         'commits_pending': len(all_targets) - len(collection_data),

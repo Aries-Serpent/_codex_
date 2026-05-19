@@ -299,7 +299,7 @@ class AlertExporter:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         data = {
-            "exported_at": datetime.now(timezone.utc).isoformat() + "Z",
+            "exported_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_alerts": len(alerts),
             "alerts": [alert.to_dict() for alert in alerts]
         }

@@ -23,7 +23,7 @@ RES = CODEX / "results.md"
 
 
 def ts():
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def log_change(action, path, why, preview=""):
