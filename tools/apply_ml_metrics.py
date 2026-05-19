@@ -258,6 +258,9 @@ ART_DIR = Path("artifacts/metrics")
 ART_DIR.mkdir(parents=True, exist_ok=True)
 
 def _ts() -> str:
+    # NOTE: this function body is emitted verbatim into generated train_loop.py files
+    # (see the f-string template below with {{ / }} escaping), so the import must be
+    # self-contained inside the function rather than at module level.
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 

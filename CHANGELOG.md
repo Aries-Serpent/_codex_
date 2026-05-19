@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Absorbed Dependabot PRs #4505, #4506, #4507: bumped `idna` from `3.11`/`3.7` to `3.15` across `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock` — fixes CVE-2024-3651 (DoS via quadratic complexity).
 - Updated `uv.lock` with upstream package refreshes: `dvc 3.67.0→3.67.1`, `idna 3.13→3.15`, `librt 0.9.0→0.11.0`, `mypy 1.20.2→2.1.0`, `numpy`, `pydantic-settings 2.14.0→2.14.1`, `transformers 5.8.0→5.8.1`, and `ast-serialize 0.5.0` (new).
 - Fixed `tools/apply_ml_metrics.py:262` — added `timezone` import inside `_ts()` to prevent `NameError` in generated training-loop snippets (reviewer feedback).
-- Updated `docs/roadmap/codebase_review_quick_wins.md` — marked detect-secrets ImportError guard as implemented (rows 118 and 141) to reflect reality of `_detect_secrets_available()` already in the PR.
+- Updated `docs/roadmap/codebase_review_quick_wins.md` — corrected detect-secrets guard status rows to reference the implementing commit (`c03d740`) rather than "this PR" (reviewer feedback).
 
 ### Fixed (PR-4504-codeql-console-redaction — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T06:24Z)
 - Removed console logging of security summary values in `scripts/ci/fetch_security_snapshot.py`; the script now prints only stage-level status messages and keeps detailed summary data on disk to avoid CodeQL clear-text logging alerts.
