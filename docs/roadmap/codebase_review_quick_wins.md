@@ -115,7 +115,7 @@ operation.
 | **mypy on `src/codex_ml/serving/inference_server.py`** | ❌ Type errors | Optional dep stubs (`FastAPI`, `pydantic`, etc.) use `_Missing*` placeholders that fail mypy |
 | **mypy on `src/codex_ml/config/__init__.py`** | ❌ Type errors | `Cannot assign to a type [misc]` — missing dep stubs |
 | **Nox full runtime** | ❌ Missing optional deps | `pydantic`, `click`, `fastapi`, `httpx`, `cryptography` not available in all CI runners |
-| **`sync_tracked_files` with `detect-secrets`** | ❌ ImportError in some envs | `detect_secrets` module not importable when `.venv_ci` not activated |
+| **`sync_tracked_files` with `detect-secrets`** | ✅ Fixed (this PR) | `_detect_secrets_available()` guard added — missing module skips gracefully instead of failing |
 | **WEC `pr-checks.yml`** | ❌ WEC integrity failure when disabled | Must remain unchecked in WEC when workflow is `disabled_manually` |
 | **Duplicate `checkpoint_manager.py`** | ⚠️ Divergence risk | `training/checkpoint_manager.py` and `src/training/checkpoint_manager.py` can diverge |
 | **Cognitive Brain API server** | ⚠️ Not validated | `COPILOT_CLI_BASE_URL=http://localhost:8765` points to local server; not running in CI |
@@ -138,9 +138,9 @@ operation.
    - Replace `_MissingConfig` placeholder classes with proper type stubs or `TYPE_CHECKING` guards
    - Reduces mypy baseline drift and enables type-safe config loading
 
-4. **Fix `sync_tracked_files` detect-secrets import**
-   - Add `try/except ImportError` guard around detect-secrets import
-   - Falls back to hash-only baseline comparison when detect-secrets unavailable
+4. **~~Fix `sync_tracked_files` detect-secrets import~~** ✅ Implemented (this PR)
+   - `_detect_secrets_available()` guard added at all 3 call sites in `sync_tracked_files.py`
+   - Missing module returns `ok=True` (skip) instead of `ok=False` (fail)
 
 #### Priority 2 — Medium Impact
 
