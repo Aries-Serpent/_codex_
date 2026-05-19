@@ -7,12 +7,12 @@ import math
 import wave
 from pathlib import Path
 
-from services.audio.workflow.transcription_workflow import (
+from src.services.audio.cli.smart_cli import apply_backward_compatible_default_command
+from src.services.audio.workflow.transcription_workflow import (
     AudioTranscriptionWorkflow,
     TranscriptionConfig,
     load_speaker_map,
 )
-from src.services.audio.cli.smart_cli import apply_backward_compatible_default_command
 
 
 def _write_test_wav(path: Path, *, seconds: float = 1.0, sample_rate: int = 16000) -> None:
@@ -81,7 +81,7 @@ def test_process_mp4_without_ffmpeg_returns_clear_error(tmp_path: Path, monkeypa
     mp4_path = tmp_path / "clip.mp4"
     mp4_path.write_bytes(b"fake-video")
 
-    monkeypatch.setattr("services.audio.workflow.transcription_workflow.shutil.which", lambda _: None)
+    monkeypatch.setattr("src.services.audio.workflow.transcription_workflow.shutil.which", lambda _: None)
 
     workflow = AudioTranscriptionWorkflow()
     result = workflow.process_file(input_path=mp4_path, output_dir=tmp_path)

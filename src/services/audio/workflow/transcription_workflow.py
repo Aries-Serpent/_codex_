@@ -418,7 +418,7 @@ class AudioTranscriptionWorkflow:
         return transcript_segments
 
     def _validate_faster_whisper_available(self) -> None:
-        if importlib.util.find_spec("faster_whisper") is None:  # pragma: no cover
+        if importlib.util.find_spec("faster_whisper") is None:
             raise MissingDependencyError(
                 "transcription_backend='faster-whisper' requires installing faster-whisper. "
                 "Install optional transcription dependencies and retry."
