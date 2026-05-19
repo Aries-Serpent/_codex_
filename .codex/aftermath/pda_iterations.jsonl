@@ -188,3 +188,5 @@
 {"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-QUERY-FILTER-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-18T14-47Z"}
 {"type": "failure", "session": "S293", "pr": 0, "branch": "", "pattern_id": "RP-SUCCESS-RATE-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-18T14-47Z"}
 {"type": "fix", "session": "S293", "pr": 0, "pattern_id": "RP-SUCCESS-RATE-TEST", "fix_applied": "", "verification_cmd": "", "verification_passed": true, "ts": "2026-05-18T14-47Z"}
+{"type":"session","session":"S1069-pr4501-comment-thread-and-ci-rescue-remediation","pr":4501,"summary":"resolved review-thread scope drift; captured CI auto-fix root causes; refreshed docs/accountability/changelog","commit":"pending","ts":"2026-05-19T01-00Z"}
+{"type":"session","session":"S1070-pr4501-approved-workflow-monitoring-continuation","pr":4501,"summary":"monitored approved workflow fan-out; triaged startup-failure runs (0 jobs); updated living docs/changelog/accountability","commit":"pending","ts":"2026-05-19T01-08Z"}

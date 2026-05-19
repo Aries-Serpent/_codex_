@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1070-pr4501-approved-workflow-monitoring-continuation — `copilot/fix-tracing-function-reference` — 2026-05-19T01:08Z)
+- Continued monitoring after maintainer confirmed pending PR workflows were approved (~20/60 minutes consumed; final 5-minute reserve maintained).
+- Captured latest current-head (`f6d749c6`) workflow snapshot: 30 runs in progress; several control/checkpoint workflows already completed successfully.
+- Triaged startup-level fail-like runs with MCP jobs API and confirmed `0` jobs (no in-job code remediation path in this snapshot):
+  - `Rust-Python Hybrid Swarm CI/CD` (`26070028902`)
+  - `Data Quality & Determinism Suite` (`26070028991`)
+  - `Progressive Validation Suite` (`26070028955`)
+- Refreshed living docs and accountability/changelog tracking for this monitoring continuation pass.
+
+### Fixed (S1069-pr4501-comment-thread-and-ci-rescue-remediation — `copilot/fix-tracing-function-reference` — 2026-05-19T01:00Z)
+- Addressed review thread `pullrequestreview-4314989322` by removing out-of-scope PR artifacts from this branch (`src/tokenization/api.py`, `tests/agents/test_phase2_deep_coverage_batch11.py`, and generated `PR-4501-followup.md`) so scope matches requested docs/test cleanup.
+- Investigated failing `PR Auto-Fix Check` run `26069350387` (`Detect CI Issues & Post Fix Instructions`) and captured actionable root causes: Pattern 25 accountability freshness, Pattern 30 merge-readiness freshness (`sync_tracked_files`, PDA entry today, accountability report today).
+- Updated living roadmap docs plus accountability/changelog tracking in this pass to satisfy freshness-driven CI gates.
+
 ### Fixed (S1068-pr4498-approved-workflow-monitoring-continuation — `copilot/fix-pep263-issues` — 2026-05-18T23:21Z)
 - Continued monitoring after maintainer confirmation of approved pending workflows with updated time-budget guidance (~12/60 used; preserve final 5 minutes).
 - Captured latest completed/in-progress snapshots centered on head `e35c2520` and validated startup-failure triage for:

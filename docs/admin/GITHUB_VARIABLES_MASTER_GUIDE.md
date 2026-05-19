@@ -281,12 +281,16 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, `src/codex/observability/tracing.py::init_tracing()` enables distributed tracing. Setup requirements are detailed in the OTel setup note below. **SAR-G05.** |
+| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, the `init_tracing()` function in `src/codex/observability/tracing.py` enables distributed tracing. Setup requirements are detailed in the OTel setup note below. **SAR-G05.** |
 
 ##### OTel setup note
 
-- Required Python packages (minimum): `opentelemetry-sdk`, `opentelemetry-exporter-otlp`.
-- Install with: `pip install opentelemetry-sdk opentelemetry-exporter-otlp` (or include in project dependency files).
+- Required Python packages (minimum): `opentelemetry-sdk` plus a protocol-specific OTLP exporter:
+  - gRPC (recommended for `OTEL_EXPORTER_OTLP_ENDPOINT`, e.g. `:4317`): `opentelemetry-exporter-otlp-proto-grpc`
+  - HTTP (if using OTLP/HTTP): `opentelemetry-exporter-otlp-proto-http`
+  - Optional convenience meta-package: `opentelemetry-exporter-otlp`
+- Install with (gRPC): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc`
+- Install with (HTTP): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http`
 - Leave `OTEL_EXPORTER_OTLP_ENDPOINT` unset for offline/local environments (no-op mode).
 
 #### Data Store / Feature Backend
