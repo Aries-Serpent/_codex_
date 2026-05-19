@@ -71,6 +71,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -98,6 +99,15 @@ AGENT_AUTH_SESSION_PATH = REPO_ROOT / ".codex" / "agent_auth_session.json"
 
 # Sentinel for auto-generated entries
 _AUTO_SYNC_SENTINEL = "[auto-sync]"
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+def _detect_secrets_available() -> bool:
+    """Return True if detect_secrets is importable in the current interpreter."""
+    return importlib.util.find_spec("detect_secrets") is not None
 
 # ---------------------------------------------------------------------------
 # Result dataclass (lightweight, no external deps)
@@ -266,6 +276,13 @@ def check_secrets_baseline(result: SyncResult, *, fix: bool) -> None:
         return
 
     # Run detect-secrets to get the expected hashed_secret
+    if not _detect_secrets_available():
+        result.record(
+            ".secrets.baseline",
+            ok=True,
+            message="detect-secrets unavailable in this env; baseline comparison skipped",
+        )
+        return
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
@@ -378,6 +395,13 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
     # Use cwd=REPO_ROOT and a repo-relative path so the result key in
     # detect-secrets output matches what is stored in .secrets.baseline.
     agent_rel = str(AGENT_CONTEXT_PATH.relative_to(REPO_ROOT))
+    if not _detect_secrets_available():
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=True,
+            message="detect-secrets unavailable in this env; baseline comparison skipped",
+        )
+        return
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
@@ -497,6 +521,13 @@ def check_agent_auth_session_baseline(result: SyncResult, *, fix: bool) -> None:
         return
 
     agent_rel = str(AGENT_AUTH_SESSION_PATH.relative_to(REPO_ROOT))
+    if not _detect_secrets_available():
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=True,
+            message="detect-secrets unavailable in this env; baseline comparison skipped",
+        )
+        return
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", agent_rel],
