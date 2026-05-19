@@ -876,20 +876,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\n{'='*62}")
     print(f"  Security Snapshot — {os.environ.get('GITHUB_REPOSITORY','?')}")
     print(f"{'='*62}")
-    for stage, summary in summaries.items():
-        print(f"  {stage}:")
+    for stage in summaries:
         if stage == "secrets":
-            # Redact all secret-scanning summary data to avoid logging sensitive information
-            safe_keys = {"total", "active_confirmed", "generated_at"}
-            for k in summary.keys():
-                if k in safe_keys and k != "generated_at":
-                    print(f"    {k:<30} {summary[k]}")
-                elif k != "generated_at":
-                    print(f"    {k:<30} [REDACTED]")
+            print(f"  {stage:<12} [redacted in console; see files under {out_dir}]")
         else:
-            for k, v in summary.items():
-                if k != "generated_at":
-                    print(f"    {k:<30} {_safe_summary_value(k, v)}")
+            print(f"  {stage:<12} [summary written to disk under {out_dir}]")
     print(f"  Output dir : {out_dir.resolve()}")
     print(f"{'='*62}\n")
 

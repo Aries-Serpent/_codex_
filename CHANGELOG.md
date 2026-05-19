@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR-4504-codeql-console-redaction — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T06:24Z)
+- Removed console logging of security summary values in `scripts/ci/fetch_security_snapshot.py`; the script now prints only stage-level status messages and keeps detailed summary data on disk to avoid CodeQL clear-text logging alerts.
+
 ### Fixed (PR-4504-comment-remediation — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T05:59Z)
 - Replaced remaining non-standard UTC timestamp formatting (`.isoformat() + "Z"`) across affected `cli/`, `scripts/`, and `tools/` files with RFC3339-safe `strftime("%Y-%m-%dT%H:%M:%SZ")` output so review-thread findings no longer emit `+00:00Z`.
 - Updated `scripts/archive_files.py` to emit true UTC `Z` timestamps via `timezone.utc` instead of naive local timestamps labeled as UTC.
