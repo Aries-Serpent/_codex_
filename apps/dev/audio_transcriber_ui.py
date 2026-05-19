@@ -64,6 +64,7 @@ class AudioTranscriberUI:
         self.root.geometry("980x700")
         self.worker_thread: threading.Thread | None = None
         self._ui_queue: queue.Queue[tuple[str, str | float]] = queue.Queue()
+        self.speaker_name_timeout_seconds = 30.0
 
         self.input_path = StringVar()
         self.output_dir = StringVar()
@@ -315,8 +316,8 @@ class AudioTranscriberUI:
         """Thread-safe input callback for interactive speaker naming in the GUI.
 
         The worker thread blocks here while the main thread shows a dialog.
-        A 30-second timeout prevents the worker from hanging if the main thread
-        is unresponsive; an empty string is returned on timeout.
+        A configurable timeout prevents the worker from hanging if the main
+        thread is unresponsive; an empty string is returned on timeout.
         """
         result: list[str] = []
         done = threading.Event()
@@ -327,7 +328,7 @@ class AudioTranscriberUI:
             done.set()
 
         self.root.after(0, ask_on_main_thread)
-        if not done.wait(timeout=30.0):
+        if not done.wait(timeout=self.speaker_name_timeout_seconds):
             return ""  # Main thread unresponsive; use default speaker ID.
         return result[0] if result else ""
 
