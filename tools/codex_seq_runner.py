@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Optional
 
 ROOT = Path.cwd()
-SESSION_DIR = ROOT / ".codex" / f"session_{datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
+SESSION_DIR = ROOT / ".codex" / f"session_{datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 LOGS = SESSION_DIR / "logs"
 PATCHES = SESSION_DIR / "patches"
 ARTIFACTS = SESSION_DIR / "artifacts"

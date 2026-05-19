@@ -57,7 +57,7 @@ ERRORS = CODEX / "errors.ndjson"
 
 
 def _ts() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _q5(step: str, err: str, ctx: str) -> None:

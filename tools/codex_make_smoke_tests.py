@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -166,14 +166,14 @@ def _log_change(action: str, path: Path, why: str, preview: str):
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
         fh.write(
-            f"## {datetime.utcnow().isoformat()}Z — {path.relative_to(ROOT)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+            f"## {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} — {path.relative_to(ROOT)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
         )
         fh.write("```diff\n" + preview[:6000] + "\n```\n\n")
 
 
 def _q5(step: str, err: str, ctx: str):
     block = f"""
-Question for ChatGPT-5 {datetime.utcnow().isoformat()}Z:
+Question for ChatGPT-5 {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}:
 While performing [{step}], encountered the following error:
 {err}
 Context: {ctx}
@@ -183,7 +183,7 @@ What are the possible causes, and how can this be resolved while preserving inte
         fh.write(
             json.dumps(
                 {
-                    "ts": datetime.utcnow().isoformat() + "Z",
+                    "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "step": step,
                     "error": err,
                     "context": ctx,
@@ -241,7 +241,7 @@ def apply():
 
 def validate():
     with RESULTS.open("a", encoding="utf-8") as fh:
-        fh.write(f"\n# Validation {datetime.utcnow().isoformat()}Z\n")
+        fh.write(f"\n# Validation {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n")
         cmds = [
             ("python -m compileall .", ["python", "-m", "compileall", "."]),
             ("pytest -q -k smoke --maxfail=1", ["pytest", "-q", "-k", "smoke", "--maxfail", "1"]),

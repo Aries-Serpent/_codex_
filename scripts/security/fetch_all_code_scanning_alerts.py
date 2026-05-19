@@ -18,7 +18,7 @@ import logging
 import os
 import sys
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -176,7 +176,7 @@ def generate_remediation_plan(
 
     with open(plan_path, "w", encoding="utf-8") as f:
         f.write("# 🔐 Code Scanning Alert Remediation Plan\n\n")
-        f.write(f"> **Generated**: {datetime.utcnow().isoformat()}Z\n")
+        f.write(f"> **Generated**: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n")
         f.write("> **Repository**: Aries-Serpent/_codex_\n")
         f.write(f"> **Total Alerts**: {len(alerts)}\n\n")
 
@@ -323,7 +323,7 @@ Examples:
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     catalog = {
-        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "repository": args.repo,
         "state_filter": args.state,
         "total_alerts": len(simplified),

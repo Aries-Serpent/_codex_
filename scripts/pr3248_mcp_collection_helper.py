@@ -8,7 +8,7 @@ CI/CD data for PR #3248 using the available MCP server tool outputs.
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Target commits (all 81 commits from user requirement)
@@ -94,7 +94,7 @@ def main() -> None:
         "repository": f"{OWNER}/{REPO}",
         "head_sha": HEAD_SHA,
         "total_commits": len(results),
-        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "collection_status": "partial_template",
         "api_access_issue": "403 Forbidden - DNS monitoring proxy or token scope limitation",
         "required_token_scopes": ["repo", "actions:read", "checks:read"],
@@ -114,7 +114,7 @@ def main() -> None:
     print(f"✅ JSON template created: {json_path}")
 
     # Generate markdown table
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     md_lines = [
         "# [Investigation Request]: Failing Checks per Commit",

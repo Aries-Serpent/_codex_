@@ -9,7 +9,7 @@ import textwrap
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -91,7 +91,7 @@ def _extract_patch(payload: dict[str, Any]) -> Optional[str]:
 
 def _store_patch(patch: str) -> Path:
     PATCH_DIR.mkdir(parents=True, exist_ok=True)
-    ts = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     path = PATCH_DIR / f"llm_patch_{ts}.diff"
     path.write_text(patch, encoding="utf-8")
     return path

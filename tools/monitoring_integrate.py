@@ -24,7 +24,7 @@ import threading
 import time
 import traceback
 from collections.abc import Callable
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -38,7 +38,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def append(path: Path, text: str) -> None:

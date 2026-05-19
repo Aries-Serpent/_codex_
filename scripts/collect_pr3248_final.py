@@ -5,7 +5,7 @@ Uses direct commit workflow run queries to collect data for all 81 commits.
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Setup paths
@@ -74,7 +74,7 @@ def generate_markdown(all_commits, collection_data=None):
     lines = [
         "# [Investigation Report]: Failing Checks per Commit (PR #3248)",
         "",
-        f"> **Generated**: {datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}",
+        f"> **Generated**: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
         "> **Automation**: GitHub MCP Server Tools (Exhaustive Collection)",
         "> **Repository**: Aries-Serpent/_codex_",
         "> **PR**: #3248 (0D_base_ → main)",
@@ -134,7 +134,7 @@ def generate_markdown(all_commits, collection_data=None):
     lines.append("- Artifacts require authentication to download")
     lines.append("- Some commits may have no workflow runs (skipped CI)")
     lines.append("")
-    lines.append(f"**Last Updated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    lines.append(f"**Last Updated**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
 
     return "\n".join(lines)
 
@@ -173,7 +173,7 @@ def main():
 
     # Save collection status
     status = {
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'total_commits': len(all_targets),
         'commits_with_data': len(collection_data),
         'commits_pending': len(all_targets) - len(collection_data),

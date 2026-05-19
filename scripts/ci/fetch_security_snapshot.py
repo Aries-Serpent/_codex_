@@ -876,11 +876,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\n{'='*62}")
     print(f"  Security Snapshot — {os.environ.get('GITHUB_REPOSITORY','?')}")
     print(f"{'='*62}")
-    for stage, summary in summaries.items():
-        print(f"  {stage}:")
-        for k, v in summary.items():
-            if k not in ("results", "generated_at"):
-                print(f"    {k:<30} {_safe_summary_value(k, v)}")
+    for stage in summaries:
+        if stage == "secrets":
+            print(f"  {stage:<12} [redacted in console; see files under {out_dir}]")
+        else:
+            print(f"  {stage:<12} [summary written to disk under {out_dir}]")
     print(f"  Output dir : {out_dir.resolve()}")
     print(f"{'='*62}\n")
 

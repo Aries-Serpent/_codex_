@@ -37,7 +37,7 @@ import json
 import logging
 import shutil
 from collections import namedtuple
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -235,7 +235,7 @@ def update_metadata(base_archive_dir: Path, new_files: list[dict[str, Any]]) -> 
     else:
         metadata = {
             "metadata_version": "1.0",
-            "created_date": datetime.now().isoformat() + "Z",
+            "created_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "purpose": "Track files moved to misc/repo-owner-review for potential deletion",
             "files_archived": [],
             "notes": [
@@ -248,7 +248,7 @@ def update_metadata(base_archive_dir: Path, new_files: list[dict[str, Any]]) -> 
 
     # Add new files
     metadata["files_archived"].extend(new_files)
-    metadata["last_updated"] = datetime.now().isoformat() + "Z"
+    metadata["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Calculate total space
     total_bytes = sum(f.get("size_bytes", 0) for f in metadata["files_archived"])

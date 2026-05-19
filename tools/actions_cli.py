@@ -66,13 +66,13 @@ def cmd_fetch(args: argparse.Namespace) -> int:
 def _write_citation(path: str, ref: str, note: str) -> pathlib.Path:
     outdir = pathlib.Path(DEFAULT_CITATIONS_DIR)
     outdir.mkdir(parents=True, exist_ok=True)
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     fname = outdir / f"citations-{now.date().isoformat()}.md"
     header_needed = not fname.exists()
     with fname.open("a", encoding="utf-8") as f:
         if header_needed:
             f.write("# DeepResearch Citations\n\n")
-        ts = now.isoformat() + "Z"
+        ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         f.write(f"- {ts} | `{ref}` | `{path}` — {note}\n")
     return fname
 

@@ -5,7 +5,7 @@ This module coordinates all detection engines and manages the scanning process.
 """
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -214,7 +214,7 @@ class DuplicateScanner:
         from . import __version__
 
         metadata = InventoryMetadata(
-            generated_at=datetime.utcnow().isoformat() + "Z",
+            generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             scanner_version=__version__,
             repository_root=str(self.root_path),
             detection_modes=modes,

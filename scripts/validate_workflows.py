@@ -266,7 +266,7 @@ class CacheMonitor:
         print("=" * 70)
 
         try:
-            since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat() + 'Z'
+            since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime('%Y-%m-%dT%H:%M:%SZ')
 
             response = requests.get(
                 f'{self.base_url}/actions/runs',

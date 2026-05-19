@@ -26,7 +26,7 @@ import random
 import sys
 import textwrap
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -40,7 +40,7 @@ sys.path.insert(0, str(REPO / "src"))
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:

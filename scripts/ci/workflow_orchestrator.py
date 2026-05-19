@@ -15,7 +15,7 @@ Usage:
 import argparse
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -60,7 +60,7 @@ class WorkflowOrchestrator:
         self.telemetry = telemetry_data
         self.changed_files = changed_files
         self.workflow_plan = {
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "pr_size": pr_size,
             "workflows_to_run": [],
             "workflows_to_skip": [],

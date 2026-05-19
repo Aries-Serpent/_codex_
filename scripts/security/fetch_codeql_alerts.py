@@ -21,7 +21,7 @@ import os
 import sys
 import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -299,7 +299,7 @@ class AlertExporter:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         data = {
-            "exported_at": datetime.utcnow().isoformat() + "Z",
+            "exported_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_alerts": len(alerts),
             "alerts": [alert.to_dict() for alert in alerts]
         }
@@ -356,7 +356,7 @@ class AlertExporter:
         lines = [
             "# CodeQL Code Scanning Alerts",
             "",
-            f"> **Generated:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC",
+            f"> **Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC",
             f"> **Total Alerts:** {total}",
             "",
             "## 📊 Summary Statistics",

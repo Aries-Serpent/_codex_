@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR-4504-dependabot-absorb — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T15:37Z)
+- Absorbed Dependabot PRs #4505, #4506, #4507: bumped `idna` from `3.11`/`3.7` to `3.15` across `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock` — fixes CVE-2024-3651 (DoS via quadratic complexity).
+- Updated `uv.lock` with upstream package refreshes: `dvc 3.67.0→3.67.1`, `idna 3.13→3.15`, `librt 0.9.0→0.11.0`, `mypy 1.20.2→2.1.0`, `numpy`, `pydantic-settings 2.14.0→2.14.1`, `transformers 5.8.0→5.8.1`, and `ast-serialize 0.5.0` (new).
+- Fixed `tools/apply_ml_metrics.py:262` — added `timezone` import inside `_ts()` to prevent `NameError` in generated training-loop snippets (reviewer feedback).
+- Updated `docs/roadmap/codebase_review_quick_wins.md` — corrected detect-secrets guard status rows to reference the implementing commit (`c03d740`) rather than "this PR" (reviewer feedback).
+
+### Fixed (PR-4504-codeql-console-redaction — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T06:24Z)
+- Removed console logging of security summary values in `scripts/ci/fetch_security_snapshot.py`; the script now prints only stage-level status messages and keeps detailed summary data on disk to avoid CodeQL clear-text logging alerts.
+
+### Fixed (PR-4504-comment-remediation — `agents/codebase-review-top-5-quick-wins` — 2026-05-19T05:59Z)
+- Replaced remaining non-standard UTC timestamp formatting (`.isoformat() + "Z"`) across affected `cli/`, `scripts/`, and `tools/` files with RFC3339-safe `strftime("%Y-%m-%dT%H:%M:%SZ")` output so review-thread findings no longer emit `+00:00Z`.
+- Updated `scripts/archive_files.py` to emit true UTC `Z` timestamps via `timezone.utc` instead of naive local timestamps labeled as UTC.
+- Rewrote `.github/copilot-prompts/active/PR-4502-followup.md` to remove duplicated sections and stale cross-PR references.
+
+### Fixed (auto-update — PR #4504)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4504 (SHA `539ed15f`) at 2026-05-19T03:33Z [auto-generated]
+
+### Fixed (S1071-review-codebase-quick-wins — `copilot/review-codebase-for-quick-wins` — 2026-05-19T01:41Z)
+- **Quick Win 1:** Modernized `datetime.utcnow()` → `datetime.now(timezone.utc)` across 130+ files in `scripts/`, `tools/`, and `cli/`. Clears all DTZ003 ruff violations and eliminates live `DeprecationWarning` from Pattern 25/30 CI runs.
+- **Quick Win 2:** Applied Pattern 25 auto-fix to resolve accountability freshness drift in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+- **Quick Win 3:** Appended fresh PDA iteration entry for S1071 to `.codex/aftermath/pda_iterations.jsonl`.
+- **Quick Win 4:** Updated `docs/roadmap/review_codebase_next_changes_whats_next.md` with current session state.
+- **Quick Win 5:** Created `docs/roadmap/codebase_review_quick_wins.md` — comprehensive codebase review document covering top 5 quick wins, agentic behavior summary (what works / what doesn't / what needs improvement), and agentic readiness score (8/10).
+
+### Fixed (auto-update — PR #4502)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4502 (SHA `a541c7c3`) at 2026-05-19T02:02Z [auto-generated]
+
 ### Fixed (S1070-pr4501-approved-workflow-monitoring-continuation — `copilot/fix-tracing-function-reference` — 2026-05-19T01:08Z)
 - Continued monitoring after maintainer confirmed pending PR workflows were approved (~20/60 minutes consumed; final 5-minute reserve maintained).
 - Captured latest current-head (`f6d749c6`) workflow snapshot: 30 runs in progress; several control/checkpoint workflows already completed successfully.

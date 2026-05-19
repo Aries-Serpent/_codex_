@@ -57,7 +57,7 @@ class Python312MigrationTool:
             "file": str(file_path.relative_to(self.repo_root)),
             "type": change_type,
             "details": details,
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z"
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         })
 
     def update_pyproject_toml(self) -> bool:
@@ -294,7 +294,7 @@ class Python312MigrationTool:
         """Generate migration report."""
         report = {
             "migration_strategy": "A - Immediate Full Migration",
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "dry_run": self.dry_run,
             "summary": {
                 "total_files_changed": len(self.changes),

@@ -33,7 +33,7 @@ def main():
                     _ = None  # suppressed: no action needed
     from datetime import datetime, timezone
 
-    out = {"generated_utc": datetime.now(timezone.utc).isoformat() + "Z", "files": files}
+    out = {"generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "files": files}
     Path("assets").mkdir(exist_ok=True)
     Path("assets/manifest.json").write_text(json.dumps(out, indent=2))
     print("assets/manifest.json")
