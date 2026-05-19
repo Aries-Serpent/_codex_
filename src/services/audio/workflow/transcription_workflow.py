@@ -8,6 +8,7 @@ import json
 import logging
 import math
 import shutil
+import struct
 import subprocess
 import wave
 from dataclasses import dataclass, field
@@ -279,14 +280,9 @@ class AudioTranscriptionWorkflow:
                 raw_chunk = wav_file.readframes(chunk_size)
 
                 sample_count = len(raw_chunk) // sample_width
-                int_samples = [
-                    int.from_bytes(
-                        raw_chunk[i * sample_width : (i + 1) * sample_width],
-                        "little",
-                        signed=True,
-                    )
-                    for i in range(sample_count)
-                ]
+                # Use struct.unpack for efficient batch PCM decoding instead of
+                # per-sample int.from_bytes, which is 10-100x slower for large chunks.
+                int_samples: list[int] = list(struct.unpack_from(f"<{sample_count}h", raw_chunk))
 
                 if channels > 1:
                     mono: list[int] = []
