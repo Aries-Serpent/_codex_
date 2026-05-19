@@ -157,7 +157,7 @@ def build_manifest(
     exp_index = _load_json(exp_index_path)
     local_gate = _load_json(local_gate_path)
 
-    now = _dt.datetime.utcnow().isoformat() + "Z"
+    now = _dt.datetime.now(_dt.timezone.utc).isoformat() + "Z"
 
     return {
         "generated_at": now,

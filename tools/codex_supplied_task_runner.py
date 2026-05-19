@@ -18,7 +18,7 @@ import re
 import shlex
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path.cwd()
@@ -140,7 +140,7 @@ PowerShell purge example:
 
 
 def now() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def ensure_codex_dirs() -> None:

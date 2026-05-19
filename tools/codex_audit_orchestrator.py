@@ -60,7 +60,7 @@ class StepContext:
 
 # Logging helpers
 def log(msg: str) -> None:
-    timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    timestamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds") + "Z"
     line = f"[{timestamp}] {msg}"
     print(line)
     try:

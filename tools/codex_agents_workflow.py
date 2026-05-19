@@ -14,7 +14,7 @@ import re
 import subprocess  # nosec B404
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # -------- Guardrails --------
@@ -82,7 +82,7 @@ def write_if_changed(path: Path, new: str, rationale: str, header: str = "") -> 
 
 def log_change(path: Path, rationale: str, before: str, after: str, header: str = ""):
     ensure_dirs()
-    ts = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    ts = datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z"
     snippet_before = "\n".join(before.splitlines()[:50])
     snippet_after = "\n".join(after.splitlines()[:50])
     entry = f"""
@@ -114,7 +114,7 @@ def die_step(step: str, err: str, ctx: str):
     """Record error in NDJSON + echo ChatGPT-5 research question; then exit non-zero."""
     ensure_dirs()
     obj = {
-        "ts": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "ts": datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z",
         "step": step,
         "error": err,
         "context": ctx,
@@ -294,7 +294,7 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
 
 
 def write_results(changes: list[str]):
-    ts = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    ts = datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z"
     body = f"""# Results — {ts}
 
 ## Implemented

@@ -65,7 +65,7 @@ def _append_change_log(change_log: Path, result: StepResult) -> None:
     change_log.parent.mkdir(parents=True, exist_ok=True)
     if not change_log.exists():
         change_log.write_text(CHANGE_LOG_HEADER + CHANGE_LOG_RULE, encoding="utf-8")
-    ts = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    ts = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds") + "Z"
     line = f"| {ts} | {result.phase_id} | {result.step_id} | {result.status} | {result.details} |\n"
     with change_log.open("a", encoding="utf-8") as f:
         f.write(line)
@@ -81,7 +81,7 @@ def _append_error_question(
     stderr: str,
 ) -> None:
     error_file.parent.mkdir(parents=True, exist_ok=True)
-    ts = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    ts = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds") + "Z"
     block = (
         f"> Question for ChatGPT @codex {ts}:\n"
         f"> While performing [{phase_id}.{step_id}:{description}], "

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import tarfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import zstandard as zstd
@@ -24,7 +24,7 @@ def bundle_run(paths: list[str], run_id: str | None = None, level: int = 6) -> P
     level:
         Zstandard compression level.
     """
-    run_id = run_id or datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    run_id = run_id or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     out_dir = Path(".codex/bundles")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{run_id}.tar.zst"

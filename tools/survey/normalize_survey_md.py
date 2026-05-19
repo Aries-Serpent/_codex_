@@ -103,7 +103,7 @@ def main() -> None:
     args = ap.parse_args()
 
     raw = Path(args.input).read_text(encoding="utf-8").rstrip() + "\n"
-    today = dt.datetime.utcnow().strftime("%Y-%m-%d")
+    today = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
     pr_or_ref = args.pr if args.pr != "N/A" else args.ref
     slug = _slugify(f"{args.ring}-{pr_or_ref}")
 

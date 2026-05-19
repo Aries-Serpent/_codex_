@@ -3,7 +3,7 @@ import argparse
 import shutil
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -15,7 +15,7 @@ def sh(cmd, check=True, capture=False, input_bytes=None):
 
 
 def now():
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
 
 
 def emit_question(step_no_desc, err_msg, ctx):

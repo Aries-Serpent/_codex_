@@ -15,7 +15,7 @@ DEFAULT_DB = os.environ.get("CODEX_DB", ".codex/codex.sqlite")
 
 
 def iso_now() -> str:
-    return datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds") + "Z"
 
 
 def ingest_change_log(md_path: str, db_path: str, branch: str) -> None:

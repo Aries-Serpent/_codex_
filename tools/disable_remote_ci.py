@@ -32,7 +32,7 @@ CHANGELOG = ROOT / "CHANGELOG_codex.md"
 
 
 def utcnow():
-    return dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def record_error(step, desc, err, ctx=""):

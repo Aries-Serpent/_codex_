@@ -1,6 +1,18 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)
+## Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)
+
+| Item | Status |
+|---|---|
+| Top 5 quick wins identification | ✅ Completed |
+| Quick Win 1: Fix DTZ003 `datetime.utcnow()` in scripts/tools/cli (130+ files) | ✅ Implemented |
+| Quick Win 2: Fix Pattern 25 accountability drift | ✅ Auto-fixed |
+| Quick Win 3: Update PDA iterations JSONL | ✅ Appended session entry |
+| Quick Win 4: Update living docs (whats_next + codebase_review_quick_wins.md) | ✅ Created |
+| Quick Win 5: Agentic behavior summary document | ✅ Created at `docs/roadmap/codebase_review_quick_wins.md` |
+| DTZ003 ruff check in scripts/tools/cli | ✅ All checks passed |
+
+## Session Status (Prior — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)
 
 | Item | Status |
 |---|---|

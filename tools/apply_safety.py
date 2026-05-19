@@ -6,7 +6,7 @@ Creates files if missing and runs pytest on safety suite.
 from __future__ import annotations
 
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -18,7 +18,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def append(p: Path, text: str) -> None:

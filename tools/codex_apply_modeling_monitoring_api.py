@@ -20,7 +20,7 @@ import json
 import subprocess
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # ---------- Core paths & logging ----------
@@ -46,7 +46,7 @@ TARGETS = [
 
 # ---------- Helpers ----------
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:

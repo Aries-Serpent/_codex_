@@ -6,7 +6,7 @@ from pathlib import Path
 
 qf = Path(".codex/notes/Codex_Questions.md")
 af = Path(".codex/notes/Codex_Answers.md")
-now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def answer_for(text):

@@ -9,7 +9,7 @@ import os
 import re
 import subprocess
 from collections.abc import Iterable, Sequence
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -21,7 +21,7 @@ DOCS_DIR = ROOT / "docs"
 
 
 def ts() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def run(

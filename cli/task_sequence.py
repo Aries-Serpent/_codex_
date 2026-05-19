@@ -20,7 +20,7 @@ import textwrap
 import zipfile
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -117,7 +117,7 @@ class TaskContext:
 
 
 def _timestamp() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def _ensure_dir(path: Path) -> None:
@@ -664,7 +664,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> list[str]:
                             "files": sorted(str(item) for item in files),
                         }
                         timestamp_key = "created_at" if created else "updated_at"
-                        payload[timestamp_key] = datetime.utcnow().isoformat() + "Z"
+                        payload[timestamp_key] = datetime.now(timezone.utc).isoformat() + "Z"
                         self._manifest_path.write_text(
                             json.dumps(payload, indent=2, sort_keys=True),
                             encoding="utf-8",
@@ -699,7 +699,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> list[str]:
 
 
                 def _timestamp() -> str:
-                    return datetime.utcnow().isoformat() + "Z"
+                    return datetime.now(timezone.utc).isoformat() + "Z"
 
 
                 def _resolve_output_dir(output_dir: str | Path | None) -> Path | None:
@@ -799,7 +799,7 @@ def _update_changelog(ctx: TaskContext, summary_lines: Iterable[str]) -> bool:
     if not ctx.changelog_path.exists():
         _write_text(ctx.changelog_path, "# Codex Changelog\n\n")
     existing = ctx.changelog_path.read_text(encoding="utf-8")
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     header = f"## {today} – Codex task sequence automation\n"
     entry = "\n".join([header, *summary_lines, ""]) + "\n"
     if header in existing:

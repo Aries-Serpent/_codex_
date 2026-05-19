@@ -26,7 +26,7 @@ import subprocess
 import sys
 import uuid
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -110,7 +110,7 @@ def check_cli_version(tool: str, *args: str) -> dict:
 
 
 def now_iso() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def _posix_append_bytes(path: Path, data: bytes) -> None:

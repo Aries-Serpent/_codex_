@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -557,7 +557,7 @@ class ZendeskPackageCurator:
             "description": "AI-powered Zendesk Support API integration for ticket management, user operations, and SLA policies.",
             "version": "1.0.0",
             "platform": "chatgpt",
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "capabilities": {
                 "tickets": [
                     "Create tickets",
@@ -612,7 +612,7 @@ class ZendeskPackageCurator:
         package: dict[str, Any] = {
             "integration": "zendesk_ai_assistant",
             "version": "1.0.0",
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "patterns": [],
             "workflows": [],
         }
@@ -660,7 +660,7 @@ class ZendeskPackageCurator:
         return {
             "name": "Zendesk API Integration",
             "version": "1.0.0",
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "patterns": [p.to_dict() for p in self._patterns.values()],
             "workflows": [w.to_dict() for w in self._workflows.values()],
             "intents": self._intents,

@@ -8,7 +8,7 @@ import json
 import subprocess
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 __all__ = ["main"]
@@ -18,7 +18,7 @@ ERRORS = CODEX / "errors.ndjson"
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def q5(step: str, err: str, ctx: str) -> None:

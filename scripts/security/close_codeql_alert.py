@@ -17,7 +17,7 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -161,7 +161,7 @@ class AlertCloser:
             commit_url = f"https://github.com/{self.owner}/{self.repo}/commit/{commit_sha}"
             lines.append(f"Commit: {commit_sha[:7]} ({commit_url})")
 
-        lines.append(f"\nClosed: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
+        lines.append(f"\nClosed: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC")
 
         return "\n".join(lines)
 
@@ -217,7 +217,7 @@ class AlertCloser:
 
         entry = {
             "alert_number": alert_number,
-            "closed_at": datetime.utcnow().isoformat() + "Z",
+            "closed_at": datetime.now(timezone.utc).isoformat() + "Z",
             "reason": reason,
             "comment": comment,
             "repository": f"{self.owner}/{self.repo}",

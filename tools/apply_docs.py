@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from codex_digest.error_capture import log_error
@@ -35,7 +35,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:

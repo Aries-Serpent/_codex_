@@ -16,7 +16,7 @@ import argparse
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -263,7 +263,7 @@ def generate_markdown_report(
         results: List of (sha, failing_checks, artifacts) tuples
         output_path: Output file path
     """
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     lines = [
         "# [Investigation Request]: Failing Checks per Commit",

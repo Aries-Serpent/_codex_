@@ -3,7 +3,7 @@
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Workflow IDs from problem statement
 WORKFLOW_IDS = [
@@ -80,7 +80,7 @@ def main():
 
     # Print summary
     print("=" * 80)
-    print(f"WORKFLOW STATUS REPORT - {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    print(f"WORKFLOW STATUS REPORT - {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 80)
     print(f"\nTotal workflows checked: {len(WORKFLOW_IDS)}")
     print(f"Successfully queried: {len(results)}")

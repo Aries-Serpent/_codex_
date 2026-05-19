@@ -13,7 +13,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -267,7 +267,7 @@ class WorkflowAnalyzer:
     def export_json(self, output_path: Path) -> None:
         """Export analysis to JSON."""
         data = {
-            'analysis_date': datetime.utcnow().isoformat() + 'Z',
+            'analysis_date': datetime.now(timezone.utc).isoformat() + 'Z',
             'repository': 'Aries-Serpent/_codex_',
             'summary': self.generate_summary(),
             'failure_patterns': self.failure_patterns,
