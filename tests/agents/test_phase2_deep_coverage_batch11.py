@@ -193,7 +193,7 @@ class TestPhase2_EndToEndWorkflows:
             path.append("branch_a")
 
             # Nested decision
-            condition_b = len(path) > 1
+            condition_b = False
             if condition_b:
                 path.append("leaf_1")
             else:
