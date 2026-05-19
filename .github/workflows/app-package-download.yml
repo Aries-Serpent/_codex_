@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - 'zd_voice_lines'
+          - 'audio_transcriber_ui'
           - 'all'
         default: 'zd_voice_lines'
       branch:
@@ -168,6 +169,67 @@ jobs:
             fi
 
             echo "Packaged Zendesk Voice Lines application"
+          elif [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            # Package Audio Transcriber UI app
+            PACKAGE_NAME="audio_transcriber_ui_${BRANCH//\//_}_${TIMESTAMP}"
+
+            if [ ! -f "apps/dev/audio_transcriber_ui.py" ]; then
+              echo "❌ Error: apps/dev/audio_transcriber_ui.py not found"
+              exit 1
+            fi
+
+            cp apps/dev/audio_transcriber_ui.py package_staging/
+
+            if [ -f "requirements-audio-transcription.txt" ]; then
+              cp requirements-audio-transcription.txt package_staging/
+            fi
+
+            # Copy shared audio workflow module needed by the UI
+            mkdir -p package_staging/services/audio/workflow
+            cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
+
+            # Add package markers for portable execution
+            mkdir -p package_staging/services
+            touch package_staging/services/__init__.py
+            touch package_staging/services/audio/__init__.py
+            cat > package_staging/services/audio/workflow/__init__.py << 'EOF'
+          """Standalone workflow package for audio transcription."""
+
+          from .transcription_workflow import (
+              AudioTranscriptionWorkflow,
+              BatchTranscriptionResult,
+              DiarizedSegment,
+              MissingDependencyError,
+              TranscriptSegment,
+              TranscriptionConfig,
+              TranscriptionResult,
+              load_speaker_map,
+          )
+
+          __all__ = [
+              "AudioTranscriptionWorkflow",
+              "BatchTranscriptionResult",
+              "DiarizedSegment",
+              "MissingDependencyError",
+              "TranscriptSegment",
+              "TranscriptionConfig",
+              "TranscriptionResult",
+              "load_speaker_map",
+          ]
+          EOF
+
+            if [ -d "apps/dev/docs" ]; then
+              mkdir -p package_staging/docs
+              cp -r apps/dev/docs/* package_staging/docs/
+            fi
+
+            for file in apps/dev/*.md; do
+              if [ -f "$file" ]; then
+                cp "$file" package_staging/
+              fi
+            done
+
+            echo "Packaged Audio Transcriber UI application"
           else
             echo "❌ Error: Unknown application name: $APP_NAME"
             exit 1
@@ -185,6 +247,22 @@ jobs:
       - name: Generate requirements.txt
         if: ${{ github.event.inputs.include_dependencies == 'true' }}
         run: |
+          APP_NAME="${{ github.event.inputs.app_name }}"
+          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
+            cat > package_staging/requirements.txt << 'EOF'
+          # Audio Transcriber UI dependencies
+          # Python 3.12+ required
+          numpy>=2.4.5,<3
+
+          # Optional transcription backends (recommended)
+          faster-whisper==1.1.1
+          pyannote.audio==3.3.2
+          ffmpeg-python==0.2.0
+          EOF
+            echo "✅ Generated requirements.txt for Audio Transcriber UI" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
           cat > package_staging/requirements.txt << 'EOF'
           # Zendesk Voice Lines Application Dependencies
           # Python 3.12+ required
@@ -226,11 +304,11 @@ jobs:
 
           ## 📦 Contents
 
-          This package contains the Zendesk Voice Lines GUI application and supporting documentation.
+          This package contains the selected application and supporting documentation.
 
           ### Main Application
 
-          - \`zd_voice_lines.py\` - Main GUI application (950 LOC)
+          - \`${{ github.event.inputs.app_name == 'audio_transcriber_ui' && 'audio_transcriber_ui.py' || 'zd_voice_lines.py' }}\` - Main application entrypoint
 
           ### Documentation
 
@@ -244,14 +322,15 @@ jobs:
 
           ### Testing
 
-          - \`test_api_client.py\` - Component tests (7 tests)
+           - \`test_api_client.py\` - Component tests (when packaging zd_voice_lines)
 
           ## 🚀 Quick Start
 
           ### Prerequisites
 
-          - Python 3.12 or higher
-          - tkinter (usually included with Python)
+           - Python 3.12 or higher
+           - tkinter (usually included with Python)
+           - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription workflows)
 
           ### Installation
 
@@ -266,10 +345,10 @@ jobs:
              pip install -r requirements.txt
              \`\`\`
 
-          3. Run the application:
-             \`\`\`bash
-             python zd_voice_lines.py
-             \`\`\`
+           3. Run the application:
+              \`\`\`bash
+              python ${{ github.event.inputs.app_name == 'audio_transcriber_ui' && 'audio_transcriber_ui.py' || 'zd_voice_lines.py' }}
+              \`\`\`
 
           ### Quick Test
 
@@ -279,13 +358,13 @@ jobs:
           python test_api_client.py
           \`\`\`
 
-          Expected output: \`7 passed, 0 failed\`
+           Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
 
           ## 📚 Documentation
 
-          - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
-          - For development information, see \`docs/DEVELOPMENT.md\`
-          - For API reference, see \`APPLICATION_SPEC.md\`
+           - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
+           - For development information, see \`docs/DEVELOPMENT.md\`
+           - For API reference, see \`APPLICATION_SPEC.md\`
 
           ## 🔗 Resources
 

@@ -23,7 +23,7 @@ gh run download <run-id> --name <package-name>
 
 | Input | Options | Default |
 |-------|---------|---------|
-| **Application** | `zd_voice_lines`, `all` | `zd_voice_lines` |
+| **Application** | `zd_voice_lines`, `audio_transcriber_ui`, `all` | `zd_voice_lines` |
 | **Branch** | `main`, `0D_base_`, `copilot/add-zd-voice-lines-console-app` | `copilot/add-zd-voice-lines-console-app` |
 | **Custom Branch** | _(text field)_ | _(empty)_ |
 | **Format** | `zip`, `tar.gz` | `zip` |
@@ -84,6 +84,14 @@ gh workflow run app-package-download.yml \
 gh workflow run app-package-download.yml \
   --field app_name=all \
   --field branch=main
+```
+
+### Use Case 4: Download Audio Transcriber UI Package
+```bash
+gh workflow run app-package-download.yml \
+  --field app_name=audio_transcriber_ui \
+  --field branch=main \
+  --field package_format=zip
 ```
 
 ## 📊 Artifacts

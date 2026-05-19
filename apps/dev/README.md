@@ -14,6 +14,9 @@ cd apps/dev
 
 # Run the application
 python zd_voice_lines.py
+
+# Or run the multi-speaker transcription desktop UI
+python audio_transcriber_ui.py
 ```
 
 ## Features
@@ -36,6 +39,32 @@ python zd_voice_lines.py
 - Multiple export format options
 - Professional GUI with intuitive controls
 - Download voice greeting files from Zendesk
+- Local multi-speaker transcription UI for MP3/MP4/WAV/M4A
+
+## Audio Transcriber UI (Standalone Packaging Ready)
+
+`audio_transcriber_ui.py` provides a local desktop workflow for:
+- MP3/MP4 ingestion and WAV normalization
+- speaker diarization with stable IDs (`SPEAKER_00`, etc.)
+- optional speaker-name mapping (`.json`) and interactive naming
+- transcript export as TXT/JSON/SRT/VTT
+
+### Run
+
+```bash
+python audio_transcriber_ui.py
+```
+
+### Download as standalone package
+
+Use the GitHub Actions workflow:
+
+`https://github.com/Aries-Serpent/_codex_/actions/workflows/app-package-download.yml`
+
+Select:
+- `app_name=audio_transcriber_ui`
+- your target branch
+- preferred package format (`zip` or `tar.gz`)
 
 ## Installation
 
