@@ -1,21 +1,22 @@
-# Session Context — 2026-05-19T17:07:34Z
+# Session Context — 2026-05-19T17:18:55Z
 **Branch:** `copilot/add-transcription-application`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4718` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4711` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-19)
 
 ## 📝 Recent Commits
+- `83078e46` Add MP3/MP4 multi-speaker transcription with pre-labelable speaker identities — copilot-swe-agent[bot] (2026-05-19)
 - `55764f8c` Merge pull request #4504 from Aries-Serpent/agents/codebase-review-top-5-quick-w — Statix (2026-05-19)
 - `f897e230` fix(ci): update accountability report for PR-4504 CI rescue session (Pattern 25) — copilot-swe-agent[bot] (2026-05-19)
 - `52104d2a` merge: sync remote session-context commits — copilot-swe-agent[bot] (2026-05-19)
@@ -23,7 +24,6 @@
 - `a1548c77` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-19)
 - `356dd09c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-19)
 - `bac78805` fix(tools): move timezone to module-level import in generated train_loop templat — copilot-swe-agent[bot] (2026-05-19)
-- `dda69e24` merge: sync with remote (take remote session_context) — copilot-swe-agent[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
