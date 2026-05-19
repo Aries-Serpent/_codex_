@@ -33,6 +33,10 @@ def _write_test_wav(path: Path, *, seconds: float = 1.0, sample_rate: int = 1600
         wav_file.writeframes(bytes(audio))
 
 
+def _fake_successful_process_file(self, input_path: str | Path, output_dir: str | Path, **_kwargs):
+    return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
+
+
 def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path, monkeypatch):
     media_dir = tmp_path / "media"
     media_dir.mkdir()
@@ -40,11 +44,8 @@ def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path, monkeypatch):
     (media_dir / "b.mp4").write_bytes(b"fake")
     (media_dir / "c.txt").write_text("not media")
 
-    def _fake_process_file(self, input_path: str | Path, output_dir: str | Path, **_kwargs):
-        return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
-
     workflow = AudioTranscriptionWorkflow()
-    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", _fake_process_file)
+    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", _fake_successful_process_file)
     results = workflow.process_path(
         input_path=str(media_dir),
         output_dir=str(tmp_path / "out"),
@@ -65,11 +66,8 @@ def test_discover_media_files_handles_uppercase_extensions(tmp_path: Path, monke
     (media_dir / "VIDEO.MP4").write_bytes(b"fake")
     (media_dir / "note.TXT").write_text("not media")
 
-    def _fake_process_file(self, input_path: str | Path, output_dir: str | Path, **_kwargs):
-        return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
-
     workflow = AudioTranscriptionWorkflow()
-    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", _fake_process_file)
+    monkeypatch.setattr(AudioTranscriptionWorkflow, "process_file", _fake_successful_process_file)
     results = workflow.process_path(
         input_path=str(media_dir),
         output_dir=str(tmp_path / "out"),

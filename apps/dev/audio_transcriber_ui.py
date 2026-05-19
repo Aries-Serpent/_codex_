@@ -58,13 +58,13 @@ except ImportError:  # pragma: no cover - fallback path for src-layout execution
 class AudioTranscriberUI:
     """Desktop UI for transcription workflow."""
 
-    def __init__(self):
+    def __init__(self, speaker_name_timeout_seconds: float = 30.0):
         self.root = Tk()
         self.root.title("Audio Transcriber UI")
         self.root.geometry("980x700")
         self.worker_thread: threading.Thread | None = None
         self._ui_queue: queue.Queue[tuple[str, str | float]] = queue.Queue()
-        self.speaker_name_timeout_seconds = 30.0
+        self.speaker_name_timeout_seconds = speaker_name_timeout_seconds
 
         self.input_path = StringVar()
         self.output_dir = StringVar()
