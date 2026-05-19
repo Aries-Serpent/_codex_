@@ -24,7 +24,7 @@ import sys
 import tempfile
 import time
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -48,7 +48,7 @@ class AutoFixWithRollback:
         self.max_retries = max_retries
         self.logger = self._setup_logging(verbose)
         self.metrics = {
-            "start_time": datetime.utcnow().isoformat(),
+            "start_time": datetime.now(timezone.utc).isoformat(),
             "pre_flight_passed": False,
             "fixes_attempted": 0,
             "fixes_succeeded": 0,
@@ -424,7 +424,7 @@ class AutoFixWithRollback:
         Args:
             output_path: Path to save metrics JSON
         """
-        self.metrics["end_time"] = datetime.utcnow().isoformat()
+        self.metrics["end_time"] = datetime.now(timezone.utc).isoformat()
         with open(output_path, "w") as f:
             json.dump(self.metrics, f, indent=2)
         self.logger.info(f"Metrics saved to {output_path}")

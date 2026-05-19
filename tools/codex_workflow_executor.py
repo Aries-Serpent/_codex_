@@ -39,7 +39,7 @@ def make_user_executable(path: pathlib.Path) -> None:
 
 
 def log_change(line: str):
-    ts = datetime.datetime.utcnow().isoformat() + "Z"
+    ts = datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z"
     CHANGELOG.parent.mkdir(exist_ok=True, parents=True)
     with open(CHANGELOG, "a", encoding="utf-8") as f:
         f.write(f"- {ts} {line}\n")

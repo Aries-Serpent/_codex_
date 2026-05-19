@@ -17,7 +17,7 @@ import shutil
 import subprocess  # nosec B404 - subprocess routed via safe runner
 import sys
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from codex_ml.utils.subproc import run_argv
@@ -37,7 +37,7 @@ RESULTS = CODEX / "results.md"
 
 
 def now_iso() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def log_change(title: str, details: str) -> None:

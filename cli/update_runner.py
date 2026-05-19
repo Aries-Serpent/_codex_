@@ -11,7 +11,7 @@ import re
 import textwrap
 from collections import defaultdict
 from collections.abc import Iterable, Sequence
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -23,7 +23,7 @@ ERROR_LOG = REPO_ROOT / ".codex" / "errors.ndjson"
 
 
 def _timestamp() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    return datetime.now(timezone.utc).isoformat() + "Z"
 
 
 def log_change(message: str) -> None:
@@ -359,7 +359,7 @@ def run_functional_training(
     state = {
         "seed": seed,
         "resume": bool(resume),
-        "timestamp": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z",
         "config_keys": sorted(str(key) for key in config.keys()),
     }
     state_path.write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")

@@ -25,7 +25,7 @@ import re
 import subprocess
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -40,7 +40,7 @@ RESULTS = CODEX / "results.md"
 
 
 def ts() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def append(path: Path, txt: str) -> None:
@@ -259,7 +259,7 @@ ART_DIR.mkdir(parents=True, exist_ok=True)
 
 def _ts() -> str:
     from datetime import datetime
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 def record_metrics(phase: str, epoch: int, metrics: Dict[str, Any], cfg_hash: str, notes: str = "toy-eval") -> None:
     payload = {{

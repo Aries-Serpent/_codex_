@@ -9,7 +9,7 @@ and reports their status until all workflows complete.
 import json
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -96,7 +96,7 @@ class WorkflowMonitorReport:
         print("\n" + "="*80)
         print("📊 WORKFLOW MONITORING REPORT")
         print(f"Commit SHA: {self.commit_sha[:8]}")
-        print(f"Timestamp: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+        print(f"Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
         print("="*80)
         print("\n📈 Overall Status:")
         print(f"  Total Workflows: {self.total_workflows}")
@@ -143,7 +143,7 @@ class WorkflowMonitorReport:
         """Save report to JSON file."""
         data = {
             "commit_sha": self.commit_sha,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "summary": {
                 "total_workflows": self.total_workflows,
                 "completed": self.completed,

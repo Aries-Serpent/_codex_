@@ -2463,7 +2463,7 @@ class CommonIssueFixer:
         if not abs_report.exists():
             return False
 
-        now = _dt.datetime.utcnow()
+        now = _dt.datetime.now(_dt.timezone.utc)
         timestamp = now.strftime("%Y-%m-%dT%H:%MZ")
         date_str = now.strftime("%Y-%m-%d")
         run_id = _os.environ.get("GITHUB_RUN_ID", "local")

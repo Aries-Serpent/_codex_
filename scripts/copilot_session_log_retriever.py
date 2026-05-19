@@ -22,7 +22,7 @@ import os
 import re
 import sqlite3
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -403,7 +403,7 @@ class CopilotSessionRetriever:
         """
         report_lines = [
             "# Copilot Session Log Verification Report",
-            f"\nGenerated: {datetime.utcnow().isoformat()}Z",
+            f"\nGenerated: {datetime.now(timezone.utc).isoformat()}Z",
             f"\nTotal Sessions Analyzed: {len(summaries)}",
             "\n---\n"
         ]

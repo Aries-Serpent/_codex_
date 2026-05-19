@@ -41,7 +41,7 @@ import sqlite3
 import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Optional
 
 # Optional imports for Parquet and querying
@@ -220,7 +220,7 @@ def parse_workers(val: str) -> int:
 
 
 def iso_utc_now() -> str:
-    return datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    return datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z"
 
 
 def parse_date_ymd(s: str) -> date:

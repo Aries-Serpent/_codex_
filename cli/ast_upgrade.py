@@ -1406,7 +1406,7 @@ def write_metrics(ctx: UpgradeContext) -> None:
 
     records.append(
         {
-            "ts": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+            "ts": datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat() + "Z",
             "name": "analysis.upgrade",
             "value": len(records),
             "repo": str(ctx.root),

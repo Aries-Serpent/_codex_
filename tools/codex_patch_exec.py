@@ -11,7 +11,7 @@ import argparse
 import json
 import subprocess
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -23,7 +23,7 @@ RES = CODEX / "results.md"
 
 
 def ts():
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def log_change(action, path, why, preview=""):
