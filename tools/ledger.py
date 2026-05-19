@@ -34,7 +34,7 @@ def append_event(event: dict[str, Any], path: Path = LEDGER_PATH) -> dict[str, A
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     rec = {
-        "ts": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds") + "Z",
+        "ts": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "run_id": event.get("run_id")
         or os.environ.get("CODEX_RUN_ID")
         or _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d%H%M%S"),

@@ -176,7 +176,7 @@ def generate_remediation_plan(
 
     with open(plan_path, "w", encoding="utf-8") as f:
         f.write("# 🔐 Code Scanning Alert Remediation Plan\n\n")
-        f.write(f"> **Generated**: {datetime.now(timezone.utc).isoformat()}Z\n")
+        f.write(f"> **Generated**: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n")
         f.write("> **Repository**: Aries-Serpent/_codex_\n")
         f.write(f"> **Total Alerts**: {len(alerts)}\n\n")
 

@@ -220,7 +220,7 @@ def parse_workers(val: str) -> int:
 
 
 def iso_utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z"
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def parse_date_ymd(s: str) -> date:

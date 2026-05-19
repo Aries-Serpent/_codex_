@@ -31,7 +31,7 @@ DEFAULT_STEPS: tuple[Step, ...] = (
 def _stream_process(cmd: list[str], log_file: Path) -> int:
     with log_file.open("w", encoding="utf-8") as handle:
         handle.write(f"# Command: {' '.join(cmd)}\n")
-        handle.write(f"# Started: {datetime.now(timezone.utc).isoformat()}Z\n\n")
+        handle.write(f"# Started: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n\n")
         handle.flush()
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         assert proc.stdout is not None

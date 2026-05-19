@@ -403,7 +403,7 @@ class CopilotSessionRetriever:
         """
         report_lines = [
             "# Copilot Session Log Verification Report",
-            f"\nGenerated: {datetime.now(timezone.utc).isoformat()}Z",
+            f"\nGenerated: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
             f"\nTotal Sessions Analyzed: {len(summaries)}",
             "\n---\n"
         ]
