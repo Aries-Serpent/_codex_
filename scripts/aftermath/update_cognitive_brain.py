@@ -276,8 +276,8 @@ def _db_query_latest_session_end(db_path: Path) -> Optional[dict]:
 
 
 def _section_hash(text: str) -> str:
-    """Return MD5 hex digest of a text block (idempotency check)."""
-    return hashlib.md5(text.encode('utf-8')).hexdigest()
+    """Return SHA-256 hex digest of a text block (idempotency check)."""
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 
 def _upsert_section(
