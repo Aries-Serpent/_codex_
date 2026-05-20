@@ -52,6 +52,7 @@
     - import harness now explicitly falls through to `original_import(...)` when helper import is allowed without a fake module
     - added inline clarifying comment documenting the intentional real-import passthrough path in test harness
     - added passthrough-path coverage test (`allow_checkpointing_import=True`, no fake module) to validate real helper import execution
+    - passthrough-path test now also validates real `build_payload_bytes` behavior via bytes-or-runtime-error assertion, depending on torch availability
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.

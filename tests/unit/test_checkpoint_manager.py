@@ -35,7 +35,8 @@ def _load_training_checkpoint_manager(
                 raise ImportError("forced checkpointing import failure")
             if fake_checkpointing is not None:
                 return fake_checkpointing
-            # Intentional passthrough: allow real helper imports when no fake is injected.
+            # Intentional passthrough: for integration testing, allow real helper imports
+            # when no mock helper module is injected.
             return original_import(name, globals, locals, fromlist, level)
         if name == "numpy" and importer == module_name:
             if fake_numpy is None:
@@ -98,6 +99,12 @@ def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
     )
 
     assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing"
+    try:
+        payload = module.build_payload_bytes(None)
+    except RuntimeError as exc:  # pragma: no cover - torch-optional environment
+        assert "torch is required" in str(exc)
+    else:
+        assert isinstance(payload, bytes)
     assert "python" in module.dump_rng_state()
 
 
