@@ -166,3 +166,58 @@ def test_dump_rng_state_cuda_failure_logs_specific_failure(monkeypatch, caplog):
     assert state["torch"]["cpu"] == [1, 2, 3]
     assert "cuda" not in state["torch"]
     assert "Failed to capture CUDA random state" in caplog.text
+
+
+def test_best_k_zero_disables_best_tracking(monkeypatch, tmp_path):
+    module = _load_training_checkpoint_manager(monkeypatch)
+    manager = module.CheckpointManager(tmp_path, metric="loss", best_k=0)
+    candidate = tmp_path / "ckpt-1.pt"
+    candidate.write_bytes(b"payload")
+
+    manager._update_best(candidate, 1, {"loss": 0.5})
+
+    assert manager._best_records == []
+    assert manager._best is None
+    assert not (tmp_path / "best.json").exists()
+
+
+def test_update_best_drops_invalid_records_before_sort(monkeypatch, tmp_path, caplog):
+    caplog.set_level(logging.WARNING)
+    module = _load_training_checkpoint_manager(monkeypatch)
+    manager = module.CheckpointManager(tmp_path, metric="loss", best_k=3)
+    manager._best_records = [
+        {"path": "ckpt-10.pt", "value": 1.0, "step": 10},
+        {"path": "missing-value.pt", "step": 11},
+        {"path": "bad-fields.pt", "value": "x", "step": "not-int"},
+    ]
+    manager._best = 1.0
+    candidate = tmp_path / "ckpt-12.pt"
+    candidate.write_bytes(b"payload")
+
+    manager._update_best(candidate, 12, {"loss": 0.5})
+
+    assert [r["path"] for r in manager._best_records] == ["ckpt-12.pt", "ckpt-10.pt"]
+    assert all("value" in r and "step" in r for r in manager._best_records)
+    assert "Dropping invalid best-record entry missing required keys" in caplog.text
+    assert "Dropping invalid best-record entry with non-numeric fields" in caplog.text
+
+
+def test_callback_on_step_end_skips_step_zero(monkeypatch, tmp_path):
+    module = _load_training_checkpoint_manager(monkeypatch)
+    manager = module.CheckpointManager(tmp_path, save_steps=2)
+    callback = manager.callback()
+    saved_steps: list[int] = []
+    monkeypatch.setattr(module, "build_payload_bytes", lambda *args, **kwargs: b"payload")
+    monkeypatch.setattr(
+        manager,
+        "save_now",
+        lambda step, payload, metrics, prefix="ckpt", *, rng_state=None: saved_steps.append(step),
+    )
+
+    dummy = SimpleNamespace(state_dict=lambda: {})
+    control = SimpleNamespace()
+    callback.on_train_begin(None, None, control, model=dummy, optimizer=dummy)
+    callback.on_step_end(None, SimpleNamespace(global_step=0), control)
+    callback.on_step_end(None, SimpleNamespace(global_step=2), control)
+
+    assert saved_steps == [2]

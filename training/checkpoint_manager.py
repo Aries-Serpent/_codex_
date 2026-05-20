@@ -374,6 +374,8 @@ class CheckpointManager:
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
             return
+        if self.best_k <= 0:
+            return
         val = float(metrics[self.metric])
         better = False
         if self._best is None:
@@ -409,6 +411,10 @@ class CheckpointManager:
             valid_records.sort(key=keyfn)
             self._best_records = valid_records[: self.best_k]
             self._best = self._best_records[0]["value"] if self._best_records else None
+            if not self._best_records:
+                self._refresh_best_symlinks()
+                self._protected_names_cache = set()
+                return
             top = self._best_records[0]
             payload = {
                 "value": top["value"],
