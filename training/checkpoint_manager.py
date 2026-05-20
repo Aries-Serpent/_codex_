@@ -20,22 +20,21 @@ _warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
-_checkpointing_import_ok = False
+_checkpoint_helpers_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (
-        CheckpointManager,
         build_payload_bytes,
         dump_rng_state,
     )
-    _checkpointing_import_ok = True
+    _checkpoint_helpers_import_ok = True
 except (ImportError, ModuleNotFoundError):
-    # fall back to existing local implementation below (if present)
+    # fall back to existing local helper implementation below (if present)
     logger.debug(
-        "Failed to import CheckpointManager/build_payload_bytes/dump_rng_state "
+        "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback.",
         exc_info=True,
     )
-if not _checkpointing_import_ok:
+if not _checkpoint_helpers_import_ok:
     import io
     import random
 

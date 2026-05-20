@@ -60,7 +60,7 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     assert "numpy" not in state
     assert "torch" not in state
     assert (
-        "Failed to import CheckpointManager/build_payload_bytes/dump_rng_state "
+        "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
     ) in caplog.text
 

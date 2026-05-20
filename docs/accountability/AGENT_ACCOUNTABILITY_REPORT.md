@@ -41170,7 +41170,6 @@ and the CI gate requirement.
 
 ---
 
-## SESSION SUMMARY — 2026-05-20T04:50Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4514)
 ## SESSION SUMMARY — 2026-05-20T04:56Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4514)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -41191,8 +41190,7 @@ and the CI gate requirement.
 2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26141843734
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26142056197
+3. **Run URLs** — https://github.com/Aries-Serpent/_codex_/actions/runs/26141843734 and https://github.com/Aries-Serpent/_codex_/actions/runs/26142056197
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
