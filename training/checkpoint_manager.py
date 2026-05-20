@@ -20,20 +20,22 @@ _warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
+_checkpointing_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (
         CheckpointManager,
         build_payload_bytes,
         dump_rng_state,
     )
-except Exception:
+    _checkpointing_import_ok = True
+except (ImportError, ModuleNotFoundError):
     # fall back to existing local implementation below (if present)
     logger.debug(
         "Failed to import CheckpointManager/build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback.",
         exc_info=True,
     )
-if "CheckpointManager" not in globals():
+if not _checkpointing_import_ok:
     import io
     import random
 
@@ -42,15 +44,15 @@ if "CheckpointManager" not in globals():
             build_payload_bytes,
             dump_rng_state,
         )
-    except Exception:  # pragma: no cover - legacy fallback path
+    except (ImportError, ModuleNotFoundError):  # pragma: no cover - legacy fallback path
         try:  # numpy is optional for RNG capture
             import numpy as _np
-        except Exception:  # pragma: no cover - optional dependency
+        except ImportError:  # pragma: no cover - optional dependency
             _np = None
 
         try:  # torch may be absent in lightweight environments
             import torch as _torch
-        except Exception:  # pragma: no cover - optional dependency
+        except ImportError:  # pragma: no cover - optional dependency
             _torch = None  # type: ignore
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
