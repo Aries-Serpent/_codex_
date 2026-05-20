@@ -53,6 +53,7 @@
     - added inline clarifying comment documenting the intentional real-import passthrough path in test harness
     - added passthrough-path coverage test (`allow_checkpointing_import=True`, no fake module) to validate real helper import execution
     - passthrough-path test now also validates real `build_payload_bytes` behavior via bytes-or-runtime-error assertion, depending on torch availability
+    - clarified that passthrough is integration-like coverage inside unit tests and marked both environment-dependent payload branches as `# pragma: no cover`
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.
