@@ -91,6 +91,16 @@ def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, cap
     assert "using legacy local fallback" not in caplog.text
 
 
+def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
+    module = _load_training_checkpoint_manager(
+        monkeypatch,
+        allow_checkpointing_import=True,
+    )
+
+    assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing"
+    assert "python" in module.dump_rng_state()
+
+
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     fake_numpy = SimpleNamespace(
