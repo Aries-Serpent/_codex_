@@ -36,7 +36,6 @@ except Exception:
 if "CheckpointManager" not in globals():
     import io
     import random
-    from typing import Any, Optional
 
     try:  # Prefer canonical helpers when available.
         from codex_ml.utils.checkpointing import (  # type: ignore
@@ -282,6 +281,13 @@ class CheckpointManager:
         *,
         rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
+        """Conditionally save a checkpoint based on the provided cadence.
+
+        ``save_steps`` is used only as a gate for this call. When the condition
+        matches, this method delegates to :meth:`save_now`, which always performs
+        an immediate save and retention/best-metric updates. It does not change
+        any instance-level scheduling configuration.
+        """
         if save_steps > 0 and step % save_steps == 0:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
@@ -349,7 +355,7 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {Path(str(rec["path"])).name for rec in self._best_records}
+        protected = {rec["path"] for rec in self._best_records}
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue

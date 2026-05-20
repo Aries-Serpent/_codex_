@@ -16,6 +16,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import tools.workflow_merge as _wm
 from tools.workflow_merge import compile_replacements, replace_in_file, update_references
 
 # ---------------------------------------------------------------------------
