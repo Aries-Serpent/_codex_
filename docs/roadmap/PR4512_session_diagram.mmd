@@ -5,8 +5,9 @@ flowchart TD
     D --> E["🧪 Add targeted tests\n tests/unit/test_checkpoint_manager.py"]
     E --> F["✅ Validate\nruff + pytest passing"]
     F --> G["📄 Validate/fix PR-4512 follow-up prompt scope"]
-    G --> H["📡 MCP workflow monitoring\n29 in_progress; startup-failure snapshots have 0 jobs"]
-    H --> I["📝 Update living docs + changelog + accountability"]
+    G --> H["📡 Address review feedback\ncommit 51dccd8: refresh follow-up prompt metadata"]
+    H --> I["🔄 CI monitoring\nworkflows approved; monitoring results"]
+    I --> J["📝 Update living docs + changelog + accountability"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -17,3 +18,4 @@ flowchart TD
     style G fill:#2d6a4f,color:#fff
     style H fill:#2d6a4f,color:#fff
     style I fill:#f4a261,color:#000
+    style J fill:#f4a261,color:#000

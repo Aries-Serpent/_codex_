@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR4512 S1075 review feedback — 2026-05-20T02:00Z)
+- Addressed 3 review comments on commit `46eea5d`:
+  - `.github/copilot-prompts/active/PR-4512-followup.md`: refreshed stale commit reference to full SHA `7cec4a167b6c4886466279bb178795b5c8a9cc28`; replaced "No files modified" with actual list of 5 modified files; marked all Priority 1/2 and Execution Checklist items complete; updated status to ✅ COMPLETE.
+  - `CHANGELOG.md` line 19: corrected description to state prompt was "refreshed with completed task marks" (not just "aligned to scope").
+  - `docs/roadmap/PR4512_whats_next.md`: updated status row to note prompt was fully refreshed.
+- Updated living docs (`PR4512_whats_next.md`, `PR4512_session_diagram.mmd`, `AGENT_ACCOUNTABILITY_REPORT.md`) with S1075 session status.
+- Commit `51dccd8` — all review feedback resolved.
+
 ### Fixed (PR4512 checkpoint/logging + workflow merge helper — 2026-05-20T01:45Z)
 - `training/checkpoint_manager.py`:
   - replaced generic fallback debug logs with operation-specific messages (import fallback, numpy RNG, torch CPU RNG, CUDA RNG), preserving `exc_info=True`;
