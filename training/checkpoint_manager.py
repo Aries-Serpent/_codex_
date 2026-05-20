@@ -15,11 +15,14 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-_warnings.warn(
-    "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
-    DeprecationWarning,
-    stacklevel=2,
-)
+_legacy_deprecation_warned = False
+if not _legacy_deprecation_warned:
+    _warnings.warn(
+        "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    _legacy_deprecation_warned = True
 _checkpoint_helpers_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (
@@ -160,7 +163,7 @@ class CheckpointManager:
         resolved_best = best_k if best_k is not None else keep_best
         if resolved_best is None:
             resolved_best = 1
-        self.best_k = max(1, int(resolved_best))
+        self.best_k = max(0, int(resolved_best))
         self._best_meta = self.root / "best.json"
         self._best_file = self.root / "best"
         self._best_dir = self.root / "best_candidates"
@@ -214,7 +217,7 @@ class CheckpointManager:
             except Exception:
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
-        self._best = self._best_records[0]["value"] if self._best_records else None
+        self._best = self._best_records[0].get("value") if self._best_records else None
         self._protected_names_cache: set[str] = {
             Path(str(p)).name
             for rec in self._best_records
@@ -326,7 +329,7 @@ class CheckpointManager:
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
                 # Keep explicit None handling for test/legacy state shims.
-                if step is not None and step % save_every == 0:
+                if step is not None and step > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -384,13 +387,27 @@ class CheckpointManager:
             existing = [r for r in self._best_records if r["path"] != path.name]
             existing.append(record)
 
+            valid_records: list[dict[str, Any]] = []
+            for item in existing:
+                if "value" not in item or "step" not in item:
+                    logger.warning("Dropping invalid best-record entry missing required keys: %r", item)
+                    continue
+                try:
+                    normalized = dict(item)
+                    normalized["value"] = float(item["value"])
+                    normalized["step"] = int(item["step"])
+                except (TypeError, ValueError):
+                    logger.warning("Dropping invalid best-record entry with non-numeric fields: %r", item)
+                    continue
+                valid_records.append(normalized)
+
             def keyfn(item: dict[str, Any]) -> tuple[float, int]:
-                value = float(item.get("value", 0.0))
-                step_idx = int(item.get("step", 0))
+                value = float(item["value"])
+                step_idx = int(item["step"])
                 return (value, step_idx) if self.mode == "min" else (-value, step_idx)
 
-            existing.sort(key=keyfn)
-            self._best_records = existing[: self.best_k]
+            valid_records.sort(key=keyfn)
+            self._best_records = valid_records[: self.best_k]
             self._best = self._best_records[0]["value"] if self._best_records else None
             top = self._best_records[0]
             payload = {
