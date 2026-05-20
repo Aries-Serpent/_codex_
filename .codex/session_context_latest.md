@@ -1,32 +1,32 @@
-# Session Context — 2026-05-19T22:18:01Z
-**Branch:** `copilot/update-speaker-name-timeout`  **PR:** #4510  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-19T23:56:01Z
+**Branch:** `copilot/fix-kwargs-naming-convention`  **PR:** #4511  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4695` (✅)
-- GraphQL remaining: `4994` (✅)
+- REST remaining: `4688` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4510 — [WIP] Update speaker name timeout documentation or configuration
-State: `open`  Draft: `True`  Branch: `copilot/update-speaker-name-timeout` → `main`
+## 📋 PR #4511 — [WIP] Fix kwargs naming convention in test transcription workflow
+State: `open`  Draft: `True`  Branch: `copilot/fix-kwargs-naming-convention` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-19)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
+- **Agent Token Delegation** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-19)
+- **Running Copilot cloud agent** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-19)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
 
 ## 📝 Recent Commits
-- `0c60bc03` Initial plan — copilot-swe-agent[bot] (2026-05-19)
-- `f4402ad7` Merge pull request #4509 from Aries-Serpent/copilot/add-transcription-applicatio — Statix (2026-05-19)
-- `4eb611bf` perf(audio): cache whisper/pyannote runtime objects and finalize workflow tests — copilot-swe-agent[bot] (2026-05-19)
-- `ff7c321e` feat(audio): wire faster-whisper + pyannote backends and add UI progress streami — copilot-swe-agent[bot] (2026-05-19)
-- `a1f264dc` Merge origin/main into copilot/add-transcription-application — copilot-swe-agent[bot] (2026-05-19)
-- `4697e874` chore: plan final merge-readiness work for transcription PR — copilot-swe-agent[bot] (2026-05-19)
-- `7e31cdc1` fix: remove unused private alias _apply_backward_compatible_default_command from — copilot-swe-agent[bot] (2026-05-19)
-- `f99db0c5` fix: struct.unpack for PCM decoding, add 30s timeout to _gui_input_func — copilot-swe-agent[bot] (2026-05-19)
+- `c1110ece` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
+- `43317d5f` chore: Generate follow-up prompt for PR #4511 [skip ci] — github-actions[bot] (2026-05-19)
+- `45d14905` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-19)
+- `d14d2063` Initial plan — copilot-swe-agent[bot] (2026-05-19)
+- `c119ddff` Merge pull request #4510 from Aries-Serpent/copilot/update-speaker-name-timeout — Statix (2026-05-19)
+- `cbb87c6d` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
+- `d582c558` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
+- `312f2d81` fix final review wording and helper naming — copilot-swe-agent[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
