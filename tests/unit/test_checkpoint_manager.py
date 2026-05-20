@@ -35,6 +35,7 @@ def _load_training_checkpoint_manager(
                 raise ImportError("forced checkpointing import failure")
             if fake_checkpointing is not None:
                 return fake_checkpointing
+            # Intentional passthrough: allow real helper imports when no fake is injected.
             return original_import(name, globals, locals, fromlist, level)
         if name == "numpy" and importer == module_name:
             if fake_numpy is None:
