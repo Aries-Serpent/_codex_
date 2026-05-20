@@ -38,108 +38,102 @@ if not _checkpoint_helpers_import_ok:
     import io
     import random
 
-    try:  # Prefer canonical helpers when available.
-        from codex_ml.utils.checkpointing import (  # type: ignore
-            build_payload_bytes,
-            dump_rng_state,
+    try:  # numpy is optional for RNG capture
+        import numpy as _np
+    except ImportError:  # pragma: no cover - optional dependency
+        _np = None
+
+    try:  # torch may be absent in lightweight environments
+        import torch as _torch
+    except ImportError:  # pragma: no cover - optional dependency
+        _torch = None  # type: ignore
+
+    def _python_state_payload(raw_state: Any) -> list[Any]:
+        return [raw_state[0], list(raw_state[1]), raw_state[2]]
+
+    def _numpy_state_payload(raw_state: Any) -> list[Any]:  # pragma: no cover - numpy optional
+        return [
+            raw_state[0],
+            raw_state[1].tolist(),
+            raw_state[2],
+            raw_state[3],
+            raw_state[4],
+        ]
+
+    def _torch_cuda_rng_available(torch_module: Any) -> bool:
+        """Return True when torch CUDA RNG-state APIs are available and usable."""
+        return (
+            hasattr(torch_module, "cuda")
+            and hasattr(torch_module.cuda, "is_available")
+            and torch_module.cuda.is_available()
+            and hasattr(torch_module.cuda, "get_rng_state_all")
         )
-    except (ImportError, ModuleNotFoundError):  # pragma: no cover - legacy fallback path
-        try:  # numpy is optional for RNG capture
-            import numpy as _np
-        except ImportError:  # pragma: no cover - optional dependency
-            _np = None
 
-        try:  # torch may be absent in lightweight environments
-            import torch as _torch
-        except ImportError:  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore
+    def dump_rng_state() -> dict[str, Any]:
+        state: dict[str, Any] = {}
+        try:
+            state["python"] = _python_state_payload(random.getstate())
+        except Exception:  # pragma: no cover - defensive
+            state["python"] = []
 
-        def _python_state_payload(raw_state: Any) -> list[Any]:
-            return [raw_state[0], list(raw_state[1]), raw_state[2]]
-
-        def _numpy_state_payload(raw_state: Any) -> list[Any]:  # pragma: no cover - numpy optional
-            return [
-                raw_state[0],
-                raw_state[1].tolist(),
-                raw_state[2],
-                raw_state[3],
-                raw_state[4],
-            ]
-
-        def _torch_cuda_rng_available(torch_module: Any) -> bool:
-            """Return True when torch CUDA RNG-state APIs are available and usable."""
-            return (
-                hasattr(torch_module, "cuda")
-                and hasattr(torch_module.cuda, "is_available")
-                and torch_module.cuda.is_available()
-                and hasattr(torch_module.cuda, "get_rng_state_all")
-            )
-
-        def dump_rng_state() -> dict[str, Any]:
-            state: dict[str, Any] = {}
+        if _np is not None:  # pragma: no branch - optional dependency
             try:
-                state["python"] = _python_state_payload(random.getstate())
+                state["numpy"] = _numpy_state_payload(_np.random.get_state())
             except Exception:  # pragma: no cover - defensive
-                state["python"] = []
+                logger.debug("Failed to capture numpy random state", exc_info=True)
+        if _torch is not None:
+            torch_state: dict[str, Any] = {}
+            try:
+                if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
+                    cpu_state = _torch.random.get_rng_state()
+                else:
+                    cpu_state = (
+                        _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
+                    )
+                if cpu_state is not None and hasattr(cpu_state, "tolist"):
+                    torch_state["cpu"] = cpu_state.tolist()
+            except Exception:  # pragma: no cover - torch optional
+                logger.debug("Failed to capture torch CPU random state", exc_info=True)
+            try:
+                if _torch_cuda_rng_available(_torch):
+                    torch_state["cuda"] = [
+                        tensor.tolist()
+                        for tensor in _torch.cuda.get_rng_state_all()
+                    ]
+            except Exception:  # pragma: no cover - cuda optional
+                logger.debug("Failed to capture CUDA random state", exc_info=True)
+            if torch_state:
+                state["torch"] = torch_state
+        return state
 
-            if _np is not None:  # pragma: no branch - optional dependency
-                try:
-                    state["numpy"] = _numpy_state_payload(_np.random.get_state())
-                except Exception:  # pragma: no cover - defensive
-                    logger.debug("Failed to capture numpy random state", exc_info=True)
-            if _torch is not None:
-                torch_state: dict[str, Any] = {}
-                try:
-                    if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
-                        cpu_state = _torch.random.get_rng_state()
-                    else:
-                        cpu_state = (
-                            _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
-                        )
-                    if cpu_state is not None and hasattr(cpu_state, "tolist"):
-                        torch_state["cpu"] = cpu_state.tolist()
-                except Exception:  # pragma: no cover - torch optional
-                    logger.debug("Failed to capture torch CPU random state", exc_info=True)
-                try:
-                    if _torch_cuda_rng_available(_torch):
-                        torch_state["cuda"] = [
-                            tensor.tolist()
-                            for tensor in _torch.cuda.get_rng_state_all()
-                        ]
-                except Exception:  # pragma: no cover - cuda optional
-                    logger.debug("Failed to capture CUDA random state", exc_info=True)
-                if torch_state:
-                    state["torch"] = torch_state
-            return state
+    def build_payload_bytes(
+        model: Any,
+        optimizer: Any | None = None,
+        scheduler: Any | None = None,
+        scaler: Any | None = None,
+        *,
+        rng_state: bool = False,
+    ) -> bytes:
+        if _torch is None:
+            raise RuntimeError("torch is required to build checkpoint payloads")
 
-        def build_payload_bytes(
-            model: Any,
-            optimizer: Any | None = None,
-            scheduler: Any | None = None,
-            scaler: Any | None = None,
-            *,
-            rng_state: bool = False,
-        ) -> bytes:
-            if _torch is None:
-                raise RuntimeError("torch is required to build checkpoint payloads")
+        payload: dict[str, Any] = {
+            "model": model.state_dict() if model is not None else None,
+            "optimizer": optimizer.state_dict() if optimizer is not None else None,
+            "scheduler": (
+                scheduler.state_dict()
+                if scheduler is not None and hasattr(scheduler, "state_dict")
+                else None
+            ),
+        }
+        if scaler is not None and hasattr(scaler, "state_dict"):
+            payload["scaler"] = scaler.state_dict()
+        if rng_state:
+            payload["rng"] = dump_rng_state()
 
-            payload: dict[str, Any] = {
-                "model": model.state_dict() if model is not None else None,
-                "optimizer": optimizer.state_dict() if optimizer is not None else None,
-                "scheduler": (
-                    scheduler.state_dict()
-                    if scheduler is not None and hasattr(scheduler, "state_dict")
-                    else None
-                ),
-            }
-            if scaler is not None and hasattr(scaler, "state_dict"):
-                payload["scaler"] = scaler.state_dict()
-            if rng_state:
-                payload["rng"] = dump_rng_state()
-
-            buffer = io.BytesIO()
-            _torch.save(payload, buffer)
-            return buffer.getvalue()
+        buffer = io.BytesIO()
+        _torch.save(payload, buffer)
+        return buffer.getvalue()
 
 
 class CheckpointManager:
