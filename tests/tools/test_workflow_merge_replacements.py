@@ -158,7 +158,7 @@ class TestUpdateReferences:
         (tmp_path / "a.py").write_text("import old_mod\n", encoding="utf-8")
         (tmp_path / "b.py").write_text("import other\n", encoding="utf-8")
 
-        monkeypatch.setattr(_wm, "REPO", tmp_path)
+        monkeypatch.setattr("tools.workflow_merge.REPO", tmp_path)
         changed, scanned = update_references({"old_mod": "new_mod"})
 
         assert changed == 1
@@ -168,7 +168,7 @@ class TestUpdateReferences:
 
     def test_empty_mapping_changes_nothing(self, tmp_path: Path, monkeypatch):
         (tmp_path / "x.py").write_text("some content\n", encoding="utf-8")
-        monkeypatch.setattr(_wm, "REPO", tmp_path)
+        monkeypatch.setattr("tools.workflow_merge.REPO", tmp_path)
         changed, scanned = update_references({})
         assert changed == 0
         assert scanned == 1

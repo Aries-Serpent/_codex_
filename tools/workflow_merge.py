@@ -391,7 +391,7 @@ def main() -> int:
     # Compliance: do not alter CI triggers
     log_change(
         "Compliance",
-        "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Actions workflows.",
+        "DO NOT activate or modify any GitHub Actions workflow files. All GitHub Actions workflows must remain unchanged.",
     )
 
     print("Consolidation complete. See .codex/ for logs and results.")
