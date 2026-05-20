@@ -350,7 +350,7 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {Path(str(rec["path"])).name for rec in self._best_records}
+        protected = self._protected_names_cache
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
@@ -366,6 +366,7 @@ class CheckpointManager:
         if not self.metric or not metrics or self.metric not in metrics:
             return
         val = float(metrics[self.metric])
+        old_len = len(self._best_records)
         better = False
         if self._best is None:
             better = True
@@ -397,6 +398,9 @@ class CheckpointManager:
                 json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
             )
             self._refresh_best_symlinks()
+
+        if len(self._best_records) != old_len:
+            self._protected_names_cache = {Path(str(rec["path"])).name for rec in self._best_records}
 
     def _refresh_best_symlinks(self) -> None:
         if not self._best_dir.exists():
