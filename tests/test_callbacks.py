@@ -36,6 +36,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
                 es = EarlyStopping(patience=patience, min_delta=min_delta)
             except Exception as e:
                 pytest.fail(f"Failed to instantiate EarlyStopping without 'mode': {e}")
+                raise
 
             # Try to set the mode attribute in a backward-compatible manner.
             try:
@@ -47,6 +48,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
             return es
         except Exception as e:
             pytest.fail(f"Unexpected error constructing EarlyStopping: {e}")
+            raise
 
 
 def _assert_step_bool(es: Any, value: float, expected: bool):
