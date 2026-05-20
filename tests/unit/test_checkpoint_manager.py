@@ -70,7 +70,7 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     ) in caplog.text
 
 
-def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch, caplog):
+def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     fake_checkpointing = SimpleNamespace(
         build_payload_bytes=lambda *args, **kwargs: b"ok",

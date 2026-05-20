@@ -47,6 +47,8 @@
   - `parallel_validation` follow-up comments resolved:
     - test helper flag renamed to `allow_checkpointing_import`
     - import-success test now asserts observable behavior only (no private-flag coupling)
+    - test renamed to `test_checkpoint_helper_import_success_uses_imported_helpers` for intent clarity
+    - `smart_cli.py` summary output kept concise without one-off temporary variable
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.

@@ -167,10 +167,9 @@ def _run_transcribe(args: argparse.Namespace) -> int:
         else:
             print(f"❌ {rel_name}: {item.error}")
 
-    total_files = result.processed_files + result.failed_files
     print(
         f"Processed={result.processed_files} Failed={result.failed_files} "
-        f"Total={total_files}"
+        f"Total={result.processed_files + result.failed_files}"
     )
     return 0 if result.failed_files == 0 else 1
 
