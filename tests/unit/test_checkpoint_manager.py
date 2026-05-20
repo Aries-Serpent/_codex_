@@ -214,9 +214,15 @@ def test_callback_on_step_end_skips_step_zero(monkeypatch, tmp_path):
         lambda step, payload, metrics, prefix="ckpt", *, rng_state=None: saved_steps.append(step),
     )
 
-    dummy = SimpleNamespace(state_dict=lambda: {})
+    mock_component = SimpleNamespace(state_dict=lambda: {})
     control = SimpleNamespace()
-    callback.on_train_begin(None, None, control, model=dummy, optimizer=dummy)
+    callback.on_train_begin(
+        None,
+        None,
+        control,
+        model=mock_component,
+        optimizer=mock_component,
+    )
     callback.on_step_end(None, SimpleNamespace(global_step=0), control)
     callback.on_step_end(None, SimpleNamespace(global_step=2), control)
 

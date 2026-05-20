@@ -15,14 +15,17 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-_legacy_deprecation_warned = False
-if not _legacy_deprecation_warned:
+_LEGACY_WARNING_MESSAGE = (
+    "training.checkpoint_manager is legacy; prefer "
+    "codex_ml.utils.checkpointing.CheckpointManager."
+)
+if not getattr(_warnings, "_training_checkpoint_manager_legacy_warned", False):
     _warnings.warn(
-        "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
+        _LEGACY_WARNING_MESSAGE,
         DeprecationWarning,
         stacklevel=2,
     )
-    _legacy_deprecation_warned = True
+    setattr(_warnings, "_training_checkpoint_manager_legacy_warned", True)
 _checkpoint_helpers_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (
@@ -410,8 +413,9 @@ class CheckpointManager:
 
             valid_records.sort(key=keyfn)
             self._best_records = valid_records[: self.best_k]
-            self._best = self._best_records[0]["value"] if self._best_records else None
+            self._best = self._best_records[0].get("value") if self._best_records else None
             if not self._best_records:
+                # Keep symlink/marker cleanup on empty best-set and skip metadata write.
                 self._refresh_best_symlinks()
                 self._protected_names_cache = set()
                 return
