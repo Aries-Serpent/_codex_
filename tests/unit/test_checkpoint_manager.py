@@ -70,7 +70,8 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     ) in caplog.text
 
 
-def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch):
+def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch, caplog):
+    caplog.set_level(logging.DEBUG)
     fake_checkpointing = SimpleNamespace(
         build_payload_bytes=lambda *args, **kwargs: b"ok",
         dump_rng_state=lambda: {"python": [1, 2, 3]},
@@ -84,6 +85,9 @@ def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch):
     assert module._checkpoint_helpers_import_ok is True
     assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes
     assert module.dump_rng_state is fake_checkpointing.dump_rng_state
+    assert module.build_payload_bytes({"k": "v"}) == b"ok"
+    assert module.dump_rng_state() == {"python": [1, 2, 3]}
+    assert "using legacy local fallback" not in caplog.text
 
 
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):

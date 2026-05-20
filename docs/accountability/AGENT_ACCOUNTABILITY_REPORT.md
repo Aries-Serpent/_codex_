@@ -41,6 +41,9 @@
 - `python -m pytest tests/services/audio -q` ✅
 - `python -m pytest tests/test_checkpoint_manager.py tests/unit/test_checkpoint_manager.py -q` ✅
 - `python scripts/ci/sync_tracked_files.py --check` (after fix) ✅
+- Post-review validation update:
+  - `python -m ruff check tests/unit/test_checkpoint_manager.py` ✅
+  - `python -m pytest tests/unit/test_checkpoint_manager.py tests/test_checkpoint_manager.py -q` ✅
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.
