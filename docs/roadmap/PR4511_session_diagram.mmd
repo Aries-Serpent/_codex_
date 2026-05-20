@@ -1,0 +1,19 @@
+flowchart TD
+    A["🧭 PR #4511 session start\nBranch: copilot/fix-kwargs-naming-convention\n2026-05-20T00:01Z"] --> B["📋 Read task\n7 AI findings across 2 files"]
+    B --> C["🔍 Read current file state\ntests/…/test_transcription_workflow.py\ntools/workflow_merge.py"]
+    C --> D["✏️ Apply 3 test-file fixes\n**_kwargs → **kwargs\n_FakePyannoteSegment → inside test fn\n_FakeSegment/_FakeWhisperModel → module scope"]
+    D --> E["✏️ Apply 4 workflow_merge.py fixes\nChatGPT-5 → ChatGPT @codex\nallow_failure default False\ncompile_replacements() helper\ngrammar fix in log_change"]
+    E --> F["✅ Validate\nruff ✅  pytest 8/8 ✅  ast.parse ✅"]
+    F --> G["📝 Living docs\nPR4511_whats_next.md\nPR4511_session_diagram.mmd"]
+    G --> H["📝 CHANGELOG + accountability update"]
+    H --> I["🚀 report_progress + create_pull_request\nPR #4511 open"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#2d6a4f,color:#fff
+    style H fill:#2d6a4f,color:#fff
+    style I fill:#f4a261,color:#000

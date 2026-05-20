@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:01Z)
+- **`tests/services/audio/test_transcription_workflow.py`**:
+  - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.
+  - Moved `_FakePyannoteSegment` from module scope into `test_process_file_with_pyannote_backend_uses_pyannote_path` to reduce module-level clutter.
+  - Extracted `_FakeSegment` and `_FakeWhisperModel` from nested-inside-test to module scope for reuse across tests.
+- **`tools/workflow_merge.py`**:
+  - Corrected `ChatGPT-5` → `ChatGPT @codex` in `log_error()` stderr message.
+  - Changed `_run()` `allow_failure` default from `True` → `False` to enforce fail-fast behaviour.
+  - Added `compile_replacements()` helper to pre-compile regex patterns once; updated `replace_in_file()` to accept compiled patterns and `update_references()` to compile once before file traversal.
+  - Fixed grammar: `"ALL GitHub Action."` → `"ALL GitHub Actions workflows."` in compliance `log_change` call.
+
 ### Fixed (auto-update — PR #4511)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4511 (SHA `e3d37062`) at 2026-05-19T23:38Z [auto-generated]
 

@@ -33,15 +33,23 @@ def _write_test_wav(path: Path, *, seconds: float = 1.0, sample_rate: int = 1600
         wav_file.writeframes(bytes(audio))
 
 
-def stub_process_file_method(self, input_path: str | Path, output_dir: str | Path, **_kwargs):
+def stub_process_file_method(self, input_path: str | Path, output_dir: str | Path, **kwargs):
     return TranscriptionResult(success=True, input_path=Path(input_path), output_files={})
 
 
-class _FakePyannoteSegment:
-    def __init__(self, start: float, end: float, speaker_id: str):
+class _FakeSegment:
+    def __init__(self, start: float, end: float, text: str):
         self.start = start
         self.end = end
-        self.speaker_id = speaker_id
+        self.text = text
+
+
+class _FakeWhisperModel:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def transcribe(self, *args, **kwargs):
+        return iter([_FakeSegment(0.0, 1.0, "hello from whisper")]), {"language": "en"}
 
 
 def test_discover_media_files_includes_mp3_and_mp4(tmp_path: Path, monkeypatch):
@@ -181,19 +189,6 @@ def test_faster_whisper_backend_runs_real_inference_when_dependency_present(
         lambda _: "present",
     )
 
-    class _FakeSegment:
-        def __init__(self, start: float, end: float, text: str):
-            self.start = start
-            self.end = end
-            self.text = text
-
-    class _FakeWhisperModel:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def transcribe(self, *args, **kwargs):
-            return iter([_FakeSegment(0.0, 1.0, "hello from whisper")]), {"language": "en"}
-
     fake_module = types.SimpleNamespace(WhisperModel=_FakeWhisperModel)
     monkeypatch.setitem(sys.modules, "faster_whisper", fake_module)
 
@@ -208,6 +203,12 @@ def test_faster_whisper_backend_runs_real_inference_when_dependency_present(
 
 
 def test_process_file_with_pyannote_backend_uses_pyannote_path(tmp_path: Path, monkeypatch):
+    class _FakePyannoteSegment:
+        def __init__(self, start: float, end: float, speaker_id: str):
+            self.start = start
+            self.end = end
+            self.speaker_id = speaker_id
+
     wav_path = tmp_path / "sample.wav"
     _write_test_wav(wav_path, seconds=1.0)
 
