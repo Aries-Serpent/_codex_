@@ -214,12 +214,15 @@ def build_replacements(non_auth_files: list[Path]) -> dict[str, str]:
 
 
 def compile_replacements(mapping: dict[str, str]) -> list[tuple[re.Pattern[str], str]]:
-    compiled: list[tuple[re.Pattern[str], str]] = []
-    for k, v in mapping.items():
-        # conservative: replace only whole-word tokens
-        pattern = re.compile(rf"(?<!\w){re.escape(k)}(?!\w)")
-        compiled.append((pattern, v))
-    return compiled
+    """Pre-compile replacement patterns once to avoid recompiling on every file.
+
+    Each pattern uses negative look-around to restrict matches to whole-word
+    tokens only (conservative replacement).
+    """
+    return [
+        (re.compile(rf"(?<!\w){re.escape(k)}(?!\w)"), v)
+        for k, v in mapping.items()
+    ]
 
 
 def replace_in_file(path: Path, compiled_mapping: list[tuple[re.Pattern[str], str]]) -> int:

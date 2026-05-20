@@ -1,4 +1,29 @@
 flowchart TD
+    A["🧭 PR #4511 session start\nBranch: copilot/fix-kwargs-naming-convention\n2026-05-20T00:01Z"] --> B["📋 Read task\n7 AI findings across 2 files + unit-test requirement"]
+    B --> C["🔍 Read current file state\ntest_transcription_workflow.py\nworkflow_merge.py\nAlready have prior partial fixes"]
+    C --> D["✏️ Apply / verify 3 test-file fixes\n**_kwargs → **kwargs ✅\n_FakePyannoteSegment → test-local ✅\n_FakeSegment/_FakeWhisperModel → module scope ✅"]
+    D --> E["✏️ Apply / verify 4 workflow_merge fixes\nChatGPT @codex ✅\nallow_failure=False ✅\ncompile_replacements() list-comp ✅\ngrammar fix ✅"]
+    E --> F["🔍 Audit allow_failure call sites\n0 external callers\n3 internal calls — now fail-fast ✅"]
+    F --> G["🧪 Create unit tests\ntests/tools/test_workflow_merge_replacements.py\n14 tests: compile_replacements + replace_in_file"]
+    G --> H["✅ Validate all\nruff ✅  pytest 22/22 ✅"]
+    H --> I["📊 Workflow monitor\n30 runs in_progress after maintainer approval"]
+    I --> J["📝 Living docs + verification report\nPR4511_whats_next.md (updated)\nPR4511_session_diagram.mmd (updated)\nPR4511_verification_report.md (new)"]
+    J --> K["📝 CHANGELOG + accountability update"]
+    K --> L["🚀 report_progress + create_pull_request\nPR #4511 open"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#1b4332,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#457b9d,color:#fff
+    style J fill:#2d6a4f,color:#fff
+    style K fill:#2d6a4f,color:#fff
+    style L fill:#f4a261,color:#000
+
     A["🧭 PR #4511 session start\nBranch: copilot/fix-kwargs-naming-convention\n2026-05-20T00:01Z"] --> B["📋 Read task\n7 AI findings across 2 files"]
     B --> C["🔍 Read current file state\ntests/…/test_transcription_workflow.py\ntools/workflow_merge.py"]
     C --> D["✏️ Apply 3 test-file fixes\n**_kwargs → **kwargs\n_FakePyannoteSegment → inside test fn\n_FakeSegment/_FakeWhisperModel → module scope"]

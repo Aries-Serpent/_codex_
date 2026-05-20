@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:01Z)
+### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:20Z)
+- **`tests/services/audio/test_transcription_workflow.py`**:
+  - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.
+  - Moved `_FakePyannoteSegment` from module scope into `test_process_file_with_pyannote_backend_uses_pyannote_path` to reduce module-level clutter.
+  - Extracted `_FakeSegment` and `_FakeWhisperModel` from nested-inside-test to module scope for reuse across tests.
+- **`tools/workflow_merge.py`**:
+  - Corrected `ChatGPT-5` → `ChatGPT @codex` in `log_error()` stderr message.
+  - Changed `_run()` `allow_failure` default from `True` → `False` (fail-fast); all call sites audited — 0 external callers, 3 internal callers now correctly raise on subprocess failure.
+  - Refactored `compile_replacements()` to use list comprehension (code-review feedback); `replace_in_file()` accepts pre-compiled patterns; `update_references()` compiles once before file traversal.
+  - Fixed grammar: `"ALL GitHub Action."` → `"ALL GitHub Actions workflows."` in compliance `log_change` call.
+- **`tests/tools/test_workflow_merge_replacements.py`** (new):
+  - 14 unit tests covering `compile_replacements` (return type, empty input, whole-word boundary, partial-match rejection, special-char escaping) and `replace_in_file` (match+write, no-match, whole-word, multi-replacement, unreadable file, UTF-8 preservation, empty mapping).
+
+
 - **`tests/services/audio/test_transcription_workflow.py`**:
   - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.
   - Moved `_FakePyannoteSegment` from module scope into `test_process_file_with_pyannote_backend_uses_pyannote_path` to reduce module-level clutter.
