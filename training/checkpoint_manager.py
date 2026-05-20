@@ -320,7 +320,7 @@ class CheckpointManager:
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
                 # Keep explicit None handling for test/legacy state shims.
-                if step is not None and save_every and save_every > 0 and step % save_every == 0:
+                if step is not None and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
