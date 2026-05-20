@@ -15,11 +15,14 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-_warnings.warn(
-    "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
-    DeprecationWarning,
-    stacklevel=2,
-)
+_legacy_deprecation_warned = False
+if not _legacy_deprecation_warned:
+    _warnings.warn(
+        "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    _legacy_deprecation_warned = True
 _checkpoint_helpers_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (
