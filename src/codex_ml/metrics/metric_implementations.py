@@ -211,32 +211,31 @@ class RecallScore(MetricBase):
     def compute(self) -> dict[str, float]:
         labels = self._stats.labels()
         recalls = [self._stats.recall(label) for label in labels]
-        score: float
         supports = [self._stats.support[label] for label in labels]
+        score: float = 0.0
 
         match self.average:
             case "micro":
                 tp = sum(self._stats.tp[label] for label in labels)
-                score = 0.0 if denom == 0 else tp / denom
+                fn = sum(self._stats.fn[label] for label in labels)
                 denom = tp + fn
-                score = _average(recalls, None)
+                score = 0.0 if denom == 0 else tp / denom
             case "macro":
-                score = _average(recalls, supports)
+                score = _average(recalls, None)
             case "weighted":
-                return {self.name: _average(recalls, supports)}
+                score = _average(recalls, supports)
             case "binary":
                 positive = 1 if self.num_classes in {None, 2} else labels[-1]
                 try:
                     idx = labels.index(positive)
-                except ValueError as e:
+                except ValueError:
                     score = 0.0
                 else:
                     score = recalls[idx]
-                    return {self.name: 0.0}
-                return {self.name: recalls[idx]}
             case _:
-        return {self.name: score}
                 raise ValueError(f"unsupported averaging strategy: {self.average}")
+
+        return {self.name: score}
 
 
 
