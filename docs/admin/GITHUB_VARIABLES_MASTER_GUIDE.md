@@ -243,7 +243,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `CODEX_LLM_MODEL` | ✅ | `gpt-4o` | LLM model for agent operations |
 | 8 | `CODEX_LLM_RATE_LIMIT_DELAY` | ✅ | `1.0` | Seconds between LLM requests |
 | 9 | `CODEX_OFFLINE` | ✅ | `1` | Offline mode for CI (`1`=offline) |
-| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (latest `3.12.x` patch line) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
+| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (floating minor): resolves to the latest available `3.12.x` patch at runtime (not pinned to `3.12.0` or any specific patch) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
 | 11 | `CODEX_SANDBOX_TIMEOUT` | ✅ | `60` | Sandbox operation timeout (seconds) |
 | 12 | `CODEX_SESSION_ID` | ✅ | `UUID v4` (auto-set per session) | Current or most-recent logical session identifier. Written by `copilot-setup-steps.yml` on session start. Format: UUID v4 string. |
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
