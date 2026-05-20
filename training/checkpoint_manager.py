@@ -160,7 +160,7 @@ class CheckpointManager:
         resolved_best = best_k if best_k is not None else keep_best
         if resolved_best is None:
             resolved_best = 1
-        self.best_k = max(1, int(resolved_best))
+        self.best_k = max(0, int(resolved_best))
         self._best_meta = self.root / "best.json"
         self._best_file = self.root / "best"
         self._best_dir = self.root / "best_candidates"
