@@ -1,32 +1,32 @@
-# Session Context — 2026-05-19T23:56:01Z
+# Session Context — 2026-05-20T00:15:19Z
 **Branch:** `copilot/fix-kwargs-naming-convention`  **PR:** #4511  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4688` (✅)
-- GraphQL remaining: `4990` (✅)
+- REST remaining: `4481` (✅)
+- GraphQL remaining: `4974` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4511 — [WIP] Fix kwargs naming convention in test transcription workflow
-State: `open`  Draft: `True`  Branch: `copilot/fix-kwargs-naming-convention` → `main`
+State: `open`  Draft: `False`  Branch: `copilot/fix-kwargs-naming-convention` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
-- **Agent Token Delegation** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-19)
-- **Running Copilot cloud agent** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-19)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-19)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-19)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
+- **Workflow Execution Gate** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-20)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-20)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-20)
+- **Validation Pipeline** — `failure` on `copilot/fix-kwargs-naming-convention` (2026-05-20)
 
 ## 📝 Recent Commits
+- `081af195` docs: remove duplicate sections in CHANGELOG, whats_next, session_diagram — copilot-swe-agent[bot] (2026-05-20)
+- `1c50ae2c` fix(tests+tools): add unit tests, list-comp refactor, allow_failure audit, verif — copilot-swe-agent[bot] (2026-05-20)
+- `948fb8c0` fix(tests+tools): resolve 7 AI findings across test_transcription_workflow.py an — copilot-swe-agent[bot] (2026-05-20)
+- `ae1d9b9a` chore: plan all changes for PR #4511 — copilot-swe-agent[bot] (2026-05-20)
 - `c1110ece` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
 - `43317d5f` chore: Generate follow-up prompt for PR #4511 [skip ci] — github-actions[bot] (2026-05-19)
 - `45d14905` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-19)
 - `d14d2063` Initial plan — copilot-swe-agent[bot] (2026-05-19)
-- `c119ddff` Merge pull request #4510 from Aries-Serpent/copilot/update-speaker-name-timeout — Statix (2026-05-19)
-- `cbb87c6d` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
-- `d582c558` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-19)
-- `312f2d81` fix final review wording and helper naming — copilot-swe-agent[bot] (2026-05-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

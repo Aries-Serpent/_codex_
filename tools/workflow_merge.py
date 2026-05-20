@@ -55,7 +55,8 @@ def log_error(step: str, err: Exception | str, ctx: str) -> None:
         f"Question for ChatGPT @codex {now_iso()}:\n"
         f"While performing [{step}], encountered the following error:\n{err}\n"
         f"Context: {ctx}\n"
-        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
+        "What are the possible causes, and how can this be resolved"
+        " while preserving intended functionality?\n\n"
     )
 
 
@@ -75,7 +76,8 @@ def have(cmd: str) -> bool:
 
 def list_candidates() -> list[Path]:
     """
-    Find all candidate workflow scripts: *codex_workflow*.py anywhere in repo, excluding venvs/build.
+    Find all candidate workflow scripts: *codex_workflow*.py anywhere in repo,
+    excluding venvs/build.
     """
     ignore_dirs = {
         ".git",
@@ -102,7 +104,8 @@ def count_references(name_fragment: str) -> int:
     """
     if have("rg"):
         try:
-            cp = _run(["rg", "-n", name_fragment])
+            # rg exits 1 when no matches found; allow that so we return 0 lines
+            cp = _run(["rg", "-n", name_fragment], allow_failure=True)
         except FileNotFoundError:
             return 0
         return sum(1 for _ in (cp.stdout or "").splitlines())
@@ -216,13 +219,16 @@ def build_replacements(non_auth_files: list[Path]) -> dict[str, str]:
 def compile_replacements(mapping: dict[str, str]) -> list[tuple[re.Pattern[str], str]]:
     """Pre-compile replacement patterns once to avoid recompiling on every file.
 
-    Each pattern uses negative look-around to restrict matches to whole-word
-    tokens only (conservative replacement).
+    Word-boundary look-arounds are applied only when the key starts/ends with
+    a word character.  This ensures tokens like ``{name}.`` (attribute access)
+    still match even when the character that follows the dot is a word char.
     """
-    return [
-        (re.compile(rf"(?<!\w){re.escape(k)}(?!\w)"), v)
-        for k, v in mapping.items()
-    ]
+    result: list[tuple[re.Pattern[str], str]] = []
+    for k, v in mapping.items():
+        prefix = r"(?<!\w)" if k and (k[0].isalnum() or k[0] == "_") else ""
+        suffix = r"(?!\w)" if k and (k[-1].isalnum() or k[-1] == "_") else ""
+        result.append((re.compile(prefix + re.escape(k) + suffix), v))
+    return result
 
 
 def replace_in_file(path: Path, compiled_mapping: list[tuple[re.Pattern[str], str]]) -> int:
@@ -378,7 +384,10 @@ def main() -> int:
     )
 
     # Compliance: do not alter CI triggers
-    log_change("Compliance", "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Actions workflows.")
+    log_change(
+        "Compliance",
+        "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Actions workflows.",
+    )
 
     print("Consolidation complete. See .codex/ for logs and results.")
     return 0

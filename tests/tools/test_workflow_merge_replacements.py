@@ -1,12 +1,14 @@
-"""Unit tests for compile_replacements and replace_in_file in tools/workflow_merge.py.
+"""Unit tests for compile_replacements, replace_in_file, and update_references
+in tools/workflow_merge.py.
 
 Covers:
 - compile_replacements produces correctly-typed tuples with compiled patterns
 - whole-word boundary enforcement (no partial-word substitution)
+- dot-terminated tokens (attribute-access style) are matched correctly
 - replace_in_file writes changes when a match is found and returns 1
 - replace_in_file is a no-op when no match is found and returns 0
 - replace_in_file handles unreadable files gracefully
-- update_references compiles mapping once (not per-file)
+- update_references compiles mapping once and returns correct changed/scanned counts
 """
 
 from __future__ import annotations
@@ -14,7 +16,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from tools.workflow_merge import compile_replacements, replace_in_file
+import tools.workflow_merge as _wm
+from tools.workflow_merge import compile_replacements, replace_in_file, update_references
 
 # ---------------------------------------------------------------------------
 # compile_replacements
@@ -45,10 +48,17 @@ class TestCompileReplacements:
         # whole-word match
         assert pattern.search("foo")
         assert pattern.search(" foo ")
-        assert pattern.search("foo.bar")  # "foo" before "." is still a word boundary
         # partial-word — must NOT match
         assert not pattern.search("foobar")
         assert not pattern.search("prefoo")
+
+    def test_dot_terminated_key_matches_followed_by_word_char(self):
+        """Keys like 'workflow.' (attribute-access tokens) must match 'workflow.something'."""
+        result = compile_replacements({"workflow.": "codex_workflow."})
+        pattern, _ = result[0]
+        # The dot ends the key — the next char is a word char; must still match
+        assert pattern.search("workflow.something")
+        assert pattern.search("from workflow.util import")
 
     def test_pattern_does_not_match_embedded_substring(self):
         result = compile_replacements({"import": "use"})
@@ -134,3 +144,32 @@ class TestReplaceInFile:
         result = replace_in_file(f, [])
         assert result == 0
         assert f.read_text(encoding="utf-8") == original
+
+
+# ---------------------------------------------------------------------------
+# update_references
+# ---------------------------------------------------------------------------
+
+
+class TestUpdateReferences:
+    def test_compiles_mapping_once_and_updates_matching_files(
+        self, tmp_path: Path, monkeypatch
+    ):
+        """update_references must scan every file in REPO and apply replacements."""
+        (tmp_path / "a.py").write_text("import old_mod\n", encoding="utf-8")
+        (tmp_path / "b.py").write_text("import other\n", encoding="utf-8")
+
+        monkeypatch.setattr(_wm, "REPO", tmp_path)
+        changed, scanned = update_references({"old_mod": "new_mod"})
+
+        assert changed == 1
+        assert scanned == 2
+        assert (tmp_path / "a.py").read_text(encoding="utf-8") == "import new_mod\n"
+        assert (tmp_path / "b.py").read_text(encoding="utf-8") == "import other\n"
+
+    def test_empty_mapping_changes_nothing(self, tmp_path: Path, monkeypatch):
+        (tmp_path / "x.py").write_text("some content\n", encoding="utf-8")
+        monkeypatch.setattr(_wm, "REPO", tmp_path)
+        changed, scanned = update_references({})
+        assert changed == 0
+        assert scanned == 1

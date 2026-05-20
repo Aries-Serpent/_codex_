@@ -1,173 +1,66 @@
 # 🎯 PR Follow-Up Tasks - #4511
 
-**PR**: #4511 - PR #4511  
-**Branch**: `copilot/fix-kwargs-naming-convention`  
-**Author**: @Copilot  
-**Date**: 2026-05-19  
-**Commit**: `d14d206301baeb3b3ec70bf4e22262ed3127cc3f`  
-**Status**: 🔄 ACTIVE
+**PR**: #4511 — fix(tests+tools): resolve 7 AI findings — kwargs naming, test helper scoping, regex compile, allow_failure + 16 unit tests
+**Branch**: `copilot/fix-kwargs-naming-convention`
+**Author**: @Copilot
+**Date**: 2026-05-20
+**Commit**: `081af195ad230928015406f1b35170f48ce6db4f` (S1) → S2 push pending
+**Status**: 🔄 S2 ACTIVE — review remediations in progress
 
 ---
 
-## 📋 PREVIOUS SESSION SUMMARY
+## 📋 SESSION SUMMARY
 
-### Completed Work
-- [`d14d2063`] Initial plan (copilot-swe-agent[bot], 2026-05-19)
-- [`c119ddff`] Merge pull request #4510 from Aries-Serpent/copilot/update-speaker-name-timeout (Statix, 2026-05-19)
-- [`cbb87c6d`] fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci] (github-actions[bot], 2026-05-19)
+### S1 Completed Work (2026-05-20T00:01Z – 00:20Z)
+- Applied 7 AI findings across `tests/services/audio/test_transcription_workflow.py` and `tools/workflow_merge.py`
+- Added 14 unit tests in `tests/tools/test_workflow_merge_replacements.py`
+- Created `docs/roadmap/PR4511_verification_report.md`
+- Updated CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs
+
+### S2 Completed Work (2026-05-20T00:45Z)
+- Fixed `compile_replacements`: conditional word-boundary look-arounds for dot-terminated tokens
+- Fixed `count_references`: `allow_failure=True` passed to `rg` (exits 1 on no matches)
+- Fixed 3 line-length violations in `tools/workflow_merge.py`
+- Updated test module docstring; replaced incorrect `foo.bar` assertion
+- Added `TestUpdateReferences` (2 tests) with monkeypatched REPO
+- Deduplicated `PR4511_whats_next.md` and `PR4511_session_diagram.mmd`
+- Updated follow-up prompt (this file) — removed stale PR #4510 content
+- Ran `sync_tracked_files --fix` (Pattern 22)
 
 ### Files Modified
-No files modified
+- `tests/services/audio/test_transcription_workflow.py`
+- `tools/workflow_merge.py`
+- `tests/tools/test_workflow_merge_replacements.py` (new)
+- `docs/roadmap/PR4511_whats_next.md`
+- `docs/roadmap/PR4511_session_diagram.mmd`
+- `docs/roadmap/PR4511_verification_report.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `CHANGELOG.md`
+- `.github/copilot-prompts/active/PR-4511-followup.md`
+- `.codex/session_context_latest.md`
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Monitor the latest approved workflow fan-out on the current PR head and capture any actionable failed jobs with logs.
-- [ ] Re-check `PR Auto-Fix Check`, validation, and security workflows after the latest push.
-- [ ] Keep `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` aligned with any new workflow findings.
-- [ ] Preserve the final 5 minutes of the session for concise wrap-up and handoff.
+- [ ] Monitor CI fan-out after S2 push; capture any actionable failures.
+- [ ] Confirm all required checks green; merge PR #4511.
 
-### Additional Session Requirements
-- [ ] Re-run focused validation if any additional code or test edits are made.
-- [ ] Keep the PR follow-up prompt in sync with the actual branch head and PR state.
-
-### Current workflow monitor snapshot
-- Current reviewed head during this session: `f0185d1e` / later continuation commits on PR #4510.
-- Approved workflow fan-out observed in progress: `Validation Pipeline`, `CodeQL Advanced`, `QA Walkthrough Agent`, `Semgrep SAST (SARIF Upload)`, `PR Auto-Fix Check`, `Audit & QA Suite (Unified)`, `Coverage with Timeout Guards`, `Resilient Dependency Submission`, `Secrets Baseline Enforcer`, `Workflow Documentation Link Validation`, and dependency submission workflows.
-- Current control-workflow state: `Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, and `Generate PR Follow-Up Prompt` are `action_required`.
-- Current startup-level fail-like runs with zero jobs via MCP: `Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`.
+### Priority 2: Validation 🟡 HIGH
+- [ ] No additional code changes anticipated.
+- [ ] Re-run `sync_tracked_files --fix` if Pattern 22 drift recurs.
 
 ---
 
-## ✅ VALIDATION SNAPSHOT
+## ✅ VALIDATION SNAPSHOT (S2)
 
 ```bash
-python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py
-python -m pytest -q tests/services/audio/test_transcription_workflow.py
-python -m pytest -q tests/services/audio
+python -m ruff check tools/workflow_merge.py tests/tools/test_workflow_merge_replacements.py
+python -m pytest tests/tools/test_workflow_merge_replacements.py -q
+python -m pytest tests/services/audio/test_transcription_workflow.py -q
+python scripts/ci/sync_tracked_files.py --fix
 ```
-
-Manual verification completed in-session:
-- `_gui_input_func()` was exercised with a stubbed root and `speaker_name_timeout_seconds=0.01`, confirming the timeout fallback returns `""`.
-
----
-
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
-
-**CRITICAL**: Perform 5 comprehensive self-review passes before concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Error handling remains correct
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] Focused tests passing locally
-- [ ] Relevant workflow checks reviewed
-- [ ] No regressions introduced
-
-### Pass 3: Documentation & Communication
-- [ ] Living docs updated
-- [ ] Accountability updated
-- [ ] CHANGELOG updated
-- [ ] Follow-up prompt updated
-
-### Pass 4: Security & Safety
-- [ ] No secrets introduced
-- [ ] No unsafe new code paths introduced
-- [ ] Validation feedback reviewed
-
-### Pass 5: Integration & Dependencies
-- [ ] PR remains internally consistent
-- [ ] Workflow monitor status recorded accurately
-- [ ] Backward compatibility maintained
-
-**Failure Protocol**: If any checkpoint fails, fix it in the current session and re-run validation.
-
----
-
-## 🤖 COPILOT AGENT INSTRUCTIONS
-
-**When you see `@copilot continue` in PR #4510:**
-
-1. Load this prompt from `.github/copilot-prompts/active/PR-4510-followup.md`
-2. Monitor the latest workflow state on the PR head
-3. Fix any actionable review or CI findings found on that head
-4. Update living docs and accountability artifacts with the new status
-5. Preserve the final 5 minutes for wrap-up
-
----
-
-**Generated**: 2026-05-19  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-19 22:40:00
-
-**Validation**:
-```bash
-python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py
-python -m pytest -q tests/services/audio/test_transcription_workflow.py
-python -m pytest -q tests/services/audio
-```
-
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
-
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
-
----
-
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
-
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
-- [ ] No regressions introduced
-
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
 
 ---
 
@@ -176,18 +69,13 @@ python -m pytest -q tests/services/audio
 **When you see `@copilot continue` in PR #4511:**
 
 1. Load this prompt from `.github/copilot-prompts/active/PR-4511-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+2. Monitor the latest workflow state on the PR head
+3. Fix any actionable review or CI findings found on that head
+4. Update living docs and accountability artifacts with the new status
+5. Preserve the final 5 minutes for wrap-up
 
 ---
 
-**Generated**: 2026-05-19  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-19 23:40:11
+**Generated**: 2026-05-20
+**Template Version**: 2.0.0
+**Last Updated**: 2026-05-20T00:45:00Z
