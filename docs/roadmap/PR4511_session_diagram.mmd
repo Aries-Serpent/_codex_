@@ -1,0 +1,33 @@
+flowchart TD
+    A["🧭 S1 start — PR #4511\nBranch: copilot/fix-kwargs-naming-convention\n2026-05-20T00:01Z"] --> B["📋 Read task\n7 AI findings across 2 files + unit-test requirement"]
+    B --> C["🔍 Read file state\ntest_transcription_workflow.py\nworkflow_merge.py"]
+    C --> D["✏️ Apply 3 test-file fixes\n**_kwargs → **kwargs ✅\n_FakePyannoteSegment → test-local ✅\n_FakeSegment/_FakeWhisperModel → module scope ✅"]
+    D --> E["✏️ Apply 4 workflow_merge fixes\nChatGPT @codex ✅\nallow_failure=False ✅\ncompile_replacements() list-comp ✅\ngrammar fix ✅"]
+    E --> F["🔍 Audit allow_failure call sites\n0 external callers\n3 internal calls — now fail-fast ✅"]
+    F --> G["🧪 14 unit tests\ntests/tools/test_workflow_merge_replacements.py\ncompile_replacements + replace_in_file"]
+    G --> H["✅ S1 validate\nruff ✅  pytest 22/22 ✅"]
+    H --> I["📝 S1 docs + CHANGELOG + accountability"]
+    I --> J["🔁 S2 start — review remediations\n2026-05-20T00:45Z"]
+    J --> K["🔧 compile_replacements: conditional look-arounds\ndot-terminated token fix ✅\ncount_references allow_failure=True ✅\nline-length fixes ✅"]
+    K --> L["🧪 +2 tests: TestUpdateReferences\ndocstring fix\nfoo.bar assertion fix ✅"]
+    L --> M["📄 Dedup whats_next + session_diagram\nFix followup prompt PR#4510 refs ✅"]
+    M --> N["✅ S2 validate\nruff ✅  pytest 16/16 ✅"]
+    N --> O["📝 S2 CHANGELOG + accountability\nsync_tracked_files ✅"]
+    O --> P["🚀 Push S2 commit\nPR #4511 ready for merge"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#1b4332,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#2d6a4f,color:#fff
+    style J fill:#4a4e69,color:#fff
+    style K fill:#1b4332,color:#fff
+    style L fill:#1b4332,color:#fff
+    style M fill:#2d6a4f,color:#fff
+    style N fill:#1b4332,color:#fff
+    style O fill:#2d6a4f,color:#fff
+    style P fill:#f4a261,color:#000

@@ -52,14 +52,15 @@ def log_error(step: str, err: Exception | str, ctx: str) -> None:
     with ERRORS.open("a", encoding="utf-8") as f:
         f.write(json.dumps(payload) + "\n")
     sys.stderr.write(
-        f"Question for ChatGPT-5 {now_iso()}:\n"
+        f"Question for ChatGPT @codex {now_iso()}:\n"
         f"While performing [{step}], encountered the following error:\n{err}\n"
         f"Context: {ctx}\n"
-        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
+        "What are the possible causes, and how can this be resolved"
+        " while preserving intended functionality?\n\n"
     )
 
 
-def _run(cmd: list[str], *, allow_failure: bool = True) -> subprocess.CompletedProcess[str]:
+def _run(cmd: list[str], *, allow_failure: bool = False) -> subprocess.CompletedProcess[str]:
     """Execute *cmd* relative to the repo root using the hardened wrapper."""
 
     try:
@@ -75,7 +76,8 @@ def have(cmd: str) -> bool:
 
 def list_candidates() -> list[Path]:
     """
-    Find all candidate workflow scripts: *codex_workflow*.py anywhere in repo, excluding venvs/build.
+    Find all candidate workflow scripts: *codex_workflow*.py anywhere in repo,
+    excluding venvs/build.
     """
     ignore_dirs = {
         ".git",
@@ -102,7 +104,8 @@ def count_references(name_fragment: str) -> int:
     """
     if have("rg"):
         try:
-            cp = _run(["rg", "-n", name_fragment])
+            # rg exits 1 when no matches found; allow that so we return 0 lines
+            cp = _run(["rg", "-n", name_fragment], allow_failure=True)
         except FileNotFoundError:
             return 0
         return sum(1 for _ in (cp.stdout or "").splitlines())
@@ -213,15 +216,29 @@ def build_replacements(non_auth_files: list[Path]) -> dict[str, str]:
     return mapping
 
 
-def replace_in_file(path: Path, mapping: dict[str, str]) -> int:
+def compile_replacements(mapping: dict[str, str]) -> list[tuple[re.Pattern[str], str]]:
+    """Pre-compile replacement patterns once to avoid recompiling on every file.
+
+    Word-boundary look-arounds are applied only when the key starts/ends with
+    a word character.  This ensures tokens like ``{name}.`` (attribute access)
+    still match even when the character that follows the dot is a word char.
+    """
+    result: list[tuple[re.Pattern[str], str]] = []
+    for k, v in mapping.items():
+        prefix = r"(?<!\w)" if k and (k[0].isalnum() or k[0] == "_") else ""
+        suffix = r"(?!\w)" if k and (k[-1].isalnum() or k[-1] == "_") else ""
+        result.append((re.compile(prefix + re.escape(k) + suffix), v))
+    return result
+
+
+def replace_in_file(path: Path, compiled_mapping: list[tuple[re.Pattern[str], str]]) -> int:
     try:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
         return 0
     orig = text
-    for k, v in mapping.items():
-        # conservative: replace only whole-word tokens
-        text = re.sub(rf"(?<!\w){re.escape(k)}(?!\w)", v, text)
+    for pattern, replacement in compiled_mapping:
+        text = pattern.sub(replacement, text)
     if text != orig:
         path.write_text(text, encoding="utf-8")
         return 1
@@ -230,6 +247,7 @@ def replace_in_file(path: Path, mapping: dict[str, str]) -> int:
 
 def update_references(mapping: dict[str, str]) -> tuple[int, int]:
     changed, scanned = 0, 0
+    compiled_mapping = compile_replacements(mapping)
     for p in REPO.rglob("*"):
         if not p.is_file():
             continue
@@ -259,7 +277,7 @@ def update_references(mapping: dict[str, str]) -> tuple[int, int]:
         }:
             continue
         scanned += 1
-        changed += replace_in_file(p, mapping)
+        changed += replace_in_file(p, compiled_mapping)
     return changed, scanned
 
 
@@ -366,7 +384,10 @@ def main() -> int:
     )
 
     # Compliance: do not alter CI triggers
-    log_change("Compliance", "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.")
+    log_change(
+        "Compliance",
+        "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Actions workflows.",
+    )
 
     print("Consolidation complete. See .codex/ for logs and results.")
     return 0

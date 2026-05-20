@@ -1,4 +1,81 @@
-## SESSION SUMMARY — 2026-05-19T22:35Z [PR-4510-speaker-timeout-follow-up-and-approved-workflow-monitor]
+## SESSION SUMMARY — 2026-05-20T00:45Z [code-quality-fix-batch-PR4511-S2-review-remediations]
+
+**Session:** code-quality-fix-batch-PR4511-S2 | **Branch:** `copilot/fix-kwargs-naming-convention` | **PR:** #4511
+
+### Completed
+- Addressed all 6 inline code-review comments from `copilot-pull-request-reviewer` (review #4324277338).
+- `compile_replacements`: applied conditional word-boundary look-arounds (`(?<!\w)` / `(?!\w)` only when key starts/ends with `\w`); dot-terminated attribute-access tokens now match correctly.
+- `count_references`: `_run(["rg", ...], allow_failure=True)` — `rg` exits 1 on no matches, preventing `CalledProcessError` with new fail-fast default.
+- Fixed 3 E501 line-length violations in `tools/workflow_merge.py`.
+- Updated `tests/tools/test_workflow_merge_replacements.py`: fixed module docstring, updated `foo.bar` assertion, added `test_dot_terminated_key_matches_followed_by_word_char`, added `TestUpdateReferences` (2 tests) — total 17 tests, all passing.
+- Deduplicated `docs/roadmap/PR4511_whats_next.md` and `PR4511_session_diagram.mmd` (3× repeated blocks removed).
+- Corrected `PR-4511-followup.md`: updated date/commit/files metadata; replaced all stale PR #4510 references.
+- Ran `sync_tracked_files --fix`; Pattern 22 cleared.
+- CHANGELOG updated with S2 detail.
+
+### Validation
+- `ruff check tools/workflow_merge.py tests/tools/test_workflow_merge_replacements.py` → All checks passed ✅
+- `pytest tests/tools/test_workflow_merge_replacements.py tests/services/audio/test_transcription_workflow.py -v` → 25 passed ✅
+
+---
+
+## SESSION SUMMARY — 2026-05-20T00:20Z [code-quality-fix-batch-PR4511-final]
+
+**Session:** code-quality-fix-batch-PR4511-final | **Branch:** `copilot/fix-kwargs-naming-convention` | **PR:** #4511
+
+### Completed
+- ✅ Applied and verified all 7 AI findings across `tests/services/audio/test_transcription_workflow.py` and `tools/workflow_merge.py`:
+  - `**_kwargs` → `**kwargs` in stub helper
+  - `_FakePyannoteSegment` moved into the consuming test function
+  - `_FakeSegment` / `_FakeWhisperModel` promoted to module scope
+  - `ChatGPT-5` → `ChatGPT @codex` in `log_error()`
+  - `allow_failure` default `True` → `False`; 0 external callers found; 3 internal calls now fail-fast
+  - `compile_replacements()` refactored to list comprehension; `replace_in_file()` accepts compiled patterns; `update_references()` compiles once
+  - Grammar fix: `"ALL GitHub Action."` → `"ALL GitHub Actions workflows."`
+- ✅ Addressed code-review feedback: list comprehension in `compile_replacements`.
+- ✅ Created `tests/tools/test_workflow_merge_replacements.py` with 14 unit tests.
+- ✅ Monitored workflow fan-out: 30 runs in_progress after maintainer approval.
+- ✅ Updated living docs: `PR4511_whats_next.md`, `PR4511_session_diagram.mmd`, `PR4511_verification_report.md` (new).
+- ✅ Updated `CHANGELOG.md` and this accountability report.
+
+### Validation
+- ✅ `python -m ruff check tests/services/audio/test_transcription_workflow.py tools/workflow_merge.py tests/tools/test_workflow_merge_replacements.py`
+- ✅ `python -m pytest tests/services/audio/test_transcription_workflow.py tests/tools/test_workflow_merge_replacements.py -q` → 22 passed
+
+### Remaining Open Items
+- CI fan-out in progress (30 workflows). No code-level issues anticipated.
+- Merge when all required checks pass.
+
+---
+
+## SESSION SUMMARY — 2026-05-20T00:01Z [code-quality-fix-batch-PR4511]
+
+**Session:** code-quality-fix-batch-PR4511 | **Branch:** `copilot/fix-kwargs-naming-convention` | **PR:** #4511
+
+### Completed
+- ✅ Applied 3 AI findings to `tests/services/audio/test_transcription_workflow.py`:
+  - renamed `**_kwargs` → `**kwargs` in `stub_process_file_method`,
+  - moved `_FakePyannoteSegment` inside the single test that uses it,
+  - extracted `_FakeSegment` / `_FakeWhisperModel` to module scope for reuse.
+- ✅ Applied 4 AI findings to `tools/workflow_merge.py`:
+  - corrected `ChatGPT-5` → `ChatGPT @codex` in `log_error()`,
+  - changed `_run()` `allow_failure` default `True` → `False`,
+  - added `compile_replacements()` helper; refactored `replace_in_file()` and `update_references()` to compile patterns once,
+  - fixed grammar: `"ALL GitHub Action."` → `"ALL GitHub Actions workflows."`.
+- ✅ Created living docs: `docs/roadmap/PR4511_whats_next.md`, `docs/roadmap/PR4511_session_diagram.mmd`.
+- ✅ Updated `CHANGELOG.md` and this accountability report.
+
+### Validation
+- ✅ `python -m ruff check tests/services/audio/test_transcription_workflow.py tools/workflow_merge.py`
+- ✅ `python -m pytest tests/services/audio/test_transcription_workflow.py -q` → 8 passed
+- ✅ `ast.parse("tools/workflow_merge.py")`
+
+### Remaining Open Items
+- None. All 7 findings fully resolved.
+
+---
+
+
 
 **Session:** PR-4510-speaker-timeout-follow-up-and-approved-workflow-monitor | **Branch:** `copilot/update-speaker-name-timeout` | **PR:** #4510
 
@@ -40871,6 +40948,55 @@ and the CI gate requirement.
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26129072913
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26129091441
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-05-19T23:38Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4511)
+## SESSION SUMMARY — 2026-05-19T23:43Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4511)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #4511 (SHA: `e3d37062`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26131933149
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26131933215
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 

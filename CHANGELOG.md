@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:20Z S1 + 00:45Z S2)
+- **`tests/services/audio/test_transcription_workflow.py`**:
+  - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.
+  - Moved `_FakePyannoteSegment` from module scope into its single consuming test function.
+  - Extracted `_FakeSegment` and `_FakeWhisperModel` from nested-inside-test to module scope for reuse.
+- **`tools/workflow_merge.py`**:
+  - Corrected `ChatGPT-5` → `ChatGPT @codex` in `log_error()` stderr message.
+  - Changed `_run()` `allow_failure` default `True` → `False` (fail-fast); all call sites audited.
+  - `compile_replacements()`: conditional word-boundary look-arounds — `(?<!\w)` / `(?!\w)` only applied when key starts/ends with a word char; dot-terminated tokens (attribute access) now match correctly.
+  - `count_references()`: pass `allow_failure=True` to `_run(["rg", ...])` — `rg` exits 1 on no matches, preventing spurious `CalledProcessError`.
+  - `replace_in_file()` accepts pre-compiled patterns; `update_references()` compiles once before traversal.
+  - Grammar fix: `"ALL GitHub Action."` → `"ALL GitHub Actions workflows."`.
+  - Fixed 3 line-length violations (E501).
+- **`tests/tools/test_workflow_merge_replacements.py`** (new — 17 tests):
+  - `TestCompileReplacements` (8): return type, empty input, multi-key, whole-word boundary, partial-match rejection, dot-terminated token, special-char escaping, `.sub()` attribute.
+  - `TestReplaceInFile` (7): match+write, no-match, whole-word, multi-replacement, unreadable file, UTF-8, empty mapping.
+  - `TestUpdateReferences` (2): correct changed/scanned counts with monkeypatched REPO; empty mapping no-op.
+
+### Fixed (auto-update — PR #4511)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4511 (SHA `e3d37062`) at 2026-05-19T23:38Z [auto-generated]
+
 ### Fixed (PR-4510-speaker-timeout-follow-up — `copilot/update-speaker-name-timeout` — 2026-05-19T22:35Z)
 - Made interactive speaker naming timeout configurable in `apps/dev/audio_transcriber_ui.py` by accepting `speaker_name_timeout_seconds` in `AudioTranscriberUI.__init__()` and using that value in `_gui_input_func()` instead of a hardcoded 30-second wait.
 - Updated `tests/services/audio/test_transcription_workflow.py` so media-discovery assertions go through the public `process_path()` API with a stubbed `process_file()` helper rather than calling `_discover_media_files()` directly.
