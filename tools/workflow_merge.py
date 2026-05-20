@@ -216,6 +216,11 @@ def build_replacements(non_auth_files: list[Path]) -> dict[str, str]:
     return mapping
 
 
+def is_word_char(ch: str) -> bool:
+    """Return True when ``ch`` is a regex word character equivalent (\\w subset)."""
+    return ch.isalnum() or ch == "_"
+
+
 def compile_replacements(mapping: dict[str, str]) -> list[tuple[re.Pattern[str], str]]:
     """Pre-compile replacement patterns once to avoid recompiling on every file.
 
@@ -225,8 +230,8 @@ def compile_replacements(mapping: dict[str, str]) -> list[tuple[re.Pattern[str],
     """
     result: list[tuple[re.Pattern[str], str]] = []
     for k, v in mapping.items():
-        prefix = r"(?<!\w)" if k and (k[0].isalnum() or k[0] == "_") else ""
-        suffix = r"(?!\w)" if k and (k[-1].isalnum() or k[-1] == "_") else ""
+        prefix = r"(?<!\w)" if k and is_word_char(k[0]) else ""
+        suffix = r"(?!\w)" if k and is_word_char(k[-1]) else ""
         result.append((re.compile(prefix + re.escape(k) + suffix), v))
     return result
 
