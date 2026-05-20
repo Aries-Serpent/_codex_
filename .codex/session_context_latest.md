@@ -1,32 +1,32 @@
-# Session Context — 2026-05-20T05:33:56Z
+# Session Context — 2026-05-20T06:36:50Z
 **Branch:** `copilot/fix-exception-handling-in-checkpoint-manager`  **PR:** #4514  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4442` (✅)
-- GraphQL remaining: `4969` (✅)
+- REST remaining: `4713` (✅)
+- GraphQL remaining: `4988` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4514 — Harden checkpoint manager import fallbacks by narrowing exception scope
+## 📋 PR #4514 — Harden checkpoint manager import fallbacks and resolve pre-merge CI rescue findings
 State: `open`  Draft: `False`  Branch: `copilot/fix-exception-handling-in-checkpoint-manager` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
-- **Addressing comment on PR #4514** — `failure` on `copilot/fix-exception-handling-in-checkpoint-manager` (2026-05-20)
-- **Pre-Merge Validation** — `failure` on `copilot/fix-exception-handling-in-checkpoint-manager` (2026-05-20)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
 
 ## 📝 Recent Commits
-- `e69caeed` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
-- `543612b9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
-- `39b3c402` fix: address PR #4514 review thread follow-up comments — copilot-swe-agent[bot] (2026-05-20)
-- `9830abad` chore: initialize plan for PR #4514 review follow-up — copilot-swe-agent[bot] (2026-05-20)
-- `7883d23d` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-20)
-- `62f64207` chore: Generate follow-up prompt for PR #4514 [skip ci] — github-actions[bot] (2026-05-20)
-- `11f6ba00` fix: narrow checkpoint manager import exception handling — copilot-swe-agent[bot] (2026-05-20)
-- `f95bc31c` chore: start checkpoint manager exception-handling fix plan — copilot-swe-agent[bot] (2026-05-20)
+- `c9596e1b` test: annotate env-dependent passthrough branches for coverage clarity — copilot-swe-agent[bot] (2026-05-20)
+- `4d3fcddd` test: cover real helper payload behavior in passthrough path — copilot-swe-agent[bot] (2026-05-20)
+- `0a882d72` test: add passthrough import coverage for checkpoint helpers — copilot-swe-agent[bot] (2026-05-20)
+- `453c4015` test: document intentional real-import passthrough in harness — copilot-swe-agent[bot] (2026-05-20)
+- `a331e7aa` test: clarify checkpoint import harness fallback behavior — copilot-swe-agent[bot] (2026-05-20)
+- `4d658498` chore: finalize CI rescue follow-up review refinements — copilot-swe-agent[bot] (2026-05-20)
+- `2ac70f19` test: polish checkpoint helper-import test semantics — copilot-swe-agent[bot] (2026-05-20)
+- `5e81cb89` test: strengthen checkpoint import-success assertions for review thread — copilot-swe-agent[bot] (2026-05-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
