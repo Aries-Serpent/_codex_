@@ -1,27 +1,25 @@
-# Session Context — 2026-05-20T07:41:18Z
+# Session Context — 2026-05-20T13:56:30Z
 **Branch:** `copilot/fix-exception-handling-in-checkpoint-manager`  **PR:** #4514  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4621` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4842` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4514 — Harden checkpoint manager import fallbacks, resolve pre-merge CI rescue findings, and clear comment-review gate blocker
+## 📋 PR #4514 — Harden checkpoint manager import fallbacks, resolve pre-merge CI rescue findings, clear comment-review gate blockers, and triage non-code CI cancellations
 State: `open`  Draft: `False`  Branch: `copilot/fix-exception-handling-in-checkpoint-manager` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
-- **PR Auto-Fix Check** — `failure` on `copilot/fix-exception-handling-in-checkpoint-manager` (2026-05-20)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
 
 ## 📝 Recent Commits
+- `dfe72d89` chore: begin CI rescue triage for latest blocking comment — copilot-swe-agent[bot] (2026-05-20)
 - `4b06bd09` chore: start PR4514 blocking comment + CI rescue triage plan — copilot-swe-agent[bot] (2026-05-20)
 - `7040f079` Harden checkpoint manager import fallbacks and resolve pre-merge CI rescue findi — copilot-swe-agent[bot] (2026-05-20)
 - `c9596e1b` test: annotate env-dependent passthrough branches for coverage clarity — copilot-swe-agent[bot] (2026-05-20)
@@ -29,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-exception-handling-in-checkp
 - `0a882d72` test: add passthrough import coverage for checkpoint helpers — copilot-swe-agent[bot] (2026-05-20)
 - `453c4015` test: document intentional real-import passthrough in harness — copilot-swe-agent[bot] (2026-05-20)
 - `a331e7aa` test: clarify checkpoint import harness fallback behavior — copilot-swe-agent[bot] (2026-05-20)
-- `4d658498` chore: finalize CI rescue follow-up review refinements — copilot-swe-agent[bot] (2026-05-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
