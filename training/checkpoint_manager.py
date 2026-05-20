@@ -216,7 +216,9 @@ class CheckpointManager:
         self._best_records = self._best_records[: self.best_k]
         self._best = self._best_records[0]["value"] if self._best_records else None
         self._protected_names_cache: set[str] = {
-            Path(str(rec["path"])).name for rec in self._best_records
+            Path(str(p)).name
+            for rec in self._best_records
+            if (p := rec.get("path")) is not None
         }
         self._refresh_best_symlinks()
 
@@ -404,7 +406,11 @@ class CheckpointManager:
             self._refresh_best_symlinks()
 
         if len(self._best_records) != old_len:
-            self._protected_names_cache = {Path(str(rec["path"])).name for rec in self._best_records}
+            self._protected_names_cache = {
+                Path(str(p)).name
+                for rec in self._best_records
+                if (p := rec.get("path")) is not None
+            }
 
     def _refresh_best_symlinks(self) -> None:
         if not self._best_dir.exists():
