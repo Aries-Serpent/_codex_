@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tools/workflow_merge.py`:
   - added `is_word_char(ch: str) -> bool` helper and updated `compile_replacements()` prefix/suffix look-around logic to use it.
 - Added `tests/unit/test_checkpoint_manager.py` with targeted fallback RNG-state tests (torch absent, numpy-only failure, torch CPU failure, CUDA failure simulation).
-- Updated `.github/copilot-prompts/active/PR-4512-followup.md` to align tasks with PR #4512 scope.
+- Updated `.github/copilot-prompts/active/PR-4512-followup.md`: refreshed commit reference, listed modified files, and marked all Priority 1/2 tasks as complete.
 
 ### Fixed (auto-update — PR #4512)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4512 (SHA `8907fe50`) at 2026-05-20T01:17Z [auto-generated]

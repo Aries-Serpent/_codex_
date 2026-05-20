@@ -11,7 +11,7 @@
 | Ensure CUDA RNG availability helper usage for RNG capture path | ✅ Complete |
 | Add `is_word_char()` helper in `tools/workflow_merge.py` and use in `compile_replacements()` | ✅ Complete |
 | Add targeted unit tests for fallback `dump_rng_state()` behavior | ✅ Complete (`tests/unit/test_checkpoint_manager.py`) |
-| Validate generated follow-up prompt for PR #4512 and align scope | ✅ Complete (`.github/copilot-prompts/active/PR-4512-followup.md`) |
+| Validate generated follow-up prompt for PR #4512 and align scope | ✅ Complete — prompt refreshed: stale commit ref updated, files listed, all Priority 1/2 tasks marked complete (`.github/copilot-prompts/active/PR-4512-followup.md`) |
 | Run targeted lint/tests | ✅ Complete |
 | Monitor approved workflow fan-out via MCP | ✅ In progress (29 runs currently `in_progress`) |
 
