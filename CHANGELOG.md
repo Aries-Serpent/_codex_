@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4512)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4512 (SHA `8907fe50`) at 2026-05-20T01:17Z [auto-generated]
+
 ### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:20Z S1 + 00:45Z S2)
 - **`tests/services/audio/test_transcription_workflow.py`**:
   - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.
