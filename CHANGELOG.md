@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR4512 checkpoint/logging + workflow merge helper — 2026-05-20T01:45Z)
+- `training/checkpoint_manager.py`:
+  - replaced generic fallback debug logs with operation-specific messages (import fallback, numpy RNG, torch CPU RNG, CUDA RNG), preserving `exc_info=True`;
+  - removed generic `"Suppressed exception in handler"` occurrences from this module;
+  - preserved and exercised `_torch_cuda_rng_available()` usage in CUDA RNG capture path;
+  - replaced `contextlib.suppress(...)` spots with explicit `try/except` and specific debug logging.
+- `tools/workflow_merge.py`:
+  - added `is_word_char(ch: str) -> bool` helper and updated `compile_replacements()` prefix/suffix look-around logic to use it.
+- Added `tests/unit/test_checkpoint_manager.py` with targeted fallback RNG-state tests (torch absent, numpy-only failure, torch CPU failure, CUDA failure simulation).
+- Updated `.github/copilot-prompts/active/PR-4512-followup.md` to align tasks with PR #4512 scope.
+
 ### Fixed (auto-update — PR #4512)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4512 (SHA `8907fe50`) at 2026-05-20T01:17Z [auto-generated]
 

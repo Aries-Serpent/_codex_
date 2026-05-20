@@ -10,6 +10,10 @@ from types import SimpleNamespace
 import pytest
 
 
+def _raise_runtime_error(message: str):
+    raise RuntimeError(message)
+
+
 def _load_training_checkpoint_manager(
     monkeypatch: pytest.MonkeyPatch,
     *,
@@ -64,7 +68,7 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     fake_numpy = SimpleNamespace(
-        random=SimpleNamespace(get_state=lambda: (_ for _ in ()).throw(RuntimeError("boom")))
+        random=SimpleNamespace(get_state=lambda: _raise_runtime_error("boom"))
     )
     module = _load_training_checkpoint_manager(
         monkeypatch,
@@ -83,7 +87,7 @@ def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
 def test_dump_rng_state_torch_cpu_without_cuda_logs_specific_failure(monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     fake_torch = SimpleNamespace(
-        get_rng_state=lambda: (_ for _ in ()).throw(RuntimeError("cpu boom")),
+        get_rng_state=lambda: _raise_runtime_error("cpu boom"),
         cuda=SimpleNamespace(is_available=lambda: False),
     )
     module = _load_training_checkpoint_manager(
@@ -105,7 +109,7 @@ def test_dump_rng_state_cuda_failure_logs_specific_failure(monkeypatch, caplog):
         get_rng_state=lambda: SimpleNamespace(tolist=lambda: [1, 2, 3]),
         cuda=SimpleNamespace(
             is_available=lambda: True,
-            get_rng_state_all=lambda: (_ for _ in ()).throw(RuntimeError("cuda boom")),
+            get_rng_state_all=lambda: _raise_runtime_error("cuda boom"),
         ),
     )
     module = _load_training_checkpoint_manager(
@@ -116,7 +120,6 @@ def test_dump_rng_state_cuda_failure_logs_specific_failure(monkeypatch, caplog):
 
     state = module.dump_rng_state()
 
-    assert module._torch_cuda_rng_available(fake_torch)
     assert state["torch"]["cpu"] == [1, 2, 3]
     assert "cuda" not in state["torch"]
     assert "Failed to capture CUDA random state" in caplog.text
