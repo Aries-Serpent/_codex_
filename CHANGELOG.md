@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR4512 S1075 review feedback — 2026-05-20T02:00Z)
+- Addressed 3 review comments on commit `46eea5d`:
+  - `.github/copilot-prompts/active/PR-4512-followup.md`: refreshed stale commit reference to full SHA `7cec4a167b6c4886466279bb178795b5c8a9cc28`; replaced "No files modified" with actual list of 5 modified files; marked all Priority 1/2 and Execution Checklist items complete; updated status to ✅ COMPLETE.
+  - `CHANGELOG.md` line 19: corrected description to state prompt was "refreshed with completed task marks" (not just "aligned to scope").
+  - `docs/roadmap/PR4512_whats_next.md`: updated status row to note prompt was fully refreshed.
+- Updated living docs (`PR4512_whats_next.md`, `PR4512_session_diagram.mmd`, `AGENT_ACCOUNTABILITY_REPORT.md`) with S1075 session status.
+- Commit `51dccd8` — all review feedback resolved.
+
+### Fixed (PR4512 checkpoint/logging + workflow merge helper — 2026-05-20T01:45Z)
+- `training/checkpoint_manager.py`:
+  - replaced generic fallback debug logs with operation-specific messages (import fallback, numpy RNG, torch CPU RNG, CUDA RNG), preserving `exc_info=True`;
+  - removed generic `"Suppressed exception in handler"` occurrences from this module;
+  - preserved and exercised `_torch_cuda_rng_available()` usage in CUDA RNG capture path;
+  - replaced `contextlib.suppress(...)` spots with explicit `try/except` and specific debug logging.
+- `tools/workflow_merge.py`:
+  - added `is_word_char(ch: str) -> bool` helper and updated `compile_replacements()` prefix/suffix look-around logic to use it.
+- Added `tests/unit/test_checkpoint_manager.py` with targeted fallback RNG-state tests (torch absent, numpy-only failure, torch CPU failure, CUDA failure simulation).
+- Updated `.github/copilot-prompts/active/PR-4512-followup.md`: refreshed commit reference, listed modified files, and marked all Priority 1/2 tasks as complete.
+
+### Fixed (auto-update — PR #4512)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4512 (SHA `8907fe50`) at 2026-05-20T01:17Z [auto-generated]
+
 ### Fixed (code-quality-fix-batch — PR #4511 — `copilot/fix-kwargs-naming-convention` — 2026-05-20T00:20Z S1 + 00:45Z S2)
 - **`tests/services/audio/test_transcription_workflow.py`**:
   - Renamed `**_kwargs` → `**kwargs` in `stub_process_file_method` for Python convention consistency.

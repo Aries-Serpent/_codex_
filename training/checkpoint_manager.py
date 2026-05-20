@@ -6,7 +6,6 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 
 from __future__ import annotations
 
-import contextlib
 import json
 import logging
 import os
@@ -29,7 +28,11 @@ try:
     )
 except Exception:
     # fall back to existing local implementation below (if present)
-    logger.debug("Suppressed exception in handler", exc_info=True)
+    logger.debug(
+        "Failed to import CheckpointManager/build_payload_bytes/dump_rng_state "
+        "from codex_ml.utils.checkpointing; using legacy local fallback.",
+        exc_info=True,
+    )
 if "CheckpointManager" not in globals():
     import io
     import random
@@ -83,7 +86,7 @@ if "CheckpointManager" not in globals():
                 try:
                     state["numpy"] = _numpy_state_payload(_np.random.get_state())
                 except Exception:  # pragma: no cover - defensive
-                    logger.debug("Suppressed exception in handler", exc_info=True)
+                    logger.debug("Failed to capture numpy random state", exc_info=True)
             if _torch is not None:
                 torch_state: dict[str, Any] = {}
                 try:
@@ -96,7 +99,7 @@ if "CheckpointManager" not in globals():
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
                 except Exception:  # pragma: no cover - torch optional
-                    logger.debug("Suppressed exception in handler", exc_info=True)
+                    logger.debug("Failed to capture torch CPU random state", exc_info=True)
                 try:
                     if _torch_cuda_rng_available(_torch):
                         torch_state["cuda"] = [
@@ -104,7 +107,7 @@ if "CheckpointManager" not in globals():
                             for tensor in _torch.cuda.get_rng_state_all()
                         ]
                 except Exception:  # pragma: no cover - cuda optional
-                    logger.debug("Suppressed exception in handler", exc_info=True)
+                    logger.debug("Failed to capture CUDA random state", exc_info=True)
                 if torch_state:
                     state["torch"] = torch_state
             return state
@@ -200,13 +203,18 @@ class CheckpointManager:
                             except Exception:
                                 path = None
                     if path is not None:
-                        with contextlib.suppress(TypeError, ValueError):
+                        try:
                             self._best_records.append(
                                 {
                                     "path": str(path),
                                     "value": float(data.get("value", 0.0)),
                                     "step": int(data.get("step", 0)),
                                 }
+                            )
+                        except (TypeError, ValueError):
+                            logger.debug(
+                                "Failed to parse legacy best-checkpoint metadata entry",
+                                exc_info=True,
                             )
             except Exception:
                 self._best_records = []
@@ -345,8 +353,13 @@ class CheckpointManager:
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
-            with contextlib.suppress(FileNotFoundError):
+            try:
                 p.unlink()
+            except FileNotFoundError:
+                logger.debug(
+                    "Checkpoint file already absent during prune",
+                    exc_info=True,
+                )
 
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
@@ -396,7 +409,10 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError:
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug(
+                    "Best-candidate symlink already absent during refresh",
+                    exc_info=True,
+                )
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -408,12 +424,15 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError:
-                    logger.debug("Suppressed exception in handler", exc_info=True)
+                    logger.debug(
+                        "Stale best-candidate entry already absent during cleanup",
+                        exc_info=True,
+                    )
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError:
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Best checkpoint symlink already absent during refresh", exc_info=True)
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

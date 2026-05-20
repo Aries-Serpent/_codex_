@@ -1,0 +1,21 @@
+flowchart TD
+    A["🧭 PR #4512 session start"] --> B["🔍 Inspect targets\ntraining/checkpoint_manager.py\ntools/workflow_merge.py"]
+    B --> C["✏️ Apply checkpoint_manager fixes\nspecific debug logs + helper usage\nremove generic suppression text"]
+    C --> D["✏️ Apply workflow_merge fix\nadd is_word_char() helper\nuse in compile_replacements()"]
+    D --> E["🧪 Add targeted tests\n tests/unit/test_checkpoint_manager.py"]
+    E --> F["✅ Validate\nruff + pytest passing"]
+    F --> G["📄 Validate/fix PR-4512 follow-up prompt scope"]
+    G --> H["📡 Address review feedback\ncommit 51dccd8: refresh follow-up prompt metadata"]
+    H --> I["🔄 CI monitoring\nworkflows approved; monitoring results"]
+    I --> J["📝 Update living docs + changelog + accountability"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#1b4332,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#2d6a4f,color:#fff
+    style H fill:#2d6a4f,color:#fff
+    style I fill:#f4a261,color:#000
+    style J fill:#f4a261,color:#000

@@ -1,3 +1,53 @@
+## SESSION SUMMARY — 2026-05-20T02:00Z [PR4512-S1075-review-feedback-and-ci-monitoring]
+
+**Session:** PR4512-S1075-review-feedback | **Branch:** `copilot/refactor-word-boundary-logic` | **PR:** #4512
+
+### Completed
+- Addressed 3 review comments from `copilot-pull-request-reviewer` on commit `46eea5d`:
+  1. `.github/copilot-prompts/active/PR-4512-followup.md` — refreshed stale commit reference from `dd05a381` to full SHA `7cec4a167b6c4886466279bb178795b5c8a9cc28`; replaced "No files modified" with actual list of 5 modified files; marked all Priority 1, Priority 2, and Execution Checklist items as complete (`[x]`); updated status to ✅ COMPLETE.
+  2. `CHANGELOG.md` line 19 — corrected to accurately state the follow-up prompt was refreshed with completed task marks (rather than only "aligned to scope").
+  3. `docs/roadmap/PR4512_whats_next.md` — updated the "Validate follow-up prompt" row to note the prompt was fully refreshed.
+- Commit `51dccd8` pushed with all review feedback addressed.
+- Maintainer approved all pending workflows on PR #4512.
+- Updated living docs for S1075:
+  - `docs/roadmap/PR4512_whats_next.md` — added S1075 status, current workflow snapshot
+  - `docs/roadmap/PR4512_session_diagram.mmd` — added review feedback and CI monitoring nodes
+  - `CHANGELOG.md` — added S1075 review feedback entry
+- Monitoring CI results on commit `51dccd8` and subsequent auto-generated commits (previous commit `46eea5d` had 43 failing checks, now superseded).
+
+### Validation
+- `parallel_validation` run on commit `51dccd8` — Code Review ✅ Success (5 comments, all informational); CodeQL ✅ Skipped (trivial changes)
+- Replied to all 3 review comments with resolution details and commit hash `51dccd8`
+
+---
+
+## SESSION SUMMARY — 2026-05-20T01:45Z [PR4512-checkpoint-logging-and-workflow-merge-followup]
+
+**Session:** PR4512-checkpoint-logging-followup | **Branch:** `copilot/refactor-word-boundary-logic` | **PR:** #4512
+
+### Completed
+- Applied requested AI findings in `training/checkpoint_manager.py`:
+  - replaced generic fallback logging with specific operation-context messages and kept `exc_info=True`,
+  - kept/used `_torch_cuda_rng_available()` for CUDA RNG checks,
+  - removed all `"Suppressed exception in handler"` usages from this module.
+- Applied requested helper refactor in `tools/workflow_merge.py`:
+  - added `is_word_char(ch: str) -> bool` and used it in `compile_replacements()` word-boundary look-around construction.
+- Added targeted tests at `tests/unit/test_checkpoint_manager.py` to exercise fallback `dump_rng_state()` in torch-absent, numpy-only, torch CPU-failure, and CUDA-failure simulation paths.
+- Validated and corrected `.github/copilot-prompts/active/PR-4512-followup.md` so tasks reference PR #4512 scope (not stale PR #4511 follow-up tasks).
+- Updated living docs for this PR:
+  - `docs/roadmap/PR4512_whats_next.md`
+  - `docs/roadmap/PR4512_session_diagram.mmd`
+- Monitored approved workflow fan-out via MCP:
+  - 29 runs currently in progress,
+  - startup-failure snapshots (`26135531870`, `26135531830`, `26135531829`) each report `total_count: 0` jobs (no actionable in-job logs in this snapshot).
+
+### Validation
+- `python -m ruff check training/checkpoint_manager.py tools/workflow_merge.py tests/unit/test_checkpoint_manager.py tests/tools/test_workflow_merge_replacements.py` ✅
+- `python -m pytest -q tests/unit/test_checkpoint_manager.py tests/tools/test_workflow_merge_replacements.py` ✅ (21 passed)
+- `parallel_validation` run completed; actionable review feedback was applied and revalidated.
+
+---
+
 ## SESSION SUMMARY — 2026-05-20T00:45Z [code-quality-fix-batch-PR4511-S2-review-remediations]
 
 **Session:** code-quality-fix-batch-PR4511-S2 | **Branch:** `copilot/fix-kwargs-naming-convention` | **PR:** #4511
@@ -40997,6 +41047,55 @@ and the CI gate requirement.
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26131933149
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26131933215
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-05-20T01:17Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4512)
+## SESSION SUMMARY — 2026-05-20T01:21Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4512)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #4512 (SHA: `8907fe50`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26134797031
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26134797036
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
