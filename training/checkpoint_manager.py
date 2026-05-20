@@ -74,6 +74,7 @@ if not _checkpoint_helpers_import_ok:
         try:
             state["python"] = _python_state_payload(random.getstate())
         except Exception:  # pragma: no cover - defensive
+            logger.debug("Failed to capture python random state", exc_info=True)
             state["python"] = []
 
         if _np is not None:  # pragma: no branch - optional dependency
@@ -214,6 +215,11 @@ class CheckpointManager:
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
         self._best = self._best_records[0]["value"] if self._best_records else None
+        self._protected_names_cache: set[str] = {
+            Path(str(p)).name
+            for rec in self._best_records
+            if (p := rec.get("path")) is not None
+        }
         self._refresh_best_symlinks()
 
     # ------------------------------------------------------------------
@@ -320,7 +326,7 @@ class CheckpointManager:
             def on_step_end(self, args, state, control, **kwargs):
                 step = state.global_step
                 # Keep explicit None handling for test/legacy state shims.
-                if step is not None and save_every and save_every > 0 and step % save_every == 0:
+                if step is not None and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -350,7 +356,7 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {Path(str(rec["path"])).name for rec in self._best_records}
+        protected = self._protected_names_cache
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
@@ -397,6 +403,11 @@ class CheckpointManager:
                 json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
             )
             self._refresh_best_symlinks()
+            self._protected_names_cache = {
+                Path(str(p)).name
+                for rec in self._best_records
+                if (p := rec.get("path")) is not None
+            }
 
     def _refresh_best_symlinks(self) -> None:
         if not self._best_dir.exists():
