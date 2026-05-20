@@ -243,6 +243,7 @@ class TestEncryptedStorage:
             return key
         except ImportError:
             pytest.skip("cryptography package not installed")
+            return None
 
     def test_store_and_load_secret(self, temp_dir, encryption_key):
         """Test basic encryption and decryption."""
