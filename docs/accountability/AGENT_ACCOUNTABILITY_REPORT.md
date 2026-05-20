@@ -21,6 +21,33 @@
 
 ---
 
+## SESSION SUMMARY — 2026-05-20 — PR #4514 CI rescue + review-link follow-up
+
+### Context
+- Addressed maintainer escalation comment for failing **Pre-Merge Validation** run `26143028693`.
+- Also validated and retained the checkpoint-manager review-thread remediation referenced at
+  `discussion_r3271335185` (`training/checkpoint_manager.py` helper-only import + intent-specific flag naming).
+
+### What was done
+- Investigated run `26143028693` job logs via GitHub Actions MCP tools.
+- Confirmed failure root cause on commit `39b3c402`: Pattern 12 line-length violations in
+  `src/services/audio/cli/smart_cli.py` and stale tracked-file dimension.
+- Applied minimal code fix in `smart_cli.py` by splitting long lines and introducing `total_files`
+  for formatted summary output.
+- Ran `python scripts/ci/sync_tracked_files.py --fix` to repair tracked-file drift.
+
+### Validation
+- `python -m ruff check src/services/audio/cli/smart_cli.py training/checkpoint_manager.py tests/unit/test_checkpoint_manager.py` ✅
+- `python -m pytest tests/services/audio -q` ✅
+- `python -m pytest tests/test_checkpoint_manager.py tests/unit/test_checkpoint_manager.py -q` ✅
+- `python scripts/ci/sync_tracked_files.py --check` (after fix) ✅
+
+### Outcome
+- CI root causes from run `26143028693` are remediated on current head.
+- Review-link follow-up remains correctly implemented and validated.
+
+---
+
 ## SESSION SUMMARY — 2026-05-20T01:45Z [PR4512-checkpoint-logging-and-workflow-merge-followup]
 
 **Session:** PR4512-checkpoint-logging-followup | **Branch:** `copilot/refactor-word-boundary-logic` | **PR:** #4512

@@ -19,6 +19,8 @@ def _load_training_checkpoint_manager(
     *,
     fake_numpy: object | None = None,
     fake_torch: object | None = None,
+    fake_checkpointing: object | None = None,
+    force_checkpointing_import_failure: bool = True,
 ):
     module_name = "training.checkpoint_manager_under_test"
     module_path = (
@@ -29,7 +31,10 @@ def _load_training_checkpoint_manager(
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
         importer = (globals or {}).get("__name__", "")
         if name == "codex_ml.utils.checkpointing":
-            raise ImportError("forced checkpointing import failure")
+            if force_checkpointing_import_failure:
+                raise ImportError("forced checkpointing import failure")
+            if fake_checkpointing is not None:
+                return fake_checkpointing
         if name == "numpy" and importer == module_name:
             if fake_numpy is None:
                 raise ImportError("forced numpy import failure")
@@ -63,6 +68,22 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
         "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
     ) in caplog.text
+
+
+def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch):
+    fake_checkpointing = SimpleNamespace(
+        build_payload_bytes=lambda *args, **kwargs: b"ok",
+        dump_rng_state=lambda: {"python": [1, 2, 3]},
+    )
+    module = _load_training_checkpoint_manager(
+        monkeypatch,
+        fake_checkpointing=fake_checkpointing,
+        force_checkpointing_import_failure=False,
+    )
+
+    assert module._checkpoint_helpers_import_ok is True
+    assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes
+    assert module.dump_rng_state is fake_checkpointing.dump_rng_state
 
 
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
