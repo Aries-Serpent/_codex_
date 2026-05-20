@@ -243,7 +243,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `CODEX_LLM_MODEL` | ✅ | `gpt-4o` | LLM model for agent operations |
 | 8 | `CODEX_LLM_RATE_LIMIT_DELAY` | ✅ | `1.0` | Seconds between LLM requests |
 | 9 | `CODEX_OFFLINE` | ✅ | `1` | Offline mode for CI (`1`=offline) |
-| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (latest `3.12.x` patch line) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
+| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (pinned minor, floating patch): resolves to the latest available `3.12.x` patch at runtime (not pinned to `3.12.0` or any specific patch) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
 | 11 | `CODEX_SANDBOX_TIMEOUT` | ✅ | `60` | Sandbox operation timeout (seconds) |
 | 12 | `CODEX_SESSION_ID` | ✅ | `UUID v4` (auto-set per session) | Current or most-recent logical session identifier. Written by `copilot-setup-steps.yml` on session start. Format: UUID v4 string. |
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
@@ -285,12 +285,12 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 ##### OTel setup note
 
-- Required Python packages (minimum): `opentelemetry-sdk` plus a protocol-specific OTLP exporter:
-  - gRPC (recommended for `OTEL_EXPORTER_OTLP_ENDPOINT`, e.g. `:4317`): `opentelemetry-exporter-otlp-proto-grpc`
-  - HTTP (if using OTLP/HTTP): `opentelemetry-exporter-otlp-proto-http`
-  - Optional convenience meta-package: `opentelemetry-exporter-otlp`
-- Install with (gRPC): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc`
-- Install with (HTTP): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http`
+- Required Python packages (minimum): `opentelemetry-sdk>=1.20.0` plus a protocol-specific OTLP exporter:
+  - gRPC (recommended for `OTEL_EXPORTER_OTLP_ENDPOINT`, e.g. `:4317`): `opentelemetry-exporter-otlp-proto-grpc>=1.20.0`
+  - HTTP (if using OTLP/HTTP): `opentelemetry-exporter-otlp-proto-http>=1.20.0`
+  - Optional convenience meta-package: `opentelemetry-exporter-otlp>=1.20.0`
+- Install with (gRPC): `pip install "opentelemetry-sdk>=1.20.0" "opentelemetry-exporter-otlp-proto-grpc>=1.20.0"`
+- Install with (HTTP): `pip install "opentelemetry-sdk>=1.20.0" "opentelemetry-exporter-otlp-proto-http>=1.20.0"`
 - Leave `OTEL_EXPORTER_OTLP_ENDPOINT` unset for offline/local environments (no-op mode).
 
 #### Data Store / Feature Backend
@@ -362,7 +362,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 | 3 | `CODEX_BRIDGE_OWNER_ONLY` | ✅ | `true` | New (not in repo-level) | IPC bridge access control |
 | 4 | `CODEX_DB_PATH` | ✅ | `.codex/logs.db` | Overrides repo (`.codex/logs.db`) | No conflict |
 | 5 | `CODEX_ENV_GO_VERSION` | ✅ | `1.21` | Overrides repo (`1.21`) | No conflict |
-| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `18` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Versioning note:** `18` is intentionally major-only and tracks the latest `18.x` release (not a pinned full semver). |
+| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `20` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Versioning note:** `20` is intentionally major-only and tracks the latest `20.x` release (not a pinned full semver). |
 | 7 | `CODEX_ENV_PYTHON_VERSION` | ✅ | `3.12` | Overrides repo (`3.12`) | ✅ **Issue 2 resolved (2026-03-06):** Updated from `3.11` to `3.12`. Now consistent with `CODEX_PYTHON_VERSION`. |
 | 8 | `CODEX_ENV_RUST_VERSION` | ✅ | `1.92` | Overrides repo (`1.92`) | No conflict |
 | 9 | `CODEX_ENV_SWIFT_VERSION` | ✅ | `5.9` | Overrides repo (`5.9`) | Interpreted as latest `5.9.x` patch release (minor pinned, patch floating). |
