@@ -384,13 +384,27 @@ class CheckpointManager:
             existing = [r for r in self._best_records if r["path"] != path.name]
             existing.append(record)
 
+            valid_records: list[dict[str, Any]] = []
+            for item in existing:
+                if "value" not in item or "step" not in item:
+                    logger.warning("Dropping invalid best-record entry missing required keys: %r", item)
+                    continue
+                try:
+                    normalized = dict(item)
+                    normalized["value"] = float(item["value"])
+                    normalized["step"] = int(item["step"])
+                except (TypeError, ValueError):
+                    logger.warning("Dropping invalid best-record entry with non-numeric fields: %r", item)
+                    continue
+                valid_records.append(normalized)
+
             def keyfn(item: dict[str, Any]) -> tuple[float, int]:
-                value = float(item.get("value", 0.0))
-                step_idx = int(item.get("step", 0))
+                value = float(item["value"])
+                step_idx = int(item["step"])
                 return (value, step_idx) if self.mode == "min" else (-value, step_idx)
 
-            existing.sort(key=keyfn)
-            self._best_records = existing[: self.best_k]
+            valid_records.sort(key=keyfn)
+            self._best_records = valid_records[: self.best_k]
             self._best = self._best_records[0]["value"] if self._best_records else None
             top = self._best_records[0]
             payload = {
