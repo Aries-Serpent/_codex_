@@ -17,7 +17,14 @@
 - [`0fce00f8`] 🧠 Update cognitive brain patterns [automated] (github-actions[bot], 2026-05-20)
 
 ### Files Modified
-No files modified
+- `tests/tools/test_workflow_merge_replacements.py`
+- `tools/workflow_merge.py`
+- `training/checkpoint_manager.py`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `CODEX_MANIFEST.json`
+- `CHANGELOG.md`
+- `.github/copilot-prompts/active/PR-4513-followup.md`
+- `.codex/session_context_latest.md`
 
 ---
 
@@ -27,7 +34,7 @@ No files modified
 - [x] Apply `training/checkpoint_manager.py` fixes: remove unused import paths, replace generic debug logs with operation-specific messages, and keep `exc_info=True`.
 - [x] Apply `tools/workflow_merge.py` fix: add `is_word_char()` helper and use it for word-boundary look-around checks in `compile_replacements()`.
 - [x] Add/verify targeted tests for checkpoint RNG fallback behavior and workflow replacement boundaries.
-- [x] Confirm all required checks green for PR #4512.
+- [x] Confirm all required checks green for PR #4513.
 
 **Validation**:
 ```bash
@@ -39,7 +46,7 @@ python scripts/ci/sync_tracked_files.py --fix
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
 - [x] Verify no remaining `Suppressed exception in handler` logs in `training/checkpoint_manager.py`.
-- [x] Verify generated follow-up prompt content stays aligned to PR #4512 scope.
+- [x] Verify generated follow-up prompt content stays aligned to PR #4513 scope.
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
 - [ ] No tasks specified

@@ -355,7 +355,7 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        protected = {rec["path"] for rec in self._best_records}
+        protected = {Path(str(rec["path"])).name for rec in self._best_records}
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
