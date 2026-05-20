@@ -44,6 +44,9 @@
 - Post-review validation update:
   - `python -m ruff check tests/unit/test_checkpoint_manager.py` ✅
   - `python -m pytest tests/unit/test_checkpoint_manager.py tests/test_checkpoint_manager.py -q` ✅
+  - `parallel_validation` follow-up comments resolved:
+    - test helper flag renamed to `allow_checkpointing_import`
+    - import-success test now asserts observable behavior only (no private-flag coupling)
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.

@@ -20,7 +20,7 @@ def _load_training_checkpoint_manager(
     fake_numpy: object | None = None,
     fake_torch: object | None = None,
     fake_checkpointing: object | None = None,
-    force_checkpointing_import_failure: bool = True,
+    allow_checkpointing_import: bool = False,
 ):
     module_name = "training.checkpoint_manager_under_test"
     module_path = (
@@ -31,7 +31,7 @@ def _load_training_checkpoint_manager(
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
         importer = (globals or {}).get("__name__", "")
         if name == "codex_ml.utils.checkpointing":
-            if force_checkpointing_import_failure:
+            if not allow_checkpointing_import:
                 raise ImportError("forced checkpointing import failure")
             if fake_checkpointing is not None:
                 return fake_checkpointing
@@ -79,10 +79,9 @@ def test_checkpoint_helper_import_success_sets_helper_flag(monkeypatch, caplog):
     module = _load_training_checkpoint_manager(
         monkeypatch,
         fake_checkpointing=fake_checkpointing,
-        force_checkpointing_import_failure=False,
+        allow_checkpointing_import=True,
     )
 
-    assert module._checkpoint_helpers_import_ok is True
     assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes
     assert module.dump_rng_state is fake_checkpointing.dump_rng_state
     assert module.build_payload_bytes({"k": "v"}) == b"ok"
