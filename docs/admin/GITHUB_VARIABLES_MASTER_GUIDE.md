@@ -285,12 +285,12 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 ##### OTel setup note
 
-- Required Python packages (minimum): `opentelemetry-sdk` plus a protocol-specific OTLP exporter:
-  - gRPC (recommended for `OTEL_EXPORTER_OTLP_ENDPOINT`, e.g. `:4317`): `opentelemetry-exporter-otlp-proto-grpc`
-  - HTTP (if using OTLP/HTTP): `opentelemetry-exporter-otlp-proto-http`
-  - Optional convenience meta-package: `opentelemetry-exporter-otlp`
-- Install with (gRPC): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc`
-- Install with (HTTP): `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http`
+- Required Python packages (minimum): `opentelemetry-sdk>=1.20.0` plus a protocol-specific OTLP exporter:
+  - gRPC (recommended for `OTEL_EXPORTER_OTLP_ENDPOINT`, e.g. `:4317`): `opentelemetry-exporter-otlp-proto-grpc>=1.20.0`
+  - HTTP (if using OTLP/HTTP): `opentelemetry-exporter-otlp-proto-http>=1.20.0`
+  - Optional convenience meta-package: `opentelemetry-exporter-otlp>=1.20.0`
+- Install with (gRPC): `pip install "opentelemetry-sdk>=1.20.0" "opentelemetry-exporter-otlp-proto-grpc>=1.20.0"`
+- Install with (HTTP): `pip install "opentelemetry-sdk>=1.20.0" "opentelemetry-exporter-otlp-proto-http>=1.20.0"`
 - Leave `OTEL_EXPORTER_OTLP_ENDPOINT` unset for offline/local environments (no-op mode).
 
 #### Data Store / Feature Backend
