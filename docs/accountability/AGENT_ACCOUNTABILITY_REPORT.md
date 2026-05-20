@@ -49,6 +49,7 @@
     - import-success test now asserts observable behavior only (no private-flag coupling)
     - test renamed to `test_checkpoint_helper_import_success_uses_imported_helpers` for intent clarity
     - `smart_cli.py` summary output kept concise without one-off temporary variable
+    - import harness now explicitly falls through to `original_import(...)` when helper import is allowed without a fake module
 
 ### Outcome
 - CI root causes from run `26143028693` are remediated on current head.
