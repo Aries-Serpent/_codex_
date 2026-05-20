@@ -159,14 +159,17 @@ def _run_transcribe(args: argparse.Namespace) -> int:
     for item in result.results:
         rel_name = item.input_path.name
         if item.success:
-            produced = ", ".join(f"{fmt}:{Path(path).name}" for fmt, path in item.output_files.items())
+            produced = ", ".join(
+                f"{fmt}:{Path(path).name}" for fmt, path in item.output_files.items()
+            )
             speakers = ", ".join(item.detected_speakers) if item.detected_speakers else "none"
             print(f"✅ {rel_name} -> speakers [{speakers}] -> {produced}")
         else:
             print(f"❌ {rel_name}: {item.error}")
 
     print(
-        f"Processed={result.processed_files} Failed={result.failed_files} Total={result.processed_files + result.failed_files}"
+        f"Processed={result.processed_files} Failed={result.failed_files} "
+        f"Total={result.processed_files + result.failed_files}"
     )
     return 0 if result.failed_files == 0 else 1
 

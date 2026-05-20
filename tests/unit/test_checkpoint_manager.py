@@ -19,6 +19,8 @@ def _load_training_checkpoint_manager(
     *,
     fake_numpy: object | None = None,
     fake_torch: object | None = None,
+    fake_checkpointing: object | None = None,
+    allow_checkpointing_import: bool = False,
 ):
     module_name = "training.checkpoint_manager_under_test"
     module_path = (
@@ -29,7 +31,13 @@ def _load_training_checkpoint_manager(
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
         importer = (globals or {}).get("__name__", "")
         if name == "codex_ml.utils.checkpointing":
-            raise ImportError("forced checkpointing import failure")
+            if not allow_checkpointing_import:
+                raise ImportError("forced checkpointing import failure")
+            if fake_checkpointing is not None:
+                return fake_checkpointing
+            # Intentional passthrough for integration-like unit coverage:
+            # allow real helper imports when no mock helper module is injected.
+            return original_import(name, globals, locals, fromlist, level)
         if name == "numpy" and importer == module_name:
             if fake_numpy is None:
                 raise ImportError("forced numpy import failure")
@@ -60,9 +68,44 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     assert "numpy" not in state
     assert "torch" not in state
     assert (
-        "Failed to import CheckpointManager/build_payload_bytes/dump_rng_state "
+        "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
     ) in caplog.text
+
+
+def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, caplog):
+    caplog.set_level(logging.DEBUG)
+    fake_checkpointing = SimpleNamespace(
+        build_payload_bytes=lambda *args, **kwargs: b"ok",
+        dump_rng_state=lambda: {"python": [1, 2, 3]},
+    )
+    module = _load_training_checkpoint_manager(
+        monkeypatch,
+        fake_checkpointing=fake_checkpointing,
+        allow_checkpointing_import=True,
+    )
+
+    assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes
+    assert module.dump_rng_state is fake_checkpointing.dump_rng_state
+    assert module.build_payload_bytes({"k": "v"}) == b"ok"
+    assert module.dump_rng_state() == {"python": [1, 2, 3]}
+    assert "using legacy local fallback" not in caplog.text
+
+
+def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
+    module = _load_training_checkpoint_manager(
+        monkeypatch,
+        allow_checkpointing_import=True,
+    )
+
+    assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing"
+    try:
+        payload = module.build_payload_bytes(None)
+    except RuntimeError as exc:  # pragma: no cover - torch-optional environment
+        assert "torch is required" in str(exc)
+    else:
+        assert isinstance(payload, bytes)  # pragma: no cover - torch-optional environment
+    assert "python" in module.dump_rng_state()
 
 
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
