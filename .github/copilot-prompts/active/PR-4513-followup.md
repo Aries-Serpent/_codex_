@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4513
 
-**PR**: #4513 - PR #4513  
+**PR**: #4513  
 **Branch**: `copilot/fix-undefined-variable-wm`  
 **Author**: @Copilot  
 **Date**: 2026-05-20  
