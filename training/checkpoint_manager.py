@@ -74,6 +74,7 @@ if not _checkpoint_helpers_import_ok:
         try:
             state["python"] = _python_state_payload(random.getstate())
         except Exception:  # pragma: no cover - defensive
+            logger.debug("Failed to capture python random state", exc_info=True)
             state["python"] = []
 
         if _np is not None:  # pragma: no branch - optional dependency
