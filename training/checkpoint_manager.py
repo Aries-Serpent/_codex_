@@ -212,7 +212,10 @@ class CheckpointManager:
                                 }
                             )
                         except (TypeError, ValueError):
-                            pass
+                            logger.debug(
+                                "Failed to parse legacy best-checkpoint metadata entry",
+                                exc_info=True,
+                            )
             except Exception:
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
@@ -353,7 +356,10 @@ class CheckpointManager:
             try:
                 p.unlink()
             except FileNotFoundError:
-                pass
+                logger.debug(
+                    "Checkpoint file already absent during prune",
+                    exc_info=True,
+                )
 
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
