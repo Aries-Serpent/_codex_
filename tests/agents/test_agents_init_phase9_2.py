@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import sys
 
-import agents
+from agents import __all__, __doc__, __version__
 
 
 class TestAgentsPackageVersion:
@@ -29,22 +29,22 @@ class TestAgentsPackageVersion:
         # Arrange & Act
 
         # Assert
-        assert agents.__version__ is not None
-        assert isinstance(agents.__version__, str)
+        assert __version__ is not None
+        assert isinstance(__version__, str)
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
         # Arrange & Act
 
         # Assert
-        assert agents.__version__ == "0.0.0"
+        assert __version__ == "0.0.0"
 
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
         # Arrange & Act
 
         # Assert
-        assert "__version__" in agents.__all__
+        assert "__version__" in __all__
 
 
 class TestPhysicsOrchestratorExports:
@@ -391,29 +391,30 @@ class TestAgentsAllExport:
         # Arrange & Act
 
         # Assert
-        assert isinstance(agents.__all__, list)
+        assert isinstance(__all__, list)
 
     def test_all_no_duplicates(self) -> None:
         """Test __all__ has no duplicates."""
         # Arrange & Act
 
         # Assert
-        assert len(agents.__all__) == len(set(agents.__all__))
+        assert len(__all__) == len(set(__all__))
 
     def test_all_items_are_strings(self) -> None:
         """Test all items in __all__ are strings."""
         # Arrange & Act
 
         # Assert
-        for item in agents.__all__:
+        for item in __all__:
             assert isinstance(item, str)
 
     def test_all_exports_accessible(self) -> None:
         """Test all exports in __all__ are accessible."""
         # Arrange & Act
+        import agents
 
         # Assert
-        for export in agents.__all__:
+        for export in __all__:
             assert hasattr(agents, export), f"Export {export} not accessible"
 
 
@@ -425,22 +426,22 @@ class TestAgentsPackageDocumentation:
         # Arrange & Act
 
         # Assert
-        assert agents.__doc__ is not None
-        assert len(agents.__doc__) > 0
+        assert __doc__ is not None
+        assert len(__doc__) > 0
 
     def test_docstring_mentions_agents(self) -> None:
         """Test docstring mentions agents."""
         # Arrange & Act
 
         # Assert
-        assert "agents" in agents.__doc__.lower()
+        assert "agents" in __doc__.lower()
 
     def test_docstring_mentions_orchestration(self) -> None:
         """Test docstring mentions orchestration."""
         # Arrange & Act
 
         # Assert
-        assert "orchestrat" in agents.__doc__.lower()
+        assert "orchestrat" in __doc__.lower()
 
 
 class TestAgentsImportSafety:

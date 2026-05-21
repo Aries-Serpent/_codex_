@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4531 code review findings — 2026-05-21T17:54Z)
+- Fixed `Connection` type hint in `tools/codex_sqlite_align.py` line 385 to use string literal `"sqlite3.Connection"` instead of bare name (resolves gemini-code-assist[bot] review comment).
+- Fixed unused global variable `ROOT` in `tests/space_traversal/test_coverage_enhanced.py` by importing module and mutating `coverage_ingest.ROOT` attribute instead of ineffective local rebinding (resolves github-code-quality[bot] review comments).
+- Fixed mixed import style in `tests/agents/test_agents_init_phase9_2.py` by removing `import agents` and using `from agents import __all__, __doc__, __version__` consistently (resolves github-code-quality[bot] review comment).
+
 ### Fixed (PR #4531 import-violation cleanup + AAIS maturity — 2026-05-21T17:45Z)
 - Fixed `Connection` undefined name in `tools/codex_sqlite_align.py` (use `sqlite3.Connection`; bare name was left after prior import-cleanup removed `from sqlite3 import Connection`).
 - Completed cleanup of 15 "module imported with both `import` and `import from`" violations across 11 files.

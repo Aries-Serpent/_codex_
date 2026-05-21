@@ -382,7 +382,7 @@ def _format_csv_value(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def fetch_rows(conn: sqlite3.Connection, table: str, limit: int) -> list[Row]:
+def fetch_rows(conn: "sqlite3.Connection", table: str, limit: int) -> list[Row]:
     safe_table = _validate_table(table)
     query = f"SELECT * FROM {_quote_identifier(safe_table)} LIMIT ?"  # nosec B608 - table name validated via _validate_table
     return conn.execute(
