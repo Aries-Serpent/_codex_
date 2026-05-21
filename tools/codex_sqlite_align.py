@@ -19,7 +19,6 @@ import os
 import re
 import shutil
 import sqlite3
-from sqlite3 import Connection
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -383,7 +382,7 @@ def _format_csv_value(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def fetch_rows(conn: Connection, table: str, limit: int) -> list[Row]:
+def fetch_rows(conn: "sqlite3.Connection", table: str, limit: int) -> list[Row]:
     safe_table = _validate_table(table)
     query = f"SELECT * FROM {_quote_identifier(safe_table)} LIMIT ?"  # nosec B608 - table name validated via _validate_table
     return conn.execute(

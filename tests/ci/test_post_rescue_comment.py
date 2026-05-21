@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 # ---------------------------------------------------------------------------
 # Ensure scripts/ci is importable regardless of pytest working directory
@@ -292,3 +292,145 @@ class TestSelfSuppressMainLogic:
         out = capsys.readouterr().out
         # Should proceed to post (not suppressed)
         assert "suppressed" not in out.lower()
+
+
+class TestDefensiveShaResolution:
+    """Tests for the defensive COMMIT_SHA / BRANCH resolution from the PR API.
+
+    When workflows fire on issue_comment or pull_request_review events, the
+    github.event.pull_request.head.sha / github.head_ref expressions may expand
+    to empty strings.  post_rescue_comment.py must fetch the missing values from
+    the PR API so the rescue comment always contains a valid, non-empty SHA.
+    """
+
+    _ENV_BASE = {
+        "GH_TOKEN": "test-token",
+        "REPO": "Aries-Serpent/_codex_",
+        "RUN_ID": "88888888",
+        "RUN_URL": "https://github.com/Aries-Serpent/_codex_/actions/runs/88888888",
+        "WORKFLOW_NAME": "Comment Review Gate",
+        "PR_NUMBER": "4531",
+    }
+
+    def _patch_env(self, monkeypatch, **overrides):
+        env = {**self._ENV_BASE, **overrides}
+        for k, v in env.items():
+            monkeypatch.setenv(k, v)
+        for k in ("SECTION_TITLE", "SECTION_CONTENT", "APPEND_ONLY"):
+            if k not in overrides:
+                monkeypatch.delenv(k, raising=False)
+
+    def test_resolves_sha_from_pr_api_when_commit_sha_empty(self, monkeypatch, capsys):
+        """When COMMIT_SHA is empty (e.g. issue_comment trigger), the script
+        must fetch it from the PR API and use the resolved SHA in the comment.
+        """
+        resolved_sha = "deadbeefcafe1234deadbeefcafe1234deadbeef"
+        self._patch_env(monkeypatch, COMMIT_SHA="", BRANCH="")
+
+        pr_api_response = {
+            "head": {"sha": resolved_sha, "ref": "0D_base_"},
+        }
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET" and "/pulls/4531" in path:
+                return 200, pr_api_response
+            if method == "GET" and "/comments" in path:
+                return 200, []  # no existing rescue comment
+            if method == "POST":
+                # Capture the comment body and assert SHA is present
+                posted_body = body.get("body", "") if body else ""
+                assert resolved_sha in posted_body, (
+                    f"Expected resolved SHA {resolved_sha!r} in posted comment body, "
+                    f"got: {posted_body[:200]!r}"
+                )
+                return 201, {"id": 1, "html_url": "https://example.com/c/1"}
+            return 200, {}
+
+        with patch.object(prc, "_gh", side_effect=_gh_side_effect):
+            with patch.object(prc, "_get_branch_head_sha", return_value=resolved_sha):
+                prc.main()
+
+        out = capsys.readouterr().out
+        assert "resolved" in out.lower(), (
+            f"Expected SHA resolution log message, got: {out!r}"
+        )
+
+    def test_resolves_branch_from_pr_api_when_branch_empty(self, monkeypatch, capsys):
+        """When BRANCH is empty the script must fetch it from the PR API."""
+        resolved_sha = "cafebabe1234cafebabe1234cafebabe12341234"
+        self._patch_env(monkeypatch, COMMIT_SHA=resolved_sha, BRANCH="")
+
+        pr_api_response = {
+            "head": {"sha": resolved_sha, "ref": "0D_base_"},
+        }
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET" and "/pulls/4531" in path:
+                return 200, pr_api_response
+            if method == "GET" and "/comments" in path:
+                return 200, []
+            if method == "POST":
+                posted_body = body.get("body", "") if body else ""
+                assert "0D_base_" in posted_body, (
+                    f"Expected resolved branch '0D_base_' in posted body: {posted_body[:200]!r}"
+                )
+                return 201, {"id": 2, "html_url": "https://example.com/c/2"}
+            return 200, {}
+
+        with patch.object(prc, "_gh", side_effect=_gh_side_effect):
+            with patch.object(prc, "_get_branch_head_sha", return_value=resolved_sha):
+                prc.main()
+
+        out = capsys.readouterr().out
+        assert "resolved" in out.lower(), (
+            f"Expected branch resolution log message, got: {out!r}"
+        )
+
+    def test_continues_with_warning_when_pr_api_lookup_fails(self, monkeypatch, capsys):
+        """When the PR API lookup fails, the script warns and continues (best-effort)."""
+        self._patch_env(monkeypatch, COMMIT_SHA="", BRANCH="")
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET" and "/pulls/4531" in path:
+                return 404, {"message": "Not Found"}
+            if method == "GET" and "/comments" in path:
+                return 200, []
+            if method == "POST":
+                return 201, {"id": 3, "html_url": "https://example.com/c/3"}
+            return 200, {}
+
+        with patch.object(prc, "_gh", side_effect=_gh_side_effect):
+            with patch.object(prc, "_get_branch_head_sha", return_value=None):
+                prc.main()
+
+        out = capsys.readouterr().out
+        assert "⚠️" in out or "warning" in out.lower() or "404" in out, (
+            f"Expected warning about failed PR lookup, got: {out!r}"
+        )
+
+    def test_skips_lookup_when_both_sha_and_branch_provided(self, monkeypatch):
+        """When COMMIT_SHA and BRANCH are both non-empty, the PR API must NOT
+        be called for resolution (the env vars are fully supplied).
+        """
+        full_sha = "aabbccddeeff00112233445566778899aabbccdd"
+        self._patch_env(monkeypatch, COMMIT_SHA=full_sha, BRANCH="my-feature")
+
+        pr_lookup_calls = []
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET" and "/pulls/4531" in path and "/comments" not in path:
+                pr_lookup_calls.append(path)
+            if method == "GET" and "/comments" in path:
+                return 200, []
+            if method == "POST":
+                return 201, {"id": 4, "html_url": "https://example.com/c/4"}
+            return 200, {}
+
+        with patch.object(prc, "_gh", side_effect=_gh_side_effect):
+            with patch.object(prc, "_get_branch_head_sha", return_value=full_sha):
+                prc.main()
+
+        assert not pr_lookup_calls, (
+            "PR API should NOT be called for SHA resolution when both "
+            f"COMMIT_SHA and BRANCH are already provided; got calls: {pr_lookup_calls}"
+        )

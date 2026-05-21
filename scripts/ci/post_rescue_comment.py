@@ -287,11 +287,11 @@ def main() -> None:
     token = os.environ["GH_TOKEN"]
     pr_number_raw = os.environ.get("PR_NUMBER", "").strip()
     repo = os.environ["REPO"]
-    commit_sha = os.environ["COMMIT_SHA"]
+    commit_sha = os.environ.get("COMMIT_SHA", "").strip()
     run_id = os.environ["RUN_ID"]
     run_url = os.environ["RUN_URL"]
     workflow = os.environ["WORKFLOW_NAME"]
-    branch = os.environ["BRANCH"]
+    branch = os.environ.get("BRANCH", "").strip()
 
     # Optional: custom section title / content / append-only mode
     section_title = os.environ.get("SECTION_TITLE", "").strip()
@@ -310,6 +310,35 @@ def main() -> None:
             print(f"ℹ️  No open PR found for branch '{branch}' — skipping rescue comment.")
             return
         pr_number = looked_up
+
+    # Defensive: when COMMIT_SHA or BRANCH env vars were not supplied (e.g. when
+    # the calling workflow is triggered by an issue_comment or pull_request_review
+    # event where github.event.pull_request.head.sha / github.head_ref are empty),
+    # resolve them from the PR API so the comment always contains a valid SHA.
+    if not commit_sha or not branch:
+        _pr_status, _pr_data = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+        if _pr_status == 200 and isinstance(_pr_data, dict):
+            _head = _pr_data.get("head") or {}
+            if not commit_sha:
+                commit_sha = _head.get("sha", "")
+                if commit_sha:
+                    print(
+                        f"ℹ️  COMMIT_SHA resolved from PR #{pr_number} API: {commit_sha[:12]}"
+                    )
+                else:
+                    print(
+                        f"⚠️  COMMIT_SHA still empty after PR #{pr_number} API lookup — "
+                        "head.sha not present in PR payload"
+                    )
+            if not branch:
+                branch = _head.get("ref", "")
+                if branch:
+                    print(f"ℹ️  BRANCH resolved from PR #{pr_number} API: {branch!r}")
+        else:
+            print(
+                f"⚠️  PR #{pr_number} API lookup returned HTTP {_pr_status} — "
+                "COMMIT_SHA/BRANCH may be empty in rescue comment"
+            )
 
     # Self-suppress: if the branch HEAD has advanced past the commit that
     # triggered this failure, the escalation targets a superseded commit and

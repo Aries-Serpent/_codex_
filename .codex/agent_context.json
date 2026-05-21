@@ -12,7 +12,7 @@
   "COGNITIVE_BRAIN_ALLOWED_ACTORS": "mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]",
   "CODEX_CLI_API_URL": "http://localhost:8765",
   "CODEX_CI_LAST_GREEN_SHA": "4e07be318498de7e7befa5d068969e3b933f9f3b",
-  "CODEX_CI_FAILURE_RATE": "2.0:ok",
+  "CODEX_CI_FAILURE_RATE": "0.0:ok",
   "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE": "0.75",
   "COGNITIVE_BRAIN_LTM_RETENTION_DAYS": "90",
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",

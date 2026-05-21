@@ -70,7 +70,7 @@ class TestPhase2_MentalMapping_Table4_Eq2:
 
     def test_all_enum_values(self):
         """Test all enum values in mental_mapping."""
-        import agents.mental_mapping as mm
+        from agents import mental_mapping as mm
 
         # Find all enum classes
         enum_found = False

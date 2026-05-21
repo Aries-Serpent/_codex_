@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import sys
 
+import agents
+
 
 class TestAgentsPackageVersion:
     """Test agents package version information."""
@@ -25,27 +27,24 @@ class TestAgentsPackageVersion:
     def test_version_import(self) -> None:
         """Test __version__ can be imported."""
         # Arrange & Act
-        from agents import __version__
 
         # Assert
-        assert __version__ is not None
-        assert isinstance(__version__, str)
+        assert agents.__version__ is not None
+        assert isinstance(agents.__version__, str)
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
         # Arrange & Act
-        from agents import __version__
 
         # Assert
-        assert __version__ == "0.0.0"
+        assert agents.__version__ == "0.0.0"
 
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
         # Arrange & Act
-        from agents import __all__
 
         # Assert
-        assert "__version__" in __all__
+        assert "__version__" in agents.__all__
 
 
 class TestPhysicsOrchestratorExports:
@@ -390,33 +389,27 @@ class TestAgentsAllExport:
     def test_all_is_list(self) -> None:
         """Test __all__ is a list."""
         # Arrange & Act
-        from agents import __all__
 
         # Assert
-        assert isinstance(__all__, list)
+        assert isinstance(agents.__all__, list)
 
     def test_all_no_duplicates(self) -> None:
         """Test __all__ has no duplicates."""
         # Arrange & Act
-        from agents import __all__
 
         # Assert
-        assert len(__all__) == len(set(__all__))
+        assert len(agents.__all__) == len(set(agents.__all__))
 
     def test_all_items_are_strings(self) -> None:
         """Test all items in __all__ are strings."""
         # Arrange & Act
-        from agents import __all__
 
         # Assert
-        for item in __all__:
+        for item in agents.__all__:
             assert isinstance(item, str)
 
     def test_all_exports_accessible(self) -> None:
         """Test all exports in __all__ are accessible."""
-        # Arrange & Act
-        import agents
-
         # Assert
         for export in agents.__all__:
             assert hasattr(agents, export), f"Export {export} not accessible"
@@ -428,7 +421,6 @@ class TestAgentsPackageDocumentation:
     def test_package_has_docstring(self) -> None:
         """Test package has docstring."""
         # Arrange & Act
-        import agents
 
         # Assert
         assert agents.__doc__ is not None
@@ -437,7 +429,6 @@ class TestAgentsPackageDocumentation:
     def test_docstring_mentions_agents(self) -> None:
         """Test docstring mentions agents."""
         # Arrange & Act
-        import agents
 
         # Assert
         assert "agents" in agents.__doc__.lower()
@@ -445,7 +436,6 @@ class TestAgentsPackageDocumentation:
     def test_docstring_mentions_orchestration(self) -> None:
         """Test docstring mentions orchestration."""
         # Arrange & Act
-        import agents
 
         # Assert
         assert "orchestrat" in agents.__doc__.lower()

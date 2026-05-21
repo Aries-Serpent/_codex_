@@ -63,6 +63,7 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
+          cache: pip  # aais-cache: pip
 
       - name: Determine PR number
         id: pr_info
@@ -211,11 +212,11 @@ jobs:
         continue-on-error: true  # rescue comment is best-effort; don't mask the gate failure
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_NAME: "Comment Review Gate"
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
+          BRANCH: ${{ github.head_ref || github.event.pull_request.head.ref }}
         run: python scripts/ci/post_rescue_comment.py

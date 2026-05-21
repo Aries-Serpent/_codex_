@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import scripts.space_traversal.coverage_ingest as ci
+
 
 def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
     """Test basic coverage XML parsing."""
-    from scripts.space_traversal.coverage_ingest import parse_coverage_xml_to_map
 
     # Create a minimal Cobertura-style coverage XML
     xml_content = """<?xml version="1.0"?>
@@ -40,7 +41,7 @@ def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
     module_file.write_text("line1\nline2\nline3\nline4\nline5\n")
 
     # Parse
-    cov_map = parse_coverage_xml_to_map(xml_path, tmp_path)
+    cov_map = ci.parse_coverage_xml_to_map(xml_path, tmp_path)
 
     assert "src/module.py" in cov_map
     data = cov_map["src/module.py"]
@@ -57,17 +58,13 @@ def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
 
 def test_parse_coverage_xml_to_map_empty():
     """Test parsing empty/invalid XML."""
-    from scripts.space_traversal.coverage_ingest import parse_coverage_xml_to_map
-
     # Non-existent file
-    cov_map = parse_coverage_xml_to_map(Path("/nonexistent.xml"))
+    cov_map = ci.parse_coverage_xml_to_map(Path("/nonexistent.xml"))
     assert cov_map == {}
 
 
 def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
     """Test parsing when source file is missing."""
-    from scripts.space_traversal.coverage_ingest import parse_coverage_xml_to_map
-
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
     <packages>
@@ -89,7 +86,7 @@ def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
     xml_path.write_text(xml_content)
 
     # Don't create the source file
-    cov_map = parse_coverage_xml_to_map(xml_path, tmp_path)
+    cov_map = ci.parse_coverage_xml_to_map(xml_path, tmp_path)
 
     # Should still parse but estimate from covered lines
     assert "src/missing.py" in cov_map
@@ -100,18 +97,14 @@ def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
 
 def test_discover_and_parse_coverage_disabled(tmp_path: Path):
     """Test that coverage discovery respects enabled flag."""
-    from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
-
     cfg = {"scoring": {"coverage": {"enabled": False}}}
 
-    result = discover_and_parse_coverage(cfg, tmp_path)
+    result = ci.discover_and_parse_coverage(cfg, tmp_path)
     assert result is None
 
 
 def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
     """Test coverage discovery with default patterns."""
-    from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
-
     # Create coverage XML at root
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
@@ -142,12 +135,10 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
     artifacts_dir.mkdir()
 
     # Need to temporarily change ROOT for this test
-    import scripts.space_traversal.coverage_ingest as ci
-
     original_root = ci.ROOT
     try:
         ci.ROOT = tmp_path
-        result = discover_and_parse_coverage(cfg, artifacts_dir)
+        result = ci.discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
         ci.ROOT = original_root
 
@@ -164,8 +155,6 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
 
 def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     """Test coverage discovery with custom patterns."""
-    from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
-
     # Create coverage XML in subdirectory
     subdir = tmp_path / "build" / "reports"
     subdir.mkdir(parents=True)
@@ -201,12 +190,10 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     artifacts_dir = tmp_path / "audit_artifacts"
     artifacts_dir.mkdir()
 
-    import scripts.space_traversal.coverage_ingest as ci
-
     original_root = ci.ROOT
     try:
         ci.ROOT = tmp_path
-        result = discover_and_parse_coverage(cfg, artifacts_dir)
+        result = ci.discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
         ci.ROOT = original_root
 
@@ -216,8 +203,6 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
 
 def test_parse_coverage_xml_backward_compat(tmp_path: Path):
     """Test backward compatibility of parse_coverage_xml function."""
-    from scripts.space_traversal.coverage_ingest import parse_coverage_xml
-
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
     <packages>
@@ -238,5 +223,5 @@ def test_parse_coverage_xml_backward_compat(tmp_path: Path):
     xml_path.write_text(xml_content)
 
     # Legacy function should still work
-    result = parse_coverage_xml(xml_path)
+    result = ci.parse_coverage_xml(xml_path)
     assert isinstance(result, dict)

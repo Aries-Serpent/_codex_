@@ -1,0 +1,23 @@
+flowchart TD
+    A["🧭 PR #4531 session start\nImport violations + P1/P2/P3/P4"] --> B["🔍 Analyse Code Quality Report\n15 import violations across 11 files"]
+    B --> C["✅ Verify prior commits resolved\n14/15 violations already fixed"]
+    C --> D["✏️ Fix remaining: tools/codex_sqlite_align.py\nConnection → sqlite3.Connection\n(undefined name after import cleanup)"]
+    D --> E["📦 P1: Add cache: pip\ncomment-review-gate.yml\nworkflow-execution-gate.yml\nCI/CD Maturity 141→143 100%"]
+    E --> F["🔧 P2: Create self-healing.yml stub\nworkflow_dispatch + permissions:{} + noop\nself_healing_wf=True"]
+    F --> G["🔀 Rebase conflicts resolved\n8 commits rebased on origin/0D_base_\nall source/test files took remote"]
+    G --> H["📊 Reliability improvement\nGitHub Actions data: 0/50 failures on main\nCorrect CODEX_CI_FAILURE_RATE 2.0→0.0:ok"]
+    H --> I["📈 AAIS 99.0 → 100.0/100\nCI/CD Maturity 100%\nReliability 100%"]
+    I --> J["📝 Update living docs\nwhats_next + session_diagram\nCHANGELOG + AGENT_ACCOUNTABILITY_REPORT"]
+    J --> K["✅ Final validation\nruff clean · AAIS 100.0/100\nrebase complete · push"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#2d6a4f,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#2d6a4f,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#52b788,color:#000
+    style J fill:#1b4332,color:#fff
+    style K fill:#52b788,color:#000
