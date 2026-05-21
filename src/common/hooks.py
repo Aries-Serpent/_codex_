@@ -32,15 +32,20 @@ except Exception:  # pragma: no cover
 
 
 class BaseHook:
-    def on_init(self, state: dict[str, Any]) -> None: ...
+    def on_init(self, state: dict[str, Any]) -> None:
+        pass
 
-    def on_step_end(self, state: dict[str, Any]) -> None: ...
+    def on_step_end(self, state: dict[str, Any]) -> None:
+        pass
 
-    def on_epoch_end(self, state: dict[str, Any]) -> None: ...
+    def on_epoch_end(self, state: dict[str, Any]) -> None:
+        pass
 
-    def on_checkpoint(self, state: dict[str, Any]) -> None: ...
+    def on_checkpoint(self, state: dict[str, Any]) -> None:
+        pass
 
-    def on_finish(self, state: dict[str, Any]) -> None: ...
+    def on_finish(self, state: dict[str, Any]) -> None:
+        pass
 
 
 class HookManager:

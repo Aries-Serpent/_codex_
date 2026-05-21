@@ -39,7 +39,7 @@ except Exception:  # pragma: no cover - requests missing or broken
 class SearchProvider(ABC):
     @abstractmethod
     def search(self, query: str) -> dict[str, Any]:  # pragma: no cover - interface
-        ...
+        pass
 
 
 class InternalRepoSearch(SearchProvider):

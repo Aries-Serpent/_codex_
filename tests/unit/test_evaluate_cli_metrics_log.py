@@ -20,7 +20,7 @@ def _stub_settings_module() -> None:
     m = types.ModuleType("codex_ml.config.settings")
 
     class _StubAppSettings:  # pragma: no cover
-        ...
+        pass
 
     class _StubEvalRow:  # pragma: no cover
         @staticmethod
@@ -46,7 +46,8 @@ def test_evaluate_cli_writes_ndjson(tmp_path, monkeypatch) -> None:
     # Stub evaluation runner before importing the CLI entry point.
     runner_mod = types.ModuleType("codex_ml.eval.runner")
 
-    class _EvaluationError(Exception): ...
+    class _EvaluationError(Exception):
+        pass
 
     def fake_run_evaluation(_eval_cfg, data_cfg=None):
         return {"metrics": {"accuracy": 0.9}, "num_records": 5}
@@ -62,7 +63,8 @@ def test_evaluate_cli_writes_ndjson(tmp_path, monkeypatch) -> None:
         dataset_path = "data/eval.jsonl"
         output_dir = ".codex/eval"
 
-    class _DummyDataCfg: ...
+    class _DummyDataCfg:
+        pass
 
     class _DummyAppCfg:
         evaluation = _DummyEvalCfg()

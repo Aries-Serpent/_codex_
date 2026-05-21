@@ -68,7 +68,8 @@ def test_tokenizer_train_dry_run_streaming(monkeypatch, tmp_path):
     calls = {}
 
     class DummyPipeline:
-        class TokenizerPipelineError(Exception): ...
+        class TokenizerPipelineError(Exception):
+            pass
 
         def run_train(self, config, streaming=None, stream_chunk_size=None, dry_run=False):
             calls["config"] = config

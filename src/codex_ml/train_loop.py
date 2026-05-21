@@ -153,10 +153,10 @@ except Exception:
     # fmt: off
     class Callback:  # type: ignore
         def on_train_start(self, state: dict[str, Any]) -> None:
-            ...
+            pass
 
         def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
-            ...
+            pass
 
         def on_epoch_end(
             self,
@@ -164,10 +164,10 @@ except Exception:
             metrics: dict[str, Any],
             state: dict[str, Any],
         ) -> None:
-            ...
+            pass
 
         def on_train_end(self, state: dict[str, Any]) -> None:
-            ...
+            pass
     # fmt: on
 
     def merge_callback_results(

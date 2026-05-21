@@ -150,9 +150,11 @@ if TORCH_AVAILABLE:
 
 @runtime_checkable
 class StateDictProvider(Protocol):
-    def state_dict(self) -> Mapping[str, Any]: ...
+    def state_dict(self) -> Mapping[str, Any]:
+        pass
 
-    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any: ...
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        pass
 
 
 @dataclass
