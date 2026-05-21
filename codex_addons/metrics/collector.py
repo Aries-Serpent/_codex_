@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import argparse
 import ast
-import collections
 import datetime as dt
 import json
 import logging
