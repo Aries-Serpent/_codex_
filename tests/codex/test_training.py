@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import sys
 import types
 
@@ -9,7 +10,7 @@ import pytest
 
 # Skip if PyTorch-dependent modules cannot be imported
 try:
-    import codex.training  # noqa: F401 -- availability check only; functions imported locally in each test
+    importlib.import_module("codex.training")  # availability check only; functions imported locally in each test
 
     TRAINING_AVAILABLE = True
 except (ImportError, AttributeError):
