@@ -517,11 +517,12 @@ def run_training_and_tokenizer(ctx: AuditContext) -> None:
 
     try:
         import torch
-        from torch import nn, optim
 
         torch.manual_seed(1234)
-        model = nn.Sequential(nn.Linear(16, 32), nn.ReLU(), nn.Linear(32, 4))
-        optimizer = optim.SGD(model.parameters(), lr=0.01)
+        model = torch.nn.Sequential(
+            torch.nn.Linear(16, 32), torch.nn.ReLU(), torch.nn.Linear(32, 4)
+        )
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
         trainer = SimpleTrainer(model=model, optimizer=optimizer, device="cpu")
         inputs = torch.randn(8, 16)
         labels = torch.randint(0, 4, (8,))
@@ -537,7 +538,9 @@ def run_training_and_tokenizer(ctx: AuditContext) -> None:
             str(ckpt_path),
         )
         restored_state = load_checkpoint(str(ckpt_path))
-        new_model = nn.Sequential(nn.Linear(16, 32), nn.ReLU(), nn.Linear(32, 4))
+        new_model = torch.nn.Sequential(
+            torch.nn.Linear(16, 32), torch.nn.ReLU(), torch.nn.Linear(32, 4)
+        )
         new_model.load_state_dict(restored_state["model_state"])
         deviation = 0.0
         for p1, p2 in zip(model.parameters(), new_model.parameters()):
