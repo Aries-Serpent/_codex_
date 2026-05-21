@@ -17,27 +17,34 @@
 - [`11dbaa6c`] Fix Connection type annotation, add pip cache to gate workflows, add self-healing.yml stub (copilot-swe-agent[bot], 2026-05-21)
 
 ### Files Modified
-No files modified
+- `tools/codex_sqlite_align.py` — Remove `from sqlite3 import Connection`, annotate with `sqlite3.Connection`
+- `tests/tokenization/test_sentencepiece_contract.py` — Remove redundant import, use module alias consistently
+- `tests/space_traversal/test_coverage_enhanced.py` — Standardize `coverage_ingest` import to `ci` alias
+- `tests/agents/test_agents_init_phase9_2.py` — Replace inline `import agents` with `sys.modules["agents"]`
+- `tests/agents/test_phase2_mental_mapping.py` — Switch to `from agents import mental_mapping as mm`
+- `scripts/codex_offline_audit.py` — Avoid `from torch import nn, optim`; use `torch.nn`/`torch.optim`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session summaries and validation for PR #4531
+- `CHANGELOG.md` — PR #4531 fixes entries
+- `.github/workflows/workflow-execution-gate.yml` — Enable pip caching
+- `.github/workflows/comment-review-gate.yml` — Enable pip caching
+- `.github/workflows/self-healing.yml` — Add manual-dispatch stub workflow
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Resolve open PR #4528 review comments for:
-  - `tests/property/test_config_properties.py`,
-  - `tests/property/test_math_properties.py`,
-  - `.github/copilot-prompts/active/PR-4528-followup.md`.
-- [ ] Re-run targeted validation for PR #4528 changes and confirm no regressions.
+- [ ] Verify all PR #4531 import-style fixes are validated end-to-end (ruff + pytest).
+- [ ] Run targeted validation for PR #4531 changes and confirm no regressions.
 
 **Validation**:
 ```bash
 python -m ruff check src/ tests/ --output-format=concise
-python -m pytest tests/property/test_config_properties.py tests/property/test_math_properties.py -q
+python -m pytest tests/agents/test_agents_init_phase9_2.py tests/space_traversal/test_coverage_enhanced.py -q
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] Verify generated follow-up prompt content stays aligned to PR #4528 scope.
+- [ ] Verify generated follow-up prompt content stays aligned to PR #4531 scope.
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
 - [ ] No tasks specified

@@ -411,7 +411,7 @@ class TestAgentsAllExport:
     def test_all_exports_accessible(self) -> None:
         """Test all exports in __all__ are accessible."""
         # Arrange & Act
-        import agents
+        agents = sys.modules["agents"]
 
         # Assert
         for export in __all__:
