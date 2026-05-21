@@ -1,0 +1,10 @@
+disabled_at: "2026-05-21T02:40:00Z"
+reason: "Consolidated into security-scanning-suite.yml (Phase 3.1, 2026-05-21). Semgrep SAST job added to the suite with identical chunked-SARIF upload logic. The standalone file is redundant."
+consolidated_into: ".github/workflows/security-scanning-suite.yml"
+rollback_available: true
+original_workflow_id: "semgrep_sarif"
+original_triggers:
+  - "push: paths [**/*.py, src/**, pyproject.toml, .semgrep/**, semgrep_rules/**, .github/workflows/semgrep_sarif.yml]"
+  - "pull_request: same paths"
+  - "workflow_dispatch"
+archived_by: "Copilot Phase 3 consolidation — PR copilot/review-and-assess-workflows"

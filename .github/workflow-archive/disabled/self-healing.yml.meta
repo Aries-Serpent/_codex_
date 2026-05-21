@@ -1,0 +1,17 @@
+disabled_at: "2026-05-21T02:04:00Z"
+reason: "Pure dispatch shim for iterative-self-healing-ci.yml — no independent logic"
+consolidated_into: "iterative-self-healing-ci.yml"
+phase: "Workflow Portfolio Triage — Archive Review pass"
+group: "Self-Healing Workflows"
+backup_location: ".github/workflow-archive/disabled/self-healing.yml"
+rollback_available: true
+functionality_preserved: true
+notes: >
+  self-healing.yml was a manual workflow_dispatch alias that simply called
+  `gh workflow run iterative-self-healing-ci.yml`. The workflow's own header comment
+  described it as "Manual trigger alias for iterative-self-healing-ci.yml". Zero
+  runtime runs in 7-day window. iterative-self-healing-ci.yml (413 lifetime runs)
+  is the canonical healing loop and also accepts workflow_dispatch directly.
+  Manual healers can invoke iterative-self-healing-ci.yml from the Actions UI directly.
+workflow_id: "223032333"
+lifetime_runs: 0

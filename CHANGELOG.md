@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (workflow-triage Phase 4 trigger remediation — `copilot/review-and-assess-workflows` — 2026-05-21T03:10Z)
+- Continued from Issue #4524 objective comment `4504378838` and executed the next branch objective for trigger remediation.
+- Reduced `.github/workflows/proactive-ci-monitor.yml` schedule frequency from every 30 minutes to every 6 hours (`*/30 * * * *` → `0 */6 * * *`) to reduce noisy recurring CI monitor runs.
+- Added trigger-audit artifact at `docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md` covering critical workflows called out in the issue objective and documenting current disposition.
+- Updated `docs/workflows/CONSOLIDATION_PLAN.md` with a Phase 4 section summarizing trigger-remediation status and the proactive-monitor schedule change.
+- Refreshed living roadmap docs in this session pass (`review_codebase_next_changes_whats_next.md`, `review_codebase_next_changes_session_diagram.mmd`) including continuation prompt and wrap-up reserve tracking.
+
 ### Fixed (auto-update — PR #4523)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4523 (SHA `d1a964de`) at 2026-05-20T23:16Z [auto-generated]
 

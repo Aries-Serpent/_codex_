@@ -1,0 +1,24 @@
+# ⛔ DISABLED 2026-05-21 — Orphan-equivalent workflow
+#
+# copilot-automation.yml (ID: 218950112) appeared as "active" in GitHub Actions
+# but has no backing file on the main branch and 0 lifetime runs.
+#
+# This stub file prevents any future accidental execution while preserving the
+# workflow name in the Actions history for audit and traceability.
+#
+# Reason:  Orphan-equivalent — backing file absent from main; 0 lifetime runs.
+# Status:  ⛔ Already Disabled (2026-05-21)
+# Session: Workflow Portfolio Triage Phase 2 — orphan-equivalent stub pass
+
+name: Copilot Automation Suite
+
+on:
+  workflow_dispatch:  # manual-only; effectively disabled
+
+permissions: {}
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "disabled — stub only"
