@@ -258,7 +258,7 @@ class TestConfigSerializationProperties:
     """Property-based tests for configuration serialization."""
 
     @given(st.dictionaries(
-        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),
+        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),  # pragma: allowlist secret
         st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False),
                   st.text(max_size=50), st.booleans()),
         max_size=20
@@ -270,7 +270,7 @@ class TestConfigSerializationProperties:
         assert deserialized == config
 
     @given(st.dictionaries(
-        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),
+        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),  # pragma: allowlist secret
         st.integers(),
         max_size=50
     ))

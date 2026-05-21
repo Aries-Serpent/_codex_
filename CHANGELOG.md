@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4528 detect-secrets false positives — 2026-05-21T16:14Z)
+- Resolved `Fast Validation` failure on commit `bbf1d5a` by marking two Hypothesis alphabet literals as false positives for secret scanning:
+  - `tests/property/test_serialization_properties.py`
+  - `tests/property/test_config_properties.py`
+- Added inline `# pragma: allowlist secret` annotations to keep test intent unchanged while satisfying `detect-secrets`.
+
 ### Fixed (PR #4528 CI rescue — 2026-05-21T15:55Z)
 - Investigated failing PR Auto-Fix Check run `26235874552` for commit `4048c786` and confirmed the actionable blocker was Pattern 25 (last-commit accountability freshness).
 - Applied `auto_fix_common_issues.py` remediation to refresh `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for the next commit.

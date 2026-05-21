@@ -1,3 +1,23 @@
+## SESSION SUMMARY — 2026-05-21T16:14Z [PR4528-detect-secrets-remediation]
+
+**Session:** PR4528-detect-secrets-remediation | **Branch:** `finding-autofix` | **PR:** #4528
+
+### Completed
+- Investigated CI failure from `Fast Validation` on commit `bbf1d5a31a6e7b97fb497abcc4f82f8d856d69b7`.
+- Retrieved workflow/job logs with GitHub Actions MCP and confirmed the blocker was `detect-secrets` false positives:
+  - `tests/property/test_serialization_properties.py:261,273`
+  - `tests/property/test_config_properties.py:73`
+- Applied minimal false-positive annotations (`# pragma: allowlist secret`) on the flagged Hypothesis alphabet literals.
+
+### Validation
+- `python -m pre_commit run detect-secrets --files tests/property/test_serialization_properties.py tests/property/test_config_properties.py` ✅
+- `python -m pytest tests/property/test_serialization_properties.py tests/property/test_config_properties.py -q` ✅
+- `python -m ruff check src/ tests/ --fix` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+- `python scripts/ci/mypy_baseline.py --require-baseline` ⚠️ pre-existing baseline regression remains (`128 > 122`)
+
+---
+
 ## SESSION SUMMARY — 2026-05-21T15:55Z [PR4528-CI-rescue-and-artifact-triage]
 
 **Session:** PR4528-CI-rescue | **Branch:** `finding-autofix` | **PR:** #4528
