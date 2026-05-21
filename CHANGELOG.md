@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4528 CI rescue — 2026-05-21T15:55Z)
+- Investigated failing PR Auto-Fix Check run `26235874552` for commit `4048c786` and confirmed the actionable blocker was Pattern 25 (last-commit accountability freshness).
+- Applied `auto_fix_common_issues.py` remediation to refresh `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for the next commit.
+- Fetched and reviewed required artifacts from run `26199091939`:
+  - `7125084971` (`dependency-scan-results.zip`)
+  - `7125082754` (`sbom-reports.zip`)
+  and recorded the concern triage in session tracking docs.
+
 ### Fixed (auto-update — PR #4528)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4528 (SHA `ac8e35d4`) at 2026-05-21T14:30Z [auto-generated]
 

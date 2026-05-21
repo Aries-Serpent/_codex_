@@ -40,7 +40,9 @@ flowchart TD
     AIT4 --> AIT5["S_phase4 — workflow trigger remediation continuation\n✅ load Issue #4524 objective comment 4504378838\n✅ audit critical trigger set"]
     AIT5 --> AIT6["Phase 4 execution\n✅ proactive-ci-monitor cron reduced 30m→6h\n✅ trigger audit report + consolidation note updated"]
     AIT6 --> AIT7["Current pass\n🔄 update living docs + changelog + accountability\n⏳ reserve final 5 min for wrap-up + follow-up prompt"]
-    AIT7 --> Y
+    AIT7 --> AIT8["PR #4528 CI rescue continuation\n✅ investigated failed run 26235874552 logs (Pattern 25 root cause)\n✅ fetched artifacts 7125084971 + 7125082754 from run 26199091939\n✅ applied auto-fix for accountability freshness\n🔄 finalize docs/changelog/accountability sync"]
+    AIT8 --> AIT9["Timebox checkpoint\n~14/60 min used; preserve final 5 min for wrap-up prompt"]
+    AIT9 --> Y
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -83,6 +85,8 @@ flowchart TD
     style AIT5 fill:#1b4332,color:#fff
     style AIT6 fill:#1b4332,color:#fff
     style AIT7 fill:#457b9d,color:#fff
+    style AIT8 fill:#457b9d,color:#fff
+    style AIT9 fill:#f4a261,color:#000
     style Y fill:#f4a261,color:#000
 
     style AJ fill:#457b9d,color:#fff
