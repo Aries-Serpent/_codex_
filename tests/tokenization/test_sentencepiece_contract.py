@@ -79,7 +79,9 @@ def adapter(tmp_path, monkeypatch):
     model_file = tmp_path / "test.model"
     model_file.write_text("", encoding="utf-8")
 
-    a = mod.SentencePieceAdapter(model_file)
+    from src.codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
+
+    a = SentencePieceAdapter(model_file)
     a.load()
     return a
 

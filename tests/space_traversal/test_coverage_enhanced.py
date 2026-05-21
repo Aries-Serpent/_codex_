@@ -142,14 +142,14 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
     artifacts_dir.mkdir()
 
     # Need to temporarily change ROOT for this test
-    from scripts.space_traversal import coverage_ingest
+    import scripts.space_traversal.coverage_ingest as ci
 
-    original_root = coverage_ingest.ROOT
+    original_root = ci.ROOT
     try:
-        coverage_ingest.ROOT = tmp_path
+        ci.ROOT = tmp_path
         result = discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
-        coverage_ingest.ROOT = original_root
+        ci.ROOT = original_root
 
     assert result is not None
     assert "test.py" in result
@@ -201,15 +201,14 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     artifacts_dir = tmp_path / "audit_artifacts"
     artifacts_dir.mkdir()
 
-    from scripts.space_traversal.coverage_ingest import ROOT
+    import scripts.space_traversal.coverage_ingest as ci
 
-    global ROOT
-    original_root = ROOT
+    original_root = ci.ROOT
     try:
-        ROOT = tmp_path
+        ci.ROOT = tmp_path
         result = discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
-        ROOT = original_root
+        ci.ROOT = original_root
 
     assert result is not None
     assert "app.py" in result
