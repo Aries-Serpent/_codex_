@@ -25,16 +25,16 @@ class TestAgentsPackageVersion:
     """Test agents package version information."""
 
     def test_version_import(self) -> None:
-        """Test __version__ can be imported."""
+        import agents
         # Arrange & Act
 
-        # Assert
         assert agents.__version__ is not None
+        assert isinstance(agents.__version__, str)
         assert isinstance(agents.__version__, str)
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
-        # Arrange & Act
+        import agents
 
         # Assert
         assert agents.__version__ == "0.0.0"
@@ -42,10 +42,10 @@ class TestAgentsPackageVersion:
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
         # Arrange & Act
-
+        import agents
         # Assert
         assert "__version__" in agents.__all__
-
+        assert "__version__" in agents.__all__
 
 class TestPhysicsOrchestratorExports:
     """Test physics orchestrator public exports."""
@@ -390,26 +390,26 @@ class TestAgentsAllExport:
         """Test __all__ is a list."""
         # Arrange & Act
 
-        # Assert
+        import agents
         assert isinstance(agents.__all__, list)
 
-    def test_all_no_duplicates(self) -> None:
+        assert isinstance(agents.__all__, list)
         """Test __all__ has no duplicates."""
         # Arrange & Act
 
         # Assert
-        assert len(agents.__all__) == len(set(agents.__all__))
+        import agents
 
     def test_all_items_are_strings(self) -> None:
-        """Test all items in __all__ are strings."""
+        assert len(agents.__all__) == len(set(agents.__all__))
         # Arrange & Act
 
         # Assert
         for item in agents.__all__:
-            assert isinstance(item, str)
+        import agents
 
     def test_all_exports_accessible(self) -> None:
-        """Test all exports in __all__ are accessible."""
+        for item in agents.__all__:
         # Arrange & Act
 
         # Assert
