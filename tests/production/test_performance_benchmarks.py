@@ -141,15 +141,26 @@ def test_batch_generation_speed():
 
     dataset_size = 10000
     batch_size = 32
+    num_features = 784
+
+    # Simulate dataset
+    dataset = np.random.randn(dataset_size, num_features).astype(np.float32)
+    labels = np.random.randint(0, 10, dataset_size)
 
     start = time.perf_counter()
     num_batches = 0
+    checksum = 0.0
     for i in range(0, dataset_size, batch_size):
+        batch_data = dataset[i:i+batch_size]
+        batch_labels = labels[i:i+batch_size]
+        # Accumulate checksum to ensure slicing actually happens
+        checksum += batch_data.sum() + batch_labels.sum()
         num_batches += 1
     elapsed = time.perf_counter() - start
 
     batches_per_second = num_batches / elapsed
     assert batches_per_second > 100, f"Batch generation {batches_per_second:.1f} batches/s too slow"
+    assert np.isfinite(checksum), "Checksum should be finite"
 
 
 def test_data_augmentation_performance():
@@ -242,10 +253,13 @@ def test_api_prediction_latency():
         input_data = np.random.randn(1, input_dim).astype(np.float32)
 
         start = time.perf_counter()
-        np.dot(input_data, weights)
+        output = np.dot(input_data, weights)
+        softmax = np.exp(output) / np.sum(np.exp(output))
         elapsed = time.perf_counter() - start
 
         latencies.append(elapsed)
+        # Verify softmax is valid probability distribution
+        assert softmax.shape == (1, output_dim) and np.isfinite(softmax).all()
 
     avg_latency = np.mean(latencies)
     p95_latency = np.percentile(latencies, 95)
