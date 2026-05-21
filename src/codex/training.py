@@ -1230,9 +1230,7 @@ def _functional_patch_argparse(ap: argparse.ArgumentParser) -> None:
 
 # --- Codex: grad-accum + AMP helpers (offline safe) ---
 def _codex_amp_supported() -> bool:
-    import torch
-
-    return torch.cuda.is_available()
+    return bool(torch is not None and torch.cuda.is_available())
 
 
 def codex_train_step(
