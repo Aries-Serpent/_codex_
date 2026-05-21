@@ -8,16 +8,13 @@ Ensures:
 - Complete coverage of all indices
 """
 
+import importlib.util
+
 import pytest
 
 from codex_ml.data.splitting import split_indices
 
-try:
-    import numpy
-
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
+NUMPY_AVAILABLE = importlib.util.find_spec("numpy") is not None
 
 
 class TestDeterministicSplits:
