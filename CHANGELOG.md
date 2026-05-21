@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4531 import standardization — session 3 — 2026-05-21T18:18Z)
+- Standardized ALL imports in `tests/space_traversal/test_coverage_enhanced.py` to use `import scripts.space_traversal.coverage_ingest as ci` alias throughout — eliminates every remaining "module imported with import and import-from" CodeQL alert in that file (resolves review threads r3283484579, r3283506906).
+- Standardized `tests/agents/test_agents_init_phase9_2.py` to use `import agents` at module level; replaced all bare `__version__` / `__all__` / `__doc__` references with `agents.__version__` / `agents.__all__` / `agents.__doc__` — eliminates mixed import/import-from violation at module-top (resolves review thread r3283385821).
+
 ### Fixed (PR #4531 code review findings — 2026-05-21T17:54Z)
 - Fixed `Connection` type hint in `tools/codex_sqlite_align.py` line 385 to use string literal `"sqlite3.Connection"` instead of bare name (resolves gemini-code-assist[bot] review comment).
 - Fixed unused global variable `ROOT` in `tests/space_traversal/test_coverage_enhanced.py` by importing module and mutating `coverage_ingest.ROOT` attribute instead of ineffective local rebinding (resolves github-code-quality[bot] review comments).
