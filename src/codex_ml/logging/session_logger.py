@@ -142,7 +142,7 @@ class SessionLogger:
         """Yield parsed events for downstream analyzers (best effort)."""
 
         if not self.session_file.exists():
-            return []  # type: ignore[return-value]
+            return
         with self.session_file.open("r", encoding="utf-8") as handle:
             for line in handle:
                 line = line.strip()

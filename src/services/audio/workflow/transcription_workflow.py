@@ -348,9 +348,7 @@ class AudioTranscriptionWorkflow:
         if backend == "pyannote":
             return self._run_pyannote_diarization(wav_path)
         if backend not in {"acoustic-clustering", "acoustic", "mock"}:
-            raise ValueError(
-                f"Unsupported diarization backend: {self.config.diarization_backend}"
-            )
+            raise ValueError(f"Unsupported diarization backend: {self.config.diarization_backend}")
         return self._run_acoustic_clustering_diarization(wav_path)
 
     def _run_acoustic_clustering_diarization(self, wav_path: Path) -> list[DiarizedSegment]:
@@ -467,9 +465,7 @@ class AudioTranscriptionWorkflow:
             return (0.0, 0.0, 0.0)
 
         energy = sum(sample * sample for sample in chunk) / len(chunk)
-        sign_changes = sum(
-            1 for prev, curr in zip(chunk, chunk[1:]) if (prev >= 0) != (curr >= 0)
-        )
+        sign_changes = sum(1 for prev, curr in zip(chunk, chunk[1:]) if (prev >= 0) != (curr >= 0))
         zcr = sign_changes / max(1, len(chunk) - 1)
 
         amplitude_sum = sum(abs(sample) for sample in chunk) + 1e-8

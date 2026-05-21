@@ -188,6 +188,8 @@ class F1Score(MetricBase):
             case _:
                 raise ValueError(f"unsupported averaging strategy: {self.average}")
 
+        raise RuntimeError("unreachable: compute() exhausted all averaging strategies")
+
 
 class RecallScore(MetricBase):
     """Recall metric supporting multiple averaging strategies."""
@@ -210,17 +212,18 @@ class RecallScore(MetricBase):
         labels = self._stats.labels()
         recalls = [self._stats.recall(label) for label in labels]
         supports = [self._stats.support[label] for label in labels]
+        score: float = 0.0
 
         match self.average:
             case "micro":
                 tp = sum(self._stats.tp[label] for label in labels)
                 fn = sum(self._stats.fn[label] for label in labels)
                 denom = tp + fn
-                return {self.name: 0.0 if denom == 0 else tp / denom}
+                score = 0.0 if denom == 0 else tp / denom
             case "macro":
-                return {self.name: _average(recalls, None)}
+                score = _average(recalls, None)
             case "weighted":
-                return {self.name: _average(recalls, supports)}
+                score = _average(recalls, supports)
             case "binary":
                 positive = 1 if self.num_classes in {None, 2} else labels[-1]
                 try:
@@ -228,10 +231,14 @@ class RecallScore(MetricBase):
                 except ValueError as e:
                     logger.debug(f"ValueError: {e}")
                     logger.warning(f"ValueError: {e}", exc_info=True)
-                    return {self.name: 0.0}
-                return {self.name: recalls[idx]}
+                    score = 0.0
+                else:
+                    score = recalls[idx]
             case _:
                 raise ValueError(f"unsupported averaging strategy: {self.average}")
+
+        return {self.name: score}
+
 
 
 class TokenAccuracy(MetricBase):

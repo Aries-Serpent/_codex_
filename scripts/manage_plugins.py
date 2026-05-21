@@ -236,6 +236,9 @@ def main():
             return cmd_validate(args)
         if args.command == "info":
             return cmd_info(args)
+
+        logger.error("Unknown command: %s", args.command)
+        return 1
     except Exception:
         logger.exception("Error while executing plugin management command")
         return 1

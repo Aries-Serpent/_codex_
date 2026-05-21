@@ -31,8 +31,10 @@ from pathlib import Path  # noqa: E402
 try:  # noqa: E402
     from codex_ml.monitoring.health import record_health_event
 except Exception:  # pragma: no cover - optional monitoring dependency
+
     def record_health_event(*_args, **_kwargs):
         return None
+
 
 from .base import Connector, ConnectorError, LocalConnector  # noqa: E402
 
