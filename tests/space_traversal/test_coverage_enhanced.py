@@ -164,7 +164,7 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
 
 def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     """Test coverage discovery with custom patterns."""
-    from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
+    import scripts.space_traversal.coverage_ingest as ci
 
     # Create coverage XML in subdirectory
     subdir = tmp_path / "build" / "reports"
@@ -201,13 +201,10 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     artifacts_dir = tmp_path / "audit_artifacts"
     artifacts_dir.mkdir()
 
-    import scripts.space_traversal.coverage_ingest as ci
-    from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
-
     original_root = ci.ROOT
     try:
         ci.ROOT = tmp_path
-        result = discover_and_parse_coverage(cfg, artifacts_dir)
+        result = ci.discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
         ci.ROOT = original_root
 
