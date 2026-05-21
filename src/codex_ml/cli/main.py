@@ -425,8 +425,6 @@ if typer is not None:
     @app.command()
     def info() -> None:
         """Show environment and configuration info."""
-        import importlib
-
         from codex_ml.utils.checkpoint_core import capture_environment_summary
 
         info = capture_environment_summary()
