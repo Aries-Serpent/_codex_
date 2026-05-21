@@ -66,8 +66,6 @@ def _resolve_tokenizer() -> TokenizerAdapter:
     kwargs: dict[str, Any] = {}
     if kwargs_env:
         try:
-            import json
-
             kwargs = json.loads(kwargs_env)
         except Exception:  # pragma: no cover - invalid env config
             logger.warning("Failed to decode CODEX_TOKENIZER_KWARGS; using defaults")
