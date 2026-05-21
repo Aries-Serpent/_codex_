@@ -252,7 +252,7 @@ class TestMSPClientConfiguration:
 
     def test_connection_pooling(self):
         """Test connection pooling configuration."""
-        _client = MSPClient()  # noqa: F841
+        MSPClient()  # Verify MSPClient initializes without error
 
         # Should have session or connection management (attribute presence is optional)
         assert True  # MSPClient session management is implementation-defined; just verify it initializes

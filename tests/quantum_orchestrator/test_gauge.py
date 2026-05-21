@@ -412,7 +412,6 @@ def test_conservation_enforcer_no_auto_repair(simple_state):
     enforcer = ConservationEnforcer(auto_repair=False)
 
     # Violate conservation
-    _prob = simple_state.tasks["task_1"].spinor.total_probability  # noqa: F841
     simple_state.tasks["task_1"].spinor.components *= 2.0
 
     repaired, was_repaired = enforcer.enforce_probability_conservation(

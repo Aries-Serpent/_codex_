@@ -291,7 +291,7 @@ def test_performance_within_limits(integrated_system):
 
     # Measure latency
     start = time.time()
-    _result = engine.evaluate_superposition(decisions, context={"test": True})
+    engine.evaluate_superposition(decisions, context={"test": True})
     latency_ms = (time.time() - start) * 1000
 
     # Should complete within 50ms

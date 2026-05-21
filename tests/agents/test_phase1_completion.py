@@ -195,11 +195,6 @@ class TestAdvancedPhysicsAdvancedPatterns:
         attractor = ChaoticAttractor(attractor_type="logistic")
 
         # Should be able to iterate
-        _state = (
-            attractor.state.copy()
-            if hasattr(attractor.state, "copy")
-            else attractor.state
-        )  # noqa: F841
         attractor.iterate(steps=5)
 
         # State should have changed

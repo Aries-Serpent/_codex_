@@ -420,8 +420,6 @@ class TestConcurrentAccessAndLocking:
 
     def test_file_lock_prevents_concurrent_writes(self, tmp_path):
         """Test file lock prevents concurrent writes."""
-        _lock_path = tmp_path / "test.lock"  # noqa: F841
-
         # Simulate lock acquisition
         locks = {}
 

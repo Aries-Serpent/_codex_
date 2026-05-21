@@ -27,7 +27,7 @@ def test_rng_restore_python_random(tmp_path: Path):
         _ = random.random()
 
     # Restore RNG by loading with restore_rng=True
-    _state, _meta = load_checkpoint(_ck, restore_rng=True)
+    load_checkpoint(_ck, restore_rng=True)
 
     # After restore, the next value should match what would have been next after save
     actual_next = random.random()

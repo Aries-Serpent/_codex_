@@ -157,8 +157,7 @@ class TestEndpointDocumentation:
 
         # Just verify we found some endpoints
         if endpoints_found > 0:
-            _response_ratio = endpoints_with_response / endpoints_found  # noqa: F841
-            # Log but don't fail (not all endpoints need response models)
+            pass  # Log but don't fail (not all endpoints need response models)
 
 
 class TestCLIDocumentation:

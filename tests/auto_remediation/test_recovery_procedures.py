@@ -187,14 +187,7 @@ class TestRollbackProcedures:
 
     def test_cascading_rollback(self):
         """Test cascading rollback of dependent operations."""
-        operations = [
-            {"id": 1, "status": "success", "depends_on": []},
-            {"id": 2, "status": "success", "depends_on": [1]},
-            {"id": 3, "status": "failed", "depends_on": [2]},
-        ]
-
         # Operation 3 failed, should rollback 2 and 3
-        _op = operations[2]  # noqa: F841
         to_rollback = [2, 3]  # Reverse order
 
         assert len(to_rollback) == 2
@@ -329,7 +322,6 @@ class TestTransactionRecovery:
         ]
 
         # Can only commit tx_003 if dependencies are committed
-        _tx = transactions[2]  # noqa: F841
         dependency = transactions[1]
 
         can_commit = dependency["status"] == "committed"

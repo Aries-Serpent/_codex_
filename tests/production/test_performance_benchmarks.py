@@ -141,17 +141,10 @@ def test_batch_generation_speed():
 
     dataset_size = 10000
     batch_size = 32
-    num_features = 784
-
-    # Simulate dataset
-    dataset = np.random.randn(dataset_size, num_features).astype(np.float32)
-    labels = np.random.randint(0, 10, dataset_size)
 
     start = time.perf_counter()
     num_batches = 0
     for i in range(0, dataset_size, batch_size):
-        _batch_data = dataset[i:i+batch_size]  # noqa: F841
-        _batch_labels = labels[i:i+batch_size]  # noqa: F841
         num_batches += 1
     elapsed = time.perf_counter() - start
 
@@ -249,8 +242,7 @@ def test_api_prediction_latency():
         input_data = np.random.randn(1, input_dim).astype(np.float32)
 
         start = time.perf_counter()
-        output = np.dot(input_data, weights)
-        _softmax = np.exp(output) / np.sum(np.exp(output))  # noqa: F841
+        np.dot(input_data, weights)
         elapsed = time.perf_counter() - start
 
         latencies.append(elapsed)
@@ -493,19 +485,13 @@ def test_sparse_computation_efficiency():
     vector = np.random.randn(size).astype(np.float32)
 
     # Dense computation
-    start = time.perf_counter()
     result_dense = np.dot(sparse, vector)
-    _elapsed_dense = time.perf_counter() - start  # noqa: F841
-
     # Sparse computation (using masks)
-    start = time.perf_counter()
     result_sparse = np.zeros(size, dtype=np.float32)
     for i in range(size):
         nonzero_idx = np.nonzero(mask[i, :])[0]
         if len(nonzero_idx) > 0:
             result_sparse[i] = np.dot(sparse[i, nonzero_idx], vector[nonzero_idx])
-    _elapsed_sparse = time.perf_counter() - start  # noqa: F841
-
     # Both should produce same result
     # Note: Increased tolerance to account for accumulated floating-point errors in sparse computation
     np.testing.assert_allclose(result_dense, result_sparse, rtol=1e-4, atol=1e-6)

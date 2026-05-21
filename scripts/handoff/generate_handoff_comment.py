@@ -90,14 +90,6 @@ def generate_copilot_to_codex_comment(
     else:
         metrics_str = "(No metrics provided)"
 
-    # Build validation checklist
-    validation_str = ""
-    if validation_items:
-        for item in validation_items:
-            validation_str += f"- [ ] {item}\n"
-    else:
-        validation_str = "- [ ] Review deliverables"
-
     # Build variables dict
     variables = {
         "phase_name": phase,
