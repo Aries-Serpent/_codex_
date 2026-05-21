@@ -41,10 +41,10 @@ class TestDeterministicSplits:
         val_set = set(val1)
         test_set = set(test1)
 
-        assert len(train_set & val_set) == 0
-        assert len(train_set & test_set) == 0
-        assert len(val_set & test_set) == 0
-        assert len(train_set | val_set | test_set) == n
+        assert len(train_set & val_set) == 0, "train and validation sets must not overlap"
+        assert len(train_set & test_set) == 0, "train and test sets must not overlap"
+        assert len(val_set & test_set) == 0, "validation and test sets must not overlap"
+        assert len(train_set | val_set | test_set) == n, "all indices must be covered exactly once"
 
     def test_split_proportions(self):
         """Splits should match requested proportions."""
