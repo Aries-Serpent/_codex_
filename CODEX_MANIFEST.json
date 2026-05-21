@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-21T00:42:15Z",
+  "generated_at": "2026-05-21T07:18:07Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1064,6 +1064,11 @@
       "has_concurrency": true
     },
     {
+      "name": "benchmarks",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "branch-cleanup",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1089,9 +1094,19 @@
       "has_concurrency": true
     },
     {
+      "name": "cache-health-monitor",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "cache-pruning",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "cache-validation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "chatops_copilot_trigger",
@@ -1207,6 +1222,11 @@
       "name": "copilot-agent-vars-bootstrap",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "copilot-automation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "copilot-evolution-suite",
@@ -1334,6 +1354,11 @@
       "has_concurrency": true
     },
     {
+      "name": "documentation-quality-check",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "e-to-d-transition-gate",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1387,6 +1412,11 @@
       "name": "labeler",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "maturity-check",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "mcp-health",
@@ -1634,14 +1664,9 @@
       "has_concurrency": true
     },
     {
-      "name": "self-healing",
-      "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
       "name": "semgrep_sarif",
       "enforcement_tier": "SOFT",
-      "has_concurrency": true
+      "has_concurrency": false
     },
     {
       "name": "session-incremental-summary-reminder",
@@ -1671,11 +1696,6 @@
     {
       "name": "template_lint",
       "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
-      "name": "test-analytics-failure-sim",
-      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2111,5 +2131,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "a9b6e2da5c97368d3859b10b995587dba5654b20d51c0bad9d56f97e10d0546f"
+  "integrity_sha256": "d51530de1136e6c75a998ef8ee9681f7f3f43cc20dd512f333f581ae2e76457d"
 }
