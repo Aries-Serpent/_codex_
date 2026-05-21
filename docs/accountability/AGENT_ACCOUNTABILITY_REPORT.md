@@ -5,14 +5,20 @@
 ### Completed
 - Fully standardized `tests/space_traversal/test_coverage_enhanced.py`: all 6 `from scripts.space_traversal.coverage_ingest import X` calls replaced with `import scripts.space_traversal.coverage_ingest as ci` + `ci.X`; eliminates every remaining CodeQL "module imported with import and import-from" alert in that file.
 - Fully standardized `tests/agents/test_agents_init_phase9_2.py`: switched from `from agents import __all__, __doc__, __version__` to `import agents` at module level; updated all ~10 dunder references to use `agents.__version__` / `agents.__all__` / `agents.__doc__`; removed redundant `agents = sys.modules["agents"]` local variable in `test_all_exports_accessible`.
+- Fixed CI rescue comment empty-SHA/empty-BRANCH bug (user requirement):
+  - **Root cause**: `comment-review-gate.yml` triggered by `issue_comment` events passes `github.event.pull_request.head.sha` and `github.head_ref` which are empty for non-`pull_request` triggers; `post_rescue_comment.py` then created a comment body with empty `` backtick `` placeholders.
+  - **`scripts/ci/post_rescue_comment.py`**: After PR number resolution, defensively fetches `COMMIT_SHA` and `BRANCH` from the PR API if either is empty. Also changed `os.environ["COMMIT_SHA"]` / `os.environ["BRANCH"]` to `.get()` with empty-string defaults.
+  - **`comment-review-gate.yml`**: `PR_NUMBER` now uses `|| github.event.issue.number`; `BRANCH` now uses `|| github.event.pull_request.head.ref`.
+  - **`tests/ci/test_post_rescue_comment.py`**: 4 new tests in `TestDefensiveShaResolution` covering SHA resolution, branch resolution, API-failure fallthrough, and no-op when both values already provided.
 - Updated CHANGELOG.md with new Fixed entry.
 - Replied to all open review threads: r3283385754, r3283385821, r3283484579, r3283506906.
 
 ### Validation
-- `python -m ruff check tests/agents/test_agents_init_phase9_2.py tests/space_traversal/test_coverage_enhanced.py` ✅ All checks passed
+- `python -m ruff check scripts/ci/post_rescue_comment.py tests/ci/test_post_rescue_comment.py tests/agents/test_agents_init_phase9_2.py tests/space_traversal/test_coverage_enhanced.py` ✅ All checks passed
+- `python -m pytest tests/ci/test_post_rescue_comment.py -v` ✅ 16 passed
 
 ### Session Timing
-- Session concluded cleanly; all review findings resolved.
+- Session concluded cleanly; all review findings and new requirements resolved.
 
 ---
 

@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import scripts.space_traversal.coverage_ingest as ci
+
 
 def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
     """Test basic coverage XML parsing."""
-    import scripts.space_traversal.coverage_ingest as ci
 
     # Create a minimal Cobertura-style coverage XML
     xml_content = """<?xml version="1.0"?>
@@ -57,8 +58,6 @@ def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
 
 def test_parse_coverage_xml_to_map_empty():
     """Test parsing empty/invalid XML."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     # Non-existent file
     cov_map = ci.parse_coverage_xml_to_map(Path("/nonexistent.xml"))
     assert cov_map == {}
@@ -66,8 +65,6 @@ def test_parse_coverage_xml_to_map_empty():
 
 def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
     """Test parsing when source file is missing."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
     <packages>
@@ -100,8 +97,6 @@ def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
 
 def test_discover_and_parse_coverage_disabled(tmp_path: Path):
     """Test that coverage discovery respects enabled flag."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     cfg = {"scoring": {"coverage": {"enabled": False}}}
 
     result = ci.discover_and_parse_coverage(cfg, tmp_path)
@@ -110,8 +105,6 @@ def test_discover_and_parse_coverage_disabled(tmp_path: Path):
 
 def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
     """Test coverage discovery with default patterns."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     # Create coverage XML at root
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
@@ -162,8 +155,6 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
 
 def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     """Test coverage discovery with custom patterns."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     # Create coverage XML in subdirectory
     subdir = tmp_path / "build" / "reports"
     subdir.mkdir(parents=True)
@@ -212,8 +203,6 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
 
 def test_parse_coverage_xml_backward_compat(tmp_path: Path):
     """Test backward compatibility of parse_coverage_xml function."""
-    import scripts.space_traversal.coverage_ingest as ci
-
     xml_content = """<?xml version="1.0"?>
 <coverage version="1.0">
     <packages>
