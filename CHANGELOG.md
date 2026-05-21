@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4531)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4531 (SHA `40fa191a`) at 2026-05-21T17:20Z [auto-generated]
+
 ### Fixed (PR #4528 detect-secrets false positives — 2026-05-21T16:14Z)
 - Resolved `Fast Validation` failure on commit `bbf1d5a` by marking two Hypothesis alphabet literals as false positives for secret scanning:
   - `tests/property/test_serialization_properties.py`
