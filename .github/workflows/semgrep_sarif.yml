@@ -3,7 +3,8 @@
 # semgrep_sarif.yml (standalone Semgrep SAST scanner) was absorbed into the
 # Security Scanning Suite (Phase 3.1).  The semgrep job in that suite runs the
 # same chunked-SARIF upload logic and is triggered by the suite's broader event
-# set (push/PR to main/develop/copilot/**, weekly schedule, workflow_dispatch).
+# set (push to main/develop/copilot/**, PR to main/develop, weekly schedule,
+# workflow_dispatch, workflow_call).
 #
 # Archive copy:  .github/workflow-archive/disabled/semgrep_sarif.yml
 # Consolidated into: .github/workflows/security-scanning-suite.yml
