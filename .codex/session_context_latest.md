@@ -1,42 +1,29 @@
-# Session Context — 2026-05-20T23:56:05Z
-**Branch:** `finding-autofix-0bdeecf2`  **PR:** #4523  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-21T01:43:30Z
+**Branch:** `copilot/review-and-assess-workflows`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4982` (✅)
-- GraphQL remaining: `4965` (✅)
+- REST remaining: `4709` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4523 — Fix for Explicit returns mixed with implicit (fall through) returns
-State: `open`  Draft: `False`  Branch: `finding-autofix-0bdeecf2` → `main`
-
-### ❌ 11 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
-- **PR Auto-Fix Check** — `failure` on `finding-autofix-0bdeecf2` (2026-05-20)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-21)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
+- **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-21)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-21)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
 
 ## 📝 Recent Commits
+- `2dfa03a3` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-21)
+- `70bdbb81` Merge pull request #4523 from Aries-Serpent/finding-autofix-0bdeecf2 — Statix (2026-05-21)
+- `6590478f` refactor: remove unreachable code after pytest control flow and add RecallScore  — copilot-swe-agent[bot] (2026-05-21)
 - `0898cc35` fix: resolve RecallScore control flow and complete all 9 reliability findings — copilot-swe-agent[bot] (2026-05-20)
 - `a1c481e8` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
 - `0d45b142` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
 - `a64454b3` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-20)
 - `b417700e` chore: Generate follow-up prompt for PR #4523 [skip ci] — github-actions[bot] (2026-05-20)
-- `556c2b39` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
-- `3d401792` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
-- `4071786e` Fix for Explicit returns mixed with implicit (fall through) returns — Statix (2026-05-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
