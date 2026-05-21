@@ -1,29 +1,29 @@
-# Session Context — 2026-05-21T19:40:24Z
+# Session Context — 2026-05-21T20:00:09Z
 **Branch:** `copilot/remediate-ineffectual-statements`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4638` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4543` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
 
 ## 📝 Recent Commits
+- `6a0bad15` Remediate py ineffectual statement findings across protocol and stub definitions — copilot-swe-agent[bot] (2026-05-21)
+- `c73170a7` Plan remediation for py/ineffectual-statement findings — copilot-swe-agent[bot] (2026-05-21)
 - `7338e88c` Create tailored Copilot prompt for py/ineffectual-statement remediation with ful — Statix (2026-05-21)
 - `c1e8f560` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-21)
 - `c3584fc9` Merge pull request #4531 from Aries-Serpent/0D_base_ — Statix (2026-05-21)
 - `37df461f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-21)
 - `cdb178ef` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-21)
 - `638df01b` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-21)
-- `895c496e` Move ci import to module level in test_coverage_enhanced.py — copilot-swe-agent[bot] (2026-05-21)
-- `212847fa` Merge remote-tracking branch 'origin/0D_base_' into 0D_base_ — copilot-swe-agent[bot] (2026-05-21)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
