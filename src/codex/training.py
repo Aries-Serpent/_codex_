@@ -1245,8 +1245,6 @@ def codex_train_step(
     precision="fp32",
     grad_clip=None,
 ):
-    import torch
-
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
