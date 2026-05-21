@@ -181,3 +181,100 @@ jobs:
 
 - GAP_ANALYSIS.md - Overall gap analysis
 - .github/workflows/ - Current workflows
+
+---
+
+# Session Update: Workflow Portfolio Triage (2026-05-21)
+
+> **Session:** Workflow Portfolio Triage (PR copilot/review-and-assess-workflows)
+> **Scope:** 41 Archive Review + 3 Orphan workflows → explicit disposition
+> **Total portfolio at time of analysis:** 99 workflows (26 Already Disabled + 3 Orphan + 41 Archive Review + 69 Active Keep)
+
+## Session Actions Completed
+
+| Action | Workflows | Status |
+|---|---|---|
+| Created orphan stub files (no triggers) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` | ✅ Done |
+| Archived dispatch shim | `self-healing.yml` → `.github/workflow-archive/disabled/` | ✅ Done |
+| Archived test simulator | `test-analytics-failure-sim.yml` → `.github/workflow-archive/disabled/` | ✅ Done |
+| Full 41-workflow analysis | All decisions documented in table below | ✅ Done |
+
+## Full Archive Review Decision Matrix (41 Workflows)
+
+### ⛔ Orphan Stubs Created (3)
+
+| Workflow ID | File | Reason |
+|---|---|---|
+| 232765030 | `cache-health-monitor.yml` | Backing file absent from `main`; 0 lifetime runs. |
+| 232765010 | `cache-validation.yml` | Backing file absent from `main`; 0 lifetime runs. |
+| 232765053 | `documentation-quality-check.yml` | Backing file absent from `main`; superseded by documentation-quality-agent. |
+
+### 📦 Archived (2)
+
+| Workflow ID | File | Reason |
+|---|---|---|
+| 225897127 | `test-analytics-failure-sim.yml` | Auto-generated test simulator; intentionally fails; no production CI path uses it. |
+| 223032333 | `self-healing.yml` | Pure dispatch shim for `iterative-self-healing-ci.yml`; file header said "Manual trigger alias". |
+
+### 🔍 Dynamic / GitHub-Managed (7) — No file-level action possible
+
+| Workflow ID | Name | Notes |
+|---|---|---|
+| 244827805 | Claude (anthropic-code-agent) | GitHub-managed; review via admin settings. |
+| 239249989 | Claude (anthropic-code-agent/claude) | GitHub-managed; possible duplicate. |
+| 255167321 | OpenAI Codex | GitHub-managed. |
+| 221118112 | Codespaces Prebuilds | Disable via Codespaces settings if not needed. |
+| 203241863 | Copilot code review | Active GitHub Copilot PR review feature. Keep. |
+| 198731352 | Dependabot Updates | Core GitHub dependency management. Keep. |
+| 223327346 | Dependency Graph | Core security feature. Keep. |
+
+### ⚠️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed
+
+| Workflow ID | File | Action Needed |
+|---|---|---|
+| 218950112 | `copilot-automation.yml` | File absent from `main`. Create disabled stub in Phase 2. |
+| 218151123 | `maturity-check.yml` | File absent from `main`. Create disabled stub in Phase 2. |
+| 218151122 | `benchmarks.yml` | File absent from `main`. Create disabled stub in Phase 2. |
+
+### ✅ Keep Active (26)
+
+| Workflow ID | Name | File | Keep Reason |
+|---|---|---|---|
+| 256293350 | ⚡ Fast-Forward Safe Files to Main | `fast-forward-safe-files.yml` | Critical agent utility for PR → main file promotion. |
+| 249744244 | 📋 Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
+| 249908045 | 🔀 Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
+| 256293349 | 🔄 Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
+| 251020901 | 🧠 Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
+| 249908046 | 🚀 Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` → `main` promotion. |
+| 239988735 | 🚿 Flush Queued Runs | `flush-queued-runs.yml` | CI queue management during high-volume sessions. |
+| 234039814 | App Package Download | `app-package-download.yml` | User-facing packaging utility with maintained docs. |
+| 223917608 | Authentication Tests | `auth-tests.yml` | Auth module path-triggered tests. |
+| 242908432 | Autonomy Phase CI Matrix | `autonomy-phase-ci-matrix.yml` | CI for confirmed-existing autonomy scripts. |
+| 241907337 | Build & Push Preview Image | `build-preview-image.yml` | Container preview build pipeline. |
+| 216390776 | CI — Optimized with Caching | `optimized-ci.yml` | Optimized main CI with tiered caching. |
+| 231490932 | Data Quality & Determinism Suite | `data-quality-suite.yml` | ML reproducibility validation. |
+| 232293563 | DependaBot Sheriff | `dependabot-sheriff.yml` | Manual Dependabot consolidation utility. |
+| 216238297 | Duplicate Detection on PR | `detect-duplicates.yml` | PR Python duplicate detection. |
+| 246225676 | mypy Baseline | `mypy-baseline.yml` | Type-check anti-regression ratchet gate. |
+| 239780045 | OpenVINO Phase C | `openvino-phase-c.yml` | Intel Arc iGPU smoke tests. Specialized path. |
+| 234837172 | Pre-Flight CI Validation | `pre-flight-validation.yml` | Pre-CI validation (ruff, secrets, pre-commit). |
+| 226584848 | Publish Python Package | `pypi-publish.yml` | PyPI release publisher. |
+| 221711588 | RAG Module Tests | `test-rag.yml` | RAG domain tests with caching. |
+| 216369703 | Repository Organization | `repo-organization.yml` | Manual repo hygiene utility. |
+| 259903484 | restore-pipeline CI | `restore-pipeline-ci.yml` | CI for `src/restore_pipeline/` module. |
+| 225516282 | Root Organization Validation | `root-org-validation.yml` | PR-triggered root file validation. |
+| 219518061 | Bootstrap Security Tools | `security-tools-bootstrap.yml` | Manual security tool deployment. |
+| 203195011 | Semgrep SAST | `semgrep_sarif.yml` | Active SAST scanning with SARIF upload. |
+| 256624124 | Test Variables API | `test-variables-api.yml` | Live variable API end-to-end test. |
+| 239965373 | Token Probe | `token-probe.yml` | On-demand CODEX key validator. |
+| 272783451 | Trigger validations on approval | `trigger-on-approval.yml` | Core PR approval orchestrator (WEC pipeline). |
+| 219140198 | Workflow Restore Tool | `workflow-restore.yml` | Archive workflow recovery utility. |
+
+## Phase 2 Consolidation Targets
+
+| Cluster | Merge Path | Priority | Est. Savings |
+|---|---|---|---|
+| Discussion poster pair | `post-accountability` + `post-ci-status` → `post-to-discussions.yml` | 🟡 Medium | −1 workflow |
+| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow |
+| Validation cluster | `optimized-ci.yml` + `pre-flight-validation.yml` + `mypy-baseline.yml` → `unified-validation.yml` | 🟡 Medium | −2 workflows; see S174 P0-2 |
+| Orphan stub creation | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | 🟢 Quick | 3 stubs |

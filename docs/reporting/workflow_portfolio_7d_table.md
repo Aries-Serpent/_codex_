@@ -37,9 +37,9 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | 🔀 Branch Rebase Gate | .github/workflows/branch-rebase-gate.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | high |
 | Build Agent Environment Cache | .github/workflows/build-agent-env-cache.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
 | Build & Push Preview Image | .github/workflows/build-preview-image.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
-| .github/workflows/cache-health-monitor.yml | .github/workflows/cache-health-monitor.yml | active | False | 0 |  | disable-now-orphan-active | unobserved-7d | unknown |
+| .github/workflows/cache-health-monitor.yml | .github/workflows/cache-health-monitor.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | Cache Pruning | .github/workflows/cache-pruning.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
-| .github/workflows/cache-validation.yml | .github/workflows/cache-validation.yml | active | False | 0 |  | disable-now-orphan-active | unobserved-7d | unknown |
+| .github/workflows/cache-validation.yml | .github/workflows/cache-validation.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | Chat-Ops — @copilot Webhook Trigger | .github/workflows/chatops_copilot_trigger.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
 | CI Checkpoint Validation | .github/workflows/ci-checkpoint-validation.yml | active | True | 2 | 2026-05-15T07:08:39Z | keep-enabled-active | observed-green | low |
 | 🚨 CI Failure Issue Creator | .github/workflows/ci-failure-issue-creator.yml | active | True | 4 | 2026-05-15T12:50:54Z | keep-enabled-active | observed-failures | medium |
@@ -89,7 +89,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE) | .github/workflows/docker-build-push.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | Docs Health (Post-Merge) | .github/workflows/docs-health.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
 | Documentation Link Checker | .github/workflows/documentation-link-checker.yml | active | True | 4 | 2026-05-15T16:55:44Z | keep-enabled-active | approval-gated-or-mixed | low |
-| Documentation Quality Check | .github/workflows/documentation-quality-check.yml | active | False | 0 |  | disable-now-orphan-active | unobserved-7d | unknown |
+| Documentation Quality Check | .github/workflows/documentation-quality-check.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | E→D Transition Readiness Gate | .github/workflows/e-to-d-transition-gate.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | medium |
 | Embedding Index Rebuild | .github/workflows/embedding-index-rebuild.yml | active | True | 5 | 2026-05-15T18:33:07Z | keep-enabled-active | observed-green | low |
 | ⚡ Fast-Forward Safe Files to Main | .github/workflows/fast-forward-safe-files.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
@@ -154,7 +154,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Security Scanning | .github/workflows/security-scanning.yml | disabled_manually | False | 0 |  | already-disabled | disabled | unknown |
 | Bootstrap Security Tools from Variables | .github/workflows/security-tools-bootstrap.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | ⚡ Self-Approve Pending Workflow Runs | .github/workflows/self-approve-pending-runs.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
-| Self-Healing CI | .github/workflows/self-healing.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| Self-Healing CI | .github/workflow-archive/disabled/self-healing.yml | archived | False | 0 |  | already-disabled | disabled | low |
 | Semgrep SAST (SARIF Upload) | .github/workflows/semgrep_sarif.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | Session Incremental Summary Reminder | .github/workflows/session-incremental-summary-reminder.yml | active | True | 22 | 2026-05-15T17:58:18Z | keep-enabled-active | observed-green | low |
 | Session Watchdog — Timebox & Continuity Enforcement | .github/workflows/session-watchdog.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
@@ -163,7 +163,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Sync Environment Variables | .github/workflows/sync-env-vars.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
 | CI Telemetry Collection | .github/workflows/telemetry-collection.yml | active | True | 1 | 2026-05-15T02:58:48Z | keep-enabled-active | observed-green | low |
 | Template Lint (HTML includes) | .github/workflows/template_lint.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
-| Analytics Failure Simulator | .github/workflows/test-analytics-failure-sim.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| Analytics Failure Simulator | .github/workflow-archive/disabled/test-analytics-failure-sim.yml | archived | False | 0 |  | already-disabled | disabled | low |
 | RAG Module Tests | .github/workflows/test-rag.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | Test Variables API | .github/workflows/test-variables-api.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | Token Expiry Monitor | .github/workflows/token-expiry-monitor.yml | active | True | 1 | 2026-05-15T09:57:01Z | keep-enabled-active | observed-green | low |

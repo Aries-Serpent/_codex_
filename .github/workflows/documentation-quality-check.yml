@@ -1,0 +1,21 @@
+# ⛔ DISABLED 2026-05-21 — Orphan workflow
+#
+# This workflow no longer has an active backing implementation. It registered as
+# "active" in GitHub Actions (ID: 232765053) because its file existed on a prior
+# branch, but the file was absent from main and has only 1 lifetime run.
+#
+# A dedicated documentation quality check is now handled by the agent-ecosystem
+# (documentation-quality-agent.md) and is covered within the unified CI suite.
+#
+# Creating this stub with no triggers prevents any future accidental execution
+# while preserving the workflow name in the Actions history for audit purposes.
+#
+# Reason:  Orphan — backing file absent from main; 1 lifetime run; superseded by agent.
+# Status:  ⛔ Already Disabled (2026-05-21)
+# Session: Workflow Portfolio Triage — Archive Review pass
+
+name: Documentation Quality Check
+
+on: {}  # no triggers — workflow is permanently disabled
+
+jobs: {}  # no jobs — satisfies YAML schema while preventing execution
