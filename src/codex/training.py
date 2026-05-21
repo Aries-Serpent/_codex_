@@ -549,7 +549,7 @@ def _run_minilm_training(
     val_split = max(0.0, min(0.999, float(val_split)))
     test_split = max(0.0, min(0.999, float(test_split)))
     if val_split + test_split >= 1.0:
-        print("Warning: val_split + test_split >= 1; clamping to 0")
+        logger.warning("val_split + test_split >= 1; clamping to 0")
         val_split = 0.0
         test_split = 0.0
     n_val = int(total * val_split)
@@ -560,8 +560,8 @@ def _run_minilm_training(
         n_train = total
         n_val = 0
         n_test = 0
-        # total >= 2 here (validated above), so always print the warning
-        print("Warning: dataset too small for validation/test split; using all data for training")
+        # total >= 2 here (validated above), so always log the warning
+        logger.warning("dataset too small for validation/test split; using all data for training")
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
     _ = tokens[n_train + n_val : n_train + n_val + n_test]
