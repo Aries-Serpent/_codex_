@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from cli.task_sequence import setup_mlflow_tracking
+import cli.task_sequence as cts
 from configs.base_config import BASE_TRAINING_CONFIG, get_base_training_config
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,12 +64,10 @@ def test_gradient_accumulation_snippet_present() -> None:
 
 
 def test_setup_mlflow_tracking_dry_run(tmp_path) -> None:
-    assert setup_mlflow_tracking(tmp_path / "mlruns", dry_run=True) is False
+    assert cts.setup_mlflow_tracking(tmp_path / "mlruns", dry_run=True) is False
 
 
 def test_setup_mlflow_tracking_file_uri(tmp_path, monkeypatch) -> None:
-    import cli.task_sequence as cts
-
     state = {"uri": ""}
 
     class _DummyMLflow(types.SimpleNamespace):
@@ -86,7 +84,7 @@ def test_setup_mlflow_tracking_file_uri(tmp_path, monkeypatch) -> None:
         lambda force=True: f"file://{(tmp_path / 'mlruns').resolve()}",
     )
     try:
-        result = setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False)
+        result = cts.setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False)
     finally:
         sys.modules.pop("mlflow", None)
     assert result is True
