@@ -17,29 +17,29 @@ class TestStableChecksum:
 
     def test_checksum_consistency(self):
         """Test checksum is consistent across calls."""
-        from training.data_utils import _stable_checksum_of_seq_repr
+        import training.data_utils as data_utils
 
         seq = [1, 2, 3, "a", "b"]
 
-        result1 = _stable_checksum_of_seq_repr(seq)
+        result1 = data_utils._stable_checksum_of_seq_repr(seq)
         result2 = _stable_checksum_of_seq_repr(seq)
 
         assert result1 == result2
 
     def test_checksum_different_for_different_sequences(self):
         """Test different sequences produce different checksums."""
-        from training.data_utils import _stable_checksum_of_seq_repr
+        import training.data_utils as data_utils
 
         seq1 = [1, 2, 3]
         seq2 = [1, 2, 4]
 
-        assert _stable_checksum_of_seq_repr(seq1) != _stable_checksum_of_seq_repr(seq2)
+        assert data_utils._stable_checksum_of_seq_repr(seq1) != data_utils._stable_checksum_of_seq_repr(seq2)
 
     def test_checksum_empty_sequence(self):
         """Test checksum for empty sequence."""
-        from training.data_utils import _stable_checksum_of_seq_repr
+        import training.data_utils as data_utils
 
-        result = _stable_checksum_of_seq_repr([])
+        result = data_utils._stable_checksum_of_seq_repr([])
 
         assert isinstance(result, str)
         assert len(result) == 64  # SHA-256 hex digest length
@@ -237,10 +237,10 @@ class TestDeterministicShuffle:
 
     def test_shuffle_preserves_elements(self):
         """Test shuffle preserves all elements."""
-        from training.data_utils import deterministic_shuffle
+        import training.data_utils as data_utils
 
         items = [1, 2, 3, 4, 5]
-        result = deterministic_shuffle(items, seed=42)
+        result = data_utils.deterministic_shuffle(items, seed=42)
 
         assert sorted(result) == sorted(items)
 
@@ -251,10 +251,10 @@ class TestRequireTorch:
     def test_require_torch_when_available(self):
         """Test _require_torch passes when torch is available."""
         try:
-            from training.data_utils import _require_torch
+            import training.data_utils as data_utils
 
             # Should not raise
-            _require_torch()
+            data_utils._require_torch()
         except ModuleNotFoundError:
             pytest.skip("torch not available")
 
@@ -264,12 +264,12 @@ class TestRequireTorch:
         # Re-import to get patched version
         import importlib
 
-        import training.data_utils
-        importlib.reload(training.data_utils)
+        import training.data_utils as data_utils
+        importlib.reload(data_utils)
 
-        if training.data_utils.torch is None:
+        if data_utils.torch is None:
             with pytest.raises(ModuleNotFoundError, match="torch is required"):
-                training.data_utils._require_torch()
+                data_utils._require_torch()
 
 
 class TestEdgeCases:
@@ -277,34 +277,34 @@ class TestEdgeCases:
 
     def test_split_single_item(self):
         """Test split with single item."""
-        from training.data_utils import split_dataset
+        import training.data_utils as data_utils
 
         items = [42]
-        train, val = split_dataset(items, train_ratio=0.5, seed=42)
+        train, val = data_utils.split_dataset(items, train_ratio=0.5, seed=42)
 
         # With one item and 0.5 ratio, we get 0 train items
         assert len(train) + len(val) == 1
 
     def test_split_preserves_types(self):
         """Test split preserves item types."""
-        from training.data_utils import split_dataset
+        import training.data_utils as data_utils
 
         class CustomItem:
             def __init__(self, value):
                 self.value = value
 
         items = [CustomItem(i) for i in range(10)]
-        train, val = split_dataset(items, train_ratio=0.8, seed=42)
+        train, val = data_utils.split_dataset(items, train_ratio=0.8, seed=42)
 
         assert all(isinstance(item, CustomItem) for item in train)
         assert all(isinstance(item, CustomItem) for item in val)
 
     def test_split_with_strings(self):
         """Test split with string items."""
-        from training.data_utils import split_dataset
+        import training.data_utils as data_utils
 
         items = ["apple", "banana", "cherry", "date", "elderberry"]
-        train, val = split_dataset(items, train_ratio=0.8, seed=42)
+        train, val = data_utils.split_dataset(items, train_ratio=0.8, seed=42)
 
         assert len(train) == 4
         assert len(val) == 1
