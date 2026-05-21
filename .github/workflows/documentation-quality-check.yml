@@ -16,6 +16,13 @@
 
 name: Documentation Quality Check
 
-on: {}  # no triggers — workflow is permanently disabled
+on:
+  workflow_dispatch:  # manual-only; effectively disabled
 
-jobs: {}  # no jobs — satisfies YAML schema while preventing execution
+permissions: {}
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "disabled — stub only"

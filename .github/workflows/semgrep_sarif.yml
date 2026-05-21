@@ -15,6 +15,13 @@ name: Semgrep SAST (SARIF Upload)
 # ARCHIVED 2026-05-21 — consolidated into security-scanning-suite.yml
 # See: .github/workflow-archive/disabled/semgrep_sarif.yml
 
-on: {}  # no triggers — workflow is permanently disabled
+on:
+  workflow_dispatch:  # manual-only; effectively disabled
 
-jobs: {}  # no jobs
+permissions: {}
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "disabled — stub only"
