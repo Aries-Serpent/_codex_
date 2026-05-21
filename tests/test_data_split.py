@@ -13,12 +13,11 @@ import pytest
 from codex_ml.data.splitting import split_indices
 
 try:
-    import numpy as np
+    import numpy
 
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
-    np = None
 
 
 class TestDeterministicSplits:
