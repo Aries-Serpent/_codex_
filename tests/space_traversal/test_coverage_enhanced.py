@@ -201,14 +201,15 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     artifacts_dir = tmp_path / "audit_artifacts"
     artifacts_dir.mkdir()
 
-    import scripts.space_traversal.coverage_ingest as ci
+    from scripts.space_traversal.coverage_ingest import ROOT
 
-    original_root = ci.ROOT
+    global ROOT
+    original_root = ROOT
     try:
-        ci.ROOT = tmp_path
+        ROOT = tmp_path
         result = discover_and_parse_coverage(cfg, artifacts_dir)
     finally:
-        ci.ROOT = original_root
+        ROOT = original_root
 
     assert result is not None
     assert "app.py" in result
