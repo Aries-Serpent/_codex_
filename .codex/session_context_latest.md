@@ -1,10 +1,10 @@
-# Session Context — 2026-05-21T01:43:30Z
+# Session Context — 2026-05-21T02:00:26Z
 **Branch:** `copilot/review-and-assess-workflows`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4709` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
 
 ## 📝 Recent Commits
+- `c77d6963` Rationalize workflow portfolio: disable orphan workflows and classify archive-re — copilot-swe-agent[bot] (2026-05-21)
 - `2dfa03a3` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-21)
 - `70bdbb81` Merge pull request #4523 from Aries-Serpent/finding-autofix-0bdeecf2 — Statix (2026-05-21)
 - `6590478f` refactor: remove unreachable code after pytest control flow and add RecallScore  — copilot-swe-agent[bot] (2026-05-21)
@@ -23,7 +24,6 @@
 - `a1c481e8` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
 - `0d45b142` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
 - `a64454b3` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-20)
-- `b417700e` chore: Generate follow-up prompt for PR #4523 [skip ci] — github-actions[bot] (2026-05-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
