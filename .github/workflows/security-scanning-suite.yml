@@ -183,11 +183,116 @@ jobs:
           echo "## SBOM Generation" >> $GITHUB_STEP_SUMMARY
           echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
 
+  # ── Semgrep SAST ─────────────────────────────────────────────────────────
+  # Consolidated from semgrep_sarif.yml (Phase 3.1, 2026-05-21).
+  # The standalone semgrep_sarif.yml is archived to .github/workflow-archive/disabled/.
+  semgrep:
+    name: Semgrep SAST (SARIF Upload)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow security-scanning-suite 2>/dev/null || echo "Cache health: check skipped"
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: live
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep scan
+        id: semgrep
+        continue-on-error: true
+        run: |
+          semgrep scan \
+            --config=p/security-audit \
+            --config=p/python \
+            --config=p/flask \
+            --config=p/sqlalchemy \
+            --sarif \
+            --output=semgrep-results.sarif \
+            2>&1 | tee semgrep-scan.log || {
+              echo "Primary configs failed, falling back to auto..."
+              semgrep scan \
+                --config=auto \
+                --sarif \
+                --output=semgrep-results.sarif \
+                2>&1 | tee semgrep-scan-fallback.log
+            }
+          EXIT_CODE=$?
+          exit ${EXIT_CODE:-0}
+
+      - name: Chunk SARIF results
+        if: always() && hashFiles('semgrep-results.sarif') != ''
+        run: |
+          python scripts/chunk_sarif.py \
+            semgrep-results.sarif \
+            sarif-chunks/ \
+            --chunk-size 4999 \
+            --base-name semgrep \
+            --verbose
+
+      - name: Upload chunked SARIF to GitHub Security
+        if: always() && hashFiles('sarif-chunks/*.sarif') != ''
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: |
+          CHUNKS=(sarif-chunks/*.sarif)
+          CHUNK_COUNT=${#CHUNKS[@]}
+          echo "Uploading $CHUNK_COUNT SARIF chunk(s)..."
+          for i in "${!CHUNKS[@]}"; do
+            sarif_file="${CHUNKS[$i]}"
+            chunk_num=$((i + 1))
+            chunk_suffix=$(basename "$sarif_file" .sarif | sed 's/semgrep-chunk-//')
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/${{ github.repository }}/code-scanning/sarifs" \
+              -F "sarif=@$sarif_file" \
+              -F "commit_sha=${{ github.sha }}" \
+              -F "ref=${{ github.ref }}" \
+              -F "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              -F "tool_name=Semgrep" \
+              -F "category=semgrep-chunk-$chunk_suffix" \
+              && echo "✅ Chunk $chunk_num uploaded" \
+              || echo "❌ Chunk $chunk_num failed"
+          done
+
+      - name: Upload Semgrep results as artifact
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: semgrep-results
+          path: |
+            semgrep-results.sarif
+            sarif-chunks/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Semgrep SAST" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.semgrep.outcome }}" >> $GITHUB_STEP_SUMMARY
+
   security-suite-summary:
     name: Security Suite Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [codeql-scan, dependency-scan, secret-scan, sbom-generation]
+    needs: [codeql-scan, dependency-scan, secret-scan, sbom-generation, semgrep]
     if: always()
     steps:
       - name: Summary
@@ -198,6 +303,8 @@ jobs:
           echo "**Dependency:** ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "**Secrets:** ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "**SBOM:** ${{ needs.sbom-generation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Semgrep:** ${{ needs.semgrep.result }}" >> $GITHUB_STEP_SUMMARY
+
 
       - name: Cache health report
         if: always()

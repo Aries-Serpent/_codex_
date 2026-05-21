@@ -275,9 +275,63 @@ jobs:
 | Cluster | Merge Path | Priority | Est. Savings | Status |
 |---|---|---|---|---|
 | Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | 🟢 Quick | 3 stubs | ✅ Done (2026-05-21) |
-| Discussion poster pair | `post-accountability` + `post-ci-status` → `post-to-discussions.yml` | 🟡 Medium | −1 workflow | 🔲 Next session |
-| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow | 🔲 Next session |
-| Validation cluster | `optimized-ci.yml` + `pre-flight-validation.yml` + `mypy-baseline.yml` → `unified-validation.yml` | 🟡 Medium | −2 workflows; see S174 P0-2 | 🔲 Next session |
+| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow | ✅ Done (2026-05-21) |
+| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) | 🟡 Medium | −0 workflows | ✅ Resolved: KEEP (2026-05-21) |
+| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) | 🟡 Medium | −0 workflows | ✅ Resolved: KEEP (2026-05-21) |
+
+---
+
+## Phase 3 Consolidation Decisions (2026-05-21)
+
+### P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ✅
+
+**Decision: CONSOLIDATE**
+
+`semgrep_sarif.yml` was a standalone Semgrep SAST workflow with chunked-SARIF upload logic.
+It was absorbed into `security-scanning-suite.yml` as the `semgrep` job (Phase 3.1).
+The standalone file was replaced with a disabled stub and the original archived to
+`.github/workflow-archive/disabled/semgrep_sarif.yml` with a `.meta` file.
+
+**Changes:**
+- Added `semgrep` job to `security-scanning-suite.yml` (chunked-SARIF, fallback config, artifact upload)
+- Updated `security-suite-summary` to include semgrep in `needs` and output
+- `semgrep_sarif.yml` → disabled stub; original in archive
+
+### P3.2 — Discussion Poster Pair: KEEP as separate workflows
+
+**Decision: KEEP SEPARATE**
+
+`post-accountability-to-discussion.yml` and `post-ci-status-to-discussion.yml` cannot be
+merged because:
+
+1. **Incompatible trigger paths:** accountability fires on `docs/accountability/**`; CI-status fires
+   on `scripts/cognitive/**`, `CODEX_MANIFEST.json`, `.codex/docs/COGNITIVE_BRAIN_STATUS_*.md`.
+2. **Incompatible job logic:** accountability uses a full GitHub App JWT auth chain with dedup
+   markers and per-PR discussion creation; CI-status uses cognitive brain scripts
+   (`continuation_chain.py`, `mcp_poster`) with pattern-DB summarization.
+3. **Independent failure domains:** merging would cause accountability to fail if CI-status
+   scripts are unavailable, violating the PRIORITY 0 guarantee on accountability posting.
+
+**Disposition:** Both workflows reclassified from `archive-review-candidate` → `active-keep`.
+
+### P3.3 — Validation Cluster: KEEP as separate workflows
+
+**Decision: KEEP SEPARATE**
+
+`mypy-baseline.yml`, `optimized-ci.yml`, and `pre-flight-validation.yml` cannot be merged
+into a matrix job because they have mutually incompatible trigger sets:
+
+| Workflow | PR trigger paths | Push trigger branches/paths |
+|---|---|---|
+| `mypy-baseline.yml` | `src/**, .mypy_baseline, mypy.ini, pyproject.toml, scripts/ci/mypy_baseline.py` | `main` + `src/**` |
+| `optimized-ci.yml` | *(none — push-only)* | `main` + `src/**, tests/**, pyproject.toml, uv.lock` |
+| `pre-flight-validation.yml` | `.github/workflows/**, tests/**, pytest.ini, pyproject.toml, scripts/ci/**` | `main`, `copilot/**` + `.github/workflows/**, tests/**, pytest.ini` |
+
+A matrix job would require a union trigger set, causing all three validators to run on every
+path change — defeating the purpose of path-scoped CI. Each workflow must retain its own
+trigger definition.
+
+**Disposition:** All three workflows reclassified from `archive-review-candidate` → `active-keep`.
 
 ---
 
@@ -334,21 +388,25 @@ jobs:
 
 | Category | Count |
 |---|---|
-| ✅ Active — Keep | 69 |
+| ✅ Active — Keep | 74 (previously 69; +5 reclassified from archive-review-candidate: 2 discussion posters + 3 validation cluster) |
 | ⛔ Already Disabled (pre-existing) | 26 |
 | ⛔ Orphan stubs created (Phase 1) | 3 |
 | ⛔ Orphan-equivalent stubs created (Phase 2) | 3 |
+| ⛔ Semgrep stub (Phase 3, consolidated) | 1 |
 | 📦 Archived (Phase 1) | 2 |
+| 📦 Archived (Phase 3, semgrep source) | 1 |
 | 🔍 Dynamic/GitHub-managed | 7 |
-| **Total** | **110** |
+| **Total** | **117** |
 
-> Note: Total exceeds the original 99 count because stub creation adds new files to the portfolio.
-> The 8 newly stubbed/archived workflows reduce the "active" risk pool from 99 to 91 effective active workflows.
+> Note: Active-keep count rose because discussion poster pair (2) and validation cluster (3)
+> were properly reclassified from archive-review-candidate to active-keep during Phase 3 analysis.
+> semgrep_sarif.yml was consolidated into security-scanning-suite.yml and replaced with a stub.
 
 #### Archive-Review Backlog
 
 - **Before this session:** 41 archive-review candidates
 - **After Phase 1:** 36 (5 resolved)
 - **After Phase 2:** 33 (3 more resolved via orphan-equivalent stubs)
-- **Remaining target:** Phase 3 consolidations (discussion poster pair, SAST merge, validation cluster)
+- **After Phase 3:** 27 (6 more resolved: 1 consolidated + 5 reclassified active-keep)
+- **Remaining:** 27 archive-review candidates — lower priority; deferred to future session
 

@@ -105,24 +105,24 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Maturity Check | .github/workflows/maturity-check.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | MCP Health & Metrics Gate | .github/workflows/mcp-health.yml | active | True | 1 | 2026-05-15T05:22:19Z | keep-enabled-active | observed-green | low |
 | Model Drift Detection & Auto-Retrain | .github/workflows/model-drift-retrain.yml | active | True | 1 | 2026-05-15T03:12:04Z | keep-enabled-active | observed-green | low |
-| mypy Baseline (Type-Check Anti-Regression) | .github/workflows/mypy-baseline.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| mypy Baseline (Type-Check Anti-Regression) | .github/workflows/mypy-baseline.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
 | Nightly CodeQL Alert Triage | .github/workflows/nightly-codeql-alert-triage.yml | active | True | 1 | 2026-05-15T03:20:12Z | keep-enabled-active | observed-green | low |
 | Nox Quality Gates | .github/workflows/nox_gates.yml | disabled_manually | False | 0 |  | keep-enabled-wec-critical | disabled | low |
 | 🧹 One-Shot: Cleanup Stale Self-Heal Branches | .github/workflows/one-shot-cleanup.yml | disabled_manually | False | 0 |  | already-disabled | disabled | unknown |
 | OpenVINO Phase C — Intel Arc iGPU Smoke Tests | .github/workflows/openvino-phase-c.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
-| CI — Optimized with Caching | .github/workflows/optimized-ci.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| CI — Optimized with Caching | .github/workflows/optimized-ci.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
 | 🩺 Pages Health Guard (Self-Healing) | .github/workflows/pages-health-guard.yml | active | True | 36 | 2026-05-15T18:34:47Z | keep-enabled-active | observed-green | low |
 | Deploy Pages (MkDocs) | .github/workflows/pages-mkdocs.yml | active | True | 15 | 2026-05-15T18:36:22Z | keep-enabled-active | observed-failures | low |
 | Pages Pre-Merge Validation | .github/workflows/pages-pre-merge-validation.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
 | Pages Scheduled Validation | .github/workflows/pages-scheduled-validation.yml | active | True | 1 | 2026-05-15T00:34:53Z | keep-enabled-active | observed-green | low |
-| 📋 Post Accountability Report to Discussion | .github/workflows/post-accountability-to-discussion.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
-| 🧠 Post CI Status to Discussions | .github/workflows/post-ci-status-to-discussion.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| 📋 Post Accountability Report to Discussion | .github/workflows/post-accountability-to-discussion.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
+| 🧠 Post CI Status to Discussions | .github/workflows/post-ci-status-to-discussion.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
 | Post-Merge Validation (Optimized) | .github/workflows/post-merge-validation-optimized.yml | disabled_manually | False | 0 |  | already-disabled | disabled | medium |
 | PR Checks (Isolated Cache) | .github/workflows/pr-checks.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | 💰 PR Cost Check | .github/workflows/pr-cost-check.yml | active | True | 6 | 2026-05-15T04:44:06Z | keep-enabled-active | observed-green | low |
 | Generate PR Follow-Up Prompt | .github/workflows/pr-followup-generator.yml | active | True | 6 | 2026-05-15T04:44:06Z | keep-enabled-active | observed-green | medium |
 | PR Size Analyzer | .github/workflows/pr-size-analyzer.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
-| Pre-Flight CI Validation | .github/workflows/pre-flight-validation.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| Pre-Flight CI Validation | .github/workflows/pre-flight-validation.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
 | Pre-Merge Validation | .github/workflows/pre-merge-validation.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-wec-critical | observed-green | medium |
 | 🔍 Proactive CI Monitor | .github/workflows/proactive-ci-monitor.yml | active | True | 19 | 2026-05-15T17:59:39Z | keep-enabled-active | observed-failures | low |
 | Process Variable Intents | .github/workflows/process-variable-intents.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
@@ -155,7 +155,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Bootstrap Security Tools from Variables | .github/workflows/security-tools-bootstrap.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | ⚡ Self-Approve Pending Workflow Runs | .github/workflows/self-approve-pending-runs.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | Self-Healing CI | .github/workflow-archive/disabled/self-healing.yml | archived | False | 0 |  | already-disabled | disabled | low |
-| Semgrep SAST (SARIF Upload) | .github/workflows/semgrep_sarif.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+| Semgrep SAST (SARIF Upload) | .github/workflows/semgrep_sarif.yml | disabled_stub | False | 0 |  | already-disabled | disabled | low |
 | Session Incremental Summary Reminder | .github/workflows/session-incremental-summary-reminder.yml | active | True | 22 | 2026-05-15T17:58:18Z | keep-enabled-active | observed-green | low |
 | Session Watchdog — Timebox & Continuity Enforcement | .github/workflows/session-watchdog.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
 | ShellCheck (IMDS Tooling) | .github/workflows/shellcheck.yml | disabled_manually | False | 0 |  | already-disabled | disabled | unknown |
