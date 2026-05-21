@@ -57,9 +57,8 @@ def hf_tok():
     """Session-scoped fixture for a real HF tokenizer adapter, if available."""
     try:
         return HFTokenizerAdapter.load()
-    except Exception as _err:
+    except Exception:
         pytest.skip("HuggingFace tokenizer not available")
-        raise
 
 
 @pytest.fixture

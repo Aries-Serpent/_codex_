@@ -1,36 +1,42 @@
-# Session Context — 2026-05-20T23:35:00Z
+# Session Context — 2026-05-20T23:56:05Z
 **Branch:** `finding-autofix-0bdeecf2`  **PR:** #4523  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4261` (✅)
-- GraphQL remaining: `4980` (✅)
+- REST remaining: `4982` (✅)
+- GraphQL remaining: `4965` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4523 — Fix for Explicit returns mixed with implicit (fall through) returns
-State: `open`  Draft: `True`  Branch: `finding-autofix-0bdeecf2` → `main`
+State: `open`  Draft: `False`  Branch: `finding-autofix-0bdeecf2` → `main`
 
-### ❌ 2 Failing CI Check(s)
-- `Post gate failure notice` (cancelled)
-- `🚦 Comment review gate` (failure)
+### ❌ 11 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-20)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-20)
+- **PR Auto-Fix Check** — `failure` on `finding-autofix-0bdeecf2` (2026-05-20)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-20)
 
 ## 📝 Recent Commits
+- `0898cc35` fix: resolve RecallScore control flow and complete all 9 reliability findings — copilot-swe-agent[bot] (2026-05-20)
+- `a1c481e8` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
+- `0d45b142` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
 - `a64454b3` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-20)
 - `b417700e` chore: Generate follow-up prompt for PR #4523 [skip ci] — github-actions[bot] (2026-05-20)
 - `556c2b39` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-20)
 - `3d401792` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-20)
 - `4071786e` Fix for Explicit returns mixed with implicit (fall through) returns — Statix (2026-05-20)
-- `daf9a890` Fix for Explicit returns mixed with implicit (fall through) returns — Statix (2026-05-20)
-- `d57f82d6` Fix for Explicit returns mixed with implicit (fall through) returns — Statix (2026-05-20)
-- `989868f8` Fix for Explicit returns mixed with implicit (fall through) returns — Statix (2026-05-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

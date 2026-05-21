@@ -324,9 +324,7 @@ class TestMSPClientPerformance:
         def make_request(i):
             try:
                 with patch.object(client, "request", return_value={"id": i}):
-                    if hasattr(client, "request"):
-                        return client.request("GET", f"/test/{i}")
-                    return None
+                    return client.request("GET", f"/test/{i}")
             except Exception as e:
                 errors.append(e)
                 return None

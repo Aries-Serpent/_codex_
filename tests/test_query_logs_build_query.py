@@ -165,9 +165,7 @@ def _load_build_query():
             continue
     if last_err:
         pytest.xfail(f"build_query not importable; last error: {last_err}")
-        raise AssertionError("unreachable after pytest.xfail")
     pytest.xfail("build_query not importable from any candidate")
-    raise AssertionError("unreachable after pytest.xfail")
 
 
 # --------------------------------------------------------------------------------------

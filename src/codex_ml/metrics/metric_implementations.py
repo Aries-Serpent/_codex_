@@ -228,7 +228,9 @@ class RecallScore(MetricBase):
                 positive = 1 if self.num_classes in {None, 2} else labels[-1]
                 try:
                     idx = labels.index(positive)
-                except ValueError:
+                except ValueError as e:
+                    logger.debug(f"ValueError: {e}")
+                    logger.warning(f"ValueError: {e}", exc_info=True)
                     score = 0.0
                 else:
                     score = recalls[idx]
