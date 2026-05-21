@@ -47,10 +47,9 @@ else:  # pragma: no cover - optional dependency
     PreTrainedTokenizerBase = Any
 
 try:  # optional PEFT
-    from peft import LoraConfig, PeftModel, get_peft_model
+    from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - optional
     LoraConfig = None
-    PeftModel = None
     get_peft_model = None
 
 
