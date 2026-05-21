@@ -1174,9 +1174,8 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
             nonlocal last_sched
             if grad_clip > 0 and model is not None:
                 try:
-                    import torch
-
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+                    if torch is not None:
+                        torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
                 except Exception as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
