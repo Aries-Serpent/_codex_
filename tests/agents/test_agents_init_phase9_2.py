@@ -417,9 +417,11 @@ class TestAgentsAllExport:
             assert hasattr(agents, export), f"Export {export} not accessible"
         from agents import __all__
         from agents import __dict__ as agents_dict
+        agents_module = sys.modules["agents"]
 
-class TestAgentsPackageDocumentation:
+
         for export in __all__:
+            assert hasattr(agents_module, export), f"Export {export} not accessible"
             assert export in agents_dict, f"Export {export} not accessible"
     def test_package_has_docstring(self) -> None:
         """Test package has docstring."""
@@ -428,27 +430,29 @@ class TestAgentsPackageDocumentation:
         # Assert
         assert agents.__doc__ is not None
         assert len(agents.__doc__) > 0
-
+        from agents import __doc__
         from agents import __doc__ as agents_doc
         """Test docstring mentions agents."""
-        # Arrange & Act
-        assert agents_doc is not None
+        assert __doc__ is not None
+        assert len(__doc__) > 0
         assert len(agents_doc) > 0
         assert "agents" in agents.__doc__.lower()
 
     def test_docstring_mentions_orchestration(self) -> None:
-        """Test docstring mentions orchestration."""
+        from agents import __doc__
         from agents import __doc__ as agents_doc
 
-        # Assert
+        assert __doc__ is not None
+        assert "agents" in __doc__.lower()
         assert "agents" in agents_doc.lower()
 
 
 class TestAgentsImportSafety:
-    """Test import safety."""
+        from agents import __doc__
         from agents import __doc__ as agents_doc
     def test_import_does_not_raise(self) -> None:
-        """Test importing agents does not raise."""
+        assert __doc__ is not None
+        assert "orchestrat" in __doc__.lower()
         assert "orchestrat" in agents_doc.lower()
         assert True
 
