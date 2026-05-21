@@ -12,9 +12,11 @@ __all__ = ["CsvSink", "MetricsSink", "NdjsonSink", "NullSink", "create_sink"]
 
 @runtime_checkable
 class MetricsSink(Protocol):
-    def write(self, row: dict) -> None: ...
+    def write(self, row: dict) -> None:
+        pass
 
-    def close(self) -> None: ...
+    def close(self) -> None:
+        pass
 
 
 class NullSink:

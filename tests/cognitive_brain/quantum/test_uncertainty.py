@@ -163,8 +163,8 @@ def test_uncertainty_principle(optimizer):
     priority = optimizer.calculate_priority("test_uncertain", 2000.0)
 
     # Uncertainty product should be ≥ ℏ/2
-    _min_uncertainty = optimizer.h_bar / 2.0  # Calculated but not asserted directly
-    assert priority.uncertainty >= 0.0  # Always non-negative
+    min_uncertainty = optimizer.h_bar / 2.0
+    assert priority.uncertainty >= min_uncertainty
 
 
 def test_optimize_test_schedule_within_budget(optimizer):

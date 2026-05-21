@@ -32,35 +32,43 @@ logger = logging.getLogger(__name__)
 
 @runtime_checkable
 class TrainingCallback(Protocol):
-    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
+    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
+        pass
 
     def on_epoch_end(
         self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
     def on_step(
         self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
 
 class NoOpCallback:
-    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
+    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
+        pass
 
     def on_epoch_end(
         self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
     def on_step(
         self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None: ...
+    ) -> None:
+        pass
 
 
 @dataclass
@@ -81,7 +89,8 @@ class BackendStrategy(Protocol):
         config: Any,
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
-    ) -> TrainingResult: ...
+    ) -> TrainingResult:
+        pass
 
 
 def _safe_callbacks(callbacks: Iterable[TrainingCallback]) -> list[TrainingCallback]:

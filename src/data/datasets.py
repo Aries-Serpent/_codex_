@@ -33,7 +33,8 @@ class BatchTokenizer(Protocol):
         /,
         *args: Any,
         **kwargs: Any,
-    ) -> dict[str, Any]: ...
+    ) -> dict[str, Any]:
+        pass
 
 
 torch: Any

@@ -84,8 +84,7 @@ class TestDependencyVersioning:
         # Just log, don't enforce
         total = exact_pins + range_pins
         if total > 0:
-            _pin_ratio = exact_pins / total  # noqa: F841
-            # Log but don't fail
+            pass  # Log but don't fail
 
 
 class TestLockFiles:

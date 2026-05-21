@@ -165,11 +165,8 @@ class TestChunkSize:
 
     def test_chunk_directories_exist(self) -> None:
         """Test that chunk directories exist in the repository."""
-        repo_root = Path(__file__).parents[2]  # Go up to repo root
-
         expected_dirs = ["src/codex", "agents", "training", "scripts"]
         for dir_path in expected_dirs:
-            _dir = repo_root / dir_path  # noqa: F841
             # Note: Some dirs may not exist in all environments
             # This is a structural test, not a file existence test
             assert isinstance(dir_path, str)

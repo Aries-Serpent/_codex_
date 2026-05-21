@@ -92,8 +92,6 @@ class TestLivenessProbes:
 
     def test_liveness_probe_basic_success(self, health_check_config):
         """Test basic liveness probe returns healthy."""
-        _liveness_cfg = health_check_config["liveness"]  # noqa: F841
-
         # Simulate liveness check
         result = {
             "status": "alive",
@@ -164,8 +162,6 @@ class TestReadinessProbes:
 
     def test_readiness_probe_basic_success(self, health_check_config):
         """Test basic readiness probe returns ready."""
-        _readiness_cfg = health_check_config["readiness"]  # noqa: F841
-
         result = {
             "ready": True,
             "timestamp": datetime.utcnow().isoformat(),

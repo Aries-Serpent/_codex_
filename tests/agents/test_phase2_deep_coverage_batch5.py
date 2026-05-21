@@ -520,8 +520,6 @@ class TestPhase2_EvolutionStrategies:
         # Full-step position
         x_new = x + dt * v_half
         # Half-step velocity
-        _v_half_new = v_half - 0.5 * dt * x_new  # noqa: F841
-
         assert abs(x_new - 0.1) < 0.01
 
     def test_symplectic_integrator(self):

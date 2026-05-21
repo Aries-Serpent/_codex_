@@ -11,7 +11,7 @@ from tokenizer.fast_tokenizer import FastTokenizerWrapper
 
 @pytest.fixture()
 def trained_tokenizer_json(tmp_path):
-    _tokenizers = pytest.importorskip("tokenizers")
+    pytest.importorskip("tokenizers")
     try:
         from tokenizers import Tokenizer  # type: ignore
         from tokenizers.models import WordLevel  # type: ignore

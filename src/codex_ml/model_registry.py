@@ -131,7 +131,6 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
             adapter_name = load_adapter(adapter_path)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            adapter_name = None
         else:
             set_active = getattr(model, "set_active_adapters", None)
             if callable(set_active) and adapter_name is not None:

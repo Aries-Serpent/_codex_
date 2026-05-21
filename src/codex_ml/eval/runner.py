@@ -646,7 +646,7 @@ def run_evaluation(
                 "step",
                 "timestamp",
             ]
-            _sink = create_sink(
+            create_sink(
                 sink_kind,
                 sink_fp,
                 fieldnames=fieldnames if sink_kind == "csv" else None,

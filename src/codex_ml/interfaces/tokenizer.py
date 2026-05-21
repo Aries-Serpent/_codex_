@@ -251,7 +251,8 @@ class TokenizerProtocol(Protocol):
         padding: bool | str = False,
         truncation: bool | str = False,
         **kwargs: Any,
-    ) -> list[int]: ...
+    ) -> list[int]:
+        pass
 
     def decode(
         self,
@@ -259,17 +260,22 @@ class TokenizerProtocol(Protocol):
         *,
         skip_special_tokens: bool = True,
         **kwargs: Any,
-    ) -> str: ...
+    ) -> str:
+        pass
 
-    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]: ...
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
+        pass
 
-    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]: ...
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
+        pass
 
     @property
-    def vocab_size(self) -> int: ...
+    def vocab_size(self) -> int:
+        pass
 
     @property
-    def pad_token_id(self) -> int | None: ...
+    def pad_token_id(self) -> int | None:
+        pass
 
 
 class TokenizerProtocolGuard(TokenizerProtocol):

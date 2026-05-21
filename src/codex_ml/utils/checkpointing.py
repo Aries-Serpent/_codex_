@@ -86,8 +86,7 @@ try:  # pragma: no cover - optional torch dependency
     import torch
 
     # Verify torch is actually functional (not just a stub)
-    _ = torch.manual_seed
-    _ = torch.get_rng_state()  # ensure get_rng_state is callable (catches stub modules)
+    torch.get_rng_state()  # ensure get_rng_state is callable (catches stub modules)
     TORCH_AVAILABLE = True
 except Exception:  # pragma: no cover - torch missing
     TORCH_AVAILABLE = False
@@ -150,9 +149,11 @@ if TORCH_AVAILABLE:
 
 @runtime_checkable
 class StateDictProvider(Protocol):
-    def state_dict(self) -> Mapping[str, Any]: ...
+    def state_dict(self) -> Mapping[str, Any]:
+        pass
 
-    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any: ...
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        pass
 
 
 @dataclass

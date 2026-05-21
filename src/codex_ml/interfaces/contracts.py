@@ -30,19 +30,25 @@ class TrainingContractError(TypeError):
 class TokenizerContract(Protocol):
     """Minimal tokenizer surface used by training and evaluation."""
 
-    def encode(self, text: str) -> list[int]: ...
+    def encode(self, text: str) -> list[int]:
+        pass
 
-    def decode(self, ids: Sequence[int]) -> str: ...
+    def decode(self, ids: Sequence[int]) -> str:
+        pass
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> Mapping[str, int]: ...
+    def add_special_tokens(self, tokens: Sequence[str]) -> Mapping[str, int]:
+        pass
 
-    def save(self, path: Path) -> None: ...
+    def save(self, path: Path) -> None:
+        pass
 
     @property
-    def vocab_size(self) -> int: ...
+    def vocab_size(self) -> int:
+        pass
 
     @property
-    def name_or_path(self) -> str: ...
+    def name_or_path(self) -> str:
+        pass
 
 
 @dataclass(slots=True)

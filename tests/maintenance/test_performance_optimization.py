@@ -151,7 +151,6 @@ class TestTestCaching:
 
     def test_pytest_cache_configured(self):
         """Verify pytest cache is configured."""
-        _cache_dir = REPO_ROOT / ".pytest_cache"  # noqa: F841
         # Cache directory should be gitignored
         gitignore = REPO_ROOT / ".gitignore"
 
@@ -180,6 +179,4 @@ class TestTestCaching:
 
         # Track heavy import ratio for monitoring (informational only)
         if total_files > 0:
-            _heavy_ratio = files_with_heavy / total_files  # noqa: F841
-            # Heavy imports are acceptable but should be monitored
-            # This test passes but logs the ratio for awareness
+            pass  # Heavy imports are acceptable but should be monitored

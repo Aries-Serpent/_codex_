@@ -149,14 +149,18 @@ def test_batch_generation_speed():
 
     start = time.perf_counter()
     num_batches = 0
+    checksum = 0.0
     for i in range(0, dataset_size, batch_size):
-        _batch_data = dataset[i:i+batch_size]  # noqa: F841
-        _batch_labels = labels[i:i+batch_size]  # noqa: F841
+        batch_data = dataset[i:i+batch_size]
+        batch_labels = labels[i:i+batch_size]
+        # Accumulate checksum to ensure slicing actually happens
+        checksum += batch_data.sum() + batch_labels.sum()
         num_batches += 1
     elapsed = time.perf_counter() - start
 
     batches_per_second = num_batches / elapsed
     assert batches_per_second > 100, f"Batch generation {batches_per_second:.1f} batches/s too slow"
+    assert np.isfinite(checksum), "Checksum should be finite"
 
 
 def test_data_augmentation_performance():
@@ -250,10 +254,12 @@ def test_api_prediction_latency():
 
         start = time.perf_counter()
         output = np.dot(input_data, weights)
-        _softmax = np.exp(output) / np.sum(np.exp(output))  # noqa: F841
+        softmax = np.exp(output) / np.sum(np.exp(output))
         elapsed = time.perf_counter() - start
 
         latencies.append(elapsed)
+        # Verify softmax is valid probability distribution
+        assert softmax.shape == (1, output_dim) and np.isfinite(softmax).all()
 
     avg_latency = np.mean(latencies)
     p95_latency = np.percentile(latencies, 95)
@@ -493,19 +499,13 @@ def test_sparse_computation_efficiency():
     vector = np.random.randn(size).astype(np.float32)
 
     # Dense computation
-    start = time.perf_counter()
     result_dense = np.dot(sparse, vector)
-    _elapsed_dense = time.perf_counter() - start  # noqa: F841
-
     # Sparse computation (using masks)
-    start = time.perf_counter()
     result_sparse = np.zeros(size, dtype=np.float32)
     for i in range(size):
         nonzero_idx = np.nonzero(mask[i, :])[0]
         if len(nonzero_idx) > 0:
             result_sparse[i] = np.dot(sparse[i, nonzero_idx], vector[nonzero_idx])
-    _elapsed_sparse = time.perf_counter() - start  # noqa: F841
-
     # Both should produce same result
     # Note: Increased tolerance to account for accumulated floating-point errors in sparse computation
     np.testing.assert_allclose(result_dense, result_sparse, rtol=1e-4, atol=1e-6)
