@@ -23,15 +23,14 @@ from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from transformers import AutoTokenizer as HF_AutoTokenizer
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - runtime fallback when transformers is not installed
-    HF_AutoTokenizer = HF_PreTrainedTokenizerBase = object  # type: ignore[misc,assignment]
+    HF_PreTrainedTokenizerBase = object  # type: ignore[misc,assignment]
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "AutoTokenizer"):
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
+    AutoTokenizer = cast("type[Any]", transformers.AutoTokenizer)
     PreTrainedTokenizerBase = cast(
         "type[HF_PreTrainedTokenizerBase]",
         transformers.PreTrainedTokenizerBase,
