@@ -1,0 +1,20 @@
+# ⛔ DISABLED 2026-05-21 — Orphan-equivalent workflow
+#
+# maturity-check.yml (ID: 218151123) appeared as "active" in GitHub Actions
+# but has no backing file on the main branch and 0 lifetime runs.
+#
+# Repository maturity is now tracked via the cognitive brain / AAIS scoring
+# infrastructure rather than a standalone workflow.
+#
+# This stub file prevents any future accidental execution while preserving the
+# workflow name in the Actions history for audit and traceability.
+#
+# Reason:  Orphan-equivalent — backing file absent from main; 0 lifetime runs; superseded.
+# Status:  ⛔ Already Disabled (2026-05-21)
+# Session: Workflow Portfolio Triage Phase 2 — orphan-equivalent stub pass
+
+name: Maturity Check
+
+on: {}  # no triggers — workflow is permanently disabled
+
+jobs: {}  # no jobs — satisfies YAML schema while preventing execution

@@ -11,7 +11,7 @@
 # Status:  ⛔ Already Disabled (2026-05-21)
 # Session: Workflow Portfolio Triage — Archive Review pass
 
-name: cache-validation
+name: Cache Validation
 
 on: {}  # no triggers — workflow is permanently disabled
 

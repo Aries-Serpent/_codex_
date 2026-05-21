@@ -1,0 +1,20 @@
+# ⛔ DISABLED 2026-05-21 — Orphan-equivalent workflow
+#
+# benchmarks.yml (ID: 218151122) appeared as "active" in GitHub Actions
+# but has no backing file on the main branch and 0 lifetime runs.
+#
+# Performance benchmarking is covered by performance-regression-detector agent
+# and the data-quality-suite.yml determinism suite.
+#
+# This stub file prevents any future accidental execution while preserving the
+# workflow name in the Actions history for audit and traceability.
+#
+# Reason:  Orphan-equivalent — backing file absent from main; 0 lifetime runs; superseded.
+# Status:  ⛔ Already Disabled (2026-05-21)
+# Session: Workflow Portfolio Triage Phase 2 — orphan-equivalent stub pass
+
+name: Performance Benchmarks
+
+on: {}  # no triggers — workflow is permanently disabled
+
+jobs: {}  # no jobs — satisfies YAML schema while preventing execution

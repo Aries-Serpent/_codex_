@@ -31,15 +31,15 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Autonomous Codebase Management | .github/workflows/autonomous-agent.yml | active | True | 4 | 2026-05-15T18:33:56Z | keep-enabled-active | observed-green | low |
 | Autonomy Phase CI Matrix | .github/workflows/autonomy-phase-ci-matrix.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | Batch CI Failure Triage | .github/workflows/batch-ci-triage.yml | active | True | 18 | 2026-05-15T18:30:38Z | keep-enabled-active | observed-green | low |
-| Performance Benchmarks | .github/workflows/benchmarks.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | unknown |
+| Performance Benchmarks | .github/workflows/benchmarks.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | 🌿 Branch Cleanup | .github/workflows/branch-cleanup.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
 | 🔀 Branch Divergence Monitor — 0D_base_ ↔ main | .github/workflows/branch-divergence-monitor.yml | active | True | 3 | 2026-05-15T12:43:13Z | keep-enabled-active | observed-green | low |
 | 🔀 Branch Rebase Gate | .github/workflows/branch-rebase-gate.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | high |
 | Build Agent Environment Cache | .github/workflows/build-agent-env-cache.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
 | Build & Push Preview Image | .github/workflows/build-preview-image.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
-| .github/workflows/cache-health-monitor.yml | .github/workflows/cache-health-monitor.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
+| Cache Health Monitor | .github/workflows/cache-health-monitor.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | Cache Pruning | .github/workflows/cache-pruning.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
-| .github/workflows/cache-validation.yml | .github/workflows/cache-validation.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
+| Cache Validation | .github/workflows/cache-validation.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | Chat-Ops — @copilot Webhook Trigger | .github/workflows/chatops_copilot_trigger.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
 | CI Checkpoint Validation | .github/workflows/ci-checkpoint-validation.yml | active | True | 2 | 2026-05-15T07:08:39Z | keep-enabled-active | observed-green | low |
 | 🚨 CI Failure Issue Creator | .github/workflows/ci-failure-issue-creator.yml | active | True | 4 | 2026-05-15T12:50:54Z | keep-enabled-active | observed-failures | medium |
@@ -63,7 +63,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | 🤖 Agent Check-In — Q&A Bridge (Discussion #3756) | .github/workflows/copilot-agent-checkin.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-wec-critical | observed-green | medium |
 | 🔄 Auto-Post @copilot review After Agent Session | .github/workflows/copilot-agent-session-done.yml | active | True | 10 | 2026-05-15T07:27:34Z | keep-enabled-active | approval-gated-or-mixed | high |
 | Agent Vars Bootstrap | .github/workflows/copilot-agent-vars-bootstrap.yml | active | True | 5 | 2026-05-15T16:55:44Z | keep-enabled-active | approval-gated-or-mixed | medium |
-| Copilot Automation Suite | .github/workflows/copilot-automation.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | unknown |
+| Copilot Automation Suite | .github/workflows/copilot-automation.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | Copilot Evolution & Review (Unified) | .github/workflows/copilot-evolution-suite.yml | active | True | 10 | 2026-05-15T16:41:46Z | keep-enabled-active | observed-green | high |
 | Copilot Issue Triage | .github/workflows/copilot-issue-triage.yml | active | True | 1 | 2026-05-15T03:30:38Z | keep-enabled-active | observed-failures | low |
 | Copilot Iterative Self-Healing Auto-Poster | .github/workflows/copilot-iterative-self-healing.yml | disabled_manually | True | 55 | 2026-05-15T02:16:56Z | already-disabled | disabled | medium |
@@ -102,7 +102,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | 🔍 Issue Resolution Gate | .github/workflows/issue-resolution-gate.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
 | Iterative Self-Healing CI | .github/workflows/iterative-self-healing-ci.yml | active | True | 413 | 2026-05-15T18:36:26Z | keep-enabled-active | approval-gated-or-mixed | high |
 | PR Labeler | .github/workflows/labeler.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
-| Maturity Check | .github/workflows/maturity-check.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | unknown |
+| Maturity Check | .github/workflows/maturity-check.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
 | MCP Health & Metrics Gate | .github/workflows/mcp-health.yml | active | True | 1 | 2026-05-15T05:22:19Z | keep-enabled-active | observed-green | low |
 | Model Drift Detection & Auto-Retrain | .github/workflows/model-drift-retrain.yml | active | True | 1 | 2026-05-15T03:12:04Z | keep-enabled-active | observed-green | low |
 | mypy Baseline (Type-Check Anti-Regression) | .github/workflows/mypy-baseline.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |

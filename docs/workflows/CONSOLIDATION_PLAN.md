@@ -272,9 +272,83 @@ jobs:
 
 ## Phase 2 Consolidation Targets
 
-| Cluster | Merge Path | Priority | Est. Savings |
-|---|---|---|---|
-| Discussion poster pair | `post-accountability` + `post-ci-status` → `post-to-discussions.yml` | 🟡 Medium | −1 workflow |
-| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow |
-| Validation cluster | `optimized-ci.yml` + `pre-flight-validation.yml` + `mypy-baseline.yml` → `unified-validation.yml` | 🟡 Medium | −2 workflows; see S174 P0-2 |
-| Orphan stub creation | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | 🟢 Quick | 3 stubs |
+| Cluster | Merge Path | Priority | Est. Savings | Status |
+|---|---|---|---|---|
+| Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | 🟢 Quick | 3 stubs | ✅ Done (2026-05-21) |
+| Discussion poster pair | `post-accountability` + `post-ci-status` → `post-to-discussions.yml` | 🟡 Medium | −1 workflow | 🔲 Next session |
+| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow | 🔲 Next session |
+| Validation cluster | `optimized-ci.yml` + `pre-flight-validation.yml` + `mypy-baseline.yml` → `unified-validation.yml` | 🟡 Medium | −2 workflows; see S174 P0-2 | 🔲 Next session |
+
+---
+
+## Investigation Report: Workflow Portfolio Triage (Phase 1-2)
+
+### Summary Table
+
+| Aspect | Finding |
+|---|---|
+| **Repository** | Aries-Serpent/_codex_ |
+| **Branch** | copilot/review-and-assess-workflows |
+| **Scope** | 41 Archive Review + 3 Orphan + 3 Orphan-Equivalent = 47 workflows evaluated |
+| **Root Cause** | 47 workflows in the portfolio required explicit disposition; 6 were files absent from main (orphans); 2 were stale active files; 39 were correctly active. |
+| **Solution Priority** | FIX — stub creation + archival + documentation |
+| **Estimated Effort** | Small |
+| **Risk Level** | Low |
+
+### Phase 1 Evidence (Completed)
+
+#### Files Inspected
+
+| Category | File | Purpose |
+|---|---|---|
+| Portfolio table | `docs/reporting/workflow_portfolio_7d_table.md` | Canonical workflow inventory |
+| Consolidation plan | `docs/workflows/CONSOLIDATION_PLAN.md` | Analysis document |
+| Orphan stubs (created) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` | Disable orphans |
+| Orphan-equiv stubs (created) | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | Disable orphan-equivalents |
+| Archived | `self-healing.yml`, `test-analytics-failure-sim.yml` | Archive dispatch shim + simulator |
+| Archive meta files | `*.meta` in `.github/workflow-archive/disabled/` | Audit trail |
+
+### Phase 2 Solution Scoring
+
+| Solution | Impact | Confidence | Momentum | Energy | Risk | Friction | Score | Rank |
+|---|---|---|---|---|---|---|---|---|
+| FIX: Stub orphans | 0.9 | 0.99 | 0.9 | 5 | 0.0 | 0.1 | 0.151 | 1 |
+| FIX: Archive stale | 0.8 | 0.95 | 0.8 | 10 | 0.1 | 0.1 | 0.055 | 2 |
+| FIX: Phase 2 orphan-equiv stubs | 0.7 | 0.99 | 0.9 | 5 | 0.0 | 0.1 | 0.118 | 1= |
+| MIGRATE: Full validation cluster merge | 0.7 | 0.7 | 0.5 | 80 | 0.3 | 0.4 | 0.004 | 3 |
+
+**Selected Solutions (Phase 1-2):** All FIX actions — highest scores, lowest energy.
+
+### Phase 3 Verification & Completion
+
+#### Success Criteria Met
+
+- [x] All 6 orphan/orphan-equivalent workflows resolved with stub files
+- [x] 2 stale dispatch-shim/simulator workflows archived with meta files
+- [x] Full 41-workflow decision matrix documented
+- [x] Portfolio table updated (8 rows: 3+3 stubs, 2 archived)
+- [x] Phase 2 consolidation targets listed with status
+- [x] No active operational workflows modified
+
+#### Final Portfolio State
+
+| Category | Count |
+|---|---|
+| ✅ Active — Keep | 69 |
+| ⛔ Already Disabled (pre-existing) | 26 |
+| ⛔ Orphan stubs created (Phase 1) | 3 |
+| ⛔ Orphan-equivalent stubs created (Phase 2) | 3 |
+| 📦 Archived (Phase 1) | 2 |
+| 🔍 Dynamic/GitHub-managed | 7 |
+| **Total** | **110** |
+
+> Note: Total exceeds the original 99 count because stub creation adds new files to the portfolio.
+> The 8 newly stubbed/archived workflows reduce the "active" risk pool from 99 to 91 effective active workflows.
+
+#### Archive-Review Backlog
+
+- **Before this session:** 41 archive-review candidates
+- **After Phase 1:** 36 (5 resolved)
+- **After Phase 2:** 33 (3 more resolved via orphan-equivalent stubs)
+- **Remaining target:** Phase 3 consolidations (discussion poster pair, SAST merge, validation cluster)
+
