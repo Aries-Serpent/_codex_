@@ -25,11 +25,10 @@ logger = logging.getLogger(__name__)
 from collections.abc import Callable  # noqa: E402
 
 try:
-    import torch
     import torch.nn as nn
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    torch, nn = None, None  # type: ignore
+    nn = None  # type: ignore[assignment]
 _REGISTRY: dict[str, Callable] = {}
 
 

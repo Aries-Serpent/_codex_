@@ -256,7 +256,6 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
 
 
 def verify_bundle(bundle_path: Path) -> dict:
-    import json
     import tarfile
 
     with tarfile.open(bundle_path.as_posix(), "r:gz") as tar:

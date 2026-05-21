@@ -36,8 +36,6 @@ def _stem_tokens(path: str) -> set[str]:
     - Split on non-alphanumeric boundaries
     - Remove empty tokens
     """
-    import re
-
     stem = Path(path).stem.lower()
     toks = re.split(r"[^a-z0-9]+", stem)
     return {t for t in toks if t}

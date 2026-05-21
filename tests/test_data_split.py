@@ -8,17 +8,13 @@ Ensures:
 - Complete coverage of all indices
 """
 
+import importlib.util
+
 import pytest
 
 from codex_ml.data.splitting import split_indices
 
-try:
-    import numpy as np
-
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
-    np = None
+NUMPY_AVAILABLE = importlib.util.find_spec("numpy") is not None
 
 
 class TestDeterministicSplits:
@@ -188,8 +184,7 @@ class TestWithNumPy:
 
     def test_uses_numpy_rng(self, monkeypatch):
         """Verify NumPy backend is actually used."""
-        pytest.importorskip("numpy")
-        import numpy as np
+        np = pytest.importorskip("numpy")
 
         shuffle_calls = []
         original_default_rng = np.random.default_rng

@@ -696,8 +696,6 @@ def feature_health(session: nox.Session) -> None:
 
         # Parse JSON to check for critical issues
         try:
-            import json
-
             with open(json_report_path) as f:
                 report_data = json.load(f)
 

@@ -14,7 +14,7 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import assume, given, settings
+    from hypothesis import given
     from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
@@ -70,7 +70,7 @@ except ImportError:
 class TestConfigKeyProperties:
     """Property-based tests for configuration key handling."""
 
-    @given(st.text(min_size=1, max_size=50, alphabet="abcdefghijklmnopqrstuvwxyz_"))
+    @given(st.text(min_size=1, max_size=50, alphabet="abcdefghijklmnopqrstuvwxyz_"))  # pragma: allowlist secret
     def test_key_normalization_idempotent(self, key: str) -> None:
         """Key normalization is idempotent."""
         def normalize_key(k: str) -> str:
