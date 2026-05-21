@@ -1106,10 +1106,10 @@ if __name__ == "__main__":
 
 def _codex_autodevice(cli_device: str | None = None) -> str:
     try:
-        import torch
-
         if cli_device:
             return cli_device
+        if torch is None:
+            return "cpu"
         return "cuda" if torch.cuda.is_available() else "cpu"
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
