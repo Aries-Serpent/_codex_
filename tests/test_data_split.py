@@ -184,8 +184,7 @@ class TestWithNumPy:
 
     def test_uses_numpy_rng(self, monkeypatch):
         """Verify NumPy backend is actually used."""
-        pytest.importorskip("numpy")
-        import numpy as np
+        np = pytest.importorskip("numpy")
 
         shuffle_calls = []
         original_default_rng = np.random.default_rng

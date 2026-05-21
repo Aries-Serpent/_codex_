@@ -423,11 +423,9 @@ if typer is not None:
         typer.echo(getattr(codex_ml, "__version__", "unknown"))
 
     @app.command()
-    def info() -> None:
-        """Show environment and configuration info."""
-        import importlib
-
-        from codex_ml.utils.checkpoint_core import capture_environment_summary
+def info() -> None:
+    """Show environment and configuration info."""
+    from codex_ml.utils.checkpoint_core import capture_environment_summary
 
         info = capture_environment_summary()
         info["codex_ml_version"] = getattr(

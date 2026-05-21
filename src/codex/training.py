@@ -1106,10 +1106,10 @@ if __name__ == "__main__":
 
 def _codex_autodevice(cli_device: str | None = None) -> str:
     try:
-        import torch
-
         if cli_device:
             return cli_device
+        if torch is None:
+            return "cpu"
         return "cuda" if torch.cuda.is_available() else "cpu"
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
@@ -1172,11 +1172,9 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
 
         def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
             nonlocal last_sched
-            if grad_clip > 0 and model is not None:
+            if grad_clip > 0 and model is not None and clip_grad_norm_ is not None:
                 try:
-                    import torch
-
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+                    clip_grad_norm_(model.parameters(), grad_clip)
                 except Exception as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
@@ -1230,9 +1228,7 @@ def _functional_patch_argparse(ap: argparse.ArgumentParser) -> None:
 
 # --- Codex: grad-accum + AMP helpers (offline safe) ---
 def _codex_amp_supported() -> bool:
-    import torch
-
-    return torch.cuda.is_available()
+    return bool(torch is not None and torch.cuda.is_available())
 
 
 def codex_train_step(
@@ -1245,8 +1241,6 @@ def codex_train_step(
     precision="fp32",
     grad_clip=None,
 ):
-    import torch
-
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
