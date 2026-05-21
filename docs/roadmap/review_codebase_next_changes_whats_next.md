@@ -1,5 +1,28 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — workflow-triage Phase 4 trigger remediation · 2026-05-21T03:10Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer note acknowledged: ~11/60 minutes used; reserve final 5 minutes for wrap-up |
+| Objective source | ✅ Issue #4524 comment `4504378838` loaded and triaged |
+| Critical trigger audit | ✅ Completed for `cleanup-stale-pr-comments`, `ci-failure-issue-creator`, `comment-review-gate`, `proactive-ci-monitor` |
+| Trigger remediation applied | ✅ `proactive-ci-monitor.yml` schedule reduced from `*/30 * * * *` to `0 */6 * * *` |
+| Documentation updates | ✅ Added `docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md`; updated `docs/workflows/CONSOLIDATION_PLAN.md` with Phase 4 section |
+| Tracking freshness maintenance | ✅ `auto_fix_common_issues.py` + `doc_metrics_sync.py --fix` + `sync_tracked_files.py --fix` executed |
+| Changelog/accountability updates | 🔄 Updating in this pass |
+| Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
+
+### Follow-up prompt (continuation)
+
+```text
+@copilot continue Phase 4/4 from current head on copilot/review-and-assess-workflows:
+- monitor post-change CI behavior for proactive-ci-monitor cadence reduction
+- expand trigger-audit coverage from critical set to remaining scheduled workflows
+- apply only low-risk schedule/path-scope remediations backed by MCP run evidence
+- keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs in sync
+```
+
 ## Session Status (Current — PR #4510 speaker-timeout follow-up + approved-workflow monitoring · 2026-05-19T22:35Z)
 
 | Item | Status |

@@ -37,7 +37,10 @@ flowchart TD
     AIT1 --> AIT2["AI findings follow-up\n✅ test docstring dedupe\n✅ stronger profile-membership and aggressive-mode assertions"]
     AIT2 --> AIT3["PR #4510 speaker-timeout follow-up\n✅ make AudioTranscriberUI speaker naming timeout configurable via constructor\n✅ move workflow discovery assertions to public process_path() with stubbed process_file helper\n✅ replace anonymous pyannote type() fixture with named fake segment class"]
     AIT3 --> AIT4["Approved-workflow monitoring on HEAD f0185d1e\n🔄 validation/security/QA fan-out in progress after approval\n✅ control workflows in action_required\n✅ startup_failure runs (rust/data-quality/progressive) each show 0 jobs via MCP"]
-    AIT4 --> Y
+    AIT4 --> AIT5["S_phase4 — workflow trigger remediation continuation\n✅ load Issue #4524 objective comment 4504378838\n✅ audit critical trigger set"]
+    AIT5 --> AIT6["Phase 4 execution\n✅ proactive-ci-monitor cron reduced 30m→6h\n✅ trigger audit report + consolidation note updated"]
+    AIT6 --> AIT7["Current pass\n🔄 update living docs + changelog + accountability\n⏳ reserve final 5 min for wrap-up + follow-up prompt"]
+    AIT7 --> Y
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -77,6 +80,9 @@ flowchart TD
     style AIT2 fill:#1b4332,color:#fff
     style AIT3 fill:#1b4332,color:#fff
     style AIT4 fill:#457b9d,color:#fff
+    style AIT5 fill:#1b4332,color:#fff
+    style AIT6 fill:#1b4332,color:#fff
+    style AIT7 fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000
 
     style AJ fill:#457b9d,color:#fff

@@ -1,7 +1,7 @@
 name: "🔍 Proactive CI Monitor"
 
 # ─────────────────────────────────────────────────────────────────────────────
-# DEFAULT BEHAVIOUR  →  Runs automatically every 30 minutes (no action needed).
+# DEFAULT BEHAVIOUR  →  Runs automatically every 6 hours (reduced to cut noise/cost).
 #
 # MANUAL TRIGGER — two equally valid methods:
 #
@@ -23,9 +23,9 @@ name: "🔍 Proactive CI Monitor"
 # ─────────────────────────────────────────────────────────────────────────────
 
 on:
-  # ── DEFAULT: scheduled every 30 minutes ──────────────────────────────────
+  # ── DEFAULT: scheduled every 6 hours (reduced from 30 minutes in Phase 4) ──
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "0 */6 * * *"
 
   # ── MANUAL: "Run workflow" button in Actions UI ───────────────────────────
   workflow_dispatch:

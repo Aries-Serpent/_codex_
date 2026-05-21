@@ -410,3 +410,8 @@ trigger definition.
 - **After Phase 3:** 27 (6 more resolved: 1 consolidated + 5 reclassified active-keep)
 - **Remaining:** 27 archive-review candidates — lower priority; deferred to future session
 
+### Phase 4 Trigger Remediation (Issue #4524)
+
+- Added Phase 4 audit artifact: `.codex/audit_reports/workflow_trigger_audit_2026-05-21.md`
+- Verified that previously flagged workflows (`cleanup-stale-pr-comments`, `ci-failure-issue-creator`, `comment-review-gate`) are already scoped and not broad `push: main` spam triggers.
+- Reduced `proactive-ci-monitor.yml` schedule frequency from every 30 minutes to every 6 hours to reduce noisy recurring executions.
