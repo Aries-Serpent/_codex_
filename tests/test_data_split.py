@@ -41,6 +41,9 @@ class TestDeterministicSplits:
         val_set = set(val1)
         test_set = set(test1)
 
+        assert len(train1) == len(train_set), "train indices must be unique"
+        assert len(val1) == len(val_set), "validation indices must be unique"
+        assert len(test1) == len(test_set), "test indices must be unique"
         assert len(train_set & val_set) == 0, "train and validation sets must not overlap"
         assert len(train_set & test_set) == 0, "train and test sets must not overlap"
         assert len(val_set & test_set) == 0, "validation and test sets must not overlap"
