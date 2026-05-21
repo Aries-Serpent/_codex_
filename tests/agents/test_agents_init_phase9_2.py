@@ -25,7 +25,7 @@ class TestAgentsPackageVersion:
     """Test agents package version information."""
 
     def test_version_import(self) -> None:
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
         # Arrange & Act
 
         assert agents.__version__ is not None
@@ -34,7 +34,7 @@ class TestAgentsPackageVersion:
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
 
         # Assert
         assert agents.__version__ == "0.0.0"
@@ -42,7 +42,7 @@ class TestAgentsPackageVersion:
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
         # Arrange & Act
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
         # Assert
         assert "__version__" in agents.__all__
         assert "__version__" in agents.__all__
@@ -390,7 +390,7 @@ class TestAgentsAllExport:
         """Test __all__ is a list."""
         # Arrange & Act
 
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
         assert isinstance(agents.__all__, list)
 
         assert isinstance(agents.__all__, list)
@@ -398,7 +398,7 @@ class TestAgentsAllExport:
         # Arrange & Act
 
         # Assert
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
 
     def test_all_items_are_strings(self) -> None:
         assert len(agents.__all__) == len(set(agents.__all__))
@@ -406,7 +406,7 @@ class TestAgentsAllExport:
 
         # Assert
         for item in agents.__all__:
-        import agents
+        pass  # removed redundant `import agents` (top-level import used)
 
     def test_all_exports_accessible(self) -> None:
         for item in agents.__all__:
