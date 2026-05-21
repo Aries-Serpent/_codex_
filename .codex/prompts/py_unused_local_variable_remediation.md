@@ -416,15 +416,15 @@ actual_next = random.random()
 - The comment suggests they're intentionally not used (`# noqa: F841`)
 - But if truly unnecessary, unpack only what's needed OR assign to `_` placeholder
 
-**Action — UNPACK ONLY USED:**
+**Action — CALL FOR SIDE EFFECTS ONLY:**
 ```python
-_ = load_checkpoint(_ck, restore_rng=True)  # Discards both return values
+load_checkpoint(_ck, restore_rng=True)  # Call for side effects only
 actual_next = random.random()
 ```
 
-Or:
+Or, if callers must handle the return value explicitly (e.g., to signal intent):
 ```python
-load_checkpoint(_ck, restore_rng=True)  # Call for side effects only
+_ = load_checkpoint(_ck, restore_rng=True)  # Return value intentionally unused
 actual_next = random.random()
 ```
 
@@ -600,7 +600,7 @@ except Exception as e:
 **Action — SIMPLIFY:**
 ```python
 "validation_item_1": validation_items[0] if validation_items else "Verify deliverables complete",
-"validation_item_2": validation_items[1] if len(validation_items) > 1 else "Validate approach",
+"validation_item_2": validation_items[1] if validation_items and len(validation_items) > 1 else "Validate approach",
 ```
 
 ---

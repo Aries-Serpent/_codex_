@@ -550,6 +550,11 @@ def run_codex_pipeline(
     The function performs lightweight preprocessing and evaluation of the
     provided data.  It is intentionally CPU only and avoids network access so
     that smoke tests and offline CI runs complete quickly.
+
+    Note:
+        Synthetic augmentation uses Python's ``random`` module (optionally
+        seeded) for deterministic, non-cryptographic sampling/shuffling. It
+        must not be used for security-sensitive randomness.
     """
 
     docs = _clean_corpus(corpus)
