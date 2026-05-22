@@ -4,17 +4,9 @@ Test Callbacks
 Test module for callbacks.
 """
 
-from typing import Any, NoReturn
+from typing import Any
 
 import pytest
-
-
-def _fail_test(message: str) -> NoReturn:
-    pytest.fail(message)
-
-
-def _skip_test(message: str) -> NoReturn:
-    pytest.skip(message)
 
 
 def _make_early_stopping(patience: int, min_delta: float, mode: str):
@@ -33,8 +25,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
         from codex_ml.training.callbacks import EarlyStopping
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
-        _skip_test(f"EarlyStopping import failed: {e}")
-        return None
+        raise pytest.skip.Exception(f"EarlyStopping import failed: {e}") from e
     else:
         try:
             # Prefer constructor with mode if available.
@@ -44,21 +35,22 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
             try:
                 es = EarlyStopping(patience=patience, min_delta=min_delta)
             except Exception as e:
-                _fail_test(f"Failed to instantiate EarlyStopping without 'mode': {e}")
-                return None
+                raise pytest.fail.Exception(
+                    f"Failed to instantiate EarlyStopping without 'mode': {e}"
+                ) from e
 
             # Try to set the mode attribute in a backward-compatible manner.
             try:
                 es.mode = mode
             except Exception:
                 # If we can't set mode, skip the tests because we can't ensure expected behavior.
-                _skip_test("EarlyStopping does not accept or expose 'mode' parameter/attribute")
-                return None
+                raise pytest.skip.Exception(
+                    "EarlyStopping does not accept or expose 'mode' parameter/attribute"
+                )
 
             return es
         except Exception as e:
-            _fail_test(f"Unexpected error constructing EarlyStopping: {e}")
-            return None
+            raise pytest.fail.Exception(f"Unexpected error constructing EarlyStopping: {e}") from e
 
 
 def _assert_step_bool(es: Any, value: float, expected: bool):
@@ -69,12 +61,14 @@ def _assert_step_bool(es: Any, value: float, expected: bool):
     try:
         result = es.step(value)
     except Exception as e:
-        _fail_test(f"Calling EarlyStopping.step({value}) raised an exception: {e}")
-        return
+        raise pytest.fail.Exception(
+            f"Calling EarlyStopping.step({value}) raised an exception: {e}"
+        ) from e
 
     if not isinstance(result, bool):
-        _fail_test(f"EarlyStopping.step({value}) returned non-bool value: {result!r}")
-        return
+        raise pytest.fail.Exception(
+            f"EarlyStopping.step({value}) returned non-bool value: {result!r}"
+        )
 
     assert result is expected
 
