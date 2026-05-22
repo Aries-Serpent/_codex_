@@ -33,7 +33,7 @@ Source documents used:
 | agents/physics_orchestrator.py | result (demo assignment) | REMOVE | Remove unused assignment | done | Source inspection (line 641) | Now side-effect call only. |
 | scripts/cognitive/analyze_token_converter.py | results (main return capture) | REMOVE | Remove unused assignment | done | Source inspection (line 564) | Now calls main directly. |
 | scripts/deep_research_task_process.py | INGESTOR_PY | REMOVE | Remove unused path constant | done | Prior branch commit 1820a382 (session context) | Previously removed on this branch. |
-| scripts/deep_research_task_process.py | Secondary unused path constant | REMOVE | Remove unused path constant | done | Source inspection + prior remediation context | No extra unused path constants from prior note remain. |
+| scripts/deep_research_task_process.py | BUILD_WORKFLOW_DISABLED (historical scope item) | REMOVE | Remove unused path constant | done | Source inspection + prior remediation context | Historical second deep_research path-item from prior remediation scope. |
 | src/codex_ml/checkpointing/compat.py | _warned | KEEP | Keep intentional deprecation state tracker | intentional-kept | Source inspection (line 14,47-55) | State flag is functionally used. |
 | UNLISTED_IN_SOURCE_DOC | UNLISTED_FINDING_29 | UNKNOWN | Remediate per master plan category bucket | blocked | Not individually enumerated in provided remediation sources | Source files provide category totals but not full per-finding file/variable mapping. |
 | UNLISTED_IN_SOURCE_DOC | UNLISTED_FINDING_30 | UNKNOWN | Remediate per master plan category bucket | blocked | Not individually enumerated in provided remediation sources | Source files provide category totals but not full per-finding file/variable mapping. |
@@ -102,7 +102,7 @@ Source documents used:
 | agents/physics_orchestrator.py | result (demo assignment) | REMOVE | Remove unused assignment | done | Source inspection (line 641) | Now side-effect call only. |
 | scripts/cognitive/analyze_token_converter.py | results (main return capture) | REMOVE | Remove unused assignment | done | Source inspection (line 564) | Now calls main directly. |
 | scripts/deep_research_task_process.py | INGESTOR_PY | REMOVE | Remove unused path constant | done | Prior branch commit 1820a382 (session context) | Previously removed on this branch. |
-| scripts/deep_research_task_process.py | Secondary unused path constant | REMOVE | Remove unused path constant | done | Source inspection + prior remediation context | No extra unused path constants from prior note remain. |
+| scripts/deep_research_task_process.py | BUILD_WORKFLOW_DISABLED (historical scope item) | REMOVE | Remove unused path constant | done | Source inspection + prior remediation context | Historical second deep_research path-item from prior remediation scope. |
 
 ## 3) Remaining findings
 | file | variable | category | planned_action | current_status | evidence | notes |
