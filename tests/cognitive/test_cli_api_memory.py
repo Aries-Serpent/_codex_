@@ -125,6 +125,47 @@ class TestSQLiteMemoryRetrieve:
         count = srv._db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
         assert count == 0
 
+    def test_search_executes_under_db_lock(self, server_app, monkeypatch):
+        """search() must acquire the shared DB lock before querying."""
+        srv, _key, _db_path = server_app
+
+        class _RecordingLock:
+            entered = False
+            exited = False
+
+            def __enter__(self):
+                self.entered = True
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                self.exited = True
+                return False
+
+        class _FakeDB:
+            params = None
+
+            def execute(self, _sql, params):
+                self.params = params
+
+                class _Cursor:
+                    @staticmethod
+                    def fetchall():
+                        return [{"key": "k1", "value": '{"value": 1}'}]
+
+                return _Cursor()
+
+        lock = _RecordingLock()
+        fake_db = _FakeDB()
+        monkeypatch.setattr(srv, "_db_lock", lock)
+        monkeypatch.setattr(srv, "_db", fake_db)
+
+        result = srv.SQLiteMemory().search({"text": "value"}, limit=3)
+
+        assert lock.entered is True
+        assert lock.exited is True
+        assert fake_db.params == ("%value%", 3)
+        assert result == [("k1", {"value": 1})]
+
 
 # ---------------------------------------------------------------------------
 # POST /api/memory/consolidate endpoint tests

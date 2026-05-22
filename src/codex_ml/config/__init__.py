@@ -851,7 +851,6 @@ def get_config(
         )
 
     try:
-        import hydra
         from hydra import compose, initialize_config_dir
     except ImportError as e:
         logger.debug(f"ImportError: {e}")

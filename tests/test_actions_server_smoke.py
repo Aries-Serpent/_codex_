@@ -10,6 +10,8 @@ import subprocess
 import time
 import urllib.request
 
+import pytest
+
 
 def _get(url: str):
     with urllib.request.urlopen(url, timeout=5) as r:
@@ -28,3 +30,17 @@ def test_server_health_and_branches_smoke(tmp_path):
         assert isinstance(branches, list)
     finally:
         p.kill()
+
+
+def test_assert_safe_github_url_requires_string():
+    from tools import actions_server
+
+    with pytest.raises(ValueError, match="URL must be a string"):
+        actions_server._assert_safe_github_url(None)  # type: ignore[arg-type]
+
+
+def test_gh_post_rejects_spoofed_github_url():
+    from tools import actions_server
+
+    with pytest.raises(ValueError, match="must target api.github.com"):
+        actions_server.gh_post("https://api.github.com@evil.com/repos/owner/repo", {})

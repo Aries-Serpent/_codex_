@@ -265,9 +265,7 @@ def _scan_repo(root: Path) -> tuple[Snapshot, dict[str, int]]:
     rho_dev_proxy = ((src_loc / modules) * test_density) if modules else 0.0
 
     # test areas from file names (very light)
-    from collections import Counter
-
-    cats = Counter()
+    cats = collections.Counter()
     for f in test_files:
         name = f.name.lower()
         if "api" in name:

@@ -160,11 +160,12 @@ def _assert_safe_github_url(url: str) -> str:
     CodeQL's same-variable taint flow into ``requests.get`` (CodeQL alerts
     py/partial-ssrf #10639, #10640).
     """
+    if not isinstance(url, str):
+        raise ValueError(f"Refusing to fetch URL {url!r}: URL must be a string")
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
     if (
-        not isinstance(url, str)
-        or parsed.scheme != "https"
+        parsed.scheme != "https"
         or host not in {"api.github.com", "raw.githubusercontent.com"}
     ):
         raise ValueError(
@@ -244,15 +245,13 @@ def code_search(owner: str, repo: str, q: str, ref: str = "main"):
 def gh_post(url: str, payload: dict[str, Any]) -> Any:
     """POST *payload* to the GitHub API and return the parsed JSON response.
 
-    The *url* must start with the expected :data:`BASE` constant to prevent
-    SSRF-class attacks where a crafted caller could redirect the POST to an
-    arbitrary host.
+    Validate *url* with :func:`_assert_safe_github_url` to enforce the same
+    SSRF protections used by :func:`gh_get`.
     """
-    if not url.startswith(BASE):
-        raise ValueError(f"gh_post: URL must start with {BASE!r}, got {url!r}")
+    safe_url = _assert_safe_github_url(url)
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = _urllib_request.Request(
-        url,
+        safe_url,
         data=data,
         headers={**_auth_headers(), "Content-Type": "application/json"},
         method="POST",

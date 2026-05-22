@@ -28,7 +28,7 @@ import pathlib
 import re
 import textwrap
 import types
-from typing import Optional
+from typing import NoReturn, Optional
 
 import pytest
 
@@ -51,6 +51,10 @@ _AST_METRICS = {"files": {}}
 # Key sets (selection & timestamp)
 _SELECT_KEYS = {"select", "columns", "cols", "select_cols"}
 _TS_KEYS = {"timestamp", "order_by", "ts", "ts_col", "sort_key"}
+
+def _xfail(message: str) -> NoReturn:
+    pytest.xfail(message)
+
 
 # Fallback static candidate paths (legacy support)
 _FALLBACK_CANDIDATES = [
@@ -164,8 +168,8 @@ def _load_build_query():
             last_err = e
             continue
     if last_err:
-        pytest.xfail(f"build_query not importable; last error: {last_err}")
-    pytest.xfail("build_query not importable from any candidate")
+        _xfail(f"build_query not importable; last error: {last_err}")
+    _xfail("build_query not importable from any candidate")
 
 
 # --------------------------------------------------------------------------------------
