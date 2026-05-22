@@ -1,5 +1,29 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — unused-global remediation continuation · 2026-05-22T00:30Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 Maintainer note acknowledged: ~20/60 minutes used; reserve final 5 minutes for wrap-up |
+| Phase 1 remediation | ✅ `services/api/main.py` global rate-limit state migrated to `app.state` |
+| Phase 2 remediation | ✅ import-guard/logging cleanup applied in `src/codex_ml/tracking/mlflow_utils.py`, `agents/developer_orchestrator.py`, `agents/physics_integration.py` |
+| Phase 3 remediation | ✅ removed targeted unused assignment captures in `agents/mental_mapping.py`, `agents/physics_orchestrator.py`, `src/cognitive_brain/experiments/exp3_validation.py`, `scripts/cognitive/analyze_token_converter.py`, `scripts/deep_research_task_process.py`; test marker intent clarified in `tests/test_sentencepiece_adapter.py` |
+| Validation snapshot | ✅ `ruff` on changed files; ✅ targeted `pytest` set for API rate-limit/mlflow/orchestrator/sentencepiece paths |
+| Parallel validation | ✅ run completed; informational comments reviewed; one actionable cleanup applied (`INGESTOR_PY` removal) |
+| Remaining scope caveat | ⚠️ Full “70 findings” closure not fully verifiable in-session due restricted `.github/agents/**` access and unavailable local CodeQL CLI |
+| Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
+| Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
+
+### Follow-up prompt (continuation)
+
+```text
+@copilot continue unused-global remediation from current branch:
+- re-run repository-wide unused-global detection with the same rule source used by CI/CodeQL
+- finish any remaining findings outside already-remediated files, including guarded handling for intentional KEEP cases
+- if `.github/agents/**` findings are still required, request maintainer guidance for allowed remediation path
+- run final validation pass and keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs synchronized
+```
+
 ## Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)
 
 | Item | Status |
