@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4536 approval-monitor docs/accountability refresh — 2026-05-22T02:34Z)
+- Refreshed PR #4536 living docs after maintainer-approved workflow dispatch:
+  - Updated `docs/roadmap/review_codebase_next_changes_whats_next.md` current-session status to reflect ~24/60 timebox usage, active approved-workflow queue state on head `a9e47ed`, and continuation prompt focused on latest non-superseded runs.
+  - Updated `docs/roadmap/review_codebase_next_changes_session_diagram.mmd` with an approval-monitor checkpoint node and preserved final 5-minute wrap-up reserve guidance.
+  - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current approval-monitor session status and continuation priorities.
+
 ### Fixed (PR #4536 security-scanning-suite review concerns — 2026-05-22T02:20Z)
 - Addressed all 3 review-thread concerns for `security-scanning-suite` and session living docs:
   - `.github/workflows/security-scanning-suite.yml`: replaced grep-based detect-secrets count with JSON parsing of `.secrets.baseline.results` for accurate totals.

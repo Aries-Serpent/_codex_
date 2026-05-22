@@ -44,6 +44,8 @@ flowchart TD
     AIT8 --> AIT9["Timebox checkpoint\n~14/60 min used; preserve final 5 min for wrap-up prompt"]
     AIT9 --> AIT10["PR #4536 review-thread remediation\n✅ fix secret count parsing in security-scanning-suite\n✅ add pipefail to SBOM generation tee pipeline\n✅ add allowlist pragma for workflow false-positive secret keyword"]
     AIT10 --> AIT11["Current pass\n🔄 update whats_next + session_diagram\n🔄 update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT\n✅ append PDA entry today + keep 5-minute wrap-up reserve"]
+    AIT11 --> AIT12["Approval-monitor checkpoint\n✅ maintainer approved all workflows\n🔄 monitor latest HEAD a9e47ed queue (in-progress + queued; skip superseded cancelled runs)\n⏳ timebox now ~24/60 used; keep final 5-minute reserve"]
+    AIT12 --> Y
     AIT11 --> Y
     AIT9 --> Y
 
@@ -92,6 +94,7 @@ flowchart TD
     style AIT9 fill:#f4a261,color:#000
     style AIT10 fill:#1b4332,color:#fff
     style AIT11 fill:#457b9d,color:#fff
+    style AIT12 fill:#457b9d,color:#fff
     style Y fill:#f4a261,color:#000
 
     style AJ fill:#457b9d,color:#fff

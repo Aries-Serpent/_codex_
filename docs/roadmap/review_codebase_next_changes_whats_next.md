@@ -1,16 +1,17 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — PR #4536 security-scanning-suite review-thread remediation · 2026-05-22T02:20Z)
+## Session Status (Current — PR #4536 approval-monitor + living-doc sync · 2026-05-22T02:34Z)
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 Maintainer note acknowledged: ~8/60 minutes used; preserve final 5 minutes for wrap-up |
+| Session budget tracking | 🔄 Maintainer note acknowledged: ~24/60 minutes used; preserve final 5 minutes for wrap-up |
 | CI failure triage | ✅ Investigated runs `26264148842`, `26264221325`, `26264233148` via MCP logs; confirmed actionable secret-baseline and review-thread items |
 | Review concern 1 (`security-scanning-suite.yml:241`) | ✅ Replaced inaccurate grep-based secret count with JSON parse of `.secrets.baseline.results` |
 | Review concern 2 (`security-scanning-suite.yml:319-320`) | ✅ Added `set -euo pipefail` to SBOM generation step so `cyclonedx-py` failures fail the job |
 | Review concern 3 (`review_codebase_next_changes_whats_next.md:3-15`) | ✅ Realigned this living doc to current PR #4536 scope (security-scanning + readiness follow-up), removing scope mismatch |
 | Secrets baseline enforcer concern | ✅ Added inline allowlist pragma on the flagged workflow line (false-positive keyword hit) |
 | Readiness-to-100 follow-up | ✅ Added explicit tasks for the two failing dimensions: PDA entry today + accountability report today |
+| Approved-workflow monitoring | 🔄 Maintainer approved all workflows; latest head `a9e47ed` shows active queue (`Trigger validations on approval` in progress, comment/WEC gates queued) with several older runs superseded/cancelled |
 | Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
@@ -18,8 +19,9 @@
 
 ```text
 @copilot continue PR #4536 from current branch:
-- re-check latest workflow runs on HEAD and confirm the three review concerns stay resolved in CI
-- verify readiness dimensions are at 100/100 (especially PDA entry today + accountability report today)
+- monitor the newly approved workflow queue on HEAD and focus only on latest non-cancelled runs
+- confirm the three review concerns stay resolved and secrets baseline remains clean
+- verify readiness dimensions remain green, especially PDA/accountability freshness
 - if any comment-review-gate blocker remains, post explicit per-thread resolution replies with commit hash
 - keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs synchronized
 ```
