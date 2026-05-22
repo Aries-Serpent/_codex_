@@ -18,7 +18,7 @@
 ### Follow-up prompt (continuation)
 
 ```text
-@copilot continue PR #4536 from current branch:
+@copilot continue PR #4536 from current branch (HEAD a9e47ed):
 - monitor the newly approved workflow queue on HEAD and focus only on latest non-cancelled runs
 - confirm the three review concerns stay resolved and secrets baseline remains clean
 - verify readiness dimensions remain green, especially PDA/accountability freshness

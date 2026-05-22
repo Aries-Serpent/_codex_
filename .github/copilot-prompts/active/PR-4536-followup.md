@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4536
 
-**PR**: #4536 - PR #4536  
+**PR**: #4536  
 **Branch**: `copilot/remediate-unused-globals`  
 **Author**: @Copilot  
 **Date**: 2026-05-22  
@@ -24,8 +24,8 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Verify all PR #4531 import-style fixes are validated end-to-end (ruff + pytest).
-- [ ] Run targeted validation for PR #4531 changes and confirm no regressions.
+- [ ] Verify PR #4536 security-scanning workflow fixes remain stable on latest head (secret count parsing + SBOM pipefail + baseline handling).
+- [ ] Run targeted validation chain for PR #4536 and confirm no regressions in readiness/accountability tracking.
 
 **Validation**:
 ```bash
@@ -34,7 +34,7 @@ python -m pytest tests/agents/test_agents_init_phase9_2.py tests/space_traversal
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] Verify generated follow-up prompt content stays aligned to PR #4531 scope.
+- [ ] Verify generated follow-up prompt content stays aligned to PR #4536 scope.
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
 - [ ] No tasks specified
