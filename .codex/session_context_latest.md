@@ -1,10 +1,10 @@
-# Session Context — 2026-05-22T15:56:21Z
+# Session Context — 2026-05-22T16:47:25Z
 **Branch:** `copilot/remediate-scan-findings`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4863` (✅)
-- GraphQL remaining: `4975` (✅)
+- REST remaining: `4842` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
+- `f6b1c669` fix: preserve exception chaining and align agent version alias — copilot-swe-agent[bot] (2026-05-22)
+- `650535b9` fix: use explicit pytest outcome exceptions in helper branches — copilot-swe-agent[bot] (2026-05-22)
+- `e02cd658` fix: simplify explicit skip/xfail return paths in test helpers — copilot-swe-agent[bot] (2026-05-22)
+- `966b0401` fix: keep best-effort test import lazy and sorted — copilot-swe-agent[bot] (2026-05-22)
+- `4977ef0f` fix: normalize imports returns and empty except handling in flagged files — copilot-swe-agent[bot] (2026-05-22)
+- `533866ec` chore: start codeql remediation for imports returns and exceptions — copilot-swe-agent[bot] (2026-05-22)
 - `65a3845c` Merge pull request #4540 from Aries-Serpent/copilot/fix-sqlite-memory-search-loc — Statix (2026-05-22)
 - `59993e62` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
-- `d1d0d7a4` fix: address all 9 review comments — line lengths, torch patch, gh_post restrict — copilot-swe-agent[bot] (2026-05-22)
-- `a743de57` Merge remote-tracking branch 'origin/copilot/fix-sqlite-memory-search-lock' into — copilot-swe-agent[bot] (2026-05-22)
-- `48fdde2b` Initial plan for PR #4540 review fixes — copilot-swe-agent[bot] (2026-05-22)
-- `3d7b7dde` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
-- `496fb483` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
-- `ddc669cb` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
