@@ -1,10 +1,10 @@
-# Session Context — 2026-05-22T22:28:03Z
+# Session Context — 2026-05-22T22:41:28Z
 **Branch:** `copilot/remove-unused-local-variables`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4675` (✅)
-- GraphQL remaining: `4985` (✅)
+- REST remaining: `4995` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
+- `c9cea00d` Fix residual unused global in intelligent analyzer — copilot-swe-agent[bot] (2026-05-22)
+- `ab8ba325` Plan CodeQL unused-global re-verification — copilot-swe-agent[bot] (2026-05-22)
 - `db85942f` fix: remove redundant globals and consume demo state — copilot-swe-agent[bot] (2026-05-22)
 - `176b12b6` chore: plan unused-global-variable remediation — copilot-swe-agent[bot] (2026-05-22)
 - `703b069c` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
 - `02463f21` Address validation follow-up for unused-local cleanup — copilot-swe-agent[bot] (2026-05-22)
 - `1dbf28c7` Remediate unused local variable findings — copilot-swe-agent[bot] (2026-05-22)
 - `8646fa68` Plan unused-local-variable remediation — copilot-swe-agent[bot] (2026-05-22)
-- `0b78f0d2` Merge pull request #4541 from Aries-Serpent/copilot/remediate-scan-findings — Statix (2026-05-22)
-- `f58f2597` Broaden tokenizer fixture skip exceptions for CI robustness — copilot-swe-agent[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
