@@ -1,29 +1,29 @@
-# Session Context — 2026-05-21T23:58:21Z
+# Session Context — 2026-05-22T01:33:04Z
 **Branch:** `copilot/remediate-unused-globals`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4291` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4988` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-21)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-21)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-22)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-22)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-22)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
-- `93245092` docs: Comprehensive Copilot Cloud Agent prompt for unused global variables remed — Statix (2026-05-21)
-- `dbfb7252` docs: Comprehensive unused global variables remediation report with CodeQL findi — Statix (2026-05-21)
-- `8de4231d` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-21)
-- `b93235bf` Merge pull request #4534 from Aries-Serpent/copilot/update-unused-local-variable — Statix (2026-05-21)
-- `9742542e` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-21)
-- `f5822016` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-21)
-- `23d4ad9b` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-21)
-- `546fa7ce` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-21)
+- `ee9d1312` Record SHA256-verified provenance for both run 26199091939 artifacts in completi — copilot-swe-agent[bot] (2026-05-22)
+- `9985710c` Restore explicit `_ = VAR` KEEP markers and refine remediation reports — copilot-swe-agent[bot] (2026-05-22)
+- `72dd4b9d` Refine unused-global remediation docs and markers — copilot-swe-agent[bot] (2026-05-22)
+- `ced710eb` Continue unused global remediation and reporting — copilot-swe-agent[bot] (2026-05-22)
+- `21d25817` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
+- `1820a382` refactor(phase3): remove unused INGESTOR_PY path constant — copilot-swe-agent[bot] (2026-05-22)
+- `9602161c` fix(review): initialize middleware rate-limit state at app startup and annotate  — copilot-swe-agent[bot] (2026-05-22)
+- `628139c3` refactor(phase3): remove unused assignment captures and preserve pytest marker i — copilot-swe-agent[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
