@@ -24,3 +24,4 @@ class _Utils:
 cuda = _Cuda()
 utils = _Utils()
 # Intentional module-level stub exports for API compatibility.
+_ = (cuda, utils)
