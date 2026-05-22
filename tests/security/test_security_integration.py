@@ -239,9 +239,8 @@ class TestEncryptedStorage:
         try:
             from codex.security.storage import generate_key
             key = generate_key()
-        except ImportError as exc:
-            pytest.skip("cryptography package not installed")
-            raise AssertionError("unreachable after pytest.skip") from exc
+        except ImportError:
+            raise pytest.skip.Exception("cryptography package not installed")
         monkeypatch.setenv("ENCRYPTION_KEY", key)
         return key
 
