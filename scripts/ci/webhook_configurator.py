@@ -62,7 +62,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse as _urlparse_webhook
+from urllib.parse import urlparse
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
@@ -263,8 +263,8 @@ def apply_config(config_path: str, dry_run: bool = False) -> int:
         for wh in desired:
             existing_url = wh.get("url", "")
             try:
-                existing_host = (_urlparse_webhook(existing_url).hostname or "").lower()
-            except Exception:
+                existing_host = (urlparse(existing_url).hostname or "").lower()
+            except (TypeError, ValueError):
                 existing_host = ""
             # CodeQL py/incomplete-url-substring-sanitization: match hostname
             # exactly (or its subdomains) rather than a substring of the URL.
