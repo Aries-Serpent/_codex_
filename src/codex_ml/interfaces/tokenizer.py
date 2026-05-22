@@ -350,7 +350,15 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
         output_dir: str = "artifacts/tokenizer",
     ) -> TrainableTokenizerProtocol:
         """Train tokenizer. Implementations must override."""
-        _ = (input_files, vocab_size, model_type, special_tokens, character_coverage, seed, output_dir)
+        _ = (
+            input_files,
+            vocab_size,
+            model_type,
+            special_tokens,
+            character_coverage,
+            seed,
+            output_dir,
+        )
         raise TypeError(f"{cls.__name__}.train() must be implemented")
 
 
