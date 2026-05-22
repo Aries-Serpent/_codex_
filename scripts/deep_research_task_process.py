@@ -106,7 +106,6 @@ INVENTORY_JSON = CODEX_DIR / "inventory.json"
 
 # Target repository artifacts
 INGESTION_DIR = REPO_ROOT / "src" / "ingestion"
-INGESTOR_PY = INGESTION_DIR / "__init__.py"
 INGESTION_README = INGESTION_DIR / "README.md"
 PRECOMMIT_CFG = REPO_ROOT / ".pre-commit-config.yaml"
 CONTRIBUTING_MD = REPO_ROOT / "docs" / "governance" / "CONTRIBUTING.md"
@@ -401,8 +400,6 @@ def phase2_search_mapping() -> None:
         _log_error("2: Locate session_logger.py", "File not found", str(SESSION_LOGGER_PY))
     if not PRECOMMIT_CFG.exists():
         _log_error("2: Locate pre-commit config", "File not found", str(PRECOMMIT_CFG))
-    if not INGESTOR_PY.exists():
-        _log_error("2: Locate ingestion package", "File not found", str(INGESTOR_PY))
 
     rc, py_ver, py_err = _run_command(["python", "--version"], check=False)
     if rc == 0:
