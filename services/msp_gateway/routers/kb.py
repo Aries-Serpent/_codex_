@@ -90,9 +90,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
     request_id = str(uuid.uuid4())
 
-    logger.info(
-        f"KB query request {sanitize_log_input(request_id)} from tenant {sanitize_log_input(tenant_id)}"
-    )
+    logger.info("KB query request %s", sanitize_log_input(request_id))
 
     try:
         # Query the knowledge base
@@ -133,7 +131,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             audit=audit,
         )
 
-        logger.info(f"KB query {request_id} returned {len(search_results)} results")
+        logger.info("KB query %s returned %d results", sanitize_log_input(request_id), len(search_results))
         return response
 
     except ImportError as exc:
@@ -147,8 +145,13 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             detail="Knowledge base retrieval dependencies are not installed",
         )
     except Exception as e:
-        logger.error(f"Error processing KB query {request_id}: {e}", exc_info=True)
+        logger.error(
+            "Error processing KB query %s (%s)",
+            sanitize_log_input(request_id),
+            type(e).__name__,
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error querying knowledge base: {str(e)}",
+            detail="Error querying knowledge base",
         )

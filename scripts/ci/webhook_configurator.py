@@ -43,7 +43,7 @@ Webhook config file format (.codex/webhook_config.json):
       {
         "name": "copilot-agent-trigger",
         "url": "https://your-receiver.example.com/github-webhook",
-        "secret_env": "WEBHOOK_SECRET",
+        "secret_env": "WEBHOOK_SECRET",  # pragma: allowlist secret
         "events": ["push", "pull_request", "issue_comment", "workflow_run"],
         "active": true,
         "content_type": "json"
@@ -62,6 +62,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
@@ -260,7 +261,18 @@ def apply_config(config_path: str, dry_run: bool = False) -> int:
     receiver_url_override = os.environ.get("WEBHOOK_RECEIVER_URL", "").strip()
     if receiver_url_override:
         for wh in desired:
-            if wh.get("url", "") == PLACEHOLDER_URL or "your-cognitive-brain-server.com" in wh.get("url", ""):
+            existing_url = wh.get("url", "")
+            try:
+                existing_host = (urlparse(existing_url).hostname or "").lower()
+            except (TypeError, ValueError):
+                existing_host = ""
+            # CodeQL py/incomplete-url-substring-sanitization: match hostname
+            # exactly (or its subdomains) rather than a substring of the URL.
+            is_placeholder_host = (
+                existing_host == "your-cognitive-brain-server.com"
+                or existing_host.endswith(".your-cognitive-brain-server.com")
+            )
+            if existing_url == PLACEHOLDER_URL or is_placeholder_host:
                 print(f"  ↳ Overriding placeholder URL with WEBHOOK_RECEIVER_URL for '{wh.get('name', wh['url'])}'")
                 wh["url"] = receiver_url_override
 

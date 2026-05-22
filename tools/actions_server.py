@@ -14,7 +14,7 @@ import time
 import urllib.request as _urllib_request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import requests
 
@@ -151,8 +151,37 @@ def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
+def _assert_safe_github_url(url: str) -> str:
+    """Validate ``url`` targets the GitHub REST/raw API and return a fresh string.
+
+    Rejects any URL that does not target the allowlisted GitHub hosts
+    (e.g. attempted SSRF via crafted owner/repo/path components that escape the
+    intended URL structure). Returning a reconstructed URL from the validator breaks
+    CodeQL's same-variable taint flow into ``requests.get`` (CodeQL alerts
+    py/partial-ssrf #10639, #10640).
+    """
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if (
+        not isinstance(url, str)
+        or parsed.scheme != "https"
+        or host not in {"api.github.com", "raw.githubusercontent.com"}
+    ):
+        raise ValueError(
+            f"Refusing to fetch URL {url!r}: must target api.github.com or "
+            "raw.githubusercontent.com (GitHub API allowlist)"
+        )
+    if parsed.username or parsed.password:
+        raise ValueError(f"Refusing to fetch URL {url!r}: embedded credentials are not allowed")
+    # Reject traversal only in path segments; query fragments may legitimately include "..".
+    if any(segment == ".." for segment in parsed.path.split("/")):
+        raise ValueError(f"Refusing to fetch URL {url!r}: contains '..' traversal sequence")
+    return parsed.geturl()
+
+
 def gh_get(url: str):
-    r = requests.get(url, headers=_auth_headers(), timeout=30)
+    safe_url = _assert_safe_github_url(url)
+    r = requests.get(safe_url, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
@@ -179,7 +208,8 @@ def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
     _validate_file_path(path)
     # Use raw endpoint; fallback to contents API
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{quote(path)}"
-    r = requests.get(raw, timeout=30)
+    safe_raw = _assert_safe_github_url(raw)
+    r = requests.get(safe_raw, timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
     meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{quote(path)}?ref={quote(ref)}")

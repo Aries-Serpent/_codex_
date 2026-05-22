@@ -34,19 +34,19 @@ class PolicyEnforcer:
                 with open(safelist_path, "r") as f:
                     self.safelist = yaml.safe_load(f) or {}
             else:
-                logger.warning(f"Safelist not found at {safelist_path}, using empty policy")
+                logger.warning("Safelist not found at %s, using empty policy", safelist_path)
                 self.safelist = {}
 
             if denylist_path.exists():
                 with open(denylist_path, "r") as f:
                     self.denylist = yaml.safe_load(f) or {}
             else:
-                logger.warning(f"Denylist not found at {denylist_path}, using empty policy")
+                logger.warning("Denylist not found at %s, using empty policy", denylist_path)
                 self.denylist = {}
 
             logger.info("Policies loaded successfully")
         except Exception as e:
-            logger.error(f"Error loading policies: {e}")
+            logger.error("Error loading policies: %s", e)
             self.safelist = {}
             self.denylist = {}
 

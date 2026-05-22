@@ -62,7 +62,7 @@ class TenantRegistry:
 
         conn.commit()
         conn.close()
-        logger.info(f"Initialized SQLite tenant registry at {db_path}")
+        logger.info("Initialized SQLite tenant registry at %s", db_path)
 
     def create_tenant(
         self,
@@ -131,7 +131,7 @@ class TenantRegistry:
         # Register API key
         auth_manager.register_api_key(api_key, tenant_id)
 
-        logger.info(f"Created tenant: {sanitize_log_input(tenant_id)}")
+        logger.info("Created tenant")
         return tenant_data
 
     def get_tenant(self, tenant_id: str) -> Optional[dict[str, Any]]:
@@ -304,7 +304,7 @@ class TenantRegistry:
         if api_key:
             auth_manager.revoke_api_key(api_key)
 
-        logger.info(f"Deleted (deactivated) tenant: {sanitize_log_input(tenant_id)}")
+        logger.info("Deleted (deactivated) tenant")
 
     def update_tenant(
         self,

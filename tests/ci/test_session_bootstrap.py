@@ -17,6 +17,7 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 from urllib.error import URLError
+from urllib.parse import urlparse
 
 import pytest
 
@@ -98,7 +99,7 @@ class TestExtractUrls:
     def test_url_is_first_element(self):
         text = "https://github.com/Aries-Serpent/_codex_/pull/1"
         urls = extract_urls(text)
-        assert urls[0][0].startswith("https://github.com")
+        assert urlparse(urls[0][0]).hostname == "github.com"
 
 
 # ---------------------------------------------------------------------------

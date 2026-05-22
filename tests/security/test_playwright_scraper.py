@@ -14,6 +14,7 @@ import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+from urllib.parse import urlparse
 
 import pytest
 
@@ -699,7 +700,7 @@ class TestIterPages:
         assert batch[0]["title"] == "Link Alert"
         assert batch[0]["alert_number"] == 55
         assert batch[0]["severity"] == "unknown"
-        assert batch[0]["url"].startswith("https://github.com")
+        assert urlparse(batch[0]["url"]).hostname == "github.com"
 
     def test_no_rows_no_links_stops_immediately(self, monkeypatch):
         """No rows and no links → generator yields nothing."""

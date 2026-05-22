@@ -160,7 +160,7 @@ def create_app() -> FastAPI:
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
         """Global exception handler"""
-        logger.error(f"Unhandled exception: {exc}", exc_info=True)
+        logger.error("Unhandled exception: %s", exc, exc_info=True)
 
         error_response = ErrorResponse(
             error="InternalServerError",
@@ -173,7 +173,7 @@ def create_app() -> FastAPI:
             content=error_response.model_dump(),
         )
 
-    logger.info(f"MSP Gateway application created (offline_mode={settings.offline})")
+    logger.info("MSP Gateway application created (offline_mode=%s)", settings.offline)
 
     return app
 

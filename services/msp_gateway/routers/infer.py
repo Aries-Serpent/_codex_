@@ -109,22 +109,18 @@ async def infer(request: Request, infer_request: InferRequest):
 
     request_id = str(uuid.uuid4())
 
-    logger.info(
-        f"Inference request {sanitize_log_input(request_id)} from tenant {sanitize_log_input(tenant_id)}"
-    )
+    logger.info("Inference request %s", sanitize_log_input(request_id))
 
     # Validate prompt
     is_valid, error_msg = validate_prompt(infer_request.prompt, tenant_id)
     if not is_valid:
-        logger.warning(f"Invalid prompt for request {request_id}: {error_msg}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid prompt: {error_msg}"
-        )
+        logger.warning("Invalid prompt for request %s: %s", sanitize_log_input(request_id), sanitize_log_input(error_msg))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid prompt")
 
     # Redact sensitive content from prompt
     redacted_prompt, redactions = redact_content(infer_request.prompt, tenant_id)
     if redactions:
-        logger.info(f"Applied {len(redactions)} redactions to prompt")
+        logger.info("Applied %d redactions to prompt", len(redactions))
 
     try:
         # Check if RAG is enabled for this tenant
@@ -155,9 +151,9 @@ async def infer(request: Request, infer_request: InferRequest):
                     for r in results
                 ]
 
-                logger.info(f"Retrieved {len(retrieved_docs)} documents for RAG")
+                logger.info("Retrieved %d documents for RAG", len(retrieved_docs))
             except Exception as e:
-                logger.warning(f"Error retrieving documents for RAG: {e}")
+                logger.warning("Error retrieving documents for RAG (%s)", type(e).__name__)
                 # Continue without RAG
 
         # Build prompt
@@ -200,7 +196,7 @@ async def infer(request: Request, infer_request: InferRequest):
         # Redact output if needed
         final_text, output_redactions = redact_content(processed_text, tenant_id)
         if output_redactions:
-            logger.info(f"Applied {len(output_redactions)} redactions to output")
+            logger.info("Applied %d redactions to output", len(output_redactions))
 
         # Create audit reference
         audit = AuditRef(
@@ -236,12 +232,17 @@ async def infer(request: Request, infer_request: InferRequest):
             },
         )
 
-        logger.info(f"Inference {request_id} completed, tokens: {tokens_used}")
+        logger.info("Inference %s completed, tokens: %s", sanitize_log_input(request_id), tokens_used)
         return response
 
     except Exception as e:
-        logger.error(f"Error processing inference {request_id}: {e}", exc_info=True)
+        logger.error(
+            "Error processing inference %s (%s)",
+            sanitize_log_input(request_id),
+            type(e).__name__,
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error generating inference: {str(e)}",
+            detail="Error generating inference",
         )
