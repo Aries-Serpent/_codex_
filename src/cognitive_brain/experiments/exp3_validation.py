@@ -231,4 +231,4 @@ def run_exp3_validation() -> dict:
 
 
 if __name__ == "__main__":
-    _results = run_exp3_validation()  # Copilot: Prefixed with _ to indicate intentionally unused
+    run_exp3_validation()

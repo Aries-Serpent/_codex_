@@ -17,9 +17,8 @@ try:
     from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
     ADVANCED_PHYSICS_AVAILABLE = True
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+except ImportError:
+    logger.warning("Failed to import advanced physics calculators", exc_info=True)
     ADVANCED_PHYSICS_AVAILABLE = False
 
 try:
@@ -29,9 +28,8 @@ try:
     )
 
     PHYSICS_ORCHESTRATOR_AVAILABLE = True
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+except ImportError:
+    logger.warning("Failed to import physics orchestrator", exc_info=True)
     PHYSICS_ORCHESTRATOR_AVAILABLE = False
 
 # Import logging utilities
@@ -39,9 +37,8 @@ try:
     from codex.logging.session_logger import log_message
 
     LOGGING_AVAILABLE = True
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+except ImportError:
+    logger.warning("Failed to import session logger; using print fallback", exc_info=True)
     LOGGING_AVAILABLE = False
 
     # Fallback to print if logging not available

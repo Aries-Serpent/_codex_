@@ -638,7 +638,7 @@ if __name__ == "__main__":
     ]
 
     # Run orchestration
-    result = orchestrator.orchestrate(state, possible_actions)
+    orchestrator.orchestrate(state, possible_actions)
 
     # Save decision history
     orchestrator.save_decision_history(Path("decision_history.json"))

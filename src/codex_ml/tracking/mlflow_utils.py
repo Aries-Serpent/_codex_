@@ -113,7 +113,7 @@ def _ensure_mlflow_available() -> None:
     RuntimeError with installation guidance when MLflow is unavailable.
     """
     global _mlf, _HAS_MLFLOW
-    if _HAS_MLFLOW and _mlf is not None:
+    if _HAS_MLFLOW:
         return
     try:
         import importlib

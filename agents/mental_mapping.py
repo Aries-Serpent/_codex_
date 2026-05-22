@@ -1371,7 +1371,7 @@ if __name__ == "__main__":
     )
 
     # Simulate outcome
-    outcome_node = mental_map.record_outcome(
+    mental_map.record_outcome(
         decision_node_id=decision_node.node_id,
         outcome_content="Code changes successful, tests pass, review comments resolved",
         success=True,

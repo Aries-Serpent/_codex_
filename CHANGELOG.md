@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4536 comment-review-gate cache path fix — 2026-05-22T02:43Z)
+- Fixed `.github/workflows/comment-review-gate.yml` setup-python caching in sparse-checkout mode by adding:
+  - `cache-dependency-path: scripts/ci/check_pr_comments.py`
+- This prevents `actions/setup-python` from failing with
+  `No file ... matched to [**/requirements.txt or **/pyproject.toml]` in issue-comment and review-triggered runs.
+
+### Fixed (PR #4536 approval-monitor docs/accountability refresh — 2026-05-22T02:34Z)
+- Refreshed PR #4536 living docs after maintainer-approved workflow dispatch:
+  - Updated `docs/roadmap/review_codebase_next_changes_whats_next.md` current-session status to reflect ~24/60 timebox usage, active approved-workflow queue state on head `a9e47ed`, and continuation prompt focused on latest non-superseded runs.
+  - Updated `docs/roadmap/review_codebase_next_changes_session_diagram.mmd` with an approval-monitor checkpoint node and preserved final 5-minute wrap-up reserve guidance.
+  - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current approval-monitor session status and continuation priorities.
+
+### Fixed (PR #4536 security-scanning-suite review concerns — 2026-05-22T02:20Z)
+- Addressed all 3 review-thread concerns for `security-scanning-suite` and session living docs:
+  - `.github/workflows/security-scanning-suite.yml`: replaced grep-based detect-secrets count with JSON parsing of `.secrets.baseline.results` for accurate totals.
+  - `.github/workflows/security-scanning-suite.yml`: added `set -euo pipefail` to SBOM generation so `cyclonedx-py` failures are not masked by `tee`.
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`: realigned current-session section to PR #4536 scope to remove unused-global remediation scope mismatch.
+- Added false-positive secret allowlist pragma for the flagged workflow option entry in `security-scanning-suite.yml`.
+- Updated living docs and accountability artifacts with readiness-to-100 tasks (PDA entry today + accountability report freshness).
+
+### Fixed (auto-update — PR #4536)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4536 (SHA `f46c7b1f`) at 2026-05-22T02:04Z [auto-generated]
+
 ### Fixed (auto-update — PR #4533)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4533 (SHA `9c6643a4`) at 2026-05-21T20:43Z [auto-generated]
 

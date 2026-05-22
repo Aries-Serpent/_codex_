@@ -64,6 +64,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip  # aais-cache: pip
+          cache-dependency-path: scripts/ci/check_pr_comments.py
 
       - name: Determine PR number
         id: pr_info
