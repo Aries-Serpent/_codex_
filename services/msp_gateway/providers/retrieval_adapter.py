@@ -83,7 +83,7 @@ class RetrievalAdapter:
                 index_name=index_name,
                 text_field=text_field,
             )
-            logger.info(f"Built index for tenant {tenant_id}")
+            logger.info("Built index for tenant %s", sanitize_log_input(tenant_id))
         except Exception as e:
-            logger.error(f"Error building index for tenant {tenant_id}: {e}")
+            logger.error("Error building index for tenant %s: %s", sanitize_log_input(tenant_id), e)
             raise

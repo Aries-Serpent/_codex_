@@ -14,6 +14,8 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
+from src.utils.log_sanitizer import sanitize_log_input
+
 from ..config import settings
 
 logger = logging.getLogger(__name__)
@@ -193,7 +195,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # Check request rate limit
         if not rate_limiter.check_request_limit(tenant_id, quota):
-            logger.warning(f"Request rate limit exceeded for tenant: {tenant_id}")
+            logger.warning("Request rate limit exceeded for tenant: %s", sanitize_log_input(tenant_id))
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"detail": "Request rate limit exceeded. Please try again later."},
@@ -343,7 +345,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
                 return rebuild_response(response_body)
             except Exception as e:
-                logger.error(f"Error processing token usage: {e}")
+                logger.error("Error processing token usage: %s", e)
                 # Reconstruct original response even when accounting fails
                 return rebuild_response(response_body)
 

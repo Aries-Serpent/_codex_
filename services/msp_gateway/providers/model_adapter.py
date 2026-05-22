@@ -55,7 +55,7 @@ class LocalTransformersAdapter(ModelAdapter):
             from codex_ml.utils.hf_pinning import load_from_pretrained
             from transformers import AutoModelForCausalLM, AutoTokenizer
 
-            logger.info(f"Loading model: {self.model_path}")
+            logger.info("Loading model: %s", self.model_path)
 
             self.tokenizer = load_from_pretrained(AutoTokenizer, self.model_path)  # Uses revision pinning for security
             self.model = load_from_pretrained(  # Uses revision pinning for security
@@ -73,7 +73,7 @@ class LocalTransformersAdapter(ModelAdapter):
 
             logger.info("Model loaded successfully")
         except Exception as e:
-            logger.error(f"Error loading model: {e}")
+            logger.error("Error loading model: %s", e)
             raise
 
     def generate(
