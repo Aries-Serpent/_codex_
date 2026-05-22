@@ -188,8 +188,6 @@ SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
 
 QUEUE: asyncio.Queue[dict] = asyncio.Queue(maxsize=128)
 JOBS: dict[str, dict[str, Any]] = {}
-_rate_ts = time.time()
-_rate_count = 0
 ACTIVE_SESSIONS: list[MutableMapping[str, Any]] = []
 
 
@@ -579,7 +577,6 @@ async def status() -> dict[str, Any]:
 
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
-    global _rate_ts, _rate_count
     key = request.headers.get("x-api-key")
     expected = os.getenv("API_KEY")
     if expected and key != expected:
@@ -619,15 +616,19 @@ async def api_key_middleware(request: Request, call_next):
 
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
     if limit > 0:
+        if not hasattr(app.state, "rate_ts"):
+            app.state.rate_ts = 0.0
+        if not hasattr(app.state, "rate_count"):
+            app.state.rate_count = 0
         now = time.time()
-        if now - _rate_ts >= 1:
-            _rate_ts = now
-            _rate_count = 0
-        if _rate_count >= limit:
+        if now - app.state.rate_ts >= 1:
+            app.state.rate_ts = now
+            app.state.rate_count = 0
+        if app.state.rate_count >= limit:
             return JSONResponse({"detail": "rate limit exceeded"}, status_code=429)
-        _rate_count += 1
+        app.state.rate_count += 1
     else:
-        _rate_count = 0
+        app.state.rate_count = 0
     try:
         return await call_next(request)
     except HTTPException:
