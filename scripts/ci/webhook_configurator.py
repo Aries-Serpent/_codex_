@@ -43,7 +43,7 @@ Webhook config file format (.codex/webhook_config.json):
       {
         "name": "copilot-agent-trigger",
         "url": "https://your-receiver.example.com/github-webhook",
-        "secret_env": "WEBHOOK_SECRET",
+        "secret_env": "WEBHOOK_SECRET",  # pragma: allowlist secret
         "events": ["push", "pull_request", "issue_comment", "workflow_run"],
         "active": true,
         "content_type": "json"
