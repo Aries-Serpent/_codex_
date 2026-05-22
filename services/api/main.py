@@ -132,6 +132,8 @@ ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "artifacts/api"))
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Codex API", version="0.1.0")
+app.state.rate_ts = 0.0
+app.state.rate_count = 0
 logger = logging.getLogger("codex_ml.api")
 
 # --- Authentication middleware + routes ------------------------------------
@@ -616,10 +618,6 @@ async def api_key_middleware(request: Request, call_next):
 
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
     if limit > 0:
-        if not hasattr(app.state, "rate_ts"):
-            app.state.rate_ts = 0.0
-        if not hasattr(app.state, "rate_count"):
-            app.state.rate_count = 0
         now = time.time()
         if now - app.state.rate_ts >= 1:
             app.state.rate_ts = now
