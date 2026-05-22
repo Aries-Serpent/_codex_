@@ -1,10 +1,10 @@
-# Session Context — 2026-05-22T05:16:25Z
+# Session Context — 2026-05-22T05:29:24Z
 **Branch:** `copilot/implement-remediations`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4981` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4823` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
+- `0c5c0a4b` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
 - `4845d8d8` refactor(security): address review feedback — narrower exception + cleaner urlpa — copilot-swe-agent[bot] (2026-05-22)
 - `8391d556` fix(security): P0 — SSRF, stack-trace exposure, log injection, URL sanitisation, — copilot-swe-agent[bot] (2026-05-22)
 - `6e3c1f47` chore(security): begin tracking remediation plan from run 26266128402 artifacts — copilot-swe-agent[bot] (2026-05-22)
@@ -23,7 +24,6 @@
 - `348ff0be` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-22)
 - `ab150643` Merge pull request #4536 from Aries-Serpent/copilot/remediate-unused-globals — Statix (2026-05-22)
 - `61e10774` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
-- `a5b53ab1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
