@@ -31,7 +31,10 @@ def sanitize_input(text: str) -> str:
     # closing tag so that variants like ``</script >`` (with extra spaces) are
     # also stripped — matching browser HTML parsing behaviour.
     sanitized = re.sub(
-        r"<script[^>]*>.*?</script\b[^>]*>", "", sanitized, flags=re.IGNORECASE | re.DOTALL
+        r"<script[^>]*>.*?</script(?:\s+[^>]*)?\s*>",
+        "",
+        sanitized,
+        flags=re.IGNORECASE | re.DOTALL,
     )
     # HTML escape remaining content
     sanitized = html.escape(sanitized)

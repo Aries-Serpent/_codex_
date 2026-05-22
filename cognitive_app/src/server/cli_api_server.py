@@ -850,14 +850,11 @@ async def cli_run(req: CliRunRequest):
             _db.commit()
     except Exception as _e:
         log.debug("SQLite history write failed (non-blocking): %s", _e)
-    # CodeQL py/log-injection: strip control characters from user-supplied command
-    # before logging so a crafted command cannot inject fake log lines.
-    _safe_cmd = re.sub(r"[\r\n\x00-\x1f\x7f]", "", str(req.command))[:80]
     log.info(
         "cli_run rc=%s %.0fms cmd_len=%d",
         record["returncode"],
         duration_ms,
-        len(_safe_cmd),
+        len(str(req.command)),
     )
     return record
 

@@ -151,12 +151,6 @@ def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
-_ALLOWED_GH_PREFIXES = (
-    "https://api.github.com/",
-    "https://raw.githubusercontent.com/",
-)
-
-
 def _assert_safe_github_url(url: str) -> str:
     """Validate ``url`` targets the GitHub REST/raw API and return a fresh string.
 
