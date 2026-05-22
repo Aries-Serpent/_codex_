@@ -16,6 +16,7 @@ try:
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from pydantic import BaseModel, Field
+    from starlette.middleware.trustedhost import TrustedHostMiddleware
 
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
@@ -25,6 +26,7 @@ except ImportError:  # pragma: no cover
     BaseModel = object
     APIKeyHeader = None
     Security = None
+    TrustedHostMiddleware = None
 
     def Field(*a, **k):
         return None
@@ -37,6 +39,14 @@ MAX_BATCH_SIZE = 100
 MAX_INPUT_LENGTH = 10000
 _MAX_EMBEDDING_SEED = 2**32
 REQUEST_RATE_LIMIT = 1000
+DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "https://localhost",
+    "http://127.0.0.1",
+    "https://127.0.0.1",
+    "http://testserver",
+]
+DEFAULT_TRUSTED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret
@@ -379,13 +389,26 @@ if FASTAPI_AVAILABLE:
 
     def create_app(config: Optional[ModelConfig] = None) -> FastAPI:
         app = FastAPI(title="Codex Inference Server", version="0.2.0")
+        allowed_origins_env = os.getenv("CODEX_ALLOWED_ORIGINS")
+        allowed_origins = (
+            [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+            if allowed_origins_env
+            else list(DEFAULT_ALLOWED_ORIGINS)
+        )
         app.add_middleware(
             CORSMiddleware,
-            allow_origins=["*"],
+            allow_origins=allowed_origins,
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
         )
+        trusted_hosts_env = os.getenv("CODEX_TRUSTED_HOSTS")
+        trusted_hosts = (
+            [host.strip() for host in trusted_hosts_env.split(",") if host.strip()]
+            if trusted_hosts_env
+            else list(DEFAULT_TRUSTED_HOSTS)
+        )
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=trusted_hosts)
 
         server = ModelServer(config=config)
         limiter = server.rate_limiter
