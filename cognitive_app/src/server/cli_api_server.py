@@ -757,15 +757,15 @@ async def ooda_metrics():
     Sprint 3: drives MetricsDashboard K1 factor display.
     """
     if not _OODA_AVAILABLE or _get_cognitive_app is None:
-        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(),
+        return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
                 "error": "Cognitive orchestrator not available"}
     try:
         metrics = _get_cognitive_app().get_metrics()
-        return {"metrics": metrics, "timestamp": datetime.utcnow().isoformat()}
+        return {"metrics": metrics, "timestamp": datetime.now(timezone.utc).isoformat()}
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log details server-side, return generic message.
         log.warning("OODA metrics error: %s", exc)
-        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(),
+        return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
                 "error": "OODA metrics unavailable (see server logs for details)"}
 
 
