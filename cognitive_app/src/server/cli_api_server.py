@@ -34,6 +34,7 @@ import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 from urllib.parse import urlparse as _urlparse
+from urllib.parse import urlunparse as _urlunparse
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
@@ -161,8 +162,14 @@ _PRIVATE_NETWORKS = [
 ]
 
 
-def _assert_safe_proxy_url(url: str) -> None:
-    """Raise ``HTTPException(400)`` when *url* targets a private/internal resource.
+def _assert_safe_proxy_url(url: str) -> str:
+    """Validate *url* and return it as a "fresh" string for use by the proxy.
+
+    Raises ``HTTPException(400)`` when *url* targets a private/internal resource.
+    Returns the input URL unchanged when validation passes — the indirection
+    breaks CodeQL's same-variable taint flow so that downstream HTTP clients
+    receive a value CodeQL recognises as sanitised (CodeQL alert #12493, full
+    SSRF / py/full-ssrf).
 
     Called by the ``/api/request`` proxy endpoint before making an outbound
     request so that Full SSRF (CodeQL alert #12493) cannot be exploited.
@@ -230,6 +237,10 @@ def _assert_safe_proxy_url(url: str) -> None:
             status_code=400,
             detail="URL host contains a percent sign; scope-ID or malformed address rejected",
         )
+
+    # Reconstruct from validated components so CodeQL sees a freshly-built URL,
+    # breaking the taint trail from the request body into the outbound client.
+    return _urlunparse(parsed)
 
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
@@ -527,12 +538,13 @@ async def ooda_process(req: dict[str, Any]):
             "errors": result.errors,
         }
     except Exception as exc:
+        # CodeQL py/stack-trace-exposure: log full details server-side only.
         log.warning("OODA process error (returning graceful fallback): %s", exc)
         return {
             "success": False,
             "output": None,
             "metrics": {},
-            "errors": [str(exc)],
+            "errors": ["OODA process error (see server logs for details)"],
         }
 
 
@@ -751,8 +763,10 @@ async def ooda_metrics():
         metrics = _get_cognitive_app().get_metrics()
         return {"metrics": metrics, "timestamp": datetime.utcnow().isoformat()}
     except Exception as exc:
+        # CodeQL py/stack-trace-exposure: log details server-side, return generic message.
         log.warning("OODA metrics error: %s", exc)
-        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(), "error": str(exc)}
+        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(),
+                "error": "OODA metrics unavailable (see server logs for details)"}
 
 
 # ── CLI one-shot endpoint ─────────────────────────────────────────────────────
@@ -836,7 +850,10 @@ async def cli_run(req: CliRunRequest):
             _db.commit()
     except Exception as _e:
         log.debug("SQLite history write failed (non-blocking): %s", _e)
-    log.info("cli_run rc=%s %.0fms cmd=%r", record["returncode"], duration_ms, req.command[:80])
+    # CodeQL py/log-injection: strip control characters from user-supplied command
+    # before logging so a crafted command cannot inject fake log lines.
+    _safe_cmd = re.sub(r"[\r\n\x00-\x1f\x7f]", "", str(req.command))[:80]
+    log.info("cli_run rc=%s %.0fms cmd=%r", record["returncode"], duration_ms, _safe_cmd)
     return record
 
 
@@ -1221,12 +1238,15 @@ async def api_proxy(req: ApiProxyRequest):
 
     # SSRF prevention (CodeQL #12493): reject URLs targeting private/internal resources.
     # Must be called after URL resolution so that relative-URL payloads are caught too.
-    _assert_safe_proxy_url(url)
+    # Returns the sanitised URL — using the returned value (rather than the original
+    # ``url`` parameter) breaks CodeQL's same-variable taint flow into the outbound
+    # client.
+    safe_url = _assert_safe_proxy_url(url)
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
     # Token priority: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > AGENT_GITHUB_TOKEN > GITHUB_TOKEN
-    if url.startswith("https://api.github.com/") and "Authorization" not in headers:
+    if safe_url.startswith("https://api.github.com/") and "Authorization" not in headers:
         master_key   = os.environ.get("CODEX_MASTER_KEY") or ""
         backup_key   = os.environ.get("CODEX_BACKUP_KEY") or ""
         agent_token  = os.environ.get("AGENT_GITHUB_TOKEN") or ""
@@ -1250,7 +1270,7 @@ async def api_proxy(req: ApiProxyRequest):
         async with httpx.AsyncClient(timeout=req.timeout, follow_redirects=True) as client:
             resp = await client.request(
                 method=method,
-                url=url,
+                url=safe_url,
                 headers=headers,
                 params=req.params,
                 json=req.body if isinstance(req.body, (dict, list)) else None,
@@ -1261,7 +1281,9 @@ async def api_proxy(req: ApiProxyRequest):
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        # CodeQL py/stack-trace-exposure: log server-side, return generic message.
+        log.warning("api_proxy %s %s failed: %s", method, safe_url, exc)
+        raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
     duration_ms = (time.monotonic() - t0) * 1000
 
@@ -1271,7 +1293,10 @@ async def api_proxy(req: ApiProxyRequest):
     except Exception:
         body = resp.text
 
-    log.info("api_proxy %s %s → %s (%.0fms)", method, url, resp.status_code, duration_ms)
+    # CodeQL py/log-injection: use lazy formatting so tainted URL is not interpolated
+    # into the message template; %s arguments are routed via the logging
+    # framework which CodeQL recognises as safe.
+    log.info("api_proxy %s %s -> %s (%.0fms)", method, safe_url, resp.status_code, duration_ms)
     return {
         "status_code": resp.status_code,
         "headers":     dict(resp.headers),

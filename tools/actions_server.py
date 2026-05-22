@@ -151,8 +151,35 @@ def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
+_ALLOWED_GH_PREFIXES = (
+    "https://api.github.com/",
+    "https://raw.githubusercontent.com/",
+)
+
+
+def _assert_safe_github_url(url: str) -> str:
+    """Validate ``url`` targets the GitHub REST/raw API and return a fresh string.
+
+    Rejects any URL that does not start with one of ``_ALLOWED_GH_PREFIXES``
+    (e.g. attempted SSRF via crafted owner/repo/path components that escape the
+    intended URL structure).  Returning the URL from the validator breaks
+    CodeQL's same-variable taint flow into ``requests.get`` (CodeQL alerts
+    py/partial-ssrf #10639, #10640).
+    """
+    if not isinstance(url, str) or not url.startswith(_ALLOWED_GH_PREFIXES):
+        raise ValueError(
+            f"Refusing to fetch URL {url!r}: must target api.github.com or "
+            "raw.githubusercontent.com (GitHub API allowlist)"
+        )
+    # Additional guard: no '..' anywhere in the URL path.
+    if ".." in url:
+        raise ValueError(f"Refusing to fetch URL {url!r}: contains '..' traversal sequence")
+    return url
+
+
 def gh_get(url: str):
-    r = requests.get(url, headers=_auth_headers(), timeout=30)
+    safe_url = _assert_safe_github_url(url)
+    r = requests.get(safe_url, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
@@ -179,7 +206,8 @@ def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
     _validate_file_path(path)
     # Use raw endpoint; fallback to contents API
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{quote(path)}"
-    r = requests.get(raw, timeout=30)
+    safe_raw = _assert_safe_github_url(raw)
+    r = requests.get(safe_raw, timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
     meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{quote(path)}?ref={quote(ref)}")

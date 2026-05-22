@@ -10,6 +10,7 @@ import logging
 import unittest.mock as mock
 import urllib.error
 from io import BytesIO
+from urllib.parse import urlparse
 
 import pytest
 
@@ -118,7 +119,7 @@ def test_post_pr_comment_success(poster, monkeypatch):
     resp = _mock_response({"html_url": "https://github.com/test/repo/issues/1#issuecomment-1"})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     result = poster.post_pr_comment("Aries-Serpent/_codex_", 3401, "@copilot test")
-    assert result["html_url"].startswith("https://github.com")
+    assert urlparse(result["html_url"]).hostname == "github.com"
 
 
 def test_post_pr_comment_requires_token(no_token_poster):

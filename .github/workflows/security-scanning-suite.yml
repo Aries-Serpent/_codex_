@@ -425,11 +425,13 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
+          # Semgrep registry: ``p/sqlalchemy`` was removed/renamed (returns HTTP
+          # 404 — confirmed in run 26266128402 logs).  The CodeQL Python suite
+          # already covers most SQLAlchemy patterns via security-extended.
           semgrep scan \
             --config=p/security-audit \
             --config=p/python \
             --config=p/flask \
-            --config=p/sqlalchemy \
             --sarif \
             --output=semgrep-results.sarif \
             2>&1 | tee semgrep-scan.log || {
@@ -452,7 +454,6 @@ jobs:
             --config=p/security-audit \
             --config=p/python \
             --config=p/flask \
-            --config=p/sqlalchemy \
             --json \
             --output=semgrep-results.json \
             2>&1 | tee semgrep-scan-json.log || {
