@@ -1,10 +1,10 @@
-# Session Context — 2026-05-22T01:33:04Z
+# Session Context — 2026-05-22T01:51:10Z
 **Branch:** `copilot/remediate-unused-globals`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4988` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4831` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
+- `02a33463` Record SHA256-verified semgrep-results artifact provenance + content audit — copilot-swe-agent[bot] (2026-05-22)
 - `ee9d1312` Record SHA256-verified provenance for both run 26199091939 artifacts in completi — copilot-swe-agent[bot] (2026-05-22)
 - `9985710c` Restore explicit `_ = VAR` KEEP markers and refine remediation reports — copilot-swe-agent[bot] (2026-05-22)
 - `72dd4b9d` Refine unused-global remediation docs and markers — copilot-swe-agent[bot] (2026-05-22)
@@ -23,7 +24,6 @@
 - `21d25817` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
 - `1820a382` refactor(phase3): remove unused INGESTOR_PY path constant — copilot-swe-agent[bot] (2026-05-22)
 - `9602161c` fix(review): initialize middleware rate-limit state at app startup and annotate  — copilot-swe-agent[bot] (2026-05-22)
-- `628139c3` refactor(phase3): remove unused assignment captures and preserve pytest marker i — copilot-swe-agent[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
