@@ -43,6 +43,7 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
 
     class _NoOpNoGrad(contextlib.AbstractContextManager[Any]):
         def __exit__(self, exc_type, exc, tb) -> bool:
+            _ = (exc_type, exc, tb)
             return False
 
     class _TorchStub:

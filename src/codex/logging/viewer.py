@@ -37,14 +37,13 @@ import sqlite3  # noqa: E402
 import sys  # noqa: E402
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from codex.db.sqlite_patch import auto_enable_from_env
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    _codex_sqlite_auto = None
 else:
     try:  # pragma: no cover - best effort
-        _codex_sqlite_auto()
+        auto_enable_from_env()
     except Exception as exc:  # pragma: no cover
         print(f"SQLite patch disabled: {exc}", file=sys.stderr)
 from datetime import datetime  # noqa: E402

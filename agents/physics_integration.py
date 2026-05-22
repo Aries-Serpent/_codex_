@@ -36,13 +36,12 @@ except ImportError:
 try:
     from codex.logging.session_logger import log_message
 
-    LOGGING_AVAILABLE = True
 except ImportError:
     logger.warning("Failed to import session logger; using print fallback", exc_info=True)
-    LOGGING_AVAILABLE = False
 
     # Fallback to print if logging not available
     def log_message(session_id, role, message, **kwargs):  # type: ignore
+        _ = (session_id, kwargs)
         print(f"[{role}] {message}")
 
 

@@ -59,6 +59,9 @@ __all__ = [
     "MemoryLayer",
     "MemoryItem",
     "ContextCache",
+    "HARD_TOKEN_CEILING",
+    "SOFT_TOKEN_CAP",
+    "SOFT_CAP_THRESHOLD",
 ]
 
 # Token limits per Global Policies

@@ -122,6 +122,7 @@ def test_optimizer_resume_state(tmp_path, disable_torch_profiler):
             return self.linear(x)
 
     model = TinyModel()
+    _ = disable_torch_profiler
     ckpt_dir = tmp_path / "resume_opt"
     ckpt_dir.mkdir()
 

@@ -12,14 +12,10 @@ _ALIASES: dict[str, str] = {
 }
 
 _warned = False
-_api = None
 
 
 def _get_api():
-    global _api
-    if _api is None:
-        _api = importlib.import_module("codex_ml.tokenization.api")
-    return _api
+    return importlib.import_module("codex_ml.tokenization.api")
 
 
 def load_tokenizer(*args: Any, **kwargs: Any) -> Any:

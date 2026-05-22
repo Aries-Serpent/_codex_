@@ -334,6 +334,7 @@ class EmergentIntelligenceAgent:
         Returns:
             True if notification sent successfully
         """
+        _ = recipients
         # Check cooldown
         now = time.time()
         last_notif = self.last_notification.get(pattern.pattern_id, 0)

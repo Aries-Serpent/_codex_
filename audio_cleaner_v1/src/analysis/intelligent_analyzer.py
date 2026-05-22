@@ -91,6 +91,7 @@ class IntelligentAudioAnalyzer:
         features: dict[str, Any]
     ) -> str:
         """Classify audio content type."""
+        _ = (audio, sr)
         zcr_mean = np.mean(features['zcr'])
         spectral_centroid_mean = np.mean(features['spectral_centroid'])
         tempo = features['tempo']
@@ -111,6 +112,7 @@ class IntelligentAudioAnalyzer:
         features: dict[str, Any]
     ) -> list[str]:
         """Detect audio problems."""
+        _ = (audio, sr)
         problems = []
 
         # Placeholder problem detection

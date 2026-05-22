@@ -115,6 +115,7 @@ def maybe_mlflow(
             return self
 
         def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial
+            _ = (exc_type, exc, tb)
             return None
 
         def get_tracking_uri(self) -> str:  # pragma: no cover - trivial

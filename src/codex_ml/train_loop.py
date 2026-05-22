@@ -185,6 +185,7 @@ try:
 except Exception:
 
     def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
+        _ = (enable, benchmark)
         return
 
 
@@ -1148,6 +1149,7 @@ def run_training(
       - retention policy
     """
     t_start = time.time()
+    _ = dataset_cache_dir
     if extra_kwargs:
         logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))
     resolved_seed = _set_seed(seed)

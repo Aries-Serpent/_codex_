@@ -56,6 +56,7 @@ class DummyTokenizer:
         max_length: int | None = None,
         return_tensors=None,
     ) -> dict[str, list[list[int]]]:
+        _ = return_tensors
         return {
             "input_ids": [
                 self.encode(

@@ -99,6 +99,7 @@ def _bootstrap_examples() -> None:
                 return "0.0.0"
 
             def activate(self, app_ctx=None) -> None:
+                _ = app_ctx
                 return
 
     try:
@@ -112,6 +113,7 @@ def _bootstrap_examples() -> None:
                 return "0.0.0"
 
             def activate(self, app_ctx=None) -> None:
+                _ = app_ctx
                 return
 
     _register_example(HelloPlugin)
