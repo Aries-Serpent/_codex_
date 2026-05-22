@@ -77,9 +77,13 @@ _API_VERSION = "2022-11-28"
 
 
 def _redact_url_for_log(url: str) -> str:
-    """Return URL without query/fragment for safe logging."""
+    """Return URL without credentials, query, or fragment for safe logging."""
     parts = urlsplit(url)
-    return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
+    host = parts.hostname or ""
+    if ":" in host and not host.startswith("["):
+        host = f"[{host}]"
+    netloc = f"{host}:{parts.port}" if parts.port else host
+    return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
 
 
 class GitHubMCPPoster:
