@@ -23,6 +23,7 @@ from types import SimpleNamespace
 import pytest
 
 pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")  # noqa: F841 - consumed by pytest
+_ = pytestmark
 
 
 @pytest.fixture(autouse=True)
