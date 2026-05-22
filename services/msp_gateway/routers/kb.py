@@ -90,11 +90,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
     request_id = str(uuid.uuid4())
 
-    logger.info(
-        "KB query request %s from tenant %s",
-        sanitize_log_input(request_id),
-        sanitize_log_input(tenant_id),
-    )
+    logger.info("KB query request %s", sanitize_log_input(request_id))
 
     try:
         # Query the knowledge base

@@ -30,7 +30,9 @@ def sanitize_input(text: str) -> str:
     # CodeQL py/bad-tag-filter: include optional whitespace before the '>' on the
     # closing tag so that variants like ``</script >`` (with extra spaces) are
     # also stripped — matching browser HTML parsing behaviour.
-    sanitized = re.sub(r"<script[^>]*>.*?</script\s*>", "", sanitized, flags=re.IGNORECASE | re.DOTALL)
+    sanitized = re.sub(
+        r"<script[^>]*>.*?</script\b[^>]*>", "", sanitized, flags=re.IGNORECASE | re.DOTALL
+    )
     # HTML escape remaining content
     sanitized = html.escape(sanitized)
     # Remove SQL injection patterns (demonstration - use parameterized queries in production)

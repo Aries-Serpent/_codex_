@@ -415,15 +415,17 @@ async def list_indices(
             requested_root = base_index_root
 
         safe_index_root = _ensure_subpath(base_index_root, requested_root)
-        tenant_dir = _ensure_subpath(safe_index_root, safe_index_root / safe_tenant_id)
-
-        # Cosmetic taint-break: construct a fresh Path from the string representation so
-        # that CodeQL's inter-procedural taint analysis cannot propagate user-derived taint
-        # past this point.  The value is already fully validated by _validate_path_segment
-        # and _ensure_subpath above; this rebind is purely structural.
-        safe_tenant_dir = Path(str(tenant_dir))
-
-        if not safe_tenant_dir.exists():
+        if not safe_index_root.exists():
+            return ListIndicesResponse(indices=[], count=0)
+        safe_tenant_dir = next(
+            (
+                path
+                for path in safe_index_root.iterdir()
+                if path.is_dir() and path.name == safe_tenant_id
+            ),
+            None,
+        )
+        if safe_tenant_dir is None:
             return ListIndicesResponse(indices=[], count=0)
 
         indices = []

@@ -32,7 +32,7 @@ async def create_tenant(tenant_request: TenantCreateRequest):
     if not settings.admin_api_enabled:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
 
-    logger.info("Creating tenant: %s", sanitize_log_input(tenant_request.tenant_id))
+    logger.info("Creating tenant")
 
     try:
         tenant_data = tenant_registry.create_tenant(
@@ -55,7 +55,7 @@ async def create_tenant(tenant_request: TenantCreateRequest):
             metadata=tenant_data["metadata"],
         )
 
-        logger.info("Tenant created successfully: %s", sanitize_log_input(tenant_request.tenant_id))
+        logger.info("Tenant created successfully")
         return response
 
     except ValueError as e:
@@ -171,7 +171,7 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-    logger.info("Tenant updated: %s", sanitize_log_input(tenant_id))
+    logger.info("Tenant updated")
 
     return TenantResponse(
         tenant_id=updated_tenant["tenant_id"],
@@ -206,5 +206,5 @@ async def delete_tenant(tenant_id: str):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-    logger.info("Tenant deactivated: %s", sanitize_log_input(tenant_id))
+    logger.info("Tenant deactivated")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

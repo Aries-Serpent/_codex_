@@ -853,7 +853,12 @@ async def cli_run(req: CliRunRequest):
     # CodeQL py/log-injection: strip control characters from user-supplied command
     # before logging so a crafted command cannot inject fake log lines.
     _safe_cmd = re.sub(r"[\r\n\x00-\x1f\x7f]", "", str(req.command))[:80]
-    log.info("cli_run rc=%s %.0fms cmd=%r", record["returncode"], duration_ms, _safe_cmd)
+    log.info(
+        "cli_run rc=%s %.0fms cmd_len=%d",
+        record["returncode"],
+        duration_ms,
+        len(_safe_cmd),
+    )
     return record
 
 
@@ -1282,7 +1287,8 @@ async def api_proxy(req: ApiProxyRequest):
         raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log server-side, return generic message.
-        log.warning("api_proxy %s %s failed: %s", method, safe_url, exc)
+        safe_host = (_urlparse(safe_url).hostname or "").lower()
+        log.warning("api_proxy %s host=%s failed (%s)", method, safe_host, type(exc).__name__)
         raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
     duration_ms = (time.monotonic() - t0) * 1000
@@ -1296,7 +1302,8 @@ async def api_proxy(req: ApiProxyRequest):
     # CodeQL py/log-injection: use lazy formatting so tainted URL is not interpolated
     # into the message template; %s arguments are routed via the logging
     # framework which CodeQL recognises as safe.
-    log.info("api_proxy %s %s -> %s (%.0fms)", method, safe_url, resp.status_code, duration_ms)
+    safe_host = (_urlparse(safe_url).hostname or "").lower()
+    log.info("api_proxy %s host=%s -> %s (%.0fms)", method, safe_host, resp.status_code, duration_ms)
     return {
         "status_code": resp.status_code,
         "headers":     dict(resp.headers),

@@ -14,7 +14,7 @@ import time
 import urllib.request as _urllib_request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import requests
 
@@ -160,21 +160,29 @@ _ALLOWED_GH_PREFIXES = (
 def _assert_safe_github_url(url: str) -> str:
     """Validate ``url`` targets the GitHub REST/raw API and return a fresh string.
 
-    Rejects any URL that does not start with one of ``_ALLOWED_GH_PREFIXES``
+    Rejects any URL that does not target the allowlisted GitHub hosts
     (e.g. attempted SSRF via crafted owner/repo/path components that escape the
-    intended URL structure).  Returning the URL from the validator breaks
+    intended URL structure). Returning a reconstructed URL from the validator breaks
     CodeQL's same-variable taint flow into ``requests.get`` (CodeQL alerts
     py/partial-ssrf #10639, #10640).
     """
-    if not isinstance(url, str) or not url.startswith(_ALLOWED_GH_PREFIXES):
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if (
+        not isinstance(url, str)
+        or parsed.scheme != "https"
+        or host not in {"api.github.com", "raw.githubusercontent.com"}
+    ):
         raise ValueError(
             f"Refusing to fetch URL {url!r}: must target api.github.com or "
             "raw.githubusercontent.com (GitHub API allowlist)"
         )
-    # Additional guard: no '..' anywhere in the URL path.
-    if ".." in url:
+    if parsed.username or parsed.password:
+        raise ValueError(f"Refusing to fetch URL {url!r}: embedded credentials are not allowed")
+    # Reject traversal only in path segments; query fragments may legitimately include "..".
+    if any(segment == ".." for segment in parsed.path.split("/")):
         raise ValueError(f"Refusing to fetch URL {url!r}: contains '..' traversal sequence")
-    return url
+    return parsed.geturl()
 
 
 def gh_get(url: str):
