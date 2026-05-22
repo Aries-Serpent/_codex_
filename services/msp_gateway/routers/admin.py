@@ -144,21 +144,6 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
     if not settings.admin_api_enabled:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
 
-    updated_tenant = tenant_registry.update_tenant(
-        tenant_id,
-        name=update_request.name,
-        quota=update_request.quota,
-        policies=update_request.policies,
-        metadata=update_request.metadata,
-        active=update_request.active,
-    )
-
-    if not updated_tenant:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
-        )
-
-    # Update tenant using registry method (persists to database)
     try:
         updated_tenant = tenant_registry.update_tenant(
             tenant_id=tenant_id,
@@ -170,6 +155,11 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
         )
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+    if not updated_tenant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
+        )
 
     logger.info("Tenant updated")
 
@@ -194,11 +184,6 @@ async def delete_tenant(tenant_id: str):
     """
     if not settings.admin_api_enabled:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
-
-    if not tenant_registry.deactivate_tenant(tenant_id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
-        )
 
     # Delete (deactivate) tenant using registry method (persists to database and revokes API key)
     try:

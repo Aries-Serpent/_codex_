@@ -583,10 +583,11 @@ class SQLiteMemory:
 
     def search(self, query: dict[str, Any], limit: int = 10) -> list:
         q = next(iter(query.values()), "") if query else ""
-        rows = _db.execute(
-            "SELECT key, value FROM stm_entries WHERE value LIKE ? LIMIT ?",
-            (f"%{q}%", limit),
-        ).fetchall()
+        with _db_lock:
+            rows = _db.execute(
+                "SELECT key, value FROM stm_entries WHERE value LIKE ? LIMIT ?",
+                (f"%{q}%", limit),
+            ).fetchall()
         return [(r["key"], json.loads(r["value"])) for r in rows]
 
     def delete(self, key: str) -> bool:

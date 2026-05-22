@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from cli.task_sequence import setup_mlflow_tracking
-from configs.base_config import BASE_TRAINING_CONFIG, get_base_training_config
+import cli.task_sequence as task_sequence
+import configs.base_config as base_config
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,9 +22,9 @@ except ImportError:  # pragma: no cover - torch may be unavailable
 
 
 def test_base_config_returns_copy() -> None:
-    cfg = get_base_training_config()
+    cfg = base_config.get_base_training_config()
     cfg["model_name"] = "modified"
-    assert BASE_TRAINING_CONFIG["model_name"] != "modified"
+    assert base_config.BASE_TRAINING_CONFIG["model_name"] != "modified"
 
 
 @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
@@ -64,12 +64,10 @@ def test_gradient_accumulation_snippet_present() -> None:
 
 
 def test_setup_mlflow_tracking_dry_run(tmp_path) -> None:
-    assert setup_mlflow_tracking(tmp_path / "mlruns", dry_run=True) is False
+    assert task_sequence.setup_mlflow_tracking(tmp_path / "mlruns", dry_run=True) is False
 
 
 def test_setup_mlflow_tracking_file_uri(tmp_path, monkeypatch) -> None:
-    import cli.task_sequence as cts
-
     state = {"uri": ""}
 
     class _DummyMLflow(types.SimpleNamespace):
@@ -81,12 +79,12 @@ def test_setup_mlflow_tracking_file_uri(tmp_path, monkeypatch) -> None:
 
     monkeypatch.setitem(sys.modules, "mlflow", _DummyMLflow())
     monkeypatch.setattr(
-        cts,
+        task_sequence,
         "bootstrap_offline_tracking",
         lambda force=True: f"file://{(tmp_path / 'mlruns').resolve()}",
     )
     try:
-        result = setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False)
+        result = task_sequence.setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False)
     finally:
         sys.modules.pop("mlflow", None)
     assert result is True
