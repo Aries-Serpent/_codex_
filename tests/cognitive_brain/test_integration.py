@@ -130,14 +130,6 @@ def test_entanglement_correlation(integrated_system):
     # Create entangled pair
     pair_id = manager.create_entanglement("agent_compliance", "agent_security")
 
-    # Simulate correlated decisions
-    decisions = [
-        ("agent_compliance", "approve" if i % 2 == 0 else "reject") for i in range(10)
-    ]
-    decisions += [
-        ("agent_security", "approve" if i % 2 == 0 else "reject") for i in range(10)
-    ]
-
     # Measure correlation
     correlation = manager.measure_correlation(pair_id)
 
@@ -166,7 +158,7 @@ def test_uncertainty_prioritization(integrated_system):
         ("test_low", 10.0, 20.0, 0.1),  # Low energy, slow (20s), very low failure
     ]
 
-    for test_id, energy, time_seconds, failure_rate in test_cases:
+    for test_id, _, time_seconds, failure_rate in test_cases:
         from cognitive_brain.quantum.uncertainty import TestExecutionMetrics
 
         metrics = TestExecutionMetrics(
@@ -301,7 +293,6 @@ def test_performance_within_limits(integrated_system):
 def test_error_handling_and_rollback(integrated_system):
     """Test error handling and automatic rollback."""
     monitor = integrated_system["monitor"]
-    _config = integrated_system["config"]  # Available for future assertions
 
     # Simulate critical coherence degradation
     from cognitive_brain.quantum.base import QuantumFeature

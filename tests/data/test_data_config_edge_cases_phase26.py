@@ -151,10 +151,6 @@ class TestConfigEdgeCases:
 
     def test_config_schema_validation_failure(self):
         """Test config that fails schema validation"""
-        _invalid_schema = {
-            "unknown_field": "value",
-            "invalid_type": []
-        }
         # Should reject invalid schema
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 

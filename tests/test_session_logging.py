@@ -306,7 +306,7 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         ) as proc:
-            _out, _err = proc.communicate()
+            _, _err = proc.communicate()
         err_lower = (_err or "").lower()
         has_error_message = "failed" in err_lower or "permission" in err_lower
         assert proc.returncode != 0 and has_error_message

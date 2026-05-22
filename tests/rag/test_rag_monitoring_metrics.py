@@ -142,7 +142,8 @@ class TestMetricsAggregation:
                 start_time = time.time()
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
-                _elapsed = time.time() - start_time
+                elapsed = time.time() - start_time
+                assert elapsed >= 0
 
                 # Calculate throughput
                 if hasattr(metrics, 'get_throughput'):
@@ -252,9 +253,9 @@ class TestErrorTracking:
 
             # Log successes and errors
             if hasattr(tracker, 'log_error') and hasattr(tracker, 'log_success'):
-                for i in range(90):
+                for _ in range(90):
                     tracker.log_success()
-                for i in range(10):
+                for _ in range(10):
                     tracker.log_error("TestError", "Test error")
 
                 # Calculate error rate
@@ -274,7 +275,7 @@ class TestErrorTracking:
 
             # Log errors above threshold
             if hasattr(tracker, 'log_error'):
-                for i in range(20):  # 20 errors
+                for _ in range(20):  # 20 errors
                     tracker.log_error("TestError", "Test")
 
                 # Check if alert triggered
@@ -537,7 +538,7 @@ class TestAlerting:
 
             # Log errors
             if hasattr(tracker, 'log_error'):
-                for i in range(10):
+                for _ in range(10):
                     tracker.log_error("TestError", "Test")
 
                 # Check alerts

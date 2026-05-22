@@ -15,7 +15,7 @@ def test_mlflow_utils_tolerant_when_missing():
     except Exception as e:
         pytest.skip(f"tracking utils missing: {e}")
     try:
-        _run = MU.start_run(tracking_uri=None, experiment_name=None)
+        _ = MU.start_run(tracking_uri=None, experiment_name=None)
     except TypeError:
         pytest.skip("start_run signature mismatch")
     MU.log_params({"lr": 1e-3})

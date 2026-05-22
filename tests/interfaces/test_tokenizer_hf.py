@@ -223,7 +223,7 @@ def test_tokenizer_properties() -> None:
     assert isinstance(eos_id, int)
 
     # Test newer property names
-    _pad_token_id = tk.pad_token_id
+    _ = tk.pad_token_id
     _ = tk.eos_token_id
     # These may be None if not defined in the tokenizer
 
