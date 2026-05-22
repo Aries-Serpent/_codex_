@@ -159,7 +159,7 @@ async def infer(request: Request, infer_request: InferRequest):
 
                 logger.info("Retrieved %d documents for RAG", len(retrieved_docs))
             except Exception as e:
-                logger.warning("Error retrieving documents for RAG: %s", e)
+                logger.warning("Error retrieving documents for RAG (%s)", type(e).__name__)
                 # Continue without RAG
 
         # Build prompt
@@ -242,8 +242,13 @@ async def infer(request: Request, infer_request: InferRequest):
         return response
 
     except Exception as e:
-        logger.error("Error processing inference %s: %s", sanitize_log_input(request_id), e, exc_info=True)
+        logger.error(
+            "Error processing inference %s (%s)",
+            sanitize_log_input(request_id),
+            type(e).__name__,
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error generating inference: {str(e)}",
+            detail="Error generating inference",
         )

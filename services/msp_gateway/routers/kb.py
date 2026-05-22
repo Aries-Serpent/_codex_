@@ -91,7 +91,9 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
     request_id = str(uuid.uuid4())
 
     logger.info(
-        f"KB query request {sanitize_log_input(request_id)} from tenant {sanitize_log_input(tenant_id)}"
+        "KB query request %s from tenant %s",
+        sanitize_log_input(request_id),
+        sanitize_log_input(tenant_id),
     )
 
     try:
@@ -147,8 +149,13 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             detail="Knowledge base retrieval dependencies are not installed",
         )
     except Exception as e:
-        logger.error("Error processing KB query %s: %s", sanitize_log_input(request_id), e, exc_info=True)
+        logger.error(
+            "Error processing KB query %s (%s)",
+            sanitize_log_input(request_id),
+            type(e).__name__,
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error querying knowledge base: {str(e)}",
+            detail="Error querying knowledge base",
         )
