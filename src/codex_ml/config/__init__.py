@@ -851,16 +851,16 @@ def get_config(
         )
 
     try:
-        from hydra import compose, initialize_config_dir
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
+        import hydra
+    except ImportError as exc:
+        logger.debug(f"ImportError: {exc}")
         raise ImportError(
             "hydra-core is required for unified config loading. "
             "Install with: pip install hydra-core"
-        ) from e
+        ) from exc
 
-    with initialize_config_dir(str(CONFIG_PATH.resolve()), version_base=None):
-        return compose(config_name=config_name, overrides=overrides or [])
+    with hydra.initialize_config_dir(str(CONFIG_PATH.resolve()), version_base=None):
+        return hydra.compose(config_name=config_name, overrides=overrides or [])
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:

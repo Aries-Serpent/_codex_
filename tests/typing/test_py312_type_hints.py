@@ -239,6 +239,8 @@ class TestPython312SpecificFeatures:
             }
 
             assert config["name"] == "test"
+            assert config["version"] == "1.0"
+            assert config["debug"] is True
         except ImportError:
             pytest.skip("typing_extensions not available")
 

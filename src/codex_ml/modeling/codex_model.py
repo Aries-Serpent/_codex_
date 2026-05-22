@@ -20,7 +20,6 @@ _torch, _HAS_TORCH = optional_import("torch")
 _peft, _HAS_PEFT = optional_import("peft")
 
 AutoTokenizer = getattr(_transformers, "AutoTokenizer", None)
-TokenizerBase = getattr(_transformers, "PreTrainedTokenizerBase", object)
 LoraConfig = getattr(_peft, "LoraConfig", None)
 get_peft_model: Callable[..., Any] | None = getattr(_peft, "get_peft_model", None)
 

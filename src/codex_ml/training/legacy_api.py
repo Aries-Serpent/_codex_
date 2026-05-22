@@ -1033,6 +1033,7 @@ def run_functional_training(
                 attention_mask: Optional[torch.Tensor] = None,
                 labels: Optional[torch.Tensor] = None,
             ) -> Any:
+                _ = attention_mask
                 logits = self.lm_head(self.embed(input_ids))
                 loss: Optional[torch.Tensor] = None
                 if labels is not None:

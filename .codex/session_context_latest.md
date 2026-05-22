@@ -1,32 +1,32 @@
-# Session Context — 2026-05-22T15:15:17Z
-**Branch:** `copilot/fix-sqlite-memory-search-lock`  **PR:** #4540  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-22T19:00:36Z
+**Branch:** `copilot/remediate-scan-findings`  **PR:** #4541  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4980` (✅)
-- GraphQL remaining: `4980` (✅)
+- REST remaining: `4257` (✅)
+- GraphQL remaining: `4973` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4540 — Fix SQLite memory locking, duplicate tenant writes, GitHub URL validation, and test/doc quality issues
-State: `open`  Draft: `False`  Branch: `copilot/fix-sqlite-memory-search-lock` → `main`
+## 📋 PR #4541 — Address scan findings, apply review-thread fixes, and remediate qs Dependabot DoS findings
+State: `open`  Draft: `False`  Branch: `copilot/remediate-scan-findings` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-22)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-22)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-22)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-sqlite-memory-search-lock` (2026-05-22)
-- **PR Auto-Fix Check** — `failure` on `copilot/fix-sqlite-memory-search-lock` (2026-05-22)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-22)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/remediate-scan-findings` (2026-05-22)
+- **PR Auto-Fix Check** — `failure` on `copilot/remediate-scan-findings` (2026-05-22)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-22)
 
 ## 📝 Recent Commits
-- `d1d0d7a4` fix: address all 9 review comments — line lengths, torch patch, gh_post restrict — copilot-swe-agent[bot] (2026-05-22)
-- `a743de57` Merge remote-tracking branch 'origin/copilot/fix-sqlite-memory-search-lock' into — copilot-swe-agent[bot] (2026-05-22)
-- `48fdde2b` Initial plan for PR #4540 review fixes — copilot-swe-agent[bot] (2026-05-22)
-- `3d7b7dde` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
-- `496fb483` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
-- `ddc669cb` Apply remaining changes — copilot-swe-agent[bot] (2026-05-22)
-- `3810873a` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
-- `24ce1eeb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
+- `74a94cd5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
+- `19eb8734` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
+- `bf0975f6` Apply review feedback and upgrade qs lockfile resolutions — copilot-swe-agent[bot] (2026-05-22)
+- `da411678` Merge origin/main into copilot/remediate-scan-findings — copilot-swe-agent[bot] (2026-05-22)
+- `cf4cb9ad` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-22)
+- `475fa39a` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-22)
+- `eefd9327` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-22)
+- `0e920873` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

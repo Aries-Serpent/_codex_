@@ -18,9 +18,11 @@ from __future__ import annotations
 
 import sys
 
-from agents import __all__ as agents_all
-from agents import __doc__ as agents_doc
-from agents import __version__
+import agents
+
+agents_all = agents.__all__
+agents_doc = agents.__doc__
+agents_version = agents.__version__
 
 
 class TestAgentsPackageVersion:
@@ -31,15 +33,15 @@ class TestAgentsPackageVersion:
         # Arrange & Act
 
         # Assert
-        assert __version__ is not None
-        assert isinstance(__version__, str)
+        assert agents_version is not None
+        assert isinstance(agents_version, str)
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
         # Arrange & Act
 
         # Assert
-        assert __version__ == "0.0.0"
+        assert agents_version == "0.0.0"
 
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
@@ -55,50 +57,38 @@ class TestPhysicsOrchestratorExports:
     def test_physics_orchestrator_import(self) -> None:
         """Test PhysicsInspiredOrchestrator can be imported."""
         # Arrange & Act
-        from agents import PhysicsInspiredOrchestrator
-
         # Assert
-        assert PhysicsInspiredOrchestrator is not None
+        assert agents.PhysicsInspiredOrchestrator is not None
 
     def test_action_path_import(self) -> None:
         """Test ActionPath can be imported."""
         # Arrange & Act
-        from agents import ActionPath
-
         # Assert
-        assert ActionPath is not None
+        assert agents.ActionPath is not None
 
     def test_action_type_import(self) -> None:
         """Test ActionType can be imported."""
         # Arrange & Act
-        from agents import ActionType
-
         # Assert
-        assert ActionType is not None
+        assert agents.ActionType is not None
 
     def test_decision_state_import(self) -> None:
         """Test DecisionState can be imported."""
         # Arrange & Act
-        from agents import DecisionState
-
         # Assert
-        assert DecisionState is not None
+        assert agents.DecisionState is not None
 
     def test_force_vector_import(self) -> None:
         """Test ForceVector can be imported."""
         # Arrange & Act
-        from agents import ForceVector
-
         # Assert
-        assert ForceVector is not None
+        assert agents.ForceVector is not None
 
     def test_import_migration_orchestrator_import(self) -> None:
         """Test ImportMigrationOrchestrator can be imported."""
         # Arrange & Act
-        from agents import ImportMigrationOrchestrator
-
         # Assert
-        assert ImportMigrationOrchestrator is not None
+        assert agents.ImportMigrationOrchestrator is not None
 
 
 class TestAdvancedPhysicsPatternExports:
@@ -107,42 +97,32 @@ class TestAdvancedPhysicsPatternExports:
     def test_diffusion_flow_model_import(self) -> None:
         """Test DiffusionFlowModel can be imported."""
         # Arrange & Act
-        from agents import DiffusionFlowModel
-
         # Assert
-        assert DiffusionFlowModel is not None
+        assert agents.DiffusionFlowModel is not None
 
     def test_energy_landscape_import(self) -> None:
         """Test EnergyLandscape can be imported."""
         # Arrange & Act
-        from agents import EnergyLandscape
-
         # Assert
-        assert EnergyLandscape is not None
+        assert agents.EnergyLandscape is not None
 
     def test_swarm_intelligence_import(self) -> None:
         """Test SwarmIntelligence can be imported."""
         # Arrange & Act
-        from agents import SwarmIntelligence
-
         # Assert
-        assert SwarmIntelligence is not None
+        assert agents.SwarmIntelligence is not None
 
     def test_task_decomposer_import(self) -> None:
         """Test TaskDecomposer can be imported."""
         # Arrange & Act
-        from agents import TaskDecomposer
-
         # Assert
-        assert TaskDecomposer is not None
+        assert agents.TaskDecomposer is not None
 
     def test_reflection_loop_import(self) -> None:
         """Test ReflectionLoop can be imported."""
         # Arrange & Act
-        from agents import ReflectionLoop
-
         # Assert
-        assert ReflectionLoop is not None
+        assert agents.ReflectionLoop is not None
 
 
 class TestQuantumPhysicsExports:
@@ -151,42 +131,32 @@ class TestQuantumPhysicsExports:
     def test_quantum_physics_orchestrator_import(self) -> None:
         """Test QuantumPhysicsOrchestrator can be imported."""
         # Arrange & Act
-        from agents import QuantumPhysicsOrchestrator
-
         # Assert
-        assert QuantumPhysicsOrchestrator is not None
+        assert agents.QuantumPhysicsOrchestrator is not None
 
     def test_quantum_state_import(self) -> None:
         """Test QuantumState can be imported."""
         # Arrange & Act
-        from agents import QuantumState
-
         # Assert
-        assert QuantumState is not None
+        assert agents.QuantumState is not None
 
     def test_quantum_walk_explorer_import(self) -> None:
         """Test QuantumWalkExplorer can be imported."""
         # Arrange & Act
-        from agents import QuantumWalkExplorer
-
         # Assert
-        assert QuantumWalkExplorer is not None
+        assert agents.QuantumWalkExplorer is not None
 
     def test_superposition_explorer_import(self) -> None:
         """Test SuperpositionExplorer can be imported."""
         # Arrange & Act
-        from agents import SuperpositionExplorer
-
         # Assert
-        assert SuperpositionExplorer is not None
+        assert agents.SuperpositionExplorer is not None
 
     def test_pinn_validator_import(self) -> None:
         """Test PINNValidator can be imported."""
         # Arrange & Act
-        from agents import PINNValidator
-
         # Assert
-        assert PINNValidator is not None
+        assert agents.PINNValidator is not None
 
 
 class TestPhysicsCalculatorExports:
@@ -195,42 +165,32 @@ class TestPhysicsCalculatorExports:
     def test_quantum_operator_import(self) -> None:
         """Test QuantumOperator can be imported."""
         # Arrange & Act
-        from agents import QuantumOperator
-
         # Assert
-        assert QuantumOperator is not None
+        assert agents.QuantumOperator is not None
 
     def test_conservation_law_checker_import(self) -> None:
         """Test ConservationLawChecker can be imported."""
         # Arrange & Act
-        from agents import ConservationLawChecker
-
         # Assert
-        assert ConservationLawChecker is not None
+        assert agents.ConservationLawChecker is not None
 
     def test_path_integral_calculator_import(self) -> None:
         """Test PathIntegralCalculator can be imported."""
         # Arrange & Act
-        from agents import PathIntegralCalculator
-
         # Assert
-        assert PathIntegralCalculator is not None
+        assert agents.PathIntegralCalculator is not None
 
     def test_hamiltonian_evolver_import(self) -> None:
         """Test HamiltonianEvolver can be imported."""
         # Arrange & Act
-        from agents import HamiltonianEvolver
-
         # Assert
-        assert HamiltonianEvolver is not None
+        assert agents.HamiltonianEvolver is not None
 
     def test_physics_calculator_suite_import(self) -> None:
         """Test PhysicsCalculatorSuite can be imported."""
         # Arrange & Act
-        from agents import PhysicsCalculatorSuite
-
         # Assert
-        assert PhysicsCalculatorSuite is not None
+        assert agents.PhysicsCalculatorSuite is not None
 
 
 class TestQuantumGameTheoryExports:
@@ -239,34 +199,26 @@ class TestQuantumGameTheoryExports:
     def test_blue_red_team_simulator_import(self) -> None:
         """Test BlueRedTeamSimulator can be imported."""
         # Arrange & Act
-        from agents import BlueRedTeamSimulator
-
         # Assert
-        assert BlueRedTeamSimulator is not None
+        assert agents.BlueRedTeamSimulator is not None
 
     def test_quantum_inspired_game_engine_import(self) -> None:
         """Test QuantumInspiredGameEngine can be imported."""
         # Arrange & Act
-        from agents import QuantumInspiredGameEngine
-
         # Assert
-        assert QuantumInspiredGameEngine is not None
+        assert agents.QuantumInspiredGameEngine is not None
 
     def test_classical_game_engine_import(self) -> None:
         """Test ClassicalGameEngine can be imported."""
         # Arrange & Act
-        from agents import ClassicalGameEngine
-
         # Assert
-        assert ClassicalGameEngine is not None
+        assert agents.ClassicalGameEngine is not None
 
     def test_quantum_game_state_import(self) -> None:
         """Test QuantumGameState can be imported."""
         # Arrange & Act
-        from agents import QuantumGameState
-
         # Assert
-        assert QuantumGameState is not None
+        assert agents.QuantumGameState is not None
 
 
 class TestSelfHealingExports:
@@ -275,34 +227,26 @@ class TestSelfHealingExports:
     def test_self_healing_engine_import(self) -> None:
         """Test SelfHealingEngine can be imported."""
         # Arrange & Act
-        from agents import SelfHealingEngine
-
         # Assert
-        assert SelfHealingEngine is not None
+        assert agents.SelfHealingEngine is not None
 
     def test_detected_issue_import(self) -> None:
         """Test DetectedIssue can be imported."""
         # Arrange & Act
-        from agents import DetectedIssue
-
         # Assert
-        assert DetectedIssue is not None
+        assert agents.DetectedIssue is not None
 
     def test_issue_severity_import(self) -> None:
         """Test IssueSeverity can be imported."""
         # Arrange & Act
-        from agents import IssueSeverity
-
         # Assert
-        assert IssueSeverity is not None
+        assert agents.IssueSeverity is not None
 
     def test_issue_type_import(self) -> None:
         """Test IssueType can be imported."""
         # Arrange & Act
-        from agents import IssueType
-
         # Assert
-        assert IssueType is not None
+        assert agents.IssueType is not None
 
 
 class TestMentalMappingExports:
@@ -311,42 +255,32 @@ class TestMentalMappingExports:
     def test_mental_mapping_model_import(self) -> None:
         """Test MentalMappingModel can be imported."""
         # Arrange & Act
-        from agents import MentalMappingModel
-
         # Assert
-        assert MentalMappingModel is not None
+        assert agents.MentalMappingModel is not None
 
     def test_mental_node_import(self) -> None:
         """Test MentalNode can be imported."""
         # Arrange & Act
-        from agents import MentalNode
-
         # Assert
-        assert MentalNode is not None
+        assert agents.MentalNode is not None
 
     def test_mental_edge_import(self) -> None:
         """Test MentalEdge can be imported."""
         # Arrange & Act
-        from agents import MentalEdge
-
         # Assert
-        assert MentalEdge is not None
+        assert agents.MentalEdge is not None
 
     def test_node_type_import(self) -> None:
         """Test NodeType can be imported."""
         # Arrange & Act
-        from agents import NodeType
-
         # Assert
-        assert NodeType is not None
+        assert agents.NodeType is not None
 
     def test_edge_type_import(self) -> None:
         """Test EdgeType can be imported."""
         # Arrange & Act
-        from agents import EdgeType
-
         # Assert
-        assert EdgeType is not None
+        assert agents.EdgeType is not None
 
 
 class TestWorkflowNavigatorExports:
@@ -355,34 +289,26 @@ class TestWorkflowNavigatorExports:
     def test_workflow_navigator_import(self) -> None:
         """Test WorkflowNavigator can be imported."""
         # Arrange & Act
-        from agents import WorkflowNavigator
-
         # Assert
-        assert WorkflowNavigator is not None
+        assert agents.WorkflowNavigator is not None
 
     def test_workflow_import(self) -> None:
         """Test Workflow can be imported."""
         # Arrange & Act
-        from agents import Workflow
-
         # Assert
-        assert Workflow is not None
+        assert agents.Workflow is not None
 
     def test_workflow_step_import(self) -> None:
         """Test WorkflowStep can be imported."""
         # Arrange & Act
-        from agents import WorkflowStep
-
         # Assert
-        assert WorkflowStep is not None
+        assert agents.WorkflowStep is not None
 
     def test_step_status_import(self) -> None:
         """Test StepStatus can be imported."""
         # Arrange & Act
-        from agents import StepStatus
-
         # Assert
-        assert StepStatus is not None
+        assert agents.StepStatus is not None
 
 
 class TestAgentsAllExport:

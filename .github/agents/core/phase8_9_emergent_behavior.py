@@ -2213,4 +2213,6 @@ __all__ = [
     "RecoveryAction",
     "DegradedMode",
     "ProductionHardeningManager",
+    "K1_PHASE_8_9_TARGET",
+    "QUANTUM_ADVANTAGE_8_9_TARGET",
 ]

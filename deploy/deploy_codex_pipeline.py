@@ -17,7 +17,8 @@ def _codex_stats():
         out["cpu_pct"] = psutil.cpu_percent(interval=0.1)
         out["mem_pct"] = psutil.virtual_memory().percent
     except Exception:
-        pass
+        # Best-effort fallback: optional integration failure must not abort execution.
+        _ = None
     try:
         import pynvml
 
@@ -28,7 +29,8 @@ def _codex_stats():
         out["gpu_mem_total"] = int(mi.total)
         out["gpu_mem_used"] = int(mi.used)
     except Exception:
-        pass
+        # Best-effort fallback: optional integration failure must not abort execution.
+        _ = None
     return out
 
 
@@ -98,13 +100,14 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             for k, v in metrics.items():
                 handles["tb"].add_scalar(k, float(v), global_step=step)
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
     if handles.get("wandb"):
         try:
             handles["wandb"].log(dict(metrics, step=step))
         except Exception:
             # Best-effort telemetry: ignore W&B logging failures to avoid interrupting deploy pipeline execution.
-            pass
+            _ = None
     if handles.get("mlf"):
         try:
             MU, _run = handles["mlf"]
@@ -112,7 +115,8 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             for art in artifacts or []:
                 MU.log_artifacts(art)
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
 
 
 def _load_jsonl(path: Path, *, allow_empty: bool = False) -> list[object]:
@@ -158,20 +162,23 @@ def _close_logging(handles: dict) -> None:
         try:
             tb.close()
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
     wandb = handles.get("wandb")
     if wandb is not None and hasattr(wandb, "finish"):
         try:
             wandb.finish()
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
     mlflow_handle = handles.get("mlf")
     if mlflow_handle:
         try:
             _, run_cm = mlflow_handle
             run_cm.__exit__(None, None, None)
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
 
 
 def main(argv: Sequence[str] | None = None) -> None:

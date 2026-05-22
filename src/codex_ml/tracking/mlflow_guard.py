@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"
 
 __all__ = [
+    "DEFAULT_LITERAL_LOCAL_URI",
     "GuardDecision",
     "bootstrap_offline_tracking",
     "bootstrap_offline_tracking_decision",

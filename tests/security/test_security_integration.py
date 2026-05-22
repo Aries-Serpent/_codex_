@@ -4,13 +4,8 @@ Integration tests for security modules.
 
 import os
 import tempfile
-from typing import NoReturn
 
 import pytest
-
-
-def _skip_test(message: str) -> NoReturn:
-    pytest.skip(message)
 
 
 class TestSecurityMasking:
@@ -244,10 +239,10 @@ class TestEncryptedStorage:
         try:
             from codex.security.storage import generate_key
             key = generate_key()
-            monkeypatch.setenv("ENCRYPTION_KEY", key)
-            return key
         except ImportError:
-            _skip_test("cryptography package not installed")
+            raise pytest.skip.Exception("cryptography package not installed")
+        monkeypatch.setenv("ENCRYPTION_KEY", key)
+        return key
 
     def test_store_and_load_secret(self, temp_dir, encryption_key):
         """Test basic encryption and decryption."""

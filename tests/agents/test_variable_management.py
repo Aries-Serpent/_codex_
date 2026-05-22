@@ -392,6 +392,7 @@ class TestLiveTestDryRun(unittest.TestCase):
         VAR = "COPILOT_DELEGATION_TEST"
 
         def side_effect(method, path, body=None, token=None, brain=None):
+            _ = brain
             if method == "GET" and "variables" in path and VAR not in path:
                 # list — before
                 return (200, {"total_count": 0, "variables": []})
@@ -409,6 +410,7 @@ class TestLiveTestDryRun(unittest.TestCase):
         # Override get_repo_var calls in sequence
         call_count = {"get": 0}
         def side_effect_v2(method, path, body=None, token=None, brain=None):
+            _ = brain
             if method == "GET" and "variables" in path and VAR not in path:
                 return (200, {"total_count": 0, "variables": []})
             if method == "GET" and VAR in path:

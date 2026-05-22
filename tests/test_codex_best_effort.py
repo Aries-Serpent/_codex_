@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import sys
 import types
 from pathlib import Path
@@ -29,7 +30,7 @@ def test_base_config_returns_copy() -> None:
 
 @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
 def test_evaluate_batches_runs() -> None:
-    from src.training.functional_training import evaluate_batches
+    functional_training = importlib.import_module("src.training.functional_training")
 
     class _ToyDataset(torch.utils.data.Dataset):
         def __len__(self) -> int:
@@ -47,7 +48,7 @@ def test_evaluate_batches_runs() -> None:
             }
 
     loader = DataLoader(_ToyDataset(), batch_size=1)
-    metrics = evaluate_batches(
+    metrics = functional_training.evaluate_batches(
         _ToyModel(),
         loader,
         lambda data: {"avg": float(data[0].mean())},

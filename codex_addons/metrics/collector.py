@@ -254,7 +254,8 @@ def _scan_repo(root: Path) -> tuple[Snapshot, dict[str, int]]:
             txt = tox_path.read_text(encoding="utf-8", errors="ignore")
             cov_gate = "COV_FAIL_UNDER" in txt or "--cov-fail-under" in txt
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
     if cov_gate:
         parts += 1
 

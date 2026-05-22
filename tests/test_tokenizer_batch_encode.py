@@ -2,18 +2,12 @@
 
 from __future__ import annotations
 
-from typing import NoReturn
-
 import pytest
 
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
 
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
-
-
-def _skip_tokenizer_unavailable() -> NoReturn:
-    pytest.skip("HuggingFace tokenizer not available")
 
 
 class DummyTokenizer:
@@ -62,9 +56,10 @@ class DummyTokenizer:
 def hf_tok():
     """Session-scoped fixture for a real HF tokenizer adapter, if available."""
     try:
-        return HFTokenizerAdapter.load()
-    except Exception as _err:
-        _skip_tokenizer_unavailable()
+        tok = HFTokenizerAdapter.load()
+    except (ImportError, OSError, RuntimeError, TypeError, ValueError):
+        pytest.skip("HuggingFace tokenizer not available")
+    return tok
 
 
 @pytest.fixture

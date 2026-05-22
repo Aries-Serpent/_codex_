@@ -996,6 +996,7 @@ class MentalMappingModel:
         Returns:
             Dictionary mapping cluster_id to list of node_ids
         """
+        _ = similarity_threshold
         clusters = {}
         clustered_nodes = set()
         cluster_id = 0

@@ -26,6 +26,7 @@ SAFE_MODE = True
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 START_TS = datetime.utcnow().isoformat() + "Z"
 STEPN = 0
+_ = (SAFE_MODE, DO_NOT_ACTIVATE_GITHUB_ACTIONS)
 
 
 def step(n, desc):  # annotate steps in logs
@@ -177,7 +178,7 @@ if not clean:
 
 # 1.2 Load guardrails (best effort)
 README_PATHS = [p for p in REPO_ROOT.glob("README*") if p.is_file()]
-CONTRIB_PATHS = [p for p in REPO_ROOT.glob("CONTRIBUTING*") if p.is_file()]
+_ = README_PATHS
 
 # 1.3 Inventory
 IGNORE_DIRS = {
@@ -533,7 +534,7 @@ print("DONE. See ./.codex/ for outputs.")
 
 # Exit code: non-zero if unresolved errors exist
 exit_code = 0
-if ERRORS.exists() and (ERROR_S := ERRORS.read_text(encoding="utf-8").strip()):
+if ERRORS.exists() and ERRORS.read_text(encoding="utf-8").strip():
     # a non-empty errors.ndjson -> unresolved
     exit_code = 2
 sys.exit(exit_code)

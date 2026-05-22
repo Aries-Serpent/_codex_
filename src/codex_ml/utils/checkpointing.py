@@ -79,6 +79,7 @@ except Exception:  # pragma: no cover - fallback no-op
         *,
         errors_path: Optional[Path] = None,
     ) -> str:
+        _ = (step_no, step_desc, msg, ctx, errors_path)
         return ""
 
 

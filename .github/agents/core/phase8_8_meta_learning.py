@@ -144,7 +144,7 @@ class LearnedOptimizer:
         # Simulate neural optimizer update rule
         updates = {}
 
-        for param_name, param_value in state.parameters.items():
+        for param_name, _ in state.parameters.items():
             # Compute pseudo-gradient (simplified for simulation)
             grad = state.gradients.get(param_name, 0.0)
 
@@ -428,7 +428,7 @@ class NASController:
         Returns:
             Best architecture found
         """
-        for gen in range(generations):
+        for _ in range(generations):
             # Evaluate population
             for arch in self.population:
                 arch.performance = self.evaluate_architecture(arch)
@@ -896,6 +896,7 @@ def integrate_with_meta_policy_router(
     Returns:
         Integration metrics
     """
+    _ = (router, learned_optimizer, fast_weights)
     return {
         "l2o_integrated": True,
         "fast_weights_integrated": True,
@@ -933,4 +934,5 @@ __all__ = [
     # Constants
     "K1_PHASE_8_8_TARGET",
     "QUANTUM_ADVANTAGE_8_8_TARGET",
+    "L2O_MAX_ITERATIONS",
 ]

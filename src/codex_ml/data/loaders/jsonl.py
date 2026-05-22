@@ -31,7 +31,6 @@ from typing import Any  # noqa: E402
 
 from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402
 
-CacheKey = tuple[str, tuple[float, float, float], int, bool]
 DEFAULT_CACHE_DIR = Path("artifacts/data_cache")
 
 
