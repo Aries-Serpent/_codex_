@@ -124,9 +124,9 @@ The 14 previously-blocked finding-IDs that have now been concretely accounted fo
 | targeted test | `python -m pytest tests/test_sentencepiece_adapter.py` | 8 passed, 4 skipped, 1 warning |
 | syntax check | `python -c "import ast; ast.parse(open(<file>).read())"` for both phase8_10 and phase8_11 | OK |
 | code scanning API (sourced as required by task statement) | `GET /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open` (via GitHub MCP tool) | `403 Resource not accessible by integration` (recorded as blocker) |
-| dependency-scan artifact run 26199091939 | downloaded `dependency-scan-results.zip` → `pip-audit.json` | 325 deps, 7 vulns; no CodeQL alert enumeration |
-| sbom-reports artifact run 26199091939 | downloaded `sbom-reports.zip` | SBOM only; no CodeQL alert enumeration |
-| dependency-scan artifact run 26262151880 (new) | downloaded `dependency-scan-results.zip` → `pip-audit.json` | 349 deps, 2 vulns remaining (`diskcache==5.6.3` / CVE-2025-69872, `sqlitedict==2.1.0` / CVE-2024-35515); both have `fix_versions: []` — out of scope for unused-global remediation. |
+| dependency-scan artifact run 26199091939 (id `7125084971`) | downloaded `dependency-scan-results.zip` (6,110 B); sha256 `fcdb7367acc57010625407d59de4e93126b4ea6f233c49887b9b6560f81cdd2e` ✅ matches task statement; extracted `pip-audit.json` | 325 deps, 7 vulns; **no `unused`/`codeql`/`alert` substrings**; no CodeQL alert enumeration |
+| sbom-reports artifact run 26199091939 (id `7125082754`) | downloaded `sbom-reports.zip` (78,164 B); sha256 `f5fbfd23a9d8d53ca6135718c53231b45c1c9fd7a73b684666d086433f58dd07` ✅ matches task statement; extracted `sbom.json` + `sbom.xml` | CycloneDX 1.6, 326 components, **no `vulnerabilities` key**, no `unused`/`codeql`/`alert` substrings; pure dependency manifest |
+| dependency-scan artifact run 26262151880 (new, id `7150601403`) | downloaded `dependency-scan-results.zip` → `pip-audit.json` | 349 deps, 2 vulns remaining (`diskcache==5.6.3` / CVE-2025-69872, `sqlitedict==2.1.0` / CVE-2024-35515); both have `fix_versions: []` — out of scope for unused-global remediation. |
 
 ---
 
