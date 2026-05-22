@@ -16,7 +16,7 @@ name: Security Scanning Suite
         type: choice
         options:
           - 'all'
-          - 'codeql'
+          - 'codeql' # pragma: allowlist secret
           - 'dependency'
           - 'semgrep'
         default: 'all'
@@ -238,8 +238,8 @@ jobs:
         continue-on-error: true
         run: |
           detect-secrets scan --all-files --force-use-all-plugins > .secrets.baseline 2> detect-secrets.log
-          SECRETS_COUNT=$(grep -c "filename" .secrets.baseline || echo "0")
-          echo "secrets_found=$SECRETS_COUNT" >> $GITHUB_OUTPUT
+          SECRETS_COUNT=$(python -c "import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results') or {}).values())))" 2>/dev/null || echo "0")
+          echo "secrets_found=$SECRETS_COUNT" >> "$GITHUB_OUTPUT"
       - name: Generate secret-scan summary
         if: always()
         shell: bash
@@ -318,6 +318,7 @@ jobs:
           pip --version >> sbom-tool-versions.txt
       - name: Generate SBOM
         run: |
+          set -euo pipefail
           # cyclonedx-bom v7.x changed the CLI: --format → --of, --outfile → -o
           cyclonedx-py environment --of JSON -o sbom.json 2>&1 | tee sbom-json.log
           cyclonedx-py environment --of XML  -o sbom.xml  2>&1 | tee sbom-xml.log

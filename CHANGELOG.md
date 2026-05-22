@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4536 security-scanning-suite review concerns — 2026-05-22T02:20Z)
+- Addressed all 3 review-thread concerns for `security-scanning-suite` and session living docs:
+  - `.github/workflows/security-scanning-suite.yml`: replaced grep-based detect-secrets count with JSON parsing of `.secrets.baseline.results` for accurate totals.
+  - `.github/workflows/security-scanning-suite.yml`: added `set -euo pipefail` to SBOM generation so `cyclonedx-py` failures are not masked by `tee`.
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`: realigned current-session section to PR #4536 scope to remove unused-global remediation scope mismatch.
+- Added false-positive secret allowlist pragma for the flagged workflow option entry in `security-scanning-suite.yml`.
+- Updated living docs and accountability artifacts with readiness-to-100 tasks (PDA entry today + accountability report freshness).
+
 ### Fixed (auto-update — PR #4536)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4536 (SHA `f46c7b1f`) at 2026-05-22T02:04Z [auto-generated]
 
