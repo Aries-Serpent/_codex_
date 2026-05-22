@@ -249,9 +249,15 @@ def gh_post(url: str, payload: dict[str, Any]) -> Any:
     """POST *payload* to the GitHub API and return the parsed JSON response.
 
     Validate *url* with :func:`_assert_safe_github_url` to enforce the same
-    SSRF protections used by :func:`gh_get`.
+    SSRF protections used by :func:`gh_get`, then additionally restrict to
+    ``api.github.com`` to avoid forwarding the Authorization header to the
+    raw content host.
     """
     safe_url = _assert_safe_github_url(url)
+    if urlparse(safe_url).hostname != "api.github.com":
+        raise ValueError(
+            f"gh_post() is restricted to api.github.com; refusing {safe_url!r}"
+        )
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = _urllib_request.Request(
         safe_url,

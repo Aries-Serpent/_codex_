@@ -44,7 +44,10 @@ class TestStableChecksum:
         seq1 = [1, 2, 3]
         seq2 = [1, 2, 4]
 
-        assert data_utils._stable_checksum_of_seq_repr(seq1) != data_utils._stable_checksum_of_seq_repr(seq2)
+        assert (
+            data_utils._stable_checksum_of_seq_repr(seq1)
+            != data_utils._stable_checksum_of_seq_repr(seq2)
+        )
 
     def test_checksum_empty_sequence(self):
         """Test checksum for empty sequence."""
@@ -134,12 +137,16 @@ class TestSplitDataset:
             items = list(range(20))
 
             # First call - creates cache
-            train1, val1 = data_utils.split_dataset(items, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train1, val1 = data_utils.split_dataset(
+                items, train_ratio=0.8, seed=42, cache_path=cache_path
+            )
 
             assert cache_path.exists()
 
             # Second call - uses cache
-            train2, val2 = data_utils.split_dataset(items, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train2, val2 = data_utils.split_dataset(
+                items, train_ratio=0.8, seed=42, cache_path=cache_path
+            )
 
             assert train1 == train2
             assert val1 == val2
@@ -159,11 +166,15 @@ class TestSplitDataset:
 
             # First call with 20 items
             items1 = list(range(20))
-            train1, _val1 = data_utils.split_dataset(items1, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train1, _val1 = data_utils.split_dataset(
+                items1, train_ratio=0.8, seed=42, cache_path=cache_path
+            )
 
             # Second call with different length - cache should be invalidated
             items2 = list(range(30))
-            train2, _val2 = data_utils.split_dataset(items2, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train2, _val2 = data_utils.split_dataset(
+                items2, train_ratio=0.8, seed=42, cache_path=cache_path
+            )
 
             assert len(train1) == 16
             assert len(train2) == 24  # New split, not from cache
@@ -236,13 +247,8 @@ class TestRequireTorch:
     @patch('training.data_utils.torch', None)
     def test_require_torch_when_unavailable(self):
         """Test _require_torch raises when torch is unavailable."""
-        # Re-import to get patched version
-        module = _data_utils_module()
-        importlib.reload(module)
-
-        if module.torch is None:
-            with pytest.raises(ModuleNotFoundError, match="torch is required"):
-                module._require_torch()
+        with pytest.raises(ModuleNotFoundError, match="torch is required"):
+            data_utils._require_torch()
 
 
 class TestEdgeCases:
