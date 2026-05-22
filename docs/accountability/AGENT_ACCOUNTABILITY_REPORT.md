@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-22T02:43Z [PR4536-comment-review-gate-cache-fix]
+
+**Session:** PR4536-comment-review-gate-cache-fix | **Branch:** `copilot/remediate-unused-globals` | **PR:** #4536
+
+### Completed
+- Investigated failing `PR Comment Review Gate` runs via GitHub Actions MCP logs (`26265153964`) and identified setup failure in `actions/setup-python` cache dependency detection under sparse checkout.
+- Applied minimal workflow fix in `.github/workflows/comment-review-gate.yml`:
+  - Added `cache-dependency-path: scripts/ci/check_pr_comments.py` to the setup-python step.
+- Updated `CHANGELOG.md` for this fix.
+
+### Validation
+- `python scripts/ci/sync_tracked_files.py --fix` ✅
+- `python -m ruff check src/ tests/ --fix` ✅ (no retained changes in tracked files after reverting unrelated auto-format diff)
+- `python scripts/ci/mypy_baseline.py --require-baseline` ⚠️ pre-existing baseline regression remains (`128 > 122`, unchanged by this patch)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ⚠️ reports pre-existing readiness drift in this branch (Pattern 9 + Pattern 25)
+
+---
+
 ## SESSION SUMMARY — 2026-05-22T02:34Z [PR4536-approval-monitor-and-wrapup-sync]
 
 **Session:** PR4536-approval-monitor-and-wrapup-sync | **Branch:** `copilot/remediate-unused-globals` | **PR:** #4536

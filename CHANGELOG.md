@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4536 comment-review-gate cache path fix — 2026-05-22T02:43Z)
+- Fixed `.github/workflows/comment-review-gate.yml` setup-python caching in sparse-checkout mode by adding:
+  - `cache-dependency-path: scripts/ci/check_pr_comments.py`
+- This prevents `actions/setup-python` from failing with
+  `No file ... matched to [**/requirements.txt or **/pyproject.toml]` in issue-comment and review-triggered runs.
+
 ### Fixed (PR #4536 approval-monitor docs/accountability refresh — 2026-05-22T02:34Z)
 - Refreshed PR #4536 living docs after maintainer-approved workflow dispatch:
   - Updated `docs/roadmap/review_codebase_next_changes_whats_next.md` current-session status to reflect ~24/60 timebox usage, active approved-workflow queue state on head `a9e47ed`, and continuation prompt focused on latest non-superseded runs.
