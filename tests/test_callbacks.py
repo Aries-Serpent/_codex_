@@ -25,7 +25,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
         from codex_ml.training.callbacks import EarlyStopping
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
-        raise pytest.skip.Exception(f"EarlyStopping import failed: {e}") from e
+        pytest.skip(f"EarlyStopping import failed: {e}")
     try:
         # Prefer constructor with mode if available.
         return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
@@ -33,7 +33,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
         # Constructor didn't accept `mode` — fall back to old behavior.
         pass
     except Exception as e:
-        raise pytest.fail.Exception(f"Unexpected error constructing EarlyStopping: {e}") from e
+        pytest.fail(f"Unexpected error constructing EarlyStopping: {e}")
 
     try:
         es = EarlyStopping(patience=patience, min_delta=min_delta)

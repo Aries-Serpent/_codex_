@@ -58,7 +58,7 @@ def hf_tok():
     try:
         tok = HFTokenizerAdapter.load()
     except Exception:
-        raise pytest.skip.Exception("HuggingFace tokenizer not available")
+        pytest.skip("HuggingFace tokenizer not available")
     return tok
 
 
