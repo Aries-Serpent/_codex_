@@ -33,7 +33,6 @@ try:
     from codex.quantum_orchestrator import (
         DiracSpinor,
         OrchestratorState,
-        PhysicsConstants,
         TaskState,
         TaskVector,
         create_observable_orchestrator,
@@ -65,22 +64,15 @@ except ImportError as e:
 # ============================================================================
 
 
-def create_test_tasks(
-    count: int, constants: Optional[PhysicsConstants] = None
-) -> dict[str, TaskState]:
+def create_test_tasks(count: int) -> dict[str, TaskState]:
     """
     Create a set of test tasks for demonstration.
 
     Args:
         count: Number of tasks to create
-        constants: Physics constants (optional)
-
     Returns:
         Dictionary of task_id -> TaskState
     """
-    if constants is None:
-        constants = PhysicsConstants()
-
     tasks = {}
     for i in range(count):
         # Create normalized spinor
@@ -210,7 +202,7 @@ def run(tasks: int, steps: int, dt: float, output: Optional[str], verbose: bool)
     )
 
     # Create test tasks
-    test_tasks = create_test_tasks(tasks, orchestrator.orchestrator.constants)
+    test_tasks = create_test_tasks(tasks)
 
     # Initialize state (set orchestrator's internal state)
     orchestrator.orchestrator.state = OrchestratorState(

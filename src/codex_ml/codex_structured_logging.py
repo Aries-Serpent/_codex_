@@ -82,20 +82,20 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
 
 
 def get_session_logger() -> SessionLogger:
-    logger = _session_logger_ctx.get()
-    if isinstance(logger, SessionLogger):
-        return logger
-    if logger is _SESSION_LOGGER_DISABLED:
+    session_logger = _session_logger_ctx.get()
+    if isinstance(session_logger, SessionLogger):
+        return session_logger
+    if session_logger is _SESSION_LOGGER_DISABLED:
         raise RuntimeError("Session logging unavailable")
     session_id = get_session_id()
     try:
-        logger = SessionLogger(session_id, _session_log_dir())
+        session_logger = SessionLogger(session_id, _session_log_dir())
     except OSError as exc:
-        logger.debug(f"OSError: {exc}")  # type: ignore[union-attr]
+        logger.debug("OSError: %s", exc)
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
         raise RuntimeError("Session logging unavailable") from exc
-    _session_logger_ctx.set(logger)
-    return logger
+    _session_logger_ctx.set(session_logger)
+    return session_logger
 
 
 def _json_safe(value: Any) -> Any:
@@ -419,12 +419,12 @@ def capture_exceptions(
                 return 1
 
             if result is None:
-                logger.debug("Exception caught, returning", exc_info=True)  # type: ignore[union-attr]
+                log.debug("Exception caught, returning", exc_info=True)
                 return 0
             try:
                 return int(result)
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)  # type: ignore[union-attr]
+                log.warning("Exception occurred", exc_info=True)
                 return 0
 
         return _wrapped

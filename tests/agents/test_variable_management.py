@@ -368,7 +368,7 @@ class TestBrainClientMechanism(unittest.TestCase):
             try:
                 vm.list_repo_vars("Aries-Serpent", "_codex_")
             except (RuntimeError, OSError, KeyError, ValueError):
-                _ = None  # brain error may propagate differently without full import
+                pass  # brain error may propagate differently without full import
             os.environ.pop("CODEX_MASTER_KEY", None)
 
 
@@ -390,22 +390,6 @@ class TestLiveTestDryRun(unittest.TestCase):
         """Happy-path: every API call returns expected status."""
         OWNER, REPO = "Aries-Serpent", "_codex_"
         VAR = "COPILOT_DELEGATION_TEST"
-
-        def side_effect(method, path, body=None, token=None, brain=None):
-            _ = brain
-            if method == "GET" and "variables" in path and VAR not in path:
-                # list — before
-                return (200, {"total_count": 0, "variables": []})
-            if method == "POST":
-                return (201, None)
-            if method == "GET" and VAR in path and body is None:
-                # get after create
-                return (200, {"name": VAR, "value": "delegation_active_W118"})
-            if method == "PATCH":
-                return (204, None)
-            if method == "DELETE":
-                return (204, None)
-            return (200, {})
 
         # Override get_repo_var calls in sequence
         call_count = {"get": 0}

@@ -82,7 +82,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
 
     # Try Python context manager first
     hooks = _import_any(["src.codex.logging.session_hooks"])
-    used = None
+    used_context = False
     try:
         if hooks:
             importlib.reload(hooks)
@@ -96,14 +96,14 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
             if cm is not None:
                 with cm:
                     time.sleep(0.01)
-                used = "python_cm"
+                used_context = True
     except Exception as e:
         logging.exception("session logging hook raised: %s: %s", e.__class__.__name__, e)
         if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
             pytest.skip(f"Required session logging hook not available: {e!r}")
         pytest.fail(f"Session logging hook failed: {e!r}")
 
-    if used is None:
+    if not used_context:
         # Fallback to shell helpers via source
         sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
         if not sh.exists():
@@ -111,7 +111,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
         cmd = f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
         cp = subprocess.run(["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True)
         assert cp.returncode == 0, cp.stderr
-        used = "shell"
+        used_context = True
 
     # Assert NDJSON exists and has start/end markers
     assert ndjson_file.exists()
