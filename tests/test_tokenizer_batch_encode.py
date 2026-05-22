@@ -63,9 +63,9 @@ def hf_tok():
     """Session-scoped fixture for a real HF tokenizer adapter, if available."""
     try:
         return HFTokenizerAdapter.load()
-    except Exception as _err:
+    except Exception:
         _skip_tokenizer_unavailable()
-        raise AssertionError("unreachable") from _err
+        return None
 
 
 @pytest.fixture

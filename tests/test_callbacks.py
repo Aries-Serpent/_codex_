@@ -34,7 +34,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
         _skip_test(f"EarlyStopping import failed: {e}")
-        raise AssertionError("unreachable") from e
+        return None
     else:
         try:
             # Prefer constructor with mode if available.
@@ -45,20 +45,20 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
                 es = EarlyStopping(patience=patience, min_delta=min_delta)
             except Exception as e:
                 _fail_test(f"Failed to instantiate EarlyStopping without 'mode': {e}")
-                raise AssertionError("unreachable") from e
+                return None
 
             # Try to set the mode attribute in a backward-compatible manner.
             try:
                 es.mode = mode
-            except Exception as _err:
+            except Exception:
                 # If we can't set mode, skip the tests because we can't ensure expected behavior.
                 _skip_test("EarlyStopping does not accept or expose 'mode' parameter/attribute")
-                raise AssertionError("unreachable") from _err
+                return None
 
             return es
         except Exception as e:
             _fail_test(f"Unexpected error constructing EarlyStopping: {e}")
-            raise AssertionError("unreachable") from e
+            return None
 
 
 def _assert_step_bool(es: Any, value: float, expected: bool):
@@ -70,11 +70,11 @@ def _assert_step_bool(es: Any, value: float, expected: bool):
         result = es.step(value)
     except Exception as e:
         _fail_test(f"Calling EarlyStopping.step({value}) raised an exception: {e}")
-        raise AssertionError("unreachable") from e
+        return
 
     if not isinstance(result, bool):
         _fail_test(f"EarlyStopping.step({value}) returned non-bool value: {result!r}")
-        raise AssertionError("unreachable")
+        return
 
     assert result is expected
 
