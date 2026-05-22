@@ -26,31 +26,31 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
         raise pytest.skip.Exception(f"EarlyStopping import failed: {e}") from e
-    else:
-        try:
-            # Prefer constructor with mode if available.
-            return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
-        except TypeError:
-            # Constructor didn't accept `mode` — fall back to old behavior.
-            try:
-                es = EarlyStopping(patience=patience, min_delta=min_delta)
-            except Exception as e:
-                raise pytest.fail.Exception(
-                    f"Failed to instantiate EarlyStopping without 'mode': {e}"
-                ) from e
+    try:
+        # Prefer constructor with mode if available.
+        return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
+    except TypeError:
+        # Constructor didn't accept `mode` — fall back to old behavior.
+        pass
+    except Exception as e:
+        raise pytest.fail.Exception(f"Unexpected error constructing EarlyStopping: {e}") from e
 
-            # Try to set the mode attribute in a backward-compatible manner.
-            try:
-                es.mode = mode
-            except Exception as exc:
-                # If we can't set mode, skip the tests because we can't ensure expected behavior.
-                raise pytest.skip.Exception(
-                    "EarlyStopping does not accept or expose 'mode' parameter/attribute"
-                ) from exc
+    try:
+        es = EarlyStopping(patience=patience, min_delta=min_delta)
+    except Exception as e:
+        raise pytest.fail.Exception(
+            f"Failed to instantiate EarlyStopping without 'mode': {e}"
+        ) from e
 
-            return es
-        except Exception as e:
-            raise pytest.fail.Exception(f"Unexpected error constructing EarlyStopping: {e}") from e
+    # Try to set the mode attribute in a backward-compatible manner.
+    try:
+        es.mode = mode
+    except Exception as exc:
+        # If we can't set mode, skip the tests because we can't ensure expected behavior.
+        raise pytest.skip.Exception(
+            "EarlyStopping does not accept or expose 'mode' parameter/attribute"
+        ) from exc
+    return es
 
 
 def _assert_step_bool(es: Any, value: float, expected: bool):
