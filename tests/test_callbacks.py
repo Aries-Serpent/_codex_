@@ -42,11 +42,11 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
             # Try to set the mode attribute in a backward-compatible manner.
             try:
                 es.mode = mode
-            except Exception:
+            except Exception as exc:
                 # If we can't set mode, skip the tests because we can't ensure expected behavior.
                 raise pytest.skip.Exception(
                     "EarlyStopping does not accept or expose 'mode' parameter/attribute"
-                )
+                ) from exc
 
             return es
         except Exception as e:

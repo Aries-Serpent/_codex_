@@ -22,7 +22,7 @@ import agents
 
 agents_all = agents.__all__
 agents_doc = agents.__doc__
-__version__ = agents.__version__
+agents_version = agents.__version__
 
 
 class TestAgentsPackageVersion:
@@ -33,15 +33,15 @@ class TestAgentsPackageVersion:
         # Arrange & Act
 
         # Assert
-        assert __version__ is not None
-        assert isinstance(__version__, str)
+        assert agents_version is not None
+        assert isinstance(agents_version, str)
 
     def test_version_value(self) -> None:
         """Test version has expected value."""
         # Arrange & Act
 
         # Assert
-        assert __version__ == "0.0.0"
+        assert agents_version == "0.0.0"
 
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
