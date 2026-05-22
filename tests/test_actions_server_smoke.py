@@ -35,7 +35,7 @@ def test_server_health_and_branches_smoke(tmp_path):
 def test_assert_safe_github_url_requires_string():
     from tools import actions_server
 
-    with pytest.raises(ValueError, match="URL must be a string"):
+    with pytest.raises(ValueError, match="must be a string"):
         actions_server._assert_safe_github_url(None)  # type: ignore[arg-type]
 
 

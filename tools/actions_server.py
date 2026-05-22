@@ -161,7 +161,10 @@ def _assert_safe_github_url(url: str) -> str:
     py/partial-ssrf #10639, #10640).
     """
     if not isinstance(url, str):
-        raise ValueError(f"Refusing to fetch URL {url!r}: URL must be a string")
+        raise ValueError(
+            f"Refusing URL {url!r}: must be a string and target api.github.com or "
+            "raw.githubusercontent.com (GitHub API allowlist)"
+        )
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
     if (
@@ -169,14 +172,14 @@ def _assert_safe_github_url(url: str) -> str:
         or host not in {"api.github.com", "raw.githubusercontent.com"}
     ):
         raise ValueError(
-            f"Refusing to fetch URL {url!r}: must target api.github.com or "
+            f"Refusing URL {url!r}: must target api.github.com or "
             "raw.githubusercontent.com (GitHub API allowlist)"
         )
     if parsed.username or parsed.password:
-        raise ValueError(f"Refusing to fetch URL {url!r}: embedded credentials are not allowed")
+        raise ValueError(f"Refusing URL {url!r}: embedded credentials are not allowed")
     # Reject traversal only in path segments; query fragments may legitimately include "..".
     if any(segment == ".." for segment in parsed.path.split("/")):
-        raise ValueError(f"Refusing to fetch URL {url!r}: contains '..' traversal sequence")
+        raise ValueError(f"Refusing URL {url!r}: contains '..' traversal sequence")
     return parsed.geturl()
 
 

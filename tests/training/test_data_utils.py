@@ -7,12 +7,14 @@ This module contains tests for data splitting, shuffling, and dataset utilities.
 import importlib
 import json
 import tempfile
+from functools import lru_cache
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
 
+@lru_cache(maxsize=1)
 def _data_utils_module():
     return importlib.import_module("training.data_utils")
 

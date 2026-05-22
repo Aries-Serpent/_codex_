@@ -52,7 +52,7 @@ _AST_METRICS = {"files": {}}
 _SELECT_KEYS = {"select", "columns", "cols", "select_cols"}
 _TS_KEYS = {"timestamp", "order_by", "ts", "ts_col", "sort_key"}
 
-def _xfail(message: str) -> NoReturn:
+def _xfail_test(message: str) -> NoReturn:
     pytest.xfail(message)
 
 
@@ -168,8 +168,8 @@ def _load_build_query():
             last_err = e
             continue
     if last_err:
-        _xfail(f"build_query not importable; last error: {last_err}")
-    _xfail("build_query not importable from any candidate")
+        _xfail_test(f"build_query not importable; last error: {last_err}")
+    _xfail_test("build_query not importable from any candidate")
 
 
 # --------------------------------------------------------------------------------------
