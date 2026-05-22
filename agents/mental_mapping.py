@@ -1417,3 +1417,4 @@ MentalMap = MentalMappingModel
 
 # Additional alias for tests expecting 'MentalMapping' name
 MentalMapping = MentalMappingModel
+assert MentalMap and MentalMapping
