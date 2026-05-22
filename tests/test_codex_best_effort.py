@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import sys
 import types
 from pathlib import Path
@@ -10,7 +11,6 @@ import pytest
 
 import cli.task_sequence as task_sequence
 import configs.base_config as base_config
-import src.training.functional_training as functional_training
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,6 +30,8 @@ def test_base_config_returns_copy() -> None:
 
 @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
 def test_evaluate_batches_runs() -> None:
+    functional_training = importlib.import_module("src.training.functional_training")
+
     class _ToyDataset(torch.utils.data.Dataset):
         def __len__(self) -> int:
             return 2
