@@ -246,8 +246,9 @@ class TestEncryptedStorage:
             key = generate_key()
             monkeypatch.setenv("ENCRYPTION_KEY", key)
             return key
-        except ImportError:
+        except ImportError as exc:
             _skip_test("cryptography package not installed")
+            raise AssertionError("unreachable") from exc
 
     def test_store_and_load_secret(self, temp_dir, encryption_key):
         """Test basic encryption and decryption."""

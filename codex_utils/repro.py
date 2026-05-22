@@ -54,7 +54,8 @@ def set_seed(seed: int, deterministic: bool = True) -> RNGState:
                     torch.backends.cudnn.deterministic = True
                     torch.backends.cudnn.benchmark = False
                 except Exception:
-                    pass
+                    # Best-effort fallback: optional integration failure must not abort execution.
+                    _ = None
         torch_state = torch.get_rng_state().tolist() if hasattr(torch, "get_rng_state") else None
         if hasattr(torch.cuda, "get_rng_state_all"):
             try:
@@ -124,17 +125,19 @@ def restore_rng(state: RNGState) -> None:
                     except Exception:
                         # Best-effort conversion only; keep original sequence element
                         # so np.random.set_state can attempt restoration.
-                        pass
+                        _ = None
                 np_state = tuple(seq)
             np.random.set_state(np_state)
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
     if torch is not None:
         if state.torch_state is not None and hasattr(torch, "set_rng_state"):
             try:
                 torch.set_rng_state(torch.ByteTensor(state.torch_state))
             except Exception:
-                pass
+                # Best-effort fallback: optional integration failure must not abort execution.
+                _ = None
         if (
             state.torch_cuda_state is not None
             and hasattr(torch, "cuda")
@@ -144,7 +147,8 @@ def restore_rng(state: RNGState) -> None:
                 tensors = [torch.ByteTensor(t) for t in state.torch_cuda_state]
                 torch.cuda.set_rng_state_all(tensors)
             except Exception:
-                pass
+                # Best-effort fallback: optional integration failure must not abort execution.
+                _ = None
 
 
 def log_env_info(path: str | Path) -> None:
@@ -154,7 +158,8 @@ def log_env_info(path: str | Path) -> None:
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     except Exception:
-        pass
+        # Best-effort fallback: optional integration failure must not abort execution.
+        _ = None
 
     packages = {
         dist.metadata.get("Name", dist.metadata.get("name", "unknown")): dist.version

@@ -54,6 +54,7 @@ _TS_KEYS = {"timestamp", "order_by", "ts", "ts_col", "sort_key"}
 
 def _xfail_test(message: str) -> NoReturn:
     pytest.xfail(message)
+    raise AssertionError("unreachable")
 
 
 # Fallback static candidate paths (legacy support)

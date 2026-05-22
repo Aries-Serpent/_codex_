@@ -10,6 +10,7 @@ import pytest
 
 import cli.task_sequence as task_sequence
 import configs.base_config as base_config
+import src.training.functional_training as functional_training
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,8 +30,6 @@ def test_base_config_returns_copy() -> None:
 
 @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
 def test_evaluate_batches_runs() -> None:
-    from src.training.functional_training import evaluate_batches
-
     class _ToyDataset(torch.utils.data.Dataset):
         def __len__(self) -> int:
             return 2
@@ -47,7 +46,7 @@ def test_evaluate_batches_runs() -> None:
             }
 
     loader = DataLoader(_ToyDataset(), batch_size=1)
-    metrics = evaluate_batches(
+    metrics = functional_training.evaluate_batches(
         _ToyModel(),
         loader,
         lambda data: {"avg": float(data[0].mean())},

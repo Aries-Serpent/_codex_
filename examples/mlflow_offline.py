@@ -82,11 +82,13 @@ def run_smoke(output: Path, tracking_uri: str | None = None) -> str:
         try:
             ml_module.log_params({"example": "mlflow_offline_smoke"})  # type: ignore[attr-defined]
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
         try:
             ml_module.log_artifact(str(artifact_path))  # type: ignore[attr-defined]
         except Exception:
-            pass
+            # Best-effort fallback: optional integration failure must not abort execution.
+            _ = None
 
         return effective_uri
     finally:

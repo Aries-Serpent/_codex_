@@ -65,6 +65,7 @@ def hf_tok():
         return HFTokenizerAdapter.load()
     except Exception as _err:
         _skip_tokenizer_unavailable()
+        raise AssertionError("unreachable") from _err
 
 
 @pytest.fixture
