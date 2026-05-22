@@ -91,7 +91,7 @@ def get_session_logger() -> SessionLogger:
     try:
         session_logger = SessionLogger(session_id, _session_log_dir())
     except OSError as exc:
-        logger.debug("OSError: %s", exc)
+        logging.getLogger(__name__).debug("OSError: %s", exc)
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
         raise RuntimeError("Session logging unavailable") from exc
     _session_logger_ctx.set(session_logger)
@@ -400,7 +400,7 @@ def capture_exceptions(
 
         @functools.wraps(target)
         def _wrapped(*args: Any, **kwargs: Any) -> int:
-            log = logger or logging.getLogger(target.__module__)
+            resolved_logger = logger or logging.getLogger(target.__module__)
             try:
                 result = target(*args, **kwargs)
             except (  # noqa: BLE001
@@ -409,22 +409,22 @@ def capture_exceptions(
                 KeyboardInterrupt,
             ) as exc:  # intentional: catch SystemExit/KeyboardInterrupt to log them
                 if _is_successful_system_exit(exc):
-                    log.info("exited successfully (SystemExit(0))")
+                    resolved_logger.info("exited successfully (SystemExit(0))")
                     return 0
                 if isinstance(exc, SystemExit):
                     code = int(getattr(exc, "code", 1) or 1)
-                    log.warning("SystemExit(%s) raised", code)
+                    resolved_logger.warning("SystemExit(%s) raised", code)
                     return code
-                log.error("Unhandled exception", exc_info=exc)
+                resolved_logger.error("Unhandled exception", exc_info=exc)
                 return 1
 
             if result is None:
-                log.debug("Exception caught, returning", exc_info=True)
+                resolved_logger.debug("Exception caught, returning", exc_info=True)
                 return 0
             try:
                 return int(result)
             except Exception:
-                log.warning("Exception occurred", exc_info=True)
+                resolved_logger.warning("Exception occurred", exc_info=True)
                 return 0
 
         return _wrapped
