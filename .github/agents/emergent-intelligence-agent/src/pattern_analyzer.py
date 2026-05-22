@@ -226,6 +226,7 @@ class EmergentIntelligenceAgent:
         else:
             # Use core pattern detector
             patterns = self._detect_with_core(repositories, context)
+        patterns = patterns[:MAX_PATTERNS_PER_REPO]
 
         # Update state
         for pattern in patterns:
@@ -385,6 +386,9 @@ class EmergentIntelligenceAgent:
             "total_patterns": len(self.detected_patterns),
             "unique_patterns": len(set(p.pattern_id for p in self.pattern_history)),
             "avg_confidence": self._calculate_avg_confidence(),
+            "target_accuracy": PATTERN_ACCURACY_TARGET,
+            "target_detection_latency_ms": DETECTION_LATENCY_TARGET_MS,
+            "max_patterns_per_repo": MAX_PATTERNS_PER_REPO,
             "perceptions": 1 if self.pda_state.get("perception") else 0,
             "decisions": 1 if self.pda_state.get("decision") else 0,
             "actions": 1 if self.pda_state.get("action") else 0,

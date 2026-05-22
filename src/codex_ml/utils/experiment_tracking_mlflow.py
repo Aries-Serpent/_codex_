@@ -154,4 +154,10 @@ def maybe_mlflow(
         yield mlflow
 
 
-__all__ = ["_as_flat_params", "ensure_local_tracking", "maybe_mlflow"]
+__all__ = [
+    "ALLOW_REMOTE_ENV",
+    "DEFAULT_LOCAL_URI",
+    "_as_flat_params",
+    "ensure_local_tracking",
+    "maybe_mlflow",
+]

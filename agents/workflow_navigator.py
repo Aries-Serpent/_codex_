@@ -803,6 +803,7 @@ if __name__ == "__main__":
     print("DRY RUN: Audit Execution Workflow")
     print("=" * 60)
     result = navigator.execute("audit", dry_run=True)
+    print(f"Dry run success: {result.get('success', False)}")
 
     # Find workflow by description
     print("\n" + "=" * 60)

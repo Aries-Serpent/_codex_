@@ -172,4 +172,4 @@ if __name__ == "__main__":
     # Test the analyzer
     analyzer = IntelligentAudioAnalyzer()
     test_path = Path("test_audio.mp3")
-    print(f"Analyzer initialized with {len(analyzer.profiles)} profiles")
+    print(f"Analyzer initialized with {len(analyzer.profiles)} profiles for {test_path}")

@@ -747,4 +747,5 @@ __all__ = [
     "ExtendedTrainer",
     "Trainer",
     "TrainerConfig",
+    "TrainerLoggingConfig",
 ]
