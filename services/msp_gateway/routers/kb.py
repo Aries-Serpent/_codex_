@@ -147,8 +147,13 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             detail="Knowledge base retrieval dependencies are not installed",
         )
     except Exception as e:
-        logger.error("Error processing KB query %s: %s", sanitize_log_input(request_id), e, exc_info=True)
+        logger.error(
+            "Error processing KB query %s (%s)",
+            sanitize_log_input(request_id),
+            type(e).__name__,
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error querying knowledge base: {str(e)}",
+            detail="Error querying knowledge base",
         )

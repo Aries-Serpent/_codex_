@@ -146,7 +146,12 @@ def get_session_info(interactive: bool = True) -> dict[str, Any]:
         "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
     }
 
-    logger.info(f"Session context discovered: {session_info}")
+    logger.info(
+        "Session context discovered: pr=%s branch=%s short_commit=%s",
+        session_info["pr_number"],
+        session_info["branch"],
+        session_info["short_commit"],
+    )
     return session_info
 
 

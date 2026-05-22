@@ -67,12 +67,19 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 logger = logging.getLogger(__name__)
 
 _GITHUB_API = "https://api.github.com"
 _ACCEPT = "application/vnd.github+json"
 _API_VERSION = "2022-11-28"
+
+
+def _redact_url_for_log(url: str) -> str:
+    """Return URL without query/fragment for safe logging."""
+    parts = urlsplit(url)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
 
 
 class GitHubMCPPoster:
@@ -1471,8 +1478,12 @@ class GitHubMCPPoster:
             with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
                 return json.loads(resp.read())
         except urllib.error.HTTPError as exc:
-            error_body = exc.read().decode(errors="replace")
-            logger.error("GitHub API GET %s → %d: %s", url, exc.code, error_body)
+            logger.error(
+                "GitHub API GET %s → %d (%s)",
+                _redact_url_for_log(url),
+                exc.code,
+                type(exc).__name__,
+            )
             raise
 
     def merge_branch(
@@ -1918,8 +1929,12 @@ class GitHubMCPPoster:
             with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
                 return json.loads(resp.read())
         except urllib.error.HTTPError as exc:
-            error_body = exc.read().decode(errors="replace")
-            logger.error("GitHub API GET %s → %d: %s", url, exc.code, error_body)
+            logger.error(
+                "GitHub API GET %s → %d (%s)",
+                _redact_url_for_log(url),
+                exc.code,
+                type(exc).__name__,
+            )
             raise
 
     def _request(
@@ -1997,8 +2012,13 @@ class GitHubMCPPoster:
                     )
                     time.sleep(wait)
                 else:
-                    error_body = exc.read().decode(errors="replace")
-                    logger.error("GitHub API %s %s → %d: %s", method, url, exc.code, error_body)
+                    logger.error(
+                        "GitHub API %s %s → %d (%s)",
+                        method,
+                        _redact_url_for_log(url),
+                        exc.code,
+                        type(exc).__name__,
+                    )
                     raise
         # Should be unreachable, but satisfy type checker
         raise last_exc  # type: ignore[misc]
