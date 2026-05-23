@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4547)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4547 (SHA `5326cfda`) at 2026-05-23T23:56Z [auto-generated]
+
 ### Fixed (PR #4544 living-docs sync — 2026-05-23T02:20Z)
 - Added PR-specific living docs for this follow-up pass:
   - `docs/roadmap/PR4544_whats_next.md`
