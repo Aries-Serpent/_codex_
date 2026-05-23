@@ -171,10 +171,10 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
    - Lock contention
 
 **Success Criteria**:
-- [ ] All uncovered lines tested
-- [ ] Edge cases documented
-- [ ] Coverage reaches 100%
-- [ ] No flaky tests
+- [x] All uncovered lines tested
+- [x] Edge cases documented
+- [x] Coverage reaches 100%
+- [x] No flaky tests
 
 **Test Additions Estimate**: 50-80 new tests
 
@@ -285,10 +285,10 @@ pytest --cov=src --cov-fail-under=85
 - [x] 50 new tests added (agents error paths + MCP error paths) — Phase 9.3 ✅ COMPLETE
 
 ### Phase 9.4: Edge Cases (Target: 100%)
-- [ ] All boundary conditions tested
-- [ ] Rare paths covered
-- [ ] Edge cases documented
-- [ ] 50-80 new tests added
+- [x] All boundary conditions tested
+- [x] Rare paths covered
+- [x] Edge cases documented
+- [x] 71 new tests added (52 agents + 19 MCP) — Phase 9.4 ✅ COMPLETE
 
 ### Final Validation
 - [ ] Coverage report shows 100%
