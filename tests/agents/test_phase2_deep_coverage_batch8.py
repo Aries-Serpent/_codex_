@@ -249,6 +249,7 @@ class TestPhase2_ResourceAllocation:
         available += allocated
         allocated = 0
         assert available == total
+        assert allocated == 0
 
     def test_resource_contention(self):
         """Test handling resource contention"""

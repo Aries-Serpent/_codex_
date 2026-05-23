@@ -235,7 +235,7 @@ def test_template_train_loop() -> str:
                 try:
                     mod.record_metrics(p, {"bad": Bad()})
                 except Exception:
-                    _ = None  # suppressed: no action needed
+                    pass  # suppressed: no action needed
         """
     )
 
@@ -322,7 +322,7 @@ def test_template_checkpointing() -> str:
                         res = fn(str(ckpt))
                         assert res in (None, False) or res
                     except Exception:
-                        _ = None  # suppressed: no action needed
+                        pass  # suppressed: no action needed
                     break
         """
     )

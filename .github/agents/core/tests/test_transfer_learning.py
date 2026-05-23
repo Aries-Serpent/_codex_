@@ -452,8 +452,7 @@ class TestMetaLearningFramework:
 
         # Adapted domain returns specific parameters
         framework.adapt_to_domain("known", [{'reward': 0.5}])
-        params = framework.get_domain_parameters("known")
-        assert "known" in framework.domain_specific_params
+        assert framework.get_domain_parameters("known") == framework.domain_specific_params["known"]
 
     def test_get_statistics(self):
         """Test getting meta-learning statistics."""

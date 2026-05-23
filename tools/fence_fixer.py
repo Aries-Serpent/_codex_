@@ -76,18 +76,6 @@ def fix_fence_in_file(filepath: Path, dry_run: bool = False) -> tuple[bool, int]
     original = content
     fixes = 0
 
-    # Fix bare triple-backtick fences (no language tag)
-    def replace_bare_fence(match):
-        nonlocal fixes
-        fence_marker = match.group(1)  # ``` or ~~~
-        body = match.group(2)
-
-        # Detect language from content
-        lang = detect_lang(body)
-        fixes += 1
-
-        return f"{fence_marker}{lang}\n{body}\n{fence_marker}"
-
     # Match fences with optional language tag
     # This handles both ``` and ~~~ style fences
     fence_pattern = r"^(```|~~~)(\w*)\n(.*?)\n\1\s*$"

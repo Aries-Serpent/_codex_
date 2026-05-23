@@ -14,16 +14,14 @@ def test_import_has_no_artifact_side_effects(tmp_path, monkeypatch):
 
     sys.modules.pop("codex_ml.train_loop", None)
 
-    module = importlib.import_module("codex_ml.train_loop")
-    module = importlib.reload(module)
+    importlib.reload(importlib.import_module("codex_ml.train_loop"))
 
     assert not (tmp_path / "artifacts").exists()
     assert not (tmp_path / "artifacts" / "metrics").exists()
 
 
 def test_run_training_creates_artifacts_on_demand(tmp_path):
-    module = importlib.import_module("codex_ml.train_loop")
-    module = importlib.reload(module)
+    module = importlib.reload(importlib.import_module("codex_ml.train_loop"))
 
     art_dir = tmp_path / "artifacts" / "metrics"
     assert not art_dir.exists()
@@ -37,8 +35,7 @@ def test_run_training_creates_artifacts_on_demand(tmp_path):
 
 
 def test_train_loop_cli_custom_art_dir(monkeypatch, tmp_path):
-    module = importlib.import_module("codex_ml.train_loop")
-    module = importlib.reload(module)
+    module = importlib.reload(importlib.import_module("codex_ml.train_loop"))
 
     target_dir = tmp_path / "custom" / "metrics"
     monkeypatch.setattr(

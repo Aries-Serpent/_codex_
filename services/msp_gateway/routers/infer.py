@@ -46,7 +46,8 @@ def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
     """Lazily instantiate the retrieval adapter.
 
     Returns None if the adapter cannot be created due to missing optional
-    dependencies. Subsequent calls reuse the cached adapter or error state.
+    dependencies. Subsequent calls reuse the cached adapter when available,
+    otherwise they retry initialization.
     """
 
     global _retrieval_adapter, _retrieval_adapter_error

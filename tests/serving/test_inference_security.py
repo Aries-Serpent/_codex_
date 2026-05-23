@@ -323,8 +323,8 @@ class TestHeaderInjection:
         """Test host header injection protection."""
         response = secure_client.get("/health", headers={"Host": "evil.com"})
 
-        # Should handle safely
-        assert response.status_code == 200
+        # Rejected by TrustedHostMiddleware
+        assert response.status_code == 400
 
 
 class TestDenialOfService:

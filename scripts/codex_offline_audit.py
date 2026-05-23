@@ -322,18 +322,6 @@ def run_capability_extraction(ctx: AuditContext) -> None:
 
     capability_matrix: dict[str, dict[str, Any]] = {}
 
-    def add_capability(
-        name: str, present_files: list[str], evidence: list[str], notes: str
-    ) -> None:
-        capability_matrix[name] = {
-            "status": "Implemented" if present_files else "Missing",
-            "evidence": present_files,
-            "gaps": notes,
-            "risk_summary": "" if present_files else "Capability not detected",
-        }
-        if present_files and notes:
-            capability_matrix[name]["status"] = "Partially"
-
     capability_matrix["tokenization"] = {
         "status": (
             "Implemented"

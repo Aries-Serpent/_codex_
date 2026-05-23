@@ -1,8 +1,7 @@
 # BEGIN: CODEX_API_REQS
-# fastapi>=0.115 pulls in a compatible starlette (>=0.40,<0.47); the explicit
-# starlette pin was removed because it conflicted with fastapi==0.111.0 which
-# requires starlette<0.38.  Starlette security bounds are enforced at the
-# project level via pyproject.toml (starlette>=0.37.2,<0.51).
+# This service intentionally relies on FastAPI's transitive Starlette dependency.
+# The project-wide Starlette security bounds are enforced centrally in
+# pyproject.toml (starlette>=1.0.1,<2), rather than by pinning Starlette here.
 fastapi==0.115.12
 uvicorn==0.30.1
 pydantic==2.8.2

@@ -1381,6 +1381,7 @@ if __name__ == "__main__":
 
     # Perform iterative review
     reviewed = mental_map.iterative_review(review_threshold=0.6)
+    print(f"Reviewed nodes: {reviewed}")
 
     # Show summary
     print(f"\n{'='*60}")
@@ -1416,3 +1417,4 @@ MentalMap = MentalMappingModel
 
 # Additional alias for tests expecting 'MentalMapping' name
 MentalMapping = MentalMappingModel
+assert MentalMap and MentalMapping

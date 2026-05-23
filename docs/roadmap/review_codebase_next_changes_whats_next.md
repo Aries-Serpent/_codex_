@@ -1,28 +1,24 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — PR #4536 approval-monitor + living-doc sync · 2026-05-22T02:34Z)
+## Session Status (Current — merge-readiness workflow monitor continuation · 2026-05-22T23:40Z)
 
 | Item | Status |
 |---|---|
-| Session budget tracking | 🔄 Maintainer note acknowledged: ~24/60 minutes used; preserve final 5 minutes for wrap-up |
-| CI failure triage | ✅ Investigated runs `26264148842`, `26264221325`, `26264233148` via MCP logs; confirmed actionable secret-baseline and review-thread items |
-| Review concern 1 (`security-scanning-suite.yml:241`) | ✅ Replaced inaccurate grep-based secret count with JSON parse of `.secrets.baseline.results` |
-| Review concern 2 (`security-scanning-suite.yml:319-320`) | ✅ Added `set -euo pipefail` to SBOM generation step so `cyclonedx-py` failures fail the job |
-| Review concern 3 (`review_codebase_next_changes_whats_next.md:3-15`) | ✅ Realigned this living doc to current PR #4536 scope (security-scanning + readiness follow-up), removing scope mismatch |
-| Secrets baseline enforcer concern | ✅ Added inline allowlist pragma on the flagged workflow line (false-positive keyword hit) |
-| Readiness-to-100 follow-up | ✅ Added explicit tasks for the two failing dimensions: PDA entry today + accountability report today |
-| Approved-workflow monitoring | 🔄 Maintainer approved all workflows; latest head `a9e47ed` shows active queue (`Trigger validations on approval` in progress, comment/WEC gates queued) with several older runs superseded/cancelled |
+| Session budget tracking | 🔄 Maintainer note acknowledged: ~8/60 minutes used; preserve final 5 minutes for wrap-up |
+| Branch alignment with `main` | ✅ Verified: branch is ahead-only and not behind `origin/main` |
+| Approved-workflow monitoring (`a1fb880`) | ✅ Previously `action_required` workflows are now approved and transitioned |
+| Latest head outcome snapshot | ✅ `7` completed-success runs (`CodeQL`, `Security Scanning Suite`, `Secrets Baseline Enforcer`, docs/dependency gates) and `1` in-progress (`Running Copilot cloud agent`) |
+| Code-fixable failure triage | ✅ No completed failed jobs on latest head; no additional remediation required in this pass |
 | Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
 ### Follow-up prompt (continuation)
 
 ```text
-@copilot continue PR #4536 from current branch (HEAD a9e47ed):
-- monitor the newly approved workflow queue on HEAD and focus only on latest non-cancelled runs
-- confirm the three review concerns stay resolved and secrets baseline remains clean
-- verify readiness dimensions remain green, especially PDA/accountability freshness
-- if any comment-review-gate blocker remains, post explicit per-thread resolution replies with commit hash
+@copilot continue from current branch (HEAD a1fb880):
+- monitor remaining in-progress run(s) on the latest head and ignore superseded/cancelled old-SHA runs
+- if any new completed failure appears, pull MCP job logs and remediate only actionable code-level issues
+- re-check merge readiness once all latest-head runs complete
 - keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs synchronized
 ```
 

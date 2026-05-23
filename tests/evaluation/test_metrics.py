@@ -24,7 +24,6 @@ def _require_metrics_module():
     if not _has_module("torch.nn.functional"):
         pytest.skip("torch.nn.functional is required for metrics tests")
 
-    torch = None  # Initialize to None so CodeQL sees the variable always bound before use
     try:
         import torch
     except Exception as exc:  # pragma: no cover - optional dependency guard
