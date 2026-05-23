@@ -1,7 +1,7 @@
 # Codex ML Architecture (v0.1.0)
 
 > **Version**: v0.1.0 Pre-Release
-> **Last Updated**: 2026-05-20
+> **Last Updated**: 2026-05-23
 > **Status**: Living Document
 > **Managed By**: AI Assistant Autonomous System
 
@@ -25,16 +25,16 @@ This document provides a comprehensive architectural overview of the `_codex_` M
 
 ## System Context (current)
 
-The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 280+ autonomous agents.
+The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 300+ autonomous agents.
 
 <!-- METRICS_LAST_UPDATED: 2026-03-25 via QA-Walkthrough GAP-028 fix -->
 ```mermaid
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
     Copilot[GitHub Copilot<br/>AI Coding Agent]
-    Agents[280+ Autonomous Agents<br/>🤖 MCP-enabled]
+    Agents[300+ Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml<br/>Production-Ready ML Platform<br/>21,500+ Tests | 10.7% Coverage]
+    Codex[codex-ml<br/>Production-Ready ML Platform<br/>22,000+ Tests | 34.6% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage<br/>289 patterns learned]
     MCP[MCP System<br/>Model Context Protocol<br/>162 active workflows]
@@ -73,7 +73,7 @@ graph TB
 
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot**: AI coding agent that autonomously fixes CI failures, fills coverage gaps, and implements features
-- **280+ Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
+- **300+ Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
 - **CI/CD Systems**: 162 active GitHub Actions workflows for testing, deployment, and self-healing
 
 ### External Systems
@@ -96,7 +96,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 21,500+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 22,000+ Tests]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
@@ -122,7 +122,7 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (280+ Agents)"
+        subgraph "Agent System (300+ Agents)"
             AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
@@ -514,7 +514,7 @@ See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 
 ## Roadmap
 
-### Current Capabilities (v0.x)
+### Current Capabilities (v0.1.0)
 - ✅ LoRA/QLoRA fine-tuning
 - ✅ Hydra-based configuration
 - ✅ MLflow experiment tracking
@@ -522,22 +522,35 @@ See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 - ✅ CLI interface
 - ✅ Evaluation with lm-eval
 - ✅ Plugin framework
+- ✅ MCP ecosystem (162 active workflows)
+- ✅ Cognitive Brain (289 patterns, k₁=0.35)
+- ✅ 300+ autonomous agents deployed
 
-### Near-Term (Phase 1 (Current Cycle))
-- 🔄 Enhanced model serving with caching
-- 🔄 Advanced evaluation metrics
-- 🔄 Automated hyperparameter tuning
-- 🔄 Better documentation and tutorials
-- 🔄 Distributed training optimizations
+### Phase 9 — Completed (2026-05-23)
+- ✅ Phase 9.1: agents/ public API + class contract tests
+- ✅ Phase 9.2: CLI smoke tests + coverage rollup (34.56%)
+- ✅ Phase 9.3: error-path coverage (50 new tests)
+- ✅ Phase 9.4: edge-case coverage (71 new tests)
+- ✅ Rate-limit orchestrator + session TTL repo var
+- ✅ Secrets baseline clean; living docs aligned to v1.3.0
 
-### Medium-Term (Cycle 2-Phase 3 (Current Cycle))
+### Phase 10 — Post-Coverage Maintenance (Current)
+- 🔄 Coverage regression gate: hold ≥34% agents/ (CI enforced)
+- 🔄 Gap-fill src/ toward 50% overall statement coverage
+- 🔄 Documentation alignment (CODEBASE_MERMAID_MAPS v1.3.0 ✅)
+- 📋 Adaptive Learning Phase 8.3: QEC k₁ tuning (80→100%)
+- 📋 Transfer Learning Phase 8.4 scaffold
+- 📋 Archive merge-candidate CI docs
+- 📋 Webhook event bus triggers (post-merge)
+
+### Medium-Term (Phase 11+)
 - 📋 Multi-modal support (vision + language)
 - 📋 Reinforcement learning from human feedback (RLHF)
 - 📋 Model compression and quantization
-- 📋 Automated dataset curation
+- 📋 75% → 100% coverage roadmap (Phase 11 final milestone)
 - 📋 Enhanced monitoring and alerting
 
-### Long-Term (Current Cycle+)
+### Long-Term
 - 💡 Auto-ML capabilities
 - 💡 Federated learning support
 - 💡 Edge deployment

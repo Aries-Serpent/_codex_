@@ -1,10 +1,10 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
 
-> **Version:** 1.2.0 (S873 + PR #4356)  
-> **Updated:** 2026-05-08  
+> **Version:** 1.3.0 (S1259 · 2026-05-23)  
+> **Updated:** 2026-05-23  
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
-> **Previous:** v1.1.0 S228 + PR #3876 · 2026-04-05
+> **Previous:** v1.2.0 S873 + PR #4356 · 2026-05-08
 
 ---
 
@@ -22,10 +22,11 @@
 10. [P19 Shadow Import Module Map](#10-p19-shadow-import-module-map)
 11. [Security + Token Delegation](#11-security--token-delegation)
 12. [Source Layout](#12-source-layout)
-13. [Autonomous Privilege Architecture ⭐ NEW](#13-autonomous-privilege-architecture)
-14. [Rate-Limit Orchestration Flow ⭐ NEW](#14-rate-limit-orchestration-flow)
-15. [Session Handoff State Machine ⭐ NEW](#15-session-handoff-state-machine)
-16. [Phase 9 — Cognitive Brain Autonomous Ops ⭐ NEW](#16-phase-9--cognitive-brain-autonomous-ops)
+13. [Autonomous Privilege Architecture](#13-autonomous-privilege-architecture)
+14. [Rate-Limit Orchestration Flow](#14-rate-limit-orchestration-flow)
+15. [Session Handoff State Machine](#15-session-handoff-state-machine)
+16. [Phase 9 — Cognitive Brain Autonomous Ops](#16-phase-9--cognitive-brain-autonomous-ops)
+17. [Phase 10 — Post-Coverage Maintenance ⭐ NEW](#17-phase-10--post-coverage-maintenance)
 
 ---
 
@@ -35,7 +36,7 @@
 graph TD
     subgraph "Aries-Serpent/_codex_ — Repository Structure"
         SRC[src/codex/\nPython package]
-        TESTS[tests/\n21,500+ tests]
+        TESTS[tests/\n22,000+ tests]
         DOCS[docs/\nMarkdown docs]
         GITHUB[.github/\nWorkflows + Agents]
         CODEX[.codex/\nCognitive Brain\nSession State]
@@ -637,7 +638,7 @@ stateDiagram-v2
 
 ## 16. Phase 9 — Cognitive Brain Autonomous Ops
 
-> **Added S867–S873 (PR #4356)**
+> **Added S867–S873 (PR #4356) · Completed S1259 (2026-05-23)**
 
 ```mermaid
 graph LR
@@ -651,25 +652,24 @@ graph LR
         P9G[8 of 8 review comments S871 to S872]
         P9H[Living docs updated S868 to S873]
         P9I[CODEBASE_MERMAID_MAPS updated S873]
-    end
-
-    subgraph "Phase 9 Pending"
-        P9J[10 vars deploy post-merge @agent-var-writer]
-        P9K[4 webhooks deploy post-merge @agent-infra]
-        P9L[T-03 security_events admin @mbaetiong]
-        P9M[TTL tighten to 3600 once CI stable]
+        P9J[Phase 9.1 — public API + class API tests S1259]
+        P9K[Phase 9.2 — CLI smoke + coverage rollup S1259]
+        P9L[Phase 9.3 — error-path coverage 50 new tests S1259]
+        P9M[Phase 9.4 — edge-case coverage 71 new tests S1259]
     end
 
     subgraph "Phase 10 Next"
-        P10A[Phase 8.3 Adaptive Learning 80 to 100 percent]
-        P10B[Phase 8.4 Transfer Learning planned]
-        P10C[Archive 5 merge-candidate CI docs]
-        P10D[Webhook event bus triggers]
+        P10A[Coverage maintenance gate — hold 34%+ regression-free]
+        P10B[Fill src/ coverage gaps toward 50% milestone]
+        P10C[Update all living docs to v1.3.0 baseline]
+        P10D[Adaptive Learning Phase 8.3 80 to 100 percent]
+        P10E[Archive merge-candidate CI docs]
+        P10F[Webhook event bus triggers post-merge]
     end
 
     P9A & P9B & P9C & P9D & P9E --> P9J
     P9F & P9G & P9H & P9I --> P9K
-    P9J & P9K & P9L & P9M --> P10A & P10B & P10C & P10D
+    P9J & P9K & P9L & P9M --> P10A & P10B & P10C & P10D & P10E & P10F
 
     style P9A fill:#e8f5e9,color:#000
     style P9B fill:#e8f5e9,color:#000
@@ -680,14 +680,97 @@ graph LR
     style P9G fill:#e8f5e9,color:#000
     style P9H fill:#e8f5e9,color:#000
     style P9I fill:#e8f5e9,color:#000
-    style P9J fill:#fff3e0,color:#000
-    style P9K fill:#fff3e0,color:#000
-    style P9L fill:#fce4ec,color:#000
-    style P9M fill:#e1f5fe,color:#000
+    style P9J fill:#e8f5e9,color:#000
+    style P9K fill:#e8f5e9,color:#000
+    style P9L fill:#e8f5e9,color:#000
+    style P9M fill:#e8f5e9,color:#000
+    style P10A fill:#fff3e0,color:#000
+    style P10B fill:#fff3e0,color:#000
+    style P10C fill:#fff3e0,color:#000
+    style P10D fill:#e1f5fe,color:#000
+    style P10E fill:#e1f5fe,color:#000
+    style P10F fill:#e1f5fe,color:#000
+```
+
+---
+
+## 17. Phase 10 — Post-Coverage Maintenance
+
+> **Added S1259 (2026-05-23)**
+
+```mermaid
+graph TD
+    subgraph "Coverage Baseline (Phase 9.4 Exit)"
+        CB1[agents/ statements: 34.56%]
+        CB2[agents/ branches: 15.37%]
+        CB3[Test files: 2,091]
+        CB4[Phase 9 tests added: 196+]
+    end
+
+    subgraph "Phase 10A — Regression Gate"
+        RG1[unified-coverage-agent monitors threshold]
+        RG2[CI fail_under = 80 in pyproject.toml]
+        RG3[fragile-test-guardian detects flakiness]
+        RG4[Coverage delta reported on every PR]
+    end
+
+    subgraph "Phase 10B — Gap Fill: src/"
+        GF1[src/codex/cli.py — CLI command coverage]
+        GF2[src/codex/cognitive_brain/ — brain ops]
+        GF3[src/codex/training/ — trainer loops]
+        GF4[src/codex/rag/ — retrieval paths]
+        GF5[src/codex/security/ — auth + secrets]
+        GF6[Target: 50% overall statements]
+    end
+
+    subgraph "Phase 10C — Documentation Alignment"
+        DA1[CODEBASE_MERMAID_MAPS v1.3.0 ✅]
+        DA2[ARCHITECTURE.md metrics refresh ✅]
+        DA3[docs/testing/coverage_report.md update]
+        DA4[AGENT_NAVIGATION.md — Phase 10 agents]
+        DA5[.codex/cognitive_brain/ status update]
+    end
+
+    subgraph "Phase 10D — Adaptive Learning"
+        AL1[Phase 8.3: QEC k₁ tuning 80 to 100%]
+        AL2[Phase 8.4: Transfer Learning scaffold]
+        AL3[Cognitive Brain pattern harvest from Phase 9]
+        AL4[memory-sync-agent STM→LTM consolidation]
+    end
+
+    CB1 & CB2 & CB3 & CB4 --> RG1 & RG2 & RG3 & RG4
+    RG1 & RG2 & RG3 & RG4 --> GF1 & GF2 & GF3 & GF4 & GF5
+    GF1 & GF2 & GF3 & GF4 & GF5 --> GF6
+    GF6 --> DA1 & DA2 & DA3 & DA4 & DA5
+    DA1 & DA2 --> AL1 & AL2 & AL3 & AL4
+
+    style CB1 fill:#e8f5e9,color:#000
+    style CB2 fill:#e8f5e9,color:#000
+    style CB3 fill:#e8f5e9,color:#000
+    style CB4 fill:#e8f5e9,color:#000
+    style DA1 fill:#e8f5e9,color:#000
+    style DA2 fill:#e8f5e9,color:#000
+    style RG1 fill:#fff3e0,color:#000
+    style RG2 fill:#fff3e0,color:#000
+    style RG3 fill:#fff3e0,color:#000
+    style RG4 fill:#fff3e0,color:#000
+    style GF1 fill:#e3f2fd,color:#000
+    style GF2 fill:#e3f2fd,color:#000
+    style GF3 fill:#e3f2fd,color:#000
+    style GF4 fill:#e3f2fd,color:#000
+    style GF5 fill:#e3f2fd,color:#000
+    style GF6 fill:#e3f2fd,color:#000
+    style DA3 fill:#e1f5fe,color:#000
+    style DA4 fill:#e1f5fe,color:#000
+    style DA5 fill:#e1f5fe,color:#000
+    style AL1 fill:#fce4ec,color:#000
+    style AL2 fill:#fce4ec,color:#000
+    style AL3 fill:#fce4ec,color:#000
+    style AL4 fill:#fce4ec,color:#000
 ```
 
 ---
 
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S873 + PR #4356 · 2026-05-08 — Sections 4 and 11 refreshed; Sections 13-16 added. See CHANGELOG.md for full details.*
+*Updated: S1259 · 2026-05-23 — Section 16 (Phase 9) marked complete with 9.1–9.4 coverage work; Section 17 (Phase 10 Post-Coverage Maintenance) added; test count, ToC, and version header refreshed.*
