@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4544 living-docs sync — 2026-05-23T02:20Z)
+- Added PR-specific living docs for this follow-up pass:
+  - `docs/roadmap/PR4544_whats_next.md`
+  - `docs/roadmap/PR4544_session_diagram.mmd`
+- Refreshed PR #4544 continuation guidance to reflect latest pushed head `856b1280`, current workflow-fanout status, and the remaining agent-controlled next step (replying on the open `@copilot` thread so Comment Review Gate can rescan).
+- Recorded current session timing guidance (~18/60 minutes used, preserve final 5 minutes for wrap-up) in the living docs and accountability trail.
+
 ### Fixed (PR #4544 review follow-up — 2026-05-23T02:02Z)
 - Resolved the remaining review findings on the CodeQL cleanup PR:
   - restored readable cache-miss branch inputs in `tests/branch_coverage/test_branch_coverage_rag.py`
