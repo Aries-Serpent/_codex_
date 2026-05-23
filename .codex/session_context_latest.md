@@ -1,29 +1,29 @@
-# Session Context — 2026-05-23T05:20:01Z
+# Session Context — 2026-05-23T18:21:37Z
 **Branch:** `copilot/update-documentation-mermaid-mappings`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4673` (✅)
+- REST remaining: `4843` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Validation Pipeline** — `failure` on `main` (2026-05-23)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-23)
+- **Batch CI Failure Triage** — `failure` on `main` (2026-05-23)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-23)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-23)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-23)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-23)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-23)
 
 ## 📝 Recent Commits
+- `043e50aa` docs: update stale test/coverage/agent counts in evolution and integration docs — copilot-swe-agent[bot] (2026-05-23)
+- `7b63ecdf` docs: update stale stats in priority-1 architecture and diagram files — copilot-swe-agent[bot] (2026-05-23)
 - `25f363dd` Merge pull request #4545 from Aries-Serpent/copilot/update-safety-module-docstri — Statix (2026-05-23)
 - `04e6a68e` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-23)
 - `9aa3fb55` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-23)
 - `f403e540` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-23)
 - `530938ea` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-23)
 - `90e2058c` Merge remote-tracking branch 'origin/copilot/update-safety-module-docstring' int — copilot-swe-agent[bot] (2026-05-23)
-- `6ced9401` Fix unresolved PR #4545 review comments and align follow-up prompt — copilot-swe-agent[bot] (2026-05-23)
-- `0424560c` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
