@@ -1,8 +1,7 @@
 # BEGIN: CODEX_API_REQS
-# fastapi>=0.115 pulls in a compatible starlette via transitive dependency.
-# Keep this service requirements file unpinned for starlette so FastAPI manages
-# its compatible range; repository-wide starlette policy remains defined in the
-# root pyproject.toml for root-package environments.
+# This service intentionally relies on FastAPI's transitive Starlette dependency.
+# The project-wide Starlette security bounds are enforced centrally in
+# pyproject.toml (starlette>=1.0.1,<2), rather than by pinning Starlette here.
 fastapi==0.115.12
 uvicorn==0.30.1
 pydantic==2.8.2
