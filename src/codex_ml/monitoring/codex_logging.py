@@ -186,6 +186,7 @@ def init_logger(name: str = __name__) -> logging.Logger:
 
 _PSUTIL_WARN_KEY = "psutil_missing"
 _TELEMETRY_BANNER_WARN_KEY = "telemetry_banner_emitted"
+_LOGGER_WARNING_CONTEXTS: set[str] = set()
 
 MAX_LOG_BYTES = int(os.environ.get("CODEX_ML_MAX_LOG_BYTES", 5 * 1024 * 1024))
 _LOG_SAFETY_FILTERS = None

@@ -695,7 +695,7 @@ class HFTokenizer(TokenizerAdapter):
         return self._tk
 
 
-from .tokenizer_hf import HFTokenizerAdapter  # noqa: E402  (re-export)
+from .tokenizer_hf import HFTokenizerAdapter  # noqa: E402,I001  (re-export)
 
 @functools.lru_cache(maxsize=1)
 def _load_tokenizer_entry_points_once() -> None:

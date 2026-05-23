@@ -35,7 +35,6 @@ from typing import Any, ContextManager, Optional  # noqa: E402
 from codex_ml.tracking import mlflow_guard  # noqa: E402
 from codex_ml.utils.optional_dependencies import (  # noqa: E402
     build_optional_dependency_error,
-    raise_optional_dependency_error,
 )
 
 # Prefer a project-local artifacts directory by default to avoid polluting
@@ -411,16 +410,13 @@ def init_run(
 ):
     """Start an MLflow run and attach git/config provenance tags."""
 
-    _ensure_mlflow_available()
-    if _mlf is None:  # pragma: no cover - defensive guard
-        raise_optional_dependency_error("mlflow", "experiment tracking")
-
-    run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[union-attr]
+    ml = _ensure_mlflow_available()
+    run = ml.start_run(run_name=run_name, **kwargs)
 
     try:
         commit = current_commit_hash()
         if commit:
-            _mlf.set_tag("git_commit", commit[:7])  # type: ignore[union-attr]
+            ml.set_tag("git_commit", commit[:7])
     except Exception as e:
         logger.debug("git_commit tag unavailable: %s", e)
 
@@ -432,7 +428,7 @@ def init_run(
                 logger.debug("config serialization failed: %s; falling back to str()", e)
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-            _mlf.set_tag("config_hash", digest)  # type: ignore[union-attr]
+            ml.set_tag("config_hash", digest)
         except Exception as e:
             logger.debug("config_hash tag unavailable: %s", e)
 
