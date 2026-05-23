@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import functools
 import os
 from typing import TYPE_CHECKING, Optional, Type
 
@@ -43,16 +44,16 @@ def register_model(name: str):
     return _models_registry.register(name)
 
 
-_EP_LOADED = False
+@functools.lru_cache(maxsize=1)
+def _load_entry_points_once() -> None:
+    if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        load_model_entry_points(True)
 
 
 def get_model(name: str) -> Optional[type[object]]:
     """Return a model class from the registry, loading entry points if enabled."""
-
-    global _EP_LOADED
-    if not _EP_LOADED and os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
-        load_model_entry_points(True)
-        _EP_LOADED = True
+    if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        _load_entry_points_once()
     item = _models_registry.get(name)
     return item.obj if item else None
 

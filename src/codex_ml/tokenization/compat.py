@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import warnings
+from functools import lru_cache
 from typing import Any
 
 _ALIASES: dict[str, str] = {
@@ -11,23 +12,22 @@ _ALIASES: dict[str, str] = {
     # "decode": "codex_ml.tokenization.api:decode",
 }
 
-_warned = False
-
-
 def _get_api():
     return importlib.import_module("codex_ml.tokenization.api")
 
 
+@lru_cache(maxsize=1)
+def _warn_load_tokenizer_deprecated() -> None:
+    warnings.warn(
+        "codex_ml.tokenization.compat.load_tokenizer is deprecated; use codex_ml.tokenization.api.load_tokenizer",  # noqa: E501
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+
 def load_tokenizer(*args: Any, **kwargs: Any) -> Any:
     """Backwards-compatible load_tokenizer with deprecation warning."""
-    global _warned
-    if not _warned:
-        warnings.warn(
-            "codex_ml.tokenization.compat.load_tokenizer is deprecated; use codex_ml.tokenization.api.load_tokenizer",  # noqa: E501
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        _warned = True
+    _warn_load_tokenizer_deprecated()
     return _get_api().load_tokenizer(*args, **kwargs)
 
 

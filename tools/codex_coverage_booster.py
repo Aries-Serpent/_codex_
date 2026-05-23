@@ -443,11 +443,11 @@ def main():
         ]
         print("[run]", " ".join(cmd))
         try:
-            code = subprocess.call(cmd)
-            print("[pytest-exit]", code)
+            exit_code = subprocess.call(cmd)
+            print("[pytest-exit]", exit_code)
         except Exception as e:
             append_error("Phase6:RunPytest", e, "pytest invocation")
-            code = 1
+            exit_code = 1
 
         cov_file = ROOT / "coverage.xml"
         pct = None
@@ -460,6 +460,8 @@ def main():
                     print(f"[coverage] line-rate ≈ {pct}%")
             except Exception as e:
                 append_error("Phase6:ParseCoverageXML", e, "coverage.xml")
+        if exit_code != 0:
+            print(f"[warn] pytest exited with code {exit_code}")
         if pct is not None and pct < args.coverage_threshold:
             msg = f"Coverage {pct}% is below threshold {args.coverage_threshold}%"
             print("[warn]", msg)

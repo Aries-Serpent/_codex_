@@ -404,7 +404,7 @@ class TestPerformanceBenchmarks:
                 # Benchmark: Search by tags
                 if hasattr(memory, "search_memories"):
                     start = time.time()
-                    results = memory.search_memories(tags=["tag_5"])
+                    memory.search_memories(tags=["tag_5"])
                     duration = time.time() - start
 
                     assert duration < 0.5

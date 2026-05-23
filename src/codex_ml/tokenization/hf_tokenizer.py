@@ -7,7 +7,6 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     Any,
     Optional,
     cast,
@@ -22,22 +21,13 @@ from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 
 logger = logging.getLogger(__name__)
 
-if TYPE_CHECKING:  # pragma: no cover - typing only
-    from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
-else:  # pragma: no cover - runtime fallback when transformers is not installed
-    HF_PreTrainedTokenizerBase = object  # type: ignore[misc,assignment]
-
-
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "AutoTokenizer"):
     AutoTokenizer = cast("type[Any]", transformers.AutoTokenizer)
-    PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]",
-        transformers.PreTrainedTokenizerBase,
-    )
+    PreTrainedTokenizerBase = cast("type[Any]", transformers.PreTrainedTokenizerBase)
 else:  # pragma: no cover - optional dependency unavailable
     AutoTokenizer = None  # type: ignore[assignment]
-    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
+    PreTrainedTokenizerBase = cast("type[Any]", object)
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 

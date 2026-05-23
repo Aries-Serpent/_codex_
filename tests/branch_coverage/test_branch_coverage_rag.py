@@ -75,22 +75,22 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_api_key_from_param_branch(self) -> None:
         """Test API key from parameter branch."""
-        api_key = "provided_key"
+        api_key = "configured-value"  # pragma: allowlist secret
         env_key = os.environ.get("OPENAI_API_KEY")
 
         resolved_key = api_key or env_key
         error = "missing_key" if not resolved_key else None
-        assert resolved_key == "provided_key"
+        assert resolved_key == "configured-value"
         assert error is None
 
     def test_embeddings_api_key_from_env_branch(self) -> None:
         """Test API key from environment branch."""
         api_key = None
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "env_key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "env-value"}):  # pragma: allowlist secret
             env_key = os.environ.get("OPENAI_API_KEY")
             resolved_key = api_key or env_key
             error = "missing_key" if not resolved_key else None
-            assert resolved_key == "env_key"
+            assert resolved_key == "env-value"
             assert error is None
 
     def test_embeddings_api_key_missing_branch(self) -> None:

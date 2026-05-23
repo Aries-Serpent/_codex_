@@ -51,6 +51,24 @@ def test_registry_disable_env(monkeypatch):
         monkeypatch.delenv("CODEX_MODEL_REGISTRY_DISABLE", raising=False)
 
 
+def test_get_model_entry_points_can_enable_after_initial_disabled_call(monkeypatch):
+    import codex_ml.models as models_api
+
+    calls: list[bool] = []
+
+    monkeypatch.delenv("CODEX_PLUGINS_ENTRYPOINTS", raising=False)
+    monkeypatch.setattr(models_api, "load_model_entry_points", lambda enabled: calls.append(enabled))
+    models_api._load_entry_points_once.cache_clear()
+
+    assert models_api.get_model("missing-model") is None
+
+    monkeypatch.setenv("CODEX_PLUGINS_ENTRYPOINTS", "1")
+    assert models_api.get_model("missing-model") is None
+    assert calls == [True]
+
+    models_api._load_entry_points_once.cache_clear()
+
+
 def test_modeling_prefers_registry():
     from codex_ml.models.loader_registry import register_model, unregister_model
     from codex_ml.utils import modeling

@@ -38,7 +38,7 @@ def _require_metrics_module():
     try:
         from codex_ml.utils.torch_checks import inspect_torch
     except ImportError:  # pragma: no cover - best effort guard
-        inspect_torch = None  # type: ignore[assignment]
+        pass
     else:
         status = inspect_torch(torch)
         if not status.ok:

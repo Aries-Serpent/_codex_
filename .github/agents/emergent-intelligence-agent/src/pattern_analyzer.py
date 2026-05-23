@@ -35,7 +35,6 @@ except ImportError:
     CORE_AVAILABLE = False
     EmergentPatternDetector = None
     SelfImprovementEngine = None
-    PatternType = None
 
 
 # =============================================================================

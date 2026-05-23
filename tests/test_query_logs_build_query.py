@@ -169,7 +169,9 @@ def _load_build_query():
             continue
     if last_err:
         _xfail_test(f"build_query not importable; last error: {last_err}")
+        raise RuntimeError("xfail should have terminated test execution")
     _xfail_test("build_query not importable from any candidate")
+    raise RuntimeError("xfail should have terminated test execution")
 
 
 # --------------------------------------------------------------------------------------

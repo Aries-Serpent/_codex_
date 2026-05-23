@@ -1380,8 +1380,7 @@ if __name__ == "__main__":
     )
 
     # Perform iterative review
-    reviewed = mental_map.iterative_review(review_threshold=0.6)
-    print(f"Reviewed nodes: {reviewed}")
+    print(f"Reviewed nodes: {mental_map.iterative_review(review_threshold=0.6)}")
 
     # Show summary
     print(f"\n{'='*60}")

@@ -184,8 +184,9 @@ def init_logger(name: str = __name__) -> logging.Logger:
     return logger_obj
 
 
-_PSUTIL_WARNED = False
-_TELEMETRY_BANNER_EMITTED = False
+_PSUTIL_WARN_KEY = "psutil_missing"
+_TELEMETRY_BANNER_WARN_KEY = "telemetry_banner_emitted"
+_LOGGER_WARNING_CONTEXTS: set[str] = set()
 
 MAX_LOG_BYTES = int(os.environ.get("CODEX_ML_MAX_LOG_BYTES", 5 * 1024 * 1024))
 _LOG_SAFETY_FILTERS = None
@@ -246,8 +247,6 @@ if _commit_candidate:
 
 
 def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
-    global _TELEMETRY_BANNER_EMITTED
-
     issues: list[str] = []
 
     for status in loggers.degradations:
@@ -286,9 +285,9 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
     if not (loggers.tb or loggers.wb or loggers.mlflow_active or loggers.gpu):
         issues.append("no telemetry sinks enabled")
 
-    if issues and not _TELEMETRY_BANNER_EMITTED:
+    if issues and _TELEMETRY_BANNER_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
         print(f"[telemetry] degraded: {'; '.join(issues)}", file=sys.stderr)
-        _TELEMETRY_BANNER_EMITTED = True
+        _LOGGER_WARNING_CONTEXTS.add(_TELEMETRY_BANNER_WARN_KEY)
     return loggers
 
 
@@ -694,7 +693,6 @@ def _codex_sample_system() -> dict[str, Any]:
         cuda_version = getattr(version_mod, "cuda", None)
         if cuda_version:
             metrics["cuda"] = cuda_version
-    global _PSUTIL_WARNED
     if psutil is not None:
         try:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
@@ -702,9 +700,9 @@ def _codex_sample_system() -> dict[str, Any]:
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("psutil metrics unavailable", exc_info=exc)
-    elif not _PSUTIL_WARNED:
+    elif _PSUTIL_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
         logger.warning("psutil not installed; system metrics will be unavailable")
-        _PSUTIL_WARNED = True
+        _LOGGER_WARNING_CONTEXTS.add(_PSUTIL_WARN_KEY)
 
     # Prefer NVML for GPU stats with per-device enumeration
     gpu_done = False

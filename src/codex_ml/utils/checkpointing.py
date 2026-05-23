@@ -1521,7 +1521,7 @@ class CheckpointManager:
                         marker_path = marker.resolve(strict=False)
                 except Exception:
                     logger.warning("Exception occurred", exc_info=True)
-                    marker_value = ""
+                    marker_path = None
                 else:
                     if marker_value:
                         candidate = Path(marker_value)

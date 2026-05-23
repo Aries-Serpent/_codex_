@@ -27,19 +27,15 @@ if TYPE_CHECKING:
     from ..providers.retrieval_adapter import RetrievalAdapter
 
 _retrieval_adapter: Optional["RetrievalAdapter"] = None
-_retrieval_adapter_error: Optional[Exception] = None
 
 
 def get_retrieval_adapter() -> "RetrievalAdapter":
     """Return a retrieval adapter, instantiating it lazily."""
 
-    global _retrieval_adapter, _retrieval_adapter_error
+    global _retrieval_adapter
 
     if _retrieval_adapter is not None:
         return _retrieval_adapter
-
-    if _retrieval_adapter_error is not None:
-        raise _retrieval_adapter_error
 
     from ..providers.retrieval_adapter import RetrievalAdapter
 
@@ -51,7 +47,6 @@ def get_retrieval_adapter() -> "RetrievalAdapter":
         )
         return _retrieval_adapter
     except Exception as exc:  # pragma: no cover - optional dependency path
-        _retrieval_adapter_error = exc
         logger.error(
             "Failed to initialize retrieval adapter for KB queries: %s",
             exc,
