@@ -1,7 +1,7 @@
 # Codex ML Architecture (v0.1.0)
 
 > **Version**: v0.1.0 Pre-Release
-> **Last Updated**: 2026-02-24
+> **Last Updated**: 2026-05-20
 > **Status**: Living Document
 > **Managed By**: AI Assistant Autonomous System
 
@@ -25,19 +25,19 @@ This document provides a comprehensive architectural overview of the `_codex_` M
 
 ## System Context (current)
 
-The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 218+ autonomous agents.
+The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 280+ autonomous agents.
 
 <!-- METRICS_LAST_UPDATED: 2026-03-25 via QA-Walkthrough GAP-028 fix -->
 ```mermaid
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
     Copilot[GitHub Copilot<br/>AI Coding Agent]
-    Agents[218+ Autonomous Agents<br/>🤖 MCP-enabled]
+    Agents[280+ Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml<br/>Production-Ready ML Platform<br/>15,640+ Tests | ~17% Coverage]
+    Codex[codex-ml<br/>Production-Ready ML Platform<br/>21,500+ Tests | 10.7% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage<br/>289 patterns learned]
-    MCP[MCP System<br/>Model Context Protocol<br/>133 active workflows]
+    MCP[MCP System<br/>Model Context Protocol<br/>162 active workflows]
     Pipeline[Python Ingestion<br/>Ingest → Analyze → Transform → Verify]
 
     HF[Hugging Face Hub<br/>Models + Datasets]
@@ -73,8 +73,8 @@ graph TB
 
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot**: AI coding agent that autonomously fixes CI failures, fills coverage gaps, and implements features
-- **218+ Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
-- **CI/CD Systems**: 133 active GitHub Actions workflows for testing, deployment, and self-healing
+- **280+ Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
+- **CI/CD Systems**: 162 active GitHub Actions workflows for testing, deployment, and self-healing
 
 ### External Systems
 
@@ -96,7 +96,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 15,640+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 21,500+ Tests]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
@@ -122,7 +122,7 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (218+ Agents)"
+        subgraph "Agent System (280+ Agents)"
             AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]

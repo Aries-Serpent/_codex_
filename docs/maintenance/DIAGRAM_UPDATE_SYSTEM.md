@@ -65,7 +65,7 @@ python scripts/maintenance/update_diagrams.py --update
 graph LR
     P6[Phase 6: MCP<br/>100% ✅] --> P7[Phase 7: Cognitive Brain<br/>100% ✅]
     P7 --> P8[Phase 8: Documentation<br/>100% ✅]
-    P8 --> P9[Phase 9: Coverage<br/>10% 🔄]
+    P8 --> P9[Phase 9: Coverage<br/>10.7% 🔄]
 
     P9 --> P91[9.1: Critical Paths<br/>72% → 85%]
     P9 --> P92[9.2: Public APIs<br/>85% → 92%]
@@ -104,9 +104,9 @@ graph TB
     end
 
     subgraph "Infrastructure"
-        TESTS[Test Suite<br/>1500+ tests]
+        TESTS[Test Suite<br/>21,500+ tests]
         DOCS[Documentation<br/>212+ KB]
-        CI[CI/CD<br/>7 workflows]
+        CI[CI/CD<br/>162 workflows]
     end
 
     CB_MAP --> CODEX
@@ -142,7 +142,7 @@ graph TB
 **Current Version**:
 ```mermaid
 graph LR
-    START[Current: 72%] --> P91[Phase 9.1<br/>85%]
+    START[Current: 10.7%] --> P91[Phase 9.1<br/>25%]
     P91 --> P92[Phase 9.2<br/>92%]
     P92 --> P93[Phase 9.3<br/>97%]
     P93 --> TARGET[Target: 100% ✨]

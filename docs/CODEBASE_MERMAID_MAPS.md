@@ -35,7 +35,7 @@
 graph TD
     subgraph "Aries-Serpent/_codex_ — Repository Structure"
         SRC[src/codex/\nPython package]
-        TESTS[tests/\n1500+ tests]
+        TESTS[tests/\n21,500+ tests]
         DOCS[docs/\nMarkdown docs]
         GITHUB[.github/\nWorkflows + Agents]
         CODEX[.codex/\nCognitive Brain\nSession State]

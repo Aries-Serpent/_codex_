@@ -1,14 +1,14 @@
 # `_codex_` (codex-ml)
-> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 21500+ tests, 80% coverage, 26 CVEs fixed, and 159 autonomous agents
+> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 21,500+ tests, 10.7% coverage, 26 CVEs fixed, and 280+ autonomous agents
 
 **📦 Release**: [pre-release_v0.1.0](https://github.com/Aries-Serpent/_codex_/releases/tag/pre-release_v0.1.0) | **📥 Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/pre-release_v0.1.0/_codex_.v0.1.0.zip)
 
 ![Version](https://img.shields.io/badge/version-0.1.0--pre--release-blue)
 ![Tests](https://img.shields.io/badge/tests-21500%2B%20total%20%7C%20Phase%2014--18%20Complete-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-80%25%20threshold-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-10.7%25-yellow)
 ![Security](https://img.shields.io/badge/security-IP--005%20Complete%20%7C%2026%20CVEs%20Fixed-brightgreen)
 ![Production](https://img.shields.io/badge/production-ready-brightgreen)
-![Agents](https://img.shields.io/badge/agents-159%20autonomous-purple)
+![Agents](https://img.shields.io/badge/agents-280%2B%20autonomous-purple)
 
 ## 🎯 Achievement Status
 
@@ -32,14 +32,14 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer + Click<br/>🔧 Training/Eval/Serve]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + Metrics<br/>📊 80% Coverage]
+            Eval[Evaluation Engine<br/>lm-eval + Metrics<br/>📊 10.7% Coverage]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production Ready]
         end
 
         subgraph "Cognitive Brain System"
             Brain[Quantum Decision Engine<br/>k₁=0.35 Optimized<br/>🧠 2.86x Advantage]
             Memory[Memory Manager<br/>STM/LTM + Patterns<br/>💾 60% Compression]
-            Agents[Agent Orchestrator<br/>159 Autonomous Agents<br/>🤖 MCP Integration]
+            Agents[Agent Orchestrator<br/>280+ Autonomous Agents<br/>🤖 MCP Integration]
         end
 
         subgraph "MCP Ecosystem"
@@ -115,10 +115,10 @@ graph TB
 ```
 
 ### Key Capabilities (v0.1.0)
-- **🧪 21500+ Tests**: Comprehensive test coverage across all components
-- **📊 80% Coverage**: Meets production-grade quality threshold
+- **🧪 21,500+ Tests**: Comprehensive test coverage across all components
+- **📊 10.7% Coverage**: Baseline coverage (coverage ratchet in progress)
 - **🔒 26 CVEs Fixed**: Security-hardened through IP-005 remediation
-- **🤖 159 Agents**: Autonomous operation with specialized domain agents
+- **🤖 280+ Agents**: Autonomous operation with specialized domain agents
 - **🧠 Cognitive Brain**: 2.86x quantum advantage (k₁=0.35)
 - **🔌 MCP System**: Standardized agent-model-context protocol
 - **⚡ CI/CD**: 75-87% time savings via auto-fix and self-healing
