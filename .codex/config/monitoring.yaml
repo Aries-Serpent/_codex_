@@ -121,6 +121,13 @@ cognitive_brain:
     confidence_threshold: 0.8
     per_workflow_overrides: {}
 
+  # Phase 10 coverage regression gate
+  coverage:
+    agents_floor_pct: 34.56       # Phase 9.4 exit baseline — any drop blocks merge
+    full_stack_fail_under: 80     # pyproject.toml fail_under (full deps CI only)
+    phase10_target_pct: 50        # 10B target: overall statement coverage
+    threshold_file: ".github/coverage_threshold.txt"
+
 # Logging and reporting
 logging:
   level: "INFO"

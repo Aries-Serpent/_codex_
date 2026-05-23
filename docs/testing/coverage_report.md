@@ -1,14 +1,46 @@
 # Test Coverage Report
 
-**Generated:** 2025-12-16  
-**PR:** #2506  
-**Status:** In Progress
+**Generated:** 2025-12-23  
+**Last Updated:** 2026-05-23 (Phase 10)  
+**Status:** Phase 10 — Post-Coverage Maintenance
 
-## Executive Summary
+## Phase 10 Summary (2026-05-23)
 
-This report documents the comprehensive test coverage expansion effort across critical orchestration modules. The initiative increased test count from 26 smoke tests to 107 total tests (313% increase) and established baseline coverage for production readiness validation.
+Phase 9 completed a four-part coverage expansion across the agents/ tier:
 
-### Key Metrics
+| Phase | Focus | Tests Added | Key Outcome |
+|-------|-------|------------|-------------|
+| 9.1 | Unit foundations | ~500 | Base test scaffold across agents/ |
+| 9.2 | Public & class API | 141 | 73 public-API + 68 class-contract tests |
+| 9.3 | Error paths | 44 | Exception & fallback coverage |
+| 9.4 | Edge cases | 54 | Boundary, concurrency, serialisation |
+
+### Current Metrics (Phase 9.4 exit)
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Statement coverage (agents/) | **34.56%** | 1,459 / 4,222 stmts |
+| Branch coverage (agents/) | **15.37%** | 178 / 1,158 branches |
+| Test files (total) | **2,091+** | Across all test directories |
+| Estimated tests | **22,000+** | Including parametrised variants |
+| CI gate (`fail_under`) | **80** | Full-stack CI only |
+| agents/ floor | **34** | `.github/coverage_threshold.txt` |
+
+### Phase 10 Targets
+
+- **10A**: Coverage regression gate — prevent drops below 34.56% (agents/)
+- **10B**: Raise overall statement coverage from ~34% → **50%** by filling `src/` gaps
+- **10C**: Documentation alignment (this update)
+- **10D**: Adaptive learning — QEC k₁ tuning, transfer-learning scaffold
+- **10E**: Operational housekeeping — archive stale docs, tighten TTL
+
+---
+
+## Historical Baseline (Phase 1, 2025-12-16)
+
+This section preserves the original Phase 1 metrics for comparison.
+
+### Key Metrics (Phase 1)
 
 | Metric | Before | After | Change |
 |--------|--------|-------|--------|
@@ -18,7 +50,7 @@ This report documents the comprehensive test coverage expansion effort across cr
 | Test Files | 1 | 7 | +6 (+600%) |
 | Test Code Volume | ~5KB | ~60KB | +55KB (+1100%) |
 
-**Overall Status:** ✅ Baseline Established, 🔄 API Alignment In Progress
+**Phase 1 Status:** ✅ Baseline Established
 
 ## Module Breakdown
 

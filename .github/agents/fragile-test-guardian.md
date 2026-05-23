@@ -65,6 +65,24 @@ Maintains test collection hygiene by detecting and protecting fragile test files
 
 **Overall Coverage**: 65/153 files (42%) → Target: 153/153 (100%)
 
+### Phase 9/10 Test Watch-List (S1259 · 2026-05-23)
+
+The following 196+ tests were added during Phase 9.1–9.4 coverage work. Many use
+`unittest.mock` stubs or lightweight fixtures. Monitor these for flakiness:
+
+| Test File | Phase | Tests | Risk |
+|-----------|-------|-------|------|
+| `tests/agents/test_public_api_phase9_2.py` | 9.2 | 73 | Mock-heavy |
+| `tests/agents/test_class_apis_phase9_2.py` | 9.2 | 68 | Mock-heavy |
+| `tests/agents/test_error_paths_phase9_3.py` | 9.3 | 44 | Error injection |
+| `tests/agents/test_edge_cases_phase9_4.py` | 9.4 | 54 | Boundary values |
+| `tests/agents/test_agents_init_phase9_2.py` | 9.2 | varies | Import guards |
+| `tests/rag/test_retrieval_phase9_2.py` | 9.2 | varies | RAG deps |
+| `tests/rag/test_verification_phase9_2.py` | 9.2 | varies | RAG deps |
+| `tests/security/test_security_phase9_1.py` | 9.1 | varies | Security mocks |
+
+**Action:** Run `pytest --lf --tb=short` on these files after each dependency update.
+
 ---
 
 ## Guard Pattern

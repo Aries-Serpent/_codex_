@@ -497,7 +497,8 @@ show_missing = true
 skip_covered = false
 precision = 2
 # NOTE: Coverage threshold actively raised each S-session (S107 roadmap).
-# Local (minimal env): ~27.5% | CI (torch+full stack): ≥50%.
+# Local (minimal env): ~34% (agents/ floor after Phase 9.4).
+# CI (torch+full stack): ≥80%.
 # Target coverage: 75% (Phase 11 final), then 100%.
 #
 # ============================================================================
@@ -519,6 +520,14 @@ precision = 2
 # - Phase 31: 85% (target: 2026-04-01)
 # - Phase 32: 90% (target: 2026-04-15)
 # - Phase 33+: 100% (aspirational: 2026-05-01)
+#
+# ============================================================================
+# PHASE 10 — POST-COVERAGE MAINTENANCE (S1259 · 2026-05-23)
+# ============================================================================
+# Phase 9.4 exit baseline: 34.56% statements (agents/).
+# fail_under = 80 applies in full-stack CI only (torch + full deps).
+# Local/minimal env: unified-coverage-agent enforces ≥34% agents/ floor.
+# Phase 10B target: raise overall to ≥50% via src/ gap-fill.
 # Owner: @mbaetiong
 fail_under = 80
 exclude_lines = [

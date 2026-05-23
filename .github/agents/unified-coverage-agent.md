@@ -84,6 +84,16 @@ Provide a single, authoritative agent for every aspect of test coverage in the
 | Phase 31 | 85% | Pending |
 | Phase 32 | 90% | Future |
 
+### Phase 10 — Post-Coverage Maintenance (S1259 · 2026-05-23)
+
+| Environment | Baseline | Enforcement |
+|-------------|----------|-------------|
+| Full-stack CI (torch) | 80% `fail_under` | `pyproject.toml` — blocks PR merge |
+| Minimal/local (agents/) | 34.56% statements | unified-coverage-agent — regression alert |
+| Branch coverage (agents/) | 15.37% | Tracked, not yet gated |
+
+**Phase 10B target:** raise overall statement coverage from ~34% → ≥50% via `src/` gap-fill (cli, rag, security modules).
+
 ---
 
 ## 🔧 Capabilities
@@ -255,4 +265,4 @@ graph LR
 
 **Agent Status:** ✅ Production Ready  
 **Supersedes:** coverage-gapfill-agent · coverage-maintenance-agent · coverage-roadmap-agent · test-coverage-agent · test-coverage-monitor  
-**Last Updated:** 2026-03-11
+**Last Updated:** 2026-05-23 (Phase 10 baseline added)
