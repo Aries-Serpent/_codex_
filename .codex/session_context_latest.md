@@ -1,10 +1,10 @@
-# Session Context — 2026-05-23T20:21:46Z
+# Session Context — 2026-05-23T21:17:27Z
 **Branch:** `copilot/update-documentation-mermaid-mappings`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4840` (✅)
-- GraphQL remaining: `4990` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-23)
 
 ## 📝 Recent Commits
+- `eb94f697` Phase 9.2 Task 3 + roll-up: CLI smoke tests + coverage report (agents/ 34.56%) — copilot-swe-agent[bot] (2026-05-23)
+- `b1821e9a` Phase 9.2 Task 1+2: public function API and class API contract tests — copilot-swe-agent[bot] (2026-05-23)
+- `ce5d3817` Phase 9.2: begin implementation plan — copilot-swe-agent[bot] (2026-05-23)
 - `e2d55da0` Apply remaining changes — copilot-swe-agent[bot] (2026-05-23)
 - `69334a40` Phase 9.1: add mental_mapping and quantum_game_theory coverage tests — copilot-swe-agent[bot] (2026-05-23)
 - `90d04975` Phase 9.1: plan tests for mental_mapping and quantum_game_theory — copilot-swe-agent[bot] (2026-05-23)
 - `56d6e84c` Phase 9.1: add msp_client and agent_memory coverage tests — copilot-swe-agent[bot] (2026-05-23)
 - `777ef5d6` Phase 9.1: plan tests for msp_client and agent_memory — copilot-swe-agent[bot] (2026-05-23)
-- `91ca6d5d` Add focused codex_client bridge and demo coverage tests — copilot-swe-agent[bot] (2026-05-23)
-- `75e7b2a6` Plan phase 9.1 codex_client coverage uplift — copilot-swe-agent[bot] (2026-05-23)
-- `043e50aa` docs: update stale test/coverage/agent counts in evolution and integration docs — copilot-swe-agent[bot] (2026-05-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
