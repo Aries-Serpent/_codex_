@@ -1,18 +1,16 @@
 """
-  Init   Module
+Safety package public interface.
 
-This module provides functionality for   init  .
+This module re-exports the primary safety utilities used across codex_ml,
+including:
+- content moderation adapters, decisions, and settings
+- prompt/output sanitization helpers and safety configuration
+- secret redaction utilities
+- sandbox availability checks and execution helper (with graceful fallback
+  on platforms where sandbox support is unavailable)
 
-Usage:
-    from safety.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+Typical usage:
+    from codex_ml.safety import sanitize_prompt, sanitize_output
 """
 
 # BEGIN: CODEX_SAFETY_INIT

@@ -297,8 +297,10 @@ def test_template_error_log() -> str:
                     time.sleep(0.001)
 
             threads = [threading.Thread(target=writer) for _ in range(4)]
-            [t.start() for t in threads]
-            [t.join() for t in threads]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
             assert logfile.exists()
         """
     )
@@ -361,6 +363,7 @@ def patch_readme(apply: bool) -> None:
             README.write_text("# Project\n\n", encoding="utf-8")
         else:
             print("[dry-run] Would create README.md")
+            return
     text = README.read_text(encoding="utf-8")
     if "Testing & Coverage (Local-Only)" not in text:
         text = text.rstrip() + "\n\n" + README_PATCH + "\n"
@@ -443,7 +446,7 @@ def main():
         ]
         print("[run]", " ".join(cmd))
         try:
-            exit_code = subprocess.call(cmd)
+            exit_code = subprocess.run(cmd).returncode
             print("[pytest-exit]", exit_code)
         except Exception as e:
             append_error("Phase6:RunPytest", e, "pytest invocation")

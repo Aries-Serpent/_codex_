@@ -120,7 +120,10 @@ class AuthManager:
         if not api_key:
             return False
 
-        return api_key in self.api_keys
+        for stored_key in self.api_keys:
+            if secrets.compare_digest(stored_key, api_key):
+                return True
+        return False
 
     def verify_jwt(self, token: str) -> dict[str, Any]:
         """Verify JWT token
