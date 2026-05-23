@@ -111,7 +111,6 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
         cmd = f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
         cp = subprocess.run(["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True)
         assert cp.returncode == 0, cp.stderr
-        session_logging_succeeded = True
 
     # Assert NDJSON exists and has start/end markers
     assert ndjson_file.exists()

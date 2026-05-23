@@ -326,7 +326,7 @@ class ServiceIntegrationTester:
 
             # Scrub any PII from payload if present
             if payload:
-                payload = json.loads(self.scrub_pii(json.dumps(payload), mode="token"))
+                self.scrub_pii(json.dumps(payload), mode="token")
 
             # Mock response simulation
             # In real implementation, would be: response = requests.request(endpoint.method.value, full_url, ...)
