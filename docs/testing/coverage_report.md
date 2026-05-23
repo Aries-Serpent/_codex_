@@ -1,10 +1,10 @@
 # Test Coverage Report
 
 **Generated:** 2025-12-23  
-**Last Updated:** 2026-05-23 (Phase 10)  
-**Status:** Phase 10 — Post-Coverage Maintenance
+**Last Updated:** 2026-05-24 (Phase 10 continued)  
+**Status:** Phase 10 — Active Coverage Expansion
 
-## Phase 10 Summary (2026-05-23)
+## Phase 10 Summary (2026-05-24)
 
 Phase 9 completed a four-part coverage expansion across the agents/ tier:
 
@@ -15,24 +15,54 @@ Phase 9 completed a four-part coverage expansion across the agents/ tier:
 | 9.3 | Error paths | 44 | Exception & fallback coverage |
 | 9.4 | Edge cases | 54 | Boundary, concurrency, serialisation |
 
-### Current Metrics (Phase 9.4 exit)
+### Current Metrics (Phase 9.4 exit → Phase 10 in-progress)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
 | Statement coverage (agents/) | **34.56%** | 1,459 / 4,222 stmts |
 | Branch coverage (agents/) | **15.37%** | 178 / 1,158 branches |
-| Test files (total) | **2,091+** | Across all test directories |
-| Estimated tests | **22,000+** | Including parametrised variants |
+| Test files (total) | **2,097+** | Across all test directories |
+| Estimated tests | **22,200+** | Including parametrised variants |
 | CI gate (`fail_under`) | **80** | Full-stack CI only |
 | agents/ floor | **34** | `.github/coverage_threshold.txt` |
 
-### Phase 10 Targets
+### Phase 10 Targets & Progress
 
-- **10A**: Coverage regression gate — prevent drops below 34.56% (agents/)
-- **10B**: Raise overall statement coverage from ~34% → **50%** by filling `src/` gaps
-- **10C**: Documentation alignment (this update)
-- **10D**: Adaptive learning — QEC k₁ tuning, transfer-learning scaffold
-- **10E**: Operational housekeeping — archive stale docs, tighten TTL
+| Sub-phase | Target | Status | Notes |
+|-----------|--------|--------|-------|
+| **10A** | Coverage regression gate — prevent drops below 34.56% | ✅ Complete | Floor enforced via monitoring.yaml + CI |
+| **10B** | Raise statement coverage → **50%** via `src/` gap-fill | 🔄 In progress | +6 test modules added (knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold) |
+| **10C** | Documentation alignment | ✅ Complete | This update |
+| **10D** | QEC k₁ tuning + transfer-learning scaffold | 🔄 In progress | k₁ lifecycle tests + knowledge_transfer.py validation added; k₁ target ≤ 0.35 |
+| **10E** | Ops housekeeping — webhooks, TTL, T-03 scope | 🔄 In progress | Webhook config documented; TTL target 3600s; T-03 security_events scope requires admin action |
+
+### Phase 10B — New Test Modules (2026-05-24)
+
+| Test File | Source Under Test | Tests | Coverage Area |
+|-----------|-------------------|-------|---------------|
+| `tests/cognitive_brain/test_knowledge_distiller.py` | `src/codex/cognitive/knowledge_distiller.py` | ~30 | KnowledgeStore CRUD, LearningExtractor, DecisionExtractor, KnowledgeDistiller |
+| `tests/cognitive_brain/test_context_compressor.py` | `src/codex/cognitive/context_compressor.py` | ~30 | TokenEstimator, KeyPointExtractor, SentenceScorer, ExtractiveSummarizer, ContextIndex |
+| `tests/cognitive_brain/test_safety_guards.py` | `src/codex/cognitive/safety_guards.py` | ~25 | RateLimit, ScopeRestriction, AuditLog, SafetyGuard (pause/resume/block/unblock) |
+| `tests/cognitive_brain/learning/test_rl_algorithms.py` | `src/cognitive_brain/learning/rl_algorithms.py` | ~20 | ReplayBuffer, QLearning (Bellman update, ε-decay, policy), DQN |
+| `tests/cognitive_brain/quantum/test_qec_k1_tuning.py` | `src/cognitive_brain/quantum/adaptive_scoring.py` | ~25 | k₁ lifecycle (init→feedback→convergence), ScoringWeights, gradient computation |
+| `tests/cognitive_brain/test_transfer_learning_scaffold.py` | `scripts/cognitive/knowledge_transfer.py` | ~10 | SESSION_KNOWLEDGE structure, pattern coverage, cross-session transfer readiness |
+
+### Phase 10D — QEC k₁ Tuning Status
+
+| Metric | Value | Target | Notes |
+|--------|-------|--------|-------|
+| Initial k₁ | **0.40** | ≤ 0.35 | Regression guard in quantum_planset_engine.py |
+| k₁ formula | `0.40 × (1 − (accuracy − 0.5) × 0.2)` | — | Empirical mapping from feedback accuracy |
+| 100% accuracy k₁ | **0.36** | ≤ 0.35 | Close to target; Phase 11 will refine formula |
+| Scoring weights | Compliance 0.38, Risk 0.32, Cost 0.15, Impact 0.15 | — | Phase 8.0 optimised |
+
+### Phase 10E — Operational Status
+
+| Item | Status | Detail |
+|------|--------|--------|
+| Webhook deployment | ⏳ Blocked | 4 webhooks defined in `.codex/webhook_config.json`; WEBHOOK_RECEIVER_URL + WEBHOOK_SECRET required |
+| `COPILOT_SESSION_TTL_SECONDS` | ⏳ Planned | Current default 43200s (12h); target 3600s once CI stable |
+| T-03 `security_events` scope | ⚠️ Admin required | `CODEX_MASTER_KEY` needs `security_events:read` scope for CodeQL alert enumeration |
 
 ---
 
