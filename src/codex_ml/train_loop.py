@@ -138,11 +138,6 @@ except Exception:
     apply_lora = None
 
 try:
-    from codex_ml.data import loaders as data_loaders  # type: ignore[attr-defined]
-except Exception:
-    data_loaders = None
-
-try:
     from codex_ml.callbacks import (
         Callback,
         EvaluationCallback,

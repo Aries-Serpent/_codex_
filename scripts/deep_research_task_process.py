@@ -1156,18 +1156,17 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
 # Single-execution sentinel
 _RUN_LOCK = threading.Lock()
-_ALREADY_RAN = False
+_RUN_ONCE = threading.Event()
 
 
 def _maybe_auto_run_on_import() -> None:
     """Import-time auto-run when CODEX_AUTO_RUN=1 (executes once)."""
-    global _ALREADY_RAN
     if os.getenv("CODEX_AUTO_RUN") != "1":
         return
     with _RUN_LOCK:
-        if _ALREADY_RAN:
+        if _RUN_ONCE.is_set():
             return
-        _ALREADY_RAN = True
+        _RUN_ONCE.set()
         run_all()
 
 
@@ -1176,6 +1175,6 @@ _maybe_auto_run_on_import()
 
 if __name__ == "__main__":
     with _RUN_LOCK:
-        if not _ALREADY_RAN:
-            _ALREADY_RAN = True
+        if not _RUN_ONCE.is_set():
+            _RUN_ONCE.set()
             raise SystemExit(main(sys.argv))

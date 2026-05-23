@@ -487,15 +487,6 @@ def main():
         text,
     )
 
-    # Helper: keep first block occurrence, remove subsequent
-    def _keep_first(pattern: str, s: str) -> str:
-        rx = re.compile(pattern, re.M | re.S)
-        matches = list(rx.finditer(s))
-        if len(matches) <= 1:
-            return s
-        first_end = matches[0].end()
-        return s[:first_end] + rx.sub("", s[first_end:])
-
     # SPDX license enforcement (string form) and canonical license-files table
     text, _ = re.subn(
         r'(?m)^\s*license\s*=\s*\{\s*file\s*=\s*"?LICENSE"?\s*\}\s*$',

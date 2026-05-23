@@ -210,7 +210,7 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
     try:
         session_logger = get_session_logger()
     except Exception:  # pragma: no cover - defensive
-        session_logger = None
+        pass
     else:
         try:
             session_logger.log_event(event, _prepare_session_payload(rec))

@@ -148,8 +148,6 @@ def current_system_metrics_config() -> SystemMetricsConfig:
 
 
 _FALLBACK_CPU_COUNT = os.cpu_count() or 1
-_FALLBACK_PROCESS_CPU_TIME: Optional[float] = None
-_FALLBACK_PROCESS_TS: Optional[float] = None
 _NVML_DISABLED = not _CONFIG.use_nvml
 _PSUTIL_WARNING_CONTEXTS: set[str] = set()
 _NVML_WARNING_CONTEXTS: set[str] = set()
@@ -163,20 +161,20 @@ def _now() -> float:
 def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
     """Return a lightweight snapshot of process metrics without psutil."""
 
-    global _FALLBACK_PROCESS_CPU_TIME, _FALLBACK_PROCESS_TS
-
     proc_time = time.process_time()
+    previous_cpu_time = getattr(_minimal_process_sample, "_previous_cpu_time", None)
+    previous_ts = getattr(_minimal_process_sample, "_previous_ts", None)
     cpu_percent = None
-    if _FALLBACK_PROCESS_CPU_TIME is not None and _FALLBACK_PROCESS_TS is not None:
-        delta_cpu = proc_time - _FALLBACK_PROCESS_CPU_TIME
-        delta_time = ts - _FALLBACK_PROCESS_TS
+    if previous_cpu_time is not None and previous_ts is not None:
+        delta_cpu = proc_time - float(previous_cpu_time)
+        delta_time = ts - float(previous_ts)
         if delta_time > 0:
             cpu_percent = max(
                 0.0, min((delta_cpu / delta_time) * 100.0, 100.0 * _FALLBACK_CPU_COUNT)
             )
 
-    _FALLBACK_PROCESS_CPU_TIME = proc_time
-    _FALLBACK_PROCESS_TS = ts
+    setattr(_minimal_process_sample, "_previous_cpu_time", proc_time)
+    setattr(_minimal_process_sample, "_previous_ts", ts)
 
     payload: dict[str, Any] = {}
     if cpu_percent is not None:

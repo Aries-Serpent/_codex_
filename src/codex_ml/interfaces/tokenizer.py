@@ -16,6 +16,7 @@ Features:
 
 from __future__ import annotations
 
+import functools
 import logging
 
 logger = logging.getLogger(__name__)
@@ -696,7 +697,10 @@ class HFTokenizer(TokenizerAdapter):
 
 from .tokenizer_hf import HFTokenizerAdapter  # noqa: E402  (re-export)
 
-_EP_LOADED = False
+@functools.lru_cache(maxsize=1)
+def _load_tokenizer_entry_points_once() -> None:
+    if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        load_tokenizer_entry_points(True)
 
 
 def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
@@ -708,10 +712,7 @@ def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
     Falls back to :class:`HFTokenizer` when no plugin is registered.
     """
 
-    global _EP_LOADED
-    if not _EP_LOADED and os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
-        load_tokenizer_entry_points(True)
-        _EP_LOADED = True
+    _load_tokenizer_entry_points_once()
 
     item = tokenizers.get(name)
     if item:

@@ -38,17 +38,17 @@ def mlflow_run(
         return
     log_param = getattr(module, "log_param", None)
 
-    stack: Optional[ExitStack] = ExitStack()
+    run_stack: Optional[ExitStack] = ExitStack()
     try:
-        stack.enter_context(run())  # type: ignore[union-attr]
+        run_stack.enter_context(run())  # type: ignore[union-attr]
     except Exception as exc:  # pragma: no cover - runtime failures fall back to no-op
         LOGGER.warning("MLflow run initialization failed; continuing without tracking: %s", exc)
-        if stack is not None:
+        if run_stack is not None:
             try:
-                stack.close()
+                run_stack.close()
             except Exception as close_exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("Failed to close MLflow context after init failure: %s", close_exc)
-        stack = None
+        run_stack = None
         yield
         return
 
@@ -62,9 +62,9 @@ def mlflow_run(
 
         yield
     finally:
-        if stack is not None:
+        if run_stack is not None:
             try:
-                stack.close()
+                run_stack.close()
             except Exception as exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("MLflow run cleanup raised but was suppressed: %s", exc)
 

@@ -106,11 +106,10 @@ def ray_train_loop(config: dict[str, Any]) -> None:
     logger.info(f"Worker {rank}/{world_size} starting training")
 
     # Create model and dataloader
-    model = config["model_fn"]()
     dataloader = config["dataloader_fn"]()
 
     # Prepare for distributed training
-    model = prepare_model(model)
+    prepare_model(config["model_fn"]())
     dataloader = prepare_data_loader(dataloader)
 
     # Training loop

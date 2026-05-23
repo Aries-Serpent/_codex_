@@ -227,15 +227,11 @@ class TestPython312SpecificFeatures:
         try:
             from typing_extensions import TypedDict
 
-            class _Config(TypedDict):  # Prefix with _ to indicate it's used for type checking
-                name: str
-                version: str
-                debug: bool
-
-            config: _Config = {
+            ConfigDict = TypedDict("ConfigDict", {"name": str, "version": str, "debug": bool})
+            config: ConfigDict = {
                 "name": "test",
                 "version": "1.0",
-                "debug": True
+                "debug": True,
             }
 
             assert config["name"] == "test"

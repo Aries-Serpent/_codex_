@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 import contextlib  # noqa: E402
 import hashlib  # noqa: E402
+import importlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 from collections.abc import Iterable, Mapping  # noqa: E402
@@ -37,9 +38,6 @@ from codex_ml.utils.optional_dependencies import (  # noqa: E402
     raise_optional_dependency_error,
 )
 
-# Lazy import variables
-_mlf = None  # Actual mlflow module if import succeeds
-_HAS_MLFLOW = False
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
@@ -49,18 +47,6 @@ _DEFAULT_LITERAL_URI = "file:./artifacts/mlruns"
 # but keep the historical literal default for compatibility checks.
 _ = mlflow_guard.bootstrap_offline_tracking(requested_uri=_CODEX_URI or _DEFAULT_LITERAL_URI)
 MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
-
-# Attempt a top-level lazy import (non-fatal)
-try:  # pragma: no cover - optional dependency
-    import mlflow as _m
-
-    _mlf = _m
-    _HAS_MLFLOW = True
-except Exception as _e:
-    logger.debug("mlflow not available: %s", _e)
-    _mlf = None
-    _HAS_MLFLOW = False
-
 
 def _resolve_tracking_uri_default() -> Optional[str]:
     codex_env = os.getenv("CODEX_MLFLOW_URI")
@@ -106,25 +92,16 @@ __all__ = [
 ]
 
 
-def _ensure_mlflow_available() -> None:
+def _ensure_mlflow_available() -> Any:
     """Ensure mlflow is importable at call time.
 
     Tries a runtime import if the top-level import failed. Raises a
     RuntimeError with installation guidance when MLflow is unavailable.
     """
-    global _mlf, _HAS_MLFLOW
-    if _HAS_MLFLOW:
-        return
     try:
-        import importlib
-
-        _m = importlib.import_module("mlflow")
-        _mlf = _m
-        _HAS_MLFLOW = True
+        return importlib.import_module("mlflow")
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
-        _mlf = None
-        _HAS_MLFLOW = False
         err = build_optional_dependency_error("mlflow", "experiment tracking")
         raise RuntimeError(err.args[0]) from exc
 
@@ -228,13 +205,14 @@ def start_run(
     try:
         # Configure tracking URI and experiment if provided
         target_uri = mlflow_guard.bootstrap_offline_tracking(requested_uri=cfg.tracking_uri)
+        ml = _ensure_mlflow_available()
         if target_uri:
-            _mlf.set_tracking_uri(target_uri)  # type: ignore[union-attr]
+            ml.set_tracking_uri(target_uri)
         if cfg.experiment:
-            _mlf.set_experiment(cfg.experiment)  # type: ignore[union-attr]
+            ml.set_experiment(cfg.experiment)
 
         # Start the run with optional tags. mlflow.start_run returns a context manager.
-        return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[union-attr]
+        return ml.start_run(tags=cfg.run_tags or {})
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to initialize MLflow run") from exc
 
@@ -252,9 +230,7 @@ def _mlflow_noop_or_raise(enabled: Optional[bool]) -> Optional[Any]:
         return None
 
     # ``enabled`` is True: ensure mlflow is importable and return the module.
-    if not _HAS_MLFLOW or _mlf is None:
-        _ensure_mlflow_available()  # will raise if unavailable
-    return _mlf
+    return _ensure_mlflow_available()
 
 
 def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:

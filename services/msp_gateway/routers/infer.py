@@ -39,7 +39,6 @@ if TYPE_CHECKING:
     from ..providers.retrieval_adapter import RetrievalAdapter
 
 _retrieval_adapter: Optional["RetrievalAdapter"] = None
-_retrieval_adapter_error: Optional[Exception] = None
 
 
 def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
@@ -50,13 +49,10 @@ def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
     otherwise they retry initialization.
     """
 
-    global _retrieval_adapter, _retrieval_adapter_error
+    global _retrieval_adapter
 
     if _retrieval_adapter is not None:
         return _retrieval_adapter
-
-    if _retrieval_adapter_error is not None:
-        return None
 
     try:
         from ..providers.retrieval_adapter import RetrievalAdapter
@@ -68,7 +64,6 @@ def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
         )
         return _retrieval_adapter
     except Exception as exc:  # pragma: no cover - optional dependency path
-        _retrieval_adapter_error = exc
         logger.warning(
             "Failed to initialize retrieval adapter; proceeding without RAG: %s",
             exc,

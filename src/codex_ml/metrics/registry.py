@@ -35,7 +35,6 @@ _METRIC_REGISTRY: dict[str, Callable[..., object]] = {}
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
-_REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
 
 
@@ -255,18 +254,10 @@ def init_metric_plugins(*, force: bool = False) -> int:
 
 
 def _ensure_metric_plugins_loaded() -> None:
-    global _REWARD_METRICS_LOADED
-
-    if not _REWARD_METRICS_LOADED:
-        with _REWARD_METRICS_LOCK:
-            if not _REWARD_METRICS_LOADED:
-                # Register built-in reward metrics alongside generative
-                # defaults without creating import cycles at module import
-                # time.
-                from . import reward as _reward
-
-                _ = _reward
-                _REWARD_METRICS_LOADED = True
+    with _REWARD_METRICS_LOCK:
+        # Register built-in reward metrics alongside generative defaults
+        # without creating import cycles at module import time.
+        from . import reward  # noqa: F401
 
     if _METRIC_PLUGINS_LOADED:
         return

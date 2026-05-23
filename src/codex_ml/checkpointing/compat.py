@@ -7,11 +7,10 @@ from __future__ import annotations
 
 import importlib
 import warnings
+from functools import lru_cache
 from typing import Any
 
 from codex_ml.utils import checkpoint_core as _core
-
-_warned = False
 
 # Map legacy names -> new import paths when they land.
 _ALIASES: dict[str, str] = {
@@ -43,13 +42,15 @@ def __dir__() -> list[str]:
     return sorted(list(globals()) + list(_ALIASES.keys()))
 
 
+@lru_cache(maxsize=1)
+def _warn_save_checkpoint_deprecated() -> None:
+    warnings.warn(
+        "codex_ml.checkpointing.compat.save_checkpoint is deprecated; use checkpoint_core.save_checkpoint",  # noqa: E501
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+
 def save_checkpoint(*args, **kwargs):
-    global _warned
-    if not _warned:
-        warnings.warn(
-            "codex_ml.checkpointing.compat.save_checkpoint is deprecated; use checkpoint_core.save_checkpoint",  # noqa: E501
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        _warned = True
+    _warn_save_checkpoint_deprecated()
     return _core.save_checkpoint(*args, **kwargs)

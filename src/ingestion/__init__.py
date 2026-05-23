@@ -56,11 +56,9 @@ except Exception:
 # Deterministic shuffle and legacy read_text_file may live in utils
 try:
     from .utils import deterministic_shuffle as _deterministic_shuffle
-    from .utils import read_text_file as _utils_read_text_file
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     _deterministic_shuffle = None  # type: ignore[assignment]
-    _utils_read_text_file = None  # type: ignore[assignment]
 
 __all__ = [
     "Ingestor",

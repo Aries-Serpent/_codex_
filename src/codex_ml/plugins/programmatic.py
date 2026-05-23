@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 from contextlib import suppress  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
+from functools import lru_cache  # noqa: E402
 
 from .base import BasePlugin  # noqa: E402
 from .registry import (  # noqa: E402
@@ -75,7 +76,6 @@ class PluginRegistry:
 
 
 _REGISTRY = PluginRegistry()
-_BOOTSTRAPPED = False
 
 
 def _register_example(plugin_cls: type[BasePlugin] | None) -> None:
@@ -85,11 +85,8 @@ def _register_example(plugin_cls: type[BasePlugin] | None) -> None:
         _REGISTRY.register(plugin_cls())
 
 
+@lru_cache(maxsize=1)
 def _bootstrap_examples() -> None:
-    global _BOOTSTRAPPED
-    if _BOOTSTRAPPED:
-        return
-
     try:
         from examples.plugins.hello_plugin import HelloPlugin
     except Exception:  # pragma: no cover - optional example absent
@@ -118,8 +115,6 @@ def _bootstrap_examples() -> None:
 
     _register_example(HelloPlugin)
     _register_example(TokenAccuracyPlugin)
-
-    _BOOTSTRAPPED = True
 
 
 def registry() -> PluginRegistry:
