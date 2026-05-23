@@ -48,7 +48,6 @@ def mlflow_run(
                 run_stack.close()
             except Exception as close_exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("Failed to close MLflow context after init failure: %s", close_exc)
-        run_stack = None
         yield
         return
 

@@ -87,12 +87,14 @@ except Exception as exc:  # pragma: no cover - OmegaConf optional
     OmegaConf = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - guard should never raise fatally
-    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+    from codex_ml.tracking.mlflow_guard import (
+        bootstrap_offline_tracking as _bootstrap_offline_tracking,
+    )
 except Exception:  # pragma: no cover - guard import optional
-    bootstrap_offline_tracking = None  # type: ignore[assignment]
+    pass
 else:
     try:
-        bootstrap_offline_tracking()
+        _bootstrap_offline_tracking()
     except Exception:  # pragma: no cover - best-effort
         logger.debug("MLflow guard initialization failed", exc_info=True)
 

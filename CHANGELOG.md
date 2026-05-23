@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4544 review follow-up — 2026-05-23T02:02Z)
+- Resolved the remaining review findings on the CodeQL cleanup PR:
+  - restored readable cache-miss branch inputs in `tests/branch_coverage/test_branch_coverage_rag.py`
+  - preserved runtime `CODEX_PLUGINS_ENTRYPOINTS` toggling in `src/codex_ml/models/__init__.py` and `src/codex_ml/interfaces/tokenizer.py`
+  - removed the unused `run_stack`, `ConfigDict`, and `bootstrap_offline_tracking` bindings flagged by GitHub code quality
+- Added focused regression coverage for the model/tokenizer entry-point toggle behavior in `tests/test_loader_registry.py` and `tests/test_interfaces_compat.py`.
+
 ### Fixed (auto-update — PR #4544)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4544 (SHA `828b7605`) at 2026-05-23T01:56Z [auto-generated]
 

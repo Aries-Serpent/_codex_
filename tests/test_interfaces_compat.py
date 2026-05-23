@@ -145,3 +145,24 @@ def test_tokenizer_protocol_guard(monkeypatch):
     message = str(exc.value)
     assert "TokenizerProtocol method 'encode'" in message
     assert "hf" in message and "whitespace" in message
+
+
+def test_get_tokenizer_entry_points_can_enable_after_initial_disabled_call(monkeypatch):
+    calls: list[bool] = []
+
+    monkeypatch.delenv("CODEX_PLUGINS_ENTRYPOINTS", raising=False)
+    monkeypatch.setattr(
+        tokenizer_mod,
+        "load_tokenizer_entry_points",
+        lambda enabled: calls.append(enabled),
+    )
+    monkeypatch.setattr(tokenizer_mod, "_resolve_auto_tokenizer", lambda: None)
+    tokenizer_mod._load_tokenizer_entry_points_once.cache_clear()
+
+    assert isinstance(tokenizer_mod.get_tokenizer("missing-tokenizer"), TokenizerAdapter)
+
+    monkeypatch.setenv("CODEX_PLUGINS_ENTRYPOINTS", "1")
+    assert isinstance(tokenizer_mod.get_tokenizer("missing-tokenizer"), TokenizerAdapter)
+    assert calls == [True]
+
+    tokenizer_mod._load_tokenizer_entry_points_once.cache_clear()

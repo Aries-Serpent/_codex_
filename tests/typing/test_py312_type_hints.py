@@ -227,8 +227,10 @@ class TestPython312SpecificFeatures:
         try:
             from typing_extensions import TypedDict
 
-            ConfigDict = TypedDict("ConfigDict", {"name": str, "version": str, "debug": bool})
-            config: ConfigDict = {
+            config: TypedDict(
+                "ConfigDict",
+                {"name": str, "version": str, "debug": bool},
+            ) = {
                 "name": "test",
                 "version": "1.0",
                 "debug": True,

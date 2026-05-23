@@ -52,7 +52,8 @@ def _load_entry_points_once() -> None:
 
 def get_model(name: str) -> Optional[type[object]]:
     """Return a model class from the registry, loading entry points if enabled."""
-    _load_entry_points_once()
+    if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        _load_entry_points_once()
     item = _models_registry.get(name)
     return item.obj if item else None
 

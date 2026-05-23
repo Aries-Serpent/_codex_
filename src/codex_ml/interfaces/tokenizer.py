@@ -712,7 +712,8 @@ def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
     Falls back to :class:`HFTokenizer` when no plugin is registered.
     """
 
-    _load_tokenizer_entry_points_once()
+    if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        _load_tokenizer_entry_points_once()
 
     item = tokenizers.get(name)
     if item:
