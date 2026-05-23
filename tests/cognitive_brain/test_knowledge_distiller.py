@@ -6,9 +6,7 @@ KnowledgeStore, LearningExtractor, DecisionExtractor, and KnowledgeDistiller.
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
-from pathlib import Path
 
 import pytest
 
@@ -22,7 +20,6 @@ from codex.cognitive.knowledge_distiller import (
     LearningExtractor,
     SessionSummary,
 )
-
 
 # ---------------------------------------------------------------------------
 # KnowledgeType / KnowledgePriority enums

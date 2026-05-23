@@ -8,7 +8,6 @@ ContextIndex, and ContextCompressor.
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 import pytest
 
@@ -24,7 +23,6 @@ from codex.cognitive.context_compressor import (
     SentenceScorer,
     TokenEstimator,
 )
-
 
 # ---------------------------------------------------------------------------
 # Enums

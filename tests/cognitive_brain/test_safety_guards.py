@@ -6,9 +6,7 @@ RateLimit, ScopeRestriction, AuditLog, and SafetyGuard.
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 import pytest
 
@@ -23,7 +21,6 @@ from codex.cognitive.safety_guards import (
     SafetyGuard,
     ScopeRestriction,
 )
-
 
 # ---------------------------------------------------------------------------
 # Enums

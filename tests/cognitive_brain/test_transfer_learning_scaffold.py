@@ -7,7 +7,6 @@ and pattern library conformance for cross-session transfer readiness.
 from __future__ import annotations
 
 import importlib
-import sys
 from pathlib import Path
 
 import pytest

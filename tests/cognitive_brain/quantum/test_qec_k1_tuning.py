@@ -21,7 +21,6 @@ from cognitive_brain.quantum.adaptive_scoring import (
     create_scoring_function,
 )
 
-
 # ---------------------------------------------------------------------------
 # ScoringWeights
 # ---------------------------------------------------------------------------
@@ -149,7 +148,7 @@ class TestAdaptiveScoringOptimizer:
                 },
                 timestamp=time.time(),
             ))
-        changes = optimizer.update_weights()
+        optimizer.update_weights()
         # k₁ should have been updated
         assert len(optimizer.k1_history) > 1
         # With 100% accuracy: k₁ = 0.40 * (1 - (1.0 - 0.5) * 0.2) = 0.40 * 0.9 = 0.36
