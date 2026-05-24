@@ -9,7 +9,8 @@ import pytest
 
 from agents import msp_client as msp_module
 from agents.msp_client import EnhancedMSPClient, MSPClient
- # pragma: allowlist test secret # pragma: allowlist secret
+
+# pragma: allowlist test secret # pragma: allowlist secret
 
 class _FakeResponse:
     def __init__(
@@ -154,9 +155,9 @@ def test_init_endpoint_alias_ignored_when_base_url_explicit(fake_client_factory)
 
 
 def test_init_with_api_key_adds_authorization_header(fake_client_factory):
-    MSPClient(api_key="example-key")
+    MSPClient(api_key="test")
     fake = fake_client_factory[0]
-    assert fake.init_kwargs["headers"]["Authorization"] == "Bearer " + "example-key"
+    assert fake.init_kwargs["headers"]["Authorization"] == "Bearer " + "test"
 
 
 def test_request_passes_method_and_path(fake_client_factory):
