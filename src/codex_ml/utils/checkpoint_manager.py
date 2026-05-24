@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
+import pickle
 from pathlib import Path
 from typing import Any
 
@@ -28,8 +28,9 @@ def save_checkpoint(
     if torch is not None and hasattr(torch, "save"):
         torch.save(state, target)
     else:  # pragma: no cover - exercised when torch is unavailable
-        with target.open("wb") as handle:
-            pickle.dump(state, handle)
+        from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+        safe_pickle_dump(state, str(target))
 
     if keep_last_k <= 0:
         return target
@@ -71,7 +72,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
         ) as torch_error:
             logger.debug(f"Exception: {torch_error}")
             # Use safe pickle loading as fallback
-            from utils.safe_pickle import safe_pickle_load
+            from codex_ml.utils.safe_pickle import safe_pickle_load
 
             try:
                 data = safe_pickle_load(str(target), use_restricted_unpickler=True)
@@ -80,7 +81,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
                 raise torch_error from err
     else:  # pragma: no cover - exercised when torch is unavailable
         # Use safe pickle loading to prevent code execution vulnerabilities
-        from utils.safe_pickle import safe_pickle_load
+        from codex_ml.utils.safe_pickle import safe_pickle_load
 
         data = safe_pickle_load(str(target), use_restricted_unpickler=True)
     if not isinstance(data, dict):

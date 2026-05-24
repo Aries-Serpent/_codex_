@@ -10,7 +10,6 @@ import csv  # noqa: E402
 import hashlib  # noqa: E402
 import io  # noqa: E402
 import json  # noqa: E402
-import pickle  # noqa: E402  # nosec B403 — pickle used for ML checkpoint data from trusted local paths only
 import time  # noqa: E402
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
@@ -411,7 +410,9 @@ def load_dataset(
     if max_items is not None:
         texts = texts[:max_items]
 
-    cache_file.write_bytes(pickle.dumps(texts))
+    from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+    safe_pickle_dump(texts, str(cache_file))
     manifest = CacheManifest(
         source=str(path),
         checksum=_compute_checksum(texts),

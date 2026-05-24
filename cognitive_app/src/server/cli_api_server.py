@@ -30,9 +30,11 @@ import re
 import secrets
 import select
 import shlex
+import shutil
 import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
+from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
 
@@ -780,6 +782,114 @@ async def ooda_metrics():
 _BLOCKED = re.compile(
     r'\b(rm\s+-rf\s+/|mkfs|dd\s+if=|shutdown|reboot|:(){ :|:& };:)\b'
 )
+_CLI_ALLOWED_ENV_PREFIXES = ("CODEX_", "GITHUB_", "PYTHON", "PATH", "HOME", "TERM", "COLORTERM")
+_CLI_TRUSTED_BIN_DIRS = tuple(Path(path).resolve() for path in ("/usr/bin", "/usr/local/bin", "/bin"))
+_DEFAULT_LOGIN_SHELL = "/bin/bash" if Path("/bin/bash").exists() else "/bin/sh"
+
+
+def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
+    # Do not call expanduser() on user input to prevent path traversal via ~username
+    # Validate user input string before using it in path operations (CodeQL alert #13688, #13690)
+
+    # Start with the trusted base path
+    repo_root = Path(REPO_ROOT).resolve()
+
+    if raw_cwd is None:
+        # No user input - use trusted REPO_ROOT directly
+        return str(repo_root)
+
+    # Validate user input before using in any path operations
+    # Check for null bytes and other control characters that could be exploited
+    if "\x00" in raw_cwd or any(ord(c) < 32 and c not in ("\t", "\n", "\r") for c in raw_cwd):
+        raise HTTPException(status_code=400, detail="Invalid characters in cwd path")
+
+    # Break taint chain by validating path components individually
+    # CodeQL tracks taint through os.path and Path operations, so we need to
+    # validate each component separately and reconstruct from trusted base
+    try:
+        # Create a temporary Path object for parsing only (not used in final path)
+        # This allows us to extract and validate individual components
+        temp_path = Path(raw_cwd)
+
+        # Handle absolute vs relative paths differently
+        if temp_path.is_absolute():
+            # For absolute paths, first verify they're within repo_root
+            # Use string operations to check prefix before creating Path
+            repo_root_str = str(repo_root)
+            raw_cwd_normalized = os.path.normpath(raw_cwd)
+
+            # Check if the absolute path starts with repo_root
+            if not raw_cwd_normalized.startswith(repo_root_str):
+                raise HTTPException(
+                    status_code=400, detail="Absolute path must be within repository"
+                )
+
+            # Extract the relative part after repo_root
+            # Use string slicing to get only the part after repo_root
+            relative_part = raw_cwd_normalized[len(repo_root_str):].lstrip(os.sep)
+
+            # If empty, return repo_root
+            if not relative_part:
+                return str(repo_root)
+
+            # Now validate the relative part's components
+            temp_path = Path(relative_part)
+
+        # Extract and validate each path component
+        parts = temp_path.parts
+
+        # Validate each component individually - reject path traversal
+        for part in parts:
+            if part in (".", ".."):
+                raise HTTPException(status_code=400, detail="Path traversal not allowed")
+            if os.sep in part or (os.altsep and os.altsep in part):
+                raise HTTPException(status_code=400, detail="Invalid path component")
+
+        # Reconstruct the path using only the validated components and trusted base
+        # This breaks the taint chain - we're building a new path from scratch
+        candidate = repo_root
+        for part in parts:
+            # Use the truediv operator (/) which creates a new Path object
+            # Since 'part' is validated and 'candidate' starts as trusted repo_root,
+            # this creates a clean path without tainted data flow
+            candidate = candidate / part
+
+        # Resolve to absolute path
+        candidate = candidate.resolve(strict=False)
+
+    except (ValueError, OSError) as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid path: {exc}") from exc
+
+    # Ensure the resolved path stays within the repository
+    if not candidate.is_relative_to(repo_root):
+        raise HTTPException(status_code=400, detail="cwd must stay inside the repository")
+
+    return str(candidate)
+
+
+def _resolve_cli_executable(program: str) -> str:
+    resolved = shutil.which(program)
+    if not resolved:
+        raise HTTPException(status_code=400, detail=f"Executable not found: {program}")
+    path = Path(resolved).resolve()
+    if not any(path.is_relative_to(base) for base in _CLI_TRUSTED_BIN_DIRS):
+        raise HTTPException(status_code=400, detail=f"Executable not allowed: {program}")
+    return str(path)
+
+
+def _sanitize_cli_env(extra_env: Optional[dict[str, str]]) -> dict[str, str]:
+    env = {
+        key: value
+        for key, value in os.environ.items()
+        if key == "PATH" or any(key.startswith(prefix) for prefix in _CLI_ALLOWED_ENV_PREFIXES)
+    }
+    env.setdefault("TERM", "xterm-256color")
+    env.setdefault("COLORTERM", "truecolor")
+    for key, value in (extra_env or {}).items():
+        if not any(key.startswith(prefix) for prefix in _CLI_ALLOWED_ENV_PREFIXES):
+            raise HTTPException(status_code=400, detail=f"Environment variable not allowed: {key}")
+        env[key] = value
+    return env
 
 
 @app.post("/api/cli/run", response_model=CliRunResponse)
@@ -805,8 +915,9 @@ async def cli_run(req: CliRunRequest):
     if not args:
         raise HTTPException(status_code=400, detail="Empty command")
 
-    cwd = req.cwd or REPO_ROOT
-    env = {**os.environ, **(req.env or {})}
+    args[0] = _resolve_cli_executable(args[0])
+    cwd = _sanitize_cli_cwd(req.cwd)
+    env = _sanitize_cli_env(req.env)
 
     t0 = time.monotonic()
     try:
@@ -1331,15 +1442,15 @@ async def ws_cli(ws: WebSocket):
     log.info("WS PTY session opened")
 
     master_fd, slave_fd = pty.openpty()
-    shell = os.environ.get("SHELL", "/bin/bash")
+    shell = _DEFAULT_LOGIN_SHELL
 
-    proc = subprocess.Popen(  # nosec B603 — shell binary sourced from SHELL env (trusted system path, not user input)
+    proc = subprocess.Popen(  # nosec B603 — shell path and environment are sanitized before execution
         [shell, "--login"],
         stdin=slave_fd,
         stdout=slave_fd,
         stderr=slave_fd,
         cwd=REPO_ROOT,
-        env={**os.environ, "TERM": "xterm-256color", "COLORTERM": "truecolor"},
+        env=_sanitize_cli_env(None),
         close_fds=True,
     )
     os.close(slave_fd)
@@ -1503,4 +1614,3 @@ async def ws_metrics(ws: WebSocket):
         log.debug("Metrics stream error: %s", exc)
     finally:
         log.info("WS metrics stream closed")
-

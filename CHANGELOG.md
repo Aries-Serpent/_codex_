@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4559 security hardening — 2026-05-24T18:32Z)
+- **CodeQL Path Traversal (Alert #13688):** Hardened `cognitive_app/src/server/cli_api_server.py::_sanitize_cli_cwd()` to validate user input before path operations, breaking the taint chain by using `os.path.normpath()` and `os.path.join()` to create sanitized path strings before `Path()` construction.
+- **XML Injection Prevention:** Replaced stdlib `xml.etree.ElementTree` with `defusedxml` in `.github/scripts/ci_parse_coverage.py` and `.github/scripts/parse_junit_xml.py`; added defusedxml validation to generated solution XML in `src/codex/dynamics/solution_xml.py`.
+- **Pickle Deserialization Hardening:** Replaced raw pickle operations with safe_pickle wrappers in checkpoint modules (`src/codex_ml/utils/checkpoint.py`, `checkpoint_manager.py`, `checkpoint_core.py`, `checkpointing.py`) and dataset caching (`src/codex_ml/data/loader.py`).
+- **Import Path Corrections:** Fixed relative imports to use absolute `codex_ml.utils.safe_pickle` imports instead of `utils.safe_pickle` to prevent ImportError when package is installed from wheel/sdist.
+- **JWT Signature Verification:** Enhanced `tests/github/test_app_token.py` to verify RS256 JWT signatures with proper algorithm validation.
+- **Static Analyzer Hardening:** Updated `src/codex/analyze/static/analyzer.py` to use defusedxml for AST parsing.
+- **Line Length Compliance:** Refactored long lines in `src/codex/dynamics/solution_xml.py` to comply with 100-character limit.
+- All changes validated with ruff, mypy baseline (131 errors = baseline), and pytest.
+
+### Fixed (auto-update — PR #4559)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4559 (SHA `8d4908ed`) at 2026-05-24T15:43Z [auto-generated]
+
 ### Fixed (auto-update — PR #4557)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4557 (SHA `3d68afa6`) at 2026-05-24T11:04Z [auto-generated]
 

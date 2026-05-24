@@ -23,7 +23,6 @@ from __future__ import annotations
 import ast
 import json
 import logging
-import os
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -33,14 +32,10 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-# Security: Default trusted directories for external tools
-# Can be overridden via CODEX_TRUSTED_TOOL_DIRS environment variable
+# Security: Default trusted directories for external tools.
+# Keep this list static so tool resolution does not depend on untrusted input.
 DEFAULT_TRUSTED_DIRS = ["/usr/bin", "/usr/local/bin", "/opt/homebrew/bin"]
-TRUSTED_TOOL_DIRS = (
-    os.environ.get("CODEX_TRUSTED_TOOL_DIRS", "").split(":")
-    if os.environ.get("CODEX_TRUSTED_TOOL_DIRS")
-    else DEFAULT_TRUSTED_DIRS
-)
+TRUSTED_TOOL_DIRS = [str(Path(path).resolve()) for path in DEFAULT_TRUSTED_DIRS]
 
 # Safeguards: Configuration bounds
 MAX_FILE_SIZE_KB = 1024

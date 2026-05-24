@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Parse JUnit XML test results and display summary."""
+
 import sys
-import xml.etree.ElementTree as ET
+
+from defusedxml import ElementTree as ET
 
 
 def parse_junit_xml(junit_file: str) -> dict:
