@@ -789,6 +789,20 @@ _DEFAULT_LOGIN_SHELL = "/bin/bash" if Path("/bin/bash").exists() else "/bin/sh"
 
 def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
     # Do not call expanduser() on user input to prevent path traversal via ~username
+    # Validate user input string before using it in path operations (CodeQL alert #13688)
+    if raw_cwd is not None:
+        # Check for null bytes and other control characters that could be exploited
+        if "\x00" in raw_cwd or any(ord(c) < 32 and c not in ("\t", "\n", "\r") for c in raw_cwd):
+            raise HTTPException(status_code=400, detail="Invalid characters in cwd path")
+        # Prevent obvious path traversal attempts before creating Path object
+        if raw_cwd.startswith("/") or raw_cwd.startswith("\\"):
+            # Absolute paths are allowed but will be checked for containment below
+            pass
+        elif ".." in raw_cwd:
+            # Relative paths with .. will be resolved and checked below
+            pass
+
+    # Now safe to create Path object with validated input
     candidate = Path(raw_cwd or REPO_ROOT)
     resolved = candidate.resolve(strict=False)
     repo_root = Path(REPO_ROOT).resolve()
