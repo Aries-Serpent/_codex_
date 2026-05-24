@@ -104,10 +104,13 @@ python scripts/tools/variable_intent_writer.py set COPILOT_RUNNER_PROFILE "ubunt
 
 ## 🕐 Last Verified
 
-Updated: 2026-05-08T01:00Z
-By: copilot-swe-agent[bot] — S859 (PR #4346)
+Updated: 2026-05-24T23:00Z
+By: copilot-swe-agent[bot] — Phase-5 consolidation (coverage + agent + cache)
 Repo variable snapshot: `.codex/agent_context.json` (COPILOT_AGENT_AUTH_ENABLED=true confirmed)
 CI failure rate: `1.6:ok` (healthy)
-Active workflows: 153 | Active agents: 162
-Current phase: Phase 5 — Full autonomous self-healing loop ACTIVE
-Last green SHA (main): `963cc05949d360bc0d937a0a5b14a84f1535768e`
+Active workflows: 285 in `.github/workflows/` (142 archived under `.github/workflow-archive/disabled/`) | Active agents: **143** (post Phase-5 consolidation; matrix at [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../agents/AGENT_CONSOLIDATION_MATRIX.md))
+Coverage: 10.7% — stepped roadmap 10 → 12 → 15 → 20% in [`.codex/COVERAGE_GAP_REPORT.md`](COVERAGE_GAP_REPORT.md)
+Cache policy: 4-layer hierarchy in [`docs/workflows/CACHE_POLICY.md`](../docs/workflows/CACHE_POLICY.md) (owned by `cache-management-agent`)
+Current phase: Phase 5 — Full autonomous self-healing loop ACTIVE; Phase 5b deferred (workflow YAML rollout)
+Last green SHA (main): `33b5f137`
+

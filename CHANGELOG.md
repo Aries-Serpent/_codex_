@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase-5 Coverage + Agent + Cache Consolidation — 2026-05-24)
+- **`.codex/COVERAGE_GAP_REPORT.md`** — static src↔tests cross-reference identifying 139/943 untested modules; ranked gaps for `mcp.*`, `codex_ml.tokenization.*`, `cognitive_brain.experiments.*`, `codex.rag.benchmarks.*`, `services.audio.*`; stepped coverage roadmap 10 → 12 → 15 → 20% targeting `pyproject.toml [tool.coverage.report].fail_under`. Hand-off to `unified-coverage-agent`.
+- **`agents/AGENT_CONSOLIDATION_MATRIX.md`** — Keep/Merge/Archive decisions across 6 agent families: 5 coverage merges (confirmed), 2 doc merges, 4 security merges, 2 CI-healing merges, 1 cache merge, 1 archive. Net: 153 → **143 active agents**. Hand-off to `agent-orchestrator` for `AGENT_REGISTRY.yaml` mutation.
+- **`docs/workflows/CACHE_POLICY.md`** — 4-layer cache hierarchy (toolchain / deps / tool-state / data-models) and skip-rescan policy (`concurrency.cancel-in-progress`, paths-filter, lockfile-hash keys, no `${{ github.sha }}` in keys). Owned by `cache-management-agent`. YAML rollout deferred to Phase 5b.
+- **`docs/workflows/CONSOLIDATION_PLAN.md`** — Phase 5 iteration log appended.
+
+### Changed
+- **`AGENTS.md`**: active agent count updated 153 → 143; unified entry points enumerated.
+- **`.codex/AGENTIC_REPO_STATE.md`**: Last-Verified block refreshed (2026-05-24); workflow/agent counts; pointers to Phase-5 artifacts.
+- **`docs/system/CODEBASE_COGNITIVE_MAP.md`**: Agent System section gains unified-agents mermaid; stats line adds active-agents/workflows; Cache Strategy section references `CACHE_POLICY.md`.
+
+### Notes
+- All Phase-5 artifacts cite the ADA policy at `.codex/CODEBASE_AGENCY_POLICY.md`.
+- `pyproject.toml [tool.coverage.report]` remains the single source of truth for `fail_under` (verified — `.coveragerc` carries no `fail_under`).
+- This PR delivers planning + matrix + gap-report artifacts only; full `pytest --cov` runs in the existing `Coverage` CI workflow. `AGENT_REGISTRY.yaml` mutation lives outside this PR (delegated to `agent-orchestrator`, which has access to `.github/agents/`).
+
 ### Fixed (auto-update — PR #4561)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4561 (SHA `99fdf377`) at 2026-05-24T21:48Z [auto-generated]
 

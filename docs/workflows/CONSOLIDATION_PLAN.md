@@ -415,3 +415,29 @@ trigger definition.
 - Added Phase 4 audit artifact: `docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md`
 - Verified that previously flagged workflows (`cleanup-stale-pr-comments`, `ci-failure-issue-creator`, `comment-review-gate`) are already scoped and not broad `push: main` spam triggers.
 - Reduced `proactive-ci-monitor.yml` schedule frequency from every 30 minutes to every 6 hours to reduce noisy recurring executions.
+
+---
+
+## Phase 5 — Coverage + Agent + Cache Consolidation Iteration (2026-05-24)
+
+**Branch:** `copilot/analyze-test-coverage-and-documentation`
+**Driver:** Implementation of the three-part plan (Coverage analysis, Agent/workflow consolidation, Docs alignment).
+**Hand-off agents:** `workflow-management-agent` (primary); supporting: `workflow-optimization-agent`, `cache-management-agent`, `ci-pattern-guardian`, `workflow-compliance-guardian`.
+**Inputs produced this iteration:**
+
+- `.codex/COVERAGE_GAP_REPORT.md` — static src↔tests cross-reference, ranked gaps, stepped coverage roadmap (10 → 12 → 15 → 20%).
+- `agents/AGENT_CONSOLIDATION_MATRIX.md` — Keep / Merge / Archive decisions for 6 agent families (net −10 agents → 143).
+- `docs/workflows/CACHE_POLICY.md` — 4-layer cache hierarchy specification and skip-rescan policy.
+
+### Phase 5 cache-aware workflow goals
+
+1. **Single workflow execution gate** — route every PR trigger through `workflow-compliance-guardian` + `ci-pattern-guardian` *before* fan-out, so duplicate runs on the same SHA collapse to a no-op.
+2. **Skip rescans on superseded commits** — every workflow that performs file-content scanning (lint, security, coverage, doc-link-check) must check the `concurrency.group` and cancel-in-progress on push, plus diff-filter to changed paths (`dorny/paths-filter` or `tj-actions/changed-files`).
+3. **Cache key discipline** — keys derived from lockfiles (`requirements*.txt`, `uv.lock`, `package-lock.json`, `Cargo.lock`) plus a workflow-version segment; never from `${{ github.sha }}` directly.
+4. **DVC pull on-demand** — model/dataset cache layer pulls only when the workflow declares a `needs-models` job-level boolean.
+
+### Phase 5 deferrals
+
+Concrete workflow YAML edits are intentionally deferred to a follow-up PR owned by `workflow-management-agent`, because the cross-cutting change-set (cancel-in-progress + path-filters + cache-key version bump) spans 70+ workflows and benefits from a single coordinated PR.
+
+This iteration commits only the **policy + matrix + gap report**; the workflow YAML mutation lands in a follow-up PR cited as `Phase 5b`.
