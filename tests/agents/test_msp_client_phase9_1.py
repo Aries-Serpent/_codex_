@@ -9,8 +9,7 @@ import pytest
 
 from agents import msp_client as msp_module
 from agents.msp_client import EnhancedMSPClient, MSPClient
- # pragma: allowlist secret # pragma: allowlist secret
- # pragma: allowlist secret # pragma: allowlist secret
+
 
 class _FakeResponse:
     def __init__(
@@ -323,7 +322,7 @@ def test_request_with_retry_recovers_after_failures(monkeypatch, fake_client_fac
         ],
     )
     sleeps: list[float] = []
-    monkeypatch.setattr("time.sleep", lambda s: sleeps.append(s))
+    monkeypatch.setattr(msp_module.time, "sleep", lambda s: sleeps.append(s))
     out = client.request_with_retry("GET", "/x", max_retries=3, backoff_factor=0.5)
     assert out == {"ok": True}
     # Two retries, so two sleeps (0.5, 1.0).
@@ -337,7 +336,7 @@ def test_request_with_retry_exhausts_and_reraises(monkeypatch, fake_client_facto
     fake.set_sequence(
         "GET", "/x", [_FakeResponse(raise_exc=err) for _ in range(3)]
     )
-    monkeypatch.setattr("time.sleep", lambda s: None)
+    monkeypatch.setattr(msp_module.time, "sleep", lambda s: None)
     with pytest.raises(httpx.TimeoutException):
         client.request_with_retry("GET", "/x", max_retries=3)
 

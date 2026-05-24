@@ -5,6 +5,7 @@ Thin HTTP client for interacting with the MSP Gateway
 
 import logging
 import os
+import time
 from typing import Any, Optional
 
 import httpx
@@ -314,8 +315,6 @@ class EnhancedMSPClient(MSPClient):
         Raises:
             httpx.HTTPStatusError: If all retries fail
         """
-        import time
-
         last_exception = None
         for attempt in range(max_retries):
             try:
