@@ -1419,3 +1419,88 @@ async def ws_cli(ws: WebSocket):
             # Best-effort cleanup: master_fd may already be closed or invalid.
             log.debug("Error while closing PTY master_fd: %s", exc)
         log.info("WS PTY session closed (pid=%s rc=%s)", proc.pid, proc.returncode)
+
+
+# ── WebSocket metrics streaming ────────────────────────────────────────────────
+
+@app.websocket("/ws/metrics")
+async def ws_metrics(ws: WebSocket):
+    """
+    Real-time metrics streaming over WebSocket.
+
+    Server → Client JSON messages (broadcast every 1 second):
+      {
+        "type": "metrics",
+        "timestamp": "2026-05-24T01:35:45Z",
+        "data": {
+          "quantum_brain": { "k1_factor": 0.35, "coherence": 0.685, "quantum_advantage": 2.86 },
+          "ooda_metrics": { "observe": ..., "orient": ..., "decide": ..., "act": ... },
+          "memory": { "stm_entries": N, "ltm_entries": N, "cache_hit_rate": 0.32 },
+          "agents": { "active": N, "queued": N, "completed": N },
+          "workflows": { "running": N, "pending": N, "total": N }
+        }
+      }
+
+    Client can send control messages:
+      { "type": "subscribe", "channels": ["quantum_brain", "memory"] }
+      { "type": "unsubscribe", "channels": ["workflows"] }
+    """
+    await ws.accept()
+    log.info("WS metrics stream opened")
+
+    subscribed_channels = {"quantum_brain", "ooda_metrics", "memory", "agents", "workflows"}
+
+    async def broadcast_metrics() -> None:
+        """Broadcast metrics to client every 1 second."""
+        while True:
+            try:
+                # Collect metrics from app
+                app_instance = _get_cognitive_app()
+                metrics = app_instance.get_metrics() if app_instance else {}
+
+                # Filter by subscribed channels
+                filtered_metrics = {k: v for k, v in metrics.items() if k in subscribed_channels}
+
+                msg = {
+                    "type": "metrics",
+                    "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+                    "data": filtered_metrics,
+                }
+                await ws.send_json(msg)
+                await asyncio.sleep(1.0)  # Broadcast every second
+            except WebSocketDisconnect:
+                break
+            except Exception as exc:
+                log.debug("Metrics broadcast error: %s", exc)
+                try:
+                    await asyncio.sleep(0.5)
+                except asyncio.CancelledError:
+                    break
+
+    async def handle_client_commands() -> None:
+        """Handle incoming client control messages."""
+        try:
+            while True:
+                raw = await ws.receive_text()
+                msg = _safe_json_loads(raw, source="ws /ws/metrics")
+                kind = msg.get("type")
+                if kind == "subscribe":
+                    channels = msg.get("channels", [])
+                    subscribed_channels.update(channels)
+                    log.debug("Subscribed to: %s", channels)
+                elif kind == "unsubscribe":
+                    channels = msg.get("channels", [])
+                    subscribed_channels.difference_update(channels)
+                    log.debug("Unsubscribed from: %s", channels)
+        except WebSocketDisconnect:
+            pass
+        except Exception as exc:
+            log.debug("Client command error: %s", exc)
+
+    try:
+        await asyncio.gather(broadcast_metrics(), handle_client_commands())
+    except Exception as exc:
+        log.debug("Metrics stream error: %s", exc)
+    finally:
+        log.info("WS metrics stream closed")
+

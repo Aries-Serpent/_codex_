@@ -1,6 +1,6 @@
 # Monitoring Configuration for Autonomous Artifact Monitor
-# Version: 1.0.0
-# Last Updated: 2026-01-22
+# Version: 1.1.0
+# Last Updated: 2026-05-24 (Phase 10 continued)
 
 # Monitoring behavior
 monitoring:
@@ -109,7 +109,7 @@ state:
 
 # Cognitive Brain integration (Phase 6)
 cognitive_brain:
-  enabled: false  # Will be enabled in Phase 6
+  enabled: true  # Phase 6 integration enabled (2026-05-24)
   sensor_module: "scripts/cognitive/sensors/monitoring_sensor.py"
   confidence_threshold: 0.8
   auto_fix_enabled: false  # Requires human approval
@@ -120,6 +120,32 @@ cognitive_brain:
     consecutive_threshold: 3
     confidence_threshold: 0.8
     per_workflow_overrides: {}
+
+  # Phase 10 coverage regression gate (updated 2026-05-24)
+  coverage:
+    agents_floor_pct: 34           # Phase 9.4 exit baseline (rounded to match threshold file) — any drop blocks merge
+    agents_floor_exact: 34.56      # Exact measured value from Phase 9.4
+    full_stack_fail_under: 80      # pyproject.toml fail_under (full deps CI only)
+    phase10_target_pct: 50         # 10B target: overall statement coverage
+    phase10_new_test_modules: 6    # 10B: knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold
+    threshold_file: ".github/coverage_threshold.txt"  # Uses rounded value (34) for enforcement
+
+  # Phase 10D QEC k₁ tuning thresholds
+  qec:
+    k1_initial: 0.40              # Starting k₁ value
+    k1_target: 0.35               # Regression guard boundary (≤ 0.35)
+    k1_formula: "0.40 * (1 - (accuracy - 0.5) * 0.2)"
+    scoring_weights:
+      compliance: 0.38            # Phase 8.0 optimized
+      risk: 0.32
+      cost: 0.15
+      impact: 0.15
+
+  # Phase 10E operational targets
+  ops:
+    copilot_session_ttl_target_seconds: 3600   # Target: reduce from 43200 (12h) to 3600 (1h)
+    webhook_deployment_status: "blocked"        # Requires WEBHOOK_RECEIVER_URL + WEBHOOK_SECRET
+    t03_security_events_scope: "pending_admin"  # CODEX_MASTER_KEY needs security_events:read
 
 # Logging and reporting
 logging:

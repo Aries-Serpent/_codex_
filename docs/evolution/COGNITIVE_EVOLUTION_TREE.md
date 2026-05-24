@@ -44,7 +44,7 @@ graph TD
         P18[Phase 18: Production Scaling]
     end
 
-    P1 -->|"1500+ tests"| P6
+    P1 -->|"21,500+ tests"| P6
     P6 -->|"Package system"| P7
     P7 -->|"Brain online"| P8
     P8 -->|"Docs unified"| P9

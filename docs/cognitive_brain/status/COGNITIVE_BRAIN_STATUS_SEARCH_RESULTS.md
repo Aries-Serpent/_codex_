@@ -41,7 +41,7 @@ _codex_/
 ├── agents/          # Autonomous agents (workflow, quantum, physics)
 ├── scripts/         # Automation & utilities
 │   └── mcp/        # ChatGPT Project packaging system
-├── tests/           # 1500+ test suite
+├── tests/           # 21,500+ test suite
 ├── docs/            # Documentation hub
 │   ├── mcp/        # MCP packaging docs (93+ KB)
 │   ├── system/     # Cognitive brain (this file)

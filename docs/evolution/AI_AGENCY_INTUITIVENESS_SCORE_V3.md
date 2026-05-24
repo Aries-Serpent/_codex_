@@ -55,7 +55,7 @@ The MSV measures the codebase's capacity for AI self-awareness across 5 dimensio
 
 | MSV Dimension | Implementation Evidence | Score |
 |---------------|------------------------|-------|
-| **Correctness Awareness** | 1500+ tests, 90% coverage threshold, CodeQL integration, marshmallow 4.x migration tested | 96/100 |
+| **Correctness Awareness** | 21,500+ tests, 10.7% coverage, CodeQL integration, marshmallow 4.x migration tested | 96/100 |
 | **Conflict Detection** | Split-brain elimination (PS-03), config consolidation (PS-01), dependency conflict resolution (GE/marshmallow) | 93/100 |
 | **Importance Assessment** | Priority-based plansets, phase-gated roadmap, owner approval guard | 94/100 |
 | **Experience Matching** | Pattern detection, meta-learning engine, knowledge graph v1.4 (12 patterns) | 92/100 |

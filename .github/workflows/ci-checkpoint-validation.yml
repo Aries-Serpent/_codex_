@@ -51,10 +51,23 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - name: Initialize with repository variables
+        env:
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
+          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+        run: |
+          echo "CI checkpoint validation variables initialized:"
+          echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
+          echo "  CODEX_COVERAGE_THRESHOLD=$CODEX_COVERAGE_THRESHOLD"
+          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+
+      - name: Setup Python (cached)
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Install minimal dependencies
         run: |

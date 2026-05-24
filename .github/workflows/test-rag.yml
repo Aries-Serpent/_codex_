@@ -34,10 +34,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - name: Initialize with repository variables
+        env:
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
+          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+        run: |
+          echo "RAG module test variables initialized:"
+          echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
+          echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
+          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+
+      - name: Set up Python (cached)
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
+          cache-tier: pytorch
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads

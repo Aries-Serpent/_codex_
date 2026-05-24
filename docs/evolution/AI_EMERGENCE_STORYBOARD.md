@@ -41,7 +41,7 @@ This is more than ETL. It's the system's first ability to *read and understand c
 
 This isn't one AI model doing one thing. It's the first multi-paradigm reasoning architecture.
 
-**Evidence**: `agents/`, orchestration modules, 1500+ tests validating behavior.
+**Evidence**: `agents/`, orchestration modules, 21,500+ tests validating behavior.
 
 ### Chapter 3: Memory and Verification
 

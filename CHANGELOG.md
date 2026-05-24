@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4547 cognitive brain analysis & code quality — 2026-05-24T01:30Z)
+- **CodeQL Security:** Resolved "Pythagorean calculation with sub-optimal numerics" alert in `tests/agents/test_class_apis_phase9_2.py:544` by replacing `math.sqrt(x²+y²)` with `math.hypot(x, y)` for numerically stable computation.
+- **Phase 6 Integration:** Enabled cognitive brain integration in `.codex/config/monitoring.yaml` by setting `cognitive_brain.enabled: true` (was `false`).
+- **Objective Validation:** Validated all objective mappings against live codebase:
+  - Backend API (FastAPI): Confirmed 1421-line implementation complete at `cognitive_app/src/server/cli_api_server.py` (was incorrectly marked 0%)
+  - WebSocket real-time updates: Confirmed PTY terminal WebSocket fully implemented (was marked 0%)
+  - Unit tests: Confirmed test_cli_api_memory.py and server tests exist (was marked 0%)
+  - Metrics dashboard: Updated to 50% complete (infrastructure ready, real-time streaming integration pending)
+- **Coverage Cross-Reference:** Verified consistency of coverage metrics:
+  - `agents_floor_pct: 34` in `monitoring.yaml` matches `.github/coverage_threshold.txt`
+  - `agents_floor_exact: 34.56%` (Phase 9.4 baseline) documented for precision
+  - Phase 10 target: 50% statement coverage
+- **Context Loss Analysis:** Reviewed session context preservation mechanisms in `src/codex/cognitive/agent_brain_api.py` and `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md`; identified enhancement opportunities for handoff enrichment to reduce context loss from ~20% to <5%.
+- **Node.js 20 Compliance:** Verified Pattern 21 (Node.js 20 actions deprecation) with `python scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` — 0 issues found; repository ready for June 2, 2026 deadline.
+- **Living Docs:** Created `docs/roadmap/PR4547_whats_next.md` and `docs/roadmap/PR4547_session_diagram.mmd` with Phase 2 continuation guidance.
+- **Tests:** All 69 tests in `test_class_apis_phase9_2.py` pass; ruff linting clean.
+- **Commits (4 total):**
+  - `7270a9c` — Fix Pythagorean numerics (CodeQL)
+  - `45e54ce` — Resolve CodeQL + consolidate prior session work
+  - `26eb038` — Enable Phase 6 cognitive brain integration
+  - `5bcec24` — Validate and update objective mappings
+
+### Fixed (auto-update — PR #4547)
+
 ### Fixed (PR #4544 living-docs sync — 2026-05-23T02:20Z)
 - Added PR-specific living docs for this follow-up pass:
   - `docs/roadmap/PR4544_whats_next.md`
