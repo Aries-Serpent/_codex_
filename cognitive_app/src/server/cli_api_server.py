@@ -928,14 +928,16 @@ async def cli_run(req: CliRunRequest):
             cwd=cwd,
             env=env,
         )
+        exit_code: int | None = None
         try:
             stdout, stderr = await asyncio.wait_for(
                 proc.communicate(), timeout=req.timeout
             )
+            exit_code = proc.returncode
         except asyncio.TimeoutError:
             proc.kill()
             stdout, stderr = b"", b"[timeout after %ds]" % req.timeout
-            proc.returncode = -1
+            exit_code = -1
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
@@ -944,7 +946,7 @@ async def cli_run(req: CliRunRequest):
         "command":     req.command,
         "stdout":      stdout.decode(errors="replace"),
         "stderr":      stderr.decode(errors="replace"),
-        "returncode":  proc.returncode or 0,
+        "returncode":  exit_code if exit_code is not None else (proc.returncode or 0),
         "duration_ms": round(duration_ms, 1),
         "cwd":         cwd,
         "timestamp":   datetime.utcnow().isoformat(),
