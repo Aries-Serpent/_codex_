@@ -788,7 +788,8 @@ _DEFAULT_LOGIN_SHELL = "/bin/bash" if Path("/bin/bash").exists() else "/bin/sh"
 
 
 def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
-    candidate = Path(raw_cwd or REPO_ROOT).expanduser()
+    # Do not call expanduser() on user input to prevent path traversal via ~username
+    candidate = Path(raw_cwd or REPO_ROOT)
     resolved = candidate.resolve(strict=False)
     repo_root = Path(REPO_ROOT).resolve()
     if not resolved.is_relative_to(repo_root):
