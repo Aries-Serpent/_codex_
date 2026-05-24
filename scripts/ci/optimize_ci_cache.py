@@ -208,6 +208,10 @@ def cmd_report() -> int:
 
     # Analyze all workflows
     workflow_files = sorted(WORKFLOWS_DIR.glob("*.yml"))
+    if not workflow_files:
+        print("\nNo workflow files found in .github/workflows")
+        return 1
+
     analyses = [analyze_workflow(wf) for wf in workflow_files]
 
     # Categorize
