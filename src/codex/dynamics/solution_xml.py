@@ -167,7 +167,12 @@ def _xml_attrs(**attrs: str | None) -> str:
     return "".join(parts)
 
 
-def _xml_node(tag: str, value: str | None = None, *, attrs: dict[str, str | None] | None = None) -> str:
+def _xml_node(
+    tag: str,
+    value: str | None = None,
+    *,
+    attrs: dict[str, str | None] | None = None,
+) -> str:
     attr_text = _xml_attrs(**(attrs or {}))
     if value is None:
         return f"<{tag}{attr_text}/>"
@@ -240,7 +245,11 @@ def build_solution_tree(config: SolutionManifestConfig) -> str:
     manifest_nodes.append(_xml_node("SourceSolutionType", "0"))
     manifest_nodes.append(_xml_node("SolutionPackageVersion", config.version))
 
-    return f"<ImportExportXml><SolutionManifest>{''.join(manifest_nodes)}</SolutionManifest></ImportExportXml>"
+    return (
+        f"<ImportExportXml>"
+        f"<SolutionManifest>{''.join(manifest_nodes)}</SolutionManifest>"
+        f"</ImportExportXml>"
+    )
 
 
 def emit_solution_xml(config: SolutionManifestConfig) -> str:
