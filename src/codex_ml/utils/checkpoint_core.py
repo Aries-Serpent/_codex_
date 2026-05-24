@@ -478,7 +478,7 @@ def _deserialize_payload(
     # safe_pickle_load expects a file path or file object, but we have bytes
     # We need to use the RestrictedUnpickler directly with the buffer
     buf.seek(0)
-    from utils.safe_pickle import RestrictedUnpickler
+    from codex_ml.utils.safe_pickle import RestrictedUnpickler
 
     return RestrictedUnpickler(buf).load()
 

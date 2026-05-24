@@ -115,7 +115,7 @@ def _sha256_file(path: str, chunk_size: int = 1 << 20) -> str:
 
 
 def _dump_payload(path: Path, payload: Any) -> None:
-    from utils.safe_pickle import safe_pickle_dump
+    from codex_ml.utils.safe_pickle import safe_pickle_dump
 
     if torch is not None:
         save_fn = getattr(torch, "save", None)
@@ -134,7 +134,7 @@ def _load_payload(path: Path, map_location: str | None = None) -> Any:
         with suppress(RuntimeError):
             return _torch_load(path, map_location=map_location)
     # Use safe pickle loading to prevent code execution vulnerabilities
-    from utils.safe_pickle import safe_pickle_load
+    from codex_ml.utils.safe_pickle import safe_pickle_load
 
     return safe_pickle_load(str(path), use_restricted_unpickler=True)
 
