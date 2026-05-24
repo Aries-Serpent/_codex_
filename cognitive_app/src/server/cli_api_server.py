@@ -1449,7 +1449,6 @@ async def ws_metrics(ws: WebSocket):
     log.info("WS metrics stream opened")
 
     subscribed_channels = {"quantum_brain", "ooda_metrics", "memory", "agents", "workflows"}
-    loop = asyncio.get_event_loop()
 
     async def broadcast_metrics() -> None:
         """Broadcast metrics to client every 1 second."""

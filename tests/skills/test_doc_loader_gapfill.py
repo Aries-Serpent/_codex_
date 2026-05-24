@@ -3,13 +3,11 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from codex.skills.doc_loader import (
     _extract_frontmatter,
     _frontmatter_to_manifest,
-    load_agent_docs_as_skills,
     _repo_root,
+    load_agent_docs_as_skills,
 )
 
 
@@ -41,9 +39,9 @@ capabilities:
   - test
 ---
 # Body"""
-        
+
         result = _extract_frontmatter(content)
-        
+
         assert result["name"] == "Test Agent"
         assert result["description"] == "A test agent"
         assert "test" in result["capabilities"]
@@ -51,9 +49,9 @@ capabilities:
     def test_no_frontmatter(self):
         """Should return empty dict when no frontmatter."""
         content = "# Just body\nNo frontmatter"
-        
+
         result = _extract_frontmatter(content)
-        
+
         assert result == {}
 
     def test_invalid_yaml(self):
@@ -62,9 +60,9 @@ capabilities:
 invalid: yaml: content:
 ---
 Body"""
-        
+
         result = _extract_frontmatter(content)
-        
+
         assert result == {}
 
     def test_empty_frontmatter(self):
@@ -72,9 +70,9 @@ Body"""
         content = """---
 ---
 Body"""
-        
+
         result = _extract_frontmatter(content)
-        
+
         # Empty YAML returns None, which becomes {}
         assert result == {}
 
@@ -90,9 +88,9 @@ config:
   budget: 5000
 ---
 Body"""
-        
+
         result = _extract_frontmatter(content)
-        
+
         assert result["name"] == "Skill"
         assert len(result["tags"]) == 2
         assert result["config"]["timeout"] == 100
@@ -108,13 +106,13 @@ class TestFrontmatterToManifest:
             "description": "A test skill",
             "capabilities": ["test.skill"],
         }
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/test.md",
             text="# Test"
         )
-        
+
         assert manifest is not None
         assert manifest.name == "Test Skill"
         assert manifest.description == "A test skill"
@@ -123,13 +121,13 @@ class TestFrontmatterToManifest:
     def test_name_from_file_stem(self):
         """Should derive name from file stem if not provided."""
         fm = {"description": "A skill"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/my-skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.name == "My Skill"
 
@@ -143,7 +141,7 @@ class TestFrontmatterToManifest:
             text="# S1"
         )
         assert "tag1" in m1.capability_tags
-        
+
         # Test with capabilities
         fm2 = {"capabilities": ["tag3"]}
         m2 = _frontmatter_to_manifest(
@@ -152,7 +150,7 @@ class TestFrontmatterToManifest:
             text="# S2"
         )
         assert "tag3" in m2.capability_tags
-        
+
         # Test with capability (singular)
         fm3 = {"capability": "tag4,tag5"}
         m3 = _frontmatter_to_manifest(
@@ -166,91 +164,91 @@ class TestFrontmatterToManifest:
     def test_skill_id_generation(self):
         """Should generate skill_id from doc_path if not provided."""
         fm = {}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/my-test-skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.id == "agent.my_test_skill"
 
     def test_custom_skill_id(self):
         """Should use provided skill_id."""
         fm = {"id": "custom.id"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.id == "custom.id"
 
     def test_version_default(self):
         """Should default to version 1.0.0."""
         fm = {}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.version == "1.0.0"
 
     def test_custom_version(self):
         """Should use provided version."""
         fm = {"version": "2.5.0"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.version == "2.5.0"
 
     def test_risk_tier_inference_d_capable(self):
         """Should infer high risk for D_CAPABLE autonomy model."""
         fm = {"autonomy_model": "D_CAPABLE"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.policy.risk_tier == "high"
 
     def test_risk_tier_inference_grounded(self):
         """Should infer high risk for GROUNDED enforcement."""
         fm = {"enforcement_tier": "GROUNDED"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.policy.risk_tier == "high"
 
     def test_risk_tier_inference_partial(self):
         """Should infer medium risk for PARTIAL enforcement."""
         fm = {"enforcement_tier": "PARTIAL"}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert manifest.policy.risk_tier == "medium"
 
@@ -259,13 +257,13 @@ class TestFrontmatterToManifest:
         fm = {
             "integration_points": ["scripts/my_skill.py"]
         }
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text="# Skill"
         )
-        
+
         assert manifest is not None
         assert "scripts.my_skill:run" in manifest.entrypoint
 
@@ -273,13 +271,13 @@ class TestFrontmatterToManifest:
         """Should generate doc hash from text content."""
         text = "# Test Skill\n\nThis is test content."
         fm = {}
-        
+
         manifest = _frontmatter_to_manifest(
             fm,
             doc_path=".github/agents/skill.md",
             text=text
         )
-        
+
         assert manifest is not None
         assert manifest.doc.hash is not None
         assert len(manifest.doc.hash) == 16
@@ -294,7 +292,7 @@ class TestLoadAgentDocsAsSkills:
             tmpdir_path = Path(tmpdir)
             agents_dir = tmpdir_path / ".github" / "agents"
             agents_dir.mkdir(parents=True)
-            
+
             # Create test agent doc
             agent_file = agents_dir / "test_agent.md"
             agent_file.write_text("""---
@@ -306,9 +304,9 @@ capabilities:
 # Test Agent
 
 This is a test agent.""")
-            
+
             skills = load_agent_docs_as_skills(agents_root=agents_dir)
-            
+
             assert len(skills) > 0
             assert skills[0].manifest.name == "Test Agent"
             assert "test.skill" in skills[0].manifest.capability_tags
@@ -319,7 +317,7 @@ This is a test agent.""")
             tmpdir_path = Path(tmpdir)
             agents_dir = tmpdir_path / ".github" / "agents"
             agents_dir.mkdir(parents=True)
-            
+
             # Create multiple agent docs
             for i in range(3):
                 agent_file = agents_dir / f"agent_{i}.md"
@@ -329,15 +327,15 @@ capabilities:
   - skill.{i}
 ---
 Content {i}""")
-            
+
             skills = load_agent_docs_as_skills(agents_root=agents_dir)
-            
+
             assert len(skills) == 3
 
     def test_nonexistent_directory(self):
         """Should return empty list for nonexistent directory."""
         skills = load_agent_docs_as_skills(agents_root=Path("/nonexistent/path"))
-        
+
         assert skills == []
 
     def test_skip_invalid_markdown(self):
@@ -346,20 +344,20 @@ Content {i}""")
             tmpdir_path = Path(tmpdir)
             agents_dir = tmpdir_path / ".github" / "agents"
             agents_dir.mkdir(parents=True)
-            
+
             # Create valid agent doc
             valid_file = agents_dir / "valid.md"
             valid_file.write_text("""---
 name: Valid Agent
 ---
 Content""")
-            
+
             # Create invalid agent doc
             invalid_file = agents_dir / "invalid.md"
             invalid_file.write_text("# No frontmatter\nJust content")
-            
+
             skills = load_agent_docs_as_skills(agents_root=agents_dir)
-            
+
             # Should only load the valid one
             assert len(skills) == 1
 
@@ -369,14 +367,14 @@ Content""")
             tmpdir_path = Path(tmpdir)
             agents_dir = tmpdir_path / ".github" / "agents"
             agents_dir.mkdir(parents=True)
-            
+
             agent_file = agents_dir / "test.md"
             agent_file.write_text("""---
 name: Test
 ---
 Content""")
-            
+
             skills = load_agent_docs_as_skills(agents_root=agents_dir)
-            
+
             assert len(skills) > 0
             assert skills[0].source_path == str(agent_file)

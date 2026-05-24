@@ -3,9 +3,7 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
-from codex.skills.doc_refresh.handler import plan_and_apply, _safe_relative
+from codex.skills.doc_refresh.handler import _safe_relative, plan_and_apply
 
 
 class TestDocRefreshPlanAndApply:
@@ -37,12 +35,12 @@ class TestDocRefreshPlanAndApply:
             tmpdir_path = Path(tmpdir)
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nThis is a test document.\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "actions": ["score"],
             })
-            
+
             assert "aais_score" in result
             assert result["files_scanned"] == 1
             assert result["patches"] == []
@@ -54,12 +52,12 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             # Create a doc with low AAIS score (very short)
             md_file.write_text("x\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "actions": ["score", "plan"],
             })
-            
+
             assert result["files_scanned"] >= 0
             assert "plan" in result
 
@@ -70,13 +68,13 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             # Create a doc with very low AAIS score
             md_file.write_text("a\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "prune_stale": True,
                 "actions": ["score", "plan"],
             })
-            
+
             assert result["files_scanned"] >= 0
             # Plan may contain prune operations
             assert "plan" in result
@@ -87,12 +85,12 @@ class TestDocRefreshPlanAndApply:
             tmpdir_path = Path(tmpdir)
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Header\n\nContent\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "actions": ["score", "plan", "apply"],
             })
-            
+
             assert "patches" in result
 
     def test_file_path_instead_of_directory(self):
@@ -101,28 +99,28 @@ class TestDocRefreshPlanAndApply:
             tmpdir_path = Path(tmpdir)
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nContent\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(md_file)],
                 "actions": ["score", "plan"],
             })
-            
+
             assert result["files_scanned"] >= 0
 
     def test_multiple_markdown_files(self):
         """Should scan multiple markdown files in directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
-            
+
             for i in range(3):
                 md_file = tmpdir_path / f"test{i}.md"
                 md_file.write_text(f"# Test {i}\n\nContent {i}\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "actions": ["score", "plan"],
             })
-            
+
             assert result["files_scanned"] == 3
 
     def test_aais_score_calculated(self):
@@ -131,12 +129,12 @@ class TestDocRefreshPlanAndApply:
             tmpdir_path = Path(tmpdir)
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nThis is a well-structured document with good content.\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "actions": ["score"],
             })
-            
+
             assert isinstance(result["aais_score"], float)
             assert 0.0 <= result["aais_score"] <= 1.0
 
@@ -146,13 +144,13 @@ class TestDocRefreshPlanAndApply:
             tmpdir_path = Path(tmpdir)
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nContent\n")
-            
+
             result = plan_and_apply({
                 "paths": [str(tmpdir_path)],
                 "style": "aais",
                 "actions": ["score"],
             })
-            
+
             assert "aais_score" in result
 
 
@@ -163,7 +161,7 @@ class TestDocRefreshSafeRelative:
         """_safe_relative should return path relative to base when possible."""
         base = Path("/home/user/docs")
         path = Path("/home/user/docs/api.md")
-        
+
         result = _safe_relative(path, base)
         assert result == "api.md"
 
@@ -171,7 +169,7 @@ class TestDocRefreshSafeRelative:
         """_safe_relative should handle nested paths."""
         base = Path("/home/user/docs")
         path = Path("/home/user/docs/guides/tutorial.md")
-        
+
         result = _safe_relative(path, base)
         assert "tutorial.md" in result
 
@@ -179,7 +177,7 @@ class TestDocRefreshSafeRelative:
         """_safe_relative should fallback when relative path fails."""
         base = Path("/home/user/docs")
         path = Path("/other/location/file.md")
-        
+
         result = _safe_relative(path, base)
         # Should return string representation when relative path fails
         assert isinstance(result, str)
