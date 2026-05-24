@@ -1,32 +1,32 @@
-# Session Context — 2026-05-24T08:10:44Z
-**Branch:** `copilot/remove-duplicate-comment-lines`  **PR:** #4553  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-24T08:33:07Z
+**Branch:** `copilot/fix-monkeypatch-target-in-retry-tests`  **PR:** #4554  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4589` (✅)
-- GraphQL remaining: `4968` (✅)
+- REST remaining: `4951` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4553 — Remove stray MSP test comment artifacts, patch retry sleep via module symbol, fix RAG cache-miss branch test, and update secrets baseline
-State: `open`  Draft: `False`  Branch: `copilot/remove-duplicate-comment-lines` → `main`
+## 📋 PR #4554 — [WIP] Fix monkeypatch target for retry tests in msp_client
+State: `open`  Draft: `True`  Branch: `copilot/fix-monkeypatch-target-in-retry-tests` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-24)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/remove-duplicate-comment-lines` (2026-05-24)
-- **PR Auto-Fix Check** — `failure` on `copilot/remove-duplicate-comment-lines` (2026-05-24)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 
 ## 📝 Recent Commits
+- `cf2f1ced` Initial plan — copilot-swe-agent[bot] (2026-05-24)
+- `8ab73c2b` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-24)
+- `7e81206f` Merge pull request #4553 from Aries-Serpent/copilot/remove-duplicate-comment-lin — Statix (2026-05-24)
+- `dd067da2` Fix unreachable-code warning and update accountability report (REQ-4) — copilot-swe-agent[bot] (2026-05-24)
+- `6666d535` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
+- `59fe4f89` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
+- `fefa1c64` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
 - `250a9320` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `00d0e93e` Fix CI: update .secrets.baseline for agent_context.json and clarify cache-miss t — copilot-swe-agent[bot] (2026-05-24)
-- `7db2a2a2` Clarify cache-miss branch coverage test condition — copilot-swe-agent[bot] (2026-05-24)
-- `ed7dd696` Plan follow-up reviewer concern fix — copilot-swe-agent[bot] (2026-05-24)
-- `81ac7520` Clean MSP client test artifacts and module sleep patching — copilot-swe-agent[bot] (2026-05-24)
-- `86e1362f` Plan minimal msp_client test fixes — copilot-swe-agent[bot] (2026-05-24)
-- `51c433fe` chore: Generate follow-up prompt for PR #4553 [skip ci] — github-actions[bot] (2026-05-24)
-- `1f9213fa` Fix for Unused local variable — Statix (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
