@@ -102,6 +102,10 @@ jobs:
             echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
             echo "dry_run=false" >> "$GITHUB_OUTPUT"
             echo "include_rescue=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "number=${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || '' }}" >> "$GITHUB_OUTPUT"
+            echo "dry_run=false" >> "$GITHUB_OUTPUT"
+            echo "include_rescue=true" >> "$GITHUB_OUTPUT"
           else
             # pull_request event — run as dry-run so auto-runs are non-destructive
             echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
@@ -129,6 +133,7 @@ jobs:
       # -----------------------------------------------------------------------
       - name: Delete stale comments
         id: cleanup
+        if: steps.pr.outputs.number != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -151,6 +156,7 @@ jobs:
       - name: Post cleanup summary
         if: |
           github.event_name != 'pull_request' &&
+          steps.pr.outputs.number != '' &&
           always()
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
@@ -191,5 +197,5 @@ jobs:
             });
 
       - name: Check exit code
-        if: steps.cleanup.outputs.exit_code != '0'
+        if: steps.pr.outputs.number != '' && steps.cleanup.outputs.exit_code != '0'
         run: exit 1
