@@ -9,7 +9,7 @@ import pytest
 
 from agents import msp_client as msp_module
 from agents.msp_client import EnhancedMSPClient, MSPClient
-
+ # pragma: allowlist secret
  # pragma: allowlist secret # pragma: allowlist secret
 
 class _FakeResponse:
