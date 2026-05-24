@@ -1,34 +1,40 @@
-# Session Context — 2026-05-24T06:09:31Z
-**Branch:** `copilot/fix-zero-division-error-report`  **PR:** #4551  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-24T07:30:32Z
+**Branch:** `copilot/remove-duplicate-comment-lines`  **PR:** #4553  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4470` (✅)
-- GraphQL remaining: `4985` (✅)
+- REST remaining: `4985` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4551 — Guard empty workflow reporting, fix validator type annotation, and make agent context timestamp dynamic
-State: `open`  Draft: `False`  Branch: `copilot/fix-zero-division-error-report` → `main`
+## 📋 PR #4553 — [WIP] Remove duplicate stray comment lines from test file
+State: `open`  Draft: `True`  Branch: `copilot/remove-duplicate-comment-lines` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-24)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
-- **Agent Token Delegation** — `failure` on `copilot/fix-zero-division-error-report` (2026-05-24)
-- **Agent Token Delegation** — `failure` on `copilot/fix-zero-division-error-report` (2026-05-24)
-- **Pre-Merge Validation** — `failure` on `copilot/fix-zero-division-error-report` (2026-05-24)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 
 ## 📝 Recent Commits
-- `92227f50` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `7ad38200` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
-- `aba3f1c0` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
-- `32273b7e` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `2b47300b` chore: Generate follow-up prompt for PR #4551 [skip ci] — github-actions[bot] (2026-05-24)
-- `70387d95` Fix CI script edge cases and typing/timestamp annotations — copilot-swe-agent[bot] (2026-05-24)
-- `a6441761` Plan minimal fixes for CI scripts — copilot-swe-agent[bot] (2026-05-24)
-- `fb212f66` Initial plan — copilot-swe-agent[bot] (2026-05-24)
+- `1f9213fa` Fix for Unused local variable — Statix (2026-05-24)
+- `27c29e13` Initial plan — copilot-swe-agent[bot] (2026-05-24)
+- `0cbc07c4` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-24)
+- `696c5c41` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-24)
+- `a3916ae1` Merge pull request #4551 from Aries-Serpent/copilot/fix-zero-division-error-repo — Statix (2026-05-24)
+- `a236e048` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-24)
+- `a48286f5` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-24)
+- `a67d15f7` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
+- `COPILOT_AGENT_AUTH_ENABLED` = `true`
+- `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1267`
+- `CODEX_CI_FAILURE_RATE` = `2.3:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `9845e182bbce1b36248453a0572f1e5d7ad844d5`
+- `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
 - [] `RP-SUCCESS-RATE-TEST`: ?
