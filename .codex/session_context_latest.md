@@ -1,42 +1,32 @@
-# Session Context — 2026-05-24T00:19:05Z
+# Session Context — 2026-05-24T00:35:59Z
 **Branch:** `copilot/update-documentation-mermaid-mappings`  **PR:** #4547  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4889` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4641` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4547 — docs: cognitive brain codebase-wide analysis & objective mapping
+## 📋 PR #4547 — docs: cognitive brain codebase-wide analysis & test quality fixes
 State: `open`  Draft: `False`  Branch: `copilot/update-documentation-mermaid-mappings` → `main`
 
-### ❌ 11 Failing CI Check(s)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post gate failure notice` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-24)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-23)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-24)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-24)
 
 ## 📝 Recent Commits
+- `65f0e3dd` fix: address all github-code-quality bot issues from PR #4547 — copilot-swe-agent[bot] (2026-05-24)
+- `d353dabc` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
+- `db45de9a` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
 - `02775f3a` fix: address all 9 AI review comments from PR #4547 — copilot-swe-agent[bot] (2026-05-24)
 - `1ce3dfec` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
 - `c13b02a3` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
 - `d4c961e2` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
 - `b5af1d6f` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `2fd943e0` chore: Generate follow-up prompt for PR #4547 [skip ci] — github-actions[bot] (2026-05-23)
-- `98be20d0` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-23)
-- `6c0dbc82` chore: auto-merge 5 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
