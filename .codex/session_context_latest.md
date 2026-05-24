@@ -22,7 +22,7 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-rag-module-tests`
 - `5b964e86` docs: refresh PR4549 accountability follow-up — copilot-swe-agent[bot] (2026-05-24)
 - `0df90a70` chore: outline ci rescue plan — copilot-swe-agent[bot] (2026-05-24)
 - `8b845dfe` Fix CI rescue blockers — copilot-swe-agent[bot] (2026-05-24)
-- `39ab8ba3` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
+- `39ab8ba3` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci] — github-actions[bot] (2026-05-24)
 - `5e559a45` fix: trigger rag workflow on workflow changes — copilot-swe-agent[bot] (2026-05-24)
 - `caf54edc` fix: harden cached venv workflow invocations — copilot-swe-agent[bot] (2026-05-24)
 - `941db9af` fix: harden rag and session-context workflows — copilot-swe-agent[bot] (2026-05-24)
