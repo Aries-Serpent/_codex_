@@ -5,6 +5,7 @@
 ### Completed
 - Investigated the failing `Validation Pipeline` run `26350535475` via GitHub Actions MCP and confirmed the fast job was failing in the `yamllint` step before the rest of validation could run.
 - Updated `.github/workflows/validate.yml` to run `yamllint --no-warnings`, matching the repository’s intended warning-only handling for `truthy`/line-length workflow lint output.
+- Updated `.github/workflows/test-rag.yml` path filters so changes to the workflow itself or the shared `setup-python-cached` action now retrigger the RAG workflow for live verification.
 - Hardened cached-venv reuse paths to avoid direct `.venv_ci/bin/pip` launcher drift:
   - `.github/actions/setup-python-cached/action.yml`
   - `.github/workflows/qa-walkthrough.yml`

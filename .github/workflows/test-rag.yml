@@ -4,12 +4,16 @@ name: RAG Module Tests
   push:
     branches: [main, develop, copilot/**]
     paths:
+      - '.github/actions/setup-python-cached/**'
+      - '.github/workflows/test-rag.yml'
       - 'src/codex/rag/**'
       - 'tests/test_rag_**'
       - 'pyproject.toml'
   pull_request:
     branches: [main, develop]
     paths:
+      - '.github/actions/setup-python-cached/**'
+      - '.github/workflows/test-rag.yml'
       - 'src/codex/rag/**'
       - 'tests/test_rag_**'
       - 'pyproject.toml'
