@@ -10,10 +10,13 @@ import pytest
 
 
 def test_mlflow_utils_tolerant_when_missing():
+    MU = None
     try:
         from codex_ml.tracking import mlflow_utils as MU
     except Exception as e:
         pytest.skip(f"tracking utils missing: {e}")
+    if MU is None:
+        pytest.skip("tracking utils missing")
     try:
         _ = MU.start_run(tracking_uri=None, experiment_name=None)
     except TypeError:

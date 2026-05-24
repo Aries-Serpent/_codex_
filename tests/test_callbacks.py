@@ -21,11 +21,14 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
       environments).
     - If construction fails for other reasons, fails the test with a clear message.
     """
+    EarlyStopping = None
     try:
         from codex_ml.training.callbacks import EarlyStopping
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
         pytest.skip(f"EarlyStopping import failed: {e}")
+    if EarlyStopping is None:
+        pytest.skip("EarlyStopping import failed")
     try:
         # Prefer constructor with mode if available.
         return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)

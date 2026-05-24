@@ -55,9 +55,12 @@ class DummyTokenizer:
 @pytest.fixture(scope="session")
 def hf_tok():
     """Session-scoped fixture for a real HF tokenizer adapter, if available."""
+    tok = None
     try:
         tok = HFTokenizerAdapter.load()
     except (ImportError, OSError, RuntimeError, TypeError, ValueError):
+        pytest.skip("HuggingFace tokenizer not available")
+    if tok is None:
         pytest.skip("HuggingFace tokenizer not available")
     return tok
 

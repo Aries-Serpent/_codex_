@@ -1,32 +1,32 @@
-# Session Context — 2026-05-24T18:49:54Z
-**Branch:** `copilot/implement-remediations-all-findings`  **PR:** #4559  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-24T20:37:28Z
+**Branch:** `copilot/fix-asyncio-process-returncode`  **PR:** #4560  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `4426` (✅)
-- GraphQL remaining: `4969` (✅)
+- GraphQL remaining: `4996` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4559 — Harden findings-integration security hotspots
-State: `open`  Draft: `False`  Branch: `copilot/implement-remediations-all-findings` → `main`
+## 📋 PR #4560 — Fix asyncio CLI timeout/reaping + workflow branch-output hardening and CodeQL uninitialized-local-variable alerts
+State: `open`  Draft: `False`  Branch: `copilot/fix-asyncio-process-returncode` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
-- **PR Comment Review Gate** — `failure` on `copilot/implement-remediations-all-findings` (2026-05-24)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-24)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-asyncio-process-returncode` (2026-05-24)
+- **Agent Token Delegation** — `failure` on `copilot/fix-asyncio-process-returncode` (2026-05-24)
+- **Agent Token Delegation** — `failure` on `copilot/fix-asyncio-process-returncode` (2026-05-24)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-asyncio-process-returncode` (2026-05-24)
+- **Agent Token Delegation** — `failure` on `copilot/fix-asyncio-process-returncode` (2026-05-24)
 
 ## 📝 Recent Commits
-- `579db27b` docs: update CHANGELOG and accountability report for PR #4559 security hardening — copilot-swe-agent[bot] (2026-05-24)
-- `b92c8ca4` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
-- `54500573` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
-- `00d9158d` Merge remote changes — copilot-swe-agent[bot] (2026-05-24)
-- `7da23c73` fix(security): break taint chain in path validation (CodeQL #13688) — copilot-swe-agent[bot] (2026-05-24)
-- `2ea9e093` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
-- `5d1d35c0` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
-- `dbabef4f` fix(security): refactor path validation to isolate user input from Path construc — copilot-swe-agent[bot] (2026-05-24)
+- `060458ad` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
+- `fc331b98` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
+- `b682cee2` fix(cli): handle null timeout and reap killed subprocess — copilot-swe-agent[bot] (2026-05-24)
+- `735e71f3` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
+- `d601989c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
+- `6fb5e41c` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
+- `63bb36ad` fix(codeql): initialize EarlyStopping=None and add guard in test_callbacks.py — copilot-swe-agent[bot] (2026-05-24)
+- `09b613a6` fix(codeql): initialize MU=None and add guard in test_mlflow_utils_noop + genera — copilot-swe-agent[bot] (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
