@@ -541,7 +541,7 @@ class TestForceVector:
     def test_magnitude_computed_from_xyz(self) -> None:
         import math
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
-        expected = math.sqrt(3.0**2 + 4.0**2)
+        expected = math.hypot(3.0, 4.0)
         assert abs(fv.magnitude - expected) < 1e-9
 
     def test_direction_normalized_from_xyz(self) -> None:
