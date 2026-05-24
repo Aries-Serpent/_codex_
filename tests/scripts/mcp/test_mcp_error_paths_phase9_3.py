@@ -37,7 +37,7 @@ class TestFilterByTopicErrors:
 
     def test_unknown_topic_lists_available_in_message(self, tmp_path: Path) -> None:
         topics_map = {"alpha": ["src/**/*.py"], "beta": ["tests/**/*.py"]}
-        with pytest.raises(ValueError, match="alpha"):
+        with pytest.raises(ValueError, match="Available topics"):
             filter_by_topic("gamma", topics_map, tmp_path)
 
     def test_known_topic_returns_set(self, tmp_path: Path) -> None:
