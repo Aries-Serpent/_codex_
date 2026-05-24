@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4560)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4560 (SHA `eba09eff`) at 2026-05-24T20:13Z [auto-generated]
+
 ### Fixed (PR #4559 security hardening — 2026-05-24T18:32Z)
 - **CodeQL Path Traversal (Alert #13688):** Hardened `cognitive_app/src/server/cli_api_server.py::_sanitize_cli_cwd()` to validate user input before path operations, breaking the taint chain by using `os.path.normpath()` and `os.path.join()` to create sanitized path strings before `Path()` construction.
 - **XML Injection Prevention:** Replaced stdlib `xml.etree.ElementTree` with `defusedxml` in `.github/scripts/ci_parse_coverage.py` and `.github/scripts/parse_junit_xml.py`; added defusedxml validation to generated solution XML in `src/codex/dynamics/solution_xml.py`.
