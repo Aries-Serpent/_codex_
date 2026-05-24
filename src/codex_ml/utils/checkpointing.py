@@ -374,14 +374,9 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        with path.open("rb") as _fh:
-            # Use safe pickle loading to prevent code execution vulnerabilities
-            try:
-                from codex_ml.utils.safe_pickle import safe_pickle_load
+        from codex_ml.utils.safe_pickle import safe_pickle_load
 
-                return safe_pickle_load(str(path), use_restricted_unpickler=True)
-            except ImportError:
-                return pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
+        return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
@@ -1262,16 +1257,18 @@ class CheckpointManager:
                 "optimizer": getattr(optimizer, "state_dict", lambda: None)(),
                 "scheduler": getattr(scheduler, "state_dict", lambda: None)(),
             }
-            with open(ep_dir / "state.pkl", "wb") as fh:
-                pickle.dump(state, fh)
+            from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+            safe_pickle_dump(state, str(ep_dir / "state.pkl"))
 
         if tokenizer is not None:  # pragma: no cover
             with contextlib.suppress(Exception):
                 if hasattr(tokenizer, "save_pretrained"):
                     tokenizer.save_pretrained(str(ep_dir / "tokenizer"))
                 else:
-                    with open(ep_dir / "tokenizer.pkl", "wb") as fh:
-                        pickle.dump(tokenizer, fh)
+                    from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+                    safe_pickle_dump(tokenizer, str(ep_dir / "tokenizer.pkl"))
 
         state_file = ep_dir / ("state.pt" if (ep_dir / "state.pt").exists() else "state.pkl")
         _write_checksum_manifest(state_file)
@@ -1361,8 +1358,9 @@ class CheckpointManager:
         else:
             # Fallback: save using basic serialization
             ckpt_path = checkpoint_dir / "state.pkl"
-            with open(ckpt_path, "wb") as f:
-                pickle.dump(state_payload, f)
+            from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+            safe_pickle_dump(state_payload, str(ckpt_path))
         meta_sidecar = {
             "step": int(step),
             "metrics": metrics,
@@ -1417,13 +1415,9 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             # Use safe pickle loading to prevent code execution vulnerabilities
-            try:
-                from codex_ml.utils.safe_pickle import safe_pickle_load
+            from codex_ml.utils.safe_pickle import safe_pickle_load
 
-                state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
-            except ImportError:
-                with open(path / "state.pkl", "rb") as _fh:
-                    state = pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
+            state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

@@ -27,8 +27,9 @@ from __future__ import annotations
 
 import math
 import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
+
+from defusedxml import ElementTree as ET
 
 
 def _as_float(s: str) -> float | None:

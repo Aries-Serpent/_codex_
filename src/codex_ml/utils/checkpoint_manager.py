@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
+import pickle
 from pathlib import Path
 from typing import Any
 
@@ -28,8 +28,9 @@ def save_checkpoint(
     if torch is not None and hasattr(torch, "save"):
         torch.save(state, target)
     else:  # pragma: no cover - exercised when torch is unavailable
-        with target.open("wb") as handle:
-            pickle.dump(state, handle)
+        from utils.safe_pickle import safe_pickle_dump
+
+        safe_pickle_dump(state, str(target))
 
     if keep_last_k <= 0:
         return target

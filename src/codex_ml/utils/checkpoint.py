@@ -6,7 +6,6 @@ import hashlib
 import inspect
 import json
 import logging
-import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 import random as _random
 import shutil
 from collections.abc import Iterable, Mapping
@@ -116,18 +115,18 @@ def _sha256_file(path: str, chunk_size: int = 1 << 20) -> str:
 
 
 def _dump_payload(path: Path, payload: Any) -> None:
+    from utils.safe_pickle import safe_pickle_dump
+
     if torch is not None:
         save_fn = getattr(torch, "save", None)
         if callable(save_fn):
             save_fn(payload, path)
             return
     else:  # pragma: no cover - torchless deployments rely on pickle
-        with path.open("wb") as fh:
-            pickle.dump(payload, fh, protocol=pickle.HIGHEST_PROTOCOL)
+        safe_pickle_dump(payload, str(path))
         return
     # Fallback for torch builds without torch.save
-    with path.open("wb") as fh:
-        pickle.dump(payload, fh, protocol=pickle.HIGHEST_PROTOCOL)
+    safe_pickle_dump(payload, str(path))
 
 
 def _load_payload(path: Path, map_location: str | None = None) -> Any:

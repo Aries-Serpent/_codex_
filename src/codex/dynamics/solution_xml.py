@@ -24,15 +24,10 @@ logger = logging.getLogger(__name__)
 
 import json  # noqa: E402
 from pathlib import Path  # noqa: E402
+from xml.sax.saxutils import escape  # noqa: E402
 
 try:
-    # Note: defusedxml.ElementTree doesn't re-export Element/SubElement
-    # We use xml.etree for construction (safe) and defusedxml for serialization (extra safety)
-    # nosec B314 — Element/SubElement are used for tree *construction* only (not parsing);
-    # defusedxml.ElementTree.tostring handles safe serialization. Not an XXE attack surface.
-    from xml.etree.ElementTree import Element, SubElement  # nosec B314 B405
-
-    from defusedxml.ElementTree import tostring
+    from defusedxml import ElementTree
 except ImportError as exc:
     logger.debug(f"ImportError: {exc}")
     raise ImportError(
@@ -163,61 +158,94 @@ def load_solution_manifest(config_dir: Path | None = None) -> SolutionManifestCo
     return SolutionManifestConfig.model_validate(data)
 
 
-def build_solution_tree(config: SolutionManifestConfig) -> Element:
-    """Construct the XML tree for ``config`` without serializing it."""
+def _xml_text(value: str) -> str:
+    return escape(value, {'"': "&quot;"})
 
-    root = Element("ImportExportXml")
-    manifest = SubElement(root, "SolutionManifest")
 
-    SubElement(manifest, "UniqueName").text = config.unique_name
-    SubElement(manifest, "Version").text = config.version
-    SubElement(manifest, "Managed").text = "1" if config.managed else "0"
+def _xml_attrs(**attrs: str | None) -> str:
+    parts = [f' {key}="{_xml_text(value)}"' for key, value in attrs.items() if value is not None]
+    return "".join(parts)
+
+
+def _xml_node(tag: str, value: str | None = None, *, attrs: dict[str, str | None] | None = None) -> str:
+    attr_text = _xml_attrs(**(attrs or {}))
+    if value is None:
+        return f"<{tag}{attr_text}/>"
+    return f"<{tag}{attr_text}>{_xml_text(value)}</{tag}>"
+
+
+def build_solution_tree(config: SolutionManifestConfig) -> str:
+    """Construct the XML string for ``config`` without reparsing it."""
+
+    manifest_nodes = [
+        _xml_node("UniqueName", config.unique_name),
+        _xml_node("Version", config.version),
+        _xml_node("Managed", "1" if config.managed else "0"),
+    ]
 
     if config.friendly_name:
-        SubElement(manifest, "FriendlyName").text = config.friendly_name
+        manifest_nodes.append(_xml_node("FriendlyName", config.friendly_name))
     if config.description:
-        SubElement(manifest, "Description").text = config.description
+        manifest_nodes.append(_xml_node("Description", config.description))
 
     if config.publisher:
-        publisher = SubElement(manifest, "Publisher")
-        SubElement(publisher, "UniqueName").text = config.publisher.unique_name
-        SubElement(publisher, "FriendlyName").text = config.publisher.friendly_name or ""
-        SubElement(publisher, "Prefix").text = config.publisher.prefix
+        manifest_nodes.append(
+            "".join(
+                [
+                    "<Publisher>",
+                    _xml_node("UniqueName", config.publisher.unique_name),
+                    _xml_node("FriendlyName", config.publisher.friendly_name or ""),
+                    _xml_node("Prefix", config.publisher.prefix),
+                    "</Publisher>",
+                ]
+            )
+        )
 
     if config.localized_names:
-        localized_names = SubElement(manifest, "LocalizedNames")
-        for entry in config.localized_names:
-            localized_name = SubElement(localized_names, "LocalizedName")
-            localized_name.set("description", entry.description)
-            localized_name.set("languagecode", str(entry.languagecode))
+        localized = "".join(
+            _xml_node(
+                "LocalizedName",
+                attrs={
+                    "description": entry.description,
+                    "languagecode": str(entry.languagecode),
+                },
+            )
+            for entry in config.localized_names
+        )
+        manifest_nodes.append(f"<LocalizedNames>{localized}</LocalizedNames>")
 
-    SubElement(manifest, "GeneratedOn").text = utc_now()
+    manifest_nodes.append(_xml_node("GeneratedOn", utc_now()))
 
-    root_components = SubElement(manifest, "RootComponents")
-    for component in config.root_components:
-        node = SubElement(root_components, "RootComponent")
-        node.set("type", str(component.type))
-        node.set("schemaName", component.schema_name)
-        if component.behavior is not None:
-            node.set("behavior", str(component.behavior))
-        if component.include_subcomponents is not None:
-            node.set("includeSubcomponents", str(component.include_subcomponents))
-        if component.component_id:
-            node.set("id", component.component_id)
+    root_components = "".join(
+        _xml_node(
+            "RootComponent",
+            attrs={
+                "type": str(component.type),
+                "schemaName": component.schema_name,
+                "behavior": str(component.behavior) if component.behavior is not None else None,
+                "includeSubcomponents": (
+                    str(component.include_subcomponents)
+                    if component.include_subcomponents is not None
+                    else None
+                ),
+                "id": component.component_id,
+            },
+        )
+        for component in config.root_components
+    )
+    manifest_nodes.append(f"<RootComponents>{root_components}</RootComponents>")
 
-    dependencies = SubElement(manifest, "Dependencies")
-    for dep in config.dependencies:
-        dep_node = SubElement(dependencies, "Dependency")
-        dep_node.text = dep
+    dependencies = "".join(_xml_node("Dependency", dep) for dep in config.dependencies)
+    manifest_nodes.append(f"<Dependencies>{dependencies}</Dependencies>")
+    manifest_nodes.append(_xml_node("SourceSolutionType", "0"))
+    manifest_nodes.append(_xml_node("SolutionPackageVersion", config.version))
 
-    SubElement(manifest, "SourceSolutionType").text = "0"
-    SubElement(manifest, "SolutionPackageVersion").text = config.version
-
-    return root
+    return f"<ImportExportXml><SolutionManifest>{''.join(manifest_nodes)}</SolutionManifest></ImportExportXml>"
 
 
 def emit_solution_xml(config: SolutionManifestConfig) -> str:
     """Serialize ``config`` to the Dynamics unmanaged solution XML string."""
 
-    tree = build_solution_tree(config)
-    return tostring(tree, encoding="utf-8", xml_declaration=True).decode("utf-8")
+    xml = f'<?xml version="1.0" encoding="utf-8"?>{build_solution_tree(config)}'
+    ElementTree.fromstring(xml)
+    return xml

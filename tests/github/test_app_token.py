@@ -32,6 +32,17 @@ def test_build_app_jwt_with_dummy_key(tmp_path: Path, monkeypatch: pytest.Monkey
     token = build_app_jwt("123456", now=1_700_000_000, ttl_seconds=540)
     header = jwt.get_unverified_header(token)
     assert header.get("alg") == "RS256"
-    payload = jwt.decode(token, options={"verify_signature": False})
+    public_key = subprocess.run(
+        ["openssl", "rsa", "-in", str(pem), "-pubout"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    payload = jwt.decode(
+        token,
+        public_key,
+        algorithms=["RS256"],
+        options={"verify_exp": False, "verify_iat": False, "verify_nbf": False},
+    )
     assert payload.get("iss") == "123456"
     assert payload.get("exp") > payload.get("iat")
