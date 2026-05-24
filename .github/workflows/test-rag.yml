@@ -71,6 +71,8 @@ jobs:
       # Caching pip packages consumes significant disk space (~3-5GB) when restoring
       # and compounds with build artifacts, causing "No space left on device" errors
       # during installation of torch, transformers, and other RAG dependencies.
+      # Keep AGENT_TOOLSDIRECTORY intact because the cached venv interpreter
+      # may still symlink into the hosted Python toolcache.
 
       - name: Free disk space
         run: |
@@ -81,7 +83,6 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           echo ""
           echo "=== Cleaning Docker and apt cache ==="
           sudo docker system prune --all --force --volumes

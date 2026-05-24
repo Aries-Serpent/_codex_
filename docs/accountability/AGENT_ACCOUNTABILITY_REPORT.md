@@ -1,3 +1,26 @@
+## SESSION SUMMARY — 2026-05-24T03:58Z [PR4549-ci-rescue]
+
+**Session:** PR4549-ci-rescue | **Branch:** `copilot/fix-ci-failure-rag-module-tests` | **PR:** #4549
+
+### Completed
+- Investigated the latest failing GitHub Actions runs for commit `5e559a45` via GitHub MCP:
+  - `Validation Pipeline` run `26351020408`
+  - `RAG Module Tests` run `26351020463`
+- Confirmed the actionable `Validation Pipeline` blocker was Pattern 9 unsorted imports in `tests/agents/test_msp_client_phase9_1.py`; sorted the import block and replaced the test token literal with a non-secret-shaped fixture value.
+- Confirmed the actionable `test-rag.yml` blocker was the free-disk cleanup removing `$AGENT_TOOLSDIRECTORY` after the cached venv had been created, which broke `${VENV_PYTHON}` (`.venv_ci/bin/python` → missing hosted toolcache target). Updated the workflow to preserve the hosted Python toolcache.
+
+### Validation
+- `python -m pytest tests/test_rag_*.py tests/rag/ -q` ✅
+- `python -m pytest tests/validation/test_ci_workflow_validation.py::TestWorkflowFileValidation::test_workflow_files_valid_yaml -q` ✅
+- `python scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ after the targeted fixes
+
+### Remaining
+- [ ] Push the CI rescue changes and wait for fresh GitHub Actions confirmation on PR #4549
+- [ ] Reply on the open `@copilot` rescue thread with the addressing commit hash
+
+---
+
 ## SESSION SUMMARY — 2026-05-24T03:30Z [PR4549-ci-followup]
 
 **Session:** PR4549-ci-followup | **Branch:** `copilot/fix-ci-failure-rag-module-tests` | **PR:** #4549
