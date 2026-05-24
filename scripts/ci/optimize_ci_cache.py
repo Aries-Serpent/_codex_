@@ -18,7 +18,6 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from typing import Optional
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 WORKFLOWS_DIR = REPO_ROOT / ".github" / "workflows"
@@ -126,7 +125,7 @@ def cmd_analyze() -> int:
     already_optimized = [a for a in analyses if a["has_cached_setup"]]
     not_applicable = [a for a in analyses if not a["has_manual_setup"]]
 
-    print(f"📊 Summary:")
+    print("📊 Summary:")
     print(f"  Total workflows: {len(workflow_files)}")
     print(f"  ✅ Already optimized: {len(already_optimized)}")
     print(f"  🔧 Can be optimized: {len(needs_optimization)}")
@@ -164,7 +163,7 @@ def cmd_fix_workflow(workflow_path: str) -> int:
 
     # Write optimized content
     path.write_text(optimized)
-    print(f"  ✅ Optimized successfully")
+    print("  ✅ Optimized successfully")
     for change in changes:
         print(f"     - {change}")
 
@@ -220,19 +219,19 @@ def cmd_report() -> int:
     estimated_time_savings_hours = len(can_optimize) * 0.5  # 30 min per workflow per day
     estimated_bandwidth_savings_gb = len(can_optimize) * 0.5  # 500MB per workflow
 
-    print(f"\n📈 Current State:")
+    print("\n📈 Current State:")
     print(f"  Total workflows: {len(workflow_files)}")
     print(f"  ✅ Using optimized cache: {len(already_optimized)} ({len(already_optimized)/len(workflow_files)*100:.0f}%)")
     print(f"  🔧 Can be optimized: {len(can_optimize)} ({len(can_optimize)/len(workflow_files)*100:.0f}%)")
     print(f"  ⏭️ Not applicable: {len(not_applicable)} ({len(not_applicable)/len(workflow_files)*100:.0f}%)")
 
-    print(f"\n💾 Estimated Impact (monthly):")
+    print("\n💾 Estimated Impact (monthly):")
     print(f"  ⏱️ Time savings: ~{estimated_time_savings_hours:.0f} hours")
     print(f"  📡 Bandwidth savings: ~{estimated_bandwidth_savings_gb:.0f}GB")
-    print(f"  💰 GitHub Actions cost reduction: 10-15%")
+    print("  💰 GitHub Actions cost reduction: 10-15%")
 
     if can_optimize:
-        print(f"\n🎯 High-Priority Workflows to Optimize:")
+        print("\n🎯 High-Priority Workflows to Optimize:")
         for analysis in sorted(can_optimize, key=lambda a: a["file"])[:10]:
             print(f"  - {analysis['file']}")
 

@@ -57,7 +57,7 @@ def _api_get(path: str, token: str, base: str = "https://api.github.com") -> Any
     req = urllib.request.Request(
         url,
         headers={
-            "Authorization": f"******",
+            "Authorization": "******",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         },
