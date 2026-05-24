@@ -62,6 +62,12 @@ jobs:
           SELECTED_BRANCH="${{ github.event.inputs.branch }}"
 
           if [ -n "$CUSTOM_BRANCH" ]; then
+            # Validate: branch name must contain only safe characters
+            if ! echo "$CUSTOM_BRANCH" | grep -qE '^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$'; then
+              echo "❌ Error: custom_branch '$CUSTOM_BRANCH' contains invalid characters."
+              echo "Allowed characters: alphanumeric, '/', '_', '.', '-' (must start with alphanumeric)."
+              exit 1
+            fi
             BRANCH="$CUSTOM_BRANCH"
             echo "Using custom branch: $BRANCH"
           else
