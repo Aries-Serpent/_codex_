@@ -11,8 +11,9 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -26,7 +27,7 @@ class Variable:
     description: str
     required: bool = False
     default: str | None = None
-    validator: callable | None = None
+    validator: Callable[[str], bool] | None = None
     category: str = "general"
 
 
@@ -161,7 +162,7 @@ def generate_agent_context() -> dict[str, Any]:
             context[var.name] = value
 
     context["_meta"] = {
-        "generated_at": "2026-05-24T01:35:45Z",
+        "generated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "workflow": "repo-var-sync-schedule",
         "variables_count": len(context) - 1,
         "critical_count": len(CRITICAL_VARIABLES),
