@@ -62,8 +62,13 @@ jobs:
           SELECTED_BRANCH="${{ github.event.inputs.branch }}"
 
           if [ -n "$CUSTOM_BRANCH" ]; then
+            # Reject control characters/newlines to prevent output injection
+            if [[ "$CUSTOM_BRANCH" == *$'\n'* || "$CUSTOM_BRANCH" == *$'\r'* ]]; then
+              echo "❌ Error: custom_branch must be a single line."
+              exit 1
+            fi
             # Validate: branch name must contain only safe characters
-            if ! echo "$CUSTOM_BRANCH" | grep -qE '^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$'; then
+            if ! [[ "$CUSTOM_BRANCH" =~ ^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$ ]]; then
               echo "❌ Error: custom_branch '$CUSTOM_BRANCH' contains invalid characters."
               echo "Allowed characters: alphanumeric, '/', '_', '.', '-' (must start with alphanumeric)."
               exit 1
@@ -75,7 +80,7 @@ jobs:
             echo "Using selected branch: $BRANCH"
           fi
 
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
