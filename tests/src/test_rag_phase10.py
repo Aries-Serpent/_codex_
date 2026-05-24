@@ -35,13 +35,15 @@ class TestScrubOutput:
 
     def test_multiple_redaction_rules(self):
         rules = [
-            {"pattern": r"secret\d+", "replacement": "***"},
-            {"pattern": r"******", "replacement": "******"},
+            {"pattern": r"secret\d+", "replacement": "[SECRET_REDACTED]"},
+            {"pattern": r"password\d+", "replacement": "[PASSWORD_REDACTED]"},
         ]
-        text = "Config: secret123, ******"
+        text = "Config: secret123, password456"
         result = OutputProcessor.scrub_output(text, redaction_rules=rules)
         assert "secret123" not in result
-        assert "hunter2" not in result
+        assert "password456" not in result
+        assert "[SECRET_REDACTED]" in result
+        assert "[PASSWORD_REDACTED]" in result
 
     def test_no_redaction_rules(self):
         text = "Hello world"

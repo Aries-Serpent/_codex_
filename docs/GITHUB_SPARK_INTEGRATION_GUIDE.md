@@ -1637,7 +1637,7 @@ pip install mangum
 
 **A**: Yes! _Codex_ is Level 4 MLOps certified:
 - ✅ 21,500+ tests (100% passing)
-- ✅ 72% code coverage
+- ✅ 34.56% agents/ coverage (Phase 9.4 baseline), targeting 50% overall (Phase 10)
 - ✅ 0 security vulnerabilities
 - ✅ CI/CD pipelines
 - ✅ Comprehensive documentation

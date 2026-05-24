@@ -25,16 +25,16 @@ This document provides a comprehensive architectural overview of the `_codex_` M
 
 ## System Context (current)
 
-The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 300+ autonomous agents.
+The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 280+ autonomous agents.
 
-<!-- METRICS_LAST_UPDATED: 2026-03-25 via QA-Walkthrough GAP-028 fix -->
+<!-- METRICS_LAST_UPDATED: 2026-05-24 Phase 10 alignment -->
 ```mermaid
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
     Copilot[GitHub Copilot<br/>AI Coding Agent]
-    Agents[300+ Autonomous Agents<br/>🤖 MCP-enabled]
+    Agents[280+ Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml<br/>Production-Ready ML Platform<br/>22,000+ Tests | 34.6% Coverage]
+    Codex[codex-ml<br/>Production-Ready ML Platform<br/>22,000+ Tests | 34.56% agents/ coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage<br/>289 patterns learned]
     MCP[MCP System<br/>Model Context Protocol<br/>162 active workflows]

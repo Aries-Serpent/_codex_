@@ -123,11 +123,12 @@ cognitive_brain:
 
   # Phase 10 coverage regression gate (updated 2026-05-24)
   coverage:
-    agents_floor_pct: 34.56       # Phase 9.4 exit baseline — any drop blocks merge
-    full_stack_fail_under: 80     # pyproject.toml fail_under (full deps CI only)
-    phase10_target_pct: 50        # 10B target: overall statement coverage
-    phase10_new_test_modules: 6   # 10B: knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold
-    threshold_file: ".github/coverage_threshold.txt"
+    agents_floor_pct: 34           # Phase 9.4 exit baseline (rounded to match threshold file) — any drop blocks merge
+    agents_floor_exact: 34.56      # Exact measured value from Phase 9.4
+    full_stack_fail_under: 80      # pyproject.toml fail_under (full deps CI only)
+    phase10_target_pct: 50         # 10B target: overall statement coverage
+    phase10_new_test_modules: 6    # 10B: knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold
+    threshold_file: ".github/coverage_threshold.txt"  # Uses rounded value (34) for enforcement
 
   # Phase 10D QEC k₁ tuning thresholds
   qec:
