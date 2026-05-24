@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-23T23:56:18Z",
+  "generated_at": "2026-05-24T07:06:45Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1674,6 +1674,11 @@
       "has_concurrency": false
     },
     {
+      "name": "session-context-capture",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
       "name": "session-incremental-summary-reminder",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -2136,5 +2141,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "4a4ab4c78d165fc3e4c24d862787814cc676bdc75f2459a013f98c7f01a1820c"
+  "integrity_sha256": "0c2636dc623e36e058bfe77979fa7887a02b424f4c6feb4bd73a9549a5a2cc16"
 }
