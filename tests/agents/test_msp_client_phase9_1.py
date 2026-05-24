@@ -10,6 +10,7 @@ import pytest
 from agents import msp_client as msp_module
 from agents.msp_client import EnhancedMSPClient, MSPClient
  # pragma: allowlist secret
+ # pragma: allowlist secret
 
 class _FakeResponse:
     def __init__(
@@ -27,6 +28,14 @@ class _FakeResponse:
     def raise_for_status(self) -> None:
         if self._raise_exc is not None:
             raise self._raise_exc
+        if self.status_code >= 400:
+            req = httpx.Request("GET", "http://testserver/fake")
+            resp = httpx.Response(self.status_code, request=req)
+            raise httpx.HTTPStatusError(
+                f"Error response {self.status_code}",
+                request=req,
+                response=resp,
+            )
 
     def json(self) -> Any:
         return self._json
@@ -343,7 +352,7 @@ def test_request_with_retry_exhausts_and_reraises(monkeypatch, fake_client_facto
 
 def test_request_with_retry_zero_retries_raises_runtime(monkeypatch, fake_client_factory):
     client = EnhancedMSPClient()
-    monkeypatch.setattr("time.sleep", lambda s: None)
+    monkeypatch.setattr(msp_module.time, "sleep", lambda s: None)
     with pytest.raises(RuntimeError):
         client.request_with_retry("GET", "/x", max_retries=0)
 
