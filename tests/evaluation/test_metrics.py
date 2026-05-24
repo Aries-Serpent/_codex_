@@ -24,10 +24,13 @@ def _require_metrics_module():
     if not _has_module("torch.nn.functional"):
         pytest.skip("torch.nn.functional is required for metrics tests")
 
+    torch = None
     try:
         import torch
     except Exception as exc:  # pragma: no cover - optional dependency guard
         pytest.skip(f"torch import failed: {exc!r}")
+    if torch is None:  # pragma: no cover - guard for static analysis
+        pytest.skip("torch import failed")
 
     if getattr(torch, "IS_CODEX_STUB", False):
         pytest.skip("torch stub lacks the real tensor/dtype APIs required for metrics tests")
