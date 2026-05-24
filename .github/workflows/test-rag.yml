@@ -19,7 +19,7 @@ name: RAG Module Tests
       - 'pyproject.toml'
 
 
-permissions: read-all
+permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
