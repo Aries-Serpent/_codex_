@@ -23,8 +23,6 @@ from __future__ import annotations
 import subprocess
 import sys
 
-import pytest
-
 
 def _run_module(module: str, *args: str, timeout: int = 30) -> subprocess.CompletedProcess:
     """Run a module as python -m <module> [args]."""

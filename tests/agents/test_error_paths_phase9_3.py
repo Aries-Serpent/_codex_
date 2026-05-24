@@ -432,7 +432,8 @@ class TestSimpleMemoryAdapterOperations:
 
     def test_delete_non_existing_key_returns_true(self) -> None:
         adapter = self._make_adapter()
-        assert adapter.delete("ghost_key") is True
+        result = adapter.delete("ghost_key")
+        assert result is True
 
     def test_clear_removes_all_entries(self) -> None:
         adapter = self._make_adapter()

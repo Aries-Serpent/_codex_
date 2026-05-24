@@ -35,13 +35,19 @@ class _FakeHttpClient:
         self.closed = True
 
 
+@dataclass
+class _MockUUID:
+    """Mock UUID object for testing."""
+    hex: str = "rid-123"
+
+
 def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_http = _FakeHttpClient(timeout=12.5)
 
     monkeypatch.setattr("agents.codex_client.codex_client.bridge.httpx.Client", lambda timeout: fake_http)
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.uuid.uuid4",
-        lambda: type("_UUID", (), {"hex": "rid-123"})(),
+        _MockUUID,
     )
 
     config = ClientConfig(ita_url="https://ita.example", api_key="secret", request_timeout=12.5)
@@ -241,7 +247,7 @@ def test_demo_main_skips_tests_section_without_targets(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     monkeypatch.setattr(demo.ClientConfig, "from_environment", classmethod(lambda cls: ClientConfig("http://ita", "k")))
-    monkeypatch.setattr(demo, "CodexBridgeClient", lambda config: _FakeDemoClient(config))
+    monkeypatch.setattr(demo, "CodexBridgeClient", _FakeDemoClient)
 
     rc = demo.main(["--query", "needle"])
     out = capsys.readouterr().out

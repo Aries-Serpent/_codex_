@@ -30,13 +30,11 @@ from agents.quantum_game_theory import (
     create_zero_sum_game,
 )
 from agents.workflow_navigator import (
-    StepStatus,
     Workflow,
     WorkflowFrequency,
     WorkflowNavigator,
     WorkflowStep,
 )
-
 
 # ---------------------------------------------------------------------------
 # WorkflowNavigator — public function contract tests

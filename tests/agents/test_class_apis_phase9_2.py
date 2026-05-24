@@ -22,8 +22,6 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from agents.developer_orchestrator import (
     AppType,
     CodeComponent,
@@ -52,7 +50,6 @@ from agents.workflow_navigator import (
     WorkflowFrequency,
     WorkflowStep,
 )
-
 
 # ---------------------------------------------------------------------------
 # Workflow dataclass — field and method contracts
@@ -554,7 +551,6 @@ class TestForceVector:
         assert abs(fv.direction[0] - 1.0) < 1e-9
 
     def test_get_components_2d_direction(self) -> None:
-        import math
         fv = ForceVector(name="test", magnitude=1.0, direction=0.0)  # angle = 0 rad
         x_comp, y_comp = fv.get_components()
         assert abs(x_comp - 1.0) < 1e-9
