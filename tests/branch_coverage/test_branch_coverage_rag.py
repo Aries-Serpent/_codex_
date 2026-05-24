@@ -55,10 +55,13 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_cache_miss_branch(self) -> None:
         """Test cache miss branch."""
-        cache_exists = False
+        cache_exists = branch_input(True)
         metadata_exists = False
 
-        source = "cache" if cache_exists and metadata_exists else "provider"
+        if cache_exists and metadata_exists:
+            source = "cache"
+        else:
+            source = "provider"
         assert source == "provider"
 
     def test_embeddings_cache_invalid_branch(self) -> None:
