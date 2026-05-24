@@ -56,7 +56,7 @@ class TestEmbeddingsModuleBranches:
     def test_embeddings_cache_miss_branch(self) -> None:
         """Test cache miss branch."""
         cache_exists = branch_input(True)
-        metadata_exists = False
+        metadata_exists = branch_input(False)
 
         if cache_exists and metadata_exists:
             source = "cache"
