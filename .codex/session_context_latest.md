@@ -1,27 +1,31 @@
-# Session Context — 2026-05-24T17:09:22Z
+# Session Context — 2026-05-24T17:58:44Z
 **Branch:** `copilot/implement-remediations-all-findings`  **PR:** #4559  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4650` (✅)
-- GraphQL remaining: `4983` (✅)
+- REST remaining: `4870` (✅)
+- GraphQL remaining: `4992` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4559 — Harden findings-integration security hotspots
 State: `open`  Draft: `False`  Branch: `copilot/implement-remediations-all-findings` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
+### ❌ 4 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
+- **PR Auto-Fix Check** — `failure` on `copilot/implement-remediations-all-findings` (2026-05-24)
 - **PR Auto-Fix Check** — `failure` on `copilot/implement-remediations-all-findings` (2026-05-24)
 - **PR Comment Review Gate** — `failure` on `copilot/implement-remediations-all-findings` (2026-05-24)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-24)
-- **PR Auto-Fix Check** — `failure` on `copilot/implement-remediations-all-findings` (2026-05-24)
 
 ## 📝 Recent Commits
+- `dbabef4f` fix(security): refactor path validation to isolate user input from Path construc — copilot-swe-agent[bot] (2026-05-24)
 - `d24e8799` Merge remote-tracking branch 'origin/copilot/implement-remediations-all-findings — copilot-swe-agent[bot] (2026-05-24)
 - `3df5cc20` fix(security): validate user input before path operations (CodeQL #13688) — copilot-swe-agent[bot] (2026-05-24)
 - `8e06008b` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
@@ -29,7 +33,6 @@ State: `open`  Draft: `False`  Branch: `copilot/implement-remediations-all-findi
 - `ebfc3261` fix(security): remove expanduser() from path sanitization to prevent traversal — copilot-swe-agent[bot] (2026-05-24)
 - `8ea61c1d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
 - `ec8e4f97` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
-- `6e2986c6` fix: resolve pre-merge validation failures (line length + tracked files) — copilot-swe-agent[bot] (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

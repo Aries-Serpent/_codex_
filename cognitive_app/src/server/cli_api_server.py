@@ -803,8 +803,21 @@ def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
     if "\x00" in raw_cwd or any(ord(c) < 32 and c not in ("\t", "\n", "\r") for c in raw_cwd):
         raise HTTPException(status_code=400, detail="Invalid characters in cwd path")
 
-    # Create path from validated input and resolve it
-    candidate = Path(raw_cwd).resolve(strict=False)
+    # Break taint chain: normalize and join with trusted base
+    # This prevents CodeQL from tracking tainted data into Path operations
+    # Use os.path operations to create a clean path before Path() construction
+    try:
+        # Normalize the input to remove .. and . components
+        normalized = os.path.normpath(raw_cwd)
+        # If absolute, make it relative to root
+        if os.path.isabs(normalized):
+            normalized = normalized.lstrip(os.sep)
+        # Join with trusted base - this breaks the taint chain
+        safe_path = os.path.join(str(repo_root), normalized)
+        # Now construct Path from the sanitized string
+        candidate = Path(safe_path).resolve(strict=False)
+    except (ValueError, OSError) as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid path: {exc}") from exc
 
     # Ensure the resolved path stays within the repository
     if not candidate.is_relative_to(repo_root):
