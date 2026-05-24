@@ -24,23 +24,24 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Address the 3 unresolved reviewer comments on PR #4545 (test branch condition + prompt alignment).
-- [ ] Reply to the remaining blocking PR comment after the latest push so Comment Review Gate can rescan.
-- [ ] Monitor the refreshed `comment-review-gate`, `pre-merge-validation`, and delegated workflow runs on the latest head.
-- [ ] Keep the final 5 minutes reserved for wrap-up and continuation handoff.
+- [ ] Verify the next `test-rag.yml` run passes on the latest head.
+- [ ] Re-run and confirm `session-context-capture.yml` is accepted by workflow YAML validation.
+- [ ] Fix the failing `Validation Pipeline` lint gate on the latest head.
+- [ ] Reply to the blocking `@copilot` remediation comment after the next push so Comment Review Gate can rescan.
 
 **Validation**:
 ```bash
-python -m ruff check src/ tests/ --fix
-pytest -q tests/branch_coverage/test_branch_coverage_rag.py
+python -m pytest tests/validation/test_ci_workflow_validation.py::TestWorkflowFileValidation::test_workflow_files_valid_yaml -q
+yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] Confirm the generated follow-up prompt content stays aligned to PR #4545 scope.
-- [ ] Confirm the safety module docstring update reflects the package purpose.
+- [ ] Confirm no other workflows rely on direct `.venv_ci/bin/pip` entry points after cached restore.
+- [ ] Confirm pending workflow enablement remains clean after the session-context YAML fix.
 - [ ] Re-run the comment review gate after the next push.
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
+- [ ] Standardize cached-venv workflow installs on `${VENV_PYTHON} -m pip ...` where direct launcher drift can break reused environments.
 - [ ] If CI surfaces new non-trivial failures on the latest head, address only issues directly coupled to this PR’s touched files.
 
 ---
