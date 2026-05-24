@@ -820,7 +820,9 @@ def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
 
             # Check if the absolute path starts with repo_root
             if not raw_cwd_normalized.startswith(repo_root_str):
-                raise HTTPException(status_code=400, detail="Absolute path must be within repository")
+                raise HTTPException(
+                    status_code=400, detail="Absolute path must be within repository"
+                )
 
             # Extract the relative part after repo_root
             # Use string slicing to get only the part after repo_root
