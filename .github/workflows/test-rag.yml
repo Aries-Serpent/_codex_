@@ -88,12 +88,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel
+          PYTHON_BIN="${VENV_PYTHON:-python}"
+          "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
           # Install the main package FIRST (may install older plugin versions)
-          pip install --no-cache-dir -e ".[rag,test]"
+          "$PYTHON_BIN" -m pip install --no-cache-dir -e ".[rag,test]"
           # Then force reinstall pytest plugins with pinned versions
           # This ensures xdist workers have correct versions at consistent paths
-          pip install --no-cache-dir --force-reinstall \
+          "$PYTHON_BIN" -m pip install --no-cache-dir --force-reinstall \
             pytest==9.0.2 \
             pytest-cov==7.0.0 \
             pytest-xdist==3.8.0 \
@@ -102,15 +103,16 @@ jobs:
             pytest-randomly==3.16.0 \
             'coverage>=7.10.6,<8'
           # Verify plugins are installed and discoverable
-          python -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
-          python -m pytest --version
+          "$PYTHON_BIN" -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
+          "$PYTHON_BIN" -m pytest --version
 
       - name: Pre-download embedding models
         continue-on-error: true
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          python -c "
+          PYTHON_BIN="${VENV_PYTHON:-python}"
+          "$PYTHON_BIN" -c "
           from sentence_transformers import SentenceTransformer
           import os
           cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
@@ -130,6 +132,7 @@ jobs:
           HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
           RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
         run: |
+          PYTHON_BIN="${VENV_PYTHON:-python}"
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 
@@ -140,7 +143,7 @@ jobs:
           # preventing the global .coveragerc `source=src` from diluting the line-rate.
           # (S235 fix: on main branch `--cov=src` was measuring all of src/ with only
           # RAG tests running → 5 % line-rate; this config isolates the RAG module.)
-          python -m pytest tests/test_rag_*.py tests/rag/ \
+          "$PYTHON_BIN" -m pytest tests/test_rag_*.py tests/rag/ \
             -v \
             --tb=short --timeout=300 \
             --cov=src/codex/rag \
@@ -170,8 +173,9 @@ jobs:
 
       - name: Check coverage threshold
         run: |
+          PYTHON_BIN="${VENV_PYTHON:-python}"
           # Parse coverage from XML report
-          COVERAGE=$(python -c "
+          COVERAGE=$("$PYTHON_BIN" -c "
           import xml.etree.ElementTree as ET
           tree = ET.parse('coverage.xml')
           root = tree.getroot()
@@ -189,8 +193,9 @@ jobs:
 
       - name: Security scan
         run: |
-          pip install bandit
-          bandit -r src/codex/rag/ -f txt -o bandit-report.txt || true
+          PYTHON_BIN="${VENV_PYTHON:-python}"
+          "$PYTHON_BIN" -m pip install bandit
+          "$PYTHON_BIN" -m bandit -r src/codex/rag/ -f txt -o bandit-report.txt || true
           # Ensure file exists even if bandit fails or produces no output
           touch bandit-report.txt
           if [ -s bandit-report.txt ]; then
@@ -204,7 +209,8 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+          PYTHON_BIN="${VENV_PYTHON:-python}"
+          "$PYTHON_BIN" scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
 
       - name: Upload security report
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5

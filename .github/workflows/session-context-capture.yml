@@ -123,27 +123,28 @@ jobs:
             const context = JSON.parse(fs.readFileSync(path.join('context', contextFile), 'utf8'));
             const marker = '<!-- session-context-capture -->';
 
-            const body = `${marker}
-## 📋 Session Context Captured
-
-**Time:** ${context.timestamp}
-**PR:** #${context.pr_number}
-**SHA:** ${context.sha}
-
-### 📝 PR State
-- **Title:** ${context.sections.pr_state.title || 'N/A'}
-- **State:** ${context.sections.pr_state.state} (Draft: ${context.sections.pr_state.draft})
-- **Branch:** \`${context.sections.pr_state.head_branch}\` → \`${context.sections.pr_state.base_branch}\`
-
-### ✅ Outstanding Tasks
-${context.sections.outstanding_tasks.map(t => \`- [ ] \${t.description}\`).join('\\n') || '- No outstanding tasks'}
-
-### 🚨 Blocking Issues
-${context.sections.blocking_issues.map(i => \`- **\${i.type}** (\${i.status}): \${i.name || i.author}\`).join('\\n') || '- No blocking issues'}
-
----
-_Context captured for session handoff. Run at: [GitHub Actions](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_
-`;
+            const body = [
+              marker,
+              '## 📋 Session Context Captured',
+              '',
+              `**Time:** ${context.timestamp}`,
+              `**PR:** #${context.pr_number}`,
+              `**SHA:** ${context.sha}`,
+              '',
+              '### 📝 PR State',
+              `- **Title:** ${context.sections.pr_state.title || 'N/A'}`,
+              `- **State:** ${context.sections.pr_state.state} (Draft: ${context.sections.pr_state.draft})`,
+              `- **Branch:** \`${context.sections.pr_state.head_branch}\` → \`${context.sections.pr_state.base_branch}\``,
+              '',
+              '### ✅ Outstanding Tasks',
+              context.sections.outstanding_tasks.map(t => `- [ ] ${t.description}`).join('\n') || '- No outstanding tasks',
+              '',
+              '### 🚨 Blocking Issues',
+              context.sections.blocking_issues.map(i => `- **${i.type}** (${i.status}): ${i.name || i.author}`).join('\n') || '- No blocking issues',
+              '',
+              '---',
+              `_Context captured for session handoff. Run at: [GitHub Actions](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,
+            ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
