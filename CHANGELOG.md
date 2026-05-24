@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4549)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4549 (SHA `0e6b0c34`) at 2026-05-24T03:47Z [auto-generated]
+
 ### Fixed (PR #4547 cognitive brain analysis & code quality — 2026-05-24T01:30Z)
 - **CodeQL Security:** Resolved "Pythagorean calculation with sub-optimal numerics" alert in `tests/agents/test_class_apis_phase9_2.py:544` by replacing `math.sqrt(x²+y²)` with `math.hypot(x, y)` for numerically stable computation.
 - **Phase 6 Integration:** Enabled cognitive brain integration in `.codex/config/monitoring.yaml` by setting `cognitive_brain.enabled: true` (was `false`).
