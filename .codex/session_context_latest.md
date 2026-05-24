@@ -1,32 +1,32 @@
-# Session Context — 2026-05-24T07:30:32Z
+# Session Context — 2026-05-24T07:41:18Z
 **Branch:** `copilot/remove-duplicate-comment-lines`  **PR:** #4553  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4985` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4800` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4553 — [WIP] Remove duplicate stray comment lines from test file
+## 📋 PR #4553 — Remove stray MSP test comment artifacts and patch retry sleep via module symbol
 State: `open`  Draft: `True`  Branch: `copilot/remove-duplicate-comment-lines` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-24)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-24)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
+- **PR Auto-Fix Check** — `failure` on `copilot/remove-duplicate-comment-lines` (2026-05-24)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/remove-duplicate-comment-lines` (2026-05-24)
+- **Validation Pipeline** — `failure` on `copilot/remove-duplicate-comment-lines` (2026-05-24)
 
 ## 📝 Recent Commits
+- `81ac7520` Clean MSP client test artifacts and module sleep patching — copilot-swe-agent[bot] (2026-05-24)
+- `86e1362f` Plan minimal msp_client test fixes — copilot-swe-agent[bot] (2026-05-24)
+- `51c433fe` chore: Generate follow-up prompt for PR #4553 [skip ci] — github-actions[bot] (2026-05-24)
 - `1f9213fa` Fix for Unused local variable — Statix (2026-05-24)
 - `27c29e13` Initial plan — copilot-swe-agent[bot] (2026-05-24)
 - `0cbc07c4` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-24)
 - `696c5c41` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-24)
 - `a3916ae1` Merge pull request #4551 from Aries-Serpent/copilot/fix-zero-division-error-repo — Statix (2026-05-24)
-- `a236e048` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-24)
-- `a48286f5` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-24)
-- `a67d15f7` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
