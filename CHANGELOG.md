@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4549 comment-gate follow-up — 2026-05-24T04:19Z)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` after re-checking `Comment Review Gate` run `26351119275` and rerunning the requested local validation commands so the latest PR head satisfies the repository accountability freshness guard before the rescue-thread reply.
+
 ### Fixed (auto-update — PR #4549)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4549 (SHA `0e6b0c34`) at 2026-05-24T03:47Z [auto-generated]
 
