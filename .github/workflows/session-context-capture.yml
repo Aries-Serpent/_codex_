@@ -29,6 +29,17 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Initialize with repository variables
+        env:
+          SESSION_CONTEXT_AUTO_CAPTURE: ${{ vars.SESSION_CONTEXT_AUTO_CAPTURE || 'true' }}
+          COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS || '128000' }}
+          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+        run: |
+          echo "Session context variables initialized:"
+          echo "  SESSION_CONTEXT_AUTO_CAPTURE=$SESSION_CONTEXT_AUTO_CAPTURE"
+          echo "  COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS=$COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"
+          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -43,11 +54,14 @@ jobs:
         id: capture
         env:
           GH_TOKEN: ${{ github.token }}
+          SESSION_CONTEXT_AUTO_CAPTURE: ${{ vars.SESSION_CONTEXT_AUTO_CAPTURE || 'true' }}
+          COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS || '128000' }}
         run: |
           python scripts/ci/session_context_enrichment.py capture \
             --pr ${{ inputs.pr_number }} \
             --sha ${{ github.sha }} \
-            --output .codex/session_contexts/session_${{ inputs.pr_number }}_latest.json
+            --output .codex/session_contexts/session_${{ inputs.pr_number }}_latest.json \
+            --max-tokens $COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
 
       - name: Generate context summary
         id: summary

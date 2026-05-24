@@ -80,6 +80,10 @@ jobs:
     timeout-minutes: 5
     env:
       GH_TRICKLE_POLITE_SLEEP: "0.5"   # Phase RL-2: polite delay between API calls
+      # Initialize with repository variables
+      CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR || '5' }}
+      COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
+      CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
     permissions:
       contents: read
       pull-requests: read
@@ -92,6 +96,13 @@ jobs:
       run_url: ${{ steps.triage.outputs.run_url }}
       workflow_name: ${{ steps.triage.outputs.workflow_name }}
     steps:
+      - name: Initialize self-healing with repository variables
+        run: |
+          echo "Self-healing auto-poster initialized:"
+          echo "  CODEX_MAX_HEALER_RUNS_PER_HOUR=${{ env.CODEX_MAX_HEALER_RUNS_PER_HOUR }}"
+          echo "  COGNITIVE_BRAIN_INJECTION_ENABLED=${{ env.COGNITIVE_BRAIN_INJECTION_ENABLED }}"
+          echo "  CODEX_LOG_LEVEL=${{ env.CODEX_LOG_LEVEL }}"
+
       - name: Sparse checkout (scripts only)
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:

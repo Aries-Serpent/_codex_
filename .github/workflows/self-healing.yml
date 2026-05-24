@@ -32,7 +32,22 @@ jobs:
     name: "Self-Healing CI stub — see copilot-iterative-self-healing.yml"
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize with repository variables
+        env:
+          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR || '5' }}
+          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+          COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
+        run: |
+          echo "Self-healing configuration initialized from repository variables:"
+          echo "  CODEX_MAX_HEALER_RUNS_PER_HOUR=$CODEX_MAX_HEALER_RUNS_PER_HOUR"
+          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+          echo "  COGNITIVE_BRAIN_INJECTION_ENABLED=$COGNITIVE_BRAIN_INJECTION_ENABLED"
+
       - run: |
           echo "Self-healing is handled autonomously by copilot-iterative-self-healing.yml."
           echo "Target run ID: ${{ inputs.target_run_id || 'latest failed' }}"
           echo "Max iterations: ${{ inputs.max_iterations }}"
+          echo ""
+          echo "Configuration:"
+          echo "  Max healer runs per hour: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR || '5' }}"
+          echo "  Log level: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}"
