@@ -17,7 +17,11 @@
 - [`81006ec6`] Initial plan (copilot-swe-agent[bot], 2026-05-24)
 
 ### Files Modified
-No files modified
+- `.github/workflows/ci-failure-issue-creator.yml`
+- `.github/workflows/cleanup-stale-pr-comments.yml`
+- `.github/workflows/comment-review-gate.yml`
+- `.github/workflows/session-context-capture.yml`
+- `.github/copilot-prompts/active/PR-4557-followup.md`
 
 ---
 

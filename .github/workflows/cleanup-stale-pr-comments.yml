@@ -103,7 +103,7 @@ jobs:
             echo "dry_run=false" >> "$GITHUB_OUTPUT"
             echo "include_rescue=true" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
-            echo "number=${{ github.event.workflow_run.pull_requests[0].number }}" >> "$GITHUB_OUTPUT"
+            echo "number=${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || '' }}" >> "$GITHUB_OUTPUT"
             echo "dry_run=false" >> "$GITHUB_OUTPUT"
             echo "include_rescue=true" >> "$GITHUB_OUTPUT"
           else
