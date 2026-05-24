@@ -25,7 +25,7 @@ env:
   RUST_TEST_THREADS: "1"
 
 
-permissions: read-all
+permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
