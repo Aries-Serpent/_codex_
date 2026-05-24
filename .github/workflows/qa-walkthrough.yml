@@ -47,12 +47,13 @@ jobs:
 
       - name: Install QA dependencies
         run: |
-          .venv_ci/bin/pip install --quiet ruff black isort pylint bandit safety pip-audit 2>&1 || true
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          "$PYTHON_BIN" -m pip install --quiet ruff black isort pylint bandit safety pip-audit 2>&1 || true
           echo "--- QA tool availability ---"
           which ruff    && echo "ruff:     installed" || echo "ruff:     MISSING"
           which bandit  && echo "bandit:   installed" || echo "bandit:   MISSING"
           which pylint  && echo "pylint:   installed" || echo "pylint:   MISSING"
-          python3 -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
+          "$PYTHON_BIN" -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
 
       - name: Download recent CI artifacts
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9

@@ -173,9 +173,10 @@ runs:
           echo "::error::Venv creation failed — .venv_ci/bin/python does not exist or is not executable"
           exit 1
         fi
-        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+        PYTHON_BIN=".venv_ci/bin/python"
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
         # Pinned pytest plugin set — keeps CI reproducible
-        .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip \
           pytest==8.4.2 \
           pytest-timeout==2.4.0 \
           pytest-xdist==3.8.0 \
@@ -185,7 +186,7 @@ runs:
           pytest-randomly>=3.15 \
           pytest-rerunfailures>=12.0
         # Project extras (always includes core deps)
-        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
         echo "::endgroup::"
 
     - name: 'Venv: refresh on exact cache hit (pyproject changed)'
@@ -198,14 +199,16 @@ runs:
         #   (b) the Python major.minor version does not match the requested version
         #       (e.g. venv was cached on Python 3.11, runner now provides 3.12).
         REQUESTED_MINOR=$(echo "${{ inputs.python-version }}" | cut -d. -f1,2)
-        ACTUAL_MINOR=$(.venv_ci/bin/python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
-        if ! .venv_ci/bin/python --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ]; then
+        PYTHON_BIN=".venv_ci/bin/python"
+        ACTUAL_MINOR=$("$PYTHON_BIN" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+        if ! "$PYTHON_BIN" --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ]; then
           echo "::warning::Stale venv — Python version mismatch (venv=${ACTUAL_MINOR}, requested=${REQUESTED_MINOR}). Rebuilding."
           chmod -R u+w .venv_ci 2>/dev/null || true
           rm -rf .venv_ci
           python -m venv .venv_ci
-          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
-          .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
+          PYTHON_BIN=".venv_ci/bin/python"
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip \
             pytest==8.4.2 \
             pytest-timeout==2.4.0 \
             pytest-xdist==3.8.0 \
@@ -214,10 +217,10 @@ runs:
             pytest-mock==3.15.1 \
             "pytest-randomly>=3.15" \
             "pytest-rerunfailures>=12.0"
-          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
         fi
-        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
-        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
         echo "::endgroup::"
 
     # ─────────────────────────────────────────────────────────────────
@@ -231,17 +234,18 @@ runs:
       shell: bash
       run: |
         echo "::group::PyTorch CPU install"
+        PYTHON_BIN=".venv_ci/bin/python"
         mkdir -p ~/.cache/torch-whl
         # --find-links: serve wheels from local cache before hitting PyPI
         # --extra-index-url: fall back to PyTorch CPU index for cache misses
-        .venv_ci/bin/pip install \
+        "$PYTHON_BIN" -m pip install \
           --cache-dir ~/.cache/pip \
           --find-links ~/.cache/torch-whl \
           --extra-index-url https://download.pytorch.org/whl/cpu \
           torch torchvision torchaudio
         # Re-export any newly downloaded wheels to the L2 cache so the
         # next run can serve them locally without hitting the network.
-        .venv_ci/bin/pip download \
+        "$PYTHON_BIN" -m pip download \
           --cache-dir ~/.cache/pip \
           --dest ~/.cache/torch-whl \
           --find-links ~/.cache/torch-whl \
@@ -259,9 +263,10 @@ runs:
       shell: bash
       run: |
         echo "::group::Preflight extras install"
+        PYTHON_BIN=".venv_ci/bin/python"
         CACHE="--cache-dir ~/.cache/pip"
         # ML stack (torch already pinned to CPU above; exclude it here)
-        .venv_ci/bin/pip install $CACHE \
+        "$PYTHON_BIN" -m pip install $CACHE \
           "transformers>=4.48.0,<6" \
           "datasets>=2.19,<5" \
           "peft>=0.11,<1" \
@@ -270,21 +275,21 @@ runs:
           --quiet
 
         # Analysis / AST extras
-        .venv_ci/bin/pip install $CACHE \
+        "$PYTHON_BIN" -m pip install $CACHE \
           "libcst>=1.0" \
           "sqlparse>=0.5.0" \
           "tree-sitter>=0.20.0" \
           --quiet
 
         # Perf / numeric extras
-        .venv_ci/bin/pip install $CACHE \
+        "$PYTHON_BIN" -m pip install $CACHE \
           "numpy>=1.24" \
           "mlflow>=2.22.4,<4" \
           "scipy>=1.11" \
           --quiet
 
         # Config / infra extras
-        .venv_ci/bin/pip install $CACHE \
+        "$PYTHON_BIN" -m pip install $CACHE \
           "hydra-core>=1.3" \
           "omegaconf>=2.3" \
           "PyYAML>=6.0" \
@@ -303,7 +308,8 @@ runs:
       shell: bash
       run: |
         echo "::group::Preflight env report"
-        .venv_ci/bin/python scripts/ci/rvs_env_preflight.py --report || true
+        PYTHON_BIN=".venv_ci/bin/python"
+        "$PYTHON_BIN" scripts/ci/rvs_env_preflight.py --report || true
         echo "::endgroup::"
 
     # ─────────────────────────────────────────────────────────────────

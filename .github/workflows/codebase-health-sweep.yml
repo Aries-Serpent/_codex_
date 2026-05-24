@@ -101,9 +101,12 @@ jobs:
       - name: Install tools
         if: steps.rate.outputs.skip != 'true'
         run: |
-          if ! .venv_ci/bin/pip install detect-secrets ruff --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
-            .venv_ci/bin/pip install detect-secrets ruff --quiet
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install detect-secrets ruff --quiet 2>/dev/null; then
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install detect-secrets ruff --quiet
           fi
 
       - name: Run sweep — main
@@ -274,9 +277,12 @@ jobs:
       - name: Install tools
         if: steps.branch_check.outputs.exists == 'true'
         run: |
-          if ! .venv_ci/bin/pip install detect-secrets ruff --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
-            .venv_ci/bin/pip install detect-secrets ruff --quiet
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install detect-secrets ruff --quiet 2>/dev/null; then
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install detect-secrets ruff --quiet
           fi
 
       - name: Run sweep — 0D_base_
@@ -359,9 +365,12 @@ jobs:
 
       - name: Install tools
         run: |
-          if ! .venv_ci/bin/pip install ruff --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
-            .venv_ci/bin/pip install ruff --quiet
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install ruff --quiet 2>/dev/null; then
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install ruff --quiet
           fi
 
       - name: Check for remaining manual-only issues

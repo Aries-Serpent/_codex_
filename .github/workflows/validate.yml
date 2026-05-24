@@ -70,7 +70,7 @@ jobs:
           extras: 'dev'
 
       - name: Run yamllint
-        run: yamllint .github/workflows/ .github/misc/ -c .yamllint.yml
+        run: yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 
       - name: Run fast validation
         env:

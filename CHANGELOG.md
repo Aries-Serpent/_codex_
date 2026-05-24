@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4549 comment-gate follow-up — 2026-05-24T04:19Z)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` after re-checking `Comment Review Gate` run `26351119275` and rerunning the requested local validation commands so the latest PR head satisfies the repository accountability freshness guard before the rescue-thread reply.
+
+### Fixed (auto-update — PR #4549)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4549 (SHA `0e6b0c34`) at 2026-05-24T03:47Z [auto-generated]
+
+### Fixed (PR #4549 CI rescue — 2026-05-24T03:58Z)
+- Fixed the current `Validation Pipeline` blocker by sorting the import block in `tests/agents/test_msp_client_phase9_1.py`; also swapped the fixture API key literal to `example` and marked it inline for detect-secrets so the test remains stable without tripping secret scans.
+- Fixed the current `RAG Module Tests` blocker in `.github/workflows/test-rag.yml` by preserving `$AGENT_TOOLSDIRECTORY` during the free-disk cleanup step; the cached `.venv_ci/bin/python` interpreter can symlink into the hosted Python toolcache and was being broken before dependency installation.
+
 ### Fixed (PR #4547 cognitive brain analysis & code quality — 2026-05-24T01:30Z)
 - **CodeQL Security:** Resolved "Pythagorean calculation with sub-optimal numerics" alert in `tests/agents/test_class_apis_phase9_2.py:544` by replacing `math.sqrt(x²+y²)` with `math.hypot(x, y)` for numerically stable computation.
 - **Phase 6 Integration:** Enabled cognitive brain integration in `.codex/config/monitoring.yaml` by setting `cognitive_brain.enabled: true` (was `false`).

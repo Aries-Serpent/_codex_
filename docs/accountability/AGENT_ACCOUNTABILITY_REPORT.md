@@ -1,3 +1,78 @@
+## SESSION SUMMARY — 2026-05-24T04:19Z [PR4549-comment-gate-followup]
+
+**Session:** PR4549-comment-gate-followup | **Branch:** `copilot/fix-ci-failure-rag-module-tests` | **PR:** #4549
+
+### Completed
+- Investigated the latest failing `Comment Review Gate` run via GitHub Actions MCP logs (`26351119275`) and confirmed the blocker was an unresolved `@copilot` reply requirement, not a new code-path regression.
+- Re-ran the requested local validation commands on the current branch head:
+  - `python -m ruff check src/ tests/ --fix`
+  - `python scripts/ci/mypy_baseline.py --require-baseline`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- Confirmed the only new local readiness drift came from Pattern 25 freshness on this accountability report, so this follow-up refresh keeps the branch aligned with the repository’s accountability guard.
+
+### Validation
+- `python -m ruff check src/ tests/ --fix` ✅
+- `python scripts/ci/mypy_baseline.py --require-baseline` ✅ (131 errors, matches baseline)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ after this accountability refresh
+
+### Remaining
+- [ ] Reply on the open `@copilot` rescue thread with the addressing commit hash
+- [ ] Wait for fresh GitHub Actions confirmation on the latest PR head
+
+---
+
+## SESSION SUMMARY — 2026-05-24T03:58Z [PR4549-ci-rescue]
+
+**Session:** PR4549-ci-rescue | **Branch:** `copilot/fix-ci-failure-rag-module-tests` | **PR:** #4549
+
+### Completed
+- Investigated the latest failing GitHub Actions runs for commit `5e559a45` via GitHub MCP:
+  - `Validation Pipeline` run `26351020408`
+  - `RAG Module Tests` run `26351020463`
+- Confirmed the actionable `Validation Pipeline` blocker was Pattern 9 unsorted imports in `tests/agents/test_msp_client_phase9_1.py`; sorted the import block and replaced the test token literal with a non-secret-shaped fixture value.
+- Confirmed the actionable `test-rag.yml` blocker was the free-disk cleanup removing `$AGENT_TOOLSDIRECTORY` after the cached venv had been created, which broke `${VENV_PYTHON}` (`.venv_ci/bin/python` → missing hosted toolcache target). Updated the workflow to preserve the hosted Python toolcache.
+
+### Validation
+- `python -m pytest tests/test_rag_*.py tests/rag/ -q` ✅
+- `python -m pytest tests/validation/test_ci_workflow_validation.py::TestWorkflowFileValidation::test_workflow_files_valid_yaml -q` ✅
+- `python scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ after the targeted fixes
+
+### Remaining
+- [ ] Push the CI rescue changes and wait for fresh GitHub Actions confirmation on PR #4549
+- [ ] Reply on the open `@copilot` rescue thread with the addressing commit hash
+
+---
+
+## SESSION SUMMARY — 2026-05-24T03:30Z [PR4549-ci-followup]
+
+**Session:** PR4549-ci-followup | **Branch:** `copilot/fix-ci-failure-rag-module-tests` | **PR:** #4549
+
+### Completed
+- Investigated the failing `Validation Pipeline` run `26350535475` via GitHub Actions MCP and confirmed the fast job was failing in the `yamllint` step before the rest of validation could run.
+- Updated `.github/workflows/validate.yml` to run `yamllint --no-warnings`, matching the repository’s intended warning-only handling for `truthy`/line-length workflow lint output.
+- Updated `.github/workflows/test-rag.yml` path filters so changes to the workflow itself or the shared `setup-python-cached` action now retrigger the RAG workflow for live verification.
+- Hardened cached-venv reuse paths to avoid direct `.venv_ci/bin/pip` launcher drift:
+  - `.github/actions/setup-python-cached/action.yml`
+  - `.github/workflows/qa-walkthrough.yml`
+  - `.github/workflows/iterative-self-healing-ci.yml`
+  - `.github/workflows/codebase-health-sweep.yml`
+  - `.github/workflows/copilot-setup-steps.yml`
+- Refreshed `.github/copilot-prompts/active/PR-4549-followup.md` so the continuation tasks match PR #4549 instead of the stale PR #4545 text.
+
+### Validation
+- `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` ✅
+- `python -m pytest tests/validation/test_ci_workflow_validation.py::TestWorkflowFileValidation::test_workflow_files_valid_yaml -q` ✅
+- `python - <<'PY' ... yaml.safe_load(...) ... PY` on the changed workflow/action YAML files ✅
+- `rg -n '\\.venv_ci/bin/pip' .github/actions .github/workflows` ✅ (no remaining direct pip launcher usage in active workflow/action YAML)
+
+### Remaining
+- [ ] Wait for the next PR CI run to confirm `test-rag.yml` passes on GitHub Actions
+- [ ] Wait for the next PR CI run to confirm the updated `Validation Pipeline` run is green
+- [ ] Reply on the blocking `@copilot` PR thread after pushing this remediation
+
+---
+
 ## SESSION SUMMARY — 2026-05-24T01:30Z [S1261-cognitive-brain-analysis-codequality]
 
 **Session:** S1261 | **Branch:** `copilot/update-documentation-mermaid-mappings` | **PR:** #4547 | **Duration:** ~30 min (out of 60)

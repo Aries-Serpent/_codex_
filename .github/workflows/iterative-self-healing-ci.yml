@@ -166,15 +166,17 @@ jobs:
           # so the triage job never fails due to a missing venv and never pollutes the
           # system/user site-packages with an un-isolated install.
           # Root cause of 126 self-healing failures (CI health alert 2026-03-21):
-          # .venv_ci/bin/pip was absent on cache misses, causing triage to exit 1
+          # the venv pip launcher was unavailable on cache misses, causing triage to exit 1
           # before classify-run could run, which marked the whole workflow as failed.
           # S177 hardening (issue #3977): rm stale venv + --clear + pip upgrade to
           # prevent corrupted partial-cache-restore venvs from causing silent failures.
-          if ! .venv_ci/bin/pip install requests --quiet 2>/dev/null; then
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install requests --quiet 2>/dev/null; then
             rm -rf .venv_ci
             python3 -m venv --clear .venv_ci
-            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
-            .venv_ci/bin/pip install requests --quiet
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install --upgrade pip setuptools --quiet
+            "$PYTHON_BIN" -m pip install requests --quiet
           fi
           echo "run_id=${TRIGGERING_RUN_ID}"       >> "$GITHUB_OUTPUT"
           echo "head_sha=${HEAD_SHA}"               >> "$GITHUB_OUTPUT"
@@ -210,7 +212,7 @@ jobs:
             self-healing)
               # Self-healing cascade detected (SELF_HEALING_001):
               # The triggering workflow is itself an Iterative Self-Healing CI run.
-              # Most common root cause: .venv_ci/bin/pip absent on cache miss caused
+              # Most common root cause: the venv pip launcher being unavailable on cache miss caused
               # triage to fail before classify-run could run (fixed in S172).
               # This pattern is not auto-fixable here — it indicates the self-healing
               # loop itself has an infrastructure issue.  Emit a clear summary for
@@ -221,7 +223,7 @@ jobs:
               echo "The failing workflow **is** an Iterative Self-Healing CI run." >> "$GITHUB_STEP_SUMMARY"
               echo "This is a cascade failure: the healer itself is failing." >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
-              echo "**Probable cause:** \`.venv_ci/bin/pip\` absent on venv cache miss." >> "$GITHUB_STEP_SUMMARY"
+              echo "**Probable cause:** the cached venv pip launcher was unavailable on cache miss." >> "$GITHUB_STEP_SUMMARY"
               echo "**Fix applied in S172:** on cache miss the venv is recreated with \`python3 -m venv .venv_ci\` (both triage and heal jobs)." >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
               echo "**If this persists:** Check \`.github/actions/setup-python-cached/action.yml\`" >> "$GITHUB_STEP_SUMMARY"
@@ -396,11 +398,13 @@ jobs:
           # Resilient pip install: prefer venv binary but recreate the venv on cache miss
           # instead of installing to system/user site-packages (same fix as triage — S172).
           # S177 hardening (issue #3977): rm stale venv + --clear + pip upgrade.
-          if ! .venv_ci/bin/pip install ruff black isort --quiet 2>/dev/null; then
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install ruff black isort --quiet 2>/dev/null; then
             rm -rf .venv_ci
             python3 -m venv --clear .venv_ci
-            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
-            .venv_ci/bin/pip install ruff black isort --quiet
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install --upgrade pip setuptools --quiet
+            "$PYTHON_BIN" -m pip install ruff black isort --quiet
           fi
 
       - name: D-07 — Run ci_triage_repro.sh (pre-heal baseline)
@@ -764,11 +768,13 @@ jobs:
 
       - name: Install detect-secrets
         run: |
-          if ! .venv_ci/bin/pip install detect-secrets --quiet 2>/dev/null; then
+          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+          if ! "$PYTHON_BIN" -m pip install detect-secrets --quiet 2>/dev/null; then
             rm -rf .venv_ci
             python3 -m venv --clear .venv_ci
-            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
-            .venv_ci/bin/pip install detect-secrets ruff --quiet
+            PYTHON_BIN=".venv_ci/bin/python"
+            "$PYTHON_BIN" -m pip install --upgrade pip setuptools --quiet
+            "$PYTHON_BIN" -m pip install detect-secrets ruff --quiet
           fi
 
       - name: Run universal sweep
