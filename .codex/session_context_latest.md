@@ -1,15 +1,15 @@
-# Session Context — 2026-05-24T09:19:38Z
+# Session Context — 2026-05-24T09:31:59Z
 **Branch:** `copilot/remove-duplicate-allowlist-comments`  **PR:** #4556  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4390` (✅)
-- GraphQL remaining: `4987` (✅)
+- REST remaining: `4987` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4556 — [WIP] Remove duplicate allowlist secret comments from test file
-State: `open`  Draft: `True`  Branch: `copilot/remove-duplicate-allowlist-comments` → `main`
+## 📋 PR #4556 — Remove redundant allowlist secret pragmas from MSP client phase 9.1 test
+State: `open`  Draft: `False`  Branch: `copilot/remove-duplicate-allowlist-comments` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
@@ -19,6 +19,7 @@ State: `open`  Draft: `True`  Branch: `copilot/remove-duplicate-allowlist-commen
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-24)
 
 ## 📝 Recent Commits
+- `7bad03f7` chore: outline minimal msp client test cleanup — copilot-swe-agent[bot] (2026-05-24)
 - `a89731a4` Initial plan — copilot-swe-agent[bot] (2026-05-24)
 - `c4b5b098` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-24)
 - `b7db067f` Merge pull request #4554 from Aries-Serpent/copilot/fix-monkeypatch-target-in-re — Statix (2026-05-24)
@@ -26,7 +27,6 @@ State: `open`  Draft: `True`  Branch: `copilot/remove-duplicate-allowlist-commen
 - `22c41b8c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
 - `c6eb1705` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
 - `afc75214` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `5250ce12` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
