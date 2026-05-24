@@ -789,7 +789,7 @@ _DEFAULT_LOGIN_SHELL = "/bin/bash" if Path("/bin/bash").exists() else "/bin/sh"
 
 def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
     # Do not call expanduser() on user input to prevent path traversal via ~username
-    # Validate user input string before using it in path operations (CodeQL alert #13688)
+    # Validate user input string before using it in path operations (CodeQL alert #13688, #13690)
 
     # Start with the trusted base path
     repo_root = Path(REPO_ROOT).resolve()
@@ -803,19 +803,58 @@ def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
     if "\x00" in raw_cwd or any(ord(c) < 32 and c not in ("\t", "\n", "\r") for c in raw_cwd):
         raise HTTPException(status_code=400, detail="Invalid characters in cwd path")
 
-    # Break taint chain: normalize and join with trusted base
-    # This prevents CodeQL from tracking tainted data into Path operations
-    # Use os.path operations to create a clean path before Path() construction
+    # Break taint chain by validating path components individually
+    # CodeQL tracks taint through os.path and Path operations, so we need to
+    # validate each component separately and reconstruct from trusted base
     try:
-        # Normalize the input to remove .. and . components
-        normalized = os.path.normpath(raw_cwd)
-        # If absolute, make it relative to root
-        if os.path.isabs(normalized):
-            normalized = normalized.lstrip(os.sep)
-        # Join with trusted base - this breaks the taint chain
-        safe_path = os.path.join(str(repo_root), normalized)
-        # Now construct Path from the sanitized string
-        candidate = Path(safe_path).resolve(strict=False)
+        # Create a temporary Path object for parsing only (not used in final path)
+        # This allows us to extract and validate individual components
+        temp_path = Path(raw_cwd)
+
+        # Handle absolute vs relative paths differently
+        if temp_path.is_absolute():
+            # For absolute paths, first verify they're within repo_root
+            # Use string operations to check prefix before creating Path
+            repo_root_str = str(repo_root)
+            raw_cwd_normalized = os.path.normpath(raw_cwd)
+
+            # Check if the absolute path starts with repo_root
+            if not raw_cwd_normalized.startswith(repo_root_str):
+                raise HTTPException(status_code=400, detail="Absolute path must be within repository")
+
+            # Extract the relative part after repo_root
+            # Use string slicing to get only the part after repo_root
+            relative_part = raw_cwd_normalized[len(repo_root_str):].lstrip(os.sep)
+
+            # If empty, return repo_root
+            if not relative_part:
+                return str(repo_root)
+
+            # Now validate the relative part's components
+            temp_path = Path(relative_part)
+
+        # Extract and validate each path component
+        parts = temp_path.parts
+
+        # Validate each component individually - reject path traversal
+        for part in parts:
+            if part in (".", ".."):
+                raise HTTPException(status_code=400, detail="Path traversal not allowed")
+            if os.sep in part or (os.altsep and os.altsep in part):
+                raise HTTPException(status_code=400, detail="Invalid path component")
+
+        # Reconstruct the path using only the validated components and trusted base
+        # This breaks the taint chain - we're building a new path from scratch
+        candidate = repo_root
+        for part in parts:
+            # Use the truediv operator (/) which creates a new Path object
+            # Since 'part' is validated and 'candidate' starts as trusted repo_root,
+            # this creates a clean path without tainted data flow
+            candidate = candidate / part
+
+        # Resolve to absolute path
+        candidate = candidate.resolve(strict=False)
+
     except (ValueError, OSError) as exc:
         raise HTTPException(status_code=400, detail=f"Invalid path: {exc}") from exc
 
