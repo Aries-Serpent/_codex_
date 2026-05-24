@@ -109,7 +109,7 @@ state:
 
 # Cognitive Brain integration (Phase 6)
 cognitive_brain:
-  enabled: false  # Will be enabled in Phase 6
+  enabled: true  # Phase 6 integration enabled (2026-05-24)
   sensor_module: "scripts/cognitive/sensors/monitoring_sensor.py"
   confidence_threshold: 0.8
   auto_fix_enabled: false  # Requires human approval
