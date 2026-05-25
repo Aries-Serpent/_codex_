@@ -108,9 +108,8 @@ Updated: 2026-05-24T23:00Z
 By: copilot-swe-agent[bot] — Phase-5 consolidation (coverage + agent + cache)
 Repo variable snapshot: `.codex/agent_context.json` (COPILOT_AGENT_AUTH_ENABLED=true confirmed)
 CI failure rate: `1.6:ok` (healthy)
-Active workflows: 285 in `.github/workflows/` (142 archived under `.github/workflow-archive/disabled/`) | Active agents: **143** (post Phase-5 consolidation; matrix at [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../agents/AGENT_CONSOLIDATION_MATRIX.md))
+Workflow files in `.github/workflows/`: 285 (includes dispatch-only stubs; 142 archived under `.github/workflow-archive/disabled/`) | Active agents: **143** (post Phase-5 consolidation; matrix at [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../agents/AGENT_CONSOLIDATION_MATRIX.md))
 Coverage: 10.7% — stepped roadmap 10 → 12 → 15 → 20% in [`.codex/COVERAGE_GAP_REPORT.md`](COVERAGE_GAP_REPORT.md)
 Cache policy: 4-layer hierarchy in [`docs/workflows/CACHE_POLICY.md`](../docs/workflows/CACHE_POLICY.md) (owned by `cache-management-agent`)
 Current phase: Phase 5 — Full autonomous self-healing loop ACTIVE; Phase 5b deferred (workflow YAML rollout)
 Last green SHA (main): `33b5f137`
-

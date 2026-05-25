@@ -37,9 +37,9 @@ State: `open`  Draft: `False`  Branch: `copilot/analyze-test-coverage-and-docume
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `RP-QUERY-FILTER-TEST`: ?
+- [ ] `RP-SUCCESS-RATE-TEST`: ?
+- [ ] `RP-SUCCESS-RATE-TEST`: ?
+- [ ] `RP-QUERY-FILTER-TEST`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

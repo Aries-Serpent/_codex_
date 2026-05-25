@@ -1,7 +1,7 @@
 # Codebase Cognitive Map
 
-> Generated: 2026-01-23T08:42:00Z | Updated by: doc-freshness-checker agent
-> PR: #2960 | Branch: `copilot/update-html-documentation-standards`
+> Generated: 2026-01-23T08:42:00Z | Updated: 2026-05-24T23:59:00Z by copilot-swe-agent[bot]
+> PR: #4562 | Branch: `copilot/analyze-test-coverage-and-documentation`
 
 ---
 
@@ -21,7 +21,7 @@
 
 **Type**: Modular ML/AI Platform with Agent Orchestration
 **MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
-**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **143 active agents** (post Phase-5 consolidation), 285 workflows under `.github/workflows/`.
+**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **143 active agents** (post Phase-5 consolidation), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
 
 ### Repository Structure
 ```
