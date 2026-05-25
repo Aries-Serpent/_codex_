@@ -256,7 +256,7 @@ jobs:
             cat > package_staging/requirements.txt << 'EOF'
           # Audio Transcriber UI dependencies
           # Python 3.12+ required
-          numpy>=2.4.5,<3
+          numpy>=2.4.6,<3
 
           # Optional transcription backends (recommended)
           faster-whisper==1.1.1

@@ -12,7 +12,7 @@ accelerate==1.13.0
     #   codex-ml (pyproject.toml)
     #   lm-eval
     #   peft
-sentence-transformers==5.4.0
+sentence-transformers==5.5.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -221,7 +221,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.5.2
+duckdb==1.5.3
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -389,7 +389,7 @@ iniconfig==2.3.0
     # via pytest
 ipykernel==7.1.0
     # via jupyterlab
-ipython==9.6.0
+ipython==9.13.0
     # via
     #   great-expectations
     #   ipykernel
@@ -558,7 +558,7 @@ multiprocess==0.70.19
     # via
     #   datasets
     #   evaluate
-mypy==2.0.0
+mypy==2.1.0
     # via codex-ml (pyproject.toml)
 mypy-extensions==1.1.0
     # via
@@ -600,7 +600,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.5
+numpy==2.4.6
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -873,7 +873,7 @@ pygtrie==2.5.0
     #   dvc-data
     #   scmrepo
     #   sqltrie
-pyjwt==2.12.1
+pyjwt==2.13.0
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.8.1
+transformers==5.9.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1290,7 +1290,7 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.9.0
     # via jupyter-server
-websockets==15.0.1
+websockets==16.0
     # via uvicorn
 # Updated to werkzeug==3.1.8 for security fixes and bug improvements:
 # See: https://github.com/pallets/werkzeug/releases/tag/3.1.8
