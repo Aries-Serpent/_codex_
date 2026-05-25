@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4564)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4564 (SHA `ddd2b9fb`) at 2026-05-25T13:35Z [auto-generated]
+
 ### Added (Phase-5 Coverage + Agent + Cache Consolidation — 2026-05-24)
 - **`.codex/COVERAGE_GAP_REPORT.md`** — static src↔tests cross-reference identifying 139/943 untested modules; ranked gaps for `mcp.*`, `codex_ml.tokenization.*`, `cognitive_brain.experiments.*`, `codex.rag.benchmarks.*`, `services.audio.*`; stepped coverage roadmap 10 → 12 → 15 → 20% targeting `pyproject.toml [tool.coverage.report].fail_under`. Hand-off to `unified-coverage-agent`.
 - **`agents/AGENT_CONSOLIDATION_MATRIX.md`** — Keep/Merge/Archive decisions across 6 agent families: 5 coverage merges (confirmed), 2 doc merges, 4 security merges, 2 CI-healing merges, 1 cache merge, 1 archive. Hand-off to `agent-orchestrator` for `AGENT_REGISTRY.yaml` mutation.
