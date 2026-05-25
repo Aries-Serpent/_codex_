@@ -389,7 +389,7 @@ iniconfig==2.3.0
     # via pytest
 ipykernel==7.1.0
     # via jupyterlab
-ipython==9.6.0
+ipython==9.13.0
     # via
     #   great-expectations
     #   ipykernel
