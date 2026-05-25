@@ -17,8 +17,13 @@ def test_call_tool_params_defaults() -> None:
 
 
 def test_call_tool_params_top_k_validation() -> None:
-    with pytest.raises(ValidationError):
-        CallToolParams(tool_id="mcp.search", input={"query": "abc"}, top_k=0)
+    for invalid_top_k in (0, -1):
+        with pytest.raises(ValidationError):
+            CallToolParams(
+                tool_id="mcp.search",
+                input={"query": "abc"},
+                top_k=invalid_top_k,
+            )
 
 
 def test_call_tool_params_accepts_custom_values() -> None:
