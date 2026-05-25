@@ -64,6 +64,7 @@ jobs:
           fi
 
           if [[ "$EVENT" == "pull_request" ]]; then
+            git fetch --no-tags origin "${{ github.base_ref }}" --depth=1
             RANGE="origin/${{ github.base_ref }}...${{ github.sha }}"
           else
             if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
@@ -86,7 +87,7 @@ jobs:
             exit 0
           fi
 
-          COVERAGE_PATTERN='^(src/|tests/|pyproject\.toml$|pytest\.ini$|\.coveragerc$|requirements.*\.txt$|tools/coverage_.*\.py$|\.github/workflows/code-quality-coverage-suite\.yml$)'
+          COVERAGE_PATTERN='^(src/|tests/|pyproject\.toml$|pytest\.ini$|\.coveragerc$|requirements[^/]*\.txt$|requirements/.*\.txt$|tools/coverage_.*\.py$|\.github/workflows/code-quality-coverage-suite\.yml$)'
           QUALITY_PATTERN='^(src/|tests/|agents/|scripts/|pyproject\.toml$|mypy\.ini$|ruff\.toml$|\.github/workflows/code-quality-coverage-suite\.yml$)'
 
           if printf '%s\n' "$CHANGED" | grep -Eq "$COVERAGE_PATTERN"; then
