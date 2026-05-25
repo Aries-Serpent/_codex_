@@ -1,42 +1,29 @@
-# Session Context — 2026-05-25T00:18:24Z
-**Branch:** `copilot/analyze-test-coverage-and-documentation`  **PR:** #4562  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-25T05:37:45Z
+**Branch:** `copilot/analyze-test-coverage`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4871` (✅)
-- GraphQL remaining: `4990` (✅)
+- REST remaining: `4749` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4562 — Phase-5: planning artifacts, review-thread fixes, and coverage floor update
-State: `open`  Draft: `False`  Branch: `copilot/analyze-test-coverage-and-documentation` → `main`
-
-### ❌ 10 Failing CI Check(s)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Activate token delegation` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Validate WEC Template Integrity` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-24)
-- **Workflow Execution Gate** — `failure` on `copilot/remediate-code-scanning-alerts` (2026-05-24)
-- **Agent Token Delegation** — `failure` on `copilot/remediate-code-scanning-alerts` (2026-05-24)
-- **Workflow Execution Gate** — `failure` on `copilot/remediate-code-scanning-alerts` (2026-05-24)
-- **Agent Token Delegation** — `failure` on `copilot/remediate-code-scanning-alerts` (2026-05-24)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-05-25)
+- **Validation Pipeline** — `failure` on `main` (2026-05-25)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
+- **PR Auto-Fix Check** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
+- **Validation Pipeline** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
 
 ## 📝 Recent Commits
-- `d7ae6567` Address PR review doc feedback and set coverage floor to 10 — copilot-swe-agent[bot] (2026-05-25)
-- `77bc647a` Plan: address review thread feedback — copilot-swe-agent[bot] (2026-05-25)
-- `d55f985b` docs(phase-5): coverage gap report + agent consolidation matrix + cache policy — copilot-swe-agent[bot] (2026-05-24)
-- `42950ebb` Apply remaining changes — copilot-swe-agent[bot] (2026-05-24)
-- `33b5f137` Merge pull request #4561 from Aries-Serpent/copilot/remediate-code-scanning-aler — Statix (2026-05-24)
-- `211a355a` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-24)
-- `75b26d36` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-24)
-- `851d9e16` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-24)
+- `c18bdc4e` Merge pull request #4562 from Aries-Serpent/copilot/analyze-test-coverage-and-do — Statix (2026-05-25)
+- `a97537b4` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-25)
+- `6eb45926` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-25)
+- `8889b760` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-25)
+- `4aac706b` Apply Phase-5 agent consolidation matrix to AGENT_REGISTRY.yaml — copilot-swe-agent[bot] (2026-05-25)
+- `e51dc9f7` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-25)
+- `e6f5476f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-25)
+- `7f0c42cd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
