@@ -21,7 +21,7 @@
 
 **Type**: Modular ML/AI Platform with Agent Orchestration
 **MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
-**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **143 active agents** (post Phase-5 consolidation), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
+**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **145 active agents** (post Phase-5 consolidation; registry total 159 — 14 archived), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
 
 ### Repository Structure
 ```
@@ -71,7 +71,7 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 
 **Tokens**: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
 
-**Active count:** 143 (post Phase-5 consolidation — see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md)). Was 153; net −10 via merges into `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `ci-auto-healer-agent`, `ci-emergency-response-agent`, `cache-management-agent`; and 1 archive (`workflow-health-monitor.deprecated`).
+**Active count:** 145 (post Phase-5 consolidation — see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md)). Registry total 159; 14 archived (5 prior coverage merges + 9 Phase-5 family merges); 1 prompt file (`workflow-health-monitor.deprecated.md`) archived without registry entry. Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `ci-testing-agent`, `ci-emergency-response-agent`, `cache-management-agent`.
 
 **Unified entry points:**
 

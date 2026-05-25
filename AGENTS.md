@@ -14,7 +14,7 @@ DO NOT MOVE this file - it is intentionally placed here as the first point of co
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Root Organization:** Phase 2 Complete
 > **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
-> **Agents:** 143 active (S174→S190 Phase-5: −10 via 9 family merges + 1 archive; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
+> **Agents:** 145 active (S174→S190 Phase-5: 9 family merges + 1 archive applied to `.github/agents/AGENT_REGISTRY.yaml`; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 >
