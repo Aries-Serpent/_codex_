@@ -1,7 +1,7 @@
 # Codebase Cognitive Map
 
-> Generated: 2026-01-23T08:42:00Z | Updated by: doc-freshness-checker agent
-> PR: #2960 | Branch: `copilot/update-html-documentation-standards`
+> Generated: 2026-01-23T08:42:00Z | Updated: 2026-05-24T23:59:00Z by copilot-swe-agent[bot]
+> PR: #4562 | Branch: `copilot/analyze-test-coverage-and-documentation`
 
 ---
 
@@ -21,7 +21,7 @@
 
 **Type**: Modular ML/AI Platform with Agent Orchestration
 **MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
-**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities
+**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **145 active agents** (post Phase-5 consolidation; registry total 159 — 14 archived), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
 
 ### Repository Structure
 ```
@@ -70,6 +70,34 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 - `mental_mapping.py` - Context tracking
 
 **Tokens**: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
+
+**Active count:** 145 (post Phase-5 consolidation — see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md)). Registry total 159; 14 archived (5 prior coverage merges + 9 Phase-5 family merges); 1 prompt file (`workflow-health-monitor.deprecated.md`) archived without registry entry. Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `ci-testing-agent`, `ci-emergency-response-agent`, `cache-management-agent`.
+
+**Unified entry points:**
+
+```mermaid
+graph LR
+    subgraph "Unified Agents (canonical entry points)"
+        UC[unified-coverage-agent]
+        UD[unified-doc-agent]
+        US[unified-security-scanner]
+        UG[unified-governance-gate]
+        WM[workflow-management-agent]
+        CM[cache-management-agent]
+        SH[self-healing-orchestrator-agent]
+    end
+    subgraph "Deprecated → Merged"
+        D1[coverage-gapfill / -maintenance / -roadmap / test-coverage-agent / -monitor] --> UC
+        D2[documentation-quality-agent / documentation-consolidator] --> UD
+        D3[secret-detection / dep-vuln-scanner / dep-sec-review / security-audit] --> US
+        D4[ci-failure-resolution-agent] --> SH
+        D5[ci-resilience-emergency-response-agent] --> CMR[ci-emergency-response-agent]
+        D6[cache-manager-integration] --> CM
+    end
+    UG --- WM
+    SH --- WM
+    CM --- WM
+```
 
 ### 3. MCP Package System (`scripts/mcp/`)
 **Purpose**: Package codebase for ChatGPT Projects
@@ -150,11 +178,12 @@ Test Execution → Cache Management → Artifact Generation
 | `build-chatgpt-package.yml` | dispatch | MCP packaging | - |
 | `scan-secrets-variables.yml` | schedule | Secrets scan | Gitleaks |
 
-### Cache Strategy (Phase 3C-Lite)
+### Cache Strategy (Phase 3C-Lite + Phase 5)
 - **Ruff**: ~20-30 MB | **MyPy**: ~50-80 MB
 - **Pytest**: ~30-50 MB | **pre-commit**: ~50-100 MB
 - **Total**: 7.69 GB / 10 GB limit (23% buffer)
 - **Keys**: `${{ runner.os }}-${{ github.workflow }}-<tool>-${{ hashFiles(...) }}`
+- **Phase 5** introduces the 4-layer cache hierarchy and skip-rescan policy — see [`docs/workflows/CACHE_POLICY.md`](../workflows/CACHE_POLICY.md) (owned by `cache-management-agent`).
 
 ---
 

@@ -1,10 +1,17 @@
 ---
 name: Cache Manager Integration Agent
 description: Integrate and coordinate cache management operations across repository systems
+deprecated: true
+superseded_by: cache-management-agent.md
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cache management operations coordination across repo systems
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
+
+> ⚠️ **DEPRECATED** — Integration capabilities have been folded into
+> **[Cache Management Agent](cache-management-agent.md)** as a sub-capability.
+> Use `cache-management-agent` for all new invocations. Tracked under
+> Phase-5 agent consolidation matrix (`agents/AGENT_CONSOLIDATION_MATRIX.md`).
 
 # Cache Manager Workflow Integration Agent
 

@@ -1,6 +1,8 @@
 version: 2.0.0
-last_updated: '2026-03-22T22:20:39Z'
+last_updated: '2026-05-25T00:23:00Z'
 total_agents: 159
+active_agents: 145
+archived_agents: 14
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -1299,7 +1301,9 @@ agents:
 - id: cache-manager-integration
   name: Cache Manager Integration
   file: cache-manager-integration.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: cache-management-agent
   maturity: beta
   category: ci_cd
   priority: medium
@@ -1356,7 +1360,9 @@ agents:
   batch_scan_enabled: true
   name: CI Failure Resolution Agent
   file: ci-failure-resolution-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: ci-testing-agent
   maturity: production
   category: ci_cd
   priority: high
@@ -1446,7 +1452,9 @@ agents:
   batch_scan_enabled: true
   name: CI Resilience Emergency Response Agent
   file: ci-resilience-emergency-response-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: ci-emergency-response-agent
   maturity: production
   category: ci_cd
   priority: critical
@@ -1722,7 +1730,9 @@ agents:
 - id: dependency-security-review-agent
   name: Dependency Security Review Agent
   file: dependency-security-review-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-security-scanner
   maturity: beta
   category: security
   priority: high
@@ -1740,7 +1750,9 @@ agents:
   batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
   file: dependency-vulnerability-scanner.agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-security-scanner
   maturity: production
   category: security
   priority: critical
@@ -1801,7 +1813,9 @@ agents:
 - id: documentation-consolidator
   name: Documentation Consolidator
   file: documentation-consolidator.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-doc-agent
   maturity: production
   category: documentation
   priority: medium
@@ -1824,7 +1838,9 @@ agents:
 - id: documentation-quality-agent
   name: Documentation Quality Agent
   file: documentation-quality-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-doc-agent
   maturity: production
   category: documentation
   priority: medium
@@ -2372,7 +2388,9 @@ agents:
 - id: secret-detection-agent
   name: Secret Detection Agent
   file: secret-detection-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-security-scanner
   maturity: production
   category: security
   priority: critical
@@ -2408,7 +2426,9 @@ agents:
   batch_scan_enabled: true
   name: Security Audit Agent
   file: security-audit-agent.md
-  status: active
+  status: archived
+  deprecated: true
+  superseded_by: unified-security-scanner
   maturity: production
   category: security
   priority: critical

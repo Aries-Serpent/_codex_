@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase-5 Coverage + Agent + Cache Consolidation — 2026-05-24)
+- **`.codex/COVERAGE_GAP_REPORT.md`** — static src↔tests cross-reference identifying 139/943 untested modules; ranked gaps for `mcp.*`, `codex_ml.tokenization.*`, `cognitive_brain.experiments.*`, `codex.rag.benchmarks.*`, `services.audio.*`; stepped coverage roadmap 10 → 12 → 15 → 20% targeting `pyproject.toml [tool.coverage.report].fail_under`. Hand-off to `unified-coverage-agent`.
+- **`agents/AGENT_CONSOLIDATION_MATRIX.md`** — Keep/Merge/Archive decisions across 6 agent families: 5 coverage merges (confirmed), 2 doc merges, 4 security merges, 2 CI-healing merges, 1 cache merge, 1 archive. Hand-off to `agent-orchestrator` for `AGENT_REGISTRY.yaml` mutation.
+- **`docs/workflows/CACHE_POLICY.md`** — 4-layer cache hierarchy (toolchain / deps / tool-state / data-models) and skip-rescan policy (`concurrency.cancel-in-progress`, paths-filter, lockfile-hash keys, no `${{ github.sha }}` in keys). Owned by `cache-management-agent`. YAML rollout deferred to Phase 5b.
+- **`docs/workflows/CONSOLIDATION_PLAN.md`** — Phase 5 iteration log appended.
+
+### Changed
+- **`AGENTS.md`**: active agent count updated to **145** following AGENT_REGISTRY.yaml application of the consolidation matrix; unified entry points enumerated.
+- **`.codex/AGENTIC_REPO_STATE.md`**: Last-Verified block refreshed (2026-05-24); workflow/agent counts; pointers to Phase-5 artifacts.
+- **`docs/system/CODEBASE_COGNITIVE_MAP.md`**: Agent System section gains unified-agents mermaid; stats line adds active-agents/workflows; Cache Strategy section references `CACHE_POLICY.md`.
+- **`pyproject.toml`**: `[tool.coverage.report].fail_under` set to **10** as the Phase-5 stepped regression floor (advances per roadmap in `.codex/COVERAGE_GAP_REPORT.md`).
+- **`.github/agents/AGENT_REGISTRY.yaml`**: applied Phase-5 consolidation matrix — 9 entries (`documentation-quality-agent`, `documentation-consolidator`, `secret-detection-agent`, `dependency-vulnerability-scanner`, `dependency-security-review-agent`, `security-audit-agent`, `ci-failure-resolution-agent`, `ci-resilience-emergency-response-agent`, `cache-manager-integration`) set to `status: archived` with `deprecated: true` and `superseded_by` populated. Added `active_agents`/`archived_agents` summary fields. Net active: 154 → 145.
+- **`.github/agents/security-audit-agent.md`**, **`.github/agents/ci-resilience-emergency-response-agent.md`**, **`.github/agents/cache-manager-integration.md`**: added deprecation banners pointing to their unified replacements; other merge targets already carried banners from prior sweeps.
+
+### Notes
+- All Phase-5 artifacts cite the ADA policy at `.codex/CODEBASE_AGENCY_POLICY.md`.
+- `pyproject.toml [tool.coverage.report]` remains the single source of truth for `fail_under` (verified — `.coveragerc` carries no `fail_under`).
+- `ci-failure-resolution-agent` is recorded `superseded_by: ci-testing-agent` to honour the existing prompt-file banner; the consolidation matrix's `ci-auto-healer-agent` target is treated as advisory.
+
+
 ### Fixed (auto-update — PR #4561)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4561 (SHA `99fdf377`) at 2026-05-24T21:48Z [auto-generated]
 
