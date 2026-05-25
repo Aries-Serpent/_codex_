@@ -873,7 +873,7 @@ pygtrie==2.5.0
     #   dvc-data
     #   scmrepo
     #   sqltrie
-pyjwt==2.12.1
+pyjwt==2.13.0
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
