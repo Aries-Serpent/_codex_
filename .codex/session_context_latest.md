@@ -1,21 +1,25 @@
-# Session Context — 2026-05-25T05:37:45Z
-**Branch:** `copilot/analyze-test-coverage`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-25T14:07:43Z
+**Branch:** `copilot/analyze-test-coverage`  **PR:** #4577  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4749` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `1004` (✅)
+- GraphQL remaining: `4784` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #4577 — deps(deps): bump pyjwt from 2.12.1 to 2.13.0
+State: `open`  Draft: `False`  Branch: `dependabot/pip/pyjwt-2.13.0` → `main`
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-05-25)
-- **Validation Pipeline** — `failure` on `main` (2026-05-25)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
-- **PR Auto-Fix Check** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
-- **Validation Pipeline** — `failure` on `copilot/analyze-test-coverage-and-documentation` (2026-05-25)
+- **Session Watchdog — Timebox & Continuity Enforcement** — `failure` on `main` (2026-05-25)
+- **RAG Module Tests** — `failure` on `dependabot/pip/data-dependencies-31f04b22d3` (2026-05-25)
+- **Pre-Merge Validation** — `failure` on `dependabot/pip/data-dependencies-31f04b22d3` (2026-05-25)
+- **Coverage with Timeout Guards** — `failure` on `dependabot/pip/data-dependencies-31f04b22d3` (2026-05-25)
+- **Validation Pipeline** — `failure` on `dependabot/pip/data-dependencies-31f04b22d3` (2026-05-25)
 
 ## 📝 Recent Commits
+- `5a3b2102` Apply remaining changes — copilot-swe-agent[bot] (2026-05-25)
 - `c18bdc4e` Merge pull request #4562 from Aries-Serpent/copilot/analyze-test-coverage-and-do — Statix (2026-05-25)
 - `a97537b4` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-25)
 - `6eb45926` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-25)
@@ -23,7 +27,6 @@
 - `4aac706b` Apply Phase-5 agent consolidation matrix to AGENT_REGISTRY.yaml — copilot-swe-agent[bot] (2026-05-25)
 - `e51dc9f7` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-25)
 - `e6f5476f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-25)
-- `7f0c42cd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
