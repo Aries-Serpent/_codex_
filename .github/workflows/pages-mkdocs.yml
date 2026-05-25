@@ -199,7 +199,7 @@ jobs:
           python scripts/ci/generate_cache_keys.py --type pip --workflow pages-mkdocs --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
         with:
           path: site/
 
