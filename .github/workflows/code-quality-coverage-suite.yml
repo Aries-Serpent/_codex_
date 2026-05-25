@@ -66,12 +66,25 @@ jobs:
           if [[ "$EVENT" == "pull_request" ]]; then
             RANGE="origin/${{ github.base_ref }}...${{ github.sha }}"
           else
+            if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+              echo "Initial push detected (null before SHA); running both suites."
+              echo "run_coverage=true" >> "$GITHUB_OUTPUT"
+              echo "run_quality=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             RANGE="${{ github.event.before }}...${{ github.sha }}"
           fi
 
           CHANGED="$(git diff --name-only "$RANGE" || true)"
           echo "Changed files:"
           echo "$CHANGED"
+
+          if [[ -z "$CHANGED" ]]; then
+            echo "Empty diff range or diff resolution failed; defaulting to run both suites."
+            echo "run_coverage=true" >> "$GITHUB_OUTPUT"
+            echo "run_quality=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           COVERAGE_PATTERN='^(src/|tests/|pyproject\.toml$|pytest\.ini$|\.coveragerc$|requirements.*\.txt$|tools/coverage_.*\.py$|\.github/workflows/code-quality-coverage-suite\.yml$)'
           QUALITY_PATTERN='^(src/|tests/|agents/|scripts/|pyproject\.toml$|mypy\.ini$|ruff\.toml$|\.github/workflows/code-quality-coverage-suite\.yml$)'
