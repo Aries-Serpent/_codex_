@@ -221,7 +221,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.5.2
+duckdb==1.5.3
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -600,7 +600,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.5
+numpy==2.4.6
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -726,7 +726,7 @@ packaging==26.1
     #   transformers
     #   typepy
     #   wandb
-pandas==2.3.3
+pandas==3.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   altair
