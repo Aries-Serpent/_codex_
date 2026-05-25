@@ -26,12 +26,76 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
+  change_filter:
+    name: Determine Changed Paths
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      run_coverage: ${{ steps.filter.outputs.run_coverage }}
+      run_quality: ${{ steps.filter.outputs.run_quality }}
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          fetch-depth: 0
+
+      - name: Compute coverage/quality scope
+        id: filter
+        shell: bash
+        run: |
+          MODE="${{ inputs.mode || '' }}"
+          EVENT="${{ github.event_name }}"
+
+          if [[ "$EVENT" == "workflow_dispatch" ]]; then
+            case "$MODE" in
+              coverage-only)
+                echo "run_coverage=true" >> "$GITHUB_OUTPUT"
+                echo "run_quality=false" >> "$GITHUB_OUTPUT"
+                ;;
+              quality-only)
+                echo "run_coverage=false" >> "$GITHUB_OUTPUT"
+                echo "run_quality=true" >> "$GITHUB_OUTPUT"
+                ;;
+              *)
+                echo "run_coverage=true" >> "$GITHUB_OUTPUT"
+                echo "run_quality=true" >> "$GITHUB_OUTPUT"
+                ;;
+            esac
+            exit 0
+          fi
+
+          if [[ "$EVENT" == "pull_request" ]]; then
+            RANGE="origin/${{ github.base_ref }}...${{ github.sha }}"
+          else
+            RANGE="${{ github.event.before }}...${{ github.sha }}"
+          fi
+
+          CHANGED="$(git diff --name-only "$RANGE" || true)"
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          COVERAGE_PATTERN='^(src/|tests/|pyproject\.toml$|pytest\.ini$|\.coveragerc$|requirements.*\.txt$|tools/coverage_.*\.py$|\.github/workflows/code-quality-coverage-suite\.yml$)'
+          QUALITY_PATTERN='^(src/|tests/|agents/|scripts/|pyproject\.toml$|mypy\.ini$|ruff\.toml$|\.github/workflows/code-quality-coverage-suite\.yml$)'
+
+          if printf '%s\n' "$CHANGED" | grep -Eq "$COVERAGE_PATTERN"; then
+            echo "run_coverage=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_coverage=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if printf '%s\n' "$CHANGED" | grep -Eq "$QUALITY_PATTERN"; then
+            echo "run_quality=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_quality=false" >> "$GITHUB_OUTPUT"
+          fi
+
   coverage_analysis:
     name: Coverage Report Generation
+    needs: [change_filter]
     runs-on: ubuntu-latest
     timeout-minutes: 45
     if: |
-      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request' && needs.change_filter.outputs.run_coverage == 'true') ||
+      (github.event_name == 'push' && needs.change_filter.outputs.run_coverage == 'true') ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'coverage-only' || inputs.mode == 'full-suite'))
 
     steps:
@@ -108,11 +172,12 @@ jobs:
 
   code_quality_analysis:
     name: Code Quality Analysis
+    needs: [change_filter]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: |
-      github.event_name == 'pull_request' ||
-      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && needs.change_filter.outputs.run_quality == 'true') ||
+      (github.event_name == 'push' && needs.change_filter.outputs.run_quality == 'true') ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'quality-only' || inputs.mode == 'full-suite'))
 
     steps:
@@ -193,7 +258,7 @@ jobs:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [coverage_analysis, code_quality_analysis]
+    needs: [change_filter, coverage_analysis, code_quality_analysis]
     if: always()
 
     steps:
@@ -215,6 +280,7 @@ jobs:
           echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Change Filter: ${{ needs.change_filter.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Coverage Analysis: ${{ needs.coverage_analysis.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Code Quality Analysis: ${{ needs.code_quality_analysis.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
