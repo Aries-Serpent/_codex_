@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-25T19:51:03Z",
+  "generated_at": "2026-05-26T18:48:51Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -2141,5 +2141,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1cc4b90c2f5aee45de18ef229dbd7a8043e6fd8364c7e727a0a167a07782c999"
+  "integrity_sha256": "614c78bc91d9849c619d132a29474a778212f111b2aa69e0471d28ae399dedf5"
 }

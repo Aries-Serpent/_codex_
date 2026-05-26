@@ -67,10 +67,10 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
+    # Note that line 70 removed which states, `  cancel-in-progress: true`
     # AAIS-aligned autonomous runner switch.
     # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
     #   Group : AS Larger Runners | Platform: Linux x64
@@ -96,7 +96,7 @@ jobs:
     #   ubuntu-latest-m may not be available in all runner groups/regions, causing
     #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
     #   the Copilot agent session can always start; larger runners remain opt-in.
-    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     timeout-minutes: 59
     permissions:
       contents: read
@@ -140,10 +140,7 @@ jobs:
       # ============================================================================
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: |
-          python3 .github/scripts/session_preload.py || {
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          }
+        run: python3 .github/scripts/session_preload.py || echo "session_preload.py failed (non-blocking) — agent will operate without preloaded context"
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
