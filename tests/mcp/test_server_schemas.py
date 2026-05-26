@@ -43,8 +43,8 @@ def test_negotiate_params_defaults() -> None:
 
 
 def test_negotiate_params_accepts_client_versions() -> None:
-    params = NegotiateParams(client_versions=["1.0", "2.0"])
-    assert params.client_versions == ["1.0", "2.0"]
+    params = NegotiateParams(client_versions={"api": "1.0", "schema": "2.0"})
+    assert params.client_versions == {"api": "1.0", "schema": "2.0"}
 
 
 def test_list_tools_params_defaults_and_override() -> None:
