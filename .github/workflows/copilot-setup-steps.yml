@@ -415,12 +415,20 @@ jobs:
 
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
-          if [ -f scripts/ci/safe_git_show.sh ]; then
-            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
-            echo "✅ safe_git_show.sh installed to /usr/local/bin"
-          else
-            echo "⚠️ scripts/ci/safe_git_show.sh not found (non-blocking)"
+          set -euo pipefail
+          if [ ! -f scripts/ci/safe_git_show.sh ]; then
+            echo "::error::scripts/ci/safe_git_show.sh is missing — cannot install git-show guard"
+            exit 1
           fi
+          install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+          ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
+          echo "✅ safe_git_show installed at $(command -v safe_git_show)"
+          # Smoke-test: source and call with a known-good ref
+          # shellcheck source=/dev/null
+          source /usr/local/bin/safe_git_show.sh
+          safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
+            && echo "✅ safe_git_show smoke-test passed" \
+            || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
