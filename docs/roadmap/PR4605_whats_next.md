@@ -45,7 +45,7 @@
 
 ## ▶ Follow-up prompt (continuation)
 
-```text
+```
 @copilot continue PR #4605 priority-1 completion
 
 1) Re-check latest runs for:
