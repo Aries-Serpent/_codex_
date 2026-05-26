@@ -96,7 +96,7 @@ jobs:
     #   ubuntu-latest-m may not be available in all runner groups/regions, causing
     #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
     #   the Copilot agent session can always start; larger runners remain opt-in.
-    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     timeout-minutes: 59
     permissions:
       contents: read
