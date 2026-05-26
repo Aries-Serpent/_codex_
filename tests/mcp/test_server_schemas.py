@@ -17,8 +17,13 @@ def test_call_tool_params_defaults() -> None:
 
 
 def test_call_tool_params_top_k_validation() -> None:
-    with pytest.raises(ValidationError):
-        CallToolParams(tool_id="mcp.search", input={"query": "abc"}, top_k=0)
+    for invalid_top_k in (0, -1):
+        with pytest.raises(ValidationError):
+            CallToolParams(
+                tool_id="mcp.search",
+                input={"query": "abc"},
+                top_k=invalid_top_k,
+            )
 
 
 def test_call_tool_params_accepts_custom_values() -> None:
@@ -35,6 +40,11 @@ def test_call_tool_params_accepts_custom_values() -> None:
 def test_negotiate_params_defaults() -> None:
     params = NegotiateParams()
     assert params.client_versions is None
+
+
+def test_negotiate_params_accepts_client_versions() -> None:
+    params = NegotiateParams(client_versions={"api": "1.0", "schema": "2.0"})
+    assert params.client_versions == {"api": "1.0", "schema": "2.0"}
 
 
 def test_list_tools_params_defaults_and_override() -> None:
