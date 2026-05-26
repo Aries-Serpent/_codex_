@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4605)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4605 (SHA `0b520c1a`) at 2026-05-26T22:42Z [auto-generated]
+
 ### Fixed (regression guard — PR cherry-pick session 2026-05-26T22:05Z)
 - **YAML Regression Guard**: Fixed inline `run:` form in `.github/workflows/copilot-setup-steps.yml` session_preload step; converted to `run: |` block scalar to prevent Copilot agent pre-flight failure ("Failed to launch agent")
 - **Regression Guard Comment**: Added verbatim guard comment above session_preload step documenting the rule, root cause, and 3× regression history (commits 7a9412a/aabe2157/a481dcae)

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-26T20:17:27Z",
+  "generated_at": "2026-05-26T22:42:54Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1259,6 +1259,11 @@
       "has_concurrency": true
     },
     {
+      "name": "copilot-setup-steps-guard",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "copilot-setup-steps",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2141,5 +2146,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e4c81a2c4c0cc4b0b39c62ee5fa99fc8249085b66044446f02d6e9305f956a94"
+  "integrity_sha256": "293f130a36d44a55d6cf28f731032391d19a683ca1576633688f14cced79376a"
 }
