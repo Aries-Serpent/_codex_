@@ -1,0 +1,50 @@
+name: Guard — copilot-setup-steps YAML safety
+
+on:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check-run-block-scalar:
+    name: "Verify session_preload step uses run: | (block scalar)"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: "❌ Fail if inline run: form detected on session_preload step"
+        run: |
+          set -euo pipefail
+          # Detect the broken inline form:
+          #   run: python3 .github/scripts/session_preload.py || {
+          # This form passes GitHub Actions runner but fails Copilot agent pre-flight.
+          if grep -n 'run: python3 .github/scripts/session_preload.py' \
+              .github/workflows/copilot-setup-steps.yml; then
+            echo "::error file=.github/workflows/copilot-setup-steps.yml,title=REGRESSION DETECTED::session_preload step uses inline 'run:' form. Must use 'run: |' block scalar. See commits 7a9412a/aabe2157/a481dcae for history."
+            exit 1
+          fi
+          echo "✅ Inline form not detected"
+
+      - name: "❌ Fail if run: | block scalar is missing before session_preload call"
+        run: |
+          set -euo pipefail
+          # Confirm the block scalar form IS present by checking that the line
+          # immediately following the step name contains 'run: |'
+          if ! awk '/Session Context Pre-load/{found=1} found && /run: \|/{print; exit} found && /run:/{print "INLINE:"$0; exit}' \
+              .github/workflows/copilot-setup-steps.yml | grep -q 'run: |'; then
+            echo "::error file=.github/workflows/copilot-setup-steps.yml,title=MISSING BLOCK SCALAR::session_preload step is missing 'run: |'. The block scalar header is required."
+            exit 1
+          fi
+          echo "✅ run: | block scalar confirmed present"
+
+      - name: "✅ Summary"
+        run: |
+          echo "Guard passed — copilot-setup-steps.yml session_preload step is correctly using run: | block scalar."
