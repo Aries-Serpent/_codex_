@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4605 review follow-up — 2026-05-26T23:20Z)
+- Updated `.github/workflows/copilot-setup-steps-guard.yml` to use fixed-string matching (`grep -Fn`) for inline `run:` regression detection, preventing regex wildcard drift in guard behavior.
+- Updated guard-step documentation comment so it matches actual logic (scan-forward from step name; first encountered `run:` must be `run: |`).
+- Revalidated targeted impacted paths with local pytest:
+  - `tests/src/test_cli_phase10.py`
+  - `tests/monitoring/test_monitoring_mlflow_utils.py`
+  - Result: 28 tests passed.
+- Added PR #4605 living docs for continuity:
+  - `docs/roadmap/PR4605_whats_next.md`
+  - `docs/roadmap/PR4605_session_diagram.mmd`
+
 ### Fixed (auto-update — PR #4605)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4605 (SHA `0b520c1a`) at 2026-05-26T22:42Z [auto-generated]
 
