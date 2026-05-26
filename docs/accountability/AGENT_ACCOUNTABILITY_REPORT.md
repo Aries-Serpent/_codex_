@@ -43239,3 +43239,46 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-05-26T22:05Z SESSION (Regression Guard — PR #4602 cherry-pick)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — no open blocking threads ✅
+- [x] **0b.** Failing CI checks reviewed — inline `run:` form identified as root cause ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed — commits 7a9412a/aabe2157/a481dcae root cause confirmed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: permanent regression guard for copilot-setup-steps.yml ✅
+- [x] **5.** `sync_tracked_files.py --fix` — exits 0, all tracked files consistent ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Phase 1 — Verified & fixed inline `run:` form**: Line 143 of `copilot-setup-steps.yml`
+   used `run: python3 .github/scripts/session_preload.py || {` (inline) which breaks the
+   Copilot agent pre-flight YAML parser while GitHub Actions runner accepts it silently.
+   Converted to `run: |` block scalar (lines 151-154).
+2. **Phase 2 — Regression guard comment**: Inserted 8-line comment block verbatim above the
+   `🧠 Session Context Pre-load` step documenting the rule, reason, history (3× regression
+   today), and enforcement reference.
+3. **Phase 3 — Guard CI workflow**: Created
+   `.github/workflows/copilot-setup-steps-guard.yml` which fires on push/PR touching
+   `copilot-setup-steps.yml` and fails fast if the inline `run:` form is detected or if
+   `run: |` block scalar is absent.
+4. **Phase 4 — Validation**: YAML lint ✅ | no inline form ✅ | block scalar present ✅
+5. **Phase 5 — Cherry-pick of PR #4602**: All required diffs (accountability report,
+   CHANGELOG, CODEX_MANIFEST, follow-up prompt) cherry-picked to this session branch.
+
+### Root-Cause Note
+The Copilot agent internal YAML parser is stricter than the GitHub Actions runner.
+The inline form `run: cmd || {` breaks agent pre-flight silently ("Failed to launch agent"
+with no log). The fix (`run: |` block scalar) was reverted 3× today (commits 7a9412a,
+aabe2157, a481dcae). The regression guard comment and CI workflow now make it hard to
+accidentally revert this fix again.
+
+### Impact Score
+- Files modified: `copilot-setup-steps.yml` (fix + guard comment), new `copilot-setup-steps-guard.yml`
+- CI gates: guard workflow catches regressions on push/PR
+- Agent pre-flight: restored to working state
+- Deferral Language Gate: 0 violations
+
+---
