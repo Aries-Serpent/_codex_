@@ -53,11 +53,15 @@ tokenizer_group = None
 repro_group = None
 auth_group = None
 _fix_pool = None
+ALLOWED_TASKS = None
+_emit_group_help = None
+_missing_command = None
 init_db_cmd = None
 export_env_cmd = None
 clean_logs_cmd = None
 session_logger_cmd = None
 query_logs_cmd = None
+subprocess = None
 validate_env_cmd = None
 list_sessions_cmd = None
 viewer_cmd = None
@@ -71,17 +75,24 @@ if cli is not None:
         repro_group = getattr(_cli_module, "repro_group", None)
         auth_group = getattr(_cli_module, "auth_group", None)
         _fix_pool = getattr(_cli_module, "_fix_pool", None)
+        ALLOWED_TASKS = getattr(_cli_module, "ALLOWED_TASKS", None)
+        _emit_group_help = getattr(_cli_module, "_emit_group_help", None)
+        _missing_command = getattr(_cli_module, "_missing_command", None)
         init_db_cmd = getattr(_cli_module, "init_db_cmd", None)
         export_env_cmd = getattr(_cli_module, "export_env_cmd", None)
         clean_logs_cmd = getattr(_cli_module, "clean_logs_cmd", None)
         session_logger_cmd = getattr(_cli_module, "session_logger_cmd", None)
         query_logs_cmd = getattr(_cli_module, "query_logs_cmd", None)
+        subprocess = getattr(_cli_module, "subprocess", None)
         validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
         list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
         viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
 
 __all__ = [
     "_fix_pool",
+    "_emit_group_help",
+    "_missing_command",
+    "ALLOWED_TASKS",
     "app",
     "auth_group",
     "clean_logs_cmd",
@@ -94,6 +105,7 @@ __all__ = [
     "query_logs_cmd",
     "repro_group",
     "session_logger_cmd",
+    "subprocess",
     "tokenizer_group",
     "validate_env_cmd",
     "viewer_cmd",
