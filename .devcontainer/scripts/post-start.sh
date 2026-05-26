@@ -19,6 +19,17 @@ cd "$WORKSPACE"
 # shellcheck source=/dev/null
 [ -f "$HOME/.codex_env" ] && source "$HOME/.codex_env"
 
+# ── 0. Install safe_git_show guard (mirrors copilot-setup-steps.yml) ──────────
+if [ -f "${WORKSPACE}/scripts/ci/safe_git_show.sh" ]; then
+    install -m 0755 "${WORKSPACE}/scripts/ci/safe_git_show.sh" /usr/local/bin/safe_git_show.sh 2>/dev/null \
+        || { cp "${WORKSPACE}/scripts/ci/safe_git_show.sh" /usr/local/bin/safe_git_show.sh && chmod 0755 /usr/local/bin/safe_git_show.sh; } \
+        || true
+    ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show 2>/dev/null || true
+    echo "  ✅ safe_git_show installed on PATH"
+else
+    echo "  ⚠️  scripts/ci/safe_git_show.sh not found — safe_git_show unavailable"
+fi
+
 echo "══════════════════════════════════════════════════════════"
 echo "  Codex Codespace — post-start"
 echo "  Starting background services…"
@@ -134,9 +145,6 @@ if [ -n "${CODESPACE_NAME:-}" ]; then
     fi
 
     # Attempt to make port visible to the organization for webhook delivery.
-    # Requires: gh CLI >= 2.28.0 and Codespace token with port-visibility permission.
-    # NOTE: org visibility (not public) limits exposure to GitHub org members only,
-    # preventing unauthenticated access to /api/cli/run and /api/request endpoints.
     gh codespace ports visibility "${CLI_API_PORT}:org" -c "${CODESPACE_NAME}" 2>/dev/null || \
         echo "  ⚠️  Could not auto-set port ${CLI_API_PORT} to org visibility. Manually adjust it in the Ports panel if needed."
 else
@@ -158,5 +166,33 @@ jwt = app.generate_jwt()
 assert len(jwt.split(".")) == 3
 PYEOF
 fi
+
+# ── 6. Write Codespace environment report ────────────────────────────────────
+CODESPACE_REPORT="${WORKSPACE}/.codex/.copilot-agent-environment-report.txt"
+mkdir -p "$(dirname "${CODESPACE_REPORT}")"
+{
+  echo "# Copilot Agent Environment Report (Codespace)"
+  echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "# Codespace: ${CODESPACE_NAME:-local}"
+  echo ""
+  echo "## safe_git_show"
+  if command -v safe_git_show >/dev/null 2>&1; then
+    echo "STATUS=ready"
+    echo "PATH=$(command -v safe_git_show)"
+  else
+    echo "STATUS=degraded"
+    echo "REASON=safe_git_show not found on PATH"
+  fi
+  echo ""
+  echo "## CLI API"
+  if [ "$SERVER_READY" = "1" ]; then
+    echo "STATUS=ready"
+    echo "URL=http://localhost:${CLI_API_PORT}"
+  else
+    echo "STATUS=degraded"
+    echo "REASON=CLI API did not become ready after 5s"
+  fi
+} > "${CODESPACE_REPORT}"
+echo "  ✅ Environment report written → ${CODESPACE_REPORT}"
 
 echo "✅ post-start complete"

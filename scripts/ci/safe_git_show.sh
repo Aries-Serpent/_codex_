@@ -8,6 +8,7 @@
 #   source scripts/ci/safe_git_show.sh
 #   safe_git_show "$BASE_SHA" "path/to/file.py"    # prints content or empty
 #   safe_git_diff "$BASE_SHA" "HEAD" "path/to/file" # prints diff or full file
+#   safe_git_show_with_head_fallback "$BASE_SHA" "path/to/file.py" # best-available
 #
 # Or run directly:
 #   bash scripts/ci/safe_git_show.sh <ref> <file>
@@ -44,6 +45,27 @@ safe_git_diff() {
   else
     # File is new (added after base_ref) — diff against /dev/null
     git diff --no-index /dev/null "${file}" 2>/dev/null || true
+  fi
+}
+
+# safe_git_show_with_head_fallback REF FILE
+#   Like safe_git_show, but falls back to HEAD content if FILE doesn't exist at REF.
+#   Useful when you want the "best available" version (e.g., for diff context).
+#   Exit code: 0 always.
+safe_git_show_with_head_fallback() {
+  local ref="${1:?ref required}"
+  local file="${2:?file path required}"
+
+  if git cat-file -e "${ref}:${file}" 2>/dev/null; then
+    git show "${ref}:${file}"
+  elif git cat-file -e "HEAD:${file}" 2>/dev/null; then
+    # File not at ref but present at HEAD — use HEAD version as fallback
+    git show "HEAD:${file}"
+  elif [ -f "${file}" ]; then
+    # Not in git at all yet — use working tree copy
+    cat "${file}" || true
+  else
+    return 0
   fi
 }
 
