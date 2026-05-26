@@ -67,10 +67,10 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
+    # Note that line 70 removed which states, `  cancel-in-progress: true`
     # AAIS-aligned autonomous runner switch.
     # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
     #   Group : AS Larger Runners | Platform: Linux x64
