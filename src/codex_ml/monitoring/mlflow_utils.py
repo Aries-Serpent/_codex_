@@ -22,7 +22,7 @@ from ..tracking.mlflow_guard import bootstrap_offline_tracking  # noqa: E402
 # patch ``mlflow_utils.mlflow`` continue to work.
 try:
     mlflow = importlib.import_module("mlflow")
-except Exception:  # pragma: no cover - optional dependency
+except ImportError:  # pragma: no cover - optional dependency
     mlflow = None
 
 __all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
