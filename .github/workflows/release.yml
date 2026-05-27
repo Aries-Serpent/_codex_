@@ -38,8 +38,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      - name: Validate version tag
+          # No pip cache — no pip install steps in this workflow
         run: |
           TAG="${{ github.event.inputs.tag || github.ref_name }}"
           echo "Release tag: $TAG"
