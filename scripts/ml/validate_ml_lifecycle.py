@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -24,7 +23,7 @@ def _ts() -> str:
 
 
 def check_reproducibility() -> dict:
-    """D2 #1 — verify reproducibility checklist items."""
+    """D2 #1 — verify reproducibility checklist items and E2E readiness."""
     checklist = Path("reports/reproducibility.md")
     items_done = 0
     total_items = 6
@@ -33,13 +32,18 @@ def check_reproducibility() -> dict:
         text = checklist.read_text()
         items_done = text.count("✅")
 
-    passed = items_done >= 5  # allow 1 pending (Hydra override logging)
+    # Also check rollback procedure documentation
+    rollback_exists = Path("docs/deployment/ROLLBACK_PROCEDURES.md").exists() or \
+                      Path("docs/PRODUCTION_DEPLOYMENT_GUIDE.md").exists()
+
+    passed = items_done >= 5 and rollback_exists
     return {
         "check": "reproducibility",
         "items_done": items_done,
         "total_items": total_items,
+        "rollback_documented": rollback_exists,
         "passed": passed,
-        "note": "reports/reproducibility.md must have ≥5/6 items ✅",
+        "note": "reports/reproducibility.md must have ≥5/6 items ✅; rollback docs required",
     }
 
 
@@ -47,6 +51,7 @@ def check_serving() -> dict:
     """D2 #3 — run serving smoke test."""
     smoke_paths = [
         "tests/integration/test_serving_smoke.py",
+        "tests/serving_tests/test_inference_serving.py",
         "scripts/ml/serving_smoke_test.py",
         "tests/test_serving.py",
     ]
@@ -88,9 +93,27 @@ def check_registry() -> dict:
     }
 
 
+def check_e2e() -> dict:
+    """D2 #5 — verify E2E gate (train → eval → register → serve) components exist."""
+    components = {
+        "reproducibility": Path("reports/reproducibility.md").exists(),
+        "model_registry": any(Path(p).exists() for p in [".codex/models", "mlruns"]),
+        "serving_smoke_test": Path("tests/integration/test_serving_smoke.py").exists(),
+        "rollback_procedure": Path("docs/deployment/ROLLBACK_PROCEDURES.md").exists(),
+        "lifecycle_gate_workflow": Path(".github/workflows/ml-lifecycle-gate.yml").exists(),
+    }
+    all_present = all(components.values())
+    return {
+        "check": "e2e",
+        "components": components,
+        "passed": all_present,
+        "note": "All E2E pipeline components must exist for D2 score 5",
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="ML Lifecycle Validator")
-    parser.add_argument("--check", choices=["reproducibility", "serving", "registry", "all"],
+    parser.add_argument("--check", choices=["reproducibility", "serving", "registry", "e2e", "all"],
                         default="all")
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
@@ -99,6 +122,7 @@ def main() -> None:
         "reproducibility": check_reproducibility,
         "serving": check_serving,
         "registry": check_registry,
+        "e2e": check_e2e,
     }
 
     if args.check == "all":

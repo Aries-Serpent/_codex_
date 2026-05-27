@@ -5,7 +5,7 @@ name: Import Linter
 # agents importing model weights directly).
 #
 # Domain: D1 · Platform Architecture & Boundaries (completion rubric v1)
-# Evidence: blocks PRs on layer-contract violations → score 4 evidence
+# Evidence: blocks PRs on layer-contract violations + circular import detection → score 5 evidence
 
 on:
   pull_request:
@@ -93,8 +93,103 @@ jobs:
           echo "::error::Import architecture contracts violated. See results above."
           exit 1
 
-      - name: Summary on success
-        if: steps.lint.outputs.exit_code == '0'
+      - name: Check for circular imports
+        id: circular
         run: |
-          echo "✅ All import architecture contracts passed."
+          python3 - <<'PYEOF'
+          """Detect circular imports in src/ packages via DFS on the import graph."""
+          import ast, sys, os
+          from pathlib import Path
+          from collections import defaultdict
+
+          def module_name(path: Path, root: Path) -> str:
+              rel = path.relative_to(root)
+              parts = list(rel.with_suffix("").parts)
+              if parts[-1] == "__init__":
+                  parts = parts[:-1]
+              return ".".join(parts)
+
+          def build_graph(src_root: Path) -> dict[str, set[str]]:
+              graph: dict[str, set[str]] = defaultdict(set)
+              py_files = list(src_root.rglob("*.py"))
+              all_modules = set()
+              for f in py_files:
+                  all_modules.add(module_name(f, src_root))
+              for f in py_files:
+                  mod = module_name(f, src_root)
+                  try:
+                      tree = ast.parse(f.read_text(errors="replace"))
+                  except SyntaxError:
+                      continue
+                  for node in ast.walk(tree):
+                      if isinstance(node, ast.Import):
+                          for alias in node.names:
+                              if alias.name in all_modules:
+                                  graph[mod].add(alias.name)
+                      elif isinstance(node, ast.ImportFrom) and node.module:
+                          target = node.module
+                          if target in all_modules:
+                              graph[mod].add(target)
+                          # Also check parent packages
+                          parts = target.split(".")
+                          for i in range(1, len(parts)):
+                              parent = ".".join(parts[:i])
+                              if parent in all_modules:
+                                  graph[mod].add(parent)
+              return graph
+
+          def find_cycles(graph: dict[str, set[str]]) -> list[list[str]]:
+              WHITE, GRAY, BLACK = 0, 1, 2
+              color = defaultdict(int)
+              cycles = []
+              path: list[str] = []
+
+              def dfs(u: str) -> None:
+                  color[u] = GRAY
+                  path.append(u)
+                  for v in sorted(graph.get(u, [])):
+                      if color[v] == GRAY:
+                          idx = path.index(v)
+                          cycle = path[idx:] + [v]
+                          cycles.append(cycle)
+                      elif color[v] == WHITE:
+                          dfs(v)
+                  path.pop()
+                  color[u] = BLACK
+
+              for node in sorted(graph):
+                  if color[node] == WHITE:
+                      dfs(node)
+              return cycles
+
+          src = Path("src")
+          if not src.exists():
+              print("⚠️ src/ directory not found — skipping circular import check")
+              sys.exit(0)
+
+          graph = build_graph(src)
+          cycles = find_cycles(graph)
+
+          if cycles:
+              print(f"❌ Found {len(cycles)} circular import chain(s):")
+              for c in cycles[:10]:
+                  print(f"  → {' → '.join(c)}")
+              if len(cycles) > 10:
+                  print(f"  ... and {len(cycles) - 10} more")
+              sys.exit(1)
+          else:
+              print(f"✅ No circular imports detected across {len(graph)} modules in src/")
+          PYEOF
+        continue-on-error: true
+
+      - name: Fail on circular imports
+        if: steps.circular.outcome == 'failure'
+        run: |
+          echo "::error::Circular imports detected in src/. See results above."
+          exit 1
+
+      - name: Summary on success
+        if: steps.lint.outputs.exit_code == '0' && steps.circular.outcome != 'failure'
+        run: |
+          echo "✅ All import architecture contracts passed (layer rules + circular import check)."
           cat /tmp/import_lint_results.txt

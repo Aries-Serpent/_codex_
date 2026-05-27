@@ -11,7 +11,6 @@ Usage:
 from __future__ import annotations
 
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -52,6 +51,24 @@ SLO_CHECKS = [
         "description": "SLO canary workflow exists",
         "path": ".github/workflows/slo-canary-check.yml",
     },
+    {
+        "id": "ml_serving_slo_defined",
+        "description": "ML serving SLO documented (P95 latency, availability)",
+        "path": "docs/observability/SLO_DEFINITIONS.md",
+        "content_check": "ML Serving",
+    },
+    {
+        "id": "rag_pipeline_slo_defined",
+        "description": "RAG pipeline SLO documented (freshness, recall)",
+        "path": "docs/observability/SLO_DEFINITIONS.md",
+        "content_check": "RAG Pipeline",
+    },
+    {
+        "id": "agent_orchestration_slo_defined",
+        "description": "Agent orchestration SLO documented (success rate)",
+        "path": "docs/observability/SLO_DEFINITIONS.md",
+        "content_check": "Agent Orchestration",
+    },
 ]
 
 
@@ -60,6 +77,13 @@ def run_canary() -> dict:
     for check in SLO_CHECKS:
         p = Path(check["path"])
         passed = p.exists()
+        # If content_check is specified, also verify the content contains the keyword
+        if passed and "content_check" in check:
+            try:
+                content = p.read_text()
+                passed = check["content_check"] in content
+            except Exception:
+                passed = False
         results.append({
             "id": check["id"],
             "description": check["description"],

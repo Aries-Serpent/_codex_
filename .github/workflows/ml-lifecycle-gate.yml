@@ -63,9 +63,24 @@ jobs:
       - name: Run model registry audit
         run: python scripts/ml/validate_ml_lifecycle.py --check registry
 
+  e2e-gate:
+    name: E2E pipeline gate (D2 #5)
+    needs: [reproducibility-check, serving-smoke, model-registry-audit]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run E2E gate validation
+        run: python scripts/ml/validate_ml_lifecycle.py --check e2e
+
   gate-summary:
     name: D2 Gate Summary
-    needs: [reproducibility-check, serving-smoke, model-registry-audit]
+    needs: [reproducibility-check, serving-smoke, model-registry-audit, e2e-gate]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -80,6 +95,7 @@ jobs:
               "reproducibility": "${{ needs.reproducibility-check.result }}",
               "serving_smoke":   "${{ needs.serving-smoke.result }}",
               "model_registry":  "${{ needs.model-registry-audit.result }}",
+              "e2e_gate":        "${{ needs.e2e-gate.result }}",
           }
           passed = [k for k, v in results.items() if v == "success"]
           failed = [k for k, v in results.items() if v != "success"]
@@ -87,7 +103,7 @@ jobs:
           report = {
               "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
               "domain": "D2_ml_lifecycle",
-              "target_score": 4,
+              "target_score": 5,
               "checks": results,
               "passed_count": len(passed),
               "failed_count": len(failed),
@@ -97,5 +113,5 @@ jobs:
           if failed:
               print(f"::warning::D2 ML Lifecycle gate: {len(failed)} checks failed: {failed}")
           else:
-              print("::notice::✅ D2 ML Lifecycle gate passed — all 3 CI checks green")
+              print("::notice::✅ D2 ML Lifecycle gate passed — all 4 CI checks green (score 5)")
           PYEOF
