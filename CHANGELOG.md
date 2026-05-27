@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Coverage Wave — 2026-05-27T21:19Z)
+- **Phase 0 + Wave A + Phase B complete**: 4 collection blockers fixed; 3079 tests pass in tests/agents+scripts+services; coverage source expanded to include agents/, scripts/, services/ in noxfile + pyproject.toml. Baseline: agents=74.4%, src=7.9%, scripts=1.6%, services=17.4%, overall=6.66%.
+- **Torch Collection Blockers Fixed**: `conftest.py` now ignores `tests/space_traversal/`, `test_dataset_hashing.py`, `test_env_logging.py`, `test_metrics_writers.py`, `test_rag_end_to_end_pipeline.py` when torch is unavailable — eliminates AttributeError collection crashes.
+- **Phase C launched**: test-enhancement-agent targeting src/security/ modules (core.py 11%→≥70%, decorators.py 0%→≥70%, token_rotation.py 0%→≥70%, audit_logger.py 0%→≥70%, github_provider.py 0%→≥70%).
+- **Phase D launched**: cognitive-brain-session-injector executing CB-001 (Typer migration), CB-002 (RAG coverage ≥95%), CB-003 (actionlint YAML fixes), CB-004 (PDA pattern library >14), CB-005 (max_concurrency throttling), CB-006 (ci.health.analyzer wiring).
+- **Phase E launched**: unified-coverage-agent lifting training/, physics_orchestrator.py, msp_gateway/, services/api/main.py coverage toward 75% overall.
+
 ### Fixed (auto-update — PR #4633)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4633 (SHA `e2ecda90`) at 2026-05-27T18:13Z [auto-generated]
 

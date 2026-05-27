@@ -1,6 +1,56 @@
 # Review Codebase / Next Changes — What's Next
 
-## Session Status (Current — merge-readiness workflow monitor continuation · 2026-05-22T23:40Z)
+## Session Status (Current — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)
+
+| Item | Status |
+|---|---|
+| Session budget tracking | 🔄 ~5/59 minutes used; preserve final 5 minutes for wrap-up |
+| Phase 0 + Wave A + Phase B | ✅ Complete — 4 collection blockers fixed; 3079 tests pass; coverage source expanded |
+| Baseline coverage | ✅ agents=74.4%, src=7.9%, scripts=1.6%, services=17.4%, overall=6.66% |
+| Torch collection blockers | 🔄 Fixed in conftest.py (space_traversal, test_dataset_hashing, test_env_logging, test_metrics_writers, test_rag_end_to_end_pipeline) |
+| Phase C — Security coverage | 🔄 test-enhancement-agent launched (src/security/ → ≥70%) |
+| Phase D — CB objectives | 🔄 cognitive-brain-session-injector launched (CB-001 through CB-006) |
+| Phase E — Lift overall | 🔄 unified-coverage-agent launched (training, physics_orchestrator, msp_gateway, api) |
+| Living docs update | 🔄 This pass |
+| Final 5-minute reserve | ⏳ Reserved for wrap-up + continuation prompt |
+
+### Phase C Targets
+- `src/security/core.py`: 11% → ≥70%
+- `src/security/decorators.py`: 0% → ≥70%
+- `src/security/token_rotation.py`: 0% → ≥70%
+- `src/security/audit_logger.py`: 0% → ≥70%
+- `src/security/providers/github_provider.py`: 0% → ≥70%
+
+### Phase D CB Objectives
+- CB-001: Typer API migration (app.group() → sub-apps)
+- CB-002: RAG test coverage ≥95%
+- CB-003: actionlint YAML multiline fixes
+- CB-004: PDA pattern library >14 entries
+- CB-005: max_concurrency throttling for agent.aais.batch
+- CB-006: ci.health.analyzer → proactive-ci-monitor.py wiring
+
+### Phase E Targets
+- `src/training/trainer.py`: 12% → ≥50% (torch-free paths)
+- `src/training/functional_training.py`: 0% → ≥50%
+- `agents/physics_orchestrator.py`: 55.7% → ≥80%
+- `services/msp_gateway/rate_limit.py`: 0% → ≥70%
+- `services/msp_gateway/security.py`: 0% → ≥70%
+- `services/api/main.py`: 0% → ≥50%
+
+### Continuation Prompt
+```text
+@copilot continue coverage improvement on branch copilot/explore-codebase-implementation-plan:
+STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, phase-d-cognitive-brain, phase-e-coverage-lift).
+- Check agent completion status and review their committed changes
+- Run coverage baseline measurement across all phases
+- If Phase C security coverage < 70%, extend test-enhancement-agent targeting uncovered lines
+- If Phase D CB objectives incomplete, continue with cognitive-ooda-loop-agent
+- If Phase E overall < 75%, run mutation-testing-agent to identify weak spots
+- Update CHANGELOG, accountability report, roadmap docs after each phase
+- Delegate unified-security-scanner to validate no new vulnerabilities from Phase C tests
+- Final: update docs/reporting/next_expected_codebase_change_48h.md
+```
+
 
 | Item | Status |
 |---|---|
