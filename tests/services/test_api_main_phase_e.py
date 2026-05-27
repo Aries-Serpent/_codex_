@@ -12,6 +12,19 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Ensure repo root is on sys.path so 'services.*' is importable
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_ROOT_SERVICES = str(_REPO_ROOT / "services")
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+# Extend services.__path__ to include both src/services and root services/
+try:
+    import services as _svc_pkg
+    if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
+        _svc_pkg.__path__.append(_ROOT_SERVICES)
+except ImportError:
+    pass
+
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
 

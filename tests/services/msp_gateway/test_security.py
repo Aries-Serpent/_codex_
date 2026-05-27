@@ -8,6 +8,18 @@ from unittest.mock import patch, mock_open, MagicMock
 
 import pytest
 
+# Ensure repo root is on sys.path so 'services.*' is importable
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+_ROOT_SERVICES = str(_REPO_ROOT / "services")
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+try:
+    import services as _svc_pkg
+    if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
+        _svc_pkg.__path__.append(_ROOT_SERVICES)
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------------------
 # PolicyEnforcer
 # ---------------------------------------------------------------------------

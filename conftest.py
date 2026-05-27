@@ -107,6 +107,9 @@ _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
         "test_checkpoint_integrity.py",
         "test_checkpoint_rng_restore.py",
         "test_checkpoint_manifest.py",
+        # Phase E: torch-free coverage tests
+        "test_trainer_phase_e.py",
+        "test_functional_training_phase_e.py",
     }
 )
 

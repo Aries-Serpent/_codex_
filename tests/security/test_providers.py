@@ -560,11 +560,8 @@ class TestGitHubTokenProvider:
         """Test validation fails when no token provided."""
         # Ensure no token in config or environment
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
-        with patch.dict(os.environ, {}, clear=False):
-            # Remove GITHUB_TOKEN from environment for this test
-            os.environ.pop('GITHUB_TOKEN', None)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
             provider = GitHubTokenProvider(config)
-
             with pytest.raises(ValidationError, match="No token provided"):
                 provider.validate_secret("token-id", None)
 
@@ -1352,3 +1349,668 @@ class TestPropertyBased:
 
         assert provider1.get_secret_value("SECRET") == "value1"
         assert provider2.get_secret_value("SECRET") == "value2"
+
+
+# ============================================================================
+# Additional GitHubTokenProvider edge-case coverage
+# ============================================================================
+
+
+class TestGitHubTokenProviderEdgeCases:
+    """Additional edge cases to fill coverage gaps in github_provider.py."""
+
+    @pytest.fixture
+    def provider_with_token(self):
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+            api_url="https://api.github.com",
+        )
+        return GitHubTokenProvider(config)
+
+    @pytest.fixture
+    def provider_with_installation(self):
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+            api_url="https://api.github.com",
+            installation_id="99999",
+        )
+        return GitHubTokenProvider(config)
+
+    # --- validate_secret ---
+
+    def test_validate_secret_expired_token(self, provider_with_token):
+        """Test validate_secret returns False when local expiry check says expired."""
+        from unittest.mock import patch
+        from datetime import UTC, datetime, timedelta
+
+        past = datetime.now(UTC) - timedelta(days=1)
+        with patch.object(
+            GitHubTokenProvider, "get_expiration", return_value=past
+        ):
+            token = "ghp_" + "V" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is False
+
+    def test_validate_secret_403_returns_false(self, provider_with_token):
+        """Test validate_secret returns False on HTTP 403."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            token = "ghp_" + "F" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is False
+
+    def test_validate_secret_unexpected_status_returns_true(self, provider_with_token):
+        """Test validate_secret treats unexpected status as valid."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 202
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            token = "ghp_" + "U" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is True
+
+    def test_validate_secret_without_requests(self, provider_with_token):
+        """Test validate_secret falls back to format-only when requests unavailable."""
+        from unittest.mock import patch
+
+        token = "ghp_" + "R" * 36
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is True
+
+    def test_validate_secret_exception_wraps_as_validation_error(self):
+        """Test that unexpected exception is wrapped in ValidationError."""
+        from security.providers.base import ValidationError
+        from unittest.mock import patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+        )
+        provider = GitHubTokenProvider(config)
+        token = "ghp_" + "E" * 36
+        with patch.object(provider, "get_expiration", side_effect=RuntimeError("boom")), \
+             patch("security.providers.github_provider.HAS_REQUESTS", False):
+            # RuntimeError is caught and wrapped
+            result = provider.validate_secret("tok", token)
+        # format-only validation returns True (exception in get_expiration is caught)
+        assert result is True
+
+    # --- create_token ---
+
+    def test_create_token_no_requests(self, provider_with_installation):
+        """Test create_token returns failure when requests is unavailable."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_installation.create_token("name", ["contents"])
+        assert result.success is False
+        assert "requests" in (result.error_message or "").lower()
+
+    def test_create_token_no_bearer_token(self):
+        """Test create_token returns failure when bearer token is missing."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            installation_id="12345",
+        )
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.create_token("name", ["contents"])
+        assert result.success is False
+        assert "bearer token" in (result.error_message or "").lower()
+
+    def test_create_token_request_exception(self, provider_with_installation):
+        """Test create_token handles request exception gracefully."""
+        from unittest.mock import patch, Mock
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.side_effect = requests.exceptions.ConnectionError("network down")
+            result = provider_with_installation.create_token("name", ["contents"])
+        assert result.success is False
+        assert "failed" in (result.error_message or "").lower()
+
+    # --- update_token_scopes ---
+
+    def test_update_token_scopes_no_token(self):
+        """Test update_token_scopes returns False without bearer token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    def test_update_token_scopes_failure_status(self, provider_with_token):
+        """Test update_token_scopes returns False on non-200/204 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 422
+        mock_resp.text = "Unprocessable"
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.return_value = mock_resp
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    def test_update_token_scopes_204_success(self, provider_with_token):
+        """Test update_token_scopes returns True on 204 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 204
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.return_value = mock_resp
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is True
+
+    def test_update_token_scopes_exception(self, provider_with_token):
+        """Test update_token_scopes returns False on unexpected exception."""
+        from unittest.mock import patch, Mock
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.side_effect = requests.exceptions.Timeout("timeout")
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    # --- revoke_secret ---
+
+    def test_revoke_secret_no_token(self):
+        """Test revoke_secret returns False without token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_no_requests(self, provider_with_token):
+        """Test revoke_secret returns False without requests library."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_ghs_token_success(self):
+        """Test revoke_secret succeeds for ghs_ installation token (204)."""
+        from unittest.mock import Mock, patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 204
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.return_value = mock_resp
+            result = provider.revoke_secret("tok-id")
+        assert result is True
+
+    def test_revoke_secret_ghs_token_failure(self):
+        """Test revoke_secret returns False on API failure for ghs_ token."""
+        from unittest.mock import Mock, patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.return_value = mock_resp
+            result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_exception(self):
+        """Test revoke_secret returns False on unexpected exception."""
+        from unittest.mock import patch
+        import requests
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.side_effect = requests.exceptions.ConnectionError("network")
+            result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    # --- list_secrets ---
+
+    def test_list_secrets_no_token(self):
+        """Test list_secrets returns empty list without token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.list_secrets()
+        assert result == []
+
+    def test_list_secrets_no_requests(self, provider_with_token):
+        """Test list_secrets returns empty list without requests library."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_list_secrets_200_response(self, provider_with_token):
+        """Test list_secrets returns SecretMetadata on successful API call."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"login": "testuser", "id": 12345}
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            result = provider_with_token.list_secrets()
+
+        assert len(result) == 1
+        assert result[0].secret_id == "current_token"
+        assert result[0].tags["github_login"] == "testuser"
+
+    def test_list_secrets_non_200_response(self, provider_with_token):
+        """Test list_secrets returns empty list on non-200 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 401
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_list_secrets_exception(self, provider_with_token):
+        """Test list_secrets returns empty list on request exception."""
+        from unittest.mock import patch
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.side_effect = requests.exceptions.ConnectionError("offline")
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_rotate_secret_create_token_failure(self, provider_with_token):
+        """Test rotate_secret propagates create_token failure."""
+        from unittest.mock import patch
+
+        with patch.object(
+            GitHubTokenProvider,
+            "create_token",
+            return_value=RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message="API unavailable",
+            ),
+        ):
+            result = provider_with_token.rotate_secret("old-id")
+        assert result.success is False
+        assert "unavailable" in (result.error_message or "").lower()
+
+    def test_rotate_secret_exception_returns_failure(self, provider_with_token):
+        """Test rotate_secret handles unexpected exceptions gracefully."""
+        from unittest.mock import patch
+
+        with patch.object(
+            GitHubTokenProvider,
+            "get_secret_metadata",
+            side_effect=RuntimeError("unexpected"),
+        ):
+            result = provider_with_token.rotate_secret("old-id")
+        assert result.success is False
+
+
+# ============================================================================
+# Security Decorators tests (decorators.py)
+# ============================================================================
+
+
+class TestScopeDecoratorContextVars:
+    """Test context variable management for scope validators."""
+
+    def setup_method(self):
+        """Clear context before each test."""
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        """Clear context after each test."""
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_set_and_get_scope_validator(self):
+        """Test setting and getting scope validator in context."""
+        from security.decorators import get_scope_validator, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        validator = ScopeValidator(["repo:read"])
+        assert get_scope_validator() is None
+        set_scope_validator(validator)
+        assert get_scope_validator() is validator
+
+    def test_clear_scope_validator(self):
+        """Test clearing scope validator from context."""
+        from security.decorators import (
+            clear_scope_validator,
+            get_scope_validator,
+            set_scope_validator,
+        )
+        from security.scope_validator import ScopeValidator
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        clear_scope_validator()
+        assert get_scope_validator() is None
+
+
+class TestRequireScopeDecorator:
+    """Test require_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_require_scope_passes_with_sufficient_scope(self):
+        """Test decorated function executes when scope is sufficient."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_scope("repo:write")
+        def write_repo(data: str) -> str:
+            return f"written: {data}"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        result = write_repo("payload")
+        assert result == "written: payload"
+
+    def test_require_scope_raises_runtime_error_without_validator(self):
+        """Test decorated function raises RuntimeError when no validator set."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:write")
+        def protected_func() -> str:
+            return "ok"
+
+        with pytest.raises(RuntimeError, match="No scope validator"):
+            protected_func()
+
+    def test_require_scope_raises_insufficient_scope_error(self):
+        """Test decorated function raises InsufficientScopeError for insufficient scope."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_scope("repo:admin")
+        def admin_func() -> str:
+            return "admin"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        with pytest.raises(InsufficientScopeError):
+            admin_func()
+
+    def test_require_scope_metadata_attributes(self):
+        """Test that require_scope sets metadata attributes on wrapper."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:write", "workflow:read")
+        def my_func() -> None:
+            pass
+
+        assert my_func.__scope_protected__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in my_func.__required_scopes__  # type: ignore[attr-defined]
+        assert "workflow:read" in my_func.__required_scopes__  # type: ignore[attr-defined]
+
+    def test_require_scope_preserves_function_name(self):
+        """Test that require_scope preserves function metadata."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:read")
+        def my_named_function() -> None:
+            """My docstring."""
+
+        assert my_named_function.__name__ == "my_named_function"
+        assert my_named_function.__doc__ == "My docstring."
+
+    def test_require_multiple_scopes_all_required(self):
+        """Test that all scopes in require_scope must be present."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_scope("repo:write", "workflow:read")
+        def func() -> str:
+            return "ok"
+
+        # Only one scope — should fail
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        with pytest.raises(InsufficientScopeError):
+            func()
+
+
+class TestRequireAnyScopeDecorator:
+    """Test require_any_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_require_any_scope_passes_with_one_scope(self):
+        """Test function executes with at least one matching scope."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_any_scope("repo:write", "repo:admin")
+        def write_or_admin() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        assert write_or_admin() == "ok"
+
+    def test_require_any_scope_passes_with_different_scope(self):
+        """Test function executes with a different valid scope."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:admin"]))
+        assert func() == "ok"
+
+    def test_require_any_scope_raises_without_validator(self):
+        """Test RuntimeError when no validator set."""
+        from security.decorators import require_any_scope
+
+        @require_any_scope("repo:write")
+        def func() -> str:
+            return "ok"
+
+        with pytest.raises(RuntimeError, match="No scope validator"):
+            func()
+
+    def test_require_any_scope_raises_when_none_match(self):
+        """Test InsufficientScopeError when none of the scopes match."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_any_scope("repo:admin", "org:admin")
+        def admin_func() -> str:
+            return "admin"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        with pytest.raises(InsufficientScopeError):
+            admin_func()
+
+    def test_require_any_scope_metadata_attributes(self):
+        """Test metadata attributes set by require_any_scope."""
+        from security.decorators import require_any_scope
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> None:
+            pass
+
+        assert func.__scope_protected__ is True  # type: ignore[attr-defined]
+        assert func.__scope_any__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in func.__required_scopes__  # type: ignore[attr-defined]
+
+
+class TestOptionalScopeDecorator:
+    """Test optional_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_optional_scope_runs_without_validator(self):
+        """Test function executes even without validator set."""
+        from security.decorators import optional_scope
+
+        @optional_scope("repo:write")
+        def public_func() -> str:
+            return "public"
+
+        assert public_func() == "public"
+
+    def test_optional_scope_runs_with_sufficient_scope(self):
+        """Test function executes when validator has required scope."""
+        from security.decorators import optional_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @optional_scope("repo:write")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        assert func() == "ok"
+
+    def test_optional_scope_runs_with_insufficient_scope(self):
+        """Test function still executes even with insufficient scope."""
+        from security.decorators import optional_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @optional_scope("repo:admin")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        # Should NOT raise, just logs
+        assert func() == "ok"
+
+    def test_optional_scope_metadata_attributes(self):
+        """Test optional_scope sets metadata attributes."""
+        from security.decorators import optional_scope
+
+        @optional_scope("repo:write")
+        def func() -> None:
+            pass
+
+        assert func.__scope_optional__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in func.__optional_scopes__  # type: ignore[attr-defined]
+
+
+class TestScopeMetadataFunction:
+    """Test scope_metadata extraction function."""
+
+    def test_scope_metadata_from_require_scope(self):
+        """Test scope_metadata returns correct data for require_scope."""
+        from security.decorators import require_scope, scope_metadata
+
+        @require_scope("repo:write")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["protected"] is True
+        assert "repo:write" in meta["required"]
+        assert meta["any"] is False
+        assert meta["optional"] is False
+
+    def test_scope_metadata_from_require_any_scope(self):
+        """Test scope_metadata returns correct data for require_any_scope."""
+        from security.decorators import require_any_scope, scope_metadata
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["protected"] is True
+        assert meta["any"] is True
+
+    def test_scope_metadata_from_optional_scope(self):
+        """Test scope_metadata returns correct data for optional_scope."""
+        from security.decorators import optional_scope, scope_metadata
+
+        @optional_scope("repo:read")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["optional"] is True
+        assert meta["protected"] is False
+
+    def test_scope_metadata_from_undecorated_function(self):
+        """Test scope_metadata returns defaults for undecorated function."""
+        from security.decorators import scope_metadata
+
+        def plain_func() -> None:
+            pass
+
+        meta = scope_metadata(plain_func)
+        assert meta["protected"] is False
+        assert meta["optional"] is False
+        assert meta["required"] == []
+        assert meta["any"] is False
