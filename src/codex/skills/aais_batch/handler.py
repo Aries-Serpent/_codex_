@@ -73,6 +73,11 @@ def run(payload: dict) -> dict:
         - ``threshold`` (float, optional): pass/fail gate (default 0.75).
         - ``include_dimensions`` (bool, optional): include per-dimension
           scores in output (default False).
+        - ``max_concurrency`` (int, optional): maximum batch chunk size for
+          synchronous processing.  Useful for very large batches to limit peak
+          memory pressure.  Set to 0 (default) to process all items at once.
+          Items are processed sequentially in chunks; the API is identical to
+          the unbounded case.
 
     Returns
     -------
@@ -89,8 +94,16 @@ def run(payload: dict) -> dict:
 
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
+    max_concurrency: int = int(payload.get("max_concurrency", payload.get("max_workers", 0)))
 
-    scores = [_score_item(item, threshold, include_dims) for item in items]
+    if max_concurrency > 0:
+        # Process in sequential chunks to throttle peak memory on large batches.
+        scores: list[dict] = []
+        for start in range(0, len(items), max_concurrency):
+            chunk = items[start : start + max_concurrency]
+            scores.extend(_score_item(item, threshold, include_dims) for item in chunk)
+    else:
+        scores = [_score_item(item, threshold, include_dims) for item in items]
 
     return {
         "scores": scores,

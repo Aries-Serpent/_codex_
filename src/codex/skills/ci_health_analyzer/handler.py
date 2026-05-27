@@ -184,6 +184,97 @@ _RULES: list[dict[str, Any]] = [
         "triage_note": "RAG Module Tests chronic failure (13 occurrences in triage 2026-04-02). "
         "Usually fixture isolation or coverage threshold issue.",
     },
+    # ── Coverage gate drop ───────────────────────────────────────────────────
+    {
+        "pattern_id": "RP-COVERAGE-DROP",
+        "category": "code-fix-required",
+        "confidence": 0.87,
+        "regex": re.compile(
+            r"coverage.*below.*threshold"
+            r"|CoverageException"
+            r"|FAIL Required test coverage of \d+%",
+            re.I,
+        ),
+        "fix_commands": [
+            "Run: python -m pytest --cov=src --cov-report=term-missing to identify gaps.",
+            "Add tests for newly uncovered lines or lower threshold if justified.",
+            "Check tests/unit/test_coverage_toml_floor.py for floor configuration.",
+        ],
+        "triage_note": "Coverage threshold gate failed — new code paths lack tests.",
+    },
+    # ── Docker / container build ─────────────────────────────────────────────
+    {
+        "pattern_id": "RP-DOCKER-BUILD",
+        "category": "workflow-config",
+        "confidence": 0.89,
+        "regex": re.compile(
+            r"ERROR \[.*\] RUN pip install"
+            r"|failed to solve.*dockerfile"
+            r"|docker build.*exit code [1-9]"
+            r"|OCI runtime.*container_linux",
+            re.I,
+        ),
+        "fix_commands": [
+            "Check Dockerfile for editable-install pip errors in multi-stage build.",
+            "Ensure src-layout packages use 'pip install -e . --no-build-isolation'.",
+            "Verify .dockerignore does not exclude required source files.",
+        ],
+        "triage_note": "Docker build failure — often caused by src-layout editable install in CI.",
+    },
+    # ── Timeout / hung job ───────────────────────────────────────────────────
+    {
+        "pattern_id": "RP-TIMEOUT",
+        "category": "transient-infra",
+        "confidence": 0.86,
+        "regex": re.compile(
+            r"The job running on runner.*has exceeded the maximum execution time"
+            r"|exceeded.*timeout.*minutes"
+            r"|timed.?out after \d+",
+            re.I,
+        ),
+        "fix_commands": [
+            "Check 'timeout-minutes:' in the workflow job — increase if legitimate.",
+            "Profile which step is slow: add timing annotations or split into stages.",
+            "If consistently timing out, consider caching expensive setup steps.",
+        ],
+        "triage_note": "Job exceeded maximum execution time. May be flaky or need timeout increase.",
+    },
+    # ── Rust / Cargo build failure ────────────────────────────────────────────
+    {
+        "pattern_id": "RP-RUST-BUILD",
+        "category": "code-fix-required",
+        "confidence": 0.88,
+        "regex": re.compile(
+            r"error\[E\d+\]:.*-->"
+            r"|cargo build.*error"
+            r"|error: could not compile",
+            re.I,
+        ),
+        "fix_commands": [
+            "Run: cargo build 2>&1 | head -50 to see full error.",
+            "Check deny.toml for banned dependency versions that trigger compile errors.",
+            "Ensure Cargo.lock is committed and not stale.",
+        ],
+        "triage_note": "Rust compilation error — check E#### codes in cargo output.",
+    },
+    # ── Secret / credential leak ──────────────────────────────────────────────
+    {
+        "pattern_id": "RP-SECRET-LEAK",
+        "category": "supply-chain",
+        "confidence": 0.96,
+        "regex": re.compile(
+            r"detect-secrets.*Potential secret found"
+            r"|secret.*scanning.*alert"
+            r"|baseline.*out of date",
+            re.I,
+        ),
+        "fix_commands": [
+            "Run: detect-secrets scan --baseline .secrets.baseline to update baseline.",
+            "Review flagged lines; revoke any real credentials immediately.",
+            "If false positive: add `# pragma: allowlist secret` inline.",
+        ],
+        "triage_note": "Potential secret detected by detect-secrets or GitHub secret scanning.",
+    },
 ]
 
 _CONFIDENCE_THRESHOLD = 0.5

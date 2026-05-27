@@ -366,12 +366,13 @@ else:  # pragma: no cover - click fallback
     def checkpoint_smoke(out_dir: Path) -> None:
         _checkpoint_smoke_impl(out_dir)
 
-    @app.group(
+    # Modern sub-apps pattern: define group separately, then register via add_command.
+    # This mirrors the Typer branch's app.add_typer(reasoning_templates, ...) pattern.
+    reasoning_templates = _click.Group(
         name="reasoning-templates",
         help="Surface reasoning training presets and curricula metadata.",
     )
-    def reasoning_templates() -> None:
-        """Reasoning template helpers."""
+    app.add_command(reasoning_templates, name="reasoning-templates")
 
     @reasoning_templates.command("list")
     def list_reasoning_templates() -> None:
