@@ -32,14 +32,13 @@ def count_test_functions(directory: Path) -> int:
                 1 for node in ast.walk(tree)
                 if isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
             )
-        except (SyntaxError, UnicodeDecodeError):
-            pass
+        except (SyntaxError, UnicodeDecodeError) as exc:
+            print(f"WARNING: skipping {path}: {exc}", file=sys.stderr)
     return count
 
 
 def classify_tests(tests_root: Path) -> dict[str, int]:
     """Classify tests into pyramid tiers."""
-    unit_dirs = [tests_root / "unit", tests_root]
     integration_dirs = [tests_root / "integration"]
     e2e_dirs = [tests_root / "e2e", tests_root / "functional"]
 

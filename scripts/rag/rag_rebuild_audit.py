@@ -82,8 +82,13 @@ def check_freshness() -> dict:
                     "passed": True,  # benchmark exists; freshness enforced by scheduler
                     "note": "Freshness enforced by rag-freshness-scheduler.yml",
                 }
-        except Exception:
-            pass
+        except Exception as exc:
+            # Non-fatal: benchmark file may be malformed; fall through to default
+            return {
+                "check": "freshness",
+                "passed": False,
+                "note": f"Failed to parse benchmark file: {exc}",
+            }
 
     return {
         "check": "freshness",

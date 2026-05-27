@@ -10,9 +10,7 @@ from agent failures — the core resilience requirement for D3 level 5.
 from __future__ import annotations
 
 import json
-import time
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
