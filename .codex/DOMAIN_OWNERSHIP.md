@@ -9,22 +9,22 @@
 
 ## Domain Owners
 
-> Replace `@TBD` with GitHub usernames.  Replace the linked workflow/script with the
-> primary CI gate for that domain.
+> Owners are Copilot custom agents defined in `.github/agents/`.  Each agent listed
+> below is the authoritative responder and decision-maker for its domain.
 
 | # | Domain | Owner | Backup | Primary Gate |
 |---|--------|-------|--------|--------------|
-| 1 | Platform Architecture & Boundaries | @TBD | @TBD | `.importlinter` / `scripts/ci/` |
-| 2 | Core ML Lifecycle (train/eval/serve) | @TBD | @TBD | `nox -s ml_tests` / `serving smoke` |
-| 3 | Agent Orchestration & Cognitive Brain | @TBD | @TBD | `cognitive-action-decision.yml` |
-| 4 | RAG Quality & Freshness | @TBD | @TBD | `rag-freshness-scheduler.yml` / `test-rag.yml` |
-| 5 | Security Posture | @TBD | @TBD | `codeql.yml` / `security-scanning-suite.yml` |
-| 6 | CI/CD Health & Workflow Governance | @TBD | @TBD | `workflow-execution-gate.yml` |
-| 7 | Test System Maturity | @TBD | @TBD | `nox -s tests` / `code-quality-coverage-suite.yml` |
-| 8 | Observability & Operational Telemetry | @TBD | @TBD | `ci-health-monitor.yml` |
-| 9 | Documentation & Developer Experience | @TBD | @TBD | `doc-freshness-check.yml` / `docs-health.yml` |
-| 10 | Performance & Cost Efficiency | @TBD | @TBD | `benchmarks.yml` / `pr-cost-check.yml` |
-| 11 | Release / Versioning / Supply Chain | @TBD | @TBD | `sbom.yml` / `pypi-publish.yml` |
+| 1 | Platform Architecture & Boundaries | `codebase-health-guardian` | `recon-scout-agent` | `.importlinter` / `scripts/ci/` |
+| 2 | Core ML Lifecycle (train/eval/serve) | `ml-validation-suite-agent` | @mbaetiong | `nox -s ml_tests` / `serving smoke` |
+| 3 | Agent Orchestration & Cognitive Brain | `agent-orchestrator` | `cognitive-brain-session-injector` | `cognitive-action-decision.yml` |
+| 4 | RAG Quality & Freshness | `rag-freshness-loop-agent` | `rag-index-manager` | `rag-freshness-scheduler.yml` / `test-rag.yml` |
+| 5 | Security Posture | `unified-security-scanner` | `security-audit-agent` | `codeql.yml` / `security-scanning-suite.yml` |
+| 6 | CI/CD Health & Workflow Governance | `workflow-health-monitor` | `workflow-compliance-guardian` | `workflow-execution-gate.yml` |
+| 7 | Test System Maturity | `unified-coverage-agent` | `fragile-test-guardian` | `nox -s tests` / `code-quality-coverage-suite.yml` |
+| 8 | Observability & Operational Telemetry | `performance-monitor-agent` | `msv-dashboard-monitor` | `ci-health-monitor.yml` |
+| 9 | Documentation & Developer Experience | `unified-doc-agent` | `doc-freshness-checker` | `doc-freshness-check.yml` / `docs-health.yml` |
+| 10 | Performance & Cost Efficiency | `performance-regression-detector` | `cache-management-agent` | `benchmarks.yml` / `pr-cost-check.yml` |
+| 11 | Release / Versioning / Supply Chain | `pypi-publishing-operations-agent` | `packaging-validation-agent` | `sbom.yml` / `pypi-publish.yml` |
 
 ---
 
@@ -147,7 +147,7 @@ All evidence items must be continuously passing in CI — not just satisfied onc
 
 ## Updating This File
 
-1. Fill in `@TBD` owner fields when assigned.
+1. Fill in owner fields when re-assigning (agents or `@mbaetiong` for human escalation).
 2. Check off exit criteria as they are met.
 3. Run `python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml`
    to recompute the weighted score.
@@ -160,3 +160,4 @@ All evidence items must be continuously passing in CI — not just satisfied onc
 | Date | Change |
 |------|--------|
 | 2026-05-27 | Initial version — all owners TBD; exit criteria drafted |
+| 2026-05-27 | Assigned Copilot custom agents as domain owners/backups; @mbaetiong as backup for Domain 2 (no ideal secondary agent) |
