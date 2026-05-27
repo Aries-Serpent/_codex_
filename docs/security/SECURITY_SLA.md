@@ -11,8 +11,8 @@
 
 This document defines the mean-time-to-remediation (MTTR) SLA for all security findings
 in the Codex platform.  Findings are discovered via CodeQL, Semgrep, Gitleaks, and
-Dependabot.  The SLA is enforced by the nightly `nightly-security-mttr.yml` workflow,
-which reports overdue findings and blocks releases when critical SLA is breached.
+Dependabot. The nightly `nightly-security-mttr.yml` workflow computes and reports overdue findings,
+and escalation/blocking is handled by the security notification/gating workflows.
 
 ---
 

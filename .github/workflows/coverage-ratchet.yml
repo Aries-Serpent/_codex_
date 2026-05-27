@@ -51,6 +51,7 @@ jobs:
       - name: Install with test dependencies
         run: |
           pip install --upgrade pip --quiet
+          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 --quiet
           pip install -e ".[dev,test]" --quiet 2>/dev/null || pip install -e ".[test]" --quiet
 
       - name: Run coverage with ratchet threshold

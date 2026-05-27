@@ -24,6 +24,7 @@ def _ts() -> str:
 
 def check_freshness() -> dict:
     """D4 #1 — RAG index age ≤ 24 hours."""
+    sla_hours = 24
     # Check for index timestamp markers
     markers = [
         ".codex/rag_index/.last_rebuilt",
@@ -34,22 +35,30 @@ def check_freshness() -> dict:
     for marker in markers:
         p = Path(marker)
         if p.exists():
-            try:
-                # Try reading JSON timestamp first
-                if p.suffix == ".json":
+            # Try reading JSON timestamp first
+            if p.suffix == ".json":
+                try:
                     data = json.loads(p.read_text())
-                    ts_str = data.get("generated_at", "")
-                    if ts_str:
-                        ts = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
-                        age_hours = (datetime.now(timezone.utc) - ts).total_seconds() / 3600
-                        return {
-                            "check": "freshness",
-                            "marker": str(p),
-                            "age_hours": round(age_hours, 1),
-                            "sla_hours": 24,
-                            "passed": True,  # Freshness enforced by rag-freshness-scheduler.yml (every 6h)
-                            "note": "Freshness enforced by rag-freshness-scheduler.yml with 72h auto-rebuild",
-                        }
+                except Exception as exc:
+                    return {
+                        "check": "freshness",
+                        "marker": str(p),
+                        "passed": False,
+                        "note": f"Failed to parse freshness marker: {exc}",
+                    }
+                ts_str = data.get("generated_at", "")
+                if ts_str:
+                    ts = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                    age_hours = (datetime.now(timezone.utc) - ts).total_seconds() / 3600
+                    return {
+                        "check": "freshness",
+                        "marker": str(p),
+                        "age_hours": round(age_hours, 1),
+                        "sla_hours": sla_hours,
+                        "passed": age_hours <= sla_hours,
+                        "note": "Freshness check from marker timestamp",
+                    }
+            try:
                 # Fallback to mtime
                 mtime = datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc)
                 age_hours = (datetime.now(timezone.utc) - mtime).total_seconds() / 3600
@@ -57,12 +66,17 @@ def check_freshness() -> dict:
                     "check": "freshness",
                     "marker": str(p),
                     "age_hours": round(age_hours, 1),
-                    "sla_hours": 24,
-                    "passed": True,  # Marker exists; freshness enforced by scheduler
-                    "note": "Freshness enforced by rag-freshness-scheduler.yml",
+                    "sla_hours": sla_hours,
+                    "passed": age_hours <= sla_hours,
+                    "note": "Freshness check from marker mtime",
                 }
-            except Exception:
-                pass
+            except Exception as exc:
+                return {
+                    "check": "freshness",
+                    "marker": str(p),
+                    "passed": False,
+                    "note": f"Failed to read freshness marker mtime: {exc}",
+                }
 
     # If no marker found, check benchmarks/rag/retrieval_benchmark.json as proxy
     bench = Path("benchmarks/rag/retrieval_benchmark.json")
@@ -78,9 +92,9 @@ def check_freshness() -> dict:
                     "check": "freshness",
                     "marker": str(bench),
                     "age_hours": round(age_hours, 1),
-                    "sla_hours": 24,
-                    "passed": True,  # benchmark exists; freshness enforced by scheduler
-                    "note": "Freshness enforced by rag-freshness-scheduler.yml",
+                    "sla_hours": sla_hours,
+                    "passed": age_hours <= sla_hours,
+                    "note": "Freshness check from retrieval benchmark timestamp",
                 }
         except Exception as exc:
             # Non-fatal: benchmark file may be malformed; fall through to default
@@ -104,11 +118,16 @@ def check_quality() -> dict:
         return {"check": "quality", "passed": False, "note": "benchmarks/rag/retrieval_benchmark.json missing"}
 
     data = json.loads(bench.read_text())
-    recall = data.get("recall_at_k", data.get("recall", 0))
-    mrr = data.get("mrr", 0)
+    last_measured = data.get("last_measured", {})
+    recall = data.get("recall_at_k", data.get("recall"))
+    if recall is None:
+        recall = last_measured.get("top5_recall", last_measured.get("recall", 0))
+    mrr = data.get("mrr")
+    if mrr is None:
+        mrr = last_measured.get("mrr", 0)
     thresholds = data.get("thresholds", {})
-    recall_thresh = thresholds.get("min_recall", 0.70)
-    mrr_thresh = thresholds.get("min_mrr", 0.60)
+    recall_thresh = thresholds.get("min_recall", thresholds.get("top5_recall_min", 0.70))
+    mrr_thresh = thresholds.get("min_mrr", thresholds.get("mrr_min", 0.60))
 
     return {
         "check": "quality",

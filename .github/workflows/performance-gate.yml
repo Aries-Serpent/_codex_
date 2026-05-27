@@ -1,8 +1,7 @@
-# D10 Performance Gate — Latency Regression Detection
+# D10 Performance Gate — Latency Baseline Policy Validation
 #
-# Runs on PR and nightly schedule. Compares current performance
-# against thresholds defined in benchmarks/perf/latency_baseline.json.
-# Blocks PRs if any P95 latency exceeds its threshold.
+# Runs on PR and nightly schedule. Validates the committed
+# latency baseline policy in benchmarks/perf/latency_baseline.json.
 
 name: Performance Gate
 
@@ -25,16 +24,16 @@ concurrency:
 
 jobs:
   performance-gate:
-    name: Latency Regression Check
+    name: Latency Baseline Policy Check
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -50,7 +49,7 @@ jobs:
             exit 1
           fi
 
-      - name: Run performance gate check
+      - name: Run baseline policy check
         run: |
           python -c "
           import json, sys
@@ -79,7 +78,7 @@ jobs:
 
       - name: Upload baseline artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: perf-baseline
           path: benchmarks/perf/latency_baseline.json

@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Compute 7-day pass rate
         id: rate
@@ -39,7 +39,7 @@ jobs:
               "gh", "api",
               f"repos/{repo}/actions/runs",
               "--paginate",
-              "-q", f'.workflow_runs[] | select(.created_at > "{since}") | [.conclusion] | @tsv'
+              "-q", f'.workflow_runs[] | select(.created_at > "{since}" and .status == "completed") | [.conclusion] | @tsv'
           ]
           result = subprocess.run(cmd, capture_output=True, text=True, env={**os.environ})
           lines = [l.strip() for l in result.stdout.splitlines() if l.strip()]
@@ -76,7 +76,7 @@ jobs:
           PYEOF
 
       - name: Upload pass-rate report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ci-pass-rate-${{ github.run_id }}
           path: reports/ci/ci_pass_rate_latest.json
