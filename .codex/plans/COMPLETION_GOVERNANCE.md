@@ -23,39 +23,39 @@ manage the 90-day remediation roadmap.
 
 ### 2.1 Eliminate CI Flakiness
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Enable `pytest-rerunfailures` tracking and report flake rate weekly | CI owner | flake-rate metric in `ci-health-monitor.yml` |
-| File a GitHub Issue for each test flaking > 2 times in a week | CI owner | Issue labelled `flaky-test` |
-| Gate PRs to `main` when flake rate exceeds 1 % | CI owner | `workflow-execution-gate.yml` threshold |
-| Run determinism checks (`determinism.yml`) on every merge | CI owner | Green badge on main |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Enable `pytest-rerunfailures` tracking and report flake rate weekly | `workflow-health-monitor` | `workflow-compliance-guardian` | flake-rate metric in `ci-health-monitor.yml` |
+| File a GitHub Issue for each test flaking > 2 times in a week | `workflow-health-monitor` | `workflow-compliance-guardian` | Issue labelled `flaky-test` |
+| Gate PRs to `main` when flake rate exceeds 1 % | `workflow-health-monitor` | `workflow-compliance-guardian` | `workflow-execution-gate.yml` threshold |
+| Run determinism checks (`determinism.yml`) on every merge | `workflow-health-monitor` | `workflow-compliance-guardian` | Green badge on main |
 
 ### 2.2 Enforce Security Remediation SLA
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Define SLA: critical ≤ 3 business days; high ≤ 10 business days | Security owner | Document in `docs/security/SECURITY_SLA.md` |
-| Automate MTTR tracking via `nightly-codeql-alert-triage.yml` | Security owner | MTTR report in `reports/security/` |
-| Weekly burn-down review: block release if critical > 0 | Security owner | `security-alert-notification.yml` |
-| Confirm dependency allowlist (`security_allowlist.json`) is current | Security owner | Reviewed in prior 30 days |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Define SLA: critical ≤ 3 business days; high ≤ 10 business days | `unified-security-scanner` | `security-audit-agent` | Document in `docs/security/SECURITY_SLA.md` |
+| Automate MTTR tracking via `nightly-codeql-alert-triage.yml` | `unified-security-scanner` | `security-audit-agent` | MTTR report in `reports/security/` |
+| Weekly burn-down review: block release if critical > 0 | `unified-security-scanner` | `security-audit-agent` | `security-alert-notification.yml` |
+| Confirm dependency allowlist (`security_allowlist.json`) is current | `unified-security-scanner` | `security-audit-agent` | Reviewed in prior 30 days |
 
 ### 2.3 Add RAG Freshness and Quality Gates
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Define freshness SLA: index age ≤ 24 h | RAG owner | Documented in `docs/rag/RAG_QUICKSTART.md` |
-| Add retrieval quality threshold (top-k recall) to `test-rag.yml` | RAG owner | Gate passes on `main` |
-| Configure drift alert: fire when quality drops > 10 % vs baseline | RAG owner | Alert tested via canary |
-| Commit benchmark baseline to `benchmarks/rag/` | RAG owner | File exists with version tag |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Define freshness SLA: index age ≤ 24 h | `rag-freshness-loop-agent` | `rag-index-manager` | Documented in `docs/rag/RAG_QUICKSTART.md` |
+| Add retrieval quality threshold (top-k recall) to `test-rag.yml` | `rag-freshness-loop-agent` | `rag-index-manager` | Gate passes on `main` |
+| Configure drift alert: fire when quality drops > 10 % vs baseline | `rag-freshness-loop-agent` | `rag-index-manager` | Alert tested via canary |
+| Commit benchmark baseline to `benchmarks/rag/` | `rag-freshness-loop-agent` | `rag-index-manager` | File exists with version tag |
 
 ### 2.4 Add Orchestration Reliability KPIs
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Instrument orchestration success/failure counters in Cognitive Brain | Agent owner | Metric in monitoring dashboard |
-| Report success rate (target ≥ 95 %) in `cognitive-action-decision.yml` | Agent owner | Logged to `reports/orchestration/` |
-| Add policy-violation alert: fires within 5 min of violation | Agent owner | Tested via integration test |
-| Nightly integration test validating OODA loop recovery | Agent owner | Job green on `main` |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Instrument orchestration success/failure counters in Cognitive Brain | `agent-orchestrator` | `cognitive-brain-session-injector` | Metric in monitoring dashboard |
+| Report success rate (target ≥ 95 %) in `cognitive-action-decision.yml` | `agent-orchestrator` | `cognitive-brain-session-injector` | Logged to `reports/orchestration/` |
+| Add policy-violation alert: fires within 5 min of violation | `agent-orchestrator` | `cognitive-brain-session-injector` | Tested via integration test |
+| Nightly integration test validating OODA loop recovery | `agent-orchestrator` | `cognitive-brain-session-injector` | Job green on `main` |
 
 ---
 
@@ -66,12 +66,12 @@ manage the 90-day remediation roadmap.
 
 ### 3.1 Dependency / Supply-Chain Controls
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Generate SBOM (CycloneDX) on every release via `sbom.yml` | Release owner | SBOM artifact in GitHub Release |
-| Sign release artifacts with Sigstore | Release owner | Provenance attestation in release |
-| Gate `pypi-publish.yml` on rubric score ≥ 80 % | Release owner | Score check step in workflow |
-| Review and pin all unpinned transitive deps | Security owner | `uv.lock` / `requirements*.txt` audited |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Generate SBOM (CycloneDX) on every release via `sbom.yml` | `pypi-publishing-operations-agent` | `packaging-validation-agent` | SBOM artifact in GitHub Release |
+| Sign release artifacts with Sigstore | `pypi-publishing-operations-agent` | `packaging-validation-agent` | Provenance attestation in release |
+| Gate `pypi-publish.yml` on rubric score ≥ 80 % | `pypi-publishing-operations-agent` | `packaging-validation-agent` | Score check step in workflow |
+| Review and pin all unpinned transitive deps | `unified-security-scanner` | `security-audit-agent` | `uv.lock` / `requirements*.txt` audited |
 
 ### 3.2 Performance / Cost Regression Gates
 
