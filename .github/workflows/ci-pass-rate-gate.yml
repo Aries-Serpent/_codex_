@@ -26,6 +26,7 @@ jobs:
         id: rate
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # No pip cache: this job runs inline Python with stdlib only.
         run: |
           python3 - <<'PYEOF'
           import json, os, subprocess, sys

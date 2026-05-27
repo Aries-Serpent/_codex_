@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          # No pip cache: release validation uses shell checks and does not install Python deps.
 
       - name: Validate version tag
         run: |
