@@ -12,6 +12,7 @@ import logging
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+LOGGING_AVAILABLE = True  # stdlib logging is always available
 
 try:
     from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator

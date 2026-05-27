@@ -22,6 +22,7 @@ import logging
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
+LOGGING_AVAILABLE = True  # stdlib logging is always available
 from enum import Enum  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
