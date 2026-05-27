@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-27T13:09:35Z",
+  "generated_at": "2026-05-27T16:01:17Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -989,6 +989,11 @@
       "has_concurrency": true
     },
     {
+      "name": "agent-health-check",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "agent-orchestration-unified",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1125,6 +1130,11 @@
     },
     {
       "name": "ci-health-monitor",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "ci-pass-rate-gate",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
@@ -1269,6 +1279,11 @@
       "has_concurrency": true
     },
     {
+      "name": "coverage-ratchet",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "coverage-with-timeout",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1341,6 +1356,11 @@
     {
       "name": "docker-build-push",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "docs-code-alignment",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1424,7 +1444,17 @@
       "has_concurrency": true
     },
     {
+      "name": "ml-lifecycle-gate",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "model-drift-retrain",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "mutation-testing",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1470,6 +1500,11 @@
     },
     {
       "name": "pages-scheduled-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "performance-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -1559,6 +1594,11 @@
       "has_concurrency": true
     },
     {
+      "name": "rag-quality-nightly",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "ratelimit_history_prune",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1566,6 +1606,11 @@
     {
       "name": "reference-integrity",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "release",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1689,6 +1734,11 @@
       "has_concurrency": true
     },
     {
+      "name": "slo-canary-check",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "status_gate",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1706,6 +1756,11 @@
     {
       "name": "template_lint",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "test-pyramid-report",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1751,6 +1806,11 @@
     {
       "name": "workflow-analytics-unified",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "workflow-compliance-gate",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2141,5 +2201,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e78d5ccb5be4f99cc44f2ffcda538c6b4737b4090da882e8d1fe1c5dee3b4312"
+  "integrity_sha256": "2c4e429616150db0c7653d24ce8a1ef957700fe8aee912312b756e753d67c7e1"
 }
