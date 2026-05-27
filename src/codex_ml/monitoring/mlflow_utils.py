@@ -7,7 +7,6 @@ This module re-exports those symbols and restores the legacy
 
 from __future__ import annotations
 
-import importlib
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,10 +19,7 @@ from ..tracking.mlflow_guard import bootstrap_offline_tracking  # noqa: E402
 
 # Expose the underlying ``mlflow`` module so older call sites and tests that
 # patch ``mlflow_utils.mlflow`` continue to work.
-try:
-    mlflow = importlib.import_module("mlflow")
-except ImportError:  # pragma: no cover - optional dependency
-    mlflow = None
+mlflow = _tracking_mlflow_utils._mlf
 
 __all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
 
