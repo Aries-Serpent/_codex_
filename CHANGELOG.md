@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase 3/4 Groundwork + Mermaid Alignment — Branch `copilot/explain-repository-structure-again` — 2026-05-27T03:30Z)
+
+- **Phase 3 groundwork workflows**: `ci-pass-rate-gate.yml`, `ml-lifecycle-gate.yml`, `agent-health-check.yml` — ensures Phase 3 target (2026-06-17) requires only execution, not design
+- **Phase 3/4 groundwork workflows**: `mutation-testing.yml`, `test-pyramid-report.yml`, `rag-quality-nightly.yml`, `slo-canary-check.yml`
+- **Supporting scripts**: `scripts/ml/validate_ml_lifecycle.py` (D2 E2E validator), `scripts/rag/rag_rebuild_audit.py` (D4 freshness+quality+audit), `scripts/ci/workflow_owner_audit.py` (D6 owner coverage), `scripts/ci/test_pyramid_report.py` (D7 pyramid health), `scripts/observability/slo_canary.py` (D8 canary)
+- **`docs/PRODUCTION_DEPLOYMENT_GUIDE.md`** — D2 #4 rollback procedure with Mermaid deploy pipeline flowchart; reproducibility requirements table; E2E gate documentation
+- **`docs/architecture/ARCHITECTURE_LAYERS.md`** — D1 #4 architecture layer map with 5-layer Mermaid flowchart + boundary rules + import contract; Cognitive Brain as Layer 5 storage
+- **`tests/architecture/test_layer_boundaries.py`** — D1 boundary enforcement tests (no test→production upward imports; arch doc + `.importlinter` + workflow existence assertions)
+- **`audit_artifacts/capabilities_scored.json`** — current domain scores with evidence links for Phase 3 gate
+- **`audit_artifacts/gaps.json`** — Phase 3 gap analysis (ml/cicd/agent/test domain deltas with remaining actions)
+- **`audit_artifacts/component_gaps.json`** — Phase 4 component-level gap analysis with groundwork_complete flags
+- **`audit_run_manifest.json`** — Phase 4 gate template (6 gate checks, all PENDING; fill in at 2026-07-08)
+
+### Changed (Mermaid + Living Docs Alignment — 2026-05-27T03:30Z)
+
+- **`docs/roadmap/explain_repository_structure_session_diagram.mmd`** — extended with Phase 3/4 groundwork nodes, Cognitive Brain integration node (373 patterns, SQLiteMemory, all_agents_completed), audit artifacts node, full readiness journey 60.8%→76.4%→85.6%→90.4%→~95%, Production-complete destination node
+- **`docs/roadmap/explain_repository_structure_whats_next.md`** — added Phase 5 (≥95%, 2026-Q3) to horizon table; added Gantt chart showing full timeline from 2026-05-27 to 2026-09-01 with all active/queued milestones
+- **`.codex/COMPLETION_DASHBOARD.md`** — added Score Trajectory & Cognitive Brain Integration Mermaid flowchart showing 5-phase journey with CB feeds and style-coded band colours
+- **`docs/governance/PHASE_3_HARDENING_CHECKLIST.md`** — added Domain Progress Map Mermaid (domain states NOW→Phase3, CB feed arrows into D6/D3 gates)
+- **`docs/governance/PHASE_4_COMPLETION_GATES.md`** — added Phase 4 Gate Flow Mermaid (CB integration subgraph feeding D4/D1/D8, Phase 5 Polish path to ~95% Production-complete)
+- **`docs/governance/COMPLETION_GOVERNANCE_FRAMEWORK.md`** — added Score Journey LR flowchart (phase score nodes with band colours + CB feeds + Phase Gates) and Assigned-Agent Phase Map TD flowchart
+- **`.codex/plans/COMPLETION_GOVERNANCE.md`** — added Cognitive Brain arc to ownership map
+- **`pytest.ini`** — `timeout = 120` + `timeout_method = thread` uncommented (D7 exit criteria #5)
+
 ### Added (Readiness Score 60.8% → 76.4% — Branch `copilot/explain-repository-structure-again` — 2026-05-27T02:57Z)
 
 - **`.codex/completion_scores.yaml`** — machine-readable flat-YAML domain scores consumed by `score_completion.py`; confirmed 76.4 % ("Operational but needs hardening")

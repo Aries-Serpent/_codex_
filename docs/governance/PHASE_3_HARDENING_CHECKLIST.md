@@ -51,3 +51,53 @@ Run the completion governance workflow with `phase=phase-3-hardening`.
 2. D11 Release: wire SBOM to release workflow; tag v1.0.0-rc1
 3. D2 ML: document Hydra override logging → reproducibility 6/6
 4. D6 CI: reduce flake count to < 10 from 93 tracked patterns
+
+---
+
+## Domain Progress Map
+
+```mermaid
+flowchart LR
+    subgraph NOW["Now — 2026-05-27 · 76.4%"]
+        A1["arch 4/5"]
+        M1["ml 3/5"]
+        AG1["agent 4/5"]
+        R1["rag 4/5"]
+        S1["sec 5/5 ✅"]
+        C1["cicd 4/5"]
+        T1["test 4/5"]
+        O1["obs 4/5"]
+        D1["doc 4/5"]
+        P1["perf 2/5"]
+        RL1["rel 2/5"]
+    end
+
+    subgraph P3["Phase 3 — 2026-06-17 · 85.6%"]
+        M2["ml 4/5\n+2.4%\nml-lifecycle-gate.yml\nPROD_DEPLOY_GUIDE.md"]
+        AG2["agent 5/5\n+2.4%\nagent-health-check.yml\ntest_agent_recovery.py"]
+        C2["cicd 5/5\n+2.4%\nci-pass-rate-gate.yml\nworkflow_owner_audit.py"]
+        T2["test 5/5\n+2.0%\nmutation-testing.yml\ntest-pyramid-report.yml\npytest timeout ✅"]
+    end
+
+    subgraph CB["Cognitive Brain Feed"]
+        CB1["workflow_patterns.jsonl\n373 patterns\n93 flakiness → D6"]
+        CB2["metadata.json\nall_agents_completed"]
+        CB3["cognitive-brain-session-injector\nD3 orchestration backup"]
+    end
+
+    M1 -->|"E2E gate + deploy guide"| M2
+    AG1 -->|"health-check + recovery test"| AG2
+    C1 -->|"pass-rate gate + owner audit"| C2
+    T1 -->|"mutation + pyramid + timeout"| T2
+
+    CB1 --> C2
+    CB2 --> AG2
+    CB3 --> AG2
+
+    M2 & AG2 & C2 & T2 --> GATE["✅ Phase 3 Gate\n2026-06-17\n85.6%\nOperational hardened"]
+
+    style NOW fill:#457b9d,color:#fff
+    style P3 fill:#2d6a4f,color:#fff
+    style CB fill:#7b2d8b,color:#fff
+    style GATE fill:#e9c46a,color:#000
+```

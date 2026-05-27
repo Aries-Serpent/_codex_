@@ -50,3 +50,22 @@ flowchart TD
     style DOCS fill:#457b9d,color:#fff
     style VAL fill:#f4a261,color:#000
     style PR fill:#f4a261,color:#000
+
+    VAL --> GROUND3["Phase 3 Groundwork Committed\n✅ ci-pass-rate-gate.yml\n✅ ml-lifecycle-gate.yml\n✅ agent-health-check.yml\n✅ mutation-testing.yml\n✅ test-pyramid-report.yml"]
+
+    GROUND3 --> GROUND4["Phase 4 Groundwork Committed\n✅ rag-quality-nightly.yml\n✅ slo-canary-check.yml\n✅ scripts/ml/validate_ml_lifecycle.py\n✅ scripts/rag/rag_rebuild_audit.py\n✅ scripts/observability/slo_canary.py\n✅ docs/architecture/ARCHITECTURE_LAYERS.md\n✅ tests/architecture/test_layer_boundaries.py"]
+
+    GROUND4 --> CB["Cognitive Brain Integration\ncognitive_brain/workflow_patterns.jsonl\n373 patterns — 93 flakiness mined for D6\ncognitive-brain-session-injector → D3 Backup\ncognitive_brain/metadata.json\nall_assigned_agents_completed: true"]
+
+    CB --> AUDIT["Audit Artifacts Committed\naudit_artifacts/capabilities_scored.json\naudit_artifacts/gaps.json — Phase 3 gap analysis\naudit_artifacts/component_gaps.json — Phase 4 gaps\naudit_run_manifest.json — Phase 4 gate template\npytest.ini: timeout=120 enabled (D7#5)"]
+
+    AUDIT --> ROAD["Readiness Journey\n60.8% → 76.4% → 85.6% → 90.4% → ~95%\n2026-05-27 → 2026-06-17 → 2026-07-08 → Production"]
+
+    ROAD --> P5["🎯 Production-Complete (~95%)\nAll 11 domains ≥4/5\nPhase 5 targets: D10 perf gate\nD11 SBOM release wiring\nD2 Hydra override confirmed\nCI 7-day pass rate ≥98%"]
+
+    style GROUND3 fill:#1b4332,color:#fff
+    style GROUND4 fill:#1b4332,color:#fff
+    style CB fill:#7b2d8b,color:#fff
+    style AUDIT fill:#2a9d8f,color:#fff
+    style ROAD fill:#457b9d,color:#fff
+    style P5 fill:#e9c46a,color:#000

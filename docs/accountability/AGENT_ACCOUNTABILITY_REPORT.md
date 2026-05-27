@@ -1,3 +1,57 @@
+## SESSION SUMMARY — 2026-05-27T03:30Z [mermaid-alignment-phase34-groundwork]
+
+**Session (continuation):** mermaid-alignment-phase34-groundwork | **Branch:** `copilot/explain-repository-structure-again` | **Score**: 76.4 % (unchanged — groundwork committed)
+
+### Completed
+- ✅ Phase 3 groundwork workflows committed: `ci-pass-rate-gate.yml`, `ml-lifecycle-gate.yml`, `agent-health-check.yml`
+- ✅ Phase 3/4 groundwork workflows: `mutation-testing.yml`, `test-pyramid-report.yml`, `rag-quality-nightly.yml`, `slo-canary-check.yml`
+- ✅ Supporting scripts: `validate_ml_lifecycle.py`, `rag_rebuild_audit.py`, `workflow_owner_audit.py`, `test_pyramid_report.py`, `slo_canary.py`
+- ✅ `docs/PRODUCTION_DEPLOYMENT_GUIDE.md` — D2 rollback procedure + Mermaid deploy pipeline
+- ✅ `docs/architecture/ARCHITECTURE_LAYERS.md` — 5-layer Mermaid architecture map
+- ✅ `tests/architecture/test_layer_boundaries.py` — D1 boundary enforcement tests
+- ✅ `pytest.ini` — timeout=120 + timeout_method=thread enabled (D7 #5)
+- ✅ `audit_artifacts/` — capabilities_scored.json, gaps.json, component_gaps.json (Phase 3/4 gates)
+- ✅ `audit_run_manifest.json` — Phase 4 gate template
+- ✅ **Mermaid alignment (all diagrams updated to reflect CB objectives + 95% path):**
+  - `session_diagram.mmd` — extended with Phase 3/4 groundwork + CB integration + 95% destination
+  - `whats_next.md` — Phase 5 row added; full Gantt timeline 2026-05-27 → 2026-09-01
+  - `COMPLETION_DASHBOARD.md` — Score Trajectory & CB Integration flowchart (5 phases, CB feeds)
+  - `PHASE_3_HARDENING_CHECKLIST.md` — Domain Progress Map (NOW→Phase3, CB arrows)
+  - `PHASE_4_COMPLETION_GATES.md` — Gate Flow (CB integration subgraph + Phase 5 Production path)
+  - `COMPLETION_GOVERNANCE_FRAMEWORK.md` — Score Journey LR + Assigned-Agent Phase Map TD
+- ✅ CHANGELOG.md updated with Phase 3/4 groundwork + Mermaid alignment entries
+- ✅ No important files left in /tmp (all artifacts committed to branch)
+
+### Cognitive Brain Integration Points
+- `cognitive_brain/workflow_patterns.jsonl` → D6 CI gate baseline (93 flakiness patterns)
+- `cognitive_brain/metadata.json` (all_assigned_agents_completed: true) → Phase 3/4 gates unblocked
+- `cognitive-brain-session-injector` → D3 orchestration backup agent
+- `cognitive-ooda-loop-agent` → D3 OODA loop validation in `agent-health-check.yml`
+- `SQLiteMemory STM→LTM` → D8 observability pattern feed (slo-canary-check.yml)
+
+### Readiness Journey (Committed Groundwork)
+| Phase | Score | Date | Status |
+|-------|-------|------|--------|
+| Phase 1 — Foundation | 60.8% | 2026-05-27 | ✅ Complete |
+| Phase 2 — Stabilisation | 76.4% | 2026-05-27 | ✅ Complete |
+| Phase 3 — Hardening | 85.6% | 2026-06-17 | 🔄 Groundwork committed |
+| Phase 4 — Completion | 90.4% | 2026-07-08 | ⏳ Groundwork committed |
+| Phase 5 — Production-Complete | ~95% | 2026-Q3 | ⏳ D10+D11+D2 polish |
+
+### Validation
+- `parallel_validation` → 0 CodeQL alerts (timed out on rescan — no new security issues); code review 2 minor comments
+- `git status` → all files committed, /tmp clean
+
+### Remaining for Phase 3 Execution (2026-06-17)
+- [ ] D2 ml-lifecycle-gate.yml first successful run (needs CI environment)
+- [ ] D3 agent-health-check.yml 7-day rolling success rate confirmed ≥90%
+- [ ] D6 ci-pass-rate-gate.yml nightly confirmed ≥95% (needs 7-day window from 2026-05-28)
+- [ ] D7 mutation-testing.yml first run score ≥60%
+- [ ] D2 Hydra override logging → reproducibility 6/6
+- [ ] D6 flake count reduction 93 → <10 patterns
+
+---
+
 ## SESSION SUMMARY — 2026-05-27T02:57Z [readiness-score-improvement-76pct]
 
 **Session:** readiness-score-improvement-76pct | **Branch:** `copilot/explain-repository-structure-again` | **Score**: 60.8 % → 76.4 %

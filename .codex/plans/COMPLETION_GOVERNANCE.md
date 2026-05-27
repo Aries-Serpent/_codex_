@@ -248,10 +248,58 @@ flowchart LR
 
 ---
 
+## Cognitive Brain Integration Arc
+
+```mermaid
+flowchart TD
+    subgraph CB["Cognitive Brain Layer"]
+        WP["workflow_patterns.jsonl\n373 patterns · 93 flakiness · 2026-05-26"]
+        MEM["SQLiteMemory\nSTM→LTM consolidation\nmemory-sync-agent"]
+        META["metadata.json\nall_assigned_agents_completed: true"]
+        CBSI["cognitive-brain-session-injector\nrecency-ranked pattern injection"]
+        OODA["cognitive-ooda-loop-agent\nOODA loop validation"]
+    end
+
+    subgraph DOMAINS["Domain Impact"]
+        D6["D6 CI/CD Health\nci-flake-tracker.yml\n93 patterns → flake baseline"]
+        D3["D3 Agent Orchestration\nagent-health-check.yml\nOODA loop validation"]
+        D8["D8 Observability\nSQLiteMemory patterns\n→ SLO canary feed"]
+        D4["D4 RAG Quality\nrag-quality-nightly.yml\npattern-informed thresholds"]
+    end
+
+    subgraph GATES["Phase Gates"]
+        G3["Phase 3 Gate 2026-06-17\n85.6% target\ngaps.json present"]
+        G4["Phase 4 Gate 2026-07-08\n90.4% target\naudit_run_manifest.json"]
+        G5["Phase 5 ~95%\nProduction-Complete\n2026-Q3"]
+    end
+
+    WP --> D6
+    OODA --> D3
+    MEM --> D8
+    WP --> D4
+    META --> G3
+    META --> G4
+    CBSI --> D3
+
+    D6 --> G3
+    D3 --> G3
+    D8 --> G4
+    D4 --> G4
+    G3 --> G4 --> G5
+
+    style CB fill:#7b2d8b,color:#fff
+    style DOMAINS fill:#457b9d,color:#fff
+    style GATES fill:#2d6a4f,color:#fff
+    style G5 fill:#e9c46a,color:#000
+```
+
+---
+
 ## Change Log
 
 | Date | Version | Change |
 |------|---------|--------|
+| 2026-05-27 | 1.3.0 | Added Cognitive Brain Integration Arc mermaid; Phase 5 (~95%) target established |
 | 2026-05-27 | 1.2.0 | Updated mermaid ownership map: added D1-Architecture subgraph, new workflow nodes (import-linter.yml, nightly-security-mttr.yml, workflow-compliance-gate.yml, ci-flake-tracker.yml, coverage-ratchet.yml, SLO_DEFINITIONS.md, orchestration_compliance.log, ONBOARDING_CHECKLIST.md, rag_quality.yaml); fixed CI subgraph label from "CI/CD & Workflow" to "CI/CD & Performance"; updated phase horizons to date-based |
 | 2026-05-27 | 1.1.0 | Assigned Copilot custom agents as Owner+Backup for all Phase 2–3 actions and Contacts & Escalation table; added mermaid ownership map |
 | 2026-05-27 | 1.0.0 | Initial version |

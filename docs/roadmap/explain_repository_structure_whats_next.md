@@ -30,30 +30,40 @@
 ```text
 @copilot continue from branch copilot/explain-repository-structure-again:
 
-Context: readiness score is 76.4% ("Operational but needs hardening"). Phase 3 target is 85% by 2026-06-17.
+Context: readiness score is 76.4% ("Operational but needs hardening").
+Phase 3 target: 85.6% by 2026-06-17 (groundwork fully committed — workflows + scripts ready).
+Phase 4 target: 90.4% by 2026-07-08 (groundwork fully committed).
+Phase 5 target: ~95% Production-Complete by 2026-Q3.
+
 Scores file: .codex/completion_scores.yaml
 Script: python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml
+Gantt: docs/roadmap/explain_repository_structure_whats_next.md
 
-Priority 1 — Phase 3 domain bumps (4 domains need +1 each to reach ~85%):
-1. D10 Performance (2→3): commit perf benchmark baseline to benchmarks/perf/; add P95 latency gate workflow
-2. D11 Release Integrity (2→3): wire .github/workflows/release.yml to include SBOM step (nox -s sbom); tag v1.0.0-rc1
-3. D2 ML Lifecycle (3→4): document Hydra override logging in reports/reproducibility.md to close item 4 → reproducibility 6/6 ✅
-4. D6 CI/CD Health (4→5): reduce flake count from 93 → <10 by applying @pytest.mark.flaky removals for zero-failure patterns in cognitive_brain/workflow_patterns.jsonl; update ci-flake-tracker.yml threshold
+Priority 1 — Phase 3 execution (bump 4 domains from 4→5 by 2026-06-17):
+1. D2 ML Lifecycle (3→4): document Hydra override logging → reports/reproducibility.md item 6 ✅;
+   run: python scripts/ml/validate_ml_lifecycle.py --check all
+2. D6 CI/CD Health (4→5): run ci-pass-rate-gate.yml after 7-day window (from 2026-05-28);
+   run: python scripts/ci/workflow_owner_audit.py --threshold 90
+3. D3 Orchestration (4→5): agent-health-check.yml needs 7-day rolling window;
+   create tests/integration/test_agent_recovery.py (D3 exit #3)
+4. D7 Test Maturity (4→5): run mutation-testing.yml (score ≥60%);
+   run test-pyramid-report.yml; pytest timeout already enabled
 
-Priority 2 — CI gate hardening (D1, D7, D9 each need +1 for 5/5):
-5. D1 Architecture (4→5): enforce cross-layer boundary test + add architecture diagram to DOMAIN_OWNERSHIP.md
-6. D7 Test Maturity (4→5): set pytest --timeout=120 on all tests; run mutation score baseline report
-7. D9 Documentation (4→5): run link-checker CI gate; wire docs-to-code alignment nightly check
+Priority 2 — D10 + D11 (perf/release — each 2→3, unlocks Phase 5):
+5. D10 Performance (2→3): create benchmarks/perf/latency_baseline.json + .github/workflows/performance-gate.yml
+6. D11 Release Integrity (2→3): wire .github/workflows/release.yml to sbom.yml; tag v1.0.0-rc1
 
-Priority 3 — Evidence already available (tick criteria to compress):
-8. D3 Orchestration (4→5): all 3 assigned agents completed (CODEX_MANIFEST.json all_assigned_agents_completed: true) → D3 item 5 checkable
-9. D4 RAG (4→5): 403 tests PASS → tick D4 items 1+4; confirm nightly benchmark CI pass → D4=5
+After each domain bump, run:
+  python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml
+Then sync: CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md, COMPLETION_DASHBOARD.md Score History.
 
-After each bump, run: python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml
-Target: ≥85.0% before 2026-06-17
+Cognitive Brain feeds to leverage:
+- cognitive_brain/workflow_patterns.jsonl → 93 flakiness patterns (D6 flake reduction)
+- cognitive_brain/metadata.json → all_assigned_agents_completed: true (D3 exit #5 checkable)
+- reports/reproducibility.md → 5/6 ✅ (only Hydra override logging missing for D2 4→5)
 
-Always sync: CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md, COMPLETION_DASHBOARD.md Score History row.
-No "weeks" language in any phase horizon — use ISO dates only.
+No "weeks" language in any phase horizon. Always use ISO dates.
+All Mermaid diagrams must show the full 60.8%→76.4%→85.6%→90.4%→~95% journey with CB feeds.
 ```
 
 ---
@@ -64,8 +74,38 @@ No "weeks" language in any phase horizon — use ISO dates only.
 |-------|--------|------|--------|
 | Phase 1 — Foundation | ≥ 60 % | 2026-05-27 ✅ | Complete at 60.8 % |
 | Phase 2 — Stabilisation | ≥ 70 % | 2026-05-27 ✅ | Complete at 76.4 % |
-| Phase 3 — Hardening | ≥ 85 % | 2026-06-17 🔄 | In progress (76.4 %) |
-| Phase 4 — Completion | ≥ 90 % | 2026-07-08 ⏳ | Queued |
+| Phase 3 — Hardening | ≥ 85 % | 2026-06-17 🔄 | In progress (76.4 %) — groundwork committed |
+| Phase 4 — Completion | ≥ 90 % | 2026-07-08 ⏳ | Queued — groundwork committed |
+| Phase 5 — Production-Complete | ~95 % | 2026-Q3 ⏳ | D10 perf gate + D11 SBOM release + D2 Hydra logging |
+
+```mermaid
+gantt
+    title Readiness Journey to ~95% Production-Complete
+    dateFormat YYYY-MM-DD
+    axisFormat %b %d
+
+    section Achieved
+    Phase 1 Foundation 60.8%       :done,    p1, 2026-05-01, 2026-05-27
+    Phase 2 Stabilisation 76.4%    :done,    p2, 2026-05-27, 2026-05-27
+
+    section Active
+    Phase 3 Hardening 85.6%        :active,  p3, 2026-05-27, 2026-06-17
+    D2 ml-lifecycle-gate runs       :active,  d2, 2026-05-28, 2026-06-10
+    D3 agent-health-check runs      :active,  d3, 2026-05-28, 2026-06-10
+    D6 ci-pass-rate-gate runs       :active,  d6, 2026-05-28, 2026-06-10
+    D7 mutation-testing first run   :active,  d7, 2026-06-01, 2026-06-15
+
+    section Queued
+    Phase 4 Completion 90.4%        :         p4, 2026-06-17, 2026-07-08
+    D4 rag-quality-nightly confirms  :         r4, 2026-06-17, 2026-07-01
+    D1 arch boundary tests green     :         a1, 2026-06-17, 2026-07-01
+    D8 slo-canary-check first pass   :         o8, 2026-06-17, 2026-07-01
+
+    section Production
+    Phase 5 Production-Complete ~95% :         p5, 2026-07-08, 2026-09-01
+    D10 perf latency gate            :         d10, 2026-07-08, 2026-08-01
+    D11 SBOM release wiring          :         d11, 2026-07-08, 2026-08-01
+```
 
 ---
 

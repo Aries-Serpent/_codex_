@@ -31,6 +31,45 @@
 
 ---
 
+## Score Trajectory & Cognitive Brain Integration
+
+```mermaid
+flowchart LR
+    subgraph DONE["Achieved ✅"]
+        P1["Phase 1\n60.8%\nFoundation\n2026-05-27"]
+        P2["Phase 2\n76.4%\nStabilisation\n2026-05-27"]
+    end
+
+    subgraph ACTIVE["In Progress 🔄"]
+        P3["Phase 3\n85.6%\nHardening\n2026-06-17\nml+agent+cicd+test → 5/5"]
+    end
+
+    subgraph QUEUED["Queued ⏳"]
+        P4["Phase 4\n90.4%\nCompletion\n2026-07-08\nrag+arch+obs → 5/5"]
+        P5["Phase 5\n~95%\nProduction\n2026-Q3\nperf+release polish"]
+    end
+
+    subgraph CB["Cognitive Brain"]
+        CB1["workflow_patterns.jsonl\n373 patterns → D6 CI gate"]
+        CB2["SQLiteMemory STM→LTM\n→ D8 Observability"]
+        CB3["all_agents_completed\n→ Phase gates unblocked"]
+    end
+
+    P1 --> P2 --> P3 --> P4 --> P5
+    CB1 --> P3
+    CB2 --> P4
+    CB3 --> P3 & P4
+
+    style P1 fill:#2d6a4f,color:#fff
+    style P2 fill:#2d6a4f,color:#fff
+    style P3 fill:#457b9d,color:#fff
+    style P4 fill:#9d4edd,color:#fff
+    style P5 fill:#e9c46a,color:#000
+    style CB fill:#7b2d8b,color:#fff
+```
+
+---
+
 ## Gap-to-Target Summary
 
 | Domain | Current | Target | Gap | Priority |
