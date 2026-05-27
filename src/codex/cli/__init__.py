@@ -61,6 +61,9 @@ query_logs_cmd = None
 validate_env_cmd = None
 list_sessions_cmd = None
 viewer_cmd = None
+ALLOWED_TASKS = None
+_emit_group_help = None
+_missing_command = None
 
 if cli is not None:
     # Import the groups from the loaded module
@@ -79,9 +82,15 @@ if cli is not None:
         validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
         list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
         viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
+        ALLOWED_TASKS = getattr(_cli_module, "ALLOWED_TASKS", None)
+        _emit_group_help = getattr(_cli_module, "_emit_group_help", None)
+        _missing_command = getattr(_cli_module, "_missing_command", None)
 
 __all__ = [
+    "_emit_group_help",
     "_fix_pool",
+    "_missing_command",
+    "ALLOWED_TASKS",
     "app",
     "auth_group",
     "clean_logs_cmd",
