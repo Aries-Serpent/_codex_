@@ -79,7 +79,7 @@ jobs:
               "mutation_score_pct": mutation_score,
               "threshold_pct": 60.0,
               "passed": executed_modules > 0 and mutation_score >= 60.0,
-              "note": "Score is module pass-rate from mutmut execution return codes",
+              "note": "Score is module pass-rate from mutmut execution return codes (not per-mutant kill ratio)",
           }
           os.makedirs("reports/mutation", exist_ok=True)
           with open("reports/mutation/mutation_score_latest.json", "w") as f:

@@ -118,6 +118,9 @@ def check_quality() -> dict:
         return {"check": "quality", "passed": False, "note": "benchmarks/rag/retrieval_benchmark.json missing"}
 
     data = json.loads(bench.read_text())
+    # Support both legacy and current benchmark schemas:
+    # - legacy: top-level recall_at_k/recall + min_recall/min_mrr
+    # - current: last_measured.top5_recall/mrr + top5_recall_min/mrr_min
     last_measured = data.get("last_measured", {})
     recall = data.get("recall_at_k", data.get("recall"))
     if recall is None:

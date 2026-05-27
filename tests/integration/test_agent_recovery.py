@@ -59,6 +59,8 @@ class TestAgentHealthDetection:
         if "all_assigned_agents_completed" in agent_metadata:
             assert isinstance(agent_metadata["all_assigned_agents_completed"], bool)
             return
+        # Real .codex/cognitive_brain/metadata.json currently tracks pattern coverage
+        # rather than legacy completion booleans; verify that metadata feed is populated.
         assert "total_patterns" in agent_metadata
         assert isinstance(agent_metadata["total_patterns"], int)
 
@@ -66,7 +68,6 @@ class TestAgentHealthDetection:
         """At least one agent must be registered."""
         agents = agent_metadata.get("agents", [])
         if agents:
-            assert len(agents) > 0, "Agent registry must have at least one agent"
             return
         assert "pattern_types" in agent_metadata
         assert isinstance(agent_metadata["pattern_types"], dict)
