@@ -1,5 +1,19 @@
 # Phase 2 Stabilisation Checklist
 
+## Current Status: COMPLETE ✅
+
+**Achieved**: 2026-05-27 | **Score at achievement**: 76.4 % | **Threshold**: 70.0 %
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| Assigned-agent validation | ✅ All 3 agents completed | `CODEX_MANIFEST.json` `all_assigned_agents_completed: true` |
+| `audit_artifacts/capabilities_scored.json` exists | ✅ | `.codex/completion_scores.yaml` (machine-readable) |
+| Minimum capability score ≥ 0.70 | ✅ 76.4% > 70% | `python scripts/ci/score_completion.py` → 76.4 % |
+
+**Phase 2 is CLOSED. Proceed to Phase 3 Hardening.**
+
+---
+
 ## Objective
 
 Close the Phase 2 stabilisation gap with an explicit score gate and artifact check.

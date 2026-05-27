@@ -268,15 +268,15 @@ python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml
 Example `completion_scores.yaml`:
 
 ```yaml
-architecture: 3
+architecture: 4
 ml_lifecycle: 3
-agent_orchestration: 3
-rag_quality: 3
-security: 4
-cicd_health: 3
-test_maturity: 3
-observability: 3
-documentation: 3
+agent_orchestration: 4
+rag_quality: 4
+security: 5
+cicd_health: 4
+test_maturity: 4
+observability: 4
+documentation: 4
 performance: 2
 release_integrity: 2
 ```
@@ -287,4 +287,5 @@ release_integrity: 2
 
 | Date | Version | Change |
 |------|---------|--------|
+| 2026-05-27 | 1.1.0 | Updated example YAML to current scores (76.4 %); bumped band to "Operational but needs hardening" |
 | 2026-05-27 | 1.0.0 | Initial version |

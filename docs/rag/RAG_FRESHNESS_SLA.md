@@ -16,6 +16,47 @@ and retrieval quality.  The SLA is enforced automatically by the workflows liste
 
 ---
 
+## RAG Freshness & Quality Pipeline
+
+```mermaid
+flowchart TD
+    SCHED["rag-freshness-scheduler.yml\nRuns: nightly 02:00 UTC\n+ every 6 hours on miss"]
+    AGE{"Index Age\n> 24 hours?"}
+    REBUILD["embedding-index-rebuild.yml\nFAISS index rebuilt from source"]
+    FRESHCHECK["Freshness Gate\nIndex age ≤ 24 h"]
+    FRESH_OK{"Freshness\nPass?"}
+
+    QUALITY["test-rag.yml\nRetrieval benchmark\nrecall ≥ 0.70 / MRR ≥ 0.60"]
+    QUALITY_OK{"Quality\nPass?"}
+
+    DRIFT["Drift Detection\nrag_quality.yaml config\ncompares to baseline\nrecall=0.82 MRR=0.74"]
+    DRIFT_OK{"Drift\n≤ threshold?"}
+
+    DEPLOY["✅ RAG Serving\nIndex current + quality gated"]
+    STALE_ALERT["⚠️ STALE ALERT\nnightly-security-mttr.yml\nGitHub Issue"]
+    QUALITY_ALERT["❌ QUALITY BREACH\nBlock PR merge\nAlert rag-freshness-loop-agent"]
+    DRIFT_ALERT["📉 DRIFT ALERT\nrag-index-manager auto-retrain\nReport to COMPLETION_DASHBOARD.md"]
+
+    SCHED --> AGE
+    AGE -->|No| FRESHCHECK
+    AGE -->|Yes| REBUILD
+    REBUILD --> FRESHCHECK
+    FRESHCHECK --> FRESH_OK
+    FRESH_OK -->|Yes| QUALITY
+    FRESH_OK -->|No| STALE_ALERT
+    QUALITY --> QUALITY_OK
+    QUALITY_OK -->|Yes| DRIFT
+    QUALITY_OK -->|No| QUALITY_ALERT
+    DRIFT --> DRIFT_OK
+    DRIFT_OK -->|Yes| DEPLOY
+    DRIFT_OK -->|No| DRIFT_ALERT
+    DRIFT_ALERT --> DEPLOY
+```
+
+**Evidence**: RAG production readiness validation PASS (2026-01-08) — 403 tests across 5 files; multi-tenant indexing, caching, observability all validated. See `reports/rag_validation_summary.md`.
+
+---
+
 ## Freshness SLA
 
 | Metric | SLA | Enforcement |

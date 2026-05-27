@@ -1,6 +1,6 @@
 # Codex Platform — Completion Governance
 
-**Version**: 1.1.0  
+**Version**: 1.2.0  
 **Created**: 2026-05-27  
 **Dashboard**: [`../.codex/COMPLETION_DASHBOARD.md`](../COMPLETION_DASHBOARD.md)  
 **Rubric**: [`../../docs/rubrics/completion_rubric_v1.md`](../../docs/rubrics/completion_rubric_v1.md)  
@@ -19,7 +19,7 @@ manage the 90-day remediation roadmap.
 ## Phase 2 — Stabilisation
 
 **Goal**: Reach rubric score ≥ 75 % (Operational but needs hardening).  
-**Horizon**: 4–6 weeks from baseline.
+**Target date**: 2026-06-10 ✅ *Achieved 2026-05-27 — score 76.4 %*
 
 ### 2.1 Eliminate CI Flakiness
 
@@ -62,7 +62,7 @@ manage the 90-day remediation roadmap.
 ## Phase 3 — Hardening
 
 **Goal**: Reach rubric score ≥ 90 % (Production-complete).  
-**Horizon**: 8–12 weeks from baseline.
+**Target date**: 2026-07-15
 
 ### 3.1 Dependency / Supply-Chain Controls
 
@@ -105,7 +105,7 @@ manage the 90-day remediation roadmap.
 
 ## Phase 4 — Completion Governance
 
-**Goal**: Sustain score ≥ 90 % indefinitely.
+**Goal**: Sustain score ≥ 90 % indefinitely.  **Target date**: 2026-07-08 (after Phase 3 closes 2026-06-17).
 
 ### 4.1 Monthly Rescoring Procedure
 
@@ -164,9 +164,16 @@ flowchart LR
         mbaetiong["@mbaetiong\nRepo Maintainer"]
     end
 
-    subgraph CI["CI/CD & Workflow (D6/D10)"]
+    subgraph ARCH["Architecture (D1)"]
+        CHG["codebase-health-guardian\nD1 Owner"]
+        ILG["import-linter.yml\n✅ PR gate"]
+    end
+
+    subgraph CI["CI/CD & Performance (D6/D10)"]
         WHM["workflow-health-monitor\nCI Health"]
         WCG["workflow-compliance-guardian\nCI Backup"]
+        WCG2["workflow-compliance-gate.yml\n✅ PR gate"]
+        FLK["ci-flake-tracker.yml\n✅ weekly report"]
         PRD["performance-regression-detector\nPerf/Cost"]
         CMA["cache-management-agent\nPerf Backup"]
     end
@@ -174,6 +181,7 @@ flowchart LR
     subgraph SEC["Security & Release (D5/D11)"]
         USS["unified-security-scanner\nSecurity"]
         SAA["security-audit-agent\nSecurity Backup"]
+        MTTR["nightly-security-mttr.yml\n✅ nightly MTTR"]
         PPOA["pypi-publishing-operations-agent\nRelease"]
         PVA["packaging-validation-agent\nRelease Backup"]
     end
@@ -182,22 +190,38 @@ flowchart LR
         MVSA["ml-validation-suite-agent\nML Lifecycle"]
         RFL["rag-freshness-loop-agent\nRAG Quality"]
         RIM["rag-index-manager\nRAG Backup"]
+        RAGQ["rag_quality.yaml\n✅ drift config"]
     end
 
     subgraph ORCH["Orchestration & Obs (D3/D8)"]
         AO["agent-orchestrator\nOrchestration"]
         CBSI["cognitive-brain-session-injector\nOrch Backup"]
+        OCL["orchestration_compliance.log\n✅ audit trail"]
         PMA["performance-monitor-agent\nObservability"]
         MSD["msv-dashboard-monitor\nObs Backup"]
+        SLO["SLO_DEFINITIONS.md\n✅ 10 SLOs defined"]
     end
 
     subgraph TEST["Test & Docs (D7/D9)"]
         UCA["unified-coverage-agent\nTest Maturity"]
         FTG["fragile-test-guardian\nTest Backup"]
+        CVR["coverage-ratchet.yml\n✅ 80% CI gate"]
         UDA["unified-doc-agent\nDocumentation"]
         DFC["doc-freshness-checker\nDoc Backup"]
+        OBC["ONBOARDING_CHECKLIST.md\n✅ validated checklist"]
     end
 
+    CHG --> ILG
+    WHM --> WCG2
+    WHM --> FLK
+    USS --> MTTR
+    RFL --> RAGQ
+    AO --> OCL
+    PMA --> SLO
+    UCA --> CVR
+    UDA --> OBC
+
+    CHG -->|escalate| RubricOwner
     WHM -->|escalate| RubricOwner
     USS -->|escalate| RubricOwner
     MVSA -->|escalate| mbaetiong
@@ -228,5 +252,6 @@ flowchart LR
 
 | Date | Version | Change |
 |------|---------|--------|
+| 2026-05-27 | 1.2.0 | Updated mermaid ownership map: added D1-Architecture subgraph, new workflow nodes (import-linter.yml, nightly-security-mttr.yml, workflow-compliance-gate.yml, ci-flake-tracker.yml, coverage-ratchet.yml, SLO_DEFINITIONS.md, orchestration_compliance.log, ONBOARDING_CHECKLIST.md, rag_quality.yaml); fixed CI subgraph label from "CI/CD & Workflow" to "CI/CD & Performance"; updated phase horizons to date-based |
 | 2026-05-27 | 1.1.0 | Assigned Copilot custom agents as Owner+Backup for all Phase 2–3 actions and Contacts & Escalation table; added mermaid ownership map |
 | 2026-05-27 | 1.0.0 | Initial version |

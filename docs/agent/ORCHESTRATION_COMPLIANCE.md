@@ -17,6 +17,46 @@ are handled, and who is responsible for each aspect.
 
 ---
 
+## Compliance Lifecycle Flow
+
+```mermaid
+flowchart TD
+    DISPATCH["Task Dispatched\n(workflow or orchestrator-agent)"]
+    POLICY["Policy Gate Check\n(rate-limit, allowed domains,\nrequired fields)"]
+    ALLOWED{"Gate Passed?"}
+
+    LOG_ENTRY["Write JSONL Log Entry\n(reports/orchestration/orchestration_compliance.log.md)"]
+    EXECUTE["Agent Executes Task"]
+    OUTCOME{"Outcome"}
+
+    SUCCESS["✅ SUCCESS\nstatus: success\nlog + OKR tick"]
+    DEGRADED["⚠️ DEGRADED\nstatus: degraded\nlog + alert"]
+    FAIL["❌ FAIL\nstatus: failure\nlog + incident"]
+    BLOCKED["🚫 BLOCKED\nstatus: blocked\nlog + policy violation alert"]
+
+    OKR["OKR_TRACKING.md\nMetrics Updated"]
+    ESCALATE["Escalation\nGitHub Issue created\n@mbaetiong notified"]
+
+    DISPATCH --> POLICY
+    POLICY --> ALLOWED
+    ALLOWED -->|Yes| LOG_ENTRY
+    ALLOWED -->|No| BLOCKED
+    LOG_ENTRY --> EXECUTE
+    EXECUTE --> OUTCOME
+    OUTCOME -->|success| SUCCESS
+    OUTCOME -->|partial / timeout| DEGRADED
+    OUTCOME -->|exception / policy| FAIL
+    BLOCKED --> ESCALATE
+    FAIL --> ESCALATE
+    DEGRADED --> ESCALATE
+    SUCCESS --> OKR
+    DEGRADED --> OKR
+    FAIL --> OKR
+    BLOCKED --> OKR
+```
+
+---
+
 ## Compliance Obligations
 
 ### 1. Logging

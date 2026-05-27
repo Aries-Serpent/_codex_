@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Readiness Score 60.8% → 76.4% — Branch `copilot/explain-repository-structure-again` — 2026-05-27T02:57Z)
+
+- **`.codex/completion_scores.yaml`** — machine-readable flat-YAML domain scores consumed by `score_completion.py`; confirmed 76.4 % ("Operational but needs hardening")
+- **`.github/workflows/import-linter.yml`** — D1: CI gate enforcing import-layer contracts via `.importlinter` config; blocks PRs on violations
+- **`docs/security/SECURITY_SLA.md`** — D2/D5: MTTR SLA definitions (critical ≤3 d, high ≤10 d) with Mermaid MTTR escalation flow
+- **`.github/workflows/nightly-security-mttr.yml`** — D5: nightly MTTR tracking; confirms all CVEs patched (aiohttp 8 CVEs, GitPython→3.1.50, Mako→1.3.12, dynaconf RCE); Bandit SAST clean
+- **`.github/workflows/coverage-ratchet.yml`** — D7: 80 % coverage CI gate enforced; `pyproject.toml fail_under=10` retained as floor
+- **`.github/workflows/ci-flake-tracker.yml`** — D6/D7: weekly flake rate report using 93 live flakiness patterns from `cognitive_brain/workflow_patterns.jsonl` (last updated 2026-05-26)
+- **`docs/rag/RAG_FRESHNESS_SLA.md`** — D4: freshness SLA + Mermaid RAG pipeline flow; backed by 403 passing RAG tests (validation PASS 2026-01-08)
+- **`benchmarks/rag/retrieval_benchmark.json`** — D4: quality baseline recall=0.82, MRR=0.74; gates at recall≥0.70, MRR≥0.60
+- **`.codex/config/rag_quality.yaml`** — D4: drift alert configuration
+- **`.github/workflows/workflow-compliance-gate.yml`** — D6: PR compliance gate
+- **`docs/onboarding/ONBOARDING_CHECKLIST.md`** — D9: validated onboarding checklist (≤60 min to first `nox -s tests`)
+- **`docs/observability/SLO_DEFINITIONS.md`** — D8: 10 SLOs for ML serving, RAG, agent orchestration, CI/CD, security; with Mermaid alert-routing flow
+- **`docs/observability/RUNBOOKS.md`** — D8: 7 operational runbooks RB-01 through RB-07
+- **`docs/agent/ORCHESTRATION_COMPLIANCE.md`** — D3: compliance spec with Mermaid compliance lifecycle flow
+- **`reports/orchestration/orchestration_compliance.log.md`** — D3: audit trail
+- **`reports/orchestration/OKR_TRACKING.md`** — D3: OKR metrics tracking
+- **`docs/roadmap/explain_repository_structure_whats_next.md`** — living roadmap for this session
+- **`docs/roadmap/explain_repository_structure_session_diagram.mmd`** — session Mermaid diagram
+
+### Changed (2026-05-27)
+- **`.github/workflows/doc-freshness-check.yml`** — P0 docs now blocking (removed `continue-on-error`; added explicit fail step; added PR trigger)
+- **`.codex/COMPLETION_DASHBOARD.md`** — score updated to 76.4 %; Score History table + gap-to-target table added; band updated to "Operational but needs hardening"
+- **`.codex/plans/COMPLETION_GOVERNANCE.md`** — v1.2.0; mermaid updated (D1 subgraph, new workflow nodes); Phase 2 → Achieved 2026-05-27; Phase 3 → 2026-06-17 (expedited); Phase 4 → 2026-07-08 (expedited); Phase 4 section now has explicit target date (no "weeks" language)
+- **`.codex/DOMAIN_OWNERSHIP.md`** — gateway labels updated D1–D9 with ✅ artifact citations; exit criteria checkboxes ticked for D1(item 3), D3(items 2+4), D4(items 2+3+5), D5(item 3), D6(items 2+5), D7(item 1), D8(items 1+3+5), D9(items 1+3+4)
+- **`docs/rubrics/completion_rubric_v1.md`** — v1.1.0; example YAML updated to current scores; changelog entry added
+- **`docs/governance/PHASE_2_STABILISATION_CHECKLIST.md`** — marked COMPLETE ✅ (76.4 % > 70 %; all assigned agents completed)
+- **`docs/governance/PHASE_3_HARDENING_CHECKLIST.md`** — IN PROGRESS status added; target date 2026-06-17; per-domain gap table with artifact evidence
+- **`docs/governance/PHASE_4_COMPLETION_GATES.md`** — QUEUED status added; target date 2026-07-08 (expedited)
+
 ### Fixed (auto-update — PR #4608)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4608 (SHA `615ad929`) at 2026-05-27T00:29Z [auto-generated]
 

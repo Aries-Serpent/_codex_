@@ -17,6 +17,60 @@ thresholds in `.codex/config/monitoring.yaml` and runbook selection when breache
 
 ---
 
+## Alert Routing Flow
+
+```mermaid
+flowchart LR
+    subgraph SOURCES["SLO Breach Sources"]
+        ML["ML Serving\nP95 > 600ms / avail < 99%"]
+        RAG["RAG Pipeline\nStale > 24h / recall drop"]
+        ORCH["Agent Orchestration\nSuccess < 90%"]
+        CI["CI/CD\nPass rate < 90%"]
+        SEC["Security\nCritical open / MTTR > 3d"]
+    end
+
+    subgraph DETECT["Detection Layer"]
+        MON["ci-health-monitor.yml\nnightly-security-mttr.yml\nrag-freshness-scheduler.yml"]
+    end
+
+    subgraph ROUTE["Alert Routing"]
+        P1["P1 Critical\n@mbaetiong\nGitHub Issue + email"]
+        P2["P2 High\nperformance-monitor-agent\nGitHub Issue"]
+        P3["P3 Warning\nci-health-alert-agent\nGitHub Issue"]
+    end
+
+    subgraph RB["Runbooks"]
+        RB01["RB-01 ML Latency"]
+        RB02["RB-02 ML Availability"]
+        RB03["RB-03 RAG Stale"]
+        RB04["RB-04 RAG Quality"]
+        RB05["RB-05 Agent Failure"]
+        RB06["RB-06 CI Pass Rate"]
+        RB07["RB-07 Security Alert"]
+    end
+
+    ML --> MON
+    RAG --> MON
+    ORCH --> MON
+    CI --> MON
+    SEC --> MON
+
+    MON -->|critical / avail breach| P1
+    MON -->|SLO breach > 30min| P2
+    MON -->|budget > 50% consumed| P3
+
+    P1 --> RB01
+    P1 --> RB02
+    P1 --> RB07
+    P2 --> RB03
+    P2 --> RB04
+    P2 --> RB05
+    P2 --> RB06
+    P3 --> RB06
+```
+
+---
+
 ## SLO Table
 
 | # | Service | SLO | Measurement | Alert Threshold |

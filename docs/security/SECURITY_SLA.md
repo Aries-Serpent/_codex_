@@ -16,6 +16,47 @@ which reports overdue findings and blocks releases when critical SLA is breached
 
 ---
 
+## MTTR Escalation Flow
+
+```mermaid
+flowchart LR
+    FIND["🔍 Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)"]
+    TRIAGE["Severity Triage\ncritical / high / medium / low"]
+
+    subgraph CRITICAL["Critical (≤ 3 days)"]
+        C_D1["Day 1\nGitHub Issue created\nDirect assign + email"]
+        C_D3["Day 3 SLA breach\nBlock release gate\nEscalate to @mbaetiong"]
+    end
+
+    subgraph HIGH["High (≤ 10 days)"]
+        H_D1["Day 1\nGitHub Issue auto-labeled\nhigh-security"]
+        H_D10["Day 10 SLA breach\nBlock release gate"]
+    end
+
+    subgraph MEDIUM["Medium (≤ 30 days)"]
+        M_WARN["Tracked in security_audit.md\nWarning-only; no release block"]
+    end
+
+    subgraph LOW["Low / Info (≤ 90 days)"]
+        L_TRACK["Tracked in Dependabot\nNo gate, no alert"]
+    end
+
+    MTTR["nightly-security-mttr.yml\nComputes age of each finding"]
+    CLOSE["✅ Remediated\nPR merged + finding closed"]
+
+    FIND --> TRIAGE
+    TRIAGE -->|critical| CRITICAL
+    TRIAGE -->|high| HIGH
+    TRIAGE -->|medium| MEDIUM
+    TRIAGE -->|low / info| LOW
+    CRITICAL --> MTTR
+    HIGH --> MTTR
+    MTTR -->|within SLA| CLOSE
+    MTTR -->|SLA breached| C_D3
+```
+
+---
+
 ## SLA Tiers
 
 | Severity | SLA | Block release if overdue? |
