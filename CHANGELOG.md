@@ -7,41 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (SN — PR #4605 Priority-1 gate recheck — 2026-05-26T23:31Z)
-- Re-polled latest PR #4605 Priority-1 workflows on head `e45c2b3df1c6`:
-  - `resilient_validation.yml` run `26480813349` → `success`
-  - `comment-review-gate.yml` run `26480896337` → `action_required` (approval-gated, 0 jobs)
-  - `workflow-execution-gate.yml` run `26480896338` → `action_required` (approval-gated, 0 jobs)
-- Retrieved run details/log checks for non-green gates and confirmed no actionable failed jobs on the latest head.
-- Re-ran requested targeted tests and required local validation commands:
-  - `python -m pytest tests/src/test_cli_phase10.py -q` ✅
-  - `python -m pytest tests/monitoring/test_monitoring_mlflow_utils.py -q` ✅
-  - `python -m ruff check src/ tests/ --fix` ✅
-  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅
-  - `python scripts/ci/auto_fix_common_issues.py --check-only` ⚠ Pattern 25 requested accountability freshness update.
-
-### Fixed (PR #4605 review follow-up — 2026-05-26T23:20Z)
-- Updated `.github/workflows/copilot-setup-steps-guard.yml` to use fixed-string matching (`grep -Fn`) for inline `run:` regression detection, preventing regex wildcard drift in guard behavior.
-- Updated guard-step documentation comment so it matches actual logic (scan-forward from step name; first encountered `run:` must be `run: |`).
-- Revalidated targeted impacted paths with local pytest:
-  - `tests/src/test_cli_phase10.py`
-  - `tests/monitoring/test_monitoring_mlflow_utils.py`
-  - Result: 28 tests passed.
-- Added PR #4605 living docs for continuity:
-  - `docs/roadmap/PR4605_whats_next.md`
-  - `docs/roadmap/PR4605_session_diagram.mmd`
-
-### Fixed (auto-update — PR #4605)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4605 (SHA `0b520c1a`) at 2026-05-26T22:42Z [auto-generated]
-
-### Fixed (regression guard — PR cherry-pick session 2026-05-26T22:05Z)
-- **YAML Regression Guard**: Fixed inline `run:` form in `.github/workflows/copilot-setup-steps.yml` session_preload step; converted to `run: |` block scalar to prevent Copilot agent pre-flight failure ("Failed to launch agent")
-- **Regression Guard Comment**: Added verbatim guard comment above session_preload step documenting the rule, root cause, and 3× regression history (commits 7a9412a/aabe2157/a481dcae)
-- **Guard CI Workflow**: Created `.github/workflows/copilot-setup-steps-guard.yml` — fails fast on push/PR if inline `run:` form is detected or `run: |` block scalar is absent
-
-### Fixed (auto-update — PR #4602)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4602 (SHA `ddd23b63`) at 2026-05-26T20:17Z [auto-generated]
-
 ### Fixed (SN — PR #4580 Code Quality Fixes — 2026-05-26T02:42Z)
 - **Test Schema Validation:** Fixed `test_negotiate_params_accepts_client_versions` in `tests/mcp/test_server_schemas.py` to use `dict` instead of `list` to match `NegotiateParams.client_versions` schema definition (`Optional[dict[str, Any]]`)
 - **Accountability Report Formatting:** Consolidated duplicate SESSION SUMMARY headings and fixed repeated item numbering in ordered list
