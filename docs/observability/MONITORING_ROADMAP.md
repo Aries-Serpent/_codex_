@@ -25,7 +25,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ### 1.1 MLflow Integration
 **Status:** ✅ Implemented  
 **Version:** >= 2.22.4 (43+ CVEs fixed from 2.11)  
-**Location:** `src/monitoring/codex_logging.py`, `training/checkpoint_manager.py`
+**Location:** `src/codex_ml/monitoring/codex_logging.py`, `training/checkpoint_manager.py`
 
 **Capabilities:**
 - Experiment grouping and run tracking
@@ -36,7 +36,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ### 1.2 Weights & Biases Integration
 **Status:** ✅ Implemented  
 **Version:** >= 0.16  
-**Location:** `src/monitoring/codex_logging.py`
+**Location:** `src/codex_ml/monitoring/codex_logging.py`
 
 **Capabilities:**
 - Cloud-based experiment tracking
@@ -59,7 +59,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 
 ### 2.1 TensorBoard Integration
 **Status:** ✅ Implemented  
-**Location:** `src/monitoring/codex_logging.py`, `src/training/trainer.py`
+**Location:** `src/codex_ml/monitoring/codex_logging.py`, `src/training/trainer.py`
 
 **Capabilities:**
 - Scalar tracking (loss, accuracy, learning rate curves)
@@ -70,7 +70,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ### 2.2 Prometheus Metrics
 **Status:** ✅ Implemented  
 **Version:** >= 0.14  
-**Location:** `src/monitoring/codex_logging.py`, `cognitive_app/metrics.py`
+**Location:** `src/codex_ml/monitoring/codex_logging.py`
 
 **Exposed Metrics:**
 - Training metrics (loss, accuracy, throughput)
@@ -79,7 +79,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 
 ### 2.3 Structured Logging
 **Status:** ✅ Implemented  
-**Location:** `src/monitoring/codex_logging.py`, `src/cli.py`
+**Location:** `src/codex_ml/monitoring/codex_logging.py`, `src/cli.py`
 
 **Log Format:** JSON with structured context  
 **Destinations:** Console, File, MLflow
@@ -124,7 +124,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 
 ### 4.1 Ray Serve Integration
 **Status:** ✅ Implemented  
-**Location:** `cognitive_app/serve_deployment.py`, `cognitive_app/metrics.py`
+**Location:** `cognitive_app/src/server/cli_api_server.py`
 
 **Auto-Instrumented Metrics:**
 - Deployment replica count, ongoing requests
@@ -133,7 +133,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 
 ### 4.2 FastAPI Integration
 **Status:** ✅ Implemented  
-**Location:** `cognitive_app/app.py`
+**Location:** `cognitive_app/src/server/cli_api_server.py`
 
 **Endpoints:**
 - `GET /health` — Liveness probe

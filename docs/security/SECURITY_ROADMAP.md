@@ -122,7 +122,7 @@ rules:
 semgrep --config=.semgrep . --json -o semgrep_results.json
 
 # CI scan (automatic on PR)
-# See: .github/workflows/semgrep-sast.yml
+# See: .github/workflows/semgrep_sarif.yml
 ```
 
 ### 2.2 SAST — CodeQL Integration
@@ -170,8 +170,9 @@ mypy src/ > .mypy_baseline.txt
 ## 3. Secret Management Layer
 
 ### 3.1 Gitleaks Integration
-**Status:** ✅ Implemented  
-**Location:** `.gitleaks.toml`, `.github/workflows/gitleaks.yml`
+**Status:** 🟡 Planned (config-only; no dedicated workflow)  
+**Location:** `.gitleaks.toml`  
+**Note:** Secret scanning is currently handled by `.github/workflows/security-scanning-suite.yml` via `detect-secrets`. A dedicated Gitleaks CI workflow (`.github/workflows/gitleaks.yml`) is planned but not yet implemented.
 
 **Secret Patterns Detected:**
 - AWS credentials (access keys, secrets)
@@ -200,13 +201,12 @@ regex = '''(?i)aws_access_key_id\s*=\s*[A-Z0-9]{20}'''
 **Run Gitleaks:**
 ```bash
 # Scan current commits
-gitleaks detect --source gitlab --verbose
+gitleaks detect --source . --verbose
 
 # Scan entire history
-gitleaks detect --source gitlab --verbose --log-opts="--all"
+gitleaks detect --source . --verbose --log-opts="--all"
 
-# CI scan (automatic on push)
-# See: .github/workflows/gitleaks.yml
+# CI scan (automatic on push via security-scanning-suite.yml using detect-secrets)
 ```
 
 ### 3.2 Secrets Baseline
@@ -292,7 +292,7 @@ token = mgr.create_agent_token(
 
 **Configuration:**
 ```yaml
-# configs/rate_limiting.yaml
+# configs/rate_limiting.yaml (planned — not yet implemented)
 rate_limits:
   api:
     default: "100/minute"
