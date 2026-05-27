@@ -26,6 +26,11 @@ def test_call_tool_params_top_k_validation() -> None:
             )
 
 
+def test_call_tool_params_top_k_lower_boundary_is_valid() -> None:
+    params = CallToolParams(tool_id="mcp.search", input={"query": "abc"}, top_k=1)
+    assert params.top_k == 1
+
+
 def test_call_tool_params_accepts_custom_values() -> None:
     params = CallToolParams(
         tool_id="mcp.search",

@@ -13,8 +13,6 @@
 # Or run directly:
 #   bash scripts/ci/safe_git_show.sh <ref> <file>
 
-set -euo pipefail
-
 # safe_git_show REF FILE
 #   Outputs the file content at REF, or nothing if the file doesn't exist at REF.
 #   Exit code: 0 always (never exits 128).
@@ -44,7 +42,7 @@ safe_git_diff() {
     git diff "${base_ref}" "${head_ref}" -- "${file}" || true
   else
     # File is new (added after base_ref) — diff against /dev/null
-    git diff --no-index /dev/null "${file}" 2>/dev/null || true
+    git diff --no-index /dev/null <(git show "${head_ref}:${file}") 2>/dev/null || true
   fi
 }
 
@@ -71,6 +69,7 @@ safe_git_show_with_head_fallback() {
 
 # If invoked directly (not sourced), run safe_git_show with args
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  set -euo pipefail
   if [[ $# -lt 2 ]]; then
     echo "Usage: $0 <ref> <file>" >&2
     exit 1
