@@ -59,6 +59,11 @@ jobs:
           violations = []
           warnings = []
 
+          # Files managed by GitHub Copilot / external tooling that use shell
+          # brace syntax valid for GitHub Actions' Go YAML parser but rejected
+          # by PyYAML's strict parser.  Skip compliance checks for these files.
+          SKIP_FILES = {"copilot-setup-steps.yml"}
+
           def is_stub(data):
               """Stubs: only workflow_dispatch trigger + no real jobs."""
               triggers = data.get("on", {}) or {}
@@ -76,6 +81,8 @@ jobs:
               return has_only_dispatch and is_noop
 
           for wf_file in sorted(WORKFLOW_DIR.glob("*.yml")):
+              if wf_file.name in SKIP_FILES:
+                  continue
               try:
                   data = yaml.safe_load(wf_file.read_text())
               except yaml.YAMLError as e:
@@ -97,12 +104,16 @@ jobs:
                   violations.append(f"{name}: missing `concurrency:` block")
 
               # Rule 3: all non-stub jobs must have timeout-minutes
+              # Exception: reusable-workflow caller jobs (uses:) do not support
+              # timeout-minutes at the caller level — skip them.
               jobs = data.get("jobs", {}) or {}
               for job_id, job in jobs.items():
                   if not isinstance(job, dict):
                       continue
                   if job_id == "noop":
                       continue
+                  if "uses" in job:
+                      continue  # reusable workflow call — timeout not supported
                   if "timeout-minutes" not in job:
                       violations.append(
                           f"{name}: job `{job_id}` missing `timeout-minutes`"
