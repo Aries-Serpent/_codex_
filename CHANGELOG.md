@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (Coverage Wave — 2026-05-27T21:19Z)
 - **Phase 0 + Wave A + Phase B complete**: 4 collection blockers fixed; 3079 tests pass in tests/agents+scripts+services; coverage source expanded to include agents/, scripts/, services/ in noxfile + pyproject.toml. Baseline: agents=74.4%, src=7.9%, scripts=1.6%, services=17.4%, overall=6.66%.
 - **Torch Collection Blockers Fixed**: `conftest.py` now ignores `tests/space_traversal/`, `test_dataset_hashing.py`, `test_env_logging.py`, `test_metrics_writers.py`, `test_rag_end_to_end_pipeline.py` when torch is unavailable — eliminates AttributeError collection crashes.
-- **Phase C launched**: test-enhancement-agent targeting src/security/ modules (core.py 11%→≥70%, decorators.py 0%→≥70%, token_rotation.py 0%→≥70%, audit_logger.py 0%→≥70%, github_provider.py 0%→≥70%).
-- **Phase D launched**: cognitive-brain-session-injector executing CB-001 (Typer migration), CB-002 (RAG coverage ≥95%), CB-003 (actionlint YAML fixes), CB-004 (PDA pattern library >14), CB-005 (max_concurrency throttling), CB-006 (ci.health.analyzer wiring).
-- **Phase E launched**: unified-coverage-agent lifting training/, physics_orchestrator.py, msp_gateway/, services/api/main.py coverage toward 75% overall.
+- **Phase C COMPLETE ✅**: src/security/ coverage raised from ~5% → **90.72%** (target ≥70%). Modules: audit_logger=95%, core=96%, decorators=92%, github_provider=98%, scope_validator=96%, token_rotation=91%, tls_config=88%, provider_factory=79%, secrets=89%, aws_provider=70%, encryption=86%, environment_provider=97%. New test files: `tests/security/test_decorators.py` (57 tests), `tests/security/test_github_provider.py` (68 tests).
+- **Phase D COMPLETE ✅**: All 6 CB objectives done — CB-001 Typer API migration, CB-002 RAG coverage (30+ tests), CB-003 actionlint YAML pipe fix, CB-004 PDA library 11→16 entries, CB-005 max_concurrency throttling, CB-006 proactive-ci-monitor wiring.
+- **Phase E in progress**: unified-coverage-agent lifting training/, physics_orchestrator.py, msp_gateway/, services/api/ coverage toward 75% overall.
 
 ### Fixed (auto-update — PR #4633)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4633 (SHA `e2ecda90`) at 2026-05-27T18:13Z [auto-generated]
