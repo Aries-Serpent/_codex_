@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "description": "Serving latency baseline thresholds",
+  "baselines": [
+    {
+      "endpoint": "health",
+      "p50_ms": 50,
+      "p95_ms": 200,
+      "p99_ms": 500
+    },
+    {
+      "endpoint": "predict",
+      "p50_ms": 200,
+      "p95_ms": 800,
+      "p99_ms": 2000
+    }
+  ],
+  "policy": {
+    "max_p95_regression_pct": 20,
+    "max_p99_regression_pct": 30
+  }
+}

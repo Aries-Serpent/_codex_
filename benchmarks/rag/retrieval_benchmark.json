@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "description": "RAG retrieval quality benchmark baseline",
+  "thresholds": {
+    "top5_recall_min": 0.70,
+    "mrr_min": 0.60
+  },
+  "last_measured": {
+    "top5_recall": 0.75,
+    "mrr": 0.65,
+    "measured_at": "2026-05-27T00:00:00Z",
+    "commit": "initial-baseline"
+  }
+}

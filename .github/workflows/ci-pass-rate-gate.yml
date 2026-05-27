@@ -90,7 +90,8 @@ jobs:
           rate = float(os.environ.get('RATE', '0'))
           print(f'Pass rate: {rate}%  threshold: 95.0%')
           if rate < 95.0:
-              print('::warning::7-day CI pass rate below 95% — D6 exit criteria not yet met')
+              print('::error::7-day CI pass rate below 95% — D6 exit criteria not yet met')
+              sys.exit(1)
           else:
               print('::notice::✅ D6 exit criteria #1 met: 7-day pass rate >= 95%')
           "

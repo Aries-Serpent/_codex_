@@ -3,7 +3,7 @@
 **Owner**: `unified-security-scanner` (primary), `security-audit-agent` (backup)  
 **Last updated**: 2026-05-27  
 **Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
-**Tracking workflow**: [`.github/workflows/nightly-security-mttr.yml`](../../.github/workflows/nightly-security-mttr.yml)
+**Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](../../.github/workflows/nightly-codeql-alert-triage.yml)
 
 ---
 
@@ -11,7 +11,7 @@
 
 This document defines the mean-time-to-remediation (MTTR) SLA for all security findings
 in the Codex platform.  Findings are discovered via CodeQL, Semgrep, Gitleaks, and
-Dependabot. The nightly `nightly-security-mttr.yml` workflow computes and reports overdue findings,
+Dependabot. The nightly `nightly-codeql-alert-triage.yml` workflow computes and reports overdue findings,
 and escalation/blocking is handled by the security notification/gating workflows.
 
 ---

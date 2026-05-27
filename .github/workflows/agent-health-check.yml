@@ -107,18 +107,29 @@ jobs:
           import sys
           from pathlib import Path
 
-          # Verify OODA loop core components are importable and present
-          checks = [
+          # Verify OODA loop core components are importable and present.
+          # required: must exist or job fails.
+          # optional: generated at runtime; absence is a warning, not a failure.
+          required_checks = [
               ("scripts/cognitive/actions", "monitoring_actions.py"),
               ("scripts/cognitive/sensors", "monitoring_sensor.py"),
               (".codex/config", "monitoring.yaml"),
+          ]
+          optional_checks = [
               ("reports/orchestration", "orchestration_compliance.log.md"),
           ]
           missing = []
-          for directory, fname in checks:
+          for directory, fname in required_checks:
               p = Path(directory) / fname
               if not p.exists():
                   missing.append(str(p))
+              else:
+                  print(f"✅ {p}")
+
+          for directory, fname in optional_checks:
+              p = Path(directory) / fname
+              if not p.exists():
+                  print(f"::warning::Optional OODA artefact absent (generated at runtime): {p}")
               else:
                   print(f"✅ {p}")
 

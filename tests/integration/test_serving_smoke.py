@@ -4,8 +4,8 @@ Serving smoke test — D2 exit criteria #3.
 Validates serving contract invariants with lightweight synthetic fixtures:
 health response schema, prediction payload shape, and batch output integrity.
 
-This test is discovered by ``scripts/ml/validate_ml_lifecycle.py --check serving``
-and runs as part of ``ml-lifecycle-gate.yml``.
+This test runs as part of ``ml-lifecycle-gate.yml`` (``serving-smoke`` job)
+and is also exercisable directly via ``pytest tests/integration/test_serving_smoke.py``.
 """
 
 from __future__ import annotations

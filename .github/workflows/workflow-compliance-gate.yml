@@ -125,7 +125,14 @@ jobs:
                   print(f"  ❌ {v}")
               sys.exit(1)
           else:
-              print(f"PASS: All {len(list(WORKFLOW_DIR.glob('*.yml')))} workflow files are compliant.")
+              all_files = len(list(WORKFLOW_DIR.glob("*.yml")))
+              skipped = len(SKIP_FILES)
+              checked = all_files - skipped
+              print(
+                  f"PASS: {checked}/{all_files} workflow files checked and compliant "
+                  f"({skipped} skipped: {', '.join(sorted(SKIP_FILES))})."
+              )
+          PYEOF
           PYEOF
           exit_code=$?
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
