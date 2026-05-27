@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4608)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4608 (SHA `615ad929`) at 2026-05-27T00:29Z [auto-generated]
+
 ### Fixed (SN — PR #4580 Code Quality Fixes — 2026-05-26T02:42Z)
 - **Test Schema Validation:** Fixed `test_negotiate_params_accepts_client_versions` in `tests/mcp/test_server_schemas.py` to use `dict` instead of `list` to match `NegotiateParams.client_versions` schema definition (`Optional[dict[str, Any]]`)
 - **Accountability Report Formatting:** Consolidated duplicate SESSION SUMMARY headings and fixed repeated item numbering in ordered list
