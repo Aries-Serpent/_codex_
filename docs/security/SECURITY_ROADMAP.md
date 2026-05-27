@@ -187,7 +187,7 @@ mypy src/ > .mypy_baseline.txt
 # .gitleaks.toml
 [allowlist]
 commits = [
-  "abc123def456"  # Historical commit to ignore
+  "abc123def456"  # Historical commit to ignore  # pragma: allowlist secret
 ]
 paths = [
   "test_credentials.py"  # Test file with fake credentials
