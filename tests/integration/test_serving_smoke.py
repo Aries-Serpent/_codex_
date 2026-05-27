@@ -61,5 +61,6 @@ class TestServingSmoke:
         versions = ["v1.0.0", "v1.1.0", "v1.2.0"]
         current = versions[-1]
         rollback_target = versions[-2]
-        assert rollback_target < current
+        # Verify rollback target is an earlier version by index
+        assert versions.index(rollback_target) < versions.index(current)
         assert rollback_target in versions
