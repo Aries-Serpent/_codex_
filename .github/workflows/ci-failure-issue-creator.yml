@@ -506,6 +506,8 @@ jobs:
         with:
           python-version: "3.12"
           # No pip cache — script uses stdlib only
+
+      - name: Find target PR for dashboard post
         id: find-pr
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
