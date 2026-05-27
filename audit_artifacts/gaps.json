@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-05-27T03:00:00Z",
+  "target_phase": 3,
+  "target_date": "2026-06-17",
+  "target_score_pct": 85.6,
+  "current_score_pct": 76.4,
+  "gap_pct": 9.2,
+  "domain_gaps": [
+    {
+      "domain": "ml_lifecycle",
+      "current": 3,
+      "target": 4,
+      "delta_contribution": 2.4,
+      "blocking_items": ["E2E CI gate — ml-lifecycle-gate.yml deployed"],
+      "remaining_items": ["Hydra override logging in reports/reproducibility.md"]
+    },
+    {
+      "domain": "cicd_health",
+      "current": 4,
+      "target": 5,
+      "delta_contribution": 2.4,
+      "blocking_items": [],
+      "remaining_items": ["ci-pass-rate-gate.yml nightly run confirms ≥95%", "workflow-owner-audit.py coverage ≥90%"]
+    },
+    {
+      "domain": "agent_orchestration",
+      "current": 4,
+      "target": 5,
+      "delta_contribution": 2.4,
+      "blocking_items": [],
+      "remaining_items": ["agent-health-check.yml rolling 7-day success rate ≥90%", "tests/integration/test_agent_recovery.py execution"]
+    },
+    {
+      "domain": "test_maturity",
+      "current": 4,
+      "target": 5,
+      "delta_contribution": 2.0,
+      "blocking_items": [],
+      "remaining_items": ["mutation-testing.yml first run score ≥60%", "test-pyramid-report.yml quarterly run", "pytest timeout uncommented"]
+    }
+  ]
+}

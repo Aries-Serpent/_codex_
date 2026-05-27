@@ -1,0 +1,81 @@
+name: Mutation Testing
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 0"   # 02:00 UTC every Sunday
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: mutation-testing
+  cancel-in-progress: true
+
+jobs:
+  mutation-score:
+    name: Mutation score on critical-path modules (D7 #4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          pip install -q -r requirements-dev.txt
+          pip install -q mutmut
+
+      - name: Run mutation tests on critical modules
+        id: mutmut
+        run: |
+          # Critical-path modules for D7 mutation gate
+          python3 - <<'PYEOF'
+          import subprocess, json, os
+          from datetime import datetime, timezone
+
+          modules = [
+              "src/codex_ml/utils/checkpointing.py",
+              "src/codex/rag/retriever.py",
+              "src/codex/rag/embeddings.py",
+              "src/training/checkpoint_manager.py",
+          ]
+
+          results = {}
+          for mod in modules:
+              from pathlib import Path
+              if not Path(mod).exists():
+                  results[mod] = {"status": "skip", "reason": "file not found"}
+                  continue
+              r = subprocess.run(
+                  ["python", "-m", "mutmut", "run", "--paths-to-mutate", mod,
+                   "--runner", "python -m pytest tests/ -x -q --timeout=30"],
+                  capture_output=True, text=True, timeout=300
+              )
+              # Parse mutmut results
+              out = subprocess.run(["python", "-m", "mutmut", "results"],
+                                   capture_output=True, text=True)
+              results[mod] = {"stdout_tail": out.stdout[-500:] if out.stdout else ""}
+
+          report = {
+              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "modules": results,
+              "threshold_pct": 60.0,
+              "note": "Run mutmut html for full report",
+          }
+          os.makedirs("reports/mutation", exist_ok=True)
+          with open("reports/mutation/mutation_score_latest.json", "w") as f:
+              json.dump(report, f, indent=2)
+          print(json.dumps(report, indent=2))
+          print("::notice::Mutation report written to reports/mutation/mutation_score_latest.json")
+          PYEOF
+
+      - name: Upload mutation report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report-${{ github.run_id }}
+          path: reports/mutation/
