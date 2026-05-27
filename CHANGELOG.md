@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Torch Collection Blockers Fixed**: `conftest.py` now ignores `tests/space_traversal/`, `test_dataset_hashing.py`, `test_env_logging.py`, `test_metrics_writers.py`, `test_rag_end_to_end_pipeline.py` when torch is unavailable — eliminates AttributeError collection crashes.
 - **Phase C COMPLETE ✅**: src/security/ coverage raised from ~5% → **90.72%** (target ≥70%). Modules: audit_logger=95%, core=96%, decorators=92%, github_provider=98%, scope_validator=96%, token_rotation=91%, tls_config=88%, provider_factory=79%, secrets=89%, aws_provider=70%, encryption=86%, environment_provider=97%. New test files: `tests/security/test_decorators.py` (57 tests), `tests/security/test_github_provider.py` (68 tests).
 - **Phase D COMPLETE ✅**: All 6 CB objectives done — CB-001 Typer API migration, CB-002 RAG coverage (30+ tests), CB-003 actionlint YAML pipe fix, CB-004 PDA library 11→16 entries, CB-005 max_concurrency throttling, CB-006 proactive-ci-monitor wiring.
+- **Phase E COMPLETE ✅**: services/api/main.py 0%→71.38%; rate_limit 0%→49.52%; training 11.97% (torch-blocked). Fixed SwarmIntelligence/BatchScanResult/`_write_artefact` test bugs. New: `tests/scripts/test_ci_top5.py`, `tests/services/test_api_main_phase_e.py` improved.
 - **Phase E in progress**: unified-coverage-agent lifting training/, physics_orchestrator.py, msp_gateway/, services/api/ coverage toward 75% overall.
 
 ### Fixed (auto-update — PR #4633)

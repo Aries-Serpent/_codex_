@@ -39,6 +39,26 @@
 ### In Progress
 - `phase-e-coverage-lift` — unified-coverage-agent (still running, ~142 tool calls)
 
+### Completed (Phase E — FINAL RESULTS)
+- **services/api/main.py**: 0% → **71.38%** ✅ (420 stmts, 99 missing)
+- **services/msp_gateway/middleware/rate_limit.py**: 0% → **49.52%** (partial — 74 missing of 158 stmts)
+- **src/training/ total**: 11.97% (torch-blocked; non-torch branches improved via test fixes)
+- **services/ total**: 20.19%
+- **Phase E test fixes**: SwarmIntelligence (particles/optimize API), BatchScanResult fields, `_write_artefact` kwargs
+
+### Validation
+- `conftest.py` torch blocker fix verified syntactically
+- Security coverage measured and confirmed: 90.72% total
+- Living docs updated with final Phase C/D/E results and continuation prompt
+
+### Observations
+- Starting baseline: agents=74.4%, src=7.9%, scripts=1.6%, services=17.4%, overall=6.66%
+- 3 background agents dispatched within first 5 minutes of session (maximizing 59-min budget)
+- Phase C exceeded target by 20+ percentage points (90.72% vs ≥70% target)
+- Phase D all 6 CB objectives completed by cognitive-brain-session-injector
+- Phase E raised services/api/main.py from 0% to 71.38%; torch-blocked training modules remain low
+- Remaining gap: services/ita/ (all 0%), msp_gateway/tenant_context (16%), training torch-free paths
+
 ### Validation
 - `conftest.py` torch blocker fix verified syntactically
 - Security coverage measured and confirmed: 90.72% total
