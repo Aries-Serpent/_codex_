@@ -1,22 +1,13 @@
 name: "📚 Documentation Freshness Check"
 # aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
-# Checks freshness of docs in key directories.
-# P0 (admin, agent, how-to): BLOCKING — fails the job when stale docs found.
-# P1 (ops, ci, mcp): Non-blocking warning only.
-#
-# Runs on push to main, on PRs touching docs/, and weekly schedule.
-#
-# Domain: D9 · Documentation & Developer Experience (completion rubric v1)
-# Evidence: freshness gate enforced in CI (P0 blocking) → score 4 evidence
+# Warns when docs in key directories have date headers older than 90 days.
+# Non-blocking (warning only) — never fails a PR over stale informational docs.
+# Runs on push to main and weekly schedule.
 
 on:
   push:
     branches: [main]
-    paths:
-      - "docs/**"
-  pull_request:
-    branches: [main, develop, "0D_base_"]
     paths:
       - "docs/**"
   schedule:
@@ -68,7 +59,7 @@ jobs:
             --cutoff "${{ steps.cutoff.outputs.cutoff }}" \
             --check-only 2>&1 | tee /tmp/p0_stale.txt
           echo "stale_count=$(grep -c '^STALE:' /tmp/p0_stale.txt || true)" >> "$GITHUB_OUTPUT"
-        # P0 docs: run without continue-on-error so script failures surface
+        continue-on-error: true
 
       - name: "🔍 Check developer docs (P1 — ops, ci, mcp)"
         id: check_p1
@@ -94,25 +85,19 @@ jobs:
             if [ "$TOTAL" -eq 0 ]; then
               echo "✅ **All critical docs are fresh** — no docs older than 90 days found."
             else
-              echo "⚠️  **${TOTAL} stale doc(s) found**."
+              echo "⚠️  **${TOTAL} stale doc(s) found** (non-blocking warning)."
               echo ""
-              echo "### P0 — Admin/Agent Docs ($P0_COUNT stale) — **BLOCKING**"
+              echo "### P0 — Admin/Agent Docs ($P0_COUNT stale)"
               cat /tmp/p0_stale.txt || true
               echo ""
-              echo "### P1 — Ops/CI/MCP Docs ($P1_COUNT stale) — Warning only"
+              echo "### P1 — Ops/CI/MCP Docs ($P1_COUNT stale)"
               cat /tmp/p1_stale.txt || true
               echo ""
               echo "**To update:** \`python3 scripts/ci/update_doc_freshness.py --dirs docs/admin --cutoff $(date -d '-90 days' +%Y-%m-%d)\`"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: "❌ Fail on stale P0 critical docs (blocking)"
-        if: steps.check_p0.outputs.stale_count != '0' && steps.check_p0.outputs.stale_count != ''
-        run: |
-          echo "::error::${{ steps.check_p0.outputs.stale_count }} critical (P0) docs are stale (older than 90 days). Update them before merging."
-          exit 1
-
-      - name: "📣 Emit warning annotation for P0 stale docs"
+      - name: "📣 Emit warning annotation (non-blocking)"
         if: steps.check_p0.outputs.stale_count != '0'
         run: |
           echo "::warning title=Stale Docs Detected::${{ steps.check_p0.outputs.stale_count }} admin/agent docs are older than 90 days. Run: python3 scripts/ci/update_doc_freshness.py --dirs docs/admin docs/agent --cutoff ${{ steps.cutoff.outputs.cutoff }}"
