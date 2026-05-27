@@ -1034,6 +1034,14 @@ def _collect_score_regressions(
     return regressions
 
 
+def _resolve_validation_path(path_like: str | os.PathLike[str]) -> Path:
+    """Resolve validation inputs relative to the repository root."""
+    path = Path(path_like)
+    if path.is_absolute():
+        return path
+    return ROOT / path
+
+
 def command_validate(cfg, args: argparse.Namespace | None = None):
     """
     Validate audit artifacts and fail if quality gates are not met.
@@ -1051,12 +1059,6 @@ def command_validate(cfg, args: argparse.Namespace | None = None):
             - EXIT_LOW_MATURITY (4): Low maturity capabilities detected
             - EXIT_MISSING_DETECTOR (5): Reserved for future detector validation
     """
-    def _resolve_validation_path(path_like: str | os.PathLike[str]) -> Path:
-        path = Path(path_like)
-        if path.is_absolute():
-            return path
-        return ROOT / path
-
     artifacts_dir = Path(
         getattr(args, "artifacts_dir", "") or cfg.get("output", {}).get("artifacts_dir", "audit_artifacts")
     )
@@ -1076,14 +1078,17 @@ def command_validate(cfg, args: argparse.Namespace | None = None):
     )
 
     # Check for required artifacts
+    missing_artifacts: list[Path] = []
     if not scored_file.exists():
-        logger.error(f"Required artifact not found: {scored_file}")
-        sys.exit(EXIT_MISSING_ARTIFACTS)
+        missing_artifacts.append(scored_file)
     for artifact in required_artifacts:
         artifact_path = _resolve_validation_path(artifact)
         if not artifact_path.exists():
-            logger.error("Required artifact not found: %s", artifact_path)
-            sys.exit(EXIT_MISSING_ARTIFACTS)
+            missing_artifacts.append(artifact_path)
+    if missing_artifacts:
+        for missing_artifact in missing_artifacts:
+            logger.error("Required artifact not found: %s", missing_artifact)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
 
     # Load scored capabilities
     capabilities = _load_capabilities_from_file(scored_file)
