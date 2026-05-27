@@ -1,0 +1,117 @@
+name: ML Lifecycle E2E Gate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"   # 04:00 UTC every Monday (weekly)
+  push:
+    branches: [main, 0D_base_]
+    paths:
+      - "src/codex_ml/**"
+      - "src/training/**"
+      - "training/**"
+      - "requirements*.txt"
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: ml-lifecycle-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reproducibility-check:
+    name: Reproducibility smoke check (D2 #1)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run reproducibility validator
+        run: python scripts/ml/validate_ml_lifecycle.py --check reproducibility
+
+  serving-smoke:
+    name: Serving smoke test (D2 #3)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run serving smoke test
+        run: python scripts/ml/validate_ml_lifecycle.py --check serving
+
+  model-registry-audit:
+    name: Model registry audit (D2 #2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run model registry audit
+        run: python scripts/ml/validate_ml_lifecycle.py --check registry
+
+  e2e-gate:
+    name: E2E pipeline gate (D2 #5)
+    needs: [reproducibility-check, serving-smoke, model-registry-audit]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run E2E gate validation
+        run: python scripts/ml/validate_ml_lifecycle.py --check e2e
+
+  gate-summary:
+    name: D2 Gate Summary
+    needs: [reproducibility-check, serving-smoke, model-registry-audit, e2e-gate]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Evaluate D2 exit criteria
+        run: |
+          python3 - <<'PYEOF'
+          import json, sys
+          from datetime import datetime, timezone
+
+          results = {
+              "reproducibility": "${{ needs.reproducibility-check.result }}",
+              "serving_smoke":   "${{ needs.serving-smoke.result }}",
+              "model_registry":  "${{ needs.model-registry-audit.result }}",
+              "e2e_gate":        "${{ needs.e2e-gate.result }}",
+          }
+          passed = [k for k, v in results.items() if v == "success"]
+          failed = [k for k, v in results.items() if v != "success"]
+
+          report = {
+              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "domain": "D2_ml_lifecycle",
+              "target_score": 5,
+              "checks": results,
+              "passed_count": len(passed),
+              "failed_count": len(failed),
+              "gate_passed": len(failed) == 0,
+          }
+          print(json.dumps(report, indent=2))
+          if failed:
+              print(f"::warning::D2 ML Lifecycle gate: {len(failed)} checks failed: {failed}")
+          else:
+              print("::notice::✅ D2 ML Lifecycle gate passed — all 4 CI checks green (score 5)")
+          PYEOF

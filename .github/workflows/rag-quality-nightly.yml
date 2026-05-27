@@ -1,0 +1,92 @@
+name: RAG Quality Nightly Gate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * *"   # 03:30 UTC daily (after freshness rebuild at 02:00)
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+concurrency:
+  group: rag-quality-nightly
+  cancel-in-progress: true
+
+jobs:
+  freshness-check:
+    name: RAG index freshness check (D4 #1)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q pyyaml
+      - name: Verify freshness SLA
+        run: python scripts/rag/rag_rebuild_audit.py --check freshness
+
+  quality-gate:
+    name: Retrieval quality gate recall>=0.70 MRR>=0.60 (D4 #2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run retrieval benchmark against thresholds
+        run: python scripts/rag/rag_rebuild_audit.py --check quality
+
+  rebuild-audit:
+    name: Index rebuild audit log (D4 #4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -q pyyaml
+      - name: Log rebuild audit entry
+        run: python scripts/rag/rag_rebuild_audit.py --check audit
+
+      - name: Upload audit log
+        uses: actions/upload-artifact@v5
+        with:
+          name: rag-audit-${{ github.run_id }}
+          path: reports/rag/rebuild_audit_latest.json
+
+  gate-summary:
+    name: D4 Gate Summary
+    needs: [freshness-check, quality-gate, rebuild-audit]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Evaluate D4 exit criteria
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          from datetime import datetime, timezone
+
+          results = {
+              "freshness": "${{ needs.freshness-check.result }}",
+              "quality":   "${{ needs.quality-gate.result }}",
+              "audit":     "${{ needs.rebuild-audit.result }}",
+          }
+          passed = [k for k, v in results.items() if v == "success"]
+          failed = [k for k, v in results.items() if v != "success"]
+          print(json.dumps({"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            "results": results, "passed": len(passed), "failed": len(failed)}, indent=2))
+          if not failed:
+              print("::notice::✅ D4 RAG Quality nightly gate passed")
+          else:
+              print(f"::warning::D4 RAG gate: {failed} failed")
+          PYEOF
