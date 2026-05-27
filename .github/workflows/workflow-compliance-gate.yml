@@ -146,19 +146,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          BODY="## ⚙️ Workflow Compliance Violations
-
-          One or more workflow files in \`.github/workflows/\` violate the
-          repository compliance standards.  Please fix before merging.
-
-          **Common fixes**:
-          - Add \`permissions: {}\` or specific scopes to the workflow level
-          - Add \`concurrency:\` block to prevent duplicate runs
-          - Add \`timeout-minutes:\` to each job
-
-          See \`docs/workflows/CONSOLIDATION_GUIDE.md\` for guidance.
-          "
-          gh pr comment "$PR_NUMBER" --body "$BODY" 2>/dev/null || true
+          printf '%s\n' \
+            "## ⚙️ Workflow Compliance Violations" \
+            "" \
+            "One or more workflow files in \`.github/workflows/\` violate the" \
+            "repository compliance standards.  Please fix before merging." \
+            "" \
+            "**Common fixes**:" \
+            "- Add \`permissions: {}\` or specific scopes to the workflow level" \
+            "- Add \`concurrency:\` block to prevent duplicate runs" \
+            "- Add \`timeout-minutes:\` to each job" \
+            "" \
+            "See \`docs/workflows/CONSOLIDATION_GUIDE.md\` for guidance." \
+            > /tmp/compliance_body.txt
+          gh pr comment "$PR_NUMBER" --body-file /tmp/compliance_body.txt 2>/dev/null || true
 
       - name: Fail on violations
         if: steps.check.outputs.exit_code != '0'

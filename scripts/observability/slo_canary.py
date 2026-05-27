@@ -14,7 +14,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 SLO_TARGETS = {
     "ci_pass_rate_7d": {"threshold": 95.0, "unit": "%"},
     "workflow_availability": {"threshold": 99.0, "unit": "%"},

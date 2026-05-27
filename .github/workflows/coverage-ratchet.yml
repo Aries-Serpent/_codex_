@@ -86,24 +86,25 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           THRESHOLD: ${{ inputs.threshold || '80' }}
         run: |
-          BODY="## 🧪 Coverage Ratchet — Regression Detected
-
-          Coverage dropped below the **${THRESHOLD}%** ratchet floor.
-          Current: \`${{ steps.coverage.outputs.coverage_pct }}%\`
-
-          Please add tests to restore coverage before merging.
-
-          <details><summary>Coverage output</summary>
-
-          \`\`\`
-          $(cat /tmp/coverage_output.txt | tail -30)
-          \`\`\`
-
-          </details>
-
-          See \`pyproject.toml → [tool.coverage.report]\` for configuration.
-          "
-          gh pr comment "$PR_NUMBER" --body "$BODY" 2>/dev/null || true
+          printf '%s\n' \
+            "## 🧪 Coverage Ratchet — Regression Detected" \
+            "" \
+            "Coverage dropped below the **${THRESHOLD}%** ratchet floor." \
+            "Current: \`${{ steps.coverage.outputs.coverage_pct }}%\`" \
+            "" \
+            "Please add tests to restore coverage before merging." \
+            "" \
+            "<details><summary>Coverage output</summary>" \
+            "" \
+            "\`\`\`" \
+            "$(cat /tmp/coverage_output.txt | tail -30)" \
+            "\`\`\`" \
+            "" \
+            "</details>" \
+            "" \
+            "See \`pyproject.toml → [tool.coverage.report]\` for configuration." \
+            > /tmp/coverage_body.txt
+          gh pr comment "$PR_NUMBER" --body-file /tmp/coverage_body.txt 2>/dev/null || true
 
       - name: Fail on coverage regression
         if: steps.coverage.outputs.exit_code != '0'
