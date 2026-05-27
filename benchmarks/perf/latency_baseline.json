@@ -1,23 +1,47 @@
 {
-  "schema_version": "1.0",
-  "generated_at": "2026-05-27T00:00:00Z",
-  "description": "Serving latency baseline thresholds",
-  "baselines": [
+  "schema_version": "1.1",
+  "generated_at": "2026-05-27T16:34:00Z",
+  "description": "Serving latency baseline thresholds — tightened p99 per maturity review 2026-05-27",
+  "benchmarks": [
     {
-      "endpoint": "health",
-      "p50_ms": 50,
-      "p95_ms": 200,
-      "p99_ms": 500
+      "name": "health_p50",
+      "baseline": 45,
+      "threshold": 80,
+      "unit": "ms"
     },
     {
-      "endpoint": "predict",
-      "p50_ms": 200,
-      "p95_ms": 800,
-      "p99_ms": 2000
+      "name": "health_p95",
+      "baseline": 180,
+      "threshold": 300,
+      "unit": "ms"
+    },
+    {
+      "name": "health_p99",
+      "baseline": 350,
+      "threshold": 450,
+      "unit": "ms"
+    },
+    {
+      "name": "predict_p50",
+      "baseline": 180,
+      "threshold": 300,
+      "unit": "ms"
+    },
+    {
+      "name": "predict_p95",
+      "baseline": 750,
+      "threshold": 1000,
+      "unit": "ms"
+    },
+    {
+      "name": "predict_p99",
+      "baseline": 1500,
+      "threshold": 1800,
+      "unit": "ms"
     }
   ],
   "policy": {
-    "max_p95_regression_pct": 20,
-    "max_p99_regression_pct": 30
+    "max_p95_regression_pct": 15,
+    "max_p99_regression_pct": 20
   }
 }

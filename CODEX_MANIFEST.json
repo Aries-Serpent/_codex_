@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-27T16:01:17Z",
+  "generated_at": "2026-05-27T16:39:54Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -966,7 +966,7 @@
     {
       "name": "admin-action-notifier",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "admin-action-t03",
@@ -1135,7 +1135,7 @@
     },
     {
       "name": "ci-pass-rate-gate",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1216,7 +1216,7 @@
     {
       "name": "consolidated-pr-status",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "copilot-agent-checkin",
@@ -1415,6 +1415,11 @@
     },
     {
       "name": "html_visual_regression",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "import-linter",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1721,7 +1726,7 @@
     {
       "name": "session-context-capture",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "session-incremental-summary-reminder",
@@ -2201,5 +2206,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "2c4e429616150db0c7653d24ce8a1ef957700fe8aee912312b756e753d67c7e1"
+  "integrity_sha256": "a46d11b14cd9078b5699158751aa2661d38f276caa819c30a24af4320ab4ac17"
 }
