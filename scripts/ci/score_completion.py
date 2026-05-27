@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 try:
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 except ImportError:
     print("ERROR: PyYAML is required.  Install with: pip install pyyaml", file=sys.stderr)
     sys.exit(2)
@@ -86,11 +86,17 @@ def _validate_scores(scores: dict[str, object]) -> list[str]:
     return errors
 
 
+def _get_score(scores: dict[str, object], domain: str) -> float:
+    """Return the numeric score for *domain*, defaulting to 0."""
+    value = scores.get(domain, 0)
+    return float(value) if isinstance(value, (int, float)) else 0.0
+
+
 def _compute(scores: dict[str, object]) -> tuple[float, dict[str, float]]:
     total = 0.0
     details: dict[str, float] = {}
     for domain, weight in WEIGHTS.items():
-        raw = float(scores.get(domain, 0))  # type: ignore[arg-type]
+        raw = _get_score(scores, domain)
         contribution = (raw / 5.0) * weight
         details[domain] = contribution
         total += contribution
@@ -108,7 +114,7 @@ def _format_report(scores: dict[str, object], total: float, details: dict[str, f
         f"  {'-'*45} {'----':>4}  {'------':>6}  {'-------':>7}",
     ]
     for domain, weight in WEIGHTS.items():
-        raw = float(scores.get(domain, 0))  # type: ignore[arg-type]
+        raw = _get_score(scores, domain)
         label = DOMAIN_LABELS[domain]
         contrib = details[domain]
         lines.append(f"  {label:<45} {weight:>3}%  {raw:>5.1f}/5  {contrib:>6.1f}%")
@@ -183,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
             "band": _readiness_band(total),
             "domains": {
                 d: {
-                    "score": float(scores.get(d, 0)),  # type: ignore[arg-type]
+                    "score": _get_score(scores, d),
                     "weight": WEIGHTS[d],
                     "contribution": round(details[d], 2),
                 }
