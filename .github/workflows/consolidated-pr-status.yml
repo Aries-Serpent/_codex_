@@ -81,10 +81,15 @@ permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: consolidated-pr-status-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   post-dashboard:
     name: 'Update PR Status Dashboard'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     # Only run on pull request context
     if: github.event_name == 'pull_request' || github.event.pull_request != null
 
