@@ -133,7 +133,6 @@ jobs:
                   f"({skipped} skipped: {', '.join(sorted(SKIP_FILES))})."
               )
           PYEOF
-          PYEOF
           exit_code=$?
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
           exit 0
