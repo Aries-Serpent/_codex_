@@ -111,6 +111,101 @@ def test_domain_ownership_doc_exists() -> None:
 
 
 # ---------------------------------------------------------------------------
+# copilot-setup-steps.yml integrity guard
+#
+# The session_preload block at lines ~141-145 uses shell brace syntax that is
+# valid for GitHub Actions' Go YAML parser but is rejected by PyYAML's strict
+# safe_load.  Any automated "fix" that normalises this block to a pipe `|`
+# form or removes it would break the non-blocking fallback behaviour.
+#
+# These tests act as a tripwire: they will fail if the block is accidentally
+# mutated, reformatted, or removed, prompting a human review before merge.
+# ---------------------------------------------------------------------------
+
+_SETUP_STEPS = ROOT / ".github" / "workflows" / "copilot-setup-steps.yml"
+
+
+def test_copilot_setup_steps_exists() -> None:
+    """copilot-setup-steps.yml must be present and non-empty."""
+    assert _SETUP_STEPS.exists(), (
+        "Missing: .github/workflows/copilot-setup-steps.yml — "
+        "Copilot coding agent cannot initialise without it"
+    )
+    assert _SETUP_STEPS.stat().st_size > 0, "copilot-setup-steps.yml is empty"
+
+
+def test_copilot_setup_steps_session_preload_block_intact() -> None:
+    """Lines ~141-145: session_preload brace block must be intact and unmodified.
+
+    The `run: python3 … || { … }` form is intentional.  Changing it to a pipe
+    block (`run: |`) or removing it would break the non-blocking fallback that
+    keeps the Copilot agent alive even when session_preload.py fails.
+    """
+    lines = _SETUP_STEPS.read_text(encoding="utf-8").splitlines()
+
+    # Locate the session_preload step by searching for the distinctive run line
+    preload_run_idx: int | None = None
+    for i, line in enumerate(lines):
+        if "session_preload.py ||" in line and "run:" in line:
+            preload_run_idx = i
+            break
+
+    assert preload_run_idx is not None, (
+        "copilot-setup-steps.yml: could not find 'run: … session_preload.py || {' line — "
+        "the session-preload brace block may have been removed or reformatted"
+    )
+
+    # The brace block spans exactly 3 lines: run:…||{, echo…, closing }
+    block = "\n".join(lines[preload_run_idx : preload_run_idx + 3])
+
+    assert "session_preload.py || {" in lines[preload_run_idx], (
+        f"Line {preload_run_idx + 1}: expected 'session_preload.py || {{' — "
+        "do not reformat to a pipe block; the brace form is required"
+    )
+    assert "session_preload.py failed (non-blocking)" in block, (
+        f"Lines {preload_run_idx + 1}-{preload_run_idx + 3}: fallback echo is missing — "
+        "the non-blocking error message must be preserved"
+    )
+    assert lines[preload_run_idx + 2].strip() == "}", (
+        f"Line {preload_run_idx + 3}: expected closing '}}' of brace block — "
+        "block structure has changed"
+    )
+
+
+def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:
+    """The session_preload step must carry 'continue-on-error: true'.
+
+    Removing this flag would cause the entire Copilot agent session to abort
+    whenever session_preload.py fails, which is explicitly undesired.
+    """
+    lines = _SETUP_STEPS.read_text(encoding="utf-8").splitlines()
+
+    # Find the step name that wraps the session_preload run
+    step_start: int | None = None
+    for i, line in enumerate(lines):
+        if "Session Context Pre-load" in line or "session_preload" in line:
+            # Walk back to the `- name:` anchor of this step
+            for j in range(i, max(i - 5, 0), -1):
+                if lines[j].lstrip().startswith("- name:"):
+                    step_start = j
+                    break
+            if step_start is not None:
+                break
+
+    assert step_start is not None, (
+        "copilot-setup-steps.yml: cannot locate the session_preload step — "
+        "step may have been removed"
+    )
+
+    # The continue-on-error flag must appear within the next 5 lines of the step
+    step_block = "\n".join(lines[step_start : step_start + 6])
+    assert "continue-on-error: true" in step_block, (
+        f"Step at line {step_start + 1}: 'continue-on-error: true' is missing — "
+        "this flag is mandatory; removing it makes session_preload failures fatal"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Source structure integrity (no empty __init__ stubs in critical packages)
 # ---------------------------------------------------------------------------
 
