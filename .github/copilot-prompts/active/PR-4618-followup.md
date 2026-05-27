@@ -1,10 +1,10 @@
-# 🎯 PR Follow-Up Tasks - #4616
+# 🎯 PR Follow-Up Tasks - #4618
 
-**PR**: #4616 - PR #4616  
-**Branch**: `copilot/explain-repository-structure-again`  
+**PR**: #4618 - PR #4618  
+**Branch**: `revert-4616-copilot/explain-repository-structure-again`  
 **Author**: @mbaetiong  
 **Date**: 2026-05-27  
-**Commit**: `33eee619e1dc3584a7731a34131cfc4d3cb9bc2a`  
+**Commit**: `d0a484fb7f8decc76c433d691c85c9257a4a93e8`  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -12,9 +12,9 @@
 ## 📋 PREVIOUS SESSION SUMMARY
 
 ### Completed Work
-- [`33eee619`] fix: use index-based version comparison in serving smoke test (copilot-swe-agent[bot], 2026-05-27)
-- [`ca336c44`] feat(phase4): bump D1,D2,D4,D8,D9 to score 5 — Phase 4 completion (96.0%) (copilot-swe-agent[bot], 2026-05-27)
-- [`6500a666`] feat: Phase 3 execution — score 76.4% → 87.6% (D2→4, D3→5, D6→5, D7→5, D10→3, D11→3) (copilot-swe-agent[bot], 2026-05-27)
+- [`d0a484fb`] Revert "fix(phase4): CI rescue hardening + full review-remediation across workflows/docs/scripts/tests" (Statix, 2026-05-27)
+- [`edd97ceb`] Merge pull request #4616 from Aries-Serpent/copilot/explain-repository-structure-again (Statix, 2026-05-27)
+- [`c7e99123`] test: fix import-order lint in architecture boundary test (copilot-swe-agent[bot], 2026-05-27)
 
 ### Files Modified
 No files modified
@@ -99,9 +99,9 @@ yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 
 ## 🤖 COPILOT AGENT INSTRUCTIONS
 
-**When you see `@copilot continue` in PR #4616:**
+**When you see `@copilot continue` in PR #4618:**
 
-1. Load this prompt from `.github/copilot-prompts/active/PR-4616-followup.md`
+1. Load this prompt from `.github/copilot-prompts/active/PR-4618-followup.md`
 2. Execute Priority 1 tasks in order, validating each
 3. Then execute Priority 2 tasks
 4. Review Priority 3 tasks
@@ -116,4 +116,4 @@ yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 
 **Generated**: 2026-05-27  
 **Template Version**: 2.0.0  
-**Last Updated**: 2026-05-27 05:05:29
+**Last Updated**: 2026-05-27 13:00:05
