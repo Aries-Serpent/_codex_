@@ -987,7 +987,13 @@ def _load_capabilities_from_file(path: Path) -> list[dict[str, Any]]:
     """Load capabilities from a scored-capabilities artifact."""
     try:
         data = json.loads(path.read_text())
-    except Exception as e:  # noqa: BLE001
+    except FileNotFoundError:
+        logger.error("Scored capability artifact not found: %s", path)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    except json.JSONDecodeError as e:
+        logger.error("Scored capability artifact is not valid JSON (%s): %s", path, e)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    except OSError as e:
         logger.error("Failed to load %s: %s", path, e)
         sys.exit(EXIT_MISSING_ARTIFACTS)
     return data.get("capabilities", [])
@@ -1045,6 +1051,12 @@ def command_validate(cfg, args: argparse.Namespace | None = None):
             - EXIT_LOW_MATURITY (4): Low maturity capabilities detected
             - EXIT_MISSING_DETECTOR (5): Reserved for future detector validation
     """
+    def _resolve_validation_path(path_like: str | os.PathLike[str]) -> Path:
+        path = Path(path_like)
+        if path.is_absolute():
+            return path
+        return ROOT / path
+
     artifacts_dir = Path(
         getattr(args, "artifacts_dir", "") or cfg.get("output", {}).get("artifacts_dir", "audit_artifacts")
     )
@@ -1057,16 +1069,18 @@ def command_validate(cfg, args: argparse.Namespace | None = None):
     required_artifacts = list(getattr(args, "required_artifacts", []) or []) if args else []
     baseline_arg = getattr(args, "baseline", None) if args else None
     max_regression = float(getattr(args, "max_regression", 0.02)) if args else 0.02
-    scored_file = Path(getattr(args, "scored_file", "") or "") if args and getattr(args, "scored_file", None) else artifacts_dir / "capabilities_scored.json"
+    scored_file = (
+        _resolve_validation_path(getattr(args, "scored_file"))
+        if args and getattr(args, "scored_file", None)
+        else artifacts_dir / "capabilities_scored.json"
+    )
 
     # Check for required artifacts
     if not scored_file.exists():
         logger.error(f"Required artifact not found: {scored_file}")
         sys.exit(EXIT_MISSING_ARTIFACTS)
     for artifact in required_artifacts:
-        artifact_path = Path(artifact)
-        if not artifact_path.is_absolute():
-            artifact_path = Path.cwd() / artifact_path
+        artifact_path = _resolve_validation_path(artifact)
         if not artifact_path.exists():
             logger.error("Required artifact not found: %s", artifact_path)
             sys.exit(EXIT_MISSING_ARTIFACTS)
@@ -1088,7 +1102,7 @@ def command_validate(cfg, args: argparse.Namespace | None = None):
             logger.error(f"  - {cap.get('id', 'unknown')}: {cap.get('score', 0.0):.2f}")
         sys.exit(EXIT_LOW_MATURITY)
 
-    baseline_file = Path(baseline_arg) if baseline_arg else None
+    baseline_file = _resolve_validation_path(baseline_arg) if baseline_arg else None
     if baseline_file is not None:
         if not baseline_file.exists():
             logger.error("Baseline artifact not found: %s", baseline_file)

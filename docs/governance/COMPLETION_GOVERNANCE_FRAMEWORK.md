@@ -4,7 +4,7 @@ This framework closes the remaining Phase 2-4 governance gaps by defining the sc
 
 ## Assigned-agent completion validation
 
-The assigned-agent completion requirement is tracked in `/tmp/workspace/Aries-Serpent/_codex_/.codex/config/completion_governance.json`.
+The assigned-agent completion requirement is tracked in `.codex/config/completion_governance.json`.
 
 Validated completed agents:
 
@@ -33,7 +33,7 @@ Current phase thresholds:
 
 ## Workflow gate
 
-Use `/tmp/workspace/Aries-Serpent/_codex_/.github/workflows/completion-governance-gates.yml` to run the explicit completion gate.
+Use `.github/workflows/completion-governance-gates.yml` to run the explicit completion gate.
 
 Supported runs:
 
