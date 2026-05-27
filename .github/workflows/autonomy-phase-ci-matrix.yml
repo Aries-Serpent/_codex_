@@ -136,6 +136,7 @@ jobs:
     needs: autonomy-matrix
     runs-on: ubuntu-latest
     if: always()
+    timeout-minutes: 5
     permissions: {}
     steps:
       - name: Check all phase jobs succeeded

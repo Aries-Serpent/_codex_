@@ -65,6 +65,7 @@ jobs:
   cleanup:
     name: Delete stale PR comments
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     # Only run issue_comment trigger when the comment is on a PR and contains the slash command
     if: |

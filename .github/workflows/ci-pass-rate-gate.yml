@@ -1,0 +1,97 @@
+name: CI Pass-Rate Gate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC daily
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: ci-pass-rate-gate
+  cancel-in-progress: true
+
+jobs:
+  pass-rate:
+    name: 7-day rolling CI pass-rate check (D6 exit criteria)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Compute 7-day pass rate
+        id: rate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, subprocess, sys
+          from datetime import datetime, timedelta, timezone
+
+          token = os.environ["GH_TOKEN"]
+          repo  = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
+          since = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          cmd = [
+              "gh", "api",
+              f"repos/{repo}/actions/runs",
+              "--paginate",
+              "-q", f'.workflow_runs[] | select(.created_at > "{since}" and .status == "completed") | [.conclusion] | @tsv'
+          ]
+          result = subprocess.run(cmd, capture_output=True, text=True, env={**os.environ})
+          lines = [l.strip() for l in result.stdout.splitlines() if l.strip()]
+
+          total    = len(lines)
+          success  = sum(1 for l in lines if l in ("success", "neutral"))
+          failures = total - success
+          rate_pct = round(success / total * 100, 1) if total else 0.0
+
+          print(f"Total runs (7d): {total}")
+          print(f"Success: {success}  Failures: {failures}")
+          print(f"Pass rate: {rate_pct}%")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"rate={rate_pct}\n")
+              f.write(f"total={total}\n")
+              f.write(f"failures={failures}\n")
+
+          # Write artifact
+          os.makedirs("reports/ci", exist_ok=True)
+          report = {
+              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "window_days": 7,
+              "total_runs": total,
+              "success_runs": success,
+              "failure_runs": failures,
+              "pass_rate_pct": rate_pct,
+              "threshold_pct": 95.0,
+              "passed": rate_pct >= 95.0,
+          }
+          with open("reports/ci/ci_pass_rate_latest.json", "w") as f:
+              json.dump(report, f, indent=2)
+          print(json.dumps(report, indent=2))
+          PYEOF
+
+      - name: Upload pass-rate report
+        uses: actions/upload-artifact@v5
+        with:
+          name: ci-pass-rate-${{ github.run_id }}
+          path: reports/ci/ci_pass_rate_latest.json
+
+      - name: Gate on 95% threshold
+        env:
+          RATE: ${{ steps.rate.outputs.rate }}
+        run: |
+          python3 -c "
+          import sys, os
+          rate = float(os.environ.get('RATE', '0'))
+          print(f'Pass rate: {rate}%  threshold: 95.0%')
+          if rate < 95.0:
+              print('::error::7-day CI pass rate below 95% — D6 exit criteria not yet met')
+              sys.exit(1)
+          else:
+              print('::notice::✅ D6 exit criteria #1 met: 7-day pass rate >= 95%')
+          "
