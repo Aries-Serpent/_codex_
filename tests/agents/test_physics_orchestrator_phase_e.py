@@ -504,25 +504,30 @@ class TestImportMigrationOrchestrator:
 
 class TestSwarmIntelligence:
     def _make_swarm(self) -> "SwarmIntelligence":
-        return SwarmIntelligence(n_particles=3, dimensions=2)
+        return SwarmIntelligence(num_particles=3, dimensions=2)
 
     def test_construction(self):
         swarm = self._make_swarm()
-        assert len(swarm.particles) == 3
+        # Particles are empty at construction; they're filled after initialize_swarm().
+        assert swarm.num_particles == 3
+        assert swarm.dimensions == 2
+        assert isinstance(swarm.particles, list)
 
     def test_optimize_returns_best_position(self):
         swarm = self._make_swarm()
         def objective(pos):
             return -sum(x**2 for x in pos)  # Maximum at origin
 
-        best_pos, best_val = swarm.optimize(objective, bounds=[(-1.0, 1.0), (-1.0, 1.0)])
-        assert best_pos is not None
-        assert isinstance(best_val, float)
+        result = swarm.optimize(objective, bounds=[(-1.0, 1.0), (-1.0, 1.0)])
+        assert isinstance(result, dict)
+        assert "best_position" in result
+        assert "best_score" in result
+        assert isinstance(result["best_score"], float)
 
     def test_optimize_improves_over_initial(self):
-        swarm = SwarmIntelligence(n_particles=5, dimensions=1)
+        swarm = SwarmIntelligence(num_particles=5, dimensions=1)
         def rosenbrock(pos):
             return -(pos[0] ** 2)  # Simple concave function
 
-        _, best_val = swarm.optimize(rosenbrock, bounds=[(-2.0, 2.0)])
-        assert best_val <= 0.0  # Maximum is at 0
+        result = swarm.optimize(rosenbrock, bounds=[(-2.0, 2.0)])
+        assert result["best_score"] <= 0.0  # Maximum is at 0

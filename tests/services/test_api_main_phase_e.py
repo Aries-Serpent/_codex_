@@ -33,11 +33,36 @@ from fastapi.testclient import TestClient
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _reload_api(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
+def _reload_api(monkeypatch: pytest.MonkeyPatch, *, auth_enabled: bool = False):
+    """Reload services.api.main for an isolated test.
+
+    Parameters
+    ----------
+    auth_enabled:
+        When True, does NOT set CODEX_AUTH_MIDDLEWARE_ENABLED=0, so the
+        API-key middleware is active.  Used by auth-guarded endpoint tests.
+    """
+    if not auth_enabled:
+        monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
     monkeypatch.delenv("API_KEY", raising=False)
     monkeypatch.delenv("API_RATE_LIMIT", raising=False)
-    return importlib.reload(importlib.import_module("services.api.main"))
+
+    # --- torch shim robustness --------------------------------------------------
+    # services/api/main.py installs fake torch helpers only when
+    # ``not hasattr(torch, "as_tensor")``.  After the first test the shim has
+    # already patched the torch module, so subsequent reloads would skip it and
+    # leave ``torch.tensor`` pointing to ``_raise_missing`` if something (e.g.
+    # monkeypatch teardown of a previous test) unset it.
+    #
+    # Fix: (a) evict the cached module so importlib always does a fresh import,
+    # and (b) use monkeypatch to temporarily remove ``torch.as_tensor`` so the
+    # shim condition is satisfied → _fake_tensor is installed every time.
+    sys.modules.pop("services.api.main", None)
+    import torch as _t
+    if hasattr(_t, "as_tensor"):
+        monkeypatch.delattr(_t, "as_tensor")
+
+    return importlib.import_module("services.api.main")
 
 
 class _FakeTokenizer:
@@ -401,7 +426,9 @@ class TestApiKeyMiddleware:
 
     def test_wrong_api_key_blocked(self, monkeypatch):
         monkeypatch.setenv("API_KEY", "secret-key-12345")
-        mod = _reload_api(monkeypatch)
+        # auth_enabled=True keeps CODEX_AUTH_MIDDLEWARE_ENABLED at its default (1)
+        # so the API-key middleware is active and an invalid key returns 401.
+        mod = _reload_api(monkeypatch, auth_enabled=True)
         with TestClient(mod.app, raise_server_exceptions=False) as client:
             resp = client.get("/status", headers={"x-api-key": "wrong"})
         assert resp.status_code == 401
@@ -422,7 +449,8 @@ class TestEchoModel:
     def test_echo_model_returns_logits(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         model = mod._EchoModel(vocab_size=16)
-        result = model([[[1, 2, 3]]])
+        # Input shape is [[token1, token2, ...]] — a single batch of flat token ids.
+        result = model([[1, 2, 3]])
         assert "logits" in result
 
     def test_echo_model_eval_returns_self(self, monkeypatch):
