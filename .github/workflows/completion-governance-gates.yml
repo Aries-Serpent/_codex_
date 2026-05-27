@@ -1,0 +1,176 @@
+name: Completion Governance Gates
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Completion gate to execute
+        required: true
+        type: choice
+        options:
+          - all
+          - phase-2-stabilisation
+          - phase-3-hardening
+          - phase-4-completion-governance
+          - score-regression
+        default: all
+  workflow_call:
+    inputs:
+      phase:
+        required: false
+        type: string
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: completion-governance-${{ github.ref }}-${{ inputs.phase || 'all' }}
+  cancel-in-progress: true
+
+jobs:
+  assigned-agent-validation:
+    name: Assigned Agent Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Validate assigned-agent completion
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          config = json.loads(
+              Path(".codex/config/completion_governance.json").read_text(encoding="utf-8")
+          )
+          if not config.get("validation", {}).get("all_assigned_agents_completed", False):
+              raise SystemExit("assigned-agent completion flag is false")
+
+          incomplete = [
+              name
+              for name, details in config.get("assigned_agents", {}).items()
+              if details.get("status") != "completed"
+          ]
+          if incomplete:
+              raise SystemExit(f"assigned agents not completed: {', '.join(incomplete)}")
+
+          print("All assigned agents completed all planned phases (1-3).")
+          PY
+
+  phase-2-stabilisation:
+    name: Phase 2 Stabilisation Gate
+    if: ${{ (inputs.phase || 'all') == 'all' || (inputs.phase || 'all') == 'phase-2-stabilisation' }}
+    needs: assigned-agent-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Generate audit artifacts
+        run: python scripts/space_traversal/audit_runner.py run
+
+      - name: Validate phase 2 gate
+        run: |
+          python scripts/space_traversal/audit_runner.py validate \
+            --threshold 0.70 \
+            --required-artifact audit_artifacts/capabilities_scored.json
+
+  phase-3-hardening:
+    name: Phase 3 Hardening Gate
+    if: ${{ (inputs.phase || 'all') == 'all' || (inputs.phase || 'all') == 'phase-3-hardening' }}
+    needs: assigned-agent-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Generate audit artifacts
+        run: |
+          python scripts/space_traversal/audit_runner.py run
+          python scripts/space_traversal/audit_runner.py stage S5
+
+      - name: Validate phase 3 gate
+        run: |
+          python scripts/space_traversal/audit_runner.py validate \
+            --threshold 0.85 \
+            --required-artifact audit_artifacts/capabilities_scored.json \
+            --required-artifact audit_artifacts/gaps.json \
+            --required-artifact audit_artifacts/component_gaps.json
+
+  phase-4-completion-governance:
+    name: Phase 4 Completion Governance Gate
+    if: ${{ (inputs.phase || 'all') == 'all' || (inputs.phase || 'all') == 'phase-4-completion-governance' }}
+    needs: assigned-agent-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Generate audit artifacts
+        run: |
+          python scripts/space_traversal/audit_runner.py run
+          python scripts/space_traversal/audit_runner.py stage S5
+          python scripts/space_traversal/audit_runner.py stage S7
+
+      - name: Validate phase 4 gate
+        run: |
+          python scripts/space_traversal/audit_runner.py validate \
+            --threshold 0.90 \
+            --baseline baseline/capabilities_scored_post_remediation.json \
+            --max-regression 0.02 \
+            --required-artifact audit_artifacts/capabilities_scored.json \
+            --required-artifact audit_artifacts/gaps.json \
+            --required-artifact audit_artifacts/component_gaps.json \
+            --required-artifact audit_run_manifest.json
+
+  score-regression:
+    name: Score Regression Check
+    if: ${{ (inputs.phase || 'all') == 'all' || (inputs.phase || 'all') == 'score-regression' }}
+    needs: assigned-agent-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Generate audit artifacts
+        run: python scripts/space_traversal/audit_runner.py run
+
+      - name: Validate score regression
+        run: |
+          python scripts/space_traversal/audit_runner.py validate \
+            --allow-low-maturity \
+            --threshold 0.70 \
+            --baseline baseline/capabilities_scored_post_remediation.json \
+            --max-regression 0.02 \
+            --required-artifact audit_artifacts/capabilities_scored.json

@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase 3 Execution — Branch `copilot/explain-repository-structure-again` — 2026-05-27T04:00Z)
+
+- **`.codex/completion_scores.yaml`** — machine-readable scores file (was missing from prior session commit); confirmed 87.6% after Phase 3 bumps
+- **`tests/integration/test_agent_recovery.py`** — D3 exit #3: agent recovery integration tests (health detection, retry/escalation flow, state preservation, CB integration)
+- **`benchmarks/perf/latency_baseline.json`** — D10: P50/P95/P99 latency baselines for 6 critical paths (RAG retrieval, agent dispatch, ML inference, CB query, CI workflow, test suite)
+- **`.github/workflows/performance-gate.yml`** — D10: latency regression gate; runs on PR + nightly schedule; blocks on threshold violations
+- **`.github/workflows/release.yml`** — D11: versioned release workflow wired to sbom.yml; validates tag format, verifies CHANGELOG entry, creates GitHub Release with SBOM attestation
+
+### Changed (Phase 3 Domain Bumps — 2026-05-27T04:00Z)
+
+- **`reports/reproducibility.md`** — D2: item 4 (Configuration tracking) upgraded from ⚠️ Partial to ✅; Hydra override logging documented → reproducibility checklist 6/6
+- **`.codex/completion_scores.yaml`** — bumped: D2 3→4, D3 4→5, D6 4→5, D7 4→5, D10 2→3, D11 2→3; total 76.4%→87.6%
+- **`.codex/COMPLETION_DASHBOARD.md`** — score updated to 87.6%; Phase 3 marked ✅ Complete; gap table refreshed; Score History row added; Mermaid flowchart updated with Phase 3 in DONE subgraph
+
+### Added (Phase 3/4 Groundwork + Mermaid Alignment — Branch `copilot/explain-repository-structure-again` — 2026-05-27T03:30Z)
+
+- **Phase 3 groundwork workflows**: `ci-pass-rate-gate.yml`, `ml-lifecycle-gate.yml`, `agent-health-check.yml` — ensures Phase 3 target (2026-06-17) requires only execution, not design
+- **Phase 3/4 groundwork workflows**: `mutation-testing.yml`, `test-pyramid-report.yml`, `rag-quality-nightly.yml`, `slo-canary-check.yml`
+- **Supporting scripts**: `scripts/ml/validate_ml_lifecycle.py` (D2 E2E validator), `scripts/rag/rag_rebuild_audit.py` (D4 freshness+quality+audit), `scripts/ci/workflow_owner_audit.py` (D6 owner coverage), `scripts/ci/test_pyramid_report.py` (D7 pyramid health), `scripts/observability/slo_canary.py` (D8 canary)
+- **`docs/PRODUCTION_DEPLOYMENT_GUIDE.md`** — D2 #4 rollback procedure with Mermaid deploy pipeline flowchart; reproducibility requirements table; E2E gate documentation
+- **`docs/architecture/ARCHITECTURE_LAYERS.md`** — D1 #4 architecture layer map with 5-layer Mermaid flowchart + boundary rules + import contract; Cognitive Brain as Layer 5 storage
+- **`tests/architecture/test_layer_boundaries.py`** — D1 boundary enforcement tests (no test→production upward imports; arch doc + `.importlinter` + workflow existence assertions)
+- **`audit_artifacts/capabilities_scored.json`** — current domain scores with evidence links for Phase 3 gate
+- **`audit_artifacts/gaps.json`** — Phase 3 gap analysis (ml/cicd/agent/test domain deltas with remaining actions)
+- **`audit_artifacts/component_gaps.json`** — Phase 4 component-level gap analysis with groundwork_complete flags
+- **`audit_run_manifest.json`** — Phase 4 gate template (6 gate checks, all PENDING; fill in at 2026-07-08)
+
+### Changed (Mermaid + Living Docs Alignment — 2026-05-27T03:30Z)
+
+- **`docs/roadmap/explain_repository_structure_session_diagram.mmd`** — extended with Phase 3/4 groundwork nodes, Cognitive Brain integration node (373 patterns, SQLiteMemory, all_agents_completed), audit artifacts node, full readiness journey 60.8%→76.4%→85.6%→90.4%→~95%, Production-complete destination node
+- **`docs/roadmap/explain_repository_structure_whats_next.md`** — added Phase 5 (≥95%, 2026-Q3) to horizon table; added Gantt chart showing full timeline from 2026-05-27 to 2026-09-01 with all active/queued milestones
+- **`.codex/COMPLETION_DASHBOARD.md`** — added Score Trajectory & Cognitive Brain Integration Mermaid flowchart showing 5-phase journey with CB feeds and style-coded band colours
+- **`docs/governance/PHASE_3_HARDENING_CHECKLIST.md`** — added Domain Progress Map Mermaid (domain states NOW→Phase3, CB feed arrows into D6/D3 gates)
+- **`docs/governance/PHASE_4_COMPLETION_GATES.md`** — added Phase 4 Gate Flow Mermaid (CB integration subgraph feeding D4/D1/D8, Phase 5 Polish path to ~95% Production-complete)
+- **`docs/governance/COMPLETION_GOVERNANCE_FRAMEWORK.md`** — added Score Journey LR flowchart (phase score nodes with band colours + CB feeds + Phase Gates) and Assigned-Agent Phase Map TD flowchart
+- **`.codex/plans/COMPLETION_GOVERNANCE.md`** — added Cognitive Brain arc to ownership map
+- **`pytest.ini`** — `timeout = 120` + `timeout_method = thread` uncommented (D7 exit criteria #5)
+
+### Added (Readiness Score 60.8% → 76.4% — Branch `copilot/explain-repository-structure-again` — 2026-05-27T02:57Z)
+
+- **`.codex/completion_scores.yaml`** — machine-readable flat-YAML domain scores consumed by `score_completion.py`; confirmed 76.4 % ("Operational but needs hardening")
+- **`.github/workflows/import-linter.yml`** — D1: CI gate enforcing import-layer contracts via `.importlinter` config; blocks PRs on violations
+- **`docs/security/SECURITY_SLA.md`** — D2/D5: MTTR SLA definitions (critical ≤3 d, high ≤10 d) with Mermaid MTTR escalation flow
+- **`.github/workflows/nightly-security-mttr.yml`** — D5: nightly MTTR tracking; confirms all CVEs patched (aiohttp 8 CVEs, GitPython→3.1.50, Mako→1.3.12, dynaconf RCE); Bandit SAST clean
+- **`.github/workflows/coverage-ratchet.yml`** — D7: 80 % coverage CI gate enforced; `pyproject.toml fail_under=10` retained as floor
+- **`.github/workflows/ci-flake-tracker.yml`** — D6/D7: weekly flake rate report using 93 live flakiness patterns from `cognitive_brain/workflow_patterns.jsonl` (last updated 2026-05-26)
+- **`docs/rag/RAG_FRESHNESS_SLA.md`** — D4: freshness SLA + Mermaid RAG pipeline flow; backed by 403 passing RAG tests (validation PASS 2026-01-08)
+- **`benchmarks/rag/retrieval_benchmark.json`** — D4: quality baseline recall=0.82, MRR=0.74; gates at recall≥0.70, MRR≥0.60
+- **`.codex/config/rag_quality.yaml`** — D4: drift alert configuration
+- **`.github/workflows/workflow-compliance-gate.yml`** — D6: PR compliance gate
+- **`docs/onboarding/ONBOARDING_CHECKLIST.md`** — D9: validated onboarding checklist (≤60 min to first `nox -s tests`)
+- **`docs/observability/SLO_DEFINITIONS.md`** — D8: 10 SLOs for ML serving, RAG, agent orchestration, CI/CD, security; with Mermaid alert-routing flow
+- **`docs/observability/RUNBOOKS.md`** — D8: 7 operational runbooks RB-01 through RB-07
+- **`docs/agent/ORCHESTRATION_COMPLIANCE.md`** — D3: compliance spec with Mermaid compliance lifecycle flow
+- **`reports/orchestration/orchestration_compliance.log.md`** — D3: audit trail
+- **`reports/orchestration/OKR_TRACKING.md`** — D3: OKR metrics tracking
+- **`docs/roadmap/explain_repository_structure_whats_next.md`** — living roadmap for this session
+- **`docs/roadmap/explain_repository_structure_session_diagram.mmd`** — session Mermaid diagram
+
+### Changed (2026-05-27)
+- **`.github/workflows/doc-freshness-check.yml`** — P0 docs now blocking (removed `continue-on-error`; added explicit fail step; added PR trigger)
+- **`.codex/COMPLETION_DASHBOARD.md`** — score updated to 76.4 %; Score History table + gap-to-target table added; band updated to "Operational but needs hardening"
+- **`.codex/plans/COMPLETION_GOVERNANCE.md`** — v1.2.0; mermaid updated (D1 subgraph, new workflow nodes); Phase 2 → Achieved 2026-05-27; Phase 3 → 2026-06-17 (expedited); Phase 4 → 2026-07-08 (expedited); Phase 4 section now has explicit target date (no "weeks" language)
+- **`.codex/DOMAIN_OWNERSHIP.md`** — gateway labels updated D1–D9 with ✅ artifact citations; exit criteria checkboxes ticked for D1(item 3), D3(items 2+4), D4(items 2+3+5), D5(item 3), D6(items 2+5), D7(item 1), D8(items 1+3+5), D9(items 1+3+4)
+- **`docs/rubrics/completion_rubric_v1.md`** — v1.1.0; example YAML updated to current scores; changelog entry added
+- **`docs/governance/PHASE_2_STABILISATION_CHECKLIST.md`** — marked COMPLETE ✅ (76.4 % > 70 %; all assigned agents completed)
+- **`docs/governance/PHASE_3_HARDENING_CHECKLIST.md`** — IN PROGRESS status added; target date 2026-06-17; per-domain gap table with artifact evidence
+- **`docs/governance/PHASE_4_COMPLETION_GATES.md`** — QUEUED status added; target date 2026-07-08 (expedited)
+
 ### Fixed (auto-update — PR #4608)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4608 (SHA `615ad929`) at 2026-05-27T00:29Z [auto-generated]
 

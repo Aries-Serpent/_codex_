@@ -983,7 +983,66 @@ def command_explain(args, cfg):
     print(f"{'Total':20s} |              |           | {explanation['score']:.4f}\n")
 
 
-def command_validate(cfg):
+def _load_capabilities_from_file(path: Path) -> list[dict[str, Any]]:
+    """Load capabilities from a scored-capabilities artifact."""
+    try:
+        data = json.loads(path.read_text())
+    except FileNotFoundError:
+        logger.error("Scored capability artifact not found: %s", path)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    except json.JSONDecodeError as e:
+        logger.error("Scored capability artifact is not valid JSON (%s): %s", path, e)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    except OSError as e:
+        logger.error("Failed to load %s: %s", path, e)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    return data.get("capabilities", [])
+
+
+def _collect_score_regressions(
+    baseline_file: Path,
+    scored_file: Path,
+    max_regression: float,
+) -> list[dict[str, float | str]]:
+    """Return capability regressions that exceed the allowed delta."""
+    baseline_caps = {
+        cap["id"]: float(cap.get("score", 0.0))
+        for cap in _load_capabilities_from_file(baseline_file)
+        if "id" in cap
+    }
+    current_caps = {
+        cap["id"]: float(cap.get("score", 0.0))
+        for cap in _load_capabilities_from_file(scored_file)
+        if "id" in cap
+    }
+
+    regressions: list[dict[str, float | str]] = []
+    for cap_id, baseline_score in baseline_caps.items():
+        current_score = current_caps.get(cap_id)
+        if current_score is None:
+            continue
+        delta = current_score - baseline_score
+        if delta < -max_regression:
+            regressions.append(
+                {
+                    "id": cap_id,
+                    "baseline": baseline_score,
+                    "current": current_score,
+                    "delta": delta,
+                }
+            )
+    return regressions
+
+
+def _resolve_validation_path(path_like: str | os.PathLike[str]) -> Path:
+    """Resolve validation inputs relative to the repository root."""
+    path = Path(path_like)
+    if path.is_absolute():
+        return path
+    return ROOT / path
+
+
+def command_validate(cfg, args: argparse.Namespace | None = None):
     """
     Validate audit artifacts and fail if quality gates are not met.
 
@@ -1000,27 +1059,44 @@ def command_validate(cfg):
             - EXIT_LOW_MATURITY (4): Low maturity capabilities detected
             - EXIT_MISSING_DETECTOR (5): Reserved for future detector validation
     """
-    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir = Path(
+        getattr(args, "artifacts_dir", "") or cfg.get("output", {}).get("artifacts_dir", "audit_artifacts")
+    )
     options = cfg.get("options", {})
     fail_on_low_maturity = options.get("fail_on_low_maturity", True)
+    if args and getattr(args, "allow_low_maturity", False):
+        fail_on_low_maturity = False
     fail_on_missing_detector = options.get("fail_on_missing_detector", False)
+    threshold_override = getattr(args, "threshold", None) if args else None
+    required_artifacts = list(getattr(args, "required_artifacts", []) or []) if args else []
+    baseline_arg = getattr(args, "baseline", None) if args else None
+    max_regression = float(getattr(args, "max_regression", 0.02)) if args else 0.02
+    scored_file = (
+        _resolve_validation_path(getattr(args, "scored_file"))
+        if args and getattr(args, "scored_file", None)
+        else artifacts_dir / "capabilities_scored.json"
+    )
 
     # Check for required artifacts
-    scored_file = artifacts_dir / "capabilities_scored.json"
+    missing_artifacts: list[Path] = []
     if not scored_file.exists():
-        logger.error(f"Required artifact not found: {scored_file}")
+        missing_artifacts.append(scored_file)
+    for artifact in required_artifacts:
+        artifact_path = _resolve_validation_path(artifact)
+        if not artifact_path.exists():
+            missing_artifacts.append(artifact_path)
+    if missing_artifacts:
+        for missing_artifact in missing_artifacts:
+            logger.error("Required artifact not found: %s", missing_artifact)
         sys.exit(EXIT_MISSING_ARTIFACTS)
 
     # Load scored capabilities
-    try:
-        scored_data = json.loads(scored_file.read_text())
-        capabilities = scored_data.get("capabilities", [])
-    except Exception as e:
-        logger.error(f"Failed to load capabilities_scored.json: {e}")
-        sys.exit(EXIT_MISSING_ARTIFACTS)
+    capabilities = _load_capabilities_from_file(scored_file)
 
     # Check for low maturity capabilities
-    low_threshold = cfg.get("scoring", {}).get("thresholds", {}).get("low", 0.70)
+    low_threshold = threshold_override
+    if low_threshold is None:
+        low_threshold = cfg.get("scoring", {}).get("thresholds", {}).get("low", 0.70)
     low_maturity_caps = [cap for cap in capabilities if cap.get("score", 0.0) < low_threshold]
 
     if low_maturity_caps and fail_on_low_maturity:
@@ -1031,6 +1107,32 @@ def command_validate(cfg):
             logger.error(f"  - {cap.get('id', 'unknown')}: {cap.get('score', 0.0):.2f}")
         sys.exit(EXIT_LOW_MATURITY)
 
+    baseline_file = _resolve_validation_path(baseline_arg) if baseline_arg else None
+    if baseline_file is not None:
+        if not baseline_file.exists():
+            logger.error("Baseline artifact not found: %s", baseline_file)
+            sys.exit(EXIT_MISSING_ARTIFACTS)
+        regressions = _collect_score_regressions(
+            baseline_file=baseline_file,
+            scored_file=scored_file,
+            max_regression=max_regression,
+        )
+        if regressions:
+            logger.error(
+                "Validation failed: %d capability regressions exceeded %.4f",
+                len(regressions),
+                max_regression,
+            )
+            for regression in regressions[:5]:
+                logger.error(
+                    "  - %s: baseline=%.2f current=%.2f delta=%+.4f",
+                    regression["id"],
+                    regression["baseline"],
+                    regression["current"],
+                    regression["delta"],
+                )
+            sys.exit(EXIT_SCORE_REGRESSION)
+
     # Check for missing detectors (future feature)
     if fail_on_missing_detector:
         # Placeholder: Detector validation not yet implemented
@@ -1038,7 +1140,12 @@ def command_validate(cfg):
         # and exit with EXIT_MISSING_DETECTOR if critical detectors are missing
         logger.warning("Detector validation requested but not yet implemented (EXIT_MISSING_DETECTOR=5)")
 
-    logger.info(f"Validation passed: {len(capabilities)} capabilities analyzed, {len(low_maturity_caps)} below threshold")
+    logger.info(
+        "Validation passed: %d capabilities analyzed, %d below threshold %.2f",
+        len(capabilities),
+        len(low_maturity_caps),
+        low_threshold,
+    )
     if low_maturity_caps:
         logger.warning(f"⚠️  {len(low_maturity_caps)} capabilities below threshold (not failing due to fail_on_low_maturity=False)")
 
@@ -1072,6 +1179,51 @@ def main() -> None:
     diff_parser = subparsers.add_parser("diff", help="Diff two scored capability files")
     diff_parser.add_argument("--old", type=Path, required=True, help="Baseline scored capabilities JSON")
     diff_parser.add_argument("--new", type=Path, required=True, help="New scored capabilities JSON")
+
+    # validate subcommand — enforce score thresholds and regression gates
+    validate_parser = subparsers.add_parser("validate", help="Validate scored capability artifacts")
+    validate_parser.add_argument(
+        "--artifacts-dir",
+        type=Path,
+        default=Path("audit_artifacts"),
+        help="Directory containing generated audit artifacts",
+    )
+    validate_parser.add_argument(
+        "--scored-file",
+        type=Path,
+        default=None,
+        help="Explicit path to capabilities_scored.json",
+    )
+    validate_parser.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Minimum accepted capability score",
+    )
+    validate_parser.add_argument(
+        "--baseline",
+        type=Path,
+        default=None,
+        help="Baseline scored capabilities JSON for regression checks",
+    )
+    validate_parser.add_argument(
+        "--max-regression",
+        type=float,
+        default=0.02,
+        help="Maximum allowed per-capability score drop from baseline",
+    )
+    validate_parser.add_argument(
+        "--required-artifact",
+        dest="required_artifacts",
+        action="append",
+        default=[],
+        help="Artifact path that must exist before validation succeeds",
+    )
+    validate_parser.add_argument(
+        "--allow-low-maturity",
+        action="store_true",
+        help="Do not fail if capabilities are below the configured threshold",
+    )
 
     # Legacy mode for backward compatibility
     parser.add_argument("target", type=Path, nargs="?", help="Target path to audit (legacy mode)")
@@ -1232,6 +1384,22 @@ def main() -> None:
             delta = new_score - old_score
             print(f"{cap_id},{old_score:.4f},{new_score:.4f},{delta:+.4f}")
 
+        return
+
+    if args.command == "validate":
+        cfg = {
+            "output": {"artifacts_dir": str(args.artifacts_dir)},
+            "options": {
+                "fail_on_low_maturity": not args.allow_low_maturity,
+                "fail_on_missing_detector": False,
+            },
+            "scoring": {
+                "thresholds": {
+                    "low": args.threshold if args.threshold is not None else 0.70,
+                }
+            },
+        }
+        command_validate(cfg, args)
         return
 
     if args.command == "run":

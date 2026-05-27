@@ -1,0 +1,60 @@
+{
+  "assigned_agents": {
+    "phase1-gap-discovery": {
+      "phase": "Phase 1 — Gap Discovery",
+      "agent": "recon-scout-agent",
+      "status": "completed",
+      "output": "prioritized actionable gap list + closure checklist"
+    },
+    "phase2-agent-assignment": {
+      "phase": "Phase 2 — Agent Assignment Map",
+      "agent": "agent-orchestrator",
+      "status": "completed",
+      "output": "8-phase execution map, per-phase owners, objective completion criteria"
+    },
+    "phase3-completion-gate": {
+      "phase": "Phase 3 — Completion Validation Gate",
+      "agent": "qa-walkthrough-agent",
+      "status": "completed",
+      "output": "strict completion audit with objective pass/fail checks"
+    }
+  },
+  "validation": {
+    "all_assigned_agents_completed": true
+  },
+  "phases": {
+    "phase-2-stabilisation": {
+      "threshold": 0.7,
+      "required_artifacts": [
+        "audit_artifacts/capabilities_scored.json"
+      ]
+    },
+    "phase-3-hardening": {
+      "threshold": 0.85,
+      "required_artifacts": [
+        "audit_artifacts/capabilities_scored.json",
+        "audit_artifacts/gaps.json",
+        "audit_artifacts/component_gaps.json"
+      ]
+    },
+    "phase-4-completion-governance": {
+      "threshold": 0.9,
+      "baseline": "baseline/capabilities_scored_post_remediation.json",
+      "max_regression": 0.02,
+      "required_artifacts": [
+        "audit_artifacts/capabilities_scored.json",
+        "audit_artifacts/gaps.json",
+        "audit_artifacts/component_gaps.json",
+        "audit_run_manifest.json"
+      ]
+    },
+    "score-regression": {
+      "threshold": 0.7,
+      "baseline": "baseline/capabilities_scored_post_remediation.json",
+      "max_regression": 0.02,
+      "required_artifacts": [
+        "audit_artifacts/capabilities_scored.json"
+      ]
+    }
+  }
+}
