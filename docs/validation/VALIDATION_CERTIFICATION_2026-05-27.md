@@ -148,21 +148,21 @@ Using **Status Quality Rubric v1.2**, final scores:
 **Status:** ✅ DEPLOYED — Multi-environment support confirmed
 
 #### 3.2 Security Hardening
-- **CVEs Fixed:** 26 documented in `pyproject.toml` comments
+- **CVEs Fixed:** 48 documented across `pyproject.toml` and security advisories
   - setuptools (CVE-2024-6345, CVE-2025-47273)
   - mlflow (43+ vulnerabilities, auth bypass, RCE)
   - transformers (deserialization issues)
   - PyJWT (CVE-2026-32597, header bypass)
   - pytest (CVE-2025-71176, plugin injection)
 
-- **Security Scanning:** SAST (CodeQL, Semgrep), Secret scanning (Gitleaks)
+- **Security Scanning:** SAST (CodeQL, Semgrep), Secret scanning (detect-secrets)
 - **Dependency Pinning:** Upper ceiling versions on critical packages
 - **Audit Logging:** Comprehensive audit trail
 
-**Status:** ✅ SECURED — 26 CVEs fixed, multi-layer SAST, secret scanning
+**Status:** ✅ SECURED — 48 CVEs fixed, multi-layer SAST, secret scanning
 
 #### 3.3 Testing Infrastructure
-- **Test Suite:** 22,000+ tests across:
+- **Test Suite:** 21,500+ tests across:
   - Unit tests (`tests/unit/`)
   - Integration tests (`tests/integration/`)
   - Quantum tests (`tests/quantum/`)
@@ -228,7 +228,7 @@ Using **Status Quality Rubric v1.2**, final scores:
 **Security Layers Confirmed:**
 
 #### 5.1 Dependency Security
-- **CVEs Fixed:** 26 documented (setuptools, MLflow, transformers, PyJWT, pytest)
+- **CVEs Fixed:** 48 documented (setuptools, MLflow, transformers, PyJWT, pytest)
 - **Version Pinning:** Upper ceiling versions on critical packages
 - **Audit Tools:** `pip-audit`, `safety`, dependency-check integration
 
