@@ -6,7 +6,8 @@
 ## Contents
 
 - [INDEX](INDEX.md)
-- [codex_eval_rubric_v3](codex_eval_rubric_v3.md)
+- [codex_eval_rubric_v3](codex_eval_rubric_v3.md) — Agent response evaluator rubric (fence/citation/tool quality)
+- [completion_rubric_v1](completion_rubric_v1.md) — Platform completion rubric — 11 domains, weighted 0–100 %
 
 ---
 
