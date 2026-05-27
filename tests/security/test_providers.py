@@ -18,6 +18,7 @@ Tests include:
 from __future__ import annotations
 
 # botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
+import importlib
 import importlib.util as _importlib_util
 import os
 from datetime import UTC, datetime, timedelta
@@ -783,6 +784,26 @@ class TestAWSSecretsManagerProvider:
         with pytest.raises(ProviderConfigError, match="boto3 required"):
             AWSSecretsManagerProvider(aws_config)
 
+    def test_module_import_fallback_without_boto3(self):
+        """Test module-level boto3 import fallback path creates testable stub."""
+        import security.providers.aws_provider as aws_provider_module
+
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "boto3" or name.startswith("botocore"):
+                raise ImportError("simulated missing boto3")
+            return real_import(name, *args, **kwargs)
+
+        try:
+            with patch("builtins.__import__", side_effect=fake_import):
+                reloaded = importlib.reload(aws_provider_module)
+                assert reloaded.HAS_BOTO3 is False
+                assert hasattr(reloaded.boto3, "client")
+                assert reloaded.ClientError is Exception
+        finally:
+            importlib.reload(aws_provider_module)
+
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
     def test_rotate_secret_success(self, mock_boto3, aws_config):
@@ -831,6 +852,21 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_rotate_secret_unexpected_exception(self, mock_boto3, aws_config):
+        """Test rotation gracefully handles unexpected exceptions."""
+        mock_client = Mock()
+        mock_client.rotate_secret.side_effect = RuntimeError("network timeout")
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.rotate_secret("test-secret")
+        assert result.success is False
+        assert "network timeout" in result.error_message
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_validate_secret_exists(self, mock_boto3, aws_config):
         """Test validating existing secret."""
         mock_client = Mock()
@@ -865,6 +901,20 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_validate_secret_unexpected_exception_raises(self, mock_boto3, aws_config):
+        """Test validation wraps unexpected exceptions in ValidationError."""
+        mock_client = Mock()
+        mock_client.describe_secret.side_effect = RuntimeError("broken client")
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        with pytest.raises(ValidationError, match="broken client"):
+            provider.validate_secret("test-secret")
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_get_secret_metadata(self, mock_boto3, aws_config):
         """Test getting secret metadata."""
         now = datetime.now(UTC)
@@ -887,6 +937,46 @@ class TestAWSSecretsManagerProvider:
         assert metadata.secret_type == SecretType.GENERIC
         assert metadata.provider == ProviderType.AWS_SECRETS_MANAGER
         assert metadata.tags == {"env": "test"}
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_metadata_normalizes_naive_datetimes(self, mock_boto3, aws_config):
+        """Test metadata normalizes naive datetime values to UTC."""
+        naive_created = datetime(2024, 1, 2, 3, 4, 5)
+        naive_updated = datetime(2024, 2, 3, 4, 5, 6)
+        mock_client = Mock()
+        mock_client.describe_secret.return_value = {
+            "Name": "test-secret",
+            "CreatedDate": naive_created,
+            "LastChangedDate": naive_updated,
+            "Tags": [],
+        }
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        metadata = provider.get_secret_metadata("test-secret")
+        assert metadata.created_at.tzinfo == UTC
+        assert metadata.updated_at.tzinfo == UTC
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_metadata_client_error(self, mock_boto3, aws_config):
+        """Test metadata lookup maps ClientError to ValidationError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.describe_secret.side_effect = FakeClientError("metadata denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            with pytest.raises(ValidationError, match="metadata denied"):
+                provider.get_secret_metadata("test-secret")
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -934,6 +1024,24 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_value_client_error(self, mock_boto3, aws_config):
+        """Test secret retrieval maps ClientError to ValidationError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.get_secret_value.side_effect = FakeClientError("access denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            with pytest.raises(ValidationError, match="access denied"):
+                provider.get_secret_value("test-secret")
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_create_secret(self, mock_boto3, aws_config):
         """Test creating new secret."""
         mock_client = Mock()
@@ -959,6 +1067,47 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_create_secret_without_optional_fields(self, mock_boto3, aws_config):
+        """Test create_secret omits optional keys when not provided."""
+        mock_client = Mock()
+        mock_client.create_secret.return_value = {
+            "ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:test",
+            "Name": "test-secret",
+            "VersionId": "v1",
+        }
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.create_secret(name="test-secret", secret_value="secret-value")
+        assert result.success is True
+        mock_client.create_secret.assert_called_once_with(
+            Name="test-secret",
+            SecretString="secret-value",
+        )
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_create_secret_client_error(self, mock_boto3, aws_config):
+        """Test create_secret returns failure result on ClientError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.create_secret.side_effect = FakeClientError("create failed")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            result = provider.create_secret(name="test-secret", secret_value="secret-value")
+            assert result.success is False
+            assert "create failed" in result.error_message
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_delete_secret(self, mock_boto3, aws_config):
         """Test deleting secret with recovery window."""
         mock_client = Mock()
@@ -970,6 +1119,23 @@ class TestAWSSecretsManagerProvider:
 
         success = provider.delete_secret("test-secret", recovery_window_days=7)
         assert success is True
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_delete_secret_client_error(self, mock_boto3, aws_config):
+        """Test delete_secret returns False on client error."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.delete_secret.side_effect = FakeClientError("delete denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            assert provider.delete_secret("test-secret") is False
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1005,6 +1171,67 @@ class TestAWSSecretsManagerProvider:
 
         secrets = provider.list_secrets()
         assert len(secrets) == 2
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_with_tag_filters(self, mock_boto3, aws_config):
+        """Test list_secrets applies tag filters to paginator call."""
+        mock_client = Mock()
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [{"SecretList": []}]
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.list_secrets(filter_tags={"env": "prod"})
+        assert result == []
+        mock_paginator.paginate.assert_called_once_with(
+            Filters=[
+                {"Key": "tag-key", "Values": ["env"]},
+                {"Key": "tag-value", "Values": ["prod"]},
+            ]
+        )
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_skips_metadata_failures(self, mock_boto3, aws_config):
+        """Test list_secrets continues when individual metadata lookups fail."""
+        mock_client = Mock()
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [
+            {"SecretList": [{"Name": "bad-secret"}, {"Name": "good-secret"}]}
+        ]
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_client.describe_secret.side_effect = [
+            RuntimeError("metadata unavailable"),
+            {"Name": "good-secret", "CreatedDate": datetime.now(UTC), "Tags": []},
+        ]
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.list_secrets()
+        assert [item.secret_id for item in result] == ["good-secret"]
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_client_error_returns_empty(self, mock_boto3, aws_config):
+        """Test list_secrets returns empty list when paginator creation fails."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.get_paginator.side_effect = FakeClientError("listing denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            assert provider.list_secrets() == []
 
 
 # ============================================================================
@@ -1200,6 +1427,21 @@ class TestProviderFactory:
         with pytest.raises(ProviderConfigError, match="not yet implemented"):
             ProviderFactory.create_provider(config)
 
+    def test_create_hashicorp_provider_not_implemented(self):
+        """Test hashicorp provider branch raises explicit not implemented error."""
+        config = ProviderConfig(provider_type=ProviderType.HASHICORP_VAULT)
+
+        with pytest.raises(ProviderConfigError, match="HashiCorp Vault provider not yet implemented"):
+            ProviderFactory.create_provider(config)
+
+    def test_create_provider_unknown_type_raises(self):
+        """Test unsupported provider type branch for non-enum values."""
+        config = Mock()
+        config.provider_type = "custom_provider"
+
+        with pytest.raises(ProviderConfigError, match="Unsupported provider type"):
+            ProviderFactory.create_provider(config)
+
     def test_create_from_dict(self):
         """Test creating provider from dictionary."""
         config_dict = {
@@ -1233,6 +1475,22 @@ class TestProviderFactory:
         assert isinstance(available, list)
         assert ProviderType.ENVIRONMENT in available
         assert ProviderType.GITHUB in available
+
+    def test_get_available_providers_handles_import_errors(self):
+        """Test get_available_providers still returns environment provider on import failures."""
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name in {
+                "security.providers.github_provider",
+                "security.providers.aws_provider",
+            }:
+                raise ImportError(f"simulated import failure for {name}")
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            available = ProviderFactory.get_available_providers()
+        assert available == [ProviderType.ENVIRONMENT]
 
     def test_validate_config_github(self):
         """Test validating GitHub config."""
@@ -1269,6 +1527,50 @@ class TestProviderFactory:
         is_valid = ProviderFactory.validate_config(config)
         assert is_valid is True
 
+    def test_validate_config_azure_requires_vault_url(self):
+        """Test validating Azure config requires vault_url."""
+        config = ProviderConfig(provider_type=ProviderType.AZURE_KEY_VAULT)
+
+        with pytest.raises(ProviderConfigError, match="vault_url"):
+            ProviderFactory.validate_config(config)
+
+    def test_validate_config_hashicorp_requires_vault_url_and_token(self):
+        """Test validating HashiCorp config requires vault_url and token."""
+        config_missing_url = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            token="vault-token",
+        )
+        with pytest.raises(ProviderConfigError, match="vault_url"):
+            ProviderFactory.validate_config(config_missing_url)
+
+        config_missing_token = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            vault_url="https://vault.example.com",
+        )
+        with pytest.raises(ProviderConfigError, match="token"):
+            ProviderFactory.validate_config(config_missing_token)
+
+        config_complete = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            vault_url="https://vault.example.com",
+            token="vault-token",
+        )
+        assert ProviderFactory.validate_config(config_complete) is True
+
+    def test_create_provider_import_error_wrapped(self):
+        """Test create_provider wraps ImportError with provider context."""
+        config = ProviderConfig(provider_type=ProviderType.GITHUB, token="ghp_test")
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "security.providers.github_provider":
+                raise ImportError("simulated import failure")
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            with pytest.raises(ProviderConfigError, match="Failed to import provider for github"):
+                ProviderFactory.create_provider(config)
+
 
 class TestCreateProviderFromEnv:
     """Test create_provider_from_env convenience function."""
@@ -1297,6 +1599,34 @@ class TestCreateProviderFromEnv:
         """Test creating unsupported provider from env."""
         with pytest.raises(ProviderConfigError, match="not supported"):
             create_provider_from_env(ProviderType.HASHICORP_VAULT)
+
+    def test_create_aws_from_env_with_explicit_credentials(self, monkeypatch):
+        """Test AWS env helper forwards explicit credentials when present."""
+        monkeypatch.setenv("AWS_REGION", "ap-southeast-1")
+        monkeypatch.setenv("AWS_ACCESS_KEY_ID", "AKIA_ENV_TEST")
+        monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "env-secret-key")
+
+        with patch.object(ProviderFactory, "create_provider") as mock_create_provider:
+            sentinel_provider = object()
+            mock_create_provider.return_value = sentinel_provider
+
+            provider = create_provider_from_env(ProviderType.AWS_SECRETS_MANAGER)
+            assert provider is sentinel_provider
+
+            passed_config = mock_create_provider.call_args.args[0]
+            assert passed_config.get("region") == "ap-southeast-1"
+            assert passed_config.get("aws_access_key_id") == "AKIA_ENV_TEST"
+            assert passed_config.get("aws_secret_access_key") == "env-secret-key"
+
+    def test_create_azure_from_env_reaches_factory(self, monkeypatch):
+        """Test Azure env helper constructs config then delegates to factory."""
+        monkeypatch.setenv("AZURE_VAULT_URL", "https://vault.example.com")
+        monkeypatch.setenv("AZURE_TENANT_ID", "tenant-id")
+        monkeypatch.setenv("AZURE_CLIENT_ID", "client-id")
+        monkeypatch.setenv("AZURE_CLIENT_SECRET", "client-secret")
+
+        with pytest.raises(ProviderConfigError, match="not yet implemented"):
+            create_provider_from_env(ProviderType.AZURE_KEY_VAULT)
 
 
 # ============================================================================
