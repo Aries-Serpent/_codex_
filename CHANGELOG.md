@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4637)
+- `release.yml`: restore missing `Validate version tag` step separator that was accidentally collapsed into the `Set up Python` step by the P1 CI/CD Maturity commit, causing GitHub Actions startup failure (step cannot have both `uses:` and `run:` keys)
+
 ### Fixed (auto-update — PR #4637)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4637 (SHA `f63b4fb9`) at 2026-05-27T22:22Z [auto-generated]
 
