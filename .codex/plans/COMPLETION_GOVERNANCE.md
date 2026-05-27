@@ -1,6 +1,6 @@
 # Codex Platform — Completion Governance
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Created**: 2026-05-27  
 **Dashboard**: [`../.codex/COMPLETION_DASHBOARD.md`](../COMPLETION_DASHBOARD.md)  
 **Rubric**: [`../../docs/rubrics/completion_rubric_v1.md`](../../docs/rubrics/completion_rubric_v1.md)  
@@ -75,31 +75,31 @@ manage the 90-day remediation roadmap.
 
 ### 3.2 Performance / Cost Regression Gates
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Run `benchmarks.yml` on every PR to `main`; block on regression ≥ 10 % | Perf owner | Gate in `pr-checks.yml` |
-| Define P50/P99 latency budgets for serving and RAG retrieval | Perf owner | Documented in `docs/PERFORMANCE_OPTIMIZATION_GUIDE.md` |
-| Generate weekly CI cost report via `pr-cost-check.yml` | CI owner | Report posted to Discussion |
-| Track cache hit ratio; alert when < 90 % | CI owner | `cache-health-monitor.yml` metric |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Run `benchmarks.yml` on every PR to `main`; block on regression ≥ 10 % | `performance-regression-detector` | `cache-management-agent` | Gate in `pr-checks.yml` |
+| Define P50/P99 latency budgets for serving and RAG retrieval | `performance-regression-detector` | `cache-management-agent` | Documented in `docs/PERFORMANCE_OPTIMIZATION_GUIDE.md` |
+| Generate weekly CI cost report via `pr-cost-check.yml` | `workflow-health-monitor` | `workflow-compliance-guardian` | Report posted to Discussion |
+| Track cache hit ratio; alert when < 90 % | `workflow-health-monitor` | `workflow-compliance-guardian` | `cache-health-monitor.yml` metric |
 
 ### 3.3 Incident-Grade Observability Runbooks
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Create runbook for ML serving failure (`docs/runbooks/serving_failure.md`) | ML owner | File committed |
-| Create runbook for RAG pipeline failure (`docs/runbooks/rag_failure.md`) | RAG owner | File committed |
-| Create runbook for agent orchestration failure (`docs/runbooks/agent_failure.md`) | Agent owner | File committed |
-| Define SLO dashboards (tools/dashboards/) for each critical surface | Ops owner | Dashboards linked from `docs/runbooks/` |
-| Test alerts by triggering canary failures; document results | Ops owner | Test report in `reports/observability/` |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Create runbook for ML serving failure (`docs/runbooks/serving_failure.md`) | `ml-validation-suite-agent` | @mbaetiong | File committed |
+| Create runbook for RAG pipeline failure (`docs/runbooks/rag_failure.md`) | `rag-freshness-loop-agent` | `rag-index-manager` | File committed |
+| Create runbook for agent orchestration failure (`docs/runbooks/agent_failure.md`) | `agent-orchestrator` | `cognitive-brain-session-injector` | File committed |
+| Define SLO dashboards (tools/dashboards/) for each critical surface | `performance-monitor-agent` | `msv-dashboard-monitor` | Dashboards linked from `docs/runbooks/` |
+| Test alerts by triggering canary failures; document results | `performance-monitor-agent` | `msv-dashboard-monitor` | Test report in `reports/observability/` |
 
 ### 3.4 End-to-End Reproducibility Validation
 
-| Action | Owner | Evidence |
-|--------|-------|---------|
-| Run `dvc repro` twice on identical inputs; diff artefacts (expect zero diff) | ML owner | Report in `reports/reproducibility/` |
-| Validate model registry: every released model has a version entry | ML owner | Registry audit in `reports/` |
-| Document rollback procedure for each environment | ML owner | `docs/PRODUCTION_DEPLOYMENT_GUIDE.md` updated |
-| Add E2E gate (train → eval → register → serve) to `nox -s ml_tests` | ML owner | Nox session green on `main` |
+| Action | Owner | Backup | Evidence |
+|--------|-------|--------|---------|
+| Run `dvc repro` twice on identical inputs; diff artefacts (expect zero diff) | `ml-validation-suite-agent` | @mbaetiong | Report in `reports/reproducibility/` |
+| Validate model registry: every released model has a version entry | `ml-validation-suite-agent` | @mbaetiong | Registry audit in `reports/` |
+| Document rollback procedure for each environment | `ml-validation-suite-agent` | @mbaetiong | `docs/PRODUCTION_DEPLOYMENT_GUIDE.md` updated |
+| Add E2E gate (train → eval → register → serve) to `nox -s ml_tests` | `ml-validation-suite-agent` | @mbaetiong | Nox session green on `main` |
 
 ---
 
@@ -154,13 +154,73 @@ A domain is **Done** (score = 5) when:
 
 ---
 
+## Agent Ownership & Escalation Map
+
+```mermaid
+flowchart LR
+    subgraph GOV["Governance Layer"]
+        RubricOwner["tracking-document-qa-agent\nRubric Owner"]
+        ReleaseGate["unified-governance-gate\nRelease Gate Owner"]
+        mbaetiong["@mbaetiong\nRepo Maintainer"]
+    end
+
+    subgraph CI["CI/CD & Workflow (D6/D10)"]
+        WHM["workflow-health-monitor\nCI Health"]
+        WCG["workflow-compliance-guardian\nCI Backup"]
+        PRD["performance-regression-detector\nPerf/Cost"]
+        CMA["cache-management-agent\nPerf Backup"]
+    end
+
+    subgraph SEC["Security & Release (D5/D11)"]
+        USS["unified-security-scanner\nSecurity"]
+        SAA["security-audit-agent\nSecurity Backup"]
+        PPOA["pypi-publishing-operations-agent\nRelease"]
+        PVA["packaging-validation-agent\nRelease Backup"]
+    end
+
+    subgraph ML["ML & RAG (D2/D4)"]
+        MVSA["ml-validation-suite-agent\nML Lifecycle"]
+        RFL["rag-freshness-loop-agent\nRAG Quality"]
+        RIM["rag-index-manager\nRAG Backup"]
+    end
+
+    subgraph ORCH["Orchestration & Obs (D3/D8)"]
+        AO["agent-orchestrator\nOrchestration"]
+        CBSI["cognitive-brain-session-injector\nOrch Backup"]
+        PMA["performance-monitor-agent\nObservability"]
+        MSD["msv-dashboard-monitor\nObs Backup"]
+    end
+
+    subgraph TEST["Test & Docs (D7/D9)"]
+        UCA["unified-coverage-agent\nTest Maturity"]
+        FTG["fragile-test-guardian\nTest Backup"]
+        UDA["unified-doc-agent\nDocumentation"]
+        DFC["doc-freshness-checker\nDoc Backup"]
+    end
+
+    WHM -->|escalate| RubricOwner
+    USS -->|escalate| RubricOwner
+    MVSA -->|escalate| mbaetiong
+    RFL -->|escalate| RubricOwner
+    AO -->|escalate| RubricOwner
+    PMA -->|escalate| RubricOwner
+    UCA -->|escalate| RubricOwner
+    UDA -->|escalate| RubricOwner
+    PRD -->|escalate| RubricOwner
+    PPOA -->|release gate| ReleaseGate
+    RubricOwner -->|final| mbaetiong
+    ReleaseGate -->|block/unblock| mbaetiong
+```
+
+---
+
 ## Contacts & Escalation
 
-| Role | Responsibility | Escalation path |
-|------|---------------|-----------------|
-| Rubric owner | Maintains scoring methodology and governance doc | Repo maintainer |
-| Domain owner | Maintains exit criteria and monthly score for their domain | Rubric owner |
-| Release gate owner | Enforces release-blocking rules | Repo maintainer |
+| Role | Agent / Contact | Backup | Responsibility | Escalation path |
+|------|----------------|--------|---------------|-----------------|
+| Rubric owner | `tracking-document-qa-agent` | @mbaetiong | Maintains scoring methodology and governance doc | @mbaetiong |
+| Domain owner | See [DOMAIN_OWNERSHIP.md](../DOMAIN_OWNERSHIP.md) | — | Maintains exit criteria and monthly score for their domain | Rubric owner |
+| Release gate owner | `unified-governance-gate` | `pypi-publishing-operations-agent` | Enforces release-blocking rules | @mbaetiong |
 
 ---
 
@@ -168,4 +228,5 @@ A domain is **Done** (score = 5) when:
 
 | Date | Version | Change |
 |------|---------|--------|
+| 2026-05-27 | 1.1.0 | Assigned Copilot custom agents as Owner+Backup for all Phase 2–3 actions and Contacts & Escalation table; added mermaid ownership map |
 | 2026-05-27 | 1.0.0 | Initial version |

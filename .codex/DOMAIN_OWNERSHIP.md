@@ -1,6 +1,6 @@
 # Codex Platform — Domain Ownership & Exit Criteria
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Created**: 2026-05-27  
 **Dashboard**: [`COMPLETION_DASHBOARD.md`](COMPLETION_DASHBOARD.md)  
 **Rubric spec**: [`../docs/rubrics/completion_rubric_v1.md`](../docs/rubrics/completion_rubric_v1.md)
@@ -25,6 +25,91 @@
 | 9 | Documentation & Developer Experience | `unified-doc-agent` | `doc-freshness-checker` | `doc-freshness-check.yml` / `docs-health.yml` |
 | 10 | Performance & Cost Efficiency | `performance-regression-detector` | `cache-management-agent` | `benchmarks.yml` / `pr-cost-check.yml` |
 | 11 | Release / Versioning / Supply Chain | `pypi-publishing-operations-agent` | `packaging-validation-agent` | `sbom.yml` / `pypi-publish.yml` |
+
+---
+
+## Agent ↔ Domain ↔ Workflow Map
+
+```mermaid
+flowchart TD
+    subgraph D1["D1 · Platform Architecture"]
+        codebase-health-guardian["codebase-health-guardian\n(primary)"]
+        recon-scout-agent["recon-scout-agent\n(backup)"]
+        GW1[".importlinter / scripts/ci/"]
+    end
+
+    subgraph D2["D2 · Core ML Lifecycle"]
+        ml-validation-suite-agent["ml-validation-suite-agent\n(primary)"]
+        mbaetiong2["@mbaetiong\n(backup)"]
+        GW2["nox -s ml_tests / serving smoke"]
+    end
+
+    subgraph D3["D3 · Agent Orchestration"]
+        agent-orchestrator["agent-orchestrator\n(primary)"]
+        cognitive-brain-session-injector["cognitive-brain-session-injector\n(backup)"]
+        GW3["cognitive-action-decision.yml"]
+    end
+
+    subgraph D4["D4 · RAG Quality & Freshness"]
+        rag-freshness-loop-agent["rag-freshness-loop-agent\n(primary)"]
+        rag-index-manager["rag-index-manager\n(backup)"]
+        GW4["rag-freshness-scheduler.yml / test-rag.yml"]
+    end
+
+    subgraph D5["D5 · Security Posture"]
+        unified-security-scanner["unified-security-scanner\n(primary)"]
+        security-audit-agent["security-audit-agent\n(backup)"]
+        GW5["codeql.yml / security-scanning-suite.yml"]
+    end
+
+    subgraph D6["D6 · CI/CD Health"]
+        workflow-health-monitor["workflow-health-monitor\n(primary)"]
+        workflow-compliance-guardian["workflow-compliance-guardian\n(backup)"]
+        GW6["workflow-execution-gate.yml"]
+    end
+
+    subgraph D7["D7 · Test System Maturity"]
+        unified-coverage-agent["unified-coverage-agent\n(primary)"]
+        fragile-test-guardian["fragile-test-guardian\n(backup)"]
+        GW7["nox -s tests / code-quality-coverage-suite.yml"]
+    end
+
+    subgraph D8["D8 · Observability"]
+        performance-monitor-agent["performance-monitor-agent\n(primary)"]
+        msv-dashboard-monitor["msv-dashboard-monitor\n(backup)"]
+        GW8["ci-health-monitor.yml"]
+    end
+
+    subgraph D9["D9 · Docs & Dev Experience"]
+        unified-doc-agent["unified-doc-agent\n(primary)"]
+        doc-freshness-checker["doc-freshness-checker\n(backup)"]
+        GW9["doc-freshness-check.yml / docs-health.yml"]
+    end
+
+    subgraph D10["D10 · Performance & Cost"]
+        performance-regression-detector["performance-regression-detector\n(primary)"]
+        cache-management-agent["cache-management-agent\n(backup)"]
+        GW10["benchmarks.yml / pr-cost-check.yml"]
+    end
+
+    subgraph D11["D11 · Release / Supply Chain"]
+        pypi-publishing-operations-agent["pypi-publishing-operations-agent\n(primary)"]
+        packaging-validation-agent["packaging-validation-agent\n(backup)"]
+        GW11["sbom.yml / pypi-publish.yml"]
+    end
+
+    codebase-health-guardian --> GW1
+    ml-validation-suite-agent --> GW2
+    agent-orchestrator --> GW3
+    rag-freshness-loop-agent --> GW4
+    unified-security-scanner --> GW5
+    workflow-health-monitor --> GW6
+    unified-coverage-agent --> GW7
+    performance-monitor-agent --> GW8
+    unified-doc-agent --> GW9
+    performance-regression-detector --> GW10
+    pypi-publishing-operations-agent --> GW11
+```
 
 ---
 
