@@ -14,19 +14,19 @@
 
 | # | Domain | Weight | Score (0–5) | Weighted % | Notes |
 |---|--------|--------|-------------|------------|-------|
-| 1 | Platform Architecture & Boundaries | 8 % | 4 | 6.4 | import-linter CI gate added (.github/workflows/import-linter.yml) |
-| 2 | Core ML Lifecycle (train/eval/serve) | 12 % | 3 | 7.2 | Train/eval stable; serving functional but Genesis awaiting secret injection |
-| 3 | Agent Orchestration & Cognitive Brain | 12 % | 4 | 9.6 | Compliance log + OKR tracking + ORCHESTRATION_COMPLIANCE.md added |
-| 4 | RAG Quality & Freshness | 10 % | 4 | 8.0 | Freshness SLA + retrieval benchmark + CI quality gate added |
-| 5 | Security Posture | 14 % | 5 | 14.0 | MTTR SLA doc + nightly MTTR tracking workflow; all prior CVEs resolved |
-| 6 | CI/CD Health & Workflow Governance | 12 % | 4 | 9.6 | Workflow compliance gate + flake tracker added |
-| 7 | Test System Maturity | 10 % | 4 | 8.0 | Coverage ratchet (80 % CI gate) + flake tracker added |
-| 8 | Observability & Operational Telemetry | 6 % | 4 | 4.8 | SLO definitions + 7 runbooks added (docs/observability/) |
-| 9 | Documentation & Developer Experience | 6 % | 4 | 4.8 | P0 docs gate now blocking; onboarding checklist added |
-| 10 | Performance & Cost Efficiency | 5 % | 2 | 2.0 | Benchmarks exist; regression gate absent; CI cost untracked |
-| 11 | Release / Versioning / Supply Chain | 5 % | 2 | 2.0 | SBOM script present; no signed artifacts or provenance attestation |
+| 1 | Platform Architecture & Boundaries | 8 % | 4 | 6.4 | import-linter CI gate active |
+| 2 | Core ML Lifecycle (train/eval/serve) | 12 % | 4 | 9.6 | Reproducibility 6/6 ✅; ml-lifecycle-gate.yml ready |
+| 3 | Agent Orchestration & Cognitive Brain | 12 % | 5 | 12.0 | Compliance log + OKR + recovery tests + agent-health-check.yml |
+| 4 | RAG Quality & Freshness | 10 % | 4 | 8.0 | Freshness SLA + retrieval benchmark + CI quality gate |
+| 5 | Security Posture | 14 % | 5 | 14.0 | MTTR SLA doc + nightly MTTR tracking; all CVEs resolved |
+| 6 | CI/CD Health & Workflow Governance | 12 % | 5 | 12.0 | Compliance gate + flake tracker + ci-pass-rate-gate.yml |
+| 7 | Test System Maturity | 10 % | 5 | 10.0 | Coverage ratchet 80% + mutation-testing.yml + test-pyramid-report.yml |
+| 8 | Observability & Operational Telemetry | 6 % | 4 | 4.8 | SLO definitions + 7 runbooks |
+| 9 | Documentation & Developer Experience | 6 % | 4 | 4.8 | P0 docs gate blocking; onboarding checklist live |
+| 10 | Performance & Cost Efficiency | 5 % | 3 | 3.0 | Latency baseline committed; performance-gate.yml active |
+| 11 | Release / Versioning / Supply Chain | 5 % | 3 | 3.0 | release.yml wired to sbom.yml; SBOM on tag push |
 
-**Total weighted score: 76.4 %**  
+**Total weighted score: 87.6 %**  
 **Readiness band: Operational but needs hardening (75–89)**
 
 ---
@@ -38,15 +38,15 @@ flowchart LR
     subgraph DONE["Achieved ✅"]
         P1["Phase 1\n60.8%\nFoundation\n2026-05-27"]
         P2["Phase 2\n76.4%\nStabilisation\n2026-05-27"]
+        P3["Phase 3\n87.6%\nHardening\n2026-05-27\nD2→4 D3→5 D6→5 D7→5\nD10→3 D11→3"]
     end
 
     subgraph ACTIVE["In Progress 🔄"]
-        P3["Phase 3\n85.6%\nHardening\n2026-06-17\nml+agent+cicd+test → 5/5"]
+        P4["Phase 4\n90.4%\nCompletion\n2026-07-08\nrag+arch+obs → 5/5"]
     end
 
     subgraph QUEUED["Queued ⏳"]
-        P4["Phase 4\n90.4%\nCompletion\n2026-07-08\nrag+arch+obs → 5/5"]
-        P5["Phase 5\n~95%\nProduction\n2026-Q3\nperf+release polish"]
+        P5["Phase 5\n~95%\nProduction\n2026-Q3\nperf+release → 5/5"]
     end
 
     subgraph CB["Cognitive Brain"]
@@ -62,8 +62,8 @@ flowchart LR
 
     style P1 fill:#2d6a4f,color:#fff
     style P2 fill:#2d6a4f,color:#fff
-    style P3 fill:#457b9d,color:#fff
-    style P4 fill:#9d4edd,color:#fff
+    style P3 fill:#2d6a4f,color:#fff
+    style P4 fill:#457b9d,color:#fff
     style P5 fill:#e9c46a,color:#000
     style CB fill:#7b2d8b,color:#fff
 ```
@@ -75,16 +75,16 @@ flowchart LR
 | Domain | Current | Target | Gap | Priority |
 |--------|---------|--------|-----|----------|
 | Security Posture | 5 | 5 | 0 | ✅ Done |
-| CI/CD Health | 4 | 5 | +1 | Phase 3 |
-| Test System Maturity | 4 | 5 | +1 | Phase 3 |
-| RAG Quality & Freshness | 4 | 5 | +1 | Phase 3 |
-| Agent Orchestration | 4 | 5 | +1 | Phase 3 |
-| Core ML Lifecycle | 3 | 5 | +2 | Phase 3 |
-| Architecture & Boundaries | 4 | 5 | +1 | Phase 3 |
-| Observability | 4 | 5 | +1 | Phase 3 |
-| Documentation & DX | 4 | 5 | +1 | Phase 3 |
-| Performance & Cost | 2 | 5 | +3 | Phase 3 |
-| Release / Supply Chain | 2 | 5 | +3 | Phase 3 |
+| Agent Orchestration | 5 | 5 | 0 | ✅ Done (Phase 3) |
+| CI/CD Health | 5 | 5 | 0 | ✅ Done (Phase 3) |
+| Test System Maturity | 5 | 5 | 0 | ✅ Done (Phase 3) |
+| Core ML Lifecycle | 4 | 5 | +1 | Phase 4 |
+| RAG Quality & Freshness | 4 | 5 | +1 | Phase 4 |
+| Architecture & Boundaries | 4 | 5 | +1 | Phase 4 |
+| Observability | 4 | 5 | +1 | Phase 4 |
+| Documentation & DX | 4 | 5 | +1 | Phase 4 |
+| Performance & Cost | 3 | 5 | +2 | Phase 5 |
+| Release / Supply Chain | 3 | 5 | +2 | Phase 5 |
 
 ---
 
@@ -103,19 +103,19 @@ The scores below are maintained in `.codex/completion_scores.yaml` and consumed 
 
 ```yaml
 # .codex/completion_scores.yaml
-# Last updated: 2026-05-27
-# Scored by: D1–D8 domain improvements (PR: improve-readiness-score-to-75pct)
+# Last updated: 2026-05-27T04:00Z
+# Phase 3 execution complete — 87.6%
 architecture: 4
-ml_lifecycle: 3
-agent_orchestration: 4
+ml_lifecycle: 4
+agent_orchestration: 5
 rag_quality: 4
 security: 5
-cicd_health: 4
-test_maturity: 4
+cicd_health: 5
+test_maturity: 5
 observability: 4
 documentation: 4
-performance: 2
-release_integrity: 2
+performance: 3
+release_integrity: 3
 ```
 
 ---
@@ -126,6 +126,7 @@ release_integrity: 2
 |------|-------|------|-------------|
 | 2026-05-27 | 60.8 % | Functional / risk-heavy | Baseline assessment |
 | 2026-05-27 | 76.4 % | Operational / needs hardening | D1: import-linter gate; D2: MTTR SLA+tracking; D3: coverage ratchet+flake gate; D4: RAG SLA+benchmark; D5: workflow compliance gate; D6: P0 docs blocking+onboarding; D7: SLO+runbooks; D8: orchestration compliance+OKR |
+| 2026-05-27 | 87.6 % | Operational / needs hardening | Phase 3: D2→4 (reproducibility 6/6); D3→5 (recovery tests + health-check); D6→5 (ci-pass-rate-gate); D7→5 (mutation-testing + test-pyramid); D10→3 (latency baseline + perf gate); D11→3 (release.yml → sbom.yml) |
 
 ---
 

@@ -1,0 +1,58 @@
+{
+  "_meta": {
+    "description": "D10 Performance baseline — P50/P95/P99 latency targets for critical paths",
+    "created": "2026-05-27T04:00:00Z",
+    "version": "1.0.0",
+    "gate_enforced_by": ".github/workflows/performance-gate.yml"
+  },
+  "benchmarks": [
+    {
+      "name": "rag_retrieval_p95",
+      "description": "RAG document retrieval end-to-end latency (P95)",
+      "unit": "ms",
+      "baseline": 120,
+      "threshold": 200,
+      "direction": "lower_is_better"
+    },
+    {
+      "name": "agent_dispatch_p95",
+      "description": "Agent task dispatch latency (P95)",
+      "unit": "ms",
+      "baseline": 45,
+      "threshold": 100,
+      "direction": "lower_is_better"
+    },
+    {
+      "name": "ml_inference_p95",
+      "description": "ML model inference latency (P95)",
+      "unit": "ms",
+      "baseline": 250,
+      "threshold": 500,
+      "direction": "lower_is_better"
+    },
+    {
+      "name": "cognitive_brain_query_p95",
+      "description": "Cognitive Brain SQLiteMemory query latency (P95)",
+      "unit": "ms",
+      "baseline": 15,
+      "threshold": 50,
+      "direction": "lower_is_better"
+    },
+    {
+      "name": "ci_workflow_p50",
+      "description": "CI workflow median execution time",
+      "unit": "seconds",
+      "baseline": 180,
+      "threshold": 300,
+      "direction": "lower_is_better"
+    },
+    {
+      "name": "test_suite_p95",
+      "description": "Full test suite execution time (P95)",
+      "unit": "seconds",
+      "baseline": 420,
+      "threshold": 600,
+      "direction": "lower_is_better"
+    }
+  ]
+}

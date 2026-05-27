@@ -1,0 +1,99 @@
+# D11 Release Integrity — Versioned Release with SBOM
+#
+# Triggered on tag push (v*) or manual dispatch.
+# Wires to sbom.yml for supply-chain attestation.
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.0.0-rc1)"
+        required: true
+        type: string
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: read
+  actions: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Pre-release Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate version tag
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "Release tag: $TAG"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "::error::Invalid version tag format: $TAG (expected vX.Y.Z[-suffix])"
+            exit 1
+          fi
+
+      - name: Verify CHANGELOG entry
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
+          if ! grep -q "\[$VERSION\]" CHANGELOG.md 2>/dev/null; then
+            echo "::warning::No CHANGELOG.md entry found for version $VERSION"
+          fi
+
+  generate-sbom:
+    name: Generate SBOM
+    needs: validate
+    uses: ./.github/workflows/sbom.yml
+    permissions:
+      contents: read
+      actions: write
+
+  release:
+    name: Create GitHub Release
+    needs: [validate, generate-sbom]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine tag
+        id: tag
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "Release ${{ steps.tag.outputs.tag }}"
+          body: |
+            ## Release ${{ steps.tag.outputs.tag }}
+
+            ### SBOM
+            Software Bill of Materials generated via `sbom.yml` workflow.
+
+            ### Verification
+            - CHANGELOG entry: see CHANGELOG.md
+            - SBOM: attached as workflow artifact
+            - Completion score: run `python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml`
+          draft: false
+          prerelease: ${{ contains(steps.tag.outputs.tag, 'rc') || contains(steps.tag.outputs.tag, 'alpha') || contains(steps.tag.outputs.tag, 'beta') }}

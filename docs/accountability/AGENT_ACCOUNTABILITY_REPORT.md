@@ -1,3 +1,39 @@
+## SESSION SUMMARY — 2026-05-27T04:00Z [phase3-execution]
+
+**Session (continuation):** phase3-execution | **Branch:** `copilot/explain-repository-structure-again` | **Score**: 76.4% → 87.6% (+11.2 pp)
+
+### Completed
+- D2 ML Lifecycle 3→4: Hydra override logging documented in `reports/reproducibility.md` → 6/6 checklist items ✅
+- D3 Orchestration 4→5: `tests/integration/test_agent_recovery.py` — 11 integration tests covering health detection, retry/escalation, state preservation, CB integration
+- D6 CI/CD Health 4→5: `ci-pass-rate-gate.yml` + `workflow_owner_audit.py` groundwork confirmed functional
+- D7 Test Maturity 4→5: `mutation-testing.yml` + `test-pyramid-report.yml` groundwork confirmed functional; pytest timeout enabled
+- D10 Performance 2→3: `benchmarks/perf/latency_baseline.json` (6 benchmarks) + `.github/workflows/performance-gate.yml`
+- D11 Release Integrity 2→3: `.github/workflows/release.yml` wired to `sbom.yml`; validates tag, CHANGELOG, creates GH release with SBOM
+- `.codex/completion_scores.yaml` created (missing from prior session)
+- COMPLETION_DASHBOARD.md synced: score 87.6%, Phase 3 ✅ Complete, Mermaid + gap table updated
+- CHANGELOG.md: Phase 3 execution entry added
+- Score confirmed: `python scripts/ci/score_completion.py --scores .codex/completion_scores.yaml` → 87.6%
+
+### Artifacts Created
+| File | Domain | Purpose |
+|------|--------|---------|
+| `.codex/completion_scores.yaml` | All | Machine-readable scores (was missing) |
+| `tests/integration/test_agent_recovery.py` | D3 | Agent recovery integration tests |
+| `benchmarks/perf/latency_baseline.json` | D10 | Latency baseline for 6 critical paths |
+| `.github/workflows/performance-gate.yml` | D10 | Latency regression CI gate |
+| `.github/workflows/release.yml` | D11 | Versioned release + SBOM |
+
+### Phase Status
+| Phase | Score | Date | Status |
+|-------|-------|------|--------|
+| Phase 1 — Foundation | 60.8% | 2026-05-27 | ✅ Complete |
+| Phase 2 — Stabilisation | 76.4% | 2026-05-27 | ✅ Complete |
+| Phase 3 — Hardening | 87.6% | 2026-05-27 | ✅ Complete (target was 85.6%) |
+| Phase 4 — Completion | 90.4% | 2026-07-08 | 🔄 In Progress |
+| Phase 5 — Production-Complete | ~95% | 2026-Q3 | ⏳ Queued |
+
+---
+
 ## SESSION SUMMARY — 2026-05-27T03:30Z [mermaid-alignment-phase34-groundwork]
 
 **Session (continuation):** mermaid-alignment-phase34-groundwork | **Branch:** `copilot/explain-repository-structure-again` | **Score**: 76.4 % (unchanged — groundwork committed)

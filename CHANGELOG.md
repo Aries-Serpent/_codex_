@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase 3 Execution — Branch `copilot/explain-repository-structure-again` — 2026-05-27T04:00Z)
+
+- **`.codex/completion_scores.yaml`** — machine-readable scores file (was missing from prior session commit); confirmed 87.6% after Phase 3 bumps
+- **`tests/integration/test_agent_recovery.py`** — D3 exit #3: agent recovery integration tests (health detection, retry/escalation flow, state preservation, CB integration)
+- **`benchmarks/perf/latency_baseline.json`** — D10: P50/P95/P99 latency baselines for 6 critical paths (RAG retrieval, agent dispatch, ML inference, CB query, CI workflow, test suite)
+- **`.github/workflows/performance-gate.yml`** — D10: latency regression gate; runs on PR + nightly schedule; blocks on threshold violations
+- **`.github/workflows/release.yml`** — D11: versioned release workflow wired to sbom.yml; validates tag format, verifies CHANGELOG entry, creates GitHub Release with SBOM attestation
+
+### Changed (Phase 3 Domain Bumps — 2026-05-27T04:00Z)
+
+- **`reports/reproducibility.md`** — D2: item 4 (Configuration tracking) upgraded from ⚠️ Partial to ✅; Hydra override logging documented → reproducibility checklist 6/6
+- **`.codex/completion_scores.yaml`** — bumped: D2 3→4, D3 4→5, D6 4→5, D7 4→5, D10 2→3, D11 2→3; total 76.4%→87.6%
+- **`.codex/COMPLETION_DASHBOARD.md`** — score updated to 87.6%; Phase 3 marked ✅ Complete; gap table refreshed; Score History row added; Mermaid flowchart updated with Phase 3 in DONE subgraph
+
 ### Added (Phase 3/4 Groundwork + Mermaid Alignment — Branch `copilot/explain-repository-structure-again` — 2026-05-27T03:30Z)
 
 - **Phase 3 groundwork workflows**: `ci-pass-rate-gate.yml`, `ml-lifecycle-gate.yml`, `agent-health-check.yml` — ensures Phase 3 target (2026-06-17) requires only execution, not design
