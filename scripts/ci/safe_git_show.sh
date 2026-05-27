@@ -4,6 +4,13 @@
 # Problem: `git show <base_sha> -- <file>` exits 128 when <file> was added
 # AFTER <base_sha>.  This poisons diffs in CI steps and agent sessions.
 #
+# Sourcing contract:
+#   When sourced (e.g., `source scripts/ci/safe_git_show.sh`), this script does
+#   NOT set shell options (set -euo pipefail). Callers are responsible for their
+#   own shell option state. This is intentional — sourced helpers should not
+#   mutate caller shell state. Both `.github/workflows/copilot-setup-steps.yml`
+#   and `.devcontainer/scripts/post-start.sh` set their own `set -euo pipefail`.
+#
 # Usage:
 #   source scripts/ci/safe_git_show.sh
 #   safe_git_show "$BASE_SHA" "path/to/file.py"    # prints content or empty
@@ -12,8 +19,6 @@
 #
 # Or run directly:
 #   bash scripts/ci/safe_git_show.sh <ref> <file>
-
-set -euo pipefail
 
 # safe_git_show REF FILE
 #   Outputs the file content at REF, or nothing if the file doesn't exist at REF.
@@ -44,7 +49,12 @@ safe_git_diff() {
     git diff "${base_ref}" "${head_ref}" -- "${file}" || true
   else
     # File is new (added after base_ref) — diff against /dev/null
-    git diff --no-index /dev/null "${file}" 2>/dev/null || true
+    if git cat-file -e "${head_ref}:${file}" 2>/dev/null; then
+      git diff --no-index /dev/null <(git show "${head_ref}:${file}") 2>/dev/null || true
+    else
+      echo "warning: ${file} does not exist at ${base_ref} or ${head_ref}" >&2
+      return 1
+    fi
   fi
 }
 
@@ -71,6 +81,7 @@ safe_git_show_with_head_fallback() {
 
 # If invoked directly (not sourced), run safe_git_show with args
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  set -euo pipefail
   if [[ $# -lt 2 ]]; then
     echo "Usage: $0 <ref> <file>" >&2
     exit 1
