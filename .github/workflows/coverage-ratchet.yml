@@ -68,11 +68,11 @@ jobs:
             --timeout=120 \
             -x \
             tests/ \
-            2>&1 | tee /tmp/coverage_output.txt
+            2>&1 | tee "$RUNNER_TEMP/coverage_output.txt"
           EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
           # Extract coverage percentage
-          COVERAGE_PCT=$(grep "TOTAL" /tmp/coverage_output.txt | awk '{print $(NF-1)}' | tr -d '%' | tail -1 || echo "unknown")
+          COVERAGE_PCT=$(grep "TOTAL" "$RUNNER_TEMP/coverage_output.txt" | awk '{print $(NF-1)}' | tr -d '%' | tail -1 || echo "unknown")
           echo "coverage_pct=$COVERAGE_PCT" >> "$GITHUB_OUTPUT"
           exit $EXIT_CODE
         continue-on-error: true
@@ -97,14 +97,14 @@ jobs:
             "<details><summary>Coverage output</summary>" \
             "" \
             "\`\`\`" \
-            "$(cat /tmp/coverage_output.txt | tail -30)" \
+            "$(cat "$RUNNER_TEMP/coverage_output.txt" | tail -30)" \
             "\`\`\`" \
             "" \
             "</details>" \
             "" \
             "See \`pyproject.toml → [tool.coverage.report]\` for configuration." \
-            > /tmp/coverage_body.txt
-          gh pr comment "$PR_NUMBER" --body-file /tmp/coverage_body.txt 2>/dev/null || true
+            > "$RUNNER_TEMP/coverage_body.txt"
+          gh pr comment "$PR_NUMBER" --body-file "$RUNNER_TEMP/coverage_body.txt" 2>/dev/null || true
 
       - name: Fail on coverage regression
         if: steps.coverage.outputs.exit_code != '0'

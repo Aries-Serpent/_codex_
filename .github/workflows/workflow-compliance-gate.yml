@@ -158,8 +158,8 @@ jobs:
             "- Add \`timeout-minutes:\` to each job" \
             "" \
             "See \`docs/workflows/CONSOLIDATION_GUIDE.md\` for guidance." \
-            > /tmp/compliance_body.txt
-          gh pr comment "$PR_NUMBER" --body-file /tmp/compliance_body.txt 2>/dev/null || true
+            > "$RUNNER_TEMP/compliance_body.txt"
+          gh pr comment "$PR_NUMBER" --body-file "$RUNNER_TEMP/compliance_body.txt" 2>/dev/null || true
 
       - name: Fail on violations
         if: steps.check.outputs.exit_code != '0'
