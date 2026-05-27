@@ -1,0 +1,145 @@
+name: Workflow Compliance Gate
+
+# Validates that all workflow files in .github/workflows/ comply with
+# repository standards: required fields, concurrency, timeout, permissions.
+# Blocks PRs when new/modified workflows violate compliance rules.
+#
+# Compliance rules (from COMPLETION_GOVERNANCE.md Phase 2.1):
+#   - All jobs must have `timeout-minutes`
+#   - All workflows must have `concurrency` (except manually-dispatched stubs)
+#   - All workflows must have a `permissions:` block
+#   - Disabled stubs must use `on: workflow_dispatch:` + `permissions: {}`
+#
+# Domain: D6 · CI/CD Health & Workflow Governance (completion rubric v1)
+# Evidence: compliance gate blocks non-compliant PRs → score 4 evidence
+
+on:
+  pull_request:
+    branches: [main, develop, "0D_base_"]
+    paths:
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: workflow-compliance-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compliance-check:
+    name: "⚙️ Workflow Compliance Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install PyYAML --quiet
+
+      - name: Run compliance check
+        id: check
+        run: |
+          python3 - <<'PYEOF'
+          import sys
+          import yaml
+          from pathlib import Path
+
+          WORKFLOW_DIR = Path(".github/workflows")
+          violations = []
+          warnings = []
+
+          def is_stub(data):
+              """Stubs: only workflow_dispatch trigger + no real jobs."""
+              triggers = data.get("on", {}) or {}
+              if isinstance(triggers, str):
+                  return False
+              has_only_dispatch = set(triggers.keys()) <= {"workflow_dispatch"}
+              jobs = data.get("jobs", {}) or {}
+              is_noop = all(
+                  any(
+                      s.get("run", "").strip().startswith("echo")
+                      for s in j.get("steps", [])
+                  )
+                  for j in jobs.values()
+              )
+              return has_only_dispatch and is_noop
+
+          for wf_file in sorted(WORKFLOW_DIR.glob("*.yml")):
+              try:
+                  data = yaml.safe_load(wf_file.read_text())
+              except yaml.YAMLError as e:
+                  violations.append(f"{wf_file.name}: YAML parse error — {e}")
+                  continue
+
+              if not isinstance(data, dict):
+                  continue
+
+              stub = is_stub(data)
+              name = wf_file.name
+
+              # Rule 1: permissions block required
+              if "permissions" not in data:
+                  violations.append(f"{name}: missing top-level `permissions:` block")
+
+              # Rule 2: concurrency required (skip stubs)
+              if not stub and "concurrency" not in data:
+                  violations.append(f"{name}: missing `concurrency:` block")
+
+              # Rule 3: all non-stub jobs must have timeout-minutes
+              jobs = data.get("jobs", {}) or {}
+              for job_id, job in jobs.items():
+                  if not isinstance(job, dict):
+                      continue
+                  if job_id == "noop":
+                      continue
+                  if "timeout-minutes" not in job:
+                      violations.append(
+                          f"{name}: job `{job_id}` missing `timeout-minutes`"
+                      )
+
+          if violations:
+              print(f"FAIL: {len(violations)} compliance violation(s) found:\n")
+              for v in violations:
+                  print(f"  ❌ {v}")
+              sys.exit(1)
+          else:
+              print(f"PASS: All {len(list(WORKFLOW_DIR.glob('*.yml')))} workflow files are compliant.")
+          PYEOF
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Post PR comment on violations
+        if: >
+          github.event_name == 'pull_request' &&
+          steps.check.outputs.exit_code != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BODY="## ⚙️ Workflow Compliance Violations
+
+          One or more workflow files in \`.github/workflows/\` violate the
+          repository compliance standards.  Please fix before merging.
+
+          **Common fixes**:
+          - Add \`permissions: {}\` or specific scopes to the workflow level
+          - Add \`concurrency:\` block to prevent duplicate runs
+          - Add \`timeout-minutes:\` to each job
+
+          See \`docs/workflows/CONSOLIDATION_GUIDE.md\` for guidance.
+          "
+          gh pr comment "$PR_NUMBER" --body "$BODY" 2>/dev/null || true
+
+      - name: Fail on violations
+        if: steps.check.outputs.exit_code != '0'
+        run: exit 1

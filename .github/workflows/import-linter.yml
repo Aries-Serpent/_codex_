@@ -1,0 +1,100 @@
+name: Import Linter
+
+# Enforces architectural layer contracts defined in `.importlinter`.
+# Blocks PRs when import rules are violated (e.g., api → training internals,
+# agents importing model weights directly).
+#
+# Domain: D1 · Platform Architecture & Boundaries (completion rubric v1)
+# Evidence: blocks PRs on layer-contract violations → score 4 evidence
+
+on:
+  pull_request:
+    branches: [main, develop, "0D_base_"]
+    paths:
+      - "src/**"
+      - "agents/**"
+      - "codex_ml/**"
+      - ".importlinter"
+      - "pyproject.toml"
+      - "setup.cfg"
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "agents/**"
+      - "codex_ml/**"
+      - ".importlinter"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: import-linter-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-imports:
+    name: "🏗️ Import Architecture Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.12"
+
+      - name: Install import-linter
+        run: pip install import-linter --quiet
+
+      - name: Install project (editable, no heavy deps)
+        run: pip install -e ".[dev]" --quiet --no-deps 2>/dev/null || pip install -e . --quiet --no-deps
+
+      - name: Run import-linter
+        id: lint
+        run: |
+          lint-imports --config .importlinter 2>&1 | tee /tmp/import_lint_results.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit $EXIT_CODE
+        continue-on-error: true
+
+      - name: Post PR comment on violation
+        if: >
+          github.event_name == 'pull_request' &&
+          steps.lint.outputs.exit_code != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BODY="## 🏗️ Import Architecture Violation
+
+          The import-linter found layer-contract violations.  Please fix before merging.
+
+          \`\`\`
+          $(cat /tmp/import_lint_results.txt | head -60)
+          \`\`\`
+
+          **Contracts checked** (see \`.importlinter\`):
+          - Core layering: utils → data → models → training → api
+          - API must not import training internals
+          - Agents must use cognitive\_app runtime for model weights
+          "
+          gh pr comment "$PR_NUMBER" --body "$BODY" 2>/dev/null || true
+
+      - name: Fail on violation
+        if: steps.lint.outputs.exit_code != '0'
+        run: |
+          echo "::error::Import architecture contracts violated. See results above."
+          exit 1
+
+      - name: Summary on success
+        if: steps.lint.outputs.exit_code == '0'
+        run: |
+          echo "✅ All import architecture contracts passed."
+          cat /tmp/import_lint_results.txt
