@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4639 scorecard follow-up)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog in the latest commit to satisfy REQ-4/REQ-5 freshness gates and clear the remaining auto-fix merge-readiness blocker.
+
 ### Fixed (SN — PR #4639)
 - Closed the remaining unresolved-review comment set by fixing outstanding static/lint findings in the flagged files (unused symbols, robust exception-path comments, and dry-run assertion cleanup) and hardening CI trend flap-rate formatting in `scripts/ci/proactive_ci_monitor.py`.
 
