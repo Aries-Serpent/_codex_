@@ -29,7 +29,7 @@ def _get_max_concurrency(payload: dict, default: int) -> int:
         warnings.warn(
             "'max_workers' is deprecated; use 'max_concurrency' instead.",
             DeprecationWarning,
-            stacklevel=2,
+            stacklevel=3,
         )
         return int(payload["max_workers"])
     return default
