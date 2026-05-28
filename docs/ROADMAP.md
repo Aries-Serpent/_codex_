@@ -288,11 +288,11 @@
 
 ### Medium Priority
 
-#### 4. **Advanced Monitoring & Observability**
+#### 5. **Advanced Monitoring & Observability**
 **Timeline**: 2026-04-01 to 2026-05-31
 **Focus**: Real-time metrics, dashboards, alerting, performance tracking
 
-#### 5. **Coverage to 95%+**
+#### 6. **Coverage to 95%+**
 **Timeline**: 2026-04-01 to 2026-06-30
 **Focus**: Comprehensive test coverage, edge cases, integration scenarios
 
@@ -387,7 +387,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-05-28 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-05-28 (W-142 S116): Level 3.95 — SAR-G01/G02/G05 COMPLETE; SAR-G03 remains 🟠 OPEN (Partial, 75/100; tracked below).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
