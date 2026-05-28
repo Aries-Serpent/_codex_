@@ -23,16 +23,21 @@ _scorer = AAISScorer()
 
 
 def _get_max_concurrency(payload: dict, default: int) -> int:
+    """Extract max_concurrency from payload with validation."""
+    val = default
     if "max_concurrency" in payload:
-        return int(payload["max_concurrency"])
-    if "max_workers" in payload:
+        val = int(payload["max_concurrency"])
+    elif "max_workers" in payload:
         warnings.warn(
             "'max_workers' is deprecated; use 'max_concurrency' instead.",
             DeprecationWarning,
             stacklevel=3,
         )
-        return int(payload["max_workers"])
-    return default
+        val = int(payload["max_workers"])
+
+    if val < 0:
+        raise ValueError("max_concurrency must be >= 0")
+    return val
 
 
 def _score_item(
@@ -111,8 +116,6 @@ def run(payload: dict) -> dict:
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
     max_concurrency: int = _get_max_concurrency(payload, 0)
-    if max_concurrency < 0:
-        raise ValueError("max_concurrency must be >= 0")
 
     if max_concurrency > 0:
         # Process in sequential chunks to throttle peak memory on large batches.

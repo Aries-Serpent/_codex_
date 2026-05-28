@@ -25,8 +25,13 @@ _codex_root = Path(__file__).resolve().parent.parent  # src/codex
 _click_cli_path = _codex_root / "cli.py"
 
 
+_cli_load_error: Exception | None = None
+
+
 def _load_click_cli() -> Any:
     """Load the Click CLI group from src/codex/cli.py using importlib."""
+    global _cli_load_error
+
     # Check if already loaded to ensure idempotency
     if "codex._cli_click" in sys.modules:
         existing_module = sys.modules["codex._cli_click"]
@@ -36,21 +41,20 @@ def _load_click_cli() -> Any:
     if not _click_cli_path.exists() or not _click_cli_path.is_file():
         return None
 
-    spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
-    if spec is None or spec.loader is None:
+    try:
+        spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
+        if spec is None or spec.loader is None:
+            return None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["codex._cli_click"] = module
+        spec.loader.exec_module(module)
+        return getattr(module, "cli", None)
+    except Exception as exc:  # pragma: no cover
+        _cli_load_error = exc
         return None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["codex._cli_click"] = module
-    spec.loader.exec_module(module)
-    return getattr(module, "cli", None)
 
 
-_cli_load_error: Exception | None = None
-try:
-    cli = _load_click_cli()
-except Exception as exc:  # pragma: no cover - degrade gracefully when CLI fails to load
-    _cli_load_error = exc
-    cli = None
+cli = _load_click_cli()
 
 # Also expose CLI groups and helpers for testing
 logs = None
