@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -234,7 +233,7 @@ class TestTrainerInstantiationGuard:
             assert "requires a real torch" not in str(exc), (
                 "Trainer should not raise torch-guard error with CODEX_ALLOW_TORCH_STUB=1"
             )
-        except Exception:
+        except Exception as _err:
             pass  # Other errors from incomplete mock setup are acceptable
 
 
@@ -250,7 +249,6 @@ class TestShouldReplace:
 
     def _make_trainer_with_checkpoint(self, tmp_path, mode: str):
         """Build a partial Trainer state via direct attribute manipulation."""
-        import types
         cfg = self.mod.TrainerConfig(epochs=1)
         cc = self.mod.CheckpointConfig(directory=str(tmp_path), mode=mode)
         cfg.checkpoint = cc

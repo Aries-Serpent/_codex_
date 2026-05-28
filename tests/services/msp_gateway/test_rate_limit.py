@@ -4,19 +4,16 @@ from __future__ import annotations
 
 import json
 import time
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 pytest.importorskip("fastapi")
 
 from services.msp_gateway.middleware.rate_limit import (
-    RateLimitMiddleware,
     RateLimiter,
+    RateLimitMiddleware,
     TokenBucket,
-    rate_limiter,
 )
-
 
 # ---------------------------------------------------------------------------
 # TokenBucket
@@ -246,6 +243,7 @@ async def test_dispatch_rate_limited_request(monkeypatch):
     """When request bucket is empty, middleware returns 429."""
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
+
     from services.msp_gateway.middleware.rate_limit import settings as rl_settings
 
     monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)

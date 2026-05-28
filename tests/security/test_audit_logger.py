@@ -5,10 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from security.audit_logger import AuditLogger, log_audit_event
-
 
 # ---------------------------------------------------------------------------
 # AuditLogger construction

@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import importlib
-import os
 import sys
 import types
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -27,7 +26,6 @@ except ImportError:
 
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
-
 
 # ---------------------------------------------------------------------------
 # Helpers

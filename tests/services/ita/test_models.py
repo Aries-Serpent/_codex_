@@ -7,6 +7,8 @@ import pytest
 from services.ita.app.models import (
     HealthResponse,
     RepoHygieneRequest,
+)
+from services.ita.app.models import (
     TestsRunRequest as ITATestsRunRequest,
 )
 

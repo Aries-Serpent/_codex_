@@ -55,6 +55,7 @@ _DEFAULT_LITERAL_URI = "file:./artifacts/mlruns"
 _ = mlflow_guard.bootstrap_offline_tracking(requested_uri=_CODEX_URI or _DEFAULT_LITERAL_URI)
 MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
 
+
 def _resolve_tracking_uri_default() -> Optional[str]:
     codex_env = os.getenv("CODEX_MLFLOW_URI")
     if codex_env:

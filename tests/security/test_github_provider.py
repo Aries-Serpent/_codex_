@@ -20,9 +20,9 @@ from security.providers.base import (
     ValidationError,
 )
 from security.providers.github_provider import (
-    GitHubTokenProvider,
     _GITHUB_TOKEN_RE,
     _KNOWN_INSTALLATION_PERMISSIONS,
+    GitHubTokenProvider,
 )
 
 # ---------------------------------------------------------------------------

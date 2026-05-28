@@ -12,10 +12,9 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # QueryMetric dataclass
@@ -168,6 +167,7 @@ class TestMetricsDatabase:
     def test_log_query_cache_hit_stored_as_1(self, db):
         """log_query stores cache_hit=True as integer 1."""
         import sqlite3
+
         from codex.rag.analytics.metrics_db import QueryMetric
 
         qm = QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 5.0, True, 3, 0.9)

@@ -10,7 +10,11 @@ from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from services.msp_gateway.middleware.rate_limit import RateLimitMiddleware, TokenBucket, rate_limiter
+from services.msp_gateway.middleware.rate_limit import (
+    RateLimitMiddleware,
+    TokenBucket,
+    rate_limiter,
+)
 
 
 class _InjectTenantMiddleware(BaseHTTPMiddleware):

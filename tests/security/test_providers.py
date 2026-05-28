@@ -1712,8 +1712,8 @@ class TestGitHubTokenProviderEdgeCases:
 
     def test_validate_secret_expired_token(self, provider_with_token):
         """Test validate_secret returns False when local expiry check says expired."""
-        from unittest.mock import patch
         from datetime import UTC, datetime, timedelta
+        from unittest.mock import patch
 
         past = datetime.now(UTC) - timedelta(days=1)
         with patch.object(
@@ -1760,7 +1760,6 @@ class TestGitHubTokenProviderEdgeCases:
 
     def test_validate_secret_exception_wraps_as_validation_error(self):
         """Test that unexpected exception is wrapped in ValidationError."""
-        from security.providers.base import ValidationError
         from unittest.mock import patch
 
         config = ProviderConfig(
@@ -1804,7 +1803,8 @@ class TestGitHubTokenProviderEdgeCases:
 
     def test_create_token_request_exception(self, provider_with_installation):
         """Test create_token handles request exception gracefully."""
-        from unittest.mock import patch, Mock
+        from unittest.mock import patch
+
         import requests
 
         with patch("security.providers.github_provider._requests") as mock_req, \
@@ -1856,7 +1856,8 @@ class TestGitHubTokenProviderEdgeCases:
 
     def test_update_token_scopes_exception(self, provider_with_token):
         """Test update_token_scopes returns False on unexpected exception."""
-        from unittest.mock import patch, Mock
+        from unittest.mock import patch
+
         import requests
 
         with patch("security.providers.github_provider._requests") as mock_req, \
@@ -1927,6 +1928,7 @@ class TestGitHubTokenProviderEdgeCases:
     def test_revoke_secret_exception(self):
         """Test revoke_secret returns False on unexpected exception."""
         from unittest.mock import patch
+
         import requests
 
         config = ProviderConfig(
@@ -1995,6 +1997,7 @@ class TestGitHubTokenProviderEdgeCases:
     def test_list_secrets_exception(self, provider_with_token):
         """Test list_secrets returns empty list on request exception."""
         from unittest.mock import patch
+
         import requests
 
         with patch("security.providers.github_provider._requests") as mock_req, \
