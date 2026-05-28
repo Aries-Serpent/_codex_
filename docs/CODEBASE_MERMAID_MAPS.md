@@ -778,7 +778,7 @@ graph TD
 
 ## 18. Phase 10 Progress — Coverage Expansion
 
-> **Added S1292 (2026-05-28)**
+> **Updated S1293 (2026-05-28)**
 
 ```mermaid
 graph LR
@@ -790,29 +790,47 @@ graph LR
         S1E[Docs + mermaid maps\nv1.4.0 refresh ✅]
     end
 
-    subgraph "Remaining Phase 10 Work"
-        R1[src/codex/cognitive_brain/\nbrain ops coverage ⏳]
-        R2[src/codex/cli.py\nCLI smoke + branch coverage ⏳]
-        R3[src/codex/rag/\nretrieval + indexer paths ⏳]
-        R4[src/training/trainer.py\n12.20% → 50% target ⏳]
-        R5[Overall: 17.57% → 25% milestone ⏳]
-        R6[Adaptive Learning Phase 8.3\nQEC k₁ tuning ⏳]
+    subgraph "Completed in S1293"
+        P1[src/codex/cognitive_brain/\nbrain ops coverage 76.92% ✅]
+        P2[src/codex/cli.py\nCLI CliRunner smoke tests ✅]
+        P3[src/codex/rag/\nFAISS-mocked retriever + indexer ✅]
+        P4[src/training/trainer.py\nmixed-precision + checkpoint hooks ✅]
+        P5[Adaptive Learning Phase 8.3\nk₁ Bayesian tuning from PDA ✅]
+        P6[AGENT_NAVIGATION.md + agent_context.json\nPhase 10 agents registered ✅]
+        P7[CI rate_limit_orchestrator.py\ncancel_superseded_runs hardened ✅]
     end
 
-    S1A & S1B & S1C & S1D & S1E --> R1 & R2 & R3 & R4
-    R1 & R2 & R3 & R4 --> R5 --> R6
+    subgraph "Phase 11 — Production Hardening"
+        N1[Coverage zero-gaps\nokr_tracker.py + task_router.py 0% ⏳]
+        N2[Cognitive depth\nknowledge_distiller + objective_adjuster 58% ⏳]
+        N3[CodeQL + bandit clean run\nzero open findings ⏳]
+        N4[Placeholder audit\nno unreachable TODO/FIXME in prod ⏳]
+        N5[Overall ≥25% statement coverage\nmilestone gate ⏳]
+        N6[RAG retrieval integration tests\nend-to-end corpus round-trip ⏳]
+    end
+
+    S1A & S1B & S1C & S1D & S1E --> P1 & P2 & P3 & P4
+    P1 & P2 & P3 & P4 & P5 & P6 & P7 --> N1 & N2 & N3 & N4
+    N1 & N2 & N3 & N4 --> N5 --> N6
 
     style S1A fill:#e8f5e9,color:#000
     style S1B fill:#e8f5e9,color:#000
     style S1C fill:#e8f5e9,color:#000
     style S1D fill:#e8f5e9,color:#000
     style S1E fill:#e8f5e9,color:#000
-    style R1 fill:#e3f2fd,color:#000
-    style R2 fill:#e3f2fd,color:#000
-    style R3 fill:#e3f2fd,color:#000
-    style R4 fill:#e3f2fd,color:#000
-    style R5 fill:#fff3e0,color:#000
-    style R6 fill:#fce4ec,color:#000
+    style P1 fill:#e8f5e9,color:#000
+    style P2 fill:#e8f5e9,color:#000
+    style P3 fill:#e8f5e9,color:#000
+    style P4 fill:#e8f5e9,color:#000
+    style P5 fill:#e8f5e9,color:#000
+    style P6 fill:#e8f5e9,color:#000
+    style P7 fill:#e8f5e9,color:#000
+    style N1 fill:#e3f2fd,color:#000
+    style N2 fill:#e3f2fd,color:#000
+    style N3 fill:#fce4ec,color:#000
+    style N4 fill:#fff3e0,color:#000
+    style N5 fill:#fff3e0,color:#000
+    style N6 fill:#e3f2fd,color:#000
 ```
 
 ---
@@ -820,99 +838,117 @@ graph LR
 ## Continuation Prompts
 
 > One tailored prompt per component requiring ongoing work. Use these to resume work in a new session.
+> **Phase 10 items below are COMPLETED (S1293).** Phase 11 prompts follow.
 
-### 🔵 Coverage: `src/codex/cognitive_brain/`
-```
-You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
-Context: Overall coverage is 17.57% (statements). Target: 25% milestone.
-Task: Add pytest tests for src/codex/cognitive_brain/ (OODAOrchestrator, memory ops, pattern library).
-Constraints:
-- Use tests/cognitive/ as the target directory
-- Mock SQLiteMemory and filesystem ops where needed
-- Do NOT alter existing tests
-- Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive_brain --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B node for cognitive_brain when done
-```
+### ✅ DONE — Coverage: `src/codex/cognitive_brain/` (S1293)
+> OODAOrchestrator, SharedMemory, PatternLibrary tests added. `tests/cognitive/test_ooda_meta_learning_coverage.py`
 
-### 🔵 Coverage: `src/codex/cli.py`
-```
-You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
-Context: CLI entry points in src/codex/cli.py have minimal test coverage.
-Task: Add CLI smoke and branch tests covering all Click commands and error paths.
-Constraints:
-- Use tests/cli/ as the target directory
-- Use Click's CliRunner for invocation; set CODEX_CLI_LIGHTWEIGHT=1 env var
-- Do NOT alter existing tests
-- Run: python -m pytest tests/cli/ --cov=src/codex/cli --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF1 node when done
-```
+### ✅ DONE — Coverage: `src/codex/cli.py` (S1293)
+> CliRunner smoke + branch tests. `tests/codex/test_cli_click_lightweight_smoke.py`
 
-### 🔵 Coverage: `src/codex/rag/`
-```
-You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
-Context: RAG retrieval paths (src/codex/rag/) are under-covered.
-Task: Add unit tests for EmbeddingProvider, Indexer (FAISS-backed), Retriever, and RAG cache.
-Constraints:
-- Use tests/rag/ as the target directory
-- Mock FAISS calls and filesystem I/O
-- Do NOT alter existing tests
-- Run: python -m pytest tests/rag/ --cov=src/codex/rag --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF4 node when done
-```
+### ✅ DONE — Coverage: `src/codex/rag/` (S1293)
+> FAISS-mocked indexer, retriever, embedding cache. `tests/rag/test_rag_faiss_mocked_units.py`
 
-### 🔵 Coverage: `src/training/trainer.py` (12% → 50%)
-```
-You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
-Context: src/training/trainer.py is at 12.20% coverage (381 of 457 statements missing).
-Task: Add targeted tests for training loop entry points, checkpoint hooks, and error paths.
-Constraints:
-- Use tests/training/ as the target directory
-- Use lightweight mocks for torch/GPU components
-- Do NOT alter existing tests
-- Run: python -m pytest tests/training/ --cov=src/training/trainer --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF3 node when done
-```
+### ✅ DONE — Coverage: `src/training/trainer.py` (S1293)
+> Mixed-precision + checkpoint hooks. `tests/unit/test_trainer_checkpoint_hooks_phase10.py`
 
-### 🟠 Adaptive Learning: QEC k₁ Tuning (Phase 8.3)
-```
-You are continuing Phase 10D Adaptive Learning work on Aries-Serpent/_codex_.
-Context: Cognitive Brain QEC decision engine has k₁=0.332 (current). Target: complete Phase 8.3 (80→100%).
-Task: Tune QEC k₁ parameter using pattern harvest data from Phase 9 sessions (S867–S1292).
-Steps:
-1. Read scripts/cognitive/cognitive_brain_core.py — locate QEC and k₁ parameter
-2. Read .codex/aftermath/pda_iterations.jsonl — extract decision accuracy history
-3. Apply Bayesian update to k₁ using recent session outcomes
-4. Run the QEC test suite: python -m pytest tests/cognitive/ -k qec -v
-5. Update docs/CODEBASE_MERMAID_MAPS.md Phase 10D AL1 node with new k₁ value
-```
+### ✅ DONE — Adaptive Learning QEC k₁ Tuning Phase 8.3 (S1293)
+> Bayesian tuning from pda_iterations.jsonl. `src/cognitive_brain/quantum/adaptive_scoring.py`
 
-### 🟠 Documentation: AGENT_NAVIGATION.md + .codex status
+### ✅ DONE — AGENT_NAVIGATION.md + .codex status (S1293)
+> Phase 10 agents registered. `.codex/AGENT_NAVIGATION.md`, `.codex/agent_context.json`
+
+### ✅ DONE — CI superseded-run cancellation hardening (S1293)
+> `cancel_superseded_runs()` wrapper with `--keep-latest` default. `scripts/ci/rate_limit_orchestrator.py`
+
+---
+
+## Phase 11 Continuation Prompts
+
+> Target: ~100% production readiness — zero CodeQL/security findings, no placeholder code, overall ≥25% statement coverage.
+
+### 🔴 P11-SEC: CodeQL + Bandit clean run
 ```
-You are continuing Phase 10C documentation alignment on Aries-Serpent/_codex_.
-Context: AGENT_NAVIGATION.md and .codex/cognitive_brain/ status files are stale (pre-S1292).
+You are continuing Phase 11 security hardening on Aries-Serpent/_codex_.
+Context: CodeQL open findings must reach zero before production gate.
 Task:
-1. Update AGENT_NAVIGATION.md — add Phase 10 agents (unified-coverage-agent, fragile-test-guardian, memory-sync-agent)
-2. Update .codex/agent_context.json Phase 10 status section
-3. Verify all 145 agent entries in AGENTS.md are current
-4. Update docs/CODEBASE_MERMAID_MAPS.md Phase 10C DA4 and DA5 nodes when done
-Constraints: Do NOT change agent definitions, only update status/metadata fields.
+1. Run bandit scan: bandit -r src/ -ll -ii -x src/codex/rag/,src/security/ --format json > reports/bandit_phase11.json
+2. Review open CodeQL alerts via GitHub MCP (list_code_scanning_alerts)
+3. Fix any CWE-078 (os.system), CWE-089 (SQLi), CWE-601 (open redirect) in src/
+4. Re-run bandit; assert exit code 0
+5. Run: python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+6. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N3 node to ✅
+Constraints: No suppression comments unless a true false-positive with justification.
 ```
 
-### 🟡 CI/Workflow: Superseded-run cancellation
+### 🔴 P11-PLACEHOLDER: Audit TODO/FIXME/placeholder in production code
 ```
-You are continuing workflow optimization work on Aries-Serpent/_codex_.
-Context: Per memory — we must skip rescans for unchanged files and cancel superseded workflow runs.
-Task: Verify and harden cancel_superseded_runs() in scripts/ci/rate_limit_orchestrator.py.
-Steps:
-1. Read scripts/ci/rate_limit_orchestrator.py — locate cancel_superseded_runs()
-2. Ensure --keep-latest flag is the default for push-triggered runs
-3. Add a pre-merge check that cancels in-progress duplicate workflow runs for the same branch
-4. Run: python -m pytest tests/ -k "rate_limit or superseded" -v
-5. Update docs/CODEBASE_MERMAID_MAPS.md Section 14 with any changes
+You are continuing Phase 11 code hardening on Aries-Serpent/_codex_.
+Context: Production code must contain no unintentional TODO/FIXME stubs or NotImplementedError raises.
+Task:
+1. grep -r "TODO\|FIXME\|raise NotImplementedError\|pass  # placeholder" src/ > reports/placeholder_audit.txt
+2. For each hit: either implement the stub, convert to a logged warning, or add an explicit @pytest.mark.skip
+3. Verify no new test failures: python -m pytest tests/ -q --tb=no -x
+4. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N4 node to ✅
+Constraints: Do NOT delete test stubs — only production src/ paths.
+```
+
+### 🔵 P11-COV-ZERO: Close 0%-coverage modules
+```
+You are continuing Phase 11 coverage work on Aries-Serpent/_codex_.
+Context: Two modules remain at 0% coverage from the S1293 cognitive run.
+Files: src/codex/cognitive/okr_tracker.py (141 stmts, 0%), src/codex/cognitive/task_router.py (104 stmts, 0%)
+Task: Add targeted tests to reach ≥60% on each file.
+Constraints:
+- Use tests/cognitive/ directory
+- Mock all external I/O (DB, HTTP)
+- Do NOT alter existing tests
+- Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N1 node to ✅
+```
+
+### 🔵 P11-COV-DEPTH: Raise low-coverage cognitive modules to ≥75%
+```
+You are continuing Phase 11 coverage depth work on Aries-Serpent/_codex_.
+Context: Several cognitive modules are at 58–69% coverage after S1293.
+Files (current → target):
+  src/codex/cognitive/knowledge_distiller.py     58% → 75%
+  src/codex/cognitive/objective_adjuster.py      58% → 75%
+  src/codex/cognitive/session_hook.py            69% → 80%
+  src/codex/cognitive/retrieval_optimizer.py     69% → 80%
+Task: Add gap-filling tests for each module.
+Constraints:
+- Use tests/cognitive/ directory
+- Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N2 node to ✅
+```
+
+### 🔵 P11-COV-MILESTONE: Reach overall ≥25% statement coverage
+```
+You are driving the Phase 11 overall coverage milestone on Aries-Serpent/_codex_.
+Context: Current overall coverage baseline is 17.57% (S1292). Target: 25%.
+Task:
+1. Run: python -m pytest tests/ --cov=src --cov-report=term-missing -q > reports/coverage_phase11.txt
+2. Identify top-10 uncovered modules by statement count
+3. Add targeted tests for the top-3 modules not already in the P11 backlog
+4. Re-run coverage; assert ≥25%
+5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N5 node to ✅
+```
+
+### 🟡 P11-RAG-E2E: RAG end-to-end corpus round-trip test
+```
+You are continuing Phase 11 RAG integration work on Aries-Serpent/_codex_.
+Context: Unit tests with FAISS mocks exist (S1293). Full corpus round-trip is not yet tested.
+Task:
+1. Read src/codex/rag/indexer.py and src/codex/rag/retriever.py
+2. Write an integration test that indexes a 5-document corpus and queries it
+3. Use pytest tmp_path for index persistence; skip if faiss not installed
+4. Run: python -m pytest tests/rag/ --cov=src/codex/rag --cov-report=term-missing -q
+5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N6 node to ✅
 ```
 
 ---
 
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S1292 · 2026-05-28 — v1.4.0: Phase 9→10 transition marked; Section 16 Phase 10 items updated with completed work (security 90.72%, ITA, MSP, training); Section 17 coverage baseline refreshed to S1292 actuals; Section 18 (Phase 10 Progress) added; Continuation Prompts section added for all active components.*
+*Updated: S1293 · 2026-05-28 — v1.5.0: Phase 10 items fully completed (cognitive brain 76.92%, CLI, RAG, trainer, k₁ tuning, agent nav, CI dedup); Phase 11 hardening prompts added (CodeQL clean, placeholder audit, 0%-coverage modules, ≥25% overall milestone, RAG E2E).*
