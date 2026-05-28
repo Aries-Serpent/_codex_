@@ -39,11 +39,13 @@ def _load_click_cli() -> Any:
 
     # Validate that the file exists before attempting to load
     if not _click_cli_path.exists() or not _click_cli_path.is_file():
+        _cli_load_error = FileNotFoundError(f"Click CLI file not found: {_click_cli_path}")
         return None
 
     try:
         spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
         if spec is None or spec.loader is None:
+            _cli_load_error = ImportError(f"Failed to create import spec for {_click_cli_path}")
             return None
         module = importlib.util.module_from_spec(spec)
         sys.modules["codex._cli_click"] = module
@@ -96,7 +98,9 @@ if cli is not None:
         _missing_command = getattr(_cli_module, "_missing_command", None)
 
 __all__ = [
+    "_emit_group_help",
     "_fix_pool",
+    "_missing_command",
     "ALLOWED_TASKS",
     "app",
     "auth_group",
