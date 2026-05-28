@@ -148,3 +148,23 @@ if [[ "$FILE" =~ ^(tests/|test_|src/.*/tests/|examples/|fixtures/|\.github/misc/
 ## Concluding Interpretation
 
 The failure is a **false-positive / stale-baseline condition** caused by newly committed documentation containing git commit SHAs. No real credential exposure occurred. The fastest resolution is **Option A** (one `detect-secrets scan` command). For long-term stability, combine Option A with Option C to prevent recurrence whenever copilot-prompt files are auto-generated with commit SHAs.
+
+---
+
+## Dependabot Alert Resolution — GHSA-g794-3fmp-753h / CVE-2026-45309 (AsyncSSH)
+
+### Package/Manifest Status
+
+- `uv.lock` resolves `asyncssh==2.23.0` (patched version; non-vulnerable)
+- `requirements/lock.txt` also pins `asyncssh==2.23.0`
+
+Evidence:
+- `uv.lock` (package block `name = "asyncssh"`, `version = "2.23.0"`)
+- `requirements/lock.txt` (`asyncssh==2.23.0`)
+
+### Reachability Assessment
+
+- **Advisory path:** AsyncSSH server-side `AuthorizedKeysFile` `%u` token expansion (`%u` = raw SSH username) during SSH public-key authentication.
+- **Repository usage search:** no code/config usage of `AuthorizedKeysFile`, AsyncSSH SSH server config, or `%u` token expansion was found in active source/workflow files.
+- **Conclusion:** vulnerable runtime path is **not reachable** in this codebase based on current references; update is primarily dependency hygiene/scanner compliance.
+- **Confidence:** **High** (advisory names specific server config path and repository-wide search did not find matching usage).

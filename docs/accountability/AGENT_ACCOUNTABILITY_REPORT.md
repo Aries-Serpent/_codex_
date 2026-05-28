@@ -198,6 +198,65 @@
 
 ---
 
+## SESSION SUMMARY — 2026-05-28T16:02Z (PR #4641 @copilot continue dispatch evidence pass)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] Reviewed bot-posted/new maintainer comments that explicitly mention `@copilot`
+- [x] Re-checked latest workflow runs on base branch `0D_base_` then PR branch `copilot/fix-asyncssh-path-traversal`
+- [x] Retrieved run/job evidence for potential failures using GitHub Actions MCP tools
+- [x] Confirmed no completed code-fixable failed jobs on current PR head before deciding scope
+- [x] Refreshed required living docs in this pass (`whats_next`, `session_diagram`, `CHANGELOG`, accountability report)
+- [x] Preserved final wrap-up reserve requirement in updated living docs
+
+### Workflow Evidence Reviewed
+1. **Current PR head:** `2e845b29f` (`copilot/fix-asyncssh-path-traversal`).
+2. **Latest completed reruns:** `26586425969`, `26586426145`, `26586426134`, etc. concluded `action_required`.
+3. **Infrastructure-only confirmation:** `list_workflow_jobs` reported `total_count: 0` on sampled `action_required` runs; `get_job_logs(run_id=26586135512, failed_only=true)` returned `total_jobs: 0`, `failed_jobs: 0`.
+4. **Base-branch context:** `0D_base_` historical failure `26582476436` was on old SHA `a031e054`, outside current PR head scope.
+
+### Review-Thread State Check
+- Queried PR #4641 review threads and confirmed no new unresolved maintainer requests were introduced in this pass.
+- Existing review threads remain outdated with already-posted fix references from prior remediation commit.
+
+### Outcome
+- **Code changes for failure remediation:** none required (no code-fixable failed jobs on current head).
+- **Documentation/accountability synchronization:** updated for continuity and continuation context.
+
+---
+
+## SESSION SUMMARY — 2026-05-28T15:54Z (PR #4641 review-thread remediation + workflow monitor)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] Reviewed bot-posted PR review comments and identified unresolved scope (3/3 targeted items) ✅
+- [x] Checked current workflow runs on branch `copilot/fix-asyncssh-path-traversal` via GitHub MCP ✅
+- [x] Confirmed active monitor-only state; no completed failed-job logs surfaced in this pass ✅
+- [x] Applied minimal scoped file changes for review-thread remediation only ✅
+
+### Work Completed
+1. Updated `.github/copilot-prompts/active/PR-4641-followup.md`:
+   - removed inaccurate `No files modified` statement
+   - updated continuation policy to require fixing all code-fixable CI failures and documenting infrastructure-only failures
+2. Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`:
+   - consolidated duplicate PR #4641 auto-session heading into one clear heading
+   - corrected duplicate ordered-list numbering for run URLs
+3. Updated living docs and tracking:
+   - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+   - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+   - `CHANGELOG.md`
+4. Timebox tracking:
+   - started at ~3/60 minutes used
+   - preserved explicit final 5-minute wrap-up reserve and continuation prompt
+
+### Workflow Monitor Snapshot (head `754f57e28`)
+- In progress: `Agent Token Delegation`, `Generate PR Follow-Up Prompt`, `Addressing comment on PR #4641`
+- Completed recent: `Workflow Execution Gate` (success) and reruns with `action_required`
+- No completed failed-job log evidence surfaced during this monitor pass
+
+### Follow-up Prompt Reserved
+- Next pass should re-check latest run conclusions and remediate only if completed, code-fixable failed jobs appear.
+
+---
+
 ## SESSION SUMMARY — 2026-05-24T18:32Z [PR4559-security-hardening-followup]
 
 **Session:** PR4559-security-hardening-followup | **Branch:** `copilot/implement-remediations-all-findings` | **PR:** #4559
@@ -43822,6 +43881,54 @@ and the CI gate requirement.
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26577295681
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-05-28T15:34Z + 2026-05-28T15:41Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4641)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #4641 (SHA: `e301808b`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26584531496
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26584531478
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note

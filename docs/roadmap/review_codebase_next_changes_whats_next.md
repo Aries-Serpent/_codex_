@@ -1,5 +1,54 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)
+
+| Item | Status | Result |
+|---|---|---|
+| Session budget | 🟢 Early session checkpoint | Preserve final 5-minute wrap-up reserve |
+| Continue target head | ✅ `2e845b29f` | Re-checked latest workflow runs on `copilot/fix-asyncssh-path-traversal` |
+| Completed run outcomes on current head | ⚠ Infra-gated | Latest completed runs are `action_required` (e.g., `26586425969`, `26586426145`) with **0 jobs** |
+| Code-fixable failed jobs (current head) | ✅ None | No completed `failure` jobs found in latest branch runs |
+| Infrastructure-only evidence | ✅ Captured | `get_job_logs(run_id=26586135512, failed_only=true)` returned `total_jobs: 0` |
+| Legacy base-branch failure check | ℹ Reviewed | `0D_base_` had historical failure `26582476436` on old SHA `a031e054` (not current PR head) |
+| PR #4641 review threads | ✅ No new unresolved requests | Existing reviewer threads are outdated and already replied with fix commit references |
+| Living docs sync | 🔄 In progress | whats_next + session_diagram + CHANGELOG + accountability being refreshed |
+
+### Immediate Remaining Objectives (this session)
+- Keep monitoring latest `2e845b29f` runs and only remediate if a completed code-fixable failure appears.
+- Preserve final 5-minute reserve for wrap-up + continuation handoff.
+
+## Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)
+
+| Item | Status | Result |
+|---|---|---|
+| Session budget | 🟢 ~3/60 min used at start | Keep final 5 min for wrap-up |
+| Maintainer approval state | ✅ Confirmed | All pending workflows approved |
+| Latest head | ✅ `754f57e28` | Tracking runs on `copilot/fix-asyncssh-path-traversal` |
+| Current workflow monitor snapshot | 🔄 Active | In-progress: Agent Token Delegation, Generate PR Follow-Up Prompt, Addressing comment on PR #4641 |
+| Current completed conclusions | ⚠ Mixed | `Workflow Execution Gate` success + `action_required` reruns present; no failed-job logs surfaced in current monitor pass |
+| PR #4641 review-thread scope | 🔄 In progress | Applying all 3 unresolved review comments in referenced files |
+| Living docs + accountability sync | 🔄 In progress | whats_next + session_diagram + CHANGELOG + AGENT_ACCOUNTABILITY_REPORT |
+
+### Immediate Remaining Objectives (this session)
+- Apply and validate all requested PR #4641 review-thread fixes.
+- Keep monitoring active runs on current head and react only if a completed, code-fixable failure appears.
+- Reserve final 5 minutes for wrap-up + continuation prompt.
+
+### Continuation Prompt (Next Session)
+```text
+@copilot continue on PR #4641 from head 754f57e28:
+- Re-check latest workflow runs on branch copilot/fix-asyncssh-path-traversal.
+- If any completed run has code-fixable failed jobs, remediate all code-fixable failures.
+- If failures are infrastructure-only (startup/action_required/no jobs), document evidence and keep code unchanged.
+- Confirm all review-thread comments remain resolved.
+- Keep living docs synchronized:
+  - docs/roadmap/review_codebase_next_changes_whats_next.md
+  - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+  - CHANGELOG.md
+  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- Preserve final 5-minute wrap-up reserve in the next pass.
+```
+
 ## Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)
 
 | Item | Status | Result |
