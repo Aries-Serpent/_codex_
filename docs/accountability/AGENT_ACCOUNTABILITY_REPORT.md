@@ -15,6 +15,7 @@
 
 ### Observations
 - Comment-review gate failures in this cycle were policy/timestamp driven (`BLOCKING > 0`) and required explicit thread responses plus a new commit.
+- Final follow-up commit applied after validation feedback to keep training test helper control-flow lint-clean.
 
 ## SESSION SUMMARY — 2026-05-28T03:56Z [Coverage-Baseline-Confirm]
 
