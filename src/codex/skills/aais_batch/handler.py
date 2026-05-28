@@ -34,7 +34,7 @@ def _get_max_concurrency(payload: dict, default: int) -> int:
             stacklevel=3,
         )
         val = int(payload["max_workers"])
-    
+
     if val < 0:
         raise ValueError("max_concurrency must be >= 0")
     return val

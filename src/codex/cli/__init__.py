@@ -31,7 +31,7 @@ _cli_load_error: Exception | None = None
 def _load_click_cli() -> Any:
     """Load the Click CLI group from src/codex/cli.py using importlib."""
     global _cli_load_error
-    
+
     # Check if already loaded to ensure idempotency
     if "codex._cli_click" in sys.modules:
         existing_module = sys.modules["codex._cli_click"]
