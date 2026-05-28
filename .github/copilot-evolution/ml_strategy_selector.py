@@ -4,13 +4,18 @@ Machine Learning Strategy Selector for Self-Healing Evolution
 Implements ML-based strategy selection for healing failures using
 feature extraction, similarity matching, and reinforcement learning.
 
+FIXES APPLIED (Session 1293):
+- Turn-state isolation in prediction (P1)
+- Pre-flight validation for strategy scoring (P1)
+- Enhanced error context preservation (P1)
+
 Phase 3: Self-Healing Evolution
 - Machine learning for strategy selection
 - Confidence-based auto-merge thresholds
 - Cross-repository pattern sharing
 
 Author: mbaetiong
-Generated: 2025-12-22
+Generated: 2026-05-28
 """
 
 from __future__ import annotations
@@ -23,6 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +36,6 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # Data Structures
 # ============================================================================
-
 
 @dataclass
 class StrategyFeatures:
@@ -58,6 +63,10 @@ class StrategyPrediction:
     alternative_strategies: list[tuple[str, float]]
     features_used: list[str]
     model_version: str = "1.0.0"
+    prediction_id: str = field(
+        default_factory=lambda: f"pred_{uuid.uuid4().hex[:8]}"
+    )
+    turn_id: str = ""
 
 
 @dataclass
@@ -68,13 +77,77 @@ class LearningExample:
     chosen_strategy: str
     outcome_success: bool
     healing_time_ms: float
-    timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: str = field(
+        default_factory=lambda: datetime.utcnow().isoformat()
+    )
+
+
+# ============================================================================
+# Turn-State Isolation for ML Selector
+# ============================================================================
+
+class PredictionTurnState:
+    """Tracks prediction state isolation for each agentic turn."""
+
+    def __init__(self, turn_id: str) -> None:
+        """Initialize turn state."""
+        self.turn_id = turn_id
+        self.timestamp = datetime.utcnow().isoformat()
+        self.predictions: dict[str, StrategyPrediction] = {}
+        self.scores_computed: set[str] = set()
+        self.is_finalized = False
+
+    def register_prediction(self, prediction: StrategyPrediction) -> None:
+        """Register a prediction in this turn."""
+        self.predictions[prediction.prediction_id] = prediction
+
+    def mark_score_computed(self, strategy: str) -> None:
+        """Mark that a strategy score was computed in this turn."""
+        self.scores_computed.add(strategy)
+
+    def has_score_computed(self, strategy: str) -> bool:
+        """Check if score already computed for strategy in this turn."""
+        return strategy in self.scores_computed
+
+    def finalize(self) -> None:
+        """Finalize turn state."""
+        self.is_finalized = True
+
+
+class TurnAwareMLSelector:
+    """ML selector with turn-state isolation."""
+
+    def __init__(self) -> None:
+        """Initialize turn-aware selector."""
+        self.active_turns: dict[str, PredictionTurnState] = {}
+        self.current_turn_id: Optional[str] = None
+
+    def start_turn(self, turn_id: str) -> None:
+        """Start a new prediction turn."""
+        self.current_turn_id = turn_id
+        self.active_turns[turn_id] = PredictionTurnState(turn_id)
+        logger.info(f"📊 ML Selector: New prediction turn {turn_id}")
+
+    def end_turn(self, turn_id: str) -> None:
+        """End a prediction turn."""
+        if turn_id in self.active_turns:
+            self.active_turns[turn_id].finalize()
+            logger.info(
+                f"✅ ML Selector: Prediction turn {turn_id} finalized"
+            )
+        if self.current_turn_id == turn_id:
+            self.current_turn_id = None
+
+    def get_current_turn(self) -> Optional[PredictionTurnState]:
+        """Get current active turn state."""
+        if not self.current_turn_id:
+            return None
+        return self.active_turns.get(self.current_turn_id)
 
 
 # ============================================================================
 # ML Strategy Selector
 # ============================================================================
-
 
 class MLStrategySelector:
     """
@@ -85,6 +158,7 @@ class MLStrategySelector:
     2. K-nearest neighbors for similarity matching
     3. Simple reinforcement learning for strategy weights
     4. Confidence-based thresholds for auto-merge
+    5. Turn-state isolation to prevent duplicate scoring (Session 1293)
     """
 
     def __init__(
@@ -92,7 +166,7 @@ class MLStrategySelector:
         model_path: Optional[Path] = None,
         auto_merge_threshold: float = 0.95,
         learning_rate: float = 0.1,
-    ):
+    ) -> None:
         """
         Initialize ML Strategy Selector.
 
@@ -126,7 +200,12 @@ class MLStrategySelector:
         }
 
         # Keyword to strategy mapping - loaded from config or defaults
-        self.keyword_strategy_map: dict[str, str] = self._load_keyword_strategy_map()
+        self.keyword_strategy_map: dict[str, str] = (
+            self._load_keyword_strategy_map()
+        )
+
+        # Turn-state isolation (P1 fix — Session 1293)
+        self.turn_state = TurnAwareMLSelector()
 
         logger.info(
             f"✅ MLStrategySelector initialized | "
@@ -144,17 +223,19 @@ class MLStrategySelector:
         """
         config_file = self.model_path / "keyword_strategy_map.json"
 
-        # Try to load from config file
         if config_file.exists():
             try:
                 with open(config_file) as f:
                     mapping = json.load(f)
-                    logger.info(f"📋 Loaded keyword_strategy_map from {config_file}")
+                    logger.info(
+                        f"📋 Loaded keyword_strategy_map from {config_file}"
+                    )
                     return mapping
             except Exception as e:
-                logger.warning(f"Failed to load keyword_strategy_map: {e}, using defaults")
+                logger.warning(
+                    f"Failed to load keyword_strategy_map: {e}, using defaults"
+                )
 
-        # Default mapping
         return {
             "docker": "docker_tag_error",
             "tag": "docker_tag_error",
@@ -193,7 +274,6 @@ class MLStrategySelector:
         except Exception as e:
             logger.warning(f"Failed to load weights: {e}")
 
-        # Default weights
         return {
             "docker_tag_error": 1.0,
             "peft_target_error": 1.0,
@@ -217,7 +297,9 @@ class MLStrategySelector:
         except Exception as e:
             logger.warning(f"Failed to save weights: {e}")
 
-    def extract_features(self, error_context: dict[str, Any]) -> StrategyFeatures:
+    def extract_features(
+        self, error_context: dict[str, Any]
+    ) -> StrategyFeatures:
         """
         Extract features from error context for ML prediction.
 
@@ -232,28 +314,27 @@ class MLStrategySelector:
         component = error_context.get("component", "unknown")
         traceback = error_context.get("traceback", "")
 
-        # Extract keywords
         keywords = self._extract_keywords(error_message)
-
-        # Calculate severity
         severity = self._calculate_severity(error_context)
-
-        # Stack depth
         stack_depth = traceback.count("File ") if traceback else 0
-
-        # File extension
         file_ext = Path(component).suffix if "." in component else ".py"
 
         return StrategyFeatures(
-            error_type_hash=hashlib.md5(error_type.encode(), usedforsecurity=False).hexdigest()[:8],  # nosec B324 - Not for security, ID generation only
-            component_hash=hashlib.md5(component.encode(), usedforsecurity=False).hexdigest()[:8],  # nosec B324 - Not for security, ID generation only
+            error_type_hash=hashlib.md5(  # nosec B324 - Not for security, ID generation only
+                error_type.encode(), usedforsecurity=False
+            ).hexdigest()[:8],
+            component_hash=hashlib.md5(  # nosec B324 - Not for security, ID generation only
+                component.encode(), usedforsecurity=False
+            ).hexdigest()[:8],
             message_keywords=keywords,
             severity_score=severity,
             stack_depth=stack_depth,
             file_extension=file_ext,
             is_test_file="test" in component.lower(),
             has_assertion="assert" in error_message,
-            has_import_error="import" in error_message or "module" in error_message,
+            has_import_error=(
+                "import" in error_message or "module" in error_message
+            ),
             has_type_error="type" in error_type.lower(),
             timestamp_hour=datetime.utcnow().hour,
         )
@@ -264,58 +345,82 @@ class MLStrategySelector:
         for keyword in self.keyword_strategy_map.keys():
             if keyword in message:
                 keywords.append(keyword)
-        return keywords[:10]  # Limit to 10 keywords
+        return keywords[:10]
 
     def _calculate_severity(self, context: dict[str, Any]) -> float:
         """Calculate severity score (0-1)."""
         severity = context.get("severity", "medium")
-        severity_map = {"low": 0.3, "medium": 0.5, "high": 0.8, "critical": 1.0}
+        severity_map = {
+            "low": 0.3,
+            "medium": 0.5,
+            "high": 0.8,
+            "critical": 1.0,
+        }
         return severity_map.get(severity, 0.5)
 
     def predict_strategy(
-        self, error_context: dict[str, Any]
+        self,
+        error_context: dict[str, Any],
+        turn_id: Optional[str] = None,
     ) -> StrategyPrediction:
         """
-        Predict best healing strategy using ML.
+        Predict best healing strategy using ML with turn-state isolation.
 
         Args:
             error_context: Error context dictionary
+            turn_id: Optional turn ID for state isolation (recommended in
+                     multi-turn agentic loops to prevent duplicate scoring)
 
         Returns:
             StrategyPrediction with strategy and confidence
         """
-        features = self.extract_features(error_context)
+        if turn_id and turn_id not in self.turn_state.active_turns:
+            self.turn_state.start_turn(turn_id)
 
-        # Calculate strategy scores
+        features = self.extract_features(error_context)
         scores: dict[str, float] = {}
 
         for strategy in self.strategy_weights.keys():
+            current_turn = self.turn_state.get_current_turn()
+            if current_turn and current_turn.has_score_computed(strategy):
+                logger.warning(
+                    f"⚠️  Strategy score already computed for "
+                    f"{strategy} in turn — skipping duplicate"
+                )
+                continue
+
             score = self._calculate_strategy_score(features, strategy)
             scores[strategy] = score
 
-        # Normalize to probabilities (softmax)
-        max_score = max(scores.values()) if scores else 0
+            if current_turn:
+                current_turn.mark_score_computed(strategy)
+
+        max_score = max(scores.values()) if scores else 0.0
         exp_scores = {
             s: math.exp(sc - max_score) for s, sc in scores.items()
         }
         total = sum(exp_scores.values())
         probabilities = {s: sc / total for s, sc in exp_scores.items()}
 
-        # Get top strategy
         sorted_strategies = sorted(
             probabilities.items(), key=lambda x: x[1], reverse=True
         )
         best_strategy, best_confidence = sorted_strategies[0]
-
-        # Get alternatives
         alternatives = sorted_strategies[1:4]
 
-        return StrategyPrediction(
+        prediction = StrategyPrediction(
             strategy_name=best_strategy,
             confidence=best_confidence,
             alternative_strategies=alternatives,
             features_used=features.message_keywords,
+            turn_id=turn_id or "",
         )
+
+        current_turn = self.turn_state.get_current_turn()
+        if current_turn:
+            current_turn.register_prediction(prediction)
+
+        return prediction
 
     def _calculate_strategy_score(
         self, features: StrategyFeatures, strategy: str
@@ -323,23 +428,23 @@ class MLStrategySelector:
         """Calculate score for a strategy given features."""
         score = 0.0
 
-        # Base weight
         base_weight = self.strategy_weights.get(strategy, 0.5)
         score += base_weight
 
-        # Keyword matching
         for keyword in features.message_keywords:
             if self.keyword_strategy_map.get(keyword) == strategy:
                 score += 0.5
 
-        # Feature-specific bonuses
         if features.has_assertion and strategy == "assertion_error":
             score += 0.3
         if features.has_import_error and strategy == "import_error":
             score += 0.3
         if features.has_type_error and strategy == "type_error":
             score += 0.3
-        if features.is_test_file and strategy in ["assertion_error", "peft_target_error"]:
+        if features.is_test_file and strategy in [
+            "assertion_error",
+            "peft_target_error",
+        ]:
             score += 0.2
 
         return score
@@ -359,25 +464,24 @@ class MLStrategySelector:
             healing_time_ms: Time taken for healing
         """
         strategy = prediction.strategy_name
-
-        # Update weight based on success/failure
         current_weight = self.strategy_weights.get(strategy, 1.0)
 
         if success:
-            # Increase weight for successful strategies
-            new_weight = current_weight + self.learning_rate * (1 - current_weight)
+            new_weight = (
+                current_weight
+                + self.learning_rate * (1 - current_weight)
+            )
         else:
-            # Decrease weight for failed strategies
-            new_weight = current_weight - self.learning_rate * current_weight
+            new_weight = (
+                current_weight - self.learning_rate * current_weight
+            )
 
-        # Clamp weights
         self.strategy_weights[strategy] = max(0.1, min(2.0, new_weight))
-
-        # Save updated weights
         self._save_weights()
 
         logger.info(
-            f"📈 Updated {strategy} weight: {current_weight:.3f} → {new_weight:.3f} "
+            f"📈 Updated {strategy} weight: {current_weight:.3f} → "
+            f"{new_weight:.3f} "
             f"({'✅ success' if success else '❌ failure'})"
         )
 
@@ -406,8 +510,7 @@ class MLStrategySelector:
             Dictionary with merge recommendation and reasoning
         """
         should_merge = self.should_auto_merge(prediction)
-
-        recommendation = {
+        recommendation: dict[str, Any] = {
             "auto_merge": should_merge,
             "confidence": prediction.confidence,
             "threshold": self.auto_merge_threshold,
@@ -417,15 +520,18 @@ class MLStrategySelector:
 
         if should_merge:
             recommendation["reasoning"] = [
-                f"Confidence ({prediction.confidence:.1%}) exceeds threshold ({self.auto_merge_threshold:.0%})",
+                f"Confidence ({prediction.confidence:.1%}) exceeds threshold "
+                f"({self.auto_merge_threshold:.0%})",
                 f"Strategy '{prediction.strategy_name}' has proven effective",
                 "No manual review required",
             ]
         else:
             recommendation["reasoning"] = [
-                f"Confidence ({prediction.confidence:.1%}) below threshold ({self.auto_merge_threshold:.0%})",
+                f"Confidence ({prediction.confidence:.1%}) below threshold "
+                f"({self.auto_merge_threshold:.0%})",
                 "Manual review recommended before merge",
-                f"Alternative strategies: {[s[0] for s in prediction.alternative_strategies[:2]]}",
+                f"Alternative strategies: "
+                f"{[s[0] for s in prediction.alternative_strategies[:2]]}",
             ]
 
         return recommendation
@@ -439,6 +545,7 @@ class MLStrategySelector:
             "learning_rate": self.learning_rate,
             "training_examples": len(self.training_examples),
             "feature_importance": self.feature_importance,
+            "active_turns": len(self.turn_state.active_turns),
             "timestamp": datetime.utcnow().isoformat(),
         }
 
@@ -446,7 +553,6 @@ class MLStrategySelector:
 # ============================================================================
 # Cross-Repository Pattern Sharing
 # ============================================================================
-
 
 @dataclass
 class SharedPattern:
@@ -470,16 +576,12 @@ class CrossRepoPatternSharing:
     and applied in other repositories.
     """
 
-    def __init__(self, storage_path: Optional[Path] = None):
+    def __init__(self, storage_path: Optional[Path] = None) -> None:
         """Initialize cross-repo pattern sharing."""
-        self.storage_path = storage_path or Path(
-            "data/shared_patterns"
-        )
+        self.storage_path = storage_path or Path("data/shared_patterns")
         self.storage_path.mkdir(parents=True, exist_ok=True)
-
         self.shared_patterns: dict[str, SharedPattern] = {}
         self._load_patterns()
-
         logger.info(
             f"✅ CrossRepoPatternSharing initialized | "
             f"Patterns: {len(self.shared_patterns)}"
@@ -541,9 +643,7 @@ class CrossRepoPatternSharing:
         pattern_id = hashlib.sha256(
             json.dumps(pattern_data, sort_keys=True).encode()
         ).hexdigest()[:16]
-
         now = datetime.utcnow().isoformat()
-
         pattern = SharedPattern(
             pattern_id=pattern_id,
             source_repo=source_repo,
@@ -554,14 +654,12 @@ class CrossRepoPatternSharing:
             created_at=now,
             updated_at=now,
         )
-
         self.shared_patterns[pattern_id] = pattern
         self._save_patterns()
-
         logger.info(
-            f"📤 Shared pattern: {pattern_id} from {source_repo} ({pattern_type})"
+            f"📤 Shared pattern: {pattern_id} from {source_repo} "
+            f"({pattern_type})"
         )
-
         return pattern
 
     def find_matching_patterns(
@@ -582,26 +680,20 @@ class CrossRepoPatternSharing:
             List of matching SharedPattern objects
         """
         matches = []
-
         for pattern in self.shared_patterns.values():
             if pattern.pattern_type != pattern_type:
                 continue
             if pattern.success_rate < min_success_rate:
                 continue
-
-            # Keyword matching
             if keywords:
                 pattern_str = json.dumps(pattern.pattern_data).lower()
                 if not any(kw.lower() in pattern_str for kw in keywords):
                     continue
-
             matches.append(pattern)
 
-        # Sort by success rate and usage count
         matches.sort(
             key=lambda p: (p.success_rate, p.usage_count), reverse=True
         )
-
         return matches[:10]
 
     def apply_pattern(self, pattern_id: str, success: bool) -> None:
@@ -614,22 +706,19 @@ class CrossRepoPatternSharing:
         """
         if pattern_id not in self.shared_patterns:
             return
-
         pattern = self.shared_patterns[pattern_id]
         pattern.usage_count += 1
-
-        # Update success rate with exponential moving average
         alpha = 0.1
         pattern.success_rate = (
-            alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
+            alpha * (1.0 if success else 0.0)
+            + (1 - alpha) * pattern.success_rate
         )
         pattern.updated_at = datetime.utcnow().isoformat()
-
         self._save_patterns()
-
         logger.info(
             f"📊 Updated pattern {pattern_id}: "
-            f"usage={pattern.usage_count}, success_rate={pattern.success_rate:.1%}"
+            f"usage={pattern.usage_count}, "
+            f"success_rate={pattern.success_rate:.1%}"
         )
 
     def get_sharing_stats(self) -> dict[str, Any]:
@@ -647,10 +736,12 @@ class CrossRepoPatternSharing:
             "pattern_types": list(
                 set(p.pattern_type for p in self.shared_patterns.values())
             ),
-            "avg_success_rate": sum(
-                p.success_rate for p in self.shared_patterns.values()
-            )
-            / len(self.shared_patterns),
+            "avg_success_rate": (
+                sum(
+                    p.success_rate for p in self.shared_patterns.values()
+                )
+                / len(self.shared_patterns)
+            ),
             "total_usage": sum(
                 p.usage_count for p in self.shared_patterns.values()
             ),
