@@ -12,9 +12,16 @@ from fastapi import Request
 
 class ITACoverageTests(unittest.TestCase):
     def setUp(self) -> None:
-        os.environ["ENVIRONMENT"] = "development"
-        os.environ["ITA_API_KEY"] = "ita-test-key"
-        os.environ["ITA_API_KEY_PEPPER"] = "ita-test-pepper"
+        self._env_patch = patch.dict(
+            os.environ,
+            {
+                "ENVIRONMENT": "development",
+                "ITA_API_KEY": "ita-test-key",
+                "ITA_API_KEY_PEPPER": "ita-test-pepper",
+            },
+        )
+        self._env_patch.start()
+        self.addCleanup(self._env_patch.stop)
         os.environ.pop("CORS_ORIGINS", None)
         self.main = importlib.reload(importlib.import_module("services.ita.app.main"))
 
@@ -54,4 +61,3 @@ class ITACoverageTests(unittest.TestCase):
             spec.loader.exec_module(module)
             with patch.object(module, "parse_args", return_value=types.SimpleNamespace(path=None)):
                 self.assertEqual(module.main(), 0)
-

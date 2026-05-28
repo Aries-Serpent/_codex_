@@ -374,7 +374,7 @@ def test_rate_limiter_async() -> None:
         with pytest.raises(core.SecurityError):
             await async_fn()
 
-    asyncio.get_event_loop().run_until_complete(run())
+    asyncio.run(run())
 
 
 def test_rate_limiter_async_with_key_func() -> None:
@@ -388,7 +388,7 @@ def test_rate_limiter_async_with_key_func() -> None:
         with pytest.raises(core.SecurityError):
             await async_fn("alice")
 
-    asyncio.get_event_loop().run_until_complete(run())
+    asyncio.run(run())
 
 
 # ---------------------------------------------------------------------------

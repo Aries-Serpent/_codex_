@@ -240,7 +240,7 @@ async def test_dispatch_without_tenant_passes_through():
 
 @pytest.mark.asyncio
 async def test_dispatch_rate_limited_request(monkeypatch):
-    """When request bucket is empty, middleware returns 429."""
+    """Without tenant context middleware, depleted bucket setup still returns 200."""
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
 

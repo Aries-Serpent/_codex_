@@ -42,7 +42,8 @@ from codex_ml.utils.optional_dependencies import (  # noqa: E402
 # without requiring mlflow to be installed.
 try:
     import mlflow as _mlf  # noqa: E402
-except ImportError:
+except Exception as exc:
+    logger.debug("Failed to import mlflow at module load: %s", exc)
     _mlf = None  # type: ignore[assignment]
 
 # Prefer a project-local artifacts directory by default to avoid polluting

@@ -95,6 +95,8 @@ def run(payload: dict) -> dict:
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
     max_concurrency: int = int(payload.get("max_concurrency", payload.get("max_workers", 0)))
+    if max_concurrency < 0:
+        raise ValueError("max_concurrency must be >= 0")
 
     if max_concurrency > 0:
         # Process in sequential chunks to throttle peak memory on large batches.
