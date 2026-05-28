@@ -5,7 +5,7 @@
 **Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
 **Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](../../.github/workflows/rag-freshness-scheduler.yml)  
 **Quality gate**: [`.github/workflows/test-rag.yml`](../../.github/workflows/test-rag.yml)  
-**Drift config**: [`.codex/config/rag_quality.yaml`](../../.codex/config/rag_quality.yaml)
+**Drift config**: `.codex/config/rag_quality.yaml` (pending check-in)
 
 ---
 
