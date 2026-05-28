@@ -46,3 +46,5 @@
 {"ts": 1779115090.5098672, "step": 2, "metrics": {"train_loss": 1.0, "val_loss": 1.0, "val_metric": 1.0}}
 {"ts": 1779115757.5785122, "step": 1, "metrics": {"train_loss": 1.0, "val_loss": 1.0, "val_metric": 1.0}}
 {"ts": 1779115757.5786602, "step": 2, "metrics": {"train_loss": 1.0, "val_loss": 1.0, "val_metric": 1.0}}
+{"ts": 1779931897.5377164, "step": 1, "metrics": {"loss": 1.0}}
+{"ts": 1779931897.7921991, "step": 2, "metrics": {"accuracy": 0.9}}
