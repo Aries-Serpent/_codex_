@@ -198,6 +198,39 @@
 
 ---
 
+## SESSION SUMMARY — 2026-05-28T15:54Z (PR #4641 review-thread remediation + workflow monitor)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] Reviewed bot-posted PR review comments and identified unresolved scope (3/3 targeted items) ✅
+- [x] Checked current workflow runs on branch `copilot/fix-asyncssh-path-traversal` via GitHub MCP ✅
+- [x] Confirmed active monitor-only state; no completed failed-job logs surfaced in this pass ✅
+- [x] Applied minimal scoped file changes for review-thread remediation only ✅
+
+### Work Completed
+1. Updated `.github/copilot-prompts/active/PR-4641-followup.md`:
+   - removed inaccurate `No files modified` statement
+   - updated continuation policy to require fixing all code-fixable CI failures and documenting infrastructure-only failures
+2. Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`:
+   - consolidated duplicate PR #4641 auto-session heading into one clear heading
+   - corrected duplicate ordered-list numbering for run URLs
+3. Updated living docs and tracking:
+   - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+   - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+   - `CHANGELOG.md`
+4. Timebox tracking:
+   - started at ~3/60 minutes used
+   - preserved explicit final 5-minute wrap-up reserve and continuation prompt
+
+### Workflow Monitor Snapshot (head `754f57e28`)
+- In progress: `Agent Token Delegation`, `Generate PR Follow-Up Prompt`, `Addressing comment on PR #4641`
+- Completed recent: `Workflow Execution Gate` (success) and reruns with `action_required`
+- No completed failed-job log evidence surfaced during this monitor pass
+
+### Follow-up Prompt Reserved
+- Next pass should re-check latest run conclusions and remediate only if completed, code-fixable failed jobs appear.
+
+---
+
 ## SESSION SUMMARY — 2026-05-24T18:32Z [PR4559-security-hardening-followup]
 
 **Session:** PR4559-security-hardening-followup | **Branch:** `copilot/implement-remediations-all-findings` | **PR:** #4559
@@ -43847,8 +43880,7 @@ and the CI gate requirement.
 
 ---
 
-## SESSION SUMMARY — 2026-05-28T15:34Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4641)
-## SESSION SUMMARY — 2026-05-28T15:41Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4641)
+## SESSION SUMMARY — 2026-05-28T15:34Z + 2026-05-28T15:41Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4641)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
@@ -43869,8 +43901,8 @@ and the CI gate requirement.
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26584531496
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26584531478
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26584531478
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note

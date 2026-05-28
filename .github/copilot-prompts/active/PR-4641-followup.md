@@ -16,11 +16,6 @@
 - [`0b4f2779`] Initial plan (copilot-swe-agent[bot], 2026-05-28)
 - [`758c05bd`] Create Investigation_Report_Copilot.md (Statix, 2026-05-28)
 
-### Files Modified
-No files modified
-
----
-
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
@@ -42,7 +37,7 @@ yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
 - [ ] Standardize cached-venv workflow installs on `${VENV_PYTHON} -m pip ...` where direct launcher drift can break reused environments.
-- [ ] If CI surfaces new non-trivial failures on the latest head, address only issues directly coupled to this PR’s touched files.
+- [ ] If CI surfaces new non-trivial failures on the latest head, fix every code-fixable failure; for infrastructure-only failures, document the reason they are non-code and blocked externally.
 
 ---
 

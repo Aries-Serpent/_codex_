@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4641 review-thread remediation + monitor sync — 2026-05-28T15:54Z)
+- Resolved all three unresolved PR #4641 review comments by:
+  - removing the inaccurate "No files modified" statement from `.github/copilot-prompts/active/PR-4641-followup.md`
+  - tightening continuation guidance to require fixing all code-fixable CI failures (with explicit infra-only documentation)
+  - consolidating duplicate auto-session headings in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and fixing duplicate ordered-list numbering
+- Updated living docs status for this pass in:
+  - `docs/roadmap/review_codebase_next_changes_whats_next.md`
+  - `docs/roadmap/review_codebase_next_changes_session_diagram.mmd`
+
 ### Fixed (auto-update — PR #4641)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4641 (SHA `e301808b`) at 2026-05-28T15:34Z [auto-generated]
 
