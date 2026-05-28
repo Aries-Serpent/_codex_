@@ -104,19 +104,19 @@ class TestLogsGroup:
         assert result.exit_code == 0
 
     def test_logs_init_invokes_script(self, runner):
-        with patch("codex.cli.subprocess.run") as mock_run:
+        with patch("codex._cli_click.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
         assert result.exit_code == 0
         mock_run.assert_called_once()
 
     def test_logs_init_failure_reports_error(self, runner):
-        with patch("codex.cli.subprocess.run", side_effect=RuntimeError("boom")):
+        with patch("codex._cli_click.subprocess.run", side_effect=RuntimeError("boom")):
             result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
         assert result.exit_code != 0
 
     def test_logs_query_invokes_script(self, runner):
-        with patch("codex.cli.subprocess.run") as mock_run:
+        with patch("codex._cli_click.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             result = runner.invoke(
                 cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
@@ -125,7 +125,7 @@ class TestLogsGroup:
         mock_run.assert_called_once()
 
     def test_logs_query_failure_reports_error(self, runner):
-        with patch("codex.cli.subprocess.run", side_effect=RuntimeError("db error")):
+        with patch("codex._cli_click.subprocess.run", side_effect=RuntimeError("db error")):
             result = runner.invoke(
                 cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
             )
