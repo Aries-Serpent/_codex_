@@ -45,7 +45,10 @@ def _load_click_cli() -> Any:
     return getattr(module, "cli", None)
 
 
-cli = _load_click_cli()
+try:
+    cli = _load_click_cli()
+except Exception:  # pragma: no cover - degrade gracefully when CLI fails to load
+    cli = None
 
 # Also expose CLI groups and helpers for testing
 logs = None

@@ -37,6 +37,14 @@ from codex_ml.utils.optional_dependencies import (  # noqa: E402
     build_optional_dependency_error,
 )
 
+# Attempt to import mlflow at module level for backward-compat aliases.
+# codex_ml.monitoring.mlflow_utils accesses _mlf to expose the module
+# without requiring mlflow to be installed.
+try:
+    import mlflow as _mlf  # noqa: E402
+except ImportError:
+    _mlf = None  # type: ignore[assignment]
+
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
@@ -79,6 +87,7 @@ class MlflowConfig:
 __all__ = [
     "MlflowConfig",
     "_ensure_mlflow_available",
+    "_mlf",
     "bootstrap_offline_tracking",
     "current_commit_hash",
     "ensure_local_artifacts",
