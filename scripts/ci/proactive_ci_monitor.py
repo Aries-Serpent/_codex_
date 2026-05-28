@@ -308,6 +308,27 @@ def _post_rescue_comment(
     branch = run.get("head_branch", "")
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # ── ci.health.analyzer trend block (CB-006 wiring) ──────────────────────
+    trend = pattern.get("trend")
+    trend_section = ""
+    if trend and isinstance(trend, dict) and trend.get("run_count", 0) > 0:
+        trend_label = trend.get("trend_label", "unknown")
+        run_count = trend.get("run_count", 0)
+        dominant = trend.get("dominant_category", "unknown")
+        flap_rate_raw = trend.get("flap_rate", 0.0)
+        flap_rate = flap_rate_raw if isinstance(flap_rate_raw, (int, float)) else 0.0
+        recurring = trend.get("recurring_pattern_ids", [])
+        recurring_str = ", ".join(f"`{p}`" for p in recurring) if recurring else "_none_"
+        trend_section = (
+            f"\n### 📊 Trend Analysis (ci.health.analyzer — last {run_count} runs)\n\n"
+            f"| Metric | Value |\n"
+            f"|--------|-------|\n"
+            f"| Trend label | `{trend_label}` |\n"
+            f"| Dominant category | `{dominant}` |\n"
+            f"| Flap rate | {flap_rate:.0%} |\n"
+            f"| Recurring patterns | {recurring_str} |\n\n"
+        )
+
     body = (
         f"<!-- proactive-ci-monitor:{sha12}:{run_id} -->\n"
         f"## 🔍 Proactive CI Monitor — Failure Detected\n\n"
@@ -319,6 +340,7 @@ def _post_rescue_comment(
         f"**Pattern:** `{pattern['id']}` ({pattern['category']})\n\n"
         f"### Fix\n\n"
         f"```\n{pattern['fix']}\n```\n\n"
+        f"{trend_section}"
         f"@copilot Fix the failing CI workflow \"{workflow_name}\" (run #{run_id}).\n\n"
         f"**Steps:**\n"
         f"1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues)\n"

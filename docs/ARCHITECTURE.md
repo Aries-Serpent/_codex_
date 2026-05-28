@@ -1,7 +1,7 @@
 # Codex ML Architecture (v0.1.0)
 
 > **Version**: v0.1.0 Pre-Release
-> **Last Updated**: 2026-05-23
+> **Last Updated**: 2026-05-28
 > **Status**: Living Document
 > **Managed By**: AI Assistant Autonomous System
 
@@ -27,17 +27,17 @@ This document provides a comprehensive architectural overview of the `_codex_` M
 
 The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. It includes the MCP ecosystem, Cognitive Brain system, and 145 active autonomous agents.
 
-<!-- METRICS_LAST_UPDATED: 2026-05-24 Phase 10 alignment -->
+<!-- METRICS_LAST_UPDATED: 2026-05-28 S1292 Phase 10 progress -->
 ```mermaid
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
     Copilot[GitHub Copilot<br/>AI Coding Agent]
     Agents[145 Active Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml<br/>Production-Ready ML Platform<br/>21,500+ Tests | 34.56% agents/ coverage]
+    Codex[codex-ml<br/>Production-Ready ML Platform<br/>2,130 Test Files | 17.57% overall cov]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage<br/>289 patterns learned]
-    MCP[MCP System<br/>Model Context Protocol<br/>126 active workflows<br/>285 workflow files incl. stubs]
+    MCP[MCP System<br/>Model Context Protocol<br/>134 active workflows<br/>298 workflow files incl. stubs]
     Pipeline[Python Ingestion<br/>Ingest → Analyze → Transform → Verify]
 
     HF[Hugging Face Hub<br/>Models + Datasets]
@@ -74,7 +74,7 @@ graph TB
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot**: AI coding agent that autonomously fixes CI failures, fills coverage gaps, and implements features
 - **145 Active Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
-- **CI/CD Systems**: 126 active GitHub Actions workflows (285 workflow files including stubs) for testing, deployment, and self-healing
+- **CI/CD Systems**: 134 active GitHub Actions workflows (298 workflow files including stubs) for testing, deployment, and self-healing
 
 ### External Systems
 
@@ -96,7 +96,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 21,500+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 2,130 Test Files]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
@@ -522,26 +522,32 @@ See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 - ✅ CLI interface
 - ✅ Evaluation with lm-eval
 - ✅ Plugin framework
-- ✅ MCP ecosystem (126 active workflows; 285 workflow files including stubs)
+- ✅ MCP ecosystem (134 active workflows; 298 workflow files including stubs)
 - ✅ Cognitive Brain (289 patterns, k₁=0.35)
 - ✅ 145 active autonomous agents deployed
 
 ### Phase 9 — Completed (2026-05-23)
 - ✅ Phase 9.1: agents/ public API + class contract tests
-- ✅ Phase 9.2: CLI smoke tests + coverage rollup (34.56%)
+- ✅ Phase 9.2: CLI smoke tests + coverage rollup
 - ✅ Phase 9.3: error-path coverage (50 new tests)
 - ✅ Phase 9.4: edge-case coverage (71 new tests)
 - ✅ Rate-limit orchestrator + session TTL repo var
 - ✅ Secrets baseline clean; living docs aligned to v1.3.0
 
-### Phase 10 — Post-Coverage Maintenance (Current)
-- 🔄 Coverage regression gate: hold ≥34% agents/ (CI enforced)
-- 🔄 Gap-fill src/ toward 50% overall statement coverage
-- 🔄 Documentation alignment (CODEBASE_MERMAID_MAPS v1.3.0 ✅)
+### Phase 10 — Coverage Expansion (Current · S1292 · 2026-05-28)
+- ✅ src/security/ coverage raised to 90.72% (S1292)
+- ✅ ITA service tests added (tests/services/ita/)
+- ✅ MSP Gateway tests added (tests/services/msp_gateway/)
+- ✅ Training module targeted tests added (S1292)
+- ✅ Documentation + mermaid maps refreshed to v1.4.0 (S1292)
+- 🔄 Overall coverage: 17.57% → 25% milestone (in progress)
+- 🔄 src/codex/cognitive_brain/ coverage expansion
+- 🔄 src/codex/cli.py CLI branch coverage
+- 🔄 src/codex/rag/ retrieval path tests
+- 🔄 src/training/trainer.py: 12.20% → 50% target
 - 📋 Adaptive Learning Phase 8.3: QEC k₁ tuning (80→100%)
-- 📋 Transfer Learning Phase 8.4 scaffold
-- 📋 Archive merge-candidate CI docs
-- 📋 Webhook event bus triggers (post-merge)
+- 📋 AGENT_NAVIGATION.md + .codex/cognitive_brain/ status update
+- 📋 Workflow superseded-run cancellation hardening
 
 ### Medium-Term (Phase 11+)
 - 📋 Multi-modal support (vision + language)

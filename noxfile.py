@@ -318,11 +318,15 @@ def tests(session: nox.Session) -> None:
     # runtime deps that aren't needed for the baseline test session.
     session.run("pip", "install", "-e", ".", "--no-deps", external=True)
     _show_vendor_scan(session)
-    # Include both src and training packages in coverage measurement
+    # Include src, training, agents, scripts, and services in coverage measurement
+    # (Phase B expansion: agents/ scripts/ services/ added 2026-05-27)
     session.run(
         "pytest",
         "--cov=src",
         "--cov=training",
+        "--cov=agents",
+        "--cov=scripts",
+        "--cov=services",
         "--cov-report=term-missing",
         "--cov-report=xml",
         "--cov-fail-under=0",  # Temporarily disabled - see pyproject.toml for roadmap

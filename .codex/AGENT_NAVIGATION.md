@@ -17,6 +17,12 @@ Agents MUST traverse this repository in layers:
 > **Rule:** Prefer generated maps (this file, `generate_mermaid.py` output) over hand-drawn ones.
 > **Rule:** Treat every static map as potentially stale — regenerate via `--emit-nav` on CI.
 
+### Phase 10 Agent Set (Coverage/Resilience)
+
+- `unified-coverage-agent`
+- `fragile-test-guardian`
+- `memory-sync-agent`
+
 ---
 
 ## Tier 0 — Entry Points

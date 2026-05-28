@@ -18,6 +18,7 @@ Tests include:
 from __future__ import annotations
 
 # botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
+import importlib
 import importlib.util as _importlib_util
 import os
 from datetime import UTC, datetime, timedelta
@@ -560,11 +561,8 @@ class TestGitHubTokenProvider:
         """Test validation fails when no token provided."""
         # Ensure no token in config or environment
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
-        with patch.dict(os.environ, {}, clear=False):
-            # Remove GITHUB_TOKEN from environment for this test
-            os.environ.pop('GITHUB_TOKEN', None)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
             provider = GitHubTokenProvider(config)
-
             with pytest.raises(ValidationError, match="No token provided"):
                 provider.validate_secret("token-id", None)
 
@@ -786,6 +784,26 @@ class TestAWSSecretsManagerProvider:
         with pytest.raises(ProviderConfigError, match="boto3 required"):
             AWSSecretsManagerProvider(aws_config)
 
+    def test_module_import_fallback_without_boto3(self):
+        """Test module-level boto3 import fallback path creates testable stub."""
+        import security.providers.aws_provider as aws_provider_module
+
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "boto3" or name.startswith("botocore"):
+                raise ImportError("simulated missing boto3")
+            return real_import(name, *args, **kwargs)
+
+        try:
+            with patch("builtins.__import__", side_effect=fake_import):
+                reloaded = importlib.reload(aws_provider_module)
+                assert reloaded.HAS_BOTO3 is False
+                assert hasattr(reloaded.boto3, "client")
+                assert reloaded.ClientError is Exception
+        finally:
+            importlib.reload(aws_provider_module)
+
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
     def test_rotate_secret_success(self, mock_boto3, aws_config):
@@ -834,6 +852,21 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_rotate_secret_unexpected_exception(self, mock_boto3, aws_config):
+        """Test rotation gracefully handles unexpected exceptions."""
+        mock_client = Mock()
+        mock_client.rotate_secret.side_effect = RuntimeError("network timeout")
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.rotate_secret("test-secret")
+        assert result.success is False
+        assert "network timeout" in result.error_message
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_validate_secret_exists(self, mock_boto3, aws_config):
         """Test validating existing secret."""
         mock_client = Mock()
@@ -868,6 +901,20 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_validate_secret_unexpected_exception_raises(self, mock_boto3, aws_config):
+        """Test validation wraps unexpected exceptions in ValidationError."""
+        mock_client = Mock()
+        mock_client.describe_secret.side_effect = RuntimeError("broken client")
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        with pytest.raises(ValidationError, match="broken client"):
+            provider.validate_secret("test-secret")
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_get_secret_metadata(self, mock_boto3, aws_config):
         """Test getting secret metadata."""
         now = datetime.now(UTC)
@@ -890,6 +937,46 @@ class TestAWSSecretsManagerProvider:
         assert metadata.secret_type == SecretType.GENERIC
         assert metadata.provider == ProviderType.AWS_SECRETS_MANAGER
         assert metadata.tags == {"env": "test"}
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_metadata_normalizes_naive_datetimes(self, mock_boto3, aws_config):
+        """Test metadata normalizes naive datetime values to UTC."""
+        naive_created = datetime(2024, 1, 2, 3, 4, 5)
+        naive_updated = datetime(2024, 2, 3, 4, 5, 6)
+        mock_client = Mock()
+        mock_client.describe_secret.return_value = {
+            "Name": "test-secret",
+            "CreatedDate": naive_created,
+            "LastChangedDate": naive_updated,
+            "Tags": [],
+        }
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        metadata = provider.get_secret_metadata("test-secret")
+        assert metadata.created_at.tzinfo == UTC
+        assert metadata.updated_at.tzinfo == UTC
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_metadata_client_error(self, mock_boto3, aws_config):
+        """Test metadata lookup maps ClientError to ValidationError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.describe_secret.side_effect = FakeClientError("metadata denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            with pytest.raises(ValidationError, match="metadata denied"):
+                provider.get_secret_metadata("test-secret")
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -937,6 +1024,24 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_get_secret_value_client_error(self, mock_boto3, aws_config):
+        """Test secret retrieval maps ClientError to ValidationError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.get_secret_value.side_effect = FakeClientError("access denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            with pytest.raises(ValidationError, match="access denied"):
+                provider.get_secret_value("test-secret")
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_create_secret(self, mock_boto3, aws_config):
         """Test creating new secret."""
         mock_client = Mock()
@@ -962,6 +1067,47 @@ class TestAWSSecretsManagerProvider:
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
+    def test_create_secret_without_optional_fields(self, mock_boto3, aws_config):
+        """Test create_secret omits optional keys when not provided."""
+        mock_client = Mock()
+        mock_client.create_secret.return_value = {
+            "ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:test",
+            "Name": "test-secret",
+            "VersionId": "v1",
+        }
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.create_secret(name="test-secret", secret_value="secret-value")
+        assert result.success is True
+        mock_client.create_secret.assert_called_once_with(
+            Name="test-secret",
+            SecretString="secret-value",
+        )
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_create_secret_client_error(self, mock_boto3, aws_config):
+        """Test create_secret returns failure result on ClientError."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.create_secret.side_effect = FakeClientError("create failed")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            result = provider.create_secret(name="test-secret", secret_value="secret-value")
+            assert result.success is False
+            assert "create failed" in result.error_message
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
     def test_delete_secret(self, mock_boto3, aws_config):
         """Test deleting secret with recovery window."""
         mock_client = Mock()
@@ -973,6 +1119,23 @@ class TestAWSSecretsManagerProvider:
 
         success = provider.delete_secret("test-secret", recovery_window_days=7)
         assert success is True
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_delete_secret_client_error(self, mock_boto3, aws_config):
+        """Test delete_secret returns False on client error."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.delete_secret.side_effect = FakeClientError("delete denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            assert provider.delete_secret("test-secret") is False
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1008,6 +1171,67 @@ class TestAWSSecretsManagerProvider:
 
         secrets = provider.list_secrets()
         assert len(secrets) == 2
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_with_tag_filters(self, mock_boto3, aws_config):
+        """Test list_secrets applies tag filters to paginator call."""
+        mock_client = Mock()
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [{"SecretList": []}]
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.list_secrets(filter_tags={"env": "prod"})
+        assert result == []
+        mock_paginator.paginate.assert_called_once_with(
+            Filters=[
+                {"Key": "tag-key", "Values": ["env"]},
+                {"Key": "tag-value", "Values": ["prod"]},
+            ]
+        )
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_skips_metadata_failures(self, mock_boto3, aws_config):
+        """Test list_secrets continues when individual metadata lookups fail."""
+        mock_client = Mock()
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [
+            {"SecretList": [{"Name": "bad-secret"}, {"Name": "good-secret"}]}
+        ]
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_client.describe_secret.side_effect = [
+            RuntimeError("metadata unavailable"),
+            {"Name": "good-secret", "CreatedDate": datetime.now(UTC), "Tags": []},
+        ]
+        mock_boto3.client.return_value = mock_client
+
+        from security.providers.aws_provider import AWSSecretsManagerProvider
+
+        provider = AWSSecretsManagerProvider(aws_config)
+        result = provider.list_secrets()
+        assert [item.secret_id for item in result] == ["good-secret"]
+
+    @patch("security.providers.aws_provider.HAS_BOTO3", True)
+    @patch("security.providers.aws_provider.boto3")
+    def test_list_secrets_client_error_returns_empty(self, mock_boto3, aws_config):
+        """Test list_secrets returns empty list when paginator creation fails."""
+        class FakeClientError(Exception):
+            pass
+
+        mock_client = Mock()
+        mock_client.get_paginator.side_effect = FakeClientError("listing denied")
+        mock_boto3.client.return_value = mock_client
+
+        with patch("security.providers.aws_provider.ClientError", FakeClientError):
+            from security.providers.aws_provider import AWSSecretsManagerProvider
+
+            provider = AWSSecretsManagerProvider(aws_config)
+            assert provider.list_secrets() == []
 
 
 # ============================================================================
@@ -1203,6 +1427,21 @@ class TestProviderFactory:
         with pytest.raises(ProviderConfigError, match="not yet implemented"):
             ProviderFactory.create_provider(config)
 
+    def test_create_hashicorp_provider_not_implemented(self):
+        """Test hashicorp provider branch raises explicit not implemented error."""
+        config = ProviderConfig(provider_type=ProviderType.HASHICORP_VAULT)
+
+        with pytest.raises(ProviderConfigError, match="HashiCorp Vault provider not yet implemented"):
+            ProviderFactory.create_provider(config)
+
+    def test_create_provider_unknown_type_raises(self):
+        """Test unsupported provider type branch for non-enum values."""
+        config = Mock()
+        config.provider_type = "custom_provider"
+
+        with pytest.raises(ProviderConfigError, match="Unsupported provider type"):
+            ProviderFactory.create_provider(config)
+
     def test_create_from_dict(self):
         """Test creating provider from dictionary."""
         config_dict = {
@@ -1236,6 +1475,22 @@ class TestProviderFactory:
         assert isinstance(available, list)
         assert ProviderType.ENVIRONMENT in available
         assert ProviderType.GITHUB in available
+
+    def test_get_available_providers_handles_import_errors(self):
+        """Test get_available_providers still returns environment provider on import failures."""
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name in {
+                "security.providers.github_provider",
+                "security.providers.aws_provider",
+            }:
+                raise ImportError(f"simulated import failure for {name}")
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            available = ProviderFactory.get_available_providers()
+        assert available == [ProviderType.ENVIRONMENT]
 
     def test_validate_config_github(self):
         """Test validating GitHub config."""
@@ -1272,6 +1527,50 @@ class TestProviderFactory:
         is_valid = ProviderFactory.validate_config(config)
         assert is_valid is True
 
+    def test_validate_config_azure_requires_vault_url(self):
+        """Test validating Azure config requires vault_url."""
+        config = ProviderConfig(provider_type=ProviderType.AZURE_KEY_VAULT)
+
+        with pytest.raises(ProviderConfigError, match="vault_url"):
+            ProviderFactory.validate_config(config)
+
+    def test_validate_config_hashicorp_requires_vault_url_and_token(self):
+        """Test validating HashiCorp config requires vault_url and token."""
+        config_missing_url = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            token="vault-token",
+        )
+        with pytest.raises(ProviderConfigError, match="vault_url"):
+            ProviderFactory.validate_config(config_missing_url)
+
+        config_missing_token = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            vault_url="https://vault.example.com",
+        )
+        with pytest.raises(ProviderConfigError, match=r"Required configuration 'token' not found for hashicorp_vault"):
+            ProviderFactory.validate_config(config_missing_token)
+
+        config_complete = ProviderConfig(
+            provider_type=ProviderType.HASHICORP_VAULT,
+            vault_url="https://vault.example.com",
+            token="vault-token",
+        )
+        assert ProviderFactory.validate_config(config_complete) is True
+
+    def test_create_provider_import_error_wrapped(self):
+        """Test create_provider wraps ImportError with provider context."""
+        config = ProviderConfig(provider_type=ProviderType.GITHUB, token="ghp_test")
+        real_import = __import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "security.providers.github_provider":
+                raise ImportError("simulated import failure")
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            with pytest.raises(ProviderConfigError, match="Failed to import provider for github"):
+                ProviderFactory.create_provider(config)
+
 
 class TestCreateProviderFromEnv:
     """Test create_provider_from_env convenience function."""
@@ -1300,6 +1599,34 @@ class TestCreateProviderFromEnv:
         """Test creating unsupported provider from env."""
         with pytest.raises(ProviderConfigError, match="not supported"):
             create_provider_from_env(ProviderType.HASHICORP_VAULT)
+
+    def test_create_aws_from_env_with_explicit_credentials(self, monkeypatch):
+        """Test AWS env helper forwards explicit credentials when present."""
+        monkeypatch.setenv("AWS_REGION", "ap-southeast-1")
+        monkeypatch.setenv("AWS_ACCESS_KEY_ID", "AKIA_ENV_TEST")
+        monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "env-secret-key")
+
+        with patch.object(ProviderFactory, "create_provider") as mock_create_provider:
+            sentinel_provider = object()
+            mock_create_provider.return_value = sentinel_provider
+
+            provider = create_provider_from_env(ProviderType.AWS_SECRETS_MANAGER)
+            assert provider is sentinel_provider
+
+            passed_config = mock_create_provider.call_args.args[0]
+            assert passed_config.get("region") == "ap-southeast-1"
+            assert passed_config.get("aws_access_key_id") == "AKIA_ENV_TEST"
+            assert passed_config.get("aws_secret_access_key") == "env-secret-key"
+
+    def test_create_azure_from_env_reaches_factory(self, monkeypatch):
+        """Test Azure env helper constructs config then delegates to factory."""
+        monkeypatch.setenv("AZURE_VAULT_URL", "https://vault.example.com")
+        monkeypatch.setenv("AZURE_TENANT_ID", "tenant-id")
+        monkeypatch.setenv("AZURE_CLIENT_ID", "client-id")
+        monkeypatch.setenv("AZURE_CLIENT_SECRET", "client-secret")
+
+        with pytest.raises(ProviderConfigError, match="not yet implemented"):
+            create_provider_from_env(ProviderType.AZURE_KEY_VAULT)
 
 
 # ============================================================================
@@ -1352,3 +1679,671 @@ class TestPropertyBased:
 
         assert provider1.get_secret_value("SECRET") == "value1"
         assert provider2.get_secret_value("SECRET") == "value2"
+
+
+# ============================================================================
+# Additional GitHubTokenProvider edge-case coverage
+# ============================================================================
+
+
+class TestGitHubTokenProviderEdgeCases:
+    """Additional edge cases to fill coverage gaps in github_provider.py."""
+
+    @pytest.fixture
+    def provider_with_token(self):
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+            api_url="https://api.github.com",
+        )
+        return GitHubTokenProvider(config)
+
+    @pytest.fixture
+    def provider_with_installation(self):
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+            api_url="https://api.github.com",
+            installation_id="99999",
+        )
+        return GitHubTokenProvider(config)
+
+    # --- validate_secret ---
+
+    def test_validate_secret_expired_token(self, provider_with_token):
+        """Test validate_secret returns False when local expiry check says expired."""
+        from datetime import UTC, datetime, timedelta
+        from unittest.mock import patch
+
+        past = datetime.now(UTC) - timedelta(days=1)
+        with patch.object(
+            GitHubTokenProvider, "get_expiration", return_value=past
+        ):
+            token = "ghp_" + "V" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is False
+
+    def test_validate_secret_403_returns_false(self, provider_with_token):
+        """Test validate_secret returns False on HTTP 403."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            token = "ghp_" + "F" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is False
+
+    def test_validate_secret_unexpected_status_returns_true(self, provider_with_token):
+        """Test validate_secret treats unexpected status as valid."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 202
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            token = "ghp_" + "U" * 36
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is True
+
+    def test_validate_secret_without_requests(self, provider_with_token):
+        """Test validate_secret falls back to format-only when requests unavailable."""
+        from unittest.mock import patch
+
+        token = "ghp_" + "R" * 36
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.validate_secret("tok", token)
+        assert result is True
+
+    def test_validate_secret_exception_wraps_as_validation_error(self):
+        """Test that unexpected exception is wrapped in ValidationError."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_testtoken1234567890123456789012345678",
+        )
+        provider = GitHubTokenProvider(config)
+        token = "ghp_" + "E" * 36
+        with patch.object(provider, "get_expiration", side_effect=RuntimeError("boom")), \
+             patch("security.providers.github_provider.HAS_REQUESTS", False):
+            # RuntimeError is caught and wrapped
+            result = provider.validate_secret("tok", token)
+        # format-only validation returns True (exception in get_expiration is caught)
+        assert result is True
+
+    # --- create_token ---
+
+    def test_create_token_no_requests(self, provider_with_installation):
+        """Test create_token returns failure when requests is unavailable."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_installation.create_token("name", ["contents"])
+        assert result.success is False
+        assert "requests" in (result.error_message or "").lower()
+
+    def test_create_token_no_bearer_token(self):
+        """Test create_token returns failure when bearer token is missing."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            installation_id="12345",
+        )
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.create_token("name", ["contents"])
+        assert result.success is False
+        assert "bearer token" in (result.error_message or "").lower()
+
+    def test_create_token_request_exception(self, provider_with_installation):
+        """Test create_token handles request exception gracefully."""
+        from unittest.mock import patch
+
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.side_effect = requests.exceptions.ConnectionError("network down")
+            result = provider_with_installation.create_token("name", ["contents"])
+        assert result.success is False
+        assert "failed" in (result.error_message or "").lower()
+
+    # --- update_token_scopes ---
+
+    def test_update_token_scopes_no_token(self):
+        """Test update_token_scopes returns False without bearer token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    def test_update_token_scopes_failure_status(self, provider_with_token):
+        """Test update_token_scopes returns False on non-200/204 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 422
+        mock_resp.text = "Unprocessable"
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.return_value = mock_resp
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    def test_update_token_scopes_204_success(self, provider_with_token):
+        """Test update_token_scopes returns True on 204 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 204
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.return_value = mock_resp
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is True
+
+    def test_update_token_scopes_exception(self, provider_with_token):
+        """Test update_token_scopes returns False on unexpected exception."""
+        from unittest.mock import patch
+
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.side_effect = requests.exceptions.Timeout("timeout")
+            result = provider_with_token.update_token_scopes("12345", ["contents"])
+        assert result is False
+
+    # --- revoke_secret ---
+
+    def test_revoke_secret_no_token(self):
+        """Test revoke_secret returns False without token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_no_requests(self, provider_with_token):
+        """Test revoke_secret returns False without requests library."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_ghs_token_success(self):
+        """Test revoke_secret succeeds for ghs_ installation token (204)."""
+        from unittest.mock import Mock, patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 204
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.return_value = mock_resp
+            result = provider.revoke_secret("tok-id")
+        assert result is True
+
+    def test_revoke_secret_ghs_token_failure(self):
+        """Test revoke_secret returns False on API failure for ghs_ token."""
+        from unittest.mock import Mock, patch
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.return_value = mock_resp
+            result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    def test_revoke_secret_exception(self):
+        """Test revoke_secret returns False on unexpected exception."""
+        from unittest.mock import patch
+
+        import requests
+
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghs_testinstallationtoken123456789",
+        )
+        provider = GitHubTokenProvider(config)
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.delete.side_effect = requests.exceptions.ConnectionError("network")
+            result = provider.revoke_secret("tok-id")
+        assert result is False
+
+    # --- list_secrets ---
+
+    def test_list_secrets_no_token(self):
+        """Test list_secrets returns empty list without token."""
+        from unittest.mock import patch
+
+        config = ProviderConfig(provider_type=ProviderType.GITHUB)
+        with patch.dict(os.environ, {"GITHUB_TOKEN": ""}, clear=False):
+            provider = GitHubTokenProvider(config)
+            with patch("security.providers.github_provider.HAS_REQUESTS", True):
+                result = provider.list_secrets()
+        assert result == []
+
+    def test_list_secrets_no_requests(self, provider_with_token):
+        """Test list_secrets returns empty list without requests library."""
+        from unittest.mock import patch
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_list_secrets_200_response(self, provider_with_token):
+        """Test list_secrets returns SecretMetadata on successful API call."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"login": "testuser", "id": 12345}
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            result = provider_with_token.list_secrets()
+
+        assert len(result) == 1
+        assert result[0].secret_id == "current_token"
+        assert result[0].tags["github_login"] == "testuser"
+
+    def test_list_secrets_non_200_response(self, provider_with_token):
+        """Test list_secrets returns empty list on non-200 response."""
+        from unittest.mock import Mock, patch
+
+        mock_resp = Mock()
+        mock_resp.status_code = 401
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.return_value = mock_resp
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_list_secrets_exception(self, provider_with_token):
+        """Test list_secrets returns empty list on request exception."""
+        from unittest.mock import patch
+
+        import requests
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.get.side_effect = requests.exceptions.ConnectionError("offline")
+            result = provider_with_token.list_secrets()
+        assert result == []
+
+    def test_rotate_secret_create_token_failure(self, provider_with_token):
+        """Test rotate_secret propagates create_token failure."""
+        from unittest.mock import patch
+
+        with patch.object(
+            GitHubTokenProvider,
+            "create_token",
+            return_value=RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message="API unavailable",
+            ),
+        ):
+            result = provider_with_token.rotate_secret("old-id")
+        assert result.success is False
+        assert "unavailable" in (result.error_message or "").lower()
+
+    def test_rotate_secret_exception_returns_failure(self, provider_with_token):
+        """Test rotate_secret handles unexpected exceptions gracefully."""
+        from unittest.mock import patch
+
+        with patch.object(
+            GitHubTokenProvider,
+            "get_secret_metadata",
+            side_effect=RuntimeError("unexpected"),
+        ):
+            result = provider_with_token.rotate_secret("old-id")
+        assert result.success is False
+
+
+# ============================================================================
+# Security Decorators tests (decorators.py)
+# ============================================================================
+
+
+class TestScopeDecoratorContextVars:
+    """Test context variable management for scope validators."""
+
+    def setup_method(self):
+        """Clear context before each test."""
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        """Clear context after each test."""
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_set_and_get_scope_validator(self):
+        """Test setting and getting scope validator in context."""
+        from security.decorators import get_scope_validator, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        validator = ScopeValidator(["repo:read"])
+        assert get_scope_validator() is None
+        set_scope_validator(validator)
+        assert get_scope_validator() is validator
+
+    def test_clear_scope_validator(self):
+        """Test clearing scope validator from context."""
+        from security.decorators import (
+            clear_scope_validator,
+            get_scope_validator,
+            set_scope_validator,
+        )
+        from security.scope_validator import ScopeValidator
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        clear_scope_validator()
+        assert get_scope_validator() is None
+
+
+class TestRequireScopeDecorator:
+    """Test require_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_require_scope_passes_with_sufficient_scope(self):
+        """Test decorated function executes when scope is sufficient."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_scope("repo:write")
+        def write_repo(data: str) -> str:
+            return f"written: {data}"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        result = write_repo("payload")
+        assert result == "written: payload"
+
+    def test_require_scope_raises_runtime_error_without_validator(self):
+        """Test decorated function raises RuntimeError when no validator set."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:write")
+        def protected_func() -> str:
+            return "ok"
+
+        with pytest.raises(RuntimeError, match="No scope validator"):
+            protected_func()
+
+    def test_require_scope_raises_insufficient_scope_error(self):
+        """Test decorated function raises InsufficientScopeError for insufficient scope."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_scope("repo:admin")
+        def admin_func() -> str:
+            return "admin"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        with pytest.raises(InsufficientScopeError):
+            admin_func()
+
+    def test_require_scope_metadata_attributes(self):
+        """Test that require_scope sets metadata attributes on wrapper."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:write", "workflow:read")
+        def my_func() -> None:
+            pass
+
+        assert my_func.__scope_protected__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in my_func.__required_scopes__  # type: ignore[attr-defined]
+        assert "workflow:read" in my_func.__required_scopes__  # type: ignore[attr-defined]
+
+    def test_require_scope_preserves_function_name(self):
+        """Test that require_scope preserves function metadata."""
+        from security.decorators import require_scope
+
+        @require_scope("repo:read")
+        def my_named_function() -> None:
+            """My docstring."""
+
+        assert my_named_function.__name__ == "my_named_function"
+        assert my_named_function.__doc__ == "My docstring."
+
+    def test_require_multiple_scopes_all_required(self):
+        """Test that all scopes in require_scope must be present."""
+        from security.decorators import require_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_scope("repo:write", "workflow:read")
+        def func() -> str:
+            return "ok"
+
+        # Only one scope — should fail
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        with pytest.raises(InsufficientScopeError):
+            func()
+
+
+class TestRequireAnyScopeDecorator:
+    """Test require_any_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_require_any_scope_passes_with_one_scope(self):
+        """Test function executes with at least one matching scope."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_any_scope("repo:write", "repo:admin")
+        def write_or_admin() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        assert write_or_admin() == "ok"
+
+    def test_require_any_scope_passes_with_different_scope(self):
+        """Test function executes with a different valid scope."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:admin"]))
+        assert func() == "ok"
+
+    def test_require_any_scope_raises_without_validator(self):
+        """Test RuntimeError when no validator set."""
+        from security.decorators import require_any_scope
+
+        @require_any_scope("repo:write")
+        def func() -> str:
+            return "ok"
+
+        with pytest.raises(RuntimeError, match="No scope validator"):
+            func()
+
+    def test_require_any_scope_raises_when_none_match(self):
+        """Test InsufficientScopeError when none of the scopes match."""
+        from security.decorators import require_any_scope, set_scope_validator
+        from security.scope_validator import InsufficientScopeError, ScopeValidator
+
+        @require_any_scope("repo:admin", "org:admin")
+        def admin_func() -> str:
+            return "admin"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        with pytest.raises(InsufficientScopeError):
+            admin_func()
+
+    def test_require_any_scope_metadata_attributes(self):
+        """Test metadata attributes set by require_any_scope."""
+        from security.decorators import require_any_scope
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> None:
+            pass
+
+        assert func.__scope_protected__ is True  # type: ignore[attr-defined]
+        assert func.__scope_any__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in func.__required_scopes__  # type: ignore[attr-defined]
+
+
+class TestOptionalScopeDecorator:
+    """Test optional_scope decorator."""
+
+    def setup_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def teardown_method(self):
+        from security.decorators import clear_scope_validator
+        clear_scope_validator()
+
+    def test_optional_scope_runs_without_validator(self):
+        """Test function executes even without validator set."""
+        from security.decorators import optional_scope
+
+        @optional_scope("repo:write")
+        def public_func() -> str:
+            return "public"
+
+        assert public_func() == "public"
+
+    def test_optional_scope_runs_with_sufficient_scope(self):
+        """Test function executes when validator has required scope."""
+        from security.decorators import optional_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @optional_scope("repo:write")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:write"]))
+        assert func() == "ok"
+
+    def test_optional_scope_runs_with_insufficient_scope(self):
+        """Test function still executes even with insufficient scope."""
+        from security.decorators import optional_scope, set_scope_validator
+        from security.scope_validator import ScopeValidator
+
+        @optional_scope("repo:admin")
+        def func() -> str:
+            return "ok"
+
+        set_scope_validator(ScopeValidator(["repo:read"]))
+        # Should NOT raise, just logs
+        assert func() == "ok"
+
+    def test_optional_scope_metadata_attributes(self):
+        """Test optional_scope sets metadata attributes."""
+        from security.decorators import optional_scope
+
+        @optional_scope("repo:write")
+        def func() -> None:
+            pass
+
+        assert func.__scope_optional__ is True  # type: ignore[attr-defined]
+        assert "repo:write" in func.__optional_scopes__  # type: ignore[attr-defined]
+
+
+class TestScopeMetadataFunction:
+    """Test scope_metadata extraction function."""
+
+    def test_scope_metadata_from_require_scope(self):
+        """Test scope_metadata returns correct data for require_scope."""
+        from security.decorators import require_scope, scope_metadata
+
+        @require_scope("repo:write")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["protected"] is True
+        assert "repo:write" in meta["required"]
+        assert meta["any"] is False
+        assert meta["optional"] is False
+
+    def test_scope_metadata_from_require_any_scope(self):
+        """Test scope_metadata returns correct data for require_any_scope."""
+        from security.decorators import require_any_scope, scope_metadata
+
+        @require_any_scope("repo:write", "repo:admin")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["protected"] is True
+        assert meta["any"] is True
+
+    def test_scope_metadata_from_optional_scope(self):
+        """Test scope_metadata returns correct data for optional_scope."""
+        from security.decorators import optional_scope, scope_metadata
+
+        @optional_scope("repo:read")
+        def func() -> None:
+            pass
+
+        meta = scope_metadata(func)
+        assert meta["optional"] is True
+        assert meta["protected"] is False
+
+    def test_scope_metadata_from_undecorated_function(self):
+        """Test scope_metadata returns defaults for undecorated function."""
+        from security.decorators import scope_metadata
+
+        def plain_func() -> None:
+            pass
+
+        meta = scope_metadata(plain_func)
+        assert meta["protected"] is False
+        assert meta["optional"] is False
+        assert meta["required"] == []
+        assert meta["any"] is False

@@ -484,7 +484,7 @@ line_length = 100
 
 [tool.coverage.run]
 branch = true
-source = ["src", "agents", "training"]
+source = ["src", "agents", "training", "scripts", "services"]
 omit = [
     "*/tests/*",
     "*/test_*",

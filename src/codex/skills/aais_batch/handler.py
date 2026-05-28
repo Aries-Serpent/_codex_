@@ -13,12 +13,31 @@ Supports both synchronous and async batching:
 from __future__ import annotations
 
 import asyncio
+import warnings
 from typing import Any
 
 from codex.skills.aais import AAISScorer
 
 _DEFAULT_THRESHOLD = 0.75
 _scorer = AAISScorer()
+
+
+def _get_max_concurrency(payload: dict, default: int) -> int:
+    """Extract max_concurrency from payload with validation."""
+    val = default
+    if "max_concurrency" in payload:
+        val = int(payload["max_concurrency"])
+    elif "max_workers" in payload:
+        warnings.warn(
+            "'max_workers' is deprecated; use 'max_concurrency' instead.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        val = int(payload["max_workers"])
+
+    if val < 0:
+        raise ValueError("max_concurrency must be >= 0")
+    return val
 
 
 def _score_item(
@@ -73,6 +92,13 @@ def run(payload: dict) -> dict:
         - ``threshold`` (float, optional): pass/fail gate (default 0.75).
         - ``include_dimensions`` (bool, optional): include per-dimension
           scores in output (default False).
+        - ``max_concurrency`` (int, optional): maximum batch chunk size for
+          synchronous processing.  Useful for very large batches to limit peak
+          memory pressure.  Set to 0 (default) to process all items at once.
+          Items are processed sequentially in chunks; the API is identical to
+          the unbounded case.
+        - ``max_workers`` (int, optional): deprecated alias for
+          ``max_concurrency``.
 
     Returns
     -------
@@ -89,8 +115,16 @@ def run(payload: dict) -> dict:
 
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
+    max_concurrency: int = _get_max_concurrency(payload, 0)
 
-    scores = [_score_item(item, threshold, include_dims) for item in items]
+    if max_concurrency > 0:
+        # Process in sequential chunks to throttle peak memory on large batches.
+        scores: list[dict] = []
+        for start in range(0, len(items), max_concurrency):
+            chunk = items[start : start + max_concurrency]
+            scores.extend(_score_item(item, threshold, include_dims) for item in chunk)
+    else:
+        scores = [_score_item(item, threshold, include_dims) for item in items]
 
     return {
         "scores": scores,
@@ -132,9 +166,7 @@ async def run_async(payload: dict) -> dict:
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
     _default_concurrency = min(32, len(items) + 4)
-    max_concurrency: int = int(
-        payload.get("max_concurrency", payload.get("max_workers", _default_concurrency))
-    )
+    max_concurrency: int = _get_max_concurrency(payload, _default_concurrency)
 
     loop = asyncio.get_running_loop()
     sem = asyncio.Semaphore(max_concurrency)

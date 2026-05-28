@@ -37,6 +37,18 @@ from codex_ml.utils.optional_dependencies import (  # noqa: E402
     build_optional_dependency_error,
 )
 
+# Attempt to import mlflow at module level for backward-compat aliases.
+# codex_ml.monitoring.mlflow_utils accesses _mlf to expose the module
+# without requiring mlflow to be installed.
+try:
+    import mlflow as _mlf  # noqa: E402
+except ImportError as exc:
+    logger.debug("Failed to import mlflow at module load: %s", exc)
+    _mlf = None  # type: ignore[assignment]
+except Exception:
+    logger.warning("Unexpected failure importing mlflow at module load", exc_info=True)
+    _mlf = None  # type: ignore[assignment]
+
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
@@ -46,6 +58,7 @@ _DEFAULT_LITERAL_URI = "file:./artifacts/mlruns"
 # but keep the historical literal default for compatibility checks.
 _ = mlflow_guard.bootstrap_offline_tracking(requested_uri=_CODEX_URI or _DEFAULT_LITERAL_URI)
 MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
+
 
 def _resolve_tracking_uri_default() -> Optional[str]:
     codex_env = os.getenv("CODEX_MLFLOW_URI")
@@ -79,6 +92,7 @@ class MlflowConfig:
 __all__ = [
     "MlflowConfig",
     "_ensure_mlflow_available",
+    "_mlf",
     "bootstrap_offline_tracking",
     "current_commit_hash",
     "ensure_local_artifacts",

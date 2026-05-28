@@ -107,6 +107,9 @@ _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
         "test_checkpoint_integrity.py",
         "test_checkpoint_rng_restore.py",
         "test_checkpoint_manifest.py",
+        # Phase E: torch-free coverage tests
+        "test_trainer_phase_e.py",
+        "test_functional_training_phase_e.py",
     }
 )
 
@@ -119,11 +122,25 @@ def _is_training_allowlisted(path_obj: pathlib.Path) -> bool:
     )
 
 
+_TORCH_REQUIRED_TEST_FILES: frozenset[str] = frozenset(
+    {
+        "test_dataset_hashing.py",
+        "test_env_logging.py",
+        "test_metrics_writers.py",
+        "test_rag_end_to_end_pipeline.py",
+    }
+)
+
+
 def _path_requires_torch(path_obj: pathlib.Path) -> bool:
     if _is_training_allowlisted(path_obj):
         return False
     if path_obj.name == "training" and "tests" in path_obj.parts and path_obj.is_dir():
         return not _TRAINING_TORCH_ALLOWLIST_FILENAMES
+    if "tests" in path_obj.parts and "space_traversal" in path_obj.parts:
+        return True
+    if path_obj.name in _TORCH_REQUIRED_TEST_FILES and "tests" in path_obj.parts:
+        return True
     return "tests" in path_obj.parts and any(
         seg in path_obj.parts for seg in ("checkpointing", "training", "codex_ml")
     )
@@ -183,6 +200,11 @@ if not _torch_available():
         [
             "tests/checkpointing",
             "tests/codex_ml",
+            "tests/space_traversal",
+            "tests/test_dataset_hashing.py",
+            "tests/test_env_logging.py",
+            "tests/test_metrics_writers.py",
+            "tests/test_rag_end_to_end_pipeline.py",
         ]
     )
     collect_ignore_glob.extend(
@@ -191,6 +213,8 @@ if not _torch_available():
             "tests/codex_ml/*",
             "*/tests/checkpointing/*",
             "*/tests/codex_ml/*",
+            "tests/space_traversal/*",
+            "*/tests/space_traversal/*",
         ]
     )
     if not _TRAINING_TORCH_ALLOWLIST_FILENAMES:

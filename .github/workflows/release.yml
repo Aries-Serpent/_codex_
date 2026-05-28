@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          # No pip cache — no pip install steps in this workflow
 
       - name: Validate version tag
         run: |

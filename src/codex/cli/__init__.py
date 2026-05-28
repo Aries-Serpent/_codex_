@@ -25,8 +25,13 @@ _codex_root = Path(__file__).resolve().parent.parent  # src/codex
 _click_cli_path = _codex_root / "cli.py"
 
 
+_cli_load_error: Exception | None = None
+
+
 def _load_click_cli() -> Any:
     """Load the Click CLI group from src/codex/cli.py using importlib."""
+    global _cli_load_error
+
     # Check if already loaded to ensure idempotency
     if "codex._cli_click" in sys.modules:
         existing_module = sys.modules["codex._cli_click"]
@@ -34,15 +39,21 @@ def _load_click_cli() -> Any:
 
     # Validate that the file exists before attempting to load
     if not _click_cli_path.exists() or not _click_cli_path.is_file():
+        _cli_load_error = FileNotFoundError(f"Click CLI file not found: {_click_cli_path}")
         return None
 
-    spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
-    if spec is None or spec.loader is None:
+    try:
+        spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
+        if spec is None or spec.loader is None:
+            _cli_load_error = ImportError(f"Failed to create import spec for {_click_cli_path}")
+            return None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["codex._cli_click"] = module
+        spec.loader.exec_module(module)
+        return getattr(module, "cli", None)
+    except Exception as exc:  # pragma: no cover
+        _cli_load_error = exc
         return None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["codex._cli_click"] = module
-    spec.loader.exec_module(module)
-    return getattr(module, "cli", None)
 
 
 cli = _load_click_cli()
@@ -61,6 +72,9 @@ query_logs_cmd = None
 validate_env_cmd = None
 list_sessions_cmd = None
 viewer_cmd = None
+ALLOWED_TASKS = None
+_emit_group_help = None
+_missing_command = None
 
 if cli is not None:
     # Import the groups from the loaded module
@@ -79,9 +93,15 @@ if cli is not None:
         validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
         list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
         viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
+        ALLOWED_TASKS = getattr(_cli_module, "ALLOWED_TASKS", None)
+        _emit_group_help = getattr(_cli_module, "_emit_group_help", None)
+        _missing_command = getattr(_cli_module, "_missing_command", None)
 
 __all__ = [
+    "_emit_group_help",
     "_fix_pool",
+    "_missing_command",
+    "ALLOWED_TASKS",
     "app",
     "auth_group",
     "clean_logs_cmd",
@@ -107,7 +127,8 @@ if cli is None:
         f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
         "IMPACT: All CLI commands (e.g., 'codex run', 'codex analyze') will be unavailable. "
         "RESOLUTION: Ensure src/codex/cli.py exists and exports a Click 'cli' group. "
-        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'",
+        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'. "
+        f"Underlying error: {_cli_load_error!r}",
         ImportWarning,
         stacklevel=2,
     )
