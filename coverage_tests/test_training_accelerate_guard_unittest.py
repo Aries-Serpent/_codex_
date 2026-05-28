@@ -50,7 +50,9 @@ class TrainingAccelerateGuardCoverageTests(unittest.TestCase):
 
     def test_safe_init_success_path(self) -> None:
         fake_state = SimpleNamespace(distributed_type="MULTI_CPU")
-        fake_accelerator_cls = lambda: SimpleNamespace(state=fake_state)
+        def fake_accelerator_cls():
+            return SimpleNamespace(state=fake_state)
+
         with (
             patch.object(guard, "is_gpu_available", return_value=True),
             patch.object(guard, "is_accelerate_available", return_value=True),

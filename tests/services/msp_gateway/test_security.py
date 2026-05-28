@@ -116,7 +116,7 @@ class TestPolicyEnforcer:
         )
         text = "My password is secret"
         redacted, applied = enforcer.redact_sensitive_content(text)
-        assert "password" not in redacted.lower() or "[REDACTED]" in redacted
+        assert "password" not in redacted.lower() and "[REDACTED]" in redacted
         assert any("term:password" in a for a in applied)
 
     def test_redact_no_match_no_change(self, monkeypatch):

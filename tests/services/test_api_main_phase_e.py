@@ -138,8 +138,7 @@ class TestReadinessEndpoint:
             del mod.app.state.model
         with TestClient(mod.app, raise_server_exceptions=False) as client:
             resp = client.get("/ready")
-        # Either 200 (if model was auto-loaded) or 503 (if not)
-        assert resp.status_code in (200, 503)
+        assert resp.status_code == 503
 
     def test_ready_after_model_load_200(self, monkeypatch):
         mod = _reload_api(monkeypatch)
@@ -227,9 +226,11 @@ class TestTrainEndpoint:
 class TestInferEndpoint:
     def test_infer_basic(self, monkeypatch):
         mod, client = _make_client(monkeypatch)
+        monkeypatch.setattr(mod, "validate_input", lambda text, **_: text)
+        monkeypatch.setattr(mod, "enforce_content_policies", lambda _: None)
         with client:
             resp = client.post("/infer", json={"prompt": "hello"})
-        assert resp.status_code in (200, 400)  # 400 if security filter blocks
+        assert resp.status_code == 200
 
     def test_infer_empty_prompt_422(self, monkeypatch):
         mod, client = _make_client(monkeypatch)
