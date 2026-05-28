@@ -140,9 +140,10 @@ jobs:
       # ============================================================================
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
