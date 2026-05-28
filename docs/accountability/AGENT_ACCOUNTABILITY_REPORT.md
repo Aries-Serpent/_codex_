@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-28T22:58Z [PR4658-validation-pipeline-fix]
+
+**Session:** PR4658-validation-pipeline-fix | **Branch:** `dependabot/pip/dulwich-1.2.5` | **PR:** #4658
+
+### Completed
+- Investigated failing `Validation Pipeline` run `#26606168154` via GitHub Actions MCP and identified the failure in `Run yamllint`.
+- Confirmed the root cause was the non-block-scalar `run:` command with shell braces in `.github/workflows/copilot-setup-steps.yml` session pre-load step.
+- Applied a minimal workflow fix: switched to `run: |` and replaced brace-form fallback with `if ! ...; then ...; fi` to avoid the yamllint indentation-rule crash path.
+- Verified no open `ci-failure` / `ci-health-alert` issues were present.
+
+### Validation
+- `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` ✅
+- PR mergeability check: `gh pr view 4658 --json mergeable,baseRefName,headRefName` → `MERGEABLE` ✅
+- Merge-tree conflict check against `origin/main` produced no conflicts ✅
+
+### Observations
+- This was a CI lint/parser robustness fix in workflow YAML only; no application runtime code paths were modified.
+
 ## SESSION SUMMARY — 2026-05-28T14:26Z [PR4640-ci-gate-remediation]
 
 **Session:** PR4640-ci-gate-remediation | **Branch:** `copilot/explore-codebase-implementation-plan` | **PR:** #4640
