@@ -7,6 +7,7 @@ spawning subprocesses, so they run reliably in minimal environments.
 
 from __future__ import annotations
 
+import inspect
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -30,7 +31,9 @@ from codex.cli import (
 
 @pytest.fixture()
 def runner():
-    return CliRunner(mix_stderr=False)
+    if "mix_stderr" in inspect.signature(CliRunner).parameters:
+        return CliRunner(mix_stderr=False)
+    return CliRunner()
 
 
 # ---------------------------------------------------------------------------
