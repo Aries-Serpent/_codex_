@@ -188,8 +188,6 @@ class F1Score(MetricBase):
             case _:
                 raise ValueError(f"unsupported averaging strategy: {self.average}")
 
-        raise RuntimeError("unreachable: compute() exhausted all averaging strategies")
-
 
 class RecallScore(MetricBase):
     """Recall metric supporting multiple averaging strategies."""
