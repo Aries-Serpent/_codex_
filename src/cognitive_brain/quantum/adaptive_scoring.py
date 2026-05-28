@@ -16,8 +16,11 @@ PDA Loop + AfterMath Pattern:
 - AfterMath: Track k₁ reduction, coherence trends
 """
 
+import json
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 
 @dataclass
@@ -239,6 +242,65 @@ class AdaptiveScoringOptimizer:
     def get_current_k1(self) -> float:
         """Get current k₁ estimate"""
         return self.k1_history[-1] if self.k1_history else 0.40
+
+    def tune_k1_from_pda_history(
+        self,
+        pda_path: str | Path = ".codex/aftermath/pda_iterations.jsonl",
+        *,
+        prior_alpha: float = 2.0,
+        prior_beta: float = 2.0,
+        max_records: int = 500,
+    ) -> float:
+        """
+        Tune k₁ using Bayesian success-rate estimation from PDA session history.
+
+        The posterior mean success probability is mapped to the k₁ process factor.
+        Higher observed success lowers k₁.
+        """
+        path = Path(pda_path)
+        if not path.exists():
+            return self.get_current_k1()
+
+        records = path.read_text(encoding="utf-8").splitlines()[-max_records:]
+        outcomes: list[int] = []
+        for line in records:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            success = self._extract_success_signal(payload)
+            if success is None:
+                continue
+            outcomes.append(1 if success else 0)
+
+        if not outcomes:
+            return self.get_current_k1()
+
+        alpha = prior_alpha + sum(outcomes)
+        beta = prior_beta + (len(outcomes) - sum(outcomes))
+        posterior_success = alpha / (alpha + beta)
+
+        # Map posterior success to bounded k₁ target space.
+        tuned_k1 = max(0.20, min(0.45, 0.45 - (0.20 * posterior_success)))
+        self.k1_history.append(tuned_k1)
+        return tuned_k1
+
+    def _extract_success_signal(self, payload: dict[str, Any]) -> bool | None:
+        """Extract a binary success signal from a PDA JSONL row."""
+        green = payload.get("ci_checks_green")
+        red = payload.get("ci_checks_red")
+        if isinstance(green, (int, float)) and isinstance(red, (int, float)):
+            return green > red
+
+        status = str(payload.get("status", "")).strip().lower()
+        if status in {"complete", "completed", "resolved", "implemented", "success", "ok"}:
+            return True
+        if status in {"failed", "failure", "error", "aborted", "blocked"}:
+            return False
+        return None
 
     def get_accuracy(self) -> float:
         """Get current accuracy from feedback"""
