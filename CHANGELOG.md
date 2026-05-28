@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4640)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4640 (SHA `92ed265b`) at 2026-05-28T13:34Z [auto-generated]
+
 ### Fixed (SN — PR #4639 scorecard follow-up)
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog in the latest commit to satisfy REQ-4/REQ-5 freshness gates and clear the remaining auto-fix merge-readiness blocker.
 - Replaced an always-true assertion in `tests/scripts/test_ci_top5.py` with a real output assertion so Pattern 6 (`Test Assertions`) reports zero auto-fixable issues.
