@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -23,9 +20,7 @@ from agents.physics_orchestrator import (
     ImportMigrationOrchestrator,
     PhysicsInspiredOrchestrator,
     SwarmIntelligence,
-    SwarmParticle,
 )
-
 
 # ---------------------------------------------------------------------------
 # ForceVector
@@ -478,6 +473,7 @@ class TestImportMigrationOrchestrator:
             line_number=1,
         )
         results = orch.execute_migrations([m], dry_run=True)
+        assert "migrations_attempted" in results
         # Dry run → file should NOT be modified
         assert py_file.read_text(encoding="utf-8") == content
 

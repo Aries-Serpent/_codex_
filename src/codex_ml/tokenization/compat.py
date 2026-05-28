@@ -12,6 +12,7 @@ _ALIASES: dict[str, str] = {
     # "decode": "codex_ml.tokenization.api:decode",
 }
 
+
 def _get_api():
     return importlib.import_module("codex_ml.tokenization.api")
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import patch, mock_open, MagicMock
 
 import pytest
 
@@ -18,6 +17,8 @@ try:
     if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
         _svc_pkg.__path__.append(_ROOT_SERVICES)
 except ImportError:
+    # Best-effort test bootstrap: if `services` cannot be imported here,
+    # later test imports will surface the real failure.
     pass
 
 # ---------------------------------------------------------------------------

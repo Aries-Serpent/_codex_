@@ -237,7 +237,7 @@ _RULES: list[dict[str, Any]] = [
             "Profile which step is slow: add timing annotations or split into stages.",
             "If consistently timing out, consider caching expensive setup steps.",
         ],
-        "triage_note": "Job exceeded maximum execution time. May be flaky or need timeout increase.",
+        "triage_note": "Job exceeded maximum execution time. May be flaky or need timeout increase.",  # noqa: E501
     },
     # ── Rust / Cargo build failure ────────────────────────────────────────────
     {

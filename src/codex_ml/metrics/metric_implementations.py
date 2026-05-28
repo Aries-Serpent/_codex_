@@ -240,7 +240,6 @@ class RecallScore(MetricBase):
         return {self.name: score}
 
 
-
 class TokenAccuracy(MetricBase):
     """Token-level accuracy across arbitrary sequence lengths."""
 

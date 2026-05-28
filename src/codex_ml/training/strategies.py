@@ -35,9 +35,7 @@ class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
         pass
 
-    def on_epoch_end(
-        self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None:
+    def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
         pass
 
     def on_step(
@@ -55,9 +53,7 @@ class NoOpCallback:
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
         pass
 
-    def on_epoch_end(
-        self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
-    ) -> None:
+    def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
         pass
 
     def on_step(

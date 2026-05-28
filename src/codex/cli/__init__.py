@@ -45,9 +45,11 @@ def _load_click_cli() -> Any:
     return getattr(module, "cli", None)
 
 
+_cli_load_error: Exception | None = None
 try:
     cli = _load_click_cli()
-except Exception:  # pragma: no cover - degrade gracefully when CLI fails to load
+except Exception as exc:  # pragma: no cover - degrade gracefully when CLI fails to load
+    _cli_load_error = exc
     cli = None
 
 # Also expose CLI groups and helpers for testing
@@ -119,7 +121,8 @@ if cli is None:
         f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
         "IMPACT: All CLI commands (e.g., 'codex run', 'codex analyze') will be unavailable. "
         "RESOLUTION: Ensure src/codex/cli.py exists and exports a Click 'cli' group. "
-        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'",
+        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'. "
+        f"Underlying error: {_cli_load_error!r}",
         ImportWarning,
         stacklevel=2,
     )

@@ -13,7 +13,6 @@ from __future__ import annotations
 import importlib
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -185,7 +184,7 @@ class TestBatchScanIntegration:
     @pytest.fixture
     def mod(self):
         import importlib.util
-        import sys as _sys
+        _sys = sys
         spec = importlib.util.spec_from_file_location(
             "batch_scan_integration",
             CI_DIR / "batch_scan_integration.py",
@@ -221,7 +220,7 @@ class TestBatchScanIntegration:
         runner = mod.BatchScanRunner(workers=1, batch_size=5)
         try:
             runner.preview(group="quick")
-        except Exception:
+        except Exception as _err:
             pass  # preview may fail if preflight script missing — that's fine
 
     def test_no_op_span_context_manager(self, mod):
@@ -262,7 +261,7 @@ class TestCiPatternPipeline:
         report = {"status": "ok", "fixed": 0, "checked": 0, "patterns": {}}
         mod._print_report(report, check_only=False)
         captured = capsys.readouterr()
-        assert len(captured.out) >= 0  # Just no error
+        assert "CI PATTERN PIPELINE — SUMMARY" in captured.out
 
     def test_write_artefact_nested_dir(self, mod, tmp_path):
         """_write_artefact creates parent dirs automatically."""

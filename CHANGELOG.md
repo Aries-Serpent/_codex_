@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4639 scorecard follow-up)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog in the latest commit to satisfy REQ-4/REQ-5 freshness gates and clear the remaining auto-fix merge-readiness blocker.
+- Replaced an always-true assertion in `tests/scripts/test_ci_top5.py` with a real output assertion so Pattern 6 (`Test Assertions`) reports zero auto-fixable issues.
+
+### Fixed (SN — PR #4639)
+- Closed the remaining unresolved-review comment set by fixing outstanding static/lint findings in the flagged files (unused symbols, robust exception-path comments, and dry-run assertion cleanup) and hardening CI trend flap-rate formatting in `scripts/ci/proactive_ci_monitor.py`.
+
+### Fixed (auto-update — PR #4639)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4639 (SHA `c8169e87`) at 2026-05-28T04:57Z [auto-generated]
+
 ### Observed (Coverage Confirm + Blocker Triage — 2026-05-28T03:56Z)
 - **Coverage baseline confirmed at 17.57% overall** — no regression vs prior baseline. Verified by `unified-coverage-agent` delegated run using `coverage.json`/`coverage-report.txt` repo artifacts.
 - **2 collection blockers identified**: `tests/monitoring/test_monitoring_mlflow_utils.py` + `tests/src/test_cli_phase10.py` — both yield collection errors; targeted fix queued for next session.

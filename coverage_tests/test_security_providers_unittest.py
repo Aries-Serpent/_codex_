@@ -6,10 +6,14 @@ import unittest
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from security import provider_factory
 from security.provider_factory import ProviderFactory, create_provider_from_env
 from security.providers import aws_provider
-from security.providers.base import ProviderConfig, ProviderConfigError, ProviderType, ValidationError
+from security.providers.base import (
+    ProviderConfig,
+    ProviderConfigError,
+    ProviderType,
+    ValidationError,
+)
 
 
 class ProviderFactoryCoverageTests(unittest.TestCase):

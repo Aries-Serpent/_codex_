@@ -42,7 +42,8 @@ from codex_ml.utils.optional_dependencies import (  # noqa: E402
 # without requiring mlflow to be installed.
 try:
     import mlflow as _mlf  # noqa: E402
-except ImportError:
+except Exception as exc:
+    logger.debug("Failed to import mlflow at module load: %s", exc)
     _mlf = None  # type: ignore[assignment]
 
 # Prefer a project-local artifacts directory by default to avoid polluting
@@ -54,6 +55,7 @@ _DEFAULT_LITERAL_URI = "file:./artifacts/mlruns"
 # but keep the historical literal default for compatibility checks.
 _ = mlflow_guard.bootstrap_offline_tracking(requested_uri=_CODEX_URI or _DEFAULT_LITERAL_URI)
 MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
+
 
 def _resolve_tracking_uri_default() -> Optional[str]:
     codex_env = os.getenv("CODEX_MLFLOW_URI")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import tempfile
 import time
 import unittest
 from pathlib import Path
@@ -149,7 +150,9 @@ class MSPRateLimitCoverageTests(unittest.TestCase):
 
 class MSPTenantContextCoverageTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.data_dir = Path("reports/coverage_phase/runtime")
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.data_dir = Path(self._tmpdir.name) / "runtime"
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.data_dir / "tenant_registry.db"
         if self.db_path.exists():

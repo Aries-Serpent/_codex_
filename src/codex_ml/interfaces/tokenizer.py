@@ -697,6 +697,7 @@ class HFTokenizer(TokenizerAdapter):
 
 from .tokenizer_hf import HFTokenizerAdapter  # noqa: E402,I001  (re-export)
 
+
 @functools.lru_cache(maxsize=1)
 def _load_tokenizer_entry_points_once() -> None:
     if os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":

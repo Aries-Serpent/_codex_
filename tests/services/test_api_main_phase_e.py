@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import importlib
-import os
 import sys
 import types
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -23,11 +22,11 @@ try:
     if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
         _svc_pkg.__path__.append(_ROOT_SERVICES)
 except ImportError:
+    # Some focused test runs may not have the namespace package importable yet.
     pass
 
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
-
 
 # ---------------------------------------------------------------------------
 # Helpers
