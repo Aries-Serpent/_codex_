@@ -32,7 +32,9 @@ def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyP
     assert registry.deactivate_tenant("tenant-a") is True
 
     registry.delete_tenant("tenant-a")
-    assert registry.get_tenant("tenant-a")["active"] is False  # type: ignore[index]
+    deleted = registry.get_tenant("tenant-a")
+    assert deleted is not None
+    assert deleted.get("active", False) is False
 
     conn = sqlite3.connect(db_path)
     row = conn.execute("SELECT name FROM tenants WHERE tenant_id = ?", ("tenant-a",)).fetchone()

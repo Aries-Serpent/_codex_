@@ -92,9 +92,7 @@ if cli is not None:
         _missing_command = getattr(_cli_module, "_missing_command", None)
 
 __all__ = [
-    "_emit_group_help",
     "_fix_pool",
-    "_missing_command",
     "ALLOWED_TASKS",
     "app",
     "auth_group",

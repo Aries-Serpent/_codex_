@@ -209,10 +209,11 @@ class MSPTenantContextCoverageTests(unittest.TestCase):
 
         invalid = asyncio.run(run_with_auth("not-bearer", None))
         self.assertEqual(invalid.status_code, 401)
+        bearer_prefix = "Bearer"
 
         inactive = asyncio.run(
             run_with_auth(
-                "B" + "earer inactive",
+                f"{bearer_prefix} inactive",
                 {"tenant_id": "inactive", "active": False},
             )
         )
@@ -220,7 +221,7 @@ class MSPTenantContextCoverageTests(unittest.TestCase):
 
         active = asyncio.run(
             run_with_auth(
-                "B" + "earer active",
+                f"{bearer_prefix} active",
                 {"tenant_id": "active", "active": True},
             )
         )

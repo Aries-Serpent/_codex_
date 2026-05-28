@@ -483,7 +483,7 @@ def test_verify_session_integrity_ip_mismatch() -> None:
         "ip": "127.0.0.1",
         "user_agent": "TestBrowser/1.0",
     }
-    with pytest.raises(core.SecurityError, match="IP"):
+    with pytest.raises(core.SecurityError, match="Session IP mismatch"):
         core.verify_session_integrity("sess123", metadata, sessions)
 
 

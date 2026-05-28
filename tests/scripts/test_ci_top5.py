@@ -218,10 +218,8 @@ class TestBatchScanIntegration:
     def test_batch_scan_runner_preview_no_error(self, mod):
         """preview() should return without raising even when preflight is absent."""
         runner = mod.BatchScanRunner(workers=1, batch_size=5)
-        try:
-            runner.preview(group="quick")
-        except Exception as _err:
-            pass  # preview may fail if preflight script missing — that's fine
+        output = runner.preview(group="quick")
+        assert isinstance(output, str)
 
     def test_no_op_span_context_manager(self, mod):
         try:
@@ -287,7 +285,7 @@ class TestCheckPrComments:
         return m
 
     def test_module_loads(self, mod):
-        assert mod is not None
+        assert hasattr(mod, "main")
 
     def test_main_missing_args_exit_nonzero(self, mod):
         """main() with empty argv should exit with a non-zero code."""

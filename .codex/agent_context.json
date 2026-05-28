@@ -21,6 +21,8 @@
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
+  "COGNITIVE_BRAIN_PHASE_10_STATUS": "in_progress",
+  "COGNITIVE_BRAIN_PHASE_10_AGENTS": "unified-coverage-agent,fragile-test-guardian,memory-sync-agent",
   "COGNITIVE_BRAIN_SESSION_NUMBER": "1292",
   "AGENT_TOOLSDIRECTORY": "/opt/hostedtoolcache",
   "_meta": {

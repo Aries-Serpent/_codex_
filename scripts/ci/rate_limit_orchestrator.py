@@ -297,6 +297,26 @@ def deduplicate_workflow(
     return cancelled
 
 
+def cancel_superseded_runs(
+    workflow_file: str,
+    branch: str,
+    repo: str,
+    tokens: list[str],
+    *,
+    keep_latest: bool = True,
+    dry_run: bool = False,
+) -> int:
+    """Cancel superseded in-progress runs while keeping latest by default."""
+    return deduplicate_workflow(
+        workflow_file,
+        branch,
+        repo,
+        tokens,
+        keep_latest=keep_latest,
+        dry_run=dry_run,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Pattern D — Concurrent cap enforcement
 # ---------------------------------------------------------------------------
@@ -462,8 +482,14 @@ def main(argv: list[str] | None = None) -> int:
         if not args.branch:
             logger.error("--branch is required for --deduplicate")
             return 1
-        n = deduplicate_workflow(args.workflow, args.branch, args.repo, tokens,
-                                 keep_latest=args.keep_latest, dry_run=args.dry_run)
+        n = cancel_superseded_runs(
+            args.workflow,
+            args.branch,
+            args.repo,
+            tokens,
+            keep_latest=args.keep_latest,
+            dry_run=args.dry_run,
+        )
         result = {"cancelled": n, "workflow": args.workflow, "branch": args.branch, "dry_run": args.dry_run}
         print(json.dumps(result, indent=2))
 

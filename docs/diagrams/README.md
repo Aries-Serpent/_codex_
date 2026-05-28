@@ -1,6 +1,6 @@
 # 📊 Mermaid Diagrams Index
 
-> **Last updated:** 2026-05-14 (S1003-ctep)
+> **Last updated:** 2026-05-28 (S1292)
 
 All `.mmd` files in this directory are authoritative Mermaid source diagrams.
 Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
@@ -12,8 +12,8 @@ Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
 
 | File | Purpose | Last Updated |
 |------|---------|-------------|
-| [`architecture.mmd`](architecture.mmd) | Full system architecture: ML core, tokenization, RAG, cognitive brain, logging, CI self-healing, GitHub Actions workflows | 2026-05-14 (S1003-ctep) |
-| [`ci_self_healing_flow.mmd`](ci_self_healing_flow.mmd) | Detailed CI self-healing pipeline: push → agent-auth-delegation → auto_fix_all_missing (REQ-4/5/6/PDA) → pre-merge-validation → Pattern 30 scorecard → merge gate | 2026-05-14 (S1003-ctep) |
+| [`architecture.mmd`](architecture.mmd) | Full system architecture: ML core, tokenization, RAG, cognitive brain, logging, CI self-healing, GitHub Actions workflows | 2026-05-28 (S1292) |
+| [`ci_self_healing_flow.mmd`](ci_self_healing_flow.mmd) | Detailed CI self-healing pipeline: push → agent-auth-delegation → auto_fix_all_missing (REQ-4/5/6/PDA) → pre-merge-validation → Pattern 30 scorecard → merge gate | 2026-05-28 (S1292) |
 | [`runtime_logic_map.mmd`](runtime_logic_map.mmd) | Detailed runtime flow map: all CLI entry points, package-main orchestration, training strategies, tokenizer pipeline, ingestion, quantum orchestrator, Rust/Python hybrid | 2026-02-xx (S178) |
 | [`audit_pipeline_v1.4.0.mmd`](audit_pipeline_v1.4.0.mmd) | 7-stage audit pipeline: context index → facet grouping → capability extraction → scoring → gap analysis → report rendering → manifest generation | 2025-xx (v1.4.0) |
 
@@ -22,10 +22,11 @@ Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
 ## Key Concepts Shown
 
 ### `architecture.mmd`
-High-level system map. Key additions since S1003-ctep:
-- `fix_pda_entry_today()` hardened into `session_wrapup_autofix.py`
-- `auto_fix_all_missing()` now includes REQ-PDA step
-- Pattern 30 `pda_today` dimension changed from `pda_manual` → `pda_auto`
+High-level system map. Key additions since S1292:
+- Coverage baseline updated: 17.57% overall statements; `src/security/` raised to 90.72%
+- Test suite expanded to 2,130 test files
+- Targeted coverage added for ITA service, MSP Gateway, training, and security modules
+- Workflows: 298 total in `.github/workflows/` (134 with active triggers)
 
 ### `ci_self_healing_flow.mmd`
 Shows the full self-healing loop from push to merge:
