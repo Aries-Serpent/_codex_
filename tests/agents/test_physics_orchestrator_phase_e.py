@@ -473,6 +473,7 @@ class TestImportMigrationOrchestrator:
             line_number=1,
         )
         results = orch.execute_migrations([m], dry_run=True)
+        assert "migrations_attempted" in results
         # Dry run → file should NOT be modified
         assert py_file.read_text(encoding="utf-8") == content
 

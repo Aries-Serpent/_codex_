@@ -27,6 +27,7 @@ def _import_trainer():
         except (ImportError, ModuleNotFoundError):
             continue
     pytest.skip("training.trainer not importable")
+    return None
 
 
 # ---------------------------------------------------------------------------

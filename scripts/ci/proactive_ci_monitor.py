@@ -315,7 +315,8 @@ def _post_rescue_comment(
         trend_label = trend.get("trend_label", "unknown")
         run_count = trend.get("run_count", 0)
         dominant = trend.get("dominant_category", "unknown")
-        flap_rate = trend.get("flap_rate", 0.0)
+        flap_rate_raw = trend.get("flap_rate", 0.0)
+        flap_rate = flap_rate_raw if isinstance(flap_rate_raw, (int, float)) else 0.0
         recurring = trend.get("recurring_pattern_ids", [])
         recurring_str = ", ".join(f"`{p}`" for p in recurring) if recurring else "_none_"
         trend_section = (

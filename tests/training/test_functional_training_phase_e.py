@@ -22,6 +22,7 @@ def _import_ft():
         except (ImportError, ModuleNotFoundError):
             continue
     pytest.skip("training.functional_training not importable")
+    return None
 
 
 # ---------------------------------------------------------------------------

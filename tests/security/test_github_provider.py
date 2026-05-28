@@ -31,7 +31,6 @@ from security.providers.github_provider import (
 
 _FAKE_GHP = "ghp_" + "A" * 36  # classic PAT format
 _FAKE_GHS = "ghs_" + "B" * 36  # installation token format
-_FAKE_CLASSIC = "a" * 40        # 40-hex-char classic
 
 
 def _make_provider(token: str = _FAKE_GHP, **extra) -> GitHubTokenProvider:

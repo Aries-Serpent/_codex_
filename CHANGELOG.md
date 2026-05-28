@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4639)
+- Closed the remaining unresolved-review comment set by fixing outstanding static/lint findings in the flagged files (unused symbols, robust exception-path comments, and dry-run assertion cleanup) and hardening CI trend flap-rate formatting in `scripts/ci/proactive_ci_monitor.py`.
+
 ### Fixed (auto-update — PR #4639)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4639 (SHA `c8169e87`) at 2026-05-28T04:57Z [auto-generated]
 

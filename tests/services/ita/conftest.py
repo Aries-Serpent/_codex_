@@ -17,4 +17,5 @@ try:
     if hasattr(_services, "__path__") and _ROOT_SERVICES not in _services.__path__:
         _services.__path__.append(_ROOT_SERVICES)
 except ImportError:
+    # Some focused test runs may not have the namespace package importable yet.
     pass
