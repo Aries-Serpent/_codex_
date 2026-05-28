@@ -1,10 +1,10 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
 
-> **Version:** 1.3.0 (S1259 · 2026-05-23)  
-> **Updated:** 2026-05-23  
+> **Version:** 1.4.0 (S1292 · 2026-05-28)  
+> **Updated:** 2026-05-28  
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
-> **Previous:** v1.2.0 S873 + PR #4356 · 2026-05-08
+> **Previous:** v1.3.0 S1259 · 2026-05-23
 
 ---
 
@@ -26,7 +26,8 @@
 14. [Rate-Limit Orchestration Flow](#14-rate-limit-orchestration-flow)
 15. [Session Handoff State Machine](#15-session-handoff-state-machine)
 16. [Phase 9 — Cognitive Brain Autonomous Ops](#16-phase-9--cognitive-brain-autonomous-ops)
-17. [Phase 10 — Post-Coverage Maintenance ⭐ NEW](#17-phase-10--post-coverage-maintenance)
+17. [Phase 10 — Post-Coverage Maintenance](#17-phase-10--post-coverage-maintenance)
+18. [Phase 10 Progress — Coverage Expansion ⭐ NEW](#18-phase-10-progress--coverage-expansion)
 
 ---
 
@@ -36,7 +37,7 @@
 graph TD
     subgraph "Aries-Serpent/_codex_ — Repository Structure"
         SRC[src/codex/\nPython package]
-        TESTS[tests/\n21,500+ tests]
+        TESTS[tests/\n2,130 test files]
         DOCS[docs/\nMarkdown docs]
         GITHUB[.github/\nWorkflows + Agents]
         CODEX[.codex/\nCognitive Brain\nSession State]
@@ -658,13 +659,13 @@ graph LR
         P9M[Phase 9.4 — edge-case coverage 71 new tests S1259]
     end
 
-    subgraph "Phase 10 Next"
-        P10A[Coverage maintenance gate — hold 34%+ regression-free]
-        P10B[Fill src/ coverage gaps toward 50% milestone]
-        P10C[Update all living docs to v1.3.0 baseline]
+    subgraph "Phase 10 In Progress"
+        P10A[Coverage maintenance gate — 17.57% overall baseline S1292]
+        P10B[Fill src/ coverage gaps — security 90.72% ✅ S1292]
+        P10C[Update all living docs to v1.4.0 baseline S1292]
         P10D[Adaptive Learning Phase 8.3 80 to 100 percent]
-        P10E[Archive merge-candidate CI docs]
-        P10F[Webhook event bus triggers post-merge]
+        P10E[ITA service coverage tests added ✅ S1292]
+        P10F[MSP Gateway coverage tests added ✅ S1292]
     end
 
     P9A & P9B & P9C & P9D & P9E --> P9J
@@ -685,26 +686,26 @@ graph LR
     style P9L fill:#e8f5e9,color:#000
     style P9M fill:#e8f5e9,color:#000
     style P10A fill:#fff3e0,color:#000
-    style P10B fill:#fff3e0,color:#000
-    style P10C fill:#fff3e0,color:#000
+    style P10B fill:#e8f5e9,color:#000
+    style P10C fill:#e8f5e9,color:#000
     style P10D fill:#e1f5fe,color:#000
-    style P10E fill:#e1f5fe,color:#000
-    style P10F fill:#e1f5fe,color:#000
+    style P10E fill:#e8f5e9,color:#000
+    style P10F fill:#e8f5e9,color:#000
 ```
 
 ---
 
 ## 17. Phase 10 — Post-Coverage Maintenance
 
-> **Added S1259 (2026-05-23)**
+> **Added S1259 (2026-05-23) · Updated S1292 (2026-05-28)**
 
 ```mermaid
 graph TD
-    subgraph "Coverage Baseline (Phase 9.4 Exit)"
-        CB1[agents/ statements: 34.56%]
-        CB2[agents/ branches: 15.37%]
-        CB3[Test files: 2,091]
-        CB4[Phase 9 tests added: 196+]
+    subgraph "Coverage Baseline (S1292 — 2026-05-28)"
+        CB1[Overall statements: 17.57%]
+        CB2[src/security/: 90.72% ✅]
+        CB3[Test files: 2,130]
+        CB4[Phase 9+10 tests added: 196+ ITA MSP training security]
     end
 
     subgraph "Phase 10A — Regression Gate"
@@ -714,21 +715,23 @@ graph TD
         RG4[Coverage delta reported on every PR]
     end
 
-    subgraph "Phase 10B — Gap Fill: src/"
-        GF1[src/codex/cli.py — CLI command coverage]
-        GF2[src/codex/cognitive_brain/ — brain ops]
-        GF3[src/codex/training/ — trainer loops]
-        GF4[src/codex/rag/ — retrieval paths]
-        GF5[src/codex/security/ — auth + secrets]
-        GF6[Target: 50% overall statements]
+    subgraph "Phase 10B — Gap Fill: src/ — In Progress"
+        GF1[src/codex/cli.py — CLI command coverage ⏳]
+        GF2[src/codex/cognitive_brain/ — brain ops ⏳]
+        GF3[src/training/ — trainer loops ⏳]
+        GF4[src/codex/rag/ — retrieval paths ⏳]
+        GF5[src/security/ — auth + secrets ✅ 90.72%]
+        GF6[services/ita/ — ITA service ✅]
+        GF7[services/msp_gateway/ — MSP Gateway ✅]
+        GF8[Target: 25% overall statements milestone]
     end
 
     subgraph "Phase 10C — Documentation Alignment"
-        DA1[CODEBASE_MERMAID_MAPS v1.3.0 ✅]
-        DA2[ARCHITECTURE.md metrics refresh ✅]
-        DA3[docs/testing/coverage_report.md update]
-        DA4[AGENT_NAVIGATION.md — Phase 10 agents]
-        DA5[.codex/cognitive_brain/ status update]
+        DA1[CODEBASE_MERMAID_MAPS v1.4.0 ✅ S1292]
+        DA2[ARCHITECTURE.md metrics refresh ✅ S1292]
+        DA3[docs/diagrams/*.mmd updated ✅ S1292]
+        DA4[AGENT_NAVIGATION.md — Phase 10 agents ⏳]
+        DA5[.codex/cognitive_brain/ status update ⏳]
     end
 
     subgraph "Phase 10D — Adaptive Learning"
@@ -739,17 +742,18 @@ graph TD
     end
 
     CB1 & CB2 & CB3 & CB4 --> RG1 & RG2 & RG3 & RG4
-    RG1 & RG2 & RG3 & RG4 --> GF1 & GF2 & GF3 & GF4 & GF5
-    GF1 & GF2 & GF3 & GF4 & GF5 --> GF6
-    GF6 --> DA1 & DA2 & DA3 & DA4 & DA5
-    DA1 & DA2 --> AL1 & AL2 & AL3 & AL4
+    RG1 & RG2 & RG3 & RG4 --> GF1 & GF2 & GF3 & GF4 & GF5 & GF6 & GF7
+    GF1 & GF2 & GF3 & GF4 & GF5 & GF6 & GF7 --> GF8
+    GF8 --> DA1 & DA2 & DA3 & DA4 & DA5
+    DA1 & DA2 & DA3 --> AL1 & AL2 & AL3 & AL4
 
-    style CB1 fill:#e8f5e9,color:#000
+    style CB1 fill:#fff3e0,color:#000
     style CB2 fill:#e8f5e9,color:#000
     style CB3 fill:#e8f5e9,color:#000
     style CB4 fill:#e8f5e9,color:#000
     style DA1 fill:#e8f5e9,color:#000
     style DA2 fill:#e8f5e9,color:#000
+    style DA3 fill:#e8f5e9,color:#000
     style RG1 fill:#fff3e0,color:#000
     style RG2 fill:#fff3e0,color:#000
     style RG3 fill:#fff3e0,color:#000
@@ -758,9 +762,10 @@ graph TD
     style GF2 fill:#e3f2fd,color:#000
     style GF3 fill:#e3f2fd,color:#000
     style GF4 fill:#e3f2fd,color:#000
-    style GF5 fill:#e3f2fd,color:#000
-    style GF6 fill:#e3f2fd,color:#000
-    style DA3 fill:#e1f5fe,color:#000
+    style GF5 fill:#e8f5e9,color:#000
+    style GF6 fill:#e8f5e9,color:#000
+    style GF7 fill:#e8f5e9,color:#000
+    style GF8 fill:#e3f2fd,color:#000
     style DA4 fill:#e1f5fe,color:#000
     style DA5 fill:#e1f5fe,color:#000
     style AL1 fill:#fce4ec,color:#000
@@ -771,6 +776,143 @@ graph TD
 
 ---
 
+## 18. Phase 10 Progress — Coverage Expansion
+
+> **Added S1292 (2026-05-28)**
+
+```mermaid
+graph LR
+    subgraph "Completed in S1292"
+        S1A[Security module: src/security/\n90.72% coverage ✅]
+        S1B[ITA service tests\ntests/services/ita/ ✅]
+        S1C[MSP Gateway tests\ntests/services/msp_gateway/ ✅]
+        S1D[Training module tests\ntests/training/ targeted ✅]
+        S1E[Docs + mermaid maps\nv1.4.0 refresh ✅]
+    end
+
+    subgraph "Remaining Phase 10 Work"
+        R1[src/codex/cognitive_brain/\nbrain ops coverage ⏳]
+        R2[src/codex/cli.py\nCLI smoke + branch coverage ⏳]
+        R3[src/codex/rag/\nretrieval + indexer paths ⏳]
+        R4[src/training/trainer.py\n12.20% → 50% target ⏳]
+        R5[Overall: 17.57% → 25% milestone ⏳]
+        R6[Adaptive Learning Phase 8.3\nQEC k₁ tuning ⏳]
+    end
+
+    S1A & S1B & S1C & S1D & S1E --> R1 & R2 & R3 & R4
+    R1 & R2 & R3 & R4 --> R5 --> R6
+
+    style S1A fill:#e8f5e9,color:#000
+    style S1B fill:#e8f5e9,color:#000
+    style S1C fill:#e8f5e9,color:#000
+    style S1D fill:#e8f5e9,color:#000
+    style S1E fill:#e8f5e9,color:#000
+    style R1 fill:#e3f2fd,color:#000
+    style R2 fill:#e3f2fd,color:#000
+    style R3 fill:#e3f2fd,color:#000
+    style R4 fill:#e3f2fd,color:#000
+    style R5 fill:#fff3e0,color:#000
+    style R6 fill:#fce4ec,color:#000
+```
+
+---
+
+## Continuation Prompts
+
+> One tailored prompt per component requiring ongoing work. Use these to resume work in a new session.
+
+### 🔵 Coverage: `src/codex/cognitive_brain/`
+```
+You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
+Context: Overall coverage is 17.57% (statements). Target: 25% milestone.
+Task: Add pytest tests for src/codex/cognitive_brain/ (OODAOrchestrator, memory ops, pattern library).
+Constraints:
+- Use tests/cognitive/ as the target directory
+- Mock SQLiteMemory and filesystem ops where needed
+- Do NOT alter existing tests
+- Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive_brain --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B node for cognitive_brain when done
+```
+
+### 🔵 Coverage: `src/codex/cli.py`
+```
+You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
+Context: CLI entry points in src/codex/cli.py have minimal test coverage.
+Task: Add CLI smoke and branch tests covering all Click commands and error paths.
+Constraints:
+- Use tests/cli/ as the target directory
+- Use Click's CliRunner for invocation; set CODEX_CLI_LIGHTWEIGHT=1 env var
+- Do NOT alter existing tests
+- Run: python -m pytest tests/cli/ --cov=src/codex/cli --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF1 node when done
+```
+
+### 🔵 Coverage: `src/codex/rag/`
+```
+You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
+Context: RAG retrieval paths (src/codex/rag/) are under-covered.
+Task: Add unit tests for EmbeddingProvider, Indexer (FAISS-backed), Retriever, and RAG cache.
+Constraints:
+- Use tests/rag/ as the target directory
+- Mock FAISS calls and filesystem I/O
+- Do NOT alter existing tests
+- Run: python -m pytest tests/rag/ --cov=src/codex/rag --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF4 node when done
+```
+
+### 🔵 Coverage: `src/training/trainer.py` (12% → 50%)
+```
+You are continuing Phase 10B coverage work on Aries-Serpent/_codex_.
+Context: src/training/trainer.py is at 12.20% coverage (381 of 457 statements missing).
+Task: Add targeted tests for training loop entry points, checkpoint hooks, and error paths.
+Constraints:
+- Use tests/training/ as the target directory
+- Use lightweight mocks for torch/GPU components
+- Do NOT alter existing tests
+- Run: python -m pytest tests/training/ --cov=src/training/trainer --cov-report=term-missing -q
+- Update docs/CODEBASE_MERMAID_MAPS.md Phase 10B GF3 node when done
+```
+
+### 🟠 Adaptive Learning: QEC k₁ Tuning (Phase 8.3)
+```
+You are continuing Phase 10D Adaptive Learning work on Aries-Serpent/_codex_.
+Context: Cognitive Brain QEC decision engine has k₁=0.332 (current). Target: complete Phase 8.3 (80→100%).
+Task: Tune QEC k₁ parameter using pattern harvest data from Phase 9 sessions (S867–S1292).
+Steps:
+1. Read scripts/cognitive/cognitive_brain_core.py — locate QEC and k₁ parameter
+2. Read .codex/aftermath/pda_iterations.jsonl — extract decision accuracy history
+3. Apply Bayesian update to k₁ using recent session outcomes
+4. Run the QEC test suite: python -m pytest tests/cognitive/ -k qec -v
+5. Update docs/CODEBASE_MERMAID_MAPS.md Phase 10D AL1 node with new k₁ value
+```
+
+### 🟠 Documentation: AGENT_NAVIGATION.md + .codex status
+```
+You are continuing Phase 10C documentation alignment on Aries-Serpent/_codex_.
+Context: AGENT_NAVIGATION.md and .codex/cognitive_brain/ status files are stale (pre-S1292).
+Task:
+1. Update AGENT_NAVIGATION.md — add Phase 10 agents (unified-coverage-agent, fragile-test-guardian, memory-sync-agent)
+2. Update .codex/agent_context.json Phase 10 status section
+3. Verify all 145 agent entries in AGENTS.md are current
+4. Update docs/CODEBASE_MERMAID_MAPS.md Phase 10C DA4 and DA5 nodes when done
+Constraints: Do NOT change agent definitions, only update status/metadata fields.
+```
+
+### 🟡 CI/Workflow: Superseded-run cancellation
+```
+You are continuing workflow optimization work on Aries-Serpent/_codex_.
+Context: Per memory — we must skip rescans for unchanged files and cancel superseded workflow runs.
+Task: Verify and harden cancel_superseded_runs() in scripts/ci/rate_limit_orchestrator.py.
+Steps:
+1. Read scripts/ci/rate_limit_orchestrator.py — locate cancel_superseded_runs()
+2. Ensure --keep-latest flag is the default for push-triggered runs
+3. Add a pre-merge check that cancels in-progress duplicate workflow runs for the same branch
+4. Run: python -m pytest tests/ -k "rate_limit or superseded" -v
+5. Update docs/CODEBASE_MERMAID_MAPS.md Section 14 with any changes
+```
+
+---
+
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S1259 · 2026-05-23 — Section 16 (Phase 9) marked complete with 9.1–9.4 coverage work; Section 17 (Phase 10 Post-Coverage Maintenance) added; test count, ToC, and version header refreshed.*
+*Updated: S1292 · 2026-05-28 — v1.4.0: Phase 9→10 transition marked; Section 16 Phase 10 items updated with completed work (security 90.72%, ITA, MSP, training); Section 17 coverage baseline refreshed to S1292 actuals; Section 18 (Phase 10 Progress) added; Continuation Prompts section added for all active components.*
