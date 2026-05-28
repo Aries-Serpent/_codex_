@@ -68,7 +68,7 @@ distro==1.9.0  # pkg:pypi/distro@1.9.0
 docker==7.1.0  # pkg:pypi/docker@7.1.0
 dpath==2.2.0  # pkg:pypi/dpath@2.2.0
 duckdb==1.5.2  # pkg:pypi/duckdb@1.5.2
-dulwich==1.2.1  # pkg:pypi/dulwich@1.2.1
+dulwich==1.2.5  # pkg:pypi/dulwich@1.2.5
 dvc==3.67.0  # pkg:pypi/dvc@3.67.0
 dvc-data==3.18.3  # pkg:pypi/dvc-data@3.18.3
 dvc-http==2.32.0  # pkg:pypi/dvc-http@2.32.0
