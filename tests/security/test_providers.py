@@ -1547,7 +1547,7 @@ class TestProviderFactory:
             provider_type=ProviderType.HASHICORP_VAULT,
             vault_url="https://vault.example.com",
         )
-        with pytest.raises(ProviderConfigError, match="token"):
+        with pytest.raises(ProviderConfigError, match=r"Required configuration 'token' not found for hashicorp_vault"):
             ProviderFactory.validate_config(config_missing_token)
 
         config_complete = ProviderConfig(
