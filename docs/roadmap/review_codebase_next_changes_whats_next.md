@@ -1,5 +1,90 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)
+
+| Item | Status | Result |
+|---|---|---|
+| Session budget | 🟡 ~8/60 min used | Reserve final 5 min for wrap-up |
+| `/tmp/nox_full_run.log` | ❌ Not present | Artifact not persisted from prior session (expected — /tmp is ephemeral) |
+| Coverage measurement via `unified-coverage-agent` | ✅ Delegated + completed | **17.57%** overall — parity with baseline |
+| Regression vs 17.57% baseline | ✅ No regression | Baseline held; no delegation to unified-coverage-agent remediation path |
+| Collection errors (2 modules) | ⚠️ Known blockers | `tests/monitoring/test_monitoring_mlflow_utils.py` + `tests/src/test_cli_phase10.py` |
+| HEAD on main (`d8d5d0ef`) | ✅ Healthy | Nightly health sweep committed; Auto-Approve ran; Admin scope gate success |
+| PR-branch `fb15b05892` workflow queue | ⚠️ action_required | SecurityScan, Rust, Dependabot, Secrets, AgentVars, CodeQL — all pending approval |
+| `copilot-setup-steps.yml` on PR-branch | ❌ Failure | Run `26553433879` — requires investigation |
+| Living docs update | 🔄 In progress | Updating whats_next, session_diagram, CHANGELOG, accountability report |
+| Artifact storage policy | ✅ Enforced | All tracked work to use repo paths; /tmp off-limits for persistent artifacts |
+
+### Coverage Snapshot (2026-05-28T03:56Z)
+| Domain | Coverage |
+|---|---|
+| **Overall** | **17.57%** |
+| src/security/ | 90.72% (Phase C — stable) |
+| services/api/main.py | 71.38% (Phase E — stable) |
+| services/msp_gateway/rate_limit.py | 49.52% (partial) |
+| src/training/ | ~11.97% (torch-blocked) |
+| services/ita/ | ~0% (all modules unstarted) |
+| agents/ | ~74.4% (Phase A baseline) |
+
+### Collection Blockers Still Open
+| File | Error Type | Priority |
+|---|---|---|
+| `tests/monitoring/test_monitoring_mlflow_utils.py` | Collection error | Medium |
+| `tests/src/test_cli_phase10.py` | Collection error | Medium |
+
+### Pending Approval Workflows (PR-branch `fb15b05892`)
+> Navigate to these URLs to approve — doing so allows current CI to source artifact logs:
+
+| Workflow | Run ID | URL |
+|---|---|---|
+| Security Scanning Suite | 26553434357 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434357 |
+| Rust-Python Hybrid Swarm CI/CD | 26553434379 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434379 |
+| Resilient Dependency Submission | 26553434381 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434381 |
+| 🔐 Secrets Baseline Enforcer | 26553434358 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434358 |
+| Agent Vars Bootstrap | 26553434383 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434383 |
+| CodeQL | 26553434424 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434424 |
+| copilot-setup-steps.yml (**FAILED**) | 26553433879 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553433879 |
+
+### Next Session Objectives
+- Investigate `copilot-setup-steps.yml` failure (run `26553433879`) — likely YAML/shell safety regression
+- Fix 2 collection blockers: `test_monitoring_mlflow_utils.py` + `test_cli_phase10.py`
+- services/ita/ coverage: 0% across all modules — delegate to `unified-coverage-agent`
+- services/msp_gateway/: rate_limit 49% → ≥70%; tenant_context 16% → ≥50%
+- src/training/: mock torch imports to test torch-free paths; target trainer.py ≥40%
+- mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%)
+- Approve all pending action_required workflows above then re-run this session's objectives
+
+### Continuation Prompt (Next Session)
+```text
+@copilot continue codebase coverage work on branch copilot/explore-codebase-implementation-plan.
+STATE: Session 2026-05-28T03:56Z — Coverage at 17.57% (no regression). Phase C/D/E complete.
+
+IMMEDIATE ACTIONS:
+1. Investigate copilot-setup-steps.yml failure: https://github.com/Aries-Serpent/_codex_/actions/runs/26553433879
+2. Fix collection errors in tests/monitoring/test_monitoring_mlflow_utils.py + tests/src/test_cli_phase10.py
+3. Approve pending workflows (see whats_next table) then re-source their artifacts
+
+COVERAGE NEXT PHASE (delegate to unified-coverage-agent + test-enhancement-agent):
+1. services/ita/: all modules at 0% (git_ops, hygiene, knowledge_base, main, security, tests_runner, models)
+2. services/msp_gateway/: rate_limit 49%→≥70%, tenant_context 16%→≥50%
+3. src/training/: mock torch; target trainer.py ≥40%
+4. mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%)
+5. Run nox -s tests --cov for cross-domain number after blockers fixed
+
+MEASUREMENT COMMANDS (verified working):
+  - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+  - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
+  - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
+
+UPDATE LIVING DOCS after each phase:
+  - docs/roadmap/review_codebase_next_changes_whats_next.md
+  - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+  - CHANGELOG.md
+  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+
+ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
+```
+
 ## Session Status (FINAL — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)
 
 | Item | Status | Result |

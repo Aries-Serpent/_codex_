@@ -47,10 +47,13 @@ flowchart TD
     AIT11 --> AIT12["Approval-monitor checkpoint\n✅ maintainer approved all workflows\n🔄 monitor latest HEAD a9e47ed queue (in-progress + queued; skip superseded cancelled runs)\n⏳ timebox now ~24/60 used; keep final 5-minute reserve"]
     AIT12 --> AIT13["Post-approval completion checkpoint\n✅ latest HEAD a1fb880 now shows 7 completed-success workflows\n✅ prior action_required queue cleared after approvals\n🔄 Running Copilot cloud agent remains in progress\n✅ no completed failed jobs requiring code remediation"]
     AIT13 --> AIT14["Current sync pass\n🔄 update whats_next + session_diagram\n🔄 update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT\n⏳ timebox now ~8/60 used; keep final 5-minute reserve + follow-up prompt"]
-    AIT14 --> Y
+    AIT14 --> AIT15
+    AIT15["S2026-05-28 — Coverage baseline confirm + blocker triage\n✅ /tmp/nox_full_run.log absent (ephemeral — expected)\n✅ unified-coverage-agent confirmed 17.57% overall — no regression\n⚠ 2 collection blockers: test_monitoring_mlflow_utils + test_cli_phase10\n⚠ PR-branch fb15b05892: 6 action_required + 1 failed workflow\n✅ main HEAD d8d5d0ef: healthy (nightly sweep + auto-approve + scope gate success)\n🔄 Living docs updated: whats_next + session_diagram + CHANGELOG + accountability\n✅ Artifact storage policy enforced: /tmp off-limits for tracked work"]
+    AIT15 --> Y
     AIT11 --> Y
     AIT9 --> Y
 
+    style AIT15 fill:#457b9d,color:#fff
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
     style C fill:#1b4332,color:#fff

@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (Coverage Wave — 2026-05-27T21:19Z)
+### Observed (Coverage Confirm + Blocker Triage — 2026-05-28T03:56Z)
+- **Coverage baseline confirmed at 17.57% overall** — no regression vs prior baseline. Verified by `unified-coverage-agent` delegated run using `coverage.json`/`coverage-report.txt` repo artifacts.
+- **2 collection blockers identified**: `tests/monitoring/test_monitoring_mlflow_utils.py` + `tests/src/test_cli_phase10.py` — both yield collection errors; targeted fix queued for next session.
+- **PR-branch `fb15b05892` workflow queue**: 6 workflows in `action_required` state (Security Scanning Suite, Rust CI, Resilient Dep Submission, Secrets Baseline, Agent Vars Bootstrap, CodeQL) + 1 failure (`copilot-setup-steps.yml` run 26553433879). Approval links added to whats_next living doc.
+- **main HEAD `d8d5d0ef`**: Nightly codebase health sweep committed; Auto-Approve ran successfully; Admin T-03 scope gate passed; Cleanup stale PR comments ran.
+- **Artifact storage policy enforced**: `/tmp` confirmed off-limits for tracked work — all artifacts must persist to repo paths or be sourced from GitHub Actions artifacts.
+- Session diagram updated with node `AIT15`; living docs synced: whats_next, session_diagram, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT.
+
+
 - **Phase 0 + Wave A + Phase B complete**: 4 collection blockers fixed; 3079 tests pass in tests/agents+scripts+services; coverage source expanded to include agents/, scripts/, services/ in noxfile + pyproject.toml. Baseline: agents=74.4%, src=7.9%, scripts=1.6%, services=17.4%, overall=6.66%.
 - **Torch Collection Blockers Fixed**: `conftest.py` now ignores `tests/space_traversal/`, `test_dataset_hashing.py`, `test_env_logging.py`, `test_metrics_writers.py`, `test_rag_end_to_end_pipeline.py` when torch is unavailable — eliminates AttributeError collection crashes.
 - **Phase C COMPLETE ✅**: src/security/ coverage raised from ~5% → **90.72%** (target ≥70%). Modules: audit_logger=95%, core=96%, decorators=92%, github_provider=98%, scope_validator=96%, token_rotation=91%, tls_config=88%, provider_factory=79%, secrets=89%, aws_provider=70%, encryption=86%, environment_provider=97%. New test files: `tests/security/test_decorators.py` (57 tests), `tests/security/test_github_provider.py` (68 tests).

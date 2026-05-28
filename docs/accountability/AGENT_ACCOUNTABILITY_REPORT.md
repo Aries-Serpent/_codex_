@@ -1,3 +1,28 @@
+## SESSION SUMMARY — 2026-05-28T03:56Z [Coverage-Baseline-Confirm]
+
+**Session:** Coverage-Baseline-Confirm | **Branch:** `main` / cross-branch validation
+
+### Completed
+- Confirmed `/tmp/nox_full_run.log` absent — correctly ephemeral; artifact storage policy enforced going forward.
+- Delegated coverage measurement to `unified-coverage-agent` — confirmed **17.57% overall**, matching baseline (no regression).
+- Identified 2 persistent collection blockers: `tests/monitoring/test_monitoring_mlflow_utils.py`, `tests/src/test_cli_phase10.py`.
+- Audited PR-branch `fb15b05892` CI queue: 6 `action_required` workflows + 1 `failure` (`copilot-setup-steps.yml`); all approval URLs logged in living doc for maintainer action.
+- Audited main HEAD `d8d5d0ef`: healthy — nightly sweep, auto-approve, admin scope gate all successful.
+- Stored artifact-storage-to-repo-paths memory to prevent ephemeral `/tmp` tracking recurrence.
+- Updated all 4 living docs: `whats_next.md`, `session_diagram.mmd`, `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`.
+
+### In Progress / Blocked
+- services/ita/ coverage: 0% — pending next session delegation to `unified-coverage-agent`
+- services/msp_gateway/: rate_limit 49% → ≥70% — pending
+- src/training/ torch-free paths: 11.97% — pending mock-torch test pass
+- Collection blockers (2 modules) — fix queued for next session
+- `copilot-setup-steps.yml` failure on PR-branch — requires investigation
+
+### Observations
+- Coverage measurement toolchain (nox not in PATH in session env) confirmed; delegate measurement to agents or workflows that have the full environment available.
+- All prior Phase C/D/E results remain stable — no regression introduced.
+- Continuation prompt added to whats_next.md for next session pickup.
+
 ## SESSION SUMMARY — 2026-05-27T21:19Z [Coverage-Wave-Phase-CDE]
 
 **Session:** Coverage-Wave-Phase-CDE | **Branch:** `copilot/explore-codebase-implementation-plan`
