@@ -15,14 +15,17 @@ if str(SRC_PATH) not in sys.path:
 
 def _import_ft():
     import importlib
+    module = None
     # Use src.training.functional_training to avoid the root-level training/ shadow package
     for mod_name in ("src.training.functional_training", "training.functional_training"):
         try:
-            return importlib.import_module(mod_name)
+            module = importlib.import_module(mod_name)
+            break
         except (ImportError, ModuleNotFoundError):
             continue
-    pytest.skip("training.functional_training not importable")
-    return None
+    if module is None:
+        pytest.skip("training.functional_training not importable")
+    return module
 
 
 # ---------------------------------------------------------------------------

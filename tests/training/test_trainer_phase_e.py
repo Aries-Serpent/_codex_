@@ -20,14 +20,17 @@ if str(SRC_PATH) not in sys.path:
 
 def _import_trainer():
     import importlib
+    module = None
     # Use src.training.trainer to avoid the root-level training/ shadow package
     for mod_name in ("src.training.trainer", "training.trainer"):
         try:
-            return importlib.import_module(mod_name)
+            module = importlib.import_module(mod_name)
+            break
         except (ImportError, ModuleNotFoundError):
             continue
-    pytest.skip("training.trainer not importable")
-    return None
+    if module is None:
+        pytest.skip("training.trainer not importable")
+    return module
 
 
 # ---------------------------------------------------------------------------
