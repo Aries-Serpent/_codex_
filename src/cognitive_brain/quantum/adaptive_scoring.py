@@ -292,7 +292,12 @@ class AdaptiveScoringOptimizer:
         """Extract a binary success signal from a PDA JSONL row."""
         green = payload.get("ci_checks_green")
         red = payload.get("ci_checks_red")
-        if isinstance(green, (int, float)) and isinstance(red, (int, float)):
+        if (
+            isinstance(green, (int, float))
+            and not isinstance(green, bool)
+            and isinstance(red, (int, float))
+            and not isinstance(red, bool)
+        ):
             return green > red
 
         status = str(payload.get("status", "")).strip().lower()
