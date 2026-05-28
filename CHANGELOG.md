@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Observed (PR #4641 continue dispatch + workflow evidence sync — 2026-05-28T16:02Z)
+- Re-checked latest workflow runs for branch `copilot/fix-asyncssh-path-traversal` at head `2e845b29f` and confirmed current completed reruns are `action_required` infrastructure-gated runs with no jobs.
+- Captured evidence that no code-fixable failed jobs are currently available on the active PR head (`get_job_logs` for `run_id=26586135512` returned `total_jobs: 0`, `failed_jobs: 0`).
+- Verified legacy base-branch failure `26582476436` is tied to older `0D_base_` SHA `a031e054` and not the current PR #4641 head.
+- Re-confirmed PR #4641 review-thread state remains addressed (threads are outdated with existing fix replies) and synchronized living docs in this pass.
+
 ### Fixed (PR #4641 review-thread remediation + monitor sync — 2026-05-28T15:54Z)
 - Resolved all three unresolved PR #4641 review comments by:
   - removing the inaccurate "No files modified" statement from `.github/copilot-prompts/active/PR-4641-followup.md`

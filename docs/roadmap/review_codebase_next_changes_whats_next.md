@@ -1,5 +1,22 @@
 # Review Codebase / Next Changes — What's Next
 
+## Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)
+
+| Item | Status | Result |
+|---|---|---|
+| Session budget | 🟢 Early session checkpoint | Preserve final 5-minute wrap-up reserve |
+| Continue target head | ✅ `2e845b29f` | Re-checked latest workflow runs on `copilot/fix-asyncssh-path-traversal` |
+| Completed run outcomes on current head | ⚠ Infra-gated | Latest completed runs are `action_required` (e.g., `26586425969`, `26586426145`) with **0 jobs** |
+| Code-fixable failed jobs (current head) | ✅ None | No completed `failure` jobs found in latest branch runs |
+| Infrastructure-only evidence | ✅ Captured | `get_job_logs(run_id=26586135512, failed_only=true)` returned `total_jobs: 0` |
+| Legacy base-branch failure check | ℹ Reviewed | `0D_base_` had historical failure `26582476436` on old SHA `a031e054` (not current PR head) |
+| PR #4641 review threads | ✅ No new unresolved requests | Existing reviewer threads are outdated and already replied with fix commit references |
+| Living docs sync | 🔄 In progress | whats_next + session_diagram + CHANGELOG + accountability being refreshed |
+
+### Immediate Remaining Objectives (this session)
+- Keep monitoring latest `2e845b29f` runs and only remediate if a completed code-fixable failure appears.
+- Preserve final 5-minute reserve for wrap-up + continuation handoff.
+
 ## Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)
 
 | Item | Status | Result |
