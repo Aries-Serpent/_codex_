@@ -261,7 +261,7 @@ class TestCiPatternPipeline:
         report = {"status": "ok", "fixed": 0, "checked": 0, "patterns": {}}
         mod._print_report(report, check_only=False)
         captured = capsys.readouterr()
-        assert len(captured.out) >= 0  # Just no error
+        assert captured.out
 
     def test_write_artefact_nested_dir(self, mod, tmp_path):
         """_write_artefact creates parent dirs automatically."""
