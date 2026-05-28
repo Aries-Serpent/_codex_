@@ -143,6 +143,7 @@ jobs:
         run: python3 .github/scripts/session_preload.py || {
           echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
         }
+
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
       # Discovers every available connection method (REST, GraphQL, gh CLI,
