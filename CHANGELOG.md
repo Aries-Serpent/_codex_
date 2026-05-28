@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4659)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4659 (SHA `9d57e411`) at 2026-05-28T22:33Z [auto-generated]
+
 ### Observed (PR #4641 continue dispatch + workflow evidence sync — 2026-05-28T16:02Z)
 - Re-checked latest workflow runs for branch `copilot/fix-asyncssh-path-traversal` at head `2e845b29f` and confirmed current completed reruns are `action_required` infrastructure-gated runs with no jobs.
 - Captured evidence that no code-fixable failed jobs are currently available on the active PR head (`get_job_logs` for `run_id=26586135512` returned `total_jobs: 0`, `failed_jobs: 0`).
