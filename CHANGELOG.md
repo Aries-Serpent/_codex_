@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4668 CI rescue P1-P4 verify — 2026-05-29T21:46Z)
+- Addressed CI rescue comment #4580098820: `Detect CI Issues & Post Fix Instructions` failure on `9186e9fd80db` was due to Pattern 25 (accountability freshness) which was already resolved in `ba19bc6`; all 33 patterns pass on current HEAD.
+- Verified P1-P4 priorities: AAIS 100/100 (CI/CD Maturity 156/156 workflows with cache), self-healing.yml exists, Pattern 21 (Node.js 20) passes — no actions to fix.
+- Updated compliance docs (REQ-4/REQ-5) for this session.
+
 ### Fixed (SN — PR #4668 coverage-ratchet set+e fix & rescue — 2026-05-29T21:42Z)
 - Addressed comment #4580080170 (Missed-Trigger Recovery S221): confirmed coverage-ratchet set +e/set -e fix was applied in commit `7dec636` (merged via PR #4670) to prevent pytest pipeline from terminating early under bash -e, ensuring exit code and coverage output are always captured.
 - Updated compliance docs (REQ-4/REQ-5) for this session.
