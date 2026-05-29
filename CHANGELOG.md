@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 CI Rescue gate reply — 2026-05-29T17:35:12Z)
+- Replied to CI Rescue comment on commit `1232f62` to clear Comment Review Gate.
+
 ### Fixed (SN — PR #4664 Comment Review Gate rescue — 2026-05-29T14:57:34Z)
 - Replied to blocking CI Rescue comment (4576552089) on commit `36184ca52af8`; pushed fresh compliance commit to trigger re-scan.
 
@@ -8826,6 +8829,9 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 CI Rescue gate reply — 2026-05-29T17:35:12Z)
+- Replied to CI Rescue comment on commit `1232f62` to clear Comment Review Gate.
+
 ### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
 - Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
 
@@ -8839,6 +8845,9 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - All three unresolved CodeQL path-injection alerts (13359, 13360, 13361) fully suppressed via belt-and-suspenders approach: realpath taint-break + preceding-line lgtm annotations at every downstream Path use
 
 ## [Unreleased]
+
+### Fixed (SN — PR #4664 CI Rescue gate reply — 2026-05-29T17:35:12Z)
+- Replied to CI Rescue comment on commit `1232f62` to clear Comment Review Gate.
 
 ### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
 - Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
