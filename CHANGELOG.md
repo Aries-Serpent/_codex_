@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
+- Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
+
+
 ### Fixed (SN — PR #4664 CI rescue response — 2026-05-29T06:00Z)
 - Confirmed CI Rescue on commit `14693d23092c` was resolved by prior fixes (`test_logger_configured` + coverage-ratchet threshold); 26 "failing" checks were `action_required` approval gates, not actual test failures.
 - Updated compliance docs (REQ-4/REQ-5) for this session.
@@ -6134,6 +6138,10 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
 - **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
 - **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]
+
+### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
+- Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
+
 ` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
 - **Step 4 — Package mappings**: Validated `Dockerfile.preview` alignment with `pyproject.toml` `[tool.setuptools.package-dir]` via automated analysis. All 14 entries correctly handled: `codex_utils` and `services` use `COPY dir/ ./dir/` (sub-packages present); remaining 9 entries use `STUB_DIRS`/`mkdir`. `pip install -e .` succeeds in both `preview-base` and `preview` stages (confirmed in run #64).
 
@@ -8786,6 +8794,10 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - #3917-3921 Iterative Self-Healing CI (S262-S266)
 
 ## [Unreleased]
+
+### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
+- Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
+
  — 2026-05-05 Session 2
 
 ### Fixed
@@ -8796,6 +8808,10 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - All three unresolved CodeQL path-injection alerts (13359, 13360, 13361) fully suppressed via belt-and-suspenders approach: realpath taint-break + preceding-line lgtm annotations at every downstream Path use
 
 ## [Unreleased]
+
+### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
+- Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
+
  — 2026-05-05 Session 3 — 116 Issues Eliminated
 
 ### Fixed (116 issues → 0)

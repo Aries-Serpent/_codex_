@@ -44280,3 +44280,15 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## Session: PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36:56Z
+
+**Action:** Fixed YAML parse error in `.github/workflows/coverage-ratchet.yml`.
+
+**Root cause:** A previous edit to the "Post PR comment on regression" step removed the `run: |` key and `printf "%s\n" \` command, leaving string literals dangling after the `env:` block. This caused a YAML scanner error ("mapping values are not allowed here") that failed the actionlint check.
+
+**Fix:** Restored `run: |` at line 92 and `printf "%s\n" \` as the first shell command in the run block.
+
+**Validation:** `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/coverage-ratchet.yml'))"` — returns OK.

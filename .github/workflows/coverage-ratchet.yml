@@ -89,6 +89,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           THRESHOLD: ${{ inputs.threshold || '10' }}
+        run: |
+          printf "%s\n" \
             "## 🧪 Coverage Ratchet — Regression Detected" \
             "" \
             "Coverage dropped below the **${THRESHOLD}%** ratchet floor." \
