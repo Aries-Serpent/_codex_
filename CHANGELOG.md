@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4662 CI gate follow-up)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog in a new commit so REQ-4/REQ-5 last-commit freshness gates pass after the review follow-up commit.
+
 ### Fixed (auto-update — PR #4662)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4662 (SHA `729726e8`) at 2026-05-29T00:15Z [auto-generated]
 
