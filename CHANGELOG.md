@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 coverage-ratchet + setup-step yaml — 2026-05-29T05:14Z)
+- Fixed coverage percentage extraction in `.github/workflows/coverage-ratchet.yml` to read the TOTAL `%` column correctly (`18.46` instead of branch-count artifacts like `245`).
+- Corrected YAML block syntax in `.github/workflows/copilot-setup-steps.yml` session preload step by switching to `run: |`.
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for this remediation session.
+
 ### Fixed (SN — PR #4662 CTEP P1 CI/CD Maturity — 2026-05-29T03:48Z)
 - Added `cache: pip` to `performance-gate.yml` and `workflow-compliance-gate.yml` setup-python steps.
 - Added explicit `# No pip cache` annotation to `ci-failure-issue-creator.yml` (sparse-checkout job — no pip installs).

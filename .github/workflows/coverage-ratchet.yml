@@ -73,7 +73,8 @@ jobs:
           EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
           # Extract coverage percentage
-          COVERAGE_PCT=$(grep "TOTAL" "$RUNNER_TEMP/coverage_output.txt" | awk '{print $(NF-1)}' | tr -d '%' | tail -1 || echo "unknown")
+          COVERAGE_PCT=$(awk '/^TOTAL/{gsub(/%/, "", $NF); cov=$NF} END{print cov}' "$RUNNER_TEMP/coverage_output.txt")
+          COVERAGE_PCT=${COVERAGE_PCT:-unknown}
           echo "coverage_pct=$COVERAGE_PCT" >> "$GITHUB_OUTPUT"
           exit $EXIT_CODE
         continue-on-error: true

@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-05-29T05:14Z [PR4664-coverage-ratchet-log-fix]
+
+**Session:** PR4664-coverage-ratchet-log-fix | **Branch:** `copilot/dependabot-fix-dulwich-vulnerability` | **PR:** #4664
+
+### Completed
+- Investigated failing `Coverage Ratchet` run `26618725656` via GitHub Actions MCP.
+- Confirmed there are no open issues labeled `ci-failure` or `ci-health-alert`.
+- Fixed coverage percentage extraction in `.github/workflows/coverage-ratchet.yml` so workflow messages/reporting use the actual TOTAL percentage value.
+- Kept prior test hygiene pragma deduplication in place (`tests/services/ita/test_hygiene.py`).
+
+### Validation
+- `python3 -m pytest tests/services/ita/test_hygiene.py -q` ⚠️ environment missing `pytest` (`No module named pytest`)
+- Verified workflow run log evidence from job `78439809939`: TOTAL coverage reported as `18.46%` while prior extraction emitted `245%`.
+
+### Observations
+- Latest workflow run on head commit `62285ab` is `action_required`; this session addresses the incorrect coverage percentage reporting seen in the previous failed run.
+
 ## SESSION SUMMARY — 2026-05-29T02:40Z [PR4662-sparse-checkout-fix]
 
 **Session:** PR4662-sparse-checkout-fix | **Branch:** `0D_base_` | **PR:** #4662
