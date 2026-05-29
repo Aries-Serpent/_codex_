@@ -17,7 +17,15 @@
 - [`6000429a`] fix(deps): upgrade dulwich to 1.2.5 to fix CVE-2026-42305 and command injection vulnerability (copilot-swe-agent[bot], 2026-05-29)
 
 ### Files Modified
-No files modified
+- `.github/copilot-prompts/active/PR-4664-followup.md` (added)
+- `.github/workflows/copilot-setup-steps.yml`
+- `.github/workflows/coverage-ratchet.yml`
+- `CHANGELOG.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `pyproject.toml`
+- `src/codex_ml/metrics/metric_implementations.py`
+- `tests/services/ita/test_hygiene.py`
+- `uv.lock`
 
 ---
 
