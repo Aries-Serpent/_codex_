@@ -13,6 +13,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
+CLI_HELP_TIMEOUT_SECONDS = 90
+
 
 class TestValidateModuleImport:
     """Tests for validate module imports."""
@@ -104,7 +106,7 @@ class TestValidateCLI:
             [sys.executable, "-m", "codex_ml.cli.validate", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=CLI_HELP_TIMEOUT_SECONDS
         )
         # May or may not have CLI entry point
         assert result.returncode in (0, 1, 2)
@@ -115,7 +117,7 @@ class TestValidateCLI:
             [sys.executable, "-m", "codex_ml.cli.validate", "config", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=CLI_HELP_TIMEOUT_SECONDS
         )
         # May or may not have config subcommand
         assert result.returncode in (0, 1, 2)

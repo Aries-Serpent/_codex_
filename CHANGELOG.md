@@ -1,3 +1,7 @@
+### Fixed (SN — PR #4668 coverage ratchet timeout flake — 2026-05-29T19:10Z)
+- Investigated `Coverage Ratchet` run `26655134617` and identified a timeout flake in `tests/cli/test_validate_comprehensive.py::TestValidateCLI::test_validate_config_command` (`codex_ml.cli.validate config --help` exceeded 30s in CI).
+- Increased CLI help subprocess timeout from 30s to 90s in `tests/cli/test_validate_comprehensive.py` to stabilize the workflow without changing production code paths.
+
 ### Fixed (SN — PR #4664 simplify session preload scalar — 2026-05-29T17:09Z)
 - Simplified `run: |` block to inline scalar in copilot-setup-steps.yml per code review.
 
