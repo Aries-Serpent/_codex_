@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4668 coverage-ratchet set+e fix & rescue — 2026-05-29T21:42Z)
+- Addressed comment #4580080170 (Missed-Trigger Recovery S221): confirmed coverage-ratchet set +e/set -e fix was applied in commit `7dec636` (merged via PR #4670) to prevent pytest pipeline from terminating early under bash -e, ensuring exit code and coverage output are always captured.
+- Updated compliance docs (REQ-4/REQ-5) for this session.
+
 ### Fixed (SN — PR #4668 comment-review-gate rescue — 2026-05-29T20:15Z)
 - Replied to CI Rescue blocking comment (4579503565) for commit `9f5e48b` and pushed a follow-up compliance refresh commit to trigger gate re-scan.
 
