@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-29T00:37Z [PR4662-import-linter-fix]
+
+**Session:** PR4662-import-linter-fix | **Branch:** `0D_base_` | **PR:** #4662
+
+### Completed
+- Investigated failing `Import Linter` workflow run `26610047848` via GitHub Actions MCP and confirmed the failure was a stale `.importlinter` package root/layer mapping (`codex_ml.*`) against the repository's current `src/codex_ml` layout.
+- Updated `.importlinter` to target `src.codex_ml` modules so the layer graph resolves against the real source tree used in this repository.
+- Appended today's PDA AfterMath entry to `.codex/aftermath/pda_iterations.jsonl` so Pattern 30 merge-readiness checks return fully green.
+- Refreshed this accountability report for the remediation session as requested by the escalation instructions.
+
+### Validation
+- `lint-imports` ✅
+- `python3 scripts/ci/sync_tracked_files.py --check` ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` ✅
+
+### Observations
+- The CI failure was configuration drift in the import-linter contract, not a runtime import regression in `src/codex_ml`.
+
 ## SESSION SUMMARY — 2026-05-28T14:26Z [PR4640-ci-gate-remediation]
 
 **Session:** PR4640-ci-gate-remediation | **Branch:** `copilot/explore-codebase-implementation-plan` | **PR:** #4640

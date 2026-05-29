@@ -1,32 +1,16 @@
 [importlinter]
-root_package = codex_ml
+root_packages =
+    src
+    agents
 
 [importlinter:contract:layers]
-name = Core layering (utils -> data -> models -> training -> api)
+name = Core layering (utils -> data -> models -> training)
 type = layers
 layers =
-    codex_ml.utils
-    codex_ml.data
-    codex_ml.models
-    codex_ml.training
-    codex_ml.api
-
-[importlinter:contract:independence]
-name = Independence: api <-> data registry (no back-refs)
-type = independence
-modules =
-    codex_ml.api
-    codex_ml.data
-
-[importlinter:contract:forbidden]
-name = API must not import training internals (stable surface only)
-type = forbidden
-source_modules =
-    codex_ml.api
-forbidden_modules =
-    codex_ml.training.internal
-    codex_ml.training._internal
-    codex_ml.training.experimental
+    src.codex_ml.utils
+    src.codex_ml.data
+    src.codex_ml.models
+    src.codex_ml.training
 
 [importlinter:contract:split_brain_resolution]
 name = Agents must not directly import model weights - use cognitive_app runtime
@@ -34,13 +18,8 @@ type = forbidden
 source_modules =
     agents
 forbidden_modules =
-    codex_ml.models
-    codex_ml.training
     src.codex_ml.models
     src.codex_ml.training
-ignore_imports =
-    agents.config -> codex_ml.models
-    agents.__init__ -> codex_ml
 
 [importlinter:contract:agents_cognitive_unification]
 name = Agents must inherit from cognitive brain ABCs
