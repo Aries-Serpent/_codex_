@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4668)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4668 (SHA `020ebdbf`) at 2026-05-29T18:33Z [auto-generated]
+
 ### Fixed (SN — PR #4664 CI Rescue gate reply — 2026-05-29T17:35:12Z)
 - Replied to CI Rescue comment on commit `1232f62` to clear Comment Review Gate.
 
