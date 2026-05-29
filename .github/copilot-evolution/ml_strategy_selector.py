@@ -158,7 +158,7 @@ class MLStrategySelector:
     2. K-nearest neighbors for similarity matching
     3. Simple reinforcement learning for strategy weights
     4. Confidence-based thresholds for auto-merge
-    5. Turn-state isolation to prevent duplicate scoring (Session 1293)
+    5. Turn-state isolation for per-turn prediction tracking (Session 1293)
     """
 
     def __init__(
@@ -368,8 +368,8 @@ class MLStrategySelector:
 
         Args:
             error_context: Error context dictionary
-            turn_id: Optional turn ID for state isolation (recommended in
-                     multi-turn agentic loops to prevent duplicate scoring)
+            turn_id: Optional turn ID for state isolation in multi-turn
+                     agentic loops
 
         Returns:
             StrategyPrediction with strategy and confidence
@@ -377,23 +377,17 @@ class MLStrategySelector:
         if turn_id and turn_id not in self.turn_state.active_turns:
             self.turn_state.start_turn(turn_id)
 
+        current_turn = (
+            self.turn_state.active_turns.get(turn_id)
+            if turn_id
+            else self.turn_state.get_current_turn()
+        )
         features = self.extract_features(error_context)
         scores: dict[str, float] = {}
 
         for strategy in self.strategy_weights.keys():
-            current_turn = self.turn_state.get_current_turn()
-            if current_turn and current_turn.has_score_computed(strategy):
-                logger.warning(
-                    f"⚠️  Strategy score already computed for "
-                    f"{strategy} in turn — skipping duplicate"
-                )
-                continue
-
             score = self._calculate_strategy_score(features, strategy)
             scores[strategy] = score
-
-            if current_turn:
-                current_turn.mark_score_computed(strategy)
 
         max_score = max(scores.values()) if scores else 0.0
         exp_scores = {
@@ -416,7 +410,6 @@ class MLStrategySelector:
             turn_id=turn_id or "",
         )
 
-        current_turn = self.turn_state.get_current_turn()
         if current_turn:
             current_turn.register_prediction(prediction)
 

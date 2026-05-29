@@ -525,9 +525,11 @@ class IntegratedSystemTester:
             logger.info(f"   Turn 2 stats: {turn2_stats}")
             assert turn2_stats["is_finalized"], "Turn 2 should be finalized"
 
-            assert turn1_id != turn2_id, "Turn IDs must be unique"
+            isolation_verified = turn1_id != turn2_id
+            assert isolation_verified, "Turn IDs must be unique"
             logger.info(
-                f"✅ Turn isolation verified: {turn1_id} != {turn2_id}"
+                f"✅ Turn isolation verified: {isolation_verified} "
+                f"({turn1_id} != {turn2_id})"
             )
 
             return {
@@ -537,7 +539,7 @@ class IntegratedSystemTester:
                     "turn2_id": turn2_id,
                     "turn1_calls": turn1_stats["function_calls"],
                     "turn2_calls": turn2_stats["function_calls"],
-                    "isolation_verified": turn1_id != turn2_id,
+                    "isolation_verified": isolation_verified,
                 },
             }
 
