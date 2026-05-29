@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4668 comment-review-gate rescue — 2026-05-29T20:15Z)
+- Replied to CI Rescue blocking comment (4579503565) for commit `9f5e48b` and pushed a follow-up compliance refresh commit to trigger gate re-scan.
+
 ### Fixed (SN — PR #4668 coverage ratchet timeout flake — 2026-05-29T19:10Z)
 - Investigated `Coverage Ratchet` run `26655134617` and identified a timeout flake in `tests/cli/test_validate_comprehensive.py::TestValidateCLI::test_validate_config_command` (`codex_ml.cli.validate config --help` exceeded 30s in CI).
 - Increased CLI help subprocess timeout from 30s to 90s in `tests/cli/test_validate_comprehensive.py` to stabilize the workflow without changing production code paths.
