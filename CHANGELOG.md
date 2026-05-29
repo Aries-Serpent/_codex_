@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 CI rescue response — 2026-05-29T06:00Z)
+- Confirmed CI Rescue on commit `14693d23092c` was resolved by prior fixes (`test_logger_configured` + coverage-ratchet threshold); 26 "failing" checks were `action_required` approval gates, not actual test failures.
+- Updated compliance docs (REQ-4/REQ-5) for this session.
+
 ### Fixed (SN — PR #4664 coverage-ratchet threshold + test LOGGER fix — 2026-05-29T05:57Z)
 - Fixed `test_logger_configured` in `tests/cli/test_eval_cli_comprehensive.py`: changed `LOGGER` (wrong uppercase) to `logger` to match the module's actual attribute name.
 - Aligned `coverage-ratchet.yml` default threshold from `80` to `10` to match `pyproject.toml`'s `fail_under = 10` (current Phase 5 regression floor); the 80% value was aspirational and caused persistent CI failures since actual coverage is ~18–20%.
