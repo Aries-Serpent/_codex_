@@ -158,7 +158,8 @@ class MLStrategySelector:
     2. K-nearest neighbors for similarity matching
     3. Simple reinforcement learning for strategy weights
     4. Confidence-based thresholds for auto-merge
-    5. Turn-state isolation for per-turn prediction tracking (Session 1293)
+    5. Turn-state isolation for per-turn prediction tracking and
+       turn-specific registration (Session 1293)
     """
 
     def __init__(
@@ -377,11 +378,6 @@ class MLStrategySelector:
         if turn_id and turn_id not in self.turn_state.active_turns:
             self.turn_state.start_turn(turn_id)
 
-        current_turn = (
-            self.turn_state.active_turns.get(turn_id)
-            if turn_id
-            else self.turn_state.get_current_turn()
-        )
         features = self.extract_features(error_context)
         scores: dict[str, float] = {}
 
@@ -410,6 +406,11 @@ class MLStrategySelector:
             turn_id=turn_id or "",
         )
 
+        current_turn = (
+            self.turn_state.active_turns.get(turn_id)
+            if turn_id
+            else self.turn_state.get_current_turn()
+        )
         if current_turn:
             current_turn.register_prediction(prediction)
 
