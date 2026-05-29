@@ -44394,3 +44394,11 @@ and the CI gate requirement.
 **Validation:** `python3 -c "import yaml; yaml.safe_load(...)"` → YAML is valid · `auto_fix_common_issues.py --check-only` → 100/100
 
 <!-- SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4664) -->
+
+## Session: PR #4664 simplify session preload run scalar — 2026-05-29T17:09Z (pass 2)
+
+**Action:** Per code review feedback, simplified `run: |` block scalar to inline `run: cmd` for the session preload step in `copilot-setup-steps.yml`. YAML remains valid with inline format since `||` does not trigger YAML special parsing (only `{` did).
+
+**Validation:** `python3 -c "import yaml; yaml.safe_load(...)"` → YAML is valid · `auto_fix_common_issues.py --check-only` → ✅ No issues found
+
+<!-- SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4664) -->

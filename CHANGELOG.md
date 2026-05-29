@@ -1,3 +1,6 @@
+### Fixed (SN — PR #4664 simplify session preload scalar — 2026-05-29T17:09Z)
+- Simplified `run: |` block to inline scalar in copilot-setup-steps.yml per code review.
+
 ### Fixed (SN — PR #4664 fix copilot-setup-steps.yml YAML + pragma dedup — 2026-05-29T17:09Z)
 - Fixed YAML parse error in copilot-setup-steps.yml: replaced bare brace-group `{ ... }` with `run: |` block scalar.
 - Verified `# pragma: allowlist secret` deduplication already applied in test_hygiene.py.
