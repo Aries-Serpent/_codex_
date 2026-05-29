@@ -44382,3 +44382,15 @@ and the CI gate requirement.
 **Validation:** `auto_fix_common_issues.py --check-only` → 100/100
 
 <!-- SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4664) -->
+
+## Session: PR #4664 fix copilot-setup-steps.yml YAML error — 2026-05-29T17:09Z
+
+**Action:** Fixed YAML parse error in `.github/workflows/copilot-setup-steps.yml` line 143 where `run: cmd || { ... }` was being interpreted as a YAML flow mapping due to the bare `{` character. Replaced with `run: |` block literal scalar. Replied to comment 4570779976 confirming `# pragma: allowlist secret` deduplication is already applied.
+
+**Root cause:** Shell brace-group `{ ... }` in a YAML scalar value (without `|`) causes the YAML parser to treat `{` as the start of a flow mapping.
+
+**Fix:** Changed `run: cmd || { echo ... }` to `run: | echo ...` in the session preload step.
+
+**Validation:** `python3 -c "import yaml; yaml.safe_load(...)"` → YAML is valid · `auto_fix_common_issues.py --check-only` → 100/100
+
+<!-- SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4664) -->

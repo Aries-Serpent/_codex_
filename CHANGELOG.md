@@ -1,3 +1,7 @@
+### Fixed (SN — PR #4664 fix copilot-setup-steps.yml YAML + pragma dedup — 2026-05-29T17:09Z)
+- Fixed YAML parse error in copilot-setup-steps.yml: replaced bare brace-group `{ ... }` with `run: |` block scalar.
+- Verified `# pragma: allowlist secret` deduplication already applied in test_hygiene.py.
+
 ### Fixed (SN — PR #4664 Comment Review Gate rescue — 2026-05-29T17:04:41Z)
 - Replied to CI Rescue comment for commit 94ab8d983b46 and refreshed compliance docs.
 
