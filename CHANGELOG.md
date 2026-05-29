@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 Comment Review Gate unblock — 2026-05-29T13:54:20Z)
+- Replied to blocking CI Rescue comment (4575961910) on commit `ae6402e`; pushed fresh compliance commit to trigger re-scan.
+
 ### Fixed (SN — PR #4664 Comment Review Gate unblock — 2026-05-29T11:46Z)
 - Replied to blocking CI Rescue comment on commit `9c269f7542da`; refreshed compliance docs (REQ-4/REQ-5) to unblock Comment Review Gate.
 
