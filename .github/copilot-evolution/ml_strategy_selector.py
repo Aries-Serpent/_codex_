@@ -370,7 +370,7 @@ class MLStrategySelector:
         Args:
             error_context: Error context dictionary
             turn_id: Optional turn ID for state isolation in multi-turn
-                     agentic loops
+                     agentic loops and prediction registration
 
         Returns:
             StrategyPrediction with strategy and confidence
@@ -406,6 +406,8 @@ class MLStrategySelector:
             turn_id=turn_id or "",
         )
 
+        # Prefer the explicit turn_id so repeated predictions stay attached to
+        # the requested turn even when current_turn_id points elsewhere.
         current_turn = (
             self.turn_state.active_turns.get(turn_id)
             if turn_id
