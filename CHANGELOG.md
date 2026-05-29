@@ -1,3 +1,6 @@
+### Fixed (SN — PR #4664 Comment Review Gate rescue — 2026-05-29T16:19Z)
+- Replied to CI Rescue comment for commit 97061db7487c and refreshed compliance docs.
+
 # Changelog
 
 All notable changes to the Cognitive Brain Core project will be documented in this file.
