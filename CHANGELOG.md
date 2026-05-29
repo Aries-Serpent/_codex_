@@ -1,3 +1,6 @@
+### Fixed (SN — PR #4664 Approval Dispatch resume — 2026-05-29T16:48Z)
+- Resumed after owner approval at 5862b66; all compliance checks green.
+
 ### Fixed (SN — PR #4664 Comment Review Gate rescue — 2026-05-29T16:19Z)
 - Replied to CI Rescue comment for commit 97061db7487c and refreshed compliance docs.
 
