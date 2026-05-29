@@ -9,10 +9,10 @@ from services.ita.app.models import RepoHygieneRequest
 def test_run_hygiene_checks_detects_multiple_issue_types() -> None:
     diff = "\n".join(
         [
-            "diff --git a/new.py b/new.py", # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+            "diff --git a/new.py b/new.py",  # pragma: allowlist secret
             "+++ b/new.py",
             "+print('TODO debug') ",
-            "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",
+            "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",  # pragma: allowlist secret
         ]
     )
     request = RepoHygieneRequest(diff=diff, checks=["format", "lint", "secrets", "license"])
@@ -33,7 +33,7 @@ def test_run_hygiene_checks_only_returns_requested_issue_types() -> None:
             "diff --git a/new.py b/new.py",  # pragma: allowlist secret
             "+++ b/new.py",
             "+print('TODO debug') ",
-            "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",
+            "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",  # pragma: allowlist secret
         ]
     )
     request = RepoHygieneRequest(diff=diff, checks=["secrets"])
