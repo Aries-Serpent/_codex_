@@ -44292,3 +44292,15 @@ and the CI gate requirement.
 **Fix:** Restored `run: |` at line 92 and `printf "%s\n" \` as the first shell command in the run block.
 
 **Validation:** `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/coverage-ratchet.yml'))"` — returns OK.
+
+---
+
+## Session: PR #4664 sync_tracked_files stale baseline fix — 2026-05-29T08:09Z
+
+**Action:** Regenerated `CODEX_MANIFEST.json` and refreshed `.secrets.baseline` to fix Pattern 30 (sync_tracked_files: ❌ stale) in Auto-Fix PR Check CI.
+
+**Root cause:** The `CODEX_MANIFEST.json` `integrity_sha256` in `.secrets.baseline` was stale — the CODEX_MANIFEST had been updated in a prior auto-refresh commit but the `.secrets.baseline` hashed_secret entry still reflected the old hash. In CI (where `detect-secrets` is installed), `sync_tracked_files.py --check` detects this mismatch and returns non-zero, causing Pattern 30 to fail.
+
+**Fix:** Ran `python3 scripts/ci/generate_manifest.py` to refresh `generated_at` + `integrity_sha256`, then `python3 scripts/ci/sync_tracked_files.py --fix` to update the CODEX_MANIFEST entry in `.secrets.baseline` (old: d6d9a23212fc, new: 1919ed39376a).
+
+**Validation:** `python3 scripts/ci/sync_tracked_files.py --check` — all tracked files consistent. `python3 scripts/ci/auto_fix_common_issues.py --check-only` — no issues found.

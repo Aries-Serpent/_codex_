@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 sync_tracked_files stale baseline — 2026-05-29T08:09Z)
+- Regenerated `CODEX_MANIFEST.json` (updated `generated_at` + `integrity_sha256`) and refreshed `.secrets.baseline` CODEX_MANIFEST entry to fix `sync_tracked_files: ❌ stale` in Auto-Fix PR Check CI (Pattern 30).
+
 ### Fixed (SN — PR #4664 coverage-ratchet YAML fix — 2026-05-29T06:36Z)
 - Restored missing `run: |` and `printf "%s\n" \` in `.github/workflows/coverage-ratchet.yml` Post PR comment step; the step was invalid YAML causing actionlint failure.
 
