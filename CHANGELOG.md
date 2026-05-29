@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4664 Comment Review Gate unblock — 2026-05-29T11:46Z)
+- Replied to blocking CI Rescue comment on commit `9c269f7542da`; refreshed compliance docs (REQ-4/REQ-5) to unblock Comment Review Gate.
+
 ### Fixed (SN — PR #4664 sync_tracked_files stale baseline — 2026-05-29T08:09Z)
 - Regenerated `CODEX_MANIFEST.json` (updated `generated_at` + `integrity_sha256`) and refreshed `.secrets.baseline` CODEX_MANIFEST entry to fix `sync_tracked_files: ❌ stale` in Auto-Fix PR Check CI (Pattern 30).
 
