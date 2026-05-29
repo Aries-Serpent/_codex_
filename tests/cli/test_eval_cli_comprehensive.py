@@ -134,7 +134,7 @@ class TestEvaluateCLIIntegration:
     def test_logger_configured(self):
         """Test that logger is properly configured."""
         from codex_ml.cli import evaluate
-        assert hasattr(evaluate, 'LOGGER')
+        assert hasattr(evaluate, 'logger')
 
     def test_optional_imports_handled(self):
         """Test that optional imports are handled gracefully."""
