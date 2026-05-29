@@ -133,7 +133,7 @@ class FunctionalStrategy:
             train_texts = functional_overrides.pop("texts", [])
         if isinstance(train_texts, str):
             train_texts = [train_texts]
-        elif isinstance(train_texts, Iterable):
+        elif isinstance(train_texts, Iterable) and not isinstance(train_texts, str):
             train_texts = list(train_texts)
         elif train_texts and not isinstance(train_texts, bool):
             train_texts = [train_texts]

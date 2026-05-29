@@ -9,7 +9,7 @@ from services.ita.app.models import RepoHygieneRequest
 def test_run_hygiene_checks_detects_multiple_issue_types() -> None:
     diff = "\n".join(
         [
-            "diff --git a/new.py b/new.py", # pragma: allowlist secret
+            "diff --git a/new.py b/new.py", # pragma: allowlist secret # pragma: allowlist secret
             "+++ b/new.py",
             "+print('TODO debug') ",
             "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",
@@ -22,7 +22,36 @@ def test_run_hygiene_checks_detects_multiple_issue_types() -> None:
 
 
 def test_run_hygiene_checks_rejects_unknown_checks() -> None:
-    request = RepoHygieneRequest(diff="", checks=["format"])
-    request.checks = ["format", "bogus"]
+    request = RepoHygieneRequest(diff="", checks=["format", "bogus"])
     with pytest.raises(ValueError, match="Unsupported hygiene checks requested"):
         run_hygiene_checks(request)
+
+
+def test_run_hygiene_checks_only_returns_requested_issue_types() -> None:
+    diff = "\n".join(
+        [
+            "diff --git a/new.py b/new.py",  # pragma: allowlist secret
+            "+++ b/new.py",
+            "+print('TODO debug') ",
+            "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",
+        ]
+    )
+    request = RepoHygieneRequest(diff=diff, checks=["secrets"])
+    issues = run_hygiene_checks(request)
+
+    assert issues
+    assert {issue.type for issue in issues} == {"secrets"}
+
+
+def test_run_hygiene_checks_clean_diff_returns_no_issues() -> None:
+    diff = "\n".join(
+        [
+            "diff --git a/new.py b/new.py",
+            "+++ b/new.py",
+            "+print('hello world')",
+        ]
+    )
+    request = RepoHygieneRequest(diff=diff, checks=["format", "lint", "secrets", "license"])
+    issues = run_hygiene_checks(request)
+
+    assert issues == []

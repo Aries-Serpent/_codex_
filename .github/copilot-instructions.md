@@ -31,6 +31,67 @@ at environment boot — the output appears in the "🧠 Session Context Pre-load
 
 ---
 
+## 🔒 COPILOT CLOUD AGENT (CCA) VERSION LOCK — CRITICAL CONFIGURATION
+
+**Effective from Session 1293 onwards**
+
+### Why This Lock Exists
+
+The Copilot Cloud Agent runtime was experiencing **duplicate function call ID errors** across multi-turn agentic sessions:
+
+`CAPIError: 400 — Duplicate item found with id fc_call_FemHt2ijHDFdgdakM7sqwQJF`
+
+**Root Cause**: Payload deduplication layer was missing in CCA runtime. Function calls from Turn N were leaking into Turn N+1 payloads, causing CAPI validation to reject duplicates.
+
+**Fix Implemented** (Session 1293):
+- Deduplication layer in `.github/copilot-evolution/integrated_system.py`
+- Turn-state isolation with unique turn IDs (`TurnState` class)
+- Pre-flight validation for function call IDs (`PayloadDeduplicator` class)
+- Payload hash integrity checks (`payload_hash` field)
+- ML turn-state isolation via `PredictionTurnState` + `TurnAwareMLSelector` in `ml_strategy_selector.py`
+
+### Configuration
+
+**MANDATORY ENVIRONMENT VARIABLES**:
+
+```yaml
+COPILOT_AGENT_CCA_VERSION_LOCK: "stable"
+COPILOT_AGENT_DEDUPLICATION_ENABLED: "true"
+COPILOT_AGENT_TURN_ISOLATION_ENABLED: "true"
+```
+
+**What This Means**:
+
+| Variable | Value | Enforcement |
+|----------|-------|-------------|
+| `COPILOT_AGENT_CCA_VERSION_LOCK` | `stable` | **Do NOT auto-upgrade CCA**. Pin to last stable release. |
+| `COPILOT_AGENT_DEDUPLICATION_ENABLED` | `true` | **Always clean payloads** before submission to CAPI. |
+| `COPILOT_AGENT_TURN_ISOLATION_ENABLED` | `true` | **Finalize turn state** after each agentic turn completes. |
+
+### When Using Copilot Cloud Agent
+
+**BEFORE** initiating any multi-turn agentic loop:
+
+1. ✅ **Verify** `COPILOT_AGENT_CCA_VERSION_LOCK=stable` is set
+2. ✅ **Verify** `COPILOT_AGENT_DEDUPLICATION_ENABLED=true` is set
+3. ✅ **Verify** `COPILOT_AGENT_TURN_ISOLATION_ENABLED=true` is set
+4. ✅ **Call** `IntegratedEvolutionSystem.deduplicate_agentic_payload()` before payload submission
+5. ✅ **Finalize** turn state with `system.deduplicator.finalize_turn()` after each turn
+6. ✅ **Pass** `turn_id` to `MLStrategySelector.predict_strategy()` for per-turn score isolation
+7. ✅ **Call** `turn_state.end_turn(turn_id)` after ML predictions complete
+
+**FORBIDDEN**:
+
+```
+❌ DO NOT upgrade CCA version without explicit session review
+❌ DO NOT skip deduplication step in payload preparation
+❌ DO NOT reuse function call IDs across turns
+❌ DO NOT submit payloads without turn-state isolation
+❌ DO NOT call predict_strategy() without a turn_id in multi-turn loops
+```
+
+---
+
 ## 🚨 HARD STOP — DEFERRAL LANGUAGE TRIGGER PROTOCOL
 
 **This rule fires BEFORE any other instruction.**
@@ -62,7 +123,7 @@ If you are about to write — or have just written — ANY of the following, you
 
 **Why:** These phrases have recurred across Sessions 20–25 of this repository.
 Automated enforcement via `.github/workflows/deferral-language-gate.yml` runs
-`scripts/ci/check_deferral_language.py` on every PR.  CI will fail.
+`scripts/ci/check_deferral_language.py` on every PR. CI will fail.
 
 **The only acceptable response to finding an issue is to fix it.**
 Origin (branch / PR / agent / session) is irrelevant per Codebase Agency Policy §2 and §3a.
@@ -76,6 +137,9 @@ Origin (branch / PR / agent / session) is irrelevant per Codebase Agency Policy 
 - `CODEX_SESSION_LOG_DIR` – directory for session log files (default: `.codex/sessions`).
 - `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH` – path to the SQLite database used by logging tools.
 - `CODEX_SQLITE_POOL` – set to `1` to enable per-session SQLite connection pooling.
+- `COPILOT_AGENT_CCA_VERSION_LOCK` – **lock CCA to stable release** (set to `stable`)
+- `COPILOT_AGENT_DEDUPLICATION_ENABLED` – **enable payload deduplication** (set to `true`)
+- `COPILOT_AGENT_TURN_ISOLATION_ENABLED` – **enable turn-state isolation** (set to `true`)
 
 ## Logging Roles
 
@@ -90,7 +154,8 @@ Use one of the following roles when recording conversation or session events: `s
 ```bash
 pre-commit run --files <changed_files>
 nox -s tests
-```text
+```
+
 - Ensure optional test dependencies (e.g., `hydra-core`, `mlflow`) are installed or appropriately mocked.
 
 ## Useful Commands
@@ -136,6 +201,7 @@ gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_bas
 
 - Do **not** create or activate any GitHub Actions workflow files.
 - Keep automation artefacts confined to `.codex/`.
+- Do **not** upgrade CCA version without explicit session review (violates `COPILOT_AGENT_CCA_VERSION_LOCK`).
 
 ## Copilot Task Execution Protocol (CTEP)
 
@@ -174,9 +240,9 @@ CTEP Compliance: ✅ PASS
 
 ## Log Directory & Retention
 
-This document collects the repository conventions, runtime configuration, testing commands, and operational constraints for contributors and automated agents (Codex automation) in the Aries-Serpent/_codex_ repository. Keep this file updated as conventions evolve.
+This document collects the repository conventions, runtime configuration, testing commands, and operational constraints for contributors and automated agents (Codex automation) in the Aries-Serpent/_codex_ repository.
 
-Table of contents
+### Table of contents
 - Repository overview
 - Environment variables (table)
 - Logging roles (table)
@@ -191,13 +257,12 @@ Table of contents
 - Troubleshooting checklist
 - Contact / maintainers
 
-Repository overview
-- Packaging: defined in pyproject.toml; install with pip install -e .
-- Command-line tasks live in src/codex/cli.py and can be invoked with python -m codex.cli <task>.
-- Base configuration files are stored under configs/ and are Hydra-compatible.
+### Repository overview
+- Packaging: defined in pyproject.toml; install with `pip install -e .`
+- Command-line tasks live in `src/codex/cli.py` and can be invoked with `python -m codex.cli <task>`.
+- Base configuration files are stored under `configs/` and are Hydra-compatible.
 
-Environment variables
-This table lists environment variables used to control runtime configuration and logging. Where sensible, defaults are indicated and guidance for safe values is provided.
+### Environment variables
 
 | Variable | Purpose | Default / Notes |
 |---|---|---|
@@ -207,12 +272,14 @@ This table lists environment variables used to control runtime configuration and
 | CODEX_ENV_GO_VERSION | Select Go version for environment setup | Used by environment provisioning tools |
 | CODEX_ENV_SWIFT_VERSION | Select Swift version for environment setup | Used by environment provisioning tools |
 | CODEX_SESSION_ID | Identifier for a logical session; groups log events | Generate per session (UUID recommended) |
-| CODEX_SESSION_LOG_DIR | Directory for session log files | .codex/sessions |
-| CODEX_LOG_DB_PATH / CODEX_DB_PATH | Path to the SQLite DB used by logging tools | .codex/session_logs.db |
+| CODEX_SESSION_LOG_DIR | Directory for session log files | `.codex/sessions` |
+| CODEX_LOG_DB_PATH / CODEX_DB_PATH | Path to the SQLite DB used by logging tools | `.codex/session_logs.db` |
 | CODEX_SQLITE_POOL | Enable per-session SQLite connection pooling | 0 (disabled). Set to 1 to enable |
+| COPILOT_AGENT_CCA_VERSION_LOCK | **Lock CCA version to stable release** | `stable` (MANDATORY) |
+| COPILOT_AGENT_DEDUPLICATION_ENABLED | **Enable payload deduplication** | `true` (MANDATORY) |
+| COPILOT_AGENT_TURN_ISOLATION_ENABLED | **Enable turn-state isolation** | `true` (MANDATORY) |
 
-Logging roles
-Logging utilities and session recorders expect a consistent set of roles. Use these roles when recording conversation or session events.
+### Logging roles
 
 | Role | Intended use |
 |---|---|
@@ -221,74 +288,69 @@ Logging utilities and session recorders expect a consistent set of roles. Use th
 | assistant | Generated assistant responses (Codex/agent) |
 | tool | Events produced by external tools or integrations (e.g., git, mlflow) |
 
-Tooling, testing & checks
-Run all checks locally before committing. The repository uses common Python tooling; adhere to the configuration in pyproject.toml.
+### Tooling, testing & checks
 
-Recommended local checks:
 ```bash
 # Run pre-commit hooks for changed files
 pre-commit run --files <changed_files>
 
 # Run the test suite (nox runs pytest with coverage)
 nox -s tests
-```text
-Formatting & static checks
+```
+
+#### Formatting & static checks
 - Format Python code with Black.
 - Lint with Ruff.
 - Sort imports with isort (if configured).
 - Run type checks with mypy when changing Python modules.
 
-CLI & tool usage
-Common CLI entry points provided by this repository:
-- python -m codex.logging.session_logger — record session events
-- python -m codex.logging.viewer — view session logs
-- python -m codex.logging.query_logs — search conversation transcripts
-- python -m codex.cli <task> — run repository CLI tasks
+### CLI & tool usage
+- `python -m codex.logging.session_logger` — record session events
+- `python -m codex.logging.viewer` — view session logs
+- `python -m codex.logging.query_logs` — search conversation transcripts
+- `python -m codex.cli <task>` — run repository CLI tasks
 
 When writing new CLI tasks:
-- Follow existing patterns in src/codex/cli.py.
+- Follow existing patterns in `src/codex/cli.py`.
 - Register argument parsing and Hydra-compatible configuration where applicable.
 - Provide clear help strings and exit codes.
 
-Optional / third-party test dependencies and mocking guidance
-Some tests require optional third-party packages (for example, hydra-core, mlflow). To avoid fragile tests in CI or local runs, adopt one of these approaches:
-- Install optional test dependencies in a dedicated test environment:
-  pip install -r requirements-tests-optional.txt
-- Prefer explicit mocks for services like mlflow or heavy integrations. Example: use pytest-mock or monkeypatch to replace mlflow imports or functions when the dependency is not available.
-- Keep test module names unique to avoid import conflicts. If you add tests that use the same module names in different directories, make them unique (e.g., tests/test_mlflow_integration.py -> tests/test_mlflow_integration_unique.py).
+### Optional / third-party test dependencies and mocking guidance
+Some tests require optional third-party packages (for example, `hydra-core`, `mlflow`). Adopt one of these approaches:
+- Install optional test dependencies: `pip install -r requirements-tests-optional.txt`
+- Prefer explicit mocks for services like mlflow or heavy integrations via `pytest-mock` or `monkeypatch`.
+- Keep test module names unique to avoid import conflicts.
 
-Prohibited actions & scope
+### Prohibited actions & scope
 - Do NOT create or activate any GitHub Actions workflow files.
-- Keep automation artifacts confined to the .codex/ directory unless a change is explicitly approved.
-- Repository changes are limited to documentation and .codex/* outputs unless otherwise specified by maintainers.
-- Respect repository conventions noted in README and CONTRIBUTING.
+- Keep automation artifacts confined to the `.codex/` directory unless explicitly approved.
+- Repository changes are limited to documentation and `.codex/*` outputs unless otherwise specified by maintainers.
+- **Do NOT upgrade CCA version without explicit session review** — violates `COPILOT_AGENT_CCA_VERSION_LOCK`.
 
-Log directory layout & retention
-Structure:
-``` text
+### Log directory layout & retention
+
+```
 ./.codex/
   session_logs.db
   sessions/<SESSION_ID>.ndjson
-```text
-Retention policy
-- Retain NDJSON files and SQLite rows for 30 iterations. Purge older logs using (safe, best-effort):
+```
+
+Retention policy — retain NDJSON files and SQLite rows for 30 iterations:
+
 ```bash
 # Purge session files older than 30 iterations (best-effort)
 find ./.codex/sessions -type f -mtime +30 -print -delete || true
 
 # Optionally vacuum the SQLite DB after purging rows (use with care)
 # sqlite3 .codex/session_logs.db "VACUUM;"
-```text
-Error handling & backward compatibility guidance
-This repository must be resilient when optional dependencies or environment differences exist.
+```
 
-General patterns
+### Error handling & backward compatibility guidance
+
+#### General patterns
 - Fail fast with clear, actionable error messages when a critical configuration is missing.
-- Provide safe fallbacks (no-op or mocked implementations) for optional integrations (e.g., mlflow, hydra-core). Prefer explicit runtime detection:
-  - Try to import optional libraries and set a boolean flag (HAS_MLFLOW). If missing, log a warning and use a stub adapter for tests or runtime.
-- Where configuration files are missing, provide helpful suggestions and exit codes, e.g., return non-zero with printed guidance.
+- Provide safe fallbacks for optional integrations. Prefer explicit runtime detection:
 
-Example Python pattern (guidance, not a code insertion):
 ```python
 try:
     import mlflow
@@ -296,43 +358,37 @@ try:
 except Exception:
     HAS_MLFLOW = False
     logger.warning("mlflow is not available; mlflow integration disabled.")
-```text
-- When invoking external tooling that may fail (e.g., database writes), wrap calls with retries and custom exceptions. Maintain idempotency where appropriate.
+```
 
-Backward compatibility
-- When changing configuration keys or CLI flags, accept legacy keys/flags for at least one release cycle and emit a deprecation warning with migration instructions.
-- Keep stable output formats (NDJSON, SQLite schema) backward compatible; version the schema when incompatible changes are required and provide migration scripts.
+- Wrap calls to external tooling with retries and custom exceptions. Maintain idempotency where appropriate.
 
-Configuration management (Hydra)
-- Base configuration files live in configs/ and are Hydra-compatible.
-- When adding new Hydra configs, document overrides and example commands to reproduce runs. Example:
+#### Backward compatibility
+- Accept legacy keys/flags for at least one release cycle and emit a deprecation warning.
+- Keep stable output formats (NDJSON, SQLite schema) backward compatible; version the schema when incompatible changes are required.
+
+### Configuration management (Hydra)
+- Base configuration files live in `configs/` and are Hydra-compatible.
+- Document overrides and example commands:
+
 ```bash
 python -m codex.cli train --config-name=my_config hydra.run.dir=./runs/my_run
-```text
-Next steps toward production readiness
-1. Stabilize the test suite
-   - Ensure optional test dependencies (hydra-core, mlflow, etc.) are installed in test environments or suitably mocked.
-   - Resolve duplicate test module names and fix import path issues.
-2. Complete checkpoint resume functionality
-   - Extend run_hf_trainer to load optimizer/scheduler state and verify resume logic with integration tests.
-3. Consolidate configuration management
-   - Adopt Hydra consistently across training and CLI tools.
-   - Document configuration overrides for reproducibility (examples and recommended patterns).
-4. Expand safety and documentation
-   - Flesh out docs/safety.md with concrete heuristics and red-team datasets.
-   - Add an architecture overview and examples to aid onboarding.
-5. Logging & observability improvements
-   - Add structured logging schemas for session events and schema versioning.
-   - Provide a small helper to migrate older session logs if schema changes are introduced.
+```
 
-Troubleshooting checklist (quick)
-- Tests failing due to missing optional deps: either install them in the test env or mock them in tests.
-- Session logs not found: verify CODEX_SESSION_LOG_DIR and CODEX_SESSION_ID values.
-- CLI tasks failing with Hydra errors: ensure configs/ contain the requested config-name and hydra-core is available.
-- Database lock errors on SQLite: consider CODEX_SQLITE_POOL usage or use per-session DB files; add retries and short backoff.
+### Next steps toward production readiness
+1. **Stabilize the test suite** — mock optional deps, resolve duplicate test module names.
+2. **Complete checkpoint resume** — extend `run_hf_trainer` to load optimizer/scheduler state.
+3. **Consolidate configuration** — adopt Hydra consistently across training and CLI tools.
+4. **Expand safety and documentation** — flesh out `docs/safety.md`, add architecture overview.
+5. **Logging & observability** — add structured schemas, provide a schema migration helper.
 
-Contact / maintainers
-- For repository-specific policy changes, open an issue in Aries-Serpent/_codex_ and tag maintainers.
-- For urgent security or data-leak concerns, follow the repository escalation path documented in CONTRIBUTING or contact maintainers directly.
+### Troubleshooting checklist
+- Tests failing due to missing optional deps: install them or mock them.
+- Session logs not found: verify `CODEX_SESSION_LOG_DIR` and `CODEX_SESSION_ID`.
+- CLI tasks failing with Hydra errors: ensure `configs/` contains the requested config-name.
+- Database lock errors on SQLite: use `CODEX_SQLITE_POOL`, per-session DB files, or add retries.
+- **CCA duplicate function call errors**: Verify `COPILOT_AGENT_CCA_VERSION_LOCK=stable`, `COPILOT_AGENT_DEDUPLICATION_ENABLED=true`, and `COPILOT_AGENT_TURN_ISOLATION_ENABLED=true` in `.codex/agent_context.json`. Confirm `turn_id` is passed to `MLStrategySelector.predict_strategy()` and `turn_state.end_turn()` is called after each loop.
 
-End of document.
+### Contact / maintainers
+- For repository-specific policy changes, open an issue in `Aries-Serpent/_codex_` and tag maintainers.
+- For urgent security or data-leak concerns, follow the escalation path in `CONTRIBUTING`.
+- **For CCA version lock or deduplication issues, escalate to the Copilot Cloud Agent team with full session logs and error context.**
