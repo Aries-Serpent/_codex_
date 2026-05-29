@@ -1,0 +1,16 @@
+# RAG Quality & Drift Detection Configuration
+# Referenced by: docs/rag/RAG_FRESHNESS_SLA.md
+# Enforced by: .github/workflows/test-rag.yml
+
+quality_thresholds:
+  top5_recall: 0.70     # minimum acceptable recall @ top-5
+  mrr: 0.60             # minimum Mean Reciprocal Rank
+  p95_latency_ms: 500   # maximum p95 retrieval latency
+
+baseline:
+  top5_recall: 0.82     # current baseline recall (from retrieval_benchmark.json)
+  mrr: 0.74             # current baseline MRR
+  drift_tolerance: 0.10 # alert if rolling 7-day average drops > 10% below baseline
+
+corpus: codex-docs-v1
+benchmark_file: benchmarks/rag/retrieval_benchmark.json

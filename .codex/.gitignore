@@ -13,6 +13,8 @@ cache/
 !.gitignore
 config/*.yaml
 !config/*.example
+!config/monitoring.yaml
+!config/rag_quality.yaml
 # Allow cognitive brain status documents
 !cognitive_brain/
 !cognitive_brain/**
