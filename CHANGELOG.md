@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4662 follow-up priorities)
+- Added pip caching to direct `actions/setup-python` steps in `coverage-ratchet.yml` and the uncached WEC helper jobs in `workflow-execution-gate.yml`.
+- Fixed `root-org-validation.yml` final-report generation so the rendered report/comment expands the runtime date instead of emitting a literal `$(date)`.
+- Verified the reserved self-healing workflow stub already exists at `.github/workflows/self-healing.yml`, so no duplicate workflow file was introduced.
+
 ### Fixed (SN — PR #4662 CI gate follow-up)
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog in a new commit so REQ-4/REQ-5 last-commit freshness gates pass after the review follow-up commit.
 

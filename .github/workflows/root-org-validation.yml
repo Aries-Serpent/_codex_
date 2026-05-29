@@ -276,7 +276,7 @@ jobs:
         run: |
           mkdir -p .codex/reports
 
-          cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << 'EOF'
+          cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << EOF
           # Root Organization Validation Report
 
           **Run:** ${{ github.run_number }}
