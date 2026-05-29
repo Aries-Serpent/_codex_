@@ -54,7 +54,9 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          sparse-checkout: scripts/ci/
+          sparse-checkout: |
+            scripts/ci/
+            pyproject.toml
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -99,7 +101,9 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          sparse-checkout: scripts/ci/
+          sparse-checkout: |
+            scripts/ci/
+            pyproject.toml
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -188,7 +192,9 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          sparse-checkout: scripts/ci/
+          sparse-checkout: |
+            scripts/ci/
+            pyproject.toml
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -255,7 +261,9 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          sparse-checkout: scripts/ci/
+          sparse-checkout: |
+            scripts/ci/
+            pyproject.toml
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -530,6 +538,7 @@ jobs:
           sparse-checkout: |
             scripts/ci/fast_forward_safe_files.py
             .codex/fast_forward_allowlist.yaml
+            pyproject.toml
           sparse-checkout-cone-mode: false
 
       - name: Set up Python 3.12
