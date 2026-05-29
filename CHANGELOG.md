@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4662 CI rescue re-trigger — 2026-05-29T03:18Z)
+- Refreshed compliance docs (REQ-4/REQ-5) after automated cognitive brain patterns commit; addressed rescue comment 4570139117.
+
 ### Fixed (SN — PR #4662 sparse-checkout pip cache — 2026-05-29T02:40Z)
 - Added `pyproject.toml` to all 5 sparse-checkout entries in `workflow-execution-gate.yml` that use `actions/setup-python` with `cache: pip`, resolving `No file matched` failures in `Detect WEC Checkbox Changes` and `Validate WEC Template Integrity` jobs.
 
@@ -6112,7 +6115,10 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 ### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
 - **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
-- **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
+- **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]
+
+### Fixed (SN — PR #4662 CI rescue re-trigger — 2026-05-29T03:18Z)
+- Refreshed compliance docs (REQ-4/REQ-5) after automated cognitive brain patterns commit; addressed rescue comment 4570139117.` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
 - **Step 4 — Package mappings**: Validated `Dockerfile.preview` alignment with `pyproject.toml` `[tool.setuptools.package-dir]` via automated analysis. All 14 entries correctly handled: `codex_utils` and `services` use `COPY dir/ ./dir/` (sub-packages present); remaining 9 entries use `STUB_DIRS`/`mkdir`. `pip install -e .` succeeds in both `preview-base` and `preview` stages (confirmed in run #64).
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 6 — review comment)
@@ -8763,7 +8769,10 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - #3916 Pre-Merge Validation
 - #3917-3921 Iterative Self-Healing CI (S262-S266)
 
-## [Unreleased] — 2026-05-05 Session 2
+## [Unreleased]
+
+### Fixed (SN — PR #4662 CI rescue re-trigger — 2026-05-29T03:18Z)
+- Refreshed compliance docs (REQ-4/REQ-5) after automated cognitive brain patterns commit; addressed rescue comment 4570139117. — 2026-05-05 Session 2
 
 ### Fixed
 - `scripts/ci/delete_stale_pr_comments.py`: moved `global` declaration to top of `main()` — fixes Python 3.12 SyntaxError "name used prior to global declaration" that caused Cleanup Stale PR Comments CI job to fail
@@ -8772,7 +8781,10 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 ### Security
 - All three unresolved CodeQL path-injection alerts (13359, 13360, 13361) fully suppressed via belt-and-suspenders approach: realpath taint-break + preceding-line lgtm annotations at every downstream Path use
 
-## [Unreleased] — 2026-05-05 Session 3 — 116 Issues Eliminated
+## [Unreleased]
+
+### Fixed (SN — PR #4662 CI rescue re-trigger — 2026-05-29T03:18Z)
+- Refreshed compliance docs (REQ-4/REQ-5) after automated cognitive brain patterns commit; addressed rescue comment 4570139117. — 2026-05-05 Session 3 — 116 Issues Eliminated
 
 ### Fixed (116 issues → 0)
 - **Pattern 6** (113×): Replaced all `except Exception:` catch-all handlers in 64 test files with narrowed exception tuples (`(AttributeError, RuntimeError, TypeError)` for optional-dep cleanup; `(ImportError, AttributeError, OSError, RuntimeError)` for psutil/stream teardown; `as _err:` binding for functional bodies; `as _err:  # intentional:` comment for branch-coverage tests). Zero broad exception swallowers remain.
