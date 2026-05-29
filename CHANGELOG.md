@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4662 sparse-checkout pip cache — 2026-05-29T02:40Z)
+- Added `pyproject.toml` to all 5 sparse-checkout entries in `workflow-execution-gate.yml` that use `actions/setup-python` with `cache: pip`, resolving `No file matched` failures in `Detect WEC Checkbox Changes` and `Validate WEC Template Integrity` jobs.
+
 ### Fixed (SN — PR #4662 S221 rescue)
 - Replied to blocking S221 rescue comment and CI Rescue comment; refreshed compliance docs so REQ-4/REQ-5 last-commit gates pass.
 - Pre-commit validation clean: `auto_fix_common_issues.py`, `mypy_baseline.py`, `session_wrapup_autofix.py` all pass.

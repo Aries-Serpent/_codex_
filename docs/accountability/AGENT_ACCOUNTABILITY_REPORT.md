@@ -1,3 +1,16 @@
+## SESSION SUMMARY — 2026-05-29T02:40Z [PR4662-sparse-checkout-fix]
+
+**Session:** PR4662-sparse-checkout-fix | **Branch:** `0D_base_` | **PR:** #4662
+
+### Completed
+- Investigated CI failures on commit `ad28ab23377c`: `Detect WEC Checkbox Changes` and `Validate WEC Template Integrity` jobs failing with `No file matched to [**/requirements.txt or **/pyproject.toml]`.
+- Added `pyproject.toml` to all 5 sparse-checkout entries in `.github/workflows/workflow-execution-gate.yml` that use `actions/setup-python` with `cache: pip`.
+- Ran `auto_fix_common_issues.py --check-only`, `mypy_baseline.py --require-baseline`, `session_wrapup_autofix.py --check` — all pass.
+
+### Validation
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` ✅ no issues
+- `python3 scripts/ci/mypy_baseline.py --require-baseline` ✅ 0 errors
+
 ## SESSION SUMMARY — 2026-05-29T02:12Z [PR4662-s221-rescue]
 
 **Session:** PR4662-s221-rescue | **Branch:** `0D_base_` | **PR:** #4662
