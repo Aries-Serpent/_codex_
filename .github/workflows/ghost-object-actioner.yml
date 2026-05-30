@@ -68,7 +68,6 @@ jobs:
           COMMENT_BODY: ${{ github.event.inputs.comment_body }}
           EXECUTE: ${{ github.event.inputs.execute }}
           DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit }}
-          SUMMARY_PATH: ${{ github.step_summary }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -76,6 +75,7 @@ jobs:
           import os
           import re
           import urllib.error
+          import urllib.parse
           import urllib.request
 
           token = os.environ.get("GH_TOKEN", "")
@@ -86,7 +86,7 @@ jobs:
           mark_as = os.environ.get("MARK_AS", "not planned")
           comment_body = os.environ.get("COMMENT_BODY", "").strip()
           execute = os.environ.get("EXECUTE", "false").lower() == "true"
-          summary_path = os.environ["SUMMARY_PATH"]
+          summary_path = os.environ["GITHUB_STEP_SUMMARY"]
 
           try:
               discovery_limit = int(os.environ.get("DISCOVERY_LIMIT", "30"))
@@ -158,8 +158,23 @@ jobs:
           branch_results = []
 
           for number in numbers:
-              if apply_issues:
-                  status, issue = call_github_api("GET", f"/repos/{owner}/{repo}/issues/{number}")
+              issue_lookup_status = None
+              issue_lookup = None
+              handle_issue = apply_issues
+              handle_pr = apply_prs
+              if target_kind == "all":
+                  issue_lookup_status, issue_lookup = call_github_api("GET", f"/repos/{owner}/{repo}/issues/{number}")
+                  if issue_lookup_status >= 300:
+                      issue_results.append({"id": number, "action": "lookup", "ok": False, "detail": issue_lookup.get("message", "API lookup failed")})
+                      continue
+                  handle_pr = "pull_request" in issue_lookup
+                  handle_issue = not handle_pr
+
+              if handle_issue:
+                  if issue_lookup_status is None:
+                      status, issue = call_github_api("GET", f"/repos/{owner}/{repo}/issues/{number}")
+                  else:
+                      status, issue = issue_lookup_status, issue_lookup
                   if status >= 300:
                       issue_results.append({"id": number, "action": "lookup", "ok": False, "detail": issue.get("message", "API lookup failed")})
                   elif "pull_request" in issue:
@@ -180,7 +195,7 @@ jobs:
                       else:
                           issue_results.append({"id": number, "action": "dry-run", "ok": True, "detail": f"would comment and set {mark_as}"})
 
-              if apply_prs:
+              if handle_pr:
                   status, pr = call_github_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
                   if status >= 300:
                       pr_results.append({"id": number, "action": "lookup", "ok": False, "detail": pr.get("message", "API lookup failed")})
@@ -199,9 +214,11 @@ jobs:
                       else:
                           pr_results.append({"id": number, "action": "dry-run", "ok": True, "detail": f"would comment and set {mark_as}"})
 
-          for branch in branch_names:
-              status, resp = call_github_api("GET", f"/repos/{owner}/{repo}/branches/{branch}")
-              branch_results.append({"name": branch, "action": "lookup", "ok": status < 300, "detail": resp.get("message", "found") if status >= 300 else "found", "protected": bool(resp.get("protected")) if status < 300 else None})
+          if discover_branch:
+              for branch in branch_names:
+                  encoded_branch = urllib.parse.quote(branch, safe="")
+                  status, resp = call_github_api("GET", f"/repos/{owner}/{repo}/branches/{encoded_branch}")
+                  branch_results.append({"name": branch, "action": "lookup", "ok": status < 300, "detail": resp.get("message", "found") if status >= 300 else "found", "protected": bool(resp.get("protected")) if status < 300 else None})
 
           discovery = {}
           if discover_issue:
