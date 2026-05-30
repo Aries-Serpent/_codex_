@@ -100,9 +100,9 @@ jobs:
               "User-Agent": "ghost-object-actioner/1.0",
           }
           if token:
-              headers["Authorization"] = "token " + token
+              headers["Authorization"] = "Bearer " + token
 
-          def gh_api(method: str, path: str, payload: dict | None = None):
+          def call_github_api(method: str, path: str, payload: dict | None = None):
               data = None
               if payload is not None:
                   data = json.dumps(payload).encode("utf-8")
@@ -124,9 +124,9 @@ jobs:
                       parsed = {"message": body}
                   return e.code, parsed
 
-          tokens = [t.strip() for t in re.split(r"[,\s]+", identifiers_raw) if t.strip()]
-          numbers = [t for t in tokens if t.isdigit()]
-          branch_names = [t for t in tokens if not t.isdigit()]
+          identifier_tokens = [token_value.strip() for token_value in re.split(r"[,\s]+", identifiers_raw) if token_value.strip()]
+          numbers = [t for t in identifier_tokens if t.isdigit()]
+          branch_names = [t for t in identifier_tokens if not t.isdigit()]
 
           if target_kind == "issues":
               apply_issues = True
@@ -159,54 +159,54 @@ jobs:
 
           for number in numbers:
               if apply_issues:
-                  status, issue = gh_api("GET", f"/repos/{owner}/{repo}/issues/{number}")
+                  status, issue = call_github_api("GET", f"/repos/{owner}/{repo}/issues/{number}")
                   if status >= 300:
-                      issue_results.append({"id": number, "action": "lookup", "ok": False, "detail": issue.get("message", issue)})
+                      issue_results.append({"id": number, "action": "lookup", "ok": False, "detail": issue.get("message", "API lookup failed")})
                   elif "pull_request" in issue:
-                      issue_results.append({"id": number, "action": "skip", "ok": False, "detail": "ID is a pull request, not an issue"})
+                      issue_results.append({"id": number, "action": "skip", "ok": False, "detail": f"This is a pull request (#{number}). Use target_kind=pull_requests."})
                   else:
                       if execute:
                           if comment_body:
-                              c_status, c_resp = gh_api("POST", f"/repos/{owner}/{repo}/issues/{number}/comments", {"body": comment_body})
+                              c_status, c_resp = call_github_api("POST", f"/repos/{owner}/{repo}/issues/{number}/comments", {"body": comment_body})
                               issue_results.append({"id": number, "action": "comment", "ok": c_status < 300, "detail": c_resp.get("message", "commented") if c_status >= 300 else "commented"})
 
                           if mark_as in {"not planned", "completed"}:
                               reason = "not_planned" if mark_as == "not planned" else "completed"
-                              p_status, p_resp = gh_api("PATCH", f"/repos/{owner}/{repo}/issues/{number}", {"state": "closed", "state_reason": reason})
+                              p_status, p_resp = call_github_api("PATCH", f"/repos/{owner}/{repo}/issues/{number}", {"state": "closed", "state_reason": reason})
                               issue_results.append({"id": number, "action": f"close:{reason}", "ok": p_status < 300, "detail": p_resp.get("message", "closed") if p_status >= 300 else "closed"})
                           else:
-                              p_status, p_resp = gh_api("PATCH", f"/repos/{owner}/{repo}/issues/{number}", {"state": "open"})
+                              p_status, p_resp = call_github_api("PATCH", f"/repos/{owner}/{repo}/issues/{number}", {"state": "open"})
                               issue_results.append({"id": number, "action": "reopen", "ok": p_status < 300, "detail": p_resp.get("message", "open") if p_status >= 300 else "open"})
                       else:
                           issue_results.append({"id": number, "action": "dry-run", "ok": True, "detail": f"would comment and set {mark_as}"})
 
               if apply_prs:
-                  status, pr = gh_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
+                  status, pr = call_github_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
                   if status >= 300:
-                      pr_results.append({"id": number, "action": "lookup", "ok": False, "detail": pr.get("message", pr)})
+                      pr_results.append({"id": number, "action": "lookup", "ok": False, "detail": pr.get("message", "API lookup failed")})
                   else:
                       if execute:
                           if comment_body:
-                              c_status, c_resp = gh_api("POST", f"/repos/{owner}/{repo}/issues/{number}/comments", {"body": comment_body})
+                              c_status, c_resp = call_github_api("POST", f"/repos/{owner}/{repo}/issues/{number}/comments", {"body": comment_body})
                               pr_results.append({"id": number, "action": "comment", "ok": c_status < 300, "detail": c_resp.get("message", "commented") if c_status >= 300 else "commented"})
 
                           if mark_as in {"not planned", "completed"}:
-                              p_status, p_resp = gh_api("PATCH", f"/repos/{owner}/{repo}/pulls/{number}", {"state": "closed"})
+                              p_status, p_resp = call_github_api("PATCH", f"/repos/{owner}/{repo}/pulls/{number}", {"state": "closed"})
                               pr_results.append({"id": number, "action": "close", "ok": p_status < 300, "detail": p_resp.get("message", "closed") if p_status >= 300 else "closed"})
                           else:
-                              p_status, p_resp = gh_api("PATCH", f"/repos/{owner}/{repo}/pulls/{number}", {"state": "open"})
+                              p_status, p_resp = call_github_api("PATCH", f"/repos/{owner}/{repo}/pulls/{number}", {"state": "open"})
                               pr_results.append({"id": number, "action": "reopen", "ok": p_status < 300, "detail": p_resp.get("message", "open") if p_status >= 300 else "open"})
                       else:
                           pr_results.append({"id": number, "action": "dry-run", "ok": True, "detail": f"would comment and set {mark_as}"})
 
           for branch in branch_names:
-              status, resp = gh_api("GET", f"/repos/{owner}/{repo}/branches/{branch}")
+              status, resp = call_github_api("GET", f"/repos/{owner}/{repo}/branches/{branch}")
               branch_results.append({"name": branch, "action": "lookup", "ok": status < 300, "detail": resp.get("message", "found") if status >= 300 else "found", "protected": bool(resp.get("protected")) if status < 300 else None})
 
           discovery = {}
           if discover_issue:
-              s, data = gh_api("GET", f"/repos/{owner}/{repo}/issues?state=all&per_page={discovery_limit}")
-              if s < 300:
+              status, data = call_github_api("GET", f"/repos/{owner}/{repo}/issues?state=all&per_page={discovery_limit}")
+              if status < 300:
                   discovery["issues"] = [
                       {
                           "number": it.get("number"),
@@ -221,8 +221,8 @@ jobs:
                   discovery["issues_error"] = data.get("message", data)
 
           if discover_pr:
-              s, data = gh_api("GET", f"/repos/{owner}/{repo}/pulls?state=all&per_page={discovery_limit}")
-              if s < 300:
+              status, data = call_github_api("GET", f"/repos/{owner}/{repo}/pulls?state=all&per_page={discovery_limit}")
+              if status < 300:
                   discovery["pull_requests"] = [
                       {
                           "number": it.get("number"),
@@ -236,8 +236,8 @@ jobs:
                   discovery["pull_requests_error"] = data.get("message", data)
 
           if discover_branch:
-              s, data = gh_api("GET", f"/repos/{owner}/{repo}/branches?per_page={discovery_limit}")
-              if s < 300:
+              status, data = call_github_api("GET", f"/repos/{owner}/{repo}/branches?per_page={discovery_limit}")
+              if status < 300:
                   discovery["branches"] = [
                       {
                           "name": it.get("name"),
@@ -280,5 +280,5 @@ jobs:
 
           has_failure = any(not r.get("ok") for r in issue_results + pr_results + branch_results)
           if execute and has_failure:
-              raise SystemExit("One or more requested actions failed; see summary table for details.")
+              raise SystemExit("One or more requested actions failed. Check the workflow summary for detailed error information.")
           PY
