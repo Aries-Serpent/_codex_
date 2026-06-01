@@ -7,16 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<<<<<<< HEAD
+### Fixed (auto-update — PR #4696)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4696 (SHA `544784c6`) at 2026-06-01T02:28Z [auto-generated]
+
 ### Fixed (auto-update — PR #4695)
 - Follow-up: clarified lazy torch import variable naming in `src/codex_ml/cli/__init__.py` (`_torch_module`) after automated review feedback, with no behavior change.
 - Reduced `python -m codex_ml.cli` startup overhead by deferring heavy training/PyTorch imports in `src/codex_ml/cli/__init__.py`, addressing `Resilient Validation Suite` subprocess timeouts on CLI help probes.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4695 (SHA `fde795e6`) at 2026-06-01T01:23Z [auto-generated]
 - Fixed YAML syntax in `.github/workflows/copilot-setup-steps.yml` session preload step by using a `run: |` block with `if ! ...; then ...; fi`, restoring workflow/test YAML parsing.
-=======
-### Fixed (auto-update — PR #4696)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4696 (SHA `544784c6`) at 2026-06-01T02:28Z [auto-generated]
->>>>>>> origin/main
 
 ### Fixed (SN — PR #4668 CI rescue P1-P4 verify — 2026-05-29T21:46Z)
 - Addressed CI rescue comment #4580098820: `Detect CI Issues & Post Fix Instructions` failure on `9186e9fd80db` was due to Pattern 25 (accountability freshness) which was already resolved in `ba19bc6`; all 33 patterns pass on current HEAD.
