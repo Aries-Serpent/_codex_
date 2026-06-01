@@ -96,7 +96,7 @@ jobs:
           if token:
               headers["Authorization"] = "Bearer " + token
 
-          def call_api(method: str, path: str, payload: dict | None = None):
+          def call_github_api(method: str, path: str, payload: dict | None = None):
               body = None
               if payload is not None:
                   body = json.dumps(payload).encode("utf-8")
@@ -132,8 +132,8 @@ jobs:
               encoded = urllib.parse.quote(task_uuid, safe="")
               return f"/agents/repos/{owner}/{repo}/tasks/{encoded}"
 
-          def escape_markdown_pipes(value) -> str:
-              return str(value).replace("|", "\\|")
+          def escape_markdown_pipes(text) -> str:
+              return str(text).replace("|", "\\|")
 
           def extract_pr_numbers(task: dict) -> list[int]:
               prs: set[int] = set()
@@ -155,7 +155,7 @@ jobs:
               return sorted(prs)
 
           def pr_closed(number: int) -> tuple[bool, str]:
-              status, payload = call_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
+              status, payload = call_github_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
               if status >= 300:
                   return False, f"lookup_failed:{payload.get('message', status)}"
               state = payload.get("state")
@@ -163,17 +163,17 @@ jobs:
               return state == "closed", "merged" if merged else "closed"
 
           def fetch_task(task_uuid: str):
-              return call_api("GET", task_path(task_uuid))
+              return call_github_api("GET", task_path(task_uuid))
 
-          janitor_states = {"queued", "in_progress", "idle", "waiting_for_user", "timed_out"}
-          janitor_states_csv = ",".join(sorted(janitor_states))
+          cleanup_eligible_states = {"queued", "in_progress", "idle", "waiting_for_user", "timed_out"}
+          cleanup_eligible_states_csv = ",".join(sorted(cleanup_eligible_states))
           list_path = (
               f"/agents/repos/{owner}/{repo}/tasks"
               f"?per_page={discovery_limit}&sort=updated_at&direction=desc"
-              f"&is_archived=false&state={janitor_states_csv}"
+              f"&is_archived=false&state={cleanup_eligible_states_csv}"
           )
 
-          list_status, list_payload = call_api("GET", list_path)
+          list_status, list_payload = call_github_api("GET", list_path)
           tasks = []
           list_error = None
           if list_status < 300:
@@ -213,7 +213,7 @@ jobs:
                   if closed:
                       closed_pr_link = True
 
-              eligible = state in janitor_states
+              eligible = state in cleanup_eligible_states
               if require_closed_pr:
                   eligible = eligible and closed_pr_link
               eligible = eligible and is_stale
@@ -236,7 +236,7 @@ jobs:
           action_results = []
 
           def attempt_cleanup(task_uuid: str):
-              delete_status, delete_payload = call_api(
+              delete_status, delete_payload = call_github_api(
                   "DELETE", task_path(task_uuid)
               )
               if 200 <= delete_status < 300:
@@ -248,7 +248,7 @@ jobs:
                       "detail": "cancelled_or_deleted",
                   }
 
-              archive_status, archive_payload = call_api(
+              archive_status, archive_payload = call_github_api(
                   "POST", f"{task_path(task_uuid)}/archive"
               )
               if 200 <= archive_status < 300:
@@ -260,7 +260,7 @@ jobs:
                       "detail": "archived",
                   }
 
-              patch_status, patch_payload = call_api(
+              patch_status, patch_payload = call_github_api(
                   "PATCH",
                   task_path(task_uuid),
                   {"is_archived": True},
@@ -289,6 +289,8 @@ jobs:
           processed_ids: set[str] = set()
           for task in candidates:
               tid = str(task.get("id", ""))
+              # Prevent duplicate cleanup attempts when the same task is present in
+              # list results and separately inserted from explicit task_id lookup.
               if not tid or tid in processed_ids:
                   continue
               processed_ids.add(tid)
