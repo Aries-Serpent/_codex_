@@ -530,14 +530,72 @@ def _build_wec_block(
         "",
         "### ✅ Always Required — fire automatically on every push (cannot be skipped)",
     ]
-    # Group items by section — indices must match _WEC_ITEMS order exactly.
-    always_required_items  = _WEC_ITEMS[:5]    # pre-merge → workflow-execution-gate
-    always_active_items    = _WEC_ITEMS[5:9]   # copilot-agent-checkin → cost-gate
-    opt_in_testing_items   = _WEC_ITEMS[9:22]  # validate → html_visual_regression
-    opt_in_security_items  = _WEC_ITEMS[22:31] # security-scanning-suite → codeql-alert-fetcher
-    opt_in_docs_items      = _WEC_ITEMS[31:33] # documentation-link-checker → pages-pre-merge
-    opt_in_infra_items     = _WEC_ITEMS[33:40] # reference-integrity → qa-walkthrough
-    auto_approve_items     = _WEC_ITEMS[40:]   # auto-approve-workflows
+    # Group items by section using explicit filename membership (not positional slices).
+    # This avoids silent misclassification if _WEC_ITEMS is reordered or edited.
+    always_required_filenames: set[str] = {
+        "pre-merge.yml",
+        "cognitive-preflight.yml",
+        "workflow-health-check.yml",
+        "policy-governance.yml",
+        "workflow-execution-gate.yml",
+    }
+    always_active_filenames: set[str] = {
+        "copilot-agent-checkin.yml",
+        "agent-auth-delegation.yml",
+        "delegation-audit.yml",
+        "cost-gate.yml",
+    }
+    opt_in_testing_filenames: set[str] = {
+        "validate.yml",
+        "ci.yml",
+        "mobile-ci.yml",
+        "build-and-test.yml",
+        "e2e.yml",
+        "test.yml",
+        "integration-tests.yml",
+        "visual-regression.yml",
+        "performance.yml",
+        "benchmark.yml",
+        "load-test.yml",
+        "smoke.yml",
+        "html_visual_regression.yml",
+    }
+    opt_in_security_filenames: set[str] = {
+        "security-scanning-suite.yml",
+        "sast.yml",
+        "secret-scanning.yml",
+        "dependency-review.yml",
+        "container-scan.yml",
+        "license-compliance.yml",
+        "sbom.yml",
+        "scorecards.yml",
+        "codeql.yml",
+        "codeql-alert-fetcher.yml",
+    }
+    opt_in_docs_filenames: set[str] = {
+        "documentation-link-checker.yml",
+        "pages-pre-merge.yml",
+    }
+    opt_in_infra_filenames: set[str] = {
+        "reference-integrity.yml",
+        "infra-validate.yml",
+        "terraform-plan.yml",
+        "k8s-validate.yml",
+        "deploy-preview.yml",
+        "release-dry-run.yml",
+        "qa-walkthrough.yml",
+    }
+    auto_approve_filenames: set[str] = {
+        "auto-approve-workflows.yml",
+    }
+
+    always_required_items = [item for item in _WEC_ITEMS if item[0] in always_required_filenames]
+    always_active_items = [item for item in _WEC_ITEMS if item[0] in always_active_filenames]
+    opt_in_testing_items = [item for item in _WEC_ITEMS if item[0] in opt_in_testing_filenames]
+    opt_in_security_items = [item for item in _WEC_ITEMS if item[0] in opt_in_security_filenames]
+    opt_in_docs_items = [item for item in _WEC_ITEMS if item[0] in opt_in_docs_filenames]
+    opt_in_infra_items = [item for item in _WEC_ITEMS if item[0] in opt_in_infra_filenames]
+    auto_approve_items = [item for item in _WEC_ITEMS if item[0] in auto_approve_filenames]
 
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")

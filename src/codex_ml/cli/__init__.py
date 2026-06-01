@@ -25,6 +25,8 @@ from typing import Any, Optional, Union
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 
+from . import utils
+
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")
 
@@ -369,4 +371,3 @@ except Exception:  # pragma: no cover - optional CLI wiring
 main = package_main
 
 __all__ = ["cli", "infer", "main", "main_cli"]
-from . import utils
