@@ -3095,9 +3095,9 @@ class CommonIssueFixer:
 
             # Find the matching fix entry (case-insensitive substring match).
             fix_type, fix_cmd = "manual", f"Manual fix required for dimension '{name}'"
-            normalized_name = name.lower().replace(" ", "_")
+            normalized_dimension_name = name.lower().replace(" ", "_")
             for key, (ftype, fcmd) in DIM_FIXES.items():
-                if key.lower() in normalized_name:
+                if key.lower() in normalized_dimension_name:
                     fix_type, fix_cmd = ftype, fcmd
                     break
 
