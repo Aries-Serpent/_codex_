@@ -259,7 +259,7 @@ def _train_model_from_click(
     del telemetry_enable
     del telemetry_port
 
-    _, has_torch = optional_import("torch")
+    _torch_module, has_torch = optional_import("torch")
     if not has_torch:
         message = (
             "PyTorch is required for 'train-model'. Install the optional extra via"
