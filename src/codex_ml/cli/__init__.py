@@ -22,16 +22,11 @@ import os
 import sys
 from typing import Any, Optional, Union
 
-from codex_ml.training.unified_training import (
-    UnifiedTrainingConfig,
-    run_unified_training,
-)
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")
-torch, _HAS_TORCH = optional_import("torch")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -236,6 +231,11 @@ def main_cli(
     mlflow_uri: Optional[str] = None,  # retained for compatibility
     **_: object,
 ) -> None:
+    from codex_ml.training.unified_training import (
+        UnifiedTrainingConfig,
+        run_unified_training,
+    )
+
     cfg = UnifiedTrainingConfig(
         model_name="cli-model",
         epochs=epochs,
@@ -259,7 +259,8 @@ def _train_model_from_click(
     del telemetry_enable
     del telemetry_port
 
-    if not _HAS_TORCH:
+    _torch_module, has_torch = optional_import("torch")
+    if not has_torch:
         message = (
             "PyTorch is required for 'train-model'. Install the optional extra via"
             " 'pip install codex_ml[torch]'"

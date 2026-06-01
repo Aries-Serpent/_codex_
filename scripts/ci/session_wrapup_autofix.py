@@ -1301,7 +1301,11 @@ def fix_pda_entry_today(
         "type": "session",
         "timestamp": timestamp,
         "session": f"auto-pda-{today}",
-        "pr_number": int(pr_number) if pr_number.isdigit() else pr_number,
+        "pr_number": (
+            int(pr_number)
+            if isinstance(pr_number, str) and pr_number.isdigit()
+            else (None if isinstance(pr_number, str) and pr_number.lower() == "unknown" else pr_number)
+        ),
         "branch": "0D_base_",
         "git_sha": sha,
         "pattern_id": f"PDA-AUTO-{today.replace('-', '')}",

@@ -3078,7 +3078,7 @@ class CommonIssueFixer:
             "sync_tracked_files": ("sync_fix",      "python scripts/ci/sync_tracked_files.py --fix"),
             "auto_fix":           ("auto_fix_sweep", "python scripts/ci/auto_fix_common_issues.py"),
             "accountability_today": ("acct_fix",    "python scripts/ci/auto_fix_common_issues.py --pattern 25"),
-            "pda_today":          ("pda_auto",    "Auto-append minimal PDA entry to .codex/aftermath/pda_iterations.jsonl"),
+            "pda_entry_today":    ("pda_auto",      "Auto-append minimal PDA entry to .codex/aftermath/pda_iterations.jsonl"),
             "pattern_27":         ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
             "secrets":            ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
             "action_versions":    ("manual",        "Review .github/workflows/ for outdated action SHA pins"),
@@ -3095,8 +3095,10 @@ class CommonIssueFixer:
 
             # Find the matching fix entry (case-insensitive substring match).
             fix_type, fix_cmd = "manual", f"Manual fix required for dimension '{name}'"
+            normalized_dimension_name = name.lower().replace(" ", "_")
             for key, (ftype, fcmd) in DIM_FIXES.items():
-                if key.lower() in name.lower():
+                normalized_dimension_key = key.lower().replace(" ", "_")
+                if normalized_dimension_key in normalized_dimension_name:
                     fix_type, fix_cmd = ftype, fcmd
                     break
 

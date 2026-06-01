@@ -7,8 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4695 CI rescue — 2026-06-01T07:23Z)
+- Addressed CI Rescue comment #4590374412 for commit `4ec9132c43ff`: ran `ruff check src/ tests/ --fix` (clean), `mypy_baseline.py --require-baseline` (0 errors, ↓131 vs baseline), and `auto_fix_common_issues.py` (all 33 patterns green, Pattern 30: 100/100).
+- Coverage ratchet alert (coverage/functional_training.py at 9.88%) is a pre-existing gap not caused by this session's changes; overall coverage at 17.94% is above the 10% ratchet floor.
+- Refreshed compliance docs (AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md) per REQ-4/REQ-5.
+
+### Fixed (SN — PR #4695 CI rescue compliance refresh — 2026-06-01T03:55Z)
+- Addressed CI Rescue comment #4589392880/#4589392888 for commit `78ac136606ba`: ran `ruff check src/ tests/ --fix` (clean), `mypy_baseline.py --require-baseline` (0 errors), and `auto_fix_common_issues.py` to resolve Pattern 25 (Last-Commit Accountability) by refreshing `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+- All 33 auto-fix patterns pass on current HEAD (Pattern 30 Merge Readiness: 85/100 — all dimensions green).
+
 ### Fixed (auto-update — PR #4696)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4696 (SHA `544784c6`) at 2026-06-01T02:28Z [auto-generated]
+
+### Fixed (auto-update — PR #4695)
+- Follow-up: clarified lazy torch import variable naming in `src/codex_ml/cli/__init__.py` (`_torch_module`) after automated review feedback, with no behavior change.
+- Reduced `python -m codex_ml.cli` startup overhead by deferring heavy training/PyTorch imports in `src/codex_ml/cli/__init__.py`, addressing `Resilient Validation Suite` subprocess timeouts on CLI help probes.
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4695 (SHA `fde795e6`) at 2026-06-01T01:23Z [auto-generated]
+- Fixed YAML syntax in `.github/workflows/copilot-setup-steps.yml` session preload step by using a `run: |` block with `if ! ...; then ...; fi`, restoring workflow/test YAML parsing.
 
 ### Fixed (SN — PR #4668 CI rescue P1-P4 verify — 2026-05-29T21:46Z)
 - Addressed CI rescue comment #4580098820: `Detect CI Issues & Post Fix Instructions` failure on `9186e9fd80db` was due to Pattern 25 (accountability freshness) which was already resolved in `ba19bc6`; all 33 patterns pass on current HEAD.
