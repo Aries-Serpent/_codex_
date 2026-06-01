@@ -220,9 +220,14 @@ def _load_training_config(path: str) -> dict[str, Any]:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Training config not found: {path}")
     if not _HAS_YAML:
-        log_error(
+        message = (
             f"PyYAML is not installed; cannot load training config from '{path}'. "
             "Proceeding with default training configuration values."
+        )
+        log_error(
+            "codex_ml.cli._load_training_config",
+            message,
+            f"path={path}",
         )
         return {}
     with open(path, encoding="utf-8") as fh:

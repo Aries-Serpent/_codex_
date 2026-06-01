@@ -10,6 +10,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -19,6 +20,7 @@ try:
 except ImportError:
     pytest.skip("typer not available", allow_module_level=True)
 
+import codex_ml.cli as cli_pkg
 import codex_ml.cli.main as main  # import the MODULE, not the package_main function
 
 # main.py uses click/hydra CLI — some tests require a typer.Typer app attribute
@@ -281,14 +283,12 @@ class TestLoadTrainingConfig:
 
     def test_load_training_config_logs_when_yaml_missing(self, monkeypatch, tmp_path):
         """Test warning is logged when YAML dependency is unavailable."""
-        import codex_ml.cli as cli_pkg
-
         config_file = tmp_path / "config.yaml"
         config_file.write_text("epochs: 2", encoding="utf-8")
         logged_errors: list[str] = []
 
-        def _capture_log_error(message, *_args):
-            logged_errors.append(message)
+        def _capture_log_error(_step: str, err: str, _ctx: str, *_args: Any) -> None:
+            logged_errors.append(err)
 
         monkeypatch.setattr(cli_pkg, "_HAS_YAML", False)
         monkeypatch.setattr(cli_pkg, "log_error", _capture_log_error)
