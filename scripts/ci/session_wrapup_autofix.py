@@ -530,72 +530,45 @@ def _build_wec_block(
         "",
         "### ✅ Always Required — fire automatically on every push (cannot be skipped)",
     ]
-    # Group items by section using explicit filename membership (not positional slices).
-    # This avoids silent misclassification if _WEC_ITEMS is reordered or edited.
-    always_required_filenames: set[str] = {
-        "pre-merge.yml",
-        "cognitive-preflight.yml",
-        "workflow-health-check.yml",
-        "policy-governance.yml",
-        "workflow-execution-gate.yml",
-    }
-    always_active_filenames: set[str] = {
-        "copilot-agent-checkin.yml",
-        "agent-auth-delegation.yml",
-        "delegation-audit.yml",
-        "cost-gate.yml",
-    }
-    opt_in_testing_filenames: set[str] = {
-        "validate.yml",
-        "ci.yml",
-        "mobile-ci.yml",
-        "build-and-test.yml",
-        "e2e.yml",
-        "test.yml",
-        "integration-tests.yml",
-        "visual-regression.yml",
-        "performance.yml",
-        "benchmark.yml",
-        "load-test.yml",
-        "smoke.yml",
-        "html_visual_regression.yml",
-    }
-    opt_in_security_filenames: set[str] = {
-        "security-scanning-suite.yml",
-        "sast.yml",
-        "secret-scanning.yml",
-        "dependency-review.yml",
-        "container-scan.yml",
-        "license-compliance.yml",
-        "sbom.yml",
-        "scorecards.yml",
-        "codeql.yml",
-        "codeql-alert-fetcher.yml",
-    }
-    opt_in_docs_filenames: set[str] = {
-        "documentation-link-checker.yml",
-        "pages-pre-merge.yml",
-    }
-    opt_in_infra_filenames: set[str] = {
-        "reference-integrity.yml",
-        "infra-validate.yml",
-        "terraform-plan.yml",
-        "k8s-validate.yml",
-        "deploy-preview.yml",
-        "release-dry-run.yml",
-        "qa-walkthrough.yml",
-    }
-    auto_approve_filenames: set[str] = {
-        "auto-approve-workflows.yml",
-    }
+    # Group items by canonical section boundaries (not hard-coded numeric slices).
+    # Boundaries are validated against _WEC_ITEMS so each entry is included exactly once.
+    filename_to_index = {fname: i for i, (fname, _, _) in enumerate(_WEC_ITEMS)}
 
-    always_required_items = [item for item in _WEC_ITEMS if item[0] in always_required_filenames]
-    always_active_items = [item for item in _WEC_ITEMS if item[0] in always_active_filenames]
-    opt_in_testing_items = [item for item in _WEC_ITEMS if item[0] in opt_in_testing_filenames]
-    opt_in_security_items = [item for item in _WEC_ITEMS if item[0] in opt_in_security_filenames]
-    opt_in_docs_items = [item for item in _WEC_ITEMS if item[0] in opt_in_docs_filenames]
-    opt_in_infra_items = [item for item in _WEC_ITEMS if item[0] in opt_in_infra_filenames]
-    auto_approve_items = [item for item in _WEC_ITEMS if item[0] in auto_approve_filenames]
+    def _section_slice(start_filename: str, end_filename: str) -> list[tuple[str, str, bool]]:
+        if start_filename not in filename_to_index or end_filename not in filename_to_index:
+            raise RuntimeError(
+                f"WEC section boundary missing in _WEC_ITEMS: {start_filename}..{end_filename}"
+            )
+        start_idx = filename_to_index[start_filename]
+        end_idx = filename_to_index[end_filename]
+        if start_idx > end_idx:
+            raise RuntimeError(
+                f"WEC section boundary out of order in _WEC_ITEMS: {start_filename}..{end_filename}"
+            )
+        return _WEC_ITEMS[start_idx:end_idx + 1]
+
+    always_required_items = _section_slice("pre-merge-validation.yml", "workflow-execution-gate.yml")
+    always_active_items = _section_slice("copilot-agent-checkin.yml", "cost-gate.yml")
+    opt_in_testing_items = _section_slice("validate.yml", "html_visual_regression.yml")
+    opt_in_security_items = _section_slice("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
+    opt_in_docs_items = _section_slice("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
+    opt_in_infra_items = _section_slice("reference-integrity.yml", "qa-walkthrough.yml")
+    auto_approve_items = _section_slice("auto-approve-workflows", "auto-approve-workflows")
+
+    grouped_sections = [
+        always_required_items,
+        always_active_items,
+        auto_approve_items,
+        opt_in_testing_items,
+        opt_in_security_items,
+        opt_in_docs_items,
+        opt_in_infra_items,
+    ]
+    grouped_filenames = [fname for section in grouped_sections for fname, _, _ in section]
+    if len(grouped_filenames) != len(_WEC_ITEMS):
+        raise RuntimeError("WEC section grouping does not cover all _WEC_ITEMS")
+    if len(set(grouped_filenames)) != len(grouped_filenames):
+        raise RuntimeError("WEC section grouping contains duplicate _WEC_ITEMS entries")
 
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
