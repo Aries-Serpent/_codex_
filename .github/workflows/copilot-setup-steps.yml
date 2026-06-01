@@ -62,6 +62,9 @@ env:
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -604,7 +607,7 @@ jobs:
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
       - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v6
         with:
           node-version: ${{ env.NODE_VERSION || '20' }}
           cache: 'npm'
