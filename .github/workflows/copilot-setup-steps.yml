@@ -611,7 +611,7 @@ jobs:
         if: hashFiles('package.json') != ''
 
       - name: "🦀 Set up Rust ${{ env.RUST_VERSION || 'stable' }}"
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
         with:
           toolchain: ${{ env.RUST_VERSION || 'stable' }}
         if: hashFiles('Cargo.toml') != ''
