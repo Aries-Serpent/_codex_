@@ -278,3 +278,20 @@ class TestLoadTrainingConfig:
         """Test loading config with non-existent path."""
         with pytest.raises((FileNotFoundError, SystemExit, Exception)):
             main._load_training_config("/nonexistent/path/config.yaml")
+
+    def test_load_training_config_logs_when_yaml_missing(self, monkeypatch, tmp_path):
+        """Test warning is logged when YAML dependency is unavailable."""
+        import codex_ml.cli as cli_pkg
+
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text("epochs: 2", encoding="utf-8")
+        errors: list[str] = []
+
+        monkeypatch.setattr(cli_pkg, "_HAS_YAML", False)
+        monkeypatch.setattr(cli_pkg, "log_error", lambda message, *args: errors.append(message))
+
+        result = main._load_training_config(str(config_file))
+
+        assert result == {}
+        assert errors
+        assert "PyYAML is not installed" in errors[0]

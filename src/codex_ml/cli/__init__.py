@@ -4,7 +4,7 @@
 This module provides functionality for   init  .
 
 Usage:
-    from cli.__init__ import ...
+    from codex_ml.cli import ...
 
 Classes:
     [To be documented]
@@ -207,7 +207,7 @@ def package_main(argv: Optional[list[str]] = None) -> int:
     return int(args.func(args) or 0)
 
 
-def _cmd_hydra_train(args):
+def _cmd_hydra_train(args: argparse.Namespace) -> int:
     from .hydra_entry import main as _hydra_main
 
     extra = args.hydra_args or []
@@ -220,6 +220,10 @@ def _load_training_config(path: str) -> dict[str, Any]:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Training config not found: {path}")
     if not _HAS_YAML:
+        log_error(
+            f"PyYAML is not installed; cannot load training config from '{path}'. "
+            "Proceeding with default training configuration values."
+        )
         return {}
     with open(path, encoding="utf-8") as fh:
         return yaml.safe_load(fh) or {}
@@ -346,7 +350,7 @@ if _HAS_CLICK:
     @click.option("--output-dir", default="runs/eval", show_default=True, help="Output directory")
     def evaluate(datasets: str, metrics: str, output_dir: str) -> None:
         """Evaluate datasets with metrics."""
-        ds = [d.strip() for d in datasets.split(",") if d.strip()] or []
+        ds = [d.strip() for d in datasets.split(",") if d.strip()]
         ms = [m.strip() for m in metrics.split(",") if m.strip()]
         from codex_ml.eval.eval_runner import evaluate_datasets
 
