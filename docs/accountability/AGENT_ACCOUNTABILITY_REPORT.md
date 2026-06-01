@@ -1,3 +1,19 @@
+## SESSION SUMMARY — 2026-06-01T02:01Z [PR4695-resilient-validation-timeout-fix]
+
+**Session:** PR4695-resilient-validation-timeout-fix | **Branch:** `automated/repository-health-18` | **PR:** #4695
+
+### Completed
+- Investigated failing `Resilient Validation Suite` run `26730319120` via GitHub Actions MCP and confirmed repeated `subprocess.TimeoutExpired` failures around `python -m codex_ml.cli train --help`.
+- Confirmed no open issues labeled `ci-failure` or `ci-health-alert`.
+- Applied a minimal CLI import-path fix in `src/codex_ml/cli/__init__.py`: deferred `codex_ml.training.unified_training` and PyTorch import checks from module import time to call sites.
+- Updated `CHANGELOG.md` and this accountability report for REQ-4/REQ-5 freshness.
+
+### Validation
+- `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` ✅
+- `python3 -m compileall -q src/codex_ml/cli/__init__.py` ✅
+- `/usr/bin/time python3 -m codex_ml.cli train --help` ✅ returns in ~0.20s (no startup timeout)
+- `python3 -m pytest tests/validation/test_ci_workflow_validation.py::TestWorkflowFileValidation::test_workflow_files_valid_yaml -q` ⚠️ local environment missing `pytest`
+
 ## SESSION SUMMARY — 2026-05-29T21:46Z [PR4668-ci-rescue-p1-p4-verify]
 
 **Session:** PR4668-ci-rescue-p1-p4-verify | **Branch:** `0D_base_` | **PR:** #4668

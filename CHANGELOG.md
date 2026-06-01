@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #4695)
+- Reduced `python -m codex_ml.cli` startup overhead by deferring heavy training/PyTorch imports in `src/codex_ml/cli/__init__.py`, addressing `Resilient Validation Suite` subprocess timeouts on CLI help probes.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4695 (SHA `fde795e6`) at 2026-06-01T01:23Z [auto-generated]
 - Fixed YAML syntax in `.github/workflows/copilot-setup-steps.yml` session preload step by using a `run: |` block with `if ! ...; then ...; fi`, restoring workflow/test YAML parsing.
 
