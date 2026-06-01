@@ -534,7 +534,7 @@ def _build_wec_block(
     # Boundaries are validated against _WEC_ITEMS so each entry is included exactly once.
     filename_to_index = {fname: i for i, (fname, _, _) in enumerate(_WEC_ITEMS)}
 
-    def _section_slice(start_filename: str, end_filename: str) -> list[tuple[str, str, bool]]:
+    def _get_section_items(start_filename: str, end_filename: str) -> list[tuple[str, str, bool]]:
         if start_filename not in filename_to_index or end_filename not in filename_to_index:
             raise RuntimeError(
                 f"WEC section boundary missing in _WEC_ITEMS: {start_filename}..{end_filename}"
@@ -547,13 +547,14 @@ def _build_wec_block(
             )
         return _WEC_ITEMS[start_idx:end_idx + 1]
 
-    always_required_items = _section_slice("pre-merge-validation.yml", "workflow-execution-gate.yml")
-    always_active_items = _section_slice("copilot-agent-checkin.yml", "cost-gate.yml")
-    opt_in_testing_items = _section_slice("validate.yml", "html_visual_regression.yml")
-    opt_in_security_items = _section_slice("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
-    opt_in_docs_items = _section_slice("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
-    opt_in_infra_items = _section_slice("reference-integrity.yml", "qa-walkthrough.yml")
-    auto_approve_items = _section_slice("auto-approve-workflows", "auto-approve-workflows")
+    always_required_items = _get_section_items("pre-merge-validation.yml", "workflow-execution-gate.yml")
+    always_active_items = _get_section_items("copilot-agent-checkin.yml", "cost-gate.yml")
+    opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
+    opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
+    opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
+    opt_in_infra_items = _get_section_items("reference-integrity.yml", "qa-walkthrough.yml")
+    # Single-item section: start/end intentionally identical.
+    auto_approve_items = _get_section_items("auto-approve-workflows", "auto-approve-workflows")
 
     grouped_sections = [
         always_required_items,
