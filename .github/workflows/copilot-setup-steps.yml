@@ -663,7 +663,8 @@ jobs:
               exit 1
             fi
           fi
-          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          PYTHON_BIN=".venv_ci/bin/python"
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
           # Add venv to PATH for all subsequent steps in this job
           echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
 
