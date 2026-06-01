@@ -285,13 +285,16 @@ class TestLoadTrainingConfig:
 
         config_file = tmp_path / "config.yaml"
         config_file.write_text("epochs: 2", encoding="utf-8")
-        errors: list[str] = []
+        logged_errors: list[str] = []
+
+        def _capture_log_error(message, *_args):
+            logged_errors.append(message)
 
         monkeypatch.setattr(cli_pkg, "_HAS_YAML", False)
-        monkeypatch.setattr(cli_pkg, "log_error", lambda message, *args: errors.append(message))
+        monkeypatch.setattr(cli_pkg, "log_error", _capture_log_error)
 
         result = main._load_training_config(str(config_file))
 
         assert result == {}
-        assert errors
-        assert "PyYAML is not installed" in errors[0]
+        assert logged_errors
+        assert "PyYAML is not installed" in logged_errors[0]
