@@ -51,6 +51,7 @@ jobs:
       - name: Inspect and optionally cleanup stale Copilot tasks
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TOKEN_SOURCE: ${{ secrets.CODEX_MASTER_KEY && 'CODEX_MASTER_KEY' || secrets.CODEX_BACKUP_KEY && 'CODEX_BACKUP_KEY' || 'GITHUB_TOKEN' }}
           OWNER_REPO: ${{ github.repository }}
           TASK_ID: ${{ github.event.inputs.task_id || '' }}
           EXECUTE: ${{ github.event.inputs.execute || 'false' }}
@@ -71,10 +72,13 @@ jobs:
           owner_repo = os.environ["OWNER_REPO"]
           owner, repo = owner_repo.split("/", 1)
           token = os.environ.get("GH_TOKEN", "")
+          token_source = os.environ.get("TOKEN_SOURCE", "GITHUB_TOKEN")
           task_id = os.environ.get("TASK_ID", "").strip()
           execute = os.environ.get("EXECUTE", "false").lower() == "true"
           require_closed_pr = os.environ.get("REQUIRE_CLOSED_PR", "true").lower() == "true"
           summary_path = os.environ["GITHUB_STEP_SUMMARY"]
+          has_elevated_token = token_source in {"CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"}
+          execute_blocked = execute and not has_elevated_token
 
           try:
               stale_hours = max(1, int(os.environ.get("STALE_HOURS", "168")))
@@ -230,7 +234,13 @@ jobs:
                   }
               )
 
-              if eligible or (task_id and tid == task_id):
+              explicit_task_eligible = (
+                  task_id
+                  and tid == task_id
+                  and is_stale
+                  and (closed_pr_link or not require_closed_pr)
+              )
+              if eligible or explicit_task_eligible:
                   candidates.append(task)
 
           action_results = []
@@ -319,6 +329,8 @@ jobs:
               handle.write("## 🧹 Agent Task Janitor\n\n")
               handle.write(f"- Repository: `{owner_repo}`\n")
               handle.write(f"- Execute mode: `{execute}`\n")
+              handle.write(f"- Token source: `{token_source}`\n")
+              handle.write(f"- Elevated token available: `{has_elevated_token}`\n")
               handle.write(f"- Task ID override: `{task_id or '(none)'}`\n")
               handle.write(f"- Require closed PR linkage: `{require_closed_pr}`\n")
               handle.write(f"- Stale cutoff (hours): `{stale_hours}`\n")
@@ -370,8 +382,16 @@ jobs:
                       handle.write(
                           "\n> If this task still appears in the Active UI despite backend completed/cancelled/archived state, open GitHub Support with this task ID and screenshot as a cache/index mismatch.\n"
                       )
+              if execute_blocked:
+                  handle.write(
+                      "\n> Execute mode was refused because this run is using the limited `GITHUB_TOKEN`. Re-run with `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY` configured.\n"
+                  )
 
           failures = [item for item in action_results if not item.get("ok")]
+          if execute_blocked:
+              raise SystemExit(
+                  "Execute mode requires CODEX_MASTER_KEY or CODEX_BACKUP_KEY; refusing with GITHUB_TOKEN."
+              )
           if execute and failures:
               raise SystemExit("One or more cleanup operations failed. Review workflow summary for API details.")
           PY
