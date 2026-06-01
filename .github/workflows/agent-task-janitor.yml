@@ -85,6 +85,7 @@ jobs:
               discovery_limit = int(os.environ.get("DISCOVERY_LIMIT", "100"))
           except ValueError:
               discovery_limit = 100
+          # Agent Tasks API returns max 100 records per page; clamp to avoid invalid requests.
           discovery_limit = max(1, min(discovery_limit, 100))
 
           headers = {
@@ -127,6 +128,13 @@ jobs:
               except ValueError:
                   return None
 
+          def task_path(task_uuid: str) -> str:
+              encoded = urllib.parse.quote(task_uuid, safe="")
+              return f"/agents/repos/{owner}/{repo}/tasks/{encoded}"
+
+          def escape_markdown_pipes(value) -> str:
+              return str(value).replace("|", "\\|")
+
           def extract_pr_numbers(task: dict) -> list[int]:
               prs: set[int] = set()
               for artifact in task.get("artifacts") or []:
@@ -155,13 +163,14 @@ jobs:
               return state == "closed", "merged" if merged else "closed"
 
           def fetch_task(task_uuid: str):
-              return call_api("GET", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}")
+              return call_api("GET", task_path(task_uuid))
 
-          active_states = "queued,in_progress,idle,waiting_for_user,timed_out"
+          janitor_states = {"queued", "in_progress", "idle", "waiting_for_user", "timed_out"}
+          janitor_states_csv = ",".join(sorted(janitor_states))
           list_path = (
               f"/agents/repos/{owner}/{repo}/tasks"
               f"?per_page={discovery_limit}&sort=updated_at&direction=desc"
-              f"&is_archived=false&state={active_states}"
+              f"&is_archived=false&state={janitor_states_csv}"
           )
 
           list_status, list_payload = call_api("GET", list_path)
@@ -204,7 +213,7 @@ jobs:
                   if closed:
                       closed_pr_link = True
 
-              eligible = state in {"queued", "in_progress", "idle", "waiting_for_user", "timed_out"}
+              eligible = state in janitor_states
               if require_closed_pr:
                   eligible = eligible and closed_pr_link
               eligible = eligible and is_stale
@@ -228,7 +237,7 @@ jobs:
 
           def attempt_cleanup(task_uuid: str):
               delete_status, delete_payload = call_api(
-                  "DELETE", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}"
+                  "DELETE", task_path(task_uuid)
               )
               if 200 <= delete_status < 300:
                   return {
@@ -240,7 +249,7 @@ jobs:
                   }
 
               archive_status, archive_payload = call_api(
-                  "POST", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}/archive"
+                  "POST", f"{task_path(task_uuid)}/archive"
               )
               if 200 <= archive_status < 300:
                   return {
@@ -253,7 +262,7 @@ jobs:
 
               patch_status, patch_payload = call_api(
                   "PATCH",
-                  f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}",
+                  task_path(task_uuid),
                   {"is_archived": True},
               )
               if 200 <= patch_status < 300:
@@ -327,7 +336,7 @@ jobs:
                       for item in row["prs"]
                   ) or "-"
                   handle.write(
-                      f"| {row['id']} | {row['state']} | {row['updated_at']} | {'✅' if row['is_stale'] else '❌'} | {'✅' if row['eligible'] else '❌'} | {linked} |\n"
+                      f"| {row['id']} | {row['state']} | {row['updated_at']} | {'✅' if row['is_stale'] else '❌'} | {'✅' if row['eligible'] else '❌'} | {escape_markdown_pipes(linked)} |\n"
                   )
               if not inspected:
                   handle.write("| (none) | - | - | - | - | - |\n")
@@ -339,7 +348,7 @@ jobs:
                   detail = item.get("detail")
                   if isinstance(detail, dict):
                       detail = json.dumps(detail)
-                  detail = str(detail).replace("|", "\\|")
+                  detail = escape_markdown_pipes(detail)
                   handle.write(
                       f"| {item['task_id']} | {item['method']} | {'✅' if item['ok'] else '❌'} | {item['status']} | {detail} |\n"
                   )
