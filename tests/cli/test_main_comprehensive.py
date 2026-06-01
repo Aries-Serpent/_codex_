@@ -287,8 +287,8 @@ class TestLoadTrainingConfig:
         config_file.write_text("epochs: 2", encoding="utf-8")
         logged_errors: list[str] = []
 
-        def _capture_log_error(_step: str, err: str, _ctx: str, *_args: Any) -> None:
-            logged_errors.append(err)
+        def _capture_log_error(_step: str, message: str, _ctx: str, *_args: Any) -> None:
+            logged_errors.append(message)
 
         monkeypatch.setattr(cli_pkg, "_HAS_YAML", False)
         monkeypatch.setattr(cli_pkg, "log_error", _capture_log_error)
