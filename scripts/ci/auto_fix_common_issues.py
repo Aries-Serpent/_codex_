@@ -3097,7 +3097,8 @@ class CommonIssueFixer:
             fix_type, fix_cmd = "manual", f"Manual fix required for dimension '{name}'"
             normalized_dimension_name = name.lower().replace(" ", "_")
             for key, (ftype, fcmd) in DIM_FIXES.items():
-                if key.lower() in normalized_dimension_name:
+                normalized_dimension_key = key.lower().replace(" ", "_")
+                if normalized_dimension_key in normalized_dimension_name:
                     fix_type, fix_cmd = ftype, fcmd
                     break
 
