@@ -1,0 +1,366 @@
+name: "🧹 Agent Task Janitor"
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: "Optional task UUID for one-time validation/cleanup"
+        required: false
+        default: ""
+      execute:
+        description: "true applies cleanup actions, false is dry-run"
+        required: true
+        type: choice
+        default: "false"
+        options:
+          - "false"
+          - "true"
+      stale_hours:
+        description: "Only janitor stale tasks older than this many hours"
+        required: false
+        default: "168"
+      discovery_limit:
+        description: "Max non-archived tasks to inspect"
+        required: false
+        default: "100"
+      require_closed_pr:
+        description: "Only janitor tasks linked to closed/merged PRs"
+        required: true
+        type: choice
+        default: "true"
+        options:
+          - "true"
+          - "false"
+  schedule:
+    - cron: "27 3 * * *"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: agent-task-janitor-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  janitor:
+    name: Validate and cleanup stale agent tasks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Inspect and optionally cleanup stale Copilot tasks
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          OWNER_REPO: ${{ github.repository }}
+          TASK_ID: ${{ github.event.inputs.task_id || '' }}
+          EXECUTE: ${{ github.event.inputs.execute || 'false' }}
+          STALE_HOURS: ${{ github.event.inputs.stale_hours || '168' }}
+          DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit || '100' }}
+          REQUIRE_CLOSED_PR: ${{ github.event.inputs.require_closed_pr || 'true' }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+
+          owner_repo = os.environ["OWNER_REPO"]
+          owner, repo = owner_repo.split("/", 1)
+          token = os.environ.get("GH_TOKEN", "")
+          task_id = os.environ.get("TASK_ID", "").strip()
+          execute = os.environ.get("EXECUTE", "false").lower() == "true"
+          require_closed_pr = os.environ.get("REQUIRE_CLOSED_PR", "true").lower() == "true"
+          summary_path = os.environ["GITHUB_STEP_SUMMARY"]
+
+          try:
+              stale_hours = max(1, int(os.environ.get("STALE_HOURS", "168")))
+          except ValueError:
+              stale_hours = 168
+
+          try:
+              discovery_limit = int(os.environ.get("DISCOVERY_LIMIT", "100"))
+          except ValueError:
+              discovery_limit = 100
+          discovery_limit = max(1, min(discovery_limit, 100))
+
+          headers = {
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2026-03-10",
+              "User-Agent": "agent-task-janitor/1.0",
+          }
+          if token:
+              headers["Authorization"] = "Bearer " + token
+
+          def call_api(method: str, path: str, payload: dict | None = None):
+              body = None
+              if payload is not None:
+                  body = json.dumps(payload).encode("utf-8")
+              req = urllib.request.Request(
+                  f"https://api.github.com{path}",
+                  data=body,
+                  method=method,
+                  headers=headers,
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      raw = resp.read().decode("utf-8")
+                      parsed = json.loads(raw) if raw else {}
+                      return resp.status, parsed
+              except urllib.error.HTTPError as exc:
+                  raw = exc.read().decode("utf-8", errors="replace")
+                  try:
+                      parsed = json.loads(raw)
+                  except json.JSONDecodeError:
+                      parsed = {"message": raw}
+                  return exc.code, parsed
+
+          def parse_utc(value: str | None) -> datetime | None:
+              if not value:
+                  return None
+              normalized = value.replace("Z", "+00:00")
+              try:
+                  return datetime.fromisoformat(normalized)
+              except ValueError:
+                  return None
+
+          def extract_pr_numbers(task: dict) -> list[int]:
+              prs: set[int] = set()
+              for artifact in task.get("artifacts") or []:
+                  art_type = str(artifact.get("type", "")).lower()
+                  if art_type not in {"pull", "pull_request", "pr"}:
+                      continue
+                  data = artifact.get("data") or {}
+                  for key in ("id", "number", "pull_number", "pr_number"):
+                      value = data.get(key)
+                      if isinstance(value, int):
+                          prs.add(value)
+                      elif isinstance(value, str) and value.isdigit():
+                          prs.add(int(value))
+              if not prs:
+                  name = str(task.get("name", ""))
+                  for match in re.findall(r"#(\d+)", name):
+                      prs.add(int(match))
+              return sorted(prs)
+
+          def pr_closed(number: int) -> tuple[bool, str]:
+              status, payload = call_api("GET", f"/repos/{owner}/{repo}/pulls/{number}")
+              if status >= 300:
+                  return False, f"lookup_failed:{payload.get('message', status)}"
+              state = payload.get("state")
+              merged = bool(payload.get("merged_at"))
+              return state == "closed", "merged" if merged else "closed"
+
+          def fetch_task(task_uuid: str):
+              return call_api("GET", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}")
+
+          active_states = "queued,in_progress,idle,waiting_for_user,timed_out"
+          list_path = (
+              f"/agents/repos/{owner}/{repo}/tasks"
+              f"?per_page={discovery_limit}&sort=updated_at&direction=desc"
+              f"&is_archived=false&state={active_states}"
+          )
+
+          list_status, list_payload = call_api("GET", list_path)
+          tasks = []
+          list_error = None
+          if list_status < 300:
+              tasks = list_payload.get("tasks") or []
+          else:
+              list_error = list_payload.get("message", f"status {list_status}")
+
+          target_task = None
+          target_error = None
+          if task_id:
+              t_status, t_payload = fetch_task(task_id)
+              if t_status < 300:
+                  target_task = t_payload
+                  if not any(t.get("id") == task_id for t in tasks):
+                      tasks.insert(0, target_task)
+              else:
+                  target_error = t_payload.get("message", f"status {t_status}")
+
+          now = datetime.now(timezone.utc)
+          cutoff = now - timedelta(hours=stale_hours)
+
+          candidates = []
+          inspected = []
+          for task in tasks:
+              tid = str(task.get("id", ""))
+              state = str(task.get("state", ""))
+              updated_at_raw = task.get("updated_at")
+              updated_at = parse_utc(updated_at_raw)
+              is_stale = bool(updated_at and updated_at <= cutoff)
+              pr_numbers = extract_pr_numbers(task)
+
+              pr_details = []
+              closed_pr_link = False
+              for number in pr_numbers:
+                  closed, detail = pr_closed(number)
+                  pr_details.append({"number": number, "closed": closed, "detail": detail})
+                  if closed:
+                      closed_pr_link = True
+
+              eligible = state in {"queued", "in_progress", "idle", "waiting_for_user", "timed_out"}
+              if require_closed_pr:
+                  eligible = eligible and closed_pr_link
+              eligible = eligible and is_stale
+
+              inspected.append(
+                  {
+                      "id": tid,
+                      "state": state,
+                      "updated_at": updated_at_raw,
+                      "is_stale": is_stale,
+                      "prs": pr_details,
+                      "eligible": eligible,
+                      "artifacts": task.get("artifacts") or [],
+                  }
+              )
+
+              if eligible or (task_id and tid == task_id):
+                  candidates.append(task)
+
+          action_results = []
+
+          def attempt_cleanup(task_uuid: str):
+              delete_status, delete_payload = call_api(
+                  "DELETE", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}"
+              )
+              if 200 <= delete_status < 300:
+                  return {
+                      "task_id": task_uuid,
+                      "method": "DELETE",
+                      "ok": True,
+                      "status": delete_status,
+                      "detail": "cancelled_or_deleted",
+                  }
+
+              archive_status, archive_payload = call_api(
+                  "POST", f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}/archive"
+              )
+              if 200 <= archive_status < 300:
+                  return {
+                      "task_id": task_uuid,
+                      "method": "POST /archive",
+                      "ok": True,
+                      "status": archive_status,
+                      "detail": "archived",
+                  }
+
+              patch_status, patch_payload = call_api(
+                  "PATCH",
+                  f"/agents/repos/{owner}/{repo}/tasks/{urllib.parse.quote(task_uuid, safe='')}",
+                  {"is_archived": True},
+              )
+              if 200 <= patch_status < 300:
+                  return {
+                      "task_id": task_uuid,
+                      "method": "PATCH is_archived=true",
+                      "ok": True,
+                      "status": patch_status,
+                      "detail": "archived",
+                  }
+
+              return {
+                  "task_id": task_uuid,
+                  "method": "DELETE -> POST /archive -> PATCH",
+                  "ok": False,
+                  "status": patch_status,
+                  "detail": {
+                      "delete": {"status": delete_status, "message": delete_payload.get("message")},
+                      "archive": {"status": archive_status, "message": archive_payload.get("message")},
+                      "patch": {"status": patch_status, "message": patch_payload.get("message")},
+                  },
+              }
+
+          processed_ids: set[str] = set()
+          for task in candidates:
+              tid = str(task.get("id", ""))
+              if not tid or tid in processed_ids:
+                  continue
+              processed_ids.add(tid)
+              if execute:
+                  action_results.append(attempt_cleanup(tid))
+              else:
+                  action_results.append(
+                      {
+                          "task_id": tid,
+                          "method": "dry-run",
+                          "ok": True,
+                          "status": 0,
+                          "detail": "would attempt DELETE, then archive fallbacks",
+                      }
+                  )
+
+          recheck = None
+          if task_id:
+              r_status, r_payload = fetch_task(task_id)
+              recheck = {
+                  "status": r_status,
+                  "payload": r_payload if r_status < 300 else {"message": r_payload.get("message")},
+              }
+
+          with open(summary_path, "a", encoding="utf-8") as handle:
+              handle.write("## 🧹 Agent Task Janitor\n\n")
+              handle.write(f"- Repository: `{owner_repo}`\n")
+              handle.write(f"- Execute mode: `{execute}`\n")
+              handle.write(f"- Task ID override: `{task_id or '(none)'}`\n")
+              handle.write(f"- Require closed PR linkage: `{require_closed_pr}`\n")
+              handle.write(f"- Stale cutoff (hours): `{stale_hours}`\n")
+              handle.write(f"- API task list status: `{list_status}`\n")
+              if list_error:
+                  handle.write(f"- API task list error: `{list_error}`\n")
+              if target_error:
+                  handle.write(f"- Task lookup error for `{task_id}`: `{target_error}`\n")
+              handle.write("\n")
+
+              handle.write("### Inspected task snapshot\n")
+              handle.write("| task_id | state | updated_at | stale | eligible | linked_prs |\n")
+              handle.write("|---|---|---|:---:|:---:|---|\n")
+              for row in inspected:
+                  linked = ", ".join(
+                      f"#{item['number']}:{'closed' if item['closed'] else item['detail']}"
+                      for item in row["prs"]
+                  ) or "-"
+                  handle.write(
+                      f"| {row['id']} | {row['state']} | {row['updated_at']} | {'✅' if row['is_stale'] else '❌'} | {'✅' if row['eligible'] else '❌'} | {linked} |\n"
+                  )
+              if not inspected:
+                  handle.write("| (none) | - | - | - | - | - |\n")
+
+              handle.write("\n### Cleanup results\n")
+              handle.write("| task_id | method | ok | status | detail |\n")
+              handle.write("|---|---|:---:|---:|---|\n")
+              for item in action_results:
+                  detail = item.get("detail")
+                  if isinstance(detail, dict):
+                      detail = json.dumps(detail)
+                  detail = str(detail).replace("|", "\\|")
+                  handle.write(
+                      f"| {item['task_id']} | {item['method']} | {'✅' if item['ok'] else '❌'} | {item['status']} | {detail} |\n"
+                  )
+              if not action_results:
+                  handle.write("| (none) | - | - | - | no candidates found |\n")
+
+              if recheck is not None:
+                  handle.write("\n### One-time task recheck\n")
+                  handle.write("```json\n")
+                  handle.write(json.dumps(recheck, indent=2))
+                  handle.write("\n```\n")
+
+              if task_id and recheck and recheck["status"] < 300:
+                  state = recheck["payload"].get("state")
+                  archived_at = recheck["payload"].get("archived_at")
+                  if state in {"completed", "cancelled"} or archived_at:
+                      handle.write(
+                          "\n> If this task still appears in the Active UI despite backend completed/cancelled/archived state, open GitHub Support with this task ID and screenshot as a cache/index mismatch.\n"
+                      )
+
+          failures = [item for item in action_results if not item.get("ok")]
+          if execute and failures:
+              raise SystemExit("One or more cleanup operations failed. Review workflow summary for API details.")
+          PY
