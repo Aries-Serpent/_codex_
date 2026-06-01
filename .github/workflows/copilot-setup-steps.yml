@@ -138,11 +138,20 @@ jobs:
       # This is the automated equivalent of "load memory, load accountability,
       # load codebase policies and follow" — it must run unconditionally.
       # ============================================================================
+      # ⚠️  REGRESSION GUARD — DO NOT MODIFY THIS RUN FORM.
+      # Rule: This step MUST use `run: |` (block scalar). NEVER use inline `run: cmd || {`.
+      # Reason: The Copilot agent internal YAML parser (strict) rejects the inline form.
+      #         GitHub Actions runner accepts it — masking the breakage — but the agent
+      #         pre-flight fails silently with "Failed to launch agent" and NO log output.
+      # History: Commits 7a9412a / aabe2157 / a481dcae reverted this fix 3× today,
+      #          breaking agent sessions for 1+ hour each time.
+      # Enforcement: .github/workflows/copilot-setup-steps-guard.yml CI check (Phase 3).
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }
+        run: |
+          python3 .github/scripts/session_preload.py || {
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          }
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
