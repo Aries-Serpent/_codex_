@@ -1,6 +1,10 @@
 {
   "schema_version": "1.0",
+<<<<<<< HEAD
   "generated_at": "2026-06-01T01:23:47Z",
+=======
+  "generated_at": "2026-06-01T02:28:42Z",
+>>>>>>> origin/main
   "agents": [
     {
       "name": "github-app-manager",
@@ -1001,6 +1005,11 @@
     {
       "name": "agent-registry-validation",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "agent-task-janitor",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -2211,5 +2220,9 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
+<<<<<<< HEAD
   "integrity_sha256": "1c0da0fb049bb7bd6f8d9176e6d8cc830c9ecebc27ef28a8142b92e943cd4cc6"
+=======
+  "integrity_sha256": "176ff91b8337902a6488f9cbd1575aa821039416dec385a41cd43ac1394aa649"
+>>>>>>> origin/main
 }
