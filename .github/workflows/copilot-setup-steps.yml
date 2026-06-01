@@ -58,19 +58,16 @@ on:
 
 env:
   PYTHON_VERSION: "3.12"
-  NODE_VERSION: "22"
+  NODE_VERSION: "20"
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
-    # Note that line 70 removed which states, `  cancel-in-progress: true`
     # AAIS-aligned autonomous runner switch.
     # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
     #   Group : AS Larger Runners | Platform: Linux x64
@@ -96,7 +93,7 @@ jobs:
     #   ubuntu-latest-m may not be available in all runner groups/regions, causing
     #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
     #   the Copilot agent session can always start; larger runners remain opt-in.
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
     timeout-minutes: 59
     permissions:
       contents: read
@@ -123,87 +120,13 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
           persist-credentials: true      # Keep token for any subsequent git operations
           clean: true
           show-progress: true
-
-      # ============================================================================
-      # 🧠 MANDATORY SESSION CONTEXT PRE-LOAD — runs before ANY other work
-      # Injects: agentic state, codebase policy, accountability report, PDA loop
-      # aftermath, and stored memories into the agent's environment.
-      # This is the automated equivalent of "load memory, load accountability,
-      # load codebase policies and follow" — it must run unconditionally.
-      # ============================================================================
-      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: |
-          python3 .github/scripts/session_preload.py || {
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          }
-
-      # ============================================================================
-      # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
-      # Discovers every available connection method (REST, GraphQL, gh CLI,
-      # CodeQL, Playwright, MCP) and their current rate-limit status.
-      # Writes ACCESS_* env vars for the whole session and a machine-readable
-      # manifest at .codex/session_access_manifest.json.
-      # The agent MUST read this manifest before making any API call so it
-      # knows the live trickle-down order: REST → GraphQL → gh CLI → CodeQL → FS.
-      # ============================================================================
-      - name: "🔌 Session Access Probe (token inventory + rate limits)"
-        id: access_probe
-        continue-on-error: true        # never block agent startup on probe failure
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN:     ${{ github.token }}
-        run: |
-          echo "::group::Session Access Probe"
-          python3 scripts/ci/session_access_probe.py || {
-            echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
-            # Emit safe defaults so downstream steps have the vars even if probe fails
-            echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
-            echo "ACCESS_GRAPHQL=unknown"       >> "$GITHUB_ENV"
-            echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
-            echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
-            echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
-          }
-          echo "::endgroup::"
-
-      # ============================================================================
-      # 🧠 AUTONOMOUS RAG CONTEXT BUILD — runs after access probe
-      # Uses the access manifest to pull the freshest available GitHub context
-      # (PR details, failing checks, review threads, recent commits) via the
-      # trickle-down chain, queries the FAISS RAG index for relevant patterns,
-      # and re-embeds only files changed since last session (incremental update).
-      # Writes .codex/session_context_latest.md for agent pickup and exports
-      # ACCESS_STRATEGY + SESSION_PR_NUMBER to GITHUB_ENV.
-      # ============================================================================
-      - name: "🧠 Autonomous RAG Context Build (PR context + RAG query + incremental index)"
-        id: rag_context
-        continue-on-error: true        # never block agent startup on RAG failure
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN:     ${{ github.token }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          echo "::group::Autonomous RAG Context Build"
-          python3 scripts/ci/autonomous_rag_context.py \
-            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }} \
-            || {
-              echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
-            }
-          # Print access strategy for agent log
-          if [ -f .codex/session_access_strategy.json ]; then
-            echo "--- Access Strategy ---"
-            cat .codex/session_access_strategy.json
-          fi
-          echo "::endgroup::"
 
       # Configure git for non-interactive operation in the CI agent environment.
       # core.editor=true: prevents 'git rebase --continue' and similar commands
@@ -383,56 +306,14 @@ jobs:
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
 
-      - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
-        # Supplement agent_context.json injection with live vars.* values for the
-        # critical cascade-control knobs added in S183d. These may not yet be in
-        # agent_context.json if vars-bootstrap hasn't run since the variables were
-        # first created. The explicit injection here ensures agent sessions always
-        # see the current values regardless of the bootstrap timing.
-        env:
-          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
-          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
-          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
-          COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
-          COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
-          CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
-        run: |
-          # Write non-empty values to GITHUB_ENV (live override of agent_context.json).
-          # ${!var} is bash indirect expansion: given var="FOO", ${!var} expands to
-          # the VALUE of the variable named FOO (i.e. the same as ${FOO}).
-          for var in \
-            CODEX_MAX_HEALER_RUNS_PER_HOUR \
-            CODEX_SWEEP_SKIP_MAIN \
-            CODEX_HEALER_SKIP_SKIPCI \
-            COPILOT_RUNNER_PROFILE \
-            CODEX_CACHE_VERSION \
-            COPILOT_AGENT_STATE \
-            CODEX_CI_LAST_GREEN_SHA; do
-            val="${!var}"
-            if [ -n "$val" ]; then
-              echo "${var}=${val}" >> "$GITHUB_ENV"
-              echo "  ✅ ${var}=${val}"
-            fi
-          done
-          echo "── Cascade-control var injection complete ──"
-
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
-          set -euo pipefail
-          if [ ! -f scripts/ci/safe_git_show.sh ]; then
-            echo "::error::scripts/ci/safe_git_show.sh is missing — cannot install git-show guard"
-            exit 1
+          if [ -f scripts/ci/safe_git_show.sh ]; then
+            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+            echo "✅ safe_git_show.sh installed to /usr/local/bin"
+          else
+            echo "⚠️ scripts/ci/safe_git_show.sh not found (non-blocking)"
           fi
-          install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
-          ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
-          echo "✅ safe_git_show installed at $(command -v safe_git_show)"
-          # Smoke-test: source and call with a known-good ref
-          # shellcheck source=/dev/null
-          source /usr/local/bin/safe_git_show.sh
-          safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
-            && echo "✅ safe_git_show smoke-test passed" \
-            || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
@@ -586,7 +467,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -597,7 +478,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -609,7 +490,7 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@v5
         with:
           path: .venv_ci
           key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -619,14 +500,14 @@ jobs:
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
       - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION || '20' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
       - name: "🦀 Set up Rust ${{ env.RUST_VERSION || 'stable' }}"
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ env.RUST_VERSION || 'stable' }}
         if: hashFiles('Cargo.toml') != ''
@@ -675,8 +556,7 @@ jobs:
               exit 1
             fi
           fi
-          PYTHON_BIN=".venv_ci/bin/python"
-          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
           # Add venv to PATH for all subsequent steps in this job
           echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
 
@@ -1046,7 +926,7 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
@@ -1084,13 +964,7 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
+      - name: Post or append @copilot rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -1100,4 +974,44 @@ jobs:
           WORKFLOW_NAME: "Copilot Setup Steps"
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error, datetime
+          token=os.environ["GH_TOKEN"]; pr_number=int(os.environ["PR_NUMBER"])
+          repo=os.environ["REPO"]; commit_sha=os.environ["COMMIT_SHA"]
+          run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
+          workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
+          now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
+          MARKER=f"<!-- ci-rescue:{pr_number} -->"
+          API="https://api.github.com"
+          HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
+          def gh(method,path,body=None):
+            url=f"{API}{path}"; data=json.dumps(body).encode() if body else None
+            req=urllib.request.Request(url,data=data,headers=HDRS,method=method)
+            try:
+              with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
+            except urllib.error.HTTPError as e: return e.code,{}
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: copilot-setup-steps.yml → rescue-comment job (S227)_
+
+---
+_[🔗 Workflow run]({run_url})_"""
+          existing_id=None; existing_body=""
+          page=1
+          while not existing_id:
+            _,page_comments=gh("GET",f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
+            if not isinstance(page_comments,list) or not page_comments: break
+            for c in page_comments:
+              if MARKER in (c.get("body") or ""): existing_id=c["id"]; existing_body=c.get("body",""); break
+            if existing_id or len(page_comments) < 100: break
+            page+=1
+          if existing_id:
+            append_section=f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n**Run:** [{run_id}]({run_url})\n\n@copilot `{workflow}` failed again on `{sha_short}`. Please investigate [run #{run_id}]({run_url})."
+            updated=(existing_body.rstrip()+append_section)[:65536]
+            status,_=gh("PATCH",f"/repos/{repo}/issues/comments/{existing_id}",{"body":updated})
+            if status in (200,201): print(f"✅ Appended to rescue comment #{existing_id}")
+            else: existing_id=None
+          if not existing_id:
+            status,resp=gh("POST",f"/repos/{repo}/issues/{pr_number}/comments",{"body":f"{MARKER}\n{rescue_body}"})
+            if status in (200,201): print(f"✅ Posted rescue comment: {resp.get('html_url','(no url)')}")
+            else: print(f"❌ Failed: HTTP {status}"); sys.exit(1)
+          PYEOF
