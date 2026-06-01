@@ -530,14 +530,46 @@ def _build_wec_block(
         "",
         "### ✅ Always Required — fire automatically on every push (cannot be skipped)",
     ]
-    # Group items by section — indices must match _WEC_ITEMS order exactly.
-    always_required_items  = _WEC_ITEMS[:5]    # pre-merge → workflow-execution-gate
-    always_active_items    = _WEC_ITEMS[5:9]   # copilot-agent-checkin → cost-gate
-    opt_in_testing_items   = _WEC_ITEMS[9:22]  # validate → html_visual_regression
-    opt_in_security_items  = _WEC_ITEMS[22:31] # security-scanning-suite → codeql-alert-fetcher
-    opt_in_docs_items      = _WEC_ITEMS[31:33] # documentation-link-checker → pages-pre-merge
-    opt_in_infra_items     = _WEC_ITEMS[33:40] # reference-integrity → qa-walkthrough
-    auto_approve_items     = _WEC_ITEMS[40:]   # auto-approve-workflows
+    # Group items by canonical section boundaries (not hard-coded numeric slices).
+    # Boundaries are validated against _WEC_ITEMS so each entry is included exactly once.
+    filename_to_index = {fname: i for i, (fname, _, _) in enumerate(_WEC_ITEMS)}
+
+    def _get_section_items(start_filename: str, end_filename: str) -> list[tuple[str, str, bool]]:
+        if start_filename not in filename_to_index or end_filename not in filename_to_index:
+            raise RuntimeError(
+                f"WEC section boundary missing in _WEC_ITEMS: {start_filename}..{end_filename}"
+            )
+        start_idx = filename_to_index[start_filename]
+        end_idx = filename_to_index[end_filename]
+        if start_idx > end_idx:
+            raise RuntimeError(
+                f"WEC section boundary out of order in _WEC_ITEMS: {start_filename}..{end_filename}"
+            )
+        return _WEC_ITEMS[start_idx:end_idx + 1]
+
+    always_required_items = _get_section_items("pre-merge-validation.yml", "workflow-execution-gate.yml")
+    always_active_items = _get_section_items("copilot-agent-checkin.yml", "cost-gate.yml")
+    opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
+    opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
+    opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
+    opt_in_infra_items = _get_section_items("reference-integrity.yml", "qa-walkthrough.yml")
+    # Single-item section: start/end intentionally identical.
+    auto_approve_items = _get_section_items("auto-approve-workflows", "auto-approve-workflows")
+
+    grouped_sections = [
+        always_required_items,
+        always_active_items,
+        auto_approve_items,
+        opt_in_testing_items,
+        opt_in_security_items,
+        opt_in_docs_items,
+        opt_in_infra_items,
+    ]
+    grouped_filenames = [fname for section in grouped_sections for fname, _, _ in section]
+    if len(grouped_filenames) != len(_WEC_ITEMS):
+        raise RuntimeError("WEC section grouping does not cover all _WEC_ITEMS")
+    if len(set(grouped_filenames)) != len(grouped_filenames):
+        raise RuntimeError("WEC section grouping contains duplicate _WEC_ITEMS entries")
 
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")

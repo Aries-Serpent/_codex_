@@ -1756,6 +1756,7 @@ class CommonIssueFixer:
             "Merge Readiness Dims": 30,
             "Stale Type Ignore": 31,
             "Bare Type Ignore Assign": 32,
+            "Rate Limit Checkpoint": 33,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -3431,9 +3432,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 33),
+        choices=range(1, 34),
         metavar="N",
-        help="Run only pattern N (1–32); see pattern list above"
+        help="Run only pattern N (1–33); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",
