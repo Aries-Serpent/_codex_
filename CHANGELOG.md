@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4703 session follow-up — 2026-06-02T01:41Z)
+- Continued CI monitoring for PR #4703 vitest bump; confirmed yamllint exit 0 on HEAD `ba425f1` (brace-free fix stable). ruff clean, auto_fix_common_issues clean. Synced with remote after `github-actions[bot]` baseline sweep commit.
+
 ### Fixed (SN — PR #4703 CI rescue — 2026-06-02T01:34Z)
 - Re-fixed yamllint crash in `Validation Pipeline / Fast Validation`: merge from `main` at commit `f1fbf94` reintroduced shell-brace `|| { ... }` syntax in `copilot-setup-steps.yml` session preload step (lines 141-145). Replaced with brace-free `run: |` / `if ! ...; then ...; fi` block so yamllint passes cleanly.
 
