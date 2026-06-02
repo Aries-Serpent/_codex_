@@ -80,17 +80,27 @@ jobs:
             const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
             async function callWithRateLimitRetry(fn, label) {
               const maxAttempts = 3;
+              const MIN_WAIT_SECONDS = 5;
+              const MAX_WAIT_SECONDS = 120;
+              const FALLBACK_WAIT_SECONDS = 60;
+              const RESET_BUFFER_SECONDS = 5;
               for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
                   return await fn();
                 } catch (error) {
-                  const remaining = Number(error?.response?.headers?.['x-ratelimit-remaining'] ?? '');
-                  const reset = Number(error?.response?.headers?.['x-ratelimit-reset'] ?? '');
+                  const remainingHeader = error?.response?.headers?.['x-ratelimit-remaining'];
+                  const resetHeader = error?.response?.headers?.['x-ratelimit-reset'];
+                  const remaining = Number.parseInt(String(remainingHeader ?? '-1'), 10);
+                  const reset = Number.parseInt(String(resetHeader ?? ''), 10);
                   const isRateLimited = error?.status === 403 && remaining === 0;
                   if (!isRateLimited || attempt === maxAttempts) {
                     throw error;
                   }
-                  const waitSeconds = Math.max(5, Math.min(120, Math.ceil(reset - Date.now() / 1000) + 5));
+                  const nowSeconds = Date.now() / 1000;
+                  const resetDelay = Number.isFinite(reset) && reset > nowSeconds
+                    ? Math.ceil(reset - nowSeconds) + RESET_BUFFER_SECONDS
+                    : FALLBACK_WAIT_SECONDS;
+                  const waitSeconds = Math.max(MIN_WAIT_SECONDS, Math.min(MAX_WAIT_SECONDS, resetDelay));
                   core.warning(`Rate limited while calling ${label}; retrying in ${waitSeconds}s (attempt ${attempt}/${maxAttempts})`);
                   await sleep(waitSeconds * 1000);
                 }
