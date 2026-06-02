@@ -79,10 +79,15 @@ jobs:
           if ! [[ "$COVERAGE_PCT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
             COVERAGE_PCT="unknown"
           fi
-          if [[ "$COVERAGE_PCT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            THRESHOLD_BREACHED=$(python -c 'import sys; print(str(float(sys.argv[1]) < float(sys.argv[2])).lower())' "$COVERAGE_PCT" "$THRESHOLD")
-          else
+          if [[ "$COVERAGE_PCT" == "unknown" ]]; then
             THRESHOLD_BREACHED="true"
+            echo "::warning::Coverage percentage is unknown; treating as ratchet breach."
+          else
+            THRESHOLD_BREACHED="false"
+            if ! THRESHOLD_BREACHED=$(python -c 'import sys; print(str(float(sys.argv[1]) < float(sys.argv[2])).lower())' "$COVERAGE_PCT" "$THRESHOLD"); then
+              THRESHOLD_BREACHED="true"
+              echo "::warning::Failed to compare coverage ($COVERAGE_PCT) against threshold ($THRESHOLD); treating as ratchet breach."
+            fi
           fi
           echo "coverage_pct=$COVERAGE_PCT" >> "$GITHUB_OUTPUT"
           echo "threshold_breached=$THRESHOLD_BREACHED" >> "$GITHUB_OUTPUT"
