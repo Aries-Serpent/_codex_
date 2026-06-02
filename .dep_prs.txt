@@ -1,0 +1,10 @@
+4717 dependabot/pip/pip-gte-26.1.2
+4716 dependabot/pip/packaging-26.2
+4715 dependabot/pip/parso-0.8.7
+4714 dependabot/pip/nvidia-curand-cu12-10.3.10.19
+4713 dependabot/pip/ruff-0.15.15
+4712 dependabot/pip/openai-gte-2.40.0
+4711 dependabot/pip/aiohappyeyeballs-2.6.2
+4710 dependabot/pip/orjson-3.11.9
+4708 dependabot/pip/gunicorn-26.0.0
+4707 dependabot/pip/data-dependencies-94a6ef2484
