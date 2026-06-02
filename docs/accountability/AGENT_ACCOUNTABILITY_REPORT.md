@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-06-02T04:35Z [PR4710-validation-pipeline-yamllint-fix]
+
+**Session:** PR4710-validation-pipeline-yamllint-fix | **Branch:** `dependabot/pip/orjson-3.11.9` | **PR:** #4710
+
+### Completed
+- Investigated `Validation Pipeline` failure run `26796276118` for commit `400918fc2d71e85effbcb22edc2a36c9d1dbb52d`.
+- Confirmed no open `ci-health-alert` issues and reviewed open `ci-failure` issues (unrelated branch `dependabot/pip/faster-whisper-1.2.1`).
+- Reproduced failure locally: `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` crashed on `.github/workflows/copilot-setup-steps.yml` with `TypeError: '<' not supported between instances of 'NoneType' and 'int'`.
+- Applied minimal fix in `.github/workflows/copilot-setup-steps.yml` by replacing inline brace-shell preload command with a `run: |` block and brace-free `if ! ...; then ...; fi`.
+- Performed 5-pass self-review on syntax, CI trigger safety, scope minimization, policy alignment, and regression risk.
+
+### Validation
+- `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` ✅
+- `python3 - <<'PY' ... yaml.safe_load('.github/workflows/copilot-setup-steps.yml') ... PY` ✅
+
+---
+
 ## SESSION SUMMARY — 2026-06-02T02:13Z [PR4703-ci-monitoring-continue]
 
 **Session:** PR4703-ci-monitoring-continue | **Branch:** `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-4825ac1e2e` | **PR:** #4703
