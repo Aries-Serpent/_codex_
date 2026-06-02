@@ -5,7 +5,7 @@
 ### Completed
 - Diagnosed Coverage Ratchet CI failure (run #26796302105): root cause was `-x` (stop-on-first-failure) flag causing pytest to halt at first timeout, reporting near-0% coverage ✅
 - Fixed `coverage-ratchet.yml`: removed `-x`, added `--continue-on-collection-errors` to allow full coverage aggregation across all tests ✅
-- REQ-4/REQ-5 compliance documents refreshed ✅
+- REQ-4/REQ-5 compliance documents refreshed (both files in this commit) ✅
 
 ### Validation
 - `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4713` — REQ-4 ✅ REQ-5 ✅
