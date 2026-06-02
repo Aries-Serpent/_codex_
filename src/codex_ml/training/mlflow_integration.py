@@ -80,7 +80,9 @@ class MLflowTracker:
         try:
             parsed_uri = urlparse(self.tracking_uri)
             is_local_tracking = parsed_uri.scheme in {"", "file"}
-            if is_local_tracking and not os.environ.get("MLFLOW_ALLOW_FILE_STORE"):
+            # MLflow 3.x raises on file-store tracking unless this opt-in env var is set.
+            # Preserve an explicit user-provided value; otherwise enable it for local/file URIs.
+            if is_local_tracking and "MLFLOW_ALLOW_FILE_STORE" not in os.environ:
                 os.environ["MLFLOW_ALLOW_FILE_STORE"] = "true"
 
             # set tracking URI (local by default for offline)

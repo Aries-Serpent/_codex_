@@ -49,18 +49,73 @@ def test_mlflow_tracker_graceful_degradation():
         # These should not raise errors even when inactive
         tracker.log_metrics({"loss": 0.5}, step=1)
         tracker.log_params({"lr": 0.001})
-        tracker.log_artifact("/tmp/test.txt")
+        with tempfile.NamedTemporaryFile() as temp_file:
+            tracker.log_artifact(temp_file.name)
 
 
 def test_mlflow_tracker_sets_file_store_env_for_local_uri():
     """Test local-path tracking enables file-store compatibility flag."""
     with tempfile.TemporaryDirectory() as tmpdir:
         with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
-            with patch("codex_ml.training.mlflow_integration.mlflow"):
-                with patch.dict(os.environ, {}, clear=True):
+            with patch("codex_ml.training.mlflow_integration.mlflow") as mlflow_mock:
+                with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "placeholder"}):
+                    del os.environ["MLFLOW_ALLOW_FILE_STORE"]
                     tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
 
                     assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
+                    assert tracker.active is True
+                    mlflow_mock.set_tracking_uri.assert_called_once_with(tmpdir)
+
+
+def test_mlflow_tracker_sets_file_store_env_for_file_scheme_uri():
+    """Test file:// URI tracking enables file-store compatibility flag."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tracking_uri = Path(tmpdir).resolve().as_uri()
+        with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
+            with patch("codex_ml.training.mlflow_integration.mlflow") as mlflow_mock:
+                with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "placeholder"}):
+                    del os.environ["MLFLOW_ALLOW_FILE_STORE"]
+                    tracker = MLflowTracker("test_exp", tracking_uri=tracking_uri)
+
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
+                    assert tracker.active is True
+                    mlflow_mock.set_tracking_uri.assert_called_once_with(tracking_uri)
+
+
+def test_mlflow_tracker_does_not_set_file_store_env_for_remote_uri():
+    """Test remote tracking URI does not enable file-store compatibility flag."""
+    with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
+        with patch("codex_ml.training.mlflow_integration.mlflow") as mlflow_mock:
+            with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "placeholder"}):
+                del os.environ["MLFLOW_ALLOW_FILE_STORE"]
+                tracker = MLflowTracker("test_exp", tracking_uri="http://localhost:5000")
+
+                assert "MLFLOW_ALLOW_FILE_STORE" not in os.environ
+                assert tracker.active is True
+                mlflow_mock.set_tracking_uri.assert_called_once_with("http://localhost:5000")
+
+
+def test_mlflow_tracker_preserves_existing_file_store_env():
+    """Test pre-set file-store compatibility flag is preserved."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
+            with patch("codex_ml.training.mlflow_integration.mlflow"):
+                with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "true"}):
+                    tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
+
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
+                    assert tracker.active is True
+
+
+def test_mlflow_tracker_preserves_non_true_file_store_env():
+    """Test non-true pre-set file-store flag value is preserved."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
+            with patch("codex_ml.training.mlflow_integration.mlflow"):
+                with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "false"}):
+                    tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
+
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "false"
                     assert tracker.active is True
 
 
