@@ -72,7 +72,7 @@ jobs:
               });
               workflowRuns = runs.data.workflow_runs || [];
             } catch (error) {
-              core.warning(`Unable to list workflow runs: ${error.message}`);
+              core.warning(`Unable to list workflow runs (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);
             }
 
             for (const run of workflowRuns) {
@@ -88,7 +88,7 @@ jobs:
                   }
                 }
               } catch (error) {
-                core.warning(`Unable to list artifacts for run ${run.id}: ${error.message}`);
+                core.warning(`Unable to list artifacts for run ${run.id} (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);
               }
             }
             core.setOutput('artifact_count', artifacts.length);

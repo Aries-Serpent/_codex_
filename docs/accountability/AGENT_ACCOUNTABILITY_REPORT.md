@@ -5,6 +5,7 @@
 ### Completed
 - Investigated failing `QA Walkthrough Agent` run `26796318589`; GitHub Actions API was rate-limited, and artifact-discovery calls were identified as a likely hard-fail point.
 - Hardened `.github/workflows/qa-walkthrough.yml` artifact download step to treat API/rate-limit failures as non-blocking by adding guarded `try/catch` handling for run and artifact listing.
+- Improved QA walkthrough artifact warning diagnostics to include error type and status code when present.
 - Repaired `.github/workflows/copilot-setup-steps.yml` session preload command to use `run: |` + brace-free shell control flow, avoiding YAML parser/unmarshal failures on CI agents.
 - Preserved existing behavior when API calls succeed; workflow now emits warnings and continues when API calls fail.
 
