@@ -77,6 +77,26 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
+            const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            async function callWithRateLimitRetry(fn, label) {
+              const maxAttempts = 3;
+              for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                  return await fn();
+                } catch (error) {
+                  const remaining = Number(error?.response?.headers?.['x-ratelimit-remaining'] ?? '');
+                  const reset = Number(error?.response?.headers?.['x-ratelimit-reset'] ?? '');
+                  const isRateLimited = error?.status === 403 && remaining === 0;
+                  if (!isRateLimited || attempt === maxAttempts) {
+                    throw error;
+                  }
+                  const waitSeconds = Math.max(5, Math.min(120, Math.ceil(reset - Date.now() / 1000) + 5));
+                  core.warning(`Rate limited while calling ${label}; retrying in ${waitSeconds}s (attempt ${attempt}/${maxAttempts})`);
+                  await sleep(waitSeconds * 1000);
+                }
+              }
+            }
+
             let prNumber;
             if (context.eventName === 'workflow_dispatch') {
               prNumber = parseInt(core.getInput('pr_number') || '${{ inputs.pr_number }}');
@@ -84,12 +104,15 @@ jobs:
               prNumber = context.payload.pull_request.number;
             }
 
-            const { data: files } = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              per_page: 10,
-            });
+            const { data: files } = await callWithRateLimitRetry(
+              () => github.rest.pulls.listFiles({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                per_page: 10,
+              }),
+              'pulls.listFiles',
+            );
 
             core.setOutput('pr_number', prNumber);
             core.setOutput('file_count', files.length);
@@ -103,11 +126,14 @@ jobs:
             }
 
             // Fetch head SHA for the PR
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-            });
+            const { data: pr } = await callWithRateLimitRetry(
+              () => github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              }),
+              'pulls.get',
+            );
             core.setOutput('head_sha', pr.head.sha);
             core.setOutput('pr_title', pr.title);
 
