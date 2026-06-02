@@ -8,6 +8,11 @@
 - Reproduced failure locally: `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` crashed on `.github/workflows/copilot-setup-steps.yml` with `TypeError: '<' not supported between instances of 'NoneType' and 'int'`.
 - Applied minimal fix in `.github/workflows/copilot-setup-steps.yml` by replacing inline brace-shell preload command with a `run: |` block and brace-free `if ! ...; then ...; fi`.
 - Performed 5-pass self-review on syntax, CI trigger safety, scope minimization, policy alignment, and regression risk.
+- Investigated failing `📦 Dependabot Auto-Absorb` run `26796309573` via GitHub Actions MCP and confirmed failure in job `📦 Cherry-pick single-file Dependabot bump` was `HttpError 403 API rate limit exceeded for installation` from `github.rest.pulls.listFiles`.
+- Loaded `.codex/CODEBASE_AGENCY_POLICY.md` (§0), reviewed open `ci-failure` and `ci-health-alert` issues, and scoped this fix to the workflow-level rate-limit failure pattern.
+- Applied a minimal resilience fix in `.github/workflows/dependabot-auto-absorb.yml`: wrapped `pulls.listFiles` and `pulls.get` API calls in a bounded retry helper that waits until rate-limit reset (`x-ratelimit-reset`) before retrying.
+- Hardened retry fallback handling after validation feedback by using explicit parsed header defaults and named wait-bound constants.
+- Updated this accountability report per escalation instructions.
 
 ### Validation
 - `yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml` ✅
