@@ -138,14 +138,9 @@ jobs:
       # This is the automated equivalent of "load memory, load accountability,
       # load codebase policies and follow" — it must run unconditionally.
       # ============================================================================
-      - name: "🧠 Mandatory Session Context Pre-Load"
-        continue-on-error: true
-        run: |
-          echo "::group::Mandatory Session Context Pre-Load"
-          if ! python3 .github/scripts/session_preload.py; then
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          fi
-          echo "::endgroup::"
+        run: python3 .github/scripts/session_preload.py || {
+          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+        }
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
