@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4722)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4722 (SHA `6fd74042`) at 2026-06-02T12:56Z [auto-generated]
+
 ### Fixed (auto-update — PR #4706)
 - Conflict-resolution follow-up: merged `origin/main` into PR branch and re-verified explicit cherry-pick provenance coverage for #4707/#4708/#4710-#4717 at 2026-06-02T11:30Z.
 
