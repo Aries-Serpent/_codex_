@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4713 coverage-ratchet coverage-timeout fix — 2026-06-02T04:25Z)
+- Removed `-x` (stop-on-first-failure) flag from `coverage-ratchet.yml`; replaced with `--continue-on-collection-errors`. Fixes coverage-timeout pattern where a single timed-out or failing test caused pytest to halt early, reporting near-0% coverage and falsely failing the ratchet gate.
+
 ### Fixed (SN — PR #4713 priority tasks — 2026-06-02T04:03Z)
 - Actioned P1–P4 follow-up tasks for PR #4713 (ruff 0.15.4→0.15.15 bump): verified CI/CD Maturity at 100% (156/156 workflows with cache), self-healing stub in place, pattern 21 (Node.js 20) clean, and post-merge sync_tracked_files prepared. Cost bot findings reviewed; all RED-tier workflows have built-in cost gates by design.
 
