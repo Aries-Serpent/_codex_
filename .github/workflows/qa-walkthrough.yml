@@ -60,23 +60,35 @@ jobs:
         id: artifacts
         with:
           script: |
-            const runs = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 5,
-              status: 'completed'
-            });
             const artifacts = [];
-            for (const run of runs.data.workflow_runs) {
-              const arts = await github.rest.actions.listWorkflowRunArtifacts({
+
+            let workflowRuns = [];
+            try {
+              const runs = await github.rest.actions.listWorkflowRunsForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                run_id: run.id
+                per_page: 5,
+                status: 'completed'
               });
-              for (const a of arts.data.artifacts) {
-                if (a.name.startsWith('validation-') || a.name.startsWith('test-results')) {
-                  artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url });
+              workflowRuns = runs.data.workflow_runs || [];
+            } catch (error) {
+              core.warning(`Unable to list workflow runs: ${error.message}`);
+            }
+
+            for (const run of workflowRuns) {
+              try {
+                const arts = await github.rest.actions.listWorkflowRunArtifacts({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: run.id
+                });
+                for (const a of arts.data.artifacts || []) {
+                  if (a.name.startsWith('validation-') || a.name.startsWith('test-results')) {
+                    artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url });
+                  }
                 }
+              } catch (error) {
+                core.warning(`Unable to list artifacts for run ${run.id}: ${error.message}`);
               }
             }
             core.setOutput('artifact_count', artifacts.length);
