@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4703 CI rescue — 2026-06-02T01:34Z)
+- Re-fixed yamllint crash in `Validation Pipeline / Fast Validation`: merge from `main` at commit `f1fbf94` reintroduced shell-brace `|| { ... }` syntax in `copilot-setup-steps.yml` session preload step (lines 141-145). Replaced with brace-free `run: |` / `if ! ...; then ...; fi` block so yamllint passes cleanly.
+
 ### Fixed (SN — PR #4703 merge conflicts + CI fix — 2026-06-02T00:28Z)
 - Resolved merge conflict in `.secrets.baseline` (differing `hashed_secret` for `CODEX_MANIFEST.json` between branch and main; HEAD value preserved).
 - Fixed yamllint crash in `Validation Pipeline / Fast Validation`: `.github/workflows/copilot-setup-steps.yml` session preload step was missing its `- name:` header (orphaned `run:` key). Added `- name: "🧠 Mandatory Session Context Pre-load"` with `continue-on-error: true` and brace-free `run: |` block.
