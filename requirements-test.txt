@@ -27,4 +27,4 @@ mlflow==3.11.0   # stable (promoted from RC per PR #3946 — lock.txt also uses 
 # These are required for RAG tests that were previously skipped
 sentence-transformers>=5.5.1  # Embedding models for RAG indexing/retrieval
 faiss-cpu>=1.7.4              # Vector similarity search for RAG retrieval
-openai>=2.38.0                 # OpenAI API client for RAG embeddings provider
+openai>=2.40.0                 # OpenAI API client for RAG embeddings provider
