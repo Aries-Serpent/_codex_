@@ -901,7 +901,7 @@ def _last_commit_changed(path: Path) -> bool:
 
 
 def _report_already_has_auto_entry(pr_number: str) -> bool:
-    """Return True if a auto-generated session entry for *pr_number* already exists.
+    """Return True if an auto-generated session entry for *pr_number* already exists.
 
     Searches for the specific section heading pattern produced by this script,
     not just any occurrence of the sentinel string in the file (which could appear
@@ -1591,11 +1591,13 @@ def select_merge_required_workflows(
       - agent-auth-delegation.yml       Agent token delegation / cognitive preflight
       - workflow-execution-gate.yml     WEC gate — arms all checked workflows
 
-    Always-Active (fire on push — need approval in Actions tab):
+    Always-Active at repository level (fire on push — may need approval in Actions tab):
       - copilot-agent-checkin.yml       Agent check-in / S221 guard
+      - cost-gate.yml                   Cost governance gate
+
+    Not auto-checked by this function (_WEC_NEVER_CHECK; skipped at runtime):
       - copilot-agent-session-done.yml  Auto-post @copilot review
       - copilot-iterative-self-healing.yml  Iterative self-healing CI loop
-      - cost-gate.yml                   Cost governance gate
 
     Opt-In: Selected by this function for merge readiness:
       - validate.yml                    Validation Pipeline (detect-secrets, ruff, pre-commit)

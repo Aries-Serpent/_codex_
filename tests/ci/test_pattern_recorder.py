@@ -482,6 +482,43 @@ def _compute_merge_readiness_score():
         # an issue for it because it is the auto_fix self-reference.
         assert fixer.fix_merge_readiness_dims() == []
 
+    def test_pattern_30_avoids_duplicate_module_import(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        scripts_ci = repo_root / "scripts" / "ci"
+        scripts_ci.mkdir(parents=True)
+        (repo_root / "src").mkdir()
+
+        (scripts_ci / "session_wrapup_autofix.py").write_text(
+            """
+from pathlib import Path
+
+_import_count_file = Path(__file__).with_name("import_count.txt")
+_count = int(_import_count_file.read_text(encoding="utf-8")) if _import_count_file.exists() else 0
+_import_count_file.write_text(str(_count + 1), encoding="utf-8")
+
+def _compute_merge_readiness_score():
+    return {
+        "dimensions": [("pda_entry_today", 8, "⚠️ no entry today", False)],
+        "score": 92,
+        "total": 100,
+    }
+
+def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
+    Path(__file__).with_name("pda_called.txt").write_text("called", encoding="utf-8")
+    return True
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        import_count_file = scripts_ci / "import_count.txt"
+        pda_called_file = scripts_ci / "pda_called.txt"
+        fixer = mod.CommonIssueFixer(repo_root)
+        assert fixer.fix_merge_readiness_dims() == []
+        assert import_count_file.read_text(encoding="utf-8").strip() == "1"
+        assert pda_called_file.read_text(encoding="utf-8").strip() == "called"
+
 
 class TestResolveAcctDiffBase:
     """S178: Validate the helper that walks past infra/[skip ci] commits."""
