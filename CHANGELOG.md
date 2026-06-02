@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4703 merge conflicts + CI fix — 2026-06-02T00:28Z)
+- Resolved merge conflict in `.secrets.baseline` (differing `hashed_secret` for `CODEX_MANIFEST.json` between branch and main; HEAD value preserved).
+- Fixed yamllint crash in `Validation Pipeline / Fast Validation`: `.github/workflows/copilot-setup-steps.yml` session preload step was missing its `- name:` header (orphaned `run:` key). Added `- name: "🧠 Mandatory Session Context Pre-load"` with `continue-on-error: true` and brace-free `run: |` block.
+
+
 ### Fixed (auto-update — PR #4703)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4703 (SHA `fce1fa91`) at 2026-06-01T20:13Z [auto-generated]
 
