@@ -3,12 +3,12 @@
 **Session:** PR4713-coverage-ratchet-fix | **Branch:** `dependabot/pip/ruff-0.15.15` | **PR:** #4713
 
 ### Completed
-- Diagnosed Coverage Ratchet CI failure (run #26796302105): root cause was `-x` (stop-on-first-failure) flag causing pytest to halt at first timeout, reporting near-0% coverage ✅
-- Fixed `coverage-ratchet.yml`: removed `-x`, added `--continue-on-collection-errors` to allow full coverage aggregation across all tests ✅
-- REQ-4/REQ-5 compliance documents refreshed (both files in this commit) ✅
+- Diagnosed Coverage Ratchet CI failure (run #26796302105): root cause was `-x` (stop-on-first-failure) causing pytest to halt at first timeout, reporting near-0% coverage ✅
+- Fixed `coverage-ratchet.yml`: removed `-x`, added `--continue-on-collection-errors` ✅
+- REQ-4/REQ-5 compliance documents refreshed ✅
 
 ### Validation
-- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4713` — REQ-4 ✅ REQ-5 ✅
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4713` — both gates pass ✅
 - Parallel validation: code review clean, CodeQL trivial ✅
 
 ---
