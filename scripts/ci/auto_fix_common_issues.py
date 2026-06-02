@@ -3141,14 +3141,9 @@ class CommonIssueFixer:
                     auto_applied.append(name)
 
             elif fix_type == "pda_auto":
-                # Import fix_pda_entry_today from session_wrapup_autofix and call it.
+                # Call fix_pda_entry_today from the already-loaded session_wrapup_autofix module.
                 try:
-                    swa_spec = _ilu.spec_from_file_location(
-                        "session_wrapup_autofix", swa_path
-                    )
-                    swa_mod = _ilu.module_from_spec(swa_spec)  # type: ignore[arg-type]
-                    swa_spec.loader.exec_module(swa_mod)  # type: ignore[union-attr]
-                    swa_mod.fix_pda_entry_today(
+                    swa.fix_pda_entry_today(
                         pr_number="unknown", sha="", run_url="", dry_run=False
                     )
                     auto_applied.append(name)

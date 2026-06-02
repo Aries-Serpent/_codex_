@@ -7,6 +7,7 @@ Covers:
   - scripts/ci/auto_fix_common_issues.py     (helper + classification fixes)
 """
 
+import builtins
 import importlib.util
 import json
 import subprocess
@@ -481,6 +482,37 @@ def _compute_merge_readiness_score():
         # Even though one dimension is failing, Pattern 30 must not return
         # an issue for it because it is the auto_fix self-reference.
         assert fixer.fix_merge_readiness_dims() == []
+
+    def test_pattern_30_pda_auto_reuses_loaded_session_wrapup_module(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        scripts_ci = repo_root / "scripts" / "ci"
+        scripts_ci.mkdir(parents=True)
+        (repo_root / "src").mkdir()
+
+        (scripts_ci / "session_wrapup_autofix.py").write_text(
+            """
+import builtins
+builtins._swa_import_count = getattr(builtins, "_swa_import_count", 0) + 1
+
+def _compute_merge_readiness_score():
+    return {
+        "dimensions": [("pda_entry_today", 8, "⚠️ no entry today", False)],
+        "score": 92,
+        "total": 100,
+    }
+
+def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
+    return True
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        builtins._swa_import_count = 0
+        fixer = mod.CommonIssueFixer(repo_root)
+        assert fixer.fix_merge_readiness_dims() == []
+        assert builtins._swa_import_count == 1
 
 
 class TestResolveAcctDiffBase:
