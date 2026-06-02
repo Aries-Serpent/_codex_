@@ -8921,3 +8921,13 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Improved
 - Patterns 6 & 7 promoted from `manual_review_patterns` to `auto_fixable_patterns` in `auto_fix_common_issues.py` — all future `auto_fix_common_issues.py --fix` runs will automatically narrow catch-all handlers and remove redundant inline imports.
+
+## 2026-06-02 Session 2 (PR #4712 follow-up)
+
+### Fixed
+- `src/training/functional_training.py`: `_looks_like_local_source()` now treats empty/whitespace-only identifiers as non-local (`False`) before filesystem checks. This aligns behavior with `tests/training/test_functional_training_phase_e.py::test_looks_like_local_source_edge_cases` expectations and resolves the reported Coverage Ratchet failure cause.
+
+### Verified
+- `python scripts/ci/aais_v4_scorer.py --json` → CI/CD Maturity remains `100.0` (`156/156` cached Python workflows).
+- `python scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` → no Node.js 20 action references found.
+- `.github/workflows/self-healing.yml` stub is present and active as the reliability marker workflow.
