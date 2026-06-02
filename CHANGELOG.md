@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4714 dependabot auto-absorb rate-limit retry — 2026-06-02T04:16Z)
+- Investigated `📦 Dependabot Auto-Absorb` run `26796309573` failure (`API rate limit exceeded for installation`) and hardened `.github/workflows/dependabot-auto-absorb.yml` with bounded retry/backoff for `pulls.listFiles` and `pulls.get` API calls, including safe fallback wait handling.
+
 ### Fixed (auto-update — PR #4714)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4714 (SHA `ffbbea9f`) at 2026-06-02T03:34Z [auto-generated]
 
