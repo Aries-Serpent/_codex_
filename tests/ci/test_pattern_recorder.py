@@ -542,6 +542,7 @@ class TestResolveAcctDiffBase:
         repo = tmp_path / "r"
         repo.mkdir()
         env = {
+            "GIT_AUTHOR_NAME": "test",
             "GIT_AUTHOR_EMAIL": "a@b.c",
             "GIT_COMMITTER_EMAIL": "a@b.c",
             "GIT_COMMITTER_NAME": "test",
@@ -819,10 +820,10 @@ class TestPreCommitHook:
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
         assert mod.run_check() == 0
 
-    def test_no_db_returns_zero(self, tmp_db, monkeypatch):
+    def test_no_db_returns_zero(self, tmp_db, tmp_path, monkeypatch):
         """When DB doesn't exist yet, hook should silently pass."""
         monkeypatch.setenv("CODEX_SKIP_PATTERN_WARN", "0")
-        monkeypatch.setenv("CODEX_DB_PATH", "/tmp/__nonexistent_db_xyz__.db")
+        monkeypatch.setenv("CODEX_DB_PATH", str(tmp_path / "nonexistent.db"))
         spec = importlib.util.spec_from_file_location(
             "hook_nodb", _ROOT / "scripts" / "hooks" / "pre_commit_pattern_check.py"
         )
