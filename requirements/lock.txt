@@ -1010,7 +1010,7 @@ ruamel-yaml==0.19.1
     # via
     #   dvc
     #   great-expectations
-ruff==0.15.4
+ruff==0.15.15
     # via codex-ml (pyproject.toml)
 sacrebleu==2.6.0
     # via lm-eval
