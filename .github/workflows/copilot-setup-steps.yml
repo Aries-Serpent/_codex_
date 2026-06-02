@@ -11,6 +11,7 @@ name: Copilot Agent Environment Setup
 # Documentation: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
+# Synthesised: 2026-06-02 — best-of-all-16-commits compilation
 
 on:
   workflow_dispatch:
@@ -27,7 +28,7 @@ on:
           - documentation
       # Selectively reintroduce LFS behavior behind guards (safe defaults kept)
       lfs_mode:
-        description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=full=fetch all)'
+        description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'
         required: false
         default: 'none'
         type: choice
@@ -58,20 +59,22 @@ on:
 
 env:
   PYTHON_VERSION: "3.12"
-  NODE_VERSION: "22"
-  RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
-
+  NODE_VERSION: "22"          # ← best: 8127a549 (Node 22 LTS)
+  RUST_VERSION: "stable"      # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 permissions:
-  contents: read
+  contents: read              # ← best: 8127a549 (workflow-level least-privilege baseline)
 
+# ── cancel-in-progress intentionally ABSENT ──────────────────────────────────
+# Cancelling an in-progress Copilot agent session mid-task is destructive.
+# Deliberate removal documented at 8127a549.
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
-    # Note that line 70 removed which states, `  cancel-in-progress: true`
-    # AAIS-aligned autonomous runner switch.
+    # ── AAIS-aligned autonomous runner switch ─────────────────────────────────
     # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
     #   Group : AS Larger Runners | Platform: Linux x64
     #   Image : Ubuntu Latest (24.04) | Custom image generation: Enabled (Preview)
@@ -94,15 +97,15 @@ jobs:
     #
     # Root cause of "✅ Validate Environment Setup" failures (sessions f62db13c etc.):
     #   ubuntu-latest-m may not be available in all runner groups/regions, causing
-    #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
+    #   the job to fail before any step runs. Falling back to ubuntu-latest ensures
     #   the Copilot agent session can always start; larger runners remain opt-in.
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}  # ← best: 014ceb3d (dynamic)
     timeout-minutes: 59
     permissions:
       contents: read
-      actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
-      issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write # Allow agent to post PR review comments
+      actions: write        # Required: trigger workflows, download artifacts, manage workflow runs
+      issues: write         # Allow agent to post @copilot follow-up comments
+      pull-requests: write  # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -125,9 +128,9 @@ jobs:
       - name: "📦 Checkout Repository (baseline: no LFS content)"
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
-          lfs: false                     # Baseline stability: avoid LFS fetch during setup
-          persist-credentials: true      # Keep token for any subsequent git operations
+          fetch-depth: 0               # Full history; required by some tools and avoids HEAD ambiguity
+          lfs: false                   # Baseline stability: avoid LFS fetch during setup
+          persist-credentials: true    # Keep token for any subsequent git operations
           clean: true
           show-progress: true
 
@@ -138,9 +141,16 @@ jobs:
       # This is the automated equivalent of "load memory, load accountability,
       # load codebase policies and follow" — it must run unconditionally.
       # ============================================================================
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }
+      # ← FIX: f0c80110 (PR #4703) — added missing - name: header; replaced inline
+      #   bash || { } error suppression with YAML-native continue-on-error + if/fi.
+      #   Without the - name: key this was an orphaned run: node causing YAML
+      #   structural invalidity across commits 12f7a861 → 8127a549.
+      - name: "🧠 Mandatory Session Context Pre-load"
+        continue-on-error: true
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
@@ -163,11 +173,11 @@ jobs:
           python3 scripts/ci/session_access_probe.py || {
             echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
             # Emit safe defaults so downstream steps have the vars even if probe fails
-            echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
-            echo "ACCESS_GRAPHQL=unknown"       >> "$GITHUB_ENV"
-            echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
-            echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
-            echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
+            echo "ACCESS_REST=unknown"                    >> "$GITHUB_ENV"
+            echo "ACCESS_GRAPHQL=unknown"                 >> "$GITHUB_ENV"
+            echo "ACCESS_GH_CLI=unknown"                  >> "$GITHUB_ENV"
+            echo "ACCESS_CODEQL_CLI=unknown"              >> "$GITHUB_ENV"
+            echo "ACCESS_RECOMMENDED_METHOD=local_fs"     >> "$GITHUB_ENV"
           }
           echo "::endgroup::"
 
@@ -333,9 +343,7 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
-
-            # List issue titles for agent context
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting the current PR."
             echo ""
             echo "── Open CI failure issues: ──"
             gh issue list --repo "$REPO" --label "ci-failure" --state open \
@@ -375,7 +383,8 @@ jobs:
             # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
             # session sees them as environment variables.
             # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3IgayB2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIGlzaW5zdGFuY2Uodiwoc3RyLGludCxmbG9hdCxib29sKSkgYW5kIChzdHIoaykuc3RhcnRzd2l0aCgnQ09QSUxPVF8nKSBvciBzdHIoaykuc3RhcnRzd2l0aCgnQ09ERVhfJykpOgogICAgICAgICAgICBnaF9lbnYud3JpdGUoZid7a309e3Z9XG4nKQogICAgICAgICAgICBuKz0xCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZid3YXJuaW5nOiBhZ2VudF9jb250ZXh0IGluamVjdGlvbiBmYWlsZWQ6IHtlfScpCg==' \
+              | base64 -d | python3
           else
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
@@ -388,12 +397,12 @@ jobs:
         # see the current values regardless of the bootstrap timing.
         env:
           CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
-          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
-          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
-          COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
-          COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
-          CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
+          CODEX_SWEEP_SKIP_MAIN:          ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
+          CODEX_HEALER_SKIP_SKIPCI:       ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
+          COPILOT_RUNNER_PROFILE:         ${{ vars.COPILOT_RUNNER_PROFILE }}
+          CODEX_CACHE_VERSION:            ${{ vars.CODEX_CACHE_VERSION }}
+          COPILOT_AGENT_STATE:            ${{ vars.COPILOT_AGENT_STATE }}
+          CODEX_CI_LAST_GREEN_SHA:        ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
         run: |
           # Write non-empty values to GITHUB_ENV (live override of agent_context.json).
           # ${!var} is bash indirect expansion: given var="FOO", ${!var} expands to
@@ -414,22 +423,25 @@ jobs:
           done
           echo "── Cascade-control var injection complete ──"
 
+      # ← BLEND: graceful file-existence guard from 014ceb3d wraps the smoke-test
+      #   + symlink block from 8127a549. Hard exit 1 only triggers if file is present
+      #   but install fails — missing file is treated as non-blocking (fresh checkout).
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
-          set -euo pipefail
           if [ ! -f scripts/ci/safe_git_show.sh ]; then
-            echo "::error::scripts/ci/safe_git_show.sh is missing — cannot install git-show guard"
-            exit 1
+            echo "⚠️ scripts/ci/safe_git_show.sh not found — skipping (non-blocking)"
+          else
+            set -euo pipefail
+            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+            ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
+            echo "✅ safe_git_show installed at $(command -v safe_git_show)"
+            # Smoke-test: source and call with a known-good ref
+            # shellcheck source=/dev/null
+            source /usr/local/bin/safe_git_show.sh
+            safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
+              && echo "✅ safe_git_show smoke-test passed" \
+              || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
           fi
-          install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
-          ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
-          echo "✅ safe_git_show installed at $(command -v safe_git_show)"
-          # Smoke-test: source and call with a known-good ref
-          # shellcheck source=/dev/null
-          source /usr/local/bin/safe_git_show.sh
-          safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
-            && echo "✅ safe_git_show smoke-test passed" \
-            || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
@@ -457,12 +469,9 @@ jobs:
         continue-on-error: ${{ inputs.lfs_continue_on_error }}
         run: |
           set -euo pipefail
-          # Convert comma-separated include patterns into git-lfs include string
           INCLUDES="${{ inputs.lfs_include_paths }}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
-
-          # Retry LFS fetch to handle transient network issues
           for i in 1 2 3; do
             echo "Attempt $i: git lfs fetch --include=\"$INCLUDES_CLEAN\" origin"
             if git lfs fetch --include="$INCLUDES_CLEAN" origin; then
@@ -473,8 +482,6 @@ jobs:
               sleep $((i * 5))
             fi
           done
-
-          # Checkout only targeted LFS files
           git lfs checkout --include="$INCLUDES_CLEAN" || true
 
       - name: "🌐 Full LFS fetch & checkout (guarded)"
@@ -482,7 +489,6 @@ jobs:
         continue-on-error: ${{ inputs.lfs_continue_on_error }}
         run: |
           set -euo pipefail
-          # Retry LFS fetch --all; guarded to avoid hard failure if repository has missing blobs
           for i in 1 2 3; do
             echo "Attempt $i: git lfs fetch --all origin"
             if git lfs fetch --all origin; then
@@ -493,18 +499,15 @@ jobs:
               sleep $((i * 5))
             fi
           done
-
-          # Materialize LFS files
           git lfs checkout || true
 
       - name: "🔍 Detect Environment Type"
         id: detect_env
         env:
-          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REF:       ${{ github.head_ref }}
           INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
         run: |
           ENV_TYPE="${INPUT_ENV_TYPE}"
-          # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
             if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
               ENV_TYPE="ml-heavy"
@@ -549,33 +552,33 @@ jobs:
           RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
 
           case "$ENV_TYPE" in
-            ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
-            security-scan)    MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
-            documentation)    MIN_TIER="standard"     ; MIN_CPUS=2  ; RECOMMENDED="ubuntu-latest-m"  ;;
-            *)                MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
+            ml-heavy)      MIN_TIER="medium"       ; MIN_CPUS=8 ; RECOMMENDED="ubuntu-8-core"   ;;
+            security-scan) MIN_TIER="standard-plus"; MIN_CPUS=4 ; RECOMMENDED="ubuntu-latest-m" ;;
+            documentation) MIN_TIER="standard"     ; MIN_CPUS=2 ; RECOMMENDED="ubuntu-latest-m" ;;
+            *)             MIN_TIER="standard-plus"; MIN_CPUS=4 ; RECOMMENDED="ubuntu-latest-m" ;;
           esac
 
           # ── AAIS Runtime Introspection output ─────────────────────────────
           echo ""
-          echo "╔══════════════════════════════════════════════════════════════╗"
-          echo "║  🧠 AAIS Runner Adequacy Assessment (Pillar 3: Observability) ║"
-          echo "╠══════════════════════════════════════════════════════════════╣"
+          echo "╔══════════════════════════════════════════════════════════════════╗"
+          echo "║  🧠 AAIS Runner Adequacy Assessment (Pillar 3: Observability)   ║"
+          echo "╠══════════════════════════════════════════════════════════════════╣"
           echo "║  Active runner    : ${RUNNER_PROFILE} (${CPUS} vCPU / ${MEM_GB} GB RAM)"
           echo "║  Runner tier      : ${RUNNER_TIER}"
           echo "║  Environment type : ${ENV_TYPE}"
-          echo "║  Required tier    : ${MIN_TIER} (≥ ${MIN_CPUS} vCPU)"
-          echo "╠══════════════════════════════════════════════════════════════╣"
+          echo "║  Required tier    : ${MIN_TIER} (>= ${MIN_CPUS} vCPU)"
+          echo "╠══════════════════════════════════════════════════════════════════╣"
 
           if [[ $CPUS -ge $MIN_CPUS ]]; then
             echo "║  ✅ ADEQUATE — runner meets requirements for ${ENV_TYPE}"
             echo "runner_adequate=true" >> "$GITHUB_OUTPUT"
           else
-            echo "║  ⚠️  UNDER-PROVISIONED — ${ENV_TYPE} needs ≥ ${MIN_CPUS} vCPU (got ${CPUS})"
-            echo "║     → Set repo variable COPILOT_RUNNER_PROFILE=${RECOMMENDED}"
-            echo "║     → See docs/plans/larger-runners-upgrade.md"
+            echo "║  ⚠️  UNDER-PROVISIONED — ${ENV_TYPE} needs >= ${MIN_CPUS} vCPU (got ${CPUS})"
+            echo "║     -> Set repo variable COPILOT_RUNNER_PROFILE=${RECOMMENDED}"
+            echo "║     -> See docs/plans/larger-runners-upgrade.md"
             echo "runner_adequate=false" >> "$GITHUB_OUTPUT"
           fi
-          echo "╚══════════════════════════════════════════════════════════════╝"
+          echo "╚══════════════════════════════════════════════════════════════════╝"
           echo ""
 
       # ============================================================================
@@ -615,10 +618,10 @@ jobs:
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '22' }}"
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
-          node-version: ${{ env.NODE_VERSION || '20' }}
+          node-version: ${{ env.NODE_VERSION || '22' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
@@ -672,6 +675,7 @@ jobs:
               exit 1
             fi
           fi
+          # ← best: 8127a549 — use PYTHON_BIN -m pip to avoid direct-launcher drift
           PYTHON_BIN=".venv_ci/bin/python"
           "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
           # Add venv to PATH for all subsequent steps in this job
@@ -682,7 +686,6 @@ jobs:
         env:
           VENV_CACHE_HIT: ${{ steps.cache-venv.outputs.cache-hit }}
         run: |
-          # Install core project deps into .venv_ci (skip full rebuild on exact cache hit)
           if [ "${VENV_CACHE_HIT}" != "true" ]; then
             pip install --cache-dir ~/.cache/pip \
               pytest==8.4.2 pytest-timeout==2.4.0 pytest-xdist==3.8.0 \
@@ -692,19 +695,15 @@ jobs:
           else
             pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
           fi
-          # Install additional agent tooling
           pip install --cache-dir ~/.cache/pip \
             ruff black mypy --quiet
 
       - name: "🤖 Install Python Dependencies (ML-Heavy)"
         if: steps.detect_env.outputs.environment_type == 'ml-heavy'
         run: |
-          # Force CPU-only PyTorch for faster installs
           pip install --cache-dir ~/.cache/pip \
             torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --quiet
-          # Install with ML extras
           pip install --cache-dir ~/.cache/pip -e ".[dev,ml]" --quiet
-          # Install ML-specific tools
           pip install --cache-dir ~/.cache/pip \
             transformers sentence-transformers scikit-learn mlflow --quiet
 
@@ -712,7 +711,6 @@ jobs:
         if: steps.detect_env.outputs.environment_type == 'security-scan'
         run: |
           pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
-          # Install security scanning tools
           pip install --cache-dir ~/.cache/pip \
             bandit safety pip-audit semgrep --quiet
 
@@ -720,7 +718,6 @@ jobs:
         if: steps.detect_env.outputs.environment_type == 'documentation'
         run: |
           pip install --cache-dir ~/.cache/pip -e ".[dev,docs]" --quiet
-          # Install documentation tools
           pip install --cache-dir ~/.cache/pip \
             mkdocs mkdocs-material mkdocstrings mkdocstrings-python --quiet
 
@@ -767,22 +764,17 @@ jobs:
 
       - name: "⚙️ Set Codex Environment Variables"
         run: |
-          # Core configuration
-          echo "CODEX_ENV=copilot-agent" >> "$GITHUB_ENV"
-          echo "CODEX_FORCE_CPU=1" >> "$GITHUB_ENV"
-          echo "RAG_EMBEDDING_PROVIDER=tfidf" >> "$GITHUB_ENV"
-          echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH" >> "$GITHUB_ENV"
-          # Logging configuration
-          echo "CODEX_LOG_LEVEL=INFO" >> "$GITHUB_ENV"
-          echo "CODEX_SESSION_LOG_DIR=${{ github.workspace }}/.codex/sessions" >> "$GITHUB_ENV"
-          # Database paths
-          echo "CODEX_DB_PATH=${{ github.workspace }}/.codex/codex.db" >> "$GITHUB_ENV"
-          # Disable interactive prompts
-          echo "DEBIAN_FRONTEND=noninteractive" >> "$GITHUB_ENV"
-          echo "PIP_NO_INPUT=1" >> "$GITHUB_ENV"
-          # GitHub-specific
-          echo "CI=true" >> "$GITHUB_ENV"
-          echo "GITHUB_COPILOT_AGENT=true" >> "$GITHUB_ENV"
+          echo "CODEX_ENV=copilot-agent"                                            >> "$GITHUB_ENV"
+          echo "CODEX_FORCE_CPU=1"                                                  >> "$GITHUB_ENV"
+          echo "RAG_EMBEDDING_PROVIDER=tfidf"                                       >> "$GITHUB_ENV"
+          echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH"                 >> "$GITHUB_ENV"
+          echo "CODEX_LOG_LEVEL=INFO"                                               >> "$GITHUB_ENV"
+          echo "CODEX_SESSION_LOG_DIR=${{ github.workspace }}/.codex/sessions"      >> "$GITHUB_ENV"
+          echo "CODEX_DB_PATH=${{ github.workspace }}/.codex/codex.db"              >> "$GITHUB_ENV"
+          echo "DEBIAN_FRONTEND=noninteractive"                                     >> "$GITHUB_ENV"
+          echo "PIP_NO_INPUT=1"                                                     >> "$GITHUB_ENV"
+          echo "CI=true"                                                            >> "$GITHUB_ENV"
+          echo "GITHUB_COPILOT_AGENT=true"                                          >> "$GITHUB_ENV"
 
       - name: "🔑 Export Auth Tokens to Agent Environment"
         # CRITICAL: CODEX_MASTER_KEY and CODEX_BACKUP_KEY are declared in the
@@ -799,7 +791,6 @@ jobs:
         # See docs/agent/COPILOT_TOKEN_GUIDE.md for complete reference.
         run: |
           echo "── Auth token export ──────────────────────────────────────────"
-          # Export CODEX_MASTER_KEY (full PAT — needed for variables/secrets API)
           if [ -n "${CODEX_MASTER_KEY:-}" ]; then
             echo "CODEX_MASTER_KEY=${CODEX_MASTER_KEY}" >> "$GITHUB_ENV"
             echo "  ✅ CODEX_MASTER_KEY → GITHUB_ENV (${#CODEX_MASTER_KEY} chars)"
@@ -807,13 +798,11 @@ jobs:
             echo "  ⚠️  CODEX_MASTER_KEY not set — variable writes will fall back to GITHUB_TOKEN"
             echo "     Set org secret CODEX_MASTER_KEY (classic PAT, repo scope)"
           fi
-          # Export CODEX_BACKUP_KEY
           if [ -n "${CODEX_BACKUP_KEY:-}" ]; then
             echo "CODEX_BACKUP_KEY=${CODEX_BACKUP_KEY}" >> "$GITHUB_ENV"
             echo "  ✅ CODEX_BACKUP_KEY → GITHUB_ENV (${#CODEX_BACKUP_KEY} chars)"
           fi
           # Always export GITHUB_TOKEN under a stable name for agent use.
-          # GITHUB_TOKEN is auto-provided by Actions and has actions:write (set above).
           echo "AGENT_GITHUB_TOKEN=${GITHUB_TOKEN}" >> "$GITHUB_ENV"
           echo "  ✅ AGENT_GITHUB_TOKEN → GITHUB_ENV (${#GITHUB_TOKEN} chars)"
           echo "     Scopes: actions:write (trigger workflows, manage runs, download artifacts)"
@@ -835,24 +824,19 @@ jobs:
 
       - name: "✅ Validate Environment Setup"
         run: |
-          # ── Root-cause fix for Copilot Coding Agent "Validate Environment
-          # Setup" failures (every session).
-          # GitHub Actions bash defaults to `set -eo pipefail`.  When `pip list`
-          # outputs 100+ packages and `head -20` closes the pipe after 20 lines,
-          # pip receives SIGPIPE → exit 141 → pipefail treats the whole pipeline
-          # as failed → the step exits non-zero → the Copilot agent reports
-          # "custom setup step failed".
-          #
-          # Fix: suppress SIGPIPE (this is a diagnostic step, not a build step)
-          # and guard every pipe command so partial reads never fail the step.
-          trap '' PIPE          # ignore SIGPIPE for this step
-          set +o pipefail       # don't fail on SIGPIPE in pipelines
+          # ── Root-cause fix for "Validate Environment Setup" failures.
+          # GitHub Actions bash defaults to set -eo pipefail. When pip list
+          # outputs 100+ packages and head -20 closes the pipe, pip receives
+          # SIGPIPE → exit 141 → pipefail fails the step.
+          # Fix: suppress SIGPIPE in this diagnostic-only step.
+          trap '' PIPE
+          set +o pipefail
 
           echo "==================== Environment Validation ===================="
           echo "Python Version: $(python --version 2>&1)"
-          echo "Pip Version: $(pip --version 2>&1)"
-          echo "Node Version: $(node --version 2>/dev/null || echo 'Not installed')"
-          echo "Rust Version: $(rustc --version 2>/dev/null || echo 'Not installed')"
+          echo "Pip Version:    $(pip --version 2>&1)"
+          echo "Node Version:   $(node --version 2>/dev/null || echo 'Not installed')"
+          echo "Rust Version:   $(rustc --version 2>/dev/null || echo 'Not installed')"
           echo ""
           echo "==================== Installed Packages ===================="
           pip list 2>/dev/null | head -20 || true
@@ -875,15 +859,13 @@ jobs:
       - name: "🏥 Run Health Check"
         run: |
           echo "Checking critical paths..."
-          test -d src/codex && echo "✅ src/codex exists" || echo "❌ src/codex missing"
-          test -d .codex && echo "✅ .codex exists" || echo "❌ .codex missing"
-          test -d tests && echo "✅ tests exists" || echo "❌ tests missing"
+          test -d src/codex    && echo "✅ src/codex exists"     || echo "❌ src/codex missing"
+          test -d .codex       && echo "✅ .codex exists"        || echo "❌ .codex missing"
+          test -d tests        && echo "✅ tests exists"         || echo "❌ tests missing"
           test -f pyproject.toml && echo "✅ pyproject.toml exists" || echo "❌ pyproject.toml missing"
-          # Verify Python imports work
           python -c "import codex; print('✅ codex package importable')" || echo "⚠️  codex package import failed"
-          # Verify tools are available
-          which ruff && echo "✅ ruff available" || echo "⚠️  ruff not available"
-          which black && echo "✅ black available" || echo "⚠️  black not available"
+          which ruff   && echo "✅ ruff available"   || echo "⚠️  ruff not available"
+          which black  && echo "✅ black available"  || echo "⚠️  black not available"
           which pytest && echo "✅ pytest available" || echo "⚠️  pytest not available"
 
       - name: "📊 Session Lifecycle Metrics"
@@ -893,18 +875,17 @@ jobs:
             echo "──────── Session Lifecycle Metrics ────────"
             python scripts/session_tracker.py metrics || true
             echo ""
-            # Write JSON metrics to GITHUB_STEP_SUMMARY
             METRICS_JSON=$(python scripts/session_tracker.py metrics --format json 2>/dev/null || echo '{}')
             echo "## 📊 Session Lifecycle Metrics" >> "$GITHUB_STEP_SUMMARY"
-            echo '```json' >> "$GITHUB_STEP_SUMMARY"
-            echo "$METRICS_JSON" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json'                          >> "$GITHUB_STEP_SUMMARY"
+            echo "$METRICS_JSON"                   >> "$GITHUB_STEP_SUMMARY"
+            echo '```'                              >> "$GITHUB_STEP_SUMMARY"
           else
             echo "⚠️  session_tracker.py not found — skipping metrics"
           fi
 
       # ============================================================================
-      # Phase 8: Cache Preparation (Optional)
+      # Phase 8: Cache Preparation
       # ============================================================================
 
       - name: "💾 Prepare Cache Artifacts"
@@ -918,9 +899,6 @@ jobs:
         env:
           CODEX_SESSION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
         run: |
-          # Run accountability auto-update in dry-run mode during setup to
-          # pre-validate the script. The actual --commit run is triggered at
-          # session close by the agent itself or post-job hooks.
           if [ -f src/codex/session/accountability_autoupdate.py ]; then
             echo "✅ Accountability auto-update script available"
             python -m src.codex.session.accountability_autoupdate --dry-run 2>/dev/null \
@@ -956,7 +934,7 @@ jobs:
         # Sprint 2: auto-start FastAPI :8765 so the CLI tab is live when the
         # Copilot agent session begins. Guarded — non-blocking on missing deps.
         # Gap-fix (S112): export CODEX_CLI_API_URL so BrainClient + agents can
-        # discover the server URL without hard-coding it.  Also add a retry loop
+        # discover the server URL without hard-coding it. Also add a retry loop
         # (up to 5 × 1 s) so slow startup does not produce a false-negative.
         continue-on-error: true
         run: |
@@ -965,11 +943,6 @@ jobs:
             exit 0
           fi
           pip install fastapi uvicorn httpx ptyprocess --quiet 2>/dev/null || true
-          # Explicitly forward auth tokens to the server process env.
-          # Even though CODEX_MASTER_KEY is in the job env block, child processes
-          # started with nohup inherit from the CURRENT step env — which already
-          # has these values. The explicit assignment below makes the intent clear
-          # and is idempotent.
           export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
           export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
           export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
@@ -980,13 +953,7 @@ jobs:
             > "${RUNNER_TEMP}/cli_api_server.log" 2>&1 &
           CLI_API_PID=$!
           echo "CLI_API_SERVER_PID=${CLI_API_PID}" >> "$GITHUB_ENV"
-          # Always export http://localhost:8765 — the server is started on that
-          # fixed address above.  Deriving from COPILOT_CLI_BASE_URL was
-          # misleading: if that variable pointed to a different host/port the
-          # exported URL would be wrong while the health check (which always
-          # hits localhost:8765) still passed.  Hard-code the actual address.
           echo "CODEX_CLI_API_URL=http://localhost:8765" >> "$GITHUB_ENV"
-          # Retry health-check up to 5 s to accommodate slower startup
           SERVER_READY=0
           for i in 1 2 3 4 5; do
             sleep 1
@@ -999,7 +966,6 @@ jobs:
             echo "✅ CLI API Server ready on :8765 (PID=${CLI_API_PID})"
             echo "   BrainClient URL: http://localhost:8765"
             echo "   Import: from codex.agents.brain_client import BrainClient"
-            # Report which auth token the server can use for GitHub API calls
             if [ -n "${CODEX_MASTER_KEY:-}" ]; then
               echo "   🔑 Auth: CODEX_MASTER_KEY active (full PAT — variables/secrets API ✅)"
             elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
@@ -1014,6 +980,10 @@ jobs:
             cat "${RUNNER_TEMP}/cli_api_server.log" 2>/dev/null | tail -20 || true
           fi
 
+      # ============================================================================
+      # Phase 10: Environment Report  ← RESTORED from 014ceb3d
+      # ============================================================================
+
       - name: "📊 Generate Environment Report (temp path)"
         id: gen_report
         if: always()
@@ -1024,16 +994,16 @@ jobs:
           REPORT="$REPORT_DIR/.copilot-agent-environment-report.txt"
           {
             echo "==================== Copilot Agent Environment Report ===================="
-            echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            echo "Generated:        $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
             echo "Environment Type: ${{ steps.detect_env.outputs.environment_type }}"
-            echo "Runner: ${{ runner.os }} ${{ runner.arch }}"
+            echo "Runner:           ${{ runner.os }} ${{ runner.arch }}"
             echo ""
             echo "Python: $(python --version)"
-            echo "Node: $(node --version 2>/dev/null || echo 'N/A')"
-            echo "Rust: $(rustc --version 2>/dev/null || echo 'N/A')"
+            echo "Node:   $(node --version 2>/dev/null || echo 'N/A')"
+            echo "Rust:   $(rustc --version 2>/dev/null || echo 'N/A')"
             echo ""
             echo "Installed Packages: $(pip list | wc -l) packages"
-            echo "Disk Space: $(df -h / | tail -1 | awk '{print $4}') available"
+            echo "Disk Space:         $(df -h / | tail -1 | awk '{print $4}') available"
             echo ""
             echo "Status: ✅ Environment ready for Copilot agent operations"
           } > "$REPORT"
@@ -1043,7 +1013,7 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
@@ -1053,21 +1023,31 @@ jobs:
 # ============================================================================
 # Workflow Metadata
 # ============================================================================
-# Version: 1.1.0
-# Created: 2026-01-28
-# Updated: 2026-01-30
+# Version: 1.2.0 (synthesised best-of-16)
+# Created:  2026-01-28
+# Synthesised: 2026-06-02
+# Sources:
+#   - 014ceb3d (2026-03-29): dynamic runs-on, report steps, rescue-comment job
+#   - 8127a549 (2026-06-01): SHA pins, Node 22, cascade-control vars, access probe,
+#                            RAG context, PYTHON_BIN -m pip pattern
+#   - f0c80110 / PR #4703:   session preload step structural fix
+# Changes from 8127a549 HEAD:
+#   1. Session preload — added missing - name: header; replaced || {} with
+#      continue-on-error: true + if ! ...; then fi  (P0 correctness fix)
+#   2. runs-on — restored dynamic ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
+#   3. safe-git-show — graceful non-blocking guard when script is absent
+#   4. Restored: 📊 Generate Environment Report + 📤 Upload steps
+#   5. Restored: rescue-comment job (auto-posts @copilot on PR failure)
 # Baseline stability maintained:
-# - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
-# - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
-# Selective adoption (guarded via workflow_dispatch inputs):
-# - lfs_mode: targeted/full with retries and continue-on-error option
-# - lfs_include_paths: limit LFS scope to required areas
-# - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
+#   - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
+#   - cancel-in-progress intentionally absent (destructive for agent sessions)
+#   - All action uses: lines SHA-pinned for supply-chain security
 # Policy: .codex/CODEBASE_AGENCY_POLICY.md
 # Integration: Cognitive Brain Phase objectives
 # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
+  # ← RESTORED from 014ceb3d (was silently dropped in 8127a549 lineage)
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -1081,20 +1061,82 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
+      - name: Post or append @copilot rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
+          GH_TOKEN:      ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER:     ${{ github.event.pull_request.number }}
+          REPO:          ${{ github.repository }}
+          COMMIT_SHA:    ${{ github.event.pull_request.head.sha }}
+          RUN_ID:        ${{ github.run_id }}
           WORKFLOW_NAME: "Copilot Setup Steps"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+          RUN_URL:       ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH:        ${{ github.head_ref }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, urllib.request, urllib.error, datetime
+          token      = os.environ["GH_TOKEN"]
+          pr_number  = int(os.environ["PR_NUMBER"])
+          repo       = os.environ["REPO"]
+          commit_sha = os.environ["COMMIT_SHA"]
+          run_id     = os.environ["RUN_ID"]
+          run_url    = os.environ["RUN_URL"]
+          workflow   = os.environ["WORKFLOW_NAME"]
+          branch     = os.environ["BRANCH"]
+          now        = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+          sha_short  = commit_sha[:12]
+          MARKER = f"<!-- ci-rescue:{pr_number} -->"
+          API    = "https://api.github.com"
+          HDRS   = {
+            "Authorization":        f"Bearer {token}",
+            "Accept":               "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type":         "application/json",
+          }
+          def gh(method, path, body=None):
+            url  = f"{API}{path}"
+            data = json.dumps(body).encode() if body else None
+            req  = urllib.request.Request(url, data=data, headers=HDRS, method=method)
+            try:
+              with urllib.request.urlopen(req, timeout=20) as r:
+                return r.status, json.loads(r.read())
+            except urllib.error.HTTPError as e:
+              return e.code, {}
+          rescue_body = f"""{MARKER}
+          ## 🚨 CI Rescue — @copilot Fix Required
+
+          **Workflow:** `{workflow}`
+          **Run:** [{run_id}]({run_url})
+          **Branch:** `{branch}`
+          **Commit:** `{sha_short}`
+          **Time:** {now}
+
+          @copilot The `{workflow}` workflow failed on this PR.
+          Please review the [workflow logs]({run_url}), identify the root cause, and push a fix.
+
+          ---
+          _[🔗 Workflow run]({run_url})_"""
+          # Find existing rescue comment by MARKER
+          existing_id   = None
+          existing_body = ""
+          page = 1
+          while True:
+            status, comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
+            if status != 200 or not comments:
+              break
+            for c in comments:
+              if MARKER in c.get("body", ""):
+                existing_id   = c["id"]
+                existing_body = c["body"]
+                break
+            if existing_id or len(comments) < 100:
+              break
+            page += 1
+          # Upsert: append to existing or post new
+          if existing_id:
+            new_body = existing_body + f"\n\n---\n**Re-triggered:** {now} — [Run {run_id}]({run_url})"
+            status, _ = gh("PATCH", f"/repos/{repo}/issues/comments/{existing_id}", {"body": new_body})
+            print(f"Updated rescue comment #{existing_id} (HTTP {status})")
+          else:
+            status, resp = gh("POST", f"/repos/{repo}/issues/{pr_number}/comments", {"body": rescue_body})
+            print(f"Posted rescue comment (HTTP {status}, id={resp.get('id', '?')})")
+          PYEOF
