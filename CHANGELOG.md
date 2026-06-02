@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4706)
+- Conflict-resolution follow-up: merged `origin/main` into PR branch and re-verified explicit cherry-pick provenance coverage for #4707/#4708/#4710-#4717 at 2026-06-02T11:30Z.
+
+### Fixed (auto-update — PR #4706)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4706 (SHA `8b773c99`) at 2026-06-02T11:26Z [auto-generated]
+
+### Fixed (auto-update — PR #4707)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4707 (SHA `1d0c63c0`) at 2026-06-02T03:21Z [auto-generated]
+### Fixed (SN — PR #4713 coverage-ratchet coverage-timeout fix — 2026-06-02T04:25Z)
+- Removed `-x` (stop-on-first-failure) flag from `coverage-ratchet.yml`; replaced with `--continue-on-collection-errors`. Fixes `coverage-timeout` pattern where a single timed-out or failing test caused pytest to halt early, reporting near-0% coverage and falsely failing the ratchet gate.
+
+### Fixed (SN — PR #4713 priority tasks — 2026-06-02T04:03Z)
+- Actioned P1–P4 follow-up tasks for PR #4713 (ruff 0.15.4→0.15.15 bump): verified CI/CD Maturity at 100% (156/156 workflows with cache), self-healing stub in place, pattern 21 (Node.js 20) clean, and post-merge sync_tracked_files prepared. Cost bot findings reviewed; all RED-tier workflows have built-in cost gates by design.
+
+### Fixed (auto-update — PR #4713)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4713 (SHA `2c94cf60`) at 2026-06-02T03:31Z [auto-generated]
+### Fixed (SN — PR #4714 dependabot auto-absorb rate-limit retry — 2026-06-02T04:16Z)
+- Investigated `📦 Dependabot Auto-Absorb` run `26796309573` failure (`API rate limit exceeded for installation`) and hardened `.github/workflows/dependabot-auto-absorb.yml` with bounded retry/backoff for `pulls.listFiles` and `pulls.get` API calls, including safe fallback wait handling.
+
+### Fixed (auto-update — PR #4714)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4714 (SHA `ffbbea9f`) at 2026-06-02T03:34Z [auto-generated]
+### Fixed (SN — PR #4707 QA walkthrough CI rescue — 2026-06-02T04:32Z)
+- Hardened `.github/workflows/qa-walkthrough.yml` artifact discovery step with non-blocking API error handling so rate-limit/API failures emit warnings and continue.
+- Improved warning diagnostics in the QA walkthrough artifact scan to include error type and HTTP status where available.
+- Restored robust YAML parsing in `.github/workflows/copilot-setup-steps.yml` session preload step by replacing shell-brace syntax with a `run: |` block using `if ! ...; then ...; fi`.
+### Fixed (SN — PR #4717 P1–P4 follow-up — 2026-06-02T04:28Z)
+- **P1 CI/CD Maturity**: Verified `aais_v4_scorer` CI/CD Maturity = 100% (156/156 Python workflows with cache). No new workflows required caching fixes.
+- **P2 Reliability**: Confirmed `.github/workflows/self-healing.yml` stub in place; AAIS Reliability gate = 100% (`healing_loop=True`, `self_healing_wf=True`).
+- **P3 Node.js 20 deadline (2026-06-02)**: Ran `auto_fix_common_issues.py --check-only --pattern 21` — all 178 workflows clean, zero deprecated Node.js 20 action refs found. All action families already at Node.js 24-compatible versions (checkout/artifact/cache/deploy v5+, setup-python v6+, github-script v8+).
+- **P4 Post-merge**: `sync_tracked_files --check` confirms all tracked files consistent; `sync_tracked_files --fix` scheduled for main after merge.
+- All bot-reported pre-merge validation checks passing (auto-fix ✅, CI pattern pipeline ✅, mermaid drift ✅, quick tests ✅, code quality ✅).
+
+### Fixed (auto-update — PR #4717)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4717 (SHA `a71a93dd`) at 2026-06-02T03:44Z [auto-generated]
+
 ### Fixed (SN — PR #4703 CI monitoring — 2026-06-02T02:13Z)
 - Continued CI monitoring for PR #4703 vitest bump on commit `921d7fc1`; all critical checks green. yamllint stable (exit 0). Refreshed REQ-4/REQ-5 compliance docs.
 
@@ -8918,3 +8953,13 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Improved
 - Patterns 6 & 7 promoted from `manual_review_patterns` to `auto_fixable_patterns` in `auto_fix_common_issues.py` — all future `auto_fix_common_issues.py --fix` runs will automatically narrow catch-all handlers and remove redundant inline imports.
+
+## 2026-06-02 Session 2 (PR #4712 follow-up)
+
+### Fixed
+- `src/training/functional_training.py`: `_looks_like_local_source()` now treats empty/whitespace-only identifiers as non-local (`False`) before filesystem checks. This aligns behavior with `tests/training/test_functional_training_phase_e.py::test_looks_like_local_source_edge_cases` expectations and resolves the reported Coverage Ratchet failure cause.
+
+### Verified
+- `python scripts/ci/aais_v4_scorer.py --json` → CI/CD Maturity remains `100.0` (`156/156` cached Python workflows).
+- `python scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` → no Node.js 20 action references found.
+- `.github/workflows/self-healing.yml` stub is present and active as the reliability marker workflow.

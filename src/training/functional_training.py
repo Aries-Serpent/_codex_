@@ -169,6 +169,9 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     norm = _normalize_identifier(identifier)
     if norm is None:
         return False
+    # Empty / whitespace-only identifiers are not valid local paths.
+    if not norm.strip():
+        return False
     if norm.startswith(_LOCAL_PATH_PREFIXES):
         return True
     try:
