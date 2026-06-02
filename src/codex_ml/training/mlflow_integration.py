@@ -7,8 +7,10 @@ when MLflow is unavailable. Designed for offline-first operation.
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +78,11 @@ class MLflowTracker:
     def _initialize(self):
         """Initialize MLflow with error handling."""
         try:
+            parsed_uri = urlparse(self.tracking_uri)
+            is_local_tracking = parsed_uri.scheme in {"", "file"}
+            if is_local_tracking and not os.environ.get("MLFLOW_ALLOW_FILE_STORE"):
+                os.environ["MLFLOW_ALLOW_FILE_STORE"] = "true"
+
             # set tracking URI (local by default for offline)
             mlflow.set_tracking_uri(self.tracking_uri)
 

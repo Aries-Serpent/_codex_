@@ -1,5 +1,6 @@
 """Tests for MLflow integration."""
 
+import os
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -49,6 +50,18 @@ def test_mlflow_tracker_graceful_degradation():
         tracker.log_metrics({"loss": 0.5}, step=1)
         tracker.log_params({"lr": 0.001})
         tracker.log_artifact("/tmp/test.txt")
+
+
+def test_mlflow_tracker_sets_file_store_env_for_local_uri():
+    """Test local-path tracking enables file-store compatibility flag."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with patch("codex_ml.training.mlflow_integration.MLFLOW_AVAILABLE", True):
+            with patch("codex_ml.training.mlflow_integration.mlflow"):
+                with patch.dict(os.environ, {}, clear=True):
+                    tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
+
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
+                    assert tracker.active is True
 
 
 @pytest.mark.skipif(not is_mlflow_available(), reason="MLflow not installed")
