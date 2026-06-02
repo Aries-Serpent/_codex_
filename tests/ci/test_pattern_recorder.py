@@ -7,7 +7,6 @@ Covers:
   - scripts/ci/auto_fix_common_issues.py     (helper + classification fixes)
 """
 
-import builtins
 import importlib.util
 import json
 import subprocess
@@ -483,7 +482,7 @@ def _compute_merge_readiness_score():
         # an issue for it because it is the auto_fix self-reference.
         assert fixer.fix_merge_readiness_dims() == []
 
-    def test_pattern_30_pda_auto_reuses_loaded_session_wrapup_module(self, tmp_path):
+    def test_pattern_30_avoids_duplicate_module_import(self, tmp_path):
         mod = _load_auto_fix()
         repo_root = tmp_path / "repo"
         scripts_ci = repo_root / "scripts" / "ci"
@@ -492,8 +491,11 @@ def _compute_merge_readiness_score():
 
         (scripts_ci / "session_wrapup_autofix.py").write_text(
             """
-import builtins
-builtins._swa_import_count = getattr(builtins, "_swa_import_count", 0) + 1
+from pathlib import Path
+
+_import_count_file = Path(__file__).with_name("import_count.txt")
+_count = int(_import_count_file.read_text(encoding="utf-8")) if _import_count_file.exists() else 0
+_import_count_file.write_text(str(_count + 1), encoding="utf-8")
 
 def _compute_merge_readiness_score():
     return {
@@ -503,16 +505,19 @@ def _compute_merge_readiness_score():
     }
 
 def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
+    Path(__file__).with_name("pda_called.txt").write_text("called", encoding="utf-8")
     return True
 """.strip()
             + "\n",
             encoding="utf-8",
         )
 
-        builtins._swa_import_count = 0
+        import_count_file = scripts_ci / "import_count.txt"
+        pda_called_file = scripts_ci / "pda_called.txt"
         fixer = mod.CommonIssueFixer(repo_root)
         assert fixer.fix_merge_readiness_dims() == []
-        assert builtins._swa_import_count == 1
+        assert import_count_file.read_text(encoding="utf-8").strip() == "1"
+        assert pda_called_file.read_text(encoding="utf-8").strip() == "called"
 
 
 class TestResolveAcctDiffBase:
