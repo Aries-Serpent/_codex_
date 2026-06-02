@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #4714)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4714 (SHA `ffbbea9f`) at 2026-06-02T03:34Z [auto-generated]
+### Fixed (SN — PR #4707 QA walkthrough CI rescue — 2026-06-02T04:32Z)
+- Hardened `.github/workflows/qa-walkthrough.yml` artifact discovery step with non-blocking API error handling so rate-limit/API failures emit warnings and continue.
+- Improved warning diagnostics in the QA walkthrough artifact scan to include error type and HTTP status where available.
+- Restored robust YAML parsing in `.github/workflows/copilot-setup-steps.yml` session preload step by replacing shell-brace syntax with a `run: |` block using `if ! ...; then ...; fi`.
 
 ### Fixed (SN — PR #4703 CI monitoring — 2026-06-02T02:13Z)
 - Continued CI monitoring for PR #4703 vitest bump on commit `921d7fc1`; all critical checks green. yamllint stable (exit 0). Refreshed REQ-4/REQ-5 compliance docs.
