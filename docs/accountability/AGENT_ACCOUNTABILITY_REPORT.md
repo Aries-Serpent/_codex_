@@ -8,6 +8,34 @@
 
 ---
 
+## SESSION SUMMARY — 2026-06-03T14:06Z · PR #4731 CI rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed before making changes ✅
+- [x] **0b.** Failing CI checks reviewed from GitHub Actions logs (`Validation Pipeline / Fast Validation`) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Investigated failing workflow run `26889344124` and extracted failure details from job `79310556765`.
+2. Confirmed guard failure cause: session preload step in `.github/workflows/copilot-setup-steps.yml` was reverted to flow-scalar `run: python3 ... || { ... }`.
+3. Restored canonical block-scalar session preload form:
+   - `run: |`
+   - `if ! python3 .github/scripts/session_preload.py; then ... fi`
+4. Executed required local validation commands for this rescue pass.
+
+### Validation Evidence
+- `python -m ruff check src/ tests/ --fix` → pass
+- `python scripts/ci/mypy_baseline.py --require-baseline` → pass (`107` errors, below baseline)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` → parse issue resolved for Pattern 3
+
+### Run URL
+- https://github.com/Aries-Serpent/_codex_/actions/runs/26889344124
+
+### Impact Score
+- Files changed: 3 (`.github/workflows/copilot-setup-steps.yml`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: unblocks `Validation Pipeline / Fast Validation` guard for session preload canonical form
+
 ## SESSION SUMMARY — 2026-06-02T04:35Z [PR4710-validation-pipeline-yamllint-fix]
 
 **Session:** PR4710-validation-pipeline-yamllint-fix | **Branch:** `dependabot/pip/orjson-3.11.9` | **PR:** #4710

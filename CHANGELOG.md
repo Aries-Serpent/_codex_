@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4731 CI rescue — 2026-06-03T14:06Z)
+- Fixed `Validation Pipeline / Fast Validation` failure on commit `b5084a983335` by restoring the canonical session preload block in `.github/workflows/copilot-setup-steps.yml` (`run: |` with `if ! ...; then ...; fi`).
+- Re-ran required local checks for this PR rescue flow: `ruff check src/ tests/ --fix`, `scripts/ci/mypy_baseline.py --require-baseline`, and `scripts/ci/auto_fix_common_issues.py --check-only`.
+
 ### Fixed (auto-update — PR #4731)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4731 (SHA `4efb1e4b`) at 2026-06-03T12:23Z [auto-generated]
 
