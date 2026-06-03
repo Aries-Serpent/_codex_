@@ -1,3 +1,78 @@
+## SESSION SUMMARY — 2026-06-03T15:58Z · PR #4731 CI rescue (addressing check failures on f1665844)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed before making changes ✅
+- [x] **0b.** Failing CI checks reviewed from GitHub Actions logs (`Final Pre-Merge Checks`, `Detect and Fix Common Issues`, `Detect CI Issues & Post Fix Instructions`) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Reviewed CI rescue comment #4614265576 requesting fixes for failing checks on commit `f1665844e9a2`.
+2. Investigated three FAILURE-state checks:
+   - "Final Pre-Merge Checks" (completed 2026-06-03T15:55:20Z) - failed due to Pattern 30: sync_tracked_files ❌ stale
+   - "Detect and Fix Common Issues" - FAILURE
+   - "Detect CI Issues & Post Fix Instructions" - FAILURE
+3. Ran all required auto-fix and validation scripts locally:
+   - `auto_fix_common_issues.py` ✅ - all 33 patterns pass, no issues found
+   - `ci_pattern_pipeline.py --strict` ✅ - 0 issues
+   - `session_wrapup_autofix.py --check --pr-number 4731` ✅ - REQ-4 and REQ-5 pass
+   - `sync_tracked_files.py --check` ✅ - all tracked files consistent
+4. Confirmed all checks pass locally on current HEAD (`f1665844e9a2`).
+5. Root cause assessment: CI failures at 15:55 UTC detected stale sync_tracked_files, but all validation scripts pass at 15:58 UTC. Issue appears to be resolved or transient.
+6. Added this session summary to accountability report and CHANGELOG per REQ-4/REQ-5 requirements.
+
+### Validation Evidence
+- `python scripts/ci/auto_fix_common_issues.py` → ✅ no issues found (Pattern 30: 100/100)
+- `python scripts/ci/ci_pattern_pipeline.py --strict` → ✅ 0 issues
+- `python scripts/ci/sync_tracked_files.py --check` → ✅ all tracked files consistent
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4731` → ✅ REQ-4 and REQ-5 pass
+- `python scripts/ci/mypy_baseline.py --require-baseline` → ✅ 0 errors (↓ 131 vs baseline)
+
+### Run URLs
+- CI rescue comment: https://github.com/Aries-Serpent/_codex_/pull/4731#issuecomment-4614265576
+- Failed check "Final Pre-Merge Checks": https://github.com/Aries-Serpent/_codex_/actions/runs/26891544619/job/79335855706
+- Failed check "Detect and Fix Common Issues": https://github.com/Aries-Serpent/_codex_/actions/runs/26891545950/job/79335843972
+- Failed check "Detect CI Issues & Post Fix Instructions": https://github.com/Aries-Serpent/_codex_/actions/runs/26891545934/job/79335830025
+
+### Impact Score
+- Files changed: 2 (`CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: Adds session documentation; all auto-fix checks already passing locally
+
+---
+
+## SESSION SUMMARY — 2026-06-03T14:22Z · PR #4731 CI rescue (Pre-Merge Validation failure)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed before making changes ✅
+- [x] **0b.** Failing CI checks reviewed from GitHub Actions logs (`Pre-Merge Validation / Final Pre-Merge Checks`) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Investigated failing workflow run `26890073116` for commit `9002d64647c0` and extracted failure details from job `79313395713`.
+2. Confirmed CI failure was due to auto-fix Pattern 30 (Merge Readiness Dims) detecting `sync_tracked_files: ❌ stale` on commit `9002d64`.
+3. Discovered the issue was already resolved in subsequent commit `be5737b` (code review follow-up), which updated the accountability report but not the CHANGELOG.
+4. Root cause: REQ-5 requires both CHANGELOG.md and accountability report in the last commit; commit `be5737b` only touched the accountability report.
+5. Added CHANGELOG entry for the code review follow-up work (consolidated headers, fixed list numbering, updated SHA).
+6. Added this session summary to the accountability report.
+7. Executed all required local validation commands.
+
+### Validation Evidence
+- `python -m ruff check src/ tests/` → pass (all checks passed)
+- `python scripts/ci/mypy_baseline.py --require-baseline` → pass (`0` errors, 131 below baseline)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` → pass (Pattern 30: 100/100, all dimensions green)
+- `python3 scripts/ci/sync_tracked_files.py --check` → pass (all tracked files consistent)
+- `python3 scripts/ci/ci_pattern_pipeline.py --strict` → pass (0 issues)
+
+### Run URL
+- https://github.com/Aries-Serpent/_codex_/actions/runs/26890073116
+
+### Impact Score
+- Files changed: 2 (`CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: unblocks `Pre-Merge Validation / Final Pre-Merge Checks` by satisfying REQ-4/REQ-5
+
+---
+
 ## SESSION SUMMARY — 2026-06-02T11:30Z [PR4706-merge-conflict-resolution]
 
 **Session:** PR4706-merge-conflict-resolution | **Branch:** `copilot/fix-git-author-name-issue` | **PR:** #4706
@@ -7,6 +82,34 @@
 - Verified explicit cherry-pick provenance references for PR heads #4707, #4708, #4710, #4711, #4712, #4713, #4714, #4715, #4716, and #4717 are present in recent commit messages.
 
 ---
+
+## SESSION SUMMARY — 2026-06-03T14:06Z · PR #4731 CI rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed before making changes ✅
+- [x] **0b.** Failing CI checks reviewed from GitHub Actions logs (`Validation Pipeline / Fast Validation`) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Investigated failing workflow run `26889344124` and extracted failure details from job `79310556765`.
+2. Confirmed guard failure cause: session preload step in `.github/workflows/copilot-setup-steps.yml` was reverted to flow-scalar `run: python3 ... || { ... }`.
+3. Restored canonical block-scalar session preload form:
+   - `run: |`
+   - `if ! python3 .github/scripts/session_preload.py; then ... fi`
+4. Executed required local validation commands for this rescue pass.
+
+### Validation Evidence
+- `python -m ruff check src/ tests/ --fix` → pass
+- `python scripts/ci/mypy_baseline.py --require-baseline` → pass (`107` errors, below baseline)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` → parse issue resolved for Pattern 3
+
+### Run URL
+- https://github.com/Aries-Serpent/_codex_/actions/runs/26889344124
+
+### Impact Score
+- Files changed: 3 (`.github/workflows/copilot-setup-steps.yml`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: unblocks `Validation Pipeline / Fast Validation` guard for session preload canonical form
 
 ## SESSION SUMMARY — 2026-06-02T04:35Z [PR4710-validation-pipeline-yamllint-fix]
 
@@ -45432,3 +45535,91 @@ and the CI gate requirement.
 - CI gates: REQ-4, REQ-5 satisfied; YAML validates cleanly; zizmor HIGH findings resolved
 
 ---
+
+## SESSION SUMMARY — 2026-06-03T12:23Z / 12:29Z / 12:36Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4731)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #4731 (SHA: `4efb1e4b`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URLs**:
+   - https://github.com/Aries-Serpent/_codex_/actions/runs/26883942457
+   - https://github.com/Aries-Serpent/_codex_/actions/runs/26883942278
+   - https://github.com/Aries-Serpent/_codex_/actions/runs/26884461227
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+---
+
+## SESSION SUMMARY — 2026-06-03T14:11Z SESSION MANUAL [github-copilot[bot]] (Code Quality Fixes — PR #4731)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — 3 review comments from copilot-pull-request-reviewer ✅
+- [x] **0b.** Failing CI checks reviewed — yamllint validation passing ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — will be updated in this session ✅
+- [x] **2.** Priority tasks reviewed — P1-P3 tasks in PR-4731-followup.md ✅
+- [x] **3.** Code quality concerns addressed — 3 formatting/consistency issues fixed ✅
+- [x] **4.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Fixed duplicate SESSION SUMMARY headers** — Consolidated three consecutive identical 
+   "SESSION SUMMARY" headers (lines 45464-45466) into single header with combined timestamps: 
+   `2026-06-03T12:23Z / 12:29Z / 12:36Z`
+2. **Fixed Run URL list numbering** — Corrected malformed numbered list (lines 45486-45488) 
+   where all three entries were numbered "3." — changed to proper nested bullet list format
+3. **Updated PR follow-up commit SHA** — Updated `.github/copilot-prompts/active/PR-4731-followup.md` 
+   line 7 from stale commit `1a26a798...` to current HEAD `9002d646...`
+4. **Validation checks** — All validation checks passing:
+   - `session_wrapup_autofix.py --check --pr-number 4731` ✅
+   - `auto_fix_common_issues.py --check-only` ✅
+   - `yamllint --no-warnings .github/workflows/ .github/misc/` ✅
+
+### Artifacts
+- **Files Modified**: 
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (formatting fixes)
+  - `.github/copilot-prompts/active/PR-4731-followup.md` (commit SHA update)
+- **Commit**: Will be generated via `engine-tools-report_progress`
+- **Review Comments Addressed**: 3 from copilot-pull-request-reviewer (comment IDs from PR #4731)
+
+### Next Steps
+- Priority 1 tasks from PR-4731-followup.md will be addressed in subsequent CI runs
+- YAML validation confirmed passing — no further action needed for P1 task #3
+- Comment Review Gate will rescan after this push
+

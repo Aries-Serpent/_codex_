@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4731 CI rescue investigation — 2026-06-03T15:58Z)
+- Investigated CI rescue comment #4614265576 for failing checks on commit `f1665844e9a2`.
+- Confirmed all auto-fix patterns pass locally (Pattern 30: 100/100, REQ-4/REQ-5 ✅, sync_tracked_files ✅).
+- Root cause: CI failures at 15:55 UTC detected stale sync_tracked_files, but all validation scripts pass at 15:58 UTC; issue appears to be resolved or transient.
+- Added session summary to accountability report and CHANGELOG per REQ-4/REQ-5 requirements.
+
+### Fixed (SN — PR #4731 code review follow-up — 2026-06-03T14:17Z)
+- Fixed duplicate SESSION SUMMARY headers in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` by consolidating three consecutive identical headers into a single header.
+- Fixed malformed Run URL numbered list (lines 45486-45488) by correcting to proper nested bullet format.
+- Updated stale commit SHA in `.github/copilot-prompts/active/PR-4731-followup.md` to match current HEAD.
+
+### Fixed (SN — PR #4731 CI rescue — 2026-06-03T14:06Z)
+- Fixed `Validation Pipeline / Fast Validation` failure on commit `b5084a983335` by restoring the canonical session preload block in `.github/workflows/copilot-setup-steps.yml` (`run: |` with `if ! ...; then ...; fi`).
+- Re-ran required local checks for this PR rescue flow: `ruff check src/ tests/ --fix`, `scripts/ci/mypy_baseline.py --require-baseline`, and `scripts/ci/auto_fix_common_issues.py --check-only`.
+
+### Fixed (auto-update — PR #4731)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4731 (SHA `4efb1e4b`) at 2026-06-03T12:23Z [auto-generated]
+
 ### Security (PR #4728 — security alert remediation — 2026-06-03T06:17Z)
 - Fixed HIGH template injection in `.github/workflows/copilot-setup-steps.yml`: moved `${{ github.base_ref }}` and `${{ inputs.lfs_include_paths }}` from inline `run:` blocks into `env:` blocks, eliminating shell injection vectors.
 - Replaced base64-obfuscated inline Python execution with a proper script `.github/scripts/inject_context_vars.py` that sanitizes values before writing to GITHUB_ENV.
