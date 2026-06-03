@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: 'live'
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install nox and deps
         run: |

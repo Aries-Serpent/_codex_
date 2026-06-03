@@ -148,7 +148,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Classify failure (D-00 — collect_telemetry --classify-run)
         id: classify
@@ -391,7 +391,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install tools
         run: |
@@ -764,7 +764,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install detect-secrets
         run: |

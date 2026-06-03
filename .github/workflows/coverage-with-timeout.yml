@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |
@@ -135,7 +135,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install coverage tools
         run: |
