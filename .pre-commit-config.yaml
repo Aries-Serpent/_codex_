@@ -1,4 +1,11 @@
 repos:
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        name: yamllint (workflows)
+        args: [--strict, -c, .yamllint.yml]
+        files: ^\.github/workflows/
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

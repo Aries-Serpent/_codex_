@@ -77,36 +77,40 @@ class TestTrainCommand:
         """Test train command with default parameters."""
         mock_run_training.return_value = None
         result = cli_runner.invoke(main.app, ["train"])
-        # Command should be invokable (may fail without full deps)
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_training.assert_called_once()
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_config_file(self, mock_run_training, cli_runner, mock_training_config):
         """Test train command with config file."""
         mock_run_training.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--config", str(mock_training_config)])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_training.assert_called_once()
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_model_name(self, mock_run_training, cli_runner):
         """Test train command with model name."""
         mock_run_training.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--model-name", "gpt2"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_training.assert_called_once()
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_epochs(self, mock_run_training, cli_runner):
         """Test train command with custom epochs."""
         mock_run_training.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--epochs", "10"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_training.assert_called_once()
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_batch_size(self, mock_run_training, cli_runner):
         """Test train command with batch size."""
         mock_run_training.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--batch-size", "32"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_training.assert_called_once()
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_learning_rate(self, mock_run_training, cli_runner):
@@ -287,8 +291,12 @@ class TestLoadTrainingConfig:
         config_file.write_text("epochs: 2", encoding="utf-8")
         logged_errors: list[str] = []
 
-        def _capture_log_error(_step: str, message: str, _ctx: str, *_args: Any) -> None:
-            logged_errors.append(message)
+        def _capture_log_error(*args: Any, **kwargs: Any) -> None:
+            message = kwargs.get("message")
+            if message is None and len(args) >= 2:
+                message = args[1]
+            if message is not None:
+                logged_errors.append(str(message))
 
         monkeypatch.setattr(cli_pkg, "_HAS_YAML", False)
         monkeypatch.setattr(cli_pkg, "log_error", _capture_log_error)

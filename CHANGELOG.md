@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4722 session continuation — 2026-06-02T23:45Z)
+- Resolved branch divergence by merging `origin/main` into PR branch `copilot/update-test-asserts-in-cli-tests`.
+- Verified all three fixes are in place: (1) strong train-command test assertions (`exit_code == 0` + `assert_called_once()`), (2) signature-agnostic `_capture_log_error` stub, (3) `copilot-setup-steps.yml` session preload step uses `run: |` block scalar with brace-free shell syntax to avoid yamllint crash.
+- Refreshed REQ-4/REQ-5 compliance files (accountability report + CHANGELOG) per session wrapup requirements.
+
+### Fixed (auto-update — PR #4722)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4722 (SHA `6fd74042`) at 2026-06-02T12:56Z [auto-generated]
+
 ### Fixed (auto-update — PR #4706)
 - Conflict-resolution follow-up: merged `origin/main` into PR branch and re-verified explicit cherry-pick provenance coverage for #4707/#4708/#4710-#4717 at 2026-06-02T11:30Z.
 
