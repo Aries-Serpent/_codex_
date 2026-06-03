@@ -69,6 +69,9 @@ jobs:
           python-version: '3.12'
           extras: 'dev'
 
+      - name: "🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)"
+        run: bash scripts/ci/validate_setup_steps_yaml.sh
+
       - name: Run yamllint
         run: yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
 
