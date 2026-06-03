@@ -191,7 +191,7 @@ Test Execution → Cache Management → Artifact Generation
 
 ### Active Variable Inventory (2026-06-03 Audit)
 
-**Total**: 106 variables/secrets across 5 scopes
+**Total**: 113 variables/secrets across 5 scopes
 
 ```mermaid
 graph TB
@@ -210,7 +210,7 @@ graph TB
         RG[CODEX_GHP_TOKEN_*]
         RB[_CODEX_BOT_RUNNER]
     end
-    subgraph "Repo Variables (70)"
+    subgraph "Repo Variables (76)"
         RV1[Agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
         RV2[Copilot: COPILOT_AGENT_*, COPILOT_WEC_*]
         RV3[Cognitive Brain: COGNITIVE_BRAIN_*]
@@ -218,7 +218,7 @@ graph TB
         RV5[LLM/ML: CODEX_LLM_MODEL, WANDB_MODE]
         RV6[Runtime: CODEX_SESSION_ID, CODEX_LOG_LEVEL]
     end
-    subgraph "Env Variables (13) — Sandbox"
+    subgraph "Env Variables (14) — Sandbox"
         EV[CODEX_ENV_*versions, RUST_BACKTRACE, CARGO_TERM_COLOR]
     end
     subgraph "Env Secrets (3) — Sandbox"

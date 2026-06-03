@@ -323,7 +323,7 @@ Add/grant/verify from **Agent Secrets** table:
 ## ▶️ What’s Next (Post Variables-Only Pass)
 
 - [ ] Execute **secrets pass** (repo/env/org) and refresh secret ages/rotation status. _(Blocked in-session by `403 Resource not accessible by integration`; requires elevated token/API scope.)_
-- [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the missing workflows to `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py` (`e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, `mcp-health.yml`).
+- [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the missing workflows to `_WEC_ITEMS` in `scripts/ci/session_wrapup_autofix.py` (`e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, `mcp-health.yml`).
 - [ ] Re-run inventory export and replace all “placeholder JSON” references with the current exact values where required. _(Blocked in-session by the same API authorization limits.)_
 - [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift between Actions Variables and Agents Variables pages. _(Blocked until repo/environment/org variable APIs are readable in-session.)_
 - [ ] After secrets pass, regenerate summary totals and update this file’s timestamp block. _(Partially updated in this commit; full totals refresh pending successful secrets pass.)_

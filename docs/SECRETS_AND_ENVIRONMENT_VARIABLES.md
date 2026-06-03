@@ -446,8 +446,8 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Fernet Encryption](https://cryptography.io/en/latest/fernet/)
-- [PR Lifecycle Spec](docs/ci/PR_LIFECYCLE.md) — referenced by `CODEX_PR_LIFECYCLE_VERSION`
-- [Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md) — mandatory load per `COPILOT_AGENT_PREFLIGHT_RULES`
+- [PR Lifecycle Spec](ci/PR_LIFECYCLE.md) — referenced by `CODEX_PR_LIFECYCLE_VERSION`
+- [Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md) — mandatory load per `COPILOT_AGENT_PREFLIGHT_RULES`
 
 ---
 
@@ -458,7 +458,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 | 2026-01-16 | Initial documentation created | @copilot |
 | 2026-01-20 | Phase 22 Secrets Audit — added 11 undocumented secrets | @copilot |
 | 2026-01-27 | Added GITLEAKS_LICENSE documentation | @copilot |
-| 2026-06-03 | **Full inventory refresh** — added all 106 variables (13 env, 70 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong |
+| 2026-06-03 | **Full inventory refresh** — added all 113 variables (14 env, 76 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong |
 | 2026-06-03 | **Variable usage expansion** — updated `CODEX_ENV_NODE_VERSION` 18→22; added Workflow & Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements | @mbaetiong |
 | 2026-06-03 | **Variables-only sync pass** — updated totals to 113 tracked (14 env vars, 76 repo vars), updated `CODEX_CI_LAST_GREEN_SHA`, and added explicit next-step actions for pending secrets pass and WEC drift remediation | @mbaetiong |
 | 2026-06-03 | **Workflow/agent reconciliation pass** — aligned cache defaults to `v2`, documented `COPILOT_RUNNER_PROFILE` safe fallback (`ubuntu-latest`), clarified `CODEX_ENV=copilot-agent`, and split `CODEX_DB_PATH` vs `CODEX_LOG_DB_PATH` by effective runtime surface | @copilot |

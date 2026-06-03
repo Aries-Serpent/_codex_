@@ -203,6 +203,6 @@ All agents check this variable at startup. After investigation, reset to `0`.
 
 - [Full Variable Inventory](../docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md)
 - [Secrets Runbook](../docs/SECRETS_RUNBOOK.md)
-- [Critical Repository Variables](.codex/../.codex/CRITICAL_REPOSITORY_VARIABLES.md)
+- [Critical Repository Variables](../.codex/CRITICAL_REPOSITORY_VARIABLES.md)
 - [Agent Registry](AGENT_CONSOLIDATION_MATRIX.md)
 - [Tokenized Workflows](TOKENIZED_WORKFLOWS.md)

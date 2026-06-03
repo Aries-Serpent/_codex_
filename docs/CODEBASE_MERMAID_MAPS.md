@@ -210,7 +210,7 @@ graph LR
         ENVX[CODEX_ENV=copilot-agent]
         LOGX[CODEX_LOG_LEVEL=INFO]
         DBX[CODEX_DB_PATH=$GITHUB_WORKSPACE/.codex/codex.db]
-        LOGDB[CODEX_LOG_DB_PATH\n.session_logs.db default]
+        LOGDB[CODEX_LOG_DB_PATH\n.codex/session_logs.db default]
     end
 
     subgraph "Agent Families"

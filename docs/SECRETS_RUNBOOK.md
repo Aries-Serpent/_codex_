@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Document how to store, rotate, and audit repository secrets and environment variables. Covers all 106 tracked variables (13 env, 70 repo vars, 3 env secrets, 7 repo secrets, 13 org secrets).
+Document how to store, rotate, and audit repository secrets and environment variables. Covers all 113 tracked variables (14 env, 76 repo vars, 3 env secrets, 7 repo secrets, 13 org secrets).
 
 ---
 

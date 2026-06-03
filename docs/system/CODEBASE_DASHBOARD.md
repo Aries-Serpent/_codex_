@@ -38,13 +38,13 @@
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Environment Variables | 13 | ✅ Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
-| Repository Variables | 70 | ✅ Current |
+| Environment Variables | 14 | ✅ Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
+| Repository Variables | 76 | ✅ Current |
 | Environment Secrets | 3 | ✅ Current |
 | Repository Secrets | 7 | ✅ Current |
 | Organization Secrets | 13 | ⚠️ 5 overdue rotation |
 | **Gap Variables (code-referenced, not in inventory)** | **30+** | 🟡 Documented — maintainer action required to create in GitHub UI |
-| **Workflow Variable Usage** | 5 categories mapped | ✅ New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#️-workflow--agent-variable-usage-map) |
+| **Workflow Variable Usage** | 5 categories mapped | ✅ New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#🗺️-workflow--agent-variable-usage-map) |
 | **Agent Variable Expectations** | 145 agents, 6 categories | ✅ New — see [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md) |
 
 ### Workflow Variable Integration Progress
@@ -53,8 +53,8 @@
 |----------|---------------------|--------|
 | `copilot-setup-steps.yml` | `NODE_VERSION` → `vars.NODE_JS_VERSION \|\| '22'` | ✅ Updated (Node 20→22) |
 | `nox_gates.yml` | `cache-version`, `timeout-minutes` via `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
-| `coverage-with-timeout.yml` | `cache-version` fallback `v2`→`v3`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
-| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | ⚠️ Fallback still `v2` — set `CODEX_CACHE_VERSION=v3` in repo vars to activate |
+| `coverage-with-timeout.yml` | `cache-version` via `CODEX_CACHE_VERSION`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
+| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | ✅ Fallback `v2` — set `CODEX_CACHE_VERSION` in repo vars to override |
 
 ### CI Tracking Variables (Auto-Updated)
 
