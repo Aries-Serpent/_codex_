@@ -23,7 +23,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CODEX_BRIDGE_OWNER_ONLY` | `true` | Restricts bridge dir to owner UID only |
 | `CODEX_DB_PATH` | `.codex/logs.db` | SQLite audit log path |
 | `CODEX_ENV_GO_VERSION` | `1.21` | Go toolchain version for env setup |
-| `CODEX_ENV_NODE_VERSION` | `22` | Node.js version for env setup |
+| `CODEX_ENV_NODE_VERSION` | `22` | Node.js version for Copilot agent sandbox env setup (distinct from `NODE_JS_VERSION` repo var used by CI workflows) |
 | `CODEX_ENV_PYTHON_VERSION` | `3.12` | Python version (must match `pyproject.toml requires-python`) |
 | `CODEX_ENV_RUST_VERSION` | `1.92` | Rust toolchain version |
 | `CODEX_ENV_SWIFT_VERSION` | `5.9` | Swift version for env setup |
@@ -235,7 +235,7 @@ The following variables are referenced in source code, workflow files, or `.code
 
 | Variable | Type | Recommended Value | Purpose |
 |----------|------|-------------------|---------|
-| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for all workflows. Note: workflows currently hardcode `NODE_VERSION: '20'` (see `.github/workflows/copilot-setup-steps.yml` line 61); this variable should be created and the workflow updated to reference it, upgrading from Node 20 to 22 LTS. |
+| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for all workflows. `.github/workflows/copilot-setup-steps.yml` now reads `NODE_VERSION: ${{ vars.NODE_JS_VERSION \|\| '22' }}` — create this repo var to centrally control the version across workflows. |
 | `CODEX_TEST_TIMEOUT_MINUTES` | Repo Var | `60` | Per-job test timeout |
 | `CODEX_JOB_TIMEOUT_MINUTES` | Repo Var | `120` | Global job timeout |
 | `CODEX_MAX_PARALLEL_JOBS` | Repo Var | `4` | Max concurrent jobs |
@@ -373,10 +373,15 @@ All variables should be accessed using the safe fallback pattern:
 ```yaml
 env:
   CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-  NODE_JS_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}
+  # NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:
+  #   env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }
   CODEX_TEST_TIMEOUT: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
   COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
 ```
+
+> **Note on Node.js version variables**:
+> - `NODE_JS_VERSION` — **repo var** (create in GitHub UI → Settings → Actions → Variables). CI workflows (e.g., `copilot-setup-steps.yml`) read it as `env.NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}`.
+> - `CODEX_ENV_NODE_VERSION` — **environment var** (Aries_Serpent_codex_ environment). Injected into the Copilot agent sandbox. These are two separate mechanisms serving different scopes.
 
 For integer fields (e.g., `timeout-minutes`):
 ```yaml
