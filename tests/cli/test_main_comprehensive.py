@@ -164,35 +164,50 @@ class TestTrainCommand:
         """Test train command with W&B logging."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--wandb"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.wandb_enable is True
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_grad_accum(self, mock_run_unified, cli_runner):
         """Test train command with gradient accumulation."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--grad-accum", "4"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.grad_accum == 4
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_grad_clip_norm(self, mock_run_unified, cli_runner):
         """Test train command with gradient clipping."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--grad-clip-norm", "1.0"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.grad_clip_norm == 1.0
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_dtype_fp16(self, mock_run_unified, cli_runner):
         """Test train command with fp16 dtype."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--dtype", "fp16"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.dtype == "fp16"
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_dtype_bf16(self, mock_run_unified, cli_runner):
         """Test train command with bf16 dtype."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--dtype", "bf16"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.dtype == "bf16"
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_resume_from(self, mock_run_unified, cli_runner, tmp_path):
@@ -201,14 +216,24 @@ class TestTrainCommand:
         checkpoint = tmp_path / "checkpoint.pt"
         checkpoint.write_text("mock_checkpoint")
         result = cli_runner.invoke(main.app, ["train", "--resume-from", str(checkpoint)])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert str(cfg.resume_from) == str(checkpoint)
 
     @patch("codex_ml.training.unified_training.run_unified_training")
-    def test_train_with_corpus(self, mock_run_unified, cli_runner):
+    @patch(
+        "codex_ml.data.reasoning_manifest.build_corpus_selection",
+        return_value={"root": "/mock", "corpora": []},
+    )
+    def test_train_with_corpus(self, _mock_build_corpus, mock_run_unified, cli_runner):
         """Test train command with corpus specification."""
         mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--corpus", "gsm8k"])
-        assert result.exit_code in (0, 1, 2)
+        assert result.exit_code == 0
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.extra.get("reasoning", {}).get("requested") == ["gsm8k"]
 
     @patch("codex_ml.training.unified_training.run_unified_training")
     def test_train_with_multiple_corpora(self, mock_run_unified, cli_runner):
