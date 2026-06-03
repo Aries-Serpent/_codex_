@@ -12,7 +12,7 @@ name: Copilot Agent Environment Setup
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       environment_type:
@@ -102,7 +102,7 @@ jobs:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write # Allow agent to post PR review comments
+      pull-requests: write  # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -123,7 +123,7 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
