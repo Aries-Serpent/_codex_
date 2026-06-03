@@ -12,7 +12,7 @@ name: Copilot Agent Environment Setup
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       environment_type:
@@ -62,6 +62,9 @@ env:
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -99,7 +102,7 @@ jobs:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write # Allow agent to post PR review comments
+      pull-requests: write  # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -120,13 +123,93 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
           persist-credentials: true      # Keep token for any subsequent git operations
           clean: true
           show-progress: true
+
+      # ============================================================================
+      # 🧠 MANDATORY SESSION CONTEXT PRE-LOAD — runs before ANY other work
+      # Injects: agentic state, codebase policy, accountability report, PDA loop
+      # aftermath, and stored memories into the agent's environment.
+      # This is the automated equivalent of "load memory, load accountability,
+      # load codebase policies and follow" — it must run unconditionally.
+      # ============================================================================
+      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # Canonical form: block scalar run: | with if ! ...; then syntax.
+      # This step has been broken 4+ times by agents converting it to flow scalar
+      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
+      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
+      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
+      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: python3 .github/scripts/session_preload.py || {
+          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+        }
+
+
+      # ============================================================================
+      # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
+      # Discovers every available connection method (REST, GraphQL, gh CLI,
+      # CodeQL, Playwright, MCP) and their current rate-limit status.
+      # Writes ACCESS_* env vars for the whole session and a machine-readable
+      # manifest at .codex/session_access_manifest.json.
+      # The agent MUST read this manifest before making any API call so it
+      # knows the live trickle-down order: REST → GraphQL → gh CLI → CodeQL → FS.
+      # ============================================================================
+      - name: "🔌 Session Access Probe (token inventory + rate limits)"
+        id: access_probe
+        continue-on-error: true        # never block agent startup on probe failure
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
+        run: |
+          echo "::group::Session Access Probe"
+          python3 scripts/ci/session_access_probe.py || {
+            echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
+            # Emit safe defaults so downstream steps have the vars even if probe fails
+            echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
+            echo "ACCESS_GRAPHQL=unknown"       >> "$GITHUB_ENV"
+            echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
+            echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
+            echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
+          }
+          echo "::endgroup::"
+
+      # ============================================================================
+      # 🧠 AUTONOMOUS RAG CONTEXT BUILD — runs after access probe
+      # Uses the access manifest to pull the freshest available GitHub context
+      # (PR details, failing checks, review threads, recent commits) via the
+      # trickle-down chain, queries the FAISS RAG index for relevant patterns,
+      # and re-embeds only files changed since last session (incremental update).
+      # Writes .codex/session_context_latest.md for agent pickup and exports
+      # ACCESS_STRATEGY + SESSION_PR_NUMBER to GITHUB_ENV.
+      # ============================================================================
+      - name: "🧠 Autonomous RAG Context Build (PR context + RAG query + incremental index)"
+        id: rag_context
+        continue-on-error: true        # never block agent startup on RAG failure
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "::group::Autonomous RAG Context Build"
+          python3 scripts/ci/autonomous_rag_context.py \
+            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }} \
+            || {
+              echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+            }
+          # Print access strategy for agent log
+          if [ -f .codex/session_access_strategy.json ]; then
+            echo "--- Access Strategy ---"
+            cat .codex/session_access_strategy.json
+          fi
+          echo "::endgroup::"
 
       # Configure git for non-interactive operation in the CI agent environment.
       # core.editor=true: prevents 'git rebase --continue' and similar commands
@@ -154,6 +237,8 @@ jobs:
       #         branch is not 'main' (e.g. copilot/resolve-failing-checks).
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
             && echo "✅ Remote branch refs fetched (as origin/*)" \
@@ -164,12 +249,117 @@ jobs:
             || echo "⚠️ Could not create local main ref (non-blocking)"
           # Promote the PR base branch to a local ref so 'git diff <base_ref>'
           # resolves correctly regardless of which branch the PR targets.
-          BASE="${{ github.base_ref }}"
+          BASE="${BASE_REF}"
           if [ -n "$BASE" ] && [ "$BASE" != "main" ]; then
             git branch -f "$BASE" "origin/$BASE" 2>/dev/null \
               && echo "✅ $BASE available as local branch ref" \
               || echo "⚠️ Could not create local $BASE ref (non-blocking)"
           fi
+
+      # ── Merge Conflict Pre-Check (§0.4 CODEBASE_AGENCY_POLICY.md) ──────────
+      # Every Copilot session MUST start conflict-free. This step detects existing
+      # merge conflicts and branch divergence BEFORE the agent begins any work.
+      # If conflicts are found, a warning annotation is emitted so the agent can
+      # resolve them as its first action (per §0.4).
+      - name: "🔀 Merge Conflict Pre-Check (session start)"
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        run: |
+          echo "── §0.4: Inspecting PR for merge conflicts ──"
+          BASE="${BASE_REF}"
+          HEAD="${HEAD_REF}"
+          # Sanitize BASE for use in workflow-command annotations (prevent command injection)
+          BASE_SAFE="${BASE_REF//[^a-zA-Z0-9._-]/}"
+
+          # 1. Check PR mergeable status via GitHub API
+          if [ -n "$PR_NUMBER" ]; then
+            MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
+            echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
+            if [ "$MERGEABLE" = "CONFLICTING" ]; then
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE_SAFE}'. Agent MUST resolve these before any other work."
+              echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
+            elif [ "$MERGEABLE" = "MERGEABLE" ]; then
+              echo "✅ No merge conflicts detected"
+              echo "COPILOT_MERGE_CONFLICT=false" >> "$GITHUB_ENV"
+            else
+              echo "ℹ️ Mergeable status: ${MERGEABLE} (GitHub may still be computing)"
+              echo "COPILOT_MERGE_CONFLICT=unknown" >> "$GITHUB_ENV"
+            fi
+          fi
+
+          # 2. Check branch divergence (behind/ahead)
+          if [ -n "$BASE" ]; then
+            BEHIND=$(git rev-list --count "HEAD..origin/${BASE}" 2>/dev/null || echo "0")
+            AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
+            echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
+            if [ "$BEHIND" -gt 0 ]; then
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE_SAFE}'. Agent should rebase or merge base before starting work."
+              echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
+            else
+              echo "✅ Branch is up-to-date with ${BASE}"
+              echo "COPILOT_BRANCH_BEHIND=0" >> "$GITHUB_ENV"
+            fi
+          fi
+
+          # 3. Dry-run merge-tree check for potential file-level conflicts
+          if [ -n "$BASE" ] && git rev-parse "origin/${BASE}" >/dev/null 2>&1; then
+            MERGE_BASE=$(git merge-base HEAD "origin/${BASE}" 2>/dev/null || echo "")
+            if [ -n "$MERGE_BASE" ]; then
+              CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
+              if [ "$CONFLICT_FILES" -gt 0 ]; then
+                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE_SAFE}'"
+              else
+                echo "✅ merge-tree: no file-level conflicts detected"
+              fi
+            fi
+          fi
+
+          echo "── §0.4 merge conflict pre-check complete ──"
+
+      # ── CI Failure Issue Check (§0.2 CODEBASE_AGENCY_POLICY.md) ─────────────
+      # Check for open CI failure report issues that may contain relevant failure
+      # patterns. These issues are auto-created by ci-failure-issue-creator.yml
+      # and ci-health-monitor.yml when workflows fail on main.
+      - name: "🚨 CI Failure Issue Check (session start)"
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          echo "── §0.2: Checking for open CI failure report issues ──"
+          REPO="Aries-Serpent/_codex_"
+
+          # Check for ci-failure issues (per-workflow failure reports)
+          CI_FAILURES=$(gh issue list --repo "$REPO" --label "ci-failure" --state open \
+            --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
+          echo "Open ci-failure issues: ${CI_FAILURES}"
+
+          # Check for ci-health-alert issues (high failure rate alerts)
+          HEALTH_ALERTS=$(gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
+            --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
+          echo "Open ci-health-alert issues: ${HEALTH_ALERTS}"
+
+          TOTAL=$((CI_FAILURES + HEALTH_ALERTS))
+          echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
+
+          if [ "$TOTAL" -gt 0 ]; then
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+
+            # List issue titles for agent context
+            echo ""
+            echo "── Open CI failure issues: ──"
+            gh issue list --repo "$REPO" --label "ci-failure" --state open \
+              --json number,title --jq '.[] | "#\(.number): \(.title)"' 2>/dev/null || true
+            gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
+              --json number,title --jq '.[] | "#\(.number): \(.title)"' 2>/dev/null || true
+          else
+            echo "✅ No open CI failure report issues"
+          fi
+
+          echo "── §0.2 CI failure issue check complete ──"
 
       - name: "🔍 Validate repo JSON files"
         run: |
@@ -191,26 +381,59 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |  # pragma: allowlist secret
-          if [ -f .codex/agent_context.json ]; then
-            echo "Injecting repo variable context from .codex/agent_context.json"
-            # base64-encoded Python script: reads agent_context.json and writes all
-            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
-            # session sees them as environment variables.
-            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
-          else
-            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
-          fi
+        run: |
+          python3 .github/scripts/inject_context_vars.py
+
+      - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
+        # Supplement agent_context.json injection with live vars.* values for the
+        # critical cascade-control knobs added in S183d. These may not yet be in
+        # agent_context.json if vars-bootstrap hasn't run since the variables were
+        # first created. The explicit injection here ensures agent sessions always
+        # see the current values regardless of the bootstrap timing.
+        env:
+          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
+          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
+          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
+          COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
+          COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
+          CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
+        run: |
+          # Write non-empty values to GITHUB_ENV (live override of agent_context.json).
+          # ${!var} is bash indirect expansion: given var="FOO", ${!var} expands to
+          # the VALUE of the variable named FOO (i.e. the same as ${FOO}).
+          for var in \
+            CODEX_MAX_HEALER_RUNS_PER_HOUR \
+            CODEX_SWEEP_SKIP_MAIN \
+            CODEX_HEALER_SKIP_SKIPCI \
+            COPILOT_RUNNER_PROFILE \
+            CODEX_CACHE_VERSION \
+            COPILOT_AGENT_STATE \
+            CODEX_CI_LAST_GREEN_SHA; do
+            val="${!var}"
+            if [ -n "$val" ]; then
+              echo "${var}=${val}" >> "$GITHUB_ENV"
+              echo "  ✅ ${var}=${val}"
+            fi
+          done
+          echo "── Cascade-control var injection complete ──"
 
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
-          if [ -f scripts/ci/safe_git_show.sh ]; then
-            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
-            echo "✅ safe_git_show.sh installed to /usr/local/bin"
-          else
-            echo "⚠️ scripts/ci/safe_git_show.sh not found (non-blocking)"
+          set -euo pipefail
+          if [ ! -f scripts/ci/safe_git_show.sh ]; then
+            echo "::error::scripts/ci/safe_git_show.sh is missing — cannot install git-show guard"
+            exit 1
           fi
+          install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+          ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
+          echo "✅ safe_git_show installed at $(command -v safe_git_show)"
+          # Smoke-test: source and call with a known-good ref
+          # shellcheck source=/dev/null
+          source /usr/local/bin/safe_git_show.sh
+          safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
+            && echo "✅ safe_git_show smoke-test passed" \
+            || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
@@ -236,10 +459,12 @@ jobs:
       - name: "🎯 Targeted LFS fetch & checkout (guarded)"
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
         continue-on-error: ${{ inputs.lfs_continue_on_error }}
+        env:
+          LFS_INCLUDE_PATHS: ${{ inputs.lfs_include_paths }}
         run: |
           set -euo pipefail
           # Convert comma-separated include patterns into git-lfs include string
-          INCLUDES="${{ inputs.lfs_include_paths }}"
+          INCLUDES="${LFS_INCLUDE_PATHS}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
 
@@ -282,8 +507,9 @@ jobs:
         id: detect_env
         env:
           HEAD_REF: ${{ github.head_ref }}
+          INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
         run: |
-          ENV_TYPE="${{ github.event.inputs.environment_type || 'standard' }}"
+          ENV_TYPE="${INPUT_ENV_TYPE}"
           # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
             if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
@@ -363,7 +589,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -374,7 +600,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -386,7 +612,7 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: .venv_ci
           key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -403,7 +629,7 @@ jobs:
         if: hashFiles('package.json') != ''
 
       - name: "🦀 Set up Rust ${{ env.RUST_VERSION || 'stable' }}"
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
         with:
           toolchain: ${{ env.RUST_VERSION || 'stable' }}
         if: hashFiles('Cargo.toml') != ''
@@ -452,7 +678,8 @@ jobs:
               exit 1
             fi
           fi
-          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          PYTHON_BIN=".venv_ci/bin/python"
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
           # Add venv to PATH for all subsequent steps in this job
           echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
 
@@ -822,7 +1049,7 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
@@ -845,3 +1072,35 @@ jobs:
 # Policy: .codex/CODEBASE_AGENCY_POLICY.md
 # Integration: Cognitive Brain Phase objectives
 # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
+
+  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+  rescue-comment:
+    name: Post rescue comment on failure
+    runs-on: ubuntu-latest
+    needs: copilot-setup-steps
+    if: |
+      failure() &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Post or update rescue comment
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "Copilot Setup Steps"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+        run: python scripts/ci/post_rescue_comment.py
