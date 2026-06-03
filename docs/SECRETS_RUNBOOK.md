@@ -146,7 +146,7 @@ The following variables **MUST or SHOULD** be present. Variables currently only 
 | `CODEX_LINT_STRICT` | `true` | **SHOULD** | Agent enforces ruff/mypy strictness |
 | `CODEX_COVERAGE_THRESHOLD` | `80` | **SHOULD** | Agent respects coverage gate floor |
 | `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | _(copy JSON from repo var)_ | **SHOULD** | Suppress known false-positive bot comment alerts |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | _(copy JSON from repo var)_ | **SHOULD** | Tracks 16 items not yet in WEC |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | _(copy JSON from repo var)_ | **SHOULD** | Carries the current WEC drift JSON; expected steady-state is `count=0` |
 
 > **Note**: Variables in the Agents settings page are injected into every Copilot coding agent session automatically. Repository-level variables require agents to read them explicitly via `${{ vars.X }}` in workflow steps.
 

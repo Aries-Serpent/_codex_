@@ -37,7 +37,7 @@ Includes: `ci-testing-agent`, `ci-auto-healer-agent`, `ci-emergency-response-age
 | `CODEX_LINT_STRICT` | `vars.CODEX_LINT_STRICT \|\| 'true'` | Fail on any lint warning when strict |
 | `CODEX_SHARD_COUNT` | `vars.CODEX_SHARD_COUNT \|\| '4'` | Parallelise test shards |
 | `CODEX_MAX_PARALLEL_JOBS` | `vars.CODEX_MAX_PARALLEL_JOBS \|\| '4'` | Cap concurrent agent jobs |
-| `CODEX_CACHE_VERSION` | `vars.CODEX_CACHE_VERSION \|\| 'v3'` | Use correct cache key |
+| `CODEX_CACHE_VERSION` | `vars.CODEX_CACHE_VERSION \|\| 'v2'` | Use current cache-bust key shared by setup-agent-env and CI workflows |
 | `CODEX_CI_FAILURE_THRESHOLD` | `vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10.0'` | Trigger alerts above threshold |
 
 **Workflow usage pattern:**
@@ -46,7 +46,7 @@ timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
 # ...
 - uses: ./.github/actions/setup-python-cached
   with:
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 ```
 
 ---
@@ -89,8 +89,8 @@ Includes: `security-audit-agent`, `unified-security-scanner`, `pii-scrubber`, `s
 
 | Variable | Read Via | Purpose |
 |----------|----------|---------|
-| `DISABLE_SECRET_FILTER` | `vars.DISABLE_SECRET_FILTER` | **MUST be `false`** — abort if `true` in production |
-| `CODEX_ENV` | `vars.CODEX_ENV \|\| 'development'` | Enforce stricter rules in `production` |
+| `DISABLE_SECRET_FILTER` | `vars.DISABLE_SECRET_FILTER` | **MUST be `false`** — abort if `true` outside isolated local debugging |
+| `CODEX_ENV` | `env.CODEX_ENV \|\| vars.CODEX_ENV \|\| 'development'` | Enforce stricter rules in `production`; Copilot setup currently exports `copilot-agent` |
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | `vars.CODEX_AUTH_MIDDLEWARE_ENABLED \|\| 'true'` | Guard API auth middleware checks |
 | `CODEX_AUTH_RATE_LIMIT` | `vars.CODEX_AUTH_RATE_LIMIT \|\| '100'` | Rate limit threshold for API |
 | `CODEX_OFFLINE` | `vars.CODEX_OFFLINE \|\| '1'` | Prevent external requests in sandbox |
@@ -106,11 +106,12 @@ Includes: `workflow-ci-fixer`, `workflow-compliance-guardian`, `workflow-managem
 | Variable | Read Via | Purpose |
 |----------|----------|---------|
 | `COPILOT_WEC_SELECTION_MATRIX` | `vars.COPILOT_WEC_SELECTION_MATRIX` | Route WEC items to correct workflows |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | `vars.COPILOT_WEC_TEMPLATE_DRIFT` | Track 16 items not yet in WEC |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | `vars.COPILOT_WEC_TEMPLATE_DRIFT` | Track current WEC drift JSON; expected steady-state is `count=0` after remediation |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | `vars.COPILOT_AGENT_PREFLIGHT_RULES` | Enforce pre-commit compliance |
 | `CODEX_CI_FAILURE_RATE` | `vars.CODEX_CI_FAILURE_RATE` | Live CI health signal |
 | `CODEX_CI_FAILURE_THRESHOLD` | `vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10.0'` | Alert above this failure % |
 | `WORKFLOW_FAILURE_TRACKING_ENABLED` | `vars.WORKFLOW_FAILURE_TRACKING_ENABLED \|\| 'true'` | Enable failure tracking |
+| `COPILOT_RUNNER_PROFILE` | `vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest'` | Select larger-runner override for `copilot-setup-steps.yml` when needed |
 
 ---
 
@@ -140,7 +141,7 @@ Includes: `ml-validation-suite-agent`, `meta-tensor-validator`, `rag-meta-tensor
 ```yaml
 - name: Load configuration
   env:
-    CODEX_CACHE_VERSION:  ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    CODEX_CACHE_VERSION:  ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     NODE_JS_VERSION:       ${{ vars.NODE_JS_VERSION || '22' }}
     CODEX_TEST_TIMEOUT:    ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
     COGNITIVE_INJECTION:   ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
@@ -162,7 +163,7 @@ timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
 ```yaml
 - uses: ./.github/actions/setup-python-cached
   with:
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
 - uses: actions/setup-node@v6
   with:
@@ -176,7 +177,7 @@ import os
 
 # With type-safe defaults
 test_timeout = int(os.getenv("CODEX_TEST_TIMEOUT_MINUTES", "60"))
-cache_version = os.getenv("CODEX_CACHE_VERSION", "v3")
+cache_version = os.getenv("CODEX_CACHE_VERSION", "v2")
 node_version = os.getenv("NODE_JS_VERSION", "22")
 cognitive_enabled = os.getenv("COGNITIVE_BRAIN_INJECTION_ENABLED", "true").lower() == "true"
 healer_rate = int(os.getenv("CODEX_MAX_HEALER_RUNS_PER_HOUR", "5"))
@@ -194,7 +195,7 @@ All agents check this variable at startup. After investigation, reset to `0`.
 
 ### Disable Secret Filter (NEVER IN PRODUCTION)
 
-`DISABLE_SECRET_FILTER` must always be `false`. Any agent detecting `DISABLE_SECRET_FILTER=true` in a non-isolated environment MUST abort and raise an alert via `ci-health-alert-agent`.
+`DISABLE_SECRET_FILTER` must always be `false`. Any agent detecting `DISABLE_SECRET_FILTER=true` while `CODEX_ENV` is `production` or `copilot-agent` MUST abort and raise an alert via `ci-health-alert-agent`.
 
 ---
 

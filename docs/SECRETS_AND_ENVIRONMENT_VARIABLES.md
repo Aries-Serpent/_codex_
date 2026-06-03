@@ -22,13 +22,13 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CARGO_TERM_COLOR` | `always` | Enables color output for Cargo (Rust CI) |
 | `CODEX_BRIDGE_DIR` | `/tmp/codex_secure_bridge` | Runtime tmpfs mount for IPC bridge (transient, not repo path) |
 | `CODEX_BRIDGE_OWNER_ONLY` | `true` | Restricts bridge dir to owner UID only |
-| `CODEX_DB_PATH` | `.codex/logs.db` | SQLite audit log path |
+| `CODEX_DB_PATH` | `.codex/session_logs.db` | Repository default SQLite DB path; `copilot-setup-steps.yml` currently overrides it to `${GITHUB_WORKSPACE}/.codex/codex.db` inside Copilot sessions |
 | `CODEX_ENV_GO_VERSION` | `1.21` | Go toolchain version for env setup |
 | `CODEX_ENV_NODE_VERSION` | `22` | Node.js version for Copilot agent sandbox env setup (distinct from `NODE_JS_VERSION` repo var used by CI workflows) |
 | `CODEX_ENV_PYTHON_VERSION` | `3.12` | Python version (must match `pyproject.toml requires-python`) |
 | `CODEX_ENV_RUST_VERSION` | `1.92` | Rust toolchain version |
 | `CODEX_ENV_SWIFT_VERSION` | `5.9` | Swift version for env setup |
-| `CODEX_LOG_DB_PATH` | `.codex/logs.db` | Alias for `CODEX_DB_PATH` (legacy compat) |
+| `CODEX_LOG_DB_PATH` | `.codex/session_logs.db` | Session log SQLite DB path used by logging/query tools |
 | `CODEX_SQLITE_POOL` | `1` | Enable per-session SQLite connection pooling |
 | `RUST_BACKTRACE` | `1` | Full backtraces for Rust panics |
 | `RUST_TEST_THREADS` | `1` | Sequential test execution for determinism |
@@ -201,7 +201,7 @@ The following variables are referenced in source code, workflow files, or `.code
 | `CODEX_AUTH_SECRET` | Repo Var | — | API service authentication secret |
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repo Var | `true` | Enable auth middleware on API service |
 | `CODEX_AUTH_RATE_LIMIT` | Repo Var | `100` | API rate limit (requests/minute) |
-| `CODEX_ENV` | Repo Var | `development` | Deployment environment (`development`/`production`) |
+| `CODEX_ENV` | Workflow-exported env (repo-var fallback optional) | `copilot-agent` in `copilot-setup-steps.yml`, otherwise `development` fallback | Sandbox/runtime environment label used by security-aware components |
 | `DISABLE_SECRET_FILTER` | Repo Var | `false` | **⚠️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. |
 | `ARTIFACTS_DIR` | Repo Var | `/tmp/artifacts` | API artifact output directory |
 
@@ -309,61 +309,51 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 
 This section maps each key repository variable to the GitHub Actions workflows and custom agents that read it. Reference this when changing a variable value to understand downstream impact.
 
-### CI/CD Configuration Variables
+### Copilot Sandbox Bootstrap Surface (`.github/workflows/copilot-setup-steps.yml`)
 
-| Variable | Workflows (via `${{ vars.X }}`) | Custom Agents |
-|----------|--------------------------------|---------------|
-| `CODEX_CACHE_VERSION` | `copilot-setup-steps.yml`, `nox_gates.yml`, `coverage-with-timeout.yml`, `cognitive-analysis-feed.yml`, `workflow-analytics-unified.yml`, `ci-health-monitor.yml`, `mcp-health.yml`, `agent-handoff-gate.yml`, `pre-flight-validation.yml`, `test-rag.yml`, `qa-walkthrough.yml` | `cache-management-agent`, `ci-optimization-agent` |
-| `CODEX_TEST_TIMEOUT_MINUTES` | `nox_gates.yml` (job timeout), `coverage-with-timeout.yml` (job timeout), `test-rag.yml`, `auth-tests.yml` | `ci-testing-agent`, `autonomous-test-healer-agent` |
-| `CODEX_COVERAGE_THRESHOLD` | `nox_gates.yml` (gate), `code-quality-coverage-suite.yml` | `unified-coverage-agent`, `ci-testing-agent` |
-| `NODE_JS_VERSION` | `copilot-setup-steps.yml` (via `env.NODE_VERSION`) | — |
-| `CODEX_SHARD_COUNT` | `coverage-with-timeout.yml` (workflow_dispatch default) | `unified-coverage-agent` |
-| `CODEX_MAX_PARALLEL_JOBS` | Picked up by nox session config | `ci-optimization-agent` |
-| `CODEX_LINT_STRICT` | `nox_gates.yml` (ruff/mypy strictness) | `mypy-manager-agent`, `code-analysis-agent` |
+| Variable | Surface | Current behavior | Downstream consumers |
+|----------|---------|------------------|----------------------|
+| `NODE_JS_VERSION` | Repository variable → workflow `env.NODE_VERSION` | Read as `${{ vars.NODE_JS_VERSION \|\| '22' }}` | Node/npm tools in the Copilot sandbox |
+| `COPILOT_RUNNER_PROFILE` | Repository variable → `runs-on` | Read as `${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}` | Runner sizing for Copilot sessions |
+| `CODEX_CACHE_VERSION` | Repository variable → `setup-agent-env` input | Read as `${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | Agent venv/cache hierarchy and cache invalidation |
+| `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` | Organization secrets → job env → export step | Injected into the agent runtime for token-chain writes | `agent-auth-delegation`, variable sync, workflow dispatch |
+| `CODEX_ENV` | Workflow-exported env | Explicitly set to `copilot-agent` | Security/compliance agents, runtime guards |
+| `CODEX_LOG_LEVEL` | Workflow-exported env | Currently exported as `INFO` | Session diagnostics and troubleshooting |
+| `CODEX_DB_PATH` | Workflow-exported env | Currently exported as `${GITHUB_WORKSPACE}/.codex/codex.db` | Cognitive brain / pattern-recorder DB consumers |
+| `CODEX_LOG_DB_PATH` | Runtime default / optional env override | Defaults to `.codex/session_logs.db` | Logging, export, query, and viewer tools |
 
-### Agent Autonomy & Control Variables
+### Agents Settings Surface (`settings/variables/agents`)
 
-| Variable | Workflows | Custom Agents |
-|----------|-----------|---------------|
-| `AGENT_KILL_SWITCH` | `agent-health-check.yml`, `agent-runtime.yml`, all agent-runner workflows | ALL agents (halt check) |
-| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `copilot-agent-vars-bootstrap.yml` | ALL Copilot coding agents |
-| `COPILOT_AGENT_AUTH_ENABLED` | `agent-auth-delegation.yml` | `bridge-security-monitor`, `owner-approval-guard` |
-| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector` |
-| `AUTONOMOUS_ACTIONS_ENABLED` | `agent-orchestration-unified.yml` | `agent-orchestrator`, `self-healing-orchestrator-agent` |
-| `COPILOT_AGENT_PREFLIGHT_RULES` | `pre-flight-validation.yml`, `workflow-execution-gate.yml` | ALL agents (mandatory load at session start) |
-| `COPILOT_WEC_SELECTION_MATRIX` | `workflow-execution-gate.yml` | ALL agents (WEC routing) |
+| Variable | Surface | Current expectation | Primary consumers |
+|----------|---------|---------------------|-------------------|
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | Agent variable | `D` ceiling | All Copilot/custom agents |
+| `COPILOT_AGENT_AUTH_ENABLED` | Agent variable | `true` | Auth-gated write paths |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | Agent variable | `true` | `cognitive-brain-session-injector` |
+| `COPILOT_AGENT_PREFLIGHT_RULES` | Agent + repo JSON | Mandatory load at session start | All Copilot/custom agents |
+| `COPILOT_WEC_SELECTION_MATRIX` | Agent + repo JSON | Current routing matrix | Workflow/orchestration agents |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | Agent + repo JSON | Expected steady-state `count=0` after remediation | `workflow-compliance-guardian`, WEC-aware agents |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | Agent variable | `true` | Cognitive Brain session/bootstrap agents |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | Agent variable | `128000` | Cognitive/context-budget aware agents |
 
-### Cognitive Brain & Session Variables
+### Workflow Automation / CI Surface
 
-| Variable | Workflows | Custom Agents |
-|----------|-----------|---------------|
-| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `copilot-setup-steps.yml`, `cognitive-analysis-feed.yml` | `cognitive-brain-session-injector` |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector`, `skills-master-agent` |
-| `COGNITIVE_BRAIN_SESSION_RETENTION_HOURS` | `cognitive-analysis-feed.yml` | `memory-sync-agent`, `cognitive-brain-session-injector` |
-| `SESSION_CONTEXT_AUTO_CAPTURE` | `session-context-capture.yml` (pending) | `cognitive-brain-session-injector`, `session-analysis-agent` |
-| `SESSION_CONTEXT_AUTO_INJECT` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector` |
-| `COGNITIVE_BRAIN_SESSION_NUMBER` | `copilot-agent-vars-bootstrap.yml` | `cognitive-brain-session-injector`, `orchestrator-agent` |
+| Variable | Verified workflow readers | Primary agent/process consumers |
+|----------|---------------------------|---------------------------------|
+| `CODEX_TEST_TIMEOUT_MINUTES` | `auth-tests.yml`, `coverage-with-timeout.yml`, `nox_gates.yml`, `test-rag.yml` | `ci-testing-agent`, `autonomous-test-healer-agent` |
+| `CODEX_COVERAGE_THRESHOLD` | `ci-checkpoint-validation.yml`, `code-quality-coverage-suite.yml`, `copilot-agent-vars-bootstrap.yml` | `unified-coverage-agent`, `ci-testing-agent` |
+| `CODEX_CI_FAILURE_RATE` | `copilot-agent-vars-bootstrap.yml`, `repo-var-sync-schedule.yml` | `ci-health-alert-agent`, `ci-triage-pipeline-agent` |
+| `CODEX_CI_FAILURE_THRESHOLD` | `ci-health-monitor.yml`, `repo-var-sync-schedule.yml` | `ci-health-alert-agent` |
+| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | `copilot-iterative-self-healing.yml`, `iterative-self-healing-ci.yml`, `self-healing.yml` | Self-healing agent family |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `agent-auth-delegation.yml`, `chatops_copilot_trigger.yml`, `copilot-iterative-self-healing.yml`, `repo-var-sync-schedule.yml` | Session injection and orchestration agents |
 
-### Self-Healing & Telemetry Variables
+### Runtime / Service Guard Surface
 
-| Variable | Workflows | Custom Agents |
-|----------|-----------|---------------|
-| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | `self-healing.yml` (pending) | `self-healing-orchestrator-agent`, `autonomous-test-healer-agent`, `ci-auto-healer-agent` |
-| `CODEX_TELEMETRY_ENABLED` | `telemetry-collection.yml` | `performance-monitor-agent`, `msv-dashboard-monitor` |
-| `METRICS_COLLECTION_INTERVAL_SECONDS` | `telemetry-collection.yml` | `performance-monitor-agent` |
-| `WORKFLOW_FAILURE_TRACKING_ENABLED` | `ci-health-monitor.yml`, `artifact-monitoring.yml` | `ci-health-alert-agent`, `workflow-health-monitor` |
-| `CODEX_CI_FAILURE_RATE` | Auto-updated by `ci-health-monitor.yml` | `ci-health-alert-agent`, `ci-triage-pipeline-agent` |
-| `CODEX_CI_FAILURE_THRESHOLD` | `ci-health-monitor.yml` | `ci-health-alert-agent` |
-
-### API & Runtime Variables (from `services/api/main.py`)
-
-| Variable | Workflows | Custom Agents |
-|----------|-----------|---------------|
-| `CODEX_AUTH_SECRET` | `api-documentation.yml` | `bridge-security-monitor` |
-| `CODEX_AUTH_MIDDLEWARE_ENABLED` | `api-documentation.yml` | `bridge-security-monitor` |
-| `CODEX_AUTH_RATE_LIMIT` | `api-documentation.yml` | `bridge-security-monitor` |
-| `CODEX_ENV` | All deployment workflows | `ci-testing-agent`, `config-validator` |
-| `DISABLE_SECRET_FILTER` | ⚠️ MUST be `false` — never referenced in workflows | `pii-scrubber`, `secret-detection-agent` |
+| Variable | Surface | Current expectation | Primary consumers |
+|----------|---------|---------------------|-------------------|
+| `CODEX_ENV` | Workflow-exported env or repo-var fallback | `copilot-agent` in Copilot sessions; `production` must trigger stricter guards | Security/compliance agents, service config |
+| `DISABLE_SECRET_FILTER` | Repository variable | Must remain `false` outside isolated local debugging | `pii-scrubber`, `secret-detection-agent` |
+| `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repository variable | Default `true` | API/auth validation |
+| `CODEX_AUTH_RATE_LIMIT` | Repository variable | Default `100` | API/auth validation |
 
 ---
 
@@ -373,7 +363,7 @@ All variables should be accessed using the safe fallback pattern:
 
 ```yaml
 env:
-  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
   # NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:
   #   env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }
   CODEX_TEST_TIMEOUT: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
@@ -383,6 +373,8 @@ env:
 > **Note on Node.js version variables**:
 > - `NODE_JS_VERSION` — **repo var** (create in GitHub UI → Settings → Actions → Variables). CI workflows (e.g., `copilot-setup-steps.yml`) read it as `env.NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}`.
 > - `CODEX_ENV_NODE_VERSION` — **environment var** (Aries_Serpent_codex_ environment). Injected into the Copilot agent sandbox. These are two separate mechanisms serving different scopes.
+> - `CODEX_ENV` — **runtime env value** exported by `copilot-setup-steps.yml` (`copilot-agent` today). This is distinct from any optional repository variable fallback used by services outside the Copilot sandbox.
+> - `CODEX_DB_PATH` vs `CODEX_LOG_DB_PATH` — the setup workflow currently exports `CODEX_DB_PATH=${GITHUB_WORKSPACE}/.codex/codex.db` for cognitive/pattern state, while logging tools still default to `CODEX_LOG_DB_PATH=.codex/session_logs.db`.
 
 For integer fields (e.g., `timeout-minutes`):
 ```yaml
@@ -393,7 +385,7 @@ For action inputs:
 ```yaml
 - uses: ./.github/actions/setup-python-cached
   with:
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 - uses: actions/setup-node@v6
   with:
     node-version: ${{ vars.NODE_JS_VERSION || '22' }}
@@ -443,7 +435,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 ## What’s Next (After Variable Sync)
 
 1. **Secrets pass (pending):** update/verify repo, environment, and org secrets inventory and rotation state.
-2. **WEC drift remediation (high priority):** resolve `COPILOT_WEC_TEMPLATE_DRIFT` (`count=16`) by extending `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py`.
+2. **WEC drift verification:** keep `COPILOT_WEC_TEMPLATE_DRIFT` aligned with the remediated `_WEC_ITEMS` state (`count=0` expected after the 2026-06-03 update).
 3. **Agent settings alignment:** verify `/settings/variables/agents` mirrors critical runtime variables (`COPILOT_AGENT_*`, `COPILOT_WEC_*`, `COGNITIVE_BRAIN_*`, `CODEX_LINT_STRICT`, `CODEX_COVERAGE_THRESHOLD`).
 4. **`DISABLE_SECRET_FILTER` hardening:** keep default/effective value `false`, add explicit CI/policy guard to block any promotion flow that attempts `true`.
 5. **Post-secrets refresh:** regenerate totals and audit timestamp once secrets are synchronized.
@@ -469,10 +461,11 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 | 2026-06-03 | **Full inventory refresh** — added all 106 variables (13 env, 70 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong |
 | 2026-06-03 | **Variable usage expansion** — updated `CODEX_ENV_NODE_VERSION` 18→22; added Workflow & Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements | @mbaetiong |
 | 2026-06-03 | **Variables-only sync pass** — updated totals to 113 tracked (14 env vars, 76 repo vars), updated `CODEX_CI_LAST_GREEN_SHA`, and added explicit next-step actions for pending secrets pass and WEC drift remediation | @mbaetiong |
+| 2026-06-03 | **Workflow/agent reconciliation pass** — aligned cache defaults to `v2`, documented `COPILOT_RUNNER_PROFILE` safe fallback (`ubuntu-latest`), clarified `CODEX_ENV=copilot-agent`, and split `CODEX_DB_PATH` vs `CODEX_LOG_DB_PATH` by effective runtime surface | @copilot |
 
 ---
 
-**Last Updated**: 2026-06-03T21:15:07Z
+**Last Updated**: 2026-06-03T22:09:48Z
 **Maintainer**: @mbaetiong
 **Review Frequency**: Quarterly
 
@@ -630,7 +623,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 
 #### `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH`
 - **Purpose**: SQLite database path for logging
-- **Default**: `.codex/logs.db`
+- **Default**: `CODEX_LOG_DB_PATH=.codex/session_logs.db`; `copilot-setup-steps.yml` currently overrides `CODEX_DB_PATH` to `${GITHUB_WORKSPACE}/.codex/codex.db`
 
 #### `CODEX_SQLITE_POOL`
 - **Purpose**: Enable per-session SQLite connection pooling

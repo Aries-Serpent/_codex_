@@ -1,6 +1,6 @@
 # Repository Secrets and Variables Inventory
-> Generated: 2026-06-03T21:47:19Z | Author: mbaetiong
-> Expanded by: Copilot Task Agent (2026-06-03T21:47:19Z)
+> Generated: 2026-06-03T22:09:48Z | Author: mbaetiong
+> Expanded by: Copilot Task Agent (2026-06-03T22:09:48Z)
 > Variable Sync Pass: 2026-06-03T21:15:07Z (variables-only; secrets unchanged)
 > Secrets/API Pass Attempt: 2026-06-03T21:32:23Z (**blocked**: GitHub Actions variables/secrets APIs returned `403 Resource not accessible by integration` for current token)
 > Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-click fallback for all required surfaces)
@@ -69,8 +69,8 @@ Click path: **Settings** → **Environments** → **Aries_Serpent_codex_**.
 If Variables pane is shown, click **Add variable** and set/verify:
 - `CODEX_ENV_NODE_VERSION` = `22` (or approved current LTS)
 - `CODEX_ENV_PYTHON_VERSION` = `3.12`
-- `CODEX_DB_PATH` = `.codex/logs.db`
-- `CODEX_LOG_DB_PATH` = `.codex/logs.db`
+- `CODEX_DB_PATH` = `.codex/session_logs.db` (base configured value; `copilot-setup-steps.yml` currently overrides runtime `CODEX_DB_PATH` inside Copilot sessions)
+- `CODEX_LOG_DB_PATH` = `.codex/session_logs.db`
 - `RUST_TEST_THREADS` = `1`
 
 #### Environment secrets
@@ -164,7 +164,7 @@ Add/grant/verify from **Agent Secrets** table:
 |---|---|---|---|
 | `CODEX_ENV_NODE_VERSION` | **UPDATE** (if stale) | `22` (or approved current LTS) | Current docs indicate `22`; prior inventory showed `18`. Keep aligned with workflow/runtime expectations. |
 | `CODEX_ENV_PYTHON_VERSION` | VERIFY | `3.12` | Must stay aligned with `pyproject.toml` (`requires-python >=3.12`). |
-| `CODEX_DB_PATH` and `CODEX_LOG_DB_PATH` | VERIFY | `.codex/logs.db` | Keep paths consistent to avoid split logging behavior. |
+| `CODEX_DB_PATH` and `CODEX_LOG_DB_PATH` | VERIFY | `CODEX_DB_PATH=.codex/session_logs.db`; `CODEX_LOG_DB_PATH=.codex/session_logs.db` | Keep the configured defaults aligned for logging tools, while noting that `copilot-setup-steps.yml` currently exports a runtime-only `CODEX_DB_PATH=${GITHUB_WORKSPACE}/.codex/codex.db` override inside Copilot sessions. |
 | `RUST_TEST_THREADS` | VERIFY | `1` | Deterministic Rust test behavior in CI/sandbox. |
 
 ---
@@ -187,6 +187,7 @@ Add/grant/verify from **Agent Secrets** table:
 | `COPILOT_WEC_SELECTION_MATRIX` | VERIFY JSON freshness | workflow mapping current to repo reality | Prevent WEC drift and checklist mismatch. |
 | `COPILOT_WEC_TEMPLATE_DRIFT` | VERIFY + SYNC | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` → `auto-approve-workflows`) | Drift was remediated in `_WEC_ITEMS`; keep the repo variable and agent settings copy aligned to the current zero-drift state. |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | REVIEW/PRUNE/UPDATE | approved domains only | Large allowlist should be periodically pruned and normalized. |
+| `COPILOT_RUNNER_PROFILE` | VERIFY | unset or valid runner label; workflow fallback is `ubuntu-latest` | `copilot-setup-steps.yml` reads this variable for larger-runner overrides, but now falls back safely to `ubuntu-latest` when the variable is absent. |
 
 ---
 

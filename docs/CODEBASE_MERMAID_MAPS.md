@@ -1,7 +1,7 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
 
-> **Version:** 1.4.0 (S1292 · 2026-05-28)  
-> **Updated:** 2026-05-28  
+> **Version:** 1.4.1 (S1292a · 2026-06-03)  
+> **Updated:** 2026-06-03  
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
 > **Previous:** v1.3.0 S1259 · 2026-05-23
@@ -199,34 +199,38 @@ graph TD
 
 ```mermaid
 graph LR
-    subgraph "CI Agents"
-        CTA[ci-testing-agent\nv4.2.0-s228]
-        SHA[self-healing-orchestrator\nv1.0.0]
-        ATH[autonomous-test-healer\nv2.0.0-s228]
+    subgraph "Configuration Surfaces"
+        REPOV[Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*]
+        AGENTV[Agents Variables\nCOPILOT_AGENT_*\nCOPILOT_WEC_*\nCOGNITIVE_BRAIN_*]
+        ORGS[Org / Repo Secrets\nCODEX_MASTER_KEY\nCODEX_BACKUP_KEY\n_GITHUB_APP_*]
+        SETUP[.github/workflows/\ncopilot-setup-steps.yml\nruns-on → ubuntu-latest fallback\ncache → v2]
     end
 
-    subgraph "Workflow Agents"
-        WCG[workflow-compliance-guardian\nv2.0.0]
-        WFX[workflow-ci-fixer\nv1.x]
+    subgraph "Runtime Exports"
+        ENVX[CODEX_ENV=copilot-agent]
+        LOGX[CODEX_LOG_LEVEL=INFO]
+        DBX[CODEX_DB_PATH=$GITHUB_WORKSPACE/.codex/codex.db]
+        LOGDB[CODEX_LOG_DB_PATH\n.session_logs.db default]
     end
 
-    subgraph "QA Agents"
-        QA[qa-walkthrough-agent\nv4.1.0]
+    subgraph "Agent Families"
+        CIA[CI / Self-Healing Agents\nci-testing-agent\nautonomous-test-healer-agent\nself-healing-orchestrator-agent]
+        WFA[Workflow / Orchestration Agents\nworkflow-compliance-guardian\nworkflow-ci-fixer\nagent-orchestrator]
+        CBA[Cognitive Brain Agents\ncognitive-brain-session-injector\nmemory-sync-agent\nsession-analysis-agent]
+        SCA[Security / Compliance Agents\nsecurity-audit-agent\nsecret-detection-agent\npii-scrubber]
     end
 
-    subgraph "Security Agents"
-        SA[security-audit-agent]
-        CQL[codeql-alert-resolution-agent]
-    end
-
-    subgraph "Orchestrator"
-        OA[agent-orchestrator\nFAISS routing]
-    end
-
-    OA -->|routes tasks| CTA & SHA & ATH & WCG & QA & SA & CQL
-    SHA -->|coordinates| CTA & ATH
-    WCG -->|validates| WFX
-    QA -->|discovers issues for| SHA & SA
+    REPOV --> SETUP
+    AGENTV --> CIA & WFA & CBA & SCA
+    ORGS --> SETUP
+    SETUP --> ENVX & LOGX & DBX
+    REPOV --> LOGDB
+    ENVX --> SCA
+    LOGX --> CIA & CBA
+    DBX --> CBA
+    LOGDB --> CIA & CBA
+    REPOV --> CIA & WFA
+    WFA -->|routes / validates| CIA & CBA & SCA
 ```
 
 ---

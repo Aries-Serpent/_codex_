@@ -76,9 +76,9 @@ jobs:
     #   with project dependencies pre-baked, cutting cold-start time to near zero.
     #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
     #
-    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Recommended repo variable default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
     # Set repo variable COPILOT_RUNNER_PROFILE to override:
-    #   ubuntu-latest-m → standard sessions (default)
+    #   ubuntu-latest-m → standard sessions when the repo variable is set
     #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
     #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
     # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
@@ -326,7 +326,7 @@ jobs:
 
           # ── Map env type → minimum required tier ──────────────────────────
           ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
-          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
 
           case "$ENV_TYPE" in
             ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
@@ -644,7 +644,7 @@ jobs:
           df -h | grep -E "^/dev" || true
           echo ""
           echo "==================== AAIS Runner Summary ===================="
-          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
           echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
           echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
           echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"
