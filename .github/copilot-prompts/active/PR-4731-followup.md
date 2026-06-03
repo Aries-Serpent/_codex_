@@ -4,7 +4,7 @@
 **Branch**: `copilot/update-cli-tests-expected-exit-codes`  
 **Author**: @Copilot  
 **Date**: 2026-06-03  
-**Commit**: `1a26a798a6402acce8de901106e6da4c358e6ba1`  
+**Commit**: `9002d64647c098c55a2eda99ae1d2aba325beaff`  
 **Status**: 🔄 ACTIVE
 
 ---
