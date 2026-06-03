@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4731)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4731 (SHA `4efb1e4b`) at 2026-06-03T12:23Z [auto-generated]
+
 ### Security (PR #4728 — security alert remediation — 2026-06-03T06:17Z)
 - Fixed HIGH template injection in `.github/workflows/copilot-setup-steps.yml`: moved `${{ github.base_ref }}` and `${{ inputs.lfs_include_paths }}` from inline `run:` blocks into `env:` blocks, eliminating shell injection vectors.
 - Replaced base64-obfuscated inline Python execution with a proper script `.github/scripts/inject_context_vars.py` that sanitizes values before writing to GITHUB_ENV.
