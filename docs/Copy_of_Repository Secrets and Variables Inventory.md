@@ -1,8 +1,152 @@
 # Repository Secrets and Variables Inventory
-> Generated: 2026-06-03T21:34:05Z | Author: mbaetiong
-> Expanded by: Copilot Task Agent (2026-06-03T21:34:05Z)
+> Generated: 2026-06-03T21:47:19Z | Author: mbaetiong
+> Expanded by: Copilot Task Agent (2026-06-03T21:47:19Z)
 > Variable Sync Pass: 2026-06-03T21:15:07Z (variables-only; secrets unchanged)
 > Secrets/API Pass Attempt: 2026-06-03T21:32:23Z (**blocked**: GitHub Actions variables/secrets APIs returned `403 Resource not accessible by integration` for current token)
+> Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-click fallback for all required surfaces)
+
+## 🚧 Blocker Continuation: `403 Resource not accessible by integration` → Manual Maintainer Setup
+
+Because API reads/writes are blocked for this session token, complete setup in GitHub UI using the exact steps below.
+
+### 0) Open required pages first (direct URLs)
+
+1. Repository settings home: https://github.com/Aries-Serpent/_codex_/settings
+2. Repository **Actions Variables**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
+3. Repository **Actions Secrets**: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
+4. Repository **Agents Variables**: https://github.com/Aries-Serpent/_codex_/settings/variables/agents
+5. Repository **Agents Secrets**: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
+6. Repository **Environments list**: https://github.com/Aries-Serpent/_codex_/settings/environments
+7. Environment page (`Aries_Serpent_codex_`): https://github.com/Aries-Serpent/_codex_/settings/environments/Aries_Serpent_codex_
+8. Organization **Actions Variables**: https://github.com/organizations/Aries-Serpent/settings/variables/actions
+9. Organization **Actions Secrets**: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
+
+### 1) Repository Variables (`/settings/variables/actions`)
+
+Click path: **Settings** → **Secrets and variables** → **Actions** → **Variables** → **New repository variable**.
+
+Create/update these first (from latest inventory notes):
+- `CODEX_CI_FAILURE_RATE`
+- `CODEX_CI_LAST_GREEN_SHA`
+- `COGNITIVE_BRAIN_SESSION_NUMBER`
+- `COPILOT_ACTIVE_SESSION`
+- `COPILOT_AGENT_PREFLIGHT_RULES`
+- `COPILOT_WEC_SELECTION_MATRIX`
+- `COPILOT_WEC_TEMPLATE_DRIFT`
+- `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS`
+
+For each variable:
+1. Click **New repository variable**.
+2. Paste **Name**.
+3. Paste **Value** from your source-of-truth export/current runtime policy.
+4. Click **Add variable**.
+5. Repeat until all listed items exist and are current.
+
+### 2) Repository Secrets (`/settings/secrets/actions`)
+
+Click path: **Settings** → **Secrets and variables** → **Actions** → **Secrets** → **New repository secret**.
+
+Create/rotate/verify:
+- `OPENAI_API_KEY`
+- `CODEX_WEBHOOK_SECRET`
+- `_CODEX_BOT_RUNNER`
+- `CODEX_GHP_TOKEN_BASE64`
+- `CODEX_GHP_TOKEN_HEX`
+- `CODEX_REPO_ID`
+
+For each secret:
+1. Click **New repository secret**.
+2. Enter **Name**.
+3. Paste secret value.
+4. Click **Add secret**.
+5. If already present, click the secret row and use **Update secret** after rotation.
+
+### 3) Environment Variables + Secrets (`Aries_Serpent_codex_`)
+
+Click path: **Settings** → **Environments** → **Aries_Serpent_codex_**.
+
+#### Environment variables
+If Variables pane is shown, click **Add variable** and set/verify:
+- `CODEX_ENV_NODE_VERSION` = `22` (or approved current LTS)
+- `CODEX_ENV_PYTHON_VERSION` = `3.12`
+- `CODEX_DB_PATH` = `.codex/logs.db`
+- `CODEX_LOG_DB_PATH` = `.codex/logs.db`
+- `RUST_TEST_THREADS` = `1`
+
+#### Environment secrets
+In the Secrets pane, click **Add secret** and rotate/verify:
+- `CODEX_ENVIRONMENT_RUNNER`
+- `CODEX_RUNNER_SHA256`
+- `CODEX_RUNNER_TOKEN`
+
+### 4) Organization Variables (`/organizations/.../settings/variables/actions`)
+
+Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Variables**.
+
+Ensure org-level variables needed by this repo are present and repo access policy includes `_codex_` where required.
+
+### 5) Organization Secrets (`/organizations/.../settings/secrets/actions`)
+
+Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Secrets**.
+
+Create/rotate/verify (priority first):
+- `CODEX_MASTER_KEY` (**priority**)
+- `CODEX_BACKUP_KEY`
+- `CODEX_ADMIN_KEY`
+- `_GITHUB_APP_PRIVATE_KEY`
+- `_GITHUB_APP_CLIENT_SECRET`
+- `HF_TOKEN`
+- `NPM_TOKEN`
+- `PYPI_TOKEN`
+- `_CODEX_ACTION_RUNNER`
+- `CODECOV_TOKEN`
+
+For each org secret:
+1. Click secret name (or **New organization secret**).
+2. Set/rotate value.
+3. In **Repository access**, choose **Selected repositories** (or policy you require).
+4. Ensure `Aries-Serpent/_codex_` is selected.
+5. Save.
+
+### 6) Agents Variables (`/settings/variables/agents`)
+
+Click path: **Settings** → **Secrets and variables** → **Copilot**/**Agents** → **Variables**.
+
+Add/verify all rows from **Agent Variables (Copilot Agent Settings)** table in this document, especially:
+- `COPILOT_AGENT_MAX_AUTONOMY_LEVEL`
+- `COPILOT_AGENT_AUTH_ENABLED`
+- `COPILOT_AGENT_SESSION_RESTORE_ENABLED`
+- `COPILOT_AGENT_FIREWALL_ENABLED`
+- `COPILOT_AGENT_PREFLIGHT_RULES`
+- `COPILOT_WEC_SELECTION_MATRIX`
+- `COGNITIVE_BRAIN_ALLOWED_ACTORS`
+- `CODEX_PYTHON_VERSION`
+
+### 7) Agents Secrets (`/settings/secrets/agents`)
+
+Click path: **Settings** → **Secrets and variables** → **Copilot**/**Agents** → **Secrets**.
+
+Add/grant/verify from **Agent Secrets** table:
+- `CODEX_MASTER_KEY`
+- `CODEX_BACKUP_KEY`
+- `CODEX_ADMIN_KEY`
+- `OPENAI_API_KEY`
+- `RAG_OPENAI_KEY`
+- `CODEX_WEBHOOK_SECRET`
+- `_GITHUB_APP_ID`
+- `_GITHUB_APP_INSTALLATION_ID`
+- `_GITHUB_APP_PRIVATE_KEY`
+- `_GITHUB_APP_CLIENT_SECRET`
+- `_CODEX_BOT_RUNNER`
+
+### 8) Immediate post-setup validation (UI)
+
+1. Re-open each of the 9 URLs above and confirm all required names are present.
+2. Trigger a lightweight workflow run in Actions and verify no `missing secret/variable` errors.
+3. Return to this file and update:
+   - top timestamp block,
+   - counts in summary table,
+   - completion status in checklists.
 
 ## 📊 Complete Inventory Tables
 
