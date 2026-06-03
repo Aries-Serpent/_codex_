@@ -171,6 +171,109 @@ jobs:
               || echo "⚠️ Could not create local $BASE ref (non-blocking)"
           fi
 
+      # ── Merge Conflict Pre-Check (§0.4 CODEBASE_AGENCY_POLICY.md) ──────────
+      # Every Copilot session MUST start conflict-free. This step detects existing
+      # merge conflicts and branch divergence BEFORE the agent begins any work.
+      # If conflicts are found, a warning annotation is emitted so the agent can
+      # resolve them as its first action (per §0.4).
+      - name: "🔀 Merge Conflict Pre-Check (session start)"
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        run: |
+          echo "── §0.4: Inspecting PR for merge conflicts ──"
+          BASE="${BASE_REF}"
+          HEAD="${HEAD_REF}"
+
+          # 1. Check PR mergeable status via GitHub API
+          if [ -n "$PR_NUMBER" ]; then
+            MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
+            echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
+            if [ "$MERGEABLE" = "CONFLICTING" ]; then
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE}'. Agent MUST resolve these before any other work."
+              echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
+            elif [ "$MERGEABLE" = "MERGEABLE" ]; then
+              echo "✅ No merge conflicts detected"
+              echo "COPILOT_MERGE_CONFLICT=false" >> "$GITHUB_ENV"
+            else
+              echo "ℹ️ Mergeable status: ${MERGEABLE} (GitHub may still be computing)"
+              echo "COPILOT_MERGE_CONFLICT=unknown" >> "$GITHUB_ENV"
+            fi
+          fi
+
+          # 2. Check branch divergence (behind/ahead)
+          if [ -n "$BASE" ]; then
+            BEHIND=$(git rev-list --count "HEAD..origin/${BASE}" 2>/dev/null || echo "0")
+            AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
+            echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
+            if [ "$BEHIND" -gt 0 ]; then
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'. Agent should rebase or merge base before starting work."
+              echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
+            else
+              echo "✅ Branch is up-to-date with ${BASE}"
+              echo "COPILOT_BRANCH_BEHIND=0" >> "$GITHUB_ENV"
+            fi
+          fi
+
+          # 3. Dry-run merge-tree check for potential file-level conflicts
+          if [ -n "$BASE" ] && git rev-parse "origin/${BASE}" >/dev/null 2>&1; then
+            MERGE_BASE=$(git merge-base HEAD "origin/${BASE}" 2>/dev/null || echo "")
+            if [ -n "$MERGE_BASE" ]; then
+              CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
+              if [ "$CONFLICT_FILES" -gt 0 ]; then
+                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE}'"
+              else
+                echo "✅ merge-tree: no file-level conflicts detected"
+              fi
+            fi
+          fi
+
+          echo "── §0.4 merge conflict pre-check complete ──"
+
+      # ── CI Failure Issue Check (§0.2 CODEBASE_AGENCY_POLICY.md) ─────────────
+      # Check for open CI failure report issues that may contain relevant failure
+      # patterns. These issues are auto-created by ci-failure-issue-creator.yml
+      # and ci-health-monitor.yml when workflows fail on main.
+      - name: "🚨 CI Failure Issue Check (session start)"
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          echo "── §0.2: Checking for open CI failure report issues ──"
+          REPO="Aries-Serpent/_codex_"
+
+          # Check for ci-failure issues (per-workflow failure reports)
+          CI_FAILURES=$(gh issue list --repo "$REPO" --label "ci-failure" --state open \
+            --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
+          echo "Open ci-failure issues: ${CI_FAILURES}"
+
+          # Check for ci-health-alert issues (high failure rate alerts)
+          HEALTH_ALERTS=$(gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
+            --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
+          echo "Open ci-health-alert issues: ${HEALTH_ALERTS}"
+
+          TOTAL=$((CI_FAILURES + HEALTH_ALERTS))
+          echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
+
+          if [ "$TOTAL" -gt 0 ]; then
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+
+            # List issue titles for agent context
+            echo ""
+            echo "── Open CI failure issues: ──"
+            gh issue list --repo "$REPO" --label "ci-failure" --state open \
+              --json number,title --jq '.[] | "#\(.number): \(.title)"' 2>/dev/null || true
+            gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
+              --json number,title --jq '.[] | "#\(.number): \(.title)"' 2>/dev/null || true
+          else
+            echo "✅ No open CI failure report issues"
+          fi
+
+          echo "── §0.2 CI failure issue check complete ──"
+
       - name: "🔍 Validate repo JSON files"
         run: |
           echo "── Validating JSON files in .codex/ and docs/ ──"
@@ -282,8 +385,9 @@ jobs:
         id: detect_env
         env:
           HEAD_REF: ${{ github.head_ref }}
+          INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
         run: |
-          ENV_TYPE="${{ github.event.inputs.environment_type || 'standard' }}"
+          ENV_TYPE="${INPUT_ENV_TYPE}"
           # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
             if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
