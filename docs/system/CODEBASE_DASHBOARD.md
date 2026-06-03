@@ -1,7 +1,7 @@
 # Codebase Dashboard
 
-> Created: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent
-> PR: #2960 | Branch: `copilot/update-html-documentation-standards`
+> Created: 2026-01-12 | Updated: 2026-06-03T18:02:00Z | Updated by: @mbaetiong (variables audit S1325)
+> Reference session: S1325 | PR queue: 47 pending
 
 ---
 
@@ -13,9 +13,9 @@
 
 **Status**: 🟢 Active Development
 
-**Last Updated**: 2026-01-23T08:45:00Z
-**Version**: 2.0.0
-**Last Reviewed**: 2026-01-23T08:45:00Z
+**Last Updated**: 2026-06-03T18:02:00Z
+**Version**: 2.1.0
+**Last Reviewed**: 2026-06-03T18:02:00Z
 
 ---
 
@@ -25,12 +25,36 @@
 
 | Metric | Status | Value | Target | Trend |
 |--------|--------|-------|--------|-------|
-| **Tests** | ✅ Passing | 1615 (100%) | 100% | ⬆️ Growing |
-| **Coverage** | 🟡 Good | 10.7% | 80%+ | ⬆️ Improving |
+| **Tests** | ✅ Passing | 21,500+ (100%) | 100% | ⬆️ Growing |
+| **Coverage** | 🟡 Active | 10.7% (overall) | 80%+ | ⬆️ Improving |
 | **Security** | ✅ Clean | 0 vulnerabilities | 0 | ➡️ Stable |
+| **CI Failure Rate** | ✅ OK | 2.5% | <10% | ➡️ Stable |
 | **MLOps Maturity** | ✅ Elite | Level 4 (100/100) | Level 4 | ➡️ Stable |
 | **Cache Usage** | ✅ Healthy | 7.69 GB / 10 GB | <8 GB | ➡️ Stable |
-| **CI Performance** | ✅ Fast | <5 min builds | <5 min | ➡️ Stable |
+| **Active Agents** | ✅ | 145 (159 total — 14 archived) | — | ➡️ Stable |
+| **Session Number** | 🔄 Active | S1325 | — | ⬆️ Growing |
+
+### Variables & Secrets Health
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Environment Variables | 13 | ✅ Current |
+| Repository Variables | 70 | ✅ Current |
+| Environment Secrets | 3 | ✅ Current |
+| Repository Secrets | 7 | ✅ Current |
+| Organization Secrets | 13 | ⚠️ 5 overdue rotation |
+| **Gap Variables (code-referenced, not in inventory)** | **30+** | 🔴 Action required |
+
+### CI Tracking Variables (Auto-Updated)
+
+| Variable | Current Value | Updated |
+|----------|---------------|---------|
+| `CODEX_CI_FAILURE_RATE` | `2.5:ok` | 2026-06-03T17:31:53Z |
+| `CODEX_CI_LAST_GREEN_SHA` | `a1741db81e87c56d865cae82b98108bc09f89605` | 2026-06-03T17:31:53Z |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `1325` | 2026-06-03T16:11:27Z |
+| `COPILOT_ACTIVE_SESSION` | `4731\|1780503084\|26896743030` | 2026-06-03T16:11:25Z |
+
+
 
 ### Active Initiatives
 
