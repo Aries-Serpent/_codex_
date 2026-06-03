@@ -16,7 +16,7 @@ Document how to store, rotate, and audit repository secrets and environment vari
 - **Never commit secrets** to the repository.
 - **Token chain for all write ops**: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `github.token`
 - **Use least privilege** — scope API keys to test environments where possible.
-- Use `report_progress` tool (never `git push`) for all commits.
+- Use `report_progress` tool (never `git push`) for all commits.  # pragma: allowlist secret
 - `DISABLE_SECRET_FILTER` must **never** be set to `true` in production.
 
 ---
