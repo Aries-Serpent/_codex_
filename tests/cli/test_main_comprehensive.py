@@ -79,8 +79,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
-        args, kwargs = mock_run_training.call_args
-        assert not args, "Expected run_training to receive only keyword arguments"
+        assert not mock_run_training.call_args.args, "Expected run_training to receive only keyword arguments"
+        kwargs = mock_run_training.call_args.kwargs
         assert kwargs.get("model_name") == "distilgpt2"
         assert kwargs.get("epochs") == 3
         assert kwargs.get("batch_size") == 8
@@ -126,7 +126,7 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--learning-rate", "0.001"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
-        _, kwargs = mock_run_training.call_args
+        kwargs = mock_run_training.call_args.kwargs
         assert kwargs.get("learning_rate") == 0.001
 
     @patch("codex_ml.cli.main.run_training")
@@ -301,7 +301,7 @@ class TestLoadTrainingConfig:
 
     def test_load_training_config_with_invalid_path(self):
         """Test loading config with non-existent path."""
-        with pytest.raises((FileNotFoundError, SystemExit)):
+        with pytest.raises(FileNotFoundError):
             main._load_training_config("/nonexistent/path/config.yaml")
 
     def test_load_training_config_logs_when_yaml_missing(self, monkeypatch, tmp_path):
