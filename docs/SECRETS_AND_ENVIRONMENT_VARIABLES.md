@@ -624,6 +624,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 #### `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH`
 - **Purpose**: SQLite database path for logging
 - **Default**: `CODEX_LOG_DB_PATH=.codex/session_logs.db`; `copilot-setup-steps.yml` currently overrides `CODEX_DB_PATH` to `${GITHUB_WORKSPACE}/.codex/codex.db`
+- **Usage split**: Use `CODEX_LOG_DB_PATH` for session-log storage/query/export flows, and use `CODEX_DB_PATH` for cognitive-brain / pattern-recorder state when the Copilot sandbox override is active
 
 #### `CODEX_SQLITE_POOL`
 - **Purpose**: Enable per-session SQLite connection pooling
