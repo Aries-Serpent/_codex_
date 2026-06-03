@@ -41,7 +41,7 @@
 | `COPILOT_ACTIVE_SESSION` | UPDATE (automated) | current session tuple | Must reflect active session state. |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | VERIFY JSON freshness | version/date + mandatory rules | Critical governance source for agent operations. |
 | `COPILOT_WEC_SELECTION_MATRIX` | VERIFY JSON freshness | workflow mapping current to repo reality | Prevent WEC drift and checklist mismatch. |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | **RESOLVED IN CODE** | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` → `auto-approve-workflows`) | `_WEC_ITEMS` now includes `e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, and `mcp-health.yml`; PR-template parity check returns zero missing workflows. |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | VERIFY + SYNC | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` → `auto-approve-workflows`) | Drift was remediated in `_WEC_ITEMS`; keep the repo variable and agent settings copy aligned to the current zero-drift state. |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | REVIEW/PRUNE/UPDATE | approved domains only | Large allowlist should be periodically pruned and normalized. |
 
 ---
