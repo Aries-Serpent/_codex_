@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restored canonical session preload syntax in `.github/workflows/copilot-setup-steps.yml` (`run: |` + `if ! ...; then ...; fi`) to resolve YAML parse and validation guard failures.
 - Updated `.github/dependabot.yml` docker update labels from `docker` to existing `dependabot` label to resolve Dependabot label warning on this PR.
 - Added pip cache configuration to `.github/workflows/release.yml` (`cache: pip`, `cache-dependency-path: pyproject.toml`) for CI/CD maturity cache coverage.
-- Verified P3 Node.js 20 deadline status with `python3 scripts/ci/auto_fix_common_issues.py --check-only --pattern 21` (no deprecated Node.js 20 action refs found).
+- Verified **Priority 3** (Node.js 20 deprecation deadline, 2026-06-02) using `python3 scripts/ci/auto_fix_common_issues.py --check-only --pattern 21` (no deprecated Node.js 20 action refs found).
 
 ### Fixed (auto-update — PR #4739)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4739 (SHA `de733c0c`) at 2026-06-03T23:32Z [auto-generated]
