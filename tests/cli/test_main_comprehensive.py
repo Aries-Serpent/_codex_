@@ -79,7 +79,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
-        _, kwargs = mock_run_training.call_args
+        args, kwargs = mock_run_training.call_args
+        assert not args, "Expected run_training to receive only keyword arguments"
         assert kwargs.get("model_name") == "distilgpt2"
         assert kwargs.get("epochs") == 3
         assert kwargs.get("batch_size") == 8
@@ -125,6 +126,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--learning-rate", "0.001"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
+        _, kwargs = mock_run_training.call_args
+        assert kwargs.get("learning_rate") == 0.001
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_seed(self, mock_run_training, cli_runner):
@@ -133,6 +136,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--seed", "999"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
+        _, kwargs = mock_run_training.call_args
+        assert kwargs.get("seed") == 999
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_output_dir(self, mock_run_training, cli_runner, tmp_path):
@@ -142,6 +147,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--output-dir", str(output_dir)])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
+        _, kwargs = mock_run_training.call_args
+        assert kwargs.get("output_dir") == str(output_dir)
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_mlflow_enabled(self, mock_run_training, cli_runner):
@@ -150,6 +157,8 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--mlflow"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
+        _, kwargs = mock_run_training.call_args
+        assert kwargs.get("mlflow") is True
 
     @patch("codex_ml.cli.main.run_training")
     def test_train_with_wandb_enabled(self, mock_run_training, cli_runner):
