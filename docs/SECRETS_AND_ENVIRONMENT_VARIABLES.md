@@ -201,7 +201,7 @@ The following variables are referenced in source code, workflow files, or `.code
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repo Var | `true` | Enable auth middleware on API service |
 | `CODEX_AUTH_RATE_LIMIT` | Repo Var | `100` | API rate limit (requests/minute) |
 | `CODEX_ENV` | Repo Var | `development` | Deployment environment (`development`/`production`) |
-| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **Dangerous** — bypass secret redaction in logs |
+| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **⚠️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. |
 | `ARTIFACTS_DIR` | Repo Var | `/tmp/artifacts` | API artifact output directory |
 
 ### Nox / ML Pipeline (`noxfile.py`, `scripts/`)
@@ -235,7 +235,7 @@ The following variables are referenced in source code, workflow files, or `.code
 
 | Variable | Type | Recommended Value | Purpose |
 |----------|------|-------------------|---------|
-| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for all workflows |
+| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for all workflows. Note: workflows currently hardcode `NODE_VERSION: '20'` (see `.github/workflows/copilot-setup-steps.yml` line 61); this variable should be created and the workflow updated to reference it, upgrading from Node 20 to 22 LTS. |
 | `CODEX_TEST_TIMEOUT_MINUTES` | Repo Var | `60` | Per-job test timeout |
 | `CODEX_JOB_TIMEOUT_MINUTES` | Repo Var | `120` | Global job timeout |
 | `CODEX_MAX_PARALLEL_JOBS` | Repo Var | `4` | Max concurrent jobs |

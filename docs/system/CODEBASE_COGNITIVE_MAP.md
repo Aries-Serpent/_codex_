@@ -229,6 +229,8 @@ graph TB
     RV2 --> |controls| EV
 ```
 
+> **Diagram legend**: `token_chain` = primary token source for write operations; `fallback` = secondary token source used only when primary is unavailable (`CODEX_BACKUP_KEY` fills in when `CODEX_MASTER_KEY` is absent).
+
 ### Token Write Chain
 
 ```
