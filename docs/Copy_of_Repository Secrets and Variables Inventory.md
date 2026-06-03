@@ -1,7 +1,8 @@
 # Repository Secrets and Variables Inventory
-> Generated: 2026-06-03T17:39:00Z | Author: mbaetiong
-> Expanded by: Copilot Task Agent (2026-06-03)
+> Generated: 2026-06-03T21:34:05Z | Author: mbaetiong
+> Expanded by: Copilot Task Agent (2026-06-03T21:34:05Z)
 > Variable Sync Pass: 2026-06-03T21:15:07Z (variables-only; secrets unchanged)
+> Secrets/API Pass Attempt: 2026-06-03T21:32:23Z (**blocked**: GitHub Actions variables/secrets APIs returned `403 Resource not accessible by integration` for current token)
 
 ## 📊 Complete Inventory Tables
 
@@ -40,7 +41,7 @@
 | `COPILOT_ACTIVE_SESSION` | UPDATE (automated) | current session tuple | Must reflect active session state. |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | VERIFY JSON freshness | version/date + mandatory rules | Critical governance source for agent operations. |
 | `COPILOT_WEC_SELECTION_MATRIX` | VERIFY JSON freshness | workflow mapping current to repo reality | Prevent WEC drift and checklist mismatch. |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | **PRIORITY UPDATE REQUIRED** | `count=16` unresolved mapping gaps | Current drift silently drops 16 workflow files during `report_progress` rebuild (`_WEC_ITEMS` mismatch). |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | **RESOLVED IN CODE** | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` → `auto-approve-workflows`) | `_WEC_ITEMS` now includes `e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, and `mcp-health.yml`; PR-template parity check returns zero missing workflows. |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | REVIEW/PRUNE/UPDATE | approved domains only | Large allowlist should be periodically pruned and normalized. |
 
 ---
@@ -119,7 +120,7 @@
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | ADD/VERIFY | SHOULD | Enables cognitive brain injection controls. |
 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | ADD/VERIFY | SHOULD | Context budget awareness for agents. |
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | ADD/VERIFY | SHOULD | Pattern injection threshold consistency. |
-| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | current actor list | ADD/SYNC | SHOULD | Restricts who can update memory/session context. |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | ADD/SYNC | SHOULD | Restricts who can update memory/session context. |
 | `CODEX_COVERAGE_THRESHOLD` | `80` | ADD/VERIFY | SHOULD | Useful for agent remediation decisions. |
 | `CODEX_LINT_STRICT` | `true` | ADD/VERIFY | SHOULD | Keeps agent behavior aligned with strict lint policy. |
 | `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | ADD/VERIFY | SHOULD | Supports CI health triage logic. |
@@ -176,11 +177,11 @@
 
 ## ▶️ What’s Next (Post Variables-Only Pass)
 
-- [ ] Execute **secrets pass** (repo/env/org) and refresh secret ages/rotation status.
-- [ ] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the 16 missing workflows to `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py`.
-- [ ] Re-run inventory export and replace all “placeholder JSON” references with the current exact values where required.
-- [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift between Actions Variables and Agents Variables pages.
-- [ ] After secrets pass, regenerate summary totals and update this file’s timestamp block.
+- [ ] Execute **secrets pass** (repo/env/org) and refresh secret ages/rotation status. _(Blocked in-session by `403 Resource not accessible by integration`; requires elevated token/API scope.)_
+- [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the missing workflows to `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py` (`e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, `mcp-health.yml`).
+- [ ] Re-run inventory export and replace all “placeholder JSON” references with the current exact values where required. _(Blocked in-session by the same API authorization limits.)_
+- [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift between Actions Variables and Agents Variables pages. _(Blocked until repo/environment/org variable APIs are readable in-session.)_
+- [ ] After secrets pass, regenerate summary totals and update this file’s timestamp block. _(Partially updated in this commit; full totals refresh pending successful secrets pass.)_
 
 ---
 
