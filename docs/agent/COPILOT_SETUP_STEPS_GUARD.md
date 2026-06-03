@@ -24,11 +24,11 @@ is the authoritative version. It is the only version that simultaneously has:
 | Feature | Required Value |
 |---------|---------------|
 | `cancel-in-progress` | `true` |
-| `runs-on` | `${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}` |
+| `runs-on` | `${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}` |
 | `NODE_VERSION` | `"22"` |
 | Workflow-level `permissions` | `contents: read` |
 | Action SHAs | All pinned (not floating `@v5`/`@v6` tags) |
-| Session Preload step `run:` form | Block scalar (`run: \|`) |
+| Session Preload step `run:` form | Block scalar (`run: |`) |
 | Session Access Probe | Present |
 | RAG Context Build | Present |
 | Cascade-control injection | Present |

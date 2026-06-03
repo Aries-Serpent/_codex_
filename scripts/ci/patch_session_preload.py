@@ -10,7 +10,8 @@ import re
 import sys
 
 path = ".github/workflows/copilot-setup-steps.yml"
-content = open(path).read()
+with open(path) as fh:
+    content = fh.read()
 
 GUARD_COMMENT = """\
       # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
@@ -49,7 +50,8 @@ match = FULL_PATTERN.search(content)
 if match:
     replacement = GUARD_COMMENT + CANONICAL_STEP
     new_content = content[: match.start()] + replacement + content[match.end() :]
-    open(path, "w").write(new_content)
+    with open(path, "w") as fh:
+        fh.write(new_content)
     print("✅ Patched: replaced || { } flow scalar with block scalar form")
     sys.exit(0)
 
@@ -60,7 +62,8 @@ if 'run: |\n          if ! python3 .github/scripts/session_preload.py' in conten
             r'( *- name: "🧠 Session Context Pre-load \(memory \+ policy \+ accountability \+ PDA\)")'
         )
         new_content = STEP_PATTERN.sub(GUARD_COMMENT.rstrip("\n") + "\n" + r"\1", content)
-        open(path, "w").write(new_content)
+        with open(path, "w") as fh:
+            fh.write(new_content)
         print("✅ Added guard comment to already-correct block scalar step")
     else:
         print("✅ File already correct — no changes needed")
