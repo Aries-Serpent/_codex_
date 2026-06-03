@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4732)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4732 (SHA `40024bb6`) at 2026-06-03T16:12Z [auto-generated]
+
 ### Fixed (SN — PR #4731 CI rescue investigation — 2026-06-03T15:58Z)
 - Investigated CI rescue comment #4614265576 for failing checks on commit `f1665844e9a2`.
 - Confirmed all auto-fix patterns pass locally (Pattern 30: 100/100, REQ-4/REQ-5 ✅, sync_tracked_files ✅).
