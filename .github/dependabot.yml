@@ -83,7 +83,7 @@ updates:
       time: "09:00"
     labels:
       - "dependencies"
-      - "docker"
+      - "dependabot"
     reviewers:
       - "Aries-Serpent/owners"
     commit-message:
