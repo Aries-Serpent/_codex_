@@ -273,7 +273,7 @@ jobs:
           BASE="${BASE_REF}"
           HEAD="${HEAD_REF}"
           # Sanitize BASE for use in workflow-command annotations (prevent command injection)
-          BASE_SAFE="${BASE_REF//[^a-zA-Z0-9._\/@-]/}"
+          BASE_SAFE="${BASE_REF//[^a-zA-Z0-9._-]/}"
 
           # 1. Check PR mergeable status via GitHub API
           if [ -n "$PR_NUMBER" ]; then

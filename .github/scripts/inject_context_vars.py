@@ -5,13 +5,28 @@ key=value pairs to the GITHUB_ENV file so the Copilot agent session
 sees them as environment variables.
 
 Skips keys that start with '_' (private/internal) and empty values.
+Keys must match the POSIX pattern [A-Za-z_][A-Za-z0-9_]* to be safe.
+Values are stripped of all control characters before writing.
 """
 
 import json
 import os
+import re
 import sys
 
 CONTEXT_FILE = ".codex/agent_context.json"
+
+# Only allow POSIX-safe environment variable names
+_SAFE_KEY_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _sanitize_value(value: str) -> str:
+    """Strip all control characters from an env-var value.
+
+    This prevents GITHUB_ENV injection attacks (e.g. embedded newlines
+    that introduce extra KEY=value lines or multiline-delimiter sequences).
+    """
+    return re.sub(r"[\x00-\x1f\x7f]", " ", value).strip()
 
 
 def main() -> int:
@@ -35,8 +50,12 @@ def main() -> int:
         for key, value in ctx.items():
             if key.startswith("_") or not value:
                 continue
-            # Sanitise: strip newlines to prevent GITHUB_ENV multi-line injection
-            safe_value = str(value).replace("\n", " ").replace("\r", " ")
+            if not _SAFE_KEY_RE.match(key):
+                print(f"Skipping unsafe key: {key!r}")
+                continue
+            safe_value = _sanitize_value(str(value))
+            if not safe_value:
+                continue
             env_fh.write(f"{key}={safe_value}\n")
             injected += 1
 
