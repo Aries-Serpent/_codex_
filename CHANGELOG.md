@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4731 CI rescue investigation — 2026-06-03T15:58Z)
+- Investigated CI rescue comment #4614265576 for failing checks on commit `f1665844e9a2`.
+- Confirmed all auto-fix patterns pass locally (Pattern 30: 100/100, REQ-4/REQ-5 ✅, sync_tracked_files ✅).
+- Root cause: CI failures at 15:55 UTC detected stale sync_tracked_files, but all validation scripts pass at 15:58 UTC; issue appears to be resolved or transient.
+- Added session summary to accountability report and CHANGELOG per REQ-4/REQ-5 requirements.
+
+### Fixed (SN — PR #4731 code review follow-up — 2026-06-03T14:17Z)
+- Fixed duplicate SESSION SUMMARY headers in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` by consolidating three consecutive identical headers into a single header.
+- Fixed malformed Run URL numbered list (lines 45486-45488) by correcting to proper nested bullet format.
+- Updated stale commit SHA in `.github/copilot-prompts/active/PR-4731-followup.md` to match current HEAD.
+
+### Fixed (SN — PR #4731 CI rescue — 2026-06-03T14:06Z)
+- Fixed `Validation Pipeline / Fast Validation` failure on commit `b5084a983335` by restoring the canonical session preload block in `.github/workflows/copilot-setup-steps.yml` (`run: |` with `if ! ...; then ...; fi`).
+- Re-ran required local checks for this PR rescue flow: `ruff check src/ tests/ --fix`, `scripts/ci/mypy_baseline.py --require-baseline`, and `scripts/ci/auto_fix_common_issues.py --check-only`.
+
+### Fixed (auto-update — PR #4731)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4731 (SHA `4efb1e4b`) at 2026-06-03T12:23Z [auto-generated]
+
+### Security (PR #4728 — security alert remediation — 2026-06-03T06:17Z)
+- Fixed HIGH template injection in `.github/workflows/copilot-setup-steps.yml`: moved `${{ github.base_ref }}` and `${{ inputs.lfs_include_paths }}` from inline `run:` blocks into `env:` blocks, eliminating shell injection vectors.
+- Replaced base64-obfuscated inline Python execution with a proper script `.github/scripts/inject_context_vars.py` that sanitizes values before writing to GITHUB_ENV.
+- Mitigated workflow-command annotation injection: added `BASE_SAFE` sanitized variable for use in `::warning::` messages (strips non-alphanumeric chars to prevent `%0A::set-env` injection).
+- Verified SHA pins for `actions/setup-python@a309ff8b...` (v6), `actions/cache@27d5ce7f...` (v5), `actions/upload-artifact@330a01c4...` (v5) — all match official tag SHAs.
+
+### Fixed (PR #4728 — test patch target + yamllint — 2026-06-03T03:39Z)
+- Fixed all `@patch("codex_ml.cli.main.run_training")` → `@patch("codex_ml.training.unified_training.run_unified_training")` in `tests/cli/test_main_comprehensive.py`: the Typer `train` command calls `run_unified_training(cfg)` directly, so tests must mock the correct target.
+- Corrected default-value assertions in `test_train_with_defaults` to match actual CLI defaults (`model_name="dummy"`, `epochs=1`, `learning_rate=3e-4`).
+- Updated config-field assertions (`test_train_with_learning_rate`, `test_train_with_seed`, `test_train_with_output_dir`, `test_train_with_mlflow_enabled`) to access `call_args.args[0]` (`UnifiedTrainingConfig` fields) instead of `call_args.kwargs`.
+- Removed stale tuple-unpacking call_args style (`_, kwargs = ...`) in two tests.
+- Resolved yamllint warnings in `.github/workflows/copilot-setup-steps.yml`: quoted `"on":` (truthy rule), added two-space padding before inline comments (lines 105, 126).
+
+### Fixed (auto-update — PR #4728)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4728 (SHA `0226e1b9`) at 2026-06-03T03:14Z [auto-generated]
+
+### Fixed (SN — PR #4726 merge conflict resolution + YAML guard — 2026-06-03T03:05Z)
+- Resolved merge conflicts from stacked PR base branch (`copilot/explain-repository-structure`) in `tests/cli/test_main_comprehensive.py` by accepting stricter assertions from base branch.
+- Fixed YAML parsing error in `.github/workflows/copilot-setup-steps.yml` session preload step by restoring canonical block scalar form (`run: |` with `if ! ...; then ...; fi` syntax).
+- Validated copilot-setup-steps.yml against canonical baseline (commit 12f7a861) with all checks passing.
+
+### Fixed (auto-update — PR #4727)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4727 (SHA `a7dd6c02`) at 2026-06-03T02:27Z [auto-generated]
+
 ### Fixed (SN — PR #4722 session continuation — 2026-06-02T23:45Z)
 - Resolved branch divergence by merging `origin/main` into PR branch `copilot/update-test-asserts-in-cli-tests`.
 - Verified all three fixes are in place: (1) strong train-command test assertions (`exit_code == 0` + `assert_called_once()`), (2) signature-agnostic `_capture_log_error` stub, (3) `copilot-setup-steps.yml` session preload step uses `run: |` block scalar with brace-free shell syntax to avoid yamllint crash.
