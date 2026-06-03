@@ -144,11 +144,18 @@ jobs:
       # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
+      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # Canonical form: block scalar run: | with if ! ...; then syntax.
+      # This step has been broken 4+ times by agents converting it to flow scalar
+      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
+      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
+      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
