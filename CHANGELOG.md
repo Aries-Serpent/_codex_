@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4728 — test patch target + yamllint — 2026-06-03T03:39Z)
+- Fixed all `@patch("codex_ml.cli.main.run_training")` → `@patch("codex_ml.training.unified_training.run_unified_training")` in `tests/cli/test_main_comprehensive.py`: the Typer `train` command calls `run_unified_training(cfg)` directly, so tests must mock the correct target.
+- Corrected default-value assertions in `test_train_with_defaults` to match actual CLI defaults (`model_name="dummy"`, `epochs=1`, `learning_rate=3e-4`).
+- Updated config-field assertions (`test_train_with_learning_rate`, `test_train_with_seed`, `test_train_with_output_dir`, `test_train_with_mlflow_enabled`) to access `call_args.args[0]` (`UnifiedTrainingConfig` fields) instead of `call_args.kwargs`.
+- Removed stale tuple-unpacking call_args style (`_, kwargs = ...`) in two tests.
+- Resolved yamllint warnings in `.github/workflows/copilot-setup-steps.yml`: quoted `"on":` (truthy rule), added two-space padding before inline comments (lines 105, 126).
+
 ### Fixed (auto-update — PR #4728)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4728 (SHA `0226e1b9`) at 2026-06-03T03:14Z [auto-generated]
 

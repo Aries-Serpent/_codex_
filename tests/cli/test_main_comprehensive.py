@@ -72,158 +72,157 @@ class TestTrainCommand:
         """Test train command is registered."""
         assert hasattr(main, "train")
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_defaults(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_defaults(self, mock_run_unified, cli_runner):
         """Test train command with default parameters."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
-        assert not mock_run_training.call_args.args, "Expected run_training to receive only keyword arguments"
-        kwargs = mock_run_training.call_args.kwargs
-        assert kwargs.get("model_name") == "distilgpt2"
-        assert kwargs.get("epochs") == 3
-        assert kwargs.get("batch_size") == 8
-        assert kwargs.get("learning_rate") == 5e-5
-        assert kwargs.get("seed") == 42
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.model_name == "dummy"
+        assert cfg.epochs == 1
+        assert cfg.batch_size == 8
+        assert cfg.learning_rate == 3e-4
+        assert cfg.seed == 42
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_config_file(self, mock_run_training, cli_runner, mock_training_config):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_config_file(self, mock_run_unified, cli_runner, mock_training_config):
         """Test train command with config file."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--config", str(mock_training_config)])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
+        mock_run_unified.assert_called_once()
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_model_name(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_model_name(self, mock_run_unified, cli_runner):
         """Test train command with model name."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--model-name", "gpt2"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
+        mock_run_unified.assert_called_once()
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_epochs(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_epochs(self, mock_run_unified, cli_runner):
         """Test train command with custom epochs."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--epochs", "10"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
+        mock_run_unified.assert_called_once()
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_batch_size(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_batch_size(self, mock_run_unified, cli_runner):
         """Test train command with batch size."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--batch-size", "32"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
+        mock_run_unified.assert_called_once()
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_learning_rate(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_learning_rate(self, mock_run_unified, cli_runner):
         """Test train command with learning rate."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--learning-rate", "0.001"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
-        kwargs = mock_run_training.call_args.kwargs
-        assert kwargs.get("learning_rate") == 0.001
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.learning_rate == 0.001
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_seed(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_seed(self, mock_run_unified, cli_runner):
         """Test train command with random seed."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--seed", "999"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
-        kwargs = mock_run_training.call_args.kwargs
-        assert kwargs.get("seed") == 999
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.seed == 999
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_output_dir(self, mock_run_training, cli_runner, tmp_path):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_output_dir(self, mock_run_unified, cli_runner, tmp_path):
         """Test train command with output directory."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         output_dir = tmp_path / "outputs"
         result = cli_runner.invoke(main.app, ["train", "--output-dir", str(output_dir)])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
-        _, kwargs = mock_run_training.call_args
-        assert kwargs.get("output_dir") == str(output_dir)
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.output_dir == str(output_dir)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_mlflow_enabled(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_mlflow_enabled(self, mock_run_unified, cli_runner):
         """Test train command with MLflow tracking."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--mlflow"])
         assert result.exit_code == 0
-        mock_run_training.assert_called_once()
-        _, kwargs = mock_run_training.call_args
-        assert kwargs.get("mlflow") is True
+        mock_run_unified.assert_called_once()
+        cfg = mock_run_unified.call_args.args[0]
+        assert cfg.mlflow_enable is True
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_wandb_enabled(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_wandb_enabled(self, mock_run_unified, cli_runner):
         """Test train command with W&B logging."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--wandb"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_grad_accum(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_grad_accum(self, mock_run_unified, cli_runner):
         """Test train command with gradient accumulation."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--grad-accum", "4"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_grad_clip_norm(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_grad_clip_norm(self, mock_run_unified, cli_runner):
         """Test train command with gradient clipping."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--grad-clip-norm", "1.0"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_dtype_fp16(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_dtype_fp16(self, mock_run_unified, cli_runner):
         """Test train command with fp16 dtype."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--dtype", "fp16"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_dtype_bf16(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_dtype_bf16(self, mock_run_unified, cli_runner):
         """Test train command with bf16 dtype."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--dtype", "bf16"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_resume_from(self, mock_run_training, cli_runner, tmp_path):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_resume_from(self, mock_run_unified, cli_runner, tmp_path):
         """Test train command with checkpoint resume."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         checkpoint = tmp_path / "checkpoint.pt"
         checkpoint.write_text("mock_checkpoint")
         result = cli_runner.invoke(main.app, ["train", "--resume-from", str(checkpoint)])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_corpus(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_corpus(self, mock_run_unified, cli_runner):
         """Test train command with corpus specification."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(main.app, ["train", "--corpus", "gsm8k"])
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_multiple_corpora(self, mock_run_training, cli_runner):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_multiple_corpora(self, mock_run_unified, cli_runner):
         """Test train command with multiple corpora."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         result = cli_runner.invoke(
             main.app, ["train", "--corpus", "gsm8k", "--corpus", "math"]
         )
         assert result.exit_code in (0, 1, 2)
 
-    @patch("codex_ml.cli.main.run_training")
-    def test_train_with_corpus_root(self, mock_run_training, cli_runner, tmp_path):
+    @patch("codex_ml.training.unified_training.run_unified_training")
+    def test_train_with_corpus_root(self, mock_run_unified, cli_runner, tmp_path):
         """Test train command with corpus root override."""
-        mock_run_training.return_value = None
+        mock_run_unified.return_value = None
         corpus_root = tmp_path / "corpora"
         corpus_root.mkdir()
         result = cli_runner.invoke(main.app, ["train", "--corpus-root", str(corpus_root)])

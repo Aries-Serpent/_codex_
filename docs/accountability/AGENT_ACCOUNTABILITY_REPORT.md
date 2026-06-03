@@ -45356,3 +45356,37 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-06-03T03:39Z (PR #4728 — test fixes + yamllint)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — all `<comment_new>` items mentioning @copilot identified ✅
+- [x] **0b.** Failing CI checks reviewed — yamllint warnings and incorrect test patch targets addressed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** `CHANGELOG.md` — updated in this commit ✅
+- [x] **3.** `.gitignore` — no changes needed ✅
+- [x] **4.** Priority: code quality / test correctness / CI green ✅
+
+### Work Completed
+1. **Fix test patch targets** — All `@patch("codex_ml.cli.main.run_training")` changed to
+   `@patch("codex_ml.training.unified_training.run_unified_training")` in
+   `tests/cli/test_main_comprehensive.py`. The Typer `train` command calls
+   `run_unified_training(cfg)` directly; the old target was never invoked.
+2. **Fix default-value assertions** — `test_train_with_defaults` now checks actual CLI
+   defaults: `model_name="dummy"`, `epochs=1`, `learning_rate=3e-4`.
+3. **Fix config-field assertions** — Tests that verify specific kwargs now access the
+   `UnifiedTrainingConfig` positional arg via `call_args.args[0]` and compare dataclass
+   fields (`cfg.learning_rate`, `cfg.seed`, `cfg.output_dir`, `cfg.mlflow_enable`).
+4. **Fix tuple-unpacking style** — Removed `_, kwargs = mock.call_args` pattern in two
+   tests; replaced with `cfg = mock.call_args.args[0]`.
+5. **yamllint fixes** — Resolved three lint warnings in `copilot-setup-steps.yml`:
+   `"on":` (truthy rule, line 15), two-space comment padding (lines 105, 126).
+6. **All 33 tests pass** — Verified with `python3 -m pytest tests/cli/test_main_comprehensive.py`.
+
+### Impact Score
+- Files changed: `tests/cli/test_main_comprehensive.py`, `CHANGELOG.md`,
+  `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`,
+  `.github/workflows/copilot-setup-steps.yml`
+- CI gates: REQ-4, REQ-5 satisfied; yamllint Fast Validation warnings resolved
+
+---
