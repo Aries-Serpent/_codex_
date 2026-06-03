@@ -132,12 +132,23 @@ These are injected into the Copilot sandbox. Sensitive section at `copilot-setup
 ### Agents Settings Page
 **GitHub UI**: `https://github.com/Aries-Serpent/_codex_/settings/variables/agents`
 
-Must add (currently only firewall defaults shown):
-- `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COPILOT_AGENT_AUTH_ENABLED` = `true`
-- `COPILOT_AGENT_SESSION_RESTORE_ENABLED` = `true`
-- `COPILOT_AGENT_PREFLIGHT_RULES` = _(copy from repo var)_
-- `COPILOT_WEC_SELECTION_MATRIX` = _(copy from repo var)_
+The following variables **MUST or SHOULD** be present. Variables currently only showing firewall defaults need the full set below:
+
+| Variable | Value | Priority | Reason |
+|----------|-------|----------|--------|
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | **MUST** | Controls agent autonomy ceiling — D is maximum |
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | **MUST** | Enforces agent authentication for all write ops |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | **MUST** | Enables cognitive brain session continuity |
+| `COPILOT_AGENT_PREFLIGHT_RULES` | _(copy JSON from repo var)_ | **MUST** | Agent pre-commit compliance rules; agents read at session start |
+| `COPILOT_WEC_SELECTION_MATRIX` | _(copy JSON from repo var)_ | **MUST** | Workflow Execution Checklist routing matrix |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | **MUST** | Session context injection on agent init |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | **SHOULD** | Token budget enforcement for agent context |
+| `CODEX_LINT_STRICT` | `true` | **SHOULD** | Agent enforces ruff/mypy strictness |
+| `CODEX_COVERAGE_THRESHOLD` | `80` | **SHOULD** | Agent respects coverage gate floor |
+| `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | _(copy JSON from repo var)_ | **SHOULD** | Suppress known false-positive bot comment alerts |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | _(copy JSON from repo var)_ | **SHOULD** | Tracks 16 items not yet in WEC |
+
+> **Note**: Variables in the Agents settings page are injected into every Copilot coding agent session automatically. Repository-level variables require agents to read them explicitly via `${{ vars.X }}` in workflow steps.
 
 ---
 

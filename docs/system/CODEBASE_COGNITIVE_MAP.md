@@ -269,6 +269,21 @@ GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
 **Exception**: `CODEX_BRIDGE_DIR=/tmp/codex_secure_bridge` is a runtime tmpfs mount (not tracked)
 **Doc**: `docs/system/ANTI_TMP_PROTECTION_SYSTEM.md`
 
+### Agent Variable Expectations
+
+Per-agent MUST/SHOULD variable requirements are documented in [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md). Key categories:
+
+| Agent Category | Key Variables |
+|----------------|--------------|
+| CI/CD agents | `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES`, `CODEX_COVERAGE_THRESHOLD` |
+| Self-healing agents | `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `AUTONOMOUS_ACTIONS_ENABLED` |
+| Cognitive brain agents | `COGNITIVE_BRAIN_INJECTION_ENABLED`, `SESSION_CONTEXT_AUTO_CAPTURE` |
+| Security agents | `DISABLE_SECRET_FILTER` (MUST be `false`), `CODEX_ENV` |
+| Orchestration agents | `COPILOT_WEC_SELECTION_MATRIX`, `COPILOT_AGENT_PREFLIGHT_RULES` |
+| ML/training agents | `CODEX_SEED`, `CODEX_CPU_MINIMAL`, `CODEX_TELEMETRY_ENABLED` |
+
+All agents universally MUST check `AGENT_KILL_SWITCH` at startup.
+
 ---
 
 ## MCP & ChatGPT Integration

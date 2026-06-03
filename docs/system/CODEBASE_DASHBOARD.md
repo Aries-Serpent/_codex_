@@ -1,6 +1,6 @@
 # Codebase Dashboard
 
-> Created: 2026-01-12 | Updated: 2026-06-03T18:02:00Z | Updated by: @mbaetiong (variables audit S1325)
+> Created: 2026-01-12 | Updated: 2026-06-03T18:29:00Z | Updated by: @mbaetiong (variables expansion S1325)
 > Reference session: S1325 | PR queue: 47 pending
 
 ---
@@ -38,12 +38,23 @@
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Environment Variables | 13 | ✅ Current |
+| Environment Variables | 13 | ✅ Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
 | Repository Variables | 70 | ✅ Current |
 | Environment Secrets | 3 | ✅ Current |
 | Repository Secrets | 7 | ✅ Current |
 | Organization Secrets | 13 | ⚠️ 5 overdue rotation |
-| **Gap Variables (code-referenced, not in inventory)** | **30+** | 🔴 Action required |
+| **Gap Variables (code-referenced, not in inventory)** | **30+** | 🟡 Documented — maintainer action required to create in GitHub UI |
+| **Workflow Variable Usage** | 5 categories mapped | ✅ New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#️-workflow--agent-variable-usage-map) |
+| **Agent Variable Expectations** | 145 agents, 6 categories | ✅ New — see [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md) |
+
+### Workflow Variable Integration Progress
+
+| Workflow | Variable Integration | Status |
+|----------|---------------------|--------|
+| `copilot-setup-steps.yml` | `NODE_VERSION` → `vars.NODE_JS_VERSION \|\| '22'` | ✅ Updated (Node 20→22) |
+| `nox_gates.yml` | `cache-version`, `timeout-minutes` via `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
+| `coverage-with-timeout.yml` | `cache-version` fallback `v2`→`v3`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
+| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | ⚠️ Fallback still `v2` — set `CODEX_CACHE_VERSION=v3` in repo vars to activate |
 
 ### CI Tracking Variables (Auto-Updated)
 

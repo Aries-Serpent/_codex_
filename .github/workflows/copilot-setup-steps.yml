@@ -58,7 +58,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.12"
-  NODE_VERSION: "20"
+  NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 
@@ -395,10 +395,10 @@ jobs:
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '22' }}"
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION || '20' }}
+          node-version: ${{ env.NODE_VERSION || '22' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 

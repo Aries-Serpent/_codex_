@@ -23,7 +23,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CODEX_BRIDGE_OWNER_ONLY` | `true` | Restricts bridge dir to owner UID only |
 | `CODEX_DB_PATH` | `.codex/logs.db` | SQLite audit log path |
 | `CODEX_ENV_GO_VERSION` | `1.21` | Go toolchain version for env setup |
-| `CODEX_ENV_NODE_VERSION` | `18` | Node.js version for env setup |
+| `CODEX_ENV_NODE_VERSION` | `22` | Node.js version for env setup |
 | `CODEX_ENV_PYTHON_VERSION` | `3.12` | Python version (must match `pyproject.toml requires-python`) |
 | `CODEX_ENV_RUST_VERSION` | `1.92` | Rust toolchain version |
 | `CODEX_ENV_SWIFT_VERSION` | `5.9` | Swift version for env setup |
@@ -304,6 +304,115 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 
 ---
 
+## 🗺️ Workflow & Agent Variable Usage Map
+
+This section maps each key repository variable to the GitHub Actions workflows and custom agents that read it. Reference this when changing a variable value to understand downstream impact.
+
+### CI/CD Configuration Variables
+
+| Variable | Workflows (via `${{ vars.X }}`) | Custom Agents |
+|----------|--------------------------------|---------------|
+| `CODEX_CACHE_VERSION` | `copilot-setup-steps.yml`, `nox_gates.yml`, `coverage-with-timeout.yml`, `cognitive-analysis-feed.yml`, `workflow-analytics-unified.yml`, `ci-health-monitor.yml`, `mcp-health.yml`, `agent-handoff-gate.yml`, `pre-flight-validation.yml`, `test-rag.yml`, `qa-walkthrough.yml` | `cache-management-agent`, `ci-optimization-agent` |
+| `CODEX_TEST_TIMEOUT_MINUTES` | `nox_gates.yml` (job timeout), `coverage-with-timeout.yml` (job timeout), `test-rag.yml`, `auth-tests.yml` | `ci-testing-agent`, `autonomous-test-healer-agent` |
+| `CODEX_COVERAGE_THRESHOLD` | `nox_gates.yml` (gate), `code-quality-coverage-suite.yml` | `unified-coverage-agent`, `ci-testing-agent` |
+| `NODE_JS_VERSION` | `copilot-setup-steps.yml` (via `env.NODE_VERSION`) | — |
+| `CODEX_SHARD_COUNT` | `coverage-with-timeout.yml` (workflow_dispatch default) | `unified-coverage-agent` |
+| `CODEX_MAX_PARALLEL_JOBS` | Picked up by nox session config | `ci-optimization-agent` |
+| `CODEX_LINT_STRICT` | `nox_gates.yml` (ruff/mypy strictness) | `mypy-manager-agent`, `code-analysis-agent` |
+
+### Agent Autonomy & Control Variables
+
+| Variable | Workflows | Custom Agents |
+|----------|-----------|---------------|
+| `AGENT_KILL_SWITCH` | `agent-health-check.yml`, `agent-runtime.yml`, all agent-runner workflows | ALL agents (halt check) |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `copilot-agent-vars-bootstrap.yml` | ALL Copilot coding agents |
+| `COPILOT_AGENT_AUTH_ENABLED` | `agent-auth-delegation.yml` | `bridge-security-monitor`, `owner-approval-guard` |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector` |
+| `AUTONOMOUS_ACTIONS_ENABLED` | `agent-orchestration-unified.yml` | `agent-orchestrator`, `self-healing-orchestrator-agent` |
+| `COPILOT_AGENT_PREFLIGHT_RULES` | `pre-flight-validation.yml`, `workflow-execution-gate.yml` | ALL agents (mandatory load at session start) |
+| `COPILOT_WEC_SELECTION_MATRIX` | `workflow-execution-gate.yml` | ALL agents (WEC routing) |
+
+### Cognitive Brain & Session Variables
+
+| Variable | Workflows | Custom Agents |
+|----------|-----------|---------------|
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `copilot-setup-steps.yml`, `cognitive-analysis-feed.yml` | `cognitive-brain-session-injector` |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector`, `skills-master-agent` |
+| `COGNITIVE_BRAIN_SESSION_RETENTION_HOURS` | `cognitive-analysis-feed.yml` | `memory-sync-agent`, `cognitive-brain-session-injector` |
+| `SESSION_CONTEXT_AUTO_CAPTURE` | `session-context-capture.yml` (pending) | `cognitive-brain-session-injector`, `session-analysis-agent` |
+| `SESSION_CONTEXT_AUTO_INJECT` | `copilot-setup-steps.yml` | `cognitive-brain-session-injector` |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `copilot-agent-vars-bootstrap.yml` | `cognitive-brain-session-injector`, `orchestrator-agent` |
+
+### Self-Healing & Telemetry Variables
+
+| Variable | Workflows | Custom Agents |
+|----------|-----------|---------------|
+| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | `self-healing.yml` (pending) | `self-healing-orchestrator-agent`, `autonomous-test-healer-agent`, `ci-auto-healer-agent` |
+| `CODEX_TELEMETRY_ENABLED` | `telemetry-collection.yml` | `performance-monitor-agent`, `msv-dashboard-monitor` |
+| `METRICS_COLLECTION_INTERVAL_SECONDS` | `telemetry-collection.yml` | `performance-monitor-agent` |
+| `WORKFLOW_FAILURE_TRACKING_ENABLED` | `ci-health-monitor.yml`, `artifact-monitoring.yml` | `ci-health-alert-agent`, `workflow-health-monitor` |
+| `CODEX_CI_FAILURE_RATE` | Auto-updated by `ci-health-monitor.yml` | `ci-health-alert-agent`, `ci-triage-pipeline-agent` |
+| `CODEX_CI_FAILURE_THRESHOLD` | `ci-health-monitor.yml` | `ci-health-alert-agent` |
+
+### API & Runtime Variables (from `services/api/main.py`)
+
+| Variable | Workflows | Custom Agents |
+|----------|-----------|---------------|
+| `CODEX_AUTH_SECRET` | `api-documentation.yml` | `bridge-security-monitor` |
+| `CODEX_AUTH_MIDDLEWARE_ENABLED` | `api-documentation.yml` | `bridge-security-monitor` |
+| `CODEX_AUTH_RATE_LIMIT` | `api-documentation.yml` | `bridge-security-monitor` |
+| `CODEX_ENV` | All deployment workflows | `ci-testing-agent`, `config-validator` |
+| `DISABLE_SECRET_FILTER` | ⚠️ MUST be `false` — never referenced in workflows | `pii-scrubber`, `secret-detection-agent` |
+
+---
+
+### Variable Access Pattern in Workflows
+
+All variables should be accessed using the safe fallback pattern:
+
+```yaml
+env:
+  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+  NODE_JS_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}
+  CODEX_TEST_TIMEOUT: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
+  COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
+```
+
+For integer fields (e.g., `timeout-minutes`):
+```yaml
+timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
+```
+
+For action inputs:
+```yaml
+- uses: ./.github/actions/setup-python-cached
+  with:
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+- uses: actions/setup-node@v6
+  with:
+    node-version: ${{ vars.NODE_JS_VERSION || '22' }}
+```
+
+### Agent Variable Expectations
+
+Every custom Copilot coding agent MUST:
+1. Check `AGENT_KILL_SWITCH` (`vars.AGENT_KILL_SWITCH == '1'` → abort immediately)
+2. Read `COPILOT_AGENT_PREFLIGHT_RULES` for pre-commit compliance rules
+3. Reference `COPILOT_WEC_SELECTION_MATRIX` for WEC item routing
+4. Respect `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` (ceiling: `D`)
+5. Use token chain: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
+
+Every agent SHOULD:
+6. Read `COGNITIVE_BRAIN_INJECTION_ENABLED` before calling cognitive brain APIs
+7. Honor `CODEX_LINT_STRICT` when running linters
+8. Respect `CODEX_COVERAGE_THRESHOLD` (default: `80`) for coverage gates
+9. Check `CODEX_MAX_HEALER_RUNS_PER_HOUR` before triggering self-healing loops
+10. Log telemetry if `CODEX_TELEMETRY_ENABLED` is `true`
+
+Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../agents/VARIABLE_EXPECTATIONS.md)
+
+---
+
 ## Security Best Practices
 
 1. **Never commit secrets** to the repository
@@ -342,6 +451,7 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 | 2026-01-20 | Phase 22 Secrets Audit — added 11 undocumented secrets | @copilot |
 | 2026-01-27 | Added GITLEAKS_LICENSE documentation | @copilot |
 | 2026-06-03 | **Full inventory refresh** — added all 106 variables (13 env, 70 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong |
+| 2026-06-03 | **Variable usage expansion** — updated `CODEX_ENV_NODE_VERSION` 18→22; added Workflow & Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements | @mbaetiong |
 
 ---
 

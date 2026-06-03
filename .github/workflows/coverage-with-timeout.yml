@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
-    timeout-minutes: 30  # Global timeout for the entire job
+    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '30') }}
 
     steps:
       - name: Checkout code
@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Install dependencies
         run: |
@@ -120,7 +120,7 @@ jobs:
   merge-coverage:
     needs: coverage-with-timeout
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
     permissions:
       contents: read
       actions: read
@@ -135,7 +135,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Install coverage tools
         run: |
