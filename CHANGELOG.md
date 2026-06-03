@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (PR #4728 — security alert remediation — 2026-06-03T06:17Z)
+- Fixed HIGH template injection in `.github/workflows/copilot-setup-steps.yml`: moved `${{ github.base_ref }}` and `${{ inputs.lfs_include_paths }}` from inline `run:` blocks into `env:` blocks, eliminating shell injection vectors.
+- Replaced base64-obfuscated inline Python execution with a proper script `.github/scripts/inject_context_vars.py` that sanitizes values before writing to GITHUB_ENV.
+- Mitigated workflow-command annotation injection: added `BASE_SAFE` sanitized variable for use in `::warning::` messages (strips non-alphanumeric chars to prevent `%0A::set-env` injection).
+- Verified SHA pins for `actions/setup-python@a309ff8b...` (v6), `actions/cache@27d5ce7f...` (v5), `actions/upload-artifact@330a01c4...` (v5) — all match official tag SHAs.
+
 ### Fixed (PR #4728 — test patch target + yamllint — 2026-06-03T03:39Z)
 - Fixed all `@patch("codex_ml.cli.main.run_training")` → `@patch("codex_ml.training.unified_training.run_unified_training")` in `tests/cli/test_main_comprehensive.py`: the Typer `train` command calls `run_unified_training(cfg)` directly, so tests must mock the correct target.
 - Corrected default-value assertions in `test_train_with_defaults` to match actual CLI defaults (`model_name="dummy"`, `epochs=1`, `learning_rate=3e-4`).

@@ -45390,3 +45390,45 @@ and the CI gate requirement.
 - CI gates: REQ-4, REQ-5 satisfied; yamllint Fast Validation warnings resolved
 
 ---
+
+## SESSION SUMMARY — 2026-06-03T06:17Z · Security Alert Remediation
+
+### Pre-flight Checklist
+- [x] **0a.** Bot-posted comments reviewed — security annotation thread (comment 4415879385) identified ✅
+- [x] **0b.** CI check failures reviewed — YAML parse error at line 146 + GitHub code scanning annotations addressed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** `CHANGELOG.md` — updated in this commit ✅
+- [x] **3.** Security fixes applied to `.github/workflows/copilot-setup-steps.yml` ✅
+- [x] **4.** `.github/scripts/inject_context_vars.py` — created to replace base64-encoded inline script ✅
+
+### Work Completed
+1. **Fix HIGH template injection (original line 250)** — Added `env: BASE_REF: ${{ github.base_ref }}`
+   block to "Fetch remote branch refs" step; changed `BASE="${{ github.base_ref }}"` to
+   `BASE="${BASE_REF}"` to prevent shell injection from attacker-controlled branch names.
+2. **Fix HIGH template injection (original line 470)** — Added
+   `env: LFS_INCLUDE_PATHS: ${{ inputs.lfs_include_paths }}` block to the "Targeted LFS fetch"
+   step; changed `INCLUDES="${{ inputs.lfs_include_paths }}"` to `INCLUDES="${LFS_INCLUDE_PATHS}"`.
+3. **Replace base64-obfuscated script (original line 387)** — Replaced 12-line base64 inline
+   Python execution (`python3 -c "$(echo ... | base64 -d)"`) with a call to a new dedicated
+   script `.github/scripts/inject_context_vars.py`.
+4. **Created `.github/scripts/inject_context_vars.py`** — Reads `.codex/agent_context.json`,
+   sanitizes values (strips newlines/CR to prevent GITHUB_ENV format injection), writes
+   non-private, non-empty key=value pairs to GITHUB_ENV.
+5. **Fix workflow-command annotation injection (original lines 279, 296, 345)** — Added
+   `BASE_SAFE` variable (strips non-alphanumeric/safe chars) and replaced `${BASE}` with
+   `${BASE_SAFE}` in all `::warning::` annotation messages.
+6. **Verified SHA pins** — Confirmed that `actions/setup-python@a309ff8b...` (v6),
+   `actions/cache@27d5ce7f...` (v5), and `actions/upload-artifact@330a01c4...` (v5) all
+   match the official GitHub tag SHAs exactly. No changes needed.
+7. **zizmor verification** — Re-ran zizmor after fixes; original two HIGH template-injection
+   findings resolved. Remaining findings are all INFO/LOW confidence.
+
+### Impact Score
+- Files changed: `.github/workflows/copilot-setup-steps.yml`,
+  `.github/scripts/inject_context_vars.py`, `CHANGELOG.md`,
+  `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Security: 2 HIGH template injection vectors eliminated; base64 obfuscation removed;
+  workflow command injection mitigated
+- CI gates: REQ-4, REQ-5 satisfied; YAML validates cleanly; zizmor HIGH findings resolved
+
+---

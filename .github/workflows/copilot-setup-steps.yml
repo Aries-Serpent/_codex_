@@ -237,6 +237,8 @@ jobs:
       #         branch is not 'main' (e.g. copilot/resolve-failing-checks).
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
             && echo "✅ Remote branch refs fetched (as origin/*)" \
@@ -247,7 +249,7 @@ jobs:
             || echo "⚠️ Could not create local main ref (non-blocking)"
           # Promote the PR base branch to a local ref so 'git diff <base_ref>'
           # resolves correctly regardless of which branch the PR targets.
-          BASE="${{ github.base_ref }}"
+          BASE="${BASE_REF}"
           if [ -n "$BASE" ] && [ "$BASE" != "main" ]; then
             git branch -f "$BASE" "origin/$BASE" 2>/dev/null \
               && echo "✅ $BASE available as local branch ref" \
@@ -270,13 +272,15 @@ jobs:
           echo "── §0.4: Inspecting PR for merge conflicts ──"
           BASE="${BASE_REF}"
           HEAD="${HEAD_REF}"
+          # Sanitize BASE for use in workflow-command annotations (prevent command injection)
+          BASE_SAFE="${BASE_REF//[^a-zA-Z0-9._\/@-]/}"
 
           # 1. Check PR mergeable status via GitHub API
           if [ -n "$PR_NUMBER" ]; then
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
-              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE}'. Agent MUST resolve these before any other work."
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE_SAFE}'. Agent MUST resolve these before any other work."
               echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
             elif [ "$MERGEABLE" = "MERGEABLE" ]; then
               echo "✅ No merge conflicts detected"
@@ -293,7 +297,7 @@ jobs:
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
             echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
             if [ "$BEHIND" -gt 0 ]; then
-              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'. Agent should rebase or merge base before starting work."
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE_SAFE}'. Agent should rebase or merge base before starting work."
               echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
             else
               echo "✅ Branch is up-to-date with ${BASE}"
@@ -307,7 +311,7 @@ jobs:
             if [ -n "$MERGE_BASE" ]; then
               CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
               if [ "$CONFLICT_FILES" -gt 0 ]; then
-                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE}'"
+                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE_SAFE}'"
               else
                 echo "✅ merge-tree: no file-level conflicts detected"
               fi
@@ -377,17 +381,8 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |  # pragma: allowlist secret
-          if [ -f .codex/agent_context.json ]; then
-            echo "Injecting repo variable context from .codex/agent_context.json"
-            # base64-encoded Python script: reads agent_context.json and writes all
-            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
-            # session sees them as environment variables.
-            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
-          else
-            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
-          fi
+        run: |
+          python3 .github/scripts/inject_context_vars.py
 
       - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
         # Supplement agent_context.json injection with live vars.* values for the
@@ -464,10 +459,12 @@ jobs:
       - name: "🎯 Targeted LFS fetch & checkout (guarded)"
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
         continue-on-error: ${{ inputs.lfs_continue_on_error }}
+        env:
+          LFS_INCLUDE_PATHS: ${{ inputs.lfs_include_paths }}
         run: |
           set -euo pipefail
           # Convert comma-separated include patterns into git-lfs include string
-          INCLUDES="${{ inputs.lfs_include_paths }}"
+          INCLUDES="${LFS_INCLUDE_PATHS}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
 
