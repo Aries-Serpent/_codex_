@@ -1,16 +1,17 @@
 # Repository Secrets and Variables Inventory
 > Generated: 2026-06-03T17:39:00Z | Author: mbaetiong
 > Expanded by: Copilot Task Agent (2026-06-03)
+> Variable Sync Pass: 2026-06-03T21:15:07Z (variables-only; secrets unchanged)
 
 ## 📊 Complete Inventory Tables
 
-> This copy preserves the 2026-06-03 inventory snapshot (106 total items) and adds explicit maintainer action items for each section, including dedicated Copilot **Agent Variables** and **Agent Secrets** setup tables.
+> This copy preserves the 2026-06-03 inventory baseline and is updated to the latest **variables-only** snapshot: **90 variables total** (14 environment + 76 repository). Secrets were not rotated/modified in this pass.
 
 ### Environment Variables (Aries_Serpent_codex_ Environment)
 
 | Category | Count | Source Snapshot |
 |---|---:|---|
-| Environment Variables | 13 | 2026-06-03T17:39:00Z |
+| Environment Variables | 14 | 2026-06-03 variables refresh |
 
 #### Maintainer Add/Update Notes — Environment Variables
 
@@ -27,7 +28,7 @@
 
 | Category | Count | Source Snapshot |
 |---|---:|---|
-| Repository Variables | 70 | 2026-06-03T17:39:00Z |
+| Repository Variables | 76 | 2026-06-03 variables refresh |
 
 #### Maintainer Add/Update Notes — Repository Variables
 
@@ -39,7 +40,7 @@
 | `COPILOT_ACTIVE_SESSION` | UPDATE (automated) | current session tuple | Must reflect active session state. |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | VERIFY JSON freshness | version/date + mandatory rules | Critical governance source for agent operations. |
 | `COPILOT_WEC_SELECTION_MATRIX` | VERIFY JSON freshness | workflow mapping current to repo reality | Prevent WEC drift and checklist mismatch. |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | UPDATE after WEC changes | drift count/details current | Ensures session wrapup checker remains accurate. |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | **PRIORITY UPDATE REQUIRED** | `count=16` unresolved mapping gaps | Current drift silently drops 16 workflow files during `report_progress` rebuild (`_WEC_ITEMS` mismatch). |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | REVIEW/PRUNE/UPDATE | approved domains only | Large allowlist should be periodically pruned and normalized. |
 
 ---
@@ -147,12 +148,12 @@
 
 | Category | Count |
 |----------|-------|
-| **Environment Variables** | 13 |
-| **Repository Variables** | 70 |
+| **Environment Variables** | 14 |
+| **Repository Variables** | 76 |
 | **Environment Secrets** | 3 |
 | **Repository Secrets** | 7 |
 | **Organization Secrets** | 13 |
-| **TOTAL** | **106** |
+| **TOTAL** | **113** |
 
 ---
 
@@ -160,7 +161,7 @@
 
 ### Most Recently Updated (from source snapshot)
 - `CODEX_CI_FAILURE_RATE`
-- `CODEX_CI_LAST_GREEN_SHA`
+- `CODEX_CI_LAST_GREEN_SHA` (`8b5588da25a5d5f12ba8bd66cc37fa688fbc8e97`)
 - `COGNITIVE_BRAIN_ALLOWED_ACTORS`
 - `COGNITIVE_BRAIN_SESSION_NUMBER`
 - `COPILOT_ACTIVE_SESSION`
@@ -170,6 +171,16 @@
 - `AUDIT_RETENTION_DAYS` (stale policy review)
 - `CODEX_AGENT_NAME`, `CODEX_API_VERSION`, `CODEX_NETWORK_MODE` (long-lived static config; verify intentional)
 - Aged org secrets: `CODECOV_TOKEN`, `HF_TOKEN`, `NPM_TOKEN`, `PYPI_TOKEN`, `_CODEX_ACTION_RUNNER`
+
+---
+
+## ▶️ What’s Next (Post Variables-Only Pass)
+
+- [ ] Execute **secrets pass** (repo/env/org) and refresh secret ages/rotation status.
+- [ ] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the 16 missing workflows to `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py`.
+- [ ] Re-run inventory export and replace all “placeholder JSON” references with the current exact values where required.
+- [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift between Actions Variables and Agents Variables pages.
+- [ ] After secrets pass, regenerate summary totals and update this file’s timestamp block.
 
 ---
 

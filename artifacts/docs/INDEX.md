@@ -1,6 +1,6 @@
 # API Documentation Index
 
-- Generated: 2026-06-03 21:15:59 UTC
+- Generated: 2026-06-03 21:17:19 UTC
 - SKIP_OPTIONAL=1
 - FAIL_ON_MISSING=0
 

@@ -1,7 +1,8 @@
 # Secrets and Environment Variables Documentation
 
 > **Last Full Audit**: 2026-06-03T17:39:00Z | **Auditor**: @mbaetiong
-> **Total Tracked**: 106 (13 env vars · 70 repo vars · 3 env secrets · 7 repo secrets · 13 org secrets)
+> **Total Tracked**: 113 (14 env vars · 76 repo vars · 3 env secrets · 7 repo secrets · 13 org secrets)
+> **Current Pass Scope**: Variables only (secrets unchanged in this pass)
 > **Next Review**: 2026-09-03 (quarterly)
 
 ## Overview
@@ -61,7 +62,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CODEX_CACHE_VERSION` | `v2` | Cache coherency key across all workflows |
 | `CODEX_CI_FAILURE_RATE` | `2.5:ok` | Live CI failure rate tracker (updated by CI agent) |
 | `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | Failure rate % that triggers CI health alert |
-| `CODEX_CI_LAST_GREEN_SHA` | `a1741db81e87c56d865cae82b98108bc09f89605` | Last commit SHA with all checks green |
+| `CODEX_CI_LAST_GREEN_SHA` | `8b5588da25a5d5f12ba8bd66cc37fa688fbc8e97` | Last commit SHA with all checks green |
 | `CODEX_COVERAGE_THRESHOLD` | `80` | Minimum test coverage % for CI gate |
 | `CODEX_LINT_STRICT` | `true` | Fail CI on any lint warning |
 | `CODEX_TEST_PARALLELISM` | `auto` | Test sharding strategy |
@@ -235,7 +236,7 @@ The following variables are referenced in source code, workflow files, or `.code
 
 | Variable | Type | Recommended Value | Purpose |
 |----------|------|-------------------|---------|
-| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for all workflows. `.github/workflows/copilot-setup-steps.yml` now reads `NODE_VERSION: ${{ vars.NODE_JS_VERSION \|\| '22' }}` — create this repo var to centrally control the version across workflows. |
+| `NODE_JS_VERSION` | Repo Var | `22` | Node.js LTS version for CI/workflows. **Scope note:** this is separate from environment variable `CODEX_ENV_NODE_VERSION` (sandbox runtime). `.github/workflows/copilot-setup-steps.yml` reads it as `NODE_VERSION: ${{ vars.NODE_JS_VERSION \|\| '22' }}`. |
 | `CODEX_TEST_TIMEOUT_MINUTES` | Repo Var | `60` | Per-job test timeout |
 | `CODEX_JOB_TIMEOUT_MINUTES` | Repo Var | `120` | Global job timeout |
 | `CODEX_MAX_PARALLEL_JOBS` | Repo Var | `4` | Max concurrent jobs |
@@ -439,6 +440,16 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 
 ---
 
+## What’s Next (After Variable Sync)
+
+1. **Secrets pass (pending):** update/verify repo, environment, and org secrets inventory and rotation state.
+2. **WEC drift remediation (high priority):** resolve `COPILOT_WEC_TEMPLATE_DRIFT` (`count=16`) by extending `_WEC_ITEMS` in `/tmp/workspace/Aries-Serpent/_codex_/scripts/ci/session_wrapup_autofix.py`.
+3. **Agent settings alignment:** verify `/settings/variables/agents` mirrors critical runtime variables (`COPILOT_AGENT_*`, `COPILOT_WEC_*`, `COGNITIVE_BRAIN_*`, `CODEX_LINT_STRICT`, `CODEX_COVERAGE_THRESHOLD`).
+4. **`DISABLE_SECRET_FILTER` hardening:** keep default/effective value `false`, add explicit CI/policy guard to block any promotion flow that attempts `true`.
+5. **Post-secrets refresh:** regenerate totals and audit timestamp once secrets are synchronized.
+
+---
+
 ## References
 
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
@@ -457,10 +468,11 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 | 2026-01-27 | Added GITLEAKS_LICENSE documentation | @copilot |
 | 2026-06-03 | **Full inventory refresh** — added all 106 variables (13 env, 70 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong |
 | 2026-06-03 | **Variable usage expansion** — updated `CODEX_ENV_NODE_VERSION` 18→22; added Workflow & Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements | @mbaetiong |
+| 2026-06-03 | **Variables-only sync pass** — updated totals to 113 tracked (14 env vars, 76 repo vars), updated `CODEX_CI_LAST_GREEN_SHA`, and added explicit next-step actions for pending secrets pass and WEC drift remediation | @mbaetiong |
 
 ---
 
-**Last Updated**: 2026-06-03T18:02:00Z
+**Last Updated**: 2026-06-03T21:15:07Z
 **Maintainer**: @mbaetiong
 **Review Frequency**: Quarterly
 
@@ -604,8 +616,8 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 #### `CODEX_ENV_*`
 - **Purpose**: Select language versions during environment setup
 - **Variables**:
-  - `CODEX_ENV_PYTHON_VERSION` (default: 3.11)
-  - `CODEX_ENV_NODE_VERSION` (default: 18)
+  - `CODEX_ENV_PYTHON_VERSION` (default: 3.12)
+  - `CODEX_ENV_NODE_VERSION` (default: 22)
   - `CODEX_ENV_RUST_VERSION` (default: 1.92)
   - `CODEX_ENV_GO_VERSION` (default: 1.21)
   - `CODEX_ENV_SWIFT_VERSION` (default: 5.9)
