@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4731 code review follow-up — 2026-06-03T14:17Z)
+- Fixed duplicate SESSION SUMMARY headers in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` by consolidating three consecutive identical headers into a single header.
+- Fixed malformed Run URL numbered list (lines 45486-45488) by correcting to proper nested bullet format.
+- Updated stale commit SHA in `.github/copilot-prompts/active/PR-4731-followup.md` to match current HEAD.
+
 ### Fixed (SN — PR #4731 CI rescue — 2026-06-03T14:06Z)
 - Fixed `Validation Pipeline / Fast Validation` failure on commit `b5084a983335` by restoring the canonical session preload block in `.github/workflows/copilot-setup-steps.yml` (`run: |` with `if ! ...; then ...; fi`).
 - Re-ran required local checks for this PR rescue flow: `ruff check src/ tests/ --fix`, `scripts/ci/mypy_baseline.py --require-baseline`, and `scripts/ci/auto_fix_common_issues.py --check-only`.
