@@ -136,7 +136,7 @@ class TestTrainCommand:
         result = cli_runner.invoke(main.app, ["train", "--seed", "999"])
         assert result.exit_code == 0
         mock_run_training.assert_called_once()
-        _, kwargs = mock_run_training.call_args
+        kwargs = mock_run_training.call_args.kwargs
         assert kwargs.get("seed") == 999
 
     @patch("codex_ml.cli.main.run_training")
