@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4738 LOGGING_AVAILABLE export fix — 2026-06-04T02:28Z)
+- Re-added `LOGGING_AVAILABLE` module-level flag to `agents/physics_integration.py` (lines 39, 42)
+- Added `LOGGING_AVAILABLE` to `__all__` exports (line 328) to indicate it's intentionally public API
+- Previous commit `eef7812` incorrectly removed the flag in response to CodeQL "unused variable" alert
+- The flag is required by test `test_logging_available_exists` and is part of the public module interface
+- Exporting in `__all__` resolves CodeQL warning by indicating intentional public API design
+
 ### Fixed (SN — PR #4738 Coverage Ratchet test fix — 2026-06-04T01:50Z)
 - Fixed failing Coverage Ratchet workflow (run #26924121665) by adding missing `LOGGING_AVAILABLE` flag to `agents/physics_integration.py`
 - Test `tests/agents/test_physics_integration.py::TestModuleLevelFlags::test_logging_available_exists` was asserting existence of `LOGGING_AVAILABLE` module-level flag

@@ -35,8 +35,11 @@ except ImportError:
 # Import logging utilities
 try:
     from codex.logging.session_logger import log_message
+
+    LOGGING_AVAILABLE = True
 except ImportError:
     logger.warning("Failed to import session logger; using print fallback", exc_info=True)
+    LOGGING_AVAILABLE = False
 
     # Fallback to print if logging not available
     def log_message(session_id, role, message, **kwargs):  # type: ignore
@@ -322,6 +325,7 @@ __all__ = [
     "create_hybrid_orchestrator",
     "ADVANCED_PHYSICS_AVAILABLE",
     "PHYSICS_ORCHESTRATOR_AVAILABLE",
+    "LOGGING_AVAILABLE",
 ]
 
 
