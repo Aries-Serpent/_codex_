@@ -1,4 +1,4 @@
-> **Last synced:** `2026-06-03T07:58:09Z` (auto-sync workflow)
+> **Last synced:** `2026-06-04T07:29:01Z` (auto-sync workflow)
 
 # GitHub Variables & Secrets — Master Reference Guide
 
@@ -35,13 +35,6 @@
 11. [Troubleshooting](#11-troubleshooting)
 12. [Related Documentation](#12-related-documentation)
 13. [✅ Previously Missing — All Resolved (2026-03-07)](#13--previously-missing--all-resolved-2026-03-07)
-
----
-
-## 🚩 TODOs (moved to top)
-
-- [ ] Rotate `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` before **2026-06-04** (rotated 2026-03-06 — 90-day window)
-- [ ] Rotate `_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` before **2026-06-04**
 
 ---
 
@@ -198,7 +191,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 4 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | ✅ | `128000` | Maximum tokens for context injection |
 | 5 | `COGNITIVE_BRAIN_MEMORY_TIER` | ✅ | `both` | Memory tier: `stm`, `ltm`, or `both` |
 | 6 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | ✅ | `0.75` | Minimum confidence to inject a pattern |
-| 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `1320` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
+| 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `120` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
 
 ### 6b. 🖥️ Copilot Agent Runtime
 
@@ -219,9 +212,9 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 1 | `AGENT_HANDOFF_TIMEOUT_SECONDS` | ✅ | `120` | Timeout for agent handoff operations |
 | 2 | `AUTO_PROMOTE_TIER_ENABLED` | ✅ | `true` | Auto-promotion tier for agent capabilities |
 | 3 | `AUTONOMOUS_ACTIONS_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — gates autonomous agent actions |
-| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `0.7:ok` (auto-updated) | Current CI failure rate (%) — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
+| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `10.7:degraded` (auto-updated) | Current CI failure rate (%) — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
 | 5 | `CODEX_CI_FAILURE_THRESHOLD` | ✅ | `10.0` | CI failure rate threshold (%) for `degraded` state (e.g., `10.0` = 10.0%) |
-| 6 | `CODEX_CI_LAST_GREEN_SHA` | ✅ | `fa9a62e3b53cfcd99f3700b95604b3159a53e629` (auto-updated) | Last commit SHA with all-green CI |
+| 6 | `CODEX_CI_LAST_GREEN_SHA` | ✅ | *(sha)* (auto-updated) | Last commit SHA with all-green CI |
 | 7 | `EMBEDDING_INDEX_AUTO_REBUILD` | ✅ | `true` | Auto-rebuild FAISS embedding index on changes |
 
 ### 6d. 🔒 Identity & Static Config
@@ -700,7 +693,8 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 
 ### 🟢 Monitor / Maintenance
 
-Moved to [🚩 TODOs (moved to top)](#-todos-moved-to-top).
+- [ ] Rotate `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` before **2026-06-04** (rotated 2026-03-06 — 90-day window)
+- [ ] Rotate `_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` before **2026-06-04**
 
 ---
 
