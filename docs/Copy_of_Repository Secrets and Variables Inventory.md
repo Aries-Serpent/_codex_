@@ -141,13 +141,13 @@ CODEX_MASTER_KEY_EXPIRY_DATE=2026-08-06
 COGNITIVE_BRAIN_LTM_RETENTION_DAYS=90
 COGNITIVE_BRAIN_MEMORY_TIER=both
 COPILOT_AGENT_LAST_SESSION_ID=bootstrap-pending
-COPILOT_AGENT_SESSION_EXPIRES=1970-01-01T00:00:00Z
+COPILOT_AGENT_SESSION_EXPIRES=1970-01-01T00:00:00Z  # bootstrap sentinel, workflow will overwrite with real ISO expiry
 COPILOT_CLI_BASE_URL=http://localhost:8765
 COPILOT_CLI_ENABLED=true
 COPILOT_SESSION_TTL_SECONDS=43200
 DEPLOY_ENV=development
 EMBEDDING_INDEX_AUTO_REBUILD=true
-WEBHOOK_RECEIVER_URL=https://<codespace-name>-8765.app.github.dev/webhook/github
+WEBHOOK_RECEIVER_URL=https://<codespace-name>-8765.app.github.dev/webhook/github  # replace <codespace-name> with active Codespace name
 ```
 
 #### C) Copy/Paste block — Repository Secrets (Actions)
@@ -202,13 +202,15 @@ _CODEX_ACTION_RUNNER=<paste-secret>
 
 ```bash
 # Agents Variables (minimum must-have mirror set)
+# Run this after Section 1 repo-variable update/verify, then copy exact values from
+# Repository Variables (Actions) for the *_ALLOW_LIST_* and JSON policy variables.
 COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D
 COPILOT_AGENT_AUTH_ENABLED=true
 COPILOT_AGENT_SESSION_RESTORE_ENABLED=true
 COPILOT_AGENT_FIREWALL_ENABLED=true
-COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS=<copy-from-repo-variable>
-COPILOT_AGENT_PREFLIGHT_RULES=<copy-json-from-repo-variable>
-COPILOT_WEC_SELECTION_MATRIX=<copy-json-from-repo-variable>
+COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS=<copy-exact-value-from-repo-variable>
+COPILOT_AGENT_PREFLIGHT_RULES=<copy-exact-json-from-repo-variable>
+COPILOT_WEC_SELECTION_MATRIX=<copy-exact-json-from-repo-variable>
 
 # Agents Secrets (minimum)
 CODEX_MASTER_KEY=<link-org-secret>
