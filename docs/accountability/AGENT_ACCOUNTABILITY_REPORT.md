@@ -13245,6 +13245,13 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+## SESSION SUMMARY — 2026-06-04T00:24Z [auto-generated]
+
+**Session:** auto-20260604T0024-run4293 | **Run:** 26921723884 | **Date:** 2026-06-04
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-06-03T16:26Z [auto-generated]
 
 **Session:** auto-20260603T1626-run312771 | **Run:** 26898116154 | **Date:** 2026-06-03
@@ -45756,3 +45763,13 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-06-04T00:24:29Z @ d90d2227 — sticky [x] maintained by all future agent sessions
