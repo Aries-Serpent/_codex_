@@ -56,8 +56,12 @@ apt_repair_state() {
 # Logs every attempt and fails explicitly (no silent masking) so genuine
 # failures (e.g. network down) surface instead of corrupting later steps.
 apt_update_with_retry() {
-  local attempt=1 max_attempts=2
-  [ "$APT_UPDATE_RETRY" = "true" ] || max_attempts=1
+  local attempt=1 max_attempts
+  if [ "$APT_UPDATE_RETRY" = "true" ]; then
+    max_attempts=2
+  else
+    max_attempts=1
+  fi
   while [ "$attempt" -le "$max_attempts" ]; do
     echo "🔄 apt-get update (attempt ${attempt}/${max_attempts})…"
     if $SUDO apt-get update -qq; then
