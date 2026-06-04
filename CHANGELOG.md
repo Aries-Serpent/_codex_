@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4744 follow-up — 2026-06-04T01:06Z)
+- Continued P1–P4/checklist follow-up: investigated workflow status and refreshed REQ-4/REQ-5 session freshness artifacts for PR #4744.
+
 ### Fixed (auto-update — PR #4744)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4744 (SHA `45ec2244`) at 2026-06-04T00:56Z [auto-generated]
 
