@@ -46031,3 +46031,31 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+## SESSION SUMMARY — 2026-06-04T17:10Z · PR #4750 workflow YAML guard rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed the active `@copilot` PR comment and current bot-posted comments before making changes ✅
+- [x] **0b.** Investigated the failing CI checks via GitHub Actions logs/results before editing files ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Retrieved current PR workflow runs and isolated the code-fixable failure to `Validation Pipeline / Fast Validation`.
+2. Confirmed the root cause locally by parsing `.github/workflows/copilot-setup-steps.yml` and reproducing the YAML error at the session preload step.
+3. Restored the canonical preload form required by the repository guard:
+   - changed the preload step back to `run: |`
+   - used brace-free `if ! ...; then ...; fi` shell syntax
+   - preserved the existing non-blocking behavior and warning message
+4. Re-checked Priority 2/3 follow-up items tied to this PR:
+   - verified `.github/workflows/self-healing.yml` is already present as the required stub
+   - ran `python3 scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` and confirmed no Node.js 20 action references remain
+
+### Validation Evidence
+- `python3` + `yaml.safe_load` over `.github/workflows/copilot-setup-steps.yml` ✅
+- `python3` + `yaml.safe_load` across all `.github/workflows/*.yml` files ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` ✅
+
+### Impact Score
+- Files changed: 3 (`.github/workflows/copilot-setup-steps.yml`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Root cause resolved: invalid inline shell brace syntax had broken workflow YAML parsing and the copilot setup guard
+- Scope kept minimal: no production Python code or dependency manifests changed
