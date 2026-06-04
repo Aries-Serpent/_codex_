@@ -1,7 +1,7 @@
 # Codebase Dashboard
 
-> Created: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent
-> PR: #2960 | Branch: `copilot/update-html-documentation-standards`
+> Created: 2026-01-12 | Updated: 2026-06-03T18:29:00Z | Updated by: @mbaetiong (variables expansion S1325)
+> Reference session: S1325 | PR queue: 47 pending
 
 ---
 
@@ -13,9 +13,9 @@
 
 **Status**: 🟢 Active Development
 
-**Last Updated**: 2026-01-23T08:45:00Z
-**Version**: 2.0.0
-**Last Reviewed**: 2026-01-23T08:45:00Z
+**Last Updated**: 2026-06-03T18:02:00Z
+**Version**: 2.1.0
+**Last Reviewed**: 2026-06-03T18:02:00Z
 
 ---
 
@@ -25,12 +25,47 @@
 
 | Metric | Status | Value | Target | Trend |
 |--------|--------|-------|--------|-------|
-| **Tests** | ✅ Passing | 1615 (100%) | 100% | ⬆️ Growing |
-| **Coverage** | 🟡 Good | 10.7% | 80%+ | ⬆️ Improving |
+| **Tests** | ✅ Passing | 21,500+ (100%) | 100% | ⬆️ Growing |
+| **Coverage** | 🟡 Active | 10.7% (overall) | 80%+ | ⬆️ Improving |
 | **Security** | ✅ Clean | 0 vulnerabilities | 0 | ➡️ Stable |
+| **CI Failure Rate** | ✅ OK | 2.5% | <10% | ➡️ Stable |
 | **MLOps Maturity** | ✅ Elite | Level 4 (100/100) | Level 4 | ➡️ Stable |
 | **Cache Usage** | ✅ Healthy | 7.69 GB / 10 GB | <8 GB | ➡️ Stable |
-| **CI Performance** | ✅ Fast | <5 min builds | <5 min | ➡️ Stable |
+| **Active Agents** | ✅ | 145 (159 total — 14 archived) | — | ➡️ Stable |
+| **Session Number** | 🔄 Active | S1325 | — | ⬆️ Growing |
+
+### Variables & Secrets Health
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Environment Variables | 14 | ✅ Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
+| Repository Variables | 76 | ✅ Current |
+| Environment Secrets | 3 | ✅ Current |
+| Repository Secrets | 7 | ✅ Current |
+| Organization Secrets | 13 | ⚠️ 5 overdue rotation |
+| **Gap Variables (code-referenced, not in inventory)** | **30+** | 🟡 Documented — maintainer action required to create in GitHub UI |
+| **Workflow Variable Usage** | 5 categories mapped | ✅ New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#🗺️-workflow--agent-variable-usage-map) |
+| **Agent Variable Expectations** | 145 agents, 6 categories | ✅ New — see [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md) |
+
+### Workflow Variable Integration Progress
+
+| Workflow | Variable Integration | Status |
+|----------|---------------------|--------|
+| `copilot-setup-steps.yml` | `NODE_VERSION` → `vars.NODE_JS_VERSION \|\| '22'` | ✅ Updated (Node 20→22) |
+| `nox_gates.yml` | `cache-version`, `timeout-minutes` via `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
+| `coverage-with-timeout.yml` | `cache-version` via `CODEX_CACHE_VERSION`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
+| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | ✅ Fallback `v2` — set `CODEX_CACHE_VERSION` in repo vars to override |
+
+### CI Tracking Variables (Auto-Updated)
+
+| Variable | Current Value | Updated |
+|----------|---------------|---------|
+| `CODEX_CI_FAILURE_RATE` | `2.5:ok` | 2026-06-03T17:31:53Z |
+| `CODEX_CI_LAST_GREEN_SHA` | `8b5588da25a5d5f12ba8bd66cc37fa688fbc8e97` | 2026-06-03T19:32:00Z |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `1325` | 2026-06-03T16:11:27Z |
+| `COPILOT_ACTIVE_SESSION` | `4731\|1780503084\|26896743030` | 2026-06-03T16:11:25Z |
+
+
 
 ### Active Initiatives
 

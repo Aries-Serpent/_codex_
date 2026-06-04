@@ -581,6 +581,18 @@ class TestWecConstants:
         filenames = [item[0] for item in swa._WEC_ITEMS]
         assert "auto-approve-workflows" in filenames
 
+    def test_new_wec_drift_workflows_present(self):
+        filenames = {item[0] for item in swa._WEC_ITEMS}
+        expected = {
+            "e-to-d-transition-gate.yml",
+            "d-capable-promotion-gate.yml",
+            "mcp-health.yml",
+        }
+        assert expected.issubset(filenames), (
+            "WEC drift remains: expected template workflows missing from _WEC_ITEMS: "
+            f"{sorted(expected - filenames)}"
+        )
+
     def test_never_check_items_are_not_always_required(self):
         assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED)
 

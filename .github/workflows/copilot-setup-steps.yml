@@ -79,9 +79,9 @@ jobs:
     #   with project dependencies pre-baked, cutting cold-start time to near zero.
     #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
     #
-    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Recommended repo variable default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
     # Set repo variable COPILOT_RUNNER_PROFILE to override:
-    #   ubuntu-latest-m → standard sessions (default)
+    #   ubuntu-latest-m → standard sessions when the repo variable is set
     #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
     #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
     # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
@@ -146,9 +146,10 @@ jobs:
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
 
       # ============================================================================
@@ -552,7 +553,7 @@ jobs:
 
           # ── Map env type → minimum required tier ──────────────────────────
           ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
-          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
 
           case "$ENV_TYPE" in
             ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
@@ -621,10 +622,10 @@ jobs:
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '22' }}"
+        uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION || '20' }}
+          node-version: ${{ env.NODE_VERSION || '22' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
@@ -871,7 +872,7 @@ jobs:
           df -h | grep -E "^/dev" || true
           echo ""
           echo "==================== AAIS Runner Summary ===================="
-          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
           echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
           echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
           echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"

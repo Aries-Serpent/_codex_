@@ -40,7 +40,7 @@ jobs:
 
       - name: Initialize with repository variables
         env:
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
           CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
         run: |
@@ -54,7 +54,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: pytorch
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads

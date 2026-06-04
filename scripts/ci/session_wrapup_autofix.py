@@ -139,7 +139,10 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("rust_swarm_ci.yml",             "Rust-Python hybrid swarm CI/CD",                             False),
     ("root-org-validation.yml",       "Root organization validation",                               False),
     ("agent-registry-validation.yml", "Agent registry validation",                                  False),
+    ("e-to-d-transition-gate.yml",    "E→D transition readiness gate",                              False),
+    ("d-capable-promotion-gate.yml",  "D_CAPABLE agent promotion gate",                             False),
     ("qa-walkthrough.yml",            "QA walkthrough agent",                                       False),
+    ("mcp-health.yml",                "MCP health & metrics gate (src/mcp/ scope)",                False),
     # --- Auto-Approve ---
     ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
 ]
@@ -552,7 +555,7 @@ def _build_wec_block(
     opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
     opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
     opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
-    opt_in_infra_items = _get_section_items("reference-integrity.yml", "qa-walkthrough.yml")
+    opt_in_infra_items = _get_section_items("reference-integrity.yml", "mcp-health.yml")
     # Single-item section: start/end intentionally identical.
     auto_approve_items = _get_section_items("auto-approve-workflows", "auto-approve-workflows")
 
