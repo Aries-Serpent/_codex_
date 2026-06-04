@@ -17,7 +17,7 @@
 - [`b5551b4f`] chore: Generate follow-up prompt for PR #4756 [skip ci] (github-actions[bot], 2026-06-04)
 
 ### Files Modified
-No files modified
+- `requirements/lock.txt`
 
 ---
 
