@@ -27,7 +27,7 @@ NODE_JS_AUTO_UPDATE_ENABLED: "true"            # Auto-update workflows on EOL
 **Reason**: Cache coherency across 110+ workflows. Prevents stale cache hits.
 
 ```yaml
-CODEX_CACHE_VERSION: "v3"                      # Current cache version key
+CODEX_CACHE_VERSION: "v2"                      # Current cache version key used by setup-agent-env and CI caches
 CODEX_CACHE_TTL_DAYS: "7"                      # Cache time-to-live
 CODEX_PIP_CACHE_ENABLED: "true"                # Enable pip download cache
 CODEX_VENV_CACHE_ENABLED: "true"               # Enable venv cache
@@ -42,7 +42,7 @@ CODEX_NPM_CACHE_ENABLED: "true"                # Enable npm tool cache
   with:
     python-version: '3.12'
     cache-tier: common
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 ```
 
 ### 3. CI/CD Workflow Configuration
@@ -194,7 +194,7 @@ Navigate to Settings → Secrets and Variables → Actions Variables:
 
 **CRITICAL Variables** (Set immediately):
 - [ ] `NODE_JS_VERSION` = `22`
-- [ ] `CODEX_CACHE_VERSION` = `v3`
+- [ ] `CODEX_CACHE_VERSION` = `v2`
 - [ ] `CODEX_COVERAGE_THRESHOLD` = `80`
 - [ ] `COGNITIVE_BRAIN_INJECTION_ENABLED` = `true`
 - [ ] `SESSION_CONTEXT_AUTO_CAPTURE` = `true`

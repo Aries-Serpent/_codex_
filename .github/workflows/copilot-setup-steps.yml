@@ -79,9 +79,9 @@ jobs:
     #   with project dependencies pre-baked, cutting cold-start time to near zero.
     #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
     #
-    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Recommended repo variable default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
     # Set repo variable COPILOT_RUNNER_PROFILE to override:
-    #   ubuntu-latest-m → standard sessions (default)
+    #   ubuntu-latest-m → standard sessions when the repo variable is set
     #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
     #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
     # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
@@ -280,7 +280,9 @@ jobs:
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
-              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE_SAFE}'. Agent MUST resolve these before any other work."
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER}" \
+                   "has merge conflicts with base branch '${BASE_SAFE}'." \
+                   "Agent MUST resolve these before any other work."
               echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
             elif [ "$MERGEABLE" = "MERGEABLE" ]; then
               echo "✅ No merge conflicts detected"
@@ -297,7 +299,9 @@ jobs:
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
             echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
             if [ "$BEHIND" -gt 0 ]; then
-              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE_SAFE}'. Agent should rebase or merge base before starting work."
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND}" \
+                   "commit(s) behind '${BASE_SAFE}'." \
+                   "Agent should rebase or merge base before starting work."
               echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
             else
               echo "✅ Branch is up-to-date with ${BASE}"
@@ -311,7 +315,8 @@ jobs:
             if [ -n "$MERGE_BASE" ]; then
               CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
               if [ "$CONFLICT_FILES" -gt 0 ]; then
-                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE_SAFE}'"
+                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected" \
+                     "${CONFLICT_FILES} file(s) with conflicts against '${BASE_SAFE}'"
               else
                 echo "✅ merge-tree: no file-level conflicts detected"
               fi
@@ -346,7 +351,9 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s)" \
+                 "found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)." \
+                 "Agent should review these for patterns affecting this PR."
 
             # List issue titles for agent context
             echo ""
@@ -437,7 +444,12 @@ jobs:
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
-        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
+        if: >-
+          ${{
+            github.event_name == 'workflow_dispatch' &&
+            (inputs.lfs_mode == 'full' ||
+             (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != ''))
+          }}
         run: |
           set -euo pipefail
           echo "Git version: $(git --version)"
@@ -552,7 +564,7 @@ jobs:
 
           # ── Map env type → minimum required tier ──────────────────────────
           ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
-          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
 
           case "$ENV_TYPE" in
             ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
@@ -589,7 +601,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -600,7 +612,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -612,19 +624,21 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
         with:
           path: .venv_ci
-          key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          key: >-
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
+            ${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '22' }}"
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
         with:
-          node-version: ${{ env.NODE_VERSION || '20' }}
+          node-version: ${{ env.NODE_VERSION || '22' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
@@ -871,7 +885,7 @@ jobs:
           df -h | grep -E "^/dev" || true
           echo ""
           echo "==================== AAIS Runner Summary ===================="
-          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
           echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
           echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
           echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"
@@ -1049,29 +1063,29 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
 
-# ============================================================================
-# Workflow Metadata
-# ============================================================================
-# Version: 1.1.0
-# Created: 2026-01-28
-# Updated: 2026-01-30
-# Baseline stability maintained:
-# - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
-# - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
-# Selective adoption (guarded via workflow_dispatch inputs):
-# - lfs_mode: targeted/full with retries and continue-on-error option
-# - lfs_include_paths: limit LFS scope to required areas
-# - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
-# Policy: .codex/CODEBASE_AGENCY_POLICY.md
-# Integration: Cognitive Brain Phase objectives
-# Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
+  # ============================================================================
+  # Workflow Metadata
+  # ============================================================================
+  # Version: 1.1.0
+  # Created: 2026-01-28
+  # Updated: 2026-01-30
+  # Baseline stability maintained:
+  # - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
+  # - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
+  # Selective adoption (guarded via workflow_dispatch inputs):
+  # - lfs_mode: targeted/full with retries and continue-on-error option
+  # - lfs_include_paths: limit LFS scope to required areas
+  # - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
+  # Policy: .codex/CODEBASE_AGENCY_POLICY.md
+  # Integration: Cognitive Brain Phase objectives
+  # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
@@ -1088,7 +1102,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

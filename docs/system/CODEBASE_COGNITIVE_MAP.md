@@ -1,7 +1,7 @@
 # Codebase Cognitive Map
 
-> Generated: 2026-01-23T08:42:00Z | Updated: 2026-05-24T23:59:00Z by copilot-swe-agent[bot]
-> PR: #4562 | Branch: `copilot/analyze-test-coverage-and-documentation`
+> Generated: 2026-01-23T08:42:00Z | Updated: 2026-06-03T18:02:00Z by @mbaetiong (S1325 variables audit)
+> PR: #4731 | Session: S1325
 
 ---
 
@@ -13,7 +13,7 @@
 
 **Status**: 🟢 Active
 
-**Last Updated**: 2026-01-23T08:42:00Z | **Version**: 2.0.0 | **Last Reviewed**: 2026-01-23T08:42:00Z
+**Last Updated**: 2026-06-03T18:02:00Z | **Version**: 2.1.0 | **Last Reviewed**: 2026-06-03T18:02:00Z
 
 ---
 
@@ -189,20 +189,100 @@ Test Execution → Cache Management → Artifact Generation
 
 ## Security & Secrets
 
+### Active Variable Inventory (2026-06-03 Audit)
+
+**Total**: 113 variables/secrets across 5 scopes
+
+```mermaid
+graph TB
+    subgraph "Org Secrets (13)"
+        OM[CODEX_MASTER_KEY]
+        OB[CODEX_BACKUP_KEY]
+        OA[CODEX_ADMIN_KEY]
+        OG[_GITHUB_APP_*]
+        OP[PYPI_TOKEN / NPM_TOKEN]
+        OH[HF_TOKEN / RAG_OPENAI_KEY]
+        OC[CODECOV_TOKEN]
+    end
+    subgraph "Repo Secrets (7)"
+        RS[OPENAI_API_KEY]
+        RW[CODEX_WEBHOOK_SECRET]
+        RG[CODEX_GHP_TOKEN_*]
+        RB[_CODEX_BOT_RUNNER]
+    end
+    subgraph "Repo Variables (76)"
+        RV1[Agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
+        RV2[Copilot: COPILOT_AGENT_*, COPILOT_WEC_*]
+        RV3[Cognitive Brain: COGNITIVE_BRAIN_*]
+        RV4[CI/CD: CODEX_CI_*, CODEX_COVERAGE_THRESHOLD]
+        RV5[LLM/ML: CODEX_LLM_MODEL, WANDB_MODE]
+        RV6[Runtime: CODEX_SESSION_ID, CODEX_LOG_LEVEL]
+    end
+    subgraph "Env Variables (14) — Sandbox"
+        EV[CODEX_ENV_*versions, RUST_BACKTRACE, CARGO_TERM_COLOR]
+    end
+    subgraph "Env Secrets (3) — Sandbox"
+        ES[CODEX_RUNNER_TOKEN, CODEX_ENVIRONMENT_RUNNER]
+    end
+    OM --> |token_chain| RS
+    OB --> |fallback| RS
+    RV2 --> |controls| EV
+```
+
+> **Diagram legend**: `token_chain` = primary token source for write operations; `fallback` = secondary token source used only when primary is unavailable (`CODEX_BACKUP_KEY` fills in when `CODEX_MASTER_KEY` is absent).
+
+### Token Write Chain
+
+```
+GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
+```
+
+- Defined in `COPILOT_AGENT_PREFLIGHT_RULES.token_rule`
+- Use `report_progress` tool — never `git push` directly
+
+### Key Variable Relationships
+
+| Variable | Controls | Used By |
+|----------|---------|---------|
+| `AGENT_KILL_SWITCH` | Emergency halt all agents | All agent runners |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | Agent autonomy ceiling (D=max) | Copilot coding agents |
+| `CODEX_CI_FAILURE_RATE` | Live CI health signal | `ci-health-alert-agent`, WEC |
+| `CODEX_COVERAGE_THRESHOLD` | Coverage gate (80%) | `nox_gates.yml`, `coverage-with-timeout.yml` |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | Session context injection | `cognitive-brain-session-injector` |
+| `COPILOT_WEC_SELECTION_MATRIX` | Workflow trigger routing | `workflow-execution-gate.yml` |
+| `CODEX_MASTER_KEY` | All write operations | All agents, `token_rule` |
+
 ### Secrets (GitHub UI injected)
-- `OPENAI_API_KEY` - OpenAI API
-- `PINECONE_API_KEY` - Pinecone (optional)
-- `CODEX_MASTER_KEY` - Genesis Protocol
+- `OPENAI_API_KEY` — OpenAI API for LLM calls
+- `CODEX_MASTER_KEY` — Genesis Protocol / all write ops
+- `CODEX_BACKUP_KEY` — Fallback write key
+- `_GITHUB_APP_PRIVATE_KEY` — GitHub App authentication
 
 ### Security Scanning
-- Gitleaks, Trufflehog - Secret detection
-- Semgrep SAST - Static analysis
-- CodeQL - Code scanning
+- Gitleaks, Trufflehog — Secret detection
+- Semgrep SAST — Static analysis
+- CodeQL — Code scanning
 
 ### Anti-/tmp/ Protection
-**Policy**: Use `.github/tmp/` instead of `/tmp/`
+**Policy**: Use `.github/tmp/` instead of `/tmp/` for tracked artifacts
 **Applied**: emergency_cache_cleanup.sh, MCP tools
+**Exception**: `CODEX_BRIDGE_DIR=/tmp/codex_secure_bridge` is a runtime tmpfs mount (not tracked)
 **Doc**: `docs/system/ANTI_TMP_PROTECTION_SYSTEM.md`
+
+### Agent Variable Expectations
+
+Per-agent MUST/SHOULD variable requirements are documented in [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md). Key categories:
+
+| Agent Category | Key Variables |
+|----------------|--------------|
+| CI/CD agents | `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES`, `CODEX_COVERAGE_THRESHOLD` |
+| Self-healing agents | `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `AUTONOMOUS_ACTIONS_ENABLED` |
+| Cognitive brain agents | `COGNITIVE_BRAIN_INJECTION_ENABLED`, `SESSION_CONTEXT_AUTO_CAPTURE` |
+| Security agents | `DISABLE_SECRET_FILTER` (MUST be `false`), `CODEX_ENV` |
+| Orchestration agents | `COPILOT_WEC_SELECTION_MATRIX`, `COPILOT_AGENT_PREFLIGHT_RULES` |
+| ML/training agents | `CODEX_SEED`, `CODEX_CPU_MINIMAL`, `CODEX_TELEMETRY_ENABLED` |
+
+All agents universally MUST check `AGENT_KILL_SWITCH` at startup.
 
 ---
 

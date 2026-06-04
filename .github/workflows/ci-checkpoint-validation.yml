@@ -53,7 +53,7 @@ jobs:
 
       - name: Initialize with repository variables
         env:
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
           CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
         run: |
@@ -67,7 +67,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install minimal dependencies
         run: |
