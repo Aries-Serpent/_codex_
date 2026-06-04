@@ -135,7 +135,7 @@ def test_copilot_setup_steps_exists() -> None:
 
 
 def test_copilot_setup_steps_session_preload_block_intact() -> None:
-    """Lines ~141-145: session_preload block-scalar form must remain intact.
+    """The session_preload block-scalar form must remain intact.
 
     The `run: |` + `if ! python3 …; then … fi` form is intentional.  Reverting to
     inline shell-brace syntax (`|| { … }`) breaks YAML parsing and yamllint in CI.
@@ -154,7 +154,15 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
         "the canonical block-scalar form may have been removed or reformatted"
     )
 
-    step_block = "\n".join(lines[step_start : step_start + 6])
+    step_end = next(
+        (
+            i
+            for i in range(step_start + 1, len(lines))
+            if lines[i].startswith("      - name:")
+        ),
+        len(lines),
+    )
+    step_block = "\n".join(lines[step_start:step_end])
 
     assert "run: |" in step_block, (
         f"Step at line {step_start + 1}: expected block-scalar 'run: |' form — "

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Investigated `Validation Pipeline` run `26921317242` and reproduced the failing canonical guard for `.github/workflows/copilot-setup-steps.yml`.
 - Restored the session preload step to the repository's canonical block-scalar form (`run: |` with `if ! ...; then ...; fi`) so YAML parsing and yamllint no longer crash on the workflow file.
 - Updated the architecture regression test to assert the same canonical preload shape enforced by `scripts/ci/validate_setup_steps_yaml.sh`.
+- Hardened that regression test to locate the preload step boundary dynamically instead of assuming a fixed six-line step body.
 
 ### Fixed (SN — PR #4741 follow-up review — 2026-06-04T00:19Z)
 - Reviewed the current PR #4741 bot findings and current branch checks after the follow-up prompt commit `23bdba9e`.
