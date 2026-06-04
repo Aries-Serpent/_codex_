@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4750)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4750 (SHA `65917562`) at 2026-06-04T17:03Z [auto-generated]
+
 ### Fixed (auto-update — PR #4747)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4747 (SHA `e64ac7e4`) at 2026-06-04T05:30Z [auto-generated]
 
