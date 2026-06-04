@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4750 validation follow-up + architecture guard alignment — 2026-06-04T17:30Z)
+- Confirmed the failing Validation Pipeline run `#26966970411` was tied to the pre-fix `copilot-setup-steps.yml` state; the current canonical guard now passes locally on the PR branch.
+- Updated `tests/architecture/test_layer_boundaries.py` to enforce the canonical session preload form (`run: |` with `if ! ...; then ...; fi`) instead of the retired `|| { ... }` flow-scalar block.
+- Re-ran the targeted architecture tripwire test and `scripts/ci/validate_setup_steps_yaml.sh` against the updated branch state.
+
 ### Fixed (SN — PR #4750 workflow YAML guard + follow-up validation — 2026-06-04T17:10Z)
 - Restored the canonical `run: |` session preload block in `.github/workflows/copilot-setup-steps.yml` so the workflow parses cleanly again.
 - Re-verified workflow YAML parsing locally and re-ran Node.js 20 Pattern 21 checks with no deprecated action references found.

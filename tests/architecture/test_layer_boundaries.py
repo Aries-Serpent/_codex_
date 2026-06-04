@@ -135,40 +135,39 @@ def test_copilot_setup_steps_exists() -> None:
 
 
 def test_copilot_setup_steps_session_preload_block_intact() -> None:
-    """Lines ~141-145: session_preload brace block must be intact and unmodified.
+    """Lines ~141-152: session_preload block-scalar fallback must stay intact.
 
-    The `run: python3 … || { … }` form is intentional.  Changing it to a pipe
-    block (`run: |`) or removing it would break the non-blocking fallback that
-    keeps the Copilot agent alive even when session_preload.py fails.
+    The canonical form is `run: |` with `if ! ...; then ...; fi`. Reverting to
+    the older `|| { ... }` flow-scalar form regresses YAML/tooling validation.
     """
     lines = _SETUP_STEPS.read_text(encoding="utf-8").splitlines()
 
-    # Locate the session_preload step by searching for the distinctive run line
-    preload_run_idx: int | None = None
+    # Locate the session_preload step by searching for the step anchor.
+    step_start: int | None = None
     for i, line in enumerate(lines):
-        if "session_preload.py ||" in line and "run:" in line:
-            preload_run_idx = i
+        if "Session Context Pre-load" in line:
+            step_start = i
             break
 
-    assert preload_run_idx is not None, (
-        "copilot-setup-steps.yml: could not find 'run: … session_preload.py || {' line — "
-        "the session-preload brace block may have been removed or reformatted"
+    assert step_start is not None, (
+        "copilot-setup-steps.yml: could not find the session_preload step anchor — "
+        "the canonical preload block may have been removed or reformatted"
     )
 
-    # The brace block spans exactly 3 lines: run:…||{, echo…, closing }
-    block = "\n".join(lines[preload_run_idx : preload_run_idx + 3])
+    block = "\n".join(lines[step_start : step_start + 8])
 
-    assert "session_preload.py || {" in lines[preload_run_idx], (
-        f"Line {preload_run_idx + 1}: expected 'session_preload.py || {{' — "
-        "do not reformat to a pipe block; the brace form is required"
+    assert "run: |" in block, (
+        f"Step at line {step_start + 1}: expected canonical 'run: |' block scalar form"
+    )
+    assert "if ! python3 .github/scripts/session_preload.py; then" in block, (
+        f"Step at line {step_start + 1}: expected brace-free non-blocking 'if ! ...; then' guard"
     )
     assert "session_preload.py failed (non-blocking)" in block, (
-        f"Lines {preload_run_idx + 1}-{preload_run_idx + 3}: fallback echo is missing — "
+        f"Step at line {step_start + 1}: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
-    assert lines[preload_run_idx + 2].strip() == "}", (
-        f"Line {preload_run_idx + 3}: expected closing '}}' of brace block — "
-        "block structure has changed"
+    assert "fi" in block, (
+        f"Step at line {step_start + 1}: expected closing 'fi' for the canonical fallback block"
     )
 
 
