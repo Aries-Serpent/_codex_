@@ -14,7 +14,8 @@
 4. Updated `tests/architecture/test_layer_boundaries.py` so the architecture tripwire now asserts the same canonical preload structure enforced by the CI guard script.
 5. Addressed follow-up code review feedback on the tripwire test by removing the stale line-range wording and deriving the step boundary dynamically instead of assuming a fixed six-line block.
 6. Addressed a second review pass by hoisting the preload step label into a local constant and matching the next YAML step with indentation-insensitive detection (`lstrip().startswith('- name:')`).
-7. Re-validated the workflow file and REQ-4/REQ-5 tracking files on the current branch head.
+7. Tightened the boundary detection to require the same indentation level as the preload step and hoisted the preload script path into a local constant to reduce further drift.
+8. Re-validated the workflow file and REQ-4/REQ-5 tracking files on the current branch head.
 
 ### Validation Evidence
 - `bash scripts/ci/validate_setup_steps_yaml.sh` → ✅ passes all 5 canonical checks

@@ -124,6 +124,7 @@ def test_domain_ownership_doc_exists() -> None:
 
 _SETUP_STEPS = ROOT / ".github" / "workflows" / "copilot-setup-steps.yml"
 _SESSION_PRELOAD_STEP = "Session Context Pre-load (memory + policy + accountability + PDA)"
+_SESSION_PRELOAD_SCRIPT = ".github/scripts/session_preload.py"
 
 
 def test_copilot_setup_steps_exists() -> None:
@@ -155,11 +156,13 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
         "the canonical block-scalar form may have been removed or reformatted"
     )
 
+    step_indent = len(lines[step_start]) - len(lines[step_start].lstrip())
     step_end = next(
         (
             i
             for i in range(step_start + 1, len(lines))
             if lines[i].lstrip().startswith("- name:")
+            and len(lines[i]) - len(lines[i].lstrip()) == step_indent
         ),
         len(lines),
     )
@@ -169,7 +172,7 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
         f"Step at line {step_start + 1}: expected block-scalar 'run: |' form — "
         "do not inline the session_preload shell command"
     )
-    assert "if ! python3 .github/scripts/session_preload.py; then" in step_block, (
+    assert f"if ! python3 {_SESSION_PRELOAD_SCRIPT}; then" in step_block, (
         f"Step at line {step_start + 1}: expected guarded 'if ! python3 ...; then' shell form — "
         "the canonical non-blocking preload structure has changed"
     )
