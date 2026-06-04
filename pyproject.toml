@@ -585,4 +585,9 @@ conflicts = [
 # dulwich is a transitive dependency through dvc, scmrepo, and dvc-studio-client.
 constraint-dependencies = [
     "dulwich>=1.2.5",
+    # Security: force aiohttp >= 3.14.0 to fix CVE-2026-34993 / GHSA-jg22-mg44-37j8
+    # (CookieJar.load() deserialization of untrusted data leading to arbitrary code execution)
+    # and GHSA cross-origin redirect with per-request cookies (#273).
+    # aiohttp is a transitive dependency via great-expectations, ray[serve], mlflow, and fsspec[http].
+    "aiohttp>=3.14.0",
 ]
