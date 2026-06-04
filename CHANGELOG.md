@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (cherry-pick + docs update — PR #4750 — 2026-06-04T17:55:28Z)
+- Cherry-picked all 6 commits from PR #4750 branch into current session branch.
+- Updated docs/Copy_of_Repository Secrets and Variables Inventory.md: moved all ToDos to top, marked all non-secret variables ✅ IMPLEMENTED, provided concrete initial JSON values for all placeholder variables.
+
 ### Fixed (SN — PR #4750 validation follow-up + architecture guard alignment — 2026-06-04T17:30Z)
 - Confirmed the failing Validation Pipeline run `#26966970411` was tied to the pre-fix `copilot-setup-steps.yml` state; the current canonical guard now passes locally on the PR branch.
 - Updated `tests/architecture/test_layer_boundaries.py` to enforce the canonical session preload form (`run: |` with `if ! ...; then ...; fi`) instead of the retired `|| { ... }` flow-scalar block.
