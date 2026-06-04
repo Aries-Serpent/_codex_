@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4758 review follow-up — 2026-06-04T22:37Z)
+- Resolved review follow-up nits in `.github/copilot-prompts/active/PR-4758-followup.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (removed duplicate heading, fixed list numbering, corrected modified-file note).
+- Updated `requirements/lock.txt` review items by restoring the `diskcache` risk-treatment annotation, recording the exact `uv pip compile ... --upgrade-package starlette` command, and pinning `starlette==1.0.1`.
+
+### Fixed (auto-update — PR #4758)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4758 (SHA `c353aa44`) at 2026-06-04T22:08Z [auto-generated]
+
 ### Fixed (auto-update — PR #4756)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4756 (SHA `766e2ea5`) at 2026-06-04T21:43Z [auto-generated]
 
