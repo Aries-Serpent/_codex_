@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4742 CI wrap-up follow-up — 2026-06-04T00:43Z)
+- Restored canonical block-scalar session preload step in `.github/workflows/copilot-setup-steps.yml` (`run: |` with brace-free `if ! ...; then ...; fi`) to resolve YAML parser failure in `Validation Pipeline / Fast Validation`.
+- Refreshed REQ-4/REQ-5 wrap-up artifacts by updating `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/aftermath/pda_iterations.jsonl`, and this `CHANGELOG.md` entry.
+
 ### Fixed (auto-update — PR #4742)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4742 (SHA `d36ee418`) at 2026-06-04T00:33Z [auto-generated]
 
