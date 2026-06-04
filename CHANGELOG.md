@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restored the canonical `run: |` session preload block in `.github/workflows/copilot-setup-steps.yml` so the workflow parses cleanly again.
 - Re-verified workflow YAML parsing locally and re-ran Node.js 20 Pattern 21 checks with no deprecated action references found.
 - Confirmed the existing `.github/workflows/self-healing.yml` stub already satisfies the follow-up reliability requirement.
-
 ### Fixed (auto-update — PR #4750)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4750 (SHA `65917562`) at 2026-06-04T17:03Z [auto-generated]
 
