@@ -29,6 +29,7 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
+| [EXPLAIN_REPOSITORY_BRIEFING.md](EXPLAIN_REPOSITORY_BRIEFING.md) | Fast repository orientation briefing | All |
 | [CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md) | Complete system architecture | All |
 | [LEVEL_4_MLOPS_ASSESSMENT.md](LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity evaluation | Ops, DevOps |
 | [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) | Implementation status | PM, Leads |

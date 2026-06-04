@@ -1,3 +1,49 @@
+## SESSION SUMMARY — 2026-06-04T17:54:46Z · PR #4750 cherry-pick + docs update
+
+### Summary
+- Cherry-picked all 6 commits from PR #4750 (starlette 0.50.0→1.0.1, copilot-setup-steps.yml fix, test_layer_boundaries.py alignment)
+- Updated docs/Copy_of_Repository Secrets and Variables Inventory.md:
+  - Moved all ToDos to top of document
+  - Updated MISSING variables status to ✅ IMPLEMENTED
+  - Provided concrete initial JSON values for all placeholder-JSON variables
+  - Updated Maintainer Execution Checklist to reflect completed phases
+## SESSION SUMMARY — 2026-06-04T17:30Z · PR #4750 validation follow-up + architecture guard alignment
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed the active maintainer escalation comment #4624504762 and prior bot context before making changes ✅
+- [x] **0b.** Investigated failing Validation Pipeline run `#26966970411`, checked open `ci-failure` / `ci-health-alert` issues (none open), and re-checked branch/base merge state ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Retrieved the failing `Validation Pipeline` run details and logs for run `#26966970411`.
+2. Confirmed the original CI failure was on the old head SHA (`b5988a96`) before the workflow preload fix landed, while the current branch copy of `.github/workflows/copilot-setup-steps.yml` passes the canonical guard locally.
+3. Identified a directly related stale tripwire in `tests/architecture/test_layer_boundaries.py`: it still enforced the retired `session_preload.py || { ... }` flow-scalar form.
+4. Applied the minimal follow-up fix by updating that architecture test to assert the canonical block-scalar preload shape:
+   - `run: |`
+   - `if ! python3 .github/scripts/session_preload.py; then`
+   - preserved non-blocking fallback echo
+   - closing `fi`
+5. Verified the latest `Validation Pipeline` run on the fixed commit showed no failed jobs; its `action_required` state is approval-related rather than a code regression.
+
+### Validation Evidence
+- `python3 -m pytest tests/architecture/test_layer_boundaries.py -q` ✅ (13 passed, 1 skipped)
+- `bash scripts/ci/validate_setup_steps_yaml.sh` ✅
+- `list_issues` for labels `ci-failure` and `ci-health-alert` → 0 open issues ✅
+- `git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main` checked with no conflict markers ✅
+
+### Run URLs
+- Escalation comment: https://github.com/Aries-Serpent/_codex_/pull/4750#issuecomment-4624504762
+- Failed run investigated: https://github.com/Aries-Serpent/_codex_/actions/runs/26966970411
+- Follow-up run on fixed commit: https://github.com/Aries-Serpent/_codex_/actions/runs/26967586893
+
+### Impact Score
+- Files changed: 3 (`tests/architecture/test_layer_boundaries.py`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: aligns the architecture tripwire with the canonical preload block already enforced by the validation guard
+- Scope: no production logic changes; only validation/documentation follow-up for PR #4750
+
+---
+
 ## SESSION SUMMARY — 2026-06-04T05:06Z · Codespaces Prebuild APT State Fix (error 1309)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -13384,6 +13430,13 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+## SESSION SUMMARY — 2026-06-04T17:14Z [auto-generated]
+
+**Session:** auto-20260604T1714-run315124 | **Run:** 26967215052 | **Date:** 2026-06-04
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-06-04T01:05Z [auto-generated]
 
 **Session:** auto-20260604T0105-run4298 | **Run:** 26923299139 | **Date:** 2026-06-04
@@ -45984,3 +46037,78 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-06-04T17:03Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4750)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #4750 (SHA: `65917562`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/26966970202
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+## SESSION SUMMARY — 2026-06-04T17:10Z · PR #4750 workflow YAML guard rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed the active `@copilot` PR comment and current bot-posted comments before making changes ✅
+- [x] **0b.** Investigated the failing CI checks via GitHub Actions logs/results before editing files ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Retrieved current PR workflow runs and isolated the code-fixable failure to `Validation Pipeline / Fast Validation`.
+2. Confirmed the root cause locally by parsing `.github/workflows/copilot-setup-steps.yml` and reproducing the YAML error at the session preload step.
+3. Restored the canonical preload form required by the repository guard:
+   - changed the preload step back to `run: |`
+   - used brace-free `if ! ...; then ...; fi` shell syntax
+   - preserved the existing non-blocking behavior and warning message
+4. Re-checked Priority 2/3 follow-up items tied to this PR:
+   - verified `.github/workflows/self-healing.yml` is already present as the required stub
+   - ran `python3 scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` and confirmed no Node.js 20 action references remain
+
+### Validation Evidence
+- `python3` + `yaml.safe_load` over `.github/workflows/copilot-setup-steps.yml` ✅
+- `python3` + `yaml.safe_load` across all `.github/workflows/*.yml` files ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` ✅
+
+### Impact Score
+- Files changed: 3 (`.github/workflows/copilot-setup-steps.yml`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Root cause resolved: invalid inline shell brace syntax had broken workflow YAML parsing and the copilot setup guard
+- Scope kept minimal: no production Python code or dependency manifests changed
