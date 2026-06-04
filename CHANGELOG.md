@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `.codex/CODESPACES_VARIABLES_BOOTSTRAP.sh` to provision those variables via the `gh` CLI (supports `DRY_RUN`).
 - Added reference comments and `CODESPACES_APT_*` / `CODEX_SQLITE_POOL` entries to `.devcontainer/devcontainer.json` `containerEnv`.
 
-
+### Fixed (SN — PR #4738 LOGGING_AVAILABLE export follow-up — 2026-06-04T01:50Z)
 - Re-added `LOGGING_AVAILABLE` module-level flag to `agents/physics_integration.py` (lines 39, 42)
 - Added `LOGGING_AVAILABLE` to `__all__` exports (line 328) to indicate it's intentionally public API
 - Previous commit `eef7812` incorrectly removed the flag in response to CodeQL "unused variable" alert

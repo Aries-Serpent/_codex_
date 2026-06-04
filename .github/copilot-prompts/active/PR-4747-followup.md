@@ -17,7 +17,14 @@
 - [`6a2decb4`] docs: accountability report + CHANGELOG for Codespaces APT fix (copilot-swe-agent[bot], 2026-06-04)
 
 ### Files Modified
-No files modified
+- `.codex/CODESPACES_VARIABLES_BOOTSTRAP.sh`
+- `.devcontainer/devcontainer.json`
+- `.devcontainer/scripts/on-create.sh`
+- `.codex/CRITICAL_REPOSITORY_VARIABLES.md`
+- `.codex/runtime_variables.md`
+- `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `CHANGELOG.md`
 
 ---
 

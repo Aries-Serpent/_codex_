@@ -164,7 +164,7 @@ directory corruption (`/var/lib/apt/lists/partial is missing`) during the
 5. `.github/workflows/copilot-setup-steps.yml` — corresponding CI environment setup
 
 **Bootstrap**: run `bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh` (requires an
-authenticated `gh` CLI) to create all 11 variables with their documented defaults.
+authenticated `gh` CLI) to create all 10 variables with their documented defaults.
 
 ---
 
