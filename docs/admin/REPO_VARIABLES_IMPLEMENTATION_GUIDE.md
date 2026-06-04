@@ -283,7 +283,7 @@ list directory is missing/corrupted during `onCreateCommand`
 ### Variable Definitions
 
 | Variable | Recommended Value | Type | MUST/SHOULD/MAY |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | `CODESPACES_APT_UPDATE_RETRY` | `true` | Boolean string | SHOULD |
 | `CODESPACES_APT_CLEANUP_AGGRESSIVE` | `true` | Boolean string | MAY |
 | `CODEX_DEVCONTAINER_WORKSPACE` | `/workspaces/_codex_` | Path string | SHOULD |
