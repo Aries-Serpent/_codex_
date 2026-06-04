@@ -184,7 +184,7 @@ Use this section as the **single maintainer execution source** for manual entry.
 | `COPILOT_SESSION_TTL_SECONDS` | `43200` | Delegation workflow default (12h) |
 | `DEPLOY_ENV` | `development` | Repository deployment baseline |
 | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Current CI rebuild behavior in master guide |
-| `WEBHOOK_RECEIVER_URL` | `https://bootstrap-pending-8765.app.github.dev/webhook/github` | Initial bootstrap value; must be updated with the active Codespace name before use |
+| `WEBHOOK_RECEIVER_URL` | `https://bootstrap-pending-8765.app.github.dev/webhook/github` | **Bootstrap placeholder only** — must be replaced with the active Codespace name before use (format: `https://<codespace-name>-8765.app.github.dev/webhook/github`) |
 
 #### B) Copy/Paste block — Repository Variables (Actions) ✅ IMPLEMENTED
 
