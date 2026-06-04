@@ -135,39 +135,41 @@ def test_copilot_setup_steps_exists() -> None:
 
 
 def test_copilot_setup_steps_session_preload_block_intact() -> None:
-    """Lines ~141-145: session_preload brace block must be intact and unmodified.
+    """Lines ~141-145: session_preload block-scalar form must remain intact.
 
-    The `run: python3 … || { … }` form is intentional.  Changing it to a pipe
-    block (`run: |`) or removing it would break the non-blocking fallback that
-    keeps the Copilot agent alive even when session_preload.py fails.
+    The `run: |` + `if ! python3 …; then … fi` form is intentional.  Reverting to
+    inline shell-brace syntax (`|| { … }`) breaks YAML parsing and yamllint in CI.
     """
     lines = _SETUP_STEPS.read_text(encoding="utf-8").splitlines()
 
-    # Locate the session_preload step by searching for the distinctive run line
-    preload_run_idx: int | None = None
+    # Locate the session_preload step by searching for the distinctive step name.
+    step_start: int | None = None
     for i, line in enumerate(lines):
-        if "session_preload.py ||" in line and "run:" in line:
-            preload_run_idx = i
+        if 'Session Context Pre-load (memory + policy + accountability + PDA)' in line:
+            step_start = i
             break
 
-    assert preload_run_idx is not None, (
-        "copilot-setup-steps.yml: could not find 'run: … session_preload.py || {' line — "
-        "the session-preload brace block may have been removed or reformatted"
+    assert step_start is not None, (
+        "copilot-setup-steps.yml: could not find the session preload step — "
+        "the canonical block-scalar form may have been removed or reformatted"
     )
 
-    # The brace block spans exactly 3 lines: run:…||{, echo…, closing }
-    block = "\n".join(lines[preload_run_idx : preload_run_idx + 3])
+    step_block = "\n".join(lines[step_start : step_start + 6])
 
-    assert "session_preload.py || {" in lines[preload_run_idx], (
-        f"Line {preload_run_idx + 1}: expected 'session_preload.py || {{' — "
-        "do not reformat to a pipe block; the brace form is required"
+    assert "run: |" in step_block, (
+        f"Step at line {step_start + 1}: expected block-scalar 'run: |' form — "
+        "do not inline the session_preload shell command"
     )
-    assert "session_preload.py failed (non-blocking)" in block, (
-        f"Lines {preload_run_idx + 1}-{preload_run_idx + 3}: fallback echo is missing — "
+    assert "if ! python3 .github/scripts/session_preload.py; then" in step_block, (
+        f"Step at line {step_start + 1}: expected guarded 'if ! python3 ...; then' shell form — "
+        "the canonical non-blocking preload structure has changed"
+    )
+    assert 'echo "⚠️ session_preload.py failed (non-blocking)' in step_block, (
+        f"Step at line {step_start + 1}: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
-    assert lines[preload_run_idx + 2].strip() == "}", (
-        f"Line {preload_run_idx + 3}: expected closing '}}' of brace block — "
+    assert "fi" in step_block, (
+        f"Step at line {step_start + 1}: expected closing 'fi' for the preload guard — "
         "block structure has changed"
     )
 

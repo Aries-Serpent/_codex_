@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4741 Validation Pipeline CI rescue — 2026-06-04T00:25Z)
+- Investigated `Validation Pipeline` run `26921317242` and reproduced the failing canonical guard for `.github/workflows/copilot-setup-steps.yml`.
+- Restored the session preload step to the repository's canonical block-scalar form (`run: |` with `if ! ...; then ...; fi`) so YAML parsing and yamllint no longer crash on the workflow file.
+- Updated the architecture regression test to assert the same canonical preload shape enforced by `scripts/ci/validate_setup_steps_yaml.sh`.
+
 ### Fixed (SN — PR #4741 follow-up review — 2026-06-04T00:19Z)
 - Reviewed the current PR #4741 bot findings and current branch checks after the follow-up prompt commit `23bdba9e`.
 - Confirmed no completed workflow runs on the current head reported a failure; the actionable gap was REQ-4/REQ-5 freshness because the latest commit only added `.github/copilot-prompts/active/PR-4741-followup.md`.

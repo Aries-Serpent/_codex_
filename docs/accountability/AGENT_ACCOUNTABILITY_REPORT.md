@@ -1,3 +1,34 @@
+## SESSION SUMMARY — 2026-06-04T00:25Z · PR #4741 Validation Pipeline CI rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed before making changes ✅
+- [x] **0b.** Failing CI checks reviewed from GitHub Actions logs (`Validation Pipeline / Fast Validation`) ✅
+- [x] **0c.** Open `ci-failure` / `ci-health-alert` issues checked (none open) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Investigated CI rescue comment `4617812042` for `Validation Pipeline` run `26921317242` on commit `2c2f280d5597`.
+2. Reproduced the failure locally with `bash scripts/ci/validate_setup_steps_yaml.sh`; root cause was the session preload step in `.github/workflows/copilot-setup-steps.yml` being back in inline `run: python3 ... || { ... }` form, which breaks YAML parsing and crashes yamllint 1.38.0.
+3. Restored the canonical block-scalar preload step (`run: |` + `if ! ...; then ...; fi`) required by `docs/agent/COPILOT_SETUP_STEPS_GUARD.md`.
+4. Updated `tests/architecture/test_layer_boundaries.py` so the architecture tripwire now asserts the same canonical preload structure enforced by the CI guard script.
+5. Re-validated the workflow file and REQ-4/REQ-5 tracking files on the current branch head.
+
+### Validation Evidence
+- `bash scripts/ci/validate_setup_steps_yaml.sh` → ✅ passes all 5 canonical checks
+- `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-setup-steps.yml'))"` → ✅ YAML parse OK
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4741` → ✅ REQ-4 and REQ-5 pass
+
+### Run URLs
+- Rescue comment: https://github.com/Aries-Serpent/_codex_/pull/4741#issuecomment-4617812042
+- Failed workflow run: https://github.com/Aries-Serpent/_codex_/actions/runs/26921317242
+
+### Impact Score
+- Files changed: 4 (`.github/workflows/copilot-setup-steps.yml`, `tests/architecture/test_layer_boundaries.py`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI impact: unblocks `Validation Pipeline / Fast Validation` by restoring the canonical preload step and aligning the local tripwire test with the guarded workflow shape
+
+---
+
 ## SESSION SUMMARY — 2026-06-03T15:58Z · PR #4731 CI rescue (addressing check failures on f1665844)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
