@@ -112,13 +112,13 @@ Use this section as the **single maintainer execution source** for manual entry.
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Current retention setting in master guide |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Current cognitive memory tier in master guide |
 | `COPILOT_AGENT_LAST_SESSION_ID` | `bootstrap-pending` | Placeholder until session workflows write active ID |
-| `COPILOT_AGENT_SESSION_EXPIRES` | `1970-01-01T00:00:00Z` | Safe bootstrap placeholder until delegation workflow sets live expiry |
+| `COPILOT_AGENT_SESSION_EXPIRES` | `1970-01-01T00:00:00Z` | Bootstrap sentinel only; delegation workflow overwrites with live ISO expiry |
 | `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Current Copilot CLI endpoint in master guide |
 | `COPILOT_CLI_ENABLED` | `true` | Current Copilot CLI enablement in master guide |
 | `COPILOT_SESSION_TTL_SECONDS` | `43200` | Delegation workflow default (12h) |
 | `DEPLOY_ENV` | `development` | Repository deployment baseline |
 | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Current CI rebuild behavior in master guide |
-| `WEBHOOK_RECEIVER_URL` | `https://<codespace-name>-8765.app.github.dev/webhook/github` | Canonical auto-set webhook receiver format |
+| `WEBHOOK_RECEIVER_URL` | `https://<codespace-name>-8765.app.github.dev/webhook/github` | Environment-specific format; replace `<codespace-name>` with active Codespace name |
 
 #### B) Copy/Paste block — Repository Variables (Actions)
 
