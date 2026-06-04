@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4738 Coverage Ratchet test fix — 2026-06-04T01:50Z)
+- Fixed failing Coverage Ratchet workflow (run #26924121665) by adding missing `LOGGING_AVAILABLE` flag to `agents/physics_integration.py`
+- Test `tests/agents/test_physics_integration.py::TestModuleLevelFlags::test_logging_available_exists` was asserting existence of `LOGGING_AVAILABLE` module-level flag
+- Added `LOGGING_AVAILABLE = True/False` flag in logging import try-except block (lines 36-42) to match pattern of existing `ADVANCED_PHYSICS_AVAILABLE` and `PHYSICS_ORCHESTRATOR_AVAILABLE` flags
+- Resolved test failure that was blocking coverage gate
+- Responded to self-healing escalation comment #4618254109 for workflow run #26924121665
+
 ### Fixed (SN — PR #4744 merge conflict + validation fix — 2026-06-04T01:20Z)
 - Resolved merge conflicts by merging `copilot/repository-explanation` into `dependabot/uv/uv-654a3705d3` and reconciling `CHANGELOG.md`.
 - Restored Validation Pipeline guard compliance for `.github/workflows/copilot-setup-steps.yml` (canonical session preload block + pinned `actions/setup-node` SHA + `NODE_VERSION: 22`).
