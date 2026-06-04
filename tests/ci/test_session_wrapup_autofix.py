@@ -230,6 +230,54 @@ class TestBuildWecBlock:
 
 
 # ===========================================================================
+# _build_followup_prompt_md
+# ===========================================================================
+
+class TestBuildFollowupPrompt:
+    def test_green_scorecard_reflects_completed_priorities(self):
+        data = {
+            "dimensions": [("example", 1, "✅", True)],
+            "score": 100,
+            "total": 100,
+            "pct": 100.0,
+            "verdict": "🟢 MERGE-READY",
+            "timestamp": "2026-06-04T00:00:00Z",
+        }
+        with (
+            patch.object(swa, "_python_workflow_cache_status", return_value=(156, 156)),
+            patch.object(swa, "_self_healing_workflow_exists", return_value=True),
+            patch.object(swa, "_nodejs20_action_status", return_value=(0, 0)),
+        ):
+            prompt = swa._build_followup_prompt_md(data)
+
+        assert "Current priority status:" in prompt
+        assert "P1 — CI/CD Maturity: already clean (156/156 Python workflows cached)" in prompt
+        assert "P2 — Reliability: .github/workflows/self-healing.yml already present" in prompt
+        assert "P3 — Node.js 20 deadline (2026-06-02): Pattern 21 clean; no tracking issue needed" in prompt
+        assert "P4 — Post-merge: sync_tracked_files --fix on main after merge" in prompt
+
+    def test_green_scorecard_reflects_remaining_priority_work(self):
+        data = {
+            "dimensions": [("example", 1, "✅", True)],
+            "score": 100,
+            "total": 100,
+            "pct": 100.0,
+            "verdict": "🟢 MERGE-READY",
+            "timestamp": "2026-06-04T00:00:00Z",
+        }
+        with (
+            patch.object(swa, "_python_workflow_cache_status", return_value=(12, 15)),
+            patch.object(swa, "_self_healing_workflow_exists", return_value=False),
+            patch.object(swa, "_nodejs20_action_status", return_value=(3, 7)),
+        ):
+            prompt = swa._build_followup_prompt_md(data)
+
+        assert "P1 — CI/CD Maturity: add cache to uncovered Python workflows (12/15 cached)" in prompt
+        assert "P2 — Reliability: create .github/workflows/self-healing.yml stub" in prompt
+        assert "open tracking issue for 3 workflow(s) / 7 refs" in prompt
+
+
+# ===========================================================================
 # fix_pr_body_checkboxes
 # ===========================================================================
 

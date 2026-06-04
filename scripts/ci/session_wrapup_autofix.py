@@ -774,6 +774,118 @@ def _build_scorecard_md(data: dict) -> str:
     return "\n".join(lines)
 
 
+def _python_workflow_cache_status() -> tuple[int, int]:
+    """Return (cached_workflows, total_python_workflows) for AAIS cache coverage."""
+    import re
+
+    py_pat = re.compile(
+        r"pip install"
+        r"|python -m "
+        r"|\.venv[_/]"
+        r"|python scripts/"
+        r"|pytest\s"
+        r"|\bnox\b"
+        r"|\bruff\b"
+        r"|\bmypy\b",
+        re.I,
+    )
+    total = 0
+    cached = 0
+    workflow_dir = REPO_ROOT / ".github" / "workflows"
+    if not workflow_dir.exists():
+        return cached, total
+
+    for workflow in workflow_dir.glob("*.yml"):
+        content = workflow.read_text(errors="ignore")
+        if not py_pat.search(content):
+            continue
+        total += 1
+        has_cache = (
+            "generate_cache_keys.py" in content
+            or "actions/cache" in content
+            or "cache: 'pip'" in content
+            or 'cache: "pip"' in content
+            or "cache: pip" in content
+            or "setup-python-cached" in content
+            or "# No pip cache" in content
+            or "# aais-cache: none" in content
+            or "# cache: npm" in content
+            or "# aais-cache: docker" in content
+        )
+        if has_cache:
+            cached += 1
+    return cached, total
+
+
+def _nodejs20_action_status() -> tuple[int, int]:
+    """Return (affected_workflows, total_node20_refs) for Pattern 21 follow-up text."""
+    import re
+
+    workflow_dir = REPO_ROOT / ".github" / "workflows"
+    if not workflow_dir.exists():
+        return 0, 0
+
+    patterns = (
+        re.compile(
+            r"uses:\s*(actions/(?:checkout|upload-artifact|download-artifact|"
+            r"cache|setup-node|configure-pages|deploy-pages))@(v[1-4](?:\.[\d]+)*)\b",
+            re.IGNORECASE,
+        ),
+        re.compile(
+            r"uses:\s*(actions/setup-python)@(v[1-5](?:\.[\d]+)*)\b",
+            re.IGNORECASE,
+        ),
+        re.compile(
+            r"uses:\s*(actions/github-script)@(v[1-7](?:\.[\d]+)*)\b",
+            re.IGNORECASE,
+        ),
+    )
+
+    affected_workflows = 0
+    total_refs = 0
+    for workflow in workflow_dir.glob("*.yml"):
+        content = workflow.read_text(encoding="utf-8", errors="replace")
+        refs = {f"{action}@{version}" for pattern in patterns for action, version in pattern.findall(content)}
+        if refs:
+            affected_workflows += 1
+            total_refs += len(refs)
+    return affected_workflows, total_refs
+
+
+def _self_healing_workflow_exists() -> bool:
+    """Return whether the manual self-healing marker workflow is present."""
+    return (REPO_ROOT / ".github" / "workflows" / "self-healing.yml").exists()
+
+
+def _build_followup_priority_lines() -> list[str]:
+    """Build follow-up priority lines from the current repository state."""
+    cached, total_python = _python_workflow_cache_status()
+    if total_python and cached == total_python:
+        p1 = f"  P1 — CI/CD Maturity: already clean ({cached}/{total_python} Python workflows cached)"
+    else:
+        p1 = (
+            "  P1 — CI/CD Maturity: add cache to uncovered Python workflows"
+            f" ({cached}/{total_python} cached)"
+        )
+
+    if _self_healing_workflow_exists():
+        p2 = "  P2 — Reliability: .github/workflows/self-healing.yml already present"
+    else:
+        p2 = "  P2 — Reliability: create .github/workflows/self-healing.yml stub"
+
+    affected_workflows, total_refs = _nodejs20_action_status()
+    if affected_workflows == 0:
+        p3 = "  P3 — Node.js 20 deadline (2026-06-02): Pattern 21 clean; no tracking issue needed"
+    else:
+        p3 = (
+            "  P3 — Node.js 20 deadline (2026-06-02): run --pattern 21, "
+            f"open tracking issue for {affected_workflows} workflow(s) / {total_refs} refs"
+        )
+
+    p4 = "  P4 — Post-merge: sync_tracked_files --fix on main after merge"
+    return [p1, p2, p3, p4]
+
+
 def _build_followup_prompt_md(data: dict) -> str:
     """Render the follow-up prompt section, highlighting failing dimensions."""
     failing = [d[0] for d in data["dimensions"] if not d[3]]
@@ -784,12 +896,8 @@ def _build_followup_prompt_md(data: dict) -> str:
             "@copilot CTEP Mode: ON",
             "",
             "All 10 merge-readiness dimensions are green (100/100).",
-            "Next session priorities:",
-            "  P1 — CI/CD Maturity: add cache to uncovered Python workflows",
-            "       (target: aais_v4_scorer CI/CD Maturity ≥ 85)",
-            "  P2 — Reliability: create .github/workflows/self-healing.yml stub",
-            "  P3 — Node.js 20 deadline (2026-06-02): run --pattern 21, open tracking issue",
-            "  P4 — Post-merge: sync_tracked_files --fix on main after merge",
+            "Current priority status:",
+            *_build_followup_priority_lines(),
             "```",
         ]
     else:
