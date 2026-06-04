@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (SN — PR #4738 LOGGING_AVAILABLE export fix — 2026-06-04T02:28Z)
+### Fixed (SN — Codespaces prebuild APT state fix — 2026-06-04T05:06Z)
+- Fixed GitHub Codespaces prebuild error 1309 (`UnifiedContainersErrorPrebuilTemplateOnCreateFailed`) caused by a missing/corrupted APT lists directory (`E: List directory /var/lib/apt/lists/partial is missing.`) during the `onCreateCommand` phase.
+- Rewrote the APT section of `.devcontainer/scripts/on-create.sh`:
+  - Added idempotent `apt_repair_state()` that recreates `/var/lib/apt/lists/partial`, fixes permissions (`chmod 0755`), and runs `apt-get clean` (root and non-root safe).
+  - Added `apt_update_with_retry()` (max 2 attempts) that repairs state and retries `apt-get update`, failing explicitly instead of silently masking errors.
+  - Moved aggressive `rm -rf /var/lib/apt/lists/*` cleanup to run only after a successful package install.
+  - Gated behaviour on new `CODESPACES_APT_UPDATE_RETRY` / `CODESPACES_APT_CLEANUP_AGGRESSIVE` repo variables (defaults preserve prior behaviour).
+
+### Added (SN — Codespaces container setup variables — 2026-06-04T05:06Z)
+- Documented 10 Codespaces container-setup repository variables in `.codex/CRITICAL_REPOSITORY_VARIABLES.md` (§11), `.codex/runtime_variables.md`, and `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` (§5a).
+- Added `.codex/CODESPACES_VARIABLES_BOOTSTRAP.sh` to provision those variables via the `gh` CLI (supports `DRY_RUN`).
+- Added reference comments and `CODESPACES_APT_*` / `CODEX_SQLITE_POOL` entries to `.devcontainer/devcontainer.json` `containerEnv`.
+
+
 - Re-added `LOGGING_AVAILABLE` module-level flag to `agents/physics_integration.py` (lines 39, 42)
 - Added `LOGGING_AVAILABLE` to `__all__` exports (line 328) to indicate it's intentionally public API
 - Previous commit `eef7812` incorrectly removed the flag in response to CodeQL "unused variable" alert

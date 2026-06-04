@@ -1,4 +1,34 @@
-## SESSION SUMMARY — 2026-06-04T02:28Z · PR #4738 LOGGING_AVAILABLE Export Fix
+## SESSION SUMMARY — 2026-06-04T05:06Z · Codespaces Prebuild APT State Fix (error 1309)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Fetched and followed `.codex/AGENT_PROMPT_CODESPACES_APT_FIX.md` (CTEP mode) ✅
+- [x] **0b.** Investigated failing on-create.sh APT logic before changes ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. **Phase 1 — Script fix**: Rewrote the APT section of `.devcontainer/scripts/on-create.sh`:
+   - Added idempotent `apt_repair_state()` (recreates `/var/lib/apt/lists/partial`, `chmod 0755`, `apt-get clean`) — works in root and non-root containers via `$SUDO`.
+   - Added `apt_update_with_retry()` (max 2 attempts; repairs state between attempts; fails explicitly so genuine errors surface).
+   - Moved aggressive `rm -rf /var/lib/apt/lists/*` cleanup to run ONLY after a successful install.
+   - Gated behaviour on `CODESPACES_APT_UPDATE_RETRY` / `CODESPACES_APT_CLEANUP_AGGRESSIVE`.
+2. **Phase 2 — Documentation**: Added "Codespaces Container Setup" (§11) to `.codex/CRITICAL_REPOSITORY_VARIABLES.md`, "Codespaces-Specific Configuration" to `.codex/runtime_variables.md`, and "Codespaces Prebuild" (§5a) to `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`.
+3. **Phase 3 — Bootstrap**: Added `.codex/CODESPACES_VARIABLES_BOOTSTRAP.sh` (gh CLI, `DRY_RUN` supported) to provision the 10 documented repo variables.
+4. **Phase 4 — Devcontainer**: Added reference comments + `CODESPACES_APT_*` / `CODEX_SQLITE_POOL` entries to `containerEnv` in `.devcontainer/devcontainer.json`.
+
+### Validation Evidence
+- `bash -n` + `shellcheck`: clean on `on-create.sh` and `CODESPACES_VARIABLES_BOOTSTRAP.sh`.
+- `devcontainer.json`: validated as JSONC (string-aware comment strip → `JSON.parse` OK).
+- Bootstrap `DRY_RUN=1` run prints all 10 `gh variable set` commands with documented defaults.
+
+### Impact Score
+- Files changed: 6 (`on-create.sh`, `devcontainer.json`, 3 docs, new bootstrap script) + this report + `CHANGELOG.md`.
+- Root cause resolved: APT `lists/partial` missing → prebuild error 1309 on `onCreateCommand`.
+- Backward compatible: existing package list preserved; new logic defaults to prior cleanup behaviour.
+
+---
+
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** User comments #4424117676, #4424156627, #4618425991 reviewed before making changes ✅
