@@ -1090,7 +1090,7 @@ sqltrie==0.11.2
     # via dvc-data
 stack-data==0.6.3
     # via ipython
-starlette==1.0.1
+starlette==0.50.0
     # via
     #   codex-ml (pyproject.toml)
     #   fastapi

@@ -95,9 +95,9 @@ When architecture/process state changes:
 
 ---
 
-## 7) “/chronicle tips” Personalized Operating Tips
+## 7) “/chronicle tips” Recommended Operating Tips
 
-Based on your observed usage patterns:
+Recommended operating guidance for contributors:
 1. Keep explicit phased plans with visible checkpoints.
 2. Keep tracked work outputs inside repository paths (not temporary scratch paths).
 3. Start sessions from Cognitive Map + Dashboard + Mermaid Maps before edits.
