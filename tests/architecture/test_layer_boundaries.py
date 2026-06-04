@@ -123,6 +123,7 @@ def test_domain_ownership_doc_exists() -> None:
 # ---------------------------------------------------------------------------
 
 _SETUP_STEPS = ROOT / ".github" / "workflows" / "copilot-setup-steps.yml"
+_SESSION_PRELOAD_STEP = "Session Context Pre-load (memory + policy + accountability + PDA)"
 
 
 def test_copilot_setup_steps_exists() -> None:
@@ -145,7 +146,7 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
     # Locate the session_preload step by searching for the distinctive step name.
     step_start: int | None = None
     for i, line in enumerate(lines):
-        if 'Session Context Pre-load (memory + policy + accountability + PDA)' in line:
+        if _SESSION_PRELOAD_STEP in line:
             step_start = i
             break
 
@@ -158,7 +159,7 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
         (
             i
             for i in range(step_start + 1, len(lines))
-            if lines[i].startswith("      - name:")
+            if lines[i].lstrip().startswith("- name:")
         ),
         len(lines),
     )
