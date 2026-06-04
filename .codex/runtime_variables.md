@@ -418,7 +418,7 @@ To enable full API access:
 
 3. **Add to CI/CD secrets:**
    - Go to repository Settings → Secrets and variables → Actions
-   - Add secret: `GITHUB_TOKEN` or `CODEX_MASTER_KEY`
+   - Add secret: `GITHUB_TOKEN` or `CODEX_MASTER_KEY` <!-- pragma: allowlist secret -->
    - Reference in workflows: `${{ secrets.GITHUB_TOKEN }}`
 
 ### Verification Commands
