@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4740 Validation Pipeline rescue — 2026-06-04T00:15Z)
+- Investigated Validation Pipeline run `26920825702` for commit `35471de3e2e2a87f51a2bf71b95fc0a9b1d6efe1` and confirmed `.github/workflows/copilot-setup-steps.yml` had regressed to the non-canonical `run: python3 ... || { ... }` preload form.
+- Restored the session preload step to the canonical `run: |` / `if ! ...; then ...; fi` form and revalidated it with `bash scripts/ci/validate_setup_steps_yaml.sh`.
+
 ### Fixed (auto-update — PR #4740)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4740 (SHA `13177726`) at 2026-06-03T23:59Z [auto-generated]
 
