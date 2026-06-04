@@ -1,3 +1,12 @@
+## SESSION SUMMARY — 2026-06-04T17:54:46Z · PR #4750 cherry-pick + docs update
+
+### Summary
+- Cherry-picked all 6 commits from PR #4750 (starlette 0.50.0→1.0.1, copilot-setup-steps.yml fix, test_layer_boundaries.py alignment)
+- Updated docs/Copy_of_Repository Secrets and Variables Inventory.md:
+  - Moved all ToDos to top of document
+  - Updated MISSING variables status to ✅ IMPLEMENTED
+  - Provided concrete initial JSON values for all placeholder-JSON variables
+  - Updated Maintainer Execution Checklist to reflect completed phases
 ## SESSION SUMMARY — 2026-06-04T17:30Z · PR #4750 validation follow-up + architecture guard alignment
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
