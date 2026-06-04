@@ -8,7 +8,7 @@
 
 ## 1) First-pass carry-over (from existing inventory)
 
-From `/tmp/workspace/Aries-Serpent/_codex_/docs/Copy_of_Repository Secrets and Variables Inventory.md`:
+From `docs/Copy_of_Repository Secrets and Variables Inventory.md`:
 
 - API verification is still blocked in-session (`403 Resource not accessible by integration`), so live read/write confirmation is still human-maintainer gated.
 - The first-pass inventory already flagged 4 repository variables as missing for `copilot-setup-steps.yml`:
@@ -25,7 +25,7 @@ Second pass focused only on variable visibility drift between workflow usage and
 
 ### 2.1 Validation method
 
-- Enumerated `${{ vars.* }}` references in active workflows under `/tmp/workspace/Aries-Serpent/_codex_/.github/workflows/`.
+- Enumerated `${{ vars.* }}` references in active workflows under `.github/workflows/`.
 - Compared those references against first-pass inventory documentation coverage.
 - Cross-checked visibility surfaces already documented in repo docs:
   - Repo Actions Variables (`/settings/variables/actions`)
@@ -114,6 +114,6 @@ This section is the handoff foundation for pass 3 (secrets).
 
 For documentation parity after this pass:
 
-- Update `/tmp/workspace/Aries-Serpent/_codex_/docs/Copy_of_Repository Secrets and Variables Inventory.md` with the 19 second-pass visibility entries.
-- Refresh `/tmp/workspace/Aries-Serpent/_codex_/docs/admin/variable_audit_latest.md` after a token-enabled audit run.
+- Update `docs/Copy_of_Repository Secrets and Variables Inventory.md` with the 19 second-pass visibility entries.
+- Refresh `docs/admin/variable_audit_latest.md` after a token-enabled audit run.
 - Re-run pass 3 and append validated secret status using the workflow links in section 4.
