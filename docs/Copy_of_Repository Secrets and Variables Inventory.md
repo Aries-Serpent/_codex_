@@ -92,6 +92,132 @@ The following variables are **referenced in copilot-setup-steps.yml but NOT pres
 8. Organization **Actions Variables**: https://github.com/organizations/Aries-Serpent/settings/variables/actions
 9. Organization **Actions Secrets**: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
 
+### 0.5) ✅ Single-Source Copy/Paste Packs (Variables + Secrets)
+
+Use this section as the **single maintainer execution source** for manual entry.
+
+#### A) Pass-2 Missing Variables — validated expected values (ready to enter)
+
+| Variable | Expected Value (ready for entry) | Why this value |
+|---|---|---|
+| `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Matches current runtime sync context and handoff baseline |
+| `AUTONOMOUS_ACTIONS_ENABLED` | `true` | Current governance state in master guide |
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | Current CI promotion setting in master guide |
+| `CODEX_BACKUP_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date |
+| `CODEX_CLI_API_URL` | `http://localhost:8765` | Current CLI API endpoint in master guide |
+| `CODEX_GROUNDED_TIER1_COUNT` | `0` | Safe counter initialization for grounded telemetry |
+| `CODEX_GROUNDED_TIER2_COUNT` | `0` | Safe counter initialization for grounded telemetry |
+| `CODEX_LAST_TELEMETRY_DATE` | `2026-06-04` | ISO date seed for telemetry freshness tracking |
+| `CODEX_MASTER_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date |
+| `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Current retention setting in master guide |
+| `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Current cognitive memory tier in master guide |
+| `COPILOT_AGENT_LAST_SESSION_ID` | `bootstrap-pending` | Placeholder until session workflows write active ID |
+| `COPILOT_AGENT_SESSION_EXPIRES` | `1970-01-01T00:00:00Z` | Safe bootstrap placeholder until delegation workflow sets live expiry |
+| `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Current Copilot CLI endpoint in master guide |
+| `COPILOT_CLI_ENABLED` | `true` | Current Copilot CLI enablement in master guide |
+| `COPILOT_SESSION_TTL_SECONDS` | `43200` | Delegation workflow default (12h) |
+| `DEPLOY_ENV` | `development` | Repository deployment baseline |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Current CI rebuild behavior in master guide |
+| `WEBHOOK_RECEIVER_URL` | `https://<codespace-name>-8765.app.github.dev/webhook/github` | Canonical auto-set webhook receiver format |
+
+#### B) Copy/Paste block — Repository Variables (Actions)
+
+Paste these into: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
+
+```bash
+CODEX_MAX_HEALER_RUNS_PER_HOUR=3
+CODEX_SWEEP_SKIP_MAIN=true
+CODEX_HEALER_SKIP_SKIPCI=true
+COPILOT_AGENT_STATE=idle
+AGENT_HANDOFF_TIMEOUT_SECONDS=120
+AUTONOMOUS_ACTIONS_ENABLED=true
+AUTO_PROMOTE_TIER_ENABLED=true
+CODEX_BACKUP_KEY_EXPIRY_DATE=2026-08-06
+CODEX_CLI_API_URL=http://localhost:8765
+CODEX_GROUNDED_TIER1_COUNT=0
+CODEX_GROUNDED_TIER2_COUNT=0
+CODEX_LAST_TELEMETRY_DATE=2026-06-04
+CODEX_MASTER_KEY_EXPIRY_DATE=2026-08-06
+COGNITIVE_BRAIN_LTM_RETENTION_DAYS=90
+COGNITIVE_BRAIN_MEMORY_TIER=both
+COPILOT_AGENT_LAST_SESSION_ID=bootstrap-pending
+COPILOT_AGENT_SESSION_EXPIRES=1970-01-01T00:00:00Z
+COPILOT_CLI_BASE_URL=http://localhost:8765
+COPILOT_CLI_ENABLED=true
+COPILOT_SESSION_TTL_SECONDS=43200
+DEPLOY_ENV=development
+EMBEDDING_INDEX_AUTO_REBUILD=true
+WEBHOOK_RECEIVER_URL=https://<codespace-name>-8765.app.github.dev/webhook/github
+```
+
+#### C) Copy/Paste block — Repository Secrets (Actions)
+
+Paste names/values into: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
+
+```bash
+OPENAI_API_KEY=<paste-secret>
+CODEX_WEBHOOK_SECRET=<paste-secret>
+_CODEX_BOT_RUNNER=<paste-secret>
+CODEX_REPO_ID=928754154
+CODEX_GHP_TOKEN_BASE64=<paste-secret>
+CODEX_GHP_TOKEN_HEX=<paste-secret>
+CODEX_GHP_TOKEN_SHA256=<paste-secret>
+```
+
+#### D) Copy/Paste block — Environment Secrets (`Aries_Serpent_codex_`)
+
+Paste into: https://github.com/Aries-Serpent/_codex_/settings/environments/Aries_Serpent_codex_
+
+```bash
+CODEX_ENVIRONMENT_RUNNER=<paste-secret>
+CODEX_RUNNER_SHA256=<paste-secret>
+CODEX_RUNNER_TOKEN=<paste-secret>
+```
+
+#### E) Copy/Paste block — Organization Secrets
+
+Paste into: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
+(then grant access to `Aries-Serpent/_codex_`)
+
+```bash
+CODEX_MASTER_KEY=<paste-secret>
+CODEX_BACKUP_KEY=<paste-secret>
+CODEX_ADMIN_KEY=<paste-secret>
+_GITHUB_APP_PRIVATE_KEY=<paste-secret>
+_GITHUB_APP_ID=<paste-secret>
+_GITHUB_APP_INSTALLATION_ID=<paste-secret>
+_GITHUB_APP_CLIENT_SECRET=<paste-secret>
+RAG_OPENAI_KEY=<paste-secret>
+HF_TOKEN=<paste-secret>
+NPM_TOKEN=<paste-secret>
+PYPI_TOKEN=<paste-secret>
+CODECOV_TOKEN=<paste-secret>
+_CODEX_ACTION_RUNNER=<paste-secret>
+```
+
+#### F) Copy/Paste block — Agents Variables + Secrets
+
+- Agents Variables: https://github.com/Aries-Serpent/_codex_/settings/variables/agents
+- Agents Secrets: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
+
+```bash
+# Agents Variables (minimum must-have mirror set)
+COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D
+COPILOT_AGENT_AUTH_ENABLED=true
+COPILOT_AGENT_SESSION_RESTORE_ENABLED=true
+COPILOT_AGENT_FIREWALL_ENABLED=true
+COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS=<copy-from-repo-variable>
+COPILOT_AGENT_PREFLIGHT_RULES=<copy-json-from-repo-variable>
+COPILOT_WEC_SELECTION_MATRIX=<copy-json-from-repo-variable>
+
+# Agents Secrets (minimum)
+CODEX_MASTER_KEY=<link-org-secret>
+CODEX_BACKUP_KEY=<link-org-secret>
+OPENAI_API_KEY=<link-repo-secret>
+```
+
+---
+
 ### 1) Repository Variables (`/settings/variables/actions`)
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
