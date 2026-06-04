@@ -272,6 +272,65 @@ stateDiagram-v2
 
 ---
 
+## 5a. New Variables — Codespaces Prebuild
+
+These variables ensure GitHub Codespaces prebuilds succeed and give Copilot
+agents a consistent runtime environment. They resolve prebuild error **1309
+(UnifiedContainersErrorPrebuilTemplateOnCreateFailed)**, triggered when the APT
+list directory is missing/corrupted during `onCreateCommand`
+(`E: List directory /var/lib/apt/lists/partial is missing.`).
+
+### Variable Definitions
+
+| Variable | Recommended Value | Type | MUST/SHOULD/MAY |
+|---|---|---|---|
+| `CODESPACES_APT_UPDATE_RETRY` | `true` | Boolean string | SHOULD |
+| `CODESPACES_APT_CLEANUP_AGGRESSIVE` | `true` | Boolean string | MAY |
+| `CODEX_DEVCONTAINER_WORKSPACE` | `/workspaces/_codex_` | Path string | SHOULD |
+| `CODEX_DEVCONTAINER_PYTHON_VERSION` | `3.12` | Version string | MUST |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | `20` | Version string | SHOULD |
+| `CODEX_DEVCONTAINER_RUST_VERSION` | `stable` | Version string | MAY |
+| `CODEX_SESSION_LOG_DIR` | `/workspaces/_codex_/.codex/sessions` | Path string | MUST |
+| `CODEX_DB_PATH` | `/workspaces/_codex_/.codex/codex.db` | Path string | MUST |
+| `CODEX_SQLITE_POOL` | `1` | Integer string | SHOULD |
+| `CODEX_CLI_API_URL` | `http://localhost:8765` | URL string | MUST |
+
+### Setup Instructions
+
+**Via GitHub UI** (Settings → Secrets and variables → Actions → Variables):
+
+1. [ ] `CODESPACES_APT_UPDATE_RETRY` = `true`
+2. [ ] `CODESPACES_APT_CLEANUP_AGGRESSIVE` = `true`
+3. [ ] `CODEX_DEVCONTAINER_WORKSPACE` = `/workspaces/_codex_`
+4. [ ] `CODEX_DEVCONTAINER_PYTHON_VERSION` = `3.12`
+5. [ ] `CODEX_DEVCONTAINER_NODE_VERSION` = `20`
+6. [ ] `CODEX_DEVCONTAINER_RUST_VERSION` = `stable`
+7. [ ] `CODEX_SESSION_LOG_DIR` = `/workspaces/_codex_/.codex/sessions`
+8. [ ] `CODEX_DB_PATH` = `/workspaces/_codex_/.codex/codex.db`
+9. [ ] `CODEX_SQLITE_POOL` = `1`
+10. [ ] `CODEX_CLI_API_URL` = `http://localhost:8765`
+
+**Via `gh` CLI** (requires an authenticated token with `repo` scope):
+
+```bash
+bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh
+```
+
+### Wiring Diagram
+
+```mermaid
+flowchart TD
+    RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --> ONCREATE["on-create.sh\napt_update_with_retry()"]
+    CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --> ONCREATE
+    ONCREATE --> |repairs| APT["/var/lib/apt/lists/partial\n(recreated, chmod 0755)"]
+    APT --> |update succeeds| INSTALL["apt-get install build-essential …"]
+    INSTALL --> |cleanup only on success| PRUNE["rm -rf /var/lib/apt/lists/*"]
+    DBPATH["CODEX_DB_PATH / CODEX_SESSION_LOG_DIR"] --> DEVJSON["devcontainer.json containerEnv"]
+    POOL["CODEX_SQLITE_POOL = 1"] --> DEVJSON
+```
+
+---
+
 ## 6. Session Number Auto-Increment
 
 `COGNITIVE_BRAIN_SESSION_NUMBER` must be incremented by a workflow step, not set manually,

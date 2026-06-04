@@ -134,6 +134,40 @@ AUTO_PROMOTE_TIER_ENABLED: "true"              # Auto-promote on success
 
 ---
 
+## 11. Codespaces Container Setup
+
+These variables control the devcontainer lifecycle and ensure Copilot agents in
+Codespaces have consistent runtime configuration across prebuilds and rebuilds.
+They were introduced to resolve prebuild error **1309
+(UnifiedContainersErrorPrebuilTemplateOnCreateFailed)**, caused by APT list
+directory corruption (`/var/lib/apt/lists/partial is missing`) during the
+`onCreateCommand` phase.
+
+| Variable | MUST/SHOULD/MAY | Default | Purpose |
+|----------|-----------------|---------|---------|
+| `CODESPACES_APT_UPDATE_RETRY` | SHOULD | `true` | Enable retry logic when `apt-get update` fails during prebuild |
+| `CODESPACES_APT_CLEANUP_AGGRESSIVE` | MAY | `true` | Aggressively clean APT lists after install (safe for transient containers) |
+| `CODEX_DEVCONTAINER_WORKSPACE` | SHOULD | `/workspaces/_codex_` | Canonical workspace path (mirrors `CODESPACE_VSCODE_FOLDER`) |
+| `CODEX_DEVCONTAINER_PYTHON_VERSION` | MUST | `3.12` | Python version (MUST match `pyproject.toml` requires-python) |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | SHOULD | `20` | Node.js version for `cognitive_app` builds |
+| `CODEX_DEVCONTAINER_RUST_VERSION` | MAY | `stable` | Rust toolchain version for container features |
+| `CODEX_SESSION_LOG_DIR` | MUST | `/workspaces/_codex_/.codex/sessions` | Session log directory (in-container, not repo root) |
+| `CODEX_DB_PATH` | MUST | `/workspaces/_codex_/.codex/codex.db` | SQLite database path for Copilot agent context (in-container) |
+| `CODEX_SQLITE_POOL` | SHOULD | `1` | Enable SQLite connection pooling (prevents lock contention in concurrent sessions) |
+| `CODEX_CLI_API_URL` | MUST | `http://localhost:8765` | Cognitive Brain CLI API endpoint (used by `copilot-setup-steps.yml`) |
+
+**Consumed by**:
+1. `.devcontainer/scripts/on-create.sh` — APT state repair + retry logic (`CODESPACES_APT_*`)
+2. `.devcontainer/scripts/update-content.sh` — Python/pip setup
+3. `.devcontainer/scripts/post-create.sh` — agent context injection
+4. `.devcontainer/devcontainer.json` — `containerEnv` defaults
+5. `.github/workflows/copilot-setup-steps.yml` — corresponding CI environment setup
+
+**Bootstrap**: run `bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh` (requires an
+authenticated `gh` CLI) to create all 10 variables with their documented defaults.
+
+---
+
 ## Variable Implementation Plan
 
 ### Phase 1: Immediate Setup (This Week)
