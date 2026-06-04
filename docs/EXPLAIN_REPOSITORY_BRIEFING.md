@@ -95,7 +95,7 @@ When architecture/process state changes:
 
 ---
 
-## 7) “/chronicle tips” Recommended Operating Tips
+## 7) Recommended Operating Tips for Contributors
 
 Recommended operating guidance for contributors:
 1. Keep explicit phased plans with visible checkpoints.
