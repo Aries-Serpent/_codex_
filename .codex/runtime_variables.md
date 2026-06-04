@@ -218,6 +218,45 @@ export HF_HOME="$HOME/.cache/huggingface"
 export TORCH_HOME="$HOME/.cache/torch"
 ```
 
+### Codespaces-Specific Configuration
+
+When running in GitHub Codespaces, the following variables control container
+setup. They are documented in full in
+`.codex/CRITICAL_REPOSITORY_VARIABLES.md` § "Codespaces Container Setup" and can
+be provisioned with `bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh`.
+
+**Container lifecycle** (set at prebuild time, consumed by `on-create.sh`):
+
+- `CODESPACES_APT_UPDATE_RETRY` — if `true`, `.devcontainer/scripts/on-create.sh`
+  repairs APT state and retries `apt-get update` on failure (default: `true`).
+- `CODESPACES_APT_CLEANUP_AGGRESSIVE` — if `true`, remove the APT cache after a
+  successful package install (default: `true`).
+
+**Workspace & paths** (must reflect in-container mounts):
+
+- `CODEX_DEVCONTAINER_WORKSPACE` — canonical workspace path; defaults to
+  `/workspaces/_codex_`.
+- `CODEX_SESSION_LOG_DIR` — session log directory; defaults to `.codex/sessions`
+  relative to the workspace.
+- `CODEX_DB_PATH` — SQLite database path; defaults to `.codex/codex.db` relative
+  to the workspace.
+
+**Runtime & versions** (must match system setup):
+
+- `CODEX_DEVCONTAINER_PYTHON_VERSION` — Python version; MUST match `pyproject.toml`.
+- `CODEX_DEVCONTAINER_NODE_VERSION` — Node.js version for `cognitive_app` builds.
+- `CODEX_DEVCONTAINER_RUST_VERSION` — Rust toolchain version.
+
+**Database & concurrency**:
+
+- `CODEX_SQLITE_POOL` — set to `1` to enable connection pooling (recommended for
+  Codespaces where multiple sessions may connect).
+
+**API networking**:
+
+- `CODEX_CLI_API_URL` — Cognitive Brain CLI API endpoint; defaults to
+  `http://localhost:8765`.
+
 ---
 
 ## Variable Naming Conventions

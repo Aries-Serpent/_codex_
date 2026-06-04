@@ -94,6 +94,12 @@
   // ── Container environment (static, secret-free) ───────────────────────────
   // These mirror the "Set Codex Environment Variables" step in copilot-setup-steps.yml.
   // Secrets are injected at runtime via the "secrets" block below — never here.
+  //
+  // REFERENCE: The CODESPACES_* / CODEX_* values below correspond to repository
+  // variables documented in .codex/CRITICAL_REPOSITORY_VARIABLES.md
+  // § "Codespaces Container Setup".  devcontainer.json does NOT support
+  // ${{ vars.* }} interpolation, so the defaults are hardcoded here and kept in
+  // sync with the variable inventory + .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh.
   "containerEnv": {
     // Python
     "PYTHONUNBUFFERED": "1",
@@ -107,6 +113,11 @@
     "CODEX_LOG_LEVEL": "INFO",
     "CODEX_DB_PATH": "/workspaces/_codex_/.codex/codex.db",
     "CODEX_SESSION_LOG_DIR": "/workspaces/_codex_/.codex/sessions",
+    "CODEX_SQLITE_POOL": "1",
+
+    // Codespaces APT prebuild controls (consumed by on-create.sh)
+    "CODESPACES_APT_UPDATE_RETRY": "true",
+    "CODESPACES_APT_CLEANUP_AGGRESSIVE": "true",
 
     // CLI API server URL — matches the hard-coded value in copilot-setup-steps.yml
     "CODEX_CLI_API_URL": "http://localhost:8765",
