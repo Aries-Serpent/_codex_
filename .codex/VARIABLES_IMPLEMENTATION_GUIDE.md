@@ -13,6 +13,42 @@ This document prepares the implementation of **9 CRITICAL + HIGH PRIORITY reposi
 
 ---
 
+## 🚩 TODOs (moved to top)
+
+### Prerequisite Checklist
+
+- [ ] **GitHub Organization Access**: Ability to set repository variables
+- [ ] **Scripts in Place**:
+  - [ ] `scripts/ci/validate_repo_variables.py` ✓ Created
+  - [ ] `scripts/ci/session_context_enrichment.py` ✓ Ready
+  - [ ] `scripts/ci/optimize_ci_cache.py` ✓ Ready
+- [ ] **Documentation in Place**:
+  - [ ] `.codex/CRITICAL_REPOSITORY_VARIABLES.md` ✓ Created
+  - [ ] `.codex/PHASE_1_ROADMAP_TRACKING.md` ✓ Created
+- [ ] **Workflows Ready**:
+  - [ ] `.github/workflows/repo-var-sync-schedule.yml` ✓ Existing
+  - [ ] `.github/actions/setup-python-cached` ✓ Existing
+  - [ ] `session-context-capture.yml` ✓ Created
+
+### Session Continuation Checklist
+
+1. **Immediate** (Today):
+   - [ ] Set all 9 variables in GitHub Actions UI
+   - [ ] Trigger `repo-var-sync-schedule.yml` manually
+   - [ ] Verify `.codex/agent_context.json` updated
+
+2. **This Week**:
+   - [ ] Update 3 test workflows to use variables
+   - [ ] Run full test suite with new variables
+   - [ ] Verify cache hit rate improvement
+
+3. **Next Week**:
+   - [ ] Roll out to 50+ workflows
+   - [ ] Begin Node.js 20 → 22 migration
+   - [ ] Track metrics in Phase 1 roadmap
+
+---
+
 ## 🎯 Phase 1 Variable Implementation Roadmap
 
 ### Step 1: Create Variables in GitHub (Immediate)
@@ -85,18 +121,7 @@ This document prepares the implementation of **9 CRITICAL + HIGH PRIORITY reposi
 
 ## 📋 Prerequisite Checklist
 
-- [ ] **GitHub Organization Access**: Ability to set repository variables
-- [ ] **Scripts in Place**:
-  - [ ] `scripts/ci/validate_repo_variables.py` ✓ Created
-  - [ ] `scripts/ci/session_context_enrichment.py` ✓ Ready
-  - [ ] `scripts/ci/optimize_ci_cache.py` ✓ Ready
-- [ ] **Documentation in Place**:
-  - [ ] `.codex/CRITICAL_REPOSITORY_VARIABLES.md` ✓ Created
-  - [ ] `.codex/PHASE_1_ROADMAP_TRACKING.md` ✓ Created
-- [ ] **Workflows Ready**:
-  - [ ] `.github/workflows/repo-var-sync-schedule.yml` ✓ Existing
-  - [ ] `.github/actions/setup-python-cached` ✓ Existing
-  - [ ] `session-context-capture.yml` ✓ Created
+Moved to [🚩 TODOs (moved to top)](#-todos-moved-to-top).
 
 ---
 
@@ -241,20 +266,7 @@ grep -r "python-version: '3\." .github/workflows/*.yml | wc -l
 
 ## Next Steps for Session Continuation
 
-1. **Immediate** (Today):
-   - [ ] Set all 9 variables in GitHub Actions UI
-   - [ ] Trigger `repo-var-sync-schedule.yml` manually
-   - [ ] Verify `.codex/agent_context.json` updated
-
-2. **This Week**:
-   - [ ] Update 3 test workflows to use variables
-   - [ ] Run full test suite with new variables
-   - [ ] Verify cache hit rate improvement
-
-3. **Next Week**:
-   - [ ] Roll out to 50+ workflows
-   - [ ] Begin Node.js 20 → 22 migration
-   - [ ] Track metrics in Phase 1 roadmap
+Moved to [🚩 TODOs (moved to top)](#-todos-moved-to-top).
 
 ---
 
