@@ -22,6 +22,7 @@ from enum import Enum
 from typing import Any
 
 from config.openai_client import CodexOpenAIClient, ExecutionResult
+from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -189,6 +190,20 @@ class AgentOrchestrator:
 
         async with self._lock:
             agent.status = AgentStatus.BUSY
+
+        try:
+            # Gap 27: mandatory pre-dispatch moderation (fail-closed)
+            _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
+            _mod.enforce(prompt, stage="input")
+        except ModerationRejection:
+            logger.warning("Moderation rejected orchestrator task prompt for agent %s", agent.id)
+            async with self._lock:
+                agent.status = AgentStatus.IDLE
+            return ExecutionResult(
+                success=False,
+                model="",
+                error="Request rejected by content policy.",
+            )
 
         try:
             # Apply rate limiting

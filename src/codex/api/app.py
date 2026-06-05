@@ -31,6 +31,7 @@ from fastapi import FastAPI, HTTPException  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
 import torch  # noqa: E402
+from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings  # noqa: E402
 from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
@@ -214,12 +215,20 @@ def root() -> dict:
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(req: PredictRequest) -> PredictResponse:
-    """Tokenize input, enforce denylist, and generate a response."""
+    """Tokenize input, enforce denylist and moderation, then generate a response."""
 
     try:
         _denylist().ensure_allowed(req.prompt)
     except DenylistViolation as exc:  # pragma: no cover - defensive branch
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    # Gap 27: mandatory pre-prompt moderation (fail-closed)
+    _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
+    try:
+        _mod.enforce(req.prompt, stage="input")
+    except ModerationRejection:
+        logger.warning("Moderation rejected /predict input")
+        raise HTTPException(status_code=400, detail="Request rejected by content policy.")
 
     tokenizer = _tokenizer()
     model = _model()
@@ -239,4 +248,12 @@ def predict(req: PredictRequest) -> PredictResponse:
             do_sample=False,
         )
     output = tokenizer.batch_decode(generated, skip_special_tokens=True)[0]
+
+    # Gap 27: post-output moderation check (fail-closed)
+    try:
+        _mod.enforce(output, stage="output")
+    except ModerationRejection:
+        logger.warning("Moderation rejected /predict output")
+        raise HTTPException(status_code=400, detail="Response rejected by content policy.")
+
     return PredictResponse(output=output)

@@ -14,6 +14,7 @@ from typing import Any, Optional
 import click
 
 from codex_ml.modeling.codex_model import CodexModel
+from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings
 from codex_ml.training import run_functional_training
 from codex_ml.utils.optional import optional_import
 
@@ -85,8 +86,24 @@ def infer(
 ) -> None:
     """Generate text from a prompt using a pretrained model."""
 
+    _mod_settings = ModerationSettings(enabled=True, fail_open=False)
+    _mod = ModerationAdapter(_mod_settings)
+
+    try:
+        _mod.enforce(prompt, stage="input")
+    except ModerationRejection:
+        logger.warning("Moderation rejected input prompt")
+        raise click.ClickException("Request rejected by content policy.")
+
     model = CodexModel(model_name, device=device, dtype=dtype)
     output = model.generate(prompt, max_tokens=max_tokens, temperature=temperature)
+
+    try:
+        _mod.enforce(output, stage="output")
+    except ModerationRejection:
+        logger.warning("Moderation rejected model output")
+        raise click.ClickException("Response rejected by content policy.")
+
     click.echo(output)
 
 
