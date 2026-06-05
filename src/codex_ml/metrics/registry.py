@@ -31,11 +31,12 @@ from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 metric_registry = Registry("metric")
 # Plain dict checked before metric_registry — allows test mocking via monkeypatch.setitem
+# Commenting out _REWARD_METRICS_LOCK = threading.Lock() as not in use
 _METRIC_REGISTRY: dict[str, Callable[..., object]] = {}
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
-_REWARD_METRICS_LOCK = threading.Lock()
+
 
 
 def _error_log_path() -> Path:
