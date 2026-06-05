@@ -1,3 +1,33 @@
+## SESSION SUMMARY — 2026-06-05T03:40Z · PR #4763 CI rescue follow-up
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed the new `@copilot` CI rescue comment and failing check list for commit `6525400ab691` before making changes ✅
+- [x] **0b.** Pulled failing workflow/job logs via GitHub MCP and reproduced local CI guard failures before editing files ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Investigated failing checks tied to commit `6525400ab691` and identified actionable, code-fixable regressions.
+2. Restored the canonical session preload block in `.github/workflows/copilot-setup-steps.yml` from flow-scalar `|| { ... }` back to `run: |` with `if ! ...; then ...; fi`.
+3. Refreshed required session accountability artifacts in the current commit to satisfy REQ-4/REQ-5 freshness gates.
+
+### Validation Evidence
+- GitHub MCP logs reviewed for failing checks:
+  - `Detect CI Issues & Post Fix Instructions` (job `79657857844`)
+  - `Detect and Fix Common Issues` (job `79657852017`)
+  - `Fast Validation` (job `79657827849`)
+  - `Final Pre-Merge Checks` (job `79657854211`)
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` (before fix) ❌ showed:
+  - Pattern 3 YAML parse error in `copilot-setup-steps.yml`
+  - Pattern 25 last-commit accountability freshness failure
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4763` (before fix) ❌ REQ-4/REQ-5 failed on latest commit freshness
+
+### Impact Score
+- Files changed: 3 (`.github/workflows/copilot-setup-steps.yml`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Primary CI regression addressed: restored YAML-safe canonical preload block required by Fast Validation guard
+
+---
+
 ## SESSION SUMMARY — 2026-06-05T02:49Z · PR #4763 PDA readiness follow-up
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)

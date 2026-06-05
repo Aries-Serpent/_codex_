@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4763 CI rescue follow-up — 2026-06-05T03:40Z)
+- Investigated failing checks on commit `6525400ab691` and restored the canonical `copilot-setup-steps.yml` session preload block to YAML-safe form: `run: |` with `if ! ...; then ...; fi`.
+- Refreshed required session accountability artifacts (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`) in the same commit to satisfy REQ-4/REQ-5 last-commit freshness checks.
+
 ### Fixed (SN — PR #4763 review-thread remediation refresh — 2026-06-05T03:12Z)
 - Applied all actionable PR #4763 review-thread fixes: deduplicated imported module extraction in architecture boundary tests, restored typed `register_metric` proxy signature in `codex_ml.metrics.reward`, and corrected follow-up prompt "Files Modified" metadata.
 - Re-ran targeted validation checks (`ruff`, `mypy_baseline`, `auto_fix_common_issues`, `sync_tracked_files`, `session_wrapup_autofix`) and confirmed merge-readiness dimensions remain green.
