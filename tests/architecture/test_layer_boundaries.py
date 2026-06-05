@@ -32,7 +32,7 @@ def _imports_from(src_file: Path) -> list[str]:
                 modules.append(alias.name.split(".")[0])
         elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
             modules.append(node.module.split(".")[0])
-    return modules
+    return list(set(modules))
 
 
 def _files_under(directory: Path) -> list[Path]:

@@ -17,7 +17,8 @@
 - [`c7817d1a`] fix workflow preload guard and boundary test (copilot-swe-agent[bot], 2026-06-05)
 
 ### Files Modified
-No files modified
+- `.github/workflows/copilot-setup-steps.yml`
+- `tests/architecture/test_layer_boundaries.py`
 
 ---
 
