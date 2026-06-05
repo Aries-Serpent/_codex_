@@ -50,8 +50,7 @@ class TestLivenessProbe:
         assert resp.status_code == 200
 
     def test_status_alive(self, client):
-        data = resp = client.get("/liveness")
-        data = resp.json()
+        data = client.get("/liveness").json()
         assert data["status"] == "alive"
 
     def test_has_uptime(self, client):
@@ -71,16 +70,12 @@ class TestLivenessProbe:
 
 
 class TestReadinessProbe:
-    def test_returns_200_when_ready(self, client, tmp_path, monkeypatch):
-        # Patch Path("metrics_data") to use tmp_path so the check succeeds
+    def test_returns_200_when_ready(self, client, tmp_path):
         from monitoring import dashboard_api as da  # type: ignore[import]
 
         with patch.object(da, "Path", return_value=tmp_path):
-            # The handler calls Path("metrics_data") — monkeypatch at module level
-            pass
-        # Default: metrics_data dir can be created → should be 200
-        resp = client.get("/readiness")
-        assert resp.status_code in (200, 503)  # depends on cwd write permissions
+            resp = client.get("/readiness")
+        assert resp.status_code == 200
 
     def test_status_field_present(self, client):
         data = client.get("/readiness").json()

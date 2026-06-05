@@ -149,8 +149,8 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 | Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
 |----------|-------|---------------|----------------------|----------------|----------------|
 | P0 | 5 | 1 (gap 4) | 0 | 1 (gap 5) | 3 |
-| P1 | 11 | 5 (gaps 6,7,8,10,14*) | 1 (gap 14) | 0 | 5 |
-| P2 | 14 | 2 (gaps 25,27*) | 3 (gaps 19,27,14) | 0 | 9 |
+| P1 | 11 | 4 (gaps 6,7,8,10) | 1 (gap 14) | 0 | 6 |
+| P2 | 14 | 1 (gap 25) | 2 (gaps 19,27) | 0 | 11 |
 | P3 | 15 | 0 | 0 | 0 | 15 |
 
 > *Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.

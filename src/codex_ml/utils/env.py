@@ -177,9 +177,7 @@ class EnvironmentFingerprint:
     # Hardware — GPU / CUDA
     cuda_version: Optional[str] = None
     cuda_driver_version: Optional[str] = None
-    gpu_devices: dataclasses.field(default_factory=list) = dataclasses.field(  # type: ignore[assignment]
-        default_factory=list
-    )
+    gpu_devices: list = dataclasses.field(default_factory=list)
 
     @classmethod
     def capture(cls, repo_root: Optional[Path] = None) -> "EnvironmentFingerprint":
