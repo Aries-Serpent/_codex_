@@ -65,7 +65,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 10 | Implement config drift detection | Medium | High | Platform | ✅ Implemented — `src/codex_ml/utils/config_drift.py` `ConfigDrift.has_drift()` and `detect_config_drift()` |
-| 11 | Add automated dependency vulnerability scanning to CI | Small | High | Security | 🔴 Not Started |
+| 11 | Add automated dependency vulnerability scanning to CI | Small | High | Security | ✅ Implemented — `scheduled-dependency-audit.yml` extended: PR trigger on requirements files + `dependency-audit` job (pip-audit HIGH/CRITICAL → hard fail; safety → warning); artifacts `dependency-audit-{run_id}` 30-day retention. See `workbench/evidence/gap11_dep_scan_ci.md` |
 | 12 | Set up alerting for training failures | Medium | High | Ops | 🔴 Not Started |
 | 13 | Add performance degradation alerts | Medium | High | Ops | 🔴 Not Started |
 
