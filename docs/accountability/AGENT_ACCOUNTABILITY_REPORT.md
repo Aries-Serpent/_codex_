@@ -1,3 +1,28 @@
+## SESSION SUMMARY — 2026-06-05T16:30Z · PR #4783 Gap Resolution Phase 1
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed gap backlog files (`workbench/gap_backlog_prioritized.md`, `docs/gaps_report.md`) before making changes ✅
+- [x] **0b.** Verified existing implementations (config_drift, determinism, checkpointing) against gap registry before marking resolved ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. **P0 gap 4** — Added `/liveness` and `/readiness` health probe endpoints to `monitoring/dashboard_api.py`
+2. **P1 gap 8** — Rewrote `src/codex_ml/utils/env.py` with `EnvironmentFingerprint` dataclass (CUDA, GPU, RAM, OS fingerprint)
+3. **Gap re-baseline** — Updated `workbench/gap_backlog_prioritized.md` with verified statuses for gaps 4–10, 14, 19, 25, 27
+4. **Tests** — Created `tests/unit/test_health_probes.py` (14 tests) and `tests/unit/test_env_fingerprint.py` (23 tests); all passing
+
+### Files Changed
+- `monitoring/dashboard_api.py` — liveness/readiness probes
+- `src/codex_ml/utils/env.py` — EnvironmentFingerprint rewrite
+- `workbench/gap_backlog_prioritized.md` — re-baseline with status table
+- `tests/unit/test_health_probes.py` — new (created)
+- `tests/unit/test_env_fingerprint.py` — new (created)
+- `CHANGELOG.md` — session entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+---
+
 ## SESSION SUMMARY — 2026-06-05T03:40Z · PR #4763 CI rescue follow-up
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
