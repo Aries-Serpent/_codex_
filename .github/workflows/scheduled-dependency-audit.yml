@@ -1,6 +1,11 @@
 name: Scheduled Dependency Audit & SBOM
 
 on:
+  pull_request:
+    paths:
+      - 'requirements*.txt'
+      - 'requirements/**'
+      - 'pyproject.toml'
   schedule:
     # Run weekly on Mondays at 00:00 UTC
     - cron: '0 0 * * 1'
@@ -276,11 +281,63 @@ jobs:
               labels: ['dependencies', 'security', 'automated']
             });
 
+  dependency-audit:
+    name: pip-audit + safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install audit tools
+        run: |
+          pip install pip-audit safety
+
+      - name: Run pip-audit (all requirements files)
+        run: |
+          pip-audit -r requirements.txt -r requirements-dev.txt --format json -o workbench/security/ci_pip_audit.json || true
+          pip-audit -r requirements.txt -r requirements-dev.txt --format cyclonedx-json -o workbench/security/ci_pip_audit_cyclonedx.json || true
+          pip-audit -r requirements.txt -r requirements-dev.txt 2>&1 | tee pip_audit_output.txt
+          if grep -qE 'CRITICAL|HIGH' pip_audit_output.txt; then
+            echo "::error::pip-audit found HIGH or CRITICAL CVEs"
+            exit 1
+          fi
+
+      - name: Run safety check
+        run: |
+          safety check -r requirements.txt --json > workbench/security/ci_safety_check.json 2>&1 || true
+          safety check -r requirements.txt 2>&1 | tee safety_output.txt || true
+          if grep -qiE 'CRITICAL|HIGH' safety_output.txt; then
+            echo "::warning::safety found HIGH or CRITICAL issues -- review workbench/security/ci_safety_check.json"
+          fi
+
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-${{ github.run_id }}
+          path: |
+            workbench/security/ci_pip_audit.json
+            workbench/security/ci_pip_audit_cyclonedx.json
+            workbench/security/ci_safety_check.json
+          retention-days: 30
+
   summary:
     name: Audit Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [baseline-wheels, sbom-generation, upgrade-compatibility, drift-detection]
+    needs: [baseline-wheels, sbom-generation, upgrade-compatibility, drift-detection, dependency-audit]
     if: always()
     permissions:
       contents: read
@@ -297,6 +354,7 @@ jobs:
           echo "- SBOM Generation: ${{ needs.sbom-generation.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Upgrade Compatibility: ${{ needs.upgrade-compatibility.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Drift Detection: ${{ needs.drift-detection.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- pip-audit + safety: ${{ needs.dependency-audit.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Artifacts:** Check the workflow run for SBOM files and wheel manifests." >> $GITHUB_STEP_SUMMARY
 
