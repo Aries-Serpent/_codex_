@@ -487,7 +487,10 @@ class GitHubTokenProvider(TokenProvider):
             prerequisites are missing, or the ``requests`` library is unavailable.
         """
         try:
-            logger.info("Updating GitHub token scopes for %s", _redact_identifier(secret_id))
+            logger.info(
+                "Updating GitHub token scopes (secret_id provided: %s)",
+                bool(secret_id),
+            )
             logger.debug("New scopes: %s", scopes)
 
             if not HAS_REQUESTS:
