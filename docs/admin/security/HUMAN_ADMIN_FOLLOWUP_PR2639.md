@@ -117,7 +117,7 @@ python3 scripts/security/token_encryption_tool.py
 🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0
 ================================================================================
 
-Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <!-- pragma: allowlist secret -->
 
 ✅ Encryption complete!
 

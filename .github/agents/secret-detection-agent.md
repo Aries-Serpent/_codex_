@@ -68,7 +68,7 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 | P-18 | JWT pattern | `eyJ...` prefix | JSON Web Token |
 | P-19 | Hex 32+ chars | `[0-9a-f]{32,}` | MD5/API key |
 | P-20 | UUID secret context | UUID in password/secret context | Credential UUID |
-| P-21 | DSN pattern | `postgres://user:pass@host/db` | DB connection |
+| P-21 | DSN pattern | `postgres://user:pass@host/db` | DB connection | <!-- pragma: allowlist secret -->
 | P-22 | Stripe key | `sk_live_...` / `pk_live_...` | Stripe API |
 | P-23 | Slack token | `xoxb-...` / `xoxp-...` | Slack API |
 | P-24 | Twilio SID | `AC[a-z0-9]{32}` | Twilio |
