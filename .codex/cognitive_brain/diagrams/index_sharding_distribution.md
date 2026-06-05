@@ -198,7 +198,7 @@ sharding:
 
 # PGVector Store Configuration
 pgvector:
-  connection_string: "postgresql://user:pass@host/db"
+  connection_string: "postgresql://user:pass@host/db" <!-- pragma: allowlist secret -->
   pool_size: 10
   shard_prefix: "vectors_shard_"
 

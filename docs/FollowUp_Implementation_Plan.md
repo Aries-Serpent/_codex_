@@ -64,8 +64,8 @@ Metadata keys: path, format, num_records, checksum, size_bytes
 | Pattern | Example | Test Assertion |
 |---------|---------|----------------|
 | OpenAI key | sk-... | Masked "[SECRET]" |
-| AWS AKIA | AKIAABCDEFGHIJKLMNOP | Masked |
-| AWS ASIA | ASIAABCDEFGHIJKLMNOP | Masked |
+| AWS AKIA | AKIAABCDEFGHIJKLMNOP | Masked | <!-- pragma: allowlist secret -->
+| AWS ASIA | ASIAABCDEFGHIJKLMNOP | Masked | <!-- pragma: allowlist secret -->
 | Google API | AIza... | Masked |
 | GitHub PAT | ghp_... | Masked |
 | Slack tokens | xoxb-, xoxp- | Masked |

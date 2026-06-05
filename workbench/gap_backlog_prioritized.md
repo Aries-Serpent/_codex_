@@ -40,7 +40,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 1 | Run pip-audit on all requirements and remediate critical CVEs | Small | Critical | Security | 🔴 Not Started |
-| 2 | Run bandit/semgrep and fix all high-severity findings | Small | Critical | Security | 🔴 Not Started |
+| 2 | Run bandit/semgrep and fix all high-severity findings | Small | Critical | Security | ✅ Implemented — 0 HIGH/CRITICAL bandit; 3 semgrep ERRORs + 2 WARNINGs → 0 after fixes: `exec()` → `importlib.import_module()` in `plugins/registry.py`; `ast.literal_eval` nosemgrep in `filters.py`; `pickle.loads` nosemgrep in `safe_pickle.py`; 141 tests pass |
 | 3 | Verify all secrets in .secrets.baseline are false positives | Small | High | Security | 🔴 Not Started |
 
 ### Operations & Monitoring

@@ -115,8 +115,8 @@ dict[str, Optional[str]]
 
 **API Secret Masking (8 tests)**:
 - `test_secret_masking[AIzaSyDUMMYKEYVALUE123456]`
-- `test_secret_masking[AKIAABCDEFGHIJKLMNOP]`
-- `test_secret_masking[ASIAABCDEFGHIJKLMNOP]`
+- `test_secret_masking[AKIAABCDEFGHIJKLMNOP]` <!-- pragma: allowlist secret -->
+- `test_secret_masking[ASIAABCDEFGHIJKLMNOP]` <!-- pragma: allowlist secret -->
 - `test_secret_masking[ghp_ABCdefGHIjklMNOpqrSTUvwxYZ012345678]`
 - `test_secret_masking[sk-abc123XYZsecret]`
 - `test_secret_masking[xoxb-1234567890-ABCDEFG]`

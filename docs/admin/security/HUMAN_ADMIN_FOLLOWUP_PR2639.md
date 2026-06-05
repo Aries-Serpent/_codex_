@@ -93,7 +93,7 @@ python3 scripts/security/copilot_token_decoder.py
      - ☑️ `workflow` (Update GitHub Action workflows)
      - ☑️ `admin:org` (Full control of orgs and teams) - if needed
 3. Click **Generate token**
-4. **CRITICAL**: Copy the token immediately (format: `ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`)
+4. **CRITICAL**: Copy the token immediately (format: `ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) <!-- pragma: allowlist secret -->
 
 #### Task 2.2: Run Encryption Tool
 

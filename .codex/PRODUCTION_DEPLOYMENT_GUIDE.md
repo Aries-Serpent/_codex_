@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
 ```bash
 export JWT_SECRET_KEY="dev-secret-do-not-use-in-prod"
-export DATABASE_URL="postgresql://user:pass@localhost/codex"
+export DATABASE_URL="postgresql://user:pass@localhost/codex" <!-- pragma: allowlist secret -->
 export OPENAI_API_KEY="sk-..."
 ```
 
