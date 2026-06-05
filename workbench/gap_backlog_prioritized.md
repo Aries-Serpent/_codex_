@@ -39,7 +39,7 @@ Execution tracking artifacts:
 ### Security & Compliance
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 1 | Run pip-audit on all requirements and remediate critical CVEs | Small | Critical | Security | 🔴 Not Started |
+| 1 | Run pip-audit on all requirements and remediate critical CVEs | Small | Critical | Security | ✅ Implemented — 7 files scanned; 4 CVEs found; 2 fixed (mlflow 3.11.0→3.11.1 CVE-2026-33865, pyarrow 23.0.0→23.0.1 CVE-2026-25087); 2 risk-accepted (no upstream fix: diskcache, sqlitedict transitive). 105 tests pass. See `workbench/security/pip_audit_summary.md` |
 | 2 | Run bandit/semgrep and fix all high-severity findings | Small | Critical | Security | ✅ Implemented — 0 HIGH/CRITICAL bandit; 3 semgrep ERRORs + 2 WARNINGs → 0 after fixes: `exec()` → `importlib.import_module()` in `plugins/registry.py`; `ast.literal_eval` nosemgrep in `filters.py`; `pickle.loads` nosemgrep in `safe_pickle.py`; 141 tests pass |
 | 3 | Verify all secrets in .secrets.baseline are false positives | Small | High | Security | 🔴 Not Started |
 
