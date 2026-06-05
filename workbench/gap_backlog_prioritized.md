@@ -146,7 +146,6 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Summary Statistics
 
 **Total Gaps Identified:** 45
-**Re-baselined:** [rebaseline-date] (S-gap-resolution kickoff — PR #4783)
 
 | Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
 |----------|-------|---------------|----------------------|----------------|----------------|
@@ -156,15 +155,17 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 | P3 | 15 | 0 | 0 | 0 | 15 |
 
 > *Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.
+> *Gap 19 requires verification details to confirm current implementation status and integration completeness.
+> *Gap 27 requires verification details to confirm current implementation status and integration completeness.
 
 **Estimated Total Effort:**	
 - Small tasks: ~14 (16-32 iterations)
 - Medium tasks: ~17 (51-85 iterations)
 - Large tasks: ~8 (48-80 iterations)
-- XLarge tasks: ~2-4 (22-160 iterations; verify exact count from full gap list)
+- XLarge tasks: 2 (22+ iterations)
 
 **Total: ~195-357 iterations of engineering effort** (2.7-7.4 months with a team of 2-3 engineers)
-- Assumption for month conversion: ~24 iterations per engineer per month; team throughput is therefore ~48-72 iterations/month (2-3 engineers), so 195-357 iterations corresponds to roughly 2.7-7.4 months.
+- Assumption for month conversion: (2-3 engineers) × (~24 iterations/engineer/month) = ~48-72 iterations/month; then ~195-357 iterations ÷ ~48-72 iterations/month = ~2.7-7.4 months.
 
 ---
 
