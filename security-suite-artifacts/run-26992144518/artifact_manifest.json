@@ -1,0 +1,47 @@
+[
+  {
+    "name": "security-suite-codeql-python",
+    "artifact_id": "7427773540",
+    "zip": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-codeql-python.zip",
+    "sha256": "30c4608e5451bd51f10fa247a757fc67162c7a3ab5731205e4f3bdff4bff61fe",
+    "expected": "30c4608e5451bd51f10fa247a757fc67162c7a3ab5731205e4f3bdff4bff61fe",
+    "digest_match": true,
+    "extract_dir": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-codeql-python"
+  },
+  {
+    "name": "security-suite-dependency",
+    "artifact_id": "7427731144",
+    "zip": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-dependency.zip",
+    "sha256": "d9963cdd2105627432f0b6ba493368a43bd4c18d2d4594bbc5e3bb286d978e37",
+    "expected": "d9963cdd2105627432f0b6ba493368a43bd4c18d2d4594bbc5e3bb286d978e37",
+    "digest_match": true,
+    "extract_dir": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-dependency"
+  },
+  {
+    "name": "security-suite-semgrep",
+    "artifact_id": "7427790295",
+    "zip": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-semgrep.zip",
+    "sha256": "9c8a4a972359c4e138da96d3958323589e21f13a327fcecacad5b62a5fbbfbcb",
+    "expected": "9c8a4a972359c4e138da96d3958323589e21f13a327fcecacad5b62a5fbbfbcb",
+    "digest_match": true,
+    "extract_dir": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-semgrep"
+  },
+  {
+    "name": "security-suite-sbom",
+    "artifact_id": "7427730583",
+    "zip": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-sbom.zip",
+    "sha256": "740ad44e29d9d16dc4e1dca7f218d08dcc03eb44bb39b993873db9e9f23a18f3",
+    "expected": "740ad44e29d9d16dc4e1dca7f218d08dcc03eb44bb39b993873db9e9f23a18f3",
+    "digest_match": true,
+    "extract_dir": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-sbom"
+  },
+  {
+    "name": "security-suite-secrets",
+    "artifact_id": "7428081733",
+    "zip": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-secrets.zip",
+    "sha256": "28c21ae13eb104257d5b40b6471ea39c9c31e6ccefc05fb7cdea479bf240f396",
+    "expected": "28c21ae13eb104257d5b40b6471ea39c9c31e6ccefc05fb7cdea479bf240f396",
+    "digest_match": true,
+    "extract_dir": "/tmp/workspace/Aries-Serpent/_codex_/security-suite-artifacts/run-26992144518/security-suite-secrets"
+  }
+]

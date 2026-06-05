@@ -1,0 +1,13 @@
+{
+  "bom_format": "CycloneDX",
+  "commit": "4086f9afdb98d9fd58ed123220f337a4caae94f0",
+  "component_count": 338,
+  "formats": [
+    "CycloneDX JSON (sbom.json)",
+    "CycloneDX XML (sbom.xml)"
+  ],
+  "generated_at": "2026-06-05T02:45:43Z",
+  "repository": "Aries-Serpent/_codex_",
+  "run_id": "26992144518",
+  "spec_version": "1.6"
+}
