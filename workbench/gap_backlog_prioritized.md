@@ -160,8 +160,10 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 **Estimated Total Effort:**	
 - Small tasks: ~16 (15-30 iterations)
 - Medium tasks: ~17 (54-90 iterations)
+- Large tasks: ~8 (80-128 iterations)
+- XLarge tasks: ~4 (80-160 iterations)
 
-**Total: ~140-260 iterations of engineering effort** (3-6 months with a team of 2-3 engineers)
+**Total: ~229-408 iterations of engineering effort** (4-8 months with a team of 2-3 engineers)
 
 ---
 
