@@ -36,7 +36,6 @@ def client():
     import monitoring.dashboard_api as _da  # type: ignore[import]
 
     # Import inside fixture so the skip above works cleanly
-    from monitoring.dashboard_api import app  # type: ignore[import]
 
     # Patch Path so /readiness never touches the repo working directory
     with tempfile.TemporaryDirectory() as _tmp:
@@ -44,7 +43,7 @@ def client():
         patcher = patch.object(_da, "Path", return_value=_tmpdir)
         patcher.start()
         try:
-            yield TestClient(app)
+            yield TestClient(_da.app)
         finally:
             patcher.stop()
 
