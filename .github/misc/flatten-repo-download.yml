@@ -9,7 +9,7 @@ on:
       compress:
         description: 'Enable Tree-sitter compression'
         required: false
-        type: boolean
+        type: boolean # pragma: allowlist secret
         default: true
       include_tests:
         description: 'Include test files in output'

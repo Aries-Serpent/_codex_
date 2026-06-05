@@ -9,7 +9,7 @@
 # - Required secrets (GDRIVE_SERVICE_ACCOUNT_JSON, GOOGLE_CLIENT_ID,
 #   GOOGLE_CLIENT_SECRET) are not yet configured
 # - Current workflow fails with: "oauth2: cannot fetch token: 400 Bad Request"
-# - The satackey/action-google-drive@v1 action attempts interactive OAuth flow
+# - The satackey/action-google-drive@v1 action attempts interactive OAuth flow # pragma: allowlist secret # pragma: allowlist secret
 #   which is incompatible with headless CI environments
 #
 # AI AGENCY POLICY COMPLIANCE:
