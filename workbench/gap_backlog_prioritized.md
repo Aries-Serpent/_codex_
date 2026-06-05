@@ -85,7 +85,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 17 | Implement data drift monitoring | Large | Medium | ML | 🔴 Not Started |
 | 18 | Add model drift detection | Large | Medium | ML | 🔴 Not Started |
-| 19 | Set up DVC for active data versioning | Medium | Medium | ML | 🔴 Reopened — Wave 0 verification: DVC never initialized (no `.dvc/`, no `params.yaml`, no remote, no CI invocation). Full implementation required. See `workbench/evidence/gap19_dvc_verification.md` |
+| 19 | Set up DVC for active data versioning | Medium | Medium | ML | ✅ Implemented — `dvc init` + `params.yaml` + local remote + `dvc_pipeline` CI job in `data-quality-suite.yml`; 246 tests pass. See `workbench/evidence/gap19_dvc_verification.md` |
 | 20 | Implement deterministic data splits | Small | Medium | ML | 🔴 Not Started |
 
 ### Testing & Quality
