@@ -1,12 +1,18 @@
 # Prioritized Gap Remediation Backlog
 **Generated:** 2026-06-05 03:42:00
 **Re-baselined:** 2026-06-05 (S-gap-resolution kickoff — PR #4783)
+**Execution baseline activated:** 2026-06-05 (queue + evidence-first intake + wave control docs)
 
 This document provides a complete, prioritized backlog of all identified gaps, organized by:
 - Priority (P0-P3)
 - Effort (Small/Medium/Large)
 - Impact (Low/Medium/High/Critical)
 - Category (Capability domain)
+
+Execution tracking artifacts:
+- `workbench/gap_execution_queue.yaml` — 45-gap tracked queue grouped by P0→P3 with wave/lane/dependency metadata
+- `workbench/evidence_intake_baseline.md` — workflow artifact/log intake baseline and correlation evidence
+- `workbench/wave_execution_control.md` — wave-level completion, lane summary, and escalation control sheet
 
 **Status legend:**
 - 🔴 Not Started
