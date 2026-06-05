@@ -1,0 +1,11 @@
+paths:
+  raw_input: data/raw
+  prepared_dir: data/prepared
+
+prepare:
+  seed: 42
+  split: 0.8
+
+data:
+  processed_dir: data/prepared
+  models_dir: data/models
