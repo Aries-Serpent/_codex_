@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 
 from collections.abc import Mapping, Sequence  # noqa: E402
 
-from .registry import register_metric  # noqa: E402
+
+def register_metric(*args: object, **kwargs: object):
+    from .registry import register_metric as _register_metric
+
+    return _register_metric(*args, **kwargs)
 
 
 def _coerce_reward(value: object) -> float:
