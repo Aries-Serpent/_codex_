@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 
 
 import json  # noqa: E402
+from html import escape as html_escape  # noqa: E402
 from pathlib import Path  # noqa: E402
-from xml.sax.saxutils import escape  # noqa: E402
 
 try:
     from defusedxml import ElementTree
@@ -159,7 +159,7 @@ def load_solution_manifest(config_dir: Path | None = None) -> SolutionManifestCo
 
 
 def _xml_text(value: str) -> str:
-    return escape(value, {'"': "&quot;"})
+    return html_escape(value, quote=True)
 
 
 def _xml_attrs(**attrs: str | None) -> str:

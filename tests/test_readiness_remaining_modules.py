@@ -111,11 +111,10 @@ def _install_optional_dependency_stubs():
 
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
-    import xml.etree.ElementTree as _etree
-
-    xml_tree_stub.Element = _etree.Element
-    xml_tree_stub.SubElement = _etree.SubElement
-    xml_tree_stub.tostring = _etree.tostring
+    xml_tree_stub.Element = lambda *_, **__: SimpleNamespace()
+    xml_tree_stub.SubElement = lambda *_, **__: SimpleNamespace()
+    xml_tree_stub.tostring = lambda *_, **__: b""
+    xml_tree_stub.fromstring = lambda *_, **__: SimpleNamespace()
     xml_stub.ElementTree = xml_tree_stub
     _install_stub("defusedxml", xml_stub)
     _install_stub("defusedxml.ElementTree", xml_tree_stub)

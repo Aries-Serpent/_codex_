@@ -1,0 +1,8 @@
+Found 2 known vulnerabilities in 2 packages
+Name       Version ID             Fix Versions Description
+---------- ------- -------------- ------------ -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+diskcache  5.6.3   CVE-2025-69872              DiskCache (python-diskcache) through 5.6.3 uses Python pickle for serialization by default. An attacker with write access to the cache directory can achieve arbitrary code execution when a victim application reads from the cache.
+sqlitedict 2.1.0   CVE-2024-35515              Insecure deserialization in sqlitedict up to v2.1.0 allows attackers to execute arbitrary code.
+Name     Skip Reason
+-------- -----------------------------------------------------------------------
+codex-ml Dependency not found on PyPI and could not be audited: codex-ml (0.9.0)
