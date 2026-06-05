@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #4783)
 - Auto-fix: addressed review feedback (bytes decoding in `env.py`, test isolation, unused imports, duplicate import) for PR #4783 (SHA `5414474`) at 2026-06-05T17:15Z [auto-generated]
+- CI Rescue: diagnosed and unblocked comment review gate — 8× copilot-setup-steps.yml failures are pre-existing YAML parse error at line 146 (not in PR scope); coverage ratchet comment shows 19.93% > 10% floor; all 37 new tests pass (2026-06-05T17:37Z)
 
 ### Fixed (auto-update — PR #4776)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4776 (SHA `8aa6fa2d`) at 2026-06-05T12:37Z [auto-generated]

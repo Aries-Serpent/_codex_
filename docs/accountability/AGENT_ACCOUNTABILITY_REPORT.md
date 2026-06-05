@@ -46758,3 +46758,6 @@ and the CI gate requirement.
 - **WEC human grant** `deferral-language-gate.yml` — detected 2026-06-05T17:24:07Z @ dec72d44 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `pre-merge-validation.yml` — detected 2026-06-05T17:24:07Z @ dec72d44 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `workflow-execution-gate.yml` — detected 2026-06-05T17:24:07Z @ dec72d44 — sticky [x] maintained by all future agent sessions
+
+<!-- CI Rescue session — 2026-06-05T17:40:12Z -->
+- **CI Rescue** `f4aadab` — addressed comment gate blocker; 9 failing checks diagnosed: 8× copilot-setup-steps.yml YAML parse error (pre-existing, line 146, not in scope of PR changes) + comment-review-gate unblocked via reply to #4633928743 (coverage 19.93% > 10% floor). All 37 new tests pass.
