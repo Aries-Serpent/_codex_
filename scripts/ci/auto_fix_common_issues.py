@@ -2028,7 +2028,7 @@ class CommonIssueFixer:
             for issue in issues[:3]:
                 print(f"   {issue}")
             print(
-                "   ℹ️  These refs are deprecated and must be upgraded to Node.js 24-safe majors.\n"
+                "   ℹ️  These refs are deprecated and must be upgraded to current supported majors.\n"
                 "   ℹ️  Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20\n"
                 "   ℹ️  See: .codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md §P-K"
             )
