@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (PR #4783 — Gap Resolution Phase 1 — 2026-06-05)
 - **monitoring/dashboard_api.py**: Added `/liveness` and `/readiness` Kubernetes-style health probe endpoints (P0 gap 4). `/liveness` returns process uptime; `/readiness` validates local resource access and returns HTTP 503 when unavailable. `/health` retained for backward compatibility.
 - **src/codex_ml/utils/env.py**: Replaced stub module with `EnvironmentFingerprint` dataclass. Captures Python version, OS platform, CPU count, RAM, CUDA toolkit version, CUDA driver version (via pynvml/nvidia-smi), and GPU device specs. Adds `.capture()`, `.to_dict()`, `.digest()`, and `.log()` methods. `environment_summary()` retained as backward-compat shim (P1 gap 8).
-- **tests/monitoring/test_health.py**: New test module covering liveness, readiness, legacy health, and root endpoint catalog.
+- **tests/unit/test_health_probes.py**: New test module covering liveness, readiness, legacy health, and root endpoint catalog.
 - **tests/unit/test_env_fingerprint.py**: New test module covering `EnvironmentFingerprint.capture()`, `to_dict()`, `digest()`, `log()`, and `environment_summary()` shim.
 - **workbench/gap_backlog_prioritized.md**: Re-baselined gap statuses — marked gaps 4, 6, 7, 8, 10, 25 as Implemented; 14, 19, 27 as Needs Verification; 5 as In Progress.
 

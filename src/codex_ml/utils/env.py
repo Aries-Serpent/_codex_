@@ -82,7 +82,10 @@ def _cuda_driver_version() -> Optional[str]:
     """Return the CUDA driver version string, or *None* when unavailable."""
     if _pynvml is not None:
         try:
-            return _pynvml.nvmlSystemGetDriverVersion()
+            val = _pynvml.nvmlSystemGetDriverVersion()
+            if isinstance(val, (bytes, bytearray)):
+                val = val.decode("utf-8", errors="replace")
+            return val or None
         except Exception:  # pragma: no cover - NVML runtime failure
             LOGGER.debug("pynvml driver version query failed", exc_info=True)
     # Fallback: read nvidia-smi output
@@ -131,7 +134,8 @@ def _gpu_devices() -> list[dict[str, Any]]:
             entry = {"index": i}
             try:
                 handle = _pynvml.nvmlDeviceGetHandleByIndex(i)
-                entry["name"] = _pynvml.nvmlDeviceGetName(handle)
+                name = _pynvml.nvmlDeviceGetName(handle)
+                entry["name"] = name.decode("utf-8", errors="replace") if isinstance(name, (bytes, bytearray)) else str(name)
                 mem = _pynvml.nvmlDeviceGetMemoryInfo(handle)
                 entry["memory_total_mb"] = round(mem.total / 1024 / 1024, 1)
             except Exception:  # pragma: no cover

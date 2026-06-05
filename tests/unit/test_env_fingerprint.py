@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 import platform
-import sys
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from codex_ml.utils.env import EnvironmentFingerprint, environment_summary
-
 
 # ---------------------------------------------------------------------------
 # EnvironmentFingerprint.capture()

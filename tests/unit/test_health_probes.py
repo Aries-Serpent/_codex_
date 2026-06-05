@@ -9,12 +9,10 @@ Covers:
 
 from __future__ import annotations
 
-import importlib
-import sys
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Import the app; skip the entire module if FastAPI is unavailable
@@ -33,10 +31,22 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture(scope="module")
 def client():
+    import tempfile
+
+    import monitoring.dashboard_api as _da  # type: ignore[import]
+
     # Import inside fixture so the skip above works cleanly
     from monitoring.dashboard_api import app  # type: ignore[import]
 
-    return TestClient(app)
+    # Patch Path so /readiness never touches the repo working directory
+    with tempfile.TemporaryDirectory() as _tmp:
+        _tmpdir = Path(_tmp)
+        patcher = patch.object(_da, "Path", return_value=_tmpdir)
+        patcher.start()
+        try:
+            yield TestClient(app)
+        finally:
+            patcher.stop()
 
 
 # ---------------------------------------------------------------------------
@@ -92,7 +102,6 @@ class TestReadinessProbe:
 
     def test_returns_503_when_mkdir_fails(self, client):
         from monitoring import dashboard_api as _da  # type: ignore[import]
-        from pathlib import Path as _Path
 
         class _FailPath:
             """Fake Path that raises OSError on mkdir."""
