@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4776)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4776 (SHA `8aa6fa2d`) at 2026-06-05T12:37Z [auto-generated]
+
 ### Fixed (SN — PR #4774 setup-steps YAML guard restore — 2026-06-05T12:20Z)
 - Restored the canonical session preload step in `.github/workflows/copilot-setup-steps.yml` to `run: |` with `if ! ...; then ...; fi`, replacing the invalid flow-scalar `|| { ... }` form that was breaking YAML parsing.
 - Re-ran `scripts/ci/validate_setup_steps_yaml.sh`, Pattern 3 (YAML indentation), and Pattern 21 (Node.js 20 Actions); all checks passed.
