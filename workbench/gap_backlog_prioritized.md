@@ -1,8 +1,6 @@
 # Prioritized Gap Remediation Backlog
 **Generated:** 2026-06-05 03:42:00
-**Re-baselined:** [rebaseline-date] (S-gap-resolution kickoff — PR #4783)
-
-[rebaseline-date]: 2026-06-05
+**Re-baselined:** 2026-06-05 (S-gap-resolution kickoff — PR #4783)
 
 This document provides a complete, prioritized backlog of all identified gaps, organized by:
 - Priority (P0-P3)
@@ -165,7 +163,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 - XLarge tasks: 2 (22+ iterations)
 
 **Total: ~137-197+ iterations of engineering effort** (2.7-7.4 months with a team of 2-3 engineers)
-- Assumption for month conversion: (2-3 engineers) × (~24 iterations/engineer/month) = ~48-72 iterations/month; then ~195-357 iterations ÷ ~48-72 iterations/month = ~2.7-7.4 months.
+- Assumption for month conversion: (2-3 engineers) × (~24 iterations/engineer/month) = ~48-72 iterations/month; then ~137-197+ iterations ÷ ~48-72 iterations/month = ~2.7-7.4 months.
 
 ---
 
