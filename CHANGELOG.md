@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4788)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4788 (SHA `73e5269d`) at 2026-06-05T19:03Z [auto-generated]
+
 ### Added (PR #4783 — Gap Resolution Phase 1 — 2026-06-05)
 - **monitoring/dashboard_api.py**: Added `/liveness` and `/readiness` Kubernetes-style health probe endpoints (P0 gap 4). `/liveness` returns process uptime; `/readiness` validates local resource access and returns HTTP 503 when unavailable. `/health` retained for backward compatibility.
 - **src/codex_ml/utils/env.py**: Replaced stub module with `EnvironmentFingerprint` dataclass. Captures Python version, OS platform, CPU count, RAM, CUDA toolkit version, CUDA driver version (via pynvml/nvidia-smi), and GPU device specs. Adds `.capture()`, `.to_dict()`, `.digest()`, and `.log()` methods. `environment_summary()` retained as backward-compat shim (P1 gap 8).
