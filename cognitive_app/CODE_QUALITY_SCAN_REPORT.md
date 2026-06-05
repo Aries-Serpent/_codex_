@@ -510,7 +510,7 @@ find src/assets -name "*.png" -o -name "*.svg"
 
 ```json
 {
-  "node": "v20.x",
+  "node": "v22.x",
   "npm": "v10.x",
   "eslint": "9.39.1",
   "typescript": "5.7.2",

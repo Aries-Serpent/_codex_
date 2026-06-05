@@ -155,8 +155,8 @@ effort_estimate: Trivial
 status: COMPLETE ✅
 ```
 
-**Problem:** 4 workflows pinned `node-version: '20'` or `NODE_VERSION: '20'`.
-Node.js 20 EOL is April 2026. GitHub Actions will start showing deprecation
+**Problem (historical):** 4 workflows were pinned `node-version: '20'` or `NODE_VERSION: '20'`.
+Node.js 20 EOL has passed and these refs were remediated; keep Pattern 21 checks clean.
 warnings and eventually block these runs.
 
 **Affected files:**

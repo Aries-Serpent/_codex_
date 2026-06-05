@@ -791,7 +791,7 @@ def _build_followup_prompt_md(data: dict) -> str:
             "  P1 — CI/CD Maturity: add cache to uncovered Python workflows",
             "       (target: aais_v4_scorer CI/CD Maturity ≥ 85)",
             "  P2 — Reliability: create .github/workflows/self-healing.yml stub",
-            "  P3 — Node.js 20 deadline (2026-06-02): run --pattern 21, open tracking issue",
+            "  P3 — Node.js action runtime hygiene: run --pattern 21 to verify no deprecated refs",
             "  P4 — Post-merge: sync_tracked_files --fix on main after merge",
             "```",
         ]

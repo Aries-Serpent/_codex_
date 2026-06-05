@@ -6,18 +6,18 @@
 
 ---
 
-## 🎯 Priority 1: CRITICAL Node.js 20 → 22 Migration
+## 🎯 Priority 1: Node.js Runtime Baseline Sustainment
 
-**⏰ DEADLINE: 2026-06-02 (9 DAYS FROM NOW)**
+**Status**: ✅ Node.js 20 migration completed; baseline is Node.js 22+
 
-Node.js 20.x reaches end-of-life on this date. All deployments must migrate to Node.js 22+ before deadline.
+Node.js 20 references have been migrated from active runtime paths. Keep Node.js 22+ enforced across workflows, templates, and docs.
 
 ### Action Items (Complete in S1263)
 
 1. **Audit Node.js Usage**
    ```bash
-   # Find all Node.js 20 references
-   grep -r "node-version.*20\|NODE.*VERSION.*20" .github/workflows/
+   # Verify no Node.js 20 references remain in active workflows
+   grep -r "node-version.*20\|NODE.*VERSION.*20" .github/workflows/ || true
    grep -r "node.*20" package.json apps/*/package.json cognitive_app/*/package.json
    
    # Check current engines spec
@@ -33,7 +33,7 @@ Node.js 20.x reaches end-of-life on this date. All deployments must migrate to N
    ```
 
 3. **Create Tracking Issue**
-   - Title: `[CRITICAL] Node.js 20 → 22 Migration (Deadline: 2026-06-02)`
+   - Title: `[Maintenance] Node.js baseline sustainment (22+)`
    - Labels: `critical`, `deadline`, `nodejs-migration`
    - Milestone: Assign to Phase 1 Completion
    - Body: Link to this document, list affected workflows, coordinate with team
@@ -239,23 +239,23 @@ Node.js 20.x reaches end-of-life on this date. All deployments must migrate to N
 ## 📊 Success Criteria for Phase 1 Completion
 
 ### By End of S1263
-- [ ] Node.js 20 → 22 migration initiated (tracking issue created)
+- [x] Node.js 20 → 22 migration completed in active runtime paths
 - [ ] All 9 repository variables created in GitHub UI
 - [ ] Variable validation workflow passes
 - [ ] 3 pending workflows tested successfully with variables
 - [ ] Cache optimization applied to 3 high-impact workflows
 
 ### By End of S1264
-- [ ] Node.js 22 migration 50% complete (10+ workflows updated)
+- [x] Node.js 22 migration 100% complete (active workflows)
 - [ ] Cache optimization applied to 15+ workflows
 - [ ] Performance baseline established (time savings tracked)
 - [ ] Session context capture validated in production
 - [ ] Self-healing workflow operational
 
-### By End of Week of 2026-05-31 (BEFORE 2026-06-02 DEADLINE)
-- [ ] Node.js 20 → 22 migration 100% complete
-- [ ] All workflows using Node.js 22+
-- [ ] package.json engines field updated
+### Ongoing Sustainment (Post-migration)
+- [x] Node.js 20 → 22 migration 100% complete
+- [x] All active workflows using Node.js 22+
+- [x] package.json engines field updated
 - [ ] Cache optimization applied to 28+ workflows
 - [ ] Phase 1 infrastructure fully operational
 
@@ -285,7 +285,7 @@ jobs:
       CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
       COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
 ```
@@ -317,8 +317,8 @@ jobs:
 - Variables are **NOT** automatically created; they must be manually configured in GitHub UI
 - Variables become available to all workflows on **next execution** after creation
 - All workflows use safe fallback defaults via `${{ vars.VAR_NAME || 'default' }}` pattern
-- Node.js 20 EOL is a **HARD DEADLINE**: 2026-06-02 (9 days from 2026-05-24)
+- Node.js 20 deadline has passed; keep Pattern 21 checks clean and baseline at Node.js 22+
 - Cache optimization should be tested incrementally on high-impact workflows first
 - Session context enrichment and self-healing are ready to deploy immediately upon variable creation
 
-**Priority**: Focus on Node.js migration and variable setup first, then proceed with cache rollout.
+**Priority**: Preserve Node.js 22+ baseline and variable setup first, then proceed with cache rollout.

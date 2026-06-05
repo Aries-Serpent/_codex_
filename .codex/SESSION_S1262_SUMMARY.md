@@ -204,7 +204,7 @@ All workflows have safe fallback defaults and are ready for deployment.
 
 | Event | Date | Days Remaining |
 |-------|------|-----------------|
-| Node.js 20 EOL (CRITICAL) | 2026-06-02 | 9 days |
+| Node.js 20 EOL (CRITICAL) | 2026-06-02 | ✅ Complete |
 | Phase 1 Target Completion | 2026-06-02 | 9 days |
 | Cache Optimization (all 28) | 2026-06-07 | 14 days |
 | Coverage Ramp Phase Target | 2026-06-14 | 21 days |
@@ -213,7 +213,7 @@ All workflows have safe fallback defaults and are ready for deployment.
 
 ## 📌 Notes for Continuation
 
-1. **Node.js Migration is BLOCKING** — Must complete before 2026-06-02
+1. **Node.js Migration** — ✅ Completed; preserve Node.js 22+ baseline going forward
 2. **Variables are Prerequisites** — All 9 variables must be created before pending workflows can be fully tested
 3. **Cache Optimization is Sequential** — Test on 3 workflows first, then roll out incrementally
 4. **All Infrastructure is Ready** — No code changes needed, only configuration and deployment

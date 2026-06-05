@@ -6,11 +6,11 @@ This document identifies repository variables that MUST be configured in GitHub 
 ## 🔴 CRITICAL Variables (Must Set Immediately)
 
 ### 1. Node.js Version Management
-**Reason**: Node.js 20 EOL on 2026-06-02. Must coordinate version across all workflows.
+**Reason**: Node.js 20 migration is complete. Keep Node.js 22+ coordinated across all workflows.
 
 ```yaml
 NODE_JS_VERSION: "22"                          # Target LTS version (was: 20)
-NODE_JS_ALLOWED_VERSIONS: "22,23"              # Allowed versions (comma-separated)
+NODE_JS_ALLOWED_VERSIONS: "22,23,24"           # Allowed versions (comma-separated)
 NODE_JS_DEPRECATION_VERSION: "20"              # Deprecated versions to warn on
 NODE_JS_AUTO_UPDATE_ENABLED: "true"            # Auto-update workflows on EOL
 ```
@@ -18,7 +18,7 @@ NODE_JS_AUTO_UPDATE_ENABLED: "true"            # Auto-update workflows on EOL
 **Implementation**: Add to GitHub Actions variables and use in workflows:
 ```yaml
 - name: Setup Node.js
-  uses: actions/setup-node@v4
+  uses: actions/setup-node@v5
   with:
     node-version: ${{ vars.NODE_JS_VERSION || '22' }}
 ```

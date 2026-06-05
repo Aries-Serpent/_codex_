@@ -1945,9 +1945,9 @@ class CommonIssueFixer:
         return issues
 
     def check_nodejs20_actions(self) -> list[str]:
-        """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (deadline: 2026-06-02).
+        """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (post-deprecation guard).
 
-        GitHub will force all actions to Node.js 24 starting 2026-06-02.  Workflows
+        GitHub forces actions onto newer runtimes after deprecation windows. Workflows
         using deprecated action versions will start producing hard failures instead of
         deprecation warnings.
 
@@ -2023,7 +2023,7 @@ class CommonIssueFixer:
             self.issues_found["Node.js 20 Actions"] = issues
             print(
                 f"⚠  Pattern 21 (Node.js 20 Actions): {len(affected)} workflow(s) / "
-                f"{total_refs} action refs — deadline 2026-06-02"
+                f"{total_refs} action refs — deprecated runtime refs detected"
             )
             for issue in issues[:3]:
                 print(f"   {issue}")
