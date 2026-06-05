@@ -1,5 +1,5 @@
 # Prioritized Gap Remediation Backlog
-**Generated:** 2025-12-06 03:42:00
+**Generated:** 2026-06-05 03:42:00
 **Re-baselined:** [rebaseline-date] (S-gap-resolution kickoff — PR #4783)
 
 [rebaseline-date]: 2026-06-05
