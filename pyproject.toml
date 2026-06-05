@@ -356,6 +356,7 @@ exclude = [
   "torch_stub*",
   ".stubs*",
   "*__pycache__*",
+  "security-suite-artifacts*",
   "configs*",
   "config*",      # Exclude config/ data directory
   "config_legacy*",
