@@ -25,8 +25,8 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Effort Definitions
 - **Small:** 1-2 iterations
 - **Medium:** 3-5 iterations
-- **Large:** 1-2 weeks
-- **XLarge:** 3+ weeks
+- **Large:** 6-10 iterations
+- **XLarge:** 11+ iterations
 
 ---
 
