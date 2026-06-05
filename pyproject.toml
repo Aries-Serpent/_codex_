@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=78.1.1", "wheel"]  # Security: Updated from 67 to fix CVE-2024-6345, CVE-2025-47273 (RCE)
+requires = ["setuptools>=78.1.1,<82", "wheel"]  # Security: Updated from 67 to fix CVE-2024-6345, CVE-2025-47273 (RCE); keep <82 for torch 2.12 compatibility
 build-backend = "setuptools.build_meta"
 
 # Rust extension module configuration (optional, for future migration)
@@ -344,7 +344,8 @@ include = [
   "hhg_logistics*",
   "hydra_extra*",
   "examples*",
-  "security*",
+  "security",
+  "security.*",
   "tools*",
   "tools.*",
   "quantum*",
