@@ -209,10 +209,14 @@ class TokenScopeVerifier:
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
         print("Timestamp: [suppressed]")
-        print(
-            "Status: "
-            + ("VALID" if results.get("status") == "valid" else "INVALID")
-        )
+        status = results.get("status", "unknown").upper()
+        if status == "VALID":
+            status_display = "VALID"
+        elif status == "ERROR":
+            status_display = "ERROR"
+        else:
+            status_display = "INVALID"
+        print(f"Status: {status_display}")
         print()
 
         if results.get("error"):

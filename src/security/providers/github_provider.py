@@ -488,10 +488,10 @@ class GitHubTokenProvider(TokenProvider):
         """
         try:
             logger.info(
-                "Updating GitHub token scopes (secret_id provided: %s)",
-                bool(secret_id),
+                "Updating GitHub token scopes (secret_id: %s, scope_count: %d)",
+                _redact_identifier(secret_id) if secret_id else "<none>",
+                len(scopes) if scopes else 0,
             )
-            logger.debug("New scopes: %s", scopes)
 
             if not HAS_REQUESTS:
                 logger.warning(
