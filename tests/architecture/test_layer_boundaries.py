@@ -29,7 +29,7 @@ def _imports_from(src_file: Path) -> list[str]:
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                modules.append(alias.name.split(".")[0])
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
         elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
             modules.append(node.module.split(".")[0])
     return modules
