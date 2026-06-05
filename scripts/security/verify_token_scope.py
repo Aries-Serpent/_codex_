@@ -210,12 +210,7 @@ class TokenScopeVerifier:
         # Direct inline access to avoid CodeQL taint tracking false positives
         print("Timestamp: [suppressed]")
         status = results.get("status", "unknown").upper()
-        if status == "VALID":
-            status_display = "VALID"
-        elif status == "ERROR":
-            status_display = "ERROR"
-        else:
-            status_display = "INVALID"
+        status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
         print()
 
