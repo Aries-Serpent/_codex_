@@ -1,3 +1,15 @@
+## SESSION SUMMARY — 2026-06-05T17:43Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4783)
+
+### Work Completed
+- **Pattern 12 (Line Length)**: `src/codex_ml/utils/env.py:138` — split inline ternary to multi-line form; line now ≤100 chars
+- **Pattern 3 (YAML Parse Error)**: `copilot-setup-steps.yml` session preload step — replaced `|| { }` flow-scalar with canonical `run: |` + `if ! ...; then ...; fi` form; YAML now parses cleanly
+
+### Files Changed
+- `src/codex_ml/utils/env.py` — line 138 multi-line split
+- `.github/workflows/copilot-setup-steps.yml` — session preload step canonical form
+
+---
+
 ## SESSION SUMMARY — 2026-06-05T16:30Z · PR #4783 Gap Resolution Phase 1
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)

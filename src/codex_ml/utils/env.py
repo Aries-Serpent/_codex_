@@ -135,7 +135,11 @@ def _gpu_devices() -> list[dict[str, Any]]:
             try:
                 handle = _pynvml.nvmlDeviceGetHandleByIndex(i)
                 name = _pynvml.nvmlDeviceGetName(handle)
-                entry["name"] = name.decode("utf-8", errors="replace") if isinstance(name, (bytes, bytearray)) else str(name)
+                entry["name"] = (
+                    name.decode("utf-8", errors="replace")
+                    if isinstance(name, (bytes, bytearray))
+                    else str(name)
+                )
                 mem = _pynvml.nvmlDeviceGetMemoryInfo(handle)
                 entry["memory_total_mb"] = round(mem.total / 1024 / 1024, 1)
             except Exception:  # pragma: no cover
