@@ -288,7 +288,7 @@ list directory is missing/corrupted during `onCreateCommand`
 | `CODESPACES_APT_CLEANUP_AGGRESSIVE` | `true` | Boolean string | MAY |
 | `CODEX_DEVCONTAINER_WORKSPACE` | `/workspaces/_codex_` | Path string | SHOULD |
 | `CODEX_DEVCONTAINER_PYTHON_VERSION` | `3.12` | Version string | MUST |
-| `CODEX_DEVCONTAINER_NODE_VERSION` | `20` | Version string | SHOULD |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | `22` | Version string | SHOULD |
 | `CODEX_DEVCONTAINER_RUST_VERSION` | `stable` | Version string | MAY |
 | `CODEX_SESSION_LOG_DIR` | `/workspaces/_codex_/.codex/sessions` | Path string | MUST |
 | `CODEX_DB_PATH` | `/workspaces/_codex_/.codex/codex.db` | Path string | MUST |
@@ -303,7 +303,7 @@ list directory is missing/corrupted during `onCreateCommand`
 2. [ ] `CODESPACES_APT_CLEANUP_AGGRESSIVE` = `true`
 3. [ ] `CODEX_DEVCONTAINER_WORKSPACE` = `/workspaces/_codex_`
 4. [ ] `CODEX_DEVCONTAINER_PYTHON_VERSION` = `3.12`
-5. [ ] `CODEX_DEVCONTAINER_NODE_VERSION` = `20`
+5. [ ] `CODEX_DEVCONTAINER_NODE_VERSION` = `22`
 6. [ ] `CODEX_DEVCONTAINER_RUST_VERSION` = `stable`
 7. [ ] `CODEX_SESSION_LOG_DIR` = `/workspaces/_codex_/.codex/sessions`
 8. [ ] `CODEX_DB_PATH` = `/workspaces/_codex_/.codex/codex.db`

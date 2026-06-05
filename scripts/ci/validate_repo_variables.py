@@ -36,10 +36,10 @@ class Variable:
 CRITICAL_VARIABLES = [
     Variable(
         name="NODE_JS_VERSION",
-        description="Target Node.js LTS version (Node.js 20 EOL: 2026-06-02)",
+        description="Target Node.js LTS version (Node.js 22+ baseline)",
         required=True,
         default="22",
-        validator=lambda v: v in ("20", "22", "23"),
+        validator=lambda v: v in ("22", "23"),
         category="runtime",
     ),
     Variable(

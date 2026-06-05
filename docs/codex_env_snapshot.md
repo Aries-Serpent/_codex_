@@ -23,7 +23,7 @@
 - `CODEX_ENV_BUN_VERSION` = `1.2.14`
 - `CODEX_ENV_GO_VERSION` = `1.24.3`
 - `CODEX_ENV_JAVA_VERSION` = `21`
-- `CODEX_ENV_NODE_VERSION` = `20`
+- `CODEX_ENV_NODE_VERSION` = `22`
 - `CODEX_ENV_PHP_VERSION` = `8.4`
 - `CODEX_ENV_PYTHON_VERSION` = `3.12`
 - `CODEX_ENV_RUBY_VERSION` = `3.4.4`
@@ -31,3 +31,7 @@
 - `CODEX_ENV_SWIFT_VERSION` = `6.1`
 - `CODEX_MLFLOW_URI` = `file:./artifacts/mlruns`
 - `CODEX_PROXY_CERT` = `/usr/local/share/ca-certificates/envoy-mitmproxy-ca-cert.crt`
+
+## Note on historical values
+
+Older snapshots and migration notes may still reference Node.js `20` or `18`; those are historical records only. The active baseline for this repository is Node.js `22`.
