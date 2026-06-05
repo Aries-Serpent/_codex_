@@ -184,7 +184,7 @@ def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:
 
     # Find the step name that wraps the session_preload run
     step_start: int | None = None
-    for i, line in enumerate(lines):
+            for j in range(i, max(i - 6, -1), -1):
         if "Session Context Pre-load" in line or "session_preload" in line:
             # Walk back to the `- name:` anchor of this step
             for j in range(i, max(i - 6, -1), -1):
