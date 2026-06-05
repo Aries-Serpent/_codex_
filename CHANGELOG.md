@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4767)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4767 (SHA `0bb60e2f`) at 2026-06-05T04:05Z [auto-generated]
+
 ### Fixed (SN — PR #4763 CI rescue follow-up — 2026-06-05T03:40Z)
 - Investigated failing checks on commit `6525400ab691` and restored the canonical `copilot-setup-steps.yml` session preload block to YAML-safe form: `run: |` with `if ! ...; then ...; fi`.
 - Refreshed required session accountability artifacts (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`) in the same commit to satisfy REQ-4/REQ-5 last-commit freshness checks.
