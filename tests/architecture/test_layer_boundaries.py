@@ -10,6 +10,7 @@ Run: pytest tests/architecture/ -v
 from __future__ import annotations
 
 import ast
+import warnings
 from pathlib import Path
 
 import pytest
@@ -29,7 +30,7 @@ def _imports_from(src_file: Path) -> list[str]:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 modules.append(alias.name.split(".")[0])
-        elif isinstance(node, ast.ImportFrom) and node.module:
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
             modules.append(node.module.split(".")[0])
     return modules
 
@@ -76,9 +77,11 @@ def test_tests_no_direct_cli_import() -> None:
                 violations.append(f"{f.relative_to(ROOT)} imports '{mod}'")
     # Warn only — CLI integration tests legitimately import entry-points
     if violations:
-        pytest.skip(
+        warnings.warn(
             f"Soft boundary: {len(violations)} test file(s) import L1 modules directly "
-            f"(expected for integration tests). Review: {violations[:5]}"
+            f"(expected for integration tests). Review: {violations[:5]}",
+            UserWarning,
+            stacklevel=1,
         )
 
 
@@ -184,7 +187,7 @@ def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:
     for i, line in enumerate(lines):
         if "Session Context Pre-load" in line or "session_preload" in line:
             # Walk back to the `- name:` anchor of this step
-            for j in range(i, max(i - 5, 0), -1):
+            for j in range(i, max(i - 6, -1), -1):
                 if lines[j].lstrip().startswith("- name:"):
                     step_start = j
                     break
