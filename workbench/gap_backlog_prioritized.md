@@ -72,7 +72,7 @@ Execution tracking artifacts:
 ### Monitoring & Observability
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 14 | Set up Prometheus metrics collection | Medium | High | Ops | 🔎 Needs Verification — `tests/monitoring/test_prometheus_metrics_registry.py` and `test_prometheus_fallback.py` exist; integration wiring TBD |
+| 14 | Set up Prometheus metrics collection | Medium | High | Ops | ✅ Implemented — Wave 0 verified: `CodexMetricsRegistry` + `start_metrics_server()` wired in `train_loop.py` + CLI; 3/3 tests pass; NDJSON fallback present. See `workbench/evidence/gap14_prometheus_verification.md` |
 | 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | 🔴 Not Started |
 | 16 | Add distributed tracing (optional) | Large | Medium | Ops | 🔴 Not Started |
 
