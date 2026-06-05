@@ -101,7 +101,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
 | 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | 🔴 Not Started |
-| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | 🔎 Needs Verification — `src/codex_ml/safety/moderation.py` `ModerationAdapter` provides prompt sanitization |
+| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | 🔴 Reopened — Wave 0 verification: 5/7 LLM entry points uncovered (`simple_cli.py`, `/predict` API, `llm_client.py`, `orchestrator.py`, `autonomous_runner.py`); moderation opt-in not mandatory; no Prometheus counters; no integration tests for EP-03–07. See `workbench/evidence/gap27_moderation_verification.md` |
 | 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | 🔴 Not Started |
 
 ### Error Handling & Resilience
