@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4763 compliance refresh — 2026-06-05T02:37Z)
+- Re-validated the architecture boundary guard/session preload follow-up on the latest PR #4763 head: `compileall`, `py_compile`, targeted `pytest`, and `ruff` on `tests/architecture/test_layer_boundaries.py` all pass.
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in the latest commit so `session_wrapup_autofix.py --check --pr-number 4763` satisfies REQ-4/REQ-5 last-commit accountability requirements.
+
 ### Fixed (auto-update — PR #4763)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4763 (SHA `00c4b345`) at 2026-06-05T02:26Z [auto-generated]
 
