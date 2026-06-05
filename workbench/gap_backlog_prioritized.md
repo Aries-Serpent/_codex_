@@ -157,11 +157,9 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 
 > *Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.
 
-**Estimated Total Effort:**
-- Small tasks: ~15 (15-30 iterations)
-- Medium tasks: ~18 (54-90 iterations)
-- Large tasks: ~10 (50-100 iterations)
-- XLarge tasks: ~2 (20-40 iterations)
+**Estimated Total Effort:**	
+- Small tasks: ~16 (15-30 iterations)
+- Medium tasks: ~17 (54-90 iterations)
 
 **Total: ~140-260 iterations of engineering effort** (3-6 months with a team of 2-3 engineers)
 
