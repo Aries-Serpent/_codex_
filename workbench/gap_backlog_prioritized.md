@@ -146,7 +146,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Summary Statistics
 
 **Total Gaps Identified:** 45
-**Re-baseline date:** [rebaseline-date] (PR #4783)
+**Re-baselined:** [rebaseline-date] (S-gap-resolution kickoff — PR #4783)
 
 | Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
 |----------|-------|---------------|----------------------|----------------|----------------|
