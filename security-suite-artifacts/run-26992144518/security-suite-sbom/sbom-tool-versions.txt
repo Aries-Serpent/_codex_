@@ -1,0 +1,3 @@
+7.3.0
+Python 3.12.13
+pip 26.1.2 from /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/pip (python 3.12)

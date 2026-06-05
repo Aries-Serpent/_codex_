@@ -1,0 +1,219 @@
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/safety/auth/main.py:5: AuthlibDeprecationWarning: authlib.jose module is deprecated, please use joserfc instead.
+It will be compatible before version 2.0.0.
+  from authlib.jose.errors import ExpiredTokenError
+
+
+[33m[1m+===========================================================================================================================================================================================+[0m
+
+
+[31m[1mDEPRECATED: [0m[33m[1mthis command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.[0m
+
+
+[32mWe highly encourage switching to the new [0m[32m[1m`scan`[0m[32m command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.[0m
+
+
+[33m[1m+===========================================================================================================================================================================================+[0m
+
+
++==============================================================================+
+
+                               /$$$$$$            /$$
+                              /$$__  $$          | $$
+           /$$$$$$$  /$$$$$$ | $$  \__//$$$$$$  /$$$$$$   /$$   /$$
+          /$$_____/ |____  $$| $$$$   /$$__  $$|_  $$_/  | $$  | $$
+         |  $$$$$$   /$$$$$$$| $$_/  | $$$$$$$$  | $$    | $$  | $$
+          \____  $$ /$$__  $$| $$    | $$_____/  | $$ /$$| $$  | $$
+          /$$$$$$$/|  $$$$$$$| $$    |  $$$$$$$  |  $$$$/|  $$$$$$$
+         |_______/  \_______/|__/     \_______/   \___/   \____  $$
+                                                          /$$  | $$
+                                                         |  $$$$$$/
+  by safetycli.com                                        \______/
+
++==============================================================================+
+
+ [1mREPORT[0m 
+
+  Safety [1mv3.8.1[0m is scanning for [1mVulnerabilities[0m[1m...[0m
+[1m  Scanning dependencies[0m in your [1menvironment:[0m
+
+  -> /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages
+
+  Using [1mopen-source vulnerability database[0m
+[1m  Found and scanned 332 packages[0m
+  Timestamp [1m2026-06-05 02:45:45[0m
+[1m  12[0m[1m vulnerabilities reported[0m
+[1m  0[0m[1m vulnerabilities ignored[0m
+
++==============================================================================+
+ [1mVULNERABILITIES REPORTED[0m 
++==============================================================================+
+
+[31m-> Vulnerability found in sqlitedict version 2.1.0[0m
+[1m   Vulnerability ID: [0m73282
+[1m   Affected spec: [0m<=2.1.0
+[1m   ADVISORY: [0mSQLitedict, in all versions, contains an insecure
+   deserialization vulnerability that could allow arbitrary code execution...
+[1m   CVE-2024-35515[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/73282/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 73282 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71693
+[1m   Affected spec: [0m>=1.24.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in affected
+   versions of the MLflow platform, enabling a maliciously uploaded...
+[1m   CVE-2024-37055[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71693/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71693 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71579
+[1m   Affected spec: [0m>=1.27.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in versions
+   of the MLflow platform running version 1.27.0 or newer, enabling a...
+[1m   CVE-2024-37060[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71579/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71579 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71578
+[1m   Affected spec: [0m>=1.1.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in versions
+   of the MLflow platform running version 1.1.0 or newer, enabling a...
+[1m   CVE-2024-37053[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71578/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71578 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71577
+[1m   Affected spec: [0m>=1.1.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in versions
+   of the MLflow platform running version 1.1.0 or newer, enabling a...
+[1m   CVE-2024-37052[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71577/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71577 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71691
+[1m   Affected spec: [0m>=0.5.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in affected
+   versions of the MLflow platform running, enabling a maliciously...
+[1m   CVE-2024-37059[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71691/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71691 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71587
+[1m   Affected spec: [0m>=0.9.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in affected
+   versions of the MLflow platform, enabling a maliciously uploaded PyFunc...
+[1m   CVE-2024-37054[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71587/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71587 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71584
+[1m   Affected spec: [0m>=1.23.0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in versions
+   of the MLflow platform affected versions, enabling a maliciously...
+[1m   CVE-2024-37056[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71584/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71584 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in mlflow version 3.13.0[0m
+[1m   Vulnerability ID: [0m71692
+[1m   Affected spec: [0m>=2.0.0rc0
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in affected
+   versions of the MLflow platform, enabling a maliciously uploaded...
+[1m   CVE-2024-37057[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71692/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71692 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in ray version 2.55.1[0m
+[1m   Vulnerability ID: [0m65189
+[1m   Affected spec: [0m>=0
+[1m   ADVISORY: [0m*DISPUTED* Ray allows a remote attacker to execute
+   arbitrary code via the job submission API. In the default...
+[1m   CVE-2023-48022[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/65189/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 65189 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in diskcache version 5.6.3[0m
+[1m   Vulnerability ID: [0m86338
+[1m   Affected spec: [0m<=5.6.3
+[1m   ADVISORY: [0mAffected versions of the diskcache package are
+   vulnerable to Deserialization of Untrusted Data due to unsafe default...
+[1m   CVE-2025-69872[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/86338/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 86338 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in skops version 0.14.0[0m
+[1m   Vulnerability ID: [0m71782
+[1m   Affected spec: [0m>=0.6
+[1m   ADVISORY: [0mDeserialization of untrusted data can occur in versions
+   0.6 or newer of the skops python library, enabling a maliciously...
+[1m   CVE-2024-37065[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://getsafety.com/v/71782/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 71782 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
++==============================================================================+
+   [32m[1mREMEDIATIONS[0m
+
+  12 vulnerabilities were reported in 5 packages. For detailed remediation & 
+  fix recommendations, upgrade to a commercial license. 
+
++==============================================================================+
+
+ Scan was completed. 12 vulnerabilities were reported. 
+
++==============================================================================+[0m
+
+
+[33m[1m+===========================================================================================================================================================================================+[0m
+
+
+[31m[1mDEPRECATED: [0m[33m[1mthis command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.[0m
+
+
+[32mWe highly encourage switching to the new [0m[32m[1m`scan`[0m[32m command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.[0m
+
+
+[33m[1m+===========================================================================================================================================================================================+[0m
+
+

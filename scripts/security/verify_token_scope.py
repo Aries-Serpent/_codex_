@@ -208,8 +208,10 @@ class TokenScopeVerifier:
         print("GitHub Token Scope Verification Report")
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print(f"Timestamp: {results.get('timestamp', 'unknown')}")
-        print(f"Status: {results.get('status', 'unknown').upper()}")
+        print("Timestamp: [suppressed]")
+        status = results.get("status", "unknown").upper()
+        status_display = status if status in ("VALID", "ERROR") else "INVALID"
+        print(f"Status: {status_display}")
         print()
 
         if results.get("error"):
@@ -222,8 +224,8 @@ class TokenScopeVerifier:
             return
 
         # Direct inline access for non-sensitive metadata
-        print(f"HTTP Status: {results.get('http_status', 'unknown')}")
-        print(f"Rate Limit Remaining: {results.get('rate_limit_remaining', 'unknown')}")
+        print("HTTP Status: [suppressed]")
+        print("Rate Limit Remaining: [suppressed]")
         print()
 
         # Display scope count only (not names) for security
