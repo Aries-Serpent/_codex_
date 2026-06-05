@@ -59,7 +59,7 @@ Execution tracking artifacts:
 | 6 | Save and restore RNG state in checkpoints | Medium | High | ML | ✅ Implemented — `src/codex_ml/utils/checkpointing.py` `dump_rng_state`/`load_rng_state`; `training/checkpoint_manager.py` uses it |
 | 7 | Enforce torch.use_deterministic_algorithms(True) | Small | High | ML | ✅ Implemented — `src/codex_ml/utils/determinism.py` `set_deterministic()` calls `torch.use_deterministic_algorithms(True)` |
 | 8 | Capture and log Python/CUDA/hardware versions | Small | High | Ops | ✅ Implemented — `src/codex_ml/utils/env.py` `EnvironmentFingerprint` dataclass with CUDA driver, GPU device info, RAM (PR #4783) |
-| 9 | Pin Docker base images to specific digests | Small | Medium | Ops | 🔴 Not Started |
+| 9 | Pin Docker base images to specific digests | Small | Medium | Ops | ✅ Implemented — all 12 Dockerfiles pinned to SHA256 digests via `skopeo inspect`; re-pin script at `scripts/docker/pin_digests.sh` (Gap 9) |
 
 ### Autonomy & Self-Healing
 | # | Gap | Effort | Impact | Owner | Status |

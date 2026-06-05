@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Gap 9 — Docker base image digest pinning — 2025-07-18)
+- **Dockerfile, Dockerfile.preview, Dockerfile.restore**: Pinned all `FROM` lines to SHA256 manifest-list digests resolved via `skopeo inspect`. Stage-internal `FROM <alias>` references unchanged.
+- **docker/Dockerfile.ci, docker/Dockerfile.cpu, docker/Dockerfile.embedding, docker/Dockerfile.gpu, docker/Dockerfile.local, docker/Dockerfile.local-codex-env, docker/Dockerfile.optimized**: Same digest pinning applied; `docker/Dockerfile.local` placeholder (`<PINNED_DIGEST>`) resolved to live `python:3.12-slim` digest.
+- **.github/agents/ci-testing-agent/Dockerfile, .github/agents/security-scan-agent/Dockerfile**: Agent Dockerfiles pinned.
+- **scripts/docker/pin_digests.sh**: New maintenance script — re-resolves all base-image digests via `skopeo` and applies updates in-place; supports `--dry-run`.
+- **workbench/evidence/gap9_docker_digest_pinning.md**: Full evidence record — resolved digests, per-file change table, re-pinning instructions.
+
 ### Fixed (auto-update — PR #4788)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4788 (SHA `73e5269d`) at 2026-06-05T19:03Z [auto-generated]
 

@@ -2,7 +2,8 @@
 # Provides separate cpu-runtime and gpu-runtime targets for deployment
 
 # ===== Stage 1: Base Image =====
-FROM python:3.12-slim AS base
+# FROM python:3.12-slim (pinned below)
+FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203 AS base
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
@@ -54,7 +55,8 @@ ENTRYPOINT ["python", "-m", "codex_ml"]
 CMD ["--help"]
 
 # ===== Stage 3: GPU Runtime =====
-FROM nvidia/cuda:13.3.0-runtime-ubuntu22.04 AS gpu-runtime
+# FROM nvidia/cuda:13.3.0-runtime-ubuntu22.04 (pinned below)
+FROM nvidia/cuda:13.3.0-runtime-ubuntu22.04@sha256:aa89ba5b690e634093fee3bec549bf3f42a67a11616fc0541b582dbebd03a5b5 AS gpu-runtime
 
 LABEL org.opencontainers.image.description="Codex ML GPU runtime"
 
@@ -104,7 +106,8 @@ ENTRYPOINT ["python3", "-m", "codex_ml"]
 CMD ["--help"]
 
 # ===== Stage 4: Test Environment (default) =====
-FROM python:3.12-slim AS test
+# FROM python:3.12-slim (pinned below)
+FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203 AS test
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
