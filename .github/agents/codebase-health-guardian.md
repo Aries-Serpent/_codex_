@@ -2,8 +2,8 @@
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
 version: 2.6.0
-updated: 2026-03-28
-last_health_sweep: 2026-03-28T21:22Z (S144)
+updated: 2026-06-05
+last_health_sweep: 2026-06-05T15:20Z (S145)
 sweep_status:
   ruff_violations: 0
   auto_fixable_issues: 0
@@ -12,7 +12,7 @@ sweep_status:
     P19_src_absolute_imports: 140  # S144 N14: 252→140 (-112 in tests/); 9 remain in src/scripts
     P20_yaml_multiline: 0
     P21_nodejs20_actions: 0
-    P21_nodejs20_deadline: "2026-06-02 — ALL action families fully upgraded (S135+S136)"
+    P21_nodejs20_deadline: "2026-06-05 — residual Node.js 20 references remediated to Node.js 22 (S145)"
   mypy_baseline: 333  # CI isolated-venv count (was 306 from local env — corrected S141)
 cognitive_integration_level: 3
 aais_contribution: +4.0 points
@@ -137,6 +137,7 @@ stat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # modified < 48h
 | S139  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ CI rescue | RC-1: crawler/__init__.py relative imports; RC-2: mypy baseline 306 (local) |
 | S140  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ S221 resolved | S221 guard false-positive resolved at a12f5e2 |
 | S141  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ mypy fixed | 9 CI errors fixed; baseline 306→333 (CI env); PR review items; PR_LIFECYCLE.md |
+| S145  | 2026-06-05 | ✅ 0 | ✅ 0 fixable | ✅ P21 maintained | Residual Node.js 20 refs remediated in examples/misc/devcontainer/docs/runbooks; deadline metadata refreshed |
 
 ---
 

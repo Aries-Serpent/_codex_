@@ -14,7 +14,7 @@
 | **Reliability** — Correct stale `CODEX_CI_FAILURE_RATE` from `2.0:ok` → `0.0:ok` (actual recent run data: 0/50 failures on main) | ✅ Complete |
 | Update living docs (`whats_next`, `session_diagram`) | ✅ Complete |
 | Update `CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
-| **P3** — Node.js 20 deadline (2026-06-02): run --pattern 21, open tracking issue | ⏳ Next session |
+| **P3** — Node.js 20 deprecation follow-up: run --pattern 21 and keep deprecated refs at 0 | ✅ Complete |
 | **P4** — Post-merge: `sync_tracked_files --fix` on main after merge | ⏳ Post-merge |
 
 ### AAIS Score Progression (this session)
@@ -37,6 +37,6 @@
 
 ### Next Session Priorities
 
-- **P3** — Node.js 20 deprecation (2026-06-02 deadline): run `--pattern 21`, open tracking issue for any affected workflows
+- **P3** — Node.js 20 deprecation follow-up: keep running `--pattern 21` and maintain 0 deprecated refs
 - **P4** — Post-merge: `sync_tracked_files --fix` on main to sync tracked file manifest
 - **Monitor** — Verify `ci-health-monitor.yml` next run writes `0.0:ok` to repo variable to keep agent_context in sync

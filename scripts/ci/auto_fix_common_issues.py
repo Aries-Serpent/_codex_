@@ -25,7 +25,7 @@ This script automatically fixes the 30 most common patterns that cause workflow 
 18. Duplicate keyword arguments — auto-fixable
 19. Src absolute imports — detect src/ imports using absolute paths
 20. YAML multiline strings — detect missing block scalars
-21. Node.js 20 actions — detect deprecated actions/setup-node@v1/v2
+21. Node.js 20 actions — detect deprecated Node.js 20-era GitHub Actions majors
 22. Tracked file sync — detects .secrets.baseline / CODEX_MANIFEST drift
 23. Secrets baseline plugins — detects missing detect-secrets plugins
 24. Codecov token missing — detect codecov-action without token: or continue-on-error
@@ -1945,9 +1945,9 @@ class CommonIssueFixer:
         return issues
 
     def check_nodejs20_actions(self) -> list[str]:
-        """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (deadline: 2026-06-02).
+        """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (post-deprecation guard).
 
-        GitHub will force all actions to Node.js 24 starting 2026-06-02.  Workflows
+        GitHub forces actions onto newer runtimes after deprecation windows. Workflows
         using deprecated action versions will start producing hard failures instead of
         deprecation warnings.
 
@@ -2023,12 +2023,12 @@ class CommonIssueFixer:
             self.issues_found["Node.js 20 Actions"] = issues
             print(
                 f"⚠  Pattern 21 (Node.js 20 Actions): {len(affected)} workflow(s) / "
-                f"{total_refs} action refs — deadline 2026-06-02"
+                f"{total_refs} action refs — deprecated runtime refs detected"
             )
             for issue in issues[:3]:
                 print(f"   {issue}")
             print(
-                "   ℹ️  These are informational until 2026-06-02 — no CI gate failure yet.\n"
+                "   ℹ️  These refs are deprecated and must be upgraded to current supported majors.\n"
                 "   ℹ️  Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20\n"
                 "   ℹ️  See: .codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md §P-K"
             )

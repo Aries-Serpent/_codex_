@@ -54,7 +54,7 @@ EXPECTED_VERSIONS: dict[str, str] = {
     "actions/checkout": "v5",
     # repo convention: v6 is the current standard (32 occurrences)
     "actions/setup-python": "v6",
-    "actions/setup-node": "v4",
+    "actions/setup-node": "v5",
     # repo convention: v5 is the current standard (79 occurrences)
     "actions/upload-artifact": "v5",
     # repo convention: v5 is the current standard (10 occurrences)
@@ -62,7 +62,7 @@ EXPECTED_VERSIONS: dict[str, str] = {
     "actions/cache": "v5",
     "actions/github-script": "v8",
     "actions/configure-pages": "v5",
-    "actions/deploy-pages": "v4",
+    "actions/deploy-pages": "v5",
     "actions/upload-pages-artifact": "v3",
     "github/codeql-action/init": "v3",
     "github/codeql-action/autobuild": "v3",

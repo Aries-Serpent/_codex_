@@ -560,7 +560,7 @@ test.describe('Advanced Tests with Fixtures', () => {
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
-    "@types/node": "^20.10.0",
+    "@types/node": "^22.10.0",
     "typescript": "~5.7.2"
   }
 }
@@ -585,7 +585,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
   PYTHON_VERSION: '3.11'
 
 jobs:

@@ -183,6 +183,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
+          # TODO (node22): update node-version to '22' before re-enabling this workflow
           node-version: '20'
           cache: 'npm'
 

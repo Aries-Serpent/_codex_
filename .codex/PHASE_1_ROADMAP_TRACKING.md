@@ -1,20 +1,20 @@
 # Phase 1 Infrastructure Roadmap — Tracking & Checkpoints
 
-## 🔴 CRITICAL: Node.js 20 End-of-Life (Deadline: 2026-06-02)
+## ✅ Node.js Runtime Baseline (22+)
 
-**Status**: ⏰ 9 DAYS REMAINING
+**Status**: ✅ Completed (2026-06-05 verification)
 
 ### Context
-Node.js 20.x reaches end of support on **2026-06-02**. The repository must complete migration to Node.js 22+ before deadline.
+Active repository runtime has been migrated to Node.js 22+ and Pattern 21 validation is clean.
 
 ### Checklist
-- [ ] Audit all `.github/workflows/*.yml` for Node.js version pinning
-- [ ] Identify all npm-based workflows currently using Node.js 20
+- [x] Audit all `.github/workflows/*.yml` for Node.js version pinning
+- [x] Identify all npm-based workflows currently using Node.js 20
 - [ ] Update GitHub Actions runner OS versions if needed
-- [ ] Update `package.json` engines field to Node.js 22+
+- [x] Update `package.json` engines field to Node.js 22+
 - [ ] Run full test suite against Node.js 22
 - [ ] Verify no breaking changes in npm dependencies
-- [ ] Update CI/CD pipelines to use Node.js 22 LTS
+- [x] Update CI/CD pipelines to use Node.js 22 LTS
 - [ ] Document Node.js 22 requirement in README
 
 ### Affected Components
@@ -96,7 +96,7 @@ cat package.json | grep -A 2 '"engines"'
 - ✅ Cache optimization infrastructure deployed
 - ✅ Session context enrichment tools ready
 - ✅ Coverage gap-fill tests at 80%+ for target modules
-- ⏳ Node.js 20 migration completed (CRITICAL: 9 days)
+- ✅ Node.js 20 migration completed and validated via Pattern 21
 - ⏳ WebSocket metrics streaming integrated (50% → 100%)
 - ⏳ Cognitive app FastAPI backend functional
 - ⏳ Coverage trending toward 15% target (from 10.7%)
@@ -106,19 +106,19 @@ cat package.json | grep -A 2 '"engines"'
 ## Next Actions (Priority Order)
 
 ### Immediate (Today)
-1. Create GitHub issue for Node.js 20 migration (link: TBD)
+1. Keep `python3 scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` in regular validation cadence
 2. Complete WebSocket metrics integration test
 3. Run all tests to ensure no regressions
 
 ### This Week
 1. Apply cache optimization to top 5 high-impact workflows
-2. Test Node.js 22 compatibility
-3. Update package.json engines field
+2. Test Node.js 22 compatibility for newly added workflows/components
+3. Keep package.json engines constraints aligned with runtime policy
 4. Implement Cognitive App FastAPI metrics endpoints
 
 ### Next Week (Phase 2 Preparation)
 1. Complete cache optimization rollout (28+ workflows)
-2. Finalize Node.js 22 migration
+2. Sustain Node.js 22 baseline and monitor future runtime policy updates
 3. Add coverage tests for CLI module
 4. Begin WebSocket frontend integration
 

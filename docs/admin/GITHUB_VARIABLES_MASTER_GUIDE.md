@@ -168,7 +168,9 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 > ✅ **Issue 1 resolved (2026-03-06):** `CODEX_ENV_NODE_VERSION` was previously stored here as an
 > environment secret. It has been **deleted** from env secrets and **recreated** as an environment
 > variable (see [§7](#7-environment-variables-aries_serpent_codex_)). Node.js version strings are
-> non-sensitive and should be variables, not secrets.
+> non-sensitive and should be variables, not secrets.  
+> ✅ **Current runtime baseline (2026-06-05):** Node.js `22` is the required active value; older
+> `18`/`20` references in this document are historical records only.
 
 ---
 
@@ -362,7 +364,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 | 3 | `CODEX_BRIDGE_OWNER_ONLY` | ✅ | `true` | New (not in repo-level) | IPC bridge access control |
 | 4 | `CODEX_DB_PATH` | ✅ | `.codex/logs.db` | Overrides repo (`.codex/logs.db`) | No conflict |
 | 5 | `CODEX_ENV_GO_VERSION` | ✅ | `1.21` | Overrides repo (`1.21`) | No conflict |
-| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `20` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Versioning note:** `20` is intentionally major-only and tracks the latest `20.x` release (not a pinned full semver). |
+| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `22` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Current-state note:** `22` is intentionally major-only and tracks the latest `22.x` release (not a pinned full semver). |
 | 7 | `CODEX_ENV_PYTHON_VERSION` | ✅ | `3.12` | Overrides repo (`3.12`) | ✅ **Issue 2 resolved (2026-03-06):** Updated from `3.11` to `3.12`. Now consistent with `CODEX_PYTHON_VERSION`. |
 | 8 | `CODEX_ENV_RUST_VERSION` | ✅ | `1.92` | Overrides repo (`1.92`) | No conflict |
 | 9 | `CODEX_ENV_SWIFT_VERSION` | ✅ | `5.9` | Overrides repo (`5.9`) | Interpreted as latest `5.9.x` patch release (minor pinned, patch floating). |
@@ -459,7 +461,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | ~~**Problem**~~ | ~~`CODEX_ENV_NODE_VERSION` is stored as an **Environment Secret** with value `18`.~~ |
-| **Resolution** | `CODEX_ENV_NODE_VERSION` env secret has been **deleted**. A replacement env *variable* with value `18` now exists under `Aries_Serpent_codex_` (verified in 2026-03-06 export). Agents and logs can now read this value. |
+| **Resolution** | `CODEX_ENV_NODE_VERSION` env secret has been **deleted**. A replacement env *variable* was created under `Aries_Serpent_codex_` (verified in 2026-03-06 export). The active baseline value is now `22`; older `18` references are historical migration context. Agents and logs can read this value. |
 
 ### ✅ Issue 2 — Python version conflict: `3.12` vs `3.11` — **RESOLVED 2026-03-06**
 
@@ -551,6 +553,7 @@ If you still see version mismatches, confirm no other variable overrides exist.
 Symptom: Node.js version appears masked in CI logs
 Status:  ✅ RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and
          recreated as an env variable. Value is now readable in logs and by the Variables API.
+Current required value: `22` (major-only).
 ```
 
 ### "Codespace starts but CLI API server not running"

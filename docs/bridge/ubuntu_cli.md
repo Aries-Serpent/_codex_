@@ -7,7 +7,7 @@ Tools API (ITA) bridge.
 ## Prerequisites
 
 - Python 3.12+ (`sudo apt install python3 python3-venv python3-pip`)
-- Node.js 20+ (`curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -` then
+- Node.js 22+ (`curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -` then
   `sudo apt install nodejs`)
 - GitHub App credentials for Copilot write operations (optional until you enable `/git/create-pr`).
 

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR #4783 — Gap Resolution Phase 1 — 2026-06-05)
+- **monitoring/dashboard_api.py**: Added `/liveness` and `/readiness` Kubernetes-style health probe endpoints (P0 gap 4). `/liveness` returns process uptime; `/readiness` validates local resource access and returns HTTP 503 when unavailable. `/health` retained for backward compatibility.
+- **src/codex_ml/utils/env.py**: Replaced stub module with `EnvironmentFingerprint` dataclass. Captures Python version, OS platform, CPU count, RAM, CUDA toolkit version, CUDA driver version (via pynvml/nvidia-smi), and GPU device specs. Adds `.capture()`, `.to_dict()`, `.digest()`, and `.log()` methods. `environment_summary()` retained as backward-compat shim (P1 gap 8).
+- **tests/unit/test_health_probes.py**: New test module covering liveness, readiness, legacy health, and root endpoint catalog.
+- **tests/unit/test_env_fingerprint.py**: New test module covering `EnvironmentFingerprint.capture()`, `to_dict()`, `digest()`, `log()`, and `environment_summary()` shim.
+- **workbench/gap_backlog_prioritized.md**: Re-baselined gap statuses — marked gaps 4, 6, 7, 8, 10, 25 as Implemented; 14, 19, 27 as Needs Verification; 5 as In Progress.
+
+### Fixed (auto-update — PR #4783)
+- Auto-fix: addressed review feedback (bytes decoding in `env.py`, test isolation, unused imports, duplicate import) for PR #4783 (SHA `5414474`) at 2026-06-05T17:15Z [auto-generated]
+- CI Rescue: diagnosed and unblocked comment review gate — 8× copilot-setup-steps.yml failures are pre-existing YAML parse error at line 146 (not in PR scope); coverage ratchet comment shows 19.93% > 10% floor; all 37 new tests pass (2026-06-05T17:37Z)
+- Auto-fix: resolved Pattern 12 (line length >100) in `src/codex_ml/utils/env.py:138` — split inline ternary to multi-line form; fixed Pattern 3 (YAML parse error) in `copilot-setup-steps.yml` session preload step — replaced `|| { }` flow-scalar with canonical `run: | if ! ...; then ...; fi` form (2026-06-05T17:43Z [auto-generated])
+
 ### Fixed (auto-update — PR #4776)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4776 (SHA `8aa6fa2d`) at 2026-06-05T12:37Z [auto-generated]
 

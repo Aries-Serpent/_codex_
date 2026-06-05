@@ -1,13 +1,17 @@
 """FastAPI dashboard for real-time CI/CD and security metrics."""
 
 import json
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+
+# Startup timestamp used by the liveness probe uptime field
+_STARTUP_TIME: float = time.monotonic()
 
 app = FastAPI(
     title="Codex Monitoring Dashboard",
@@ -37,17 +41,66 @@ async def root():
             "agent_metrics": "/api/metrics/agents",
             "alerts": "/api/alerts",
             "health": "/health",
+            "readiness": "/readiness",
+            "liveness": "/liveness",
         },
     }
 
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """Legacy health check endpoint — prefer /readiness or /liveness."""
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
     }
+
+
+@app.get("/liveness")
+async def liveness_probe():
+    """Kubernetes-style liveness probe.
+
+    Returns HTTP 200 as long as the process is running. This endpoint never
+    touches downstream dependencies; a non-200 response means the process
+    should be restarted.
+    """
+    return {
+        "status": "alive",
+        "uptime_seconds": round(time.monotonic() - _STARTUP_TIME, 2),
+        "timestamp": datetime.now().isoformat(),
+    }
+
+
+@app.get("/readiness")
+async def readiness_probe():
+    """Kubernetes-style readiness probe.
+
+    Checks that required local resources (metrics data directory) are
+    accessible before declaring the service ready to serve traffic.
+    Returns HTTP 503 when dependencies are unavailable so that load
+    balancers can route traffic away until the service recovers.
+    """
+    checks: dict[str, str] = {}
+    ready = True
+
+    # Check that the metrics data directory is accessible
+    metrics_dir = Path("metrics_data")
+    try:
+        metrics_dir.mkdir(parents=True, exist_ok=True)
+        checks["metrics_dir"] = "ok"
+    except OSError as exc:  # pragma: no cover - filesystem error path
+        checks["metrics_dir"] = f"error: {exc}"
+        ready = False
+
+    http_status = status.HTTP_200_OK if ready else status.HTTP_503_SERVICE_UNAVAILABLE
+    return JSONResponse(
+        status_code=http_status,
+        content={
+            "status": "ready" if ready else "not_ready",
+            "checks": checks,
+            "timestamp": datetime.now().isoformat(),
+        },
+    )
 
 
 @app.get("/api/metrics/ci")

@@ -106,7 +106,7 @@ Fix the `.devcontainer/scripts/on-create.sh` script to handle APT state corrupti
 | `CODESPACES_APT_CLEANUP_AGGRESSIVE` | Container Setup | Boolean | MAY | `true` | Aggressively clean APT lists after install (existing behavior) |
 | `CODEX_DEVCONTAINER_WORKSPACE` | Workspace Config | String | SHOULD | `/workspaces/_codex_` | Canonical workspace path for Codespaces (mirrors CODESPACE_VSCODE_FOLDER) |
 | `CODEX_DEVCONTAINER_PYTHON_VERSION` | Runtime Config | String | MUST | `3.12` | Python version for devcontainer (MUST match pyproject.toml) |
-| `CODEX_DEVCONTAINER_NODE_VERSION` | Runtime Config | String | SHOULD | `20` | Node.js version for devcontainer (from devcontainer.json) |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | Runtime Config | String | SHOULD | `22` | Node.js version for devcontainer (from devcontainer.json) |
 | `CODEX_DEVCONTAINER_RUST_VERSION` | Runtime Config | String | MAY | `stable` | Rust version for devcontainer features |
 | `CODEX_SESSION_LOG_DIR` | Logging Config | String | MUST | `/workspaces/_codex_/.codex/sessions` | Session log directory (in-container path) |
 | `CODEX_DB_PATH` | Database Config | String | MUST | `/workspaces/_codex_/.codex/codex.db` | SQLite database path for Codespaces (Copilot session context) |
@@ -144,7 +144,7 @@ in Codespaces have consistent runtime configuration across prebuilds and rebuild
 | `CODESPACES_APT_CLEANUP_AGGRESSIVE` | MAY | `true` | Aggressively clean APT lists after installation (safe for transient containers) |
 | `CODEX_DEVCONTAINER_WORKSPACE` | SHOULD | `/workspaces/_codex_` | Canonical workspace path (mirrors CODESPACE_VSCODE_FOLDER env var) |
 | `CODEX_DEVCONTAINER_PYTHON_VERSION` | MUST | `3.12` | Python version (MUST match pyproject.toml requires-python) |
-| `CODEX_DEVCONTAINER_NODE_VERSION` | SHOULD | `20` | Node.js version for cognitive_app builds |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | SHOULD | `22` | Node.js version for cognitive_app builds |
 | `CODEX_DEVCONTAINER_RUST_VERSION` | MAY | `stable` | Rust toolchain version for container features |
 | `CODEX_SESSION_LOG_DIR` | MUST | `/workspaces/_codex_/.codex/sessions` | Session log SQLite directory (in-container, not repo root) |
 | `CODEX_DB_PATH` | MUST | `/workspaces/_codex_/.codex/codex.db` | SQLite database path for Copilot agent context (in-container) |
@@ -202,7 +202,7 @@ have a consistent runtime environment:
 2. [ ] `CODESPACES_APT_CLEANUP_AGGRESSIVE` = `true`
 3. [ ] `CODEX_DEVCONTAINER_WORKSPACE` = `/workspaces/_codex_`
 4. [ ] `CODEX_DEVCONTAINER_PYTHON_VERSION` = `3.12`
-5. [ ] `CODEX_DEVCONTAINER_NODE_VERSION` = `20`
+5. [ ] `CODEX_DEVCONTAINER_NODE_VERSION` = `22`
 6. [ ] `CODEX_SESSION_LOG_DIR` = `/workspaces/_codex_/.codex/sessions`
 7. [ ] `CODEX_DB_PATH` = `/workspaces/_codex_/.codex/codex.db`
 8. [ ] `CODEX_SQLITE_POOL` = `1`
@@ -214,7 +214,7 @@ gh variable set CODESPACES_APT_UPDATE_RETRY --body "true"
 gh variable set CODESPACES_APT_CLEANUP_AGGRESSIVE --body "true"
 gh variable set CODEX_DEVCONTAINER_WORKSPACE --body "/workspaces/_codex_"
 gh variable set CODEX_DEVCONTAINER_PYTHON_VERSION --body "3.12"
-gh variable set CODEX_DEVCONTAINER_NODE_VERSION --body "20"
+gh variable set CODEX_DEVCONTAINER_NODE_VERSION --body "22"
 gh variable set CODEX_SESSION_LOG_DIR --body "/workspaces/_codex_/.codex/sessions"
 gh variable set CODEX_DB_PATH --body "/workspaces/_codex_/.codex/codex.db"
 gh variable set CODEX_SQLITE_POOL --body "1"

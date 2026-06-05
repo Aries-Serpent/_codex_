@@ -1,11 +1,18 @@
 # Prioritized Gap Remediation Backlog
 **Generated:** 2025-12-06 03:42:00
+**Re-baselined:** 2026-06-05 (S-gap-resolution kickoff — PR #4783)
 
 This document provides a complete, prioritized backlog of all identified gaps, organized by:
 - Priority (P0-P3)
 - Effort (Small/Medium/Large)
 - Impact (Low/Medium/High/Critical)
 - Category (Capability domain)
+
+**Status legend:**
+- 🔴 Not Started
+- 🟡 In Progress
+- ✅ Implemented
+- 🔎 Needs Verification
 
 ## Priority Definitions
 - **P0 (Critical):** Blocking production deployment, must fix immediately
@@ -33,8 +40,8 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ### Operations & Monitoring
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 4 | Implement health check endpoints (readiness/liveness) | Medium | Critical | Ops | 🔴 Not Started |
-| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🔴 Not Started |
+| 4 | Implement health check endpoints (readiness/liveness) | Medium | Critical | Ops | ✅ Implemented — `monitoring/dashboard_api.py` `/readiness`+`/liveness` probes added (PR #4783) |
+| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — `pyproject.toml` floor at 10; roadmap targets 80%; raised incrementally per S-session plan |
 
 ---
 
@@ -43,15 +50,15 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ### Reproducibility & Determinism
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 6 | Save and restore RNG state in checkpoints | Medium | High | ML | 🔴 Not Started |
-| 7 | Enforce torch.use_deterministic_algorithms(True) | Small | High | ML | 🔴 Not Started |
-| 8 | Capture and log Python/CUDA/hardware versions | Small | High | Ops | 🔴 Not Started |
+| 6 | Save and restore RNG state in checkpoints | Medium | High | ML | ✅ Implemented — `src/codex_ml/utils/checkpointing.py` `dump_rng_state`/`load_rng_state`; `training/checkpoint_manager.py` uses it |
+| 7 | Enforce torch.use_deterministic_algorithms(True) | Small | High | ML | ✅ Implemented — `src/codex_ml/utils/determinism.py` `set_deterministic()` calls `torch.use_deterministic_algorithms(True)` |
+| 8 | Capture and log Python/CUDA/hardware versions | Small | High | Ops | ✅ Implemented — `src/codex_ml/utils/env.py` `EnvironmentFingerprint` dataclass with CUDA driver, GPU device info, RAM (PR #4783) |
 | 9 | Pin Docker base images to specific digests | Small | Medium | Ops | 🔴 Not Started |
 
 ### Autonomy & Self-Healing
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 10 | Implement config drift detection | Medium | High | Platform | 🔴 Not Started |
+| 10 | Implement config drift detection | Medium | High | Platform | ✅ Implemented — `src/codex_ml/utils/config_drift.py` `ConfigDrift.has_drift()` and `detect_config_drift()` |
 | 11 | Add automated dependency vulnerability scanning to CI | Small | High | Security | 🔴 Not Started |
 | 12 | Set up alerting for training failures | Medium | High | Ops | 🔴 Not Started |
 | 13 | Add performance degradation alerts | Medium | High | Ops | 🔴 Not Started |
@@ -59,7 +66,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ### Monitoring & Observability
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 14 | Set up Prometheus metrics collection | Medium | High | Ops | 🔴 Not Started |
+| 14 | Set up Prometheus metrics collection | Medium | High | Ops | 🔎 Needs Verification — `tests/monitoring/test_prometheus_metrics_registry.py` and `test_prometheus_fallback.py` exist; integration wiring TBD |
 | 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | 🔴 Not Started |
 | 16 | Add distributed tracing (optional) | Large | Medium | Ops | 🔴 Not Started |
 
@@ -72,7 +79,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 |---|-----|--------|--------|-------|--------|
 | 17 | Implement data drift monitoring | Large | Medium | ML | 🔴 Not Started |
 | 18 | Add model drift detection | Large | Medium | ML | 🔴 Not Started |
-| 19 | Set up DVC for active data versioning | Medium | Medium | ML | 🔴 Not Started |
+| 19 | Set up DVC for active data versioning | Medium | Medium | ML | 🔎 Needs Verification — `dvc.yaml` exists; needs CI pipeline wiring |
 | 20 | Implement deterministic data splits | Small | Medium | ML | 🔴 Not Started |
 
 ### Testing & Quality
@@ -86,9 +93,9 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ### Security & Supply Chain
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 25 | Generate SBOM for all releases | Small | Medium | Security | 🔴 Not Started |
+| 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
 | 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | 🔴 Not Started |
-| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | 🔴 Not Started |
+| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | 🔎 Needs Verification — `src/codex_ml/safety/moderation.py` `ModerationAdapter` provides prompt sanitization |
 | 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | 🔴 Not Started |
 
 ### Error Handling & Resilience
@@ -137,10 +144,16 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Summary Statistics
 
 **Total Gaps Identified:** 45
-**P0 (Critical):** 5 gaps
-**P1 (High):** 11 gaps
-**P2 (Medium):** 14 gaps
-**P3 (Low):** 15 gaps
+**Re-baseline date:** 2026-06-05 (PR #4783)
+
+| Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
+|----------|-------|---------------|----------------------|----------------|----------------|
+| P0 | 5 | 1 (gap 4) | 0 | 1 (gap 5) | 3 |
+| P1 | 11 | 4 (gaps 6,7,8,10) | 1 (gap 14) | 0 | 6 |
+| P2 | 14 | 1 (gap 25) | 2 (gaps 19,27) | 0 | 11 |
+| P3 | 15 | 0 | 0 | 0 | 15 |
+
+> *Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.
 
 **Estimated Total Effort:**
 - Small tasks: ~15 (15-30 iterations)
