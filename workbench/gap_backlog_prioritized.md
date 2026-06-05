@@ -153,17 +153,17 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 | P3 | 15 | 0 | 0 | 0 | 15 |
 
 > - Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.
-> - Gap 19 requires verification details to confirm current implementation status and integration completeness.
-> - Gap 27 requires verification details to confirm current implementation status and integration completeness.
+> - Gap 19: verify DVC pipeline integration in CI, including pipeline stage execution, artifact/version consistency, and reproducibility checks in automated runs.
+> - Gap 27: verify ModerationAdapter coverage across all LLM prompt entry points, including pre/post moderation enforcement, fail-closed behavior on provider errors, and observability (logs/metrics).
 
 **Estimated Total Effort:**	
 - Small tasks: ~14 (14-28 iterations)
 - Medium tasks: ~17 (51-85 iterations)
-- Large tasks: ~8 (48-80 iterations)
+- Large tasks: ~12 (72-120 iterations)
 - XLarge tasks: 2 (22+ iterations)
 
-**Total: ~137-197+ iterations of engineering effort** (2.7-7.4 months with a team of 2-3 engineers)
-- Assumption for month conversion: (2-3 engineers) × (~24 iterations/engineer/month) = ~48-72 iterations/month; then ~137-197+ iterations ÷ ~48-72 iterations/month = ~2.7-7.4 months.
+**Total: ~159-233+ iterations of engineering effort** (2.2-4.9 months with a team of 2-3 engineers)
+- Assumption for month conversion: (2-3 engineers) × (~24 iterations/engineer/month) = ~48-72 iterations/month; then ~159-233+ iterations ÷ ~48-72 iterations/month = ~2.2-4.9 months.
 
 ---
 
