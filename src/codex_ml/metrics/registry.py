@@ -11,23 +11,22 @@ must be deterministic and side-effect free.
 
 from __future__ import annotations
 
+import importlib
+import json
 import logging
+import math
+import os
+import re
+import threading
+from collections import Counter
+from collections.abc import Callable, Sequence
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Optional
+
+from codex_ml.registry.base import Registry, RegistryConflictError
 
 logger = logging.getLogger(__name__)
-
-import importlib  # noqa: E402
-import json  # noqa: E402
-import math  # noqa: E402
-import os  # noqa: E402
-import re  # noqa: E402
-import threading  # noqa: E402
-from collections import Counter  # noqa: E402
-from collections.abc import Callable, Sequence  # noqa: E402
-from datetime import datetime, timezone  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
-
-from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 metric_registry = Registry("metric")
 # Plain dict checked before metric_registry — allows test mocking via monkeypatch.setitem
@@ -203,7 +202,6 @@ def _register_metric_from_plugin(
             source="entry_point",
         )
     except RegistryConflictError as e:
-        logger.debug(f"RegistryConflictError: {e}")
         logger.warning(f"RegistryConflictError: {e}", exc_info=True)
         if fn is None:
             append_error_entry(
@@ -273,7 +271,6 @@ def register(
         try:
             metric_registry.register(name, target, override=override)
         except RegistryConflictError as exc:
-            logger.debug(f"RegistryConflictError: {exc}")
             append_error_entry(
                 "metric.register",
                 str(exc),
@@ -408,7 +405,7 @@ def _resolve_metric_resource(
     checked_msg = ", ".join(checked) if checked else "<no candidates>"
     raise FileNotFoundError(
         f"Offline metric resource '{name}' not found. Checked: {checked_msg}. Provide `weights_path` or "  # noqa: E501
-        "set CODEX_ML_OFFLINE_METRICS_DIR / {specific_env or 'CODEX_ML_WEIGHTED_ACCURACY_PATH'} to point to the file."  # noqa: E501
+        f"set CODEX_ML_OFFLINE_METRICS_DIR / {specific_env or 'CODEX_ML_WEIGHTED_ACCURACY_PATH'} to point to the file."  # noqa: E501
     )
 
 
@@ -615,7 +612,6 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         scorer = CHRF()
         return float(scorer.corpus_score(preds, [targets]).score)
     except Exception as e:
-        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency

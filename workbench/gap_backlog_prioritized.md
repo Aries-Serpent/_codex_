@@ -1,6 +1,8 @@
 # Prioritized Gap Remediation Backlog
 **Generated:** 2025-12-06 03:42:00
-**Re-baselined:** 2026-06-05 (S-gap-resolution kickoff — PR #4783)
+**Re-baselined:** [rebaseline-date] (S-gap-resolution kickoff — PR #4783)
+
+[rebaseline-date]: 2026-06-05
 
 This document provides a complete, prioritized backlog of all identified gaps, organized by:
 - Priority (P0-P3)
@@ -23,8 +25,8 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Effort Definitions
 - **Small:** 1-2 iterations
 - **Medium:** 3-5 iterations
-- **Large:** 1-2 phases
-- **XLarge:** 2+ weeks
+- **Large:** 1-2 weeks
+- **XLarge:** 3+ weeks
 
 ---
 
@@ -144,7 +146,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 ## Summary Statistics
 
 **Total Gaps Identified:** 45
-**Re-baseline date:** 2026-06-05 (PR #4783)
+**Re-baseline date:** [rebaseline-date] (PR #4783)
 
 | Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
 |----------|-------|---------------|----------------------|----------------|----------------|
@@ -167,25 +169,25 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 
 ## Recommended Execution Strategy
 
-### Phase 1: Foundation (Pre-commit 1-8)
+### Phase 1: Foundation
 Focus: Security, Monitoring, Basic Autonomy
 - Complete all P0 tasks (gaps 1-5)
 - Complete P1 autonomy tasks (gaps 10-13)
 - Complete P1 observability tasks (gaps 14-16)
 
-### Phase 2: Reproducibility & Quality (Pre-commit 9-16)
+### Phase 2: Reproducibility & Quality
 Focus: Determinism, Testing, Supply Chain
 - Complete P1 reproducibility tasks (gaps 6-9)
 - Complete P2 testing tasks (gaps 21-24)
 - Complete P2 security tasks (gaps 25-28)
 
-### Phase 3: Advanced Autonomy (Pre-commit 17-24)
+### Phase 3: Advanced Autonomy
 Focus: Drift Detection, Error Handling, Data Management
 - Complete P2 data/model tasks (gaps 17-20)
 - Complete P2 resilience tasks (gaps 29-31)
 - Start P3 code quality cleanup (gap 32)
 
-### Phase 4: Excellence & Innovation (Pre-commit 25-32)
+### Phase 4: Excellence & Innovation
 Focus: Advanced Features, Documentation, Long-term Quality
 - Complete remaining P3 tasks
 - Build continuous improvement systems

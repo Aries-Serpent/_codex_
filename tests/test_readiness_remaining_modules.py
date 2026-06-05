@@ -111,6 +111,8 @@ def _install_optional_dependency_stubs():
 
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
+    # Minimal no-op stubs — lambdas accept *_, **__ to mirror the real API signatures
+    # (Element/SubElement require a tag, tostring requires an element) without enforcing them.
     xml_tree_stub.Element = lambda *_, **__: SimpleNamespace()
     xml_tree_stub.SubElement = lambda *_, **__: SimpleNamespace()
     xml_tree_stub.tostring = lambda *_, **__: b""
