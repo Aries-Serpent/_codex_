@@ -161,10 +161,10 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 - Small tasks: ~14 (16-32 iterations)
 - Medium tasks: ~17 (51-85 iterations)
 - Large tasks: ~8 (48-80 iterations)
-- XLarge tasks: ~4 (80-160 iterations)
+- XLarge tasks: ~2-4 (22-160 iterations; verify exact count from full gap list)
 
-**Total: ~198-362 iterations of engineering effort** (2.8-7.5 months with a team of 2-3 engineers)
-- Assumption for month conversion: ~24 iterations per engineer per month; team throughput is therefore ~48-72 iterations/month (2-3 engineers), so 198-362 iterations corresponds to roughly 2.8-7.5 months.
+**Total: ~195-357 iterations of engineering effort** (2.7-7.4 months with a team of 2-3 engineers)
+- Assumption for month conversion: ~24 iterations per engineer per month; team throughput is therefore ~48-72 iterations/month (2-3 engineers), so 195-357 iterations corresponds to roughly 2.7-7.4 months.
 
 ---
 
