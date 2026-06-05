@@ -91,6 +91,15 @@ _KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset(
 )
 
 
+def _redact_identifier(identifier: str) -> str:
+    """Return a non-sensitive token/secret identifier for logs."""
+    if not identifier:
+        return "<empty>"
+    if len(identifier) <= 8:
+        return "***"
+    return f"{identifier[:4]}...{identifier[-4:]}"
+
+
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
 
@@ -478,7 +487,7 @@ class GitHubTokenProvider(TokenProvider):
             prerequisites are missing, or the ``requests`` library is unavailable.
         """
         try:
-            logger.info("Updating GitHub token scopes for %s", secret_id)
+            logger.info("Updating GitHub token scopes for %s", _redact_identifier(secret_id))
             logger.debug("New scopes: %s", scopes)
 
             if not HAS_REQUESTS:
@@ -514,9 +523,8 @@ class GitHubTokenProvider(TokenProvider):
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; "
-                "scopes may not be updated. Response: %s",
+                "scopes may not be updated.",
                 resp.status_code,
-                resp.text[:200],
             )
             return False
 
