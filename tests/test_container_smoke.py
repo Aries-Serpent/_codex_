@@ -56,7 +56,8 @@ def test_container_smoke_basic(tmp_path):
         str(host_port),
     ]
     print(f"[test] Running: {' '.join(cmd)}", file=sys.stderr)
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    # Allow enough time for slower CI/container startup while still failing reasonably fast.
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
     if proc.returncode != 0:
         sys.stderr.write(proc.stdout)
         sys.stderr.write(proc.stderr)

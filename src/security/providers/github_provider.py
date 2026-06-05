@@ -446,14 +446,13 @@ class GitHubTokenProvider(TokenProvider):
                     },
                 )
             logger.error(
-                "GitHub API returned %d when creating installation token: %s",
+                "GitHub API returned %d when creating installation token.",
                 resp.status_code,
-                resp.text[:200],
             )
             return RotationResult(
                 success=False,
                 old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
-                error_message=f"GitHub API returned {resp.status_code}: {resp.text[:200]}",
+                error_message=f"GitHub API returned {resp.status_code} when creating installation token.",
             )
         except Exception as e:
             logger.error("Failed to create GitHub installation token: %s", e)
