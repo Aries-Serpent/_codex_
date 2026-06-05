@@ -10,9 +10,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from collections.abc import Mapping, Sequence  # noqa: E402
+from collections.abc import Callable, Mapping, Sequence  # noqa: E402
 
-from .registry import register_metric  # noqa: E402
+
+def register_metric(
+    name: str,
+    fn: Callable[..., object] | None = None,
+    *,
+    override: bool = False,
+) -> Callable[[Callable[..., object]], Callable[..., object]] | Callable[..., object]:
+    from .registry import register_metric as _register_metric
+
+    return _register_metric(name, fn, override=override)
 
 
 def _coerce_reward(value: object) -> float:

@@ -254,11 +254,6 @@ def init_metric_plugins(*, force: bool = False) -> int:
 
 
 def _ensure_metric_plugins_loaded() -> None:
-    with _REWARD_METRICS_LOCK:
-        # Register built-in reward metrics alongside generative defaults
-        # without creating import cycles at module import time.
-        from . import reward  # noqa: F401
-
     if _METRIC_PLUGINS_LOADED:
         return
 
