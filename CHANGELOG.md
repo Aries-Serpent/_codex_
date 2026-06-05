@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **scripts/docker/pin_digests.sh**: New maintenance script — re-resolves all base-image digests via `skopeo` and applies updates in-place; supports `--dry-run`.
 - **workbench/evidence/gap9_docker_digest_pinning.md**: Full evidence record — resolved digests, per-file change table, re-pinning instructions.
 
+### Fixed (auto-update — PR #4789)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4789 (SHA `4aa59f9c`) at 2026-06-05T23:55Z [auto-generated]
+
 ### Fixed (auto-update — PR #4788)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4788 (SHA `73e5269d`) at 2026-06-05T19:03Z [auto-generated]
 
