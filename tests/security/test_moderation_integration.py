@@ -346,8 +346,10 @@ class TestLLMClientModeration:
 
 
 # ---------------------------------------------------------------------------
-# EP-06: agents.orchestrator
+# EP-06: agents.orchestrator (imported via src.agents.orchestrator)
 # ---------------------------------------------------------------------------
+
+_ORCHESTRATOR_MOD = "src.agents.orchestrator"
 
 
 class TestOrchestratorModeration:
@@ -355,14 +357,14 @@ class TestOrchestratorModeration:
 
     def test_rejected_prompt_returns_failure_result(self) -> None:
         """A rejected prompt returns a failure ExecutionResult (not an exception)."""
-        from agents.orchestrator import AgentOrchestrator
+        from src.agents.orchestrator import AgentOrchestrator
 
         orchestrator = AgentOrchestrator()
         orchestrator.register_agent("agent-01", ["general"])
 
         bad_decision = _rejected_decision("input")
 
-        with patch("agents.orchestrator.ModerationAdapter") as mock_cls:
+        with patch(f"{_ORCHESTRATOR_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = ModerationRejection("input", bad_decision)
             mock_cls.return_value = mock_adapter
@@ -376,14 +378,14 @@ class TestOrchestratorModeration:
 
     def test_rejected_prompt_error_does_not_leak_reasons(self) -> None:
         """ExecutionResult.error must not expose internal moderation details."""
-        from agents.orchestrator import AgentOrchestrator
+        from src.agents.orchestrator import AgentOrchestrator
 
         orchestrator = AgentOrchestrator()
         orchestrator.register_agent("agent-01", ["general"])
 
         bad_decision = _rejected_decision("input")
 
-        with patch("agents.orchestrator.ModerationAdapter") as mock_cls:
+        with patch(f"{_ORCHESTRATOR_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = ModerationRejection("input", bad_decision)
             mock_cls.return_value = mock_adapter
@@ -397,7 +399,7 @@ class TestOrchestratorModeration:
 
     def test_moderation_called_before_rate_limits(self) -> None:
         """Moderation must be invoked before _enforce_rate_limits."""
-        from agents.orchestrator import AgentOrchestrator
+        from src.agents.orchestrator import AgentOrchestrator
 
         orchestrator = AgentOrchestrator()
         orchestrator.register_agent("agent-01", ["general"])
@@ -416,7 +418,7 @@ class TestOrchestratorModeration:
 
         orchestrator._enforce_rate_limits = record_rate_limit  # type: ignore[method-assign]
 
-        with patch("agents.orchestrator.ModerationAdapter") as mock_cls:
+        with patch(f"{_ORCHESTRATOR_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = record_moderation
             mock_cls.return_value = mock_adapter
@@ -433,12 +435,12 @@ class TestOrchestratorModeration:
 
     def test_accepted_task_proceeds_to_execution(self) -> None:
         """Accepted task proceeds to normal execution path."""
-        from agents.orchestrator import AgentOrchestrator
+        from src.agents.orchestrator import AgentOrchestrator
 
         orchestrator = AgentOrchestrator()
         orchestrator.register_agent("agent-01", ["general"])
 
-        with patch("agents.orchestrator.ModerationAdapter") as mock_cls:
+        with patch(f"{_ORCHESTRATOR_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.return_value = _accepted_decision()
             mock_cls.return_value = mock_adapter
@@ -451,8 +453,10 @@ class TestOrchestratorModeration:
 
 
 # ---------------------------------------------------------------------------
-# EP-07: agents.autonomous_runner
+# EP-07: agents.autonomous_runner (imported via src.agents.autonomous_runner)
 # ---------------------------------------------------------------------------
+
+_RUNNER_MOD = "src.agents.autonomous_runner"
 
 
 class TestAutonomousRunnerModeration:
@@ -460,12 +464,12 @@ class TestAutonomousRunnerModeration:
 
     def test_rejected_task_returns_failure_result(self) -> None:
         """A rejected task returns a failure ExecutionResult."""
-        from agents.autonomous_runner import AutonomousAgent
+        from src.agents.autonomous_runner import AutonomousAgent
 
         agent = AutonomousAgent()
         bad_decision = _rejected_decision("input")
 
-        with patch("agents.autonomous_runner.ModerationAdapter") as mock_cls:
+        with patch(f"{_RUNNER_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = ModerationRejection("input", bad_decision)
             mock_cls.return_value = mock_adapter
@@ -479,12 +483,12 @@ class TestAutonomousRunnerModeration:
 
     def test_rejected_task_error_does_not_leak_reasons(self) -> None:
         """ExecutionResult.error must not expose internal moderation details."""
-        from agents.autonomous_runner import AutonomousAgent
+        from src.agents.autonomous_runner import AutonomousAgent
 
         agent = AutonomousAgent()
         bad_decision = _rejected_decision("input")
 
-        with patch("agents.autonomous_runner.ModerationAdapter") as mock_cls:
+        with patch(f"{_RUNNER_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = ModerationRejection("input", bad_decision)
             mock_cls.return_value = mock_adapter
@@ -498,7 +502,7 @@ class TestAutonomousRunnerModeration:
 
     def test_moderation_called_before_model_selection(self) -> None:
         """Moderation must fire before select_model() is invoked."""
-        from agents.autonomous_runner import AutonomousAgent
+        from src.agents.autonomous_runner import AutonomousAgent
 
         agent = AutonomousAgent()
         call_order: list[str] = []
@@ -515,7 +519,7 @@ class TestAutonomousRunnerModeration:
 
         agent.client.select_model = record_select  # type: ignore[method-assign]
 
-        with patch("agents.autonomous_runner.ModerationAdapter") as mock_cls:
+        with patch(f"{_RUNNER_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.side_effect = record_moderation
             mock_cls.return_value = mock_adapter
@@ -530,11 +534,11 @@ class TestAutonomousRunnerModeration:
 
     def test_accepted_task_proceeds_to_execution(self) -> None:
         """Accepted task proceeds to normal execution path."""
-        from agents.autonomous_runner import AutonomousAgent
+        from src.agents.autonomous_runner import AutonomousAgent
 
         agent = AutonomousAgent()
 
-        with patch("agents.autonomous_runner.ModerationAdapter") as mock_cls:
+        with patch(f"{_RUNNER_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.return_value = _accepted_decision()
             mock_cls.return_value = mock_adapter
@@ -545,11 +549,11 @@ class TestAutonomousRunnerModeration:
 
     def test_moderation_settings_fail_closed(self) -> None:
         """ModerationAdapter must be instantiated with enabled=True, fail_open=False."""
-        from agents.autonomous_runner import AutonomousAgent
+        from src.agents.autonomous_runner import AutonomousAgent
 
         agent = AutonomousAgent()
 
-        with patch("agents.autonomous_runner.ModerationAdapter") as mock_cls:
+        with patch(f"{_RUNNER_MOD}.ModerationAdapter") as mock_cls:
             mock_adapter = MagicMock()
             mock_adapter.enforce.return_value = _accepted_decision()
             mock_cls.return_value = mock_adapter
