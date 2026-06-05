@@ -314,7 +314,10 @@ def _parse_scalar(value: str) -> Any:
             logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
     try:
-        return ast.literal_eval(value)
+        # ast.literal_eval is the *safe* alternative to eval() — it only parses
+        # Python literals (str, int, float, bool, None, list, dict, tuple, set).
+        # The semgrep rule incorrectly groups it with eval()/exec().
+        return ast.literal_eval(value)  # nosemgrep: semgrep_rules.python.python.insecure.eval
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         return value
