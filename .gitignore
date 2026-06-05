@@ -48,6 +48,7 @@ mlruns/
 .github/checkpoints/
 # Generated artifacts (build outputs)
 # (see detailed artifacts rules below around line 121)
+security-suite-artifacts/
 # Audit outputs (keep baselines committed)
 audit_artifacts/**
 !audit_artifacts/baselines/
