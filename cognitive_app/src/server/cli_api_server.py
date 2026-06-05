@@ -973,9 +973,17 @@ async def cli_run(req: CliRunRequest):
             _db.commit()
     except Exception as _e:
         log.debug("SQLite history write failed (non-blocking): %s", _e)
+
+    # Normalize before logging to avoid propagating request-influenced taint
+    # into log sinks (defense-in-depth against log injection style findings).
+    try:
+        safe_returncode = int(record.get("returncode", -1))
+    except (TypeError, ValueError):
+        safe_returncode = -1
+
     log.info(
         "cli_run rc=%s %.0fms cmd_len=%d",
-        record["returncode"],
+        safe_returncode,
         duration_ms,
         len(str(req.command)),
     )
