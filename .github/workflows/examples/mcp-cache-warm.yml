@@ -30,7 +30,7 @@ on:
 env:
   CACHE_VERSION: v1
   PYTHON_VERSION: '3.12'
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   warm-python-cache:

@@ -45,7 +45,7 @@
       "installTools": true
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
+      "version": "22"
     },
     "ghcr.io/devcontainers/features/rust:1": {
       "version": "stable",

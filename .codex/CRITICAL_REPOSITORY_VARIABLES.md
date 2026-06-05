@@ -149,7 +149,7 @@ directory corruption (`/var/lib/apt/lists/partial is missing`) during the
 | `CODESPACES_APT_CLEANUP_AGGRESSIVE` | MAY | `true` | Aggressively clean APT lists after install (safe for transient containers) |
 | `CODEX_DEVCONTAINER_WORKSPACE` | SHOULD | `/workspaces/_codex_` | Canonical workspace path (mirrors `CODESPACE_VSCODE_FOLDER`) |
 | `CODEX_DEVCONTAINER_PYTHON_VERSION` | MUST | `3.12` | Python version (MUST match `pyproject.toml` requires-python) |
-| `CODEX_DEVCONTAINER_NODE_VERSION` | SHOULD | `20` | Node.js version for `cognitive_app` builds |
+| `CODEX_DEVCONTAINER_NODE_VERSION` | SHOULD | `22` | Node.js version for `cognitive_app` builds |
 | `CODEX_DEVCONTAINER_RUST_VERSION` | MAY | `stable` | Rust toolchain version for container features |
 | `CODEX_SESSION_LOG_DIR` | MUST | `/workspaces/_codex_/.codex/sessions` | Session log directory (in-container, not repo root) |
 | `CODEX_DB_PATH` | MUST | `/workspaces/_codex_/.codex/codex.db` | SQLite database path for Copilot agent context (in-container) |
