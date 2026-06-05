@@ -149,6 +149,7 @@ jobs:
         run: |
           if ! python3 .github/scripts/session_preload.py; then
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+            exit 0
           fi
 
 
