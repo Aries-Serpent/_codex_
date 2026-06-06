@@ -91,7 +91,7 @@ def test_fuzz_query_request_valid(query, index_name, tenant_id, top_k, min_score
         assert 1 <= req.top_k <= 100
         assert 0.0 <= req.min_score <= 1.0
     except ValidationError:
-        pass
+        pass  # invalid input rejected by Pydantic — expected behaviour
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"QueryRequest raised unexpected: {exc!r}")
 
@@ -145,7 +145,7 @@ def test_fuzz_build_index_request_valid(files, index_name, chunk_size, overlap):
         assert isinstance(req.files, list)
         assert 100 <= req.chunk_size <= 10000
     except ValidationError:
-        pass
+        pass  # invalid input rejected by Pydantic — expected behaviour
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"BuildIndexRequest raised unexpected: {exc!r}")
 
@@ -190,7 +190,7 @@ def test_fuzz_delete_index_request_valid(index_name, tenant_id, force):
         req = DeleteIndexRequest(index_name=index_name, tenant_id=tenant_id, force=force)
         assert isinstance(req.force, bool)
     except ValidationError:
-        pass
+        pass  # invalid input rejected by Pydantic — expected behaviour
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"DeleteIndexRequest raised unexpected: {exc!r}")
 

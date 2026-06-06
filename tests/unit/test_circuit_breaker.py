@@ -211,7 +211,6 @@ def test_success_resets_failure_count_in_closed():
     fn_fail = _make_failing()
     fn_ok = _make_success()
 
-    cb.call(fn_fail) if False else None  # suppress lint warning
     for _ in range(2):
         with pytest.raises(RuntimeError):
             cb.call(fn_fail)

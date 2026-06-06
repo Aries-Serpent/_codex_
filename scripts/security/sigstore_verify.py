@@ -57,7 +57,10 @@ try:
 
     _SIGSTORE_AVAILABLE = True
 except ImportError:
-    pass
+    logger.warning(
+        "sigstore is not installed — package signature verification will be skipped. "
+        "Install with: pip install sigstore"
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (code-quality bot remediation — PR #4792 — 2026-06-06T07:00Z)
+
+- **test_circuit_breaker.py** — removed dead `cb.call(fn_fail) if False else None` statement (thread 8)
+- **test_degradation.py** — refactored bare `raise` inside `with GracefulDegradation` blocks to function calls, eliminating unreachable-code warnings (threads 9, 10)
+- **test_property_resilience.py** — same bare-raise refactor; removed redundant `dg.result = fallback` pre-assignment (thread 11)
+- **test_fuzz_configs.py** — replaced tautological `eval_split == eval_split` NaN guard with `not math.isnan(eval_split)`; added `import math`; added explanatory comment to empty `except ValidationError` (threads 12, 17)
+- **sigstore_verify.py** — empty `except ImportError: pass` replaced with `logger.warning(...)` explaining sigstore is optional (thread 13)
+- **test_fuzz_api.py** — added explanatory comments to all three empty `except ValidationError: pass` blocks (threads 14–16)
+
 ### Added (Wave 3/4 full gap remediation — PR #4792 — 2026-06-06T06:40Z)
 
 All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-session code). PR #4792 branch `copilot/explore-codebase-and-create-plan`.

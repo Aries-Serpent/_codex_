@@ -13,6 +13,7 @@ Import guard skips the module gracefully when ``hypothesis`` is absent.
 
 from __future__ import annotations
 
+import math
 import sys
 
 import pytest
@@ -143,7 +144,7 @@ def test_fuzz_train_config_boundary_numerics(
         assert cfg.learning_rate > 0
         assert cfg.batch_size >= 1
     except ValidationError:
-        pass
+        pass  # invalid input rejected by Pydantic — expected behaviour
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"Unexpected exception from TrainConfig: {exc!r}")
 
@@ -204,7 +205,7 @@ def test_fuzz_train_config_dtype_and_eval_split(dtype, eval_split):
     ValidationError = _pydantic_validation_error()
     try:
         cfg = TrainConfig(dtype=dtype, eval_split=eval_split)
-        if eval_split is not None and eval_split == eval_split:  # not NaN
+        if eval_split is not None and not math.isnan(eval_split):  # not NaN
             assert 0.0 <= cfg.eval_split <= 1.0
     except ValidationError:
         pass

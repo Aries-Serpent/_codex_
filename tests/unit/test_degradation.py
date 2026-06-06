@@ -115,8 +115,12 @@ def test_context_manager_captures_result_on_success():
 
 
 def test_context_manager_sets_fallback_on_exception():
-    with GracefulDegradation(fallback="safe") as dg:
+    def _fail():
         raise ValueError("something failed")
+
+    dg = GracefulDegradation(fallback="safe")
+    with dg:
+        _fail()
 
     assert dg.result == "safe"
 
@@ -127,9 +131,12 @@ def test_context_manager_sets_fallback_on_exception():
 
 
 def test_context_manager_no_fallback_raises_degradation_error():
+    def _boom():
+        raise RuntimeError("boom")
+
     with pytest.raises(DegradationError) as exc_info:
         with GracefulDegradation() as dg:  # noqa: F841
-            raise RuntimeError("boom")
+            _boom()
 
     assert isinstance(exc_info.value.original, RuntimeError)
 

@@ -318,9 +318,12 @@ class TestGracefulDegradationProperties:
     ) -> None:
         """Context manager form must set result=fallback when the body raises."""
         dg = GracefulDegradation(fallback=fallback)
-        with dg:
-            dg.result = fallback  # assign before raising; body will raise
+
+        def _fail() -> None:
             raise ValueError("boom")
+
+        with dg:
+            _fail()
 
         # After the with block, result should be fallback
         assert dg.result == fallback

@@ -1,4 +1,24 @@
-## SESSION SUMMARY — 2026-06-06T06:40Z · Wave 3/4 full gap remediation (PR #4792)
+## SESSION SUMMARY — 2026-06-06T07:00Z · Code-quality bot remediation — all 9 issues fixed (PR #4792)
+
+### Pre-flight Checklist
+- [x] **0a.** All 9 unresolved code-quality bot threads from review #4442009364 explicitly identified
+- [x] **0b.** Fixes applied to 6 files; all affected tests pass locally ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. **test_circuit_breaker.py:214** — deleted dead `cb.call(fn_fail) if False else None` statement.
+2. **test_degradation.py:121,134** — refactored bare `raise` statements inside `with GracefulDegradation` blocks to helper function calls so post-`with` assertions are not flagged as unreachable.
+3. **test_property_resilience.py:326** — same bare-raise refactor; removed redundant `dg.result = fallback` pre-assignment.
+4. **test_fuzz_configs.py:207** — replaced tautological `eval_split == eval_split` with `not math.isnan(eval_split)`; added `import math`.
+5. **test_fuzz_configs.py:145** — added `# invalid input rejected by Pydantic — expected behaviour` comment to empty `except ValidationError`.
+6. **sigstore_verify.py:59** — replaced `except ImportError: pass` with `logger.warning(...)` message.
+7. **test_fuzz_api.py:93,147,192** — added explanatory comments to all three empty `except ValidationError: pass` blocks.
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
+
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Re-validated Wave 3/4 queue lock state and `special_flags.needs_verification` before dispatching ✅
