@@ -9161,3 +9161,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - `python scripts/ci/aais_v4_scorer.py --json` → CI/CD Maturity remains `100.0` (`156/156` cached Python workflows).
 - `python scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` → no Node.js 20 action references found.
 - `.github/workflows/self-healing.yml` stub is present and active as the reliability marker workflow.
+
+### Fixed (auto-update — PR #4790 session-close 2026-06-06T00:53Z)
+- Session-close compliance: addressed bot-reported findings, triggered REQ-4/REQ-5 gate fixes, and confirmed merge-readiness score 100/100 for PR #4790 (uv dependency bump) [auto-generated]
