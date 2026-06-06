@@ -1,4 +1,20 @@
-## SESSION SUMMARY — 2026-06-06T09:14Z · Pre-flight fix (PR #4792)
+## SESSION SUMMARY — 2026-06-06T20:14Z · Gap 5 coverage session 5 (PR #4792)
+
+### Pre-flight Checklist
+- [x] **0a.** Addressed CI rescue comment (Comment review gate failure) ✅
+- [x] **0b.** Addressed coverage gate continuation comment (Comment #4443711530) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+1. **`tests/unit/test_reproducibility_hardening.py`** — 33 unit tests for `src/codex_ml/utils/reproducibility_hardening.py`; coverage ~70%.
+2. **`tests/unit/test_subproc.py`** — 20 unit tests for `src/codex_ml/utils/subproc.py`; coverage ~89%.
+3. **`tests/unit/test_retention.py`** — 22 unit tests for `src/codex_ml/utils/retention.py`; coverage ~83%.
+4. **`pyproject.toml fail_under`** raised from 20 → 22 per Task 1 of coverage continuation comment.
+5. Total: 75 new tests across 3 previously-uncovered modules.
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
 
 ### Pre-flight Checklist
 - [x] **0a.** Investigated Pre-Flight Validation failure ✅

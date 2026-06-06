@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Gap 5: coverage session 5 — 2026-06-06T20:14Z)
+
+- **`tests/unit/test_reproducibility_hardening.py`** — 33 unit tests for `src/codex_ml/utils/reproducibility_hardening.py`; covers `enable_deterministic_training`, `save_env_snapshot`, `create_reproducibility_manifest`, and `ReproducibilityManager`. Coverage: 0% → ~70%.
+- **`tests/unit/test_subproc.py`** — 20 unit tests for `src/codex_ml/utils/subproc.py`; covers `_discover_repo_root`, `_gather_allowed_roots`, `_assert_safe_script`, and `run_argv`. Coverage: 0% → ~89%.
+- **`tests/unit/test_retention.py`** — 22 unit tests for `src/codex_ml/utils/retention.py`; covers `prune_checkpoints` with keep_last, keep_every, max_epochs, dry_run, latest.json protection, and edge cases. Coverage: 0% → ~83%.
+- **`pyproject.toml fail_under`** raised from **20 → 22**: Gap 5 session 5 added 75 new tests across 3 modules (`reproducibility_hardening`, `subproc`, `retention`).
+
 ### Fixed (pre-flight validation — test assertion patterns — PR #4792 — 2026-06-06T09:14Z)
 
 - **tests/unit/test_scalability_utils.py** — replaced overly-broad pytest.raises match patterns (`"oops"`, `"boom"`) with descriptive strings (`"circuit_failure"`, `"monitor_failure"`) to pass pre_flight_check.py assertion-pattern validation.
