@@ -17,10 +17,15 @@ permissions:
   contents: read
   security-events: write
 
+concurrency:
+  group: container-scan-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   trivy-scan:
     name: Trivy Scan — ${{ matrix.dockerfile }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
