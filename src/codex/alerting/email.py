@@ -93,7 +93,7 @@ class EmailChannel(AlertChannel):
             from_addr=from_addr,
             to_addrs=to_addrs,
             username=username,
-            ******
+            password=password,
         )
 
     # ------------------------------------------------------------------

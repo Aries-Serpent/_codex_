@@ -29,6 +29,7 @@ sentencepiece>=0.1.99
 # Monitoring and tracking
 tensorboard>=2.13.0
 wandb>=0.15.0
+opentelemetry-sdk>=1.24
 
 # Security: IP-005 dependency updates
 twisted>=24.7.0  # Security: Fixes CVE-2024-41810, CVE-2024-41671 (XSS in redirectTo, HTTP pipelining)

@@ -74,7 +74,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 14 | Set up Prometheus metrics collection | Medium | High | Ops | ✅ Implemented — Wave 0 verified: `CodexMetricsRegistry` + `start_metrics_server()` wired in `train_loop.py` + CLI; 3/3 tests pass; NDJSON fallback present. See `workbench/evidence/gap14_prometheus_verification.md` |
 | 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | 🔴 Not Started |
-| 16 | Add distributed tracing (optional) | Large | Medium | Ops | 🔴 Not Started |
+| 16 | Add distributed tracing (optional) | Large | Medium | Ops | ✅ Deferred via `docs/adr/ADR-0001-distributed-tracing.md`; optional `opentelemetry-sdk` added and no-op stub created at `src/codex_ml/observability/tracing.py` |
 
 ---
 
@@ -162,7 +162,7 @@ Execution tracking artifacts:
 > - Gap 19: verify DVC pipeline integration in CI, including pipeline stage execution, artifact/version consistency, and reproducibility checks in automated runs.
 > - Gap 27: verify ModerationAdapter coverage across all LLM prompt entry points, including pre/post moderation enforcement, fail-closed behavior on provider errors, and observability (logs/metrics).
 
-**Estimated Total Effort:**	
+**Estimated Total Effort:**
 - Small tasks: ~14 (14-28 iterations)
 - Medium tasks: ~17 (51-85 iterations)
 - Large tasks: ~12 (72-120 iterations)

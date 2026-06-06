@@ -58,6 +58,18 @@ from codex_ml.config import (
 )
 from codex_ml.logging.ndjson_logger import is_legacy_mode
 
+# ---------------------------------------------------------------------------
+# Training failure alerting — imported lazily at call site to keep the
+# import cheap and to avoid hard failures if the package is unavailable.
+# ---------------------------------------------------------------------------
+try:
+    from codex.alerting import TrainingAlertManager as _TrainingAlertManager
+
+    _ALERTING_AVAILABLE = True
+except Exception:  # pragma: no cover — optional dependency
+    _ALERTING_AVAILABLE = False
+    _TrainingAlertManager = None  # type: ignore[assignment,misc]
+
 if TYPE_CHECKING:
     from codex_ml.models.reasoning import ReasoningHarness
 
@@ -1821,7 +1833,12 @@ def run_training(
     learning_rate_history: list[list[float]] = []
     last_checkpoint_sha = None
 
-    for epoch in range(start_epoch, target_epochs + 1):
+    # ------------------------------------------------------------------
+    # Epoch loop — wrapped to emit training-failure alerts on unhandled
+    # exceptions while still re-raising so callers remain unaffected.
+    # ------------------------------------------------------------------
+    try:
+        for epoch in range(start_epoch, target_epochs + 1):
         epoch_start = time.perf_counter()
         epoch_checkpoint_sha = None
         for cb in cb_list:
@@ -2049,6 +2066,18 @@ def run_training(
             current_lrs,
             sha_for_log,
         )
+    except Exception as _train_exc:
+        # Emit a failure alert and re-raise so the caller still sees the error.
+        if _ALERTING_AVAILABLE and _TrainingAlertManager is not None:
+            try:
+                _TrainingAlertManager.from_env().alert_training_failure(
+                    _train_exc,
+                    run_id=_TRAIN_RUN_ID,
+                    epoch=locals().get("epoch", 0),
+                )
+            except Exception:  # pragma: no cover — alerting must never crash training
+                logger.debug("Suppressed alerting exception in training failure handler", exc_info=True)
+        raise
 
     for cb in cb_list:
         try:
@@ -2127,6 +2156,20 @@ def run_training(
     report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
     _render_reasoning_report(report_dir, state)
     _render_evaluation_report(report_dir, state)
+
+    # Emit training-complete alert (best-effort; never raises).
+    if _ALERTING_AVAILABLE and _TrainingAlertManager is not None:
+        try:
+            _final_loss = result.get("learning_rate_history") and state.get("avg_loss")
+            _final_loss_val: float = float(_final_loss) if _final_loss is not None else 0.0
+            _TrainingAlertManager.from_env().alert_training_complete(
+                run_id=_TRAIN_RUN_ID,
+                epochs=int(result.get("epochs", 0)),
+                final_loss=_final_loss_val,
+                wall_time_sec=result.get("wall_time_sec", 0),
+            )
+        except Exception:  # pragma: no cover — alerting must never crash training
+            logger.debug("Suppressed alerting exception in training complete handler", exc_info=True)
 
     return result
 

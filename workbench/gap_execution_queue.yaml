@@ -401,8 +401,8 @@ queue:
     owner: Ops
     effort: Large
     impact: Medium
-    status: queued
-    status_source: 🔴 Not Started
+    status: completed
+    status_source: ✅ Deferred via `docs/adr/ADR-0001-distributed-tracing.md`; optional `opentelemetry-sdk` added and no-op stub created at `src/codex_ml/observability/tracing.py`
     flags: []
     wave: Wave 2
     lane: Lane B — CI/Workflow resilience + alerting
