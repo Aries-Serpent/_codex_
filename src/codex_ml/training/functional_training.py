@@ -56,8 +56,8 @@ else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None
     AutoTokenizer = None
 
-# Compatibility alias for legacy tests that patch 'mlflow_run'
-# TODO: Remove after test migration to 'maybe_mlflow'
+# Compatibility alias: legacy tests patch 'mlflow_run' on this module.
+# Remove once test_training_integration_flags.py migrates to patching maybe_mlflow directly.
 mlflow_run = maybe_mlflow
 
 

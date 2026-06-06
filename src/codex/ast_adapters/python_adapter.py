@@ -122,7 +122,7 @@ class PythonASTAdapter(BaseASTAdapter):
         # Extract position info if available
         # Note: Position metadata requires MetadataWrapper to be set up.
         # Without it, line_start/line_end will default to 0.
-        # TODO: Consider wrapping module in MetadataWrapper for accurate positions.
+        # Wrapping the module in MetadataWrapper would provide accurate positions.
         pos = func.name.metadata.get("position", None) if hasattr(func.name, "metadata") else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
