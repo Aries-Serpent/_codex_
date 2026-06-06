@@ -85,15 +85,15 @@ def _is_train_candidate(data: object) -> bool:
     """
     Return True if *data* looks like a **standalone** TrainConfig payload.
 
-    Hydra config groups (e.g. ``configs/training/profiles/``) use different
-    key names (``lr`` vs ``learning_rate``) and are composed at runtime, so we
-    only validate files that explicitly carry ``config_version`` — the clearest
-    signal that the file is a first-class TrainConfig document, not a fragment.
+    Hydra config groups and sweep configs use ``config_version`` as a path
+    reference (e.g. ``conf/config.yaml``), not as the integer sentinel from
+    ``TrainConfig``.  We only attempt Pydantic validation when the value is
+    an integer — the canonical signal for a first-class TrainConfig document.
     """
     if not isinstance(data, dict):
         return False
-    # Only validate if the canonical TrainConfig sentinel key is present
-    return "config_version" in data
+    val = data.get("config_version")
+    return isinstance(val, int)
 
 
 def validate_yaml_syntax(path: Path) -> str | None:

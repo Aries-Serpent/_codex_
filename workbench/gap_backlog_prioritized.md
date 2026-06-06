@@ -101,7 +101,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
 | 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | ✅ Implemented — `.github/workflows/container-scan.yml`: Trivy filesystem scan matrix (Dockerfile, Dockerfile.cpu, Dockerfile.gpu); SARIF → GitHub Security tab; artifact upload 30-day retention; PR/push + weekly schedule triggers. See `workbench/evidence/gap26_container_scanning.md` |
-| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | ✅ Implemented — All 7 LLM entry points wired: `simple_cli.py` (EP-03), `/predict` API (EP-04), `llm_client.py` (EP-05), `orchestrator.py` (EP-06), `autonomous_runner.py` (EP-07); `fail_open=False` enforced; Prometheus `moderation_decisions_total` counter added; 18 integration tests pass. See `workbench/evidence/gap27_moderation_verification.md` |
+| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | ✅ Verified 2026-06-06 — All 7 LLM entry points confirmed wired with `ModerationAdapter(enabled=True, fail_open=False)`: `infer.py` (EP-01), `legacy_api.py` (EP-02), `simple_cli.py` (EP-03), `/predict` API (EP-04), `llm_client.py` (EP-05), `orchestrator.py` (EP-06), `autonomous_runner.py` (EP-07); Prometheus `moderation_decisions_total` counter present; **22/22 integration tests pass** (EP-04 torch-absent fixture fixed in this pass). See `workbench/evidence/gap27_moderation_verification_v2.md` |
 | 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | ✅ Implemented |
 
 ### Error Handling & Resilience

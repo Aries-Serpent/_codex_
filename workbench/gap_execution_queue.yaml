@@ -9,8 +9,7 @@ done_definition:
   artifact_or_log_proof_required: true
   status_updated_in_backlog_and_workbench: true
 special_flags:
-  needs_verification:
-  - 27
+  needs_verification: []
   in_progress:
   - 5
 waves:
@@ -622,11 +621,11 @@ queue:
     owner: Security
     effort: Medium
     impact: High
-    status: needs_verification
-    status_source: 🔎 Needs Verification — `src/codex_ml/safety/moderation.py` `ModerationAdapter`
-      provides prompt sanitization
-    flags:
-    - needs_verification
+    status: done
+    status_source: ✅ Verified 2026-06-06 — all 7 LLM entry points wired with ModerationAdapter(fail_open=False);
+      22/22 integration tests pass; Prometheus moderation_decisions_total counter present.
+      See workbench/evidence/gap27_moderation_verification_v2.md
+    flags: []
     wave: Wave 0
     lane: Lane A — Security/Compliance
     dependencies: []
