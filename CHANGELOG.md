@@ -7,7 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (SN — Wave 3/4 timeout-safe continuation — 2026-06-06T05:41Z)
+### Added (Wave 3/4 full gap remediation — PR #4792 — 2026-06-06T06:40Z)
+
+All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-session code). PR #4792 branch `copilot/explore-codebase-and-create-plan`.
+
+#### Monitoring & Drift (Wave 3)
+- **Gap 17** — `src/codex_ml/monitoring/data_drift.py`: `DataDriftDetector` with PSI + KL-divergence; wired into `train_loop.py` epoch loop; 27 unit tests. Evidence: `workbench/evidence/gap17_data_drift.md`
+- **Gap 18** — `src/codex_ml/monitoring/model_drift.py`: `ModelDriftDetector` (JSD + confidence monitoring); wired into `train_loop.py` post-epoch; 35 unit tests. Evidence: `workbench/evidence/gap18_model_drift.md`
+
+#### Testing & Quality (Wave 3)
+- **Gap 21** — `tests/regression/`: 67 regression tests across 5 files (model output stability, API contracts, data pipeline integrity, config schema, checkpoint round-trip). Evidence: `workbench/evidence/gap21_regression_suite.md`
+- **Gap 22** — `pyproject.toml [tool.mutmut]`: mutation testing configured; 20 mutation-killer tests in `tests/unit/test_gap22_mutation_killers.py`; scheduled `.github/workflows/mutation-testing.yml`. Evidence: `workbench/evidence/gap22_mutation_testing.md`
+- **Gap 23** — `tests/integration/test_gap23_boundaries.py`: 19 integration tests across 4 cross-component boundaries. Evidence: `workbench/evidence/gap23_integration_tests.md`
+- **Gap 24** — `benchmarks/`: bench_training/inference/memory harness + `benchmarks/results/benchmark_report.json`. Evidence: `workbench/evidence/gap24_benchmarks.md`
+
+#### Security (Wave 3)
+- **Gap 28** — `scripts/security/sigstore_verify.py` + `.github/workflows/sigstore-verify.yml` + 21 tests. Evidence: `workbench/evidence/gap28_sigstore.md`
+
+#### Resilience (Wave 3)
+- **Gap 29** — `src/codex/resilience/circuit_breaker.py`: `CircuitBreaker` (CLOSED/OPEN/HALF_OPEN) + `CircuitOpenError`; 17 tests. Evidence: `workbench/evidence/gap29_circuit_breaker.md`
+- **Gap 30** — `src/codex/resilience/retry.py`: `retry_with_backoff` + `RetryExhausted`; 9 tests. Evidence: `workbench/evidence/gap30_retry.md`
+- **Gap 31** — `src/codex/resilience/degradation.py`: `GracefulDegradation` + `DegradationError`; 15 tests. Evidence: `workbench/evidence/gap31_degradation.md`
+- **`src/codex/resilience/__init__.py`** — package exporting all 7 resilience symbols.
+
+#### Code Quality (Wave 4 P3)
+- **Gap 32** — TODO/FIXME/stub cleanup: `src/` reduced from 36 → 27 (−25%).
+- **Gap 33** — `.pre-commit-config.yaml`: mypy-src informational hook added (non-blocking, `language: system`).
+- **Gap 34** — 38 new docstrings across 8 modules; pydocstyle informational pre-commit hook. Evidence: `workbench/evidence/gap34_docstrings.md`
+- **Gap 35** — `scripts/ci/check_workflow_yaml.py` + `scripts/ci/validate_configs.py`; two new pre-commit hooks; 0 failures on 136 configs. Evidence: `workbench/evidence/gap35_schema_validation.md`
+
+#### Advanced ML Features (Wave 4 P3)
+- **Gap 36** — `src/codex_ml/continuous_learning/`: `ContinuousLearningPipeline`, `EvalGate`, `RetrainingTrigger`; 25 tests. Evidence: `workbench/evidence/gap36_continuous_learning.md`
+- **Gap 37** — `src/codex_ml/experiments/ab_testing.py`: `ABTestSuite` + `run_ab_test` (Welch's t-test + Cohen's d + stdlib fallback); 29 tests. Evidence: `workbench/evidence/gap37_ab_testing.md`
+- **Gap 38** — `src/codex_ml/training/auto_retrain.py`: `AutoRetrainPipeline` wired to `ModelDriftDetector`; `repository_dispatch` payload schema for `model-drift-retrain.yml`; 16 tests. Evidence: `workbench/evidence/gap38_auto_retrain.md`
+- **Gap 39** — `src/codex_ml/feedback/`: `FeedbackLoop`, `FeedbackCollector` (ring-buffer + JSONL sink), `FeedbackEvent`; 27 tests. Evidence: `workbench/evidence/gap39_feedback_loop.md`
+
+#### Advanced Testing (Wave 4 P3)
+- **Gap 40** — `tests/fuzz/`: 23 hypothesis `@given` tests (tokenizer, Pydantic configs, API models). Evidence: `workbench/evidence/gap40_fuzzing.md`
+- **Gap 41** — `tests/property/`: 38 `@given` tests (drift invariants, A/B bounds, resilience contracts). Evidence: `workbench/evidence/gap41_property_tests.md`
+- **Gap 42** — `tests/chaos/`: 24 chaos tests (CB random failures, retry exhaustion, pipeline overflow, degenerate A/B inputs). Evidence: `workbench/evidence/gap42_chaos.md`
+
+#### Documentation (Wave 4 P3)
+- **Gap 43** — `docs/tutorials/`: README + 4 tutorials (drift monitoring, A/B testing, continuous learning, resilient services) with verified import paths. Evidence: `workbench/evidence/gap43_tutorials.md`
+- **Gap 44** — `docs/examples/`: README + 4 runnable PEP 723 demo scripts (drift, A/B, continuous learning, resilience); all exit 0. Evidence: `workbench/evidence/gap44_interactive_docs.md`
+- **Gap 45** — `docs/adr/`: README + ADR-001 (drift monitoring), ADR-002 (resilience pattern), ADR-003 (continuous learning), ADR-004 (testing strategy) in MADR format. Evidence: `workbench/evidence/gap45_adrs.md`
+
+### Fixed (Wave 3/4 code quality — PR #4792 — commit `1b59803`)
+- `tests/unit/test_alerting.py:17` — removed unused `from io import BytesIO`
+- `tests/unit/test_alerting.py:76` — tautological `ERROR >= ERROR` → `ERROR >= WARNING`
+- `src/codex_ml/train_loop.py:2083` — empty `except Exception: pass` → `logger.debug(...)`
+- `tests/security/test_moderation_integration.py:18` — removed unused `AsyncMock`
+- `tests/security/test_moderation_integration.py:167` — removed unbound `fastapi =` variable
+- `tests/unit/test_performance_monitor.py:5` — removed unused `patch` import
+- `src/codex_ml/plugins/registry.py:21` — replaced bare `import importlib` + `importlib.import_module()` with `from importlib import import_module as _import_module`
+
+### Verified (needs_verification cleared — 2026-06-06)
+- **Gap 14** — Prometheus `CodexMetricsRegistry` wiring confirmed; `train_loop.py` IndentationError fixed; removed from `special_flags.needs_verification`. Evidence: `workbench/evidence/gap14_prometheus_verification_v2.md`
+- **Gap 27** — All 7 LLM entry points confirmed wired (`fail_open=False`); 22/22 integration tests pass; removed from `special_flags.needs_verification`. Evidence: `workbench/evidence/gap27_moderation_verification_v2.md`
+
+
 - Re-validated Wave 3/Wave 4 queue lock state in `workbench/gap_execution_queue.yaml` and confirmed `special_flags.needs_verification` lock values.
 - Completed scoped Wave 3 small-item execution by verifying deterministic split implementation for Gap 20 and recording evidence in `workbench/evidence/gap20_deterministic_splits_verification.md`.
 - Updated `workbench/wave_execution_control.md` with explicit deferred `>55` minute handoff list for workflow/custom-agent processing (Wave 3: 17/18/21/23; Wave 4: 32–45).
