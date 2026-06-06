@@ -14,7 +14,6 @@ Import guard skips the module gracefully when ``hypothesis`` is absent.
 from __future__ import annotations
 
 import math
-import sys
 
 import pytest
 

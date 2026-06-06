@@ -14,6 +14,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import logging
 import re
@@ -51,12 +52,8 @@ CRITICAL_PACKAGES: frozenset[str] = frozenset(
 # Sigstore import (optional)
 # ---------------------------------------------------------------------------
 
-_SIGSTORE_AVAILABLE = False
-try:
-    import sigstore  # type: ignore[import-untyped]  # noqa: F401
-
-    _SIGSTORE_AVAILABLE = True
-except ImportError:
+_SIGSTORE_AVAILABLE = importlib.util.find_spec("sigstore") is not None
+if not _SIGSTORE_AVAILABLE:
     logger.warning(
         "sigstore is not installed — package signature verification will be skipped. "
         "Install with: pip install sigstore"

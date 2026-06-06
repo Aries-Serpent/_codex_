@@ -16,8 +16,6 @@ Import guard skips the module when ``hypothesis`` is absent.
 
 from __future__ import annotations
 
-import sys
-
 import pytest
 
 hypothesis = pytest.importorskip("hypothesis")

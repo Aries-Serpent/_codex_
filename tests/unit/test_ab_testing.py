@@ -18,7 +18,7 @@ from __future__ import annotations
 import math
 import pytest
 
-from codex_ml.experiments import ABTest, ABTestResult, ABTestSuite, run_ab_test
+from codex_ml.experiments import ABTest, ABTestSuite, run_ab_test
 
 
 # ---------------------------------------------------------------------------

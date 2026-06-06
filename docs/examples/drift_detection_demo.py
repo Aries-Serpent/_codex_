@@ -25,7 +25,7 @@ import os
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 sys.path.insert(0, os.path.join(_REPO_ROOT, "src"))
 
-from codex_ml.monitoring.data_drift import DataDriftDetector, DriftResult
+from codex_ml.monitoring.data_drift import DataDriftDetector
 from codex_ml.monitoring.model_drift import ModelDriftDetector
 
 

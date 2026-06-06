@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (unused imports — 10 review threads — PR #4792 — 2026-06-06T22:34Z)
+
+- **`docs/examples/drift_detection_demo.py`** — removed unused `DriftResult` import
+- **`docs/examples/resilience_demo.py`** — removed unused `CircuitState` import
+- **`scripts/security/sigstore_verify.py`** — replaced bare `import sigstore` availability-check with `importlib.util.find_spec("sigstore")` to eliminate CodeQL unused-import flag
+- **`tests/chaos/test_chaos_resilience.py`** — removed unused `import unittest.mock as mock`
+- **`tests/fuzz/test_fuzz_api.py`** — removed unused `import sys`
+- **`tests/fuzz/test_fuzz_configs.py`** — removed unused `import sys`
+- **`tests/unit/test_ab_testing.py`** — removed unused `ABTestResult` from import
+- **`tests/unit/test_auto_retrain.py`** — removed unused `timezone` from import
+- **`tests/unit/test_check_workflow_yaml.py`** — removed unused `import textwrap`
+- **`tests/unit/test_dict_serializable.py`** — removed unused `import pytest`
+
 ### Added (Gap 5: coverage session 6 — 2026-06-06T20:29Z)
 
 - **`tests/unit/test_track_c_workflow.py`** — 49 unit tests for `src/codex_ml/workflow/track_c_workflow.py`; covers `WorkflowContext`, `CapabilityPlan`, `CapabilityRouter`, `WorkflowOrchestrator`, `record_error`, `step_context`, all six phase implementations, `run_capability`, and phase overrides. Coverage: 0% → ~95%.

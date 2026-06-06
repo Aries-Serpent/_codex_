@@ -31,7 +31,6 @@ from codex.resilience import (
     retry_with_backoff,
     RetryExhausted,
 )
-from codex.resilience.circuit_breaker import CircuitState
 
 
 # ---------------------------------------------------------------------------
