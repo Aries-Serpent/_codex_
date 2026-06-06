@@ -119,7 +119,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 32 | Clean up TODOs/FIXMEs/stubs (`src/`: 36→27, −25%) | XLarge | Medium | Team | 🟡 In Progress (25% reduction — 9/36 items resolved; remaining 14 are legitimate abstracts) |
-| 33 | Add mypy to pre-commit hooks | Small | Low | QA | 🔴 Not Started |
+| 33 | Add mypy to pre-commit hooks | Small | Low | QA | ✅ Implemented |
 | 34 | Implement automated docstring generation | Medium | Low | Docs | 🔴 Not Started |
 | 35 | Add schema validation to pre-commit | Small | Low | QA | 🔴 Not Started |
 
