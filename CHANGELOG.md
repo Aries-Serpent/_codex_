@@ -9164,3 +9164,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (auto-update — PR #4790 session-close 2026-06-06T00:53Z)
 - Session-close compliance: addressed bot-reported findings, triggered REQ-4/REQ-5 gate fixes, and confirmed merge-readiness score 100/100 for PR #4790 (uv dependency bump) [auto-generated]
+
+### Fixed (PR #4790 CI fix — 2026-06-06T00:58Z)
+- `.github/workflows/copilot-setup-steps.yml`: fixed session preload step (lines 149-151) — replaced `|| { }` flow scalar `run:` with canonical `run: |` block scalar + `if ! ...; then ...; fi` form to resolve yamllint crash in Validation Pipeline run #27047717092 [auto-generated]
