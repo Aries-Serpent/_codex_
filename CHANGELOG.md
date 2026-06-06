@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (coverage agent results integration — PR #4792 — 2026-06-06T07:32Z)
+
+- **unified-coverage-agent completed**: +89 new tests in 2 files committed to branch:
+  - `tests/unit/test_drift_detection.py` (54 tests) — `src/codex_ml/monitoring/drift_detection.py` 0% → ~86%
+  - `tests/unit/test_ab_testing_stdlib.py` (35 tests) — `src/codex_ml/experiments/ab_testing.py` stdlib path 52% → ~97%
+- Total new coverage tests this session: **117** (28 manual + 89 agent); all pass
+- Updated `workbench/coverage/gap5_coverage_evidence.md` and `workbench/gap_backlog_prioritized.md` with agent results
+
 ### Fixed (living docs update + session wrap-up — PR #4792 — 2026-06-06T07:22Z)
 
 - Updated `workbench/COPILOT_NEXT_SESSION_PROMPT.md` with accurate continuation prompt for Gap 5 coverage gate advancement
