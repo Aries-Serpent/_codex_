@@ -9239,3 +9239,8 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - `tests/unit/test_ab_testing.py`: narrowed overly-broad `match="alpha"` patterns to `match="alpha must be in"` — resolves pre-flight-validation assertion pattern check
 - `.github/workflows/container-scan.yml`, `sigstore-verify.yml`, `scheduled-dependency-audit.yml`: updated action versions to repo-approved pins (actions/checkout@v5, actions/setup-python@v6, actions/upload-artifact@v5) — resolves Required Actions Version Enforcer failures
 - `.github/workflows/container-scan.yml`: fixed `aquasecurity/trivy-action@0.20.0` → `aquasecurity/trivy-action@v0.20.0` (missing `v` prefix caused "unable to find version" error) — resolves Trivy Scan failures
+
+### Added (PR #4792 coverage gate advance — 2026-06-06T07:10Z)
+- `tests/unit/test_check_workflow_yaml.py` — 12 unit tests for `scripts/ci/check_workflow_yaml.py` (Gap 35 CI script coverage)
+- `tests/unit/test_validate_configs.py` — 16 unit tests for `scripts/ci/validate_configs.py` (Gap 35 CI script coverage)
+- `workbench/coverage/gap5_coverage_evidence.md` — Coverage gate evidence file documenting floor history, Wave 3/4 contributions, and 80% roadmap

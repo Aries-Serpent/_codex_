@@ -47044,3 +47044,13 @@ The session preload step was using `|| { }` shell brace syntax in a single-line 
 - Wave 3/4 agents introduced 3 new workflow files and 2 test files with policy violations
 - Pre-flight check: patterns ≤5 chars are flagged as "overly broad" regardless of context
 - Action enforcer: only checks `EXPECTED_VERSIONS` actions; `aquasecurity/trivy-action` is a third-party action not in the policy dict
+
+## Session Entry — PR #4792 coverage gate advance (2026-06-06T07:10Z)
+
+### Work Completed
+1. **New tests** — `tests/unit/test_check_workflow_yaml.py`: 12 tests for `scripts/ci/check_workflow_yaml.py` (validate_syntax, validate_schema, main)
+2. **New tests** — `tests/unit/test_validate_configs.py`: 16 tests for `scripts/ci/validate_configs.py` (validate_yaml_syntax, _is_train_candidate, _should_skip, run, validate_train_config)
+3. **Coverage evidence** — `workbench/coverage/gap5_coverage_evidence.md` created with floor history, Wave 3/4 module contributions, and roadmap to 80%
+4. **parallel_validation** — ✅ Code review: 0 issues · CodeQL: 0 alerts
+
+### Total new coverage tests (this session): 28 (12 + 16)
