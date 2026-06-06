@@ -86,4 +86,17 @@ class _MetricRegistry:
 
 metrics = _MetricRegistry()
 
-__all__ = ["Counter", "Histogram", "metrics"]
+from codex.monitoring.performance_monitor import (  # noqa: E402
+    PerformanceMonitor,
+    PerformanceSnapshot,
+    PerformanceThresholds,
+)
+
+__all__ = [
+    "Counter",
+    "Histogram",
+    "PerformanceMonitor",
+    "PerformanceSnapshot",
+    "PerformanceThresholds",
+    "metrics",
+]

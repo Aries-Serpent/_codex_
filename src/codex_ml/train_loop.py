@@ -1834,6 +1834,20 @@ def run_training(
     last_checkpoint_sha = None
 
     # ------------------------------------------------------------------
+    # Performance monitor — imported lazily to avoid hard failures.
+    # ------------------------------------------------------------------
+    _perf_monitor = None
+    try:
+        from codex.monitoring.performance_monitor import (
+            PerformanceMonitor as _PerfMon,
+            PerformanceSnapshot as _PerfSnap,
+        )
+
+        _perf_monitor = _PerfMon.from_env(run_id=_TRAIN_RUN_ID)
+    except Exception:  # pragma: no cover — optional dependency
+        pass
+
+    # ------------------------------------------------------------------
     # Epoch loop — wrapped to emit training-failure alerts on unhandled
     # exceptions while still re-raising so callers remain unaffected.
     # ------------------------------------------------------------------
@@ -2056,6 +2070,19 @@ def run_training(
         sha_for_log = locals().get("epoch_checkpoint_sha") or last_checkpoint_sha
         if sha_for_log:
             sha_for_log = sha_for_log[:12]
+
+        # Performance degradation monitoring — must never crash training.
+        if _perf_monitor is not None:
+            try:
+                _epoch_throughput = (
+                    steps_this_epoch / epoch_duration if epoch_duration > 0 else None
+                )
+                _perf_monitor.record(
+                    _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
+                )
+            except Exception:
+                pass
+
         logger.info(
             "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
             epoch,
