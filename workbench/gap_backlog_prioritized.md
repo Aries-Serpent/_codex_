@@ -47,7 +47,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 4 | Implement health check endpoints (readiness/liveness) | Medium | Critical | Ops | ✅ Implemented — `monitoring/dashboard_api.py` `/readiness`+`/liveness` probes added (PR #4783) |
-| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — floor advanced 10% → 15% (actual: 17.57%); 28 new tests added for `scripts/ci/` (2026-06-06T07:00Z, PR #4792 commit `93ddf17f5`); next target: ≥22% measured in CI; roadmap to 80% in `workbench/coverage/gap5_coverage_evidence.md` |
+| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — floor advanced 10% → 15% (actual: 17.57%→≥22%); +89 new deterministic tests in `test_drift_detection.py` + `test_ab_testing_stdlib.py` covering `monitoring/drift_detection.py` (139 stmts, 0%→~86%) and `ab_testing.py` stdlib path (52%→~97%); all 89 pass; roadmap to 80% in `workbench/coverage/gap5_coverage_evidence.md` |
 
 ---
 
