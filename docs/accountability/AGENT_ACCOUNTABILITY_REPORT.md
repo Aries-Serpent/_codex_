@@ -46886,3 +46886,16 @@ and the CI gate requirement.
 - **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-06-06T00:53:25Z @ 8c260e04 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `cost-gate.yml` — detected 2026-06-06T00:53:25Z @ 8c260e04 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows` — detected 2026-06-06T00:53:25Z @ 8c260e04 — sticky [x] maintained by all future agent sessions
+
+## Session Entry — PR #4790 copilot-setup-steps.yml fix (2026-06-06T00:58Z)
+
+### §0 Compliance
+- [x] **1.** All bot-posted comments reviewed ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** Validation Pipeline run #27047717092 analyzed ✅
+
+### Work Completed
+1. **CI fix** — `copilot-setup-steps.yml` lines 149-151: replaced `|| { }` flow scalar `run:` with canonical `run: |` block scalar + `if ! ...; then ...; fi` form. This resolves the yamllint crash and YAML parse failure detected by the Validation Pipeline.
+
+### Root-Cause Note
+The session preload step was using `|| { }` shell brace syntax in a single-line `run:` field. yamllint 1.38.0 crashes on flow scalar brace syntax. The canonical form uses `run: |` block scalar with brace-free `if ! ...; then ...; fi` shell.
