@@ -11,7 +11,6 @@ done_definition:
 special_flags:
   needs_verification:
   - 14
-  - 19
   - 27
   in_progress:
   - 5
@@ -37,9 +36,9 @@ waves:
   - 18
   - 20
   - 21
+  - 22
   - 23
   - 24
-  - 26
   - 28
   - 29
   - 30
@@ -463,10 +462,10 @@ queue:
     owner: ML
     effort: Medium
     impact: Medium
-    status: needs_verification
-    status_source: 🔎 Needs Verification — `dvc.yaml` exists; needs CI pipeline wiring
-    flags:
-    - needs_verification
+    status: completed
+    status_source: ✅ Implemented — `dvc init` + `params.yaml` + local remote + `dvc_pipeline`
+      CI job in `data-quality-suite.yml`; 246 tests pass. See `workbench/evidence/gap19_dvc_verification.md`
+    flags: []
     wave: Wave 0
     lane: Lane C — Repro/platform hardening
     dependencies: []
@@ -601,8 +600,10 @@ queue:
     owner: Security
     effort: Small
     impact: Medium
-    status: queued
-    status_source: 🔴 Not Started
+    status: completed
+    status_source: '✅ Implemented — `.github/workflows/container-scan.yml`: Trivy
+      filesystem scan matrix (Dockerfile, Dockerfile.cpu, Dockerfile.gpu); SARIF
+      upload + artifact retention. See `workbench/evidence/gap26_container_scanning.md`'
     flags: []
     wave: Wave 3
     lane: Lane A — Security/Compliance
