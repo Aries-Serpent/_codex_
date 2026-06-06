@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Gap 5: self_healing coverage — copilot/explore-codebase-and-create-plan — 2026-06-06)
+
+- **`tests/unit/test_self_healing_utils.py`** — 63 unit tests for `src/codex_ml/utils/self_healing.py`; covers `FailureType` enum (all 5 variants), `OOMHandler` (init, can_retry all branches, reduce_batch_size, reset), `SelfHealingContext` (__init__, context manager protocol, __exit__ all paths, _classify_failure all 7 paths, failures accumulation), `auto_remediate` (success, args, retries, batch_size injection, re-raise), and `__all__` export contract. Coverage: 0% → ~100%.
+
 ### Added (Gap 5 coverage — eval_gate & trigger — copilot/explore-codebase-and-create-plan)
 
 - **`tests/unit/test_eval_gate.py`** — 27 unit tests for `src/codex_ml/continuous_learning/eval_gate.py`; covers `EvalGateResult` dataclass, all three `EvalGate` threshold checks, boundary conditions, multi-failure accumulation, and metrics copy safety. Coverage: 0% → ~100%.

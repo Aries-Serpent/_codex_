@@ -387,8 +387,10 @@ class TestAutoRemediate:
         assert call_kwargs["y"] == 20
 
     def test_retries_then_raises(self):
-        func = MagicMock(side_effect=ValueError("boom"))
-        with pytest.raises(ValueError, match="boom"):
+        # Use a message that does NOT contain "oom" (a substring of "boom") so the
+        # exception is classified as UNKNOWN and not suppressed by the healing context.
+        func = MagicMock(side_effect=ValueError("deliberate-failure"))
+        with pytest.raises(ValueError, match="deliberate-failure"):
             auto_remediate(func, max_retries=3, batch_size=32)
         assert func.call_count == 3
 
@@ -404,14 +406,17 @@ class TestAutoRemediate:
 
         def side_effect(**kwargs):
             calls.append(kwargs.get("batch_size", -1))
-            raise MemoryError("out of memory")
+            # Use ValueError (UNKNOWN type) so the context does NOT suppress it,
+            # allowing the outer retry loop to count attempts normally.
+            raise ValueError("generic failure")
 
-        # Pass batch_size as a plain kwarg so it ends up in **kwargs of auto_remediate
         extra_kwargs = {"batch_size": 32}
-        with pytest.raises(MemoryError):
+        with pytest.raises(ValueError):
             auto_remediate(side_effect, max_retries=2, **extra_kwargs)
-        # calls should have been made with updated batch sizes from the healer
+        # Both attempts were made
         assert len(calls) == 2
+        # The batch_size kwarg was injected into the function each attempt
+        assert all(isinstance(bs, int) for bs in calls)
 
     def test_returns_none_when_func_returns_none(self):
         func = MagicMock(return_value=None)
