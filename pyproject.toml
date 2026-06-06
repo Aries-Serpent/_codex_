@@ -531,7 +531,8 @@ precision = 2
 # Local/minimal env: unified-coverage-agent enforces ≥34% agents/ floor.
 # Phase 10B target: raise overall to ≥50% via src/ gap-fill.
 # Owner: @mbaetiong
-fail_under = 10
+# Gap 5 advancement (Wave 1): 10% → 15% (actual ~17.57%, formula: min(X-5, floor+10) → 15)
+fail_under = 15
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
