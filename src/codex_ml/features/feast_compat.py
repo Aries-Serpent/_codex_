@@ -298,11 +298,11 @@ class FeastBackend(Protocol):
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
         """Write / update feature values for an entity key."""
-        ...  # Protocol stub — concrete backends (InMemoryBackend, SQLiteBackend, etc.) supply implementations
+        raise NotImplementedError  # Protocol stub — concrete backends supply implementations
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
         """Read the latest feature values for an entity key (None if missing)."""
-        ...  # Protocol stub — concrete backends supply implementations
+        raise NotImplementedError  # Protocol stub — concrete backends supply implementations
 
     def delete(self, view_name: str, entity_key: str) -> None:
         """Delete feature values for an entity key."""

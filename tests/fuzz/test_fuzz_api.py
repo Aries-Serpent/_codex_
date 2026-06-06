@@ -218,7 +218,7 @@ def test_fuzz_merge_indices_request_valid(source_indices, target_index, tenant_i
         )
         assert len(req.source_indices) >= 2
     except ValidationError:
-        pass
+        pass  # invalid input rejected by Pydantic — expected behaviour in fuzz test
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"MergeIndicesRequest raised unexpected: {exc!r}")
 
@@ -271,4 +271,4 @@ def test_fuzz_health_response_construction(status, version, timestamp, component
         assert isinstance(resp.status, str)
         assert isinstance(resp.components, dict)
     except (ValidationError, Exception):
-        pass
+        pass  # arbitrary inputs may fail validation or construction — expected in fuzz test

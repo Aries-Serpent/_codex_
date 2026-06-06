@@ -193,7 +193,7 @@ class TestCircuitBreakerProperties:
             try:
                 cb.call(always_fails)
             except RuntimeError:
-                pass
+                pass  # expected: underlying error propagates while circuit stays CLOSED
         assert cb.state is CircuitState.CLOSED, (
             f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
         )
@@ -202,7 +202,7 @@ class TestCircuitBreakerProperties:
         try:
             cb.call(always_fails)
         except RuntimeError:
-            pass
+            pass  # expected: final failure propagates and trips circuit to OPEN
         assert cb.state is CircuitState.OPEN, (
             f"Circuit must be OPEN after {failure_threshold} consecutive failures"
         )
@@ -226,7 +226,7 @@ class TestCircuitBreakerProperties:
             try:
                 cb.call(fails)
             except RuntimeError:
-                pass
+                pass  # expected: underlying error propagates while tripping the circuit
 
         assert cb.state is CircuitState.OPEN
 
@@ -257,7 +257,7 @@ class TestCircuitBreakerProperties:
             try:
                 cb.call(fails)
             except RuntimeError:
-                pass
+                pass  # expected: underlying error propagates while tripping the circuit
 
         assert cb.state is CircuitState.OPEN
         cb.reset()

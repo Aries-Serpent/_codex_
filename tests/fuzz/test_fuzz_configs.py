@@ -208,7 +208,7 @@ def test_fuzz_train_config_dtype_and_eval_split(dtype, eval_split):
         if eval_split is not None and not math.isnan(eval_split):  # not NaN
             assert 0.0 <= cfg.eval_split <= 1.0
     except ValidationError:
-        pass
+        pass  # invalid config values rejected by Pydantic — expected behaviour in fuzz test
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"Unexpected exception: {exc!r}")
 
@@ -241,7 +241,7 @@ def test_fuzz_lora_config_construction(enable, r, lora_alpha, lora_dropout, task
         assert cfg.lora_alpha >= 1
         assert 0.0 <= cfg.lora_dropout <= 1.0
     except ValidationError:
-        pass
+        pass  # non-positive ranks/alpha rejected by Pydantic — expected behaviour in fuzz test
     except Exception as exc:  # noqa: BLE001
         pytest.fail(f"Unexpected LoraConfig exception: {exc!r}")
 

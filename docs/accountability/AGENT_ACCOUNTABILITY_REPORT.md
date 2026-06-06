@@ -47110,3 +47110,21 @@ The session preload step was using `|| { }` shell brace syntax in a single-line 
 4. **parallel_validation** — ✅ Code review: 0 issues · CodeQL: 0 alerts
 
 ### Total new coverage tests (this session): 28 (12 + 16)
+
+## Session Entry — PR #4792 code-quality bot round 2 + copilot continue (2026-06-06T07:46Z)
+
+### §0 Compliance
+- [x] **1.** All `<comment_new>` blocking comments reviewed ✅
+- [x] **2.** CI Rescue comment (#4637828176) actioned ✅
+- [x] **3.** Token delegation comment (#4637834235) / `@copilot continue` actioned ✅
+- [x] **4.** New requirement applied: 10 open review threads fixed ✅
+
+### Work Completed
+1. **feast_compat.py lines 301, 305** — replaced `...` (Ellipsis/no-effect) with `raise NotImplementedError` in `FeastBackend.write` and `FeastBackend.read` Protocol stubs
+2. **test_fuzz_api.py lines 220, 273** — added `# invalid input rejected by Pydantic — expected behaviour in fuzz test` and `# arbitrary inputs may fail validation or construction — expected in fuzz test` to empty except blocks
+3. **test_fuzz_configs.py lines 210, 243** — added `# invalid config values rejected by Pydantic — expected behaviour in fuzz test` and `# non-positive ranks/alpha rejected by Pydantic — expected behaviour in fuzz test` to empty except blocks
+4. **test_property_resilience.py lines 195, 204, 228, 259** — added explanatory comments to all 4 empty `except RuntimeError: pass` blocks documenting intent
+
+### Root-Cause Notes
+- All 10 open review threads were from the automated code-quality bot (pattern: empty except / no-effect statement)
+- Fixes are purely documentation/comment additions and one `raise NotImplementedError` substitution — no behaviour changes

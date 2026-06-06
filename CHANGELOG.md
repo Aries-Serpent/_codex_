@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (code-quality bot remediation round 2 — PR #4792 — 2026-06-06T07:46Z)
+
+- **feast_compat.py** — replaced `...` (no-effect Ellipsis) with `raise NotImplementedError` in `FeastBackend.write` and `FeastBackend.read` Protocol stubs (review threads r3366906649, r3366906653)
+- **test_fuzz_api.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 220, 273 (review threads r3366906634, r3366906637)
+- **test_fuzz_configs.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 210, 243 (review threads r3366906639, r3366906641)
+- **test_property_resilience.py** — added explanatory comments to empty `except RuntimeError: pass` blocks at lines 195, 204, 228, 259 (review threads r3366906642, r3366906644, r3366906646, r3366906648)
+
 ### Added (coverage agent results integration — PR #4792 — 2026-06-06T07:32Z)
 
 - **unified-coverage-agent completed**: +89 new tests in 2 files committed to branch:
