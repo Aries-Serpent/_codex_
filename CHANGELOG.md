@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added (Gap 5: coverage session 4 — 2026-06-06T08:15Z)
 
-- **`tests/unit/test_self_healing_utils.py`** — bug fix: corrected `test_batch_size_kwarg_updated_on_retry` to use `ValueError` (UNKNOWN type) instead of `MemoryError` so context does not suppress it; self_healing agent completed with all tests passing.
+- **`tests/unit/test_self_healing_utils.py`** — bug fix: corrected `test_batch_size_kwarg_updated_on_retry` to use `ValueError` (UNKNOWN type) instead of `MemoryError` so context does not suppress it; self_healing agent completed with all tests passing. Strengthened `test_all_exports` to also import each symbol from the module (code-review feedback).
 - **`pyproject.toml fail_under`** raised from **15 → 20**: Gap 5 session 3 added 313+ new tests across 8 modules (`scalability`, `self_healing`, `stub_cleanup`, `eval_gate`, `trigger`, `jsonio`, `optional_dependencies`, `serialization`, `feedback/events`, `hf_revision`, `opt_import`).
-- **`workbench/coverage/gap5_coverage_evidence.md`** — session 3 agents row finalized: 257 agent tests (77+77+78+46) completed.
+- **`workbench/coverage/gap5_coverage_evidence.md`** — session 3 agents row finalized: 257 agent tests (77+77+78+46) completed. Unblocked from `.gitignore` via `!workbench/coverage/` exception.
+- **`.gitignore`** — added `!workbench/coverage/` and `!workbench/coverage/**` exceptions (the `coverage/` rule was silently blocking the workbench tracking doc).
 - **Gap 5 status** in `workbench/gap_backlog_prioritized.md` updated: 430+ total coverage tests, `fail_under = 20`.
 
 

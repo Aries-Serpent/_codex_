@@ -446,3 +446,10 @@ def test_all_exports():
     import codex_ml.utils.self_healing as mod
 
     assert set(mod.__all__) == {"FailureType", "OOMHandler", "SelfHealingContext", "auto_remediate"}
+    # Verify each symbol is actually importable at the module level
+    from codex_ml.utils.self_healing import (  # noqa: F401
+        FailureType,
+        OOMHandler,
+        SelfHealingContext,
+        auto_remediate,
+    )
