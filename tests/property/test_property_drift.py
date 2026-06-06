@@ -134,7 +134,13 @@ class TestPSIProperties:
 class TestKLProperties:
     """Property tests for KL-divergence drift detection."""
 
-    @given(_pos_floats)
+    @given(
+        st.lists(
+            st.floats(min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False),
+            min_size=4,
+            max_size=30,
+        )
+    )
     @settings(max_examples=50)
     def test_kl_identical_distributions_near_zero(self, vals: list[float]) -> None:
         """KL-divergence of identical distributions must be ≈ 0."""
@@ -145,24 +151,24 @@ class TestKLProperties:
             f"KL of identical distributions should be ~0, got {result.score}"
         )
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_kl_score_non_negative(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """KL score must always be ≥ 0."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector(kl_threshold=0.5)
         result = detector.detect_kl(ref, cur)
         assert result.score >= 0.0
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_kl_drifted_flag_consistent_with_threshold(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """KL DriftResult.drifted must match score > threshold."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         threshold = 0.5
         detector = DataDriftDetector(kl_threshold=threshold)
         result = detector.detect_kl(ref, cur)
@@ -171,24 +177,24 @@ class TestKLProperties:
             f"vs threshold={threshold}"
         )
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_kl_result_has_correct_method_field(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """DriftResult returned by detect_kl must carry method='kl'."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector()
         result = detector.detect_kl(ref, cur)
         assert result.method == "kl"
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_kl_severity_is_valid_label(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """KL severity must always be one of the documented labels."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector(kl_threshold=0.5)
         result = detector.detect_kl(ref, cur)
         assert result.severity in {"none", "moderate", "significant"}, (
