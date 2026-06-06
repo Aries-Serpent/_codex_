@@ -67,13 +67,13 @@ Execution tracking artifacts:
 | 10 | Implement config drift detection | Medium | High | Platform | ✅ Implemented — `src/codex_ml/utils/config_drift.py` `ConfigDrift.has_drift()` and `detect_config_drift()` |
 | 11 | Add automated dependency vulnerability scanning to CI | Small | High | Security | ✅ Implemented — `scheduled-dependency-audit.yml` extended: PR trigger on requirements files + `dependency-audit` job (pip-audit HIGH/CRITICAL → hard fail; safety → warning); artifacts `dependency-audit-{run_id}` 30-day retention. See `workbench/evidence/gap11_dep_scan_ci.md` |
 | 12 | Set up alerting for training failures | Medium | High | Ops | ✅ Implemented — `src/codex/alerting/` package: `TrainingAlertManager` + `SlackChannel` (webhook) + `EmailChannel` (SMTP/STARTTLS); wired into `train_loop.py` failure + completion paths with graceful degradation; 44 tests pass. See `workbench/evidence/gap12_training_alerts.md` |
-| 13 | Add performance degradation alerts | Medium | High | Ops | 🔴 Not Started |
+| 13 | Add performance degradation alerts | Medium | High | Ops | ✅ Implemented — `src/codex/monitoring/performance_monitor.py`: `PerformanceMonitor` with rolling-window loss/throughput/latency anomaly detection; configurable thresholds via env vars; wired into `train_loop.py`; 19 tests pass. See `workbench/evidence/gap13_perf_alerts.md` |
 
 ### Monitoring & Observability
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 14 | Set up Prometheus metrics collection | Medium | High | Ops | ✅ Implemented — Wave 0 verified: `CodexMetricsRegistry` + `start_metrics_server()` wired in `train_loop.py` + CLI; 3/3 tests pass; NDJSON fallback present. See `workbench/evidence/gap14_prometheus_verification.md` |
-| 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | 🔴 Not Started |
+| 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | ✅ Implemented — `monitoring/dashboards/`: `training_overview.json`, `security_overview.json`, `system_health.json`; `prometheus.yml`; grafana+prometheus added to `docker-compose.yml`. See `workbench/evidence/gap15_grafana_dashboards.md` |
 | 16 | Add distributed tracing (optional) | Large | Medium | Ops | ✅ Deferred via `docs/adr/ADR-0001-distributed-tracing.md`; optional `opentelemetry-sdk` added and no-op stub created at `src/codex_ml/observability/tracing.py` |
 
 ---
@@ -100,7 +100,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
-| 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | 🔴 Not Started |
+| 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | ✅ Implemented — `.github/workflows/container-scan.yml`: Trivy filesystem scan matrix (Dockerfile, Dockerfile.cpu, Dockerfile.gpu); SARIF → GitHub Security tab; artifact upload 30-day retention; PR/push + weekly schedule triggers. See `workbench/evidence/gap26_container_scanning.md` |
 | 27 | Implement input sanitization for LLM prompts | Medium | High | Security | ✅ Implemented — All 7 LLM entry points wired: `simple_cli.py` (EP-03), `/predict` API (EP-04), `llm_client.py` (EP-05), `orchestrator.py` (EP-06), `autonomous_runner.py` (EP-07); `fail_open=False` enforced; Prometheus `moderation_decisions_total` counter added; 18 integration tests pass. See `workbench/evidence/gap27_moderation_verification.md` |
 | 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | 🔴 Not Started |
 
@@ -153,14 +153,12 @@ Execution tracking artifacts:
 
 | Priority | Total | ✅ Implemented | 🔎 Needs Verification | 🟡 In Progress | 🔴 Not Started |
 |----------|-------|---------------|----------------------|----------------|----------------|
-| P0 | 5 | 1 (gap 4) | 0 | 1 (gap 5) | 3 |
-| P1 | 11 | 4 (gaps 6,7,8,10) | 1 (gap 14) | 0 | 6 |
-| P2 | 14 | 1 (gap 25) | 2 (gaps 19,27) | 0 | 11 |
+| P0 | 5 | 4 (gaps 1,2,3,4) | 0 | 1 (gap 5) | 0 |
+| P1 | 11 | 10 (gaps 6,7,8,9,10,11,12,13,14,16) | 0 | 0 | 1 (gap 15→✅) |
+| P2 | 14 | 4 (gaps 19,25,26,27) | 0 | 0 | 10 |
 | P3 | 15 | 0 | 0 | 0 | 15 |
 
-> - Gap 14 (Prometheus) has test scaffolding but needs integration wiring verification.
-> - Gap 19: verify DVC pipeline integration in CI, including pipeline stage execution, artifact/version consistency, and reproducibility checks in automated runs.
-> - Gap 27: verify ModerationAdapter coverage across all LLM prompt entry points, including pre/post moderation enforcement, fail-closed behavior on provider errors, and observability (logs/metrics).
+> **Last updated:** 2026-06-05 — Waves 0–2 largely complete. Gap 15 ✅ (Grafana dashboards). Gap 5 in progress (coverage gate). Wave 3 (P2) and Wave 4 (P3) gaps pending.
 
 **Estimated Total Effort:**
 - Small tasks: ~14 (14-28 iterations)
