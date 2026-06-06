@@ -36,8 +36,9 @@ def test_enable_deterministic_training_sets_pythonhashseed():
 
 
 def test_enable_deterministic_training_numpy_seeded_when_available():
+    # Probe whether numpy is installed; the assertion adapts based on availability.
     try:
-        import numpy  # noqa: F401
+        import numpy  # noqa: F401 — availability probe only
 
         status = enable_deterministic_training(seed=1)
         assert status.get("numpy") is True

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
@@ -146,8 +147,6 @@ def test_run_argv_check_false_allows_nonzero_exit():
 
 
 def test_run_argv_check_true_raises_on_failure():
-    import subprocess
-
     with pytest.raises(subprocess.CalledProcessError):
         run_argv([sys.executable, "-c", "import sys; sys.exit(2)"], check=True)
 
