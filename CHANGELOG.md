@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (living docs update + session wrap-up — PR #4792 — 2026-06-06T07:22Z)
+
+- Updated `workbench/COPILOT_NEXT_SESSION_PROMPT.md` with accurate continuation prompt for Gap 5 coverage gate advancement
+- Updated `workbench/wave_execution_control.md` with post-completion CI & quality session log
+- Updated `workbench/gap_backlog_prioritized.md` Gap 5 status line (28 new tests added)
+- Updated `workbench/coverage/gap5_coverage_evidence.md` floor history row for this session
+- All 8 unanswered review threads from review #4442009364 replied to with resolving commit `93ddf17f5`
+
 ### Fixed (code-quality bot remediation — PR #4792 — 2026-06-06T07:00Z)
 
 - **test_circuit_breaker.py** — removed dead `cb.call(fn_fail) if False else None` statement (thread 8)

@@ -1,4 +1,22 @@
-## SESSION SUMMARY — 2026-06-06T07:00Z · Code-quality bot remediation — all 9 issues fixed (PR #4792)
+## SESSION SUMMARY — 2026-06-06T07:22Z · Living docs update + session wrap-up (PR #4792)
+
+### Pre-flight Checklist
+- [x] **0a.** All 8 unanswered review comment threads replied to with resolving SHA ✅
+- [x] **0b.** Living docs updated with current state ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. **Review thread replies** — All 8 unanswered threads from review #4442009364 replied to with resolving commit `93ddf17f5`.
+2. **COPILOT_NEXT_SESSION_PROMPT.md** — Replaced stale Wave 3/4 task list with accurate continuation prompt focused on Gap 5 coverage gate (≥22% → ≥80% roadmap), including task sequence, dispatch constraints, success criteria, and key file reference.
+3. **wave_execution_control.md** — Added "Post-Completion CI & Quality Session" section documenting all 3 CI regression fixes, 9 code-quality fixes, and 28 new coverage tests.
+4. **gap_backlog_prioritized.md** — Gap 5 status line updated to reflect +28 tests committed; last-updated footer bumped.
+5. **coverage/gap5_coverage_evidence.md** — Floor history table updated with new session row (commit `93ddf17f5`, +28 tests).
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
+
+
 
 ### Pre-flight Checklist
 - [x] **0a.** All 9 unresolved code-quality bot threads from review #4442009364 explicitly identified

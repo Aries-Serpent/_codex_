@@ -47,7 +47,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 4 | Implement health check endpoints (readiness/liveness) | Medium | Critical | Ops | ✅ Implemented — `monitoring/dashboard_api.py` `/readiness`+`/liveness` probes added (PR #4783) |
-| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — floor advanced 10% → 15% (actual: 17.57%); roadmap to 80% in `workbench/coverage/gap5_coverage_evidence.md`; next step: 20% after gap-fill |
+| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — floor advanced 10% → 15% (actual: 17.57%); 28 new tests added for `scripts/ci/` (2026-06-06T07:00Z, PR #4792 commit `93ddf17f5`); next target: ≥22% measured in CI; roadmap to 80% in `workbench/coverage/gap5_coverage_evidence.md` |
 
 ---
 
@@ -158,7 +158,7 @@ Execution tracking artifacts:
 | P2 | 14 | 14 (gaps 17–30) | 0 | 0 | 0 |
 | P3 | 15 | 15 (gaps 31–45) | 0 | 0 | 0 |
 
-> **Last updated:** 2026-06-06T06:40Z — **ALL 45 gaps complete** (Waves 0–4). Only remaining item: gap 5 coverage gate progression (🟡 In Progress, 17.57% → 80% roadmap; `workbench/coverage/gap5_coverage_evidence.md`).
+> **Last updated:** 2026-06-06T07:22Z — **ALL 45 gaps complete** (Waves 0–4). CI regressions fixed, all 9 code-quality bot issues remediated (review #4442009364), 28 new coverage tests committed. Only remaining item: gap 5 coverage gate progression (🟡 In Progress, ≥22% target; `workbench/coverage/gap5_coverage_evidence.md`). PR #4792 ready for merge.
 
 **Estimated Total Effort:**
 - Small tasks: ~14 (14-28 iterations)
