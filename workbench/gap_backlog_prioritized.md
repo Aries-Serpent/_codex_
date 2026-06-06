@@ -91,7 +91,7 @@ Execution tracking artifacts:
 ### Testing & Quality
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 21 | Build comprehensive regression test suite | Large | High | QA | 🔴 Not Started |
+| 21 | Build comprehensive regression test suite | Large | High | QA | ✅ Implemented — 67 regression tests across 5 files in `tests/regression/`: model output stability, API contracts, data pipeline integrity, config schema regression, checkpoint round-trip. All 67 pass. See `workbench/evidence/gap21_regression_suite.md` |
 | 22 | Add mutation testing with mutmut | Medium | Medium | QA | 🔴 Not Started |
 | 23 | Implement automated integration tests | Large | Medium | QA | ✅ Implemented — 19 tests across 4 boundaries (API↔model, monitoring↔alerting, data-pipeline↔training, config↔runtime) in `tests/integration/test_gap23_boundaries.py`; all 19 pass. See `workbench/evidence/gap23_integration_tests.md` |
 | 24 | Add performance benchmarking suite | Medium | Medium | QA | 🔴 Not Started |

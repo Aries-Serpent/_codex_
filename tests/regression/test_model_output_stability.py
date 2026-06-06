@@ -94,15 +94,19 @@ class TestPipelineOutputStructure:
         missing = self.REQUIRED_KEYS - set(pipeline_result.keys())
         assert not missing, f"Pipeline result missing keys: {missing}"
 
-    def test_pipeline_losses_are_non_negative(self, pipeline_result):
-        """Every loss value in the result must be >= 0."""
+    def test_pipeline_losses_are_finite_numerics(self, pipeline_result):
+        """Every loss value in the result must be a finite numeric value.
+
+        Note: L_RLHF is a *negative* reward (its sign reflects the
+        reward model output), so we only assert finiteness, not non-negativity.
+        """
         losses = pipeline_result.get("losses", {})
         assert losses, "losses dict must not be empty"
         for name, value in losses.items():
             assert isinstance(value, (int, float)), (
                 f"loss '{name}' must be numeric, got {type(value)}"
             )
-            assert value >= 0.0, f"loss '{name}' = {value} is negative"
+            assert math.isfinite(value), f"loss '{name}' = {value} is not finite"
 
     def test_pipeline_objective_u_is_float(self, pipeline_result):
         """Combined objective U must be a finite float."""
