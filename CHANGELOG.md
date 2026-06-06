@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4789 (SHA `4aa59f9c`) at 2026-06-05T23:55Z [auto-generated]
 - CI follow-up: investigated Validation Pipeline run `#27046295354`, confirmed YAML preload parse failure was resolved by commit `6e9246c`, and refreshed REQ-4/REQ-5 session artifacts in the latest commit (2026-06-06T00:08Z).
 
+### Fixed (auto-update — PR #4790)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4790 (SHA `35581cc7`) at 2026-06-06T00:47Z [auto-generated]
+
 ### Fixed (auto-update — PR #4788)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4788 (SHA `73e5269d`) at 2026-06-05T19:03Z [auto-generated]
 
