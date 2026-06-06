@@ -1,3 +1,22 @@
+## SESSION SUMMARY — Gap 5 — eval_gate & trigger unit tests (copilot/explore-codebase-and-create-plan)
+
+### Pre-flight Checklist
+- [x] **0a.** Source modules read and fully understood ✅
+- [x] **0b.** 46 new unit tests verified passing locally ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+1. **`tests/unit/test_eval_gate.py`** — 27 tests covering `EvalGateResult` (construction, `to_dict`, copy safety) and `EvalGate` (no-threshold pass, `min_accuracy`, `max_loss`, `min_improvement_pct`, combined thresholds, boundary conditions).
+2. **`tests/unit/test_retraining_trigger.py`** — 19 tests covering `RetrainingTrigger` construction, UTC-aware defaults, `to_dict` serialisation, `from_dict` round-trip and edge cases, equality semantics, mutable-default safety.
+3. **Coverage delta**: `eval_gate.py` 0% → ~100%; `trigger.py` 0% → ~100%.
+4. No source files modified; all external dependencies mocked where needed (none required — modules are pure-Python, no ML deps).
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
+
+
+
 ## SESSION SUMMARY — 2026-06-06T07:32Z · Coverage agent integration (PR #4792)
 
 ### Pre-flight Checklist

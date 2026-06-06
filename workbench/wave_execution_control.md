@@ -172,3 +172,16 @@
 - All dispatch prompts: `workbench/wave3_wave4_dispatch_matrix.md`
 - All artifacts must be stored under `workbench/evidence/gap{N}_*.md`
 - Approval workflow: `auto-approve-workflows.yml` (wec:auto-approve-once label)
+
+---
+
+## Coverage Session — Gap 5 advance (2026-06-06T07:46Z)
+
+| # | Activity | Outcome |
+|---|----------|---------|
+| 1 | Fixed 10 open review threads (empty except + Protocol stubs) | ✅ Committed |
+| 2 | Wrote 56 direct unit tests: `test_jsonio`, `test_optional_dependencies`, `test_dict_serializable`, `test_feedback_events`, `test_hf_revision`, `test_opt_import` | ✅ Committed |
+| 3 | Created `workbench/coverage/gap5_coverage_evidence.md` | ✅ |
+| 4 | Dispatched 4× unified-coverage-agent (scalability, self_healing, stub_cleanup, continuous_learning) | 🟡 In progress |
+| 5 | REQ-4/REQ-5 compliance verified | ✅ |
+| 6 | parallel_validation pending | ⬜ |

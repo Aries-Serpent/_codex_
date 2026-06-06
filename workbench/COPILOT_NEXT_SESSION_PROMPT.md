@@ -1,8 +1,8 @@
 # Follow-Up Prompt for GitHub Copilot Agent
 
-## @copilot Coverage gate advancement + post-merge housekeeping
+## @copilot Coverage gate continuation — Gap 5 toward ≥35%
 
-**Generated:** 2026-06-06T07:22Z  
+**Generated:** 2026-06-06T07:46Z  
 **Branch:** `copilot/explore-codebase-and-create-plan`  
 **PR:** #4792
 
@@ -10,15 +10,18 @@
 
 ## Context Lock — What Is Done
 
-All 45 capability gaps are ✅ implemented (Waves 0–4). This session completed:
+All 45 capability gaps ✅ implemented (Waves 0–4). This session completed:
 
-- ✅ CI regressions from Wave 3/4 fixed (pre-flight, action versions, Trivy scan)
-- ✅ All 9 code-quality bot issues from review #4442009364 fixed (commit `93ddf17f5`)
-- ✅ All 8 unanswered review comment threads replied to with resolving SHA
-- ✅ 28 new coverage tests added (`test_check_workflow_yaml.py`, `test_validate_configs.py`)
-- ✅ parallel_validation: CodeQL 0 alerts, code review 0 blocking issues
-- ✅ REQ-4/REQ-5 compliant in every commit
-- ✅ PR #4792 declared merge-ready
+- ✅ 10 open code-quality review threads fixed (commit `fix(quality): remediate 10 open review-bot issues`)
+  - `feast_compat.py` lines 301, 305: `...` → `raise NotImplementedError` in Protocol stubs
+  - `test_fuzz_api.py` lines 220, 273: empty except blocks now have explanatory comments
+  - `test_fuzz_configs.py` lines 210, 243: same pattern fixed
+  - `test_property_resilience.py` lines 195, 204, 228, 259: same pattern fixed
+- ✅ 56 new direct coverage tests (jsonio, optional_dependencies, serialization, feedback_events, hf_revision, opt_import)
+- ✅ `workbench/coverage/gap5_coverage_evidence.md` created with floor history + roadmap
+- ✅ 4× unified-coverage-agent dispatched for: scalability, self_healing, stub_cleanup, continuous_learning
+- ✅ REQ-4/REQ-5 compliant
+- ✅ Replied to both `<comment_new>` blocking comments (4637828176, 4637834235)
 
 `special_flags.needs_verification: []` — empty, no re-verification required.
 
@@ -26,49 +29,39 @@ All 45 capability gaps are ✅ implemented (Waves 0–4). This session completed
 
 ## Primary Objective for Next Session
 
-**Advance Gap 5 coverage gate**: measured baseline 17.57% → roadmap target ≥80%.  
-Immediate milestone: **≥22%** (close the +4.43 pp gap from baseline).
+**Continue Gap 5 coverage gate**: current floor ~20–22% → roadmap target ≥35%.
 
 ---
 
 ## Task Sequence
 
-### Task 1 — Merge PR #4792 (if not yet merged)
-Check if PR #4792 is already merged. If not, confirm CI is green and request merge.
+### Task 1 — Integrate background agent results
+Check if the 4 coverage agents completed:
+- `coverage-scalability` → `tests/unit/test_scalability_utils.py`
+- `coverage-self-healing` → `tests/unit/test_self_healing_utils.py`
+- `coverage-stub-cleanup` → `tests/unit/test_stub_cleanup.py`
+- `coverage-continuous-learning` → `tests/unit/test_eval_gate.py` + `tests/unit/test_retraining_trigger.py`
 
-### Task 2 — Measure current coverage (post-merge baseline)
-```bash
-python -m pytest --cov=src --cov=scripts --cov=agents --cov=training \
-  --cov-report=term-missing -q 2>&1 | tail -40
-```
-Record the new baseline in `workbench/coverage/gap5_coverage_evidence.md`.
+Run: `python3 -m pytest tests/unit/ --cov=src/codex_ml --cov-report=term-missing -q 2>&1 | tail -5`
 
-### Task 3 — Advance coverage floor (Gap 5)
-Target: **≥22%** (then push toward ≥35% if time permits).
+### Task 2 — Raise pyproject.toml fail_under
+Once coverage ≥ 22% confirmed in CI output, set `fail_under = 22` in `pyproject.toml` (line ~535).
 
-Approach:
-1. Identify top 5 lowest-coverage modules with existing source code
-2. Dispatch `unified-coverage-agent` for each (up to 4 concurrent):
-   - Prompt: *"Write unit tests for `<module_path>` targeting the uncovered lines listed below. All tests must pass. Do not modify source code. Commit tests with `test(coverage): ...`"*
-3. After agents complete: re-run coverage and record new floor
-4. If ≥22% reached, raise `fail_under` in `pyproject.toml` to the new floor
-5. Update `workbench/coverage/gap5_coverage_evidence.md` floor history table
+### Task 3 — Advance toward ≥35%
+Identify next 5 highest-line 0% modules from coverage report and dispatch 4 more unified-coverage-agents.
 
-### Task 4 — REQ-4/REQ-5 compliance
-Each commit must include both `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md`.
-Run after every commit:
+### Task 4 — parallel_validation gate
+Run `parallel_validation` after all new tests committed. Address any HIGH/CRITICAL findings.
+
+### Task 5 — REQ-4/REQ-5 compliance
 ```bash
 python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4792
 ```
 
-### Task 5 — parallel_validation gate
-Run `parallel_validation` after all coverage tests are committed. Address any HIGH/CRITICAL findings.
-
 ### Task 6 — Update living docs
-- `workbench/coverage/gap5_coverage_evidence.md` — floor history + new actual
-- `workbench/gap_backlog_prioritized.md` — gap 5 status line
-- `workbench/wave_execution_control.md` — add coverage session row
-- `workbench/COPILOT_NEXT_SESSION_PROMPT.md` — update for next continuation
+- `workbench/coverage/gap5_coverage_evidence.md` — add session 4 row with new floor
+- `workbench/gap_backlog_prioritized.md` — update gap 5 status with new floor %
+- `workbench/wave_execution_control.md` — add session row
 
 ---
 
@@ -81,24 +74,24 @@ Run `parallel_validation` after all coverage tests are committed. Address any HI
 | `workbench/wave_execution_control.md` | Wave + session log |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 compliance |
 | `CHANGELOG.md` | REQ-5 compliance |
-| `pyproject.toml` | `fail_under` threshold (currently 15) |
+| `pyproject.toml` line ~535 | `fail_under` threshold (currently 15) |
 
 ---
 
 ## Dispatch Constraints
 - Max concurrent background agents: **4**
 - All artifacts under `workbench/evidence/` (never `/tmp`)
-- Pre-existing lint failures in `ruff check src/ tests/` are NOT your responsibility unless introduced by your changes
+- Pre-existing lint failures are NOT your responsibility unless introduced by your changes
 - Do NOT modify `.github/workflows/copilot-setup-steps.yml` lines 141–147 (hardened YAML block)
 - REQ-4/REQ-5: BOTH `CHANGELOG.md` AND `AGENT_ACCOUNTABILITY_REPORT.md` must appear in the **latest** commit
 
 ---
 
 ## Success Criteria
-- [ ] PR #4792 merged (or confirmed merge-ready)
-- [ ] Coverage floor ≥ 22% measured in CI (from 17.57% baseline)
-- [ ] `pyproject.toml fail_under` raised to match new floor
+- [ ] All 4 agent results integrated
+- [ ] Coverage floor ≥ 22% measured and recorded
+- [ ] `pyproject.toml fail_under` raised to ≥22
+- [ ] Progress toward ≥35% underway
 - [ ] `session_wrapup_autofix --check` passes
 - [ ] `parallel_validation` complete — 0 HIGH/CRITICAL issues
-- [ ] Gap 5 status line in `gap_backlog_prioritized.md` updated with new % floor
-- [ ] `COPILOT_NEXT_SESSION_PROMPT.md` updated for next session
+- [ ] Living docs updated

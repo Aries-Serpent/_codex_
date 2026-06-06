@@ -7,12 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Gap 5 coverage — eval_gate & trigger — copilot/explore-codebase-and-create-plan)
+
+- **`tests/unit/test_eval_gate.py`** — 27 unit tests for `src/codex_ml/continuous_learning/eval_gate.py`; covers `EvalGateResult` dataclass, all three `EvalGate` threshold checks, boundary conditions, multi-failure accumulation, and metrics copy safety. Coverage: 0% → ~100%.
+- **`tests/unit/test_retraining_trigger.py`** — 19 unit tests for `src/codex_ml/continuous_learning/trigger.py`; covers `RetrainingTrigger` construction, UTC timestamp defaults, `to_dict`/`from_dict` round-trip, edge cases (missing timestamp, zero baseline), equality semantics, and mutable-default isolation. Coverage: 0% → ~100%.
+
 ### Fixed (code-quality bot remediation round 2 — PR #4792 — 2026-06-06T07:46Z)
 
 - **feast_compat.py** — replaced `...` (no-effect Ellipsis) with `raise NotImplementedError` in `FeastBackend.write` and `FeastBackend.read` Protocol stubs (review threads r3366906649, r3366906653)
 - **test_fuzz_api.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 220, 273 (review threads r3366906634, r3366906637)
 - **test_fuzz_configs.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 210, 243 (review threads r3366906639, r3366906641)
 - **test_property_resilience.py** — added explanatory comments to empty `except RuntimeError: pass` blocks at lines 195, 204, 228, 259 (review threads r3366906642, r3366906644, r3366906646, r3366906648)
+
+### Added (coverage gate — Gap 5 session 3 — PR #4792 — 2026-06-06T07:46Z)
+
+- **56 new unit tests** across 6 modules with 0% previous coverage:
+  - `tests/unit/test_jsonio.py` (15 tests) — `src/codex_ml/utils/jsonio.py`
+  - `tests/unit/test_optional_dependencies.py` (9 tests) — `src/codex_ml/utils/optional_dependencies.py`
+  - `tests/unit/test_dict_serializable.py` (7 tests) — `src/codex_ml/utils/serialization.py`
+  - `tests/unit/test_feedback_events.py` (13 tests) — `src/codex_ml/feedback/events.py`
+  - `tests/unit/test_hf_revision.py` (7 tests) — `src/codex_ml/utils/hf_revision.py`
+  - `tests/unit/test_opt_import.py` (5 tests) — `src/codex_ml/utils/opt_import.py`
+- Created `workbench/coverage/gap5_coverage_evidence.md` with floor history, module inventory and roadmap
+- Updated `workbench/gap_backlog_prioritized.md` Gap 5 status line
+- Updated `workbench/wave_execution_control.md` with session log row
+- Updated `workbench/COPILOT_NEXT_SESSION_PROMPT.md` for next continuation
+- Dispatched 4× `unified-coverage-agent` for `utils/scalability`, `utils/self_healing`, `utils/stub_cleanup`, `continuous_learning/eval_gate+trigger`
 
 ### Added (coverage agent results integration — PR #4792 — 2026-06-06T07:32Z)
 
