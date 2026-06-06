@@ -66,7 +66,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 10 | Implement config drift detection | Medium | High | Platform | ✅ Implemented — `src/codex_ml/utils/config_drift.py` `ConfigDrift.has_drift()` and `detect_config_drift()` |
 | 11 | Add automated dependency vulnerability scanning to CI | Small | High | Security | ✅ Implemented — `scheduled-dependency-audit.yml` extended: PR trigger on requirements files + `dependency-audit` job (pip-audit HIGH/CRITICAL → hard fail; safety → warning); artifacts `dependency-audit-{run_id}` 30-day retention. See `workbench/evidence/gap11_dep_scan_ci.md` |
-| 12 | Set up alerting for training failures | Medium | High | Ops | 🔴 Not Started |
+| 12 | Set up alerting for training failures | Medium | High | Ops | ✅ Implemented — `src/codex/alerting/` package: `TrainingAlertManager` + `SlackChannel` (webhook) + `EmailChannel` (SMTP/STARTTLS); wired into `train_loop.py` failure + completion paths with graceful degradation; 44 tests pass. See `workbench/evidence/gap12_training_alerts.md` |
 | 13 | Add performance degradation alerts | Medium | High | Ops | 🔴 Not Started |
 
 ### Monitoring & Observability
@@ -101,7 +101,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
 | 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | 🔴 Not Started |
-| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | 🔴 Reopened — Wave 0 verification: 5/7 LLM entry points uncovered (`simple_cli.py`, `/predict` API, `llm_client.py`, `orchestrator.py`, `autonomous_runner.py`); moderation opt-in not mandatory; no Prometheus counters; no integration tests for EP-03–07. See `workbench/evidence/gap27_moderation_verification.md` |
+| 27 | Implement input sanitization for LLM prompts | Medium | High | Security | ✅ Implemented — All 7 LLM entry points wired: `simple_cli.py` (EP-03), `/predict` API (EP-04), `llm_client.py` (EP-05), `orchestrator.py` (EP-06), `autonomous_runner.py` (EP-07); `fail_open=False` enforced; Prometheus `moderation_decisions_total` counter added; 18 integration tests pass. See `workbench/evidence/gap27_moderation_verification.md` |
 | 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | 🔴 Not Started |
 
 ### Error Handling & Resilience

@@ -10,7 +10,6 @@ import os
 from contextlib import contextmanager
 from typing import Any, Generator
 
-
 _NOOP: bool = os.getenv("CODEX_TRACING_NOOP", "1") == "1"
 
 
