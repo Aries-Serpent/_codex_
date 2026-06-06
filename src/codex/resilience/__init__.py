@@ -20,10 +20,17 @@ Provides building blocks for fault-tolerant external-service integration:
 * :class:`~codex.resilience.degradation.DegradationError` — raised by
   :class:`GracefulDegradation` when a failure occurs and no fallback is set.
 
+* :func:`~codex.resilience.retry.retry_with_backoff` — decorator / callable
+  wrapper that retries a function with exponential backoff and optional jitter.
+
+* :exc:`~codex.resilience.retry.RetryExhausted` — raised after all retry
+  attempts are exhausted; the last exception is chained as ``__cause__``.
+
 Quick start::
 
     from codex.resilience import CircuitBreaker, CircuitOpenError
     from codex.resilience import GracefulDegradation, DegradationError
+    from codex.resilience import retry_with_backoff, RetryExhausted
 
     # --- Circuit breaker ---
     cb = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
@@ -41,6 +48,17 @@ Quick start::
     with GracefulDegradation(fallback=None) as dg:
         dg.result = risky_operation()
     value = dg.result  # None if risky_operation() raised
+
+    # --- Exponential backoff retry (decorator) ---
+    @retry_with_backoff(max_retries=3, base_delay=1.0)
+    def call_external_api() -> dict:
+        return requests.get("https://api.example.com/data").json()
+
+    # --- Exponential backoff retry (direct wrapper) ---
+    try:
+        result = retry_with_backoff(max_retries=2)(some_func)(arg)
+    except RetryExhausted as exc:
+        logger.error("All retries failed: %s", exc.__cause__)
 """
 
 from codex.resilience.circuit_breaker import (
@@ -52,6 +70,10 @@ from codex.resilience.degradation import (
     DegradationError,
     GracefulDegradation,
 )
+from codex.resilience.retry import (
+    RetryExhausted,
+    retry_with_backoff,
+)
 
 __all__ = [
     "CircuitBreaker",
@@ -59,4 +81,6 @@ __all__ = [
     "CircuitState",
     "DegradationError",
     "GracefulDegradation",
+    "RetryExhausted",
+    "retry_with_backoff",
 ]

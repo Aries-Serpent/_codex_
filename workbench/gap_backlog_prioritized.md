@@ -92,7 +92,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 21 | Build comprehensive regression test suite | Large | High | QA | ✅ Implemented — 67 regression tests across 5 files in `tests/regression/`: model output stability, API contracts, data pipeline integrity, config schema regression, checkpoint round-trip. All 67 pass. See `workbench/evidence/gap21_regression_suite.md` |
-| 22 | Add mutation testing with mutmut | Medium | Medium | QA | 🔴 Not Started |
+| 22 | Add mutation testing with mutmut | Medium | Medium | QA | 🟡 In Progress — mutmut 3.5.0 configured in `pyproject.toml` `[tool.mutmut]`; local CPU-sandbox run: 189 mutants, 33 killed, score **18.6%** (torch-dependent paths survive without torch; full score ~65–70% expected in scheduled workflow with torch). 20 mutation-killer tests added to `tests/unit/test_gap22_mutation_killers.py`. Scheduled workflow at `.github/workflows/mutation-testing.yml`. See `workbench/evidence/gap22_mutation_testing.md` |
 | 23 | Implement automated integration tests | Large | Medium | QA | ✅ Implemented — 19 tests across 4 boundaries (API↔model, monitoring↔alerting, data-pipeline↔training, config↔runtime) in `tests/integration/test_gap23_boundaries.py`; all 19 pass. See `workbench/evidence/gap23_integration_tests.md` |
 | 24 | Add performance benchmarking suite | Medium | Medium | QA | ✅ Implemented — `benchmarks/bench_training.py` (1 780 steps/sec), `benchmarks/bench_inference.py` (p99 0.80 ms/sample), `benchmarks/bench_memory.py` (peak 7.93 MiB), `benchmarks/run_all.py` produces `benchmarks/results/benchmark_report.json`; total runtime 6.8 s. See `workbench/evidence/gap24_benchmarks.md` |
 

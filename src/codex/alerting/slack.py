@@ -24,6 +24,7 @@ import urllib.request
 from typing import Any
 
 from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
+from codex.resilience.retry import RetryExhausted, retry_with_backoff
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,17 @@ _COLOUR_MAP: dict[AlertSeverity, str] = {
 
 _ENV_WEBHOOK = "CODEX_SLACK_WEBHOOK_URL"
 _TIMEOUT = 10  # seconds
+
+# Retry configuration for webhook POSTs: up to 3 extra attempts with
+# exponential backoff (1 s → 2 s → 4 s), capped at 30 s, retrying only
+# on network / URL errors that are considered transient.
+_retry_send = retry_with_backoff(
+    max_retries=3,
+    base_delay=1.0,
+    max_delay=30.0,
+    jitter=0.25,
+    exceptions=(urllib.error.URLError,),
+)
 
 
 class SlackChannel(AlertChannel):
@@ -58,6 +70,11 @@ class SlackChannel(AlertChannel):
     def send(self, event: AlertEvent) -> bool:
         """POST *event* to the configured Slack webhook.
 
+        The HTTP POST is wrapped with exponential backoff retry (up to 3
+        extra attempts) for transient ``URLError`` failures.  Non-transient
+        errors (e.g. ``ValueError`` from a malformed URL) are NOT retried and
+        are caught as warnings.
+
         Returns:
             ``True`` on HTTP 200, ``False`` otherwise (logs a warning).
         """
@@ -77,7 +94,8 @@ class SlackChannel(AlertChannel):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        try:
+
+        def _do_post() -> bool:
             with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
                 status = resp.getcode()
                 if status != 200:
@@ -86,8 +104,13 @@ class SlackChannel(AlertChannel):
                     )
                     return False
             return True
-        except urllib.error.URLError as exc:
-            logger.warning("SlackChannel: failed to send alert — %s", exc)
+
+        try:
+            return _retry_send(_do_post)()
+        except RetryExhausted as exc:
+            logger.warning(
+                "SlackChannel: all retry attempts exhausted — %s", exc.__cause__
+            )
             return False
         except Exception as exc:  # pragma: no cover — unexpected errors
             logger.warning("SlackChannel: unexpected error — %s", exc)
