@@ -141,7 +141,7 @@ Execution tracking artifacts:
 ### Documentation & Onboarding
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 43 | Create video tutorials for key workflows | Medium | Low | Docs | 🔴 Not Started |
+| 43 | Create video tutorials for key workflows | Medium | Low | Docs | ✅ Implemented |
 | 44 | Build interactive documentation with examples | Large | Low | Docs | 🔴 Not Started |
 | 45 | Add architecture decision records (ADRs) | Medium | Low | Arch | 🔴 Not Started |
 
