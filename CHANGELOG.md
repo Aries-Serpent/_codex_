@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (pre-flight validation — test assertion patterns — PR #4792 — 2026-06-06T09:14Z)
+
+- **tests/unit/test_scalability_utils.py** — replaced overly-broad pytest.raises match patterns (`"oops"`, `"boom"`) with descriptive strings (`"circuit_failure"`, `"monitor_failure"`) to pass pre_flight_check.py assertion-pattern validation.
+
 ### Added (Gap 5: coverage session 4 — 2026-06-06T08:15Z)
 
 - **`tests/unit/test_self_healing_utils.py`** — bug fix: corrected `test_batch_size_kwarg_updated_on_retry` to use `ValueError` (UNKNOWN type) instead of `MemoryError` so context does not suppress it; self_healing agent completed with all tests passing. Strengthened `test_all_exports` to also import each symbol from the module (code-review feedback).

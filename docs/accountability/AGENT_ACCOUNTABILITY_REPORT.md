@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-06-06T09:14Z · Pre-flight fix (PR #4792)
+
+### Pre-flight Checklist
+- [x] **0a.** Investigated Pre-Flight Validation failure ✅
+- [x] **0b.** Fixed overly-broad match patterns in test_scalability_utils.py ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+1. **`tests/unit/test_scalability_utils.py`** — fixed two overly-broad pytest.raises match patterns flagged by pre-flight check: changed `match="oops"` → `match="circuit_failure"` (line 401) and `match="boom"` → `match="monitor_failure"` (line 705). Both error messages updated to match.
+2. Pre-flight check now passes: 6/6 checks green.
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
+
+
+
 ## SESSION SUMMARY — Gap 5 — eval_gate & trigger unit tests (copilot/explore-codebase-and-create-plan)
 
 ### Pre-flight Checklist

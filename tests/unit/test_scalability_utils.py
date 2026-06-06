@@ -396,9 +396,9 @@ class TestCircuitBreaker:
 
         @cb
         def failing():
-            raise ValueError("oops")
+            raise ValueError("circuit_failure")
 
-        with pytest.raises(ValueError, match="oops"):
+        with pytest.raises(ValueError, match="circuit_failure"):
             failing()
         assert cb._failures == 1
 
@@ -700,9 +700,9 @@ class TestPerformanceMonitor:
 
         @mon.timed("failing_op")
         def fn():
-            raise ValueError("boom")
+            raise ValueError("monitor_failure")
 
-        with pytest.raises(ValueError, match="boom"):
+        with pytest.raises(ValueError, match="monitor_failure"):
             fn()
 
         avg = mon.get_average("failing_op_latency_ms", window_seconds=60)
