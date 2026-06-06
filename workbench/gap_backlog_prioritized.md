@@ -47,7 +47,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 4 | Implement health check endpoints (readiness/liveness) | Medium | Critical | Ops | ✅ Implemented — `monitoring/dashboard_api.py` `/readiness`+`/liveness` probes added (PR #4783) |
-| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — `pyproject.toml` floor at 10; roadmap targets 80%; raised incrementally per S-session plan |
+| 5 | Add coverage gate enforcement (≥80% threshold) | Small | High | QA | 🟡 In Progress — floor advanced 10% → 15% (actual: 17.57%); roadmap to 80% in `workbench/coverage/gap5_coverage_evidence.md`; next step: 20% after gap-fill |
 
 ---
 
