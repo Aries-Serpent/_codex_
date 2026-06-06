@@ -46924,3 +46924,12 @@ and the CI gate requirement.
 
 ### Root-Cause Note
 The session preload step was using `|| { }` shell brace syntax in a single-line `run:` field. yamllint 1.38.0 crashes on flow scalar brace syntax. The canonical form uses `run: |` block scalar with brace-free `if ! ...; then ...; fi` shell.
+
+## Session Entry — PR #4790 pip-audit fix (2026-06-06T01:22Z)
+
+### §0 Compliance
+- [x] **1.** All bot-posted comments reviewed ✅
+- [x] **2.** CI failure analyzed: Validation Pipeline run #27048136214 ✅
+
+### Work Completed
+1. **pip-audit fix** — Added `--ignore-vuln PYSEC-2026-196` to `.pre-commit-config.yaml` pip-audit hook args. `pip 26.1.1` has a known entry-point path traversal vulnerability (fix: `pip 26.1.2`). The CI runner controls the pip version; ignoring until the runner environment upgrades. This matches the existing pattern for ignoring CI-environment-controlled package vulnerabilities in the pip-audit config.

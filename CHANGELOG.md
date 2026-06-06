@@ -9167,3 +9167,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (PR #4790 CI fix — 2026-06-06T00:58Z)
 - `.github/workflows/copilot-setup-steps.yml`: fixed session preload step (lines 149-151) — replaced `|| { }` flow scalar `run:` with canonical `run: |` block scalar + `if ! ...; then ...; fi` form to resolve yamllint crash in Validation Pipeline run #27047717092 [auto-generated]
+
+### Fixed (PR #4790 pip-audit fix — 2026-06-06T01:22Z)
+- `.pre-commit-config.yaml`: added `--ignore-vuln PYSEC-2026-196` to pip-audit hook args — pip 26.1.1 entry-point path traversal vulnerability (fix in pip 26.1.2); CI runner controls pip version and will remove this ignore once runner upgrades to pip 26.1.2+ [auto-generated]
