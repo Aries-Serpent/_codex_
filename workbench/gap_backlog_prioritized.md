@@ -120,7 +120,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 32 | Clean up TODOs/FIXMEs/stubs (`src/`: 36→27, −25%) | XLarge | Medium | Team | 🟡 In Progress (25% reduction — 9/36 items resolved; remaining 14 are legitimate abstracts) |
 | 33 | Add mypy to pre-commit hooks | Small | Low | QA | ✅ Implemented |
-| 34 | Implement automated docstring generation | Medium | Low | Docs | 🔴 Not Started |
+| 34 | Implement automated docstring generation | Medium | Low | Docs | ✅ Implemented — +38 documented items (7 353→7 391 abs.); docstrings added to 8 modules (modeling, runmeta, checksums, errors, toml_compat, jsonl, health, tracking); pydocstyle informational pre-commit hook added. See `workbench/evidence/gap34_docstrings.md` |
 | 35 | Add schema validation to pre-commit | Small | Low | QA | 🔴 Not Started |
 
 ### Advanced Features

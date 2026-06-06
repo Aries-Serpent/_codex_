@@ -82,10 +82,18 @@ def _should_skip(path: Path) -> bool:
 
 
 def _is_train_candidate(data: object) -> bool:
-    """Return True if *data* looks like a TrainConfig payload."""
+    """
+    Return True if *data* looks like a **standalone** TrainConfig payload.
+
+    Hydra config groups (e.g. ``configs/training/profiles/``) use different
+    key names (``lr`` vs ``learning_rate``) and are composed at runtime, so we
+    only validate files that explicitly carry ``config_version`` — the clearest
+    signal that the file is a first-class TrainConfig document, not a fragment.
+    """
     if not isinstance(data, dict):
         return False
-    return bool(TRAIN_CONFIG_KEYS.intersection(data.keys()))
+    # Only validate if the canonical TrainConfig sentinel key is present
+    return "config_version" in data
 
 
 def validate_yaml_syntax(path: Path) -> str | None:
