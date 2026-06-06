@@ -35,14 +35,14 @@ except Exception:  # pragma: no cover
 try:  # pragma: no cover - optional psutil dependency
     import psutil as _psutil
 except Exception:  # pragma: no cover
-    _psutil = None  # type: ignore[assignment]
+    _psutil = None
 
 try:  # pragma: no cover - optional pynvml dependency
     import pynvml as _pynvml
 
     _pynvml.nvmlInit()
 except Exception:  # pragma: no cover
-    _pynvml = None  # type: ignore[assignment]
+    _pynvml = None
 
 
 # ---------------------------------------------------------------------------
@@ -228,9 +228,7 @@ class EnvironmentFingerprint:
         digest is stable across commits on the same hardware.
         """
         stable: dict[str, Any] = {
-            k: v
-            for k, v in self.to_dict().items()
-            if k not in {"git_commit"}
+            k: v for k, v in self.to_dict().items() if k not in {"git_commit"}
         }
         serialised = json.dumps(stable, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(serialised.encode()).hexdigest()[:16]
