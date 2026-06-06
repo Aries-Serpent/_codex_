@@ -108,7 +108,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 29 | Implement circuit breakers for external services | Medium | Medium | Platform | ✅ Implemented — `src/codex/resilience/circuit_breaker.py`: `CircuitBreaker` (CLOSED/OPEN/HALF_OPEN) + `CircuitOpenError`; thread-safe; exported via `src/codex/resilience/__init__.py`; 17 tests pass. See `workbench/evidence/gap29_circuit_breaker.md` |
-| 30 | Add exponential backoff retry logic | Small | Medium | Platform | 🔴 Not Started |
+| 30 | Add exponential backoff retry logic | Small | Medium | Platform | ✅ Implemented — `src/codex/resilience/retry.py`: `retry_with_backoff` decorator + `RetryExhausted`; wired into `SlackChannel.send()` HTTP webhook (3 retries, 1–30 s exponential backoff); 9 unit tests (all mocking `time.sleep`). See `workbench/evidence/gap30_retry.md` |
 | 31 | Build graceful degradation mechanisms | Medium | Medium | Platform | ✅ Implemented — `src/codex/resilience/degradation.py`: `GracefulDegradation` decorator+context-manager + `DegradationError`; callable fallback support; exported via `src/codex/resilience/__init__.py`; 15 tests pass. See `workbench/evidence/gap31_degradation.md` |
 
 ---
@@ -118,7 +118,7 @@ Execution tracking artifacts:
 ### Code Quality & Maintenance
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 32 | Clean up 1,152 TODOs/FIXMEs/stubs | XLarge | Medium | Team | 🔴 Not Started |
+| 32 | Clean up TODOs/FIXMEs/stubs (`src/`: 36→27, −25%) | XLarge | Medium | Team | 🟡 In Progress (25% reduction — 9/36 items resolved; remaining 14 are legitimate abstracts) |
 | 33 | Add mypy to pre-commit hooks | Small | Low | QA | 🔴 Not Started |
 | 34 | Implement automated docstring generation | Medium | Low | Docs | 🔴 Not Started |
 | 35 | Add schema validation to pre-commit | Small | Low | QA | 🔴 Not Started |

@@ -434,3 +434,36 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         always_run: true
+
+      # ── Gap 33: mypy type-check (src/ only, informational) ────────────────
+      # Runs mypy against src/ at commit time so contributors see type errors
+      # immediately, without blocking the commit.  The strict anti-regression
+      # gate (which CAN block) lives in the pre-push stage above as
+      # `mypy-isolated-venv-gate` and enforces the .mypy_baseline ratchet.
+      #
+      # Exit behaviour: always exits 0 (non-blocking) so dirty commits are
+      # never refused because of pre-existing type debt (baseline = 131 as of
+      # 2026-03-14).  Use `pre-commit run mypy-src --all-files` to audit.
+      - id: mypy-src
+        name: "🔬 mypy type check (src/ only – informational)"
+        entry: >
+          bash -c '
+            if ! python -m mypy --version >/dev/null 2>&1; then
+              echo "⚠️  mypy not installed — skipping (pip install mypy)";
+              exit 0;
+            fi;
+            python -m mypy src/
+              --config-file=mypy.ini
+              --no-error-summary
+              --no-pretty
+            ; EXIT=$?;
+            if [ "$EXIT" -ne 0 ]; then
+              echo "ℹ️  mypy found type errors in src/ (non-blocking).";
+              echo "ℹ️  Run: python scripts/ci/mypy_baseline.py --update  to refresh baseline.";
+            fi;
+            exit 0'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run mypy-src --all-files
+        # Strict pre-push gate: mypy-isolated-venv-gate (blocks on regression)
