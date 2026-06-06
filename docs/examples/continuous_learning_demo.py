@@ -85,7 +85,7 @@ def demo_pipeline() -> None:
     job = pipeline.trigger_retrain(config={"epochs": 10, "lr": 5e-4, "batch_size": 32})
     _row("Job ID", job.job_id)
     _row("Config", job.config)
-    _row("Triggered at", job.triggered_at[:19])
+    _row("Status", job.status)
 
     # ---- Step 3: simulate training finished — run eval gate ----
     print("\n  [Step 3] Evaluate candidate model → eval_gate()")
@@ -135,8 +135,8 @@ def demo_feedback_loop() -> None:
     _row("Events collected", len(loop.collector))
     _row("should_adapt()?", loop.should_adapt())
 
-    print("\n  [Step 2] Ingest 3 alerts (crosses adapt_threshold)")
-    for sev in ["warning", "critical", "critical"]:
+    print("\n  [Step 2] Ingest 4 alerts (crosses adapt_threshold of 3)")
+    for sev in ["warning", "critical", "critical", "critical"]:
         loop.on_alert({"severity": sev, "source": "prometheus", "message": "drift rate elevated"})
     _row("Events collected", len(loop.collector))
     _row("should_adapt()?", loop.should_adapt())
@@ -168,7 +168,6 @@ def demo_eval_gate() -> None:
     gate = EvalGate(
         min_accuracy=0.82,
         max_loss=0.30,
-        min_improvement_pct=2.0,
     )
 
     scenarios = [
@@ -181,7 +180,7 @@ def demo_eval_gate() -> None:
     for label, metrics in scenarios:
         result: EvalGateResult = gate.evaluate(metrics)
         icon = "✅" if result.passed else "❌"
-        print(f"  {icon} {label:<28} passed={result.passed}  reason={result.reason or '—'}")
+        print(f"  {icon} {label:<28} passed={result.passed}  reasons={result.reasons or ['—']}")
 
     _sep()
 

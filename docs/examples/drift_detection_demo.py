@@ -113,8 +113,8 @@ def demo_data_drift() -> None:
         "feature_income": (reference, drifted_current),
     }
     for feat, (ref, cur) in features.items():
-        epoch_results = detector.check_epoch(ref, cur)
-        any_drift = any(r.drifted for r in epoch_results)
+        epoch_results = detector.check_epoch(ref, cur, feature_name=feat)
+        any_drift = any(r.drifted for r in epoch_results.values())
         print(f"    {feat}: {'⚠ DRIFT' if any_drift else '✓ stable'}")
 
     _sep()
@@ -131,23 +131,25 @@ def demo_model_drift() -> None:
     detector.update_baseline(baseline_scores)
 
     print(f"\n  Baseline set: {len(baseline_scores)} confidence scores")
-    print(f"  JS threshold:           {detector._js_threshold}")
-    print(f"  Confidence threshold:   {detector._confidence_threshold}")
+    print(f"  JS threshold:           {detector.js_threshold}")
+    print(f"  Confidence threshold:   {detector.confidence_threshold}")
 
     print("\n  [Scenario A] Current epoch ≈ Baseline (no drift expected)")
     result_a = detector.check(stable_scores)
     _row("Drift detected?", result_a.drift_detected)
-    _row("JS divergence", f"{result_a.js_divergence:.4f}")
-    _row("Mean confidence", f"{result_a.confidence.mean:.4f}")
-    _row("Low-conf rate", f"{result_a.confidence.low_confidence_rate:.4f}")
+    _row("JS divergence", f"{result_a.js_divergence:.4f}" if result_a.js_divergence is not None else "N/A")
+    if result_a.confidence_stats:
+        _row("Mean confidence", f"{result_a.confidence_stats.mean_confidence:.4f}")
+        _row("Low-conf rate", f"{result_a.confidence_stats.low_confidence_rate:.4f}")
     print(f"  Summary: {result_a.summary()}")
 
     print("\n  [Scenario B] Degraded epoch (drift expected)")
     result_b = detector.check(drifted_scores)
     _row("Drift detected?", result_b.drift_detected)
-    _row("JS divergence", f"{result_b.js_divergence:.4f}")
-    _row("Mean confidence", f"{result_b.confidence.mean:.4f}")
-    _row("Low-conf rate", f"{result_b.confidence.low_confidence_rate:.4f}")
+    _row("JS divergence", f"{result_b.js_divergence:.4f}" if result_b.js_divergence is not None else "N/A")
+    if result_b.confidence_stats:
+        _row("Mean confidence", f"{result_b.confidence_stats.mean_confidence:.4f}")
+        _row("Low-conf rate", f"{result_b.confidence_stats.low_confidence_rate:.4f}")
     print(f"  Summary: {result_b.summary()}")
 
     _sep()

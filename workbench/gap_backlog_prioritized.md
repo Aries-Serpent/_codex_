@@ -143,7 +143,7 @@ Execution tracking artifacts:
 |---|-----|--------|--------|-------|--------|
 | 43 | Create video tutorials for key workflows | Medium | Low | Docs | ✅ Implemented |
 | 44 | Build interactive documentation with examples | Large | Low | Docs | 🔴 Not Started |
-| 45 | Add architecture decision records (ADRs) | Medium | Low | Arch | 🔴 Not Started |
+| 45 | Add architecture decision records (ADRs) | Medium | Low | Arch | ✅ Implemented — `docs/adr/README.md` index + ADR-001 (drift monitoring), ADR-002 (resilience), ADR-003 (continuous learning), ADR-004 (testing strategy) in MADR format |
 
 ---
 
