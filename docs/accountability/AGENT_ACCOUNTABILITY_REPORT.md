@@ -47147,3 +47147,23 @@ The session preload step was using `|| { }` shell brace syntax in a single-line 
 ### Root-Cause Notes
 - All 10 open review threads were from the automated code-quality bot (pattern: empty except / no-effect statement)
 - Fixes are purely documentation/comment additions and one `raise NotImplementedError` substitution — no behaviour changes
+
+## Session Entry — PR #4792 coverage gate session 3 (2026-06-06T07:46Z)
+
+### §0 Compliance
+- [x] **1.** REQ-4/REQ-5 verified ✅
+- [x] **2.** 56 new tests passing locally ✅
+- [x] **3.** Living docs updated ✅
+- [x] **4.** 4× coverage agents dispatched ✅
+
+### Work Completed
+1. **test_jsonio.py** — 15 tests for `codex_ml.utils.jsonio` (`_ensure_newline`, `print_json`, `print_error_json`)
+2. **test_optional_dependencies.py** — 9 tests for `codex_ml.utils.optional_dependencies` (`format_optional_dependency_error`, `build_optional_dependency_error`, `raise_optional_dependency_error`)
+3. **test_dict_serializable.py** — 7 tests for `codex_ml.utils.serialization.DictSerializable` mixin
+4. **test_feedback_events.py** — 13 tests for `codex_ml.feedback.events.FeedbackEvent` dataclass + `_utcnow_iso`
+5. **test_hf_revision.py** — 7 tests for `codex_ml.utils.hf_revision.get_hf_revision` (env var fallback chain)
+6. **test_opt_import.py** — 5 tests for `codex_ml.utils.opt_import.try_import`
+7. **workbench/coverage/gap5_coverage_evidence.md** — created; floor history + module inventory
+8. **Agents dispatched**: 4× `unified-coverage-agent` for scalability, self_healing, stub_cleanup, continuous_learning
+
+### Total new coverage tests this session: 56 (all pass)
