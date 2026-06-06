@@ -73,3 +73,34 @@
 ### Deferred for workflow/custom-agent processing (>55 minutes)
 - Wave 3: 17, 18, 21, 23
 - Wave 4: 32–45 (unless a tightly bounded <=55-minute slice is explicitly selected)
+
+## Wave 3/4 Workflow-Dispatch Handoff (2026-06-06T05:49:59Z)
+
+**Mode:** workflow-dispatch only — NO in-session implementation  
+**Dispatch matrix:** `workbench/wave3_wave4_dispatch_matrix.md`
+
+### Dispatch scope
+| Category | Gap IDs |
+|---|---|
+| Mandatory dispatch (Wave 3) | 17, 18, 21, 23 |
+| Optional dispatch (Wave 3 — exceed 55 min) | 22, 24, 28, 29, 30, 31 |
+| Mandatory dispatch (Wave 4) | 32–45 |
+| Verification only (already implemented) | 14, 27 |
+
+### Batch execution order
+| Batch | Gap IDs | Start condition | Parallelism |
+|---|---|---|---|
+| A | 17, 18, 21, 22, 23 | Immediate | All parallel |
+| B | 24, 28, 29, 30, 31 | After Batch A dispatched | All parallel |
+| C | 33, 34, 35 | Immediate (Wave 4 P3, independent) | All parallel |
+| G | 32 | Immediate (long background) | Single |
+| D | 36, 37, 38, 39 | After Batch A complete | All parallel |
+| E | 40, 41, 42 | After Batch A complete | All parallel |
+| F | 43, 44, 45 | After Batch A complete | All parallel |
+| Verify | 14, 27 | Immediate (needs_verification) | Parallel |
+
+### PR handoff
+- PR branch: `copilot/explore-codebase-and-create-plan`
+- All dispatch prompts: `workbench/wave3_wave4_dispatch_matrix.md`
+- All artifacts must be stored under `workbench/evidence/gap{N}_*.md`
+- Approval workflow: `auto-approve-workflows.yml` (wec:auto-approve-once label)
