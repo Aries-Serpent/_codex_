@@ -17,9 +17,8 @@ Run with:
 
 from __future__ import annotations
 
-import random
-import sys
 import os
+import sys
 
 # Ensure the repo src is on the path when run directly
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
@@ -29,11 +28,8 @@ from codex_ml.continuous_learning import (
     ContinuousLearningPipeline,
     EvalGate,
     EvalGateResult,
-    RetrainingJob,
-    RetrainingTrigger,
 )
-from codex_ml.feedback import FeedbackCollector, FeedbackEvent, FeedbackLoop
-
+from codex_ml.feedback import FeedbackLoop
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -65,7 +61,7 @@ def demo_pipeline() -> None:
         eval_gate_max_loss=0.35,
     )
 
-    print(f"\n  Pipeline config:")
+    print("\n  Pipeline config:")
     _row("drift_threshold", pipeline.drift_threshold)
 
     # ---- Step 1: check if retraining is needed ----
@@ -121,8 +117,8 @@ def demo_feedback_loop() -> None:
 
     loop = FeedbackLoop(adapt_threshold=3, adapt_window=10)
 
-    print(f"\n  Config: adapt_threshold=3, adapt_window=10")
-    print(f"  (needs ≥3 alert events in last 10 events to trigger adaptation)")
+    print("\n  Config: adapt_threshold=3, adapt_window=10")
+    print("  (needs ≥3 alert events in last 10 events to trigger adaptation)")
 
     # Ingest a mix of drift signals and alerts
     print("\n  [Step 1] Ingest 2 drift signals (below threshold)")

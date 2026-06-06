@@ -13,8 +13,8 @@ so the module is importable in environments without scipy.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence, Tuple
+from dataclasses import dataclass
+from typing import Dict, List, Sequence, Tuple
 
 # ---------------------------------------------------------------------------
 # Optional scipy import

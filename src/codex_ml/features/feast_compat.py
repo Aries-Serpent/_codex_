@@ -306,15 +306,15 @@ class FeastBackend(Protocol):
 
     def delete(self, view_name: str, entity_key: str) -> None:
         """Delete feature values for an entity key."""
-        ...  # Protocol stub — concrete backends supply implementations
+        raise NotImplementedError  # Protocol stub — concrete backends supply implementations
 
     def list_views(self) -> list[str]:
         """Return all view names stored in this backend."""
-        ...  # Protocol stub — concrete backends supply implementations
+        raise NotImplementedError  # Protocol stub — concrete backends supply implementations
 
     def close(self) -> None:
         """Release any resources (connections, files)."""
-        ...  # Protocol stub — concrete backends supply implementations
+        raise NotImplementedError  # Protocol stub — concrete backends supply implementations
 
 
 class InMemoryBackend:

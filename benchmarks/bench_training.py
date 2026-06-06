@@ -11,7 +11,6 @@ Training loop: stochastic gradient descent for 200 steps, batch size 32.
 
 from __future__ import annotations
 
-import math
 import random
 import statistics
 import time

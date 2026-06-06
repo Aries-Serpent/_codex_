@@ -10,7 +10,6 @@ All fixtures in this module are available to every test file under
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -81,8 +80,8 @@ def pipeline_result(corpus, demos, prefs):
     """Full pipeline run result dict — computed once per session."""
     from codex_ml.symbolic_pipeline import (
         PretrainCfg,
-        RLHFCfg,
         RewardModelCfg,
+        RLHFCfg,
         SFTCfg,
         run_codex_symbolic_pipeline,
     )
@@ -114,6 +113,7 @@ def base_train_config() -> dict[str, Any]:
 def dashboard_client():
     """FastAPI TestClient for the monitoring dashboard API."""
     from fastapi.testclient import TestClient
+
     from monitoring.dashboard_api import app
 
     with TestClient(app, raise_server_exceptions=True) as client:
