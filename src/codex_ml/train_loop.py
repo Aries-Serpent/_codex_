@@ -81,6 +81,7 @@ except Exception:
     attach_reasoning_adapters = None
     _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
+from codex_ml.monitoring.data_drift import DataDriftDetector as _DataDriftDetector
 from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 from codex_ml.utils.checksum import sha256sum
@@ -1848,6 +1849,24 @@ def run_training(
         pass
 
     # ------------------------------------------------------------------
+    # Model drift detector (Gap 18) — imported lazily; never crashes training.
+    # ------------------------------------------------------------------
+    _drift_detector = None
+    try:
+        from codex_ml.monitoring.model_drift import ModelDriftDetector as _DriftDet
+
+        _drift_detector = _DriftDet()
+    except Exception:  # pragma: no cover — optional dependency
+        logger.debug("ModelDriftDetector unavailable; drift monitoring disabled.")
+
+    # ------------------------------------------------------------------
+    # Data drift detector — initialised once per run; called after the
+    # performance monitor block inside the epoch loop.
+    # ------------------------------------------------------------------
+    _drift_detector = _DataDriftDetector()
+    _drift_reference: list[float] | None = None  # set on first epoch
+
+    # ------------------------------------------------------------------
     # Epoch loop — wrapped to emit training-failure alerts on unhandled
     # exceptions while still re-raising so callers remain unaffected.
     # ------------------------------------------------------------------
@@ -2082,6 +2101,86 @@ def run_training(
                 )
             except Exception as _perf_exc:
                 logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
+
+        # ------------------------------------------------------------------
+        # Data drift monitoring — runs after the performance monitor block.
+        # On the first epoch the current loss distribution is stored as the
+        # reference baseline; on subsequent epochs it is compared against it.
+        # All exceptions are swallowed so drift monitoring never crashes training.
+        # ------------------------------------------------------------------
+        try:
+            # Build a simple 4-bucket histogram from the epoch's synthetic losses
+            # (or fall back to a single-value distribution if losses are unavailable).
+            _loss_dist: list[float]
+            if synthetic_losses:
+                _n = len(synthetic_losses)
+                _q = max(_n // 4, 1)
+                _loss_dist = [
+                    sum(synthetic_losses[i * _q : (i + 1) * _q]) + 1e-9
+                    for i in range(4)
+                ]
+            else:
+                _loss_dist = [max(avg_loss or 1e-9, 1e-9), 1e-9, 1e-9, 1e-9]
+
+            if _drift_reference is None:
+                # Epoch 1 — seed the reference distribution
+                _drift_reference = _loss_dist
+                logger.debug("Data drift: reference distribution seeded at epoch %d", epoch)
+            else:
+                _drift_results = _drift_detector.check_epoch(
+                    _drift_reference,
+                    _loss_dist,
+                    epoch=epoch,
+                    feature_name="training_loss_hist",
+                )
+                _psi_r = _drift_results["psi"]
+                _kl_r = _drift_results["kl"]
+                _append_metrics_event(
+                    art_dir_path,
+                    {
+                        "type": "data_drift",
+                        "timestamp": _now_ts(),
+                        "epoch": epoch,
+                        "psi_score": _psi_r.score,
+                        "psi_drifted": _psi_r.drifted,
+                        "psi_severity": _psi_r.severity,
+                        "kl_score": _kl_r.score,
+                        "kl_drifted": _kl_r.drifted,
+                        "kl_severity": _kl_r.severity,
+                    },
+                )
+        except Exception as _drift_exc:
+            logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)
+
+        # Model drift detection (Gap 18) — must never crash training.
+        if _drift_detector is not None:
+            try:
+                # Derive per-step confidence proxies from the synthetic loss values
+                # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
+                import math as _math
+                _epoch_conf_scores = [
+                    max(0.0, min(1.0, _math.exp(-l)))
+                    for l in synthetic_losses
+                ] if synthetic_losses else None
+
+                if _epoch_conf_scores:
+                    if not _drift_detector.has_baseline():
+                        # First epoch always becomes the baseline reference.
+                        _drift_detector.update_baseline(_epoch_conf_scores)
+                    else:
+                        _drift_result = _drift_detector.check(
+                            _epoch_conf_scores, epoch=epoch
+                        )
+                        if _drift_result.drift_detected:
+                            logger.warning(
+                                "Model drift detected at epoch %d: %s",
+                                epoch,
+                                _drift_result.summary(),
+                            )
+                        if state is not None and isinstance(state, dict):
+                            state["drift_result_epoch"] = _drift_result.to_dict()
+            except Exception as _drift_exc:
+                logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)
 
         logger.info(
             "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",

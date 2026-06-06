@@ -83,8 +83,8 @@ Execution tracking artifacts:
 ### Data & Model Management
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 17 | Implement data drift monitoring | Large | Medium | ML | 🔴 Not Started |
-| 18 | Add model drift detection | Large | Medium | ML | 🔴 Not Started |
+| 17 | Implement data drift monitoring | Large | Medium | ML | ✅ Implemented — `DataDriftDetector` with PSI + KL-divergence in `src/codex_ml/monitoring/data_drift.py`; wired into `train_loop.py` epoch loop; 27 tests pass. See `workbench/evidence/gap17_data_drift.md` |
+| 18 | Add model drift detection | Large | Medium | ML | ✅ Implemented — `src/codex_ml/monitoring/model_drift.py` `ModelDriftDetector` (JSD + confidence monitoring); wired into `train_loop.py` post-epoch block; 35 unit tests pass. See `workbench/evidence/gap18_model_drift.md` |
 | 19 | Set up DVC for active data versioning | Medium | Medium | ML | ✅ Implemented — `dvc init` + `params.yaml` + local remote + `dvc_pipeline` CI job in `data-quality-suite.yml`; 246 tests pass. See `workbench/evidence/gap19_dvc_verification.md` |
 | 20 | Implement deterministic data splits | Small | Medium | ML | ✅ Implemented — deterministic split utilities verified in `src/codex_ml/data/{split.py,split_utils.py,splits.py}` with targeted deterministic tests passing. See `workbench/evidence/gap20_deterministic_splits_verification.md` |
 

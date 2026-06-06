@@ -36,7 +36,7 @@
 | Lane B — CI/Workflow resilience + alerting | 0 | 0 | 1 (proactive-monitor) | telemetry-classifier-agent |
 | Lane C — Repro/platform hardening | 0 | 0 | 0 | wave0-gap19 (DVC agent running) |
 | Lane D — QA/coverage/testing scale-up | 0 | 0 | 0 | wave1-gap5 (coverage agent queued) |
-| Lane E — ML drift and advanced capabilities | 0 | 0 | 0 | wave0-gap14 (prometheus agent running) |
+| Lane E — ML drift and advanced capabilities | 1 | 0 | 0 | gap17 ✅ data drift implemented; wave0-gap14 (prometheus agent running) |
 | Shared lane — cross-cutting/maintenance | 0 | 0 | 0 | wave0-gap27 (moderation agent running) |
 
 ## Active agents (2026-06-05T23:20Z)
