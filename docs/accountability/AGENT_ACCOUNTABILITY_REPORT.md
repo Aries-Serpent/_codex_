@@ -1,3 +1,31 @@
+## SESSION SUMMARY — 2026-06-06T05:41Z · Wave 3/4 timeout-safe continuation
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Re-validated queue lock values in `workbench/gap_execution_queue.yaml` before making updates ✅
+- [x] **0b.** Ran lint/test pre-checks and captured baseline constraints for timeout-safe scope ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this session ✅
+- [x] **2.** `CHANGELOG.md` updated in this session ✅
+
+### Work Completed
+1. Re-validated context-lock queue integrity for Wave 3/4 and `special_flags.needs_verification`.
+2. Executed one small Wave 3 item (Gap 20) within session budget by verifying existing deterministic split implementation and running targeted deterministic split tests.
+3. Updated queue status for Gap 20 to completed with explicit evidence linkage.
+4. Added timeout-safe handoff/defer list for >55-minute work (Wave 3 long items and most Wave 4 items) in `workbench/wave_execution_control.md`.
+
+### Validation Evidence
+- `python3` YAML lock-check script for `workbench/gap_execution_queue.yaml` ✅
+- `python3 -m pytest tests/test_deterministic_split.py tests/data/test_split_dataset_deterministic.py -q` ✅
+- `ruff check src/ tests/` ❌ (pre-existing unrelated issues in untouched files; no new lint regressions introduced by this scoped update)
+
+### Files Changed
+- `workbench/gap_execution_queue.yaml`
+- `workbench/evidence/gap20_deterministic_splits_verification.md` (new)
+- `workbench/wave_execution_control.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `CHANGELOG.md`
+
+---
+
 ## SESSION SUMMARY — 2026-06-06T00:08Z · PR #4789 Validation Pipeline CI follow-up
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)

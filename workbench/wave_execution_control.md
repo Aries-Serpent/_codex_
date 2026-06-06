@@ -59,3 +59,17 @@
 | Wave 2 | pending | pending | pending | pending | [ ] | [ ] |
 | Wave 3 | pending | pending | pending | pending | [ ] | [ ] |
 | Wave 4 | pending | pending | pending | pending | [ ] | [ ] |
+
+## Timeout-safe continuation update (2026-06-06T05:41Z)
+
+- Queue integrity re-validated against context lock:
+  - Wave 3 queue set: `17, 18, 20, 21, 22, 23, 24, 28, 29, 30, 31`
+  - Wave 4 queue set: `32–45`
+  - `special_flags.needs_verification`: `[14, 27]`
+- Small in-session Wave 3 execution completed:
+  - Gap 20 (deterministic data splits) marked completed after implementation verification + targeted deterministic split tests.
+  - Evidence: `workbench/evidence/gap20_deterministic_splits_verification.md`
+
+### Deferred for workflow/custom-agent processing (>55 minutes)
+- Wave 3: 17, 18, 21, 23
+- Wave 4: 32–45 (unless a tightly bounded <=55-minute slice is explicitly selected)

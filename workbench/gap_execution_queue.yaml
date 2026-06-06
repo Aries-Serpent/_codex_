@@ -484,8 +484,10 @@ queue:
     owner: ML
     effort: Small
     impact: Medium
-    status: queued
-    status_source: 🔴 Not Started
+    status: completed
+    status_source: '✅ Implemented/verified — deterministic split utilities exist in
+      `src/codex_ml/data/split.py`, `src/codex_ml/data/split_utils.py`, and `src/codex_ml/data/splits.py`;
+      targeted deterministic tests passing. See `workbench/evidence/gap20_deterministic_splits_verification.md`'
     flags: []
     wave: Wave 3
     lane: Lane C — Repro/platform hardening

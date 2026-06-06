@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (SN — Wave 3/4 timeout-safe continuation — 2026-06-06T05:41Z)
+- Re-validated Wave 3/Wave 4 queue lock state in `workbench/gap_execution_queue.yaml` and confirmed `special_flags.needs_verification` lock values.
+- Completed scoped Wave 3 small-item execution by verifying deterministic split implementation for Gap 20 and recording evidence in `workbench/evidence/gap20_deterministic_splits_verification.md`.
+- Updated `workbench/wave_execution_control.md` with explicit deferred `>55` minute handoff list for workflow/custom-agent processing (Wave 3: 17/18/21/23; Wave 4: 32–45).
+
 ### Added (Gap 9 — Docker base image digest pinning — 2025-07-18)
 - **Dockerfile, Dockerfile.preview, Dockerfile.restore**: Pinned all `FROM` lines to SHA256 manifest-list digests resolved via `skopeo inspect`. Stage-internal `FROM <alias>` references unchanged.
 - **docker/Dockerfile.ci, docker/Dockerfile.cpu, docker/Dockerfile.embedding, docker/Dockerfile.gpu, docker/Dockerfile.local, docker/Dockerfile.local-codex-env, docker/Dockerfile.optimized**: Same digest pinning applied; `docker/Dockerfile.local` placeholder (`<PINNED_DIGEST>`) resolved to live `python:3.12-slim` digest.

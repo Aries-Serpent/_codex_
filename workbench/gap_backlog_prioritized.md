@@ -86,7 +86,7 @@ Execution tracking artifacts:
 | 17 | Implement data drift monitoring | Large | Medium | ML | 🔴 Not Started |
 | 18 | Add model drift detection | Large | Medium | ML | 🔴 Not Started |
 | 19 | Set up DVC for active data versioning | Medium | Medium | ML | ✅ Implemented — `dvc init` + `params.yaml` + local remote + `dvc_pipeline` CI job in `data-quality-suite.yml`; 246 tests pass. See `workbench/evidence/gap19_dvc_verification.md` |
-| 20 | Implement deterministic data splits | Small | Medium | ML | 🔴 Not Started |
+| 20 | Implement deterministic data splits | Small | Medium | ML | ✅ Implemented — deterministic split utilities verified in `src/codex_ml/data/{split.py,split_utils.py,splits.py}` with targeted deterministic tests passing. See `workbench/evidence/gap20_deterministic_splits_verification.md` |
 
 ### Testing & Quality
 | # | Gap | Effort | Impact | Owner | Status |
