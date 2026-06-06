@@ -163,6 +163,20 @@ def _resolve_device(name: str | None) -> str:
 
 @dataclass
 class LoraSettings:
+    """Configuration for Low-Rank Adaptation (LoRA) fine-tuning.
+
+    Attributes:
+        enabled: Whether LoRA adapters should be applied to the loaded model.
+        r: LoRA rank — controls the size of the low-rank decomposition matrices.
+        alpha: LoRA scaling factor (``lora_alpha`` in PEFT).
+        dropout: Dropout probability applied to the LoRA layers.
+        target_modules: Names of the model sub-modules to which LoRA adapters
+            are attached.  Defaults to ``("q_proj", "v_proj")``.
+        bias: Bias handling strategy; one of ``"none"``, ``"all"``, or
+            ``"lora_only"``.
+        task_type: PEFT task type string (e.g. ``"CAUSAL_LM"``).
+    """
+
     enabled: bool = False
     r: int = 8
     alpha: int = 16
@@ -174,6 +188,26 @@ class LoraSettings:
 
 @dataclass
 class ModelInitConfig:
+    """Fully-resolved configuration for loading a HuggingFace model and tokenizer.
+
+    Attributes:
+        model_name: HuggingFace model identifier or local path.
+        tokenizer_name: Tokenizer identifier; falls back to *model_name* when
+            ``None``.
+        dtype: String representation of the desired torch dtype (e.g.
+            ``"float32"``, ``"bf16"``).
+        device: Target device string (``"cpu"``, ``"cuda"``, or ``"auto"``).
+        trust_remote_code: Whether to allow custom model/tokenizer code from
+            the HuggingFace Hub.
+        load_config: Additional keyword arguments forwarded to
+            ``from_pretrained``.
+        lora: LoRA adapter settings.  Adapters are applied only when
+            ``lora.enabled`` is ``True``.
+        bf16_require_capability: When ``True`` and ``dtype`` resolves to
+            bfloat16, raise a :exc:`RuntimeError` if the target device lacks
+            native bf16 support.
+    """
+
     model_name: str
     tokenizer_name: str | None = None
     dtype: str = "float32"
@@ -250,6 +284,22 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
 def load_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
 ) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
+    """Load a HuggingFace tokenizer described by *config*.
+
+    Args:
+        config: Either a :class:`ModelInitConfig` or a raw mapping that is
+            coerced to one.  The tokenizer is loaded from
+            ``config.tokenizer_name`` when set, otherwise from
+            ``config.model_name``.
+
+    Returns:
+        A :class:`~transformers.PreTrainedTokenizerBase` instance.
+
+    Raises:
+        RuntimeError: If ``transformers`` is not installed, or if the
+            tokenizer cannot be fetched (e.g. network unavailable in offline
+            mode).
+    """
     if AutoTokenizer is None:  # pragma: no cover - optional dependency missing
         raise RuntimeError("transformers is required to load tokenizers")
 
@@ -313,6 +363,25 @@ def _coerce_torch_dtype(dtype: Any) -> Any:
 def load_model(
     config: Mapping[str, Any] | ModelInitConfig,
 ) -> PreTrainedModel:  # type: ignore[valid-type]
+    """Load and return a causal-LM model described by *config*.
+
+    The model is moved to the configured device after loading.  When
+    ``config.lora.enabled`` is ``True`` the PEFT LoRA adapters are attached
+    before the model is returned.
+
+    Args:
+        config: Either a :class:`ModelInitConfig` or a raw mapping that is
+            coerced to one.
+
+    Returns:
+        A :class:`~transformers.PreTrainedModel` (possibly wrapped with LoRA
+        adapters) placed on the target device.
+
+    Raises:
+        RuntimeError: If ``transformers`` or ``torch`` is not installed, if
+            the model weights cannot be located, if the target device is
+            unavailable, or if bf16 capability is required but absent.
+    """
     if AutoModelForCausalLM is None:  # pragma: no cover - transformers missing
         raise RuntimeError("transformers is required to load models")
 
@@ -421,6 +490,33 @@ def load_model_and_tokenizer(
     device_map: str = "auto",
     lora: dict[str, Any] | None = None,
 ) -> tuple[Any, Any]:
+    """Load a model and its tokenizer in a single call.
+
+    Accepts three forms for *config*:
+
+    * **Mapping / ModelInitConfig** — delegates to :func:`load_model` and
+      :func:`load_tokenizer`.
+    * **str** — first attempts to resolve the name through the internal model
+      registry; falls back to a direct HuggingFace ``from_pretrained`` load.
+
+    Args:
+        config: A :class:`ModelInitConfig`, a raw configuration mapping, or a
+            plain model-name string.
+        dtype: Torch dtype string (``"auto"``, ``"fp32"``, ``"bf16"``, …) used
+            only when *config* is a plain string.
+        device_map: Device map string passed to ``from_pretrained`` when
+            *config* is a plain string.
+        lora: Optional LoRA override dict used when *config* is a plain string
+            and PEFT is available.
+
+    Returns:
+        A ``(model, tokenizer)`` tuple.
+
+    Raises:
+        ImportError: If ``torch`` or ``transformers`` is not available when
+            a direct string-based load is attempted.
+        RuntimeError: On model/tokenizer loading failures.
+    """
     if isinstance(config, (Mapping | ModelInitConfig)):
         coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)
         model = load_model(coerced)

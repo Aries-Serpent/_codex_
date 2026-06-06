@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def python_version() -> str:
+    """Return the current Python interpreter version as a ``'major.minor.patch'`` string."""
     return ".".join(map(str, sys.version_info[:3]))
 
 
@@ -53,6 +54,19 @@ def _git_read_head(repo: Path) -> str | None:
 
 
 def git_sha(repo: str | Path = ".") -> str:
+    """Return the current HEAD commit SHA for the repository at *repo*.
+
+    Tries ``git rev-parse HEAD`` first; falls back to reading ``.git/HEAD``
+    directly when the ``git`` binary is unavailable.  Returns an empty string
+    when the SHA cannot be determined.
+
+    Args:
+        repo: Path to the root of the git repository.  Defaults to the
+            current working directory.
+
+    Returns:
+        40-character hex SHA string, or ``""`` on failure.
+    """
     repo_path = Path(repo)
     return _git_rev_parse() or _git_read_head(repo_path) or ""
 
@@ -73,6 +87,19 @@ _LOCK_CANDIDATES = ("uv.lock", "requirements/lock.txt", "poetry.lock", "Pipfile.
 
 
 def lock_digest(root: str | Path = ".") -> str:
+    """Return the SHA-256 hex digest of the first lock file found under *root*.
+
+    Searches for ``uv.lock``, ``requirements/lock.txt``, ``poetry.lock``, and
+    ``Pipfile.lock`` in that order.  Returns an empty string when none are
+    found.
+
+    Args:
+        root: Repository root directory.  Defaults to the current working
+            directory.
+
+    Returns:
+        64-character hex SHA-256 digest, or ``""`` when no lock file exists.
+    """
     base = Path(root)
     for candidate in _LOCK_CANDIDATES:
         lock_path = base / candidate
@@ -84,6 +111,23 @@ def lock_digest(root: str | Path = ".") -> str:
 
 
 def collect_run_meta(extra: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Collect minimal reproducibility metadata for a training run.
+
+    Returns a dictionary with at least the following keys:
+
+    * ``"python"`` — interpreter version string (see :func:`python_version`).
+    * ``"git"`` — HEAD commit SHA (see :func:`git_sha`), empty if unavailable.
+    * ``"lock_sha256"`` — SHA-256 of the first lock file found (see
+      :func:`lock_digest`), empty if no lock file exists.
+
+    Additional keys from *extra* are merged in (extra values take precedence).
+
+    Args:
+        extra: Optional mapping of additional metadata to include.
+
+    Returns:
+        Dictionary of run metadata suitable for JSON serialisation.
+    """
     payload: dict[str, Any] = {
         "python": python_version(),
         "git": git_sha(),

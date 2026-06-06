@@ -467,3 +467,42 @@ repos:
         pass_filenames: false
         # To run manually:   pre-commit run mypy-src --all-files
         # Strict pre-push gate: mypy-isolated-venv-gate (blocks on regression)
+
+      # ── Gap 34: pydocstyle docstring check (informational) ───────────────
+      # Reports missing/malformed Google-style docstrings without blocking
+      # commits.  D100 (missing module docstring) and D104 (missing package
+      # docstring) are intentionally ignored since many __init__.py files are
+      # intentionally minimal.  Run manually with:
+      #   pre-commit run pydocstyle-check --all-files
+      - id: pydocstyle-check
+        name: "📝 pydocstyle docstring check (informational)"
+        entry: bash -c 'python -m pydocstyle src/ --convention=google --add-ignore=D100,D104 || true'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+
+  # ── Gap 35: Schema validation ─────────────────────────────────────────────
+  # Two hooks:
+  #   1. check-github-workflows  — validates .github/workflows/*.yml against the
+  #      official GitHub Actions JSON Schema (via check-jsonschema, if installed).
+  #      Falls back gracefully to YAML-parse-only when the package is absent.
+  #   2. validate-codex-configs  — runs scripts/ci/validate_configs.py which
+  #      loads every YAML in configs/ through the Pydantic TrainConfig schema.
+
+  - repo: local
+    hooks:
+      - id: check-github-workflows
+        name: "✅ Validate GitHub Actions workflow schemas"
+        entry: python scripts/ci/check_workflow_yaml.py
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        stages: [pre-commit]
+
+      - id: validate-codex-configs
+        name: "🧪 Validate Codex pydantic/Hydra configs (configs/)"
+        entry: python scripts/ci/validate_configs.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run validate-codex-configs --all-files
+        # Or standalone:     python scripts/ci/validate_configs.py

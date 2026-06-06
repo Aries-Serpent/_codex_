@@ -1872,326 +1872,326 @@ def run_training(
     # ------------------------------------------------------------------
     try:
         for epoch in range(start_epoch, target_epochs + 1):
-        epoch_start = time.perf_counter()
-        epoch_checkpoint_sha = None
-        for cb in cb_list:
-            try:
-                cb.on_epoch_start(epoch, state)
-            except Exception as e:
-                cb.record_error("on_epoch_start", e, state)
-                logger.warning("Callback on_epoch_start error: %s", e)
-
-        epoch_loss_accum = 0.0
-        synthetic_losses: list[float] = []
-        steps_this_epoch = 0
-        optimizer_steps_this_epoch = 0
-        if reasoning_runtime is not None:
-            reasoning_runtime.on_new_epoch()
-
-        if model is not None and optimizer is not None and _HAS_TORCH:
-            if dtype_obj is not None:
+            epoch_start = time.perf_counter()
+            epoch_checkpoint_sha = None
+            for cb in cb_list:
                 try:
-                    model.to(dtype=dtype_obj)
-                except Exception:
-                    logger.debug("Suppressed exception in handler", exc_info=True)
-            model.to(device_obj)
-            model.train()
-            optimizer.zero_grad(set_to_none=True)
+                    cb.on_epoch_start(epoch, state)
+                except Exception as e:
+                    cb.record_error("on_epoch_start", e, state)
+                    logger.warning("Callback on_epoch_start error: %s", e)
 
-            loader_iter = iter(train_loader) if train_loader is not None else None
-            for step in range(steps_per_epoch):
-                steps_this_epoch += 1
-                total_steps += 1
-                if loader_iter is not None:
-                    load_start = time.perf_counter()
+            epoch_loss_accum = 0.0
+            synthetic_losses: list[float] = []
+            steps_this_epoch = 0
+            optimizer_steps_this_epoch = 0
+            if reasoning_runtime is not None:
+                reasoning_runtime.on_new_epoch()
+
+            if model is not None and optimizer is not None and _HAS_TORCH:
+                if dtype_obj is not None:
                     try:
-                        _batch = next(loader_iter)
-                    except StopIteration:
-                        loader_iter = iter(train_loader)  # type: ignore[arg-type]
-                        _batch = next(loader_iter)
-                    finally:
-                        load_duration = time.perf_counter() - load_start
-                        if metrics_registry is not None:
-                            metrics_registry.observe_data_loading(load_duration)
-                loss_val = _synthetic_step(model)
-                epoch_loss_accum += loss_val
-                synthetic_losses.append(loss_val)
-                if metrics_registry is not None:
-                    metrics_registry.record_training_step(loss_val)
-                if reasoning_runtime is not None:
-                    hidden_states = None
-                    try:
-                        hidden_states = getattr(model, "hidden_states", None)
+                        model.to(dtype=dtype_obj)
                     except Exception:
+                        logger.debug("Suppressed exception in handler", exc_info=True)
+                model.to(device_obj)
+                model.train()
+                optimizer.zero_grad(set_to_none=True)
+
+                loader_iter = iter(train_loader) if train_loader is not None else None
+                for step in range(steps_per_epoch):
+                    steps_this_epoch += 1
+                    total_steps += 1
+                    if loader_iter is not None:
+                        load_start = time.perf_counter()
+                        try:
+                            _batch = next(loader_iter)
+                        except StopIteration:
+                            loader_iter = iter(train_loader)  # type: ignore[arg-type]
+                            _batch = next(loader_iter)
+                        finally:
+                            load_duration = time.perf_counter() - load_start
+                            if metrics_registry is not None:
+                                metrics_registry.observe_data_loading(load_duration)
+                    loss_val = _synthetic_step(model)
+                    epoch_loss_accum += loss_val
+                    synthetic_losses.append(loss_val)
+                    if metrics_registry is not None:
+                        metrics_registry.record_training_step(loss_val)
+                    if reasoning_runtime is not None:
                         hidden_states = None
-                    step_ctx = (
-                        {"hidden_states": hidden_states} if hidden_states is not None else None
-                    )
-                    reasoning_runtime.record_trace(
-                        model,
-                        epoch=epoch,
-                        step=step + 1,
-                        art_dir_path=art_dir_path,
-                        session_id=session_id,
-                        step_ctx=step_ctx,
-                    )
-                if (step + 1) % grad_accum == 0:
+                        try:
+                            hidden_states = getattr(model, "hidden_states", None)
+                        except Exception:
+                            hidden_states = None
+                        step_ctx = (
+                            {"hidden_states": hidden_states} if hidden_states is not None else None
+                        )
+                        reasoning_runtime.record_trace(
+                            model,
+                            epoch=epoch,
+                            step=step + 1,
+                            art_dir_path=art_dir_path,
+                            session_id=session_id,
+                            step_ctx=step_ctx,
+                        )
+                    if (step + 1) % grad_accum == 0:
+                        try:
+                            optimizer.step()
+                            optimizer.zero_grad(set_to_none=True)
+                            optimizer_steps_this_epoch += 1
+                            total_optimizer_steps += 1
+                        except Exception as e:
+                            logger.warning("Optimizer step failed: %s", e)
+
+                if steps_per_epoch % grad_accum != 0:
                     try:
                         optimizer.step()
                         optimizer.zero_grad(set_to_none=True)
                         optimizer_steps_this_epoch += 1
                         total_optimizer_steps += 1
                     except Exception as e:
-                        logger.warning("Optimizer step failed: %s", e)
+                        logger.warning("Final optimizer step failed: %s", e)
+            else:
+                steps_this_epoch = steps_per_epoch
+                total_steps += steps_per_epoch
 
-            if steps_per_epoch % grad_accum != 0:
+            avg_loss = None
+            if synthetic_losses:
+                avg_loss = epoch_loss_accum / max(len(synthetic_losses), 1)
+
+            if scheduler is not None and optimizer is not None:
                 try:
-                    optimizer.step()
-                    optimizer.zero_grad(set_to_none=True)
-                    optimizer_steps_this_epoch += 1
-                    total_optimizer_steps += 1
+                    scheduler.step()
                 except Exception as e:
-                    logger.warning("Final optimizer step failed: %s", e)
-        else:
-            steps_this_epoch = steps_per_epoch
-            total_steps += steps_per_epoch
+                    logger.warning("Scheduler step failed: %s", e)
+                current_lrs = _scheduler_current_lr(scheduler, optimizer)
+            else:
+                current_lrs = _scheduler_current_lr(None, optimizer)
 
-        avg_loss = None
-        if synthetic_losses:
-            avg_loss = epoch_loss_accum / max(len(synthetic_losses), 1)
+            learning_rate_history.append(current_lrs or [])
 
-        if scheduler is not None and optimizer is not None:
-            try:
-                scheduler.step()
-            except Exception as e:
-                logger.warning("Scheduler step failed: %s", e)
-            current_lrs = _scheduler_current_lr(scheduler, optimizer)
-        else:
-            current_lrs = _scheduler_current_lr(None, optimizer)
+            epoch_duration = time.perf_counter() - epoch_start
+            if metrics_registry is not None:
+                metrics_registry.observe_training_duration(epoch_duration)
 
-        learning_rate_history.append(current_lrs or [])
+            epoch_metrics = TrainingMetrics(
+                epoch=epoch,
+                synthetic_loss=avg_loss,
+                optimizer_steps=optimizer_steps_this_epoch,
+                total_steps=steps_this_epoch,
+            ).to_dict()
+            epoch_metrics["lr"] = current_lrs
 
-        epoch_duration = time.perf_counter() - epoch_start
-        if metrics_registry is not None:
-            metrics_registry.observe_training_duration(epoch_duration)
-
-        epoch_metrics = TrainingMetrics(
-            epoch=epoch,
-            synthetic_loss=avg_loss,
-            optimizer_steps=optimizer_steps_this_epoch,
-            total_steps=steps_this_epoch,
-        ).to_dict()
-        epoch_metrics["lr"] = current_lrs
-
-        for cb in cb_list:
-            try:
-                addon = cb.on_epoch_end(epoch, epoch_metrics, state)
-                merge_callback_results(epoch_metrics, addon)
-            except TypeError as merge_exc:
-                logger.debug(f"TypeError: {merge_exc}")
-                cb.record_error("merge_callback_results", merge_exc, state)
-                logger.warning("Callback merge error: %s", merge_exc)
-            except Exception as e:
-                cb.record_error("on_epoch_end", e, state)
-                logger.warning("Callback on_epoch_end error: %s", e)
-
-        metric_session_id = session_id or get_session_id()
-        metrics_payload = {
-            "type": "metric",
-            "timestamp": _now_ts(),
-            "metric_name": "training.loss",
-            "value": avg_loss,
-            "epoch": epoch,
-            "optimizer_steps": optimizer_steps_this_epoch,
-            "total_steps": total_steps,
-            "session_id": metric_session_id,
-        }
-        _append_metrics_event(art_dir_path, metrics_payload)
-        duration_payload = {
-            "type": "metric",
-            "timestamp": _now_ts(),
-            "metric_name": "training.epoch_duration_seconds",
-            "value": epoch_duration,
-            "epoch": epoch,
-            "session_id": metric_session_id,
-        }
-        _append_metrics_event(art_dir_path, duration_payload)
-
-        if checkpoint_dir:
-            epoch_dir = Path(checkpoint_dir) / f"epoch-{epoch:04d}"
-            epoch_dir.mkdir(parents=True, exist_ok=True)
-            ckpt_metadata = {
-                "epoch": epoch,
-                "created_at": _now_ts(),
-                "model_params": model_params_count,
-                "optimizer_steps_total": total_optimizer_steps,
-                "optimizer_steps_epoch": optimizer_steps_this_epoch,
-                "steps_per_epoch": steps_per_epoch,
-                "grad_accum": grad_accum,
-                "avg_loss": avg_loss,
-                "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
-                "current_lrs": current_lrs,
-                "learning_rate_history_len": len(learning_rate_history),
-            }
-            if model is not None and _HAS_TORCH:
+            for cb in cb_list:
                 try:
-                    save_checkpoint(
-                        model=model,
-                        optimizer=optimizer,
-                        scheduler=scheduler,
-                        out_dir=epoch_dir,
-                        metadata=ckpt_metadata,
-                        metric_name="avg_loss",
-                        metric_value=avg_loss,
-                        best_k=best_k_index,
+                    addon = cb.on_epoch_end(epoch, epoch_metrics, state)
+                    merge_callback_results(epoch_metrics, addon)
+                except TypeError as merge_exc:
+                    logger.debug(f"TypeError: {merge_exc}")
+                    cb.record_error("merge_callback_results", merge_exc, state)
+                    logger.warning("Callback merge error: %s", merge_exc)
+                except Exception as e:
+                    cb.record_error("on_epoch_end", e, state)
+                    logger.warning("Callback on_epoch_end error: %s", e)
+
+            metric_session_id = session_id or get_session_id()
+            metrics_payload = {
+                "type": "metric",
+                "timestamp": _now_ts(),
+                "metric_name": "training.loss",
+                "value": avg_loss,
+                "epoch": epoch,
+                "optimizer_steps": optimizer_steps_this_epoch,
+                "total_steps": total_steps,
+                "session_id": metric_session_id,
+            }
+            _append_metrics_event(art_dir_path, metrics_payload)
+            duration_payload = {
+                "type": "metric",
+                "timestamp": _now_ts(),
+                "metric_name": "training.epoch_duration_seconds",
+                "value": epoch_duration,
+                "epoch": epoch,
+                "session_id": metric_session_id,
+            }
+            _append_metrics_event(art_dir_path, duration_payload)
+
+            if checkpoint_dir:
+                epoch_dir = Path(checkpoint_dir) / f"epoch-{epoch:04d}"
+                epoch_dir.mkdir(parents=True, exist_ok=True)
+                ckpt_metadata = {
+                    "epoch": epoch,
+                    "created_at": _now_ts(),
+                    "model_params": model_params_count,
+                    "optimizer_steps_total": total_optimizer_steps,
+                    "optimizer_steps_epoch": optimizer_steps_this_epoch,
+                    "steps_per_epoch": steps_per_epoch,
+                    "grad_accum": grad_accum,
+                    "avg_loss": avg_loss,
+                    "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
+                    "current_lrs": current_lrs,
+                    "learning_rate_history_len": len(learning_rate_history),
+                }
+                if model is not None and _HAS_TORCH:
+                    try:
+                        save_checkpoint(
+                            model=model,
+                            optimizer=optimizer,
+                            scheduler=scheduler,
+                            out_dir=epoch_dir,
+                            metadata=ckpt_metadata,
+                            metric_name="avg_loss",
+                            metric_value=avg_loss,
+                            best_k=best_k_index,
+                        )
+                    except Exception as e:
+                        msg = "Failed to save checkpoint for epoch %d: %s"
+                        logger.warning(msg, epoch, e)
+                epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
+                if epoch_checkpoint_sha:
+                    last_checkpoint_sha = epoch_checkpoint_sha
+
+                latest_payload = {
+                    "epoch": epoch,
+                    "path": epoch_dir.name,
+                    "created_at": _now_ts(),
+                    "model_params": model_params_count,
+                    "optimizer_steps_total": total_optimizer_steps,
+                    "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
+                    "checkpoint_sha256": epoch_checkpoint_sha,
+                }
+                try:
+                    (Path(checkpoint_dir) / "latest.json").write_text(
+                        json.dumps(latest_payload, indent=2)
                     )
                 except Exception as e:
-                    msg = "Failed to save checkpoint for epoch %d: %s"
-                    logger.warning(msg, epoch, e)
-            epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
-            if epoch_checkpoint_sha:
-                last_checkpoint_sha = epoch_checkpoint_sha
+                    logger.warning("Failed to write latest.json: %s", e)
 
-            latest_payload = {
-                "epoch": epoch,
-                "path": epoch_dir.name,
-                "created_at": _now_ts(),
-                "model_params": model_params_count,
-                "optimizer_steps_total": total_optimizer_steps,
-                "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
-                "checkpoint_sha256": epoch_checkpoint_sha,
-            }
-            try:
-                (Path(checkpoint_dir) / "latest.json").write_text(
-                    json.dumps(latest_payload, indent=2)
-                )
-            except Exception as e:
-                logger.warning("Failed to write latest.json: %s", e)
+                # Retention pruning
+                if retention_policy:
+                    try:
+                        prune_result = prune_checkpoints(checkpoint_dir, **retention_policy)
+                        state["retention_last"] = prune_result
+                    except Exception as e:
+                        logger.warning("Retention pruning failed: %s", e)
+            else:
+                latest_payload = {
+                    "epoch": epoch,
+                    "created_at": _now_ts(),
+                    "model_params": model_params_count,
+                    "optimizer_steps_total": total_optimizer_steps,
+                    "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
+                }
 
-            # Retention pruning
-            if retention_policy:
+            state["latest_checkpoint"] = latest_payload
+
+            sha_for_log = locals().get("epoch_checkpoint_sha") or last_checkpoint_sha
+            if sha_for_log:
+                sha_for_log = sha_for_log[:12]
+
+            # Performance degradation monitoring — must never crash training.
+            if _perf_monitor is not None:
                 try:
-                    prune_result = prune_checkpoints(checkpoint_dir, **retention_policy)
-                    state["retention_last"] = prune_result
-                except Exception as e:
-                    logger.warning("Retention pruning failed: %s", e)
-        else:
-            latest_payload = {
-                "epoch": epoch,
-                "created_at": _now_ts(),
-                "model_params": model_params_count,
-                "optimizer_steps_total": total_optimizer_steps,
-                "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
-            }
+                    _epoch_throughput = (
+                        steps_this_epoch / epoch_duration if epoch_duration > 0 else None
+                    )
+                    _perf_monitor.record(
+                        _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
+                    )
+                except Exception as _perf_exc:
+                    logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
 
-        state["latest_checkpoint"] = latest_payload
-
-        sha_for_log = locals().get("epoch_checkpoint_sha") or last_checkpoint_sha
-        if sha_for_log:
-            sha_for_log = sha_for_log[:12]
-
-        # Performance degradation monitoring — must never crash training.
-        if _perf_monitor is not None:
+            # ------------------------------------------------------------------
+            # Data drift monitoring — runs after the performance monitor block.
+            # On the first epoch the current loss distribution is stored as the
+            # reference baseline; on subsequent epochs it is compared against it.
+            # All exceptions are swallowed so drift monitoring never crashes training.
+            # ------------------------------------------------------------------
             try:
-                _epoch_throughput = (
-                    steps_this_epoch / epoch_duration if epoch_duration > 0 else None
-                )
-                _perf_monitor.record(
-                    _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
-                )
-            except Exception as _perf_exc:
-                logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
+                # Build a simple 4-bucket histogram from the epoch's synthetic losses
+                # (or fall back to a single-value distribution if losses are unavailable).
+                _loss_dist: list[float]
+                if synthetic_losses:
+                    _n = len(synthetic_losses)
+                    _q = max(_n // 4, 1)
+                    _loss_dist = [
+                        sum(synthetic_losses[i * _q : (i + 1) * _q]) + 1e-9
+                        for i in range(4)
+                    ]
+                else:
+                    _loss_dist = [max(avg_loss or 1e-9, 1e-9), 1e-9, 1e-9, 1e-9]
 
-        # ------------------------------------------------------------------
-        # Data drift monitoring — runs after the performance monitor block.
-        # On the first epoch the current loss distribution is stored as the
-        # reference baseline; on subsequent epochs it is compared against it.
-        # All exceptions are swallowed so drift monitoring never crashes training.
-        # ------------------------------------------------------------------
-        try:
-            # Build a simple 4-bucket histogram from the epoch's synthetic losses
-            # (or fall back to a single-value distribution if losses are unavailable).
-            _loss_dist: list[float]
-            if synthetic_losses:
-                _n = len(synthetic_losses)
-                _q = max(_n // 4, 1)
-                _loss_dist = [
-                    sum(synthetic_losses[i * _q : (i + 1) * _q]) + 1e-9
-                    for i in range(4)
-                ]
-            else:
-                _loss_dist = [max(avg_loss or 1e-9, 1e-9), 1e-9, 1e-9, 1e-9]
-
-            if _drift_reference is None:
-                # Epoch 1 — seed the reference distribution
-                _drift_reference = _loss_dist
-                logger.debug("Data drift: reference distribution seeded at epoch %d", epoch)
-            else:
-                _drift_results = _drift_detector.check_epoch(
-                    _drift_reference,
-                    _loss_dist,
-                    epoch=epoch,
-                    feature_name="training_loss_hist",
-                )
-                _psi_r = _drift_results["psi"]
-                _kl_r = _drift_results["kl"]
-                _append_metrics_event(
-                    art_dir_path,
-                    {
-                        "type": "data_drift",
-                        "timestamp": _now_ts(),
-                        "epoch": epoch,
-                        "psi_score": _psi_r.score,
-                        "psi_drifted": _psi_r.drifted,
-                        "psi_severity": _psi_r.severity,
-                        "kl_score": _kl_r.score,
-                        "kl_drifted": _kl_r.drifted,
-                        "kl_severity": _kl_r.severity,
-                    },
-                )
-        except Exception as _drift_exc:
-            logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)
-
-        # Model drift detection (Gap 18) — must never crash training.
-        if _drift_detector is not None:
-            try:
-                # Derive per-step confidence proxies from the synthetic loss values
-                # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
-                import math as _math
-                _epoch_conf_scores = [
-                    max(0.0, min(1.0, _math.exp(-l)))
-                    for l in synthetic_losses
-                ] if synthetic_losses else None
-
-                if _epoch_conf_scores:
-                    if not _drift_detector.has_baseline():
-                        # First epoch always becomes the baseline reference.
-                        _drift_detector.update_baseline(_epoch_conf_scores)
-                    else:
-                        _drift_result = _drift_detector.check(
-                            _epoch_conf_scores, epoch=epoch
-                        )
-                        if _drift_result.drift_detected:
-                            logger.warning(
-                                "Model drift detected at epoch %d: %s",
-                                epoch,
-                                _drift_result.summary(),
-                            )
-                        if state is not None and isinstance(state, dict):
-                            state["drift_result_epoch"] = _drift_result.to_dict()
+                if _drift_reference is None:
+                    # Epoch 1 — seed the reference distribution
+                    _drift_reference = _loss_dist
+                    logger.debug("Data drift: reference distribution seeded at epoch %d", epoch)
+                else:
+                    _drift_results = _drift_detector.check_epoch(
+                        _drift_reference,
+                        _loss_dist,
+                        epoch=epoch,
+                        feature_name="training_loss_hist",
+                    )
+                    _psi_r = _drift_results["psi"]
+                    _kl_r = _drift_results["kl"]
+                    _append_metrics_event(
+                        art_dir_path,
+                        {
+                            "type": "data_drift",
+                            "timestamp": _now_ts(),
+                            "epoch": epoch,
+                            "psi_score": _psi_r.score,
+                            "psi_drifted": _psi_r.drifted,
+                            "psi_severity": _psi_r.severity,
+                            "kl_score": _kl_r.score,
+                            "kl_drifted": _kl_r.drifted,
+                            "kl_severity": _kl_r.severity,
+                        },
+                    )
             except Exception as _drift_exc:
-                logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)
+                logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)
 
-        logger.info(
-            "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
-            epoch,
-            target_epochs,
-            f"{avg_loss:.6f}" if avg_loss is not None else "n/a",
-            steps_this_epoch,
-            optimizer_steps_this_epoch,
-            current_lrs,
-            sha_for_log,
-        )
+            # Model drift detection (Gap 18) — must never crash training.
+            if _drift_detector is not None:
+                try:
+                    # Derive per-step confidence proxies from the synthetic loss values
+                    # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
+                    import math as _math
+                    _epoch_conf_scores = [
+                        max(0.0, min(1.0, _math.exp(-l)))
+                        for l in synthetic_losses
+                    ] if synthetic_losses else None
+
+                    if _epoch_conf_scores:
+                        if not _drift_detector.has_baseline():
+                            # First epoch always becomes the baseline reference.
+                            _drift_detector.update_baseline(_epoch_conf_scores)
+                        else:
+                            _drift_result = _drift_detector.check(
+                                _epoch_conf_scores, epoch=epoch
+                            )
+                            if _drift_result.drift_detected:
+                                logger.warning(
+                                    "Model drift detected at epoch %d: %s",
+                                    epoch,
+                                    _drift_result.summary(),
+                                )
+                            if state is not None and isinstance(state, dict):
+                                state["drift_result_epoch"] = _drift_result.to_dict()
+                except Exception as _drift_exc:
+                    logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)
+
+            logger.info(
+                "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
+                epoch,
+                target_epochs,
+                f"{avg_loss:.6f}" if avg_loss is not None else "n/a",
+                steps_this_epoch,
+                optimizer_steps_this_epoch,
+                current_lrs,
+                sha_for_log,
+            )
     except Exception as _train_exc:
         # Emit a failure alert and re-raise so the caller still sees the error.
         if _ALERTING_AVAILABLE and _TrainingAlertManager is not None:

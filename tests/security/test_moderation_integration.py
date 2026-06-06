@@ -163,7 +163,13 @@ class TestPredictEndpointModeration:
 
     @pytest.fixture()
     def client(self):
-        """Return a FastAPI test client with mocked model/tokenizer/denylist."""
+        """Return a FastAPI test client with mocked model/tokenizer/denylist.
+
+        Uses MagicMock in place of real torch tensors so the fixture works in
+        CPU-only / torch-absent CI environments.  ``torch.no_grad`` is patched
+        as a no-op context manager for the same reason; the actual LLM call is
+        fully mocked and never reaches real PyTorch code.
+        """
         pytest.importorskip("fastapi")
         from fastapi.testclient import TestClient
 
@@ -179,16 +185,25 @@ class TestPredictEndpointModeration:
         }
         mock_tokenizer.batch_decode.return_value = ["generated output"]
 
+        # Use MagicMock — torch may be absent in CPU-only environments.
+        # batch_decode is already mocked above, so the exact tensor shape is irrelevant.
         mock_model = MagicMock()
-        import torch
-
-        mock_model.generate.return_value = torch.zeros((1, 5), dtype=torch.long)
+        mock_model.generate.return_value = MagicMock()
 
         mock_enforcer = MagicMock()
         mock_enforcer.ensure_allowed.return_value = None  # denylist always passes
 
         configure_runtime(model=mock_model, tokenizer=mock_tokenizer, enforcer=mock_enforcer)
-        return TestClient(app)
+
+        # Patch torch.no_grad as a no-op context manager so tests work without PyTorch.
+        mock_no_grad_ctx = MagicMock()
+        mock_no_grad_ctx.__enter__ = MagicMock(return_value=None)
+        mock_no_grad_ctx.__exit__ = MagicMock(return_value=False)
+        mock_torch = MagicMock()
+        mock_torch.no_grad.return_value = mock_no_grad_ctx
+
+        with patch("codex.api.app.torch", mock_torch):
+            yield TestClient(app)
 
     def test_rejected_input_returns_400(self, client) -> None:
         """Moderation rejection on prompt input must return HTTP 400."""

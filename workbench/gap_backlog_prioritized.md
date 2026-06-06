@@ -72,7 +72,7 @@ Execution tracking artifacts:
 ### Monitoring & Observability
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 14 | Set up Prometheus metrics collection | Medium | High | Ops | ✅ Implemented — Wave 0 verified: `CodexMetricsRegistry` + `start_metrics_server()` wired in `train_loop.py` + CLI; 3/3 tests pass; NDJSON fallback present. See `workbench/evidence/gap14_prometheus_verification.md` |
+| 14 | Set up Prometheus metrics collection | Medium | High | Ops | ✅ Verified (2026-06-06, needs_verification cleared) — `CodexMetricsRegistry` at `monitoring/prometheus_metrics.py:58`; `start_metrics_server()` wired in `train_loop.py:1297` + `codex_cli.py:563`; 4/4 tests pass; NDJSON fallback confirmed; `train_loop.py` IndentationError fixed. See `workbench/evidence/gap14_prometheus_verification_v2.md` |
 | 15 | Create Grafana dashboards for key metrics | Medium | Medium | Ops | ✅ Implemented — `monitoring/dashboards/`: `training_overview.json`, `security_overview.json`, `system_health.json`; `prometheus.yml`; grafana+prometheus added to `docker-compose.yml`. See `workbench/evidence/gap15_grafana_dashboards.md` |
 | 16 | Add distributed tracing (optional) | Large | Medium | Ops | ✅ Deferred via `docs/adr/ADR-0001-distributed-tracing.md`; optional `opentelemetry-sdk` added and no-op stub created at `src/codex_ml/observability/tracing.py` |
 

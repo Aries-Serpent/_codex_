@@ -44,6 +44,21 @@ def _normalize(value: Any) -> Any:
 
 
 def health_log_path(component: str) -> Path:
+    """Resolve the NDJSON log file path for a given *component*.
+
+    Uses the ``CODEX_HEALTH_LOG_DIR`` environment variable when set; falls
+    back to ``.codex/health``.  The chosen parent directory is created on
+    first access; if creation fails the function falls back to the default
+    directory path without raising.
+
+    Args:
+        component: Logical component name (e.g. ``"model_drift"``).  Forward
+            slashes are replaced with hyphens to avoid accidental
+            subdirectories.
+
+    Returns:
+        :class:`~pathlib.Path` to ``<log_dir>/<component>.ndjson``.
+    """
     root = os.getenv(HEALTH_LOG_ENV)
     candidates: list[Path] = []
     if root:
@@ -96,12 +111,27 @@ def record_health_event(
 
 
 class HealthStatus(str, Enum):
+    """Enumeration of possible system health states.
+
+    Inherits from ``str`` so values serialise naturally to JSON / YAML.
+    """
+
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
 
 
 class HealthReport(BaseModel):
+    """Structured result returned by :meth:`HealthChecker.check_dependencies`.
+
+    Attributes:
+        status: Overall health classification.
+        timestamp: ISO-8601 UTC timestamp of the check.
+        checks: Mapping of dependency name → status string (e.g.
+            ``"ok"``, ``"missing"``, ``"cuda"``).
+        message: Human-readable summary sentence.
+    """
+
     status: HealthStatus
     timestamp: str
     checks: dict[str, str]
@@ -112,6 +142,18 @@ class HealthChecker:
     """Composite dependency health checker for Codex services."""
 
     async def check_dependencies(self) -> HealthReport:
+        """Run dependency probes and return a consolidated :class:`HealthReport`.
+
+        Probes performed:
+
+        * **pytorch** — checks whether ``torch`` is importable and whether
+          CUDA is available.
+        * **data_directory** — verifies that ``./data`` exists.
+        * **model_cache** — verifies that ``.hf_cache`` exists.
+
+        Returns:
+            A :class:`HealthReport` reflecting the outcome of all checks.
+        """
         checks: dict[str, str] = {}
 
         try:
