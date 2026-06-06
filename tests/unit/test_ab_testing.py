@@ -232,11 +232,11 @@ class TestControlWinner:
 
 class TestABTestDataclassValidation:
     def test_invalid_alpha_raises(self):
-        with pytest.raises(ValueError, match="alpha"):
+        with pytest.raises(ValueError, match="alpha must be in"):
             ABTest("bad", [1.0, 2.0], [1.0, 2.0], alpha=1.5)
 
     def test_zero_alpha_raises(self):
-        with pytest.raises(ValueError, match="alpha"):
+        with pytest.raises(ValueError, match="alpha must be in"):
             ABTest("bad", [1.0, 2.0], [1.0, 2.0], alpha=0.0)
 
     def test_insufficient_control_observations_raises(self):

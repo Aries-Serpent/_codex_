@@ -29,14 +29,14 @@ jobs:
           - docker/Dockerfile.cpu
           - docker/Dockerfile.gpu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build image for scanning
         run: |
           docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
 
       - name: Run Trivy filesystem scan (fallback if build unavailable)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.20.0
         with:
           scan-type: fs
           scan-ref: .
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload scan artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
           path: trivy-results-${{ strategy.job-index }}.sarif

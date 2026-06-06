@@ -195,12 +195,12 @@ class TestInputValidation:
 class TestEmptyInputs:
     def test_psi_empty_reference_raises(self):
         detector = DataDriftDetector()
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match="must not be empty"):
             detector.detect_psi([], [])
 
     def test_kl_empty_current_raises(self):
         detector = DataDriftDetector()
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match="must not be empty"):
             detector.detect_kl([], [])
 
 

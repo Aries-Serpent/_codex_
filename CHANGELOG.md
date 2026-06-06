@@ -9233,3 +9233,9 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (PR #4790 pip-audit fix — 2026-06-06T01:22Z)
 - `.pre-commit-config.yaml`: added `--ignore-vuln PYSEC-2026-196` to pip-audit hook args — pip 26.1.1 entry-point path traversal vulnerability (fix in pip 26.1.2); CI runner controls pip version and will remove this ignore once runner upgrades to pip 26.1.2+ [auto-generated]
+
+### Fixed (PR #4792 CI health — 2026-06-06T06:47Z)
+- `tests/unit/test_data_drift.py`: narrowed overly-broad `match="empty"` patterns to `match="must not be empty"` — resolves pre-flight-validation assertion pattern check
+- `tests/unit/test_ab_testing.py`: narrowed overly-broad `match="alpha"` patterns to `match="alpha must be in"` — resolves pre-flight-validation assertion pattern check
+- `.github/workflows/container-scan.yml`, `sigstore-verify.yml`, `scheduled-dependency-audit.yml`: updated action versions to repo-approved pins (actions/checkout@v5, actions/setup-python@v6, actions/upload-artifact@v5) — resolves Required Actions Version Enforcer failures
+- `.github/workflows/container-scan.yml`: fixed `aquasecurity/trivy-action@0.20.0` → `aquasecurity/trivy-action@v0.20.0` (missing `v` prefix caused "unable to find version" error) — resolves Trivy Scan failures

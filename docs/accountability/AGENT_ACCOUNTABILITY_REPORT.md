@@ -47024,3 +47024,23 @@ The session preload step was using `|| { }` shell brace syntax in a single-line 
 
 ### Work Completed
 1. **pip-audit fix** — Added `--ignore-vuln PYSEC-2026-196` to `.pre-commit-config.yaml` pip-audit hook args. `pip 26.1.1` has a known entry-point path traversal vulnerability (fix: `pip 26.1.2`). The CI runner controls the pip version; ignoring until the runner environment upgrades. This matches the existing pattern for ignoring CI-environment-controlled package vulnerabilities in the pip-audit config.
+
+## Session Entry — PR #4792 CI health fixes (2026-06-06T06:47Z)
+
+### §0 Compliance
+- [x] **1.** All `<comment_new>` blocking comments reviewed ✅
+- [x] **2.** CI Rescue comment (#4637714352) fully actioned ✅
+- [x] **3.** Pre-flight validation failure analyzed and fixed ✅
+- [x] **4.** Required Actions Version Enforcer failures fixed ✅
+- [x] **5.** Trivy scan failures fixed ✅
+
+### Work Completed
+1. **Pre-flight fix** — `tests/unit/test_data_drift.py` lines 198, 203: `match="empty"` → `match="must not be empty"` (pre-flight checker flags ≤5-char patterns as overly-broad)
+2. **Pre-flight fix** — `tests/unit/test_ab_testing.py` lines 235, 239: `match="alpha"` → `match="alpha must be in"` (same pre-flight rule)
+3. **Action versions fix** — `container-scan.yml`, `sigstore-verify.yml`, `scheduled-dependency-audit.yml`: `actions/checkout@v4→v5`, `actions/setup-python@v5→v6`, `actions/upload-artifact@v4→v5` (ran `enforce_actions_versions.py --fix`)
+4. **Trivy fix** — `container-scan.yml`: `aquasecurity/trivy-action@0.20.0` → `aquasecurity/trivy-action@v0.20.0` (missing `v` prefix)
+
+### Root-Cause Notes
+- Wave 3/4 agents introduced 3 new workflow files and 2 test files with policy violations
+- Pre-flight check: patterns ≤5 chars are flagged as "overly broad" regardless of context
+- Action enforcer: only checks `EXPECTED_VERSIONS` actions; `aquasecurity/trivy-action` is a third-party action not in the policy dict
