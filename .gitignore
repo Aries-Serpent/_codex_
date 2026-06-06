@@ -313,6 +313,9 @@ coverage/
 # Exception: tracked codex coverage intelligence map
 !.codex/coverage/
 !.codex/coverage/**
+# Exception: workbench coverage tracking docs
+!workbench/coverage/
+!workbench/coverage/**
 .next/
 .nuxt/
 .cache/

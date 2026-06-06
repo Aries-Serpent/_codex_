@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (Gap 5: self_healing coverage — copilot/explore-codebase-and-create-plan — 2026-06-06)
+### Added (Gap 5: coverage session 4 — 2026-06-06T08:15Z)
 
-- **`tests/unit/test_self_healing_utils.py`** — 63 unit tests for `src/codex_ml/utils/self_healing.py`; covers `FailureType` enum (all 5 variants), `OOMHandler` (init, can_retry all branches, reduce_batch_size, reset), `SelfHealingContext` (__init__, context manager protocol, __exit__ all paths, _classify_failure all 7 paths, failures accumulation), `auto_remediate` (success, args, retries, batch_size injection, re-raise), and `__all__` export contract. Coverage: 0% → ~100%.
+- **`tests/unit/test_self_healing_utils.py`** — bug fix: corrected `test_batch_size_kwarg_updated_on_retry` to use `ValueError` (UNKNOWN type) instead of `MemoryError` so context does not suppress it; self_healing agent completed with all tests passing.
+- **`pyproject.toml fail_under`** raised from **15 → 20**: Gap 5 session 3 added 313+ new tests across 8 modules (`scalability`, `self_healing`, `stub_cleanup`, `eval_gate`, `trigger`, `jsonio`, `optional_dependencies`, `serialization`, `feedback/events`, `hf_revision`, `opt_import`).
+- **`workbench/coverage/gap5_coverage_evidence.md`** — session 3 agents row finalized: 257 agent tests (77+77+78+46) completed.
+- **Gap 5 status** in `workbench/gap_backlog_prioritized.md` updated: 430+ total coverage tests, `fail_under = 20`.
+
 
 ### Added (Gap 5 coverage — eval_gate & trigger — copilot/explore-codebase-and-create-plan)
 
