@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import os
 import smtplib
-from io import BytesIO
 from typing import Any
 from unittest.mock import MagicMock, patch
 
@@ -73,7 +72,7 @@ class TestAlertSeverity:
 
     def test_ordering_ge(self) -> None:
         assert AlertSeverity.CRITICAL >= AlertSeverity.ERROR
-        assert AlertSeverity.ERROR >= AlertSeverity.ERROR
+        assert AlertSeverity.ERROR >= AlertSeverity.WARNING
 
     def test_ordering_gt(self) -> None:
         assert AlertSeverity.CRITICAL > AlertSeverity.WARNING

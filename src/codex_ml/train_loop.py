@@ -2080,8 +2080,8 @@ def run_training(
                 _perf_monitor.record(
                     _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
                 )
-            except Exception:
-                pass
+            except Exception as _perf_exc:
+                logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
 
         logger.info(
             "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",

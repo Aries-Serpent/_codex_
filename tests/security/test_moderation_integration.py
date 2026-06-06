@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import asyncio
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -164,7 +164,7 @@ class TestPredictEndpointModeration:
     @pytest.fixture()
     def client(self):
         """Return a FastAPI test client with mocked model/tokenizer/denylist."""
-        fastapi = pytest.importorskip("fastapi")  # noqa: F841
+        pytest.importorskip("fastapi")
         from fastapi.testclient import TestClient
 
         from codex.api.app import app, configure_runtime
