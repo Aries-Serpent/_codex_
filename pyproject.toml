@@ -610,6 +610,7 @@ also_copy = [
 ]
 tests_dir = [
     "tests/smoke/test_determinism.py",
+    "tests/unit/test_gap22_mutation_killers.py",
 ]
 pytest_add_cli_args = [
     "-x",

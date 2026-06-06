@@ -107,9 +107,9 @@ Execution tracking artifacts:
 ### Error Handling & Resilience
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 29 | Implement circuit breakers for external services | Medium | Medium | Platform | 🔴 Not Started |
+| 29 | Implement circuit breakers for external services | Medium | Medium | Platform | ✅ Implemented — `src/codex/resilience/circuit_breaker.py`: `CircuitBreaker` (CLOSED/OPEN/HALF_OPEN) + `CircuitOpenError`; thread-safe; exported via `src/codex/resilience/__init__.py`; 17 tests pass. See `workbench/evidence/gap29_circuit_breaker.md` |
 | 30 | Add exponential backoff retry logic | Small | Medium | Platform | 🔴 Not Started |
-| 31 | Build graceful degradation mechanisms | Medium | Medium | Platform | 🔴 Not Started |
+| 31 | Build graceful degradation mechanisms | Medium | Medium | Platform | ✅ Implemented — `src/codex/resilience/degradation.py`: `GracefulDegradation` decorator+context-manager + `DegradationError`; callable fallback support; exported via `src/codex/resilience/__init__.py`; 15 tests pass. See `workbench/evidence/gap31_degradation.md` |
 
 ---
 
