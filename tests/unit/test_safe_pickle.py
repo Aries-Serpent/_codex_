@@ -231,7 +231,7 @@ def test_wrong_key_raises(tmp_path: Path):
 
 
 # ---------------------------------------------------------------------------
-# _get_secret_key via environment variable
+# Environment variable secret key integration
 # ---------------------------------------------------------------------------
 
 
