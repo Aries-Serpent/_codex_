@@ -102,7 +102,7 @@ Execution tracking artifacts:
 | 25 | Generate SBOM for all releases | Small | Medium | Security | ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX SBOM from `requirements/lock.txt`/`uv.lock` |
 | 26 | Add container scanning with Trivy/Grype | Small | Medium | Security | ✅ Implemented — `.github/workflows/container-scan.yml`: Trivy filesystem scan matrix (Dockerfile, Dockerfile.cpu, Dockerfile.gpu); SARIF → GitHub Security tab; artifact upload 30-day retention; PR/push + weekly schedule triggers. See `workbench/evidence/gap26_container_scanning.md` |
 | 27 | Implement input sanitization for LLM prompts | Medium | High | Security | ✅ Implemented — All 7 LLM entry points wired: `simple_cli.py` (EP-03), `/predict` API (EP-04), `llm_client.py` (EP-05), `orchestrator.py` (EP-06), `autonomous_runner.py` (EP-07); `fail_open=False` enforced; Prometheus `moderation_decisions_total` counter added; 18 integration tests pass. See `workbench/evidence/gap27_moderation_verification.md` |
-| 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | 🔴 Not Started |
+| 28 | Add Sigstore verification for critical dependencies | Medium | Medium | Security | ✅ Implemented |
 
 ### Error Handling & Resilience
 | # | Gap | Effort | Impact | Owner | Status |

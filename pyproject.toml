@@ -594,3 +594,31 @@ constraint-dependencies = [
     # aiohttp is a transitive dependency via great-expectations, ray[serve], mlflow, and fsspec[http].
     "aiohttp>=3.14.0",
 ]
+
+# ---------------------------------------------------------------------------
+# Gap 22 – Mutation testing (mutmut 3.x) for critical codex_ml modules
+# ---------------------------------------------------------------------------
+[tool.mutmut]
+paths_to_mutate = [
+    "src/codex_ml/utils/determinism.py",
+    "src/codex_ml/utils/seed.py",
+]
+also_copy = [
+    "src/",
+    "tests/smoke/",
+    "tests/repro/",
+]
+tests_dir = [
+    "tests/smoke/test_determinism.py",
+]
+pytest_add_cli_args = [
+    "-x",
+    "-q",
+    "--no-header",
+    "--ignore=tests/agents",
+    "--ignore=tests/services",
+]
+do_not_mutate = [
+    "*__pycache__*",
+    "*.pyc",
+]
