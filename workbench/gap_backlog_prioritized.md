@@ -126,7 +126,7 @@ Execution tracking artifacts:
 ### Advanced Features
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
-| 36 | Build continuous learning pipeline | XLarge | Low | ML | 🔴 Not Started |
+| 36 | Build continuous learning pipeline | XLarge | Low | ML | ✅ Implemented — `src/codex_ml/continuous_learning/` package with `ContinuousLearningPipeline`, `RetrainingTrigger`, `EvalGate`; drift-triggered retraining loop compatible with Gap 17/18 monitors; 25 unit tests pass. See `workbench/evidence/gap36_continuous_learning.md` |
 | 37 | Implement A/B testing framework | Large | Low | ML | ✅ Implemented |
 | 38 | Add automated model retraining | Large | Low | ML | 🔴 Not Started |
 | 39 | Build feedback loop integration | Large | Low | ML | 🔴 Not Started |
