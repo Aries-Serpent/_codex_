@@ -47167,3 +47167,49 @@ The session preload step was using `|| { }` shell brace syntax in a single-line 
 8. **Agents dispatched**: 4× `unified-coverage-agent` for scalability, self_healing, stub_cleanup, continuous_learning
 
 ### Total new coverage tests this session: 56 (all pass)
+
+## Session Entry — Gap 5: codex_ml.utils.scalability unit tests (2026-06-06)
+
+### §0 Compliance
+- [x] **1.** Source file read and all public APIs inventoried ✅
+- [x] **2.** Tests written in `tests/unit/test_scalability_utils.py` ✅
+- [x] **3.** All 77 tests pass (`python3 -m pytest tests/unit/test_scalability_utils.py -v`) ✅
+- [x] **4.** Source code not modified ✅
+- [x] **5.** `AGENT_ACCOUNTABILITY_REPORT.md` updated (REQ-4) ✅
+- [x] **6.** `CHANGELOG.md` updated (REQ-5) ✅
+
+### Work Completed
+1. **New tests** — `tests/unit/test_scalability_utils.py`: 77 unit tests covering all 8 public symbols:
+   - `LRUCache` (14 tests): get/set/clear, TTL expiry, LRU eviction, hit_rate, stats, thread-safety
+   - `cached` decorator (5 tests): caching behaviour, custom key_func, `__name__` preservation, None return
+   - `RateLimiter` (6 tests): burst acquire, exhaustion, refill, wait_for_token success/timeout, multi-token
+   - `rate_limited` decorator (3 tests): passthrough, exhaustion raises RuntimeError, name preservation
+   - `CircuitBreaker` (14 tests): state transitions closed→open→half-open→closed, decorator usage, failure re-raise
+   - `Endpoint` (2 tests): default values, custom values
+   - `LoadBalancer` (8 tests): round_robin, least_connections, weighted, no healthy, mark_healthy/unhealthy, unknown strategy
+   - `ResourcePool` (7 tests): pre-populate, acquire, release, stats, timeout, notify on release
+   - `MetricPoint` (3 tests): default tags/timestamp, custom tags
+   - `PerformanceMonitor` (15 tests): record, average, percentile, summary, 1000-cap, timed decorator, thread-safety
+
+### Total new coverage tests (this session): 77
+
+## Session Entry — stub_cleanup coverage [Gap 5] (2026-06-06)
+
+### Work Completed
+- **tests/unit/test_stub_cleanup.py** — 78 unit tests for `codex_ml.utils.stub_cleanup` (0% → ~95% line coverage)
+  - `StubInfo` dataclass: creation, defaults, `__str__` output
+  - `StubAnalyzer.__init__`: default dirs, custom dirs, Path coercion
+  - `StubAnalyzer.analyze`: non-existent dirs, empty dirs, recursion, non-Python files, multi-dir, reset between calls
+  - `StubAnalyzer._analyze_file`: `NotImplementedError` (plain raise, no-parens, missing file), `TODO`/`FIXME` case-insensitive, line numbers, context stripping, unreadable files
+  - `StubAnalyzer._is_abstract_method`: `@abstractmethod`, `ABC` base, attribute forms, standalone function, invalid Python, missing file
+  - `StubAnalyzer._determine_priority`: P0/P1/P2 keywords, case-insensitive
+  - `StubAnalyzer.get_by_priority / get_by_type / get_summary`: filtering, counts, empty state
+  - `find_stubs`: convenience wrapper
+  - `prioritize_stubs`: ordering, unknown priority, input immutability
+  - `generate_stub_report`: file creation, parent dir creation, content sections, total count, string path input
+
+### Compliance
+- [x] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated ✅
+- [x] REQ-5: CHANGELOG.md updated ✅
+- [x] Source code not modified ✅
+- [x] All 78 tests pass locally ✅

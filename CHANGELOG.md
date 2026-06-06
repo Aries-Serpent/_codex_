@@ -9296,3 +9296,9 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - `tests/unit/test_check_workflow_yaml.py` — 12 unit tests for `scripts/ci/check_workflow_yaml.py` (Gap 35 CI script coverage)
 - `tests/unit/test_validate_configs.py` — 16 unit tests for `scripts/ci/validate_configs.py` (Gap 35 CI script coverage)
 - `workbench/coverage/gap5_coverage_evidence.md` — Coverage gate evidence file documenting floor history, Wave 3/4 contributions, and 80% roadmap
+
+### Added (coverage gap-fill — codex_ml.utils.scalability — 2026-06-06)
+- `tests/unit/test_scalability_utils.py` — 77 unit tests covering `LRUCache`, `cached`, `RateLimiter`, `rate_limited`, `CircuitBreaker`, `Endpoint`, `LoadBalancer`, `ResourcePool`, `MetricPoint`, and `PerformanceMonitor` (Gap 5: 0% → full public-API coverage)
+
+### Added (PR #4792 coverage — stub_cleanup Gap 5 — 2026-06-06)
+- `tests/unit/test_stub_cleanup.py` — 78 unit tests for `codex_ml.utils.stub_cleanup` covering `StubInfo`, `StubAnalyzer` (all methods including AST-based `_is_abstract_method`), `find_stubs`, `prioritize_stubs`, and `generate_stub_report` [Gap 5, 0% → ~95% line coverage]
