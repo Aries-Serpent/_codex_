@@ -135,7 +135,7 @@ Execution tracking artifacts:
 | # | Gap | Effort | Impact | Owner | Status |
 |---|-----|--------|--------|-------|--------|
 | 40 | Add fuzzing for critical code paths | Large | Low | QA | ✅ Implemented |
-| 41 | Implement property-based testing expansion | Medium | Low | QA | 🔴 Not Started |
+| 41 | Implement property-based testing expansion | Medium | Low | QA | ✅ Implemented — 38 `@given` tests across 3 new files: `test_property_drift.py` (13), `test_property_ab_testing.py` (10), `test_property_resilience.py` (15); all pass in ≈4 s. See `workbench/evidence/gap41_property_tests.md` |
 | 42 | Add chaos engineering tests | Large | Low | QA | ✅ Implemented |
 
 ### Documentation & Onboarding
