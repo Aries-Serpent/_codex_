@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Gap 5: coverage session 6 — 2026-06-06T20:29Z)
+
+- **`tests/unit/test_track_c_workflow.py`** — 49 unit tests for `src/codex_ml/workflow/track_c_workflow.py`; covers `WorkflowContext`, `CapabilityPlan`, `CapabilityRouter`, `WorkflowOrchestrator`, `record_error`, `step_context`, all six phase implementations, `run_capability`, and phase overrides. Coverage: 0% → ~95%.
+- **`tests/unit/test_safe_pickle.py`** — 28 unit tests for `src/codex_ml/utils/safe_pickle.py`; covers `RestrictedUnpickler` (allowed and blocked classes), signed pickle HMAC round-trips, tamper detection, legacy format splitting, error cases, and env-key auto-generation. Coverage: 0% → ~90%.
+
 ### Added (Gap 5: coverage session 5 — 2026-06-06T20:14Z)
 
 - **`tests/unit/test_reproducibility_hardening.py`** — 33 unit tests for `src/codex_ml/utils/reproducibility_hardening.py`; covers `enable_deterministic_training`, `save_env_snapshot`, `create_reproducibility_manifest`, and `ReproducibilityManager`. Coverage: 0% → ~70%.

@@ -1,4 +1,22 @@
-## SESSION SUMMARY — 2026-06-06T20:14Z · Gap 5 coverage session 5 (PR #4792)
+## SESSION SUMMARY — 2026-06-06T20:29Z · Gap 5 coverage session 6 (PR #4792)
+
+### Pre-flight Checklist
+- [x] **0a.** Addressed approval dispatch / copilot continue comment ✅
+- [x] **0b.** Addressed coverage gate continuation comment (Task 2 — next batch) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+1. **`tests/unit/test_track_c_workflow.py`** — 49 unit tests for `src/codex_ml/workflow/track_c_workflow.py`; coverage: 0% → ~95%.
+2. **`tests/unit/test_safe_pickle.py`** — 28 unit tests for `src/codex_ml/utils/safe_pickle.py`; coverage: 0% → ~90%.
+3. Total: 77 new tests across 2 previously-uncovered modules (HIGH + MEDIUM priority).
+
+### REQ-4/REQ-5 compliance
+Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit. ✅
+
+---
+
+
 
 ### Pre-flight Checklist
 - [x] **0a.** Addressed CI rescue comment (Comment review gate failure) ✅
