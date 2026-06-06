@@ -210,7 +210,13 @@ class TestKLProperties:
 class TestThresholdMonotonicity:
     """Higher drift → more likely to be flagged (threshold monotonicity)."""
 
-    @given(_pos_floats)
+    @given(
+        st.lists(
+            st.floats(min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False),
+            min_size=4,
+            max_size=30,
+        )
+    )
     @settings(max_examples=50)
     def test_lower_threshold_flags_at_least_as_often_as_higher_threshold(
         self, vals: list[float]
