@@ -452,7 +452,7 @@ class GitHubTokenProvider(TokenProvider):
             return RotationResult(
                 success=False,
                 old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
-                error_message=f"GitHub API returned {resp.status_code} when creating installation token.",
+                error_message=f"GitHub API returned {resp.status_code} when creating installation token.",  # noqa: E501
             )
         except Exception as e:
             logger.error("Failed to create GitHub installation token: %s", e)
@@ -524,8 +524,7 @@ class GitHubTokenProvider(TokenProvider):
                 logger.info("GitHub token scopes updated successfully.")
                 return True
             logger.warning(
-                "update_token_scopes(): GitHub API returned %d; "
-                "scopes may not be updated.",
+                "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",
                 resp.status_code,
             )
             return False
