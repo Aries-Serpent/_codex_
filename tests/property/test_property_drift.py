@@ -15,6 +15,7 @@ hypothesis = pytest.importorskip("hypothesis")
 
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
+from hypothesis.strategies import composite
 
 # ---------------------------------------------------------------------------
 # Import production modules
@@ -29,17 +30,19 @@ from codex_ml.monitoring.model_drift import ModelDriftDetector, jensen_shannon_d
 # Shared strategies
 # ---------------------------------------------------------------------------
 
-_pos_floats = st.lists(
-    st.floats(min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False),
-    min_size=4,
-    max_size=50,
+_pos_float_element = st.floats(
+    min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False
 )
 
-_raw_floats = st.lists(
-    st.floats(allow_nan=False, allow_infinity=False),
-    min_size=10,
-    max_size=100,
-)
+
+@composite
+def _paired_pos_float_lists(draw) -> tuple[list[float], list[float]]:
+    """Draw two positive-float lists of the same length."""
+    n = draw(st.integers(min_value=4, max_value=30))
+    ref = draw(st.lists(_pos_float_element, min_size=n, max_size=n))
+    cur = draw(st.lists(_pos_float_element, min_size=n, max_size=n))
+    return ref, cur
+
 
 _confidence_scores = st.lists(
     st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
@@ -56,7 +59,13 @@ _confidence_scores = st.lists(
 class TestPSIProperties:
     """Property tests for Population Stability Index (PSI)."""
 
-    @given(_pos_floats)
+    @given(
+        st.lists(
+            st.floats(min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False),
+            min_size=4,
+            max_size=30,
+        )
+    )
     @settings(max_examples=50)
     def test_psi_identical_distributions_near_zero(self, vals: list[float]) -> None:
         """PSI between identical distributions must be ≈ 0 (bounded by epsilon smoothing)."""
@@ -69,49 +78,49 @@ class TestPSIProperties:
             f"PSI of identical distributions should be ~0, got {result.score}"
         )
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_psi_score_non_negative(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """PSI score must always be ≥ 0 for any valid positive inputs."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector(psi_threshold=0.2)
         result = detector.detect_psi(ref, cur)
         assert result.score >= 0.0, f"PSI score must be non-negative, got {result.score}"
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_psi_drifted_flag_consistent_with_threshold(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """DriftResult.drifted must be True iff score > threshold."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         threshold = 0.2
         detector = DataDriftDetector(psi_threshold=threshold)
         result = detector.detect_psi(ref, cur)
         assert result.drifted == (result.score > threshold)
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_psi_severity_is_valid_label(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """PSI severity must always be one of the documented labels."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector(psi_threshold=0.2)
         result = detector.detect_psi(ref, cur)
         assert result.severity in {"none", "slight", "significant"}, (
             f"Unexpected PSI severity: {result.severity!r}"
         )
 
-    @given(_pos_floats, _pos_floats)
+    @given(_paired_pos_float_lists())
     @settings(max_examples=50)
     def test_psi_result_has_correct_method_field(
-        self, ref: list[float], cur: list[float]
+        self, pair: tuple[list[float], list[float]]
     ) -> None:
         """DriftResult returned by detect_psi must carry method='psi'."""
-        assume(len(ref) == len(cur))
+        ref, cur = pair
         detector = DataDriftDetector()
         result = detector.detect_psi(ref, cur)
         assert result.method == "psi"
