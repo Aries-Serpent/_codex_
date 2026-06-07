@@ -1,6 +1,3 @@
-import pytest
-import json
-from pathlib import Path
 from src.codex_ml.utils.config_drift import ConfigDrift, detect_config_drift, embed_config_hash
 
 def test_config_drift(tmp_path):

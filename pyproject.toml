@@ -585,10 +585,11 @@ pytest_add_cli_args = [
     "--ignore=tests/agents",
     "--ignore=tests/services",
 ]
-pytest_add_cli_args_test_selection = [
+tests_dir = [
     "tests/smoke/test_determinism.py",
     "tests/unit/test_gap22_mutation_killers.py",
 ]
+do_not_mutate = ["*__pycache__*", "*.pyc"]
 debug = true
 paths_to_mutate = [
     "src/codex_ml/utils/determinism.py",

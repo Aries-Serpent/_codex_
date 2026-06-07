@@ -103,8 +103,11 @@ def test_enable_deterministic_training_torch_no_cuda_and_strict_exception():
         assert status["torch_deterministic_algorithms"] is False
 
 def test_enable_deterministic_training_tf_no_op_determinism():
+    class _Experimental:
+        pass
+
     mock_tf = MagicMock()
-    del mock_tf.config.experimental.enable_op_determinism
+    mock_tf.config.experimental = _Experimental()
     with patch.dict("sys.modules", {"tensorflow": mock_tf, "numpy": None, "torch": None}):
         status = enable_deterministic_training(42)
         assert status["tensorflow"] is True

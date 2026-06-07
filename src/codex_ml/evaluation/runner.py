@@ -39,7 +39,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
-from abc import ABC, abstractmethod  # noqa: E402
+from abc import ABC  # noqa: E402
 
 try:
     import torch
@@ -88,7 +88,6 @@ class MetricAdapter(ABC):
         self._predictions.extend(predictions if isinstance(predictions, list) else [predictions])
         self._references.extend(references if isinstance(references, list) else [references])
 
-    @abstractmethod
     def compute(self) -> dict[str, float]:
         """Compute final metrics from accumulated results."""
         raise NotImplementedError("Subclasses must implement compute()")

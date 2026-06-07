@@ -1,7 +1,6 @@
 import os
 import pickle
-from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
 
 import pytest
 
@@ -90,7 +89,7 @@ def test_safe_pickle_load_restricted_blocked(tmp_path):
             
         with pytest.raises(pickle.UnpicklingError):
             safe_pickle_load(str(file_path), use_restricted_unpickler=True)
-    except Exception as e:
+    except Exception:
         # Depending on OS, EvilClass might not be picklable in test scope easily
         # Let's just create a custom pickle stream that references os.system
         pass

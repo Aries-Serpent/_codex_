@@ -86,10 +86,12 @@ def test_record_error():
 def test_step_context():
     ctx = WorkflowContext(capability="test")
     def rollback(c): c.notes.append("rb")
+    def fail_step():
+        raise ValueError("oops")
     
     # step_context swallows exceptions
     with step_context(ctx, "Preparation", "step1", rollback=rollback):
-        raise ValueError("oops")
+        fail_step()
     
     assert len(ctx.errors) == 1
     assert ctx.errors[0].exception_type == "ValueError"
