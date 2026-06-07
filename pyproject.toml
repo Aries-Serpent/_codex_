@@ -593,3 +593,4 @@ pytest_add_cli_args_test_selection = [
     "tests/smoke/test_determinism.py",
     "tests/unit/test_gap22_mutation_killers.py",
 ]
+debug = true

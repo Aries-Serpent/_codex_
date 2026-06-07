@@ -1,1 +1,42 @@
-⠋ Generating mutants⠙ Generating mutants⠹ Generating mutants⠸ Generating mutants⠼ Generating mutants⠴ Generating mutants⠦ Generating mutants⠧ Generating mutants⠇ Generating mutants⠏ Generating mutants⠋ Generating mutants⠙ Generating mutants⠹ Generating mutants⠸ Generating mutants⠼ Generating mutants⠴ Generating mutants⠦ Generating mutants⠧ Generating mutants⠇ Generating mutants⠏ Generating mutants⠋ Generating mutants
+⠋ Generating mutants
+     also copying src
+     also copying tests/smoke
+     also copying tests/repro
+     also copying tests/unit
+     also copying tests
+     also copying test
+     also copying setup.cfg
+     also copying pyproject.toml
+     also copying test_b.py
+     also copying test_a.py
+src/codex_ml/utils/seed.py
+src/codex_ml/utils/determinism.py
+
+    done in 1359ms (2 files mutated, 0 ignored, 0 unmodified)
+⠙ Running stats
+     python -m pytest  "-vv" "--rootdir=." "--tb=native" "-x" "-q" "-p" "no:randomly" "-p" "no:random-order" "tests/smoke/test_determinism.py" "tests/unit/test_gap22_mutation_killers.py" "-x" "-q" "--no-header" "--ignore=tests/agents" "--ignore=tests/services"
+.s....................                                                   [100%]
+=============================== warnings summary ===============================
+../src/tokenization/train_tokenizer.py:41
+  /tmp/workspace/Aries-Serpent/_codex_/src/tokenization/train_tokenizer.py:41: RuntimeWarning: Hydra extras plugin (`hydra.extra`) is unavailable. Install the Codex test extras (e.g. `pip install -e '.[test]'`) or `hydra-core==1.3.2` before running Hydra-backed commands. Set CODEX_ALLOW_MISSING_HYDRA_EXTRA=1 to bypass this guard when stubbing Hydra for tests.
+    import config_legacy as hydra
+
+../.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1434
+  /tmp/workspace/Aries-Serpent/_codex_/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1434
+  /tmp/workspace/Aries-Serpent/_codex_/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+21 passed, 1 skipped, 3 warnings in 0.64s
+    exit code 0
+
+Stopping early, because we could not find any test case for any mutant. It seems that the selected tests do not cover any code that we mutated.
+In the last pytest run above, you can see which tests we executed.
+You can use mutmut browse to check which parts of the source code we mutated.
+If some of the mutated code should be covered by the executed tests, consider opening an issue (with a MRE if possible).
+
