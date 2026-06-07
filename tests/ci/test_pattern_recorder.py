@@ -393,6 +393,40 @@ class TestAutoFixCheckOnlyBehavior:
         assert target.read_text(encoding="utf-8") == original
 
 
+class TestPattern34MissingNewlineAtEof:
+    def test_pattern_34_check_only_reports_sorted_python_files(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        (src_dir / "b.py").write_bytes(b"print('b')")
+        (src_dir / "a.py").write_bytes(b"print('a')")
+        (src_dir / "empty.py").write_bytes(b"")
+
+        fixer = mod.CommonIssueFixer(repo_root, check_only=True)
+
+        assert fixer.fix_missing_newline_at_eof() == [
+            "Would fix missing newline in src/a.py",
+            "Would fix missing newline in src/b.py",
+        ]
+
+    def test_pattern_34_appends_newline_without_touching_empty_files(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        empty = src_dir / "empty.py"
+        target.write_bytes(b"print('sample')")
+        empty.write_bytes(b"")
+
+        fixer = mod.CommonIssueFixer(repo_root)
+
+        assert fixer.fix_missing_newline_at_eof() == ["Fixed missing newline in src/sample.py"]
+        assert target.read_bytes() == b"print('sample')\n"
+        assert empty.read_bytes() == b""
+
+
 class TestPattern30MergeReadiness:
     def test_pattern_30_uses_noarg_scorecard(self, tmp_path):
         mod = _load_auto_fix()

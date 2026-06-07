@@ -495,10 +495,19 @@ class WorkflowNavigator:
 
         if step_index is not None:
             if 0 <= step_index < len(workflow.steps):
-                logger.info(f"Navigating to step index {step_index} in workflow {self.current_workflow_id}")
+                logger.debug(
+                    "Navigating to step index %s in workflow %s",
+                    step_index,
+                    self.current_workflow_id,
+                )
                 self.current_step_index = step_index
                 return True
-            logger.warning(f"Step index {step_index} out of bounds.")
+            logger.warning(
+                "Step index %s out of bounds for workflow %s with %s steps.",
+                step_index,
+                self.current_workflow_id,
+                len(workflow.steps),
+            )
             return False
 
         if step_id is not None:

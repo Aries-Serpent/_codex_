@@ -1,6 +1,6 @@
 """Utility metrics for codex_ml."""
 
-from codex_ml.metrics_base import accuracy, f1_score, precision, recall
+from codex_ml.metrics_base import accuracy, f1_score, mean_absolute_error, precision, recall
 
 from .api import (
     get_metric,
@@ -33,6 +33,7 @@ __all__ = [
     "f1_score",
     "get_metric",
     "list_metrics",
+    "mean_absolute_error",
     "perplexity",
     "precision",
     "recall",

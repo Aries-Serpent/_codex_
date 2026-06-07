@@ -3414,12 +3414,16 @@ class CommonIssueFixer:
     def fix_missing_newline_at_eof(self) -> list[str]:
         """Pattern 34: Adds missing newline at EOF for python files."""
         messages = []
-        for py_file in self.repo_root.rglob("*.py"):
+        for py_file in sorted(self.repo_root.rglob("*.py")):
             if not py_file.is_file():
                 continue
             with open(py_file, "rb") as f:
-                content = f.read()
-            if content and not content.endswith(b"\n"):
+                f.seek(0, os.SEEK_END)
+                if f.tell() == 0:
+                    continue
+                f.seek(-1, os.SEEK_END)
+                if f.read(1) == b"\n":
+                    continue
                 if self.check_only or self.dry_run:
                     messages.append(f"Would fix missing newline in {py_file.relative_to(self.repo_root)}")
                 else:

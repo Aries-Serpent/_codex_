@@ -61,4 +61,14 @@ def f1_score(preds: Iterable[int], labels: Iterable[int]) -> float:
     return 2 * prec * rec / denom
 
 
-__all__ = ["accuracy", "f1_score", "perplexity", "precision", "recall"]
+def mean_absolute_error(preds: Iterable[float], labels: Iterable[float]) -> float:
+    """Compute mean absolute error for numeric predictions and labels."""
+
+    preds_seq = [float(value) for value in preds]
+    labels_seq = [float(value) for value in labels]
+    total = max(1, len(labels_seq))
+    error_sum = sum(abs(pred - label) for pred, label in zip(preds_seq, labels_seq, strict=False))
+    return error_sum / total
+
+
+__all__ = ["accuracy", "f1_score", "mean_absolute_error", "perplexity", "precision", "recall"]
