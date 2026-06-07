@@ -9,7 +9,7 @@ from src.codex_ml.utils.reproducibility_hardening import (
     enable_deterministic_training,
     save_env_snapshot,
 )
-
+ # pragma: allowlist secret
 
 def test_enable_deterministic_training_success():
     """Test deterministic training with all dependencies mocked successfully."""
