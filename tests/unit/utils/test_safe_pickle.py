@@ -5,7 +5,7 @@ from unittest.mock import patch, mock_open
 
 import pytest
 
-from codex_ml.utils.safe_pickle import (
+from src.codex_ml.utils.safe_pickle import (
     RestrictedUnpickler,
     safe_pickle_load,
     safe_pickle_dump,
@@ -136,7 +136,7 @@ def test_get_secret_key_env_var():
 
 def test_get_secret_key_create_file(tmp_path):
     # Mock Path.home() to point to tmp_path
-    with patch("codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
+    with patch("src.codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
         key = _get_secret_key()
         assert len(key) == 32
         key_file = tmp_path / ".codex" / "pickle.key"
@@ -145,7 +145,7 @@ def test_get_secret_key_create_file(tmp_path):
 
 
 def test_get_secret_key_existing_file(tmp_path):
-    with patch("codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
+    with patch("src.codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
         key_file = tmp_path / ".codex" / "pickle.key"
         key_file.parent.mkdir(parents=True)
         key_file.write_bytes(b"existing_secret_key")
@@ -155,7 +155,7 @@ def test_get_secret_key_existing_file(tmp_path):
 
 
 def test_get_secret_key_os_error(tmp_path):
-    with patch("codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
+    with patch("src.codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
         key_file = tmp_path / ".codex" / "pickle.key"
         key_file.parent.mkdir(parents=True)
         

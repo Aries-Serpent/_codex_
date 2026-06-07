@@ -1,3 +1,4 @@
+import random
 """Gap 22: Mutation-killing tests for codex_ml.utils.determinism.
 
 These tests are specifically designed to kill surviving mutmut mutants

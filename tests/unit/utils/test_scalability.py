@@ -8,19 +8,9 @@ from src.codex_ml.utils.scalability import (
     CircuitBreaker,
     PerformanceMonitor,
     cached,
-    rate_limited
+    rate_limited,
+    Endpoint
 )
-
-# In scalability.py, Endpoint is likely a dataclass or similar. Let's define a mock or import it if we can.
-try:
-    from src.codex_ml.utils.scalability import Endpoint
-except ImportError:
-    class Endpoint:
-        def __init__(self, name, weight=1, healthy=True, current_connections=0):
-            self.name = name
-            self.weight = weight
-            self.healthy = healthy
-            self.current_connections = current_connections
 
 def test_lru_cache():
     cache = LRUCache(max_size=2, ttl_seconds=10)
@@ -29,12 +19,9 @@ def test_lru_cache():
     assert cache.get("a") == 1
     assert cache.get("b") == 2
     
-    # Exceed max size
+    # After accessing a then b, setting c evicts a (LRU)
     cache.set("c", 3)
-    assert cache.get("a") is None  # 'b' was inserted second, but 'a' was accessed last
-    # wait, 'b' was accessed in `assert cache.get("b") == 2`. So 'a' was accessed before 'b'.
-    # Access order: a(set), b(set), a(get), b(get). 'b' is most recently used.
-    # Ah, LRU evicts least recently used. So 'a' is evicted? Wait, if 'b' was accessed last, 'a' is LRU.
+    assert cache.get("a") is None
     
     stats = cache.stats
     assert isinstance(stats, dict)
@@ -50,14 +37,14 @@ def test_load_balancer():
     lb = LoadBalancer([e1, e2], strategy="round_robin")
     
     assert lb.get_endpoint() == e1
-    assert lb.get_endpoint() in [e1, e2]
+    assert lb.get_endpoint() == e2
     
     lb.mark_unhealthy(e2)
     assert lb.get_endpoint() == e1
     assert lb.get_endpoint() == e1
     
     lb.mark_healthy(e2)
-    assert lb.get_endpoint() in [e1, e2]
+    assert lb.get_endpoint() == e2
 
 def test_rate_limiter():
     rl = RateLimiter(rate=10, burst=2)
@@ -92,7 +79,6 @@ def test_circuit_breaker():
     cb.record_failure()
     assert cb.can_execute() is False
     
-    # decorator
     @cb
     def failing_func():
         pass

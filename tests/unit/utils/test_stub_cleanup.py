@@ -27,7 +27,7 @@ def another_func():
     analyzer = StubAnalyzer(source_dirs=[tmp_path])
     stubs = analyzer.analyze()
     
-    assert len(stubs) >= 3 # TODO, NotImplementedError, FIXME
+    assert len(stubs) == 3
     
     todo_stubs = [s for s in stubs if s.stub_type == "TODO"]
     assert len(todo_stubs) == 1
@@ -54,9 +54,8 @@ class MyInterface(ABC):
     
     analyzer = StubAnalyzer(source_dirs=[tmp_path])
     stubs = analyzer.analyze()
-    # abstractmethod NotImplementedError should be ignored if analyzer handles it
     nie_stubs = [s for s in stubs if s.stub_type == "NotImplementedError"]
-    assert len(nie_stubs) == 0
+    assert len(nie_stubs) == 0, "Abstract method stubs should be ignored"
 
 def test_find_stubs_and_prioritize(tmp_path):
     py_file = tmp_path / "test_code.py"
@@ -70,4 +69,4 @@ def test_find_stubs_and_prioritize(tmp_path):
     
     prioritized = prioritize_stubs(stubs)
     assert len(prioritized) == 2
-    assert prioritized[0].stub_type == "FIXME" # FIXMEs are usually higher priority
+    assert prioritized[0].stub_type == "FIXME"

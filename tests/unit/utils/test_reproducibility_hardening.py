@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from codex_ml.utils.reproducibility_hardening import (
+from src.codex_ml.utils.reproducibility_hardening import (
     ReproducibilityManager,
     create_reproducibility_manifest,
     enable_deterministic_training,
@@ -74,7 +74,7 @@ def test_enable_deterministic_training_exceptions():
             raise Exception("mock env error")
             
     with patch("random.seed", side_effect=Exception("mock random error")), \
-         patch("codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()):
+         patch("src.codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()):
         status = enable_deterministic_training(42)
         assert status["python_random"] is False
         assert status["python_hash_seed"] is False
@@ -207,8 +207,8 @@ def test_save_env_snapshot_no_cuda_available(tmp_path):
         assert snapshot["gpu_devices"] == []
 
 def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
-    with patch("codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
+         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
          
         mock_enable.return_value = {"python_random": True}
         mock_save.return_value = {
@@ -229,8 +229,8 @@ def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
         assert "dataset_hash" not in manifest
 
 def test_create_reproducibility_manifest(tmp_path):
-    with patch("codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
+         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
          
         mock_enable.return_value = {"python_random": True}
         mock_save.return_value = {
@@ -258,8 +258,8 @@ def test_create_reproducibility_manifest(tmp_path):
         assert manifest_path.exists()
 
 def test_reproducibility_manager(tmp_path):
-    with patch("codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
+         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
          
         mock_enable.return_value = {"status": "ok"}
         mock_save.return_value = {"env": "snapshot"}
@@ -277,7 +277,7 @@ def test_reproducibility_manager(tmp_path):
         mock_save.assert_called_once_with(tmp_path / "env_snapshot.txt")
         
         # Test finalize
-        with patch("codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest") as mock_create:
+        with patch("src.codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest") as mock_create:
             mock_create.return_value = {"manifest": "data"}
             
             manifest = manager.finalize(config={"lr": 0.01}, dataset_hash="dataset1")
