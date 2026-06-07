@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-07T00:44:56Z",
+  "generated_at": "2026-06-07T05:03:45Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1224,6 +1224,11 @@
       "has_concurrency": true
     },
     {
+      "name": "container-scan",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-checkin",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1695,7 +1700,7 @@
     },
     {
       "name": "scheduled-dependency-audit",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1746,6 +1751,11 @@
     {
       "name": "session-watchdog",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "sigstore-verify",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -2216,5 +2226,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "900de59d232613922952f2a8deaaa0bfefd2d7e5d1cda44aa275cc0ee6cb9863"
+  "integrity_sha256": "7a1349ade90102d4507ce50d2d73fd9c3b725153ef26ae587a78472add86b30a"
 }
