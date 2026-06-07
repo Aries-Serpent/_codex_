@@ -9,7 +9,7 @@ from src.codex_ml.utils.safe_pickle import (
     safe_pickle_load,
     safe_pickle_dump,
     _get_secret_key,
-    _build_signed_pickle,
+    _build_signed_pickle, # pragma: allowlist secret
     _split_signed_pickle,
     SIGNED_PICKLE_MAGIC,
     SIGNED_PICKLE_VERSION,
