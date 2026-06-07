@@ -1,10 +1,7 @@
 import json
 import os
 import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from src.codex_ml.utils.reproducibility_hardening import (
     ReproducibilityManager,
@@ -26,10 +23,7 @@ def test_enable_deterministic_training_success():
     
     with patch("random.seed") as mock_random_seed, \
          patch.dict("sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}):
-         
-        # Import mocks inside
-        import sys
-        
+
         status = enable_deterministic_training(42, strict=True)
         
         assert status["python_random"] is True
