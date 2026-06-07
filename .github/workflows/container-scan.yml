@@ -41,7 +41,7 @@ jobs:
           docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
 
       - name: Run Trivy filesystem scan (fallback if build unavailable)
-        uses: aquasecurity/trivy-action@v0.20.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: fs
           scan-ref: .
