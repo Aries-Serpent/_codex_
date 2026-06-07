@@ -1,4 +1,3 @@
-import random
 """Gap 22: Mutation-killing tests for codex_ml.utils.determinism.
 
 These tests are specifically designed to kill surviving mutmut mutants
@@ -7,19 +6,15 @@ They focus on Python-level behaviours (no torch/numpy required) to
 maximise mutation score in CPU-only CI environments.
 """
 
-from __future__ import annotations
-
 import os
 import random
-
-import pytest
 
 from codex_ml.utils.determinism import (
     enable_determinism,
     set_deterministic,
     set_global_determinism,
 )
-
+from codex_ml.utils.seed import deterministic_shuffle, set_seed
 
 # ---------------------------------------------------------------------------
 # enable_determinism – return-value key assertions
@@ -185,12 +180,6 @@ class TestEnableDeterminismNoSeed:
     def test_no_seed_deterministic_false(self):
         state = enable_determinism(deterministic=False)
         assert state["deterministic"] is False
-
-# ---------------------------------------------------------------------------
-# codex_ml.utils.seed mutations
-# ---------------------------------------------------------------------------
-
-from codex_ml.utils.seed import deterministic_shuffle, set_seed
 
 class TestSeedUtils:
     def test_deterministic_shuffle_preserves_elements(self):
