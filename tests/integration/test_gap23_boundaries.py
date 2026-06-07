@@ -33,7 +33,7 @@ import pytest
 try:
     from fastapi.testclient import TestClient  # type: ignore[import]
 except ImportError:  # pragma: no cover
-    pass
+    pass  # FastAPI is optional; TestClient features unavailable without it
 
 
 @pytest.mark.integration
