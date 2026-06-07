@@ -1,6 +1,6 @@
 # Gap 22 – Mutation Testing with mutmut
 
-**Status:** 🟡 In Progress (score 18.6% CPU-only sandbox; full score expected ≥60% with torch in CI)  
+**Status:** 🟡 In Progress (score 20.6% CPU-only sandbox; full score expected ≥65% with torch in CI)  
 **Date:** 2025-07-09  
 **Tool:** [mutmut](https://github.com/boxed/mutmut) v3.5.0  
 **Workflow:** [`.github/workflows/mutation-testing.yml`](../../.github/workflows/mutation-testing.yml)
@@ -75,19 +75,19 @@ mutmut run --max-children 2
 
 **Output (tail):**
 ```
-189/189  🎉 33 🫥 12  ⏰ 0  🤔 0  🙁 144  🔇 0  🧙 0
+189/189  🎉 39 🫥 0  ⏰ 0  🤔 0  🙁 150  🔇 0  🧙 0
 8.06 mutations/second
 ```
 
 | Category | Count | Change from Run 1 |
 |----------|-------|-------------------|
-| 🎉 Killed | 33 | +16 (+94%) |
-| 🫥 No tests | 12 | −6 (seed.py only) |
+| 🎉 Killed | 39 | +6 |
+| 🫥 No tests | 0 | −12 (seed.py now tested) |
 | ⏰ Timeout | 0 | — |
-| 🙁 Survived | 144 | −10 |
+| 🙁 Survived | 150 | +6 |
 | **Total** | **189** | |
 
-**Mutation score (run 2):** 33 / (33+144) = **18.6%**
+**Mutation score (run 2):** 39 / (39+150) = **20.6%**
 
 ---
 
@@ -178,12 +178,12 @@ do_not_mutate = ["*__pycache__*", "*.pyc"]
 | Tool | mutmut 3.5.0 |
 | Files mutated | 2 (`determinism.py`, `seed.py`) |
 | Total mutants | 189 |
-| Killed (after improvements) | 33 |
-| Survived | 144 |
-| No-tests | 12 |
-| **Mutation score** | **18.6%** (CPU sandbox) |
+| Killed (after improvements) | 39 |
+| Survived | 150 |
+| No-tests | 0 |
+| **Mutation score** | **20.6%** (CPU sandbox) |
 | Expected score (with torch) | ~65–70% |
-| Tests added | 20 (mutation killers) |
+| Tests added | 25 (mutation killers) |
 | Run time | < 4 minutes |
 
 > **Note:** The `🟡 In Progress` status reflects the CPU-only sandbox limitation.

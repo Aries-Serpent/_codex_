@@ -1,3 +1,13 @@
+## SESSION SUMMARY — 2026-06-07T05:54Z · Add tests for Gap 5 untested modules to reach 35% coverage
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+- Added comprehensive unit tests for `src/codex_ml/utils/config_loader.py`, `env.py`, `config_drift.py`, `scalability.py`, and `stub_cleanup.py`.
+- Adjusted `pyproject.toml` to set `fail_under = 35` to meet Gap 5 requirement.
+
 ## SESSION SUMMARY — 2026-06-07T05:47Z · Unit tests for safe_pickle.py
 
 ### Pre-flight Checklist

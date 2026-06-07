@@ -15,6 +15,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
+from abc import ABC, abstractmethod
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ class PluginMetadata:
             self.dependencies = []
 
 
-class Plugin:
+class Plugin(ABC):
     """Base class for all plugins.
 
     Subclass this to create custom plugins.
@@ -78,6 +79,7 @@ class Plugin:
     def initialize(self) -> None:
         """Initialize plugin. Override in subclass."""
 
+    @abstractmethod
     def execute(self, *args, **kwargs) -> Any:
         """Execute plugin logic. Override in subclass."""
         raise NotImplementedError()

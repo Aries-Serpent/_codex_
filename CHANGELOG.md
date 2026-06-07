@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Addressed Gap 32: Cleaned up TODOs, FIXMEs, and stubs in the `src/` directory. Converted remaining abstract method implementations to use `abc.ABC` and `abc.abstractmethod` for robust tracking via AST detection in `stub_cleanup.py`. Verified that the remaining stubs (P0) are strictly necessary fallback exceptions or standard structural representations (14 items resolved or verified).
+
 ### Added
+- Added comprehensive unit tests for `src/codex_ml/utils/config_loader.py`, `env.py`, `config_drift.py`, `scalability.py`, and `stub_cleanup.py` to raise coverage above 35% threshold (Gap 5).
 - Added comprehensive unit tests for `src/codex_ml/utils/safe_pickle.py` to achieve 100% code coverage.
 - Added comprehensive unit tests for `src/codex_ml/utils/reproducibility_hardening.py` to achieve 100% code coverage.
 

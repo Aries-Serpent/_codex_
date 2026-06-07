@@ -184,3 +184,44 @@ class TestEnableDeterminismNoSeed:
     def test_no_seed_deterministic_false(self):
         state = enable_determinism(deterministic=False)
         assert state["deterministic"] is False
+
+# ---------------------------------------------------------------------------
+# codex_ml.utils.seed mutations
+# ---------------------------------------------------------------------------
+
+from codex_ml.utils.seed import deterministic_shuffle, set_seed
+
+class TestSeedUtils:
+    def test_deterministic_shuffle_preserves_elements(self):
+        """Mutant changing logic should not lose elements."""
+        original = [1, 2, 3, 4, 5]
+        shuffled = deterministic_shuffle(original, seed=42)
+        assert sorted(original) == sorted(shuffled)
+        assert len(original) == len(shuffled)
+
+    def test_deterministic_shuffle_is_reproducible(self):
+        """Mutant changing the seed being passed should break this."""
+        original = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        shuffled1 = deterministic_shuffle(original, seed=99)
+        shuffled2 = deterministic_shuffle(original, seed=99)
+        assert shuffled1 == shuffled2
+
+    def test_deterministic_shuffle_different_seeds(self):
+        """Mutant changing +1 to seed etc."""
+        original = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        shuffled1 = deterministic_shuffle(original, seed=1)
+        shuffled2 = deterministic_shuffle(original, seed=2)
+        assert shuffled1 != shuffled2
+
+    def test_deterministic_shuffle_does_not_mutate_original(self):
+        original = [1, 2, 3]
+        deterministic_shuffle(original, seed=1)
+        assert original == [1, 2, 3]
+
+    def test_set_seed_wiring(self):
+        """Test set_seed wired correctly."""
+        set_seed(42)
+        a = random.random()
+        set_seed(42)
+        b = random.random()
+        assert a == b

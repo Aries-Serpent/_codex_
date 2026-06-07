@@ -533,7 +533,7 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-fail_under = 22
+fail_under = 35
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
@@ -585,12 +585,12 @@ pytest_add_cli_args = [
     "--ignore=tests/agents",
     "--ignore=tests/services",
 ]
-source_paths = [
-    "src/codex_ml/utils/determinism.py",
-    "src/codex_ml/utils/seed.py",
-]
 pytest_add_cli_args_test_selection = [
     "tests/smoke/test_determinism.py",
     "tests/unit/test_gap22_mutation_killers.py",
 ]
 debug = true
+paths_to_mutate = [
+    "src/codex_ml/utils/determinism.py",
+    "src/codex_ml/utils/seed.py",
+]
