@@ -66,9 +66,11 @@ def mean_absolute_error(preds: Iterable[float], labels: Iterable[float]) -> floa
 
     preds_seq = [float(value) for value in preds]
     labels_seq = [float(value) for value in labels]
+    if not labels_seq:
+        raise ValueError("preds and labels must not be empty")
     if len(preds_seq) != len(labels_seq):
         raise ValueError("preds and labels must have the same length")
-    total = max(1, len(labels_seq))
+    total = len(labels_seq)
     error_sum = sum(abs(pred - label) for pred, label in zip(preds_seq, labels_seq, strict=True))
     return error_sum / total
 

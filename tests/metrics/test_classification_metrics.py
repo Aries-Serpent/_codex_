@@ -40,3 +40,9 @@ def test_mean_absolute_error_is_exported_from_metrics_package() -> None:
 def test_mean_absolute_error_rejects_mismatched_lengths() -> None:
     with pytest.raises(ValueError, match="same length"):
         mean_absolute_error([1.0, 2.0], [1.0])
+
+
+@pytest.mark.ml
+def test_mean_absolute_error_rejects_empty_inputs() -> None:
+    with pytest.raises(ValueError, match="must not be empty"):
+        mean_absolute_error([], [])
