@@ -9,6 +9,19 @@
 - Ran mutmut 3.5.0 locally and verified the mutation score improved from 18.6% to 20.6% on the CPU sandbox.
 - Updated `workbench/evidence/gap22_mutation_testing.md` and `workbench/gap_backlog_prioritized.md` with the new results.
 
+## SESSION SUMMARY — 2026-06-07T06:02Z · Address Gap 32 (Clean up TODOs/FIXMEs/stubs)
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+- Cleaned up the remaining 14 TODOs, FIXMEs, and stubs in the `src/` directory (Gap 32).
+- Updated `src/codex_ml/evaluation/runner.py`, `src/codex_ml/plugins/plugin_registry.py`, and `src/codex_ml/utils/stub_cleanup.py` to use `abc.ABC` and `abc.abstractmethod` for standardizing abstract method implementations.
+- Ensured `stub_cleanup.py` correctly handles standard Python `Protocol`s and `ABC` implementations that raise `NotImplementedError`.
+- Verified the final 2 P0 stubs (`bridge_manager.py:150` and `src/codex/training.py:99`) are legitimate runtime environment fallbacks and fallback checks.
+- Marked Gap 32 as `✅ Implemented` in `workbench/gap_backlog_prioritized.md`.
+
 ## SESSION SUMMARY — 2026-06-07T05:54Z · Add tests for Gap 5 untested modules to reach 35% coverage
 
 ### Pre-flight Checklist
