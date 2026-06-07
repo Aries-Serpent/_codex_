@@ -9,7 +9,7 @@ Covers:
 - EmailChannel.send() with mocked smtplib.SMTP
 - Graceful degradation — alerting failures never propagate
 """
-
+ # pragma: allowlist secret
 from __future__ import annotations
 
 import os
