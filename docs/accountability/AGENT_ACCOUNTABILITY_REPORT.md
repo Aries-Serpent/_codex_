@@ -1,3 +1,14 @@
+## SESSION SUMMARY — 2026-06-07T05:54Z · Improve mutation score for Gap 22
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+- Added 5 mutation killer tests for `src/codex_ml/utils/seed.py` to `tests/unit/test_gap22_mutation_killers.py`.
+- Ran mutmut 3.5.0 locally and verified the mutation score improved from 18.6% to 20.6% on the CPU sandbox.
+- Updated `workbench/evidence/gap22_mutation_testing.md` and `workbench/gap_backlog_prioritized.md` with the new results.
+
 ## SESSION SUMMARY — 2026-06-07T05:54Z · Add tests for Gap 5 untested modules to reach 35% coverage
 
 ### Pre-flight Checklist

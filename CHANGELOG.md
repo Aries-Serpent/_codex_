@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added mutation killer tests for `src/codex_ml/utils/seed.py` and improved tests for `determinism.py`, pushing the mutation testing score from 18.6% to 20.6% on the CPU sandbox (Gap 22).
+
 ### Fixed
 - Addressed Gap 32: Cleaned up TODOs, FIXMEs, and stubs in the `src/` directory. Converted remaining abstract method implementations to use `abc.ABC` and `abc.abstractmethod` for robust tracking via AST detection in `stub_cleanup.py`. Verified that the remaining stubs (P0) are strictly necessary fallback exceptions or standard structural representations (14 items resolved or verified).
 
