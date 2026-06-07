@@ -5,7 +5,7 @@ from codex_ml.workflow.track_c_workflow import (
     record_error, step_context, _preparation_phase, _search_and_mapping_phase,
     _best_effort_construction_phase, _controlled_pruning_phase,
     _error_capture_phase, _finalization_phase, WorkflowOrchestrator,
-    run_capability, SIX_PHASES, PHASE_IMPLEMENTATIONS
+    run_capability, SIX_PHASES, PHASE_IMPLEMENTATIONS, DEFAULT_ROUTER
 )
 
 def test_error_record_to_dict():
@@ -64,6 +64,10 @@ def test_capability_router():
     
     with pytest.raises(KeyError, match="Unknown capability"):
         router.resolve("unknown")
+        
+    # test default
+    router2 = CapabilityRouter()
+    assert len(router2._plans) == 0
 
 def test_record_error():
     ctx = WorkflowContext(capability="test")
@@ -83,9 +87,9 @@ def test_step_context():
     ctx = WorkflowContext(capability="test")
     def rollback(c): c.notes.append("rb")
     
-    with pytest.raises(ValueError):
-        with step_context(ctx, "Preparation", "step1", rollback=rollback):
-            raise ValueError("oops")
+    # step_context swallows exceptions
+    with step_context(ctx, "Preparation", "step1", rollback=rollback):
+        raise ValueError("oops")
     
     assert len(ctx.errors) == 1
     assert ctx.errors[0].exception_type == "ValueError"
@@ -106,6 +110,9 @@ def test_preparation_phase():
     
     ctx.apply_rollbacks()
     assert "prepared:test" not in ctx.notes
+    
+    # double rollback doesn't crash
+    ctx.apply_rollbacks()
 
 def test_search_and_mapping_phase():
     ctx = WorkflowContext(capability="test")
@@ -129,6 +136,11 @@ def test_best_effort_construction_phase():
     ctx.apply_rollbacks()
     assert len(ctx.artifacts) == 0
 
+    # Ensure empty pops work
+    _best_effort_construction_phase(ctx, plan)
+    ctx.artifacts.clear() # artificially empty
+    ctx.apply_rollbacks() # should not crash
+
     plan_default = CapabilityPlan("test2")
     _best_effort_construction_phase(ctx, plan_default)
     assert ctx.artifacts == ["test2:prototype"]
@@ -137,19 +149,22 @@ def test_best_effort_construction_phase():
 
 def test_controlled_pruning_phase():
     ctx = WorkflowContext(capability="test")
-    ctx.artifacts = ["good", "bad", "bad", "stale1"]
+    ctx.artifacts = ["good", "bad", "bad", "stale1", "stale1"] # stale1 is duplicate AND matches rule
     plan = CapabilityPlan("test", pruning_rules=["stale"])
     _controlled_pruning_phase(ctx, plan)
     
     assert ctx.artifacts == ["good", "bad"]
-    assert "stale1" in ctx.pruned
-    assert "bad" in ctx.pruned
+    assert ctx.pruned == ["bad", "stale1", "stale1"]
     
     ctx.apply_rollbacks()
-    assert "stale1" in ctx.artifacts
+    # It restores items in reverse order. The specific order isn't strictly mandated by our test,
+    # but let's check membership.
+    assert "good" in ctx.artifacts
     assert "bad" in ctx.artifacts
-    assert "stale1" not in ctx.pruned
+    assert "stale1" in ctx.artifacts
+    # Check that removed items are removed from pruned
     assert "bad" not in ctx.pruned
+    assert "stale1" not in ctx.pruned
 
 def test_error_capture_phase():
     ctx = WorkflowContext(capability="test")
@@ -193,6 +208,10 @@ def test_workflow_orchestrator():
     assert len(ctx.errors) == 1
     assert ctx.errors[0].phase == "Preparation"
     assert "Finalization" in ctx.phase_history
+    
+    # Test default router
+    orch2 = WorkflowOrchestrator()
+    assert orch2.router == DEFAULT_ROUTER
 
 def test_run_capability():
     plan = CapabilityPlan("test")

@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-06-07T05:47Z · Unit tests for safe_pickle.py
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+- Added comprehensive unit tests for `src/codex_ml/utils/safe_pickle.py` in `tests/unit/utils/test_safe_pickle.py`.
+- Achieved 100% code coverage.
+- Verified restricted unpickling, valid MAC signatures, tampered file handling, and implicit key behaviors.
+
+## SESSION SUMMARY — 2026-06-07T05:45Z · Unit tests for reproducibility_hardening.py
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+
+### Work Completed
+- Added comprehensive unit tests for `src/codex_ml/utils/reproducibility_hardening.py` in `tests/unit/utils/test_reproducibility_hardening.py`
+- Achieved 100% test coverage for all code paths, including missing dependencies and mocked dependencies.
+- Verified test suite passes without issues in local environment.
+
 ## SESSION SUMMARY — 2026-06-06T22:34Z · Fix 10 unused-import review threads (PR #4792)
 
 ### Pre-flight Checklist

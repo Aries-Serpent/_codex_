@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added comprehensive unit tests for `src/codex_ml/utils/safe_pickle.py` to achieve 100% code coverage.
+- Added comprehensive unit tests for `src/codex_ml/utils/reproducibility_hardening.py` to achieve 100% code coverage.
+
 ### Fixed (auto-update — PR #4794)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4794 (SHA `cf1be5e8`) at 2026-06-07T05:03Z [auto-generated]
 

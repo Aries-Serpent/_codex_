@@ -27,25 +27,26 @@ class DummyBlockedClass:
 
 
 def test_restricted_unpickler_find_class():
-    unpickler = RestrictedUnpickler(b"")
+    import io
+    unpickler = RestrictedUnpickler(io.BytesIO(b""))
     
-    # Test allowed
-    with patch.dict(unpickler.SAFE_MODULES, {"__main__": {"DummyAllowedClass"}}, clear=False):
-        cls = unpickler.find_class("__main__", "DummyAllowedClass")
-        assert cls == DummyAllowedClass
-        
+    # Test allowed (use a real class)
+    cls = unpickler.find_class("builtins", "int")
+    assert cls == int
+    
     # Test wildcard allowed
-    with patch.dict(unpickler.SAFE_MODULES, {"__main__": {"*"}}, clear=False):
-        cls = unpickler.find_class("__main__", "DummyBlockedClass")
-        assert cls == DummyBlockedClass
+    with patch.dict(unpickler.SAFE_MODULES, {"os": {"*"}}, clear=False):
+        cls = unpickler.find_class("os", "system")
+        import os
+        assert cls == os.system
 
     # Test blocked
     with pytest.raises(pickle.UnpicklingError, match="not in whitelist"):
-        unpickler.find_class("__main__", "DummyBlockedClass")
+        unpickler.find_class("builtins", "eval")
 
     # Test module entirely blocked
     with pytest.raises(pickle.UnpicklingError, match="not in whitelist"):
-        unpickler.find_class("os", "system")
+        unpickler.find_class("subprocess", "Popen")
 
 
 def test_safe_pickle_load_file_not_found(tmp_path):

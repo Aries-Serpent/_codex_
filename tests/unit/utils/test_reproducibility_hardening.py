@@ -192,6 +192,42 @@ def test_save_env_snapshot_pip_error(tmp_path):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=True)
         assert snapshot["pip_freeze"] == []
 
+def test_save_env_snapshot_no_cuda_available(tmp_path):
+    output_path = tmp_path / "env_snapshot.txt"
+    
+    mock_torch = MagicMock()
+    mock_torch.cuda.is_available.return_value = False
+    
+    with patch("subprocess.check_output", side_effect=Exception("Git error")), \
+         patch.dict("sys.modules", {"torch": mock_torch}):
+        snapshot = save_env_snapshot(output_path, include_pip_freeze=False)
+        assert snapshot["cuda_available"] is False
+        assert snapshot["cuda_version"] is None
+        assert snapshot["gpu_count"] == 0
+        assert snapshot["gpu_devices"] == []
+
+def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
+    with patch("codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
+         patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+         
+        mock_enable.return_value = {"python_random": True}
+        mock_save.return_value = {
+            "python_version": "3.10.0",
+            "git_commit": "abc",
+            "git_dirty": False,
+            "cuda_available": False,
+            "platform": {"system": "Linux"}
+        }
+        
+        manifest = create_reproducibility_manifest(
+            seed=123,
+            output_dir=tmp_path,
+        )
+        
+        assert manifest["seed"] == 123
+        assert "config" not in manifest
+        assert "dataset_hash" not in manifest
+
 def test_create_reproducibility_manifest(tmp_path):
     with patch("codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
          patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
