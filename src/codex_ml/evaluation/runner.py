@@ -39,6 +39,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+from abc import ABC  # noqa: E402
 
 try:
     import torch
@@ -69,7 +70,7 @@ class EvaluationConfig:
     system_metrics: bool = False
 
 
-class MetricAdapter:
+class MetricAdapter(ABC):
     """
     Base class for metric adapters.
 

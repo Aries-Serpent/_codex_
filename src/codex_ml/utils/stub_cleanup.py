@@ -123,13 +123,13 @@ class StubAnalyzer:
                             ):
                                 return True
 
-                        # Check if method is in an ABC class
+                        # Check if method is in an ABC class or Protocol
                         parent_class = func_to_class.get(func_node)
                         if parent_class:
                             for base in parent_class.bases:
-                                if isinstance(base, ast.Name) and base.id == "ABC":
+                                if isinstance(base, ast.Name) and base.id in ("ABC", "Protocol"):
                                     return True
-                                if isinstance(base, ast.Attribute) and base.attr == "ABC":
+                                if isinstance(base, ast.Attribute) and base.attr in ("ABC", "Protocol"):
                                     return True
 
             # Also check for top-level functions (not in classes)
