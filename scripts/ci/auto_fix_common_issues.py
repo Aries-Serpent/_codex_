@@ -333,6 +333,7 @@ class CommonIssueFixer:
             (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
             (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),
+            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),
         ]
         patterns = all_patterns
         skip_env = os.getenv("CODEX_SKIP_PATTERN_NUMS", "")
@@ -3407,6 +3408,26 @@ class CommonIssueFixer:
 
         return issues
 
+    # ------------------------------------------------------------------
+    # Pattern 34: Missing Newline at EOF
+    # ------------------------------------------------------------------
+    def fix_missing_newline_at_eof(self) -> list[str]:
+        """Pattern 34: Adds missing newline at EOF for python files."""
+        messages = []
+        for py_file in self.repo_root.rglob("*.py"):
+            if not py_file.is_file():
+                continue
+            with open(py_file, "rb") as f:
+                content = f.read()
+            if content and not content.endswith(b"\n"):
+                if self.check_only or self.dry_run:
+                    messages.append(f"Would fix missing newline in {py_file.relative_to(self.repo_root)}")
+                else:
+                    with open(py_file, "ab") as f:
+                        f.write(b"\n")
+                    messages.append(f"Fixed missing newline in {py_file.relative_to(self.repo_root)}")
+        return messages
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -3427,9 +3448,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 34),
+        choices=range(1, 35),
         metavar="N",
-        help="Run only pattern N (1–33); see pattern list above"
+        help="Run only pattern N (1–34); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",
