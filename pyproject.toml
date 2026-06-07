@@ -1,12 +1,9 @@
 [build-system]
-requires = ["setuptools>=78.1.1,<82", "wheel"]  # Security: Updated from 67 to fix CVE-2024-6345, CVE-2025-47273 (RCE); keep <82 for torch 2.12 compatibility
+requires = [
+    "setuptools>=78.1.1,<82",
+    "wheel",
+]
 build-backend = "setuptools.build_meta"
-
-# Rust extension module configuration (optional, for future migration)
-# To enable Rust extension: uncomment below and comment out above
-# [build-system]
-# requires = ["maturin>=1.4,<2.0"]
-# build-backend = "maturin"
 
 [project]
 name = "codex-ml"
@@ -15,254 +12,279 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 authors = [
-  { name = "Aries Serpent" }
+    { name = "Aries Serpent" },
 ]
-keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
+keywords = [
+    "ml",
+    "training",
+    "evaluation",
+    "plugins",
+    "hydra",
+    "cli",
+]
 classifiers = [
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
-  "Operating System :: OS Independent",
+    "Operating System :: OS Independent",
 ]
-# Ensure runtime dependencies remain declared so console entrypoints import successfully
 dependencies = [
-  "omegaconf>=2.3",
-  "hydra-core==1.3.2",
-  "pydantic>=2.4",
-  "pydantic-settings>=2.14.1",
-  "pyyaml>=6.0",
-  "pandas>=2.3.3,<3",
-  "marshmallow>=3.7.1,<5",  # Widened to allow ge extra (GE requires <4); use [marshmallow-v4] extra to pin >=4
-  "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 43+ vulnerabilities (RCE, auth bypass, path traversal)
-  "transformers>=5.9.0,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
-  "peft>=0.19.1,<1",
-  "accelerate>=0.31,<2",
-  "datasets>=4.8.5,<5",
-  "lm-eval>=0.4.2,<1",
-  "ray[serve]>=2.9,<3",
-  "fastapi>=0.135.3,<1",
-  "slowapi>=0.1.9",
-  "starlette>=1.0.1,<2",
-  "httpx>=0.26,<1",
-  "evidently>=0.7.21,<1",
-  "numpy>=2.4.6,<3",
-  "scikit-learn>=1.4,<2",
-  "duckdb>=1.5.3",
-  "sentencepiece>=0.1.99",
-  "torch>=2.6.0,<3.0.0",  # Security: Updated from 2.2.2 to fix RCE in torch.load with weights_only=True
-  "typer>=0.12",
-  # AST Analysis Core Dependencies
-  "libcst>=1.0.0",
-  "radon>=6.0.1",
-  "parso>=0.8.0",
-  # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
-  "jinja2>=3.1.6",  # Security: Fixes CVE-2024-56326, CVE-2024-56201 (RCE via sandbox escape)
-  "certifi>=2024.7.4",  # Security: Fixes CVE-2024-39689 (root cert trust issue)
-  "filelock>=3.29.0",  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
-  "idna>=3.15",  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
-  "urllib3>=2.7.0",  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
-  "requests>=2.32.4",  # Security: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass, credential leak)
-  "defusedxml>=0.7.1",  # Security: XXE prevention for XML parsing (cli.py defuse_stdlib, solution_xml.py)
+    "omegaconf>=2.3",
+    "hydra-core==1.3.2",
+    "pydantic>=2.4",
+    "pydantic-settings>=2.14.1",
+    "pyyaml>=6.0",
+    "pandas>=2.3.3,<3",
+    "marshmallow>=3.7.1,<5",
+    "mlflow>=2.22.4,<4",
+    "transformers>=5.9.0,<6",
+    "peft>=0.19.1,<1",
+    "accelerate>=0.31,<2",
+    "datasets>=4.8.5,<5",
+    "lm-eval>=0.4.2,<1",
+    "ray[serve]>=2.9,<3",
+    "fastapi>=0.135.3,<1",
+    "slowapi>=0.1.9",
+    "starlette>=1.0.1,<2",
+    "httpx>=0.26,<1",
+    "evidently>=0.7.21,<1",
+    "numpy>=2.4.6,<3",
+    "scikit-learn>=1.4,<2",
+    "duckdb>=1.5.3",
+    "sentencepiece>=0.1.99",
+    "torch>=2.6.0,<3.0.0",
+    "typer>=0.12",
+    "libcst>=1.0.0",
+    "radon>=6.0.1",
+    "parso>=0.8.0",
+    "jinja2>=3.1.6",
+    "certifi>=2024.7.4",
+    "filelock>=3.29.0",
+    "idna>=3.15",
+    "urllib3>=2.7.0",
+    "requests>=2.32.4",
+    "defusedxml>=0.7.1",
 ]
-
-# Version may be injected by CI or read dynamically.
-# If you keep a __version__ in package, uncomment the next line and remove the explicit version field.
-# dynamic = ["version"]
 version = "0.9.0"
 
 [project.optional-dependencies]
-analysis = ["libcst>=1.0", "parso>=0.8.0"]
+analysis = [
+    "libcst>=1.0",
+    "parso>=0.8.0",
+]
 ast = [
-  "tree-sitter>=0.25.2",
-  "tree-sitter-python>=0.20.0",
-  "tree-sitter-yaml>=0.7.0",
-  "sqlparse>=0.5.5",
+    "tree-sitter>=0.25.2",
+    "tree-sitter-python>=0.20.0",
+    "tree-sitter-yaml>=0.7.0",
+    "sqlparse>=0.5.5",
 ]
 auth = [
-  "PyJWT>=2.13.0,<3.0.0",  # >=2.12.0 fixes CVE-2026-32597 (crit header bypass, CVSS 7.5)
-  "cryptography>=42.0.0,<47.0.0",
-  "PyNaCl>=1.5.0,<2.0.0",
+    "PyJWT>=2.13.0,<3.0.0",
+    "cryptography>=42.0.0,<47.0.0",
+    "PyNaCl>=1.5.0,<2.0.0",
 ]
-cli = ["typer>=0.9", "click>=8.1"]
+cli = [
+    "typer>=0.9",
+    "click>=8.1",
+]
 ge = [
-  "great_expectations>=0.18.7,<2",
-  # marshmallow<4 constraint comes from great-expectations itself; declared as conflicting with marshmallow-v4
+    "great_expectations>=0.18.7,<2",
 ]
 marshmallow-v4 = [
-  "marshmallow>=4.0.0,<5",  # Explicit marshmallow 4.x pin; conflicts with ge extra (GE requires marshmallow<4)
+    "marshmallow>=4.0.0,<5",
 ]
 configs = [
-  "hydra-core[hydra_plugins]>=1.3",
-  "omegaconf>=2.3",
-  "PyYAML>=6.0",
+    "hydra-core[hydra_plugins]>=1.3",
+    "omegaconf>=2.3",
+    "PyYAML>=6.0",
 ]
 hydra = [
-  "hydra-core[hydra_plugins]>=1.3",
-  "omegaconf>=2.3",
-  "PyYAML>=6.0",
+    "hydra-core[hydra_plugins]>=1.3",
+    "omegaconf>=2.3",
+    "PyYAML>=6.0",
 ]
 dev = [
-  "pytest>=9.0.3,<10.0.0",  # CVE-2025-71176: >=9.0.3 required
-  "pytest-cov>=4.1.0,<6.0.0",
-  "pytest-xdist>=3.5.0,<4.0.0",
-  "pytest-timeout>=2.2.0,<3.0.0",
-  "pytest-asyncio>=0.23.0,<2.0.0",
-  "pytest-mock>=3.12.0,<4.0.0",
-  "pytest-randomly>=3.15",
-  "pytest-rerunfailures>=12.0",
-  "pytest-split>=0.11.0",  # For test sharding in CI
-  "hypothesis>=6.152.4,<7.0.0",
-  "ruff>=0.1.15,<1.0.0",
-  "jsonschema>=4.26.0",
-  "black>=24.0.0,<27.0.0",
-  "isort>=8.0.1",
-  "mypy>=2.1.0,<3.0.0",
-  "dvc==3.67.1",
-  "pre-commit>=3.6.0,<5.0.0",
-  "nox>=2026.4.10",
-  "nbstripout>=0.6",
-  "tomli>=2.0; python_version < '3.11'",
-  "yamllint>=1.35.1,<2.0.0",
-  "detect-secrets>=1.5.0",
+    "pytest>=9.0.3,<10.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-xdist>=3.5.0,<4.0.0",
+    "pytest-timeout>=2.2.0,<3.0.0",
+    "pytest-asyncio>=0.23.0,<2.0.0",
+    "pytest-mock>=3.12.0,<4.0.0",
+    "pytest-randomly>=3.15",
+    "pytest-rerunfailures>=12.0",
+    "pytest-split>=0.11.0",
+    "hypothesis>=6.152.4,<7.0.0",
+    "ruff>=0.1.15,<1.0.0",
+    "jsonschema>=4.26.0",
+    "black>=24.0.0,<27.0.0",
+    "isort>=8.0.1",
+    "mypy>=2.1.0,<3.0.0",
+    "dvc==3.67.1",
+    "pre-commit>=3.6.0,<5.0.0",
+    "nox>=2026.4.10",
+    "nbstripout>=0.6",
+    "tomli>=2.0; python_version < '3.11'",
+    "yamllint>=1.35.1,<2.0.0",
+    "detect-secrets>=1.5.0",
 ]
-dist = ["torch>=2.6.0,<3.0.0; platform_system != 'Windows'"]  # Security: match main dependencies
+dist = [
+    "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",
+]
 github = [
-  "PyGithub>=2.9.1,<3.0.0",  # GitHub API client for workflow monitoring
+    "PyGithub>=2.9.1,<3.0.0",
 ]
-gpu = ["nvidia-ml-py3>=7.352.0"]
+gpu = [
+    "nvidia-ml-py3>=7.352.0",
+]
 logging = [
-  "duckdb>=1.5.3",
-  "jsonschema>=4.26.0",
-  "pandas>=2.3.3,<3",
-  "tensorboard>=2.14",
+    "duckdb>=1.5.3",
+    "jsonschema>=4.26.0",
+    "pandas>=2.3.3,<3",
+    "tensorboard>=2.14",
 ]
 metrics = [
-  "nltk>=3.8",
-  "rouge-score>=0.1.2",
-  "sacrebleu>=2.6.0",
+    "nltk>=3.8",
+    "rouge-score>=0.1.2",
+    "sacrebleu>=2.6.0",
 ]
 ml = [
-  "datasets>=4.8.5,<5",
-  "peft>=0.19.1,<1",
-  "sentencepiece>=0.1.99",
-  "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.9.0,<6",  # Security: updated from 4.41 to fix deserialization
-  "accelerate>=0.31,<2",
+    "datasets>=4.8.5,<5",
+    "peft>=0.19.1,<1",
+    "sentencepiece>=0.1.99",
+    "torch>=2.6.0,<3.0.0",
+    "transformers>=5.9.0,<6",
+    "accelerate>=0.31,<2",
 ]
-monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
-ops = ["requests>=2.32.4", "PyJWT>=2.13.0"]  # Security: >=2.12.0 fixes CVE-2026-32597 (crit header bypass)
-playwright = ["playwright>=1.40"]  # Optional: browser-based alert scraping (scripts/security/playwright_scraper.py)
-perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.22.4,<4"]  # Security: updated from 2.0
-sharding = ["xxhash>=3.0.0"]  # Optional: 10-100x faster hashing for index sharding (PS-06)
-plugins = ["importlib-metadata; python_version < '3.10'"]
+monitoring = [
+    "prometheus-client>=0.14",
+    "psutil>=5.9",
+    "pynvml>=11.5",
+]
+ops = [
+    "requests>=2.32.4",
+    "PyJWT>=2.13.0",
+]
+playwright = [
+    "playwright>=1.40",
+]
+perf = [
+    "numpy>=1.24; python_version<'3.13'",
+    "mlflow>=2.22.4,<4",
+]
+sharding = [
+    "xxhash>=3.0.0",
+]
+plugins = [
+    "importlib-metadata; python_version < '3.10'",
+]
 rag = [
-  # sentence-transformers>=5.2.0 supports transformers<6.0.0 (i.e., transformers 5.x)
-  # torch and transformers inherited from main dependencies (lines 37, 52)
-  # Meta tensor handling via code-level device initialization (indexer.py:100)
-  "sentence-transformers>=5.5.1,<6.0.0",
-  "chromadb>=1.5.8,<2.0.0",
-  "faiss-cpu>=1.13.2,<2.0.0",
-  "openai>=2.38.0; python_version >= '3.8'",
+    "sentence-transformers>=5.5.1,<6.0.0",
+    "chromadb>=1.5.8,<2.0.0",
+    "faiss-cpu>=1.13.2,<2.0.0",
+    "openai>=2.38.0; python_version >= '3.8'",
 ]
-symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
-"test-core" = [
-  "hydra-core[hydra_plugins]>=1.3",
-  "omegaconf>=2.3",
-  "PyYAML>=6.0",
-  "pytest>=9.0.3",
-  "pytest-cov>=4.0",
-  "pytest-randomly>=3.10",
-  "hypothesis>=6.152.4",
-  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
-  "tomli>=2.0; python_version < '3.11'",
+symbolic = [
+    "sentencepiece>=0.1.99",
+    "tokenizers>=0.14",
+]
+test-core = [
+    "hydra-core[hydra_plugins]>=1.3",
+    "omegaconf>=2.3",
+    "PyYAML>=6.0",
+    "pytest>=9.0.3",
+    "pytest-cov>=4.0",
+    "pytest-randomly>=3.10",
+    "hypothesis>=6.152.4",
+    "packaging>=26.1,<27.0",
+    "tomli>=2.0; python_version < '3.11'",
 ]
 test = [
-  "hydra-core[hydra_plugins]>=1.3",
-  "omegaconf>=2.3",
-  "PyYAML>=6.0",
-  "pytest>=9.0.3,<10.0.0",  # CVE-2025-71176: >=9.0.3 required
-  "pytest-cov>=4.1.0,<6.0.0",
-  "pytest-xdist>=3.5.0,<4.0.0",
-  "pytest-timeout>=2.2.0,<3.0.0",
-  "pytest-asyncio>=0.23.0,<2.0.0",
-  "pytest-mock>=3.12.0,<4.0.0",
-  "pytest-rerunfailures>=12.0",
-  "pytest-randomly>=3.10",
-  "hypothesis>=6.152.4,<7.0.0",
-  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
-  "transformers>=5.9.0,<6",  # Security: updated from 4.41 to fix deserialization
-  "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
-  "datasets>=4.8.5,<5",
-  "accelerate>=0.31,<2",
-  "sentencepiece>=0.1.99",
-  "tokenizers>=0.15",
-  "responses>=0.26.1",  # HTTP mocking for API tests (Zendesk, etc.)
+    "hydra-core[hydra_plugins]>=1.3",
+    "omegaconf>=2.3",
+    "PyYAML>=6.0",
+    "pytest>=9.0.3,<10.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-xdist>=3.5.0,<4.0.0",
+    "pytest-timeout>=2.2.0,<3.0.0",
+    "pytest-asyncio>=0.23.0,<2.0.0",
+    "pytest-mock>=3.12.0,<4.0.0",
+    "pytest-rerunfailures>=12.0",
+    "pytest-randomly>=3.10",
+    "hypothesis>=6.152.4,<7.0.0",
+    "packaging>=26.1,<27.0",
+    "transformers>=5.9.0,<6",
+    "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",
+    "datasets>=4.8.5,<5",
+    "accelerate>=0.31,<2",
+    "sentencepiece>=0.1.99",
+    "tokenizers>=0.15",
+    "responses>=0.26.1",
 ]
-tokenizer = ["sentencepiece>=0.1.99"]
-tokenizers = ["tokenizers>=0.15"]
+tokenizer = [
+    "sentencepiece>=0.1.99",
+]
+tokenizers = [
+    "tokenizers>=0.15",
+]
 tracking = [
-  "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
-  "wandb>=0.16",
-  "pandas>=2.3.3,<3",
+    "mlflow>=2.22.4,<4",
+    "wandb>=0.16",
+    "pandas>=2.3.3,<3",
 ]
 train = [
-  "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.9.0,<6",  # Security: updated from 4.41 to fix deserialization
-  "accelerate>=0.31,<2",
-  "peft>=0.19.1,<1",
-  "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
+    "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",
+    "transformers>=5.9.0,<6",
+    "accelerate>=0.31,<2",
+    "peft>=0.19.1,<1",
+    "mlflow>=2.22.4,<4",
 ]
-
 all = [
-  "accelerate>=0.31,<2",
-  "datasets>=4.8.5,<5",
-  "duckdb>=1.5.3",
-  "hydra-core[hydra_plugins]>=1.3",
-  "hypothesis>=6.152.4,<7.0.0",
-  "importlib-metadata; python_version < '3.10'",
-  "jsonschema>=4.26.0",
-  "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
-  "mypy>=2.1.0,<3.0.0",
-  "nox>=2026.4.10",
-  "numpy>=1.24; python_version<'3.13'",
-  "omegaconf>=2.3",
-  "pandas>=2.3.3,<3",
-  "peft>=0.19.1,<1",
-  "pre-commit>=3.7",
-  "prometheus-client>=0.14",
-  "psutil>=5.9",
-  "PyJWT>=2.13.0,<3.0.0",  # >=2.12.0 fixes CVE-2026-32597 (crit header bypass, CVSS 7.5)
-  "cryptography>=42.0.0,<47.0.0",
-  "PyNaCl>=1.5.0,<2.0.0",
-  "PyYAML>=6.0",
-  "pytest>=9.0.3,<10.0.0",  # CVE-2025-71176: >=9.0.3 required
-  "pytest-cov>=4.1.0,<6.0.0",
-  "pytest-xdist>=3.5.0,<4.0.0",
-  "pytest-timeout>=2.2.0,<3.0.0",
-  "pytest-asyncio>=0.23.0,<2.0.0",
-  "pytest-mock>=3.12.0,<4.0.0",
-  "pytest-randomly>=3.10",
-  "pynvml>=11.5",
-  "ruff>=0.1.15,<1.0.0",
-  "sentence-transformers>=5.5.1,<6.0.0",
-  "chromadb>=1.5.8,<2.0.0",
-  "faiss-cpu>=1.13.2,<2.0.0",
-  "sentencepiece>=0.1.99",
-  "tensorboard>=2.14",
-  "tokenizers>=0.15",
-  "tomli>=2.0; python_version < '3.11'",
-  "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.9.0,<6",  # Security: updated from 4.41 to fix deserialization
-  "wandb>=0.16",
+    "accelerate>=0.31,<2",
+    "datasets>=4.8.5,<5",
+    "duckdb>=1.5.3",
+    "hydra-core[hydra_plugins]>=1.3",
+    "hypothesis>=6.152.4,<7.0.0",
+    "importlib-metadata; python_version < '3.10'",
+    "jsonschema>=4.26.0",
+    "mlflow>=2.22.4,<4",
+    "mypy>=2.1.0,<3.0.0",
+    "nox>=2026.4.10",
+    "numpy>=1.24; python_version<'3.13'",
+    "omegaconf>=2.3",
+    "pandas>=2.3.3,<3",
+    "peft>=0.19.1,<1",
+    "pre-commit>=3.7",
+    "prometheus-client>=0.14",
+    "psutil>=5.9",
+    "PyJWT>=2.13.0,<3.0.0",
+    "cryptography>=42.0.0,<47.0.0",
+    "PyNaCl>=1.5.0,<2.0.0",
+    "PyYAML>=6.0",
+    "pytest>=9.0.3,<10.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-xdist>=3.5.0,<4.0.0",
+    "pytest-timeout>=2.2.0,<3.0.0",
+    "pytest-asyncio>=0.23.0,<2.0.0",
+    "pytest-mock>=3.12.0,<4.0.0",
+    "pytest-randomly>=3.10",
+    "pynvml>=11.5",
+    "ruff>=0.1.15,<1.0.0",
+    "sentence-transformers>=5.5.1,<6.0.0",
+    "chromadb>=1.5.8,<2.0.0",
+    "faiss-cpu>=1.13.2,<2.0.0",
+    "sentencepiece>=0.1.99",
+    "tensorboard>=2.14",
+    "tokenizers>=0.15",
+    "tomli>=2.0; python_version < '3.11'",
+    "torch>=2.6.0,<3.0.0",
+    "transformers>=5.9.0,<6",
+    "wandb>=0.16",
 ]
-
 
 [project.scripts]
-# Canonical entrypoints
 codex-train = "codex_ml.cli.entrypoints:train_main"
 codex-eval = "codex_ml.cli.entrypoints:eval_main"
 codex-list-plugins = "codex_ml.cli.list_plugins:main"
-# Preserve legacy/extended scripts present in this repo
 codex = "codex.cli:cli"
 codex-smoke = "codex_cli.app:app"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
@@ -273,14 +295,11 @@ codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
 codex-validate-config = "codex_ml.cli.validate:main"
 codex-perf = "codex_ml.cli.perf.bench:main"
-# NEW: Analysis and Quality Tools (Phase 1 - REPO_ADMIN_IMPLEMENTATION_DECISIONS.md)
 codex-analyze = "codex.analysis.cli:analyze_main"
 codex-audit = "codex.audit.cli:audit_main"
 codex-smell = "codex.quality.cli:smell_main"
 codex-metrics = "codex.ast.cli:metrics_main"
-# AST framework CLI (Phase 7.2 - Multi-language parser CLI)
 codex-ast = "codex.cli.ast_cli:main"
-# NEW: Reporting Tools
 codex-report = "codex.reporting.cli:report_main"
 codex-dashboard = "codex.reporting.cli:dashboard_main"
 codex-ndjson = "codex_utils.cli.ndjson_summary:main"
@@ -293,7 +312,6 @@ hhg-monitor-serve = "hhg_logistics.monitor.serve_report:main"
 hhg-monitor-data = "hhg_logistics.monitor.data_report:main"
 hhg-monitor-snapshot = "hhg_logistics.monitor.snapshot:main"
 codex-tokenizer = "tokenization.cli:app"
-# Consolidated Codex CLI entry points
 codex-setup = "cli.setup:main"
 codex-patch-runner = "cli.patch_runner:main"
 codex-update-runner = "cli.update_runner:main"
@@ -303,126 +321,12 @@ codex-task-sequence = "cli.task_sequence:main"
 codex-ast-upgrade = "cli.ast_upgrade:main"
 codex-audit-runner = "cli.audit_runner_root:main"
 codex-status-audit = "cli.status_audit:main"
-# Cognitive Brain Skills Registry CLI
 codex-skill = "codex.skills.cli:main"
-
-[tool.setuptools]
-license-files = ["LICENSE", "LICENSES/*"]
-
-[tool.setuptools.package-dir]
-"" = "src"
-agents = "agents"
-codex_addons = "codex_addons"
-codex_digest = "codex_digest"
-codex_utils = "codex_utils"
-codex_regression = "codex_regression"
-configs = "configs"
-interfaces = "interfaces"
-tokenization = "src/tokenization"
-tools = "tools"
-training = "src/training"
-examples = "examples"
-cli = "cli"
-services = "services"
-
-[tool.setuptools.packages.find]
-where = [".", "src"]
-include = [
-  "agents*",
-  "codex_ml*",
-  "codex*",
-  # "config*",  # REMOVED: config/ is a data directory (Hydra configs), not a Python package
-  "cli*",
-  "common*",
-  "cognitive_brain*",
-  "services*",  # Re-enabled: Tests need to import from services/ directory
-  # Root services/ contains application entry points (not library code), src/services/ is imported as src.services.*
-  "tokenization*",
-  "training*",
-  "codex_utils*",
-  "interfaces*",
-  "hhg_logistics*",
-  "hydra_extra*",
-  "examples*",
-  "security",
-  "security.*",
-  "tools*",
-  "tools.*",
-  "quantum*",
-  "cognitive_brain*",
-  "zendesk*",
-]
-exclude = [
-  "tests*",
-  "torch_stub*",
-  ".stubs*",
-  "*__pycache__*",
-  "security-suite-artifacts*",
-  "configs*",
-  "config*",      # Exclude config/ data directory
-  "config_legacy*",
-  "cli",
-  "cli.*",
-  "codex_addons*",
-  "codex_digest*",
-  "codex_regression*",
-  "examples",
-  "examples.*",
-  "interfaces",
-  "interfaces.*",
-  "build*",
-  "dist*",
-  "*.tests",
-  "*.tests.*",
-  "tests.*",
-  "tests",
-  "*.__pycache__",
-  "*.pycache",
-  "*.__pycache__.*",
-  "__pycache__",
-]
-namespaces = true
-
-[tool.setuptools.package-data]
-# Ensure runtime resources remain available in installed wheels
-codex_ml = [
-  "**/*.md",
-  "**/*.jinja2",
-  "**/*.j2",
-  "configs/**/*.yaml",
-  "configs/**/*.yml",
-  "configs/**/*.json",
-  "configs/**/*.csv",
-]
-hhg_logistics = []
-configs = [
-  "**/*.yaml",
-  "**/*.yml",
-  "**/*.json",
-  "**/*.csv",
-  "**/*.env",
-  "**/*.md",
-]
-codex_crm = ["cdm/data/**/*.csv"]
-common = []
-
-[tool.setuptools.exclude-package-data]
-codex_ml = ["**/tests/*", "torch_stub/*", ".stubs/*"]
 
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
 
-# ---------------------------------------------------------------------------
-# codex.skills — skill self-registration entry-point group.
-# Third-party packages that ship skills register here.  Each entry point
-# must point at a SkillManifest instance or a zero-arg factory returning one.
-# Built-in skills (under src/codex/skills/) are discovered via filesystem scan
-# and intentionally absent here.
-# ---------------------------------------------------------------------------
 [project.entry-points."codex.skills"]
-# (built-in skills discovered via filesystem — no entries needed here)
-# Example for a third-party skill package:
-#   my_skill = "my_package.skills.my_skill:manifest"
 
 [project.entry-points."codex_ml.reward_models"]
 heuristic = "codex_ml.plugins.registries:_reward_model_heuristic"
@@ -454,39 +358,170 @@ csv = "codex_ml.data.registry:load_csv"
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"
 
+[tool.setuptools]
+license-files = [
+    "LICENSE",
+    "LICENSES/*",
+]
+
+[tool.setuptools.package-dir]
+"" = "src"
+agents = "agents"
+codex_addons = "codex_addons"
+codex_digest = "codex_digest"
+codex_utils = "codex_utils"
+codex_regression = "codex_regression"
+configs = "configs"
+interfaces = "interfaces"
+tokenization = "src/tokenization"
+tools = "tools"
+training = "src/training"
+examples = "examples"
+cli = "cli"
+services = "services"
+
+[tool.setuptools.packages.find]
+where = [
+    ".",
+    "src",
+]
+include = [
+    "agents*",
+    "codex_ml*",
+    "codex*",
+    "cli*",
+    "common*",
+    "cognitive_brain*",
+    "services*",
+    "tokenization*",
+    "training*",
+    "codex_utils*",
+    "interfaces*",
+    "hhg_logistics*",
+    "hydra_extra*",
+    "examples*",
+    "security",
+    "security.*",
+    "tools*",
+    "tools.*",
+    "quantum*",
+    "cognitive_brain*",
+    "zendesk*",
+]
+exclude = [
+    "tests*",
+    "torch_stub*",
+    ".stubs*",
+    "*__pycache__*",
+    "security-suite-artifacts*",
+    "configs*",
+    "config*",
+    "config_legacy*",
+    "cli",
+    "cli.*",
+    "codex_addons*",
+    "codex_digest*",
+    "codex_regression*",
+    "examples",
+    "examples.*",
+    "interfaces",
+    "interfaces.*",
+    "build*",
+    "dist*",
+    "*.tests",
+    "*.tests.*",
+    "tests.*",
+    "tests",
+    "*.__pycache__",
+    "*.pycache",
+    "*.__pycache__.*",
+    "__pycache__",
+]
+namespaces = true
+
+[tool.setuptools.package-data]
+codex_ml = [
+    "**/*.md",
+    "**/*.jinja2",
+    "**/*.j2",
+    "configs/**/*.yaml",
+    "configs/**/*.yml",
+    "configs/**/*.json",
+    "configs/**/*.csv",
+]
+hhg_logistics = []
+configs = [
+    "**/*.yaml",
+    "**/*.yml",
+    "**/*.json",
+    "**/*.csv",
+    "**/*.env",
+    "**/*.md",
+]
+codex_crm = [
+    "cdm/data/**/*.csv",
+]
+common = []
+
+[tool.setuptools.exclude-package-data]
+codex_ml = [
+    "**/tests/*",
+    "torch_stub/*",
+    ".stubs/*",
+]
+
 [tool.black]
 line-length = 100
-target-version = ["py39", "py310", "py311"]
+target-version = [
+    "py39",
+    "py310",
+    "py311",
+]
 
 [tool.ruff]
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E","F","I"]
+select = [
+    "E",
+    "F",
+    "I",
+]
 ignore = []
 
 [tool.ruff.lint.per-file-ignores]
-# test files frequently use pytest.importorskip() which forces subsequent
-# imports to appear after non-import statements — E402 is expected/correct here.
-# F811 (redefinition) is intentional in conftest fixtures and importorskip guards.
-"tests/**/*.py" = ["E402", "F811"]
-"tests/*.py"    = ["E402", "F811"]
-# stub packages ship deliberate re-definitions for compatibility — F811 expected.
-"torch/**/*.py"               = ["F811"]
-"tests/stub_packages/**/*.py" = ["E402", "F811"]
-# CLI orchestration script — long log/argparse strings are acceptable
-"scripts/ci/rate_limit_orchestrator.py" = ["E501"]
+"tests/**/*.py" = [
+    "E402",
+    "F811",
+]
+"tests/*.py" = [
+    "E402",
+    "F811",
+]
+"torch/**/*.py" = [
+    "F811",
+]
+"tests/stub_packages/**/*.py" = [
+    "E402",
+    "F811",
+]
+"scripts/ci/rate_limit_orchestrator.py" = [
+    "E501",
+]
 
 [tool.isort]
 profile = "black"
 line_length = 100
 
-# Pytest configuration is in pytest.ini (avoids config conflicts)
-# See: pytest.ini for complete test configuration including markers, addopts, and filterwarnings
-
 [tool.coverage.run]
 branch = true
-source = ["src", "agents", "training", "scripts", "services"]
+source = [
+    "src",
+    "agents",
+    "training",
+    "scripts",
+    "services",
+]
 omit = [
     "*/tests/*",
     "*/test_*",
@@ -498,42 +533,6 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-# NOTE: Coverage threshold actively raised each S-session (S107 roadmap).
-# Local (minimal env): ~34% (agents/ floor after Phase 9.4).
-# CI (torch+full stack): ≥80%.
-# Target coverage: 75% (Phase 11 final), then 100%.
-#
-# ============================================================================
-# COVERAGE THRESHOLD - SINGLE SOURCE OF TRUTH (P10-09 — S96 2026-02-28)
-# ============================================================================
-# This pyproject.toml setting is the authoritative coverage threshold.
-# All other tools (.coveragerc, pytest.ini) defer to this configuration.
-#
-# Incremental roadmap (all dates are targets):
-# - Phase 21: 0%  (permissive during migration — completed)
-# - Phase 23: 30% (target: 2026-02-15 — completed ✅ S96)
-# - Phase 24: 35% (target: 2026-02-28 — completed ✅ S104)
-# - Phase 25: 40% (target: 2026-02-28 — completed ✅ S106)
-# - Phase 26: 50% (target: 2026-02-28 — completed ✅ S107 — archive+metrics+health+path_utils tests)
-# - Phase 27: 60% (target: 2026-03-07 — completed ✅ S116 — autonomy tests added)
-# - Phase 28: 65% (target: 2026-03-14 — completed ✅ S116/W-142 — feast+budget exhaustion tests)
-# - Phase 29: 75% (target: 2026-03-21 — completed ✅ S116/W-142 — feast backends + integration tests)
-# - Phase 30: 80% (target: 2026-03-14 — completed ✅ PR-3514 — sentencepiece contract + ci fixes)
-# - Phase 31: 85% (target: 2026-04-01)
-# - Phase 32: 90% (target: 2026-04-15)
-# - Phase 33+: 100% (aspirational: 2026-05-01)
-#
-# ============================================================================
-# PHASE 10 — POST-COVERAGE MAINTENANCE (S1259 · 2026-05-23)
-# ============================================================================
-# Phase 9.4 exit baseline: 34.56% statements (agents/).
-# fail_under = 10 is the current stepped regression floor for Phase 5 planning.
-# Local/minimal env: unified-coverage-agent enforces ≥34% agents/ floor.
-# Phase 10B target: raise overall to ≥50% via src/ gap-fill.
-# Owner: @mbaetiong
-# Gap 5 advancement (Wave 1): 10% → 15% (actual ~17.57%, formula: min(X-5, floor+10) → 15)
-# Gap 5 advancement (Wave 2): 15% → 20% (257+ new tests across 8 modules, session 3)
-# Gap 5 advancement (Wave 3): 20% → 22% (75+ new tests for reproducibility_hardening, subproc, retention)
 fail_under = 22
 exclude_lines = [
     "pragma: no cover",
@@ -552,67 +551,32 @@ ignore_missing_imports = true
 strict = false
 
 [tool.pip-audit]
-# CVE-2025-69872: diskcache <=5.6.3 uses pickle serialization by default,
-# enabling RCE if an attacker has write access to the cache directory.
-# Status: No patched version available (5.6.3 is the latest release).
-# diskcache is an indirect dependency via dvc-data -> dvc (dev extra only)
-# and is not used directly in application code.
-# Tracked in Dependabot alert #89. Re-evaluate when a fix is published.
-#
-# CVE-2024-35515: sqlitedict <=2.1.0 uses Python pickle for deserialization,
-# allowing RCE if an attacker can write to the database file.
-# Status: No patched version available (2.1.0 is the latest release).
-# sqlitedict is an indirect dependency (lock.txt only) and is not called
-# directly from application code; database files are stored in controlled
-# locations inaccessible to untrusted users.
-# Tracked in Dependabot alert #90. Re-evaluate when a fix is published.
-ignore-vulns = ["CVE-2025-69872", "CVE-2024-35515"]
+ignore-vulns = [
+    "CVE-2025-69872",
+    "CVE-2024-35515",
+]
 
 [tool.uv]
-# Restrict lock resolution to Python 3.12 on Linux (the CI target environment).
-# Several optional extras have platform-specific version conflicts that do not
-# affect Linux builds (e.g. tree-sitter-yaml on Python 3.13+).
-# Update this range when CI moves to a newer Python or needs Windows support.
 environments = [
     "python_version == '3.12.*' and sys_platform == 'linux'",
 ]
-# ge and marshmallow-v4 are mutually exclusive: great-expectations requires
-# marshmallow<4.0.0 while marshmallow-v4 pins marshmallow>=4.0.0.
-# Declare as conflicting so uv can solve each separately in the lock file.
 conflicts = [
     [
         { extra = "ge" },
         { extra = "marshmallow-v4" },
     ],
 ]
-# Security: force dulwich >= 1.2.5 to fix CVE-2026-42305 (GHSA-897w-fcg9-f6xj)
-# and command injection via merge driver path (issue #264).
-# dulwich is a transitive dependency through dvc, scmrepo, and dvc-studio-client.
 constraint-dependencies = [
     "dulwich>=1.2.5",
-    # Security: force aiohttp >= 3.14.0 to fix CVE-2026-34993 / GHSA-jg22-mg44-37j8
-    # (CookieJar.load() deserialization of untrusted data leading to arbitrary code execution)
-    # and GHSA cross-origin redirect with per-request cookies (#273).
-    # aiohttp is a transitive dependency via great-expectations, ray[serve], mlflow, and fsspec[http].
     "aiohttp>=3.14.0",
 ]
 
-# ---------------------------------------------------------------------------
-# Gap 22 – Mutation testing (mutmut 3.x) for critical codex_ml modules
-# ---------------------------------------------------------------------------
 [tool.mutmut]
-paths_to_mutate = [
-    "src/codex_ml/utils/determinism.py",
-    "src/codex_ml/utils/seed.py",
-]
 also_copy = [
     "src/",
     "tests/smoke/",
     "tests/repro/",
-]
-tests_dir = [
-    "tests/smoke/test_determinism.py",
-    "tests/unit/test_gap22_mutation_killers.py",
+    "tests/unit/",
 ]
 pytest_add_cli_args = [
     "-x",
@@ -621,7 +585,11 @@ pytest_add_cli_args = [
     "--ignore=tests/agents",
     "--ignore=tests/services",
 ]
-do_not_mutate = [
-    "*__pycache__*",
-    "*.pyc",
+source_paths = [
+    "src/codex_ml/utils/determinism.py",
+    "src/codex_ml/utils/seed.py",
+]
+pytest_add_cli_args_test_selection = [
+    "tests/smoke/test_determinism.py",
+    "tests/unit/test_gap22_mutation_killers.py",
 ]
