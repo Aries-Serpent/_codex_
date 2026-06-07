@@ -254,13 +254,12 @@ def run_ab_test(
 
     # --- t-test ---
     if _SCIPY_AVAILABLE:
-        t_stat, p_value = _scipy_stats.ttest_ind(
+        _, p_value = _scipy_stats.ttest_ind(
             ctrl, trt, equal_var=False
         )
         p_value = float(p_value)
-        t_stat = float(t_stat)
     else:
-        t_stat, p_value = _stdlib_ttest_ind(ctrl, trt)
+        _, p_value = _stdlib_ttest_ind(ctrl, trt)
 
     # --- Cohen's d (pooled std, Welch variant) ---
     pooled_std = math.sqrt((var_ctrl * (n1 - 1) + var_trt * (n2 - 1)) / (n1 + n2 - 2))

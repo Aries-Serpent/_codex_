@@ -13,7 +13,7 @@ import pytest
 
 hypothesis = pytest.importorskip("hypothesis")
 
-from hypothesis import assume, given, settings
+from hypothesis import given, settings
 from hypothesis import strategies as st
 from hypothesis.strategies import composite
 
@@ -23,8 +23,8 @@ from hypothesis.strategies import composite
 
 sys.path.insert(0, "src")
 
-from codex_ml.monitoring.data_drift import DataDriftDetector, DriftResult
-from codex_ml.monitoring.model_drift import ModelDriftDetector, jensen_shannon_divergence
+from codex_ml.monitoring.data_drift import DataDriftDetector
+from codex_ml.monitoring.model_drift import jensen_shannon_divergence
 
 # ---------------------------------------------------------------------------
 # Shared strategies
@@ -42,13 +42,6 @@ def _paired_pos_float_lists(draw) -> tuple[list[float], list[float]]:
     ref = draw(st.lists(_pos_float_element, min_size=n, max_size=n))
     cur = draw(st.lists(_pos_float_element, min_size=n, max_size=n))
     return ref, cur
-
-
-_confidence_scores = st.lists(
-    st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-    min_size=5,
-    max_size=100,
-)
 
 
 # ---------------------------------------------------------------------------

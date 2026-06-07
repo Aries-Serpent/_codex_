@@ -13,12 +13,12 @@ import pytest
 
 hypothesis = pytest.importorskip("hypothesis")
 
-from hypothesis import assume, given, settings
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 sys.path.insert(0, "src")
 
-from codex_ml.experiments.ab_testing import ABTestResult, run_ab_test
+from codex_ml.experiments.ab_testing import run_ab_test
 
 # ---------------------------------------------------------------------------
 # Shared strategies

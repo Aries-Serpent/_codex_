@@ -20,9 +20,12 @@ import pytest
 
 hypothesis = pytest.importorskip("hypothesis")
 
-from hypothesis import given, settings  # noqa: E402
+from hypothesis import (  # noqa: E402
+    HealthCheck,  # noqa: E402
+    given,
+    settings,
+)
 from hypothesis import strategies as st  # noqa: E402
-from hypothesis import HealthCheck  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Lazy import helpers
@@ -52,7 +55,6 @@ def _validation_error():
 # ---------------------------------------------------------------------------
 
 _nonempty_text = st.text(min_size=1, max_size=256)
-_any_text = st.text(min_size=0, max_size=256)
 _tenant_id = st.one_of(
     st.just("default"),
     _nonempty_text,

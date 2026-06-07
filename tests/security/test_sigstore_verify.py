@@ -10,8 +10,6 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Path setup — ensure the repo root is importable
 # ---------------------------------------------------------------------------
@@ -21,7 +19,6 @@ if str(REPO_ROOT) not in sys.path:
 
 # Import module under test (after path fix)
 import scripts.security.sigstore_verify as sv  # noqa: E402
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -205,7 +202,6 @@ class TestVerifyPackageWithAttestation:
         mock_verifier = MagicMock()
         mock_verifier.verify_artifact.return_value = None  # no exception = verified
         mock_verifier_cls = MagicMock(return_value=mock_verifier)
-        mock_verifier_production = MagicMock(return_value=mock_verifier)
 
         mock_bundle = MagicMock()
         mock_bundle_cls = MagicMock()

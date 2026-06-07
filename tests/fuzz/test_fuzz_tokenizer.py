@@ -11,9 +11,6 @@ absent (e.g., minimal CI environments that don't install dev extras).
 
 from __future__ import annotations
 
-import json
-import sys
-
 import pytest
 
 # Guard: skip entire module if hypothesis is unavailable.
@@ -138,7 +135,6 @@ def _import_split_utils():
 def test_fuzz_normalise_ratios_invalid_sum(a, b):
     """Fuzz: ratios that don't sum to ~1.0 raise ValueError."""
     _normalise_ratios, _ = _import_split_utils()
-    c = 1.0 - a - b
     # Only call with combinations that definitely don't sum to 1
     bad_total = a + b  # 2-tuple → wrong length
     if abs(bad_total - 1.0) > 0.05:

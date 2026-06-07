@@ -19,11 +19,8 @@ runnable via::
 
 from __future__ import annotations
 
-import sys
-import types
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -35,10 +32,8 @@ import pytest
 # environments where the dependency is unavailable.
 try:
     from fastapi.testclient import TestClient  # type: ignore[import]
-
-    _FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
-    _FASTAPI_AVAILABLE = False
+    pass
 
 
 @pytest.mark.integration
@@ -237,7 +232,12 @@ def test_data_pipeline_different_seeds_produce_different_orders() -> None:
 @pytest.mark.integration
 def test_data_pipeline_dataset_registry_roundtrip() -> None:
     """A DatasetSpec registered then retrieved is identical (pipeline ↔ training)."""
-    from codex_ml.data.datasets import DatasetSpec, _DATASET_REGISTRY, register_dataset, get_dataset_spec
+    from codex_ml.data.datasets import (
+        _DATASET_REGISTRY,
+        DatasetSpec,
+        get_dataset_spec,
+        register_dataset,
+    )
 
     spec = DatasetSpec(
         name="_gap23_test_ds_",
@@ -291,7 +291,7 @@ def test_config_load_base_config_returns_dict() -> None:
 @pytest.mark.integration
 def test_config_experiment_basic_loads_and_merges() -> None:
     """load_experiment_config('basic') merges correctly with the base config."""
-    from codex_ml.config.load import load_base_config, load_experiment_config, _deep_merge
+    from codex_ml.config.load import _deep_merge, load_base_config, load_experiment_config
 
     base = load_base_config()
     exp = load_experiment_config("basic")

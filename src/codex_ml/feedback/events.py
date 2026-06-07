@@ -6,6 +6,15 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+
+
+def _utcnow_iso() -> str:
+    """Return the current UTC time as an ISO 8601 string (with ``Z`` suffix)."""
+    return datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z")
+
 
 @dataclass
 class FeedbackEvent:
@@ -28,7 +37,7 @@ class FeedbackEvent:
     source: str
     payload: dict[str, Any] = field(default_factory=dict)
     score: float | None = None
-    timestamp: str = field(default_factory=lambda: _utcnow_iso())
+    timestamp: str = field(default_factory=_utcnow_iso)
 
     # ------------------------------------------------------------------
     # Helpers
@@ -43,13 +52,3 @@ class FeedbackEvent:
             "score": self.score,
             "timestamp": self.timestamp,
         }
-
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
-
-def _utcnow_iso() -> str:
-    """Return the current UTC time as an ISO 8601 string (with ``Z`` suffix)."""
-    return datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z")
