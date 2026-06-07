@@ -34,4 +34,4 @@ for p in Path("src").rglob("*.py"):
                     if not is_abstract:
                         print(f"{p}:{node.lineno} {node.name}")
     except Exception as e:
-        print(f"warning: failed to scan {p}: {e}", file=sys.stderr)
+        print(f"Warning: failed to scan {p}: {e}", file=sys.stderr)

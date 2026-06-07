@@ -119,3 +119,4 @@ def test_cached_decorator():
     previous_count = call_count
     assert my_func(2) == 4
     assert call_count == previous_count
+    assert call_count == 1
