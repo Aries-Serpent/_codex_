@@ -34,3 +34,9 @@ def test_mean_absolute_error_is_exported_from_metrics_package() -> None:
     preds = [1.0, 2.0, 3.0]
     targets = [1.1, 1.9, 3.2]
     assert mean_absolute_error(preds, targets) == pytest.approx((0.1 + 0.1 + 0.2) / 3)
+
+
+@pytest.mark.ml
+def test_mean_absolute_error_rejects_mismatched_lengths() -> None:
+    with pytest.raises(ValueError, match="same length"):
+        mean_absolute_error([1.0, 2.0], [1.0])

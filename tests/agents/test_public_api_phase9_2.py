@@ -268,8 +268,7 @@ class TestWorkflowNavigatorNavigation:
     ) -> None:
         nav = WorkflowNavigator(workspace_dir=tmp_path)
         steps = [WorkflowStep(id="s0", action="a0"), WorkflowStep(id="s1", action="a1")]
-        nav.create_workflow("idx_logging", steps=steps)
-        nav.current_workflow_id = "IDX_LOGGING"
+        nav.current_workflow_id = nav.create_workflow("idx_logging", steps=steps)
 
         with caplog.at_level("DEBUG"):
             assert nav.navigate_to(step_index=1) is True
