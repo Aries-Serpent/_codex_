@@ -1,5 +1,6 @@
 from src.codex_ml.utils.env import EnvironmentFingerprint, environment_summary
 
+
 def test_environment_fingerprint():
     fp = EnvironmentFingerprint.capture()
     assert isinstance(fp, EnvironmentFingerprint)
@@ -8,6 +9,7 @@ def test_environment_fingerprint():
     assert isinstance(fp.to_dict(), dict)
     assert len(fp.digest()) == 16
     fp.log()
+
 
 def test_environment_summary():
     summary = environment_summary()

@@ -2,20 +2,21 @@ import ast
 import sys
 from pathlib import Path
 
+
 def is_empty_func(node):
     # A function is considered empty if its body only contains 'pass', '...', or docstrings.
     for stmt in node.body:
         if isinstance(stmt, ast.Pass):
             continue
         elif isinstance(stmt, ast.Expr) and (
-            isinstance(stmt.value, ast.Constant) and (
-                stmt.value.value is Ellipsis or isinstance(stmt.value.value, str)
-            )
+            isinstance(stmt.value, ast.Constant)
+            and (stmt.value.value is Ellipsis or isinstance(stmt.value.value, str))
         ):
             continue
         else:
             return False
     return True
+
 
 for p in Path("src").rglob("*.py"):
     try:
