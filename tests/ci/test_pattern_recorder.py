@@ -394,14 +394,17 @@ class TestAutoFixCheckOnlyBehavior:
 
 
 class TestPattern34MissingNewlineAtEof:
-    def test_pattern_34_check_only_reports_sorted_python_files(self, tmp_path):
+    def test_pattern_34_check_only_reports_sorted_repo_python_files(self, tmp_path):
         mod = _load_auto_fix()
         repo_root = tmp_path / "repo"
         src_dir = repo_root / "src"
         src_dir.mkdir(parents=True)
+        venv_dir = repo_root / ".venv_ci" / "site-packages"
+        venv_dir.mkdir(parents=True)
         (src_dir / "b.py").write_bytes(b"print('b')")
         (src_dir / "a.py").write_bytes(b"print('a')")
         (src_dir / "empty.py").write_bytes(b"")
+        (venv_dir / "ignored.py").write_bytes(b"print('ignored')")
 
         fixer = mod.CommonIssueFixer(repo_root, check_only=True)
 

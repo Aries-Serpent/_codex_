@@ -188,6 +188,21 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
 
+    _PATTERN_34_IGNORED_DIRS = frozenset(
+        {
+            ".git",
+            ".mypy_cache",
+            ".pytest_cache",
+            ".ruff_cache",
+            ".tox",
+            ".venv",
+            ".venv_ci",
+            "__pycache__",
+            "node_modules",
+            "venv",
+        }
+    )
+
     def __init__(self, repo_root: Path, check_only: bool = False, dry_run: bool = False):
         self.repo_root = repo_root
         self.check_only = check_only
@@ -3411,12 +3426,21 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 34: Missing Newline at EOF
     # ------------------------------------------------------------------
-    def fix_missing_newline_at_eof(self) -> list[str]:
-        """Pattern 34: Adds missing newline at EOF for python files."""
-        messages = []
+    def _iter_pattern_34_python_files(self):
+        """Yield repository Python files relevant to Pattern 34."""
+
         for py_file in sorted(self.repo_root.rglob("*.py")):
             if not py_file.is_file():
                 continue
+            rel_parts = py_file.relative_to(self.repo_root).parts
+            if any(part in self._PATTERN_34_IGNORED_DIRS for part in rel_parts):
+                continue
+            yield py_file
+
+    def fix_missing_newline_at_eof(self) -> list[str]:
+        """Pattern 34: Adds missing newline at EOF for python files."""
+        messages = []
+        for py_file in self._iter_pattern_34_python_files():
             with open(py_file, "rb") as f:
                 f.seek(0, os.SEEK_END)
                 if f.tell() == 0:
