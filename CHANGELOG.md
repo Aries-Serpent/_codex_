@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4796)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4796 (SHA `e5909400`) at 2026-06-07T06:39Z [auto-generated]
+
 ### Added
 - Added mutation killer tests for `src/codex_ml/utils/seed.py` and improved tests for `determinism.py`, pushing the mutation testing score from 18.6% to 20.6% on the CPU sandbox (Gap 22).
 
