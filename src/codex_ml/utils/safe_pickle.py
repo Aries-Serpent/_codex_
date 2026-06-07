@@ -113,7 +113,11 @@ def safe_pickle_load(
         "Use use_restricted_unpickler=True unless the file is fully trusted.",
         path,
     )
-    return pickle.loads(data)  # nosec B301 - explicitly allowed by caller
+    # Rationale: caller explicitly set use_restricted_unpickler=False, meaning
+    # they accept full responsibility for the trust boundary of this file.
+    # The default (use_restricted_unpickler=True) routes through RestrictedUnpickler
+    # which enforces a class allowlist.  The warning above is always emitted.
+    return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load
 
 
 def safe_pickle_dump(

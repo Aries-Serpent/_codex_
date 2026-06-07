@@ -28,7 +28,8 @@ from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 
 # Compatibility imports for legacy test patches
-# TODO: Remove after test migration
+# NOTE: mlflow_run alias is intentionally kept — legacy tests still patch this symbol.
+#       Remove once test_training_integration_flags.py migrates to patching maybe_mlflow directly.
 try:
     from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
 

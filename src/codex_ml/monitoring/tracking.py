@@ -32,6 +32,19 @@ class Tracker:
     def start(
         self, run_name: Optional[str] = None, params: Optional[dict[str, object]] = None
     ) -> None:
+        """Initialise tracking backends and optionally log initial hyperparameters.
+
+        Activates MLflow when the ``MLFLOW_ENABLE=1`` environment variable is
+        set and ``mlflow`` is importable.  Activates Weights & Biases when
+        ``WANDB_ENABLE=1`` is set and ``wandb`` is importable.  Both backends
+        default to *offline* mode so runs never fail due to network issues.
+
+        Args:
+            run_name: Optional display name for the run in both MLflow and
+                Weights & Biases.
+            params: Optional dictionary of hyperparameters to log at run
+                start.
+        """
         if os.getenv("MLFLOW_ENABLE", "0") == "1" and mlflow is not None:
             from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
@@ -78,6 +91,13 @@ class Tracker:
             self.wandb_active = True
 
     def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None) -> None:
+        """Log a dictionary of scalar metrics to all active backends.
+
+        Args:
+            metrics: Mapping of metric name → scalar float value.
+            step: Optional global step index.  Forwarded to MLflow;
+                appended under the key ``"step"`` for Weights & Biases.
+        """
         if self.mlflow_active and mlflow is not None:
             mlflow.log_metrics(metrics, step=step)
         if self.wandb_active and wandb is not None:
@@ -87,12 +107,23 @@ class Tracker:
             wandb.log(payload)
 
     def log_artifact(self, path: str | Path) -> None:
+        """Log a file artifact to all active tracking backends.
+
+        Args:
+            path: Local path to the file or directory to upload.
+        """
         if self.mlflow_active and mlflow is not None:
             mlflow.log_artifact(str(path))
         if self.wandb_active and wandb is not None:
             wandb.save(str(path))
 
     def end(self) -> None:
+        """Finalise and close all active tracking runs.
+
+        Calls ``mlflow.end_run()`` and/or ``wandb.finish()`` as appropriate.
+        After this call both ``mlflow_active`` and ``wandb_active`` are
+        reset to ``False``.
+        """
         if self.mlflow_active and mlflow is not None:
             mlflow.end_run()
             self.mlflow_active = False

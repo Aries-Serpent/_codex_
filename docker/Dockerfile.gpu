@@ -12,7 +12,8 @@ ARG TORCH_WHEEL=""
 ARG TORCH_VERSION="2.4.0"
 ARG TORCHVISION_VERSION="0.19.0"
 
-FROM python:3.14-slim AS builder
+# FROM python:3.14-slim (pinned below)
+FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97 AS builder
 
 ARG VERSION
 ARG VCS_REF
@@ -45,7 +46,8 @@ RUN --mount=type=cache,target=/root/.cache/pip if [ -f "requirements/docker.txt"
 COPY . .
 RUN --mount=type=cache,target=/root/.cache/pip pip wheel --no-build-isolation --no-deps --wheel-dir /tmp/wheels .
 
-FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 AS runtime
+# FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 (pinned below)
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04@sha256:2d913b09e6be8387e1a10976933642c73c840c0b735f0bf3c28d97fc9bc422e0 AS runtime
 
 ARG VERSION
 ARG VCS_REF

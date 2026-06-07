@@ -1,0 +1,981 @@
+generated_at: '2026-06-05T22:50:23Z'
+source_files:
+  backlog: workbench/gap_backlog_prioritized.md
+  dependency_graph: workbench/codex_ready_task_sequence.yaml
+  artifact_catalog: .github/workflow-archive/ARTIFACT_CATALOG.md
+done_definition:
+  implementation_complete: true
+  ci_evidence_required: true
+  artifact_or_log_proof_required: true
+  status_updated_in_backlog_and_workbench: true
+special_flags:
+  needs_verification: []
+  in_progress:
+  - 5
+waves:
+  Wave 0:
+  - 14
+  - 19
+  - 27
+  Wave 1:
+  - 1
+  - 2
+  - 3
+  - 5
+  Wave 2:
+  - 9
+  - 11
+  - 12
+  - 13
+  - 15
+  - 16
+  Wave 3:
+  - 17
+  - 18
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 28
+  - 29
+  - 30
+  - 31
+  Wave 4:
+  - 32
+  - 33
+  - 34
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  - 40
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+lane_ownership:
+- lane: Lane A — Security/Compliance
+  agents:
+  - unified-security-scanner
+  - dependency-vulnerability-scanner
+  - secret-detection-agent
+  - security-audit-agent
+  - codeql-alert-resolution-agent
+- lane: Lane B — CI/Workflow resilience + alerting
+  agents:
+  - workflow-health-monitor
+  - workflow-analytics-agent
+  - ci-log-retrieval-agent
+  - artifact-monitor-agent
+  - telemetry-classifier-agent
+  - workflow-ci-fixer
+- lane: Lane C — Repro/platform hardening
+  agents:
+  - config-validator
+  - dependency-conflict-agent
+  - test-alignment-fixer
+  - ci-testing-agent
+- lane: Lane D — QA/coverage/testing scale-up
+  agents:
+  - unified-coverage-agent
+  - mutation-testing-agent
+  - integration-test-runner
+  - fragile-test-guardian
+  - test-failure-analyzer-agent
+- lane: Lane E — ML drift and advanced capabilities
+  agents:
+  - performance-monitor-agent
+  - performance-regression-detector
+  - ml-validation-suite-agent
+  - rag-index-manager
+queue:
+  P0:
+  - gap_id: 1
+    task_id: GAP001
+    title: Run pip-audit on all requirements and remediate critical CVEs
+    owner: Security
+    effort: Small
+    impact: Critical
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 1
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T001
+  - gap_id: 2
+    task_id: GAP002
+    title: Run bandit/semgrep and fix all high-severity findings
+    owner: Security
+    effort: Small
+    impact: Critical
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 1
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T002
+  - gap_id: 3
+    task_id: GAP003
+    title: Verify all secrets in .secrets.baseline are false positives
+    owner: Security
+    effort: Small
+    impact: High
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 1
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T003
+  - gap_id: 4
+    task_id: GAP004
+    title: Implement health check endpoints (readiness/liveness)
+    owner: Ops
+    effort: Medium
+    impact: Critical
+    status: completed
+    status_source: '✅ Implemented — `monitoring/dashboard_api.py` `/readiness`+`/liveness`
+      probes added (PR #4783)'
+    flags: []
+    wave: Wave 1
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T004
+  - gap_id: 5
+    task_id: GAP005
+    title: Add coverage gate enforcement (≥80% threshold)
+    owner: QA
+    effort: Small
+    impact: High
+    status: in_progress
+    status_source: 🟡 In Progress — `pyproject.toml` floor at 10; roadmap targets 80%;
+      raised incrementally per S-session plan
+    flags:
+    - in_progress
+    wave: Wave 1
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T005
+  P1:
+  - gap_id: 6
+    task_id: GAP006
+    title: Save and restore RNG state in checkpoints
+    owner: ML
+    effort: Medium
+    impact: High
+    status: completed
+    status_source: ✅ Implemented — `src/codex_ml/utils/checkpointing.py` `dump_rng_state`/`load_rng_state`;
+      `training/checkpoint_manager.py` uses it
+    flags: []
+    wave: Wave 2
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T006
+  - gap_id: 7
+    task_id: GAP007
+    title: Enforce torch.use_deterministic_algorithms(True)
+    owner: ML
+    effort: Small
+    impact: High
+    status: completed
+    status_source: ✅ Implemented — `src/codex_ml/utils/determinism.py` `set_deterministic()`
+      calls `torch.use_deterministic_algorithms(True)`
+    flags: []
+    wave: Wave 2
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies:
+    - T006
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T007
+  - gap_id: 8
+    task_id: GAP008
+    title: Capture and log Python/CUDA/hardware versions
+    owner: Ops
+    effort: Small
+    impact: High
+    status: completed
+    status_source: '✅ Implemented — `src/codex_ml/utils/env.py` `EnvironmentFingerprint`
+      dataclass with CUDA driver, GPU device info, RAM (PR #4783)'
+    flags: []
+    wave: Wave 2
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T008
+  - gap_id: 9
+    task_id: GAP009
+    title: Pin Docker base images to specific digests
+    owner: Ops
+    effort: Small
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 2
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T009
+  - gap_id: 10
+    task_id: GAP010
+    title: Implement config drift detection
+    owner: Platform
+    effort: Medium
+    impact: High
+    status: completed
+    status_source: ✅ Implemented — `src/codex_ml/utils/config_drift.py` `ConfigDrift.has_drift()`
+      and `detect_config_drift()`
+    flags: []
+    wave: Wave 2
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T010
+  - gap_id: 11
+    task_id: GAP011
+    title: Add automated dependency vulnerability scanning to CI
+    owner: Security
+    effort: Small
+    impact: High
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 2
+    lane: Lane A — Security/Compliance
+    dependencies:
+    - T001
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T011
+  - gap_id: 12
+    task_id: GAP012
+    title: Set up alerting for training failures
+    owner: Ops
+    effort: Medium
+    impact: High
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 2
+    lane: Lane B — CI/Workflow resilience + alerting
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T012
+  - gap_id: 13
+    task_id: GAP013
+    title: Add performance degradation alerts
+    owner: Ops
+    effort: Medium
+    impact: High
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 2
+    lane: Lane B — CI/Workflow resilience + alerting
+    dependencies:
+    - T012
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T013
+  - gap_id: 14
+    task_id: GAP014
+    title: Set up Prometheus metrics collection
+    owner: Ops
+    effort: Medium
+    impact: High
+    status: verified
+    status_source: '✅ Verified 2026-06-06 — `CodexMetricsRegistry` at `monitoring/prometheus_metrics.py:58`;
+      `start_metrics_server` wired in `train_loop.py:1297` + `codex_cli.py:563`; 4/4
+      Prometheus tests pass; NDJSON fallback confirmed. See `workbench/evidence/gap14_prometheus_verification_v2.md`'
+    flags: []
+    wave: Wave 0
+    lane: Lane B — CI/Workflow resilience + alerting
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T014
+  - gap_id: 15
+    task_id: GAP015
+    title: Create Grafana dashboards for key metrics
+    owner: Ops
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 2
+    lane: Lane B — CI/Workflow resilience + alerting
+    dependencies:
+    - T014
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T015
+  - gap_id: 16
+    task_id: GAP016
+    title: Add distributed tracing (optional)
+    owner: Ops
+    effort: Large
+    impact: Medium
+    status: completed
+    status_source: ✅ Deferred via `docs/adr/ADR-0001-distributed-tracing.md`; optional `opentelemetry-sdk` added and no-op stub created at `src/codex_ml/observability/tracing.py`
+    flags: []
+    wave: Wave 2
+    lane: Lane B — CI/Workflow resilience + alerting
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  P2:
+  - gap_id: 17
+    task_id: GAP017
+    title: Implement data drift monitoring
+    owner: ML
+    effort: Large
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with:
+    - T017
+    - T018
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T016
+  - gap_id: 18
+    task_id: GAP018
+    title: Add model drift detection
+    owner: ML
+    effort: Large
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with:
+    - T016
+    - T018
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T017
+  - gap_id: 19
+    task_id: GAP019
+    title: Set up DVC for active data versioning
+    owner: ML
+    effort: Medium
+    impact: Medium
+    status: completed
+    status_source: ✅ Implemented — `dvc init` + `params.yaml` + local remote + `dvc_pipeline`
+      CI job in `data-quality-suite.yml`; 246 tests pass. See `workbench/evidence/gap19_dvc_verification.md`
+    flags: []
+    wave: Wave 0
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with:
+    - T016
+    - T017
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T018
+  - gap_id: 20
+    task_id: GAP020
+    title: Implement deterministic data splits
+    owner: ML
+    effort: Small
+    impact: Medium
+    status: completed
+    status_source: '✅ Implemented/verified — deterministic split utilities exist in
+      `src/codex_ml/data/split.py`, `src/codex_ml/data/split_utils.py`, and `src/codex_ml/data/splits.py`;
+      targeted deterministic tests passing. See `workbench/evidence/gap20_deterministic_splits_verification.md`'
+    flags: []
+    wave: Wave 3
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 21
+    task_id: GAP021
+    title: Build comprehensive regression test suite
+    owner: QA
+    effort: Large
+    impact: High
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T019
+  - gap_id: 22
+    task_id: GAP022
+    title: Add mutation testing with mutmut
+    owner: QA
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies:
+    - T019
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T020
+  - gap_id: 23
+    task_id: GAP023
+    title: Implement automated integration tests
+    owner: QA
+    effort: Large
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 24
+    task_id: GAP024
+    title: Add performance benchmarking suite
+    owner: QA
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 25
+    task_id: GAP025
+    title: Generate SBOM for all releases
+    owner: Security
+    effort: Small
+    impact: Medium
+    status: completed
+    status_source: ✅ Implemented — `scripts/sbom_cyclonedx.py` generates CycloneDX
+      SBOM from `requirements/lock.txt`/`uv.lock`
+    flags: []
+    wave: Wave 3
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 26
+    task_id: GAP026
+    title: Add container scanning with Trivy/Grype
+    owner: Security
+    effort: Small
+    impact: Medium
+    status: completed
+    status_source: '✅ Implemented — `.github/workflows/container-scan.yml`: Trivy
+      filesystem scan matrix (Dockerfile, Dockerfile.cpu, Dockerfile.gpu); SARIF
+      upload + artifact retention. See `workbench/evidence/gap26_container_scanning.md`'
+    flags: []
+    wave: Wave 3
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 27
+    task_id: GAP027
+    title: Implement input sanitization for LLM prompts
+    owner: Security
+    effort: Medium
+    impact: High
+    status: done
+    status_source: ✅ Verified 2026-06-06 — all 7 LLM entry points wired with ModerationAdapter(fail_open=False);
+      22/22 integration tests pass; Prometheus moderation_decisions_total counter present.
+      See workbench/evidence/gap27_moderation_verification_v2.md
+    flags: []
+    wave: Wave 0
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 28
+    task_id: GAP028
+    title: Add Sigstore verification for critical dependencies
+    owner: Security
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane A — Security/Compliance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 29
+    task_id: GAP029
+    title: Implement circuit breakers for external services
+    owner: Platform
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 30
+    task_id: GAP030
+    title: Add exponential backoff retry logic
+    owner: Platform
+    effort: Small
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 31
+    task_id: GAP031
+    title: Build graceful degradation mechanisms
+    owner: Platform
+    effort: Medium
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 3
+    lane: Lane C — Repro/platform hardening
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  P3:
+  - gap_id: 32
+    task_id: GAP032
+    title: Clean up 1,152 TODOs/FIXMEs/stubs
+    owner: Team
+    effort: XLarge
+    impact: Medium
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: T021
+  - gap_id: 33
+    task_id: GAP033
+    title: Add mypy to pre-commit hooks
+    owner: QA
+    effort: Small
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 34
+    task_id: GAP034
+    title: Implement automated docstring generation
+    owner: Docs
+    effort: Medium
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 35
+    task_id: GAP035
+    title: Add schema validation to pre-commit
+    owner: QA
+    effort: Small
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 36
+    task_id: GAP036
+    title: Build continuous learning pipeline
+    owner: ML
+    effort: XLarge
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 37
+    task_id: GAP037
+    title: Implement A/B testing framework
+    owner: ML
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 38
+    task_id: GAP038
+    title: Add automated model retraining
+    owner: ML
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 39
+    task_id: GAP039
+    title: Build feedback loop integration
+    owner: ML
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane E — ML drift and advanced capabilities
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 40
+    task_id: GAP040
+    title: Add fuzzing for critical code paths
+    owner: QA
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 41
+    task_id: GAP041
+    title: Implement property-based testing expansion
+    owner: QA
+    effort: Medium
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 42
+    task_id: GAP042
+    title: Add chaos engineering tests
+    owner: QA
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Lane D — QA/coverage/testing scale-up
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 43
+    task_id: GAP043
+    title: Create video tutorials for key workflows
+    owner: Docs
+    effort: Medium
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 44
+    task_id: GAP044
+    title: Build interactive documentation with examples
+    owner: Docs
+    effort: Large
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null
+  - gap_id: 45
+    task_id: GAP045
+    title: Add architecture decision records (ADRs)
+    owner: Arch
+    effort: Medium
+    impact: Low
+    status: queued
+    status_source: 🔴 Not Started
+    flags: []
+    wave: Wave 4
+    lane: Shared lane — cross-cutting/maintenance
+    dependencies: []
+    parallel_with: []
+    required_evidence:
+    - implementation_proof
+    - ci_evidence
+    - artifact_or_log_proof
+    - backlog_and_workbench_status_update
+    sequence_task_id: null

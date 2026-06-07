@@ -1,0 +1,25 @@
+typer>=0.12
+cryptography==46.0.7
+jsonschema>=4.26.0
+psutil>=5.9; platform_system != "Windows"  # optional sys-metrics
+tomli>=2.0; python_version < "3.11"
+pytest>=9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required
+pytest-cov==5.0.0
+pytest-xdist>=3.5.0,<4.0.0
+nox
+numpy>=2.4.6,<3
+# Pin torch to stable CPU-only versions to avoid pulling CUDA/NVIDIA stacks during P0.
+# - torchvision/torchaudio compatibility matrix
+# - Dependabot update failures on bleeding edge versions
+# Security: Updated to >=2.6.0 to fix CVE-2024-XXXXX (RCE in torch.load with weights_only=True)
+transformers>=5.9.0  # Security: Updated from 4.41 to fix deserialization vulnerabilities
+# Security: XML parsing protection against XXE attacks
+defusedxml>=0.7.1,<1.0.0
+pyyaml>=6.0
+# Security: IP-005 dependency updates - addressing 26 known vulnerabilities
+jinja2>=3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201 (RCE via sandbox escape)
+certifi>=2024.7.4  # Security: Fixes CVE-2024-39689 (root cert trust issue)
+filelock>=3.29.0  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
+idna>=3.15  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
+urllib3>=2.7.0  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
+requests>=2.32.4  # Security: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass, credential leak)

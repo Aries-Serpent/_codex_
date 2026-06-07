@@ -724,7 +724,9 @@ psutil==7.2.2
     #   peft
 py-spy==0.4.2
     # via ray
-pyarrow==23.0.0
+pyarrow==23.0.1
+    # Security: bumped from 23.0.0 — CVE-2026-25087 (Use-After-Free in Arrow C++ IPC reader,
+    # affects versions 15.0.0–23.0.0). Fix available in 23.0.1. GHSA-rgxp-2hwp-jwgg.
     # via
     #   datasets
     #   mlflow
@@ -979,6 +981,11 @@ sqlalchemy==2.0.49
     #   mlflow
 sqlitedict==2.1.0
     # via lm-eval
+    # Security: CVE-2024-35515 — insecure pickle deserialization in sqlitedict <=2.1.0.
+    # No patched release available upstream as of this lock revision.
+    # Risk treatment: accepted as a transitive dependency via lm-eval (test/eval use only).
+    # Required mitigations: do not allow untrusted data in sqlitedict stores; restrict to
+    # controlled evaluation environments. Monitor upstream advisories for a fix release.
 sqlparse==0.5.5
     # via mlflow-skinny
 sqltrie==0.11.2

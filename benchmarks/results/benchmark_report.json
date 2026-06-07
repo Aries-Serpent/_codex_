@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-06T06:12:11.714655+00:00",
+  "environment": {
+    "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+    "platform": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "cpu_count": 4
+  },
+  "benchmarks": [
+    {
+      "benchmark": "training_throughput",
+      "description": "SGD training loop \u2014 steps/sec (higher is better)",
+      "config": {
+        "n_samples": 1000,
+        "n_features": 64,
+        "n_steps": 200,
+        "batch_size": 32,
+        "learning_rate": 0.01,
+        "repeats": 3
+      },
+      "results": {
+        "throughput_steps_per_sec": [
+          1767.56,
+          1792.92,
+          1782.42
+        ],
+        "mean_steps_per_sec": 1780.97,
+        "stdev_steps_per_sec": 12.74
+      },
+      "status": "pass",
+      "elapsed_sec": 0.378
+    },
+    {
+      "benchmark": "inference_latency",
+      "description": "Two-layer MLP forward pass \u2014 ms/sample (lower is better)",
+      "config": {
+        "input_dim": 64,
+        "hidden_dim": 128,
+        "output_dim": 10,
+        "n_warmup_passes": 20,
+        "n_measured_passes": 200
+      },
+      "results": {
+        "batch_1": {
+          "n_samples_per_call": 1,
+          "mean_ms_per_sample": 0.6308,
+          "stdev_ms": 0.024,
+          "p50_ms": 0.6285,
+          "p95_ms": 0.6538,
+          "p99_ms": 0.7985
+        },
+        "batch_8": {
+          "n_samples_per_call": 8,
+          "mean_ms_per_sample": 0.6372,
+          "stdev_ms": 0.0387,
+          "p50_ms": 0.6297,
+          "p95_ms": 0.6762,
+          "p99_ms": 0.8208
+        },
+        "batch_32": {
+          "n_samples_per_call": 32,
+          "mean_ms_per_sample": 0.6425,
+          "stdev_ms": 0.0335,
+          "p50_ms": 0.6334,
+          "p95_ms": 0.7105,
+          "p99_ms": 0.8395
+        }
+      },
+      "status": "pass",
+      "elapsed_sec": 5.314
+    },
+    {
+      "benchmark": "memory_usage",
+      "description": "Peak heap allocation per workload in MiB (lower is better)",
+      "config": {
+        "n_samples": 2000,
+        "n_features": 128,
+        "hidden_dim": 256,
+        "output_dim": 10,
+        "batch_size": 64
+      },
+      "results": {
+        "dataset_allocation": {
+          "current_mib": 0.0065,
+          "peak_mib": 7.9316
+        },
+        "model_weights": {
+          "current_mib": 0.0065,
+          "peak_mib": 1.094
+        },
+        "forward_pass_batch": {
+          "current_mib": 0.0065,
+          "peak_mib": 1.3893
+        }
+      },
+      "overall_peak_mib": 7.9316,
+      "status": "pass",
+      "elapsed_sec": 1.107
+    }
+  ],
+  "summary": {
+    "total_elapsed_sec": 6.8,
+    "training_mean_steps_per_sec": 1780.97,
+    "inference_batch1_p50_ms": 0.6285,
+    "inference_batch1_p99_ms": 0.7985,
+    "memory_overall_peak_mib": 7.9316
+  }
+}

@@ -98,7 +98,7 @@ gh api -X POST /user/tokens \
 
 ```bash
 # Set token as environment variable first
-export NEW_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export NEW_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" <!-- pragma: allowlist secret -->
 
 # Update repository secret
 gh secret set CODEX_MASTER_KEY \

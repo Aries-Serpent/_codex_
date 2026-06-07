@@ -33,6 +33,8 @@ from pathlib import Path
 CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
 from typing import Any, Optional  # noqa: E402
 
+from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings  # noqa: E402
+
 logger = logging.getLogger(__name__)
 
 # Configuration
@@ -225,6 +227,10 @@ Return ONLY valid JSON, no explanation or markdown."""
             logger.warning("Prompt exceeds token budget, truncating")
             prompt = _truncate_context(prompt, MAX_TOKENS * 3)
 
+        # Gap 27: mandatory pre-call moderation (fail-closed) — raises ModerationRejection if blocked
+        _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
+        _mod.enforce(prompt, stage="input")
+
         # Rate limit
         self._rate_limit()
 
@@ -245,6 +251,13 @@ Return ONLY valid JSON, no explanation or markdown."""
 
             # Extract response
             response_text = response.choices[0].message.content or ""
+
+            # Gap 27: post-response moderation (fail-closed)
+            try:
+                _mod.enforce(response_text, stage="output")
+            except ModerationRejection:
+                logger.warning("Moderation rejected LLM response in infer_intent")
+                raise
 
             # Record provenance
             record = ProvenanceRecord(
@@ -284,6 +297,8 @@ Return ONLY valid JSON, no explanation or markdown."""
                 logger.warning("Failed to parse LLM response as JSON: %s", e)
                 return None
 
+        except ModerationRejection:
+            raise
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.error("LLM call failed: %s", e)
@@ -309,6 +324,10 @@ Return ONLY valid JSON, no explanation or markdown."""
 
 Be concise and factual. Do not invent functionality not present in the code."""
 
+        # Gap 27: mandatory pre-call moderation (fail-closed)
+        _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
+        _mod.enforce(prompt, stage="input")
+
         self._rate_limit()
 
         try:
@@ -318,7 +337,16 @@ Be concise and factual. Do not invent functionality not present in the code."""
                 temperature=DEFAULT_TEMPERATURE,
                 max_tokens=200,
             )
-            return response.choices[0].message.content
+            result = response.choices[0].message.content
+            # Gap 27: post-response moderation (fail-closed)
+            try:
+                _mod.enforce(result or "", stage="output")
+            except ModerationRejection:
+                logger.warning("Moderation rejected LLM response in summarize_code")
+                raise
+            return result
+        except ModerationRejection:
+            raise
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.error("Summarization failed: %s", e)

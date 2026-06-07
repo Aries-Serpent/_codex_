@@ -1,0 +1,65 @@
+name: Container Security Scan
+
+on:
+  push:
+    paths:
+      - 'Dockerfile*'
+      - 'docker/**'
+  pull_request:
+    paths:
+      - 'Dockerfile*'
+      - 'docker/**'
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: container-scan-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trivy-scan:
+    name: Trivy Scan — ${{ matrix.dockerfile }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - Dockerfile
+          - docker/Dockerfile.cpu
+          - docker/Dockerfile.gpu
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build image for scanning
+        run: |
+          docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
+
+      - name: Run Trivy filesystem scan (fallback if build unavailable)
+        uses: aquasecurity/trivy-action@v0.20.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results-${{ strategy.job-index }}.sarif
+          severity: CRITICAL,HIGH
+          exit-code: '0'
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ strategy.job-index }}.sarif
+
+      - name: Upload scan artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
+          path: trivy-results-${{ strategy.job-index }}.sarif
+          retention-days: 30

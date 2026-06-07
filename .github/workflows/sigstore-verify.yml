@@ -1,0 +1,113 @@
+name: Sigstore Dependency Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      requirements_file:
+        description: "Path to requirements/lock file (default: requirements/lock.txt)"
+        required: false
+        default: "requirements/lock.txt"
+      critical_only:
+        description: "Verify critical packages only"
+        required: false
+        type: boolean
+        default: false
+  pull_request:
+    paths:
+      - "requirements/**"
+      - "uv.lock"
+      - "pyproject.toml"
+      - "scripts/security/sigstore_verify.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sigstore-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sigstore-verify:
+    name: Sigstore Signature Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install sigstore SDK (best-effort)
+        run: |
+          pip install sigstore --quiet || echo "sigstore SDK not available; running in structured-warning mode"
+
+      - name: Determine requirements file
+        id: req_file
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REQ="${{ github.event.inputs.requirements_file }}"
+          elif [ -f "requirements/lock.txt" ]; then
+            REQ="requirements/lock.txt"
+          elif [ -f "uv.lock" ]; then
+            REQ="uv.lock"
+          else
+            REQ="requirements.txt"
+          fi
+          echo "path=${REQ}" >> "${GITHUB_OUTPUT}"
+          echo "Using requirements file: ${REQ}"
+
+      - name: Run Sigstore verification
+        id: verify
+        run: |
+          EXTRA_FLAGS=""
+          if [ "${{ github.event.inputs.critical_only }}" = "true" ]; then
+            EXTRA_FLAGS="--critical-only"
+          fi
+          python scripts/security/sigstore_verify.py \
+            --requirements "${{ steps.req_file.outputs.path }}" \
+            --output sigstore-report.json \
+            ${EXTRA_FLAGS}
+        # Exit 0 = verified or unverified (missing sig is fine)
+        # Exit 1 = actual signature mismatch on critical package
+        # Exit 2 = script error (missing file etc.)
+
+      - name: Display verification summary
+        if: always()
+        run: |
+          if [ -f sigstore-report.json ]; then
+            echo "=== Sigstore Verification Summary ==="
+            python - <<'EOF'
+          import json, sys
+          with open("sigstore-report.json") as f:
+              r = json.load(f)
+          s = r["summary"]
+          print(f"Total packages:    {s['total']}")
+          print(f"Verified:          {s['verified']}")
+          print(f"Unverified:        {s['unverified']}  (no Sigstore bundle — expected for most packages)")
+          print(f"Errors/Mismatches: {s['errors']}")
+          print(f"Sigstore SDK:      {'available' if r['sigstore_sdk_available'] else 'not installed (warning mode)'}")
+          if r["errors"]:
+              print("\n--- Errors/Mismatches ---")
+              for e in r["errors"]:
+                  crit = " [CRITICAL]" if e.get("critical") else ""
+                  print(f"  {e['name']}=={e['version']} ({e['status']}){crit}: {e['detail']}")
+          EOF
+          else
+            echo "No report file generated."
+          fi
+
+      - name: Upload verification report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: sigstore-verification-report-${{ github.run_id }}
+          path: sigstore-report.json
+          if-no-files-found: warn
+          retention-days: 30

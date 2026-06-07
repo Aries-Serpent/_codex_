@@ -23,7 +23,7 @@ Identify potential secret tokens missed by simple pattern lists using Shannon en
 {
   "threshold": 3.5,
   "count": 3,
-  "findings": [{"file":"secrets.txt","span":"AKIAABCDEFGHIJKLMNOP","entropy":4.2}]
+  "findings": [{"file":"secrets.txt","span":"AKIAABCDEFGHIJKLMNOP","entropy":4.2}] <!-- pragma: allowlist secret -->
 }
 ```text
 

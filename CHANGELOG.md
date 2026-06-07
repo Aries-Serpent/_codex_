@@ -7,6 +7,176 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #unknown)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #unknown (SHA `9cabe52c`) at 2026-06-07T04:08Z [auto-generated]
+
+### Fixed (unused imports — 10 review threads — PR #4792 — 2026-06-06T22:34Z)
+
+- **`docs/examples/drift_detection_demo.py`** — removed unused `DriftResult` import
+- **`docs/examples/resilience_demo.py`** — removed unused `CircuitState` import
+- **`scripts/security/sigstore_verify.py`** — replaced bare `import sigstore` availability-check with `importlib.util.find_spec("sigstore")` to eliminate CodeQL unused-import flag
+- **`tests/chaos/test_chaos_resilience.py`** — removed unused `import unittest.mock as mock`
+- **`tests/fuzz/test_fuzz_api.py`** — removed unused `import sys`
+- **`tests/fuzz/test_fuzz_configs.py`** — removed unused `import sys`
+- **`tests/unit/test_ab_testing.py`** — removed unused `ABTestResult` from import
+- **`tests/unit/test_auto_retrain.py`** — removed unused `timezone` from import
+- **`tests/unit/test_check_workflow_yaml.py`** — removed unused `import textwrap`
+- **`tests/unit/test_dict_serializable.py`** — removed unused `import pytest`
+
+### Added (Gap 5: coverage session 6 — 2026-06-06T20:29Z)
+
+- **`tests/unit/test_track_c_workflow.py`** — 49 unit tests for `src/codex_ml/workflow/track_c_workflow.py`; covers `WorkflowContext`, `CapabilityPlan`, `CapabilityRouter`, `WorkflowOrchestrator`, `record_error`, `step_context`, all six phase implementations, `run_capability`, and phase overrides. Coverage: 0% → ~95%.
+- **`tests/unit/test_safe_pickle.py`** — 28 unit tests for `src/codex_ml/utils/safe_pickle.py`; covers `RestrictedUnpickler` (allowed and blocked classes), signed pickle HMAC round-trips, tamper detection, legacy format splitting, error cases, and env-key auto-generation. Coverage: 0% → ~90%.
+
+### Added (Gap 5: coverage session 5 — 2026-06-06T20:14Z)
+
+- **`tests/unit/test_reproducibility_hardening.py`** — 33 unit tests for `src/codex_ml/utils/reproducibility_hardening.py`; covers `enable_deterministic_training`, `save_env_snapshot`, `create_reproducibility_manifest`, and `ReproducibilityManager`. Coverage: 0% → ~70%.
+- **`tests/unit/test_subproc.py`** — 20 unit tests for `src/codex_ml/utils/subproc.py`; covers `_discover_repo_root`, `_gather_allowed_roots`, `_assert_safe_script`, and `run_argv`. Coverage: 0% → ~89%.
+- **`tests/unit/test_retention.py`** — 22 unit tests for `src/codex_ml/utils/retention.py`; covers `prune_checkpoints` with keep_last, keep_every, max_epochs, dry_run, latest.json protection, and edge cases. Coverage: 0% → ~83%.
+- **`pyproject.toml fail_under`** raised from **20 → 22**: Gap 5 session 5 added 75 new tests across 3 modules (`reproducibility_hardening`, `subproc`, `retention`).
+
+### Fixed (pre-flight validation — test assertion patterns — PR #4792 — 2026-06-06T09:14Z)
+
+- **tests/unit/test_scalability_utils.py** — replaced overly-broad pytest.raises match patterns (`"oops"`, `"boom"`) with descriptive strings (`"circuit_failure"`, `"monitor_failure"`) to pass pre_flight_check.py assertion-pattern validation.
+
+### Added (Gap 5: coverage session 4 — 2026-06-06T08:15Z)
+
+- **`tests/unit/test_self_healing_utils.py`** — bug fix: corrected `test_batch_size_kwarg_updated_on_retry` to use `ValueError` (UNKNOWN type) instead of `MemoryError` so context does not suppress it; self_healing agent completed with all tests passing. Strengthened `test_all_exports` to also import each symbol from the module (code-review feedback).
+- **`pyproject.toml fail_under`** raised from **15 → 20**: Gap 5 session 3 added 313+ new tests across 8 modules (`scalability`, `self_healing`, `stub_cleanup`, `eval_gate`, `trigger`, `jsonio`, `optional_dependencies`, `serialization`, `feedback/events`, `hf_revision`, `opt_import`).
+- **`workbench/coverage/gap5_coverage_evidence.md`** — session 3 agents row finalized: 257 agent tests (77+77+78+46) completed. Unblocked from `.gitignore` via `!workbench/coverage/` exception.
+- **`.gitignore`** — added `!workbench/coverage/` and `!workbench/coverage/**` exceptions (the `coverage/` rule was silently blocking the workbench tracking doc).
+- **Gap 5 status** in `workbench/gap_backlog_prioritized.md` updated: 430+ total coverage tests, `fail_under = 20`.
+
+
+### Added (Gap 5 coverage — eval_gate & trigger — copilot/explore-codebase-and-create-plan)
+
+- **`tests/unit/test_eval_gate.py`** — 27 unit tests for `src/codex_ml/continuous_learning/eval_gate.py`; covers `EvalGateResult` dataclass, all three `EvalGate` threshold checks, boundary conditions, multi-failure accumulation, and metrics copy safety. Coverage: 0% → ~100%.
+- **`tests/unit/test_retraining_trigger.py`** — 19 unit tests for `src/codex_ml/continuous_learning/trigger.py`; covers `RetrainingTrigger` construction, UTC timestamp defaults, `to_dict`/`from_dict` round-trip, edge cases (missing timestamp, zero baseline), equality semantics, and mutable-default isolation. Coverage: 0% → ~100%.
+
+### Fixed (code-quality bot remediation round 2 — PR #4792 — 2026-06-06T07:46Z)
+
+- **feast_compat.py** — replaced `...` (no-effect Ellipsis) with `raise NotImplementedError` in `FeastBackend.write` and `FeastBackend.read` Protocol stubs (review threads r3366906649, r3366906653)
+- **test_fuzz_api.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 220, 273 (review threads r3366906634, r3366906637)
+- **test_fuzz_configs.py** — added explanatory comments to empty `except ValidationError: pass` blocks at lines 210, 243 (review threads r3366906639, r3366906641)
+- **test_property_resilience.py** — added explanatory comments to empty `except RuntimeError: pass` blocks at lines 195, 204, 228, 259 (review threads r3366906642, r3366906644, r3366906646, r3366906648)
+
+### Added (coverage gate — Gap 5 session 3 — PR #4792 — 2026-06-06T07:46Z)
+
+- **56 new unit tests** across 6 modules with 0% previous coverage:
+  - `tests/unit/test_jsonio.py` (15 tests) — `src/codex_ml/utils/jsonio.py`
+  - `tests/unit/test_optional_dependencies.py` (9 tests) — `src/codex_ml/utils/optional_dependencies.py`
+  - `tests/unit/test_dict_serializable.py` (7 tests) — `src/codex_ml/utils/serialization.py`
+  - `tests/unit/test_feedback_events.py` (13 tests) — `src/codex_ml/feedback/events.py`
+  - `tests/unit/test_hf_revision.py` (7 tests) — `src/codex_ml/utils/hf_revision.py`
+  - `tests/unit/test_opt_import.py` (5 tests) — `src/codex_ml/utils/opt_import.py`
+- Created `workbench/coverage/gap5_coverage_evidence.md` with floor history, module inventory and roadmap
+- Updated `workbench/gap_backlog_prioritized.md` Gap 5 status line
+- Updated `workbench/wave_execution_control.md` with session log row
+- Updated `workbench/COPILOT_NEXT_SESSION_PROMPT.md` for next continuation
+- Dispatched 4× `unified-coverage-agent` for `utils/scalability`, `utils/self_healing`, `utils/stub_cleanup`, `continuous_learning/eval_gate+trigger`
+
+### Added (coverage agent results integration — PR #4792 — 2026-06-06T07:32Z)
+
+- **unified-coverage-agent completed**: +89 new tests in 2 files committed to branch:
+  - `tests/unit/test_drift_detection.py` (54 tests) — `src/codex_ml/monitoring/drift_detection.py` 0% → ~86%
+  - `tests/unit/test_ab_testing_stdlib.py` (35 tests) — `src/codex_ml/experiments/ab_testing.py` stdlib path 52% → ~97%
+- Total new coverage tests this session: **117** (28 manual + 89 agent); all pass
+- Updated `workbench/coverage/gap5_coverage_evidence.md` and `workbench/gap_backlog_prioritized.md` with agent results
+
+### Fixed (living docs update + session wrap-up — PR #4792 — 2026-06-06T07:22Z)
+
+- Updated `workbench/COPILOT_NEXT_SESSION_PROMPT.md` with accurate continuation prompt for Gap 5 coverage gate advancement
+- Updated `workbench/wave_execution_control.md` with post-completion CI & quality session log
+- Updated `workbench/gap_backlog_prioritized.md` Gap 5 status line (28 new tests added)
+- Updated `workbench/coverage/gap5_coverage_evidence.md` floor history row for this session
+- All 8 unanswered review threads from review #4442009364 replied to with resolving commit `93ddf17f5`
+
+### Fixed (code-quality bot remediation — PR #4792 — 2026-06-06T07:00Z)
+
+- **test_circuit_breaker.py** — removed dead `cb.call(fn_fail) if False else None` statement (thread 8)
+- **test_degradation.py** — refactored bare `raise` inside `with GracefulDegradation` blocks to function calls, eliminating unreachable-code warnings (threads 9, 10)
+- **test_property_resilience.py** — same bare-raise refactor; removed redundant `dg.result = fallback` pre-assignment (thread 11)
+- **test_fuzz_configs.py** — replaced tautological `eval_split == eval_split` NaN guard with `not math.isnan(eval_split)`; added `import math`; added explanatory comment to empty `except ValidationError` (threads 12, 17)
+- **sigstore_verify.py** — empty `except ImportError: pass` replaced with `logger.warning(...)` explaining sigstore is optional (thread 13)
+- **test_fuzz_api.py** — added explanatory comments to all three empty `except ValidationError: pass` blocks (threads 14–16)
+
+### Added (Wave 3/4 full gap remediation — PR #4792 — 2026-06-06T06:40Z)
+
+All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-session code). PR #4792 branch `copilot/explore-codebase-and-create-plan`.
+
+#### Monitoring & Drift (Wave 3)
+- **Gap 17** — `src/codex_ml/monitoring/data_drift.py`: `DataDriftDetector` with PSI + KL-divergence; wired into `train_loop.py` epoch loop; 27 unit tests. Evidence: `workbench/evidence/gap17_data_drift.md`
+- **Gap 18** — `src/codex_ml/monitoring/model_drift.py`: `ModelDriftDetector` (JSD + confidence monitoring); wired into `train_loop.py` post-epoch; 35 unit tests. Evidence: `workbench/evidence/gap18_model_drift.md`
+
+#### Testing & Quality (Wave 3)
+- **Gap 21** — `tests/regression/`: 67 regression tests across 5 files (model output stability, API contracts, data pipeline integrity, config schema, checkpoint round-trip). Evidence: `workbench/evidence/gap21_regression_suite.md`
+- **Gap 22** — `pyproject.toml [tool.mutmut]`: mutation testing configured; 20 mutation-killer tests in `tests/unit/test_gap22_mutation_killers.py`; scheduled `.github/workflows/mutation-testing.yml`. Evidence: `workbench/evidence/gap22_mutation_testing.md`
+- **Gap 23** — `tests/integration/test_gap23_boundaries.py`: 19 integration tests across 4 cross-component boundaries. Evidence: `workbench/evidence/gap23_integration_tests.md`
+- **Gap 24** — `benchmarks/`: bench_training/inference/memory harness + `benchmarks/results/benchmark_report.json`. Evidence: `workbench/evidence/gap24_benchmarks.md`
+
+#### Security (Wave 3)
+- **Gap 28** — `scripts/security/sigstore_verify.py` + `.github/workflows/sigstore-verify.yml` + 21 tests. Evidence: `workbench/evidence/gap28_sigstore.md`
+
+#### Resilience (Wave 3)
+- **Gap 29** — `src/codex/resilience/circuit_breaker.py`: `CircuitBreaker` (CLOSED/OPEN/HALF_OPEN) + `CircuitOpenError`; 17 tests. Evidence: `workbench/evidence/gap29_circuit_breaker.md`
+- **Gap 30** — `src/codex/resilience/retry.py`: `retry_with_backoff` + `RetryExhausted`; 9 tests. Evidence: `workbench/evidence/gap30_retry.md`
+- **Gap 31** — `src/codex/resilience/degradation.py`: `GracefulDegradation` + `DegradationError`; 15 tests. Evidence: `workbench/evidence/gap31_degradation.md`
+- **`src/codex/resilience/__init__.py`** — package exporting all 7 resilience symbols.
+
+#### Code Quality (Wave 4 P3)
+- **Gap 32** — TODO/FIXME/stub cleanup: `src/` reduced from 36 → 27 (−25%).
+- **Gap 33** — `.pre-commit-config.yaml`: mypy-src informational hook added (non-blocking, `language: system`).
+- **Gap 34** — 38 new docstrings across 8 modules; pydocstyle informational pre-commit hook. Evidence: `workbench/evidence/gap34_docstrings.md`
+- **Gap 35** — `scripts/ci/check_workflow_yaml.py` + `scripts/ci/validate_configs.py`; two new pre-commit hooks; 0 failures on 136 configs. Evidence: `workbench/evidence/gap35_schema_validation.md`
+
+#### Advanced ML Features (Wave 4 P3)
+- **Gap 36** — `src/codex_ml/continuous_learning/`: `ContinuousLearningPipeline`, `EvalGate`, `RetrainingTrigger`; 25 tests. Evidence: `workbench/evidence/gap36_continuous_learning.md`
+- **Gap 37** — `src/codex_ml/experiments/ab_testing.py`: `ABTestSuite` + `run_ab_test` (Welch's t-test + Cohen's d + stdlib fallback); 29 tests. Evidence: `workbench/evidence/gap37_ab_testing.md`
+- **Gap 38** — `src/codex_ml/training/auto_retrain.py`: `AutoRetrainPipeline` wired to `ModelDriftDetector`; `repository_dispatch` payload schema for `model-drift-retrain.yml`; 16 tests. Evidence: `workbench/evidence/gap38_auto_retrain.md`
+- **Gap 39** — `src/codex_ml/feedback/`: `FeedbackLoop`, `FeedbackCollector` (ring-buffer + JSONL sink), `FeedbackEvent`; 27 tests. Evidence: `workbench/evidence/gap39_feedback_loop.md`
+
+#### Advanced Testing (Wave 4 P3)
+- **Gap 40** — `tests/fuzz/`: 23 hypothesis `@given` tests (tokenizer, Pydantic configs, API models). Evidence: `workbench/evidence/gap40_fuzzing.md`
+- **Gap 41** — `tests/property/`: 38 `@given` tests (drift invariants, A/B bounds, resilience contracts). Evidence: `workbench/evidence/gap41_property_tests.md`
+- **Gap 42** — `tests/chaos/`: 24 chaos tests (CB random failures, retry exhaustion, pipeline overflow, degenerate A/B inputs). Evidence: `workbench/evidence/gap42_chaos.md`
+
+#### Documentation (Wave 4 P3)
+- **Gap 43** — `docs/tutorials/`: README + 4 tutorials (drift monitoring, A/B testing, continuous learning, resilient services) with verified import paths. Evidence: `workbench/evidence/gap43_tutorials.md`
+- **Gap 44** — `docs/examples/`: README + 4 runnable PEP 723 demo scripts (drift, A/B, continuous learning, resilience); all exit 0. Evidence: `workbench/evidence/gap44_interactive_docs.md`
+- **Gap 45** — `docs/adr/`: README + ADR-001 (drift monitoring), ADR-002 (resilience pattern), ADR-003 (continuous learning), ADR-004 (testing strategy) in MADR format. Evidence: `workbench/evidence/gap45_adrs.md`
+
+### Fixed (Wave 3/4 code quality — PR #4792 — commit `1b59803`)
+- `tests/unit/test_alerting.py:17` — removed unused `from io import BytesIO`
+- `tests/unit/test_alerting.py:76` — tautological `ERROR >= ERROR` → `ERROR >= WARNING`
+- `src/codex_ml/train_loop.py:2083` — empty `except Exception: pass` → `logger.debug(...)`
+- `tests/security/test_moderation_integration.py:18` — removed unused `AsyncMock`
+- `tests/security/test_moderation_integration.py:167` — removed unbound `fastapi =` variable
+- `tests/unit/test_performance_monitor.py:5` — removed unused `patch` import
+- `src/codex_ml/plugins/registry.py:21` — replaced bare `import importlib` + `importlib.import_module()` with `from importlib import import_module as _import_module`
+
+### Verified (needs_verification cleared — 2026-06-06)
+- **Gap 14** — Prometheus `CodexMetricsRegistry` wiring confirmed; `train_loop.py` IndentationError fixed; removed from `special_flags.needs_verification`. Evidence: `workbench/evidence/gap14_prometheus_verification_v2.md`
+- **Gap 27** — All 7 LLM entry points confirmed wired (`fail_open=False`); 22/22 integration tests pass; removed from `special_flags.needs_verification`. Evidence: `workbench/evidence/gap27_moderation_verification_v2.md`
+
+
+- Re-validated Wave 3/Wave 4 queue lock state in `workbench/gap_execution_queue.yaml` and confirmed `special_flags.needs_verification` lock values.
+- Completed scoped Wave 3 small-item execution by verifying deterministic split implementation for Gap 20 and recording evidence in `workbench/evidence/gap20_deterministic_splits_verification.md`.
+- Updated `workbench/wave_execution_control.md` with explicit deferred `>55` minute handoff list for workflow/custom-agent processing (Wave 3: 17/18/21/23; Wave 4: 32–45).
+
+### Added (Gap 9 — Docker base image digest pinning — 2025-07-18)
+- **Dockerfile, Dockerfile.preview, Dockerfile.restore**: Pinned all `FROM` lines to SHA256 manifest-list digests resolved via `skopeo inspect`. Stage-internal `FROM <alias>` references unchanged.
+- **docker/Dockerfile.ci, docker/Dockerfile.cpu, docker/Dockerfile.embedding, docker/Dockerfile.gpu, docker/Dockerfile.local, docker/Dockerfile.local-codex-env, docker/Dockerfile.optimized**: Same digest pinning applied; `docker/Dockerfile.local` placeholder (`<PINNED_DIGEST>`) resolved to live `python:3.12-slim` digest.
+- **.github/agents/ci-testing-agent/Dockerfile, .github/agents/security-scan-agent/Dockerfile**: Agent Dockerfiles pinned.
+- **scripts/docker/pin_digests.sh**: New maintenance script — re-resolves all base-image digests via `skopeo` and applies updates in-place; supports `--dry-run`.
+- **workbench/evidence/gap9_docker_digest_pinning.md**: Full evidence record — resolved digests, per-file change table, re-pinning instructions.
+
+### Fixed (auto-update — PR #4789)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4789 (SHA `4aa59f9c`) at 2026-06-05T23:55Z [auto-generated]
+- CI follow-up: investigated Validation Pipeline run `#27046295354`, confirmed YAML preload parse failure was resolved by commit `6e9246c`, and refreshed REQ-4/REQ-5 session artifacts in the latest commit (2026-06-06T00:08Z).
+
+### Fixed (auto-update — PR #4790)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4790 (SHA `35581cc7`) at 2026-06-06T00:47Z [auto-generated]
+
 ### Fixed (auto-update — PR #4788)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4788 (SHA `73e5269d`) at 2026-06-05T19:03Z [auto-generated]
 
@@ -9147,3 +9317,29 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - `python scripts/ci/aais_v4_scorer.py --json` → CI/CD Maturity remains `100.0` (`156/156` cached Python workflows).
 - `python scripts/ci/auto_fix_common_issues.py --pattern 21 --check-only` → no Node.js 20 action references found.
 - `.github/workflows/self-healing.yml` stub is present and active as the reliability marker workflow.
+
+### Fixed (auto-update — PR #4790 session-close 2026-06-06T00:53Z)
+- Session-close compliance: addressed bot-reported findings, triggered REQ-4/REQ-5 gate fixes, and confirmed merge-readiness score 100/100 for PR #4790 (uv dependency bump) [auto-generated]
+
+### Fixed (PR #4790 CI fix — 2026-06-06T00:58Z)
+- `.github/workflows/copilot-setup-steps.yml`: fixed session preload step (lines 149-151) — replaced `|| { }` flow scalar `run:` with canonical `run: |` block scalar + `if ! ...; then ...; fi` form to resolve yamllint crash in Validation Pipeline run #27047717092 [auto-generated]
+
+### Fixed (PR #4790 pip-audit fix — 2026-06-06T01:22Z)
+- `.pre-commit-config.yaml`: added `--ignore-vuln PYSEC-2026-196` to pip-audit hook args — pip 26.1.1 entry-point path traversal vulnerability (fix in pip 26.1.2); CI runner controls pip version and will remove this ignore once runner upgrades to pip 26.1.2+ [auto-generated]
+
+### Fixed (PR #4792 CI health — 2026-06-06T06:47Z)
+- `tests/unit/test_data_drift.py`: narrowed overly-broad `match="empty"` patterns to `match="must not be empty"` — resolves pre-flight-validation assertion pattern check
+- `tests/unit/test_ab_testing.py`: narrowed overly-broad `match="alpha"` patterns to `match="alpha must be in"` — resolves pre-flight-validation assertion pattern check
+- `.github/workflows/container-scan.yml`, `sigstore-verify.yml`, `scheduled-dependency-audit.yml`: updated action versions to repo-approved pins (actions/checkout@v5, actions/setup-python@v6, actions/upload-artifact@v5) — resolves Required Actions Version Enforcer failures
+- `.github/workflows/container-scan.yml`: fixed `aquasecurity/trivy-action@0.20.0` → `aquasecurity/trivy-action@v0.20.0` (missing `v` prefix caused "unable to find version" error) — resolves Trivy Scan failures
+
+### Added (PR #4792 coverage gate advance — 2026-06-06T07:10Z)
+- `tests/unit/test_check_workflow_yaml.py` — 12 unit tests for `scripts/ci/check_workflow_yaml.py` (Gap 35 CI script coverage)
+- `tests/unit/test_validate_configs.py` — 16 unit tests for `scripts/ci/validate_configs.py` (Gap 35 CI script coverage)
+- `workbench/coverage/gap5_coverage_evidence.md` — Coverage gate evidence file documenting floor history, Wave 3/4 contributions, and 80% roadmap
+
+### Added (coverage gap-fill — codex_ml.utils.scalability — 2026-06-06)
+- `tests/unit/test_scalability_utils.py` — 77 unit tests covering `LRUCache`, `cached`, `RateLimiter`, `rate_limited`, `CircuitBreaker`, `Endpoint`, `LoadBalancer`, `ResourcePool`, `MetricPoint`, and `PerformanceMonitor` (Gap 5: 0% → full public-API coverage)
+
+### Added (PR #4792 coverage — stub_cleanup Gap 5 — 2026-06-06)
+- `tests/unit/test_stub_cleanup.py` — 78 unit tests for `codex_ml.utils.stub_cleanup` covering `StubInfo`, `StubAnalyzer` (all methods including AST-based `_is_abstract_method`), `find_stubs`, `prioritize_stubs`, and `generate_stub_report` [Gap 5, 0% → ~95% line coverage]

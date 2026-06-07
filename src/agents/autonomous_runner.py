@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from config.openai_client import CodexOpenAIClient, ExecutionResult
+from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -88,6 +89,18 @@ class AutonomousAgent:
         if len(task) > MAX_TASK_LENGTH:
             logger.warning(f"Task exceeds maximum length: {len(task)} > {MAX_TASK_LENGTH}")
             task = task[:MAX_TASK_LENGTH]
+
+        # Gap 27: mandatory pre-dispatch moderation (fail-closed)
+        try:
+            _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
+            _mod.enforce(task, stage="input")
+        except ModerationRejection:
+            logger.warning("Moderation rejected autonomous runner task")
+            return ExecutionResult(
+                success=False,
+                model="",
+                error="Request rejected by content policy.",
+            )
 
         logger.info("🚀 Starting autonomous agent execution...")
         logger.info(f"📋 Task: {task[:100]}{'...' if len(task) > 100 else ''}")

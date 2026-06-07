@@ -332,7 +332,7 @@ bash .devcontainer/scripts/update-content.sh   # re-install deps
 ### GitHub App JWT fails
 ```bash
 # Check _GITHUB_APP_PRIVATE_KEY is in PEM format
-echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE KEY-----"
+echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE KEY-----" <!-- pragma: allowlist secret -->
 ```
 
 ---

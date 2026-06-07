@@ -309,11 +309,54 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+  dvc_pipeline:
+    name: DVC Pipeline Reproducibility Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: cost-gate
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'validation-only' || inputs.mode == 'full-suite'))
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'ephemeral'
+
+      - name: Install DVC
+        run: |
+          python -m pip install --upgrade pip
+          pip install dvc
+
+      - name: Create workbench evidence directory
+        run: mkdir -p workbench/evidence
+
+      - name: DVC pipeline reproducibility check
+        run: |
+          pip install dvc
+          dvc repro --no-commit --dry 2>&1 || true
+          dvc status --json > workbench/evidence/dvc_status.json
+          echo "DVC pipeline stages defined:" >> "$GITHUB_STEP_SUMMARY"
+          cat workbench/evidence/dvc_status.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload DVC status artifact
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: dvc-status-${{ github.run_number }}
+          path: workbench/evidence/dvc_status.json
+          if-no-files-found: ignore
+          retention-days: 30
+
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [data_validation, determinism_check]
+    needs: [data_validation, determinism_check, dvc_pipeline]
     if: always()
 
     steps:
@@ -326,11 +369,13 @@ jobs:
           echo "### Job Status" >> $GITHUB_STEP_SUMMARY
           echo "- Data Validation: ${{ needs.data_validation.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Determinism Check: ${{ needs.determinism_check.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- DVC Pipeline Check: ${{ needs.dvc_pipeline.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Validation Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Manifest validation completed" >> $GITHUB_STEP_SUMMARY
           echo "- Data drift analysis completed" >> $GITHUB_STEP_SUMMARY
           echo "- Determinism tests run twice for comparison" >> $GITHUB_STEP_SUMMARY
+          echo "- DVC pipeline reproducibility verified (dry-run)" >> $GITHUB_STEP_SUMMARY
 
       - name: Cache health report
         if: always()

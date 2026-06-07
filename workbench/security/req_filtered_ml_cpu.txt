@@ -1,0 +1,7 @@
+# Segmented ML (CPU-only) install surface — Generated: 2025-11-12 16:24:19 UTC | Author: mbaetiong
+transformers==5.9.0
+tokenizers==0.22.1
+safetensors==0.6.2
+accelerate==1.13.0
+peft==0.19.1
+sentencepiece==0.2.1

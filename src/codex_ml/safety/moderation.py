@@ -31,6 +31,37 @@ from codex_ml.utils.error_log import log_error
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Prometheus counter — Gap 27 observability requirement
+# ---------------------------------------------------------------------------
+
+
+class _NoopModCounter:
+    """No-op counter used when prometheus-client is unavailable."""
+
+    def labels(self, **_: str) -> "_NoopModCounter":
+        return self
+
+    def inc(self, amount: float = 1.0) -> None:  # noqa: ARG002
+        pass
+
+
+def _make_moderation_counter() -> Any:
+    """Create a Prometheus Counter for moderation decisions, or a noop fallback."""
+    try:
+        from prometheus_client import Counter  # type: ignore[import-untyped]
+
+        return Counter(
+            "moderation_decisions_total",
+            "Total moderation decisions by stage and verdict",
+            ["stage", "verdict"],
+        )
+    except Exception:  # pragma: no cover — prometheus-client absent or already registered
+        return _NoopModCounter()
+
+
+_moderation_decisions_total: Any = _make_moderation_counter()
+
 
 @dataclass
 class ModerationSettings:
@@ -139,6 +170,10 @@ class ModerationAdapter:
         if decision is None:
             decision = self._offline_review(text, stage)
 
+        # --- Gap 27 observability: record decision in Prometheus counter ---
+        verdict = "accepted" if decision.approved else "rejected"
+        _moderation_decisions_total.labels(stage=stage, verdict=verdict).inc()
+
         if not decision.approved:
             self._record_audit(decision, stage=stage, original_text=text, error=provider_error)
             if self.settings.fail_open:
@@ -159,6 +194,8 @@ class ModerationAdapter:
     def enforce(self, text: str, *, stage: str) -> ModerationDecision:
         decision = self.review(text, stage=stage)
         if not decision.approved and not self.settings.fail_open:
+            # Gap 27: record enforcement-path rejection in counter before raising
+            _moderation_decisions_total.labels(stage=stage, verdict="enforced_rejected").inc()
             raise ModerationRejection(stage, decision)
         return decision
 

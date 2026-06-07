@@ -6,9 +6,11 @@
 ## Contents
 
 - [000-mcp-architecture](000-mcp-architecture.md)
+- [ADR-0001-distributed-tracing](ADR-0001-distributed-tracing.md)
 - [ADR-001_HYDRA_CONFIGURATION](ADR-001_HYDRA_CONFIGURATION.md)
 - [ADR-002_NAMED_PIPES_VS_TCP](ADR-002_NAMED_PIPES_VS_TCP.md)
 - [INDEX](INDEX.md)
+- [README](README.md)
 
 ---
 

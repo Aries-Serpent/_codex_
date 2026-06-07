@@ -18,12 +18,18 @@ logger = logging.getLogger(__name__)
 import sys  # noqa: E402
 import warnings  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
+import re  # noqa: E402
+from importlib import import_module as _import_module  # noqa: E402
 from importlib import invalidate_caches as _invalidate_caches  # noqa: E402
 from importlib import metadata  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
 DEFAULT_GROUP = "codex_ml.plugins"
+
+# Matches only simple `import a.b.c` — no semicolons, no commas.
+# Used to safely handle .pth bootstrap lines without exec().
+_SIMPLE_IMPORT_RE = re.compile(r"^import\s+([A-Za-z_][A-Za-z0-9_.]*)\s*$")
 
 
 # ---------------------------------------------------------------------------
@@ -86,10 +92,17 @@ def _activate_editable_distribution(ep: Any) -> None:
             if not entry or entry.startswith("#"):
                 continue
             if entry.startswith("import "):
-                try:
-                    exec(entry, {})  # pragma: no cover - executes .pth bootstrap  # nosec B102
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
+                match = _SIMPLE_IMPORT_RE.match(entry)
+                if match:
+                    try:
+                        _import_module(match.group(1))  # pragma: no cover - .pth bootstrap
+                    except Exception as e:  # pragma: no cover
+                        logger.debug("import_module(%r) failed: %s", match.group(1), e)
+                else:
+                    # Complex .pth lines (e.g. chained statements) are skipped to
+                    # avoid exec(). In practice editable-install .pth files only
+                    # emit simple `import <name>` lines.
+                    logger.debug("Skipping complex .pth import line: %r", entry)
                 continue
             if entry not in sys.path:
                 sys.path.insert(0, entry)

@@ -1,4 +1,5 @@
-FROM python:3.10-slim
+# FROM python:3.10-slim (pinned below)
+FROM python:3.10-slim@sha256:70f65c721aaddfb22b20ed6ec12606c59d9592493c5fcb6639f3d0e8ba3fbc10
 
 # Non-root user for security
 RUN useradd --create-home appuser

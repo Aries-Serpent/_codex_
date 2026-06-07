@@ -284,7 +284,7 @@ Create these secrets **exactly as named**:
 1. Open the downloaded `.pem` file in a text editor
 2. Copy the **entire contents** including:
    ```
-   -----BEGIN RSA PRIVATE KEY-----
+   -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
    [multiple lines of characters]
    -----END RSA PRIVATE KEY-----
    ```

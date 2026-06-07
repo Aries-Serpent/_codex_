@@ -290,7 +290,7 @@ aws iam get-role-policy \
 ```bash
 # Verify PEM format
 head -n 1 private-key.pem
-# Should show: -----BEGIN RSA PRIVATE KEY-----
+# Should show: -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
 
 # Convert if needed (OpenSSH format → PEM)
 ssh-keygen -p -m PEM -f private-key.pem

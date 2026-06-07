@@ -34,10 +34,13 @@ repos:
       - id: pip-audit
         name: pip-audit (dependency vulnerability scan)
         args: ["--desc", "--skip-editable", "--ignore-vuln", "GHSA-5239-wwwm-4pmq",
-               "--ignore-vuln", "GHSA-58qw-9mgm-455v"]
+               "--ignore-vuln", "GHSA-58qw-9mgm-455v",
+               "--ignore-vuln", "PYSEC-2026-196"]
         # GHSA-5239-wwwm-4pmq: pygments AdlLexer DoS — no fix version published yet
         # GHSA-58qw-9mgm-455v: pip 26.x ZIP/tar confusion — pip-audit v2.6.1 misreports
         #   26.0.1 as affected (fix landed in 25.3; 26.x branch is clean)
+        # PYSEC-2026-196: pip 26.1.1 entry-point path traversal — fix in pip 26.1.2;
+        #   CI runner environment controls pip version; remove once runner upgrades to 26.1.2+
         # Note: May require requirements files to be present
         # Run manually with: pre-commit run pip-audit --all-files
 
@@ -431,3 +434,75 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         always_run: true
+
+      # ── Gap 33: mypy type-check (src/ only, informational) ────────────────
+      # Runs mypy against src/ at commit time so contributors see type errors
+      # immediately, without blocking the commit.  The strict anti-regression
+      # gate (which CAN block) lives in the pre-push stage above as
+      # `mypy-isolated-venv-gate` and enforces the .mypy_baseline ratchet.
+      #
+      # Exit behaviour: always exits 0 (non-blocking) so dirty commits are
+      # never refused because of pre-existing type debt (baseline = 131 as of
+      # 2026-03-14).  Use `pre-commit run mypy-src --all-files` to audit.
+      - id: mypy-src
+        name: "🔬 mypy type check (src/ only – informational)"
+        entry: >
+          bash -c '
+            if ! python -m mypy --version >/dev/null 2>&1; then
+              echo "⚠️  mypy not installed — skipping (pip install mypy)";
+              exit 0;
+            fi;
+            python -m mypy src/
+              --config-file=mypy.ini
+              --no-error-summary
+              --no-pretty
+            ; EXIT=$?;
+            if [ "$EXIT" -ne 0 ]; then
+              echo "ℹ️  mypy found type errors in src/ (non-blocking).";
+              echo "ℹ️  Run: python scripts/ci/mypy_baseline.py --update  to refresh baseline.";
+            fi;
+            exit 0'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run mypy-src --all-files
+        # Strict pre-push gate: mypy-isolated-venv-gate (blocks on regression)
+
+      # ── Gap 34: pydocstyle docstring check (informational) ───────────────
+      # Reports missing/malformed Google-style docstrings without blocking
+      # commits.  D100 (missing module docstring) and D104 (missing package
+      # docstring) are intentionally ignored since many __init__.py files are
+      # intentionally minimal.  Run manually with:
+      #   pre-commit run pydocstyle-check --all-files
+      - id: pydocstyle-check
+        name: "📝 pydocstyle docstring check (informational)"
+        entry: bash -c 'python -m pydocstyle src/ --convention=google --add-ignore=D100,D104 || true'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+
+  # ── Gap 35: Schema validation ─────────────────────────────────────────────
+  # Two hooks:
+  #   1. check-github-workflows  — validates .github/workflows/*.yml against the
+  #      official GitHub Actions JSON Schema (via check-jsonschema, if installed).
+  #      Falls back gracefully to YAML-parse-only when the package is absent.
+  #   2. validate-codex-configs  — runs scripts/ci/validate_configs.py which
+  #      loads every YAML in configs/ through the Pydantic TrainConfig schema.
+
+  - repo: local
+    hooks:
+      - id: check-github-workflows
+        name: "✅ Validate GitHub Actions workflow schemas"
+        entry: python scripts/ci/check_workflow_yaml.py
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        stages: [pre-commit]
+
+      - id: validate-codex-configs
+        name: "🧪 Validate Codex pydantic/Hydra configs (configs/)"
+        entry: python scripts/ci/validate_configs.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run validate-codex-configs --all-files
+        # Or standalone:     python scripts/ci/validate_configs.py

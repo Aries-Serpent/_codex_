@@ -41,11 +41,11 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 | P-01 | API key assignment | `api_key = "sk-..."` | 0.99 |
 | P-02 | Bearer token | `Authorization: Bearer <b64>` | 0.99 |
 | P-03 | Password literal | `password = "hunter2"` | 0.95 |
-| P-04 | AWS key ID | `AKIAIOSFODNN7EXAMPLE` | 0.99 |
+| P-04 | AWS key ID | `AKIAIOSFODNN7EXAMPLE` | 0.99 | <!-- pragma: allowlist secret -->
 | P-05 | GitHub PAT | `ghp_...` prefix | 0.99 |
 | P-06 | OpenAI key | `sk-...` prefix | 0.99 |
-| P-07 | Private key PEM | `-----BEGIN PRIVATE KEY-----` | 1.00 |
-| P-08 | Connection string | `mongodb+srv://user:pass@...` | 0.98 |
+| P-07 | Private key PEM | `-----BEGIN PRIVATE KEY-----` | 1.00 | <!-- pragma: allowlist secret -->
+| P-08 | Connection string | `mongodb+srv://user:pass@...` | 0.98 | <!-- pragma: allowlist secret -->
 
 ### Tier 2: Multi-Variant / Split-Assignment Patterns (NEW in E-09)
 
@@ -68,7 +68,7 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 | P-18 | JWT pattern | `eyJ...` prefix | JSON Web Token |
 | P-19 | Hex 32+ chars | `[0-9a-f]{32,}` | MD5/API key |
 | P-20 | UUID secret context | UUID in password/secret context | Credential UUID |
-| P-21 | DSN pattern | `postgres://user:pass@host/db` | DB connection |
+| P-21 | DSN pattern | `postgres://user:pass@host/db` | DB connection | <!-- pragma: allowlist secret -->
 | P-22 | Stripe key | `sk_live_...` / `pk_live_...` | Stripe API |
 | P-23 | Slack token | `xoxb-...` / `xoxp-...` | Slack API |
 | P-24 | Twilio SID | `AC[a-z0-9]{32}` | Twilio |

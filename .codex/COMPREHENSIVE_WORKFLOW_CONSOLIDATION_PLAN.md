@@ -526,7 +526,7 @@ AWS_ACCESS_KEY_ID=<from-secrets-manager>
 AWS_SECRET_ACCESS_KEY=<from-secrets-manager>
 
 # Database
-DATABASE_URL=postgresql://user:pass@host:5432/codex
+DATABASE_URL=postgresql://user:pass@host:5432/codex <!-- pragma: allowlist secret -->
 ```
 
 ---
