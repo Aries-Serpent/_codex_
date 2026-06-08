@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<<<<<<< HEAD
 ### Fixed (auto-update — PR #4811)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4811 (SHA `7038237b`) at 2026-06-08T09:24Z [auto-generated]
-=======
-### Fixed (auto-update — PR #4810)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4810 (SHA `4af13853`) at 2026-06-08T09:19Z [auto-generated]
->>>>>>> origin/dependabot/pip/httptools-0.8.0
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.
