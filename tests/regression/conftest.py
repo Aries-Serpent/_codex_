@@ -113,6 +113,7 @@ def base_train_config() -> dict[str, Any]:
 def dashboard_client():
     """FastAPI TestClient for the monitoring dashboard API."""
     from fastapi.testclient import TestClient
+
     from monitoring.dashboard_api import app
 
     with TestClient(app, raise_server_exceptions=True) as client:

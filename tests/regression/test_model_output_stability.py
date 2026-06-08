@@ -152,8 +152,8 @@ class TestModelDeterminism:
         """Full pipeline run must produce the same objective_U for the same seed."""
         from codex_ml.symbolic_pipeline import (
             PretrainCfg,
-            RLHFCfg,
             RewardModelCfg,
+            RLHFCfg,
             SFTCfg,
             run_codex_symbolic_pipeline,
         )

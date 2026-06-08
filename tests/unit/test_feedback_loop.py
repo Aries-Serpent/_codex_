@@ -20,7 +20,6 @@ import pytest
 
 from codex_ml.feedback import FeedbackCollector, FeedbackEvent, FeedbackLoop
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
