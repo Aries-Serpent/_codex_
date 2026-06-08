@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4808)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4808 (SHA `ffa6aa2d`) at 2026-06-08T09:21Z [auto-generated]
+### Fixed (auto-update — PR #4807)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4807 (SHA `5f1037f2`) at 2026-06-08T09:16Z [auto-generated]
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.

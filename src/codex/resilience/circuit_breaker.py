@@ -167,7 +167,10 @@ class CircuitBreaker:
     def _get_state_locked(self) -> CircuitState:
         """Return current state, auto-transitioning OPEN → HALF_OPEN if timeout elapsed."""
         if self._state is CircuitState.OPEN:
-            if self._opened_at is not None and (time.monotonic() - self._opened_at) >= self.recovery_timeout:
+            if (
+                self._opened_at is not None
+                and (time.monotonic() - self._opened_at) >= self.recovery_timeout
+            ):
                 logger.info(
                     "[%s] Recovery timeout elapsed — transitioning OPEN → HALF_OPEN.",
                     self.name,
@@ -199,7 +202,11 @@ class CircuitBreaker:
                     self._failure_count = 0
                     self._success_count = 0
                     self._opened_at = None
-                    logger.info("[%s] Circuit closed after %d consecutive successes.", self.name, self.success_threshold)
+                    logger.info(
+                        "[%s] Circuit closed after %d consecutive successes.",
+                        self.name,
+                        self.success_threshold,
+                    )
             elif state is CircuitState.CLOSED:
                 # Reset failure count on each success in CLOSED state.
                 self._failure_count = 0

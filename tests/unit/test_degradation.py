@@ -19,7 +19,6 @@ import pytest
 
 from codex.resilience import DegradationError, GracefulDegradation
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

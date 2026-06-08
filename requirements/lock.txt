@@ -640,7 +640,7 @@ packaging==26.1
     #   transformers
     #   typepy
     #   wandb
-pandas==3.0.3
+pandas==2.3.3
     # via
     #   codex-ml (pyproject.toml)
     #   datasets
@@ -912,7 +912,7 @@ safetensors==0.6.2
     #   accelerate
     #   peft
     #   transformers
-scikit-learn==1.9.0
+scikit-learn==1.8.0
     # via
     #   codex-ml (pyproject.toml)
     #   evidently
