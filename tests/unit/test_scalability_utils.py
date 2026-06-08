@@ -19,26 +19,23 @@ Covers all public APIs:
 
 from __future__ import annotations
 
-import time
 import threading
-from unittest.mock import MagicMock, patch, call
-from dataclasses import fields
+import time
 
 import pytest
 
 from codex_ml.utils.scalability import (
-    LRUCache,
-    RateLimiter,
     CircuitBreaker,
     Endpoint,
     LoadBalancer,
-    ResourcePool,
+    LRUCache,
     MetricPoint,
     PerformanceMonitor,
+    RateLimiter,
+    ResourcePool,
     cached,
     rate_limited,
 )
-
 
 # ---------------------------------------------------------------------------
 # LRUCache

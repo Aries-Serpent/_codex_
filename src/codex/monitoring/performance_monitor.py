@@ -3,6 +3,7 @@
 Monitors training metrics (loss, throughput, latency) and fires alerts
 via TrainingAlertManager when anomalies exceed configured thresholds.
 """
+
 from __future__ import annotations
 
 import os
@@ -44,9 +45,7 @@ class PerformanceSnapshot:
     loss: float | None = None
     throughput: float | None = None  # samples/sec
     latency_ms: float | None = None
-    timestamp: str = field(
-        default_factory=lambda: datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    )
+    timestamp: str = field(default_factory=lambda: datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
     metadata: dict[str, Any] = field(default_factory=dict)
 
 

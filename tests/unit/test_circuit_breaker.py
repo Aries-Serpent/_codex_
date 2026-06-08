@@ -25,7 +25,6 @@ import pytest
 
 from codex.resilience import CircuitBreaker, CircuitOpenError, CircuitState
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

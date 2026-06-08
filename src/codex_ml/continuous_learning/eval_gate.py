@@ -115,40 +115,28 @@ class EvalGate:
                     f"min_accuracy={self.min_accuracy}: 'accuracy' key missing from metrics"
                 )
             elif accuracy < self.min_accuracy:
-                failures.append(
-                    f"min_accuracy={self.min_accuracy}: got accuracy={accuracy:.4f}"
-                )
+                failures.append(f"min_accuracy={self.min_accuracy}: got accuracy={accuracy:.4f}")
 
         # ---- max_loss check --------------------------------------------
         if self.max_loss is not None:
             if loss is None:
-                failures.append(
-                    f"max_loss={self.max_loss}: 'loss' key missing from metrics"
-                )
+                failures.append(f"max_loss={self.max_loss}: 'loss' key missing from metrics")
             elif loss > self.max_loss:
-                failures.append(
-                    f"max_loss={self.max_loss}: got loss={loss:.4f}"
-                )
+                failures.append(f"max_loss={self.max_loss}: got loss={loss:.4f}")
 
         # ---- min_improvement_pct check ---------------------------------
         if self.min_improvement_pct is not None:
             if accuracy is None:
-                failures.append(
-                    "min_improvement_pct check: 'accuracy' key missing from metrics"
-                )
+                failures.append("min_improvement_pct check: 'accuracy' key missing from metrics")
             elif baseline_accuracy is None:
                 failures.append(
                     "min_improvement_pct check: 'baseline_accuracy' key missing from metrics"
                 )
             else:
                 if baseline_accuracy <= 0.0:
-                    failures.append(
-                        "min_improvement_pct check: baseline_accuracy must be > 0"
-                    )
+                    failures.append("min_improvement_pct check: baseline_accuracy must be > 0")
                 else:
-                    improvement = (
-                        (accuracy - baseline_accuracy) / baseline_accuracy * 100.0
-                    )
+                    improvement = (accuracy - baseline_accuracy) / baseline_accuracy * 100.0
                     if improvement < self.min_improvement_pct:
                         failures.append(
                             f"min_improvement_pct={self.min_improvement_pct}%: "
