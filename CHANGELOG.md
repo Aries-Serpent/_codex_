@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (merge conflict resolution — PR #4814 — 2026-06-08T23:55Z)
+- Resolved merge conflicts between stacked PR branches (`dependabot/pip/coverage-7.14.1` ← `dependabot/pip/nvidia-cusparselt-cu13-0.9.1`) by taking current branch versions for auto-generated files (.codex/agent_auth_session.json, .codex/session_context_latest.md, .secrets.baseline, CHANGELOG.md, CODEX_MANIFEST.json). Merge commit: `f90a461ae`.
+
 ### Fixed (auto-update — PR #4814)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4814 (SHA `71353416`) at 2026-06-08T09:29Z [auto-generated]
 
