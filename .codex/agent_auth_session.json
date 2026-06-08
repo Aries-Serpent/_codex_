@@ -1,10 +1,19 @@
 {
+<<<<<<< HEAD
   "issued_at": "2026-06-08T10:13:05Z",
   "expires_at": 1780956785,
   "issued_by": "agent-auth-delegation",
   "run_id": "27130551850",
   "run_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/27130551850",
   "pr_number": "4811",
+=======
+  "issued_at": "2026-06-08T10:12:59Z",
+  "expires_at": 1780956779,
+  "issued_by": "agent-auth-delegation",
+  "run_id": "27130671103",
+  "run_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/27130671103",
+  "pr_number": "4810",
+>>>>>>> origin/dependabot/pip/httptools-0.8.0
   "bypass_tools": "",
   "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL. Renew by re-triggering agent-auth-delegation."
 }

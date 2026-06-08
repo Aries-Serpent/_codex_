@@ -1,6 +1,10 @@
 {
   "schema_version": "1.0",
+<<<<<<< HEAD
   "generated_at": "2026-06-08T09:24:36Z",
+=======
+  "generated_at": "2026-06-08T09:19:36Z",
+>>>>>>> origin/dependabot/pip/httptools-0.8.0
   "agents": [
     {
       "name": "github-app-manager",
@@ -2226,5 +2230,9 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
+<<<<<<< HEAD
   "integrity_sha256": "ecf8fc26785b9454e110dfa1dd76d9c8a50e4ce6df12fada566285a2e19d2265"
+=======
+  "integrity_sha256": "09a9c9db00926dffdf44fca46a815abfe8087fb93e00b8a63ee98eedcb380bcf"
+>>>>>>> origin/dependabot/pip/httptools-0.8.0
 }
