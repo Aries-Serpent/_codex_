@@ -160,7 +160,6 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
 
     # Dynamically find the next step boundary so the block size stays correct
     # even if lines are added/removed inside this step.
-    step_end = step_start + 1
     for j in range(step_start + 1, min(step_start + 30, len(lines))):
         if lines[j].lstrip().startswith("- name:") or lines[j].lstrip().startswith("# ==="):
             step_end = j
