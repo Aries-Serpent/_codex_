@@ -513,8 +513,20 @@ class WorkflowNavigator:
         if step_id is not None:
             for i, step in enumerate(workflow.steps):
                 if step.id == step_id:
+                    logger.debug(
+                        "Navigating to step id %s (index %s) in workflow %s",
+                        step_id,
+                        i,
+                        self.current_workflow_id,
+                    )
                     self.current_step_index = i
                     return True
+            logger.warning(
+                "Step id %s not found in workflow %s with %s steps.",
+                step_id,
+                self.current_workflow_id,
+                len(workflow.steps),
+            )
             return False
 
         return False
