@@ -138,14 +138,15 @@ def test_copilot_setup_steps_exists() -> None:
 
 
 def test_copilot_setup_steps_session_preload_block_intact() -> None:
-    """Lines ~141-152: session_preload block-scalar fallback must stay intact.
+    """The session_preload step must use the Method D block-scalar pattern.
 
-    The canonical form is `run: |` with `if ! ...; then ...; fi`. Reverting to
-    the older `|| { ... }` flow-scalar form regresses YAML/tooling validation.
+    The canonical form is `run: |` (block scalar) with `|| { }` flow scalar
+    fallback (Method D).  This pattern is proven stable — copied from the
+    Session Access Probe step which has never regressed.
     """
     lines = _SETUP_STEPS.read_text(encoding="utf-8").splitlines()
 
-    # Locate the session_preload step by searching for the step anchor.
+    # Locate the session_preload step by its name anchor.
     step_start: int | None = None
     for i, line in enumerate(lines):
         if "Session Context Pre-load" in line:
@@ -157,20 +158,35 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
         "the canonical preload block may have been removed or reformatted"
     )
 
-    block = "\n".join(lines[step_start : step_start + 8])
+    # Dynamically find the next step boundary so the block size stays correct
+    # even if lines are added/removed inside this step.
+    for j in range(step_start + 1, min(step_start + 30, len(lines))):
+        if lines[j].lstrip().startswith("- name:") or lines[j].lstrip().startswith("# ==="):
+            step_end = j
+            break
+    else:
+        step_end = step_start + 20  # generous fallback
+
+    block = "\n".join(lines[step_start:step_end])
 
     assert "run: |" in block, (
-        f"Step at line {step_start + 1}: expected canonical 'run: |' block scalar form"
+        f"'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
     )
-    assert "if ! python3 .github/scripts/session_preload.py; then" in block, (
-        f"Step at line {step_start + 1}: expected brace-free non-blocking 'if ! ...; then' guard"
+    assert "python3 .github/scripts/session_preload.py" in block, (
+        f"'Session Context Pre-load' step: expected session_preload.py invocation"
     )
     assert "session_preload.py failed (non-blocking)" in block, (
-        f"Step at line {step_start + 1}: fallback echo is missing — "
+        f"'Session Context Pre-load' step: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
-    assert "fi" in block, (
-        f"Step at line {step_start + 1}: expected closing 'fi' for the canonical fallback block"
+    assert "SESSION_PRELOAD_STATUS=failed" in block, (
+        f"'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
+    )
+    assert "::group::Session Context Pre-load" in block, (
+        f"'Session Context Pre-load' step: expected ::group:: log grouping marker"
+    )
+    assert "::endgroup::" in block, (
+        f"'Session Context Pre-load' step: expected ::endgroup:: closing marker"
     )
 
 

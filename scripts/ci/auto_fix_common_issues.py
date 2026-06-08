@@ -188,6 +188,21 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
 
+    _PATTERN_34_IGNORED_DIRS = frozenset(
+        {
+            ".git",
+            ".mypy_cache",
+            ".pytest_cache",
+            ".ruff_cache",
+            ".tox",
+            ".venv",
+            ".venv_ci",
+            "__pycache__",
+            "node_modules",
+            "venv",
+        }
+    )
+
     def __init__(self, repo_root: Path, check_only: bool = False, dry_run: bool = False):
         self.repo_root = repo_root
         self.check_only = check_only
@@ -333,6 +348,7 @@ class CommonIssueFixer:
             (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
             (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),
+            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),
         ]
         patterns = all_patterns
         skip_env = os.getenv("CODEX_SKIP_PATTERN_NUMS", "")
@@ -3407,6 +3423,39 @@ class CommonIssueFixer:
 
         return issues
 
+    # ------------------------------------------------------------------
+    # Pattern 34: Missing Newline at EOF
+    # ------------------------------------------------------------------
+    def _iter_pattern_34_python_files(self):
+        """Yield repository Python files relevant to Pattern 34."""
+
+        for py_file in sorted(self.repo_root.rglob("*.py")):
+            if not py_file.is_file():
+                continue
+            rel_parts = py_file.relative_to(self.repo_root).parts
+            if any(part in self._PATTERN_34_IGNORED_DIRS for part in rel_parts):
+                continue
+            yield py_file
+
+    def fix_missing_newline_at_eof(self) -> list[str]:
+        """Pattern 34: Adds missing newline at EOF for python files."""
+        messages = []
+        for py_file in self._iter_pattern_34_python_files():
+            with open(py_file, "rb") as f:
+                f.seek(0, os.SEEK_END)
+                if f.tell() == 0:
+                    continue
+                f.seek(-1, os.SEEK_END)
+                if f.read(1) == b"\n":
+                    continue
+                if self.check_only or self.dry_run:
+                    messages.append(f"Would fix missing newline in {py_file.relative_to(self.repo_root)}")
+                else:
+                    with open(py_file, "ab") as f:
+                        f.write(b"\n")
+                    messages.append(f"Fixed missing newline in {py_file.relative_to(self.repo_root)}")
+        return messages
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -3427,9 +3476,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 34),
+        choices=range(1, 35),
         metavar="N",
-        help="Run only pattern N (1–33); see pattern list above"
+        help="Run only pattern N (1–34); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

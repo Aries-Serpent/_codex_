@@ -485,23 +485,48 @@ class WorkflowNavigator:
             True if navigation successful, False otherwise
         """
         if not self.current_workflow_id:
+            logger.warning("navigate_to called with no active workflow.")
             return False
 
         workflow = self.workflows.get(self.current_workflow_id)
         if not workflow or not workflow.steps:
+            logger.warning("Active workflow has no steps or is invalid.")
             return False
 
         if step_index is not None:
             if 0 <= step_index < len(workflow.steps):
+                logger.debug(
+                    "Navigating to step index %s in workflow %s",
+                    step_index,
+                    self.current_workflow_id,
+                )
                 self.current_step_index = step_index
                 return True
+            logger.warning(
+                "Step index %s out of bounds for workflow %s with %s steps.",
+                step_index,
+                self.current_workflow_id,
+                len(workflow.steps),
+            )
             return False
 
         if step_id is not None:
             for i, step in enumerate(workflow.steps):
                 if step.id == step_id:
+                    logger.debug(
+                        "Navigating to step id %s (index %s) in workflow %s",
+                        step_id,
+                        i,
+                        self.current_workflow_id,
+                    )
                     self.current_step_index = i
                     return True
+            logger.warning(
+                "Step id %s not found in workflow %s with %s steps.",
+                step_id,
+                self.current_workflow_id,
+                len(workflow.steps),
+            )
             return False
 
         return False

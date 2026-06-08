@@ -263,6 +263,28 @@ class TestWorkflowNavigatorNavigation:
         ok = nav.navigate_to(step_index=99)
         assert ok is False
 
+    def test_navigate_to_uses_debug_logging_and_includes_bounds_context(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        nav = WorkflowNavigator(workspace_dir=tmp_path)
+        steps = [WorkflowStep(id="s0", action="a0"), WorkflowStep(id="s1", action="a1")]
+        nav.current_workflow_id = nav.create_workflow("idx_logging", steps=steps)
+
+        with caplog.at_level("DEBUG"):
+            assert nav.navigate_to(step_index=1) is True
+            assert nav.navigate_to(step_index=99) is False
+
+        assert any(
+            record.levelname == "DEBUG"
+            and record.message == "Navigating to step index 1 in workflow IDX_LOGGING"
+            for record in caplog.records
+        )
+        assert any(
+            record.levelname == "WARNING"
+            and record.message == "Step index 99 out of bounds for workflow IDX_LOGGING with 2 steps."
+            for record in caplog.records
+        )
+
     def test_suggest_next_action_no_workflow(self, tmp_path: Path) -> None:
         nav = WorkflowNavigator(workspace_dir=tmp_path)
         assert nav.suggest_next_action() is None

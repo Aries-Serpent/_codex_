@@ -82,9 +82,18 @@ def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
     return (preds == targets).float().mean().item()
 
 
+def mean_absolute_error(preds: torch.Tensor, targets: torch.Tensor) -> float:
+    """
+    Compute mean absolute error.
+    """
+    import torch.nn.functional as F
+    return F.l1_loss(preds.float(), targets.float()).item()
+
+
 __all__ = [
     "accuracy",
     "f1_score",
+    "mean_absolute_error",
     "perplexity",
     "precision",
     "recall",
