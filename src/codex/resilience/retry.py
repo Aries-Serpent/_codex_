@@ -121,7 +121,7 @@ def retry_with_backoff(
                     last_exc = exc
                     if attempt < total_attempts - 1:
                         delay = min(
-                            base_delay * (2 ** attempt) + random.uniform(0, jitter),
+                            base_delay * (2**attempt) + random.uniform(0, jitter),
                             max_delay,
                         )
                         logger.warning(
@@ -145,8 +145,7 @@ def retry_with_backoff(
                         )
 
             raise RetryExhausted(
-                f"{func_name!r} failed after {total_attempts} attempt(s): "
-                f"{last_exc!r}",
+                f"{func_name!r} failed after {total_attempts} attempt(s): {last_exc!r}",
                 attempts=total_attempts,
             ) from last_exc
 

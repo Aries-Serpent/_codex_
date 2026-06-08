@@ -15,7 +15,6 @@ Tests cover:
 
 from __future__ import annotations
 
-import math
 import pytest
 
 from codex_ml.monitoring.model_drift import (
@@ -24,7 +23,6 @@ from codex_ml.monitoring.model_drift import (
     ModelDriftDetector,
     jensen_shannon_divergence,
 )
-
 
 # ---------------------------------------------------------------------------
 # T01 — JSD helper: edge-case values

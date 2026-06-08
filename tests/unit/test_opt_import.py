@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import logging
 
-import pytest
-
 from codex_ml.utils.opt_import import try_import
 
 

@@ -1,11 +1,7 @@
 """Tests for codex_ml.utils.jsonio — CLI JSON stdout helpers."""
 from __future__ import annotations
 
-import io
 import json
-import sys
-
-import pytest
 
 from codex_ml.utils.jsonio import _ensure_newline, print_error_json, print_json
 
