@@ -4,6 +4,7 @@ See docs/adr/ADR-0001-distributed-tracing.md for the deferred decision.
 Activate real OTEL tracing by setting CODEX_TRACING_NOOP=0 and providing
 OTEL_EXPORTER_OTLP_ENDPOINT in the environment.
 """
+
 from __future__ import annotations
 
 import os
