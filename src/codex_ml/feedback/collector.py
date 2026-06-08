@@ -31,9 +31,7 @@ class FeedbackCollector:
         sink_path: str | Path | None = None,
     ) -> None:
         self._max_memory = max_memory
-        self._buffer: collections.deque[FeedbackEvent] = collections.deque(
-            maxlen=max_memory
-        )
+        self._buffer: collections.deque[FeedbackEvent] = collections.deque(maxlen=max_memory)
         self._sink_path: Path | None = Path(sink_path) if sink_path else None
         self._lock = threading.Lock()
 

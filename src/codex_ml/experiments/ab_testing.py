@@ -20,7 +20,7 @@ from typing import Dict, List, Sequence, Tuple
 # Optional scipy import
 # ---------------------------------------------------------------------------
 try:
-    from scipy import stats as _scipy_stats  # type: ignore[import-untyped]
+    from scipy import stats as _scipy_stats
 
     _SCIPY_AVAILABLE = True
 except ModuleNotFoundError:
@@ -30,6 +30,7 @@ except ModuleNotFoundError:
 # ---------------------------------------------------------------------------
 # Pure-stdlib helpers (used when scipy is absent)
 # ---------------------------------------------------------------------------
+
 
 def _mean(data: Sequence[float]) -> float:
     n = len(data)
@@ -67,7 +68,7 @@ def _welch_df(var1: float, n1: int, var2: float, n2: int) -> float:
     a = var1 / n1
     b = var2 / n2
     numerator = (a + b) ** 2
-    denominator = (a ** 2) / (n1 - 1) + (b ** 2) / (n2 - 1)
+    denominator = (a**2) / (n1 - 1) + (b**2) / (n2 - 1)
     if denominator == 0.0:
         return float(n1 + n2 - 2)
     return numerator / denominator
@@ -171,6 +172,7 @@ def _stdlib_ttest_ind(
 # Public dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class ABTest:
     """Container for a single A/B test configuration and raw metrics."""
@@ -200,14 +202,13 @@ class ABTestResult:
     def __post_init__(self) -> None:
         valid = {"control", "treatment", "inconclusive"}
         if self.winner not in valid:
-            raise ValueError(
-                f"winner must be one of {valid}, got {self.winner!r}"
-            )
+            raise ValueError(f"winner must be one of {valid}, got {self.winner!r}")
 
 
 # ---------------------------------------------------------------------------
 # Core function
 # ---------------------------------------------------------------------------
+
 
 def run_ab_test(
     control_metrics: Sequence[float],
@@ -238,13 +239,9 @@ def run_ab_test(
     trt = list(treatment_metrics)
 
     if len(ctrl) < 2:
-        raise ValueError(
-            f"{metric_name}: control group needs ≥2 observations, got {len(ctrl)}"
-        )
+        raise ValueError(f"{metric_name}: control group needs ≥2 observations, got {len(ctrl)}")
     if len(trt) < 2:
-        raise ValueError(
-            f"{metric_name}: treatment group needs ≥2 observations, got {len(trt)}"
-        )
+        raise ValueError(f"{metric_name}: treatment group needs ≥2 observations, got {len(trt)}")
 
     n1, n2 = len(ctrl), len(trt)
     mean_ctrl = _mean(ctrl)
@@ -254,9 +251,7 @@ def run_ab_test(
 
     # --- t-test ---
     if _SCIPY_AVAILABLE:
-        _, p_value = _scipy_stats.ttest_ind(
-            ctrl, trt, equal_var=False
-        )
+        _, p_value = _scipy_stats.ttest_ind(ctrl, trt, equal_var=False)
         p_value = float(p_value)
     else:
         _, p_value = _stdlib_ttest_ind(ctrl, trt)
@@ -297,6 +292,7 @@ def run_ab_test(
 # ---------------------------------------------------------------------------
 # Suite
 # ---------------------------------------------------------------------------
+
 
 class ABTestSuite:
     """Manage and run multiple :class:`ABTest` instances.
