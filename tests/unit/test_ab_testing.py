@@ -16,10 +16,10 @@ Tests cover:
 from __future__ import annotations
 
 import math
+
 import pytest
 
 from codex_ml.experiments import ABTest, ABTestSuite, run_ab_test
-
 
 # ---------------------------------------------------------------------------
 # Shared fixtures / helpers

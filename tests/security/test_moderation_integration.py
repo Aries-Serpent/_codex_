@@ -21,7 +21,6 @@ import pytest
 
 from codex_ml.safety.moderation import ModerationDecision, ModerationRejection, ModerationSettings
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -592,7 +591,11 @@ class TestModerationCounter:
 
     def test_counter_increments_on_review(self) -> None:
         """_moderation_decisions_total increments when review() is called."""
-        from codex_ml.safety.moderation import ModerationAdapter, ModerationSettings, _moderation_decisions_total
+        from codex_ml.safety.moderation import (
+            ModerationAdapter,
+            ModerationSettings,
+            _moderation_decisions_total,
+        )
 
         settings = ModerationSettings(enabled=True, fail_open=True)
         adapter = ModerationAdapter(settings)

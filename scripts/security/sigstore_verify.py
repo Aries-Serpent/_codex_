@@ -177,8 +177,8 @@ def _verify_with_sigstore(name: str, version: str) -> VerificationResult:
             # Attestation present — attempt real SDK verification
             try:
                 # sigstore SDK verification (bundle from provenance URL)
-                from sigstore.verify import Verifier  # type: ignore[import-untyped]
                 from sigstore.models import Bundle  # type: ignore[import-untyped]
+                from sigstore.verify import Verifier  # type: ignore[import-untyped]
 
                 bundle_url = provenance
                 with urllib.request.urlopen(bundle_url, timeout=15) as r:  # noqa: S310

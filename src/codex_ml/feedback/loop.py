@@ -108,15 +108,15 @@ class FeedbackLoop:
         else:
             payload = {"raw": str(drift_result)}
 
-        score_val = payload.get(
-            "drift_score", getattr(drift_result, "drift_score", None)
-        )
+        score_val = payload.get("drift_score", getattr(drift_result, "drift_score", None))
         score: float | None = float(score_val) if score_val is not None else None
 
         self._collector.record(
             FeedbackEvent(
                 event_type="drift",
-                source=str(payload.get("source", getattr(drift_result, "source", "drift_detector"))),
+                source=str(
+                    payload.get("source", getattr(drift_result, "source", "drift_detector"))
+                ),
                 payload=payload,
                 score=score,
             )
