@@ -39,7 +39,7 @@ Covers:
 from __future__ import annotations
 
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -49,7 +49,6 @@ from codex_ml.utils.self_healing import (
     SelfHealingContext,
     auto_remediate,
 )
-
 
 # ---------------------------------------------------------------------------
 # FailureType

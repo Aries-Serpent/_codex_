@@ -23,7 +23,6 @@ from codex.alerting import AlertChannel, AlertEvent, AlertSeverity, TrainingAler
 from codex.alerting.email import EmailChannel
 from codex.alerting.slack import SlackChannel
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

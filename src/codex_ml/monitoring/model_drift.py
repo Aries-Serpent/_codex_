@@ -54,9 +54,7 @@ def _kl_divergence(p: list[float], q: list[float]) -> float:
     *q* are guarded with a small epsilon to avoid division-by-zero / -inf.
     """
     if len(p) != len(q):
-        raise ValueError(
-            f"p and q must have the same length, got {len(p)} vs {len(q)}"
-        )
+        raise ValueError(f"p and q must have the same length, got {len(p)} vs {len(q)}")
     eps = 1e-12
     total = 0.0
     for pi, qi in zip(p, q):
@@ -85,9 +83,7 @@ def jensen_shannon_divergence(p: list[float], q: list[float]) -> float:
         JSD value in the range [0, 1] (using base-2 logarithm).
     """
     if len(p) != len(q):
-        raise ValueError(
-            f"p and q must have the same length, got {len(p)} vs {len(q)}"
-        )
+        raise ValueError(f"p and q must have the same length, got {len(p)} vs {len(q)}")
     n = len(p)
     if n == 0:
         raise ValueError("p and q must be non-empty")
@@ -131,7 +127,7 @@ class ConfidenceStats:
     min_confidence: float
     max_confidence: float
     low_confidence_rate: float  # fraction of samples below threshold
-    entropy: float              # normalised entropy of the confidence distribution
+    entropy: float  # normalised entropy of the confidence distribution
     n_samples: int
 
     @classmethod
@@ -221,10 +217,7 @@ class DriftResult:
         """Return a one-line human-readable summary."""
         if not self.drift_detected:
             return f"[epoch={self.epoch}] No drift detected."
-        return (
-            f"[epoch={self.epoch}] DRIFT DETECTED — "
-            + "; ".join(self.reasons)
-        )
+        return f"[epoch={self.epoch}] DRIFT DETECTED — " + "; ".join(self.reasons)
 
     def to_dict(self) -> dict:
         out: dict = {
@@ -295,22 +288,16 @@ class ModelDriftDetector:
         n_distribution_bins: int = 10,
     ) -> None:
         if not (0.0 < js_threshold <= 1.0):
-            raise ValueError(
-                f"js_threshold must be in (0, 1], got {js_threshold}"
-            )
+            raise ValueError(f"js_threshold must be in (0, 1], got {js_threshold}")
         if not (0.0 <= confidence_threshold <= 1.0):
-            raise ValueError(
-                f"confidence_threshold must be in [0, 1], got {confidence_threshold}"
-            )
+            raise ValueError(f"confidence_threshold must be in [0, 1], got {confidence_threshold}")
         if not (0.0 <= low_confidence_rate_threshold <= 1.0):
             raise ValueError(
                 f"low_confidence_rate_threshold must be in [0, 1], "
                 f"got {low_confidence_rate_threshold}"
             )
         if n_distribution_bins < 2:
-            raise ValueError(
-                f"n_distribution_bins must be >= 2, got {n_distribution_bins}"
-            )
+            raise ValueError(f"n_distribution_bins must be >= 2, got {n_distribution_bins}")
 
         self.js_threshold = js_threshold
         self.confidence_threshold = confidence_threshold
@@ -387,9 +374,7 @@ class ModelDriftDetector:
             current_dist = self._to_histogram(confidence_scores)
             js_div = jensen_shannon_divergence(self._baseline_dist, current_dist)
             if js_div > self.js_threshold:
-                reasons.append(
-                    f"JSD={js_div:.4f} exceeds threshold={self.js_threshold:.4f}"
-                )
+                reasons.append(f"JSD={js_div:.4f} exceeds threshold={self.js_threshold:.4f}")
                 drift_detected = True
 
         # 3. Confidence drop check
