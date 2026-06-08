@@ -170,23 +170,23 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
     block = "\n".join(lines[step_start:step_end])
 
     assert "run: |" in block, (
-        f"'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
+        "'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
     )
     assert "python3 .github/scripts/session_preload.py" in block, (
-        f"'Session Context Pre-load' step: expected session_preload.py invocation"
+        "'Session Context Pre-load' step: expected session_preload.py invocation"
     )
     assert "session_preload.py failed (non-blocking)" in block, (
-        f"'Session Context Pre-load' step: fallback echo is missing — "
+        "'Session Context Pre-load' step: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
     assert "SESSION_PRELOAD_STATUS=failed" in block, (
-        f"'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
+        "'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
     )
     assert "::group::Session Context Pre-load" in block, (
-        f"'Session Context Pre-load' step: expected ::group:: log grouping marker"
+        "'Session Context Pre-load' step: expected ::group:: log grouping marker"
     )
     assert "::endgroup::" in block, (
-        f"'Session Context Pre-load' step: expected ::endgroup:: closing marker"
+        "'Session Context Pre-load' step: expected ::endgroup:: closing marker"
     )
 
 

@@ -124,8 +124,9 @@ def validate_train_config(path: Path, data: dict) -> str | None:  # type: ignore
         if src_dir not in sys.path:
             sys.path.insert(0, src_dir)
 
-        from codex_ml.config_schema import TrainConfig  # type: ignore[import]
         from pydantic import ValidationError  # type: ignore[import]
+
+        from codex_ml.config_schema import TrainConfig  # type: ignore[import]
 
         # Only pass fields that TrainConfig actually declares, so Hydra-group
         # extras (grad_clip_norm, weight_decay, log_interval, etc.) don't
