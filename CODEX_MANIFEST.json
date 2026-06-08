@@ -1,10 +1,6 @@
 {
   "schema_version": "1.0",
-<<<<<<< HEAD
-  "generated_at": "2026-06-08T09:19:36Z",
-=======
-  "generated_at": "2026-06-08T09:16:42Z",
->>>>>>> origin/dependabot/pip/data-dependencies-1bed5daba7
+  "generated_at": "2026-06-08T23:53:15Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -2230,9 +2226,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-<<<<<<< HEAD
-  "integrity_sha256": "09a9c9db00926dffdf44fca46a815abfe8087fb93e00b8a63ee98eedcb380bcf"
-=======
-  "integrity_sha256": "cf43cff644405bc0aab443748bd4dafa7edb577427a9a8100464c34ac42be582"
->>>>>>> origin/dependabot/pip/data-dependencies-1bed5daba7
+  "integrity_sha256": "cc1b6b17349ec511d98b8bf273ddc489d80497035dfabcdbb881e5cb4fac6410"
 }
