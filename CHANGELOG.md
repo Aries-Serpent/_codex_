@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (stacked PR merge — PR #4805 — 2026-06-08T23:40Z)
+- Merged base branch `dependabot/github_actions/docker/setup-qemu-action-4.1.0` into codecov PR #4805, resolving merge conflicts by keeping codecov PR version for session-generated files.
+
 ### Fixed (auto-update — PR #4805)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4805 (SHA `6222f1b4`) at 2026-06-08T09:15Z [auto-generated]
 
