@@ -12,10 +12,10 @@ from __future__ import annotations
 import importlib
 import logging
 import sys
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
-from abc import ABC, abstractmethod
 
 logger = logging.getLogger(__name__)
 

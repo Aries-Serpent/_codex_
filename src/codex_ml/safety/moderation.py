@@ -49,7 +49,7 @@ class _NoopModCounter:
 def _make_moderation_counter() -> Any:
     """Create a Prometheus Counter for moderation decisions, or a noop fallback."""
     try:
-        from prometheus_client import Counter  # type: ignore[import-untyped]
+        from prometheus_client import Counter
 
         return Counter(
             "moderation_decisions_total",

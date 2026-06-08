@@ -1841,6 +1841,8 @@ def run_training(
     try:
         from codex.monitoring.performance_monitor import (
             PerformanceMonitor as _PerfMon,
+        )
+        from codex.monitoring.performance_monitor import (
             PerformanceSnapshot as _PerfSnap,
         )
 
@@ -2116,8 +2118,7 @@ def run_training(
                     _n = len(synthetic_losses)
                     _q = max(_n // 4, 1)
                     _loss_dist = [
-                        sum(synthetic_losses[i * _q : (i + 1) * _q]) + 1e-9
-                        for i in range(4)
+                        sum(synthetic_losses[i * _q : (i + 1) * _q]) + 1e-9 for i in range(4)
                     ]
                 else:
                     _loss_dist = [max(avg_loss or 1e-9, 1e-9), 1e-9, 1e-9, 1e-9]
@@ -2158,19 +2159,19 @@ def run_training(
                     # Derive per-step confidence proxies from the synthetic loss values
                     # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
                     import math as _math
-                    _epoch_conf_scores = [
-                        max(0.0, min(1.0, _math.exp(-l)))
-                        for l in synthetic_losses
-                    ] if synthetic_losses else None
+
+                    _epoch_conf_scores = (
+                        [max(0.0, min(1.0, _math.exp(-l))) for l in synthetic_losses]
+                        if synthetic_losses
+                        else None
+                    )
 
                     if _epoch_conf_scores:
                         if not _drift_detector.has_baseline():
                             # First epoch always becomes the baseline reference.
                             _drift_detector.update_baseline(_epoch_conf_scores)
                         else:
-                            _drift_result = _drift_detector.check(
-                                _epoch_conf_scores, epoch=epoch
-                            )
+                            _drift_result = _drift_detector.check(_epoch_conf_scores, epoch=epoch)
                             if _drift_result.drift_detected:
                                 logger.warning(
                                     "Model drift detected at epoch %d: %s",
@@ -2202,7 +2203,9 @@ def run_training(
                     epoch=locals().get("epoch", 0),
                 )
             except Exception:  # pragma: no cover — alerting must never crash training
-                logger.debug("Suppressed alerting exception in training failure handler", exc_info=True)
+                logger.debug(
+                    "Suppressed alerting exception in training failure handler", exc_info=True
+                )
         raise
 
     for cb in cb_list:
@@ -2295,7 +2298,9 @@ def run_training(
                 wall_time_sec=result.get("wall_time_sec", 0),
             )
         except Exception:  # pragma: no cover — alerting must never crash training
-            logger.debug("Suppressed alerting exception in training complete handler", exc_info=True)
+            logger.debug(
+                "Suppressed alerting exception in training complete handler", exc_info=True
+            )
 
     return result
 

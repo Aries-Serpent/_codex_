@@ -130,9 +130,7 @@ class RetrainResult:
     triggered: bool
     reason: str
     config_snapshot: dict[str, Any] = field(default_factory=dict)
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-serialisable representation."""
@@ -194,13 +192,9 @@ class AutoRetrainPipeline:
         extra_config: dict[str, Any] | None = None,
     ) -> None:
         if not (0.0 < drift_threshold <= 1.0):
-            raise ValueError(
-                f"drift_threshold must be in (0, 1], got {drift_threshold}"
-            )
+            raise ValueError(f"drift_threshold must be in (0, 1], got {drift_threshold}")
         if min_samples < 0:
-            raise ValueError(
-                f"min_samples must be >= 0, got {min_samples}"
-            )
+            raise ValueError(f"min_samples must be >= 0, got {min_samples}")
         self.drift_threshold = drift_threshold
         self.min_samples = min_samples
         self.model_id = model_id

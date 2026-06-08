@@ -129,7 +129,10 @@ class StubAnalyzer:
                             for base in parent_class.bases:
                                 if isinstance(base, ast.Name) and base.id in ("ABC", "Protocol"):
                                     return True
-                                if isinstance(base, ast.Attribute) and base.attr in ("ABC", "Protocol"):
+                                if isinstance(base, ast.Attribute) and base.attr in (
+                                    "ABC",
+                                    "Protocol",
+                                ):
                                     return True
 
             # Also check for top-level functions (not in classes)
