@@ -10,8 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (PR #4803 — 2026-06-08T23:28Z)
 - Fixed unused variable `mock_random_seed` in `tests/unit/utils/test_reproducibility_hardening.py:25` (CodeQL alert F841).
 - Addressed CI auto-fixable issues for PR #4803 (bump softprops/action-gh-release from 2 to 3).
-
-### Fixed (auto-update — PR #4803)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4803 (SHA `6019f7b9`) at 2026-06-08T09:10Z [auto-generated]
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
