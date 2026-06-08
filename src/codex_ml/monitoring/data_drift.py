@@ -90,9 +90,7 @@ class DriftResult:
     drifted: bool
     severity: str
     details: dict[str, Any] = field(default_factory=dict)
-    detected_at: str = field(
-        default_factory=lambda: datetime.now(UTC).isoformat()
-    )
+    detected_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise the result to a plain dictionary."""

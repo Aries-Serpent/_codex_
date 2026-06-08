@@ -75,7 +75,9 @@ class AutoTuneWorkflow:
             # Stub: audio processing pipeline not yet wired — timing the no-op pass for now.
             # Real implementation will invoke the DSP chain here.
             processing_time = time.perf_counter() - t0
-            results.append(FileProcessingResult(success=True, input_path=f, processing_time=processing_time))
+            results.append(
+                FileProcessingResult(success=True, input_path=f, processing_time=processing_time)
+            )
 
         return WorkflowResult(
             success=True,
