@@ -16,8 +16,8 @@ Run with:
 
 from __future__ import annotations
 
-import sys
 import os
+import sys
 
 # Ensure the repo src is on the path when run directly
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
@@ -26,12 +26,11 @@ sys.path.insert(0, os.path.join(_REPO_ROOT, "src"))
 from codex.resilience import (
     CircuitBreaker,
     CircuitOpenError,
-    GracefulDegradation,
     DegradationError,
-    retry_with_backoff,
+    GracefulDegradation,
     RetryExhausted,
+    retry_with_backoff,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -65,7 +64,7 @@ def demo_circuit_breaker() -> None:
         name="demo-service",
     )
 
-    print(f"\n  Config: failure_threshold=3, recovery_timeout=0.01s, success_threshold=2")
+    print("\n  Config: failure_threshold=3, recovery_timeout=0.01s, success_threshold=2")
     _row("Initial state", cb.state.name)
 
     # ---- Simulate healthy calls ----
@@ -215,7 +214,7 @@ def demo_graceful_degradation() -> None:
     try:
         critical_fail()
     except DegradationError as exc:
-        print(f"    ✓ DegradationError raised")
+        print("    ✓ DegradationError raised")
         _row("original cause", str(exc.__cause__))
 
     _sep()

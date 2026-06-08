@@ -45,7 +45,11 @@ class DegradationError(Exception):
         original: The original exception that caused the degradation.
     """
 
-    def __init__(self, message: str = "Unrecoverable failure — no fallback provided", original: BaseException | None = None) -> None:
+    def __init__(
+        self,
+        message: str = "Unrecoverable failure — no fallback provided",
+        original: BaseException | None = None,
+    ) -> None:
         super().__init__(message)
         self.original = original
 
@@ -117,7 +121,9 @@ class GracefulDegradation:
         self.result = None
         return self
 
-    def __exit__(self, exc_type: type | None, exc_val: BaseException | None, exc_tb: object) -> bool:
+    def __exit__(
+        self, exc_type: type | None, exc_val: BaseException | None, exc_tb: object
+    ) -> bool:
         if exc_type is None:
             return False  # no exception — nothing to do
         if not issubclass(exc_type, self._exceptions):
@@ -137,7 +143,9 @@ class GracefulDegradation:
             ctx_label,
             type(exc).__name__,
             exc,
-            "using fallback" if self._fallback is not _SENTINEL else "no fallback, raising DegradationError",
+            "using fallback"
+            if self._fallback is not _SENTINEL
+            else "no fallback, raising DegradationError",
         )
         if self._fallback is _SENTINEL:
             raise DegradationError(

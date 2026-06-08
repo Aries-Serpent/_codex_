@@ -15,10 +15,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import re  # noqa: E402
 import sys  # noqa: E402
 import warnings  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
-import re  # noqa: E402
 from importlib import import_module as _import_module  # noqa: E402
 from importlib import invalidate_caches as _invalidate_caches  # noqa: E402
 from importlib import metadata  # noqa: E402

@@ -85,8 +85,7 @@ class TrainingAlertManager:
             min_severity = AlertSeverity(raw_sev)
         except ValueError:
             logger.warning(
-                "TrainingAlertManager: unknown CODEX_ALERT_MIN_SEVERITY=%r; "
-                "defaulting to 'error'",
+                "TrainingAlertManager: unknown CODEX_ALERT_MIN_SEVERITY=%r; defaulting to 'error'",
                 raw_sev,
             )
             min_severity = AlertSeverity.ERROR
@@ -179,8 +178,7 @@ class TrainingAlertManager:
         event = AlertEvent(
             title="Training run completed",
             message=(
-                f"Training finished successfully — "
-                f"epochs={epochs}, final_loss={final_loss:.6f}"
+                f"Training finished successfully — epochs={epochs}, final_loss={final_loss:.6f}"
             ),
             severity=AlertSeverity.INFO,
             run_id=run_id,
