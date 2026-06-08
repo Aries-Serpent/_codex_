@@ -131,54 +131,18 @@ jobs:
           clean: true
           show-progress: true
 
-      # ============================================================================
-      # 🧠 SESSION CONTEXT PRE-LOAD — TEMPORARILY DISABLED
-      #
-      # WHY DISABLED:
-      # - Multiple attempted fixes for this step have still caused fast-fail agent sessions
-      #   before usable logs were produced.
-      # - Because the failure happens too early, troubleshooting from session logs has not
-      #   been possible.
-      #
-      # FAILED ATTEMPTS RECORDED HERE TO AVOID LOOPING:
-      # 1. Original non-blocking flow-scalar form:
-      #      run: python3 .github/scripts/session_preload.py || { ... }
-      #    Result: known regression / fast-fail behavior.
-      #
-      # 2. Block-scalar shell-guard form ("Method B"):
-      #      run: |
-      #        if ! python3 .github/scripts/session_preload.py; then
-      #          echo "⚠️ ..."
-      #        fi
-      #    Result: still fast-failed in agent session testing.
-      #
-      # 3. Block-scalar grouped fallback form ("Method D", copied from Access Probe pattern):
-      #      run: |
-      #        echo "::group::Session Context Pre-load"
-      #        python3 .github/scripts/session_preload.py || {
-      #          echo "⚠️ ..."
-      #          echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
-      #        }
-      #        echo "::endgroup::"
-      #    Result: still fast-failed in agent session testing.
-      #
-      # CURRENT DECISION:
-      # - Disable this step completely so Copilot agent sessions can start.
-      # - Investigate session_preload.py in isolation later, outside the critical startup path.
-      # - Do not re-enable this step until a separately validated approach is proven.
-      #
-      # RULE:
-      # - If you are fixing a CI failure, do NOT reintroduce or refactor this step as part of
-      #   the same change unless the failing issue is specifically this preload mechanism.
-      # ============================================================================
-      #
-      # - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-      #   continue-on-error: true   # non-blocking: agent must start even if preload fails
-      #   run: python3 .github/scripts/session_preload.py || {
-      #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-      #   }
-      #
-      # Session preload intentionally disabled; Session Access Probe is now the first active startup step.
+      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # Canonical form: block scalar run: | with if ! ...; then syntax.
+      # This step has been broken 4+ times by agents converting it to flow scalar
+      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
+      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
+      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
+      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
