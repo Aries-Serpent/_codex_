@@ -87,6 +87,7 @@ def mean_absolute_error(preds: torch.Tensor, targets: torch.Tensor) -> float:
     Compute mean absolute error.
     """
     import torch.nn.functional as F
+
     return F.l1_loss(preds.float(), targets.float()).item()
 
 

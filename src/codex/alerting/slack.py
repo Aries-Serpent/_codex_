@@ -30,9 +30,9 @@ logger = logging.getLogger(__name__)
 
 # Slack attachment colour codes
 _COLOUR_MAP: dict[AlertSeverity, str] = {
-    AlertSeverity.INFO: "#36a64f",      # green
-    AlertSeverity.WARNING: "#ffcc00",   # yellow
-    AlertSeverity.ERROR: "#e01e5a",     # red
+    AlertSeverity.INFO: "#36a64f",  # green
+    AlertSeverity.WARNING: "#ffcc00",  # yellow
+    AlertSeverity.ERROR: "#e01e5a",  # red
     AlertSeverity.CRITICAL: "#c0392b",  # dark red
 }
 
@@ -80,8 +80,7 @@ class SlackChannel(AlertChannel):
         """
         if not self._webhook_url:
             logger.warning(
-                "SlackChannel: no webhook URL configured "
-                "(set %s or pass webhook_url=...)",
+                "SlackChannel: no webhook URL configured (set %s or pass webhook_url=...)",
                 _ENV_WEBHOOK,
             )
             return False
@@ -99,18 +98,14 @@ class SlackChannel(AlertChannel):
             with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
                 status = resp.getcode()
                 if status != 200:
-                    logger.warning(
-                        "SlackChannel: unexpected HTTP %s from webhook", status
-                    )
+                    logger.warning("SlackChannel: unexpected HTTP %s from webhook", status)
                     return False
             return True
 
         try:
             return _retry_send(_do_post)()
         except RetryExhausted as exc:
-            logger.warning(
-                "SlackChannel: all retry attempts exhausted — %s", exc.__cause__
-            )
+            logger.warning("SlackChannel: all retry attempts exhausted — %s", exc.__cause__)
             return False
         except Exception as exc:  # pragma: no cover — unexpected errors
             logger.warning("SlackChannel: unexpected error — %s", exc)
@@ -126,9 +121,7 @@ class SlackChannel(AlertChannel):
         if event.run_id:
             fields.append({"title": "Run ID", "value": event.run_id, "short": True})
         if event.epoch:
-            fields.append(
-                {"title": "Epoch", "value": str(event.epoch), "short": True}
-            )
+            fields.append({"title": "Epoch", "value": str(event.epoch), "short": True})
         for key, value in event.metadata.items():
             fields.append({"title": key, "value": str(value), "short": True})
 

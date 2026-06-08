@@ -33,7 +33,11 @@ from pathlib import Path
 CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
 from typing import Any, Optional  # noqa: E402
 
-from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings  # noqa: E402
+from codex_ml.safety.moderation import (  # noqa: E402
+    ModerationAdapter,
+    ModerationRejection,
+    ModerationSettings,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -227,7 +231,7 @@ Return ONLY valid JSON, no explanation or markdown."""
             logger.warning("Prompt exceeds token budget, truncating")
             prompt = _truncate_context(prompt, MAX_TOKENS * 3)
 
-        # Gap 27: mandatory pre-call moderation (fail-closed) — raises ModerationRejection if blocked
+        # Gap 27: mandatory pre-call moderation (fail-closed) — raises ModerationRejection if blocked  # noqa: E501
         _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
         _mod.enforce(prompt, stage="input")
 
