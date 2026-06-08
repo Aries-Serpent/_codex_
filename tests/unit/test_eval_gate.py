@@ -25,10 +25,7 @@ Tests cover:
 
 from __future__ import annotations
 
-import pytest
-
 from codex_ml.continuous_learning.eval_gate import EvalGate, EvalGateResult
-
 
 # ---------------------------------------------------------------------------
 # Test 1 — EvalGateResult construction and to_dict
