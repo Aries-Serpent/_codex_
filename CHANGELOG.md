@@ -7,8 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4812)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4812 (SHA `8b236b26`) at 2026-06-08T09:25Z [auto-generated]
+### Fixed (CI resolution — PR #4814 — 2026-06-09T03:31Z)
+- Resolved remaining CI failures in PR #4814 (deps: bump coverage from 7.13.1 to 7.14.1) by verifying compliance checks and updating accountability documentation. All validation checks pass: ruff clean, mypy baseline OK (0 errors), auto-fix common issues OK.
+
+### Fixed (merge conflict resolution — PR #4814 — 2026-06-08T23:55Z)
+- Resolved merge conflicts between stacked PR branches (`dependabot/pip/coverage-7.14.1` ← `dependabot/pip/nvidia-cusparselt-cu13-0.9.1`) by taking current branch versions for auto-generated files (.codex/agent_auth_session.json, .codex/session_context_latest.md, .secrets.baseline, CHANGELOG.md, CODEX_MANIFEST.json). Merge commit: `f90a461ae`.
+
+### Fixed (auto-update — PR #4814)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4814 (SHA `71353416`) at 2026-06-08T09:29Z [auto-generated]
+
+### Fixed (auto-update — PR #4817)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4817 (SHA `396d6e1f`) at 2026-06-08T09:36Z [auto-generated]
+
+### Fixed (merge conflict resolution — PR #4815 — 2026-06-09T00:01Z)
+- Resolved 12 merge conflicts between `dependabot/pip/coverage-7.14.1` and `dependabot/pip/pytest-randomly-4.1.0` branches by retaining pytest-randomly 4.1.0 version across configuration and requirements files (merge commit 9c2f643c9).
+
+### Fixed (auto-update — PR #4815)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4815 (SHA `43dbeb6b`) at 2026-06-08T09:37Z [auto-generated]
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.
