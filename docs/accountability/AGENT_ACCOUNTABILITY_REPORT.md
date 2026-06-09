@@ -1,3 +1,7 @@
+## SESSION SUMMARY — 2026-06-09T09:44Z · Stabilize PR #4826 CodeQL Advanced workflow gate
+- Investigated failing `CodeQL Advanced` run logs (run `27194131871`) and confirmed SARIF upload rejection caused by repository default Code Scanning setup + advanced config incompatibility.
+- Updated `.github/workflows/codeql.yml` to manual-only (`workflow_dispatch`) to stop automatic failing PR/main runs until default setup is disabled.
+
 ## SESSION SUMMARY — 2026-06-09T04:30Z · Resolve merge conflicts in PR #4811 (lm-eval bump)
 ## SESSION SUMMARY — 2026-06-09T01:23Z · Resolve merge conflicts and fix failing CI checks (PR #4807)
 ## SESSION SUMMARY — 2026-06-08T23:40Z · Resolve merge conflicts in stacked PR #4805

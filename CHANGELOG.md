@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (CodeQL Advanced PR failure gate — PR #4826 — 2026-06-09T09:44Z)
+- `.github/workflows/codeql.yml`: switched `CodeQL Advanced` to `workflow_dispatch` only so PR/main runs are not auto-triggered while GitHub default Code Scanning setup is enabled (prevents SARIF upload failure: "advanced configurations cannot be processed when the default setup is enabled")
+
 ### Added (copilot/improve-explore-codebase absorbed — PR #4826 — 2026-06-09T09:05Z)
 - `.github/copilot-instructions.md`: added "Handling GitHub URLs" section — agents must use `github-mcp-server` tools to fetch error logs when given action run or PR comment URLs
 - `.github/copilot-instructions.md`: added prohibition on modifying `copilot-setup-steps.yml` without explicit human instruction

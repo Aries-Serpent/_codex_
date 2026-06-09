@@ -10,14 +10,11 @@
 name: "CodeQL Advanced"
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  schedule:
-    # Monday 03:00 UTC — staggered from codeql-analysis.yml (Thursday 03:00) to
-    # avoid concurrent GHAS upload contention (RL-2c rate-limit hardening).
-    - cron: '0 3 * * 1'
+  # NOTE:
+  # Advanced CodeQL uploads fail when GitHub's default Code Scanning setup is
+  # enabled ("CodeQL analyses from advanced configurations cannot be processed
+  # when the default setup is enabled"). Keep this workflow manual-only so it
+  # does not fail PR/main checks until default setup is disabled.
   workflow_dispatch:
 
 permissions:
