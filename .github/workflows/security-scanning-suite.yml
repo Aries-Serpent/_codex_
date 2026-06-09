@@ -64,7 +64,7 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           languages: ${{ matrix.language }}
@@ -111,7 +111,7 @@ jobs:
           cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
       - name: Upload CodeQL artifacts
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           # Stable, dropdown-friendly prefix per matrix language
           name: security-suite-codeql-${{ matrix.language }}
@@ -129,7 +129,7 @@ jobs:
       (github.event_name == 'schedule') ||
       (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -192,7 +192,7 @@ jobs:
           cat dependency-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-suite-dependency
           path: |
@@ -222,7 +222,7 @@ jobs:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-python-cached
@@ -279,7 +279,7 @@ jobs:
           cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload secret-scan artifacts
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-suite-secrets
           path: |
@@ -304,7 +304,7 @@ jobs:
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -364,7 +364,7 @@ jobs:
           cat sbom-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload SBOM
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-suite-sbom
           path: |
@@ -404,7 +404,7 @@ jobs:
       issues: write
     steps:
       - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: CacheManager health check
         continue-on-error: true
@@ -529,7 +529,7 @@ jobs:
 
       - name: Upload Semgrep results as artifact
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-suite-semgrep
           path: |
@@ -635,7 +635,7 @@ jobs:
 
       - name: Upload consolidated summary
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-suite-summary
           path: security-suite-summary/
@@ -663,7 +663,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
