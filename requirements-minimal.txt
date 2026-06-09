@@ -5,7 +5,7 @@
 # Testing framework
 pytest>=9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required
 pytest-cov>=4.1.0,<6.0.0
-pytest-randomly>=4.1.0
+pytest-randomly>=3.15
 
 # Code quality tools
 ruff>=0.6.2
