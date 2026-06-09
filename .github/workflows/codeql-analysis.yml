@@ -64,6 +64,7 @@ jobs:
         uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           category: "/language:${{ matrix.language }}"
+          upload: false
 
       - name: Cache health report
         if: always()

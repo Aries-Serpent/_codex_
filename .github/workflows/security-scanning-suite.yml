@@ -76,9 +76,9 @@ jobs:
         with:
           category: "/language:${{ matrix.language }}"
           # Persist SARIF locally so it can be packaged into the run artifact
-          # below for off-platform triage in addition to the GHAS upload.
+          # below for off-platform triage. SARIF upload to GitHub Advanced Security is handled by CodeQL Default Setup.
           output: codeql-sarif/${{ matrix.language }}
-          upload: always
+          upload: false
       - name: Build CodeQL human-readable summary
         if: always()
         shell: bash

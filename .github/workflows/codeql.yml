@@ -82,6 +82,7 @@ jobs:
           # Distinct categories let both workflows coexist on the Security tab without
           # one overwriting the other's results.
           category: "/language:${{ matrix.language }}/advanced"
+          upload: false
 
       - name: Cache health report
         if: always()
