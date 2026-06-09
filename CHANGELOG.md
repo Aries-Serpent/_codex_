@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<<<<<<< HEAD
 
 ### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T04:30Z)
 - Resolved 3 merge conflicts between `dependabot/pip/lm-eval-0.4.12` and base branch `dependabot/pip/httptools-0.8.0`:
@@ -47,6 +48,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #4807)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4807 (SHA `5f1037f2`) at 2026-06-08T09:16Z [auto-generated]
+=======
+### Fixed (PR #4807 merge & CI remediation — 2026-06-09T01:23Z)
+- Resolved 5 merge conflicts between PR #4807 (dependabot/github_actions/actions/upload-artifact-7.0.1) and base branch PR #4806 (dependabot/pip/ml-dependencies-05a1b58efb).
+- Fixed unused variable F841 in `tests/unit/utils/test_reproducibility_hardening.py:25` (`mock_random_seed`).
+- Updated `.codex/aftermath/pda_iterations.jsonl` with session PDA entry for 2026-06-09.
+- Added accountability report entry for merge conflict resolution and CI failure remediation.
+>>>>>>> refs/remotes/origin/dependabot/github_actions/actions/upload-artifact-7.0.1
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.

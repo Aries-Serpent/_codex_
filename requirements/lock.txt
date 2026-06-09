@@ -161,7 +161,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==4.8.5
+datasets==5.0.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1051,7 +1051,7 @@ traitlets==5.14.3
     # via
     #   jupyter-core
     #   nbformat
-transformers==5.9.0
+transformers==5.10.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
