@@ -403,3 +403,23 @@ python -m codex.cli train --config-name=my_config hydra.run.dir=./runs/my_run
 - For repository-specific policy changes, open an issue in `Aries-Serpent/_codex_` and tag maintainers.
 - For urgent security or data-leak concerns, follow the escalation path in `CONTRIBUTING`.
 - **For CCA version lock or deduplication issues, escalate to the Copilot Cloud Agent team with full session logs and error context.**
+
+<HighLevelDetails>
+- A summary of what the repository does: This repository contains the Aries-Serpent _codex_ project. It focuses on automation, AI agent workflows, and maintaining rigorous code standards.
+- High level repository information: Large codebase, written primarily in Python, Markdown, and Shell. Heavy use of GitHub Actions for CI/CD. Target runtimes include Python >=3.12 and Node.js 22+.
+</HighLevelDetails>
+
+<BuildInstructions>
+- Format with **Black**, lint with **Ruff**, sort imports with **isort**.
+- Ruff config selects only E,F,I; tests ignore E402 and F811.
+- Before committing, always run:
+  `pre-commit run --files <changed_files>`
+- Run the test suite using nox:
+  `nox -s tests`
+</BuildInstructions>
+
+<ProjectLayout>
+- Command-line tasks live in `src/codex/cli.py`.
+- Base configuration files are stored under `configs/` and are Hydra-compatible.
+- Workflows are defined in `.github/workflows/`.
+</ProjectLayout>
