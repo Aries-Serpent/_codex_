@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T04:30Z)
+- Resolved 3 merge conflicts between `dependabot/pip/lm-eval-0.4.12` and base branch `dependabot/pip/httptools-0.8.0`:
+  - `.github/workflows/copilot-setup-steps.yml`: Retained HEAD version (actions/upload-artifact v5)
+  - `.secrets.baseline`: Regenerated auto-generated baseline file
+  - `CODEX_MANIFEST.json`: Retained HEAD version with integrity validation
+- Created merge commit with full history preservation
+- All YAML and JSON syntax validated
+
 ### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T01:24Z)
 - Resolved merge conflicts in stacked PR `dependabot/pip/lm-eval-0.4.12` on base branch `dependabot/pip/httptools-0.8.0`.
 - Addressed secrets baseline enforcer issue via `sync_tracked_files.py --fix`.
