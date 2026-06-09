@@ -7,54 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<<<<<<< HEAD
 
-### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T04:30Z)
-- Resolved 3 merge conflicts between `dependabot/pip/lm-eval-0.4.12` and base branch `dependabot/pip/httptools-0.8.0`:
-  - `.github/workflows/copilot-setup-steps.yml`: Retained HEAD version (actions/upload-artifact v5)
-  - `.secrets.baseline`: Regenerated auto-generated baseline file
-  - `CODEX_MANIFEST.json`: Retained HEAD version with integrity validation
-- Created merge commit with full history preservation
-- All YAML and JSON syntax validated
+### Fixed (PR #4804 — 2026-06-09T01:23Z)
+- Resolved merge conflicts between PR #4804 (docker/setup-qemu-action v4.1.0) and base branch PR #4803 (softprops/action-gh-release v3).
+- Fixed critical YAML parsing error in `.github/workflows/copilot-setup-steps.yml` causing "did not find expected key" failure that blocked all agent sessions.
+  - Issue: orphaned `run:` directive outside valid step definition (line 177)
+  - Solution: properly commented out the entire disabled session preload step
+  - Impact: unblocked workflow parsing and downstream CI execution
 
-### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T01:24Z)
-- Resolved merge conflicts in stacked PR `dependabot/pip/lm-eval-0.4.12` on base branch `dependabot/pip/httptools-0.8.0`.
-- Addressed secrets baseline enforcer issue via `sync_tracked_files.py --fix`.
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy REQ-4 compliance gate (most-recent session entry dated 2026-06-09).
-
-### Fixed (auto-update — PR #4811)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4811 (SHA `7038237b`) at 2026-06-08T09:24Z [auto-generated]
-
-### Fixed (CI resolution — PR #4814 — 2026-06-09T03:31Z)
-- Resolved remaining CI failures in PR #4814 (deps: bump coverage from 7.13.1 to 7.14.1) by verifying compliance checks and updating accountability documentation. All validation checks pass: ruff clean, mypy baseline OK (0 errors), auto-fix common issues OK.
-
-### Fixed (merge conflict resolution — PR #4814 — 2026-06-08T23:55Z)
-- Resolved merge conflicts between stacked PR branches (`dependabot/pip/coverage-7.14.1` ← `dependabot/pip/nvidia-cusparselt-cu13-0.9.1`) by taking current branch versions for auto-generated files (.codex/agent_auth_session.json, .codex/session_context_latest.md, .secrets.baseline, CHANGELOG.md, CODEX_MANIFEST.json). Merge commit: `f90a461ae`.
-
-### Fixed (auto-update — PR #4814)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4814 (SHA `71353416`) at 2026-06-08T09:29Z [auto-generated]
-
-### Fixed (auto-update — PR #4817)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4817 (SHA `396d6e1f`) at 2026-06-08T09:36Z [auto-generated]
-
-### Fixed (merge conflict resolution — PR #4815 — 2026-06-09T00:01Z)
-- Resolved 12 merge conflicts between `dependabot/pip/coverage-7.14.1` and `dependabot/pip/pytest-randomly-4.1.0` branches by retaining pytest-randomly 4.1.0 version across configuration and requirements files (merge commit 9c2f643c9).
-
-### Fixed (auto-update — PR #4815)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4815 (SHA `43dbeb6b`) at 2026-06-08T09:37Z [auto-generated]
-
-### Fixed (auto-update — PR #4808)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4808 (SHA `f774bc8d`) at 2026-06-08T23:53Z [auto-generated]
-
-### Fixed (auto-update — PR #4807)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4807 (SHA `5f1037f2`) at 2026-06-08T09:16Z [auto-generated]
-=======
-### Fixed (PR #4807 merge & CI remediation — 2026-06-09T01:23Z)
-- Resolved 5 merge conflicts between PR #4807 (dependabot/github_actions/actions/upload-artifact-7.0.1) and base branch PR #4806 (dependabot/pip/ml-dependencies-05a1b58efb).
-- Fixed unused variable F841 in `tests/unit/utils/test_reproducibility_hardening.py:25` (`mock_random_seed`).
-- Updated `.codex/aftermath/pda_iterations.jsonl` with session PDA entry for 2026-06-09.
-- Added accountability report entry for merge conflict resolution and CI failure remediation.
->>>>>>> refs/remotes/origin/dependabot/github_actions/actions/upload-artifact-7.0.1
+### Fixed (PR #4803 — 2026-06-08T23:38Z)
+- Fixed CodeQL unnecessary pass statements in `tests/unit/utils/test_safe_pickle.py` at lines 39 and 82.
+- Fixed unused variable `mock_random_seed` in `tests/unit/utils/test_reproducibility_hardening.py:25` (CodeQL alert F841).
+- Addressed CI auto-fixable issues for PR #4803 (bump softprops/action-gh-release from 2 to 3).
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4803 (SHA `6019f7b9`) at 2026-06-08T09:10Z [auto-generated]
 
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.
@@ -9415,3 +9380,8 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Added (PR #4792 coverage — stub_cleanup Gap 5 — 2026-06-06)
 - `tests/unit/test_stub_cleanup.py` — 78 unit tests for `codex_ml.utils.stub_cleanup` covering `StubInfo`, `StubAnalyzer` (all methods including AST-based `_is_abstract_method`), `find_stubs`, `prioritize_stubs`, and `generate_stub_report` [Gap 5, 0% → ~95% line coverage]
+
+### Fixed (PR #4803 merge conflict resolution — 2026-06-09T01:28Z)
+- Fixed YAML indentation issue in `.github/workflows/copilot-setup-steps.yml` (Pattern 3).
+- Resolved merge conflicts between dependabot branch and main.
+- Added session entry to AGENT_ACCOUNTABILITY_REPORT.md for CI rescue session.
