@@ -48305,3 +48305,25 @@ and the CI gate requirement.
 
 ### ⚡ Auto-Approve
 - [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `validate.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `security-scanning-suite.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `reference-integrity.yml` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Tests` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Linting` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Type` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Pre-commit` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Documentation` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `CHANGELOG` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `My` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `New` — detected 2026-06-09T17:35:48Z @ 23ada9a7 — sticky [x] maintained by all future agent sessions

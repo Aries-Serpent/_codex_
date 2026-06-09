@@ -121,7 +121,6 @@ jobs:
       # ============================================================================
       # Phase 1: Repository & Code Setup
       # ============================================================================
-
       - name: "📦 Checkout Repository (baseline: no LFS content)"
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
@@ -623,7 +622,6 @@ jobs:
       # ============================================================================
       # Phase 2: Language Runtimes Setup
       # ============================================================================
-
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -673,7 +671,6 @@ jobs:
       # ============================================================================
       # Phase 3: System Dependencies
       # ============================================================================
-
       - name: "📚 Install System Dependencies"
         run: |
           sudo apt-get update
@@ -696,7 +693,6 @@ jobs:
       # ============================================================================
       # Phase 4: Python Dependencies (Environment-Specific)
       # ============================================================================
-
       - name: "🔧 Upgrade pip and install build tools"
         run: |
           # Create .venv_ci if it wasn't restored from cache, or if the
@@ -769,7 +765,6 @@ jobs:
       # ============================================================================
       # Phase 5: Rust Dependencies
       # ============================================================================
-
       - name: "🦀 Build Rust Components"
         if: hashFiles('Cargo.toml') != ''
         run: |
@@ -783,7 +778,6 @@ jobs:
       # coding agent needs: lint, test, docs, auth, CI scripts.
       # No PyTorch / heavy ML — cold build ~75 s; cache hit ~4 s.
       # Pre-warmed weekly by build-agent-env-cache.yml so hits are the norm.
-
       - name: "🤖 L6 — Setup Copilot agent env (.venv_agent)"
         id: agent-env
         uses: ./.github/actions/setup-agent-env
@@ -806,7 +800,6 @@ jobs:
       # ============================================================================
       # Phase 6: Environment Variables & Configuration
       # ============================================================================
-
       - name: "⚙️ Set Codex Environment Variables"
         run: |
           # Core configuration
@@ -874,7 +867,6 @@ jobs:
       # ============================================================================
       # Phase 7: Validation & Diagnostics
       # ============================================================================
-
       - name: "✅ Validate Environment Setup"
         run: |
           # ── Root-cause fix for Copilot Coding Agent "Validate Environment
@@ -948,7 +940,6 @@ jobs:
       # ============================================================================
       # Phase 8: Cache Preparation (Optional)
       # ============================================================================
-
       - name: "💾 Prepare Cache Artifacts"
         run: |
           mkdir -p .codex/cache
@@ -975,7 +966,6 @@ jobs:
       # ============================================================================
       # Phase 9: Agent-Specific Initialization
       # ============================================================================
-
       - name: "🔄 Rotate Cognitive Brain Status Files"
         continue-on-error: true
         run: |
