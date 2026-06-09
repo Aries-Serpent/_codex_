@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (WEC gate unblock — PR #4826 — 2026-06-09T08:56Z)
+- `scripts/ci/session_wrapup_autofix.py`: removed `codeql-analysis.yml` from `_MERGE_REQUIRED_WORKFLOWS` — the workflow is `disabled_manually` in GitHub Actions; CodeQL coverage maintained by active `codeql.yml` (CodeQL Advanced)
+
 ### Fixed (CI escalation — PR #4826 — 2026-06-09T08:30Z)
 - `.github/workflows/copilot-setup-steps.yml`: fixed YAML indentation error (session preload step at line 175 had 7-space indent instead of 6, causing parse error `expected <block end>, but found '<block sequence start>'`)
 - `.github/workflows/copilot-setup-steps.yml`: updated session preload run body to canonical Method D form (`::group::`, `SESSION_PRELOAD_STATUS=failed`, `::endgroup::`)

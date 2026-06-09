@@ -201,8 +201,9 @@ _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
     # Opt-in: validation & testing (required for passing merge gate)
     "validate.yml",
     "resilient_validation.yml",
-    # Opt-in: security (required for CodeQL / security-suite merge gates)
-    "codeql-analysis.yml",
+    # Opt-in: security (required for security-suite merge gate)
+    # NOTE: codeql-analysis.yml removed — disabled_manually in Actions;
+    # CodeQL coverage is maintained by the active codeql.yml (CodeQL Advanced).
     "security-scanning-suite.yml",
     # Opt-in: infrastructure (reference integrity gate)
     "reference-integrity.yml",
