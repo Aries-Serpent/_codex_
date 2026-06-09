@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (copilot/improve-explore-codebase absorbed — PR #4826 — 2026-06-09T09:05Z)
+- `.github/copilot-instructions.md`: added "Handling GitHub URLs" section — agents must use `github-mcp-server` tools to fetch error logs when given action run or PR comment URLs
+- `.github/copilot-instructions.md`: added prohibition on modifying `copilot-setup-steps.yml` without explicit human instruction
+- `.github/copilot-instructions.md`: added "Documentation & Architecture Conventions" section — ownership assignment and Mermaid diagrams required for architecture docs
+
 ### Fixed (WEC gate unblock — PR #4826 — 2026-06-09T08:56Z)
 - `scripts/ci/session_wrapup_autofix.py`: removed `codeql-analysis.yml` from `_MERGE_REQUIRED_WORKFLOWS` — the workflow is `disabled_manually` in GitHub Actions; CodeQL coverage maintained by active `codeql.yml` (CodeQL Advanced)
 
