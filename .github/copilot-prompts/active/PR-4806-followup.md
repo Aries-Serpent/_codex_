@@ -4,7 +4,7 @@
 **Branch**: `dependabot/pip/ml-dependencies-05a1b58efb`  
 **Author**: @dependabot[bot]  
 **Date**: 2026-06-08  
-**Commit**: `a39dffc5d2103f3c011d8741f7c3291a5c93b418`  
+**Commit**: `a39dffc5d2103f3c011d8741f7c3291a5c93b418`   <!-- pragma: allowlist secret -->
 **Status**: 🔄 ACTIVE
 
 ---
