@@ -31,7 +31,7 @@ def test_restricted_unpickler_find_class():
 
     # Test allowed (use a real class)
     cls = unpickler.find_class("builtins", "int")
-    assert cls == int
+    assert cls is int
 
     # Test wildcard allowed
     with patch.dict(unpickler.SAFE_MODULES, {"os": {"*"}}, clear=False):
