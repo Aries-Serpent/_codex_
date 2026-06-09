@@ -9417,3 +9417,10 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Fixed YAML indentation issue in `.github/workflows/copilot-setup-steps.yml` (Pattern 3).
 - Resolved merge conflicts between dependabot branch and main.
 - Added session entry to AGENT_ACCOUNTABILITY_REPORT.md for CI rescue session.
+
+### Added (PR #4826 — 2026-06-09T17:19Z)
+- Created `.github/copilot-automations/` directory with automation reference definitions for PR CI healer, issue triage, and scheduled repository hygiene.
+- Created `.github/instructions/` directory with path-specific instructions for Python (`.github/instructions/python.instructions.md`) and YAML workflows (`.github/instructions/workflows.instructions.md`).
+- Appended `<HighLevelDetails>`, `<BuildInstructions>`, and `<ProjectLayout>` XML blocks to `.github/copilot-instructions.md`.
+- Created `CLAUDE.md` and `GEMINI.md` root stubs to direct multi-LLM agents to `AGENTS.md`.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session summary (REQ-4).
