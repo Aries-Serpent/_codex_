@@ -12,7 +12,7 @@ name: Copilot Agent Environment Setup
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
 
-"on":
+on:
   workflow_dispatch:
     inputs:
       environment_type:
@@ -79,9 +79,9 @@ jobs:
     #   with project dependencies pre-baked, cutting cold-start time to near zero.
     #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
     #
-    # Recommended repo variable default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
     # Set repo variable COPILOT_RUNNER_PROFILE to override:
-    #   ubuntu-latest-m → standard sessions when the repo variable is set
+    #   ubuntu-latest-m → standard sessions (default)
     #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
     #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
     # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
@@ -102,7 +102,7 @@ jobs:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write  # Allow agent to post PR review comments
+      pull-requests: write # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -123,7 +123,7 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
@@ -168,15 +168,16 @@ jobs:
       # - Do not re-enable this step until a separately validated approach is proven.
       #
       # RULE:
-      # - If you are fixing a CI failure, do NOT reintroduce or refactor this step as part of
+      # - DO NOT REFACTOR THIS STEP: If you are fixing a CI failure, do NOT reintroduce or refactor this step as part of
       #   the same change unless the failing issue is specifically this preload mechanism.
       # ============================================================================
       #
       # - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
       #   continue-on-error: true   # non-blocking: agent must start even if preload fails
-      #   run: python3 .github/scripts/session_preload.py || {
-      #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-      #   }
+      #   run: |
+      #     python3 .github/scripts/session_preload.py || {
+      #       echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+      #     }
       #
       # Session preload intentionally disabled; Session Access Probe is now the first active startup step.
 
@@ -266,8 +267,6 @@ jobs:
       #         branch is not 'main' (e.g. copilot/resolve-failing-checks).
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
-        env:
-          BASE_REF: ${{ github.base_ref }}
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
             && echo "✅ Remote branch refs fetched (as origin/*)" \
@@ -278,7 +277,7 @@ jobs:
             || echo "⚠️ Could not create local main ref (non-blocking)"
           # Promote the PR base branch to a local ref so 'git diff <base_ref>'
           # resolves correctly regardless of which branch the PR targets.
-          BASE="${BASE_REF}"
+          BASE="${{ github.base_ref }}"
           if [ -n "$BASE" ] && [ "$BASE" != "main" ]; then
             git branch -f "$BASE" "origin/$BASE" 2>/dev/null \
               && echo "✅ $BASE available as local branch ref" \
@@ -301,17 +300,13 @@ jobs:
           echo "── §0.4: Inspecting PR for merge conflicts ──"
           BASE="${BASE_REF}"
           HEAD="${HEAD_REF}"
-          # Sanitize BASE for use in workflow-command annotations (prevent command injection)
-          BASE_SAFE="${BASE_REF//[^a-zA-Z0-9._-]/}"
 
           # 1. Check PR mergeable status via GitHub API
           if [ -n "$PR_NUMBER" ]; then
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
-              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER}" \
-                   "has merge conflicts with base branch '${BASE_SAFE}'." \
-                   "Agent MUST resolve these before any other work."
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE}'. Agent MUST resolve these before any other work."
               echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
             elif [ "$MERGEABLE" = "MERGEABLE" ]; then
               echo "✅ No merge conflicts detected"
@@ -328,9 +323,7 @@ jobs:
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
             echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
             if [ "$BEHIND" -gt 0 ]; then
-              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND}" \
-                   "commit(s) behind '${BASE_SAFE}'." \
-                   "Agent should rebase or merge base before starting work."
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'. Agent should rebase or merge base before starting work."
               echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
             else
               echo "✅ Branch is up-to-date with ${BASE}"
@@ -344,8 +337,7 @@ jobs:
             if [ -n "$MERGE_BASE" ]; then
               CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
               if [ "$CONFLICT_FILES" -gt 0 ]; then
-                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected" \
-                     "${CONFLICT_FILES} file(s) with conflicts against '${BASE_SAFE}'"
+                echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE}'"
               else
                 echo "✅ merge-tree: no file-level conflicts detected"
               fi
@@ -380,9 +372,7 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s)" \
-                 "found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)." \
-                 "Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
 
             # List issue titles for agent context
             echo ""
@@ -417,8 +407,17 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |
-          python3 .github/scripts/inject_context_vars.py
+        run: |  # pragma: allowlist secret
+          if [ -f .codex/agent_context.json ]; then
+            echo "Injecting repo variable context from .codex/agent_context.json"
+            # base64-encoded Python script: reads agent_context.json and writes all
+            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
+            # session sees them as environment variables.
+            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
+          else
+            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
+          fi
 
       - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
         # Supplement agent_context.json injection with live vars.* values for the
@@ -473,12 +472,7 @@ jobs:
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
-        if: >-
-          ${{
-            github.event_name == 'workflow_dispatch' &&
-            (inputs.lfs_mode == 'full' ||
-             (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != ''))
-          }}
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
         run: |
           set -euo pipefail
           echo "Git version: $(git --version)"
@@ -500,12 +494,10 @@ jobs:
       - name: "🎯 Targeted LFS fetch & checkout (guarded)"
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
         continue-on-error: ${{ inputs.lfs_continue_on_error }}
-        env:
-          LFS_INCLUDE_PATHS: ${{ inputs.lfs_include_paths }}
         run: |
           set -euo pipefail
           # Convert comma-separated include patterns into git-lfs include string
-          INCLUDES="${LFS_INCLUDE_PATHS}"
+          INCLUDES="${{ inputs.lfs_include_paths }}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
 
@@ -593,7 +585,7 @@ jobs:
 
           # ── Map env type → minimum required tier ──────────────────────────
           ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
-          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
 
           case "$ENV_TYPE" in
             ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
@@ -630,7 +622,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -641,7 +633,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -653,21 +645,19 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: .venv_ci
-          key: >-
-            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
-            ${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
             ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '22' }}"
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
         with:
-          node-version: ${{ env.NODE_VERSION || '22' }}
+          node-version: ${{ env.NODE_VERSION || '20' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
@@ -914,7 +904,7 @@ jobs:
           df -h | grep -E "^/dev" || true
           echo ""
           echo "==================== AAIS Runner Summary ===================="
-          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}"
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
           echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
           echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
           echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"
@@ -1092,29 +1082,29 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
 
-  # ============================================================================
-  # Workflow Metadata
-  # ============================================================================
-  # Version: 1.1.0
-  # Created: 2026-01-28
-  # Updated: 2026-01-30
-  # Baseline stability maintained:
-  # - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
-  # - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
-  # Selective adoption (guarded via workflow_dispatch inputs):
-  # - lfs_mode: targeted/full with retries and continue-on-error option
-  # - lfs_include_paths: limit LFS scope to required areas
-  # - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
-  # Policy: .codex/CODEBASE_AGENCY_POLICY.md
-  # Integration: Cognitive Brain Phase objectives
-  # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
+# ============================================================================
+# Workflow Metadata
+# ============================================================================
+# Version: 1.1.0
+# Created: 2026-01-28
+# Updated: 2026-01-30
+# Baseline stability maintained:
+# - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
+# - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
+# Selective adoption (guarded via workflow_dispatch inputs):
+# - lfs_mode: targeted/full with retries and continue-on-error option
+# - lfs_include_paths: limit LFS scope to required areas
+# - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md
+# Integration: Cognitive Brain Phase objectives
+# Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
@@ -1131,7 +1121,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

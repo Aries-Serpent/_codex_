@@ -7,8 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4810)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4810 (SHA `4af13853`) at 2026-06-08T09:19Z [auto-generated]
+### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T04:30Z)
+- Resolved 3 merge conflicts between `dependabot/pip/lm-eval-0.4.12` and base branch `dependabot/pip/httptools-0.8.0`:
+  - `.github/workflows/copilot-setup-steps.yml`: Retained HEAD version (actions/upload-artifact v5)
+  - `.secrets.baseline`: Regenerated auto-generated baseline file
+  - `CODEX_MANIFEST.json`: Retained HEAD version with integrity validation
+- Created merge commit with full history preservation
+- All YAML and JSON syntax validated
+
+### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T01:24Z)
+- Resolved merge conflicts in stacked PR `dependabot/pip/lm-eval-0.4.12` on base branch `dependabot/pip/httptools-0.8.0`.
+- Addressed secrets baseline enforcer issue via `sync_tracked_files.py --fix`.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy REQ-4 compliance gate (most-recent session entry dated 2026-06-09).
+
+### Fixed (auto-update — PR #4811)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4811 (SHA `7038237b`) at 2026-06-08T09:24Z [auto-generated]
+
+### Fixed (CI resolution — PR #4814 — 2026-06-09T03:31Z)
+- Resolved remaining CI failures in PR #4814 (deps: bump coverage from 7.13.1 to 7.14.1) by verifying compliance checks and updating accountability documentation. All validation checks pass: ruff clean, mypy baseline OK (0 errors), auto-fix common issues OK.
+
+### Fixed (merge conflict resolution — PR #4814 — 2026-06-08T23:55Z)
+- Resolved merge conflicts between stacked PR branches (`dependabot/pip/coverage-7.14.1` ← `dependabot/pip/nvidia-cusparselt-cu13-0.9.1`) by taking current branch versions for auto-generated files (.codex/agent_auth_session.json, .codex/session_context_latest.md, .secrets.baseline, CHANGELOG.md, CODEX_MANIFEST.json). Merge commit: `f90a461ae`.
+
+### Fixed (auto-update — PR #4814)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4814 (SHA `71353416`) at 2026-06-08T09:29Z [auto-generated]
+
+### Fixed (auto-update — PR #4817)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4817 (SHA `396d6e1f`) at 2026-06-08T09:36Z [auto-generated]
+
+### Fixed (merge conflict resolution — PR #4815 — 2026-06-09T00:01Z)
+- Resolved 12 merge conflicts between `dependabot/pip/coverage-7.14.1` and `dependabot/pip/pytest-randomly-4.1.0` branches by retaining pytest-randomly 4.1.0 version across configuration and requirements files (merge commit 9c2f643c9).
+
+### Fixed (auto-update — PR #4815)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4815 (SHA `43dbeb6b`) at 2026-06-08T09:37Z [auto-generated]
 
 ### Fixed (auto-update — PR #4807)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4807 (SHA `5f1037f2`) at 2026-06-08T09:16Z [auto-generated]
