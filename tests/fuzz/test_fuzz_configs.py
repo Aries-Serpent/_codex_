@@ -19,9 +19,12 @@ import pytest
 
 hypothesis = pytest.importorskip("hypothesis")
 
-from hypothesis import given, settings  # noqa: E402
+from hypothesis import (  # noqa: E402
+    HealthCheck,  # noqa: E402
+    given,
+    settings,
+)
 from hypothesis import strategies as st  # noqa: E402
-from hypothesis import HealthCheck  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Lazy import helpers

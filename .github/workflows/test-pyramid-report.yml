@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -30,7 +30,7 @@ jobs:
         run: python scripts/ci/test_pyramid_report.py --output reports/test_pyramid_latest.json
 
       - name: Upload pyramid report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: test-pyramid-${{ github.run_id }}
           path: reports/test_pyramid_latest.json

@@ -31,7 +31,11 @@ from fastapi import FastAPI, HTTPException  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
 import torch  # noqa: E402
-from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings  # noqa: E402
+from codex_ml.safety.moderation import (  # noqa: E402
+    ModerationAdapter,
+    ModerationRejection,
+    ModerationSettings,
+)
 from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,

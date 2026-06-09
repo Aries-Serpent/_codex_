@@ -1,10 +1,6 @@
 """Tests for codex_ml.utils.hf_revision — HF pinned revision helper."""
 from __future__ import annotations
 
-import os
-
-import pytest
-
 from codex_ml.utils.hf_revision import get_hf_revision
 
 

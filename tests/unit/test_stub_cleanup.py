@@ -10,8 +10,6 @@ from __future__ import annotations
 import textwrap
 from pathlib import Path
 
-import pytest
-
 from codex_ml.utils.stub_cleanup import (
     StubAnalyzer,
     StubInfo,
@@ -19,7 +17,6 @@ from codex_ml.utils.stub_cleanup import (
     generate_stub_report,
     prioritize_stubs,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

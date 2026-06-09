@@ -152,9 +152,7 @@ class ContinuousLearningPipeline:
         score, drifted = self._extract_drift_info(drift_result)
 
         if drifted is True:
-            logger.info(
-                "should_retrain: drift flag set — triggering (score=%.4f)", score
-            )
+            logger.info("should_retrain: drift flag set — triggering (score=%.4f)", score)
             return True
 
         if score is not None and score > self.drift_threshold:
@@ -215,9 +213,7 @@ class ContinuousLearningPipeline:
         """
         result = self._gate.evaluate(metrics)
         if not result.passed:
-            logger.warning(
-                "eval_gate: model REJECTED — failures: %s", result.reasons
-            )
+            logger.warning("eval_gate: model REJECTED — failures: %s", result.reasons)
         return result.passed
 
     def promote(
@@ -292,8 +288,6 @@ class ContinuousLearningPipeline:
             return (float(score) if score is not None else None, drifted)
 
         # Object with attributes (e.g. DriftResult dataclass)
-        score = getattr(drift_result, "score", None) or getattr(
-            drift_result, "drift_score", None
-        )
+        score = getattr(drift_result, "score", None) or getattr(drift_result, "drift_score", None)
         drifted = getattr(drift_result, "drifted", None)
         return (float(score) if score is not None else None, drifted)
