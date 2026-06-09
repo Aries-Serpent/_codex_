@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4820)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4820 (SHA `f2731497`) at 2026-06-09T05:29Z [auto-generated]
+
 
 ### Fixed (PR #4804 — 2026-06-09T01:23Z)
 - Resolved merge conflicts between PR #4804 (docker/setup-qemu-action v4.1.0) and base branch PR #4803 (softprops/action-gh-release v3).
