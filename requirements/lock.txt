@@ -339,7 +339,7 @@ hf-xet==1.5.0
     # via huggingface-hub
 httpcore==1.0.9
     # via httpx
-httptools==0.7.1
+httptools==0.8.0
     # via uvicorn
 httpx==0.28.1
     # via
@@ -427,7 +427,7 @@ litestar==2.20.0
     # via evidently
 litestar-htmx==0.5.0
     # via litestar
-lm-eval==0.4.9.2
+lm-eval==0.4.12
     # via codex-ml (pyproject.toml)
 lxml==6.1.0
     # via sacrebleu
