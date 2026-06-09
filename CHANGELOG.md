@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4826)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4826 (SHA `e0fa741e`) at 2026-06-09T07:05Z [auto-generated]
 
+### Fixed (PR #4826 review-findings resolution — 2026-06-09T07:16Z)
+- `tests/docs/test_variable_guide_alignment.py`: added `encoding="utf-8"` to all `read_text()` calls for cross-platform safety (gemini-code-assist review)
+- `tests/scripts/test_ci_script_regressions.py`: fixed datetime mock to return timezone-aware `datetime(tzinfo=timezone.utc)` (copilot-pull-request-reviewer)
+- `.github/copilot-prompts/active/PR-4821-followup.md`: corrected contradicting "No files modified" section (copilot-pull-request-reviewer)
+- All 4 review comments replied to with resolving commit SHA `09f1a19` [auto-generated]
+
+
 ### Fixed (auto-update — PR #4821)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4821 (SHA `adc1086d`) at 2026-06-09T06:04Z [auto-generated]
 
