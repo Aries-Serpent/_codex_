@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (CI escalation — PR #4826 — 2026-06-09T08:30Z)
+- `.github/workflows/copilot-setup-steps.yml`: fixed YAML indentation error (session preload step at line 175 had 7-space indent instead of 6, causing parse error `expected <block end>, but found '<block sequence start>'`)
+- `.github/workflows/copilot-setup-steps.yml`: updated session preload run body to canonical Method D form (`::group::`, `SESSION_PRELOAD_STATUS=failed`, `::endgroup::`)
+- `tests/architecture/test_layer_boundaries.py`: fixed step anchor search to match only `- name:` lines to avoid false match on comments [auto-generated]
+
 ### Fixed (auto-update — PR #4826)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4826 (SHA `e0fa741e`) at 2026-06-09T07:05Z [auto-generated]
 

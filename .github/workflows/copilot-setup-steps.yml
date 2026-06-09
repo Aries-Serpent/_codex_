@@ -172,12 +172,15 @@ jobs:
       #   the same change unless the failing issue is specifically this preload mechanism.
       # ============================================================================
       #
-       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-         continue-on-error: true   # non-blocking: agent must start even if preload fails
-         run: |
-           python3 .github/scripts/session_preload.py || {
-             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-           }
+      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: |
+          echo "::group::Session Context Pre-load"
+          python3 .github/scripts/session_preload.py || {
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+            echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
+          }
+          echo "::endgroup::"
       #
       # Session preload intentionally disabled; Session Access Probe is now the first active startup step.
 

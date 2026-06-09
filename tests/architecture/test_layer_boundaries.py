@@ -149,7 +149,7 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
     # Locate the session_preload step by its name anchor.
     step_start: int | None = None
     for i, line in enumerate(lines):
-        if "Session Context Pre-load" in line:
+        if line.lstrip().startswith("- name:") and "Session Context Pre-load" in line:
             step_start = i
             break
 
