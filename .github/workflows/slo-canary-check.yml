@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -33,7 +33,7 @@ jobs:
         run: python scripts/observability/slo_canary.py
 
       - name: Upload canary report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: slo-canary-${{ github.run_id }}
           path: reports/observability/slo_canary_latest.json
@@ -45,7 +45,7 @@ jobs:
     # Run on explicit monthly schedule or manual dispatch
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 1 * *' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -82,7 +82,7 @@ jobs:
           PYEOF
 
       - name: Upload MTTR report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: mttr-report-${{ github.run_id }}
           path: reports/observability/mttr_*.json
@@ -93,7 +93,7 @@ jobs:
     timeout-minutes: 15
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 1 * *' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -139,7 +139,7 @@ jobs:
           PYEOF
 
       - name: Upload MTTD report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: mttd-report-${{ github.run_id }}
           path: reports/observability/mttd_*.json

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Fixed (PR #4804 — 2026-06-09T01:23Z)
+- Resolved merge conflicts between PR #4804 (docker/setup-qemu-action v4.1.0) and base branch PR #4803 (softprops/action-gh-release v3).
+- Fixed critical YAML parsing error in `.github/workflows/copilot-setup-steps.yml` causing "did not find expected key" failure that blocked all agent sessions.
+  - Issue: orphaned `run:` directive outside valid step definition (line 177)
+  - Solution: properly commented out the entire disabled session preload step
+  - Impact: unblocked workflow parsing and downstream CI execution
+
 ### Fixed (PR #4803 — 2026-06-08T23:38Z)
 - Fixed CodeQL unnecessary pass statements in `tests/unit/utils/test_safe_pickle.py` at lines 39 and 82.
 - Fixed unused variable `mock_random_seed` in `tests/unit/utils/test_reproducibility_hardening.py:25` (CodeQL alert F841).
