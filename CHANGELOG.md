@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (copilot-setup-steps YAML parse error — PR #4826 — 2026-06-09T17:36Z)
+- `.github/workflows/copilot-setup-steps.yml`: removed 10 empty lines between section-header comment blocks and `- name:` step items in `steps:` sequence; Go YAML parser (Copilot cloud agent) was emitting "did not find expected '-' indicator" at line 124, blocking all new Copilot sessions
+
 ### Fixed (CodeQL Advanced PR failure gate — PR #4826 — 2026-06-09T09:44Z)
 - `.github/workflows/codeql.yml`: switched `CodeQL Advanced` to `workflow_dispatch` only so PR/main runs are not auto-triggered while GitHub default Code Scanning setup is enabled (prevents SARIF upload failure: "advanced configurations cannot be processed when the default setup is enabled")
 
