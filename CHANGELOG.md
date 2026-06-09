@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4805)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4805 (SHA `6222f1b4`) at 2026-06-08T09:15Z [auto-generated]
 
+### Fixed (PR #4804 — 2026-06-09T01:23Z)
+- Resolved merge conflicts between PR #4804 (docker/setup-qemu-action v4.1.0) and base branch PR #4803 (softprops/action-gh-release v3).
+- Fixed critical YAML parsing error in `.github/workflows/copilot-setup-steps.yml` causing "did not find expected key" failure that blocked all agent sessions.
+  - Issue: orphaned `run:` directive outside valid step definition (line 177)
+  - Solution: properly commented out the entire disabled session preload step
+  - Impact: unblocked workflow parsing and downstream CI execution
+
+### Fixed (PR #4803 — 2026-06-08T23:38Z)
+- Fixed CodeQL unnecessary pass statements in `tests/unit/utils/test_safe_pickle.py` at lines 39 and 82.
+- Fixed unused variable `mock_random_seed` in `tests/unit/utils/test_reproducibility_hardening.py:25` (CodeQL alert F841).
+- Addressed CI auto-fixable issues for PR #4803 (bump softprops/action-gh-release from 2 to 3).
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4803 (SHA `6019f7b9`) at 2026-06-08T09:10Z [auto-generated]
+
 ### Fixed (PR #4797 wrap-up — 2026-06-07T17:48Z)
 - Refreshed the PR #4797 wrap-up artifacts after the `copilot-setup-steps.yml` CI regression fix by recording a fresh accountability entry and same-day PDA entry for the latest commit.
 
@@ -9372,3 +9385,8 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Added (PR #4792 coverage — stub_cleanup Gap 5 — 2026-06-06)
 - `tests/unit/test_stub_cleanup.py` — 78 unit tests for `codex_ml.utils.stub_cleanup` covering `StubInfo`, `StubAnalyzer` (all methods including AST-based `_is_abstract_method`), `find_stubs`, `prioritize_stubs`, and `generate_stub_report` [Gap 5, 0% → ~95% line coverage]
+
+### Fixed (PR #4803 merge conflict resolution — 2026-06-09T01:28Z)
+- Fixed YAML indentation issue in `.github/workflows/copilot-setup-steps.yml` (Pattern 3).
+- Resolved merge conflicts between dependabot branch and main.
+- Added session entry to AGENT_ACCOUNTABILITY_REPORT.md for CI rescue session.

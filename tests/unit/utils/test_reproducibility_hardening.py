@@ -22,7 +22,7 @@ def test_enable_deterministic_training_success():
     mock_tf = MagicMock()
     mock_tf.config.experimental.enable_op_determinism = MagicMock()
 
-    with patch("random.seed") as mock_random_seed, \
+    with patch("random.seed"), \
          patch.dict("sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}):
 
         status = enable_deterministic_training(42, strict=True)
