@@ -187,6 +187,10 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 - `CODEX_MASTER_KEY` → `repo` + `workflow` + `actions:write` → full variable/secret CRUD
 - MCP Server → **does NOT support** variable/secret CRUD — use REST API or `gh` CLI
 
+### Handling GitHub URLs
+
+Whenever the user provides a GitHub Action run URL (e.g., `https://github.com/.../actions/runs/...`) or a PR comment URL (`...#issuecomment-...`), you MUST proactively use the `github-mcp-server` tools (`get_job_logs`, `pull_request_read`, `get_discussion_comments`) to fetch the exact error logs or review text. Do not hallucinate the feedback or failure reasons.
+
 ### Test Variables API
 
 ```bash
@@ -200,8 +204,15 @@ gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_bas
 ## Prohibited Actions
 
 - Do **not** create or activate any GitHub Actions workflow files.
+- Do **not** modify `.github/workflows/copilot-setup-steps.yml` or try to re-enable/fix commented-out steps within it unless explicitly instructed by a human.
 - Keep automation artefacts confined to `.codex/`.
 - Do **not** upgrade CCA version without explicit session review (violates `COPILOT_AGENT_CCA_VERSION_LOCK`).
+
+## Documentation & Architecture Conventions
+
+When generating or updating documentation related to architecture, domain ownership, or agent mapping:
+1. **Assign specific ownership**: Always assign ownership to the exact ideal Copilot custom agent designed for that domain. As a fallback, use `@mbaetiong` or a secondary relevant custom agent.
+2. **Use Mermaid**: Always format structural workflows, diagrams, and agent/workflow mappings using Mermaid.js (`mermaid` code blocks).
 
 ## Copilot Task Execution Protocol (CTEP)
 
