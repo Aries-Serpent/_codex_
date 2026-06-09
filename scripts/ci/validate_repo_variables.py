@@ -11,7 +11,7 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -162,7 +162,7 @@ def generate_agent_context() -> dict[str, Any]:
             context[var.name] = value
 
     context["_meta"] = {
-        "generated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "workflow": "repo-var-sync-schedule",
         "variables_count": len(context) - 1,
         "critical_count": len(CRITICAL_VARIABLES),

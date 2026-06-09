@@ -198,7 +198,7 @@ _REGISTRY: list[ExpectedEntry] = [
     ExpectedEntry("CODEX_LLM_MODEL",            LAYER_REPO_VARS, True, "Build", "LLM model for agents"),
     ExpectedEntry("CODEX_LLM_RATE_LIMIT_DELAY", LAYER_REPO_VARS, True, "Build", "LLM request delay"),
     ExpectedEntry("CODEX_OFFLINE",              LAYER_REPO_VARS, True, "Build", "Offline mode flag"),
-    ExpectedEntry("CODEX_PYTHON_VERSION",       LAYER_REPO_VARS, True, "Build", "Python version"),
+    ExpectedEntry("CODEX_PYTHON_VERSION",       LAYER_REPO_VARS, True, "Build", "Python version target"),
     ExpectedEntry("CODEX_SANDBOX_TIMEOUT",      LAYER_REPO_VARS, True, "Build", "Sandbox operation timeout"),
     ExpectedEntry("CODEX_SESSION_ID",           LAYER_REPO_VARS, True, "Build", "Current session ID (auto-set)"),
     ExpectedEntry("CODEX_SESSION_LOG_DIR",      LAYER_REPO_VARS, True, "Build", "Session log directory"),
