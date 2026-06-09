@@ -58,7 +58,7 @@ jobs:
         run: python scripts/rag/rag_rebuild_audit.py --check audit
 
       - name: Upload audit log
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: rag-audit-${{ github.run_id }}
           path: reports/rag/rebuild_audit_latest.json

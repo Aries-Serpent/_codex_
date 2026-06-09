@@ -98,7 +98,7 @@ jobs:
 
       - name: Upload coverage artifact (shard ${{ matrix.shard }})
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-shard-${{ matrix.shard }}
           path: |
@@ -109,7 +109,7 @@ jobs:
 
       - name: Upload timeout logs
         if: steps.coverage.outputs.coverage_failed == 'true'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: timeout-logs-shard-${{ matrix.shard }}
           path: |
@@ -181,7 +181,7 @@ jobs:
 
       - name: Upload combined coverage
         if: steps.merge.outputs.merge_succeeded == 'true'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-combined
           path: |
