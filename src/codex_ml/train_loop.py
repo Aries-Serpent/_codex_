@@ -2161,7 +2161,7 @@ def run_training(
                     import math as _math
 
                     _epoch_conf_scores = (
-                        [max(0.0, min(1.0, _math.exp(-l))) for l in synthetic_losses]
+                        [max(0.0, min(1.0, _math.exp(-loss))) for loss in synthetic_losses]
                         if synthetic_losses
                         else None
                     )
