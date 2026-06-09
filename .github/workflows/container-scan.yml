@@ -34,7 +34,7 @@ jobs:
           - docker/Dockerfile.cpu
           - docker/Dockerfile.gpu
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
 
       - name: Build image for scanning
         run: |

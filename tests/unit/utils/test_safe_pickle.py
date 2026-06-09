@@ -36,6 +36,7 @@ def test_restricted_unpickler_find_class():
     # Test wildcard allowed
     with patch.dict(unpickler.SAFE_MODULES, {"os": {"*"}}, clear=False):
         cls = unpickler.find_class("os", "system")
+        pass  # removed redundant `import os` (top-level import used)
         assert cls == os.system
 
     # Test blocked
@@ -78,6 +79,7 @@ def test_safe_pickle_load_restricted_blocked(tmp_path):
 
     class EvilClass:
         def __reduce__(self):
+            pass  # removed redundant `import os` (top-level import used)
             return (os.system, ("echo evil",))
 
     try:
