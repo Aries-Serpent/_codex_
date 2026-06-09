@@ -45,7 +45,7 @@ jobs:
       matrix:
         platform: ['linux/amd64', 'linux/arm64']
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
@@ -97,7 +97,7 @@ jobs:
 
       - name: Upload wheelhouse with manifest
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
           path: ./wheelhouse
@@ -115,7 +115,7 @@ jobs:
       matrix:
         variant: ['cpu', 'gpu']
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
@@ -162,7 +162,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sbom-${{ matrix.variant }}
           path: |
@@ -188,7 +188,7 @@ jobs:
       matrix:
         python_version: ['3.11', '3.12', '3.13']
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
@@ -223,7 +223,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Download current baseline (amd64)
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -289,7 +289,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -324,7 +324,7 @@ jobs:
 
       - name: Upload audit artifacts
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: dependency-audit-${{ github.run_id }}
           path: |

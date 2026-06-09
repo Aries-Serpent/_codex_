@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ### Fixed (PR #4804 — 2026-06-09T01:23Z)
 - Resolved merge conflicts between PR #4804 (docker/setup-qemu-action v4.1.0) and base branch PR #4803 (softprops/action-gh-release v3).
 - Fixed critical YAML parsing error in `.github/workflows/copilot-setup-steps.yml` causing "did not find expected key" failure that blocked all agent sessions.
