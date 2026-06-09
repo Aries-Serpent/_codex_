@@ -65,6 +65,15 @@ jobs:
         with:
           category: "/language:${{ matrix.language }}"
           upload: false
+          output: "codeql-sarif/${{ matrix.language }}"
+
+      - name: Upload CodeQL SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: codeql-sarif-${{ matrix.language }}
+          path: codeql-sarif/${{ matrix.language }}
+          if-no-files-found: warn
 
       - name: Cache health report
         if: always()

@@ -189,7 +189,7 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 
 ### Handling GitHub URLs
 
-Whenever the user provides a GitHub Action run URL (e.g., `https://github.com/.../actions/runs/...`) or a PR comment URL (`...#issuecomment-...`), you MUST proactively use the `github-mcp-server` tools (`get_job_logs`, `pull_request_read`, `get_discussion_comments`) to fetch the exact error logs or review text. Do not hallucinate the feedback or failure reasons.
+Whenever the user provides a GitHub Action run URL (e.g., `https://github.com/.../actions/runs/...`) or a PR comment URL (`...#issuecomment-...`), you MUST proactively use the `github-mcp-server` tools (`get_job_logs`, `pull_request_read` with `get_comments`/`get_review_comments`, `issue_read` with `get_comments`) to fetch the exact error logs or review text. Do not hallucinate the feedback or failure reasons.
 
 ### Test Variables API
 

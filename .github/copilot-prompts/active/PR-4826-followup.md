@@ -17,7 +17,8 @@
 - [`1dc14dba`] fix: restore full agent context snapshot (copilot-swe-agent[bot], 2026-06-09)
 
 ### Files Modified
-No files modified
+- `CODEX_MANIFEST.json` (updated in `3004f454`)
+- Additional file changes are present in referenced merge/session commits; review each commit diff for complete file lists.
 
 ---
 

@@ -48080,16 +48080,10 @@ and the CI gate requirement.
 - **WEC human grant** `auto-approve-workflows.yml` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `Documentation` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `CHANGELOG` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `My` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `I` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `New` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 
 <!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
 - **WEC human grant** `CHANGELOG` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `Documentation` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `I` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `My` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `New` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `agent-auth-delegation.yml` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows.yml` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `comment-review-gate.yml` — detected 2026-06-09T07:16:54Z @ 17304458 — sticky [x] maintained by all future agent sessions
