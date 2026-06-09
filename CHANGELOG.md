@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (CI resolution — PR #4814 — 2026-06-09T03:31Z)
+- Resolved remaining CI failures in PR #4814 (deps: bump coverage from 7.13.1 to 7.14.1) by verifying compliance checks and updating accountability documentation. All validation checks pass: ruff clean, mypy baseline OK (0 errors), auto-fix common issues OK.
+
 ### Fixed (merge conflict resolution — PR #4814 — 2026-06-08T23:55Z)
 - Resolved merge conflicts between stacked PR branches (`dependabot/pip/coverage-7.14.1` ← `dependabot/pip/nvidia-cusparselt-cu13-0.9.1`) by taking current branch versions for auto-generated files (.codex/agent_auth_session.json, .codex/session_context_latest.md, .secrets.baseline, CHANGELOG.md, CODEX_MANIFEST.json). Merge commit: `f90a461ae`.
 
