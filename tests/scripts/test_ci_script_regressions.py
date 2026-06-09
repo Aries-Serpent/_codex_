@@ -35,7 +35,8 @@ def test_generate_agent_context_uses_runtime_timestamp(monkeypatch):
 
     class _FakeDateTime:
         @classmethod
-        def utcnow(cls):
+        def now(cls, tz=None):
+            assert tz is not None
             return datetime(2030, 1, 2, 3, 4, 5)
 
     monkeypatch.setattr(module, "datetime", _FakeDateTime)
