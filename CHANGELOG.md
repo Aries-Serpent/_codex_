@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (Merge conflict resolution — PR #4811 — 2026-06-09T01:24Z)
+- Resolved merge conflicts in stacked PR `dependabot/pip/lm-eval-0.4.12` on base branch `dependabot/pip/httptools-0.8.0`.
+- Addressed secrets baseline enforcer issue via `sync_tracked_files.py --fix`.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy REQ-4 compliance gate (most-recent session entry dated 2026-06-09).
+
 ### Fixed (auto-update — PR #4811)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4811 (SHA `7038237b`) at 2026-06-08T09:24Z [auto-generated]
 
