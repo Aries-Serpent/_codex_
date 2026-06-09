@@ -104,7 +104,7 @@ jobs:
           echo "  CODEX_LOG_LEVEL=${{ env.CODEX_LOG_LEVEL }}"
 
       - name: Sparse checkout (scripts only)
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
@@ -203,7 +203,7 @@ jobs:
     if: needs.should-escalate.outputs.escalate == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           sparse-checkout: |
             .codex
