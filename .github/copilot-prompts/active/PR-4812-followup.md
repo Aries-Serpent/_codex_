@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4812
 
-**PR**: #4812 - PR #4812  
+**PR**: #4812  
 **Branch**: `dependabot/pip/sqlalchemy-2.0.50`  
 **Author**: @dependabot[bot]  
 **Date**: 2026-06-08  
