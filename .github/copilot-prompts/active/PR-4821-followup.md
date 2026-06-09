@@ -17,7 +17,8 @@
 - [`d8708c67`] docs: Convert quality findings report to markdown format (Statix, 2026-06-09)
 
 ### Files Modified
-No files modified
+- `.github/workflows/copilot-setup-steps.yml` (modified — [`3500d520`])
+- `docs/reports/recent-activity-report.md` (added — [`d8708c67`]; removed — [`92cb33d7`])
 
 ---
 
