@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (merge conflict resolution — PR #4815 — 2026-06-09T00:01Z)
+- Resolved 12 merge conflicts between `dependabot/pip/coverage-7.14.1` and `dependabot/pip/pytest-randomly-4.1.0` branches by retaining pytest-randomly 4.1.0 version across configuration and requirements files (merge commit 9c2f643c9).
+
 ### Fixed (auto-update — PR #4815)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4815 (SHA `43dbeb6b`) at 2026-06-08T09:37Z [auto-generated]
 
