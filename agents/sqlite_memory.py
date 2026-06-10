@@ -214,4 +214,3 @@ class SQLiteMemory(MemoryInterface):
         except Exception as e:
             print(f"❌ Error summarizing: {e}")
             return "Error generating summary"
-

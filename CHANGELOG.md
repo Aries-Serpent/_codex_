@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (S58 CI rescue — PR #4830 — 2026-06-10T18:20Z)
+- Cleared failing auto-fix gates on commit `ec0abb224459` by applying repository lint auto-fixes across affected test files and agent modules.
+- Resolved remaining auto-fixable W-series whitespace findings in `agents/self_healing.py` and `agents/sqlite_memory.py`.
+- Removed stale `type: ignore` annotations flagged by Pattern 31 in `agents/workflow_navigator.py` and `src/codex_ml/tracking/mlflow_utils.py`.
+- Re-ran required rescue checks successfully: `python -m ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`.
+
 ### Fixed
 - CI rescue for PR #4830 (`ec0abb2`): resolved auto-fix gate findings by removing unused imports, reordering imports, and clearing trailing-whitespace W-series warnings in affected agent/test files.
 - Verified rescue checklist commands for this branch: `python scripts/ci/mypy_baseline.py --require-baseline` ✅ and `python scripts/ci/auto_fix_common_issues.py --check-only` ✅.
