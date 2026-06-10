@@ -40,6 +40,14 @@ runner_compatibility:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+```mermaid
+flowchart LR
+    Observe["Observe: changed docs"] --> Orient["Orient: quality + freshness + links + consolidation"]
+    Orient --> Decide{"Decide: thresholds met?"}
+    Decide -->|Yes| ActPass["Act: publish unified doc health report"]
+    Decide -->|No| ActFail["Act: publish remediation plan and owners"]
+```
+
 ## Capabilities
 
 | Capability | Source Agent | Threshold |
@@ -91,3 +99,28 @@ Produces `artifacts/doc-health-report.json`:
   "recommendations": [...]
 }
 ```
+
+## Integration Points
+
+- `docs/` and `README.md` update audits
+- `.github/agents/AGENT_REGISTRY.yaml` for lifecycle and ownership metadata
+- `scripts/ci/rvs_preflight.py` for parallelized validation runs
+
+## S58 Phase 3 Groundwork (Prep Start)
+
+- ✅ Unified documentation scope and thresholds consolidated in one agent contract
+- ✅ OODA execution flow defined for deterministic evaluations
+- ✅ Output contract standardized (`artifacts/doc-health-report.json`)
+- ⏳ Next step: wire workflow-level invocation and reporting gates
+
+## Error Handling
+
+- Treat broken internal links and stale critical docs as blocking findings
+- Downgrade transient network failures to retryable warnings with explicit follow-up
+- Emit one consolidated failure summary to avoid fragmented remediation loops
+
+## Success Metrics
+
+- Documentation quality score ≥ 0.75
+- Broken links = 0 on changed docs
+- Freshness SLA ≤ 90 days for critical documentation
