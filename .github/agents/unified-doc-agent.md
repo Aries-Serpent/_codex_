@@ -43,7 +43,7 @@ runner_compatibility:
 ```mermaid
 flowchart LR
     Observe["Observe: changed docs"] --> Orient["Orient: quality + freshness + links + consolidation"]
-    Orient --> Decide{"Decide: thresholds met?"}
+    Orient --> Decide{"Decide: quality ≥ 0.75,\nbroken links = 0,\nfreshness ≤ 90 days?"}
     Decide -->|Yes| ActPass["Act: publish unified doc health report"]
     Decide -->|No| ActFail["Act: publish remediation plan and owners"]
 ```
@@ -123,7 +123,7 @@ Produces `artifacts/doc-health-report.json`:
 
 - Documentation quality score ≥ 0.75
 - Broken links = 0 on changed docs
-- Freshness SLA ≤ 90 days for critical documentation (see Critical Documentation Scope, defined below)
+- Freshness SLA ≤ 90 days for critical documentation (see [Critical Documentation Scope](#critical-documentation-scope))
 
 ## Critical Documentation Scope
 

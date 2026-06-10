@@ -9,6 +9,7 @@
 - Added an S58 Phase 2 execution checkpoint and tracked-report-path guidance in `.github/agents/unified-security-scanner.md`.
 - Added S58 Phase 3 groundwork content in `.github/agents/unified-doc-agent.md`, including OODA architecture flow, integration/error-handling sections, and explicit success metrics.
 - Clarified report-path setup wording in security-scanner examples and defined a dedicated critical-documentation scope for freshness SLA tracking.
+- Refined doc usability by embedding threshold values directly in the OODA decision node and adding anchor-linked freshness scope references.
 
 All notable changes to the Cognitive Brain Core project will be documented in this file.
 

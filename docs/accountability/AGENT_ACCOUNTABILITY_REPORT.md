@@ -7,6 +7,7 @@
 - Added final wording clarifications: `mkdir -p` is idempotent/safe on every run, and freshness SLA scope explicitly means recursive Markdown coverage under `docs/agent/` and `docs/admin/`.
 - Aligned changelog semantics by moving non-fix updates under `### Changed`, and extracted a dedicated "Critical Documentation Scope" section in `unified-doc-agent.md` for cleaner metric references.
 - Tightened changelog specificity with direct file-level references and simplified operational phrasing in agent examples per final review feedback.
+- Added explicit threshold values in the Unified Documentation Agent OODA diagram and converted freshness-scope references to navigable Markdown anchors.
 
 ### Pre-flight Checklist
 - [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
