@@ -1,5 +1,4 @@
 import pytest
-import argparse
 from unittest.mock import patch, MagicMock
 from mcp.packager.cli import main
 
