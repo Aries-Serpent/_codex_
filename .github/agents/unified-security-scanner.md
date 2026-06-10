@@ -198,6 +198,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 4
 python scripts/ci/rvs_preflight.py --group quick --workers 6 --batch-size 30
 
 # 4. With structured JSON report for agent analysis
+mkdir -p .codex/reports
 python scripts/ci/rvs_preflight.py --group quick --workers 6 \
     --report .codex/reports/rvs_report.json
 
