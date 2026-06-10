@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (cherry-pick — Dependabot PRs #4832, #4833, #4834)
+- Cherry-picked `litestar` bump from 2.20.0 to 2.22.0 (`requirements/lock.txt`) from all 3 open Dependabot PRs into active session [2026-06-10T19:19Z]
+
 ### Changed (S58 Phase 3 execution — PR #4830 — 2026-06-10T18:52Z)
 - `unified-governance-gate.md`: added S58 Phase 3 execution section — three-pillar decision flow wired, reporting gate snippet added, `artifacts/governance-report.json` upload step documented.
 - `unified-coverage-agent.md`: added S58 Phase 3 execution section — threshold enforcement flow documented, reporting gate snippet added, anti-regression guard confirmed.
