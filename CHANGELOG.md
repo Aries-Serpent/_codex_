@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4834 follow-up)
+- Added same-day accountability refresh entry to satisfy Pre-Merge Validation gates for run `27300007026` on branch `dependabot/uv/uv-cb880220d5` (2026-06-10T19:36Z).
+
 ### Fixed (auto-update — PR #4834)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4834 (SHA `8aa0bd22`) at 2026-06-10T19:15Z [auto-generated]
 
