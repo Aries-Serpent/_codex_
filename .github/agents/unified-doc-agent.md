@@ -123,4 +123,4 @@ Produces `artifacts/doc-health-report.json`:
 
 - Documentation quality score ≥ 0.75
 - Broken links = 0 on changed docs
-- Freshness SLA ≤ 90 days for critical documentation (`README.md`, `docs/index.md`, `docs/agent/**/*.md`, `docs/admin/**/*.md`)
+- Freshness SLA ≤ 90 days for critical documentation (`README.md`, `docs/index.md`, and all Markdown files recursively under `docs/agent/` and `docs/admin/`)
