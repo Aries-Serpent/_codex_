@@ -3,7 +3,7 @@ name: Coverage Ratchet
 # Enforces a minimum coverage threshold aligned with pyproject.toml `fail_under`.
 # Blocks PRs when coverage drops below the ratchet floor.
 #
-# The pyproject.toml `fail_under = 10` is the single source of truth for the
+# The pyproject.toml `fail_under = 35` is the single source of truth for the
 # current regression floor (Phase 5 planning; Phase 10B target is ≥50%).
 # The default threshold here matches pyproject.toml to avoid spurious failures.
 #
@@ -21,9 +21,9 @@ on:
   workflow_dispatch:
     inputs:
       threshold:
-        description: "Coverage threshold % (default: 10)"
+        description: "Coverage threshold % (default: 35)"
         type: string
-        default: "10"
+        default: "35"
 
 permissions:
   contents: read
@@ -58,7 +58,7 @@ jobs:
       - name: Run coverage with ratchet threshold
         id: coverage
         env:
-          THRESHOLD: ${{ inputs.threshold || '10' }}
+          THRESHOLD: ${{ inputs.threshold || '35' }}
         run: |
           set +e
           python -m pytest \
@@ -101,7 +101,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          THRESHOLD: ${{ inputs.threshold || '10' }}
+          THRESHOLD: ${{ inputs.threshold || '35' }}
         run: |
           printf "%s\n" \
             "## 🧪 Coverage Ratchet — Regression Detected" \
@@ -126,7 +126,7 @@ jobs:
       - name: Fail on coverage regression
         if: steps.coverage.outputs.exit_code != '0'
         run: |
-          echo "::error::Coverage ${{ steps.coverage.outputs.coverage_pct }}% is below ratchet threshold ${{ inputs.threshold || '10' }}%"
+          echo "::error::Coverage ${{ steps.coverage.outputs.coverage_pct }}% is below ratchet threshold ${{ inputs.threshold || '35' }}%"
           exit 1
 
       - name: Job summary
@@ -138,6 +138,6 @@ jobs:
             echo "| Item | Value |"
             echo "|------|-------|"
             echo "| Coverage | ${{ steps.coverage.outputs.coverage_pct }}% |"
-            echo "| Threshold | ${{ inputs.threshold || '10' }}% |"
+            echo "| Threshold | ${{ inputs.threshold || '35' }}% |"
             echo "| Status | ${{ steps.coverage.outputs.exit_code == '0' && '✅ PASS' || '❌ FAIL' }} |"
           } >> "$GITHUB_STEP_SUMMARY"
