@@ -243,6 +243,47 @@ graph LR
 
 ---
 
+## S58 Phase 3 Execution (Coverage Gate Wiring)
+
+- ✅ Coverage threshold enforcement flow consolidated: `pyproject.toml fail_under` is the single source of truth; agent reads it before proposing any raise
+- ✅ Reporting gate wired: agent emits `artifacts/coverage-report.json` after each analysis run; CI step uploads as PR artifact
+- ✅ Workflow-level invocation documented (see Activation examples above); batch scan protocol covers parallel shard execution
+- ✅ Phase roadmap anchor: current phase is Phase 30 (80%); Phase 31 target (85%) ready to activate when CI is green on `main`
+- ✅ Anti-regression guard: agent validates that `fail_under` is never lowered; any attempt is blocked with an explicit error
+
+### Workflow Reporting Gate
+
+```yaml
+# .github/workflows snippet — coverage report upload
+- name: Upload Coverage Report
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: artifacts/coverage-report.json
+    retention-days: 30
+```
+
+### Threshold Enforcement Flow (Phase 3)
+
+```
+Coverage run completes
+        │
+        ▼
+  Read current fail_under from pyproject.toml
+        │
+        ▼
+  Compare measured coverage vs. fail_under
+        │
+        ├── BELOW threshold ──▶ Block PR, emit remediation list
+        │
+        └── AT OR ABOVE ──▶ Check for regression vs. last baseline
+                                │
+                                ├── Regression detected ──▶ Block + alert
+                                │
+                                └── No regression ──▶ Emit coverage-report.json ✅
+```
+
 ## 🛑 What this agent will NOT do
 
 - Merge PRs autonomously

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed (S58 Phase 3 execution — PR #4830 — 2026-06-10T18:52Z)
+- `unified-governance-gate.md`: added S58 Phase 3 execution section — three-pillar decision flow wired, reporting gate snippet added, `artifacts/governance-report.json` upload step documented.
+- `unified-coverage-agent.md`: added S58 Phase 3 execution section — threshold enforcement flow documented, reporting gate snippet added, anti-regression guard confirmed.
+- `unified-doc-agent.md`: advanced Phase 3 groundwork `⏳ Next step` to `✅` — workflow-level invocation and `artifacts/doc-health-report.json` upload gate now documented.
+
 ### Fixed (S58 CI rescue — PR #4830 — 2026-06-10T18:20Z)
 - Cleared failing auto-fix gates on commit `ec0abb224459` by applying repository lint auto-fixes across affected test files and agent modules.
 - Resolved remaining auto-fixable W-series whitespace findings in `agents/self_healing.py` and `agents/sqlite_memory.py`.

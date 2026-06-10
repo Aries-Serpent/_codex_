@@ -167,6 +167,54 @@ Prohibited Statements (blocked if found in PR body):
 | Fields 🔄 | Policy feedback loop: violations → agent learning → improved decisions |
 | Patterns 👁️ | Recurring violation patterns trigger policy rule refinement |
 
+## S58 Phase 3 Execution (Governance Pillar Wiring)
+
+- ✅ Three-pillar governance contract (owner approval, config validation, compliance) consolidated in one agent spec
+- ✅ Deterministic decision flow: each pillar emits a binary PASS/BLOCK signal; first BLOCK short-circuits and posts remediation steps
+- ✅ Reporting gate wired: agent emits `artifacts/governance-report.json` on every invocation; CI step uploads as PR artifact
+- ✅ Workflow-level invocation standardised via `governance-gate` composite action (see GitHub Actions Integration above)
+- ✅ Deferral-language guard integrated: compliance pillar scans PR body for prohibited phrases before approval is emitted
+
+### Workflow Reporting Gate
+
+```yaml
+# .github/workflows snippet — governance report upload
+- name: Upload Governance Report
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: governance-report
+    path: artifacts/governance-report.json
+    retention-days: 30
+```
+
+### Decision Flow (Phase 3)
+
+```
+PR push / workflow_dispatch
+        │
+        ▼
+┌───────────────────┐   BLOCK   ┌────────────────────────┐
+│  Owner Approval   ├──────────▶│  Post remediation steps │
+│  Pillar           │           │  and block merge         │
+└───────┬───────────┘           └────────────────────────┘
+        │ PASS
+        ▼
+┌───────────────────┐   BLOCK   ┌────────────────────────┐
+│  Config Validator │──────────▶│  Emit schema errors      │
+│  Pillar           │           │  and block merge         │
+└───────┬───────────┘           └────────────────────────┘
+        │ PASS
+        ▼
+┌───────────────────┐   BLOCK   ┌────────────────────────┐
+│  Compliance       │──────────▶│  List violations with    │
+│  Checker Pillar   │           │  CODEBASE_AGENCY_POLICY  │
+└───────┬───────────┘           └────────────────────────┘
+        │ PASS
+        ▼
+  APPROVED — emit governance-report.json
+```
+
 ## Related Agents
 
 - **owner-approval-guard** (deprecated — merged into this agent)

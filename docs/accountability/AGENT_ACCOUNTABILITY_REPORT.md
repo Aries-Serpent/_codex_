@@ -1,3 +1,24 @@
+## SESSION SUMMARY — 2026-06-10T18:52Z · S58 Phase 3 execution (agent gate wiring)
+
+### Pre-flight Checklist
+- [x] **0a.** All bot-posted PR comments reviewed — Comment Review Gate confirmed 3/3 addressed ✅
+- [x] **0b.** Failing CI checks reviewed — no failures on HEAD `d79237f`; local ruff ✅, auto_fix_common_issues ✅, REQ-4/REQ-5 ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **`unified-governance-gate.md`** — Added S58 Phase 3 execution section: three-pillar decision flow diagram, `governance-report.json` reporting gate, workflow upload snippet.
+2. **`unified-coverage-agent.md`** — Added S58 Phase 3 execution section: threshold enforcement flow diagram, anti-regression guard confirmation, `coverage-report.json` upload gate.
+3. **`unified-doc-agent.md`** — Advanced Phase 3 groundwork `⏳ Next step` to `✅`; added workflow invocation snippet for `doc_health_check.py` and `doc-health-report.json` upload gate.
+
+### Files Modified
+- `.github/agents/unified-governance-gate.md`
+- `.github/agents/unified-coverage-agent.md`
+- `.github/agents/unified-doc-agent.md`
+- `CHANGELOG.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+
 ## SESSION SUMMARY — 2026-06-10T18:34Z · PR #4830 CI rescue autofix pass
 - Investigated failing checks reported on commit `ec0abb224459` via GitHub Actions logs (`Auto-Fix Common CI Issues`, `PR Auto-Fix Check`) and reproduced pattern failures locally.
 - Applied minimal auto-fixable cleanup in impacted files (unused imports, import ordering, trailing whitespace/W-series warnings) to clear Pattern 1, 9, and 13 failures.

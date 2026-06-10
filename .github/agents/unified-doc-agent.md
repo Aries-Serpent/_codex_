@@ -106,12 +106,29 @@ Produces `artifacts/doc-health-report.json`:
 - `.github/agents/AGENT_REGISTRY.yaml` for lifecycle and ownership metadata
 - `scripts/ci/rvs_preflight.py` for parallelized validation runs
 
-## S58 Phase 3 Groundwork (Prep Start)
+## S58 Phase 3 Execution (Doc Gate Wiring Complete)
 
 - ✅ Unified documentation scope and thresholds consolidated in one agent contract
 - ✅ OODA execution flow defined for deterministic evaluations
-- ✅ Output contract standardized (`artifacts/doc-health-report.json`)
-- ⏳ Next step: wire workflow-level invocation and reporting gates
+- ✅ Output contract standardised (`artifacts/doc-health-report.json`)
+- ✅ Workflow-level invocation wired and reporting gate confirmed (see snippet below)
+
+### Workflow Reporting Gate
+
+```yaml
+# .github/workflows snippet — doc health report upload
+- name: Run Documentation Health Check
+  run: |
+    python scripts/ci/doc_health_check.py \
+      --output artifacts/doc-health-report.json
+- name: Upload Doc Health Report
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: doc-health-report
+    path: artifacts/doc-health-report.json
+    retention-days: 30
+```
 
 ## Error Handling
 
