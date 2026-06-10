@@ -14031,6 +14031,20 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+
+
+## SESSION SUMMARY — 2026-06-10T08:12Z [auto-generated]
+
+**Session:** auto-20260610T0812-run4503 | **Run:** 27262488020 | **Date:** 2026-06-10
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## SESSION SUMMARY — 2026-06-10T08:12Z [auto-generated]
+
+**Session:** auto-20260610T0812-run4503 | **Run:** 27262488020 | **Date:** 2026-06-10
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-06-10T05:40Z [auto-generated]
 
 **Session:** auto-20260610T0540-run4498 | **Run:** 27255713817 | **Date:** 2026-06-10
