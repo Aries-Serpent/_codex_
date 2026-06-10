@@ -3,11 +3,13 @@
 ## [Unreleased]
 
 ### Fixed
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4830 (SHA `db05cca5`) at 2026-06-10T17:34Z [auto-generated]
+
+### Changed
 - Advanced S58 Phase 2 documentation by hardening Unified Security Scanner operational guidance.
 - Started S58 Phase 3 groundwork by expanding Unified Documentation Agent architecture, integration guidance, and quality gates.
 - Clarified documentation examples to use tracked repository report paths and explicit critical-doc freshness scope.
 - Clarified operational wording: `mkdir -p` usage is idempotent and freshness scope applies recursively to Markdown docs in agent/admin documentation trees.
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4830 (SHA `db05cca5`) at 2026-06-10T17:34Z [auto-generated]
 
 All notable changes to the Cognitive Brain Core project will be documented in this file.
 

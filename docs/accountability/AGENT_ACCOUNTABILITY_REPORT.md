@@ -5,6 +5,7 @@
 - Addressed validation feedback by explicitly adding `mkdir -p .codex/reports` before report output example and clarifying which docs are considered critical for freshness SLA.
 - Refined changelog language for concise user-focused release notes and made freshness scope patterns explicit with recursive Markdown globs.
 - Added final wording clarifications: `mkdir -p` is idempotent/safe on every run, and freshness SLA scope explicitly means recursive Markdown coverage under `docs/agent/` and `docs/admin/`.
+- Aligned changelog semantics by moving non-fix updates under `### Changed`, and extracted a dedicated "Critical Documentation Scope" section in `unified-doc-agent.md` for cleaner metric references.
 
 ### Pre-flight Checklist
 - [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
