@@ -1,15 +1,15 @@
-import pytest
 from mcp.api.schemas import (
+    ErrorCodes,
+    HealthResponse,
+    JSONRPCError,
+    JSONRPCRequest,
+    JSONRPCResponse,
     QueryRequest,
     QueryResponse,
     UpsertRequest,
     UpsertResponse,
-    HealthResponse,
-    JSONRPCRequest,
-    JSONRPCResponse,
-    JSONRPCError,
-    ErrorCodes,
 )
+
 
 def test_query_request_defaults():
     req = QueryRequest(query="test")

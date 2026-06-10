@@ -1,5 +1,5 @@
-import pytest
 from mcp.packager.config import PackageConfig
+
 
 def test_package_config_defaults():
     config = PackageConfig(name="my_pkg")

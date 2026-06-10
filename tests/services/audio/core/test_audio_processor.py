@@ -1,11 +1,12 @@
-import pytest
 from pathlib import Path
+
 from services.audio.core.audio_processor import (
     AudioConfig,
+    AudioProcessor,
     ProcessingProfile,
     ProcessingResult,
-    AudioProcessor,
 )
+
 
 def test_audio_config():
     config = AudioConfig()
@@ -28,12 +29,12 @@ def test_audio_processor_process_file(tmp_path):
     config = AudioConfig()
     processor = AudioProcessor(config)
     profile = ProcessingProfile(name="basic", parameters={})
-    
+
     in_path = tmp_path / "in.wav"
     out_path = tmp_path / "out.wav"
-    
+
     result = processor.process_file(in_path, out_path, profile)
-    
+
     assert result.success is True
     assert result.output_path == out_path
     assert result.quality_score == 8.5

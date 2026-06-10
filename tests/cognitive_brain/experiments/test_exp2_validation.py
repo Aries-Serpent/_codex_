@@ -1,10 +1,5 @@
-import pytest
-from cognitive_brain.experiments.exp2_validation import (
-    generate_test_audits,
-    run_exp2,
-    ExperimentConfig,
-    EXP_2_CONFIG
-)
+from cognitive_brain.experiments.exp2_validation import generate_test_audits, run_exp2
+
 
 def test_generate_test_audits():
     audits = generate_test_audits(5, seed=42)

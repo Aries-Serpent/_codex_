@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Fixed
+- CI rescue for PR #4830 (`ec0abb2`): resolved auto-fix gate findings by removing unused imports, reordering imports, and clearing trailing-whitespace W-series warnings in affected agent/test files.
+- Verified rescue checklist commands for this branch: `python scripts/ci/mypy_baseline.py --require-baseline` ✅ and `python scripts/ci/auto_fix_common_issues.py --check-only` ✅.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4830 (SHA `db05cca5`) at 2026-06-10T17:34Z [auto-generated]
 
 ### Changed

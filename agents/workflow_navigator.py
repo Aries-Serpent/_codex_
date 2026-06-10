@@ -25,6 +25,7 @@ from src.cognitive_brain.base import (
     Planner,
 )
 
+
 class WorkflowFrequency(Enum):
     """How often a workflow is typically used"""
 
@@ -823,14 +824,14 @@ class WorkflowNavigator(Planner):
         """
         trigger_event = input_data.get("event")
         context = input_data.get("context", {})
-        
+
         # Simple heuristic to find the right workflow ID
         workflow_id = None
         if trigger_event:
             workflow = self.find_workflow(trigger_event)
             if workflow:
                 workflow_id = workflow.workflow_id
-        
+
         return ObservationData(
             data={
                 "trigger": trigger_event,
@@ -841,28 +842,28 @@ class WorkflowNavigator(Planner):
             source="workflow_navigator_trigger",
             metadata={"confidence": 0.95 if trigger_event else 0.5}
         )
-    
+
     def orient(self, observation: ObservationData) -> OrientationResult:
         """
         Orient: Map to workflow token selection
         """
         workflow_id = observation.data.get("workflow_id")
         context = observation.data.get("context", {})
-        
+
         current_tokens = []
         next_token = "UNKNOWN"
         patterns = []
-        
+
         if workflow_id and workflow_id in self.workflows:
             workflow = self.workflows[workflow_id]
             current_tokens = [step.id for step in workflow.steps]
             patterns.append(workflow.category)
-            
+
             # Simplified next token selection (just pick the first for now if starting)
             if current_tokens:
                 # This could be based on current state, using index 0 for simplicity
                 next_token = current_tokens[0]
-                
+
         return OrientationResult(
             analysis=next_token,
             context={
@@ -873,13 +874,13 @@ class WorkflowNavigator(Planner):
             confidence=0.8,
             alternatives=[]
         )
-    
+
     def decide(self, orientation: OrientationResult) -> Decision:
         """
         Decide: Choose next workflow step
         """
         next_token = orientation.analysis
-        
+
         return Decision(
             action=f"execute_workflow_step:{next_token}",
             parameters={"step": next_token, "context": orientation.context},
@@ -887,7 +888,7 @@ class WorkflowNavigator(Planner):
             confidence=0.9,
             timestamp=datetime.now(UTC)
         )
-    
+
     def act(self, decision: Decision) -> ActionResult:
         """
         Act: Execute tokenized workflow step

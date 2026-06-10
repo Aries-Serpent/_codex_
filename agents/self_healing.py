@@ -601,15 +601,15 @@ class SelfHealingEngine(Planner):
     def observe(self, input_data: dict[str, Any]) -> ObservationData:
         """
         Observe phase: Detect issues in codebase
-        
+
         Wraps existing detect_issues() method
         """
         log_output = input_data.get("log_output")
         run_checks = input_data.get("run_checks", True)
         issues = self.detect_issues(log_output, run_checks)
-        
+
         confidence = 0.9 if any(i.severity == IssueSeverity.CRITICAL for i in issues) else 0.7
-        
+
         return ObservationData(
             data={
                 "issues": [issue.to_dict() for issue in issues],
@@ -619,24 +619,24 @@ class SelfHealingEngine(Planner):
             source="self_healing_detector",
             metadata={"confidence": confidence}
         )
-    
+
     def orient(self, observation: ObservationData) -> OrientationResult:
         """
         Orient phase: Classify and contextualize issues
         """
         issues_data = observation.data.get("issues", [])
-        
+
         classified_issues = {}
         for issue in issues_data:
             category = issue.get("type")
             if category not in classified_issues:
                 classified_issues[category] = []
             classified_issues[category].append(issue)
-        
+
         has_critical = any(i.get("severity") == IssueSeverity.CRITICAL.value for i in issues_data)
         classification = "CRITICAL" if has_critical else "WARNING"
         patterns = list(classified_issues.keys())
-        
+
         return OrientationResult(
             analysis=classification,
             context={
@@ -647,13 +647,13 @@ class SelfHealingEngine(Planner):
             confidence=0.8,
             alternatives=[]
         )
-    
+
     def decide(self, orientation: OrientationResult) -> Decision:
         """
         Decide phase: Plan remediation strategy
         """
         by_category = orientation.context.get("by_category", {})
-        
+
         return Decision(
             action="execute_remediation",
             parameters={"issues_by_category": by_category},
@@ -661,7 +661,7 @@ class SelfHealingEngine(Planner):
             confidence=0.8,
             timestamp=datetime.now(UTC)
         )
-    
+
     def act(self, decision: Decision) -> ActionResult:
         """
         Act phase: Execute remediation

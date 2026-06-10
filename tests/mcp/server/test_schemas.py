@@ -1,6 +1,8 @@
 import pytest
 from pydantic import ValidationError
-from mcp.server.schemas import CallToolParams, NegotiateParams, ListToolsParams
+
+from mcp.server.schemas import CallToolParams, ListToolsParams, NegotiateParams
+
 
 def test_call_tool_params_valid():
     params = CallToolParams(tool_id="tool1", input={"key": "value"})

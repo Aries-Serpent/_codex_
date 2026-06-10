@@ -1,5 +1,7 @@
 import pytest
-from mcp.adapters.base_adapter import AdapterConfig, QueryResult, BaseAdapter
+
+from mcp.adapters.base_adapter import AdapterConfig, BaseAdapter, QueryResult
+
 
 def test_adapter_config_defaults():
     config = AdapterConfig()
