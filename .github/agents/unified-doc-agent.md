@@ -123,7 +123,7 @@ Produces `artifacts/doc-health-report.json`:
 
 - Documentation quality score ≥ 0.75
 - Broken links = 0 on changed docs
-- Freshness SLA ≤ 90 days for critical documentation (see Critical Documentation Scope)
+- Freshness SLA ≤ 90 days for critical documentation (see Critical Documentation Scope, defined below)
 
 ## Critical Documentation Scope
 
