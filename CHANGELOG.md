@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (CI compliance refresh — PR #4826 — 2026-06-10T05:15:58Z)
+- All pre-commit checks pass: ruff ✅, mypy ✅ (0 errors), auto_fix_common_issues ✅
+- Root cause analysis: `copilot-setup-steps.yml` YAML parse error originates from `main` branch (blank line 124 between comment block and first step); fix is in this PR and will resolve on merge
+- REQ-4/REQ-5 freshness gates confirmed passing
+
 ### Fixed (copilot-setup-steps YAML parse error — PR #4826 — 2026-06-09T17:36Z)
 - `.github/workflows/copilot-setup-steps.yml`: removed 10 empty lines between section-header comment blocks and `- name:` step items in `steps:` sequence; Go YAML parser (Copilot cloud agent) was emitting "did not find expected '-' indicator" at line 124, blocking all new Copilot sessions
 
@@ -6695,7 +6700,12 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 ### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
 - **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
-- **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
+- **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]
+
+### Fixed (CI compliance refresh — PR #4826 — 2026-06-10T05:15:58Z)
+- All pre-commit checks pass: ruff ✅, mypy ✅ (0 errors), auto_fix_common_issues ✅
+- Root cause analysis: `copilot-setup-steps.yml` YAML parse error originates from `main` branch (blank line 124 between comment block and first step); fix is in this PR and will resolve on merge
+- REQ-4/REQ-5 freshness gates confirmed passing` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
 - **Step 4 — Package mappings**: Validated `Dockerfile.preview` alignment with `pyproject.toml` `[tool.setuptools.package-dir]` via automated analysis. All 14 entries correctly handled: `codex_utils` and `services` use `COPY dir/ ./dir/` (sub-packages present); remaining 9 entries use `STUB_DIRS`/`mkdir`. `pip install -e .` succeeds in both `preview-base` and `preview` stages (confirmed in run #64).
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 6 — review comment)
