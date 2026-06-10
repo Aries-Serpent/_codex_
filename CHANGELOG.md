@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4830 (SHA `db05cca5`) at 2026-06-10T17:34Z [auto-generated]
+
 All notable changes to the Cognitive Brain Core project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
