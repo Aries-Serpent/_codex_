@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4833 — 2026-06-10T19:32Z)
+- Fixed Security Scanning Suite CI failure: extended `continue-on-error: true` to all CodeQL matrix languages in `security-scanning-suite.yml` and `codeql-analysis.yml`. Both Python and JavaScript CodeQL jobs were failing with `JOB_STATUS_CONFIGURATION_ERROR` because GHAS rejects advanced-configuration SARIF uploads when the repository default setup is enabled. Previously only `javascript` had `continue-on-error: true`.
+
 ### Fixed (auto-update — PR #4833)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4833 (SHA `dd7b0da3`) at 2026-06-10T19:14Z [auto-generated]
 

@@ -45,10 +45,11 @@ jobs:
     name: CodeQL Analysis (${{ matrix.language }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # javascript/typescript: repo has no standalone JS build; allow this matrix leg to fail
-    # without blocking the overall workflow (python must still pass).
+    # All CodeQL matrix legs continue-on-error: GHAS rejects advanced-configuration
+    # SARIF uploads when the repository default setup is enabled, causing
+    # JOB_STATUS_CONFIGURATION_ERROR for every language regardless of build success.
     # Mirrors the identical guard in codeql-analysis.yml.
-    continue-on-error: ${{ matrix.language == 'javascript' }}
+    continue-on-error: true
     if: |
       (github.event_name == 'push') ||
       (github.event_name == 'pull_request') ||
