@@ -14010,6 +14010,9 @@ Changed from broken identical try/except to clean relative imports:
 **Session:** auto-20260610T1934-run4514 | **Run:** 27300980343 | **Date:** 2026-06-10
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+
+### Follow-up (2026-06-10T19:36Z)
+- Added a same-session accountability refresh so the newest commit carries REQ-4 evidence together with the changelog REQ-5 update for Pre-Merge Validation.
 ## SESSION SUMMARY — 2026-06-08T10:02Z [auto-generated]
 
 **Session:** auto-20260608T1002-run325439 | **Run:** 27129378971 | **Date:** 2026-06-08

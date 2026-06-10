@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4832 — 2026-06-10T19:35Z)
+- Refreshed accountability tracking for the latest branch commit to satisfy the Pre-Merge Validation REQ-4/REQ-5 freshness gate.
+
 ### Fixed (auto-update — PR #4832)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4832 (SHA `bdaa7be7`) at 2026-06-10T19:14Z [auto-generated]
 
