@@ -74,8 +74,7 @@ class _LegacyTokenizerProxy:
             stacklevel=2,
         )
         if _CanonicalLegacyTokenizer is None:
-            raise AttributeError(
-                f"{self.__class__.__name__!s} has no attribute {name!r}; "
+            raise ImportError(
                 "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
             )
         return getattr(_CanonicalLegacyTokenizer, name)

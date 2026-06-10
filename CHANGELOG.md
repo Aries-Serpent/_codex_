@@ -9430,3 +9430,7 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (S20260610)
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5) to satisfy last-commit freshness gate for PR #4826 at 2026-06-10T03:12:15Z.
+
+### Fixed (S20260610b)
+- Fixed `src/tokenization/api._LegacyTokenizerProxy.__getattr__` to raise `ImportError` instead of `AttributeError` when `_CanonicalLegacyTokenizer` is None, matching test expectations and communicating the root cause correctly (PR #4826 at 2026-06-10T04:34:49Z).
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5).
