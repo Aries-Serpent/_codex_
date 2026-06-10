@@ -48561,3 +48561,28 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-06-10T19:27Z COPILOT AGENT (Fix CODEX_MANIFEST orphaned conflict markers)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — CI Rescue comment (comment_id 4673657791) addressed ✅
+- [x] **0b.** Failing CI checks reviewed — `Detect CI Issues & Post Fix Instructions` job was failing due to Pattern 22 (CODEX_MANIFEST integrity) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Root cause identified** — `CODEX_MANIFEST.json` had orphaned git merge conflict markers (`=======` and `>>>>>>>` without `<<<<<<<`) from the cherry-pick chain in the previous session. These were not caught because the Python `re.sub` conflict resolver only handled the `generated_at` field, not the trailing `integrity_sha256` field at the end of the file.
+2. **Fix applied** — Removed the orphaned `=======` conflict separator and the duplicate older `integrity_sha256` entry, keeping the newest value `29bf3399...` from PR #4834.
+3. **JSON validity verified** — `python3 -c "import json; json.load(open('CODEX_MANIFEST.json'))"` confirms valid JSON.
+4. **sync_tracked_files verified** — All tracked file checks pass: `CODEX_MANIFEST integrity: sha256 consistent`, `CHANGELOG.md: ## [Unreleased] non-empty`, `AGENT_ACCOUNTABILITY_REPORT: dated 2026-06-10 (0d ago)`.
+5. **session_wrapup_autofix --check --pr-number 4830** — REQ-4 ✅ REQ-5 ✅
+
+### Impact Score
+- Files fixed: 1 (`CODEX_MANIFEST.json`)
+- CI gates unblocked: Pattern 22 (Tracked File Sync), `Detect CI Issues & Post Fix Instructions`
+- Deferral Language Gate: 0 violations
+
+---

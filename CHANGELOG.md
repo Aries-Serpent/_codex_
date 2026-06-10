@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (SN: CODEX_MANIFEST conflict markers)
+- Fixed orphaned git merge conflict markers in `CODEX_MANIFEST.json` (missing `<<<<<<<` header caused JSON parse error in tracked-file sync check) [2026-06-10T19:27Z]
+
 ### Fixed (cherry-pick — Dependabot PRs #4832, #4833, #4834)
 - Cherry-picked `litestar` bump from 2.20.0 to 2.22.0 (`requirements/lock.txt`) from all 3 open Dependabot PRs into active session [2026-06-10T19:19Z]
 
