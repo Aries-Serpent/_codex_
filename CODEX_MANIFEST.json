@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-10T19:14:13Z",
+  "generated_at": "2026-06-10T19:15:03Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -2226,8 +2226,8 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "4eb6daef0011df6603f6da30ab28e980335eb6eee2ac135d6f03b510c60705a2"
-=======
   "integrity_sha256": "329d5215019375af55dbc74d6baefbd720ab1f1b968908d0ef32b8fb3dde01fc"
->>>>>>> c044c780f (chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci])
+=======
+  "integrity_sha256": "29bf3399be1fd77e6f28e5c182f57f73d27c82e83249c5a50a2b7bd329f41a8b"
+>>>>>>> 68fea9502 (chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci])
 }
