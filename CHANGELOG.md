@@ -3,8 +3,9 @@
 ## [Unreleased]
 
 ### Fixed
-- S58 execution progress: hardened `.github/agents/unified-security-scanner.md` (Phase 2 checkpoint + tracked `.codex/reports/` example path) and started Phase 3 groundwork in `.github/agents/unified-doc-agent.md` (Mermaid OODA flow, integration/error-handling/success-metric sections, prep checklist).
-- Validation follow-up: added explicit `mkdir -p .codex/reports` step for report output examples and defined critical documentation scope for the freshness SLA metric.
+- Advanced S58 Phase 2 documentation by hardening Unified Security Scanner operational guidance.
+- Started S58 Phase 3 groundwork by expanding Unified Documentation Agent architecture, integration guidance, and quality gates.
+- Clarified documentation examples to use tracked repository report paths and explicit critical-doc freshness scope.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4830 (SHA `db05cca5`) at 2026-06-10T17:34Z [auto-generated]
 
 All notable changes to the Cognitive Brain Core project will be documented in this file.

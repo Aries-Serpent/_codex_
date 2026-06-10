@@ -3,6 +3,7 @@
 - Began S58 Phase 3 groundwork for `unified-doc-agent` by adding OODA Mermaid architecture flow, integration points, error handling, success metrics, and a Phase 3 prep checklist.
 - Kept changes scoped to agent documentation artifacts for minimal-risk progression of S58 plan work.
 - Addressed validation feedback by explicitly adding `mkdir -p .codex/reports` before report output example and clarifying which docs are considered critical for freshness SLA.
+- Refined changelog language for concise user-focused release notes and made freshness scope patterns explicit with recursive Markdown globs.
 
 ### Pre-flight Checklist
 - [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
