@@ -1,53 +1,11 @@
-# Self-Healing CI — manual dispatch stub
-#
-# This workflow serves as the AAIS Reliability gate marker and the manual
-# workflow_dispatch entry-point for the self-healing loop.
-#
-# The autonomous healing loop fires automatically via
-# copilot-iterative-self-healing.yml (subscribes to workflow_run: ["*"]).
-# This file provides the human-visible "Self-Healing CI" entry in the
-# Actions UI and satisfies the self_healing_wf=True AAIS reliability check.
-#
-# Full archived implementation: .github/workflow-archive/disabled/self-healing.yml
-
-name: "Self-Healing CI"
-
+name: Self-Healing Pipeline
 on:
   workflow_dispatch:
-    inputs:
-      target_run_id:
-        description: "Workflow run ID to heal (leave blank for latest failed)"
-        required: false
-        type: string
-      max_iterations:
-        description: "Maximum heal iterations (1-5)"
-        required: false
-        default: "3"
-        type: string
-
-permissions: {}
-
 jobs:
-  noop:
-    name: "Self-Healing CI stub — see copilot-iterative-self-healing.yml"
+  heal:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize with repository variables
-        env:
-          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR || '5' }}
-          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-          COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
-        run: |
-          echo "Self-healing configuration initialized from repository variables:"
-          echo "  CODEX_MAX_HEALER_RUNS_PER_HOUR=$CODEX_MAX_HEALER_RUNS_PER_HOUR"
-          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
-          echo "  COGNITIVE_BRAIN_INJECTION_ENABLED=$COGNITIVE_BRAIN_INJECTION_ENABLED"
-
-      - run: |
-          echo "Self-healing is handled autonomously by copilot-iterative-self-healing.yml."
-          echo "Target run ID: ${{ inputs.target_run_id || 'latest failed' }}"
-          echo "Max iterations: ${{ inputs.max_iterations }}"
-          echo ""
-          echo "Configuration:"
-          echo "  Max healer runs per hour: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR || '5' }}"
-          echo "  Log level: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}"
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Stub
+        run: echo "Self-healing pipeline stub"

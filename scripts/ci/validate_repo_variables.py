@@ -226,7 +226,7 @@ def save_agent_context(output_path: Path) -> None:
     """Save agent context to file."""
     context = generate_agent_context()
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Merge with existing file to preserve other keys injected by bootstrap/sync agents
     if output_path.exists():
         try:
