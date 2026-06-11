@@ -97,7 +97,6 @@ jobs:
             --sha "${{ github.sha }}" \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --check
-        continue-on-error: true
 
       - name: Upload validation reports
         if: always()
@@ -128,7 +127,7 @@ jobs:
             };
 
             // Only these three block the merge; the rest are informational warnings.
-            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol'];
+            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol', 'session_wrapup'];
             const passed = critical.every(k => checks[k] === 'success');
             const emoji = passed ? '✅' : '❌';
 
@@ -143,7 +142,7 @@ jobs:
             | Mermaid Diagram Drift | ${checks.mermaid_check === 'success' ? '✅ Pass' : '⚠️ Drift detected'} |
             | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
-            | Session Wrapup (REQ-4/5) | ${checks.session_wrapup === 'success' ? '✅ Pass' : '⚠️ Warning'} |
+            | Session Wrapup (REQ-4/5) | ${checks.session_wrapup === 'success' ? '✅ Pass' : '❌ Fail'} |
 
             ${passed ? '✅ **All required checks passed! Ready to merge.**' : '❌ **Some checks failed. Please review and fix.**'}
 
@@ -176,7 +175,7 @@ jobs:
             }
 
       - name: Fail if critical checks failed
-        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success'
+        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome != 'success'
         run: |
           echo "::error::Pre-merge validation failed"
           if [ "${{ steps.autofix.outcome }}" != "success" ]; then
@@ -196,6 +195,10 @@ jobs:
           if [ "${{ steps.batch_scan_protocol.outcome }}" != "success" ]; then
             echo "::error::Agent batch-scan protocol check failed — one or more agent files are missing the ⚡ Parallel Batch Scanning Protocol section"
             echo "Fix with: python scripts/ci/inject_batch_scan_protocol.py"
+          fi
+          if [ "${{ steps.session_wrapup.outcome }}" != "success" ]; then
+            echo "::error::Session wrapup check failed — REQ-4/REQ-5 files are not fresh for latest commit"
+            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR_NUMBER>"
           fi
           exit 1
 

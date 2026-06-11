@@ -175,10 +175,10 @@ jobs:
         continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
           echo "::group::Session Context Pre-load"
-          python3 .github/scripts/session_preload.py || {
+          if ! python3 .github/scripts/session_preload.py; then
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
             echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
-          }
+          fi
           echo "::endgroup::"
       #
       # Session preload intentionally disabled; Session Access Probe is now the first active startup step.
@@ -201,7 +201,7 @@ jobs:
           GITHUB_TOKEN:     ${{ github.token }}
         run: |
           echo "::group::Session Access Probe"
-          python3 scripts/ci/session_access_probe.py || {
+          if ! python3 scripts/ci/session_access_probe.py; then
             echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
             # Emit safe defaults so downstream steps have the vars even if probe fails
             echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
@@ -209,7 +209,7 @@ jobs:
             echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
             echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
             echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
-          }
+          fi
           echo "::endgroup::"
 
       # ============================================================================
@@ -231,11 +231,10 @@ jobs:
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "::group::Autonomous RAG Context Build"
-          python3 scripts/ci/autonomous_rag_context.py \
-            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }} \
-            || {
-              echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
-            }
+          if ! python3 scripts/ci/autonomous_rag_context.py \
+            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }}; then
+            echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+          fi
           # Print access strategy for agent log
           if [ -f .codex/session_access_strategy.json ]; then
             echo "--- Access Strategy ---"
