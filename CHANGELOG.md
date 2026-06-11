@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed (PR #4838 startup follow-up — 2026-06-11T15:36Z)
+- `.github/workflows/copilot-setup-steps.yml`: simplified the guarded Git LFS step conditions by centralizing the workflow-dispatch booleans in job env, fixed the `lfs_mode` input description typo, and aligned the session-preload comments with the active non-blocking block-scalar implementation.
+- `docs/guides/lfs_policy.md`: documented the current repo-wide LFS baseline (`GIT_LFS_SKIP_SMUDGE=1`, no forced repo-wide filters, opt-in targeted/full fetch only) so the workflow behavior and policy guidance stay in sync.
+
 ### Fixed (PR #4838 workflow alert cleanup + security follow-up — 2026-06-11T15:12Z)
 - `.github/workflows/copilot-setup-steps.yml`: cleared the reported workflow lint annotations by normalizing YAML comments/line wrapping, replacing the opaque base64 env injector with an equivalent readable Python command, and preserving the guarded session preload structure required by repository tripwires.
 - `pyproject.toml`: added an explicit `litestar>=2.22.0,<3` floor so dependency resolution cannot fall back to versions affected by CVE-2026-48060 / GHSA-542p-wvx7-72m4, addressing the high-severity litestar alerts tracked in issue #4840.
