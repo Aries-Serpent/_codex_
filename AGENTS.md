@@ -14,7 +14,7 @@ DO NOT MOVE this file - it is intentionally placed here as the first point of co
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Root Organization:** Phase 2 Complete
 > **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
-> **Agents:** 131 active (Phase 6 sweep: 14 agents deprecated into unified entry points; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
+> **Agents:** 145 active (source of truth: [`.github/agents/AGENT_REGISTRY.yaml`](.github/agents/AGENT_REGISTRY.yaml); 14 archived prompt files remain for backward compatibility. Key unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 >
@@ -479,100 +479,156 @@ python scripts/remediation/check_windows_filenames.py <files...>
 
 ## 🤖 Specialized Agents
 
-The repository includes 53 specialized GitHub Copilot agents designed for specific tasks. See [.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md](.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md) for complete analysis.
+The source of truth for the custom-agent ecosystem is [`.github/agents/AGENT_REGISTRY.yaml`](.github/agents/AGENT_REGISTRY.yaml): **145 active agents** and **14 archived agents**. Archived prompt files are still present under `.github/agents/` for backward compatibility, but routing should prefer the active consolidated entry points below.
 
-### Available Agents (54 Total)
+## 🗺️ Agent Consolidation Map
 
-#### CI/CD & Build (18 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Artifact Monitor Agent** | Autonomous CI/CD health monitoring with pattern recognition and agent orchestration | [.github/agents/artifact-monitor-agent.md](.github/agents/artifact-monitor-agent.md) | ✅ Active |
-| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
-| **CI Log Retrieval Agent** | Retrieve authenticated GitHub Actions logs and summarize failures | [.github/agents/ci-log-retrieval-agent.md](.github/agents/ci-log-retrieval-agent.md) | ✅ Active |
-| **CI Emergency Response Agent** | Emergency CI/CD pipeline fixes | [.github/agents/ci-emergency-response-agent.md](.github/agents/ci-emergency-response-agent.md) | ✅ Active |
-| **Coverage Roadmap Agent** | Drive coverage threshold roadmap execution and test development | [.github/agents/coverage-roadmap-agent.md](.github/agents/coverage-roadmap-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
-| **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
-| **Dependency Vulnerability Scanner** | Scan dependencies for security vulnerabilities | [.github/agents/dependency-vulnerability-scanner.agent.md](.github/agents/dependency-vulnerability-scanner.agent.md) | ⚠️ DEPRECATED → `unified-security-scanner` |
-| **Doc Freshness Checker** | Check documentation freshness and validate links | [.github/agents/doc-freshness-checker.agent.md](.github/agents/doc-freshness-checker.agent.md) | ✅ Active |
-| **Owner Approval Guard** | Enforce owner approval for autonomous operations | [.github/agents/owner-approval-guard.agent.md](.github/agents/owner-approval-guard.agent.md) | ✅ Active |
-| **PII Scrubber** | Scrub PII from content for GDPR/CCPA compliance | [.github/agents/pii-scrubber.agent.md](.github/agents/pii-scrubber.agent.md) | ✅ Active |
-| **RAG Index Manager** | Manage RAG index operations (build, update, query) | [.github/agents/rag-index-manager.agent.md](.github/agents/rag-index-manager.agent.md) | ✅ Active |
-| **Repository Hygiene Agent** | Autonomous repository cleanup and maintenance | [.github/agents/repository-hygiene-agent.md](.github/agents/repository-hygiene-agent.md) | ✅ Active |
-| **Root Organizer Agent** | Safe incremental root folder reorganization | [.github/agents/root-organizer-agent.md](.github/agents/root-organizer-agent.md) | ✅ Active |
-| **Tokenization Coverage Agent** | Improve src/tokenization test coverage and validation | [.github/agents/tokenization-coverage-agent.md](.github/agents/tokenization-coverage-agent.md) | ✅ Active |
-| **Workflow CI Fixer** | Fix GitHub Actions workflow syntax errors and failures | [.github/agents/workflow-ci-fixer.agent.md](.github/agents/workflow-ci-fixer.agent.md) | ✅ Active |
-| **Workflow Analytics Agent** | Analyze workflow performance and patterns | [.github/agents/workflow-analytics-agent.md](.github/agents/workflow-analytics-agent.md) | ✅ Active |
-| **Workflow Management Agent** | Orchestrate workflow operations | [.github/agents/workflow-management-agent.md](.github/agents/workflow-management-agent.md) | ✅ Active |
+```mermaid
+flowchart TB
+  Registry["AGENT_REGISTRY.yaml
+145 active / 14 archived"]
 
-#### Testing (12 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Test Alignment Fixer** | Fix test alignment issues after API changes | [.github/agents/test-alignment-fixer.agent.md](.github/agents/test-alignment-fixer.agent.md) | ✅ Active |
-| **Test Coverage Monitor** | Monitor test coverage and enforce thresholds | [.github/agents/test-coverage-monitor.agent.md](.github/agents/test-coverage-monitor.agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
-| **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) | ✅ Active |
-| **Integration Test Runner** | Run integration tests across services | [.github/agents/integration-test-runner.agent.md](.github/agents/integration-test-runner.agent.md) | ✅ Active |
-| **Autonomous Test Healer Agent** | Auto-fix test failures | [.github/agents/autonomous-test-healer-agent.md](.github/agents/autonomous-test-healer-agent.md) | ✅ Active |
-| **Coverage Gapfill Agent** | Target low-coverage modules and add tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
-| **Coverage Maintenance Agent** | Maintain test coverage over time | [.github/agents/coverage-maintenance-agent.md](.github/agents/coverage-maintenance-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
-| **Mutation Testing Agent** | Perform mutation testing | [.github/agents/mutation-testing-agent.md](.github/agents/mutation-testing-agent.md) | ✅ Active |
-| **Test Enhancement Agent** | Improve test quality | [.github/agents/test-enhancement-agent.md](.github/agents/test-enhancement-agent.md) | ✅ Active |
-| **Test Failure Analyzer Agent** | Analyze and diagnose test failures | [.github/agents/test-failure-analyzer-agent.md](.github/agents/test-failure-analyzer-agent.md) | ✅ Active |
+  subgraph Coverage["Coverage family"]
+    CG["coverage-gapfill-agent"] --> UC["unified-coverage-agent"]
+    CM["coverage-maintenance-agent"] --> UC
+    CR["coverage-roadmap-agent"] --> UC
+    TCA["test-coverage-agent"] --> UC
+    TCM["test-coverage-monitor"] --> UC
+  end
 
-#### Security (6 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Bridge Security Monitor** | Monitor IPC bridge security and detect unauthorized access | [.github/agents/bridge-security-monitor.agent.md](.github/agents/bridge-security-monitor.agent.md) | ✅ Active |
-| **Security Alert Verification Agent** | Verify GitHub security alerts and propose remediation | [.github/agents/security-alert-verification-agent.md](.github/agents/security-alert-verification-agent.md) | ✅ Active |
-| **Security Audit Agent** | Perform security audits | [.github/agents/security-audit-agent.md](.github/agents/security-audit-agent.md) | ⚠️ DEPRECATED → `unified-security-scanner` |
-| **Code Scanning Remediation Agent** | Fix code scanning issues | [.github/agents/code-scanning-remediation-agent.md](.github/agents/code-scanning-remediation-agent.md) | ✅ Active |
-| **CodeQL Alert Resolution Agent** | Resolve CodeQL alerts | [.github/agents/codeql-alert-resolution-agent.md](.github/agents/codeql-alert-resolution-agent.md) | ✅ Active |
-| **Performance Regression Detector** | Detect performance regressions | [.github/agents/performance-regression-detector.agent.md](.github/agents/performance-regression-detector.agent.md) | ✅ Active |
+  subgraph Docs["Documentation family"]
+    DC["documentation-consolidator"] --> UD["unified-doc-agent"]
+    DQ["documentation-quality-agent"] --> UD
+    DF["doc-freshness-checker"] -. specialist .-> UD
+    LV["link-validator-agent"] -. specialist .-> UD
+    PM["post-merge-doc-alignment-agent"] -. specialist .-> UD
+  end
 
-#### Documentation (6 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Documentation Consolidator** | Intelligent documentation consolidation | [.github/agents/documentation-consolidator.md](.github/agents/documentation-consolidator.md) | ⚠️ DEPRECATED → `unified-doc-agent` |
-| **Documentation Quality Agent** | Automated documentation quality assessment | [.github/agents/documentation-quality-agent.md](.github/agents/documentation-quality-agent.md) | ⚠️ DEPRECATED → `unified-doc-agent` |
-| **Link Validator Agent** | Cross-reference and link validation | [.github/agents/link-validator-agent.md](.github/agents/link-validator-agent.md) | ✅ Active |
-| **Semantic Search** | Semantic search over codebase and docs | [.github/agents/semantic-search.agent.md](.github/agents/semantic-search.agent.md) | ✅ Active |
-| **Claim Verification Agent** | Verify claims in commit messages and docs | [.github/agents/claim-verification-agent.md](.github/agents/claim-verification-agent.md) | ✅ Active |
-| **GitHub Pages Manager Agent** | Manages GitHub Pages deployment, theme, and live doc sync | [.github/agents/github-pages-manager.md](.github/agents/github-pages-manager.md) | ✅ Active |
+  subgraph Security["Security family"]
+    SDS["secret-detection-agent"] --> US["unified-security-scanner"]
+    DVS["dependency-vulnerability-scanner"] --> US
+    DSR["dependency-security-review-agent"] --> US
+    SA["security-audit-agent"] --> US
+    CSV["security-alert-verification-agent"] -. verify .-> US
+    CSR["code-scanning-remediation-agent"] -. remediate .-> US
+    CQL["codeql-alert-resolution-agent"] -. fix .-> US
+  end
 
-#### Configuration (2 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Config Migration Assistant** | Migrate configurations to Hydra format | [.github/agents/config-migration-assistant.agent.md](.github/agents/config-migration-assistant.agent.md) | ✅ Active |
-| **Config Validator** | Validate Hydra configuration files | [.github/agents/config-validator.agent.md](.github/agents/config-validator.agent.md) | ✅ Active |
+  subgraph Healing["CI healing / cache family"]
+    CFR["ci-failure-resolution-agent"] --> CAH["ci-auto-healer-agent"]
+    CRE["ci-resilience-emergency-response-agent"] --> CER["ci-emergency-response-agent"]
+    CMI["cache-manager-integration"] --> CMA["cache-management-agent"]
+    SHO["self-healing-orchestrator-agent"] --> CAH
+    SHO --> CER
+  end
 
-#### RAG/ML (4 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Meta Tensor Validator** | Validate PyTorch model initialization patterns | [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md) | ✅ Active |
-| **RAG Meta Tensor Regression Agent** | Prevent RAG meta tensor regressions | [.github/agents/rag-meta-tensor-regression-agent.md](.github/agents/rag-meta-tensor-regression-agent.md) | ✅ Active |
-| **RAG Meta Tensor Guardian** | Guard RAG tensor operations | [.github/agents/rag-meta-tensor-guardian.md](.github/agents/rag-meta-tensor-guardian.md) | ✅ Active |
-| **RAG Module Management Agent** | Manage RAG modules | [.github/agents/rag-module-management-agent.md](.github/agents/rag-module-management-agent.md) | ✅ Active |
+  Registry --> UC
+  Registry --> UD
+  Registry --> US
+  Registry --> CAH
+  Registry --> CER
+  Registry --> CMA
+  Registry --> UGG["unified-governance-gate"]
+```
 
-#### Repository Management (4 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Reference Updater Agent** | Atomic reference updates across codebase | [.github/agents/reference-updater-agent.md](.github/agents/reference-updater-agent.md) | ✅ Active |
-| **Repository Organization Agent** | Organize repository structure | [.github/agents/repository-organization-agent.md](.github/agents/repository-organization-agent.md) | ✅ Active |
+### Available Agents (145 Active)
 
-#### Performance (2 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Performance Monitor Agent** | Real-time performance tracking | [.github/agents/performance-monitor-agent.md](.github/agents/performance-monitor-agent.md) | ✅ Active |
+These tables intentionally list the **active entry points surfaced in this guide**. For the full 145-agent inventory, use `AGENT_REGISTRY.yaml`.
 
-#### Other Specialized (10 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Datetime Modernizer** | Modernize datetime handling to timezone-aware objects | [.github/agents/datetime-modernizer.agent.md](.github/agents/datetime-modernizer.agent.md) | ✅ Active |
-| **Code Analysis Agent** | Code quality analysis | [.github/agents/code-analysis-agent.md](.github/agents/code-analysis-agent.md) | ✅ Active |
-| **Codex Reviewer** | Quantum-inspired PR reviewer with self-evolution | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
-| **Cognitive Brain Manager** | Manage cognitive brain system | [.github/agents/cognitive-brain-manager.md](.github/agents/cognitive-brain-manager.md) | ✅ Active |
-| **Cross Platform Filename Validator** | Validate Windows-compatible filenames | [.github/agents/cross-platform-filename-validator.md](.github/agents/cross-platform-filename-validator.md) | ✅ Active |
-| **PR 3095 Verification Agent** | Verify PR #3095 fixes | [.github/agents/pr-3095-verification-agent.md](.github/agents/pr-3095-verification-agent.md) | ✅ Active |
-| **Rust Config Validator** | Validate Rust configurations | [.github/agents/rust-config-validator.md](.github/agents/rust-config-validator.md) | ✅ Active |
+#### Unified Entry Points
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Unified Coverage Agent** | Canonical entry point for coverage monitoring, gap-filling, maintenance, and roadmap enforcement | [.github/agents/unified-coverage-agent.md](.github/agents/unified-coverage-agent.md) |
+| **Unified Doc Agent** | Canonical entry point for documentation management and consolidation workflows | [.github/agents/unified-doc-agent.md](.github/agents/unified-doc-agent.md) |
+| **Unified Security Scanner** | Canonical entry point for dependency, secrets, and SAST scanning | [.github/agents/unified-security-scanner.md](.github/agents/unified-security-scanner.md) |
+| **Unified Governance Gate** | Canonical gate for PR, deployment, and policy governance workflows | [.github/agents/unified-governance-gate.md](.github/agents/unified-governance-gate.md) |
+| **Cache Management Agent** | Canonical owner of the four-layer cache hierarchy and related integrations | [.github/agents/cache-management-agent.md](.github/agents/cache-management-agent.md) |
+| **Self-Healing Orchestrator Agent** | Canonical coordinator for CI self-healing loops and specialist handoffs | [.github/agents/self-healing-orchestrator-agent.md](.github/agents/self-healing-orchestrator-agent.md) |
+
+#### CI/CD & Workflow
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Artifact Monitor Agent** | Autonomous CI/CD health monitoring with pattern recognition and agent orchestration | [.github/agents/artifact-monitor-agent.md](.github/agents/artifact-monitor-agent.md) |
+| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors, and build problems | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) |
+| **CI Log Retrieval Agent** | Retrieve authenticated GitHub Actions logs and summarize failures | [.github/agents/ci-log-retrieval-agent.md](.github/agents/ci-log-retrieval-agent.md) |
+| **CI Auto-Healer Agent** | Apply automated CI fix patterns and execute healing loops | [.github/agents/ci-auto-healer-agent.md](.github/agents/ci-auto-healer-agent.md) |
+| **CI Emergency Response Agent** | Handle blocking CI/CD incidents that need rapid remediation | [.github/agents/ci-emergency-response-agent.md](.github/agents/ci-emergency-response-agent.md) |
+| **CI Triage Pipeline Agent** | Route failures by severity to the appropriate specialist agents | [.github/agents/ci-triage-pipeline-agent.md](.github/agents/ci-triage-pipeline-agent.md) |
+| **Workflow CI Fixer** | Fix GitHub Actions workflow syntax errors and job failures | [.github/agents/workflow-ci-fixer.agent.md](.github/agents/workflow-ci-fixer.agent.md) |
+| **Workflow Analytics Agent** | Analyze workflow performance, trends, and optimization opportunities | [.github/agents/workflow-analytics-agent.md](.github/agents/workflow-analytics-agent.md) |
+| **Workflow Health Monitor** | Monitor GitHub Actions workflow health and surface anomalies | [.github/agents/workflow-health-monitor.agent.md](.github/agents/workflow-health-monitor.agent.md) |
+| **Workflow Management Agent** | Manage workflow lifecycle operations and consolidations | [.github/agents/workflow-management-agent.md](.github/agents/workflow-management-agent.md) |
+
+#### Testing & Quality
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **QA Walkthrough Agent** | Run repository-wide QA walkthroughs across code, tests, security, and docs | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) |
+| **Autonomous Test Healer Agent** | Detect and automatically fix failing tests | [.github/agents/autonomous-test-healer-agent.md](.github/agents/autonomous-test-healer-agent.md) |
+| **Test Alignment Fixer** | Repair tests after API or signature changes | [.github/agents/test-alignment-fixer.agent.md](.github/agents/test-alignment-fixer.agent.md) |
+| **Integration Test Runner** | Run integration tests across services and validate end-to-end flows | [.github/agents/integration-test-runner.agent.md](.github/agents/integration-test-runner.agent.md) |
+| **Mutation Testing Agent** | Assess test-suite effectiveness through mutation testing | [.github/agents/mutation-testing-agent.md](.github/agents/mutation-testing-agent.md) |
+| **Test Enhancement Agent** | Improve assertions, add edge cases, and deepen test coverage | [.github/agents/test-enhancement-agent.md](.github/agents/test-enhancement-agent.md) |
+| **Test Failure Analyzer Agent** | Diagnose failing tests and recommend targeted fixes | [.github/agents/test-failure-analyzer-agent.md](.github/agents/test-failure-analyzer-agent.md) |
+| **Fragile Test Guardian** | Identify and stabilize flaky or fragile tests | [.github/agents/fragile-test-guardian.md](.github/agents/fragile-test-guardian.md) |
+| **Test Pattern Guardian** | Enforce testing best practices and guard against anti-patterns | [.github/agents/test-pattern-guardian.md](.github/agents/test-pattern-guardian.md) |
+| **Tokenization Coverage Agent** | Improve tokenization-module coverage and validation depth | [.github/agents/tokenization-coverage-agent.md](.github/agents/tokenization-coverage-agent.md) |
+
+#### Documentation & Knowledge
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Doc Freshness Checker** | Check documentation freshness and validate links and timestamps | [.github/agents/doc-freshness-checker.agent.md](.github/agents/doc-freshness-checker.agent.md) |
+| **Doc Refactor Test Agent** | Refactor docs and validate them with targeted checks | [.github/agents/doc-refactor-test-agent.md](.github/agents/doc-refactor-test-agent.md) |
+| **Link Validator Agent** | Validate internal and external links across documentation | [.github/agents/link-validator-agent.md](.github/agents/link-validator-agent.md) |
+| **Terminology Consistency Agent** | Enforce consistent terminology across documentation and code comments | [.github/agents/terminology-consistency-agent.md](.github/agents/terminology-consistency-agent.md) |
+| **Post-Merge Doc Alignment Agent** | Reconcile GitHub Pages and docs content after merges to `main` | [.github/agents/post-merge-doc-alignment-agent.md](.github/agents/post-merge-doc-alignment-agent.md) |
+| **Semantic Search** | Perform semantic search over code and documentation | [.github/agents/semantic-search.agent.md](.github/agents/semantic-search.agent.md) |
+| **GitHub Pages Manager Agent** | Manage GitHub Pages deployment, theme, and live documentation sync | [.github/agents/github-pages-manager.md](.github/agents/github-pages-manager.md) |
+| **Claim Verification Agent** | Verify claims made in PRs, commits, and documentation | [.github/agents/claim-verification-agent.md](.github/agents/claim-verification-agent.md) |
+
+#### Security & Compliance
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Security Alert Verification Agent** | Verify GitHub security alerts and propose targeted fixes | [.github/agents/security-alert-verification-agent.md](.github/agents/security-alert-verification-agent.md) |
+| **Code Scanning Remediation Agent** | Remediate code scanning findings and GHAS issues | [.github/agents/code-scanning-remediation-agent.md](.github/agents/code-scanning-remediation-agent.md) |
+| **CodeQL Alert Resolution Agent** | Resolve CodeQL findings with targeted code changes | [.github/agents/codeql-alert-resolution-agent.md](.github/agents/codeql-alert-resolution-agent.md) |
+| **Bridge Security Monitor** | Monitor IPC bridge security and detect unauthorized access | [.github/agents/bridge-security-monitor.agent.md](.github/agents/bridge-security-monitor.agent.md) |
+| **PII Scrubber** | Scrub logs and outputs for personally identifiable information | [.github/agents/pii-scrubber.agent.md](.github/agents/pii-scrubber.agent.md) |
+| **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend safe pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) |
+| **Owner Approval Guard** | Enforce owner approval requirements for sensitive operations | [.github/agents/owner-approval-guard.agent.md](.github/agents/owner-approval-guard.agent.md) |
+| **Policy Coach Agent** | Coach contributors on repository policies and governance rules | [.github/agents/policy-coach-agent.md](.github/agents/policy-coach-agent.md) |
+
+#### Platform, Configuration & RAG
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Config Migration Assistant** | Migrate legacy configuration to Hydra-compatible layouts | [.github/agents/config-migration-assistant.agent.md](.github/agents/config-migration-assistant.agent.md) |
+| **Config Validator** | Validate Hydra and project configuration files | [.github/agents/config-validator.agent.md](.github/agents/config-validator.agent.md) |
+| **Meta Tensor Validator** | Guard PyTorch initialization patterns against meta-tensor errors | [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md) |
+| **RAG Index Manager** | Manage RAG index building, updates, and retrieval operations | [.github/agents/rag-index-manager.agent.md](.github/agents/rag-index-manager.agent.md) |
+| **RAG Module Management Agent** | Manage RAG module lifecycle and updates | [.github/agents/rag-module-management-agent.md](.github/agents/rag-module-management-agent.md) |
+| **RAG Freshness Loop Agent** | Keep RAG indexes current through incremental refresh loops | [.github/agents/rag-freshness-loop-agent.md](.github/agents/rag-freshness-loop-agent.md) |
+| **RAG Meta Tensor Guardian** | Guard RAG tensor operations against meta-tensor regressions | [.github/agents/rag-meta-tensor-guardian.md](.github/agents/rag-meta-tensor-guardian.md) |
+| **RAG Meta Tensor Regression Agent** | Catch meta-tensor regressions introduced by RAG changes | [.github/agents/rag-meta-tensor-regression-agent.md](.github/agents/rag-meta-tensor-regression-agent.md) |
+| **ML Validation Suite Agent** | Run the ML validation suite for model and data checks | [.github/agents/ml-validation-suite-agent.md](.github/agents/ml-validation-suite-agent.md) |
+| **Cross Platform Filename Validator** | Enforce Windows-safe filenames across repository outputs | [.github/agents/cross-platform-filename-validator.md](.github/agents/cross-platform-filename-validator.md) |
+| **Rust Config Validator** | Validate Cargo and Rust configuration correctness | [.github/agents/rust-config-validator.md](.github/agents/rust-config-validator.md) |
+
+#### Session, Cognitive Brain & Repository Operations
+| Agent | Purpose | Location |
+|-------|---------|----------|
+| **Agent Orchestrator** | Coordinate multi-agent workflows and capability-based routing | [.github/agents/agent-orchestrator.md](.github/agents/agent-orchestrator.md) |
+| **Orchestrator Agent** | Advisory orchestrator over the broader agent ecosystem | [.github/agents/orchestrator-agent.md](.github/agents/orchestrator-agent.md) |
+| **Skills Master Agent** | Discover, maintain, and score reusable skills and custom agents | [.github/agents/skills-master-agent.md](.github/agents/skills-master-agent.md) |
+| **Cognitive Brain CLI Agent** | Operate the Cognitive Brain CLI and related APIs | [.github/agents/cognitive-brain-cli-agent.md](.github/agents/cognitive-brain-cli-agent.md) |
+| **Cognitive Brain Session Injector** | Inject session context and close the AfterMath loop | [.github/agents/cognitive-brain-session-injector.md](.github/agents/cognitive-brain-session-injector.md) |
+| **Cognitive OODA Loop Agent** | Run full OODA loop execution for the cognitive stack | [.github/agents/cognitive-ooda-loop-agent.md](.github/agents/cognitive-ooda-loop-agent.md) |
+| **Memory Sync Agent** | Consolidate STM/LTM memory and prune stale patterns | [.github/agents/memory-sync-agent.md](.github/agents/memory-sync-agent.md) |
+| **Session Log Retrieval Agent** | Recall prior Copilot sessions and recover uncommitted work | [.github/agents/session-log-retrieval-agent.md](.github/agents/session-log-retrieval-agent.md) |
+| **Session Analysis Agent** | Analyze Copilot sessions, commits, and objective completion patterns | [.github/agents/session-analysis-agent.md](.github/agents/session-analysis-agent.md) |
+| **Repository Hygiene Agent** | Clean stale files and maintain repository hygiene | [.github/agents/repository-hygiene-agent.md](.github/agents/repository-hygiene-agent.md) |
+| **Repository Organization Agent** | Organize repository structure for maintainability | [.github/agents/repository-organization-agent.md](.github/agents/repository-organization-agent.md) |
+| **Reference Updater Agent** | Update cross-repository references after refactors | [.github/agents/reference-updater-agent.md](.github/agents/reference-updater-agent.md) |
+| **Root Organizer Agent** | Safely reorganize root-level repository structure | [.github/agents/root-organizer-agent.md](.github/agents/root-organizer-agent.md) |
+| **Repo Var Sync Agent** | Sync `.codex/agent_context.json` with repository variables | [.github/agents/repo-var-sync-agent.md](.github/agents/repo-var-sync-agent.md) |
 
 ### Using Specialized Agents
 
@@ -589,8 +645,9 @@ To create a new specialized agent:
 1. Create agent file in `.github/agents/[agent-name].md`
 2. Follow the template in [.github/agents/README.md](.github/agents/README.md)
 3. Document agent capabilities, responsibilities, and activation commands
-4. Add agent to the table above
-5. Test agent activation and behavior
+4. Register the agent in `.github/agents/AGENT_REGISTRY.yaml`
+5. Update the active-agent tables above if the new agent should be surfaced here
+6. Test agent activation and behavior
 
 ---
 
@@ -611,8 +668,8 @@ To create a new specialized agent:
 ## 📝 Document Status
 
 **Version:** 2.1.0
-**Last Updated:** 2025-12-28T12:50:00Z
-**Status:** ✅ UP-TO-DATE (Workflow consolidation & artifact catalog added)
+**Last Updated:** 2026-06-11T06:30:00Z
+**Status:** ✅ UP-TO-DATE (Active-agent tables consolidated; Mermaid hierarchy added)
 **Next Review:** After Phase 2 completion
 
 ---
@@ -623,9 +680,3 @@ To create a new specialized agent:
 - Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong
-
-#### Session Management (2 agents)
-| Agent | Purpose | Location | Status |
-|-------|---------|----------|--------|
-| **Session Log Retrieval Agent** | Recall previous Copilot sessions, extract uncommitted work, search conversation history | [.github/agents/session-log-retrieval-agent.md](.github/agents/session-log-retrieval-agent.md) | ✅ Active |
-| **Session Analysis Agent** | Analyze Copilot sessions, verify commits, pattern learning, objective tracking, cognitive brain integration | [.github/agents/session-analysis-agent.md](.github/agents/session-analysis-agent.md) | ✅ Active |

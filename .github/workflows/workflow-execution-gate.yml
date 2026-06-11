@@ -115,7 +115,7 @@ jobs:
         run: |
           REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "0")
           echo "GitHub API rate limit remaining: ${REMAINING}"
-          if [ "${REMAINING}" -lt 50 ] 2>/dev/null; then
+          if [[ "${REMAINING}" =~ ^[0-9]+$ ]] && [ "${REMAINING}" -lt 50 ]; then
             RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "unknown")
             echo "::warning::GitHub API rate limit critically low (${REMAINING} remaining, resets at ${RESET_AT}). cancel-unchecked may be throttled."
           fi
@@ -216,7 +216,7 @@ jobs:
         run: |
           REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "0")
           echo "GitHub API rate limit remaining: ${REMAINING}"
-          if [ "${REMAINING}" -lt 50 ] 2>/dev/null; then
+          if [[ "${REMAINING}" =~ ^[0-9]+$ ]] && [ "${REMAINING}" -lt 50 ]; then
             RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "unknown")
             echo "::warning::GitHub API rate limit critically low (${REMAINING} remaining, resets at ${RESET_AT}). dispatch-checked may be throttled."
           fi
@@ -295,7 +295,7 @@ jobs:
         run: |
           REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "0")
           echo "GitHub API rate limit remaining: ${REMAINING}"
-          if [ "${REMAINING}" -lt 50 ] 2>/dev/null; then
+          if [[ "${REMAINING}" =~ ^[0-9]+$ ]] && [ "${REMAINING}" -lt 50 ]; then
             RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "unknown")
             echo "::warning::GitHub API rate limit critically low (${REMAINING} remaining, resets at ${RESET_AT}). validate-wec-integrity may be throttled."
           fi
@@ -715,5 +715,6 @@ jobs:
               else:
                   subprocess.run(['gh', 'pr', 'comment', pr, '--repo', repo, '--body', body], check=True)
           except subprocess.CalledProcessError as exc:
-              print(f"::warning::WEC FF comment upsert failed (exit {exc.returncode}) — non-fatal, continuing.", file=sys.stderr)
+              op = "update" if existing_id else "creation"
+              print(f"::warning::WEC FF comment {op} failed (exit {exc.returncode}) — non-fatal, continuing.", file=sys.stderr)
           PYEOF
