@@ -78,11 +78,6 @@ query-filters:
   - exclude:
       id: py/similar-function
 
-# Database configuration for Python
-database:
-  python:
-    buildless: true
-
 # Performance settings
 # Note: These are applied at runtime via workflow
 # memory: 16384  # 16GB

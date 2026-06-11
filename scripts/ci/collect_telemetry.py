@@ -213,7 +213,7 @@ class TelemetryCollector:
         "markdown-secrets-fp": [
             "detect-secrets-hook", "Potential Secret Detected",
             ".github/agents/", "pragma: allowlist secret",
-            "markdown.*secret", "secret.*\.md",
+            "markdown secret", "secret baseline md",
             "RP-024",
         ],
         # ── RP-025: Validation pipeline cascade ──────────────────────────────
@@ -221,14 +221,14 @@ class TelemetryCollector:
         "validate-cascade": [
             "Full Validation (Daily)", "validate.yml",
             "validation cascade", "systemic test environment",
-            "16+ branches", "validate.*multiple branch",
+            "16+ branches", "validate multiple branch",
             "RP-025",
         ],
         # ── RP-026: Auto-fix workflow loop ────────────────────────────────────
         # auto-fix workflows detect issues but exit 1 without applying fixes.
         "auto-fix-loop": [
             "Fail if auto-fixable issues found", "auto-fix-common-issues",
-            "auto-fix-pr-check", "auto_fix.*exit 1",
+            "auto-fix-pr-check", "auto_fix exit 1",
             "same issues persist", "permanent ci block",
             "RP-026",
         ],
