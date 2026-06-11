@@ -209,7 +209,7 @@ jobs:
         # CODEX_MASTER_KEY is required: github.token lacks actions:write scope
         # needed for both workflow dispatch and run approval.
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
           HEAD_BRANCH: ${{ github.head_ref }}
           NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
@@ -225,7 +225,7 @@ jobs:
       # ── Persist owner opt-ins as labels so they survive PR body rewrites ──────
       - name: Persist owner-selected flags as labels
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
