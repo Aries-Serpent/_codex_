@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (Phase 3 agent completions + code review remediation — 2026-06-11T05:14Z)
+- **Validation Pipeline (RP-025):** Added `tenacity>=8.2,<10` to `requirements/dev.txt`; relaxed `--maxfail` 1→50 in full validation mode. Fixes 16 consecutive failures on all branches.
+- **CI Pattern Registry:** Registered RP-024/RP-025/RP-026 across `ci_rescue.py`, `auto_fix_common_issues.py`, `collect_telemetry.py` (35→38 categories), `.codex/patterns/ci_failure_patterns.yaml`.
+- **Dependabot:** Converted triple-quoted docstring in `.github/copilot-security/requirements.txt` to `#` comments; added `dependabot-preflight.yml` pre-flight workflow (Sunday 23:00 UTC + PR gate).
+- **CodeQL/Security Scanning:** Fixed `upload: false` → `upload: 'never'` in 3 CodeQL workflows; removed invalid `database:` key from `.codeql/codeql-config.yml`; added Dependabot `continue-on-error`.
+- **Pattern 35 code review:** Extracted `trailing` variable (eliminates duplicated expression); documented empty `fence_lang` Python-pragma treatment; simplified multi-line workflow commit messages; removed misleading `develop` branch reference from coverage-ratchet comment.
+
 ### Fixed (CI hardening — RP-007/RP-009 — PR #4837 — 2026-06-11T05:00Z)
 - **Phase 1 (RP-007):** Added `<!-- pragma: allowlist secret -->` to 2 false-positive lines in `.github/agents/secret-detection-agent.md` (lines 45, 47: P-01 and P-03 pattern table rows) and `# pragma: allowlist secret` to `.github/agents/security-audit-agent.md:189` (API_KEY example in Before/After code block). Unblocks `0D_base_` Secrets Baseline Enforcer gate.
 - **Phase 2 (Pattern 35):** Added Pattern 35 "Markdown FP Secrets" to `scripts/ci/auto_fix_common_issues.py` — detects and auto-annotates false-positive secret-like strings in markdown table rows and fenced code blocks. Registered in `run_all_patterns()` as pattern 35.

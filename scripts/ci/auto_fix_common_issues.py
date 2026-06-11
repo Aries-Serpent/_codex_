@@ -3605,16 +3605,18 @@ class CommonIssueFixer:
                 if not self._DOC_SECRET_INDICATORS.search(line):
                     continue
 
-                # Determine annotation style
+                # Determine annotation style.
+                # Empty fence_lang ("") means an unlabelled fenced block; we
+                # treat these as Python because detect-secrets does the same —
+                # it applies the Secret Keyword plugin regardless of language
+                # label, so the Python-style inline comment is correct here.
+                trailing = raw_line[len(line.rstrip()):]  # preserves \n / whitespace
                 if in_code_fence and fence_lang in ("python", "py", ""):
-                    # Python code inside a fenced block
                     pragma = "  # pragma: allowlist secret"
-                    new_line = line.rstrip() + pragma + raw_line[len(line.rstrip()):]
+                    new_line = line.rstrip() + pragma + trailing
                 elif self._MARKDOWN_TABLE_ROW_RE.match(line):
-                    # Markdown table row
-                    # Preserve trailing whitespace/newline
                     pragma = " <!-- pragma: allowlist secret -->"
-                    new_line = line.rstrip() + pragma + raw_line[len(line.rstrip()):]
+                    new_line = line.rstrip() + pragma + trailing
                 else:
                     continue  # Not in a safe annotation context — skip
 

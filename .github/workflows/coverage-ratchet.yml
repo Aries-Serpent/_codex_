@@ -46,8 +46,8 @@ jobs:
     timeout-minutes: 30
     # Skip ratchet enforcement for Copilot-generated branches (copilot/*) unless
     # the PR targets the protected trunks (main or 0D_base_).  Copilot exploration
-    # branches targeting `develop` or other integration branches are exempt; they
-    # must add tests before promoting to main/0D_base_.
+    # branches targeting other integration branches are exempt; they must add
+    # tests before promoting to main/0D_base_.
     if: >
       !startsWith(github.head_ref, 'copilot/') ||
       github.base_ref == 'main' ||
