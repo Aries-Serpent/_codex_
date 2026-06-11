@@ -33,7 +33,8 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 10. [Documentation Standards](#documentation-standards)
 11. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
 12. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
-13. [Custom Agent Delegation Mandate (CAD-Mandate)](#custom-agent-delegation-mandate-cad-mandate)
+13. [Machine Learning Components Must Run Offline](#machine-learning-components-must-run-offline)
+14. [Custom Agent Delegation Mandate (CAD-Mandate)](#custom-agent-delegation-mandate-cad-mandate)
 
 ---
 
@@ -1373,7 +1374,7 @@ Repeated violations or inability to correct:
 
 ## Network Safety (CI / Agent Offline Mode)
 
-### §13 — Machine Learning Components Must Run Offline
+### §14 — Machine Learning Components Must Run Offline
 
 All ML components used in CI gates MUST operate without any network access.
 
@@ -1414,7 +1415,7 @@ policy violation and must be fixed immediately.
 | 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
 | 1.2.0 | 2026-03-13 | Added Network Safety section (ML offline-mode proof) |
 | 1.3.0 | 2026-03-28 | Added §ARLOOP — Already-Addressed-Task Response Protocol (S242, PR #3770) |
-| 1.4.0 | 2026-06-11 | Added § Custom Agent Delegation Mandate (CAD-Mandate) |
+| 1.4.0 | 2026-06-11 | Added §14 Custom Agent Delegation Mandate (CAD-Mandate); normalized ML section to §14; fixed enforcement description for agent-bypass detection |
 
 ---
 
@@ -1524,9 +1525,9 @@ All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.
 
 ### Enforcement
 
-- **deferral-language-gate.yml**: The existing deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals) and PR comments; it does not detect agent-bypass statements.
-- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one Custom Agent used per session.
-- **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked.
+- **deferral-language-gate.yml**: The deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals, PR comments) **and agent-bypass statements** (CAD Rule 1 violations). Agent-bypass patterns (e.g., "without using an agent", "manually instead of", "no agent needed") are included in `DEFERRAL_TRIGGERS` in `scripts/ci/check_deferral_language.py`.
+- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one valid registered Custom Agent identifier per session (placeholder values such as `unknown-agent` are rejected).
+- **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked; placeholder entries are rejected by the pre-merge validation gate.
 
 **Violations of the CAD-Mandate must be corrected immediately before any commit is pushed.**
 
