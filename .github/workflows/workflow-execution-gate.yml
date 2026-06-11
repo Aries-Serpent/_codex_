@@ -76,7 +76,7 @@ jobs:
         env:
           BODY_BEFORE: ${{ github.event.changes.body.from }}
           BODY_AFTER: ${{ github.event.pull_request.body }}
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
         run: |
           python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json || true

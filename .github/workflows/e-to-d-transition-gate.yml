@@ -33,6 +33,7 @@ jobs:
     outputs:
       readiness_score: ${{ steps.check.outputs.score }}
       model_capable: ${{ steps.check.outputs.capable }}
+      c2_pass: ${{ steps.check.outputs.c2_pass }}
 
     steps:
       - name: Checkout repository
@@ -230,10 +231,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [transition-readiness]
-    # Fire when: gate failed AND score was 4 (one condition short — likely C2)
+    # Fire when: gate failed AND exactly one condition short AND C2 specifically failed
+    # (c2_pass == 'false' guards against healing when a different condition is the blocker)
     if: >-
       failure() &&
       needs.transition-readiness.outputs.readiness_score == '4' &&
+      needs.transition-readiness.outputs.c2_pass == 'false' &&
       github.event_name == 'pull_request'
     steps:
       - name: Checkout PR branch
