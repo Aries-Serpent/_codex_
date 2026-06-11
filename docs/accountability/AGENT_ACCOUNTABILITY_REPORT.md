@@ -1,3 +1,18 @@
+## SESSION SUMMARY — 2026-06-11T06:30Z · AGENTS.md consolidation refresh
+
+**Last Updated:** 2026-06-11T06:30Z
+**Current Agent Count:** 145 active / 14 archived (registry source of truth; archived prompt files retained)
+
+### Work Completed
+1. Audited `.github/agents/` against `.github/agents/AGENT_REGISTRY.yaml` and confirmed 14 archived agents still retain prompt files for backward-compatible routing.
+2. Updated root `AGENTS.md` to remove deprecated rows from the visible agent tables, refresh the documented active count to 145, and add a Mermaid consolidation hierarchy.
+3. Left `.github/agents/AGENT_REGISTRY.yaml` unchanged; documentation now points to it as the source of truth.
+
+### Archived Prompt Files Retained
+- `cache-manager-integration`, `ci-failure-resolution-agent`, `ci-resilience-emergency-response-agent`, `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `dependency-security-review-agent`, `dependency-vulnerability-scanner`, `documentation-consolidator`, `documentation-quality-agent`, `secret-detection-agent`, `security-audit-agent`, `test-coverage-agent`, `test-coverage-monitor`
+
+---
+
 ## SESSION SUMMARY — 2026-06-11T00:00Z · CHPP Phase 6 — Agent Consolidation Sweep
 
 **Last Updated:** 2026-06-11T03:43Z

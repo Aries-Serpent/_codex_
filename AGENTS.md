@@ -255,7 +255,7 @@ MEDIUM RISK
 HIGH RISK
 • Security → Escalate immediately
 • Configuration → Escalate immediately
-• Secrets → Escalate immediately
+• Secrets → Escalate immediately <!-- pragma: allowlist secret -->
 ```
 
 **When in doubt:** Escalate to @mbaetiong
@@ -540,7 +540,7 @@ These tables intentionally list the **active entry points surfaced in this guide
 |-------|---------|----------|
 | **Unified Coverage Agent** | Canonical entry point for coverage monitoring, gap-filling, maintenance, and roadmap enforcement | [.github/agents/unified-coverage-agent.md](.github/agents/unified-coverage-agent.md) |
 | **Unified Doc Agent** | Canonical entry point for documentation management and consolidation workflows | [.github/agents/unified-doc-agent.md](.github/agents/unified-doc-agent.md) |
-| **Unified Security Scanner** | Canonical entry point for dependency, secrets, and SAST scanning | [.github/agents/unified-security-scanner.md](.github/agents/unified-security-scanner.md) |
+| **Unified Security Scanner** | Canonical entry point for dependency, secrets, and SAST scanning | [.github/agents/unified-security-scanner.md](.github/agents/unified-security-scanner.md) | <!-- pragma: allowlist secret -->
 | **Unified Governance Gate** | Canonical gate for PR, deployment, and policy governance workflows | [.github/agents/unified-governance-gate.md](.github/agents/unified-governance-gate.md) |
 | **Cache Management Agent** | Canonical owner of the four-layer cache hierarchy and related integrations | [.github/agents/cache-management-agent.md](.github/agents/cache-management-agent.md) |
 | **Self-Healing Orchestrator Agent** | Canonical coordinator for CI self-healing loops and specialist handoffs | [.github/agents/self-healing-orchestrator-agent.md](.github/agents/self-healing-orchestrator-agent.md) |
@@ -571,7 +571,7 @@ These tables intentionally list the **active entry points surfaced in this guide
 | **Test Failure Analyzer Agent** | Diagnose failing tests and recommend targeted fixes | [.github/agents/test-failure-analyzer-agent.md](.github/agents/test-failure-analyzer-agent.md) |
 | **Fragile Test Guardian** | Identify and stabilize flaky or fragile tests | [.github/agents/fragile-test-guardian.md](.github/agents/fragile-test-guardian.md) |
 | **Test Pattern Guardian** | Enforce testing best practices and guard against anti-patterns | [.github/agents/test-pattern-guardian.md](.github/agents/test-pattern-guardian.md) |
-| **Tokenization Coverage Agent** | Improve tokenization-module coverage and validation depth | [.github/agents/tokenization-coverage-agent.md](.github/agents/tokenization-coverage-agent.md) |
+| **Tokenization Coverage Agent** | Improve tokenization-module coverage and validation depth | [.github/agents/tokenization-coverage-agent.md](.github/agents/tokenization-coverage-agent.md) | <!-- pragma: allowlist secret -->
 
 #### Documentation & Knowledge
 | Agent | Purpose | Location |
