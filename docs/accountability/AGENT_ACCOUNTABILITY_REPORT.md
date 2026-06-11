@@ -120,7 +120,7 @@
 ## SESSION SUMMARY — 2026-06-11T00:00Z · CHPP Phase 6 — Agent Consolidation Sweep
 
 **Last Updated:** 2026-06-11T03:43Z
-**Current Agent Count:** 131 active (was 145)
+**Current Agent Count:** 145 active (was 131)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** All bot-posted PR comments reviewed ✅
