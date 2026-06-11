@@ -779,26 +779,10 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"\.github/agents/.*\.md.*secret",
         ],
         fix_command=[
-            "bash",
-            "-c",
-            # Append the allowlist pragma to each flagged markdown line.
-            # The caller must supply the filename and line-number via environment;
-            # this command is an illustrative template — ci_rescue.py replaces
-            # %FILE% and %LINE% before executing.
-            (
-                "python3 -c \""
-                "import pathlib, sys; "
-                "fp = pathlib.Path(sys.argv[1]); "
-                "lines = fp.read_text().splitlines(); "
-                "n = int(sys.argv[2]) - 1; "
-                "if not lines[n].rstrip().endswith('pragma: allowlist secret'): "
-                "    suffix = '  # pragma: allowlist secret' "
-                "    if lines[n].startswith('|') else ' <!-- pragma: allowlist secret -->'; "
-                "    lines[n] = lines[n].rstrip() + suffix; "
-                "    fp.write_text('\\n'.join(lines) + '\\n'); "
-                "    print(f'RP-024: added allowlist pragma to {sys.argv[1]}:{sys.argv[2]}') "
-                "\""
-            ),
+            "python3",
+            "scripts/ci/auto_fix_common_issues.py",
+            "--pattern",
+            "35",
         ],
         fix_description=(
             "Append `<!-- pragma: allowlist secret -->` (markdown table rows) or "

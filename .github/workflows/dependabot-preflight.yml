@@ -81,9 +81,12 @@ jobs:
 
             # A parse error will contain "Invalid requirement" or
             # "Expected package name" — check for those specifically.
-            if echo "$ERR" | grep -qiE "invalid requirement|expected package name|could not find a version"; then
+            # Note: "--no-index" always emits "Could not find a version …" for
+            # every package (there is no local index), so that string must NOT
+            # be treated as a failure indicator here.
+            if echo "$ERR" | grep -qiE "invalid requirement|expected package name"; then
               echo "  ❌ FAILED: $req_file"
-              echo "$ERR" | grep -i "invalid requirement\|expected package name\|could not find" | head -5
+              echo "$ERR" | grep -iE "invalid requirement|expected package name" | head -5
               FAILED=$((FAILED + 1))
               FAILURES="$FAILURES\n  - $req_file"
             else

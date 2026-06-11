@@ -3543,19 +3543,30 @@ class CommonIssueFixer:
         """
         issues: list[str] = []
 
-        # Collect changed .md files
+        # Collect changed .md files using the committed diff base (same approach
+        # as Pattern 25) so that CI on a clean checkout detects PR-introduced
+        # changes rather than only uncommitted working-tree differences.
         try:
+            base_ref = _resolve_acct_diff_base(self.repo_root) or "HEAD~1"
             diff_result = subprocess.run(
-                ["git", "diff", "HEAD", "--name-only", "--diff-filter=ACM"],
+                ["git", "diff", "--name-only", "--diff-filter=ACM", base_ref, "HEAD"],
                 capture_output=True, text=True, cwd=self.repo_root,
             )
-            staged_result = subprocess.run(
-                ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
-                capture_output=True, text=True, cwd=self.repo_root,
-            )
-            all_changed = list(dict.fromkeys(
-                diff_result.stdout.splitlines() + staged_result.stdout.splitlines()
-            ))
+            if diff_result.returncode != 0:
+                # Shallow clone or no parent — fall back to staged + working tree
+                diff_result = subprocess.run(
+                    ["git", "diff", "HEAD", "--name-only", "--diff-filter=ACM"],
+                    capture_output=True, text=True, cwd=self.repo_root,
+                )
+                staged_result = subprocess.run(
+                    ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
+                    capture_output=True, text=True, cwd=self.repo_root,
+                )
+                all_changed = list(dict.fromkeys(
+                    diff_result.stdout.splitlines() + staged_result.stdout.splitlines()
+                ))
+            else:
+                all_changed = list(dict.fromkeys(diff_result.stdout.splitlines()))
         except FileNotFoundError:
             return issues
 
@@ -3634,7 +3645,7 @@ class CommonIssueFixer:
         if not issues:
             print("✅ Pattern 35 (Markdown FP Secrets): no unannotated doc secrets found")
         else:
-            action = "Would annotate" if self.check_only else "Annotated"
+            action = "Would annotate" if (self.check_only or self.dry_run) else "Annotated"
             print(f"   {'⚠' if self.check_only else '✅'} Pattern 35 (Markdown FP Secrets): "
                   f"{action} {len(issues)} line(s)")
             for msg in issues:
