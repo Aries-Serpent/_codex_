@@ -1,13 +1,9 @@
 ---
 name: CI Emergency Response Agent
 description: Rapid diagnosis and resolution of blocking CI/CD failures that prevent PR merges
-deprecated: true
-superseded_by: ci-testing-agent.md (v4.0.0-unified, 2026-02-20)
+merged_agents:
+  - ci-resilience-emergency-response-agent
 ---
-
-> ⚠️ **DEPRECATED** — This agent has been absorbed into **[CI Testing Agent v4.0](ci-testing-agent.md)**.
-> Emergency triage, rapid-fix, and blocking-failure resolution capabilities are fully preserved in
-> the unified agent's Phase 2 triage step. Use `ci-testing-agent` for all new invocations.
 
 # CI Emergency Response Agent
 
@@ -191,6 +187,34 @@ Activate this agent with these trigger phrases:
 - `ruff check --fix --unsafe-fixes` - Aggressive fixes
 - `python -m bandit` - Security scanning
 - `python -m pytest` - Test validation
+
+---
+
+## 🛡️ Resilience Capabilities
+*(Absorbed from `ci-resilience-emergency-response-agent` — Phase 6 consolidation)*
+
+### R-01: Emergency Timeout Resolution
+- Detect slow/hanging test patterns causing workflow timeouts
+- Configure per-job `timeout-minutes` based on historical p95 durations
+- Mark known-slow tests with `@pytest.mark.timeout` or equivalent
+- Auto-propose `timeout-minutes` increases via PR comment
+
+### R-02: Artifact Resilience
+- Ensure all `actions/upload-artifact` steps include `if: always()`
+- Detect broken artifact dependency chains (upload → download mismatches)
+- Repair artifact retention configuration
+- Validate artifact name consistency across jobs
+
+### R-03: Workflow Health Monitoring
+- Scan all `.github/workflows/*.yml` for missing `timeout-minutes`
+- Detect risky upload patterns missing failure guards
+- Flag workflows with no `on: [push, pull_request]` event scoping
+- Report health score per workflow (0–100)
+
+### R-04: Preventive Tooling
+- Activate `ci_workflow_health_scanner.py` for pre-merge validation
+- Install pre-commit hooks for workflow YAML lint + timeout enforcement
+- Generate `WORKFLOW_HEALTH_REPORT.md` after each scan
 
 ---
 
@@ -420,6 +444,21 @@ module = importlib.util.module_from_spec(spec)
 - ❌ Skip validation steps
 - ❌ Commit secrets or credentials
 - ❌ Make breaking API changes without approval
+
+---
+
+## ⛔ Constraints
+
+**ALWAYS:**
+- Add `if: always()` to every artifact upload step when fixing
+- Use GitHub MCP `get_job_logs` before proposing any fix
+- Validate fix against the full workflow YAML before committing
+
+**NEVER:**
+- Disable artifact uploads on failure paths
+- Remove timeout-minutes without replacement
+- Commit fixes without running `actionlint` on changed workflows
+- Suppress CI errors by adding `continue-on-error: true` without explanation
 
 ---
 
