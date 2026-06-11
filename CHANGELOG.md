@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4842)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4842 (SHA `5bb59b13`) at 2026-06-11T17:55Z [auto-generated]
+
 ### Fixed (PR #4841 review feedback — 2026-06-11T17:45Z)
 - `test_env`: removed unrelated root-level file that would shadow `python -m venv test_env` setup commands.
 - `scripts/ci/inject_agent_context.py`: deleted duplicate injection script that lacked key validation and control-character sanitization.

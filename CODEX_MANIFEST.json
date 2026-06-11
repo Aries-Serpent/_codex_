@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-11T03:43:35Z",
+  "generated_at": "2026-06-11T17:55:09Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1324,6 +1324,11 @@
       "has_concurrency": true
     },
     {
+      "name": "dependabot-preflight",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "dependabot-sheriff",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1705,6 +1710,11 @@
     },
     {
       "name": "secrets-baseline-enforcer",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "secrets-false-positive-healer",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -2230,5 +2240,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "9c703b40fcc14b0f9319b09738354790b2cfcaa8c883618e071069ec55ae30d3"
+  "integrity_sha256": "07b7f5f1e744da5106d841f962d034e6180d712b6d34a750ba7dbcc4ce998988"
 }
