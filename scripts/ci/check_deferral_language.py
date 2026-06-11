@@ -108,6 +108,8 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
      "Agent-bypass: CAD Rule 1 violation (skipping custom agent)"),
     (r"directly rather than delegating\b",
      "Agent-bypass: CAD Rule 1 violation (raw command instead of delegation)"),
+    (r"without using an agent\b",
+     "Agent-bypass: CAD Rule 1 violation (avoiding agent delegation)"),
     (r"no agent needed\b",
      "Agent-bypass: CAD Rule 1 violation (refusing agent ecosystem)"),
 ]
