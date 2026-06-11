@@ -1450,7 +1450,7 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
 |---------------|--------------|------------|
 | Fix test coverage | `pytest --cov` + manual test writing | `unified-coverage-agent` |
 | Fix CI import error | Manual grep + edit | `ci-importerror-agent` |
-| Detect secrets | `grep -r "secret"` | `unified-security-scanner` |
+| Detect secrets | `grep -r "secret"` | `unified-security-scanner` | <!-- pragma: allowlist secret -->
 | Validate doc links | Manual link checking | `link-validator-agent` |
 | Resolve CodeQL alert | Direct code edit without agent | `codeql-alert-resolution-agent` |
 | Fix workflow YAML | Direct YAML edit only | `workflow-ci-fixer` |
