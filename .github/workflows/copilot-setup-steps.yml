@@ -231,8 +231,11 @@ jobs:
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "::group::Autonomous RAG Context Build"
-          if ! python3 scripts/ci/autonomous_rag_context.py \
-            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }}; then
+          if [ -n "${GITHUB_PR_NUMBER:-}" ]; then
+            if ! python3 scripts/ci/autonomous_rag_context.py --pr "${GITHUB_PR_NUMBER}"; then
+              echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+            fi
+          elif ! python3 scripts/ci/autonomous_rag_context.py; then
             echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
           fi
           # Print access strategy for agent log

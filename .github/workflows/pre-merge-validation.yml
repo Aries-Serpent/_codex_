@@ -198,7 +198,7 @@ jobs:
           fi
           if [ "${{ steps.session_wrapup.outcome }}" != "success" ]; then
             echo "::error::Session wrapup check failed — REQ-4/REQ-5 files are not fresh for latest commit"
-            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR_NUMBER>"
+            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number ${{ github.event.pull_request.number }}"
           fi
           exit 1
 
