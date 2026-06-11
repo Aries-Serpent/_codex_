@@ -156,11 +156,11 @@ jobs:
       # ============================================================================
       # 🧠 SESSION CONTEXT PRE-LOAD — guarded, non-blocking
       #
-      # WHY DISABLED:
-      # - Multiple attempted fixes for this step have still caused fast-fail agent sessions
-      #   before usable logs were produced.
-      # - Because the failure happens too early, troubleshooting from session logs has not
-      #   been possible.
+      # WHY GUARDED:
+      # - Earlier refactors of this step caused fast-fail agent sessions before usable logs
+      #   were produced.
+      # - The current guarded block-scalar form keeps the preload enabled while preserving a
+      #   non-blocking fallback if session_preload.py regresses.
       #
       # FAILED ATTEMPTS RECORDED HERE TO AVOID LOOPING:
       # 1. Original non-blocking flow-scalar form:
