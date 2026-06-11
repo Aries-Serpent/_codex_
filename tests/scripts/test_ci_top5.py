@@ -103,6 +103,12 @@ class TestCheckCrossReferences:
         broken = mod.scan_file(md)
         assert broken == []
 
+    def test_skip_numeric_placeholder_links(self, mod, tmp_path):
+        md = tmp_path / "page.md"
+        md.write_text("[placeholder](1)\n", encoding="utf-8")
+        broken = mod.scan_file(md)
+        assert broken == []
+
 
 # ---------------------------------------------------------------------------
 # 2. check_deferral_language.py

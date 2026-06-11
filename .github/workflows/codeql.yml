@@ -10,14 +10,13 @@
 name: "CodeQL Advanced"
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  schedule:
-    # Monday 03:00 UTC — staggered from codeql-analysis.yml (Thursday 03:00) to
-    # avoid concurrent GHAS upload contention (RL-2c rate-limit hardening).
-    - cron: '0 3 * * 1'
+  # NOTE:
+  # Advanced CodeQL uploads fail when GitHub's default Code Scanning setup is
+  # enabled ("CodeQL analyses from advanced configurations cannot be processed
+  # when the default setup is enabled"). Keep this workflow manual-only so it
+  # does not fail PR/main checks until default setup is disabled.
+  # To restore automatic triggers, first disable default Code Scanning setup in
+  # repository settings, then re-add push/pull_request/schedule triggers here.
   workflow_dispatch:
 
 permissions:
@@ -34,6 +33,9 @@ jobs:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    # Dependabot PRs: make CodeQL advisory-only so dependency-update PRs are not
+    # blocked if GHAS upload conflicts arise (e.g. default setup interference).
+    continue-on-error: ${{ github.actor == 'dependabot[bot]' }}
 
     permissions:
       security-events: write
@@ -82,6 +84,20 @@ jobs:
           # Distinct categories let both workflows coexist on the Security tab without
           # one overwriting the other's results.
           category: "/language:${{ matrix.language }}/advanced"
+          # FIX (issue #4835): upload: false (boolean) does NOT suppress SARIF upload
+          # in CodeQL action v4.35.4+. The string value 'never' must be used instead.
+          # Using 'false' caused "CodeQL analyses from advanced configurations cannot
+          # be processed when the default setup is enabled" → JOB_STATUS_CONFIGURATION_ERROR.
+          upload: 'never'
+          output: "codeql-sarif-advanced/${{ matrix.language }}"
+
+      - name: Upload CodeQL SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: codeql-sarif-advanced-${{ matrix.language }}
+          path: codeql-sarif-advanced/${{ matrix.language }}
+          if-no-files-found: warn
 
       - name: Cache health report
         if: always()

@@ -112,7 +112,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CODEX_OFFLINE` | `1` | Disable external network requests (`1` = offline) |
 | `CODEX_ORG_NAME` | `Aries-Serpent` | GitHub organization name |
 | `CODEX_PR_LIFECYCLE_VERSION` | _(JSON S293)_ | Current PR lifecycle spec version/metadata |
-| `CODEX_PYTHON_VERSION` | `3.12` | Python version for CI (mirrors env var) |
+| `CODEX_PYTHON_VERSION` | `3.12` | Python version target (minor pinned, patch floating) |
 | `CODEX_SANDBOX_TIMEOUT` | `60` | Seconds before sandbox task is killed |
 | `CODEX_SESSION_ID` | `UUID v4` | Per-session unique identifier |
 | `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | Session log directory |

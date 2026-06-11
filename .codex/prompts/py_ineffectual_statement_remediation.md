@@ -462,7 +462,7 @@ pytest tests/ -xvs -k "hook or checkpoint" 2>&1 | head -50
 
 **Current Structure:** The file has duplicate `TokenizerContract` class definitions with overlapping methods.
 
-**Strategy:** 
+**Strategy:**
 - Consolidate into a single class definition
 - Remove all ellipsis
 - Keep explicit bodies (`pass` or `raise NotImplementedError`)
@@ -472,7 +472,7 @@ pytest tests/ -xvs -k "hook or checkpoint" 2>&1 | head -50
 ```python
 class TokenizerContract(Protocol):
     """Minimal tokenizer surface used by training and evaluation."""
-    
+
     # Method 1: encode (findings at lines 33, 35, 37, 39, 42, 45)
     def encode(self, text: str) -> list[int]: ...  # ❌ Remove this
     def encode(self, text: str) -> list[int]:
@@ -480,12 +480,12 @@ class TokenizerContract(Protocol):
 
     # Similar pattern for decode, add_special_tokens, save
     # ...
-    
+
     @property
     def vocab_size(self) -> int: ...  # ❌ Remove this
     def vocab_size(self) -> int:
         pass  # ✅ Keep this
-    
+
     @property
     def name_or_path(self) -> str: ...  # ❌ Remove this
     def name_or_path(self) -> str:
@@ -505,7 +505,7 @@ class TokenizerContract(Protocol):
    def encode(self, text: str) -> list[int]: ...
    def encode(self, text: str) -> list[int]:
        raise NotImplementedError
-   
+
    # AFTER
    def encode(self, text: str) -> list[int]:
        raise NotImplementedError
@@ -616,7 +616,7 @@ pytest tests/ -xvs 2>&1 | tail -20
    python3 -m py_compile src/codex_ml/metrics/sinks.py
    python3 -m py_compile src/data/datasets.py
    python3 -m py_compile src/codex_ml/analysis/providers.py
-   
+
    echo "✅ All files parse successfully"
    ```
 
@@ -1027,7 +1027,7 @@ class MyProtocol(Protocol):
 
 This prompt is complete, detailed, and actionable. Begin Phase 1 immediately.
 
-**Next Step:** 
+**Next Step:**
 1. Read entire prompt (✅ done)
 2. Load required policy documents
 3. Execute Phase 1, Step 1.1 (Audit all findings)

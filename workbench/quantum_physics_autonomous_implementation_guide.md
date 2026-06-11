@@ -39,7 +39,7 @@ Authorization State |Ψ⟩ = α|AUTHORIZED⟩ + β|BLOCKED⟩
 where:
   α² = P(authorization) based on observed criteria
   β² = P(blocked) based on unmet constraints
-  
+
 Measurement (run_authorization_check) → collapses to one state deterministically
 ```
 
@@ -48,7 +48,7 @@ Measurement (run_authorization_check) → collapses to one state deterministical
 # quantum_auth_model.py
 class WaveFunctionAuthorization:
     """Quantum-inspired authorization via observable collapse"""
-    
+
     def measure_all_observables(self) -> AuthorizationState:
         """
         Measures 4 observable categories:
@@ -56,7 +56,7 @@ class WaveFunctionAuthorization:
         2. Security Compliance Observable  
         3. Quality Gates Observable
         4. Policy Compliance Observable
-        
+
         Returns: collapsed state (AUTHORIZED | BLOCKED | UNKNOWN)
         """
         observables = {
@@ -65,10 +65,10 @@ class WaveFunctionAuthorization:
             'quality': self.measure_quality_gates(),
             'policy': self.measure_policy_compliance(),
         }
-        
+
         # Wave function collapse: all must be True
         collapsed_state = all(observables.values())
-        
+
         return AuthorizationState.AUTHORIZED if collapsed_state else AuthorizationState.BLOCKED
 ```
 
@@ -101,17 +101,17 @@ class QuantumAgentOptimizer:
         """
         θ_current = self.initialize_from_prior()
         E_current = self.compute_energy(θ_current)
-        
+
         for iteration in range(max_iterations):
             θ_candidate = self.gradient_descent_step(θ_current, constraints)
             E_candidate = self.compute_energy(θ_candidate)
-            
+
             if E_candidate < E_current:
                 θ_current = θ_candidate
                 E_current = E_candidate
             elif energy_improvement_too_small():
                 break  # Converged
-        
+
         return θ_current  # θ* with minimal energy
 ```
 
@@ -129,28 +129,28 @@ class QuantumAgentOrchestrator:
     - Coherence: measure of coordination quality
     - Quantum Annealing: optimize execution order
     """
-    
+
     def execute_agent_superposition(self, task_query: str):
         """
         Instead of: execute_agent_A(); execute_agent_B(); execute_agent_C()
-        
+
         Quantum approach:
         1. Create superposition of candidate agents
         2. Evaluate each in parallel
         3. Measure execution results → collapse to optimal path
         """
         candidates = self.find_capable_agents(task_query)
-        
+
         # Superposition: all agents in possible-execution state
-        superposition = {agent: probability 
+        superposition = {agent: probability
                         for agent, probability in self.score_agents(candidates)}
-        
+
         # Parallel evaluation
         results = self.evaluate_all_in_parallel(superposition)
-        
+
         # Measurement → collapse to optimal agent
         optimal_agent = self.measure_and_collapse(results)
-        
+
         return optimal_agent.execute(task_query)
 ```
 
@@ -162,12 +162,12 @@ class EntangledDependency:
     Represents quantum entanglement between dependent agents.
     When Agent A executes, Agent B's state is non-locally correlated.
     """
-    
+
     def __init__(self, agent_a: Agent, agent_b: Agent, coupling_strength: float = 0.8):
         self.agent_a = agent_a
         self.agent_b = agent_b
         self.coupling_strength = coupling_strength  # ∈ [0,1]
-    
+
     def propagate_entanglement(self, result_a: AgentResult) -> AgentState:
         """
         Non-local update: Agent B's input state modified based on Agent A's result
@@ -175,11 +175,11 @@ class EntangledDependency:
         """
         # Extract information from Agent A's result
         context_delta = self.extract_context_delta(result_a)
-        
+
         # Update Agent B's state by coupling_strength factor
         agent_b_input = self.agent_b.get_current_input()
         entangled_input = agent_b_input + (coupling_strength * context_delta)
-        
+
         return entangled_input
 ```
 
@@ -211,7 +211,7 @@ class AuthorizationCriteria:
 
 class AuthorizationCriteriaRegistry:
     """Registry of all measurable authorization criteria"""
-    
+
     @staticmethod
     def technical_readiness() -> list[AuthorizationCriteria]:
         return [
@@ -237,7 +237,7 @@ class AuthorizationCriteriaRegistry:
                 threshold=None
             ),
         ]
-    
+
     @staticmethod
     def security_compliance() -> list[AuthorizationCriteria]:
         return [
@@ -256,7 +256,7 @@ class AuthorizationCriteriaRegistry:
                 threshold=0  # Zero new alerts allowed
             ),
         ]
-    
+
     @staticmethod
     def quality_gates() -> list[AuthorizationCriteria]:
         return [
@@ -275,7 +275,7 @@ class AuthorizationCriteriaRegistry:
                 threshold=None
             ),
         ]
-    
+
     @staticmethod
     def policy_compliance() -> list[AuthorizationCriteria]:
         return [
@@ -304,26 +304,26 @@ class AuthorizationCriteriaRegistry:
 class QuantumAuthorizationEngine:
     """
     Wave function collapse model for autonomous authorization.
-    
+
     Mathematical basis:
       |Ψ⟩ = α|AUTHORIZED⟩ + β|BLOCKED⟩
-      
+
       Measurement of all observables → deterministic collapse
     """
-    
+
     def __init__(self, repo_root: str):
         self.repo_root = Path(repo_root)
         self.criteria_registry = AuthorizationCriteriaRegistry()
         self.measured_criteria = {}
         self.authorization_report = None
-    
+
     def measure_all_observables(self) -> Dict[str, AuthorizationResult]:
         """
         Measures all 4 observable categories.
         Returns dictionary of measurement results.
         """
         results = {}
-        
+
         # Measure each category
         for category_name, criteria_list in [
             ("technical", self.criteria_registry.technical_readiness()),
@@ -332,10 +332,10 @@ class QuantumAuthorizationEngine:
             ("policy", self.criteria_registry.policy_compliance()),
         ]:
             results[category_name] = self._measure_category(category_name, criteria_list)
-        
+
         self.measured_criteria = results
         return results
-    
+
     def _measure_category(self, category: str, criteria_list: list) -> AuthorizationResult:
         """Measure all criteria in a single category"""
         category_results = {
@@ -345,12 +345,12 @@ class QuantumAuthorizationEngine:
             "failed": 0,
             "unknown": 0,
         }
-        
+
         for criterion in criteria_list:
             try:
                 # Run measurement function
                 is_pass = criterion.measurement_fn()
-                
+
                 criterion.status = "PASS" if is_pass else "FAIL"
                 category_results["criteria"].append({
                     "name": criterion.name,
@@ -358,12 +358,12 @@ class QuantumAuthorizationEngine:
                     "status": criterion.status,
                     "threshold": criterion.threshold,
                 })
-                
+
                 if is_pass:
                     category_results["passed"] += 1
                 else:
                     category_results["failed"] += 1
-                    
+
             except Exception as e:
                 criterion.status = "UNKNOWN"
                 category_results["criteria"].append({
@@ -372,9 +372,9 @@ class QuantumAuthorizationEngine:
                     "error": str(e),
                 })
                 category_results["unknown"] += 1
-        
+
         return category_results
-    
+
     def collapse_wave_function(self) -> AuthorizationState:
         """
         Wave function collapse:
@@ -387,10 +387,10 @@ class QuantumAuthorizationEngine:
                 if criterion.get("required", True):
                     if criterion["status"] != "PASS":
                         return AuthorizationState.BLOCKED
-        
+
         # All required criteria passed → AUTHORIZED
         return AuthorizationState.AUTHORIZED
-    
+
     def run_authorization_check(self, safe_mode: bool = True) -> AuthorizationReport:
         """
         Main entry point: measure all observables and collapse wave function.
@@ -398,21 +398,21 @@ class QuantumAuthorizationEngine:
         print("\n" + "="*70)
         print("🔬 QUANTUM AUTHORIZATION CHECK — OBSERVABLE MEASUREMENT")
         print("="*70)
-        
+
         # Phase 1: Measure all observables
         print("\n📊 Measuring observables...")
         measurements = self.measure_all_observables()
-        
+
         # Phase 2: Wave function collapse
         print("\n🔄 Collapsing wave function...")
         authorized = self.collapse_wave_function()
-        
+
         # Phase 3: Generate report
         report = self._generate_authorization_report(authorized, safe_mode)
-        
+
         self.authorization_report = report
         return report
-    
+
     def _generate_authorization_report(self, state: AuthorizationState, safe_mode: bool):
         """Generate human-readable authorization report"""
         report = {
@@ -422,12 +422,12 @@ class QuantumAuthorizationEngine:
             "measurements": self.measured_criteria,
             "next_action": self._determine_next_action(state, safe_mode),
         }
-        
+
         # Print report
         self._print_report(report)
-        
+
         return report
-    
+
     def _determine_next_action(self, state: AuthorizationState, safe_mode: bool) -> str:
         if state == AuthorizationState.AUTHORIZED:
             if safe_mode:
@@ -457,17 +457,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .[dev]
           pip install gitleaks semgrep
-      
+
       - name: Run Quantum Authorization Engine
         env:
           SAFE_MODE: ${{ github.event_name == 'schedule' }}
@@ -477,7 +477,7 @@ jobs:
             --repo-root "$REPO_ROOT" \
             --safe-mode "$SAFE_MODE" \
             --generate-report ".codex/authorization_report_latest.json"
-      
+
       - name: Post Authorization Status
         if: always()
         uses: actions/github-script@v6
@@ -485,10 +485,10 @@ jobs:
           script: |
             const fs = require('fs');
             const report = JSON.parse(fs.readFileSync('.codex/authorization_report_latest.json', 'utf8'));
-            
+
             const status = report.state === 'AUTHORIZED' ? '✅' : '🚫';
             const body = `${status} Quantum Authorization: ${report.state}\n\nDetails: See \`authorization_report_latest.json\``;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -510,7 +510,7 @@ jobs:
 class AgentConfigurationState:
     """
     Agent configuration state θ in energy minimization framework.
-    
+
     Mathematical representation:
       θ ≡ {θ_name, θ_desc, θ_instr, θ_sources, θ_caps, θ_prompts}
     """
@@ -534,17 +534,17 @@ class EnergyWeights:
 class QuantumAgentConfigurator:
     """
     Optimizes agent configuration via energy minimization.
-    
+
     θ* = argmin_{θ∈Ω} E(θ)
-    
+
     where:
       Ω = constraint domain (hard limits)
       E(θ) = weighted sum of 4 loss components
     """
-    
+
     def __init__(self, weights: Optional[EnergyWeights] = None):
         self.weights = weights or EnergyWeights()
-    
+
     def compute_energy(self, θ: AgentConfigurationState) -> EnergyComponents:
         """
         Compute total energy E(θ) as weighted sum of loss components.
@@ -553,7 +553,7 @@ class QuantumAgentConfigurator:
         L_fmt = self._compute_formatting_loss(θ)
         L_src = self._compute_source_compliance_loss(θ)
         L_coh = self._compute_coherence_loss(θ)
-        
+
         return EnergyComponents(
             hallucination=self.weights.λ_hall * L_hall,
             formatting=self.weights.λ_fmt * L_fmt,
@@ -566,7 +566,7 @@ class QuantumAgentConfigurator:
                 self.weights.λ_coh * L_coh,
             ])
         )
-    
+
     def optimize_configuration(
         self,
         initial_θ: AgentConfigurationState,
@@ -579,9 +579,9 @@ class QuantumAgentConfigurator:
         """
         θ_current = initial_θ
         E_current = self.compute_energy(θ_current)
-        
+
         learning_rate = 0.01
-        
+
         for iteration in range(max_iterations):
             # Gradient descent step
             θ_candidate = self._gradient_descent_step(
@@ -589,24 +589,24 @@ class QuantumAgentConfigurator:
                 learning_rate,
                 constraints
             )
-            
+
             # Evaluate candidate
             E_candidate = self.compute_energy(θ_candidate)
-            
+
             # Accept if energy decreased
             if E_candidate.total < E_current.total:
                 θ_current = θ_candidate
                 E_current = E_candidate
-                
+
                 print(f"Iteration {iteration}: E = {E_current.total:.4f}")
             else:
                 # Check convergence
                 if abs(E_current.total - E_candidate.total) < tolerance:
                     print(f"Converged at iteration {iteration}")
                     break
-        
+
         return θ_current  # θ* with minimal energy
-    
+
     def _compute_hallucination_loss(self, θ: AgentConfigurationState) -> float:
         """
         Measures factual inconsistency with sources.
@@ -615,7 +615,7 @@ class QuantumAgentConfigurator:
         # Implementation: scan instructions and prompts for unsourced claims
         unsourced_claims = self._find_unsourced_claims(θ.θ_instr, θ.θ_sources)
         return len(unsourced_claims) * 0.1
-    
+
     def _compute_formatting_loss(self, θ: AgentConfigurationState) -> float:
         """
         Measures output format constraint violations.
@@ -624,14 +624,14 @@ class QuantumAgentConfigurator:
         # Check if prompts specify conflicting output formats
         # Implementation: parse θ_prompts for format specs
         return violations * 0.05
-    
+
     def _compute_source_compliance_loss(self, θ: AgentConfigurationState) -> float:
         """
         Measures required source usage and access violations.
         """
         missing_required_sources = self._find_missing_required_sources(θ.θ_sources)
         return len(missing_required_sources) * 0.15
-    
+
     def _compute_coherence_loss(self, θ: AgentConfigurationState) -> float:
         """
         Measures logical consistency of reasoning chain.
@@ -651,7 +651,7 @@ class SystemConstraints:
     requiredSources: list[str] = field(default_factory=list)
     hallucinationThreshold: float = 0.2
     energyBudget: float = 100.0
-    
+
     def is_feasible(self, θ: AgentConfigurationState) -> bool:
         """Check if configuration θ ∈ Ω"""
         # Verify all hard constraints
@@ -709,47 +709,47 @@ class Action:
 class Planner(ABC):
     """
     Abstract base class for OODA loop implementation.
-    
+
     OODA = Observe → Orient → Decide → Act
     Boyd's decision cycle applied to agent autonomy
     """
-    
+
     @abstractmethod
     def observe(self, input_data: Any) -> Observation:
         """
         Observe phase: Gather raw data from environment
-        
+
         Returns: Observation with classification and confidence
         """
         pass
-    
+
     @abstractmethod
     def orient(self, observation: Observation) -> Orientation:
         """
         Orient phase: Interpret observation using mental models
-        
+
         Pattern recognition, context enrichment
         """
         pass
-    
+
     @abstractmethod
     def decide(self, orientation: Orientation) -> Decision:
         """
         Decide phase: Choose action based on orientation
-        
+
         Decision-making, priority assessment, parameter selection
         """
         pass
-    
+
     @abstractmethod
     def act(self, decision: Decision) -> Action:
         """
         Act phase: Execute chosen action
-        
+
         Returns result, success status, metadata
         """
         pass
-    
+
     async def execute_ooda_cycle(self, input_data: Any) -> Action:
         """
         Full OODA cycle execution
@@ -772,15 +772,15 @@ class SelfHealingEngine(Planner):  # NOW INHERITS FROM Planner
     """
     Self-healing automation with OODA formalization.
     """
-    
+
     def observe(self, input_data: Any) -> Observation:
         """
         Observe phase: Detect issues in codebase
-        
+
         Wraps existing detect_issues() method
         """
         issues = self.detect_issues(input_data)
-        
+
         return Observation(
             data={
                 "issues": [asdict(issue) for issue in issues],
@@ -789,11 +789,11 @@ class SelfHealingEngine(Planner):  # NOW INHERITS FROM Planner
             timestamp=datetime.now(UTC),
             confidence=self._calculate_detection_confidence(issues)
         )
-    
+
     def orient(self, observation: Observation) -> Orientation:
         """
         Orient phase: Classify and contextualize issues
-        
+
         Wraps existing issue classification logic
         """
         classified_issues = {}
@@ -802,7 +802,7 @@ class SelfHealingEngine(Planner):  # NOW INHERITS FROM Planner
             if category not in classified_issues:
                 classified_issues[category] = []
             classified_issues[category].append(issue)
-        
+
         return Orientation(
             classification=self._determine_severity(classified_issues),
             context={
@@ -811,34 +811,34 @@ class SelfHealingEngine(Planner):  # NOW INHERITS FROM Planner
             },
             patterns=self._find_patterns(classified_issues)
         )
-    
+
     def decide(self, orientation: Orientation) -> Decision:
         """
         Decide phase: Plan remediation strategy
-        
+
         Wraps existing _plan_remediation() method
         """
         remediation_plan = self._plan_remediation(
             orientation.context["by_category"],
             orientation.patterns
         )
-        
+
         return Decision(
             action="execute_remediation",
             priority=self._calculate_priority(orientation),
             parameters={"plan": remediation_plan},
             rationale=f"Severity: {orientation.classification}, Patterns: {orientation.patterns}"
         )
-    
+
     def act(self, decision: Decision) -> Action:
         """
         Act phase: Execute remediation
-        
+
         Wraps existing remediate() method
         """
         try:
             result = self.remediate(decision.parameters["plan"])
-            
+
             return Action(
                 result=result,
                 success=True,
@@ -864,14 +864,14 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
     """
     Workflow navigation with OODA formalization.
     """
-    
+
     def observe(self, input_data: Any) -> Observation:
         """
         Observe: Capture trigger event + context
         """
         trigger_event = input_data.get("event")
         context = input_data.get("context", {})
-        
+
         return Observation(
             data={
                 "trigger": trigger_event,
@@ -881,18 +881,18 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
             timestamp=datetime.now(UTC),
             confidence=0.95  # Trigger events are high-confidence
         )
-    
+
     def orient(self, observation: Observation) -> Orientation:
         """
         Orient: Map to workflow token selection
-        
+
         Tokens represent workflow steps in sequence:
         "LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"
         """
         workflow_id = observation.data["workflow_id"]
         current_tokens = self.get_workflow_tokens(workflow_id)
         next_token = self.select_next_token(current_tokens, observation.data["context"])
-        
+
         return Orientation(
             classification=next_token,
             context={
@@ -902,21 +902,21 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
             },
             patterns=self._extract_workflow_patterns(workflow_id)
         )
-    
+
     def decide(self, orientation: Orientation) -> Decision:
         """
         Decide: Choose next workflow step
         """
         next_token = orientation.classification
         step_params = self._resolve_token_parameters(next_token, orientation.context)
-        
+
         return Decision(
             action=f"execute_workflow_step:{next_token}",
             priority=1,
             parameters=step_params,
             rationale=f"Executing workflow token: {next_token}"
         )
-    
+
     def act(self, decision: Decision) -> Action:
         """
         Act: Execute tokenized workflow step
@@ -926,7 +926,7 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
                 decision.parameters["step"],
                 decision.parameters
             )
-            
+
             return Action(
                 result=result,
                 success=result is not None,
@@ -956,22 +956,22 @@ from abc import ABC, abstractmethod
 
 class MemoryInterface(ABC):
     """Abstract interface for agent memory systems"""
-    
+
     @abstractmethod
     def store(self, key: str, value: Any, **metadata) -> bool:
         """Store value with key and optional metadata"""
         pass
-    
+
     @abstractmethod
     def retrieve(self, key: str) -> Any:
         """Retrieve value by key, None if not found"""
         pass
-    
+
     @abstractmethod
     def search(self, query: str, limit: int = 10) -> list[dict]:
         """Search memory by query string"""
         pass
-    
+
     @abstractmethod
     def summarize_history(self, last_n: int = 5) -> str:
         """Generate summary of recent history"""
@@ -993,17 +993,17 @@ from typing import Any, Optional
 class SQLiteMemory(MemoryInterface):
     """
     SQLite-backed persistent memory for cross-session agent state.
-    
+
     Zero additional dependencies (uses stdlib sqlite3).
     """
-    
+
     def __init__(self, db_path: str | Path = ".codex/agent_memory.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize schema
         self._initialize_schema()
-    
+
     def _initialize_schema(self):
         """Create tables if not exist"""
         with closing(sqlite3.connect(self.db_path)) as conn:
@@ -1016,23 +1016,23 @@ class SQLiteMemory(MemoryInterface):
                     metadata_json TEXT
                 )
             """)
-            
+
             conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_updated_at 
+                CREATE INDEX IF NOT EXISTS idx_updated_at
                 ON memory(updated_at)
             """)
-            
+
             conn.commit()
-    
+
     def store(self, key: str, value: Any, **metadata) -> bool:
         """
         Store value in SQLite
-        
+
         Args:
             key: Unique identifier
             value: Any JSON-serializable value
             **metadata: Optional metadata dict
-        
+
         Returns:
             True if successful
         """
@@ -1040,28 +1040,28 @@ class SQLiteMemory(MemoryInterface):
             now = datetime.now(UTC).isoformat()
             value_json = json.dumps(value)
             metadata_json = json.dumps(metadata) if metadata else None
-            
+
             with closing(sqlite3.connect(self.db_path)) as conn:
                 conn.execute("""
-                    INSERT OR REPLACE INTO memory 
+                    INSERT OR REPLACE INTO memory
                     (key, value_json, created_at, updated_at, metadata_json)
                     VALUES (?, ?, ?, ?, ?)
                 """, (key, value_json, now, now, metadata_json))
-                
+
                 conn.commit()
-            
+
             return True
         except Exception as e:
             print(f"❌ Error storing {key}: {e}")
             return False
-    
+
     def retrieve(self, key: str) -> Optional[Any]:
         """
         Retrieve value from SQLite
-        
+
         Args:
             key: Unique identifier
-        
+
         Returns:
             Deserialized value or None
         """
@@ -1072,22 +1072,22 @@ class SQLiteMemory(MemoryInterface):
                     (key,)
                 )
                 row = cursor.fetchone()
-                
+
                 if row:
                     return json.loads(row[0])
                 return None
         except Exception as e:
             print(f"❌ Error retrieving {key}: {e}")
             return None
-    
+
     def search(self, query: str, limit: int = 10) -> list[dict]:
         """
         Search memory entries by key pattern
-        
+
         Args:
             query: Search query (% wildcards supported)
             limit: Max results to return
-        
+
         Returns:
             List of matching entries with values
         """
@@ -1100,7 +1100,7 @@ class SQLiteMemory(MemoryInterface):
                     ORDER BY updated_at DESC
                     LIMIT ?
                 """, (f"%{query}%", limit))
-                
+
                 results = []
                 for row in cursor.fetchall():
                     results.append({
@@ -1109,19 +1109,19 @@ class SQLiteMemory(MemoryInterface):
                         "created_at": row[2],
                         "updated_at": row[3],
                     })
-                
+
                 return results
         except Exception as e:
             print(f"❌ Error searching {query}: {e}")
             return []
-    
+
     def summarize_history(self, last_n: int = 5) -> str:
         """
         Generate summary of recent memory entries
-        
+
         Args:
             last_n: Number of recent entries to summarize
-        
+
         Returns:
             Markdown-formatted summary
         """
@@ -1133,11 +1133,11 @@ class SQLiteMemory(MemoryInterface):
                     ORDER BY updated_at DESC
                     LIMIT ?
                 """, (last_n,))
-                
+
                 summary = "## Memory Summary\n\n"
                 for key, updated_at in cursor.fetchall():
                     summary += f"- **{key}** (updated: {updated_at})\n"
-                
+
                 return summary
         except Exception as e:
             print(f"❌ Error summarizing: {e}")
@@ -1153,11 +1153,11 @@ class LegacyAgentAdapter(Planner):
     """
     Adapts legacy agents to Planner ABC with optional memory
     """
-    
+
     def __init__(self, legacy_agent, memory: Optional[MemoryInterface] = None):
         self.legacy_agent = legacy_agent
         self.memory = memory or SimpleDictMemory()  # Fallback
-    
+
     def execute_with_memory(self, input_data: Any) -> Action:
         """
         Execute agent and persist results to memory
@@ -1165,14 +1165,14 @@ class LegacyAgentAdapter(Planner):
         # Check memory for cached results
         cache_key = self._compute_cache_key(input_data)
         cached_result = self.memory.retrieve(cache_key)
-        
+
         if cached_result:
             print(f"✅ Cache hit: {cache_key}")
             return cached_result
-        
+
         # Execute OODA cycle
         action = self.execute_ooda_cycle(input_data)
-        
+
         # Store result
         self.memory.store(
             cache_key,
@@ -1180,7 +1180,7 @@ class LegacyAgentAdapter(Planner):
             input_hash=cache_key,
             session_id=self._get_session_id()
         )
-        
+
         return action
 ```
 
@@ -1215,7 +1215,7 @@ agents:
       - gitleaks-agent
       - semgrep-agent
     ooda_phases: [observe, orient, decide, act]
-    
+
   # S58: Unified Doc Agent (merges 4 agents)
   - id: unified-doc-agent
     name: Unified Documentation Agent
@@ -1228,7 +1228,7 @@ agents:
       - link-validator-agent
       - documentation-consolidator
     ooda_phases: [observe, orient, decide, act]
-    
+
   # S58: CI Triage Pipeline (merges 3 agents)
   - id: ci-triage-pipeline-agent
     name: CI Triage Pipeline Agent
@@ -1252,15 +1252,15 @@ class QuantumAgentOrchestrator:
     """
     Orchestrate 53+ agents using quantum-inspired multi-agent patterns.
     """
-    
+
     def __init__(self):
         self.agent_registry = load_agent_registry()
         self.quantum_state = QuantumMultiAgentState()
-    
+
     def execute_hierarchical_chain(self, task: str, depth: int = 3) -> AgentResult:
         """
         Hierarchical execution: primary agent hands off to specialized agents.
-        
+
         Pattern:
           Primary Agent → observes task
                        → orients with capability map
@@ -1269,35 +1269,35 @@ class QuantumAgentOrchestrator:
                        → primary synthesizes
         """
         primary_agent = self.select_primary_agent(task)
-        
+
         # OODA cycle
         observation = primary_agent.observe(task)
         orientation = primary_agent.orient(observation)
-        
+
         # Delegation decision
         specialist_candidates = self.find_specialists(orientation)
-        
+
         # Parallel execution of specialists
         specialist_results = self._execute_parallel(specialist_candidates, task)
-        
+
         # Synthesis by primary agent
         decision = primary_agent.decide(orientation, specialist_results)
         final_action = primary_agent.act(decision)
-        
+
         return final_action
-    
+
     def _execute_parallel(self, agents: list[Agent], task: str) -> dict:
         """
         Execute multiple agents in parallel, return entangled results.
         """
         import asyncio
-        
+
         async def run_all():
             tasks = [agent.execute_ooda_cycle(task) for agent in agents]
             return await asyncio.gather(*tasks)
-        
+
         results = asyncio.run(run_all())
-        
+
         # Entanglement: propagate results between agents
         for i, result in enumerate(results):
             if i < len(agents) - 1:
@@ -1306,27 +1306,27 @@ class QuantumAgentOrchestrator:
                     result,
                     agents[i+1]
                 )
-        
+
         return {"results": results, "entangled": True}
-    
+
     def measure_quantum_advantage(self) -> float:
         """
         Measure actual quantum advantage vs classical execution.
-        
+
         Target: 3.0x (from 2.86x current)
         """
         # Parallel execution time
         parallel_time = self._benchmark_parallel_execution()
-        
+
         # Sequential execution time
         sequential_time = self._benchmark_sequential_execution()
-        
+
         advantage = sequential_time / parallel_time
-        
+
         print(f"📊 Quantum Advantage: {advantage:.2f}x")
         print(f"   Sequential: {sequential_time:.2f}s")
         print(f"   Parallel:   {parallel_time:.2f}s")
-        
+
         return advantage
 ```
 
@@ -1345,25 +1345,25 @@ class AdaptiveScoringOptimizer:
     """
     Phase 8.0: Quantum k₁ weight refinement toward 0.35
     """
-    
+
     def __init__(self):
         # S58 weights (refined from S57)
         self.compliance_weight = 0.38  # was 0.40
         self.risk_weight = 0.32        # was 0.30
         self.implementation_weight = 0.18
         self.performance_weight = 0.12
-        
+
         self.scenario_dataset = self._load_expanded_scenarios()  # 50 → 100 scenarios
-    
+
     def _load_expanded_scenarios(self) -> list[dict]:
         """
         Expand scenario dataset from 50 → 100 for better validation
         """
         scenarios = []
-        
+
         # Original 50 scenarios
         scenarios.extend(self._load_original_scenarios())
-        
+
         # New 50 scenarios (edge cases + quantum patterns)
         scenarios.extend([
             {
@@ -1380,64 +1380,64 @@ class AdaptiveScoringOptimizer:
             },
             # ... 48 more
         ])
-        
+
         return scenarios
-    
+
     def validate_k1_accuracy(self) -> ValidationReport:
         """
         Run all 100 scenarios against current weights.
-        
+
         Target: ≥95% pass rate (at most 5 scenarios miss target)
         """
         results = []
         passed = 0
-        
+
         for scenario in self.scenario_dataset:
             computed_k1 = self.compute_k1(scenario["weights"])
             expected_k1 = scenario["expected_k1"]
             tolerance = scenario["tolerance"]
-            
+
             is_pass = abs(computed_k1 - expected_k1) <= tolerance
             passed += is_pass
-            
+
             results.append({
                 "scenario": scenario["name"],
                 "computed_k1": computed_k1,
                 "expected_k1": expected_k1,
                 "passed": is_pass,
             })
-        
+
         pass_rate = passed / len(self.scenario_dataset)
-        
+
         return ValidationReport(
             pass_rate=pass_rate,
             results=results,
             target_met=(pass_rate >= 0.95),
         )
-    
+
     def compute_k1(self, weights: dict) -> float:
         """
         Quantum k₁ factor: measure of coherence/entanglement efficiency.
-        
+
         k₁ = (compliance_weight × risk_weight) / (implementation_weight × performance_weight)
         """
         compliance = weights.get("compliance", self.compliance_weight)
         risk = weights.get("risk", self.risk_weight)
         impl = weights.get("implementation", self.implementation_weight)
         perf = weights.get("performance", self.performance_weight)
-        
+
         return (compliance * risk) / (impl * perf)
-    
+
     def update(self, lesson: dict):
         """
         Update weights based on lesson from ReflectionLoop.
-        
+
         Called when error patterns observed.
         """
         scenario = lesson.get("scenario")
         outcome = lesson.get("outcome")  # success | failure
         complexity = lesson.get("complexity")
-        
+
         if outcome == "failure":
             # Micro-adjust weights
             if "compliance" in scenario:
@@ -1457,12 +1457,12 @@ def test_k1_target_100_scenarios():
     Target: ≥95% pass rate
     """
     optimizer = AdaptiveScoringOptimizer()
-    
+
     report = optimizer.validate_k1_accuracy()
-    
+
     assert report.pass_rate >= 0.95, f"Pass rate {report.pass_rate} < 0.95"
     assert report.target_met
-    
+
     print(f"✅ k₁ Validation: {report.pass_rate:.1%} pass rate")
 ```
 
@@ -1561,4 +1561,3 @@ This implementation guide bridges **quantum mechanics** and **AI agent autonomy*
 ---
 
 **Next Action**: Begin S57 Phase 1 with E-01 (OODA formalization) and E-02 (SQLiteMemory implementation).
-

@@ -8,6 +8,10 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
+> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
 > ⚠️ **DEPRECATED** — Security audit capabilities (SAST, dependency vulnerabilities,
 > compliance checks) have been merged into **[Unified Security Scanner](unified-security-scanner.md)**.
 > Use `unified-security-scanner` for all new invocations. Tracked under
@@ -181,14 +185,14 @@ werkzeug>=3.0.0,<4.0.0  # Fixed CVE-2024-12345
 - **Baseline updates**: Maintain `.secrets.baseline` file
 - **Example Fix**:
 ```python
-# Before (Leaked secret)
-API_KEY = "sk-1234567890abcdef"
+# Before (Leaked secret)  # pragma: allowlist secret
+API_KEY = "sk-1234567890abcdef"  # pragma: allowlist secret
 
 # After (Fixed)
 import os
-API_KEY = os.getenv("API_KEY")
-if not API_KEY:
-    raise ValueError("API_KEY environment variable required")
+API_KEY = os.getenv("API_KEY")  # pragma: allowlist secret
+if not API_KEY:  # pragma: allowlist secret
+    raise ValueError("API_KEY environment variable required")  # pragma: allowlist secret
 ```
 
 ### 4. SQL Injection Prevention
@@ -742,7 +746,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | Network Access | ✅ | Restricted | Approved endpoints only |
 | Process Execution | ✅ | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
+| API Integrations | ✅ | Authenticated | Token-based | <!-- pragma: allowlist secret -->
 | Git Operations | ✅ | Full | Within repository |
 
 ### Tool Access

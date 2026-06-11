@@ -11,7 +11,7 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -73,6 +73,30 @@ CRITICAL_VARIABLES = [
         default="true",
         validator=lambda v: v.lower() in ("true", "false"),
         category="cognitive",
+    ),
+    Variable(
+        name="COPILOT_AGENT_CCA_VERSION_LOCK",
+        description="Lock CCA version to stable release (CAD-Mandate Rule 2)",
+        required=True,
+        default="stable",
+        validator=lambda v: v == "stable",
+        category="governance",
+    ),
+    Variable(
+        name="COPILOT_AGENT_DEDUPLICATION_ENABLED",
+        description="Enable CCA prompt deduplication (MSPV requirement)",
+        required=True,
+        default="true",
+        validator=lambda v: v.lower() == "true",
+        category="governance",
+    ),
+    Variable(
+        name="COPILOT_AGENT_TURN_ISOLATION_ENABLED",
+        description="Enable CCA turn isolation (MSPV requirement)",
+        required=True,
+        default="true",
+        validator=lambda v: v.lower() == "true",
+        category="governance",
     ),
 ]
 
@@ -162,7 +186,7 @@ def generate_agent_context() -> dict[str, Any]:
             context[var.name] = value
 
     context["_meta"] = {
-        "generated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "workflow": "repo-var-sync-schedule",
         "variables_count": len(context) - 1,
         "critical_count": len(CRITICAL_VARIABLES),
@@ -202,6 +226,18 @@ def save_agent_context(output_path: Path) -> None:
     """Save agent context to file."""
     context = generate_agent_context()
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Merge with existing file to preserve other keys injected by bootstrap/sync agents
+    if output_path.exists():
+        try:
+            existing = json.loads(output_path.read_text())
+            # Don't overwrite existing non-metadata keys that aren't managed here
+            for key, val in existing.items():
+                if key not in context and not key.startswith("_"):
+                    context[key] = val
+        except (json.JSONDecodeError, OSError):
+            pass  # existing file is absent or malformed; proceed with generated context
+
     output_path.write_text(json.dumps(context, indent=2))
     logger.info("✓ Agent context saved to %s", output_path)
 

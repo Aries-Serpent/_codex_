@@ -64,10 +64,7 @@ jobs:
         run: |
           # Run and capture output; save to file for summary
           # shellcheck disable=SC2016  # Go template syntax, not shell variables
-          # copilot-setup-steps.yml is excluded: it uses shell brace syntax (|| { echo ... })
-          # that PyYAML and actionlint cannot parse; it is protected by tripwire tests.
-          mapfile -t WORKFLOW_FILES < <(find .github/workflows -maxdepth 1 -name '*.yml' \
-            ! -name 'copilot-setup-steps.yml' | sort)
+          mapfile -t WORKFLOW_FILES < <(find .github/workflows -maxdepth 1 -name '*.yml' | sort)
           actionlint \
             -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}' \
             "${WORKFLOW_FILES[@]}" 2>&1 | tee /tmp/actionlint_results.txt || true

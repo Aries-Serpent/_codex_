@@ -506,3 +506,27 @@ repos:
         pass_filenames: false
         # To run manually:   pre-commit run validate-codex-configs --all-files
         # Or standalone:     python scripts/ci/validate_configs.py
+
+  # ── Phase 3b: actionlint gate for *.yml workflow files ───────────────────
+  # Runs actionlint against any staged .github/workflows/*.yml file.
+  # Install: https://github.com/rhysd/actionlint#installation (v1.7.7 pinned
+  # to match actionlint-audit.yml CI gate).  Skips gracefully when the binary
+  # is absent so first-time contributors are not blocked; CI (actionlint-audit.yml)
+  # enforces the hard gate on every PR.
+  # Run manually: pre-commit run actionlint --all-files
+  - repo: local
+    hooks:
+      - id: actionlint
+        name: "🔍 actionlint — workflow YAML syntax gate (Phase 3b)"
+        entry: >
+          bash -c '
+            if ! command -v actionlint >/dev/null 2>&1; then
+              echo "⚠️  actionlint not installed — skipping (see https://github.com/rhysd/actionlint)";
+              exit 0;
+            fi;
+            actionlint "$@"' --
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        stages: [pre-commit]
+        # To install: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+        # Or via script: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)

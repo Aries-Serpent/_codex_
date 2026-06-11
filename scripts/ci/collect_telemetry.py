@@ -3,7 +3,7 @@
 CI Telemetry Collection Script
 
 Collects workflow runs, jobs, and artifacts from GitHub Actions.
-Maps failures to 16 pattern categories for automated analysis.
+Maps failures to 38 pattern categories for automated analysis.
 
 Usage:
     python scripts/ci/collect_telemetry.py --owner Aries-Serpent --repo _codex_ --branch main --days 7
@@ -207,6 +207,30 @@ class TelemetryCollector:
             "non-fast-forward", "push rejected", "failed to push",
             "concurrent push", "push failed after", "updates were rejected",
             "push race", "fetch first",
+        ],
+        # ── RP-024: Markdown false-positive secrets ───────────────────────────
+        # detect-secrets-hook exits 1 on example credential strings in agent .md docs.
+        "markdown-secrets-fp": [
+            "detect-secrets-hook", "Potential Secret Detected",
+            ".github/agents/", "pragma: allowlist secret",
+            "markdown secret", "secret baseline md",
+            "RP-024",
+        ],
+        # ── RP-025: Validation pipeline cascade ──────────────────────────────
+        # validate.yml "Full Validation (Daily)" fails across 16+ branches for 3+ days.
+        "validate-cascade": [
+            "Full Validation (Daily)", "validate.yml",
+            "validation cascade", "systemic test environment",
+            "16+ branches", "validate multiple branch",
+            "RP-025",
+        ],
+        # ── RP-026: Auto-fix workflow loop ────────────────────────────────────
+        # auto-fix workflows detect issues but exit 1 without applying fixes.
+        "auto-fix-loop": [
+            "Fail if auto-fixable issues found", "auto-fix-common-issues",
+            "auto-fix-pr-check", "auto_fix exit 1",
+            "same issues persist", "permanent ci block",
+            "RP-026",
         ],
     }
 

@@ -187,6 +187,10 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 - `CODEX_MASTER_KEY` → `repo` + `workflow` + `actions:write` → full variable/secret CRUD
 - MCP Server → **does NOT support** variable/secret CRUD — use REST API or `gh` CLI
 
+### Handling GitHub URLs
+
+Whenever the user provides a GitHub Action run URL (e.g., `https://github.com/.../actions/runs/...`) or a PR comment URL (`...#issuecomment-...`), you MUST proactively use the `github-mcp-server` tools (`get_job_logs`, `pull_request_read` with `get_comments`/`get_review_comments`, `issue_read` with `get_comments`) to fetch the exact error logs or review text. Do not hallucinate the feedback or failure reasons.
+
 ### Test Variables API
 
 ```bash
@@ -200,8 +204,15 @@ gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_bas
 ## Prohibited Actions
 
 - Do **not** create or activate any GitHub Actions workflow files.
+- Do **not** modify `.github/workflows/copilot-setup-steps.yml` or try to re-enable/fix commented-out steps within it unless explicitly instructed by a human.
 - Keep automation artefacts confined to `.codex/`.
 - Do **not** upgrade CCA version without explicit session review (violates `COPILOT_AGENT_CCA_VERSION_LOCK`).
+
+## Documentation & Architecture Conventions
+
+When generating or updating documentation related to architecture, domain ownership, or agent mapping:
+1. **Assign specific ownership**: Always assign ownership to the exact ideal Copilot custom agent designed for that domain. As a fallback, use `@mbaetiong` or a secondary relevant custom agent.
+2. **Use Mermaid**: Always format structural workflows, diagrams, and agent/workflow mappings using Mermaid.js (`mermaid` code blocks).
 
 ## Copilot Task Execution Protocol (CTEP)
 
@@ -392,3 +403,23 @@ python -m codex.cli train --config-name=my_config hydra.run.dir=./runs/my_run
 - For repository-specific policy changes, open an issue in `Aries-Serpent/_codex_` and tag maintainers.
 - For urgent security or data-leak concerns, follow the escalation path in `CONTRIBUTING`.
 - **For CCA version lock or deduplication issues, escalate to the Copilot Cloud Agent team with full session logs and error context.**
+
+<HighLevelDetails>
+- A summary of what the repository does: This repository contains the Aries-Serpent _codex_ project. It focuses on automation, AI agent workflows, and maintaining rigorous code standards.
+- High level repository information: Large codebase, written primarily in Python, Markdown, and Shell. Heavy use of GitHub Actions for CI/CD. Target runtimes include Python >=3.12 and Node.js 22+.
+</HighLevelDetails>
+
+<BuildInstructions>
+- Format with **Black**, lint with **Ruff**, sort imports with **isort**.
+- Ruff config selects only E,F,I; tests ignore E402 and F811.
+- Before committing, always run:
+  `pre-commit run --files <changed_files>`
+- Run the test suite using nox:
+  `nox -s tests`
+</BuildInstructions>
+
+<ProjectLayout>
+- Command-line tasks live in `src/codex/cli.py`.
+- Base configuration files are stored under `configs/` and are Hydra-compatible.
+- Workflows are defined in `.github/workflows/`.
+</ProjectLayout>

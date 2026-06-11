@@ -1269,7 +1269,7 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 | `CODEX_AGENT_NAME` | `ai_org_repo_admin` | Canonical agent name used in logs and reports | ⚠️ Change requires updating all log parsers |
 | `CODEX_API_VERSION` | `2022-11-28` | GitHub REST API version header | ✅ Update when GitHub releases breaking API changes |
 | `CODEX_ORG_NAME` | `Aries-Serpent` | GitHub organization name | ❌ Changing breaks all hardcoded org references |
-| `CODEX_PYTHON_VERSION` | `3.12` | Python version (alias of `CODEX_ENV_PYTHON_VERSION`) | ✅ Keep in sync with `CODEX_ENV_PYTHON_VERSION` |
+| `CODEX_PYTHON_VERSION` | `3.12` | Python version target (minor pinned, patch floating) | ✅ Keep in sync with `CODEX_ENV_PYTHON_VERSION` |
 | `CODEX_CACHE_VERSION` | `v2` | Cache key version prefix | ✅ Increment (`v3`, `v4`...) to bust all caches |
 | `GENESIS_TIMESTAMP` | `2025-12-26T16:04:45Z` | Repository Genesis Protocol activation time | ❌ Historical — never change |
 | `CODEX_PR_LIFECYCLE_VERSION` | *(JSON blob)* | PR lifecycle version metadata | ✅ Updated by session wrapup scripts |

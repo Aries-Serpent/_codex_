@@ -8,6 +8,10 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
+> ⚠️ **DEPRECATED** — This agent has been merged into [`ci-emergency-response-agent`](./ci-emergency-response-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
 > ⚠️ **DEPRECATED** — Resilience + emergency-response capabilities have been merged into
 > **[CI Emergency Response Agent](ci-emergency-response-agent.md)** (single rapid-response surface).
 > Use `ci-emergency-response-agent` for all new invocations. Tracked under

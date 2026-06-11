@@ -48,7 +48,9 @@ jobs:
     # javascript/typescript: repo has no standalone JS build; allow this matrix leg to fail
     # without blocking the overall workflow (python must still pass).
     # Mirrors the identical guard in codeql-analysis.yml.
-    continue-on-error: ${{ matrix.language == 'javascript' }}
+    # Dependabot PRs: make CodeQL advisory-only so dependency-update PRs are not
+    # blocked when default Code Scanning setup is enabled.
+    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
     if: |
       (github.event_name == 'push') ||
       (github.event_name == 'pull_request') ||
@@ -76,9 +78,14 @@ jobs:
         with:
           category: "/language:${{ matrix.language }}"
           # Persist SARIF locally so it can be packaged into the run artifact
-          # below for off-platform triage in addition to the GHAS upload.
+          # below for off-platform triage. SARIF upload to GitHub Advanced Security
+          # is handled by GitHub's Default Code Scanning Setup.
+          # FIX (issue #4835): upload: false (boolean) does NOT suppress SARIF upload
+          # in CodeQL action v4.35.4+. The string value 'never' must be used instead.
+          # Using 'false' caused "CodeQL analyses from advanced configurations cannot
+          # be processed when the default setup is enabled" → JOB_STATUS_CONFIGURATION_ERROR.
           output: codeql-sarif/${{ matrix.language }}
-          upload: always
+          upload: 'never'
       - name: Build CodeQL human-readable summary
         if: always()
         shell: bash

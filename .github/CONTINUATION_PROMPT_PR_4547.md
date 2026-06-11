@@ -96,7 +96,7 @@ codebase-health-sweep.yml
 ### 4. Session Context Enrichment (⏱️ 10-15 min)
 **Goal:** Reduce handoff context loss 20% → <5% by enriching `AgentSessionContext`
 
-**Current bottleneck:** 
+**Current bottleneck:**
 `get_session_context()` returns:
 - `next_actions` (ranked prompts) ✅
 - `continuation_from` (completed steps summary) ✅
@@ -108,20 +108,20 @@ codebase-health-sweep.yml
 # In src/codex/cognitive/agent_brain_api.py
 def get_session_context(self, session_context=None, max_actions=None):
     # ... existing code ...
-    
+
     # NEW: Include failure context
     recent_failures = self._orch.get_recent_failures(max_count=5)  # Last 5 failures
-    
+
     # NEW: Include blocked objectives  
-    blocked = [obj for obj in self._orch.get_current_objectives() 
+    blocked = [obj for obj in self._orch.get_current_objectives()
                if obj.status == 'BLOCKED']
-    
+
     # NEW: Include critical alerts
     critical_alerts = [
         alert for alert in self._monitoring.get_alerts()
         if alert.severity == 'CRITICAL'
     ]
-    
+
     context_enrichment = {
         'recent_failures': recent_failures,
         'blocked_objectives': blocked,

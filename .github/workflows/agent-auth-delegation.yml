@@ -267,7 +267,7 @@ jobs:
           github.event_name == 'pull_request_review'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             // Branches that are staging gates — never the HEAD of an agent session.
             const INTEGRATION_BRANCHES = ['0D_base_'];
@@ -397,7 +397,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
             const sha = (context.sha || 'unknown').slice(0, 7);
@@ -553,7 +553,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const sha    = (context.sha || 'unknown').slice(0, 7);
             const MARKER = 'COGNITIVE SESSION-TYPE DIRECTIVE';
@@ -1039,7 +1039,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
@@ -1138,7 +1138,7 @@ jobs:
           github.event_name == 'pull_request_review'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';
             const SUMMARY_MARKER  = '## 🧠 Session Summary';
@@ -1345,10 +1345,10 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';
             const RESOLVED_MARKER = 'BRANCH_REBASE_RESOLVED';
@@ -1720,7 +1720,7 @@ jobs:
         id: session_bootstrap
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
           GIT_AUTHOR_NAME: github-actions[bot]
@@ -2022,7 +2022,6 @@ jobs:
       - name: "Post @copilot continue"
         id: post_copilot_comment
         if: steps.session_gate.outputs.acquired == 'true'
-        continue-on-error: true
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
@@ -2091,16 +2090,6 @@ jobs:
               });
             }
             core.info(`✅ Posted @copilot continue on PR #${prNumber}`);
-
-      # ── 3e-obs: Emit warning annotation when 3e fails (fail-open visibility) ──
-      - name: "Warn if @copilot continue post failed"
-        if: steps.session_gate.outputs.acquired == 'true' && steps.post_copilot_comment.outcome == 'failure'
-        run: |
-          echo "::warning title=Post @copilot continue skipped::The 'Post @copilot continue' step failed (continue-on-error=true). Delegation succeeded but no PR comment was posted. Check the previous step's logs for details."
-          echo "### ⚠️ Post \`@copilot continue\` step failed" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Token delegation completed but the PR comment could not be posted (fail-open policy)." >> "$GITHUB_STEP_SUMMARY"
-          echo "Maintainers should manually post \`@copilot continue\` on the PR if required." >> "$GITHUB_STEP_SUMMARY"
 
       # ── 3f: Auto-increment COGNITIVE_BRAIN_SESSION_NUMBER ────────────────────
       # Fires on every successful token delegation approval — the natural per-session

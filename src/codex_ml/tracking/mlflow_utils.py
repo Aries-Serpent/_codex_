@@ -44,10 +44,10 @@ try:
     import mlflow as _mlf  # noqa: E402
 except ImportError as exc:
     logger.debug("Failed to import mlflow at module load: %s", exc)
-    _mlf = None  # type: ignore[assignment]
+    _mlf = None
 except Exception:
     logger.warning("Unexpected failure importing mlflow at module load", exc_info=True)
-    _mlf = None  # type: ignore[assignment]
+    _mlf = None
 
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via

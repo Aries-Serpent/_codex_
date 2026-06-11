@@ -26,10 +26,9 @@ on:
           - workflow-health-monitor
           - ci-testing-agent
           - test-alignment-fixer
-          - coverage-roadmap-agent
+          - unified-coverage-agent
           - security-alert-verification-agent
-          - documentation-quality-agent
-          - test-coverage-monitor
+          - unified-doc-agent
         default: 'workflow-health-monitor'
       chain_depth:
         description: 'Maximum chain depth'

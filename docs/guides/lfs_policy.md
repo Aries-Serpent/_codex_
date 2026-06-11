@@ -29,6 +29,12 @@ Then commit the updated `.gitattributes`. All future files matching the pattern 
 | Datasets | DVC-tracked, not in Git |
 | CI artifacts | GitHub Actions Artifacts (30-day retention) |
 
+## Current Repository Baseline
+
+- The repository does **not** force repo-wide Git LFS filters from `.gitattributes`; contributors opt in by adding explicit `git lfs track` patterns when needed.
+- Copilot and Codespaces startup paths default to `GIT_LFS_SKIP_SMUDGE=1` so ordinary sessions do not fetch large blobs during checkout.
+- `copilot-setup-steps.yml` only re-enables LFS on `workflow_dispatch` runs when `lfs_mode=targeted` or `lfs_mode=full` is explicitly requested.
+
 ## Guardrails
 
 - The `.dvcignore` file excludes common large-file patterns from DVC tracking.

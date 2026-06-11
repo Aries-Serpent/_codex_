@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, get_type_hints
 
@@ -35,8 +35,9 @@ def test_generate_agent_context_uses_runtime_timestamp(monkeypatch):
 
     class _FakeDateTime:
         @classmethod
-        def utcnow(cls):
-            return datetime(2030, 1, 2, 3, 4, 5)
+        def now(cls, tz=None):
+            assert tz is not None
+            return datetime(2030, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
 
     monkeypatch.setattr(module, "datetime", _FakeDateTime)
 

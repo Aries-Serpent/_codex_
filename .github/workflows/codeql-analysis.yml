@@ -30,7 +30,9 @@ jobs:
     timeout-minutes: 60
     # javascript/typescript: repo has no JS source; allow this matrix leg to fail without
     # blocking the overall workflow (python and go must still pass).
-    continue-on-error: ${{ matrix.language == 'javascript' }}
+    # Dependabot PRs: make CodeQL advisory-only so dependency-update PRs are not blocked
+    # when default Code Scanning setup is enabled on the repository.
+    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
 
     permissions:
       actions: read
@@ -64,6 +66,20 @@ jobs:
         uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           category: "/language:${{ matrix.language }}"
+          # FIX (issue #4835): upload: false (boolean) does NOT suppress SARIF upload
+          # in CodeQL action v4.35.4+. The string value 'never' must be used instead.
+          # Using 'false' caused "CodeQL analyses from advanced configurations cannot
+          # be processed when the default setup is enabled" → JOB_STATUS_CONFIGURATION_ERROR.
+          upload: 'never'
+          output: "codeql-sarif/${{ matrix.language }}"
+
+      - name: Upload CodeQL SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: codeql-sarif-${{ matrix.language }}
+          path: codeql-sarif/${{ matrix.language }}
+          if-no-files-found: warn
 
       - name: Cache health report
         if: always()

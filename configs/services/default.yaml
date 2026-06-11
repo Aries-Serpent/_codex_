@@ -38,4 +38,3 @@ transcription:
   diarization_threshold: 0.18
   backend: "mock"  # switch to "faster-whisper" after optional deps install
   model_size: "small"
-

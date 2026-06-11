@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-09T05:29:27Z",
+  "generated_at": "2026-06-11T17:55:09Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1324,6 +1324,11 @@
       "has_concurrency": true
     },
     {
+      "name": "dependabot-preflight",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "dependabot-sheriff",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1709,6 +1714,11 @@
       "has_concurrency": true
     },
     {
+      "name": "secrets-false-positive-healer",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "security-alert-notification",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2021,6 +2031,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COPILOT_MCP_TOOL_REFERENCE.md",
       "type": "enforcement"
     },
@@ -2226,5 +2240,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "739f76e1881bacee6930e9069e8ad32d6e040e2c2dda83f49a77e1457f42e7cc"
+  "integrity_sha256": "07b7f5f1e744da5106d841f962d034e6180d712b6d34a750ba7dbcc4ce998988"
 }

@@ -136,6 +136,11 @@ jobs:
               if any(key.startswith(p) for p in TRACKED_PREFIXES) and val:
                   current[key] = val
 
+          # Add mandatory CCA version-lock constants (CAD-Mandate Rule 2 / MSPV)
+          current["COPILOT_AGENT_CCA_VERSION_LOCK"] = "stable"
+          current["COPILOT_AGENT_DEDUPLICATION_ENABLED"] = "true"
+          current["COPILOT_AGENT_TURN_ISOLATION_ENABLED"] = "true"
+
           dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
           force_sync = os.environ.get("FORCE_SYNC", "false").lower() == "true"
 

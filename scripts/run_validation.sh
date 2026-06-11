@@ -221,7 +221,14 @@ else
 fi
 
 declare -a PYTEST_ARGS
-PYTEST_ARGS+=("--junitxml=$JUNIT_XML" "--maxfail=1")
+# Fast mode: stop quickly on first failure (saves CI minutes).
+# Full mode: allow up to 50 failures before aborting so one collection error
+# (e.g. a missing optional dependency) does not suppress the entire suite.
+if [[ "$MODE" == "fast" ]]; then
+  PYTEST_ARGS+=("--junitxml=$JUNIT_XML" "--maxfail=1")
+else
+  PYTEST_ARGS+=("--junitxml=$JUNIT_XML" "--maxfail=50")
+fi
 
 if [[ -n "$FILES" ]]; then
   IFS=', ' read -r -a FILE_ITEMS <<< "$FILES"
