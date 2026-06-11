@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from src.cognitive_brain.base import MemoryInterface
+from cognitive_brain.base import MemoryInterface
 
 
 class SQLiteMemory(MemoryInterface):
@@ -72,12 +72,13 @@ class SQLiteMemory(MemoryInterface):
 
             with closing(sqlite3.connect(self.db_path)) as conn:
                 conn.execute("""
-                    INSERT OR REPLACE INTO memory
-                    (key, value_json, created_at, updated_at, metadata_json)
-                    VALUES (?, ?,
-                        COALESCE((SELECT created_at FROM memory WHERE key = ?), ?),
-                        ?, ?)
-                """, (key, value_json, key, now, now, metadata_json))
+                    INSERT INTO memory (key, value_json, created_at, updated_at, metadata_json)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(key) DO UPDATE SET
+                        value_json = excluded.value_json,
+                        updated_at = excluded.updated_at,
+                        metadata_json = excluded.metadata_json
+                """, (key, value_json, now, now, metadata_json))
 
                 conn.execute("""
                     INSERT INTO memory_history (key, value_json, timestamp)

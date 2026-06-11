@@ -181,7 +181,7 @@ Prohibited Statements (blocked if found in PR body):
 # .github/workflows snippet — governance report upload
 - name: Upload Governance Report
   if: always()
-  uses: actions/upload-artifact@v4
+  uses: actions/upload-artifact@v5
   with:
     name: governance-report
     path: artifacts/governance-report.json

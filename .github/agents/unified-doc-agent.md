@@ -123,7 +123,7 @@ Produces `artifacts/doc-health-report.json`:
       --output artifacts/doc-health-report.json
 - name: Upload Doc Health Report
   if: always()
-  uses: actions/upload-artifact@v4
+  uses: actions/upload-artifact@v5
   with:
     name: doc-health-report
     path: artifacts/doc-health-report.json

@@ -17,7 +17,7 @@ from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-from src.cognitive_brain.base import (
+from cognitive_brain.base import (
     ActionResult,
     Decision,
     ObservationData,

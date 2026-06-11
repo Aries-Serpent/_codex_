@@ -1,7 +1,7 @@
 
 from agents.self_healing import SelfHealingEngine
 from agents.workflow_navigator import WorkflowNavigator
-from src.cognitive_brain.base import Planner
+from cognitive_brain.base import Planner
 
 
 def test_ooda_inheritance():

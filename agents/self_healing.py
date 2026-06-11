@@ -25,7 +25,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from src.cognitive_brain.base import (
+from cognitive_brain.base import (
     ActionResult,
     Decision,
     ObservationData,
@@ -628,7 +628,7 @@ class SelfHealingEngine(Planner):
 
         classified_issues = {}
         for issue in issues_data:
-            category = issue.get("type")
+            category = issue.get("issue_type") or issue.get("type")
             if category not in classified_issues:
                 classified_issues[category] = []
             classified_issues[category].append(issue)
