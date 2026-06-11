@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (PR #4838 workflow alert cleanup + security follow-up — 2026-06-11T15:12Z)
+- `.github/workflows/copilot-setup-steps.yml`: cleared the reported workflow lint annotations by normalizing YAML comments/line wrapping, replacing the opaque base64 env injector with an equivalent readable Python command, and preserving the guarded session preload structure required by repository tripwires.
+- `pyproject.toml`: added an explicit `litestar>=2.22.0,<3` floor so dependency resolution cannot fall back to versions affected by CVE-2026-48060 / GHSA-542p-wvx7-72m4, addressing the high-severity litestar alerts tracked in issue #4840.
+
 ### Fixed (CI cross-reference gate false positives — PR #4838 — 2026-06-11T13:14Z)
 - `scripts/ci/check_cross_references.py`: ignore numeric Markdown link targets such as `(1)`/`(2)` that come from SARIF-style placeholder references and are not repository file paths.
 - `tests/scripts/test_ci_top5.py`: added regression coverage to ensure numeric placeholder links are not flagged as broken internal file links.
