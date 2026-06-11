@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 60
 
     permissions:
-      contents: read
+      contents: write  # Required for heal-and-commit push-back (RP-009)
       pull-requests: write
       checks: write
 
@@ -34,8 +34,10 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          # Use branch ref (not SHA) so we can push back heal commits (RP-009)
+          ref: ${{ github.head_ref || github.event.pull_request.head.ref }}
           fetch-depth: 0
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
       - name: CacheManager health check
         continue-on-error: true

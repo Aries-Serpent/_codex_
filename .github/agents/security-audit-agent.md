@@ -186,7 +186,7 @@ werkzeug>=3.0.0,<4.0.0  # Fixed CVE-2024-12345
 - **Example Fix**:
 ```python
 # Before (Leaked secret)
-API_KEY = "sk-1234567890abcdef"
+API_KEY = "sk-1234567890abcdef"  # pragma: allowlist secret
 
 # After (Fixed)
 import os
