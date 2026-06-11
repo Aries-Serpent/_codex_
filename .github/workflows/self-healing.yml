@@ -1,6 +1,7 @@
 name: Self-Healing Pipeline
 on:
   workflow_dispatch:
+permissions: {}
 jobs:
   heal:
     runs-on: ubuntu-latest
