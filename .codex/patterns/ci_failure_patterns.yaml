@@ -2001,6 +2001,7 @@ name: "Markdown False-Positive Secrets"
 category: security_scanning
 priority: 2
 severity: warning
+tier: stable
 
 description: |
   Agent documentation files (.github/agents/*.md) contain example credential
@@ -2043,6 +2044,7 @@ name: "Validation Pipeline Cascade"
 category: test_infrastructure
 priority: 1
 severity: critical
+tier: stable
 
 description: |
   Systemic test environment failure causing validate.yml "Full Validation (Daily)"
@@ -2087,6 +2089,7 @@ name: "Auto-Fix Workflow Loop"
 category: workflow_configuration
 priority: 1
 severity: critical
+tier: stable
 
 description: |
   Auto-fix CI workflows (auto-fix-common-issues.yml, auto-fix-pr-check.yml)
