@@ -442,12 +442,7 @@ jobs:
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
         run: |  # pragma: allowlist secret
-          if [ -f .codex/agent_context.json ]; then
-            echo "Injecting repo variable context from .codex/agent_context.json"
-            python3 -c "import json, os; ctx = json.load(open('.codex/agent_context.json', encoding='utf-8')); [open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8').write(f'{k}={v}\n') for k, v in ctx.items() if not k.startswith('_') and v]; print('Injected variables into GITHUB_ENV')"
-          else
-            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
-          fi
+          python3 scripts/ci/inject_agent_context.py
 
       - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
         # Supplement agent_context.json injection with live vars.* values for the
