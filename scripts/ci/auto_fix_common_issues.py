@@ -3659,7 +3659,7 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 35),
+        choices=range(1, 36),
         metavar="N",
         help="Run only pattern N (1–35); see pattern list above"
     )

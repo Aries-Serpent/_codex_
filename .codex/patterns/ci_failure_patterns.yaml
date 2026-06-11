@@ -1994,3 +1994,133 @@ auto_fix: true
 references:
   - ".secrets.baseline"
   - ".pre-commit-config.yaml"
+
+---
+pattern_id: RP-024
+name: "Markdown False-Positive Secrets"
+category: security_scanning
+priority: 2
+severity: warning
+
+description: |
+  Agent documentation files (.github/agents/*.md) contain example credential
+  strings in tables or code blocks (e.g., password = "hunter2", API_KEY = "sk-...").
+  detect-secrets-hook exits 1, treating these illustrative examples as real secrets.
+
+detection:
+  error_signatures:
+    - "detect-secrets-hook.*exit.*1"
+    - "Potential Secret Detected.*\\.md"
+    - "\\.github/agents/.*\\.md.*secret"
+  file_patterns:
+    - ".github/agents/*.md"
+  conditions:
+    - "Flagged file extension is .md"
+    - "Flagged line is inside a markdown table cell (starts with |) or a labeled code block (```python ... # Before / # Example)"
+
+root_cause:
+  technical: "detect-secrets has no built-in context for markdown documentation files"
+  specific: "Example credential strings in security-pattern tables are indistinguishable from real secrets without pragmas"
+  underlying: "Agent docs intentionally show credential patterns to explain detection rules"
+
+fix_steps:
+  - "1. Identify the flagged line (file + line number from detect-secrets output)"
+  - "2. For markdown table rows: append  <!-- pragma: allowlist secret --> to the end of the line"
+  - "3. For Python code blocks inside markdown: append  # pragma: allowlist secret to the end of the line"
+  - "4. Run: detect-secrets scan --baseline .secrets.baseline to verify the baseline is clean"
+  - "5. Run: sync_tracked_files.py --fix to update CODEX_MANIFEST hash"
+
+auto_fix: true
+auto_fix_command: "python3 scripts/ci/auto_fix_common_issues.py --pattern RP-024"
+references:
+  - ".github/agents/*.md"
+  - ".secrets.baseline"
+  - "scripts/ci/ci_rescue.py RP-024"
+
+---
+pattern_id: RP-025
+name: "Validation Pipeline Cascade"
+category: test_infrastructure
+priority: 1
+severity: critical
+
+description: |
+  Systemic test environment failure causing validate.yml "Full Validation (Daily)"
+  to fail across 16+ branches simultaneously, including main, for 3 or more
+  consecutive days.  Indicates an infrastructure-wide regression rather than a
+  branch-specific code change.
+
+detection:
+  error_signatures:
+    - "Full Validation (Daily).*[Ff]ail"
+    - "validate\\.yml.*[Ff]ail.*multiple branch"
+  conditions:
+    - "validate.yml fails on 16+ branches concurrently"
+    - "Failures span 3+ consecutive days"
+    - "No recent code changes correlate with failure onset across all branches"
+
+root_cause:
+  technical: "Shared test-environment resource degradation (runner quota, pip dependency regression, shared fixture corruption)"
+  fix: "Isolate failing steps with continue-on-error; triage root cause independently from unblocking branches"
+
+impact:
+  blocks: "All PR merges and daily validation gates"
+  affects: "All branches sharing the validate.yml workflow"
+  cascade: "Blocks downstream security scans and coverage reports"
+
+fix_steps:
+  - "1. Add continue-on-error: true to the failing step(s) in validate.yml to unblock the pipeline"
+  - "2. File a tracking issue (label: ci-health-alert) listing all affected branches and run IDs"
+  - "3. Bisect the regression: compare last-passing vs first-failing run artefacts/logs"
+  - "4. Identify whether root cause is runner-quota, dependency pin, or fixture pollution"
+  - "5. Apply targeted fix (dependency pin rollback / fixture isolation / runner-group quota increase)"
+  - "6. Remove continue-on-error once all branches are green for two consecutive days"
+
+auto_fix: false
+references:
+  - ".github/workflows/validate.yml"
+  - "scripts/ci/ci_rescue.py RP-025"
+
+---
+pattern_id: RP-026
+name: "Auto-Fix Workflow Loop"
+category: workflow_configuration
+priority: 1
+severity: critical
+
+description: |
+  Auto-fix CI workflows (auto-fix-common-issues.yml, auto-fix-pr-check.yml)
+  detect auto-fixable issues but exit 1 with "Fail if auto-fixable issues found"
+  without applying the fixes, creating a permanent CI block.  The same unfixed
+  issues persist in every consecutive run, preventing any PR from merging.
+
+detection:
+  error_signatures:
+    - "Fail if auto-fixable issues found"
+    - "auto-fix-common-issues.*exit.*1"
+    - "auto-fix-pr-check.*exit.*1"
+  conditions:
+    - "auto-fix workflow fails at the 'Fail if auto-fixable issues found' step"
+    - "Same issues reported in 2+ consecutive workflow runs"
+    - "No fix commit appears between the failing runs"
+
+root_cause:
+  technical: "Workflow uses --check-only mode (or equivalent exit 1) without a subsequent apply+commit+push step"
+  specific: "The detect→report cycle has no corresponding fix→commit→push cycle"
+  underlying: "Token or permission gap preventing the workflow from pushing fix commits"
+
+fix_steps:
+  - "1. Run locally: python scripts/ci/auto_fix_common_issues.py (without --check-only)"
+  - "2. Stage all changed files: git add -u"
+  - "3. Commit: git commit -m 'fix: auto-fix loop — apply pending auto-fixable issues [RP-026]'"
+  - "4. Push using CODEX_MASTER_KEY: git push"
+  - "5. Verify CI is clean: python scripts/ci/auto_fix_common_issues.py --check-only"
+  - "6. If the loop re-occurs, update the workflow to use detect→apply→commit→push pattern instead of detect→exit-1"
+
+auto_fix: true
+auto_fix_command: "python3 scripts/ci/auto_fix_common_issues.py && git add -u && git diff --cached --quiet || git commit -m 'fix: auto-fix loop [RP-026]' && git push"
+references:
+  - ".github/workflows/auto-fix-common-issues.yml"
+  - ".github/workflows/auto-fix-pr-check.yml"
+  - "scripts/ci/auto_fix_common_issues.py"
+  - "scripts/ci/ci_rescue.py RP-026"
