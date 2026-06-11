@@ -267,7 +267,7 @@ jobs:
           github.event_name == 'pull_request_review'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             // Branches that are staging gates — never the HEAD of an agent session.
             const INTEGRATION_BRANCHES = ['0D_base_'];
@@ -397,7 +397,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
             const sha = (context.sha || 'unknown').slice(0, 7);
@@ -553,7 +553,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const sha    = (context.sha || 'unknown').slice(0, 7);
             const MARKER = 'COGNITIVE SESSION-TYPE DIRECTIVE';
@@ -1039,7 +1039,7 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
@@ -1138,7 +1138,7 @@ jobs:
           github.event_name == 'pull_request_review'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';
             const SUMMARY_MARKER  = '## 🧠 Session Summary';
@@ -1345,10 +1345,10 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';
             const RESOLVED_MARKER = 'BRANCH_REBASE_RESOLVED';
@@ -1720,7 +1720,7 @@ jobs:
         id: session_bootstrap
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
           GIT_AUTHOR_NAME: github-actions[bot]

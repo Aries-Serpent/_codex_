@@ -111,7 +111,7 @@ jobs:
           cache: "pip"
       - name: Cancel in-progress runs for unchecked workflows
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           HEAD_BRANCH: ${{ github.head_ref }}
@@ -128,7 +128,7 @@ jobs:
       # ── Owner-protection: restore flags reset by bots / remove label if owner unchecked ──
       - name: Protect owner-selected flags from bot resets
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           NEWLY_UNCHECKED: ${{ needs.detect-wec-changes.outputs.newly_unchecked }}

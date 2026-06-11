@@ -73,6 +73,7 @@ jobs:
 
       - name: Run quick tests
         id: tests
+        timeout-minutes: 5
         run: |
           # Run CI capability tests only — these are fast (~30s) and exercise
           # the key infrastructure without running the full 1500-test suite.
@@ -86,6 +87,30 @@ jobs:
           python -m ruff check src/ tests/ --output-format=github || true
         continue-on-error: true
 
+      - name: Session wrapup check
+        id: session_wrapup
+        run: |
+          # Verify accountability report and CHANGELOG were updated this session
+          # (REQ-4 / REQ-5 cognitive pre-flight gate — check-only, no writes).
+          python scripts/ci/session_wrapup_autofix.py \
+            --pr-number "${{ github.event.pull_request.number }}" \
+            --sha "${{ github.sha }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --check
+        continue-on-error: true
+
+      - name: Upload validation reports
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        with:
+          name: pre-merge-validation-reports-${{ github.run_id }}
+          path: |
+            /tmp/autofix_report.json
+            /tmp/pattern_pipeline_report.json
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Post validation summary
         if: always()
         continue-on-error: true
@@ -95,12 +120,16 @@ jobs:
             const checks = {
               autofix: '${{ steps.autofix.outcome }}',
               pattern_pipeline: '${{ steps.pattern_pipeline.outcome }}',
+              batch_scan_protocol: '${{ steps.batch_scan_protocol.outcome }}',
               mermaid_check: '${{ steps.mermaid_check.outcome }}',
               tests: '${{ steps.tests.outcome }}',
-              quality: '${{ steps.quality.outcome }}'
+              quality: '${{ steps.quality.outcome }}',
+              session_wrapup: '${{ steps.session_wrapup.outcome }}',
             };
 
-            const passed = Object.values(checks).every(v => v === 'success');
+            // Only these three block the merge; the rest are informational warnings.
+            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol'];
+            const passed = critical.every(k => checks[k] === 'success');
             const emoji = passed ? '✅' : '❌';
 
             const MARKER = '<!-- pre-merge-validation-summary -->';
@@ -110,9 +139,11 @@ jobs:
             |-------|--------|
             | Auto-Fix Issues | ${checks.autofix === 'success' ? '✅ Pass' : '❌ Fail'} |
             | CI Pattern Pipeline (strict) | ${checks.pattern_pipeline === 'success' ? '✅ Pass' : '❌ Fail'} |
+            | Agent Batch-Scan Protocol | ${checks.batch_scan_protocol === 'success' ? '✅ Pass' : '❌ Fail'} |
             | Mermaid Diagram Drift | ${checks.mermaid_check === 'success' ? '✅ Pass' : '⚠️ Drift detected'} |
             | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
+            | Session Wrapup (REQ-4/5) | ${checks.session_wrapup === 'success' ? '✅ Pass' : '⚠️ Warning'} |
 
             ${passed ? '✅ **All required checks passed! Ready to merge.**' : '❌ **Some checks failed. Please review and fix.**'}
 
@@ -145,7 +176,7 @@ jobs:
             }
 
       - name: Fail if critical checks failed
-        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success'
+        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success'
         run: |
           echo "::error::Pre-merge validation failed"
           if [ "${{ steps.autofix.outcome }}" != "success" ]; then
@@ -161,6 +192,10 @@ jobs:
               python3 -c "import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json')); print(json.dumps(r.get('summary',{}), indent=2))"
             fi
             echo "Fix with: python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py --strict"
+          fi
+          if [ "${{ steps.batch_scan_protocol.outcome }}" != "success" ]; then
+            echo "::error::Agent batch-scan protocol check failed — one or more agent files are missing the ⚡ Parallel Batch Scanning Protocol section"
+            echo "Fix with: python scripts/ci/inject_batch_scan_protocol.py"
           fi
           exit 1
 
