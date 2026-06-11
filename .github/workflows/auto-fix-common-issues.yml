@@ -185,7 +185,8 @@ jobs:
         if: |
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository &&
-          steps.check.outcome == 'failure'
+          steps.check.outcome == 'failure' &&
+          !startsWith(github.head_ref, 'copilot/')
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
@@ -221,7 +222,8 @@ jobs:
         if: |
           github.event_name == 'pull_request' &&
           steps.recheck.outcome == 'failure' &&
-          steps.pr_heal.outputs.healed != 'true'
+          steps.pr_heal.outputs.healed != 'true' &&
+          !startsWith(github.head_ref, 'copilot/')
         run: |
           echo "❌ Manual-review CI issues remain after auto-fix. See PR comment for remediation steps."
           echo "ℹ️  All auto-fixable issues have been applied. Only manual-review items remain."

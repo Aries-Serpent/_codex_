@@ -264,7 +264,8 @@ jobs:
         if: |
           steps.diagnostic.outcome == 'failure' &&
           steps.read_report.outputs.auto_fixable != '0' &&
-          github.event.pull_request.head.repo.full_name == github.repository
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          !startsWith(github.head_ref, 'copilot/')
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
@@ -291,7 +292,8 @@ jobs:
         if: |
           steps.diagnostic.outcome == 'failure' &&
           steps.read_report.outputs.auto_fixable != '0' &&
-          steps.pr_heal.outputs.healed != 'true'
+          steps.pr_heal.outputs.healed != 'true' &&
+          !startsWith(github.head_ref, 'copilot/')
         run: |
           echo "::error::Auto-fixable CI issues detected. See PR comment for fix instructions."
           echo "ℹ️  Manual review issues are informational only."
