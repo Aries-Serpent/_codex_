@@ -10,6 +10,10 @@ deprecated: true
 superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
 ---
 
+> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-doc-agent`](./unified-doc-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
 > ⚠️ **DEPRECATED** — Quality assessment capabilities have been merged into
 > **[Unified Documentation Agent v1.0](unified-doc-agent.md)** (M-02 merge).
 > Use `unified-doc-agent` for all documentation quality work.

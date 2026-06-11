@@ -5,7 +5,8 @@
 > **Hand-off agent:** `agent-orchestrator` (supporting: `skills-master-agent`, `cross-agent-knowledge-graph`, `agent-iq-scoring-gate`).
 > **ADA citation:** [../.codex/CODEBASE_AGENCY_POLICY.md](../.codex/CODEBASE_AGENCY_POLICY.md)
 > **Source of truth:** `.github/agents/AGENT_REGISTRY.yaml` (registry total 159; 145 active after Phase-5 consolidation; 14 archived).
-> **Applied:** 2026-05-25 — 9 merges + the previously-deprecated `workflow-health-monitor.deprecated.md` prompt file (no registry entry to archive) applied directly to `.github/agents/AGENT_REGISTRY.yaml`.
+> **Applied:** 2026-06-11 (Phase 6 sweep: 14 deprecations applied)
+> **Phase 6 complete:** 14 agents deprecated/archived. Active count: 145 → 131.
 
 This matrix captures the Keep / Merge-into / Archive decisions for each agent family identified in the implementation plan. The orchestrator must apply these to `AGENT_REGISTRY.yaml` and add a deprecation note in each archived agent's prompt file (the file itself remains for backward compatibility until the next sweep).
 

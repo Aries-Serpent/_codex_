@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4836)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4836 (SHA `6b6528ba`) at 2026-06-11T03:43Z [auto-generated]
+
 ### Fixed (CI — copilot-setup-steps.yml pinned checkout SHA — 2026-06-11T00:20Z)
 - Restored `actions/checkout` to canonical pinned SHA `93cb6efe18208431cddfb8368fd83d5badbf9bfd` (v5) in `copilot-setup-steps.yml` — Dependabot bump to v6.0.3 (`df4cb1c...`) caused `Pinned checkout SHA missing` regression in `validate_setup_steps_yaml.sh`.
 

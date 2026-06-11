@@ -8,6 +8,10 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
+> ⚠️ **DEPRECATED** — This agent has been merged into [`cache-management-agent`](./cache-management-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
 > ⚠️ **DEPRECATED** — Integration capabilities have been folded into
 > **[Cache Management Agent](cache-management-agent.md)** as a sub-capability.
 > Use `cache-management-agent` for all new invocations. Tracked under

@@ -4,6 +4,8 @@ description: Manage caching strategies across the 4-layer cache hierarchy to opt
 runner_compatibility:
   default: ubuntu-latest        # 2-core — 4-layer cache hierarchy management, build and runtime optimization
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+merged_agents:
+  - cache-manager-integration
 ---
 
 # Cache Management Agent
@@ -17,6 +19,7 @@ runner_compatibility:
 
 ## 🎯 Purpose
 
+The `cache-management-agent` is the canonical 4-layer cache orchestrator for this repository. It manages pip, node_modules, pre-commit, and build artefact caches across all GitHub Actions workflows to minimise CI wall-clock time and reduce redundant dependency installs. It absorbed the capabilities of `cache-manager-integration` in the Phase 6 consolidation sweep (2026-06-11).
 
 ## 🧠 Cognitive Brain Integration
 
@@ -309,6 +312,38 @@ key: ${{ runner.os }}-pip-cache
     python -m codex.ci.cache_manager health
     # Implement cleanup based on recommendations
 ```
+
+---
+
+## 🔗 Target Workflows
+*(Absorbed from `cache-manager-integration` — Phase 6 consolidation)*
+
+| Workflow | Cache Type | Adoption Status |
+|---|---|---|
+| `pr-checks.yml` | pip + pre-commit | ✅ Integrated |
+| `test-rag.yml` | pip | ⏳ Pending |
+| `code-quality-coverage-suite.yml` | pip + node_modules | ⏳ Pending |
+| `pages-mkdocs.yml` | pip | ⏳ Pending |
+| `rust_swarm_ci.yml` | cargo | ⏳ Pending |
+
+**Adoption rate:** Track via `scripts/ci/cache_adoption_report.py`
+Current: 1/42 workflows (2%) → Phase target: 5/42 (12%) → Goal: 100%
+
+---
+
+## ⛔ Constraints
+
+**ALWAYS:**
+- Scope cache keys with `${{ github.workflow }}` identifier prefix
+- Implement a restore-key fallback hierarchy (exact → prefix → OS)
+- Include the dependency file hash (e.g., `hashFiles('**/requirements*.txt')`) in the primary key
+- Validate cache hit/miss rates are reported as step output
+
+**NEVER:**
+- Use generic OS-only keys (`${{ runner.os }}`) without a dependency hash
+- Cache files that include secrets or credentials
+- Set `cache: pip` on setup-python without confirming pyproject.toml or requirements file is checked out
+- Remove an existing cache configuration without a replacement
 
 ---
 

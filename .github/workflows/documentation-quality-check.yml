@@ -5,7 +5,7 @@
 # branch, but the file was absent from main and has only 1 lifetime run.
 #
 # A dedicated documentation quality check is now handled by the agent-ecosystem
-# (documentation-quality-agent.md) and is covered within the unified CI suite.
+# (unified-doc-agent.md) and is covered within the unified CI suite.
 #
 # Creating this stub with no triggers prevents any future accidental execution
 # while preserving the workflow name in the Actions history for audit purposes.

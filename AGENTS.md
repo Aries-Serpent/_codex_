@@ -9,12 +9,12 @@ It provides essential orientation, operational guidelines, and navigation to all
 DO NOT MOVE this file - it is intentionally placed here as the first point of contact.
 -->
 
-> **Status:** ✅ UP-TO-DATE (2026-03-21 - S174 Consolidation)
+> **Status:** ✅ UP-TO-DATE (2026-06-11 - Phase 6 Consolidation)
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Root Organization:** Phase 2 Complete
 > **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
-> **Agents:** 145 active (S174→S190 Phase-5: 9 family merges + 1 archive applied to `.github/agents/AGENT_REGISTRY.yaml`; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
+> **Agents:** 131 active (Phase 6 sweep: 14 agents deprecated into unified entry points; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 >
@@ -490,9 +490,9 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 | **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
 | **CI Log Retrieval Agent** | Retrieve authenticated GitHub Actions logs and summarize failures | [.github/agents/ci-log-retrieval-agent.md](.github/agents/ci-log-retrieval-agent.md) | ✅ Active |
 | **CI Emergency Response Agent** | Emergency CI/CD pipeline fixes | [.github/agents/ci-emergency-response-agent.md](.github/agents/ci-emergency-response-agent.md) | ✅ Active |
-| **Coverage Roadmap Agent** | Drive coverage threshold roadmap execution and test development | [.github/agents/coverage-roadmap-agent.md](.github/agents/coverage-roadmap-agent.md) | ✅ Active |
+| **Coverage Roadmap Agent** | Drive coverage threshold roadmap execution and test development | [.github/agents/coverage-roadmap-agent.md](.github/agents/coverage-roadmap-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
 | **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
-| **Dependency Vulnerability Scanner** | Scan dependencies for security vulnerabilities | [.github/agents/dependency-vulnerability-scanner.agent.md](.github/agents/dependency-vulnerability-scanner.agent.md) | ✅ Active |
+| **Dependency Vulnerability Scanner** | Scan dependencies for security vulnerabilities | [.github/agents/dependency-vulnerability-scanner.agent.md](.github/agents/dependency-vulnerability-scanner.agent.md) | ⚠️ DEPRECATED → `unified-security-scanner` |
 | **Doc Freshness Checker** | Check documentation freshness and validate links | [.github/agents/doc-freshness-checker.agent.md](.github/agents/doc-freshness-checker.agent.md) | ✅ Active |
 | **Owner Approval Guard** | Enforce owner approval for autonomous operations | [.github/agents/owner-approval-guard.agent.md](.github/agents/owner-approval-guard.agent.md) | ✅ Active |
 | **PII Scrubber** | Scrub PII from content for GDPR/CCPA compliance | [.github/agents/pii-scrubber.agent.md](.github/agents/pii-scrubber.agent.md) | ✅ Active |
@@ -508,12 +508,12 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
 | **Test Alignment Fixer** | Fix test alignment issues after API changes | [.github/agents/test-alignment-fixer.agent.md](.github/agents/test-alignment-fixer.agent.md) | ✅ Active |
-| **Test Coverage Monitor** | Monitor test coverage and enforce thresholds | [.github/agents/test-coverage-monitor.agent.md](.github/agents/test-coverage-monitor.agent.md) | ✅ Active |
+| **Test Coverage Monitor** | Monitor test coverage and enforce thresholds | [.github/agents/test-coverage-monitor.agent.md](.github/agents/test-coverage-monitor.agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
 | **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) | ✅ Active |
 | **Integration Test Runner** | Run integration tests across services | [.github/agents/integration-test-runner.agent.md](.github/agents/integration-test-runner.agent.md) | ✅ Active |
 | **Autonomous Test Healer Agent** | Auto-fix test failures | [.github/agents/autonomous-test-healer-agent.md](.github/agents/autonomous-test-healer-agent.md) | ✅ Active |
-| **Coverage Gapfill Agent** | Target low-coverage modules and add tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ✅ Active |
-| **Coverage Maintenance Agent** | Maintain test coverage over time | [.github/agents/coverage-maintenance-agent.md](.github/agents/coverage-maintenance-agent.md) | ✅ Active |
+| **Coverage Gapfill Agent** | Target low-coverage modules and add tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
+| **Coverage Maintenance Agent** | Maintain test coverage over time | [.github/agents/coverage-maintenance-agent.md](.github/agents/coverage-maintenance-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
 | **Mutation Testing Agent** | Perform mutation testing | [.github/agents/mutation-testing-agent.md](.github/agents/mutation-testing-agent.md) | ✅ Active |
 | **Test Enhancement Agent** | Improve test quality | [.github/agents/test-enhancement-agent.md](.github/agents/test-enhancement-agent.md) | ✅ Active |
 | **Test Failure Analyzer Agent** | Analyze and diagnose test failures | [.github/agents/test-failure-analyzer-agent.md](.github/agents/test-failure-analyzer-agent.md) | ✅ Active |
@@ -523,7 +523,7 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 |-------|---------|----------|--------|
 | **Bridge Security Monitor** | Monitor IPC bridge security and detect unauthorized access | [.github/agents/bridge-security-monitor.agent.md](.github/agents/bridge-security-monitor.agent.md) | ✅ Active |
 | **Security Alert Verification Agent** | Verify GitHub security alerts and propose remediation | [.github/agents/security-alert-verification-agent.md](.github/agents/security-alert-verification-agent.md) | ✅ Active |
-| **Security Audit Agent** | Perform security audits | [.github/agents/security-audit-agent.md](.github/agents/security-audit-agent.md) | ✅ Active |
+| **Security Audit Agent** | Perform security audits | [.github/agents/security-audit-agent.md](.github/agents/security-audit-agent.md) | ⚠️ DEPRECATED → `unified-security-scanner` |
 | **Code Scanning Remediation Agent** | Fix code scanning issues | [.github/agents/code-scanning-remediation-agent.md](.github/agents/code-scanning-remediation-agent.md) | ✅ Active |
 | **CodeQL Alert Resolution Agent** | Resolve CodeQL alerts | [.github/agents/codeql-alert-resolution-agent.md](.github/agents/codeql-alert-resolution-agent.md) | ✅ Active |
 | **Performance Regression Detector** | Detect performance regressions | [.github/agents/performance-regression-detector.agent.md](.github/agents/performance-regression-detector.agent.md) | ✅ Active |
@@ -531,8 +531,8 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 #### Documentation (6 agents)
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
-| **Documentation Consolidator** | Intelligent documentation consolidation | [.github/agents/documentation-consolidator.md](.github/agents/documentation-consolidator.md) | ✅ Active |
-| **Documentation Quality Agent** | Automated documentation quality assessment | [.github/agents/documentation-quality-agent.md](.github/agents/documentation-quality-agent.md) | ✅ Active |
+| **Documentation Consolidator** | Intelligent documentation consolidation | [.github/agents/documentation-consolidator.md](.github/agents/documentation-consolidator.md) | ⚠️ DEPRECATED → `unified-doc-agent` |
+| **Documentation Quality Agent** | Automated documentation quality assessment | [.github/agents/documentation-quality-agent.md](.github/agents/documentation-quality-agent.md) | ⚠️ DEPRECATED → `unified-doc-agent` |
 | **Link Validator Agent** | Cross-reference and link validation | [.github/agents/link-validator-agent.md](.github/agents/link-validator-agent.md) | ✅ Active |
 | **Semantic Search** | Semantic search over codebase and docs | [.github/agents/semantic-search.agent.md](.github/agents/semantic-search.agent.md) | ✅ Active |
 | **Claim Verification Agent** | Verify claims in commit messages and docs | [.github/agents/claim-verification-agent.md](.github/agents/claim-verification-agent.md) | ✅ Active |
