@@ -38,7 +38,7 @@ Rule 3: CTEP-Aligned Plan Structure (CAPS)
 ## Quick Task → Agent Lookup
 
 ```
-CI pipeline failing              → ci-testing-agent → ci-failure-resolution-agent
+CI pipeline failing              → ci-testing-agent → ci-auto-healer-agent
 CI import error                  → ci-importerror-agent
 CI emergency (blocking PR)       → ci-emergency-response-agent
 CI workflow YAML broken          → workflow-ci-fixer
@@ -48,12 +48,12 @@ Flaky/intermittent test          → fragile-test-guardian
 Test assertions outdated         → test-alignment-fixer-enhanced
 New test cases needed            → test-enhancement-agent
 CodeQL security alert            → codeql-alert-resolution-agent
-Secret detected in code          → secret-detection-agent
-Dependency CVE found             → dependency-vulnerability-scanner
-Full security audit              → security-audit-agent
+Secret detected in code          → unified-security-scanner
+Dependency CVE found             → unified-security-scanner
+Full security audit              → unified-security-scanner
 Doc link broken                  → link-validator-agent
 Stale documentation              → doc-freshness-checker
-Duplicate documentation          → documentation-consolidator
+Duplicate documentation          → unified-doc-agent
 Post-merge doc drift             → post-merge-doc-alignment-agent
 Stale repository files           → repository-hygiene-agent
 Dependency version conflict      → dependency-conflict-agent
@@ -98,9 +98,9 @@ Agent capability routing         → orchestrator-agent
 |-------|-----------|
 | Orchestration | `orchestrator-agent`, `skills-master-agent`, `cognitive-ooda-loop-agent` |
 | CI/CD & Build | `ci-testing-agent`, `ci-auto-healer-agent`, `artifact-monitor-agent`, `workflow-ci-fixer` |
-| Security | `unified-security-scanner`, `codeql-alert-resolution-agent`, `secret-detection-agent` |
+| Security | `unified-security-scanner`, `codeql-alert-resolution-agent` |
 | Testing | `unified-coverage-agent`, `autonomous-test-healer-agent`, `fragile-test-guardian` |
-| Documentation | `unified-doc-agent`, `documentation-consolidator`, `link-validator-agent` |
+| Documentation | `unified-doc-agent`, `link-validator-agent` |
 | Repository Mgmt | `repository-hygiene-agent`, `root-organizer-agent`, `reference-updater-agent` |
 | Session / Cognitive | `cognitive-brain-session-injector`, `session-analysis-agent`, `memory-sync-agent` |
 | Governance | `unified-governance-gate`, `owner-approval-guard`, `policy-coach-agent` |

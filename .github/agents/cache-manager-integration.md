@@ -1,9 +1,3 @@
-> ⚠️ **DEPRECATED** — This agent has been merged into [`cache-management-agent`](./cache-management-agent.md).
-> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
-> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
-
----
-
 ---
 name: Cache Manager Integration Agent
 description: Integrate and coordinate cache management operations across repository systems
@@ -13,6 +7,10 @@ runner_compatibility:
   default: ubuntu-latest        # 2-core — cache management operations coordination across repo systems
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
+
+> ⚠️ **DEPRECATED** — This agent has been merged into [`cache-management-agent`](./cache-management-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
 
 > ⚠️ **DEPRECATED** — Integration capabilities have been folded into
 > **[Cache Management Agent](cache-management-agent.md)** as a sub-capability.

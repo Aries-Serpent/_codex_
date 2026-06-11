@@ -1422,13 +1422,13 @@ policy violation and must be fixed immediately.
 
 **Version:** 1.0.0 — Effective 2026-06-11
 **Canonical Reference:** `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`
-**CI Enforcement:** `deferral-language-gate.yml` covers agent-bypass violations
+**CI Enforcement:** `deferral-language-gate.yml` covers deferral-language violations
 
 ### Overview
 
 This mandate codifies the **Copilot Hardened Planning Protocol (CHPP)** as a binding policy section. Its purpose is to guarantee that all Copilot agent planning sessions **always leverage and maintain Custom Agents** rather than performing ad-hoc manual operations where specialized agents already exist.
 
-The repository maintains **153+ active Custom Agents** spanning eight architectural layers (see `AGENT_REGISTRY.yaml`). These agents represent the accumulated, hardened, and tested operational knowledge of the codebase. Bypassing them for covered task categories is a policy violation.
+The repository maintains **131 active Custom Agents** spanning eight architectural layers (see `AGENT_REGISTRY.yaml`). These agents represent the accumulated, hardened, and tested operational knowledge of the codebase. Bypassing them for covered task categories is a policy violation.
 
 ---
 
@@ -1449,12 +1449,12 @@ The repository maintains **153+ active Custom Agents** spanning eight architectu
 |---------------|--------------|------------|
 | Fix test coverage | `pytest --cov` + manual test writing | `unified-coverage-agent` |
 | Fix CI import error | Manual grep + edit | `ci-importerror-agent` |
-| Detect secrets | `grep -r "secret"` | `secret-detection-agent` |
+| Detect secrets | `grep -r "secret"` | `unified-security-scanner` |
 | Validate doc links | Manual link checking | `link-validator-agent` |
 | Resolve CodeQL alert | Direct code edit without agent | `codeql-alert-resolution-agent` |
 | Fix workflow YAML | Direct YAML edit only | `workflow-ci-fixer` |
 | Clean stale repo files | `find . -delete` | `repository-hygiene-agent` |
-| Dependency CVE scan | `pip-audit` manually | `dependency-vulnerability-scanner` |
+| Dependency CVE scan | `pip-audit` manually | `unified-security-scanner` |
 
 ---
 
@@ -1524,7 +1524,7 @@ All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.
 
 ### Enforcement
 
-- **deferral-language-gate.yml**: The existing deferral gate CI workflow is extended to catch agent-bypass language (e.g., "I'll just run pytest manually").
+- **deferral-language-gate.yml**: The existing deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals) and PR comments; it does not detect agent-bypass statements.
 - **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one Custom Agent used per session.
 - **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked.
 

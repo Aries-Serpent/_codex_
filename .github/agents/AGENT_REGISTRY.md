@@ -1,8 +1,8 @@
 # 🤖 Agent Registry
 
 **Version**: 1.4.0
-**Last Updated**: 2026-01-22T07:21:00Z
-**Total Agents**: 35+ (21+ active; 14 deprecated per Phase 5 S174 + Phase 6 sweep)
+**Last Updated**: 2026-06-11T04:00:00Z
+**Total Agents**: 131 active (159 total; 28 archived — 14 newly archived per Phase 6 sweep)
 **Standardized**: 7 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator, artifact-monitor-agent)
 
 > ⚠️ **Consolidation notice (Phase 5 S174 + Phase 6 sweep):** Agents marked `DEPRECATED` below have been consolidated into unified entry points. See [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for full details.

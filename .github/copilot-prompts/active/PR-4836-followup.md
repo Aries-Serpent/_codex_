@@ -17,7 +17,8 @@
 - [`1e1dab74`] docs(accountability): record CHPP Phase 6 consolidation in accountability report (copilot-swe-agent[bot], 2026-06-11)
 
 ### Files Modified
-No files modified
+- `CODEX_MANIFEST.json` (auto-refreshed by github-actions[bot])
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (CHPP Phase 6 session entry added)
 
 ---
 

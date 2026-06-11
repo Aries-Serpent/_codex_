@@ -3,7 +3,7 @@
 **Version**: 1.0.0
 **Last Updated**: 2026-06-11
 **Repository**: Aries-Serpent/_codex_
-**Total Agents**: 131 active (153 pre-Phase-6; 14 deprecated per Phase 5 S174 + Phase 6 sweep; see `agents/AGENT_CONSOLIDATION_MATRIX.md`)
+**Total Agents**: 131 active (145 pre-Phase-6; 14 deprecated per Phase 5 S174 + Phase 6 sweep; see `agents/AGENT_CONSOLIDATION_MATRIX.md`)
 
 ---
 
@@ -97,8 +97,7 @@ PR push event
 ### Pattern 4: Documentation Freshness
 ```
 doc-freshness-checker → link-validator-agent
-  → documentation-quality-agent
-  → documentation-consolidator (if duplicates found)
+  → unified-doc-agent (if duplicates found)
 ```
 
 ---

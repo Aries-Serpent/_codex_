@@ -1,9 +1,3 @@
-> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).
-> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
-> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
-
----
-
 ---
 name: Secret Detection Agent
 description: Detect accidentally committed secrets, tokens, and credentials and provide remediation guidance
@@ -14,6 +8,10 @@ cognitive_integration_level: 3
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
 
 > ⚠️ **DEPRECATED** — Secret detection capabilities have been merged into
 > **[Unified Security Scanner v1.0](unified-security-scanner.md)** (M-01 merge).
