@@ -177,6 +177,17 @@ _For Copilot / AI-assisted PRs:_
 
 ---
 
+## 🤖 Agents Used
+
+> **For Copilot Cloud Agent:** List every Custom Agent (from `AGENT_REGISTRY.yaml`) invoked during this session.
+> Check the box using `- [x] \`agent_type\`` format to indicate usage.
+> Required by CAD-Mandate (Rule 3).
+
+- [ ] `agent-type-here`
+- [ ] `another-agent-here`
+
+---
+
 ## 🔄 Workflow Execution Checklist
 
 > **For Copilot Cloud Agent:** Check ONLY the workflows needed this session. Unchecked
@@ -584,6 +595,17 @@ For Copilot/AI-assisted PRs:
   - When disabled: sessions are queued and executed sequentially
   - **Caution:** Multiple sessions may cause merge conflicts on shared files
   - See: [`docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md`](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md)
+
+---
+
+## 🤖 Agents Used
+
+> **For Copilot Cloud Agent:** List every Custom Agent (from `AGENT_REGISTRY.yaml`) invoked during this session.
+> Check the box using `- [x] \`agent_type\`` format to indicate usage.
+> Required by CAD-Mandate (Rule 3).
+
+- [ ] `agent-type-here`
+- [ ] `another-agent-here`
 
 ---
 
