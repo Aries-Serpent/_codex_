@@ -42,9 +42,9 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 
 | ID | Pattern | Example | Confidence |
 |----|---------|---------|------------|
-| P-01 | API key assignment | `api_key = "sk-..."` | 0.99 |
+| P-01 | API key assignment | `api_key = "sk-..."` | 0.99 | <!-- pragma: allowlist secret -->
 | P-02 | Bearer token | `Authorization: Bearer <b64>` | 0.99 |
-| P-03 | Password literal | `password = "hunter2"` | 0.95 |
+| P-03 | Password literal | `password = "hunter2"` | 0.95 | <!-- pragma: allowlist secret -->
 | P-04 | AWS key ID | `AKIAIOSFODNN7EXAMPLE` | 0.99 | <!-- pragma: allowlist secret -->
 | P-05 | GitHub PAT | `ghp_...` prefix | 0.99 |
 | P-06 | OpenAI key | `sk-...` prefix | 0.99 |

@@ -390,6 +390,7 @@ jobs:
           echo "── §0.2 CI failure issue check complete ──"
 
       - name: "🔍 Validate repo JSON files"
+        continue-on-error: true   # Phase 3 hardening: invalid doc JSON should warn, not block agent startup
         run: |
           echo "── Validating JSON files in .codex/ and docs/ ──"
           FAIL=0
@@ -456,6 +457,7 @@ jobs:
           echo "── Cascade-control var injection complete ──"
 
       - name: "🛡️ Install safe-git-show guard on PATH"
+        continue-on-error: true   # Phase 3 hardening: missing utility should warn, not block agent startup
         run: |
           set -euo pipefail
           if [ ! -f scripts/ci/safe_git_show.sh ]; then
@@ -672,6 +674,7 @@ jobs:
       # Phase 3: System Dependencies
       # ============================================================================
       - name: "📚 Install System Dependencies"
+        timeout-minutes: 15   # Phase 3 hardening: cap apt-get install to avoid runaway hangs
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -687,13 +690,14 @@ jobs:
             sudo apt-get install -y \
               libblas-dev \
               liblapack-dev \
-              gfortran
+              gfortran || true   # Phase 3 hardening: ML-specific packages are optional
           fi
 
       # ============================================================================
       # Phase 4: Python Dependencies (Environment-Specific)
       # ============================================================================
       - name: "🔧 Upgrade pip and install build tools"
+        timeout-minutes: 10   # Phase 3 hardening: cap pip/venv bootstrap to avoid runaway hangs
         run: |
           # Create .venv_ci if it wasn't restored from cache, or if the
           # restored venv has a broken Python binary (cross-patch-version
@@ -717,6 +721,7 @@ jobs:
 
       - name: "📦 Install Python Dependencies (Standard)"
         if: steps.detect_env.outputs.environment_type == 'standard'
+        timeout-minutes: 20   # Phase 3 hardening: cap pip install to avoid runaway hangs
         env:
           VENV_CACHE_HIT: ${{ steps.cache-venv.outputs.cache-hit }}
         run: |
@@ -736,6 +741,8 @@ jobs:
 
       - name: "🤖 Install Python Dependencies (ML-Heavy)"
         if: steps.detect_env.outputs.environment_type == 'ml-heavy'
+        continue-on-error: true   # Phase 3 hardening: PyTorch failure must not block agent startup
+        timeout-minutes: 30       # Phase 3 hardening: PyTorch CPU install can take 10-20 min
         run: |
           # Force CPU-only PyTorch for faster installs
           pip install --cache-dir ~/.cache/pip \
@@ -748,6 +755,7 @@ jobs:
 
       - name: "🔒 Install Python Dependencies (Security-Scan)"
         if: steps.detect_env.outputs.environment_type == 'security-scan'
+        timeout-minutes: 20   # Phase 3 hardening: cap pip install to avoid runaway hangs
         run: |
           pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
           # Install security scanning tools
@@ -756,6 +764,7 @@ jobs:
 
       - name: "📝 Install Python Dependencies (Documentation)"
         if: steps.detect_env.outputs.environment_type == 'documentation'
+        timeout-minutes: 20   # Phase 3 hardening: cap pip install to avoid runaway hangs
         run: |
           pip install --cache-dir ~/.cache/pip -e ".[dev,docs]" --quiet
           # Install documentation tools
@@ -767,6 +776,8 @@ jobs:
       # ============================================================================
       - name: "🦀 Build Rust Components"
         if: hashFiles('Cargo.toml') != ''
+        continue-on-error: true   # Phase 3 hardening: Rust build failure must not block agent startup
+        timeout-minutes: 30       # Phase 3 hardening: release builds can be slow; cap to prevent job stall
         run: |
           cargo build --release
           echo "RUST_BACKTRACE=1" >> "$GITHUB_ENV"
@@ -858,6 +869,7 @@ jobs:
 
       - name: "⚙️ Load Custom Agent Configuration"
         if: hashFiles('.codex/agent_environment_config.yaml') != ''
+        continue-on-error: true   # Phase 3 hardening: optional file loading should not block agent startup
         run: |
           if [ -f .codex/agent_environment_config.yaml ]; then
             echo "✅ Loading custom agent configuration..."
@@ -974,6 +986,7 @@ jobs:
           fi
 
       - name: "🤖 Initialize Cognitive Brain Context"
+        continue-on-error: true   # Phase 3 hardening: optional init (ls|head SIGPIPE) must not block agent startup
         run: |
           if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then
             echo "✅ Loading specialized agents from registry..."
@@ -1085,9 +1098,9 @@ jobs:
 # ============================================================================
 # Workflow Metadata
 # ============================================================================
-# Version: 1.1.0
+# Version: 1.2.0
 # Created: 2026-01-28
-# Updated: 2026-01-30
+# Updated: Phase 3 hardening — 12 resilience fixes (continue-on-error, timeout-minutes, || true guards)
 # Baseline stability maintained:
 # - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
 # - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
