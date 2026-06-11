@@ -26,7 +26,7 @@ superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
 ## Activation
 
 ```
-@copilot Use the Secret Detection Agent to scan for secrets in <path>
+@copilot Use the Secret Detection Agent to scan for secrets in <path>  # pragma: allowlist secret
 ```
 
 ## Architecture
@@ -43,11 +43,11 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 | ID | Pattern | Example | Confidence |
 |----|---------|---------|------------|
 | P-01 | API key assignment | `api_key = "sk-..."` | 0.99 | <!-- pragma: allowlist secret -->
-| P-02 | Bearer token | `Authorization: Bearer <b64>` | 0.99 |
+| P-02 | Bearer token | `Authorization: Bearer <b64>` | 0.99 | <!-- pragma: allowlist secret -->
 | P-03 | Password literal | `password = "hunter2"` | 0.95 | <!-- pragma: allowlist secret -->
 | P-04 | AWS key ID | `AKIAIOSFODNN7EXAMPLE` | 0.99 | <!-- pragma: allowlist secret -->
-| P-05 | GitHub PAT | `ghp_...` prefix | 0.99 |
-| P-06 | OpenAI key | `sk-...` prefix | 0.99 |
+| P-05 | GitHub PAT | `ghp_...` prefix | 0.99 | <!-- pragma: allowlist secret -->
+| P-06 | OpenAI key | `sk-...` prefix | 0.99 | <!-- pragma: allowlist secret -->
 | P-07 | Private key PEM | `-----BEGIN PRIVATE KEY-----` | 1.00 | <!-- pragma: allowlist secret -->
 | P-08 | Connection string | `mongodb+srv://user:pass@...` | 0.98 | <!-- pragma: allowlist secret -->
 
@@ -55,40 +55,40 @@ Phase 1: Pattern Library     →    Phase 2: Entropy Scan    →    Phase 3: Rep
 
 | ID | Pattern | Example | Notes |
 |----|---------|---------|-------|
-| P-09 | Split assignment | `key = "sk-" + suffix` | Concat obfuscation |
-| P-10 | f-string embed | `url = f"https://{secret}@host"` | f-string injection |
-| P-11 | Env-var fallback | `os.environ.get("SECRET", "literal")` | Hardcoded fallback |
-| P-12 | Base64-encoded | `b64decode("c2s...")` → sk- | Base64 obfuscation |
-| P-13 | Dict literal | `cfg = {"api_key": "sk-..."}` | Dict value |
-| P-14 | List literal | `keys = ["sk-abc", "sk-def"]` | List elements |
-| P-15 | Multiline concat | `token = ("sk-" "abc" "def")` | Implicit concat |
-| P-16 | Assignment expr | `(token := "sk-...")` | Walrus |
+| P-09 | Split assignment | `key = "sk-" + suffix` | Concat obfuscation | <!-- pragma: allowlist secret -->
+| P-10 | f-string embed | `url = f"https://{secret}@host"` | f-string injection | <!-- pragma: allowlist secret -->
+| P-11 | Env-var fallback | `os.environ.get("SECRET", "literal")` | Hardcoded fallback | <!-- pragma: allowlist secret -->
+| P-12 | Base64-encoded | `b64decode("c2s...")` → sk- | Base64 obfuscation | <!-- pragma: allowlist secret -->
+| P-13 | Dict literal | `cfg = {"api_key": "sk-..."}` | Dict value | <!-- pragma: allowlist secret -->
+| P-14 | List literal | `keys = ["sk-abc", "sk-def"]` | List elements | <!-- pragma: allowlist secret -->
+| P-15 | Multiline concat | `token = ("sk-" "abc" "def")` | Implicit concat | <!-- pragma: allowlist secret -->
+| P-16 | Assignment expr | `(token := "sk-...")` | Walrus | <!-- pragma: allowlist secret -->
 
 ### Tier 3: Context-Aware Entropy Patterns (NEW in E-09)
 
 | ID | Pattern | Entropy Threshold | Notes |
 |----|---------|-------------------|-------|
-| P-17 | High-entropy string > 32 chars | H > 4.0 bits/char | General secret |
-| P-18 | JWT pattern | `eyJ...` prefix | JSON Web Token |
+| P-17 | High-entropy string > 32 chars | H > 4.0 bits/char | General secret | <!-- pragma: allowlist secret -->
+| P-18 | JWT pattern | `eyJ...` prefix | JSON Web Token | <!-- pragma: allowlist secret -->
 | P-19 | Hex 32+ chars | `[0-9a-f]{32,}` | MD5/API key |
-| P-20 | UUID secret context | UUID in password/secret context | Credential UUID |
+| P-20 | UUID secret context | UUID in password/secret context | Credential UUID | <!-- pragma: allowlist secret -->
 | P-21 | DSN pattern | `postgres://user:pass@host/db` | DB connection | <!-- pragma: allowlist secret -->
-| P-22 | Stripe key | `sk_live_...` / `pk_live_...` | Stripe API |
-| P-23 | Slack token | `xoxb-...` / `xoxp-...` | Slack API |
+| P-22 | Stripe key | `sk_live_...` / `pk_live_...` | Stripe API | <!-- pragma: allowlist secret -->
+| P-23 | Slack token | `xoxb-...` / `xoxp-...` | Slack API | <!-- pragma: allowlist secret -->
 | P-24 | Twilio SID | `AC[a-z0-9]{32}` | Twilio |
 
 ### Tier 4: Infrastructure Patterns (NEW in E-09)
 
 | ID | Pattern | Example | Notes |
 |----|---------|---------|-------|
-| P-25 | K8s secret manifest | `stringData:` in YAML | K8s secret |
-| P-26 | Docker ENV literal | `ENV SECRET_KEY=...` | Dockerfile |
-| P-27 | TF var literal | `variable "secret" { default = ... }` | Terraform |
-| P-28 | .env file | `SECRET=...` in .env | dotenv |
-| P-29 | YAML secret | `secret_key: "sk-..."` | YAML config |
-| P-30 | JSON token | `"token": "sk-..."` | JSON config |
-| P-31 | Config.ini | `[credentials]\napi_key = ...` | INI file |
-| P-32 | Comment secret | `# password: hunter2` | Comment bleed |
+| P-25 | K8s secret manifest | `stringData:` in YAML | K8s secret | <!-- pragma: allowlist secret -->
+| P-26 | Docker ENV literal | `ENV SECRET_KEY=...` | Dockerfile | <!-- pragma: allowlist secret -->
+| P-27 | TF var literal | `variable "secret" { default = ... }` | Terraform | <!-- pragma: allowlist secret -->
+| P-28 | .env file | `SECRET=...` in .env | dotenv | <!-- pragma: allowlist secret -->
+| P-29 | YAML secret | `secret_key: "sk-..."` | YAML config | <!-- pragma: allowlist secret -->
+| P-30 | JSON token | `"token": "sk-..."` | JSON config | <!-- pragma: allowlist secret -->
+| P-31 | Config.ini | `[credentials]\napi_key = ...` | INI file | <!-- pragma: allowlist secret -->
+| P-32 | Comment secret | `# password: hunter2` | Comment bleed | <!-- pragma: allowlist secret -->
 
 ## Entropy Calculation
 
@@ -107,7 +107,7 @@ def shannon_entropy(text: str) -> float:
         for c in counts.values()
     )
 
-ENTROPY_THRESHOLD = 4.0  # bits/char — flags likely secrets
+ENTROPY_THRESHOLD = 4.0  # bits/char — flags likely secrets  # pragma: allowlist secret
 MIN_LENGTH = 16          # chars — below this, skip entropy check
 ```
 
@@ -117,7 +117,7 @@ MIN_LENGTH = 16          # chars — below this, skip entropy check
 |----------------|-----------|
 | `# nosec` comment | Explicit allowlist |
 | `test_*` fixtures | Test data |
-| Placeholder values (`your-key-here`, `<TOKEN>`, `REPLACE_ME`) | Template |
+| Placeholder values (`your-key-here`, `<TOKEN>`, `REPLACE_ME`) | Template | <!-- pragma: allowlist secret -->
 | SHA256/MD5 of committed files | Hash values |
 | UUID v4 in non-credential context | Random IDs |
 

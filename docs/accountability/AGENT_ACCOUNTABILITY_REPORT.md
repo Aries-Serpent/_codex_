@@ -1440,12 +1440,12 @@ Both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` upd
   |--------|----------|-------|
   | core.py | ~11% | 95.96% |
   | decorators.py | 0% | 92.31% |
-  | token_rotation.py | 0% | 91.43% |
+  | token_rotation.py | 0% | 91.43% | <!-- pragma: allowlist secret -->
   | audit_logger.py | 0% | 95.24% |
   | github_provider.py | 0% | 97.98% |
   | scope_validator.py | 0% | 95.56% |
   | tls_config.py | 0% | 88.24% |
-  | secrets.py | 0% | 89.29% |
+  | secrets.py | 0% | 89.29% | <!-- pragma: allowlist secret -->
   | provider_factory.py | 0% | 78.57% |
   | aws_provider.py | 0% | 70.14% |
   | **TOTAL** | **~5%** | **90.72%** |
@@ -8113,8 +8113,8 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 | `.github/workflows/trigger-on-approval.yml` | `head.ref` + `review.user.login` → `env:` block |
 | `.github/workflows/workflow-execution-gate.yml` | `dispatch-checked` timeout 10→15 min, documented post-dispatch approval |
 | `scripts/ci/wec_enforcer.py` | Added `_approve_run()`, `_find_and_approve_dispatched_run()`, post-dispatch approval in `cmd_dispatch_checked()` |
-| `docs/roadmap/PR4346_whats_next.md` | v3 — 9 Mermaid diagrams, full delivery table, security fix diagrams, token hierarchy |
-| `docs/sessions/PR4346_session_diagram.md` | v3 — 9 diagrams: flowchart, sequence, architecture, token hierarchy, pies, radar, state machine, scorecard |
+| `docs/roadmap/PR4346_whats_next.md` | v3 — 9 Mermaid diagrams, full delivery table, security fix diagrams, token hierarchy | <!-- pragma: allowlist secret -->
+| `docs/sessions/PR4346_session_diagram.md` | v3 — 9 diagrams: flowchart, sequence, architecture, token hierarchy, pies, radar, state machine, scorecard | <!-- pragma: allowlist secret -->
 | `CHANGELOG.md` | S859-v3 entry |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This entry |
 
@@ -10703,8 +10703,8 @@ After PR #4107 merged, branch-rebase-gate ran `chore: auto-merge ... [skip ci]` 
 | PR Auto-Fix Check | 7 | Same — stale on `57f0d05d`. |
 | Pre-Merge Validation | 12 | Same — stale on `57f0d05d` and earlier branches. |
 | PR Comment Review Gate (main) | 20 | Informational gate firing on each main push — `BLOCKING=4` reflects unaddressed PR comments somewhere in the comment graph; not a CI error. |
-| Secrets Baseline Enforcer | 5 | On `copilot/research-security-vs-access` (separate branch — addressed by that branch's owner). |
-| Agent Token Delegation | 3 | On `copilot/fix-mlops-maturity-claims` (separate branch). Cognitive Pre-flight CHANGELOG check — fixable in that branch. |
+| Secrets Baseline Enforcer | 5 | On `copilot/research-security-vs-access` (separate branch — addressed by that branch's owner). | <!-- pragma: allowlist secret -->
+| Agent Token Delegation | 3 | On `copilot/fix-mlops-maturity-claims` (separate branch). Cognitive Pre-flight CHANGELOG check — fixable in that branch. | <!-- pragma: allowlist secret -->
 | Automatic Dependency Submission | 4 | On separate branches. |
 | Resilient Validation Suite | 1 | On `copilot/create-implementation-plan-and-test-cases` (separate branch). Stale. |
 | Dependency Graph | 1 | Transient Dependabot error on main. |
@@ -10784,8 +10784,8 @@ Test-suite hardening (`tests/ci/test_session_wrapup_autofix.py`): 48 tests inclu
 | A: Merge conflicts in `AGENT_ACCOUNTABILITY_REPORT.md` | Pattern 25 mutated `**Last updated:**` in old session entries; nightly main sweep ran same mutation → same line, different run IDs | **FIXED** — mutation removed from `auto_fix_common_issues.py` |
 | B: No union merge strategy | Git 3-way merge on append-only file creates conflict markers on every PR | **FIXED** — `merge=union` added to `.gitattributes` |
 | C: Dependency Graph `No uv.lock` | Transient Dependabot error — `uv.lock` exists at root | Transient — no code change needed |
-| D: Secrets Baseline Enforcer | Unstaged `.secrets.baseline` on separate branch `copilot/research-security-vs-access` | Separate branch, not this PR |
-| E: Validation Pipeline on main (Codecov) | `Token required because branch is protected` — external service config | External service config |
+| D: Secrets Baseline Enforcer | Unstaged `.secrets.baseline` on separate branch `copilot/research-security-vs-access` | Separate branch, not this PR | <!-- pragma: allowlist secret -->
+| E: Validation Pipeline on main (Codecov) | `Token required because branch is protected` — external service config | External service config | <!-- pragma: allowlist secret -->
 | F: Auto-Fix / Pre-Merge Validation | All on old commit `57f0d05d` of our branch | Stale — resolved by `7a7adf6` |
 | G: PR Comment Review Gate on main | Unaddressed comment on main at time of nightly sweep | Self-clearing |
 
@@ -12190,8 +12190,8 @@ Complete the autonomous CI fix system for PR #4063: resolve the Secrets Baseline
 ### Changes This Session (S316b)
 | Fix | File | Status |
 |-----|------|--------|
-| Update `hashed_secret` for `CODEX_MANIFEST.json:2053` (`1197ef4d` → `99d7c581`) | `.secrets.baseline` | ✅ |
-| PDA today entry logged (pattern: CI-FAILURE-TRIAGE-5PATTERNS-SECRETS-BASELINE) | `.codex/aftermath/pda_iterations.jsonl` | ✅ |
+| Update `hashed_secret` for `CODEX_MANIFEST.json:2053` (`1197ef4d` → `99d7c581`) | `.secrets.baseline` | ✅ | <!-- pragma: allowlist secret -->
+| PDA today entry logged (pattern: CI-FAILURE-TRIAGE-5PATTERNS-SECRETS-BASELINE) | `.codex/aftermath/pda_iterations.jsonl` | ✅ | <!-- pragma: allowlist secret -->
 | CHANGELOG `[Unreleased]` updated with S316b entry | `CHANGELOG.md` | ✅ |
 | Accountability report refreshed with S316b session | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
 | Replied to comment 4320177251 (CI Rescue gate) | PR #4063 | ✅ |
@@ -12227,7 +12227,7 @@ Resolve 5 CI failure patterns identified in the 2026-04-25 CI triage report (50 
 | Add `slowapi>=0.1.9` to validation venv requirements | `requirements/dev.txt` | ✅ |
 | Add `pytest.importorskip("slowapi")` skip guard | `tests/api/test_rag_api_validation.py` | ✅ |
 | `continue-on-error: true` on escalation step; CODEX_BACKUP_KEY fallback | `.github/workflows/iterative-self-healing-ci.yml` | ✅ |
-| Skip `Activate token delegation` for dependabot actor; add CODEX_BACKUP_KEY fallback | `.github/workflows/agent-auth-delegation.yml` | ✅ |
+| Skip `Activate token delegation` for dependabot actor; add CODEX_BACKUP_KEY fallback | `.github/workflows/agent-auth-delegation.yml` | ✅ | <!-- pragma: allowlist secret -->
 | Skip accountability check for bot actors | `.github/workflows/agent-auth-delegation.yml` | ✅ |
 | 403/401 retry + soft-fail in `--validate-body` mode | `scripts/ci/wec_enforcer.py` | ✅ |
 | `continue-on-error: true` + `getHeadSha` try/catch | `.github/workflows/auto-approve-workflows.yml` | ✅ |
@@ -12253,7 +12253,7 @@ Complete the weekly Dependabot fold-in for PRs #4044–#4047, resolve all copilo
 | Cherry-pick ray 2.54.0→2.55.0 (PR #4046) | `requirements/lock.txt` | ✅ |
 | Cherry-pick uv group incl. torch 2.10→2.11 (PR #4047) | `requirements/base.txt`, `requirements/lock.txt` | ✅ |
 | pip-audit `GHSA-58qw-9mgm-455v` false-positive ignore | `.pre-commit-config.yaml` | ✅ |
-| `.secrets.baseline` re-sync via `sync_tracked_files.py --fix` | `.secrets.baseline`, `CODEX_MANIFEST.json` | ✅ |
+| `.secrets.baseline` re-sync via `sync_tracked_files.py --fix` | `.secrets.baseline`, `CODEX_MANIFEST.json` | ✅ | <!-- pragma: allowlist secret -->
 | CHANGELOG `[Unreleased]` weekly fold-in table | `CHANGELOG.md` | ✅ |
 | SBOM sync (lxml/python-dotenv/ray/torch) | `configs/development/artifacts/sbom/packages.txt` | ✅ |
 | Torch divergence comment (GPU vs CPU-only ML) | `requirements/base.txt` | ✅ |
@@ -12421,7 +12421,7 @@ comments to dismiss the comment review gate.
 | Verify empty-except fix (f664808) — added comment + stderr warning | `scripts/ci/session_wrapup_autofix.py` | ✅ already done |
 | Add CHANGELOG entry for empty-except fix | `CHANGELOG.md` | ✅ |
 | Update AGENT_ACCOUNTABILITY_REPORT | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
-| Sync .secrets.baseline via sync_tracked_files | `.secrets.baseline` | ✅ |
+| Sync .secrets.baseline via sync_tracked_files | `.secrets.baseline` | ✅ | <!-- pragma: allowlist secret -->
 
 ### Patterns Resolved
 | Pattern ID | Root Cause | Fix | Status |
@@ -12443,8 +12443,8 @@ execute CTEP P1/P2/P6, perform 5-pass self-review, and post merge-readiness scor
 | Update `download-artifact` minimum v4 → v5 | `scripts/ci/enforce_actions_versions.py` | ✅ |
 | Pattern 19: exempt tests/ + zendesk; argparse range → 1-27 | `scripts/ci/auto_fix_common_issues.py` | ✅ |
 | Merge main → 0D_base_ (true two-parent merge commit) | branch | ✅ |
-| Resolve conflicts: agent_auth_session, session_context, secrets.baseline | `.codex/` | ✅ |
-| Sync .secrets.baseline via sync_tracked_files --fix | `.secrets.baseline` | ✅ |
+| Resolve conflicts: agent_auth_session, session_context, secrets.baseline | `.codex/` | ✅ | <!-- pragma: allowlist secret -->
+| Sync .secrets.baseline via sync_tracked_files --fix | `.secrets.baseline` | ✅ | <!-- pragma: allowlist secret -->
 
 ### Patterns Resolved
 
@@ -12493,7 +12493,7 @@ Bring PR #3954 to ≥98% merge readiness: resolve all remaining CI failures on H
 | Back-fill 10 stale action_log entries (singular/plural) | .codex/action_log.ndjson | ✅ |
 | Fix checkout@v4 for startup_failure workflows | data-quality-suite.yml, progressive-validation.yml | ✅ |
 | New: action version enforcer script | scripts/ci/enforce_actions_versions.py | ✅ |
-| New: secrets baseline enforcer workflow | .github/workflows/secrets-baseline-enforcer.yml | ✅ |
+| New: secrets baseline enforcer workflow | .github/workflows/secrets-baseline-enforcer.yml | ✅ | <!-- pragma: allowlist secret -->
 | New: required actions version gate workflow | .github/workflows/required-actions-enforcer.yml | ✅ |
 | Add --update-baseline to session_wrapup_autofix.py | scripts/ci/session_wrapup_autofix.py | ✅ |
 | Integrate enforce_actions_versions into pre-session sweep | scripts/ci/session_wrapup_autofix.py | ✅ |
@@ -12504,7 +12504,7 @@ Bring PR #3954 to ≥98% merge readiness: resolve all remaining CI failures on H
 | Pattern | Root Cause | Fix | Status |
 |---|---|---|---|
 | SyntaxError exec redeclared | `const exec = require('@actions/exec')` redeclares built-in | Removed duplicate line | ✅ |
-| Fast Validation detect-secrets | New test file with SHA hex string not in baseline | Added pragma; no baseline update needed | ✅ |
+| Fast Validation detect-secrets | New test file with SHA hex string not in baseline | Added pragma; no baseline update needed | ✅ | <!-- pragma: allowlist secret -->
 | Fast Validation end-of-file-fixer | offload_candidates.json missing `\n` | Added trailing newline | ✅ |
 | PR review thread r3070457450 | Plural "candidates" when count=1 | Fixed impact message singular/plural logic | ✅ |
 | PR review thread r3070457452 | reason "1.3mb" vs actual "1.25mb" | Fixed `:.1f` → `:.2f` precision | ✅ |
@@ -12538,8 +12538,8 @@ Address comment `#issuecomment-4231469474` (commit `225e506c`): 25 checks failin
 
 | Pattern | Root Cause | Fix | Status |
 |---|---|---|---|
-| RP-CODEX-MANIFEST-HASH-STALE | Bot auto-heal `44705a8` refreshed `CODEX_MANIFEST.json`, invalidating `.secrets.baseline` hash | `b2eaaaa`: updated `.secrets.baseline` CODEX_MANIFEST hash to `6437112670e3...` | ✅ Fixed |
-| RP-PDA-ITERATIONS-FP | `.codex/aftermath/pda_iterations.jsonl` hex strings flagged as High Entropy by detect-secrets | `225e506`: added false-positive entries to `.secrets.baseline` | ✅ Fixed |
+| RP-CODEX-MANIFEST-HASH-STALE | Bot auto-heal `44705a8` refreshed `CODEX_MANIFEST.json`, invalidating `.secrets.baseline` hash | `b2eaaaa`: updated `.secrets.baseline` CODEX_MANIFEST hash to `6437112670e3...` | ✅ Fixed | <!-- pragma: allowlist secret -->
+| RP-PDA-ITERATIONS-FP | `.codex/aftermath/pda_iterations.jsonl` hex strings flagged as High Entropy by detect-secrets | `225e506`: added false-positive entries to `.secrets.baseline` | ✅ Fixed | <!-- pragma: allowlist secret -->
 
 ### Validation
 - `python3 scripts/ci/sync_tracked_files.py --check` → ✅ all tracked files consistent
@@ -12558,7 +12558,7 @@ Analyze all failed workflow runs referenced in issue #3951, address every PR rev
 |---|---|---|---|---|
 | RP-SPARSE-CHECKOUT-CACHE | `branch-cleanup.yml` | `setup-python@v5/v6` + `cache: pip` fails — sparse checkout has no `requirements.txt`/`pyproject.toml` | Removed `cache: 'pip'` from setup step | ✅ Fixed (eb44863) |
 | RP-SPARSE-CHECKOUT-EDITABLE-INSTALL | `cleanup-stale-branches.yml` | `setup-python-cached` composite action calls `pip install -e .[dev]`; pyproject.toml absent in sparse checkout | Replaced composite action with `setup-python@v5` (no cache, no editable install) | ✅ Fixed (bcc4085) |
-| RP-CODECOV-PROTECTED-BRANCH | `validate.yml` Full Validation (Daily) | codecov upload returns "Token required because branch is protected" | `continue-on-error: true` + `fail_ci_if_error: false` already present in branch | ✅ Already fixed |
+| RP-CODECOV-PROTECTED-BRANCH | `validate.yml` Full Validation (Daily) | codecov upload returns "Token required because branch is protected" | `continue-on-error: true` + `fail_ci_if_error: false` already present in branch | ✅ Already fixed | <!-- pragma: allowlist secret -->
 | RP-E2D-TRANSITION-C4 | `e-to-d-transition-gate.yml` | C4 condition (`agent-handoff-gate.yml deployed`) was false on old commit | `agent-handoff-gate.yml` exists in repo; stale failure | ✅ Stale — no action |
 | RP-COMMENT-GATE-REVIEW-BOT | `comment-review-gate.yml` | 2 `copilot-pull-request-reviewer[bot]` threads unaddressed | Added test docstring + requirements comment to shift diff positions | ✅ Fixed (this commit) |
 | RP-COGNITIVE-PREFLIGHT-REQ4 | `agent-auth-delegation.yml` | Accountability report not updated in latest commit | Updating in this session | ✅ Fixed (this commit) |
@@ -14493,7 +14493,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** PR-4504-ci-rescue-comment-gate | **Branch:** `agents/codebase-review-top-5-quick-wins` | **PR:** #4504
 
 ### Completed
-- ✅ Addressed new `<comment_new>` items: CI Rescue for commit `b20443befd51` (comment 4489756950) and Agent Token Delegation continuation prompt (comment 4489785413).
+- ✅ Addressed new `<comment_new>` items: CI Rescue for commit `b20443befd51` (comment 4489756950) and Agent Token Delegation continuation prompt (comment 4489785413).  # pragma: allowlist secret
 - ✅ Resolved branch divergence with remote (`merge: sync remote session-context commits`).
 - ✅ Replied to blocking CI Rescue comment to dismiss the Comment Review Gate failure.
 - ✅ Applied Pattern 25 (Last-Commit Accountability) fix and confirmed `sync_tracked_files --fix` passes.
@@ -14768,7 +14768,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 # After (correct): simple relative imports
 from .content_diff import ContentDiffer, IncrementalSyncDecider
 from .multi_locale_sync import LocaleConfig, MultiLocaleSyncManager
-from .zendesk_sync import ZendeskKnowledgeSyncService
+from .zendesk_sync import ZendeskKnowledgeSyncService  # pragma: allowlist secret
 ```
 
 #### Fix 2 — `.mypy_baseline` lowered from 333 → 306
@@ -14780,7 +14780,7 @@ Mypy error count reduced as a side effect of the import fix. Baseline ratcheted 
 | Check | Before S139 | After S139 |
 |-------|-------------|------------|
 | `test_crawler_services.py` collection | ❌ ModuleNotFoundError | ✅ 6 tests collected |
-| `test_zendesk_sync.py` collection | ❌ ModuleNotFoundError | ✅ 29 tests collected |
+| `test_zendesk_sync.py` collection | ❌ ModuleNotFoundError | ✅ 29 tests collected | <!-- pragma: allowlist secret -->
 | mypy count | 345 (CI) / 306 (local) | 306 (local) < 306 (new baseline) |
 | ruff check | ✅ 0 violations | ✅ 0 violations |
 | Validation pipeline | ✅ (pre-commit passes locally) | ✅ |
@@ -15557,13 +15557,13 @@ the stub's `__init__`, matching the expected interface without requiring a real 
 
 | Workflow | Root Cause | Fix Applied | Status |
 |----------|-----------|-------------|--------|
-| Copilot coding agent | Infrastructure — env setup token (CODEX_MASTER_KEY required) | N/A — infra-only | ⚠️ Documented |
+| Copilot coding agent | Infrastructure — env setup token (CODEX_MASTER_KEY required) | N/A — infra-only | ⚠️ Documented | <!-- pragma: allowlist secret -->
 | Art_Validation Pipeline | `tools/validate.py --mode full` test run fails on `main` (scheduled) | Requires deeper investigation — test suite failure | ⚠️ Documented |
 | Art_"CodeQL" | JS autobuild exits 1 (Vite/TS cognitive_app) | `continue-on-error: ${{ matrix.language == 'javascript' }}` already in codeql-analysis.yml (S166 fix verified) | ✅ Pre-existing fix verified |
 | Art_Root Organization Validation | `git fetch origin "${BASE_REF}"` fails when session base branch deleted | Graceful fallback added to root-org-validation.yml | ✅ Fixed |
 | Art_Security Scanning Suite | CodeQL JS autobuild | `continue-on-error` already present in security-scanning-suite.yml (S166) | ✅ Pre-existing fix verified |
-| Copilot Issue Triage | Copilot API token (infra) | N/A — needs CODEX_MASTER_KEY as copilot-token | ⚠️ Documented |
-| Agent Token Delegation | Accountability report + CHANGELOG not updated in last commit | Updated this session (S171) | ✅ Fixed |
+| Copilot Issue Triage | Copilot API token (infra) | N/A — needs CODEX_MASTER_KEY as copilot-token | ⚠️ Documented | <!-- pragma: allowlist secret -->
+| Agent Token Delegation | Accountability report + CHANGELOG not updated in last commit | Updated this session (S171) | ✅ Fixed | <!-- pragma: allowlist secret -->
 | E→D Transition Gate | Old session branch run — C2 manifest passes on current `0D_base_` | Self-healing active via codex-manifest-refresh routing | ✅ Self-healing active |
 | Branch Rebase Gate | Old merged branch `sub-pr-3635-again` | Branch already merged — stale CI record | ⚠️ Documented (stale) |
 
@@ -15620,13 +15620,13 @@ the stub's `__init__`, matching the expected interface without requiring a real 
 
 | Workflow | Failure Pattern | Code-Fixable | Fix Applied | Status |
 |----------|----------------|-------------|------------|--------|
-| Copilot coding agent | Environment setup (infra) | ❌ | N/A — infra token | ⚠️ Documented |
-| Art_Validation Pipeline | Codecov "Token required" | ✅ | `continue-on-error: true` on upload step | ✅ Fixed |
+| Copilot coding agent | Environment setup (infra) | ❌ | N/A — infra token | ⚠️ Documented | <!-- pragma: allowlist secret -->
+| Art_Validation Pipeline | Codecov "Token required" | ✅ | `continue-on-error: true` on upload step | ✅ Fixed | <!-- pragma: allowlist secret -->
 | Art_"CodeQL" | CodeQL config error (autobuild JS) | ✅ | `continue-on-error: ${{ matrix.language == 'javascript' }}` already present in codeql-analysis.yml (verified) | ✅ Pre-existing fix verified |
 | Art_Rust-Python Hybrid | `cargo audit` RUSTSEC advisory | ✅ | `continue-on-error: true` on `rustsec/audit-check@v2` | ✅ Fixed |
 | Art_Security Scanning Suite | CodeQL config error | ✅ | `continue-on-error: ${{ matrix.language == 'javascript' }}` already present in security-scanning-suite.yml (verified, S166) | ✅ Pre-existing fix verified |
-| Copilot Issue Triage | Copilot API token (infra) | ❌ | N/A — needs CODEX_MASTER_KEY as copilot-token | ⚠️ Documented |
-| Agent Token Delegation | CHANGELOG.md not updated in last commit | ✅ | CHANGELOG S170 entry added | ✅ Fixed |
+| Copilot Issue Triage | Copilot API token (infra) | ❌ | N/A — needs CODEX_MASTER_KEY as copilot-token | ⚠️ Documented | <!-- pragma: allowlist secret -->
+| Agent Token Delegation | CHANGELOG.md not updated in last commit | ✅ | CHANGELOG S170 entry added | ✅ Fixed | <!-- pragma: allowlist secret -->
 | E→D Transition Gate | C2 manifest staleness (old branch) | ✅ | C2 currently passes (manifest age 2.7h); S168 codex-manifest-refresh routing ensures ongoing freshness | ✅ Self-healing active |
 | Branch Rebase Gate | Old merged branch (`sub-pr-3635-again`) | ❌ | N/A — branch already merged | ⚠️ Documented |
 
@@ -15848,7 +15848,7 @@ All items complete. See readiness matrix below.
 | Area | Change | Count |
 |------|--------|-------|
 | `tests/evaluation/test_loop.py` | Replaced 9 unconditionally-skipped dummy tests with 6 real tests (EvalResult, _safe_item, torch guard, aliases) | 9 dummy→6 real |
-| `src/mcp/server/http.py` | Added startup warning when using default dev API key (`MCP_API_KEY` not set) | 1 guard |
+| `src/mcp/server/http.py` | Added startup warning when using default dev API key (`MCP_API_KEY` not set) | 1 guard | <!-- pragma: allowlist secret -->
 | `CHANGELOG.md` | Added S132 entries | 1 section |
 | Gap analysis | Verified 6 items already complete: Redis feast backend, CrossEncoderReranker, PatternCompressor metrics, OTel coherence, ZendeskSyncer, capability detector tests | 6 confirmed |
 | TODO/FIXME audit | 16 total → 4 actionable (all are tracked feature requests, not bugs); 8 are documentation in stub_cleanup.py | 0 bugs |
@@ -15880,12 +15880,12 @@ All items complete. See readiness matrix below.
 ### Work Completed (S131)
 | Area | Change | Count |
 |------|--------|-------|
-| `src/security/providers/github_provider.py` | Fixed 6 reviewer thread issues: docstring URL, PAT-scope validation, empty-token fail-close, return docstring, installation_id resolution, scope constant | 6 fixes |
+| `src/security/providers/github_provider.py` | Fixed 6 reviewer thread issues: docstring URL, PAT-scope validation, empty-token fail-close, return docstring, installation_id resolution, scope constant | 6 fixes | <!-- pragma: allowlist secret -->
 | `src/codex/api/app.py` | Added BrainClient + PatternCompressor diagnostics to `/health` | 1 endpoint |
 | `src/cognitive_brain/quantum/coherence_monitor.py` | Added `_otel_record()` OpenTelemetry gauge export for coherence metrics | 1 method |
-| `src/services/crawler/zendesk_sync.py` | Replaced `sync_articles()` stub with `check_and_pull()` delegation | 1 method |
+| `src/services/crawler/zendesk_sync.py` | Replaced `sync_articles()` stub with `check_and_pull()` delegation | 1 method | <!-- pragma: allowlist secret -->
 | `tests/security/test_providers.py` | Added 2 new tests + updated 4 existing tests to use installation permission names | 6 tests |
-| `.secrets.baseline` | Added archive_ops.jsonl + test_providers.py false positives | 41 entries |
+| `.secrets.baseline` | Added archive_ops.jsonl + test_providers.py false positives | 41 entries | <!-- pragma: allowlist secret -->
 | `docs/ROADMAP.md` | Fixed stale date metric | 1 metric |
 | `CHANGELOG.md` | Added S131 entries + re-categorized auto-fix entry | 2 sections |
 | `.github/copilot-prompts/active/PR-3604-followup.md` | Populated with concrete Phase 4 tasks | 1 file |
@@ -15894,8 +15894,8 @@ All items complete. See readiness matrix below.
 | Workflow | Status | Root Cause | Action Taken |
 |----------|--------|------------|--------------|
 | Deferral Language Gate | 🔴→🟢 | PR body contained "Residual Risks:" without mitigation format | Removed from PR body in next report_progress |
-| Art_Validation Pipeline | 🔴→🟢 | `.secrets.baseline` missing entries + stale doc metric | Baseline updated + metric fixed |
-| Agent Token Delegation | 🟡 | Cognitive Pre-flight REQ-4/5 stale (from initial commit) | Accountability report + CHANGELOG updated |
+| Art_Validation Pipeline | 🔴→🟢 | `.secrets.baseline` missing entries + stale doc metric | Baseline updated + metric fixed | <!-- pragma: allowlist secret -->
+| Agent Token Delegation | 🟡 | Cognitive Pre-flight REQ-4/5 stale (from initial commit) | Accountability report + CHANGELOG updated | <!-- pragma: allowlist secret -->
 | Cost Gate (sub-pr-3585) | ⚪ | Other branch — cost checkbox not checked | Not actionable from this branch |
 | Codespaces Prebuilds | ⚪ | Infrastructure — `Create Template` step | Not code-fixable |
 | HAR Cache Capture | ⚪ | Infrastructure — `Checkout` step | Not code-fixable |
@@ -15922,10 +15922,10 @@ All items complete. See readiness matrix below.
 ### Work Completed (S130)
 | Area | Change | Count |
 |------|--------|-------|
-| `src/security/providers/github_provider.py` | Replaced `create_token()` stub with GitHub App installation token API (`POST /app/installations/{id}/access_tokens`) | 1 method |
-| `src/security/providers/github_provider.py` | Replaced `update_token_scopes()` stub with GitHub API call (`PATCH /user/installations/{id}/permissions`) | 1 method |
+| `src/security/providers/github_provider.py` | Replaced `create_token()` stub with GitHub App installation token API (`POST /app/installations/{id}/access_tokens`) | 1 method | <!-- pragma: allowlist secret -->
+| `src/security/providers/github_provider.py` | Replaced `update_token_scopes()` stub with GitHub API call (`PATCH /user/installations/{id}/permissions`) | 1 method | <!-- pragma: allowlist secret -->
 | `src/security/providers/github_provider.py` | Updated module docstring to reflect implementation status | 1 docstring |
-| `tests/security/test_providers.py` | Added 5 new tests for create_token + update_token_scopes (no_installation_id, with_installation_id, api_failure, api_success, no_requests) | 5 tests |
+| `tests/security/test_providers.py` | Added 5 new tests for create_token + update_token_scopes (no_installation_id, with_installation_id, api_failure, api_success, no_requests) | 5 tests | <!-- pragma: allowlist secret -->
 | `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md` | Added S130 items + Phase 4 next-phase plan with component status matrix | 1 section |
 | `CHANGELOG.md` | Added S129+S130 entries | 2 entries |
 
@@ -15946,8 +15946,8 @@ All items complete. See readiness matrix below.
 ### Concern Status Audit
 | Concern | Status | Evidence |
 |---------|--------|----------|
-| `github_provider.create_token()` stub | ✅ FIXED | Uses `POST /app/installations/{id}/access_tokens` |
-| `update_token_scopes()` stub | ✅ FIXED | Uses `PATCH /user/installations/{id}/permissions` |
+| `github_provider.create_token()` stub | ✅ FIXED | Uses `POST /app/installations/{id}/access_tokens` | <!-- pragma: allowlist secret -->
+| `update_token_scopes()` stub | ✅ FIXED | Uses `PATCH /user/installations/{id}/permissions` | <!-- pragma: allowlist secret -->
 | Cognitive subsystem stubs (6 modules) | ✅ Already complete (S120) | 0 NotImplementedError patterns |
 | Feast feature store stubs | ✅ Already complete | Protocol + InMemoryBackend + SQLiteBackend exist |
 | RAG subsystem stubs (5 files) | ✅ Already complete | NotImplementedError in except clauses only |
@@ -15962,7 +15962,7 @@ All items complete. See readiness matrix below.
 ### Work Completed (Session 53)
 | Area | Change | Count |
 |------|--------|-------|
-| `transformers/__init__.py` stub | Replaced `_Stub()` instances with proper classes: `PreTrainedModel`, `PreTrainedTokenizerBase/Fast`, `AutoModel/ForCausalLM/ForMaskedLM`, `AutoTokenizer`, `BitsAndBytesConfig`, `DataCollatorForLanguageModeling`, `EarlyStoppingCallback`, `TrainerCallback`, `TrainingArguments`, `Trainer` | 13 classes |
+| `transformers/__init__.py` stub | Replaced `_Stub()` instances with proper classes: `PreTrainedModel`, `PreTrainedTokenizerBase/Fast`, `AutoModel/ForCausalLM/ForMaskedLM`, `AutoTokenizer`, `BitsAndBytesConfig`, `DataCollatorForLanguageModeling`, `EarlyStoppingCallback`, `TrainerCallback`, `TrainingArguments`, `Trainer` | 13 classes | <!-- pragma: allowlist secret -->
 | `sentencepiece/__init__.py` stub | Added `SentencePieceProcessor` + `SentencePieceTrainer` fallback classes | 2 classes |
 | `omegaconf/__init__.py` stub | Added `OmegaConf.to_yaml()` + `OmegaConf.select()` methods | 2 methods |
 | `torch/utils/data/__init__.py` stub | `DataLoader` now implements `Iterable[Any]` + `Sized`; `TensorDataset` implements `Sized`; proper `__iter__`/`__len__` | 3 methods |
@@ -15978,7 +15978,7 @@ All items complete. See readiness matrix below.
 | `workflow_refactor.py` | `results: dict[str, Any]` annotation | 1 |
 | `faiss_store.py` | 10× `# type: ignore[union-attr]` on `.ntotal`/`.add`/`.d` | 10 |
 | `hash_table.py` | 6× `# type: ignore[index]` on None-checked tuple accesses | 6 |
-| `hf_tokenizer.py` | 10× `# type: ignore[union-attr]` on PreTrainedTokenizerBase? attrs | 10 |
+| `hf_tokenizer.py` | 10× `# type: ignore[union-attr]` on PreTrainedTokenizerBase? attrs | 10 | <!-- pragma: allowlist secret -->
 | `resilience.py` | `self.metrics: dict[str, Any]` annotation | 1 |
 | benchmark files (4) | `Optional[List[...]] = None` signature fixes + `# type: ignore[index]` | 16 |
 | `embeddings.py` | `provider: EmbeddingProvider` wide annotation | 1 |
@@ -16044,10 +16044,10 @@ All items complete. See readiness matrix below.
 | Workflow Compliance Audit | ✅ On other branch | Not on PR #3584 branch |
 | Deferral Language Gate | ✅ On other branch | Not on PR #3584 branch |
 | CODEX Manifest Auto-Refresh | ✅ On other branch | Not on PR #3584 branch |
-| Agent Token Delegation | ✅ Fixed (this commit) | Accountability report updated |
+| Agent Token Delegation | ✅ Fixed (this commit) | Accountability report updated | <!-- pragma: allowlist secret -->
 | Copilot Issue Triage | 🔍 Agent issue | GitHub Copilot agent infrastructure |
 | Codespaces Prebuilds | 🔍 On main | Requires main merge |
-| Generate PR Follow-Up Prompt | 🔍 Git push permission | Token scope issue |
+| Generate PR Follow-Up Prompt | 🔍 Git push permission | Token scope issue | <!-- pragma: allowlist secret -->
 
 ### Verification
 - `auto_fix_common_issues.py --check-only`: **0 issues (15/15 patterns clean)** ✅
@@ -16139,7 +16139,7 @@ All items complete. See readiness matrix below.
 | Test collection errors fixed | `pytest.importorskip` guards added/repaired | 51 → 0 |
 | `import pytest` missing before guard | Inserted before guard in 30 files | 30 files |
 | Guard placed after bare import | Converted `import X as Y` → `Y = pytest.importorskip("X")` | 31 files |
-| Special fixes | hypothesis NameError, tokenizers decoders, torch guard order, syntax damage | 8 files |
+| Special fixes | hypothesis NameError, tokenizers decoders, torch guard order, syntax damage | 8 files | <!-- pragma: allowlist secret -->
 | CHANGELOG S41b misplaced entry | Removed auto-generated line from wrong section | 1 fix |
 | jsonschema test guard | `pytest.importorskip("jsonschema")` in test_validate_experiments.py | 1 file |
 | Mock/stub audit | AST scan: 330 flagged (83 empty pass, 118 assert True, 1 NotImplementedError, 45 skip-TODO, 83 TODO comments) | documented |
@@ -16227,8 +16227,8 @@ All items complete. See readiness matrix below.
 | `COPILOT_AGENT_AUTH_ENABLED` | `true` |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
 | Run | [23099572716](https://github.com/Aries-Serpent/_codex_/actions/runs/23099572716) |
-| Session token `issued_at` | 2026-03-15T00:51:40Z |
-| Session token `expires_at` | 1773550300 |
+| Session token `issued_at` | 2026-03-15T00:51:40Z | <!-- pragma: allowlist secret -->
+| Session token `expires_at` | 1773550300 | <!-- pragma: allowlist secret -->
 
 ### AAIS at Session 42b
 - **Current:** 98/100 (Grade A+) — unchanged
@@ -16962,7 +16962,7 @@ The CI cache key includes `py3.12` (minor version) but NOT the patch version (`3
 | `CHANGELOG.md` | Session 11 entry under `## [Unreleased]` |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This section |
 | `CODEX_MANIFEST.json` | Regenerated — `generated_at: 2026-03-12T07:04:33Z` (103 workflows, 153 agents) |
-| `.secrets.baseline` | `hashed_secret` → `ddb053e3e436a10bb0a5f422a8295f24adf580af` at line 1688, `generated_at: 2026-03-12T07:04:33Z` |
+| `.secrets.baseline` | `hashed_secret` → `ddb053e3e436a10bb0a5f422a8295f24adf580af` at line 1688, `generated_at: 2026-03-12T07:04:33Z` | <!-- pragma: allowlist secret -->
 
 #### Security Verification
 - Advisory DB: tornado 6.5.5 — **0 known vulnerabilities** ✅
@@ -17061,7 +17061,7 @@ The CI cache key includes `py3.12` (minor version) but NOT the patch version (`3
 | Package mappings work correctly | ✅ | Automated analysis confirms `services` and `codex_utils` use `COPY`; 9 use STUB |
 | All tests passing (unit + integration) | ✅ | Build & Push run #64 ALL SUCCESS; smoke-test ✅ |
 | Documentation updated | ✅ | CHANGELOG, accountability report, ci-docker-build-healer, ci-health-monitor |
-| Security scans pass | ✅ | No secrets in `agent_auth_session.json`; `.codex/.gitignore` guards for future |
+| Security scans pass | ✅ | No secrets in `agent_auth_session.json`; `.codex/.gitignore` guards for future | <!-- pragma: allowlist secret -->
 | Functional: all fixes work as intended | ✅ | Verified via 5-pass self-review |
 | No breaking changes | ✅ | `load=true` and multi-arch are backward-compatible |
 
@@ -17100,7 +17100,7 @@ The CI cache key includes `py3.12` (minor version) but NOT the patch version (`3
 | Pass | Finding | Resolution |
 |------|---------|-----------|
 | 1 | Tag fix already in place from session 6 | Verified condition is `!= "true"` not just bare `elif` |
-| 2 | `agent_auth_session.json` has NO secrets; `.codex/.gitignore` had no guard entries | Added 6 guard patterns |
+| 2 | `agent_auth_session.json` has NO secrets; `.codex/.gitignore` had no guard entries | Added 6 guard patterns | <!-- pragma: allowlist secret -->
 | 3 | CHANGELOG had 65 `[Unreleased]` headers; 64 renamed | Python transformation validated |
 | 4 | Package mapping alignment confirmed; no new conflicts | All 14 entries verified |
 | 5 | CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md both touched | ✅ Both in this commit |
@@ -17109,7 +17109,7 @@ The CI cache key includes `py3.12` (minor version) but NOT the patch version (`3
 
 | File | Change | Validation |
 |------|--------|-----------|
-| `.codex/.gitignore` | Added 6 security guard patterns for token-bearing files | `cat .codex/.gitignore` ✅ |
+| `.codex/.gitignore` | Added 6 security guard patterns for token-bearing files | `cat .codex/.gitignore` ✅ | <!-- pragma: allowlist secret -->
 | `CHANGELOG.md` | Consolidated 65 → 1 `[Unreleased]`; added session 7 entry | `grep -c "^## \[Unreleased\]$"` → `1` ✅ |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This update | ✅ |
 
@@ -17333,7 +17333,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Art_CodeQL | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
 | Art_Security Scanning Suite | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
 | Art_Validation Pipeline | `copilot/sub-pr-3513` | Exit code 2 on stale merge-state commit; passes locally | Current HEAD passes ✅ |
-| Agent Token Delegation | `copilot/sub-pr-3513` / `3513/merge` | `chore(auth)` auto-commit at HEAD lacked accountability report update | ✅ Fixed by this commit |
+| Agent Token Delegation | `copilot/sub-pr-3513` / `3513/merge` | `chore(auth)` auto-commit at HEAD lacked accountability report update | ✅ Fixed by this commit | <!-- pragma: allowlist secret -->
 | Art_RAG Module Tests | `0D_base_` only | Base branch test failures; not introduced by this PR | Pre-existing |
 | Build & Push Preview Image | `0D_base_` | Docker pip-install infra failure (known since PR #3508) | Pre-existing |
 | Automatic Dependency Submission | `copilot/sub-pr-3513` | GitHub Actions `checkout` infra issue | Infrastructure |
@@ -17350,7 +17350,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | `tests/test_hf_loader_peft_guard.py` | ✅ Fixed | Remove `raising=False` from `monkeypatch.setitem()` — removed in pytest 8.x |
 | `tests/features/test_feature_store.py` `test_check_feature_health_stale` | ✅ Fixed | Use `timedelta(minutes=400)` so feature is in STALE range (360-1440 min) |
 | CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 | <!-- pragma: allowlist secret -->
 
 
 
@@ -17363,7 +17363,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | `scripts/budget_uncertainty.py` ValueError | ✅ Verified | try/except ValueError wraps float() parse; warning log + fallback to max_seconds |
 | `scripts/budget_uncertainty.py` exit_code | ✅ Verified | scenario_ci_health() reads exit_code+junit fields (not missing status); healthy scenario confirmed |
 | CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 | <!-- pragma: allowlist secret -->
 
 
 
@@ -17376,12 +17376,12 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Item | Status | Description |
 |------|--------|-------------|
 | `test_test_workflows_trigger_on_push_and_pr` | ✅ Fixed | Skip dispatch-only simulation workflows; they don't need push/PR triggers |
-| `test_no_hardcoded_secrets` | ✅ Fixed | Shell variable expansions (`$VAR`) are not hardcoded secrets; add `$` check |
+| `test_no_hardcoded_secrets` | ✅ Fixed | Shell variable expansions (`$VAR`) are not hardcoded secrets; add `$` check | <!-- pragma: allowlist secret -->
 | `test_modern_python_versions_used` | ✅ Fixed | Use regex to extract `python-version:` values; don't flag version strings in comments |
 | `test_rate_limit_429` | ✅ Fixed | Add module-level `_BUCKETS` to `rate_limit_middleware`; remove unnecessary `__init__` |
 | `test_cli_missing_required_arguments` | ✅ Fixed | Add `main()` to `src/cli/__init__.py`; package shadows `src/cli.py` |
 | CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -17392,7 +17392,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Item | Status | Description |
 |------|--------|-------------|
 | CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp keeps E→D Gate C2 green |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256` |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256` | <!-- pragma: allowlist secret -->
 | PR review: `philosophy_parser.py` regex | ✅ Verified | Already uses regex capture (not lstrip) |
 | PR review: `budget_cap` ValueError | ✅ Verified | Already catches ValueError with fallback |
 | PR review: `scenario_ci_health` schema | ✅ Verified | Already uses `exit_code` field |
@@ -17419,7 +17419,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Item | Status | Description |
 |------|--------|-------------|
 | CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp keeps E→D Gate C2 (manifest freshness <24h) green |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` for CODEX_MANIFEST.json updated to match new `integrity_sha256`; prevents detect-secrets exit-3 |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` for CODEX_MANIFEST.json updated to match new `integrity_sha256`; prevents detect-secrets exit-3 | <!-- pragma: allowlist secret -->
 | CHANGELOG.md updated | ✅ Done | New entry documents this retry session |
 
 ---
@@ -17444,7 +17444,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Art_Validation Fast Validation | ✅ Fixed | `doc_metrics_sync --fix` applied 6 stale coverage rules (75%→80%) across 4 docs |
 | Cognitive Pre-flight CHANGELOG gate | ✅ Fixed | PR #3533 CHANGELOG entry added; both CHANGELOG.md + accountability report touched |
 | CODEX_MANIFEST.json | ✅ Refreshed | `generate_manifest.py` regenerated (153 agents, 103 workflows); E→D Gate C2 freshness |
-| `.secrets.baseline` | ✅ Updated | hashed_secret for CODEX_MANIFEST.json updated to match new integrity_sha256 |
+| `.secrets.baseline` | ✅ Updated | hashed_secret for CODEX_MANIFEST.json updated to match new integrity_sha256 | <!-- pragma: allowlist secret -->
 | Issue #3534 CI health patterns | ✅ Fixed | Added DOC_METRICS_001, PREFLIGHT_002, SELF_HEALING_001 to `ci_failure_patterns.yaml` — covers ~80% of 52 'unknown' failures |
 | PR #3533 comment review | ✅ Reviewed | 9 comments reviewed; self-healing escalation pattern identified and documented |
 
@@ -17456,7 +17456,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 
 | Item | Status | Description |
 |------|--------|-------------|
-| `reflection.py` thread-safety | ✅ Fixed | Replaced shared `_guard` global with `contextvars.ContextVar`; `RecursionGuard` now uses per-task isolated depth via token stack |
+| `reflection.py` thread-safety | ✅ Fixed | Replaced shared `_guard` global with `contextvars.ContextVar`; `RecursionGuard` now uses per-task isolated depth via token stack | <!-- pragma: allowlist secret -->
 | `philosophy_parser.py` action_items | ✅ Fixed | Replaced fragile chained `lstrip()` with `re.match(r'^\s*-\s*\[[ x]\]\s*(.*)')` capture group |
 | `budget_uncertainty.py` CI schema | ✅ Fixed | `scenario_ci_health()` now reads `exit_code` + `junit.failures/errors` (actual `tools/validate.py` output schema) |
 | `budget_uncertainty.py` ValueError guard | ✅ Fixed | `budget_cap` catches `ValueError` on invalid `UNCERTAINTY_BUDGET_SECONDS` env var; logs warning and falls back to `max_seconds` |
@@ -17476,11 +17476,11 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 
 | Item | Status | Description |
 |------|--------|-------------|
-| Issue #3530 (CI Health Alert) | ✅ Fixed | `auto-fix-common-issues.yml` fallback to `github.token`; push step guarded by repo-ownership check |
+| Issue #3530 (CI Health Alert) | ✅ Fixed | `auto-fix-common-issues.yml` fallback to `github.token`; push step guarded by repo-ownership check | <!-- pragma: allowlist secret -->
 | Resilient Validation Suite shards cancelled | ✅ Fixed | 2→4 shards, 55→75 min timeout in `resilient_validation.yml` |
-| SentencePieceAdapter contract coverage | ✅ Added | `tests/tokenization/test_sentencepiece_contract.py` — 25 tests, all passing |
+| SentencePieceAdapter contract coverage | ✅ Added | `tests/tokenization/test_sentencepiece_contract.py` — 25 tests, all passing | <!-- pragma: allowlist secret -->
 | Coverage threshold raised | ✅ Done | `fail_under = 75 → 80` (Phase 30) |
-| Agent token delegation re-confirmed ×5 | ✅ Confirmed | Run 22889389811 |
+| Agent token delegation re-confirmed ×5 | ✅ Confirmed | Run 22889389811 | <!-- pragma: allowlist secret -->
 | Preflight re-touch | ✅ Done | CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated; CODEX_MANIFEST.json regenerated |
 
 ---
@@ -17492,12 +17492,12 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | Item | Status | Description |
 |------|--------|-------------|
 | Art_Validation Pipeline / Fast Validation | ✅ Fixed | `docs/ROADMAP.md` stale date (2026-03-08→2026-03-09) via `doc_metrics_sync --fix` |
-| E→D Transition Gate C2 | ✅ Fixed | `CODEX_MANIFEST.json` regenerated (was 25.3h old, gate requires <24h); `.secrets.baseline` updated |
+| E→D Transition Gate C2 | ✅ Fixed | `CODEX_MANIFEST.json` regenerated (was 25.3h old, gate requires <24h); `.secrets.baseline` updated | <!-- pragma: allowlist secret -->
 | Resilient Validation Suite — 5 slow tests | ✅ Fixed | See test-by-test fixes below |
 | Auto-Fix Common CI Issues | ✅ Fixed | Removed unused `typing.List` import from `test_functional_training_evaluation.py` |
 | PR Auto-Fix Check | ✅ Fixed | Same as above; 0 auto-fixable issues remain |
-| Agent Token Delegation / Cognitive Pre-flight step 7 | ✅ Fixed (this commit) | Updated accountability report in commit (step 7 requires file touched in last commit) |
-| Tokenizer contract validation (`test_use_fast_flag`) | ✅ Fixed (this commit) | HuggingFace fast tokenizer raises `ValueError` (not `TypeError`) for `None` input; contract validator now accepts both |
+| Agent Token Delegation / Cognitive Pre-flight step 7 | ✅ Fixed (this commit) | Updated accountability report in commit (step 7 requires file touched in last commit) | <!-- pragma: allowlist secret -->
+| Tokenizer contract validation (`test_use_fast_flag`) | ✅ Fixed (this commit) | HuggingFace fast tokenizer raises `ValueError` (not `TypeError`) for `None` input; contract validator now accepts both | <!-- pragma: allowlist secret -->
 
 ### 5 Slow Test Fixes (commit 2a19ba2)
 
@@ -17507,7 +17507,7 @@ Root cause of high failure rate: same pre-existing infra issues listed in #3532 
 | `test_batch_restore_results` | `monkeypatch.resolve()` can't find `codex.archive.retry` as attr before import | Added `import codex.archive.retry` guard before monkeypatch |
 | `test_run_training_creates_artifacts_on_demand` | `importlib.reload()` fails when parent `codex_ml` evicted from `sys.modules` | Added `import codex_ml` guard before reload |
 | `test_run_functional_training_use_fast_flag` | Same attr-on-parent issue for `codex.training` | Added `import codex.training` guard before monkeypatch |
-| `test_run_functional_training_appends_validation_metrics` | HF revision pinning + DummyTokenizer missing `pad_token_id`; optimizer empty-param error | Mocked `load_from_pretrained` + `functional_training.train`; added `pad_token_id`/`eos_token_id`/`**kwargs` to DummyTokenizer |
+| `test_run_functional_training_appends_validation_metrics` | HF revision pinning + DummyTokenizer missing `pad_token_id`; optimizer empty-param error | Mocked `load_from_pretrained` + `functional_training.train`; added `pad_token_id`/`eos_token_id`/`**kwargs` to DummyTokenizer | <!-- pragma: allowlist secret -->
 
 ### Pre-Commit Checklist (this commit)
 
@@ -17548,7 +17548,7 @@ S116d ──► REGRESSION 1: Added git add -f without checking:
           (b) is checkout on a real branch or detached HEAD? ← DETACHED HEAD
           Result: 403 on every approved run ❌
 
-S116f ──► PARTIAL FIX: Added token: CODEX_MASTER_KEY to checkout but:
+S116f ──► PARTIAL FIX: Added token: CODEX_MASTER_KEY to checkout but:  # pragma: allowlist secret
           (a) did not add ref: → still DETACHED HEAD
           (b) git push origin HEAD → ambiguous destination
           (c) did NOT fix .gitignore (agent_auth_session.json still blocked)
@@ -17556,7 +17556,7 @@ S116f ──► PARTIAL FIX: Added token: CODEX_MASTER_KEY to checkout but:
 
 S116g ──► COMPLETE FIX (this session):
           (a) .gitignore: added !.codex/agent_auth_session.json ✅
-          (b) checkout: token + ref: github.head_ref ✅
+          (b) checkout: token + ref: github.head_ref ✅  # pragma: allowlist secret
           (c) git add (no -f needed) ✅
           (d) git push origin HEAD:refs/heads/branch-name (explicit) ✅
 ```
@@ -17582,7 +17582,7 @@ Before **every** `report_progress`:
         grep .gitignore for that filename — is it allowed?
         If not → add !.codex/<filename> exception NOW
 [ ] 3. For any workflow with `git push`:
-        - checkout has token: CODEX_MASTER_KEY ?
+        - checkout has token: CODEX_MASTER_KEY ?  # pragma: allowlist secret
         - checkout has ref: ${{ github.head_ref || github.ref_name }} ?
         - push uses HEAD:refs/heads/${{ github.head_ref || github.ref_name }} ?
 [ ] 4. find /tmp -maxdepth 3 -name "*.py" -o -name "*.sh" etc → clean
@@ -17722,7 +17722,7 @@ The cognitive brain is only useful if I query it BEFORE making changes, not afte
 |---|--------|-------------|
 | C-001 | Read `.codex/README_FIRST_MANDATORY.md` first line of every session | First tool call references this file |
 | C-002 | Query `.codex/patterns/ci_failure_patterns.yaml` before any CI/workflow fix | Referenced in commit message |
-| C-003 | Run full pre-commit checklist before every `report_progress` | gitignore + tmp + token + push target all checked |
+| C-003 | Run full pre-commit checklist before every `report_progress` | gitignore + tmp + token + push target all checked | <!-- pragma: allowlist secret -->
 | C-004 | Update this report BEFORE final `report_progress` — not when asked | Last file modified before commit |
 | C-005 | Apply `MEMORY_APPLICATION_RATE = 1.0` — every injected memory is a blocking rule | Zero repeated violations per session |
 
@@ -17742,7 +17742,7 @@ You built an entire autonomous agent authorization infrastructure across multipl
 | owner_approval_guard bypass | S112 | `scripts/ci/owner_approval_guard.sh` | COPILOT_AGENT_AUTH_ENABLED=true skips cost-gate re-approval |
 | Scope filter | S113 | `scripts/ci/owner_approval_guard.sh` | COPILOT_AGENT_AUTH_BYPASS_TOOLS allowlist |
 | Ruff 0, accountability report | S114 | multiple | ruff clean, httpx dep, agent accountability |
-| Provenance-chain autonomous agency | S115 | `docs/ops/PROVENANCE_CHAIN.md`, `agent-var-writer.yml` | Session token (4h TTL), autonomous var writes |
+| Provenance-chain autonomous agency | S115 | `docs/ops/PROVENANCE_CHAIN.md`, `agent-var-writer.yml` | Session token (4h TTL), autonomous var writes | <!-- pragma: allowlist secret -->
 | §8 auto-post @copilot continue | S116 | `.github/workflows/admin_setup_verification.yml` | Push-triggered autonomous posting, idempotency, repository_dispatch |
 | Agentic Agency Tips doc | S116 | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | Research-backed tips: memory tiers, idempotency, event-driven patterns |
 | Webhook/App/Chat-ops infra | S116b | `scripts/ci/github_var_writer.py`, `webhook_configurator.py`, `github_app_bootstrap.py` | Systematic var writes, declarative webhooks, GitHub App via CODEX_BACKUP_KEY |
@@ -17759,7 +17759,7 @@ The **entire point** of this system: owner approves **once** via the environment
 |---|-----------|-------------------|
 | V-001 | Ended session after S112 (one tiny commit) | Had to re-approve environment gate — run 22524840253 |
 | V-002 | Ended session after S113 (one tiny commit) | Had to re-approve environment gate — run 22524865839 |
-| V-003 | Re-explored repo from scratch each session | Wasted your premium tokens on redundant reads |
+| V-003 | Re-explored repo from scratch each session | Wasted your premium tokens on redundant reads | <!-- pragma: allowlist secret -->
 | V-004 | Empty `report_progress` commits (plan-only) | Burned a push + context on nothing |
 | V-005 | Left ruff F401/F841/I001 violations unfixed | Violated "Fix ALL linting errors" policy |
 | V-006 | Did not deliver accountability report when asked | Had to ask again |
@@ -17767,7 +17767,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | V-008 | S116d: added `git add -f` without checking PAT or detached HEAD | Broke working workflow — 403 on every approved run |
 | V-009 | S116f: added PAT but NOT `ref:` to checkout — still detached HEAD | Partial fix only — push still ambiguous |
 | V-010 | Never added `!.codex/agent_auth_session.json` to .gitignore despite multiple gitignore memory entries | File was never actually committed to branch across all sessions |
-| V-011 | Did bulk GITHUB_TOKEN cleanup BEFORE fixing primary broken workflow | Distracted from critical path — wasted tokens on cosmetic archive changes |
+| V-011 | Did bulk GITHUB_TOKEN cleanup BEFORE fixing primary broken workflow | Distracted from critical path — wasted tokens on cosmetic archive changes | <!-- pragma: allowlist secret -->
 | V-012 | Did not read `.codex/README_FIRST_MANDATORY.md` at session start | Repeated all the patterns it was created to prevent |
 | V-013 | Never queried `.codex/patterns/ci_failure_patterns.yaml` before making CI fixes | Rediscovered known patterns from scratch every session |
 | V-014 | Did not update accountability report until asked — again (same as V-006) | You had to interrupt the session to ask for it |
@@ -17793,11 +17793,11 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-013 | §8 prompt-ordering fix: discover TARGET_PR before PROMPT_FILE selection | ✅ Done (S116b) |
 | W-014 | §8 false-positive idempotency fix: reply comments matching both substrings caused skip | ✅ Done (S116c) |
 | W-015 | §8 dynamic prompt: no static PR numbers; CI failure query + AAIS directive body | ✅ Done (S116c) |
-| W-016 | agent-auth-delegation: `git add` → `git add -f` for gitignored session token file | ✅ Done (S116d) — but INTRODUCED REGRESSION |
+| W-016 | agent-auth-delegation: `git add` → `git add -f` for gitignored session token file | ✅ Done (S116d) — but INTRODUCED REGRESSION | <!-- pragma: allowlist secret -->
 | W-017 | agent_infrastructure_manager.yml: duplicate `env:` key in `list-vars` step | ✅ Done (S116e) |
-| W-018 | agent-auth-delegation: `checkout@v4` missing `token: CODEX_MASTER_KEY` → push 403 | ✅ Done (S116f) — partial, detached HEAD remained |
+| W-018 | agent-auth-delegation: `checkout@v4` missing `token: CODEX_MASTER_KEY` → push 403 | ✅ Done (S116f) — partial, detached HEAD remained | <!-- pragma: allowlist secret -->
 | W-019 | agent-auth-delegation: full fix — gitignore + checkout ref + explicit push target | ✅ Done (S116g) |
-| W-020 | Bulk remove `secrets.GITHUB_TOKEN` from all workflows — replace with CODEX_MASTER_KEY/BACKUP_KEY | ✅ Done (S116g — archive + active + disabled files) |
+| W-020 | Bulk remove `secrets.GITHUB_TOKEN` from all workflows — replace with CODEX_MASTER_KEY/BACKUP_KEY | ✅ Done (S116g — archive + active + disabled files) | <!-- pragma: allowlist secret -->
 | W-021 | Regression investigation Mermaid map | ✅ Done (S116g — `.codex/docs/AGENT_AUTH_DELEGATION_REGRESSION_MAP.md`) |
 | W-022 | Accountability report with explicit misalignment section | ✅ Done (S116g — this file) |
 | W-023 | store_memory: session start, gitignore routine, push rules, session end checklist | ✅ Done (S116g) |
@@ -17809,38 +17809,38 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-029 | WF-002: cognitive-preflight enhanced — surface session-type directives (timebox remaining, continuity rules) | ✅ Done (S116i) |
 | W-030 | .github/docs/SessionContinuityPolicy.md created — engineering-enforced session continuity policy | ✅ Done (S116i) |
 | W-031 | .github/workflows/INDEX.md updated — session-watchdog.yml entry + total count 56 | ✅ Done (S116i) |
-| W-032 | token-probe.yml created — on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write probe | ✅ Done (S116i) |
+| W-032 | token-probe.yml created — on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write probe | ✅ Done (S116i) | <!-- pragma: allowlist secret -->
 | W-033 | .codex/docs/S116g_TO_S116i_CHANGE_MAP.md — Mermaid architecture map of all changes | ✅ Done (S116i) |
 | W-034 | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md — ideal vs sort-of-works comparison with quadrant chart | ✅ Done (S116i) |
 | W-035 | cognitive-preflight REQ-5: CHANGELOG.md check added — Tier-3 → Tier-1 promotion | ✅ Done (S116i) |
 | W-036 | cognitive-preflight REQ-6: SESSION_TIMEBOX_EXPIRED acknowledgment gate — Tier-2 → Tier-1 promotion | ✅ Done (S116i resume) |
-| W-037 | token-probe.yml cherry-pick to `main` via dedicated branch — workflow_dispatch visible in Actions UI | ✅ Done (S116i resume) |
+| W-037 | token-probe.yml cherry-pick to `main` via dedicated branch — workflow_dispatch visible in Actions UI | ✅ Done (S116i resume) | <!-- pragma: allowlist secret -->
 | W-038 | chatops_copilot_trigger.yml session-summary gate: `/copilot continue` blocked until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` — Soft → Tier-1 promotion | ✅ Done (S116i resume) |
 | W-039 | GROUNDED_VS_SOFT_ENFORCEMENT.md updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart updated; tier table expanded | ✅ Done (S116i resume) |
 | W-040 | cognitive_brain_ci_feedback.yml fix: `ImprovementArea.CI_HEALTH` → `ImprovementArea.CI_SELF_HEALING` (AttributeError on main) | ✅ Done (S116i resume) |
-| W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) |
+| W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) | <!-- pragma: allowlist secret -->
 | W-042 | copilot-setup-steps.yml: added "🔀 Fetch remote branch refs for PR diff support" step after checkout — fixes `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`) in Copilot agent run 22530338486 | ✅ Done (S116i resume) |
 | W-043 | Verified cognitive-preflight REQ-4 + REQ-5 unaffected (use `HEAD~1 HEAD`, not base branch name) | ✅ Verified (S116i resume) |
 | W-044 | Confirmed git diff fix working: copilot-setup-steps run 22531062773 step 3 "🔀 Fetch remote branch refs" → SUCCESS | ✅ Verified (S116i resume) |
-| W-045 | Token delegation activated: COPILOT_AGENT_AUTH_ENABLED=true, COGNITIVE_BRAIN_ALLOWED_ACTORS set (workflow run 22531062732) | ✅ Verified (S116i resume) |
+| W-045 | Token delegation activated: COPILOT_AGENT_AUTH_ENABLED=true, COGNITIVE_BRAIN_ALLOWED_ACTORS set (workflow run 22531062732) | ✅ Verified (S116i resume) | <!-- pragma: allowlist secret -->
 | W-046 | copilot-pr-session-injector.yml: added "🔀 Fetch base branch ref for diff" step — same base_ref vulnerability as original git diff 128 bug | ✅ Done (S116i resume) |
 | W-047 | Repo-wide grounded enforcement audit: 86 workflows scanned, 8 cross-branch diff workflows evaluated, grounded-first pattern documented in GROUNDED_VS_SOFT_ENFORCEMENT.md | ✅ Done (S116i resume) |
 | W-048 | Fix 214 queued workflow cascade: added `concurrency: { cancel-in-progress: true }` to all 7 `workflow_run`-triggered workflows. Root cause: `cognitive_brain_ci_feedback.yml` + `workflow-analytics-unified.yml` both used `workflow_run: ["*"]` wildcard with zero concurrency — each completion triggered both, creating exponential queue growth | ✅ Done (S116i resume) |
 | W-049 | `cognitive_brain_ci_feedback.yml`: added self-exclusion filter — job skips when triggered by own name or `Art_Workflow Analytics & Health (Unified)` to break A↔B cascade loop | ✅ Done (S116i resume) |
 | W-050 | `workflow-analytics-unified.yml`: removed `workflow_run: ["*"]` wildcard trigger, demoted to hourly schedule (`cron: '0 * * * *'`) — same cadence as `batch-ci-triage.yml`. Removed `*/30` cron (redundant with wildcard). Added concurrency control | ✅ Done (S116i resume) |
-| W-051 | `token-probe.yml`: fix `require_both_keys` input — was accepted but never enforced in summary job. Now properly: (1) shows 100%/50%/0% coverage in overall status, (2) fails when `require_both_keys=true` and backup key is non-functional, (3) reports both keys with equal weight | ✅ Done (S116i resume) |
+| W-051 | `token-probe.yml`: fix `require_both_keys` input — was accepted but never enforced in summary job. Now properly: (1) shows 100%/50%/0% coverage in overall status, (2) fails when `require_both_keys=true` and backup key is non-functional, (3) reports both keys with equal weight | ✅ Done (S116i resume) | <!-- pragma: allowlist secret -->
 | W-052 | `flush-queued-runs.yml`: new emergency workflow_dispatch workflow — bulk-cancels queued/waiting/in_progress runs. Supports dry-run mode, max cap, workflow exclusion, self-protection (never cancels own run). Created for 600+ queue emergency from cascade incident | ✅ Done (S117) |
 | W-053 | `ci-health-monitor.yml`: Sprint 1 — new step auto-updates `CODEX_CI_FAILURE_RATE` repo variable to `<rate>:<status>` (ok/degraded/critical) via GitHub API PATCH+POST fallback after every telemetry run (PR #3421) | ✅ Done (PR #3421) |
 | W-054 | `cognitive_brain_ci_feedback.yml`: Sprint 1 — add P-047 keyword map (`health`/`monitor`/`self.heal` → `CI_SELF_HEALING`) so CI Health Monitor completions are reported to cognitive brain (PR #3421) | ✅ Done (PR #3421) |
 | W-055 | `copilot-setup-steps.yml`: Sprint 2 — `💻 Start CLI API Server` step auto-starts FastAPI :8765 in background with health-check guard; log to `RUNNER_TEMP` (PR #3421) | ✅ Done (PR #3421) |
-| W-056 | Sprint 5 complete — `CODEX_BACKUP_KEY` rotated; token-probe S117 confirms 100%/100% coverage (both keys HTTP 200 read + HTTP 201 write); pre-flight CHANGELOG gate unblocked (PR #3421) | ✅ Done (PR #3421) |
+| W-056 | Sprint 5 complete — `CODEX_BACKUP_KEY` rotated; token-probe S117 confirms 100%/100% coverage (both keys HTTP 200 read + HTTP 201 write); pre-flight CHANGELOG gate unblocked (PR #3421) | ✅ Done (PR #3421) | <!-- pragma: allowlist secret -->
 | W-057 | `cli_api_server.py` Sprint 2: CORS allowlist from `CODEX_ALLOWED_ORIGINS` env var (comma-separated) with localhost fallback; `_build_cors_origins()` helper (PR #3421) | ✅ Done (PR #3421) |
 | W-058 | `cli_api_server.py` Sprint 2: SQLite history persistence via `CODEX_DB_PATH`; in-memory `deque` pre-loaded from DB on start; INSERT on each run; DELETE on clear (PR #3421) | ✅ Done (PR #3421) |
 | W-059 | `cli_api_server.py` Sprint 3: `POST /api/ooda/process` wires `CognitiveAppMain.process()` to FastAPI; `GET /api/ooda/metrics` exposes K1 factor; lazy import with graceful fallback (PR #3421) | ✅ Done (PR #3421) |
 | W-060 | Sprint 4: 3 new agent definitions — `ci-health-alert-agent.md`, `repo-var-sync-agent.md`, `cognitive-ooda-loop-agent.md`; AGENT_REGISTRY.yaml v1.6.0 (123→126) (PR #3421) | ✅ Done (PR #3421) |
 | W-061 | P4.2: `stm_entries` + `ltm_entries` SQLite tables added to `_init_history_db()`; `SQLiteMemory` concrete class; `GET /api/memory/state` + `GET /api/memory/search` endpoints (PR #3422) | ✅ Done (PR #3422) |
 | W-062 | P4.1: `use-memory-system.ts`, `use-quantum-state.ts`, `use-agent-orchestration.ts` rewired to `VITE_CLI_API_URL ?? VITE_CODEX_API ?? :8765`; `cognitive_app/.env.example` created (PR #3422) | ✅ Done (PR #3422) |
-| W-063 | P4.3: `api_proxy()` auto-injects `Authorization: Bearer <CODEX_MASTER_KEY>` for `api.github.com` requests; token never logged or returned in response headers (PR #3422) | ✅ Done (PR #3422) |
+| W-063 | P4.3: `api_proxy()` auto-injects `Authorization: Bearer <CODEX_MASTER_KEY>` for `api.github.com` requests; token never logged or returned in response headers (PR #3422) | ✅ Done (PR #3422) | <!-- pragma: allowlist secret -->
 | W-064 | P4.4: `XtermTerminal.tsx` — real xterm.js PTY WebSocket terminal with FitAddon + WebLinksAddon; wired into `App.tsx` CLI tab replacing `<CliTerminal />` (PR #3422) | ✅ Done (PR #3422) |
 | W-065 | P4.5: 3 new classifiers in `collect_telemetry.py` — `datetime-error` (offset-aware/naive), `build-config` (SPDX/pyproject), `packaging` (PEP 621/setuptools) — drive unknown bucket toward <20% (PR #3422) | ✅ Done (PR #3422) |
 | W-066 | P4.6: `memory-sync-agent.md` — STM→LTM consolidation on 80% capacity; LTM pruning for entries >30d confidence<0.3 (PR #3422) | ✅ Done (PR #3422) |
@@ -17853,41 +17853,41 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-073 | Phase 0 WU-0.3: `docs/architecture/E_TO_D_TRANSITION_MAP.md` created — Mermaid FSM state diagram, 5-condition table (C1–C5), per-phase satisfaction map, Phase 0 gap summary. Current score: 0/5 conditions met | ✅ Done (Phase 0) |
 | W-074 | Phase 0 Task 5: `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` KPI baseline section complete — all metrics filled with real numbers: 151 total agents, 5 GROUNDED, 125 PARTIAL, 21 SOFT, 0 structured handoff, 144 no-handoff, E→D score 0/5 | ✅ Done (Phase 0) |
 | W-075 | Phase 0 complete: `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` + `scripts/ci/workflow_compliance_scan.py` + `scripts/ci/agent_frequency_audit.py` + `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` + `docs/architecture/E_TO_D_TRANSITION_MAP.md` all committed | ✅ Done (Phase 0) |
-| W-076 | CI failure triage (PR #3474): investigated 3 failing CI runs — E→D Transition Readiness Gate (run 22599723381), Agent Token Delegation Cognitive Pre-flight (run 22599723390), Progressive Validation Suite (run 22599723468) | ✅ Done (PR #3477) |
+| W-076 | CI failure triage (PR #3474): investigated 3 failing CI runs — E→D Transition Readiness Gate (run 22599723381), Agent Token Delegation Cognitive Pre-flight (run 22599723390), Progressive Validation Suite (run 22599723468) | ✅ Done (PR #3477) | <!-- pragma: allowlist secret -->
 | W-077 | Fix E→D Transition Readiness Gate: 6 GROUNDED agents in AGENT_REGISTRY.yaml had empty `accepts_handoff_from: []` triggering demotion warnings. Added `accepts_handoff_from: [orchestrator, agent-orchestrator]` (+ ci-health-alert-agent for workflow-health-monitor) and promoted `handoff_protocol: none → structured` for test-pattern-guardian, mutation-testing-agent, owner-approval-guard, test-enhancement-agent, workflow-health-monitor, workflow-compliance-guardian. Gate now returns 0 demotion candidates. | ✅ Done (PR #3477) |
 | W-078 | Fix Cognitive Pre-flight REQ-5 (CHANGELOG.md check): CHANGELOG.md was not updated in commit `54c8433`. Added `## [Unreleased] — PR #3477 CI fixes (2026-03-02)` section with W-076/W-077/W-078 entries. | ✅ Done (PR #3477) |
-| W-079 | Fix `e-to-d-transition-gate.yml` C3 failure (PR #3478): `GROUNDED_VS_SOFT_ENFORCEMENT.md` had 4 `❌ **SOFT**` matches (C3 threshold ≤ 2). Agent-table rows for `codex_reviewer` + `zendesk-architect-agent` were using `❌` (policy-enforcement icon) instead of `⚠️` (informational icon), inflating the gate regex count to 4. Fixed by changing those two rows to `⚠️ **SOFT**`. Regenerated `CODEX_MANIFEST.json` (generated_at 2026-03-02T23:58:27Z) to keep C2 valid. All 5/5 gate conditions restored. | ✅ Done (PR #3478) |
-| W-080 | Fix Art_Validation Pipeline pre-commit failures (PR #3478): (1) trailing whitespace on `GROUNDED_VS_SOFT_ENFORCEMENT.md` line 259 fixed; (2) missing trailing newline on `CODEX_MANIFEST.json` added; (3) `.secrets.baseline` updated with `CODEX_MANIFEST.json` `integrity_sha256` Hex High Entropy String false positive (line 1619, hashed: `4ee4f7f2...`); (4) `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` updated per REQ-4/REQ-5. | ✅ Done (PR #3478) |
+| W-079 | Fix `e-to-d-transition-gate.yml` C3 failure (PR #3478): `GROUNDED_VS_SOFT_ENFORCEMENT.md` had 4 `❌ **SOFT**` matches (C3 threshold ≤ 2). Agent-table rows for `codex_reviewer` + `zendesk-architect-agent` were using `❌` (policy-enforcement icon) instead of `⚠️` (informational icon), inflating the gate regex count to 4. Fixed by changing those two rows to `⚠️ **SOFT**`. Regenerated `CODEX_MANIFEST.json` (generated_at 2026-03-02T23:58:27Z) to keep C2 valid. All 5/5 gate conditions restored. | ✅ Done (PR #3478) | <!-- pragma: allowlist secret -->
+| W-080 | Fix Art_Validation Pipeline pre-commit failures (PR #3478): (1) trailing whitespace on `GROUNDED_VS_SOFT_ENFORCEMENT.md` line 259 fixed; (2) missing trailing newline on `CODEX_MANIFEST.json` added; (3) `.secrets.baseline` updated with `CODEX_MANIFEST.json` `integrity_sha256` Hex High Entropy String false positive (line 1619, hashed: `4ee4f7f2...`); (4) `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` updated per REQ-4/REQ-5. | ✅ Done (PR #3478) | <!-- pragma: allowlist secret -->
 | W-081 | Documentation sync session (PR #3478): Updated `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` v1.0→v1.1.0 with accurate post-Phase-6 metrics (readiness 68→100/100, gate 3/5→5/5, 151→152 agents, phase table corrected, KPIs updated to v1.9.0 counts). Created `.codex/plans/COGNITIVE_BRAIN_STATUS_PR3478.md` with current system state, component status table, KPI dashboard, and next-phase roadmap. Updated `.github/copilot-prompts/active/PR-3478-followup.md` to v2.1.0 with complete session history and 5-pass self-review results. | ✅ Done (PR #3478) |
 | W-082 | Next-phase execution (PR #3478): Confirmed P2 (`/copilot tier-check`) and P3 (5 ADRs) already complete in prior sessions. Implemented P5 R-12 context injection hardening: added `CONTEXT_WINDOW_BUDGET = 32_000` constant and `context_window_budget` parameter to `sanitize_for_injection()` in `scripts/ci/generate_manifest.py` — raises `ValueError` when serialised safe payload exceeds budget, blocking prompt-injection surface expansion via manifest inflation. All 3 test cases verified (normal pass, budget exceeded, blocklist still active). | ✅ Done (PR #3478) |
-| W-083 | CI fix + documentation sync (PR #3474): (1) Added missing EOF newline to `.codex/embeddings/codex_index_meta.json` — unblocked `end-of-file-fixer` pre-commit hook in Art_Validation Pipeline run 22603733594; (2) Registered 15 detect-secrets false positives for `codex_index_meta.json` in `.secrets.baseline` (embedding vectors triggered Base64/PrivateKey/AWS/GitHub token detectors); (3) Updated `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` v1.1.1: Section 3 registry v1.8.0→v1.9.0 (151→152 agents), Section 4 distribution GROUNDED=5→8/PARTIAL=125→144/SOFT=21→0, Section 7 C3+C5 ❌→✅ score 3/5→5/5; (4) Updated `docs/architecture/E_TO_D_TRANSITION_MAP.md`: score 0/5→5/5 ✅, agent count 128+→152, structured handoff status corrected; (5) `CHANGELOG.md` W-083 section added; `CODEX_MANIFEST.json` still valid (age 1.8h < 24h C2 threshold). | ✅ Done (PR #3474) |
+| W-083 | CI fix + documentation sync (PR #3474): (1) Added missing EOF newline to `.codex/embeddings/codex_index_meta.json` — unblocked `end-of-file-fixer` pre-commit hook in Art_Validation Pipeline run 22603733594; (2) Registered 15 detect-secrets false positives for `codex_index_meta.json` in `.secrets.baseline` (embedding vectors triggered Base64/PrivateKey/AWS/GitHub token detectors); (3) Updated `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` v1.1.1: Section 3 registry v1.8.0→v1.9.0 (151→152 agents), Section 4 distribution GROUNDED=5→8/PARTIAL=125→144/SOFT=21→0, Section 7 C3+C5 ❌→✅ score 3/5→5/5; (4) Updated `docs/architecture/E_TO_D_TRANSITION_MAP.md`: score 0/5→5/5 ✅, agent count 128+→152, structured handoff status corrected; (5) `CHANGELOG.md` W-083 section added; `CODEX_MANIFEST.json` still valid (age 1.8h < 24h C2 threshold). | ✅ Done (PR #3474) | <!-- pragma: allowlist secret -->
 | W-084 | CI fix: actionlint-audit Tier-1 gate SC2016/SC2012 (PR #3483): (1) Added `# shellcheck disable=SC2016` directive before `actionlint -format` invocation — `$e` is Go template syntax, not a shell variable; (2) Replaced 2× `$(ls .github/workflows/*.yml \| wc -l)` with `$(find .github/workflows -maxdepth 1 -name '*.yml' \| wc -l)` (SC2012 fix); (3) Deep research analysis performed across 10 agentic infrastructure dimensions: cognitive brain 3-tier memory (STM/MTM/LTM), FAISS/RAG index refresh, OODA orchestration parallelisation, MCP CIMD/XAA handoff, governance tier automation demotion, self-healing CI MTTG tracking, Copilot CLI remote-plugin wiring, Bayesian-Fuzzy compliance calibration, actionlint best practices; (4) Repo variable recommendations delivered: 20 new/updated variables covering cognitive brain context budget, LTM retention, MTM TTL, FAISS opt level, CLI base URL, tier demotion gate, MCP CIMD flag; (5) Cognitive Pre-flight REQ-4/REQ-5 gate compliance: accountability report (this entry) + CHANGELOG.md PR #3483 section added. | ✅ Done (PR #3483) |
 | W-085 | Documentation + audit session (PR #3483): (1) Created `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` — full technical guide for 13 new repo variables with 5 Mermaid diagrams (architecture map, wiring diagrams, CI health state machine, session-number sequence diagram, variable dependency map); (2) Created `docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md` — human admin action guide with per-variable checkboxes, copy-paste batch CLI block, step-by-step GitHub UI instructions with direct URLs, Mermaid setup flowchart + variable mindmap + impact timeline; (3) Codebase-wide Mermaid audit: 446 markdown files scanned, 9 non-archive files with stale "91 workflow" count fixed to "96" (WORKFLOW_COMPLIANCE_MATRIX.md, CONSOLIDATION_GUIDE.md, READINESS_AUDIT_ANALYSIS.md, AGENT_REGISTRY.md, COGNITIVE_BRAIN_LIVE_STATUS.md, PR3422 status, PR3422 followup, PR3422 planset, CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md); (4) Updated 3 agent files: `repo-var-sync-agent.md` v1.1 (extended prefix coverage + Mermaid architecture diagram), `cognitive-brain-manager.md` v2.0 (current metrics: 152 agents, GROUNDED=8, PARTIAL=144, SOFT=0, 96 workflows, 5/5 gate, 100/100 score + Mermaid diagrams), `ci-health-alert-agent.md` (CODEX_CI_FAILURE_THRESHOLD integration + Mermaid state machine); (5) Created `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3483.md` and `.codex/docs/FOLLOWUP_PROMPT_PR3483.md` for session continuity; (6) P2 validation: confirmed no other SC2012 `ls .github/workflows` patterns in any workflow. | ✅ Done (PR #3483) |
-| W-112 | Session 113 + `COGNITIVE_BRAIN_SESSION_NUMBER` auto-increment + CI fix (PR #3496, 2026-03-05): **(W-112a)** `.secrets.baseline` line numbers refreshed (agent-auth-delegation.yml: 559→561, 590→592) and `generated_at` updated — fixes detect-secrets exit code 3 / Art_Validation / Fast Validation failure. Root cause: two entries in the baseline tracked line numbers that shifted when earlier W-111 commit added lines to `agent-auth-delegation.yml`. **(W-112b)** `agent-auth-delegation.yml` — `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step added as step 3e in `activate-delegation` job. Root cause analysis: `chatops_copilot_trigger.yml` Group D increment only fires on `/copilot` (slash) commands via `issue_comment` events; all real agent invocations use `@copilot continue` (at-sign) so the chatops workflow never sees them and the counter never auto-advances — requiring manual updates after every PR. Fix wires the increment to the token delegation approval event which fires on every real session. Requires `CODEX_MASTER_KEY` with `variables:write` scope (gracefully skips if unavailable). **(W-112c)** `.codex/agent_context.json` `COGNITIVE_BRAIN_SESSION_NUMBER` 112→113 — confirmed live by @mbaetiong (2026-03-05). 6th token delegation activation: run 22698122358, approved 2026-03-05T01:59:16Z. | ✅ Done (PR #3496) |
+| W-112 | Session 113 + `COGNITIVE_BRAIN_SESSION_NUMBER` auto-increment + CI fix (PR #3496, 2026-03-05): **(W-112a)** `.secrets.baseline` line numbers refreshed (agent-auth-delegation.yml: 559→561, 590→592) and `generated_at` updated — fixes detect-secrets exit code 3 / Art_Validation / Fast Validation failure. Root cause: two entries in the baseline tracked line numbers that shifted when earlier W-111 commit added lines to `agent-auth-delegation.yml`. **(W-112b)** `agent-auth-delegation.yml` — `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step added as step 3e in `activate-delegation` job. Root cause analysis: `chatops_copilot_trigger.yml` Group D increment only fires on `/copilot` (slash) commands via `issue_comment` events; all real agent invocations use `@copilot continue` (at-sign) so the chatops workflow never sees them and the counter never auto-advances — requiring manual updates after every PR. Fix wires the increment to the token delegation approval event which fires on every real session. Requires `CODEX_MASTER_KEY` with `variables:write` scope (gracefully skips if unavailable). **(W-112c)** `.codex/agent_context.json` `COGNITIVE_BRAIN_SESSION_NUMBER` 112→113 — confirmed live by @mbaetiong (2026-03-05). 6th token delegation activation: run 22698122358, approved 2026-03-05T01:59:16Z. | ✅ Done (PR #3496) | <!-- pragma: allowlist secret -->
 | W-111 | @mbaetiong C8 sign-off recorded — fourth D_CAPABLE promotion unblocked (PR #3496, 2026-03-05): **(W-111a)** `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` updated — C8 gap marked RESOLVED ✅; §5 rewritten to record @mbaetiong explicit sign-off on top-25 rank threshold relaxation (PR #3496 review comment, 2026-03-05); promotion status updated from "DEFERRED on C4+C8" to "PENDING C4 only". **(W-111b)** `AGENT_REGISTRY.yaml` v1.9.4→v1.9.5: `workflow-health-monitor` — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added. Fourth D_CAPABLE promotion is now fully unblocked pending only the observation window closure (2026-04-04). | ✅ Done (PR #3496) |
 | W-110 | Fourth D_CAPABLE candidate designation — `workflow-health-monitor` (PR #3496, 2026-03-05): **(W-110a)** Created `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` — full scorecard evaluation of `owner-approval-guard` (REJECTED as 5th queue) vs `workflow-health-monitor` (DESIGNATED 4th candidate); both score 6/8 criteria; `workflow-health-monitor` selected: 3 handoff sources (vs 2), `batch_scan_enabled: true`, CI-adjacent role completing the CI triad, primary agent in orchestration chain tests. **(W-110b)** `AGENT_REGISTRY.yaml` v1.9.3→v1.9.4: `workflow-health-monitor` updated with `has_tests: true`, `has_docs: true`, `activation_frequency_rank: 21`, `violations_30d: 0`, `observation_started: '2026-03-05'`, `observation_window_days: 30`, `observation_baseline`; `owner-approval-guard` updated with `has_tests: true`, `has_docs: true`. Promotion DEFERRED pending C4 observation window (2026-03-05 → 2026-04-04) and @mbaetiong sign-off on C8 rank threshold relaxation (top-20 → top-25). | ✅ Done (PR #3496) |
 | W-132 | Cache hierarchy verification & shared datasets (PR #3503, 2026-03-06): **(W-132a)** `actions/cache@v4→@v5`: upgraded 7 cache steps across `setup-python-cached/action.yml` (4 steps), `setup-python-uv/action.yml` (1), `copilot-setup-steps.yml` (2). **(W-132b)** `CODEX_CACHE_VERSION` wired: added `cache-version` input to `setup-python-cached`; L1/L3 keys now include `{tier}-{VER}` segment — bumping `CODEX_CACHE_VERSION` repo variable busts the entire cache hierarchy. **(W-132c)** `cache-tier` made functional: LIVE/COMMON/EPHEMERAL tier prefix embedded in L1/L3 keys (was "Informational only"); restore-keys always include `live` fallback. **(W-132d)** `agent-registry-validation.yml`: Python 3.11→3.12; added `actions/cache@v5` pip cache with live-tier fallback restore-key. **(W-132e)** `docs/ops/CACHE_SHARED_DATASETS.md` v1.0.0 created: 4-layer hierarchy, tier system, variable/file-based shared datasets, cognitive brain in-process cache (LRU+TTL+SQLite+FAISS), agent tier matrix, sync protocol, 5 gaps identified (3 fixed). **(W-132f)** `.github/WORKFLOW_CACHE_TIERS.md` updated: functional key format, bust instructions, fallback chain, Mermaid tier map. **(W-132g)** QA walkthrough refresh: Session 15 in `WALKTHROUGH_SUMMARY.md`; `codebase_snapshot.yaml` 2026-03-06 actuals; IP-007 cache optimization added to `improvement_proposals.json`. Gap documented: 51 Python workflows still missing cache. | ✅ Done (PR #3503) |
-| W-136 | GITHUB_VARIABLES_MASTER_GUIDE.md v1.4.0 — CODEX_MASTER_KEY Codespace secret confirmed (PR #3503, 2026-03-06): **(W-136a)** `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.3.0→v1.4.0: §3 `CODEX_MASTER_KEY` rotation timestamp updated to "now" (third rotation 2026-03-06 by @mbaetiong). §8 row 1 `CODEX_MASTER_KEY` status updated from "❌ Not confirmed" to "✅ Confirmed (org-level)" — org-level Codespace secret is active; repo-level override that was masking it has been removed by @mbaetiong. §8 CLI block + §13 CLI block: `CODEX_MASTER_KEY` marked as already-set with skip comment. §13 source-values table: `CODEX_MASTER_KEY` row struck through as ✅ completed. Summary Checklist: "Set 8 Codespace secrets" → "Set 7 Codespace secrets"; CODEX_MASTER_KEY noted as ✅ confirmed. Footer: v1.4.0 + W-136 last-reviewed date. | ✅ Done (PR #3503) |
-| W-131 | CI failure sweep — registry, imports, pre-flight, actionlint (PR #3503, 2026-03-06): **(W-131a)** `.github/agents/AGENT_REGISTRY.yaml` — added `handoff_protocol: none` to `github-app-manager` entry (first agent in list, added W-126, was missing the field required by `AgentRegistrySchema.json`); resolves Agent Registry Validation schema error (`'handoff_protocol' is a required property`) and unblocks E→D Transition Readiness Gate C4. **(W-131b)** `src/codex/auth/__init__.py` + `tests/server/test_webhook_endpoint.py` — fixed unsorted import blocks (Ruff I001 / isort); 2 files fixed with `ruff --fix --select I001`; resolves Auto-Fix Common CI Issues (Pattern 9) + PR Auto-Fix Check failures. **(W-131c)** `tests/auth/test_user_store.py` (lines 39, 137): tightened `pytest.raises(match="empty")` → `match="must not be empty"` (matches `PasswordHasher`/`UserStore` actual error messages; pattern length > 5 chars bypasses pre-flight broad-match detector `\w{1,5}`). **(W-131d)** `tests/auth/test_github_app.py` (lines 80, 129, 275): tightened `match="PEM"` → `match="valid PEM-encoded"`, `match="600"` → `match="expiry_seconds must"`, `match="empty"` → `match="must not be empty"`; all match actual `ValueError` messages in `github_app.py`. Pre-flight: 6/6 checks pass, 0 failed. **(W-131e)** `.github/actionlint.yaml`: added `ubuntu-latest-m` to `self-hosted-runner.labels` array (AS Larger Runners custom runner provisioned W-122); eliminates spurious "unknown label" annotations across all workflows that use this runner. **(W-131f)** `.github/workflows/build-preview-image.yml` line 90: replaced invalid `${{ inputs.image_tag \|\| SHORT_SHA }}` (shell variable inside `${{ }}` expression) with `INPUT_TAG="${{ inputs.image_tag }}"` + `TAG="${INPUT_TAG:-$SHORT_SHA}"` pure-bash OR pattern; resolves actionlint `undefined variable "SHORT_SHA"` error. Total CI checks resolved: Agent Registry Validation ✅, Auto-Fix Common CI Issues ✅, E→D Transition Readiness Gate ✅, PR Auto-Fix Check ✅, Pre-Flight CI Validation ✅, Workflow Compliance Audit (actionlint) ✅. | ✅ Done (PR #3503) |
-| W-128 | Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05): Created `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` — single source of truth for ALL GitHub variable and secret storage layers. Covers: (1) Org Secrets (8 present + 1 missing: `CODEX_ADMIN_KEY`), (2) Repo Secrets (6 present, 1 potentially stale), (3) Env Secrets (`Aries_Serpent_codex_`, 4 entries including `CODEX_ENV_NODE_VERSION` wrongly stored as secret), (4) Repo Variables (52 entries across 6 subsystem groups), (5) Env Variables (13 entries, Python version conflict with repo-level), (6) Codespace Secrets (8 declared in devcontainer.json, 0 confirmed set). Each entry has status checkboxes (✅ / ⚠️ / ❌), GitHub UI deep links, and explicit troubleshooting steps for incorrect format, invalid tokens, stale secrets, and missing variables. Identified 7 actionable issues including: `CODEX_ENV_NODE_VERSION` stored as secret (wrong type), Python 3.11 vs 3.12 env conflict, missing `CODEX_ADMIN_KEY`, missing `WEBHOOK_RECEIVER_URL`, unconfirmed Codespace secrets, and approaching rotation window for `CODEX_MASTER_KEY`. Superseded `.codex/runtime_variables.md`, `docs/security/CURRENT_EXPECTED_VARIABLES.md`, and `.codex/QUICK_REFERENCE_TOKEN_STATUS.md` with forwarding notices. Updated `docs/admin/INDEX.md` to surface the new guide at top. | ✅ Done (PR #3503) |
+| W-136 | GITHUB_VARIABLES_MASTER_GUIDE.md v1.4.0 — CODEX_MASTER_KEY Codespace secret confirmed (PR #3503, 2026-03-06): **(W-136a)** `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.3.0→v1.4.0: §3 `CODEX_MASTER_KEY` rotation timestamp updated to "now" (third rotation 2026-03-06 by @mbaetiong). §8 row 1 `CODEX_MASTER_KEY` status updated from "❌ Not confirmed" to "✅ Confirmed (org-level)" — org-level Codespace secret is active; repo-level override that was masking it has been removed by @mbaetiong. §8 CLI block + §13 CLI block: `CODEX_MASTER_KEY` marked as already-set with skip comment. §13 source-values table: `CODEX_MASTER_KEY` row struck through as ✅ completed. Summary Checklist: "Set 8 Codespace secrets" → "Set 7 Codespace secrets"; CODEX_MASTER_KEY noted as ✅ confirmed. Footer: v1.4.0 + W-136 last-reviewed date. | ✅ Done (PR #3503) | <!-- pragma: allowlist secret -->
+| W-131 | CI failure sweep — registry, imports, pre-flight, actionlint (PR #3503, 2026-03-06): **(W-131a)** `.github/agents/AGENT_REGISTRY.yaml` — added `handoff_protocol: none` to `github-app-manager` entry (first agent in list, added W-126, was missing the field required by `AgentRegistrySchema.json`); resolves Agent Registry Validation schema error (`'handoff_protocol' is a required property`) and unblocks E→D Transition Readiness Gate C4. **(W-131b)** `src/codex/auth/__init__.py` + `tests/server/test_webhook_endpoint.py` — fixed unsorted import blocks (Ruff I001 / isort); 2 files fixed with `ruff --fix --select I001`; resolves Auto-Fix Common CI Issues (Pattern 9) + PR Auto-Fix Check failures. **(W-131c)** `tests/auth/test_user_store.py` (lines 39, 137): tightened `pytest.raises(match="empty")` → `match="must not be empty"` (matches `PasswordHasher`/`UserStore` actual error messages; pattern length > 5 chars bypasses pre-flight broad-match detector `\w{1,5}`). **(W-131d)** `tests/auth/test_github_app.py` (lines 80, 129, 275): tightened `match="PEM"` → `match="valid PEM-encoded"`, `match="600"` → `match="expiry_seconds must"`, `match="empty"` → `match="must not be empty"`; all match actual `ValueError` messages in `github_app.py`. Pre-flight: 6/6 checks pass, 0 failed. **(W-131e)** `.github/actionlint.yaml`: added `ubuntu-latest-m` to `self-hosted-runner.labels` array (AS Larger Runners custom runner provisioned W-122); eliminates spurious "unknown label" annotations across all workflows that use this runner. **(W-131f)** `.github/workflows/build-preview-image.yml` line 90: replaced invalid `${{ inputs.image_tag \|\| SHORT_SHA }}` (shell variable inside `${{ }}` expression) with `INPUT_TAG="${{ inputs.image_tag }}"` + `TAG="${INPUT_TAG:-$SHORT_SHA}"` pure-bash OR pattern; resolves actionlint `undefined variable "SHORT_SHA"` error. Total CI checks resolved: Agent Registry Validation ✅, Auto-Fix Common CI Issues ✅, E→D Transition Readiness Gate ✅, PR Auto-Fix Check ✅, Pre-Flight CI Validation ✅, Workflow Compliance Audit (actionlint) ✅. | ✅ Done (PR #3503) | <!-- pragma: allowlist secret -->
+| W-128 | Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05): Created `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` — single source of truth for ALL GitHub variable and secret storage layers. Covers: (1) Org Secrets (8 present + 1 missing: `CODEX_ADMIN_KEY`), (2) Repo Secrets (6 present, 1 potentially stale), (3) Env Secrets (`Aries_Serpent_codex_`, 4 entries including `CODEX_ENV_NODE_VERSION` wrongly stored as secret), (4) Repo Variables (52 entries across 6 subsystem groups), (5) Env Variables (13 entries, Python version conflict with repo-level), (6) Codespace Secrets (8 declared in devcontainer.json, 0 confirmed set). Each entry has status checkboxes (✅ / ⚠️ / ❌), GitHub UI deep links, and explicit troubleshooting steps for incorrect format, invalid tokens, stale secrets, and missing variables. Identified 7 actionable issues including: `CODEX_ENV_NODE_VERSION` stored as secret (wrong type), Python 3.11 vs 3.12 env conflict, missing `CODEX_ADMIN_KEY`, missing `WEBHOOK_RECEIVER_URL`, unconfirmed Codespace secrets, and approaching rotation window for `CODEX_MASTER_KEY`. Superseded `.codex/runtime_variables.md`, `docs/security/CURRENT_EXPECTED_VARIABLES.md`, and `.codex/QUICK_REFERENCE_TOKEN_STATUS.md` with forwarding notices. Updated `docs/admin/INDEX.md` to surface the new guide at top. | ✅ Done (PR #3503) | <!-- pragma: allowlist secret -->
 | W-127 | CI fix: Cognitive Pre-flight REQ-4 gate — accountability report missing from intermediate commits `a189432` and `3e95fc3` (PR #3503, 2026-03-05): Self-healing CI runs 22710605987 and 22711289287 both failed REQ-4 because those commits (MFA/SSRF follow-ups) did not touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`. Root cause: iterative code-review fix commits were pushed without the mandatory accountability-report update. Fix already applied: commit `5167be5` (W-126/S114 batch) touched both `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md`, satisfying REQ-4 + REQ-5. This W-127 entry satisfies the gate for subsequent CI runs. Pattern: `PREFLIGHT_001`. | ✅ Done (PR #3503) |
-| W-126 | User auth system + GitHub App package + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114): **(W-126a)** `src/codex/auth/user_store.py` — `User` dataclass, `PasswordHasher` (PBKDF2-SHA256), `UserStore` in-memory CRUD. **(W-126b)** `src/codex/auth/authenticator.py` — `Authenticator` + `LoginResult`: login/logout/MFA/password-change lifecycle. **(W-126c)** `src/codex/auth/github_app.py` — `GitHubApp` (RS256 JWT, installation tokens), `GitHubAppConfig` (SSRF-safe URL validation), `InstallationToken` (cached, 60s expiry buffer), `WebhookVerifier` (HMAC-SHA256), `build_app_manifest()`, `_resolve_github_token()` (CODEX_MASTER_KEY→CODEX_BACKUP_KEY→AGENT_GITHUB_TOKEN→GITHUB_TOKEN chain), `pat_api_get()` (auto-retry on 401/403). **(W-126d)** `.github/agents/github-app-manager.md` — new production Copilot agent v1.0.0 for GitHub App lifecycle management. **(W-126e)** `.devcontainer/devcontainer.json` — full Codespace config with 8 secrets declared, 5 features, 3 forwarded ports, 11 VS Code extensions, Copilot-agent settings, parity with `copilot-setup-steps.yml`. **(W-126f)** `.devcontainer/scripts/` — 5 lifecycle scripts (on-create, update-content, post-create, post-start, post-attach) mirroring every phase of `copilot-setup-steps.yml`. **(W-126g)** `Dockerfile.preview` — multi-stage preview/preview-dev targets. **(W-126h)** `.github/workflows/build-preview-image.yml` — GHCR build + smoke-test. **(W-126i)** Documentation: `docs/agent/GITHUB_APP_CLI_MAPPING.md`, `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`, `docs/plans/custom-preview-image.md`. **(W-126j)** Cognitive brain: `COGNITIVE_BRAIN_STATUS_S114.md`, `COGNITIVE_BRAIN_PHASE_23_OBJECTIVES.md`. **(W-126k)** Tests: 111 new tests (test_user_store×34, test_authenticator×25, test_github_app×52) — 100% pass. | ✅ Done (PR #3503) |
-| W-119 | CI fix: Cognitive Pre-flight REQ-4 gate — accountability report not touched in last commit (PR #3501, 2026-03-05): `Agent Token Delegation / 🧠 Cognitive Pre-flight Check` run 22706880946 failed with exit code 1 at REQ-4. Root cause: automated follow-up prompt commit `2502ca8` ("chore: Generate follow-up prompt for PR #3501") generated by the self-healing CI pipeline did not include `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, triggering the gate: `git diff --name-only HEAD~1 HEAD` did not include the report. Fix: added W-119 entry to this file and W-119 section to `CHANGELOG.md` to satisfy REQ-4 + REQ-5. Pattern: `PREFLIGHT_001`. Cherry-picked into PR #3499. | ✅ Done (PR #3501) |
-| W-118 | Full token tooling + variable management (PR #3497, 2026-03-05): **(W-118a)** `copilot-setup-steps.yml` — added "🔑 Export Auth Tokens" step that bridges job-level `env:` → `GITHUB_ENV` for `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`; CLI server startup now explicitly forwards all tokens to uvicorn; `actions: write` permission added with accurate capability comments. **(W-118b)** `cli_api_server.py` — 4-token priority chain auto-inject (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN) with source logging. **(W-118c)** `brain_client.py` — `_auth_header()` same priority chain. **(W-118d)** `scripts/tools/variable_manager.py` — complete CRUD for repo/env/org variables; auto-resolves token; BrainClient secondary + urllib fallback; CLI interface. **(W-118e)** `tests/agents/test_variable_management.py` — 26 tests: token priority, repo/env/org CRUD, mechanism fallback, full lifecycle, 403 handling — all pass. **(W-118f)** `docs/agent/COPILOT_TOKEN_GUIDE.md` — created: complete token reference; accurate permission matrix (key constraint: GITHUB_TOKEN cannot access variables API — needs CODEX_MASTER_KEY); usage examples; delegation section; troubleshooting; quick verification script. Live test: GITHUB_TOKEN returns 403 on variables API (expected and documented); 26/26 unit tests pass; MCP primary mechanism confirmed working. | ✅ Done (PR #3497) |
-| W-117 | Correct agent API priority hierarchy + variable management docs (PR #3497, 2026-03-05): **(W-117a)** Fixed incorrect "prohibited" statement for urllib/requests/httpx — updated 3-tier hierarchy across all sources: (1) Primary = MCP Server + Playwright, (2) Secondary = CLI API Client, (3) Fallback = urllib/requests/httpx. Updated `brain_client.py` module header + `proxy_request()` docstring; `cli_api_server.py` `/api/request` route docstring; `COGNITIVE_APP_CONNECTION_GUIDE.md` "Intended Use" → "Agent API Request Priority Hierarchy" table. **(W-117b)** Added "GitHub Variables Management" section to connection guide: curl + BrainClient examples for creating/updating/deleting repo vars (`POST /repos/…/actions/variables`), env vars (`POST /repos/…/environments/{env}/variables`), and org vars (`POST /orgs/…/actions/variables`); full CRUD method table with expected upstream HTTP codes (201 create, 204 update/delete). **(W-117c)** Live hierarchy demonstration: MCP tool (`github-mcp-server-search_repositories`) ✅ confirmed working as primary (full repo info + admin perms); CLI API Client probe returned correct upstream 401 when `CODEX_MASTER_KEY` absent from server process env (expected — delegation token is a repo variable not exported to sandbox process); documented as known auth constraint with correct fix guidance. Added 401 troubleshooting entry. **(W-117d)** Stored updated memory: BrainClient API priority hierarchy corrected (MCP=primary, CLI=secondary, urllib=fallback). | ✅ Done (PR #3497) |
+| W-126 | User auth system + GitHub App package + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114): **(W-126a)** `src/codex/auth/user_store.py` — `User` dataclass, `PasswordHasher` (PBKDF2-SHA256), `UserStore` in-memory CRUD. **(W-126b)** `src/codex/auth/authenticator.py` — `Authenticator` + `LoginResult`: login/logout/MFA/password-change lifecycle. **(W-126c)** `src/codex/auth/github_app.py` — `GitHubApp` (RS256 JWT, installation tokens), `GitHubAppConfig` (SSRF-safe URL validation), `InstallationToken` (cached, 60s expiry buffer), `WebhookVerifier` (HMAC-SHA256), `build_app_manifest()`, `_resolve_github_token()` (CODEX_MASTER_KEY→CODEX_BACKUP_KEY→AGENT_GITHUB_TOKEN→GITHUB_TOKEN chain), `pat_api_get()` (auto-retry on 401/403). **(W-126d)** `.github/agents/github-app-manager.md` — new production Copilot agent v1.0.0 for GitHub App lifecycle management. **(W-126e)** `.devcontainer/devcontainer.json` — full Codespace config with 8 secrets declared, 5 features, 3 forwarded ports, 11 VS Code extensions, Copilot-agent settings, parity with `copilot-setup-steps.yml`. **(W-126f)** `.devcontainer/scripts/` — 5 lifecycle scripts (on-create, update-content, post-create, post-start, post-attach) mirroring every phase of `copilot-setup-steps.yml`. **(W-126g)** `Dockerfile.preview` — multi-stage preview/preview-dev targets. **(W-126h)** `.github/workflows/build-preview-image.yml` — GHCR build + smoke-test. **(W-126i)** Documentation: `docs/agent/GITHUB_APP_CLI_MAPPING.md`, `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`, `docs/plans/custom-preview-image.md`. **(W-126j)** Cognitive brain: `COGNITIVE_BRAIN_STATUS_S114.md`, `COGNITIVE_BRAIN_PHASE_23_OBJECTIVES.md`. **(W-126k)** Tests: 111 new tests (test_user_store×34, test_authenticator×25, test_github_app×52) — 100% pass. | ✅ Done (PR #3503) | <!-- pragma: allowlist secret -->
+| W-119 | CI fix: Cognitive Pre-flight REQ-4 gate — accountability report not touched in last commit (PR #3501, 2026-03-05): `Agent Token Delegation / 🧠 Cognitive Pre-flight Check` run 22706880946 failed with exit code 1 at REQ-4. Root cause: automated follow-up prompt commit `2502ca8` ("chore: Generate follow-up prompt for PR #3501") generated by the self-healing CI pipeline did not include `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, triggering the gate: `git diff --name-only HEAD~1 HEAD` did not include the report. Fix: added W-119 entry to this file and W-119 section to `CHANGELOG.md` to satisfy REQ-4 + REQ-5. Pattern: `PREFLIGHT_001`. Cherry-picked into PR #3499. | ✅ Done (PR #3501) | <!-- pragma: allowlist secret -->
+| W-118 | Full token tooling + variable management (PR #3497, 2026-03-05): **(W-118a)** `copilot-setup-steps.yml` — added "🔑 Export Auth Tokens" step that bridges job-level `env:` → `GITHUB_ENV` for `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`; CLI server startup now explicitly forwards all tokens to uvicorn; `actions: write` permission added with accurate capability comments. **(W-118b)** `cli_api_server.py` — 4-token priority chain auto-inject (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN) with source logging. **(W-118c)** `brain_client.py` — `_auth_header()` same priority chain. **(W-118d)** `scripts/tools/variable_manager.py` — complete CRUD for repo/env/org variables; auto-resolves token; BrainClient secondary + urllib fallback; CLI interface. **(W-118e)** `tests/agents/test_variable_management.py` — 26 tests: token priority, repo/env/org CRUD, mechanism fallback, full lifecycle, 403 handling — all pass. **(W-118f)** `docs/agent/COPILOT_TOKEN_GUIDE.md` — created: complete token reference; accurate permission matrix (key constraint: GITHUB_TOKEN cannot access variables API — needs CODEX_MASTER_KEY); usage examples; delegation section; troubleshooting; quick verification script. Live test: GITHUB_TOKEN returns 403 on variables API (expected and documented); 26/26 unit tests pass; MCP primary mechanism confirmed working. | ✅ Done (PR #3497) | <!-- pragma: allowlist secret -->
+| W-117 | Correct agent API priority hierarchy + variable management docs (PR #3497, 2026-03-05): **(W-117a)** Fixed incorrect "prohibited" statement for urllib/requests/httpx — updated 3-tier hierarchy across all sources: (1) Primary = MCP Server + Playwright, (2) Secondary = CLI API Client, (3) Fallback = urllib/requests/httpx. Updated `brain_client.py` module header + `proxy_request()` docstring; `cli_api_server.py` `/api/request` route docstring; `COGNITIVE_APP_CONNECTION_GUIDE.md` "Intended Use" → "Agent API Request Priority Hierarchy" table. **(W-117b)** Added "GitHub Variables Management" section to connection guide: curl + BrainClient examples for creating/updating/deleting repo vars (`POST /repos/…/actions/variables`), env vars (`POST /repos/…/environments/{env}/variables`), and org vars (`POST /orgs/…/actions/variables`); full CRUD method table with expected upstream HTTP codes (201 create, 204 update/delete). **(W-117c)** Live hierarchy demonstration: MCP tool (`github-mcp-server-search_repositories`) ✅ confirmed working as primary (full repo info + admin perms); CLI API Client probe returned correct upstream 401 when `CODEX_MASTER_KEY` absent from server process env (expected — delegation token is a repo variable not exported to sandbox process); documented as known auth constraint with correct fix guidance. Added 401 troubleshooting entry. **(W-117d)** Stored updated memory: BrainClient API priority hierarchy corrected (MCP=primary, CLI=secondary, urllib=fallback). | ✅ Done (PR #3497) | <!-- pragma: allowlist secret -->
 | W-116 | Copilot Agent API gateway intent documentation (PR #3497, 2026-03-05): **(W-116a)** `src/codex/agents/brain_client.py` — module header rewritten: `proxy_request()` is now clearly identified as the primary/sole mechanism for all outbound HTTP calls from Copilot Agent sessions; prohibition on direct urllib/requests/httpx from agent code; quick-start examples for GET GH Repo, GET GH Runs, POST, env var reference, server auto-start note, link to connection guide. **(W-116b)** `proxy_request()` docstring expanded: added intended-use enforcement block, explicit "do NOT use urllib/requests/httpx" statement, rationale (auto-auth, audit logging, consistent error handling, observable egress), full parameter docs, return schema, and concrete GitHub API examples. **(W-116c)** `cognitive_app/src/server/cli_api_server.py` — `POST /api/request` route docstring updated: "Primary API request gateway for Copilot Agent sessions", enforcement note, auto-auth description. **(W-116d)** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — restructured to lead with new "Intended Use" section: agent pattern table (BrainClient vs curl), minimal session pattern code block, enforcement rationale. **Note: W-116 language corrected in W-117.** | ✅ Superseded by W-117 |
-| W-115 | Cognitive App CLI connection guide + full API audit (PR #3497, 2026-03-05): **(W-115a)** Created `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — comprehensive Copilot Agent session connection reference covering: quick-start checklist, all 7 API endpoints (`GET /api/health`, `POST /api/cli/run`, `GET /api/cli/history`, `DELETE /api/cli/history`, `POST /api/request` with GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS proxy), BrainClient Python examples, GitHub Pages SPA limitations (ERR_BLOCKED_BY_CLIENT permanent sandbox constraint RC-6), troubleshooting for server-down/env-missing/503-memory/detect-secrets scenarios, and cross-references to all related docs/ADRs. **(W-115b)** Live audit results embedded: 8/8 API operations verified ✅ — `GET /api/health` → 200, `POST /api/cli/run` (git log) → 200, `GET /api/cli/history` → 200, `DELETE /api/cli/history` → 200 `{"cleared":true}`, `GET GH Repo` via proxy → 200 (`Aries-Serpent/_codex_`, Python, id 1040037790), `GET GH Runs` via proxy → 200 (total 40000, latest run 22702237122), PUT proxy → 200 body echoed, PATCH proxy → 200 body echoed. One known permanent limitation: GitHub Pages browser blocked. | ✅ Done (PR #3497) |
-| W-114 | CI fix: detect-secrets actual line numbers 561/592 + CHANGELOG REQ-5 gate + cognitive_app CLI test (PR #3497, 2026-03-05): **(W-114a)** `.secrets.baseline` — W-113a used manual Python token-search and found the WRONG base64 token at lines 566/604; running `detect-secrets scan` locally confirmed actual positions are line **561** (hash `417c84ca...` REQ-8, UNCHANGED from W-102) and line **592** (hash `1565169a...` REQ-9, UNCHANGED from W-102); only line numbers shifted (+2 from main merge), not the hashes; corrected baseline, `detect-secrets scan --baseline .secrets.baseline` exits 0. **(W-114b)** `CHANGELOG.md` — added [Unreleased] W-113/W-114 entry to satisfy REQ-5 Cognitive Pre-flight gate (`git diff HEAD~1 HEAD | grep CHANGELOG.md` must match); this was the exact failing step identified in triage report #3498: `🧠 Cognitive Pre-flight Check › Verify CHANGELOG.md updated in last commit`. **(W-114c)** `.codex/patterns/ci_failure_patterns.yaml` — added 3 new patterns: `DETECT_SECRETS_002` (baseline line drift), `PREFLIGHT_001` (CHANGELOG gate), `CODEQL_001` (no-source language matrix); stats updated 20→23 patterns. Attempted cognitive_app CLI browser verification — blocked by sandbox (RC-6, permanent); verified all 8 API operations via curl/BrainClient instead. | ✅ Done (PR #3497) |
-| W-113 | CI fix: `.secrets.baseline` stale line numbers + CodeQL `javascript` no-code failure (PR #3497, 2026-03-05): **(W-113a)** `.secrets.baseline` line numbers for `agent-auth-delegation.yml` shifted after main merge (c0a71f3) — REQ-8 base64 token moved from line 561→566 (new hash `31a7aa9c...`) and REQ-9 token moved from line 592→604 (new hash `c99b53af...`); updated both entries (values later corrected in W-114a — hashes were wrong). `CODEX_MANIFEST.json` entry also refreshed (line 1653, hash `f88d271f...`). **(W-113b)** `codeql-analysis.yml`: reverted `config-file: .codeql/codeql-config.yml` (broke Go analysis); restored `queries: +security-extended`; added `continue-on-error: ${{ matrix.language == 'javascript' }}`. **(W-113c)** Updated `AGENT_ACCOUNTABILITY_REPORT.md`. | ✅ Done (PR #3497) |
+| W-115 | Cognitive App CLI connection guide + full API audit (PR #3497, 2026-03-05): **(W-115a)** Created `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — comprehensive Copilot Agent session connection reference covering: quick-start checklist, all 7 API endpoints (`GET /api/health`, `POST /api/cli/run`, `GET /api/cli/history`, `DELETE /api/cli/history`, `POST /api/request` with GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS proxy), BrainClient Python examples, GitHub Pages SPA limitations (ERR_BLOCKED_BY_CLIENT permanent sandbox constraint RC-6), troubleshooting for server-down/env-missing/503-memory/detect-secrets scenarios, and cross-references to all related docs/ADRs. **(W-115b)** Live audit results embedded: 8/8 API operations verified ✅ — `GET /api/health` → 200, `POST /api/cli/run` (git log) → 200, `GET /api/cli/history` → 200, `DELETE /api/cli/history` → 200 `{"cleared":true}`, `GET GH Repo` via proxy → 200 (`Aries-Serpent/_codex_`, Python, id 1040037790), `GET GH Runs` via proxy → 200 (total 40000, latest run 22702237122), PUT proxy → 200 body echoed, PATCH proxy → 200 body echoed. One known permanent limitation: GitHub Pages browser blocked. | ✅ Done (PR #3497) | <!-- pragma: allowlist secret -->
+| W-114 | CI fix: detect-secrets actual line numbers 561/592 + CHANGELOG REQ-5 gate + cognitive_app CLI test (PR #3497, 2026-03-05): **(W-114a)** `.secrets.baseline` — W-113a used manual Python token-search and found the WRONG base64 token at lines 566/604; running `detect-secrets scan` locally confirmed actual positions are line **561** (hash `417c84ca...` REQ-8, UNCHANGED from W-102) and line **592** (hash `1565169a...` REQ-9, UNCHANGED from W-102); only line numbers shifted (+2 from main merge), not the hashes; corrected baseline, `detect-secrets scan --baseline .secrets.baseline` exits 0. **(W-114b)** `CHANGELOG.md` — added [Unreleased] W-113/W-114 entry to satisfy REQ-5 Cognitive Pre-flight gate (`git diff HEAD~1 HEAD | grep CHANGELOG.md` must match); this was the exact failing step identified in triage report #3498: `🧠 Cognitive Pre-flight Check › Verify CHANGELOG.md updated in last commit`. **(W-114c)** `.codex/patterns/ci_failure_patterns.yaml` — added 3 new patterns: `DETECT_SECRETS_002` (baseline line drift), `PREFLIGHT_001` (CHANGELOG gate), `CODEQL_001` (no-source language matrix); stats updated 20→23 patterns. Attempted cognitive_app CLI browser verification — blocked by sandbox (RC-6, permanent); verified all 8 API operations via curl/BrainClient instead. | ✅ Done (PR #3497) | <!-- pragma: allowlist secret -->
+| W-113 | CI fix: `.secrets.baseline` stale line numbers + CodeQL `javascript` no-code failure (PR #3497, 2026-03-05): **(W-113a)** `.secrets.baseline` line numbers for `agent-auth-delegation.yml` shifted after main merge (c0a71f3) — REQ-8 base64 token moved from line 561→566 (new hash `31a7aa9c...`) and REQ-9 token moved from line 592→604 (new hash `c99b53af...`); updated both entries (values later corrected in W-114a — hashes were wrong). `CODEX_MANIFEST.json` entry also refreshed (line 1653, hash `f88d271f...`). **(W-113b)** `codeql-analysis.yml`: reverted `config-file: .codeql/codeql-config.yml` (broke Go analysis); restored `queries: +security-extended`; added `continue-on-error: ${{ matrix.language == 'javascript' }}`. **(W-113c)** Updated `AGENT_ACCOUNTABILITY_REPORT.md`. | ✅ Done (PR #3497) | <!-- pragma: allowlist secret -->
 | W-112 | CI fixes: detect-secrets Private Key false positive + CODEX_MANIFEST.json EOF + session timeout + CodeQL config (PR #3497, run 22700651784, 2026-03-05): **(W-112a)** `tests/security/test_no_hardcoded_secrets.py:13` — added `# pragma: allowlist secret` to `re.compile(r"BEGIN RSA PRIVATE KEY")` regex literal (detect-secrets was flagging the pattern string itself); **(W-112b)** `.secrets.baseline` — updated `CODEX_MANIFEST.json` entry from line 1635→1653 with recomputed hash `f88d271f...`; **(W-112c)** `CODEX_MANIFEST.json` — added missing trailing newline (end-of-file-fixer); **(W-112d)** `chatops_copilot_trigger.yml` — raised `timeout-minutes: 30→60` (Copilot session duration increase requested by @mbaetiong). | ✅ Done (PR #3497) | **(W-109a)** Created `.github/workflows/repo-var-sync-schedule.yml` — daily scheduled (06:00 UTC) sync of all 25 tracked repo variables (COPILOT_* CODEX_* COGNITIVE_BRAIN_* AGENT_* EMBEDDING_* AUTO_*) to `.codex/agent_context.json`; drift detection; auto-commit when drift found; workflow_dispatch with dry-run + force-sync inputs; explicitly scheduled by active Copilot Agent per Priority 3 of FOLLOWUP_PROMPT_PR3495.md. GitHub Actions has no native variable-change event — daily polling is the standard mechanism. **(W-109b)** Created `.github/workflows/rust-error-validator-observation.yml` — weekly (Mondays 08:00 UTC) D_CAPABLE post-promotion observation tracker for `rust-error-validator` (window: 2026-03-04 → 2026-04-03); explicitly leverages historical baseline from `ADR-20260304-rust-error-validator-d-capable-promotion.md` (24/24 tests 100%, violations_30d: 0) and `.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md`; elapsed-day counter; violations check with demotion warning; workflow_dispatch override_date for testing. **(W-109b)** `AGENT_REGISTRY.yaml` v1.9.3: `rust-error-validator` observation fields added (`observation_started: '2026-03-04'`, `observation_window_days: 30`, `observation_baseline`). REQ-4/REQ-5 updated. | ✅ Done (PR #3496) |
 | W-107 | Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04): Full live capability assessment of Copilot Coding Agent using the Cognitive Brain CLI API (`localhost:8765`). **Verified working:** `/api/health`, `/api/cli/run`, `/api/cli/history`, `/api/request` (HTTP proxy — confirmed GitHub API call returning `_codex_` repo data). **Root causes found and fixed:** (RC-1) `.codex/agent_context.json` was missing — repo variable injection step in `copilot-setup-steps.yml` silently skipped every session → created file with all 28 repo variables; (RC-2) `CODEX_CLI_API_URL` never exported to `GITHUB_ENV` → startup step now exports `${COPILOT_CLI_BASE_URL:-http://localhost:8765}`; (RC-3) No Python client wrapper → created `src/codex/agents/brain_client.py` (`BrainClient` class); (RC-4) `CODEX_MASTER_KEY` empty → memory endpoints return 503 (action for @mbaetiong to rotate); (RC-5) `httpx` missing from startup pip install → added; (RC-6) Playwright browser blocked by sandbox policy (cannot reach GitHub Pages frontend) → documented as permanent sandbox constraint, use REST API directly. **ADR:** `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md`. | ✅ Done (PR #3495) |
 | W-106b | CI fix docs + merge safety (PR #3494, 2026-03-04): Updated `FOLLOWUP_PROMPT_PR3494.md` with HOTFIX Merge Assessment section — PR #3494 confirmed safe to merge: Art_Validation fixed (W-106), Resilient Validation Suite failures confirmed pre-existing on `main` (genesis safety guard tests: `.codex/autonomous_agent.yaml` unchanged; model loader tests: HuggingFace env requirement; coverage/chaos tests: untouched code paths). E→D gate 5/5 ✅, test_auto_promote_tier.py 15/15 ✅. Updated `COGNITIVE_BRAIN_STATUS_PR3494.md` with W-106 session summary. | ✅ Done (PR #3494) |
 | W-106 | CI fixes: Art_Validation EOF + detect-secrets false positive (PR #3494, run 22685833400, 2026-03-04): `Art_Validation / Fast Validation` failed — (1) `end-of-file-fixer` hook failed because `CODEX_MANIFEST.json` was missing trailing newline after W-105 commit — added EOF newline; (2) `detect-secrets` flagged `Secret Keyword` false positive in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry text contained `integrity_sha256` keyword pattern) — added `<!-- pragma: allowlist secret -->` inline suppressor. `detect-secrets scan --baseline .secrets.baseline` exit 0 verified. Resilient Validation Suite failures (shard 2/2 + slow) confirmed pre-existing on `main` (genesis safety guard tests + model loader + coverage threshold tests); not caused by this PR's changes. | ✅ Done (PR #3494) |
-| W-105 | 5th Token Delegation Activation recorded (PR #3494, 2026-03-04): Owner @mbaetiong activated Agent Token Delegation (workflow run 22685144324). `COPILOT_AGENT_AUTH_ENABLED=true` and `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed (mbaetiong, github-actions[bot], copilot-swe-agent[bot], github-copilot[bot]). `COGNITIVE_BRAIN_STATUS_PR3494.md` and `FOLLOWUP_PROMPT_PR3494.md` updated to record activation. REQ-4/REQ-5 updated (this entry + CHANGELOG.md W-105 section). | ✅ Done (PR #3494) |
-| W-104 | Second D_CAPABLE Promotion — `workflow-ci-fixer` (PR #3494, 2026-03-04): 2-sprint observation of `ci-testing-agent` completed with zero demotion annotations and zero D_CAPABLE violations. Promoted `workflow-ci-fixer` as second D_CAPABLE agent: (1) W-104a — `AGENT_REGISTRY.yaml` v1.9.1→v1.9.2: `workflow-ci-fixer` `autonomy_model: E` → `D_CAPABLE`, `enforcement_tier: PARTIAL` → `GROUNDED`, `has_tests: true`, `has_docs: true`, `violations_30d: 0` added — D_CAPABLE count: 1→2; `ci-emergency-response-agent` evaluated and rejected (fails structured handoff + GROUNDED tier criteria); (2) W-104b — Created `docs/arch/ADR-20260304-second-d-capable-promotion.md` documenting candidate evaluation, GROUNDED tier upgrade rationale, and 2-sprint clean observation confirmation; (3) W-104c — Regenerated `CODEX_MANIFEST.json` (2026-03-04T19:08:27Z, D_CAPABLE count: 1→2); updated `.secrets.baseline` (CODEX_MANIFEST.json line 1631→1635, new hash `c03794f4...`); (4) W-104d — `COGNITIVE_BRAIN_STATUS_PR3494.md` P4/P5 updated ✅; `FOLLOWUP_PROMPT_PR3494.md` Priority 2 marked ✅ COMPLETE; 4th token delegation activation (run 22684341839, owner @mbaetiong) recorded; (5) W-104e — REQ-4 + REQ-5 updated (this entry). | ✅ Done (PR #3494) |
-| W-103 | Variables review (PR #3494, 2026-03-04): Reviewed all 30+ repo/environment/org/secret variables against docs and code. Findings: (1) `AUTO_PROMOTE_TIER_ENABLED=true` — Domain 8 sign-off complete; write path in `auto_promote_tier.py` is now active; `generate_manifest.py` must be run after any auto-promotion to keep `CODEX_MANIFEST.json` in sync; (2) `CODEX_ENV_PYTHON_VERSION` shows `,3.12` (leading comma) in Variables Summary data extraction — this is a CSV artifact; env-level value confirmed `3.12` in Environment Variables table and `copilot-setup-steps.yml` usage — no action required; (3) Third token delegation activation recorded (run 22683350353, owner @mbaetiong); (4) All other variables (`COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D`, `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS`, `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE=0.75`, `COGNITIVE_BRAIN_SESSION_NUMBER=110`, `EMBEDDING_INDEX_AUTO_REBUILD=true`, etc.) confirmed correct. | ✅ Done (PR #3494) |
-| W-102 | detect-secrets baseline fix (PR #3494, run 22683254031): `Art_Validation / Fast Validation` failed — detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml` at lines 559 and 590. These are base64-encoded Python scripts (REQ-8 memory check + REQ-9 YAML parse helper), not real secrets. Added both entries (`hashed_secret: 417c84ca85ef273db93b076674f37e2b5f49805b` line 559; `hashed_secret: 1565169af1b9d6d005facca4e55da01272e41ca8` line 590) to `.secrets.baseline` as false positives. `detect-secrets scan --baseline .secrets.baseline` exit 0 verified locally. | ✅ Done (PR #3494) |
-| W-101 | CI triage: `dynamic/dependency-graph/auto-submission` GitHub Dependency Graph API transient error (PR #3494, run 22682889650): `HttpError: An error occurred while processing your request. Please try again later.` — GitHub's Dependency Graph snapshot API returned a transient 5xx. NOT a code defect. Added `TRANSIENT_001` pattern to `.codex/patterns/ci_failure_patterns.yaml` (pattern count: 19→20, categories: 6→7). Updated `COGNITIVE_BRAIN_STATUS_PR3494.md` with W-099/W-100 details + second token delegation activation (run 22682630214) + GitHub App registration admin guide. Fix: re-run the workflow. | ✅ Done (PR #3494) |
+| W-105 | 5th Token Delegation Activation recorded (PR #3494, 2026-03-04): Owner @mbaetiong activated Agent Token Delegation (workflow run 22685144324). `COPILOT_AGENT_AUTH_ENABLED=true` and `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed (mbaetiong, github-actions[bot], copilot-swe-agent[bot], github-copilot[bot]). `COGNITIVE_BRAIN_STATUS_PR3494.md` and `FOLLOWUP_PROMPT_PR3494.md` updated to record activation. REQ-4/REQ-5 updated (this entry + CHANGELOG.md W-105 section). | ✅ Done (PR #3494) | <!-- pragma: allowlist secret -->
+| W-104 | Second D_CAPABLE Promotion — `workflow-ci-fixer` (PR #3494, 2026-03-04): 2-sprint observation of `ci-testing-agent` completed with zero demotion annotations and zero D_CAPABLE violations. Promoted `workflow-ci-fixer` as second D_CAPABLE agent: (1) W-104a — `AGENT_REGISTRY.yaml` v1.9.1→v1.9.2: `workflow-ci-fixer` `autonomy_model: E` → `D_CAPABLE`, `enforcement_tier: PARTIAL` → `GROUNDED`, `has_tests: true`, `has_docs: true`, `violations_30d: 0` added — D_CAPABLE count: 1→2; `ci-emergency-response-agent` evaluated and rejected (fails structured handoff + GROUNDED tier criteria); (2) W-104b — Created `docs/arch/ADR-20260304-second-d-capable-promotion.md` documenting candidate evaluation, GROUNDED tier upgrade rationale, and 2-sprint clean observation confirmation; (3) W-104c — Regenerated `CODEX_MANIFEST.json` (2026-03-04T19:08:27Z, D_CAPABLE count: 1→2); updated `.secrets.baseline` (CODEX_MANIFEST.json line 1631→1635, new hash `c03794f4...`); (4) W-104d — `COGNITIVE_BRAIN_STATUS_PR3494.md` P4/P5 updated ✅; `FOLLOWUP_PROMPT_PR3494.md` Priority 2 marked ✅ COMPLETE; 4th token delegation activation (run 22684341839, owner @mbaetiong) recorded; (5) W-104e — REQ-4 + REQ-5 updated (this entry). | ✅ Done (PR #3494) | <!-- pragma: allowlist secret -->
+| W-103 | Variables review (PR #3494, 2026-03-04): Reviewed all 30+ repo/environment/org/secret variables against docs and code. Findings: (1) `AUTO_PROMOTE_TIER_ENABLED=true` — Domain 8 sign-off complete; write path in `auto_promote_tier.py` is now active; `generate_manifest.py` must be run after any auto-promotion to keep `CODEX_MANIFEST.json` in sync; (2) `CODEX_ENV_PYTHON_VERSION` shows `,3.12` (leading comma) in Variables Summary data extraction — this is a CSV artifact; env-level value confirmed `3.12` in Environment Variables table and `copilot-setup-steps.yml` usage — no action required; (3) Third token delegation activation recorded (run 22683350353, owner @mbaetiong); (4) All other variables (`COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D`, `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS`, `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE=0.75`, `COGNITIVE_BRAIN_SESSION_NUMBER=110`, `EMBEDDING_INDEX_AUTO_REBUILD=true`, etc.) confirmed correct. | ✅ Done (PR #3494) | <!-- pragma: allowlist secret -->
+| W-102 | detect-secrets baseline fix (PR #3494, run 22683254031): `Art_Validation / Fast Validation` failed — detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml` at lines 559 and 590. These are base64-encoded Python scripts (REQ-8 memory check + REQ-9 YAML parse helper), not real secrets. Added both entries (`hashed_secret: 417c84ca85ef273db93b076674f37e2b5f49805b` line 559; `hashed_secret: 1565169af1b9d6d005facca4e55da01272e41ca8` line 590) to `.secrets.baseline` as false positives. `detect-secrets scan --baseline .secrets.baseline` exit 0 verified locally. | ✅ Done (PR #3494) | <!-- pragma: allowlist secret -->
+| W-101 | CI triage: `dynamic/dependency-graph/auto-submission` GitHub Dependency Graph API transient error (PR #3494, run 22682889650): `HttpError: An error occurred while processing your request. Please try again later.` — GitHub's Dependency Graph snapshot API returned a transient 5xx. NOT a code defect. Added `TRANSIENT_001` pattern to `.codex/patterns/ci_failure_patterns.yaml` (pattern count: 19→20, categories: 6→7). Updated `COGNITIVE_BRAIN_STATUS_PR3494.md` with W-099/W-100 details + second token delegation activation (run 22682630214) + GitHub App registration admin guide. Fix: re-run the workflow. | ✅ Done (PR #3494) | <!-- pragma: allowlist secret -->
 
 | W-099 | CI fix: agent-auth-delegation.yml checkout ref (PR #3494, run 22681530883): `github.head_ref` is only defined for `pull_request`/`pull_request_target` events — for `pull_request_review` it is empty, causing fallback to `github.ref_name` which resolves to `3494/merge` (a non-existent branch), failing `actions/checkout@v4` with exit code 1. Fixed by using `github.event.pull_request.head.ref || github.head_ref || github.ref_name` — event payload ref is always populated for both PR and PR review triggers. | ✅ Done (PR #3494) |
 | W-098 | W-098 continuation (PR #3494): (1) W-098a — Added `tests/ci/test_auto_promote_tier.py` with 15 tests covering `_apply_promotion()` write path (all branches: single agent, multiple agents, non-SOFT skipped, missing registry), `AUTO_PROMOTE_TIER_ENABLED` guard integration in `run()` (dry-run vs write path), violation-based exclusion, YAML key-order preservation, and SOURCE_TIER/TARGET_TIER constants — 15/15 pass; (2) W-098b — Documented `COPILOT_AGENT_AUTH_ENABLED=true` activation (run 22680576854, owner @mbaetiong) in `COGNITIVE_BRAIN_STATUS_PR3494.md`; (3) W-098c/d — GitHub App design-pattern gap analysis: all four patterns (user-to-server, server-to-server, webhooks, permissions) have code infrastructure in place; App registration is the sole remaining operational gap. | ✅ Done (PR #3494) |
@@ -17898,10 +17898,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-092 | Cognitive brain objectives — P2.6 + EMBEDDING_INDEX_AUTO_REBUILD guard (PR #3492): (1) Added `Write CODEX_CI_LAST_GREEN_SHA when CI is healthy` step to `ci-health-monitor.yml` — writes the current git SHA to `CODEX_CI_LAST_GREEN_SHA` repo variable whenever the CI failure rate is below `CODEX_CI_FAILURE_THRESHOLD`, enabling `git bisect good "$CODEX_CI_LAST_GREEN_SHA"` workflows; uses PATCH/POST fallback pattern matching existing `CODEX_CI_FAILURE_RATE` step (P2.6); (2) Wired `EMBEDDING_INDEX_AUTO_REBUILD` guard into `agent-registry-validation.yml` — `Trigger embedding index refresh` step now gated on `vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'` (previously unconditional on push to main), allowing the operator to pause FAISS rebuilds without a workflow commit. | ✅ Done (PR #3492) |
 | W-091 | Update user access levels functionality (PR #3492): Added `update_user(user_id, **updates)` method to `src/zendesk/api_client.py` — implements `PUT /api/v2/users/{user_id}.json` endpoint, enabling role/access-level changes (end-user → agent → admin) and general user field updates. Added 2 targeted tests to `tests/zendesk/test_api_client.py` (`test_update_user_role`, `test_update_user_multiple_fields`); all 35 zendesk tests pass. | ✅ Done (PR #3492) |
 | W-090 | Reviewer feedback fixes (PR #3486): (1) `actionlint.yaml` header comment updated to reflect warning-level suppressions; (2) `agent_infrastructure_manager.yml`: fixed unreliable `cat \| tail \|\| echo` fallback → `tail -n 5 file 2>/dev/null \|\| echo`, and replaced `printf`-based JSON body (injection risk) with Python `json.dumps()` heredoc; (3) `copilot-evolution-suite.yml`: fixed `$GITHUB_OUTPUT` injection — `pr_title` now written via `name<<EOF...EOF` multiline format to safely handle newlines and embedded `key=value` sequences in PR titles. | ✅ Done (current PR) |
-| W-089 | Actionlint gate fix (PR branch `copilot/resolve-action-failure`): (1) Added `cache-tier` optional input to `setup-python-cached` composite action — resolves 50+ `[action]` errors across 35 workflows; (2) Fixed `agent_infrastructure_manager.yml` shell parse errors (FENCE variable pattern, single-line Python JSON, parameter expansion vs sed); (3) Fixed `auto-fix-common-issues.yml` empty-string choice option; (4) Fixed `apply-ci-fix/action.yml` invalid branding icon `tool`→`settings`; (5) Fixed `auth-tests.yml` codecov input `file`→`files`; (6) Fixed `workflow-restore.yml` heredoc end-token indentation; (7) Fixed untrusted expressions in `agent-auth-delegation.yml` and `copilot-evolution-suite.yml` via env vars; (8) Fixed `scheduled-dependency-audit.yml` undefined `replace()` function; (9) Fixed `optimized-ci.yml` missing step ID `cache`; (10) Fixed `repo-organization.yml` missing step ID `analyze`; (11) Added `post_comment` + `commit_sha` inputs to `audit-qa-suite.yml` / `workflow-analytics-unified.yml`; (12) Expanded `actionlint.yaml` suppress list with 10 additional SC codes. CI actionlint error count: 94→0. | ✅ Done (current PR) |
+| W-089 | Actionlint gate fix (PR branch `copilot/resolve-action-failure`): (1) Added `cache-tier` optional input to `setup-python-cached` composite action — resolves 50+ `[action]` errors across 35 workflows; (2) Fixed `agent_infrastructure_manager.yml` shell parse errors (FENCE variable pattern, single-line Python JSON, parameter expansion vs sed); (3) Fixed `auto-fix-common-issues.yml` empty-string choice option; (4) Fixed `apply-ci-fix/action.yml` invalid branding icon `tool`→`settings`; (5) Fixed `auth-tests.yml` codecov input `file`→`files`; (6) Fixed `workflow-restore.yml` heredoc end-token indentation; (7) Fixed untrusted expressions in `agent-auth-delegation.yml` and `copilot-evolution-suite.yml` via env vars; (8) Fixed `scheduled-dependency-audit.yml` undefined `replace()` function; (9) Fixed `optimized-ci.yml` missing step ID `cache`; (10) Fixed `repo-organization.yml` missing step ID `analyze`; (11) Added `post_comment` + `commit_sha` inputs to `audit-qa-suite.yml` / `workflow-analytics-unified.yml`; (12) Expanded `actionlint.yaml` suppress list with 10 additional SC codes. CI actionlint error count: 94→0. | ✅ Done (current PR) | <!-- pragma: allowlist secret -->
 | W-088 | Created `.github/actionlint.yaml` suppressing info/style shellcheck codes (SC2086/SC2012/SC2016/SC2002/SC2129) repo-wide while keeping error-level findings hard-fail; verified W-087/W-086 entries correct; confirmed actionlint EXIT:0 on all 6 PR-modified workflow files | ✅ Done (current PR) |
 | W-087 | Review fixes + CI hardening: (1) Quoted all $GITHUB_STEP_SUMMARY/$GITHUB_ENV redirects in admin_setup_verification.yml (SC2086 fix); (2) SC2129 group-redirect fix; (3) agent-handoff-gate.yml AGENT_HANDOFF_TIMEOUT_SECONDS consumed via signal.alarm() deadline; (4) prune_corpus.py defensive float→int() + updated docstring; (5) generate_manifest.py defensive float→int() + unit comment; (6) chatops_copilot_trigger.yml increment step: replaced || true with if ! gh api error check; (7) CHANGELOG.md: removed duplicate ### Fixed heading + corrected W-086f; (8) PR template: added 18-row CI failure triage table with Copilot auto-fill prompts; (9) validation-junit.xml added to .gitignore; (10) trailing whitespace stripped from CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md | ✅ Done (current PR) |
-| W-086 | Post-PR #3483 wiring + cache alignment session: (1) Fixed actionlint-audit Tier-1 gate — removed duplicate truncated `§3b test_backup` step in `admin_setup_verification.yml` (SC1073/SC1078 + duplicate step ID); (2) Wired Group D auto-increment: added `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step to `chatops_copilot_trigger.yml` — increments session counter via `gh api PATCH` after every authorized `/copilot` command; (3) P2.1 `generate_manifest.py`: `CONTEXT_WINDOW_BUDGET` now reads `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` env var; (4) P2.2 `prune_corpus.py`: `RETENTION_DAYS` now reads `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` env var; (5) P2.3 `ci-health-monitor.yml`: replaced hardcoded `THRESHOLD=20` with `${{ vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10' }}`, both telemetry alert and `Update CODEX_CI_FAILURE_RATE` step now use variable; (6) P2.4 `agent-handoff-gate.yml`: `AGENT_HANDOFF_TIMEOUT_SECONDS` repo variable passed as env var into validate step; consumed as `HANDOFF_TIMEOUT` via `signal.alarm()` for Python validator deadline (`timeout-minutes` stays at fixed 5 min — GitHub Actions expressions lack arithmetic operators); (7) Cache alignment: `copilot-setup-steps.yml` now uses explicit L1 pip + L3 venv cache steps with keys matching `setup-python-cached` composite action — shared cachesets align with Copilot Coding Agent "Setting up environment"; all env-specific pip installs use `--cache-dir ~/.cache/pip` + `.venv_ci`; (8) `pr-checks.yml`: removed unsupported `cache-tier: 'live'` input. | ✅ Done (current PR) |
+| W-086 | Post-PR #3483 wiring + cache alignment session: (1) Fixed actionlint-audit Tier-1 gate — removed duplicate truncated `§3b test_backup` step in `admin_setup_verification.yml` (SC1073/SC1078 + duplicate step ID); (2) Wired Group D auto-increment: added `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step to `chatops_copilot_trigger.yml` — increments session counter via `gh api PATCH` after every authorized `/copilot` command; (3) P2.1 `generate_manifest.py`: `CONTEXT_WINDOW_BUDGET` now reads `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` env var; (4) P2.2 `prune_corpus.py`: `RETENTION_DAYS` now reads `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` env var; (5) P2.3 `ci-health-monitor.yml`: replaced hardcoded `THRESHOLD=20` with `${{ vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10' }}`, both telemetry alert and `Update CODEX_CI_FAILURE_RATE` step now use variable; (6) P2.4 `agent-handoff-gate.yml`: `AGENT_HANDOFF_TIMEOUT_SECONDS` repo variable passed as env var into validate step; consumed as `HANDOFF_TIMEOUT` via `signal.alarm()` for Python validator deadline (`timeout-minutes` stays at fixed 5 min — GitHub Actions expressions lack arithmetic operators); (7) Cache alignment: `copilot-setup-steps.yml` now uses explicit L1 pip + L3 venv cache steps with keys matching `setup-python-cached` composite action — shared cachesets align with Copilot Coding Agent "Setting up environment"; all env-specific pip installs use `--cache-dir ~/.cache/pip` + `.venv_ci`; (8) `pr-checks.yml`: removed unsupported `cache-tier: 'live'` input. | ✅ Done (current PR) | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -17928,14 +17928,14 @@ The auth system you built works. I will not regress it.
 | Variable-write gap | `scripts/tools/variable_intent_writer.py` | Intent-file mailbox writer for queuing variable ops |
 | Variable-write gap | `.github/workflows/process-variable-intents.yml` | On-push workflow processes intents via CODEX_MASTER_KEY |
 | Dockerfile fail-fast | `Dockerfile.preview` lines 58+91 | Removed `2>/dev/null \|\| true` from both `pip install -e .` calls |
-| WEBHOOK_REGISTRY doc | `docs/ops/WEBHOOK_REGISTRY.md` | Clarified GITHUB_TOKEN limitation; port `public` → `org` visibility |
+| WEBHOOK_REGISTRY doc | `docs/ops/WEBHOOK_REGISTRY.md` | Clarified GITHUB_TOKEN limitation; port `public` → `org` visibility | <!-- pragma: allowlist secret -->
 | Redundant pip cache | `.github/workflows/agent-registry-validation.yml` | Removed `cache: 'pip'` from setup-python (kept manual `actions/cache`) |
 | build-preview-image | `.github/workflows/build-preview-image.yml` | `inputs.image_tag` → `github.event.inputs.image_tag`; gated GHCR login + push on main/dispatch |
 | User docstring | `src/codex/auth/user_store.py` | "Immutable" → "Mutable" user identity record docstring |
 | Assert style | `tests/integration/test_genesis_workflow.py` | Backslash continuation → parenthesised `assert` |
-| _GITHUB_APP_* naming | `.devcontainer/scripts/post-create.sh`, `post-attach.sh` | `GITHUB_APP_ID` → `_GITHUB_APP_ID` to match actual Codespace secret names |
+| _GITHUB_APP_* naming | `.devcontainer/scripts/post-create.sh`, `post-attach.sh` | `GITHUB_APP_ID` → `_GITHUB_APP_ID` to match actual Codespace secret names | <!-- pragma: allowlist secret -->
 | _GITHUB_APP_* naming | `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md` | All three occurrences updated to `_GITHUB_APP_*` |
-| Security audit | `.codex/qa_walkthrough/security_audit.json` | PasswordHasher iterations: `100k` → `600k` |
+| Security audit | `.codex/qa_walkthrough/security_audit.json` | PasswordHasher iterations: `100k` → `600k` | <!-- pragma: allowlist secret -->
 | Port security | `.devcontainer/scripts/post-start.sh` | Port visibility `public` → `org` (prevents unauthenticated internet access) |
 
 ### Human Admin Tasks Required
@@ -18187,7 +18187,7 @@ Failures assessed and root-cause resolved. 10 distinct failures fixed:
 | Test | Root Cause | Fix |
 |------|-----------|-----|
 | `test_no_over_suppression` | rglob included `.venv_ci` with non-UTF-8 files | Skip `.venv_ci` + catch `UnicodeDecodeError` |
-| `test_infer_masks_secrets` | `KeyError: 'tokenizer'` in `_clear_app_state` | Catch `(AttributeError, KeyError)` |
+| `test_infer_masks_secrets` | `KeyError: 'tokenizer'` in `_clear_app_state` | Catch `(AttributeError, KeyError)` | <!-- pragma: allowlist secret -->
 | `test_infer_passes_lora_args` | `from codex_ml.cli import infer` → Click Group | `import codex_ml.cli.infer as infer` + `load_from_pretrained` mock |
 | `test_repo_map_lists_visible_top_level_entries` | Stale "CLI test message" SQLite artifact in root | Remove artifact |
 | `test_recovery_from_graph_error` | `retrieve_memory("key")` returns `MemoryEntry` | Use `key=` kwarg form |
@@ -18531,7 +18531,7 @@ No new bot review threads, no new CI failures, no new code quality issues detect
 | Auth 401 in rate-limit tests | test_rate_limit_middleware.py | JWT auth middleware enabled by default, intercepted before rate-limit logic | 18 passed, 1 xpassed |
 | Auth 401 in infer-limit tests | test_infer_limits.py | `fresh_app` fixture didn't disable JWT auth before reload | 18 passed, 1 xpassed |
 | Auth 401 in api-infer test | test_api_infer.py | Module-level `app` import had JWT auth baked in | 18 passed, 1 xpassed |
-| Auth 401 in middleware-security | test_middleware_security.py | JWT auth intercepted API_KEY tests | 18 passed (xpassed) |
+| Auth 401 in middleware-security | test_middleware_security.py | JWT auth intercepted API_KEY tests | 18 passed (xpassed) | <!-- pragma: allowlist secret -->
 | validate-internal-links failure | docs/cognitive_brain/INDEX.md | Broken relative path to missing Phase 3 status file | 0 link errors (1851 files) |
 | Missing Phase 3 status doc | docs/cognitive_brain/status/ | File never created | Created with complete Phase 3 record |
 
@@ -18631,7 +18631,7 @@ No new bot review threads, no new CI failures, no new code quality issues detect
 | Auto-Fix PR Check | ✅ 0 issues | Run 23072021231 |
 | GitHub Pages Validation | ✅ all passed | Link/Table/MkDocs/cognitive_app |
 | .gitignore agent_auth_session.json | ✅ allowlisted | Line 189: !.codex/agent_auth_session.json |
-| Agent Token Delegation | ✅ activated | mbaetiong approval, run 23072149610 |
+| Agent Token Delegation | ✅ activated | mbaetiong approval, run 23072149610 | <!-- pragma: allowlist secret -->
 
 ### No New Issues
 No open bot review threads, no CI failures. All Session 32 changes validated. PR remains clean and ready for merge.
@@ -18665,7 +18665,7 @@ No open bot review threads, no CI failures. All Session 32 changes validated. PR
 | 2 | `.codex/CODEBASE_AGENCY_POLICY.md:1122` | Training data count 202 ≠ 217 | Updated 202 → 217 |
 | 3 | `src/codex/auth/in_memory_user_repository.py:40-42` | Unsanitized username/email in ValueError | Added `sanitize_log_message()` |
 | 4 | `src/codex/auth/sqlite_user_repository.py:128-134` | Unsanitized username/email in ValueError | Added `sanitize_log_message()` |
-| 5 | `src/codex/auth/user_store.py:276-280` | `update_password()` read-modify-write not locked | Wrapped in `self._lock` |
+| 5 | `src/codex/auth/user_store.py:276-280` | `update_password()` read-modify-write not locked | Wrapped in `self._lock` | <!-- pragma: allowlist secret -->
 | 6 | `src/codex/auth/user_store.py:292-298` | `deactivate_user()` read-modify-write not locked | Wrapped in `self._lock` |
 | 7 | `scripts/migrations/001_userstore_to_sqlite.py:88-89` | `json.dumps` not Black-formatted | Reformatted per Black |
 | 8 | `tests/auth/test_migration_001.py:8` | Docstring claimed missing-file test; none existed | Added `test_main_missing_snapshot_returns_exit_code_2` |
@@ -19575,7 +19575,7 @@ New file: `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S39_PR3579.md`
 |--------|------|-------------|
 | `|| true` pytest step | pre-merge-validation.yml:56 | ✅ No `|| true` on id:tests step |
 | F841 unused constants | test_cost_gate_integration.py:38 | ✅ Used in `test_green_yellow_boundary` |
-| `_load_pattern_success` | task_router.py:213 | ✅ Keys by `entry.get("agent_name")` |
+| `_load_pattern_success` | task_router.py:213 | ✅ Keys by `entry.get("agent_name")` | <!-- pragma: allowlist secret -->
 | Docstring mismatch | okr_tracker.py:10 | ✅ Says "hard-coded in `_build_obj001()`" |
 | `head_commit.message` | codex-manifest-refresh.yml | ✅ Uses `actor != 'github-actions[bot]'` |
 | Nested double-quotes | codex-manifest-refresh.yml | ✅ Single-quoted Python body |
@@ -19624,7 +19624,7 @@ New file: `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S39_PR3579.md`
 #### CI Triage Issue #3581 — Pattern Resolution Map
 | Pattern | Root Cause | Status | Fix Applied |
 |---------|-----------|--------|-------------|
-| Agent Token Delegation (our branch) | REQ-4/5: accountability+changelog missing | ✅ Fixed | This entry + CHANGELOG update |
+| Agent Token Delegation (our branch) | REQ-4/5: accountability+changelog missing | ✅ Fixed | This entry + CHANGELOG update | <!-- pragma: allowlist secret -->
 | actionlint (1 error our branch) | SC2129 shellcheck in agent-auth-delegation.yml | ✅ Fixed | `# shellcheck disable=SC2129` |
 | PR reviewer comment | No mypy CI in PR despite title | ✅ Fixed | mypy-baseline.yml + script + baseline |
 | Python 3.11 (self_healing_ci, embedding) | Old runs on old commits | ✅ Already fixed (3.12 in current files) |
@@ -20103,7 +20103,7 @@ Session S58 addressed remaining CI failures from issue #3583 by fixing a flaky t
 | Build & Push Preview Image | Old commit failures, no new failures detected | ⚠️ Monitor on next push |
 | Art_Documentation Link Checker | Old commit failures, link checker config updated (S52) | ✅ **FIXED** by S52 |
 | Generate PR Follow-Up Prompt | Different branch (copilot/cost-proposal-rust-swarm-ci) | 🔵 Out of scope |
-| Agent Token Delegation | Different branch (copilot/cost-proposal-rust-swarm-ci) | 🔵 Out of scope |
+| Agent Token Delegation | Different branch (copilot/cost-proposal-rust-swarm-ci) | 🔵 Out of scope | <!-- pragma: allowlist secret -->
 | Copilot coding agent | GitHub infra — environment setup | 🔵 Infra issue |
 
 ### Root Cause — RAG Test Flakiness
@@ -20933,7 +20933,7 @@ and the CI gate requirement.
 | `<!-- PR_STATUS_DASHBOARD_v1 -->` | audit-qa-suite.yml | ✅ | ✅ (delegated to consolidator) |
 | `<!-- pr-followup-prompt-generated -->` | pr-followup-generator.yml | ✅ | ✅ (retry added) |
 | `<!-- benchmark-results-v1 -->` | rust_swarm_ci.yml | ✅ | ✅ (retry added) |
-| `<!-- agent-token-delegation-result -->` | agent-auth-delegation.yml | ✅ | ✅ |
+| `<!-- agent-token-delegation-result -->` | agent-auth-delegation.yml | ✅ | ✅ | <!-- pragma: allowlist secret -->
 
 ### Lessons Learned
 - A bot comment workflow that lacks a retry loop is a latent race condition — it just hasn't been observed yet. Add retry to every comment-posting pattern proactively.
@@ -21220,7 +21220,7 @@ This single pattern accounts for 5+ workflow failures across 4 different workflo
 | 🔀 Branch Rebase Gate | `branch-rebase-gate.yml` `cache: 'pip'` | Removed |
 | 🚨 Deferral Language Gate | `deferral-language-gate.yml` `cache: 'pip'` | Removed |
 | Workflow Compliance Audit (actionlint) | `root-org-validation.yml` self-reference | Fixed |
-| Agent Token Delegation | CHANGELOG.md not in last commit (REQ-5) | Updated |
+| Agent Token Delegation | CHANGELOG.md not in last commit (REQ-5) | Updated | <!-- pragma: allowlist secret -->
 
 ### Impact Score
 - Files changed: 9 (workflows ×4, src ×1, tests ×2, CHANGELOG, accountability)
@@ -21247,7 +21247,7 @@ This single pattern accounts for 5+ workflow failures across 4 different workflo
 | **mypy zero-error baseline** | ✅ Achieved (0 non-import errors) |
 | AAIS score ≥95.9 confirmed | ✅ 99.7/100 (S+) |
 | Slow-test audit (tests/critical_path/) | ✅ All tests < 0.02s except 2 already marked |
-| `docs/admin/TOKEN_ROTATION_GUIDE.md` | ✅ Created (was MISSING) |
+| `docs/admin/TOKEN_ROTATION_GUIDE.md` | ✅ Created (was MISSING) | <!-- pragma: allowlist secret -->
 | Doc staleness audit (1,381 files) | ✅ 533 stale identified |
 | P0 admin/agent/how-to docs (21 files) | ✅ Updated |
 | P1 ops/mcp/ci docs (24 files) | ✅ Updated via script |
@@ -21549,7 +21549,7 @@ CodeQL                                         → 0 alerts ✅
 | `e7e2ebe` | fix(ci): SC2072 decimal comparison, ci_score dead assign, CHANGELOG | ✅ already present via b6b59c4 |
 | `4afb1404` | feat(session): ci_triage_repro.sh + CI_TRIAGE_REPRO_S145.md + SESSION-DIAGNOSTIC-PROTOCOL.md | ✅ already present via b6b59c4 |
 | `7e9c4e04` | fix: gitignore dup, repro pipefail+perf, CHANGELOG cross-PR, bootstrap offline display | ✅ already present via b6b59c4 |
-| `6354611` | chore(auth): write provenance session token [skip ci] | ✅ trailing-newline parity applied |
+| `6354611` | chore(auth): write provenance session token [skip ci] | ✅ trailing-newline parity applied | <!-- pragma: allowlist secret -->
 
 ### Verification
 - All 9 commits from `copilot/sub-pr-3606` accounted for ✅
@@ -22741,7 +22741,7 @@ and the CI gate requirement.
 | 7 | Extend `GitHubMCPPoster` with write methods | `src/codex/github/mcp_poster.py` | ✅ Done |
 | 8 | Create MCP/Playwright improvement plan | `docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md` | ✅ Done |
 | 9 | Update CHANGELOG.md S174 entries | `CHANGELOG.md` | ✅ Done |
-| 10 | Activate Agent Token Delegation checkbox | PR body `[x] Enable Agent Token Delegation` | ✅ Done |
+| 10 | Activate Agent Token Delegation checkbox | PR body `[x] Enable Agent Token Delegation` | ✅ Done | <!-- pragma: allowlist secret -->
 | 11 | Cherry-pick 6 commits from `copilot/research-energy-conversion-requirements` | `energy-conversion-agent.md`, `ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md`, `AGENT_REGISTRY.yaml` | ✅ Done |
 
 ### Violations / Deviations
@@ -22839,7 +22839,7 @@ and the CI gate requirement.
 |---|------|--------|-----------|
 | 1 | `.github/copilot-cascade/mcp_server.py` | Replaced placeholder `_execute_real()` with actual JSON-RPC 2.0 HTTP transport using `urllib`; added `CODEX_MCP_ENDPOINT` env var override; added `_http_post_json()` static helper with URL scheme validation | IMP-004 (P1.1) |
 | 2 | `tests/github/test_mcp_poster.py` | Added 42 new tests covering `create_ref`, `create_pull_request`, `list_pull_requests`, `merge_branch`, `create_discussion`, `_request` retry logic, CLI new commands; coverage 50% → 95.83% | P1.3 |
-| 3 | `tests/github/test_mcp_poster.py` | Fixed pre-existing flaky `test_no_token_warns` — temporarily re-enables propagation on `codex` logger (set to `False` by `init_logger` in gh_api.py) | Bug fix |
+| 3 | `tests/github/test_mcp_poster.py` | Fixed pre-existing flaky `test_no_token_warns` — temporarily re-enables propagation on `codex` logger (set to `False` by `init_logger` in gh_api.py) | Bug fix | <!-- pragma: allowlist secret -->
 | 4 | `.github/copilot-cascade/tests/test_cascade.py` | Added 7 tests for new `_execute_real()` JSON-RPC transport covering success, error, CODEX_MCP_ENDPOINT override, HTTP errors, `_http_post_json` URL validation | IMP-004 verification |
 | 5 | `src/codex/github/mcp_poster.py` | Added `_record_cb_pattern()` cognitive brain lifecycle hook; wired into `create_ref()`, `create_pull_request()`, `merge_branch()` | IMP-012 (P2.1) |
 | 6 | `.codex/sessions/chain-20260322-042713.md` | Applied Gemini review suggestion: run ID is now a clickable link | Review fix |
@@ -25048,7 +25048,7 @@ Interim: informational warning only; no CI gate failure.
 ### Failure Patterns Fixed in This Session
 | Pattern | File | Root Cause | Fix |
 |---------|------|-----------|-----|
-| sync-tracked-files CI failure | `run_validation.sh` | `detect-secrets` not installed in fast-mode venv | Added `detect-secrets==1.4.0` to fast-mode pip install |
+| sync-tracked-files CI failure | `run_validation.sh` | `detect-secrets` not installed in fast-mode venv | Added `detect-secrets==1.4.0` to fast-mode pip install | <!-- pragma: allowlist secret -->
 
 ### Self-Review (5-Pass)
 | Pass | Check | Status |
@@ -25338,8 +25338,8 @@ and the CI gate requirement.
 ### Self-Review (5-Pass)
 | Pass | Check | Status |
 |------|-------|--------|
-| 1 | `.secrets.baseline` diff is minimal (only hash + line_number changed) | ✅ |
-| 2 | `detect-secrets scan --baseline .secrets.baseline CODEX_MANIFEST.json` exits 0 | ✅ |
+| 1 | `.secrets.baseline` diff is minimal (only hash + line_number changed) | ✅ | <!-- pragma: allowlist secret -->
+| 2 | `detect-secrets scan --baseline .secrets.baseline CODEX_MANIFEST.json` exits 0 | ✅ | <!-- pragma: allowlist secret -->
 | 3 | `sync_tracked_files.py --check` all-green | ✅ |
 | 4 | RAG threshold comment updated to record full history | ✅ |
 | 5 | No deferral language used | ✅ |
@@ -25847,7 +25847,7 @@ python3 scripts/cognitive/agent_checkin.py \
 
 **Token priority order:**
 ```
-CODEX_MASTER_KEY  →  CODEX_BACKUP_KEY  →  GITHUB_TOKEN  →  offline (graceful)
+CODEX_MASTER_KEY  →  CODEX_BACKUP_KEY  →  GITHUB_TOKEN  →  offline (graceful)  # pragma: allowlist secret
 ```
 
 **Offline mode:** When no token is available, all actions log to stdout and return exit 0 (no CI breakage). Pass `--no-block` to prevent unanswered-question exit code 1.
@@ -25861,14 +25861,14 @@ CODEX_MASTER_KEY  →  CODEX_BACKUP_KEY  →  GITHUB_TOKEN  →  offline (gracef
 | `action_open(...)` | Posts/upserts open check-in via `upsert_discussion_comment` |
 | `action_close(...)` | Polls discussion, posts close check-in; returns exit 1 if Qs unanswered (unless `--no-block`) |
 | `action_post_research(...)` | Posts/upserts research topics comment |
-| `_get_poster()` | Returns `GitHubMCPPoster` instance; tries 3 tokens; returns `None` offline |
+| `_get_poster()` | Returns `GitHubMCPPoster` instance; tries 3 tokens; returns `None` offline | <!-- pragma: allowlist secret -->
 
 **Response detection** (improved in S215 — keyword + label matching):
 ```python
 topic_keywords = {
-    "Q1": ["detect-secrets", "agent_context.json", "secrets.baseline"],
+    "Q1": ["detect-secrets", "agent_context.json", "secrets.baseline"],  # pragma: allowlist secret
     "Q2": ["rag", "coverage", "delta-coverage", "unified-coverage"],
-    "Q3": ["CODEX_MASTER_KEY", "token rotation", "GAP-033", "delegation"],
+    "Q3": ["CODEX_MASTER_KEY", "token rotation", "GAP-033", "delegation"],  # pragma: allowlist secret
 }
 # Matches if maintainer types exact Q-label OR any topic keyword
 matched = qid in body_text or any(kw.lower() in body_text.lower() for kw in keywords)
@@ -25882,7 +25882,7 @@ matched = qid in body_text or any(kw.lower() in body_text.lower() for kw in keyw
 **Fix:** Check `result.get("errors")` before accessing `.get("data")`. Raise `PermissionError` with actionable message:
 ```
 GitHub Discussion comment FORBIDDEN (FORBIDDEN): Resource not accessible by integration.
-Ensure the token has 'write:discussion' scope (PAT) or the workflow declares
+Ensure the token has 'write:discussion' scope (PAT) or the workflow declares  # pragma: allowlist secret
 'discussions: write' permission.
 ```
 
@@ -25895,7 +25895,7 @@ Ensure the token has 'write:discussion' scope (PAT) or the workflow declares
 
 | Job | Trigger | Action |
 |---|---|---|
-| `checkin-post-on-push` | `push` to `0D_base_` (paths: agent_checkin.py, AGENT_ACCOUNTABILITY_REPORT.md) | Posts research + open check-in to Discussion #3756 via `actions/github-script@v7` + `GITHUB_TOKEN` |
+| `checkin-post-on-push` | `push` to `0D_base_` (paths: agent_checkin.py, AGENT_ACCOUNTABILITY_REPORT.md) | Posts research + open check-in to Discussion #3756 via `actions/github-script@v7` + `GITHUB_TOKEN` | <!-- pragma: allowlist secret -->
 | `checkin-open` | `issue_comment` containing `@copilot` on a PR | Runs Python script `--check-in open --post-research` |
 | `checkin-close` | `workflow_run` on `Copilot Setup Steps` completed | Runs Python script `--check-in close` |
 
@@ -25947,7 +25947,7 @@ if (found) {
 def _offline(monkeypatch):
     monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
-    monkeypatch.delenv("GITHUB_TOKEN", raising=False)  # ← required; CI always sets this
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)  # ← required; CI always sets this  # pragma: allowlist secret
 ```
 
 **Run tests:**
@@ -25963,7 +25963,7 @@ python3 -m pytest tests/cognitive/test_agent_checkin.py -v
 | Check | Status |
 |---|---|
 | `agent_checkin.py --help` runs without error | ✅ |
-| Offline mode (no tokens): all 3 actions return 0 | ✅ |
+| Offline mode (no tokens): all 3 actions return 0 | ✅ | <!-- pragma: allowlist secret -->
 | 39 unit tests pass | ✅ |
 | YAML valid: `copilot-agent-checkin.yml` | ✅ |
 | actionlint: 0 errors on `copilot-agent-checkin.yml` | ✅ |
@@ -25981,9 +25981,9 @@ The Copilot agent session `GITHUB_TOKEN` is a GitHub Apps installation token wit
 
 #### Pattern 1 — Discussion Write: Workflow Token vs PAT
 ```
-GITHUB_TOKEN + 'discussions: write' in workflow permissions  →  can write discussions ✅
+GITHUB_TOKEN + 'discussions: write' in workflow permissions  →  can write discussions ✅  # pragma: allowlist secret
 CODEX_MASTER_KEY (PAT, write:discussion scope)               →  can write discussions ✅
-GITHUB_TOKEN in Copilot agent session (no scope declaration) →  FORBIDDEN ❌
+GITHUB_TOKEN in Copilot agent session (no scope declaration) →  FORBIDDEN ❌  # pragma: allowlist secret
 ```
 **Rule:** Any workflow that writes to GitHub Discussions MUST declare `discussions: write` in its `permissions:` block.
 
@@ -26111,7 +26111,7 @@ ensure no broken links exist in the touched sections.
 2. GitHub org protection gate: conclusion=action_required on first run
 3. Admin must approve at: https://github.com/Aries-Serpent/_codex_/actions/runs/{run_id}
 4. S217 adds workflow_dispatch trigger so admin can manually trigger after approving
-5. S217 also adds CODEX_MASTER_KEY as preferred token (avoids GITHUB_TOKEN discussions:write limitation)
+5. S217 also adds CODEX_MASTER_KEY as preferred token (avoids GITHUB_TOKEN discussions:write limitation)  # pragma: allowlist secret
 6. After admin approves + manual dispatch: Discussion #3756 receives research topics + Q&A
 ```
 
@@ -27578,7 +27578,7 @@ Run 23703519127 reported RP-004 for commit `1801083` (which is the automated cog
 
 ```
 Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
-Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅  # pragma: allowlist secret
 YAML syntax: branch-divergence-monitor.yml  ✅
 YAML syntax: agent-auth-delegation.yml  ✅
 ```
@@ -27617,7 +27617,7 @@ However, investigating this test locally revealed a **real latent bug**: `now.re
 ```
 tests/capabilities/ci_test/test_usage_logger.py  11/11 passed  ✅
 Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
-Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅  # pragma: allowlist secret
 auto_fix_common_issues: 0 auto-fixable  ✅
 ```
 
@@ -27655,7 +27655,7 @@ The Validation Pipeline failure was a downstream consequence — the `🔄 Sync 
 
 ```
 Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
-Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅  # pragma: allowlist secret
 sync_tracked_files.py --fix: all consistent  ✅
 ```
 
@@ -27695,8 +27695,8 @@ The CI `Auto-Fix Common Issues` and `PR Auto-Fix Check` jobs then both exited wi
 
 ```
 Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
-Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
-Simulated detect-secrets not installed: 0 false positives  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅  # pragma: allowlist secret
+Simulated detect-secrets not installed: 0 false positives  ✅  # pragma: allowlist secret
 sync_tracked_files.py --check: all consistent  ✅
 ```
 
@@ -27740,7 +27740,7 @@ Pre-Merge Validation reported two failures:
 ```
 ruff check scripts/ci/auto_fix_common_issues.py → All checks passed ✅
 Pattern 22 (Tracked File Sync): all tracked files consistent ✅
-Pattern 23 (Secrets Baseline Plugins): all baseline plugins available ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available ✅  # pragma: allowlist secret
 sync_tracked_files.py --fix: all consistent ✅
 auto_fix_common_issues.py --check-only: 0 auto-fixable issues ✅
 ```
@@ -27837,7 +27837,7 @@ A secondary issue was found: `.secrets.baseline` held a stale `hashed_secret`/
 ```
 sync_tracked_files.py --check: all consistent ✅
 CODEX_MANIFEST integrity: sha256 consistent ✅
-.secrets.baseline: updated to correct hash ✅
+.secrets.baseline: updated to correct hash ✅  # pragma: allowlist secret
 AGENT_ACCOUNTABILITY_REPORT: session entry dated 2026-03-29 ✅
 ```
 
@@ -28183,7 +28183,7 @@ timing issues.
 
 | # | Issue | Fix Applied | Outcome |
 |---|-------|-------------|---------|
-| 1 | RP-007: agent_context.json hash stale in .secrets.baseline | `detect-secrets scan --baseline` + `sync_tracked_files.py --fix` | ✅ Fixed |
+| 1 | RP-007: agent_context.json hash stale in .secrets.baseline | `detect-secrets scan --baseline` + `sync_tracked_files.py --fix` | ✅ Fixed | <!-- pragma: allowlist secret -->
 | 2 | Copilot review: deferral-language phrasing in accountability report (2 lines) | Rephrased to objective summaries | ✅ Fixed |
 | 3 | Copilot review: P-044 note about sharded runs misleading | Clarified: marker is no-op in sharded runs | ✅ Fixed |
 | 4 | Pattern 19: 141 src-imports | Pre-existing P19 issue (tracked separately) | 🏗️ Infrastructure |
@@ -29400,7 +29400,7 @@ now documents the RP-NEW-002 pattern to prevent recurrence.
 | Branch Rebase Resolved | bot | informational | ✅ noted |
 | PR Status Dashboard | bot | informational | ✅ noted |
 | Root Organization Validation | bot | informational | ✅ noted |
-| Agent Token Delegation Activated | bot | informational | ✅ noted |
+| Agent Token Delegation Activated | bot | informational | ✅ noted | <!-- pragma: allowlist secret -->
 | PR Comment Review Gate 7/7 ✅ | bot | gate cleared | ✅ noted |
 | Copilot reply (POST_MERGE_ALIGNMENT) | @Copilot | our prior reply | ✅ own |
 | CI Rescue 732d3d0 | bot | blocking — replied in S253 | ✅ replied |
@@ -30750,13 +30750,13 @@ mypy.manager skill improvements, mypy 23→0 errors via skill-driven fixes, CI t
 #### CI Triage Report #3853 — Pattern Analysis
 | Workflow | Root Cause | Status |
 |----------|-----------|--------|
-| Validation Pipeline | Fast validation pre-commit failures (EOF, secrets drift) | ✅ Fixed (RP-005/006/007) |
+| Validation Pipeline | Fast validation pre-commit failures (EOF, secrets drift) | ✅ Fixed (RP-005/006/007) | <!-- pragma: allowlist secret -->
 | Auto-Fix Common Issues | Unused imports in test_mypy_manager.py | ✅ Fixed |
 | PR Auto-Fix Check | Same as Auto-Fix | ✅ Fixed |
 | mypy Baseline | 23 mypy errors above baseline 0 | ✅ Fixed (0 errors) |
 | Deferral Language Gate | Deferral language in PR description | ⚠️ Monitoring |
 | RAG Module Tests | Pre-existing RAG test coverage regression | 🏗️ Infrastructure |
-| Agent Token Delegation | REQ-11: integration-branch direct-session guard | 🏗️ Infrastructure |
+| Agent Token Delegation | REQ-11: integration-branch direct-session guard | 🏗️ Infrastructure | <!-- pragma: allowlist secret -->
 | Copilot coding agent | PR processing failures on dependabot branches | 🏗️ Infrastructure |
 | Workflow Compliance Audit | actionlint findings | 🔄 In progress |
 
@@ -30965,8 +30965,8 @@ Excluded task branch versions of `.pre-commit-config.yaml` (v1.4.0 vs HEAD v1.5.
 |---|------|--------|-------|
 | 1 | CB App permissions ingested | ✅ Done | Full repo/org/account perms documented |
 | 2 | Webhook context ingested | ✅ Done | 1 push-only webhook, all other events via GA triggers |
-| 3 | `api.github.com/installation/token` firewall | ✅ Confirmed | S302 App token minting path now active |
-| 4 | `post-accountability-to-discussion.yml` App token | ✅ Fixed | Added `🔑 Resolve auth token` step; uses `resolved_token` instead of bare `GITHUB_TOKEN` for discussion writes |
+| 3 | `api.github.com/installation/token` firewall | ✅ Confirmed | S302 App token minting path now active | <!-- pragma: allowlist secret -->
+| 4 | `post-accountability-to-discussion.yml` App token | ✅ Fixed | Added `🔑 Resolve auth token` step; uses `resolved_token` instead of bare `GITHUB_TOKEN` for discussion writes | <!-- pragma: allowlist secret -->
 | 5 | CHANGELOG.md S303 entry | ✅ Done | — |
 | 6 | Webhook guidance policy noted | ✅ Done | New webhooks require explicit click-by-click UI guidance |
 
@@ -31528,7 +31528,7 @@ No automated diff→workflow recommendation logic exists. The agent applies judg
 | Changed file pattern | Recommended workflow(s) |
 |---------------------|------------------------|
 | `.github/workflows/*.yml` | `actionlint-audit.yml` |
-| `.secrets.baseline`, `CODEX_MANIFEST.json` | `validate.yml` |
+| `.secrets.baseline`, `CODEX_MANIFEST.json` | `validate.yml` | <!-- pragma: allowlist secret -->
 | `src/**/*.py` | `resilient_validation.yml`, `mypy-baseline.yml` |
 | `docs/**/*.md` (links changed) | `documentation-link-checker.yml` |
 | `src/codex/skills/**` | `test-rag.yml`, `nox_gates.yml` |
@@ -31541,7 +31541,7 @@ No automated diff→workflow recommendation logic exists. The agent applies judg
 | **CLI (`gh`, `git`, `python`, `ruff`)** | ✅ Fully available | CODEX_MASTER_KEY needed for write ops; sandbox has HTTP 403 without it |
 | **GitHub MCP Server (28 tools)** | ✅ Read-only | No variable CRUD, no workflow approval, no PR body write |
 | **Playwright MCP (21 tools)** | ✅ Available | Restricted to localhost/127.0.0.1 origins; cannot browse github.com |
-| **Cognitive Brain GitHub App** | ⚠️ CI-only | `_GITHUB_APP_PRIVATE_KEY` is a CI secret; not accessible in agent sandbox |
+| **Cognitive Brain GitHub App** | ⚠️ CI-only | `_GITHUB_APP_PRIVATE_KEY` is a CI secret; not accessible in agent sandbox | <!-- pragma: allowlist secret -->
 
 ### Lessons Learned
 - Bot dedup logic in `workflow-execution-gate.yml` (upsert via MARKER) only triggers on
@@ -31558,15 +31558,15 @@ No automated diff→workflow recommendation logic exists. The agent applies judg
 
 ### Methods Attempted (all 7, exhaustive)
 
-| # | Method | Token Used | Result | HTTP |
+| # | Method | Token Used | Result | HTTP | <!-- pragma: allowlist secret -->
 |---|--------|-----------|--------|------|
-| 1 | `gh api -X POST /repos/.../actions/variables` | GITHUB_TOKEN | ❌ Blocked | 403 |
-| 2 | `curl` direct REST POST | GITHUB_TOKEN | ❌ Blocked | 403 |
-| 3 | `scripts/ci/github_var_writer.py --set` | GITHUB_TOKEN | ❌ Blocked | 403 |
-| 4 | `gh workflow run process-variable-intents.yml` | GITHUB_TOKEN | ❌ Blocked | 403 |
+| 1 | `gh api -X POST /repos/.../actions/variables` | GITHUB_TOKEN | ❌ Blocked | 403 | <!-- pragma: allowlist secret -->
+| 2 | `curl` direct REST POST | GITHUB_TOKEN | ❌ Blocked | 403 | <!-- pragma: allowlist secret -->
+| 3 | `scripts/ci/github_var_writer.py --set` | GITHUB_TOKEN | ❌ Blocked | 403 | <!-- pragma: allowlist secret -->
+| 4 | `gh workflow run process-variable-intents.yml` | GITHUB_TOKEN | ❌ Blocked | 403 | <!-- pragma: allowlist secret -->
 | 5 | Playwright browser to github.com/settings | n/a | ❌ Blocked | localhost-only |
 | 6 | `agent-var-writer.yml` provenance chain | CODEX_MASTER_KEY (CI) | ❌ Session expired 118h | n/a |
-| 7 | `process-variable-intents.yml` + CB App token | Cognitive Brain App | ✅ Queued for CI | pending |
+| 7 | `process-variable-intents.yml` + CB App token | Cognitive Brain App | ✅ Queued for CI | pending | <!-- pragma: allowlist secret -->
 
 ### Root Cause (confirmed)
 `GITHUB_TOKEN` in Copilot sandbox = GitHub App installation token with `X-Oauth-Scopes: ` (empty).
@@ -32084,7 +32084,7 @@ The CI rescue system reported 35 "failing" checks on commit `1e738ea8bb11`. Inve
 
 | Category | Count | Details |
 |----------|-------|---------|
-| `success` | 17 | WEC gate ✅, Agent Token Delegation ✅, Cost Check ✅, ... |
+| `success` | 17 | WEC gate ✅, Agent Token Delegation ✅, Cost Check ✅, ... | <!-- pragma: allowlist secret -->
 | `cancelled` | 9 | Superseded by newer concurrent runs (not failures) |
 | `skipped` | 1 | Conditional skip (expected) |
 | `startup_failure` | 3 | Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite, Progressive Validation Suite — GitHub infrastructure errors, unrelated to code |
@@ -32102,10 +32102,10 @@ The CI rescue system reported 35 "failing" checks on commit `1e738ea8bb11`. Inve
 | Gate | Result |
 |------|--------|
 | WEC gate (latest) | ✅ success |
-| Agent Token Delegation | ✅ success |
+| Agent Token Delegation | ✅ success | <!-- pragma: allowlist secret -->
 | Cost Check | ✅ success |
 | Comment Review Gate (10/10) | ✅ cleared |
-| ruff / YAML / detect-secrets | ✅ all green |
+| ruff / YAML / detect-secrets | ✅ all green | <!-- pragma: allowlist secret -->
 | Uncommitted changes | ✅ none |
 | Security label `wec:auto-approve` | ✅ present |
 | CHANGELOG.md S303 entry | ✅ added |
@@ -32367,7 +32367,7 @@ Iterative Self-Healing CI issues #3912–3921 reported three recurring failures:
 | ID | Root Cause | Issues Resolved |
 |----|-----------|----------------|
 | RC-1 | `iterative-self-healing-ci.yml` escalation checkout hard-fails when triggering branch deleted | #3917–#3921 |
-| RC-2 | `.secrets.baseline` hashed_secrets stale (CODEX_MANIFEST + agent_context.json) | #3912 |
+| RC-2 | `.secrets.baseline` hashed_secrets stale (CODEX_MANIFEST + agent_context.json) | #3912 | <!-- pragma: allowlist secret -->
 | RC-3 | `git pull --rebase` missing `--autostash` (Pattern 26, 10 occurrences / 7 files) | #3913, #3914, #3916 |
 | RC-4 | `PULL_REQUEST_TEMPLATE.md` missing `⚡ Auto-Approve` + `pr-checks.yml` + `html_visual_regression.yml` | WEG integrity |
 | RC-5 | `session_wrapup_autofix.py` `_WEC_ITEMS` out-of-sync with template (12 items missing) | WEG integrity |
@@ -38464,9 +38464,9 @@ jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|call-to-
 
 | Change | File | Description |
 |--------|------|-------------|
-| `status()` function + `--status` CLI | `scripts/ci/github_api_trickle.py` | Checks all token pools; writes `.codex/rate_limit_state.json`; exits 1 if all exhausted; pretty-prints with reset epoch |
+| `status()` function + `--status` CLI | `scripts/ci/github_api_trickle.py` | Checks all token pools; writes `.codex/rate_limit_state.json`; exits 1 if all exhausted; pretty-prints with reset epoch | <!-- pragma: allowlist secret -->
 | D-00 rate-limit gate | `scripts/ci/session_bootstrap.py` | Probes rate limits at session start; re-uses cache if < 60 s old; adds blocking warning when exhausted |
-| New doc | `.codex/docs/RATE_LIMIT_AWARENESS.md` | Complete agent reference: token pools, pre-call protocol, state file format, correct vs. wrong usage examples |
+| New doc | `.codex/docs/RATE_LIMIT_AWARENESS.md` | Complete agent reference: token pools, pre-call protocol, state file format, correct vs. wrong usage examples | <!-- pragma: allowlist secret -->
 
 #### Validation
 - `ruff check src/logging_utils.py src/cli.py scripts/ci/github_api_trickle.py scripts/ci/session_bootstrap.py`: ✅ 0 violations
@@ -38494,10 +38494,10 @@ lack `security_events` scope. Every call to `list_code_scanning_alerts` (MCP) or
 `github_api_trickle.py --resource code-scanning-alerts` returns 403 "Resource not accessible
 by integration" — regardless of rate limit state.
 
-| Token | Scope issue | Fix |
+| Token | Scope issue | Fix | <!-- pragma: allowlist secret -->
 |-------|------------|-----|
-| MCP sandbox token | No `security_events` | ❌ Cannot fix in sandbox |
-| `AGENT_GITHUB_TOKEN` | No `security_events` | ❌ Cannot fix in sandbox |
+| MCP sandbox token | No `security_events` | ❌ Cannot fix in sandbox | <!-- pragma: allowlist secret -->
+| `AGENT_GITHUB_TOKEN` | No `security_events` | ❌ Cannot fix in sandbox | <!-- pragma: allowlist secret -->
 | `CODEX_MASTER_KEY` | Has `security_events:read` | ✅ Use via GitHub Actions or local shell |
 
 ### Fix Path Documented
@@ -40070,10 +40070,10 @@ and the CI gate requirement.
 ### Issue #4360 Pattern Analysis Summary
 | Pattern | Root Cause | Status |
 |---------|-----------|--------|
-| Secrets Baseline Enforcer | webhook_config.json FP (key names) | ✅ Fixed |
+| Secrets Baseline Enforcer | webhook_config.json FP (key names) | ✅ Fixed | <!-- pragma: allowlist secret -->
 | Validation Pipeline Fast Validation | Pre-existing on old commit | ℹ️ Not current |
 | Automatic Dependency Submission | GitHub HTTP 503 infra | ℹ️ Resilient workflow |
-| Agent Token Delegation | action_required gate (normal) | ℹ️ Not a failure |
+| Agent Token Delegation | action_required gate (normal) | ℹ️ Not a failure | <!-- pragma: allowlist secret -->
 | Copilot code review | PR #4351 infra / artifact | ℹ️ Different branch |
 | finding-autofix-faa8614c branch failures | Separate bot branch | ℹ️ Not our branch |
 
@@ -41296,7 +41296,7 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 | pip-audit actionable | 0 (2 accepted — no fix version) |
 | SBOM | 0 vulnerabilities |
 | ruff src/ | 0 ✅ |
-| detect-secrets | 0 ✅ |
+| detect-secrets | 0 ✅ | <!-- pragma: allowlist secret -->
 
 ### Pattern Compliance
 - Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
