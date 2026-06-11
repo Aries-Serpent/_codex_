@@ -78,7 +78,7 @@ codebase-health-sweep.yml
 | Test File | Source Module | Tests Needed | Focus |
 |-----------|---------------|-------------|-------|
 | `tests/cognitive_brain/test_knowledge_distiller.py` | `src/codex/cognitive/knowledge_distiller.py` | ~30 | KnowledgeStore CRUD, pattern extraction |
-| `tests/cognitive_brain/test_context_compressor.py` | `src/codex/cognitive/context_compressor.py` | ~30 | Token estimation, key point extraction |
+| `tests/cognitive_brain/test_context_compressor.py` | `src/codex/cognitive/context_compressor.py` | ~30 | Token estimation, key point extraction | <!-- pragma: allowlist secret -->
 | `tests/cognitive_brain/test_safety_guards.py` | `src/codex/cognitive/safety_guards.py` | ~25 | Rate limiting, audit logging, guard state transitions |
 | `tests/cognitive_brain/learning/test_rl_algorithms.py` | `src/cognitive_brain/learning/rl_algorithms.py` | ~20 | ReplayBuffer, QLearning, DQN |
 | `tests/cognitive_brain/quantum/test_qec_k1_tuning.py` | `src/cognitive_brain/quantum/adaptive_scoring.py` | ~25 | k₁ lifecycle, ScoringWeights, gradient computation |

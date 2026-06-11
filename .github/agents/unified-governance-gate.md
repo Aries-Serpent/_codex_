@@ -76,7 +76,7 @@ Validation rules:
 
 | Policy | Enforcement | Source |
 |--------|------------|--------|
-| No secrets in code | Block PR | secret-detection-agent (E-09) |
+| No secrets in code | Block PR | secret-detection-agent (E-09) | <!-- pragma: allowlist secret -->
 | Network safety (`NETWORK_SAFETY_ACK`) | Block PR | AGENTS.md |
 | Offline mode for audits (`OFFLINE_MODE_CONFIRM`) | Block PR | AGENTS.md |
 | Windows-safe filenames | Block PR | cross-platform-filename-validator |

@@ -83,7 +83,7 @@ Map each finding to its category in the remediation document:
 **Current Code (Lines 624-630):**
 ```python
 @app.middleware("http")
-async def api_key_middleware(request: Request, call_next):
+async def api_key_middleware(request: Request, call_next):  # pragma: allowlist secret
     global _rate_ts, _rate_count
 
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
@@ -104,10 +104,10 @@ async def api_key_middleware(request: Request, call_next):
 **Remediation:**
 ```python
 @app.middleware("http")
-async def api_key_middleware(request: Request, call_next):
+async def api_key_middleware(request: Request, call_next):  # pragma: allowlist secret
     # State management moved to app.state for thread-safety
-    key = request.headers.get("x-api-key")
-    expected = os.getenv("API_KEY")
+    key = request.headers.get("x-api-key")  # pragma: allowlist secret
+    expected = os.getenv("API_KEY")  # pragma: allowlist secret
     if expected and key != expected:
         return JSONResponse({"detail": "unauthorized"}, status_code=401)
 
@@ -593,8 +593,8 @@ Removed assignments from:
 - src/cognitive_brain/experiments/exp3_validation.py:234 (_results)
 - agents/mental_mapping.py:1374 (outcome_node)
 - agents/physics_orchestrator.py:641 (result)
-- scripts/cognitive/analyze_token_converter.py:564 (results)
-- scripts/deep_research_task_process.py (2 instances)
+- scripts/cognitive/analyze_token_converter.py:564 (results)  # pragma: allowlist secret
+- scripts/deep_research_task_process.py (2 instances)  # pragma: allowlist secret
 - (5 more instances from various modules)
 
 Fixes: 9 unused-global-variable findings
@@ -758,7 +758,7 @@ import httpx
 async def test_concurrent_rate_limiting():
     client = httpx.AsyncClient(base_url="http://localhost:8000")
     tasks = [
-        client.get("/api/endpoint", headers={"x-api-key": "test"})
+        client.get("/api/endpoint", headers={"x-api-key": "test"})  # pragma: allowlist secret
         for _ in range(200)
     ]
     responses = await asyncio.gather(*tasks, return_exceptions=True)

@@ -130,7 +130,7 @@ class QuantumAgentOrchestrator:
     - Quantum Annealing: optimize execution order
     """
 
-    def execute_agent_superposition(self, task_query: str):
+    def execute_agent_superposition(self, task_query: str):  # pragma: allowlist secret
         """
         Instead of: execute_agent_A(); execute_agent_B(); execute_agent_C()
 
@@ -139,7 +139,7 @@ class QuantumAgentOrchestrator:
         2. Evaluate each in parallel
         3. Measure execution results → collapse to optimal path
         """
-        candidates = self.find_capable_agents(task_query)
+        candidates = self.find_capable_agents(task_query)  # pragma: allowlist secret
 
         # Superposition: all agents in possible-execution state
         superposition = {agent: probability
@@ -151,7 +151,7 @@ class QuantumAgentOrchestrator:
         # Measurement → collapse to optimal agent
         optimal_agent = self.measure_and_collapse(results)
 
-        return optimal_agent.execute(task_query)
+        return optimal_agent.execute(task_query)  # pragma: allowlist secret
 ```
 
 #### Entanglement Pattern for Dependent Agents
@@ -242,7 +242,7 @@ class AuthorizationCriteriaRegistry:
     def security_compliance() -> list[AuthorizationCriteria]:
         return [
             AuthorizationCriteria(
-                name="no_secrets_detected",
+                name="no_secrets_detected",  # pragma: allowlist secret
                 category="security",
                 required=True,
                 measurement_fn=lambda: run_command("gitleaks detect --source local").returncode == 0,
@@ -646,7 +646,7 @@ class QuantumAgentConfigurator:
 @dataclass
 class SystemConstraints:
     """Hard constraints defining feasible configuration space Ω"""
-    maxResponseTokens: int = 2000
+    maxResponseTokens: int = 2000  # pragma: allowlist secret
     allowedOutputFormats: list[str] = field(default_factory=lambda: ['text', 'json', 'markdown'])
     requiredSources: list[str] = field(default_factory=list)
     hallucinationThreshold: float = 0.2
@@ -656,7 +656,7 @@ class SystemConstraints:
         """Check if configuration θ ∈ Ω"""
         # Verify all hard constraints
         return (
-            len(θ.θ_prompts) <= self.maxResponseTokens and
+            len(θ.θ_prompts) <= self.maxResponseTokens and  # pragma: allowlist secret
             all(fmt in self.allowedOutputFormats for fmt in self._extract_formats(θ)) and
             all(src in θ.θ_sources for src in self.requiredSources)
         )
@@ -884,21 +884,21 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
 
     def orient(self, observation: Observation) -> Orientation:
         """
-        Orient: Map to workflow token selection
+        Orient: Map to workflow token selection  # pragma: allowlist secret
 
-        Tokens represent workflow steps in sequence:
+        Tokens represent workflow steps in sequence:  # pragma: allowlist secret
         "LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"
         """
         workflow_id = observation.data["workflow_id"]
-        current_tokens = self.get_workflow_tokens(workflow_id)
-        next_token = self.select_next_token(current_tokens, observation.data["context"])
+        current_tokens = self.get_workflow_tokens(workflow_id)  # pragma: allowlist secret
+        next_token = self.select_next_token(current_tokens, observation.data["context"])  # pragma: allowlist secret
 
         return Orientation(
-            classification=next_token,
+            classification=next_token,  # pragma: allowlist secret
             context={
                 "workflow": workflow_id,
-                "tokens": current_tokens,
-                "next_token": next_token,
+                "tokens": current_tokens,  # pragma: allowlist secret
+                "next_token": next_token,  # pragma: allowlist secret
             },
             patterns=self._extract_workflow_patterns(workflow_id)
         )
@@ -907,19 +907,19 @@ class WorkflowNavigator(Planner):  # NOW INHERITS FROM Planner
         """
         Decide: Choose next workflow step
         """
-        next_token = orientation.classification
-        step_params = self._resolve_token_parameters(next_token, orientation.context)
+        next_token = orientation.classification  # pragma: allowlist secret
+        step_params = self._resolve_token_parameters(next_token, orientation.context)  # pragma: allowlist secret
 
         return Decision(
-            action=f"execute_workflow_step:{next_token}",
+            action=f"execute_workflow_step:{next_token}",  # pragma: allowlist secret
             priority=1,
             parameters=step_params,
-            rationale=f"Executing workflow token: {next_token}"
+            rationale=f"Executing workflow token: {next_token}"  # pragma: allowlist secret
         )
 
     def act(self, decision: Decision) -> Action:
         """
-        Act: Execute tokenized workflow step
+        Act: Execute tokenized workflow step  # pragma: allowlist secret
         """
         try:
             result = self.execute_workflow_step(
@@ -1194,9 +1194,9 @@ class LegacyAgentAdapter(Planner):
 
 | Merge | Source Agents (5) | Target (1) | Benefit |
 |-------|-------------------|-----------|---------|
-| **M-01** | vulnerability-scanner + alert-verification + secret-detection + gitleaks + semgrep | unified-security-scanner | Single consolidated report, de-duplication |
+| **M-01** | vulnerability-scanner + alert-verification + secret-detection + gitleaks + semgrep | unified-security-scanner | Single consolidated report, de-duplication | <!-- pragma: allowlist secret -->
 | **M-02** | doc-quality + doc-freshness-checker + link-validator + documentation-consolidator | unified-doc-agent | Unified quality score + consolidation suggestions |
-| **M-03** | ci-diagnostician + batch-triage-agent + log-retrieval-agent | ci-triage-pipeline-agent | Tokenized workflow: LOG_RETRIEVE → DIAGNOSE → TRIAGE → FIX |
+| **M-03** | ci-diagnostician + batch-triage-agent + log-retrieval-agent | ci-triage-pipeline-agent | Tokenized workflow: LOG_RETRIEVE → DIAGNOSE → TRIAGE → FIX | <!-- pragma: allowlist secret -->
 
 ```python
 # .github/agents/AGENT_REGISTRY.yaml (MODIFICATION)
@@ -1211,7 +1211,7 @@ agents:
     replaces:
       - vulnerability-scanner-agent
       - alert-verification-agent
-      - secret-detection-agent
+      - secret-detection-agent  # pragma: allowlist secret
       - gitleaks-agent
       - semgrep-agent
     ooda_phases: [observe, orient, decide, act]
@@ -1233,13 +1233,13 @@ agents:
   - id: ci-triage-pipeline-agent
     name: CI Triage Pipeline Agent
     type: ci_cd
-    description: "Tokenized pipeline: LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"
+    description: "Tokenized pipeline: LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"  # pragma: allowlist secret
     status: active
     replaces:
       - ci-diagnostician
       - batch-triage-agent
       - log-retrieval-agent
-    workflow_token: "LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"
+    workflow_token: "LOG_RETRIEVE → DIAGNOSE → BATCH_TRIAGE → FIX"  # pragma: allowlist secret
     ooda_phases: [observe, orient, decide, act]
 ```
 
@@ -1349,7 +1349,7 @@ class AdaptiveScoringOptimizer:
     def __init__(self):
         # S58 weights (refined from S57)
         self.compliance_weight = 0.38  # was 0.40
-        self.risk_weight = 0.32        # was 0.30
+        self.risk_weight = 0.32        # was 0.30  # pragma: allowlist secret
         self.implementation_weight = 0.18
         self.performance_weight = 0.12
 
@@ -1419,10 +1419,10 @@ class AdaptiveScoringOptimizer:
         """
         Quantum k₁ factor: measure of coherence/entanglement efficiency.
 
-        k₁ = (compliance_weight × risk_weight) / (implementation_weight × performance_weight)
+        k₁ = (compliance_weight × risk_weight) / (implementation_weight × performance_weight)  # pragma: allowlist secret
         """
         compliance = weights.get("compliance", self.compliance_weight)
-        risk = weights.get("risk", self.risk_weight)
+        risk = weights.get("risk", self.risk_weight)  # pragma: allowlist secret
         impl = weights.get("implementation", self.implementation_weight)
         perf = weights.get("performance", self.performance_weight)
 
@@ -1443,7 +1443,7 @@ class AdaptiveScoringOptimizer:
             if "compliance" in scenario:
                 self.compliance_weight *= 0.99  # Slight decrease
             if "risk" in scenario:
-                self.risk_weight *= 1.01  # Slight increase
+                self.risk_weight *= 1.01  # Slight increase  # pragma: allowlist secret
 ```
 
 ### 7.2 Test Coverage Update

@@ -268,11 +268,11 @@ class AgentPermission(Enum):
 
 **Delegation Mechanism:**
 ```python
-# Generate scoped token for agent
-from src.security.token_manager import TokenManager
+# Generate scoped token for agent  # pragma: allowlist secret
+from src.security.token_manager import TokenManager  # pragma: allowlist secret
 
-mgr = TokenManager()
-token = mgr.create_agent_token(
+mgr = TokenManager()  # pragma: allowlist secret
+token = mgr.create_agent_token(  # pragma: allowlist secret
     agent_name="test-agent",
     permissions=["read_code", "write_tests"],
     ttl_hours=24,
@@ -491,10 +491,10 @@ pytest tests/security/test_audit_logging.py -v
 |-----------|-------|-----|-----------------|
 | CVE Patches | Security Team | 24 hours | Real-time |
 | Dependency Updates | DevOps Team | 7 days | Weekly |
-| Secret Scanning | Infra Team | 5 minutes | Real-time |
+| Secret Scanning | Infra Team | 5 minutes | Real-time | <!-- pragma: allowlist secret -->
 | CodeQL/Semgrep | Security Team | 24 hours | Per PR |
 | Audit Logs | Compliance Team | Continuous | Monthly review |
-| Token Delegation | Platform Team | 1 hour | Per grant |
+| Token Delegation | Platform Team | 1 hour | Per grant | <!-- pragma: allowlist secret -->
 
 ---
 

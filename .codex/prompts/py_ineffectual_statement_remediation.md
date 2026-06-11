@@ -470,15 +470,15 @@ pytest tests/ -xvs -k "hook or checkpoint" 2>&1 | head -50
 
 **Current Code (consolidated view):**
 ```python
-class TokenizerContract(Protocol):
-    """Minimal tokenizer surface used by training and evaluation."""
+class TokenizerContract(Protocol):  # pragma: allowlist secret
+    """Minimal tokenizer surface used by training and evaluation."""  # pragma: allowlist secret
 
     # Method 1: encode (findings at lines 33, 35, 37, 39, 42, 45)
     def encode(self, text: str) -> list[int]: ...  # ❌ Remove this
     def encode(self, text: str) -> list[int]:
         pass  # ✅ Keep this
 
-    # Similar pattern for decode, add_special_tokens, save
+    # Similar pattern for decode, add_special_tokens, save  # pragma: allowlist secret
     # ...
 
     @property
@@ -914,7 +914,7 @@ ruff check src/ --select E,W 2>&1 | head -10 || true
 ```python
 if error_matches("ImportError: cannot import"):
     # Generate fix prompt for circular import
-    generate_prompt("SUBFIX-CIRCULAR_IMPORT", task_context)
+    generate_prompt("SUBFIX-CIRCULAR_IMPORT", task_context)  # pragma: allowlist secret
 ```
 
 ### Self-Correction Mechanism

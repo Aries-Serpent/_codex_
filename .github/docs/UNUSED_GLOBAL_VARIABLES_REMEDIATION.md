@@ -92,7 +92,7 @@ Migrate global rate-limit variables to FastAPI `app.state` pattern.
 **Current Code:**
 ```python
 @app.middleware("http")
-async def api_key_middleware(request: Request, call_next):
+async def api_key_middleware(request: Request, call_next):  # pragma: allowlist secret
     global _rate_ts, _rate_count
 
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
@@ -113,7 +113,7 @@ async def api_key_middleware(request: Request, call_next):
 **Fix:** Remove globals; use `app.state` exclusively:
 ```python
 @app.middleware("http")
-async def api_key_middleware(request: Request, call_next):
+async def api_key_middleware(request: Request, call_next):  # pragma: allowlist secret
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
     if limit > 0:
         if not hasattr(app.state, "rate_ts"):
@@ -652,7 +652,7 @@ import httpx
 async def test_rate_limit():
     client = httpx.AsyncClient(base_url="http://localhost:8000")
     # Send 101 requests within 1 second
-    tasks = [client.get("/endpoint", headers={"x-api-key": "valid"}) for _ in range(101)]
+    tasks = [client.get("/endpoint", headers={"x-api-key": "valid"}) for _ in range(101)]  # pragma: allowlist secret
     responses = await asyncio.gather(*tasks)
     # Verify exactly 100 succeed (429) and last is 429
     assert sum(1 for r in responses if r.status_code == 429) >= 1

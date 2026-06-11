@@ -56,8 +56,8 @@ This matrix captures the Keep / Merge-into / Archive decisions for each agent fa
 
 | Agent | Decision | Rationale |
 |---|---|---|
-| `unified-security-scanner` | **Keep** | Canonical SAST + deps + secrets entry point. |
-| `secret-detection-agent` | Merge → `unified-security-scanner` | Capability tag. |
+| `unified-security-scanner` | **Keep** | Canonical SAST + deps + secrets entry point. | <!-- pragma: allowlist secret -->
+| `secret-detection-agent` | Merge → `unified-security-scanner` | Capability tag. | <!-- pragma: allowlist secret -->
 | `dependency-vulnerability-scanner` | Merge → `unified-security-scanner` | Capability tag. |
 | `dependency-security-review-agent` | Merge → `unified-security-scanner` | Capability tag (review variant). |
 | `security-audit-agent` | Merge → `unified-security-scanner` | Capability tag. |

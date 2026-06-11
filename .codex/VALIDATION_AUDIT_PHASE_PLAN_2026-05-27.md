@@ -181,7 +181,7 @@
 | **AI-Augmented** | ✅ 100% | 145 agents, quantum engine, MCP, cognitive brain | None |
 | **Production-Ready** | ✅ 95% | Deployed to stage, CVE fixes, security scanning | Observability docs |
 | **Autonomy** | ✅ 100% | 145 active agents + self-healing orchestrator | None |
-| **Security** | ✅ 90% | 26 CVEs fixed, SAST, CodeQL, secret scanning | Supply chain policy |
+| **Security** | ✅ 90% | 26 CVEs fixed, SAST, CodeQL, secret scanning | Supply chain policy | <!-- pragma: allowlist secret -->
 | **Observability** | ⚠️ 80% | MLflow, W&B, TensorBoard, custom monitoring | Roadmap docs needed |
 
 ### 5.2 Documentation Quality Assessment

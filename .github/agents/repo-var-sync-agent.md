@@ -50,7 +50,7 @@ flowchart LR
 
 | Prefix | Variables | Count |
 |---|---|---|
-| `COGNITIVE_BRAIN_` | MAX_CONTEXT_TOKENS, LTM_RETENTION_DAYS, PATTERN_MIN_CONFIDENCE, MEMORY_TIER, SESSION_NUMBER, INJECTION_ENABLED, ALLOWED_ACTORS | 7 |
+| `COGNITIVE_BRAIN_` | MAX_CONTEXT_TOKENS, LTM_RETENTION_DAYS, PATTERN_MIN_CONFIDENCE, MEMORY_TIER, SESSION_NUMBER, INJECTION_ENABLED, ALLOWED_ACTORS | 7 | <!-- pragma: allowlist secret -->
 | `COPILOT_` | CLI_BASE_URL, CLI_ENABLED, AGENT_AUTH_ENABLED, AGENT_FIREWALL_ENABLED, AGENT_SESSION_RESTORE_ENABLED, AGENT_MAX_AUTONOMY_LEVEL | 6 |
 | `CODEX_` | CI_FAILURE_RATE, CI_FAILURE_THRESHOLD, CI_LAST_GREEN_SHA, LOG_LEVEL, NETWORK_MODE, ORG_NAME, AGENT_NAME, API_VERSION, ISOLATED_PATH | 9 |
 | `AGENT_` | HANDOFF_TIMEOUT_SECONDS | 1 |
@@ -66,11 +66,11 @@ Used by `copilot-agent-vars-bootstrap.yml` to inject context at session start:
 ```python
 import os, json, requests
 
-token  = os.environ["CODEX_MASTER_KEY"]
+token  = os.environ["CODEX_MASTER_KEY"]  # pragma: allowlist secret
 owner  = "Aries-Serpent"
 repo   = "_codex_"
 url    = f"https://api.github.com/repos/{owner}/{repo}/actions/variables"
-headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}  # pragma: allowlist secret
 
 resp = requests.get(url, headers=headers)
 vars_data = {v["name"]: v["value"] for v in resp.json().get("variables", [])}
