@@ -441,8 +441,8 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |  # pragma: allowlist secret
-          python3 scripts/ci/inject_agent_context.py
+        run: |
+          python3 .github/scripts/inject_context_vars.py
 
       - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
         # Supplement agent_context.json injection with live vars.* values for the
