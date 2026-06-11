@@ -103,7 +103,7 @@ Agent capability routing         → orchestrator-agent
 | Documentation | `unified-doc-agent`, `documentation-consolidator`, `link-validator-agent` |
 | Repository Mgmt | `repository-hygiene-agent`, `root-organizer-agent`, `reference-updater-agent` |
 | Session / Cognitive | `cognitive-brain-session-injector`, `session-analysis-agent`, `memory-sync-agent` |
-| Governance | `unified-governance-gate`, `owner-approval-guard`, `unified-governance-gate` |
+| Governance | `unified-governance-gate`, `owner-approval-guard`, `policy-coach-agent` |
 
 ---
 
