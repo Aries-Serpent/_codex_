@@ -189,6 +189,7 @@ jobs:
           !startsWith(github.head_ref, 'copilot/')
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TARGET_BRANCH: ${{ github.head_ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -204,7 +205,7 @@ jobs:
             TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
             git commit -m "fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007)"
 
-            git push origin "HEAD:${{ github.head_ref }}"
+            git push origin "HEAD:${TARGET_BRANCH}"
             echo "healed=true" >> "$GITHUB_OUTPUT"
             echo "✅ Auto-fixes applied and pushed to PR branch."
           fi

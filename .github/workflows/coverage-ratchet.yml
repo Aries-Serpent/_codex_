@@ -161,6 +161,7 @@ jobs:
   notify-exempt:
     name: "🧪 Coverage Ratchet (exempt)"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: >
       github.event_name == 'pull_request' &&
       startsWith(github.head_ref, 'copilot/') &&
@@ -192,13 +193,16 @@ jobs:
           gh pr comment "$PR_NUMBER" --body-file "${RUNNER_TEMP}/exempt_body.txt" 2>/dev/null || true
 
       - name: Job summary
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           {
             echo "## 🧪 Coverage Ratchet (exempt)"
             echo ""
             echo "| Item | Value |"
             echo "|------|-------|"
-            echo "| Head branch | \`${{ github.head_ref }}\` |"
-            echo "| Base branch | \`${{ github.base_ref }}\` |"
+            echo "| Head branch | \`${HEAD_REF}\` |"
+            echo "| Base branch | \`${BASE_REF}\` |"
             echo "| Status | ⏭️ Exempt — Copilot branch targeting non-trunk |"
           } >> "$GITHUB_STEP_SUMMARY"
