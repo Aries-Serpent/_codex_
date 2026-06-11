@@ -1050,7 +1050,7 @@ def check_req14_agents_used() -> bool:
     if not ACCOUNTABILITY_REPORT.exists():
         return False
     content = ACCOUNTABILITY_REPORT.read_text(encoding="utf-8")
-    return bool(re.search(r"(?i)(agent_type:|Agents Used|Agent Binding Map)", content))
+    return bool(re.search(r"^#{1,4}\s+Agents Used", content, re.MULTILINE))
 
 def fix_req14_agents_used(dry_run: bool = False) -> bool:
     """Ensure AGENT_ACCOUNTABILITY_REPORT.md has an Agents Used section."""
@@ -2258,8 +2258,8 @@ def main(argv: list[str] | None = None) -> int:
     errors = 0
 
     if fix_req14:
-        ok = fix_req14_agents_used(dry_run=args.dry_run)
-        if not ok:
+        fix_req14_agents_used(dry_run=args.dry_run)
+        if not check_req14_agents_used():
             errors += 1
 
     if fix_acct:

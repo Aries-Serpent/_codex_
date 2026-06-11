@@ -49109,8 +49109,3 @@ and the CI gate requirement.
 - **WEC human grant** `repo-var-sync-agent` — detected 2026-06-11T18:54:55Z @ 4132b814 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `ci-testing-agent` — detected 2026-06-11T18:54:55Z @ 4132b814 — sticky [x] maintained by all future agent sessions
 
-<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
-- **WEC human grant** `ci-testing-agent` — detected 2026-06-11T18:54:55Z @ 4132b814 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `general-purpose` — detected 2026-06-11T18:54:55Z @ 4132b814 — sticky [x] maintained by all future agent sessions
-- **WEC human grant** `repo-var-sync-agent` — detected 2026-06-11T18:54:55Z @ 4132b814 — sticky [x] maintained by all future agent sessions
-
