@@ -33,6 +33,7 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 10. [Documentation Standards](#documentation-standards)
 11. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
 12. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
+13. [Custom Agent Delegation Mandate (CAD-Mandate)](#custom-agent-delegation-mandate-cad-mandate)
 
 ---
 
@@ -1413,6 +1414,121 @@ policy violation and must be fixed immediately.
 | 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
 | 1.2.0 | 2026-03-13 | Added Network Safety section (ML offline-mode proof) |
 | 1.3.0 | 2026-03-28 | Added §ARLOOP — Already-Addressed-Task Response Protocol (S242, PR #3770) |
+| 1.4.0 | 2026-06-11 | Added § Custom Agent Delegation Mandate (CAD-Mandate) |
+
+---
+
+## Custom Agent Delegation Mandate (CAD-Mandate)
+
+**Version:** 1.0.0 — Effective 2026-06-11
+**Canonical Reference:** `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`
+**CI Enforcement:** `deferral-language-gate.yml` covers agent-bypass violations
+
+### Overview
+
+This mandate codifies the **Copilot Hardened Planning Protocol (CHPP)** as a binding policy section. Its purpose is to guarantee that all Copilot agent planning sessions **always leverage and maintain Custom Agents** rather than performing ad-hoc manual operations where specialized agents already exist.
+
+The repository maintains **153+ active Custom Agents** spanning eight architectural layers (see `AGENT_REGISTRY.yaml`). These agents represent the accumulated, hardened, and tested operational knowledge of the codebase. Bypassing them for covered task categories is a policy violation.
+
+---
+
+### CAD Rule 1: Agent-First Delegation (AFD)
+
+**Hard Rule** — Manual shell scripting, direct file edits, or raw bash commands are **prohibited** for any task category that has a dedicated Custom Agent in `AGENT_REGISTRY.yaml`.
+
+**Before writing any bash command, grep, or direct file edit, the agent MUST:**
+
+1. Consult `.github/agents/AGENT_SELECTION_GUIDE.md` Quick Decision Tree.
+2. Check `.github/agents/AGENT_REGISTRY.yaml` capability_tags for the task type.
+3. If a matching agent exists → use `task(agent_type="...", mode="background")`.
+4. If no agent exists → proceed with direct tooling AND add an entry to `.github/agents/GAP_ANALYSIS.md`.
+
+**Non-exhaustive bypass prohibition table:**
+
+| Task Category | ❌ Prohibited | ✅ Required |
+|---------------|--------------|------------|
+| Fix test coverage | `pytest --cov` + manual test writing | `unified-coverage-agent` |
+| Fix CI import error | Manual grep + edit | `ci-importerror-agent` |
+| Detect secrets | `grep -r "secret"` | `secret-detection-agent` |
+| Validate doc links | Manual link checking | `link-validator-agent` |
+| Resolve CodeQL alert | Direct code edit without agent | `codeql-alert-resolution-agent` |
+| Fix workflow YAML | Direct YAML edit only | `workflow-ci-fixer` |
+| Clean stale repo files | `find . -delete` | `repository-hygiene-agent` |
+| Dependency CVE scan | `pip-audit` manually | `dependency-vulnerability-scanner` |
+
+---
+
+### CAD Rule 2: Mandatory Session Pre-Load Validation (MSPV)
+
+**Hard Rule** — Before executing ANY plan, the Copilot MUST complete the following validation sequence:
+
+```
+1. Read .codex/agent_context.json
+   → Confirm COPILOT_AGENT_CCA_VERSION_LOCK=stable
+   → Confirm COPILOT_AGENT_DEDUPLICATION_ENABLED=true
+   → Confirm COPILOT_AGENT_TURN_ISOLATION_ENABLED=true
+
+2. Load policy state
+   → Re-read .codex/CODEBASE_AGENCY_POLICY.md
+   → Re-read docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   → Check last 5 lines of .codex/aftermath/pda_iterations.jsonl
+
+3. Resolve applicable agents
+   → Consult .github/agents/AGENT_REGISTRY.yaml capability_tags
+   → Identify minimum set of agents whose tags cover the task
+   → Prefer agents with maturity: production
+
+4. Confirm no deferral intent
+   → Scan planned response for any phrase from AGENTS.md "Deferral Language Trigger Protocol"
+   → If found: STOP — remove phrase — fix the issue now
+```
+
+---
+
+### CAD Rule 3: CTEP-Aligned Plan Structure (CAPS)
+
+**Hard Rule** — Every plan produced by a Copilot agent session MUST follow the CTEP (Copilot Task Execution Protocol) structure with each task explicitly bound to an `agent_type`:
+
+```markdown
+## 📊 Task Execution Progress
+
+### Phase N: [Phase Name] — X% Complete
+- [ ] Task N.1: [Description] → agent_type: `<agent_id>` ⏳ PENDING
+- [x] Task N.2: [Description] → agent_type: `<agent_id>` ✅ COMPLETE
+
+## 🔍 Agent Binding Map
+| Task | Agent | Mode | Priority |
+|------|-------|------|----------|
+| Fix import error | ci-importerror-agent | background | P0 |
+
+## ✅ Completion Summary
+Total Tasks: X | Completed: X ✅ | Skipped: 0 ❌
+CTEP Compliance: ✅ PASS
+CAD-Mandate Compliance: ✅ PASS
+```
+
+Plans that list tasks without an `agent_type` binding are non-compliant and MUST be revised.
+
+---
+
+### Implementation Workflow
+
+All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`:
+
+- **Phase 1: Diagnosis & Routing** — Map problem to agents via `AGENT_ECOSYSTEM_MAP.md` and `AGENT_SELECTION_GUIDE.md`.
+- **Phase 2: Parallel Task Dispatch** — Use `task(agent_type=..., mode="background")` for concurrent agent execution.
+- **Phase 3: Automated Quality & Security Validation** — Call `parallel_validation()` before PR creation; plan for `post-merge-doc-alignment-agent` after merge.
+- **Phase 4: Memory & Accountability Updates** — Update `pda_iterations.jsonl`; delegate to `session-analysis-agent` and `memory-sync-agent`.
+
+---
+
+### Enforcement
+
+- **deferral-language-gate.yml**: The existing deferral gate CI workflow is extended to catch agent-bypass language (e.g., "I'll just run pytest manually").
+- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one Custom Agent used per session.
+- **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked.
+
+**Violations of the CAD-Mandate must be corrected immediately before any commit is pushed.**
 
 ---
 
