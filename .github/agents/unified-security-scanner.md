@@ -55,7 +55,7 @@ graph TD
 │                  Unified Security Scanner                    │
 │                                                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌───────────────────┐ │
-│  │  Dependency  │  │    Secret    │  │  Alert            │ │
+│  │  Dependency  │  │    Secret    │  │  Alert            │ │  # pragma: allowlist secret
 │  │  Vuln Scan   │  │  Detection   │  │  Verification     │ │
 │  │  (pip-audit) │  │  (E-09 pat.) │  │  (GitHub GHAS)    │ │
 │  └──────┬───────┘  └──────┬───────┘  └────────┬──────────┘ │
@@ -78,7 +78,7 @@ graph TD
 |-----------|-------------|--------|
 | C-01: PyPI vulnerability scan | dependency-vulnerability-scanner | ✅ Merged |
 | C-02: npm/cargo/Go vulnerability scan | dependency-vulnerability-scanner | ✅ Merged |
-| C-03: Secret pattern detection (32 patterns) | secret-detection-agent v2.0 | ✅ Merged |
+| C-03: Secret pattern detection (32 patterns) | secret-detection-agent v2.0 | ✅ Merged | <!-- pragma: allowlist secret -->
 | C-04: GitHub Advanced Security alert triage | security-alert-verification-agent | ✅ Merged |
 | C-05: CodeQL alert resolution | code-scanning-remediation-agent | ✅ Merged |
 | C-06: Semgrep custom rules | new | ✅ Included |
@@ -107,14 +107,14 @@ graph TD
 | Dependency CVE | Critical (≥9.0) | Block PR, open P1 issue |
 | Dependency CVE | High (7.0–8.9) | Open P2 issue, suggest fix |
 | Dependency CVE | Medium/Low | Document in tracking log |
-| Secret detected | Any | Block PR, rotate credential |
+| Secret detected | Any | Block PR, rotate credential | <!-- pragma: allowlist secret -->
 | GHAS alert | High | Auto-remediate if pattern known |
 | GHAS alert | Medium | Open issue, assign |
 
 ## Risk Score Formula
 
 ```
-risk_score = (cvss_weight × cvss_score +
+risk_score = (cvss_weight × cvss_score +  # pragma: allowlist secret
               entropy_weight × entropy_score +
               context_weight × context_score) / sum_weights
 
@@ -130,7 +130,7 @@ where:
 |---------|-------------|
 | Balance ⚖️ | Unified risk scoring balances CVSS + entropy + context signals |
 | Redundancy 🔀 | Multiple scanners ensure no single-point miss (defense in depth) |
-| Path 🛤️ | Waterfall triage (secret → CVE → alert) minimizes total scan time |
+| Path 🛤️ | Waterfall triage (secret → CVE → alert) minimizes total scan time | <!-- pragma: allowlist secret -->
 
 ## Related Agents
 
@@ -145,7 +145,7 @@ where:
 | Capability | Description | Status |
 |------------|-------------|--------|
 | **CVE Scanning** | `pip-audit` + `safety` on all dependency files | ✅ Active |
-| **Secret Detection** | Entropy-based + regex pattern (E-09 patterns) across all commits | ✅ Active |
+| **Secret Detection** | Entropy-based + regex pattern (E-09 patterns) across all commits | ✅ Active | <!-- pragma: allowlist secret -->
 | **GHAS Alert Triage** | GitHub Advanced Security alert ingestion & classification | ✅ Active |
 | **SBOM Generation** | CycloneDX-format Software Bill of Materials output | ✅ Active |
 | **Auto-Remediation** | PR-based dependency bumps for known CVEs | ✅ Active |

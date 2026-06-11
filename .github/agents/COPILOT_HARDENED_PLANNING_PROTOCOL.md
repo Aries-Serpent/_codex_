@@ -60,11 +60,11 @@ The repository currently has **153+ active custom agents** (145 listed in `AGENT
 
 | Agent | Purpose | File |
 |-------|---------|------|
-| `unified-security-scanner` | Comprehensive SAST + dependency + secrets detection | `unified-security-scanner.md` |
+| `unified-security-scanner` | Comprehensive SAST + dependency + secrets detection | `unified-security-scanner.md` | <!-- pragma: allowlist secret -->
 | `security-audit-agent` | Full security audit: SAST, CVEs, compliance checks | `security-audit-agent.md` |
 | `code-scanning-remediation-agent` | Fix GitHub Advanced Security + static analysis alerts | `code-scanning-remediation-agent.md` |
 | `codeql-alert-resolution-agent` | Resolve CodeQL alerts via Playwright scraping + auto-fix pipeline | `codeql-alert-resolution-agent.md` |
-| `secret-detection-agent` | Detect accidentally committed secrets and provide remediation | `secret-detection-agent.md` |
+| `secret-detection-agent` | Detect accidentally committed secrets and provide remediation | `secret-detection-agent.md` | <!-- pragma: allowlist secret -->
 | `dependency-vulnerability-scanner` | Scan project dependencies for known CVEs | `dependency-vulnerability-scanner.agent.md` |
 | `dependency-security-review-agent` | Review dependencies for vulnerabilities + recommend upgrades | `dependency-security-review-agent.md` |
 | `bridge-security-monitor` | Monitor IPC bridge security, detect unauthorized access | `bridge-security-monitor.agent.md` |
@@ -84,7 +84,7 @@ The repository currently has **153+ active custom agents** (145 listed in `AGENT
 | `test-alignment-fixer` | Fix test alignment issues after refactors/signature updates | `test-alignment-fixer.agent.md` |
 | `test-pattern-guardian` | Guard against anti-patterns in tests | `test-pattern-guardian.md` |
 | `integration-test-runner` | Run integration tests across services, validate e2e workflows | `integration-test-runner.agent.md` |
-| `tokenization-coverage-agent` | Improve coverage for tokenization module | `tokenization-coverage-agent.md` |
+| `tokenization-coverage-agent` | Improve coverage for tokenization module | `tokenization-coverage-agent.md` | <!-- pragma: allowlist secret -->
 
 ### 1.5 Documentation Layer
 
@@ -495,7 +495,7 @@ Flaky/intermittent test        → fragile-test-guardian
 Test assertions outdated       → test-alignment-fixer-enhanced
 New test cases needed          → test-enhancement-agent
 CodeQL security alert          → codeql-alert-resolution-agent
-Secret detected in code        → secret-detection-agent
+Secret detected in code        → secret-detection-agent  # pragma: allowlist secret
 Dependency CVE found           → dependency-vulnerability-scanner
 Full security audit            → security-audit-agent
 Doc link broken                → link-validator-agent

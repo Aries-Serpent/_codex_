@@ -170,8 +170,8 @@ nox -s tests
 
 | Document | Path | When to Use |
 |----------|------|-------------|
-| **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Any operation on variables, secrets, Dependabot, Codespaces secrets |
-| **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body WEC protocol, workflow ops |
+| **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Any operation on variables, secrets, Dependabot, Codespaces secrets | <!-- pragma: allowlist secret -->
+| **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body WEC protocol, workflow ops | <!-- pragma: allowlist secret -->
 | **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Tool inventory: 21 Playwright + 28 GitHub MCP tools |
 | **CB API Knowledge Entry** | `.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md` | Quick-access summary + wiring map |
 | **MCP Server Config Guide** | Upstream: `github.com/github/github-mcp-server/docs/server-configuration.md` | Toolsets, read-only mode, lockdown, insiders |

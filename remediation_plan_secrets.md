@@ -37,7 +37,7 @@
 | `.venv_ci/lib/python3.12/site-packages/torch/_inductor/autoheuristic/artifacts/_MMRankingA100.py` | 197 |
 | `.venv_ci/lib/python3.12/site-packages/py_spy-0.4.2.dist-info/sboms/py-spy.cyclonedx.json` | 114 |
 | `.venv_ci/lib/python3.12/site-packages/pydantic_core-2.46.4.dist-info/sboms/pydantic-core.cyclonedx.json` | 103 |
-| `scripts/pr3248_agent_task_spec.py` | 82 |
+| `scripts/pr3248_agent_task_spec.py` | 82 | <!-- pragma: allowlist secret -->
 | `scripts/pr3248_mcp_collection_helper.py` | 82 |
 | `scripts/populate_pr3248_checks.py` | 81 |
 | `scripts/pr3248_comprehensive_collector.py` | 81 |

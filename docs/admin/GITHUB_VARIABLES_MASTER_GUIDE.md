@@ -47,23 +47,23 @@ GitHub provides **six distinct storage layers** for variables and secrets. Choos
 │                    Variable Storage Hierarchy                        │
 │                                                                      │
 │  🏢 ORGANIZATION LEVEL  (Aries-Serpent)                             │
-│  ├─ Org Secrets       → shared across all repos in org              │
+│  ├─ Org Secrets       → shared across all repos in org              │  # pragma: allowlist secret
 │  └─ Org Variables     → [none currently, use repo vars instead]     │
 │                                                                      │
 │  📦 REPOSITORY LEVEL  (Aries-Serpent/_codex_)                       │
-│  ├─ Repo Secrets      → encrypted, not readable by agents           │
+│  ├─ Repo Secrets      → encrypted, not readable by agents           │  # pragma: allowlist secret
 │  └─ Repo Variables    → readable plaintext, writable via API        │
 │                                                                      │
 │  🌍 ENVIRONMENT LEVEL  (Aries_Serpent_codex_ environment)           │
-│  ├─ Env Secrets       → override repo secrets for this env          │
+│  ├─ Env Secrets       → override repo secrets for this env          │  # pragma: allowlist secret
 │  └─ Env Variables     → override repo variables for this env        │
 │                                                                      │
 │  💻 CODESPACE LEVEL  (org or user-scoped)                           │
-│  └─ Codespace Secrets → injected into interactive Codespace only    │
+│  └─ Codespace Secrets → injected into interactive Codespace only    │  # pragma: allowlist secret
 └─────────────────────────────────────────────────────────────────────┘
 
 Resolution order (GitHub Actions): Env > Repo > Org (most specific wins)
-Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
+Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: allowlist secret
 ```
 
 **Key constraints:**
@@ -77,14 +77,14 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
 
 | Storage Type | GitHub UI Location | API / CLI |
 |---|---|---|
-| **Org Secrets** | [Settings → Security → Secrets → Actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) | `gh secret set NAME --org Aries-Serpent` |
+| **Org Secrets** | [Settings → Security → Secrets → Actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) | `gh secret set NAME --org Aries-Serpent` | <!-- pragma: allowlist secret -->
 | **Org Variables** | [Settings → Security → Variables → Actions](https://github.com/organizations/Aries-Serpent/settings/variables/actions) | `gh variable set NAME --org Aries-Serpent` |
-| **Repo Secrets** | [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | `gh secret set NAME --repo Aries-Serpent/_codex_` |
-| **Repo Variables** | [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) | `gh variable set NAME --body VALUE --repo Aries-Serpent/_codex_` |
-| **Env Secrets** | [Settings → Environments → Aries_Serpent_codex_ → Secrets](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh secret set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` |
+| **Repo Secrets** | [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | `gh secret set NAME --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
+| **Repo Variables** | [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) | `gh variable set NAME --body VALUE --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
+| **Env Secrets** | [Settings → Environments → Aries_Serpent_codex_ → Secrets](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh secret set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
 | **Env Variables** | [Settings → Environments → Aries_Serpent_codex_ → Variables](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh variable set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` |
-| **Codespace Secrets (org)** | [Settings → Codespaces → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces) | `gh secret set NAME --app codespaces --org Aries-Serpent` |
-| **Codespace Secrets (user)** | [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces) | `gh secret set NAME --app codespaces` |
+| **Codespace Secrets (org)** | [Settings → Codespaces → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces) | `gh secret set NAME --app codespaces --org Aries-Serpent` | <!-- pragma: allowlist secret -->
+| **Codespace Secrets (user)** | [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces) | `gh secret set NAME --app codespaces` | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -94,20 +94,20 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
 > **Referenced in workflows as:** `${{ secrets.NAME }}`  
 > **Access via API:** Requires `CODEX_MASTER_KEY` or org-admin token
 
-| # | Secret Name | Status | Last Updated | Purpose | Required By |
+| # | Secret Name | Status | Last Updated | Purpose | Required By | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | `CODECOV_TOKEN` | ✅ Present | 2 months ago | Code coverage upload to codecov.io | `coverage*.yml` workflows |
+| 1 | `CODECOV_TOKEN` | ✅ Present | 2 months ago | Code coverage upload to codecov.io | `coverage*.yml` workflows | <!-- pragma: allowlist secret -->
 | 2 | `CODEX_ADMIN_KEY` | ✅ Present | 3 hours ago | Fine-grained PAT (`Webhooks:write`). Used for `webhook_configurator.py` least-privilege mode. | `apply-webhooks` job in `agent_infrastructure_manager.yml` |
 | 3 | `CODEX_BACKUP_KEY` | ✅ Present | **2 hours ago** | Fallback GitHub PAT — auto-used on 401/403 from `CODEX_MASTER_KEY`. Same scope as master. | All auth-delegation workflows, `variable_manager.py`, `brain_client.py`, `github_app.py` |
-| 4 | `CODEX_MASTER_KEY` | ✅ Present | **now** (2026-03-06) | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Re-rotated 2026-03-06 — next rotation due ~2026-06-04. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` |
-| 5 | `HF_TOKEN` | ✅ Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows |
-| 6 | `NPM_TOKEN` | ✅ Present | 2 months ago | npm publish authentication | Node.js package publish workflows |
-| 7 | `PYPI_TOKEN` | ✅ Present | 2 months ago | PyPI publish authentication | Python package publish workflows |
+| 4 | `CODEX_MASTER_KEY` | ✅ Present | **now** (2026-03-06) | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Re-rotated 2026-03-06 — next rotation due ~2026-06-04. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` | <!-- pragma: allowlist secret -->
+| 5 | `HF_TOKEN` | ✅ Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows | <!-- pragma: allowlist secret -->
+| 6 | `NPM_TOKEN` | ✅ Present | 2 months ago | npm publish authentication | Node.js package publish workflows | <!-- pragma: allowlist secret -->
+| 7 | `PYPI_TOKEN` | ✅ Present | 2 months ago | PyPI publish authentication | Python package publish workflows | <!-- pragma: allowlist secret -->
 | 8 | `RAG_OPENAI_KEY` | ✅ Present | 3 weeks ago | OpenAI API key for RAG embeddings | RAG index build workflows |
-| 9 | `_CODEX_ACTION_RUNNER` | ✅ Present | 2 months ago | Runner registration token for self-hosted Actions runners | Runner registration |
-| 10 | `_GITHUB_APP_CLIENT_SECRET` | ✅ Present | 8 hours ago | GitHub App OAuth client secret for web-flow App authentication | `github_app.py`, OAuth web-flow auth |
+| 9 | `_CODEX_ACTION_RUNNER` | ✅ Present | 2 months ago | Runner registration token for self-hosted Actions runners | Runner registration | <!-- pragma: allowlist secret -->
+| 10 | `_GITHUB_APP_CLIENT_SECRET` | ✅ Present | 8 hours ago | GitHub App OAuth client secret for web-flow App authentication | `github_app.py`, OAuth web-flow auth | <!-- pragma: allowlist secret -->
 | 11 | `_GITHUB_APP_ID` | ✅ Present | 8 hours ago | Numeric GitHub App ID for RS256 JWT generation | `github_app.py`, App JWT auth flows |
-| 12 | `_GITHUB_APP_INSTALLATION_ID` | ✅ Present | 8 hours ago | App installation ID for generating installation access tokens | `github_app.py`, installation token flows |
+| 12 | `_GITHUB_APP_INSTALLATION_ID` | ✅ Present | 8 hours ago | App installation ID for generating installation access tokens | `github_app.py`, installation token flows | <!-- pragma: allowlist secret -->
 | 13 | `_GITHUB_APP_PRIVATE_KEY` | ✅ Present | 8 hours ago | RSA-2048 PEM private key for signing GitHub App JWTs | `github_app.py`, RS256 JWT signing |
 
 > ✅ **`CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` rotated 2026-03-06** (latest rotation "now" per @mbaetiong — repo-level Codespace override removed, org secret active directly). Next rotation due ~2026-06-04 (90-day cycle).  
@@ -133,23 +133,23 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 > **Location:** [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)  
 > **Referenced in workflows as:** `${{ secrets.NAME }}`
 
-| # | Secret Name | Status | Last Updated | Purpose | Notes |
+| # | Secret Name | Status | Last Updated | Purpose | Notes | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | `CODEX_GHP_TOKEN_BASE64` | ✅ Present | 2 months ago | Base64-encoded GitHub token for copilot-with-mcp workflow | Decoder priority #3 in `copilot_token_decoder.py` |
-| 2 | `CODEX_GHP_TOKEN_HEX` | ✅ Present | 2 months ago | Hex-encoded GitHub token (alternative encoding) | Decoder priority #4 |
-| 3 | `CODEX_GHP_TOKEN_SHA256` | ✅ Present | 2 months ago | One-way SHA-256 hash of GHP token for integrity validation | Verification only — not a usable token |
+| 1 | `CODEX_GHP_TOKEN_BASE64` | ✅ Present | 2 months ago | Base64-encoded GitHub token for copilot-with-mcp workflow | Decoder priority #3 in `copilot_token_decoder.py` | <!-- pragma: allowlist secret -->
+| 2 | `CODEX_GHP_TOKEN_HEX` | ✅ Present | 2 months ago | Hex-encoded GitHub token (alternative encoding) | Decoder priority #4 | <!-- pragma: allowlist secret -->
+| 3 | `CODEX_GHP_TOKEN_SHA256` | ✅ Present | 2 months ago | One-way SHA-256 hash of GHP token for integrity validation | Verification only — not a usable token | <!-- pragma: allowlist secret -->
 | 4 | `CODEX_REPO_ID` | ✅ Present | 6 hours ago | Repository numeric ID (GitHub internal) | Used in manifest generation |
-| 5 | `CODEX_WEBHOOK_SECRET` | ✅ Present | 12 minutes ago | HMAC-SHA256 shared secret for incoming webhook verification | `WebhookVerifier` in `src/codex/auth/github_app.py` |
-| 6 | `OPENAI_API_KEY` | ✅ Present | 5 hours ago | OpenAI API key for LLM agent operations | Consumed by `brain_client.py` and LLM-based CI workflows |
-| 7 | `_CODEX_BOT_RUNNER` | ✅ Present | **45 minutes ago** | Bot runner registration token | ✅ Rotated 2026-03-06 |
+| 5 | `CODEX_WEBHOOK_SECRET` | ✅ Present | 12 minutes ago | HMAC-SHA256 shared secret for incoming webhook verification | `WebhookVerifier` in `src/codex/auth/github_app.py` | <!-- pragma: allowlist secret -->
+| 6 | `OPENAI_API_KEY` | ✅ Present | 5 hours ago | OpenAI API key for LLM agent operations | Consumed by `brain_client.py` and LLM-based CI workflows | <!-- pragma: allowlist secret -->
+| 7 | `_CODEX_BOT_RUNNER` | ✅ Present | **45 minutes ago** | Bot runner registration token | ✅ Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
 
 ### Token Decoder Priority Order
 
 ```
-1. CODEX_GHP_TOKEN_CONFIG   (Combined AES — not currently set)
-2. CODEX_GHP_TOKEN_BASE64   ✅ (present — simplest, recommended)
-3. CODEX_GHP_TOKEN_HEX      ✅ (present — alternative)
-4. GITHUB_TOKEN             (auto-provided by Actions)
+1. CODEX_GHP_TOKEN_CONFIG   (Combined AES — not currently set)  # pragma: allowlist secret
+2. CODEX_GHP_TOKEN_BASE64   ✅ (present — simplest, recommended)  # pragma: allowlist secret
+3. CODEX_GHP_TOKEN_HEX      ✅ (present — alternative)  # pragma: allowlist secret
+4. GITHUB_TOKEN             (auto-provided by Actions)  # pragma: allowlist secret
 ```
 
 ---
@@ -159,11 +159,11 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 > **Location:** [Settings → Environments → Aries_Serpent_codex_](https://github.com/Aries-Serpent/_codex_/settings/environments)  
 > **Override scope:** These override org/repo secrets for jobs using `environment: Aries_Serpent_codex_`
 
-| # | Secret Name | Status | Last Updated | Value | Notes |
+| # | Secret Name | Status | Last Updated | Value | Notes | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | `CODEX_ENVIRONMENT_RUNNER` | ✅ Present | **48 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 |
-| 2 | `CODEX_RUNNER_SHA256` | ✅ Present | **50 minutes ago** | *(secret hash)* | ✅ Rotated 2026-03-06 |
-| 3 | `CODEX_RUNNER_TOKEN` | ✅ Present | **50 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 |
+| 1 | `CODEX_ENVIRONMENT_RUNNER` | ✅ Present | **48 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
+| 2 | `CODEX_RUNNER_SHA256` | ✅ Present | **50 minutes ago** | *(secret hash)* | ✅ Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
+| 3 | `CODEX_RUNNER_TOKEN` | ✅ Present | **50 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
 
 > ✅ **Issue 1 resolved (2026-03-06):** `CODEX_ENV_NODE_VERSION` was previously stored here as an
 > environment secret. It has been **deleted** from env secrets and **recreated** as an environment
@@ -190,7 +190,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 1 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | ✅ | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | Actors permitted to interact with cognitive brain memory |
 | 2 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | ✅ | `true` | Master switch for session context injection |
 | 3 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | ✅ | `90` | Long-term memory retention in days |
-| 4 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | ✅ | `128000` | Maximum tokens for context injection |
+| 4 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | ✅ | `128000` | Maximum tokens for context injection | <!-- pragma: allowlist secret -->
 | 5 | `COGNITIVE_BRAIN_MEMORY_TIER` | ✅ | `both` | Memory tier: `stm`, `ltm`, or `both` |
 | 6 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | ✅ | `0.75` | Minimum confidence to inject a pattern |
 | 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `120` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
@@ -199,7 +199,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `COPILOT_AGENT_AUTH_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — gates token delegation workflow |
+| 1 | `COPILOT_AGENT_AUTH_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — gates token delegation workflow | <!-- pragma: allowlist secret -->
 | 2 | `COPILOT_AGENT_FIREWALL_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — network isolation control |
 | 3 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | ✅ | *(long allowlist)* | Additional URLs allowed through Copilot firewall |
 | 4 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | ✅ | `D` | Maximum D_CAPABLE autonomy level |
@@ -250,7 +250,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 12 | `CODEX_SESSION_ID` | ✅ | `UUID v4` (auto-set per session) | Current or most-recent logical session identifier. Written by `copilot-setup-steps.yml` on session start. Format: UUID v4 string. |
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
 | 14 | `CODEX_TEST_PARALLELISM` | ✅ | `auto` | Pytest parallel execution mode |
-| 15 | `CODEX_ZENDESK_DOCS_ROOT` | ✅ | `docs/vendors/zendesk` | Zendesk documentation root |
+| 15 | `CODEX_ZENDESK_DOCS_ROOT` | ✅ | `docs/vendors/zendesk` | Zendesk documentation root | <!-- pragma: allowlist secret -->
 | 16 | `ENABLE_LIVE_TESTS` | ✅ | `true` | Enable live/integration tests in CI |
 
 ### 6f. 🤖 ML / HuggingFace / Weights & Biases
@@ -265,8 +265,8 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 6 | `TORCH_HOME` | ✅ | `~/.cache/torch` | PyTorch cache directory |
 | 7 | `TRANSFORMERS_OFFLINE` | ✅ | `1` | Run HF Transformers offline |
 | 8 | `WANDB_MODE` | ✅ | `offline` | Weights & Biases run mode |
-| 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
-| 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
+| 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit | <!-- pragma: allowlist secret -->
+| 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) | <!-- pragma: allowlist secret -->
 
 ### 6g. Webhook / Infra
 
@@ -364,7 +364,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 | 3 | `CODEX_BRIDGE_OWNER_ONLY` | ✅ | `true` | New (not in repo-level) | IPC bridge access control |
 | 4 | `CODEX_DB_PATH` | ✅ | `.codex/logs.db` | Overrides repo (`.codex/logs.db`) | No conflict |
 | 5 | `CODEX_ENV_GO_VERSION` | ✅ | `1.21` | Overrides repo (`1.21`) | No conflict |
-| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `22` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Current-state note:** `22` is intentionally major-only and tracks the latest `22.x` release (not a pinned full semver). |
+| 6 | `CODEX_ENV_NODE_VERSION` | ✅ | `22` | Overrides repo — env variable only | ✅ **Issue 1 resolved (2026-03-06):** Previously stored as an env *secret*. Deleted from secrets; recreated as an env *variable*. **Current-state note:** `22` is intentionally major-only and tracks the latest `22.x` release (not a pinned full semver). | <!-- pragma: allowlist secret -->
 | 7 | `CODEX_ENV_PYTHON_VERSION` | ✅ | `3.12` | Overrides repo (`3.12`) | ✅ **Issue 2 resolved (2026-03-06):** Updated from `3.11` to `3.12`. Now consistent with `CODEX_PYTHON_VERSION`. |
 | 8 | `CODEX_ENV_RUST_VERSION` | ✅ | `1.92` | Overrides repo (`1.92`) | No conflict |
 | 9 | `CODEX_ENV_SWIFT_VERSION` | ✅ | `5.9` | Overrides repo (`5.9`) | Interpreted as latest `5.9.x` patch release (minor pinned, patch floating). |
@@ -398,17 +398,17 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 
 > ⚠️ **Codespace secrets are NOT automatically mirrored from org Actions secrets** — they must be set separately at the Codespace level even when the same secret exists as an Actions org secret.
 
-| # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent |
+| # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | `CODEX_MASTER_KEY` | ✅ **Confirmed** (org-level, 2026-03-06) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | `CODEX_MASTER_KEY` (org secret ✅) |
-| 2 | `CODEX_BACKUP_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fallback PAT for 401/403 retries | User Codespace secrets | `CODEX_BACKUP_KEY` (org secret ✅) |
-| 3 | `CODEX_ADMIN_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fine-grained PAT (`Webhooks:write`) for webhook management | User Codespace secrets | `CODEX_ADMIN_KEY` (org secret ✅) |
-| 4 | `_GITHUB_APP_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | Numeric GitHub App ID for RS256 JWT auth | User Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) |
-| 5 | `_GITHUB_APP_PRIVATE_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | PEM RSA-2048 private key for GitHub App | User Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) |
-| 6 | `_GITHUB_APP_INSTALLATION_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | App installation ID for generating installation tokens | User Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) |
-| 7 | `_GITHUB_APP_CLIENT_SECRET` | ✅ **Confirmed** (user secret, 2026-03-07) | GitHub App OAuth client secret | User Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) |
-| 8 | `WEBHOOK_SECRET` | ✅ **Confirmed** (user secret, 2026-03-06) | HMAC-SHA256 shared secret for webhook signature verification | User Codespace secrets | `CODEX_WEBHOOK_SECRET` (repo secret ✅) |
-| 9 | `WEBHOOK_RECEIVER_URL` | ✅ **Confirmed** (user secret + repo var, 2026-03-06) | Webhook receiver URL (also auto-set as repo var by `post-start.sh`) | User Codespace secrets | Repo variable `WEBHOOK_RECEIVER_URL` ✅ |
+| 1 | `CODEX_MASTER_KEY` | ✅ **Confirmed** (org-level, 2026-03-06) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | `CODEX_MASTER_KEY` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 2 | `CODEX_BACKUP_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fallback PAT for 401/403 retries | User Codespace secrets | `CODEX_BACKUP_KEY` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 3 | `CODEX_ADMIN_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fine-grained PAT (`Webhooks:write`) for webhook management | User Codespace secrets | `CODEX_ADMIN_KEY` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 4 | `_GITHUB_APP_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | Numeric GitHub App ID for RS256 JWT auth | User Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 5 | `_GITHUB_APP_PRIVATE_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | PEM RSA-2048 private key for GitHub App | User Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 6 | `_GITHUB_APP_INSTALLATION_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | App installation ID for generating installation tokens | User Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 7 | `_GITHUB_APP_CLIENT_SECRET` | ✅ **Confirmed** (user secret, 2026-03-07) | GitHub App OAuth client secret | User Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) | <!-- pragma: allowlist secret -->
+| 8 | `WEBHOOK_SECRET` | ✅ **Confirmed** (user secret, 2026-03-06) | HMAC-SHA256 shared secret for webhook signature verification | User Codespace secrets | `CODEX_WEBHOOK_SECRET` (repo secret ✅) | <!-- pragma: allowlist secret -->
+| 9 | `WEBHOOK_RECEIVER_URL` | ✅ **Confirmed** (user secret + repo var, 2026-03-06) | Webhook receiver URL (also auto-set as repo var by `post-start.sh`) | User Codespace secrets | Repo variable `WEBHOOK_RECEIVER_URL` ✅ | <!-- pragma: allowlist secret -->
 
 > ✅ **SAR-G01 COMPLETE (2026-03-07)** — All 9 Codespace secrets confirmed set by @mbaetiong.
 > Secrets are stored as **user-level** Codespace secrets (not org-level), which works identically for personal Codespace sessions.
@@ -444,8 +444,8 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 | Variable | Defined In | Value / Source | Purpose |
 |---|---|---|---|
-| `GITHUB_TOKEN` | Auto-injected by Actions | GitHub-provisioned short-lived token | Default token for all workflow steps |
-| `AGENT_GITHUB_TOKEN` | `copilot-setup-steps.yml` Export step | `${{ env.GITHUB_TOKEN }}` | Stable alias for `GITHUB_TOKEN` written to `GITHUB_ENV` |
+| `GITHUB_TOKEN` | Auto-injected by Actions | GitHub-provisioned short-lived token | Default token for all workflow steps | <!-- pragma: allowlist secret -->
+| `AGENT_GITHUB_TOKEN` | `copilot-setup-steps.yml` Export step | `${{ env.GITHUB_TOKEN }}` | Stable alias for `GITHUB_TOKEN` written to `GITHUB_ENV` | <!-- pragma: allowlist secret -->
 | `CODEX_SESSION_ID` | `copilot-setup-steps.yml` + repo variable | UUID v4 (written per session to repo var) | Logical session identifier for log grouping. Also persisted as repo variable (§6e). |
 | `CARGO_TERM_COLOR` | Rust workflows | `always` | Rust compiler coloured output |
 | `RUST_BACKTRACE` | Rust workflows | `1` | Enable Rust backtraces on panic |
@@ -460,8 +460,8 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 | | Detail |
 |---|---|
-| ~~**Problem**~~ | ~~`CODEX_ENV_NODE_VERSION` is stored as an **Environment Secret** with value `18`.~~ |
-| **Resolution** | `CODEX_ENV_NODE_VERSION` env secret has been **deleted**. A replacement env *variable* was created under `Aries_Serpent_codex_` (verified in 2026-03-06 export). The active baseline value is now `22`; older `18` references are historical migration context. Agents and logs can read this value. |
+| ~~**Problem**~~ | ~~`CODEX_ENV_NODE_VERSION` is stored as an **Environment Secret** with value `18`.~~ | <!-- pragma: allowlist secret -->
+| **Resolution** | `CODEX_ENV_NODE_VERSION` env secret has been **deleted**. A replacement env *variable* was created under `Aries_Serpent_codex_` (verified in 2026-03-06 export). The active baseline value is now `22`; older `18` references are historical migration context. Agents and logs can read this value. | <!-- pragma: allowlist secret -->
 
 ### ✅ Issue 2 — Python version conflict: `3.12` vs `3.11` — **RESOLVED 2026-03-06**
 
@@ -479,13 +479,13 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 ### ✅ Issue 4 — Stale secrets (> 90-day rotation guideline) — **RESOLVED 2026-03-06**
 
-| Secret | Previous Age | Resolution |
+| Secret | Previous Age | Resolution | <!-- pragma: allowlist secret -->
 |---|---|---|
 | `CODEX_MASTER_KEY` | Rotated 2026-03-05 | ✅ Re-rotated 2026-03-06 (~2 h before export). Next due ~2026-06-04. |
 | `CODEX_BACKUP_KEY` | 5+ days | ✅ Re-rotated 2026-03-06 (~2 h before export). |
 | `_CODEX_BOT_RUNNER` | 7 months | ✅ Rotated 2026-03-06 (~45 min before export). |
 | `CODEX_ENVIRONMENT_RUNNER` | 7 months | ✅ Rotated 2026-03-06 (~48 min before export). |
-| `CODEX_RUNNER_TOKEN` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). |
+| `CODEX_RUNNER_TOKEN` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). | <!-- pragma: allowlist secret -->
 | `CODEX_RUNNER_SHA256` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). |
 
 ### ✅ Issue 5 — `CODEX_ADMIN_KEY` missing — **RESOLVED 2026-03-06**
@@ -493,7 +493,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | ~~**Problem**~~ | ~~`webhook_configurator.py` preferred `CODEX_ADMIN_KEY` but it was missing.~~ |
-| **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 3 hours before 2026-03-06 export). `webhook_configurator.py` can now use least-privilege webhook management without falling back to `CODEX_MASTER_KEY`. |
+| **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 3 hours before 2026-03-06 export). `webhook_configurator.py` can now use least-privilege webhook management without falling back to `CODEX_MASTER_KEY`. | <!-- pragma: allowlist secret -->
 
 ### ✅ Issue 6 — `WEBHOOK_RECEIVER_URL` missing — **RESOLVED 2026-03-06**
 
@@ -506,10 +506,10 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 | | Detail |
 |---|---|
-| ~~**Problem**~~ | ~~The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` were not confirmed as set at the Codespace level (org or user).~~ |
-| **Resolution** | All 9 Codespace secrets listed in [§8](#8-codespace-secrets) are confirmed set at the Codespace level (org or user) (SAR-G01 complete). |
-| **Verification** | Codespace-based Copilot agent sessions have required authentication tokens, and `post-start.sh` can start the CLI server. |
-| **Instructions** | For audit/revalidation, see [§8 Codespace Secrets](#8-codespace-secrets) for CLI/UI steps. |
+| ~~**Problem**~~ | ~~The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` were not confirmed as set at the Codespace level (org or user).~~ | <!-- pragma: allowlist secret -->
+| **Resolution** | All 9 Codespace secrets listed in [§8](#8-codespace-secrets) are confirmed set at the Codespace level (org or user) (SAR-G01 complete). | <!-- pragma: allowlist secret -->
+| **Verification** | Codespace-based Copilot agent sessions have required authentication tokens, and `post-start.sh` can start the CLI server. | <!-- pragma: allowlist secret -->
+| **Instructions** | For audit/revalidation, see [§8 Codespace Secrets](#8-codespace-secrets) for CLI/UI steps. | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -519,23 +519,23 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 ```
 Symptom: VariableManager or brain_client raises AuthenticationError on variable read/write
-Cause:   GITHUB_TOKEN used instead of CODEX_MASTER_KEY
+Cause:   GITHUB_TOKEN used instead of CODEX_MASTER_KEY  # pragma: allowlist secret
 Fix:
-  1. Confirm CODEX_MASTER_KEY is set as an org secret (§3)
-  2. Confirm copilot-setup-steps.yml "🔑 Export Auth Tokens" step is running
+  1. Confirm CODEX_MASTER_KEY is set as an org secret (§3)  # pragma: allowlist secret
+  2. Confirm copilot-setup-steps.yml "🔑 Export Auth Tokens" step is running  # pragma: allowlist secret
   3. In code, use: from scripts.tools.variable_manager import VariableManager; vm = VariableManager()
-  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix
+  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix  # pragma: allowlist secret
 ```
 
 ### "Webhooks return 403 on create/update"
 
 ```
 Symptom: webhook_configurator.py fails with HTTP 403 on webhook API calls
-Cause:   GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed
+Cause:   GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed  # pragma: allowlist secret
 Fix:
   1. Confirm CODEX_MASTER_KEY has admin:repo_hook scope, OR
-  2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret
-  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section
+  2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret  # pragma: allowlist secret
+  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section  # pragma: allowlist secret
 ```
 
 ### "Python version mismatch between jobs"
@@ -551,7 +551,7 @@ If you still see version mismatches, confirm no other variable overrides exist.
 
 ```
 Symptom: Node.js version appears masked in CI logs
-Status:  ✅ RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and
+Status:  ✅ RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and  # pragma: allowlist secret
          recreated as an env variable. Value is now readable in logs and by the Variables API.
 Current required value: `22` (major-only).
 ```
@@ -560,8 +560,8 @@ Current required value: `22` (major-only).
 
 ```
 Symptom: post-start.sh health check fails; uvicorn :8765 not reachable
-Cause:   CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets
-Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8
+Cause:   CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets  # pragma: allowlist secret
+Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8  # pragma: allowlist secret
          Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
 ```
 
@@ -579,7 +579,7 @@ Fix:
 ### "Secret rotation — CODEX_MASTER_KEY / CODEX_BACKUP_KEY"
 
 ```
-Full runbook: docs/ops/secrets_rotation_runbook.md
+Full runbook: docs/ops/secrets_rotation_runbook.md  # pragma: allowlist secret
 Quick summary:
   1. Generate new 32-byte base64 key offline
   2. Copy current CODEX_MASTER_KEY → set as CODEX_BACKUP_KEY (opens grace window)
@@ -608,19 +608,19 @@ Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Se
 
 | Document | Scope | Notes |
 |---|---|---|
-| [`docs/agent/COPILOT_TOKEN_GUIDE.md`](../agent/COPILOT_TOKEN_GUIDE.md) | Token priority chain, permission matrix, how tokens reach agents | **Primary auth reference** |
+| [`docs/agent/COPILOT_TOKEN_GUIDE.md`](../agent/COPILOT_TOKEN_GUIDE.md) | Token priority chain, permission matrix, how tokens reach agents | **Primary auth reference** | <!-- pragma: allowlist secret -->
 | [`docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`](./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md) | Architecture, subsystem wiring, variable dependency map | Technical deep-dive |
 | [`docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md`](./HUMAN_ADMIN_REPO_VARIABLES_SETUP.md) | Step-by-step CLI / UI setup for repo variables | Admin setup guide |
-| [`docs/ops/secrets_rotation_runbook.md`](../ops/secrets_rotation_runbook.md) | Full rotation procedure for CODEX_MASTER_KEY / CODEX_BACKUP_KEY | **Required for 90-day rotation** |
-| [`docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md) | Codespace secrets, lifecycle hooks, environment parity with Actions | Codespace setup |
+| [`docs/ops/secrets_rotation_runbook.md`](../ops/secrets_rotation_runbook.md) | Full rotation procedure for CODEX_MASTER_KEY / CODEX_BACKUP_KEY | **Required for 90-day rotation** | <!-- pragma: allowlist secret -->
+| [`docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md) | Codespace secrets, lifecycle hooks, environment parity with Actions | Codespace setup | <!-- pragma: allowlist secret -->
 | [`docs/agent/GITHUB_APP_CLI_MAPPING.md`](../agent/GITHUB_APP_CLI_MAPPING.md) | GitHub App ID, private key, installation ID setup | GitHub App authentication |
 | [`docs/ops/WEBHOOK_REGISTRY.md`](../ops/WEBHOOK_REGISTRY.md) | Webhook config, registry, apply procedure, CODEX_ADMIN_KEY | Webhook activation |
 | [`.codex/runtime_variables.md`](../../.codex/runtime_variables.md) | Legacy env var catalog (pre-unification) | Superseded by this guide |
 | [`docs/security/CURRENT_EXPECTED_VARIABLES.md`](../security/CURRENT_EXPECTED_VARIABLES.md) | Security-focused variable inventory (pre-unification) | Superseded by this guide |
-| [`docs/security/secret_handling.md`](../security/secret_handling.md) | Secret handling best practices, never-log rules | Security policy |
+| [`docs/security/secret_handling.md`](../security/secret_handling.md) | Secret handling best practices, never-log rules | Security policy | <!-- pragma: allowlist secret -->
 | [`.codex/agent_context.json`](../../.codex/agent_context.json) | Live snapshot of repo variables (synced daily) | Machine-readable state |
 | [`scripts/tools/variable_manager.py`](../../scripts/tools/variable_manager.py) | Python API for reading/writing repo variables | Code reference |
-| [`src/codex/auth/github_app.py`](../../src/codex/auth/github_app.py) | `_resolve_github_token()` — token fallback chain implementation | Code reference |
+| [`src/codex/auth/github_app.py`](../../src/codex/auth/github_app.py) | `_resolve_github_token()` — token fallback chain implementation | Code reference | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -652,17 +652,17 @@ For webhook delivery to work, port 8765 must be set to **public** visibility in 
 All 9 Codespace secrets confirmed set by @mbaetiong as user-level Codespace secrets.
 See [§8](#8-codespace-secrets) for the complete confirmed status table.
 
-| Codespace Secret | Resolution |
+| Codespace Secret | Resolution | <!-- pragma: allowlist secret -->
 |---|---|
 | `CODEX_MASTER_KEY` | ✅ Org-level (2026-03-06) |
-| `CODEX_BACKUP_KEY` | ✅ User secret (2026-03-06) |
-| `CODEX_ADMIN_KEY` | ✅ User secret (2026-03-06) |
-| `_GITHUB_APP_ID` | ✅ User secret (2026-03-06) |
-| `_GITHUB_APP_PRIVATE_KEY` | ✅ User secret (2026-03-06) |
-| `_GITHUB_APP_INSTALLATION_ID` | ✅ User secret (2026-03-06) |
-| `_GITHUB_APP_CLIENT_SECRET` | ✅ User secret (2026-03-07) |
-| `WEBHOOK_SECRET` | ✅ User secret (2026-03-06) |
-| `WEBHOOK_RECEIVER_URL` | ✅ User secret + repo var (2026-03-06) |
+| `CODEX_BACKUP_KEY` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `CODEX_ADMIN_KEY` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_ID` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_PRIVATE_KEY` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_INSTALLATION_ID` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_CLIENT_SECRET` | ✅ User secret (2026-03-07) | <!-- pragma: allowlist secret -->
+| `WEBHOOK_SECRET` | ✅ User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| `WEBHOOK_RECEIVER_URL` | ✅ User secret + repo var (2026-03-06) | <!-- pragma: allowlist secret -->
 
 ---
 

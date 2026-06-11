@@ -31,11 +31,11 @@ CI/CD Layer
 └── artifact-monitor-agent      — CI/CD artifact health monitoring
 
 Security Layer
-├── unified-security-scanner    — Canonical SAST + deps + secrets entry point
+├── unified-security-scanner    — Canonical SAST + deps + secrets entry point  # pragma: allowlist secret
 ├── security-audit-agent        — (DEPRECATED → unified-security-scanner)
 ├── code-scanning-remediation-agent — Fix code scanning alerts
 ├── codeql-alert-resolution-agent   — Resolve CodeQL security alerts
-├── secret-detection-agent      — (DEPRECATED → unified-security-scanner)
+├── secret-detection-agent      — (DEPRECATED → unified-security-scanner)  # pragma: allowlist secret
 └── dependency-vulnerability-scanner — (DEPRECATED → unified-security-scanner)
 
 Documentation Layer

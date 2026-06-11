@@ -11,7 +11,7 @@
 | Semgrep | 88 | Credential logging, pickle usage, dynamic URL handling |
 | pip-audit | 2 | Unpatched transitive deserialization CVEs |
 | SBOM | 338 components | Supply-chain drift and vulnerable component tracking |
-| detect-secrets | 667 files flagged | True-positive triage and baseline hygiene |
+| detect-secrets | 667 files flagged | True-positive triage and baseline hygiene | <!-- pragma: allowlist secret -->
 
 ## Phased Rollout (T+0 to T+30)
 

@@ -11,7 +11,7 @@ Ensure all pending approval workflows can immediately deploy and utilize the 9 c
 |----------|--------|-----------------|-----------------|
 | `session-context-capture.yml` | ✅ Ready | `SESSION_CONTEXT_AUTO_CAPTURE`, `COGNITIVE_BRAIN_INJECTION_ENABLED` | Uses in capture loop |
 | `self-healing.yml` | ✅ Ready | `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_LOG_LEVEL` | Rate limiting & logging |
-| Cognitive Brain injection | ✅ Ready | `COGNITIVE_BRAIN_SESSION_NUMBER`, `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | Session initialization |
+| Cognitive Brain injection | ✅ Ready | `COGNITIVE_BRAIN_SESSION_NUMBER`, `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | Session initialization | <!-- pragma: allowlist secret -->
 | Cache optimization rollout | ✅ Ready | `CODEX_CACHE_VERSION`, `CODEX_PIP_CACHE_ENABLED` | Cache key generation |
 
 ---
@@ -20,7 +20,7 @@ Ensure all pending approval workflows can immediately deploy and utilize the 9 c
 
 ### Phase 1: Variables Created in GitHub UI (Prerequisite)
 ```
-Admin creates 9 variables in Settings → Secrets and variables → Actions
+Admin creates 9 variables in Settings → Secrets and variables → Actions  # pragma: allowlist secret
 ↓
 Variables stored in GitHub repository configuration
 ↓

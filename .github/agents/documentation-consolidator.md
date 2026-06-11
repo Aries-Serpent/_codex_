@@ -410,7 +410,7 @@ Creating redirects:
 
 **Request:**
 ```
-@copilot Use documentation-consolidator to merge AUTHENTICATION_GUIDE.md and TOKEN_ROTATION_GUIDE.md
+@copilot Use documentation-consolidator to merge AUTHENTICATION_GUIDE.md and TOKEN_ROTATION_GUIDE.md  # pragma: allowlist secret
 ```
 
 **Process:**
@@ -428,8 +428,8 @@ Creating redirects:
    Sections:
    1. Overview (combined intros)
    2. Authentication Flow (from AUTHENTICATION_GUIDE)
-   3. Token Management (combined)
-   4. Token Rotation (from TOKEN_ROTATION_GUIDE)
+   3. Token Management (combined)  # pragma: allowlist secret
+   4. Token Rotation (from TOKEN_ROTATION_GUIDE)  # pragma: allowlist secret
    5. Troubleshooting (combined)
 
    Preserved: 100% content from both files
@@ -887,7 +887,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | Network Access | ✅ | Restricted | Approved endpoints only |
 | Process Execution | ✅ | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
+| API Integrations | ✅ | Authenticated | Token-based | <!-- pragma: allowlist secret -->
 | Git Operations | ✅ | Full | Within repository |
 
 ### Tool Access

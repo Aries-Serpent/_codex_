@@ -729,7 +729,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | Network Access | ✅ | Restricted | Approved endpoints only |
 | Process Execution | ✅ | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
+| API Integrations | ✅ | Authenticated | Token-based | <!-- pragma: allowlist secret -->
 | Git Operations | ✅ | Full | Within repository |
 
 ### Tool Access

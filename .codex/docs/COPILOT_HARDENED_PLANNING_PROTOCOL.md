@@ -48,7 +48,7 @@ Flaky/intermittent test          → fragile-test-guardian
 Test assertions outdated         → test-alignment-fixer-enhanced
 New test cases needed            → test-enhancement-agent
 CodeQL security alert            → codeql-alert-resolution-agent
-Secret detected in code          → unified-security-scanner
+Secret detected in code          → unified-security-scanner  # pragma: allowlist secret
 Dependency CVE found             → unified-security-scanner
 Full security audit              → unified-security-scanner
 Doc link broken                  → link-validator-agent
