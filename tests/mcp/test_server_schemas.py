@@ -55,4 +55,3 @@ def test_negotiate_params_accepts_client_versions() -> None:
 def test_list_tools_params_defaults_and_override() -> None:
     assert ListToolsParams().include_internal is False
     assert ListToolsParams(include_internal=True).include_internal is True
-

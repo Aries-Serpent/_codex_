@@ -6,7 +6,7 @@ This document prepares the implementation of **9 CRITICAL + HIGH PRIORITY reposi
 
 **Goal**: Eliminate hardcoded values across workflows, enable dynamic configuration, and improve codebase functionality for Phase 1 completion.
 
-**Timeline**: 
+**Timeline**:
 - Week 1 (Immediate): Set variables in GitHub Actions UI
 - Week 2: Validate and test in 3 workflows
 - Week 3: Roll out to all 110+ workflows
@@ -98,12 +98,12 @@ This document prepares the implementation of **9 CRITICAL + HIGH PRIORITY reposi
   uses: actions/setup-node@v4
   with:
     node-version: ${{ vars.NODE_JS_VERSION }}
-    
+
 - name: Setup Python (cached)
   uses: ./.github/actions/setup-python-cached
   with:
     cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-    
+
 - name: Run tests with timeout
   timeout-minutes: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || 60 }}
   run: pytest -v

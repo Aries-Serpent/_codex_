@@ -113,7 +113,7 @@ Fix the `.devcontainer/scripts/on-create.sh` script to handle APT state corrupti
 | `CODEX_SQLITE_POOL` | Database Config | Integer | SHOULD | `1` | Enable per-session SQLite connection pooling (prevents lock contention) |
 | `CODEX_CLI_API_URL` | Network Config | URL | MUST | `http://localhost:8765` | Cognitive Brain CLI API server URL (matches hardcoded value in copilot-setup-steps.yml) |
 
-**Location to Add**: 
+**Location to Add**:
 - File: `https://github.com/Aries-Serpent/_codex_/settings/variables/actions` (GitHub UI)
 - Or: Auto-add via `scripts/ops/codex_repo_admin_bootstrap.py` if variable sync workflow exists
 
@@ -237,14 +237,14 @@ gh variable set CODEX_CLI_API_URL --body "http://localhost:8765"
 ```json
 {
   "name": "Codex — Copilot Agent Workspace",
-  
+
   // ── REFERENCE: Variables control this container setup ──────────────────────
   // See: .codex/CRITICAL_REPOSITORY_VARIABLES.md § "Codespaces Container Setup"
   // Variables: CODESPACES_APT_UPDATE_RETRY, CODEX_DEVCONTAINER_PYTHON_VERSION, etc.
   // Note: devcontainer.json does NOT support ${{ vars.* }} syntax; values are
   // hardcoded here and documented in the variable inventory.
   // ──────────────────────────────────────────────────────────────────────────
-  
+
   "image": "ghcr.io/aries-serpent/codex/preview-dev:latest",
   ...
   "containerEnv": {
@@ -252,7 +252,7 @@ gh variable set CODEX_CLI_API_URL --body "http://localhost:8765"
     "PYTHONUNBUFFERED": "1",
     "PYTHONPATH": "/workspaces/_codex_/src",
     "PIP_NO_INPUT": "1",
-    
+
     // Session & Database (values correspond to repo variables)
     "CODEX_SESSION_LOG_DIR": "/workspaces/_codex_/.codex/sessions",
     "CODEX_DB_PATH": "/workspaces/_codex_/.codex/codex.db",
@@ -400,4 +400,3 @@ gh variable set CODEX_CLI_API_URL --body "http://localhost:8765"
 4. Monitor Job logs for success completion
 5. Merge feature branch once verification passes
 6. (Optional) Create follow-up issue for automated variable sync workflow (`repo-var-sync-schedule.yml` mentioned in docs)
-

@@ -218,7 +218,7 @@ Marker 5: "Session Access Probe"
 
 ### Issue B: `::group::` appears, but `::endgroup::` never comes (step hangs)
 
-**Observation:** 
+**Observation:**
 - You see `::group::Session Context Pre-load` at min 5
 - But at min 15, `::endgroup::` still not found
 - Step is still "running" (no completion status)
@@ -303,7 +303,7 @@ Marker 5: "Session Access Probe"
    git show <agent-commit>:.github/workflows/copilot-setup-steps.yml | grep -A10 "Session Context Pre-load"
    ```
 2. **Compare to Method D patch** — what changed?
-   - Removed `::group::`? 
+   - Removed `::group::`?
    - Changed `run: |` to `run: python3 ...`?
    - Removed `id: session_preload`?
 3. **Severity:**

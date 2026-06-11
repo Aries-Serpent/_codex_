@@ -407,4 +407,3 @@ The `_codex_` v0.1.0 platform meets all enterprise-grade requirements. The claim
 ---
 
 *This certification confirms that all components of the codebase function as expected for production deployment of an enterprise-grade, AI-augmented ML platform with sophisticated autonomy, security, and observability.*
-
