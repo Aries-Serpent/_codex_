@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (CI cross-reference gate false positives — PR #4838 — 2026-06-11T13:14Z)
+- `scripts/ci/check_cross_references.py`: ignore numeric Markdown link targets such as `(1)`/`(2)` that come from SARIF-style placeholder references and are not repository file paths.
+- `tests/scripts/test_ci_top5.py`: added regression coverage to ensure numeric placeholder links are not flagged as broken internal file links.
+
 ### Fixed (CI — prevent auto-fix/Copilot push races — 2026-06-11T07:10Z)
 - `.github/workflows/auto-fix-pr-check.yml`: skip Detect→Heal→Commit push and the corresponding fail gate when PR head branch starts with `copilot/`.
 - `.github/workflows/auto-fix-common-issues.yml`: skip Detect→Heal→Commit push and the corresponding fail gate when PR head branch starts with `copilot/`.

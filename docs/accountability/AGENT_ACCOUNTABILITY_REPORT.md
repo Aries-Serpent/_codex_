@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-06-11T13:14Z · PR #4838 CI rescue follow-up (cross-reference gate)
+
+### Pre-flight Checklist
+- [x] Reviewed failing Actions run and job logs via GitHub MCP (`run_id=27344742830`, `job_id=80803766281`) ✅
+- [x] Identified root cause from logs: numeric markdown placeholder links like `(1)` were treated as broken internal file refs ✅
+- [x] Applied minimal parser hardening + regression test ✅
+
+### Root Cause
+- The cross-reference gate interpreted numeric markdown link targets from SARIF-style output (`[...](1)`) as repository paths and flagged them as missing files.
+- This produced false-positive failures in `Validation Pipeline / Fast Validation`.
+
+### Remediation Applied
+1. Updated `scripts/ci/check_cross_references.py` to skip pure numeric link targets (`raw.isdigit()`).
+2. Added regression coverage in `tests/scripts/test_ci_top5.py` (`test_skip_numeric_placeholder_links`).
+
+### Validation
+- `python -m pytest -q tests/scripts/test_ci_top5.py -k 'CheckCrossReferences or numeric_placeholder'` ✅
+- `python -m ruff check scripts/ci/check_cross_references.py tests/scripts/test_ci_top5.py` ✅
+- `python scripts/ci/check_cross_references.py remediation_plan_codeql_python.md` ✅
+
+---
+
 ## SESSION SUMMARY — 2026-06-11T07:10Z · CI failure RCA for job 80737700028
 
 ### Pre-flight Checklist
