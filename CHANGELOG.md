@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (CI — copilot-setup-steps.yml pinned checkout SHA — 2026-06-11T00:20Z)
+- Restored `actions/checkout` to canonical pinned SHA `93cb6efe18208431cddfb8368fd83d5badbf9bfd` (v5) in `copilot-setup-steps.yml` — Dependabot bump to v6.0.3 (`df4cb1c...`) caused `Pinned checkout SHA missing` regression in `validate_setup_steps_yaml.sh`.
+
 ### Fixed (SN: CODEX_MANIFEST conflict markers)
 - Fixed orphaned git merge conflict markers in `CODEX_MANIFEST.json` (missing `<<<<<<<` header caused JSON parse error in tracked-file sync check) [2026-06-10T19:27Z]
 

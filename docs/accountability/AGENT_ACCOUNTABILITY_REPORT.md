@@ -48576,3 +48576,25 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-06-11T00:20Z COPILOT AGENT (Fix validate.yml Pinned Checkout SHA regression)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** CI rescue comment (comment_id 4675954072) reviewed — Validation Pipeline / Fast Validation failing ✅
+- [x] **0b.** Failing CI checks reviewed — `validate_setup_steps_yaml.sh` check 4 failing: `Pinned checkout SHA missing` ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Root cause identified** — Dependabot bump `ci(deps): bump actions/checkout from 4.2.2 to 6.0.3` (commit `134cdef7e`) changed `actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd` (canonical v5 SHA) to `actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10` (v6.0.3). The `validate_setup_steps_yaml.sh` script checks for the pattern `actions/checkout@93cb6efe` as a canonical feature — this is the pinned SHA registered in the baseline.
+2. **Fix applied** — Restored `actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5` at both occurrences (lines 125, 1117) in `.github/workflows/copilot-setup-steps.yml`.
+3. **validate_setup_steps_yaml.sh verified** — All 5 checks pass: YAML parse ✅, yamllint ✅, block scalar ✅, all canonical features ✅, line count ✅.
+4. **CHANGELOG.md updated** with `### Fixed (CI — copilot-setup-steps.yml pinned checkout SHA — 2026-06-11T00:20Z)` entry.
+
+### Impact Score
+- Files fixed: 1 (`.github/workflows/copilot-setup-steps.yml`)
+- CI gates unblocked: `Validation Pipeline / Fast Validation`
+- Deferral Language Gate: 0 violations
+
+---
