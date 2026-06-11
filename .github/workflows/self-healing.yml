@@ -5,6 +5,7 @@ permissions: {}
 jobs:
   heal:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Stub
         run: echo "Self-healing pipeline stub"

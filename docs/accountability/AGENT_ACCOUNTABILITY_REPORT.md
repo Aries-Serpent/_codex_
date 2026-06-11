@@ -49137,3 +49137,27 @@ The `.mypy_baseline` file was incorrectly set to `0` in a prior commit, causing 
 
 ### Agents Used
 - [x] `general-purpose` (direct @copilot session)
+
+---
+
+## Session Entry — 2026-06-11 (commit: fix workflow compliance + reply to CI rescue)
+
+**PR:** #4844
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — CI Rescue comment #4685034270 reviewed and actioned ✅
+- [x] **0b.** Failing CI checks reviewed — `⚙️ Workflow Compliance Check` (missing `timeout-minutes` in `self-healing.yml`) fixed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** CI failure root-cause identified and fixed ✅
+- [x] **3.** No deferral language used ✅
+
+### Work Completed
+1. **Workflow compliance fixed** — added `timeout-minutes: 5` to the `heal` job in `.github/workflows/self-healing.yml`; previously missing, causing `⚙️ Workflow Compliance Check` gate failure.
+2. **CHANGELOG.md** — appended workflow compliance fix to `### Fixed (SN)` entry.
+3. **Blocking comment replied** — replied to CI Rescue comment #4685034270.
+
+### Root-Cause Note
+The `self-healing.yml` stub workflow was added without a `timeout-minutes` on the job, violating the repository's workflow compliance rules (all non-stub jobs must declare `timeout-minutes`). The compliance gate correctly identified this. Fixed by adding `timeout-minutes: 5`.
+
+### Agents Used
+- [x] `general-purpose` (direct @copilot session)

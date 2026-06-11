@@ -7,6 +7,7 @@
 - Reliability: created `.github/workflows/self-healing.yml` stub using current `actions/checkout` version
 - Node.js action runtime hygiene: verified no deprecated refs using Pattern 21
 - `.mypy_baseline`: regenerated from current source run (122 errors) to fix mypy anti-regression gate failure caused by stale baseline value
+- Workflow compliance: added `timeout-minutes: 5` to `self-healing.yml` `heal` job to fix `⚙️ Workflow Compliance Check` gate
 
 ### Fixed (auto-update — PR #4844)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4844 (SHA `4132b814`) at 2026-06-11T18:54Z [auto-generated]
