@@ -1428,7 +1428,7 @@ policy violation and must be fixed immediately.
 
 This mandate codifies the **Copilot Hardened Planning Protocol (CHPP)** as a binding policy section. Its purpose is to guarantee that all Copilot agent planning sessions **always leverage and maintain Custom Agents** rather than performing ad-hoc manual operations where specialized agents already exist.
 
-The repository maintains **131 active Custom Agents** spanning eight architectural layers (see `AGENT_REGISTRY.yaml`). These agents represent the accumulated, hardened, and tested operational knowledge of the codebase. Bypassing them for covered task categories is a policy violation.
+The repository maintains **145 active Custom Agents** spanning eight architectural layers (see `AGENT_REGISTRY.yaml`). These agents represent the accumulated, hardened, and tested operational knowledge of the codebase. Bypassing them for covered task categories is a policy violation.
 
 ---
 

@@ -74,6 +74,30 @@ CRITICAL_VARIABLES = [
         validator=lambda v: v.lower() in ("true", "false"),
         category="cognitive",
     ),
+    Variable(
+        name="COPILOT_AGENT_CCA_VERSION_LOCK",
+        description="Lock CCA version to stable release (CAD-Mandate Rule 2)",
+        required=True,
+        default="stable",
+        validator=lambda v: v == "stable",
+        category="governance",
+    ),
+    Variable(
+        name="COPILOT_AGENT_DEDUPLICATION_ENABLED",
+        description="Enable CCA prompt deduplication (MSPV requirement)",
+        required=True,
+        default="true",
+        validator=lambda v: v.lower() == "true",
+        category="governance",
+    ),
+    Variable(
+        name="COPILOT_AGENT_TURN_ISOLATION_ENABLED",
+        description="Enable CCA turn isolation (MSPV requirement)",
+        required=True,
+        default="true",
+        validator=lambda v: v.lower() == "true",
+        category="governance",
+    ),
 ]
 
 HIGH_PRIORITY_VARIABLES = [
@@ -202,6 +226,18 @@ def save_agent_context(output_path: Path) -> None:
     """Save agent context to file."""
     context = generate_agent_context()
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Merge with existing file to preserve other keys injected by bootstrap/sync agents
+    if output_path.exists():
+        try:
+            existing = json.loads(output_path.read_text())
+            # Don't overwrite existing non-metadata keys that aren't managed here
+            for key, val in existing.items():
+                if key not in context and not key.startswith("_"):
+                    context[key] = val
+        except (json.JSONDecodeError, OSError):
+            pass
+
     output_path.write_text(json.dumps(context, indent=2))
     logger.info("✓ Agent context saved to %s", output_path)
 

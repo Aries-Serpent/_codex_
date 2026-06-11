@@ -58,6 +58,9 @@ def ctx_summary() -> str:
         "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
         "CODEX_AGENT_DELEGATED",
         "COPILOT_AGENT_SESSION_RESTORE_ENABLED",
+        "COPILOT_AGENT_CCA_VERSION_LOCK",
+        "COPILOT_AGENT_DEDUPLICATION_ENABLED",
+        "COPILOT_AGENT_TURN_ISOLATION_ENABLED",
     ]
     return "\n".join(f"  {k} = {d.get(k, '(not set)')}" for k in keys)
 
@@ -74,6 +77,9 @@ section("📊 AGENT ACCOUNTABILITY REPORT (last session state)",
 section("🔄 PDA AFTERMATH — last 5 iterations", pda_summary())
 
 section("🔑 REPO VARIABLE SNAPSHOT (agent_context.json)", ctx_summary())
+
+section("🛡️ COPILOT HARDENED PLANNING PROTOCOL (CHPP)",
+        read(".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"))
 
 print("")
 print("━" * 60)

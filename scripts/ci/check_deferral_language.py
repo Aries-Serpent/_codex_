@@ -12,6 +12,8 @@ TRIGGER RULE (mandatory for ALL agents):
     1. Load `.codex/CODEBASE_AGENCY_POLICY.md`
     2. Load the latest `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
     3. Fix the issue immediately — no exceptions for branch/PR/agent origin
+    4. Note CAD-bypass: Custom Agent Delegation (CAD-Mandate) bypass is a
+       violation. Manual work where a Custom Agent exists is prohibited.
 
 Usage:
   python scripts/ci/check_deferral_language.py --pr-body FILE
@@ -97,6 +99,19 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
      "Safety assumption without verification"),
     (r"(?:another|a different|the previous) (?:session|agent|team|pr) (?:should|will|can|must)",
      "Responsibility delegation to another agent/session"),
+    # Agent-bypass / CAD-Mandate deferrals
+    (r"(?:without|instead of) using an agent\b",
+     "Agent-bypass: CAD Rule 1 violation (skipping custom agent)"),
+    (r"manually instead of\b",
+     "Agent-bypass: CAD Rule 1 violation (manual operation instead of agent)"),
+    (r"skip(?:ping)? the agent\b",
+     "Agent-bypass: CAD Rule 1 violation (skipping custom agent)"),
+    (r"directly rather than delegating\b",
+     "Agent-bypass: CAD Rule 1 violation (raw command instead of delegation)"),
+    (r"without using an agent\b",
+     "Agent-bypass: CAD Rule 1 violation (avoiding agent delegation)"),
+    (r"no agent needed\b",
+     "Agent-bypass: CAD Rule 1 violation (refusing agent ecosystem)"),
 ]
 
 # ── Allowed exemptions (phrases that appear in policy/accountability docs themselves) ──
