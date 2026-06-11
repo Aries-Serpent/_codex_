@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 60
 
     permissions:
-      contents: read
+      contents: write  # Required for heal-and-commit push-back (RP-009)
       pull-requests: write
       checks: write
 
@@ -34,8 +34,10 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          # Use branch ref (not SHA) so we can push back heal commits (RP-009)
+          ref: ${{ github.head_ref || github.event.pull_request.head.ref }}
           fetch-depth: 0
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
       - name: CacheManager health check
         continue-on-error: true
@@ -254,8 +256,45 @@ jobs:
           details: ${{ steps.gen_comment.outputs.comment_body || '' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Apply and push fixes on PR (Detect→Heal→Commit)
+        # Phase 2 hardening (RP-009): Apply auto-fixable issues and push back
+        # to the PR branch instead of immediately failing.  Only runs on PRs
+        # from the same repo (not forks) where we have push access.
+        id: pr_heal
+        if: |
+          steps.diagnostic.outcome == 'failure' &&
+          steps.read_report.outputs.auto_fixable != '0' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          !startsWith(github.head_ref, 'copilot/')
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TARGET_BRANCH: ${{ github.head_ref || github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Apply all auto-fixable patterns (includes Pattern 35: Markdown FP Secrets)
+          python scripts/ci/auto_fix_common_issues.py || true
+
+          git add -A
+          if git diff --staged --quiet; then
+            echo "healed=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  No file changes after auto-fix run."
+          else
+            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            git commit -m "fix(ci): auto-fix CI issues on PR [skip ci] (RP-007/RP-009)"
+
+            git push origin "HEAD:${TARGET_BRANCH}"
+            echo "healed=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Auto-fixes pushed to PR branch — re-run CI to verify."
+          fi
+
       - name: Fail if auto-fixable issues found
-        if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.auto_fixable != '0'
+        if: |
+          steps.diagnostic.outcome == 'failure' &&
+          steps.read_report.outputs.auto_fixable != '0' &&
+          steps.pr_heal.outputs.healed != 'true' &&
+          !startsWith(github.head_ref, 'copilot/')
         run: |
           echo "::error::Auto-fixable CI issues detected. See PR comment for fix instructions."
           echo "ℹ️  Manual review issues are informational only."

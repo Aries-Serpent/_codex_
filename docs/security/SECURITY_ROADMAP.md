@@ -107,7 +107,7 @@ rules:
     pattern: pickle.loads($X)
     message: "Use pickle.loads only on trusted data"
     severity: ERROR
-  
+
   - id: codex-sql-injection
     pattern-either:
       - pattern: |
@@ -501,4 +501,3 @@ pytest tests/security/test_audit_logging.py -v
 **Status:** ✅ Complete & Validated (2026-05-27)  
 **Next Review:** 2026-06-27  
 **Certification:** Enterprise-Grade Security Built-In ✓
-

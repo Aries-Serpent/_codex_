@@ -100,6 +100,10 @@ def _resolve_ref(raw: str, source_file: Path) -> Path | None:
     # skipping extensionless files like README, LICENSE, or CHANGELOG.
     if raw in {"URL", "RUN_URL"}:
         return None
+    # SARIF/code-scanning markdown often encodes references as [text](1), [text](2), etc.
+    # These are numeric placeholders, not repository file paths.
+    if raw.isdigit():
+        return None
     # Strip anchor fragment (#section) before resolving the file path
     raw = raw.split("#")[0].strip()
     raw = raw.split("?")[0].strip()

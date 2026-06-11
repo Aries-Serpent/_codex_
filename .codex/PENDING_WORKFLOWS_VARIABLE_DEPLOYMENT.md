@@ -68,7 +68,7 @@ All pending workflows should use this pattern:
     CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
     COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
     SESSION_CONTEXT_AUTO_CAPTURE: ${{ vars.SESSION_CONTEXT_AUTO_CAPTURE || 'true' }}
-    
+
     # HIGH PRIORITY variables with fallback defaults
     CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
     CODEX_SHARD_COUNT: ${{ vars.CODEX_SHARD_COUNT || '4' }}
@@ -264,7 +264,7 @@ repo-var-sync-schedule.yml (runs daily)
 
 **Blocker**: Node.js 20 end-of-life on 2026-06-02 (9 days)
 
-**Variable Enables**: 
+**Variable Enables**:
 ```yaml
 NODE_JS_VERSION: "22"
 # Now used in all workflows:
@@ -273,7 +273,7 @@ NODE_JS_VERSION: "22"
     node-version: ${{ vars.NODE_JS_VERSION || '22' }}
 ```
 
-**Action Required**: 
+**Action Required**:
 1. Set `NODE_JS_VERSION = 22` immediately
 2. Test all Node.js workflows
 3. Update package.json engines field

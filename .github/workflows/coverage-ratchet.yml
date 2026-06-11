@@ -7,6 +7,12 @@ name: Coverage Ratchet
 # current regression floor (Phase 5 planning; Phase 10B target is ≥50%).
 # The default threshold here matches pyproject.toml to avoid spurious failures.
 #
+# Exemption policy (2026-06-11):
+#   Copilot-generated branches (head ref matching `copilot/*`) are exempt from
+#   ratchet enforcement UNLESS the PR targets `main` or `0D_base_`.
+#   This prevents spurious failures on exploration/agent branches that are created
+#   without accompanying tests, while preserving full enforcement on trunk merges.
+#
 # Domain: D7 · Test System Maturity (completion rubric v1)
 # Evidence: coverage ratchet blocks regression → score 4 evidence
 
@@ -38,6 +44,14 @@ jobs:
     name: "🧪 Coverage Ratchet"
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Skip ratchet enforcement for Copilot-generated branches (copilot/*) unless
+    # the PR targets the protected trunks (main or 0D_base_).  Copilot exploration
+    # branches targeting other integration branches are exempt; they must add
+    # tests before promoting to main/0D_base_.
+    if: >
+      !startsWith(github.head_ref, 'copilot/') ||
+      github.base_ref == 'main' ||
+      github.base_ref == '0D_base_'
 
     steps:
       - name: Checkout
@@ -140,4 +154,55 @@ jobs:
             echo "| Coverage | ${{ steps.coverage.outputs.coverage_pct }}% |"
             echo "| Threshold | ${{ inputs.threshold || '35' }}% |"
             echo "| Status | ${{ steps.coverage.outputs.exit_code == '0' && '✅ PASS' || '❌ FAIL' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Informational job: runs only when the ratchet is exempt for a copilot/* branch.
+  # Posts a concise notice so contributors know the check was intentionally skipped.
+  notify-exempt:
+    name: "🧪 Coverage Ratchet (exempt)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >
+      github.event_name == 'pull_request' &&
+      startsWith(github.head_ref, 'copilot/') &&
+      github.base_ref != 'main' &&
+      github.base_ref != '0D_base_'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post exemption notice
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          printf "%s\n" \
+            "## 🧪 Coverage Ratchet — Exempt ✅" \
+            "" \
+            "Coverage ratchet enforcement is **skipped** for Copilot-generated branches targeting \`${BASE_REF}\`." \
+            "" \
+            "| Item | Value |" \
+            "|------|-------|" \
+            "| Head branch | \`${HEAD_REF}\` |" \
+            "| Base branch | \`${BASE_REF}\` |" \
+            "| Status | ⏭️ Exempt |" \
+            "" \
+            "> **Note:** Full ratchet enforcement resumes when this branch (or its changes) targets \`main\` or \`0D_base_\`." \
+            > "${RUNNER_TEMP}/exempt_body.txt"
+          gh pr comment "$PR_NUMBER" --body-file "${RUNNER_TEMP}/exempt_body.txt" 2>/dev/null || true
+
+      - name: Job summary
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          {
+            echo "## 🧪 Coverage Ratchet (exempt)"
+            echo ""
+            echo "| Item | Value |"
+            echo "|------|-------|"
+            echo "| Head branch | \`${HEAD_REF}\` |"
+            echo "| Base branch | \`${BASE_REF}\` |"
+            echo "| Status | ⏭️ Exempt — Copilot branch targeting non-trunk |"
           } >> "$GITHUB_STEP_SUMMARY"

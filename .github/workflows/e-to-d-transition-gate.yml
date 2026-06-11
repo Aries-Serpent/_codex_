@@ -33,6 +33,7 @@ jobs:
     outputs:
       readiness_score: ${{ steps.check.outputs.score }}
       model_capable: ${{ steps.check.outputs.capable }}
+      c2_pass: ${{ steps.check.outputs.c2_pass }}
 
     steps:
       - name: Checkout repository
@@ -50,12 +51,52 @@ jobs:
             const conditions = [];
 
             // C1: AGENT_REGISTRY.yaml present and covers all active agents
+            // Hardened: structural parse + active_agents count consistency check
             const registryPath = '.github/agents/AGENT_REGISTRY.yaml';
-            const registryExists = fs.existsSync(registryPath);
+            let c1Pass = false;
+            if (!fs.existsSync(registryPath)) {
+              core.warning('C1: AGENT_REGISTRY.yaml not found at .github/agents/AGENT_REGISTRY.yaml');
+            } else {
+              try {
+                const regContent = fs.readFileSync(registryPath, 'utf8');
+                // Must have top-level 'agents:' list and 'active_agents:' count
+                const hasAgentsList = /^agents:/m.test(regContent);
+                const activeMatch = regContent.match(/^active_agents:\s*(\d+)/m);
+                if (!hasAgentsList || !activeMatch) {
+                  core.warning('C1: AGENT_REGISTRY.yaml missing required keys: agents or active_agents');
+                } else {
+                  const declaredActive = parseInt(activeMatch[1], 10);
+                  // Count actual entries with status: active
+                  const actualActive = (regContent.match(/^  status: active\s*$/gm) || []).length;
+                  if (actualActive === 0) {
+                    core.warning('C1: No agents with status=active found in AGENT_REGISTRY.yaml');
+                  } else {
+                    const drift = Math.abs(declaredActive - actualActive);
+                    if (drift > 10) {
+                      // Hard-fail: registry header count is significantly stale
+                      core.warning(
+                        `C1: active_agents count drift too large — declared: ${declaredActive}, actual: ${actualActive} (drift: ${drift}). ` +
+                        'Regenerate AGENT_REGISTRY.yaml to fix.'
+                      );
+                    } else {
+                      if (drift > 0) {
+                        core.warning(
+                          `C1: minor active_agents drift (declared: ${declaredActive}, actual: ${actualActive}) — ` +
+                          'acceptable but consider regenerating registry.'
+                        );
+                      }
+                      c1Pass = true;
+                    }
+                  }
+                }
+              } catch (e) {
+                core.warning(`C1: AGENT_REGISTRY.yaml validation error: ${e.message}`);
+              }
+            }
             conditions.push({
               id: 'C1',
               label: 'AGENT_REGISTRY.yaml present with full coverage',
-              pass: registryExists
+              pass: c1Pass
             });
 
             // C2: CODEX_MANIFEST.json valid and current (<24h)
@@ -78,15 +119,22 @@ jobs:
             });
 
             // C3: Tier-3 (SOFT) policy count <= 2
+            // C5 shares the same document — load once, fail both explicitly if missing
             const gvsPath = '.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md';
-            const gvsDoc = fs.existsSync(gvsPath)
-              ? fs.readFileSync(gvsPath, 'utf8')
-              : '';
-            const softCount = (gvsDoc.match(/\u274C \*\*SOFT\*\*/g) || []).length;
+            const gvsExists = fs.existsSync(gvsPath);
+            if (!gvsExists) {
+              core.warning(`C3/C5: ${gvsPath} not found — cannot verify SOFT or GROUNDED counts`);
+            }
+            const gvsDoc = gvsExists ? fs.readFileSync(gvsPath, 'utf8') : null;
+
+            // C3: SOFT count — hard-fail when doc is missing (missing doc ≠ zero SOFT policies)
+            const softCount = gvsDoc ? (gvsDoc.match(/\u274C \*\*SOFT\*\*/g) || []).length : null;
             conditions.push({
               id: 'C3',
-              label: `Tier-3 count \u22642 (current: ${softCount})`,
-              pass: softCount <= 2
+              label: softCount !== null
+                ? `Tier-3 count \u22642 (current: ${softCount})`
+                : 'Tier-3 count \u22642 (GVS doc MISSING)',
+              pass: softCount !== null && softCount <= 2
             });
 
             // C4: agent-handoff-gate.yml deployed (Phase 2 complete)
@@ -97,12 +145,14 @@ jobs:
               pass: handoffGate
             });
 
-            // C5: GROUNDED Tier-1 gate count >= 8
-            const tier1Count = (gvsDoc.match(/\u2705 \*\*GROUNDED\*\*/g) || []).length;
+            // C5: GROUNDED Tier-1 gate count >= 8 — hard-fail when doc is missing
+            const tier1Count = gvsDoc ? (gvsDoc.match(/\u2705 \*\*GROUNDED\*\*/g) || []).length : null;
             conditions.push({
               id: 'C5',
-              label: `Tier-1 gates \u22658 (current: ${tier1Count})`,
-              pass: tier1Count >= 8
+              label: tier1Count !== null
+                ? `Tier-1 gates \u22658 (current: ${tier1Count})`
+                : 'Tier-1 gates \u22658 (GVS doc MISSING)',
+              pass: tier1Count !== null && tier1Count >= 8
             });
 
             const score = conditions.filter(c => c.pass).length;
@@ -120,6 +170,9 @@ jobs:
 
             core.setOutput('score', score.toString());
             core.setOutput('capable', capable.toString());
+            // Export per-condition pass flags so downstream jobs can gate precisely
+            const c2Condition = conditions.find(c => c.id === 'C2');
+            core.setOutput('c2_pass', (c2Condition && c2Condition.pass).toString());
 
             // Tier-1 GROUNDED gate: block PR when score < 5/5
             if (!capable) {
@@ -134,9 +187,13 @@ jobs:
           registry_path = ".github/agents/AGENT_REGISTRY.yaml"
           if not os.path.exists(registry_path):
               sys.exit(0)
-          with open(registry_path) as f:
-              data = yaml.safe_load(f)
-          agents = data.get("agents", [])
+          try:
+              with open(registry_path) as f:
+                  data = yaml.safe_load(f)
+          except Exception as e:
+              print(f"::warning::Could not parse AGENT_REGISTRY.yaml for demotion check: {e}")
+              sys.exit(0)
+          agents = data.get("agents", []) if isinstance(data, dict) else []
           demotions = []
           for a in agents:
               tier = a.get("enforcement_tier", "SOFT")
@@ -178,10 +235,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [transition-readiness]
-    # Fire when: gate failed AND score was 4 (one condition short — likely C2)
+    # Fire when: gate failed AND exactly one condition short AND C2 specifically failed
+    # (c2_pass == 'false' guards against healing when a different condition is the blocker)
     if: >-
       failure() &&
       needs.transition-readiness.outputs.readiness_score == '4' &&
+      needs.transition-readiness.outputs.c2_pass == 'false' &&
       github.event_name == 'pull_request'
     steps:
       - name: Checkout PR branch

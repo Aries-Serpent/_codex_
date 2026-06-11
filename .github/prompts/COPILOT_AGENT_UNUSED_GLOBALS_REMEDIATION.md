@@ -85,7 +85,7 @@ Map each finding to its category in the remediation document:
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
     global _rate_ts, _rate_count
-    
+
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
     if limit > 0:
         if not hasattr(app.state, "rate_ts"):
@@ -338,7 +338,7 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")      # ❌ FIRST LOG
     logger.warning(f"ImportError: {e}", exc_info=True)  # ❌ SECOND LOG (duplicate)
     LOGGING_AVAILABLE = False
-    
+
     def log_message(session_id, role, message, **kwargs):
         pass
 ```
@@ -351,7 +351,7 @@ try:
 except ImportError:
     logger.warning("Failed to import session logger; using fallback", exc_info=True)
     LOGGING_AVAILABLE = False
-    
+
     def log_message(session_id, role, message, **kwargs):
         """Fallback logging when session logger unavailable."""
         pass
@@ -542,7 +542,7 @@ echo "Phase 2 Result: $PHASE2_COUNT findings (target: ~45 remaining)"
    ```python
    # BEFORE
    _results = run_exp3_validation()
-   
+
    # AFTER
    run_exp3_validation()
    ```
@@ -551,7 +551,7 @@ echo "Phase 2 Result: $PHASE2_COUNT findings (target: ~45 remaining)"
    ```python
    # BEFORE
    outcome_node = mental_map.record_outcome(...)
-   
+
    # AFTER
    mental_map.record_outcome(...)
    ```
@@ -560,7 +560,7 @@ echo "Phase 2 Result: $PHASE2_COUNT findings (target: ~45 remaining)"
    ```python
    # BEFORE
    result = orchestrator.orchestrate(state, possible_actions)
-   
+
    # AFTER
    orchestrator.orchestrate(state, possible_actions)
    ```
@@ -569,7 +569,7 @@ echo "Phase 2 Result: $PHASE2_COUNT findings (target: ~45 remaining)"
    ```python
    # BEFORE
    results = main()
-   
+
    # AFTER
    main()
    ```
@@ -865,7 +865,7 @@ except RuntimeError as e:
 
 ### Summary
 
-This PR remediates all unused global variable findings per the remediation 
+This PR remediates all unused global variable findings per the remediation
 plan in `.github/docs/UNUSED_GLOBAL_VARIABLES_REMEDIATION.md`.
 
 ### Baseline Metrics
@@ -951,4 +951,3 @@ Reduction: [PERCENTAGE]%
 Merge Commit: [SHA]
 Merged At: [TIMESTAMP]
 ```
-

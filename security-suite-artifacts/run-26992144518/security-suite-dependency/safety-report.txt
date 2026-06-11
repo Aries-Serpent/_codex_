@@ -31,7 +31,7 @@ It will be compatible before version 2.0.0.
 
 +==============================================================================+
 
- [1mREPORT[0m 
+ [1mREPORT[0m
 
   Safety [1mv3.8.1[0m is scanning for [1mVulnerabilities[0m[1m...[0m
 [1m  Scanning dependencies[0m in your [1menvironment:[0m
@@ -45,7 +45,7 @@ It will be compatible before version 2.0.0.
 [1m  0[0m[1m vulnerabilities ignored[0m
 
 +==============================================================================+
- [1mVULNERABILITIES REPORTED[0m 
+ [1mVULNERABILITIES REPORTED[0m
 +==============================================================================+
 
 [31m-> Vulnerability found in sqlitedict version 2.1.0[0m
@@ -195,12 +195,12 @@ It will be compatible before version 2.0.0.
 +==============================================================================+
    [32m[1mREMEDIATIONS[0m
 
-  12 vulnerabilities were reported in 5 packages. For detailed remediation & 
-  fix recommendations, upgrade to a commercial license. 
+  12 vulnerabilities were reported in 5 packages. For detailed remediation &
+  fix recommendations, upgrade to a commercial license.
 
 +==============================================================================+
 
- Scan was completed. 12 vulnerabilities were reported. 
+ Scan was completed. 12 vulnerabilities were reported.
 
 +==============================================================================+[0m
 
@@ -215,5 +215,3 @@ It will be compatible before version 2.0.0.
 
 
 [33m[1m+===========================================================================================================================================================================================+[0m
-
-

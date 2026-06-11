@@ -19,7 +19,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    # Verify no Node.js 20 references remain in active workflows
    grep -r "node-version.*20\|NODE.*VERSION.*20" .github/workflows/ || true
    grep -r "node.*20" package.json apps/*/package.json cognitive_app/*/package.json
-   
+
    # Check current engines spec
    cat package.json | grep -A 2 '"engines"'
    ```
@@ -43,7 +43,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    # Install Node.js 22
    nvm install 22
    nvm use 22
-   
+
    # Run all npm-based tests
    npm ci
    npm run test  # Cognitive app tests
@@ -64,7 +64,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
 ### Action Items (Complete in S1263)
 
 1. **Create Variables in GitHub UI**
-   
+
    Navigate to: Repository Settings → Secrets and Variables → Actions
 
    **CRITICAL Variables** (Set immediately):
@@ -111,7 +111,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    ```bash
    # GitHub CLI approach
    gh workflow run repo-var-sync-schedule.yml --ref main
-   
+
    # OR visit GitHub Actions UI and manually trigger the workflow
    ```
 
@@ -138,7 +138,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    ```bash
    # Manually trigger workflow
    gh workflow run session-context-capture.yml --ref main
-   
+
    # Verify
    # - Captures PR state, commits, tasks, blocking issues, test results
    # - Generates JSON + Markdown outputs
@@ -149,7 +149,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    ```bash
    # Trigger self-healing workflow
    gh workflow run self-healing.yml --ref main
-   
+
    # Verify
    # - Delegates to copilot-iterative-self-healing.yml
    # - Uses CODEX_MAX_HEALER_RUNS_PER_HOUR variable
@@ -162,7 +162,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    gh workflow run test-rag.yml --ref main
    gh workflow run auth-tests.yml --ref main
    gh workflow run ci-checkpoint-validation.yml --ref main
-   
+
    # Verify
    # - Uses CODEX_CACHE_VERSION variable
    # - Hit rates improve on second run
@@ -187,13 +187,13 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    ```bash
    # Identify all analyzable workflows
    python scripts/ci/optimize_ci_cache.py --analyze-all
-   
+
    # Expected: 62 total workflows, 28 suitable for optimization
    # Output: JSON report with cache tier recommendations
    ```
 
 2. **Apply Cache to High-Impact Workflows** (Week 1)
-   
+
    Priority tier 1 (highest impact):
    - `.github/workflows/docker-build-push.yml`
    - `.github/workflows/coverage-with-timeout.yml`
@@ -203,17 +203,17 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    ```bash
    # Apply cache optimization
    python scripts/ci/optimize_ci_cache.py --fix .github/workflows/docker-build-push.yml
-   
+
    # Review changes
    git diff .github/workflows/docker-build-push.yml
-   
+
    # Commit and test
    git add .github/workflows/docker-build-push.yml
    git commit -m "ci: add 4-layer cache hierarchy to docker-build-push.yml"
    ```
 
 3. **Verify Cache Performance** (Week 1)
-   
+
    For each optimized workflow:
    - [ ] First run: establish baseline (no cache)
    - [ ] Second run: verify cache hits
@@ -221,7 +221,7 @@ Node.js 20 references have been migrated from active runtime paths. Keep Node.js
    - [ ] Monitor cache size and validity
 
 4. **Gradual Rollout** (Weeks 2-4)
-   
+
    Apply cache to remaining 25+ workflows:
    - All pip-based Python workflows
    - All npm-based Node.js workflows
