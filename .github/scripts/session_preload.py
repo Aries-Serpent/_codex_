@@ -69,6 +69,11 @@ def ctx_summary() -> str:
         "COPILOT_AGENT_DEDUPLICATION_ENABLED",
         "COPILOT_AGENT_TURN_ISOLATION_ENABLED",
     ]
+    # Mandatory governance variable requirements.
+    # NOTE: These values are intentionally duplicated from promotion_readiness_gate.py
+    # because session_preload.py is a standalone script that runs without importing
+    # from scripts/ci/ (it runs from the repo root during copilot-setup-steps boot).
+    # Keep both definitions in sync when updating governance requirements.
     _REQUIRED_GOVERNANCE_VARS: dict[str, str] = {
         "COPILOT_AGENT_CCA_VERSION_LOCK": "stable",
         "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",

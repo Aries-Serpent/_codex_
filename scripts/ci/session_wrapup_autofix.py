@@ -1161,13 +1161,12 @@ def fix_req14_agents_used(dry_run: bool = False) -> bool:
 def check_pr_body_agents_used(pr_body: str) -> tuple[bool, str]:
     """Validate the '## 🤖 Agents Used' block in a PR body.
 
-    Returns ``(ok, reason)`` where *ok* is True only when:
-    - The section heading is present.
-    - At least one backtick-quoted agent identifier is listed.
-    - No identifier is a known placeholder value.
-    - At least one identifier matches a registered agent (when registry available).
-
-    *reason* is a human-readable explanation on failure, or ``""`` on success.
+    Returns:
+        tuple[bool, str]: ``(ok, reason)`` where *ok* is True only when the
+        section is present, contains at least one backtick-quoted agent
+        identifier that is not a placeholder, and that identifier matches a
+        registered agent (when the registry is available).  *reason* is a
+        human-readable explanation on failure, or ``""`` on success.
     """
     if "## 🤖 Agents Used" not in pr_body:
         return False, "PR body is missing the '## 🤖 Agents Used' section"

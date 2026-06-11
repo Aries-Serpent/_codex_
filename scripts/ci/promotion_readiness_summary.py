@@ -19,6 +19,8 @@ import json
 import sys
 from pathlib import Path
 
+_MAX_DETAIL_LENGTH = 80  # max characters of failure detail shown per check row
+
 
 def render(report: dict) -> str:
     ready = report.get("ready", False)
@@ -37,7 +39,7 @@ def render(report: dict) -> str:
     for c in report.get("checks", []):
         status = "✅ PASS" if c["pass"] else "❌ FAIL"
         detail = c.get("detail") or ""
-        detail_cell = detail[:80] if detail else ""
+        detail_cell = detail[:_MAX_DETAIL_LENGTH] if detail else ""
         lines.append(f"| {status} | `{c['check']}` | {detail_cell} |")
     return "\n".join(lines) + "\n"
 

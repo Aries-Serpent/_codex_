@@ -309,9 +309,10 @@ def check_pda_freshness() -> list[dict[str, Any]]:
             ts_str = d.get("timestamp", "")
             if not ts_str:
                 continue
-            # Accept both "2026-06-11T03:30:00Z" and "2026-06-11T03:30Z"
+            # Accept "YYYY-MM-DDTHH:MM" (16-char short-form) by appending seconds.
+            _SHORT_ISO_LEN = 16
             ts_str_norm = ts_str.rstrip("Z")
-            if len(ts_str_norm) == 16:
+            if len(ts_str_norm) == _SHORT_ISO_LEN:
                 ts_str_norm += ":00"
             ts = datetime.fromisoformat(ts_str_norm).replace(tzinfo=timezone.utc)
             age_days = (now - ts).days
@@ -427,6 +428,7 @@ def _build_summary(results: list[dict[str, Any]]) -> str:
         "├─────────────────────────────────────────────────────────────────┤",
     ]
     passed = 0
+    _MAX_DETAIL_LINES = 3  # max lines of failure detail shown in the summary table
     failed = 0
     for r in results:
         icon = "✅" if r["pass"] else "❌"
@@ -434,7 +436,7 @@ def _build_summary(results: list[dict[str, Any]]) -> str:
         check_name = r["check"][:58]
         lines.append(f"│ {icon} {status:<4}  {check_name:<58}│")
         if not r["pass"] and r.get("detail"):
-            for detail_line in r["detail"].splitlines()[:3]:
+            for detail_line in r["detail"].splitlines()[:_MAX_DETAIL_LINES]:
                 lines.append(f"│        ↳ {detail_line[:62]:<62}│")
         if r["pass"]:
             passed += 1

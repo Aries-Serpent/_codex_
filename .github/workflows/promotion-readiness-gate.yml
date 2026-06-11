@@ -36,7 +36,9 @@ jobs:
         run: |
           python scripts/ci/promotion_readiness_gate.py \
             --json-out .codex/promotion-readiness-report.json
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          GATE_EXIT=$?
+          echo "exit_code=${GATE_EXIT}" >> "$GITHUB_OUTPUT"
+          exit ${GATE_EXIT}
         continue-on-error: true
 
       - name: Publish step summary
@@ -61,7 +63,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Fail if gate blocked
-        if: steps.gate.outputs.exit_code != '0' || steps.gate.outcome == 'failure'
+        if: steps.gate.conclusion == 'failure' || steps.gate.outputs.exit_code != '0'
         run: |
           echo "❌ Promotion readiness gate failed — see step summary for details."
           exit 1
