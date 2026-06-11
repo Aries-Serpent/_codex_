@@ -1,9 +1,9 @@
 # 🗺️ Agent Ecosystem Map
 
 **Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-06-11
 **Repository**: Aries-Serpent/_codex_
-**Total Agents**: 153 active
+**Total Agents**: 131 active (153 pre-Phase-6; 14 deprecated per Phase 5 S174 + Phase 6 sweep; see `agents/AGENT_CONSOLIDATION_MATRIX.md`)
 
 ---
 
@@ -24,24 +24,26 @@ Orchestration Layer
 CI/CD Layer
 ├── ci-testing-agent            — Debug CI pipelines, test failures, import errors
 ├── ci-auto-healer-agent        — Detect and heal CI failures (embedded fix patterns)
-├── ci-failure-resolution-agent — Diagnose and resolve CI/CD pipeline failures
+├── ci-failure-resolution-agent — (DEPRECATED → ci-auto-healer-agent)
 ├── ci-emergency-response-agent — Emergency fixes for blocking failures
 ├── ci-triage-pipeline-agent    — Triage CI failures by severity
 ├── iterative-self-healing-ci   — (workflow) Auto-fix + Copilot escalation
 └── artifact-monitor-agent      — CI/CD artifact health monitoring
 
 Security Layer
-├── security-audit-agent        — SAST, dependency vulnerabilities, compliance
+├── unified-security-scanner    — Canonical SAST + deps + secrets entry point
+├── security-audit-agent        — (DEPRECATED → unified-security-scanner)
 ├── code-scanning-remediation-agent — Fix code scanning alerts
 ├── codeql-alert-resolution-agent   — Resolve CodeQL security alerts
-├── secret-detection-agent      — Detect committed secrets/tokens
-└── dependency-vulnerability-scanner — Scan deps for CVEs
+├── secret-detection-agent      — (DEPRECATED → unified-security-scanner)
+└── dependency-vulnerability-scanner — (DEPRECATED → unified-security-scanner)
 
 Documentation Layer
-├── documentation-consolidator  — Eliminate documentation duplication
-├── documentation-quality-agent — Assess and improve doc quality
+├── documentation-consolidator  — (DEPRECATED → unified-doc-agent)
+├── documentation-quality-agent — (DEPRECATED → unified-doc-agent)
+├── unified-doc-agent           — Unified documentation management
 ├── link-validator-agent        — Validate internal/external links
-└── unified-doc-agent           — Unified documentation management
+└── doc-freshness-checker       — Scheduled link/timestamp staleness checks
 
 Testing Layer
 ├── autonomous-test-healer-agent — Auto-fix failing tests

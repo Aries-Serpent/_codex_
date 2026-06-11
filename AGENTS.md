@@ -9,12 +9,12 @@ It provides essential orientation, operational guidelines, and navigation to all
 DO NOT MOVE this file - it is intentionally placed here as the first point of contact.
 -->
 
-> **Status:** ✅ UP-TO-DATE (2026-03-21 - S174 Consolidation)
+> **Status:** ✅ UP-TO-DATE (2026-06-11 - Phase 6 Consolidation)
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Root Organization:** Phase 2 Complete
 > **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
-> **Agents:** 145 active (S174→S190 Phase-5: 9 family merges + 1 archive applied to `.github/agents/AGENT_REGISTRY.yaml`; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
+> **Agents:** 131 active (Phase 6 sweep: 14 agents deprecated into unified entry points; see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](agents/AGENT_CONSOLIDATION_MATRIX.md). Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 >
@@ -490,9 +490,9 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 | **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
 | **CI Log Retrieval Agent** | Retrieve authenticated GitHub Actions logs and summarize failures | [.github/agents/ci-log-retrieval-agent.md](.github/agents/ci-log-retrieval-agent.md) | ✅ Active |
 | **CI Emergency Response Agent** | Emergency CI/CD pipeline fixes | [.github/agents/ci-emergency-response-agent.md](.github/agents/ci-emergency-response-agent.md) | ✅ Active |
-| **Coverage Roadmap Agent** | Drive coverage threshold roadmap execution and test development | [.github/agents/coverage-roadmap-agent.md](.github/agents/coverage-roadmap-agent.md) | ✅ Active |
+| **Coverage Roadmap Agent** | Drive coverage threshold roadmap execution and test development | [.github/agents/coverage-roadmap-agent.md](.github/agents/coverage-roadmap-agent.md) | ⚠️ DEPRECATED → `unified-coverage-agent` |
 | **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
-| **Dependency Vulnerability Scanner** | Scan dependencies for security vulnerabilities | [.github/agents/dependency-vulnerability-scanner.agent.md](.github/agents/dependency-vulnerability-scanner.agent.md) | ✅ Active |
+| **Dependency Vulnerability Scanner** | Scan dependencies for security vulnerabilities | [.github/agents/dependency-vulnerability-scanner.agent.md](.github/agents/dependency-vulnerability-scanner.agent.md) | ⚠️ DEPRECATED → `unified-security-scanner` |
 | **Doc Freshness Checker** | Check documentation freshness and validate links | [.github/agents/doc-freshness-checker.agent.md](.github/agents/doc-freshness-checker.agent.md) | ✅ Active |
 | **Owner Approval Guard** | Enforce owner approval for autonomous operations | [.github/agents/owner-approval-guard.agent.md](.github/agents/owner-approval-guard.agent.md) | ✅ Active |
 | **PII Scrubber** | Scrub PII from content for GDPR/CCPA compliance | [.github/agents/pii-scrubber.agent.md](.github/agents/pii-scrubber.agent.md) | ✅ Active |

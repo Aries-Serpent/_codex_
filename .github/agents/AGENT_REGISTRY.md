@@ -2,8 +2,11 @@
 
 **Version**: 1.4.0
 **Last Updated**: 2026-01-22T07:21:00Z
-**Total Agents**: 35+
+**Total Agents**: 35+ (21+ active; 14 deprecated per Phase 5 S174 + Phase 6 sweep)
 **Standardized**: 7 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator, artifact-monitor-agent)
+
+> ⚠️ **Consolidation notice (Phase 5 S174 + Phase 6 sweep):** Agents marked `DEPRECATED` below have been consolidated into unified entry points. See [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for full details.
+> Deprecated → Unified mappings: `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor` → **`unified-coverage-agent`** | `documentation-quality-agent`, `documentation-consolidator` → **`unified-doc-agent`** | `secret-detection-agent`, `dependency-vulnerability-scanner`, `dependency-security-review-agent`, `security-audit-agent` → **`unified-security-scanner`** | `ci-failure-resolution-agent` → **`ci-auto-healer-agent`** | `ci-resilience-emergency-response-agent` → **`ci-emergency-response-agent`** | `cache-manager-integration` → **`cache-management-agent`**
 **Target**: 100% standardization by 2026-01-23
 
 ---
@@ -128,11 +131,11 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 - **Last Updated**: 2026-01-23
 - **Maintainer**: Root Organization Team
 
-### 0. Documentation-Consolidator ✅ NEW
+### 0. Documentation-Consolidator ⚠️ DEPRECATED → `unified-doc-agent`
 - **ID**: `documentation-consolidator`
 - **File**: `.github/agents/documentation-consolidator.md`
 - **Purpose**: Intelligent documentation consolidation with content preservation
-- **Status**: Active
+- **Status**: DEPRECATED → `unified-doc-agent` (Phase 6 sweep; capability folded in as a capability tag)
 - **Maturity**: Production
 - **Test Coverage**: Manual validation
 - **Has Prompts**: Embedded in agent documentation
