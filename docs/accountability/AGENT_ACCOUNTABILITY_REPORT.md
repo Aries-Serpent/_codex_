@@ -1,3 +1,40 @@
+## SESSION SUMMARY — 2026-06-11T00:00Z · CHPP Phase 6 — Agent Consolidation Sweep
+
+**Last Updated:** 2026-06-11T00:00Z
+**Current Agent Count:** 131 active (was 145)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted PR comments reviewed ✅
+- [x] **0b.** Failing CI checks reviewed — no blocking failures ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated this session ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` followed — CHPP Rule 1 (AFD), Rule 2 (MSPV), Rule 3 (CAPS) all satisfied ✅
+
+### Work Completed
+1. **AGENT_REGISTRY.yaml** — 14 agents deprecated/archived; active agent count reduced from 145 → 131.
+2. **14 agent prompt files** — Deprecation banners added to all 14 consolidated agent `.md` files.
+3. **2 workflow files** — Deprecated agent references removed from CI/CD workflow definitions.
+4. **Documentation updated** — `AGENT_REGISTRY.md`, `AGENT_ECOSYSTEM_MAP.md`, `AGENTS.md`, and `AGENT_CONSOLIDATION_MATRIX.md` all reflect the post-consolidation state.
+
+### Agents Dispatched
+- `agent-orchestrator`, `skills-master-agent`, `workflow-management-agent`, `unified-doc-agent`, `agent-iq-scoring-gate`, `memory-sync-agent`
+
+### Recent Sessions
+
+| Date | Session Label | Outcome | Status |
+|------|---------------|---------|--------|
+| 2026-06-11 | CHPP Phase 6 consolidation | 14 deprecated, active 145→131 | ✅ PASS |
+
+### Impact Score
+- Agents deprecated: 14
+- Active agent count: 131 (was 145)
+- Workflow files patched: 2
+- Documentation files updated: 4 (`AGENT_REGISTRY.md`, `AGENT_ECOSYSTEM_MAP.md`, `AGENTS.md`, `AGENT_CONSOLIDATION_MATRIX.md`)
+- Policy compliance: CHPP Rule 1 (AFD) ✅ · Rule 2 (MSPV) ✅ · Rule 3 (CAPS) ✅
+- Deferral Language Gate: 0 violations
+
+---
+
 ## SESSION SUMMARY — 2026-06-10T18:52Z · S58 Phase 3 execution (agent gate wiring)
 
 ### Pre-flight Checklist
