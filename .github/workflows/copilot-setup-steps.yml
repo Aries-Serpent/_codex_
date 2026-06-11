@@ -12,7 +12,7 @@ name: Copilot Agent Environment Setup
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       environment_type:
@@ -102,7 +102,7 @@ jobs:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write # Allow agent to post PR review comments
+      pull-requests: write  # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -122,7 +122,7 @@ jobs:
       # Phase 1: Repository & Code Setup
       # ============================================================================
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
@@ -310,7 +310,8 @@ jobs:
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
-              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE}'. Agent MUST resolve these before any other work."
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts " \
+                "with base branch '${BASE}'. Agent MUST resolve these before any other work."
               echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
             elif [ "$MERGEABLE" = "MERGEABLE" ]; then
               echo "✅ No merge conflicts detected"
@@ -327,7 +328,8 @@ jobs:
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
             echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
             if [ "$BEHIND" -gt 0 ]; then
-              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'. Agent should rebase or merge base before starting work."
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'." \
+                " Agent should rebase or merge base before starting work."
               echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
             else
               echo "✅ Branch is up-to-date with ${BASE}"
@@ -376,7 +378,9 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found " \
+              "(${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)." \
+              " Agent should review these for patterns affecting this PR."
 
             # List issue titles for agent context
             echo ""
@@ -415,11 +419,19 @@ jobs:
         run: |  # pragma: allowlist secret
           if [ -f .codex/agent_context.json ]; then
             echo "Injecting repo variable context from .codex/agent_context.json"
-            # base64-encoded Python script: reads agent_context.json and writes all
-            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
-            # session sees them as environment variables.
-            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
+            python3 -c "import json, os
+            try:
+                with open('.codex/agent_context.json', encoding='utf-8') as handle:
+                    context = json.load(handle)
+                with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as github_env:
+                    injected = 0
+                    for key, value in context.items():
+                        if not key.startswith('_') and value:
+                            github_env.write(f'{key}={value}\n')
+                            injected += 1
+                print(f'Injected {injected} variables into GITHUB_ENV')
+            except Exception as exc:
+                print(f'Warning: {exc}')"
           else
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
@@ -478,7 +490,12 @@ jobs:
 
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
-        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
+        if: >-
+          ${{
+            github.event_name == 'workflow_dispatch' &&
+            (inputs.lfs_mode == 'full' ||
+            (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != ''))
+          }}
         run: |
           set -euo pipefail
           echo "Git version: $(git --version)"
@@ -627,7 +644,7 @@ jobs:
       # Phase 2: Language Runtimes Setup
       # ============================================================================
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -638,7 +655,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -650,14 +667,16 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        env:
+          VENV_CACHE_PREFIX: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev
         with:
           path: .venv_ci
-          key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          key: ${{ env.VENV_CACHE_PREFIX }}-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
           restore-keys: |
-            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
-            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
-            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
+            ${{ env.VENV_CACHE_PREFIX }}-torch=false-preflight=false-
+            ${{ env.VENV_CACHE_PREFIX }}-torch=false-
+            ${{ env.VENV_CACHE_PREFIX }}-
 
       - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
@@ -1090,29 +1109,12 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
-
-# ============================================================================
-# Workflow Metadata
-# ============================================================================
-# Version: 1.2.0
-# Created: 2026-01-28
-# Updated: Phase 3 hardening — 12 resilience fixes (continue-on-error, timeout-minutes, || true guards)
-# Baseline stability maintained:
-# - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
-# - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
-# Selective adoption (guarded via workflow_dispatch inputs):
-# - lfs_mode: targeted/full with retries and continue-on-error option
-# - lfs_include_paths: limit LFS scope to required areas
-# - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
-# Policy: .codex/CODEBASE_AGENCY_POLICY.md
-# Integration: Cognitive Brain Phase objectives
-# Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
@@ -1129,7 +1131,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
