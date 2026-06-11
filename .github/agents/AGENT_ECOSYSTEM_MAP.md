@@ -3,7 +3,7 @@
 **Version**: 1.0.0
 **Last Updated**: 2026-06-11
 **Repository**: Aries-Serpent/_codex_
-**Total Agents**: 131 active (145 pre-Phase-6; 14 deprecated per Phase 5 S174 + Phase 6 sweep; see `agents/AGENT_CONSOLIDATION_MATRIX.md`)
+**Total Agents**: 145 active (145 pre-Phase-6; 14 deprecated per Phase 5 S174 + Phase 6 sweep; see `agents/AGENT_CONSOLIDATION_MATRIX.md`)
 
 ---
 

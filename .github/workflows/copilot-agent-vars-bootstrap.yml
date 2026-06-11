@@ -91,6 +91,11 @@ jobs:
               if any(key.startswith(p) for p in VAR_PREFIXES) and val:
                   context[key] = val
 
+          # Add mandatory CCA version-lock constants
+          context["COPILOT_AGENT_CCA_VERSION_LOCK"] = "stable"
+          context["COPILOT_AGENT_DEDUPLICATION_ENABLED"] = "true"
+          context["COPILOT_AGENT_TURN_ISOLATION_ENABLED"] = "true"
+
           # Add workflow metadata
           context["_meta"] = {
               "generated_at":   datetime.datetime.now(datetime.timezone.utc).isoformat(),

@@ -79,6 +79,11 @@ vars_data = {v["name"]: v["value"] for v in resp.json().get("variables", [])}
 TRACKED_PREFIXES = ("COPILOT_", "CODEX_", "COGNITIVE_BRAIN_", "AGENT_", "EMBEDDING_", "AUTO_")
 context = {k: v for k, v in vars_data.items() if k.startswith(TRACKED_PREFIXES)}
 
+# Add mandatory CCA version-lock constants (CAD-Mandate Rule 2 / MSPV)
+context["COPILOT_AGENT_CCA_VERSION_LOCK"] = "stable"
+context["COPILOT_AGENT_DEDUPLICATION_ENABLED"] = "true"
+context["COPILOT_AGENT_TURN_ISOLATION_ENABLED"] = "true"
+
 os.makedirs(".codex", exist_ok=True)
 with open(".codex/agent_context.json", "w") as f:
     json.dump(context, f, indent=2)
@@ -89,10 +94,13 @@ print(f"Wrote {len(context)} variables to .codex/agent_context.json")
 When an agent updates `.codex/agent_context.json` and the change should persist:
 
 ```python
-# For each key in agent_context.json:
+# For each key in agent_context.json (skip static constants):
 # 1. Try PATCH (update existing)
 # 2. Fall back to POST (create new)
+STATIC_KEYS = {"COPILOT_AGENT_CCA_VERSION_LOCK", "COPILOT_AGENT_DEDUPLICATION_ENABLED", "COPILOT_AGENT_TURN_ISOLATION_ENABLED"}
 for key, value in context.items():
+    if key in STATIC_KEYS:
+        continue
     r = requests.patch(f"{url}/{key}", json={"value": str(value)}, headers=headers)
     if r.status_code == 404:
         requests.post(url, json={"name": key, "value": str(value)}, headers=headers)
