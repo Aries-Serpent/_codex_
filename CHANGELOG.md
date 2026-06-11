@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (PR #4841 review feedback — 2026-06-11T17:45Z)
+- `test_env`: removed unrelated root-level file that would shadow `python -m venv test_env` setup commands.
+- `scripts/ci/inject_agent_context.py`: deleted duplicate injection script that lacked key validation and control-character sanitization.
+- `.github/workflows/copilot-setup-steps.yml`: updated the "🔑 Inject repo variable context" step to use the existing hardened `.github/scripts/inject_context_vars.py` (POSIX key validation + control-char sanitization) instead of the newly added duplicate; removed the `pragma: allowlist secret` comment from the `run:` block.
+
 ### Changed (PR #4838 priority-1 verification refresh — 2026-06-11T16:06Z)
 - `.github/workflows/copilot-setup-steps.yml`: renamed the stale preload rationale header from `WHY DISABLED` to `WHY GUARDED` so the comment matches the active guarded/non-blocking session-preload behavior.
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: recorded the refreshed Priority 1 verification pass covering PR head checks, approval-gated runs, opt-in LFS policy confirmation, and the current GitHub-side limits on directly reading code-scanning alerts.
