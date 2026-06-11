@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-11T17:55:09Z",
+  "generated_at": "2026-06-11T23:23:04Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1599,6 +1599,11 @@
       "has_concurrency": true
     },
     {
+      "name": "promotion-readiness-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "publish_dashboard_release",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2240,5 +2245,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "07b7f5f1e744da5106d841f962d034e6180d712b6d34a750ba7dbcc4ce998988"
+  "integrity_sha256": "470f8b290172a14be13ea9e78b2905234a50aebf6c028c4588acc2464e85bc3c"
 }
