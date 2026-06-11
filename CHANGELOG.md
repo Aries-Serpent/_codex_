@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (CI — prevent auto-fix/Copilot push races — 2026-06-11T07:10Z)
+- `.github/workflows/auto-fix-pr-check.yml`: skip Detect→Heal→Commit push and the corresponding fail gate when PR head branch starts with `copilot/`.
+- `.github/workflows/auto-fix-common-issues.yml`: skip Detect→Heal→Commit push and the corresponding fail gate when PR head branch starts with `copilot/`.
+- This avoids concurrent branch updates from auto-fix workflows while Copilot cloud-agent sessions are actively committing on the same `copilot/*` PR branch.
+
 ### Fixed (Phase 3 agent completions + code review remediation — 2026-06-11T05:14Z)
 - **Validation Pipeline (RP-025):** Added `tenacity>=8.2,<10` to `requirements/dev.txt`; relaxed `--maxfail` 1→50 in full validation mode. Fixes 16 consecutive failures on all branches.
 - **CI Pattern Registry:** Registered RP-024/RP-025/RP-026 across `ci_rescue.py`, `auto_fix_common_issues.py`, `collect_telemetry.py` (35→38 categories), `.codex/patterns/ci_failure_patterns.yaml`.

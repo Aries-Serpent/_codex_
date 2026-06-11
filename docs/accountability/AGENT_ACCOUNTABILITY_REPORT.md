@@ -1,3 +1,27 @@
+## SESSION SUMMARY — 2026-06-11T07:10Z · CI failure RCA for job 80737700028
+
+### Pre-flight Checklist
+- [x] Reviewed failing Actions run and job logs via GitHub MCP (`run_id=27329344490`, `job_id=80737700028`) ✅
+- [x] Identified root-cause chain from logs (`report_progress` push disruption on active branch + eventual `quota_exceeded` session abort) ✅
+- [x] Implemented workflow guard to prevent auto-fix push races on `copilot/*` branches ✅
+
+### Root Cause
+- The failing check run (`Addressing comment on PR #4838`) entered a long recovery path after `report_progress` failed near the end of the session.
+- In the same window, auto-fix workflows pushed commits directly to the same PR head branch, creating branch-update contention during Copilot session commit/push handling.
+- The extended recovery loop consumed remaining agent quota, ending with `402 quota_exceeded`, which surfaced as the final job failure.
+
+### Remediation Applied
+1. Added `!startsWith(github.head_ref, 'copilot/')` guard to Detect→Heal→Commit push step in:
+   - `.github/workflows/auto-fix-pr-check.yml`
+   - `.github/workflows/auto-fix-common-issues.yml`
+2. Added the same `copilot/*` guard to the follow-up fail gates so skipped heal steps on Copilot branches do not hard-fail these workflows.
+
+### Expected Outcome
+- Auto-fix workflows remain diagnostic on Copilot-managed branches without pushing mid-session commits that can race the active cloud-agent run.
+- Copilot branch commit/push flow should no longer be interrupted by same-branch auto-fix writes from these two workflows.
+
+---
+
 ## SESSION SUMMARY — 2026-06-11T06:30Z · AGENTS.md consolidation refresh
 
 **Last Updated:** 2026-06-11T06:30Z
