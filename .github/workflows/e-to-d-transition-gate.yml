@@ -187,9 +187,13 @@ jobs:
           registry_path = ".github/agents/AGENT_REGISTRY.yaml"
           if not os.path.exists(registry_path):
               sys.exit(0)
-          with open(registry_path) as f:
-              data = yaml.safe_load(f)
-          agents = data.get("agents", [])
+          try:
+              with open(registry_path) as f:
+                  data = yaml.safe_load(f)
+          except Exception as e:
+              print(f"::warning::Could not parse AGENT_REGISTRY.yaml for demotion check: {e}")
+              sys.exit(0)
+          agents = data.get("agents", []) if isinstance(data, dict) else []
           demotions = []
           for a in agents:
               tier = a.get("enforcement_tier", "SOFT")

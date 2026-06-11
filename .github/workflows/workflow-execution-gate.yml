@@ -160,11 +160,11 @@ jobs:
                 echo "::warning::Could not fetch PR body; cannot restore '${FLAG}'."
                 continue
               fi
-              printf '%s' "${BODY}" > /tmp/_wec_restore_body.txt
+              printf '%s' "${BODY}" > "${RUNNER_TEMP}/_wec_restore_body.txt"
               # Replace '- [ ] <flag>' with '- [x] <flag>' (single-line Python, no YAML indent issue)
-              python3 -c "import re,sys,os; f=sys.argv[1]; b=open('/tmp/_wec_restore_body.txt').read(); b=re.sub(r'(?m)(^[ \t]*-[ \t]*\[) \]([ \t]+'+re.escape(f)+r')',r'\1x]\2',b); open('/tmp/_wec_restored_body.txt','w').write(b)" "${FLAG}"
+              python3 -c "import re,sys,os; rt=os.environ.get('RUNNER_TEMP','/tmp'); f=sys.argv[1]; b=open(rt+'/_wec_restore_body.txt').read(); b=re.sub(r'(?m)(^[ \t]*-[ \t]*\[) \]([ \t]+'+re.escape(f)+r')',r'\1x]\2',b); open(rt+'/_wec_restored_body.txt','w').write(b)" "${FLAG}"
               gh pr edit "${PR_NUMBER}" --repo "${REPO}" \
-                --body "$(cat /tmp/_wec_restored_body.txt)" \
+                --body "$(cat "${RUNNER_TEMP}/_wec_restored_body.txt")" \
                 && echo "✅ Restored [x] ${FLAG} in PR body (bot reset blocked)." \
                 || echo "::warning::PR body restore failed — please manually re-check [x] ${FLAG}."
             else
@@ -271,7 +271,7 @@ jobs:
           cache: "pip"
       - name: Validate WEC template integrity
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
@@ -582,7 +582,7 @@ jobs:
             --pr    "$PR" \
             --target main \
             --merge-mode "$MERGE_MODE" \
-            --output /tmp/ff_result.json \
+            --output "${RUNNER_TEMP}/ff_result.json" \
             "${DRY_FLAG[@]}" "${FILES_ARG[@]}"
 
       - name: Upload fast-forward result artifact
@@ -590,7 +590,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{ github.run_id }}
-          path: /tmp/ff_result.json
+          path: ${{ runner.temp }}/ff_result.json
           retention-days: 30
 
       - name: Post fast-forward result comment to PR
@@ -601,12 +601,12 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          [ -f /tmp/ff_result.json ] || exit 0
+          [ -f "${RUNNER_TEMP}/ff_result.json" ] || exit 0
 
           python3 - <<'PYEOF'
           import json, os, subprocess
 
-          data     = json.load(open('/tmp/ff_result.json'))
+          data     = json.load(open(os.environ.get('RUNNER_TEMP', '/tmp') + '/ff_result.json'))
           pr       = os.environ.get('PR', '?')
           repo     = os.environ.get('GITHUB_REPOSITORY', '')
           run_url  = f"https://github.com/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}"
