@@ -113,7 +113,7 @@ def _load_registered_agent_ids() -> set[str]:
     if not registry.exists():
         return ids
     text = registry.read_text(encoding="utf-8")
-    for m in re.finditer(r"^- id:\s+(\S+)", text, re.MULTILINE):
+    for m in re.finditer(r"^\s*-\s+id:\s+(\S+)", text, re.MULTILINE):
         ids.add(m.group(1).strip())
     return ids
 
@@ -289,7 +289,7 @@ def check_deferral_scan() -> list[dict[str, Any]]:
         try:
             scratch.unlink()
         except OSError:
-            pass
+            pass  # best-effort cleanup; ignore if file was already removed
     ok = rc == 0
     return [{"check": "deferral_scan", "pass": ok,
              "detail": "" if ok else f"Deferral language detected in recent session entry (exit {rc}):\n{out[:500]}"}]

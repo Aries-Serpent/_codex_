@@ -24,7 +24,8 @@ def test_sqlite_memory_crud(tmp_path):
     assert history[1][1] == {"data": "value"}
 
     # Delete
-    assert memory.delete("key1") is True
+    delete_result = memory.delete("key1")
+    assert delete_result is True
     assert memory.retrieve("key1") is None
 
     # Clear

@@ -1374,7 +1374,7 @@ Repeated violations or inability to correct:
 
 ## Network Safety (CI / Agent Offline Mode)
 
-### §14 — Machine Learning Components Must Run Offline
+### §13 — Machine Learning Components Must Run Offline
 
 All ML components used in CI gates MUST operate without any network access.
 

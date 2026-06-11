@@ -11,6 +11,7 @@ def test_noise_reducer():
     result = reducer.process(audio, 44100)
     np.testing.assert_array_almost_equal(result, audio * 0.95)
 
+
 def test_hum_remover():
     remover = HumRemover(frequency=50.0)
     assert remover.frequency == 50.0
@@ -18,6 +19,7 @@ def test_hum_remover():
     audio = np.array([1.0, 0.5, 0.0])
     result = remover.process(audio, 44100)
     np.testing.assert_array_equal(result, audio)
+
 
 def test_reverb_reducer():
     reducer = ReverbReducer(strength=0.8)

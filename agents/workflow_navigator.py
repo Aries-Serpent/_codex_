@@ -848,7 +848,6 @@ class WorkflowNavigator(Planner):
         Orient: Map to workflow token selection
         """
         workflow_id = observation.data.get("workflow_id")
-        context = observation.data.get("context", {})
 
         current_tokens = []
         next_token = "UNKNOWN"

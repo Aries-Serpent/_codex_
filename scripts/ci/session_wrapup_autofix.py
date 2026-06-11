@@ -42,6 +42,7 @@ Design principles
 from __future__ import annotations
 
 import argparse
+import functools
 import logging
 import os
 import re
@@ -1051,8 +1052,6 @@ and the CI gate requirement.
 # ---------------------------------------------------------------------------
 
 _AGENT_REGISTRY_PATH = REPO_ROOT / ".github" / "agents" / "AGENT_REGISTRY.yaml"
-# Cached set of registered agent IDs (loaded once per process).
-_REGISTERED_AGENT_IDS: set[str] | None = None
 
 # Placeholder values that must NOT appear as the sole agent entry.
 _AGENT_PLACEHOLDER_VALUES = frozenset({
@@ -1067,20 +1066,17 @@ _AGENT_PLACEHOLDER_VALUES = frozenset({
 })
 
 
-def _load_registered_agent_ids() -> set[str]:
-    """Return the set of all agent IDs from AGENT_REGISTRY.yaml (cached)."""
-    global _REGISTERED_AGENT_IDS
-    if _REGISTERED_AGENT_IDS is not None:
-        return _REGISTERED_AGENT_IDS
+@functools.lru_cache(maxsize=None)
+def _load_registered_agent_ids() -> frozenset[str]:
+    """Return the set of all agent IDs from AGENT_REGISTRY.yaml (cached per process)."""
     ids: set[str] = set()
     try:
         text = _AGENT_REGISTRY_PATH.read_text(encoding="utf-8")
-        for m in re.finditer(r"^- id:\s+(\S+)", text, re.MULTILINE):
+        for m in re.finditer(r"^\s*-\s+id:\s+(\S+)", text, re.MULTILINE):
             ids.add(m.group(1).strip())
     except FileNotFoundError:
         logger.warning("AGENT_REGISTRY.yaml not found — agent ID validation skipped")
-    _REGISTERED_AGENT_IDS = ids
-    return ids
+    return frozenset(ids)
 
 
 def check_req14_agents_used() -> bool:

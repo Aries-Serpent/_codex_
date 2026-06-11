@@ -8,6 +8,7 @@ def test_ooda_inheritance():
     assert issubclass(SelfHealingEngine, Planner)
     assert issubclass(WorkflowNavigator, Planner)
 
+
 def test_self_healing_ooda():
     engine = SelfHealingEngine()
     obs = engine.observe({"log_output": "error", "run_checks": False})
@@ -21,6 +22,7 @@ def test_self_healing_ooda():
 
     act = engine.act(dec)
     assert act.success is True
+
 
 def test_workflow_navigator_ooda():
     nav = WorkflowNavigator()

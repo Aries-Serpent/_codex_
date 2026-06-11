@@ -236,7 +236,7 @@ def save_agent_context(output_path: Path) -> None:
                 if key not in context and not key.startswith("_"):
                     context[key] = val
         except (json.JSONDecodeError, OSError):
-            pass
+            pass  # existing file is absent or malformed; proceed with generated context
 
     output_path.write_text(json.dumps(context, indent=2))
     logger.info("✓ Agent context saved to %s", output_path)

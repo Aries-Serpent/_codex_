@@ -18,6 +18,7 @@ def test_package_config_defaults():
     assert config.env == {}
     assert config.features == []
 
+
 def test_package_config_custom():
     config = PackageConfig(
         name="my_pkg",
@@ -33,7 +34,7 @@ def test_package_config_custom():
         serverless_target="aws",
         dependencies=["requests"],
         env={"ENV": "prod"},
-        features=["auth"]
+        features=["auth"],
     )
     assert config.description == "desc"
     assert config.template == "custom"
