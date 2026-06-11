@@ -1,0 +1,69 @@
+name: Promotion Readiness Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  promotion-readiness:
+    name: Promotion Readiness — 0D_base_ → main
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run promotion readiness gate
+        id: gate
+        run: |
+          python scripts/ci/promotion_readiness_gate.py \
+            --json-out .codex/promotion-readiness-report.json
+          GATE_EXIT=$?
+          echo "exit_code=${GATE_EXIT}" >> "$GITHUB_OUTPUT"
+          exit ${GATE_EXIT}
+        continue-on-error: true
+
+      - name: Publish step summary
+        if: always()
+        run: |
+          if [ -f .codex/promotion-readiness-report.json ]; then
+            python3 scripts/ci/promotion_readiness_summary.py \
+              --json-in .codex/promotion-readiness-report.json \
+              --output "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## ❌ Promotion Readiness Gate" >> "$GITHUB_STEP_SUMMARY"
+            echo "Report file not generated — check gate step logs." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload promotion readiness artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: promotion-readiness-report
+          path: .codex/promotion-readiness-report.json
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Fail if gate blocked
+        if: steps.gate.conclusion == 'failure' || steps.gate.outputs.exit_code != '0'
+        run: |
+          echo "❌ Promotion readiness gate failed — see step summary for details."
+          exit 1
