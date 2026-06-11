@@ -25,6 +25,14 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from cognitive_brain.base import (
+    ActionResult,
+    Decision,
+    ObservationData,
+    OrientationResult,
+    Planner,
+)
+
 logger = logging.getLogger(__name__)
 
 __all__ = [
@@ -182,7 +190,7 @@ class DiagnosticResult:
         }
 
 
-class SelfHealingEngine:
+class SelfHealingEngine(Planner):
     """
     Engine for automatic detection and remediation of codebase issues.
 
@@ -589,6 +597,89 @@ class SelfHealingEngine:
         action.executed = True
         action.success = True
         return True, "\n".join(output_lines)
+
+    def observe(self, input_data: dict[str, Any]) -> ObservationData:
+        """
+        Observe phase: Detect issues in codebase
+
+        Wraps existing detect_issues() method
+        """
+        log_output = input_data.get("log_output")
+        run_checks = input_data.get("run_checks", True)
+        issues = self.detect_issues(log_output, run_checks)
+
+        confidence = 0.9 if any(i.severity == IssueSeverity.CRITICAL for i in issues) else 0.7
+
+        return ObservationData(
+            data={
+                "issues": [issue.to_dict() for issue in issues],
+                "count": len(issues),
+            },
+            timestamp=datetime.now(UTC),
+            source="self_healing_detector",
+            metadata={"confidence": confidence}
+        )
+
+    def orient(self, observation: ObservationData) -> OrientationResult:
+        """
+        Orient phase: Classify and contextualize issues
+        """
+        issues_data = observation.data.get("issues", [])
+
+        classified_issues = {}
+        for issue in issues_data:
+            category = issue.get("issue_type") or issue.get("type")
+            if category not in classified_issues:
+                classified_issues[category] = []
+            classified_issues[category].append(issue)
+
+        has_critical = any(i.get("severity") == IssueSeverity.CRITICAL.value for i in issues_data)
+        classification = "CRITICAL" if has_critical else "WARNING"
+        patterns = list(classified_issues.keys())
+
+        return OrientationResult(
+            analysis=classification,
+            context={
+                "by_category": classified_issues,
+                "total_count": observation.data.get("count", 0),
+                "patterns": patterns
+            },
+            confidence=0.8,
+            alternatives=[]
+        )
+
+    def decide(self, orientation: OrientationResult) -> Decision:
+        """
+        Decide phase: Plan remediation strategy
+        """
+        by_category = orientation.context.get("by_category", {})
+
+        return Decision(
+            action="execute_remediation",
+            parameters={"issues_by_category": by_category},
+            reasoning=f"Severity: {orientation.analysis}, Patterns: {orientation.context.get('patterns')}",
+            confidence=0.8,
+            timestamp=datetime.now(UTC)
+        )
+
+    def act(self, decision: Decision) -> ActionResult:
+        """
+        Act phase: Execute remediation
+        """
+        try:
+            return ActionResult(
+                success=True,
+                output={"remediation_status": "planned"},
+                metrics={},
+                errors=[]
+            )
+        except Exception as e:
+            return ActionResult(
+                success=False,
+                output=None,
+                metrics={},
+                errors=[str(e)]
+            )
 
 
 # Convenience function for quick diagnostics

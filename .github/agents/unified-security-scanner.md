@@ -93,6 +93,13 @@ graph TD
 @copilot Use the Unified Security Scanner to triage GitHub security alerts
 ```
 
+## S58 Phase 2 Execution Checkpoint
+
+- ✅ Unified scanner agent spec is active and registered
+- ✅ Consolidated capability matrix covers dependency, secret, and GHAS/CodeQL flows
+- ✅ Decision matrix and risk formula are documented for deterministic triage
+- ✅ Batch scanning protocol is documented for repeatable execution
+
 ## Decision Matrix
 
 | Finding Type | CVSS/Severity | Action |
@@ -191,8 +198,10 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 4
 python scripts/ci/rvs_preflight.py --group quick --workers 6 --batch-size 30
 
 # 4. With structured JSON report for agent analysis
+# Create report directory if needed
+mkdir -p .codex/reports
 python scripts/ci/rvs_preflight.py --group quick --workers 6 \
-    --report /tmp/rvs_report.json
+    --report .codex/reports/rvs_report.json
 
 # 5. Fail-fast triage (stop all batches on first failure)
 python scripts/ci/rvs_preflight.py --group quick --fail-fast --workers 4

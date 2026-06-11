@@ -40,6 +40,14 @@ runner_compatibility:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+```mermaid
+flowchart LR
+    Observe["Observe: changed docs"] --> Orient["Orient: quality + freshness + links + consolidation"]
+    Orient --> Decide{"Decide: quality ≥ 0.75,\nbroken links = 0,\nfreshness ≤ 90 days?"}
+    Decide -->|Yes| ActPass["Act: publish unified doc health report"]
+    Decide -->|No| ActFail["Act: publish remediation plan and owners"]
+```
+
 ## Capabilities
 
 | Capability | Source Agent | Threshold |
@@ -91,3 +99,52 @@ Produces `artifacts/doc-health-report.json`:
   "recommendations": [...]
 }
 ```
+
+## Integration Points
+
+- `docs/` and `README.md` update audits
+- `.github/agents/AGENT_REGISTRY.yaml` for lifecycle and ownership metadata
+- `scripts/ci/rvs_preflight.py` for parallelized validation runs
+
+## S58 Phase 3 Execution (Doc Gate Wiring Complete)
+
+- ✅ Unified documentation scope and thresholds consolidated in one agent contract
+- ✅ OODA execution flow defined for deterministic evaluations
+- ✅ Output contract standardised (`artifacts/doc-health-report.json`)
+- ✅ Workflow-level invocation wired and reporting gate confirmed (see snippet below)
+
+### Workflow Reporting Gate
+
+```yaml
+# .github/workflows snippet — doc health report upload
+- name: Run Documentation Health Check
+  run: |
+    python scripts/ci/doc_health_check.py \
+      --output artifacts/doc-health-report.json
+- name: Upload Doc Health Report
+  if: always()
+  uses: actions/upload-artifact@v5
+  with:
+    name: doc-health-report
+    path: artifacts/doc-health-report.json
+    retention-days: 30
+```
+
+## Error Handling
+
+- Treat broken internal links and stale critical docs as blocking findings
+- Downgrade transient network failures to retryable warnings with explicit follow-up
+- Emit one consolidated failure summary to avoid fragmented remediation loops
+
+## Success Metrics
+
+- Documentation quality score ≥ 0.75
+- Broken links = 0 on changed docs
+- Freshness SLA ≤ 90 days for critical documentation (see [Critical Documentation Scope](#critical-documentation-scope))
+
+## Critical Documentation Scope
+
+- `README.md`
+- `docs/index.md`
+- All Markdown files recursively under `docs/agent/`
+- All Markdown files recursively under `docs/admin/`

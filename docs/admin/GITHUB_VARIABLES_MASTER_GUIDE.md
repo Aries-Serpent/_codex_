@@ -1,10 +1,10 @@
-> **Last synced:** `2026-06-09T07:08:37Z` (auto-sync workflow)
+> **Last synced:** `2026-06-10T07:22:34Z` (auto-sync workflow)
 
 # GitHub Variables & Secrets — Master Reference Guide
 
 > **Version:** 1.7.0 (W-142/S116 phase 3, 2026-03-07)  
 > **Owner:** @mbaetiong  
-> **Status:** ✅ Current — validated snapshot as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)  
+> **Status:** ✅ Current — reflects live state as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)  
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
 > **Auto-synced by:** `repo-var-sync-schedule.yml` (daily 06:00 UTC → `.codex/agent_context.json`)
 
@@ -170,7 +170,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 > variable (see [§7](#7-environment-variables-aries_serpent_codex_)). Node.js version strings are
 > non-sensitive and should be variables, not secrets.  
 > ✅ **Current runtime baseline (2026-06-05):** Node.js `22` is the required active value; older
-> `18`/`20` references in this document are legacy notes for migration context.
+> `18`/`20` references in this document are historical records only.
 
 ---
 
@@ -245,7 +245,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `CODEX_LLM_MODEL` | ✅ | `gpt-4o` | LLM model for agent operations |
 | 8 | `CODEX_LLM_RATE_LIMIT_DELAY` | ✅ | `1.0` | Seconds between LLM requests |
 | 9 | `CODEX_OFFLINE` | ✅ | `1` | Offline mode for CI (`1`=offline) |
-| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (minor pinned, patch floating): pins the minor version while allowing patch updates; runtime resolves to the latest available `3.12.x` patch (not pinned to `3.12.0` or any specific patch) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
+| 10 | `CODEX_PYTHON_VERSION` | ✅ | `3.12` | Python version target (pinned minor, floating patch): resolves to the latest available `3.12.x` patch at runtime (not pinned to `3.12.0` or any specific patch) — aligned with env-level `CODEX_ENV_PYTHON_VERSION`. Issue 2 resolved. |
 | 11 | `CODEX_SANDBOX_TIMEOUT` | ✅ | `60` | Sandbox operation timeout (seconds) |
 | 12 | `CODEX_SESSION_ID` | ✅ | `UUID v4` (auto-set per session) | Current or most-recent logical session identifier. Written by `copilot-setup-steps.yml` on session start. Format: UUID v4 string. |
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
