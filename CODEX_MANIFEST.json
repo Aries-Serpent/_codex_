@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-10T19:15:03Z",
+  "generated_at": "2026-06-11T03:43:35Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -2021,6 +2021,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COPILOT_MCP_TOOL_REFERENCE.md",
       "type": "enforcement"
     },
@@ -2226,5 +2230,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "29bf3399be1fd77e6f28e5c182f57f73d27c82e83249c5a50a2b7bd329f41a8b"
+  "integrity_sha256": "9c703b40fcc14b0f9319b09738354790b2cfcaa8c883618e071069ec55ae30d3"
 }
