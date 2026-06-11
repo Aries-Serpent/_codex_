@@ -1,3 +1,9 @@
+> ⚠️ **DEPRECATED** — This agent has been merged into [`ci-emergency-response-agent`](./ci-emergency-response-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
+---
+
 ---
 name: CI Resilience Emergency Response Agent
 description: Provide emergency resilience fixes for fragile CI/CD configurations and transient failures

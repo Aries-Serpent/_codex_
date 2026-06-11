@@ -1,3 +1,9 @@
+> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-doc-agent`](./unified-doc-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
+---
+
 ---
 name: Documentation Consolidator Agent
 description: Consolidate redundant documentation files, eliminate duplication, and improve overall structure

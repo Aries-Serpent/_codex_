@@ -1,3 +1,9 @@
+> ⚠️ **DEPRECATED** — This agent has been merged into [`unified-coverage-agent`](./unified-coverage-agent.md).
+> All capabilities are available via the unified agent. See [agents/AGENT_CONSOLIDATION_MATRIX.md](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for rationale.
+> **Effective:** 2026-06-11 | **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` § CAD-Mandate
+
+---
+
 ---
 name: Test Coverage Monitor
 description: "DEPRECATED — use unified-coverage-agent instead. Monitors coverage thresholds and enforces CI gate blocking on regressions."
