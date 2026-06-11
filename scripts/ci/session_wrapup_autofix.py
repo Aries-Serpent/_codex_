@@ -1047,7 +1047,7 @@ and the CI gate requirement.
     return True
 
 
-def _accountability_has_agents_used() -> bool:
+def check_req14_agents_used() -> bool:
     if not ACCOUNTABILITY_REPORT.exists():
         return False
     content = ACCOUNTABILITY_REPORT.read_text(encoding="utf-8")
@@ -1059,7 +1059,7 @@ def fix_req14_agents_used(dry_run: bool = False) -> bool:
         print(f"⚠  {ACCOUNTABILITY_REPORT} does not exist — cannot auto-fix.", file=sys.stderr)
         return False
 
-    if _accountability_has_agents_used():
+    if check_req14_agents_used():
         return False
 
     if dry_run:
@@ -1829,7 +1829,7 @@ def auto_fix_all_missing(
     )
 
     # REQ-14
-    req14_ok = _accountability_has_agents_used()
+    req14_ok = check_req14_agents_used()
     if not req14_ok:
         results["req14"] = fix_req14_agents_used(dry_run=dry_run)
     else:
@@ -2231,7 +2231,7 @@ def main(argv: list[str] | None = None) -> int:
             print("⚠  REQ-6: CODEX_MANIFEST.json or .secrets.baseline missing")
 
         # REQ-14
-        req14_ok = _accountability_has_agents_used()
+        req14_ok = check_req14_agents_used()
 
         if not req14_ok:
             print(f"❌ REQ-14: {ACCOUNTABILITY_REPORT.relative_to(REPO_ROOT)} missing Agents Used reference")
@@ -2249,7 +2249,7 @@ def main(argv: list[str] | None = None) -> int:
         fix_mfst = True   # always idempotent — cheap to check
         fix_body = args.pr_number != "unknown"
 
-        req14_ok = _accountability_has_agents_used()
+        req14_ok = check_req14_agents_used()
         fix_req14 = not req14_ok
 
     if not any([fix_acct, fix_cl, fix_mfst, fix_body, fix_req14]):
