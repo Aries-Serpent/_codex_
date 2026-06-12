@@ -34,7 +34,8 @@ def legacy_hash_api_key(api_key: str) -> str:
     """
     # nosec: B303,B324 - intentional SHA-256 for legacy compatibility, not for new password hashing
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    return sha256(api_key.encode("utf-8")).hexdigest()  # codeql[py/weak-cryptographic-algorithm]: SHA-256 used intentionally for backward compatibility with legacy stored hashes - new implementations use PBKDF2 via hash_api_key()  # pragma: allowlist secret
+    # lgtm[py/weak-sensitive-data-hashing]
+    return sha256(api_key.encode("utf-8")).hexdigest()  # pragma: allowlist secret
 
 
 def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:

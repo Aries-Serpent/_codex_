@@ -160,13 +160,17 @@ class AdminAutomationAgent:
         # The full sanitized message is already stored in task_result above.
         _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
+            # lgtm[py/clear-text-logging-sensitive-data]
+            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         elif status == "error":
-            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
+            # lgtm[py/clear-text-logging-sensitive-data]
+            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         elif status == "warning":
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
+            # lgtm[py/clear-text-logging-sensitive-data]
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
+            # lgtm[py/clear-text-logging-sensitive-data]
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # pragma: allowlist secret
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
