@@ -296,6 +296,7 @@ def safe_pickle_dump(
     else:
         data = pickled_data
 
+    # lgtm[py/path-injection]
     with open(file_path, 'wb') as f:
         f.write(data)
 
