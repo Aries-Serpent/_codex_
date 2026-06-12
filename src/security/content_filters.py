@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from ._types import SecurityError, _PROFANITY, sanitize_text  # noqa: F401
+from ._types import _PROFANITY, SecurityError, sanitize_text  # noqa: F401
 
 # Re-export for backward compatibility – callers may do:
 #   from src.security.content_filters import SecurityError

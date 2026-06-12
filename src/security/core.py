@@ -17,7 +17,6 @@ from typing import Any, Literal
 
 from ._types import SecurityError, sanitize_text  # noqa: F401 – re-exported for callers
 
-
 SQL_INJECTION_PATTERNS = [
     re.compile(r";\s*(DROP|DELETE|UPDATE|INSERT|ALTER)\s+", re.IGNORECASE),
     re.compile(r"'\s*OR\s+'", re.IGNORECASE),

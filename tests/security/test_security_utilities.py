@@ -42,8 +42,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load
-from utils.safe_pickle import trusted_pickle_dumps
+from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load, trusted_pickle_dumps
 from utils.safe_torch_loader import safe_load
 
 
