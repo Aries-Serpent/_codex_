@@ -32,10 +32,13 @@ def legacy_hash_api_key(api_key: str) -> str:
     stored hashes. New hashes should use hash_api_key() which uses PBKDF2.
     This is intentionally weak for legacy support only.
     """
-    # Security: intentional SHA-256 for legacy compatibility only, not for new password hashing
+    # Security: intentional SHA-256 for backward-compat lookup of existing stored hashes only.
+    # New hashes always use hash_api_key() (PBKDF2). Legacy hashes are migrated to PBKDF2
+    # on first use via TenantRegistry.get_tenant_by_api_key(). See tenant_context.py.
     # nosec: B303,B324 - legacy support for existing hashes
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    # lgtm[py/weak-sensitive-data-hashing]
+    # codeql[py/weak-sensitive-data-hashing]: intentional legacy SHA-256; PBKDF2 migration
+    # happens on first use in TenantRegistry — see services/msp_gateway/middleware/tenant_context.py
     return sha256(api_key.encode("utf-8")).hexdigest()  # nosec  # pragma: allowlist secret
 
 

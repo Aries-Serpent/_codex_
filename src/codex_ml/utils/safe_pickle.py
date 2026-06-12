@@ -36,6 +36,8 @@ Migration Path:
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import hmac
 import io
@@ -46,7 +48,11 @@ import secrets
 from pathlib import Path
 from typing import Any
 
+from cryptography.fernet import Fernet, InvalidToken
+
 logger = logging.getLogger(__name__)
+
+ENCRYPTED_PICKLE_HEADER = b"SPK2"
 
 SIGNED_PICKLE_MAGIC = b"SPKL"
 SIGNED_PICKLE_VERSION = 1
@@ -189,6 +195,9 @@ def safe_pickle_load_bytes(
     use_restricted_unpickler: bool = True,
     source: str = "<memory>",
 ) -> Any:
+    key = secret_key or _get_secret_key()
+    if data.startswith(ENCRYPTED_PICKLE_HEADER):
+        data = _decrypt_pickle_payload(data, key)
     """Safely load pickle bytes with the same controls as :func:`safe_pickle_load`."""
     if verify_signature:
         key = secret_key or _get_secret_key()
@@ -250,17 +259,18 @@ def safe_pickle_dump(
     # current process. Centralizing the pickle boundary here keeps surrounding
     # checkpoint code on safer abstractions.
     pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
+    key = secret_key or _get_secret_key()
     if add_signature:
-        key = secret_key or _get_secret_key()
         data = _build_signed_pickle(pickled_data, key)
         logger.info("Added HMAC signature to %s", path)
     else:
         data = pickled_data
 
-    # Security: data is HMAC-signed pickled bytes; path is trusted from caller
-    # lgtm[py/clear-text-storage-sensitive-data]
-    path.write_bytes(data)  # nosec  # pragma: allowlist secret
-    logger.debug("Saved pickle to %s (%d bytes)", path, len(data))
+    encrypted_data = _encrypt_pickle_payload(data, key)
+
+    # Security: payload is encrypted (and optionally signed) pickle bytes; path is trusted from caller  # noqa: E501
+    path.write_bytes(encrypted_data)  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
+    logger.debug("Saved pickle to %s (%d bytes)", path, len(encrypted_data))
 
 
 def _get_secret_key() -> bytes:
@@ -284,6 +294,34 @@ def _get_secret_key() -> bytes:
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)
     return new_key
+
+
+def _coerce_fernet_key(secret_key: bytes) -> bytes:
+    """Convert raw secret bytes into a valid Fernet key."""
+    try:
+        decoded = base64.urlsafe_b64decode(secret_key)
+        if len(decoded) == 32:
+            return secret_key
+    except (binascii.Error, ValueError, TypeError):
+        # Input is not a valid urlsafe-base64 Fernet key; derive a stable key below.
+        pass
+    return base64.urlsafe_b64encode(hashlib.sha256(secret_key).digest())
+
+
+def _encrypt_pickle_payload(payload: bytes, secret_key: bytes) -> bytes:
+    """Encrypt payload before storing it at rest."""
+    fernet = Fernet(_coerce_fernet_key(secret_key))
+    return ENCRYPTED_PICKLE_HEADER + fernet.encrypt(payload)
+
+
+def _decrypt_pickle_payload(data: bytes, secret_key: bytes) -> bytes:
+    """Decrypt an encrypted payload produced by _encrypt_pickle_payload."""
+    token = data[len(ENCRYPTED_PICKLE_HEADER) :]
+    fernet = Fernet(_coerce_fernet_key(secret_key))
+    try:
+        return fernet.decrypt(token)
+    except InvalidToken as exc:
+        raise ValueError("Encrypted pickle payload could not be decrypted") from exc
 
 
 def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:

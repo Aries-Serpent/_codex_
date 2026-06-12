@@ -223,7 +223,9 @@ class TenantRegistry:
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
-            api_key_hashes = candidate_api_key_hashes(api_key)
+            # codeql[py/weak-sensitive-data-hashing]: legacy SHA-256 for backward-compat
+            # lookup only; any SHA-256 match is immediately re-hashed to PBKDF2 below.
+            api_key_hashes = candidate_api_key_hashes(api_key)  # (pbkdf2_hash, sha256_hash)
 
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
@@ -238,15 +240,41 @@ class TenantRegistry:
             )
 
             row = cursor.fetchone()
-            conn.close()
 
             if row:
                 tenant_id = row[0]
+                stored_hash = row[2]
+                pbkdf2_hash, legacy_sha256_hash = api_key_hashes
+
+                # Lazy migration: upgrade legacy SHA-256 hash to PBKDF2 on first use.
+                # Reuse the same connection to avoid race conditions and duplicate opens.
+                if stored_hash == legacy_sha256_hash:
+                    try:
+                        cursor.execute(
+                            "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
+                            (pbkdf2_hash, tenant_id),
+                        )
+                        conn.commit()
+                        logger.info(
+                            "Migrated legacy SHA-256 API key hash to PBKDF2 for tenant %s",
+                            sanitize_log_input(tenant_id),
+                        )
+                        stored_hash = pbkdf2_hash
+                    except Exception as exc:
+                        logger.warning(
+                            "Failed to migrate API key hash for tenant %s: %s",
+                            sanitize_log_input(tenant_id),
+                            type(exc).__name__,
+                        )
+
+            conn.close()
+
+            if row:
                 tenant_data = {
                     "tenant_id": tenant_id,
                     "name": row[1],
                     "api_key": None,
-                    "api_key_hash": row[2],
+                    "api_key_hash": stored_hash,
                     "quota": json.loads(row[3]) if row[3] else {},
                     "policies": json.loads(row[4]) if row[4] else [],
                     "metadata": json.loads(row[5]) if row[5] else {},
