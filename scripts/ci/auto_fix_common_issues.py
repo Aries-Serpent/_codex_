@@ -3527,9 +3527,11 @@ class CommonIssueFixer:
 
         Root-cause (first observed: PR #4836/run 27324173148):
         ``detect-secrets`` KeywordDetector flags example credential strings
-        in agent documentation markdown files (e.g. ``password = "hunter2"``  # pragma: allowlist secret
-        in a detection-pattern table, ``API_KEY = "sk-..."``  # pragma: allowlist secret
-        in a Before/After code block). These are documentation, not real secrets.
+        in agent documentation markdown files (e.g. a table row:
+        ``password = "hunter2" <!-- pragma: allowlist secret -->``  # pragma: allowlist secret
+        or a code block line:
+        ``API_KEY = "sk-..."  # pragma: allowlist secret``).  # pragma: allowlist secret
+        These are documentation, not real secrets.
 
         **Detection:** Scan .md files changed in the current diff for lines
         that match common secret patterns AND appear inside a markdown table

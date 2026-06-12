@@ -8,6 +8,9 @@
 - Review follow-up (`discussion_r3400282720`): simplified Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to remove escaped quote/newline sequences and keep readable real line breaks.
 
 ### Fixed (SN)
+- PR #4853 review follow-up (`c21a5f9`): removed duplicate auto-generated session entry in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (lines 14357–14361).
+- PR #4853 review follow-up (`c21a5f9`): updated Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to correctly show `<!-- pragma: allowlist secret -->` for markdown table examples and `# pragma: allowlist secret` for code-block examples, aligning with the described auto-fix behaviour.
+- PR #4853 review follow-up (`c21a5f9`): reformatted minified JSONL entry at line 283 of `.codex/aftermath/pda_iterations.jsonl` to match surrounding spaced style.
 - PR #4853 CI rescue follow-up (`#4687210820`): fixed `yamllint` gate failures in `.github/workflows/resilient_validation.yml` by quoting `'on'`, wrapping long expressions, and normalizing inline-comment spacing.
 - Resilient Validation Suite import fix: changed workflow `PYTHONPATH` from `src` to `.:src` so legacy top-level modules (`cli`, `deploy`, `agents`) resolve before `src/` package shadows during pytest collection.
 - PR #4853 CI rescue follow-up: executed required queue commands from comment `#4687083507` (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) and confirmed all pass.
