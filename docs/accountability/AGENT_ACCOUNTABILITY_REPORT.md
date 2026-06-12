@@ -11,6 +11,9 @@
    - on failure performs `git fetch` + `git rebase origin/$TARGET_BRANCH`,
    - fails with explicit workflow error only after retries are exhausted.
 2. Preserved existing no-op behavior when no staged changes are present.
+3. Follow-up hardening after review validation:
+   - handle `git rebase` failures explicitly by aborting rebase and failing with a clear error message,
+   - clarified retry log wording to cover non-fast-forward and transient push failure modes.
 
 ### Validation / Audit Notes
 - `python -m compileall -q scripts/ci/auto_fix_common_issues.py` ✅

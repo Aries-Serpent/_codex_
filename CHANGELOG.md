@@ -4,6 +4,7 @@
 
 ### Fixed (PR #4863 CI rescue — secrets healer push retry)
 - Hardened `.github/workflows/secrets-false-positive-healer.yml` commit/push step to handle non-fast-forward branch updates: on push rejection, fetch + rebase onto `origin/$TARGET_BRANCH` and retry up to 3 times before failing with an explicit error.
+- Added explicit rebase-failure handling in the same workflow step (`git rebase --abort` + clear error) to avoid retrying in an unresolved rebase state.
 - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with this CI remediation session details for REQ-4 compliance.
 
 ### Fixed (auto-update — PR #4863)
