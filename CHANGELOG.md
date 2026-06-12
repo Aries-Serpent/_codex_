@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4861)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4861 (SHA `309ebd24`) at 2026-06-12T18:31Z [auto-generated]
+
 ### Fixed (SN — `_PREEXISTING_FAILURES` batch continuation 2026-06-12T18:10Z)
 - Cleared the next stale `_PREEXISTING_FAILURES` batch in `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/tests/conftest.py` by retiring now-valid entries for status-gate, sentencepiece prefix handling, train-loop timestamp coverage, system-metrics logger coverage, event integration fallback, CLI help behaviour, inference-serving detector coverage, LoRA config coverage, and tokenization compat coverage.
 - Fixed `src/codex_ml/training/event_integration.py` to import event primitives and cloud publishers from `codex_ml.events.*`, restoring the local EventBus fallback path used by training event tests.
