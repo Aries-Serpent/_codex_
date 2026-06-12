@@ -14,6 +14,9 @@
 3. Follow-up hardening after review validation:
    - handle `git rebase` failures explicitly by aborting rebase and failing with a clear error message,
    - clarified retry log wording to cover non-fast-forward and transient push failure modes.
+4. Final workflow hardening update:
+   - replaced loop `exit 0` with loop `break` + explicit `pushed` state check,
+   - added explicit `git fetch` failure handling to emit a dedicated fetch error before rebase.
 
 ### Validation / Audit Notes
 - `python -m compileall -q scripts/ci/auto_fix_common_issues.py` ✅
