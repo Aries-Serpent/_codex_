@@ -176,3 +176,11 @@
 - MEDIUM (6 findings): 2-4 hours (logging sanitization fixes + tests)
 - LOW (59 findings): 8-12 hours (correctness refactors and cleanup)
 - Total estimated effort: **20-30 hours** in phased batches
+
+## Implementation Status — 2026-06-12
+
+- **Status:** Bulk remediation executed for the scoped source files targeted in this session.
+- **Security lanes completed:** `py/clear-text-logging-sensitive-data`, `py/clear-text-storage-sensitive-data`, and `py/log-injection` were remediated across the scoped workflow/auth/security/runtime files by replacing raw secret logging/storage with hashed or sanitized representations and by sanitizing user-controlled log values.
+- **Quality lanes completed:** targeted `py/cyclic-import`, `py/pythagorean`, `py/overwritten-inherited-attribute`, and selected `py/uninitialized-local-variable` / `py/unused-global-variable` findings were remediated in the scoped `src/security/*`, `agents/physics_orchestrator.py`, deployment test, and selected test files.
+- **Representative touched files:** `scripts/catalog_workflows.py`, `scripts/github_secrets_sync.py`, `src/security/providers/github_provider.py`, `cognitive_app/src/server/cli_api_server.py`, `services/msp_gateway/security.py`, `src/security/core.py`, `src/security/content_filters.py`, `agents/physics_orchestrator.py`, `tests/agents/test_phase2_deep_coverage_batch9.py`, `tests/capabilities/deployment/test_deployment_comprehensive.py`.
+- **Validation basis:** each remediation lane reported targeted compile/runtime or scoped test validation; no additional main-agent lint/build/test rerun was performed on custom-agent changes.

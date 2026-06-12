@@ -61,3 +61,11 @@
 3. Keep bulky generated/vendor directories out of ad-hoc scans where policy allows, while preserving CI baseline enforcement.
 4. For any true secret, rotate immediately, purge from history if policy-approved, and add detector-specific tests.
 5. Regenerate `.secrets.baseline` only after triage to avoid masking regressions.
+
+## Implementation Status — 2026-06-12
+
+- **Status:** Scoped source-path triage executed for the requested high-signal files.
+- **Touched files:** `scripts/pr3248_agent_task_spec.py`, `scripts/pr3248_mcp_collection_helper.py`, `scripts/populate_pr3248_checks.py`, `scripts/pr3248_comprehensive_collector.py`, `scripts/process_workflow_runs.py`, `.github/agents/scripts/validate_patterns.py`.
+- **Outcome:** no true secrets were found in the scoped source files; only verified false positives were retained, and each was handled with exact-line allowlist pragmas.
+- **Targeted validation:** the scoped secret-detection lane reported a clean targeted secret scan after the allowlist adjustments.
+- **Baseline handling:** no `.secrets.baseline` content change was required for this scoped source-path remediation because the targeted files were made clean without introducing new baseline entries.

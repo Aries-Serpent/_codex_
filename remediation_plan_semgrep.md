@@ -115,3 +115,11 @@
 | 85 | WARNING | `python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1` | `src/codex/session/accountability_autoupdate.py` | 206 | Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead. |
 | 86 | WARNING | `python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1` | `src/codex_bridge/github_client.py` | 52 | Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead. |
 | 87 | WARNING | `python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1` | `src/codex_ml/data/splits.py` | 27 | Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead. |
+
+## Implementation Status — 2026-06-12
+
+- **Status:** Bulk remediation executed for the scoped Semgrep source files targeted in this session.
+- **Completed rule families:** `python-logger-credential-disclosure`, `dynamic-urllib-use-detected`, `use-defused-xml`, `dangerous-subprocess-use-tainted-env-args`, `exec-detected`, `insecure-file-permissions`, `avoid-pickle`, and the scoped MD5/SHA1 weak-hash findings.
+- **Representative touched files:** `.github/agents/codex_reviewer/github_client.py`, `.github/copilot-cascade/mcp_server.py`, `src/codex/auth/github_app.py`, `src/codex/github/mcp_poster.py`, `src/codex/dynamics/solution_xml.py`, `tests/test_container_smoke.py`, `src/codex_ml/plugins/registry.py`, `src/codex_ml/utils/checkpoint_core.py`, `src/codex_ml/utils/checkpointing.py`, `src/codex_ml/utils/safe_pickle.py`, `src/codex/session/accountability_autoupdate.py`, `src/codex_bridge/github_client.py`, `src/codex_ml/data/splits.py`.
+- **Scoped test updates completed:** checkpoint/security/hash tests were updated where required to follow the safer serialization and SHA-256-based deterministic identifier paths.
+- **Validation basis:** remediation lanes reported targeted `compileall`/`py_compile` checks plus scoped pytest coverage for the serialization and weak-hash changes.
