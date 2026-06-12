@@ -1,3 +1,40 @@
+## SESSION SUMMARY — 2026-06-12T18:10Z · `_PREEXISTING_FAILURES` batch continuation
+
+### Pre-flight Checklist
+- [x] Loaded mandatory session context (AGENTIC_REPO_STATE, CODEBASE_AGENCY_POLICY, accountability state, PDA state, agent_context) ✅
+- [x] Triaged the next `_PREEXISTING_FAILURES` batch with custom-agent support and spot-checked highest-confidence removals ✅
+- [x] Re-ran available in-session validation before/after edits (`mypy_baseline` pass; `pytest`/`ruff` unavailable in PATH) ✅
+
+### Work Completed
+1. Retired 10 stale `_PREEXISTING_FAILURES` entries from `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/tests/conftest.py` covering:
+   - status gate threshold handling
+   - sentencepiece model-prefix setter
+   - train-loop timestamp formatting
+   - system-metrics logger coverage
+   - training event integration fallback
+   - Codex ML CLI help behaviour
+   - inference-serving detector expectations
+   - LoRA config coverage
+   - tokenization compat warning/forwarding coverage
+2. Fixed `src/codex_ml/training/event_integration.py` import paths to use `codex_ml.events.base`, `codex_ml.events.azure_events`, and `codex_ml.events.aws_events`, restoring the local EventBus fallback path instead of importing a removed `codex_ml.training.base` module.
+3. Updated stale tests to current code paths/interfaces in:
+   - `tests/monitoring/test_system_metrics.py`
+   - `tests/test_train_loop.py`
+   - `tests/test_codexml_cli.py`
+   - `tests/specs/test_detector_inference_serving.py`
+   - `tests/test_modeling_module.py`
+   - `tests/tokenization/test_tokenization_compat.py`
+
+### Agents Used
+- `test-alignment-fixer` (candidate batch selection)
+- `ci-testing-agent` (targeted `_PREEXISTING_FAILURES` verification and fix prioritisation)
+
+### Validation / Audit Notes
+- `python3 -m py_compile src/codex_ml/training/event_integration.py tests/monitoring/test_system_metrics.py tests/test_train_loop.py tests/test_codexml_cli.py tests/specs/test_detector_inference_serving.py tests/test_modeling_module.py tests/tokenization/test_tokenization_compat.py tests/conftest.py tests/status/test_status_gate_from_statusrc.py tests/tokenization/test_sentencepiece_adapter_prefix.py` ✅
+- `python3 - <<'PY' ...` source smoke check for `TrainingEventEmitter`, `train_loop._now_ts()`, `cli(['--help'])`, and `detect(...)` ✅
+- `python3 scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `pytest` / `ruff` executables were not available in this sandbox PATH, so no direct pytest/ruff rerun was possible in-session.
+
 ## SESSION SUMMARY — 2026-06-12T17:39Z · remediation-plan implementation (critical guard fix)
 
 ### Pre-flight Checklist

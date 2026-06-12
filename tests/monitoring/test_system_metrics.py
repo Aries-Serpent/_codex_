@@ -6,6 +6,7 @@ Test module for system metrics.
 
 from __future__ import annotations
 
+import time
 import types
 
 from codex_ml.monitoring import system_metrics as sm
@@ -20,26 +21,47 @@ class _Writer:
 
 
 def test_system_metrics_logger_with_writer(monkeypatch) -> None:
-    class _Psutil:
-        @staticmethod
-        def cpu_percent() -> float:
-            return 12.5
+    captured: list[tuple[object, dict[str, object]]] = []
 
-        @staticmethod
-        def virtual_memory() -> types.SimpleNamespace:
-            return types.SimpleNamespace(percent=64.0)
+    monkeypatch.setattr(
+        sm,
+        "_ensure_sampler_dependencies",
+        lambda *args, **kwargs: sm.SamplerStatus(
+            cpu_enabled=True,
+            degraded=False,
+            gpu_enabled=False,
+        ),
+    )
+    monkeypatch.setattr(
+        sm,
+        "sample_system_metrics",
+        lambda: {"cpu_percent": 12.5, "memory": types.SimpleNamespace(percent=64.0)},
+    )
+    monkeypatch.setattr(sm, "_write_record", lambda path, record: captured.append((path, record)))
 
-    monkeypatch.setattr(sm, "_PSUTIL", _Psutil)
-    logger = sm.SystemMetricsLogger(log_interval=0.0)
-    writer = _Writer()
-    logger.log(step=5, writer=writer)
-    assert writer.values
-    assert writer.values[0][0].startswith("system/")
+    logger = sm.SystemMetricsLogger(path="metrics.jsonl", interval=0.1)
+    logger.start()
+    time.sleep(0.02)
+    logger.stop()
+
+    assert captured
+    assert captured[0][0] == logger._path
+    assert captured[0][1]["cpu_percent"] == 12.5
 
 
 def test_system_metrics_logger_without_psutil(monkeypatch, capsys) -> None:
-    monkeypatch.setattr(sm, "_PSUTIL", None)
-    logger = sm.SystemMetricsLogger(log_interval=0.0)
-    logger.log(step=1)
+    monkeypatch.setattr(
+        sm,
+        "_ensure_sampler_dependencies",
+        lambda *args, **kwargs: sm.SamplerStatus(
+            cpu_enabled=False,
+            degraded=True,
+            gpu_enabled=False,
+            missing_dependencies=("psutil",),
+        ),
+    )
+    logger = sm.SystemMetricsLogger(path="metrics.jsonl", interval=0.1)
+    logger.start()
     captured = capsys.readouterr()
+    assert logger._thread is None
     assert captured.out == ""

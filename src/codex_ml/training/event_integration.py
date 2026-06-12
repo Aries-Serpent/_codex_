@@ -6,7 +6,7 @@ import logging
 import os
 from typing import Any, Optional
 
-from .base import Event, EventBus, EventPublisher, EventType
+from codex_ml.events.base import Event, EventBus, EventPublisher, EventType
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class TrainingEventEmitter:
         # Try Azure Event Grid first
         if os.getenv("AZURE_EVENT_GRID_ENDPOINT"):
             try:
-                from .azure_events import AzureEventPublisher
+                from codex_ml.events.azure_events import AzureEventPublisher
 
                 logger.info("Using Azure Event Grid publisher")
                 return AzureEventPublisher()
@@ -45,7 +45,7 @@ class TrainingEventEmitter:
         # Try AWS EventBridge
         if os.getenv("AWS_EVENT_BUS_NAME"):
             try:
-                from .aws_events import AWSEventPublisher
+                from codex_ml.events.aws_events import AWSEventPublisher
 
                 logger.info("Using AWS EventBridge publisher")
                 return AWSEventPublisher()
