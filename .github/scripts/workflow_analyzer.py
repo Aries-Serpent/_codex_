@@ -4,6 +4,7 @@ Comprehensive GitHub Actions Workflow Analyzer
 Analyzes all workflows in .github/workflows/ and cross-references with CI failure reports.
 """
 
+import hashlib
 import json
 import re
 from collections import defaultdict
@@ -73,7 +74,7 @@ class WorkflowAnalyzer:
                 'guarded': is_guarded,
                 'triggers': self._extract_triggers(workflow_data),
                 'jobs': self._extract_jobs(workflow_data),
-                'secrets': self._extract_secrets(content),
+                'secrets': [hashlib.sha256(s.encode()).hexdigest()[:16] for s in self._extract_secrets(content)],
                 'env_vars': self._extract_env_vars(workflow_data),
                 'runners': self._extract_runners(workflow_data),
                 'actions_used': self._extract_actions(workflow_data),
