@@ -117,6 +117,7 @@ jobs:
         id: validate
         env:
           IS_PROMOTION_PR: ${{ github.base_ref == 'main' && github.head_ref == '0D_base_' && 'true' || 'false' }}
+          PYTHONPATH: src
         run: |
           # For non-promotion PRs, limit quick tests to files changed in this PR
           # (max 60 min budget) and skip integration/slow groups entirely.
@@ -127,13 +128,16 @@ jobs:
             if [ -n "$CHANGED_FILES" ]; then
               echo "Running scoped quick tests on changed paths..."
               python -m pytest $CHANGED_FILES -v -m "not slow and not integration" \
+                --import-mode=importlib \
                 --timeout=55 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q \
                 || python -m pytest tests/ -v -m "not slow and not integration" \
+                     --import-mode=importlib \
                      --timeout=55 --tb=short --maxfail=20 \
                      --cov=src --cov-report=xml --cov-report=json -q
             else
               python -m pytest tests/ -v -m "not slow and not integration" \
+                --import-mode=importlib \
                 --timeout=55 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q
             fi
@@ -144,7 +148,8 @@ jobs:
             quick)
               # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
               # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20 \
+              python -m pytest tests/ -v -m "not slow and not integration" \
+                --import-mode=importlib --timeout=60 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q
               ;;
             documentation)
@@ -161,11 +166,13 @@ jobs:
             integration)
               # Integration tests: 300s timeout, SEQUENTIAL execution (PR #3248 Attempt 15)
               # Removed -n 2 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short --maxfail=10
+              python -m pytest tests/ -v -m "integration and not slow" \
+                --import-mode=importlib --timeout=300 --tb=short --maxfail=10
               ;;
             slow)
               # Slow tests: 600s timeout, sequential execution, fail after 5 failures
-              python -m pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
+              python -m pytest tests/ -v -m "slow" \
+                --import-mode=importlib --timeout=600 --maxfail=5 --tb=short
               ;;
           esac
 
@@ -267,6 +274,8 @@ jobs:
 
       - name: Run sharded quick tests
         id: shard-run
+        env:
+          PYTHONPATH: src
         run: |
           # DRQ-S105-001: Disable pytest-rerunfailures in sharded runs.
           # pytest-rerunfailures starts a background server socket thread; pytest-timeout
@@ -278,6 +287,7 @@ jobs:
           # least_duration correctly instead of falling back to count-based splitting.
           python -m pytest tests/ \
             -m "not slow and not integration" \
+            --import-mode=importlib \
             --timeout=60 \
             --tb=short \
             --maxfail=20 \

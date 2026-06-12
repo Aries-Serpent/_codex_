@@ -4,6 +4,8 @@
 
 ### Fixed (auto-update — PR #4853)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4853 (SHA `a85a96a5`) at 2026-06-12T02:17Z [auto-generated]
+- Resilient Validation Suite hardening: added `PYTHONPATH=src` and `--import-mode=importlib` to quick/sharded pytest commands in `.github/workflows/resilient_validation.yml` to prevent module/import-file-mismatch collection failures.
+- Review follow-up (`discussion_r3400282720`): simplified Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to remove escaped quote/newline sequences and keep readable real line breaks.
 
 ### Fixed (SN)
 - Resolved PR #4849 merge conflicts while merging `origin/0D_base_` into `copilot/fix-review-comments`.
