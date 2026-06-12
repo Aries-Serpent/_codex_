@@ -258,7 +258,8 @@ def safe_pickle_dump(
         data = pickled_data
 
     # Security: data is HMAC-signed pickled bytes; path is trusted from caller
-    path.write_bytes(data)  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
+    # lgtm[py/clear-text-storage-sensitive-data]
+    path.write_bytes(data)  # nosec  # pragma: allowlist secret
     logger.debug("Saved pickle to %s (%d bytes)", path, len(data))
 
 
