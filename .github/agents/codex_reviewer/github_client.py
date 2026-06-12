@@ -167,7 +167,7 @@ class GitHubAPIClient:
 
         for attempt in range(self.config.max_retries):
             try:
-                with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+                with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
                     request, timeout=self.config.timeout
                 ) as response:
                     return json.loads(response.read().decode('utf-8'))
@@ -239,7 +239,7 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
                 request, timeout=self.config.timeout
             ) as response:
                 return json.loads(response.read().decode('utf-8'))
@@ -266,7 +266,7 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
                 request, timeout=self.config.timeout
             ) as response:
                 return json.loads(response.read().decode('utf-8'))
@@ -294,7 +294,7 @@ class GitHubAPIClient:
                 return response.text
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
                 request, timeout=self.config.timeout
             ) as response:
                 return response.read().decode('utf-8')
