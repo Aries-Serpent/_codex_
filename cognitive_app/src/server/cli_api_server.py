@@ -1444,7 +1444,13 @@ async def api_proxy(req: ApiProxyRequest):
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log server-side, return generic message.
         safe_host = (_urlparse(safe_url).hostname or "").lower()
-        log.warning("api_proxy %s host=%s failed (%s)", method, safe_host, type(exc).__name__)
+        # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
+        log.warning(
+            "api_proxy %s host=%s failed (%s)",
+            _sanitize_log_value(method),
+            _sanitize_log_value(safe_host),
+            type(exc).__name__,
+        )
         raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
     duration_ms = (time.monotonic() - t0) * 1000
@@ -1455,11 +1461,15 @@ async def api_proxy(req: ApiProxyRequest):
     except Exception:
         body = resp.text
 
-    # CodeQL py/log-injection: use lazy formatting so tainted URL is not interpolated
-    # into the message template; %s arguments are routed via the logging
-    # framework which CodeQL recognises as safe.
+    # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
     safe_host = (_urlparse(safe_url).hostname or "").lower()
-    log.info("api_proxy %s host=%s -> %s (%.0fms)", method, safe_host, resp.status_code, duration_ms)
+    log.info(
+        "api_proxy %s host=%s -> %s (%.0fms)",
+        _sanitize_log_value(method),
+        _sanitize_log_value(safe_host),
+        resp.status_code,
+        duration_ms,
+    )
     return {
         "status_code": resp.status_code,
         "headers":     dict(resp.headers),
