@@ -34,6 +34,8 @@ import numpy as np
 
 import torch
 
+from codex_ml.utils.safe_pickle import safe_pickle_load
+
 
 class TestTrainingEdgeCases:
     """Edge case tests for training pipeline"""
@@ -536,10 +538,7 @@ class TestDataLoadingEdgeCases:
 
         try:
             with pytest.raises((pickle.UnpicklingError, EOFError)):
-                with open(corrupted_file, 'rb') as f:
-                    # nosec B301 - Test code validating error handling of corrupted pickle files
-                    # nosemgrep: semgrep_rules.py-pickle-load
-                    pickle.load(f)
+                safe_pickle_load(corrupted_file, use_restricted_unpickler=True)
         finally:
             import os
             os.unlink(corrupted_file)

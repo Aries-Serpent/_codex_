@@ -43,6 +43,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load
+from utils.safe_pickle import trusted_pickle_dumps
 from utils.safe_torch_loader import safe_load
 
 
@@ -100,9 +101,7 @@ class TestSafePickle:
 
         with tempfile.NamedTemporaryFile(delete=False) as f:
             temp_path = f.name
-            # nosec B301 - Test fixture: creating known-safe pickle for testing
-            # nosemgrep: semgrep_rules.py-pickle-dump
-            pickle.dump(data, f)
+            f.write(trusted_pickle_dumps(data))
 
         try:
             loaded = safe_pickle_load(temp_path, use_restricted_unpickler=False)
@@ -118,9 +117,7 @@ class TestSafePickle:
         safe_data = {'int': 42, 'str': 'hello', 'list': [1, 2, 3]}
 
         buffer = io.BytesIO()
-        # nosec B301 - Test fixture: creating known-safe pickle for testing
-        # nosemgrep: semgrep_rules.py-pickle-dump
-        pickle.dump(safe_data, buffer)
+        buffer.write(trusted_pickle_dumps(safe_data))
         buffer.seek(0)
 
         unpickler = RestrictedUnpickler(buffer)
@@ -142,9 +139,7 @@ class TestSafePickle:
         unsafe_obj = UnsafeClass()
 
         buffer = io.BytesIO()
-        # nosec B301 - Test fixture: creating unsafe pickle to validate blocking
-        # nosemgrep: semgrep_rules.py-pickle-dump
-        pickle.dump(unsafe_obj, buffer)
+        buffer.write(trusted_pickle_dumps(unsafe_obj))
         buffer.seek(0)
 
         unpickler = RestrictedUnpickler(buffer)
@@ -165,9 +160,7 @@ class TestSafePickle:
 
             with tempfile.NamedTemporaryFile(delete=False) as f:
                 temp_path = f.name
-                # nosec B301 - Test fixture: creating known-safe pickle for testing
-                # nosemgrep: semgrep_rules.py-pickle-dump
-                pickle.dump(data, f)
+                f.write(trusted_pickle_dumps(data))
 
             try:
                 loaded = safe_pickle_load(temp_path, use_restricted_unpickler=True)

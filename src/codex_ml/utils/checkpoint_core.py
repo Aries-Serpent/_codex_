@@ -21,7 +21,6 @@ import hashlib
 import io
 import json
 import logging
-import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
 import re
@@ -58,6 +57,7 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
+from .safe_pickle import safe_pickle_load_bytes, trusted_pickle_dumps  # noqa: E402
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
@@ -365,17 +365,9 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
             torch_save(state, buf)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            buf.seek(0)
-            buf.truncate(0)
-            # SECURITY: pickle.dump used ONLY for ML checkpoint state from local trusted paths.
-            # This state was created by the current process and contains model weights/optimizer state.
-            # Alternative: Use torch.save or safetensors for production checkpoints.
-            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+            return trusted_pickle_dumps(state)
     else:
-        # SECURITY: pickle.dump used ONLY for ML checkpoint state from local trusted paths.
-        # This state was created by the current process and contains model weights/optimizer state.
-        # Alternative: Use torch.save or safetensors for production checkpoints.
-        pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+        return trusted_pickle_dumps(state)
     return buf.getvalue()
 
 
@@ -426,12 +418,8 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             hasher.update(tensor.numpy().tobytes())
             return
 
-        # Fallback: rely on pickle for custom objects (deterministic for stable reprs)
-        # SECURITY: pickle.dumps used ONLY for deterministic hashing of metadata payloads
-        # created by the current process. This is NOT deserialized from external sources.
-        # The pickled bytes are only used for hash computation, never unpickled.
         hasher.update(b"pickle")
-        hasher.update(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+        hasher.update(trusted_pickle_dumps(value))
 
     _update(payload)
     return hasher.digest()
@@ -482,14 +470,7 @@ def _deserialize_payload(
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
-    # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
-
-    # safe_pickle_load expects a file path or file object, but we have bytes
-    # We need to use the RestrictedUnpickler directly with the buffer
-    buf.seek(0)
-    from codex_ml.utils.safe_pickle import RestrictedUnpickler
-
-    return RestrictedUnpickler(buf).load()
+    return safe_pickle_load_bytes(buf.getvalue(), use_restricted_unpickler=True)
 
 
 _CKPT_COUNTER = count()

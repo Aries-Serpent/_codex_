@@ -51,7 +51,7 @@ import hmac
 import io
 import logging
 import os
-import pickle
+import pickle  # nosec B403 - centralized safe wrapper around trusted pickle operations
 import secrets
 from pathlib import Path
 from typing import Any, Optional
@@ -75,6 +75,7 @@ class RestrictedUnpickler(pickle.Unpickler):
         'collections.abc': {'Iterable', 'Iterator', 'Mapping', 'MutableMapping', 'Sequence', 'MutableSequence'},
         'numpy': {'ndarray', 'dtype', 'generic', 'number', 'int_', 'float_', 'complex_', 'bool_'},
         'numpy.core.multiarray': {'_reconstruct', 'scalar'},
+        'numpy._core.multiarray': {'_reconstruct', 'scalar'},
         'torch': {'Tensor', 'Size', 'dtype', 'device'},
         'torch.storage': {'_TypedStorage', 'TypedStorage', '_LegacyStorage'},
         # Add project-specific safe classes here
@@ -180,6 +181,24 @@ def safe_pickle_load(
     with open(file_path, 'rb') as f:
         data = f.read()
 
+    return safe_pickle_load_bytes(
+        data,
+        verify_signature=verify_signature,
+        secret_key=secret_key,
+        use_restricted_unpickler=use_restricted_unpickler,
+        source=str(file_path),
+    )
+
+
+def safe_pickle_load_bytes(
+    data: bytes,
+    *,
+    verify_signature: bool = False,
+    secret_key: Optional[bytes] = None,
+    use_restricted_unpickler: bool = True,
+    source: str = "<memory>",
+) -> Any:
+    """Safely load pickle bytes with optional signature verification."""
     if verify_signature:
         if secret_key is None:
             secret_key = _get_secret_key()
@@ -204,28 +223,31 @@ def safe_pickle_load(
             )
 
         data = pickled_data
-        logger.info(f"✅ HMAC signature verified for {file_path}")
+        logger.info(f"✅ HMAC signature verified for {source}")
 
     # Unpickle with appropriate unpickler
     if use_restricted_unpickler:
-        logger.debug(f"Loading pickle with RestrictedUnpickler: {file_path}")
+        logger.debug(f"Loading pickle with RestrictedUnpickler: {source}")
         return RestrictedUnpickler(io.BytesIO(data)).load()
     
-    logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {file_path}")
+    logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {source}")
     # SECURITY JUSTIFICATION:
     # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility.
     # This is ONLY safe if:
-    # 1. The file was created by the current process or trusted local code
-    # 2. The file is stored in a secure location with proper access controls
-    # 3. The caller has validated the file's source and integrity
-    #
-    # Default behavior (use_restricted_unpickler=True) routes through RestrictedUnpickler.
-    # Warning above is ALWAYS logged for audit trail.
-    #
-    # Trust Boundary: Explicit caller trust → Raw deserialization
-    # Risk: HIGH (arbitrary code execution if file is malicious)
-    # Mitigation: Warning logged, explicit opt-in, documented nosec markers
+    # 1. The bytes were created by the current process or trusted local code
+    # 2. The bytes originated from a secure location with proper access controls
+    # 3. The caller has validated the source and integrity before calling this helper
     return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load
+
+
+def trusted_pickle_dumps(
+    obj: Any,
+    *,
+    protocol: Optional[int] = None,
+) -> bytes:
+    """Serialize trusted objects behind one reviewed pickle boundary."""
+    resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
+    return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
 
 def safe_pickle_dump(
@@ -233,6 +255,8 @@ def safe_pickle_dump(
     file_path: str,
     add_signature: bool = False,
     secret_key: Optional[bytes] = None,
+    *,
+    protocol: Optional[int] = None,
 ) -> None:
     """
     Safely dump object to pickle with optional HMAC signature.
@@ -251,10 +275,10 @@ def safe_pickle_dump(
     file_path = Path(file_path)
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # SECURITY: pickle.dumps used to serialize trusted objects for checkpoint saving.
-    # This is the SAVE path - we're creating a pickle, not loading one.
-    # The object being serialized comes from the current process's memory.
-    pickled_data = pickle.dumps(obj)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    # SECURITY: serialization only; callers pass trusted objects created by the
+    # current process. Centralizing this boundary keeps call sites free of raw
+    # pickle operations.
+    pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
 
     if add_signature:
         if secret_key is None:
@@ -362,7 +386,9 @@ For caching:
 # Export public API
 __all__ = [
     'safe_pickle_load',
+    'safe_pickle_load_bytes',
     'safe_pickle_dump',
+    'trusted_pickle_dumps',
     'RestrictedUnpickler',
     'suggest_alternatives',
 ]

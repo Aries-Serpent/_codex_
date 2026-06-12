@@ -18,7 +18,6 @@ import inspect
 import io
 import json
 import logging
-import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 import platform
 import random
 import shutil
@@ -51,6 +50,7 @@ from codex_ml.utils.seeding import (
     set_reproducible,  # after optional imports
 )
 
+from .safe_pickle import safe_pickle_dump, safe_pickle_load
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 from .storage import StorageProvider
 from codex_ml.utils.seed_registry import (  # DR-001: breaks seeding↔checkpointing cycle
@@ -297,19 +297,13 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
     Risk: LOW (trusted source, controlled destination)
     """
     try:
-        with path.open("wb") as fh:
-            # nosec B301 - Trusted local checkpoint state from current process
-            # nosemgrep: semgrep_rules.py-pickle-dump
-            pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+        safe_pickle_dump(dict(payload), str(path))
     except TypeError as e:
         if "issubclass() arg 2 must be a class" in str(
             e
         ) or "isinstance() arg 2 must be a type" in str(e):
-            with path.open("wb") as fh:
-                # nosec B301 - Trusted local checkpoint state from current process
-                # nosemgrep: semgrep_rules.py-pickle-dump
-                # Use protocol 2 for compatibility with older Python versions
-                pickle.dump(dict(payload), fh, protocol=2)
+            # Use protocol 2 for compatibility with older Python versions.
+            safe_pickle_dump(dict(payload), str(path), protocol=2)
         else:
             raise
 
@@ -391,8 +385,6 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        from codex_ml.utils.safe_pickle import safe_pickle_load
-
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
