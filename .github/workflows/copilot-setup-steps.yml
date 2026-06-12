@@ -193,13 +193,18 @@ jobs:
       #
       # Session preload is intentionally guarded/non-blocking; Session Access Probe
       # remains the first mandatory startup step after this best-effort preload.
+      # Below is the RECENT FAILING CODE NOW COMMENTED OUT and replaced with the below previous that was working despite its possible incorrectness
+      # - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+      #  continue-on-error: true   # non-blocking: agent must start even if preload fails
+      #  run: |
+      #    python3 .github/scripts/session_preload.py || {
+      #      echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"   
       # Below is the previous code that DID NOT cause a fast fail despite its possible incorrectness
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: |
-          python3 .github/scripts/session_preload.py || {
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          }
+        continue-on-error: true   # non-blocking: agent must start even if preload fails          
+        run: python3 .github/scripts/session_preload.py || {
+          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+        }        
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
