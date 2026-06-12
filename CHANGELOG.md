@@ -9,6 +9,7 @@
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4848 (SHA `188d45af`) at 2026-06-11T23:23Z [auto-generated]
 
 ### Fixed (SN)
+- CI validation hardening: excluded `.venv_validation` from Pattern 34 newline scanning in `scripts/ci/auto_fix_common_issues.py` to prevent false failures from generated virtualenv files.
 - CI/CD Maturity: added `cache: "pip"` to uncovered Python workflows (`dependabot-preflight.yml`, `secrets-false-positive-healer.yml`)
 - Reliability: created `.github/workflows/self-healing.yml` stub using current `actions/checkout` version
 - Node.js action runtime hygiene: verified no deprecated refs using Pattern 21
@@ -9412,4 +9413,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Diagnosed root cause of persistent Copilot setup steps parse error: `main` branch `copilot-setup-steps.yml` has 7-space indent on Session Context Pre-load step instead of 6-space, causing Go yaml.v3 parse failure (`yaml: line 124: did not find expected '-' indicator`). Fix already present in `0D_base_` and PR branch; will propagate on merge.
 - Confirmed all 12 review threads resolved in commit `fa34bc2`.
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5).
-
