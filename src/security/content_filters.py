@@ -4,11 +4,21 @@ from __future__ import annotations
 
 import re
 
+from ._types import SecurityError, _PROFANITY, sanitize_text  # noqa: F401
 
-class SecurityError(ValueError):
-    """Raised when security validation fails."""
+# Re-export for backward compatibility – callers may do:
+#   from src.security.content_filters import SecurityError
+#   from src.security.content_filters import sanitize_text
+__all__ = [
+    "SecurityError",
+    "_PROFANITY",
+    "sanitize_text",
+    "detect_profanity",
+    "detect_personal_data",
+    "detect_malware_patterns",
+    "enforce_content_policies",
+]
 
-_PROFANITY = {"foo", "barf", "bazinga", "dang"}
 _PII_PATTERNS = [
     re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),  # SSN
     re.compile(r"\b\d{4} \d{4} \d{4} \d{4}\b"),  # Credit card (simplified)
@@ -19,13 +29,6 @@ _MALWARE_PATTERNS = [
     re.compile(r"curl\s+http[s]?://[\w./-]+\s*-o\s+/tmp/\w+", re.I),
     re.compile(r"rm\s+-rf\s+/", re.I),
 ]
-
-
-def sanitize_text(text: str) -> str:
-    sanitized = text
-    for word in _PROFANITY:
-        sanitized = re.sub(re.escape(word), "[REDACTED]", sanitized, flags=re.I)
-    return sanitized
 
 
 def detect_profanity(text: str) -> bool:

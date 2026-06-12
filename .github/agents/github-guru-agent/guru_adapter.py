@@ -392,7 +392,7 @@ class GitHubGuruAdapter(Planner):
                 },
                 method="POST",
             )
-            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is allowlisted by _validated_github_api_url()
+            with urllib.request.urlopen(  # nosec B310 -- URL is allowlisted by _validated_github_api_url() (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is allowlisted by _validated_github_api_url()
                 req, timeout=15
             ) as resp:
                 data = json.loads(resp.read())

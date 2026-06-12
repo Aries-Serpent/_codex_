@@ -20,7 +20,7 @@ def _get(url: str):
     parts = urlsplit(url)
     if parts.scheme != "http" or parts.hostname != "localhost" or parts.port != 8010:
         raise ValueError(f"unexpected smoke-test URL: {url!r}")
-    with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is constrained to localhost:8010 above
+    with urllib.request.urlopen(  # nosec B310 -- test-only controlled URL; scheme/host/port constrained to http://localhost:8010 above  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is constrained to localhost:8010 above
         url, timeout=5
     ) as r:
         return json.loads(r.read().decode("utf-8"))

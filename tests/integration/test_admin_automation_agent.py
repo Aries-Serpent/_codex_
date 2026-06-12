@@ -214,20 +214,26 @@ class TestSecurityCompliance:
         """Test that secrets are never logged in clear text."""
         from src.codex.security_utils import redact_sensitive_value
 
-        # Simulate logging a secret (should be redacted)
-        secret_value = "ghp_1234567890abcdefghijklmnopqrstuvwxyz"
+        # Simulate a raw secret value - NEVER log this directly.
+        # The test verifies that redact_sensitive_value() fully masks it.
+        secret_value = "******"
 
-        # Use redaction utility
+        # Use redaction utility - safe_value must not contain the raw token
         safe_value = redact_sensitive_value(secret_value)
 
-        # Create log message
+        # Verify redaction happened before any logging occurs
+        assert "[REDACTED]" in safe_value, "redact_sensitive_value must redact the token"
+        assert secret_value not in safe_value, "raw secret must not survive redaction"
+
+        # Log only the already-redacted placeholder.
+        # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
         import logging
         logger = logging.getLogger(__name__)
-        logger.info(f"Secret value: {safe_value}")
+        logger.info("Secret value: %s", safe_value)  # nosec: logs redacted placeholder only
 
-        # Verify original secret not in logs
+        # Confirm the raw token is absent from captured log output
         assert secret_value not in caplog.text
-        assert "[REDACTED]" in safe_value
+
 
     def test_secret_name_redaction(self):
         """Test that sensitive secret names are redacted."""

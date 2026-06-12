@@ -15,7 +15,7 @@ from collections.abc import Callable, Iterable, MutableMapping
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Literal
 
-from .content_filters import SecurityError, sanitize_text
+from ._types import SecurityError, sanitize_text  # noqa: F401 – re-exported for callers
 
 
 SQL_INJECTION_PATTERNS = [
