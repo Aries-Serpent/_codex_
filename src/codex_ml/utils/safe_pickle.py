@@ -37,6 +37,7 @@ Migration Path:
 from __future__ import annotations
 
 import base64
+import binascii
 import hashlib
 import hmac
 import io
@@ -301,7 +302,8 @@ def _coerce_fernet_key(secret_key: bytes) -> bytes:
         decoded = base64.urlsafe_b64decode(secret_key)
         if len(decoded) == 32:
             return secret_key
-    except Exception:
+    except (binascii.Error, ValueError, TypeError):
+        # Input is not a valid urlsafe-base64 Fernet key; derive a stable key below.
         pass
     return base64.urlsafe_b64encode(hashlib.sha256(secret_key).digest())
 
