@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4853 CI rescue commit 0f76f7b)
+- PR #4853 CI rescue (`#4687893864`): ran required action queue (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) on commit `0f76f7b`; all pass clean.
+
 ### Fixed (SN — PR #4853 CI rescue + @copilot continue)
 - PR #4853 CI rescue (`#4687749290`): verified 5 previously failing checks resolved by `0e199c3`; applied REQ-4/REQ-5 compliance updates in this session.
 - PR #4853 (`#4687764358`): `@copilot continue` actioned after Agent Token Delegation activation.
