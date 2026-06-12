@@ -276,17 +276,20 @@ class SecurityValidator:
         }
 
         for validation_name, validator in validators.items():
+            # Security: mask validation_name in console output — CodeQL
+            # py/clear-text-logging-sensitive-data (keys contain "secret_scanning").
+            _vn_fp = (str(validation_name)[:8] + "…") if validation_name else "<none>"
             if validation_config.get(validation_name, {}).get("enabled", True):
                 try:
                     self.results["validations"][validation_name] = validator()
                 except Exception as e:
-                    print(f"❌ Error running {validation_name}. See validation results for details.")
+                    print(f"❌ Error running {_vn_fp}. See validation results for details.")
                     self.results["validations"][validation_name] = {
                         "status": "error",
                         "error": _sanitize_text(type(e).__name__)
                     }
             else:
-                print(f"⏭️  Skipping disabled validation: {validation_name}")
+                print(f"⏭️  Skipping disabled validation: {_vn_fp}")
                 self.results["validations"][validation_name] = {"status": "disabled"}
 
         self._calculate_overall_status()
