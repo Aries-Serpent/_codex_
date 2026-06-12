@@ -1,3 +1,24 @@
+## SESSION SUMMARY — 2026-06-12T01:40Z · PR #4849 Validation Pipeline + WEC gate rescue
+
+### Pre-flight Checklist
+- [x] Reviewed targeted CI failures via GitHub MCP (`run_id=27386513831`, `run_id=27386525780`, reference `27385436941`) ✅
+- [x] Checked open CI issue labels (`ci-failure`, `ci-health-alert`) for relevant cross-branch patterns ✅
+- [x] Reproduced baseline fast validation locally before edits (`bash scripts/run_validation.sh --fast`) ✅
+
+### Root Cause
+- `Validation Pipeline / Fast Validation` failed because `end-of-file-fixer` modified `.github/PULL_REQUEST_TEMPLATE.md` at runtime.
+- `Workflow Execution Gate / Validate WEC Template Integrity` failed because the PR body had no `## 🔄 Workflow Execution Checklist` block.
+
+### Remediation Applied
+1. Committed EOF normalization for `.github/PULL_REQUEST_TEMPLATE.md` so pre-commit no longer mutates it.
+2. Prepared session wrap-up to re-publish PR description with a generated WEC block via `session_wrapup_autofix.py --print-wec-block`.
+
+### Validation / Audit Notes
+- `bash scripts/run_validation.sh --fast` ✅
+- `.venv_validation/bin/pre-commit run end-of-file-fixer --files .github/PULL_REQUEST_TEMPLATE.md` (passes after fix) ✅
+
+---
+
 ## SESSION SUMMARY — 2026-06-11T17:45Z · PR #4841 review feedback
 
 ### Pre-flight Checklist

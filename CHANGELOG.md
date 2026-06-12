@@ -9,6 +9,7 @@
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4848 (SHA `188d45af`) at 2026-06-11T23:23Z [auto-generated]
 
 ### Fixed (SN)
+- Validation Pipeline: normalized `.github/PULL_REQUEST_TEMPLATE.md` EOF so pre-commit `end-of-file-fixer` no longer mutates the file during CI fast validation.
 - CI validation hardening: excluded `.venv_validation` from Pattern 34 newline scanning in `scripts/ci/auto_fix_common_issues.py` to prevent false positives from generated virtualenv files.
 - CI/CD Maturity: added `cache: "pip"` to uncovered Python workflows (`dependabot-preflight.yml`, `secrets-false-positive-healer.yml`)
 - Reliability: created `.github/workflows/self-healing.yml` stub using current `actions/checkout` version
