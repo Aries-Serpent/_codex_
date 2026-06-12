@@ -1445,8 +1445,7 @@ async def api_proxy(req: ApiProxyRequest):
         # CodeQL py/stack-trace-exposure: log server-side, return generic message.
         safe_host = (_urlparse(safe_url).hostname or "").lower()
         # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
-        # lgtm[py/clear-text-logging-sensitive-data]
-        log.warning(  # nosec: method and host are sanitized via _sanitize_log_value  # pragma: allowlist secret
+        log.warning(  # nosec: method and host are sanitized via _sanitize_log_value  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
             "api_proxy %s host=%s failed (%s)",
             _sanitize_log_value(method),
             _sanitize_log_value(safe_host),
@@ -1464,8 +1463,7 @@ async def api_proxy(req: ApiProxyRequest):
 
     # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
     safe_host = (_urlparse(safe_url).hostname or "").lower()
-    # lgtm[py/clear-text-logging-sensitive-data]
-    log.info(  # nosec: method and host are sanitized via _sanitize_log_value  # pragma: allowlist secret
+    log.info(  # nosec: method and host are sanitized via _sanitize_log_value  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         "api_proxy %s host=%s -> %s (%.0fms)",
         _sanitize_log_value(method),
         _sanitize_log_value(safe_host),

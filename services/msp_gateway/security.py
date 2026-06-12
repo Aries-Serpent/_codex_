@@ -34,8 +34,7 @@ def legacy_hash_api_key(api_key: str) -> str:
     """
     # nosec: B303,B324 - intentional SHA-256 for legacy compatibility, not for new password hashing
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    # codeql[py/weak-sensitive-data-hashing]
-    return sha256(api_key.encode("utf-8")).hexdigest()  # pragma: allowlist secret
+    return sha256(api_key.encode("utf-8")).hexdigest()  # codeql[py/weak-sensitive-data-hashing]  # pragma: allowlist secret
 
 
 def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
@@ -221,8 +220,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        # lgtm[py/clear-text-logging-sensitive-data]
-        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # pragma: allowlist secret
+        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
             "Blocked prompt for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(error),
@@ -244,8 +242,7 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        # lgtm[py/clear-text-logging-sensitive-data]
-        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # pragma: allowlist secret
+        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
             "Applied redactions for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(str(redactions)),

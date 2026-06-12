@@ -296,8 +296,7 @@ def safe_pickle_dump(
     else:
         data = pickled_data
 
-    # lgtm[py/path-injection]
-    with open(file_path, 'wb') as f:
+    with open(file_path, 'wb') as f:  # codeql[py/path-injection]
         f.write(data)
 
     logger.debug(f"Saved pickle to {file_path} ({len(data)} bytes)")

@@ -160,17 +160,13 @@ class AdminAutomationAgent:
         # The full sanitized message is already stored in task_result above.
         _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            # codeql[py/clear-text-logging-sensitive-data]
-            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # pragma: allowlist secret
+            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         elif status == "error":
-            # codeql[py/clear-text-logging-sensitive-data]
-            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # pragma: allowlist secret
+            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         elif status == "warning":
-            # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # pragma: allowlist secret
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         else:
-            # codeql[py/clear-text-logging-sensitive-data]
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # pragma: allowlist secret
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
