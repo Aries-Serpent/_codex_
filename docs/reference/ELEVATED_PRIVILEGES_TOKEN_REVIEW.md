@@ -52,36 +52,36 @@ env:
 
 ### 2.1 ✅ What Works
 
-| Token / Process | Evidence | Verified By | <!-- pragma: allowlist secret -->
+| Token / Process | Evidence | Verified By <!-- pragma: allowlist secret --> |
 |-----------------|----------|-------------|
 | `CODEX_MASTER_KEY` → Variables API (`/repos/.../actions/variables`) | `admin_setup_verification.yml` passes key checks | Workflow run logs |
 | `CODEX_MASTER_KEY` → Workflow approval (`POST /repos/.../actions/runs/{id}/approve`) | `auto-approve-workflows.yml` fires on every push | PR #4346 run `25529558543` |
 | `CODEX_MASTER_KEY` → PR body edit (`PATCH /repos/.../pulls/{n}`) | `session_wrapup_autofix.py --fix-pr-body` succeeds | `report_progress` RP chain |
 | `CODEX_BACKUP_KEY` → Contents read/write | Fallback observed in `agent-auth-delegation.yml` | CI logs |
-| `github.token` → Post PR comment | `gh pr comment` used in ~40 workflows | Review gate, WEC gate | <!-- pragma: allowlist secret -->
-| `_GITHUB_APP_PRIVATE_KEY` → JWT mint → Installation token | `post-accountability-to-discussion.yml` L130–160 | Run 25529473383 | <!-- pragma: allowlist secret -->
+| `github.token` → Post PR comment | `gh pr comment` used in ~40 workflows | Review gate, WEC gate <!-- pragma: allowlist secret --> |
+| `_GITHUB_APP_PRIVATE_KEY` → JWT mint → Installation token | `post-accountability-to-discussion.yml` L130–160 | Run 25529473383 <!-- pragma: allowlist secret --> |
 | MCP GitHub Server (read) | `list_workflow_runs`, `get_file_contents` etc. succeed | This session |
 
 ### 2.2 ❌ What Fails / Returns Errors
 
-| Token / Operation | Error | Root Cause | Affected Workflows | <!-- pragma: allowlist secret -->
+| Token / Operation | Error | Root Cause | Affected Workflows <!-- pragma: allowlist secret --> |
 |-------------------|-------|------------|-------------------|
-| `github.token` → `/code-scanning/alerts` | `403 Resource not accessible by integration` | Lacks `security_events` scope | MCP `list_code_scanning_alerts` | <!-- pragma: allowlist secret -->
-| `github.token` → `/actions/variables` (CRUD) | `403 Resource not accessible by integration` | No OAuth scopes on installation token | Any workflow using `github.token` for var writes | <!-- pragma: allowlist secret -->
-| `github.token` → Approve pending workflow runs | `403` | `actions:write` scope required | 1 workflow identified (`workflow-link-validation.yml`) | <!-- pragma: allowlist secret -->
-| MCP Server → secret/variable CRUD | Not supported | MCP server has no variable write toolset | All sessions | <!-- pragma: allowlist secret -->
+| `github.token` → `/code-scanning/alerts` | `403 Resource not accessible by integration` | Lacks `security_events` scope | MCP `list_code_scanning_alerts` <!-- pragma: allowlist secret --> |
+| `github.token` → `/actions/variables` (CRUD) | `403 Resource not accessible by integration` | No OAuth scopes on installation token | Any workflow using `github.token` for var writes <!-- pragma: allowlist secret --> |
+| `github.token` → Approve pending workflow runs | `403` | `actions:write` scope required | 1 workflow identified (`workflow-link-validation.yml`) <!-- pragma: allowlist secret --> |
+| MCP Server → secret/variable CRUD | Not supported | MCP server has no variable write toolset | All sessions <!-- pragma: allowlist secret --> |
 | `CODEX_BACKUP_KEY` → `security_events` scope | `403` | PAT scoped without `security_events` | `codeql-alert-fetcher.yml` fallback |
-| `_GITHUB_APP_PRIVATE_KEY` → Not configured | Empty env var → skipped to fallback token | App not installed or creds not set in Secrets | `post-accountability-to-discussion.yml` | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_PRIVATE_KEY` → Not configured | Empty env var → skipped to fallback token | App not installed or creds not set in Secrets | `post-accountability-to-discussion.yml` <!-- pragma: allowlist secret --> |
 
 ### 2.3 ⚠️ Needs Implementation / Improvement
 
 | Gap | Impact | Priority | AAIS Dimension |
 |-----|--------|----------|----------------|
-| 1 workflow uses bare `github.token` for write ops without MASTER_KEY chain | Write ops may silently fail with 403 | **P1** | Reliability | <!-- pragma: allowlist secret -->
+| 1 workflow uses bare `github.token` for write ops without MASTER_KEY chain | Write ops may silently fail with 403 | **P1** | Reliability <!-- pragma: allowlist secret --> |
 | `CODEX_MASTER_KEY` expiry monitoring — no automated alert | Master key expiry causes all 125 workflows to fail simultaneously | **P1** | Reliability |
 | `_GITHUB_APP` credentials — app not verified as active installation | `post-accountability-to-discussion.yml` silently skips app-signed commits | **P2** | Security |
 | `security_events` scope absent from all PATs | CodeQL alerts require a separate workflow dispatch (manual) | **P2** | Security |
-| MCP Server has no variable/secret CRUD toolset | Agent sessions must use REST API + `gh` CLI workarounds | **P2** | Automation Coverage | <!-- pragma: allowlist secret -->
+| MCP Server has no variable/secret CRUD toolset | Agent sessions must use REST API + `gh` CLI workarounds | **P2** | Automation Coverage <!-- pragma: allowlist secret --> |
 | No automated key rotation reminder / expiry gate | Silent failures when PATs expire | **P3** | Reliability |
 | `CODEX_BACKUP_KEY` lacks `security_events` scope | CodeQL alert fetcher has no fallback | **P3** | Security |
 
@@ -341,9 +341,9 @@ git push
 |----------|-------|--------|
 | Total workflows | 154 | — |
 | Using proper MASTER_KEY chain | 113 | ✅ 73.4% |
-| Using bare `github.token` for writes (risk) | 1 | ⚠️ Low-risk (PR comments only) | <!-- pragma: allowlist secret -->
-| Using GitHub App token minting | 8 | ✅ Pattern valid | <!-- pragma: allowlist secret -->
-| Read-only `github.token` (safe) | ~73 | ✅ Acceptable | <!-- pragma: allowlist secret -->
+| Using bare `github.token` for writes (risk) | 1 | ⚠️ Low-risk (PR comments only) <!-- pragma: allowlist secret --> |
+| Using GitHub App token minting | 8 | ✅ Pattern valid <!-- pragma: allowlist secret --> |
+| Read-only `github.token` (safe) | ~73 | ✅ Acceptable <!-- pragma: allowlist secret --> |
 
 ### 4.2 Workflows With Elevated Privilege Operations
 
@@ -374,7 +374,7 @@ graph TD
 
 ### 4.3 Highest-Risk Workflows
 
-| Workflow | Elevated Op | Token Used | Risk if Token Fails | <!-- pragma: allowlist secret -->
+| Workflow | Elevated Op | Token Used | Risk if Token Fails <!-- pragma: allowlist secret --> |
 |----------|------------|------------|---------------------|
 | `auto-approve-workflows.yml` | Approve all pending runs on every push | `CODEX_MASTER_KEY` | All CI workflows stuck in "Waiting for approval" — full CI blockage |
 | `agent-auth-delegation.yml` | Dispatch sub-workflows + set variables | `CODEX_MASTER_KEY` | No autonomous ops — agent paralysed |
@@ -391,11 +391,11 @@ graph TD
 | Property | Value | Status |
 |----------|-------|--------|
 | App Name | Cognitive Brain | ❓ Needs verification |
-| App ID | `${{ secrets._GITHUB_APP_ID }}` | Set in secrets | <!-- pragma: allowlist secret -->
-| Installation ID | `${{ secrets._GITHUB_APP_INSTALLATION_ID }}` | Set in secrets | <!-- pragma: allowlist secret -->
-| Private Key | `${{ secrets._GITHUB_APP_PRIVATE_KEY }}` | Set (RSA PEM) | <!-- pragma: allowlist secret -->
+| App ID | `${{ secrets._GITHUB_APP_ID }}` | Set in secrets <!-- pragma: allowlist secret --> |
+| Installation ID | `${{ secrets._GITHUB_APP_INSTALLATION_ID }}` | Set in secrets <!-- pragma: allowlist secret --> |
+| Private Key | `${{ secrets._GITHUB_APP_PRIVATE_KEY }}` | Set (RSA PEM) <!-- pragma: allowlist secret --> |
 | Installed on `_codex_` | ❓ Not auto-verified | Run §3.3 to check |
-| Token TTL | 1 hour (GitHub App default) | ⚠️ No refresh logic for long jobs | <!-- pragma: allowlist secret -->
+| Token TTL | 1 hour (GitHub App default) | ⚠️ No refresh logic for long jobs <!-- pragma: allowlist secret --> |
 
 ### 5.2 App Permission Gaps
 
@@ -432,15 +432,15 @@ For long-running jobs (>1 hour), the App token needs refreshing. Implement this 
 
 | ID | Gap | AAIS Dimension | Current Score Impact | Priority | Effort |
 |----|-----|---------------|---------------------|----------|--------|
-| T-01 | `workflow-link-validation.yml` uses bare `github.token` for write ops | Reliability | −0.1 | P1 | 10 min | <!-- pragma: allowlist secret -->
+| T-01 | `workflow-link-validation.yml` uses bare `github.token` for write ops | Reliability | −0.1 | P1 | 10 min <!-- pragma: allowlist secret --> |
 | T-02 | No automated PAT expiry monitoring | Reliability | −0.5 (latent risk) | P1 | 30 min |
 | T-03 | `security_events` scope absent from all PATs | Security | −0 (alerts via workflow) | P2 | 15 min |
 | T-04 | GitHub App active installation not auto-verified | Security | −0.1 | P2 | 20 min |
-| T-05 | MCP Server has no variable/secret write toolset | Automation Coverage | −0 (workaround in place) | P2 | External | <!-- pragma: allowlist secret -->
+| T-05 | MCP Server has no variable/secret write toolset | Automation Coverage | −0 (workaround in place) | P2 | External <!-- pragma: allowlist secret --> |
 | T-06 | `CODEX_BACKUP_KEY` missing `security_events` scope | Security | −0 | P3 | 15 min |
-| T-07 | App token refresh for >1hr jobs not implemented | Reliability | −0 (latent risk) | P3 | 45 min | <!-- pragma: allowlist secret -->
+| T-07 | App token refresh for >1hr jobs not implemented | Reliability | −0 (latent risk) | P3 | 45 min <!-- pragma: allowlist secret --> |
 | T-08 | No key rotation policy / reminder workflow | Reliability | −0.5 (latent risk) | P3 | 30 min |
-| T-09 | AGENT_GITHUB_TOKEN only used in 2 workflows (under-leveraged) | Automation Coverage | −0 | P4 | 60 min | <!-- pragma: allowlist secret -->
+| T-09 | AGENT_GITHUB_TOKEN only used in 2 workflows (under-leveraged) | Automation Coverage | −0 | P4 | 60 min <!-- pragma: allowlist secret --> |
 | T-10 | Reliability Reliability score ceiling at 98.4 due to 1.6% CI failure rate | Reliability | −0.36 composite | P1* | CI ops |
 
 > *T-10 requires sustained CI green runs — not fixable in a single session.
@@ -610,12 +610,12 @@ xychart-beta
 
 | Resource | Link |
 |----------|------|
-| Repository Secrets (view/edit) | [/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | <!-- pragma: allowlist secret -->
+| Repository Secrets (view/edit) | [/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) <!-- pragma: allowlist secret --> |
 | GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
-| Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) | <!-- pragma: allowlist secret -->
+| Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) | <!-- pragma: allowlist secret -->
-| Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) | <!-- pragma: allowlist secret -->
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
 | Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
@@ -675,13 +675,13 @@ Copy this checklist and tick each box as you complete it.
 
 | Step | Location | Action | Direct Link |
 |------|----------|--------|-------------|
-| A-1 | GitHub PAT settings | Regenerate (or create new) Classic PAT with scopes: `repo`, `workflow`, `admin:repo_hook`, `read:org`, `security_events` (recommended) | [settings/tokens](https://github.com/settings/tokens) | <!-- pragma: allowlist secret -->
-| A-2 | Repo Actions Secret | Update `CODEX_MASTER_KEY` secret value | [settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit) | <!-- pragma: allowlist secret -->
-| A-3 | Repo Variables | Check if any variable **stores** a token value (see §9.3) — update any that reference MASTER_KEY | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) | <!-- pragma: allowlist secret -->
-| A-4 | `.codex/agent_auth_session.json` | If this file contains a token field, regenerate it via `python scripts/ci/write_agent_auth_session.py` | Local repo | <!-- pragma: allowlist secret -->
-| A-5 | `.codex/agent_context.json` | Remove any stale `token` or `gh_token` key; the file should only contain variable *names*, not values | [.codex/agent_context.json](../../.codex/agent_context.json) | <!-- pragma: allowlist secret -->
+| A-1 | GitHub PAT settings | Regenerate (or create new) Classic PAT with scopes: `repo`, `workflow`, `admin:repo_hook`, `read:org`, `security_events` (recommended) | [settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
+| A-2 | Repo Actions Secret | Update `CODEX_MASTER_KEY` secret value | [settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit) <!-- pragma: allowlist secret --> |
+| A-3 | Repo Variables | Check if any variable **stores** a token value (see §9.3) — update any that reference MASTER_KEY | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) <!-- pragma: allowlist secret --> |
+| A-4 | `.codex/agent_auth_session.json` | If this file contains a token field, regenerate it via `python scripts/ci/write_agent_auth_session.py` | Local repo <!-- pragma: allowlist secret --> |
+| A-5 | `.codex/agent_context.json` | Remove any stale `token` or `gh_token` key; the file should only contain variable *names*, not values | [.codex/agent_context.json](../../.codex/agent_context.json) <!-- pragma: allowlist secret --> |
 | A-6 | Local `.env` / shell profile | Replace old value in `~/.bash_profile`, `~/.zshrc`, `.env`, or any local `.env.local` | Local machine |
-| A-7 | Other repos sharing this PAT | If the org secret `CODEX_MASTER_KEY` is shared across repos, update it at org level too | [org/settings/secrets/actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) | <!-- pragma: allowlist secret -->
+| A-7 | Other repos sharing this PAT | If the org secret `CODEX_MASTER_KEY` is shared across repos, update it at org level too | [org/settings/secrets/actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) <!-- pragma: allowlist secret --> |
 | A-8 | Verify with live test | Re-run `admin_setup_verification.yml` → expand **KEY VERIFICATION** step — must pass | [admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
 | A-9 | Update this doc | Change the **Updated** date in §1.1 and §2.1 | This file |
 
@@ -689,22 +689,22 @@ Copy this checklist and tick each box as you complete it.
 
 | Step | Location | Action | Direct Link |
 |------|----------|--------|-------------|
-| B-1 | GitHub PAT settings | Regenerate Classic PAT with scopes: `repo`, `workflow` | [settings/tokens](https://github.com/settings/tokens) | <!-- pragma: allowlist secret -->
-| B-2 | Repo Actions Secret | Update `CODEX_BACKUP_KEY` secret value | [settings/secrets/actions/CODEX_BACKUP_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_BACKUP_KEY/edit) | <!-- pragma: allowlist secret -->
+| B-1 | GitHub PAT settings | Regenerate Classic PAT with scopes: `repo`, `workflow` | [settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
+| B-2 | Repo Actions Secret | Update `CODEX_BACKUP_KEY` secret value | [settings/secrets/actions/CODEX_BACKUP_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_BACKUP_KEY/edit) <!-- pragma: allowlist secret --> |
 | B-3 | Repo Variables | Same check as A-3 | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | B-4 | Local `.env` / shell | Replace old backup key value if stored locally | Local machine |
-| B-5 | Verify fallback works | Temporarily blank MASTER_KEY in a local `.env`, run `GH_TOKEN=$CODEX_BACKUP_KEY gh api rate_limit` — should succeed | Local shell | <!-- pragma: allowlist secret -->
+| B-5 | Verify fallback works | Temporarily blank MASTER_KEY in a local `.env`, run `GH_TOKEN=$CODEX_BACKUP_KEY gh api rate_limit` — should succeed | Local shell <!-- pragma: allowlist secret --> |
 
 #### C. Rotating the GitHub App (`_GITHUB_APP_PRIVATE_KEY`)
 
 | Step | Location | Action | Direct Link |
 |------|----------|--------|-------------|
 | C-1 | GitHub App settings | Generate a new private key on the App page (Downloads `.pem` file) | [organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
-| C-2 | Repo Actions Secret | Replace `_GITHUB_APP_PRIVATE_KEY` with the new `.pem` contents (full PEM block including `-----BEGIN/END RSA PRIVATE KEY-----`) | [settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit) | <!-- pragma: allowlist secret -->
-| C-3 | `_GITHUB_APP_ID` | Verify this secret still matches the App ID shown on the App page (it doesn't rotate, but confirm) | [settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | <!-- pragma: allowlist secret -->
+| C-2 | Repo Actions Secret | Replace `_GITHUB_APP_PRIVATE_KEY` with the new `.pem` contents (full PEM block including `-----BEGIN/END RSA PRIVATE KEY-----`) | [settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit) <!-- pragma: allowlist secret --> |
+| C-3 | `_GITHUB_APP_ID` | Verify this secret still matches the App ID shown on the App page (it doesn't rotate, but confirm) | [settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) <!-- pragma: allowlist secret --> |
 | C-4 | `_GITHUB_APP_INSTALLATION_ID` | Verify this still matches the installation (shown under the App → Installations) | App settings page |
 | C-5 | Delete old private key | On the App settings page, delete the old private key entry to prevent dual-signing risks | App settings → Private keys list |
-| C-6 | Test token minting | Run the Python snippet in §3.3 Step 5 to confirm the new key mints a valid installation token | Local shell | <!-- pragma: allowlist secret -->
+| C-6 | Test token minting | Run the Python snippet in §3.3 Step 5 to confirm the new key mints a valid installation token | Local shell <!-- pragma: allowlist secret --> |
 | C-7 | Trigger `post-accountability-to-discussion.yml` | Manually dispatch this workflow to confirm Discussion posting works as App identity | [actions](https://github.com/Aries-Serpent/_codex_/actions) |
 
 ---
@@ -744,14 +744,14 @@ alongside the secret rotation.
 
 **Known variables to review (full list as of 2026-05-08):**
 
-| Variable Name | Contains Token? | Action on Rotation | <!-- pragma: allowlist secret -->
+| Variable Name | Contains Token? | Action on Rotation <!-- pragma: allowlist secret --> |
 |--------------|-----------------|-------------------|
 | `COPILOT_AGENT_AUTH_ENABLED` | No — boolean `true`/`false` | ✅ No change needed |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | No — login names | ✅ No change needed |
 | `CODEX_CI_FAILURE_RATE` | No — float string | ✅ No change needed |
 | `CODEX_SESSION_ID` | No — UUID | ✅ No change needed |
-| `AGENT_GITHUB_TOKEN` | ⚠️ **Possibly** — check value | 🔄 Update if contains `ghp_` / `github_pat_` | <!-- pragma: allowlist secret -->
-| `COPILOT_SESSION_TOKEN` | ⚠️ **Possibly** — session token | 🔄 Regenerate via `session_bootstrap.py` | <!-- pragma: allowlist secret -->
+| `AGENT_GITHUB_TOKEN` | ⚠️ **Possibly** — check value | 🔄 Update if contains `ghp_` / `github_pat_` <!-- pragma: allowlist secret --> |
+| `COPILOT_SESSION_TOKEN` | ⚠️ **Possibly** — session token | 🔄 Regenerate via `session_bootstrap.py` <!-- pragma: allowlist secret --> |
 | `AAIS_LAST_SCORE` | No — numeric | ✅ No change needed |
 | `CODEX_MASTER_KEY_LAST_VERIFIED` | No — timestamp | 🔄 Update after rotation confirmed |
 
@@ -764,10 +764,10 @@ inspected after a rotation:
 
 | File | What to check | How to fix |
 |------|--------------|-----------|
-| `.codex/agent_context.json` | Remove any `gh_token`, `token`, or `api_key` field containing a live value | `python scripts/ci/repo_var_sync.py --sanitize` or edit manually | <!-- pragma: allowlist secret -->
-| `.codex/agent_auth_session.json` | Contains a session token + actor list — regenerate if the actor list changes | `python scripts/ci/write_agent_auth_session.py` | <!-- pragma: allowlist secret -->
+| `.codex/agent_context.json` | Remove any `gh_token`, `token`, or `api_key` field containing a live value | `python scripts/ci/repo_var_sync.py --sanitize` or edit manually <!-- pragma: allowlist secret --> |
+| `.codex/agent_auth_session.json` | Contains a session token + actor list — regenerate if the actor list changes | `python scripts/ci/write_agent_auth_session.py` <!-- pragma: allowlist secret --> |
 | `.codex/rate_limit_state.json` | Contains `earliest_reset_epoch` — stale after rotation but harmless; delete to force fresh check | `rm -f .codex/rate_limit_state.json` |
-| `.secrets.baseline` | `detect-secrets` scans for high-entropy strings — new token may trigger a false positive | `python scripts/ci/sync_tracked_files.py --fix` then `git add .secrets.baseline` | <!-- pragma: allowlist secret -->
+| `.secrets.baseline` | `detect-secrets` scans for high-entropy strings — new token may trigger a false positive | `python scripts/ci/sync_tracked_files.py --fix` then `git add .secrets.baseline` <!-- pragma: allowlist secret --> |
 
 > **⚠️ Never commit a live token value into any of these files.**
 > If `detect-secrets` flags a new string after rotation, add `# pragma: allowlist secret`
@@ -966,7 +966,7 @@ sequenceDiagram
 
 Use this table when creating or regenerating PATs to ensure you select the right checkboxes:
 
-| Token | Required Scopes | Optional / Recommended | Prohibited | <!-- pragma: allowlist secret -->
+| Token | Required Scopes | Optional / Recommended | Prohibited <!-- pragma: allowlist secret --> |
 |-------|----------------|----------------------|------------|
 | `CODEX_MASTER_KEY` | `repo` (full) · `workflow` | `admin:repo_hook` · `read:org` · `security_events` | `delete_repo` · `admin:org` · `admin:enterprise` |
 | `CODEX_BACKUP_KEY` | `repo` (full) · `workflow` | `read:org` · `security_events` | `delete_repo` · `admin:org` |
@@ -1008,12 +1008,12 @@ graph LR
 This matrix shows which **CI workflows** are directly impacted when each token is unavailable.
 Use it to prioritise which rotation to complete first in an emergency.
 
-| Failing Token | Directly Broken Workflows | Observable Symptom | Time-to-Detect | <!-- pragma: allowlist secret -->
+| Failing Token | Directly Broken Workflows | Observable Symptom | Time-to-Detect <!-- pragma: allowlist secret --> |
 |--------------|--------------------------|-------------------|----------------|
 | `CODEX_MASTER_KEY` | `auto-approve-workflows.yml` · `agent-auth-delegation.yml` · `iterative-self-healing-ci.yml` · `session_wrapup_autofix.py` · `copilot-agent-checkin.yml` · `wec_enforcer.py` (dispatch) · `trigger-on-approval.yml` | All CI workflows stuck in **"Waiting for approval"** indefinitely; WEC gate fails; self-healing loop broken | **Immediate** — first push after expiry |
 | `CODEX_BACKUP_KEY` | Fallback in `agent-auth-delegation.yml` and 114 other workflows if MASTER_KEY is also absent | Silent degradation — only visible if MASTER_KEY also fails | Only when MASTER_KEY also fails |
 | `_GITHUB_APP_PRIVATE_KEY` | `post-accountability-to-discussion.yml` · `copilot-pr-session-injector.yml` | App-identity Discussion posts silently skipped; PRs created as `github-actions[bot]` instead of App | **Delayed** — only noticed on Discussion post |
-| `github.token` | Cannot expire (refreshed per-run by GitHub) | N/A | N/A | <!-- pragma: allowlist secret -->
+| `github.token` | Cannot expire (refreshed per-run by GitHub) | N/A | N/A <!-- pragma: allowlist secret --> |
 
 > **Emergency triage order:** CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GitHub App key
 
@@ -1023,13 +1023,13 @@ Use it to prioritise which rotation to complete first in an emergency.
 
 | Resource | Link |
 |----------|------|
-| Repository Secrets (view/edit) | [/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | <!-- pragma: allowlist secret -->
+| Repository Secrets (view/edit) | [/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) <!-- pragma: allowlist secret --> |
 | GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
-| Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) | <!-- pragma: allowlist secret -->
+| Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Repo Variables (view/edit) | [/settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) | <!-- pragma: allowlist secret -->
-| Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) | <!-- pragma: allowlist secret -->
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
 | Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
@@ -1082,20 +1082,20 @@ graph TD
 
 These are stored at org level and available to this repo. Only org owners can update them.
 
-| Secret Name | Purpose | Used By | Rotation Frequency | Notes | <!-- pragma: allowlist secret -->
+| Secret Name | Purpose | Used By | Rotation Frequency | Notes <!-- pragma: allowlist secret --> |
 |------------|---------|---------|-------------------|-------|
 | `CODEX_MASTER_KEY` | Primary PAT — variables API, workflow approve/dispatch, CodeQL, self-healing | 100+ workflows | **Mandatory: every 90 days** | Scopes: `repo`, `workflow`; recommend adding `security_events`. See §3 |
 | `CODEX_BACKUP_KEY` | Fallback PAT if MASTER_KEY fails | `agent-auth-delegation.yml` fallback chain | **Mandatory: every 90 days** | Same scopes as MASTER_KEY |
 | `CODEX_ADMIN_KEY` | Admin-only operations (org management, protected branch overrides) | Admin workflows only | **When MASTER_KEY rotates** | Higher privilege — protect carefully |
-| `_GITHUB_APP_ID` | GitHub App numeric ID (not secret per se, but stored here) | App token workflows | Rarely (only if app is recreated) | Not a token — safe to treat as semi-public | <!-- pragma: allowlist secret -->
-| `_GITHUB_APP_INSTALLATION_ID` | Installation ID for this repo's App installation | App token workflows | Rarely | Retrieve from App → Installations page | <!-- pragma: allowlist secret -->
-| `_GITHUB_APP_PRIVATE_KEY` | RSA private key for App JWT signing | `actions/create-github-app-token@v1` | **Every 365 days or on compromise** | Full PEM block including header/footer | <!-- pragma: allowlist secret -->
-| `_GITHUB_APP_CLIENT_SECRET` | OAuth client secret for App (web flow) | App web auth workflows | **Every 365 days or on compromise** | Required only if App uses OAuth device/web flow | <!-- pragma: allowlist secret -->
-| `_CODEX_ACTION_RUNNER` | Token for self-hosted or elevated runner registration | Runner registration workflows | **Every 30 days** (runner tokens expire) | GitHub runner tokens have a 1-hour TTL at mint; stored value is the registration token | <!-- pragma: allowlist secret -->
-| `CODECOV_TOKEN` | Code coverage upload to Codecov.io | `code-quality-coverage-suite.yml` | **Annually or on compromise** | Codecov → Settings → Repository Token | <!-- pragma: allowlist secret -->
-| `HF_TOKEN` | HuggingFace Hub — model downloads, dataset access | RAG/ML workflows | **Annually or on model tier change** | Scopes: `read` for downloads, `write` for uploads | <!-- pragma: allowlist secret -->
-| `NPM_TOKEN` | npm package publishing | `npm publish` workflows | **Every 90 days** | Automation token (no 2FA required) — narrow to publish scope | <!-- pragma: allowlist secret -->
-| `PYPI_TOKEN` | PyPI package publishing | `pypi-publishing-operations-agent` | **Every 90 days** | Project-scoped token preferred over account-scoped | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_ID` | GitHub App numeric ID (not secret per se, but stored here) | App token workflows | Rarely (only if app is recreated) | Not a token — safe to treat as semi-public <!-- pragma: allowlist secret --> |
+| `_GITHUB_APP_INSTALLATION_ID` | Installation ID for this repo's App installation | App token workflows | Rarely | Retrieve from App → Installations page <!-- pragma: allowlist secret --> |
+| `_GITHUB_APP_PRIVATE_KEY` | RSA private key for App JWT signing | `actions/create-github-app-token@v1` | **Every 365 days or on compromise** | Full PEM block including header/footer <!-- pragma: allowlist secret --> |
+| `_GITHUB_APP_CLIENT_SECRET` | OAuth client secret for App (web flow) | App web auth workflows | **Every 365 days or on compromise** | Required only if App uses OAuth device/web flow <!-- pragma: allowlist secret --> |
+| `_CODEX_ACTION_RUNNER` | Token for self-hosted or elevated runner registration | Runner registration workflows | **Every 30 days** (runner tokens expire) | GitHub runner tokens have a 1-hour TTL at mint; stored value is the registration token <!-- pragma: allowlist secret --> |
+| `CODECOV_TOKEN` | Code coverage upload to Codecov.io | `code-quality-coverage-suite.yml` | **Annually or on compromise** | Codecov → Settings → Repository Token <!-- pragma: allowlist secret --> |
+| `HF_TOKEN` | HuggingFace Hub — model downloads, dataset access | RAG/ML workflows | **Annually or on model tier change** | Scopes: `read` for downloads, `write` for uploads <!-- pragma: allowlist secret --> |
+| `NPM_TOKEN` | npm package publishing | `npm publish` workflows | **Every 90 days** | Automation token (no 2FA required) — narrow to publish scope <!-- pragma: allowlist secret --> |
+| `PYPI_TOKEN` | PyPI package publishing | `pypi-publishing-operations-agent` | **Every 90 days** | Project-scoped token preferred over account-scoped <!-- pragma: allowlist secret --> |
 | `RAG_OPENAI_KEY` | OpenAI API key for RAG index embedding | RAG index build/query workflows | **Every 90 days** | Project-level key recommended; set usage limits in OpenAI dashboard |
 
 **How to add a new Org Secret:**
@@ -1114,15 +1114,15 @@ GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
 
 Stored at repo level, visible only to this repository.
 
-| Secret Name | Purpose | Used By | Rotation Notes | <!-- pragma: allowlist secret -->
+| Secret Name | Purpose | Used By | Rotation Notes <!-- pragma: allowlist secret --> |
 |------------|---------|---------|---------------|
-| `CODEX_GHP_TOKEN_BASE64` | Base64-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts that decode at runtime | **Rotate alongside MASTER_KEY** — must stay in sync with source token | <!-- pragma: allowlist secret -->
-| `CODEX_GHP_TOKEN_HEX` | Hex-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts | **Rotate alongside MASTER_KEY** | <!-- pragma: allowlist secret -->
-| `CODEX_GHP_TOKEN_SHA256` | SHA-256 hash of a GHP token (integrity check) | Token validation / integrity scripts | **Update whenever source token rotates** — this is the hash, not the token itself | <!-- pragma: allowlist secret -->
+| `CODEX_GHP_TOKEN_BASE64` | Base64-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts that decode at runtime | **Rotate alongside MASTER_KEY** — must stay in sync with source token <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_HEX` | Hex-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts | **Rotate alongside MASTER_KEY** <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_SHA256` | SHA-256 hash of a GHP token (integrity check) | Token validation / integrity scripts | **Update whenever source token rotates** — this is the hash, not the token itself <!-- pragma: allowlist secret --> |
 | `CODEX_REPO_ID` | GitHub repository numeric ID (`1040037790`) | Workflows that need the repo ID without an API call | Rarely (only if repo is forked/transferred) |
-| `CODEX_WEBHOOK_SECRET` | HMAC secret for validating incoming GitHub webhook payloads | Webhook receiver (`WEBHOOK_RECEIVER_URL`) | **Every 90 days or on compromise** | <!-- pragma: allowlist secret -->
-| `OPENAI_API_KEY` | OpenAI API key (repo-level, separate from RAG key) | Direct OpenAI calls in CI scripts | **Every 90 days** — set usage limits in OpenAI dashboard | <!-- pragma: allowlist secret -->
-| `_CODEX_BOT_RUNNER` | Bot runner token (repo-scoped runner credentials) | Bot automation jobs | **Every 30 days** | <!-- pragma: allowlist secret -->
+| `CODEX_WEBHOOK_SECRET` | HMAC secret for validating incoming GitHub webhook payloads | Webhook receiver (`WEBHOOK_RECEIVER_URL`) | **Every 90 days or on compromise** <!-- pragma: allowlist secret --> |
+| `OPENAI_API_KEY` | OpenAI API key (repo-level, separate from RAG key) | Direct OpenAI calls in CI scripts | **Every 90 days** — set usage limits in OpenAI dashboard <!-- pragma: allowlist secret --> |
+| `_CODEX_BOT_RUNNER` | Bot runner token (repo-scoped runner credentials) | Bot automation jobs | **Every 30 days** <!-- pragma: allowlist secret --> |
 
 > **⚠️ Encoded token secrets:** `CODEX_GHP_TOKEN_BASE64` and `CODEX_GHP_TOKEN_HEX` are
 > **derived values** of a primary PAT. When you rotate the primary PAT, you MUST also
@@ -1140,11 +1140,11 @@ Stored at repo level, visible only to this repository.
 
 Scoped to the `Aries_Serpent_codex_` named environment (requires environment protection rules).
 
-| Secret Name | Purpose | Rotation Notes | <!-- pragma: allowlist secret -->
+| Secret Name | Purpose | Rotation Notes <!-- pragma: allowlist secret --> |
 |------------|---------|---------------|
 | `CODEX_ENVIRONMENT_RUNNER` | Runner credentials for environment-specific job execution | **Every 30 days** |
-| `CODEX_RUNNER_SHA256` | SHA-256 hash of the runner binary/token for integrity validation | **Update when CODEX_ENVIRONMENT_RUNNER rotates** | <!-- pragma: allowlist secret -->
-| `CODEX_RUNNER_TOKEN` | Short-lived GitHub Actions runner registration token for this environment | **Every 30 days** (or sooner — runner tokens expire at use) | <!-- pragma: allowlist secret -->
+| `CODEX_RUNNER_SHA256` | SHA-256 hash of the runner binary/token for integrity validation | **Update when CODEX_ENVIRONMENT_RUNNER rotates** <!-- pragma: allowlist secret --> |
+| `CODEX_RUNNER_TOKEN` | Short-lived GitHub Actions runner registration token for this environment | **Every 30 days** (or sooner — runner tokens expire at use) <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -1188,7 +1188,7 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 | `AUTONOMY_DRY_RUN` | `0` | Autonomy engine dry-run mode | ✅ Same as `AGENT_RUNNER_DRY_RUN` but for autonomy engine |
 | `AUTONOMY_MAX_ITERATIONS` | `3` | Max iterations for autonomy loop | ✅ Keep ≤5 |
 | `UNCERTAINTY_BUDGET_SECONDS` | `20` | Time budget for uncertainty resolution in agent decisions | ✅ Increase if agents abort early on ambiguous states |
-| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Token delegation active — Copilot agent can use elevated tokens | ⚠️ Managed by `agent-auth-delegation.yml` — don't set manually | <!-- pragma: allowlist secret -->
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Token delegation active — Copilot agent can use elevated tokens | ⚠️ Managed by `agent-auth-delegation.yml` — don't set manually <!-- pragma: allowlist secret --> |
 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | Highest FSM autonomy level allowed (A=advisory, D=autonomous) | ⚠️ Requires E→D gate passage before changing |
 | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Enable session state restore across Copilot sessions | ✅ Set `false` to force fresh session state |
 | `AUTO_PROMOTE_TIER_ENABLED` | `true` | Allow automatic tier promotion when AAIS gates pass | ✅ Set `false` to require manual tier promotion |
@@ -1215,7 +1215,7 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | *(login list)* | Comma-separated logins allowed to trigger Cognitive Brain | ✅ Add new bot/login; never remove `mbaetiong` |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enable Cognitive Brain session context injection | ✅ Set `false` to disable CB for debugging |
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Long-term memory retention window (days) | ✅ Match `AUDIT_RETENTION_DAYS` |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max token budget for CB context injection | ✅ Match your model's context window | <!-- pragma: allowlist secret -->
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max token budget for CB context injection | ✅ Match your model's context window <!-- pragma: allowlist secret --> |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Memory tiers to use: `stm`, `ltm`, or `both` | ✅ |
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Min confidence score for pattern recall (0.0–1.0) | ✅ Raise to reduce noise; lower to catch weak patterns |
 | `COGNITIVE_BRAIN_SESSION_NUMBER` | *(auto-incremented)* | **Auto-managed** — current session counter | ❌ **Never edit manually** |
@@ -1257,9 +1257,9 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `ZENDESK_RATE_LIMIT` | `100` | Zendesk API rate limit (requests/minute) | ✅ Match your Zendesk plan limit | <!-- pragma: allowlist secret -->
-| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds | ✅ | <!-- pragma: allowlist secret -->
-| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation root | ✅ | <!-- pragma: allowlist secret -->
+| `ZENDESK_RATE_LIMIT` | `100` | Zendesk API rate limit (requests/minute) | ✅ Match your Zendesk plan limit <!-- pragma: allowlist secret --> |
+| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds | ✅ <!-- pragma: allowlist secret --> |
+| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation root | ✅ <!-- pragma: allowlist secret --> |
 | `CODEX_D365_POLICIES_PATH` | `configs/deployment/d365/sla_policies.json` | Path to D365 SLA policies | ✅ |
 
 #### 10.6.7 Repository Identity & Versioning
@@ -1313,12 +1313,12 @@ Follow these patterns when adding new variables or secrets to maintain consisten
 |----------|---------|---------|
 | Environment version pins | `CODEX_ENV_{LANG}_VERSION` | `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION` |
 | Feature flags (boolean) | `{FEATURE}_ENABLED` or `{FEATURE}_DRY_RUN` | `COGNITIVE_BRAIN_INJECTION_ENABLED`, `AGENT_RUNNER_DRY_RUN` |
-| Resource budgets | `{SYSTEM}_BUDGET_SECONDS` or `{SYSTEM}_MAX_{UNIT}` | `AUTONOMY_BUDGET_SECONDS`, `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | <!-- pragma: allowlist secret -->
+| Resource budgets | `{SYSTEM}_BUDGET_SECONDS` or `{SYSTEM}_MAX_{UNIT}` | `AUTONOMY_BUDGET_SECONDS`, `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` <!-- pragma: allowlist secret --> |
 | Path configs | `CODEX_{COMPONENT}_PATH` or `CODEX_{COMPONENT}_DIR` | `CODEX_SESSION_LOG_DIR`, `CODEX_D365_POLICIES_PATH` |
-| Rate limits | `{SERVICE}_RATE_LIMIT` | `ZENDESK_RATE_LIMIT`, `CODEX_LLM_RATE_LIMIT_DELAY` | <!-- pragma: allowlist secret -->
+| Rate limits | `{SERVICE}_RATE_LIMIT` | `ZENDESK_RATE_LIMIT`, `CODEX_LLM_RATE_LIMIT_DELAY` <!-- pragma: allowlist secret --> |
 | Retention windows | `{SYSTEM}_RETENTION_DAYS` | `AUDIT_RETENTION_DAYS`, `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` |
-| Agent tokens (org secrets) | `CODEX_{PURPOSE}_KEY` or `_{SYSTEM}_PRIVATE_KEY` | `CODEX_MASTER_KEY`, `_GITHUB_APP_PRIVATE_KEY` | <!-- pragma: allowlist secret -->
-| Service API keys | `{SERVICE}_API_KEY` or `{SERVICE}_TOKEN` | `OPENAI_API_KEY`, `PYPI_TOKEN`, `HF_TOKEN` | <!-- pragma: allowlist secret -->
+| Agent tokens (org secrets) | `CODEX_{PURPOSE}_KEY` or `_{SYSTEM}_PRIVATE_KEY` | `CODEX_MASTER_KEY`, `_GITHUB_APP_PRIVATE_KEY` <!-- pragma: allowlist secret --> |
+| Service API keys | `{SERVICE}_API_KEY` or `{SERVICE}_TOKEN` | `OPENAI_API_KEY`, `PYPI_TOKEN`, `HF_TOKEN` <!-- pragma: allowlist secret --> |
 
 #### 10.7.3 Adding a New Repo Variable
 
@@ -1421,21 +1421,21 @@ Based on the current variable inventory, these improvements would increase secur
 
 | Suggested Variable | Value | Rationale |
 |-------------------|-------|-----------|
-| `CODEX_MASTER_KEY_LAST_VERIFIED` | `2026-05-08T01:00:00Z:ok` | Timestamp of last successful MASTER_KEY health check. Enables the `token-expiry-monitor.yml` (T-02 gap). | <!-- pragma: allowlist secret -->
+| `CODEX_MASTER_KEY_LAST_VERIFIED` | `2026-05-08T01:00:00Z:ok` | Timestamp of last successful MASTER_KEY health check. Enables the `token-expiry-monitor.yml` (T-02 gap). <!-- pragma: allowlist secret --> |
 | `CODEX_MASTER_KEY_EXPIRY_DATE` | `2026-08-06` | ISO date when current MASTER_KEY PAT expires. Enables proactive rotation reminders 14 days before expiry. |
 | `CODEX_BACKUP_KEY_EXPIRY_DATE` | `2026-08-06` | Same for BACKUP_KEY. |
 | `CODEX_AAIS_LAST_SCORE` | `100.0` | Last computed AAIS composite score. Enables score regression detection without running the full scorer. |
 | `CODEX_AAIS_LAST_SCORED_SHA` | *(SHA)* | Commit SHA when AAIS was last scored. Detects score staleness. |
 | `CODEX_WEC_TEMPLATE_VERSION` | `S293` | Version of the WEC template currently in use. Detects template drift. |
-| `CODEX_SECRETS_BASELINE_SHA` | *(sha256)* | SHA-256 of `.secrets.baseline`. Detects out-of-band baseline modifications. | <!-- pragma: allowlist secret -->
+| `CODEX_SECRETS_BASELINE_SHA` | *(sha256)* | SHA-256 of `.secrets.baseline`. Detects out-of-band baseline modifications. <!-- pragma: allowlist secret --> |
 | `COPILOT_MAX_CONCURRENT_SESSIONS` | `1` | Enforce single active Copilot session at a time. Prevent session collision. |
 
 #### 10.9.2 Variables That Should Be Reviewed / Potentially Removed
 
 | Variable | Issue | Recommendation |
 |----------|-------|----------------|
-| `CODEX_GHP_TOKEN_BASE64` | Encoded token stored as secret — doubles rotation surface | ✅ Keep only if a workflow *requires* base64 input; otherwise replace callers with direct secret reference | <!-- pragma: allowlist secret -->
-| `CODEX_GHP_TOKEN_HEX` | Same issue as BASE64 | ✅ Audit callers; remove if unused | <!-- pragma: allowlist secret -->
+| `CODEX_GHP_TOKEN_BASE64` | Encoded token stored as secret — doubles rotation surface | ✅ Keep only if a workflow *requires* base64 input; otherwise replace callers with direct secret reference <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_HEX` | Same issue as BASE64 | ✅ Audit callers; remove if unused <!-- pragma: allowlist secret --> |
 | `WEBHOOK_RECEIVER_URL` | Contains `${CODESPACE_NAME}` — only valid in Codespaces | ✅ Move to environment variable scoped to Codespaces environment |
 | `CODEX_FORCE_CPU` | Duplicate of `GPU_OPT=""` | ✅ Consider replacing with a single `USE_GPU=true/false` flag |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | Very long JSON blob in variable | ✅ Move to a config file in `.codex/config/firewall_allowlist.json` |
@@ -1528,20 +1528,20 @@ jobs:
 
 Cross-reference: for each token rotation scenario, which variables and secrets need updating.
 
-| Rotation Event | Secrets to Update | Variables to Update | Scripts to Re-run | <!-- pragma: allowlist secret -->
+| Rotation Event | Secrets to Update | Variables to Update | Scripts to Re-run <!-- pragma: allowlist secret --> |
 |---------------|------------------|--------------------|--------------------|
-| **Rotate CODEX_MASTER_KEY** | `CODEX_MASTER_KEY` (org) · `CODEX_GHP_TOKEN_BASE64` · `CODEX_GHP_TOKEN_HEX` · `CODEX_GHP_TOKEN_SHA256` | `CODEX_MASTER_KEY_LAST_VERIFIED` (new) | `post_rotation_verify.sh` | <!-- pragma: allowlist secret -->
+| **Rotate CODEX_MASTER_KEY** | `CODEX_MASTER_KEY` (org) · `CODEX_GHP_TOKEN_BASE64` · `CODEX_GHP_TOKEN_HEX` · `CODEX_GHP_TOKEN_SHA256` | `CODEX_MASTER_KEY_LAST_VERIFIED` (new) | `post_rotation_verify.sh` <!-- pragma: allowlist secret --> |
 | **Rotate CODEX_BACKUP_KEY** | `CODEX_BACKUP_KEY` (org) | None required | Verify fallback: `post_rotation_verify.sh` |
-| **Rotate GitHub App key** | `_GITHUB_APP_PRIVATE_KEY` (org) | None required | Test App token mint (§3.3 Step 5) | <!-- pragma: allowlist secret -->
-| **Rotate OPENAI_API_KEY** | `OPENAI_API_KEY` (repo) | None | Verify LLM calls succeed | <!-- pragma: allowlist secret -->
+| **Rotate GitHub App key** | `_GITHUB_APP_PRIVATE_KEY` (org) | None required | Test App token mint (§3.3 Step 5) <!-- pragma: allowlist secret --> |
+| **Rotate OPENAI_API_KEY** | `OPENAI_API_KEY` (repo) | None | Verify LLM calls succeed <!-- pragma: allowlist secret --> |
 | **Rotate RAG_OPENAI_KEY** | `RAG_OPENAI_KEY` (org) | None | Re-run RAG index build to confirm |
-| **Rotate HF_TOKEN** | `HF_TOKEN` (org) | None | Trigger `test-rag.yml` | <!-- pragma: allowlist secret -->
-| **Rotate PYPI_TOKEN** | `PYPI_TOKEN` (org) | None | Dry-run `pypi-publishing-operations-agent` | <!-- pragma: allowlist secret -->
-| **Rotate NPM_TOKEN** | `NPM_TOKEN` (org) | None | Run `npm publish --dry-run` | <!-- pragma: allowlist secret -->
-| **Rotate CODEX_WEBHOOK_SECRET** | `CODEX_WEBHOOK_SECRET` (repo) | None | Update webhook receiver + GitHub webhook HMAC setting | <!-- pragma: allowlist secret -->
-| **Rotate runner tokens** | `CODEX_RUNNER_TOKEN` · `CODEX_ENVIRONMENT_RUNNER` · `CODEX_RUNNER_SHA256` · `_CODEX_BOT_RUNNER` · `_CODEX_ACTION_RUNNER` | None | Re-register runners | <!-- pragma: allowlist secret -->
+| **Rotate HF_TOKEN** | `HF_TOKEN` (org) | None | Trigger `test-rag.yml` <!-- pragma: allowlist secret --> |
+| **Rotate PYPI_TOKEN** | `PYPI_TOKEN` (org) | None | Dry-run `pypi-publishing-operations-agent` <!-- pragma: allowlist secret --> |
+| **Rotate NPM_TOKEN** | `NPM_TOKEN` (org) | None | Run `npm publish --dry-run` <!-- pragma: allowlist secret --> |
+| **Rotate CODEX_WEBHOOK_SECRET** | `CODEX_WEBHOOK_SECRET` (repo) | None | Update webhook receiver + GitHub webhook HMAC setting <!-- pragma: allowlist secret --> |
+| **Rotate runner tokens** | `CODEX_RUNNER_TOKEN` · `CODEX_ENVIRONMENT_RUNNER` · `CODEX_RUNNER_SHA256` · `_CODEX_BOT_RUNNER` · `_CODEX_ACTION_RUNNER` | None | Re-register runners <!-- pragma: allowlist secret --> |
 | **Rotate CODEX_ADMIN_KEY** | `CODEX_ADMIN_KEY` (org) | None | Verify admin ops succeed |
-| **Rotate CODECOV_TOKEN** | `CODECOV_TOKEN` (org) | None | Trigger coverage upload workflow | <!-- pragma: allowlist secret -->
+| **Rotate CODECOV_TOKEN** | `CODECOV_TOKEN` (org) | None | Trigger coverage upload workflow <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -1607,9 +1607,9 @@ graph TB
 |-------|-------|
 | **Trigger** | `workflow_dispatch` (manual) · push to `main`/`develop` · PR |
 | **Inputs** | `include_env_vars` (boolean, default `true`) |
-| **Token needed** | `CODEX_MASTER_KEY` (variables read) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` (variables read) <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: read`, `issues: write`, `pull-requests: write` |
-| **Output** | Full inventory of all variables and secrets posted to PR/issue | <!-- pragma: allowlist secret -->
+| **Output** | Full inventory of all variables and secrets posted to PR/issue <!-- pragma: allowlist secret --> |
 | **§10 addresses** | §10.2, §10.3, §10.4, §10.5, §10.6 — generates live snapshot |
 | **Implementation gap** | Requires script update to add §10.9.1 suggested variables check |
 
@@ -1628,11 +1628,11 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
 |-------|-------|
 | **Trigger** | `workflow_dispatch` only |
 | **Inputs** | `pr_number` (required), `require_both_keys` (default `true`) |
-| **Token needed** | `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: read`, `pull-requests: write` |
 | **Output** | Pass/fail summary comment on the target PR |
-| **§10 addresses** | §10.2 org secrets — validates MASTER_KEY + BACKUP_KEY are functional | <!-- pragma: allowlist secret -->
-| **Run after** | Every token rotation (§9.2, §10.11) | <!-- pragma: allowlist secret -->
+| **§10 addresses** | §10.2 org secrets — validates MASTER_KEY + BACKUP_KEY are functional <!-- pragma: allowlist secret --> |
+| **Run after** | Every token rotation (§9.2, §10.11) <!-- pragma: allowlist secret --> |
 
 **How to trigger manually:**
 ```bash
@@ -1650,11 +1650,11 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run token-probe.yml \
 |-------|-------|
 | **Trigger** | `workflow_dispatch` · push to `admin_setup_verification.yml` · `repository_dispatch` |
 | **Inputs** | `pr_number` (optional — posts summary to PR) |
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: read`, `pull-requests: write` |
-| **Output** | Verifies §2 repo variables, §3 secrets existence, §6 workflow permissions | <!-- pragma: allowlist secret -->
-| **§10 addresses** | §10.2–§10.6 — confirms all variables and secrets are present | <!-- pragma: allowlist secret -->
-| **Use case** | Run immediately after any rotation or new variable/secret addition | <!-- pragma: allowlist secret -->
+| **Output** | Verifies §2 repo variables, §3 secrets existence, §6 workflow permissions <!-- pragma: allowlist secret --> |
+| **§10 addresses** | §10.2–§10.6 — confirms all variables and secrets are present <!-- pragma: allowlist secret --> |
+| **Use case** | Run immediately after any rotation or new variable/secret addition <!-- pragma: allowlist secret --> |
 
 **How to trigger manually:**
 ```bash
@@ -1671,11 +1671,11 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run admin_setup_verification.yml \
 |-------|-------|
 | **Trigger** | `workflow_dispatch` only |
 | **Inputs** | `run_org_tests` (boolean, default `false`), `dry_run` (boolean, default `false`) |
-| **Token needed** | `CODEX_MASTER_KEY` (repo scope), `CODEX_BACKUP_KEY` (fallback) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` (repo scope), `CODEX_BACKUP_KEY` (fallback) <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: read` |
 | **Output** | Live CREATE → GET → UPDATE → DELETE test results |
 | **§10 addresses** | §10.7.3, §10.7.4 — verifies variable API is functional before bulk updates |
-| **Use case** | Run before `process-variable-intents.yml` to confirm token is working | <!-- pragma: allowlist secret -->
+| **Use case** | Run before `process-variable-intents.yml` to confirm token is working <!-- pragma: allowlist secret --> |
 
 **How to trigger manually:**
 ```bash
@@ -1693,7 +1693,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
 |-------|-------|
 | **Trigger** | Push to PR branches · `workflow_dispatch` |
 | **Inputs** | None |
-| **Token needed** | `CODEX_MASTER_KEY` (variables read) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` (variables read) <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write` |
 | **Output** | Writes `.codex/agent_context.json` with all CODEX_*/COPILOT_* variable values |
 | **§10 addresses** | §10.8 — keeps auto-managed variable snapshot current |
@@ -1713,7 +1713,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run copilot-agent-vars-bootstrap.yml \
 |-------|-------|
 | **Trigger** | `schedule: cron: '0 6 * * *'` (daily 06:00 UTC) · `workflow_dispatch` |
 | **Inputs** | None |
-| **Token needed** | `CODEX_MASTER_KEY` (falls back to `GITHUB_TOKEN`) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` (falls back to `GITHUB_TOKEN`) <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write` |
 | **Output** | Detects drift between live variables and `agent_context.json`; auto-commits if changed |
 | **§10 addresses** | §10.6 (all groups) — daily consistency enforcement |
@@ -1732,10 +1732,10 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run repo-var-sync-schedule.yml \
 | Field | Value |
 |-------|-------|
 | **Trigger** | `schedule: cron: '0 6 * * *'` · `workflow_dispatch` · after `process-variable-intents.yml` completes |
-| **Inputs** | `layers` (comma-separated: `org-secrets,repo-secrets,repo-vars,env-vars` or `all`), `dry_run` | <!-- pragma: allowlist secret -->
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Inputs** | `layers` (comma-separated: `org-secrets,repo-secrets,repo-vars,env-vars` or `all`), `dry_run` <!-- pragma: allowlist secret --> |
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write`, `pull-requests: write` |
-| **Output** | Refreshes `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` with live data | <!-- pragma: allowlist secret -->
+| **Output** | Refreshes `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` with live data <!-- pragma: allowlist secret --> |
 | **§10 addresses** | §10.2–§10.6 — keeps reference doc current; §10.9.2 — flags stale variables |
 | **Use case** | Run after bulk variable changes to regenerate the reference doc |
 
@@ -1762,7 +1762,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
 |-------|-------|
 | **Trigger** | Push (specific source file changes) · `workflow_dispatch` |
 | **Inputs** | `environment` (`production`/`staging`/`development`), `dry_run` (default `true`) |
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write` |
 | **Output** | Syncs environment-scoped variables for the target environment |
 | **§10 addresses** | §10.5 — updates `Aries_Serpent_codex_` environment variables |
@@ -1791,11 +1791,11 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
 |-------|-------|
 | **Trigger** | PR comment: `@agent-var-writer apply` |
 | **Inputs** | None (reads `.codex/pending_var_updates.json`) |
-| **Token needed** | `CODEX_MASTER_KEY` or `CODEX_ADMIN_KEY` (variables write) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` or `CODEX_ADMIN_KEY` (variables write) <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write`, `pull-requests: write` |
 | **Output** | Applies pending variable updates; writes audit log to `.codex/evidence/var_write_audit.jsonl` |
 | **§10 addresses** | §10.7.3 — autonomous variable creation within allowed list |
-| **Security** | Session token expiry enforced; allowlist of variable names checked before write | <!-- pragma: allowlist secret -->
+| **Security** | Session token expiry enforced; allowlist of variable names checked before write <!-- pragma: allowlist secret --> |
 
 **How to use (agent workflow):**
 ```bash
@@ -1823,7 +1823,7 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 |-------|-------|
 | **Trigger** | Push (when `.codex/pending_ops/variable_set_*.json` files are present) |
 | **Inputs** | None (processes all pending intent files) |
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write` |
 | **Output** | Applies queued variable sets/deletes; self-cleans processed intent files |
 | **§10 addresses** | §10.7.3, §10.7.4 — implements the recommended variable additions from §10.9.1 |
@@ -1849,10 +1849,10 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 |-------|-------|
 | **Trigger** | Push to `automated/**`, `copilot/**`, `0D_base_`, `main` · PR · `workflow_dispatch` |
 | **Inputs** | None |
-| **Token needed** | `github.token` | <!-- pragma: allowlist secret -->
+| **Token needed** | `github.token` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: write`, `pull-requests: write`, `issues: write` |
 | **Output** | Keeps `.secrets.baseline` in sync; auto-adds `# pragma: allowlist secret`; fails on genuine new secrets |
-| **§10 addresses** | §10.3 `CODEX_WEBHOOK_SECRET`, §10.9.3 security hardening — continuous baseline enforcement | <!-- pragma: allowlist secret -->
+| **§10 addresses** | §10.3 `CODEX_WEBHOOK_SECRET`, §10.9.3 security hardening — continuous baseline enforcement <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -1862,10 +1862,10 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 |-------|-------|
 | **Trigger** | `workflow_dispatch` · push paths |
 | **Inputs** | None |
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `contents: read`, `pull-requests: write` |
-| **Output** | detect-secrets · ruff · pre-commit · sync_tracked_files | <!-- pragma: allowlist secret -->
-| **§10 addresses** | §10.9.3 — confirms `.secrets.baseline` is clean after changes | <!-- pragma: allowlist secret -->
+| **Output** | detect-secrets · ruff · pre-commit · sync_tracked_files <!-- pragma: allowlist secret --> |
+| **§10 addresses** | §10.9.3 — confirms `.secrets.baseline` is clean after changes <!-- pragma: allowlist secret --> |
 
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
@@ -1880,7 +1880,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
 |-------|-------|
 | **Trigger** | WEC checkbox · `workflow_dispatch` |
 | **Inputs** | None |
-| **Token needed** | `CODEX_MASTER_KEY` (security_events scope — T-03 gap) | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` (security_events scope — T-03 gap) <!-- pragma: allowlist secret --> |
 | **Permissions** | `security-events: read`, `contents: read` |
 | **Output** | 4 artefacts in `.codex/artifacts/codeql_alerts/` |
 | **§10 addresses** | §10.2 MASTER_KEY scope — demonstrates need for `security_events` scope (T-03) |
@@ -1893,10 +1893,10 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
 |-------|-------|
 | **Trigger** | `workflow_dispatch` · schedule |
 | **Inputs** | None |
-| **Token needed** | `CODEX_MASTER_KEY` | <!-- pragma: allowlist secret -->
+| **Token needed** | `CODEX_MASTER_KEY` <!-- pragma: allowlist secret --> |
 | **Permissions** | `security-events: write`, `contents: read` |
 | **Output** | bandit SAST results, pip-audit dependency scan, SARIF upload |
-| **§10 addresses** | §10.3 `OPENAI_API_KEY`, `CODEX_WEBHOOK_SECRET` — detects hardcoded secrets | <!-- pragma: allowlist secret -->
+| **§10 addresses** | §10.3 `OPENAI_API_KEY`, `CODEX_WEBHOOK_SECRET` — detects hardcoded secrets <!-- pragma: allowlist secret --> |
 
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run security-scanning-suite.yml \
@@ -1911,10 +1911,10 @@ These workflow stubs exist as `.md` documentation files but need their `.yml` co
 
 | Stub File | Intended Function | §10 Coverage | Priority |
 |-----------|------------------|--------------|----------|
-| `auth-secret-rotation.md` | Automated secret rotation (backup → rotate → verify) | §10.2, §10.3, §10.11 | P1 | <!-- pragma: allowlist secret -->
-| `auth-token-rotation.md` | Automated JWT/PAT token rotation | §10.2, §10.11 | P1 | <!-- pragma: allowlist secret -->
-| `phase10-automated-secrets-setup.md` | Genesis Phase 2 secrets injection | §10.2–§10.4 | P2 | <!-- pragma: allowlist secret -->
-| `scan-secrets-variables.md` | Enhanced variable scan with §10.9.1 new variables | §10.6, §10.9.1 | P2 | <!-- pragma: allowlist secret -->
+| `auth-secret-rotation.md` | Automated secret rotation (backup → rotate → verify) | §10.2, §10.3, §10.11 | P1 <!-- pragma: allowlist secret --> |
+| `auth-token-rotation.md` | Automated JWT/PAT token rotation | §10.2, §10.11 | P1 <!-- pragma: allowlist secret --> |
+| `phase10-automated-secrets-setup.md` | Genesis Phase 2 secrets injection | §10.2–§10.4 | P2 <!-- pragma: allowlist secret --> |
+| `scan-secrets-variables.md` | Enhanced variable scan with §10.9.1 new variables | §10.6, §10.9.1 | P2 <!-- pragma: allowlist secret --> |
 | `sync-env-vars.md` | Environment variable sync documentation | §10.5 | P3 |
 
 ---
@@ -2019,15 +2019,15 @@ reuse these — do not reinvent:**
 
 | Tool / Script | Location | What it does |
 |--------------|----------|-------------|
-| `github_api_trickle.py` | `scripts/ci/github_api_trickle.py` | 5-method trickle-down fetcher: REST → GraphQL → `gh` CLI → artifact → local CodeQL DB. Token rotation, per-page sleep, exponential backoff, `Retry-After` respect. | <!-- pragma: allowlist secret -->
-| `github_api_trickle.py --status` | Same | Pre-call check: exit 0=ready, exit 1=ALL tokens exhausted. Writes `.codex/rate_limit_state.json`. | <!-- pragma: allowlist secret -->
+| `github_api_trickle.py` | `scripts/ci/github_api_trickle.py` | 5-method trickle-down fetcher: REST → GraphQL → `gh` CLI → artifact → local CodeQL DB. Token rotation, per-page sleep, exponential backoff, `Retry-After` respect. <!-- pragma: allowlist secret --> |
+| `github_api_trickle.py --status` | Same | Pre-call check: exit 0=ready, exit 1=ALL tokens exhausted. Writes `.codex/rate_limit_state.json`. <!-- pragma: allowlist secret --> |
 | `.codex/rate_limit_state.json` | Auto-written by trickle | Cached rate limit state. Re-use if age < 60 s. Contains `ok`, `earliest_reset_epoch`, `earliest_reset_human`. |
 | `RATE_LIMIT_AWARENESS.md` | `.codex/docs/RATE_LIMIT_AWARENESS.md` | Protocol reference — read before writing any API-calling workflow. |
 | `ratelimit_history_prune.yml` | `.github/workflows/ratelimit_history_prune.yml` | Monthly pruning of rate-limit history logs (90-day retention). |
 | `GH_TRICKLE_POLITE_SLEEP` | Env var | Seconds between trickle calls (default `0.5`). Set per workflow. |
-| `GH_TRICKLE_MIN_REMAINING` | Env var | Switch token when remaining drops below this (default `10`). | <!-- pragma: allowlist secret -->
+| `GH_TRICKLE_MIN_REMAINING` | Env var | Switch token when remaining drops below this (default `10`). <!-- pragma: allowlist secret --> |
 | `GH_TRICKLE_MAX_WAIT` | Env var | Max seconds to wait for rate-limit recovery (default `120`). |
-| `GH_TRICKLE_RETRIES` | Env var | Max retries per method per token (default `3`). | <!-- pragma: allowlist secret -->
+| `GH_TRICKLE_RETRIES` | Env var | Max retries per method per token (default `3`). <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -2064,7 +2064,7 @@ Workflows are ranked by **gap score** = (API calls) − (guards present).
 
 | Workflow | API Calls | Guards | Notes |
 |----------|----------:|-------:|-------|
-| `agent-auth-delegation.yml` | 1 | 16 | Best-in-class: full `Retry-After` handling, token chain, `continue-on-error` on every API step | <!-- pragma: allowlist secret -->
+| `agent-auth-delegation.yml` | 1 | 16 | Best-in-class: full `Retry-After` handling, token chain, `continue-on-error` on every API step <!-- pragma: allowlist secret --> |
 | `codeql-alert-fetcher.yml` | — | 4 | Uses `github_api_trickle.py` natively; configurable `page_sleep_ms`; exits 0 on exhaustion |
 | `artifact-monitoring.yml` | 1 | 2 | Explicit `gh api rate_limit` check step + summary |
 | `iterative-self-healing-ci.yml` | 4 | 3 | Best self-healing example; use as template for P1/P2 improvements |
@@ -2364,7 +2364,7 @@ Add these variables to complement the §10.9.1 suggestions:
 | Variable | Value | Purpose |
 |----------|-------|---------|
 | `CODEX_RL_POLITE_SLEEP_DEFAULT` | `0.5` | Default polite sleep (seconds) injected via `GH_TRICKLE_POLITE_SLEEP` |
-| `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` | Default minimum remaining before token switch | <!-- pragma: allowlist secret -->
+| `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` | Default minimum remaining before token switch <!-- pragma: allowlist secret --> |
 | `CODEX_RL_MAX_WAIT_DEFAULT` | `120` | Default max recovery wait (seconds) |
 | `CODEX_RL_CIRCUIT_BREAKER_ENABLED` | `true` | Master switch for circuit-breaker pattern |
 | `CODEX_RL_LAST_EXHAUSTION_TIME` | *(auto-set)* | ISO timestamp of last rate-limit exhaustion; auto-set by `github_api_trickle.py` |

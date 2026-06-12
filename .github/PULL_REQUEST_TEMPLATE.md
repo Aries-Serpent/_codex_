@@ -161,7 +161,7 @@ _For Copilot / AI-assisted PRs:_
 |---|-----|-------------|------------|
 | 1 | `cost-gate` | RED-tier timeout waiting for stakeholder checkbox | Tick `💰 Cost Proposal Approved` above or re-run with `workflow_dispatch` |
 | 2 | `actionlint-gate` | SC2086 unquoted vars / duplicate step IDs | `@copilot Fix actionlint-audit: run actionlint .github/workflows/*.yml and fix all errors` |
-| 3 | `validate` / `pre-merge-validation` | pre-commit / detect-secrets / ruff failures | `@copilot Fix validation: run pre-commit run --files <changed> and python -m ruff check src/ tests/ --fix` | <!-- pragma: allowlist secret -->
+| 3 | `validate` / `pre-merge-validation` | pre-commit / detect-secrets / ruff failures | `@copilot Fix validation: run pre-commit run --files <changed> and python -m ruff check src/ tests/ --fix` <!-- pragma: allowlist secret --> |
 | 4 | `agent-auth-delegation` | AGENT_ACCOUNTABILITY_REPORT or CHANGELOG not touched in last commit | `@copilot Fix REQ-4/REQ-5: touch docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in the last commit` |
 | 5 | `comment-review-gate` | Unanswered `<comment_new>` PR comments | `@copilot reply_to_comment for all open <comment_new> items using the reply_to_comment tool` |
 | 6 | `deferral-language-gate` | Prohibited deferral phrase in PR body or commit | `@copilot Fix deferral-language: scan PR body and last 3 commits for prohibited phrases; remove or rephrase` |
@@ -169,7 +169,7 @@ _For Copilot / AI-assisted PRs:_
 | 8 | `resilient_validation` | pytest failures or import errors | `@copilot Fix Resilient Validation: run pytest tests/ -x --tb=short and fix any broken imports or assertions` |
 | 9 | `auto-fix-pr-check` | ruff F401 unused imports or Pattern 20 YAML multiline | `@copilot Fix auto-fix: run python scripts/ci/auto_fix_common_issues.py and commit fixes` |
 | 10 | `copilot-swe-agent` | Agent context overflow or API timeout | Re-trigger with smaller scope, or run `python scripts/ci/generate_manifest.py` to refresh context |
-| 11 | `token-expiry-monitor` | PAT near expiry | Follow 7-step playbook in `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §9` | <!-- pragma: allowlist secret -->
+| 11 | `token-expiry-monitor` | PAT near expiry | Follow 7-step playbook in `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §9` <!-- pragma: allowlist secret --> |
 
 - [ ] **Failure(s) detected** — @copilot please investigate and fix the checked items above.
 
