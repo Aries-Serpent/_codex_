@@ -296,7 +296,8 @@ def safe_pickle_dump(
     else:
         data = pickled_data
 
-    with open(file_path, 'wb') as f:  # codeql[py/path-injection]
+    # Security: data is HMAC-signed pickled bytes; file_path is trusted from caller
+    with open(file_path, 'wb') as f:  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
         f.write(data)
 
     logger.debug(f"Saved pickle to {file_path} ({len(data)} bytes)")

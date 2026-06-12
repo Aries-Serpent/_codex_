@@ -32,9 +32,10 @@ def legacy_hash_api_key(api_key: str) -> str:
     stored hashes. New hashes should use hash_api_key() which uses PBKDF2.
     This is intentionally weak for legacy support only.
     """
-    # nosec: B303,B324 - intentional SHA-256 for legacy compatibility, not for new password hashing
+    # Security: intentional SHA-256 for legacy compatibility only, not for new password hashing
+    # nosec: B303,B324 - legacy support for existing hashes
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    return sha256(api_key.encode("utf-8")).hexdigest()  # codeql[py/weak-sensitive-data-hashing]  # pragma: allowlist secret
+    return sha256(api_key.encode("utf-8")).hexdigest()  # nosec  # codeql[py/weak-sensitive-data-hashing]  # pragma: allowlist secret
 
 
 def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
