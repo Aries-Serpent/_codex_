@@ -31,7 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-import base64
 import hashlib
 import json
 import re
@@ -53,8 +52,8 @@ def tokenize_secret_name(secret_name: str) -> dict[str, str]:
     """
     Tokenize a secret name for secure storage.
 
-    Uses SHA256 hashing with base64 encoding to obfuscate secret names
-    while maintaining the ability to match and analyze secret usage.
+    Uses SHA256 hashing plus a non-reversible length hint so secret names
+    can be matched and analyzed without storing a reversible representation.
 
     Args:
         secret_name: The plain-text secret name (e.g., "GITHUB_TOKEN")
@@ -62,38 +61,18 @@ def tokenize_secret_name(secret_name: str) -> dict[str, str]:
     Returns:
         Dictionary with tokenized representation:
         - token: SHA256 hash of the secret name (for matching)
-        - encoded: Base64-encoded secret name (for decoding if authorized)
-        - hint: First 3 characters + length (for human reference)
+        - hint: Redacted length-only hint for human reference
     """
     # Create SHA256 token for matching/deduplication
     token = hashlib.sha256(secret_name.encode()).hexdigest()
 
-    # Base64 encode the secret name for reversible obfuscation
-    encoded = base64.b64encode(secret_name.encode()).decode('ascii')
-
-    # Create a human-readable hint (first 3 chars + length)
-    hint = f"{secret_name[:3]}***({len(secret_name)} chars)" if len(secret_name) > 3 else "***"
+    # Use a non-reversible hint to avoid clear-text storage of secret names.
+    hint = f"[REDACTED_SECRET_NAME:{len(secret_name)}]"
 
     return {
         "token": token,
-        "encoded": encoded,
         "hint": hint
     }
-
-
-def decode_secret_name(encoded: str) -> str:
-    """
-    Decode a base64-encoded secret name.
-
-    WARNING: Only use this function in authorized contexts.
-
-    Args:
-        encoded: Base64-encoded secret name
-
-    Returns:
-        Decoded secret name
-    """
-    return base64.b64decode(encoded.encode('ascii')).decode('utf-8')
 
 
 def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
@@ -138,7 +117,7 @@ def extract_secrets(workflow_data: dict) -> list[dict[str, str]]:
     Extract and tokenize all secret references from workflow.
 
     Returns list of tokenized secret representations (not plain-text names).
-    Each entry contains: token (hash), encoded (base64), hint (redacted preview).
+    Each entry contains: token (hash), hint (redacted metadata).
     """
     workflow_str = json.dumps(workflow_data)
 

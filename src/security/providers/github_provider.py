@@ -100,6 +100,11 @@ def _redact_identifier(identifier: str) -> str:
     return f"{identifier[:4]}...{identifier[-4:]}"
 
 
+def _safe_error(exc: Exception) -> str:
+    """Return a non-sensitive exception summary for logs/results."""
+    return type(exc).__name__
+
+
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
 
@@ -182,7 +187,7 @@ class GitHubTokenProvider(TokenProvider):
                 try:
                     self.revoke_secret(secret_id)
                 except Exception as e:
-                    logger.warning(f"Failed to revoke old token: {e}")
+                    logger.warning("Failed to revoke old token: %s", _safe_error(e))
 
             return RotationResult(
                 success=True,
@@ -196,8 +201,12 @@ class GitHubTokenProvider(TokenProvider):
             )
 
         except Exception as e:
-            logger.error(f"GitHub token rotation failed: {e}")
-            return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
+            logger.error("GitHub token rotation failed: %s", _safe_error(e))
+            return RotationResult(
+                success=False,
+                old_secret_id=secret_id,
+                error_message=f"GitHub token rotation failed: {_safe_error(e)}",
+            )
 
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate GitHub token.
@@ -228,7 +237,7 @@ class GitHubTokenProvider(TokenProvider):
                     logger.warning("GitHub token has expired (local expiry check)")
                     return False
             except Exception as e:
-                logger.debug(f"Could not check expiration: {e}")
+                logger.debug("Could not check expiration: %s", _safe_error(e))
 
             # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
             # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
@@ -272,12 +281,12 @@ class GitHubTokenProvider(TokenProvider):
                 # Network unreachable, DNS failure, timeout — degrade gracefully
                 logger.warning(
                     "GitHub API unreachable (%s); using format-only token validation",
-                    network_err,
+                    _safe_error(network_err),
                 )
                 return True
 
         except Exception as e:
-            raise ValidationError(f"Token validation failed: {e}") from e
+            raise ValidationError(f"Token validation failed: {_safe_error(e)}") from e
 
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get GitHub token metadata.
@@ -316,7 +325,7 @@ class GitHubTokenProvider(TokenProvider):
             metadata = self.get_secret_metadata(secret_id)
             return metadata.expires_at
         except Exception as e:
-            logger.error(f"Failed to get token expiration: {e}")
+            logger.error("Failed to get token expiration: %s", _safe_error(e))
             return None
 
     def get_scopes(self, secret_id: str) -> list[str]:
@@ -332,7 +341,7 @@ class GitHubTokenProvider(TokenProvider):
             metadata = self.get_secret_metadata(secret_id)
             return metadata.scopes or []
         except Exception as e:
-            logger.error(f"Failed to get token scopes: {e}")
+            logger.error("Failed to get token scopes: %s", _safe_error(e))
             return []
 
     def create_token(
@@ -455,11 +464,11 @@ class GitHubTokenProvider(TokenProvider):
                 error_message=f"GitHub API returned {resp.status_code} when creating installation token.",  # noqa: E501
             )
         except Exception as e:
-            logger.error("Failed to create GitHub installation token: %s", e)
+            logger.error("Failed to create GitHub installation token: %s", _safe_error(e))
             return RotationResult(
                 success=False,
                 old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
-                error_message=f"Token creation request failed: {e}",
+                error_message=f"Token creation request failed: {_safe_error(e)}",
             )
 
     def update_token_scopes(self, secret_id: str, scopes: list[str]) -> bool:
@@ -530,7 +539,7 @@ class GitHubTokenProvider(TokenProvider):
             return False
 
         except Exception as e:
-            logger.error("Failed to update token scopes: %s", e)
+            logger.error("Failed to update token scopes: %s", _safe_error(e))
             return False
 
     def revoke_secret(self, secret_id: str) -> bool:
@@ -584,7 +593,7 @@ class GitHubTokenProvider(TokenProvider):
             )
             return False
         except Exception as exc:
-            logger.error("revoke_secret() failed: %s", exc)
+            logger.error("revoke_secret() failed: %s", _safe_error(exc))
             return False
 
     def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
@@ -635,5 +644,5 @@ class GitHubTokenProvider(TokenProvider):
             logger.warning("list_secrets(): GitHub API returned %d.", resp.status_code)
             return []
         except Exception as exc:
-            logger.error("list_secrets() failed: %s", exc)
+            logger.error("list_secrets() failed: %s", _safe_error(exc))
             return []

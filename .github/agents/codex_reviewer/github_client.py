@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import urllib.parse
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -19,7 +20,6 @@ try:
 except ImportError:
     HTTPX_AVAILABLE = False
     import json
-    import urllib.parse
     import urllib.request
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,14 @@ class GitHubConfig:
     base_url: str = "https://api.github.com"
     timeout: int = 30
     max_retries: int = 3
+
+    def __post_init__(self) -> None:
+        """Reject unsafe API endpoints before any urllib fallback is used."""
+        parsed = urllib.parse.urlsplit(self.base_url.rstrip("/"))
+        if parsed.scheme != "https" or not parsed.netloc:
+            raise ValueError("GitHub API base_url must be an https:// URL with a host")
+        if parsed.username or parsed.password:
+            raise ValueError("GitHub API base_url must not embed credentials")
 
     @classmethod
     def from_env(cls) -> "GitHubConfig":
@@ -159,7 +167,9 @@ class GitHubAPIClient:
 
         for attempt in range(self.config.max_retries):
             try:
-                with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
+                with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+                    request, timeout=self.config.timeout
+                ) as response:
                     return json.loads(response.read().decode('utf-8'))
 
             except urllib.error.HTTPError as e:
@@ -229,7 +239,9 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
+            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+                request, timeout=self.config.timeout
+            ) as response:
                 return json.loads(response.read().decode('utf-8'))
 
     async def get_pr_files(self, repo: str, pr_number: int) -> list[dict[str, Any]]:
@@ -254,7 +266,9 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
+            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+                request, timeout=self.config.timeout
+            ) as response:
                 return json.loads(response.read().decode('utf-8'))
 
     async def get_pr_diff(self, repo: str, pr_number: int) -> str:
@@ -280,5 +294,7 @@ class GitHubAPIClient:
                 return response.text
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
+            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- request URL is derived from validated GitHubConfig.base_url
+                request, timeout=self.config.timeout
+            ) as response:
                 return response.read().decode('utf-8')

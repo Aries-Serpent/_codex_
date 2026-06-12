@@ -19,8 +19,19 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 logger = logging.getLogger(__name__)
+
+
+def _validated_github_api_url(url: str) -> str:
+    """Allow only credential-free HTTPS calls to api.github.com."""
+    parts = urlsplit(url)
+    if parts.scheme != "https" or parts.hostname != "api.github.com":
+        raise ValueError(f"Unsupported GitHub API URL: {url!r}")
+    if parts.username or parts.password:
+        raise ValueError("GitHub API URL must not contain embedded credentials")
+    return url
 
 # Locate repo root and inject into sys.path for cognitive brain imports
 _here = Path(__file__).resolve()
@@ -371,7 +382,7 @@ class GitHubGuruAdapter(Planner):
             }).encode()
 
             req = urllib.request.Request(
-                url=f"https://api.github.com/repos/{owner}/{repo}/pulls",
+                url=_validated_github_api_url(f"https://api.github.com/repos/{owner}/{repo}/pulls"),
                 data=payload,
                 headers={
                     "Authorization": f"Bearer {token}",
@@ -381,7 +392,9 @@ class GitHubGuruAdapter(Planner):
                 },
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=15) as resp:
+            with urllib.request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is allowlisted by _validated_github_api_url()
+                req, timeout=15
+            ) as resp:
                 data = json.loads(resp.read())
                 pr_url = data.get("html_url")
                 pr_number = data.get("number")

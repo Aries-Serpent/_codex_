@@ -1,6 +1,18 @@
 """
 Test suite for security utilities.
 Validates safe_torch_loader, safe_pickle, and security middleware.
+
+SECURITY TESTING NOTES:
+-----------------------
+This test suite validates security utilities that protect against:
+1. Arbitrary code execution via pickle deserialization
+2. Unsafe PyTorch model loading (weights_only enforcement)
+3. API security middleware (form size, rate limits)
+
+Test Pickle Usage:
+- All pickle operations in this file are on test fixtures WE create
+- These are trusted sources used to validate security controls
+- Production code should use safe_pickle_load with RestrictedUnpickler
 """
 import hashlib
 import io
@@ -79,11 +91,17 @@ class TestSafePickle:
     """Test suite for safe pickle deserialization."""
 
     def test_safe_pickle_load_with_simple_data(self):
-        """Test safe pickle loading with simple data structures."""
+        """Test safe pickle loading with simple data structures.
+        
+        SECURITY NOTE: We're creating a test pickle here, so it's a trusted source.
+        This validates that safe_pickle_load can handle legitimate data.
+        """
         data = {'key': 'value', 'number': 42, 'list': [1, 2, 3]}
 
         with tempfile.NamedTemporaryFile(delete=False) as f:
             temp_path = f.name
+            # nosec B301 - Test fixture: creating known-safe pickle for testing
+            # nosemgrep: semgrep_rules.py-pickle-dump
             pickle.dump(data, f)
 
         try:
@@ -93,10 +111,15 @@ class TestSafePickle:
             os.unlink(temp_path)
 
     def test_restricted_unpickler_allows_safe_types(self):
-        """Test that RestrictedUnpickler allows whitelisted types."""
+        """Test that RestrictedUnpickler allows whitelisted types.
+        
+        SECURITY NOTE: Creating test pickle with safe data to validate allowlist.
+        """
         safe_data = {'int': 42, 'str': 'hello', 'list': [1, 2, 3]}
 
         buffer = io.BytesIO()
+        # nosec B301 - Test fixture: creating known-safe pickle for testing
+        # nosemgrep: semgrep_rules.py-pickle-dump
         pickle.dump(safe_data, buffer)
         buffer.seek(0)
 
@@ -106,7 +129,11 @@ class TestSafePickle:
         assert loaded == safe_data
 
     def test_restricted_unpickler_blocks_unsafe_types(self):
-        """Test that RestrictedUnpickler blocks non-whitelisted types."""
+        """Test that RestrictedUnpickler blocks non-whitelisted types.
+        
+        SECURITY TEST: This validates that the allowlist works by attempting
+        to unpickle a custom class that should be blocked.
+        """
         # Create a custom class that should be blocked
         class UnsafeClass:
             def __init__(self):
@@ -115,6 +142,8 @@ class TestSafePickle:
         unsafe_obj = UnsafeClass()
 
         buffer = io.BytesIO()
+        # nosec B301 - Test fixture: creating unsafe pickle to validate blocking
+        # nosemgrep: semgrep_rules.py-pickle-dump
         pickle.dump(unsafe_obj, buffer)
         buffer.seek(0)
 
@@ -124,7 +153,11 @@ class TestSafePickle:
             unpickler.load()
 
     def test_safe_pickle_with_numpy_array(self):
-        """Test safe pickle with numpy arrays (whitelisted)."""
+        """Test safe pickle with numpy arrays (whitelisted).
+        
+        SECURITY NOTE: NumPy arrays are in the allowlist because they're
+        commonly used in ML checkpoints and have limited attack surface.
+        """
         try:
             import numpy as np
 
@@ -132,6 +165,8 @@ class TestSafePickle:
 
             with tempfile.NamedTemporaryFile(delete=False) as f:
                 temp_path = f.name
+                # nosec B301 - Test fixture: creating known-safe pickle for testing
+                # nosemgrep: semgrep_rules.py-pickle-dump
                 pickle.dump(data, f)
 
             try:

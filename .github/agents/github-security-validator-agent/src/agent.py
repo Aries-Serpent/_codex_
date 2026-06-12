@@ -20,6 +20,21 @@ except ImportError:
     yaml = None
 
 
+def _sanitize_text(value: object) -> str:
+    """Redact token-like content and control characters for console/report output."""
+    text = str(value)
+    text = re.sub(r"[\r\n\t]+", " ", text)
+    patterns = [
+        r"gh[pousr]_[A-Za-z0-9_]{6,}",
+        r"github_pat_[A-Za-z0-9_]{20,}",
+        r"sk-[A-Za-z0-9]{4,}",
+        r"AKIA[0-9A-Z]{16}",
+    ]
+    for pattern in patterns:
+        text = re.sub(pattern, "[REDACTED]", text, flags=re.IGNORECASE)
+    return text
+
+
 class SecurityValidator:
     """Main validator for security configurations."""
 
@@ -42,7 +57,7 @@ class SecurityValidator:
         config_file = Path(__file__).parent.parent / config_path
 
         if not config_file.exists():
-            print(f"Warning: Config file not found: {config_file}")
+            print("Warning: Config file not found")
             return self._default_config()
 
         if yaml is None:
@@ -181,7 +196,7 @@ class SecurityValidator:
                                 "file": str(file_path.relative_to(self.repo_root)),
                                 "line": line_num,
                                 "pattern": pattern,
-                                "comment": line.strip()
+                                "comment": _sanitize_text(line.strip())
                             })
         except (UnicodeDecodeError, PermissionError):
             pass  # Skip files that can't be read
@@ -268,7 +283,7 @@ class SecurityValidator:
                     print(f"❌ Error running {validation_name}. See validation results for details.")
                     self.results["validations"][validation_name] = {
                         "status": "error",
-                        "error": str(e)
+                        "error": _sanitize_text(type(e).__name__)
                     }
             else:
                 print(f"⏭️  Skipping disabled validation: {validation_name}")

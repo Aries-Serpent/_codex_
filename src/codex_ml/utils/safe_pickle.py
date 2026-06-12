@@ -1,4 +1,38 @@
-"""Secure pickle loading utilities for the codex_ml package."""
+"""Secure pickle loading utilities for the codex_ml package.
+
+SECURITY MODEL:
+---------------
+This module provides safe alternatives to direct pickle usage for ML checkpoint scenarios.
+
+Trust Boundaries:
+1. RestrictedUnpickler: Enforces class allowlist to prevent arbitrary code execution
+2. HMAC signatures: Verifies checkpoint integrity before deserialization
+3. Explicit trust flags: use_restricted_unpickler must be consciously disabled
+
+Usage Guidelines:
+- ALWAYS use RestrictedUnpickler for untrusted sources (default behavior)
+- ONLY set use_restricted_unpickler=False for checkpoints YOU created locally
+- ALWAYS verify HMAC signatures for checkpoints from external sources
+- PREFER torch.save(weights_only=True) or safetensors for new code
+
+Example - Safe Loading:
+    >>> from codex_ml.utils.safe_pickle import safe_pickle_load
+    >>> # Load with class restrictions (safe)
+    >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
+    >>> 
+    >>> # Load with signature verification (safest)
+    >>> data = safe_pickle_load("signed.pkl", verify_signature=True, use_restricted_unpickler=True)
+
+Example - Trusted Source (use with caution):
+    >>> # Only if you KNOW the checkpoint was created by your code
+    >>> data = safe_pickle_load("my_local_checkpoint.pkl", use_restricted_unpickler=False)
+    >>> # Warning will be logged automatically
+
+Migration Path:
+- For new ML models: Use safetensors (pip install safetensors)
+- For PyTorch models: Use torch.save/torch.load with weights_only=True
+- For legacy compatibility: Use this module with RestrictedUnpickler
+"""
 
 from __future__ import annotations
 
@@ -84,7 +118,55 @@ def safe_pickle_load(
     secret_key: bytes | None = None,
     use_restricted_unpickler: bool = True,
 ) -> Any:
-    """Safely load a pickle file with optional signature verification."""
+    """Safely load a pickle file with optional signature verification.
+    
+    SECURITY CONTRACT:
+    ------------------
+    This function provides defense-in-depth against pickle deserialization attacks:
+    
+    1. RestrictedUnpickler (default): Only allows whitelisted classes
+       - Prevents arbitrary code execution via __reduce__
+       - See SAFE_MODULES constant for allowed classes
+       
+    2. HMAC verification (optional): Ensures file integrity
+       - Prevents tampering with checkpoint files
+       - Use for checkpoints from external/untrusted sources
+       
+    3. Explicit trust override: use_restricted_unpickler=False
+       - ONLY use for files YOU created locally
+       - Logs warning when disabled
+       - Caller accepts full responsibility for file trust
+    
+    Trust Boundaries:
+    - verify_signature=True: Untrusted filesystem → Verified trusted source
+    - use_restricted_unpickler=True: Unknown classes → Known safe classes
+    - use_restricted_unpickler=False: TRUSTED source → Raw deserialization (RISKY)
+    
+    Args:
+        file_path: Path to pickle file to load
+        verify_signature: Enable HMAC signature verification (recommended for external sources)
+        secret_key: HMAC key (auto-generated if None, shared across saves/loads)
+        use_restricted_unpickler: Enable class allowlist (STRONGLY recommended)
+        
+    Returns:
+        Deserialized Python object
+        
+    Raises:
+        FileNotFoundError: File does not exist
+        ValueError: HMAC signature verification failed
+        pickle.UnpicklingError: Restricted class detected (when use_restricted_unpickler=True)
+        
+    Examples:
+        >>> # Safest: Load with restrictions and verification
+        >>> data = safe_pickle_load("external.pkl", verify_signature=True, use_restricted_unpickler=True)
+        
+        >>> # Safe: Load with restrictions only
+        >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
+        
+        >>> # Risky: Load without restrictions (local trusted files only)
+        >>> data = safe_pickle_load("my_checkpoint.pkl", use_restricted_unpickler=False)
+        ⚠️  Loading pickle WITHOUT restriction (potential security risk): ...
+    """
     path = Path(file_path)
     if not path.exists():
         raise FileNotFoundError(f"Pickle file not found: {path}")
@@ -113,10 +195,21 @@ def safe_pickle_load(
         "Use use_restricted_unpickler=True unless the file is fully trusted.",
         path,
     )
-    # Rationale: caller explicitly set use_restricted_unpickler=False, meaning
-    # they accept full responsibility for the trust boundary of this file.
-    # The default (use_restricted_unpickler=True) routes through RestrictedUnpickler
-    # which enforces a class allowlist.  The warning above is always emitted.
+    # SECURITY JUSTIFICATION:
+    # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility
+    # for the trust boundary. This is ONLY safe if:
+    # 1. The file was created by the current process or trusted local code
+    # 2. The file is stored in a secure location with proper access controls
+    # 3. The caller has validated the file's source and integrity
+    #
+    # The warning above is ALWAYS emitted to maintain audit trail.
+    # 
+    # Default behavior (use_restricted_unpickler=True) routes through RestrictedUnpickler
+    # which enforces a class allowlist, preventing arbitrary code execution.
+    #
+    # Trust Boundary: Caller's explicit trust declaration → Raw deserialization
+    # Risk Level: HIGH (arbitrary code execution possible with malicious pickle)
+    # Mitigation: Warning logged, explicit opt-in required, nosec markers documented
     return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load
 
 

@@ -367,9 +367,15 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
             buf.truncate(0)
-            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
+            # SECURITY: pickle.dump used ONLY for ML checkpoint state from local trusted paths.
+            # This state was created by the current process and contains model weights/optimizer state.
+            # Alternative: Use torch.save or safetensors for production checkpoints.
+            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
     else:
-        pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
+        # SECURITY: pickle.dump used ONLY for ML checkpoint state from local trusted paths.
+        # This state was created by the current process and contains model weights/optimizer state.
+        # Alternative: Use torch.save or safetensors for production checkpoints.
+        pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
     return buf.getvalue()
 
 
@@ -421,8 +427,11 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             return
 
         # Fallback: rely on pickle for custom objects (deterministic for stable reprs)
+        # SECURITY: pickle.dumps used ONLY for deterministic hashing of metadata payloads
+        # created by the current process. This is NOT deserialized from external sources.
+        # The pickled bytes are only used for hash computation, never unpickled.
         hasher.update(b"pickle")
-        hasher.update(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))
+        hasher.update(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
     _update(payload)
     return hasher.digest()
