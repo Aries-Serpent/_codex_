@@ -25,8 +25,8 @@
 | Rule ID | Count | Severity | Category | Remediation Strategy |
 |---|---:|---|---|---|
 | `py/uninitialized-local-variable` | 46 | LOW | Code Quality | Initialize variable on all control paths; add explicit defaults before branching/try blocks. |
-| `py/clear-text-logging-sensitive-data` | 30 | HIGH | Security | Mask/redact secrets before logging; replace with token fingerprints/non-sensitive identifiers. | <!-- pragma: allowlist secret -->
-| `py/clear-text-storage-sensitive-data` | 12 | HIGH | Security | Avoid persisting raw secrets; use secure stores, hashing, or encryption-at-rest wrappers. | <!-- pragma: allowlist secret -->
+| `py/clear-text-logging-sensitive-data` | 30 | HIGH | Security | Mask/redact secrets before logging; replace with token fingerprints/non-sensitive identifiers. <!-- pragma: allowlist secret --> |
+| `py/clear-text-storage-sensitive-data` | 12 | HIGH | Security | Avoid persisting raw secrets; use secure stores, hashing, or encryption-at-rest wrappers. <!-- pragma: allowlist secret --> |
 | `py/pythagorean` | 7 | LOW | Code Quality | Replace `x**0.5` with `math.sqrt(x)` or `math.hypot(...)` for clarity/correctness. |
 | `py/log-injection` | 6 | MEDIUM | Security | Sanitize/escape user-controlled values and prefer structured logging fields. |
 | `py/cyclic-import` | 4 | LOW | Code Quality | Move imports into function scope or refactor shared symbols to dependency-neutral module. |

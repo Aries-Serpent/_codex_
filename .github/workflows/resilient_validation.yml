@@ -1,6 +1,6 @@
 name: Resilient Validation Suite
 
-on:
+'on':
   pull_request:
     # Only run on non-draft PRs by default. DRAFT mode: validation is optional.
     types: [opened, synchronize, reopened, ready_for_review]
@@ -92,10 +92,15 @@ jobs:
       fail-fast: false
       matrix:
         # Full suite: all 5 groups. Simplified suite: quick + documentation + skills.
-        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","skills","integration","slow"]') || fromJSON('["quick","documentation","skills"]') }}
+        test-group: >-
+          ${{
+            (github.base_ref == 'main' && github.head_ref == '0D_base_')
+            && fromJSON('["quick","documentation","skills","integration","slow"]')
+            || fromJSON('["quick","documentation","skills"]')
+          }}
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
 
       - name: Fetch base ref for PR-scoped diff
         # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
@@ -117,23 +122,30 @@ jobs:
         id: validate
         env:
           IS_PROMOTION_PR: ${{ github.base_ref == 'main' && github.head_ref == '0D_base_' && 'true' || 'false' }}
+          PYTHONPATH: .:src
         run: |
           # For non-promotion PRs, limit quick tests to files changed in this PR
           # (max 60 min budget) and skip integration/slow groups entirely.
           if [ "$IS_PROMOTION_PR" = "false" ] && [ "${{ matrix.test-group }}" = "quick" ]; then
             # Collect files changed in this PR to narrow test scope
             git fetch origin ${{ github.base_ref }} --depth=1 2>/dev/null || true
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'tests/' 'src/' 'scripts/' 2>/dev/null | head -100 || true)
+            CHANGED_FILES=$(
+              git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'tests/' 'src/' 'scripts/' \
+                2>/dev/null | head -100 || true
+            )
             if [ -n "$CHANGED_FILES" ]; then
               echo "Running scoped quick tests on changed paths..."
               python -m pytest $CHANGED_FILES -v -m "not slow and not integration" \
+                --import-mode=importlib \
                 --timeout=55 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q \
                 || python -m pytest tests/ -v -m "not slow and not integration" \
+                     --import-mode=importlib \
                      --timeout=55 --tb=short --maxfail=20 \
                      --cov=src --cov-report=xml --cov-report=json -q
             else
               python -m pytest tests/ -v -m "not slow and not integration" \
+                --import-mode=importlib \
                 --timeout=55 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q
             fi
@@ -144,7 +156,8 @@ jobs:
             quick)
               # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
               # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20 \
+              python -m pytest tests/ -v -m "not slow and not integration" \
+                --import-mode=importlib --timeout=60 --tb=short --maxfail=20 \
                 --cov=src --cov-report=xml --cov-report=json -q
               ;;
             documentation)
@@ -161,11 +174,13 @@ jobs:
             integration)
               # Integration tests: 300s timeout, SEQUENTIAL execution (PR #3248 Attempt 15)
               # Removed -n 2 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short --maxfail=10
+              python -m pytest tests/ -v -m "integration and not slow" \
+                --import-mode=importlib --timeout=300 --tb=short --maxfail=10
               ;;
             slow)
               # Slow tests: 600s timeout, sequential execution, fail after 5 failures
-              python -m pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
+              python -m pytest tests/ -v -m "slow" \
+                --import-mode=importlib --timeout=600 --maxfail=5 --tb=short
               ;;
           esac
 
@@ -183,7 +198,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: coverage-baseline
           path: |
@@ -194,7 +209,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -244,7 +259,7 @@ jobs:
         total: [4]
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
@@ -258,7 +273,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -267,6 +282,8 @@ jobs:
 
       - name: Run sharded quick tests
         id: shard-run
+        env:
+          PYTHONPATH: .:src
         run: |
           # DRQ-S105-001: Disable pytest-rerunfailures in sharded runs.
           # pytest-rerunfailures starts a background server socket thread; pytest-timeout
@@ -278,6 +295,7 @@ jobs:
           # least_duration correctly instead of falling back to count-based splitting.
           python -m pytest tests/ \
             -m "not slow and not integration" \
+            --import-mode=importlib \
             --timeout=60 \
             --tb=short \
             --maxfail=20 \
@@ -299,7 +317,7 @@ jobs:
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |

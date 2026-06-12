@@ -197,6 +197,7 @@ class CommonIssueFixer:
             ".tox",
             ".venv",
             ".venv_ci",
+            ".venv_validation",
             "__pycache__",
             "node_modules",
             "venv",
@@ -3517,7 +3518,7 @@ class CommonIssueFixer:
     # Regex to detect common secret-keyword patterns that appear in docs
     _DOC_SECRET_INDICATORS = re.compile(
         r'(?:api[_-]?key|password|secret|token|bearer|sk-|ghp_|'
-        r'sk[_-]|AKIAIOSFODNN7EXAMPLE|hunter2|sk-1234)',
+        r'sk[_-]|AKIAIOSFODNN7EXAMPLE|hunter2|sk-1234)',  # pragma: allowlist secret
         re.IGNORECASE,
     )
 
@@ -3526,9 +3527,11 @@ class CommonIssueFixer:
 
         Root-cause (first observed: PR #4836/run 27324173148):
         ``detect-secrets`` KeywordDetector flags example credential strings
-        in agent documentation markdown files (e.g. ``password = "hunter2"``
-        in a detection-pattern table, ``API_KEY = "sk-..."`` in a Before/After
-        code block).  These are documentation, not real secrets.
+        in agent documentation markdown files (e.g. a table row:
+        ``password = "hunter2" <!-- pragma: allowlist secret -->``
+        or a code block line:
+        ``API_KEY = "sk-..."  # pragma: allowlist secret``).
+        These are documentation, not real secrets.
 
         **Detection:** Scan .md files changed in the current diff for lines
         that match common secret patterns AND appear inside a markdown table

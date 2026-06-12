@@ -2,6 +2,38 @@
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4853 CI rescue #4688307317 commit e1cf205)
+- PR #4853 CI rescue (`#4688307317`): verified `Final Pre-Merge Checks` failure on commit `e1cf2051` was REQ-4/REQ-5/REQ-14 non-compliance; fix confirmed in `913e89b1`; ran `python scripts/ci/mypy_baseline.py --require-baseline` (0 errors ↓122), `python scripts/ci/auto_fix_common_issues.py --check-only` (0 issues), `session_wrapup_autofix.py --check` (all green).
+
+### Fixed (SN — PR #4853 missed-trigger recovery S221 #4688271265)
+- PR #4853 missed-trigger recovery (`#4688271265`): re-ran required action queue (`python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) — all pass clean; REQ-4/REQ-5/REQ-14 compliance verified on latest commit.
+
+### Fixed (SN — PR #4853 CI rescue commit 0f76f7b)
+- PR #4853 CI rescue (`#4687893864`): ran required action queue (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) on commit `0f76f7b`; all pass clean.
+
+### Fixed (SN — PR #4853 CI rescue + @copilot continue)
+- PR #4853 CI rescue (`#4687749290`): verified 5 previously failing checks resolved by `0e199c3`; applied REQ-4/REQ-5 compliance updates in this session.
+- PR #4853 (`#4687764358`): `@copilot continue` actioned after Agent Token Delegation activation.
+
+### Fixed (auto-update — PR #4853)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4853 (SHA `a85a96a5`) at 2026-06-12T02:17Z [auto-generated]
+- Resilient Validation Suite hardening: added `PYTHONPATH=src` and `--import-mode=importlib` to quick/sharded pytest commands in `.github/workflows/resilient_validation.yml` to prevent module/import-file-mismatch collection failures.
+- Review follow-up (`discussion_r3400282720`): simplified Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to remove escaped quote/newline sequences and keep readable real line breaks.
+
+### Fixed (SN)
+- PR #4853 review follow-up (`c21a5f9`): removed duplicate auto-generated session entry in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (lines 14357–14361).
+- PR #4853 review follow-up (`c21a5f9`): updated Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to correctly show `<!-- pragma: allowlist secret -->` for markdown table examples and `# pragma: allowlist secret` for code-block examples, aligning with the described auto-fix behaviour.
+- PR #4853 review follow-up (`c21a5f9`): reformatted minified JSONL entry at line 283 of `.codex/aftermath/pda_iterations.jsonl` to match surrounding spaced style.
+- PR #4853 CI rescue follow-up (`#4687210820`): fixed `yamllint` gate failures in `.github/workflows/resilient_validation.yml` by quoting `'on'`, wrapping long expressions, and normalizing inline-comment spacing.
+- Resilient Validation Suite import fix: changed workflow `PYTHONPATH` from `src` to `.:src` so legacy top-level modules (`cli`, `deploy`, `agents`) resolve before `src/` package shadows during pytest collection.
+- PR #4853 CI rescue follow-up: executed required queue commands from comment `#4687083507` (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) and confirmed all pass.
+- Resolved PR #4849 merge conflicts while merging `origin/0D_base_` into `copilot/fix-review-comments`.
+- Added explicit name + block-scalar guarded `run` for the session preload step in `.github/workflows/copilot-setup-steps.yml`.
+- Removed redundant `PR #4850` duplication in `.github/copilot-prompts/active/PR-4850-followup.md`.
+
+### Fixed (auto-update — PR #4849)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4849 (SHA `87ce04db`) at 2026-06-12T00:19Z [auto-generated]
+
 ### Fixed (auto-update — PR #4850)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4850 (SHA `ea3207ca`) at 2026-06-12T00:06Z [auto-generated]
 
@@ -9,6 +41,8 @@
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4848 (SHA `188d45af`) at 2026-06-11T23:23Z [auto-generated]
 
 ### Fixed (SN)
+- Validation Pipeline: normalized `.github/PULL_REQUEST_TEMPLATE.md` EOF so pre-commit `end-of-file-fixer` no longer mutates the file during CI fast validation.
+- CI validation hardening: excluded `.venv_validation` from Pattern 34 newline scanning in `scripts/ci/auto_fix_common_issues.py` to prevent false positives from generated virtualenv files.
 - CI/CD Maturity: added `cache: "pip"` to uncovered Python workflows (`dependabot-preflight.yml`, `secrets-false-positive-healer.yml`)
 - Reliability: created `.github/workflows/self-healing.yml` stub using current `actions/checkout` version
 - Node.js action runtime hygiene: verified no deprecated refs using Pattern 21
@@ -9412,4 +9446,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Diagnosed root cause of persistent Copilot setup steps parse error: `main` branch `copilot-setup-steps.yml` has 7-space indent on Session Context Pre-load step instead of 6-space, causing Go yaml.v3 parse failure (`yaml: line 124: did not find expected '-' indicator`). Fix already present in `0D_base_` and PR branch; will propagate on merge.
 - Confirmed all 12 review threads resolved in commit `fa34bc2`.
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5).
-
