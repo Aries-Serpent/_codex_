@@ -6,6 +6,7 @@
 - Cleared the next stale `_PREEXISTING_FAILURES` batch in `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/tests/conftest.py` by retiring now-valid entries for status-gate, sentencepiece prefix handling, train-loop timestamp coverage, system-metrics logger coverage, event integration fallback, CLI help behaviour, inference-serving detector coverage, LoRA config coverage, and tokenization compat coverage.
 - Fixed `src/codex_ml/training/event_integration.py` to import event primitives and cloud publishers from `codex_ml.events.*`, restoring the local EventBus fallback path used by training event tests.
 - Updated stale tests to match current interfaces and behaviour in `tests/monitoring/test_system_metrics.py`, `tests/test_train_loop.py`, `tests/test_codexml_cli.py`, `tests/specs/test_detector_inference_serving.py`, `tests/test_modeling_module.py`, and `tests/tokenization/test_tokenization_compat.py`.
+- Restored the canonical guarded block-scalar session-preload step in `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/.github/workflows/copilot-setup-steps.yml`, clearing the workflow YAML parse failure and returning `validate_setup_steps_yaml.sh` / Pattern 3 to green.
 
 ### Fixed (SN — remediation-plan implementation 2026-06-12T17:39Z)
 - Hardened SQL codemod safety in `scripts/security/codemods/fix_sql_injection.py` by guarding single-variable tuple handling with `var is not None and var.isidentifier()`, preventing `NoneType` attribute errors.

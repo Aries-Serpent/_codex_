@@ -24,6 +24,7 @@
    - `tests/specs/test_detector_inference_serving.py`
    - `tests/test_modeling_module.py`
    - `tests/tokenization/test_tokenization_compat.py`
+4. Repaired `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/.github/workflows/copilot-setup-steps.yml` by restoring the canonical guarded `run: |` preload block (`if ! ...; then ...; fi`), eliminating the YAML parse regression surfaced by Pattern 3 / `validate_setup_steps_yaml.sh`.
 
 ### Agents Used
 - `test-alignment-fixer` (candidate batch selection)
@@ -33,6 +34,8 @@
 - `python3 -m py_compile src/codex_ml/training/event_integration.py tests/monitoring/test_system_metrics.py tests/test_train_loop.py tests/test_codexml_cli.py tests/specs/test_detector_inference_serving.py tests/test_modeling_module.py tests/tokenization/test_tokenization_compat.py tests/conftest.py tests/status/test_status_gate_from_statusrc.py tests/tokenization/test_sentencepiece_adapter_prefix.py` ✅
 - `python3 - <<'PY' ...` source smoke check for `TrainingEventEmitter`, `train_loop._now_ts()`, `cli(['--help'])`, and `detect(...)` ✅
 - `python3 scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `bash scripts/ci/validate_setup_steps_yaml.sh` ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` ✅ 0 issues
 - `pytest` / `ruff` executables were not available in this sandbox PATH, so no direct pytest/ruff rerun was possible in-session.
 
 ## SESSION SUMMARY — 2026-06-12T17:39Z · remediation-plan implementation (critical guard fix)
