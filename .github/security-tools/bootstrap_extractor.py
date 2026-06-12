@@ -98,12 +98,11 @@ class BootstrapExtractor:
             output_file = full_output_dir / filename
             output_file.write_text(content, encoding='utf-8')
 
-            # Apply explicit file modes after creation so docs/modules stay readable
-            # while executable payloads remain owner-only.
-            # Security: executable tools stay owner-only (0o700) and non-executable
-            # artifacts stay readable (0o644) for legitimate group/other access.
+            # Apply explicit file modes after creation with least-privilege defaults.
+            # Security: executable tools remain owner-only executable (0o700) and
+            # non-executable artifacts are owner read/write only (0o600).
             # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
-            os.chmod(output_file, 0o700 if executable else 0o644)  # nosec  # codeql[py/overly-permissive-file]  # pragma: allowlist secret
+            os.chmod(output_file, 0o700 if executable else 0o600)  # nosec  # pragma: allowlist secret
 
             print(f"✅ Extracted: {output_file}")
             return True
