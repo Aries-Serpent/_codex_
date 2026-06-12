@@ -19,17 +19,24 @@ name: "🔀 Branch Divergence Monitor — 0D_base_ ↔ main"
 #
 # This workflow closes that gap by:
 #   1. Running on a schedule to detect any accumulated divergence.
-#   2. Classifying leaked commits on main (auto-gen vs. code).
-#   3. Auto-correcting auto-gen leaks by triggering forward-sync.
+#   2. Classifying main-only commits as pipeline-merge / auto-gen / agent-commit / code-leak.
+#   3. Auto-correcting self-healable drift (forward-sync or fast-forward/merge).
 #   4. Opening or updating a tracking issue with divergence status.
-#   5. Posting a @copilot escalation comment when human code leaked to main.
+#   5. Posting a @copilot escalation comment only when true unabsorbed code leaked to main.
 #
 # ─── DIVERGENCE TAXONOMY ────────────────────────────────────────────────────
 #   EXPECTED   — 0D_base_ AHEAD of main: staged agent sessions waiting to merge.
-#   AUTO-GEN   — main AHEAD via github-actions[bot] auto-gen commits only.
-#                Self-correctable: trigger forward-sync-autogen.
-#   CODE-LEAK  — main AHEAD via human/code commits that bypassed 0D_base_.
-#                Requires @copilot session to investigate and resolve.
+#   PIPELINE-MERGE — main AHEAD via "Merge pull request #N from Aries-Serpent/0D_base_".
+#                    Self-correctable: fast-forward or merge main back into 0D_base_.
+#   AUTO-GEN      — main AHEAD via github-actions[bot] auto-gen commits only.
+#                    Self-correctable: trigger forward-sync-autogen.
+#   AGENT-COMMIT  — main AHEAD via Copilot bot commits or empty commits.
+#                    Self-correctable: absorbed by the pipeline-merge fast-forward/merge.
+#   CODE-LEAK     — main AHEAD via human/code commits that bypassed 0D_base_.
+#                    Requires @copilot session only when no absorber is present.
+#
+# Healthy does NOT require ahead_count=0. It is normal for 0D_base_ to remain ahead
+# of main while reviewed staged work waits for the promotion PR.
 #
 # ─── REFERENCES ─────────────────────────────────────────────────────────────
 #   .codex/docs/BRANCH_DIVERGENCE_PREVENTION.md  — full runbook

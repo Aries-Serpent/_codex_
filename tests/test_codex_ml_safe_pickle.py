@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import logging
 import os
-import pickle
 from pathlib import Path
 
 import pytest
@@ -37,7 +36,7 @@ def test_safe_pickle_dump_writes_versioned_signature_header(tmp_path: Path) -> N
 def test_safe_pickle_load_supports_legacy_signature_format(tmp_path: Path) -> None:
     payload = {"legacy": True}
     key = b"z" * 32
-    pickled = pickle.dumps(payload)
+    pickled = safe_pickle_module.trusted_pickle_dumps(payload)
     legacy_signed = pickled + hmac.new(key, pickled, hashlib.sha256).digest()
     pickle_path = tmp_path / "legacy.pkl"
     pickle_path.write_bytes(legacy_signed)
@@ -51,7 +50,7 @@ def test_safe_pickle_load_supports_legacy_signature_format(tmp_path: Path) -> No
 
 def test_safe_pickle_load_rejects_invalid_versioned_header(tmp_path: Path) -> None:
     key = b"q" * 32
-    payload = pickle.dumps({"bad": "header"})
+    payload = safe_pickle_module.trusted_pickle_dumps({"bad": "header"})
     signature = hmac.new(key, payload, hashlib.sha256).digest()
     pickle_path = tmp_path / "invalid-header.pkl"
     pickle_path.write_bytes(

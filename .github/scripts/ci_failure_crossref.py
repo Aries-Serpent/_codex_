@@ -164,7 +164,9 @@ for runner, count in sorted(runner_usage.items(), key=lambda x: x[1], reverse=Tr
 
 print("\n**Most Common Secrets**:")
 for secret, count in sorted(secrets_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
-    print(f"- `{secret}`: {count} critical workflows")
+    # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data
+    _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"
+    print(f"- `{_secret_fp}`: {count} critical workflows")
 
 print()
 print("\n## Recommended Action Plan\n")

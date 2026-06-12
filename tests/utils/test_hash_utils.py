@@ -24,14 +24,14 @@ class TestEigenstateHashPatterns:
         assert hash1 == hash2 == hash3
         assert len(hash1) == 64  # SHA-256 produces 64 hex chars
 
-    def test_md5_deterministic(self):
-        """MD5 hash is deterministic (for non-security uses)."""
+    def test_sha256_identifier_deterministic(self):
+        """SHA-256 hash is deterministic for stable identifiers."""
         data = b"content identifier"
-        hash1 = hashlib.md5(data).hexdigest()
-        hash2 = hashlib.md5(data).hexdigest()
+        hash1 = hashlib.sha256(data).hexdigest()
+        hash2 = hashlib.sha256(data).hexdigest()
 
         assert hash1 == hash2
-        assert len(hash1) == 32  # MD5 produces 32 hex chars
+        assert len(hash1) == 64  # SHA-256 produces 64 hex chars
 
     def test_blake2b_deterministic(self):
         """Blake2b hash is deterministic."""
@@ -133,7 +133,7 @@ class TestCacheKeyGeneration:
         def make_cache_key(*args, **kwargs):
             parts = [str(a) for a in args]
             parts.extend(f"{k}={v}" for k, v in sorted(kwargs.items()))
-            return hashlib.md5(":".join(parts).encode()).hexdigest()
+            return hashlib.sha256(":".join(parts).encode()).hexdigest()
 
         key1 = make_cache_key("func", 1, 2, x=3)
         key2 = make_cache_key("func", 1, 2, x=3)
@@ -144,7 +144,7 @@ class TestCacheKeyGeneration:
         """Kwargs order doesn't affect cache key."""
         def make_cache_key(**kwargs):
             parts = [f"{k}={v}" for k, v in sorted(kwargs.items())]
-            return hashlib.md5(":".join(parts).encode()).hexdigest()
+            return hashlib.sha256(":".join(parts).encode()).hexdigest()
 
         key1 = make_cache_key(a=1, b=2, c=3)
         key2 = make_cache_key(c=3, a=1, b=2)
@@ -154,7 +154,7 @@ class TestCacheKeyGeneration:
     def test_different_args_different_keys(self):
         """Different arguments produce different cache keys."""
         def make_cache_key(*args):
-            return hashlib.md5(str(args).encode()).hexdigest()
+            return hashlib.sha256(str(args).encode()).hexdigest()
 
         key1 = make_cache_key(1, 2, 3)
         key2 = make_cache_key(1, 2, 4)

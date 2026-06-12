@@ -6,9 +6,10 @@ name: "📋 Post Accountability Report to Discussion"
 #
 # Architecture:
 #   1. Extract the most recent session entry from AGENT_ACCOUNTABILITY_REPORT.md
-#   2. Post as a new comment on discussion #3673 (or update existing if same PR)
-#   3. The markdown file remains as an audit trail but is no longer the primary
-#      accountability surface — the Discussion thread is.
+#   2. Derive a stable upsert contract keyed to branch / PR / session / turn
+#   3. Upsert exactly one authoritative comment in discussion #3673 for that turn
+#   4. The markdown file remains as an audit trail but the Discussion thread is
+#      the machine-readable source of truth for historical notes.
 #
 # Policy: PRIORITY 0 — hardened systematic process (see PR #3676 comment)
 # Discussion: https://github.com/Aries-Serpent/_codex_/discussions/3673
@@ -27,7 +28,7 @@ on:
         required: false
         default: ""
       force_post:
-        description: "Force post even if a comment for this session was already posted"
+        description: "Deprecated: reruns now upsert the authoritative branch/PR/session/turn comment"
         required: false
         default: false
         type: boolean
@@ -65,13 +66,25 @@ jobs:
         run: |
           import os
           import re
-          import sys
           from pathlib import Path
 
           report_path = Path("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")
+          output_file = Path(os.environ["GITHUB_OUTPUT"])
+
+          def write_output(name: str, value: str) -> None:
+              with output_file.open("a", encoding="utf-8") as handle:
+                  handle.write(f"{name}={value}\n")
+
+          def write_multiline_output(name: str, value: str) -> None:
+              delimiter = "__ACCOUNTABILITY_ENTRY__"
+              with output_file.open("a", encoding="utf-8") as handle:
+                  handle.write(f"{name}<<{delimiter}\n{value}\n{delimiter}\n")
+
           if not report_path.exists():
               print("::warning::AGENT_ACCOUNTABILITY_REPORT.md not found — skipping")
-              sys.exit(0)
+              write_output("should_post", "false")
+              write_output("skip_reason", "missing-report")
+              raise SystemExit(0)
 
           content = report_path.read_text(encoding="utf-8")
 
@@ -93,28 +106,46 @@ jobs:
                   break
 
           if not latest:
-              print("::warning::No session entry found in report — skipping")
-              # Fall back to last 50 lines of the file
-              lines = content.strip().splitlines()
-              latest = "\n".join(lines[-50:]) if len(lines) > 50 else content
+              print("::warning::No recognized session entry found in report — skipping")
+              write_output("should_post", "false")
+              write_output("skip_reason", "missing-session-entry")
+              raise SystemExit(0)
 
-          # Extract session ID from heading for deduplication (handles both formats)
-          heading_match = re.match(
-              r'^## (?:SESSION SUMMARY|Session \S+) — (.+?)$', latest, re.MULTILINE
+          heading_line = latest.splitlines()[0].strip()
+
+          session_id = "unknown"
+          explicit_session = re.search(r"SessionID:\s*([A-Za-z0-9._:-]+)", latest)
+          if explicit_session:
+              session_id = explicit_session.group(1)
+          else:
+              heading_session = re.match(r"^## Session (S\d+) —", heading_line)
+              if heading_session:
+                  session_id = heading_session.group(1)
+              else:
+                  heading_turn = re.match(r"^## SESSION SUMMARY — ([^·\n]+?)(?:\s+·.*)?$", heading_line)
+                  if heading_turn:
+                      session_id = heading_turn.group(1).strip()
+
+          turn_id = session_id
+          heading_ts = re.search(r"\b\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}Z)?\b", heading_line)
+          if heading_ts:
+              turn_id = heading_ts.group(0)
+
+          pr_number = ""
+          pr_match = re.search(r"\bPR #(\d+)\b", latest)
+          if pr_match:
+              pr_number = pr_match.group(1)
+
+          write_output("should_post", "true")
+          write_output("session_id", session_id[:120])
+          write_output("turn_id", turn_id[:120])
+          write_output("pr_number", pr_number)
+          write_multiline_output("entry_md", latest.rstrip())
+
+          print(
+              "✅ Extracted accountability entry "
+              f"(session={session_id[:80]}, turn={turn_id[:80]}, pr={pr_number or 'n/a'})"
           )
-          session_id = heading_match.group(1).strip() if heading_match else "unknown"
-
-          # Write outputs
-          output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
-          with open(output_file, "a") as f:
-              f.write(f"session_id={session_id[:100]}\n")
-
-          # Write entry to a workspace-safe temp file (avoids multiline output issues)
-          entry_file = os.environ.get("RUNNER_TEMP", "/tmp") + "/accountability_entry.md"
-          with open(entry_file, "w", encoding="utf-8") as f:
-              f.write(latest)
-
-          print(f"✅ Extracted session entry: {session_id[:80]}")
 
       - name: "🔑 Resolve auth token for discussions:write"
         # S303: Mint GitHub App installation token first (has discussions:write).
@@ -192,157 +223,118 @@ jobs:
           fi
           echo "resolved_token=${RESOLVED_TOKEN}" >> "$GITHUB_OUTPUT"
 
-      - name: Post to GitHub Discussion #3673
+      - name: "Post to GitHub Discussion #3673"
+        if: steps.extract.outputs.should_post == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           SESSION_ID: ${{ steps.extract.outputs.session_id }}
-          PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}
+          TURN_ID: ${{ steps.extract.outputs.turn_id }}
+          ENTRY_MD: ${{ steps.extract.outputs.entry_md }}
+          PR_NUMBER: ${{ inputs.pr_number || steps.extract.outputs.pr_number || '' }}
           FORCE_POST: ${{ inputs.force_post || 'false' }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
           SHA: ${{ github.sha }}
           REF: ${{ github.ref_name }}
         with:
           github-token: ${{ steps.auth.outputs.resolved_token }}
           script: |
-            const fs = require('fs');
-            const path = require('path');
-
-            // Read the extracted entry from RUNNER_TEMP
-            const runnerTemp = process.env.RUNNER_TEMP || '/tmp';
-            const entryPath = path.join(runnerTemp, 'accountability_entry.md');
-            let entryContent = '';
-            try {
-              entryContent = fs.readFileSync(entryPath, 'utf8');
-            } catch (e) {
-              core.warning('No entry file found — skipping discussion post');
-              return;
-            }
-
-            if (!entryContent.trim()) {
+            const encode = encodeURIComponent;
+            const discussionNumber = 3673;
+            const entryContent = (process.env.ENTRY_MD || '').trim();
+            if (!entryContent) {
               core.warning('Empty entry content — skipping discussion post');
               return;
             }
 
             const sessionId = process.env.SESSION_ID || 'unknown';
-            const prNumber  = process.env.PR_NUMBER || '';
-            const sha       = (process.env.SHA || '').slice(0, 7);
-            const ref       = process.env.REF || '';
-            const forcePost = process.env.FORCE_POST === 'true';
+            const turnId = process.env.TURN_ID || sessionId;
+            const prNumber = process.env.PR_NUMBER || '';
+            const branch = process.env.REF || '';
+            const sha = (process.env.SHA || '').slice(0, 7);
+            const contractMarker = [
+              '<!-- codex-accountability-turn:v1',
+              `branch=${encode(branch)}`,
+              `pr=${encode(prNumber || 'none')}`,
+              `session=${encode(sessionId)}`,
+              `turn=${encode(turnId)}`,
+              '-->',
+            ].join(' ');
+            const metadataLine = prNumber
+              ? `> branch \`${branch}\` · PR #${prNumber} · session \`${sessionId}\` · turn \`${turnId}\` · sha \`${sha}\``
+              : `> branch \`${branch}\` · PR n/a · session \`${sessionId}\` · turn \`${turnId}\` · sha \`${sha}\``;
+            const body = `${contractMarker}\n${metadataLine}\n\n${entryContent}`;
 
-            // Deduplication marker — unique per session
-            const DEDUP_MARKER = `<!-- accountability-session: ${sessionId.slice(0, 80)} -->`;
+            if (process.env.FORCE_POST === 'true') {
+              core.info('force_post input is deprecated; authoritative turn comments are always upserted.');
+            }
 
-            // Build the discussion comment body
-            const prRef   = prNumber ? ` (PR #${prNumber})` : '';
-            const header  = [
-              DEDUP_MARKER,
-              `## 📋 Session Accountability Entry${prRef}`,
-              ``,
-              `> **Branch:** \`${ref}\` · **SHA:** \`${sha}\` · **Posted:** ${new Date().toISOString()}`,
-              `> **Policy:** [CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)`,
-              ``,
-            ].join('\n');
-
-            const body = header + entryContent;
-
-            // RC-4 (S300): Find or create a per-PR scoped discussion instead of
-            // posting to the shared global discussion #3673. This allows each PR to
-            // have its own isolated accountability thread without hardcoded numbers.
-            const prNum   = prNumber ? parseInt(prNumber, 10) : 0;
-            let discussionId;
-            let resolvedDiscussionNumber = 3673; // fallback to global discussion
-
-            if (prNum > 0) {
-              // Search for an existing per-PR discussion titled
-              // "📋 Agent Accountability — PR #<N>"
-              const targetTitle = `📋 Agent Accountability — PR #${prNum}`;
-              try {
-                const searchResult = await github.graphql(`
-                  query($owner: String!, $name: String!, $first: Int!) {
-                    repository(owner: $owner, name: $name) {
-                      discussions(first: $first, orderBy: { field: CREATED_AT, direction: DESC }) {
-                        nodes { id number title }
-                      }
-                    }
+            let discussionId = '';
+            try {
+              const discussion = await github.graphql(`
+                query($owner: String!, $name: String!, $number: Int!) {
+                  repository(owner: $owner, name: $name) {
+                    discussion(number: $number) { id }
                   }
-                `, { owner: context.repo.owner, name: context.repo.repo, first: 50 });
-                const discussions = searchResult.repository.discussions.nodes || [];
-                const found = discussions.find(d => d.title === targetTitle);
-                if (found) {
-                  discussionId = found.id;
-                  resolvedDiscussionNumber = found.number;
-                  core.info(`RC-4: Found per-PR discussion #${found.number} for PR #${prNum}`);
                 }
-              } catch (e) {
-                core.warning(`RC-4: Could not search discussions: ${e.message}`);
-              }
-            }
-
-            // If no per-PR discussion found, fall back to global discussion #3673
-            if (!discussionId) {
-              const DISCUSSION_NUMBER = 3673;
-              try {
-                const result = await github.graphql(`
-                  query($owner: String!, $name: String!, $number: Int!) {
-                    repository(owner: $owner, name: $name) {
-                      discussion(number: $number) { id }
-                    }
-                  }
-                `, {
-                  owner: context.repo.owner,
-                  name:  context.repo.repo,
-                  number: DISCUSSION_NUMBER,
-                });
-                discussionId = result.repository.discussion.id;
-                resolvedDiscussionNumber = DISCUSSION_NUMBER;
-                core.info(`RC-4: Using fallback global discussion #${DISCUSSION_NUMBER}`);
-              } catch (e) {
-                core.warning(`Could not fetch discussion #${DISCUSSION_NUMBER}: ${e.message}`);
-                core.warning('Ensure GITHUB_TOKEN has discussions:write permission');
-                return;
-              }
-            }
-
-            if (!discussionId) {
-              core.warning(`No suitable discussion found for accountability entry`);
+              `, {
+                owner: context.repo.owner,
+                name: context.repo.repo,
+                number: discussionNumber,
+              });
+              discussionId = discussion.repository.discussion.id;
+            } catch (e) {
+              core.warning(`Could not fetch discussion #${discussionNumber}: ${e.message}`);
+              core.warning('Ensure the token has discussions:write permission');
               return;
             }
 
-            // Check for existing comment with same dedup marker
-            // Uses last:50 (most-recent 50 comments, backward search). Per-PR discussions
-            // are newly created so this safely covers all comments. For global #3673 fallback,
-            // comments accumulate; 50 covers ~25 sessions. If a per-PR discussion grows beyond
-            // 50 comments, force_post=true can bypass the dedup.
-            if (!forcePost) {
-              try {
-                const existing = await github.graphql(`
-                  query($id: ID!) {
-                    node(id: $id) {
-                      ... on Discussion {
-                        comments(last: 50) {
-                          nodes { id body }
-                        }
+            let existingComment = null;
+            let cursor = null;
+            while (discussionId) {
+              const page = await github.graphql(`
+                query($id: ID!, $cursor: String) {
+                  node(id: $id) {
+                    ... on Discussion {
+                      comments(last: 100, before: $cursor) {
+                        nodes { id body url }
+                        pageInfo { hasPreviousPage startCursor }
                       }
                     }
                   }
-                `, { id: discussionId });
-
-                const comments = existing.node.comments.nodes || [];
-                const found = comments.find(c => (c.body || '').includes(DEDUP_MARKER));
-                if (found) {
-                  core.info(`Discussion comment already posted for session: ${sessionId.slice(0, 60)}`);
-                  core.info('Use force_post=true to repost');
-                  return;
                 }
-              } catch (e) {
-                core.warning(`Could not check existing comments: ${e.message}`);
+              `, { id: discussionId, cursor });
+              const comments = page.node.comments.nodes || [];
+              for (const comment of [...comments].reverse()) {
+                if ((comment.body || '').includes(contractMarker)) {
+                  existingComment = comment;
+                  break;
+                }
               }
+              if (existingComment || !page.node.comments.pageInfo.hasPreviousPage) {
+                break;
+              }
+              cursor = page.node.comments.pageInfo.startCursor;
             }
 
-            // Post the new comment
             try {
-              await github.graphql(`
+              if (existingComment) {
+                const result = await github.graphql(`
+                  mutation($commentId: ID!, $body: String!) {
+                    updateDiscussionComment(input: { commentId: $commentId, body: $body }) {
+                      comment { id url }
+                    }
+                  }
+                `, {
+                  commentId: existingComment.id,
+                  body,
+                });
+                core.info(
+                  `✅ Updated authoritative accountability entry in discussion #${discussionNumber}: ` +
+                  `${result.updateDiscussionComment.comment.url}`
+                );
+                return;
+              }
+
+              const result = await github.graphql(`
                 mutation($discussionId: ID!, $body: String!) {
                   addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
                     comment { id url }
@@ -352,7 +344,10 @@ jobs:
                 discussionId,
                 body,
               });
-              core.info(`✅ Posted accountability entry to discussion #${resolvedDiscussionNumber}`);
+              core.info(
+                `✅ Posted authoritative accountability entry to discussion #${discussionNumber}: ` +
+                `${result.addDiscussionComment.comment.url}`
+              );
             } catch (e) {
               core.warning(`Failed to post discussion comment: ${e.message}`);
               core.info('Body preview (first 200 chars): ' + body.slice(0, 200));

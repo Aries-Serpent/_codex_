@@ -534,11 +534,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "TypeError: can't compare offset-naive and offset-aware datetimes. "
                 "FeatureStore uses datetime.utcnow() (naive). Pre-existing on base branch."
             ),
-            # Tokenization compat: no DeprecationWarning emitted by shim
-            "tests/tokenization/test_tokenization_compat.py::test_tokenization_compat_emits_deprecation_and_forwards_attributes": (
-                "AssertionError: no DeprecationWarning emitted — tokenization compat shim "
-                "doesn't warn on use. Pre-existing on base branch."
-            ),
             # Seed consistency: MagicMock vs float comparison in deterministic check
             "tests/repro/test_seed_consistency.py::TestSeedConsistency::test_torch_deterministic_with_same_seed": (
                 "TypeError: '<' not supported between instances of 'MagicMock' and 'float'. "
@@ -600,16 +595,6 @@ def pytest_collection_modifyitems(session, config, items):
             "tests/validation/test_test_suite_validation.py::TestTestIsolation::test_no_global_state_modification": (
                 "59 files with potential global state issues. Pre-existing on base branch — "
                 "not introduced by this PR."
-            ),
-            # Status gate: threshold check reports 0 but test expects 1 (pre-existing)
-            "tests/status/test_status_gate_from_statusrc.py::test_status_gate_fail_when_below_threshold": (
-                "assert 0 == 1 — status gate returns 0 when below threshold instead of 1. "
-                "Pre-existing on base branch — not introduced by this PR."
-            ),
-            # Inference serving detector: 'server' not in ['serve'] (pre-existing API name mismatch)
-            "tests/specs/test_detector_inference_serving.py::test_inference_serving_detector_basic_path_signals": (
-                "AssertionError: 'server' not in ['serve']. InferenceServingDetector uses 'serve' "
-                "not 'server'. Pre-existing API naming mismatch on base branch."
             ),
             # Policy YAML override: custom regex pattern not detected (pre-existing)
             "tests/safety/test_sanitizers_coverage.py::TestSanitizePrompt::test_policy_yaml_override": (
@@ -690,12 +675,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "torch.float32 instead of None — import path resolves different module. "
                 "Pre-existing import path conflict on base branch."
             ),
-            # Sentencepiece model_prefix: PosixPath equality fails in isolated module load
-            # (both sides display identically but assertion fails — CI/module isolation issue)
-            "tests/tokenization/test_sentencepiece_adapter_prefix.py::test_model_prefix_setter": (
-                "PosixPath equality assertion fails under spec_from_file_location module isolation "
-                "in CI runner. Passes locally. Pre-existing environment-specific issue."
-            ),
             # experiments.manager: mlflow IS installed in CI; no-mlflow path untestable without mocking
             "tests/experiments/test_manager.py::TestInitExperiment::test_init_experiment_file_backend_no_mlflow": (
                 "pytest.raises(ImportError) never triggers because mlflow is installed in CI. "
@@ -717,11 +696,6 @@ def pytest_collection_modifyitems(session, config, items):
             "tests/test_normalize.py::test_normalized_detector_ignores_whitespace": (
                 "NormalizedDetector does not detect files differing only in indentation as "
                 "duplicates. Pre-existing on base branch — not introduced by this PR."
-            ),
-            # test_load_model_with_lora: StubLoraConfig.lora_alpha returns 16 not 32
-            "tests/test_modeling_module.py::test_load_model_with_lora": (
-                "StubLoraConfig.lora_alpha returns 16 instead of expected 32. Pre-existing "
-                "test expectation mismatch on base branch — not introduced by this PR."
             ),
             # test_evaluator_emits: tools.codex_evaluator exits 0 not 2 when deps missing
             "tests/evaluators/test_evaluator_optional_deps.py::test_evaluator_emits_friendly_optional_dependency_message": (
@@ -819,10 +793,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "Pre-existing environment limitation."
             ),
             # train_loop module API mismatches
-            "tests/test_train_loop.py::test_ts_format": (
-                "AttributeError: module codex_ml.train_loop has no attribute '_ts'. "
-                "Function was renamed to _now_ts(). Pre-existing API mismatch."
-            ),
             "tests/test_train_loop.py::test_cli_parsing_smoke": (
                 "SystemExit: 2 — CLI arg parsing failure with test args. "
                 "Pre-existing compatibility issue on base branch."
@@ -832,17 +802,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "AssertionError: knobs_effective.json sidecar missing. "
                 "audit_artifacts/ directory not created in CI run. "
                 "Pre-existing environment dependency."
-            ),
-            # SystemMetricsLogger API mismatch (log_interval kwarg / missing log() method)
-            "tests/monitoring/test_system_metrics.py::test_system_metrics_logger_without_psutil": (
-                "TypeError: SystemMetricsLogger.__init__() got unexpected keyword 'log_interval'. "
-                "Test uses deprecated API (log_interval + log()) vs current (interval + start/stop). "
-                "Pre-existing API mismatch."
-            ),
-            "tests/monitoring/test_system_metrics.py::test_system_metrics_logger_with_writer": (
-                "TypeError: SystemMetricsLogger.__init__() got unexpected keyword 'log_interval'. "
-                "Test uses deprecated API (log_interval + log()) vs current (interval + start/stop). "
-                "Pre-existing API mismatch."
             ),
             # duplication ratio detector: 4 same-stem files → ratio 1.0 vs expected 0.75
             "tests/space_traversal/test_duplication_ratio_detector.py::TestEdgeCases::test_all_same_stem": (
@@ -855,10 +814,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "at machine epsilon boundary. Pre-existing flaky precision issue."
             ),
             # S61 additions — slow suite pre-existing
-            "tests/test_event_integration.py::test_emitter_falls_back_to_event_bus": (
-                "ModuleNotFoundError: No module named 'codex_ml.training.base'. "
-                "Module was removed/renamed; test has a broken import path."
-            ),
             "tests/atomic_diffs/test_track_a.py::test_training_cli_checkpoint_cycle": (
                 "TypeError: load_tokenizer() got unexpected keyword argument 'allow_remote'. "
                 "API mismatch: caller passes allow_remote but function signature changed."
@@ -869,11 +824,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "test; fails when 'minilm' model is not cached on CI runner."
             ),
             # S61 additions — quick suite pre-existing
-            "tests/test_codexml_cli.py::test_codexml_cli_help": (
-                "Failed: DID NOT RAISE SystemExit — cli() from main.py wraps hydra "
-                "and does not raise SystemExit(0) for --help when called as plain function. "
-                "Typer app help path not exercised by plain cli() call."
-            ),
             "tests/test_metrics_generative.py::test_runner_handles_rouge_dict_return": (
                 "assert 1.0 == 0.88 — monkeypatch for rouge_l not applied at test runtime "
                 "(import timing mismatch). Pre-existing environment isolation issue."

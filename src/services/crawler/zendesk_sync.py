@@ -217,8 +217,10 @@ class ZendeskKnowledgeSyncService:
             RuntimeError: If other network errors persist after retries
         """
         parsed = urllib.parse.urlparse(url)
-        if parsed.scheme not in {"https"}:
+        if parsed.scheme not in {"https"} or not parsed.netloc:
             raise ValueError(f"Unsupported URL scheme for {url!r}")
+        if parsed.username or parsed.password:
+            raise ValueError(f"Refusing URL with embedded credentials: {url!r}")
 
         req = urllib.request.Request(  # noqa: S310  # scheme validated above (https only)
             url,
@@ -229,7 +231,9 @@ class ZendeskKnowledgeSyncService:
         last_exc: Exception | None = None
         for attempt in range(self.retries):
             try:
-                with urllib.request.urlopen(req) as response:  # noqa: S310  # nosec: B310  # scheme validated at line 220 (https only)
+                with urllib.request.urlopen(  # noqa: S310  # nosec: B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated above for https/netloc/credentials
+                    req
+                ) as response:
                     content = response.read()
                     headers = dict(response.headers)
                     return content, headers

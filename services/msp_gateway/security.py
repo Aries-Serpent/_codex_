@@ -5,6 +5,7 @@ Handles authentication, authorization, policy enforcement, and redaction
 
 import logging
 import re
+from hashlib import pbkdf2_hmac, sha256
 from pathlib import Path
 from typing import Optional
 
@@ -15,6 +16,34 @@ from src.utils.log_sanitizer import sanitize_log_input
 from .config import settings
 
 logger = logging.getLogger(__name__)
+
+_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"
+_API_KEY_HASH_ITERATIONS = 200_000
+
+
+def _api_key_pepper_bytes() -> bytes:
+    return settings.api_key_pepper.encode("utf-8")
+
+
+def legacy_hash_api_key(api_key: str) -> str:
+    """Return the legacy SHA-256 API-key hash for compatibility lookups."""
+    return sha256(api_key.encode("utf-8")).hexdigest()
+
+
+def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
+    """Return current and legacy hash representations for *api_key*."""
+    return (hash_api_key(api_key), legacy_hash_api_key(api_key))
+
+
+def hash_api_key(api_key: str) -> str:
+    """Return a stable KDF-derived hash for API-key storage and lookup."""
+    derived = pbkdf2_hmac(
+        "sha256",
+        api_key.encode("utf-8"),
+        _api_key_pepper_bytes(),
+        _API_KEY_HASH_ITERATIONS,
+    ).hex()
+    return f"{_API_KEY_HASH_PREFIX}{derived}"
 
 
 class PolicyEnforcer:
@@ -46,7 +75,7 @@ class PolicyEnforcer:
 
             logger.info("Policies loaded successfully")
         except Exception as e:
-            logger.error("Error loading policies: %s", e)
+            logger.error("Error loading policies: %s", type(e).__name__)
             self.safelist = {}
             self.denylist = {}
 
@@ -111,11 +140,15 @@ class AuthManager:
     """Handles authentication and authorization"""
 
     def __init__(self):
-        self.api_keys: dict[str, str] = {}  # api_key -> tenant_id mapping
+        self.api_keys: dict[str, str] = {}  # api_key_hash -> tenant_id mapping
 
     def register_api_key(self, api_key: str, tenant_id: str):
         """Register an API key for a tenant"""
-        self.api_keys[api_key] = tenant_id
+        self.register_api_key_hash(hash_api_key(api_key), tenant_id)
+
+    def register_api_key_hash(self, api_key_hash: str, tenant_id: str):
+        """Register a pre-hashed API key for a tenant."""
+        self.api_keys[api_key_hash] = tenant_id
 
     def verify_api_key(self, api_key: str) -> Optional[str]:
         """Verify API key and return tenant_id
@@ -123,11 +156,20 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        return self.api_keys.get(api_key)
+        for api_key_hash in candidate_api_key_hashes(api_key):
+            tenant_id = self.api_keys.get(api_key_hash)
+            if tenant_id is not None:
+                return tenant_id
+        return None
 
     def revoke_api_key(self, api_key: str):
         """Revoke an API key"""
-        self.api_keys.pop(api_key, None)
+        for api_key_hash in candidate_api_key_hashes(api_key):
+            self.revoke_api_key_hash(api_key_hash)
+
+    def revoke_api_key_hash(self, api_key_hash: str):
+        """Revoke a pre-hashed API key."""
+        self.api_keys.pop(api_key_hash, None)
 
 
 class OfflineGuard:
@@ -172,7 +214,9 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
         logger.warning(
-            f"Blocked prompt for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(error)}"
+            "Blocked prompt for tenant %s: %s",
+            sanitize_log_input(tenant_id),
+            sanitize_log_input(error),
         )
         return False, error
 
@@ -192,6 +236,8 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
         logger.info(
-            f"Applied redactions for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(str(redactions))}"
+            "Applied redactions for tenant %s: %s",
+            sanitize_log_input(tenant_id),
+            sanitize_log_input(str(redactions)),
         )
     return redacted, redactions

@@ -14,9 +14,7 @@ try:
     if not hasattr(typer, 'Typer'):
         pytest.skip("typer package not properly installed", allow_module_level=True)
     from typer.testing import CliRunner
-    TYPER_AVAILABLE = True
 except (ImportError, AttributeError):
-    TYPER_AVAILABLE = False
     pytest.skip("typer package not available", allow_module_level=True)
 
 
@@ -46,10 +44,7 @@ def mock_deps():
 
 
 def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
-    try:
-        from codex import cli_maps
-    except ImportError:
-        pytest.skip("cli_maps not importable")
+    cli_maps = pytest.importorskip("codex.cli_maps")
 
     result = cli_runner.invoke(cli_maps.app, ["--help"])
     if result.exit_code not in (0, 2):
@@ -58,10 +53,7 @@ def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
 
 
 def test_cli_maps_subcommand_help(cli_runner: CliRunner, mock_deps):
-    try:
-        from codex import cli_maps
-    except ImportError:
-        pytest.skip("cli_maps not importable")
+    cli_maps = pytest.importorskip("codex.cli_maps")
 
     result = cli_runner.invoke(cli_maps.app, ["inspect", "--help"])
     if result.exit_code not in (0, 2):

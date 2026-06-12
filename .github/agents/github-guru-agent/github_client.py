@@ -16,6 +16,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Optional
+from urllib import parse as urllib_parse
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
 
@@ -94,20 +95,31 @@ class GitHubAPIClient:
             headers["Authorization"] = f"Bearer {self._token}"
         return headers
 
+    def _build_url(self, path: str, params: Optional[dict[str, Any]] = None) -> str:
+        """Build and validate a GitHub REST API URL."""
+        url = f"{self._base_url}{path}"
+        if params:
+            url = f"{url}?{urllib_parse.urlencode(params, doseq=True)}"
+        parts = urllib_parse.urlsplit(url)
+        if parts.scheme != "https" or parts.hostname != "api.github.com":
+            raise ValueError(f"Refusing non-GitHub API URL: {url!r}")
+        if parts.username or parts.password:
+            raise ValueError("Refusing GitHub API URL with embedded credentials")
+        return url
+
     def _get(self, path: str, params: Optional[dict[str, Any]] = None) -> GitHubAPIResponse:
         """Issue a GET request with retry + backoff."""
         if self.offline_mode:
             return GitHubAPIResponse(status=200, data={})
 
-        url = f"{self._base_url}{path}"
-        if params:
-            query = "&".join(f"{k}={v}" for k, v in params.items())
-            url = f"{url}?{query}"
+        url = self._build_url(path, params)
 
         for attempt in range(_MAX_RETRIES):
             try:
                 req = urllib_request.Request(url, headers=self._headers(), method="GET")
-                with urllib_request.urlopen(req, timeout=_DEFAULT_TIMEOUT) as resp:
+                with urllib_request.urlopen(  # nosec B310 -- URL scheme and hostname are validated by _build_url() (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _build_url()
+                    req, timeout=_DEFAULT_TIMEOUT
+                ) as resp:
                     raw = resp.read().decode("utf-8")
                     data = json.loads(raw) if raw else {}
                     remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
@@ -152,14 +164,16 @@ class GitHubAPIClient:
                 status=403, data={}, error="SAFE_MODE: mutating operations disabled"
             )
 
-        url = f"{self._base_url}{path}"
+        url = self._build_url(path)
         payload = json.dumps(body).encode("utf-8")
 
         for attempt in range(_MAX_RETRIES):
             try:
                 headers = {**self._headers(), "Content-Type": "application/json"}
                 req = urllib_request.Request(url, data=payload, headers=headers, method="POST")
-                with urllib_request.urlopen(req, timeout=_DEFAULT_TIMEOUT) as resp:
+                with urllib_request.urlopen(  # nosec B310 -- URL scheme and hostname are validated by _build_url() (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _build_url()
+                    req, timeout=_DEFAULT_TIMEOUT
+                ) as resp:
                     raw = resp.read().decode("utf-8")
                     data = json.loads(raw) if raw else {}
                     remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))

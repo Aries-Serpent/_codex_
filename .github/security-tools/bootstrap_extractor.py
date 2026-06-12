@@ -96,11 +96,13 @@ class BootstrapExtractor:
 
             # Write file
             output_file = full_output_dir / filename
-            output_file.write_text(content)
+            output_file.write_text(content, encoding='utf-8')
 
-            # Make executable if needed (owner-only for security)
-            if executable:
-                os.chmod(output_file, 0o700)
+            # Apply explicit file modes after creation so docs/modules stay readable
+            # while executable payloads remain owner-only.
+            os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- executable tools stay owner-only and non-executable artifacts stay read-only for group/other
+                output_file, 0o700 if executable else 0o644
+            )
 
             print(f"✅ Extracted: {output_file}")
             return True

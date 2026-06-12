@@ -92,7 +92,12 @@ def test_load_model_with_lora(monkeypatch):
         "device": "cpu",
         "dtype": "float32",
         "use_lora": True,
-        "lora": {"target_modules": ["linear"], "alpha": 32, "r": 4, "dropout": 0.1},
+        "lora": {
+            "target_modules": ["linear"],
+            "lora_alpha": 32,
+            "r": 4,
+            "lora_dropout": 0.1,
+        },
     }
 
     model = modeling.load_model(config)

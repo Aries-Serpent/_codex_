@@ -1,4 +1,38 @@
-"""Secure pickle loading utilities for the codex_ml package."""
+"""Secure pickle loading utilities for the codex_ml package.
+
+SECURITY MODEL:
+---------------
+This module provides safe alternatives to direct pickle usage for ML checkpoint scenarios.
+
+Trust Boundaries:
+1. RestrictedUnpickler: Enforces class allowlist to prevent arbitrary code execution
+2. HMAC signatures: Verifies checkpoint integrity before deserialization
+3. Explicit trust flags: use_restricted_unpickler must be consciously disabled
+
+Usage Guidelines:
+- ALWAYS use RestrictedUnpickler for untrusted sources (default behavior)
+- ONLY set use_restricted_unpickler=False for checkpoints YOU created locally
+- ALWAYS verify HMAC signatures for checkpoints from external sources
+- PREFER torch.save(weights_only=True) or safetensors for new code
+
+Example - Safe Loading:
+    >>> from codex_ml.utils.safe_pickle import safe_pickle_load
+    >>> # Load with class restrictions (safe)
+    >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
+    >>> 
+    >>> # Load with signature verification (safest)
+    >>> data = safe_pickle_load("signed.pkl", verify_signature=True, use_restricted_unpickler=True)
+
+Example - Trusted Source (use with caution):
+    >>> # Only if you KNOW the checkpoint was created by your code
+    >>> data = safe_pickle_load("my_local_checkpoint.pkl", use_restricted_unpickler=False)
+    >>> # Warning will be logged automatically
+
+Migration Path:
+- For new ML models: Use safetensors (pip install safetensors)
+- For PyTorch models: Use torch.save/torch.load with weights_only=True
+- For legacy compatibility: Use this module with RestrictedUnpickler
+"""
 
 from __future__ import annotations
 
@@ -7,7 +41,7 @@ import hmac
 import io
 import logging
 import os
-import pickle  # nosec B403 — this is the safe pickle wrapper; it validates HMAC before loading
+import pickle  # nosec B403 — centralized safe wrapper around trusted pickle operations
 import secrets
 from pathlib import Path
 from typing import Any
@@ -56,6 +90,7 @@ class RestrictedUnpickler(pickle.Unpickler):
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
         # NumPy pickles for ndarray/scalar values rely on these reconstruction helpers.
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
+        "numpy._core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
         # Private `torch.storage` helpers remain necessary to reconstruct trusted
         # tensor cache payloads; `_TypedStorage` is still emitted by tensor
@@ -84,13 +119,77 @@ def safe_pickle_load(
     secret_key: bytes | None = None,
     use_restricted_unpickler: bool = True,
 ) -> Any:
-    """Safely load a pickle file with optional signature verification."""
+    """Safely load a pickle file with optional signature verification.
+    
+    SECURITY CONTRACT:
+    ------------------
+    This function provides defense-in-depth against pickle deserialization attacks:
+    
+    1. RestrictedUnpickler (default): Only allows whitelisted classes
+       - Prevents arbitrary code execution via __reduce__
+       - See SAFE_MODULES constant for allowed classes
+       
+    2. HMAC verification (optional): Ensures file integrity
+       - Prevents tampering with checkpoint files
+       - Use for checkpoints from external/untrusted sources
+       
+    3. Explicit trust override: use_restricted_unpickler=False
+       - ONLY use for files YOU created locally
+       - Logs warning when disabled
+       - Caller accepts full responsibility for file trust
+    
+    Trust Boundaries:
+    - verify_signature=True: Untrusted filesystem → Verified trusted source
+    - use_restricted_unpickler=True: Unknown classes → Known safe classes
+    - use_restricted_unpickler=False: TRUSTED source → Raw deserialization (RISKY)
+    
+    Args:
+        file_path: Path to pickle file to load
+        verify_signature: Enable HMAC signature verification (recommended for external sources)
+        secret_key: HMAC key (auto-generated if None, shared across saves/loads)
+        use_restricted_unpickler: Enable class allowlist (STRONGLY recommended)
+        
+    Returns:
+        Deserialized Python object
+        
+    Raises:
+        FileNotFoundError: File does not exist
+        ValueError: HMAC signature verification failed
+        pickle.UnpicklingError: Restricted class detected (when use_restricted_unpickler=True)
+        
+    Examples:
+        >>> # Safest: Load with restrictions and verification
+        >>> data = safe_pickle_load("external.pkl", verify_signature=True, use_restricted_unpickler=True)
+        
+        >>> # Safe: Load with restrictions only
+        >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
+        
+        >>> # Risky: Load without restrictions (local trusted files only)
+        >>> data = safe_pickle_load("my_checkpoint.pkl", use_restricted_unpickler=False)
+        ⚠️  Loading pickle WITHOUT restriction (potential security risk): ...
+    """
     path = Path(file_path)
     if not path.exists():
         raise FileNotFoundError(f"Pickle file not found: {path}")
 
-    data = path.read_bytes()
+    return safe_pickle_load_bytes(
+        path.read_bytes(),
+        verify_signature=verify_signature,
+        secret_key=secret_key,
+        use_restricted_unpickler=use_restricted_unpickler,
+        source=str(path),
+    )
 
+
+def safe_pickle_load_bytes(
+    data: bytes,
+    *,
+    verify_signature: bool = False,
+    secret_key: bytes | None = None,
+    use_restricted_unpickler: bool = True,
+    source: str = "<memory>",
+) -> Any:
+    """Safely load pickle bytes with the same controls as :func:`safe_pickle_load`."""
     if verify_signature:
         key = secret_key or _get_secret_key()
         pickled_data, signature = _split_signed_pickle(data)
@@ -102,22 +201,37 @@ def safe_pickle_load(
             )
 
         data = pickled_data
-        logger.debug("Verified HMAC signature for %s", path)
+        logger.debug("Verified HMAC signature for %s", source)
 
     if use_restricted_unpickler:
-        logger.debug("Loading pickle with RestrictedUnpickler: %s", path)
+        logger.debug("Loading pickle with RestrictedUnpickler: %s", source)
         return RestrictedUnpickler(io.BytesIO(data)).load()
 
     logger.warning(
         "Loading pickle WITHOUT restriction (potential security risk): %s. "
         "Use use_restricted_unpickler=True unless the file is fully trusted.",
-        path,
+        source,
     )
-    # Rationale: caller explicitly set use_restricted_unpickler=False, meaning
-    # they accept full responsibility for the trust boundary of this file.
-    # The default (use_restricted_unpickler=True) routes through RestrictedUnpickler
-    # which enforces a class allowlist.  The warning above is always emitted.
+    # SECURITY JUSTIFICATION:
+    # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility
+    # for the trust boundary. This is ONLY safe if:
+    # 1. The bytes were created by the current process or trusted local code
+    # 2. The bytes came from a secure location with proper access controls
+    # 3. The caller validated the source and integrity before calling this helper
     return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load
+
+
+def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
+    """Serialize trusted in-memory objects behind one audited pickle boundary.
+
+    SECURITY NOTE:
+        Callers are responsible for ensuring *obj* was created by trusted local
+        code and is not derived from attacker-controlled state. This helper is
+        only safe for reviewed compatibility boundaries where pickle output must
+        remain interoperable with existing checkpoint consumers.
+    """
+    resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
+    return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
 
 def safe_pickle_dump(
@@ -125,12 +239,17 @@ def safe_pickle_dump(
     file_path: str,
     add_signature: bool = False,
     secret_key: bytes | None = None,
+    *,
+    protocol: int | None = None,
 ) -> None:
     """Safely dump an object to pickle with optional HMAC signature."""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    pickled_data = pickle.dumps(obj)
+    # SECURITY: serialization only; callers pass trusted objects created by the
+    # current process. Centralizing the pickle boundary here keeps surrounding
+    # checkpoint code on safer abstractions.
+    pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
     if add_signature:
         key = secret_key or _get_secret_key()
         data = _build_signed_pickle(pickled_data, key)
@@ -200,4 +319,10 @@ def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
     return data[:-SIGNED_PICKLE_SIGNATURE_LEN], data[-SIGNED_PICKLE_SIGNATURE_LEN:]
 
 
-__all__ = ["RestrictedUnpickler", "safe_pickle_dump", "safe_pickle_load"]
+__all__ = [
+    "RestrictedUnpickler",
+    "safe_pickle_dump",
+    "safe_pickle_load",
+    "safe_pickle_load_bytes",
+    "trusted_pickle_dumps",
+]

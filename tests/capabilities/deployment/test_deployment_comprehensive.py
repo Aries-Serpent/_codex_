@@ -159,8 +159,14 @@ class TestHealthProbes:
 class K8sManifest:
     """Kubernetes manifest representation."""
 
-    def __init__(self, kind: str, name: str, namespace: str = "default"):
-        self.api_version = "v1"
+    def __init__(
+        self,
+        kind: str,
+        name: str,
+        namespace: str = "default",
+        api_version: str = "v1",
+    ):
+        self.api_version = api_version
         self.kind = kind
         self.name = name
         self.namespace = namespace
@@ -192,8 +198,7 @@ class DeploymentManifest(K8sManifest):
     """Kubernetes Deployment manifest."""
 
     def __init__(self, name: str, namespace: str = "default"):
-        super().__init__("Deployment", name, namespace)
-        self.api_version = "apps/v1"
+        super().__init__("Deployment", name, namespace, api_version="apps/v1")
         self.replicas = 1
         self.image = ""
         self.port = 8080

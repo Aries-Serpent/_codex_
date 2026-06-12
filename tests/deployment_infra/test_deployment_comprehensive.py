@@ -87,10 +87,7 @@ class TestDockerCompose:
 
     def test_docker_compose_services_structure(self):
         """Test Docker Compose services structure."""
-        try:
-            import yaml
-        except ImportError:
-            pytest.skip("PyYAML not installed")
+        yaml = pytest.importorskip("yaml")
 
         repo_root = Path(__file__).parents[2]
         compose_file = repo_root / "docker-compose.yml"

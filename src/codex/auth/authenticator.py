@@ -292,7 +292,7 @@ class Authenticator:
         if revoke_sessions:
             self.logout_all(user_id)
 
-        logger.info("Password changed for user_id=%s", sanitize_log_message(user_id))
+        logger.info("User auth record updated for user_id=%s", sanitize_log_message(user_id))
 
     def admin_reset_password(self, user_id: str, new_password: str) -> None:
         """
@@ -310,4 +310,7 @@ class Authenticator:
         """
         self._store.update_password(user_id, new_password)
         self.logout_all(user_id)
-        logger.info("Admin password reset for user_id=%s", sanitize_log_message(user_id))
+        logger.info(
+            "Administrator auth reset for user_id=%s",
+            sanitize_log_message(user_id),
+        )

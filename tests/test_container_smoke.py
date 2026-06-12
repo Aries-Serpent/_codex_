@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -39,6 +40,20 @@ def _validated_host_port(raw: str) -> int:
     return port
 
 
+def _validated_script_path(name: str) -> str:
+    script_path = Path(script(name)).resolve()
+    allowed_root = (Path.cwd() / "scripts" / "ci").resolve()
+    script_path.relative_to(allowed_root)
+    return str(script_path)
+
+
+def _bash_executable() -> str:
+    bash_path = shutil.which("bash")
+    if not bash_path:
+        raise RuntimeError("bash executable not found")
+    return bash_path
+
+
 @pytest.mark.skipif(
     os.environ.get("RUN_CONTAINER_SMOKE", "0") != "1",
     reason="Set RUN_CONTAINER_SMOKE=1 to enable container smoke test",
@@ -49,15 +64,17 @@ def test_container_smoke_basic(tmp_path):
     # Use an ephemeral host port in the high range to avoid conflicts
     host_port = _validated_host_port(os.environ.get("SMOKE_HOST_PORT", "18000"))
     cmd = [
-        "bash",
-        script("container_smoke.sh"),
+        _bash_executable(),
+        _validated_script_path("container_smoke.sh"),
         image,
         "8000",
         str(host_port),
     ]
     print(f"[test] Running: {' '.join(cmd)}", file=sys.stderr)
     # Allow enough time for slower CI/container startup while still failing reasonably fast.
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+    proc = subprocess.run(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args -- env-derived args are validated by _validated_smoke_image/_validated_host_port and shell=False is used
+        cmd, capture_output=True, text=True, timeout=300, check=False, shell=False
+    )
     if proc.returncode != 0:
         sys.stderr.write(proc.stdout)
         sys.stderr.write(proc.stderr)

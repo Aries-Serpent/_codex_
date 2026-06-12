@@ -154,7 +154,9 @@ class BrainClient:
                 f"Blocked request to disallowed URL scheme '{scheme}://' "
                 f"(only http/https are permitted)"
             )
-        return urllib.request.urlopen(req, timeout=timeout)  # nosec B310
+        return urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- req.full_url is validated above
+            req, timeout=timeout
+        )
 
     def _auth_header(self) -> dict[str, str]:
         """Return a Bearer auth header using the best available token.

@@ -48,14 +48,14 @@ subcommands that close the remaining gaps:
 
 | Workflow | File | Status | Purpose |
 |---|---|---|---|
-| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | ✅ Pre-existing | Posts latest session entry from `AGENT_ACCOUNTABILITY_REPORT.md` to discussion #3673 |
+| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | ✅ Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
 | Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | ✅ **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
 
 ### 2.3 Discussion Threads in Use
 
 | # | Title | Purpose | Upsert Key |
 |---|---|---|---|
-| 3673 | Accountability Report | Session entries from `AGENT_ACCOUNTABILITY_REPORT.md` | `<!-- ci-pattern-summary:run-{RUN_ID} -->` |
+| 3673 | Accountability Report | Authoritative historical notes sourced from `AGENT_ACCOUNTABILITY_REPORT.md` | `<!-- codex-accountability-turn:v1 branch=… pr=… session=… turn=… -->` |
 | _auto_ | CI Pattern Summary | High-recurrence + cross-PR tables | `<!-- ci-pattern-summary:{session_id} -->` |
 | _auto_ | Continuation Chain | Tokenized chain prompts for next-session pickup | Always new comment |
 
@@ -232,7 +232,7 @@ onboarding a new agent session with accumulated context.
 | Update status without spamming thread | `upsert_discussion_comment()` | `upsert-discussion-comment` |
 | Report CI pattern state | `post_ci_pattern_summary()` | `post-ci-pattern-summary` |
 | Resume from prior session context | Read last chain comment from Discussion | `discussion-digest` (planned) |
-| Post session accountability | `post-accountability-to-discussion.yml` | Automatic on AGENT_ACCOUNTABILITY_REPORT.md push |
+| Post session accountability | `post-accountability-to-discussion.yml` | Automatic upsert on `AGENT_ACCOUNTABILITY_REPORT.md` push; exactly one authoritative comment per branch/PR/session/turn |
 
 ### 5.2 Tokenized Continuation Chain Format
 

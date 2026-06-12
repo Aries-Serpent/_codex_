@@ -27,7 +27,7 @@ from html import escape as html_escape  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 try:
-    from defusedxml import ElementTree
+    from defusedxml.ElementTree import fromstring as safe_xml_fromstring
 except ImportError as exc:
     logger.debug(f"ImportError: {exc}")
     raise ImportError(
@@ -256,5 +256,5 @@ def emit_solution_xml(config: SolutionManifestConfig) -> str:
     """Serialize ``config`` to the Dynamics unmanaged solution XML string."""
 
     xml = f'<?xml version="1.0" encoding="utf-8"?>{build_solution_tree(config)}'
-    ElementTree.fromstring(xml)
+    safe_xml_fromstring(xml)
     return xml

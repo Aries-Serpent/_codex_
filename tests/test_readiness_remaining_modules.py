@@ -111,12 +111,15 @@ def _install_optional_dependency_stubs():
 
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
-    # Minimal no-op stubs — lambdas accept *_, **__ to mirror the real API signatures
-    # (Element/SubElement require a tag, tostring requires an element) without enforcing them.
-    xml_tree_stub.Element = lambda *_, **__: SimpleNamespace()
-    xml_tree_stub.SubElement = lambda *_, **__: SimpleNamespace()
-    xml_tree_stub.tostring = lambda *_, **__: b""
-    xml_tree_stub.fromstring = lambda *_, **__: SimpleNamespace()
+    # Minimal no-op stubs that mirror the defusedxml ElementTree API without
+    # importing an XML parser in this readiness smoke test.
+    for attr_name, stub_impl in (
+        ("Element", lambda *_, **__: SimpleNamespace()),
+        ("SubElement", lambda *_, **__: SimpleNamespace()),
+        ("tostring", lambda *_, **__: b""),
+        ("fromstring", lambda *_, **__: SimpleNamespace()),
+    ):
+        setattr(xml_tree_stub, attr_name, stub_impl)
     xml_stub.ElementTree = xml_tree_stub
     _install_stub("defusedxml", xml_stub)
     _install_stub("defusedxml.ElementTree", xml_tree_stub)

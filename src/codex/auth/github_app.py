@@ -50,6 +50,7 @@ import json
 import logging
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Optional
@@ -151,6 +152,18 @@ class GitHubApp:
     def __init__(self, config: GitHubAppConfig) -> None:
         self._config = config
         self._token_cache: dict[int, InstallationToken] = {}
+
+    def _validated_api_url(self, url: str) -> str:
+        """Allow only credential-free HTTPS calls to the configured GitHub host."""
+        parts = urllib.parse.urlsplit(url)
+        expected_host = urllib.parse.urlsplit(self._config.api_base_url).hostname
+        if parts.scheme != "https" or not parts.netloc or parts.hostname != expected_host:
+            raise AuthenticationError(
+                f"Refusing request outside configured GitHub API host: {url!r}"
+            )
+        if parts.username or parts.password:
+            raise AuthenticationError("GitHub API URL must not contain embedded credentials")
+        return url
 
     # ------------------------------------------------------------------ #
     # JWT                                                                  #
@@ -257,7 +270,9 @@ class GitHubApp:
     ) -> InstallationToken:
         """Call the GitHub API to create an installation access token."""
         jwt = self.generate_jwt()
-        url = f"{self._config.api_base_url}/app/installations/{installation_id}/access_tokens"
+        url = self._validated_api_url(
+            f"{self._config.api_base_url}/app/installations/{installation_id}/access_tokens"
+        )
 
         body: dict[str, Any] = {}
         if permissions:
@@ -281,7 +296,9 @@ class GitHubApp:
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+                req, timeout=30
+            ) as resp:
                 response_body = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             error_body = exc.read().decode("utf-8", errors="replace")
@@ -339,7 +356,7 @@ class GitHubApp:
 
     def _api_get(self, path: str, bearer: str) -> Any:
         """Low-level GET using an explicit bearer token (e.g. App JWT)."""
-        url = self._config.api_base_url + path
+        url = self._validated_api_url(self._config.api_base_url + path)
         req = urllib.request.Request(
             url,
             headers={
@@ -350,7 +367,9 @@ class GitHubApp:
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+                req, timeout=30
+            ) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             body = exc.read().decode("utf-8", errors="replace")
@@ -390,7 +409,7 @@ class GitHubApp:
             if not token_value:
                 continue
             req = urllib.request.Request(
-                url,
+                self._validated_api_url(url),
                 headers={
                     "Accept": "application/vnd.github+json",
                     "Authorization": f"Bearer {token_value}",
@@ -399,7 +418,9 @@ class GitHubApp:
                 },
             )
             try:
-                with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+                    req, timeout=30
+                ) as resp:
                     logger.debug("pat_api_get succeeded with %s: %s", token_name, url)
                     return json.loads(resp.read().decode("utf-8"))
             except urllib.error.HTTPError as exc:

@@ -185,7 +185,7 @@ def collect_metadata(
     ----------
     session_id:
         Explicit session ID.  When *None*, derived from ``CODEX_SESSION_ID``
-        env-var or a SHA-1 hash of ``commit_sha + timestamp``.
+        env-var or a SHA-256 hash of ``commit_sha + timestamp``.
     narrative:
         Free-form session description.  Falls back to the last commit message.
 
@@ -203,7 +203,7 @@ def collect_metadata(
         session_id = os.environ.get("CODEX_SESSION_ID")
     if not session_id:
         raw = f"{commit_sha}:{timestamp}".encode()
-        session_id = hashlib.sha1(raw, usedforsecurity=False).hexdigest()[:12]
+        session_id = hashlib.sha256(raw).hexdigest()[:12]
 
     # Author ---------------------------------------------------------------
     author = (

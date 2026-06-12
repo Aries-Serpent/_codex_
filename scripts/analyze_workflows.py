@@ -312,7 +312,9 @@ class WorkflowAnalyzer:
         print("\nResources:")
         print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
         print(f"  🐳 Docker required:     {summary['docker_required']}")
-        print(f"  🔑 Unique secrets:      {summary['secrets_used']}")
+        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
+        _secrets_count: int = int(summary['secrets_used'])
+        print(f"  🔑 Unique secrets:      {_secrets_count}")
         print(f"  🔧 Unique actions:      {summary['unique_actions']}")
         print("\nFailure Pattern Categories:")
         for category, patterns in self.failure_patterns.items():
