@@ -1,3 +1,22 @@
+## SESSION SUMMARY — 2026-06-12T02:06Z · PR #4849 merge conflict resolution
+
+### Pre-flight Checklist
+- [x] Fetched latest `origin/0D_base_` and `origin/copilot/fix-review-comments` before integration ✅
+- [x] Merged `origin/0D_base_` into branch and resolved conflict markers ✅
+- [x] Ran workflow/file validation checks on touched files ✅
+
+### Work Completed
+1. Completed branch integration with merge commit `022b82afe` and resolved `CHANGELOG.md` conflict while preserving both PR #4849 and PR #4850 auto-update entries.
+2. Restored explicit `name` + non-blocking guarded `run: |` block for the session preload step in `.github/workflows/copilot-setup-steps.yml`.
+3. Simplified redundant PR metadata in `.github/copilot-prompts/active/PR-4850-followup.md` (`**PR**: #4850`).
+
+### Validation / Audit Notes
+- `bash scripts/ci/validate_setup_steps_yaml.sh` ✅
+- `~/.local/bin/pre-commit run --files .github/workflows/copilot-setup-steps.yml .github/copilot-prompts/active/PR-4850-followup.md CHANGELOG.md docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` ✅
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 4849` ✅
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T01:40Z · PR #4849 Validation Pipeline + WEC gate rescue
 
 ### Pre-flight Checklist

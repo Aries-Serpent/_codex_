@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (SN)
+- Resolved PR #4849 merge conflicts while merging `origin/0D_base_` into `copilot/fix-review-comments`.
+- Added explicit name + block-scalar guarded `run` for the session preload step in `.github/workflows/copilot-setup-steps.yml`.
+- Removed redundant `PR #4850` duplication in `.github/copilot-prompts/active/PR-4850-followup.md`.
+
 ### Fixed (auto-update — PR #4849)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4849 (SHA `87ce04db`) at 2026-06-12T00:19Z [auto-generated]
 

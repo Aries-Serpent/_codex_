@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4850
 
-**PR**: #4850 - PR #4850  
+**PR**: #4850  
 **Branch**: `main`  
 **Author**: @mbaetiong  
 **Date**: 2026-06-12  
