@@ -203,7 +203,7 @@ class TestProviderConfig:
         """Test creating provider config."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test",
+            token="ghp_test",  # pragma: allowlist secret
             api_url="https://api.github.com",
         )
         assert config.provider_type == ProviderType.GITHUB
@@ -449,7 +449,7 @@ class TestGitHubTokenProvider:
         """Create test config for GitHub provider."""
         return ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test_token_1234567890",
+            token="ghp_test_token_1234567890",  # pragma: allowlist secret
             api_url="https://api.github.com",
         )
 
@@ -611,7 +611,7 @@ class TestGitHubTokenProvider:
         """Test create_token calls GitHub API when installation_id is set."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test_token_1234567890",
+            token="ghp_test_token_1234567890",  # pragma: allowlist secret
             api_url="https://api.github.com",
             installation_id="12345",
         )
@@ -641,7 +641,7 @@ class TestGitHubTokenProvider:
         """Test create_token rejects PAT-style scopes."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test_token_1234567890",
+            token="ghp_test_token_1234567890",  # pragma: allowlist secret
             api_url="https://api.github.com",
             installation_id="12345",
         )
@@ -659,7 +659,7 @@ class TestGitHubTokenProvider:
         """Test create_token fails closed when API returns 201 but no token."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test_token_1234567890",
+            token="ghp_test_token_1234567890",  # pragma: allowlist secret
             api_url="https://api.github.com",
             installation_id="12345",
         )
@@ -681,7 +681,7 @@ class TestGitHubTokenProvider:
         """Test create_token handles API errors gracefully."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test_token_1234567890",
+            token="ghp_test_token_1234567890",  # pragma: allowlist secret
             api_url="https://api.github.com",
             installation_id="12345",
         )
@@ -1389,7 +1389,7 @@ class TestProviderFactory:
         """Test creating GitHub provider."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test",
+            token="ghp_test",  # pragma: allowlist secret
         )
 
         provider = ProviderFactory.create_provider(config)
@@ -1496,7 +1496,7 @@ class TestProviderFactory:
         """Test validating GitHub config."""
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_test",
+            token="ghp_test",  # pragma: allowlist secret
         )
 
         is_valid = ProviderFactory.validate_config(config)
@@ -1538,7 +1538,7 @@ class TestProviderFactory:
         """Test validating HashiCorp config requires vault_url and token."""
         config_missing_url = ProviderConfig(
             provider_type=ProviderType.HASHICORP_VAULT,
-            token="vault-token",
+            token="vault-token",  # pragma: allowlist secret
         )
         with pytest.raises(ProviderConfigError, match="vault_url"):
             ProviderFactory.validate_config(config_missing_url)
@@ -1553,13 +1553,13 @@ class TestProviderFactory:
         config_complete = ProviderConfig(
             provider_type=ProviderType.HASHICORP_VAULT,
             vault_url="https://vault.example.com",
-            token="vault-token",
+            token="vault-token",  # pragma: allowlist secret
         )
         assert ProviderFactory.validate_config(config_complete) is True
 
     def test_create_provider_import_error_wrapped(self):
         """Test create_provider wraps ImportError with provider context."""
-        config = ProviderConfig(provider_type=ProviderType.GITHUB, token="ghp_test")
+        config = ProviderConfig(provider_type=ProviderType.GITHUB, token="ghp_test")  # pragma: allowlist secret
         real_import = __import__
 
         def fake_import(name, *args, **kwargs):

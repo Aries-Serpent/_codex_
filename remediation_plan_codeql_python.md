@@ -208,3 +208,18 @@
 - **Phase 3-D** (uninitialized-local-variable sweep confirmation): All 46 findings in the plan verified clean across 22 test files. Pattern used throughout: `pytest.importorskip()` (skips on missing optional deps), explicit `var = None` before try blocks, and `try: ... except ImportError: var = None`. Files confirmed: `scripts/cognitive/tests/test_advanced_reasoning.py`, `tests/agents/test_phase2_deep_coverage_batch9.py`, `tests/agents/test_phase2_quantum_game_theory.py`, `tests/codex/test_cli_maps.py`, `tests/codex/test_cli_zendesk.py`, `tests/configuration/test_config_basics.py`, `tests/deployment_infra/test_deployment_comprehensive.py`, `tests/integration/test_data_gate.py`, `tests/integration/test_data_report.py`, `tests/integration/test_eval_wrapper.py`, `tests/integration/test_monitor_report.py`, `tests/modeling/test_lora_minimal.py`, `tests/performance/test_performance_regression.py`, `tests/security/test_security_gating.py`, `tests/smoke/test_cli_determinism_wiring.py`, `tests/specs/test_dup_similarity.py`, `tests/tokenization/test_fast_tokenizer_wrapper.py`, `tests/tokenization/test_roundtrip_basic.py`, `tests/training/test_simple_trainer.py`, `tests/unit/test_peft_utils.py`, `tests/unit/test_plugin_loader.py`, `tests/utils/test_repro_rng.py` — 22 files verified clean, no additional changes required.
 
 - **Validation basis**: `python3 -m py_compile` clean on all touched files; `python3 -m compileall -q src/ scripts/ agents/ tests/ cognitive_app/ services/ tools/` — 0 errors; `ast.parse` OK on all `src/**/*.py`.
+
+## Cross-Plan Reconciliation — 2026-06-12
+
+- **Cross-plan audit completed**: all HIGH `py/clear-text-logging-sensitive-data` findings
+  (`scripts/catalog_workflows.py`, `scripts/github_secrets_sync.py`,
+  `scripts/ops/codex_mint_tokens_per_run.py`, `scripts/ops/codex_repo_admin_bootstrap.py`,
+  `scripts/security/verify_token_scope.py`, `src/codex/knowledge/pii.py`,
+  `src/security/providers/github_provider.py`,
+  `tests/integration/test_admin_automation_agent.py`) individually re-verified clean
+  against the working-tree files — all previously recorded Phase 3-A conclusions confirmed.
+- **Missing SHAs**: acd5a3762, 2138f9da1, ff72490a6, 3a0cd9055 are absent from the
+  shallow-clone environment; all source fixes are present in the working tree.
+  See `.codex/reports/commit_sha_audit_2026-06-12.md`.
+- **Full reconciliation report**: `.codex/reports/cross_plan_reconciliation_2026-06-12.md`
+- **Open items remaining**: 0

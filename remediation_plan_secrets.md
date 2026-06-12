@@ -96,7 +96,7 @@
 - **Files covered by baseline only (JSON — no inline comment support):**
   - `.codex/webhook_config.json` — lines 7, 85: `"secret_env"` key and `"WEBHOOK_SECRET"` key are env-var name references, not values
   - `.codex/agent_context.json` — line 14: `CODEX_CI_LAST_GREEN_SHA` is a CI tracking Git SHA, not a credential
-  - `CODEX_MANIFEST.json` — line 2248: SHA256 integrity hash flagged as Hex High Entropy (also has an unresolved merge conflict marker; out of scope for secret triage)
+  - `CODEX_MANIFEST.json` — line 2248: SHA256 integrity hash flagged as Hex High Entropy (merge conflict marker at that line is a separate concern addressed in Phase 5-C below)
   - `.codex/aftermath/pda_iterations.jsonl` — lines 3, 4, 57, 231: JSONL with Git SHAs / iteration identifiers as hex entropy
 - **Baseline handling:** no `.secrets.baseline` regeneration performed; existing baseline entries for covered findings remain as tracked known issues until a full baseline regeneration pass is executed after triage is complete.
 
@@ -117,7 +117,7 @@
 - **Phase 5-A** (JSON/JSONL baseline registration): all 4 JSON/JSONL false-positive findings already correctly registered in `.secrets.baseline` — no new entries needed
 - **Phase 5-B** (vendor path exclusions): `.codex/validation/`, `.venv_ci/`, `assets/manifest.json` added to `--exclude-files` in `security-scanning-suite.yml` — Commit: 8a5f23868
 - **Phase 5-C** (CODEX_MANIFEST conflict): merge conflict at line 2248 resolved (HEAD version kept); `.secrets.baseline` entry updated with correct hash — Commit: 8a5f23868
-- **Phase 5-D** (baseline regeneration): see Commit: 8a5f23868 (or: deferred to CI run if detect-secrets unavailable in agent environment)
+- **Phase 5-D** (baseline regeneration): see Commit: 8a5f23868 (baseline regeneration triggered via CI run when detect-secrets is unavailable in the agent environment)
 - **Validation basis**: CODEX_MANIFEST.json JSON-valid after conflict resolution; CI exclude-files patterns verified against `.gitignore`
 
 ## Implementation Status — 2026-06-12 (Phase 6: Final Baseline Verification)
@@ -146,3 +146,14 @@
   - `.codex/aftermath/pda_iterations.jsonl`: tracked
 
 - **Overall Status**: COMPLETE — all known false positives resolved; no true secrets found in source paths; O-7 closed after code review confirmed no unmasked credential logging; vendor exclusions verified; baseline JSON entries confirmed present.
+
+## Cross-Plan Reconciliation — 2026-06-12
+
+- **O-7 final disposition**: CLOSED — cli_api_server.py confirmed clean; all `log.*` calls
+  near lines 1320–1360 log only env-var names and exception type strings, never raw values.
+  See `.codex/reports/cross_plan_reconciliation_2026-06-12.md` § O-7.
+- **Missing SHAs**: 8a5f23868 is absent from the shallow-clone environment;
+  all source fixes are present in the working tree.
+  See `.codex/reports/commit_sha_audit_2026-06-12.md`.
+- **Full reconciliation report**: `.codex/reports/cross_plan_reconciliation_2026-06-12.md`
+- **Open items remaining**: 0

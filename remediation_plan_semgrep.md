@@ -199,3 +199,12 @@ python3 -m compileall -q src/ tests/ services/ cli/ .github/agents/ .github/copi
 - **Files changed this session**: `.github/agents/codex_reviewer/github_client.py` (4 urlopen lines), `src/codex/release/api.py` (1 chmod line)
 - **All other findings**: confirmed clean from prior sessions
 - **Total findings addressed across all sessions**: 88/88
+
+## Cross-Plan Reconciliation — 2026-06-12
+
+- **Semgrep ↔ CodeQL overlap** (1 finding): verified resolved in both plans' Phase 3-A sections.
+- **Missing SHAs**: 3a0cd9055, 4659c8640 are absent from the shallow-clone environment;
+  all source fixes are present in the working tree.
+  See `.codex/reports/commit_sha_audit_2026-06-12.md`.
+- **Full reconciliation report**: `.codex/reports/cross_plan_reconciliation_2026-06-12.md`
+- **Open items remaining**: 0
