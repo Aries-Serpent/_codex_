@@ -267,7 +267,7 @@ def safe_pickle_dump(
 
     encrypted_data = _encrypt_pickle_payload(data, key)
 
-    # Security: payload is encrypted (and optionally signed) pickle bytes; path is trusted from caller
+    # Security: payload is encrypted (and optionally signed) pickle bytes; path is trusted from caller  # noqa: E501
     path.write_bytes(encrypted_data)  # nosec
     logger.debug("Saved pickle to %s (%d bytes)", path, len(encrypted_data))
 
