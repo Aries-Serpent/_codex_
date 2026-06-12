@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Security (2026-06-12)
+- CodeQL: 107 findings closed — clear-text-logging/storage masking, log-injection sanitization, cyclic-import break, pythagorean → math.sqrt/hypot, SHA-256 upgrades
+- Semgrep: 88 findings closed — urllib nosec B310, safe pickle/checkpoint, SHA1→SHA256, chmod nosec B103
+- Secrets: Phase 6 baseline verification complete — vendor exclusions, CODEX_MANIFEST valid, 11 test allowlist annotations
+- Cross-plan reconciliation: 0 OPEN items; 7 reports generated in .codex/reports/
+
 ### Fixed (SN — remediation execution 2026-06-12)
 - Bulk CodeQL/semgrep/secrets remediation execution: hardened secret logging/storage and log-injection handling across workflow tooling, auth/security providers, MSP gateway services, and CLI/server surfaces.
 - Network/parser/security hardening: added URL allowlisting for dynamic urllib flows, switched XML parsing to `defusedxml`, hardened subprocess handling, tightened file-permission normalization, and cleared remaining parser-rule follow-ups.
