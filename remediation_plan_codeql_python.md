@@ -186,3 +186,13 @@
 - **Validation basis:** each remediation lane reported targeted compile/runtime or scoped test validation; no additional main-agent lint/build/test rerun was performed on custom-agent changes.
 - **Residual test-lane sweep:** follow-up cleanup normalized optional-import guards and default initialization across the documented `py/uninitialized-local-variable` test clusters in `scripts/cognitive/tests/test_advanced_reasoning.py`, `tests/agents/test_phase2_*`, `tests/codex/*`, `tests/configuration/*`, `tests/deployment_infra/*`, `tests/integration/*`, `tests/modeling/*`, `tests/performance/*`, `tests/security/*`, `tests/smoke/*`, `tests/specs/*`, `tests/tokenization/*`, `tests/training/*`, `tests/unit/*`, and `tests/utils/*`.
 - **Residual test-lane validation:** targeted `py_compile` passed for each touched file and `python scripts/ci/rvs_preflight.py --group quick --preview` completed cleanly; a direct targeted `python -m pytest ...` invocation could not run in this environment because `pytest` is not installed in the runner image.
+
+## Implementation Status — 2026-06-12 (Phase 1-A/B, 2-A/B/C/D)
+
+- **Phase 1-A** (clear-text-logging HIGH): 7 files fixed — `.github/agents/admin-automation-agent/src/agent.py`, `.github/agents/github-security-validator-agent/src/agent.py`, `.github/scripts/ci_failure_crossref.py`, `scripts/analyze_workflows.py`, `scripts/decode_workflow_secrets.py`, `scripts/ops/codex_repo_admin_bootstrap.py`, `tests/integration/test_admin_automation_agent.py` — Commit: acd5a3762
+- **Phase 1-B** (clear-text-storage HIGH): 4 files fixed — `.codex/reports/.../workflow_analyzer.py`, `.github/scripts/workflow_analyzer.py`, `src/codex_ml/deployment/package.py`, `tools/codex_secret_scan_stub.py` — Commit: 2138f9da1
+- **Phase 2-A** (uninitialized-local-variable validation): 22 test files verified; 1 fixed (`tests/modeling/test_lora_minimal.py`) — 79 tests passed — Commit: ff72490a6
+- **Phase 2-B** (cyclic-import): new `src/security/_types.py` created; cycle broken between `core.py` and `content_filters.py` — Commit: acd5a3762
+- **Phase 2-C** (pythagorean): `agents/physics_orchestrator.py` — `**0.5` replaced with `math.sqrt()` — Commit: 3a0cd9055
+- **Phase 2-D** (unused-global): stale dead-code comment removed from `src/codex_ml/metrics/registry.py` — Commit: 3a0cd9055
+- **Validation basis**: `py_compile` clean on all touched files; pytest 79 passed / 38 skipped / 0 failed on the uninitialized-var cluster

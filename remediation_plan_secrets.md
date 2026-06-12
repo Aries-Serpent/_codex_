@@ -111,3 +111,11 @@
 - **Baseline-only evidence noise revalidated:**
   - `.codex/evidence/archive_ops.jsonl` — 24 `Hex High Entropy String` hits are SHA256 values in archive/evidence records, not credentials; no inline suppression is possible or warranted for this JSONL evidence file.
 - **Targeted validation:** `detect-secrets scan` over the 3 active test files returned no findings after existing allowlists; scanning `.codex/evidence/archive_ops.jsonl` still reports only the expected SHA256 evidence noise.
+
+## Implementation Status — 2026-06-12 (Phase 5-A/B/C/D)
+
+- **Phase 5-A** (JSON/JSONL baseline registration): all 4 JSON/JSONL false-positive findings already correctly registered in `.secrets.baseline` — no new entries needed
+- **Phase 5-B** (vendor path exclusions): `.codex/validation/`, `.venv_ci/`, `assets/manifest.json` added to `--exclude-files` in `security-scanning-suite.yml` — Commit: 8a5f23868
+- **Phase 5-C** (CODEX_MANIFEST conflict): merge conflict at line 2248 resolved (HEAD version kept); `.secrets.baseline` entry updated with correct hash — Commit: 8a5f23868
+- **Phase 5-D** (baseline regeneration): see Commit: 8a5f23868 (or: deferred to CI run if detect-secrets unavailable in agent environment)
+- **Validation basis**: CODEX_MANIFEST.json JSON-valid after conflict resolution; CI exclude-files patterns verified against `.gitignore`

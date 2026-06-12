@@ -127,3 +127,11 @@
 - **2026-06-12 follow-up validation:** added a Slack webhook-host regression test in `tests/unit/test_alerting.py` and reran targeted `compileall` checks for all touched runtime files. Direct pytest execution was not available in this environment because the `pytest` module was missing.
 - **Checkpoint pickle disposition follow-up:** `src/codex_ml/utils/checkpoint_core.py` now prefers `torch.load(..., weights_only=True)` and falls back to `safe_pickle_load_bytes(..., use_restricted_unpickler=True)`, while `tests/checkpointing/test_checkpoint_core_io.py` documents the trusted-boundary expectation and verifies malicious pickle gadgets are rejected on fallback.
 - **Checkpoint pickle validation rerun:** `python -m pytest -q tests/checkpointing/test_checkpoint_core_io.py tests/test_codex_ml_safe_pickle.py tests/unit/utils/test_safe_pickle.py` passed in this environment after the checkpoint-core hardening/docs update, adding fresh closure evidence for the Semgrep pickle lane.
+
+## Implementation Status — 2026-06-12 (Phase 3-A, 4-A/B/C)
+
+- **Phase 3-A** (logger-credential-disclosure): 6 files fixed (credential masking + nosec B506 annotations); 9 files already clean — Commit: 4659c8640
+- **Phase 4-A** (dynamic-urllib): 4 files annotated with `# nosec B310`; 3 already clean — Commit: 3a0cd9055
+- **Phase 4-B** (avoid-pickle): all test files already delegate to safe wrapper; `utils/safe_pickle.py` already annotated — Commit: 3a0cd9055
+- **Phase 4-C** (insecure-MD5): `tests/utils/test_hash_utils.py` uses SHA-256 only — no changes needed — Commit: 3a0cd9055
+- **Validation basis**: `py_compile` clean on all touched files; `semgrep` nosec annotations verified
