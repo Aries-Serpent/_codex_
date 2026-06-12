@@ -5,7 +5,7 @@ Handles authentication, authorization, policy enforcement, and redaction
 
 import logging
 import re
-from hashlib import sha256
+from hashlib import pbkdf2_hmac, sha256
 from pathlib import Path
 from typing import Optional
 
@@ -17,10 +17,33 @@ from .config import settings
 
 logger = logging.getLogger(__name__)
 
+_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"
+_API_KEY_HASH_ITERATIONS = 200_000
+
+
+def _api_key_pepper_bytes() -> bytes:
+    return settings.api_key_pepper.encode("utf-8")
+
+
+def legacy_hash_api_key(api_key: str) -> str:
+    """Return the legacy SHA-256 API-key hash for compatibility lookups."""
+    return sha256(api_key.encode("utf-8")).hexdigest()
+
+
+def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
+    """Return current and legacy hash representations for *api_key*."""
+    return (hash_api_key(api_key), legacy_hash_api_key(api_key))
+
 
 def hash_api_key(api_key: str) -> str:
-    """Return a stable hash for API-key storage and lookup."""
-    return sha256(api_key.encode("utf-8")).hexdigest()
+    """Return a stable KDF-derived hash for API-key storage and lookup."""
+    derived = pbkdf2_hmac(
+        "sha256",
+        api_key.encode("utf-8"),
+        _api_key_pepper_bytes(),
+        _API_KEY_HASH_ITERATIONS,
+    ).hex()
+    return f"{_API_KEY_HASH_PREFIX}{derived}"
 
 
 class PolicyEnforcer:
@@ -133,11 +156,16 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        return self.api_keys.get(hash_api_key(api_key))
+        for api_key_hash in candidate_api_key_hashes(api_key):
+            tenant_id = self.api_keys.get(api_key_hash)
+            if tenant_id is not None:
+                return tenant_id
+        return None
 
     def revoke_api_key(self, api_key: str):
         """Revoke an API key"""
-        self.revoke_api_key_hash(hash_api_key(api_key))
+        for api_key_hash in candidate_api_key_hashes(api_key):
+            self.revoke_api_key_hash(api_key_hash)
 
     def revoke_api_key_hash(self, api_key_hash: str):
         """Revoke a pre-hashed API key."""

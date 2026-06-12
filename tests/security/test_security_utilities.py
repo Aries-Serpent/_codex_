@@ -109,6 +109,22 @@ class TestSafePickle:
         finally:
             os.unlink(temp_path)
 
+    def test_unrestricted_pickle_load_logs_warning(self, caplog):
+        """Test unrestricted pickle loads emit an explicit trust-boundary warning."""
+        data = {"trusted": True}
+
+        with tempfile.NamedTemporaryFile(delete=False) as f:
+            temp_path = f.name
+            f.write(trusted_pickle_dumps(data))
+
+        try:
+            caplog.set_level("WARNING")
+            loaded = safe_pickle_load(temp_path, use_restricted_unpickler=False)
+            assert loaded == data
+            assert "WITHOUT restriction" in caplog.text
+        finally:
+            os.unlink(temp_path)
+
     def test_restricted_unpickler_allows_safe_types(self):
         """Test that RestrictedUnpickler allows whitelisted types.
         

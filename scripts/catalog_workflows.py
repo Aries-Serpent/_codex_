@@ -52,8 +52,9 @@ def tokenize_secret_name(secret_name: str) -> dict[str, str]:
     """
     Tokenize a secret name for secure storage.
 
-    Uses SHA256 hashing plus a non-reversible length hint so secret names
-    can be matched and analyzed without storing a reversible representation.
+    Uses SHA256 hashing plus a constant redaction hint so secret names can be
+    matched and analyzed without storing a reversible representation or a
+    fingerprintable length signal.
 
     Args:
         secret_name: The plain-text secret name (e.g., "GITHUB_TOKEN")
@@ -61,13 +62,13 @@ def tokenize_secret_name(secret_name: str) -> dict[str, str]:
     Returns:
         Dictionary with tokenized representation:
         - token: SHA256 hash of the secret name (for matching)
-        - hint: Redacted length-only hint for human reference
+        - hint: Constant redacted hint for human reference
     """
     # Create SHA256 token for matching/deduplication
     token = hashlib.sha256(secret_name.encode()).hexdigest()
 
-    # Use a non-reversible hint to avoid clear-text storage of secret names.
-    hint = f"[REDACTED_SECRET_NAME:{len(secret_name)}]"
+    # Use a constant hint to avoid clear-text storage and length fingerprinting.
+    hint = "[REDACTED_SECRET_NAME]"
 
     return {
         "token": token,

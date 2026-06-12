@@ -222,7 +222,14 @@ def safe_pickle_load_bytes(
 
 
 def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
-    """Serialize trusted in-memory objects behind one audited pickle boundary."""
+    """Serialize trusted in-memory objects behind one audited pickle boundary.
+
+    SECURITY NOTE:
+        Callers are responsible for ensuring *obj* was created by trusted local
+        code and is not derived from attacker-controlled state. This helper is
+        only safe for reviewed compatibility boundaries where pickle output must
+        remain interoperable with existing checkpoint consumers.
+    """
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
     return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 

@@ -268,7 +268,7 @@ class TestSlackChannel:
         fake_resp.__exit__ = MagicMock(return_value=False)
 
         with patch("urllib.request.urlopen", return_value=fake_resp) as mock_open:
-            ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
+            ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             result = ch.send(self._make_event())
 
         assert result is True
@@ -292,7 +292,7 @@ class TestSlackChannel:
             "urllib.request.urlopen",
             side_effect=urllib.error.URLError("connection refused"),
         ):
-            ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
+            ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             assert ch.send(self._make_event()) is False
 
     def test_send_returns_false_when_no_url(self) -> None:
@@ -307,11 +307,15 @@ class TestSlackChannel:
         fake_resp.__exit__ = MagicMock(return_value=False)
 
         with patch("urllib.request.urlopen", return_value=fake_resp):
-            ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
+            ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             assert ch.send(self._make_event()) is False
 
     def test_send_returns_false_on_disallowed_webhook_host(self) -> None:
         ch = SlackChannel(webhook_url="https://example.com/not-slack")
+        assert ch.send(self._make_event()) is False
+
+    def test_send_returns_false_on_disallowed_webhook_path(self) -> None:
+        ch = SlackChannel(webhook_url="https://hooks.slack.com/not-a-webhook")
         assert ch.send(self._make_event()) is False
 
     @pytest.mark.parametrize(
@@ -324,16 +328,16 @@ class TestSlackChannel:
         ],
     )
     def test_colour_mapping(self, severity: AlertSeverity, expected_color: str) -> None:
-        ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
+        ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
         payload = ch._build_payload(self._make_event(severity))
         assert payload["attachments"][0]["color"] == expected_color
 
     def test_reads_webhook_from_env(self) -> None:
         with patch.dict(
-            os.environ, {"CODEX_SLACK_WEBHOOK_URL": "https://hooks.slack.com/env"}
+            os.environ, {"CODEX_SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/env"}
         ):
             ch = SlackChannel()
-        assert ch._webhook_url == "https://hooks.slack.com/env"
+        assert ch._webhook_url == "https://hooks.slack.com/services/env"
 
 
 # ---------------------------------------------------------------------------
@@ -504,7 +508,7 @@ class TestGracefulDegradation:
             "urllib.request.urlopen",
             side_effect=urllib.error.URLError("timeout"),
         ):
-            ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
+            ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             result = ch.send(
                 AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR)
             )

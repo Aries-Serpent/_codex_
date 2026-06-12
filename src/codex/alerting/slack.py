@@ -40,6 +40,7 @@ _COLOUR_MAP: dict[AlertSeverity, str] = {
 _ENV_WEBHOOK = "CODEX_SLACK_WEBHOOK_URL"
 _TIMEOUT = 10  # seconds
 _ALLOWED_WEBHOOK_HOSTS = {"hooks.slack.com", "hooks.slack-gov.com"}
+_ALLOWED_WEBHOOK_PATH_PREFIXES = ("/services/",)
 
 # Retry configuration for webhook POSTs: up to 3 extra attempts with
 # exponential backoff (1 s → 2 s → 4 s), capped at 30 s, retrying only
@@ -66,7 +67,25 @@ def _validated_webhook_url(raw_url: str) -> str:
             "SlackChannel: webhook URL host must be one of "
             f"{sorted(_ALLOWED_WEBHOOK_HOSTS)!r}"
         )
-    return raw_url
+    if parsed.params or parsed.query or parsed.fragment:
+        raise ValueError(
+            "SlackChannel: webhook URL must not include params, query strings, or fragments"
+        )
+    if not parsed.path.startswith(_ALLOWED_WEBHOOK_PATH_PREFIXES):
+        raise ValueError(
+            "SlackChannel: webhook URL path must start with one of "
+            f"{_ALLOWED_WEBHOOK_PATH_PREFIXES!r}"
+        )
+    return urllib.parse.urlunparse(
+        (
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            "",
+            "",
+            "",
+        )
+    )
 
 
 class SlackChannel(AlertChannel):

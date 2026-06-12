@@ -17,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from src.utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
-from ..security import auth_manager, hash_api_key
+from ..security import auth_manager, candidate_api_key_hashes, hash_api_key
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +25,15 @@ security = HTTPBearer()
 
 
 def _looks_hashed_api_key(value: str) -> bool:
-    """Return True when *value* looks like a SHA-256 hex digest."""
-    return len(value) == 64 and all(ch in "0123456789abcdef" for ch in value.lower())
+    """Return True when *value* matches a supported hashed API-key format."""
+    normalized = value.lower()
+    if len(normalized) == 64 and all(ch in "0123456789abcdef" for ch in normalized):
+        return True
+    prefix = "pbkdf2_sha256$"
+    if normalized.startswith(prefix):
+        digest = normalized[len(prefix):]
+        return len(digest) == 64 and all(ch in "0123456789abcdef" for ch in digest)
+    return False
 
 
 class TenantRegistry:
@@ -70,6 +77,13 @@ class TenantRegistry:
         migrated = 0
         for tenant_id, stored_api_key in rows:
             if stored_api_key and not _looks_hashed_api_key(stored_api_key):
+                if migrated == 0:
+                    logger.warning(
+                        "Migrating plaintext tenant API keys to hashed storage in %s. "
+                        "Back up the tenant registry before the first migration run if "
+                        "you may need to recover plaintext keys.",
+                        db_path,
+                    )
                 cursor.execute(
                     "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
                     (hash_api_key(stored_api_key), tenant_id),
@@ -209,7 +223,7 @@ class TenantRegistry:
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
-            api_key_hash = hash_api_key(api_key)
+            api_key_hashes = candidate_api_key_hashes(api_key)
 
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
@@ -218,9 +232,9 @@ class TenantRegistry:
                 """
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
-                FROM tenants WHERE api_key = ?
+                FROM tenants WHERE api_key IN (?, ?)
             """,
-                (api_key_hash,),
+                api_key_hashes,
             )
 
             row = cursor.fetchone()
@@ -242,7 +256,8 @@ class TenantRegistry:
                 }
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
-                auth_manager.register_api_key_hash(api_key_hash, tenant_id)
+                for api_key_hash in api_key_hashes:
+                    auth_manager.register_api_key_hash(api_key_hash, tenant_id)
                 return tenant_data
 
         return None

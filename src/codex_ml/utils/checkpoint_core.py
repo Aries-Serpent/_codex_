@@ -494,6 +494,10 @@ def _deserialize_payload(
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
+    # Legacy compatibility fallback: older reviewed checkpoints may not be
+    # tensor-first payloads that torch.load(..., weights_only=True) can decode.
+    # When that happens, keep the fallback on RestrictedUnpickler so the
+    # deserialization boundary stays constrained even for legacy payloads.
     return safe_pickle_load_bytes(buf.getvalue(), use_restricted_unpickler=True)
 
 
