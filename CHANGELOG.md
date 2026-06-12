@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4853 CI rescue + @copilot continue)
+- PR #4853 CI rescue (`#4687749290`): verified 5 previously failing checks resolved by `0e199c3`; applied REQ-4/REQ-5 compliance updates in this session.
+- PR #4853 (`#4687764358`): `@copilot continue` actioned after Agent Token Delegation activation.
+
 ### Fixed (auto-update — PR #4853)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4853 (SHA `a85a96a5`) at 2026-06-12T02:17Z [auto-generated]
 - Resilient Validation Suite hardening: added `PYTHONPATH=src` and `--import-mode=importlib` to quick/sharded pytest commands in `.github/workflows/resilient_validation.yml` to prevent module/import-file-mismatch collection failures.
