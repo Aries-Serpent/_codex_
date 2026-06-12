@@ -283,14 +283,14 @@ class SecurityValidator:
                 try:
                     self.results["validations"][validation_name] = validator()
                 except Exception as e:
-                    # lgtm[py/clear-text-logging-sensitive-data]
+                    # codeql[py/clear-text-logging-sensitive-data]
                     print(f"❌ Error running {_vn_fp}. See validation results for details.")  # nosec  # pragma: allowlist secret
                     self.results["validations"][validation_name] = {
                         "status": "error",
                         "error": _sanitize_text(type(e).__name__)
                     }
             else:
-                # lgtm[py/clear-text-logging-sensitive-data]
+                # codeql[py/clear-text-logging-sensitive-data]
                 print(f"⏭️  Skipping disabled validation: {_vn_fp}")  # nosec  # pragma: allowlist secret
                 self.results["validations"][validation_name] = {"status": "disabled"}
 

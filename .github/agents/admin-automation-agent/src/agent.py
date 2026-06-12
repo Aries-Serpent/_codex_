@@ -160,16 +160,16 @@ class AdminAutomationAgent:
         # The full sanitized message is already stored in task_result above.
         _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            # lgtm[py/clear-text-logging-sensitive-data]
+            # codeql[py/clear-text-logging-sensitive-data]
             logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         elif status == "error":
-            # lgtm[py/clear-text-logging-sensitive-data]
+            # codeql[py/clear-text-logging-sensitive-data]
             logger.error("❌ Task error: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         elif status == "warning":
-            # lgtm[py/clear-text-logging-sensitive-data]
+            # codeql[py/clear-text-logging-sensitive-data]
             logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # pragma: allowlist secret
         else:
-            # lgtm[py/clear-text-logging-sensitive-data]
+            # codeql[py/clear-text-logging-sensitive-data]
             logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # pragma: allowlist secret
 
     # ====================================================================

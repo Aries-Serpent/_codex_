@@ -34,7 +34,7 @@ def legacy_hash_api_key(api_key: str) -> str:
     """
     # nosec: B303,B324 - intentional SHA-256 for legacy compatibility, not for new password hashing
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    # lgtm[py/weak-sensitive-data-hashing]
+    # codeql[py/weak-sensitive-data-hashing]
     return sha256(api_key.encode("utf-8")).hexdigest()  # pragma: allowlist secret
 
 

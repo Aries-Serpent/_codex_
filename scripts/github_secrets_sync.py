@@ -131,9 +131,9 @@ class GitHubSecretsManager:
                     print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                # lgtm[py/clear-text-logging-sensitive-data]
+                # codeql[py/clear-text-logging-sensitive-data]
                 logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # nosec  # pragma: allowlist secret
-                # lgtm[py/clear-text-logging-sensitive-data]
+                # codeql[py/clear-text-logging-sensitive-data]
                 print(f"✗ Failed to rotate secret ({secret_ref})")  # nosec  # pragma: allowlist secret
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
