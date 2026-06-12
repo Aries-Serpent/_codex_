@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4855)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4855 (SHA `2ccdf700`) at 2026-06-12T14:36Z [auto-generated]
+
 ### Fixed (SN — PR #4853 CI rescue #4688307317 commit e1cf205)
 - PR #4853 CI rescue (`#4688307317`): verified `Final Pre-Merge Checks` failure on commit `e1cf2051` was REQ-4/REQ-5/REQ-14 non-compliance; fix confirmed in `913e89b1`; ran `python scripts/ci/mypy_baseline.py --require-baseline` (0 errors ↓122), `python scripts/ci/auto_fix_common_issues.py --check-only` (0 issues), `session_wrapup_autofix.py --check` (all green).
 
