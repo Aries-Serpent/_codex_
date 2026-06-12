@@ -205,7 +205,7 @@ class GitHubTokenProvider(TokenProvider):
             return RotationResult(
                 success=False,
                 old_secret_id=secret_id,
-                error_message=f"GitHub token rotation failed: {_safe_error(e)}",
+                error_message=f"GitHub token rotation failed: {str(e)}",
             )
 
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
@@ -285,6 +285,8 @@ class GitHubTokenProvider(TokenProvider):
                 )
                 return True
 
+        except ValidationError:
+            raise
         except Exception as e:
             raise ValidationError(f"Token validation failed: {_safe_error(e)}") from e
 
