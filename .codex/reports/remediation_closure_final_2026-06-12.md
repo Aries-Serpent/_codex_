@@ -18,7 +18,7 @@ All three remediation plans (CodeQL, Semgrep, detect-secrets) have been executed
 |------|---------------|-------|----------------|------|-------|
 | CodeQL | 107 | 107 | 0 | 0 | All HIGH/MEDIUM/LOW closed |
 | Semgrep | 88 | 82 | 6 | 0 | 6 confirmed FP (nosec/allowlist annotated) |
-| detect-secrets | 9 groups | 9 | — | 0 | All 4 baseline entries tracked; 11 test allowlist annotations added |
+| detect-secrets | 9 groups | 9 | — | 0 | All 4 baseline entries tracked; 11 test allowlist annotations added | <!-- pragma: allowlist secret -->
 | **Total** | **204** | **198** | **6** | **0** | |
 
 > **Shallow-clone SHA gap:** 87 findings in the ledger were listed as "open by SHA" during Phase A triage. These findings had commit SHAs that could not be resolved in the shallow-clone CI environment (depth-limited fetch). All 87 were subsequently verified as fixed in the full history or confirmed as pre-existing non-issues. Zero genuine open findings remain.
@@ -82,7 +82,7 @@ All three remediation plans (CodeQL, Semgrep, detect-secrets) have been executed
 | `claim-verification-agent` | Prior-work verification |
 | `codeql-alert-resolution-agent` | CodeQL Phase 3 bulk closure |
 | `security-alert-verification-agent` | Semgrep Phase 5 bulk closure |
-| `secret-detection-agent` | Secrets Phase 6 closure |
+| `secret-detection-agent` | Secrets Phase 6 closure | <!-- pragma: allowlist secret -->
 | `unified-security-scanner` | Cross-plan reconciliation |
 | `documentation-quality-agent` | Copy verification (34 files) |
 | `ci-testing-agent` | Validation gate |

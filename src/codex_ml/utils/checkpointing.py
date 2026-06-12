@@ -285,14 +285,14 @@ def _resolve_format(value: Optional[str]) -> SaveFormat:
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
     """Dump checkpoint payload to pickle file.
-    
+
     SECURITY CONTRACT:
     - This function is ONLY called from save_checkpoint() with trusted local state
     - The payload contains model weights/optimizer state created by the current process
     - Files are written to a local checkpoint directory controlled by the application
     - For production deployments, prefer torch.save or safetensors format
     - pickle is used here for compatibility with legacy checkpoints and fallback scenarios
-    
+
     Trust Boundary: Local process-created state → Local filesystem
     Risk: LOW (trusted source, controlled destination)
     """

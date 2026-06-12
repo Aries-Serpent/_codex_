@@ -46,7 +46,7 @@ def _set_mode(path: Path, mode_str: str) -> None:
             path,
             oct(sanitized),
         )
-    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- manifest mode is sanitized to strip group/other write bits
+    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- manifest mode is sanitized to strip group/other write bits  # noqa: E501
         path, (path.stat().st_mode & ~0o777) | sanitized
     )
 

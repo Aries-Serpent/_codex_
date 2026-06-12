@@ -64,8 +64,7 @@ def _validated_webhook_url(raw_url: str) -> str:
     hostname = (parsed.hostname or "").lower()
     if hostname not in _ALLOWED_WEBHOOK_HOSTS:
         raise ValueError(
-            "SlackChannel: webhook URL host must be one of "
-            f"{sorted(_ALLOWED_WEBHOOK_HOSTS)!r}"
+            f"SlackChannel: webhook URL host must be one of {sorted(_ALLOWED_WEBHOOK_HOSTS)!r}"
         )
     if parsed.params or parsed.query or parsed.fragment:
         raise ValueError(

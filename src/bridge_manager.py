@@ -80,7 +80,7 @@ def _set_owner_only_permissions(path: Path, mode: int) -> None:
     """Apply a narrow owner-only mode for bridge artifacts."""
     if mode not in {0o600, 0o700}:
         raise ValueError(f"Unsupported secure bridge mode: {oct(mode)}")
-    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- helper only permits 0o600/0o700
+    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- helper only permits 0o600/0o700  # noqa: E501
         path, mode
     )
 

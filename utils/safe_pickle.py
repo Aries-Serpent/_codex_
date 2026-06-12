@@ -229,7 +229,7 @@ def safe_pickle_load_bytes(
     if use_restricted_unpickler:
         logger.debug(f"Loading pickle with RestrictedUnpickler: {source}")
         return RestrictedUnpickler(io.BytesIO(data)).load()
-    
+
     logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {source}")
     # SECURITY JUSTIFICATION:
     # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility.

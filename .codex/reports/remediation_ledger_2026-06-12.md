@@ -21,19 +21,19 @@
 | 10 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/catalog_workflows.py` | 281 | OPEN | No commit SHA in Phase entries |
 | 11 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ci/auto_fix_common_issues.py` | 472 | OPEN | No commit SHA in Phase entries |
 | 12 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ci/auto_fix_common_issues.py` | 478 | OPEN | No commit SHA in Phase entries |
-| 13 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/decode_workflow_secrets.py` | 217 | FIXED | acd5a3762 (Phase 1-A) |
+| 13 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/decode_workflow_secrets.py` | 217 | FIXED | acd5a3762 (Phase 1-A) | <!-- pragma: allowlist secret -->
 | 14 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/fix_security_issues.py` | 266 | OPEN | No commit SHA in Phase entries |
 | 15 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/fix_security_issues.py` | 270 | OPEN | No commit SHA in Phase entries |
-| 16 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/github_secrets_sync.py` | 115 | OPEN | No commit SHA in Phase entries |
-| 17 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/github_secrets_sync.py` | 118 | OPEN | No commit SHA in Phase entries |
-| 18 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ops/codex_mint_tokens_per_run.py` | 401 | OPEN | No commit SHA in Phase entries |
-| 19 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ops/codex_mint_tokens_per_run.py` | 449 | OPEN | No commit SHA in Phase entries |
+| 16 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/github_secrets_sync.py` | 115 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 17 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/github_secrets_sync.py` | 118 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 18 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ops/codex_mint_tokens_per_run.py` | 401 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 19 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ops/codex_mint_tokens_per_run.py` | 449 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
 | 20 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/ops/codex_repo_admin_bootstrap.py` | 572 | FIXED | acd5a3762 (Phase 1-A) |
-| 21 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 211 | OPEN | No commit SHA in Phase entries |
-| 22 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 212 | OPEN | No commit SHA in Phase entries |
-| 23 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 221 | OPEN | No commit SHA in Phase entries |
-| 24 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 225 | OPEN | No commit SHA in Phase entries |
-| 25 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 226 | OPEN | No commit SHA in Phase entries |
+| 21 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 211 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 22 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 212 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 23 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 221 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 24 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 225 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 25 | HIGH | `py/clear-text-logging-sensitive-data` | `scripts/security/verify_token_scope.py` | 226 | OPEN | No commit SHA in Phase entries | <!-- pragma: allowlist secret -->
 | 26 | HIGH | `py/clear-text-logging-sensitive-data` | `src/codex/knowledge/pii.py` | 179 | OPEN | No commit SHA in Phase entries |
 | 27 | HIGH | `py/clear-text-logging-sensitive-data` | `src/codex/knowledge/pii.py` | 180 | OPEN | No commit SHA in Phase entries |
 | 28 | HIGH | `py/clear-text-logging-sensitive-data` | `src/security/providers/github_provider.py` | 481 | OPEN | No commit SHA in Phase entries |
@@ -48,9 +48,9 @@
 | 37 | HIGH | `py/clear-text-storage-sensitive-data` | `scripts/catalog_workflows.py` | 320 | OPEN | No commit SHA in Phase entries |
 | 38 | HIGH | `py/clear-text-storage-sensitive-data` | `scripts/catalog_workflows.py` | 321 | OPEN | No commit SHA in Phase entries |
 | 39 | HIGH | `py/clear-text-storage-sensitive-data` | `src/codex_ml/deployment/package.py` | 65 | FIXED | 2138f9da1 (Phase 1-B) |
-| 40 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 60 | FIXED | 2138f9da1 (Phase 1-B) |
-| 41 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 70 | FIXED | 2138f9da1 (Phase 1-B) |
-| 42 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 76 | FIXED | 2138f9da1 (Phase 1-B) |
+| 40 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 60 | FIXED | 2138f9da1 (Phase 1-B) | <!-- pragma: allowlist secret -->
+| 41 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 70 | FIXED | 2138f9da1 (Phase 1-B) | <!-- pragma: allowlist secret -->
+| 42 | HIGH | `py/clear-text-storage-sensitive-data` | `tools/codex_secret_scan_stub.py` | 76 | FIXED | 2138f9da1 (Phase 1-B) | <!-- pragma: allowlist secret -->
 | 43 | LOW | `py/cyclic-import` | `src/security/content_filters.py` | 7 | FIXED | acd5a3762 (Phase 2-B — _types.py extraction) |
 | 44 | LOW | `py/cyclic-import` | `src/security/core.py` | 128 | FIXED | acd5a3762 (Phase 2-B — _types.py extraction) |
 | 45 | LOW | `py/cyclic-import` | `src/security/core.py` | 335 | FIXED | acd5a3762 (Phase 2-B — _types.py extraction) |
@@ -96,13 +96,13 @@
 | 85 | LOW | `py/uninitialized-local-variable` | `tests/security/test_security_gating.py` | 99 | OPEN | Residual sweep — no commit SHA in Phase entries |
 | 86 | LOW | `py/uninitialized-local-variable` | `tests/smoke/test_cli_determinism_wiring.py` | 30 | OPEN | Residual sweep — no commit SHA in Phase entries |
 | 87 | LOW | `py/uninitialized-local-variable` | `tests/specs/test_dup_similarity.py` | 51 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 88 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 89 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 90 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 25 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 91 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 26 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 92 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 100 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 93 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 107 | OPEN | Residual sweep — no commit SHA in Phase entries |
-| 94 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 42 | OPEN | Residual sweep — no commit SHA in Phase entries |
+| 88 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 89 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 90 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 25 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 91 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 26 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 92 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 100 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 93 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 107 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
+| 94 | LOW | `py/uninitialized-local-variable` | `tests/tokenization/test_roundtrip_basic.py` | 42 | OPEN | Residual sweep — no commit SHA in Phase entries | <!-- pragma: allowlist secret -->
 | 95 | LOW | `py/uninitialized-local-variable` | `tests/training/test_simple_trainer.py` | 22 | OPEN | Residual sweep — no commit SHA in Phase entries |
 | 96 | LOW | `py/uninitialized-local-variable` | `tests/training/test_simple_trainer.py` | 35 | OPEN | Residual sweep — no commit SHA in Phase entries |
 | 97 | LOW | `py/uninitialized-local-variable` | `tests/unit/test_peft_utils.py` | 39 | OPEN | Residual sweep — no commit SHA in Phase entries |
@@ -144,7 +144,7 @@
 | 19 | WARNING | `dynamic-urllib-use-detected` | `src/codex/github/mcp_poster.py` | 1933 | FIXED | 3a0cd9055 (Phase 4-A) |
 | 20 | WARNING | `dynamic-urllib-use-detected` | `src/codex/github/mcp_poster.py` | 1987 | FIXED | 3a0cd9055 (Phase 4-A) |
 | 21 | WARNING | `dynamic-urllib-use-detected` | `src/codex/skills/telemetry.py` | 369 | FIXED | 3a0cd9055 (Phase 4-A) |
-| 22 | WARNING | `dynamic-urllib-use-detected` | `src/services/crawler/zendesk_sync.py` | 232 | FIXED | 3a0cd9055 (Phase 4-A) |
+| 22 | WARNING | `dynamic-urllib-use-detected` | `src/services/crawler/zendesk_sync.py` | 232 | FIXED | 3a0cd9055 (Phase 4-A) | <!-- pragma: allowlist secret -->
 | 23 | WARNING | `dynamic-urllib-use-detected` | `tests/test_actions_server_smoke.py` | 17 | FIXED | 3a0cd9055 (Phase 4-A) |
 | 24 | WARNING | `exec-detected` | `src/codex_ml/plugins/registry.py` | 90 | OPEN | Bulk section only — no commit SHA in Phase 3-A/4-A/B/C entries |
 | 25 | WARNING | `exec-detected` | `tests/test_readme_examples.py` | 34 | OPEN | Bulk section only — no commit SHA in Phase 3-A/4-A/B/C entries |
@@ -162,12 +162,12 @@
 | 37 | WARNING | `python-logger-credential-disclosure` | `src/codex/archive/sigstore_client.py` | 102 | FIXED | 4659c8640 (Phase 3-A) |
 | 38 | WARNING | `python-logger-credential-disclosure` | `src/codex/auth/authenticator.py` | 295 | FIXED | 4659c8640 (Phase 3-A) |
 | 39 | WARNING | `python-logger-credential-disclosure` | `src/codex/auth/authenticator.py` | 313 | FIXED | 4659c8640 (Phase 3-A) |
-| 40 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 145 | FIXED | 4659c8640 (Phase 3-A) |
-| 41 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 155 | FIXED | 4659c8640 (Phase 3-A) |
-| 42 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 165 | FIXED | 4659c8640 (Phase 3-A) |
+| 40 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 145 | FIXED | 4659c8640 (Phase 3-A) | <!-- pragma: allowlist secret -->
+| 41 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 155 | FIXED | 4659c8640 (Phase 3-A) | <!-- pragma: allowlist secret -->
+| 42 | WARNING | `python-logger-credential-disclosure` | `src/codex/autonomy/token_broker.py` | 165 | FIXED | 4659c8640 (Phase 3-A) | <!-- pragma: allowlist secret -->
 | 43 | WARNING | `python-logger-credential-disclosure` | `src/codex/cli.py` | 1867 | FIXED | 4659c8640 (Phase 3-A) |
 | 44 | WARNING | `python-logger-credential-disclosure` | `src/codex/zendesk/apply.py` | 104 | FIXED | 4659c8640 (Phase 3-A) |
-| 45 | WARNING | `python-logger-credential-disclosure` | `src/codex_ml/interfaces/tokenizer.py` | 442 | FIXED | 4659c8640 (Phase 3-A) |
+| 45 | WARNING | `python-logger-credential-disclosure` | `src/codex_ml/interfaces/tokenizer.py` | 442 | FIXED | 4659c8640 (Phase 3-A) | <!-- pragma: allowlist secret -->
 | 46 | WARNING | `python-logger-credential-disclosure` | `src/codex_ml/pipeline.py` | 74 | FIXED | 4659c8640 (Phase 3-A) |
 | 47 | WARNING | `python-logger-credential-disclosure` | `src/codex_ml/pipeline.py` | 77 | FIXED | 4659c8640 (Phase 3-A) |
 | 48 | WARNING | `python-logger-credential-disclosure` | `src/codex_ml/safety/filters.py` | 790 | FIXED | 4659c8640 (Phase 3-A) |
@@ -219,14 +219,14 @@
 |---|---|---|---|
 | Vendor/generated bulk exclusions | `.venv_ci/**`, `.codex/validation/**`, `assets/manifest.json` | FIXED | 8a5f23868 (Phase 5-B — `--exclude-files` added to `security-scanning-suite.yml`) |
 | Source scripts — allowlisted false positives | `scripts/pr3248_agent_task_spec.py`, `scripts/pr3248_mcp_collection_helper.py`, `scripts/populate_pr3248_checks.py`, `scripts/pr3248_comprehensive_collector.py`, `scripts/process_workflow_runs.py` | FALSE_POSITIVE | 2026-06-12 status: exact-line `<!-- pragma: allowlist secret -->` pragmas added; no true secrets found |
-| GitHub agent validation script | `.github/agents/scripts/validate_patterns.py` | FALSE_POSITIVE | 2026-06-12 status: exact-line allowlist pragmas added; no true secrets found |
-| Test fixture Python files (15 files) | `tests/security/test_providers.py`, `tests/ci/test_post_rescue_comment.py`, `tests/api/test_auth_mfa_expiry.py`, `tests/auth/test_mfa_provider.py`, `tests/auth/test_token_manager.py`, `tests/branch_coverage/test_branch_coverage_config.py`, `tests/agents/test_msp_client_phase9_1.py`, `coverage_tests/test_security_providers_unittest.py`, `tests/unit/test_alerting.py`, `tests/unit/utils/test_reproducibility_hardening.py`, `tests/unit/utils/test_safe_pickle.py`, `tests/services/test_api_main_phase_e.py`, `tests/test_fast_forward_safe_files.py`, `scripts/space_traversal/viz_html.py`, `tools/codex_apply_modeling_monitoring_api.py` | FALSE_POSITIVE | 2026-06-13 extended source triage: 37 baseline entries confirmed false positives; exact-line pragmas added |
-| GitHub Actions workflow YAML files | `.github/workflows/codeql-alert-fetcher.yml`, `.github/workflows/security-scanning-suite.yml` | FALSE_POSITIVE | 2026-06-13 extended source triage: secret references / step IDs, not credential values |
-| JSON/JSONL baseline-only files | `.codex/webhook_config.json` (lines 7, 85), `.codex/agent_context.json` (line 14), `.codex/aftermath/pda_iterations.jsonl` (lines 3, 4, 57, 231) | FIXED | 8a5f23868 (Phase 5-A — already registered in `.secrets.baseline`; env-var references / Git SHAs, not credentials) |
-| CODEX_MANIFEST.json conflict + SHA256 entropy | `CODEX_MANIFEST.json` (line 2248) | FIXED | 8a5f23868 (Phase 5-C — merge conflict resolved; `.secrets.baseline` updated) |
-| Active test files with existing allowlists | `tests/safety/test_sanitizers_coverage.py`, `tests/serving/test_inference_enhanced.py`, `tests/test_token_verification.py` | FALSE_POSITIVE | Follow-up validation 2026-06-12: all 6 findings already exact-line allowlisted; `detect-secrets scan` returned clean |
+| GitHub agent validation script | `.github/agents/scripts/validate_patterns.py` | FALSE_POSITIVE | 2026-06-12 status: exact-line allowlist pragmas added; no true secrets found | <!-- pragma: allowlist secret -->
+| Test fixture Python files (15 files) | `tests/security/test_providers.py`, `tests/ci/test_post_rescue_comment.py`, `tests/api/test_auth_mfa_expiry.py`, `tests/auth/test_mfa_provider.py`, `tests/auth/test_token_manager.py`, `tests/branch_coverage/test_branch_coverage_config.py`, `tests/agents/test_msp_client_phase9_1.py`, `coverage_tests/test_security_providers_unittest.py`, `tests/unit/test_alerting.py`, `tests/unit/utils/test_reproducibility_hardening.py`, `tests/unit/utils/test_safe_pickle.py`, `tests/services/test_api_main_phase_e.py`, `tests/test_fast_forward_safe_files.py`, `scripts/space_traversal/viz_html.py`, `tools/codex_apply_modeling_monitoring_api.py` | FALSE_POSITIVE | 2026-06-13 extended source triage: 37 baseline entries confirmed false positives; exact-line pragmas added | <!-- pragma: allowlist secret -->
+| GitHub Actions workflow YAML files | `.github/workflows/codeql-alert-fetcher.yml`, `.github/workflows/security-scanning-suite.yml` | FALSE_POSITIVE | 2026-06-13 extended source triage: secret references / step IDs, not credential values | <!-- pragma: allowlist secret -->
+| JSON/JSONL baseline-only files | `.codex/webhook_config.json` (lines 7, 85), `.codex/agent_context.json` (line 14), `.codex/aftermath/pda_iterations.jsonl` (lines 3, 4, 57, 231) | FIXED | 8a5f23868 (Phase 5-A — already registered in `.secrets.baseline`; env-var references / Git SHAs, not credentials) | <!-- pragma: allowlist secret -->
+| CODEX_MANIFEST.json conflict + SHA256 entropy | `CODEX_MANIFEST.json` (line 2248) | FIXED | 8a5f23868 (Phase 5-C — merge conflict resolved; `.secrets.baseline` updated) | <!-- pragma: allowlist secret -->
+| Active test files with existing allowlists | `tests/safety/test_sanitizers_coverage.py`, `tests/serving/test_inference_enhanced.py`, `tests/test_token_verification.py` | FALSE_POSITIVE | Follow-up validation 2026-06-12: all 6 findings already exact-line allowlisted; `detect-secrets scan` returned clean | <!-- pragma: allowlist secret -->
 | Evidence archive SHA-256 noise | `.codex/evidence/archive_ops.jsonl` (24 Hex High Entropy hits) | FALSE_POSITIVE | Follow-up validation 2026-06-12: SHA-256 archive record hashes, not credentials; no inline suppression possible for JSONL |
-| Baseline-only phase 5-D (regeneration) | `.secrets.baseline` | FIXED | 8a5f23868 (Phase 5-D — deferred to CI run; existing baseline entries remain tracked known issues) |
+| Baseline-only phase 5-D (regeneration) | `.secrets.baseline` | FIXED | 8a5f23868 (Phase 5-D — deferred to CI run; existing baseline entries remain tracked known issues) | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -238,7 +238,7 @@
 |---|---:|---:|---:|---:|
 | CodeQL Python | 32 | 0 | 75 | 107 |
 | Semgrep | 75 | 0 | 12 | 87 |
-| Secrets (groups) | 4 | 6 | 0 | 10 |
+| Secrets (groups) | 4 | 6 | 0 | 10 | <!-- pragma: allowlist secret -->
 | **Total** | **111** | **6** | **87** | **204** |
 
 - **FIXED: 111** (32 CodeQL + 75 Semgrep + 4 Secrets groups)
@@ -259,15 +259,15 @@
 | CQL-12 HIGH clear-text-logging | `scripts/ci/auto_fix_common_issues.py` | 478 | `security-alert-verification-agent` |
 | CQL-14 HIGH clear-text-logging | `scripts/fix_security_issues.py` | 266 | `security-alert-verification-agent` |
 | CQL-15 HIGH clear-text-logging | `scripts/fix_security_issues.py` | 270 | `security-alert-verification-agent` |
-| CQL-16 HIGH clear-text-logging | `scripts/github_secrets_sync.py` | 115 | `security-alert-verification-agent` |
-| CQL-17 HIGH clear-text-logging | `scripts/github_secrets_sync.py` | 118 | `security-alert-verification-agent` |
-| CQL-18 HIGH clear-text-logging | `scripts/ops/codex_mint_tokens_per_run.py` | 401 | `security-alert-verification-agent` |
-| CQL-19 HIGH clear-text-logging | `scripts/ops/codex_mint_tokens_per_run.py` | 449 | `security-alert-verification-agent` |
-| CQL-21 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 211 | `security-alert-verification-agent` |
-| CQL-22 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 212 | `security-alert-verification-agent` |
-| CQL-23 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 221 | `security-alert-verification-agent` |
-| CQL-24 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 225 | `security-alert-verification-agent` |
-| CQL-25 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 226 | `security-alert-verification-agent` |
+| CQL-16 HIGH clear-text-logging | `scripts/github_secrets_sync.py` | 115 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-17 HIGH clear-text-logging | `scripts/github_secrets_sync.py` | 118 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-18 HIGH clear-text-logging | `scripts/ops/codex_mint_tokens_per_run.py` | 401 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-19 HIGH clear-text-logging | `scripts/ops/codex_mint_tokens_per_run.py` | 449 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-21 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 211 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-22 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 212 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-23 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 221 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-24 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 225 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
+| CQL-25 HIGH clear-text-logging | `scripts/security/verify_token_scope.py` | 226 | `security-alert-verification-agent` | <!-- pragma: allowlist secret -->
 | CQL-26 HIGH clear-text-logging | `src/codex/knowledge/pii.py` | 179 | `security-alert-verification-agent` |
 | CQL-27 HIGH clear-text-logging | `src/codex/knowledge/pii.py` | 180 | `security-alert-verification-agent` |
 | CQL-28 HIGH clear-text-logging | `src/security/providers/github_provider.py` | 481 | `security-alert-verification-agent` |
@@ -309,13 +309,13 @@
 | CQL-85 LOW uninitialized-local | `tests/security/test_security_gating.py` | 99 | `ci-testing-agent` |
 | CQL-86 LOW uninitialized-local | `tests/smoke/test_cli_determinism_wiring.py` | 30 | `ci-testing-agent` |
 | CQL-87 LOW uninitialized-local | `tests/specs/test_dup_similarity.py` | 51 | `ci-testing-agent` |
-| CQL-88 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | `ci-testing-agent` |
-| CQL-89 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | `ci-testing-agent` |
-| CQL-90 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 25 | `ci-testing-agent` |
-| CQL-91 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 26 | `ci-testing-agent` |
-| CQL-92 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 100 | `ci-testing-agent` |
-| CQL-93 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 107 | `ci-testing-agent` |
-| CQL-94 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 42 | `ci-testing-agent` |
+| CQL-88 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-89 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 24 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-90 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 25 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-91 LOW uninitialized-local | `tests/tokenization/test_fast_tokenizer_wrapper.py` | 26 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-92 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 100 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-93 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 107 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
+| CQL-94 LOW uninitialized-local | `tests/tokenization/test_roundtrip_basic.py` | 42 | `ci-testing-agent` | <!-- pragma: allowlist secret -->
 | CQL-95 LOW uninitialized-local | `tests/training/test_simple_trainer.py` | 22 | `ci-testing-agent` |
 | CQL-96 LOW uninitialized-local | `tests/training/test_simple_trainer.py` | 35 | `ci-testing-agent` |
 | CQL-97 LOW uninitialized-local | `tests/unit/test_peft_utils.py` | 39 | `ci-testing-agent` |

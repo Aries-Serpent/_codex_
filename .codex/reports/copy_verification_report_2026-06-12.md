@@ -16,13 +16,13 @@ All 27 Python files compiled without errors (`python3 -m py_compile`).
 | `.github/agents/github-security-validator-agent/src/agent.py` | ✅ OK |
 | `.github/scripts/ci_failure_crossref.py` | ✅ OK |
 | `scripts/analyze_workflows.py` | ✅ OK |
-| `scripts/decode_workflow_secrets.py` | ✅ OK |
+| `scripts/decode_workflow_secrets.py` | ✅ OK | <!-- pragma: allowlist secret -->
 | `scripts/ops/codex_repo_admin_bootstrap.py` | ✅ OK |
 | `tests/integration/test_admin_automation_agent.py` | ✅ OK |
 | `.codex/reports/ci_workflow_analysis_artifacts_2026_01_30/workflow_analyzer.py` | ✅ OK |
 | `.github/scripts/workflow_analyzer.py` | ✅ OK |
 | `src/codex_ml/deployment/package.py` | ✅ OK |
-| `tools/codex_secret_scan_stub.py` | ✅ OK |
+| `tools/codex_secret_scan_stub.py` | ✅ OK | <!-- pragma: allowlist secret -->
 | `src/security/_types.py` | ✅ OK |
 | `src/security/core.py` | ✅ OK |
 | `src/security/content_filters.py` | ✅ OK |
@@ -38,7 +38,7 @@ All 27 Python files compiled without errors (`python3 -m py_compile`).
 | `tests/security/test_providers.py` | ✅ OK |
 | `tests/ci/test_post_rescue_comment.py` | ✅ OK |
 | `tests/auth/test_mfa_provider.py` | ✅ OK |
-| `tests/auth/test_token_manager.py` | ✅ OK |
+| `tests/auth/test_token_manager.py` | ✅ OK | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -59,9 +59,9 @@ Checked all relative file-path links (skipped `http://`, `https://`, `#anchor` l
 
 | File | Broken Relative Links |
 |---|---|
-| `remediation_plan_codeql_python.md` | ✅ None (false positives confirmed — all `(secret)` / `(1)` references are inline code, not file paths) |
+| `remediation_plan_codeql_python.md` | ✅ None (false positives confirmed — all `(secret)` / `(1)` references are inline code, not file paths) | <!-- pragma: allowlist secret -->
 | `remediation_plan_semgrep.md` | ✅ None |
-| `remediation_plan_secrets.md` | ✅ None |
+| `remediation_plan_secrets.md` | ✅ None | <!-- pragma: allowlist secret -->
 | `.codex/reports/claim_verification_report_2026-06-12.md` | ✅ None |
 
 ---
@@ -86,17 +86,17 @@ Scanned for `password =`, `token =`, `secret =`, `api_key =` patterns assigned t
 
 | Line | Content |
 |---|---|
-| 206 | `token="ghp_test",` |
-| 452 | `token="ghp_test_token_1234567890",` |
-| 614 | `token="ghp_test_token_1234567890",` |
-| 644 | `token="ghp_test_token_1234567890",` |
-| 662 | `token="ghp_test_token_1234567890",` |
-| 684 | `token="ghp_test_token_1234567890",` |
-| 1392 | `token="ghp_test",` |
-| 1499 | `token="ghp_test",` |
-| 1541 | `token="vault-token",` |
-| 1556 | `token="vault-token",` |
-| 1562 | `config = ProviderConfig(..., token="ghp_test")` |
+| 206 | `token="ghp_test",` | <!-- pragma: allowlist secret -->
+| 452 | `token="ghp_test_token_1234567890",` | <!-- pragma: allowlist secret -->
+| 614 | `token="ghp_test_token_1234567890",` | <!-- pragma: allowlist secret -->
+| 644 | `token="ghp_test_token_1234567890",` | <!-- pragma: allowlist secret -->
+| 662 | `token="ghp_test_token_1234567890",` | <!-- pragma: allowlist secret -->
+| 684 | `token="ghp_test_token_1234567890",` | <!-- pragma: allowlist secret -->
+| 1392 | `token="ghp_test",` | <!-- pragma: allowlist secret -->
+| 1499 | `token="ghp_test",` | <!-- pragma: allowlist secret -->
+| 1541 | `token="vault-token",` | <!-- pragma: allowlist secret -->
+| 1556 | `token="vault-token",` | <!-- pragma: allowlist secret -->
+| 1562 | `config = ProviderConfig(..., token="ghp_test")` | <!-- pragma: allowlist secret -->
 
 Existing annotations at lines 1696, 1705, 1767 were confirmed correct and untouched.
 
@@ -110,11 +110,11 @@ Checked with `scripts/ci/check_deferral_language.py --text <file-content>` for a
 |---|---|
 | All CodeQL Python files (15) | ✅ No deferral language |
 | All Semgrep Python files (8) | ✅ No deferral language |
-| All Secrets test files (4) | ✅ No deferral language |
+| All Secrets test files (4) | ✅ No deferral language | <!-- pragma: allowlist secret -->
 | Both YAML workflow files | ✅ No deferral language |
 | `remediation_plan_codeql_python.md` | ✅ No deferral language |
 | `remediation_plan_semgrep.md` | ✅ No deferral language |
-| `remediation_plan_secrets.md` | 🔴 **BLOCKER — FIXED** (see §Fixes Applied) |
+| `remediation_plan_secrets.md` | 🔴 **BLOCKER — FIXED** (see §Fixes Applied) | <!-- pragma: allowlist secret -->
 | `.codex/reports/claim_verification_report_2026-06-12.md` | ✅ No deferral language |
 
 ---

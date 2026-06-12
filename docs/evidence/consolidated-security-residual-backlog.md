@@ -9,13 +9,13 @@
 | Check | Result | Notes |
 |---|---|---|
 | `python scripts/ci/rvs_preflight.py --group quick --preview` | PASS | No `quick` test files were discovered; preview still confirms the supported preflight path is clean. |
-| `detect-secrets scan tests/safety/test_sanitizers_coverage.py tests/serving/test_inference_enhanced.py tests/test_token_verification.py .github/workflows/codeql-alert-fetcher.yml .github/workflows/security-scanning-suite.yml` | PASS | Returned `"results": {}` after the allowlist work already documented in `remediation_plan_secrets.md`. |
+| `detect-secrets scan tests/safety/test_sanitizers_coverage.py tests/serving/test_inference_enhanced.py tests/test_token_verification.py .github/workflows/codeql-alert-fetcher.yml .github/workflows/security-scanning-suite.yml` | PASS | Returned `"results": {}` after the allowlist work already documented in `remediation_plan_secrets.md`. | <!-- pragma: allowlist secret -->
 | `pip-audit -r requirements/lock.txt --desc on` | FAIL | Reported `torch 2.11.0` → `CVE-2025-3000` on the default lockfile surface. |
 | `pip-audit -r requirements/lock-eval.txt --desc on` | FAIL | Reported `sqlitedict 2.1.0` → `CVE-2024-35515` on the opt-in eval lockfile surface. |
 | CodeQL live alert query | BLOCKED | GitHub code-scanning API access returned `403 Resource not accessible by integration`. |
 | Semgrep rerun | BLOCKED | `semgrep` CLI is not installed in the current environment. |
 | Bandit rerun | BLOCKED | `bandit` CLI is not installed in the current environment; historical `artifacts/security/bandit.txt` remains the only local evidence. |
-| Secret scanning API query | BLOCKED | GitHub secret-scanning API access returned `403 Resource not accessible by integration`. |
+| Secret scanning API query | BLOCKED | GitHub secret-scanning API access returned `403 Resource not accessible by integration`. | <!-- pragma: allowlist secret -->
 
 ## Consolidated overlap rules
 
@@ -42,7 +42,7 @@
 | P1 | Fresh Semgrep rerun for sanitized logging, dynamic URL, and file-permission families | Current branch code shows the hardening patterns, but Semgrep was unavailable locally. |
 | P1 | `torch 2.11.0` advisory on `requirements/lock.txt` | Newly reproduced by current-session `pip-audit`; this is the main default-install delta versus the historical plans. |
 | P2 | `sqlitedict 2.1.0` advisory on `requirements/lock-eval.txt` | Still present, but isolated to the opt-in eval surface. |
-| P2 | `.secrets.baseline` regeneration | Source-path false positives are already triaged; the baseline still needs a single cleanup pass to retire them. |
+| P2 | `.secrets.baseline` regeneration | Source-path false positives are already triaged; the baseline still needs a single cleanup pass to retire them. | <!-- pragma: allowlist secret -->
 | P3 | Bandit low-severity hygiene rerun | Historical artifact still shows low-severity subprocess / broad-`except` findings, but Bandit was unavailable locally. |
 
 ## Non-reopen guidance

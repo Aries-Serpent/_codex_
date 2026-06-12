@@ -35,7 +35,7 @@ Method: `grep -in "defer|future work|not yet|will be|pending|TODO|TBD|out of sco
 |----------|--------------------------|-------|
 | `remediation_plan_codeql_python.md` | None | Zero matches |
 | `remediation_plan_semgrep.md` | None | Zero matches |
-| `remediation_plan_secrets.md` | None (1 false-positive) | Single match: "still reports only the expected SHA256 evidence noise" — describes expected CI behavior, not a deferral |
+| `remediation_plan_secrets.md` | None (1 false-positive) | Single match: "still reports only the expected SHA256 evidence noise" — describes expected CI behavior, not a deferral | <!-- pragma: allowlist secret -->
 
 **Checklist:**
 - [x] `remediation_plan_codeql_python.md` — passes deferral language gate

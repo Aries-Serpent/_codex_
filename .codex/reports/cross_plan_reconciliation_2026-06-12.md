@@ -42,7 +42,7 @@ Six commit SHAs referenced in Implementation Status sections do not appear in
 | `ff72490a6` | CodeQL Phase 2-A | Shallow-clone artifact — commit exists on remote |
 | `3a0cd9055` | CodeQL Phase 2-C/D; Semgrep Phase 4-A/B/C | Shallow-clone artifact — commit exists on remote |
 | `4659c8640` | Semgrep Phase 3-A | Shallow-clone artifact — commit exists on remote |
-| `8a5f23868` | Secrets Phase 5-B/C/D | Shallow-clone artifact — commit exists on remote |
+| `8a5f23868` | Secrets Phase 5-B/C/D | Shallow-clone artifact — commit exists on remote | <!-- pragma: allowlist secret -->
 
 All source changes described for those phases **are present** in the working tree.
 Full verification: `git fetch --unshallow origin && git show <sha>`.
@@ -171,11 +171,11 @@ Logs only the integer length and byte position — no card digits.
 
 **Actual lines 221–232:**
 ```python
-        safe_value = redact_sensitive_value(secret_value)
-        assert "[REDACTED]" in safe_value, "redact_sensitive_value must redact the token"
-        assert secret_value not in safe_value, "raw secret must not survive redaction"
-        # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
-        logger.info("Secret value: %s", safe_value)  # nosec: logs redacted placeholder only
+        safe_value = redact_sensitive_value(secret_value)  # pragma: allowlist secret
+        assert "[REDACTED]" in safe_value, "redact_sensitive_value must redact the token"  # pragma: allowlist secret
+        assert secret_value not in safe_value, "raw secret must not survive redaction"  # pragma: allowlist secret
+        # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.  # pragma: allowlist secret
+        logger.info("Secret value: %s", safe_value)  # nosec: logs redacted placeholder only  # pragma: allowlist secret
 ```
 
 The raw secret is verified absent from `safe_value` before logging.
@@ -223,10 +223,10 @@ them clean.  The overlapping finding is therefore addressed in both plans.
 | O-7 — cli_api_server.py | CLOSED ✅ |
 | Missing SHA audit (O-1 – O-6) | DOCUMENTED ✅ |
 | catalog_workflows.py (280–281) | CLEAN ✅ |
-| github_secrets_sync.py (115, 118) | CLEAN ✅ |
-| codex_mint_tokens_per_run.py (401, 449) | CLEAN ✅ |
+| github_secrets_sync.py (115, 118) | CLEAN ✅ | <!-- pragma: allowlist secret -->
+| codex_mint_tokens_per_run.py (401, 449) | CLEAN ✅ | <!-- pragma: allowlist secret -->
 | codex_repo_admin_bootstrap.py (572) | CLEAN ✅ |
-| verify_token_scope.py (211–226) | CLEAN ✅ |
+| verify_token_scope.py (211–226) | CLEAN ✅ | <!-- pragma: allowlist secret -->
 | pii.py (179–180) | CLEAN ✅ |
 | github_provider.py (481, 519) | CLEAN ✅ |
 | test_admin_automation_agent.py (226) | CLEAN ✅ |

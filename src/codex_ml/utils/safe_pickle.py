@@ -19,7 +19,7 @@ Example - Safe Loading:
     >>> from codex_ml.utils.safe_pickle import safe_pickle_load
     >>> # Load with class restrictions (safe)
     >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
-    >>> 
+    >>>
     >>> # Load with signature verification (safest)
     >>> data = safe_pickle_load("signed.pkl", verify_signature=True, use_restricted_unpickler=True)
 
@@ -120,54 +120,54 @@ def safe_pickle_load(
     use_restricted_unpickler: bool = True,
 ) -> Any:
     """Safely load a pickle file with optional signature verification.
-    
+
     SECURITY CONTRACT:
     ------------------
     This function provides defense-in-depth against pickle deserialization attacks:
-    
+
     1. RestrictedUnpickler (default): Only allows whitelisted classes
        - Prevents arbitrary code execution via __reduce__
        - See SAFE_MODULES constant for allowed classes
-       
+
     2. HMAC verification (optional): Ensures file integrity
        - Prevents tampering with checkpoint files
        - Use for checkpoints from external/untrusted sources
-       
+
     3. Explicit trust override: use_restricted_unpickler=False
        - ONLY use for files YOU created locally
        - Logs warning when disabled
        - Caller accepts full responsibility for file trust
-    
+
     Trust Boundaries:
     - verify_signature=True: Untrusted filesystem → Verified trusted source
     - use_restricted_unpickler=True: Unknown classes → Known safe classes
     - use_restricted_unpickler=False: TRUSTED source → Raw deserialization (RISKY)
-    
+
     Args:
         file_path: Path to pickle file to load
         verify_signature: Enable HMAC signature verification (recommended for external sources)
         secret_key: HMAC key (auto-generated if None, shared across saves/loads)
         use_restricted_unpickler: Enable class allowlist (STRONGLY recommended)
-        
+
     Returns:
         Deserialized Python object
-        
+
     Raises:
         FileNotFoundError: File does not exist
         ValueError: HMAC signature verification failed
         pickle.UnpicklingError: Restricted class detected (when use_restricted_unpickler=True)
-        
+
     Examples:
         >>> # Safest: Load with restrictions and verification
         >>> data = safe_pickle_load("external.pkl", verify_signature=True, use_restricted_unpickler=True)
-        
+
         >>> # Safe: Load with restrictions only
         >>> data = safe_pickle_load("checkpoint.pkl", use_restricted_unpickler=True)
-        
+
         >>> # Risky: Load without restrictions (local trusted files only)
         >>> data = safe_pickle_load("my_checkpoint.pkl", use_restricted_unpickler=False)
         ⚠️  Loading pickle WITHOUT restriction (potential security risk): ...
-    """
+    """  # noqa: E501
     path = Path(file_path)
     if not path.exists():
         raise FileNotFoundError(f"Pickle file not found: {path}")

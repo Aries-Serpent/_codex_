@@ -20,7 +20,7 @@ All six commit SHAs referenced across the three plans were checked against the l
 | `ff72490a6` | CodeQL Phase 2-A | ❌ NOT IN HISTORY |
 | `3a0cd9055` | CodeQL Phase 2-C/D, Semgrep Phase 4-A/B/C | ❌ NOT IN HISTORY |
 | `4659c8640` | Semgrep Phase 3-A | ❌ NOT IN HISTORY |
-| `8a5f23868` | Secrets Phase 5-B/C/D | ❌ NOT IN HISTORY |
+| `8a5f23868` | Secrets Phase 5-B/C/D | ❌ NOT IN HISTORY | <!-- pragma: allowlist secret -->
 
 > **Interpretation:** The commits are not reachable in the current branch's history (they may have been squashed, rebased away, or the SHAs were fabricated in the plan text). Each code claim below was therefore verified **directly against the live file content**, independent of commit attribution.
 
@@ -67,9 +67,9 @@ The vulnerability (logging `secret_scanning` key name) is addressed; the fix is 
 ✅ **VERIFIED** — Line 315 is the security comment; line 316 introduces the taint-breaking cast:
 
 ```python
-# 315:         # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
-# 316:         _secrets_count: int = int(summary['secrets_used'])
-# 317:         print(f"  🔑 Unique secrets:      {_secrets_count}")
+# 315:         # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key  # pragma: allowlist secret
+# 316:         _secrets_count: int = int(summary['secrets_used'])  # pragma: allowlist secret
+# 317:         print(f"  🔑 Unique secrets:      {_secrets_count}")  # pragma: allowlist secret
 ```
 
 ---
@@ -91,9 +91,9 @@ The vulnerability (logging `secret_scanning` key name) is addressed; the fix is 
 ✅ **VERIFIED** — Line 167 is the security comment; line 168 applies the fingerprint mask:
 
 ```python
-# 167:     # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data
-# 168:     _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"
-# 169:     print(f"- `{_secret_fp}`: {count} critical workflows")
+# 167:     # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data  # pragma: allowlist secret
+# 168:     _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"  # pragma: allowlist secret
+# 169:     print(f"- `{_secret_fp}`: {count} critical workflows")  # pragma: allowlist secret
 ```
 
 ---
@@ -116,7 +116,7 @@ Lines 464 and 468 are plain file-write calls:
 The actual sanitization fix is at **line 77** (well upstream of the writes):
 
 ```python
-# 77: 'secrets': [hashlib.sha256(s.encode()).hexdigest()[:16] for s in self._extract_secrets(content)],
+# 77: 'secrets': [hashlib.sha256(s.encode()).hexdigest()[:16] for s in self._extract_secrets(content)],  # pragma: allowlist secret
 ```
 
 The written output no longer contains raw secret names (they are SHA-256 truncated). The claim "no raw secret storage" is functionally correct but the referenced lines 464/468 contain no masking code themselves. **Reclassified as OPEN with respect to line precision; the underlying fix at line 77 is verified.**
@@ -140,7 +140,7 @@ The written output no longer contains raw secret names (they are SHA-256 truncat
 ✅ **VERIFIED** — Line ~65 stores only hashed secret identifiers:
 
 ```python
-# 65: "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # hashed identifiers only — no secret values stored
+# 65: "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # hashed identifiers only — no secret values stored  # pragma: allowlist secret
 ```
 
 ---
@@ -274,7 +274,7 @@ Neither line is a logging statement. Neither contains credential masking. The fu
 | **CodeQL Phase 2-C pythagorean** | 1 | 0 | 0 |
 | **Semgrep Phase 3-A credential masking** | 1 | 0 | 1 |
 | **Semgrep Phase 4-A nosec B310** | 1 | 0 | 0 |
-| **Secrets Phase 5-B exclude-files** | 1 | 0 | 0 |
+| **Secrets Phase 5-B exclude-files** | 1 | 0 | 0 | <!-- pragma: allowlist secret -->
 | **TOTAL** | **13** | **2** | **7** |
 
 ---
@@ -285,7 +285,7 @@ Neither line is a logging statement. Neither contains credential masking. The fu
 |---|---|---|---|---|
 | O-1 | All 6 commit SHAs | Present in git history | Not found by `git log --oneline \| grep <sha_prefix>` | Repo admin / PR author |
 | O-2 | `github-security-validator-agent/src/agent.py` lines 268,274 | Credential masking at those lines | Lines 268 (blank) and 274 (dict literal) are not logging lines; masking code is at lines 279–281 | Security team |
-| O-3 | `.github/scripts/workflow_analyzer.py` lines 464,468 | No raw secret storage at those lines | Lines are file-write calls; sanitization is upstream at line 77 | Security team |
+| O-3 | `.github/scripts/workflow_analyzer.py` lines 464,468 | No raw secret storage at those lines | Lines are file-write calls; sanitization is upstream at line 77 | Security team | <!-- pragma: allowlist secret -->
 | O-4 | `cognitive_app/src/server/cli_api_server.py` lines 1320,1326 | Credential masking present | Lines are a conditional and an import statement — no masking code at those lines | @mbaetiong / security team |
 
 ---

@@ -67,10 +67,10 @@ but not blocking.
 | 10: Bandit Security | 8 | Pre-existing bandit findings — not introduced by remediation |
 | 13: W-Series Warnings | 33 | Pre-existing W-series mypy/pytest warnings |
 | 14: Link Checker Config | 1 | Pre-existing link checker config issue |
-| 23: Secrets Baseline Plugins | 1 | Pre-existing configuration gap |
+| 23: Secrets Baseline Plugins | 1 | Pre-existing configuration gap | <!-- pragma: allowlist secret -->
 | 26: Auto-Post Rebase Race | 2 | Pre-existing workflow race condition |
 | 31: Stale Type Ignore | 18 | Pre-existing stale `# type: ignore` comments |
-| 35: Markdown FP Secrets | 18 | In `.codex/reports/copy_verification_report_2026-06-12.md` (doc table values, not real secrets) |
+| 35: Markdown FP Secrets | 18 | In `.codex/reports/copy_verification_report_2026-06-12.md` (doc table values, not real secrets) | <!-- pragma: allowlist secret -->
 
 **Total: 22 issues, 2 auto-fixable**  
 No NEW actionable patterns introduced by remediation work. All issues are pre-existing.
@@ -85,7 +85,7 @@ No NEW actionable patterns introduced by remediation work. All issues are pre-ex
 python3 scripts/ci/check_cross_references.py \
     remediation_plan_codeql_python.md \
     remediation_plan_semgrep.md \
-    remediation_plan_secrets.md
+    remediation_plan_secrets.md  # pragma: allowlist secret
 
 OK 3 file(s) checked -- all internal references resolve.
 ```
@@ -175,7 +175,7 @@ All 13 security-remediation-touched files compile without errors via `python3 -m
 |-------------|--------|-------|
 | CodeQL findings | 107 | 0 (CLOSED) |
 | Semgrep findings | 88 | 0 (CLOSED) |
-| detect-secrets findings | resolved | 0 (all FP, baseline consistent) |
+| detect-secrets findings | resolved | 0 (all FP, baseline consistent) | <!-- pragma: allowlist secret -->
 | Cross-plan OPEN items | 0 | 0 |
 
 ---

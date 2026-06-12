@@ -31,7 +31,7 @@ Run for each of the six SHAs on the working branch
 | `ff72490a6` | CodeQL Phase 2-A | **NOT FOUND** | |
 | `3a0cd9055` | CodeQL Phase 2-C/D; Semgrep Phase 4-A/B/C | **NOT FOUND** | |
 | `4659c8640` | Semgrep Phase 3-A | **NOT FOUND** | |
-| `8a5f23868` | Secrets Phase 5-B/C/D | **NOT FOUND** | |
+| `8a5f23868` | Secrets Phase 5-B/C/D | **NOT FOUND** | | <!-- pragma: allowlist secret -->
 
 All six SHAs are absent from the full `git log --all --oneline` output.
 
@@ -40,10 +40,10 @@ All six SHAs are absent from the full `git log --all --oneline` output.
 ## Actual git history on branch
 
 ```
-71b04f39f  docs: complete Phase 6 secrets remediation verification
+71b04f39f  docs: complete Phase 6 secrets remediation verification  # pragma: allowlist secret
 cc5fcfc88  fix: close remaining Semgrep findings — nosec B310 on urllib + nosemgrep on chmod
 eeca822a0  Add claim verification report for remediation plans 2026-06-12
-98d1322de  fix(secrets): regenerate .secrets.baseline after full source triage (phase-5d)
+98d1322de  fix(secrets): regenerate .secrets.baseline after full source triage (phase-5d)  # pragma: allowlist secret
 84054cecc  (grafted) docs: update remediation plan status sections with phase 1-5 commit SHAs (phase-6d)
 ```
 

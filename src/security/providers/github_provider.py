@@ -612,7 +612,9 @@ class GitHubTokenProvider(TokenProvider):
         """
         token = self.config.get("token") or os.environ.get("GITHUB_TOKEN", "")
         if not token:
-            logger.warning("GitHub listing API has no auth material configured; returning empty list.")
+            logger.warning(
+                "GitHub listing API has no auth material configured; returning empty list."
+            )
             return []
         if not HAS_REQUESTS:
             logger.warning("GitHub listing API unavailable: requests library missing.")

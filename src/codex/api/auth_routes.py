@@ -265,7 +265,9 @@ def create_auth_router(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         ip = request.client.host if request.client else "unknown"
-        logger.info("User registered: %s from %s", _safe_log_value(user.username), _safe_log_value(ip))
+        logger.info(
+            "User registered: %s from %s", _safe_log_value(user.username), _safe_log_value(ip)
+        )
 
         return RegisterResponse(
             user_id=user.user_id,
@@ -302,11 +304,15 @@ def create_auth_router(
                 logger.warning("MFA verification failed from %s", _safe_log_value(ip_address))
                 raise HTTPException(status_code=403, detail="MFA verification failed") from exc
             if hasattr(exc, "code"):
-                logger.warning("Login failed from %s: %s", _safe_log_value(ip_address), type(exc).__name__)
+                logger.warning(
+                    "Login failed from %s: %s", _safe_log_value(ip_address), type(exc).__name__
+                )
                 raise HTTPException(status_code=401, detail="Invalid credentials") from exc
             # Not an auth-domain exception — log and re-raise as 500
             exc_type = type(exc).__name__
-            logger.error("Unexpected error during login from %s: %s", _safe_log_value(ip_address), exc_type)
+            logger.error(
+                "Unexpected error during login from %s: %s", _safe_log_value(ip_address), exc_type
+            )
             raise
 
         logger.info(
