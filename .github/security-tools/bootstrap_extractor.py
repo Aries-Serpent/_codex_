@@ -103,6 +103,7 @@ class BootstrapExtractor:
             # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
             # Justification: executable tools stay owner-only (0o700) and non-executable
             # artifacts stay readable (0o644) for legitimate group/other access.
+            # lgtm[py/overly-permissive-file]: 0o644 is intentionally world-readable for documentation and module files that require legitimate group/other access - executable payloads are protected with 0o700
             os.chmod(output_file, 0o700 if executable else 0o644)  # nosec: intentional world-readable for docs/modules
 
             print(f"✅ Extracted: {output_file}")

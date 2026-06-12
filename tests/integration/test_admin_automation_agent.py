@@ -229,6 +229,7 @@ class TestSecurityCompliance:
         # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
         import logging
         logger = logging.getLogger(__name__)
+        # lgtm[py/clear-text-logging-sensitive-data]: safe_value is a pre-redacted [REDACTED] placeholder - the raw secret token never reaches the logger, verified by assertion on line 235
         logger.info("Secret value: %s", safe_value)  # nosec: logs redacted placeholder only  # pragma: allowlist secret
 
         # Confirm the raw token is absent from captured log output
