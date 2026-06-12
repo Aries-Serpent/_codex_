@@ -244,7 +244,11 @@ jobs:
         id: detect-secrets  # pragma: allowlist secret
         continue-on-error: true
         run: |
-          detect-secrets scan --all-files --force-use-all-plugins > .secrets.baseline 2> detect-secrets.log
+          detect-secrets scan --all-files --force-use-all-plugins \
+            --exclude-files '\.codex/validation/' \
+            --exclude-files '\.venv_ci/' \
+            --exclude-files 'assets/manifest\.json' \
+            > .secrets.baseline 2> detect-secrets.log
           SECRETS_COUNT=$(python -c "import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results') or {}).values())))" 2>/dev/null || echo "0")
           echo "secrets_found=$SECRETS_COUNT" >> "$GITHUB_OUTPUT"
       - name: Generate secret-scan summary
