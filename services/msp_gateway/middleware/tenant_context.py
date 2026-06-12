@@ -240,7 +240,6 @@ class TenantRegistry:
             )
 
             row = cursor.fetchone()
-            conn.close()
 
             if row:
                 tenant_id = row[0]
@@ -248,25 +247,29 @@ class TenantRegistry:
                 pbkdf2_hash, legacy_sha256_hash = api_key_hashes
 
                 # Lazy migration: upgrade legacy SHA-256 hash to PBKDF2 on first use.
-                # This eliminates the weak-hashing path for this tenant going forward.
+                # Reuse the same connection to avoid race conditions and duplicate opens.
                 if stored_hash == legacy_sha256_hash:
                     try:
-                        mig_conn = sqlite3.connect(settings.db_path)
-                        mig_cursor = mig_conn.cursor()
-                        mig_cursor.execute(
+                        cursor.execute(
                             "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
                             (pbkdf2_hash, tenant_id),
                         )
-                        mig_conn.commit()
-                        mig_conn.close()
+                        conn.commit()
                         logger.info(
                             "Migrated legacy SHA-256 API key hash to PBKDF2 for tenant %s",
                             sanitize_log_input(tenant_id),
                         )
                         stored_hash = pbkdf2_hash
-                    except Exception:
-                        pass  # Non-critical: will retry on next authentication
+                    except Exception as exc:
+                        logger.warning(
+                            "Failed to migrate API key hash for tenant %s: %s",
+                            sanitize_log_input(tenant_id),
+                            type(exc).__name__,
+                        )
 
+            conn.close()
+
+            if row:
                 tenant_data = {
                     "tenant_id": tenant_id,
                     "name": row[1],
