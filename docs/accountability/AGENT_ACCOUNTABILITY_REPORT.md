@@ -1,3 +1,29 @@
+## SESSION SUMMARY — 2026-06-12T04:02Z · PR #4853 CI rescue (`#4687210820`)
+
+### Pre-flight Checklist
+- [x] Reviewed failing checks and pulled logs/artifacts via GitHub MCP (`run_id=27392923782`, `run_id=27392923783`) ✅
+- [x] Identified root causes from artifacts/logs (yamllint failure + PYTHONPATH shadowing) ✅
+- [x] Applied minimal workflow-only fixes and re-ran required rescue commands ✅
+
+### Work Completed
+1. Updated `.github/workflows/resilient_validation.yml` to satisfy fast-validation yamllint gate:
+   - quoted top-level `'on'`
+   - wrapped long matrix/command lines
+   - normalized inline comment spacing before `# v*` annotations
+2. Changed resilient workflow env from `PYTHONPATH: src` to `PYTHONPATH: .:src` in validation + sharded jobs so top-level legacy modules (`cli`, `deploy`, `agents`) resolve before `src/` package shadows.
+3. Re-ran required queue commands locally:
+   - `python -m ruff check src/ tests/ --fix`
+   - `python scripts/ci/mypy_baseline.py --require-baseline`
+   - `python scripts/ci/auto_fix_common_issues.py --check-only`
+
+### Validation / Audit Notes
+- `yamllint --no-warnings .github/workflows/resilient_validation.yml -c .yamllint.yml` ✅
+- `python -m ruff check src/ tests/ --fix` ✅
+- `python scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T03:36Z · PR #4853 CI rescue follow-up (`#4687083507`)
 
 ### Pre-flight Checklist

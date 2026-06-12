@@ -8,6 +8,8 @@
 - Review follow-up (`discussion_r3400282720`): simplified Pattern 35 docstring examples in `scripts/ci/auto_fix_common_issues.py` to remove escaped quote/newline sequences and keep readable real line breaks.
 
 ### Fixed (SN)
+- PR #4853 CI rescue follow-up (`#4687210820`): fixed `yamllint` gate failures in `.github/workflows/resilient_validation.yml` by quoting `'on'`, wrapping long expressions, and normalizing inline-comment spacing.
+- Resilient Validation Suite import fix: changed workflow `PYTHONPATH` from `src` to `.:src` so legacy top-level modules (`cli`, `deploy`, `agents`) resolve before `src/` package shadows during pytest collection.
 - PR #4853 CI rescue follow-up: executed required queue commands from comment `#4687083507` (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) and confirmed all pass.
 - Resolved PR #4849 merge conflicts while merging `origin/0D_base_` into `copilot/fix-review-comments`.
 - Added explicit name + block-scalar guarded `run` for the session preload step in `.github/workflows/copilot-setup-steps.yml`.
