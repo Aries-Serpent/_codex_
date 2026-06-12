@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4850)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4850 (SHA `ea3207ca`) at 2026-06-12T00:06Z [auto-generated]
+
 ### Fixed (auto-update — PR #4848)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4848 (SHA `188d45af`) at 2026-06-11T23:23Z [auto-generated]
 
