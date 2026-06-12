@@ -223,7 +223,9 @@ class TenantRegistry:
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
-            api_key_hashes = candidate_api_key_hashes(api_key)
+            # codeql[py/weak-sensitive-data-hashing]: legacy SHA-256 for backward-compat
+            # lookup only; any SHA-256 match is immediately re-hashed to PBKDF2 below.
+            api_key_hashes = candidate_api_key_hashes(api_key)  # (pbkdf2_hash, sha256_hash)
 
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
@@ -242,11 +244,34 @@ class TenantRegistry:
 
             if row:
                 tenant_id = row[0]
+                stored_hash = row[2]
+                pbkdf2_hash, legacy_sha256_hash = api_key_hashes
+
+                # Lazy migration: upgrade legacy SHA-256 hash to PBKDF2 on first use.
+                # This eliminates the weak-hashing path for this tenant going forward.
+                if stored_hash == legacy_sha256_hash:
+                    try:
+                        mig_conn = sqlite3.connect(settings.db_path)
+                        mig_cursor = mig_conn.cursor()
+                        mig_cursor.execute(
+                            "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
+                            (pbkdf2_hash, tenant_id),
+                        )
+                        mig_conn.commit()
+                        mig_conn.close()
+                        logger.info(
+                            "Migrated legacy SHA-256 API key hash to PBKDF2 for tenant %s",
+                            sanitize_log_input(tenant_id),
+                        )
+                        stored_hash = pbkdf2_hash
+                    except Exception:
+                        pass  # Non-critical: will retry on next authentication
+
                 tenant_data = {
                     "tenant_id": tenant_id,
                     "name": row[1],
                     "api_key": None,
-                    "api_key_hash": row[2],
+                    "api_key_hash": stored_hash,
                     "quota": json.loads(row[3]) if row[3] else {},
                     "policies": json.loads(row[4]) if row[4] else [],
                     "metadata": json.loads(row[5]) if row[5] else {},
