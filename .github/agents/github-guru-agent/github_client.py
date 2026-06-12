@@ -117,7 +117,7 @@ class GitHubAPIClient:
         for attempt in range(_MAX_RETRIES):
             try:
                 req = urllib_request.Request(url, headers=self._headers(), method="GET")
-                with urllib_request.urlopen(  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _build_url()
+                with urllib_request.urlopen(  # nosec B310 -- URL scheme and hostname are validated by _build_url() (https + api.github.com only)  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _build_url()
                     req, timeout=_DEFAULT_TIMEOUT
                 ) as resp:
                     raw = resp.read().decode("utf-8")

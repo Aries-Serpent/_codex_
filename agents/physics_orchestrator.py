@@ -1015,8 +1015,8 @@ class FlowVector:
         dx = velocity * dt + gradient * dt + noise * sqrt(dt)
         """
         # Generate random noise for exploration (Brownian motion component)
-        noise_x = (2 * self.diffusion_coefficient * dt) ** 0.5 * (random.random() - 0.5)
-        noise_y = (2 * self.diffusion_coefficient * dt) ** 0.5 * (random.random() - 0.5)
+        noise_x = math.sqrt(2 * self.diffusion_coefficient * dt) * (random.random() - 0.5)
+        noise_y = math.sqrt(2 * self.diffusion_coefficient * dt) * (random.random() - 0.5)
 
         new_x = self.position[0] + self.velocity[0] * dt + self.gradient[0] * dt + noise_x
         new_y = self.position[1] + self.velocity[1] * dt + self.gradient[1] * dt + noise_y
