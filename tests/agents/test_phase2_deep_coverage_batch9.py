@@ -84,7 +84,7 @@ class TestPhase2_PhysicsIntegration:
         # Cartesian to Polar: (x, y) -> (r, θ)
         x = 3.0
         y = 4.0
-        r = np.sqrt(x**2 + y**2)
+        r = np.hypot(x, y)
         np.arctan2(y, x)
         assert abs(r - 5.0) < 1e-10
 
@@ -209,6 +209,7 @@ class TestPhase2_BoundaryConditions:
         # If x > L, reflect: x' = 2L - x
         x = 12.0
         L = 10.0
+        reflected = x
         if x > L:
             reflected = 2 * L - x
         assert reflected == 8.0
@@ -251,7 +252,7 @@ class TestPhase2_ErrorPropagation:
         # σ_{x+y} = √(σ_x² + σ_y²)
         sigma_x = 0.1
         sigma_y = 0.2
-        sigma_sum = np.sqrt(sigma_x**2 + sigma_y**2)
+        sigma_sum = np.hypot(sigma_x, sigma_y)
         assert abs(sigma_sum - 0.2236) < 0.001
 
     def test_product_error_propagation(self):
@@ -259,7 +260,7 @@ class TestPhase2_ErrorPropagation:
         # σ_{xy}/xy = √((σ_x/x)² + (σ_y/y)²)
         x, sigma_x = 10.0, 0.1
         y, sigma_y = 5.0, 0.05
-        rel_error = np.sqrt((sigma_x / x) ** 2 + (sigma_y / y) ** 2)
+        rel_error = np.hypot(sigma_x / x, sigma_y / y)
         assert rel_error > 0
 
 

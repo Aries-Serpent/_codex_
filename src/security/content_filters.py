@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import re
 
-from .core import SecurityError
+
+class SecurityError(ValueError):
+    """Raised when security validation fails."""
 
 _PROFANITY = {"foo", "barf", "bazinga", "dang"}
 _PII_PATTERNS = [

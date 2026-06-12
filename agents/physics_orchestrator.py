@@ -61,7 +61,7 @@ class ForceVector:
         """Calculate magnitude from x, y, z if provided"""
         # If x, y, z are provided (non-zero) and magnitude is 0, calculate magnitude
         if (self.x != 0.0 or self.y != 0.0 or self.z != 0.0) and self.magnitude == 0.0:
-            self.magnitude = math.sqrt(self.x**2 + self.y**2 + self.z**2)
+            self.magnitude = math.hypot(self.x, self.y, self.z)
             # set direction as 3D vector
             if self.magnitude > 0:
                 self.direction = [
@@ -1025,7 +1025,7 @@ class FlowVector:
 
     def magnitude(self) -> float:
         """Calculate velocity magnitude"""
-        return math.sqrt(self.velocity[0] ** 2 + self.velocity[1] ** 2)
+        return math.hypot(self.velocity[0], self.velocity[1])
 
 
 class DiffusionFlowModel:
@@ -1098,12 +1098,12 @@ class DiffusionFlowModel:
 
                 # Attractive potential (negative, pulls toward)
                 for ax, ay, strength in self.attractors:
-                    dist = math.sqrt((x - ax) ** 2 + (y - ay) ** 2) + 0.01
+                    dist = math.hypot(x - ax, y - ay) + 0.01
                     potential -= strength / dist
 
                 # Repulsive potential (positive, pushes away)
                 for rx, ry, strength in self.repulsors:
-                    dist = math.sqrt((x - rx) ** 2 + (y - ry) ** 2) + 0.01
+                    dist = math.hypot(x - rx, y - ry) + 0.01
                     potential += strength / dist
 
                 self.potential_field[(i, j)] = potential
@@ -1170,7 +1170,7 @@ class DiffusionFlowModel:
             trajectory.append(position)
 
             # Check for convergence
-            if math.sqrt(gradient[0] ** 2 + gradient[1] ** 2) < 0.001:
+            if math.hypot(gradient[0], gradient[1]) < 0.001:
                 break
 
         return trajectory
@@ -1190,9 +1190,9 @@ class DiffusionFlowModel:
             "trajectory": trajectory,
             "steps_to_goal": len(trajectory),
             "final_position": trajectory[-1],
-            "convergence_distance": math.sqrt(
-                (trajectory[-1][0] - goal_position[0]) ** 2
-                + (trajectory[-1][1] - goal_position[1]) ** 2
+            "convergence_distance": math.hypot(
+                trajectory[-1][0] - goal_position[0],
+                trajectory[-1][1] - goal_position[1],
             ),
         }
 
@@ -2990,13 +2990,13 @@ class ConservationLawChecker:
         """
         total_px = sum(p[0] for p in momenta)
         total_py = sum(p[1] for p in momenta)
-        total_momentum = math.sqrt(total_px**2 + total_py**2)
+        total_momentum = math.hypot(total_px, total_py)
 
         expected_change = 0.0
         if forces_applied:
             force_x = sum(f[0] for f in forces_applied)
             force_y = sum(f[1] for f in forces_applied)
-            expected_change = math.sqrt(force_x**2 + force_y**2)
+            expected_change = math.hypot(force_x, force_y)
 
         result = {
             "total_momentum_x": total_px,

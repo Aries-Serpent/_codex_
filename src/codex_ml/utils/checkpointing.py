@@ -308,6 +308,7 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
             with path.open("wb") as fh:
                 # nosec B301 - Trusted local checkpoint state from current process
                 # nosemgrep: semgrep_rules.py-pickle-dump
+                # Use protocol 2 for compatibility with older Python versions
                 pickle.dump(dict(payload), fh, protocol=2)
         else:
             raise

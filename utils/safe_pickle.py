@@ -251,7 +251,10 @@ def safe_pickle_dump(
     file_path = Path(file_path)
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    pickled_data = pickle.dumps(obj)
+    # SECURITY: pickle.dumps used to serialize trusted objects for checkpoint saving.
+    # This is the SAVE path - we're creating a pickle, not loading one.
+    # The object being serialized comes from the current process's memory.
+    pickled_data = pickle.dumps(obj)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
     if add_signature:
         if secret_key is None:
