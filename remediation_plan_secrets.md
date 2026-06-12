@@ -99,3 +99,15 @@
   - `CODEX_MANIFEST.json` — line 2248: SHA256 integrity hash flagged as Hex High Entropy (also has an unresolved merge conflict marker; out of scope for secret triage)
   - `.codex/aftermath/pda_iterations.jsonl` — lines 3, 4, 57, 231: JSONL with Git SHAs / iteration identifiers as hex entropy
 - **Baseline handling:** no `.secrets.baseline` regeneration performed; existing baseline entries for covered findings remain as tracked known issues until a full baseline regeneration pass is executed after triage is complete.
+
+## Follow-up Validation — residual active/evidence paths
+
+- **Status:** Residual validation completed for the remaining baseline entries outside the already-documented high-signal and extended-source triage sets.
+- **Active-path findings triaged:** 6 baseline entries across 3 active test files, all confirmed as **false positives** already covered by existing exact-line allowlist pragmas. No new source changes were needed.
+- **Revalidated active test files:**
+  - `tests/safety/test_sanitizers_coverage.py` — 4 findings (`ghp_*`, `AKIA*`, `sk-*`, PEM block) used as sanitizer-detection test vectors; all already exact-line allowlisted.
+  - `tests/serving/test_inference_enhanced.py` — 1 finding: `jwt_secret="my-secret"` auth test fixture already exact-line allowlisted.
+  - `tests/test_token_verification.py` — 1 finding: `ghp_SECRETTOKEN123456789` negative test token already exact-line allowlisted.
+- **Baseline-only evidence noise revalidated:**
+  - `.codex/evidence/archive_ops.jsonl` — 24 `Hex High Entropy String` hits are SHA256 values in archive/evidence records, not credentials; no inline suppression is possible or warranted for this JSONL evidence file.
+- **Targeted validation:** `detect-secrets scan` over the 3 active test files returned no findings after existing allowlists; scanning `.codex/evidence/archive_ops.jsonl` still reports only the expected SHA256 evidence noise.
