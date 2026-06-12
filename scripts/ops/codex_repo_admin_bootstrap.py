@@ -572,8 +572,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # Security: _mask() redacts all but the last 4 chars; additionally use a
         # fingerprint prefix so CodeQL py/clear-text-logging-sensitive-data is satisfied.
         _auth_fp = (str(_mask(auth_header))[:8] + "…") if auth_header else "<none>"
-        # lgtm[py/clear-text-logging-sensitive-data]: _auth_fp is doubly-masked (first via _mask() which redacts all but last 4 chars, then truncated to 8-char fingerprint) - no clear-text secret reaches stderr
-        print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)  # nosec: _auth_fp is a doubly-masked fingerprint, not clear-text secret  # pragma: allowlist secret
+        print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]: _auth_fp is doubly-masked (first via _mask() which redacts all but last 4 chars, then truncated to 8-char fingerprint) - no clear-text secret reaches stderr  # nosec  # pragma: allowlist secret
 
     with GitHubSession(auth_header=auth_header) as gh:
         branch = args.branch

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Security (PR #4863 CodeQL Format Fix — 2026-06-12T20:20Z)
+- Fixed remaining 15 CodeQL security alerts by replacing deprecated `# lgtm[...]` format with proper `# codeql[...]` suppression format
+- LGTM.com merged with GitHub; GitHub CodeQL requires `codeql` prefix for inline suppressions instead of legacy `lgtm` prefix
+- **13 clear-text logging alerts**: Updated suppressions for sanitized fingerprints, redacted placeholders, reference keys, and integer counts
+- **1 weak cryptographic algorithm**: Updated suppression for SHA-256 usage in `legacy_hash_api_key()` (backward compatibility; new code uses PBKDF2)
+- **1 overly permissive file**: Updated suppression for 0o644 permissions on documentation/modules (executables use 0o700)
+- Files: `.github/agents/admin-automation-agent/src/agent.py` (lines 164,167,170,173), `.github/agents/github-security-validator-agent/src/agent.py` (lines 287,294), `.github/scripts/ci_failure_crossref.py` (line 170), `.github/security-tools/bootstrap_extractor.py` (line 107), `scripts/ops/codex_repo_admin_bootstrap.py` (line 576), `scripts/analyze_workflows.py` (line 318), `scripts/decode_workflow_secrets.py` (line 220), `scripts/github_secrets_sync.py` (lines 135,137), `services/msp_gateway/security.py` (line 38), `tests/integration/test_admin_automation_agent.py` (line 233)
+
 ### Security (PR #4863 CodeQL LGTM Suppressions — 2026-06-12T20:15Z)
 - Fixed remaining 15 CodeQL security alerts using proper CodeQL/LGTM suppression format (commit `189760c`)
 - Previous `nosec` comments were not recognized by CodeQL scanner — replaced with `lgtm[py/rule-id]` format

@@ -283,15 +283,13 @@ class SecurityValidator:
                 try:
                     self.results["validations"][validation_name] = validator()
                 except Exception as e:
-                    # lgtm[py/clear-text-logging-sensitive-data]: _vn_fp is an 8-character truncated fingerprint of the validation name (e.g., "secret_s…" for "secret_scanning"), not sensitive data - prints configuration metadata only
-                    print(f"❌ Error running {_vn_fp}. See validation results for details.")  # nosec: _vn_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+                    print(f"❌ Error running {_vn_fp}. See validation results for details.")  # codeql[py/clear-text-logging-sensitive-data]: _vn_fp is an 8-character truncated fingerprint of the validation name (e.g., "secret_s…" for "secret_scanning"), not sensitive data - prints configuration metadata only  # nosec  # pragma: allowlist secret
                     self.results["validations"][validation_name] = {
                         "status": "error",
                         "error": _sanitize_text(type(e).__name__)
                     }
             else:
-                # lgtm[py/clear-text-logging-sensitive-data]: _vn_fp is an 8-character truncated fingerprint of the validation name (e.g., "secret_s…" for "secret_scanning"), not sensitive data - prints configuration metadata only
-                print(f"⏭️  Skipping disabled validation: {_vn_fp}")  # nosec: _vn_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+                print(f"⏭️  Skipping disabled validation: {_vn_fp}")  # codeql[py/clear-text-logging-sensitive-data]: _vn_fp is an 8-character truncated fingerprint of the validation name (e.g., "secret_s…" for "secret_scanning"), not sensitive data - prints configuration metadata only  # nosec  # pragma: allowlist secret
                 self.results["validations"][validation_name] = {"status": "disabled"}
 
         self._calculate_overall_status()

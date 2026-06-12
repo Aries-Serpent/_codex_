@@ -160,17 +160,13 @@ class AdminAutomationAgent:
         # The full sanitized message is already stored in task_result above.
         _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            # lgtm[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data
-            logger.info("✅ Task completed: %s", _msg_fp)  # nosec: _msg_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
         elif status == "error":
-            # lgtm[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data
-            logger.error("❌ Task error: %s", _msg_fp)  # nosec: _msg_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
         elif status == "warning":
-            # lgtm[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec: _msg_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
         else:
-            # lgtm[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec: _msg_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]: _msg_fp is an 8-character truncated fingerprint of a pre-sanitized message (via _sanitize_text on line 147), not clear-text sensitive data  # nosec  # pragma: allowlist secret
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
