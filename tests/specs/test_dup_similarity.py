@@ -35,10 +35,7 @@ def test_dup_heuristic_switch_fallback(tmp_path):
     runner = Path("scripts/space_traversal/audit_runner.py")
     if not runner.exists():
         pytest.skip("audit runner missing")
-    try:
-        import yaml
-    except ImportError:
-        pytest.skip("pyyaml not installed")
+    yaml = pytest.importorskip("yaml")
 
     # S1..S3
     for stage in ("S1", "S2", "S3"):

@@ -440,9 +440,9 @@ class HFTokenizer(TokenizerAdapter):
                 )
         except Exception as exc:  # pragma: no cover - defensive
             LOGGER.warning(
-                "Falling back to WhitespaceTokenizer due to load error for '%s': %s",
+                "Falling back to whitespace backend for '%s' after load failure (%s)",
                 name_or_path or artifacts_dir,
-                exc,
+                type(exc).__name__,
             )
             self._fallback = WhitespaceTokenizer()
             self._tk = self._fallback

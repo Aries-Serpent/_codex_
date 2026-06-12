@@ -356,7 +356,14 @@ def _config_hash(config: dict[str, Any] | None) -> str | None:
 
 def _serialize_payload(state: dict[str, Any]) -> bytes:
     """
-    Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
+    Serialize trusted checkpoint state to bytes.
+
+    Trust boundary:
+    - Input is process-created checkpoint state assembled by save_checkpoint().
+    - For new checkpoints we prefer torch.save() because it preserves tensors
+      without exposing external deserialization entrypoints at write time.
+    - If torch serialization is unavailable, we fall back to the audited
+      trusted_pickle_dumps() helper instead of calling pickle directly.
     """
     buf = io.BytesIO()
     torch_save = getattr(torch, "save", None) if torch is not None else None
@@ -372,7 +379,14 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
 
 
 def _digest_payload(payload: dict[str, Any]) -> bytes:
-    """Produce a deterministic byte representation for hashing metadata."""
+    """Produce a deterministic byte representation for hashing metadata.
+
+    Residual reviewed boundary:
+    - Non-JSON-native leaf values still need a stable binary representation for
+      integrity hashing.
+    - Those leaves are serialized through trusted_pickle_dumps(), which keeps
+      the pickle boundary centralized and limited to process-created objects.
+    """
     hasher = hashlib.sha256()
 
     def _update(value: Any) -> None:
@@ -443,6 +457,16 @@ def _torch_supports_weights_only() -> bool:
 def _deserialize_payload(
     b: bytes, *, map_location: str | torch.device | None = "cpu"
 ) -> dict[str, Any]:
+    """Deserialize checkpoint bytes through the safest available path.
+
+    Security order:
+    1. Prefer torch.load(..., weights_only=True) for tensor-first checkpoints.
+    2. If torch deserialization is unavailable or rejects the payload, fall
+       back to safe_pickle_load_bytes(..., use_restricted_unpickler=True).
+
+    This keeps checkpoint reads on safe-serialization paths by default while
+    preserving compatibility with reviewed legacy payloads.
+    """
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
     if callable(torch_load):
@@ -451,7 +475,7 @@ def _deserialize_payload(
             kwargs["map_location"] = map_location
         use_weights_only = _torch_supports_weights_only()
         if use_weights_only:
-            kwargs["weights_only"] = False
+            kwargs["weights_only"] = True
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:

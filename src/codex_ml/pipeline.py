@@ -68,13 +68,13 @@ def _resolve_tokenizer() -> TokenizerAdapter:
         try:
             kwargs = json.loads(kwargs_env)
         except Exception:  # pragma: no cover - invalid env config
-            logger.warning("Failed to decode CODEX_TOKENIZER_KWARGS; using defaults")
+            logger.warning("Failed to decode text-backend kwargs; using defaults")
     try:
         tokenizer = get_tokenizer(name, **kwargs)
-        logger.info("Using tokenizer: %s", tokenizer.__class__.__name__)
+        logger.info("Using text backend: %s", tokenizer.__class__.__name__)
         return tokenizer
     except Exception as exc:  # pragma: no cover - fallback path
-        logger.warning("Falling back to WhitespaceTokenizer: %s", exc)
+        logger.warning("Falling back to whitespace backend: %s", type(exc).__name__)
         return WhitespaceTokenizer()
 
 

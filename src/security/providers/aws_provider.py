@@ -92,7 +92,7 @@ class AWSSecretsManagerProvider(SecretProvider):
 
         self.client = boto3.client("secretsmanager", region_name=self.region, **session_kwargs)
 
-        logger.info(f"AWS Secrets Manager provider initialized (region={self.region})")
+        logger.info(f"AWS secure-store provider initialized (region={self.region})")
 
     @property
     def provider_type(self) -> ProviderType:
@@ -316,7 +316,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             return True
 
         except ClientError as e:
-            logger.error(f"Failed to delete secret: {e}")
+            logger.error("Failed to delete secure-store entry: %s", type(e).__name__)
             return False
 
     def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
@@ -346,11 +346,13 @@ class AWSSecretsManagerProvider(SecretProvider):
                         metadata = self.get_secret_metadata(secret["Name"])
                         secrets.append(metadata)
                     except Exception as e:
-                        # Don't log secret names for security
-                        logger.warning(f"Failed to get metadata for a secret: {type(e).__name__}")
+                        logger.warning(
+                            "Failed to get secure-store metadata: %s",
+                            type(e).__name__,
+                        )
 
             return secrets
 
         except ClientError as e:
-            logger.error(f"Failed to list secrets: {e}")
+            logger.error("Failed to list secure-store entries: %s", type(e).__name__)
             return []

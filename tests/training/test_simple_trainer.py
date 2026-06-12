@@ -15,20 +15,12 @@ if str(SRC_PATH) not in sys.path:
 
 
 def test_simple_trainer_imports():
-    try:
-        import training.simple_trainer as simple_trainer
-    except ImportError:
-        pytest.skip("training.simple_trainer not importable")
+    simple_trainer = pytest.importorskip("training.simple_trainer")
     assert hasattr(simple_trainer, "SimpleTrainer")
 
 
 def test_simple_trainer_requires_torch():
-    import importlib
-
-    try:
-        module = importlib.import_module("training.simple_trainer")
-    except ModuleNotFoundError:
-        pytest.skip("training.simple_trainer not importable")
+    module = pytest.importorskip("training.simple_trainer")
     mock_model = MagicMock()
     mock_optimizer = MagicMock()
 

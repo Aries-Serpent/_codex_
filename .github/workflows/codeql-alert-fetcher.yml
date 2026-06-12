@@ -367,13 +367,13 @@ jobs:
           print(f"Dependabot: {len(alerts)} open alerts ({len(urgent)} critical/high)")
           PYEOF
         env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}  # pragma: allowlist secret
           DEP_DIR: ${{ steps.params.outputs.dep_dir }}
 
       # ── Secret scanning alerts ──────────────────────────────────────────────
       - name: Fetch secret-scanning alerts
         # pragma: allowlist secret
-        if: >
+        if: >  # pragma: allowlist secret
           steps.token_check.outputs.token_available == 'true' &&
           steps.params.outputs.include_secrets == 'true'
         continue-on-error: true

@@ -684,7 +684,7 @@ dependencies = [
     { name = "idna", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "jinja2", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "libcst", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "lm-eval", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "litestar", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "marshmallow", version = "3.26.2", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and sys_platform == 'linux' and extra == 'extra-8-codex-ml-ge') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "marshmallow", version = "4.3.0", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and sys_platform == 'linux' and extra != 'extra-8-codex-ml-ge') or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "mlflow", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -716,12 +716,15 @@ all = [
     { name = "cryptography", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "datasets", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "duckdb", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "dvc", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "faiss-cpu", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "hydra-core", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "hypothesis", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "jsonschema", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "lm-eval", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "mlflow", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "mypy", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "nltk", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "nox", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "numpy", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "omegaconf", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -741,9 +744,13 @@ all = [
     { name = "pytest-timeout", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "pytest-xdist", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "pyyaml", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "rouge-score", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "ruff", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "sacrebleu", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "scipy", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "sentence-transformers", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "sentencepiece", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "statsmodels", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "tensorboard", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "tokenizers", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "torch", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -774,10 +781,12 @@ configs = [
     { name = "omegaconf", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "pyyaml", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
+dataops = [
+    { name = "dvc", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+]
 dev = [
     { name = "black", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "detect-secrets", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "dvc", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "hypothesis", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "isort", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "jsonschema", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -799,6 +808,14 @@ dev = [
 ]
 dist = [
     { name = "torch", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+]
+eval = [
+    { name = "lm-eval", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "nltk", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "rouge-score", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "sacrebleu", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "scipy", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "statsmodels", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
 ge = [
     { name = "great-expectations", marker = "python_full_version < '3.13' and sys_platform == 'linux'" },
@@ -930,16 +947,17 @@ requires-dist = [
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.1" },
     { name = "cryptography", marker = "extra == 'all'", specifier = ">=42.0.0,<47.0.0" },
     { name = "cryptography", marker = "extra == 'auth'", specifier = ">=42.0.0,<47.0.0" },
-    { name = "datasets", specifier = ">=4.8.5,<5" },
-    { name = "datasets", marker = "extra == 'all'", specifier = ">=4.8.5,<5" },
-    { name = "datasets", marker = "extra == 'ml'", specifier = ">=4.8.5,<5" },
-    { name = "datasets", marker = "extra == 'test'", specifier = ">=4.8.5,<5" },
+    { name = "datasets", specifier = ">=5.0.0,<6" },
+    { name = "datasets", marker = "extra == 'all'", specifier = ">=5.0.0,<6" },
+    { name = "datasets", marker = "extra == 'ml'", specifier = ">=5.0.0,<6" },
+    { name = "datasets", marker = "extra == 'test'", specifier = ">=5.0.0,<6" },
     { name = "defusedxml", specifier = ">=0.7.1" },
     { name = "detect-secrets", marker = "extra == 'dev'", specifier = ">=1.5.0" },
     { name = "duckdb", specifier = ">=1.5.3" },
     { name = "duckdb", marker = "extra == 'all'", specifier = ">=1.5.3" },
     { name = "duckdb", marker = "extra == 'logging'", specifier = ">=1.5.3" },
-    { name = "dvc", marker = "extra == 'dev'", specifier = "==3.67.1" },
+    { name = "dvc", marker = "extra == 'all'", specifier = "==3.67.1" },
+    { name = "dvc", marker = "extra == 'dataops'", specifier = "==3.67.1" },
     { name = "evidently", specifier = ">=0.7.21,<1" },
     { name = "faiss-cpu", marker = "extra == 'all'", specifier = ">=1.13.2,<2.0.0" },
     { name = "faiss-cpu", marker = "extra == 'rag'", specifier = ">=1.13.2,<2.0.0" },
@@ -967,7 +985,9 @@ requires-dist = [
     { name = "jsonschema", marker = "extra == 'logging'", specifier = ">=4.26.0" },
     { name = "libcst", specifier = ">=1.0.0" },
     { name = "libcst", marker = "extra == 'analysis'", specifier = ">=1.0" },
-    { name = "lm-eval", specifier = ">=0.4.2,<1" },
+    { name = "litestar", specifier = ">=2.22.0,<3" },
+    { name = "lm-eval", marker = "extra == 'all'", specifier = ">=0.4.2,<1" },
+    { name = "lm-eval", marker = "extra == 'eval'", specifier = ">=0.4.2,<1" },
     { name = "marshmallow", specifier = ">=3.7.1,<5" },
     { name = "marshmallow", marker = "extra == 'marshmallow-v4'", specifier = ">=4.0.0,<5" },
     { name = "mlflow", specifier = ">=2.22.4,<4" },
@@ -978,6 +998,8 @@ requires-dist = [
     { name = "mypy", marker = "extra == 'all'", specifier = ">=2.1.0,<3.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=2.1.0,<3.0.0" },
     { name = "nbstripout", marker = "extra == 'dev'", specifier = ">=0.6" },
+    { name = "nltk", marker = "extra == 'all'", specifier = ">=3.8" },
+    { name = "nltk", marker = "extra == 'eval'", specifier = ">=3.8" },
     { name = "nltk", marker = "extra == 'metrics'", specifier = ">=3.8" },
     { name = "nox", marker = "extra == 'all'", specifier = ">=2026.4.10" },
     { name = "nox", marker = "extra == 'dev'", specifier = ">=2026.4.10" },
@@ -1059,11 +1081,17 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.4" },
     { name = "requests", marker = "extra == 'ops'", specifier = ">=2.32.4" },
     { name = "responses", marker = "extra == 'test'", specifier = ">=0.26.1" },
+    { name = "rouge-score", marker = "extra == 'all'", specifier = ">=0.1.2" },
+    { name = "rouge-score", marker = "extra == 'eval'", specifier = ">=0.1.2" },
     { name = "rouge-score", marker = "extra == 'metrics'", specifier = ">=0.1.2" },
     { name = "ruff", marker = "extra == 'all'", specifier = ">=0.1.15,<1.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.15,<1.0.0" },
+    { name = "sacrebleu", marker = "extra == 'all'", specifier = ">=2.6.0" },
+    { name = "sacrebleu", marker = "extra == 'eval'", specifier = ">=2.6.0" },
     { name = "sacrebleu", marker = "extra == 'metrics'", specifier = ">=2.6.0" },
     { name = "scikit-learn", specifier = ">=1.4,<2" },
+    { name = "scipy", marker = "extra == 'all'", specifier = ">=1.15,<2" },
+    { name = "scipy", marker = "extra == 'eval'", specifier = ">=1.15,<2" },
     { name = "sentence-transformers", marker = "extra == 'all'", specifier = ">=5.5.1,<6.0.0" },
     { name = "sentence-transformers", marker = "extra == 'rag'", specifier = ">=5.5.1,<6.0.0" },
     { name = "sentencepiece", specifier = ">=0.1.99" },
@@ -1075,6 +1103,8 @@ requires-dist = [
     { name = "slowapi", specifier = ">=0.1.9" },
     { name = "sqlparse", marker = "extra == 'ast'", specifier = ">=0.5.5" },
     { name = "starlette", specifier = ">=1.0.1,<2" },
+    { name = "statsmodels", marker = "extra == 'all'", specifier = ">=0.14,<1" },
+    { name = "statsmodels", marker = "extra == 'eval'", specifier = ">=0.14,<1" },
     { name = "tensorboard", marker = "extra == 'all'", specifier = ">=2.14" },
     { name = "tensorboard", marker = "extra == 'logging'", specifier = ">=2.14" },
     { name = "tokenizers", marker = "extra == 'all'", specifier = ">=0.15" },
@@ -1090,11 +1120,11 @@ requires-dist = [
     { name = "torch", marker = "sys_platform != 'win32' and extra == 'train'", specifier = ">=2.6.0,<3.0.0" },
     { name = "torch", marker = "extra == 'all'", specifier = ">=2.6.0,<3.0.0" },
     { name = "torch", marker = "extra == 'ml'", specifier = ">=2.6.0,<3.0.0" },
-    { name = "transformers", specifier = ">=5.9.0,<6" },
-    { name = "transformers", marker = "extra == 'all'", specifier = ">=5.9.0,<6" },
-    { name = "transformers", marker = "extra == 'ml'", specifier = ">=5.9.0,<6" },
-    { name = "transformers", marker = "extra == 'test'", specifier = ">=5.9.0,<6" },
-    { name = "transformers", marker = "extra == 'train'", specifier = ">=5.9.0,<6" },
+    { name = "transformers", specifier = ">=5.10.2,<6" },
+    { name = "transformers", marker = "extra == 'all'", specifier = ">=5.10.2,<6" },
+    { name = "transformers", marker = "extra == 'ml'", specifier = ">=5.10.2,<6" },
+    { name = "transformers", marker = "extra == 'test'", specifier = ">=5.10.2,<6" },
+    { name = "transformers", marker = "extra == 'train'", specifier = ">=5.10.2,<6" },
     { name = "tree-sitter", marker = "extra == 'ast'", specifier = ">=0.25.2" },
     { name = "tree-sitter-python", marker = "extra == 'ast'", specifier = ">=0.20.0" },
     { name = "tree-sitter-yaml", marker = "extra == 'ast'", specifier = ">=0.7.0" },
@@ -1106,7 +1136,7 @@ requires-dist = [
     { name = "xxhash", marker = "extra == 'sharding'", specifier = ">=3.0.0" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = ">=1.35.1,<2.0.0" },
 ]
-provides-extras = ["analysis", "ast", "auth", "cli", "ge", "marshmallow-v4", "configs", "hydra", "dev", "dist", "github", "gpu", "logging", "metrics", "ml", "monitoring", "ops", "playwright", "perf", "sharding", "plugins", "rag", "symbolic", "test-core", "test", "tokenizer", "tokenizers", "tracking", "train", "all"]
+provides-extras = ["analysis", "ast", "auth", "cli", "eval", "ge", "marshmallow-v4", "configs", "hydra", "dev", "dataops", "dist", "github", "gpu", "logging", "metrics", "ml", "monitoring", "ops", "playwright", "perf", "sharding", "plugins", "rag", "symbolic", "test-core", "test", "tokenizer", "tokenizers", "tracking", "train", "all"]
 
 [[package]]
 name = "colorama"
@@ -1395,7 +1425,7 @@ wheels = [
 
 [[package]]
 name = "datasets"
-version = "4.8.5"
+version = "5.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dill", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -1413,9 +1443,9 @@ dependencies = [
     { name = "tqdm", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "xxhash", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/34/14cd8e76f907f7d4dca2334cfeec9f81d30fd15c25a015f99aaea694eaed/datasets-4.8.5.tar.gz", hash = "sha256:0f0c1c3d56ffff2c93b2f4c63c95bac94f3d7e8621aea2a2a576275233bba772", size = 605649, upload-time = "2026-04-27T15:43:57.384Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/85/ce4f780c32f7e36d71257f1c27e8ba898ebe379cb54f211f5f2013f2c219/datasets-5.0.0.tar.gz", hash = "sha256:83dbbbdb07a33b82192b8c419deb18739b138ee2ce1a322d55ce6b100954ec1a", size = 631708, upload-time = "2026-06-05T13:18:26.124Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/99/00f3196036501b53032c4b1ab8337a0b978dee832ed276dae3815df4e8b5/datasets-4.8.5-py3-none-any.whl", hash = "sha256:5079900781719c0e063a8efdd2cd95a31ad0c63209178669cd23cf1b926149ff", size = 528973, upload-time = "2026-04-27T15:43:53.702Z" },
+    { url = "https://files.pythonhosted.org/packages/05/66/73034ad30b59f13439b75e620989dacba4c047256e358ba7c2e9ec98ea22/datasets-5.0.0-py3-none-any.whl", hash = "sha256:7dd34927a0fd7046e98aad5cb9430e699c373238a15befa7b9bf22b991a7fee6", size = 555084, upload-time = "2026-06-05T13:18:24.435Z" },
 ]
 
 [[package]]
@@ -2803,7 +2833,7 @@ wheels = [
 
 [[package]]
 name = "litestar"
-version = "2.21.1"
+version = "2.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -2820,9 +2850,9 @@ dependencies = [
     { name = "sniffio", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "typing-extensions", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/fc/7ce2057ffd738be4d2abc5b69229f57181bbff8a84a4576004b021085773/litestar-2.21.1.tar.gz", hash = "sha256:28301438de7c5e77bb68a5d8684dff415b9f252b0dd8413b356e8e6794c6863a", size = 376270, upload-time = "2026-03-07T13:49:16.053Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/42/f6/33619a1562c6732dab211a967b1e7af3285de29d655c0b37b3f379aa2700/litestar-2.24.0.tar.gz", hash = "sha256:8f4b137cb115554b9fbc12bd01d398d5bb40ba85f2d333dd73f4b747308bbb46", size = 383070, upload-time = "2026-06-11T11:27:00.519Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/67/139c0fa6e1dd9e558910c02a383cd0ae12c2a1d6d3f0ea0d42dbeb03d8b2/litestar-2.21.1-py3-none-any.whl", hash = "sha256:6321340195801454aeac4a12e72c28f54714a4c3e8172c33e577c593cc5982c6", size = 568342, upload-time = "2026-03-07T13:49:13.694Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/ce/4697b547790f23d2fcc37a928d48c38140cf86360e4041ca8177e3367c14/litestar-2.24.0-py3-none-any.whl", hash = "sha256:0ef13630173ea147847363f03f0459877ab14a572e68b2af7a25796055513a31", size = 581807, upload-time = "2026-06-11T11:26:58.509Z" },
 ]
 
 [[package]]
@@ -5777,7 +5807,7 @@ wheels = [
 
 [[package]]
 name = "transformers"
-version = "5.9.0"
+version = "5.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "huggingface-hub", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -5790,9 +5820,9 @@ dependencies = [
     { name = "tqdm", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "typer", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/51/58/7f843608f2e8421f86bb97060b54649be6239ec612b82bf9d41e65c26c00/transformers-5.9.0.tar.gz", hash = "sha256:25997cb8fa6053533171634b6162d7df54346530ec2aa9b42bb834e63668c842", size = 8642240, upload-time = "2026-05-20T14:50:49.278Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/f9/4552e2ba55db1c943aea0d4c09a32e9cbe5445b9eabe9856900de503dc8f/transformers-5.12.0.tar.gz", hash = "sha256:f0cf42ae1464c2eb41e7e0e66d7fd4b66145f48af17093b4cc0b2e9781faa7f4", size = 8923020, upload-time = "2026-06-12T14:39:20.43Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/ca/2eaa5359f2ccb8c2e1656bc26305ad0cf438aa392ce4b29ae67a315c186e/transformers-5.9.0-py3-none-any.whl", hash = "sha256:1d19509bcff7028ebc6b277d71caa712e8353778463d38764237d14b42b52788", size = 10787648, upload-time = "2026-05-20T14:50:45.337Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/1f/d385913c38e900d23b728a4188fee625f2fccb306aeebc59be9d91404a5a/transformers-5.12.0-py3-none-any.whl", hash = "sha256:500be9eb644ede81c3103eee7687fc36d05dd75d1c76686c3820b26396fe7c7c", size = 11150246, upload-time = "2026-06-12T14:39:17.009Z" },
 ]
 
 [[package]]

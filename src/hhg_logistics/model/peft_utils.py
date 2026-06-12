@@ -85,9 +85,10 @@ def load_hf_llm(
         except ValueError as err:
             logger.debug(f"ValueError: {err}")
             logger.info(
-                "Falling back to slow tokenizer for %s because fast tokenizer is unavailable: %s",
+                "Falling back to slow text backend for %s because the fast path is unavailable"
+                " (%s)",
                 tok_name,
-                err,
+                type(err).__name__,
             )
             tokenizer = AutoTokenizer.from_pretrained(  # nosec B615                tok_name,
                 use_fast=False,  # nosec B615

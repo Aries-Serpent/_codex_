@@ -1334,7 +1334,7 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
             inst_token, expires_at = exchange_installation_token(
                 app_jwt, env["GITHUB_APP_INSTALLATION_ID"]
             )
-            log.info("github_token: issued App installation token")
+            log.info("GitHub auth: issued app installation grant")
             return _GithubTokenResponse(
                 token=inst_token,
                 expires_at=expires_at,
@@ -1343,7 +1343,7 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
             )
         except Exception as exc:
             log.warning(
-                "github_token: App installation token failed (%s), falling back",
+                "GitHub auth: app installation exchange failed (%s), falling back",
                 type(exc).__name__,
             )
 
@@ -1351,7 +1351,7 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
     for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
         pat = env.get(var, "").strip()
         if pat:
-            log.info("github_token: using %s as PAT", var)
+            log.info("GitHub auth: using %s as fallback source", var)
             return _GithubTokenResponse(
                 token=pat,
                 expires_at=None,

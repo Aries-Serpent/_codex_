@@ -8,6 +8,7 @@ Set RUN_LORA_TESTS=1 to enable these tests.
 
 from __future__ import annotations
 
+import importlib
 import os
 
 import pytest
@@ -29,11 +30,7 @@ def test_lora_config_shapes_sanity():
 
     Does NOT require network/model downloads.
     """
-    # Try to import peft
-    try:
-        from peft import LoraConfig
-    except ImportError:
-        pytest.skip("peft not installed")
+    LoraConfig = importlib.import_module("peft").LoraConfig
 
     # Create basic LoRA config
     config = LoraConfig(
@@ -62,24 +59,17 @@ def test_lora_config_shapes_sanity():
 
 def test_lora_available():
     """Test that LoRA/PEFT is available for use."""
-    try:
-        import peft
+    peft = importlib.import_module("peft")
 
-        # Verify key classes are available
-        assert hasattr(peft, "LoraConfig")
-        assert hasattr(peft, "get_peft_model")
-        assert hasattr(peft, "PeftModel")
-
-    except ImportError:
-        pytest.skip("peft not installed")
+    # Verify key classes are available
+    assert hasattr(peft, "LoraConfig")
+    assert hasattr(peft, "get_peft_model")
+    assert hasattr(peft, "PeftModel")
 
 
 def test_lora_config_validation():
     """Test LoRA config parameter validation."""
-    try:
-        from peft import LoraConfig
-    except ImportError:
-        pytest.skip("peft not installed")
+    LoraConfig = importlib.import_module("peft").LoraConfig
 
     # Valid config should not raise
     config = LoraConfig(r=16, lora_alpha=32)

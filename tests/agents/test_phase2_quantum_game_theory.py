@@ -84,10 +84,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
 
     def test_action_type_enum_all_values(self):
         """Test all ActionType enum values comprehensively."""
-        try:
-            from agents.physics_orchestrator import ActionType
-        except ImportError:
-            pytest.skip("ActionType not available in physics_orchestrator")
+        ActionType = pytest.importorskip("agents.physics_orchestrator").ActionType
 
         action_types = list(ActionType)
 
@@ -102,10 +99,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
 
     def test_action_type_enum_access_by_name(self):
         """Test ActionType enum access by name."""
-        try:
-            from agents.physics_orchestrator import ActionType
-        except ImportError:
-            pytest.skip("ActionType not available in physics_orchestrator")
+        ActionType = pytest.importorskip("agents.physics_orchestrator").ActionType
 
         # Get first enum value
         action_types = list(ActionType)

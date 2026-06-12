@@ -19,10 +19,7 @@ class TestConfigFileOperations:
 
     def test_load_yaml_config(self):
         """Test loading YAML configuration file."""
-        try:
-            import yaml
-        except ImportError:
-            pytest.skip("PyYAML not installed")
+        yaml = pytest.importorskip("yaml")
 
         test_dir = Path(tempfile.mkdtemp())
         config_file = test_dir / "config.yaml"

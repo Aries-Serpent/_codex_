@@ -143,12 +143,12 @@ class TestRotationResult:
             success=True,
             old_secret_id="old-id",
             new_secret_id="new-id",
-            new_secret_value="new-value",
+            new_secret_value="new-value",  # pragma: allowlist secret
         )
         assert result.success is True
         assert result.old_secret_id == "old-id"
         assert result.new_secret_id == "new-id"
-        assert result.new_secret_value == "new-value"
+        assert result.new_secret_value == "new-value"  # pragma: allowlist secret
         assert result.error_message is None
 
     def test_failure_result(self):
@@ -762,7 +762,7 @@ class TestAWSSecretsManagerProvider:
             provider_type=ProviderType.AWS_SECRETS_MANAGER,
             region="us-east-1",
             aws_access_key_id="AKIA_TEST",
-            aws_secret_access_key="secret_test_key",
+            aws_secret_access_key="secret_test_key",  # pragma: allowlist secret
         )
 
     def test_initialization_requires_boto3(self, aws_config):
@@ -996,7 +996,7 @@ class TestAWSSecretsManagerProvider:
         """Test getting secret string value."""
         mock_client = Mock()
         mock_client.get_secret_value.return_value = {
-            "SecretString": "my-secret-value"
+            "SecretString": "my-secret-value"  # pragma: allowlist secret
         }
         mock_boto3.client.return_value = mock_client
 
@@ -1057,7 +1057,7 @@ class TestAWSSecretsManagerProvider:
 
         result = provider.create_secret(
             name="test-secret",
-            secret_value="secret-value",
+            secret_value="secret-value",  # pragma: allowlist secret
             description="Test secret",
             tags={"env": "test"},
         )
@@ -1084,7 +1084,7 @@ class TestAWSSecretsManagerProvider:
         assert result.success is True
         mock_client.create_secret.assert_called_once_with(
             Name="test-secret",
-            SecretString="secret-value",
+            SecretString="secret-value",  # pragma: allowlist secret
         )
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
@@ -1273,7 +1273,7 @@ class TestEnvironmentProvider:
 
     def test_rotate_secret_returns_manual_instruction(self, env_config):
         """Test that rotation returns manual instruction."""
-        os.environ["TEST_SECRET"] = "value"
+        os.environ["TEST_SECRET"] = "value"  # pragma: allowlist secret
         provider = EnvironmentProvider(env_config)
 
         result = provider.rotate_secret("SECRET")
@@ -1293,7 +1293,7 @@ class TestEnvironmentProvider:
 
     def test_validate_secret_exists(self, env_config):
         """Test validation when env var exists."""
-        os.environ["TEST_SECRET"] = "value"
+        os.environ["TEST_SECRET"] = "value"  # pragma: allowlist secret
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET")
@@ -1308,7 +1308,7 @@ class TestEnvironmentProvider:
 
     def test_validate_secret_with_value_match(self, env_config):
         """Test validation with matching value."""
-        os.environ["TEST_SECRET"] = "expected_value"
+        os.environ["TEST_SECRET"] = "expected_value"  # pragma: allowlist secret
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET", "expected_value")
@@ -1316,7 +1316,7 @@ class TestEnvironmentProvider:
 
     def test_validate_secret_with_value_mismatch(self, env_config):
         """Test validation with non-matching value."""
-        os.environ["TEST_SECRET"] = "actual_value"
+        os.environ["TEST_SECRET"] = "actual_value"  # pragma: allowlist secret
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET", "wrong_value")
@@ -1341,7 +1341,7 @@ class TestEnvironmentProvider:
 
     def test_get_secret_value(self, env_config):
         """Test getting secret value."""
-        os.environ["TEST_SECRET"] = "my_value"
+        os.environ["TEST_SECRET"] = "my_value"  # pragma: allowlist secret
         provider = EnvironmentProvider(env_config)
 
         value = provider.get_secret_value("SECRET")
@@ -1360,13 +1360,13 @@ class TestEnvironmentProvider:
 
         success = provider.set_secret_value("NEW_SECRET", "new_value")
         assert success is True
-        assert os.environ["TEST_NEW_SECRET"] == "new_value"
+        assert os.environ["TEST_NEW_SECRET"] == "new_value"  # pragma: allowlist secret
 
     def test_list_secrets_with_prefix(self, env_config):
         """Test listing secrets with prefix filter."""
-        os.environ["TEST_SECRET1"] = "value1"
-        os.environ["TEST_SECRET2"] = "value2"
-        os.environ["OTHER_SECRET"] = "value3"
+        os.environ["TEST_SECRET1"] = "value1"  # pragma: allowlist secret
+        os.environ["TEST_SECRET2"] = "value2"  # pragma: allowlist secret
+        os.environ["OTHER_SECRET"] = "value3"  # pragma: allowlist secret
 
         provider = EnvironmentProvider(env_config)
         secrets = provider.list_secrets()
@@ -1642,16 +1642,16 @@ class TestPropertyBased:
         # Success results should have new_secret_id
         result = RotationResult(
             success=True,
-            old_secret_id="old",
-            new_secret_id="new",
+            old_secret_id="old",  # pragma: allowlist secret
+            new_secret_id="new",  # pragma: allowlist secret
         )
         assert result.success is True
-        assert result.new_secret_id == "new"
+        assert result.new_secret_id == "new"  # pragma: allowlist secret
 
         # Failure results should have error_message
         result = RotationResult(
             success=False,
-            old_secret_id="old",
+            old_secret_id="old",  # pragma: allowlist secret
             error_message="error",
         )
         assert result.success is False
@@ -1693,7 +1693,7 @@ class TestGitHubTokenProviderEdgeCases:
     def provider_with_token(self):
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_testtoken1234567890123456789012345678",
+            token="ghp_testtoken1234567890123456789012345678",  # pragma: allowlist secret
             api_url="https://api.github.com",
         )
         return GitHubTokenProvider(config)
@@ -1702,7 +1702,7 @@ class TestGitHubTokenProviderEdgeCases:
     def provider_with_installation(self):
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_testtoken1234567890123456789012345678",
+            token="ghp_testtoken1234567890123456789012345678",  # pragma: allowlist secret
             api_url="https://api.github.com",
             installation_id="99999",
         )
@@ -1764,7 +1764,7 @@ class TestGitHubTokenProviderEdgeCases:
 
         config = ProviderConfig(
             provider_type=ProviderType.GITHUB,
-            token="ghp_testtoken1234567890123456789012345678",
+            token="ghp_testtoken1234567890123456789012345678",  # pragma: allowlist secret
         )
         provider = GitHubTokenProvider(config)
         token = "ghp_" + "E" * 36

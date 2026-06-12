@@ -63,10 +63,7 @@ class TestCausalReasoning:
 
     def test_causal_effect_estimation(self, sample_data):
         """Test estimating causal effect of code changes on test success"""
-        try:
-            from dowhy import CausalModel
-        except ImportError:
-            pytest.skip("DoWhy not installed")
+        CausalModel = pytest.importorskip("dowhy").CausalModel
 
         # Define causal model
         model = CausalModel(
@@ -92,10 +89,7 @@ class TestCausalReasoning:
 
     def test_confounding_detection(self, sample_data):
         """Test detecting confounding variables"""
-        try:
-            from dowhy import CausalModel
-        except ImportError:
-            pytest.skip("DoWhy not installed")
+        CausalModel = pytest.importorskip("dowhy").CausalModel
 
         # Model without confounder
         model_biased = CausalModel(
@@ -129,10 +123,7 @@ class TestCausalReasoning:
 
     def test_causal_graph_construction(self):
         """Test building causal graphs"""
-        try:
-            import networkx as nx
-        except ImportError:
-            pytest.skip("NetworkX not installed")
+        nx = pytest.importorskip("networkx")
 
         # Build causal graph
         G = nx.DiGraph()
@@ -180,11 +171,10 @@ class TestCounterfactualReasoning:
         """Test predicting treatment effect uplift"""
         X, treatment, outcome = sample_data
 
-        try:
-            from causalml.inference.meta import BaseSRegressor
-            from sklearn.ensemble import RandomForestRegressor
-        except ImportError:
-            pytest.skip("CausalML or sklearn not installed")
+        BaseSRegressor = pytest.importorskip("causalml.inference.meta").BaseSRegressor
+        RandomForestRegressor = pytest.importorskip(
+            "sklearn.ensemble"
+        ).RandomForestRegressor
 
         # Train uplift model
         learner = BaseSRegressor(RandomForestRegressor(random_state=42))
@@ -227,10 +217,9 @@ class TestExplainability:
     @pytest.fixture
     def trained_model(self):
         """Train a simple model for testing"""
-        try:
-            from sklearn.ensemble import RandomForestClassifier
-        except ImportError:
-            pytest.skip("sklearn not installed")
+        RandomForestClassifier = pytest.importorskip(
+            "sklearn.ensemble"
+        ).RandomForestClassifier
 
         np.random.seed(42)
         n = 200
@@ -247,10 +236,7 @@ class TestExplainability:
         """Test computing feature importance with SHAP"""
         model, X, _y = trained_model
 
-        try:
-            import shap
-        except ImportError:
-            pytest.skip("SHAP not installed")
+        shap = pytest.importorskip("shap")
 
         # Create explainer
         explainer = shap.TreeExplainer(model)
@@ -264,10 +250,7 @@ class TestExplainability:
         """Test explaining individual predictions"""
         model, X, _y = trained_model
 
-        try:
-            import shap
-        except ImportError:
-            pytest.skip("SHAP not installed")
+        shap = pytest.importorskip("shap")
 
         # Explain single prediction
         explainer = shap.TreeExplainer(model)
@@ -285,10 +268,7 @@ class TestExplainability:
         """Test generating global model explanations"""
         model, X, _y = trained_model
 
-        try:
-            import shap
-        except ImportError:
-            pytest.skip("SHAP not installed")
+        shap = pytest.importorskip("shap")
 
         explainer = shap.TreeExplainer(model)
         shap_values = explainer.shap_values(X)
@@ -319,11 +299,10 @@ class TestAdvancedReasoningIntegration:
         # Add treatment effect
         data.loc[data['treatment'] == 1, 'outcome'] += 0.5
 
-        try:
-            import shap
-            from sklearn.ensemble import RandomForestRegressor
-        except ImportError:
-            pytest.skip("sklearn or SHAP not installed")
+        shap = pytest.importorskip("shap")
+        RandomForestRegressor = pytest.importorskip(
+            "sklearn.ensemble"
+        ).RandomForestRegressor
 
         # Train outcome model
         X = data[['feature1', 'feature2', 'treatment']]

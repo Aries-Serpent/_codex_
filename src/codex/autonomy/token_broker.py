@@ -143,7 +143,7 @@ class TokenBroker:
             if _cc_level(ceiling) < cc_lvl:
                 # This source's privilege ceiling is too low for the requested class
                 logger.debug(
-                    "TokenBroker: skipping %s — ceiling %s < required %s",
+                    "Access broker: skipping %s — ceiling %s < required %s",
                     source.value,
                     ceiling.value,
                     cc.value,
@@ -153,7 +153,7 @@ class TokenBroker:
             token = self._fetch(source)
             if token:
                 logger.info(
-                    "TokenBroker: resolved %s via %s (ceiling=%s)",
+                    "Access broker: resolved %s via %s (ceiling=%s)",
                     cc.value,
                     source.value,
                     ceiling.value,
@@ -161,8 +161,8 @@ class TokenBroker:
                 return TokenResolution(source=source, token=token, control_class=cc)
 
         # No credential found
-        reason = f"No credential available for {cc.value} in resolution order {resolution_order}"
-        logger.warning("TokenBroker: %s", reason)
+        reason = f"No access source available for {cc.value} in resolution order {resolution_order}"
+        logger.warning("Access broker: %s", reason)
         if require:
             raise TokenBrokerError(reason)
         return TokenResolution(

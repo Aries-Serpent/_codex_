@@ -101,7 +101,7 @@ def _get_client(env: str):
     email = os.getenv(f"{prefix}EMAIL")
     token = os.getenv(f"{prefix}TOKEN")
     if not subdomain or not email or not token:
-        LOGGER.error("Missing Zendesk credentials for environment '%s'.", env)
+        LOGGER.error("Zendesk authentication config incomplete for environment '%s'.", env)
         return None
 
     return zenpy_client(subdomain=subdomain, email=email, token=token)

@@ -310,6 +310,10 @@ class TestSlackChannel:
             ch = SlackChannel(webhook_url="https://hooks.slack.com/test")
             assert ch.send(self._make_event()) is False
 
+    def test_send_returns_false_on_disallowed_webhook_host(self) -> None:
+        ch = SlackChannel(webhook_url="https://example.com/not-slack")
+        assert ch.send(self._make_event()) is False
+
     @pytest.mark.parametrize(
         "severity,expected_color",
         [
@@ -445,11 +449,11 @@ class TestEmailChannel:
         with patch.dict(os.environ, env, clear=True):
             ch = EmailChannel.from_env()
         assert ch._smtp_host == "smtp.test.com"
-        assert ch._smtp_port == 465
+        assert ch._smtp_port == 465  # pragma: allowlist secret
         assert ch._from_addr == "from@test.com"
         assert ch._to_addrs == ["a@test.com", "b@test.com"]
         assert ch._username == "user"
-        assert ch._password == "s3cr3t"
+        assert ch._password == "s3cr3t"  # pragma: allowlist secret
 
     def test_from_env_defaults_port_to_587(self) -> None:
         env = {

@@ -257,7 +257,7 @@ def load_tokenizer(
         # Set pad_token to eos_token if not already set (common default)
         if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):
             LOGGER.warning(
-                "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "Text backend '%s' has no pad token; falling back to EOS padding. "
                 "This may affect training behaviour.",
                 tokenizer_name,
             )

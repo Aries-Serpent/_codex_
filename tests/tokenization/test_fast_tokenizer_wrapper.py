@@ -11,14 +11,10 @@ from tokenizer.fast_tokenizer import FastTokenizerWrapper
 
 @pytest.fixture()
 def trained_tokenizer_json(tmp_path):
-    pytest.importorskip("tokenizers")
-    try:
-        from tokenizers import Tokenizer  # type: ignore
-        from tokenizers.models import WordLevel  # type: ignore
-        from tokenizers.pre_tokenizers import Whitespace  # type: ignore
-        from tokenizers.trainers import WordLevelTrainer  # type: ignore
-    except Exception as exc:  # pragma: no cover - optional dependency not fully available
-        pytest.skip(f"tokenizers dependency incomplete: {exc}")
+    Tokenizer = pytest.importorskip("tokenizers").Tokenizer
+    WordLevel = pytest.importorskip("tokenizers.models").WordLevel
+    Whitespace = pytest.importorskip("tokenizers.pre_tokenizers").Whitespace
+    WordLevelTrainer = pytest.importorskip("tokenizers.trainers").WordLevelTrainer
 
     corpus = ["hello world", "foo bar baz", "chatbot"]
     tok = Tokenizer(WordLevel(unk_token="[UNK]"))

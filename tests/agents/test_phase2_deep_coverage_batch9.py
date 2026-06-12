@@ -330,6 +330,7 @@ class TestPhase2_NumericalStability:
         """Test preventing overflow"""
         large_value = 1e308
         max_float = 1.7e308
+        result = large_value
         if large_value < max_float:
             result = large_value
         assert result == large_value

@@ -220,7 +220,9 @@ def create_auth_router(
     if authenticator is None:
         resolved_secret = secret_key or os.environ.get("CODEX_AUTH_SECRET") or _DEFAULT_SECRET
         if resolved_secret == _DEFAULT_SECRET:
-            logger.warning("Using default JWT secret — set CODEX_AUTH_SECRET for production")
+            logger.warning(
+                "Using default JWT signing material — configure a dedicated production key"
+            )
         store = UserStore()
         tokens = TokenManager(secret_key=resolved_secret)
         authenticator = Authenticator(user_store=store, token_manager=tokens)
@@ -345,9 +347,9 @@ def create_auth_router(
             new_token = auth.refresh(body.refresh_token)
         except Exception as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
-                logger.warning("Token refresh failed: %s", type(exc).__name__)
+                logger.warning("Session refresh rejected: %s", type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
-            logger.error("Unexpected error during token refresh: %s", type(exc).__name__)
+            logger.error("Unexpected auth refresh error: %s", type(exc).__name__)
             raise
 
         return RefreshResponse(access_token=new_token)

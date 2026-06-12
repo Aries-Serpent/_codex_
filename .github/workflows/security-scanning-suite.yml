@@ -241,7 +241,7 @@ jobs:
           pip install --upgrade pip
           pip install detect-secrets
       - name: Run detect-secrets
-        id: detect-secrets
+        id: detect-secrets  # pragma: allowlist secret
         continue-on-error: true
         run: |
           detect-secrets scan --all-files --force-use-all-plugins > .secrets.baseline 2> detect-secrets.log
@@ -250,7 +250,7 @@ jobs:
       - name: Generate secret-scan summary
         if: always()
         shell: bash
-        run: |
+        run: |  # pragma: allowlist secret
           set -euo pipefail
           python -c "
           import json

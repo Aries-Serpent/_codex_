@@ -69,3 +69,33 @@
 - **Outcome:** no true secrets were found in the scoped source files; only verified false positives were retained, and each was handled with exact-line allowlist pragmas.
 - **Targeted validation:** the scoped secret-detection lane reported a clean targeted secret scan after the allowlist adjustments.
 - **Baseline handling:** no `.secrets.baseline` content change was required for this scoped source-path remediation because the targeted files were made clean without introducing new baseline entries.
+
+## Implementation Status — 2026-06-13 (extended source triage)
+
+- **Status:** Extended source-path triage completed for all remaining non-generated, non-vendor, non-previously-reviewed baseline entries.
+- **Findings triaged:** 37 baseline entries across 17 source/config/workflow files, all confirmed as **false positives**. No true secrets found.
+- **Files receiving exact-line allowlist pragmas (Python):**
+  - `tests/security/test_providers.py` — 15 lines: test-fixture secret values (fake AWS keys, GitHub tokens, env var assignments used in provider unit tests)
+  - `tests/ci/test_post_rescue_comment.py` — 4 lines: hardcoded Git SHA test fixtures flagged as Hex High Entropy
+  - `tests/api/test_auth_mfa_expiry.py` — 1 line: `"password": "Str0ngPass!"` in auth test fixture
+  - `tests/auth/test_mfa_provider.py` — 1 line: `secret="JBSWY3DPEHPK3PXP"` (standard IETF RFC 6238 TOTP test seed)
+  - `tests/auth/test_token_manager.py` — 1 line: `secret = "test_secret_key_123"` test fixture
+  - `tests/branch_coverage/test_branch_coverage_config.py` — 1 line: env-var dict literal used in test
+  - `tests/agents/test_msp_client_phase9_1.py` — 1 line: `api_key="test"` in unit test
+  - `coverage_tests/test_security_providers_unittest.py` — 1 line: mock `get_secret_value` return in unittest
+  - `tests/unit/test_alerting.py` — 1 line: SMTP port assertion (keyword over-match)
+  - `tests/unit/utils/test_reproducibility_hardening.py` — 1 line: `mock_git_commit` fixture value
+  - `tests/unit/utils/test_safe_pickle.py` — 1 line: `b"env_secret"` assertion string
+  - `tests/services/test_api_main_phase_e.py` — 1 line: `monkeypatch.setenv("DISABLE_SECRET_FILTER", ...)` test setup
+  - `tests/test_fast_forward_safe_files.py` — 1 line: `"abc123def456"` SHA fixture (peer of the already-pragmaed line 118)
+  - `scripts/space_traversal/viz_html.py` — 1 line: `integrity="sha384-..."` SRI hash attribute in HTML template
+  - `tools/codex_apply_modeling_monitoring_api.py` — 1 line: `API_KEY_ENV = "CODEX_API_KEY"` env-var name constant
+- **Files receiving exact-line allowlist pragmas (YAML workflow):**
+  - `.github/workflows/codeql-alert-fetcher.yml` — 1 line: `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` (GitHub Actions secret reference, not a credential value)
+  - `.github/workflows/security-scanning-suite.yml` — 1 line: `id: detect-secrets` step identifier (keyword over-match)
+- **Files covered by baseline only (JSON — no inline comment support):**
+  - `.codex/webhook_config.json` — lines 7, 85: `"secret_env"` key and `"WEBHOOK_SECRET"` key are env-var name references, not values
+  - `.codex/agent_context.json` — line 14: `CODEX_CI_LAST_GREEN_SHA` is a CI tracking Git SHA, not a credential
+  - `CODEX_MANIFEST.json` — line 2248: SHA256 integrity hash flagged as Hex High Entropy (also has an unresolved merge conflict marker; out of scope for secret triage)
+  - `.codex/aftermath/pda_iterations.jsonl` — lines 3, 4, 57, 231: JSONL with Git SHAs / iteration identifiers as hex entropy
+- **Baseline handling:** no `.secrets.baseline` regeneration performed; existing baseline entries for covered findings remain as tracked known issues until a full baseline regeneration pass is executed after triage is complete.

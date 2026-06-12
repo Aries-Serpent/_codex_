@@ -248,7 +248,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
             if available_tokens < requested_tokens:
                 logger.warning(
-                    "Token quota exhausted for tenant: %s (requested=%s, available=%s)",
+                    "Usage quota exhausted for tenant: %s (requested=%s, available=%s)",
                     tenant_id,
                     requested_tokens,
                     available_tokens,
@@ -337,15 +337,20 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         # Drain remaining tokens to enforce blocking on subsequent requests
                         token_bucket.tokens = 0
                         logger.warning(
-                            f"Token limit exceeded after inference for tenant: {tenant_id}, "
-                            f"tokens used: {tokens_used}"
+                            "Usage limit exceeded after inference for tenant: %s "
+                            "(usage_units=%s)",
+                            tenant_id,
+                            tokens_used,
                         )
                         # Note: We already processed the request, so we can't reject it now
                         # Future requests will be blocked if bucket is empty
 
                 return rebuild_response(response_body)
             except Exception as e:
-                logger.error("Error processing token usage: %s", e)
+                logger.error(
+                    "Error processing usage accounting: %s",
+                    type(e).__name__,
+                )
                 # Reconstruct original response even when accounting fails
                 return rebuild_response(response_body)
 

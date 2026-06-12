@@ -99,7 +99,7 @@ class SignstoreClient:
             resp.raise_for_status()
             return resp.json().get("value", "github-oidc-token-placeholder")
         except Exception as exc:
-            logger.warning("Could not fetch GitHub OIDC token: %s", exc)
+            logger.warning("GitHub OIDC exchange failed: %s", type(exc).__name__)
             return "github-oidc-token-placeholder"
 
     # ------------------------------------------------------------------

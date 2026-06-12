@@ -45,10 +45,7 @@ def mock_deps():
 
 
 def test_cli_zendesk_help(cli_runner: CliRunner, mock_deps):
-    try:
-        from codex import cli_zendesk
-    except ImportError:
-        pytest.skip("cli_zendesk not importable")
+    cli_zendesk = pytest.importorskip("codex.cli_zendesk")
 
     result = cli_runner.invoke(cli_zendesk.app, ["--help"])
     if result.exit_code not in (0, 2):
@@ -57,10 +54,7 @@ def test_cli_zendesk_help(cli_runner: CliRunner, mock_deps):
 
 
 def test_cli_zendesk_subcommand_help(cli_runner: CliRunner, mock_deps):
-    try:
-        from codex import cli_zendesk
-    except ImportError:
-        pytest.skip("cli_zendesk not importable")
+    cli_zendesk = pytest.importorskip("codex.cli_zendesk")
 
     result = cli_runner.invoke(cli_zendesk.app, ["sync", "--help"])
     if result.exit_code not in (0, 2):
