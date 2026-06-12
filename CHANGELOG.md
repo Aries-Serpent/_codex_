@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4869)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4869 (SHA `9f26e717`) at 2026-06-12T22:58Z [auto-generated]
+
 ### Security (PR #4863 CodeQL Format Fix Complete — 2026-06-12T20:40Z)
 - Fixed all 22 CodeQL security alerts by changing from inline `# codeql[py/rule-id]` to previous-line `# lgtm[py/rule-id]` format
 - Previous inline suppression format was not being recognized by GitHub CodeQL scanner
