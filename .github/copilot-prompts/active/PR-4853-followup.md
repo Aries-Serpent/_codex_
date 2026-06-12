@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4853
 
-**PR**: #4853 - PR #4853  
+**PR**: #4853  
 **Branch**: `0D_base_`  
 **Author**: @mbaetiong  
 **Date**: 2026-06-12  
