@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (PR #4861 CI follow-up — 2026-06-12T18:39Z)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` after newer session/auth commits so PR #4861 satisfies the cognitive pre-flight REQ-4 / REQ-5 last-commit freshness gates again.
+- Re-verified that `.github/workflows/copilot-setup-steps.yml` now parses cleanly and that Pattern 3 no longer reports the session-preload YAML regression on this branch.
+
 ### Fixed (auto-update — PR #4861)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4861 (SHA `309ebd24`) at 2026-06-12T18:31Z [auto-generated]
 

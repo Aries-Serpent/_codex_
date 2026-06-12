@@ -1,3 +1,23 @@
+## SESSION SUMMARY — 2026-06-12T18:39Z · PR #4861 CI follow-up
+
+### Pre-flight Checklist
+- [x] Reviewed the current `@mbaetiong` / bot comment state for PR #4861 and confirmed no unresolved blocking review items remain ✅
+- [x] Investigated the latest relevant workflow runs via GitHub MCP on `0D_base_` first, then this PR branch ✅
+- [x] Verified the current `copilot-setup-steps.yml` preload block parses cleanly and Pattern 3 is green in this branch ✅
+
+### Work Completed
+1. Confirmed the `copilot-setup-steps.yml` YAML parse failure still visible on the latest `0D_base_` runs is already resolved on PR #4861 by the restored guarded `run: |` preload block.
+2. Identified the remaining actionable branch-local issue as REQ-4 / REQ-5 drift caused by newer session/auth commits that did not touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md`.
+3. Updated both required tracking documents in this session so the next commit satisfies the cognitive pre-flight freshness gates.
+
+### Validation / Audit Notes
+- `python3 - <<'PY' ... yaml.safe_load('.github/workflows/copilot-setup-steps.yml')` ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only --pattern 3` ✅
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 4861` ⚠️ expected until this commit lands because REQ-4 / REQ-5 validate the latest commit only
+- `pre-commit run --files docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md` ⚠️ unavailable in this sandbox (`pre-commit: command not found`)
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T18:10Z · `_PREEXISTING_FAILURES` batch continuation
 
 ### Pre-flight Checklist
