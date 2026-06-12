@@ -20,7 +20,7 @@ subcommands that close the remaining gaps:
 | No way to add a comment to an *existing* discussion | `add_discussion_comment()` + `add-discussion-comment` CLI |
 | Duplicate status comments accumulate on every push | `upsert_discussion_comment()` + `upsert-discussion-comment` CLI |
 | No standardised CI pattern summary poster | `post_ci_pattern_summary()` + `post-ci-pattern-summary` CLI |
-| No tokenized continuation chain poster | `post_continuation_chain()` + `post-continuation` CLI |
+| No tokenized continuation chain poster | `post_continuation_chain()` + `post-continuation` CLI | <!-- pragma: allowlist secret -->
 | No scheduled/push-triggered discussion status workflow | `.github/workflows/post-ci-status-to-discussion.yml` |
 | No self-contained chain generator that reads live state | `scripts/cognitive/continuation_chain.py` |
 
@@ -37,7 +37,7 @@ subcommands that close the remaining gaps:
 | `add_discussion_comment()` | ✅ **New S192** | Add a comment to an existing Discussion |
 | `upsert_discussion_comment()` | ✅ **New S192** | Idempotent add-or-update by HTML marker |
 | `post_ci_pattern_summary()` | ✅ **New S192** | Upsert CI pattern knowledge-graph summary |
-| `post_continuation_chain()` | ✅ **New S192** | Always-new comment: tokenized chain prompt |
+| `post_continuation_chain()` | ✅ **New S192** | Always-new comment: tokenized chain prompt | <!-- pragma: allowlist secret -->
 | `_resolve_discussion_node_id()` | ✅ **New S192** | GraphQL: discussion number → node ID |
 | `_find_discussion_comment()` | ✅ **New S192** | GraphQL: search 50 most recent comments for marker |
 | `_update_discussion_comment()` | ✅ **New S192** | GraphQL `updateDiscussionComment` |
@@ -48,16 +48,16 @@ subcommands that close the remaining gaps:
 
 | Workflow | File | Status | Purpose |
 |---|---|---|---|
-| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | ✅ Pre-existing | Posts latest session entry from `AGENT_ACCOUNTABILITY_REPORT.md` to discussion #3673 |
+| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | ✅ Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
 | Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | ✅ **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
 
 ### 2.3 Discussion Threads in Use
 
 | # | Title | Purpose | Upsert Key |
 |---|---|---|---|
-| 3673 | Accountability Report | Session entries from `AGENT_ACCOUNTABILITY_REPORT.md` | `<!-- ci-pattern-summary:run-{RUN_ID} -->` |
+| 3673 | Accountability Report | Authoritative historical notes sourced from `AGENT_ACCOUNTABILITY_REPORT.md` | `<!-- codex-accountability-turn:v1 branch=… pr=… session=… turn=… -->` |
 | _auto_ | CI Pattern Summary | High-recurrence + cross-PR tables | `<!-- ci-pattern-summary:{session_id} -->` |
-| _auto_ | Continuation Chain | Tokenized chain prompts for next-session pickup | Always new comment |
+| _auto_ | Continuation Chain | Tokenized chain prompts for next-session pickup | Always new comment | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -77,7 +77,7 @@ commit-files               Push file changes via Git Data API
 add-discussion-comment     [NEW] Add comment to existing Discussion
 upsert-discussion-comment  [NEW] Add-or-update by marker
 post-ci-pattern-summary    [NEW] Upsert CI pattern summary to Discussion
-post-continuation          [NEW] Post tokenized continuation chain
+post-continuation          [NEW] Post tokenized continuation chain  # pragma: allowlist secret
 ```
 
 ### 3.2 New Script CLI (`python scripts/cognitive/continuation_chain.py`)
@@ -200,7 +200,7 @@ onboarding a new agent session with accumulated context.
                     │   • CODEX_MANIFEST.json (ci_patterns)        │
                     │   • pattern_recorder.py (high_rec, cross_pr) │
                     │   • COGNITIVE_BRAIN_STATUS_*.md              │
-                    │   Outputs: tokenized Markdown chain          │
+                    │   Outputs: tokenized Markdown chain          │  # pragma: allowlist secret
                     └───────────────┬─────────────────────────────┘
                                     │
                ┌────────────────────▼────────────────────────────┐
@@ -232,7 +232,7 @@ onboarding a new agent session with accumulated context.
 | Update status without spamming thread | `upsert_discussion_comment()` | `upsert-discussion-comment` |
 | Report CI pattern state | `post_ci_pattern_summary()` | `post-ci-pattern-summary` |
 | Resume from prior session context | Read last chain comment from Discussion | `discussion-digest` (planned) |
-| Post session accountability | `post-accountability-to-discussion.yml` | Automatic on AGENT_ACCOUNTABILITY_REPORT.md push |
+| Post session accountability | `post-accountability-to-discussion.yml` | Automatic upsert on `AGENT_ACCOUNTABILITY_REPORT.md` push; exactly one authoritative comment per branch/PR/session/turn |
 
 ### 5.2 Tokenized Continuation Chain Format
 
@@ -301,12 +301,12 @@ poster.upsert_discussion_comment(repo, number, full_body, marker)
 
 ## 7. Security and Token Requirements
 
-| Operation | Required Permission | Token Priority |
+| Operation | Required Permission | Token Priority | <!-- pragma: allowlist secret -->
 |---|---|---|
-| Read discussions | `discussions: read` | `GITHUB_TOKEN` |
+| Read discussions | `discussions: read` | `GITHUB_TOKEN` | <!-- pragma: allowlist secret -->
 | Add/update discussion comment | `discussions: write` | `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` |
 | Create new discussion | `discussions: write` | `CODEX_MASTER_KEY` |
-| Search comments (GraphQL) | `discussions: read` | `GITHUB_TOKEN` |
+| Search comments (GraphQL) | `discussions: read` | `GITHUB_TOKEN` | <!-- pragma: allowlist secret -->
 
 All write operations require `discussions: write` permission in the workflow
 `permissions:` block AND on the token itself.  `GITHUB_TOKEN` from Actions
@@ -328,7 +328,7 @@ if [ "$STATUS" = "200" ]; then echo "Discussions enabled"; fi
 | File | Role |
 |---|---|
 | `src/codex/github/mcp_poster.py` | Core Discussion API client (GraphQL + REST) |
-| `scripts/cognitive/continuation_chain.py` | **New S192** — tokenized chain builder |
+| `scripts/cognitive/continuation_chain.py` | **New S192** — tokenized chain builder | <!-- pragma: allowlist secret -->
 | `.github/workflows/post-accountability-to-discussion.yml` | Posts accountability entries to #3673 |
 | `.github/workflows/post-ci-status-to-discussion.yml` | **New S192** — push-triggered CI status posts |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Accountability report source |

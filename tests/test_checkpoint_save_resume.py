@@ -18,6 +18,7 @@ from codex_ml.utils.checkpointing import (
     load_checkpoint,
     save_checkpoint,
 )
+from codex_ml.utils.safe_pickle import trusted_pickle_dumps
 
 pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="requires torch")
 
@@ -29,9 +30,8 @@ def test_save_and_load_checkpoint(tmp_path: Path) -> None:
 
     # ADDED: Pre-check for pickling issues
     try:
-        import pickle
         test_model = torch.nn.Linear(2, 2)
-        pickle.dumps(test_model.state_dict())
+        trusted_pickle_dumps(test_model.state_dict())
     except Exception as e:
         pytest.skip(f"PyTorch pickling not working in this environment: {e}")
 

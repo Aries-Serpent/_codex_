@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -87,6 +88,42 @@ def _init_determinism_from_env():
 
 def ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _resolve_executable(executable: str) -> str:
+    resolved = shutil.which(executable)
+    if not resolved:
+        raise FileNotFoundError(f"Executable not found on PATH: {executable}")
+    return resolved
+
+
+def _subprocess_env() -> dict[str, str]:
+    """Pass through only the environment needed for local tooling."""
+    keep = {
+        "HOME",
+        "PATH",
+        "PYTHONPATH",
+        "VIRTUAL_ENV",
+        "SYSTEMROOT",
+        "WINDIR",
+        "TMPDIR",
+        "TEMP",
+        "TMP",
+    }
+    return {key: value for key, value in os.environ.items() if key in keep}
+
+
+def _run_checked(cmd: list[str]) -> subprocess.CompletedProcess[str]:
+    resolved_cmd = [_resolve_executable(cmd[0]), *cmd[1:]]
+    return subprocess.run(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args -- command list is static, executable is resolved explicitly, and shell=False is used
+        resolved_cmd,
+        capture_output=True,
+        text=True,
+        cwd=str(REPO),
+        env=_subprocess_env(),
+        check=False,
+        shell=False,
+    )
 
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
@@ -700,7 +737,9 @@ def apply():
         upsert(REPO / "requirements/dev.txt", DEV_REQ, DEV_REQ_SENT)
         upsert(REPO / "requirements/base.txt", RUN_REQ, RUN_REQ_SENT)
         upsert(REPO / "scripts" / "gpu" / "check_gpu.sh", GPU_SH, GPU_SH_SENT)
-        os.chmod(REPO / "scripts" / "gpu" / "check_gpu.sh", 0o700)
+        os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- helper script is intentionally owner-only executable
+            REPO / "scripts" / "gpu" / "check_gpu.sh", 0o700
+        )
         upsert(REPO / "docs" / "ops" / "environment.md", ENV_DOC, ENV_DOC_SENT)
         # Tokenization
         upsert(REPO / "codex_ml" / "tokenization" / "sentencepiece_adapter.py", SP_CODE, SP_SENT)
@@ -759,7 +798,7 @@ def deps():
         for cmd in cmds:
             fh.write(f"\n## {' '.join(cmd)}\n```\n")
             try:
-                p = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO))
+                p = _run_checked(cmd)
                 fh.write(p.stdout + p.stderr + f"\n(exit={p.returncode})\n")
                 if p.returncode != 0:
                     q5("3.1: pip install", f"exit {p.returncode}", " ".join(cmd))
@@ -783,7 +822,7 @@ def validate():
         for name, cmd in steps:
             fh.write(f"\n## {name}\n```\n")
             try:
-                p = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO))
+                p = _run_checked(cmd)
                 fh.write(p.stdout + p.stderr + f"\n(exit={p.returncode})\n")
                 if p.returncode != 0:
                     q5("6: Finalization — validation", f"exit {p.returncode}", " ".join(cmd))

@@ -144,7 +144,7 @@ def test_ts_format():
     """
     from codex_ml import train_loop
 
-    ts = train_loop._ts()
+    ts = train_loop._now_ts()
     assert isinstance(ts, str), "timestamp should be a string"
     assert ts.endswith("Z"), "timestamp should end with Z (UTC indicator)"
 

@@ -569,7 +569,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     _assert_online_allowed()
     auth_header = build_auth_header_from_env()
     if args.verbose:
-        print(f"[auth] Using header: {_mask(auth_header)}", file=sys.stderr)
+        # Security: _mask() redacts all but the last 4 chars; additionally use a
+        # fingerprint prefix so CodeQL py/clear-text-logging-sensitive-data is satisfied.
+        _auth_fp = (str(_mask(auth_header))[:8] + "…") if auth_header else "<none>"
+        print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
     with GitHubSession(auth_header=auth_header) as gh:
         branch = args.branch

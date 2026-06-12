@@ -56,7 +56,7 @@ Developer pushes commit to 0D_base_
          │
          ▼ (all green OR rescue triggered)
 ┌────────────────────────────────┐
-│  PHASE 2: Agent Token Gate     │  ← owner approves agent-auth-delegation
+│  PHASE 2: Agent Token Gate     │  ← owner approves agent-auth-delegation  # pragma: allowlist secret
 │  (owner approves once per PR)  │
 └────────────────────────────────┘
          │
@@ -87,7 +87,7 @@ see [§18 WEC Workflow Catalog](#18-wec-workflow-catalog--complete-reference).
 | `pre-merge-validation.yml` | `pull_request`, `pull_request_review` | ✅ Always required | Ruff, line-length, auto-fix check gate |
 | `comment-review-gate.yml` | `pull_request`, `pull_request_review`, `issue_comment` | ✅ Always required | Enforces §0 comment-reply policy |
 | `deferral-language-gate.yml` | `pull_request` | ✅ Always required | Blocks forbidden deferral phrases |
-| `agent-auth-delegation.yml` | `push`, `issue_comment`, `workflow_run` | ✅ Always required — owner approves | Delegates COPILOT_AGENT_AUTH_ENABLED token |
+| `agent-auth-delegation.yml` | `push`, `issue_comment`, `workflow_run` | ✅ Always required — owner approves | Delegates COPILOT_AGENT_AUTH_ENABLED token | <!-- pragma: allowlist secret -->
 | `copilot-agent-checkin.yml` | `push` to `0D_base_` | ✅ Always required | S221 missed-trigger guard |
 | `cost-gate.yml` | `workflow_call` | ✅ Always required | RED-tier cost governance gate |
 | `copilot-agent-session-done.yml` | `workflow_run` | ✅ Always required | Session completion + S221 retrigger |
@@ -100,7 +100,7 @@ see [§18 WEC Workflow Catalog](#18-wec-workflow-catalog--complete-reference).
 |----------|---------|-------------|---------|
 | `resilient_validation.yml` | `pull_request` | `resilient_validation.yml` | Full pytest suite (4 shards + integration + slow) |
 | `nox_gates.yml` | `pull_request` | `nox_gates.yml` | Nox quality gates (ruff, mypy, coverage) |
-| `validate.yml` | `pull_request`, `schedule` | `validate.yml` | Fast validation (ruff, detect-secrets, sync-tracked) |
+| `validate.yml` | `pull_request`, `schedule` | `validate.yml` | Fast validation (ruff, detect-secrets, sync-tracked) | <!-- pragma: allowlist secret -->
 | `mypy-baseline.yml` | `pull_request`, `push` | `mypy-baseline.yml` | Type-check anti-regression gate |
 | `progressive-validation.yml` | `pull_request` | `progressive-validation.yml` | Progressive validation suite |
 | `coverage-with-timeout.yml` | `pull_request` | `coverage-with-timeout.yml` | Coverage run with timeout guards |
@@ -119,7 +119,7 @@ see [§18 WEC Workflow Catalog](#18-wec-workflow-catalog--complete-reference).
 | `actionlint-audit.yml` | `pull_request`, `push` | `actionlint-audit.yml` | Workflow compliance audit (actionlint) |
 | `auto-fix-common-issues.yml` | `pull_request`, `workflow_dispatch` | `auto-fix-common-issues.yml` | Auto-fix ruff/P22/P23 violations |
 | `auto-fix-pr-check.yml` | `pull_request` | `auto-fix-pr-check.yml` | PR auto-fix check |
-| `scan-secrets-variables.yml` | `pull_request` | `scan-secrets-variables.yml` | Secrets & variables scan |
+| `scan-secrets-variables.yml` | `pull_request` | `scan-secrets-variables.yml` | Secrets & variables scan | <!-- pragma: allowlist secret -->
 | `code-quality-coverage-suite.yml` | `pull_request` | `code-quality-coverage-suite.yml` | Code quality & coverage suite |
 
 ### 2.4 Documentation Workflows (WEC opt-in)
@@ -164,9 +164,9 @@ These workflows manage GitHub Discussion context, accountability entries, and PR
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `discussion-cleanup.yml` | `workflow_dispatch`, `schedule` | Manifest-mode + direct-mode discussion dupe cleanup; uses CB App token for `discussions:write` (S302) |
+| `discussion-cleanup.yml` | `workflow_dispatch`, `schedule` | Manifest-mode + direct-mode discussion dupe cleanup; uses CB App token for `discussions:write` (S302) | <!-- pragma: allowlist secret -->
 | `discussion-response-bridge.yml` | `discussion_comment` | Bridges maintainer discussion replies back to the originating PR comment (RC-3, S300) |
-| `post-accountability-to-discussion.yml` | `push` to `0D_base_`/`copilot/**`, `workflow_dispatch` | Posts accountability entries to Discussion #3673; uses CB App token (S303) |
+| `post-accountability-to-discussion.yml` | `push` to `0D_base_`/`copilot/**`, `workflow_dispatch` | Upserts exactly one authoritative accountability comment per branch/PR/session/turn in Discussion #3673; uses CB App token (S303) | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -262,7 +262,7 @@ The **S221 guard** (`copilot-agent-checkin.yml`) fires on every push to `0D_base
 
 | Check | Why it must pass |
 |-------|-----------------|
-| `validate.yml / Fast Validation` | Import hygiene, no secrets drift |
+| `validate.yml / Fast Validation` | Import hygiene, no secrets drift | <!-- pragma: allowlist secret -->
 | `mypy-baseline.yml / mypy Anti-Regression` | No new type errors introduced |
 | `resilient_validation.yml` (all shards) | No test collection errors, no regressions |
 
@@ -326,11 +326,11 @@ github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secret
 GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```
 
-| Secret | Owner | Purpose |
+| Secret | Owner | Purpose | <!-- pragma: allowlist secret -->
 |--------|-------|---------|
 | `CODEX_MASTER_KEY` | `@mbaetiong` PAT | Primary — comments post as `mbaetiong` |
 | `CODEX_BACKUP_KEY` | `@mbaetiong` PAT | Fallback if primary expires |
-| `GITHUB_TOKEN` / `github.token` | `github-actions[bot]` | Last resort — Copilot will NOT see this |
+| `GITHUB_TOKEN` / `github.token` | `github-actions[bot]` | Last resort — Copilot will NOT see this | <!-- pragma: allowlist secret -->
 
 > **S293 Bug Fix:** `actionlint-audit.yml`'s inline `actions/github-script@v8` rescue step was
 > not passing `github-token`, causing it to use the default `github.token` (= `github-actions[bot]`).
@@ -419,7 +419,7 @@ every per-failure section below the H2 headline. This keeps the PR clean and sca
          │
          ▼
 4. [TIER 2 — needs approval] iterative-self-healing-ci.yml fires
-   - Up to 3 auto-fix iterations (ruff, EOF, detect-secrets, mypy)
+   - Up to 3 auto-fix iterations (ruff, EOF, detect-secrets, mypy)  # pragma: allowlist secret
    - Commits and pushes fixes back to branch
    - Per-branch hourly cap ≥10 runs/hr (cascade brake from S283)
    - PDA Loop: logs pattern + fix outcome
@@ -449,7 +449,7 @@ See `.codex/aftermath/failure_pattern_solutions.yaml` for full library.
 | Pattern | Failure Type | Fix |
 |---------|-------------|-----|
 | `RP-006` | Missing EOF newline in `.codex/` JSON files | `find .codex -name '*.json' | xargs -I{} sh -c 'tail -c1 "$1" \| grep -q . && echo >> "$1"' _ {}` |
-| `RP-007` | detect-secrets baseline stale | `python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline` |
+| `RP-007` | detect-secrets baseline stale | `python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline` | <!-- pragma: allowlist secret -->
 | `RP-009` | mypy anti-regression gate exceeded baseline | Fix type errors; run `python scripts/ci/mypy_baseline.py --require-baseline` |
 | `RP-019` | `from src.` import regression | Run P19-BATCH-001 |
 | `RP-MYPY-UNUSED-IGNORE` | Stale `# type: ignore` comment | Remove the suppression comment |
@@ -616,7 +616,7 @@ The following CI runs on this PR are referenced throughout this document and in 
 | [23689574640](https://github.com/Aries-Serpent/_codex_/actions/runs/23689574640) | Agent Auth Delegation | `77d4ec89` | ❌ FAIL | Auth delegation pending approval | Human approval |
 | [23689574652](https://github.com/Aries-Serpent/_codex_/actions/runs/23689574652) | Validation Pipeline | `77d4ec89` | ❌ FAIL | Same crawler import error (collection failure) | S139 `a12f5e2` |
 | [23689574653](https://github.com/Aries-Serpent/_codex_/actions/runs/23689574653) | Resilient Validation Suite | `77d4ec89` | ❌ FAIL (7 jobs) | Same crawler import error | S139 `a12f5e2` |
-| [23691793298](https://github.com/Aries-Serpent/_codex_/actions/runs/23691793298) | Agent Auth Delegation | — | ✅ PASS | Owner approved token delegation | N/A |
+| [23691793298](https://github.com/Aries-Serpent/_codex_/actions/runs/23691793298) | Agent Auth Delegation | — | ✅ PASS | Owner approved token delegation | N/A | <!-- pragma: allowlist secret -->
 | [23691951388](https://github.com/Aries-Serpent/_codex_/actions/runs/23691951388) | mypy Baseline Gate | `2293b9af` | ❌ FAIL (342 > 306) | Baseline incorrectly lowered to 306 (local env), CI env sees 342 | S141 this PR |
 | [23691951400](https://github.com/Aries-Serpent/_codex_/actions/runs/23691951400) | Validation Pipeline | `2293b9af` | ❌ FAIL | Same baseline mismatch | S141 this PR |
 | [23691951433](https://github.com/Aries-Serpent/_codex_/actions/runs/23691951433) | Resilient Validation Suite | `2293b9af` | ❌ FAIL | Same baseline mismatch | S141 this PR |
@@ -644,7 +644,7 @@ S141 additionally fixed 9 errors introduced by the P19 src-import backfill:
 | File | Error | Root Cause | Fix Applied |
 |------|-------|-----------|-------------|
 | `src/codex/zendesk/agent.py` | `Module "tools" has no attribute "ToolRegistry"` | Root `./tools/__init__.py` shadows `src/tools/` | Reverted to `from src.tools import` |
-| `src/codex_ml/tokenization/train_tokenizer.py` | `Variable "..." not valid as type` | Module attribute alias not recognized as type | Explicit `from tokenization.train_tokenizer import TrainTokenizerConfig as TrainTokenizerConfig` |
+| `src/codex_ml/tokenization/train_tokenizer.py` | `Variable "..." not valid as type` | Module attribute alias not recognized as type | Explicit `from tokenization.train_tokenizer import TrainTokenizerConfig as TrainTokenizerConfig` | <!-- pragma: allowlist secret -->
 | `src/codex/zendesk/monitoring/mcp_bridge.py` | Unused `# type: ignore[arg-type]` (×4) | `mcp.*` now resolvable; `set_gauge(float)` is correct | Removed redundant `# type: ignore` |
 | `src/mcp/server/jsonrpc_adapter.py` | Unused `# type: ignore[return-value]` | `BackendAdapter` now resolvable, no return mismatch | Removed redundant `# type: ignore` |
 
@@ -662,14 +662,14 @@ Baseline was then reset to **333** using the CI isolated venv to ensure parity.
 | P19-SHADOW-REVERT-001 | When a de-src-ified import silently resolves to the wrong root-level shadow, revert to `from src.X` form. The shadow intercepts before `sys.path` src/ entry is reached | S145 |
 | P21 | GitHub Actions Node.js 20 version deadline: 2026-06-02 | S135-S136 |
 | P22 | Tracked file sync drift: run `sync_tracked_files.py --fix` when `CODEX_MANIFEST.json` changes | S138 |
-| P23 | `detect-secrets` baseline plugin mismatch: `.secrets.baseline` generated with newer detect-secrets version causes `TypeError: No such <plugin>` in CI. Fix: `python scripts/ci/auto_fix_common_issues.py --pattern 23` | S145 |
+| P23 | `detect-secrets` baseline plugin mismatch: `.secrets.baseline` generated with newer detect-secrets version causes `TypeError: No such <plugin>` in CI. Fix: `python scripts/ci/auto_fix_common_issues.py --pattern 23` | S145 | <!-- pragma: allowlist secret -->
 | SECRET-PRAGMA-001 | `# pragma: allowlist secret` for detect-secrets false positives (demo keys, dev placeholders, pattern variables). Run `python3 -m detect_secrets scan <file>` to verify suppression | S143 |
 | FP-ACTOR-SKIP-001 | S221 missed-trigger AND incomplete-session guards must skip when `context.actor ∈ {copilot-swe-agent[bot], github-copilot[bot], copilot[bot]}` | S144 |
 | FP-PREAPPROVAL-001 | All bot-posted `@copilot` comments embed pre-authorization notice to prevent duplicate approval gates | S144 |
 | FP-SAFETYCAP-001 | S221 guard safety cap ≥3 retriggers per rescue ID prevents infinite loops | S144 |
 | §ARLOOP | When a rescue is already addressed, reply `"Resolved at <SHA>"` to suppress S221 re-triggers | S242-S243 |
 | `RP-009` | mypy anti-regression gate exceeded baseline (too many errors) | ci-rescue.yml |
-| `GH013` | Branch ruleset violation: Copilot agent token lacks bypass → owner must add agent to bypass list | S244 |
+| `GH013` | Branch ruleset violation: Copilot agent token lacks bypass → owner must add agent to bypass list | S244 | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -679,13 +679,13 @@ These patterns appear repeatedly in CI triage reports. Each has a documented fix
 
 | Workflow | Failure Step | Pattern | Fix |
 |----------|-------------|---------|-----|
-| Validation Pipeline / Fast Validation | `detect-secrets` hook `TypeError: No such GitLabTokenDetector` | P23 (plugin mismatch) | `python scripts/ci/auto_fix_common_issues.py --pattern 23` |
+| Validation Pipeline / Fast Validation | `detect-secrets` hook `TypeError: No such GitLabTokenDetector` | P23 (plugin mismatch) | `python scripts/ci/auto_fix_common_issues.py --pattern 23` | <!-- pragma: allowlist secret -->
 | Validation Pipeline / Fast Validation | `sync-tracked-files: files were modified by hook` | P22 (tracked file drift) | `python scripts/ci/sync_tracked_files.py --fix && git add -A && git commit` |
 | Validation Pipeline / Fast Validation | `Run yamllint` exit 1 — `[colons] too many spaces after colon` | Yamllint `[colons]` error in workflow env block | Remove alignment spaces from `env:` blocks in `.github/workflows/*.yml` — `key: value` not `key:   value` (S305) |
 | agent-auth-delegation / Cognitive Pre-flight | `Verify CHANGELOG.md updated in last commit` | CHANGELOG gate | Add `### Fixed (SN)` entry to `## [Unreleased]` in `CHANGELOG.md` before committing |
 | mypy Baseline Gate | `Fail if regression detected` | `.mypy_baseline` stale | Update with CI isolated-venv per P19-ENV-001 |
 | Resilient Validation Suite / Sharded tests | `startup_failure` (no error log) | Pre-existing infra | Runner never starts for Data Quality/Progressive Validation/Rust-Python — not a code failure |
-| Agent Token Delegation | `action_required` on all checks | `agent-auth-delegation` environment gate | Owner clicks "Approve" at the Actions URL — needed once per approval cycle |
+| Agent Token Delegation | `action_required` on all checks | `agent-auth-delegation` environment gate | Owner clicks "Approve" at the Actions URL — needed once per approval cycle | <!-- pragma: allowlist secret -->
 | Copilot Issue Triage | `Analyze issue with GitHub Copilot` fails | API/CLI invocation error | Infrastructure issue — not code-fixable; retries usually succeed |
 | Embedding Index Rebuild | `Commit updated index metadata` | Push permissions | `CODEX_MASTER_KEY` needed for push; falls back to `CODEX_BACKUP_KEY` |
 
@@ -759,7 +759,7 @@ The following checks MUST be green before any WEC items are approved:
 |----------------|----------------------------------|
 | `Automatic Dependency Submission (Python)` ← `dynamic / submit-pypi` | GitHub-managed supply-chain check. Transient API failure (HTTP 503) is the only acceptable reason for a red; re-run resolves it. |
 | `Resilient Dependency Submission` (`dependency-submission.yml`) | Our retry-wrapped replacement. Must pass with all green. |
-| `Validation Pipeline / Fast Validation` (`validate.yml`) | detect-secrets, ruff, sync-tracked-files. All must pass. |
+| `Validation Pipeline / Fast Validation` (`validate.yml`) | detect-secrets, ruff, sync-tracked-files. All must pass. | <!-- pragma: allowlist secret -->
 | `mypy Baseline Gate` (`mypy-baseline.yml`) | No new type errors vs baseline. Must pass. |
 | `deferral-language-gate.yml` | No forbidden deferral phrases in changed files. Must pass. |
 | `pre-merge-validation.yml` | Ruff, line-length, auto-fix check. Must pass. |
@@ -964,14 +964,14 @@ stateDiagram-v2
 | 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push | 🔄 Ongoing |
 | 2 | RAG Module Tests | 13 | RP-RAG-CHRONIC | code-fix-required | ✅ **Fixed S292** — tests for preprocessor/validator added | ✅ Fixed |
 | 3 | Validation Pipeline | 11 | RP-P22 / RP-P23 / RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
-| 4 | Agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate | ✅ Update CHANGELOG + accountability | 🔄 Ongoing |
+| 4 | Agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate | ✅ Update CHANGELOG + accountability | 🔄 Ongoing | <!-- pragma: allowlist secret -->
 | 5 | Resilient Validation Suite | 5 | RP-COLLECT / RP-019 | code-fix-required | Partial | 🔄 Ongoing |
 | 6 | Automatic Dependency Submission | 3 | RP-TRANSIENT-API503 | transient-infra | ✅ Re-run only | N/A |
 | 7 | Auto-Fix Common CI Issues | 3 | RP-RUFF / F401 / E501 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
 | 8 | PR Auto-Fix Check | 3 | RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
 | 9 | Workflow Compliance Audit (SC2269) | 1 | RP-ACTIONLINT-SC2269 | workflow-config | ✅ **Fixed S293** — `PR="${PR}"` self-assign removed | ✅ Fixed |
 | 9 | Workflow Compliance Audit (CB-003) | 2 | RP-ACTIONLINT | workflow-config | ✅ **Fixed S292** — CB-003 expression-in-script fix | ✅ Fixed |
-| 9 | Actionlint rescue posted as bot | 1 | RP-RESCUE-IDENTITY | automation | ✅ **Fixed S293** — `github-token` added to inline step | ✅ Fixed |
+| 9 | Actionlint rescue posted as bot | 1 | RP-RESCUE-IDENTITY | automation | ✅ **Fixed S293** — `github-token` added to inline step | ✅ Fixed | <!-- pragma: allowlist secret -->
 | 10 | mypy Baseline Gate | 2 | RP-009 | code-fix-required | ✅ `mypy_baseline.py` | ✅ Fixed |
 | 11 | Pre-Merge Validation | 1 | RP-P22 / RP-P23 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
 | 12 | Copilot Issue Triage | 1 | RP-TRANSIENT | transient-infra | ✅ Re-run only | N/A |
@@ -1086,7 +1086,7 @@ in §13, and the planned improvements to close each gap.
 | Gap | Current Behaviour | Target Behaviour | Status |
 |-----|------------------|-----------------|--------|
 | **First failure does not always trigger self-healer** | Tier 2 (`workflow_run`) runs queue in `action_required` state | Tier 1 `validate.yml` + `test-rag.yml` rescue always fire; Tier 2 needs human to approve queued runs | ✅ Documented §7.1 |
-| **Rescue comments posted as `github-actions[bot]`** | `actionlint-audit.yml` inline step used default `github.token` → Copilot ignores the `@copilot` mention | All `actions/github-script@v8` rescue steps explicitly pass `github-token: CODEX_MASTER_KEY` | ✅ Fixed S293 |
+| **Rescue comments posted as `github-actions[bot]`** | `actionlint-audit.yml` inline step used default `github.token` → Copilot ignores the `@copilot` mention | All `actions/github-script@v8` rescue steps explicitly pass `github-token: CODEX_MASTER_KEY` | ✅ Fixed S293 | <!-- pragma: allowlist secret -->
 | **actionlint SC2269 self-assignment** | `PR="${PR}"` in `workflow-execution-gate.yml` → actionlint compliance fails | Remove redundant self-assignment | ✅ Fixed S293 |
 | **RAG meta-tensor test isolation** | `torch.nn.Linear(10, 5).to("cpu")` fails on meta tensor after global device pollution | Use `device="cpu"` constructor argument; no `.to()` call | ✅ Fixed S293 |
 | **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template | 🔄 Ongoing |
@@ -1139,7 +1139,7 @@ in §13, and the planned improvements to close each gap.
 │ actionlint-audit.yml → inline   │         │ copilot-iterative-self.yml  │
 │ - SHA-scoped comment            │         │ (queued in action_required) │
 │ - PDA loop log                  │         │                             │
-│ - @copilot instructions         │         │ ⚠️ Token MUST be            │
+│ - @copilot instructions         │         │ ⚠️ Token MUST be            │  # pragma: allowlist secret
 │ - posted as @mbaetiong          │         │    CODEX_MASTER_KEY         │
 │   (CODEX_MASTER_KEY required)   │         │    for @copilot to see it   │
 └─────────────────────────────────┘         └─────────────────────────────┘
@@ -1650,7 +1650,7 @@ with root causes, fix templates, and verification commands. The resolution statu
 | Workflow Compliance Audit (actionlint) | 4 | SC2089/SC2090 string-as-array | ✅ Fixed S281/S283 |
 | RAG Module Tests | 5 | MagicMock chain, coverage threshold | ✅ Fixed S276 |
 | Resilient Validation Suite | 2 | Transient / older commit | ⚠️ Monitor |
-| Agent Token Delegation | 5 | REQ-4 accountability report not updated | ⚠️ Ongoing (auto-fix handles) |
+| Agent Token Delegation | 5 | REQ-4 accountability report not updated | ⚠️ Ongoing (auto-fix handles) | <!-- pragma: allowlist secret -->
 | PR Comment Review Gate | 5 | Unaddressed mbaetiong comments | 🔄 Addressed in S283 |
 | Workflow Execution Gate | 5 | SC2089/SC2090 in FF job + duplicate env: | ✅ Fixed S281/S283 |
 | Copilot Issue Triage | 1 | Infrastructure (Copilot session on main) | ℹ️ Not code-fixable |
@@ -1673,7 +1673,7 @@ with root causes, fix templates, and verification commands. The resolution statu
 | `pre-merge-validation.yml` | Pre-Merge Validation | Ruff, line-length, auto-fix gate — must always pass |
 | `comment-review-gate.yml` | PR Comment Review Gate | §0 policy — all mbaetiong comments must be addressed |
 | `deferral-language-gate.yml` | 🚨 Deferral Language Gate | Deferral-language CI enforcement — always active |
-| `agent-auth-delegation.yml` | Agent Token Delegation | Token delegation — owner approves once per cycle |
+| `agent-auth-delegation.yml` | Agent Token Delegation | Token delegation — owner approves once per cycle | <!-- pragma: allowlist secret -->
 | `copilot-agent-checkin.yml` | Agent Check-In | S221 missed-trigger guard — fires every push |
 | `cost-gate.yml` | 💰 Cost Governance Gate | RED-tier budget gate — must always be armed |
 | `copilot-agent-session-done.yml` | Auto-Post @copilot review After Agent Session | Session completion + S221 retrigger |
@@ -1686,7 +1686,7 @@ with root causes, fix templates, and verification commands. The resolution statu
 |--------------------|-------------|------|-------|
 | `resilient_validation.yml` | Resilient Validation Suite | 🔴 High | Full pytest (4 shards + integration + slow) |
 | `nox_gates.yml` | Nox Quality Gates | 🟡 Medium | Nox ruff, mypy, coverage gates |
-| `validate.yml` | Validation Pipeline | 🟢 Low | Fast: detect-secrets, ruff, sync-tracked |
+| `validate.yml` | Validation Pipeline | 🟢 Low | Fast: detect-secrets, ruff, sync-tracked | <!-- pragma: allowlist secret -->
 | `mypy-baseline.yml` | mypy Baseline (Type-Check Anti-Regression) | 🟢 Low | Type-check gate — recommended always-on |
 | `progressive-validation.yml` | Progressive Validation Suite | 🔴 High | Full progressive suite + coverage |
 | `coverage-with-timeout.yml` | Coverage with Timeout Guards | 🟡 Medium | Coverage run with timeout |
@@ -1704,13 +1704,13 @@ with root causes, fix templates, and verification commands. The resolution statu
 
 | Exact WEC Filename | Display Name | Cost | Notes |
 |--------------------|-------------|------|-------|
-| `security-scanning-suite.yml` | Security Scanning Suite | 🟡 Medium | Bandit, pip-audit, secrets |
+| `security-scanning-suite.yml` | Security Scanning Suite | 🟡 Medium | Bandit, pip-audit, secrets | <!-- pragma: allowlist secret -->
 | `codeql-analysis.yml` | CodeQL | 🔴 High | SAST — runs on schedule too |
 | `semgrep_sarif.yml` | Semgrep SAST (SARIF Upload) | 🟡 Medium | Semgrep policy enforcement |
 | `actionlint-audit.yml` | Workflow Compliance Audit (actionlint) | 🟢 Low | Workflow YAML linting |
 | `auto-fix-common-issues.yml` | Auto-Fix Common CI Issues | 🟢 Low | Applies P1/P9/P12 auto-fixes |
 | `auto-fix-pr-check.yml` | PR Auto-Fix Check | 🟢 Low | Pre-merge auto-fix check |
-| `scan-secrets-variables.yml` | Scan and Report GitHub Secrets and Variables | 🟢 Low | Secrets/vars audit |
+| `scan-secrets-variables.yml` | Scan and Report GitHub Secrets and Variables | 🟢 Low | Secrets/vars audit | <!-- pragma: allowlist secret -->
 | `code-quality-coverage-suite.yml` | Code Quality & Coverage Suite | 🟡 Medium | Coverage + quality |
 | `dependency-scan.yml` | Dependency Vulnerability Scan | 🟢 Low | pip-audit on requirements |
 | `sbom.yml` | Generate SBOM | 🟢 Low | Software Bill of Materials |
@@ -1738,9 +1738,9 @@ with root causes, fix templates, and verification commands. The resolution statu
 | `rust_swarm_ci.yml` | Rust-Python Hybrid Swarm CI/CD | 🔴 High | Rust cargo build + tests |
 | `e-to-d-transition-gate.yml` | E→D Transition Readiness Gate | 🟢 Low | Autonomy phase transition |
 | `d-capable-promotion-gate.yml` | D_CAPABLE Agent Promotion Gate | 🟢 Low | Agent authority gate |
-| `discussion-cleanup.yml` | Discussion Duplicate Cleanup | 🟢 Low | Manifest-mode + direct-mode dupe cleanup; uses CB App token for `discussions:write` (S302) |
+| `discussion-cleanup.yml` | Discussion Duplicate Cleanup | 🟢 Low | Manifest-mode + direct-mode dupe cleanup; uses CB App token for `discussions:write` (S302) | <!-- pragma: allowlist secret -->
 | `discussion-response-bridge.yml` | Discussion → PR Reply Bridge | 🟢 Low | Bridges maintainer discussion replies to originating PR comment; triggers on `discussion_comment` (RC-3, S300) |
-| `post-accountability-to-discussion.yml` | Post Accountability to Discussion | 🟢 Low | Posts accountability entries to Discussion #3673 on push to `0D_base_`/`copilot/**`; uses CB App token (S303) |
+| `post-accountability-to-discussion.yml` | Post Accountability to Discussion | 🟢 Low | Posts accountability entries to Discussion #3673 on push to `0D_base_`/`copilot/**`; uses CB App token (S303) | <!-- pragma: allowlist secret -->
 
 ### 18.6 Fast-Forward (separate WEC section — not a checkbox item)
 
@@ -2046,14 +2046,14 @@ on the global default device entirely. Applied consistently to all models create
 
 ### 20.4 Full Rescue Comment Identity Chain (Summary)
 
-| Workflow | Step Type | `github-token` | Status |
+| Workflow | Step Type | `github-token` | Status | <!-- pragma: allowlist secret -->
 |----------|-----------|----------------|--------|
 | `actionlint-audit.yml` inline | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` (fixed S293) | Fixed |
-| `actionlint-audit.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
-| `validate.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
-| `test-rag.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
-| `ci-rescue.yml` | Python urllib + `GITHUB_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
-| `iterative-self-healing-ci.yml` escalate | `gh pr comment` + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `actionlint-audit.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK | <!-- pragma: allowlist secret -->
+| `validate.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK | <!-- pragma: allowlist secret -->
+| `test-rag.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK | <!-- pragma: allowlist secret -->
+| `ci-rescue.yml` | Python urllib + `GITHUB_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK | <!-- pragma: allowlist secret -->
+| `iterative-self-healing-ci.yml` escalate | `gh pr comment` + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK | <!-- pragma: allowlist secret -->
 | `comment-review-gate.yml` | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` | OK |
 | `copilot-agent-session-done.yml` | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` | OK |
 
@@ -2126,9 +2126,9 @@ STEP 5 — Commit and reply
 | Rule | Reason |
 |------|--------|
 | Rescue comments MUST be posted as `@mbaetiong` | Copilot ignores `@copilot` mentions from `github-actions[bot]` |
-| All `actions/github-script@v8` rescue steps MUST set `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY \|\| secrets.GITHUB_TOKEN }}` | Without explicit override, `github-script` uses the default `GITHUB_TOKEN` (= bot) |
-| All Python/shell rescue steps MUST use `GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` | Same reason — token identity determines comment author |
-| If `CODEX_MASTER_KEY` expires, ALL rescue automation breaks | Admin must rotate the secret; fallback `CODEX_BACKUP_KEY` provides one level of redundancy |
+| All `actions/github-script@v8` rescue steps MUST set `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY \|\| secrets.GITHUB_TOKEN }}` | Without explicit override, `github-script` uses the default `GITHUB_TOKEN` (= bot) | <!-- pragma: allowlist secret -->
+| All Python/shell rescue steps MUST use `GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` | Same reason — token identity determines comment author | <!-- pragma: allowlist secret -->
+| If `CODEX_MASTER_KEY` expires, ALL rescue automation breaks | Admin must rotate the secret; fallback `CODEX_BACKUP_KEY` provides one level of redundancy | <!-- pragma: allowlist secret -->
 
 **Token expiry symptoms:** rescue comments suddenly appear as `github-actions[bot]`, `@copilot` stops auto-triggering from rescue comments.
 
@@ -2163,7 +2163,7 @@ Minimum viable WEC for a feature PR:
 - [x] workflow-execution-gate.yml     ← always required
 - [ ] copilot-agent-session-done.yml  ← leave unchecked unless maintainer explicitly wants follow-up auto-post
 - [ ] copilot-iterative-self-healing.yml ← leave unchecked unless maintainer explicitly wants self-healing loop approval
-- [x] validate.yml               ← cheap: detect-secrets + ruff
+- [x] validate.yml               ← cheap: detect-secrets + ruff  # pragma: allowlist secret
 - [x] mypy-baseline.yml          ← cheap: type-check gate
 - [x] actionlint-audit.yml       ← cheap: workflow compliance
 - [x] test-rag.yml               ← if RAG files changed
@@ -2216,7 +2216,7 @@ grep -rn '\${{' .github/workflows/*.yml | grep -v '^\s*#' | \
 | Never embed `${{ }}` in `run:` body | `run: \| echo "${{ github.sha }}"` | `env:\n  SHA: ${{ github.sha }}\nrun: \| echo "${SHA}"` |
 | Never self-assign in `run:` | `PR="${PR}"` | *(remove the line entirely)* |
 | Step names must not contain `${{ }}` | `name: Fix PR #${{ ... }}` | `name: Fix PR` |
-| `github-token` must be explicit in `github-script@v8` | *(no `github-token:` key)* | `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` |
+| `github-token` must be explicit in `github-script@v8` | *(no `github-token:` key)* | `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -2405,7 +2405,7 @@ Individual opt-in workflows call the gate at startup to check if they should run
 All cancel and dispatch operations use the Cognitive Brain GitHub Connector as the primary token source:
 
 ```
-Token priority: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token
+Token priority: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token  # pragma: allowlist secret
 API: POST /repos/{repo}/actions/runs/{run_id}/cancel       (cancel)
 API: POST /repos/{repo}/actions/workflows/{file}/dispatches (dispatch)
 CB connector: wec_enforcer.py _gh_api() → urllib.request with Authorization header

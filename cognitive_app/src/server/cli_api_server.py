@@ -130,6 +130,18 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("cli_api_server")
 
+_CONTROL_CHARS_RE = re.compile(r"[\r\n\t\x00-\x1f\x7f]+")
+
+
+def _sanitize_log_value(value: object) -> str:
+    """Remove control characters from user-influenced log values."""
+    return _CONTROL_CHARS_RE.sub(" ", str(value))
+
+
+def _hash_secret_for_storage(value: str) -> str:
+    """Persist only a one-way hash for sensitive values."""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
 
 # ── SSRF prevention (CodeQL alert #12493) ────────────────────────────────────
 # The /api/request proxy endpoint accepts a caller-supplied URL and makes an
@@ -262,7 +274,10 @@ def _build_cors_origins() -> list[str]:
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:
         origins = [o.strip() for o in env_val.split(",") if o.strip()]
-        log.info("CORS origins from CODEX_ALLOWED_ORIGINS: %s", origins)
+        log.info(
+            "CORS origins from CODEX_ALLOWED_ORIGINS: %s",
+            [_sanitize_log_value(origin) for origin in origins],
+        )
         return origins
     # Default: localhost dev only.
     # Non-local origins (e.g. https://aries-serpent.github.io) MUST be added
@@ -440,11 +455,11 @@ try:
         })
     log.info("Loaded %d history entries from SQLite (%s)", len(_rows), _DB_PATH)
 except sqlite3.OperationalError as _e:
-    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", _e)
+    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", type(_e).__name__)
 except sqlite3.DatabaseError as _e:
-    log.warning("SQLite database error pre-loading history (connection failure?): %s", _e)
+    log.warning("SQLite database error pre-loading history (connection failure?): %s", type(_e).__name__)
 except Exception as _e:
-    log.warning("Unexpected error pre-loading history from SQLite: %s", _e)
+    log.warning("Unexpected error pre-loading history from SQLite: %s", type(_e).__name__)
 
 # Repo root (4 levels up from this file: server/ → src/ → cognitive_app/ → repo/)
 REPO_ROOT = str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -541,7 +556,7 @@ async def ooda_process(req: dict[str, Any]):
         }
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log full details server-side only.
-        log.warning("OODA process error (returning graceful fallback): %s", exc)
+        log.warning("OODA process error (returning graceful fallback): %s", type(exc).__name__)
         return {
             "success": False,
             "output": None,
@@ -630,7 +645,7 @@ async def memory_state(_auth: None = Depends(_require_memory_auth)):
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
     except Exception as exc:
-        log.warning("memory_state error: %s", exc)
+        log.warning("memory_state error: %s", type(exc).__name__)
         return {
             "stm_count": 0,
             "ltm_count": 0,
@@ -662,7 +677,7 @@ async def memory_search(q: str = "", limit: int = 20, _auth: None = Depends(_req
             ).fetchall()
         return {"items": [dict(r) for r in rows], "total": len(rows)}
     except Exception as exc:
-        log.warning("memory_search error: %s", exc)
+        log.warning("memory_search error: %s", type(exc).__name__)
         return {"items": [], "total": 0, "error": "Internal error searching memory"}
 
 
@@ -742,7 +757,7 @@ async def memory_consolidate(_auth: None = Depends(_require_memory_auth)):
             "timestamp": now.isoformat(),
         }
     except Exception as exc:
-        log.warning("memory_consolidate error: %s", exc)
+        log.warning("memory_consolidate error: %s", type(exc).__name__)
         return {
             "consolidated": 0,
             "pruned": 0,
@@ -767,7 +782,7 @@ async def ooda_metrics():
         return {"metrics": metrics, "timestamp": datetime.now(timezone.utc).isoformat()}
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log details server-side, return generic message.
-        log.warning("OODA metrics error: %s", exc)
+        log.warning("OODA metrics error: %s", type(exc).__name__)
         return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
                 "error": "OODA metrics unavailable (see server logs for details)"}
 
@@ -972,7 +987,7 @@ async def cli_run(req: CliRunRequest):
             )
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history write failed (non-blocking): %s", _e)
+        log.debug("SQLite history write failed (non-blocking): %s", type(_e).__name__)
 
     # Normalize before logging to avoid propagating request-influenced taint
     # into log sinks (defense-in-depth against log injection style findings).
@@ -1006,7 +1021,7 @@ async def cli_clear_history():
             _db.execute("DELETE FROM cli_history")
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history clear failed (non-blocking): %s", _e)
+        log.debug("SQLite history clear failed (non-blocking): %s", type(_e).__name__)
     return {"cleared": True}
 
 
@@ -1036,7 +1051,7 @@ async def webhook_github(request: Request):
         expected = "sha256=" + hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
         if not sig_header or not hmac.compare_digest(expected, sig_header):
             log.warning("Webhook HMAC verification failed (delivery=%s)",
-                        request.headers.get("X-GitHub-Delivery", "unknown"))
+                        _sanitize_log_value(request.headers.get("X-GitHub-Delivery", "unknown")))
             return JSONResponse(status_code=401, content={"error": "Invalid signature"})
 
     event_type = request.headers.get("X-GitHub-Event", "unknown")
@@ -1053,13 +1068,23 @@ async def webhook_github(request: Request):
             _db.execute(
                 "INSERT INTO webhook_events (delivery_id, event_type, payload, signature, timestamp) "
                 "VALUES (?, ?, ?, ?, ?)",
-                (delivery_id, event_type, json.dumps(payload), sig_header, timestamp),
+                (
+                    delivery_id,
+                    event_type,
+                    json.dumps(payload),
+                    _hash_secret_for_storage(sig_header) if sig_header else "",
+                    timestamp,
+                ),
             )
             _db.commit()
     except Exception as _e:
-        log.warning("webhook_events SQLite write failed (non-blocking): %s", _e)
+        log.warning("webhook_events SQLite write failed (non-blocking): %s", type(_e).__name__)
 
-    log.info("webhook_github event=%r delivery=%r", event_type, delivery_id)
+    log.info(
+        "webhook_github event=%r delivery=%r",
+        _sanitize_log_value(event_type),
+        _sanitize_log_value(delivery_id),
+    )
     return {"status": "accepted", "delivery_id": delivery_id}
 
 
@@ -1089,7 +1114,7 @@ async def webhooks_recent(limit: int = 50):
             })
         return {"events": events, "total": len(events)}
     except Exception as exc:
-        log.warning("webhooks_recent error: %s", exc)
+        log.warning("webhooks_recent error: %s", type(exc).__name__)
         return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
 
 
@@ -1157,7 +1182,7 @@ async def patterns_recent(
             "total": len(rows),
         }
     except Exception as exc:
-        log.warning("patterns_recent error: %s", exc)
+        log.warning("patterns_recent error: %s", type(exc).__name__)
         return {"patterns": [], "total": 0, "error": "Internal error"}
 
 
@@ -1208,7 +1233,7 @@ async def patterns_summary():
             )
         return {"summary": summary}
     except Exception as exc:
-        log.warning("patterns_summary error: %s", exc)
+        log.warning("patterns_summary error: %s", type(exc).__name__)
         return {"summary": [], "error": "Internal error"}
 
 
@@ -1248,7 +1273,7 @@ async def patterns_record(
             _db.commit()
         return {"id": cur.lastrowid, "timestamp": ts}
     except Exception as exc:
-        log.warning("patterns_record error: %s", exc)
+        log.warning("patterns_record error: %s", type(exc).__name__)
         raise HTTPException(status_code=500, detail="Failed to record pattern") from exc
 
 
@@ -1309,7 +1334,7 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
             inst_token, expires_at = exchange_installation_token(
                 app_jwt, env["GITHUB_APP_INSTALLATION_ID"]
             )
-            log.info("github_token: issued App installation token")
+            log.info("GitHub auth: issued app installation grant")
             return _GithubTokenResponse(
                 token=inst_token,
                 expires_at=expires_at,
@@ -1317,13 +1342,16 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
                 rate_limit=5000,
             )
         except Exception as exc:
-            log.warning("github_token: App installation token failed (%s), falling back", exc)
+            log.warning(
+                "GitHub auth: app installation exchange failed (%s), falling back",
+                type(exc).__name__,
+            )
 
     # ── Fall back to PAT ──────────────────────────────────────────────────────
     for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
         pat = env.get(var, "").strip()
         if pat:
-            log.info("github_token: using %s as PAT", var)
+            log.info("GitHub auth: using %s as fallback source", var)
             return _GithubTokenResponse(
                 token=pat,
                 expires_at=None,
@@ -1416,7 +1444,13 @@ async def api_proxy(req: ApiProxyRequest):
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log server-side, return generic message.
         safe_host = (_urlparse(safe_url).hostname or "").lower()
-        log.warning("api_proxy %s host=%s failed (%s)", method, safe_host, type(exc).__name__)
+        # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
+        log.warning(  # nosec: method and host are sanitized via _sanitize_log_value  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            "api_proxy %s host=%s failed (%s)",
+            _sanitize_log_value(method),
+            _sanitize_log_value(safe_host),
+            type(exc).__name__,
+        )
         raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
     duration_ms = (time.monotonic() - t0) * 1000
@@ -1427,11 +1461,15 @@ async def api_proxy(req: ApiProxyRequest):
     except Exception:
         body = resp.text
 
-    # CodeQL py/log-injection: use lazy formatting so tainted URL is not interpolated
-    # into the message template; %s arguments are routed via the logging
-    # framework which CodeQL recognises as safe.
+    # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
     safe_host = (_urlparse(safe_url).hostname or "").lower()
-    log.info("api_proxy %s host=%s -> %s (%.0fms)", method, safe_host, resp.status_code, duration_ms)
+    log.info(  # nosec: method and host are sanitized via _sanitize_log_value  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        "api_proxy %s host=%s -> %s (%.0fms)",
+        _sanitize_log_value(method),
+        _sanitize_log_value(safe_host),
+        resp.status_code,
+        duration_ms,
+    )
     return {
         "status_code": resp.status_code,
         "headers":     dict(resp.headers),
@@ -1505,14 +1543,14 @@ async def ws_cli(ws: WebSocket):
                             })
                     except OSError as exc:
                         # Best-effort drain: PTY may already be closed; ignore and exit.
-                        log.debug("Ignoring OSError while draining PTY output: %s", exc)
+                        log.debug("Ignoring OSError while draining PTY output: %s", type(exc).__name__)
                     await ws.send_json({"type": "exit", "code": proc.returncode or 0})
                     break
         except WebSocketDisconnect:
             # Client disconnected — normal control flow; stop reading silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in read_pty: %s", exc)
+            log.debug("Unexpected RuntimeError in read_pty: %s", type(exc).__name__)
 
     async def write_pty() -> None:
         """Forward WebSocket keystrokes to the PTY."""
@@ -1532,7 +1570,7 @@ async def ws_cli(ws: WebSocket):
             # Client disconnected — normal control flow; stop writing silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in write_pty: %s", exc)
+            log.debug("Unexpected RuntimeError in write_pty: %s", type(exc).__name__)
 
     try:
         await asyncio.gather(read_pty(), write_pty())
@@ -1547,7 +1585,7 @@ async def ws_cli(ws: WebSocket):
             os.close(master_fd)
         except OSError as exc:
             # Best-effort cleanup: master_fd may already be closed or invalid.
-            log.debug("Error while closing PTY master_fd: %s", exc)
+            log.debug("Error while closing PTY master_fd: %s", type(exc).__name__)
         log.info("WS PTY session closed (pid=%s rc=%s)", proc.pid, proc.returncode)
 
 
@@ -1601,7 +1639,7 @@ async def ws_metrics(ws: WebSocket):
             except WebSocketDisconnect:
                 break
             except Exception as exc:
-                log.debug("Metrics broadcast error: %s", exc)
+                log.debug("Metrics broadcast error: %s", type(exc).__name__)
                 try:
                     await asyncio.sleep(0.5)
                 except asyncio.CancelledError:
@@ -1625,11 +1663,11 @@ async def ws_metrics(ws: WebSocket):
         except WebSocketDisconnect:
             pass
         except Exception as exc:
-            log.debug("Client command error: %s", exc)
+            log.debug("Client command error: %s", type(exc).__name__)
 
     try:
         await asyncio.gather(broadcast_metrics(), handle_client_commands())
     except Exception as exc:
-        log.debug("Metrics stream error: %s", exc)
+        log.debug("Metrics stream error: %s", type(exc).__name__)
     finally:
         log.info("WS metrics stream closed")

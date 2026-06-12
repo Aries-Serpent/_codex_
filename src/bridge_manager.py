@@ -76,6 +76,15 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _set_owner_only_permissions(path: Path, mode: int) -> None:
+    """Apply a narrow owner-only mode for bridge artifacts."""
+    if mode not in {0o600, 0o700}:
+        raise ValueError(f"Unsupported secure bridge mode: {oct(mode)}")
+    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- helper only permits 0o600/0o700  # noqa: E501
+        path, mode
+    )
+
+
 class BridgeMode(Enum):
     """Bridge communication mode."""
 
@@ -356,7 +365,7 @@ class BridgeManager:
         # Create bridge directory with secure permissions
         self.bridge_dir.mkdir(parents=True, exist_ok=True)
         if owner_only:
-            os.chmod(self.bridge_dir, 0o700)  # Owner only: rwx------
+            _set_owner_only_permissions(self.bridge_dir, 0o700)  # Owner only: rwx------
 
         # Set up paths
         self.lock_path = self.bridge_dir / "bridge.lock"
@@ -372,7 +381,7 @@ class BridgeManager:
         if not self.audit_file.exists():
             self.audit_file.touch()
             if owner_only:
-                os.chmod(self.audit_file, 0o600)
+                _set_owner_only_permissions(self.audit_file, 0o600)
 
         self._audit_log(
             "BRIDGE_INIT",
@@ -794,7 +803,7 @@ class BridgeManager:
 
             # Set permissions
             if self.owner_only:
-                os.chmod(self.socket_path, 0o600)
+                _set_owner_only_permissions(self.socket_path, 0o600)
 
             # Accept connection
             conn, _ = server.accept()

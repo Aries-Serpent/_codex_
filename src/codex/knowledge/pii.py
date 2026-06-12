@@ -171,13 +171,11 @@ def scrub(
         if not _luhn_check(card_num):
             # Luhn validation failed - pattern matches credit card format but checksum
             # is invalid. This could indicate typos, test data, or false positive matches.
-            # Log for security audit trail without exposing the actual number.
+            # Log for security audit trail without exposing any card digits.
             logger.debug(
-                "Luhn validation failed for credit card pattern. "
-                f"Length: {len(card_num)}, Position: {m.start()}, "
-                "First 2 digits: %s, Last 2 digits: %s",
-                card_num[:2] if len(card_num) >= 2 else "N/A",
-                card_num[-2:] if len(card_num) >= 2 else "N/A",
+                "Luhn validation failed for credit card pattern (length=%d position=%d)",
+                len(card_num),
+                m.start(),
             )
             return m.group(0)  # Not a valid card number
         flags.pii_credit_card = True

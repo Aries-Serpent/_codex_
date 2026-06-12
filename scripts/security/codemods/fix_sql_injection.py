@@ -67,7 +67,7 @@ def fix_fstring_sql(content: str) -> tuple[str, list[str]]:
                 any(pattern in var.lower() for pattern in likely_iterable_patterns)
             )
 
-            if var.isidentifier() and not is_likely_iterable:
+            if var is not None and var.isidentifier() and not is_likely_iterable:
                 params += ','  # Single element tuple needs trailing comma
                 changes.append(f"Parameterized SQL with variable: {var} (added trailing comma for single-element tuple)")
             else:

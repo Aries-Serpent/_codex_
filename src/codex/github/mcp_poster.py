@@ -86,6 +86,16 @@ def _redact_url_for_log(url: str) -> str:
     return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
 
 
+def _validated_github_api_url(url: str) -> str:
+    """Allow only credential-free HTTPS calls to api.github.com."""
+    parts = urlsplit(url)
+    if parts.scheme != "https" or parts.hostname != "api.github.com":
+        raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
+    if parts.username or parts.password:
+        raise ValueError("GitHub API URL must not contain embedded credentials")
+    return url
+
+
 class GitHubMCPPoster:
     """Thin GitHub REST client authenticated with CODEX_MASTER_KEY.
 
@@ -176,14 +186,16 @@ class GitHubMCPPoster:
 
         try:
             req = urllib.request.Request(
-                f"{_GITHUB_API}/user",
+                _validated_github_api_url(f"{_GITHUB_API}/user"),
                 headers={
                     "Authorization": f"Bearer {self._token}",
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": _API_VERSION,
                 },
             )
-            with urllib.request.urlopen(req, timeout=10) as resp:  # nosec B310
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+                req, timeout=10
+            ) as resp:
                 body = json.loads(resp.read().decode())
                 raw_scopes = resp.headers.get("x-oauth-scopes", "")
                 status = resp.status
@@ -1469,7 +1481,7 @@ class GitHubMCPPoster:
             params.append(f"head={head}")
         if base:
             params.append(f"base={base}")
-        url = f"{_GITHUB_API}/repos/{repo}/pulls?{'&'.join(params)}"
+        url = _validated_github_api_url(f"{_GITHUB_API}/repos/{repo}/pulls?{'&'.join(params)}")
         req = urllib.request.Request(
             url,
             headers={
@@ -1479,7 +1491,9 @@ class GitHubMCPPoster:
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+                req, timeout=30
+            ) as resp:
                 return json.loads(resp.read())
         except urllib.error.HTTPError as exc:
             logger.error(
@@ -1919,8 +1933,7 @@ class GitHubMCPPoster:
         (:meth:`_get_ref_sha`, :meth:`_get_commit_tree_sha`) where a single
         attempt is sufficient.
         """
-        if not url.startswith("https://"):
-            raise ValueError(f"URL scheme must be https: {url}")
+        url = _validated_github_api_url(url)
         req = urllib.request.Request(
             url,
             headers={
@@ -1930,7 +1943,9 @@ class GitHubMCPPoster:
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+                req, timeout=30
+            ) as resp:
                 return json.loads(resp.read())
         except urllib.error.HTTPError as exc:
             logger.error(
@@ -1967,8 +1982,7 @@ class GitHubMCPPoster:
             Maximum number of retry attempts after the first failure
             (default 3, giving up to 4 total attempts).
         """
-        if not url.startswith("https://"):
-            raise ValueError(f"URL scheme must be https: {url}")
+        url = _validated_github_api_url(url)
         data = json.dumps(payload).encode()
         last_exc: urllib.error.HTTPError | None = None
         for attempt in range(max_retries + 1):
@@ -1984,7 +1998,9 @@ class GitHubMCPPoster:
                 },
             )
             try:
-                with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+                    req, timeout=30
+                ) as resp:
                     body = resp.read()
                     return json.loads(body) if body else {}
             except urllib.error.HTTPError as exc:

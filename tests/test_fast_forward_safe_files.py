@@ -131,7 +131,7 @@ class TestBuildPlanDryRun:
 
         assert plan.pr_number == 42
         assert plan.pr_branch == "my-feature-branch"
-        assert plan.source_sha == "abc123def456"
+        assert plan.source_sha == "abc123def456"  # pragma: allowlist secret
         assert plan.target_branch == "main"
         # Workflow is allowed, model is excluded, deploy is denied
         assert ".github/workflows/proactive-ci-monitor.yml" in plan.allowed

@@ -1069,12 +1069,10 @@ def run_hf_trainer(
         **tokenizer_kwargs,
     )
     if tokenizer.pad_token is None:
-        # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure  # noqa: E501
-        # Note: "pad_token" and "eos_token" are tokenizer configuration, not credentials
         logger.warning(
             "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
             "This may affect training behaviour.",
-            source,
+            type(tokenizer).__name__,
         )
         tokenizer.pad_token = tokenizer.eos_token
 

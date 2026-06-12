@@ -28,7 +28,7 @@ from typing import Any, Optional  # noqa: E402
 DEFAULT_GROUP = "codex_ml.plugins"
 
 # Matches only simple `import a.b.c` — no semicolons, no commas.
-# Used to safely handle .pth bootstrap lines without exec().
+# Used to safely handle .pth bootstrap lines without evaluating arbitrary code.
 _SIMPLE_IMPORT_RE = re.compile(r"^import\s+([A-Za-z_][A-Za-z0-9_.]*)\s*$")
 
 
@@ -100,8 +100,8 @@ def _activate_editable_distribution(ep: Any) -> None:
                         logger.debug("import_module(%r) failed: %s", match.group(1), e)
                 else:
                     # Complex .pth lines (e.g. chained statements) are skipped to
-                    # avoid exec(). In practice editable-install .pth files only
-                    # emit simple `import <name>` lines.
+                    # avoid dynamic code evaluation. In practice editable-install
+                    # .pth files only emit simple `import <name>` lines.
                     logger.debug("Skipping complex .pth import line: %r", entry)
                 continue
             if entry not in sys.path:

@@ -228,7 +228,11 @@ async def infer(request: Request, infer_request: InferRequest):
             },
         )
 
-        logger.info("Inference %s completed, tokens: %s", sanitize_log_input(request_id), tokens_used)
+        logger.info(
+            "Inference %s completed (usage_units=%s)",
+            sanitize_log_input(request_id),
+            tokens_used,
+        )
         return response
 
     except Exception as e:

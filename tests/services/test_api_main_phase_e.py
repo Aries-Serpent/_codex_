@@ -293,9 +293,9 @@ class TestMaskSecrets:
         assert "[SECRET]" in result
 
     def test_disable_filter_env_passes_through(self, monkeypatch):
-        monkeypatch.setenv("DISABLE_SECRET_FILTER", "1")
+        monkeypatch.setenv("DISABLE_SECRET_FILTER", "1")  # pragma: allowlist secret
         mod = _reload_api(monkeypatch)
-        text = "sk-abcdefghij1234567890"
+        text = "sk-abcdefghij1234567890"  # pragma: allowlist secret
         assert mod._mask_secrets(text) == text
 
 

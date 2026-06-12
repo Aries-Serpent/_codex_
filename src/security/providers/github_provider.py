@@ -100,6 +100,11 @@ def _redact_identifier(identifier: str) -> str:
     return f"{identifier[:4]}...{identifier[-4:]}"
 
 
+def _safe_error(exc: Exception) -> str:
+    """Return a non-sensitive exception summary for logs/results."""
+    return type(exc).__name__
+
+
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
 
@@ -130,7 +135,7 @@ class GitHubTokenProvider(TokenProvider):
         self.token = config.get("token", os.getenv("GITHUB_TOKEN"))
 
         if not self.token:
-            logger.warning("GitHub token not configured")
+            logger.warning("GitHub authentication not configured")
 
     @property
     def provider_type(self) -> ProviderType:
@@ -182,7 +187,7 @@ class GitHubTokenProvider(TokenProvider):
                 try:
                     self.revoke_secret(secret_id)
                 except Exception as e:
-                    logger.warning(f"Failed to revoke old token: {e}")
+                    logger.warning("Failed to revoke prior grant: %s", _safe_error(e))
 
             return RotationResult(
                 success=True,
@@ -196,8 +201,12 @@ class GitHubTokenProvider(TokenProvider):
             )
 
         except Exception as e:
-            logger.error(f"GitHub token rotation failed: {e}")
-            return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
+            logger.error("GitHub auth rotation failed: %s", _safe_error(e))
+            return RotationResult(
+                success=False,
+                old_secret_id=secret_id,
+                error_message=f"GitHub token rotation failed: {str(e)}",
+            )
 
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate GitHub token.
@@ -219,21 +228,21 @@ class GitHubTokenProvider(TokenProvider):
             if not token:
                 raise ValidationError("No token provided for validation")
 
-            logger.info("Validating GitHub token")
+            logger.info("Validating GitHub authentication")
 
             # Check local expiration first (avoids unnecessary API call)
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning("GitHub token has expired (local expiry check)")
+                    logger.warning("GitHub authentication has expired (local expiry check)")
                     return False
             except Exception as e:
-                logger.debug(f"Could not check expiration: {e}")
+                logger.debug("Could not check expiration: %s", _safe_error(e))
 
             # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
             # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
             if not _GITHUB_TOKEN_RE.match(token):
-                logger.warning("GitHub token does not match expected format")
+                logger.warning("GitHub authentication does not match expected format")
                 return False
 
             # Live validation: call GET /user to confirm the token is accepted
@@ -241,7 +250,7 @@ class GitHubTokenProvider(TokenProvider):
             # offline / air-gapped deployments are not broken.
             if not HAS_REQUESTS:
                 # requests not available — fall back to format-only validation
-                logger.warning("requests library unavailable; using format-only token validation")
+                logger.warning("requests library unavailable; using format-only auth validation")
                 return True
             try:
                 resp = _requests.get(
@@ -254,13 +263,13 @@ class GitHubTokenProvider(TokenProvider):
                     timeout=10,
                 )
                 if resp.status_code == 401:
-                    logger.warning("GitHub token rejected by API (401 Unauthorized)")
+                    logger.warning("GitHub authentication rejected by API (401 Unauthorized)")
                     return False
                 if resp.status_code == 403:
-                    logger.warning("GitHub token forbidden by API (403 Forbidden)")
+                    logger.warning("GitHub authentication forbidden by API (403 Forbidden)")
                     return False
                 if resp.status_code == 200:
-                    logger.info("GitHub token validated successfully via API")
+                    logger.info("GitHub authentication validated successfully via API")
                     return True
                 # Unexpected status — treat as valid but log
                 logger.warning(
@@ -272,12 +281,14 @@ class GitHubTokenProvider(TokenProvider):
                 # Network unreachable, DNS failure, timeout — degrade gracefully
                 logger.warning(
                     "GitHub API unreachable (%s); using format-only token validation",
-                    network_err,
+                    _safe_error(network_err),
                 )
                 return True
 
+        except ValidationError:
+            raise
         except Exception as e:
-            raise ValidationError(f"Token validation failed: {e}") from e
+            raise ValidationError(f"Token validation failed: {_safe_error(e)}") from e
 
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get GitHub token metadata.
@@ -316,7 +327,7 @@ class GitHubTokenProvider(TokenProvider):
             metadata = self.get_secret_metadata(secret_id)
             return metadata.expires_at
         except Exception as e:
-            logger.error(f"Failed to get token expiration: {e}")
+            logger.error("Failed to get auth expiry: %s", _safe_error(e))
             return None
 
     def get_scopes(self, secret_id: str) -> list[str]:
@@ -332,7 +343,7 @@ class GitHubTokenProvider(TokenProvider):
             metadata = self.get_secret_metadata(secret_id)
             return metadata.scopes or []
         except Exception as e:
-            logger.error(f"Failed to get token scopes: {e}")
+            logger.error("Failed to get access scopes: %s", _safe_error(e))
             return []
 
     def create_token(
@@ -426,14 +437,14 @@ class GitHubTokenProvider(TokenProvider):
                 data = resp.json()
                 new_token = data.get("token", "")
                 if not new_token:
-                    logger.error("GitHub API returned 201 but response contains no token value.")
+                    logger.error("GitHub API returned 201 but response contains no access value.")
                     return RotationResult(
                         success=False,
                         old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                         error_message="GitHub API returned 201 but no token in response body.",
                     )
                 token_id = str(data.get("id", name))
-                logger.info("GitHub installation access token created successfully.")
+                logger.info("GitHub installation grant created successfully.")
                 return RotationResult(
                     success=True,
                     old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
@@ -455,11 +466,11 @@ class GitHubTokenProvider(TokenProvider):
                 error_message=f"GitHub API returned {resp.status_code} when creating installation token.",  # noqa: E501
             )
         except Exception as e:
-            logger.error("Failed to create GitHub installation token: %s", e)
+            logger.error("Failed to create GitHub installation grant: %s", _safe_error(e))
             return RotationResult(
                 success=False,
                 old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
-                error_message=f"Token creation request failed: {e}",
+                error_message=f"Token creation request failed: {_safe_error(e)}",
             )
 
     def update_token_scopes(self, secret_id: str, scopes: list[str]) -> bool:
@@ -487,7 +498,7 @@ class GitHubTokenProvider(TokenProvider):
         """
         try:
             logger.info(
-                "Updating GitHub token scopes (secret_id: %s, scope_count: %d)",
+                "Updating GitHub access scopes (grant_id: %s, scope_count: %d)",
                 _redact_identifier(secret_id) if secret_id else "<none>",
                 len(scopes) if scopes else 0,
             )
@@ -521,7 +532,7 @@ class GitHubTokenProvider(TokenProvider):
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):
-                logger.info("GitHub token scopes updated successfully.")
+                logger.info("GitHub access scopes updated successfully.")
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",
@@ -530,7 +541,7 @@ class GitHubTokenProvider(TokenProvider):
             return False
 
         except Exception as e:
-            logger.error("Failed to update token scopes: %s", e)
+            logger.error("Failed to update access scopes: %s", _safe_error(e))
             return False
 
     def revoke_secret(self, secret_id: str) -> bool:
@@ -548,10 +559,10 @@ class GitHubTokenProvider(TokenProvider):
         """
         token = self.config.get("token") or os.environ.get("GITHUB_TOKEN", "")
         if not token:
-            logger.warning("revoke_secret(): no token configured; cannot revoke.")
+            logger.warning("GitHub revoke API unavailable without configured auth material.")
             return False
         if not HAS_REQUESTS:
-            logger.warning("revoke_secret(): requests library unavailable; cannot revoke.")
+            logger.warning("GitHub revoke API unavailable: requests library missing.")
             return False
         try:
             # Fine-grained PATs and installation tokens can be revoked via DELETE /installation/token  # noqa: E501
@@ -568,7 +579,7 @@ class GitHubTokenProvider(TokenProvider):
                     timeout=10,
                 )
                 if resp.status_code in (204, 200):
-                    logger.info("revoke_secret(): installation token revoked successfully.")
+                    logger.info("GitHub revoke API: installation grant revoked successfully.")
                     return True
                 logger.warning(
                     "revoke_secret(): GitHub API returned %d; token may not be revoked.",
@@ -584,7 +595,7 @@ class GitHubTokenProvider(TokenProvider):
             )
             return False
         except Exception as exc:
-            logger.error("revoke_secret() failed: %s", exc)
+            logger.error("GitHub revoke API failed: %s", _safe_error(exc))
             return False
 
     def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
@@ -601,10 +612,12 @@ class GitHubTokenProvider(TokenProvider):
         """
         token = self.config.get("token") or os.environ.get("GITHUB_TOKEN", "")
         if not token:
-            logger.warning("list_secrets(): no token configured; returning empty list.")
+            logger.warning(
+                "GitHub listing API has no auth material configured; returning empty list."
+            )
             return []
         if not HAS_REQUESTS:
-            logger.warning("list_secrets(): requests library unavailable.")
+            logger.warning("GitHub listing API unavailable: requests library missing.")
             return []
         try:
             resp = _requests.get(
@@ -632,8 +645,8 @@ class GitHubTokenProvider(TokenProvider):
                     scopes=None,  # scope info not available from /user
                 )
                 return [meta]
-            logger.warning("list_secrets(): GitHub API returned %d.", resp.status_code)
+            logger.warning("GitHub listing API returned %d.", resp.status_code)
             return []
         except Exception as exc:
-            logger.error("list_secrets() failed: %s", exc)
+            logger.error("GitHub listing API failed: %s", _safe_error(exc))
             return []

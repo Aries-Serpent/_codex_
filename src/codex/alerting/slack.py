@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any
 
@@ -38,6 +39,8 @@ _COLOUR_MAP: dict[AlertSeverity, str] = {
 
 _ENV_WEBHOOK = "CODEX_SLACK_WEBHOOK_URL"
 _TIMEOUT = 10  # seconds
+_ALLOWED_WEBHOOK_HOSTS = {"hooks.slack.com", "hooks.slack-gov.com"}
+_ALLOWED_WEBHOOK_PATH_PREFIXES = ("/services/",)
 
 # Retry configuration for webhook POSTs: up to 3 extra attempts with
 # exponential backoff (1 s → 2 s → 4 s), capped at 30 s, retrying only
@@ -49,6 +52,39 @@ _retry_send = retry_with_backoff(
     jitter=0.25,
     exceptions=(urllib.error.URLError,),
 )
+
+
+def _validated_webhook_url(raw_url: str) -> str:
+    """Return a Slack webhook URL only when it matches the approved HTTPS hosts."""
+    parsed = urllib.parse.urlparse(raw_url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError("SlackChannel: webhook URL must use https and include a host")
+    if parsed.username or parsed.password:
+        raise ValueError("SlackChannel: webhook URL must not embed credentials")
+    hostname = (parsed.hostname or "").lower()
+    if hostname not in _ALLOWED_WEBHOOK_HOSTS:
+        raise ValueError(
+            f"SlackChannel: webhook URL host must be one of {sorted(_ALLOWED_WEBHOOK_HOSTS)!r}"
+        )
+    if parsed.params or parsed.query or parsed.fragment:
+        raise ValueError(
+            "SlackChannel: webhook URL must not include params, query strings, or fragments"
+        )
+    if not parsed.path.startswith(_ALLOWED_WEBHOOK_PATH_PREFIXES):
+        raise ValueError(
+            "SlackChannel: webhook URL path must start with one of "
+            f"{_ALLOWED_WEBHOOK_PATH_PREFIXES!r}"
+        )
+    return urllib.parse.urlunparse(
+        (
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            "",
+            "",
+            "",
+        )
+    )
 
 
 class SlackChannel(AlertChannel):
@@ -85,24 +121,26 @@ class SlackChannel(AlertChannel):
             )
             return False
 
-        payload = self._build_payload(event)
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(
-            self._webhook_url,
-            data=data,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-
-        def _do_post() -> bool:
-            with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
-                status = resp.getcode()
-                if status != 200:
-                    logger.warning("SlackChannel: unexpected HTTP %s from webhook", status)
-                    return False
-            return True
-
         try:
+            payload = self._build_payload(event)
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                _validated_webhook_url(self._webhook_url),
+                data=data,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+
+            def _do_post() -> bool:
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- webhook URL is allowlisted by _validated_webhook_url()
+                    req, timeout=_TIMEOUT
+                ) as resp:
+                    status = resp.getcode()
+                    if status != 200:
+                        logger.warning("SlackChannel: unexpected HTTP %s from webhook", status)
+                        return False
+                return True
+
             return _retry_send(_do_post)()
         except RetryExhausted as exc:
             logger.warning("SlackChannel: all retry attempts exhausted — %s", exc.__cause__)

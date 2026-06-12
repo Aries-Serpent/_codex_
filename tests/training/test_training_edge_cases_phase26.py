@@ -2,6 +2,20 @@
 Phase 26: Training Pipeline Edge Case Tests - Batch 3
 Target: 25+ edge case tests for training components
 Coverage Target: src/training/engine_hf_trainer.py, src/codex_ml/training/unified_training.py
+
+SECURITY TESTING NOTES:
+-----------------------
+This module tests edge cases in the training pipeline, including checkpoint corruption
+scenarios. Pickle usage in this file is limited to:
+
+1. Import for UnpicklingError exception type (PyTorch ≥2.6)
+2. Test fixtures where we create corrupted pickles to validate error handling
+
+All pickle operations are on test data WE create, making them trusted sources.
+Production code should use:
+- torch.save/load with weights_only=True for PyTorch checkpoints
+- safe_pickle_load with RestrictedUnpickler for legacy compatibility
+- safetensors for new ML models
 """
 
 import pytest
@@ -9,7 +23,8 @@ import pytest
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 
-import pickle  # for PyTorch ≥2.6 UnpicklingError
+# Import pickle ONLY for exception type - no load/dump operations on untrusted data
+import pickle  # for PyTorch ≥2.6 UnpicklingError exception type only
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
@@ -18,6 +33,7 @@ from unittest.mock import patch
 import numpy as np
 
 import torch
+from codex_ml.utils.safe_pickle import safe_pickle_load
 
 
 class TestTrainingEdgeCases:
@@ -76,7 +92,12 @@ class TestTrainingEdgeCases:
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_training_checkpoint_corruption_placeholder(self):
-        """Test training with corrupted checkpoint"""
+        """Test training with corrupted checkpoint.
+        
+        SECURITY NOTE: This test validates error handling when loading corrupted
+        checkpoints. We use torch.load with weights_only=True for safe loading.
+        The corrupted data is a test fixture we create, not external untrusted data.
+        """
         import tempfile
         with tempfile.NamedTemporaryFile(suffix='.pt', delete=False) as f:
             f.write(b"corrupted data")
@@ -84,8 +105,9 @@ class TestTrainingEdgeCases:
 
         try:
             # Should handle corrupted checkpoint
+            # nosec B614 - weights_only=True ensures safe loading even of corrupted data
             with pytest.raises((RuntimeError, ValueError, pickle.UnpicklingError)):
-                torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
+                torch.load(checkpoint_path, weights_only=True)
         finally:
             import os
             os.unlink(checkpoint_path)
@@ -376,7 +398,13 @@ class TestTrainingEdgeCases:
         assert len(remaining) == 5
 
     def test_training_checkpoint_corruption(self):
-        """Test training validates and recovers from corrupted checkpoints"""
+        """Test training validates and recovers from corrupted checkpoints.
+        
+        SECURITY NOTE: This test creates a corrupted checkpoint to validate
+        error handling. PyTorch's weights_only=True provides safe loading even
+        for corrupted data. We catch UnpicklingError which PyTorch ≥2.6 raises
+        for invalid pickle data when using weights_only=True.
+        """
         import os
         import tempfile
 
@@ -389,8 +417,9 @@ class TestTrainingEdgeCases:
             # Attempt to load — PyTorch ≥2.6 raises pickle.UnpicklingError for
             # corrupted data when weights_only=True; older versions raise RuntimeError,
             # ValueError, or EOFError.
+            # nosec B614 - weights_only=True ensures safe loading
             with pytest.raises((RuntimeError, ValueError, EOFError, pickle.UnpicklingError)):
-                torch.load(corrupted_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
+                torch.load(corrupted_path, weights_only=True)
 
             # Fallback to previous checkpoint
             fallback_checkpoint = {
@@ -495,7 +524,12 @@ class TestDataLoadingEdgeCases:
     """Edge cases for data loading in training"""
 
     def test_data_loader_corrupted_file(self):
-        """Test data loader with corrupted file"""
+        """Test data loader with corrupted file.
+        
+        SECURITY NOTE: This test validates error handling for corrupted pickle files.
+        We create a corrupted file as a test fixture to ensure proper exception handling.
+        Production code should NOT use raw pickle.load - use safe_pickle_load instead.
+        """
         import tempfile
         with tempfile.NamedTemporaryFile(mode='wb', suffix='.pkl', delete=False) as f:
             f.write(b"not a valid pickle")
@@ -503,8 +537,7 @@ class TestDataLoadingEdgeCases:
 
         try:
             with pytest.raises((pickle.UnpicklingError, EOFError)):
-                with open(corrupted_file, 'rb') as f:
-                    pickle.load(f)  # nosec B301 - Test code validating error handling of corrupted pickle files
+                safe_pickle_load(corrupted_file, use_restricted_unpickler=True)
         finally:
             import os
             os.unlink(corrupted_file)

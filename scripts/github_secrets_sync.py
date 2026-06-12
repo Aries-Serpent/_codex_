@@ -33,6 +33,7 @@ Last Updated: 2026-01-16
 import argparse
 import hashlib
 import json
+import logging
 import os
 import secrets
 import sys
@@ -44,6 +45,20 @@ try:
 except ImportError:
     print("Error: Install dependencies: pip install PyGithub")
     sys.exit(1)
+
+
+logger = logging.getLogger(__name__)
+
+
+def _secret_ref(secret_name: str) -> str:
+    """Return a non-reversible reference for a secret name."""
+    digest = hashlib.sha256(secret_name.encode("utf-8")).hexdigest()[:12]
+    return f"secret:{digest}"
+
+
+def _safe_error(exc: Exception) -> str:
+    """Return a non-sensitive error summary."""
+    return type(exc).__name__
 
 
 class GitHubSecretsManager:
@@ -104,19 +119,21 @@ class GitHubSecretsManager:
         results = {'rotated': [], 'failed': []}
 
         for name in secret_names:
+            secret_ref = _secret_ref(name)
             try:
                 new_value = secrets.token_urlsafe(64)
 
                 if self.repo:
                     self.repo.create_secret(name, new_value)
                     print("✓ Rotated secret")
-                    results['rotated'].append({'name': name, 'status': 'success'})
+                    results['rotated'].append({'secret_ref': secret_ref, 'status': 'success'})
                 else:
-                    print(f"⚠ Skipped {name} (no repo connection)")
-                    results['failed'].append({'name': name, 'reason': 'no_repo'})
+                    print("⚠ Skipped secret rotation (no repo connection)")
+                    results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                print(f"✗ Failed to rotate {name}: {e}")
-                results['failed'].append({'name': name, 'reason': str(e)})
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+                print(f"✗ Failed to rotate secret ({secret_ref})")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+                results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
         # Save results
         results_file = Path('rotation_results.json')
@@ -140,17 +157,18 @@ class GitHubSecretsManager:
 
         for name in required_secrets:
             value = os.getenv(name)
+            secret_ref = _secret_ref(name)
             if not value:
                 print("✗ Missing required secret")
-                validations.append({'test': name, 'passed': False})
+                validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             elif len(value) < 32:
                 print("✗ A required secret is too short")
-                validations.append({'test': name, 'passed': False})
+                validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             else:
                 print("✓ Secret passed validation")
-                validations.append({'test': name, 'passed': True})
+                validations.append({'secret_ref': secret_ref, 'passed': True})
 
         # Save validation results
         with open('rotation_results.json', 'r+') as f:
@@ -206,7 +224,7 @@ def main():
             parser.print_help()
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        print(f"Error: {_safe_error(e)}", file=sys.stderr)
         sys.exit(1)
 
 

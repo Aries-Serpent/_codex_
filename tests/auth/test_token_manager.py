@@ -157,7 +157,7 @@ class TestTokenManager:
 
     def test_initialization_with_secret(self):
         """Test token manager initialization with provided secret."""
-        secret = "test_secret_key_123"
+        secret = "test_secret_key_123"  # pragma: allowlist secret
         manager = TokenManager(secret_key=secret)
 
         assert manager._secret_key == secret

@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 # ---------------------------------------------------------------------------
 # Standalone SSE transport helper (single source of truth: scripts/ci/).
@@ -63,6 +64,17 @@ except ImportError:
     _sse_transport_imported = False
 
 logger = logging.getLogger(__name__)
+
+
+def _validated_network_url(url: str, *, allow_http: bool = True) -> str:
+    """Allow only credential-free HTTP(S) URLs with an explicit host."""
+    parts = urlsplit(url)
+    allowed_schemes = {"https", "http"} if allow_http else {"https"}
+    if parts.scheme not in allowed_schemes or not parts.netloc:
+        raise ValueError(f"Unsupported network URL: {url!r}")
+    if parts.username or parts.password:
+        raise ValueError("Refusing URL with embedded credentials")
+    return url
 
 
 class MCPConnectionMode(Enum):
@@ -543,14 +555,15 @@ class MCPIntegration:
         ValueError
             If *url* does not start with ``http://`` or ``https://``.
         """
-        if not url.startswith(("http://", "https://")):
-            raise ValueError(f"_http_post_json: URL must start with http:// or https://, got: {url!r}")
+        url = _validated_network_url(url)
         data = json.dumps(payload).encode("utf-8")
         headers: dict[str, str] = {"Content-Type": "application/json"}
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+        with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_network_url()
+            req, timeout=timeout
+        ) as resp:
             return json.loads(resp.read())
 
     async def _execute_streaming(self, request: MCPRequest, server: MCPServer) -> MCPResponse:
@@ -685,11 +698,7 @@ class MCPIntegration:
         # where the repo root is not available, e.g. a bare checkout of the  #
         # .github/copilot-cascade/ sub-tree only).                            #
         # ------------------------------------------------------------------ #
-        if not self.startswith(("http://", "https://")):
-            raise ValueError(
-                f"_http_post_json_streaming: URL must start with "
-                f"http:// or https://, got: {self!r}"
-            )
+        self = _validated_network_url(self)
         data = json.dumps(payload).encode("utf-8")
         headers: dict[str, str] = {
             "Content-Type": "application/json",
@@ -699,7 +708,9 @@ class MCPIntegration:
             headers["Authorization"] = f"Bearer {auth_token}"
 
         req = urllib.request.Request(self, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+        with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_network_url()
+            req, timeout=timeout
+        ) as resp:
             content_type = resp.headers.get("Content-Type", "")
             raw = resp.read()
 

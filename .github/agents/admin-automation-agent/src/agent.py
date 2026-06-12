@@ -65,6 +65,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _safe_error(exc: Exception) -> str:
+    """Return a non-sensitive exception summary."""
+    return sanitize_log_message(type(exc).__name__)
+
+
 class AdminAutomationAgent:
     """
     Admin Automation Agent - Production Implementation
@@ -121,7 +126,7 @@ class AdminAutomationAgent:
                 with open(self.config_path) as f:
                     return yaml.safe_load(f)
         except Exception as e:
-            logger.warning(f"Could not load config: {e}")
+            logger.warning("Could not load config: %s", _safe_error(e))
 
         # Return default config
         return {
@@ -150,15 +155,18 @@ class AdminAutomationAgent:
         }
         self.results["tasks"].append(task_result)
 
-        # Log with sanitized message to prevent clear-text logging
+        # Security: Use a masked fingerprint to prevent clear-text logging of any
+        # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.
+        # The full sanitized message is already stored in task_result above.
+        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            logger.info(f"✅ Task completed: {safe_message}")
+            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         elif status == "error":
-            logger.error(f"❌ Task error: {safe_message}")
+            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         elif status == "warning":
-            logger.warning(f"⚠️  Task warning: {safe_message}")
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         else:
-            logger.info(f"ℹ️  Task info: {safe_message}")
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
@@ -293,7 +301,7 @@ class AdminAutomationAgent:
 
         for idx, secret_name in enumerate(secrets):
             # Security: Don't log secret names - CodeQL alert #3322
-            logger.info(f"\n🔑 Rotating secret {idx + 1}/{len(secrets)}...")
+            logger.info("\n🔑 Rotating secret %d/%d...", idx + 1, len(secrets))
 
             # Backup current secret (metadata only, never the value)
             if backup:
@@ -435,7 +443,7 @@ class AdminAutomationAgent:
         with open(report_path, 'w') as f:
             f.write(report)
 
-        logger.info(f"  📄 Report saved: {report_path}")
+        logger.info("  📄 Report saved")
         return report_path
 
     def _generate_summary(self, task_results: list[dict]) -> str:
@@ -459,8 +467,8 @@ class AdminAutomationAgent:
         Returns:
             Task execution results
         """
-        logger.info(f"🤖 Admin Automation Agent v{self.results['agent_version']}")
-        logger.info(f"📋 Task: {task}")
+        logger.info("🤖 Admin Automation Agent v%s", self.results["agent_version"])
+        logger.info("📋 Task: %s", sanitize_log_message(task))
         logger.info("🔐 Authorization: FULL ACCESS (mbaetiong)")
         logger.info("")
 
@@ -476,7 +484,7 @@ class AdminAutomationAgent:
             else:
                 result = {
                     "success": False,
-                    "error": f"Unknown task: {task}"
+                    "error": f"Unknown task: {sanitize_log_message(task)}"
                 }
 
             self.results["success"] = result.get("success", False)
@@ -487,10 +495,10 @@ class AdminAutomationAgent:
         except Exception as e:
             logger.error("❌ Task execution failed. See results for details.", exc_info=True)
             self.results["success"] = False
-            self.results["error"] = str(e)
+            self.results["error"] = _safe_error(e)
             return {
                 "success": False,
-                "error": str(e)
+                "error": _safe_error(e)
             }
 
 

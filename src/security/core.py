@@ -15,10 +15,7 @@ from collections.abc import Callable, Iterable, MutableMapping
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Literal
 
-
-class SecurityError(ValueError):
-    """Raised when security validation fails."""
-
+from ._types import SecurityError, sanitize_text  # noqa: F401 – re-exported for callers
 
 SQL_INJECTION_PATTERNS = [
     re.compile(r";\s*(DROP|DELETE|UPDATE|INSERT|ALTER)\s+", re.IGNORECASE),
@@ -87,8 +84,6 @@ def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] 
     else:
         sanitized = text
 
-    from .content_filters import sanitize_text  # Local import to avoid cycle
-
     return sanitize_text(sanitized)
 
 
@@ -125,8 +120,6 @@ def validate_input(
     if input_type == "text":
         if "\0" in value or any(ord(char) < 32 and char not in "\t\n\r" for char in value):
             raise SecurityError("Invalid control characters in text")
-        from .content_filters import sanitize_text  # Local import to avoid cycle
-
         return sanitize_text(value)
 
     if input_type == "json":
@@ -332,8 +325,6 @@ def log_security_event(event: str, *, logger: logging.Logger | None = None) -> N
     """Emit an audit log entry for a security-relevant event."""
 
     log = logger or logging.getLogger("codex.security")
-    from .content_filters import sanitize_text  # Local import to avoid cycle
-
     log.info("security_event", extra={"event": sanitize_text(event)})
 
 

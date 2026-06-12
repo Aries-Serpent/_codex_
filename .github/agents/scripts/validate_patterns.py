@@ -23,40 +23,40 @@ class PatternValidator:
         """Initialize with comprehensive test cases."""
         self.test_cases = {
             "api_key": [
-                ('API_KEY="sk_test_1234567890abcdefghij"', True, "Standard format"),
-                ('apiKey: "abc123xyz789def456ghi"', True, "JSON format"),
-                ('api-key = my_secret_key_12345678', True, "Hyphenated"),
-                ('{"api_key": "1234567890abcdef1234"}', True, "JSON embedded"),
+                ('API_KEY="sk_test_1234567890abcdefghij"', True, "Standard format"),  # pragma: allowlist secret
+                ('apiKey: "abc123xyz789def456ghi"', True, "JSON format"),  # pragma: allowlist secret
+                ('api-key = my_secret_key_12345678', True, "Hyphenated"),  # pragma: allowlist secret
+                ('{"api_key": "1234567890abcdef1234"}', True, "JSON embedded"),  # pragma: allowlist secret
                 ('regular text without keys', False, "No secret"),
                 ('API_KEY=YOUR_API_KEY_HERE', False, "Placeholder"),
             ],
             "api_key_variants": [
-                ('API_KEY = "sk_live_123456"', True, "Uppercase with spaces"),
-                ('export API_KEY="test_key"', True, "Export statement"),
+                ('API_KEY = "sk_live_123456"', True, "Uppercase with spaces"),  # pragma: allowlist secret
+                ('export API_KEY="test_key"', True, "Export statement"),  # pragma: allowlist secret
             ],
             "aws_access_key": [
-                ('AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"', True, "Standard format"),
-                ('aws_access_key_id="AKIAI44QH8DHBEXAMPLE"', True, "Lowercase"),
+                ('AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"', True, "Standard format"),  # pragma: allowlist secret
+                ('aws_access_key_id="AKIAI44QH8DHBEXAMPLE"', True, "Lowercase"),  # pragma: allowlist secret
                 ('not an aws key', False, "No secret"),
             ],
             "aws_secret_key": [
-                ('AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"', True, "Standard"),
-                ('aws_secret_access_key="1234567890abcdefghijklmnopqrstuvwxyz1234"', True, "Lowercase"),
+                ('AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"', True, "Standard"),  # pragma: allowlist secret
+                ('aws_secret_access_key="1234567890abcdefghijklmnopqrstuvwxyz1234"', True, "Lowercase"),  # pragma: allowlist secret
             ],
             "github_token": [
-                ('ghp_1234567890abcdefghijklmnopqrstuv', True, "Personal token"),
-                ('gho_1234567890abcdefghijklmnopqrstuv', True, "OAuth token"),
-                ('ghs_1234567890abcdefghijklmnopqrstuv', True, "Server token"),
-                ('github_token = "ghp_abcdef123456"', False, "Too short"),
+                ('ghp_1234567890abcdefghijklmnopqrstuv', True, "Personal token"),  # pragma: allowlist secret
+                ('gho_1234567890abcdefghijklmnopqrstuv', True, "OAuth token"),  # pragma: allowlist secret
+                ('ghs_1234567890abcdefghijklmnopqrstuv', True, "Server token"),  # pragma: allowlist secret
+                ('github_token = "ghp_abcdef123456"', False, "Too short"),  # pragma: allowlist secret
             ],
             "github_token_classic": [
-                ('GITHUB_TOKEN="ghp_1234567890abcdefghijklmnopqrstuv1234"', True, "Classic format"),
-                ('gh_token: github_pat_11AAAAAAA0123456789_abcdefghijklmnopqrstuvwxyz123', True, "PAT format"),
+                ('GITHUB_TOKEN="ghp_1234567890abcdefghijklmnopqrstuv1234"', True, "Classic format"),  # pragma: allowlist secret
+                ('gh_token: github_pat_11AAAAAAA0123456789_abcdefghijklmnopqrstuvwxyz123', True, "PAT format"),  # pragma: allowlist secret
             ],
             "private_key": [
-                ('-----BEGIN PRIVATE KEY-----', True, "Standard PEM"),
-                ('-----BEGIN RSA PRIVATE KEY-----', True, "RSA PEM"),
-                ('-----BEGIN EC PRIVATE KEY-----', True, "EC PEM"),
+                ('-----BEGIN PRIVATE KEY-----', True, "Standard PEM"),  # pragma: allowlist secret
+                ('-----BEGIN RSA PRIVATE KEY-----', True, "RSA PEM"),  # pragma: allowlist secret
+                ('-----BEGIN EC PRIVATE KEY-----', True, "EC PEM"),  # pragma: allowlist secret
                 ('not a private key', False, "No key"),
             ],
         }
@@ -144,9 +144,9 @@ class PatternValidator:
         print("=" * 70)
 
         fixes = {
-            "api_key": r'(?i)(?:api[_\-]?key|apikey)["\']?\s*[:=]\s*["\']?([A-Za-z0-9+/=_\-]{16,})["\']?',
-            "aws_secret_key": r'(?i)aws[_\-]?secret[_\-]?(?:access[_\-]?)?key\s*[:=]\s*["\']?([A-Za-z0-9+/=]{40})["\']?',
-            "github_token_classic": r'(?i)(?:github[_\-]?token|gh[_\-]?token)\s*[:=]\s*["\']?(ghp_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{36,})["\']?',
+            "api_key": r'(?i)(?:api[_\-]?key|apikey)["\']?\s*[:=]\s*["\']?([A-Za-z0-9+/=_\-]{16,})["\']?',  # pragma: allowlist secret
+            "aws_secret_key": r'(?i)aws[_\-]?secret[_\-]?(?:access[_\-]?)?key\s*[:=]\s*["\']?([A-Za-z0-9+/=]{40})["\']?',  # pragma: allowlist secret
+            "github_token_classic": r'(?i)(?:github[_\-]?token|gh[_\-]?token)\s*[:=]\s*["\']?(ghp_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{36,})["\']?',  # pragma: allowlist secret
         }
 
         for pattern_name, tests in results.items():

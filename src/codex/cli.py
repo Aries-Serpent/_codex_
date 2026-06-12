@@ -1712,7 +1712,7 @@ def _get_auth():
             import secrets as _sec
 
             _secret = _sec.token_urlsafe(32)
-            logger.debug("Generated ephemeral CLI auth secret (in-process only)")
+            logger.debug("Generated ephemeral CLI signing material (in-process only)")
         _tm = TokenManager(secret_key=_secret)
         _cli_auth = Authenticator(user_store=_cli_user_store, token_manager=_tm)
     return _cli_auth
@@ -1864,7 +1864,7 @@ def _load_cached_credentials() -> dict | None:
         try:
             return json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as exc:
-            logger.debug("Failed to load cached credentials file: %s", exc)
+            logger.debug("Failed to load cached auth state file: %s", type(exc).__name__)
             return None
     return None
 

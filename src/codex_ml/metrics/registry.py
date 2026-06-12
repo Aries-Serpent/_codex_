@@ -30,7 +30,6 @@ logger = logging.getLogger(__name__)
 
 metric_registry = Registry("metric")
 # Plain dict checked before metric_registry — allows test mocking via monkeypatch.setitem
-# Commenting out _REWARD_METRICS_LOCK = threading.Lock() as not in use
 _METRIC_REGISTRY: dict[str, Callable[..., object]] = {}
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
