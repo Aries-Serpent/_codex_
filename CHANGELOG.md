@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Fixed (SN — PR #4853 CI rescue #4688307317 commit e1cf205)
-- PR #4853 CI rescue (`#4688307317`): verified `Final Pre-Merge Checks` failure on commit `e1cf2051af39` was REQ-4/REQ-5/REQ-14 non-compliance; fix confirmed in `913e89b`; ran `python scripts/ci/mypy_baseline.py --require-baseline` (0 errors ↓122), `python scripts/ci/auto_fix_common_issues.py --check-only` (0 issues), `session_wrapup_autofix.py --check` (all green).
+- PR #4853 CI rescue (`#4688307317`): verified `Final Pre-Merge Checks` failure on commit `e1cf2051` was REQ-4/REQ-5/REQ-14 non-compliance; fix confirmed in `913e89b1`; ran `python scripts/ci/mypy_baseline.py --require-baseline` (0 errors ↓122), `python scripts/ci/auto_fix_common_issues.py --check-only` (0 issues), `session_wrapup_autofix.py --check` (all green).
 
 ### Fixed (SN — PR #4853 missed-trigger recovery S221 #4688271265)
 - PR #4853 missed-trigger recovery (`#4688271265`): re-ran required action queue (`python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) — all pass clean; REQ-4/REQ-5/REQ-14 compliance verified on latest commit.
