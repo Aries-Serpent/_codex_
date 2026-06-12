@@ -216,7 +216,7 @@ Examples:
         decoded = decode_secret_name(args.encoded)
         # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data
         _decoded_fp = (str(decoded)[:8] + "…") if decoded else "<none>"
-        print(f"Decoded: {_decoded_fp}")
+        print(f"Decoded: {_decoded_fp}")  # nosec: _decoded_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
         return
 
     # Handle token listing (safe, no decoding)

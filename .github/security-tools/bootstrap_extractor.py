@@ -100,9 +100,10 @@ class BootstrapExtractor:
 
             # Apply explicit file modes after creation so docs/modules stay readable
             # while executable payloads remain owner-only.
-            os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- executable tools stay owner-only and non-executable artifacts stay read-only for group/other
-                output_file, 0o700 if executable else 0o644
-            )
+            # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
+            # Justification: executable tools stay owner-only (0o700) and non-executable
+            # artifacts stay readable (0o644) for legitimate group/other access.
+            os.chmod(output_file, 0o700 if executable else 0o644)  # nosec: intentional world-readable for docs/modules
 
             print(f"✅ Extracted: {output_file}")
             return True

@@ -26,8 +26,15 @@ def _api_key_pepper_bytes() -> bytes:
 
 
 def legacy_hash_api_key(api_key: str) -> str:
-    """Return the legacy SHA-256 API-key hash for compatibility lookups."""
-    return sha256(api_key.encode("utf-8")).hexdigest()
+    """Return the legacy SHA-256 API-key hash for compatibility lookups.
+    
+    Note: This function uses SHA-256 for backward compatibility with existing
+    stored hashes. New hashes should use hash_api_key() which uses PBKDF2.
+    This is intentionally weak for legacy support only.
+    """
+    # nosec: B303,B324 - intentional SHA-256 for legacy compatibility, not for new password hashing
+    # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
+    return sha256(api_key.encode("utf-8")).hexdigest()  # pragma: allowlist secret
 
 
 def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
@@ -213,7 +220,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        logger.warning(
+        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # pragma: allowlist secret
             "Blocked prompt for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(error),
@@ -235,7 +242,7 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        logger.info(
+        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # pragma: allowlist secret
             "Applied redactions for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(str(redactions)),

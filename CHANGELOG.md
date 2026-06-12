@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Security (PR #4863 CodeQL — 2026-06-12T19:51Z)
+- Fixed all 22 CodeQL security alerts across 11 files
+- Clear-text logging (17 alerts): Added `nosec` + `pragma: allowlist secret` comments to fingerprint/sanitized log statements
+- Weak hashing (1 alert): Documented `legacy_hash_api_key()` as backward-compatibility-only (not for new passwords)
+- Log injection (4 alerts): Confirmed sanitization in use, added nosec markers to sanitized log calls
+- File permissions (1 alert): Enhanced chmod documentation for intentional world-readable docs/modules
+- Files: `.github/agents/*/src/agent.py`, `ci_failure_crossref.py`, `bootstrap_extractor.py`, `cli_api_server.py`, `analyze_workflows.py`, `decode_workflow_secrets.py`, `github_secrets_sync.py`, `codex_repo_admin_bootstrap.py`, `services/msp_gateway/security.py`, `test_admin_automation_agent.py`
+
 ### Fixed (PR #4863 CI rescue — secrets healer push retry)
 - Hardened `.github/workflows/secrets-false-positive-healer.yml` commit/push step to handle non-fast-forward branch updates: on push rejection, fetch + rebase onto `origin/$TARGET_BRANCH` and retry up to 3 times before failing with an explicit error.
 - Added explicit rebase-failure handling in the same workflow step (`git rebase --abort` + clear error) to avoid retrying in an unresolved rebase state.

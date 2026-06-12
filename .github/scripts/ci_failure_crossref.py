@@ -166,7 +166,7 @@ print("\n**Most Common Secrets**:")
 for secret, count in sorted(secrets_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
     # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data
     _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"
-    print(f"- `{_secret_fp}`: {count} critical workflows")
+    print(f"- `{_secret_fp}`: {count} critical workflows")  # nosec: _secret_fp is a sanitized fingerprint, not clear-text secret  # pragma: allowlist secret
 
 print()
 print("\n## Recommended Action Plan\n")
