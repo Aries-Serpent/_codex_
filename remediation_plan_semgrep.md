@@ -14,7 +14,7 @@
 
 | Rule | Count | Severity | Primary Remediation |
 |---|---:|---|---|
-| `python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure` | 30 | WARNING | Mask credentials/secrets before logging; remove direct token/header logging. | <!-- pragma: allowlist secret -->
+| `python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure` | 30 | WARNING | Mask credentials/secrets before logging; remove direct token/header logging. <!-- pragma: allowlist secret --> |
 | `python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected` | 20 | WARNING | Validate/allowlist URLs and avoid user-controlled dynamic URL construction. |
 | `python.lang.security.deserialization.pickle.avoid-pickle` | 20 | WARNING | Replace pickle-based persistence with safe serialization formats; verify trusted input boundary. |
 | `python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5` | 5 | WARNING | Migrate MD5/SHA1 to SHA-256+ or cryptographic KDF where security-sensitive. |

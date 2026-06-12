@@ -148,11 +148,11 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 
 ### Environment Secrets — `Aries_Serpent_codex_`
 
-| Secret | Purpose | Rotation | <!-- pragma: allowlist secret -->
+| Secret | Purpose | Rotation <!-- pragma: allowlist secret --> |
 |--------|---------|---------|
-| `CODEX_ENVIRONMENT_RUNNER` | Runner registration token for environment | On runner recycle | <!-- pragma: allowlist secret -->
+| `CODEX_ENVIRONMENT_RUNNER` | Runner registration token for environment | On runner recycle <!-- pragma: allowlist secret --> |
 | `CODEX_RUNNER_SHA256` | SHA256 checksum of runner binary | On binary update |
-| `CODEX_RUNNER_TOKEN` | Auth token for self-hosted runner | Every 90 days | <!-- pragma: allowlist secret -->
+| `CODEX_RUNNER_TOKEN` | Auth token for self-hosted runner | Every 90 days <!-- pragma: allowlist secret --> |
 
 ---
 

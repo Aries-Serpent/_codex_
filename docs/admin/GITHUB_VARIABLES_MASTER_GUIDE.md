@@ -77,14 +77,14 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: all
 
 | Storage Type | GitHub UI Location | API / CLI |
 |---|---|---|
-| **Org Secrets** | [Settings → Security → Secrets → Actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) | `gh secret set NAME --org Aries-Serpent` | <!-- pragma: allowlist secret -->
+| **Org Secrets** | [Settings → Security → Secrets → Actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) | `gh secret set NAME --org Aries-Serpent` <!-- pragma: allowlist secret --> |
 | **Org Variables** | [Settings → Security → Variables → Actions](https://github.com/organizations/Aries-Serpent/settings/variables/actions) | `gh variable set NAME --org Aries-Serpent` |
-| **Repo Secrets** | [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | `gh secret set NAME --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
-| **Repo Variables** | [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) | `gh variable set NAME --body VALUE --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
-| **Env Secrets** | [Settings → Environments → Aries_Serpent_codex_ → Secrets](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh secret set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` | <!-- pragma: allowlist secret -->
+| **Repo Secrets** | [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) | `gh secret set NAME --repo Aries-Serpent/_codex_` <!-- pragma: allowlist secret --> |
+| **Repo Variables** | [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) | `gh variable set NAME --body VALUE --repo Aries-Serpent/_codex_` <!-- pragma: allowlist secret --> |
+| **Env Secrets** | [Settings → Environments → Aries_Serpent_codex_ → Secrets](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh secret set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` <!-- pragma: allowlist secret --> |
 | **Env Variables** | [Settings → Environments → Aries_Serpent_codex_ → Variables](https://github.com/Aries-Serpent/_codex_/settings/environments) | `gh variable set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_` |
-| **Codespace Secrets (org)** | [Settings → Codespaces → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces) | `gh secret set NAME --app codespaces --org Aries-Serpent` | <!-- pragma: allowlist secret -->
-| **Codespace Secrets (user)** | [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces) | `gh secret set NAME --app codespaces` | <!-- pragma: allowlist secret -->
+| **Codespace Secrets (org)** | [Settings → Codespaces → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces) | `gh secret set NAME --app codespaces --org Aries-Serpent` <!-- pragma: allowlist secret --> |
+| **Codespace Secrets (user)** | [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces) | `gh secret set NAME --app codespaces` <!-- pragma: allowlist secret --> |
 
 ---
 

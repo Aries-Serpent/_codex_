@@ -23,14 +23,14 @@
 
 ### 1.1 Repository Secrets (as of 2026-05-08)
 
-| Secret Name | Type | Scopes | Usage Count (workflows) | Purpose | <!-- pragma: allowlist secret -->
+| Secret Name | Type | Scopes | Usage Count (workflows) | Purpose <!-- pragma: allowlist secret --> |
 |-------------|------|--------|------------------------|---------|
-| `CODEX_MASTER_KEY` | PAT (Classic) | `repo` + `workflow` + `actions:write` | **125** | Primary write token — PR edits, workflow approvals, variable CRUD, force-push | <!-- pragma: allowlist secret -->
+| `CODEX_MASTER_KEY` | PAT (Classic) | `repo` + `workflow` + `actions:write` | **125** | Primary write token — PR edits, workflow approvals, variable CRUD, force-push <!-- pragma: allowlist secret --> |
 | `CODEX_BACKUP_KEY` | PAT (Classic) | `repo` + `workflow` | **115** | Fallback when MASTER_KEY unavailable |
 | `_GITHUB_APP_PRIVATE_KEY` | RSA Private Key | App installation scopes | **8** | Cognitive Brain App — commit signing, PR creation as App identity |
 | `_GITHUB_APP_ID` | App ID string | n/a | **8** | Paired with `_GITHUB_APP_PRIVATE_KEY` |
-| `_GITHUB_APP_INSTALLATION_ID` | Installation ID | n/a | **7** | App token minting target | <!-- pragma: allowlist secret -->
-| `GITHUB_TOKEN` / `github.token` | Built-in actions token | `contents:read`, `pull-requests:write` (limited) | **87** | Read-only ops, posting comments | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_INSTALLATION_ID` | Installation ID | n/a | **7** | App token minting target <!-- pragma: allowlist secret --> |
+| `GITHUB_TOKEN` / `github.token` | Built-in actions token | `contents:read`, `pull-requests:write` (limited) | **87** | Read-only ops, posting comments <!-- pragma: allowlist secret --> |
 
 > **Critical note:** `GITHUB_TOKEN` returns **HTTP 403** on the Variables/Secrets API and
 > **cannot** approve workflow runs or push to protected branches.

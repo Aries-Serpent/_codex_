@@ -25,7 +25,7 @@
 | **Merge Readiness** | <!-- AUTO: merge_score --> % |
 | **Rate-Limit Status** | <!-- AUTO: rate_limit_status --> |
 | **Copilot Auth** | `COPILOT_AGENT_AUTH_ENABLED=true` (permanent — no checkbox needed) |
-| **Token Chain** | `CODEX_MASTER_KEY ‖ CODEX_BACKUP_KEY ‖ github.token` | <!-- pragma: allowlist secret -->
+| **Token Chain** | `CODEX_MASTER_KEY ‖ CODEX_BACKUP_KEY ‖ github.token` <!-- pragma: allowlist secret --> |
 
 ### 🧠 Agent Pre-Load Checklist (run in order at session start)
 1. `READ .codex/AGENTIC_REPO_STATE.md` — confirms auth state
@@ -307,5 +307,4 @@ _Add screenshots for UI/visual changes._
 ## 👤 Reviewer(s)
 
 - @mbaetiong
-
 

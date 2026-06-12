@@ -49164,7 +49164,6 @@ The `self-healing.yml` stub workflow was added without a `timeout-minutes` on th
 
 ---
 
-## SESSION SUMMARY — 2026-06-11T23:23Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4848)
 ## SESSION SUMMARY — 2026-06-11T23:28Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4848)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -49186,8 +49185,8 @@ The `self-healing.yml` stub workflow was added without a `timeout-minutes` on th
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27383781641
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27383781637
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27383781637
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note
