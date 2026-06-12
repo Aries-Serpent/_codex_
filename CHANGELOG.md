@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4853 missed-trigger recovery S221 #4688271265)
+- PR #4853 missed-trigger recovery (`#4688271265`): re-ran required action queue (`python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) — all pass clean; REQ-4/REQ-5/REQ-14 compliance verified on latest commit.
+
 ### Fixed (SN — PR #4853 CI rescue commit 0f76f7b)
 - PR #4853 CI rescue (`#4687893864`): ran required action queue (`ruff check src/ tests/ --fix`, `python scripts/ci/mypy_baseline.py --require-baseline`, `python scripts/ci/auto_fix_common_issues.py --check-only`) on commit `0f76f7b`; all pass clean.
 
