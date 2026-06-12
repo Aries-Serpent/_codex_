@@ -3,6 +3,7 @@ Rate limiting middleware
 Per-tenant token bucket rate limiting (in-memory)
 """
 
+import hashlib
 import json
 import logging
 import time
@@ -249,7 +250,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             if available_tokens < requested_tokens:
                 logger.warning(
                     "Usage quota exhausted for tenant: %s (requested=%s, available=%s)",
-                    tenant_id,
+                    hashlib.sha256(str(tenant_id).encode()).hexdigest()[:8],
                     requested_tokens,
                     available_tokens,
                 )
@@ -339,7 +340,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         logger.warning(
                             "Usage limit exceeded after inference for tenant: %s "
                             "(usage_units=%s)",
-                            tenant_id,
+                            hashlib.sha256(str(tenant_id).encode()).hexdigest()[:8],
                             tokens_used,
                         )
                         # Note: We already processed the request, so we can't reject it now

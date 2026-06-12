@@ -793,7 +793,7 @@ class SafetyFilters:
                 logger.debug(
                     "safety.filters: failed to assign neg_inf for token %s (%s)",
                     tid,
-                    exc,
+                    type(exc).__name__,
                     exc_info=True,
                 )
                 continue

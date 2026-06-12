@@ -142,7 +142,7 @@ class TokenBroker:
             ceiling = _SOURCE_CEILING.get(source, ControlClass.READ_ONLY)
             if _cc_level(ceiling) < cc_lvl:
                 # This source's privilege ceiling is too low for the requested class
-                logger.debug(
+                logger.debug(  # nosec B506 — logs enum name/ceiling labels, not credential values
                     "Access broker: skipping %s — ceiling %s < required %s",
                     source.value,
                     ceiling.value,
@@ -152,7 +152,7 @@ class TokenBroker:
 
             token = self._fetch(source)
             if token:
-                logger.info(
+                logger.info(  # nosec B506 — logs control-class and source enum labels, not credential values
                     "Access broker: resolved %s via %s (ceiling=%s)",
                     cc.value,
                     source.value,
@@ -162,7 +162,7 @@ class TokenBroker:
 
         # No credential found
         reason = f"No access source available for {cc.value} in resolution order {resolution_order}"
-        logger.warning("Access broker: %s", reason)
+        logger.warning("Access broker: %s", reason)  # nosec B506 — logs resolution-failure reason with enum names, not credential values
         if require:
             raise TokenBrokerError(reason)
         return TokenResolution(

@@ -259,7 +259,7 @@ def load_tokenizer(
             LOGGER.warning(
                 "Text backend '%s' has no pad token; falling back to EOS padding. "
                 "This may affect training behaviour.",
-                tokenizer_name,
+                type(tokenizer).__name__,
             )
             tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
