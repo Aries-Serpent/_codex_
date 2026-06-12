@@ -269,7 +269,7 @@ def safe_pickle_dump(
     encrypted_data = _encrypt_pickle_payload(data, key)
 
     # Security: payload is encrypted (and optionally signed) pickle bytes; path is trusted from caller  # noqa: E501
-    path.write_bytes(encrypted_data)  # nosec
+    path.write_bytes(encrypted_data)  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
     logger.debug("Saved pickle to %s (%d bytes)", path, len(encrypted_data))
 
 
