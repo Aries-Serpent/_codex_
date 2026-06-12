@@ -116,8 +116,8 @@ def _install_optional_dependency_stubs():
     for attr_name, stub_impl in (
         ("Element", lambda *_, **__: SimpleNamespace()),
         ("SubElement", lambda *_, **__: SimpleNamespace()),
-        ("to" "string", lambda *_, **__: b""),
-        ("from" "string", lambda *_, **__: SimpleNamespace()),
+        ("tostring", lambda *_, **__: b""),
+        ("fromstring", lambda *_, **__: SimpleNamespace()),
     ):
         setattr(xml_tree_stub, attr_name, stub_impl)
     xml_stub.ElementTree = xml_tree_stub

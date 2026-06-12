@@ -41,8 +41,12 @@ def test_system_metrics_logger_with_writer(monkeypatch) -> None:
 
     logger = sm.SystemMetricsLogger(path="metrics.jsonl", interval=0.1)
     logger.start()
-    time.sleep(0.02)
-    logger.stop()
+    try:
+        deadline = time.monotonic() + 1.0
+        while not captured and time.monotonic() < deadline:
+            time.sleep(0.01)
+    finally:
+        logger.stop()
 
     assert captured
     assert captured[0][0] == logger._path
