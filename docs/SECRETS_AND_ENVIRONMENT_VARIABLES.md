@@ -74,7 +74,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | Actors allowed to write cognitive brain state |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enable session context injection at session start |
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Days to retain long-term memory |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max tokens for cognitive brain context window | <!-- pragma: allowlist secret -->
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max tokens for cognitive brain context window <!-- pragma: allowlist secret --> |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Memory tiers (`stm`, `ltm`, or `both`) |
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Minimum confidence to store a pattern |
 | `COGNITIVE_BRAIN_SESSION_NUMBER` | `1325` | Current session counter (auto-incremented) |
@@ -84,7 +84,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | Variable | Value | Purpose |
 |----------|-------|---------|
 | `COPILOT_ACTIVE_SESSION` | `4731\|1780503084\|26896743030` | Current active session ID triplet |
-| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Require auth token for all agent write operations | <!-- pragma: allowlist secret -->
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Require auth token for all agent write operations <!-- pragma: allowlist secret --> |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | _(100+ domains)_ | Additional domains beyond GitHub defaults |
 | `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | Enable Copilot agent network firewall |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | _(JSON v2.0)_ | Pre-commit rules, mandatory loads, WEC rules |
@@ -116,7 +116,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 | `CODEX_SANDBOX_TIMEOUT` | `60` | Seconds before sandbox task is killed |
 | `CODEX_SESSION_ID` | `UUID v4` | Per-session unique identifier |
 | `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | Session log directory |
-| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation | <!-- pragma: allowlist secret -->
+| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation <!-- pragma: allowlist secret --> |
 | `COMPOSE_DOCKER_CLI_BUILD` | `1` | Use Docker CLI for compose builds |
 | `DOCKER_BUILDKIT` | `1` | Enable BuildKit for Docker builds |
 | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Auto-rebuild embedding index on change |
@@ -141,49 +141,49 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `ZENDESK_RATE_LIMIT` | `100` | Max Zendesk API requests per minute | <!-- pragma: allowlist secret -->
-| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds | <!-- pragma: allowlist secret -->
+| `ZENDESK_RATE_LIMIT` | `100` | Max Zendesk API requests per minute <!-- pragma: allowlist secret --> |
+| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds <!-- pragma: allowlist secret --> |
 
 ---
 
 ### Environment Secrets — `Aries_Serpent_codex_`
 
-| Secret | Purpose | Rotation | <!-- pragma: allowlist secret -->
+| Secret | Purpose | Rotation <!-- pragma: allowlist secret --> |
 |--------|---------|---------|
-| `CODEX_ENVIRONMENT_RUNNER` | Runner registration token for environment | On runner recycle | <!-- pragma: allowlist secret -->
+| `CODEX_ENVIRONMENT_RUNNER` | Runner registration token for environment | On runner recycle <!-- pragma: allowlist secret --> |
 | `CODEX_RUNNER_SHA256` | SHA256 checksum of runner binary | On binary update |
-| `CODEX_RUNNER_TOKEN` | Auth token for self-hosted runner | Every 90 days | <!-- pragma: allowlist secret -->
+| `CODEX_RUNNER_TOKEN` | Auth token for self-hosted runner | Every 90 days <!-- pragma: allowlist secret --> |
 
 ---
 
 ### Repository Secrets
 
-| Secret | Purpose | Security Level | <!-- pragma: allowlist secret -->
+| Secret | Purpose | Security Level <!-- pragma: allowlist secret --> |
 |--------|---------|----------------|
-| `CODEX_GHP_TOKEN_BASE64` | GitHub PAT (Base64 encoded) | CRITICAL | <!-- pragma: allowlist secret -->
-| `CODEX_GHP_TOKEN_HEX` | GitHub PAT (Hex encoded) | CRITICAL | <!-- pragma: allowlist secret -->
-| `CODEX_GHP_TOKEN_SHA256` | GitHub PAT (SHA256 hash for verification) | CRITICAL | <!-- pragma: allowlist secret -->
+| `CODEX_GHP_TOKEN_BASE64` | GitHub PAT (Base64 encoded) | CRITICAL <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_HEX` | GitHub PAT (Hex encoded) | CRITICAL <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_SHA256` | GitHub PAT (SHA256 hash for verification) | CRITICAL <!-- pragma: allowlist secret --> |
 | `CODEX_REPO_ID` | GitHub repository numeric ID | HIGH |
-| `CODEX_WEBHOOK_SECRET` | HMAC secret for webhook signature validation | HIGH | <!-- pragma: allowlist secret -->
-| `OPENAI_API_KEY` | OpenAI API key for LLM calls | CRITICAL | <!-- pragma: allowlist secret -->
-| `_CODEX_BOT_RUNNER` | Bot runner auth token | HIGH | <!-- pragma: allowlist secret -->
+| `CODEX_WEBHOOK_SECRET` | HMAC secret for webhook signature validation | HIGH <!-- pragma: allowlist secret --> |
+| `OPENAI_API_KEY` | OpenAI API key for LLM calls | CRITICAL <!-- pragma: allowlist secret --> |
+| `_CODEX_BOT_RUNNER` | Bot runner auth token | HIGH <!-- pragma: allowlist secret --> |
 
 ---
 
 ### Organization Secrets
 
-| Secret | Purpose | Security Level | Age | <!-- pragma: allowlist secret -->
+| Secret | Purpose | Security Level | Age <!-- pragma: allowlist secret --> |
 |--------|---------|----------------|-----|
-| `CODECOV_TOKEN` | Upload coverage reports to Codecov | MEDIUM | 5 months ⚠️ | <!-- pragma: allowlist secret -->
+| `CODECOV_TOKEN` | Upload coverage reports to Codecov | MEDIUM | 5 months ⚠️ <!-- pragma: allowlist secret --> |
 | `CODEX_ADMIN_KEY` | Admin-level operations key | CRITICAL | 3 months |
 | `CODEX_BACKUP_KEY` | Fallback key for write operations | CRITICAL | 3 months |
-| `CODEX_MASTER_KEY` | Master key for all token-chain write ops | CRITICAL | 3 months | <!-- pragma: allowlist secret -->
-| `HF_TOKEN` | HuggingFace Hub access token | HIGH | 5 months ⚠️ | <!-- pragma: allowlist secret -->
-| `NPM_TOKEN` | npm package publishing token | HIGH | 5 months ⚠️ | <!-- pragma: allowlist secret -->
-| `PYPI_TOKEN` | PyPI package publishing token | HIGH | 5 months ⚠️ | <!-- pragma: allowlist secret -->
+| `CODEX_MASTER_KEY` | Master key for all token-chain write ops | CRITICAL | 3 months <!-- pragma: allowlist secret --> |
+| `HF_TOKEN` | HuggingFace Hub access token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `NPM_TOKEN` | npm package publishing token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `PYPI_TOKEN` | PyPI package publishing token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
 | `RAG_OPENAI_KEY` | Dedicated OpenAI key for RAG pipeline | HIGH | 4 months |
-| `_CODEX_ACTION_RUNNER` | Actions runner registration token | HIGH | 5 months ⚠️ | <!-- pragma: allowlist secret -->
-| `_GITHUB_APP_CLIENT_SECRET` | GitHub App OAuth client secret | CRITICAL | 3 months | <!-- pragma: allowlist secret -->
+| `_CODEX_ACTION_RUNNER` | Actions runner registration token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `_GITHUB_APP_CLIENT_SECRET` | GitHub App OAuth client secret | CRITICAL | 3 months <!-- pragma: allowlist secret --> |
 | `_GITHUB_APP_ID` | GitHub App identifier | HIGH | 3 months |
 | `_GITHUB_APP_INSTALLATION_ID` | App installation identifier | HIGH | 3 months |
 | `_GITHUB_APP_PRIVATE_KEY` | GitHub App private key (RSA) | CRITICAL | 3 months |
@@ -198,11 +198,11 @@ The following variables are referenced in source code, workflow files, or `.code
 
 | Variable | Type | Default | Purpose |
 |----------|------|---------|---------|
-| `CODEX_AUTH_SECRET` | Repo Var | — | API service authentication secret | <!-- pragma: allowlist secret -->
+| `CODEX_AUTH_SECRET` | Repo Var | — | API service authentication secret <!-- pragma: allowlist secret --> |
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repo Var | `true` | Enable auth middleware on API service |
 | `CODEX_AUTH_RATE_LIMIT` | Repo Var | `100` | API rate limit (requests/minute) |
 | `CODEX_ENV` | Workflow-exported env (repo-var fallback optional) | `copilot-agent` in `copilot-setup-steps.yml`, otherwise `development` fallback | Sandbox/runtime environment label used by security-aware components |
-| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **⚠️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. | <!-- pragma: allowlist secret -->
+| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **⚠️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --> |
 | `ARTIFACTS_DIR` | Repo Var | `/tmp/artifacts` | API artifact output directory |
 
 ### Nox / ML Pipeline (`noxfile.py`, `scripts/`)
@@ -258,19 +258,19 @@ Defined in `COPILOT_AGENT_PREFLIGHT_RULES.token_rule`. Never use `git push` dire
 
 ## 🔄 Secret Rotation Schedule
 
-| Secret | Rotation Frequency | Method | Due | <!-- pragma: allowlist secret -->
+| Secret | Rotation Frequency | Method | Due <!-- pragma: allowlist secret --> |
 |--------|-------------------|--------|-----|
-| `CODEX_MASTER_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 | <!-- pragma: allowlist secret -->
-| `CODEX_BACKUP_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 | <!-- pragma: allowlist secret -->
-| `CODEX_ADMIN_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 | <!-- pragma: allowlist secret -->
+| `CODEX_MASTER_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 <!-- pragma: allowlist secret --> |
+| `CODEX_BACKUP_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 <!-- pragma: allowlist secret --> |
+| `CODEX_ADMIN_KEY` | Every 90 days | Manual → update org secret | 2026-06-28 <!-- pragma: allowlist secret --> |
 | `_GITHUB_APP_PRIVATE_KEY` | Every 90 days | GitHub App → regenerate | 2026-06-03 |
-| `_GITHUB_APP_CLIENT_SECRET` | Every 90 days | GitHub App → regenerate | 2026-06-04 | <!-- pragma: allowlist secret -->
-| `CODEX_RUNNER_TOKEN` | Every 90 days | Runner recycle | 2026-06-04 | <!-- pragma: allowlist secret -->
-| `OPENAI_API_KEY` | Every 90 days | OpenAI dashboard | 2026-06-03 | <!-- pragma: allowlist secret -->
-| `CODECOV_TOKEN` | Annual | Codecov dashboard | ⚠️ OVERDUE (5 months) | <!-- pragma: allowlist secret -->
-| `HF_TOKEN` | Annual | HuggingFace settings | ⚠️ OVERDUE (5 months) | <!-- pragma: allowlist secret -->
-| `NPM_TOKEN` | Annual | npm settings | ⚠️ OVERDUE (5 months) | <!-- pragma: allowlist secret -->
-| `PYPI_TOKEN` | Annual | PyPI account | ⚠️ OVERDUE (5 months) | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_CLIENT_SECRET` | Every 90 days | GitHub App → regenerate | 2026-06-04 <!-- pragma: allowlist secret --> |
+| `CODEX_RUNNER_TOKEN` | Every 90 days | Runner recycle | 2026-06-04 <!-- pragma: allowlist secret --> |
+| `OPENAI_API_KEY` | Every 90 days | OpenAI dashboard | 2026-06-03 <!-- pragma: allowlist secret --> |
+| `CODECOV_TOKEN` | Annual | Codecov dashboard | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `HF_TOKEN` | Annual | HuggingFace settings | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `NPM_TOKEN` | Annual | npm settings | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `PYPI_TOKEN` | Annual | PyPI account | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
 | `_CODEX_ACTION_RUNNER` | Annual | GitHub Actions runners | ⚠️ OVERDUE (5 months) |
 
 ---
@@ -282,14 +282,14 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 | Variable | Value | Priority | Reason |
 |----------|-------|----------|--------|
 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | **MUST** | Controls maximum autonomy level granted to all Copilot coding agents |
-| `COPILOT_AGENT_AUTH_ENABLED` | `true` | **MUST** | Enforces auth token requirement for all agent write operations | <!-- pragma: allowlist secret -->
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | **MUST** | Enforces auth token requirement for all agent write operations <!-- pragma: allowlist secret --> |
 | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | **MUST** | Enables cognitive brain session restore on agent init |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | _(see repo var)_ | **MUST** | Pre-commit rules and mandatory doc loads; agents MUST read this at session start |
 | `COPILOT_WEC_SELECTION_MATRIX` | _(see repo var)_ | **MUST** | Workflow Execution Checklist trigger map; agents must reference to select WEC items |
 | `CODEX_LINT_STRICT` | `true` | **SHOULD** | Instructs agents to fail on any lint warning |
 | `CODEX_COVERAGE_THRESHOLD` | `80` | **SHOULD** | Coverage gate threshold visible to agents |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | **SHOULD** | Confirms cognitive brain injection is active |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | **SHOULD** | Lets agents know their max context budget | <!-- pragma: allowlist secret -->
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | **SHOULD** | Lets agents know their max context budget <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -297,11 +297,11 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 
 | Workflow | Required Permissions |
 |----------|---------------------|
-| `auth-token-rotation.yml` | `contents: write`, `issues: write`, `secrets: write` | <!-- pragma: allowlist secret -->
-| `auth-secret-rotation.yml` | `contents: write`, `secrets: write`, `issues: write` | <!-- pragma: allowlist secret -->
+| `auth-token-rotation.yml` | `contents: write`, `issues: write`, `secrets: write` <!-- pragma: allowlist secret --> |
+| `auth-secret-rotation.yml` | `contents: write`, `secrets: write`, `issues: write` <!-- pragma: allowlist secret --> |
 | `auth-compliance-report.yml` | `contents: read`, `issues: write` |
-| `release.yml` | `contents: write`, `packages: write`, `id-token: write` | <!-- pragma: allowlist secret -->
-| `cognitive-brain` writes | Uses `_GITHUB_APP_*` via `actions/create-github-app-token@v1` | <!-- pragma: allowlist secret -->
+| `release.yml` | `contents: write`, `packages: write`, `id-token: write` <!-- pragma: allowlist secret --> |
+| `cognitive-brain` writes | Uses `_GITHUB_APP_*` via `actions/create-github-app-token@v1` <!-- pragma: allowlist secret --> |
 
 ---
 
@@ -316,7 +316,7 @@ This section maps each key repository variable to the GitHub Actions workflows a
 | `NODE_JS_VERSION` | Repository variable → workflow `env.NODE_VERSION` | Read as `${{ vars.NODE_JS_VERSION \|\| '22' }}` | Node/npm tools in the Copilot sandbox |
 | `COPILOT_RUNNER_PROFILE` | Repository variable → `runs-on` | Read as `${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}` | Runner sizing for Copilot sessions |
 | `CODEX_CACHE_VERSION` | Repository variable → `setup-agent-env` input | Read as `${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | Agent venv/cache hierarchy and cache invalidation |
-| `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` | Organization secrets → job env → export step | Injected into the agent runtime for token-chain writes | `agent-auth-delegation`, variable sync, workflow dispatch | <!-- pragma: allowlist secret -->
+| `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` | Organization secrets → job env → export step | Injected into the agent runtime for token-chain writes | `agent-auth-delegation`, variable sync, workflow dispatch <!-- pragma: allowlist secret --> |
 | `CODEX_ENV` | Workflow-exported env | Explicitly set to `copilot-agent` | Security/compliance agents, runtime guards |
 | `CODEX_LOG_LEVEL` | Workflow-exported env | Currently exported as `INFO` | Session diagnostics and troubleshooting |
 | `CODEX_DB_PATH` | Workflow-exported env | Currently exported as `${GITHUB_WORKSPACE}/.codex/codex.db` | Cognitive brain / pattern-recorder DB consumers |
@@ -333,7 +333,7 @@ This section maps each key repository variable to the GitHub Actions workflows a
 | `COPILOT_WEC_SELECTION_MATRIX` | Agent + repo JSON | Current routing matrix | Workflow/orchestration agents |
 | `COPILOT_WEC_TEMPLATE_DRIFT` | Agent + repo JSON | Expected steady-state `count=0` after remediation | `workflow-compliance-guardian`, WEC-aware agents |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | Agent variable | `true` | Cognitive Brain session/bootstrap agents |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | Agent variable | `128000` | Cognitive/context-budget aware agents | <!-- pragma: allowlist secret -->
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | Agent variable | `128000` | Cognitive/context-budget aware agents <!-- pragma: allowlist secret --> |
 
 ### Workflow Automation / CI Surface
 
@@ -351,7 +351,7 @@ This section maps each key repository variable to the GitHub Actions workflows a
 | Variable | Surface | Current expectation | Primary consumers |
 |----------|---------|---------------------|-------------------|
 | `CODEX_ENV` | Workflow-exported env or repo-var fallback | `copilot-agent` in Copilot sessions; `production` must trigger stricter guards | Security/compliance agents, service config |
-| `DISABLE_SECRET_FILTER` | Repository variable | Must remain `false` outside isolated local debugging | `pii-scrubber`, `secret-detection-agent` | <!-- pragma: allowlist secret -->
+| `DISABLE_SECRET_FILTER` | Repository variable | Must remain `false` outside isolated local debugging | `pii-scrubber`, `secret-detection-agent` <!-- pragma: allowlist secret --> |
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repository variable | Default `true` | API/auth validation |
 | `CODEX_AUTH_RATE_LIMIT` | Repository variable | Default `100` | API/auth validation |
 
@@ -456,11 +456,11 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-01-16 | Initial documentation created | @copilot |
-| 2026-01-20 | Phase 22 Secrets Audit — added 11 undocumented secrets | @copilot | <!-- pragma: allowlist secret -->
+| 2026-01-20 | Phase 22 Secrets Audit — added 11 undocumented secrets | @copilot <!-- pragma: allowlist secret --> |
 | 2026-01-27 | Added GITLEAKS_LICENSE documentation | @copilot |
-| 2026-06-03 | **Full inventory refresh** — added all 113 variables (14 env, 76 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong | <!-- pragma: allowlist secret -->
+| 2026-06-03 | **Full inventory refresh** — added all 113 variables (14 env, 76 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added `settings/variables/agents` recommendations; updated token chain docs | @mbaetiong <!-- pragma: allowlist secret --> |
 | 2026-06-03 | **Variable usage expansion** — updated `CODEX_ENV_NODE_VERSION` 18→22; added Workflow & Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements | @mbaetiong |
-| 2026-06-03 | **Variables-only sync pass** — updated totals to 113 tracked (14 env vars, 76 repo vars), updated `CODEX_CI_LAST_GREEN_SHA`, and added explicit next-step actions for pending secrets pass and WEC drift remediation | @mbaetiong | <!-- pragma: allowlist secret -->
+| 2026-06-03 | **Variables-only sync pass** — updated totals to 113 tracked (14 env vars, 76 repo vars), updated `CODEX_CI_LAST_GREEN_SHA`, and added explicit next-step actions for pending secrets pass and WEC drift remediation | @mbaetiong <!-- pragma: allowlist secret --> |
 | 2026-06-03 | **Workflow/agent reconciliation pass** — aligned cache defaults to `v2`, documented `COPILOT_RUNNER_PROFILE` safe fallback (`ubuntu-latest`), clarified `CODEX_ENV=copilot-agent`, and split `CODEX_DB_PATH` vs `CODEX_LOG_DB_PATH` by effective runtime surface | @copilot |
 
 ---
@@ -689,12 +689,12 @@ permissions:
 
 Comprehensive rotation schedule with all 18 secrets: **.codex/security/rotation_schedule.md**
 
-| Secret Category | Examples | Rotation Frequency | Method | <!-- pragma: allowlist secret -->
+| Secret Category | Examples | Rotation Frequency | Method <!-- pragma: allowlist secret --> |
 |----------------|----------|-------------------|--------|
-| **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 iterations (JWT: monthly) | Manual / Automated workflow | <!-- pragma: allowlist secret -->
-| **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 iterations | Manual via service provider | <!-- pragma: allowlist secret -->
-| **Medium Priority** | `CODECOV_TOKEN`, `ZENDESK_TOKEN`, `GOOGLE_CLIENT_SECRET` | Annually or as needed | Manual via service dashboard | <!-- pragma: allowlist secret -->
-| **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL`, `GITLEAKS_LICENSE` | N/A or with paired secret / On renewal | GitHub auto / Manual / Subscription renewal | <!-- pragma: allowlist secret -->
+| **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 iterations (JWT: monthly) | Manual / Automated workflow <!-- pragma: allowlist secret --> |
+| **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 iterations | Manual via service provider <!-- pragma: allowlist secret --> |
+| **Medium Priority** | `CODECOV_TOKEN`, `ZENDESK_TOKEN`, `GOOGLE_CLIENT_SECRET` | Annually or as needed | Manual via service dashboard <!-- pragma: allowlist secret --> |
+| **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL`, `GITLEAKS_LICENSE` | N/A or with paired secret / On renewal | GitHub auto / Manual / Subscription renewal <!-- pragma: allowlist secret --> |
 
 ### Secrets Usage Matrix
 
