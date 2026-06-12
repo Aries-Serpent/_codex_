@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4853)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4853 (SHA `a85a96a5`) at 2026-06-12T02:17Z [auto-generated]
+
 ### Fixed (SN)
 - Resolved PR #4849 merge conflicts while merging `origin/0D_base_` into `copilot/fix-review-comments`.
 - Added explicit name + block-scalar guarded `run` for the session preload step in `.github/workflows/copilot-setup-steps.yml`.
