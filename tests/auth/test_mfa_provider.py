@@ -37,7 +37,7 @@ class TestMFASecret:
         """Test existing SHA1 secrets still normalize and work."""
         provider = MFAProvider()
         secret = MFASecret(
-            secret="JBSWY3DPEHPK3PXP",
+            secret="JBSWY3DPEHPK3PXP",  # pragma: allowlist secret
             user_id="user123",
             issuer="Codex",
             algorithm="SHA1",
@@ -54,7 +54,7 @@ class TestMFASecret:
     def test_provisioning_uri(self):
         """Test provisioning URI generation."""
         secret = MFASecret(
-            secret="JBSWY3DPEHPK3PXP",
+            secret="JBSWY3DPEHPK3PXP",  # pragma: allowlist secret
             user_id="user123",
             issuer="Codex",
         )
@@ -147,7 +147,7 @@ class TestMFAProvider:
     def test_generate_totp(self):
         """Test TOTP generation."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"  # "Hello!" in base32
+        secret = "JBSWY3DPEHPK3PXP"  # "Hello!" in base32  # pragma: allowlist secret
 
         # Generate TOTP
         totp = provider.generate_totp(secret)
@@ -159,7 +159,7 @@ class TestMFAProvider:
     def test_generate_totp_consistent(self):
         """Test TOTP generation is consistent for same time."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         timestamp = 1000000000.0
 
         totp1 = provider.generate_totp(secret, timestamp)
@@ -170,7 +170,7 @@ class TestMFAProvider:
     def test_generate_totp_sha1_compatibility(self):
         """Test explicit SHA1 compatibility for RFC 6238 clients."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         timestamp = 1000000000.0
 
         totp1 = provider.generate_totp(secret, timestamp, algorithm="SHA1")
@@ -181,7 +181,7 @@ class TestMFAProvider:
     def test_verify_totp_valid(self):
         """Test TOTP verification with valid code."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         user_id = "user123"
 
         # Generate code for current time
@@ -195,7 +195,7 @@ class TestMFAProvider:
     def test_verify_totp_invalid(self):
         """Test TOTP verification with invalid code."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         user_id = "user123"
 
         # Verify with wrong code
@@ -206,7 +206,7 @@ class TestMFAProvider:
     def test_verify_totp_time_window(self):
         """Test TOTP verification with time window."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         user_id = "user123"
 
         # Generate code for 30 seconds ago
@@ -221,7 +221,7 @@ class TestMFAProvider:
     def test_verify_totp_sha1_compatibility(self):
         """Test SHA1 verification remains available for existing secrets."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         user_id = "user123"
         code = provider.generate_totp(secret, algorithm="SHA1")
 
@@ -237,7 +237,7 @@ class TestMFAProvider:
     def test_secret_creation_invalid_algorithm(self):
         """Test invalid secret algorithms are rejected during construction."""
         with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
-            MFASecret(secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5")
+            MFASecret(secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5")  # pragma: allowlist secret
 
     def test_verify_totp_invalid_algorithm(self):
         """Test invalid verify_totp algorithms are rejected."""
@@ -249,7 +249,7 @@ class TestMFAProvider:
     def test_rate_limiting(self):
         """Test rate limiting on failed attempts."""
         provider = MFAProvider()
-        secret = "JBSWY3DPEHPK3PXP"
+        secret = "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         user_id = "user123"
 
         # Make MAX_ATTEMPTS failed attempts

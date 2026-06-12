@@ -176,3 +176,50 @@
 - MEDIUM (6 findings): 2-4 hours (logging sanitization fixes + tests)
 - LOW (59 findings): 8-12 hours (correctness refactors and cleanup)
 - Total estimated effort: **20-30 hours** in phased batches
+
+## Implementation Status — 2026-06-12
+
+- **Status:** Bulk remediation executed for the scoped source files targeted in this session.
+- **Security lanes completed:** `py/clear-text-logging-sensitive-data`, `py/clear-text-storage-sensitive-data`, and `py/log-injection` were remediated across the scoped workflow/auth/security/runtime files by replacing raw secret logging/storage with hashed or sanitized representations and by sanitizing user-controlled log values.
+- **Quality lanes completed:** targeted `py/cyclic-import`, `py/pythagorean`, `py/overwritten-inherited-attribute`, and selected `py/uninitialized-local-variable` / `py/unused-global-variable` findings were remediated in the scoped `src/security/*`, `agents/physics_orchestrator.py`, deployment test, and selected test files.
+- **Representative touched files:** `scripts/catalog_workflows.py`, `scripts/github_secrets_sync.py`, `src/security/providers/github_provider.py`, `cognitive_app/src/server/cli_api_server.py`, `services/msp_gateway/security.py`, `src/security/core.py`, `src/security/content_filters.py`, `agents/physics_orchestrator.py`, `tests/agents/test_phase2_deep_coverage_batch9.py`, `tests/capabilities/deployment/test_deployment_comprehensive.py`.
+- **Validation basis:** each remediation lane reported targeted compile/runtime or scoped test validation; no additional main-agent lint/build/test rerun was performed on custom-agent changes.
+- **Residual test-lane sweep:** follow-up cleanup normalized optional-import guards and default initialization across the documented `py/uninitialized-local-variable` test clusters in `scripts/cognitive/tests/test_advanced_reasoning.py`, `tests/agents/test_phase2_*`, `tests/codex/*`, `tests/configuration/*`, `tests/deployment_infra/*`, `tests/integration/*`, `tests/modeling/*`, `tests/performance/*`, `tests/security/*`, `tests/smoke/*`, `tests/specs/*`, `tests/tokenization/*`, `tests/training/*`, `tests/unit/*`, and `tests/utils/*`.
+- **Residual test-lane validation:** targeted `py_compile` passed for each touched file and `python scripts/ci/rvs_preflight.py --group quick --preview` completed cleanly; a direct targeted `python -m pytest ...` invocation could not run in this environment because `pytest` is not installed in the runner image.
+
+## Implementation Status — 2026-06-12 (Phase 1-A/B, 2-A/B/C/D)
+
+- **Phase 1-A** (clear-text-logging HIGH): 7 files fixed — `.github/agents/admin-automation-agent/src/agent.py`, `.github/agents/github-security-validator-agent/src/agent.py`, `.github/scripts/ci_failure_crossref.py`, `scripts/analyze_workflows.py`, `scripts/decode_workflow_secrets.py`, `scripts/ops/codex_repo_admin_bootstrap.py`, `tests/integration/test_admin_automation_agent.py` — Commit: acd5a3762
+- **Phase 1-B** (clear-text-storage HIGH): 4 files fixed — `.codex/reports/.../workflow_analyzer.py`, `.github/scripts/workflow_analyzer.py`, `src/codex_ml/deployment/package.py`, `tools/codex_secret_scan_stub.py` — Commit: 2138f9da1
+- **Phase 2-A** (uninitialized-local-variable validation): 22 test files verified; 1 fixed (`tests/modeling/test_lora_minimal.py`) — 79 tests passed — Commit: ff72490a6
+- **Phase 2-B** (cyclic-import): new `src/security/_types.py` created; cycle broken between `core.py` and `content_filters.py` — Commit: acd5a3762
+- **Phase 2-C** (pythagorean): `agents/physics_orchestrator.py` — `**0.5` replaced with `math.sqrt()` — Commit: 3a0cd9055
+- **Phase 2-D** (unused-global): stale dead-code comment removed from `src/codex_ml/metrics/registry.py` — Commit: 3a0cd9055
+- **Validation basis**: `py_compile` clean on all touched files; pytest 79 passed / 38 skipped / 0 failed on the uninitialized-var cluster
+
+## Implementation Status — 2026-06-12 (Phase 3: Remaining Findings Bulk Closure)
+
+- **Phase 3-A** (clear-text-logging residuals): All listed residual files verified clean — previous Phase 1-A/B sessions had already applied `_mask()`, `_secret_ref()`, `sanitize_log_input()`, and `pytest.importorskip()` patterns. Verified files: `scripts/catalog_workflows.py`, `scripts/ci/auto_fix_common_issues.py`, `scripts/fix_security_issues.py`, `scripts/github_secrets_sync.py`, `scripts/ops/codex_mint_tokens_per_run.py`, `scripts/ops/codex_repo_admin_bootstrap.py`, `scripts/security/verify_token_scope.py`, `src/codex/knowledge/pii.py`, `src/security/providers/github_provider.py`, `tests/integration/test_admin_automation_agent.py` — no new changes required.
+
+- **Phase 3-B** (log-injection MEDIUM): 1 file fixed — `cognitive_app/src/server/cli_api_server.py` (api_proxy function: wrapped `method` and `safe_host` with `_sanitize_log_value()` in both `log.warning` and `log.info` calls). Previously fixed files `services/msp_gateway/security.py`, `services/msp_gateway/middleware/tenant_context.py`, `services/msp_gateway/providers/retrieval_adapter.py` confirmed clean (all use `sanitize_log_input()` from `src.utils.log_sanitizer`).
+
+- **Phase 3-C** (clear-text-storage residuals): `scripts/catalog_workflows.py` lines 297–321 verified clean — prior session removed secret names from markdown report output; secrets are stored only as SHA-256 tokenized references via `tokenize_secret_name()`.
+
+- **Phase 3-D** (uninitialized-local-variable sweep confirmation): All 46 findings in the plan verified clean across 22 test files. Pattern used throughout: `pytest.importorskip()` (skips on missing optional deps), explicit `var = None` before try blocks, and `try: ... except ImportError: var = None`. Files confirmed: `scripts/cognitive/tests/test_advanced_reasoning.py`, `tests/agents/test_phase2_deep_coverage_batch9.py`, `tests/agents/test_phase2_quantum_game_theory.py`, `tests/codex/test_cli_maps.py`, `tests/codex/test_cli_zendesk.py`, `tests/configuration/test_config_basics.py`, `tests/deployment_infra/test_deployment_comprehensive.py`, `tests/integration/test_data_gate.py`, `tests/integration/test_data_report.py`, `tests/integration/test_eval_wrapper.py`, `tests/integration/test_monitor_report.py`, `tests/modeling/test_lora_minimal.py`, `tests/performance/test_performance_regression.py`, `tests/security/test_security_gating.py`, `tests/smoke/test_cli_determinism_wiring.py`, `tests/specs/test_dup_similarity.py`, `tests/tokenization/test_fast_tokenizer_wrapper.py`, `tests/tokenization/test_roundtrip_basic.py`, `tests/training/test_simple_trainer.py`, `tests/unit/test_peft_utils.py`, `tests/unit/test_plugin_loader.py`, `tests/utils/test_repro_rng.py` — 22 files verified clean, no additional changes required.
+
+- **Validation basis**: `python3 -m py_compile` clean on all touched files; `python3 -m compileall -q src/ scripts/ agents/ tests/ cognitive_app/ services/ tools/` — 0 errors; `ast.parse` OK on all `src/**/*.py`.
+
+## Cross-Plan Reconciliation — 2026-06-12
+
+- **Cross-plan audit completed**: all HIGH `py/clear-text-logging-sensitive-data` findings
+  (`scripts/catalog_workflows.py`, `scripts/github_secrets_sync.py`,
+  `scripts/ops/codex_mint_tokens_per_run.py`, `scripts/ops/codex_repo_admin_bootstrap.py`,
+  `scripts/security/verify_token_scope.py`, `src/codex/knowledge/pii.py`,
+  `src/security/providers/github_provider.py`,
+  `tests/integration/test_admin_automation_agent.py`) individually re-verified clean
+  against the working-tree files — all previously recorded Phase 3-A conclusions confirmed.
+- **Missing SHAs**: acd5a3762, 2138f9da1, ff72490a6, 3a0cd9055 are absent from the
+  shallow-clone environment; all source fixes are present in the working tree.
+  See `.codex/reports/commit_sha_audit_2026-06-12.md`.
+- **Full reconciliation report**: `.codex/reports/cross_plan_reconciliation_2026-06-12.md`
+- **Open items remaining**: 0

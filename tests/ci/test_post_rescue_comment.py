@@ -27,7 +27,7 @@ class TestGetBranchHeadSha:
     """Unit tests for _get_branch_head_sha()."""
 
     def test_returns_sha_on_success(self):
-        sha = "abc123def456abc123def456abc123def456abcd"
+        sha = "abc123def456abc123def456abc123def456abcd"  # pragma: allowlist secret
         with patch.object(prc, "_gh", return_value=(200, {"commit": {"sha": sha}})):
             result = prc._get_branch_head_sha("token", "owner/repo", "my-branch")
         assert result == sha
@@ -138,7 +138,7 @@ class TestSelfSuppressMainLogic:
     _ENV_BASE = {
         "GH_TOKEN": "test-token",
         "REPO": "Aries-Serpent/_codex_",
-        "COMMIT_SHA": "aabbccddeeff00112233445566778899aabbccdd",
+        "COMMIT_SHA": "aabbccddeeff00112233445566778899aabbccdd",  # pragma: allowlist secret
         "RUN_ID": "99999999",
         "RUN_URL": "https://github.com/Aries-Serpent/_codex_/actions/runs/99999999",
         "WORKFLOW_NAME": "Test Workflow",
@@ -326,7 +326,7 @@ class TestDefensiveShaResolution:
         """When COMMIT_SHA is empty (e.g. issue_comment trigger), the script
         must fetch it from the PR API and use the resolved SHA in the comment.
         """
-        resolved_sha = "deadbeefcafe1234deadbeefcafe1234deadbeef"
+        resolved_sha = "deadbeefcafe1234deadbeefcafe1234deadbeef"  # pragma: allowlist secret
         self._patch_env(monkeypatch, COMMIT_SHA="", BRANCH="")
 
         pr_api_response = {
@@ -359,7 +359,7 @@ class TestDefensiveShaResolution:
 
     def test_resolves_branch_from_pr_api_when_branch_empty(self, monkeypatch, capsys):
         """When BRANCH is empty the script must fetch it from the PR API."""
-        resolved_sha = "cafebabe1234cafebabe1234cafebabe12341234"
+        resolved_sha = "cafebabe1234cafebabe1234cafebabe12341234"  # pragma: allowlist secret
         self._patch_env(monkeypatch, COMMIT_SHA=resolved_sha, BRANCH="")
 
         pr_api_response = {
@@ -414,7 +414,7 @@ class TestDefensiveShaResolution:
         """When COMMIT_SHA and BRANCH are both non-empty, the PR API must NOT
         be called for resolution (the env vars are fully supplied).
         """
-        full_sha = "aabbccddeeff00112233445566778899aabbccdd"
+        full_sha = "aabbccddeeff00112233445566778899aabbccdd"  # pragma: allowlist secret
         self._patch_env(monkeypatch, COMMIT_SHA=full_sha, BRANCH="my-feature")
 
         pr_lookup_calls = []

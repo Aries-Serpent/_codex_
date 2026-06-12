@@ -36,6 +36,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 from .models import BudgetUsed, ExecutionMetrics, TelemetryEvent
 
@@ -63,6 +64,16 @@ def _append_jsonl(record: dict[str, Any]) -> None:
             fh.write(json.dumps(record) + "\n")
     except OSError as exc:  # pragma: no cover
         logger.debug("Telemetry: cannot write JSONL to '%s': %s", path, exc)
+
+
+def _validated_push_endpoint(endpoint: str) -> str:
+    """Allow only credential-free HTTP(S) telemetry endpoints."""
+    parts = urlsplit(endpoint)
+    if parts.scheme not in {"http", "https"} or not parts.netloc:
+        raise ValueError(f"Telemetry endpoint must be http(s) with host: {endpoint!r}")
+    if parts.username or parts.password:
+        raise ValueError("Telemetry endpoint must not contain embedded credentials")
+    return endpoint
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +359,7 @@ def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
         httpx = importlib.import_module("httpx")
         try:
             payload = [e.model_dump() for e in events]
-            resp = httpx.post(endpoint, json=payload, timeout=30)
+            resp = httpx.post(_validated_push_endpoint(endpoint), json=payload, timeout=30)
             resp.raise_for_status()
             logger.info("Telemetry: pushed %d events to %s", len(events), endpoint)
             return True
@@ -364,9 +375,14 @@ def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
     try:
         data = _json.dumps([e.model_dump() for e in events]).encode()
         req = urllib.request.Request(
-            endpoint, data=data, headers={"Content-Type": "application/json"}, method="POST"
+            _validated_push_endpoint(endpoint),
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
         )
-        with urllib.request.urlopen(req, timeout=30):  # nosec B310 - endpoint from env/config
+        with urllib.request.urlopen(  # nosec B310 - endpoint from env/config  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- endpoint is validated by _validated_push_endpoint()
+            req, timeout=30
+        ):
             pass
         logger.info("Telemetry: pushed %d events to %s", len(events), endpoint)
         return True

@@ -37,8 +37,18 @@ from codex.release.manifest import dump_manifest_locked, load_manifest  # noqa: 
 
 
 def _set_mode(path: Path, mode_str: str) -> None:
-    mode = int(mode_str, 8)
-    os.chmod(path, (path.stat().st_mode & ~0o777) | mode)
+    requested = int(mode_str, 8) & 0o777
+    sanitized = requested & ~0o022  # never allow group/other write bits from manifest input
+    if sanitized != requested:
+        logger.warning(
+            "Release mode %s for %s included unsafe write bits; applying %s instead",
+            mode_str,
+            path,
+            oct(sanitized),
+        )
+    os.chmod(  # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- manifest mode is sanitized to strip group/other write bits
+        path, (path.stat().st_mode & ~0o777) | sanitized
+    )
 
 
 def _templated_bytes(data: bytes, vars: dict) -> bytes:
@@ -139,7 +149,7 @@ def _clean_path(path: Path) -> None:
 
         def _onerror(func, p, exc_info):  # pragma: no cover - defensive cleanup
             with contextlib.suppress(OSError):
-                os.chmod(p, 0o700)
+                os.chmod(p, 0o700)  # nosec B103 -- nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- temporary owner-only mode applied to force-delete locked tree entries before immediately removing them
             func(p)
 
         shutil.rmtree(path, onerror=_onerror)

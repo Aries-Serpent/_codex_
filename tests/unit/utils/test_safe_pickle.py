@@ -126,9 +126,9 @@ def test_safe_pickle_load_signed_tampered(tmp_path):
 
 
 def test_get_secret_key_env_var():
-    with patch.dict(os.environ, {"PICKLE_SECRET_KEY": "env_secret"}):
+    with patch.dict(os.environ, {"PICKLE_SECRET_KEY": "env_secret"}):  # pragma: allowlist secret
         key = _get_secret_key()
-        assert key == b"env_secret"
+        assert key == b"env_secret"  # pragma: allowlist secret
 
 
 def test_get_secret_key_create_file(tmp_path):
@@ -201,7 +201,7 @@ def test_split_signed_pickle_legacy():
     assert extracted_signature == signature
 
 def test_safe_pickle_dump_without_explicit_key(tmp_path):
-    with patch.dict(os.environ, {"PICKLE_SECRET_KEY": "env_secret"}):
+    with patch.dict(os.environ, {"PICKLE_SECRET_KEY": "env_secret"}):  # pragma: allowlist secret
         file_path = tmp_path / "test_implicit_key.pkl"
         safe_pickle_dump([1,2,3], str(file_path), add_signature=True)
 

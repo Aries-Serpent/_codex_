@@ -74,7 +74,7 @@ class WorkflowAnalyzer:
                 "guarded": is_guarded,
                 "triggers": self._extract_triggers(workflow_data),
                 "jobs": self._extract_jobs(workflow_data),
-                "secrets": self._extract_secrets(content),
+                "secrets": len(self._extract_secrets(content)),  # count only — do not store secret names
                 "env_vars": self._extract_env_vars(workflow_data),
                 "runners": self._extract_runners(workflow_data),
                 "actions_used": self._extract_actions(workflow_data),
@@ -334,7 +334,7 @@ class WorkflowAnalyzer:
             if len(info["triggers"]) > 2:
                 triggers += "..."
             runner = info["runners"][0] if info["runners"] else "unknown"
-            secrets_count = len(info["secrets"])
+            secrets_count = info["secrets"]  # already a pre-computed count (not a list)
 
             deps = []
             if info["has_docker"]:
@@ -380,7 +380,7 @@ class WorkflowAnalyzer:
         workflows_with_secrets = 0
         secrets_per_workflow: list[int] = []
         for info in self.workflows.values():
-            count = len(info["secrets"])
+            count = info["secrets"]  # already a pre-computed count (not a list)
             if count > 0:
                 workflows_with_secrets += 1
             secrets_per_workflow.append(count)

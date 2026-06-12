@@ -442,7 +442,7 @@ try:
 except Exception:
     FastAPI = None  # type: ignore
 
-API_KEY_ENV = "CODEX_API_KEY"
+API_KEY_ENV = "CODEX_API_KEY"  # pragma: allowlist secret
 
 def api_key_auth(request: Request) -> None:  # type: ignore
     key = os.environ.get(API_KEY_ENV)

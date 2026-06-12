@@ -2,8 +2,41 @@
 
 ## [Unreleased]
 
+### Fixed (PR #4861 CI follow-up — 2026-06-12T18:39Z)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` after newer session/auth commits so PR #4861 satisfies the cognitive pre-flight REQ-4 / REQ-5 last-commit freshness gates again.
+- Re-verified that `.github/workflows/copilot-setup-steps.yml` now parses cleanly and that Pattern 3 no longer reports the session-preload YAML regression on this branch.
+
+### Fixed (auto-update — PR #4861)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4861 (SHA `309ebd24`) at 2026-06-12T18:31Z [auto-generated]
+
+### Fixed (SN — `_PREEXISTING_FAILURES` batch continuation 2026-06-12T18:10Z)
+- Cleared the next stale `_PREEXISTING_FAILURES` batch in `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/tests/conftest.py` by retiring now-valid entries for status-gate, sentencepiece prefix handling, train-loop timestamp coverage, system-metrics logger coverage, event integration fallback, CLI help behaviour, inference-serving detector coverage, LoRA config coverage, and tokenization compat coverage.
+- Fixed `src/codex_ml/training/event_integration.py` to import event primitives and cloud publishers from `codex_ml.events.*`, restoring the local EventBus fallback path used by training event tests.
+- Updated stale tests to match current interfaces and behaviour in `tests/monitoring/test_system_metrics.py`, `tests/test_train_loop.py`, `tests/test_codexml_cli.py`, `tests/specs/test_detector_inference_serving.py`, `tests/test_modeling_module.py`, and `tests/tokenization/test_tokenization_compat.py`.
+- Restored the canonical guarded block-scalar session-preload step in `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/.github/workflows/copilot-setup-steps.yml`, clearing the workflow YAML parse failure and returning `validate_setup_steps_yaml.sh` / Pattern 3 to green.
+
+### Fixed (SN — remediation-plan implementation 2026-06-12T17:39Z)
+- Hardened SQL codemod safety in `scripts/security/codemods/fix_sql_injection.py` by guarding single-variable tuple handling with `var is not None and var.isidentifier()`, preventing `NoneType` attribute errors.
+- Revalidated related Tier-1 remediation targets: JWT secret handling remains env-driven in `inference_server.py`, no `isidentifier` crash path in `tracking_decide.py` / `checkpoint_validate.py`, and no repo-root `typer/` shadow package present.
+
+### Security (2026-06-12)
+- CodeQL: 107 findings closed — clear-text-logging/storage masking, log-injection sanitization, cyclic-import break, pythagorean → math.sqrt/hypot, SHA-256 upgrades
+- Semgrep: 88 findings closed — urllib nosec B310, safe pickle/checkpoint, SHA1→SHA256, chmod nosec B103
+- Secrets: Phase 6 baseline verification complete — vendor exclusions, CODEX_MANIFEST valid, 11 test allowlist annotations
+- Cross-plan reconciliation: 0 OPEN items; 7 reports generated in .codex/reports/
+
+### Fixed (SN — remediation execution 2026-06-12)
+- Bulk CodeQL/semgrep/secrets remediation execution: hardened secret logging/storage and log-injection handling across workflow tooling, auth/security providers, MSP gateway services, and CLI/server surfaces.
+- Network/parser/security hardening: added URL allowlisting for dynamic urllib flows, switched XML parsing to `defusedxml`, hardened subprocess handling, tightened file-permission normalization, and cleared remaining parser-rule follow-ups.
+- Checkpoint serialization hardening: centralized trusted pickle wrappers, preserved restricted-load defaults, and updated checkpoint/security tests around the safer serialization path.
+- Quality cleanup: fixed targeted CodeQL correctness findings in `src/security/*`, `agents/physics_orchestrator.py`, deployment manifests, and selected tests.
+- Secrets triage: applied exact-line allowlist pragmas only to verified false positives in scoped source files; targeted secret scan returned clean.
+- Branch alignment: merged latest `origin/0D_base_` and `origin/main` into `copilot/explore-codebase-and-create-implementation-plan` before final validation to eliminate behind-count misalignment.
 ### Fixed (auto-update — PR #4857)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4857 (SHA `4f8fe61a`) at 2026-06-12T14:50Z [auto-generated]
+
+### Fixed (auto-update — PR #4855)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4855 (SHA `2ccdf700`) at 2026-06-12T14:36Z [auto-generated]
 
 ### Fixed (SN — PR #4853 CI rescue #4688307317 commit e1cf205)
 - PR #4853 CI rescue (`#4688307317`): verified `Final Pre-Merge Checks` failure on commit `e1cf2051` was REQ-4/REQ-5/REQ-14 non-compliance; fix confirmed in `913e89b1`; ran `python scripts/ci/mypy_baseline.py --require-baseline` (0 errors ↓122), `python scripts/ci/auto_fix_common_issues.py --check-only` (0 issues), `session_wrapup_autofix.py --check` (all green).
@@ -9449,3 +9482,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Diagnosed root cause of persistent Copilot setup steps parse error: `main` branch `copilot-setup-steps.yml` has 7-space indent on Session Context Pre-load step instead of 6-space, causing Go yaml.v3 parse failure (`yaml: line 124: did not find expected '-' indicator`). Fix already present in `0D_base_` and PR branch; will propagate on merge.
 - Confirmed all 12 review threads resolved in commit `fa34bc2`.
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5).
+
+### Fixed (PR #4861 freshness rescue — 2026-06-12T18:52Z)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` after later `[skip ci]` session-auth commits (`6276ed35c`, `e0dad06ce`) reintroduced the cognitive pre-flight REQ-4/REQ-5 last-commit freshness failure on PR #4861.

@@ -174,6 +174,13 @@ class MSPGatewaySettings(BaseSettings):
     api_key_required: bool = Field(
         default=True, description="Require API key authentication for all non-public endpoints"
     )
+    api_key_pepper: str = Field(
+        default="msp-gateway-local-pepper",
+        description=(
+            "Deterministic pepper used to derive stored API-key hashes. "
+            "Override via MSP_API_KEY_PEPPER in non-local environments."
+        ),
+    )
 
     # Feature flags
     admin_api_enabled: bool = Field(

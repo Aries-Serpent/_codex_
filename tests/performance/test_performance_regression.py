@@ -264,11 +264,9 @@ class TestAgentMemoryPerformance:
         import tempfile
         from pathlib import Path
 
-        # Skip if agent_memory not available
-        try:
-            from agents.agent_memory import AgentMemorySystem
-        except ImportError:
-            pytest.skip("agent_memory not available")
+        AgentMemorySystem = pytest.importorskip(
+            "agents.agent_memory"
+        ).AgentMemorySystem
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "perf_test.db"
@@ -293,10 +291,9 @@ class TestAgentMemoryPerformance:
         import tempfile
         from pathlib import Path
 
-        try:
-            from agents.agent_memory import AgentMemorySystem
-        except ImportError:
-            pytest.skip("agent_memory not available")
+        AgentMemorySystem = pytest.importorskip(
+            "agents.agent_memory"
+        ).AgentMemorySystem
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "perf_test.db"

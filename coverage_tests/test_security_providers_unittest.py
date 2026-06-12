@@ -99,8 +99,8 @@ class AWSProviderCoverageTests(unittest.TestCase):
             with self.assertRaises(ValidationError):
                 provider.validate_secret("denied")
 
-        provider.client.get_secret_value.return_value = {"SecretString": "plain"}
-        self.assertEqual(provider.get_secret_value("sec"), "plain")
+        provider.client.get_secret_value.return_value = {"SecretString": "plain"}  # pragma: allowlist secret
+        self.assertEqual(provider.get_secret_value("sec"), "plain")  # pragma: allowlist secret
         provider.client.get_secret_value.return_value = {"SecretBinary": b"bin"}
         self.assertEqual(provider.get_secret_value("sec"), base64.b64encode(b"bin").decode("utf-8"))
 

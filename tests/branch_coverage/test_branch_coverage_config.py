@@ -320,7 +320,7 @@ class TestEnvironmentOverridesBranches:
         """Test environment variable prefix matching branch."""
         with patch.dict(
             os.environ,
-            {"CODEX_API_KEY": "key1", "CODEX_DB_URL": "url1", "OTHER_VAR": "value"},
+            {"CODEX_API_KEY": "key1", "CODEX_DB_URL": "url1", "OTHER_VAR": "value"},  # pragma: allowlist secret
         ):
             env_vars = {
                 k: v for k, v in os.environ.items() if k.startswith("CODEX_")

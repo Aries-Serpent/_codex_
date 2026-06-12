@@ -111,7 +111,7 @@ def test_enable_deterministic_training_tf_no_op_determinism():
 def test_save_env_snapshot(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
 
-    mock_git_commit = "abc1234567890def"
+    mock_git_commit = "abc1234567890def"  # pragma: allowlist secret
     mock_git_dirty = " M some_file.py"
     mock_pip_freeze = "package==1.0.0\nother==2.0.0"
 
@@ -138,7 +138,7 @@ def test_save_env_snapshot(tmp_path):
 
         assert snapshot["python_version"] == sys.version
         assert snapshot["python_executable"] == sys.executable
-        assert snapshot["git_commit"] == "abc1234567890def"
+        assert snapshot["git_commit"] == "abc1234567890def"  # pragma: allowlist secret
         assert snapshot["git_dirty"] is True
         assert snapshot["pip_freeze"] == ["package==1.0.0", "other==2.0.0"]
         assert snapshot["cuda_available"] is True
@@ -152,7 +152,7 @@ def test_save_env_snapshot(tmp_path):
 
         with open(output_path.with_suffix(".json")) as f:
             data = json.load(f)
-            assert data["git_commit"] == "abc1234567890def"
+            assert data["git_commit"] == "abc1234567890def"  # pragma: allowlist secret
 
 def test_save_env_snapshot_no_git_no_gpu(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"

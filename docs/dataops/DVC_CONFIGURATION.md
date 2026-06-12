@@ -3,6 +3,9 @@
 ## Quick Setup
 
 ```bash
+# Install the opt-in data tooling surface first
+pip install -e ".[dataops]"
+
 # Track knowledge data with DVC
 dvc add data/knowledge/zendesk/
 

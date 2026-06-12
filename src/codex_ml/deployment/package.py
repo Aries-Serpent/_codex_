@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import hashlib  # noqa: E402
 import json  # noqa: E402
 import shutil  # noqa: E402
 import tarfile  # noqa: E402
@@ -59,7 +60,7 @@ def build_service_package(
         "model_dir": str(model_root),
         "files": sorted(p.name for p in model_root.glob("*")),
         "metadata": dict(metadata or {}),
-        "secrets": list(gathered_secrets.keys()),
+        "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # hashed identifiers only — no secret values stored
     }
     manifest_path = staging / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")

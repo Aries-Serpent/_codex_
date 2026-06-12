@@ -33,11 +33,17 @@ from pydantic import BaseModel, Field, field_validator
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
+from codex.security_utils import sanitize_log_message
 
 logger = logging.getLogger(__name__)
 
 # Simple e-mail pattern — intentionally permissive but catches obvious junk.
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def _safe_log_value(value: object) -> str:
+    """Normalize user-controlled values before logging."""
+    return sanitize_log_message(str(value) if value is not None else "unknown")
 
 
 # ---------------------------------------------------------------------------
@@ -214,7 +220,9 @@ def create_auth_router(
     if authenticator is None:
         resolved_secret = secret_key or os.environ.get("CODEX_AUTH_SECRET") or _DEFAULT_SECRET
         if resolved_secret == _DEFAULT_SECRET:
-            logger.warning("Using default JWT secret — set CODEX_AUTH_SECRET for production")
+            logger.warning(
+                "Using default JWT signing material — configure a dedicated production key"
+            )
         store = UserStore()
         tokens = TokenManager(secret_key=resolved_secret)
         authenticator = Authenticator(user_store=store, token_manager=tokens)
@@ -257,7 +265,7 @@ def create_auth_router(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         ip = request.client.host if request.client else "unknown"
-        logger.info("User registered: %s from %s", user.username, ip)
+        logger.info("User registered: %s from %s", _safe_log_value(user.username), _safe_log_value(ip))
 
         return RegisterResponse(
             user_id=user.user_id,
@@ -288,20 +296,24 @@ def create_auth_router(
         except Exception as exc:
             code = getattr(exc, "code", "")
             if code == "mfa_required":
-                logger.info("MFA required for login attempt from %s", ip_address)
+                logger.info("MFA required for login attempt from %s", _safe_log_value(ip_address))
                 raise HTTPException(status_code=403, detail="MFA verification required") from exc
             if code == "mfa_failed":
-                logger.warning("MFA verification failed from %s", ip_address)
+                logger.warning("MFA verification failed from %s", _safe_log_value(ip_address))
                 raise HTTPException(status_code=403, detail="MFA verification failed") from exc
             if hasattr(exc, "code"):
-                logger.warning("Login failed from %s: %s", ip_address, type(exc).__name__)
+                logger.warning("Login failed from %s: %s", _safe_log_value(ip_address), type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid credentials") from exc
             # Not an auth-domain exception — log and re-raise as 500
             exc_type = type(exc).__name__
-            logger.error("Unexpected error during login from %s: %s", ip_address, exc_type)
+            logger.error("Unexpected error during login from %s: %s", _safe_log_value(ip_address), exc_type)
             raise
 
-        logger.info("Login success: user=%s from %s", result.username, ip_address)
+        logger.info(
+            "Login success: user=%s from %s",
+            _safe_log_value(result.username),
+            _safe_log_value(ip_address),
+        )
 
         return LoginResponse(
             user_id=result.user_id,
@@ -335,9 +347,9 @@ def create_auth_router(
             new_token = auth.refresh(body.refresh_token)
         except Exception as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
-                logger.warning("Token refresh failed: %s", type(exc).__name__)
+                logger.warning("Session refresh rejected: %s", type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
-            logger.error("Unexpected error during token refresh: %s", type(exc).__name__)
+            logger.error("Unexpected auth refresh error: %s", type(exc).__name__)
             raise
 
         return RefreshResponse(access_token=new_token)

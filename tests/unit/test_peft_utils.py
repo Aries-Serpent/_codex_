@@ -16,14 +16,10 @@ import pytest
     reason="transformers/peft not installed in this environment",
 )
 def test_freeze_counts():
-    try:
-        from hhg_logistics.model.peft_utils import (
-            apply_lora,
-            freeze_base_weights,
-            load_hf_llm,
-        )
-    except ImportError:
-        pytest.skip("transformers/peft not installed")
+    peft_utils = pytest.importorskip("hhg_logistics.model.peft_utils")
+    apply_lora = peft_utils.apply_lora
+    freeze_base_weights = peft_utils.freeze_base_weights
+    load_hf_llm = peft_utils.load_hf_llm
 
     def load_bundle_or_skip():
         loaded_bundle = None  # initialize before try so CodeQL can confirm it's always set

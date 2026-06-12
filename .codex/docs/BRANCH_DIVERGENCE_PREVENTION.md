@@ -57,9 +57,23 @@ All authored by `github-actions[bot]`, all `[skip ci]` or `[automated]`.
 
 | Type | Description | Detection | Corrective Action |
 |------|-------------|-----------|-------------------|
-| **EXPECTED** | `0D_base_` ahead of `main` | `git log origin/main..origin/0D_base_` | Normal — merge staging-gate PR |
-| **AUTO-GEN** | `main` ahead via `github-actions[bot]` auto-gen | `git log origin/0D_base_..origin/main` \| filter by author | Auto-correctable → trigger `forward-sync-autogen.yml` |
-| **CODE-LEAK** | `main` ahead via human/code commits | `git log origin/0D_base_..origin/main` \| filter non-bot | Requires @copilot session to cherry-pick onto `0D_base_` |
+| **EXPECTED** | `0D_base_` ahead of `main` with staged reviewed work | `git log origin/main..origin/0D_base_` | Normal — promotion PR still in flight |
+| **PIPELINE-MERGE** | `main` ahead via `Merge pull request #N from Aries-Serpent/0D_base_` | subject match on `git log origin/0D_base_..origin/main` | Auto-correct fast-forwards or merges `main` back into `0D_base_` |
+| **AUTO-GEN** | `main` ahead via `github-actions[bot]` auto-gen | author + subject match on `git log origin/0D_base_..origin/main` | Auto-correctable → trigger `forward-sync-autogen.yml` |
+| **AGENT-COMMIT** | `main` ahead via Copilot bot commits or empty commits | bot author or 0 file-tree changes | Auto-absorbed by the same fast-forward/merge path as PIPELINE-MERGE |
+| **CODE-LEAK** | `main` ahead via human/code commits with no absorbers present | everything else in `git log origin/0D_base_..origin/main` | Requires @copilot session to cherry-pick onto `0D_base_` or otherwise investigate |
+
+### Steady-State Target
+
+The repository does **not** treat `ahead=0 / behind=0` as the continuous healthy state.
+
+- `0D_base_ ahead of main` is **expected** while reviewed staging work waits for the
+  promotion PR.
+- `0D_base_ behind main` by bot `[skip ci]` commits can also be **temporarily acceptable**
+  under REQ-10 and the branch-divergence monitor, because auto-correction absorbs
+  pipeline-merge, agent-commit, and workflow-generated drift.
+- The practical health target is: **no unresolved `main`-only divergence requiring human
+  action** (`severity=healthy`, `codeleak_count=0`, and no remaining unabsorbed drift).
 
 ---
 
@@ -70,10 +84,10 @@ All authored by `github-actions[bot]`, all `[skip ci]` or `[automated]`.
 1. Checks if `0D_base_` exists.
 2. Computes `git merge-base origin/main origin/0D_base_`.
 3. Lists all commits that `main` has beyond the merge base.
-4. Classifies each: auto-gen (author = `github-actions[bot]` + known message patterns) vs. code-leak.
+4. Classifies each into 4 tiers: pipeline-merge / auto-gen / agent-commit / code-leak.
 5. Emits severity: `healthy` / `low` / `high` / `critical`.
 6. Opens or updates a `branch-divergence` tracking issue with full report.
-7. Posts `@copilot` escalation for code-leaks.
+7. Posts `@copilot` escalation only for unabsorbed code-leaks.
 
 **To run manually:**
 ```bash
@@ -86,14 +100,17 @@ gh workflow run branch-divergence-monitor.yml -f dry_run=true
 
 ## Auto-Correction (Automated)
 
-When only auto-gen leaks are detected, `branch-divergence-monitor.yml` automatically:
+When divergence is self-correctable, `branch-divergence-monitor.yml` automatically:
 
 1. Checks out `0D_base_`.
 2. Fetches `main`.
-3. Copies each auto-gen file from `main` to `0D_base_` (if `main`'s version is different).
+3. Copies each auto-gen file from `main` to `0D_base_` (if `main`'s version is different)
+   when AUTO-GEN drift is present.
 4. Applies the **slim-format rule** for `codex_index_meta.json` — strips the `chunks` array
    (per `scripts/ci/build_embeddings.py`: "git-tracked, slim header only — no chunks").
-5. Commits and pushes with a **rebase guard** (`git pull --rebase origin 0D_base_`) to prevent
+5. Fast-forwards or merges `main` back into `0D_base_` when PIPELINE-MERGE / AGENT-COMMIT
+   commits are the absorber path.
+6. Pushes with a **rebase guard** (`git pull --rebase origin 0D_base_`) to prevent
    non-fast-forward failures when `0D_base_` received commits since checkout.
 
 **`forward-sync-autogen.yml`** provides real-time correction on every auto-gen `push` to `main`:
@@ -220,7 +237,7 @@ After any agent session that touches auto-gen workflows:
 
 After any staging-gate merge (`0D_base_` → `main`):
 
-- [ ] Run `branch-divergence-monitor.yml` manually to confirm `behind_count=0`
+- [ ] Run `branch-divergence-monitor.yml` manually to confirm `behind_count=0` and `severity=healthy` (ahead_count may remain > 0 if new staged work already landed on `0D_base_`)
 - [ ] Verify next scheduled auto-gen run pushes to `0D_base_` (not `main`)
 
 ---
@@ -343,9 +360,9 @@ Detect → Classify → Remediate → Verify
 | Phase | Action |
 |-------|--------|
 | **Detect** | Check `branch-divergence-monitor.yml` last run output. Identify `severity` and `behind_count`. |
-| **Classify** | `git log origin/0D_base_..origin/main` — are they `github-actions[bot]` (auto-gen) or human (code-leak)? |
-| **Remediate** | Auto-gen: `gh workflow run forward-sync-autogen.yml`. Code-leak: cherry-pick onto `0D_base_` or open investigation session. |
-| **Verify** | Re-run `branch-divergence-monitor.yml --dry-run`. Confirm `behind_count=0` and `severity=healthy`. |
+| **Classify** | `git log origin/0D_base_..origin/main` — classify as PIPELINE-MERGE / AUTO-GEN / AGENT-COMMIT / CODE-LEAK. |
+| **Remediate** | PIPELINE-MERGE / AGENT-COMMIT: let auto-correct absorb. AUTO-GEN: `gh workflow run forward-sync-autogen.yml`. CODE-LEAK: cherry-pick onto `0D_base_` or open investigation session. |
+| **Verify** | Re-run `branch-divergence-monitor.yml --dry-run`. Confirm `behind_count=0` and `severity=healthy` (ahead_count may still be > 0). |
 
 **AfterMath patterns stored:**
 - `.codex/cognitive_brain/patterns/branch_divergence_grep_c_20260327.json` (RC-1)
@@ -437,7 +454,7 @@ Detect → Classify → Remediate → Verify
 | **Detect** | Check `branch-divergence-monitor.yml` last run output. Identify `severity`, `behind_count`, `codeleak_count`. |
 | **Classify** | 4 tiers: PIPELINE-MERGE / AUTO-GEN / AGENT-COMMIT / CODE-LEAK |
 | **Remediate** | PIPELINE-MERGE or AGENT-COMMIT: auto-correct handles it. AUTO-GEN: `gh workflow run forward-sync-autogen.yml`. CODE-LEAK (no absorbers): cherry-pick onto `0D_base_` or open investigation. |
-| **Verify** | Re-run `branch-divergence-monitor.yml --dry-run`. Confirm `codeleak_count=0` and `severity=healthy`. |
+| **Verify** | Re-run `branch-divergence-monitor.yml --dry-run`. Confirm `codeleak_count=0` and `severity=healthy` (ahead_count may still be > 0 while staged work is waiting for promotion). |
 
 ### Classification Quick Reference
 

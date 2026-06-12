@@ -37,5 +37,9 @@ def test_secret_scan_stub_detects_pattern(tmp_path: Path):
     data = json.loads(json_out.read_text(encoding="utf-8"))
     assert data["total_findings"] >= 1
     first = data["findings"][0]
-    # Snippet is redacted - check for beginning of secret key name or redaction marker
-    assert "AWS_SECRET" in first["snippet"] or "[REDACTED]" in first["snippet"]
+    # Snippet is sanitized before storage — accept any redaction sentinel.
+    assert (
+        "AWS_SECRET" in first["snippet"]
+        or "[REDACTED]" in first["snippet"]
+        or first["snippet"] == "<redacted>"
+    )

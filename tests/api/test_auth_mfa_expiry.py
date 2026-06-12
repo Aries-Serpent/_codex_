@@ -61,7 +61,7 @@ def registered_mfa_user(mfa_client, mfa_auth_components):
         json={
             "username": "alice",
             "email": "alice@example.com",
-            "password": "Str0ngPass!",
+            "password": "Str0ngPass!",  # pragma: allowlist secret
         },
     )
     assert resp.status_code == 201
@@ -92,7 +92,7 @@ class TestMFARoundTrip:
             "/auth/login",
             json={
                 "username_or_email": "alice",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
                 "totp_code": totp_code,
             },
         )
@@ -115,7 +115,7 @@ class TestMFARoundTrip:
             "/auth/login",
             json={
                 "username_or_email": "alice",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
         assert resp.status_code == 403
@@ -133,7 +133,7 @@ class TestMFARoundTrip:
             "/auth/login",
             json={
                 "username_or_email": "alice",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
                 "totp_code": "000000",
             },
         )
@@ -149,7 +149,7 @@ class TestMFARoundTrip:
             "/auth/login",
             json={
                 "username_or_email": "alice",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
         assert resp.status_code == 200
@@ -168,7 +168,7 @@ class TestMFARoundTrip:
             "/auth/login",
             json={
                 "username_or_email": "alice",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
                 "totp_code": totp_code,
             },
         )
@@ -251,12 +251,12 @@ class TestTokenExpiry:
             json={
                 "username": "carol",
                 "email": "carol@test.com",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
         login = client.post(
             "/auth/login",
-            json={"username_or_email": "carol", "password": "Str0ngPass!"},
+            json={"username_or_email": "carol", "password": "Str0ngPass!"},  # pragma: allowlist secret
         )
         assert login.status_code == 200
         refresh_token = login.json()["refresh_token"]

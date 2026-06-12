@@ -49,6 +49,35 @@ The test intentionally saves only tensors—no custom classes or lambda
 objects—because the goal is validating the safety gate and confirming
 that the helper returns tensors unchanged.
 
+`tests/checkpointing/test_checkpoint_core_io.py` covers the lower-level
+`codex_ml.utils.checkpoint_core` path used by the checkpoint metadata and
+retention helpers:
+
+- The primary read path now prefers `torch.load(..., weights_only=True)`
+  for checkpoint bytes produced by the repository's own checkpoint writer.
+- If torch cannot safely deserialize the payload, the code falls back to
+  `safe_pickle_load_bytes(..., use_restricted_unpickler=True)`.
+- A regression test feeds a known-malicious pickle gadget into that
+  fallback path and asserts that the restricted unpickler blocks it.
+
+## Trusted boundary and residual risk
+
+The Semgrep pickle lane for checkpointing is dispositioned on a narrow,
+documented boundary:
+
+- **Allowed write boundary:** `trusted_pickle_dumps()` remains in
+  `checkpoint_core` and `safe_pickle` for process-created checkpoint
+  payloads and deterministic integrity hashing where JSON cannot preserve
+  tensor/numpy state.
+- **Allowed read boundary:** checkpoint loads must stay on
+  `weights_only=True` or `RestrictedUnpickler` paths by default.
+- **Residual risk:** operators must still treat externally supplied
+  checkpoint files as untrusted unless they come from a reviewed source
+  and, where available, carry an expected HMAC/integrity sidecar.
+
+In short: trusted local checkpoint compatibility remains, but unchecked
+general-purpose pickle deserialization is no longer the default read path.
+
 ## Running the test locally
 
 For deterministic local runs, disable auto-loading of third-party pytest

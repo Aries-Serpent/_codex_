@@ -22,7 +22,7 @@ def test_precommit_config_exists():
 
 def test_precommit_config_valid_yaml():
     """Test that pre-commit config is valid YAML."""
-    import yaml
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -35,7 +35,7 @@ def test_precommit_config_valid_yaml():
 
 def test_precommit_has_pip_audit():
     """Test that pre-commit config includes pip-audit."""
-    import yaml
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -57,7 +57,7 @@ def test_precommit_has_pip_audit():
 
 def test_precommit_has_gitleaks():
     """Test that pre-commit config includes gitleaks."""
-    import yaml
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -85,6 +85,7 @@ def test_gitleaks_config_exists():
 
 def test_gitleaks_config_valid_toml():
     """Test that gitleaks config is valid TOML."""
+    toml = None
     try:
         import tomli as toml
     except ImportError:

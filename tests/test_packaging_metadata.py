@@ -49,6 +49,8 @@ def load_pyproject() -> dict[str, object]:
 def test_pyproject_core_metadata():
     data = load_pyproject()
     proj = data["project"]
+    dependencies = proj.get("dependencies", [])
+    optional = proj.get("optional-dependencies", {})
 
     # SPDX license (can be string or dict with 'text' key)
     license_val = proj.get("license")
@@ -60,6 +62,13 @@ def test_pyproject_core_metadata():
     # Python floor
     req = proj.get("requires-python", "")
     assert req.startswith(">=3.12") or req.startswith(">=3.10")
+
+    # Vulnerable optional stacks should not be pulled into the base install.
+    assert all("lm-eval" not in dep for dep in dependencies)
+    assert "eval" in optional
+    assert any("lm-eval" in dep for dep in optional["eval"])
+    assert "dataops" in optional
+    assert any("dvc==" in dep for dep in optional["dataops"])
 
     # Scripts presence
     scripts = proj.get("scripts", {})

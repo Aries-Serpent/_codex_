@@ -21,7 +21,6 @@ import hashlib
 import io
 import json
 import logging
-import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
 import re
@@ -58,6 +57,7 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
+from .safe_pickle import safe_pickle_load_bytes, trusted_pickle_dumps  # noqa: E402
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
@@ -356,7 +356,14 @@ def _config_hash(config: dict[str, Any] | None) -> str | None:
 
 def _serialize_payload(state: dict[str, Any]) -> bytes:
     """
-    Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
+    Serialize trusted checkpoint state to bytes.
+
+    Trust boundary:
+    - Input is process-created checkpoint state assembled by save_checkpoint().
+    - For new checkpoints we prefer torch.save() because it preserves tensors
+      without exposing external deserialization entrypoints at write time.
+    - If torch serialization is unavailable, we fall back to the audited
+      trusted_pickle_dumps() helper instead of calling pickle directly.
     """
     buf = io.BytesIO()
     torch_save = getattr(torch, "save", None) if torch is not None else None
@@ -365,16 +372,21 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
             torch_save(state, buf)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            buf.seek(0)
-            buf.truncate(0)
-            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
+            return trusted_pickle_dumps(state)
     else:
-        pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
+        return trusted_pickle_dumps(state)
     return buf.getvalue()
 
 
 def _digest_payload(payload: dict[str, Any]) -> bytes:
-    """Produce a deterministic byte representation for hashing metadata."""
+    """Produce a deterministic byte representation for hashing metadata.
+
+    Residual reviewed boundary:
+    - Non-JSON-native leaf values still need a stable binary representation for
+      integrity hashing.
+    - Those leaves are serialized through trusted_pickle_dumps(), which keeps
+      the pickle boundary centralized and limited to process-created objects.
+    """
     hasher = hashlib.sha256()
 
     def _update(value: Any) -> None:
@@ -420,9 +432,8 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             hasher.update(tensor.numpy().tobytes())
             return
 
-        # Fallback: rely on pickle for custom objects (deterministic for stable reprs)
         hasher.update(b"pickle")
-        hasher.update(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))
+        hasher.update(trusted_pickle_dumps(value))
 
     _update(payload)
     return hasher.digest()
@@ -446,6 +457,16 @@ def _torch_supports_weights_only() -> bool:
 def _deserialize_payload(
     b: bytes, *, map_location: str | torch.device | None = "cpu"
 ) -> dict[str, Any]:
+    """Deserialize checkpoint bytes through the safest available path.
+
+    Security order:
+    1. Prefer torch.load(..., weights_only=True) for tensor-first checkpoints.
+    2. If torch deserialization is unavailable or rejects the payload, fall
+       back to safe_pickle_load_bytes(..., use_restricted_unpickler=True).
+
+    This keeps checkpoint reads on safe-serialization paths by default while
+    preserving compatibility with reviewed legacy payloads.
+    """
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
     if callable(torch_load):
@@ -454,7 +475,7 @@ def _deserialize_payload(
             kwargs["map_location"] = map_location
         use_weights_only = _torch_supports_weights_only()
         if use_weights_only:
-            kwargs["weights_only"] = False
+            kwargs["weights_only"] = True
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
@@ -473,14 +494,11 @@ def _deserialize_payload(
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
-    # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
-
-    # safe_pickle_load expects a file path or file object, but we have bytes
-    # We need to use the RestrictedUnpickler directly with the buffer
-    buf.seek(0)
-    from codex_ml.utils.safe_pickle import RestrictedUnpickler
-
-    return RestrictedUnpickler(buf).load()
+    # Legacy compatibility fallback: older reviewed checkpoints may not be
+    # tensor-first payloads that torch.load(..., weights_only=True) can decode.
+    # When that happens, keep the fallback on RestrictedUnpickler so the
+    # deserialization boundary stays constrained even for legacy payloads.
+    return safe_pickle_load_bytes(buf.getvalue(), use_restricted_unpickler=True)
 
 
 _CKPT_COUNTER = count()

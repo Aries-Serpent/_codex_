@@ -38,6 +38,7 @@ def test_rng_snapshot_roundtrip(seed: int) -> None:
         if not hasattr(torch, "random") or not hasattr(torch.random, "get_rng_state"):
             pytest.skip("torch RNG APIs unavailable")
 
+    state = None
     try:
         state = snapshot_rng_state()
     except AttributeError as exc:

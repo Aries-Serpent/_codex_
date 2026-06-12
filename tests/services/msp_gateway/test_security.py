@@ -170,6 +170,14 @@ class TestAuthManager:
         from services.msp_gateway.security import AuthManager
         return AuthManager()
 
+    def test_hash_api_key_uses_versioned_kdf_format(self):
+        from services.msp_gateway.security import hash_api_key
+
+        hashed = hash_api_key("key123")
+
+        assert hashed.startswith("pbkdf2_sha256$")
+        assert len(hashed.split("$", 1)[1]) == 64
+
     def test_register_and_verify(self):
         auth = self._make_auth()
         auth.register_api_key("key123", "tenant_a")
@@ -201,6 +209,14 @@ class TestAuthManager:
         auth.register_api_key("key_shared", "tenant_old")
         auth.register_api_key("key_shared", "tenant_new")
         assert auth.verify_api_key("key_shared") == "tenant_new"
+
+    def test_verify_api_key_accepts_legacy_hash(self):
+        from services.msp_gateway.security import legacy_hash_api_key
+
+        auth = self._make_auth()
+        auth.register_api_key_hash(legacy_hash_api_key("legacy-key"), "tenant_legacy")
+
+        assert auth.verify_api_key("legacy-key") == "tenant_legacy"
 
 
 # ---------------------------------------------------------------------------

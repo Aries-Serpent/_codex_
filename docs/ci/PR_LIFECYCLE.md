@@ -166,7 +166,7 @@ These workflows manage GitHub Discussion context, accountability entries, and PR
 |----------|---------|---------|
 | `discussion-cleanup.yml` | `workflow_dispatch`, `schedule` | Manifest-mode + direct-mode discussion dupe cleanup; uses CB App token for `discussions:write` (S302) |
 | `discussion-response-bridge.yml` | `discussion_comment` | Bridges maintainer discussion replies back to the originating PR comment (RC-3, S300) |
-| `post-accountability-to-discussion.yml` | `push` to `0D_base_`/`copilot/**`, `workflow_dispatch` | Posts accountability entries to Discussion #3673; uses CB App token (S303) |
+| `post-accountability-to-discussion.yml` | `push` to `0D_base_`/`copilot/**`, `workflow_dispatch` | Upserts exactly one authoritative accountability comment per branch/PR/session/turn in Discussion #3673; uses CB App token (S303) |
 
 ---
 
