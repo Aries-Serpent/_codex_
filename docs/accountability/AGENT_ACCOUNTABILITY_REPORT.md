@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-06-12T19:07Z · PR #4863 secrets healer push-reject fix
+
+### Pre-flight Checklist
+- [x] Reviewed active `@copilot` maintainer instruction and fetched failing workflow logs for run `27436535716` via GitHub MCP ✅
+- [x] Checked open `ci-failure` and `ci-health-alert` issues (none open) ✅
+- [x] Identified root cause in `🩹 Secrets False-Positive Healer`: non-fast-forward push rejection during auto-heal commit step ✅
+
+### Work Completed
+1. Hardened `.github/workflows/secrets-false-positive-healer.yml` push logic in `Commit and push healed annotations`:
+   - added retry loop (up to 3 attempts),
+   - on failure performs `git fetch` + `git rebase origin/$TARGET_BRANCH`,
+   - fails with explicit workflow error only after retries are exhausted.
+2. Preserved existing no-op behavior when no staged changes are present.
+
+### Validation / Audit Notes
+- `python -m compileall -q scripts/ci/auto_fix_common_issues.py` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only --pattern 35` ✅
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 4863` ⚠️ expected until this commit lands (latest-commit freshness gate)
+- `pre-commit` / `nox` unavailable in sandbox PATH (`command not found`)
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T18:39Z · PR #4861 CI follow-up
 
 ### Pre-flight Checklist
