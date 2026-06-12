@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-06-12T17:39Z · remediation-plan implementation (critical guard fix)
+
+### Pre-flight Checklist
+- [x] Loaded mandatory session context (AGENTIC_REPO_STATE, CODEBASE_AGENCY_POLICY, accountability state, PDA state, agent_context) ✅
+- [x] Ran baseline checks available in-session before edits (`mypy_baseline` pass; `ruff`/`nox`/`pytest` unavailable in PATH) ✅
+- [x] Verified current state of plan targets before patching (TD-008/014/015/048 already satisfied in codebase) ✅
+
+### Work Completed
+1. Implemented **TD-010** remediation in `scripts/security/codemods/fix_sql_injection.py`: guarded `.isidentifier()` with `var is not None` to prevent NoneType crashes during SQL codemod tuple handling.
+2. Re-validated nearby Tier-1 targets:
+   - `src/codex_ml/serving/inference_server.py` uses `CODEX_JWT_SECRET` env lookup (no hardcoded default).
+   - `src/codex_ml/cli/tracking_decide.py` and `src/codex_ml/cli/checkpoint_validate.py` contain no `.isidentifier()` crash path.
+   - No repo-root `typer/` shadow directory present.
+3. Performed post-change validation:
+   - `python3 -m compileall -q scripts/security/codemods/fix_sql_injection.py` ✅
+   - `python3 scripts/ci/mypy_baseline.py --require-baseline` ✅
+
+### Agents Used
+- `general-purpose` (direct @copilot session)
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T17:02Z · Remediation plan bulk closure (CodeQL + Semgrep + Secrets)
 
 ### Pre-flight Checklist

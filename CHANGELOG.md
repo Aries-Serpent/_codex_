@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (SN — remediation-plan implementation 2026-06-12T17:39Z)
+- Hardened SQL codemod safety in `scripts/security/codemods/fix_sql_injection.py` by guarding single-variable tuple handling with `var is not None and var.isidentifier()`, preventing `NoneType` attribute errors.
+- Revalidated related Tier-1 remediation targets: JWT secret handling remains env-driven in `inference_server.py`, no `isidentifier` crash path in `tracking_decide.py` / `checkpoint_validate.py`, and no repo-root `typer/` shadow package present.
+
 ### Security (2026-06-12)
 - CodeQL: 107 findings closed — clear-text-logging/storage masking, log-injection sanitization, cyclic-import break, pythagorean → math.sqrt/hypot, SHA-256 upgrades
 - Semgrep: 88 findings closed — urllib nosec B310, safe pickle/checkpoint, SHA1→SHA256, chmod nosec B103
