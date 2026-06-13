@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4879)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4879 (SHA `810a5cf2`) at 2026-06-13T09:06Z [auto-generated]
+
 ### Fixed (PR #4875 Actionlint YAML + Accountability — 2026-06-13T08:59Z)
 - Fixed failing actionlint check in copylot-setup-steps.yml by correcting YAML syntax
   - Changed invalid raw shell syntax to block scalar `run: |` (lines 208-212)
