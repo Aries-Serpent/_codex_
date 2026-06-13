@@ -93,7 +93,7 @@ class TestTrainingEdgeCases:
 
     def test_training_checkpoint_corruption_placeholder(self):
         """Test training with corrupted checkpoint.
-        
+
         SECURITY NOTE: This test validates error handling when loading corrupted
         checkpoints. We use torch.load with weights_only=True for safe loading.
         The corrupted data is a test fixture we create, not external untrusted data.
@@ -399,7 +399,7 @@ class TestTrainingEdgeCases:
 
     def test_training_checkpoint_corruption(self):
         """Test training validates and recovers from corrupted checkpoints.
-        
+
         SECURITY NOTE: This test creates a corrupted checkpoint to validate
         error handling. PyTorch's weights_only=True provides safe loading even
         for corrupted data. We catch UnpicklingError which PyTorch ≥2.6 raises
@@ -525,7 +525,7 @@ class TestDataLoadingEdgeCases:
 
     def test_data_loader_corrupted_file(self):
         """Test data loader with corrupted file.
-        
+
         SECURITY NOTE: This test validates error handling for corrupted pickle files.
         We create a corrupted file as a test fixture to ensure proper exception handling.
         Production code should NOT use raw pickle.load - use safe_pickle_load instead.

@@ -32,10 +32,10 @@ Usage Examples:
 
     # Load with signature verification (safest)
     data = safe_pickle_load('data.pkl', verify_signature=True, use_restricted_unpickler=True)
-    
+
     # Load with class restrictions only (safe for local files)
     data = safe_pickle_load('checkpoint.pkl', use_restricted_unpickler=True)
-    
+
     # Load without restrictions (ONLY for trusted local files YOU created)
     data = safe_pickle_load('my_file.pkl', use_restricted_unpickler=False)
     # ⚠️  Warning: Loading pickle WITHOUT restriction (potential security risk)
@@ -117,27 +117,27 @@ def safe_pickle_load(
 ) -> Any:
     """
     Safely load pickle file with optional signature verification.
-    
+
     SECURITY CONTRACT:
     ------------------
     Provides defense-in-depth against pickle deserialization attacks:
-    
+
     1. HMAC Verification (verify_signature=True):
        - Validates file integrity before deserialization
        - Prevents tampering with checkpoint files
        - Use for files from external/untrusted sources
-       
+
     2. RestrictedUnpickler (use_restricted_unpickler=True, DEFAULT):
        - Only allows whitelisted classes (see SAFE_MODULES)
        - Prevents arbitrary code execution via __reduce__
        - Recommended for all scenarios except fully trusted local files
-       
+
     3. Trust Override (use_restricted_unpickler=False):
        - Bypasses class restrictions
        - ONLY use for files YOU created locally
        - Logs WARNING automatically
        - Caller accepts full responsibility
-       
+
     Trust Boundaries:
     - verify_signature=True: Untrusted source → Verified integrity → Safe classes
     - use_restricted_unpickler=True: Unknown file → Known safe classes
@@ -160,14 +160,14 @@ def safe_pickle_load(
     Security Examples:
         >>> # SAFEST: External file with signature + restrictions
         >>> data = safe_pickle_load('external.pkl', verify_signature=True, use_restricted_unpickler=True)
-        
+
         >>> # SAFE: Local file with restrictions
         >>> data = safe_pickle_load('checkpoint.pkl', use_restricted_unpickler=True)
-        
+
         >>> # RISKY: Trusted local file without restrictions
         >>> data = safe_pickle_load('my_checkpoint.pkl', use_restricted_unpickler=False)
         ⚠️  Loading pickle WITHOUT restriction (potential security risk): my_checkpoint.pkl
-        
+
     Production Guidelines:
         - NEVER use use_restricted_unpickler=False in production
         - ALWAYS verify signatures for external sources
