@@ -211,11 +211,11 @@ def safe_pickle_load_bytes(
 
         data = pickled_data
         logger.debug("Verified HMAC signature for %s", source)
- 
+
     if use_restricted_unpickler:
         logger.debug("Loading pickle with RestrictedUnpickler: %s", source)
         return RestrictedUnpickler(io.BytesIO(data)).load()
- 
+
     logger.warning(
         "Loading pickle WITHOUT restriction (potential security risk): %s. "
         "Use use_restricted_unpickler=True unless the file is fully trusted.",

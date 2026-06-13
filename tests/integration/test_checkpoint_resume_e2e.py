@@ -10,7 +10,6 @@ import json
 import shutil
 import tempfile
 from pathlib import Path
-from unittest import mock
 
 import pytest
 
@@ -22,9 +21,9 @@ class TestCheckpointResumeFullWorkflow:
         """Test complete save-load-resume-train cycle."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
-            load_checkpoint,
             SCHEMA_VERSION,
+            load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -97,8 +96,8 @@ class TestCheckpointResumeFullWorkflow:
         """Verify schema compatibility checks during resume."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -139,8 +138,8 @@ class TestCheckpointResumeFullWorkflow:
         """Verify resume still works when metadata is missing."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -181,8 +180,8 @@ class TestCheckpointPartialRecovery:
         """Verify load handles extra fields in saved state gracefully."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -219,8 +218,8 @@ class TestCheckpointPartialRecovery:
         """Verify load gracefully handles missing metadata.json."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -260,8 +259,8 @@ class TestCheckpointResumeDeterminism:
         """Verify repeated save-load cycles produce identical results."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -304,11 +303,12 @@ class TestCheckpointResumeDeterminism:
     def test_checkpoint_timestamp_changes_on_each_save(self):
         """Verify checkpoint timestamps update on each save."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
-            load_checkpoint,
-        )
         import time
+
+        from src.codex_ml.checkpointing.checkpoint_core import (
+            load_checkpoint,
+            save_checkpoint,
+        )
 
         tmpdir = Path(tempfile.mkdtemp())
 
@@ -376,6 +376,7 @@ class TestCheckpointResumeErrorRecovery:
         """Verify appropriate error when save directory is read-only."""
         # Arrange
         import os
+
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         tmpdir = Path(tempfile.mkdtemp())

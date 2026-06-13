@@ -61,7 +61,7 @@ def _load_registry_module():
             sys.modules["codex_ml.registry"] = saved_registry
         else:
             sys.modules.pop("codex_ml.registry", None)
-        
+
         if saved_mlflow_registry is not None:
             sys.modules["codex_ml.registry.mlflow_registry"] = saved_mlflow_registry
         else:
