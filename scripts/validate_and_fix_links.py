@@ -91,6 +91,16 @@ class LinkValidator:
             (r"(?:^|\s)(https?://[^\s]+)", "url"),
         ]
 
+        # Patterns to skip (false positives)
+        skip_patterns = [
+            r"^\[.*\]\(\.+\?\)",
+            r"^\[.*\]\(\[\^",
+            r"^\[.*\]\(\.",
+            r"^\[.*\]\(\+",
+            r"^\[.*\]\(\*",
+            r"^\[.*\]\(\)",
+        ]
+
         for pattern, link_type in link_patterns:
             for match in re.finditer(pattern, content):
                 if link_type == "markdown":
@@ -101,6 +111,14 @@ class LinkValidator:
                 else:
                     url = match.group(1)
                     text = url
+
+                # Skip regex patterns and other false positives
+                if any(re.match(skip, f"[{text}]({url})") for skip in skip_patterns):
+                    continue
+
+                # Skip markdown/regex special characters
+                if re.match(r"^[\.\+\*\[\^\$\|]+", url):
+                    continue
 
                 links.append(
                     {
