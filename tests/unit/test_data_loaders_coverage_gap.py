@@ -10,8 +10,6 @@ This test suite covers:
 
 from __future__ import annotations
 
-from unittest.mock import patch
-
 import pytest
 
 from data.loaders import safe_line_loader, validate_records

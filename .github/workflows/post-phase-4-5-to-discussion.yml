@@ -154,6 +154,7 @@ jobs:
               echo "⚠️ Using github.token — discussion write may fail without discussions:write"
             fi
           fi
+          echo "::add-mask::${RESOLVED_TOKEN}"
           echo "resolved_token=${RESOLVED_TOKEN}" >> "$GITHUB_OUTPUT"
 
       - name: "Post to GitHub Discussion #4872"
