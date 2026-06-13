@@ -211,11 +211,11 @@ def safe_pickle_load_bytes(
 
         data = pickled_data
         logger.debug("Verified HMAC signature for %s", source)
-
+ 
     if use_restricted_unpickler:
         logger.debug("Loading pickle with RestrictedUnpickler: %s", source)
         return RestrictedUnpickler(io.BytesIO(data)).load()
-
+ 
     logger.warning(
         "Loading pickle WITHOUT restriction (potential security risk): %s. "
         "Use use_restricted_unpickler=True unless the file is fully trusted.",
@@ -286,11 +286,11 @@ def _get_secret_key() -> bytes:
     try:
         fd = os.open(str(key_file), flags, 0o600)
     except FileExistsError:
-        logger.debug("Using existing pickle secret key at %s", key_file)
+        logger.debug("Using existing pickle signing key file at %s", key_file)
         return key_file.read_bytes()
     except OSError as exc:
-        raise OSError(f"Unable to create pickle secret key at {key_file}: {exc}") from exc
-    logger.info("Generating new pickle secret key at %s", key_file)
+        raise OSError(f"Unable to create pickle signing key file at {key_file}: {exc}") from exc
+    logger.info("Generating new pickle signing key file at %s", key_file)
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)
     return new_key

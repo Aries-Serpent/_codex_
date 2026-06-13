@@ -185,6 +185,129 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     return parent.stdout.strip() or None
 
 
+# ---------------------------------------------------------------------------
+# Cascade detection circuit breaker (S85 Pattern Prevention)
+# ---------------------------------------------------------------------------
+
+class CascadeDetector:
+    """Detects and prevents auto-fix cascades using circuit breaker pattern.
+    
+    A cascade occurs when one pattern fix triggers another pattern, which then
+    re-triggers the first pattern, creating a cycle. This detector implements
+    a 3-strike circuit breaker: allow up to 3 consecutive retries per pattern,
+    then escalate to manual review.
+    
+    See: .codex/CI_STABILITY_CASCADE_PREVENTION.md for cascade detection rules.
+    """
+    
+    # Maximum consecutive retries for the same pattern before circuit breaks
+    MAX_RETRIES = 3
+    STATE_FILE = Path(".codex/cascade_detector_state.json")
+    
+    def __init__(self):
+        # Track (pattern_id, file_path) → attempt_count
+        self.pattern_attempts: dict[tuple[int, str], int] = {}
+        # Track (pattern_id, file_path) → list of hashes of modifications
+        self.pattern_history: dict[tuple[int, str], list[str]] = {}
+        # Circuit breaker state per pattern: CLOSED, OPEN, or BROKEN
+        self.circuit_state: dict[int, str] = {}
+        
+        # Load persisted state from previous runs
+        self._load_state()
+    
+    def _load_state(self) -> None:
+        """Load cascade detector state from persistent storage."""
+        if not self.STATE_FILE.exists():
+            return
+        
+        try:
+            with open(self.STATE_FILE) as f:
+                data = json.load(f)
+            # Convert string keys back to tuples for pattern_attempts
+            for key_str, value in data.get("pattern_attempts", {}).items():
+                # key_str format: "pattern_id:file_path"
+                try:
+                    pattern_id, file_path = key_str.split(":", 1)
+                    self.pattern_attempts[(int(pattern_id), file_path)] = value
+                except (ValueError, IndexError):
+                    pass  # Skip malformed keys
+            
+            # Convert string keys to int for circuit_state
+            circuit_state_data = data.get("circuit_state", {})
+            self.circuit_state = {int(k): v for k, v in circuit_state_data.items()}
+            logger.info(f"✓ Loaded cascade detector state from {self.STATE_FILE}")
+        except Exception as e:
+            logger.warning(f"Could not load cascade detector state: {e}")
+    
+    def _save_state(self) -> None:
+        """Persist cascade detector state to storage for cross-run detection."""
+        try:
+            self.STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+            # Convert tuple keys to strings for JSON serialization
+            pattern_attempts_serialized = {
+                f"{pattern_id}:{file_path}": value
+                for (pattern_id, file_path), value in self.pattern_attempts.items()
+            }
+            # Convert int keys to strings for JSON serialization
+            circuit_state_serialized = {
+                str(pattern_id): state
+                for pattern_id, state in self.circuit_state.items()
+            }
+            data = {
+                "pattern_attempts": pattern_attempts_serialized,
+                "circuit_state": circuit_state_serialized,
+            }
+            with open(self.STATE_FILE, "w") as f:
+                json.dump(data, f, indent=2)
+        except Exception as e:
+            logger.warning(f"Could not save cascade detector state: {e}")
+    
+    def record_attempt(self, pattern_id: int, files_modified: list[str]) -> None:
+        """Record an attempt for this pattern on given files."""
+        for f in files_modified:
+            key = (pattern_id, f)
+            self.pattern_attempts[key] = self.pattern_attempts.get(key, 0) + 1
+            if key not in self.pattern_history:
+                self.pattern_history[key] = []
+        self._save_state()  # Persist state after each modification
+    
+    def check_cascade(self, pattern_id: int, files_modified: list[str]) -> bool:
+        """Return True if cascade detected (same files modified again by same pattern)."""
+        for f in files_modified:
+            key = (pattern_id, f)
+            if key in self.pattern_attempts and self.pattern_attempts[key] > 0:
+                # This pattern has already tried to fix this file in this session
+                return True
+        return False
+    
+    def should_skip_pattern(self, pattern_id: int) -> bool:
+        """Return True if pattern should be skipped (circuit broken)."""
+        return self.circuit_state.get(pattern_id) == "BROKEN"
+    
+    def record_cascade(self, pattern_id: int, files_modified: list[str], attempt: int) -> None:
+        """Record a cascade detection and check if circuit should break."""
+        if attempt > self.MAX_RETRIES:
+            self.circuit_state[pattern_id] = "BROKEN"
+            logger.warning(f"⛔ Cascade circuit breaker BROKEN for Pattern {pattern_id} (attempt {attempt})")
+        else:
+            self.circuit_state[pattern_id] = "OPEN"
+            logger.warning(
+                f"⚠️  Cascade detected for Pattern {pattern_id} on files: {files_modified} "
+                f"(attempt {attempt}/{self.MAX_RETRIES})"
+            )
+        self._save_state()  # Persist state after cascade detection
+    
+    def report_broken_circuit(self, pattern_id: int, pattern_name: str) -> None:
+        """Log a DRQ-style report when circuit breaks."""
+        logger.warning(
+            f"\n### DRQ — CASCADE PREVENTION PN-{pattern_id}\n"
+            f"**Pattern**: {pattern_id} ({pattern_name})\n"
+            f"**Status**: Circuit breaker BROKEN after {self.MAX_RETRIES} retries\n"
+            f"**Action**: Pattern skipped; manual review recommended\n"
+            f"**Recovery**: Skip via CODEX_SKIP_PATTERN_NUMS={pattern_id}\n"
+        )
+
+
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
 
@@ -212,6 +335,9 @@ class CommonIssueFixer:
         self.dry_run = dry_run or check_only
         self.issues_found: dict[str, list[str]] = {}
         self.fixes_applied: dict[str, int] = {}
+        
+        # Initialize cascade detector (S85 pattern prevention)
+        self.cascade_detector = CascadeDetector()
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {
@@ -493,12 +619,53 @@ class CommonIssueFixer:
 
         any_issues = False
         for num, name, func in patterns:
+            # ── Cascade detection circuit breaker (S85 pattern prevention) ──
+            # Check if this pattern's circuit is broken (exceeded max retries)
+            if self.cascade_detector.should_skip_pattern(num):
+                # codeql[py/clear-text-logging-sensitive-data] - pattern names are hardcoded constants, not secrets
+                print(f"Pattern {num}: {name}")
+                print(f"  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
+                self.cascade_detector.report_broken_circuit(num, name)
+                print()
+                continue
+            
+            # codeql[py/clear-text-logging-sensitive-data] - pattern names are hardcoded constants, not secrets
             print(f"Pattern {num}: {name}")
+            
+            # Run the pattern fix and capture issues
             issues = func()
+            
+            # Track attempt for cascade detection
+            # (Note: this is a simplified tracker; in production, we'd parse file changes
+            #  from each pattern's return value to be more precise)
             if issues:
-                any_issues = True
-                self.issues_found[name] = issues
-                print(f"  ✗ Found {len(issues)} issues")
+                # Extract file paths from issues where possible
+                files_from_issues = []
+                for issue_str in issues[:5]:  # Sample first 5 issues for files
+                    parts = issue_str.split(':')
+                    if parts and '/' in parts[0]:
+                        files_from_issues.append(parts[0])
+                
+                # Check for cascade on same files
+                if self.cascade_detector.check_cascade(num, files_from_issues):
+                    attempt = self.cascade_detector.pattern_attempts.get((num, files_from_issues[0] if files_from_issues else ''), 0) + 1
+                    self.cascade_detector.record_cascade(num, files_from_issues, attempt)
+                    
+                    if attempt > CascadeDetector.MAX_RETRIES:
+                        print(f"  ⛔ Cascade detected (attempt {attempt}) — circuit broken")
+                        print(f"  ✗ Found {len(issues)} issues (skipped due to cascade)")
+                    else:
+                        print(f"  ⚠️  Cascade detected (attempt {attempt}/{CascadeDetector.MAX_RETRIES})")
+                        print(f"  ✗ Found {len(issues)} issues")
+                    # Record issues even on cascade to track problems
+                    self.cascade_detector.record_attempt(num, files_from_issues)
+                    self.issues_found[name] = issues
+                    any_issues = True
+                else:
+                    self.cascade_detector.record_attempt(num, files_from_issues)
+                    any_issues = True
+                    self.issues_found[name] = issues
+                    print(f"  ✗ Found {len(issues)} issues")
             else:
                 print("  ✓ No issues found")
             print()

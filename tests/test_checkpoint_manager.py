@@ -41,7 +41,7 @@ def test_load_checkpoint_pickle_fallback_when_torch_available(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Test that load_checkpoint falls back to pickle when torch.load fails.
-    
+
     SECURITY NOTE: This test validates the fallback path when torch.load raises
     an error. The fallback file is created by this test through the trusted
     safe_pickle wrapper, making it a trusted source. In production, checkpoints

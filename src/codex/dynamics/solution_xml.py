@@ -256,5 +256,7 @@ def emit_solution_xml(config: SolutionManifestConfig) -> str:
     """Serialize ``config`` to the Dynamics unmanaged solution XML string."""
 
     xml = f'<?xml version="1.0" encoding="utf-8"?>{build_solution_tree(config)}'
+    if "<!DOCTYPE" in xml.upper():
+        raise ValueError("DOCTYPE declarations are not permitted in solution XML")
     safe_xml_fromstring(xml)
     return xml

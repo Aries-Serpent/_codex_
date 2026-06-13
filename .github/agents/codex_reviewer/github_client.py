@@ -82,6 +82,20 @@ class GitHubAPIClient:
 
         return headers
 
+    def _validated_request_url(self, url: str) -> str:
+        """Enforce scheme/host parity with configured GitHub API base URL."""
+        base = urllib.parse.urlsplit(self.config.base_url.rstrip("/"))
+        target = urllib.parse.urlsplit(url)
+        if target.scheme != "https" or not target.netloc:
+            raise ValueError("GitHub request URL must be an absolute https URL")
+        if target.username or target.password:
+            raise ValueError("GitHub request URL must not include embedded credentials")
+        if target.hostname != base.hostname:
+            raise ValueError(
+                f"GitHub request host mismatch: expected {base.hostname}, got {target.hostname}"
+            )
+        return url
+
     async def post_review(
         self,
         repo: str,
@@ -124,6 +138,7 @@ class GitHubAPIClient:
 
     async def _post_with_httpx(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Post request using httpx library."""
+        url = self._validated_request_url(url)
         async with httpx.AsyncClient() as client:
             for attempt in range(self.config.max_retries):
                 try:
@@ -140,7 +155,10 @@ class GitHubAPIClient:
                 except httpx.HTTPStatusError as e:
                     if e.response.status_code == 422:
                         # Validation error - don't retry
-                        logger.error(f"GitHub API validation error: {e.response.text}")
+                        logger.error(
+                            "GitHub API validation error (status=%d).",
+                            e.response.status_code,
+                        )
                         raise
 
                     if attempt < self.config.max_retries - 1:
@@ -158,6 +176,7 @@ class GitHubAPIClient:
 
     async def _post_with_urllib(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Fallback: Post request using urllib (synchronous)."""
+        url = self._validated_request_url(url)
         request = urllib.request.Request(
             url,
             data=json.dumps(payload).encode('utf-8'),
@@ -174,7 +193,7 @@ class GitHubAPIClient:
 
             except urllib.error.HTTPError as e:
                 if e.code == 422:
-                    logger.error(f"GitHub API validation error: {e.read().decode()}")
+                    logger.error("GitHub API validation error (status=%d).", e.code)
                     raise
 
                 if attempt < self.config.max_retries - 1:
@@ -229,6 +248,7 @@ class GitHubAPIClient:
             PR details from GitHub API
         """
         url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}"
+        url = self._validated_request_url(url)
 
         headers = self._get_headers()
 
@@ -256,6 +276,7 @@ class GitHubAPIClient:
             List of changed files from GitHub API
         """
         url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}/files"
+        url = self._validated_request_url(url)
 
         headers = self._get_headers()
 
@@ -283,6 +304,7 @@ class GitHubAPIClient:
             Unified diff string
         """
         url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}"
+        url = self._validated_request_url(url)
 
         headers = self._get_headers()
         headers["Accept"] = "application/vnd.github.v3.diff"
