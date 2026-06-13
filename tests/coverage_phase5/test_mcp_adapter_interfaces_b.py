@@ -2,16 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict
-import asyncio
-
-import pytest
-
-try:
-    from mcp.adapters import AdapterRegistry
-except ImportError:
-    pytest.skip("mcp.adapters not available", allow_module_level=True)
-
 
 class SimpleAdapter:
     def __init__(self, name: str):

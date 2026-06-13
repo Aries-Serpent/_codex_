@@ -488,12 +488,25 @@ class ArchiveDAL:
         
         # Handle sqlite:// or sqlite:/// scheme
         if parsed.scheme == "sqlite":
-            # For sqlite:// URLs, the path is in parsed.path
-            # For sqlite:///path URLs, the path is also in parsed.path
-            path = parsed.path
-            if not path:
+            # Reconstruct path from netloc + path to handle both:
+            # - sqlite://relative/db.sqlite (netloc='relative', path='/db.sqlite')
+            # - sqlite:///./.codex/archive.sqlite (netloc='', path='/./.codex/archive.sqlite')
+            full_path = parsed.netloc + parsed.path
+            
+            if not full_path:
                 # Fallback to treating as bare path if no scheme
                 path = url
+            else:
+                # Strip leading slash only for relative-style paths (not absolute paths)
+                # Absolute paths (starting with /) or Windows drive letters (C:) stay as-is
+                if full_path.startswith("/./"):
+                    # Relative path with ./ prefix: strip the leading /
+                    path = full_path[1:]
+                elif full_path.startswith("/") and not (len(full_path) > 2 and full_path[2] == ":"):
+                    # Absolute path (starts with / but not Windows C:/ style)
+                    path = full_path
+                else:
+                    path = full_path
         else:
             # No scheme detected, treat as bare path
             path = url

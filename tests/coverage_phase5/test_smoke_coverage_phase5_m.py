@@ -1,6 +1,5 @@
 """Smoke tests for coverage phase 5 - batch 12."""
 from __future__ import annotations
-import pytest
 
 
 def dummy_function_12() -> str:
