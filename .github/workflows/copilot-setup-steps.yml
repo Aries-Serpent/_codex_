@@ -645,6 +645,8 @@ jobs:
       # Phase 2: Language Runtimes Setup
       # ============================================================================
       - name: "🗂️ Pre-create pip cache directory (compat guard)"
+        # actions/setup-python cache mode expects ~/.cache/pip to exist on some
+        # ephemeral runner variants; pre-creating it avoids intermittent cache init failures.
         run: |
           mkdir -p ~/.cache/pip
 

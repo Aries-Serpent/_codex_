@@ -926,9 +926,9 @@ def _is_infra_or_skipci_commit(author: str, subject: str) -> bool:
 
 def _resolve_last_meaningful_base_ref(max_lookback: int = 10) -> str:
     """Return a safe diff base that skips infra/[skip ci] commits when possible."""
-    skipped = 0
-    while skipped < max_lookback:
-        candidate = f"HEAD~{skipped}"
+    commits_back = 0
+    while commits_back < max_lookback:
+        candidate = f"HEAD~{commits_back}"
         verify = subprocess.run(
             ["git", "rev-parse", "--verify", "--quiet", f"{candidate}^{{commit}}"],
             capture_output=True,
@@ -952,10 +952,10 @@ def _resolve_last_meaningful_base_ref(max_lookback: int = 10) -> str:
         ).stdout.strip()
 
         if _is_infra_or_skipci_commit(author, subject):
-            skipped += 1
+            commits_back += 1
             continue
 
-        return f"HEAD~{skipped + 1}"
+        return f"HEAD~{commits_back + 1}"
 
     return "HEAD~1"
 

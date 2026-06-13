@@ -11,6 +11,15 @@ from pathlib import Path
 import pytest
 
 
+def _repo_root() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "pyproject.toml").is_file():
+            return parent
+    msg = "Repository root not found from test path"
+    raise RuntimeError(msg)
+
+
 def _load_registry_module():
     fake_mlflow_registry = types.ModuleType("codex_ml.registry.mlflow_registry")
 
@@ -34,7 +43,7 @@ def _load_registry_module():
     sys.modules["codex_ml.registry"] = fake_registry_pkg
     sys.modules["codex_ml.registry.mlflow_registry"] = fake_mlflow_registry
 
-    module_path = Path(__file__).resolve().parents[2] / "src" / "codex_ml" / "cli" / "registry.py"
+    module_path = _repo_root() / "src" / "codex_ml" / "cli" / "registry.py"
     spec = importlib.util.spec_from_file_location("codex_ml_cli_registry_under_test", module_path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)

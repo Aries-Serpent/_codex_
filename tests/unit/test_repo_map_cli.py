@@ -4,8 +4,17 @@ import importlib.util
 from pathlib import Path
 
 
+def _repo_root() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "pyproject.toml").is_file():
+            return parent
+    msg = "Repository root not found from test path"
+    raise RuntimeError(msg)
+
+
 def _load_repo_map_module():
-    module_path = Path(__file__).resolve().parents[2] / "src" / "codex_ml" / "cli" / "repo_map.py"
+    module_path = _repo_root() / "src" / "codex_ml" / "cli" / "repo_map.py"
     spec = importlib.util.spec_from_file_location("codex_ml_cli_repo_map_under_test", module_path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
