@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-12T22:58:12Z",
+  "generated_at": "2026-06-13T03:08:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1549,6 +1549,11 @@
       "has_concurrency": true
     },
     {
+      "name": "post-phase-4-5-to-discussion",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "pr-checks",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2245,5 +2250,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "06f12aadce4a335350dca95edde98058eaadcb72f5c74c46d73874e1a2cc920d"
+  "integrity_sha256": "8266745111d725c68e43a8f4f71326287f28ee3561079ae7931e3da4233310db"
 }

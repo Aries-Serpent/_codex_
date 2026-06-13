@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4873)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4873 (SHA `4746bc1c`) at 2026-06-13T03:08Z [auto-generated]
+
 ### Fixed (phase3-ci-stability: workflow YAML hardening — 2026-06-13 Turn 17-22)
 - Validated all 183 GitHub Actions workflows for YAML syntax compliance
 - Confirmed copilot-setup-steps.yml passes canonical baseline checks with block-scalar preload syntax
