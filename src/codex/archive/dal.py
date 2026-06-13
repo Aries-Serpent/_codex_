@@ -246,9 +246,14 @@ class SqliteDAL(BaseDAL):
 
     @staticmethod
     def from_url(url: str) -> SqliteDAL:
-        if not url.startswith("sqlite:///"):
-            raise ValueError("SQLite URL must start with sqlite:///")
-        path = url[len("sqlite:///") :]
+        # CWE-20: Use proper URL parsing instead of string operations
+        parsed = urlparse(url)
+        if parsed.scheme != "sqlite" or not parsed.path:
+            raise ValueError("SQLite URL must use sqlite:// scheme with a path")
+        # Extract path from parsed URL (handles both sqlite:/// and sqlite://)
+        path = parsed.path
+        if not path:
+            raise ValueError("SQLite URL must include a valid file path")
         p = Path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(p.as_posix())

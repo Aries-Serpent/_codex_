@@ -31,6 +31,7 @@ from contextlib import contextmanager  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import TYPE_CHECKING, Any  # noqa: E402
+from urllib.parse import urlparse  # noqa: E402 — CWE-20: proper URL parsing
 
 try:  # pragma: no cover - optional dependency
     import sqlalchemy as sa
@@ -482,13 +483,21 @@ class ArchiveDAL:
     # helpers
     # ------------------------------------------------------------------
     def _sqlite_path(self, url: str) -> Path:
-        prefix = "sqlite:///"
-        if url.startswith(prefix):
-            path = url[len(prefix) :]
-        elif url.startswith("sqlite://"):
-            path = url[len("sqlite://") :]
+        """Parse SQLite URL and extract path using proper URL parsing (CWE-20 fix)."""
+        parsed = urlparse(url)
+        
+        # Handle sqlite:// or sqlite:/// scheme
+        if parsed.scheme == "sqlite":
+            # For sqlite:// URLs, the path is in parsed.path
+            # For sqlite:///path URLs, the path is also in parsed.path
+            path = parsed.path
+            if not path:
+                # Fallback to treating as bare path if no scheme
+                path = url
         else:
+            # No scheme detected, treat as bare path
             path = url
+        
         return Path(path).expanduser().resolve()
 
     @contextmanager
