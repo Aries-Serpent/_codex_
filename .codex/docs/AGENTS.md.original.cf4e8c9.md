@@ -12,7 +12,7 @@
 
 1. **Repository Status:** Pre-Genesis (Template Mode - SAFE_MODE active)
 2. **Your Role:** Advisory only - No autonomous actions yet
-3. **Key Constraints:** See <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](.codex/guardrails.md) --> --> --> --> --> --> --> -->
+3. **Key Constraints:** See <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](../guardrails.md) --> --> --> --> --> --> --> -->
 4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
 ---
@@ -53,7 +53,7 @@ Agent Authority: PRE-GENESIS (Template Mode)
 
 ### Must-Read Documents
 
-1. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](.codex/guardrails.md) --> --> --> --> --> --> --> -->** - Operational constraints (5 min)
+1. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](../guardrails.md) --> --> --> --> --> --> --> -->** - Operational constraints (5 min)
 2. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
 3. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 4. **[README.md](README.md)** - Repository overview (5 min)

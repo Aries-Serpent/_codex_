@@ -9,6 +9,7 @@ Phase: 4.1 - Branch Coverage Analysis
 Target: 100% branch coverage for utility modules
 """
 
+import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -241,7 +242,7 @@ class TestFileOperationBranches:
         """Test neither file nor directory branch."""
         with patch.object(Path, "is_file", return_value=False):
             with patch.object(Path, "is_dir", return_value=False):
-                path = Path("/dev/null")
+                path = Path(os.devnull)
                 if path.is_file():
                     obj_type = "file"
                 elif path.is_dir():
@@ -285,14 +286,14 @@ class TestPathOperationBranches:
 
     def test_path_absolute_branch(self) -> None:
         """Test absolute path branch."""
-        path = "/absolute/path"
-        path_type = "absolute" if path.startswith("/") else "relative"
+        path = str(Path.home() / "absolute" / "path")
+        path_type = "absolute" if Path(path).is_absolute() else "relative"
         assert path_type == "absolute"
 
     def test_path_relative_branch(self) -> None:
         """Test relative path branch."""
         path = "relative/path"
-        path_type = "absolute" if path.startswith("/") else "relative"
+        path_type = "absolute" if Path(path).is_absolute() else "relative"
         assert path_type == "relative"
 
     def test_path_home_expansion_needed_branch(self) -> None:
@@ -303,7 +304,7 @@ class TestPathOperationBranches:
 
     def test_path_home_expansion_not_needed_branch(self) -> None:
         """Test path home expansion not needed branch."""
-        path = "/home/user/Documents"
+        path = str(Path.home() / "Documents")
         expanded = bool(path.startswith("~"))
         assert expanded is False
 

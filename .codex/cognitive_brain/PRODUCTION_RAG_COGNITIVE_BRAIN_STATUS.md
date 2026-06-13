@@ -728,7 +728,7 @@ graph TB
 
 ## References
 
-- [Production RAG Pipeline Planset](.codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md)
+- [Production RAG Pipeline Planset](../plans/PRODUCTION_RAG_PIPELINE_PLANSET.md)
 - [Cognitive Brain Production Roadmap](../../docs/ROADMAP.md)
 - [RAG Quickstart Guide](../docs/RAG_QUICKSTART.md)
 - [RAG Enhancement Plansets](../docs/RAG_ENHANCEMENT_PLANSETS.md)

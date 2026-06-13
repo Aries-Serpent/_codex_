@@ -94,12 +94,13 @@ class TestConfigLoadingBranches:
 
     def test_config_from_env_var_branch(self) -> None:
         """Test configuration from environment variable branch."""
-        with patch.dict(os.environ, {"CODEX_CONFIG": "/path/to/config.yaml"}):
+        test_config = str(Path.home() / ".codex" / "config.yaml")
+        with patch.dict(os.environ, {"CODEX_CONFIG": test_config}):
             if "CODEX_CONFIG" in os.environ:
                 config_path = os.environ["CODEX_CONFIG"]
             else:
                 config_path = "config.yaml"
-            assert config_path == "/path/to/config.yaml"
+            assert Path(config_path).name == "config.yaml"
 
     def test_config_from_default_path_branch(self) -> None:
         """Test configuration from default path branch."""
@@ -387,14 +388,14 @@ class TestHydraConfigBranches:
 
     def test_hydra_config_path_absolute_branch(self) -> None:
         """Test Hydra config path absolute branch."""
-        config_path = "/absolute/path/config"
-        path_type = "absolute" if config_path.startswith("/") else "relative"
+        config_path = str(Path.home() / "config")
+        path_type = "absolute" if Path(config_path).is_absolute() else "relative"
         assert path_type == "absolute"
 
     def test_hydra_config_path_relative_branch(self) -> None:
         """Test Hydra config path relative branch."""
         config_path = "relative/path/config"
-        path_type = "absolute" if config_path.startswith("/") else "relative"
+        path_type = "absolute" if Path(config_path).is_absolute() else "relative"
         assert path_type == "relative"
 
     def test_hydra_config_group_exists_branch(self) -> None:

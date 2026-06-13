@@ -417,8 +417,8 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 ### Quick Links
 
 - 📖 [Full Documentation Index](.codex/docs/README.md)
-- 🎯 [Implementation Roadmap](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
-- 📊 [Philosophical Metrics](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#philosophical-metrics)
+- 🎯 [Implementation Roadmap](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#9-refactoring-recommendations)
+- 📊 [Philosophical Metrics](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#10-philosophical-metrics)
 - 🧠 [Cognitive Pattern Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md#cognitive-domain-mapping)
 
 ---

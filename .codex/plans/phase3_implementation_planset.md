@@ -175,7 +175,7 @@ class GitHubIssuesAlerter:
 
 - [Validation Dashboard](.codex/metrics/dashboard.html)
 - [Incident Report](.codex/incident_reports/ci_failure_batch_2026_01_19.md)
-- [Cognitive Brain Learnings](.codex/cognitive_brain/incident_learnings_2026_01_22.md)
+- [Cognitive Brain Learnings](../cognitive_brain/incident_learnings_2026_01_22.md)
 
 ## Auto-Resolution
 

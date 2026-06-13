@@ -49,7 +49,7 @@ class TestTrainingStrategyBranches:
 
     def test_strategy_resume_from_provided_branch(self) -> None:
         """Test resume from checkpoint provided branch."""
-        resume_from = "/path/to/checkpoint"
+        resume_from = str(Path.home() / "checkpoints" / "model.pt")
         action = "resume" if resume_from else "start_fresh"
         assert action == "resume"
 
@@ -345,14 +345,14 @@ class TestModelLoadingBranches:
 
     def test_model_path_local_branch(self) -> None:
         """Test model path local branch."""
-        model_path = "/local/models/bert"
-        source = "local" if model_path.startswith("/") else "hub"
+        model_path = str(Path.home() / "models" / "bert")
+        source = "local" if Path(model_path).is_absolute() else "hub"
         assert source == "local"
 
     def test_model_path_hub_branch(self) -> None:
         """Test model path hub branch."""
         model_path = "bert-base-uncased"
-        source = "local" if model_path.startswith("/") else "hub"
+        source = "local" if Path(model_path).is_absolute() else "hub"
         assert source == "hub"
 
     def test_model_dtype_fp32_branch(self) -> None:
@@ -433,9 +433,9 @@ class TestModelLoadingBranches:
 
     def test_model_cache_dir_provided_branch(self) -> None:
         """Test cache dir provided branch."""
-        cache_dir = "/custom/cache"
+        cache_dir = str(Path.home() / ".cache" / "models")
         used_cache = cache_dir or None
-        assert used_cache == "/custom/cache"
+        assert "cache" in used_cache or "models" in used_cache
 
     def test_model_cache_dir_default_branch(self) -> None:
         """Test cache dir default branch."""

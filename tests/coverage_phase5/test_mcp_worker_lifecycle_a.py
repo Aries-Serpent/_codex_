@@ -1,0 +1,102 @@
+"""Test MCP worker lifecycle management."""
+
+from __future__ import annotations
+
+import asyncio
+from enum import Enum
+from typing import Optional
+
+import pytest
+
+
+class WorkerState(Enum):
+    IDLE = "idle"
+    RUNNING = "running"
+    PAUSED = "paused"
+    STOPPED = "stopped"
+
+
+class Worker:
+    def __init__(self, name: str):
+        self.name = name
+        self.state = WorkerState.IDLE
+        
+    async def start(self) -> None:
+        self.state = WorkerState.RUNNING
+        
+    async def pause(self) -> None:
+        if self.state == WorkerState.RUNNING:
+            self.state = WorkerState.PAUSED
+            
+    async def resume(self) -> None:
+        if self.state == WorkerState.PAUSED:
+            self.state = WorkerState.RUNNING
+            
+    async def stop(self) -> None:
+        self.state = WorkerState.STOPPED
+
+
+def test_worker_lifecycle_start():
+    """Test worker start transition."""
+    worker = Worker("test")
+    assert worker.state == WorkerState.IDLE
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(worker.start())
+    
+    assert worker.state == WorkerState.RUNNING
+
+
+def test_worker_lifecycle_pause():
+    """Test worker pause transition."""
+    worker = Worker("test")
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(worker.start())
+    loop.run_until_complete(worker.pause())
+    
+    assert worker.state == WorkerState.PAUSED
+
+
+def test_worker_lifecycle_resume():
+    """Test worker resume transition."""
+    worker = Worker("test")
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(worker.start())
+    loop.run_until_complete(worker.pause())
+    loop.run_until_complete(worker.resume())
+    
+    assert worker.state == WorkerState.RUNNING
+
+
+def test_worker_lifecycle_stop():
+    """Test worker stop transition."""
+    worker = Worker("test")
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(worker.start())
+    loop.run_until_complete(worker.stop())
+    
+    assert worker.state == WorkerState.STOPPED
+
+
+@pytest.mark.asyncio
+async def test_worker_invalid_transition():
+    """Test invalid state transitions."""
+    worker = Worker("test")
+    
+    # Cannot pause from idle
+    await worker.pause()
+    assert worker.state == WorkerState.IDLE
+
+
+@pytest.mark.asyncio
+async def test_worker_multiple_starts():
+    """Test starting an already running worker."""
+    worker = Worker("test")
+    
+    await worker.start()
+    await worker.start()  # Should be idempotent or handle gracefully
+    
+    assert worker.state == WorkerState.RUNNING

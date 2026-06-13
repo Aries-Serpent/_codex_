@@ -126,7 +126,7 @@ Both scripts support:
 **Sample Change:**
 ```diff
 -- 🗺️ **[Phase 8 Roadmap](/.github/agents/PHASE_8_ROADMAP.md)**
-+- 🗺️ **[Phase 8 Roadmap](docs/ROADMAP.md)**
++- 🗺️ **[Phase 8 Roadmap](../../../docs/ROADMAP.md)**
 ```
 
 ---

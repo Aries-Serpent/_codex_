@@ -302,7 +302,7 @@ Successfully completed comprehensive repository improvements including:
 3. **Establish metrics** and KPIs
 4. **Continuous optimization** based on data
 
-**See:** [Follow-Up Documentation](.codex/FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md)
+**See:** [Follow-Up Documentation](FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md)
 
 ---
 

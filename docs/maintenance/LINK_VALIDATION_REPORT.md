@@ -174,7 +174,7 @@ _... and 41 more files_
 
 ### agents/prompts/debugging/test-failure-debugging.md
 
-- `[Codex testing conventions](.././agents.md#testing)` → No suggestion
+- `[Codex testing conventions](#tooling-testing)` → No suggestion
 
 ### configs/CONFIGURATION_STRUCTURE.md
 

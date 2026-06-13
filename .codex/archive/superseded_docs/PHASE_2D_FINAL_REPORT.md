@@ -114,9 +114,9 @@ while current != Path('.'):
 
 **Before:**
 ```markdown
-[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)
-[Dashboard](system/CODEBASE_DASHBOARD.md)
-[Roadmap](ROADMAP.md)
+[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
+[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)
+[Roadmap](../../../docs/plans/archive/PHASE2_FINAL_STATUS_AND_ROADMAP.md)
 ```
 
 **After:**

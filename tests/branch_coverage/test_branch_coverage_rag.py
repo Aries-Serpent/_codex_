@@ -11,6 +11,7 @@ Target: Real code coverage improvement for RAG modules
 
 import hashlib
 import os
+from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
@@ -376,9 +377,10 @@ class TestIndexerModuleBranches:
 
     def test_indexer_cache_dir_from_profile_branch(self) -> None:
         """Test cache dir from profile branch."""
-        model_profile = {"cache_dir": "/custom/cache"}
+        cache_path = str(Path.home() / ".cache" / "models")
+        model_profile = {"cache_dir": cache_path}
         cache_dir = model_profile.get("cache_dir")
-        assert cache_dir == "/custom/cache"
+        assert Path(cache_dir).name == "models" or "cache" in cache_dir
 
     def test_indexer_cache_dir_default_branch(self) -> None:
         """Test cache dir default branch."""

@@ -164,7 +164,7 @@ Recommendation: Safe to move with reference updates
 ### Reference Graph Analysis
 
 **Scans for:**
-- Markdown links: `[text](file.md)`
+- Markdown links: `[text](../../docs/security/remove-env-file.md)`
 - HTML links: `href="file.md"`
 - YAML paths: `path: file.md`
 - Python imports: `from module import`
