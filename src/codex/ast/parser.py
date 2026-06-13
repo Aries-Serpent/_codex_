@@ -123,7 +123,7 @@ class UniversalParser:
                 source_location=SourceLocation(file_path, 1, 0, len(code.splitlines()), 0),
                 metadata={
                     "parser": "libcst",
-                    "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest(),
+                    "hash": hashlib.sha256(code.encode()).hexdigest(),
                 },
             )
 
@@ -156,7 +156,7 @@ class UniversalParser:
                 source_location=SourceLocation(file_path, 1, 0, len(code.splitlines()), 0),
                 metadata={
                     "parser": "ast",
-                    "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest(),
+                    "hash": hashlib.sha256(code.encode()).hexdigest(),
                 },
             )
 

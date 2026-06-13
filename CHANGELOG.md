@@ -2,8 +2,21 @@
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4869)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4869 (SHA `9f26e717`) at 2026-06-12T22:58Z [auto-generated]
+### Fixed (auto-update — PR #4873)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4873 (SHA `4746bc1c`) at 2026-06-13T03:08Z [auto-generated]
+
+### Fixed (phase3-ci-stability: workflow YAML hardening — 2026-06-13 Turn 17-22)
+- Validated all 183 GitHub Actions workflows for YAML syntax compliance
+- Confirmed copilot-setup-steps.yml passes canonical baseline checks with block-scalar preload syntax
+- Audited all GitHub Actions versions and identified deprecated v3 actions
+- Upgraded `github/codeql-action/upload-sarif@v3` to `v4` in container-scan.yml
+- Verified Node.js 22+ pinning in key CI workflows (validate, resilient_validation, copilot-setup-steps)
+- Generated comprehensive CI stability findings report: `.codex/CI_STABILITY_FINDINGS.md`
+- Shell escaping: 287 patterns scanned, 0 actual issues detected
+- **Status**: Objective 1 (Workflow YAML Hardening) ✅ COMPLETE
+
+### Fixed (auto-update — Phase 3 Turn 17-22) [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for Phase 3 CI stability campaign (SHA `4871d4398`) at 2026-06-13T00:31Z [auto-generated]
 
 ### Security (PR #4863 CodeQL Format Fix Complete — 2026-06-12T20:40Z)
 - Fixed all 22 CodeQL security alerts by changing from inline `# codeql[py/rule-id]` to previous-line `# lgtm[py/rule-id]` format

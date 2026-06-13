@@ -27,7 +27,7 @@ def _api_key_pepper_bytes() -> bytes:
 
 def legacy_hash_api_key(api_key: str) -> str:
     """Return the legacy SHA-256 API-key hash for compatibility lookups.
-    
+
     Note: This function uses SHA-256 for backward compatibility with existing
     stored hashes. New hashes should use hash_api_key() which uses PBKDF2.
     This is intentionally weak for legacy support only.

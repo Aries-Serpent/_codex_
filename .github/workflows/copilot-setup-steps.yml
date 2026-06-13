@@ -200,10 +200,11 @@ jobs:
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails          
-        run: python3 .github/scripts/session_preload.py || {
-          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-        }  
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: |
+          if ! python3 .github/scripts/session_preload.py; then
+            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+          fi
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
@@ -643,6 +644,12 @@ jobs:
       # ============================================================================
       # Phase 2: Language Runtimes Setup
       # ============================================================================
+      - name: "🗂️ Pre-create pip cache directory (compat guard)"
+        # actions/setup-python cache mode expects ~/.cache/pip to exist on some
+        # ephemeral runner variants; pre-creating it avoids intermittent cache init failures.
+        run: |
+          mkdir -p ~/.cache/pip
+
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
@@ -864,6 +871,8 @@ jobs:
         #   3. GITHUB_TOKEN      — scoped installation token (actions:write only)
         #
         # See docs/agent/COPILOT_TOKEN_GUIDE.md for complete reference.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           echo "── Auth token export ──────────────────────────────────────────"
           # Export CODEX_MASTER_KEY (full PAT — needed for variables/secrets API)

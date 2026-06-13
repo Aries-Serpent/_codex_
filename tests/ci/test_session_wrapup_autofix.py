@@ -420,6 +420,7 @@ class TestAutoFixAllMissing:
         assert set(results.keys()) == {
             "accountability", "changelog", "manifest_baseline",
             "pda_today", "pr_description", "pr_body_wec", "wec_workflow_activation",
+            "req14",
         }
 
     def test_calls_fixes_when_needed(self):
@@ -433,6 +434,8 @@ class TestAutoFixAllMissing:
             patch.object(swa, "update_pr_description", return_value=True) as mock_desc,
             patch.object(swa, "fix_pr_body_checkboxes", return_value=True) as mock_wec,
             patch.object(swa, "select_merge_required_workflows", return_value=True) as mock_act,
+            patch.object(swa, "check_req14_agents_used", return_value=False),
+            patch.object(swa, "fix_req14_agents_used", return_value=True) as mock_req14,
         ):
             results = swa.auto_fix_all_missing(pr_number="42", sha="abc123", run_url="http://x")
         mock_acct.assert_called_once()
@@ -442,6 +445,7 @@ class TestAutoFixAllMissing:
         mock_desc.assert_called_once()
         mock_wec.assert_called_once()
         mock_act.assert_called_once()
+        mock_req14.assert_called_once()
         assert all(results.values())
 
     def test_skips_pr_body_when_pr_unknown(self):

@@ -111,6 +111,7 @@ def _install_optional_dependency_stubs():
 
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
+    xml_minidom_stub = _module_spec_stub("defusedxml.minidom")
     # Minimal no-op stubs that mirror the defusedxml ElementTree API without
     # importing an XML parser in this readiness smoke test.
     for attr_name, stub_impl in (
@@ -120,9 +121,12 @@ def _install_optional_dependency_stubs():
         ("fromstring", lambda *_, **__: SimpleNamespace()),
     ):
         setattr(xml_tree_stub, attr_name, stub_impl)
+    setattr(xml_minidom_stub, "parseString", lambda *_, **__: SimpleNamespace())
     xml_stub.ElementTree = xml_tree_stub
+    xml_stub.minidom = xml_minidom_stub
     _install_stub("defusedxml", xml_stub)
     _install_stub("defusedxml.ElementTree", xml_tree_stub)
+    _install_stub("defusedxml.minidom", xml_minidom_stub)
 
     for name in [
         "accelerate",
