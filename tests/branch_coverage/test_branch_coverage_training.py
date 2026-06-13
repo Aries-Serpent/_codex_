@@ -149,7 +149,7 @@ class TestCheckpointBranches:
 
     def test_resume_from_checkpoint_branch(self) -> None:
         """Test resume from checkpoint branch."""
-        resume_path = "/path/to/checkpoint"
+        resume_path = str(Path.home() / "checkpoints" / "model.pt")
         action = "resume" if resume_path else "start_fresh"
         assert action == "resume"
 
@@ -332,15 +332,15 @@ class TestModelLoadingBranches:
 
     def test_model_local_path_branch(self) -> None:
         """Test model loading from local path branch."""
-        model_path = "/models/bert-base"
+        model_path = str(Path.home() / "models" / "bert-base")
         with patch.object(Path, "exists", return_value=True):
-            source = "local" if model_path.startswith("/") else "hub"
+            source = "local" if Path(model_path).is_absolute() else "hub"
             assert source == "local"
 
     def test_model_hub_path_branch(self) -> None:
         """Test model loading from hub branch."""
         model_path = "bert-base-uncased"
-        source = "local" if model_path.startswith("/") else "hub"
+        source = "local" if Path(model_path).is_absolute() else "hub"
         assert source == "hub"
 
     def test_model_dtype_float32_branch(self) -> None:

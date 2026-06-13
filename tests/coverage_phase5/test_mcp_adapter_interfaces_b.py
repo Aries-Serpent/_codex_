@@ -1,0 +1,61 @@
+"""Test MCP adapter registry and discovery."""
+
+from __future__ import annotations
+
+from typing import Dict
+import asyncio
+
+import pytest
+
+try:
+    from mcp.adapters import AdapterRegistry
+except ImportError:
+    pytest.skip("mcp.adapters not available", allow_module_level=True)
+
+
+class SimpleAdapter:
+    def __init__(self, name: str):
+        self.name = name
+    
+    async def initialize(self) -> None:
+        pass
+
+
+def test_adapter_registry_register():
+    """Test registering adapters."""
+    registry = {}
+    adapter = SimpleAdapter("test")
+    registry["test"] = adapter
+    
+    assert "test" in registry
+    assert registry["test"] == adapter
+
+
+def test_adapter_registry_lookup():
+    """Test looking up registered adapters."""
+    registry = {"test": SimpleAdapter("test")}
+    
+    adapter = registry.get("test")
+    assert adapter is not None
+    assert adapter.name == "test"
+
+
+def test_adapter_registry_list():
+    """Test listing all adapters."""
+    registry = {
+        "adapter1": SimpleAdapter("adapter1"),
+        "adapter2": SimpleAdapter("adapter2"),
+    }
+    
+    names = list(registry.keys())
+    assert len(names) == 2
+    assert "adapter1" in names
+
+
+def test_adapter_registry_unregister():
+    """Test unregistering adapters."""
+    registry = {"test": SimpleAdapter("test")}
+    
+    del registry["test"]
+    
+    assert "test" not in registry

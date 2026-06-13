@@ -226,7 +226,8 @@ class TestCliConfigBranches:
 
     def test_config_from_env_branch(self) -> None:
         """Test config loading from environment branch."""
-        with patch.dict(os.environ, {"CODEX_CONFIG_PATH": "/path/to/config"}):
+        test_config = str(Path.home() / ".codex" / "config")
+        with patch.dict(os.environ, {"CODEX_CONFIG_PATH": test_config}):
             config_source = "env" if "CODEX_CONFIG_PATH" in os.environ else "default"
             assert config_source == "env"
 
@@ -287,7 +288,7 @@ class TestCliOutputBranches:
 
     def test_output_to_file_branch(self) -> None:
         """Test output to file branch."""
-        output_file = "/tmp/output.txt"
+        output_file = str(Path.home() / ".cache" / "output.txt")
         destination = "file" if output_file else "stdout"
         assert destination == "file"
 

@@ -286,7 +286,7 @@ class TestRealModuleImportBranches:
 
     def test_pathlib_path_import_branch(self) -> None:
         """Test pathlib.Path import and usage."""
-        path = Path("/test/path")
+        path = Path.home() / "test" / "path"
 
         path_type = "absolute" if path.is_absolute() else "relative"
 
