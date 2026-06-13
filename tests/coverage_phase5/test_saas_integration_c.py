@@ -9,7 +9,7 @@ class SaaSEndpointStatus(Enum):
     DEGRADED = "degraded"
     DOWN = "down"
 
-class SaaSClient:
+class SaaSClient: # pragma: allowlist secret
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.status = SaaSEndpointStatus.HEALTHY
