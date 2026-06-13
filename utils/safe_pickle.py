@@ -230,6 +230,12 @@ def safe_pickle_load_bytes(
         logger.debug(f"Loading pickle with RestrictedUnpickler: {source}")
         return RestrictedUnpickler(io.BytesIO(data)).load()
 
+    if os.environ.get("CODEX_ALLOW_UNSAFE_PICKLE", "0") != "1":
+        raise ValueError(
+            "Unsafe pickle loading is disabled. Set CODEX_ALLOW_UNSAFE_PICKLE=1 only "
+            "for trusted local migration workflows."
+        )
+
     logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {source}")
     # SECURITY JUSTIFICATION:
     # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility.
@@ -326,7 +332,7 @@ def _get_secret_key() -> bytes:
         return key_file.read_bytes()
 
     # Generate new key
-    logger.info(f"Generating new pickle secret key at {key_file}")
+    logger.info(f"Generating new pickle signing key file at {key_file}")
     new_key = secrets.token_bytes(32)
     key_file.parent.mkdir(parents=True, exist_ok=True)
     key_file.write_bytes(new_key)

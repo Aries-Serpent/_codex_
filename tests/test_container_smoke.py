@@ -6,6 +6,7 @@ Test module for container smoke.
 
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -44,6 +45,9 @@ def _validated_script_path(name: str) -> str:
     script_path = Path(script(name)).resolve()
     allowed_root = (Path.cwd() / "scripts" / "ci").resolve()
     script_path.relative_to(allowed_root)
+    if not script_path.is_file() or script_path.is_symlink():
+        msg = "Invalid smoke script path; expected a real file under scripts/ci"
+        raise ValueError(msg)
     return str(script_path)
 
 
@@ -70,7 +74,7 @@ def test_container_smoke_basic(tmp_path):
         "8000",
         str(host_port),
     ]
-    print(f"[test] Running: {' '.join(cmd)}", file=sys.stderr)
+    print(f"[test] Running: {shlex.join(cmd)}", file=sys.stderr)
     # Allow enough time for slower CI/container startup while still failing reasonably fast.
     proc = subprocess.run(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args -- env-derived args are validated by _validated_smoke_image/_validated_host_port and shell=False is used
         cmd, capture_output=True, text=True, timeout=300, check=False, shell=False
