@@ -40,15 +40,31 @@ def _load_registry_module():
     fake_registry_pkg = types.ModuleType("codex_ml.registry")
     fake_registry_pkg.mlflow_registry = fake_mlflow_registry
 
-    sys.modules["codex_ml.registry"] = fake_registry_pkg
-    sys.modules["codex_ml.registry.mlflow_registry"] = fake_mlflow_registry
+    # Save previous sys.modules entries
+    saved_registry = sys.modules.get("codex_ml.registry")
+    saved_mlflow_registry = sys.modules.get("codex_ml.registry.mlflow_registry")
 
-    module_path = _repo_root() / "src" / "codex_ml" / "cli" / "registry.py"
-    spec = importlib.util.spec_from_file_location("codex_ml_cli_registry_under_test", module_path)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    try:
+        sys.modules["codex_ml.registry"] = fake_registry_pkg
+        sys.modules["codex_ml.registry.mlflow_registry"] = fake_mlflow_registry
+
+        module_path = _repo_root() / "src" / "codex_ml" / "cli" / "registry.py"
+        spec = importlib.util.spec_from_file_location("codex_ml_cli_registry_under_test", module_path)
+        assert spec is not None and spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    finally:
+        # Restore previous sys.modules entries
+        if saved_registry is not None:
+            sys.modules["codex_ml.registry"] = saved_registry
+        else:
+            sys.modules.pop("codex_ml.registry", None)
+        
+        if saved_mlflow_registry is not None:
+            sys.modules["codex_ml.registry.mlflow_registry"] = saved_mlflow_registry
+        else:
+            sys.modules.pop("codex_ml.registry.mlflow_registry", None)
 
 
 class _FakeVersion:

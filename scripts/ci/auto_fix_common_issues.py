@@ -603,6 +603,10 @@ class CommonIssueFixer:
                     else:
                         print(f"  ⚠️  Cascade detected (attempt {attempt}/{CascadeDetector.MAX_RETRIES})")
                         print(f"  ✗ Found {len(issues)} issues")
+                    # Record issues even on cascade to track problems
+                    self.cascade_detector.record_attempt(num, files_from_issues)
+                    self.issues_found[name] = issues
+                    any_issues = True
                 else:
                     self.cascade_detector.record_attempt(num, files_from_issues)
                     any_issues = True

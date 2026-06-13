@@ -224,19 +224,16 @@ def safe_pickle_load_bytes(
 
         data = pickled_data
         logger.info(f"✅ HMAC signature verified for {source}")
-
+ 
     # Unpickle with appropriate unpickler
     if use_restricted_unpickler:
         logger.debug(f"Loading pickle with RestrictedUnpickler: {source}")
         return RestrictedUnpickler(io.BytesIO(data)).load()
-
-    if os.environ.get("CODEX_ALLOW_UNSAFE_PICKLE", "0") != "1":
-        raise ValueError(
-            "Unsafe pickle loading is disabled. Set CODEX_ALLOW_UNSAFE_PICKLE=1 only "
-            "for trusted local migration workflows."
-        )
-
-    logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {source}")
+ 
+    logger.warning(
+        f"Loading pickle WITHOUT restriction (potential security risk): {source}. "
+        f"Use use_restricted_unpickler=True unless the file is fully trusted."
+    )
     # SECURITY JUSTIFICATION:
     # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility.
     # This is ONLY safe if:

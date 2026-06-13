@@ -11,8 +11,7 @@ This test suite covers:
 
 from __future__ import annotations
 
-import asyncio
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, AsyncMock
 
 import pytest
 

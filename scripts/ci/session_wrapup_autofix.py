@@ -1912,7 +1912,7 @@ def select_merge_required_workflows(
             f"✅ PR #{pr_number} WEC already has all merge-required workflows selected "
             f"({n_checked} checked) — no update needed"
         )
-        return True
+        return False
 
     new_wec_block = _build_wec_block(updated_state, human_grants=human_grants)
 

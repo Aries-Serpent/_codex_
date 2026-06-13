@@ -17,19 +17,18 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import json
 import logging
+import os
+import time
+from typing import Any
+from urllib.parse import urlsplit
+
+import requests
 
 logger = logging.getLogger(__name__)
-
-import base64  # noqa: E402
-import hashlib  # noqa: E402
-import json  # noqa: E402
-import os  # noqa: E402
-import time  # noqa: E402
-from urllib.parse import urlsplit  # noqa: E402
-from typing import Any  # noqa: E402
-
-import requests  # noqa: E402
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 REPO = os.getenv("CODEX_GH_REPO", "_codex_")

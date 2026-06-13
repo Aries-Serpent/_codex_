@@ -178,7 +178,7 @@ jobs:
             const branch = process.env.REF || '';
             const sha = (process.env.SHA || '').slice(0, 7);
             const timestamp = new Date().toISOString();
-            const contractMarker = `<!-- codex-phase-4-5:v1 branch=${encode(branch)} sha=${encode(sha)} posted=${encode(timestamp)} -->`;
+            const contractMarker = `<!-- codex-phase-4-5:v1 -->`;
             const metadataLine = `> **Posted:** ${timestamp} · branch \`${branch}\` · sha \`${sha}\``;
             const body = `${contractMarker}\n${metadataLine}\n\n${postContent}`;
 

@@ -6,7 +6,6 @@ and proper event cleanup after training completion.
 
 from __future__ import annotations
 
-from typing import Any
 from unittest import mock
 
 import pytest
@@ -52,6 +51,7 @@ class TestEventIntegrationLifecycle:
             es.step(loss)
 
         first_run_bad = es.bad
+        assert first_run_bad > 0, "First run should accumulate bad count before reset"
 
         # Reset for second run
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
