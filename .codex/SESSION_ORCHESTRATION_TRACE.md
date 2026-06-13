@@ -166,7 +166,7 @@ T51 ──[5s]───→ T60 (Reports & wrap-up)
 | `.codex/TURN_32_STATUS_REPORT.md` | Report | ~6KB | ✅ |
 | `tests/unit/test_checkpoint_core_resume.py` | Code | 350 LOC | ✅ |
 | `tests/unit/test_training_callbacks.py` | Code | 400 LOC | ✅ |
-| `tests/unit/test_tokenization_edges.py` | Code | 297 LOC | ✅ |
+| `tests/unit/test_tokenization_edges.py` | Code | 297 LOC | ✅ | <!-- pragma: allowlist secret -->
 | `tests/integration/test_device_strategy_fallback.py` | Code | 320 LOC | ✅ |
 | `tests/integration/test_event_integration_e2e.py` | Code | 380 LOC | ✅ |
 | `tests/integration/test_checkpoint_resume_e2e.py` | Code | 393 LOC | ✅ |

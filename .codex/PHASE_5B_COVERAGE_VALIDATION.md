@@ -108,7 +108,7 @@ pytest --cov=src --cov=training --cov=agents --cov=scripts --cov=services \
 |-------------------|--------|-------|
 | test_checkpoint_core_resume.py | ✅ Not errored | Should be included in run |
 | test_training_callbacks.py | ✅ Not errored | Should be included in run |
-| test_tokenization_edges.py | ✅ Not errored | Should be included in run |
+| test_tokenization_edges.py | ✅ Not errored | Should be included in run | <!-- pragma: allowlist secret -->
 | test_device_strategy_fallback.py | ✅ Not errored | Should be included in run |
 | test_event_integration_e2e.py | ✅ Not errored | Should be included in run |
 | test_checkpoint_resume_e2e.py | ✅ Not errored | Should be included in run |

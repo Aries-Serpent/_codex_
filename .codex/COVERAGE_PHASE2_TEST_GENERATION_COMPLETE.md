@@ -114,12 +114,12 @@
 
 **Critical Paths Tested**:
 ```
-✅ tokenize("") → valid empty token list
-✅ tokenize("\x00null\x00byte") → handles or rejects clearly
-✅ tokenize("\ufeffBOM") → handles without error
-✅ tokenize("混合 🌍 мир") → produces tokens
-✅ tokenize("word" * 10000) → completes without hang
-✅ tokenize(None) → raises TypeError/AttributeError
+✅ tokenize("") → valid empty token list  # pragma: allowlist secret
+✅ tokenize("\x00null\x00byte") → handles or rejects clearly  # pragma: allowlist secret
+✅ tokenize("\ufeffBOM") → handles without error  # pragma: allowlist secret
+✅ tokenize("混合 🌍 мир") → produces tokens  # pragma: allowlist secret
+✅ tokenize("word" * 10000) → completes without hang  # pragma: allowlist secret
+✅ tokenize(None) → raises TypeError/AttributeError  # pragma: allowlist secret
 ```
 
 ---
@@ -253,7 +253,7 @@
 |------|------|-------|-----------------|
 | test_checkpoint_core_resume.py | Unit | 13 | Save/load, metadata, schema |
 | test_training_callbacks.py | Unit | 21 | Early stopping, plateau detection |
-| test_tokenization_edges.py | Unit | 18 | Empty, special chars, length |
+| test_tokenization_edges.py | Unit | 18 | Empty, special chars, length | <!-- pragma: allowlist secret -->
 | test_device_strategy_fallback.py | Integration | 11 | Device fallback, dtype selection |
 | test_event_integration_e2e.py | Integration | 11 | Event flow, checkpoint resume |
 | test_checkpoint_resume_e2e.py | Integration | 14 | Full resume workflow, migration |
@@ -270,7 +270,7 @@ Based on test case count and module LOC:
 |--------|----------|-------|-----------|--------|
 | checkpointing/ | ~2% | 27 | +0.4% | 2.4% |
 | training/callbacks.py | ~0% | 21 | +0.3% | 0.3% |
-| tokenization/ | ~3% | 18 | +0.2% | 3.2% |
+| tokenization/ | ~3% | 18 | +0.2% | 3.2% | <!-- pragma: allowlist secret -->
 | training/device_strategy.py | ~1% | 11 | +0.2% | 1.2% |
 | event_integration | ~0% | 11 | +0.1% | 0.1% |
 | **Cumulative** | **~1% (from test pool)** | **78** | **+1.2%** | **~2.2% (turn 32)** |
@@ -442,29 +442,29 @@ TestEarlyStoppingIntegration (2 tests)
 ## tests/unit/test_tokenization_edges.py (18+ tests)
 
 ```
-TestTokenizationEmptyInputs (3 tests)
-  ✅ test_tokenize_empty_string
-  ✅ test_tokenize_whitespace_only
-  ✅ test_tokenize_single_character
+TestTokenizationEmptyInputs (3 tests)  # pragma: allowlist secret
+  ✅ test_tokenize_empty_string  # pragma: allowlist secret
+  ✅ test_tokenize_whitespace_only  # pragma: allowlist secret
+  ✅ test_tokenize_single_character  # pragma: allowlist secret
 
-TestTokenizationSpecialCharacters (3 tests)
-  ✅ test_tokenize_null_byte_handling
-  ✅ test_tokenize_unicode_bom_removal
-  ✅ test_tokenize_mixed_unicode_scripts
+TestTokenizationSpecialCharacters (3 tests)  # pragma: allowlist secret
+  ✅ test_tokenize_null_byte_handling  # pragma: allowlist secret
+  ✅ test_tokenize_unicode_bom_removal  # pragma: allowlist secret
+  ✅ test_tokenize_mixed_unicode_scripts  # pragma: allowlist secret
 
-TestTokenizationLengthBoundaries (3 tests)
-  ✅ test_tokenize_very_long_sequence
-  ✅ test_tokenize_repeated_characters
-  ✅ test_tokenize_max_length_truncation
+TestTokenizationLengthBoundaries (3 tests)  # pragma: allowlist secret
+  ✅ test_tokenize_very_long_sequence  # pragma: allowlist secret
+  ✅ test_tokenize_repeated_characters  # pragma: allowlist secret
+  ✅ test_tokenize_max_length_truncation  # pragma: allowlist secret
 
-TestTokenizationConsistency (2 tests)
-  ✅ test_tokenize_deterministic_output
-  ✅ test_tokenize_symmetric_strip_equivalence
+TestTokenizationConsistency (2 tests)  # pragma: allowlist secret
+  ✅ test_tokenize_deterministic_output  # pragma: allowlist secret
+  ✅ test_tokenize_symmetric_strip_equivalence  # pragma: allowlist secret
 
-TestTokenizationErrorRecovery (3+ tests)
-  ✅ test_tokenize_invalid_type_raises_error
-  ✅ test_tokenize_none_input_raises_error
-  ✅ test_tokenize_recovery_after_error
+TestTokenizationErrorRecovery (3+ tests)  # pragma: allowlist secret
+  ✅ test_tokenize_invalid_type_raises_error  # pragma: allowlist secret
+  ✅ test_tokenize_none_input_raises_error  # pragma: allowlist secret
+  ✅ test_tokenize_recovery_after_error  # pragma: allowlist secret
 ```
 
 (Integration tests similarly detailed in appendix if needed)

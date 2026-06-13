@@ -129,7 +129,7 @@ cognitive_brain/
 | Pattern ID | Category | Improvement Area | Status |
 |-----------|----------|------------------|--------|
 | codeql-alert-remediation | SECURITY | Security_Hardening | ✅ Inferred |
-| secret-detection-protocol | SECURITY | Security_Hardening | ✅ Inferred |
+| secret-detection-protocol | SECURITY | Security_Hardening | ✅ Inferred | <!-- pragma: allowlist secret -->
 | dependency-cve-scan | SECURITY | Dependency_Security | ✅ Inferred |
 | code-scanning-fix | SECURITY | Security_Hardening | ✅ Inferred |
 | vulnerability-report | SECURITY | Security_Hardening | ✅ Inferred |
@@ -280,7 +280,7 @@ Phase 3 (CI):
 
 | Phase | Improvement Area | Description | Recurrence_Count |
 |-------|------------------|-------------|-----------------|
-| 1 | `Security_Hardening` | CodeQL, secrets, dependencies | 45 |
+| 1 | `Security_Hardening` | CodeQL, secrets, dependencies | 45 | <!-- pragma: allowlist secret -->
 | 2 | `Coverage_Expansion` | Test generation, gap analysis | ~30 |
 | 3 | `CI_Stability` | Cascade prevention, healing | ~25 |
 
@@ -372,7 +372,7 @@ knowledge_graph/
 ```
 Security_Hardening (Phase 1)
   ├─ Fix CodeQL alerts
-  ├─ Scan secrets
+  ├─ Scan secrets  # pragma: allowlist secret
   └─ Resolve CVEs
       └─ FEEDS INTO Phase 2
           └─ Security coverage gaps

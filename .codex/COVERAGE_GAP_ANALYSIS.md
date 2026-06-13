@@ -105,10 +105,10 @@ precision = 2
 #### Uncovered Edge Cases
 | Edge Case | Risk | Test Type |
 |-----------|------|-----------|
-| Empty sequence tokenization | Data corruption | Unit |
-| Very long sequence (>2M tokens) | OOM/truncation | Unit |
+| Empty sequence tokenization | Data corruption | Unit | <!-- pragma: allowlist secret -->
+| Very long sequence (>2M tokens) | OOM/truncation | Unit | <!-- pragma: allowlist secret -->
 | Special character handling (BOM, null bytes) | Silent failures | Unit |
-| Token ID collisions in custom vocabularies | Index errors | Unit |
+| Token ID collisions in custom vocabularies | Index errors | Unit | <!-- pragma: allowlist secret -->
 | Encoding format mismatch (UTF-8 vs UTF-16) | Data loss | Unit |
 
 ---

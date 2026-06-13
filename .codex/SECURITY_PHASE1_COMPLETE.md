@@ -127,11 +127,11 @@
 | A02: Cryptographic Failures | Phase 3 | SHA-256 in production, no SHA-1 | ✅ PASS |
 | A03: Injection | Phase 1 + Phase 4 | No SQL, CmdInjection, XXE | ✅ PASS |
 | A04: Insecure Design | Implicit (defusedxml, safe defaults) | N/A | ✅ |
-| A05: Security Misconfiguration | Phase 2 + Phase 4 | No exposed secrets, hardcoded HTTPS | ✅ PASS |
+| A05: Security Misconfiguration | Phase 2 + Phase 4 | No exposed secrets, hardcoded HTTPS | ✅ PASS | <!-- pragma: allowlist secret -->
 | A06: Vulnerable Components | Out of scope (dependency scanning separate) | N/A | - |
-| A07: Authentication Failure | Phase 2 + Phase 4 | Token masking, HTTPS-only | ✅ PASS |
+| A07: Authentication Failure | Phase 2 + Phase 4 | Token masking, HTTPS-only | ✅ PASS | <!-- pragma: allowlist secret -->
 | A08: Data Integrity Failures | Phase 3 | No insecure deserialization | ✅ PASS |
-| A09: Logging & Monitoring | Phase 2 | No clear-text secrets logged | ✅ PASS |
+| A09: Logging & Monitoring | Phase 2 | No clear-text secrets logged | ✅ PASS | <!-- pragma: allowlist secret -->
 | A10: SSRF | Phase 4 | No SSRF vectors (hardcoded endpoints) | ✅ PASS |
 
 ---
@@ -144,11 +144,11 @@
 | CWE-79 | Cross-site Scripting (XSS) | Implicit (N/A for backend) | N/A | - |
 | CWE-89 | SQL Injection | Phase 1 | 0 instances found | ✅ |
 | CWE-90 | Improper Neutralization of Special Elements used in an Expression Language | N/A | N/A | - |
-| CWE-200 | Exposure of Sensitive Information | Phase 2 | All tokens masked/truncated | ✅ |
+| CWE-200 | Exposure of Sensitive Information | Phase 2 | All tokens masked/truncated | ✅ | <!-- pragma: allowlist secret -->
 | CWE-327 | Use of a Broken or Risky Cryptographic Algorithm | Phase 3 | No SHA-1, proper MD5 (usedforsecurity=False), SHA-256 production | ✅ |
 | CWE-502 | Deserialization of Untrusted Data | Phase 3 | 0 unsafe pickle.loads() | ✅ |
 | CWE-611 | Improper Restriction of XML External Entity Reference | Phase 1 | All XML parsing uses defusedxml | ✅ |
-| CWE-916 | Use of Password Hash With Insufficient Computational Effort | Out of scope | N/A | - |
+| CWE-916 | Use of Password Hash With Insufficient Computational Effort | Out of scope | N/A | - | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -169,7 +169,7 @@ Security patterns detected: 40+
 ### Findings Breakdown
 ```
 Phase 1 (XXE/CmdInjection):     14 findings (all SAFE or TEST)
-Phase 2 (Logging):              12 findings (all SAFE, no unredacted secrets)
+Phase 2 (Logging):              12 findings (all SAFE, no unredacted secrets)  # pragma: allowlist secret
 Phase 3 (Hashing/Deser):        15+ findings (all SAFE, strong crypto)
 Phase 4 (URL Validation):       10+ findings (all SAFE, HTTPS hardcoded)
 ───────────────────────────────────────────────────────────────

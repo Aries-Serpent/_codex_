@@ -184,9 +184,9 @@ Total vulnerabilities found: 37 (across 13 packages)
 
 ```
 Scan Results:
-├─ GitHub personal tokens (ghp_*):  0 exposed (test data only)
-├─ OAuth secrets (ghs_*):          0 exposed
-├─ Refresh tokens (ghr_*):         0 exposed
+├─ GitHub personal tokens (ghp_*):  0 exposed (test data only)  # pragma: allowlist secret
+├─ OAuth secrets (ghs_*):          0 exposed  # pragma: allowlist secret
+├─ Refresh tokens (ghr_*):         0 exposed  # pragma: allowlist secret
 ├─ API Keys:                        0 exposed
 └─ Credentials in code:             0 exposed
 ```
@@ -209,7 +209,7 @@ Scan Results:
 |---|---|---|---|
 | Critical vulnerabilities | 0 | 0 | ✅ LOCKED |
 | High-severity issues | 0 | 0 | ✅ LOCKED |
-| Exposed secrets | 0 | 0 | ✅ LOCKED |
+| Exposed secrets | 0 | 0 | ✅ LOCKED | <!-- pragma: allowlist secret -->
 | XXE vulnerabilities | 0 | 0 | ✅ LOCKED |
 | Command injection vectors | 0 | 0 | ✅ LOCKED |
 | Weak cryptography | 0 | 0 | ✅ LOCKED |
@@ -232,7 +232,7 @@ All security hardening from Phase 1-4 remains intact. Zero new critical/high vul
 | Security baseline | Locked | Locked | ✅ **PASS** |
 | Bandit scan | 0 high-severity | 0 found | ✅ **PASS** |
 | Dependency audit | 0 blocking CVEs | None critical | ✅ **PASS** |
-| Secret scan | 0 exposed | 0 found | ✅ **PASS** |
+| Secret scan | 0 exposed | 0 found | ✅ **PASS** | <!-- pragma: allowlist secret -->
 
 ### Final Security Gate: **✅ PASS**
 
@@ -251,7 +251,7 @@ All security hardening from Phase 1-4 remains intact. Zero new critical/high vul
 │ Code Scanned:                  337,784 lines ✅         │
 │ High-Severity Issues Found:    0 ✅                     │
 │ Critical Vulnerabilities:      0 ✅                     │
-│ Exposed Secrets:               0 ✅                     │
+│ Exposed Secrets:               0 ✅                     │  # pragma: allowlist secret
 │ XXE/CmdInjection Fixes:        100% intact ✅           │
 │ Logging Masking:               100% verified ✅         │
 │ Cryptography Strength:         SHA-256 ✅               │

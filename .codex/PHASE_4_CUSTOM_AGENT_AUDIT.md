@@ -202,7 +202,7 @@ Task: Fix cascading CI failures
 | Task | Agent | Mode | Priority |
 |------|-------|------|----------|
 | Fix CodeQL alerts | unified-security-scanner | background | P0 |
-| Scan secrets | unified-security-scanner | background | P0 |
+| Scan secrets | unified-security-scanner | background | P0 | <!-- pragma: allowlist secret -->
 | Patch CVEs | unified-security-scanner | background | P1 |
 
 ## ✅ Completion Summary

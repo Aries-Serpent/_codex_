@@ -112,8 +112,8 @@ url = f"https://api.github.com/repos/{repo}/..."
 # Overridable API base, but defaults to secure
 api_base = os.environ.get("GITHUB_API_BASE", "https://api.github.com")
 
-# Token from trusted sources (GitHub Secrets)
-token = os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")
+# Token from trusted sources (GitHub Secrets)  # pragma: allowlist secret
+token = os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")  # pragma: allowlist secret
 ```
 **Analysis**:
 - **Source**: GitHub Actions environment (trusted CI system)

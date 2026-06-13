@@ -126,9 +126,9 @@ Non-Blocking Issues:   37 (transitive, not critical)
 
 #### Secret Detection
 ```
-Patterns Scanned:      8 secret types
+Patterns Scanned:      8 secret types  # pragma: allowlist secret
 Exposed Credentials:   0 ✅
-Clear-Text Secrets:    0 ✅
+Clear-Text Secrets:    0 ✅  # pragma: allowlist secret
 False Positives:       3 (test data, documentation)
 ```
 
@@ -149,7 +149,7 @@ False Positives:       3 (test data, documentation)
 |---|---|---|---|---|
 | Critical Issues | 0 | 0 | +0 | ✅ LOCKED |
 | High-Severity | 0 | 0 | +0 | ✅ LOCKED |
-| Exposed Secrets | 0 | 0 | +0 | ✅ LOCKED |
+| Exposed Secrets | 0 | 0 | +0 | ✅ LOCKED | <!-- pragma: allowlist secret -->
 | XXE Vulnerabilities | 0 | 0 | +0 | ✅ LOCKED |
 | CMDI Vectors | 0 | 0 | +0 | ✅ LOCKED |
 | Weak Crypto | 0 | 0 | +0 | ✅ LOCKED |
@@ -171,7 +171,7 @@ False Positives:       3 (test data, documentation)
 ```
 IF (critical_vulns == 0 AND 
     high_severity == 0 AND 
-    exposed_secrets == 0 AND 
+    exposed_secrets == 0 AND  # pragma: allowlist secret 
     phase1_baseline_intact == TRUE AND 
     regressions == 0)
 THEN gate = PASS
@@ -200,7 +200,7 @@ THEN gate = PASS
 │                                           │
 │  Critical Vulnerabilities:          0 ✅  │
 │  High-Severity Issues:              0 ✅  │
-│  Exposed Secrets:                   0 ✅  │
+│  Exposed Secrets:                   0 ✅  │  # pragma: allowlist secret
 │  Code Quality Issues (bandit):    67 ⚠️   │
 │  Dependency Advisories (pip):     37 ⚠️   │
 │  Security Baseline Status:    LOCKED ✅   │
