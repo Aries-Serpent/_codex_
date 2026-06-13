@@ -571,6 +571,7 @@ class CommonIssueFixer:
             if self.cascade_detector.should_skip_pattern(num):
                 print(f"Pattern {num}: {name}")
                 print(f"  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
+                # codeql[py/clear-text-logging-sensitive-data] - pattern names are hardcoded constants
                 self.cascade_detector.report_broken_circuit(num, name)
                 print()
                 continue
