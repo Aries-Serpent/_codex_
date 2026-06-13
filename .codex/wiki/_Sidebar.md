@@ -7,9 +7,9 @@
 
 ## For Developers
 - [Installation](Home.md#for-developers)
-- [Project Structure](#repository-architecture)
-- [Development Workflow](#development-workflow)
-- [Testing](#testing)
+- [Project Structure](Home.md#repository-architecture)
+- [Development Workflow](Home.md#development-workflow)
+- [Testing](Home.md#testing)
 - [Contributing](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
 
 ## For AI Agents

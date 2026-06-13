@@ -155,7 +155,7 @@ If issues arise, temporarily disable pre-commit hook:
 
 - [Failing CI Job](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604 <!-- Note: Logs expire after 90 days -->/job/60974199331)
 - [Windows Filename Restrictions (Microsoft Docs)](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
-- [AGENTS.md - Cross-Platform Guidelines](#or)
+- [AGENTS.md - Cross-Platform Guidelines](../../AGENTS.md#-cross-platform-filename-requirements)
 
 ## Support
 

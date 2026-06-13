@@ -117,7 +117,7 @@ Use tokenized variable aliases in living docs and session handoffs to keep refer
 
 ## 🚨 Branch-Update Conflict — Session Quick Reference
 
-> Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md → Branch-Update Conflict Dashboard`](#branch-update-conflict-dashboard)
+> Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md → Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)
 
 ```
 Detect drift:  git log main..HEAD --oneline | wc -l
