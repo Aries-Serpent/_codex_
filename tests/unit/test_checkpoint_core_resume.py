@@ -96,8 +96,8 @@ class TestCheckpointCoreBasics:
         """Verify state is preserved through save and load cycle."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         original_state = {
@@ -126,8 +126,8 @@ class TestCheckpointCoreBasics:
         """Verify load succeeds even if metadata.json is missing."""
         # Arrange
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         test_state = {"model": {"w": 0.5}}

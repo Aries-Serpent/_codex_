@@ -11,17 +11,17 @@ This test suite covers:
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from mcp.lifecycle import (
-    ServerState,
-    InvalidStateTransition,
+    VALID_TRANSITIONS,
     HealthStatus,
+    InvalidStateTransition,
     LifecycleConfig,
     LifecycleManager,
-    VALID_TRANSITIONS,
+    ServerState,
     get_lifecycle_manager,
     reset_lifecycle_manager,
 )
