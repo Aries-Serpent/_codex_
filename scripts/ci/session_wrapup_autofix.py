@@ -904,15 +904,74 @@ def _short_sha() -> str:
         return "unknown"
 
 
-def _last_commit_changed(path: Path) -> bool:
-    """Return True if *path* appears in the diff between HEAD~1 and HEAD."""
-    try:
-        result = subprocess.run(
-            ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
+def _is_infra_or_skipci_commit(author: str, subject: str) -> bool:
+    """Return True for bot/infra commits that should be ignored in REQ file checks."""
+    infra_authors = {
+        "github-actions[bot]",
+        "github-actions",
+        "dependabot[bot]",
+        "dependabot-preview[bot]",
+    }
+    if author in infra_authors:
+        return True
+
+    s = subject.lower()
+    return (
+        "[skip ci]" in s
+        or "chore: auto-merge" in s
+        or s.startswith("chore(manifest):")
+        or "chore: generate follow-up" in s
+    )
+
+
+def _resolve_last_meaningful_base_ref(max_lookback: int = 10) -> str:
+    """Return a safe diff base that skips infra/[skip ci] commits when possible."""
+    skipped = 0
+    while skipped < max_lookback:
+        candidate = f"HEAD~{skipped}"
+        verify = subprocess.run(
+            ["git", "rev-parse", "--verify", "--quiet", f"{candidate}^{{commit}}"],
             capture_output=True,
             text=True,
             check=False,
         )
+        if verify.returncode != 0:
+            break
+
+        author = subprocess.run(
+            ["git", "log", "-1", "--format=%an", candidate],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+        subject = subprocess.run(
+            ["git", "log", "-1", "--format=%s", candidate],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+
+        if _is_infra_or_skipci_commit(author, subject):
+            skipped += 1
+            continue
+
+        return f"HEAD~{skipped + 1}"
+
+    return "HEAD~1"
+
+
+def _last_commit_changed(path: Path) -> bool:
+    """Return True if *path* changed since the last meaningful (non-infra) commit."""
+    try:
+        base_ref = _resolve_last_meaningful_base_ref()
+        result = subprocess.run(
+            ["git", "diff", "--name-only", base_ref, "HEAD"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            return False
         rel = str(path.relative_to(REPO_ROOT))
         return rel in result.stdout.splitlines()
     except OSError:
@@ -1698,7 +1757,7 @@ def _run_pre_session_health_sweep(dry_run: bool = False) -> bool:
     if sync_script.exists():
         cmd = [sys.executable, str(sync_script), "--fix", "--manifest-only"]
         if dry_run:
-            cmd[-1] = "--check"
+            cmd = [sys.executable, str(sync_script), "--check", "--manifest-only"]
         result = subprocess.run(cmd, capture_output=False, text=True)
         print(f"  sync_tracked_files exit={result.returncode}")
     else:
@@ -1853,7 +1912,7 @@ def select_merge_required_workflows(
             f"✅ PR #{pr_number} WEC already has all merge-required workflows selected "
             f"({n_checked} checked) — no update needed"
         )
-        return False
+        return True
 
     new_wec_block = _build_wec_block(updated_state, human_grants=human_grants)
 

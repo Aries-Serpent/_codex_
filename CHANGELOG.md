@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (production readiness phase start — 2026-06-13T00:31Z)
+- Added tracked implementation artifacts: `.codex/PRODUCTION_DEPLOYMENT_READINESS_PLAN.md` and `.codex/PRODUCTION_DEPLOYMENT_PLAN_DETAILED.md`.
+- Fixed workflow YAML regression in `.github/workflows/copilot-setup-steps.yml` by restoring guarded block-scalar preload command syntax.
+- Hardened container smoke command display in `tests/test_container_smoke.py` using `shlex.join(...)`.
+- Added `defusedxml.minidom` stubs in `tests/test_readiness_remaining_modules.py` to align readiness imports with defused XML handling.
+- Captured baseline campaign diagnostics in `.codex/baseline.json`.
+
 ### Fixed (auto-update — PR #4869)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4869 (SHA `9f26e717`) at 2026-06-12T22:58Z [auto-generated]
 

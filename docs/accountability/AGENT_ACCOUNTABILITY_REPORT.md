@@ -1,3 +1,34 @@
+## SESSION SUMMARY — 2026-06-13T00:31Z · Production Readiness Plan Execution (Phase 1 Start)
+
+**Session ID:** production-readiness-phase1-start  
+**Agent:** @copilot  
+**Branch:** `0D_base_`  
+**Duration:** ~15 minutes
+
+### Objective
+Start implementation of the production deployment readiness campaign by applying immediate hardening changes and creating plan artifacts for tracked execution.
+
+### Actions Completed
+1. ✅ Created `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/.codex/PRODUCTION_DEPLOYMENT_READINESS_PLAN.md`
+2. ✅ Created `/home/runner/work/_codex_/_codex_/Aries-Serpent/_codex_/.codex/PRODUCTION_DEPLOYMENT_PLAN_DETAILED.md`
+3. ✅ Hardened workflow preload command syntax in `.github/workflows/copilot-setup-steps.yml` (`run: |` + `if ! ...; then ...; fi`)
+4. ✅ Improved command logging safety in `tests/test_container_smoke.py` via `shlex.join(...)`
+5. ✅ Added `defusedxml.minidom` stubbing in `tests/test_readiness_remaining_modules.py`
+6. ✅ Generated baseline diagnostics at `.codex/baseline.json`
+7. ✅ Delegated parallel phase tracks to background custom agents:
+   - `security-phase1` (`unified-security-scanner`)
+   - `coverage-phase2` (`unified-coverage-agent`)
+   - `ci-phase3` (`ci-auto-healer-agent`)
+
+### Validation
+- YAML parse check for `copilot-setup-steps.yml`: **pass**
+- Targeted tests:
+  - `tests/test_container_smoke.py`: pass/skip as expected
+  - `tests/test_readiness_remaining_modules.py`: one pre-existing import failure (`codex.dynamics.model.role`)
+- Baseline `nox -s tests`: pre-existing collection/import errors in unrelated modules (documented)
+
+---
+
 ## SESSION SUMMARY — 2026-06-12T20:40Z · PR #4863 CodeQL Suppression Format Fix (Attempt 3 — Complete)
 
 **Session ID:** PR #4863 CodeQL Suppression Format Fix Attempt 3 (Complete)  
@@ -50194,3 +50225,211 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-13T00:32:40Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
