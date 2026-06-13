@@ -13,14 +13,14 @@ from __future__ import annotations
 import pytest
 
 from modeling import (
+    _DTYPE_MAP,
     LoraSettings,
     ModelInitConfig,
     _coerce_config,
+    _needs_bf16,
     _resolve_device,
     _resolve_dtype,
     resolve_dtype,
-    _DTYPE_MAP,
-    _needs_bf16,
 )
 
 
@@ -390,7 +390,6 @@ class TestDtypeMap:
 
     def test_dtype_map_contains_all_dtypes(self):
         """Test that _DTYPE_MAP contains expected dtypes."""
-        import torch
         assert "float32" in _DTYPE_MAP
         assert "fp32" in _DTYPE_MAP
         assert "float16" in _DTYPE_MAP

@@ -6,8 +6,6 @@ and proper event cleanup after training completion.
 
 from __future__ import annotations
 
-from unittest import mock
-
 import pytest
 
 
@@ -142,8 +140,8 @@ class TestCheckpointResumeIntegration:
         from pathlib import Path
 
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -187,8 +185,8 @@ class TestCheckpointResumeIntegration:
         from pathlib import Path
 
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -224,8 +222,8 @@ class TestCheckpointResumeIntegration:
         from pathlib import Path
 
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
 
         tmpdir = Path(tempfile.mkdtemp())
@@ -268,11 +266,11 @@ class TestTrainingLoopIntegration:
         import tempfile
         from pathlib import Path
 
-        from src.codex_ml.training.callbacks import EarlyStopping
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 
@@ -337,11 +335,11 @@ class TestTrainingLoopIntegration:
         import tempfile
         from pathlib import Path
 
-        from src.codex_ml.training.callbacks import EarlyStopping
         from src.codex_ml.checkpointing.checkpoint_core import (
-            save_checkpoint,
             load_checkpoint,
+            save_checkpoint,
         )
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 
