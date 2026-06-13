@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import asyncio
 from abc import ABC, abstractmethod
 from typing import Any, Protocol
 
 import pytest
 
 try:
-    from mcp.adapters import BaseAdapter, AdapterRegistry
+    from mcp.adapters import BaseAdapter
 except ImportError:
     pytest.skip("mcp.adapters not available", allow_module_level=True)
 
@@ -78,5 +79,3 @@ async def test_adapter_context_manager():
     await adapter.shutdown()
     assert not adapter.initialized
 
-
-import asyncio
