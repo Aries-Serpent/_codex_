@@ -179,7 +179,7 @@ Fix all broken links that point to files that have been relocated to new directo
 ### Sample Change
 ```diff
 - [Phase 8 Roadmap](/.github/agents/PHASE_8_ROADMAP.md)
-+ [Phase 8 Roadmap](docs/ROADMAP.md)
++ [Phase 8 Roadmap](../../../docs/ROADMAP.md)
 ```
 
 ---

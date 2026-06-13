@@ -27629,7 +27629,7 @@ bare `"Will fix in a future session"` → exit 1 ✅ (still caught).
    **Fix:** Added trailing newline.
 
 2. **`check-cross-references`**: `.github/workflows/pre-flight-validation.yml` line 81 contained
-   `[CI Failure Tracking Log](.codex/CI_FAILURE_TRACKING_LOG.md)` — a link to a file that has
+   `[CI Failure Tracking Log](../../.codex/CI_FAILURE_TRACKING_LOG.md)` — a link to a file that has
    never existed in the repository.
    **Fix:** Created `.codex/CI_FAILURE_TRACKING_LOG.md` with standard tracking log structure.
 

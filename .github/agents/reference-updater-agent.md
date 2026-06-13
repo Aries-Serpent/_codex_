@@ -404,7 +404,7 @@ Time: 12.3s
 ```
 [DRY RUN] Would update 12 files:
   docs/index.md:
-    Line 15: <!-- BROKEN LINK: [text](old.md) --> → <!-- BROKEN LINK: [text](new.md) -->
+    Line 15: <!-- BROKEN LINK: [text](../../.codex/PR_3248_FOLLOWUP_PROMPT.old.md) --> → <!-- BROKEN LINK: [text](new.md) -->
     Line 42: <a href="old.md"> → <a href="new.md">
   ...
 

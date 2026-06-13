@@ -314,17 +314,17 @@ Successfully implemented comprehensive MCP (Model Context Protocol) documentatio
 ## References
 
 **Created Documentation**:
-- [MCP Capability Matrix](.codex/docs/MCP_CAPABILITY_MATRIX.md)
-- [Playwright Recipe](.codex/docs/MCP_PLAYWRIGHT_RECIPE.md)
-- [agentAssignment Examples](.codex/docs/MCP_AGENT_ASSIGNMENT_EXAMPLES.md)
-- [Workflow Recipes](.codex/docs/MCP_WORKFLOW_RECIPES.md)
-- [Package.json Recipe](.codex/docs/MCP_PACKAGE_JSON_RECIPE.md)
-- [Chain-PR Plan](.codex/docs/CHAIN_PR_ORCHESTRATION_PLAN.md)
+- [MCP Capability Matrix](MCP_CAPABILITY_MATRIX.md)
+- [Playwright Recipe](MCP_PLAYWRIGHT_RECIPE.md)
+- [agentAssignment Examples](MCP_AGENT_ASSIGNMENT_EXAMPLES.md)
+- [Workflow Recipes](MCP_WORKFLOW_RECIPES.md)
+- [Package.json Recipe](MCP_PACKAGE_JSON_RECIPE.md)
+- [Chain-PR Plan](CHAIN_PR_ORCHESTRATION_PLAN.md)
 
 **Existing Documentation**:
-- [MCP Setup Guide](docs/MCP_SETUP_GUIDE.md)
-- [GitHub MCP Capabilities](docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md)
-- [Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [MCP Setup Guide](../../docs/MCP_SETUP_GUIDE.md)
+- [GitHub MCP Capabilities](../../docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md)
+- [Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)
 - [Sprint Execution Template](.github/prompts/sprint_execution_plan/TEMPLATE.md)
 
 **External Resources**:

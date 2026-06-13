@@ -296,15 +296,15 @@ graph LR
 ## 🔗 Quick Links
 
 **Tracking Documents**:
-- [Primary Log](.codex/PR_3248_FAILURE_TRACKING_LOG.md)
-- [Repeated Issues](.codex/REPEATED_ISSUES_LOG_PR_3248.md)
-- [Thrashing Pattern](.codex/THE_THRASHING_PATTERN_PR_3248.md)
-- [Root Cause](.codex/PR_3248_ROOT_CAUSE_ANALYSIS.md)
+- [Primary Log](PR_3248_FAILURE_TRACKING_LOG.md)
+- [Repeated Issues](REPEATED_ISSUES_LOG_PR_3248.md)
+- [Thrashing Pattern](THE_THRASHING_PATTERN_PR_3248.md)
+- [Root Cause](PR_3248_ROOT_CAUSE_ANALYSIS.md)
 
 **Templates**:
-- [Issue Tracking Template](.codex/templates/ISSUE_TRACKING_PROMPT_TEMPLATE.md)
-- [Quick Reference](.codex/templates/QUICK_TRACKING_REFERENCE.md)
-- [Mandatory Reading](.codex/README_FIRST_MANDATORY.md)
+- [Issue Tracking Template](templates/ISSUE_TRACKING_PROMPT_TEMPLATE.md)
+- [Quick Reference](templates/QUICK_TRACKING_REFERENCE.md)
+- [Mandatory Reading](README_FIRST_MANDATORY.md)
 
 **Workflows**:
 - [Resilient Validation](.github/workflows/resilient_validation.yml)

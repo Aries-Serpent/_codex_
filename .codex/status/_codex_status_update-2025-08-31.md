@@ -6,7 +6,7 @@
 - Logged Python environment to `.codex/inventory.txt` for reproducibility.
 
 ## Deferred
-See [`.codex/deferred_items.md`](.codex/deferred_items.md) for postponed tasks.
+See [`.codex/deferred_items.md`](../deferred_items.md) for postponed tasks.
 
 ## Open Questions
 - Should the LoRA helper expose per-layer rank scaling?

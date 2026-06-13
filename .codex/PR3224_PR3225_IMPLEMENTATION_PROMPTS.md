@@ -404,7 +404,7 @@ Generate comprehensive PR comment using this template:
 | CVE-2026-25480 | litestar | 🟡 MEDIUM | 6.5 | ✅ Fixed in 2.20.0 |
 
 **References**:
-- [Full Security Analysis](.codex/PR3224_PR3225_SECURITY_ANALYSIS.md)
+- [Full Security Analysis](PR3224_PR3225_SECURITY_ANALYSIS.md)
 - [nbconvert Changelog](https://github.com/jupyter/nbconvert/blob/main/CHANGELOG.md)
 - [Litestar Security Advisory GHSA-93ph-p7v4-hwh4](https://github.com/litestar-org/litestar/security/advisories/GHSA-93ph-p7v4-hwh4)
 - [Litestar Security Advisory GHSA-vxqx-rh46-q2pg](https://github.com/litestar-org/litestar/security/advisories/GHSA-vxqx-rh46-q2pg)
