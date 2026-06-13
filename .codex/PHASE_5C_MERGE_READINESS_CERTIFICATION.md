@@ -20,7 +20,7 @@
 | **REQ-3: Type Checking** | ✅ PASS | mypy configured (advisory errors) | NO |
 | **REQ-4: Accountability Report** | ✅ PASS | docs/accountability/ updated today | NO |
 | **REQ-5: CHANGELOG** | ✅ PASS | CHANGELOG.md updated today | NO |
-| **REQ-6: Secrets Baseline** | ✅ PASS | No credentials detected | NO |
+| **REQ-6: Secrets Baseline** | ✅ PASS | No credentials detected | NO | <!-- pragma: allowlist secret -->
 | **REQ-7: Permissions Policy** | ✅ PASS | CODEBASE_AGENCY_POLICY.md enforced | NO |
 | **REQ-8: Workflow Compliance** | ✅ PASS | 183/183 workflows YAML valid | NO |
 | **REQ-9: CodeQL Security** | ✅ PASS | No blocking alerts (22 justified) | NO |

@@ -26,7 +26,7 @@
 |-----------|-------------|---------|--------|
 | **Critical Vulnerabilities** | 0 remaining | 0 found | ✅ **PASS** |
 | **High-Severity Issues** | 0 in-scope | 0 found | ✅ **PASS** |
-| **Exposed Secrets** | 0 committed | 0 found | ✅ **PASS** |
+| **Exposed Secrets** | 0 committed | 0 found | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | **Phase 1 Fixes** | 100% intact | 100% verified | ✅ **PASS** |
 | **Baseline Locked** | No regressions | No regressions | ✅ **PASS** |
 | **Dependency Blockers** | 0 critical | 0 critical | ✅ **PASS** |
@@ -47,9 +47,9 @@ Dependency Scan (pip-audit):
   └─ Critical CVEs:           0 ✅
   └─ High-Severity CVEs:      0 ✅
   
-Secret Detection:
+Secret Detection:  # pragma: allowlist secret
   └─ Exposed Credentials:     0 ✅
-  └─ Clear-text Secrets:      0 ✅
+  └─ Clear-text Secrets:      0 ✅  # pragma: allowlist secret
 
 Phase 1 Baseline:
   └─ XXE/CmdInjection Fixes:  100% intact ✅
@@ -129,7 +129,7 @@ Known Advisory Issues (Non-Blocking):
 | Phase | Finding Category | Status | Verification |
 |-------|---|---|---|
 | Phase 1 | XXE/Command Injection | ✅ INTACT | defusedxml usage confirmed (6+ files) |
-| Phase 2 | Clear-text Logging | ✅ INTACT | Token masking (_mask) confirmed |
+| Phase 2 | Clear-text Logging | ✅ INTACT | Token masking (_mask) confirmed | <!-- pragma: allowlist secret -->
 | Phase 3 | Weak Hashing | ✅ INTACT | SHA-256 usage (546 instances) confirmed |
 | Phase 4 | URL Validation | ✅ INTACT | HTTPS hardcoded, no user input confirmed |
 
@@ -212,7 +212,7 @@ Known Advisory Issues (Non-Blocking):
 ```
 IF (critical_issues == 0 AND 
     high_severity_issues == 0 AND 
-    exposed_secrets == 0 AND
+    exposed_secrets == 0 AND  # pragma: allowlist secret
     phase1_baseline_intact == TRUE)
 THEN gate_status = PASS
 ELSE gate_status = FAIL

@@ -49,7 +49,7 @@ import hashlib
 
 text_hash = hashlib.sha256(text.encode()).hexdigest()
 checksum = hashlib.sha256(content.encode()).hexdigest()[:16]
-sha = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()
+sha = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()  # pragma: allowlist secret
 ```
 **Analysis**:
 - Production code exclusively uses SHA-256
@@ -89,10 +89,10 @@ def get_hash(self) -> str:
 **File**: `scripts/ai_self_review_protocol.py:115-120`  
 **Code**:
 ```python
-def create_session_id(task_description: str) -> str:
+def create_session_id(task_description: str) -> str:  # pragma: allowlist secret
     """Create deterministic session ID from task description."""
     timestamp = datetime.now().isoformat()
-    session_content = f"{task_description}:{timestamp}"
+    session_content = f"{task_description}:{timestamp}"  # pragma: allowlist secret
     session_id = hashlib.md5(session_content.encode(), usedforsecurity=False).hexdigest()[:16]
     return session_id
 ```

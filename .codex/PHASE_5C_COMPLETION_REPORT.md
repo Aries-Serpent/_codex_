@@ -71,7 +71,7 @@ OVERALL RESULT:                       🚀 APPROVED FOR MERGE
 | REQ-3 | Type checking | ✅ PASS | mypy configured (144 advisory errors) |
 | REQ-4 | Accountability report | ✅ PASS | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md current |
 | REQ-5 | CHANGELOG.md | ✅ PASS | CHANGELOG.md updated today |
-| REQ-6 | Secrets baseline | ✅ PASS | .secrets.baseline: zero credentials |
+| REQ-6 | Secrets baseline | ✅ PASS | .secrets.baseline: zero credentials | <!-- pragma: allowlist secret -->
 | REQ-7 | Permissions policy | ✅ PASS | CODEBASE_AGENCY_POLICY.md enforced |
 | REQ-8 | Workflow compliance | ✅ PASS | 183/183 workflows YAML valid |
 | REQ-9 | CodeQL security | ✅ PASS | 22 alerts justified, no blockers |
@@ -137,7 +137,7 @@ Result: PASS (advisory only; design debt tracked)
 ```
 ✅ No credentials in commits
 ✅ No API keys detected
-✅ No tokens leaked
+✅ No tokens leaked  # pragma: allowlist secret
 ✅ 22 CodeQL alerts: all have valid suppressions
    - 19 clear-text logging (sanitized fingerprints)
    - 1 weak crypto (legacy compatibility)

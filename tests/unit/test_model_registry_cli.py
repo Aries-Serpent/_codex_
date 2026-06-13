@@ -38,6 +38,7 @@ def _load_registry_module():
     fake_mlflow_registry.ModelRegistry = _ModelRegistry
 
     fake_registry_pkg = types.ModuleType("codex_ml.registry")
+    fake_registry_pkg.__path__ = []  # Mark as package
     fake_registry_pkg.mlflow_registry = fake_mlflow_registry
 
     # Save previous sys.modules entries

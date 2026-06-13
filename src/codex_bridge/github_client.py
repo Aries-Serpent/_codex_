@@ -59,9 +59,12 @@ def _validated_url(url: str) -> str:
         raise ValueError("GitHub client only allows absolute https URLs")
     if parsed.username or parsed.password:
         raise ValueError("GitHub client URL must not include embedded credentials")
-    hostname = (parsed.hostname or "").lower()
-    if hostname not in _ALLOWED_HTTP_HOSTS:
-        raise ValueError(f"GitHub client URL host not allowlisted: {hostname}")
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("GitHub client URL must have a valid hostname")
+    hostname_lower = hostname.lower()
+    if hostname_lower not in _ALLOWED_HTTP_HOSTS:
+        raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
     return url
 
 

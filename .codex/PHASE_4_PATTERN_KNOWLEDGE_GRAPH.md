@@ -57,7 +57,7 @@
 ```
 Layer 1: Security_Hardening → 
 Layer 2: unified-security-scanner → 
-Layer 3: [CodeQL remediation, secret scanning, CVE patching] →
+Layer 3: [CodeQL remediation, secret scanning, CVE patching] →  # pragma: allowlist secret
 Layer 4: [45 instances, 92.5% success rate, last used Session S227]
 ```
 
@@ -121,32 +121,32 @@ Cross-Phase Deps:   Phase 2 (coverage validation), Phase 3 (CI gates)
 #### Pattern Family 1.2: Secret Scanning
 
 ```
-Pattern ID:         secret-detection-protocol
-Family:             Secret Scanning
+Pattern ID:         secret-detection-protocol  # pragma: allowlist secret
+Family:             Secret Scanning  # pragma: allowlist secret
 Layer 3 Category:   Credential Protection
 Severity:           Critical
 Success Rate:       0.92 (92%)
-Applications:       12 secrets detected and remediated
+Applications:       12 secrets detected and remediated  # pragma: allowlist secret
 Last Session:       S167
 Recurrence:         MEDIUM (appears in 8+ sessions)
 
 Description:
-  Detection of accidentally committed API keys, tokens,
+  Detection of accidentally committed API keys, tokens,  # pragma: allowlist secret
   credentials using gitleaks and custom patterns.
 
 Trigger Conditions:
-  - Pre-commit hook detects secret pattern
-  - GitHub secret scanning alert triggered
+  - Pre-commit hook detects secret pattern  # pragma: allowlist secret
+  - GitHub secret scanning alert triggered  # pragma: allowlist secret
   - Manual scan requested
 
 Actions:
-  1. Extract credential type (API key, token, etc)
+  1. Extract credential type (API key, token, etc)  # pragma: allowlist secret
   2. Notify repository owner for rotation
   3. Remove from git history
   4. Update .gitignore/.gitleaks.toml
-  5. Create follow-up issue for token rotation
+  5. Create follow-up issue for token rotation  # pragma: allowlist secret
 
-Recovery Key:       session_S42_secret_patterns
+Recovery Key:       session_S42_secret_patterns  # pragma: allowlist secret
 Cross-Phase Deps:   (None - foundational)
 ```
 
@@ -629,7 +629,7 @@ Cross-Phase Deps:   All phases (continuous learning)
 ```
 Phase 1 (Security) → Phase 2 (Coverage) → Phase 3 (CI)
 ├─ CodeQL fixes ──────→ Security test coverage gap ──→ CI security gates
-├─ Secret scanning ────→ Credential protection tests ─→ CI secret gates  
+├─ Secret scanning ────→ Credential protection tests ─→ CI secret gates  # pragma: allowlist secret  
 ├─ CVE patches ────────→ Dependency version coverage ─→ CI dependency validation
 └─ Code scanning fixes → Code quality test cases ──→ CI linting gates
 ```
@@ -696,7 +696,7 @@ Phase 3 Pattern:  workflow-validation-protocol
 
 ```
 Phase 1 (Security):
-  Critical:  2 patterns (codeql, secrets)
+  Critical:  2 patterns (codeql, secrets)  # pragma: allowlist secret
   High:      2 patterns (CVE, code scanning)
   Medium:    1 pattern (audit)
 
@@ -720,7 +720,7 @@ Phase 3 (CI):
 Phase 1 Patterns:
   HIGH recurrence:   codeql-alert-fix (12+ sessions)
   HIGH recurrence:   dependency-cve-scan (weekly)
-  MEDIUM recurrence: secret-detection (8+ sessions)
+  MEDIUM recurrence: secret-detection (8+ sessions)  # pragma: allowlist secret
   LOW recurrence:    security-audit (quarterly)
 
 Phase 2 Patterns:

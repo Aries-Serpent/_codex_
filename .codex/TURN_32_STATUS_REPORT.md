@@ -133,7 +133,7 @@
 |--------|-------|-------|
 | checkpointing/ | 27 | save/load, schema v2, atomic I/O |
 | training/callbacks | 21 | early stopping, plateau, recovery |
-| tokenization/ | 18 | edge cases, special chars, length |
+| tokenization/ | 18 | edge cases, special chars, length | <!-- pragma: allowlist secret -->
 | training/device_strategy | 11 | fallback, dtype, CUDA/CPU |
 | event_integration | 11 | lifecycle, event flow, reset |
 | training (general) | 0 | (legacy_api/fsdp reserved for Phase 3) |

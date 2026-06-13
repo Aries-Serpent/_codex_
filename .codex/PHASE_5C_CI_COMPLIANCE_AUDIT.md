@@ -31,7 +31,7 @@ All **13 REQ gates (REQ-1 through REQ-13)** are **PASSING** ✅. The codebase is
 | REQ-3 | Type checking (mypy, type stubs) | ✅ PASS | mypy.ini + type checking enabled | 144 errors advisory (design debt, non-blocking) |
 | REQ-4 | AGENT_ACCOUNTABILITY_REPORT.md updated | ✅ PASS | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | Latest session entries present, freshness locked |
 | REQ-5 | CHANGELOG.md updated | ✅ PASS | CHANGELOG.md | Latest session + PR entries present, freshness locked |
-| REQ-6 | Secrets baseline validator | ✅ PASS | .secrets.baseline present | No secrets detected in commits |
+| REQ-6 | Secrets baseline validator | ✅ PASS | .secrets.baseline present | No secrets detected in commits | <!-- pragma: allowlist secret -->
 | REQ-7 | Permission checks (CODEBASE_AGENCY_POLICY) | ✅ PASS | .codex/CODEBASE_AGENCY_POLICY.md enforced | All changes leave codebase better than found |
 | REQ-8 | Workflow compliance (concurrency + timeout) | ✅ PASS | 183/183 workflows YAML valid, compliance rules | Branch-scoped concurrency verified, timeouts enforced |
 | REQ-9 | CodeQL security alerts | ✅ PASS | GitHub CodeQL scanner | No blocking alerts (suppression format fixed in PR #4863) |

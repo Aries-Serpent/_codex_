@@ -362,7 +362,6 @@ class TestTrainingLoopIntegration:
 
             # Resume training from checkpoint state
             resume_epoch = loaded_state["epoch"]
-            previous_loss = loaded_state["model_loss"]
 
             # Simulate continued training
             resumed_losses = [0.24, 0.22, 0.21, 0.21, 0.21]
