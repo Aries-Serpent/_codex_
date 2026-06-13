@@ -27,10 +27,13 @@ class TestFeatureExtraction:
 
     def test_vulnerable_code_detection(self):
         """Test detection of vulnerable code patterns."""
+        # SECURITY NOTE: These are intentional security antipatterns used to test
+        # the ML threat detection model's ability to identify vulnerable code.
+        # NOT executed with real user input — purely static analysis on string fixtures.
         vulnerable_code = """
 import subprocess
-subprocess.run("ls", shell=True)
-eval(user_input)
+subprocess.run("ls", shell=True)  # nosec B602 — fixture for threat detection testing
+eval(user_input)  # nosec B307 — fixture for threat detection testing
 """
         features = self.extractor.extract(vulnerable_code)
         assert features.subprocess_calls > 0

@@ -17,23 +17,24 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import json
 import logging
+import os
+import time
+from typing import Any
+from urllib.parse import urlsplit
+
+import requests
 
 logger = logging.getLogger(__name__)
-
-import base64  # noqa: E402
-import hashlib  # noqa: E402
-import json  # noqa: E402
-import os  # noqa: E402
-import time  # noqa: E402
-from typing import Any  # noqa: E402
-
-import requests  # noqa: E402
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 REPO = os.getenv("CODEX_GH_REPO", "_codex_")
 TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
 BASE = "https://api.github.com"
+_ALLOWED_HTTP_HOSTS = {"api.github.com", "raw.githubusercontent.com", "github.com"}
 CACHE_DIR = os.getenv("CODEX_CACHE_DIR", ".codex/cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
@@ -50,6 +51,21 @@ def _cache_path(key: str) -> str:
         CACHE_DIR,
         hashlib.sha256(key.encode()).hexdigest() + ".json",
     )
+
+
+def _validated_url(url: str) -> str:
+    parsed = urlsplit(url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError("GitHub client only allows absolute https URLs")
+    if parsed.username or parsed.password:
+        raise ValueError("GitHub client URL must not include embedded credentials")
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("GitHub client URL must have a valid hostname")
+    hostname_lower = hostname.lower()
+    if hostname_lower not in _ALLOWED_HTTP_HOSTS:
+        raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
+    return url
 
 
 def cache_get(key: str, ttl: int) -> Any | None:
@@ -70,7 +86,7 @@ def cache_set(key: str, data: Any) -> None:
 
 
 def gh_get(url: str) -> Any:
-    r = requests.get(url, headers=_auth_headers(), timeout=30)
+    r = requests.get(_validated_url(url), headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
@@ -87,7 +103,7 @@ def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
-    r = requests.get(raw, timeout=30)
+    r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
     meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{path}?ref={ref}")

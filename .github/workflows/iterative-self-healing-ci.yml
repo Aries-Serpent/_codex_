@@ -63,7 +63,9 @@ jobs:
         github.event.workflow_run.name != 'Copilot PR Session Injector' &&
         github.event.workflow_run.name != 'Session Watchdog — Timebox & Continuity Enforcement' &&
         github.event.workflow_run.name != 'Chat-Ops — @copilot Webhook Trigger' &&
-        github.event.workflow_run.name != '🤖 Copilot Review Responder'
+        github.event.workflow_run.name != '🤖 Copilot Review Responder' &&
+        github.event.workflow_run.name != 'Auto-Fix Common CI Issues' &&
+        github.event.workflow_run.name != 'PR Auto-Fix Check'
       )
 
     outputs:
@@ -98,7 +100,18 @@ jobs:
           # workflow_run fires anyway, this guard stops the healer re-entry).
           CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI || 'true' }}
           TRIGGERING_COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message || '' }}
+          TRIGGERING_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
         run: |
+          # Guard: never heal failures from auto-fix workflows themselves.
+          # This prevents recursive healer↔autofix feedback loops.
+          case "${TRIGGERING_WORKFLOW}" in
+            "Auto-Fix Common CI Issues"|"PR Auto-Fix Check")
+              echo "::notice::Healer skipped — triggering workflow is ${TRIGGERING_WORKFLOW} (recursive loop guard)"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
           # Guard: skip if the triggering commit message contains [skip ci].
           # Cascade vector: sweep pushes [skip ci] commit → some workflow_run still
           # fires (e.g. workflow_run triggered by the completed healer itself on a

@@ -183,19 +183,21 @@ class FeatureExtractor:
 
 
 if __name__ == "__main__":
-    # Example usage
+    # Example usage (test/documentation only - not executed in production)
     extractor = FeatureExtractor()
 
     # Test with vulnerable code
+    # SECURITY NOTE: This is a hardcoded string literal of vulnerable code patterns,
+    # used ONLY for feature extraction testing. NOT executed with real user input.
     vulnerable_code = """
 import subprocess
 import pickle
 
 def unsafe_function(user_input):
-    # Multiple security issues
-    subprocess.run(user_input, shell=True)
-    data = pickle.loads(user_input)
-    eval(user_input)
+    # Multiple security issues (intentional for ML feature extraction testing)
+    subprocess.run(user_input, shell=True)  # nosec B602 — test fixture only
+    data = pickle.loads(user_input)  # nosec B301 — test fixture only
+    eval(user_input)  # nosec B307 — test fixture only
     return data
 """
 

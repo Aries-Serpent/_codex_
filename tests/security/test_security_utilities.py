@@ -92,7 +92,7 @@ class TestSafePickle:
 
     def test_safe_pickle_load_with_simple_data(self):
         """Test safe pickle loading with simple data structures.
-        
+
         SECURITY NOTE: We're creating a test pickle here, so it's a trusted source.
         This validates that safe_pickle_load can handle legitimate data.
         """
@@ -126,7 +126,7 @@ class TestSafePickle:
 
     def test_restricted_unpickler_allows_safe_types(self):
         """Test that RestrictedUnpickler allows whitelisted types.
-        
+
         SECURITY NOTE: Creating test pickle with safe data to validate allowlist.
         """
         safe_data = {'int': 42, 'str': 'hello', 'list': [1, 2, 3]}
@@ -142,7 +142,7 @@ class TestSafePickle:
 
     def test_restricted_unpickler_blocks_unsafe_types(self):
         """Test that RestrictedUnpickler blocks non-whitelisted types.
-        
+
         SECURITY TEST: This validates that the allowlist works by attempting
         to unpickle a custom class that should be blocked.
         """
@@ -164,7 +164,7 @@ class TestSafePickle:
 
     def test_safe_pickle_with_numpy_array(self):
         """Test safe pickle with numpy arrays (whitelisted).
-        
+
         SECURITY NOTE: NumPy arrays are in the allowlist because they're
         commonly used in ML checkpoints and have limited attack surface.
         """
