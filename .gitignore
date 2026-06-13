@@ -101,6 +101,7 @@ manifests/k8s/*/secret.yaml
 .codex/*
 !.codex/README.md
 !.codex/*.md
+!.codex/fast_forward_allowlist.yaml
 !.codex/agent_context.json
 !.codex/agent_auth_session.json
 !.codex/webhook_config.json

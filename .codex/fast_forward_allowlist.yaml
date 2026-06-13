@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Fast-Forward Safe Files Allowlist
+#
+# This file governs which files can be **promoted directly to main** via the
+# fast-forward-safe-files.yml workflow without waiting for a full PR merge.
+#
+# PURPOSE:
+#   GitHub Actions workflows (.github/workflows/*.yml) only take effect from
+#   the default branch (main).  A schedule trigger or workflow_dispatch defined
+#   in a PR branch is completely inert until the file lands on main.
+#
+#   This allowlist enables maintainers to promote "safe" files (CI scripts,
+#   agent prompts, discussion workflows, etc.) immediately.
+#
+# USAGE:
+#   1. Open fast-forward-safe-files.yml
+#   2. Click "Run workflow"
+#   3. Enter the PR number (e.g. 3856)
+#   4. Files matching the allowlist below will be promoted
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Patterns of files that are SAFE to promote directly to main.
+# Glob patterns: .github/workflows/*.yml matches any .yml file in that directory.
+allowlist:
+  # ─ Workflows that manage CI/CD and meta-operations ───────────────────────
+  - .github/workflows/*.yml
+  - .github/workflows/*.yaml
+
+  # ─ Custom agent prompts (safe readonly data) ────────────────────────────
+  - .github/agents/*.md
+
+  # ─ CI/CD support scripts (only when they don't modify git state) ────────
+  - scripts/ci/*.py
+
+  # ─ CI documentation and guides ────────────────────────────────────────
+  - docs/ci/*.md
+
+  # ─ Changelog and release notes ───────────────────────────────────────
+  - CHANGELOG.md
+
+# Patterns of files that are EXPLICITLY DENIED from fast-forward.
+# These are HIGH-RISK files that should ALWAYS go through full PR review.
+denylist:
+  # ─ Deployment, release, and publish workflows (NEVER auto-promote) ────
+  - .github/workflows/*deploy*.yml
+  - .github/workflows/*release*.yml
+  - .github/workflows/*publish*.yml
+  - .github/workflows/*prod*.yml
+
+  # ─ Repository configuration (NEVER auto-promote) ───────────────────
+  - .github/settings.yml
+  - .github/branch-rules.yml
+
+  # ─ Secrets or sensitive data (NEVER auto-promote) ──────────────────
+  - secrets.env
+  - .env
+
+# Default merge mode when --merge-mode is not specified on CLI.
+# Valid values: "create-pr" (safe default), "direct-push" (maintainer only)
+default_merge_mode: "create-pr"
+
+# If true, auto-approve the created fast-forward PR when ALL files are safe.
+# If false, require manual approval before merge.
+auto_approve_when_all_safe: true
