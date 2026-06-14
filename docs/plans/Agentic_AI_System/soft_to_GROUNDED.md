@@ -339,7 +339,7 @@ and A2A protocol fields:
 **Tier-1 gates passed:** {tier1_gates_passed}
 **Violations this chain:** {violation_count}
 
-_agent-handoff-gate.yml | [AgentHandoffManifest v1.1](.codex/schemas/) | GROUNDED enforcement_
+_agent-handoff-gate.yml | [AgentHandoffManifest v1.1](https://github.com/Aries-Serpent/_codex_/tree/main/.codex/schemas) | GROUNDED enforcement_
 ```
 
 ---

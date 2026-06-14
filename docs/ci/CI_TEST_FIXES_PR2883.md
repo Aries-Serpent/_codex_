@@ -228,7 +228,7 @@ Monitor these workflows in PR:
 
 ### Repository Documentation
 - [TESTING_CONVENTIONS.md](../testing/TESTING_CONVENTIONS.md) - Testing best practices
-- [.codex/agents/ci-testing-agent/README.md](../../.github/agents/ci-testing-agent.md) - CI testing agent docs
+- [.codex/agents/ci-testing-agent/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/ci-testing-agent.md) - CI testing agent docs
 
 ### Previous Related Issues
 - Similar timeout/xdist issues may have occurred in past PRs

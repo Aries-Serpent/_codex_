@@ -421,13 +421,13 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 ### Related Repository Documentation
 
 - [Release Process](../RELEASE_CHECKLIST.md)
-- [Workflow Documentation](../../.github/workflows/README.md)
+- [Workflow Documentation](https://github.com/Aries-Serpent/_codex_/tree/main/.github/workflows)
 - [Security Best Practices](../SECURITY_BEST_PRACTICES.md)
 
 ### Support
 
 - **Questions:** Create GitHub Issue with `[PyPI]` tag
-- **Security Issues:** Follow [Security Policy](../../SECURITY.md)
+- **Security Issues:** Follow [Security Policy](https://github.com/Aries-Serpent/_codex_/blob/main/SECURITY.md)
 - **Maintainer:** @mbaetiong
 
 ---

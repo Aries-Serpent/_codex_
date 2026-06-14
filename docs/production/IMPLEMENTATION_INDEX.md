@@ -14,25 +14,25 @@
    - All 5 components specified in detail
    - Deployment checklist
 
-2. **[Health Checks Specification](docs/production/HEALTH_CHECKS_SPECIFICATION.md)**
+2. **[Health Checks Specification](HEALTH_CHECKS_SPECIFICATION.md)**
    - Liveness, readiness, and detailed health checks
    - 15+ services monitored
    - SLA targets and failure scenarios
    - Testing procedures
 
-3. **[Metrics Schema](docs/production/METRICS_SCHEMA.md)**
+3. **[Metrics Schema](METRICS_SCHEMA.md)**
    - 8 core metrics defined
    - Collection pipeline architecture
    - Data retention policies
    - Alerting thresholds
 
-4. **[Alert Runbooks](docs/operations/ALERT_RUNBOOKS.md)** (FOR ON-CALL TEAMS)
+4. **[Alert Runbooks](../operations/ALERT_RUNBOOKS.md)** (FOR ON-CALL TEAMS)
    - 5 detailed alert runbooks
    - Step-by-step troubleshooting procedures
    - Escalation contacts
    - Incident tracking template
 
-5. **[Dashboard Configuration](docs/production/MONITORING_DASHBOARD_CONFIG.yaml)**
+5. **[Dashboard Configuration](MONITORING_DASHBOARD_CONFIG.yaml)**
    - 4 production dashboards
    - Kubernetes manifests
    - Prometheus alerting rules
@@ -296,19 +296,19 @@ All 5 dimensions monitored across all metrics:
 ## 🎓 Training Materials
 
 **For Operations Team**:
-- [Alert Runbooks](docs/operations/ALERT_RUNBOOKS.md)
-- [Dashboard Walkthroughs](docs/production/MONITORING_DASHBOARD_CONFIG.yaml)
-- [Escalation Procedures](.codex/BATCH_1_MONITORING_CONFIG.md#escalation)
+- [Alert Runbooks](../operations/ALERT_RUNBOOKS.md)
+- [Dashboard Walkthroughs](MONITORING_DASHBOARD_CONFIG.yaml)
+- [Escalation Procedures](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/BATCH_1_MONITORING_CONFIG.md#escalation)
 
 **For Engineering Team**:
-- [Metrics Schema](docs/production/METRICS_SCHEMA.md)
-- [Health Checks Specification](docs/production/HEALTH_CHECKS_SPECIFICATION.md)
-- [Logging Framework](.codex/BATCH_1_MONITORING_CONFIG.md#logging)
+- [Metrics Schema](METRICS_SCHEMA.md)
+- [Health Checks Specification](HEALTH_CHECKS_SPECIFICATION.md)
+- [Logging Framework](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/BATCH_1_MONITORING_CONFIG.md#logging)
 
 **For Management**:
-- [Expected Impact](.codex/aftermath/batch1_monitoring_metrics.json)
-- [Success Metrics](.codex/BATCH_1_MONITORING_CONFIG.md#success-metrics)
-- [Cost & ROI](.codex/aftermath/batch1_monitoring_metrics.json)
+- [Expected Impact](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/aftermath/batch1_monitoring_metrics.json)
+- [Success Metrics](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/BATCH_1_MONITORING_CONFIG.md#success-metrics)
+- [Cost & ROI](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/aftermath/batch1_monitoring_metrics.json)
 
 ---
 

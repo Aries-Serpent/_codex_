@@ -1,7 +1,7 @@
 # Elevated Privileges Token & Process Review
 > **Session:** S859 | **Date:** 2026-05-08 | **PR:** #4346
 > **Author:** copilot-swe-agent[bot]
-> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
+> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
 > **AAIS relevance:** Security gate + Reliability gate — token health directly impacts both
 
 ---
@@ -227,7 +227,7 @@ grep -rl "github\.token" .github/workflows/ | xargs grep -L "CODEX_MASTER_KEY" 2
 Current result: `consolidated-pr-status.yml` (reusable workflow — posts PR status comments only; `issues:write` via `github.token` is sufficient for this read-adjacent operation)
 
 **Step 2:** Open the file:
-> 🔗 [.github/workflows/workflow-link-validation.yml](../../.github/workflows/workflow-link-validation.yml)
+> 🔗 [.github/workflows/workflow-link-validation.yml](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/workflow-link-validation.yml)
 
 **Step 3:** Find lines using `${{ github.token }}` for write operations (PR comments, variable sets, approvals).
 
@@ -614,7 +614,7 @@ xychart-beta
 | GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
@@ -1028,12 +1028,12 @@ Use it to prioritise which rotation to complete first in an emergency.
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Repo Variables (view/edit) | [/settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
 | Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
-| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](../../scripts/ci/post_rotation_verify.sh) |
+| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/ci/post_rotation_verify.sh) |
 
 ---
 

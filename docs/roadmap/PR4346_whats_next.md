@@ -686,7 +686,7 @@ jobs:
           if issues:
               body = "## 🚨 Token Expiry Warning\n\n" + "\n".join(f"- {i}" for i in issues)
               body += "\n\n**Action:** Rotate via [Settings → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/actions)\n"
-              body += "**Reference:** [Token Refresh Alignment Guide](../docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md#9-token-refresh-alignment-guide)\n"
+              body += "**Reference:** [Token Refresh Alignment Guide](../reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md#9-token-refresh-alignment-guide)\n"
               with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
                   f.write(body)
               sys.exit(1)

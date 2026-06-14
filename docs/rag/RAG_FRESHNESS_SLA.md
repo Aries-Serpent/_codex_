@@ -2,10 +2,10 @@
 
 **Owner**: `rag-freshness-loop-agent` (primary), `rag-index-manager` (backup)  
 **Last updated**: 2026-05-27  
-**Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
-**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](../../.github/workflows/rag-freshness-scheduler.yml)  
-**Quality gate**: [`.github/workflows/test-rag.yml`](../../.github/workflows/test-rag.yml)  
-**Drift config**: [`.codex/config/rag_quality.yaml`](../../.codex/config/rag_quality.yaml)
+**Dashboard**: [Completion Dashboard](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/COMPLETION_DASHBOARD.md)  
+**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/rag-freshness-scheduler.yml)  
+**Quality gate**: [`.github/workflows/test-rag.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/test-rag.yml)  
+**Drift config**: [`.codex/config/rag_quality.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/config/rag_quality.yaml)
 
 ---
 

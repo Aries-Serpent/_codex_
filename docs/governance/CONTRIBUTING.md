@@ -170,7 +170,7 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Scope
 
-See [docs/guides/AGENTS.md](../../.github/AGENTS.md) for full guidelines.
+See [docs/guides/AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.github/AGENTS.md) for full guidelines.
 
 ## Extending Codex ML components
 
