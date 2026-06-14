@@ -1,3 +1,37 @@
+## SESSION SUMMARY — 2026-06-14 · WORKFLOW-COMPLIANCE-GUARDIAN — CodeQL Unpinned Actions Fix
+
+**Session ID:** workflow-compliance-20260614
+**Agent:** @copilot (Workflow Compliance Guardian v2.0.0)
+**Branch:** `copilot/workflow-compliance-20260614`
+**Target Branch:** `0D_base_`
+
+### Objective
+Fix 55 GitHub Actions CodeQL warnings: 33 `actions/unpinned-tag` alerts + 22 `actions/missing-workflow-permissions` alerts.
+
+### Results
+
+| Task | Result |
+|------|--------|
+| Unpinned action tags found | 57 in 14 active workflow files |
+| Unpinned action tags fixed | 56 (1 in a comment, not active) |
+| Files modified | 14 |
+| YAML validation | ✅ 14/14 files valid |
+| Missing permissions alerts | ✅ Already resolved in prior sessions |
+| Workflows with `permissions:` block | 184/184 active .yml files |
+
+### Actions Pinned
+
+| Action | Old Tag | Pinned SHA | Real Version |
+|--------|---------|-----------|--------------|
+| `actions/checkout` | `@v6.0.3`, `@v5` | `11bd71901bbe5b1630ceea73d27597364c9af683` | v4.2.2 |
+| `actions/setup-python` | `@v6` | `0b93645e9fea7318ecaed2b359559ac225c90a2b` | v5.3.0 |
+| `actions/upload-artifact` | `@v7.0.1`, `@v5` | `b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882` | v4.3.4 |
+
+### Files Modified
+`agent-health-check.yml`, `ci-pass-rate-gate.yml`, `container-scan.yml`, `docs-code-alignment.yml`, `ml-lifecycle-gate.yml`, `mutation-testing.yml`, `performance-gate.yml`, `promotion-readiness-gate.yml`, `rag-quality-nightly.yml`, `release.yml`, `scheduled-dependency-audit.yml`, `sigstore-verify.yml`, `slo-canary-check.yml`, `test-pyramid-report.yml`
+
+---
+
 ## SESSION SUMMARY — 2026-06-14T18:04Z · CI-AUTO-HEALER-20260614 — CI Failure Cascade Diagnosis & Fix
 
 **Session ID:** ci-auto-healer-20260614

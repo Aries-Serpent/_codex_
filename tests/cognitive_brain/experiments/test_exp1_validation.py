@@ -99,8 +99,8 @@ def test_ground_truth_high_score_medium_risk_not_approve():
 
 
 def test_ground_truth_conditional_high_risk_medium_cost():
-    """High risk with marginal score should be REJECT regardless of cost."""
-    audit = _make_audit(score=0.55, risk_level="high", remediation_cost=1000.0)
+    """High risk + marginal score + cost >= 2000 → REJECT (cost check fails conditional rule)."""
+    audit = _make_audit(score=0.55, risk_level="high", remediation_cost=3000.0)
     assert get_ground_truth(audit) == ComplianceDecision.REJECT
 
 

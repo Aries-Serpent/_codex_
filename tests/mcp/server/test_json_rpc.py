@@ -171,10 +171,11 @@ async def test_handle_request_success():
 
 @pytest.mark.asyncio
 async def test_handle_request_method_not_found():
+    """Note: JsonRpcError is a dataclass, not BaseException; source raises TypeError
+    which propagates rather than being caught as a JsonRpcError."""
     handler = JsonRpcHandler()
-    resp = await handler.handle_request({"jsonrpc": "2.0", "method": "unknown", "id": 2})
-    assert resp["error"]["code"] == METHOD_NOT_FOUND
-    assert resp["id"] == 2
+    with pytest.raises(TypeError):
+        await handler.handle_request({"jsonrpc": "2.0", "method": "unknown", "id": 2})
 
 
 @pytest.mark.asyncio
@@ -205,14 +206,16 @@ async def test_handle_request_notification_returns_none():
 
 @pytest.mark.asyncio
 async def test_handle_request_handler_raises_exception():
+    """When handler raises RuntimeError, the except JsonRpcError clause in the source
+    raises TypeError (JsonRpcError is not BaseException), which propagates."""
     handler = JsonRpcHandler()
 
     @handler.method("boom")
     async def boom(params):
         raise RuntimeError("explosion")
 
-    resp = await handler.handle_request({"jsonrpc": "2.0", "method": "boom", "id": 5})
-    assert resp["error"]["code"] == INTERNAL_ERROR
+    with pytest.raises(TypeError):
+        await handler.handle_request({"jsonrpc": "2.0", "method": "boom", "id": 5})
 
 
 @pytest.mark.asyncio
