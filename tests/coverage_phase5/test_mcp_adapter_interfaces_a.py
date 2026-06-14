@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 try:
-    from mcp.adapters import BaseAdapter as _BaseAdapter  # noqa: F401
+    from mcp.adapters import BaseAdapter  # noqa: F401
 except ImportError:
     pytest.skip("mcp.adapters not available", allow_module_level=True)
 
