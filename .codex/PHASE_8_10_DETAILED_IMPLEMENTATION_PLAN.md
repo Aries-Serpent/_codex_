@@ -225,9 +225,16 @@ Execute staged production rollout with continuous health monitoring and defined 
   # 4. Create SBOM
   syft -o json registry.example.com/codex:v0.1.0-production > sbom.json
   
-  # 5. Sign artifacts
-  cosign sign --key cosign.key registry.example.com/codex:v0.1.0-production
+  # 5. Sign artifacts (requires private key from KMS/HSM)
+  # ⚠️ Security: Signing key stored in AWS KMS or HashiCorp Vault (no local key files)
+  cosign sign --key awskms://arn:aws:kms:us-east-1:ACCOUNT:key/KEY-ID registry.example.com/codex:v0.1.0-production
   ```
+- **Artifact Signing Security:**
+  - Signing key: Stored in AWS KMS or HashiCorp Vault (HSM-backed)
+  - Access controls: Limited to Build Team lead + CI/CD service account (IAM roles)
+  - Key rotation: Annually + after key compromise
+  - Verification: All artifacts verified with `cosign verify` before deployment
+  - Audit logging: All signing operations logged to CloudTrail
 - **Success Criteria:**
   - Tag created and pushed
   - Container image built and pushed
@@ -315,11 +322,12 @@ Execute staged production rollout with continuous health monitoring and defined 
   5. Document any anomalies
 
 - **Rollback Decision Criteria:**
-  - If error rate >5% for 2 consecutive intervals → ROLLBACK
-  - If P99 >10s for 2 consecutive intervals → ROLLBACK
-  - If memory >85% → ROLLBACK
-  - If database connections >80% → ROLLBACK
+  - If error rate >5% for 2 consecutive 5-minute intervals (10 min total) → ROLLBACK
+  - If P99 latency >10s for 2 consecutive 5-minute intervals (10 min total) → ROLLBACK
+  - If memory usage >85% sustained for 5+ minutes → ROLLBACK
+  - If database connections >80% of pool sustained for 5+ minutes → ROLLBACK
   - Otherwise → PROCEED to 25%
+  - **Note:** Measurement window is aligned to the 5-minute canary analysis interval (line 289)
 
 - **Success Criteria:**
   - 4-hour monitoring window passed
