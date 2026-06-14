@@ -317,7 +317,7 @@ echo "Invalidate artifacts created: 2026-06-14T12:34:56Z to $(date -u +%Y-%m-%dT
   "findings": {
     "scoping_compliance": "PASS",
     "rotation_schedule_compliance": "PASS",
-    "no_hardcoded_secrets": "PASS",
+    "no_hardcoded_secrets": "PASS", <!-- pragma: allowlist secret -->
     "audit_logging_completeness": "PASS"
   },
   "issues_found": 0,

@@ -402,7 +402,7 @@ Contact: _________________________ Phone: _________
    # Test endpoint 1: Authentication
    curl -X POST http://${API_ENDPOINT}/auth/login \
      -H "Content-Type: application/json" \
-     -d '{"username":"test","password":"test"}'
+     -d '{"username":"test","password":"test"}' <!-- pragma: allowlist secret -->
 
    # Test endpoint 2: Core functionality
    curl http://${API_ENDPOINT}/api/v1/resources
@@ -867,7 +867,7 @@ VERSION=$(cat VERSION)
 | DB connection error | "psql: could not connect to server" | Verify DB host/port: `nslookup $DB_HOST` |
 | Image pull failed | ImagePullBackOff | Check ECR credentials: `aws ecr get-login-password` |
 | Network policy blocking | Connection timeout | Review policies: `kubectl get networkpolicies` |
-| Secret not found | Key error in logs | Verify secrets: `kubectl get secrets -n production` |
+| Secret not found | Key error in logs | Verify secrets: `kubectl get secrets -n production` | <!-- pragma: allowlist secret -->
 
 ---
 

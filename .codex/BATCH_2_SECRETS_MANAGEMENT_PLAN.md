@@ -561,7 +561,7 @@ jobs:
   },
   "action": {
     "type": "read|write|delete|rotate",
-    "secret_name": "CODEX_MASTER_KEY",
+    "secret_name": "CODEX_MASTER_KEY", <!-- pragma: allowlist secret -->
     "status": "success|failure"
   },
   "context": {

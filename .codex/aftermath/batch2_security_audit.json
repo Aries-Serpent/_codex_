@@ -298,7 +298,7 @@
       "privilege_escalation_prevention": "PASS",
       "mfa_enforcement": "PASS",
       "rate_limiting": "PASS",
-      "secret_rotation": "PASS",
+      "secret_rotation": "PASS", <!-- pragma: allowlist secret -->
       "audit_logging": "PASS"
     },
     "all_tests_passed": true,

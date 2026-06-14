@@ -59,7 +59,7 @@
 ```json
 {
   "CODEX_CI_FAILURE_RATE": "0.7:ok",
-  "CODEX_CI_LAST_GREEN_SHA": "39b00cf3e51e04eba10d8f1c0041be8bfe92352c",
+  "CODEX_CI_LAST_GREEN_SHA": "39b00cf3e51e04eba10d8f1c0041be8bfe92352c", <!-- pragma: allowlist secret -->
   "COGNITIVE_BRAIN_SESSION_NUMBER": "1392",
   "CODEX_CACHE_VERSION": "v2"
 }

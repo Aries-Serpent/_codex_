@@ -203,7 +203,7 @@
   "security_audit": {
     "cache_poisoning_risk": "LOW",
     "cross_workflow_contamination_risk": "LOW",
-    "secrets_exposure_risk": "LOW",
+    "secrets_exposure_risk": "LOW", <!-- pragma: allowlist secret -->
     "performance_regression_risk": "LOW",
     "scalability_risk": "MEDIUM",
     "credentials_found": 0,

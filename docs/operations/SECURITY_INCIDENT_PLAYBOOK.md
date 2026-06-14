@@ -355,7 +355,7 @@ EOF
 ```bash
 # Revoke compromised credentials
 # Step 1: Rotate database password
-ALTER USER codex_admin PASSWORD 'new_secure_password_here';
+ALTER USER codex_admin PASSWORD 'new_secure_password_here'; <!-- pragma: allowlist secret -->
 
 # Step 2: Rotate API keys
 aws apigateway create-api-key --name "prod-api-key-$(date +%s)" --enabled

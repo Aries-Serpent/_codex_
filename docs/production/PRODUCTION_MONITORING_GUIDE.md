@@ -381,7 +381,7 @@ route:
 receivers:
   - name: 'pagerduty-critical'
     pagerduty_configs:
-      - service_key: 'YOUR_SERVICE_KEY'
+      - service_key: 'YOUR_SERVICE_KEY' <!-- pragma: allowlist secret -->
         severity: 'critical'
     slack_configs:
       - channel: '#prod-incidents'
@@ -653,7 +653,7 @@ tests:
     method: POST
     interval: 300s
     timeout: 10s
-    body: '{"username":"monitor","password":"monitor"}'
+    body: '{"username":"monitor","password":"monitor"}' <!-- pragma: allowlist secret -->
     expected_status: 200
     
   - name: "Database connectivity"
