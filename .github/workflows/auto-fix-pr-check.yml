@@ -303,7 +303,7 @@ jobs:
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
-        name: Post rescue comment on failure
+    name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: check-and-report
     if: |
