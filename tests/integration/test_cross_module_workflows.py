@@ -400,7 +400,7 @@ class TestMultiServiceOrchestration:
         }
 
         # Simple dependency check
-        for service, deps in dependencies.items():
+        for _service, deps in dependencies.items():
             assert isinstance(deps, list)
 
     def test_service_communication(self, temp_workspace):

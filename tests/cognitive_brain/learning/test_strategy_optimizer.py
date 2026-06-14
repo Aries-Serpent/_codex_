@@ -190,7 +190,7 @@ def test_dqn_convergence():
 
     # Simple environment with consistent rewards
     rewards = []
-    for episode in range(50):
+    for _episode in range(50):
         episode_reward = 0
         for step in range(10):
             state = f"state_{step % 3}"

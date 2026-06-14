@@ -96,7 +96,7 @@ class TestDeterministicSplits:
             (1000, 0.6, 0.2, 0.2),  # 60/20/20
         ]
 
-        for n, train_ratio, val_ratio, expected_test in test_cases:
+        for n, train_ratio, val_ratio, _expected_test in test_cases:
             train, val, test = split_indices(n, train_ratio, val_ratio)
 
             # Check proportions (within 1 sample tolerance)

@@ -109,7 +109,7 @@ class TestTokenCache:
 
     def test_shard_incrementing(self, cache, tmp_path):
         """Test shard index increments."""
-        for i in range(3):
+        for _i in range(3):
             batch = {
                 "input_ids": np.arange(15).reshape(5, 3),  # 5 rows
             }

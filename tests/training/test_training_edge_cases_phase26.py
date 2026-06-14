@@ -309,7 +309,7 @@ class TestTrainingEdgeCases:
         accumulated_grad = torch.zeros(10)
 
         # Accumulate gradients
-        for step in range(accumulation_steps):
+        for _step in range(accumulation_steps):
             mini_batch_grad = torch.randn(10)
             accumulated_grad += mini_batch_grad
 

@@ -369,7 +369,7 @@ def test_api_rate_limiting_overhead():
         return True
 
     start = time.perf_counter()
-    for i in range(1000):
+    for _i in range(1000):
         check_rate_limit('client-1')
     elapsed = time.perf_counter() - start
 

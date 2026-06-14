@@ -308,7 +308,7 @@ class TestCopilotSessionRetriever:
 
         retriever = CopilotSessionRetriever()
 
-        for message, expected_path, expected_op in test_cases:
+        for message, expected_path, _expected_op in test_cases:
             log = SessionLogEntry(
                 session_id="test",
                 timestamp="2026-02-05T08:00:00Z",

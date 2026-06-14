@@ -218,7 +218,7 @@ class TestEndToEndTrainingWorkflow:
             optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
             # Run mini training loop
-            for step in range(3):
+            for _step in range(3):
                 input_data = torch.randn(2, 10)
                 target = torch.tensor([0, 1])
 

@@ -950,7 +950,7 @@ class TestCrossPrCorrelation:
     def test_multiple_patterns_sorted_by_pr_count(self, conn):
         """Results sorted by descending pr_count."""
         # 'Unused Imports' in 4 SHAs; 'Line Length' in 2 SHAs
-        for i, sha in enumerate(("s1", "s2", "s3", "s4")):
+        for _i, sha in enumerate(("s1", "s2", "s3", "s4")):
             self._insert(conn, "Unused Imports", sha, pid=1)
         for sha in ("s5", "s6"):
             self._insert(conn, "Line Length", sha, pid=12)

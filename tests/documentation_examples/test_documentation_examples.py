@@ -63,7 +63,7 @@ class TestREADMEExamples:
             pytest.skip("README.md not found")
 
         blocks = extract_python_blocks(readme_content)
-        for i, block in enumerate(blocks):
+        for _i, block in enumerate(blocks):
             # Skip blocks that are intentionally incomplete
             if "..." in block or "# ..." in block:
                 continue

@@ -287,7 +287,7 @@ class TestCoherenceMonitorBatching:
         monitor = CoherenceMonitor(config=config, repository=repo, batch_size=10)
 
         # Record exactly batch_size metrics
-        for i in range(10):
+        for _i in range(10):
             monitor.record_metric(
                 feature="superposition",
                 metric_name="coherence",
@@ -306,7 +306,7 @@ class TestCoherenceMonitorBatching:
         monitor = CoherenceMonitor(config=config, repository=repo, batch_size=100)
 
         # Record 20 metrics (below batch_size, won't auto-flush)
-        for i in range(20):
+        for _i in range(20):
             monitor.record_metric(
                 feature="entanglement",
                 metric_name="error_rate",
@@ -356,7 +356,7 @@ class TestCoherenceMonitorBatching:
         monitor = CoherenceMonitor(config=config, repository=repo, batch_size=5)
 
         # Existing code pattern: record metrics until auto-flush
-        for i in range(15):
+        for _i in range(15):
             monitor.record_metric(
                 feature="superposition",
                 metric_name="coherence",
@@ -383,13 +383,13 @@ class TestCoherenceMonitorBatching:
         monitor = CoherenceMonitor(config=config, repository=repo, batch_size=100)
 
         # First batch
-        for i in range(10):
+        for _i in range(10):
             monitor.record_metric("superposition", "coherence", 0.9)
         count1 = monitor.flush_batch()
         assert count1 == 10
 
         # Second batch
-        for i in range(15):
+        for _i in range(15):
             monitor.record_metric("superposition", "coherence", 0.85)
         count2 = monitor.flush_batch()
         assert count2 == 15

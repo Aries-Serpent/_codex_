@@ -541,7 +541,7 @@ class TestCLIEdgeCases:
             ('\u200b\u200c\u200d', 'Zero-width characters')
         ]
 
-        for unicode_str, description in unicode_test_cases:
+        for unicode_str, _description in unicode_test_cases:
             # Should handle Unicode properly
             encoded = unicode_str.encode('utf-8')
             decoded = encoded.decode('utf-8')
@@ -712,7 +712,7 @@ class TestCLIEdgeCases:
             (['codex', 'failure_cmd'], 1),
             (['codex', 'invalid'], 2),
         ]
-        for args, expected_code in test_cases:
+        for args, _expected_code in test_cases:
             with patch('sys.argv', args):
                 # Should return correct exit code
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")

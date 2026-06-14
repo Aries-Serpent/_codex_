@@ -49,7 +49,7 @@ class TestAgentDashboardRecord:
 
     def test_window_size_respected(self):
         d = AgentDashboard(window_size=5)
-        for i in range(10):
+        for _i in range(10):
             d.record_decision("approve", coherence=0.8, latency_ms=10.0)
         assert len(d._records) == 5
 

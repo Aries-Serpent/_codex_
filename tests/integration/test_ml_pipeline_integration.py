@@ -51,7 +51,7 @@ class TestEndToEndTraining:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
         # Simple training loop
-        for step in range(5):
+        for _step in range(5):
             input_data = torch.randn(2, 10)
             target = torch.randn(2, 5)
 
@@ -80,7 +80,7 @@ class TestCheckpointResumeWorkflow:
         optimizer = torch.optim.Adam(model.parameters())
 
         # Train for a few steps
-        for step in range(5):
+        for _step in range(5):
             loss = torch.nn.functional.mse_loss(model(torch.randn(2, 10)), torch.randn(2, 5))
             optimizer.zero_grad()
             loss.backward()

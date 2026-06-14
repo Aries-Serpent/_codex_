@@ -452,7 +452,7 @@ def test_concurrent_read_access(tmp_path):
         try:
             count = 0
             with open(data_file, 'r') as f:
-                for line in f:
+                for _line in f:
                     count += 1
             read_counts.append(count)
         except Exception as e:

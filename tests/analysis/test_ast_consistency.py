@@ -187,7 +187,7 @@ class ASTPatternLibrary:
             return {}
 
         results = {}
-        for name, pattern in self.patterns.items():
+        for name, _pattern in self.patterns.items():
             matches = self.find_matches(tree, name)
             if matches:
                 results[name] = [

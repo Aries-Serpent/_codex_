@@ -49,7 +49,7 @@ class TestCircuitBreaker:
             raise ValueError("Failure")
 
         # Trigger failures up to threshold
-        for i in range(3):
+        for _i in range(3):
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 

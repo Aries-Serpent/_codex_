@@ -19,7 +19,7 @@ class TestPoolingBehavior:
     def test_multiple_connections_pooled(self, pooling_db_manager, pool_state_tracker):
         """Test that multiple connections are correctly pooled."""
         # Get and return 3 connections
-        for i in range(3):
+        for _i in range(3):
             conn = pooling_db_manager.get_connection()
             pooling_db_manager.close_connection(conn)
 
@@ -74,7 +74,7 @@ class TestPoolingBehavior:
 
         def worker(thread_id):
             try:
-                for i in range(5):
+                for _i in range(5):
                     conn = pooling_db_manager.get_connection()
                     connections_used.put(id(conn))  # Thread-safe put
 

@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Fixed (mypy Wave 3 — copilot/mypy-wave3-20260614, 2026-06-14)
+- **`embed.py:17` `[assignment]`**: Added `# type: ignore[assignment]` to the `_NumpyFallback`
+  optional-import fallback assignment (`np = _NumpyFallback()`); mypy correctly flags the
+  `_NumpyFallback` instance as incompatible with the inferred `Module` type.
+- **`faiss_store.py:578` `[type-var]`**: Added `# type: ignore[type-var]` to `np.zeros()` call
+  where the shape tuple `(int, int | None)` (dimension is `Optional[int]`) could not be matched
+  to numpy's `_AnyShapeT` type variable; a None-guard refactor would require broader changes.
+- **mypy scan scope**: All 10 new test files from PROD-READINESS-CAMPAIGN-20260614 passed mypy
+  clean (`--ignore-missing-imports --no-strict-optional`). Source files `__init__.py` and
+  `test_peft_utils.py` also clean after the two fixes above.
+
 ### Added (Coverage Wave 1 — PROD-READINESS-CAMPAIGN-20260614, 2026-06-14)
 - **179 new test functions** across 10 new test files targeting highest-priority untested modules
 - `tests/mcp/server/test_json_rpc.py` — 27 tests covering `JsonRpcHandler`, `JsonRpcRequest`, `JsonRpcResponse`, `JsonRpcError`, batch handling, notifications

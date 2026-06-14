@@ -115,7 +115,7 @@ class TestRateLimiter:
         """Test that requests within limit are allowed"""
         limiter = RateLimiter(max_requests=5, window_seconds=60)
 
-        for i in range(5):
+        for _i in range(5):
             assert limiter.is_allowed("client1") is True
 
     def test_blocks_requests_over_limit(self):
@@ -123,7 +123,7 @@ class TestRateLimiter:
         limiter = RateLimiter(max_requests=3, window_seconds=60)
 
         # Use up the limit
-        for i in range(3):
+        for _i in range(3):
             assert limiter.is_allowed("client1") is True
 
         # Next request should be blocked

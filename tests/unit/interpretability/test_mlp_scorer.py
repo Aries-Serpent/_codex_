@@ -208,7 +208,7 @@ class TestMLPScorer:
         assert 'sparsity' in stats
 
         # Check shapes
-        for key, value in stats.items():
+        for _key, value in stats.items():
             assert isinstance(value, np.ndarray)
             assert value.shape == (2, hidden_dim)  # (num_layers, hidden_dim)
 
@@ -252,7 +252,7 @@ class TestMLPScorer:
         assert isinstance(top_neurons, dict)
         assert len(top_neurons) == num_layers
 
-        for layer_idx, neurons in top_neurons.items():
+        for _layer_idx, neurons in top_neurons.items():
             assert len(neurons) == 10
             for neuron_idx, importance in neurons:
                 assert isinstance(neuron_idx, int)

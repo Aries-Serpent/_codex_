@@ -89,7 +89,7 @@ def test_bearer_prefix_case_insensitive():
 
 def test_dev_keys_contain_scopes():
     """Ensure all DEV_KEYS entries have a 'scopes' list."""
-    for key_val, info in DEV_KEYS.items():
+    for _key_val, info in DEV_KEYS.items():
         assert "scopes" in info
         assert isinstance(info["scopes"], list)
 

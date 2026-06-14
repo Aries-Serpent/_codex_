@@ -132,7 +132,7 @@ def test_rate_limit_metrics():
     allowed_count = 0
     denied_count = 0
 
-    for i in range(7):
+    for _i in range(7):
         if limiter.allow("test_user", "test_tool"):
             allowed_count += 1
         else:

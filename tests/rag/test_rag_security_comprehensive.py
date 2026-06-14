@@ -215,7 +215,7 @@ class TestRAGUtilsSecurity:
                 ("A" * 1000000, "Very long text"),
             ]
 
-            for text, description in test_cases:
+            for text, _description in test_cases:
                 # Should handle all inputs safely
                 chunks = chunk_text(text, chunk_size=100)
                 assert isinstance(chunks, list)

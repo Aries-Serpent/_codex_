@@ -479,7 +479,7 @@ class TestPhase3_Performance_Distributed:
         from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         states = []
-        for i in range(10):
+        for _i in range(10):
             blue = StrategyState("blue", np.array([0.6, 0.4]))
             red = StrategyState("red", np.array([0.6, 0.4]))
             states.append(QuantumGameState(blue, red, entanglement_strength=0.5))
