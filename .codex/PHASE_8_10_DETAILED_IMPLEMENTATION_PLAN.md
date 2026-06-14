@@ -37,8 +37,9 @@ Establish production readiness through backup validation, infrastructure verific
   # 2. Verify clone integrity
   cd /backup/codex-mirror.git && git fsck --full
   
-  # 3. Create checksum manifest (handles binary objects and special characters)
-  find /backup -name "*.git" -type d -exec sh -c 'find "{}" -type f -exec sha256sum {} \; > "{}/CHECKSUM.sha256"' \;
+  # 3. Create checksum manifest (efficient batch processing for large repositories)
+  find /backup/codex-mirror.git -type f -print0 | xargs -0 sha256sum > /backup/codex-mirror.git/CHECKSUM.sha256
+  # Alternative for multiple .git directories: find /backup -name "*.git" -type d | while read gitdir; do find "$gitdir" -type f -print0 | xargs -0 sha256sum > "$gitdir/CHECKSUM.sha256"; done
   ```
 - **Success Criteria:**
   - Mirror clone size matches source (within 5%)
@@ -76,7 +77,11 @@ Establish production readiness through backup validation, infrastructure verific
   #   - Key fingerprint: EXPECTED_FINGERPRINT should match organizational key registry
   #   - Verification: gpg --list-keys deployment-key | grep "^fpr" | awk '{print $4}' # Must match registry
   # CRITICAL: Verify key fingerprint matches expected value BEFORE proceeding
-  EXPECTED_FINGERPRINT="FEDCBA9876543210FEDCBA9876543210FEDCBA98"
+  EXPECTED_FINGERPRINT="${DEPLOYMENT_GPG_FINGERPRINT:-PLACEHOLDER_REPLACE_WITH_ACTUAL_FINGERPRINT}"
+  # ⚠️ CONFIGURATION REQUIRED: Replace PLACEHOLDER with actual organizational GPG key fingerprint
+  # Obtain from: Corporate key registry or run `gpg --list-keys deployment-key | grep "^fpr" | awk '{print $4}'`
+  # Or set environment variable: export DEPLOYMENT_GPG_FINGERPRINT="your-actual-fingerprint-here"
+  # WARNING: Do not execute this script with placeholder fingerprint - it will skip actual verification
   ACTUAL_FINGERPRINT=$(gpg --list-keys deployment-key | grep "^fpr" | awk '{print $4}')
   if [ "$ACTUAL_FINGERPRINT" != "$EXPECTED_FINGERPRINT" ]; then
     echo "ERROR: GPG key fingerprint mismatch! Expected: $EXPECTED_FINGERPRINT, Got: $ACTUAL_FINGERPRINT"
@@ -269,7 +274,11 @@ Execute staged production rollout with continuous health monitoring and defined 
   
   # 5. Sign artifacts (requires private key from KMS/HSM)
   # ⚠️ Security: Signing key stored in AWS KMS or HashiCorp Vault (no local key files)
-  # Configuration: Replace ACCOUNT with your AWS account ID, KEY-ID with your KMS key ID
+  # CONFIGURATION REQUIRED:
+  #   1. ACCOUNT: Your AWS account ID (12 digits, e.g., 123456789012) — find at: https://console.aws.amazon.com/iam/
+  #   2. KEY-ID: Your KMS key ID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx) — find at: AWS KMS console > Key Management > Codex signing key
+  #   3. Verify key exists: aws kms describe-key --key-id alias/codex-artifact-signing-key --region us-east-1
+  # Example: cosign sign --key awskms://arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012 registry.example.com/codex:v0.1.0-production
   cosign sign --key awskms://arn:aws:kms:us-east-1:ACCOUNT:key/KEY-ID registry.example.com/codex:v0.1.0-production
   # Alternatively, reference from environment: cosign sign --key $COSIGN_KEY_PATH registry.example.com/codex:v0.1.0-production
   ```
@@ -359,8 +368,12 @@ Execute staged production rollout with continuous health monitoring and defined 
 - **Canary Failure Definition:**
   - Each monitored metric has defined thresholds (aligned to section 9.2.2 rollback criteria)
   - Flagger automatically evaluates metrics at 5-minute intervals
-  - If any metric exceeds threshold, counter increments
-  - When counter reaches 5, canary automatically rolls back
+  - **Violation counting methodology:** `threshold: 5` means total metric violations (cumulative across all metrics)
+    - Example: If error-rate exceeds max (violation 1), then latency exceeds max (violation 2), when counter reaches 5 total violations, rollback triggers
+    - This is NOT consecutive violations of a single metric—it's the aggregate count of any metric exceeding its threshold
+    - Counter resets after successful 5-minute analysis interval with no violations
+  - When counter reaches 5 total violations, canary automatically rolls back (see section 9.2.2 for manual escalation)
+  - Reference: Consult Flagger documentation on `threshold` field for metric evaluation semantics
 - **Success Criteria:**
   - 5% traffic routed to new version
   - Istio VirtualService configured
