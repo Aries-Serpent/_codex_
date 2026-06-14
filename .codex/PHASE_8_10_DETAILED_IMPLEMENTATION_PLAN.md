@@ -37,8 +37,8 @@ Establish production readiness through backup validation, infrastructure verific
   # 2. Verify clone integrity
   cd /backup/codex-mirror.git && git fsck --full
   
-  # 3. Create checksum manifest
-  find /backup -name "*.git" -type d | xargs -I {} sh -c 'sha256sum {}/* > {}/CHECKSUM.sha256 2>/dev/null'
+  # 3. Create checksum manifest (handles binary objects and special characters)
+  find /backup -name "*.git" -type d -exec sh -c 'find "{}" -type f -exec sha256sum {} \; > "{}/CHECKSUM.sha256"' \;
   ```
 - **Success Criteria:**
   - Mirror clone size matches source (within 5%)
@@ -227,7 +227,9 @@ Execute staged production rollout with continuous health monitoring and defined 
   
   # 5. Sign artifacts (requires private key from KMS/HSM)
   # ⚠️ Security: Signing key stored in AWS KMS or HashiCorp Vault (no local key files)
+  # Configuration: Replace ACCOUNT with your AWS account ID, KEY-ID with your KMS key ID
   cosign sign --key awskms://arn:aws:kms:us-east-1:ACCOUNT:key/KEY-ID registry.example.com/codex:v0.1.0-production
+  # Alternatively, reference from environment: cosign sign --key $COSIGN_KEY_PATH registry.example.com/codex:v0.1.0-production
   ```
 - **Artifact Signing Security:**
   - Signing key: Stored in AWS KMS or HashiCorp Vault (HSM-backed)
@@ -294,10 +296,29 @@ Execute staged production rollout with continuous health monitoring and defined 
       port: 8080
     analysis:
       interval: 5m
-      threshold: 5  # 5 canary failures = rollback
+      threshold: 5  # Failure threshold (number of metric violations)
       maxWeight: 5  # 5% traffic initially
       stepWeight: 1  # Increase 1% per interval
+    metrics:
+    # Canary failure definition: Any of these metrics violated triggers escalation
+    - name: request-error-rate
+      thresholdRange:
+        max: 0.05  # >5% error rate = failure (see section 9.2.2 rollback criteria)
+    - name: request-duration
+      thresholdRange:
+        max: 10000  # >10s P99 latency = failure (see section 9.2.2 rollback criteria)
+    - name: memory
+      thresholdRange:
+        max: 0.85  # >85% memory usage = failure
+    - name: database-connections
+      thresholdRange:
+        max: 0.80  # >80% of connection pool = failure
   ```
+- **Canary Failure Definition:**
+  - Each monitored metric has defined thresholds (aligned to section 9.2.2 rollback criteria)
+  - Flagger automatically evaluates metrics at 5-minute intervals
+  - If any metric exceeds threshold, counter increments
+  - When counter reaches 5, canary automatically rolls back
 - **Success Criteria:**
   - 5% traffic routed to new version
   - Istio VirtualService configured
@@ -322,12 +343,16 @@ Execute staged production rollout with continuous health monitoring and defined 
   5. Document any anomalies
 
 - **Rollback Decision Criteria:**
+  - **Measurement methodology:** Use Prometheus rolling windows aligned to the 5-minute Flagger analysis interval
+    - **Rolling window:** Each metric evaluated at 5-minute boundaries
+    - **Consecutive intervals:** 2 analysis cycles = 10-minute total observation window
+    - **Sustained metrics:** 5+ minutes continuous violation triggers immediate escalation
+    - **Monitoring tool:** Prometheus query results + Flagger automated analysis
   - If error rate >5% for 2 consecutive 5-minute intervals (10 min total) → ROLLBACK
-  - If P99 latency >10s for 2 consecutive 5-minute intervals (10 min total) → ROLLBACK
+  - If P99 latency >10s for 2 consecutive 5-minute intervals (10 min total) → ROLLBACK  
   - If memory usage >85% sustained for 5+ minutes → ROLLBACK
   - If database connections >80% of pool sustained for 5+ minutes → ROLLBACK
   - Otherwise → PROCEED to 25%
-  - **Note:** Measurement window is aligned to the 5-minute canary analysis interval (line 289)
 
 - **Success Criteria:**
   - 4-hour monitoring window passed
