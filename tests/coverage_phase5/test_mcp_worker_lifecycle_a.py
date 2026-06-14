@@ -35,48 +35,48 @@ class Worker:
         self.state = WorkerState.STOPPED
 
 
-def test_worker_lifecycle_start():
+@pytest.mark.asyncio
+async def test_worker_lifecycle_start():
     """Test worker start transition."""
     worker = Worker("test")
     assert worker.state == WorkerState.IDLE
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(worker.start())
-
+    
+    await worker.start()
+    
     assert worker.state == WorkerState.RUNNING
 
 
-def test_worker_lifecycle_pause():
+@pytest.mark.asyncio
+async def test_worker_lifecycle_pause():
     """Test worker pause transition."""
     worker = Worker("test")
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(worker.start())
-    loop.run_until_complete(worker.pause())
-
+    
+    await worker.start()
+    await worker.pause()
+    
     assert worker.state == WorkerState.PAUSED
 
 
-def test_worker_lifecycle_resume():
+@pytest.mark.asyncio
+async def test_worker_lifecycle_resume():
     """Test worker resume transition."""
     worker = Worker("test")
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(worker.start())
-    loop.run_until_complete(worker.pause())
-    loop.run_until_complete(worker.resume())
-
+    
+    await worker.start()
+    await worker.pause()
+    await worker.resume()
+    
     assert worker.state == WorkerState.RUNNING
 
 
-def test_worker_lifecycle_stop():
+@pytest.mark.asyncio
+async def test_worker_lifecycle_stop():
     """Test worker stop transition."""
     worker = Worker("test")
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(worker.start())
-    loop.run_until_complete(worker.stop())
-
+    
+    await worker.start()
+    await worker.stop()
+    
     assert worker.state == WorkerState.STOPPED
 
 

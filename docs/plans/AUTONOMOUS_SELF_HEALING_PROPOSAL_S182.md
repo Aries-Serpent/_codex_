@@ -347,7 +347,7 @@ Agent Token Delegation checkbox in the PR template:
 
 - [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
   - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]`
-  - Triggers the [`agent-auth-delegation`](.github/workflows/agent-auth-delegation.yml) gated workflow
+  - Triggers the [`agent-auth-delegation`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/agent-auth-delegation.yml) gated workflow
   - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
 
 - [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)

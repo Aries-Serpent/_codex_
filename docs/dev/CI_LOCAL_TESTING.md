@@ -444,10 +444,10 @@ sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1-16
 
 ## See also
 
-- [`scripts/dev_env_setup.sh`](../../scripts/dev_env_setup.sh) — environment setup
-- [`scripts/ci_local.sh`](../../scripts/ci_local.sh) — CI runner
-- [`.github/workflows/validate.yml`](../../.github/workflows/validate.yml)
-- [`.github/workflows/resilient_validation.yml`](../../.github/workflows/resilient_validation.yml)
-- [`.github/workflows/pre-merge-validation.yml`](../../.github/workflows/pre-merge-validation.yml)
+- [`scripts/dev_env_setup.sh`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/dev_env_setup.sh) — environment setup
+- [`scripts/ci_local.sh`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/ci_local.sh) — CI runner
+- [`.github/workflows/validate.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/validate.yml)
+- [`.github/workflows/resilient_validation.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/resilient_validation.yml)
+- [`.github/workflows/pre-merge-validation.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/pre-merge-validation.yml)
 - [`docs/dev/testing.md`](testing.md) — general testing conventions
-- [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
+- [`CONTRIBUTING.md`](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)

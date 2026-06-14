@@ -232,7 +232,7 @@ Actions:
 ```bash
 Broken Link: [User Guide](../guides/user-guide.md)
 Issue: File not found (404)
-Fix: ✅ AUTO-FIXED → [User Guide](../guides/getting-started.md)
+Fix: ✅ AUTO-FIXED → [User Guide](../guides/QUICKSTART.md)
 Confidence: 95% (similar filename match)
 ```
 

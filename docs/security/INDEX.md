@@ -18,9 +18,9 @@ Security advisories, vulnerability fixes, and CodeQL remediation documentation.
 - ✅ All GitHub Actions updated to secure versions
 
 ## Related Documentation
-- [CI/CD Documentation](../ci/INDEX.md)
+- [CI/CD Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/INDEX.md)
 - [Archive](../archive/INDEX.md)
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)
-- [GitHub Actions Workflows](../../.github/workflows/)
+- [GitHub Actions Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/)

@@ -8,7 +8,7 @@ Historical changelogs and change tracking documentation.
 - [Changes](CHANGES.md) - Additional change tracking
 
 ## Specialized Changelogs
-- [Agent Changelog](../../.github/agents/docs/CHANGELOG.md) - GitHub Copilot agents changes
+- [Agent Changelog](https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/docs/CHANGELOG.md) - GitHub Copilot agents changes
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)

@@ -197,6 +197,12 @@ jobs:
       #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
       #    fi
       #
+      # Commenting out the below statement as it cased as issue and made the workflow fast fail from PR #4892
+      #  run: |
+      #   if ! python3 .github/scripts/session_preload.py; then
+      #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+      #   fi
+      #
       # Session preload is intentionally guarded/non-blocking; Session Access Probe
       # remains the first mandatory startup step after this best-effort preload.
       # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
@@ -206,11 +212,10 @@ jobs:
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails          
-        run: |
-          if ! python3 .github/scripts/session_preload.py; then
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          fi
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: python3 .github/scripts/session_preload.py || {
+          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+        }
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload

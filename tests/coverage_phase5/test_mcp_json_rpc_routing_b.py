@@ -69,7 +69,8 @@ async def test_json_rpc_null_params():
     assert response is not None
 
 
-def test_json_rpc_timeout_handling():
+@pytest.mark.asyncio
+async def test_json_rpc_timeout_handling():
     """Test handling of timeouts in JSON-RPC requests."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
@@ -80,12 +81,10 @@ def test_json_rpc_timeout_handling():
         "method": "mcp.listTools",
         "params": {},
     }
-
-    loop = asyncio.get_event_loop()
+    
     try:
-        response = asyncio.wait_for(
+        response = await asyncio.wait_for(
             server.handle_request(request), timeout=5.0
         )
-        loop.run_until_complete(response)
     except asyncio.TimeoutError:
         pytest.fail("Request timed out")
