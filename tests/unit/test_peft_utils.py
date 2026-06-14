@@ -12,7 +12,7 @@ import pytest
 
 
 @pytest.mark.skipif(
-    importlib.util.find_spec('peft') is None or importlib.util.find_spec('transformers') is None,
+    importlib.util.find_spec("peft") is None or importlib.util.find_spec("transformers") is None,
     reason="transformers/peft not installed in this environment",
 )
 def test_freeze_counts():
