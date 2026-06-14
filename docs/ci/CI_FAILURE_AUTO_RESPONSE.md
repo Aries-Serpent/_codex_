@@ -3,7 +3,7 @@
 > **Owner:** @mbaetiong  
 > **Version:** 1.0.0  
 > **Last Updated:** 2026-03-17  
-> **Workflow:** [`.github/workflows/ci-failure-issue-creator.yml`](../../.github/workflows/ci-failure-issue-creator.yml)
+> **Workflow:** [`.github/workflows/ci-failure-issue-creator.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/ci-failure-issue-creator.yml)
 
 ---
 

@@ -164,7 +164,7 @@ Recommendation: Safe to move with reference updates
 ### Reference Graph Analysis
 
 **Scans for:**
-- Markdown links: `[text](file.md)`
+- Markdown links: `[text](../../docs/security/remove-env-file.md)`
 - HTML links: `href="file.md"`
 - YAML paths: `path: file.md`
 - Python imports: `from module import`
@@ -700,7 +700,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | Network Access | ✅ | Restricted | Approved endpoints only |
 | Process Execution | ✅ | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
+| API Integrations | ✅ | Authenticated | Token-based | <!-- pragma: allowlist secret -->
 | Git Operations | ✅ | Full | Within repository |
 
 ### Tool Access

@@ -73,7 +73,7 @@ Fixed broken links in:
 
 ### Example 1: Relative Path Normalization
 ```diff
-- [Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)
+- [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
 + [Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)
 ```
 

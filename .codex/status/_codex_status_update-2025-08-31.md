@@ -6,7 +6,7 @@
 - Logged Python environment to `.codex/inventory.txt` for reproducibility.
 
 ## Deferred
-See [`.codex/deferred_items.md`](.codex/deferred_items.md) for postponed tasks.
+See [`.codex/deferred_items.md`](../deferred_items.md) for postponed tasks.
 
 ## Open Questions
 - Should the LoRA helper expose per-layer rank scaling?
@@ -18,7 +18,7 @@ Canonical source: docs/status_update_outstanding_questions.md (update there firs
 
 | Timestamp(s) | Step / Phase | Recorded blocker | Status | Current disposition |
 | --- | --- | --- | --- | --- |
-| 2025-08-28T03:55:32Z | PH6: Run pre-commit | Hook execution failed because `yamllint`, `mdformat`, and `detect-secrets-hook` were missing. | Retired | The active pre-commit configuration only invokes local commands (ruff, black, mypy, pytest, git-secrets, license checker, etc.), so those CLIs are optional for developers and no longer required by automation. |
+| 2025-08-28T03:55:32Z | PH6: Run pre-commit | Hook execution failed because `yamllint`, `mdformat`, and `detect-secrets-hook` were missing. | Retired | The active pre-commit configuration only invokes local commands (ruff, black, mypy, pytest, git-secrets, license checker, etc.), so those CLIs are optional for developers and no longer required by automation. | <!-- pragma: allowlist secret -->
 | 2025-08-28T03:55:32Z | PH6: Run pytest with coverage | `pytest` rejected legacy `--cov=src/codex_ml` arguments. | Retired | Coverage flags were removed from `pytest.ini`, and the nox helper now targets `src/codex`, so the legacy failure mode is obsolete. |
 | 2025-08-28T03:55:32Z | PH6: Run pre-commit | `check-merge-conflicts` and ruff flagged merge markers / unused imports. | Retired | The hook set no longer includes `check-merge-conflicts`; ruff/black remain for lint enforcement, so the merge-marker question is superseded. |
 | 2025-09-10T05:02:28Z | `nox -s tests` | Coverage session failed during the gate. | Action required | `nox -s tests` still delegates to the coverage session, so the suite must pass with coverage enabled before this blocker can be closed. |

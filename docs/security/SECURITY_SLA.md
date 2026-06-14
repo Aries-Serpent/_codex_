@@ -3,7 +3,7 @@
 **Owner**: `unified-security-scanner` (primary), `security-audit-agent` (backup)  
 **Last updated**: 2026-05-27  
 **Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
-**Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](../../.github/workflows/nightly-codeql-alert-triage.yml)
+**Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/nightly-codeql-alert-triage.yml)
 
 ---
 

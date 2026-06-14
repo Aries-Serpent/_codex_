@@ -328,10 +328,10 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_exempt_branch(self) -> None:
         """Test path prefix exemption branch."""
-        path = branch_input("/public/docs/index.html")
-        if path.startswith("/public/"):
+        path = branch_input("public/docs/index.html")
+        if path.startswith(("public", "/public")):
             exempt = True
-        elif path.startswith("/api/"):
+        elif path.startswith(("api", "/api")):
             exempt = False
         else:
             exempt = False
@@ -339,10 +339,10 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_api_branch(self) -> None:
         """Test path prefix API (protected) branch."""
-        path = branch_input("/api/users")
-        if path.startswith("/public/"):
+        path = branch_input("api/users")
+        if path.startswith(("public", "/public")):
             exempt = True
-        elif path.startswith("/api/"):
+        elif path.startswith(("api", "/api")):
             exempt = False
         else:
             exempt = False
@@ -350,10 +350,10 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_other_branch(self) -> None:
         """Test path prefix other branch."""
-        path = branch_input("/other/endpoint")
-        if path.startswith("/public/"):
+        path = branch_input("other/endpoint")
+        if path.startswith(("public", "/public")):
             exempt = True
-        elif path.startswith("/api/"):
+        elif path.startswith(("api", "/api")):
             exempt = False
         else:
             exempt = False

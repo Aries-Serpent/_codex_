@@ -85,47 +85,47 @@
 
 ### Pattern 1: ROADMAP.md (43 fixes)
 ```diff
-- [text](ROADMAP.md)
-+ [text](docs/ROADMAP.md)
+- [text](../../../docs/plans/archive/PHASE2_FINAL_STATUS_AND_ROADMAP.md)
++ [text](../../../docs/ROADMAP.md)
 
 - [text](/.github/agents/PHASE_8_ROADMAP.md)
-+ [text](docs/ROADMAP.md)
++ [text](../../../docs/ROADMAP.md)
 ```
 
 ### Pattern 2: CODEBASE_DASHBOARD.md (18 fixes)
 ```diff
-- [text](CODEBASE_DASHBOARD.md)
-+ [text](docs/system/CODEBASE_DASHBOARD.md)
+- [text](../../../docs/system/CODEBASE_DASHBOARD.md)
++ [text](../../../docs/system/CODEBASE_DASHBOARD.md)
 ```
 
 ### Pattern 3: CODEBASE_AGENCY_POLICY.md (17 fixes)
 ```diff
-- [text](CODEBASE_AGENCY_POLICY.md)
-+ [text](.codex/CODEBASE_AGENCY_POLICY.md)
+- [text](../../CODEBASE_AGENCY_POLICY.md)
++ [text](../../CODEBASE_AGENCY_POLICY.md)
 
-- [text](.codex/CODEBASE_AGENCY_POLICY.md)
+- [text](../../CODEBASE_AGENCY_POLICY.md)
 + [text](../../../.codex/CODEBASE_AGENCY_POLICY.md)  # Relative path
 ```
 
 ### Pattern 4: OPERATIONAL_GUIDELINES.md (11 fixes)
 ```diff
-- [text](OPERATIONAL_GUIDELINES.md)
-+ [text](docs/agent/OPERATIONAL_GUIDELINES.md)
+- [text](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
++ [text](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
-- [text](docs/agent/OPERATIONAL_GUIDELINES.md)
+- [text](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
 + [text](../../../docs/agent/OPERATIONAL_GUIDELINES.md)  # Relative path
 ```
 
 ### Pattern 5: GENESIS_SETUP_GUIDE.md (10 fixes)
 ```diff
-- [text](GENESIS_SETUP_GUIDE.md)
-+ [text](docs/admin/GENESIS_SETUP_GUIDE.md)
+- [text](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
++ [text](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
 ```
 
 ### Pattern 6: CODEBASE_COGNITIVE_MAP.md (8 fixes)
 ```diff
-- [text](CODEBASE_COGNITIVE_MAP.md)
-+ [text](docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [text](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
++ [text](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
 ```
 
 ---

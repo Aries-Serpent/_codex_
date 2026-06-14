@@ -1,0 +1,365 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "aries-serpent-phase-6-security-audit",
+  "documentNamespace": "https://aries-serpent.github.io/_codex_/sbom/phase6-2026-06-13T11:57:23.134432",
+  "creationInfo": {
+    "created": "2026-06-13T11:57:23.134444",
+    "creators": [
+      "Tool: unified-security-scanner-v1.0"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-1",
+      "PackageName": "annotated-doc",
+      "PackageVersion": "0.0.4",
+      "PackageDownloadLocation": "https://pypi.org/project/annotated-doc/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-2",
+      "PackageName": "annotated-types",
+      "PackageVersion": "0.7.0",
+      "PackageDownloadLocation": "https://pypi.org/project/annotated-types/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-3",
+      "PackageName": "anyio",
+      "PackageVersion": "4.13.0",
+      "PackageDownloadLocation": "https://pypi.org/project/anyio/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-4",
+      "PackageName": "argcomplete",
+      "PackageVersion": "3.6.3",
+      "PackageDownloadLocation": "https://pypi.org/project/argcomplete/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-5",
+      "PackageName": "attrs",
+      "PackageVersion": "23.2.0",
+      "PackageDownloadLocation": "https://pypi.org/project/attrs/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-6",
+      "PackageName": "Authlib",
+      "PackageVersion": "1.7.2",
+      "PackageDownloadLocation": "https://pypi.org/project/Authlib/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-7",
+      "PackageName": "Automat",
+      "PackageVersion": "22.10.0",
+      "PackageDownloadLocation": "https://pypi.org/project/Automat/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-8",
+      "PackageName": "Babel",
+      "PackageVersion": "2.10.3",
+      "PackageDownloadLocation": "https://pypi.org/project/Babel/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-9",
+      "PackageName": "bandit",
+      "PackageVersion": "1.9.4",
+      "PackageDownloadLocation": "https://pypi.org/project/bandit/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-10",
+      "PackageName": "bcc",
+      "PackageVersion": "0.29.1",
+      "PackageDownloadLocation": "https://pypi.org/project/bcc/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-11",
+      "PackageName": "bcrypt",
+      "PackageVersion": "3.2.2",
+      "PackageDownloadLocation": "https://pypi.org/project/bcrypt/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-12",
+      "PackageName": "blinker",
+      "PackageVersion": "1.7.0",
+      "PackageDownloadLocation": "https://pypi.org/project/blinker/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-13",
+      "PackageName": "boltons",
+      "PackageVersion": "21.0.0",
+      "PackageDownloadLocation": "https://pypi.org/project/boltons/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-14",
+      "PackageName": "boolean.py",
+      "PackageVersion": "5.0",
+      "PackageDownloadLocation": "https://pypi.org/project/boolean.py/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-15",
+      "PackageName": "boto3",
+      "PackageVersion": "1.34.46",
+      "PackageDownloadLocation": "https://pypi.org/project/boto3/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-16",
+      "PackageName": "botocore",
+      "PackageVersion": "1.34.46",
+      "PackageDownloadLocation": "https://pypi.org/project/botocore/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-17",
+      "PackageName": "bracex",
+      "PackageVersion": "2.6",
+      "PackageDownloadLocation": "https://pypi.org/project/bracex/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-18",
+      "PackageName": "CacheControl",
+      "PackageVersion": "0.14.4",
+      "PackageDownloadLocation": "https://pypi.org/project/CacheControl/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-19",
+      "PackageName": "certifi",
+      "PackageVersion": "2023.11.17",
+      "PackageDownloadLocation": "https://pypi.org/project/certifi/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-20",
+      "PackageName": "cffi",
+      "PackageVersion": "2.0.0",
+      "PackageDownloadLocation": "https://pypi.org/project/cffi/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-21",
+      "PackageName": "chardet",
+      "PackageVersion": "5.2.0",
+      "PackageDownloadLocation": "https://pypi.org/project/chardet/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-22",
+      "PackageName": "click",
+      "PackageVersion": "8.1.8",
+      "PackageDownloadLocation": "https://pypi.org/project/click/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-23",
+      "PackageName": "click-option-group",
+      "PackageVersion": "0.5.9",
+      "PackageDownloadLocation": "https://pypi.org/project/click-option-group/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-24",
+      "PackageName": "cloud-init",
+      "PackageVersion": "26.1",
+      "PackageDownloadLocation": "https://pypi.org/project/cloud-init/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-25",
+      "PackageName": "colorama",
+      "PackageVersion": "0.4.6",
+      "PackageDownloadLocation": "https://pypi.org/project/colorama/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-26",
+      "PackageName": "command-not-found",
+      "PackageVersion": "0.3",
+      "PackageDownloadLocation": "https://pypi.org/project/command-not-found/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-27",
+      "PackageName": "configobj",
+      "PackageVersion": "5.0.8",
+      "PackageDownloadLocation": "https://pypi.org/project/configobj/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-28",
+      "PackageName": "constantly",
+      "PackageVersion": "23.10.4",
+      "PackageDownloadLocation": "https://pypi.org/project/constantly/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-29",
+      "PackageName": "coverage",
+      "PackageVersion": "7.14.1",
+      "PackageDownloadLocation": "https://pypi.org/project/coverage/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-30",
+      "PackageName": "cryptography",
+      "PackageVersion": "49.0.0",
+      "PackageDownloadLocation": "https://pypi.org/project/cryptography/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-31",
+      "PackageName": "cyclonedx-python-lib",
+      "PackageVersion": "11.10.0",
+      "PackageDownloadLocation": "https://pypi.org/project/cyclonedx-python-lib/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-32",
+      "PackageName": "dbus-python",
+      "PackageVersion": "1.3.2",
+      "PackageDownloadLocation": "https://pypi.org/project/dbus-python/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-33",
+      "PackageName": "defusedxml",
+      "PackageVersion": "0.7.1",
+      "PackageDownloadLocation": "https://pypi.org/project/defusedxml/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-34",
+      "PackageName": "distro",
+      "PackageVersion": "1.9.0",
+      "PackageDownloadLocation": "https://pypi.org/project/distro/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-35",
+      "PackageName": "distro-info",
+      "PackageVersion": "1.7+build1",
+      "PackageDownloadLocation": "https://pypi.org/project/distro-info/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-36",
+      "PackageName": "dparse",
+      "PackageVersion": "0.6.4",
+      "PackageDownloadLocation": "https://pypi.org/project/dparse/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-37",
+      "PackageName": "exceptiongroup",
+      "PackageVersion": "1.2.2",
+      "PackageDownloadLocation": "https://pypi.org/project/exceptiongroup/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-38",
+      "PackageName": "face",
+      "PackageVersion": "26.0.0",
+      "PackageDownloadLocation": "https://pypi.org/project/face/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-39",
+      "PackageName": "filelock",
+      "PackageVersion": "3.29.3",
+      "PackageDownloadLocation": "https://pypi.org/project/filelock/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-40",
+      "PackageName": "glom",
+      "PackageVersion": "25.12.0",
+      "PackageDownloadLocation": "https://pypi.org/project/glom/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-41",
+      "PackageName": "googleapis-common-protos",
+      "PackageVersion": "1.75.0",
+      "PackageDownloadLocation": "https://pypi.org/project/googleapis-common-protos/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-42",
+      "PackageName": "h11",
+      "PackageVersion": "0.16.0",
+      "PackageDownloadLocation": "https://pypi.org/project/h11/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-43",
+      "PackageName": "httpcore",
+      "PackageVersion": "1.0.9",
+      "PackageDownloadLocation": "https://pypi.org/project/httpcore/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-44",
+      "PackageName": "httplib2",
+      "PackageVersion": "0.20.4",
+      "PackageDownloadLocation": "https://pypi.org/project/httplib2/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-45",
+      "PackageName": "httpx",
+      "PackageVersion": "0.28.1",
+      "PackageDownloadLocation": "https://pypi.org/project/httpx/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-46",
+      "PackageName": "httpx-sse",
+      "PackageVersion": "0.4.3",
+      "PackageDownloadLocation": "https://pypi.org/project/httpx-sse/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-47",
+      "PackageName": "hyperlink",
+      "PackageVersion": "21.0.0",
+      "PackageDownloadLocation": "https://pypi.org/project/hyperlink/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-48",
+      "PackageName": "idna",
+      "PackageVersion": "3.6",
+      "PackageDownloadLocation": "https://pypi.org/project/idna/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-49",
+      "PackageName": "importlib_metadata",
+      "PackageVersion": "8.7.1",
+      "PackageDownloadLocation": "https://pypi.org/project/importlib_metadata/",
+      "FilesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-Package-50",
+      "PackageName": "incremental",
+      "PackageVersion": "22.10.0",
+      "PackageDownloadLocation": "https://pypi.org/project/incremental/",
+      "FilesAnalyzed": false
+    }
+  ]
+}

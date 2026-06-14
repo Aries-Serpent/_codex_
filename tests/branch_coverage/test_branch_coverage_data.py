@@ -27,14 +27,14 @@ class TestDataLoadingBranches:
 
     def test_dataset_exists_branch(self) -> None:
         """Test branch when dataset file exists."""
-        dataset_path = Path("/data/train.json")
+        dataset_path = Path.home() / "datasets" / "train.json"
         with patch.object(Path, "exists", return_value=True):
             status = "found" if dataset_path.exists() else "not_found"
             assert status == "found"
 
     def test_dataset_missing_branch(self) -> None:
         """Test branch when dataset file is missing."""
-        dataset_path = Path("/data/nonexistent.json")
+        dataset_path = Path.home() / "datasets" / "nonexistent.json"
         with patch.object(Path, "exists", return_value=False):
             status = "found" if dataset_path.exists() else "not_found"
             assert status == "not_found"

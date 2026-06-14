@@ -135,7 +135,7 @@ Total: 45 passed, 25 skipped, 0 failed ✅
 
 - [Branch Protection Config](.github/BRANCH_PROTECTION_CONFIG.md)
 - [AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)
-- [Cognitive Brain Status V2](.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md)
+- [Cognitive Brain Status V2](COGNITIVE_BRAIN_STATUS_V2.md)
 - [Genesis Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)
 
 ---

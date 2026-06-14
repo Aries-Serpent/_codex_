@@ -116,16 +116,37 @@ class BrainClient:
             or _DEFAULT_URL
         ).strip()
 
-        # Normalise a bare "host:port" (no scheme) to "http://host:port" so that
-        # common mis-configurations fail with a clear message rather than a
-        # cryptic "disallowed URL scheme ''" from _safe_urlopen.
-        # urlparse("localhost:8765") yields scheme="localhost", netloc="" — treat
-        # any non-http/https scheme with no netloc as a bare host:port.
+        # Validation logic for SSRF protection (CWE-918)
+        # URLs must be http or https only; all other schemes (file, ftp, data, etc.)
+        # are dangerous and must be rejected outright.
         parsed = urllib.parse.urlparse(raw)
-        if parsed.scheme not in ("http", "https") and not parsed.netloc:
-            raw = f"http://{raw}"
+
+        # Detect if this is a bare "host:port" misidentified as a scheme by urlparse.
+        # urlparse("localhost:8765") → scheme="localhost", netloc="", path="8765"
+        # The key indicator: in a bare host:port, there's no "://" in the original URL.
+        # Real schemes (http://, file://, data:, etc.) have either "://" or are followed
+        # by content that looks like a scheme continuation (e.g., "data:text/html").
+        has_url_scheme = parsed.scheme and (
+            f"{parsed.scheme}://" in raw  # Real URL scheme with authority
+            or parsed.scheme in ("data", "javascript", "vbscript", "file", "ftp", "gopher")
+            # ^ Known dangerous schemes that don't use "://"
+        )
+
+        if has_url_scheme:
+            # Explicit URL scheme provided; must be http or https
+            scheme = parsed.scheme.lower()
+            if scheme not in ("http", "https"):
+                raise BrainClientError(
+                    f"Invalid URL scheme '{scheme}' (only http:// or https:// permitted). "
+                    f"Check the 'base_url' argument or CODEX_CLI_API_URL / COPILOT_CLI_BASE_URL."
+                )
+        else:
+            # Bare host, host:port, or host/path — convert to http://
+            if not raw.startswith("http://") and not raw.startswith("https://"):
+                raw = f"http://{raw}"
             parsed = urllib.parse.urlparse(raw)
 
+        # Final validation: must have http/https scheme and a valid host
         scheme = parsed.scheme.lower()
         if scheme not in ("http", "https") or not parsed.netloc:
             raise BrainClientError(

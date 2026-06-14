@@ -80,7 +80,7 @@ Incorrect path to `PHASE_2_QUICK_REFERENCE.md`:
 
 #### Fix Applied
 ```diff
-+ <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [PHASE_2_QUICK_REFERENCE.md](phases/PHASE_2_QUICK_REFERENCE.md) --> --> --> --> -->
++ <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [PHASE_2_QUICK_REFERENCE.md](../archive/phases/PHASE_2_QUICK_REFERENCE.md) --> --> --> --> -->
 ```
 
 **Impact**: Archive navigation now correctly points to phase documentation.
@@ -303,7 +303,7 @@ Expected: All files exist at documented locations
 ### Fixed Documents
 - [PR_3133_ANALYSIS.md](PR_3133_ANALYSIS.md) - PR analysis with fixed archive links
 - [archive/INDEX.md](../archive/INDEX.md) - Archive index with corrected paths
-- [ci/INDEX.md](../ci/INDEX.md) - CI docs with updated workflow references
+- [ci/INDEX.md](https://github.com/Aries-Serpent/_codex_/blob/main/INDEX.md) - CI docs with updated workflow references
 
 ### Archive Locations
 - **PR #3133 Artifacts**: `.codex/archive/pr-resolutions/`
@@ -384,5 +384,5 @@ All critical broken documentation links have been successfully resolved. The "Wo
 
 For questions or follow-up, see:
 - [Link Validation Fix Summary](LINK_VALIDATION_FIX_SUMMARY.md)
-- [Link Validator Script](../../scripts/fix_broken_doc_links.py)
-- [CI Validation Script](../../.github/scripts/validate-links.py)
+- [Link Validator Script](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/fix_broken_doc_links.py)
+- [CI Validation Script](https://github.com/Aries-Serpent/_codex_/blob/main/.github/scripts/validate-links.py)
