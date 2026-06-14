@@ -70,6 +70,18 @@ Establish production readiness through backup validation, infrastructure verific
   kubectl get all -A -o yaml > /backup/k8s-config-backup.yaml
   
   # 2. Export all secrets (encrypted)
+  # ⚠️ Security: Requires GPG private key 'deployment-key' from KMS (not local)
+  # Key source documentation:
+  #   - Key location: AWS KMS key alias 'alias/deployment-signing-key' or HashiCorp Vault secret path 'secret/data/deployment-key'
+  #   - Key fingerprint: EXPECTED_FINGERPRINT should match organizational key registry
+  #   - Verification: gpg --list-keys deployment-key | grep "^fpr" | awk '{print $4}' # Must match registry
+  # CRITICAL: Verify key fingerprint matches expected value BEFORE proceeding
+  EXPECTED_FINGERPRINT="FEDCBA9876543210FEDCBA9876543210FEDCBA98"
+  ACTUAL_FINGERPRINT=$(gpg --list-keys deployment-key | grep "^fpr" | awk '{print $4}')
+  if [ "$ACTUAL_FINGERPRINT" != "$EXPECTED_FINGERPRINT" ]; then
+    echo "ERROR: GPG key fingerprint mismatch! Expected: $EXPECTED_FINGERPRINT, Got: $ACTUAL_FINGERPRINT"
+    exit 1
+  fi
   kubectl get secrets -A -o yaml | \
     gpg --encrypt --recipient deployment-key > /backup/secrets-backup.gpg
   
@@ -95,6 +107,36 @@ Establish production readiness through backup validation, infrastructure verific
   - All backups verified and checksums match
   - Isolated restoration test passes
   - Runbook documented in PRODUCTION_OPERATIONS_RUNBOOK.md
+
+#### 8.1.5 Security Requirements for Backups
+- **Owner:** Security Team + Platform Lead
+- **Effort:** 2 hours
+- **KMS Key Management Policy:**
+  - **Key storage location:**
+    - Production: AWS KMS with cross-account replication (us-east-1 + us-west-2 for DR)
+    - Staging: HashiCorp Vault on-prem or AWS KMS secondary region
+    - Key alias: `alias/codex-backup-encryption`
+    - Cross-account permissions: DBA, Platform Lead, Incident Commander (assume role with MFA)
+  - **Key retention policy:**
+    - Active key rotation: Every 90 days (automatic in AWS KMS)
+    - Retired key retention: 7 years (regulatory requirement for audit trail)
+    - Backup of encrypted data: Keep indefinitely (key used for encryption stays accessible)
+  - **Secure key destruction:**
+    - Scheduled key deletion: 30-day wait period after retirement request
+    - Manual destruction: Authorized by VP of Infrastructure + Chief Security Officer (dual control)
+    - Post-destruction verification: Confirm key no longer accessible in KMS console/audit logs
+    - Documentation: Record destruction timestamp, approver names, reason for destruction
+- **Backup Encryption Details:**
+  - All backups encrypted with KMS keys at rest
+  - Encryption in transit: TLS 1.2+ for all backup transfers
+  - Storage location: Encrypted S3 bucket (aws-kms encryption, versioning enabled, access logging)
+  - Access controls: IAM policies restrict to DBA + Platform Lead only
+  - Audit logging: Enable S3 access logging and CloudTrail for all backup access
+- **Success Criteria:**
+  - KMS key policy documented in team wiki
+  - All team members trained on key access procedures
+  - Automated key rotation configured and tested
+  - Backup encryption verified (openssl enc verification)
 
 ### 8.2 Infrastructure Readiness Checklist (Days 2-4)
 
