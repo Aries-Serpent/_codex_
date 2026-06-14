@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from enum import Enum
 
 import pytest
@@ -40,9 +39,9 @@ async def test_worker_lifecycle_start():
     """Test worker start transition."""
     worker = Worker("test")
     assert worker.state == WorkerState.IDLE
-    
+
     await worker.start()
-    
+
     assert worker.state == WorkerState.RUNNING
 
 
@@ -50,10 +49,10 @@ async def test_worker_lifecycle_start():
 async def test_worker_lifecycle_pause():
     """Test worker pause transition."""
     worker = Worker("test")
-    
+
     await worker.start()
     await worker.pause()
-    
+
     assert worker.state == WorkerState.PAUSED
 
 
@@ -61,11 +60,11 @@ async def test_worker_lifecycle_pause():
 async def test_worker_lifecycle_resume():
     """Test worker resume transition."""
     worker = Worker("test")
-    
+
     await worker.start()
     await worker.pause()
     await worker.resume()
-    
+
     assert worker.state == WorkerState.RUNNING
 
 
@@ -73,10 +72,10 @@ async def test_worker_lifecycle_resume():
 async def test_worker_lifecycle_stop():
     """Test worker stop transition."""
     worker = Worker("test")
-    
+
     await worker.start()
     await worker.stop()
-    
+
     assert worker.state == WorkerState.STOPPED
 
 

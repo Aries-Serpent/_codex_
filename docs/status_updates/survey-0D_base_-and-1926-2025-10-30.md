@@ -763,12 +763,12 @@ class ReasoningHead(nn.Module):
         probs = torch.softmax(logits, dim=-1)
         k = max(1, min(int(top_k), probs.size(-1)))
         values, indices = torch.topk(probs, k, dim=-1)
-        top_tokens = [
-            {"token": int(idx), "probability": float(val)}
+        top_tokens = [  # pragma: allowlist secret
+            {"token": int(idx), "probability": float(val)}  # pragma: allowlist secret
             for idx, val in zip(indices[0], values[0])
         ]
         top_probability = float(values[0, 0]) if values.numel() else None
-        return {"top_tokens": top_tokens, "top_probability": top_probability}
+        return {"top_tokens": top_tokens, "top_probability": top_probability}  # pragma: allowlist secret
 
 
 class _Identity(nn.Module):
@@ -932,7 +932,7 @@ class ReasoningHarness:
             payload: Dict[str, Any] = {
                 "epoch": epoch,
                 "step": step,
-                "top_tokens": summary["top_tokens"],
+                "top_tokens": summary["top_tokens"],  # pragma: allowlist secret
                 "top_probability": summary.get("top_probability"),
                 "embedding_norm": (
                     float(torch.sqrt(torch.sum(embedding * embedding)).item())
@@ -1145,7 +1145,7 @@ from codex_ml.utils.optional import optional_import
 
 from ..tracking.writers import NdjsonWriter
 from .fallback import synthetic_alignment
-from .metrics import perplexity, token_accuracy
+from .metrics import perplexity, token_accuracy  # pragma: allowlist secret
 
 torch, _HAS_TORCH = optional_import("torch")
 datasets, _HAS_DATASETS = optional_import("datasets")
@@ -1208,8 +1208,8 @@ Dataset = datasets.Dataset if _HAS_DATASETS else None  # type: ignore[attr-defin
 AutoModelForCausalLM = (
     transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None
 )  # type: ignore[attr-defined,assignment]
-AutoTokenizer = (
-    transformers.AutoTokenizer if _HAS_TRANSFORMERS else None
+AutoTokenizer = (  # pragma: allowlist secret
+    transformers.AutoTokenizer if _HAS_TRANSFORMERS else None  # pragma: allowlist secret
 )  # type: ignore[attr-defined,assignment]
 
 
@@ -1241,23 +1241,23 @@ def _missing_dependencies(
     return missing
 
 
-def evaluate_model(model, tokenizer, texts: Iterable[str]) -> dict[str, float]:
+def evaluate_model(model, tokenizer, texts: Iterable[str]) -> dict[str, float]:  # pragma: allowlist secret
     missing = _missing_dependencies(require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
     ds = Dataset.from_dict({"text": list(texts)})
     column = list(ds["text"])
-    toks = tokenizer(column, return_tensors="pt", padding=True)
+    toks = tokenizer(column, return_tensors="pt", padding=True)  # pragma: allowlist secret
     input_ids = toks["input_ids"]
     with torch.no_grad():
         out = model(input_ids, labels=input_ids)
     logits = out.logits
     pred_ids = logits.argmax(-1).reshape(-1).tolist()
     target_ids = input_ids.reshape(-1).tolist()
-    pad = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else -100
-    acc = token_accuracy(pred_ids, target_ids, ignore_index=pad)
+    pad = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else -100  # pragma: allowlist secret
+    acc = token_accuracy(pred_ids, target_ids, ignore_index=pad)  # pragma: allowlist secret
     ppl = perplexity(logits.reshape(-1, logits.shape[-1]).tolist(), target_ids, ignore_index=pad)
-    return {"token_accuracy": acc, "perplexity": ppl}
+    return {"token_accuracy": acc, "perplexity": ppl}  # pragma: allowlist secret
 
 
 def _to_float(value: Any) -> float | None:
@@ -1304,19 +1304,19 @@ def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     missing = _missing_dependencies(require_transformers=True, require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
-    tokenizer = load_from_pretrained(
-        AutoTokenizer,
+    tokenizer = load_from_pretrained(  # pragma: allowlist secret
+        AutoTokenizer,  # pragma: allowlist secret
         model_name,
         revision=get_hf_revision(),
     )
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    if tokenizer.pad_token is None:  # pragma: allowlist secret
+        tokenizer.pad_token = tokenizer.eos_token  # pragma: allowlist secret
     model = load_from_pretrained(
         AutoModelForCausalLM,
         model_name,
         revision=get_hf_revision(),
     )
-    return evaluate_model(model, tokenizer, texts)
+    return evaluate_model(model, tokenizer, texts)  # pragma: allowlist secret
 
 
 def lite_sequence_evaluation(
@@ -1434,8 +1434,8 @@ def _coerce_bool(value: Any) -> bool | None:
             return bool(value)
         return None
     if isinstance(value, str):
-        token = value.strip().lower()
-        if token in _BOOLEAN_TRUE:
+        token = value.strip().lower()  # pragma: allowlist secret
+        if token in _BOOLEAN_TRUE:  # pragma: allowlist secret
 [END CONTENT]
 ```text
 
@@ -1537,7 +1537,7 @@ if _USE_TYPER:
     app = _typer.Typer(
         name="codex",
         add_completion=False,
-        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
+        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",  # pragma: allowlist secret
     )
 
     def _discover_reasoning_templates() -> Sequence[Tuple[str, str, Path]]:
@@ -1638,7 +1638,7 @@ if _USE_TYPER:
 else:  # pragma: no cover - click fallback
     import click as _click
 
-    @_click.group(name="codex", help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).")
+    @_click.group(name="codex", help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).")  # pragma: allowlist secret
     def app() -> None:
         """Codex offline smoke helpers."""
 
@@ -1758,23 +1758,23 @@ from codex_utils.ndjson import NDJSONLogger
 
 _ = (ArgparseJSONParser, run_cmd)
 
-DEFAULT_TOKENIZER_CONFIG = "configs/training/tokenization/base.yaml"
-DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
+DEFAULT_TOKENIZER_CONFIG = "configs/training/tokenization/base.yaml"  # pragma: allowlist secret
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"  # pragma: allowlist secret
 
 
 @lru_cache(maxsize=1)
-def _get_tokenizer_pipeline():
+def _get_tokenizer_pipeline():  # pragma: allowlist secret
     try:
-        from codex_ml.tokenization import pipeline as tokenizer_pipeline
+        from codex_ml.tokenization import pipeline as tokenizer_pipeline  # pragma: allowlist secret
     except ModuleNotFoundError as exc:  # pragma: no cover - surfaced via Click
         missing = (exc.name or "").split(".", 1)[0]
-        if missing == "tokenizers":
+        if missing == "tokenizers":  # pragma: allowlist secret
             raise click.ClickException(
-                "Tokenizer commands require the optional 'tokenizers' dependency. "
-                "Install it to enable tokenizer CLI functionality."
+                "Tokenizer commands require the optional 'tokenizers' dependency. "  # pragma: allowlist secret
+                "Install it to enable tokenizer CLI functionality."  # pragma: allowlist secret
             ) from exc
         raise
-    return tokenizer_pipeline
+    return tokenizer_pipeline  # pragma: allowlist secret
 
 
 @click.group()
@@ -1789,17 +1789,17 @@ def _emit_provenance_summary(provenance_dir: Path) -> None:
 
 
 @codex.group()
-def tokenizer() -> None:
-    """Tokenizer pipeline utilities."""
+def tokenizer() -> None:  # pragma: allowlist secret
+    """Tokenizer pipeline utilities."""  # pragma: allowlist secret
 
 
-@tokenizer.command("train")
+@tokenizer.command("train")  # pragma: allowlist secret
 @click.option(
     "--config",
-    default=DEFAULT_TOKENIZER_CONFIG,
+    default=DEFAULT_TOKENIZER_CONFIG,  # pragma: allowlist secret
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Path to the tokenizer pipeline configuration file.",
+    help="Path to the tokenizer pipeline configuration file.",  # pragma: allowlist secret
 )
 @click.option(
     "--streaming/--no-streaming",
@@ -1816,40 +1816,40 @@ def tokenizer() -> None:
     ),
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
-def tokenizer_train(
+def tokenizer_train(  # pragma: allowlist secret
     config: str, streaming: bool | None, stream_chunk_size: int | None, dry_run: bool
 ) -> None:
-    """Train a tokenizer according to the provided configuration."""
-    tokenizer_pipeline = _get_tokenizer_pipeline()
+    """Train a tokenizer according to the provided configuration."""  # pragma: allowlist secret
+    tokenizer_pipeline = _get_tokenizer_pipeline()  # pragma: allowlist secret
     try:
-        out_dir = tokenizer_pipeline.run_train(
+        out_dir = tokenizer_pipeline.run_train(  # pragma: allowlist secret
             config,
             streaming=streaming,
             stream_chunk_size=stream_chunk_size,
             dry_run=dry_run,
         )
-    except tokenizer_pipeline.TokenizerPipelineError as exc:
+    except tokenizer_pipeline.TokenizerPipelineError as exc:  # pragma: allowlist secret
         raise click.ClickException(str(exc)) from exc
     if dry_run:
         click.echo("dry run complete")
         return
-    click.echo(f"tokenizer artifacts written to {out_dir}")
+    click.echo(f"tokenizer artifacts written to {out_dir}")  # pragma: allowlist secret
 
 
-@tokenizer.command("validate")
+@tokenizer.command("validate")  # pragma: allowlist secret
 @click.option(
     "--config",
-    default=DEFAULT_TOKENIZER_CONFIG,
+    default=DEFAULT_TOKENIZER_CONFIG,  # pragma: allowlist secret
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Path to the tokenizer pipeline configuration file.",
+    help="Path to the tokenizer pipeline configuration file.",  # pragma: allowlist secret
 )
-def tokenizer_validate(config: str) -> None:
-    """Validate dataset manifests and cached tokenizer artifacts."""
-    tokenizer_pipeline = _get_tokenizer_pipeline()
+def tokenizer_validate(config: str) -> None:  # pragma: allowlist secret
+    """Validate dataset manifests and cached tokenizer artifacts."""  # pragma: allowlist secret
+    tokenizer_pipeline = _get_tokenizer_pipeline()  # pragma: allowlist secret
     try:
-        report = tokenizer_pipeline.run_validate(config)
-    except tokenizer_pipeline.TokenizerPipelineError as exc:
+        report = tokenizer_pipeline.run_validate(config)  # pragma: allowlist secret
+    except tokenizer_pipeline.TokenizerPipelineError as exc:  # pragma: allowlist secret
         raise click.ClickException(str(exc)) from exc
     click.echo(json.dumps(report, indent=2, sort_keys=True))
 # ... [omitted for brevity] ...
@@ -1859,10 +1859,10 @@ def tokenizer_validate(config: str) -> None:
 
 @codex.command()
 @click.argument("text")
-def tokenize(text: str) -> None:
-    from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+def tokenize(text: str) -> None:  # pragma: allowlist secret
+    from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter  # pragma: allowlist secret
 
-    tok = HFTokenizerAdapter.load()
+    tok = HFTokenizerAdapter.load()  # pragma: allowlist secret
     ids = tok.encode(text)
     click.echo(str(ids))
 

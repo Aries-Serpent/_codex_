@@ -18,7 +18,7 @@ Day 90: ❌ ROTATION REQUIRED
 |------|--------|-----------------|
 | CODEX_MASTER_KEY | 90 days | 75+ days |
 | CODEX_BACKUP_KEY | 30 days | 25+ days |
-| Service Tokens | 90 days | 30+ days |
+| Service Tokens | 90 days | 30+ days | <!-- pragma: allowlist secret -->
 
 ---
 

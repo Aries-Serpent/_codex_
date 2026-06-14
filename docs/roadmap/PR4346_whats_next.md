@@ -11,9 +11,9 @@
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0); `run_validation.sh` now uses `detect-secrets==1.5.0` | ✅ |
+| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0); `run_validation.sh` now uses `detect-secrets==1.5.0` | ✅ | <!-- pragma: allowlist secret -->
 | 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message | ✅ |
-| 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` → `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | ✅ |
+| 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` → `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | ✅ | <!-- pragma: allowlist secret -->
 | 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) | ✅ |
 | 5 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | ✅ |
 
@@ -33,8 +33,8 @@
 | 1 | Reviewed all 5 unresolved Copilot AI review threads | ✅ All confirmed resolved in current code |
 | 2 | `wec_enforcer.py` `_find_and_approve_dispatched_run()` — no `completed` check | ✅ |
 | 3 | `wec_enforcer.py` summary counter — distinct outcome tracking | ✅ |
-| 4 | `post_rotation_verify.sh` — no partial token value in logs | ✅ |
-| 5 | `# aais-cache: none` comments in `token-probe.yml` + `pr-size-analyzer.yml` | ✅ |
+| 4 | `post_rotation_verify.sh` — no partial token value in logs | ✅ | <!-- pragma: allowlist secret -->
+| 5 | `# aais-cache: none` comments in `token-probe.yml` + `pr-size-analyzer.yml` | ✅ | <!-- pragma: allowlist secret -->
 | 6 | Replied to all `comment_new` threads (#4403141030, #4403147280, #4403149897) | ✅ |
 | 7 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | ✅ |
 
@@ -44,14 +44,14 @@
 
 | # | Deliverable | Files Touched | Status |
 |---|-------------|---------------|--------|
-| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ |
-| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ |
-| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ |
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ | <!-- pragma: allowlist secret -->
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ | <!-- pragma: allowlist secret -->
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ | <!-- pragma: allowlist secret -->
 | 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | ✅ |
 | 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | ✅ |
 | 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | ✅ |
 | 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | ✅ |
-| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -98,7 +98,7 @@ flowchart LR
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
 | **OBJ-B** `py/wrong-named-arg` ×15 | `security_events` scope on `CODEX_MASTER_KEY` | `admin-action-t03.yml` creates issue |
-| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check |
+| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check | <!-- pragma: allowlist secret -->
 
 ### Admin Steps to Unblock (T-03)
 1. [Settings → Tokens → CODEX_MASTER_KEY → Edit](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
@@ -154,14 +154,14 @@ After workflows complete:
 
 | # | Deliverable | Files Touched | Status |
 |---|-------------|---------------|--------|
-| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ |
-| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ |
-| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ |
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ | <!-- pragma: allowlist secret -->
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ | <!-- pragma: allowlist secret -->
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ | <!-- pragma: allowlist secret -->
 | 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | ✅ |
 | 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | ✅ |
 | 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | ✅ |
 | 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | ✅ |
-| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -208,7 +208,7 @@ flowchart LR
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
 | **OBJ-B** `py/wrong-named-arg` ×15 | `security_events` scope on `CODEX_MASTER_KEY` | `admin-action-t03.yml` creates issue |
-| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check |
+| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check | <!-- pragma: allowlist secret -->
 
 ### Admin Steps to Unblock (T-03)
 1. [Settings → Secrets → CODEX_MASTER_KEY → Edit PAT](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
@@ -240,7 +240,7 @@ flowchart LR
 | **Workflow Compliance Audit (actionlint)** | — | ✅ PASS |
 | **🔗 Reference Integrity** | — | ✅ PASS |
 | **Pre-Merge Validation** | — | ⏳ running |
-| **🔐 Secrets Baseline Enforcer** | — | ⏳ pending (fires after Pre-Merge) |
+| **🔐 Secrets Baseline Enforcer** | — | ⏳ pending (fires after Pre-Merge) | <!-- pragma: allowlist secret -->
 | **PR Comment Review Gate** | — | ⏳ pending |
 | **startup_failure** (4 infra) | — | ⚠️ env/billing — not code failures |
 
@@ -253,9 +253,9 @@ flowchart LR
 
 #### Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)
 ```
-All agent-fixable items are complete. OBJ-B (py/wrong-named-arg ×15) and OBJ-D (token rotation)
+All agent-fixable items are complete. OBJ-B (py/wrong-named-arg ×15) and OBJ-D (token rotation)  # pragma: allowlist secret
 require admin action. The admin-action-t03.yml notifier will create a T-03 issue automatically.
-→ Merge when Pre-Merge Validation and Secrets Baseline Enforcer turn ✅.
+→ Merge when Pre-Merge Validation and Secrets Baseline Enforcer turn ✅.  # pragma: allowlist secret
 ```
 
 #### Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)
@@ -267,7 +267,7 @@ S862 Objectives (after admin rotates CODEX_MASTER_KEY with security_events scope
   2. OBJ-D: Run post_rotation_verify.sh 7-step check → commit variable_set_master_key_rotated.json
   3. Drive AAIS Reliability from 98.4 to 100.0 (need ~14 more green CI runs to flush 1.6% rate)
   4. RL-3a remaining: promote-integration-branch.yml Pattern D guard if not yet done
-  5. T-10 gap: remaining token-review items from ELEVATED_PRIVILEGES_TOKEN_REVIEW.md
+  5. T-10 gap: remaining token-review items from ELEVATED_PRIVILEGES_TOKEN_REVIEW.md  # pragma: allowlist secret
 
 Branch: finding-autofix-faa8614c (or new PR off main after merge)
 ```
@@ -276,10 +276,10 @@ Branch: finding-autofix-faa8614c (or new PR off main after merge)
 
 | File | Purpose | Session |
 |------|---------|---------|
-| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | Token inventory, click-by-click playbook | S859 |
-| `.github/workflows/token-expiry-monitor.yml` | Daily PAT expiry monitor (T-02) | S860 |
+| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | Token inventory, click-by-click playbook | S859 | <!-- pragma: allowlist secret -->
+| `.github/workflows/token-expiry-monitor.yml` | Daily PAT expiry monitor (T-02) | S860 | <!-- pragma: allowlist secret -->
 | `scripts/ci/wec_enforcer.py` | WEC dispatch + distinct outcome tracking | S860 |
-| `scripts/ci/post_rotation_verify.sh` | 7-step post-rotation check (no token values in logs) | S860 |
+| `scripts/ci/post_rotation_verify.sh` | 7-step post-rotation check (no token values in logs) | S860 | <!-- pragma: allowlist secret -->
 | `scripts/ci/github_api_trickle.py` | Rate-limit trickle helper (all RL patterns) | S860 |
 | `.github/workflows/admin-action-notifier.yml` | Reusable admin-action gap engine | S861-cont |
 | `.github/workflows/admin-action-t03.yml` | T-03 auto-notifier (fires on approval) | S861-cont |
@@ -452,7 +452,7 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 
 | File | Purpose |
 |------|---------|
-| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | Token inventory, health matrix, 7-step click-by-click playbook |
+| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | Token inventory, health matrix, 7-step click-by-click playbook | <!-- pragma: allowlist secret -->
 | `docs/roadmap/PR4346_whats_next.md` | This file — living roadmap |
 | `docs/sessions/PR4346_session_diagram.md` | 8-diagram session map |
 | `.github/workflows/self-healing.yml` | AAIS Reliability gate (manual alias for iterative-self-healing-ci.yml) |
@@ -804,10 +804,10 @@ When ready to implement Phases C and D, use this prompt:
 ```
 @copilot CTEP Mode: ON
 
-## Task: Variable & Secret Governance Implementation — Phases C + D
+## Task: Variable & Secret Governance Implementation — Phases C + D  # pragma: allowlist secret
 
-**Reference:** docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §10.9.1 and §11.2.10
-**Plan:** docs/roadmap/PR4346_whats_next.md — "Variable & Secret Governance" section
+**Reference:** docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §10.9.1 and §11.2.10  # pragma: allowlist secret
+**Plan:** docs/roadmap/PR4346_whats_next.md — "Variable & Secret Governance" section  # pragma: allowlist secret
 
 ### Phase C: Add 7 new repository variables via process-variable-intents.yml
 
@@ -815,11 +815,11 @@ For each variable C-1 through C-7 in the Phase C checklist:
 1. Write the intent file to `.codex/pending_ops/variable_set_cN.json`
 2. Use the exact JSON schema shown in the checklist
 3. For C-4b: replace "FILL_FROM_HEAD" with `$(git rev-parse HEAD)`
-4. For C-6: replace "FILL_SHA256" with `$(sha256sum .secrets.baseline | awk '{print $1}')`
+4. For C-6: replace "FILL_SHA256" with `$(sha256sum .secrets.baseline | awk '{print $1}')`  # pragma: allowlist secret
 
-### Phase D: Create token-expiry-monitor.yml
+### Phase D: Create token-expiry-monitor.yml  # pragma: allowlist secret
 
-1. Create `.github/workflows/token-expiry-monitor.yml` using the template in the checklist
+1. Create `.github/workflows/token-expiry-monitor.yml` using the template in the checklist  # pragma: allowlist secret
 2. Verify it passes actionlint
 3. Run: `python -m ruff check src/ tests/ --fix`
 4. Run: `python scripts/ci/sync_tracked_files.py --fix`
@@ -828,7 +828,7 @@ For each variable C-1 through C-7 in the Phase C checklist:
 
 ### Verification:
 - All intent files present in `.codex/pending_ops/`
-- `token-expiry-monitor.yml` passes actionlint
+- `token-expiry-monitor.yml` passes actionlint  # pragma: allowlist secret
 - `sync_tracked_files` clean
 - CHANGELOG updated with `### Added (SN)` entry
 
@@ -841,10 +841,10 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 | Phase | Status | Assigned To | ETA |
 |-------|--------|-------------|-----|
-| A — Pre-flight | ⏳ Pending admin action | @mbaetiong | Before token rotation |
-| B — Token rotation | ⏳ Pending admin action | @mbaetiong | At refresh time |
+| A — Pre-flight | ⏳ Pending admin action | @mbaetiong | Before token rotation | <!-- pragma: allowlist secret -->
+| B — Token rotation | ⏳ Pending admin action | @mbaetiong | At refresh time | <!-- pragma: allowlist secret -->
 | C — New variables | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After B completes |
-| D — token-expiry-monitor | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 |
+| D — token-expiry-monitor | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 | <!-- pragma: allowlist secret -->
 | E — Clean-up | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After D |
 | F — Verification | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After E |
 

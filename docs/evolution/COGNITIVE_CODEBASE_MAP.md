@@ -118,7 +118,7 @@ graph TD
 |-----------|------|:----------------:|-----------|---------------|------------------|
 | **Dashboard** | `src/App.tsx` | 93/100 | L6 | Tab-based, 4 panels | AAIS integration |
 | **Quantum Viz** | `src/components/quantum/` | 94/100 | L3 | Brain metrics, k₁ factor | MSV display |
-| **Agent Panel** | `src/components/quantum/AgentOrchestrationPanel.tsx` | 92/100 | L4 | 6 physics paradigms, workflow tokens | Live agent status |
+| **Agent Panel** | `src/components/quantum/AgentOrchestrationPanel.tsx` | 92/100 | L4 | 6 physics paradigms, workflow tokens | Live agent status | <!-- pragma: allowlist secret -->
 | **Metrics Hook** | `src/hooks/use-dashboard-metrics.ts` | 91/100 | L6 | Auto-refresh, error handling | AAIS V3 metrics |
 | **Memory Mgmt** | `src/components/quantum/MemoryManagementDashboard.tsx` | 93/100 | L3 | STM/LTM, compression | RAG integration |
 

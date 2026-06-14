@@ -195,7 +195,7 @@ pytest --tb=short 2>&1 | grep -c FAILED  # Should be 0
 Format: "Fix [CATEGORY]: [Description] ([related-to-main-work])"
 
 Examples:
-  ✅ "Fix test failure: test_auth_invalid_token (ensures PR doesn't break auth)"
+  ✅ "Fix test failure: test_auth_invalid_token (ensures PR doesn't break auth)"  # pragma: allowlist secret
   ✅ "Fix linting error: unused import in utils.py (cleanup before PR merge)"
   ✅ "Fix broken doc link: CONTRIBUTING.md → guides/setup.md (improves contributor experience)"
   ✅ "Fix security issue: SQL injection in query builder (critical vulnerability)"
@@ -244,7 +244,7 @@ Format: "Improve [CATEGORY]: [Description]"
 Examples:
   ✅ "Improve typing: Add type hints to auth module functions"
   ✅ "Improve docs: Add docstring to parse_config function"
-  ✅ "Improve test coverage: Add edge case tests for token validation"
+  ✅ "Improve test coverage: Add edge case tests for token validation"  # pragma: allowlist secret
   ✅ "Improve performance: Cache config parsing results (fixes N+1 query)"
 ```
 

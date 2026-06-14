@@ -105,7 +105,7 @@ State Definitions:
 | From State | To State | Required Approver | Duration | Notification |
 |-----------|----------|------------------|----------|--------------|
 | DRAFT | REVIEW | Author | 1 day | Issue created |
-| REVIEW | APPROVED | Tech lead (or Owner for secrets) | 3-7 days | Comments posted |
+| REVIEW | APPROVED | Tech lead (or Owner for secrets) | 3-7 days | Comments posted | <!-- pragma: allowlist secret -->
 | APPROVED | ACTIVE | Tech lead (or Owner) | Same day | Slack notification |
 | ACTIVE | DEPRECATED | Tech lead | N/A (ongoing) | 30-day notice |
 | DEPRECATED | ARCHIVED | Owner | 30 days | Email notification |

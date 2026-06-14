@@ -162,10 +162,10 @@ python scripts/ci/generate_accountability_report.py \
 
 | Variable | Type | Scope | Lifecycle | Audit |
 |----------|------|-------|-----------|-------|
-| `COPILOT_AUTH_TOKEN` | Secret | CI only | Regenerate quarterly | Auto-tracked |
-| `GITHUB_TOKEN_ADMIN` | Secret | Deploy only | Regenerate yearly | Auto-tracked |
-| `AZURE_CREDENTIALS` | Secret | Deploy only | Rotate on access review | Manual approval |
-| `SLACK_BOT_TOKEN` | Secret | Notifications | Rotate quarterly | Manual approval |
+| `COPILOT_AUTH_TOKEN` | Secret | CI only | Regenerate quarterly | Auto-tracked | <!-- pragma: allowlist secret -->
+| `GITHUB_TOKEN_ADMIN` | Secret | Deploy only | Regenerate yearly | Auto-tracked | <!-- pragma: allowlist secret -->
+| `AZURE_CREDENTIALS` | Secret | Deploy only | Rotate on access review | Manual approval | <!-- pragma: allowlist secret -->
+| `SLACK_BOT_TOKEN` | Secret | Notifications | Rotate quarterly | Manual approval | <!-- pragma: allowlist secret -->
 
 **Category 2: CI/CD Health & Monitoring (Agent-Writable)**
 
@@ -213,7 +213,7 @@ State Descriptions:
 
 | Category | Draft Duration | Review Approval | Active Duration | Deprecation Notice | Archive |
 |----------|---|---|---|---|---|
-| Auth & Secrets | 0 (n/a) | Owner only | 1 year | 30 days | 1 year |
+| Auth & Secrets | 0 (n/a) | Owner only | 1 year | 30 days | 1 year | <!-- pragma: allowlist secret -->
 | CI/CD Health | 1 week | Tech lead | 3 months | 7 days | 6 months |
 | Runner Config | 1 week | Tech lead | 6 months | 14 days | 1 year |
 | Cognitive Brain | 0 (auto) | System only | Indefinite | Manual only | 1 year |
@@ -245,8 +245,8 @@ class VariableAuditLogger:
         entry = {
             'timestamp': datetime.now().isoformat(),
             'variable_name': variable_name,
-            'old_value': '*' * 8 if self._is_secret(variable_name) else old_value,
-            'new_value': '*' * 8 if self._is_secret(variable_name) else new_value,
+            'old_value': '*' * 8 if self._is_secret(variable_name) else old_value,  # pragma: allowlist secret
+            'new_value': '*' * 8 if self._is_secret(variable_name) else new_value,  # pragma: allowlist secret
             'changed_by': os.getenv('GITHUB_ACTOR'),
             'reason': reason,
             'approval_id': approval_id,

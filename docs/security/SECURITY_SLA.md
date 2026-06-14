@@ -120,7 +120,7 @@ introduce new unpinned high-severity dependencies.
 |----------|---------|-------|
 | CodeQL scan | Every push + daily | `unified-security-scanner` |
 | Semgrep scan | Every push + weekly | `unified-security-scanner` |
-| Gitleaks secrets scan | Every push | `secret-detection-agent` |
+| Gitleaks secrets scan | Every push | `secret-detection-agent` | <!-- pragma: allowlist secret -->
 | Dependabot review | Weekly | `dependency-security-review-agent` |
 | MTTR burn-down review | Weekly (Monday) | `unified-security-scanner` |
 | Full security audit | Quarterly | `security-audit-agent` |

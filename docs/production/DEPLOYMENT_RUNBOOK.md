@@ -865,7 +865,7 @@ VERSION=$(cat VERSION)
 |-------|---------|----------|
 | Pod pending | `kubectl get pods` shows Pending | Check resource availability: `kubectl top nodes` |
 | DB connection error | "psql: could not connect to server" | Verify DB host/port: `nslookup $DB_HOST` |
-| Image pull failed | ImagePullBackOff | Check ECR credentials: `aws ecr get-login-password` |
+| Image pull failed | ImagePullBackOff | Check ECR credentials: `aws ecr get-login-password` | <!-- pragma: allowlist secret -->
 | Network policy blocking | Connection timeout | Review policies: `kubectl get networkpolicies` |
 | Secret not found | Key error in logs | Verify secrets: `kubectl get secrets -n production` | <!-- pragma: allowlist secret -->
 

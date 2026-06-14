@@ -27,7 +27,7 @@ This document provides comprehensive framework for secrets and credentials manag
 ```
 CODEX_MASTER_KEY (primary, rotates quarterly)
   ├── CODEX_BACKUP_KEY (backup, rotates monthly)
-  └── github.token (github.com token, rotates on-demand)
+  └── github.token (github.com token, rotates on-demand)  # pragma: allowlist secret
 ```
 
 **Key Properties**:
@@ -44,9 +44,9 @@ CODEX_MASTER_KEY (primary, rotates quarterly)
 |-----|-----------|---------------|---------------|--------|
 | CODEX_MASTER_KEY | Quarterly (90 days) | 2026-03-15 | 2026-06-14 | DUE |
 | CODEX_BACKUP_KEY | Monthly (30 days) | 2026-05-14 | 2026-06-14 | DUE |
-| github.token | On-demand | 2026-05-14 | 2026-06-14 | DUE |
-| codex-ci-deploy token | Quarterly (90 days) | 2026-03-14 | 2026-06-14 | DUE |
-| codex-security-scan token | Quarterly (90 days) | 2026-03-14 | 2026-06-14 | DUE |
+| github.token | On-demand | 2026-05-14 | 2026-06-14 | DUE | <!-- pragma: allowlist secret -->
+| codex-ci-deploy token | Quarterly (90 days) | 2026-03-14 | 2026-06-14 | DUE | <!-- pragma: allowlist secret -->
+| codex-security-scan token | Quarterly (90 days) | 2026-03-14 | 2026-06-14 | DUE | <!-- pragma: allowlist secret -->
 
 #### Rotation Calendar (Annual)
 ```
@@ -238,39 +238,39 @@ fi
 
 #### Repository Secrets (Aries-Serpent/_codex_)
 
-| Secret | Scope | Environment | Rotation | Status |
+| Secret | Scope | Environment | Rotation | Status | <!-- pragma: allowlist secret -->
 |--------|-------|-------------|----------|--------|
 | CODEX_MASTER_KEY | Repository | Production | Quarterly | ✅ Active |
 | CODEX_BACKUP_KEY | Repository | Production | Monthly | ✅ Active |
-| GITHUB_TOKEN | Repository | Production | On-demand | ✅ Active |
+| GITHUB_TOKEN | Repository | Production | On-demand | ✅ Active | <!-- pragma: allowlist secret -->
 | SLACK_WEBHOOK | Repository | Production | Manual | ✅ Active |
 | GCP_SA_KEY | Repository | Production | Annual | ✅ Active |
-| DOCKER_HUB_TOKEN | Repository | Production | Annual | ✅ Active |
+| DOCKER_HUB_TOKEN | Repository | Production | Annual | ✅ Active | <!-- pragma: allowlist secret -->
 
 #### Environment Secrets
 
 **Production Environment**:
 ```
-CODEX_MASTER_KEY        (inherited from repo secrets)
+CODEX_MASTER_KEY        (inherited from repo secrets)  # pragma: allowlist secret
 DEPLOYMENT_KEY          (production-specific SSH key)
-DB_PASSWORD             (production database password)
-API_KEY_PRODUCTION      (production API key)
+DB_PASSWORD             (production database password)  # pragma: allowlist secret
+API_KEY_PRODUCTION      (production API key)  # pragma: allowlist secret
 ```
 
 **Staging Environment**:
 ```
 CODEX_MASTER_KEY_STAGING  (staging version of master key)
 DEPLOYMENT_KEY_STAGING    (staging-specific SSH key)
-DB_PASSWORD_STAGING       (staging database password)
-API_KEY_STAGING           (staging API key)
+DB_PASSWORD_STAGING       (staging database password)  # pragma: allowlist secret
+API_KEY_STAGING           (staging API key)  # pragma: allowlist secret
 ```
 
 **Development Environment**:
 ```
 CODEX_MASTER_KEY_DEV     (dev version of master key)
 DEPLOYMENT_KEY_DEV       (dev-specific SSH key)
-DB_PASSWORD_DEV          (dev database password)
-API_KEY_DEV              (dev API key)
+DB_PASSWORD_DEV          (dev database password)  # pragma: allowlist secret
+API_KEY_DEV              (dev API key)  # pragma: allowlist secret
 ```
 
 ### 2.2 Secrets Isolation & Scoping
@@ -278,36 +278,36 @@ API_KEY_DEV              (dev API key)
 #### No Cross-Environment Sharing
 
 ```python
-# Enforce secrets isolation
-SECRET_SCOPE_MATRIX = {
+# Enforce secrets isolation  # pragma: allowlist secret
+SECRET_SCOPE_MATRIX = {  # pragma: allowlist secret
     "PRODUCTION": {
-        "allowed_secrets": [
+        "allowed_secrets": [  # pragma: allowlist secret
             "CODEX_MASTER_KEY",
             "CODEX_BACKUP_KEY",
-            "GITHUB_TOKEN",
+            "GITHUB_TOKEN",  # pragma: allowlist secret
             "DEPLOYMENT_KEY",
-            "DB_PASSWORD",
-            "API_KEY_PRODUCTION"
+            "DB_PASSWORD",  # pragma: allowlist secret
+            "API_KEY_PRODUCTION"  # pragma: allowlist secret
         ],
         "forbidden_prefixes": ["_DEV", "_STAGING"],
         "environment_context": "production"
     },
     "STAGING": {
-        "allowed_secrets": [
+        "allowed_secrets": [  # pragma: allowlist secret
             "CODEX_MASTER_KEY_STAGING",
             "DEPLOYMENT_KEY_STAGING",
-            "DB_PASSWORD_STAGING",
-            "API_KEY_STAGING"
+            "DB_PASSWORD_STAGING",  # pragma: allowlist secret
+            "API_KEY_STAGING"  # pragma: allowlist secret
         ],
         "forbidden_prefixes": ["_DEV"],
         "environment_context": "staging"
     },
     "DEVELOPMENT": {
-        "allowed_secrets": [
+        "allowed_secrets": [  # pragma: allowlist secret
             "CODEX_MASTER_KEY_DEV",
             "DEPLOYMENT_KEY_DEV",
-            "DB_PASSWORD_DEV",
-            "API_KEY_DEV"
+            "DB_PASSWORD_DEV",  # pragma: allowlist secret
+            "API_KEY_DEV"  # pragma: allowlist secret
         ],
         "forbidden_prefixes": ["_PRODUCTION"],
         "environment_context": "development"
@@ -315,11 +315,11 @@ SECRET_SCOPE_MATRIX = {
 }
 
 # Validation function
-def validate_secret_scope(environment, secret_name):
-    allowed = SECRET_SCOPE_MATRIX[environment]["allowed_secrets"]
-    if secret_name not in allowed:
+def validate_secret_scope(environment, secret_name):  # pragma: allowlist secret
+    allowed = SECRET_SCOPE_MATRIX[environment]["allowed_secrets"]  # pragma: allowlist secret
+    if secret_name not in allowed:  # pragma: allowlist secret
         raise SecurityError(
-            f"Secret '{secret_name}' not allowed in {environment}"
+            f"Secret '{secret_name}' not allowed in {environment}"  # pragma: allowlist secret
         )
     return True
 ```
@@ -390,22 +390,22 @@ PYTHON
 
 ```python
 #!/usr/bin/env python3
-# scripts/token_rotation/check_token_expiry.py
+# scripts/token_rotation/check_token_expiry.py  # pragma: allowlist secret
 
 import os
 import json
 from datetime import datetime, timedelta
 from typing import Dict, List
 
-class TokenExpiryChecker:
+class TokenExpiryChecker:  # pragma: allowlist secret
     ALERT_THRESHOLD_DAYS = 30
     
     def __init__(self):
-        self.tokens = self._load_token_inventory()
+        self.tokens = self._load_token_inventory()  # pragma: allowlist secret
         self.alerts = []
     
-    def _load_token_inventory(self) -> Dict:
-        """Load token expiration dates from environment or config"""
+    def _load_token_inventory(self) -> Dict:  # pragma: allowlist secret
+        """Load token expiration dates from environment or config"""  # pragma: allowlist secret
         return {
             "CODEX_MASTER_KEY": {
                 "type": "master_key",
@@ -413,9 +413,9 @@ class TokenExpiryChecker:
                 "last_rotation": os.getenv("CODEX_KEY_ROTATION_DATE"),
                 "critical": True
             },
-            "GITHUB_TOKEN": {
-                "type": "github_token",
-                "expires_at": os.getenv("GITHUB_TOKEN_EXPIRY"),
+            "GITHUB_TOKEN": {  # pragma: allowlist secret
+                "type": "github_token",  # pragma: allowlist secret
+                "expires_at": os.getenv("GITHUB_TOKEN_EXPIRY"),  # pragma: allowlist secret
                 "critical": True
             },
             "GCP_SA_KEY": {
@@ -427,29 +427,29 @@ class TokenExpiryChecker:
         }
     
     def check_expiry(self) -> List[Dict]:
-        """Check all tokens for impending expiration"""
+        """Check all tokens for impending expiration"""  # pragma: allowlist secret
         alerts = []
         now = datetime.utcnow()
         threshold = now + timedelta(days=self.ALERT_THRESHOLD_DAYS)
         
-        for token_name, token_info in self.tokens.items():
-            if token_info["type"] == "master_key":
+        for token_name, token_info in self.tokens.items():  # pragma: allowlist secret
+            if token_info["type"] == "master_key":  # pragma: allowlist secret
                 # Calculate next rotation date
                 last_rotation = datetime.fromisoformat(
-                    token_info["last_rotation"]
+                    token_info["last_rotation"]  # pragma: allowlist secret
                 )
                 next_rotation = last_rotation + timedelta(
-                    days=token_info["rotation_frequency_days"]
+                    days=token_info["rotation_frequency_days"]  # pragma: allowlist secret
                 )
                 
                 if next_rotation <= threshold:
                     alerts.append({
-                        "token": token_name,
+                        "token": token_name,  # pragma: allowlist secret
                         "type": "rotation_due",
                         "current_date": now.isoformat(),
                         "due_date": next_rotation.isoformat(),
                         "days_until": (next_rotation - now).days,
-                        "severity": "HIGH" if token_info["critical"] else "MEDIUM"
+                        "severity": "HIGH" if token_info["critical"] else "MEDIUM"  # pragma: allowlist secret
                     })
         
         self.alerts = alerts
@@ -466,8 +466,8 @@ class TokenExpiryChecker:
                 severity_emoji = "ℹ️"
             
             message = (
-                f"{severity_emoji} Token Rotation Alert\n"
-                f"Token: {alert['token']}\n"
+                f"{severity_emoji} Token Rotation Alert\n"  # pragma: allowlist secret
+                f"Token: {alert['token']}\n"  # pragma: allowlist secret
                 f"Due: {alert['due_date']}\n"
                 f"Days remaining: {alert['days_until']}"
             )
@@ -487,14 +487,14 @@ class TokenExpiryChecker:
     
     def _log_alert(self, alert: Dict):
         """Log alert to audit trail"""
-        with open(".codex/aftermath/token_expiry_alerts.jsonl", "a") as f:
+        with open(".codex/aftermath/token_expiry_alerts.jsonl", "a") as f:  # pragma: allowlist secret
             f.write(json.dumps({
                 "timestamp": datetime.utcnow().isoformat(),
                 **alert
             }) + "\n")
 
 if __name__ == "__main__":
-    checker = TokenExpiryChecker()
+    checker = TokenExpiryChecker()  # pragma: allowlist secret
     alerts = checker.check_expiry()
     if alerts:
         print(f"Found {len(alerts)} expiry alerts")
@@ -592,24 +592,24 @@ import hashlib
 
 class AuditLogger:
     def __init__(self):
-        self.log_file = ".codex/aftermath/secrets_audit.jsonl"
+        self.log_file = ".codex/aftermath/secrets_audit.jsonl"  # pragma: allowlist secret
         self.rotation_log_file = ".codex/key-archive/rotation-log.txt"
     
-    def log_secret_access(
+    def log_secret_access(  # pragma: allowlist secret
         self,
         action_type: str,
-        secret_name: str,
+        secret_name: str,  # pragma: allowlist secret
         actor_type: str,
         actor_id: str,
         success: bool,
         error_message: str = None,
         duration_ms: int = None
     ):
-        """Log secret access event"""
+        """Log secret access event"""  # pragma: allowlist secret
         
         event = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
-            "event_type": "secret_access",
+            "event_type": "secret_access",  # pragma: allowlist secret
             "actor": {
                 "type": actor_type,
                 "id": actor_id,
@@ -617,7 +617,7 @@ class AuditLogger:
             },
             "action": {
                 "type": action_type,
-                "secret_name": secret_name,
+                "secret_name": secret_name,  # pragma: allowlist secret
                 "status": "success" if success else "failure"
             },
             "context": {
@@ -634,16 +634,16 @@ class AuditLogger:
             }
         }
         
-        # Mask secret name for audit trail
-        event["action"]["secret_hash"] = self._hash_secret_name(secret_name)
+        # Mask secret name for audit trail  # pragma: allowlist secret
+        event["action"]["secret_hash"] = self._hash_secret_name(secret_name)  # pragma: allowlist secret
         
         # Write to audit log
         with open(self.log_file, "a") as f:
             f.write(json.dumps(event) + "\n")
     
-    def _hash_secret_name(self, secret_name: str) -> str:
-        """Hash secret name for audit trail"""
-        return hashlib.sha256(secret_name.encode()).hexdigest()[:16]
+    def _hash_secret_name(self, secret_name: str) -> str:  # pragma: allowlist secret
+        """Hash secret name for audit trail"""  # pragma: allowlist secret
+        return hashlib.sha256(secret_name.encode()).hexdigest()[:16]  # pragma: allowlist secret
     
     def log_rotation_event(
         self,
@@ -718,7 +718,7 @@ def investigate_incident(incident_time: str, window_hours: int = 24):
     end = incident + timedelta(hours=1)
     
     events = []
-    with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:
+    with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:  # pragma: allowlist secret
         for line in f:
             event = json.loads(line)
             event_time = datetime.fromisoformat(
@@ -734,7 +734,7 @@ def investigate_incident(incident_time: str, window_hours: int = 24):
     for event in events:
         print(f"  {event['timestamp']}: {event['actor']['id']} "
               f"{event['action']['type']} "
-              f"{event['action']['secret_name']} "
+              f"{event['action']['secret_name']} "  # pragma: allowlist secret
               f"({event['result']['status']})")
 ```
 

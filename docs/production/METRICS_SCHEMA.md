@@ -290,8 +290,8 @@ process_resident_memory_bytes
 
 **Disk Metrics**:
 ```
-node_disk_read_bytes_total
-node_disk_write_bytes_total
+node_disk_read_bytes_total  # pragma: allowlist secret
+node_disk_write_bytes_total  # pragma: allowlist secret
 node_filesystem_avail_bytes
 node_filesystem_size_bytes
 ```

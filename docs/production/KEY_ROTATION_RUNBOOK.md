@@ -14,7 +14,7 @@
 | Generate Key | `bash scripts/phase10/generate_codex_master_key.sh` | Security Lead |
 | Validate Key | `python tests/security/test_key_validation.py` | Any Engineer |
 | Deploy Staging | `./.codex/deploy_to_staging.sh "$NEW_KEY"` | DevOps Lead |
-| Activate Production | `gh secret set CODEX_MASTER_KEY --body "$NEW_KEY"` | 2x Approval (sec + ops) |
+| Activate Production | `gh secret set CODEX_MASTER_KEY --body "$NEW_KEY"` | 2x Approval (sec + ops) | <!-- pragma: allowlist secret -->
 | Verify Active | `./scripts/verify_key_active.sh` | DevOps |
 | Incident Rollback | `./scripts/emergency_rollback_key.sh` | On-call Lead |
 

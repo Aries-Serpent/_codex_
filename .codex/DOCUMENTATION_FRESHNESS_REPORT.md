@@ -111,7 +111,7 @@ Sampled 25 critical cross-references from:
 | docs/operations/INCIDENT_RESPONSE.md | docs/operations/ESCALATION_MATRIX.md | ✅ VALID |
 | docs/operations/ALERT_RUNBOOKS.md | docs/production/MONITORING_DASHBOARD_CONFIG.yaml | ✅ VALID |
 | docs/operations/CACHE_WARMUP_RUNBOOK.md | docs/operations/INCIDENT_RESPONSE_PLAYBOOKS.md | ✅ VALID |
-| docs/operations/SECRETS_AUDIT_PROCEDURES.md | docs/security/TOKEN_ROTATION_GUIDE.md | ✅ VALID |
+| docs/operations/SECRETS_AUDIT_PROCEDURES.md | docs/security/TOKEN_ROTATION_GUIDE.md | ✅ VALID | <!-- pragma: allowlist secret -->
 
 #### Sample 4: Security References (5 tested)
 
@@ -119,7 +119,7 @@ Sampled 25 critical cross-references from:
 |--------|--------|--------|
 | docs/security/INDEX.md | docs/security/SECURITY_BEST_PRACTICES.md | ✅ VALID |
 | docs/security/SECURITY_SLA.md | docs/operations/INCIDENT_RESPONSE.md | ✅ VALID |
-| docs/security/TOKEN_ROTATION_GUIDE.md | docs/security/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md | ✅ VALID |
+| docs/security/TOKEN_ROTATION_GUIDE.md | docs/security/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md | ✅ VALID | <!-- pragma: allowlist secret -->
 | docs/security/AUTHENTICATION.md | docs/security/AUTHORIZATION.md | ✅ VALID |
 | docs/security/SECURITY_GATING_CHECKLIST.md | docs/security/SECURITY_BEST_PRACTICES.md | ✅ VALID |
 

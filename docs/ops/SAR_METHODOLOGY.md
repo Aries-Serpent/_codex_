@@ -67,8 +67,8 @@ quadrantChart
 |-----------|----------------|---------------|-------|--------------|
 | **CI/CD Automation** | Full end-to-end; zero manual gates | ✅ 100 workflows; self-healing CI | 9.2/10 | — |
 | **Cognitive Memory** | Persistent agent memory + pattern learning | ✅ SQLite STM/LTM; cognitive brain app | 8.5/10 | — |
-| **Security & Governance** | 0 CVEs; auto policy enforcement; audit trail | ✅ 48 CVEs fixed; CodeQL; detect-secrets | 9.0/10 | — |
-| **Variable Hygiene** | All secrets/vars present, rotated, audited | ✅ 9 Codespace secrets set (SAR-G01 COMPLETE W-142) | 9.0/10 | ✅ |
+| **Security & Governance** | 0 CVEs; auto policy enforcement; audit trail | ✅ 48 CVEs fixed; CodeQL; detect-secrets | 9.0/10 | — | <!-- pragma: allowlist secret -->
+| **Variable Hygiene** | All secrets/vars present, rotated, audited | ✅ 9 Codespace secrets set (SAR-G01 COMPLETE W-142) | 9.0/10 | ✅ | <!-- pragma: allowlist secret -->
 | **Cache Efficiency** | Shared L1–L5 hierarchy; < 5% miss rate | ⚠️ 24+ workflows miss cache wiring | 5.5/10 | P2 |
 | **Model Lifecycle** | Auto-train → deploy → monitor → retrain | ⚠️ Auto-train + deploy; no auto-retrain | 5.5/10 | **P1** |
 | **Data / Model Drift** | Real-time detection + auto-remediation | ⚠️ Basic MLflow tracking; no auto-retrain | 4.0/10 | **P1** |
@@ -635,7 +635,7 @@ flowchart TB
 
 | ID | Gap | Layer | Severity | Status | Owner | Playbook |
 |----|-----|-------|----------|--------|-------|----------|
-| SAR-G01 | 7 Codespace secrets missing | L3 | 🔴 P1 | ✅ RESOLVED W-142 (2026-03-07) | @mbaetiong | SAR-001 §13 |
+| SAR-G01 | 7 Codespace secrets missing | L3 | 🔴 P1 | ✅ RESOLVED W-142 (2026-03-07) | @mbaetiong | SAR-001 §13 | <!-- pragma: allowlist secret -->
 | SAR-G02 | Feature store absent | L4 | 🔴 P1 | ✅ RESOLVED W-142 (97/100 — 5 backends + Arrow IPC) | @mbaetiong | New design |
 | SAR-G03 | Auto-retrain on drift absent | L4 | 🔴 P1 | OPEN | @mbaetiong | SAR-004 |
 | SAR-G04 | 18+ Python workflows missing cache | L2 | 🟡 P2 | IN PROGRESS (6 done W-139) | @copilot | SAR-002 |
@@ -791,7 +791,7 @@ flowchart TD
 
 | Tool | Location | Purpose | SAR Phase |
 |------|----------|---------|-----------|
-| `variable_audit_cli.py` | `scripts/tools/` | Audit all GitHub vars/secrets vs guide | SEARCH + RESCUE |
+| `variable_audit_cli.py` | `scripts/tools/` | Audit all GitHub vars/secrets vs guide | SEARCH + RESCUE | <!-- pragma: allowlist secret -->
 | `variable_intent_writer.py` | `scripts/tools/` | Queue variable writes (mailbox pattern) | RESCUE SAR-001 |
 | `variable_manager.py` | `scripts/tools/` | Direct GitHub Variables API CRUD | RESCUE |
 | `auto_fix_common_issues.py` | `scripts/ci/` | Auto-fix 8 common CI patterns | RESCUE SAR-002 |
@@ -842,7 +842,7 @@ bandit -r src/ --configfile .bandit -f json -o .codex/scans/bandit-post-merge.js
 | ISO/IEC 23053 | AI management system requirements — maps to §1 governance row |
 | EU AI Act (2024) | Explainability + risk classification — SAR-G07 |
 | `docs/LEVEL_4_MLOPS_ASSESSMENT.md` | Baseline assessment (Dec 2025); §1 score origin |
-| `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` | Variables/secrets source of truth for SAR-001/SAR-006 |
+| `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` | Variables/secrets source of truth for SAR-001/SAR-006 | <!-- pragma: allowlist secret -->
 | `.codex/patterns/ci_failure_patterns.yaml` | CI failure pattern library used in TRIAGE phase |
 | `docs/ops/CACHE_SHARED_DATASETS.md §7` | Cache hierarchy gap analysis (SAR-G04 origin) |
 

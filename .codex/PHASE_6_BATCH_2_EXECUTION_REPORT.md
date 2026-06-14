@@ -190,7 +190,7 @@ Verify and harden all secrets and credentials management procedures for producti
 | Security Controls Implemented | 15+ |
 | Audit Capabilities | 8+ query types |
 | Alert Thresholds | 9+ configured |
-| Secrets Tracked | 16+ secrets |
+| Secrets Tracked | 16+ secrets | <!-- pragma: allowlist secret -->
 | Environments Secured | 3 (prod/staging/dev) |
 | Production Readiness | ✅ CERTIFIED |
 
@@ -286,7 +286,7 @@ Verify and harden all secrets and credentials management procedures for producti
 |-----|---------------|----------|--------|
 | CODEX_MASTER_KEY | 2026-03-15 | 2026-06-14 | 🟡 DUE |
 | CODEX_BACKUP_KEY | 2026-05-14 | 2026-06-14 | 🟡 DUE |
-| github.token | 2026-05-14 | 2026-06-14 | 🟡 DUE |
+| github.token | 2026-05-14 | 2026-06-14 | 🟡 DUE | <!-- pragma: allowlist secret -->
 
 **Action Required**: Execute rotations per KEY_ROTATION_RUNBOOK.md
 

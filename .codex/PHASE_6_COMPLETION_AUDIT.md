@@ -74,13 +74,13 @@ Comprehensive final audit confirms all Phase 6 production deployment work is com
 | 2.1 | Security Audit Report | `docs/production/SECURITY_AUDIT_REPORT.md` | ✅ | Report |
 | 2.2 | Remediation Summary | `.codex/BATCH_2_SECURITY_REMEDIATION_SUMMARY.md` | ✅ | Summary |
 | 2.3 | Governance Framework | `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` | ✅ | Framework |
-| 2.4 | Secrets Management Plan | `.codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md` | ✅ | Plan |
-| 2.5 | Secrets Completion | `.codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md` | ✅ | Summary |
+| 2.4 | Secrets Management Plan | `.codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md` | ✅ | Plan | <!-- pragma: allowlist secret -->
+| 2.5 | Secrets Completion | `.codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md` | ✅ | Summary | <!-- pragma: allowlist secret -->
 | 2.6 | RBAC Policy | `docs/production/RBAC_POLICY.md` | ✅ | Policy |
 | 2.7 | Incident Response | `docs/production/INCIDENT_RESPONSE_PLAYBOOK.md` | ✅ | Playbook |
 | 2.8 | Privilege Controls | `docs/production/PRIVILEGE_ESCALATION_CONTROL.md` | ✅ | Control |
 | 2.9 | Security Audit JSON | `.codex/aftermath/batch2_security_audit.json` | ✅ | Archive |
-| 2.10 | Secrets Audit JSON | `.codex/aftermath/batch2_secrets_audit.json` | ✅ | Archive |
+| 2.10 | Secrets Audit JSON | `.codex/aftermath/batch2_secrets_audit.json` | ✅ | Archive | <!-- pragma: allowlist secret -->
 | 2.11 | Governance Audit JSON | `.codex/aftermath/batch2_governance_audit.json` | ✅ | Archive |
 | 2.12 | Execution Report | `.codex/PHASE_6_BATCH_2_EXECUTION_REPORT.md` | ✅ | Report |
 | 2.13 | Batch Completion | `.codex/BATCH_1_COMPLETION_SUMMARY.md` | ✅ | Summary |
@@ -199,15 +199,15 @@ Comprehensive final audit confirms all Phase 6 production deployment work is com
 ✅ docs/production/SECURITY_AUDIT_REPORT.md
 ✅ .codex/BATCH_2_SECURITY_REMEDIATION_SUMMARY.md
 ✅ .codex/BATCH_2_GOVERNANCE_FRAMEWORK.md
-✅ .codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md
-✅ .codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md
+✅ .codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md  # pragma: allowlist secret
+✅ .codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md  # pragma: allowlist secret
 ✅ docs/production/RBAC_POLICY.md
 ✅ docs/production/INCIDENT_RESPONSE_PLAYBOOK.md
 ✅ docs/production/PRIVILEGE_ESCALATION_CONTROL.md
-✅ docs/production/SECRET_ROTATION_PROCEDURES.md
+✅ docs/production/SECRET_ROTATION_PROCEDURES.md  # pragma: allowlist secret
 ✅ docs/production/COMPLIANCE_CHECKLIST.md
 ✅ .codex/aftermath/batch2_security_audit.json
-✅ .codex/aftermath/batch2_secrets_audit.json
+✅ .codex/aftermath/batch2_secrets_audit.json  # pragma: allowlist secret
 ✅ .codex/aftermath/batch2_governance_audit.json
 ```
 
@@ -283,7 +283,7 @@ Comprehensive final audit confirms all Phase 6 production deployment work is com
 | Criterion | Target | Actual | Status |
 |-----------|--------|--------|--------|
 | Findings remediation | 100% | 204/204 remediated (0 critical/high) | ✅ PASS |
-| Secret rotation | Documented & ready | Complete procedures in place | ✅ PASS |
+| Secret rotation | Documented & ready | Complete procedures in place | ✅ PASS | <!-- pragma: allowlist secret -->
 | RBAC enforcement | Least-privilege | 7 roles, 5 service accounts | ✅ PASS |
 | Incident response | 5+ playbooks | 5 comprehensive playbooks | ✅ PASS |
 | Compliance gates | All pass | All governance gates PASSED | ✅ PASS |
@@ -384,7 +384,7 @@ Comprehensive final audit confirms all Phase 6 production deployment work is com
 | **Testing** | B3 | 10/10 | 15% | 1.5 | ✅ Excellent |
 | **Performance** | B3 | 10/10 | 12% | 1.2 | ✅ Excellent |
 | **Governance** | B2 | 10/10 | 10% | 1.0 | ✅ Excellent |
-| **Secrets** | B2 | 10/10 | 10% | 1.0 | ✅ Excellent |
+| **Secrets** | B2 | 10/10 | 10% | 1.0 | ✅ Excellent | <!-- pragma: allowlist secret -->
 | **Documentation** | B4 | 9.5/10 | 9% | 0.855 | ✅ Excellent |
 | | | | **TOTAL** | **10.755** | ✅ **100/100** |
 
