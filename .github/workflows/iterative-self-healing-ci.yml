@@ -999,7 +999,7 @@ jobs:
   # is not diagnosable are excluded — these still go to human escalation only.
   copilot-escalation:
     name: "🤖 Copilot escalation"
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [triage, baseline-sweep]
     if: >
