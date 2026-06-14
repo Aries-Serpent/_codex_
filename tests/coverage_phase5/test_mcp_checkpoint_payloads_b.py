@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any, Dict
-
-import pytest
 
 
 def validate_checkpoint_payload(data: Dict[str, Any]) -> bool:
@@ -21,7 +18,7 @@ def test_valid_checkpoint_payload():
         "state": {"data": "test"},
         "metadata": {"version": "1"}
     }
-    
+
     assert validate_checkpoint_payload(payload)
 
 
@@ -31,7 +28,7 @@ def test_missing_checkpoint_id():
         "state": {"data": "test"},
         "metadata": {"version": "1"}
     }
-    
+
     assert not validate_checkpoint_payload(payload)
 
 
@@ -41,7 +38,7 @@ def test_missing_state():
         "checkpoint_id": "ckpt_001",
         "metadata": {"version": "1"}
     }
-    
+
     assert not validate_checkpoint_payload(payload)
 
 
@@ -51,14 +48,14 @@ def test_missing_metadata():
         "checkpoint_id": "ckpt_001",
         "state": {"data": "test"}
     }
-    
+
     assert not validate_checkpoint_payload(payload)
 
 
 def test_empty_checkpoint_payload():
     """Test empty checkpoint payload."""
     payload = {}
-    
+
     assert not validate_checkpoint_payload(payload)
 
 
@@ -70,5 +67,5 @@ def test_extra_fields_in_payload():
         "metadata": {"version": "1"},
         "extra_field": "value"
     }
-    
+
     assert validate_checkpoint_payload(payload)

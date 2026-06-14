@@ -1,9 +1,8 @@
 """Comprehensive error handling tests."""
 from __future__ import annotations
 
-import pytest
-from typing import Optional, Any
 from enum import Enum
+from typing import Any, Optional
 
 
 class ErrorCode(Enum):
@@ -21,7 +20,7 @@ class JsonRpcError(Exception):
         self.code = code
         self.message = message
         self.data = data
-    
+
     def to_dict(self):
         result = {"code": self.code, "message": self.message}
         if self.data:
@@ -32,7 +31,7 @@ class JsonRpcError(Exception):
 def test_parse_error():
     """Test parse error creation."""
     error = JsonRpcError(ErrorCode.PARSE_ERROR.value, "Invalid JSON")
-    
+
     assert error.code == -32700
     assert error.message == "Invalid JSON"
 
@@ -40,14 +39,14 @@ def test_parse_error():
 def test_invalid_request_error():
     """Test invalid request error."""
     error = JsonRpcError(ErrorCode.INVALID_REQUEST.value, "Missing method")
-    
+
     assert error.code == -32600
 
 
 def test_method_not_found_error():
     """Test method not found error."""
     error = JsonRpcError(ErrorCode.METHOD_NOT_FOUND.value, "mcp.unknown")
-    
+
     assert error.code == -32601
     assert error.message == "mcp.unknown"
 
@@ -59,7 +58,7 @@ def test_invalid_params_error():
         "Invalid parameters",
         data={"param": "x", "expected": "string", "got": "number"}
     )
-    
+
     assert error.code == -32602
     assert error.data["param"] == "x"
 
@@ -68,7 +67,7 @@ def test_error_to_dict():
     """Test error serialization."""
     error = JsonRpcError(-32603, "Internal error", data={"details": "test"})
     result = error.to_dict()
-    
+
     assert result["code"] == -32603
     assert result["message"] == "Internal error"
     assert result["data"]["details"] == "test"

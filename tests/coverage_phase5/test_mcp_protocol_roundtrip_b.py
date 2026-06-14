@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict
+from typing import Dict
 
 import pytest
 
 try:
-    from hypothesis import given, strategies as st
+    from hypothesis import given
+    from hypothesis import strategies as st
 except ImportError:
     pytest.skip("hypothesis not available", allow_module_level=True)
 
@@ -22,7 +23,7 @@ def test_special_characters_in_roundtrip(text: str):
         message = {"content": text}
         encoded = json.dumps(message)
         decoded = json.loads(encoded)
-        
+
         assert decoded["content"] == text
     except (ValueError, OverflowError):
         # Some special characters might not be JSON-serializable
@@ -35,7 +36,7 @@ def test_float_roundtrip(value: float):
     message = {"value": value}
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
-    
+
     assert abs(decoded["value"] - value) < 1e-10
 
 
@@ -54,5 +55,5 @@ def test_complex_nested_structure(data: list[Dict[str, int]]):
     message = {"nested": data}
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
-    
+
     assert decoded["nested"] == data

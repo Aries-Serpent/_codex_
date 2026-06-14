@@ -485,14 +485,14 @@ class ArchiveDAL:
     def _sqlite_path(self, url: str) -> Path:
         """Parse SQLite URL and extract path using proper URL parsing (CWE-20 fix)."""
         parsed = urlparse(url)
-        
+
         # Handle sqlite:// or sqlite:/// scheme
         if parsed.scheme == "sqlite":
             # Reconstruct path from netloc + path to handle both:
             # - sqlite://relative/db.sqlite (netloc='relative', path='/db.sqlite')
             # - sqlite:///./.codex/archive.sqlite (netloc='', path='/./.codex/archive.sqlite')
             full_path = parsed.netloc + parsed.path
-            
+
             if not full_path:
                 # Fallback to treating as bare path if no scheme
                 path = url
@@ -510,7 +510,7 @@ class ArchiveDAL:
         else:
             # No scheme detected, treat as bare path
             path = url
-        
+
         return Path(path).expanduser().resolve()
 
     @contextmanager

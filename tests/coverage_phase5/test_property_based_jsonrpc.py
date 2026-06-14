@@ -7,7 +7,8 @@ from typing import Any, Dict
 import pytest
 
 try:
-    from hypothesis import given, strategies as st, assume
+    from hypothesis import assume, given
+    from hypothesis import strategies as st
 except ImportError:
     pytest.skip("hypothesis not available", allow_module_level=True)
 
@@ -43,10 +44,10 @@ def test_message_ids_are_valid(msg_id: int):
         "method": "test.method",
         "params": {}
     }
-    
+
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
-    
+
     assert decoded["id"] == msg_id
 
 
@@ -56,13 +57,13 @@ def test_message_ids_are_valid(msg_id: int):
 def test_method_names_preserved(method_name: str):
     """Property: Method names are preserved through roundtrip."""
     assume(not any(c in method_name for c in ['\\', '\'"']))
-    
+
     message = {
         "jsonrpc": "2.0",
         "method": method_name,
         "params": {}
     }
-    
+
     try:
         encoded = json.dumps(message)
         decoded = json.loads(encoded)

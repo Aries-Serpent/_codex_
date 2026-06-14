@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 from enum import Enum
-from typing import Optional
 
 import pytest
 
@@ -20,18 +19,18 @@ class Worker:
     def __init__(self, name: str):
         self.name = name
         self.state = WorkerState.IDLE
-        
+
     async def start(self) -> None:
         self.state = WorkerState.RUNNING
-        
+
     async def pause(self) -> None:
         if self.state == WorkerState.RUNNING:
             self.state = WorkerState.PAUSED
-            
+
     async def resume(self) -> None:
         if self.state == WorkerState.PAUSED:
             self.state = WorkerState.RUNNING
-            
+
     async def stop(self) -> None:
         self.state = WorkerState.STOPPED
 
@@ -85,7 +84,7 @@ async def test_worker_lifecycle_stop():
 async def test_worker_invalid_transition():
     """Test invalid state transitions."""
     worker = Worker("test")
-    
+
     # Cannot pause from idle
     await worker.pause()
     assert worker.state == WorkerState.IDLE
@@ -95,8 +94,8 @@ async def test_worker_invalid_transition():
 async def test_worker_multiple_starts():
     """Test starting an already running worker."""
     worker = Worker("test")
-    
+
     await worker.start()
     await worker.start()  # Should be idempotent or handle gracefully
-    
+
     assert worker.state == WorkerState.RUNNING

@@ -82,7 +82,7 @@ Create comprehensive test suites for high-priority, zero-coverage modules to inc
 
 ```
 ✅ Test Classes
-   - Grouped by functionality (e.g., TestTokenBudget, TestAgentCore)
+   - Grouped by functionality (e.g., TestTokenBudget, TestAgentCore)  # pragma: allowlist secret
    - Clear naming conventions (test_<feature>_<scenario>)
    - Comprehensive docstrings
 

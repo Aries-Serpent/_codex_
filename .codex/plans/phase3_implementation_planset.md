@@ -521,11 +521,11 @@ Create REST API endpoint for programmatic access to validation metrics.
 **Implementation Sketch**:
 ```python
 from fastapi import FastAPI, HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials  # pragma: allowlist secret
 import json
 
 app = FastAPI(title="Configuration Validation Metrics API")
-security = HTTPBearer()
+security = HTTPBearer()  # pragma: allowlist secret
 
 @app.get("/metrics/summary")
 async def get_summary(credentials: HTTPAuthorizationCredentials = Depends(security)):

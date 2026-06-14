@@ -1,6 +1,5 @@
 """Boundary condition tests 6."""
 from __future__ import annotations
-import pytest
 
 
 def clamp(value: float, min_val: float, max_val: float) -> float:

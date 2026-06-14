@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict
 
 REPORT_FILE = Path.cwd() / ".codex" / "phase6_link_audit_complete.json"
 
@@ -30,11 +30,11 @@ def extract_headings(content: str) -> Dict[str, str]:
 def find_closest_anchor(target: str, available: Dict[str, str]) -> str:
     """Find the closest matching anchor."""
     target_lower = target.lower()
-    
+
     # Exact match
     if target_lower in available:
         return target_lower
-    
+
     # Partial matches
     matches = []
     for anchor in available:
@@ -44,10 +44,10 @@ def find_closest_anchor(target: str, available: Dict[str, str]) -> str:
         # Check if anchor is contained in target
         elif anchor in target_lower:
             matches.append((len(anchor), anchor))
-    
+
     if matches:
         return sorted(matches)[0][1]
-    
+
     return ""
 
 
@@ -79,7 +79,7 @@ def fix_broken_anchors() -> Dict[str, int]:
             continue
 
         file_part, anchor_part = old_url.rsplit("#", 1)
-        
+
         # If file_part is empty, it's an anchor in the same file
         if not file_part:
             target_file = file_path

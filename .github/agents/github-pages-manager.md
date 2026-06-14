@@ -109,7 +109,7 @@ cached_results = cache.query("pages_validation_results")
 
 **Session Parameters** (from accountability report):
 - Optimal duration: 30 minutes
-- Context budget: 128K tokens
+- Context budget: 128K tokens  # pragma: allowlist secret
 - Mandatory checkpoints: Every 10 actions
 - Corrections per issue: 1.0 (first fix succeeds)
 

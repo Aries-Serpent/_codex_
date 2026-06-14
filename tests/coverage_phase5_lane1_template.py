@@ -10,11 +10,9 @@ To be enhanced with semantic assertions and comprehensive edge cases.
 Target Mutation Score: ≥75%
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import json
-from typing import Dict, Any
 
+import pytest
 
 # ============================================================================
 # ENHANCEMENT PATTERN 1: JSON-RPC Request Routing
@@ -28,15 +26,15 @@ class TestJSONRPCRouter:
         # ❌ BEFORE: assert router is not None
         # ✅ AFTER: Test existence, type, and properties
         config = {"version": "2.0", "timeout": 30}
-        
+
         router = create_router(config)  # imaginary function
-        
+
         # Existence assertion
         assert router is not None
-        
+
         # Type assertion
         assert isinstance(router, type(router))  # Use actual class
-        
+
         # Property assertions (semantic)
         assert router.version == "2.0"
         assert router.timeout == 30
@@ -52,10 +50,10 @@ class TestJSONRPCRouter:
             "params": {"key": "value"},
             "id": 1
         }
-        
+
         # Act
         response = router.handle_request(request)
-        
+
         # Assert - Multiple levels
         assert response is not None  # Existence
         assert isinstance(response, dict)  # Type
@@ -72,7 +70,7 @@ class TestJSONRPCRouter:
             "method": "test",
             "id": 1
         }
-        
+
         with pytest.raises(ValueError, match="JSON-RPC 2.0 required"):
             router.handle_request(request)
 
@@ -84,7 +82,7 @@ class TestJSONRPCRouter:
             "id": 1
             # Missing 'method'
         }
-        
+
         with pytest.raises(ValueError, match="method.*required"):
             router.handle_request(request)
 
@@ -97,12 +95,12 @@ class TestJSONRPCRouter:
             "params": {"event": "test"}
             # No 'id' - this is a notification
         }
-        
+
         result = router.handle_request(request)
-        
+
         # Notifications don't get responses
         assert result is None  # Exact semantic check
-        
+
     def test_router_handles_batch_request(self):
         """✅ PATTERN: Complex edge case - Batch requests."""
         router = create_router({})
@@ -110,9 +108,9 @@ class TestJSONRPCRouter:
             {"jsonrpc": "2.0", "method": "test1", "id": 1},
             {"jsonrpc": "2.0", "method": "test2", "id": 2},
         ]
-        
+
         results = router.handle_batch(batch)
-        
+
         assert results is not None
         assert isinstance(results, list)
         assert len(results) == 2
@@ -123,7 +121,7 @@ class TestJSONRPCRouter:
     def test_router_handles_empty_batch(self):
         """✅ PATTERN: Edge case - Empty batch."""
         router = create_router({})
-        
+
         with pytest.raises(ValueError, match="batch.*empty"):
             router.handle_batch([])
 
@@ -137,7 +135,7 @@ class TestJSONRPCRouter:
             "params": {"data": large_payload},
             "id": 1
         }
-        
+
         result = router.handle_request(request)
         assert result is not None
         assert result.get("status") == "processed"
@@ -155,9 +153,9 @@ class TestAdapterInterface:
         # ❌ BEFORE: assert adapter is not None
         # ✅ AFTER: Validate all interface methods
         adapter = create_adapter()
-        
+
         required_methods = ['process', 'handle_error', 'validate', 'close']
-        
+
         for method_name in required_methods:
             assert hasattr(adapter, method_name), f"Missing {method_name}"
             method = getattr(adapter, method_name)
@@ -166,11 +164,11 @@ class TestAdapterInterface:
     def test_adapter_process_signature(self):
         """✅ PATTERN: Semantic assertion - Method signature validation."""
         adapter = create_adapter()
-        
+
         # Validate method signature
         import inspect
         sig = inspect.signature(adapter.process)
-        
+
         assert 'payload' in sig.parameters
         assert 'timeout' in sig.parameters or sig.parameters['payload'].default != inspect.Parameter.empty
         assert sig.return_annotation != inspect.Parameter.empty or True  # Has return type
@@ -179,9 +177,9 @@ class TestAdapterInterface:
         """✅ PATTERN: Multi-assertion depth - Method behavior."""
         adapter = create_adapter()
         payload = {"action": "process", "data": "test"}
-        
+
         result = adapter.process(payload)
-        
+
         # Multiple assertions
         assert result is not None
         assert isinstance(result, dict)
@@ -192,21 +190,21 @@ class TestAdapterInterface:
     def test_adapter_process_empty_payload_edge_case(self):
         """✅ PATTERN: Edge case - Empty payload."""
         adapter = create_adapter()
-        
+
         with pytest.raises(ValueError, match="payload.*empty"):
             adapter.process({})
 
     def test_adapter_process_none_payload_edge_case(self):
         """✅ PATTERN: Edge case - None payload."""
         adapter = create_adapter()
-        
+
         with pytest.raises(TypeError, match="payload.*dict"):
             adapter.process(None)
 
     def test_adapter_process_invalid_type_edge_case(self):
         """✅ PATTERN: Edge case - Wrong type."""
         adapter = create_adapter()
-        
+
         with pytest.raises(TypeError, match="dict"):
             adapter.process("invalid")
 
@@ -214,9 +212,9 @@ class TestAdapterInterface:
         """✅ PATTERN: Error handling - Semantic assertions."""
         adapter = create_adapter()
         error = ValueError("Test error")
-        
+
         result = adapter.handle_error(error)
-        
+
         assert result is not None
         assert result.get("error_type") == "ValueError"
         assert result.get("error_message") == "Test error"
@@ -227,19 +225,19 @@ class TestAdapterInterface:
         """✅ PATTERN: Boolean return - Exact value validation."""
         adapter = create_adapter()
         valid_data = {"type": "valid", "version": 1}
-        
+
         result = adapter.validate(valid_data)
-        
+
         # ✅ Exact value, not truthy
         assert result is True  # Specific True, not just truthy
-        
+
     def test_adapter_validate_false_case(self):
         """✅ PATTERN: Boolean return - False case validation."""
         adapter = create_adapter()
         invalid_data = {"type": "invalid"}
-        
+
         result = adapter.validate(invalid_data)
-        
+
         # ✅ Exact value, not falsy
         assert result is False  # Specific False, not just falsy
 
@@ -254,19 +252,19 @@ class TestWorkerLifecycle:
     def test_worker_startup_shutdown(self):
         """✅ PATTERN: State mutation - Verify state changes."""
         worker = create_worker()
-        
+
         # Initial state
         assert worker.state == "initialized"
         assert worker.running is False
         assert worker.started_at is None
-        
+
         # Start worker
         worker.start()
         assert worker.state == "running"
         assert worker.running is True
         assert worker.started_at is not None  # Timestamp set
         start_time = worker.started_at
-        
+
         # Stop worker
         worker.stop()
         assert worker.state == "stopped"
@@ -278,7 +276,7 @@ class TestWorkerLifecycle:
         """✅ PATTERN: Configuration validation."""
         config = {"max_workers": 10, "timeout": 30, "retry": 3}
         worker = create_worker(config)
-        
+
         assert worker.max_workers == 10
         assert worker.timeout == 30
         assert worker.retry_count == 3
@@ -292,16 +290,16 @@ class TestWorkerLifecycle:
         """✅ PATTERN: Task processing with full state validation."""
         worker = create_worker()
         worker.start()
-        
+
         task = {"id": 1, "action": "process", "data": "test"}
         result = worker.process_task(task)
-        
+
         # Return value assertions
         assert result is not None
         assert isinstance(result, dict)
         assert result.get("task_id") == 1
         assert result.get("status") == "completed"
-        
+
         # State assertions
         assert worker.tasks_processed == 1
         assert worker.last_task_id == 1
@@ -311,7 +309,7 @@ class TestWorkerLifecycle:
         """✅ PATTERN: Edge case - Invalid state."""
         worker = create_worker()
         task = {"id": 1, "action": "process"}
-        
+
         with pytest.raises(RuntimeError, match="worker.*not.*running"):
             worker.process_task(task)
 
@@ -319,16 +317,16 @@ class TestWorkerLifecycle:
         """✅ PATTERN: Shutdown with pending tasks."""
         worker = create_worker()
         worker.start()
-        
+
         # Queue some tasks
         worker.queue_task({"id": 1})
         worker.queue_task({"id": 2})
-        
+
         assert worker.pending_count == 2
-        
+
         # Graceful shutdown
         worker.stop(graceful=True)
-        
+
         # All tasks should be processed
         assert worker.pending_count == 0
         assert worker.tasks_processed == 2
@@ -350,14 +348,14 @@ class TestCheckpointPayloads:
             "loss": 0.5,
             "metadata": {"version": "1.0"}
         }
-        
+
         checkpoint = create_checkpoint(data)
         serialized = checkpoint.serialize()
-        
+
         # Type assertions
         assert isinstance(serialized, bytes)
         assert len(serialized) > 0
-        
+
         # Deserialize and validate
         deserialized = checkpoint.deserialize(serialized)
         assert deserialized["state"] == "running"  # Exact value
@@ -373,12 +371,12 @@ class TestCheckpointPayloads:
     def test_checkpoint_large_payload_edge_case(self):
         """✅ PATTERN: Edge case - Very large data."""
         large_data = {f"key_{i}": f"value_{i}" * 100 for i in range(1000)}
-        
+
         checkpoint = create_checkpoint(large_data)
         serialized = checkpoint.serialize()
-        
+
         assert len(serialized) > 100000  # Significant size
-        
+
         # Should still deserialize correctly
         deserialized = checkpoint.deserialize(serialized)
         assert len(deserialized) == 1000
@@ -388,10 +386,10 @@ class TestCheckpointPayloads:
         """✅ PATTERN: Edge case - Corrupted checkpoint."""
         checkpoint = create_checkpoint({"data": "test"})
         serialized = checkpoint.serialize()
-        
+
         # Corrupt the data
         corrupted = serialized[:-10]  # Truncate
-        
+
         with pytest.raises((ValueError, IOError)):
             checkpoint.deserialize(corrupted)
 
@@ -399,12 +397,12 @@ class TestCheckpointPayloads:
         """✅ PATTERN: Edge case - Version compatibility."""
         data = {"version": "2.0", "data": "test"}
         checkpoint = create_checkpoint(data)
-        
+
         # Try to deserialize with old reader
         serialized = checkpoint.serialize()
-        
+
         old_reader = OldCheckpointReader()  # Imaginary old reader
-        
+
         with pytest.raises(ValueError, match="version.*incompatible"):
             old_reader.deserialize(serialized)
 
@@ -424,23 +422,23 @@ class TestProtocolRoundTrip:
             "params": {"x": 10, "y": 20},
             "id": 42
         }
-        
+
         # Send through protocol
         encoded = encode_protocol(original_request)
         decoded_request = decode_protocol(encoded)
-        
+
         # Validate round-trip
         assert decoded_request["method"] == "compute"  # Exact value
         assert decoded_request["params"]["x"] == 10  # Exact number
         assert decoded_request["params"]["y"] == 20
         assert decoded_request["id"] == 42  # ID preserved
-        
+
         # Process and return
         response = process_request(decoded_request)
-        
+
         encoded_response = encode_protocol(response)
         decoded_response = decode_protocol(encoded_response)
-        
+
         # Validate response round-trip
         assert decoded_response["result"] == 30  # Exact result
         assert decoded_response["id"] == 42  # ID matches
@@ -452,10 +450,10 @@ class TestProtocolRoundTrip:
             "params": {"text": "Hello 世界 🚀"},
             "id": 1
         }
-        
+
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
-        
+
         assert decoded["params"]["text"] == "Hello 世界 🚀"  # Exact match
 
     def test_protocol_handles_null_values_edge_case(self):
@@ -465,10 +463,10 @@ class TestProtocolRoundTrip:
             "params": {"value": None, "other": "data"},
             "id": 1
         }
-        
+
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
-        
+
         assert decoded["params"]["value"] is None  # Exact None check
         assert decoded["params"]["other"] == "data"
 
@@ -488,10 +486,10 @@ class TestProtocolRoundTrip:
             },
             "id": 1
         }
-        
+
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
-        
+
         # Navigate deep structure
         assert decoded["params"]["level1"]["level2"]["level3"]["data"] == [1, 2, 3]
         assert decoded["params"]["level1"]["level2"]["level3"]["nested"]["key"] == "value"
@@ -511,10 +509,10 @@ class TestProtocolRoundTrip:
             },
             "id": 1
         }
-        
+
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
-        
+
         params = decoded["params"]
         assert isinstance(params["int_val"], int)
         assert isinstance(params["float_val"], float)
@@ -537,13 +535,13 @@ def create_router(config=None):
             self.version = config.get("version", "2.0")
             self.timeout = config.get("timeout", 30)
             self.max_connections = 1000
-        
+
         def handle_request(self, request):
             return {"jsonrpc": "2.0", "result": None, "id": request.get("id"), "status": "processed"}
-        
+
         def handle_batch(self, batch):
             return [self.handle_request(r) for r in batch]
-    
+
     return Router(config)
 
 
@@ -552,16 +550,16 @@ def create_adapter():
     class Adapter:
         def process(self, payload):
             return {"status": "success", "processed_at": "2026-02-04", "record_count": 1}
-        
+
         def handle_error(self, error):
             return {"error_type": type(error).__name__, "error_message": str(error), "recovered": True}
-        
+
         def validate(self, data):
             return "type" in data and data.get("type") == "valid"
-        
+
         def close(self):
             pass
-    
+
     return Adapter()
 
 
@@ -583,17 +581,17 @@ def create_worker(config=None):
             self.last_task_id = None
             self.last_processed_at = None
             self.pending_count = 0
-        
+
         def start(self):
             self.state = "running"
             self.running = True
             self.started_at = "2026-02-04T00:00:00Z"
-        
+
         def stop(self, graceful=False):
             self.state = "stopped"
             self.running = False
             self.stopped_at = "2026-02-04T00:00:10Z"
-        
+
         def process_task(self, task):
             if not self.running:
                 raise RuntimeError("worker is not running")
@@ -601,10 +599,10 @@ def create_worker(config=None):
             self.last_task_id = task.get("id")
             self.last_processed_at = "2026-02-04T00:00:05Z"
             return {"task_id": task.get("id"), "status": "completed"}
-        
+
         def queue_task(self, task):
             self.pending_count += 1
-        
+
     return Worker(config)
 
 
@@ -615,27 +613,27 @@ def create_checkpoint(data):
             if not data:
                 raise ValueError("data cannot be empty")
             self.data = data
-        
+
         def serialize(self):
-            import json
+            pass  # removed redundant `import json` (top-level import used)
             return json.dumps(self.data).encode('utf-8')
-        
+
         def deserialize(self, data):
-            import json
+            pass  # removed redundant `import json` (top-level import used)
             return json.loads(data.decode('utf-8'))
-    
+
     return Checkpoint(data)
 
 
 def encode_protocol(data):
     """Imaginary protocol encoder."""
-    import json
+    pass  # removed redundant `import json` (top-level import used)
     return json.dumps(data).encode('utf-8')
 
 
 def decode_protocol(data):
     """Imaginary protocol decoder."""
-    import json
+    pass  # removed redundant `import json` (top-level import used)
     return json.loads(data.decode('utf-8'))
 
 

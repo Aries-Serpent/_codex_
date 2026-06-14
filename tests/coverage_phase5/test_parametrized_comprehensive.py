@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import pytest
-from typing import Tuple
 
 
 @pytest.mark.parametrize("input_val,expected", [
