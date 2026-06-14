@@ -8,7 +8,8 @@ from typing import Any, Dict
 import pytest
 
 try:
-    from hypothesis import given, strategies as st
+    from hypothesis import given
+    from hypothesis import strategies as st
 except ImportError:
     pytest.skip("hypothesis not available", allow_module_level=True)
 
@@ -33,7 +34,7 @@ def test_message_roundtrip(data: Dict[str, str | int | bool]):
     """Test that messages survive JSON roundtrip."""
     encoded = encode_message(data)
     decoded = decode_message(encoded)
-    
+
     assert decoded == data
 
 
@@ -49,10 +50,10 @@ def test_jsonrpc_message_roundtrip(message_id: int, method: str):
         "method": method,
         "params": {}
     }
-    
+
     encoded = encode_message(message)
     decoded = decode_message(encoded)
-    
+
     assert decoded["id"] == message_id
     assert decoded["method"] == method
     assert decoded["jsonrpc"] == "2.0"
@@ -62,8 +63,8 @@ def test_jsonrpc_message_roundtrip(message_id: int, method: str):
 def test_list_payload_roundtrip(values: list[int]):
     """Test list payload roundtrip."""
     message = {"data": values}
-    
+
     encoded = encode_message(message)
     decoded = decode_message(encoded)
-    
+
     assert decoded["data"] == values

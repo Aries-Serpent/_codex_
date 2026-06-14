@@ -1,22 +1,24 @@
 """Test codex bridge module 1."""
 from __future__ import annotations
+
+from typing import Any, Dict
+
 import pytest
-from typing import Dict, Any
-import asyncio
+
 
 class BridgeProtocol:
     def __init__(self, version: str):
         self.version = version
         self.connected = False
-    
+
     async def connect(self) -> bool:
         self.connected = True
         return True
-    
+
     async def disconnect(self) -> bool:
         self.connected = False
         return True
-    
+
     async def send_message(self, msg: Dict[str, Any]) -> Dict[str, Any]:
         if not self.connected:
             raise Exception("Not connected")
@@ -33,7 +35,7 @@ async def test_bridge_protocol_1_connect():
     """Test bridge connection."""
     bridge = BridgeProtocol("v2")
     result = await bridge.connect()
-    
+
     assert result is True
     assert bridge.connected is True
 
@@ -42,7 +44,7 @@ async def test_bridge_protocol_1_message():
     """Test sending message."""
     bridge = BridgeProtocol("v2")
     await bridge.connect()
-    
+
     result = await bridge.send_message({"cmd": "test"})
     assert result["ack"] is True
 
@@ -52,6 +54,6 @@ async def test_bridge_protocol_1_disconnect():
     bridge = BridgeProtocol("v2")
     await bridge.connect()
     result = await bridge.disconnect()
-    
+
     assert result is True
     assert bridge.connected is False

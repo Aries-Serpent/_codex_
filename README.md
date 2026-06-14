@@ -1,10 +1,10 @@
 # `_codex_` (codex-ml)
-> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 21,24000+ tests, 10.7% coverage, 26 CVEs fixed, and 145 active autonomous agents
+> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 21,24500+ tests, 10.7% coverage, 26 CVEs fixed, and 145 active autonomous agents
 
 **📦 Release**: [pre-release_v0.1.0](https://github.com/Aries-Serpent/_codex_/releases/tag/pre-release_v0.1.0) | **📥 Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/pre-release_v0.1.0/_codex_.v0.1.0.zip)
 
 ![Version](https://img.shields.io/badge/version-0.1.0--pre--release-blue)
-![Tests](https://img.shields.io/badge/tests-24000%2B%20total%20%7C%20Phase%2014--18%20Complete-brightgreen)
+![Tests](https://img.shields.io/badge/tests-24500%2B%20total%20%7C%20Phase%2014--18%20Complete-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-10.7%25-yellow)
 ![Security](https://img.shields.io/badge/security-IP--005%20Complete%20%7C%2026%20CVEs%20Fixed-brightgreen)
 ![Production](https://img.shields.io/badge/production-ready-brightgreen)
@@ -196,7 +196,7 @@ python scripts/ci/auto_fix_common_issues.py
 | 2 | Unused variables | ⚠️ Manual | ruff F841 |
 | 3 | YAML indentation | ⚠️ Manual | PyYAML parser |
 | 4 | Coverage thresholds | ✅ Yes | Regex → 70% |
-| 5 | Tokenizer fallbacks | ⚠️ Manual | String search |
+| 5 | Tokenizer fallbacks | ⚠️ Manual | String search | <!-- pragma: allowlist secret -->
 | 6 | Test assertions | ⚠️ Manual | Regex patterns |
 | 7 | Redundant imports | ⚠️ Manual | AST analysis |
 | 8 | CodeQL alerts | ✅ Yes | ruff F401/F841 |
@@ -1163,24 +1163,24 @@ gh workflow run scheduled-dependency-audit.yml \
 ### Quick Start
 
 ```python
-from codex.security import mask_token, sanitize_log, hash_secure
+from codex.security import mask_token, sanitize_log, hash_secure  # pragma: allowlist secret
 from codex.security.storage import SecureStorage
 
 # Mask sensitive data in logs
-logger.info(f"API Key: {mask_token(api_key)}")
+logger.info(f"API Key: {mask_token(api_key)}")  # pragma: allowlist secret
 # Output: "API Key: ****************xyz789"
 
 # Prevent log injection attacks
 user_input = request.form.get('data')
 logger.info(f"User provided: {sanitize_log(user_input)}")
 
-# Secure token hashing for comparison
-token_hash = hash_secure(token, algorithm='sha256')
+# Secure token hashing for comparison  # pragma: allowlist secret
+token_hash = hash_secure(token, algorithm='sha256')  # pragma: allowlist secret
 
-# Encrypted storage for secrets
+# Encrypted storage for secrets  # pragma: allowlist secret
 storage = SecureStorage()  # Requires ENCRYPTION_KEY env var
-storage.store_secret("secrets/api_key.enc", api_key)
-api_key = storage.load_secret("secrets/api_key.enc")
+storage.store_secret("secrets/api_key.enc", api_key)  # pragma: allowlist secret
+api_key = storage.load_secret("secrets/api_key.enc")  # pragma: allowlist secret
 ```
 
 ### Performance
@@ -1189,10 +1189,10 @@ All security functions are highly optimized for production use:
 
 | Function | Throughput | Use Case |
 |----------|-----------|----------|
-| `mask_token()` | 3.7M ops/sec | API key masking |
-| `mask_password()` | 12.4M ops/sec | Password hiding |
+| `mask_token()` | 3.7M ops/sec | API key masking | <!-- pragma: allowlist secret -->
+| `mask_password()` | 12.4M ops/sec | Password hiding | <!-- pragma: allowlist secret -->
 | `sanitize_log()` | 1.3M ops/sec | Log injection prevention |
-| `hash_secure()` | 1.2M ops/sec | SHA-256 token hashing |
+| `hash_secure()` | 1.2M ops/sec | SHA-256 token hashing | <!-- pragma: allowlist secret -->
 
 **Benchmark Results**: All functions <0.01ms average (see `benchmarks/security_benchmarks.py`)
 
@@ -1309,9 +1309,9 @@ See: [Admin Token Setup Guide](docs/admin/security/ADMIN_TOKEN_SETUP.md)
 Token retrieval is automatic:
 
 ```python
-from scripts.security.copilot_token_decoder import copilot_get_github_token
+from scripts.security.copilot_token_decoder import copilot_get_github_token  # pragma: allowlist secret
 
-token = copilot_get_github_token()
+token = copilot_get_github_token()  # pragma: allowlist secret
 # Use for GitHub API operations
 ```
 

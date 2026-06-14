@@ -26,7 +26,7 @@ Language: Python (78.3%), Markdown (18%), Shell (2.5%)
 Tests: 1500+ | Coverage: 90% | Security: 0 vulnerabilities
 
 Genesis Protocol Status:
-├─ Phase 1: ✅ COMPLETE (Pre-token templates created)
+├─ Phase 1: ✅ COMPLETE (Pre-token templates created)  # pragma: allowlist secret
 ├─ Phase 2: 🔄 PLANNED (Advanced automation)
 └─ Phase 3: ⏳ FUTURE (ML-based decisions)
 
@@ -162,7 +162,7 @@ MEDIUM RISK
 HIGH RISK
 • Security → Escalate immediately
 • Configuration → Escalate immediately
-• Secrets → Escalate immediately
+• Secrets → Escalate immediately  # pragma: allowlist secret
 ```
 
 **When in doubt:** Escalate to @mbaetiong

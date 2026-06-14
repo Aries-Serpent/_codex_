@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict
-
-import pytest
 
 
 @dataclass
@@ -14,13 +12,13 @@ class Checkpoint:
     checkpoint_id: str
     state: Dict[str, Any]
     metadata: Dict[str, str]
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
-    
+
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
-    
+
     @classmethod
     def from_json(cls, json_str: str) -> "Checkpoint":
         data = json.loads(json_str)
@@ -38,10 +36,10 @@ def test_checkpoint_serialization():
         state={"model": "weights", "epoch": 10},
         metadata={"timestamp": "2024-01-01", "version": "1.0"}
     )
-    
+
     json_str = checkpoint.to_json()
     data = json.loads(json_str)
-    
+
     assert data["checkpoint_id"] == "ckpt_001"
     assert data["state"]["epoch"] == 10
 
@@ -49,9 +47,9 @@ def test_checkpoint_serialization():
 def test_checkpoint_deserialization():
     """Test checkpoint from JSON."""
     json_str = '''{"checkpoint_id": "ckpt_001", "state": {"model": "weights"}, "metadata": {"version": "1.0"}}'''
-    
+
     checkpoint = Checkpoint.from_json(json_str)
-    
+
     assert checkpoint.checkpoint_id == "ckpt_001"
     assert checkpoint.state["model"] == "weights"
 
@@ -63,10 +61,10 @@ def test_checkpoint_roundtrip():
         state={"data": [1, 2, 3]},
         metadata={"type": "training"}
     )
-    
+
     json_str = original.to_json()
     restored = Checkpoint.from_json(json_str)
-    
+
     assert restored.checkpoint_id == original.checkpoint_id
     assert restored.state == original.state
     assert restored.metadata == original.metadata
@@ -82,8 +80,8 @@ def test_checkpoint_with_nested_state():
         },
         metadata={}
     )
-    
+
     json_str = checkpoint.to_json()
     restored = Checkpoint.from_json(json_str)
-    
+
     assert restored.state["model"]["layers"][0]["weights"] == [0.1, 0.2]

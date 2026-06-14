@@ -120,7 +120,7 @@ class BrainClient:
         # URLs must be http or https only; all other schemes (file, ftp, data, etc.)
         # are dangerous and must be rejected outright.
         parsed = urllib.parse.urlparse(raw)
-        
+
         # Detect if this is a bare "host:port" misidentified as a scheme by urlparse.
         # urlparse("localhost:8765") → scheme="localhost", netloc="", path="8765"
         # The key indicator: in a bare host:port, there's no "://" in the original URL.
@@ -131,7 +131,7 @@ class BrainClient:
             or parsed.scheme in ("data", "javascript", "vbscript", "file", "ftp", "gopher")
             # ^ Known dangerous schemes that don't use "://"
         )
-        
+
         if has_url_scheme:
             # Explicit URL scheme provided; must be http or https
             scheme = parsed.scheme.lower()

@@ -13,13 +13,13 @@ class WorkerPool:
         self.size = size
         self.workers: List[asyncio.Task] = []
         self.completed = 0
-        
+
     async def submit(self, coro):
         """Submit a coroutine to the pool."""
         task = asyncio.create_task(coro)
         self.workers.append(task)
         return task
-        
+
     async def wait_all(self):
         """Wait for all workers to complete."""
         if self.workers:
@@ -44,7 +44,7 @@ async def test_worker_pool_creation():
 async def test_worker_pool_submit():
     """Test submitting tasks to pool."""
     pool = WorkerPool(4)
-    
+
     task = await pool.submit(dummy_task())
     assert task in pool.workers
 
@@ -53,10 +53,10 @@ async def test_worker_pool_submit():
 async def test_worker_pool_wait_all():
     """Test waiting for all workers to complete."""
     pool = WorkerPool(4)
-    
+
     for _ in range(3):
         await pool.submit(dummy_task())
-    
+
     await pool.wait_all()
-    
+
     assert pool.completed == 3

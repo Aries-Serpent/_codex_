@@ -680,7 +680,7 @@ If iteration == 5:
 
 **Path 3: Security-Related Error**
 ```
-Error detected → Security keywords found (injection, exploit, token)
+Error detected → Security keywords found (injection, exploit, token)  # pragma: allowlist secret
     ↓
 Immediate escalation (no auto-fix)
     ↓

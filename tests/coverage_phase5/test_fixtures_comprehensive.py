@@ -1,9 +1,10 @@
 """Comprehensive fixture-based testing."""
 from __future__ import annotations
 
-import pytest
-from typing import Dict, Any, List
 from dataclasses import dataclass
+from typing import Any, Dict, List
+
+import pytest
 
 
 @dataclass
@@ -59,7 +60,7 @@ def test_context_results_tracking(test_context):
     """Test tracking results in context."""
     test_context.results.append("result1")
     test_context.results.append("result2")
-    
+
     assert len(test_context.results) == 2
 
 

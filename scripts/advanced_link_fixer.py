@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 REPORT_FILE = Path.cwd() / ".codex" / "phase6_link_audit_complete.json"
 
@@ -14,13 +14,13 @@ def find_file_by_name(target_name: str) -> List[Path]:
     """Find files by name pattern."""
     results = []
     target_lower = target_name.lower()
-    
+
     for md_file in Path(".").rglob("*.md"):
         if md_file.name.lower() == target_lower:
             results.append(md_file)
         elif md_file.name.lower().endswith(target_lower):
             results.append(md_file)
-    
+
     return results
 
 
@@ -36,9 +36,9 @@ def fix_by_filename_matching(
     matches = find_file_by_name(filename)
     if not matches:
         return ""
-    
+
     best_match = matches[0]
-    
+
     try:
         rel_path = best_match.relative_to(file_path.parent)
         return str(rel_path)
@@ -52,7 +52,7 @@ def fix_by_filename_matching(
                     common = i + 1
                 else:
                     break
-            
+
             if common > 0:
                 up_count = len(source_parts) - common
                 down_parts = parts[common:]
@@ -60,7 +60,7 @@ def fix_by_filename_matching(
                 return rel_path
         except Exception:
             pass
-    
+
     return ""
 
 
@@ -68,11 +68,11 @@ def fix_archive_references(file_path: Path, old_url: str) -> str:
     """Fix references to archived files."""
     if ".codex/archive" in old_url or "archive/" in old_url:
         return ""
-    
+
     if "archive" in str(file_path):
         filename = extract_filename(old_url)
         return fix_by_filename_matching(file_path, old_url, filename)
-    
+
     return ""
 
 
@@ -80,10 +80,10 @@ def fix_relative_path_errors(file_path: Path, old_url: str) -> str:
     """Fix relative path errors."""
     if old_url.startswith("/"):
         return old_url[1:]
-    
+
     if old_url.startswith("./"):
         return old_url[2:]
-    
+
     return ""
 
 
@@ -91,7 +91,7 @@ def fix_malformed_urls(old_url: str) -> str:
     """Fix malformed URLs."""
     if old_url.startswith("..") and not old_url.startswith("../../"):
         return old_url
-    
+
     return ""
 
 

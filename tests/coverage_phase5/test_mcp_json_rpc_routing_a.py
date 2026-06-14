@@ -3,14 +3,11 @@
 from __future__ import annotations
 
 import asyncio
-import json
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 try:
-    from mcp.server import MCPServer, Tool, ToolRegistry, JsonRpcError
+    from mcp.server import JsonRpcError, MCPServer, Tool, ToolRegistry
 except ImportError:
     pytest.skip("mcp not available", allow_module_level=True)
 
@@ -21,16 +18,16 @@ async def test_json_rpc_request_with_id():
     registry = ToolRegistry()
     registry.register(Tool(name="test_tool", description="Test tool"))
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     response = await server.handle_request(request)
-    
+
     assert response is not None
     assert response["jsonrpc"] == "2.0"
     assert response["id"] == 1
@@ -42,15 +39,15 @@ async def test_json_rpc_notification_no_response():
     """Test JSON-RPC notification (no ID) produces no response."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     response = await server.handle_request(request)
-    
+
     assert response is None
 
 
@@ -59,16 +56,16 @@ async def test_json_rpc_error_response():
     """Test JSON-RPC error response for invalid method."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "invalid.method",
         "params": {},
     }
-    
+
     response = await server.handle_request(request)
-    
+
     assert response is not None
     assert "error" in response
     assert response["error"]["code"] == -32601
@@ -80,18 +77,18 @@ async def test_json_rpc_batch_requests():
     registry = ToolRegistry()
     registry.register(Tool(name="tool1", description="Tool 1"))
     server = MCPServer(tool_registry=registry)
-    
+
     batch = [
         {"jsonrpc": "2.0", "id": 1, "method": "mcp.listTools", "params": {}},
         {"jsonrpc": "2.0", "id": 2, "method": "mcp.listTools", "params": {}},
     ]
-    
+
     responses = []
     for req in batch:
         resp = await server.handle_request(req)
         if resp:
             responses.append(resp)
-    
+
     assert len(responses) == 2
 
 
@@ -99,17 +96,17 @@ def test_json_rpc_version_negotiation():
     """Test version negotiation with multiple supported versions."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": "version_test",
         "method": "mcp.negotiateVersion",
         "params": {"supported": ["0.9", "1.0", "1.1"]},
     }
-    
+
     loop = asyncio.get_event_loop()
     response = loop.run_until_complete(server.handle_request(request))
-    
+
     assert response is not None
     assert "result" in response
 
@@ -120,7 +117,7 @@ def test_json_rpc_large_payload():
     tools = [Tool(name=f"tool_{i}", description=f"Tool {i}") for i in range(100)]
     for tool in tools:
         registry.register(tool)
-    
+
     server = MCPServer(tool_registry=registry)
     request = {
         "jsonrpc": "2.0",
@@ -128,10 +125,10 @@ def test_json_rpc_large_payload():
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     loop = asyncio.get_event_loop()
     response = loop.run_until_complete(server.handle_request(request))
-    
+
     assert response is not None
     assert isinstance(response["result"], list)
     assert len(response["result"]) == 100

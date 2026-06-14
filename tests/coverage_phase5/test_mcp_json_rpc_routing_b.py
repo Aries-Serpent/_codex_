@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any
 
 import pytest
 
@@ -18,15 +17,15 @@ async def test_json_rpc_missing_jsonrpc_field():
     """Test that missing jsonrpc field is handled gracefully."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "id": 1,
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     response = await server.handle_request(request)
-    
+
     # Should still work or return error
     assert response is not None or response is None
 
@@ -36,16 +35,16 @@ async def test_json_rpc_invalid_params():
     """Test handling of invalid params in JSON-RPC request."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "mcp.listTools",
         "params": "invalid_not_dict",
     }
-    
+
     response = await server.handle_request(request)
-    
+
     # Should handle gracefully
     assert response is not None
 
@@ -56,16 +55,16 @@ async def test_json_rpc_null_params():
     registry = ToolRegistry()
     registry.register(Tool(name="tool1", description="Tool 1"))
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "mcp.listTools",
         "params": None,
     }
-    
+
     response = await server.handle_request(request)
-    
+
     # Should still work
     assert response is not None
 
@@ -74,14 +73,14 @@ def test_json_rpc_timeout_handling():
     """Test handling of timeouts in JSON-RPC requests."""
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
-    
+
     request = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     loop = asyncio.get_event_loop()
     try:
         response = asyncio.wait_for(

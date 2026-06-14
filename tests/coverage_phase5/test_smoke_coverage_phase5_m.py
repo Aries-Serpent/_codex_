@@ -13,10 +13,10 @@ def dummy_add_12(a: int, b: int) -> int:
 class DummyClass_12:
     def __init__(self, value: int):
         self.value = value
-    
+
     def get_value(self) -> int:
         return self.value
-    
+
     def set_value(self, new_value: int) -> None:
         self.value = new_value
 

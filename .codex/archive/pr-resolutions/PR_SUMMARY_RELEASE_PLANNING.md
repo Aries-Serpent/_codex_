@@ -144,7 +144,7 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
 | **Phase 26 Readiness** | ✅ CONFIRMED | 100% | PHASE_26_RELEASE_READINESS.md |
 | **Documentation Coverage** | ✅ COMPLETE | 100% | All 10 documents |
 | **Cross-References** | ✅ VALIDATED | 100% | All links working |
-| **Security** | ✅ CLEAN | 100% | No secrets found |
+| **Security** | ✅ CLEAN | 100% | No secrets found | <!-- pragma: allowlist secret -->
 | **Quality Gates** | ✅ DEFINED | 100% | 14 gates specified |
 | **Automation** | ✅ DESIGNED | 60-70% | CI/CD workflows |
 
