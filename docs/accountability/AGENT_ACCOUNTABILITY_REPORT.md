@@ -1,3 +1,103 @@
+## SESSION SUMMARY — 2026-06-14T23:00Z · DEPENDENCY-VULNERABILITY-SCANNER-AGENT-v1.0 — Comprehensive CVE Scan
+
+**Session ID:** dep-security-fixes-20260614  
+**Agent:** @copilot (Dependency Vulnerability Scanner Agent)  
+**Branch:** `copilot/dep-security-fixes-20260614`  
+**Target Branch:** `0D_base_`  
+**Campaign:** PROD-READINESS-CAMPAIGN-20260614  
+
+### Objective
+Comprehensive dependency vulnerability scan across ALL requirements files (29 files, 95 packages)
+using the GitHub Advisory Database. Remediate all Critical and High CVEs found.
+
+### Actions Completed
+
+| Task | Status |
+|------|--------|
+| Enumerated all requirements files (29 total) | ✅ |
+| Extracted all pinned packages from all sources including pyproject.toml | ✅ |
+| Scanned 95 unique packages in batches of 10 using advisory database | ✅ |
+| Prioritized security/crypto/web/ML families first | ✅ |
+| Fixed ray CRITICAL RCE → >=2.55.0 in pyproject.toml | ✅ |
+| Fixed chromadb CRITICAL code injection → >=1.5.10 in pyproject.toml | ✅ |
+| Fixed sentencepiece HIGH heap overflow → >=0.2.1 (8 occurrences across 3 files) | ✅ |
+| Fixed aiohttp HIGH zip bomb DoS → >=3.13.3 (2 GitHub agent files) | ✅ |
+| Fixed setuptools HIGH path traversal → >=78.1.1 in requirements/agent.txt | ✅ |
+| Fixed black MEDIUM file write → >=26.3.1 (4 files) | ✅ |
+| Fixed gitpython MEDIUM Windows code exec → >=3.1.33 (ci-testing-agent) | ✅ |
+| Vulnerability report created at `.codex/dependency-vuln-report-20260614.md` | ✅ |
+| Secret scanning passed — no secrets detected | ✅ |
+| CHANGELOG.md updated (REQ-4) | ✅ |
+| Accountability report updated (REQ-5) | ✅ |
+
+### CVE Summary
+| Severity | Count | Fixed |
+|----------|-------|-------|
+| 🔴 Critical | 2 (ray RCE, chromadb code injection) | ✅ 2/2 |
+| 🟠 High | 3 (sentencepiece heap overflow, aiohttp zip bomb, setuptools path traversal) | ✅ 3/3 |
+| 🟡 Medium | 2 (black file write, gitpython Windows RCE) | ✅ 2/2 |
+| **Total** | **7** | **✅ 7/7** |
+
+### Packages Scanned With No CVEs: 88
+(Includes previously-remediated packages: mlflow 3.11.1 fixed by packaging-validation-agent,
+cryptography 49.0.0, requests 2.34.2, urllib3 2.7.0, jinja2 3.1.6, torch 2.6.0,
+transformers 5.10.2, numpy 2.4.6, pandas 3.0.3, scipy 1.17.1, and 78 others)
+
+### Known Accepted Risks (No Patch Available)
+- **ray auth disabled by default** (<=2.52.0): Design limitation; operational mitigation in place
+- **ray jobs API arbitrary code exec** (<=2.49.2): Not exposed to untrusted networks
+- **wandb SSRF** (<=0.17.0): Advisory WITHDRAWN — false positive, no action required
+
+---
+
+## SESSION SUMMARY — 2026-06-14T22:00Z · CODEQL-ALERT-RESOLUTION-AGENT-v3.1 — CodeQL Note-Severity Wave 2
+
+**Session ID:** codeql-notes-wave2-20260614
+**Agent:** @copilot (CodeQL Alert Resolution Agent v3.1)
+**Branch:** `copilot/codeql-notes-wave2-20260614`
+**Target Branch:** `0D_base_`
+**Campaign:** PROD-READINESS-CAMPAIGN-20260614
+
+### Objective
+Resolve all 61 note-severity CodeQL alerts across 6 categories:
+`py/unused-local-variable` (41), `py/unused-import` (8), `py/unused-global-variable` (6),
+`py/import-and-import-from` (3), `py/ineffectual-statement` (2), `actions/syntax-error` (1).
+
+### Actions Completed
+
+| Task | Status |
+|------|--------|
+| Identified all B007 (unused loop vars) + F841 (assigned-but-unused) issues | ✅ 80 found |
+| Applied `ruff --select B007,F841 --unsafe-fixes` to tests/ | ✅ 76 auto-fixed |
+| Manually fixed 4 tuple-unpacking loop vars (ruff cannot handle nested tuples) | ✅ |
+| Fixed 3 genuine `py/unused-import` (F401) instances across 3 test files | ✅ |
+| Added `...` to Protocol stubs in `src/codex/rag/embeddings.py` | ✅ |
+| Verified `py/unused-global-variable` alerts (6): all stale for current code | ✅ |
+| Verified `py/import-and-import-from` alerts (3): all stale for current code | ✅ |
+| Verified `actions/syntax-error` alert (1): YAML parses cleanly, stale alert | ✅ |
+| CHANGELOG.md updated | ✅ |
+| Accountability report updated | ✅ |
+
+### Alert Disposition
+
+| Category | Inventory Count | Fixed | Stale/FP |
+|----------|-----------------|-------|----------|
+| `py/unused-local-variable` (B007+F841) | 41 | ✅ 80 (broader scan found more) | 0 |
+| `py/unused-import` (F401) | 8 | ✅ 3 real | 5 stale |
+| `py/unused-global-variable` | 6 | 0 | ✅ 6 stale |
+| `py/import-and-import-from` | 3 | 0 | ✅ 3 stale |
+| `py/ineffectual-statement` | 2 | ✅ 2 | 0 |
+| `actions/syntax-error` | 1 | 0 | ✅ 1 stale |
+
+### Key Technical Findings
+- **B007 scope**: CodeQL's `py/unused-local-variable` catches ruff B007 (unused loop control
+  variables), not just F841. The project's ruff config excludes B007 (only selects `E,F,I`).
+  Used `ruff --isolated` to bypass project config and find all 80 instances.
+- **Stale inventory**: The `.codex/plans/CODEQL_ALERT_INVENTORY.md` was generated from a
+  2026-05-12 scan. Six categories of alerts had stale line numbers that don't match current code.
+
+---
+
 ## SESSION SUMMARY — 2026-06-14T19:00Z · PACKAGING-VALIDATION-AGENT-v1.0 — Full Packaging Posture Audit
 
 **Session ID:** packaging-audit-20260614
