@@ -119,13 +119,9 @@ jobs:
       CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       # Repo-wide LFS baseline stays opt-in: initial checkout skips blobs unless
       # a workflow_dispatch run explicitly requests targeted/full materialization.
-      LFS_DIAGNOSTICS_ENABLED: >-
-        ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' ||
-        (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
+      LFS_DIAGNOSTICS_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}"
       LFS_FETCH_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}"
-      LFS_TARGETED_ENABLED: >-
-        ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' &&
-        inputs.lfs_include_paths != '' }}
+      LFS_TARGETED_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}"
       LFS_FULL_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}"
 
     steps:
