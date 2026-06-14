@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-14T12:39:56Z",
+  "generated_at": "2026-06-14T20:46:47Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1076,7 +1076,7 @@
     {
       "name": "benchmarks",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "branch-cleanup",
@@ -1106,7 +1106,7 @@
     {
       "name": "cache-health-monitor",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "cache-pruning",
@@ -1116,7 +1116,7 @@
     {
       "name": "cache-validation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "chatops_copilot_trigger",
@@ -1246,7 +1246,7 @@
     {
       "name": "copilot-automation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "copilot-evolution-suite",
@@ -1391,7 +1391,7 @@
     {
       "name": "documentation-quality-check",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "e-to-d-transition-gate",
@@ -1461,7 +1461,7 @@
     {
       "name": "maturity-check",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "mcp-health",
@@ -1751,12 +1751,12 @@
     {
       "name": "self-healing",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "semgrep_sarif",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "session-context-capture",
@@ -2250,5 +2250,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "c3c1ce8b69488c6c6d385fe219786174132819e4f36c2c97340196891822a0e2"
+  "integrity_sha256": "c45b29c6ca059ba58a39003f66c9c0534c7ca73f85d0f21ff8273b1ee33fc0d8"
 }
