@@ -2,6 +2,39 @@
 
 ## [Unreleased]
 
+### Added (Memory Sync Wave 3 — copilot/memory-sync-wave3-20260614, 2026-06-14) [REQ-5]
+- **Consolidated 13 PROD-READINESS-CAMPAIGN-20260614 patterns into LTM** (`.codex/memory/ltm_store.json`):
+  - 5 security patterns: `CODEQL-UNDEFINED-EXPORT`, `CODEQL-UNTRUSTED-CHECKOUT-SUPPRESSION`,
+    `MLFLOW-CVE-BUMP`, `WORKFLOW-ACTION-PINNING`, `DETECT-SECRETS-VENV-FP`
+  - 5 coverage patterns: `COVERAGE-MCP-SERVER`, `COVERAGE-RESTORE-PIPELINE`,
+    `COVERAGE-COGNITIVE-EXPERIMENTS`, `COVERAGE-RAG-ANALYTICS`, `FAIL-UNDER-CALIBRATION`
+  - 3 CI-stability patterns: `ACTION-REQUIRED-IS-COPILOT-GATE`, `SELF-HEALING-CASCADE-CHECK`,
+    `PRECOMMIT-NOT-IN-CI-RUNNER`
+- **LTM store initialised** at `.codex/memory/ltm_store.json` (13/1000 entries, fill_rate=1.3%, health=🟢 green)
+- **Stale entries pruned**: 0 (LTM was empty — first initialisation, no entries older than 90 days)
+- **MemoryManagementDashboard metrics updated** via `meta.dashboard_metrics` in `ltm_store.json`
+- **PDA entry appended** to `.codex/aftermath/pda_iterations.jsonl` (pattern: `MEMORY-SYNC-CAMPAIGN-20260614`)
+
+### Fixed (CodeQL Note-Severity Alerts Wave 2 — copilot/codeql-notes-wave2-20260614, 2026-06-14)
+- **`py/unused-local-variable` — B007 (80 instances across 56 test files)**: Renamed all
+  unused loop control variables (`i`, `step`, `epoch`, `batch`, `iteration`, `timestamp`, etc.)
+  to underscore-prefixed equivalents using `ruff --select B007 --unsafe-fixes`.  76 fixed
+  automatically; 4 tuple-unpacking cases required manual edits.  Additionally fixed 2 F841
+  (assigned-but-unused local) occurrences.
+- **`py/unused-import` — F401 (real instances)**:
+  - `tests/coverage_phase5/test_mcp_json_rpc_routing_a.py`: Removed `JsonRpcError` (unused).
+  - `tests/coverage_phase5/test_mcp_adapter_interfaces_a.py`: Added `# noqa: F401` to
+    `BaseAdapter` guard-import (availability check, intentionally not referenced by name).
+  - `tests/integration/test_device_strategy_fallback.py`: Added `# noqa: F401` to all
+    `import torch` guard-imports inside try/except availability checks.
+- **`py/ineffectual-statement` — Protocol abstract methods (2 instances)**:
+  `src/codex/rag/embeddings.py` — Added explicit `...` body to `EmbeddingProvider.encode()`
+  and `EmbeddingProvider.get_dimension()` Protocol stub methods.
+- **Remaining note-severity categories assessed as stale**: `py/unused-global-variable`
+  (6 alerts), `py/import-and-import-from` (3 alerts), and `actions/syntax-error` (1 alert)
+  — all verified to reference variables/imports actively used in current code, or YAML that
+  parses cleanly.  Alert numbers are significantly older than other open alerts.
+
 ### Fixed (mypy Wave 3 — copilot/mypy-wave3-20260614, 2026-06-14)
 - **`embed.py:17` `[assignment]`**: Added `# type: ignore[assignment]` to the `_NumpyFallback`
   optional-import fallback assignment (`np = _NumpyFallback()`); mypy correctly flags the

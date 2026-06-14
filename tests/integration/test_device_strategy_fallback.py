@@ -18,7 +18,7 @@ class TestDeviceStrategyFallback:
         """Verify CPU fallback when CUDA is not available."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -39,7 +39,7 @@ class TestDeviceStrategyFallback:
         """Verify CUDA is selected when available."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -60,7 +60,7 @@ class TestDeviceStrategyFallback:
         """Verify MPS is preferred over CPU when available and preferred."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -85,7 +85,7 @@ class TestDeviceStrategyFallback:
         """Verify bfloat16 support is correctly detected."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -102,7 +102,7 @@ class TestDeviceStrategyFallback:
         """Verify dtype is selected appropriately for device."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -127,7 +127,7 @@ class TestDeviceStrategyValidation:
         """Verify DeviceConfig can be initialized with explicit values."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -152,7 +152,7 @@ class TestDeviceStrategyValidation:
         """Verify CPU is always reported as available."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -169,7 +169,7 @@ class TestDeviceStrategyValidation:
         """Verify CUDA availability check matches torch.cuda.is_available()."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -191,7 +191,7 @@ class TestDeviceStrategyIntegration:
         """Verify device can be manually specified and overridden."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -212,7 +212,7 @@ class TestDeviceStrategyIntegration:
         """Verify repeated auto-detect calls return consistent results."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -251,7 +251,7 @@ class TestDeviceStrategyErrorHandling:
         """Verify clear error when torch is required but unavailable."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -270,7 +270,7 @@ class TestDeviceStrategyErrorHandling:
         """Verify bfloat16 check handles errors gracefully."""
         # Arrange
         try:
-            import torch
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 

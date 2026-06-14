@@ -7,7 +7,7 @@ import asyncio
 import pytest
 
 try:
-    from mcp.server import JsonRpcError, MCPServer, Tool, ToolRegistry
+    from mcp.server import MCPServer, Tool, ToolRegistry
 except ImportError:
     pytest.skip("mcp not available", allow_module_level=True)
 
