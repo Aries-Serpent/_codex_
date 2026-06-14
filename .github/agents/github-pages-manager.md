@@ -109,7 +109,7 @@ cached_results = cache.query("pages_validation_results")
 
 **Session Parameters** (from accountability report):
 - Optimal duration: 30 minutes
-- Context budget: 128K tokens
+- Context budget: 128K tokens  # pragma: allowlist secret
 - Mandatory checkpoints: Every 10 actions
 - Corrections per issue: 1.0 (first fix succeeds)
 
@@ -546,7 +546,7 @@ Solution:
    cat > docs/api/rag.md << 'EOF'
    # RAG Pipeline API
 
-   For detailed documentation, see [RAG Pipelines](rag_pipelines.md).
+   For detailed documentation, see [RAG Pipelines](../../docs/api/rag_pipelines.md).
    EOF
    ```
 3. Build and test: `mkdocs serve`

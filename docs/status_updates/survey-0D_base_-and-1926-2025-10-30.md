@@ -2093,7 +2093,7 @@ When modifying the topology, update both the diagram and `docs/guides/serving_re
    source .venv/bin/activate
    codex repo-map --reasoning
    ```
-2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](../src/codex_cli/app.py)). Templates
+2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py)). Templates
    live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
 3. **Materialise runtime overlays**
    ```bash
@@ -2206,7 +2206,7 @@ These assets are designed for offline validation and do not require hosted servi
 
 ## 🚀 Quick links for reasoning teams
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the
-  [`codex_cli` help](../src/codex_cli/app.py) for command details.
+  [`codex_cli` help](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py) for command details.
 - **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in
   [`README_ROOT.md`](../README_ROOT.md#training-quickstart).
 - **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure

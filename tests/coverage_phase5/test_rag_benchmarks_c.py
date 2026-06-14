@@ -1,0 +1,55 @@
+"""Test RAG benchmark fixtures 2."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class BenchmarkResult:
+    metric_name: str
+    value: float
+    unit: str
+
+class BenchmarkFixture:
+    def __init__(self, name: str):
+        self.name = name
+        self.results: List[BenchmarkResult] = []
+
+    def record_metric(self, metric_name: str, value: float, unit: str = "ms"):
+        result = BenchmarkResult(metric_name, value, unit)
+        self.results.append(result)
+
+    def get_metric(self, metric_name: str) -> float:
+        for r in self.results:
+            if r.metric_name == metric_name:
+                return r.value
+        return -1.0
+
+def test_benchmark_fixture_2_init():
+    """Test benchmark fixture initialization."""
+    fixture = BenchmarkFixture("bench2")
+    assert fixture.name == "bench2"
+
+def test_benchmark_fixture_2_record():
+    """Test recording benchmark metrics."""
+    fixture = BenchmarkFixture("bench2")
+    fixture.record_metric("latency", 42.5, "ms")
+
+    assert len(fixture.results) == 1
+    assert fixture.results[0].value == 42.5
+
+def test_benchmark_fixture_2_retrieve():
+    """Test retrieving benchmark metrics."""
+    fixture = BenchmarkFixture("bench2")
+    fixture.record_metric("throughput", 1000.0, "ops/sec")
+
+    value = fixture.get_metric("throughput")
+    assert value == 1000.0
+
+def test_benchmark_fixture_2_missing():
+    """Test missing metric retrieval."""
+    fixture = BenchmarkFixture("bench2")
+    value = fixture.get_metric("nonexistent")
+
+    assert value == -1.0

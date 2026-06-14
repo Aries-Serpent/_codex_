@@ -52,7 +52,7 @@ In addition to the packages specified in the table above, the following packages
 - `java`: 21
 - `bazelisk` / `bazel`
 
-See [Dockerfile](Dockerfile) for the full details of installed packages.
+See [Dockerfile](../../Dockerfile) for the full details of installed packages.
 
 ## Development
 

@@ -39,7 +39,7 @@
 
 ### 📝 Audit Trail
 
-6. **[Change Log Entry](.codex/change_log.md)** - Audit log record
+6. **[Change Log Entry](../change_log.md)** - Audit log record
    - Session metadata
    - Verification checklist
    - Next actions
@@ -147,7 +147,7 @@ git push
 
 ## Related Documentation
 
-- **[Change Log](.codex/change_log.md)** - Audit trail
+- **[Change Log](../change_log.md)** - Audit trail
 - **[Agent README](agents/ci-log-retrieval-agent/README.md)** - Agent documentation
 - **[pytest.ini](pytest.ini)** - Timeout configuration
 - **[Workflow](../.github/workflows/code-quality-coverage-suite.yml)** - CI configuration

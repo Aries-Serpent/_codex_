@@ -80,16 +80,16 @@
 
 ```markdown
 # Fix 1: CODEBASE_DASHBOARD.md (16 references)
-Before: [Dashboard](docs/system/CODEBASE_DASHBOARD.md)
-After:  [Dashboard](docs/system/CODEBASE_DASHBOARD.md)
+Before: [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)
+After:  [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)
 
 # Fix 2: CODEBASE_AGENCY_POLICY.md (12 references)
-Before: [Policy](.codex/CODEBASE_AGENCY_POLICY.md)
-After:  [Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+Before: [Policy](../../CODEBASE_AGENCY_POLICY.md)
+After:  [Policy](../../CODEBASE_AGENCY_POLICY.md)
 
 # Fix 3: ROADMAP.md (10 references)
-Before: [Roadmap](docs/ROADMAP.md)
-After:  [Roadmap](docs/ROADMAP.md)
+Before: [Roadmap](../../../docs/ROADMAP.md)
+After:  [Roadmap](../../../docs/ROADMAP.md)
 ```
 
 ---

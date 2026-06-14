@@ -350,7 +350,7 @@ See [AGENT_DESIGNS.md](#) for comprehensive agent architectures
 
 ## 🔗 Related Documentation
 
-- [CONTINUATION_PROMPT_PR2782_POST_CI.md](.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md) - Original continuation prompt
+- [CONTINUATION_PROMPT_PR2782_POST_CI.md](CONTINUATION_PROMPT_PR2782_POST_CI.md) - Original continuation prompt
 - [AGENT_DESIGNS.md](#) - Comprehensive agent architectures (to be created)
 - [AGENT_REGISTRY.yaml](#) - Agent metadata and status (to be created)
 - [.template/](#) - Agent scaffolding template (to be created)

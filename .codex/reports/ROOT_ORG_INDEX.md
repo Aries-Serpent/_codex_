@@ -14,16 +14,16 @@ This index provides navigation to all root organization documentation, plans, an
 ## 🎯 Quick Start
 
 **New here?** Start with:
-1. [Session Summary](.codex/reports/ROOT_ORG_SESSION_COMPLETE.md) - Overview of what was accomplished
-2. [Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md) - Full cleanup strategy
-3. <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> - Detailed execution report
+1. [Session Summary](ROOT_ORG_SESSION_COMPLETE.md) - Overview of what was accomplished
+2. [Comprehensive Plan](../plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md) - Full cleanup strategy
+3. <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> - Detailed execution report
 
 ---
 
 ## 📋 Planning Documents
 
 ### Master Plan
-📄 [ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)
+📄 [ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md](../plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)
 - Current state analysis (92 files, 86 directories)
 - Categorization of all root items
 - Proposed organization structure
@@ -55,7 +55,7 @@ This index provides navigation to all root organization documentation, plans, an
 ## 📊 Execution Reports
 
 ### Phase 1 Summary
-📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> -->
+📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md](ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> -->
 - Complete execution details
 - Batch-by-batch breakdown
 - Validation results
@@ -65,7 +65,7 @@ This index provides navigation to all root organization documentation, plans, an
 - **Status:** ✅ Complete
 
 ### Session Summary
-📄 [ROOT_ORG_SESSION_COMPLETE.md](.codex/reports/ROOT_ORG_SESSION_COMPLETE.md)
+📄 [ROOT_ORG_SESSION_COMPLETE.md](ROOT_ORG_SESSION_COMPLETE.md)
 - High-level overview
 - Key achievements
 - Impact analysis
@@ -229,7 +229,7 @@ See [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appe
 - Integration with other agents
 
 ### Continuation Prompts
-📄 [.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md](.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md)
+📄 [.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md](../prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md)
 - Future phase instructions
 - Deferred items
 - Follow-up actions
@@ -239,9 +239,9 @@ See [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appe
 ## 🤝 Contributing
 
 When continuing this work:
-1. Read the [Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)
+1. Read the [Comprehensive Plan](../plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)
 2. Review [Tool Documentation](../../scripts/root_org/README.md)
-3. Check <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> for lessons learned
+3. Check <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> for lessons learned
 4. Follow Physics Model directives (Energy=5)
 5. Maintain zero-break guarantee
 6. Update this index when adding new documentation

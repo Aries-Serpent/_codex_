@@ -82,7 +82,7 @@ Create comprehensive test suites for high-priority, zero-coverage modules to inc
 
 ```
 ✅ Test Classes
-   - Grouped by functionality (e.g., TestTokenBudget, TestAgentCore)
+   - Grouped by functionality (e.g., TestTokenBudget, TestAgentCore)  # pragma: allowlist secret
    - Clear naming conventions (test_<feature>_<scenario>)
    - Comprehensive docstrings
 
@@ -317,7 +317,7 @@ git commit -m "feat(tests): Phase 9.1 coverage enhancement to 30%+ #Phase9.1 #Co
 - [Coverage Roadmap](../../docs/ROADMAP.md)
 - [Test Priority Matrix](.codex/qa_walkthrough/test_priority_matrix.json)
 - [Coverage Analysis](.codex/qa_walkthrough/coverage_analysis.json)
-- [AfterMath Analysis](.codex/qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md)
+- [AfterMath Analysis](../qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md)
 
 ---
 

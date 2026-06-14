@@ -246,10 +246,28 @@ class SqliteDAL(BaseDAL):
 
     @staticmethod
     def from_url(url: str) -> SqliteDAL:
-        if not url.startswith("sqlite:///"):
-            raise ValueError("SQLite URL must start with sqlite:///")
-        path = url[len("sqlite:///") :]
-        p = Path(path)
+        # CWE-20: Use proper URL parsing instead of string operations
+        parsed = urlparse(url)
+        if parsed.scheme != "sqlite":
+            raise ValueError("SQLite URL must use sqlite:// scheme")
+
+        # Reconstruct path from netloc + path to handle both:
+        # - sqlite://relative/db.sqlite (netloc='relative', path='/db.sqlite')
+        # - sqlite:///./.codex/archive.sqlite (netloc='', path='/./.codex/archive.sqlite')
+        full_path = parsed.netloc + parsed.path
+
+        if not full_path:
+            raise ValueError("SQLite URL must include a valid file path")
+
+        # Strip leading slash only for relative-style paths (not absolute paths)
+        if full_path.startswith("/./"):
+            # Relative path with ./ prefix: strip the leading /
+            full_path = full_path[1:]
+        elif full_path.startswith("//"):
+            # Handle double slash from sqlite:////path (absolute path)
+            full_path = full_path[1:]
+
+        p = Path(full_path)
         p.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(p.as_posix())
         dal = SqliteDAL(conn, p.parent)

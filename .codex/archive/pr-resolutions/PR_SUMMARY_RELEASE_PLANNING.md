@@ -28,18 +28,18 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
    - Release process overview
    - Navigation to all release docs
 
-2. **<!-- BROKEN: [GITLAB_CI_CD_INTEGRATION.md](.codex/release/GITLAB_CI_CD_INTEGRATION.md) -->** (11KB)
+2. **<!-- BROKEN: [GITLAB_CI_CD_INTEGRATION.md](../../release/GITLAB_CI_CD_INTEGRATION.md) -->** (11KB)
    - Complete CI/CD integration guide
    - GitLab CI configuration examples
    - Pipeline stage definitions
    - Integration with existing workflows
 
-3. **<!-- BROKEN: [ACTIVESTATE_OIDC_INTEGRATION.md](.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md) -->** (11KB)
+3. **<!-- BROKEN: [ACTIVESTATE_OIDC_INTEGRATION.md](../../release/ACTIVESTATE_OIDC_INTEGRATION.md) -->** (11KB)
    - OIDC trusted publishing setup
    - ActiveState Platform integration
    - Security best practices
 
-4. **<!-- BROKEN: [AI_AGENT_AUTONOMOUS_OPERATIONS.md](.codex/release/AI_AGENT_AUTONOMOUS_OPERATIONS.md) -->** (15KB)
+4. **<!-- BROKEN: [AI_AGENT_AUTONOMOUS_OPERATIONS.md](../../release/AI_AGENT_AUTONOMOUS_OPERATIONS.md) -->** (15KB)
    - AI agent autonomous solutions
    - Executable workflows
    - Phase-based execution plan
@@ -51,13 +51,13 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
    - Package building instructions
    - Distribution best practices
 
-6. **<!-- BROKEN: [PRE_RELEASE_CHECKLIST.md](.codex/release/PRE_RELEASE_CHECKLIST.md) -->** (7KB)
+6. **<!-- BROKEN: [PRE_RELEASE_CHECKLIST.md](../../release/PRE_RELEASE_CHECKLIST.md) -->** (7KB)
    - Pre-release validation steps
    - Quality gate requirements
    - Documentation verification
    - Build testing procedures
 
-7. **<!-- BROKEN: [RELEASE_WORKFLOW_PLAN.md](.codex/release/RELEASE_WORKFLOW_PLAN.md) -->** (12KB)
+7. **<!-- BROKEN: [RELEASE_WORKFLOW_PLAN.md](../../release/RELEASE_WORKFLOW_PLAN.md) -->** (12KB)
    - Step-by-step release process
    - Phase-based timeline
    - Decision points and gates
@@ -69,19 +69,19 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
    - Emergency procedures
    - Contact information
 
-9. **<!-- BROKEN: [COGNITIVE_BRAIN_ALIGNMENT.md](.codex/release/COGNITIVE_BRAIN_ALIGNMENT.md) -->** (7KB)
+9. **<!-- BROKEN: [COGNITIVE_BRAIN_ALIGNMENT.md](../../release/COGNITIVE_BRAIN_ALIGNMENT.md) -->** (7KB)
    - Cognitive brain integration
    - Phase alignment matrix
    - Quality standards mapping
    - Success metrics
 
-10. **<!-- BROKEN: [README_VERIFICATION_REPORT.md](.codex/release/README_VERIFICATION_REPORT.md) -->** (6KB)
+10. **<!-- BROKEN: [README_VERIFICATION_REPORT.md](../../release/README_VERIFICATION_REPORT.md) -->** (6KB)
     - Documentation verification results
     - Link validation report
     - Completeness assessment
     - Quality score
 
-11. **<!-- BROKEN: [PINNED_SHAS.md](.codex/release/PINNED_SHAS.md) -->** (1KB)
+11. **<!-- BROKEN: [PINNED_SHAS.md](../../release/PINNED_SHAS.md) -->** (1KB)
     - Pinned commit SHAs
     - Version references
     - Dependency locks
@@ -144,7 +144,7 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
 | **Phase 26 Readiness** | ✅ CONFIRMED | 100% | PHASE_26_RELEASE_READINESS.md |
 | **Documentation Coverage** | ✅ COMPLETE | 100% | All 10 documents |
 | **Cross-References** | ✅ VALIDATED | 100% | All links working |
-| **Security** | ✅ CLEAN | 100% | No secrets found |
+| **Security** | ✅ CLEAN | 100% | No secrets found | <!-- pragma: allowlist secret -->
 | **Quality Gates** | ✅ DEFINED | 100% | 14 gates specified |
 | **Automation** | ✅ DESIGNED | 60-70% | CI/CD workflows |
 
@@ -345,7 +345,7 @@ The `codex-ml` package is now **production-ready for release** with:
 
 For any questions or clarifications:
 1. **Review**: <!-- BROKEN: [Release Documentation Index](.codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md) -->
-2. **Detailed Guide**: <!-- BROKEN: [FOLLOWUP_PROMPT_RELEASE_PLANNING.md](.codex/FOLLOWUP_PROMPT_RELEASE_PLANNING.md) -->
+2. **Detailed Guide**: <!-- BROKEN: [FOLLOWUP_PROMPT_RELEASE_PLANNING.md](../../FOLLOWUP_PROMPT_RELEASE_PLANNING.md) -->
 3. **Alignment**: <!-- BROKEN: [PHASE_26_RELEASE_READINESS.md](.codex/release/PHASE_26_RELEASE_READINESS.md) -->
 4. **Contact**: @mbaetiong
 

@@ -908,7 +908,7 @@ class CodeQLSuppressionReviewer:
         report_lines.extend([
             "## References",
             "",
-            "- [Security False Positive Standard](.codex/SECURITY_FALSE_POSITIVE_STANDARD.md)",
+            "- [Security False Positive Standard](SECURITY_FALSE_POSITIVE_STANDARD.md)",
             "- [CodeQL Documentation](https://codeql.github.com/docs/)",
             "",
             "## Recommendations",

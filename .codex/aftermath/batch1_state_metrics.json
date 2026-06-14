@@ -1,0 +1,439 @@
+{
+  "timestamp": "2026-06-14T02:56:49.356551",
+  "phase": "6_batch_1_state_management",
+  "databases_identified": [
+    {
+      "name": "session_logs.db",
+      "path": ".codex/session_logs.db",
+      "module": "src/codex/logging",
+      "wal_enabled": true,
+      "journal_mode": "WAL",
+      "purpose": "Session event logging for Copilot sessions",
+      "tables": [
+        {
+          "name": "session_events",
+          "columns": [
+            {
+              "name": "ts",
+              "type": "REAL",
+              "nullable": false
+            },
+            {
+              "name": "session_id",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "role",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "message",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "seq",
+              "type": "INTEGER",
+              "nullable": true
+            },
+            {
+              "name": "meta",
+              "type": "TEXT",
+              "nullable": true
+            }
+          ],
+          "indexes": [
+            "session_events_sid_ts_idx (session_id, ts)"
+          ],
+          "constraints": [
+            "PRIMARY KEY (rowid)"
+          ],
+          "row_count_estimate": "High (millions)",
+          "growth_rate": "Continuous",
+          "access_pattern": "Write-heavy (append-only), reads by session_id and ts"
+        }
+      ],
+      "concurrency_features": [
+        "WAL mode",
+        "Reentrant locks",
+        "Connection pooling"
+      ],
+      "production_readiness": "READY"
+    },
+    {
+      "name": "agent_memory.db",
+      "path": ".codex/agent_memory.db",
+      "module": "agents/sqlite_memory.py",
+      "wal_enabled": false,
+      "journal_mode": "DEFAULT",
+      "purpose": "Persistent cross-session agent state",
+      "tables": [
+        {
+          "name": "memory",
+          "columns": [
+            {
+              "name": "key",
+              "type": "TEXT",
+              "nullable": false,
+              "constraint": "PRIMARY KEY"
+            },
+            {
+              "name": "value_json",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "created_at",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "updated_at",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "metadata_json",
+              "type": "TEXT",
+              "nullable": true
+            }
+          ],
+          "indexes": [
+            "idx_updated_at (updated_at)"
+          ],
+          "row_count_estimate": "Low to Medium (hundreds to thousands)",
+          "access_pattern": "Read-modify-write with JSON serialization"
+        },
+        {
+          "name": "memory_history",
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "nullable": false,
+              "constraint": "PRIMARY KEY AUTOINCREMENT"
+            },
+            {
+              "name": "key",
+              "type": "TEXT",
+              "nullable": false,
+              "constraint": "FOREIGN KEY"
+            },
+            {
+              "name": "value_json",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "timestamp",
+              "type": "TEXT",
+              "nullable": false
+            }
+          ],
+          "row_count_estimate": "High (history growing)",
+          "access_pattern": "Append-only history"
+        }
+      ],
+      "concurrency_features": [
+        "IN-MEMORY Connections (no sharing)"
+      ],
+      "migration_needed": "Enable WAL mode for better concurrency",
+      "production_readiness": "NEEDS_ENHANCEMENT"
+    },
+    {
+      "name": "users.db",
+      "path": "Variable (CODEX_USERSTORE_DB_PATH)",
+      "module": "src/codex/auth/sqlite_user_repository.py",
+      "wal_enabled": true,
+      "journal_mode": "WAL",
+      "purpose": "User authentication and authorization data",
+      "tables": [
+        {
+          "name": "users",
+          "columns": [
+            {
+              "name": "id",
+              "type": "TEXT",
+              "nullable": false,
+              "constraint": "PRIMARY KEY"
+            },
+            {
+              "name": "username",
+              "type": "TEXT",
+              "nullable": false,
+              "constraint": "UNIQUE NOT NULL"
+            },
+            {
+              "name": "email",
+              "type": "TEXT",
+              "nullable": false,
+              "constraint": "UNIQUE NOT NULL"
+            },
+            {
+              "name": "password_hash",
+              "type": "TEXT",
+              "nullable": false
+            },
+            {
+              "name": "is_active",
+              "type": "INTEGER",
+              "nullable": false,
+              "default": "1"
+            },
+            {
+              "name": "roles",
+              "type": "TEXT",
+              "nullable": false,
+              "default": "[\"user\"]"
+            },
+            {
+              "name": "display_name",
+              "type": "TEXT",
+              "nullable": true
+            },
+            {
+              "name": "created_at",
+              "type": "REAL",
+              "nullable": false
+            },
+            {
+              "name": "updated_at",
+              "type": "REAL",
+              "nullable": false
+            }
+          ],
+          "indexes": [
+            "idx_users_username (username)",
+            "idx_users_email (email)"
+          ],
+          "constraints": [
+            "PRIMARY KEY (id)",
+            "UNIQUE (username)",
+            "UNIQUE (email)",
+            "FOREIGN_KEYS ON"
+          ],
+          "row_count_estimate": "Low to Medium (dozens to hundreds)",
+          "access_pattern": "Frequent lookups by username/email, moderate writes",
+          "thread_safety": "RLock protected"
+        }
+      ],
+      "concurrency_features": [
+        "WAL mode",
+        "RLock protection",
+        "Row factory"
+      ],
+      "production_readiness": "READY"
+    },
+    {
+      "name": "archive.db",
+      "path": "Variable (backend-specific)",
+      "module": "src/codex/archive/",
+      "wal_enabled": true,
+      "journal_mode": "WAL",
+      "purpose": "Artifact storage and lifecycle management",
+      "tables": [
+        {
+          "name": "artifact",
+          "columns": [
+            "id",
+            "content_sha256",
+            "size_bytes",
+            "compression",
+            "mime_type",
+            "storage_driver",
+            "blob_bytes",
+            "object_url",
+            "created_at"
+          ],
+          "constraints": [
+            "PRIMARY KEY (id)",
+            "UNIQUE (content_sha256)"
+          ],
+          "row_count_estimate": "Medium to High"
+        },
+        {
+          "name": "item",
+          "columns": [
+            "id",
+            "repo",
+            "path",
+            "commit_sha",
+            "language",
+            "kind",
+            "reason",
+            "artifact_id",
+            "metadata",
+            "archived_by",
+            "archived_at",
+            "tombstone_id",
+            "legal_hold",
+            "delete_after",
+            "restored_at"
+          ],
+          "constraints": [
+            "PRIMARY KEY (id)",
+            "FOREIGN KEY (artifact_id) REFERENCES artifact(id)",
+            "CHECK (kind IN ('code','doc','asset'))",
+            "CHECK (reason IN ('dead','pruned','legacy','replaced'))"
+          ],
+          "indexes": [
+            "idx_item_repo_path",
+            "idx_item_archived_at"
+          ]
+        },
+        {
+          "name": "event",
+          "columns": [
+            "id",
+            "item_id",
+            "action",
+            "actor",
+            "context",
+            "created_at"
+          ],
+          "constraints": [
+            "PRIMARY KEY (id)",
+            "FOREIGN KEY (item_id) REFERENCES item(id)",
+            "CHECK (action IN ('ARCHIVE','RESTORE','PRUNE_REQUEST','DELETE_APPROVED'))"
+          ]
+        },
+        {
+          "name": "tag",
+          "columns": [
+            "item_id",
+            "tag"
+          ],
+          "constraints": [
+            "PRIMARY KEY (item_id, tag)",
+            "FOREIGN KEY (item_id) REFERENCES item(id)"
+          ]
+        },
+        {
+          "name": "referent",
+          "columns": [
+            "item_id",
+            "ref_type",
+            "ref_value"
+          ],
+          "constraints": [
+            "PRIMARY KEY (item_id, ref_type, ref_value)",
+            "FOREIGN KEY (item_id) REFERENCES item(id)"
+          ]
+        }
+      ],
+      "production_readiness": "READY"
+    }
+  ],
+  "concurrency_validation": {
+    "wal_mode_databases": [
+      "session_logs.db (ENABLED)",
+      "users.db (ENABLED)",
+      "archive.db (ENABLED)"
+    ],
+    "non_wal_databases": [
+      "agent_memory.db (NOT ENABLED - RECOMMENDATION: ENABLE)"
+    ],
+    "thread_safety_mechanisms": [
+      "Reentrant locks (RLock) - session logging",
+      "Connection pooling - optional via CODEX_SQLITE_POOL",
+      "IN-MEMORY sharing - agent memory (local only)",
+      "Row factory - users repository"
+    ],
+    "concurrent_access_tests": [
+      "test_sqlite_pool_allows_concurrent_writes - PASS",
+      "test_sqlite_user_repository::test_concurrent_creates - PASS",
+      "test_sqlite_user_repository::test_concurrent_reads_and_writes - PASS",
+      "test_wal_mode_read_while_write - PASS"
+    ]
+  },
+  "schema_versioning": {
+    "current_version": "1.0",
+    "migrations_available": [
+      "001_userstore_to_sqlite.py - JSON to SQLite migration for users"
+    ],
+    "migration_framework": "Manual scripts in scripts/migrations/",
+    "schema_evolution_pattern": "IF NOT EXISTS clauses with ALTER TABLE for new columns"
+  },
+  "constraints_and_indexes": {
+    "foreign_keys": "ENABLED in sqlite_user_repository, ENABLED in archive schema",
+    "unique_constraints": [
+      "users.username",
+      "users.email",
+      "artifact.content_sha256",
+      "item.tombstone_id"
+    ],
+    "check_constraints": [
+      "item.kind IN ('code','doc','asset')",
+      "item.reason IN ('dead','pruned','legacy','replaced')",
+      "event.action IN ('ARCHIVE','RESTORE','PRUNE_REQUEST','DELETE_APPROVED')"
+    ],
+    "indexes_by_database": {
+      "session_events": [
+        "session_events_sid_ts_idx"
+      ],
+      "agent_memory": [
+        "idx_updated_at"
+      ],
+      "users": [
+        "idx_users_username",
+        "idx_users_email"
+      ],
+      "archive": [
+        "idx_item_repo_path",
+        "idx_item_archived_at"
+      ]
+    }
+  },
+  "pragmas_configuration": {
+    "journal_mode": "WAL (Write-Ahead Logging) for session_logs, users, archive",
+    "synchronous_mode": "NORMAL (PRAGMA synchronous=NORMAL) for balanced safety/performance",
+    "foreign_keys": "ON in sqlite_user_repository",
+    "check_same_thread": "False in user repository (allows multi-threaded use)"
+  },
+  "production_recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Schema Stability",
+      "item": "Enable WAL mode for agent_memory.db",
+      "rationale": "Current default journal mode is SQLite default (DELETE). WAL provides better concurrency.",
+      "impact": "Improved concurrent read performance by ~2-3x"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Monitoring",
+      "item": "Add database health checks to operational monitoring",
+      "rationale": "No current monitoring for database size, connection pool utilization, or lock contention",
+      "implementation": "Add metrics for file size, active connections, busy timeouts"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Recovery",
+      "item": "Document backup and restore procedures for each database",
+      "rationale": "Critical state data needs documented recovery procedures",
+      "implementation": "Create runbook with WAL checkpoint procedures"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Performance",
+      "item": "Implement connection pool monitoring",
+      "rationale": "Connection pool enabled via env var but no observability",
+      "implementation": "Add metrics for pool size and reuse ratio"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Testing",
+      "item": "Add chaos testing for database scenarios",
+      "rationale": "Need to validate recovery from disk full, corrupted db, etc.",
+      "implementation": "Extend auto_remediation tests with database-specific scenarios"
+    },
+    {
+      "priority": "LOW",
+      "category": "Documentation",
+      "item": "Document state consistency guarantees",
+      "rationale": "Operators need to understand ACID properties and transaction isolation levels",
+      "implementation": "Add technical specification document"
+    }
+  ]
+}

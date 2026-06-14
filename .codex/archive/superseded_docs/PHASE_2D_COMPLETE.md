@@ -162,13 +162,13 @@ distance = steps_up_from_source + steps_down_to_target
 ```diff
 File: docs/MASTER_INDEX.md
 
-- [Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)
+- [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
 + [Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)
 
-- [Dashboard](system/CODEBASE_DASHBOARD.md)
+- [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)
 + [Dashboard](./system/CODEBASE_DASHBOARD.md)
 
-- [Roadmap](ROADMAP.md)
+- [Roadmap](../../../docs/plans/archive/PHASE2_FINAL_STATUS_AND_ROADMAP.md)
 + [Roadmap](./ROADMAP.md)
 ```
 
@@ -200,7 +200,7 @@ File: .github/agents/PHASE3_EXECUTIVE_SUMMARY.md
 ```diff
 File: .github/agents/reference-updater-agent.md
 
-- [text](docs/README.md)
+- [text](../../../docs/README.md)
 + [text](../../agents/README.md)
 
 - [Guide](docs/README.md#section)

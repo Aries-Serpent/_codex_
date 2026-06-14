@@ -404,7 +404,7 @@ Time: 12.3s
 ```
 [DRY RUN] Would update 12 files:
   docs/index.md:
-    Line 15: <!-- BROKEN LINK: [text](old.md) --> → <!-- BROKEN LINK: [text](new.md) -->
+    Line 15: <!-- BROKEN LINK: [text](../../.codex/PR_3248_FOLLOWUP_PROMPT.old.md) --> → <!-- BROKEN LINK: [text](new.md) -->
     Line 42: <a href="old.md"> → <a href="new.md">
   ...
 
@@ -862,7 +862,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | Network Access | ✅ | Restricted | Approved endpoints only |
 | Process Execution | ✅ | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
+| API Integrations | ✅ | Authenticated | Token-based | <!-- pragma: allowlist secret -->
 | Git Operations | ✅ | Full | Within repository |
 
 ### Tool Access

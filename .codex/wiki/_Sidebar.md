@@ -3,13 +3,13 @@
 ## Getting Started
 - [Home](Home.md)
 - [README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
-- [Quick Start Guide](Home.md#-quick-start)
+- [Quick Start Guide](#quick-start)
 
 ## For Developers
 - [Installation](Home.md#for-developers)
-- [Project Structure](Home.md#-repository-architecture)
-- [Development Workflow](Home.md#-development-workflow)
-- [Testing](Home.md#-testing)
+- [Project Structure](Home.md#repository-architecture)
+- [Development Workflow](Home.md#development-workflow)
+- [Testing](Home.md#testing)
 - [Contributing](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
 
 ## For AI Agents

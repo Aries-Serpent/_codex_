@@ -193,9 +193,9 @@ python .codex/analysis/philosophical_metrics.py --becoming-rate
 - [.codex/docs README](../../docs/README.md) - Documentation navigation
 
 ### Implementation References
-- [Philosophical Metrics Section](../docs/PHILOSOPHICAL_FRAMEWORK.md#philosophical-metrics)
+- [Philosophical Metrics Section](#10-philosophical-metrics)
 - [Quantitative Analysis](../../docs/ARCHITECTURE.md#quantitative-analysis)
-- [Refactoring Roadmap](../docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
+- [Refactoring Roadmap](#9-refactoring-recommendations)
 
 ---
 
@@ -259,7 +259,7 @@ python .codex/analysis/philosophical_metrics.py --becoming-rate
 
 **For Implementation:**
 - Reference [Philosophical Framework](../docs/PHILOSOPHICAL_FRAMEWORK.md) Section 10
-- See [Refactoring Priorities](../docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
+- See [Refactoring Priorities](#9-refactoring-recommendations)
 - Check [Implementation Status](../../docs/README.md#implementation-status)
 
 **For Questions:**
