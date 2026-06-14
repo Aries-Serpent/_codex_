@@ -27,6 +27,7 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--no-verify", "--baseline", ".secrets.baseline"]
+        exclude: "venv_test/.*"
   # Security scanning: pip-audit for dependency vulnerabilities
   - repo: https://github.com/pypa/pip-audit
     rev: v2.6.1
