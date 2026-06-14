@@ -596,7 +596,7 @@ def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatc
 
 
 def test_request_rejects_non_https_url(poster):
-    with pytest.raises(ValueError, match=r"URL scheme must be https"):
+    with pytest.raises(ValueError, match=r"GitHub API URL must target https://api.github.com"):
         poster._request("POST", "http://insecure.example.com/api", {})
 
 
@@ -932,7 +932,7 @@ def test_get_method_returns_json(poster, monkeypatch):
 
 def test_get_method_rejects_non_https(poster):
     """_get() raises ValueError for non-HTTPS URLs."""
-    with pytest.raises(ValueError, match="URL scheme must be https"):
+    with pytest.raises(ValueError, match="GitHub API URL must target https://api.github.com"):
         poster._get("http://api.github.com/repos/owner/repo/git/refs/heads/main")
 
 

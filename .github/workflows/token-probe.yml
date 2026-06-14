@@ -28,15 +28,16 @@ on:
         type: choice
         options: ['true', 'false']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   pull-requests: write
   issues: write
   contents: read
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
 
   probe-master-key:

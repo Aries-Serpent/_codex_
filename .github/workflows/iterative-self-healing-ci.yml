@@ -24,9 +24,10 @@ on:
         default: '3'
         type: string
 
+
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.head_ref || github.ref }}-${{ github.event.workflow_run.id || github.run_id }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -737,10 +738,7 @@ jobs:
     # second trigger will queue behind it instead of losing its commit.
     # This eliminates the push race (SELF_HEALING_001-B) at the source by serialising
     # all sweeps that target the same branch across concurrent workflow_run events.
-    concurrency:
-      group: baseline-sweep-${{ needs.triage.outputs.head_branch || github.ref_name }}
-      cancel-in-progress: false
-    # Run whenever triage ran (regardless of fixable flag), unless it was skipped
+        # Run whenever triage ran (regardless of fixable flag), unless it was skipped
     # by the cascade brake.  skip==true means rate_cap fired — nothing to do.
     if: >
       always() &&
@@ -1001,9 +999,6 @@ jobs:
   # is not diagnosable are excluded — these still go to human escalation only.
   copilot-escalation:
     name: "🤖 Copilot escalation"
-    concurrency:
-      group: copilot-escalation-pr-${{ github.event.pull_request.number || needs.triage.outputs.head_branch || github.run_id }}
-      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [triage, baseline-sweep]

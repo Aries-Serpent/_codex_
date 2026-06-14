@@ -42,6 +42,10 @@ on:
     types: [completed]
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   issues: write
   pull-requests: write
@@ -52,9 +56,6 @@ permissions:
 # One instance at a time across ALL workflow names — enforces the single-branch
 # rule without any external state store.  cancel-in-progress: false queues
 # subsequent failures rather than dropping them.
-concurrency:
-  group: ci-failure-issue-creator-global-lock
-  cancel-in-progress: false
 
 jobs:
 

@@ -12,13 +12,14 @@ on:
       - "training/**"
       - "requirements*.txt"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write
 
-concurrency:
-  group: ml-lifecycle-gate-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   reproducibility-check:

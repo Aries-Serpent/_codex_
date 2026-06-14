@@ -10,12 +10,13 @@ on:
         default: '7 days ago'
 
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   perceive-environment:
     runs-on: ubuntu-latest

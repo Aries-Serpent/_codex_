@@ -15,11 +15,12 @@ on:
   workflow_dispatch:
 
 
-permissions: read-all
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: read-all
+
 jobs:
   test-authentication:
     name: Test Authentication Module

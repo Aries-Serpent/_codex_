@@ -9,6 +9,10 @@ on:
     # Run daily at 9 AM UTC to check for new alerts
     - cron: '0 9 * * *'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: read
@@ -16,9 +20,6 @@ permissions:
   pull-requests: write
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   check-security-alerts:
     runs-on: ubuntu-latest

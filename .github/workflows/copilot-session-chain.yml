@@ -50,14 +50,15 @@ on:
     branches:
       - "0D_base_"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
-concurrency:
-  group: session-chain-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: false
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────

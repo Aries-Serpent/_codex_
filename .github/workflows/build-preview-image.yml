@@ -29,8 +29,9 @@ on:
         required: false
         type: string
 
+
 concurrency:
-  group: preview-image-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

@@ -27,8 +27,9 @@ on:
   # workflow_run with contents:write that executes code is a security risk).
   workflow_dispatch:
 
+
 concurrency:
-  group: codex-manifest-refresh-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

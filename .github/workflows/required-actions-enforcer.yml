@@ -34,8 +34,9 @@ on:
         type: boolean
         default: false
 
+
 concurrency:
-  group: required-actions-enforcer-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

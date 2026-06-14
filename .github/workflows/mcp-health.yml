@@ -37,8 +37,9 @@ env:
   MCP_LATENCY_THRESHOLD_MS: ${{ inputs.latency-threshold-ms || '500' }}
   MCP_ERROR_RATE_THRESHOLD: ${{ inputs.error-rate-threshold || '0.05' }}
 
+
 concurrency:
-  group: mcp-health-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

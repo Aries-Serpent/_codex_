@@ -33,14 +33,15 @@ on:
         required: false
         default: 'manual'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: false
 
 jobs:
   build:

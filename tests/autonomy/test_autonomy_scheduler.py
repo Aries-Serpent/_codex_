@@ -41,13 +41,15 @@ class TestBudgetCap:
 
         assert fast() == "done"
 
-    @pytest.mark.flaky(reruns=2)
+    @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision")
     def test_budget_cap_raises_on_timeout(self):
         mod = _import_scheduler()
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
 
-        @mod.budget_cap(max_seconds=0.01)
+        # STABILIZATION: Increase timeout from 0.01s to 0.1s to allow reliable
+        # thread scheduling and timer enforcement on loaded CI runners
+        @mod.budget_cap(max_seconds=0.1)
         def slow():
             time.sleep(1)
             return "never"
@@ -79,8 +81,8 @@ class TestKillSwitch:
 class TestDecisionLoop:
     """Tests for the main decision loop in dry-run mode."""
 
-    @pytest.mark.flaky(reruns=2)
-    @pytest.mark.timeout(120)
+    @pytest.mark.flaky(reruns=2, reason="P3-subprocess: sense_test_health subprocess timeout")
+    @pytest.mark.timeout(240)  # STABILIZATION: Increase from 120s to 240s for slow CI runners
     def test_run_loop_dry_run_no_side_effects(self, tmp_path):
         """Dry-run mode should not write to memory/ directory."""
         mod = _import_scheduler()

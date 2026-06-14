@@ -256,7 +256,7 @@ pre-commit run check-meta-tensors --all-files
 
 - **Agent Documentation**: [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)
 - **Utility Registry**: [.codex/AI_AGENT_UTILITIES_REGISTRY.md](.codex/AI_AGENT_UTILITIES_REGISTRY.md) - See `safe_model_load_v2()`
-- **Fix Summary**: [RAG_META_TENSOR_FIX_SUMMARY.md](RAG_META_TENSOR_FIX_SUMMARY.md) - Historical context
+- **Fix Summary**: [RAG_META_TENSOR_FIX_SUMMARY.md](.codex/RAG_META_TENSOR_FIX_SUMMARY.md) - Historical context
 
 ### Troubleshooting
 

@@ -707,7 +707,7 @@
 
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Code Style Guide](dev/CODE_STYLE_GUIDE.md)
-- [Testing Guidelines](./CONTRIBUTING.md#testing)
+- [Testing Guidelines](./CONTRIBUTING.md#testing-requirements)
 - [Security Policy](SECURITY.md)
 - [Archival Policy](./agents.md)
 

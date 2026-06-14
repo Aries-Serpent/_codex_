@@ -460,10 +460,10 @@ class TestMetricsIntegration:
     def test_monitor_embedding_generation(self):
         """Test monitoring during embedding generation."""
         try:
-            from codex.rag.embeddings import TFIDFEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
             from codex.rag.monitoring import RAGMetrics
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
             metrics = RAGMetrics()
 
             texts = ["text 1", "text 2", "text 3"]

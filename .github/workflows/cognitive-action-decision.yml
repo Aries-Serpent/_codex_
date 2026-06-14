@@ -35,15 +35,16 @@ on:
         required: false
         default: 'false'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   issues: write
   pull-requests: write
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   decision_engine:

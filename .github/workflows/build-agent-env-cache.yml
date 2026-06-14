@@ -45,12 +45,13 @@ env:
   PYTHON_VERSION: '3.12'
   CACHE_VERSION: ${{ inputs.cache-version || vars.CODEX_CACHE_VERSION || 'v2' }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: build-agent-env-cache
-  cancel-in-progress: true
 
 jobs:
   build-agent-env:

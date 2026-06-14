@@ -104,8 +104,9 @@ on:
   repository_dispatch:
     types: [codeql-alert-fetcher]
 
+
 concurrency:
-  group: codeql-alert-fetcher-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

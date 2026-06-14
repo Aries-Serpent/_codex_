@@ -47,9 +47,10 @@ on:
         default: "false"
         type: boolean
 
+
 concurrency:
-  group: process-variable-intents
-  cancel-in-progress: false   # never cancel mid-processing
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write   # needed to commit the cleanup of processed intent files

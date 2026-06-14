@@ -69,8 +69,8 @@ Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the 
 ## 🚀 Quick Links for Reasoning Teams
 
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the [`codex_cli` help](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py) for command details.
-- **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](./README_ROOT.md#training-quickstart).
-- **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure NDJSON metrics pipelines.
+- **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](README_ROOT.md#training-quickstart).
+- **Evaluation ledger** — Use [`guides/reasoning_overview.md`](guides/reasoning_overview.md) to configure NDJSON metrics pipelines.
 - **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
 ---
@@ -96,7 +96,7 @@ Each template includes role guidance (developers draft → maintainers execute),
 2. Rollback and communication steps point to real runbooks or dashboards.
 3. The template is stored alongside the service codebase (usually under `docs/`) and linked from the change description or PR.
 
-See [`docs/CONTRIBUTING.md`](./CONTRIBUTING.md#using-operational-templates) for the full drafting workflow and role expectations.
+See [CONTRIBUTING](../CONTRIBUTING.md#using-operational-templates) for the full drafting workflow and role expectations.
 
 ---
 

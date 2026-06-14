@@ -9,12 +9,13 @@ on:
     - cron: "30 3 * * *"       # 03:30 UTC nightly
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: docs-code-alignment
-  cancel-in-progress: true
 
 jobs:
   alignment-check:

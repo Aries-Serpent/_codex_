@@ -56,13 +56,14 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: promote-target-branch-${{ inputs.target_branch || '0D_base_' }}
-  cancel-in-progress: false
 
 jobs:
   promote:

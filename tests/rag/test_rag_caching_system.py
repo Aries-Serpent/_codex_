@@ -504,11 +504,11 @@ class TestCacheIntegration:
         """Test cache integration with embedding generation."""
         try:
             from codex.rag.cache import EmbeddingCache
-            from codex.rag.embeddings import TFIDFEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
-                provider = TFIDFEmbeddingProvider()
+                provider = TfidfEmbeddingProvider()
 
                 text = "test text for cache integration"
 

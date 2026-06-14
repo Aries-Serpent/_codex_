@@ -72,9 +72,10 @@ on:
 # workflow_run events → exponential cascade (SELF_HEALING_001).
 # Since approve_pending_runs.py sweeps ALL pending runs in one pass, running
 # multiple concurrent copies provides no benefit and only amplifies the cascade.
+
 concurrency:
-  group: self-approve-global
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   actions: write        # approve / rerun workflow runs

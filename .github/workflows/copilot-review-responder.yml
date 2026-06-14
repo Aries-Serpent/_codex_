@@ -33,8 +33,9 @@ on:
     types: [created]
 
 # Concurrency: use PR number (available in both events) with fallback to run ID.
+
 concurrency:
-  group: copilot-review-responder-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

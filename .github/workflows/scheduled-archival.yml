@@ -19,15 +19,16 @@ on:
         default: 'true'
         type: boolean
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   # ── 💰 Cost Gate ─────────────────────────────────────────────────────────────
   # RED tier: 3 jobs × 60 min = 180 effective minutes (scheduled, recurring)

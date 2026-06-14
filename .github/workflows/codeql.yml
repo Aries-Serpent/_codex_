@@ -19,14 +19,15 @@ on:
   # repository settings, then re-add push/pull_request/schedule triggers here.
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
   actions: read
 
-concurrency:
-  group: codeql-advanced-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   analyze:

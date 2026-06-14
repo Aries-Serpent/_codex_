@@ -86,9 +86,10 @@ on:
     workflows: ["Copilot coding agent"]
     types: [completed]
 
+
 concurrency:
-  group: agent-checkin-${{ github.event.issue.number || github.event.workflow_run.id || github.sha }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

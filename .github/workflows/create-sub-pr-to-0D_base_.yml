@@ -35,13 +35,14 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
 
-concurrency:
-  group: create-sub-pr-${{ inputs.session_branch }}
-  cancel-in-progress: false
 
 jobs:
   create-sub-pr:

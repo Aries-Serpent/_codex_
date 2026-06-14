@@ -92,15 +92,14 @@ on:
         default: ""
         required: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write        # needed to create branches and push commits
   pull-requests: write   # needed to open the fast-forward PR
   actions: read
-
-concurrency:
-  # One fast-forward at a time per target branch
-  group: fast-forward-${{ inputs.target_branch || 'main' }}
-  cancel-in-progress: false
 
 jobs:
   preflight:

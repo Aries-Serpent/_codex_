@@ -18,8 +18,9 @@ on:
         default: "0.75"
         type: string
 
+
 concurrency:
-  group: doc-refresh-gate-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

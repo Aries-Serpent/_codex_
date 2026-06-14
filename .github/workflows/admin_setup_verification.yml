@@ -27,14 +27,15 @@ on:
   repository_dispatch:
     types: [run-admin-verification]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
   issues: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   verify-setup:

@@ -47,8 +47,9 @@ on:
         type: string
         required: false
 
+
 concurrency:
-  group: rust-error-validator-observation
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

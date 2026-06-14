@@ -5,14 +5,15 @@ on:
   schedule:
     - cron: "30 3 * * *"   # 03:30 UTC daily (after freshness rebuild at 02:00)
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write
   issues: write
 
-concurrency:
-  group: rag-quality-nightly
-  cancel-in-progress: true
 
 jobs:
   freshness-check:

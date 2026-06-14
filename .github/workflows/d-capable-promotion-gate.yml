@@ -26,13 +26,14 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: d-capable-promotion-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   promotion-gate:

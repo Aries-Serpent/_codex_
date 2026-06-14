@@ -60,15 +60,16 @@ on:
         default: false
         required: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   issues: write
   pull-requests: write
   actions: read
 
-concurrency:
-  group: proactive-ci-monitor
-  cancel-in-progress: false
 
 jobs:
   scan:

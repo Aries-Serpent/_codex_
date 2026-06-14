@@ -43,14 +43,15 @@ on:
         required: false
         default: "30"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   issues: write
   pull-requests: write
 
-concurrency:
-  group: ghost-object-actioner-${{ github.ref_name }}
-  cancel-in-progress: false
 
 jobs:
   action-and-discover:
