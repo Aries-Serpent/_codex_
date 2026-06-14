@@ -205,7 +205,7 @@ class TestAdapterInterface:
         """✅ PATTERN: Edge case - Wrong type."""
         adapter = create_adapter()
 
-        with pytest.raises(TypeError, match="dict"):
+        with pytest.raises(TypeError, match="payload.*dict"):
             adapter.process("invalid")
 
     def test_adapter_handle_error_semantics(self):
