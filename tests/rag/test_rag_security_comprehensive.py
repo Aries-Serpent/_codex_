@@ -20,9 +20,9 @@ class TestEmbeddingProviderSecurity:
     def test_embedding_input_sanitization(self):
         """Test that embedding inputs are properly sanitized."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test with potentially malicious inputs
             malicious_inputs = [
@@ -310,9 +310,9 @@ class TestRAGRateLimiting:
     def test_embedding_rate_limits(self):
         """Test that embedding operations respect rate limits."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Make multiple rapid requests
             texts = [f"Text {i}" for i in range(100)]
@@ -353,9 +353,9 @@ class TestRAGErrorHandling:
     def test_embedding_error_handling(self):
         """Test error handling in embedding generation."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test with invalid inputs
             invalid_inputs = [
