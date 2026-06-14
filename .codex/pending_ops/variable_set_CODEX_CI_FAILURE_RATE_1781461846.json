@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "operation": "set",
+  "scope": "repo",
+  "owner": "Aries-Serpent",
+  "repo": "_codex_",
+  "name": "CODEX_CI_FAILURE_RATE",
+  "value": "0.5:ok",
+  "queued_at": "2026-06-14T18:30:46Z",
+  "queued_by": "variable_intent_writer",
+  "note": "Processed by .github/workflows/process-variable-intents.yml on next push using CODEX_MASTER_KEY."
+}
