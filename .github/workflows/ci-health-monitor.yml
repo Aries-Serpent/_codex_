@@ -15,15 +15,16 @@ on:
       - 'scripts/catalog_workflows.py'
       - 'scripts/ci/collect_telemetry.py'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   issues: write
   pull-requests: write
 
 # GROUNDED: concurrency control — only one health check runs at a time.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   health-check:

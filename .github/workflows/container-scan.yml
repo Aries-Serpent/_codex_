@@ -13,13 +13,14 @@ on:
     - cron: '0 5 * * 1'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
 
-concurrency:
-  group: container-scan-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   trivy-scan:

@@ -23,12 +23,13 @@ on:
       - 'tests/autonomy/**'
   workflow_dispatch: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   autonomy-matrix:

@@ -13,6 +13,7 @@ __pycache__/
 venv/
 .venv_ci/
 .venv_agent/
+venv_test/
 # Distribution / packaging
 build/
 dist/

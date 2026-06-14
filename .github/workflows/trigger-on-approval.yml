@@ -26,15 +26,16 @@ on:
   pull_request_review:
     types: [submitted]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write
   pull-requests: write
   issues: write
 
-concurrency:
-  group: trigger-on-approval-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
 
 jobs:
   on-approval:

@@ -61,9 +61,10 @@ on:
   schedule:
     - cron: "0 6 * * 5"   # 06:00 UTC every Friday
 
+
 concurrency:
-  group: discussion-cleanup
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

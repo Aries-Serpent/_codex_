@@ -27,14 +27,15 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write     # Required for auto-merge via GitHub Merges API
   pull-requests: write
   issues: write
 
-concurrency:
-  group: rebase-gate-${{ github.head_ref }}
-  cancel-in-progress: true
 
 jobs:
   rebase-check:

@@ -19,14 +19,15 @@ on:
   pull_request:
     types: [opened, reopened, ready_for_review]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   pull-requests: write
   contents: read
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   inject-context:
     name: Inject Cognitive Brain Context

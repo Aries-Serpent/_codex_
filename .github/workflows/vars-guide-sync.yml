@@ -21,8 +21,9 @@ on:
     workflows: ['Process Variable Intents']
     types: [completed]
 
+
 concurrency:
-  group: vars-guide-sync
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

@@ -3,13 +3,14 @@ name: Runner diagnostics — self-hosted readiness
 on:
   workflow_dispatch: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   diag:
     runs-on: ${{ fromJSON(vars.RUNS_ON || '["self-hosted","linux"]') }}

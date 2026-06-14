@@ -6,11 +6,12 @@ on:
   workflow_dispatch:
 
 
-permissions: {}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   template-lint:
     runs-on: ubuntu-latest

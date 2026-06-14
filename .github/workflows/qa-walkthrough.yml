@@ -14,13 +14,14 @@ on:
         required: false
         default: 'full'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
 
-concurrency:
-  group: qa-walkthrough-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   qa-walkthrough:

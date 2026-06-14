@@ -20,11 +20,12 @@ on:
     - cron: '0 0 * * 0'
 
 
-permissions: read-all
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: read-all
+
 jobs:
   # ── WEC gate — check PR body to decide if link check should run ──────────────
   wec-gate:

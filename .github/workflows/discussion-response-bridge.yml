@@ -19,9 +19,10 @@ on:
   discussion_comment:
     types: [created]
 
+
 concurrency:
-  group: discussion-bridge-${{ github.event.comment.id }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

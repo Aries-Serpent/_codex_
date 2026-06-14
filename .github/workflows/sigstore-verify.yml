@@ -19,12 +19,13 @@ on:
       - "pyproject.toml"
       - "scripts/security/sigstore_verify.py"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: sigstore-verify-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   sigstore-verify:

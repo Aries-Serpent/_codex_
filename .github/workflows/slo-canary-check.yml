@@ -6,14 +6,15 @@ on:
     - cron: "0 7 * * 1"   # 07:00 UTC every Monday
     - cron: "0 7 1 * *"   # 07:00 UTC on day 1 of each month
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write
   issues: write
 
-concurrency:
-  group: slo-canary-check
-  cancel-in-progress: true
 
 jobs:
   slo-canary:

@@ -21,8 +21,9 @@ on:
         type: boolean
         default: false
 
+
 concurrency:
-  group: token-expiry-monitor
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

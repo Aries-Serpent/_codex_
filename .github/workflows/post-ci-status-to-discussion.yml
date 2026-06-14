@@ -45,8 +45,9 @@ on:
         default: "true"
         type: boolean
 
+
 concurrency:
-  group: post-ci-status-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

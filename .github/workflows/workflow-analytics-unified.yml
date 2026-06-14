@@ -74,6 +74,10 @@ on:
         type: string
         default: ''
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   issues: write
@@ -81,9 +85,6 @@ permissions:
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
 # Only one health check or analytics job runs at a time.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   # Health check job (runs frequently)

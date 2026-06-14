@@ -24,9 +24,9 @@ class TestEmbeddingAccuracy:
     def test_tfidf_embedding_consistency(self):
         """Test that TF-IDF embeddings are consistent."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Same text should produce same embedding
             text = ["This is a test document"]
@@ -40,9 +40,9 @@ class TestEmbeddingAccuracy:
     def test_embedding_dimension_consistency(self):
         """Test that embedding dimensions are consistent."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Different texts should have same dimension
             texts = [
@@ -63,9 +63,9 @@ class TestEmbeddingAccuracy:
     def test_embedding_semantic_similarity(self):
         """Test that similar texts have similar embeddings."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Similar texts
             text1 = ["The cat sits on the mat"]
@@ -92,9 +92,9 @@ class TestEmbeddingAccuracy:
     def test_embedding_normalization(self):
         """Test that embeddings are properly normalized."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             texts = ["Test document for normalization"]
             emb = provider.encode(texts)
@@ -312,9 +312,9 @@ class TestRAGPerformance:
         try:
             import time
 
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test batch sizes
             batch_sizes = [10, 50, 100]
@@ -368,9 +368,9 @@ class TestRAGEdgeCases:
     def test_empty_text_embedding(self):
         """Test embedding of empty text."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test empty string
             try:
@@ -386,9 +386,9 @@ class TestRAGEdgeCases:
     def test_very_long_text_handling(self):
         """Test handling of very long texts."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test with very long text
             long_text = "word " * 10000  # 10k words
@@ -404,9 +404,9 @@ class TestRAGEdgeCases:
     def test_special_characters_in_text(self):
         """Test handling of special characters."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test with various special characters
             special_texts = [
@@ -447,9 +447,9 @@ class TestRAGEdgeCases:
         try:
             import threading
 
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
             results = []
             errors = []
 

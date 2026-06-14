@@ -18,11 +18,12 @@ on:
       - 'pytest.ini'
 
 
-permissions: read-all
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: read-all
+
 jobs:
   pre-flight-validation:
     runs-on: ubuntu-latest

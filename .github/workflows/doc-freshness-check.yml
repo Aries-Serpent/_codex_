@@ -20,8 +20,9 @@ on:
         default: "90"
         type: string
 
+
 concurrency:
-  group: doc-freshness-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

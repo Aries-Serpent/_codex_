@@ -1,5 +1,9 @@
 name: Workflow Expiry Enforcer — Auto-disable on expiry
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -11,9 +15,6 @@ on:
     - cron: "17 3 * * *"  # daily best-effort check
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   enforce:
     name: Check approval window and disable workflows if expired

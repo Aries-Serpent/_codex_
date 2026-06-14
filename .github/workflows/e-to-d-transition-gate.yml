@@ -16,14 +16,15 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   actions: write
 
-concurrency:
-  group: e-to-d-transition-gate-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   transition-readiness:

@@ -42,6 +42,10 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: read
@@ -49,9 +53,6 @@ permissions:
   checks: read
   statuses: read
 
-concurrency:
-  group: issue-resolution-gate-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
 
 jobs:
   verify:

@@ -48,13 +48,14 @@ on:
         required: false
         default: ""
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
 
-concurrency:
-  group: reference-integrity-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   # ── Gate 1: Cross-Reference Integrity ─────────────────────────────────────

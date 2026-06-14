@@ -30,12 +30,13 @@ on:
         type: boolean
 
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   sync-env-vars:
     name: Sync Environment Variables

@@ -10,12 +10,13 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: optimized-ci-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   CODEX_FORCE_CPU: "1"

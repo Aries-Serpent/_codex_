@@ -25,11 +25,12 @@ env:
   RUST_TEST_THREADS: "1"
 
 
-permissions: {}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   # ── 💰 Cost Gate ─────────────────────────────────────────────────────────────
   # RED tier: multiple jobs × 60 min = 180+ effective minutes

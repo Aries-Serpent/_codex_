@@ -25,6 +25,7 @@ def test_mlflow_offline_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     pytest.importorskip("mlflow", reason="mlflow not installed")
     uri = f"file:{tmp_path / 'mlruns'}"
     monkeypatch.setenv("MLFLOW_TRACKING_URI", uri)
+    monkeypatch.setenv("MLFLOW_ALLOW_FILE_STORE", "true")
     with logging_utils_mod.mlflow_run(
         run_name="smoke", offline=True, tracking_dir=tmp_path / "mlruns"
     ):

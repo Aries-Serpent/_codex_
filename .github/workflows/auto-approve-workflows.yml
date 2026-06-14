@@ -92,9 +92,10 @@ on:
 
 # One approver run per PR (or one schedule sweep) at a time.
 # Do NOT cancel in-progress so a new push doesn't kill an ongoing sweep.
+
 concurrency:
-  group: auto-approve-workflows-${{ github.event_name == 'schedule' && 'schedule' || github.event.workflow_run.pull_requests[0].number || github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   actions: write        # approve workflow runs

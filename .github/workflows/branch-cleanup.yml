@@ -58,14 +58,15 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
-concurrency:
-  group: branch-cleanup
-  cancel-in-progress: true
 
 jobs:
   cleanup:

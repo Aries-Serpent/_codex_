@@ -14,14 +14,15 @@ on:
   issues:
     types: [opened, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   issues: write
   contents: read
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   triage:
     name: AI Issue Triage

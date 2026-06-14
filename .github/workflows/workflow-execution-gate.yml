@@ -30,8 +30,9 @@ on:
   pull_request:
     types: [edited]
 
+
 concurrency:
-  group: workflow-execution-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

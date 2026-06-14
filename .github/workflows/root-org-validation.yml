@@ -25,15 +25,16 @@ on:
         type: boolean
         default: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
   issues: write
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   pre-validation:
     name: Pre-Move Validation

@@ -103,15 +103,16 @@ on:
         type: string
         default: 'true'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   audit_gap_analysis:
     name: Run Audit Gap Analysis

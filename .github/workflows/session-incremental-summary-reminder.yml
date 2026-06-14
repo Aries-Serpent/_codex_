@@ -23,6 +23,10 @@ on:
     # At this cadence the reminder fires within ~5min of a 10min silence.
     - cron: '*/5 * * * *'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   pull-requests: write
   issues: write
@@ -31,9 +35,6 @@ permissions:
 # GROUNDED: concurrency control — only one instance runs at a time.
 # cancel-in-progress: true — newest cron run wins; prevents queue build-up if a run
 # takes longer than 5 min. Posts are idempotent (dedup check inside the script).
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   remind:

@@ -7,14 +7,15 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
   checks: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   promotion-readiness:

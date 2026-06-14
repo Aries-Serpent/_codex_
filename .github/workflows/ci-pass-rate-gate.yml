@@ -5,14 +5,15 @@ on:
   schedule:
     - cron: "0 6 * * *"   # 06:00 UTC daily
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
   issues: write
 
-concurrency:
-  group: ci-pass-rate-gate
-  cancel-in-progress: true
 
 jobs:
   pass-rate:

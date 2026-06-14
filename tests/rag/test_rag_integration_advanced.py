@@ -23,12 +23,12 @@ class TestComplexWorkflows:
     def test_full_rag_pipeline(self):
         """Test complete RAG pipeline from indexing to retrieval."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
             from src.codex.rag.indexer import CodexIndexer
             from src.codex.rag.retriever import CodexRetriever
 
             # Initialize components
-            TFIDFEmbeddingProvider()
+            TfidfEmbeddingProvider()
             indexer = CodexIndexer()
             retriever = CodexRetriever()
 
@@ -208,9 +208,9 @@ class TestStressTests:
     def test_batch_embedding_1000_texts(self):
         """Test batch embedding of 1000 texts."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Generate 1000 texts
             texts = [f"Test document number {i} with content" for i in range(1000)]
@@ -234,9 +234,9 @@ class TestStressTests:
         try:
             import sys
 
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Track memory
             initial_size = sys.getsizeof(provider)
@@ -263,9 +263,9 @@ class TestConcurrentAccess:
     def test_concurrent_embedding_generation(self):
         """Test concurrent embedding generation."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
             errors = []
             results = []
 
@@ -415,9 +415,9 @@ class TestPerformanceBenchmarks:
     def test_embedding_throughput(self):
         """Benchmark embedding generation throughput."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Benchmark different batch sizes
             batch_sizes = [10, 50, 100, 500]
@@ -499,9 +499,9 @@ class TestScalability:
     def test_linear_scaling(self):
         """Test that performance scales linearly with data size."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             # Test with increasing sizes
             sizes = [100, 200, 400]
@@ -529,9 +529,9 @@ class TestScalability:
     def test_cache_effectiveness(self):
         """Test that caching improves performance."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
-            provider = TFIDFEmbeddingProvider()
+            provider = TfidfEmbeddingProvider()
 
             texts = ["cached text 1", "cached text 2", "cached text 3"]
 

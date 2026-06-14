@@ -33,15 +33,16 @@ on:
         required: true
         type: number
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   # ── Job 0: PR body checkpoint guardian ────────────────────────────────────
   # REASON THIS JOB EXISTS:

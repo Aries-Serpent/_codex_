@@ -14,12 +14,13 @@ on:
       - "src/restore_pipeline/tests/**"
       - "src/restore_pipeline/requirements.txt"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: restore-pipeline-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   test:

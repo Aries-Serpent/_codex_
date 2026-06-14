@@ -24,8 +24,9 @@ on:
   issue_comment:
     types: [created]
 
+
 concurrency:
-  group: comment-review-gate-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -195,10 +196,7 @@ jobs:
     timeout-minutes: 5
     needs: [scan-and-post, gate]
     if: failure()
-    concurrency:
-      group: ci-rescue-comment-${{ github.event.pull_request.number || github.sha }}
-      cancel-in-progress: false
-
+    
     permissions:
       pull-requests: write
       issues: write
