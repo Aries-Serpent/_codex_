@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Security (Dependency CVE Scan — copilot/dep-security-fixes-20260614, 2026-06-14)
+- Scanned 95 packages across 29 requirements files using GitHub Advisory Database. Fixed **7 CVEs**.
+- **ray[serve]>=2.55.0** (CRITICAL): RCE via DNS rebinding + Parquet Arrow deserialization
+- **chromadb>=1.5.10** (CRITICAL): pre-auth code injection (≤1.5.9)
+- **sentencepiece>=0.2.1** (HIGH): heap buffer overflow (8 occurrences across pyproject.toml + requirements)
+- **aiohttp>=3.13.3** (HIGH): zip bomb DoS (2 .github agent files)
+- **setuptools>=78.1.1** (HIGH): path traversal / arbitrary file write
+- **black>=26.3.1** (MEDIUM): arbitrary file write via cache (4 files)
+- **GitPython>=3.1.33** (MEDIUM): Windows untrusted search path
+
 ### Fixed (CodeQL Note-Severity Alerts Wave 2 — copilot/codeql-notes-wave2-20260614, 2026-06-14)
 - **`py/unused-local-variable` — B007 (80 instances across 56 test files)**: Renamed all
   unused loop control variables (`i`, `step`, `epoch`, `batch`, `iteration`, `timestamp`, etc.)
