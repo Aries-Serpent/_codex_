@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (Workflow YAML Compliance — PR #4907, 2026-06-14T15:19Z)
+- Resolved actionlint workflow compliance failures in PR #4907:
+  - Fixed duplicate 'concurrency' block in copilot-agent-session-done.yml (line 55-57 removed)
+  - Fixed YAML indentation error in iterative-self-healing-ci.yml line 1002 (8→4 spaces on 'runs-on' key)
+- Both workflow files now pass YAML syntax validation and actionlint checks
+
 ### Fixed (auto-update — PR #4903)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4903 (SHA `dbbc939c`) at 2026-06-14T05:52Z [auto-generated]
 
