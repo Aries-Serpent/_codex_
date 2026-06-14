@@ -36,13 +36,14 @@ on:
         type: choice
         options: ['false', 'true']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   issues: write
 
-concurrency:
-  group: admin-action-t03
-  cancel-in-progress: true
 
 jobs:
   check-t03:

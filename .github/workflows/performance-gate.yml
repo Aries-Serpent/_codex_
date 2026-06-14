@@ -15,12 +15,13 @@ on:
   schedule:
     - cron: "30 4 * * 1-5"  # Weekdays 04:30 UTC
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
 
 jobs:
   performance-gate:

@@ -16,6 +16,10 @@ name: Cache Health Monitor
 on:
   workflow_dispatch:  # manual-only; effectively disabled
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions: {}
 
 jobs:

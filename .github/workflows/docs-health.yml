@@ -16,12 +16,13 @@ on:
       - 'mkdocs.yml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
-concurrency:
-  group: docs-health-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   docs-health:

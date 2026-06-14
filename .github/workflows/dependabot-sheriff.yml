@@ -32,13 +32,14 @@ on:
   #   - cron: '0 10 * * 1'  # Every Monday at 10:00 UTC
 
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   consolidate-dependabot-prs:
     name: Consolidate Dependabot PRs

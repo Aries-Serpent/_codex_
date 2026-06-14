@@ -33,9 +33,10 @@ on:
         default: false
         type: boolean
 
+
 concurrency:
-  group: post-accountability-${{ github.ref }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

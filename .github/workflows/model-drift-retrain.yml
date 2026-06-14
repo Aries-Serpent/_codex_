@@ -35,9 +35,10 @@ on:
     types:
       - drift-detected   # fired by monitoring agents or post-deploy hooks
 
+
 concurrency:
-  group: model-drift-retrain
-  cancel-in-progress: false   # never cancel an in-flight retrain
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write

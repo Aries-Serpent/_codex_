@@ -12,14 +12,15 @@ name: Resilient Validation Suite
       - 'scripts/**'
 
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
   checks: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 # ── Promotion check: is this PR merging 0D_base_ → main? ────────────────────
 # Full suite (all test groups, sharded quick) runs only on promotion PRs.

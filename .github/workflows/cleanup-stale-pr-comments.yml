@@ -50,6 +50,10 @@ on:
       - "✅ Agent Auth Delegation"
     types: [completed]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   # issues: write is the key permission that allows comment deletion via REST API.
   # Without this explicit declaration the GITHUB_TOKEN is read-only for issues.
@@ -57,9 +61,6 @@ permissions:
   pull-requests: write
   contents: read
 
-concurrency:
-  group: cleanup-stale-pr-comments-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
-  cancel-in-progress: true
 
 jobs:
   cleanup:

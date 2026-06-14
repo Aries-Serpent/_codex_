@@ -92,6 +92,10 @@ on:
         default: ""
         required: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write        # needed to create branches and push commits
   pull-requests: write   # needed to open the fast-forward PR

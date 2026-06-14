@@ -28,6 +28,10 @@ name: Security Scanning Suite
         type: string
         default: 'all'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
@@ -37,9 +41,6 @@ env:
   PYTHON_VERSION: '3.12'
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   codeql-scan:
     name: CodeQL Analysis (${{ matrix.language }})

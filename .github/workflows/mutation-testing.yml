@@ -5,13 +5,14 @@ on:
   schedule:
     - cron: "0 2 * * 0"   # 02:00 UTC every Sunday
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write
 
-concurrency:
-  group: mutation-testing
-  cancel-in-progress: true
 
 jobs:
   mutation-score:

@@ -47,15 +47,16 @@ on:
     # Every 6 hours — catches any bad deployments that slipped through
     - cron: '0 */6 * * *'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
   id-token: write
   actions: write      # Required to trigger pages-mkdocs.yml via workflow_dispatch
 
-concurrency:
-  group: pages-health-guard
-  cancel-in-progress: true
 
 jobs:
   health-check:

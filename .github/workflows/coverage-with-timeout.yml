@@ -12,12 +12,13 @@ on:
         type: string
 
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   coverage-with-timeout:
     runs-on: ubuntu-latest

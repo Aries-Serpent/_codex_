@@ -5,14 +5,15 @@ on:
   schedule:
     - cron: "30 5 * * *"   # 05:30 UTC daily
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
   issues: write
 
-concurrency:
-  group: agent-health-check
-  cancel-in-progress: true
 
 jobs:
   success-rate:

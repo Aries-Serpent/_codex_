@@ -22,8 +22,9 @@ on:
     branches: [main, '0D_base_']
   workflow_dispatch:
 
+
 concurrency:
-  group: dependency-submission-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

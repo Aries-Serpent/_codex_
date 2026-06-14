@@ -13,14 +13,15 @@ on:
   issue_comment:
     types: [created]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   pull-requests: write
   issues: write
   contents: read
 
-concurrency:
-  group: agent-handoff-gate-${{ github.event.issue.number }}
-  cancel-in-progress: false
 
 jobs:
   validate-handoff:

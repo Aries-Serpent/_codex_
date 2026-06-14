@@ -14,14 +14,15 @@ on:
           - pypi
         default: 'testpypi'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   id-token: write  # Required for OIDC trusted publishing
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: false  # deployment: never cancel in-progress — leaves prod in unknown state
 jobs:
   build:
     name: Build Distribution

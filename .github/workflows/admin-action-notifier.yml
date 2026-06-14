@@ -78,13 +78,14 @@ on:
         description: 'GitHub issue number created/updated (empty if none)'
         value: ${{ jobs.probe-and-notify.outputs.issue_number }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   issues: write
 
-concurrency:
-  group: admin-action-notifier-${{ inputs.gap_id }}-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   probe-and-notify:

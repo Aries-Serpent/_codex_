@@ -43,6 +43,10 @@ on:
           - '60'
           - '90'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   issues: write
@@ -50,9 +54,6 @@ permissions:
   actions: read
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   aftermath_evaluator:

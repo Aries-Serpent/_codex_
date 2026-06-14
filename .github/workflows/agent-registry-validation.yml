@@ -22,14 +22,15 @@ on:
       - '.codex/schemas/**'
       - 'CODEX_MANIFEST.json'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   actions: write
   contents: read
   pull-requests: write
 
-concurrency:
-  group: agent-registry-validation-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   validate-registry:

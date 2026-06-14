@@ -18,8 +18,9 @@ on:
         default: ""
         type: string
 
+
 concurrency:
-  group: coherence-snapshot
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

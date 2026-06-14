@@ -23,13 +23,14 @@ on:
 # This workflow fires on every workflow completion. Without concurrency control,
 # its own completion triggers workflow-analytics-unified → which triggers this → ∞ queue.
 # cancel-in-progress: true ensures only the latest run executes; duplicates are dropped.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 # §6 ADMIN_MANUAL_SETUP_GUIDE.md: explicit permissions block replaces the
 # need to set "Read and write" manually in GitHub Settings → Actions.
 # This is the least-privilege declaration for this specific workflow.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write       # write .codex/ files (store_memory, session logs)
   pull-requests: write  # post @copilot follow-up comments via mcp_poster

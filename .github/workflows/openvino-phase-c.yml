@@ -23,13 +23,14 @@ on:
       - 'src/codex_ml/backends/openvino_backend.py'
       - 'tests/smoke/test_openvino_backend_smoke.py'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   openvino-cpu-guard:
     name: OpenVINO smoke (CPU-only runner — Phase B)

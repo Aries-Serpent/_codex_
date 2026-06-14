@@ -21,6 +21,10 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: read
@@ -30,9 +34,6 @@ env:
   PYTHON_VERSION: '3.12'
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 jobs:
   alert-triage:
     name: CodeQL Alert Triage Pipeline

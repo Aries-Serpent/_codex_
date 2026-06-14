@@ -9,11 +9,12 @@ on:
 # Target runtime: ≤ 10 minutes
 
 
-permissions: read-all
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+permissions: read-all
+
 jobs:
   validate-imports:
     runs-on: ubuntu-latest

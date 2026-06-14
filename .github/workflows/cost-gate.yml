@@ -50,13 +50,14 @@ on:
         description: "true if job may proceed"
         value: ${{ jobs.gate.outputs.approved }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
 
-concurrency:
-  group: cost-gate-pr-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: false
 
 jobs:
   # ── Step 1: Estimate cost ──────────────────────────────────────────────────

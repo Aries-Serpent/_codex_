@@ -62,11 +62,12 @@ on:
           - ci_pattern
           - general
 
-concurrency:
-  group: copilot-self-healing-${{ github.event.workflow_run.head_branch || github.ref_name }}
-  cancel-in-progress: false   # never cancel — each post is a unique escalation
 
 # Default to read-only; individual jobs grant only what they need
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 

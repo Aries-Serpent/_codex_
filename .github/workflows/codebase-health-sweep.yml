@@ -46,9 +46,10 @@ on:
     workflows: ["🔄 Auto-Post @copilot review After Agent Session"]
     types: [completed]
 
+
 concurrency:
-  group: codebase-health-sweep-${{ github.event.inputs.branch || 'nightly' }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write

@@ -29,8 +29,9 @@ on:
   # Allow manual triggering.
   workflow_dispatch:
 
+
 concurrency:
-  group: dependabot-preflight-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:
