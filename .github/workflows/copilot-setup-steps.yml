@@ -206,7 +206,7 @@ jobs:
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails          
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
           if ! python3 .github/scripts/session_preload.py; then
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
