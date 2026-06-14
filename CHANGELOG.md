@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+### Fixed (CodeQL Note-Severity Alerts Wave 2 — copilot/codeql-notes-wave2-20260614, 2026-06-14)
+- **`py/unused-local-variable` — B007 (80 instances across 56 test files)**: Renamed all
+  unused loop control variables (`i`, `step`, `epoch`, `batch`, `iteration`, `timestamp`, etc.)
+  to underscore-prefixed equivalents using `ruff --select B007 --unsafe-fixes`.  76 fixed
+  automatically; 4 tuple-unpacking cases required manual edits.  Additionally fixed 2 F841
+  (assigned-but-unused local) occurrences.
+- **`py/unused-import` — F401 (real instances)**:
+  - `tests/coverage_phase5/test_mcp_json_rpc_routing_a.py`: Removed `JsonRpcError` (unused).
+  - `tests/coverage_phase5/test_mcp_adapter_interfaces_a.py`: Added `# noqa: F401` to
+    `BaseAdapter` guard-import (availability check, intentionally not referenced by name).
+  - `tests/integration/test_device_strategy_fallback.py`: Added `# noqa: F401` to all
+    `import torch` guard-imports inside try/except availability checks.
+- **`py/ineffectual-statement` — Protocol abstract methods (2 instances)**:
+  `src/codex/rag/embeddings.py` — Added explicit `...` body to `EmbeddingProvider.encode()`
+  and `EmbeddingProvider.get_dimension()` Protocol stub methods.
+- **Remaining note-severity categories assessed as stale**: `py/unused-global-variable`
+  (6 alerts), `py/import-and-import-from` (3 alerts), and `actions/syntax-error` (1 alert)
+  — all verified to reference variables/imports actively used in current code, or YAML that
+  parses cleanly.  Alert numbers are significantly older than other open alerts.
+
 ### Security (Dependency CVE Scan — copilot/dep-security-fixes-20260614, 2026-06-14)
 - **Comprehensive dependency vulnerability scan**: Scanned 95 unique packages across 29 requirements
   files using the GitHub Advisory Database. Found and fixed 7 CVEs (2 Critical, 3 High, 2 Medium).
