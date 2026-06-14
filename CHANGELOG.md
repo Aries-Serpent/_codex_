@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Security (Dependency CVE Scan — copilot/dep-security-fixes-20260614, 2026-06-14)
+- **Comprehensive dependency vulnerability scan**: Scanned 95 unique packages across 29 requirements
+  files using the GitHub Advisory Database. Found and fixed 7 CVEs (2 Critical, 3 High, 2 Medium).
+- **ray** (CRITICAL RCE): Bumped `ray[serve]>=2.9,<3` → `>=2.55.0,<3` in `pyproject.toml` to fix
+  RCE via DNS rebinding (<2.52.0) and Parquet Arrow Extension Type deserialization (>=2.49.0,<2.55.0).
+- **chromadb** (CRITICAL code injection): Bumped `chromadb>=1.5.8` → `>=1.5.10` in `pyproject.toml`
+  to clear pre-authentication code injection vulnerability present in <=1.5.9.
+- **sentencepiece** (HIGH heap overflow): Bumped `sentencepiece>=0.1.99` → `>=0.2.1` across
+  `pyproject.toml` (6 occurrences), `requirements-ml-lite.txt`, and `requirements-optional.txt`.
+- **aiohttp** (HIGH zip bomb DoS): Bumped `aiohttp>=3.9.5/3.11.11` → `>=3.13.3` in
+  `.github/copilot-cascade/requirements.txt` and `.github/copilot-security/requirements.txt`.
+- **setuptools** (HIGH path traversal): Bumped `setuptools>=69.0` → `>=78.1.1` in `requirements/agent.txt`.
+- **black** (MEDIUM arbitrary file write): Bumped `black>=23.0/24.0/24.10` → `>=26.3.1` in
+  `pyproject.toml`, `requirements-minimal.txt`, `.github/ai-evolution/requirements.txt`,
+  and `requirements/agent.txt`.
+- **gitpython** (MEDIUM Windows code execution): Bumped `GitPython>=3.1.0` → `>=3.1.33` in
+  `.github/agents/ci-testing-agent/requirements.txt`.
+- Full report: `.codex/dependency-vuln-report-20260614.md`
+
 ### Fixed (Packaging Audit — copilot/packaging-audit-20260614, 2026-06-14)
 - **MLflow CVE remediation (16 CVEs, Critical/High/Moderate)**: Updated all `mlflow>=2.22.4,<4`
   lower bounds in `pyproject.toml` to `mlflow>=3.11.0,<4`, eliminating 16 known vulnerabilities
