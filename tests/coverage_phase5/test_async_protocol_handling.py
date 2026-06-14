@@ -20,7 +20,7 @@ class AsyncMessageQueue:
 
     async def process_all(self):
         while not self.queue.empty():
-            msg = await self.dequeue()
+            await self.dequeue()
             self.processed += 1
 
 

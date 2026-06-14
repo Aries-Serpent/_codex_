@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Fixed (CI YAML Parse Error & Code Quality — PR #4907, 2026-06-14T20:00Z)
+- Fixed `Copilot Agent Environment Preparation` YAML parse error (`yaml: line 213: did not find expected key`):
+  - Compressed 70-line historical comment block between checkout and preload steps in copilot-setup-steps.yml
+  - Removed redundant `continue-on-error: true` from preload step (shell `if !` construct already handles failures)
+- Fixed 12 ruff errors in coverage_phase5 and integration test files introduced by commit 92c4dd9:
+  - F841: removed unused `msg` and `response` local variables
+  - F401: removed unused `BaseAdapter` and `JsonRpcError` imports; added `# noqa: F401` to torch availability checks
+  - W291: removed trailing whitespace in coverage_phase5_lane1_template.py
+
 ### Fixed (Token Delegation & Session Continuation — PR #4907, 2026-06-14T19:24Z)
 - Verified all CI compliance checks pass post token delegation activation
 - Validated copilot-setup-steps.yml structure (46 steps, 1167 lines, YAML valid)

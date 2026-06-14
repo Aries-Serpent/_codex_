@@ -1,7 +1,7 @@
 """
 Phase 5 Lane 1: MCP Server Enhancement Templates
 
-Focus: JSON-RPC routing, adapter interfaces, worker lifecycle, 
+Focus: JSON-RPC routing, adapter interfaces, worker lifecycle,
 checkpoint payloads, protocol round-trip
 
 This file provides enhancement patterns for Lane 1 tests.

@@ -139,77 +139,10 @@ jobs:
 
       # ============================================================================
       # 🧠 SESSION CONTEXT PRE-LOAD — guarded, non-blocking
-      #
-      # WHY GUARDED:
-      # - Earlier refactors of this step caused fast-fail agent sessions before usable logs
-      #   were produced.
-      # - The current guarded block-scalar form keeps the preload enabled while preserving a
-      #   non-blocking fallback if session_preload.py regresses.
-      #
-      # FAILED ATTEMPTS RECORDED HERE TO AVOID LOOPING:
-      # 1. Original non-blocking flow-scalar form:
-      #      run: python3 .github/scripts/session_preload.py || { ... }
-      #    Result: known regression / fast-fail behavior.
-      #
-      # 2. Block-scalar shell-guard form ("Method B"):
-      #      run: |
-      #        if ! python3 .github/scripts/session_preload.py; then
-      #          echo "⚠️ ..."
-      #        fi
-      #    Result: still fast-failed in agent session testing.
-      #
-      # 3. Block-scalar grouped fallback form ("Method D", copied from Access Probe pattern):
-      #      run: |
-      #        echo "::group::Session Context Pre-load"
-      #        python3 .github/scripts/session_preload.py || {
-      #          echo "⚠️ ..."
-      #          echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
-      #        }
-      #        echo "::endgroup::"
-      #    Result: still fast-failed in agent session testing.
-      #
-      # CURRENT DECISION:
-      # - Keep this step enabled only in the guarded block-scalar form below.
-      # - Preserve continue-on-error + explicit GITHUB_ENV fallback so Copilot
-      #   sessions still start even if session_preload.py regresses.
-      # - Do not reintroduce flow-scalar brace variants without separate validation.
-      #
-      # RULE:
-      # - DO NOT REFACTOR THIS STEP: If you are fixing a CI failure, do NOT reintroduce or refactor this step as part of
-      #   the same change unless the failing issue is specifically this preload mechanism.
+      # Uses block-scalar if ! form to avoid fast-fail. Do not convert to flow-scalar.
+      # See docs/agent/COPILOT_SETUP_STEPS_GUARD.md for change history.
       # ============================================================================
-      #
-      # Commenting out the below statement as this did not resolve the issue and made the workflow fast fail yet again
-      #  run: |
-      #    echo "::group::Session Context Pre-load"
-      #    if ! python3 .github/scripts/session_preload.py; then
-      #      echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-      #      echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
-      #    fi
-      #    echo "::endgroup::"
-      #
-      # Commenting out the below statement as this did not resolve the issue and made the workflow fast fail yet again-again
-      # run: |
-      #   if ! python3 .github/scripts/session_preload.py; then
-      #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-      #    fi
-      #
-      # Commenting out the below statement as it cased as issue and made the workflow fast fail from PR #4892
-      #  run: |
-      #   if ! python3 .github/scripts/session_preload.py; then
-      #     echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-      #   fi
-      #
-      # Session preload is intentionally guarded/non-blocking; Session Access Probe
-      # remains the first mandatory startup step after this best-effort preload.
-      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
-      # Canonical form: block scalar run: | with if ! ...; then syntax.
-      # This step has been broken 4+ times by agents converting it to flow scalar
-      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
-      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
-      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
           if ! python3 .github/scripts/session_preload.py; then
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
