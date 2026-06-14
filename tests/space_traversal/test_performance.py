@@ -42,16 +42,16 @@ def test_file_cache_basic(tmp_path: Path):
 def test_file_cache_expiry(tmp_path: Path):
     """Test cache TTL expiry."""
     from scripts.space_traversal.performance import FileCache
- 
+
     cache = FileCache(tmp_path / "cache")
- 
+
     # Set with very short TTL (1 second)
     cache.set("key1", "value", ttl_seconds=1)
- 
+
     # Should still be valid
     result = cache.get("key1")
     assert result == "value"
- 
+
     # STABILIZATION: Increase sleep from 1.1s to 1.5s to guarantee expiry
     # even on slow CI runners where clock granularity or system load may cause delays
     time.sleep(1.5)
@@ -93,17 +93,17 @@ def test_file_cache_clear(tmp_path: Path):
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
     from scripts.space_traversal.performance import FileCache
- 
+
     cache = FileCache(tmp_path / "cache")
- 
+
     # Set one with short TTL (1 second) and one with long TTL
     cache.set("expired", "old", ttl_seconds=1)
     cache.set("valid", "new", ttl_seconds=3600)
- 
+
     # STABILIZATION: Increase sleep from 1.1s to 1.5s to guarantee expiry
     # even on slow CI runners where clock granularity or system load may cause delays
     time.sleep(1.5)
- 
+
     count = cache.cleanup_expired()
     assert count == 1
     assert cache.get("valid") == "new"
@@ -210,12 +210,12 @@ def test_performance_metrics_to_json(tmp_path: Path):
 def test_profile_stage_context_manager():
     """Test profile_stage context manager."""
     from scripts.space_traversal.performance import PerformanceMetrics, profile_stage
- 
+
     metrics = PerformanceMetrics()
- 
+
     with profile_stage(metrics, "my_stage"):
         time.sleep(0.05)
- 
+
     summary = metrics.summary()
     assert "my_stage" in summary["stages"]
     # STABILIZATION: Relax assertion from >= 0.05 to >= 0.04

@@ -50,14 +50,14 @@ class TestBudgetCap:
         mod = _import("budget_uncertainty")
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
- 
+
         # STABILIZATION: Increase timeout from 0.001s to 0.1s to allow reliable
         # thread scheduling and timer enforcement on loaded CI runners
         @mod.budget_cap(max_seconds=0.1)
         def slow():
             time.sleep(1)
             return "should never reach here"
- 
+
         with pytest.raises(Exception):
             slow()
 
