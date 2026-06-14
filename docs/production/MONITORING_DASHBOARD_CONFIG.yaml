@@ -1,0 +1,790 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-config
+  namespace: monitoring
+data:
+  # Production Monitoring Dashboard
+  production-overview.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Prometheus --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {"color": "red", "value": null},
+                  {"color": "yellow", "value": 99.5},
+                  {"color": "green", "value": 99.9}
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+          "id": 1,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "up{job=\"production\"}",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "System Status",
+          "type": "gauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 0.005},
+                  {"color": "red", "value": 0.05}
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0},
+          "id": 2,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "rate(http_requests_errors_total[5m])",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Error Rate",
+          "type": "gauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 500},
+                  {"color": "red", "value": 2000}
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0},
+          "id": 3,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Response Time (p99)",
+          "type": "gauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "Latency (ms)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null}
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+          "id": 4,
+          "options": {
+            "legend": {
+              "calcs": ["mean", "max"],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))",
+              "intervalFactor": 1,
+              "legendFormat": "p50",
+              "refId": "A"
+            },
+            {
+              "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+              "intervalFactor": 1,
+              "legendFormat": "p95",
+              "refId": "B"
+            },
+            {
+              "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))",
+              "intervalFactor": 1,
+              "legendFormat": "p99",
+              "refId": "C"
+            }
+          ],
+          "title": "Request Latency Percentiles",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "Requests/sec",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null}
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+          "id": 5,
+          "options": {
+            "legend": {
+              "calcs": ["mean", "max"],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "sum(rate(http_requests_total[5m])) by (service)",
+              "intervalFactor": 1,
+              "legendFormat": "{{service}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Throughput (Requests/sec)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "CPU %",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 80},
+                  {"color": "red", "value": 95}
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+          "id": 6,
+          "options": {
+            "legend": {
+              "calcs": ["mean", "max"],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Utilization",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "Memory %",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 85},
+                  {"color": "red", "value": 95}
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12},
+          "id": 7,
+          "options": {
+            "legend": {
+              "calcs": ["mean", "max"],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Memory Utilization",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "Cache Hit Ratio",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "red", "value": null},
+                  {"color": "yellow", "value": 0.80},
+                  {"color": "green", "value": 0.85}
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 8, "x": 16, "y": 12},
+          "id": 8,
+          "options": {
+            "legend": {
+              "calcs": ["mean"],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "cache_hits_total / (cache_hits_total + cache_misses_total)",
+              "intervalFactor": 1,
+              "legendFormat": "Cache Hit Ratio",
+              "refId": "A"
+            }
+          ],
+          "title": "Cache Performance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "axisLabel": "Status",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "tooltip": false,
+                  "viz": false,
+                  "legend": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null}
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 20},
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.0.0",
+          "targets": [
+            {
+              "expr": "ALERTS",
+              "format": "table",
+              "instant": true,
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Active Alerts",
+          "type": "table"
+        }
+      ],
+      "schemaVersion": 30,
+      "style": "dark",
+      "tags": ["production", "monitoring"],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+      },
+      "timezone": "",
+      "title": "Production Monitoring - Primary",
+      "uid": "production-primary",
+      "version": 1
+    }
+
+  # Service Health Dashboard
+  service-health.json: |
+    {
+      "dashboard": {
+        "title": "Service Health Details",
+        "tags": ["services", "health"],
+        "panels": [
+          {
+            "title": "Service Status Grid",
+            "type": "stat",
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 0},
+            "targets": [
+              {
+                "expr": "up{job=\"production\"}",
+                "legendFormat": "{{instance}}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+  # Incident Response Dashboard
+  incident-response.json: |
+    {
+      "dashboard": {
+        "title": "Incident Response",
+        "tags": ["incident", "response"],
+        "refresh": "10s",
+        "panels": [
+          {
+            "title": "Active Incidents",
+            "type": "alertlist",
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 0},
+            "options": {
+              "dashboardAlerts": true,
+              "dashboardTitle": "",
+              "alertName": "",
+              "dashboardTitle": "",
+              "tags": [],
+              "sortOrder": 3,
+              "maxItems": 10,
+              "alertLimit": 10,
+              "stateFilter": ["firing"]
+            }
+          },
+          {
+            "title": "Error Logs Tail",
+            "type": "logs",
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 10},
+            "targets": [
+              {
+                "expr": "{level=\"ERROR\"}",
+                "refId": "A"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerting-rules
+  namespace: monitoring
+data:
+  production-alerts.yml: |
+    groups:
+    - name: production_critical
+      interval: 30s
+      rules:
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_errors_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
+      
+      # High Latency
+      - alert: HighLatency
+        expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High latency detected"
+          description: "p99 latency is {{ $value }}s for {{ $labels.service }}"
+      
+      # Health Check Failed
+      - alert: HealthCheckFailed
+        expr: up{job="production"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Health check failed"
+          description: "{{ $labels.instance }} has been down for 1 minute"
+      
+      # Resource Exhaustion
+      - alert: CPUHigh
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 0.95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU utilization"
+          description: "CPU is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+      
+      - alert: MemoryHigh
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory utilization"
+          description: "Memory is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+    
+    - name: production_warning
+      interval: 30s
+      rules:
+      # Elevated Error Rate
+      - alert: ElevatedErrorRate
+        expr: rate(http_requests_errors_total[5m]) > 0.01
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated error rate"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
+      
+      # Elevated Latency
+      - alert: ElevatedLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated latency"
+          description: "p95 latency is {{ $value }}s for {{ $labels.service }}"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+  namespace: monitoring
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus:9090
+      isDefault: true
+      editable: true
+    
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki:3100
+      editable: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: grafana
+  selector:
+    app: grafana
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9090
+    targetPort: 9090
+    name: prometheus
+  selector:
+    app: prometheus
