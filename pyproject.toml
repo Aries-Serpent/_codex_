@@ -41,7 +41,7 @@ dependencies = [
     "peft>=0.19.1,<1",
     "accelerate>=0.31,<2",
     "datasets>=5.0.0,<6",
-    "ray[serve]>=2.9,<3",
+    "ray[serve]>=2.55.0,<3",
     "fastapi>=0.135.3,<1",
     "litestar>=2.22.0,<3",
     "slowapi>=0.1.9",
@@ -51,7 +51,7 @@ dependencies = [
     "numpy>=2.4.6,<3",
     "scikit-learn>=1.4,<2",
     "duckdb>=1.5.3",
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
     "torch>=2.6.0,<3.0.0",
     "typer>=0.12",
     "libcst>=1.0.0",
@@ -124,7 +124,7 @@ dev = [
     "hypothesis>=6.152.4,<7.0.0",
     "ruff>=0.1.15,<1.0.0",
     "jsonschema>=4.26.0",
-    "black>=24.0.0,<27.0.0",
+    "black>=26.3.1",
     "isort>=8.0.1",
     "mypy>=2.1.0,<3.0.0",
     "pre-commit>=3.6.0,<5.0.0",
@@ -160,7 +160,7 @@ metrics = [
 ml = [
     "datasets>=5.0.0,<6",
     "peft>=0.19.1,<1",
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
     "torch>=2.6.0,<3.0.0",
     "transformers>=5.10.2,<6",
     "accelerate>=0.31,<2",
@@ -189,12 +189,12 @@ plugins = [
 ]
 rag = [
     "sentence-transformers>=5.5.1,<6.0.0",
-    "chromadb>=1.5.8,<2.0.0",
+    "chromadb>=1.5.10,<2.0.0",
     "faiss-cpu>=1.13.2,<2.0.0",
     "openai>=2.38.0; python_version >= '3.8'",
 ]
 symbolic = [
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
     "tokenizers>=0.14",
 ]
 test-core = [
@@ -226,12 +226,12 @@ test = [
     "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",
     "datasets>=5.0.0,<6",
     "accelerate>=0.31,<2",
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
     "tokenizers>=0.15",
     "responses>=0.26.1",
 ]
 tokenizer = [
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
 ]
 tokenizers = [
     "tokenizers>=0.15",
@@ -286,9 +286,9 @@ all = [
     "sacrebleu>=2.6.0",
     "scipy>=1.15,<2",
     "sentence-transformers>=5.5.1,<6.0.0",
-    "chromadb>=1.5.8,<2.0.0",
+    "chromadb>=1.5.10,<2.0.0",
     "faiss-cpu>=1.13.2,<2.0.0",
-    "sentencepiece>=0.1.99",
+    "sentencepiece>=0.2.1",
     "statsmodels>=0.14,<1",
     "tensorboard>=2.14",
     "tokenizers>=0.15",
