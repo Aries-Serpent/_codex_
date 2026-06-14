@@ -115,8 +115,8 @@ jobs:
       # inject them as env vars (COPILOT_AGENT_INJECTED_SECRET_NAMES) so that
       # GitHubMCPPoster and structural_policy_manager can use them autonomously.
       # See: .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3
-      CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-      CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+      CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
+      CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
       # Repo-wide LFS baseline stays opt-in: initial checkout skips blobs unless
       # a workflow_dispatch run explicitly requests targeted/full materialization.
       LFS_DIAGNOSTICS_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}"
@@ -228,9 +228,9 @@ jobs:
         id: access_probe
         continue-on-error: true        # never block agent startup on probe failure
         env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN:     ${{ github.token }}
+          CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
+          CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
+          GITHUB_TOKEN:     "${{ github.token }}"
         run: |
           echo "::group::Session Access Probe"
           if ! python3 scripts/ci/session_access_probe.py; then
@@ -257,10 +257,10 @@ jobs:
         id: rag_context
         continue-on-error: true        # never block agent startup on RAG failure
         env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN:     ${{ github.token }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
+          CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
+          GITHUB_TOKEN:     "${{ github.token }}"
+          GITHUB_PR_NUMBER: "${{ github.event.pull_request.number }}"
         run: |
           echo "::group::Autonomous RAG Context Build"
           if [ -n "${GITHUB_PR_NUMBER:-}" ]; then
