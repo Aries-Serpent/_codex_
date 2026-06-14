@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
 import uuid
 from unittest.mock import MagicMock, patch
 
@@ -14,7 +13,6 @@ from mcp.server.tracing import (
     init_tracing,
     record_drift_event,
 )
-
 
 # ---------------------------------------------------------------------------
 # init_tracing

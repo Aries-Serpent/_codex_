@@ -17,7 +17,6 @@ from cognitive_brain.experiments.exp3_validation import (
     run_traditional_approach,
 )
 
-
 # ---------------------------------------------------------------------------
 # TestCase dataclass
 # ---------------------------------------------------------------------------

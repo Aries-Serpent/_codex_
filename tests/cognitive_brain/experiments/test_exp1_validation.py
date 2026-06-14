@@ -7,8 +7,6 @@ Tests cover:
 
 from __future__ import annotations
 
-import pytest
-
 from cognitive_brain.experiments.exp1_validation import (
     generate_audit_scenarios,
     get_ground_truth,
@@ -17,7 +15,6 @@ from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
     ComplianceDecision,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

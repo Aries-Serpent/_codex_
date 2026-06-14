@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from starlette.requests import Request
 
-from mcp.server.middleware.auth import APIKeyAuthMiddleware, DEV_KEYS
+from mcp.server.middleware.auth import DEV_KEYS, APIKeyAuthMiddleware
 
 
 def _build_app(dev_keys: dict | None = None) -> tuple[FastAPI, TestClient]:

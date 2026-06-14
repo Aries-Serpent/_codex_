@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
-
 import pytest
 
 from mcp.server.json_rpc import (
@@ -17,7 +15,6 @@ from mcp.server.json_rpc import (
     JsonRpcRequest,
     JsonRpcResponse,
 )
-
 
 # ---------------------------------------------------------------------------
 # JsonRpcRequest

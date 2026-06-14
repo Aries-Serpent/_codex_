@@ -6,7 +6,6 @@ import pytest
 
 from restore_pipeline.cli import _collect_inputs, build_parser
 
-
 # ---------------------------------------------------------------------------
 # build_parser
 # ---------------------------------------------------------------------------

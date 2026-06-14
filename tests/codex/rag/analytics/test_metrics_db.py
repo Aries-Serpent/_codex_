@@ -9,7 +9,6 @@ import pytest
 
 from codex.rag.analytics.metrics_db import MetricsDatabase, QueryMetric
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
