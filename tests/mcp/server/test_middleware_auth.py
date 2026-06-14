@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
 from mcp.server.middleware.auth import APIKeyAuthMiddleware, DEV_KEYS
@@ -15,13 +15,9 @@ def _build_app(dev_keys: dict | None = None) -> tuple[FastAPI, TestClient]:
     app.add_middleware(APIKeyAuthMiddleware)
 
     @app.get("/whoami")
-    async def whoami(request):
-        from starlette.requests import Request as StarletteRequest
-
-        if hasattr(request, "state"):
-            principal = getattr(request.state, "principal", None)
-            return {"principal": principal}
-        return {"principal": None}
+    async def whoami(request: Request):
+        principal = getattr(request.state, "principal", None)
+        return {"principal": principal}
 
     client = TestClient(app, raise_server_exceptions=False)
     return app, client
@@ -54,7 +50,8 @@ def test_no_key_allows_anonymous_access():
 def test_valid_bearer_token_sets_principal():
     key = _get_valid_key()
     _, client = _build_app()
-    resp = client.get("/whoami", headers={"Authorization": f"******"})
+    auth_header = "Bearer " + key
+    resp = client.get("/whoami", headers={"Authorization": auth_header})
     assert resp.status_code == 200
     data = resp.json()
     assert data["principal"]["tenant"] == DEV_KEYS[key]["tenant"]
@@ -78,7 +75,8 @@ def test_unknown_key_returns_401():
 
 def test_unknown_bearer_returns_401():
     _, client = _build_app()
-    resp = client.get("/whoami", headers={"Authorization": "******"})
+    prefix = "Bearer "
+    resp = client.get("/whoami", headers={"Authorization": prefix + "totally-unknown-key-xyz"})
     assert resp.status_code == 401
 
 

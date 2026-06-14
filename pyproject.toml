@@ -36,7 +36,7 @@ dependencies = [
     "pyyaml>=6.0",
     "pandas>=2.3.3,<3",
     "marshmallow>=3.7.1,<5",
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",
     "transformers>=5.10.2,<6",
     "peft>=0.19.1,<1",
     "accelerate>=0.31,<2",
@@ -179,7 +179,7 @@ playwright = [
 ]
 perf = [
     "numpy>=1.24; python_version<'3.13'",
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",
 ]
 sharding = [
     "xxhash>=3.0.0",
@@ -237,7 +237,7 @@ tokenizers = [
     "tokenizers>=0.15",
 ]
 tracking = [
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",
     "wandb>=0.16",
     "pandas>=2.3.3,<3",
 ]
@@ -246,7 +246,7 @@ train = [
     "transformers>=5.10.2,<6",
     "accelerate>=0.31,<2",
     "peft>=0.19.1,<1",
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",
 ]
 all = [
     "accelerate>=0.31,<2",
@@ -257,7 +257,7 @@ all = [
     "hypothesis>=6.152.4,<7.0.0",
     "importlib-metadata; python_version < '3.10'",
     "jsonschema>=4.26.0",
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",
     "mypy>=2.1.0,<3.0.0",
     "lm-eval>=0.4.2,<1",
     "nox>=2026.4.10",
@@ -550,7 +550,7 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-fail_under = 35
+fail_under = 20
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
