@@ -73,14 +73,14 @@ Address explicit feedback from PR #4907 comments: resolve coverage ratchet regre
 | **MLflow offline test fix** | Set MLFLOW_ALLOW_FILE_STORE=true to fix test_mlflow_offline_smoke | ✅ COMPLETE |
 | **venv_test gitignore** | Add venv_test to .gitignore to prevent false positive detection | ✅ COMPLETE |
 | **Coverage ratchet resolution** | Root cause: MLflow test failing due to file-based tracking maintenance mode | ✅ IDENTIFIED & FIXED |
-| **Secrets baseline resolution** | Root cause: venv_test directory not in .gitignore, pip/_vendor code flagged as secret | ✅ IDENTIFIED & FIXED |
+| **Secrets baseline resolution** | Root cause: venv_test directory not in .gitignore, pip/_vendor code flagged as secret | ✅ IDENTIFIED & FIXED | <!-- pragma: allowlist secret -->
 
 ### Feedback Addressed
 
 | Comment ID | Author | Issue | Resolution | Commit |
 |-----------|--------|-------|-----------|--------|
 | 4701188216 | @github-actions[bot] | Coverage Ratchet: 17.98% < 35% | Fixed MLflow test env var | pending |
-| 4701176176 | @mbaetiong | Secrets baseline false positive | Added venv_test to gitignore | pending |
+| 4701176176 | @mbaetiong | Secrets baseline false positive | Added venv_test to gitignore | pending | <!-- pragma: allowlist secret -->
 | 4701188633 | @mbaetiong | Pre-flight checklist | Updating accountability report | in-progress |
 | 4702115545 | @mbaetiong | Approval dispatch | Continuing per instruction | in-progress |
 
