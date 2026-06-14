@@ -100,7 +100,7 @@ class TestMonitoringConfiguration:
         assert len(patterns["categories"]) > 0
 
         # Check that patterns have required fields
-        for category, pattern_list in patterns["categories"].items():
+        for _category, pattern_list in patterns["categories"].items():
             assert len(pattern_list) > 0
             for pattern in pattern_list:
                 assert "id" in pattern

@@ -101,7 +101,7 @@ class TestModelFailures:
             mock_predict.side_effect = RuntimeError("Model inference failed")
 
             # Trigger circuit breaker with consecutive failures
-            for i in range(6):
+            for _i in range(6):
                 response = chaos_client.post(
                     "/infer",
                     json={"model_name": "failing-model", "inputs": ["test"], "max_length": 50},

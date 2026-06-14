@@ -224,7 +224,7 @@ class TestRegistryNames:
         assert "trainers" in ALL_REGISTRY_NAMES
 
         # Each category should map to a dict of names->descriptions
-        for kind, names_dict in ALL_REGISTRY_NAMES.items():
+        for _kind, names_dict in ALL_REGISTRY_NAMES.items():
             assert isinstance(names_dict, dict)
             assert len(names_dict) > 0
 

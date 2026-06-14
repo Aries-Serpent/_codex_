@@ -2,6 +2,42 @@
 
 ## [Unreleased]
 
+### CI Pattern Knowledge Graph (ci-pattern-wave3-20260614 — 2026-06-14)
+- **Pattern sweep**: Analysed `pda_iterations.jsonl` across full history; identified **7 high-recurrence
+  patterns** (≥3 occurrences each) and recorded all entries in `.codex/ci_pattern_knowledge.jsonl`.
+- **High-recurrence patterns recorded**:
+  - `RP-PYTEST-SKILL-TEST` × 34 (TestHarness — skill-test fixtures, no code fix required)
+  - `RP-SUCCESS-RATE-TEST` × 34 (TestHarness — skill-test fixtures, no code fix required)
+  - `RP-QUERY-FILTER-TEST` × 17 (TestHarness — skill-test fixtures, no code fix required)
+  - `PDA-AUTO-20260608` × 14 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `PDA-AUTO-20260609` × 5 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `PDA-AUTO-20260606` × 4 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `WEEKLY-DEPENDABOT-FOLDIN` × 3 (DependencyMaintenance — expected weekly cadence)
+- **Variable update queued**: `CODEX_CI_FAILURE_RATE` → `0.5:ok` (post-campaign improvement from `0.7:ok`;
+  intent written to `.codex/pending_ops/variable_set_CODEX_CI_FAILURE_RATE_*.json`).
+- **`CODEX_HEALER_SKIP_SKIPCI`** verified `"true"` in `.codex/pending_ops/` (already set; no new intent needed).
+- **PDA entry appended**: `CI-PATTERN-SWEEP-20260614` continuation chain entry added to
+  `.codex/aftermath/pda_iterations.jsonl`.
+
+### Security (Dependency CVE Scan — copilot/dep-security-fixes-20260614, 2026-06-14)
+- **Comprehensive dependency vulnerability scan**: Scanned 95 unique packages across 29 requirements
+  files using the GitHub Advisory Database. Found and fixed 7 CVEs (2 Critical, 3 High, 2 Medium).
+- **ray** (CRITICAL RCE): Bumped `ray[serve]>=2.9,<3` → `>=2.55.0,<3` in `pyproject.toml` to fix
+  RCE via DNS rebinding (<2.52.0) and Parquet Arrow Extension Type deserialization (>=2.49.0,<2.55.0).
+- **chromadb** (CRITICAL code injection): Bumped `chromadb>=1.5.8` → `>=1.5.10` in `pyproject.toml`
+  to clear pre-authentication code injection vulnerability present in <=1.5.9.
+- **sentencepiece** (HIGH heap overflow): Bumped `sentencepiece>=0.1.99` → `>=0.2.1` across
+  `pyproject.toml` (6 occurrences), `requirements-ml-lite.txt`, and `requirements-optional.txt`.
+- **aiohttp** (HIGH zip bomb DoS): Bumped `aiohttp>=3.9.5/3.11.11` → `>=3.13.3` in
+  `.github/copilot-cascade/requirements.txt` and `.github/copilot-security/requirements.txt`.
+- **setuptools** (HIGH path traversal): Bumped `setuptools>=69.0` → `>=78.1.1` in `requirements/agent.txt`.
+- **black** (MEDIUM arbitrary file write): Bumped `black>=23.0/24.0/24.10` → `>=26.3.1` in
+  `pyproject.toml`, `requirements-minimal.txt`, `.github/ai-evolution/requirements.txt`,
+  and `requirements/agent.txt`.
+- **gitpython** (MEDIUM Windows code execution): Bumped `GitPython>=3.1.0` → `>=3.1.33` in
+  `.github/agents/ci-testing-agent/requirements.txt`.
+- Full report: `.codex/dependency-vuln-report-20260614.md`
+
 ### Fixed (Packaging Audit — copilot/packaging-audit-20260614, 2026-06-14)
 - **MLflow CVE remediation (16 CVEs, Critical/High/Moderate)**: Updated all `mlflow>=2.22.4,<4`
   lower bounds in `pyproject.toml` to `mlflow>=3.11.0,<4`, eliminating 16 known vulnerabilities
@@ -9701,3 +9737,11 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
   - Deployed 3 specialized agents in parallel for Phase 1-3 verification
   - Posted kickoff comment to Discussion #4872
   - Estimated timeline: 8-day fast-track campaign with parallel agent execution
+
+### Added (2026-06-14T00:00:00Z — QA Walkthrough PROD-READINESS-CAMPAIGN-20260614)
+- Created `.codex/qa-walkthrough-report-20260614.md` with scored pass/fail results for all 8 production readiness checks (overall score: 82/100).
+- Validated syntax of all 4 production test files in `tests/production/` — zero syntax errors.
+- Confirmed `ruff check src/ --select E,F,I` returns 0 violations.
+- Confirmed `fail_under = 20` coverage gate in `pyproject.toml` (lowered from 35 per packaging-audit PR).
+- Verified 5 key AGENTS.md internal links all resolve to existing files (no broken references).
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) and `CHANGELOG.md` (REQ-5) for branch `copilot/qa-walkthrough-20260614`.

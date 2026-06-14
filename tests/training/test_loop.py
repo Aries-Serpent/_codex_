@@ -323,7 +323,7 @@ class TestResourceManagement:
         def cleanup_memory():
             cleanup_called.append(True)
 
-        for epoch in range(5):
+        for _epoch in range(5):
             # Training step...
             cleanup_memory()
 

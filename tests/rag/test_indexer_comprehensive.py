@@ -66,7 +66,7 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=100, overlap=10)
 
         assert len(chunks) > 1
-        for start, end, chunk in chunks:
+        for _start, _end, chunk in chunks:
             assert len(chunk) <= 100
 
     def test_chunk_overlap(self):

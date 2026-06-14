@@ -203,7 +203,7 @@ class TestPresets:
 
     def test_presets_contain_examples(self) -> None:
         """Test presets contain Example objects."""
-        for name, examples in _PRESETS.items():
+        for _name, examples in _PRESETS.items():
             assert len(examples) > 0
             for ex in examples:
                 assert isinstance(ex, Example)

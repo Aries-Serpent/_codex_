@@ -313,7 +313,7 @@ class TestTransactionHandling:
 
             # Single transaction for bulk insert
             start = time.time()
-            for i in range(100):
+            for _i in range(100):
                 cursor.execute("INSERT INTO events (timestamp) VALUES (?)", (time.time(),))
             conn.commit()
             duration = time.time() - start
@@ -761,7 +761,7 @@ class TestBackupRestoreWorkflows:
                 snapshots.append((timestamp, snapshot_path))
 
         # Verify we can recover to any snapshot
-        for i, (timestamp, snapshot_path) in enumerate(snapshots):
+        for i, (_timestamp, snapshot_path) in enumerate(snapshots):
             with sqlite3.connect(snapshot_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT COUNT(*) FROM timeline")

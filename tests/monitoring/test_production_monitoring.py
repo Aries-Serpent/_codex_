@@ -179,7 +179,7 @@ class TestHealthChecks:
         """Test individual component health checks."""
         checks = sample_health_response["checks"]
 
-        for component, status in checks.items():
+        for _component, status in checks.items():
             assert "status" in status
             assert "latency_ms" in status
             assert status["status"] == "up"

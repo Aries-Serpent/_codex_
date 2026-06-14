@@ -155,7 +155,7 @@ class TestRetryExecution:
         max_retries = 3
         attempts = 0
 
-        for retry in range(max_retries + 1):
+        for _retry in range(max_retries + 1):
             attempts += 1
             # Always fail
             success = False
@@ -169,7 +169,7 @@ class TestRetryExecution:
         attempts = 0
         result = ""
 
-        for retry in range(max_retries + 1):
+        for _retry in range(max_retries + 1):
             attempts += 1
             # Succeed immediately
             result = "pass"

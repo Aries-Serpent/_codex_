@@ -251,7 +251,7 @@ class TestDistributionQuality:
         distribution = ring.get_shard_distribution(keys)
 
         # Each shard should get roughly 1250 documents
-        for shard_id, count in distribution.items():
+        for _shard_id, count in distribution.items():
             # Allow 20% deviation
             assert 1000 <= count <= 1500
 
@@ -265,7 +265,7 @@ class TestDistributionQuality:
         distribution = ring.get_shard_distribution(keys)
 
         # Should still be reasonably balanced
-        for shard_id, count in distribution.items():
+        for _shard_id, count in distribution.items():
             assert 200 <= count <= 300
 
     def test_hotspot_avoidance(self):

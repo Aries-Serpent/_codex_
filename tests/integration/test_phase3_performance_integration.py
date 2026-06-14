@@ -286,7 +286,7 @@ class TestRAGLargeCorpus:
         index_size = initial_size
         update_times = []
 
-        for batch in range(num_batches):
+        for _batch in range(num_batches):
             # Update time increases with index size
             update_time = (index_size / 10000) * 0.1
             update_times.append(update_time)
@@ -636,7 +636,7 @@ class TestConcurrentCLIOperations:
 
         # Process in batches
         num_batches = 0
-        for i in range(0, len(operations), batch_size):
+        for _i in range(0, len(operations), batch_size):
             # Process batch
             num_batches += 1
 
@@ -687,7 +687,7 @@ class TestAdditionalPerformance:
         waiting_requests = 0
 
         # Simulate requests
-        for request_id in range(50):
+        for _request_id in range(50):
             if active_connections < pool_size:
                 active_connections += 1
             else:

@@ -186,7 +186,7 @@ class TestDocumentationLinks:
                 link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
                 links = re.findall(link_pattern, content)
 
-                for link_text, link_target in links[:5]:
+                for _link_text, link_target in links[:5]:
                     # Skip external links and anchors
                     if link_target.startswith(("http://", "https://", "#", "mailto:")):
                         continue

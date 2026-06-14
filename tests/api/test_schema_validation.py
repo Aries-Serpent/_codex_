@@ -216,7 +216,7 @@ class TestSchemaEvolution:
                 # Check for deprecated field
                 if isinstance(content, dict):
                     props = content.get("properties", {})
-                    for prop_name, prop_def in props.items():
+                    for _prop_name, prop_def in props.items():
                         if isinstance(prop_def, dict) and "deprecated" in prop_def:
                             # Found deprecation marker - good practice
                             pass
