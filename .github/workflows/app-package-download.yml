@@ -88,11 +88,6 @@ jobs:
       # persist-credentials: false ensures the checkout token is not stored
       # in git config and cannot be accessed by code in the checked-out branch.
       # codeql[actions/untrusted-checkout]
-      # Security: branch name is validated above to match ^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$
-      # (control characters and newlines are rejected before this point).
-      # persist-credentials: false ensures the checkout token is not stored
-      # in git config and cannot be accessed by code in the checked-out branch.
-      # codeql[actions/untrusted-checkout]
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
