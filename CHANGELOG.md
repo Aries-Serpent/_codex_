@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### CI Pattern Knowledge Graph (ci-pattern-wave3-20260614 — 2026-06-14)
+- **Pattern sweep**: Analysed `pda_iterations.jsonl` across full history; identified **7 high-recurrence
+  patterns** (≥3 occurrences each) and recorded all entries in `.codex/ci_pattern_knowledge.jsonl`.
+- **High-recurrence patterns recorded**:
+  - `RP-PYTEST-SKILL-TEST` × 34 (TestHarness — skill-test fixtures, no code fix required)
+  - `RP-SUCCESS-RATE-TEST` × 34 (TestHarness — skill-test fixtures, no code fix required)
+  - `RP-QUERY-FILTER-TEST` × 17 (TestHarness — skill-test fixtures, no code fix required)
+  - `PDA-AUTO-20260608` × 14 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `PDA-AUTO-20260609` × 5 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `PDA-AUTO-20260606` × 4 (PDAContinuityDuplication — parallel-session dedup gap)
+  - `WEEKLY-DEPENDABOT-FOLDIN` × 3 (DependencyMaintenance — expected weekly cadence)
+- **Variable update queued**: `CODEX_CI_FAILURE_RATE` → `0.5:ok` (post-campaign improvement from `0.7:ok`;
+  intent written to `.codex/pending_ops/variable_set_CODEX_CI_FAILURE_RATE_*.json`).
+- **`CODEX_HEALER_SKIP_SKIPCI`** verified `"true"` in `.codex/pending_ops/` (already set; no new intent needed).
+- **PDA entry appended**: `CI-PATTERN-SWEEP-20260614` continuation chain entry added to
+  `.codex/aftermath/pda_iterations.jsonl`.
+
 ### Security (Dependency CVE Scan — copilot/dep-security-fixes-20260614, 2026-06-14)
 - **Comprehensive dependency vulnerability scan**: Scanned 95 unique packages across 29 requirements
   files using the GitHub Advisory Database. Found and fixed 7 CVEs (2 Critical, 3 High, 2 Medium).
