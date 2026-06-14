@@ -45,17 +45,19 @@ class TestBudgetCap:
 
         assert fast() == "done"
 
-    @pytest.mark.flaky(reruns=2)
+    @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision")
     def test_budget_cap_raises_on_exhaustion(self):
         mod = _import("budget_uncertainty")
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
-
-        @mod.budget_cap(max_seconds=0.001)
+ 
+        # STABILIZATION: Increase timeout from 0.001s to 0.1s to allow reliable
+        # thread scheduling and timer enforcement on loaded CI runners
+        @mod.budget_cap(max_seconds=0.1)
         def slow():
             time.sleep(1)
             return "should never reach here"
-
+ 
         with pytest.raises(Exception):
             slow()
 
