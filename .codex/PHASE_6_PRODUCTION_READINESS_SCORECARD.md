@@ -36,7 +36,7 @@ Comprehensive Phase 6 production deployment across 4 batches has achieved an agg
 | Vulnerability Remediation | 3.0 | 3.0 | 204/204 findings remediated, 0 critical/high remaining |
 | Threat Prevention | 2.5 | 2.5 | RBAC, privilege controls, incident response (5 playbooks) |
 | Compliance & Governance | 2.5 | 2.5 | All governance gates PASSED, policies documented |
-| Secret Management | 2.0 | 2.0 | Rotation policies complete, encryption verified |
+| Secret Management | 2.0 | 2.0 | Rotation policies complete, encryption verified | <!-- pragma: allowlist secret -->
 | **TOTAL** | **10.0** | **10.0** | ✅ MAXIMUM |
 
 **Key Metrics:**
@@ -223,7 +223,7 @@ Comprehensive Phase 6 production deployment across 4 batches has achieved an agg
 |-----------|-----|-------|----------|
 | Rotation Procedures | 2.5 | 2.5 | Complete rotation schedules documented |
 | Encryption & Storage | 2.5 | 2.5 | AES-256-GCM encryption, secure vaults |
-| Access Logging | 2.5 | 2.5 | All secret access logged and audited |
+| Access Logging | 2.5 | 2.5 | All secret access logged and audited | <!-- pragma: allowlist secret -->
 | Compliance Readiness | 2.5 | 2.5 | FIPS 140-2, PCI-DSS ready |
 | **TOTAL** | **10.0** | **10.0** | ✅ MAXIMUM |
 
@@ -280,7 +280,7 @@ Comprehensive Phase 6 production deployment across 4 batches has achieved an agg
 | Testing | 10.0 | 10.0 | 15% | **1.500** |
 | Performance | 10.0 | 10.0 | 12% | **1.200** |
 | Governance | 10.0 | 10.0 | 10% | **1.000** |
-| Secrets | 10.0 | 10.0 | 10% | **1.000** |
+| Secrets | 10.0 | 10.0 | 10% | **1.000** | <!-- pragma: allowlist secret -->
 | Documentation | 10.0 | 9.5 | 9% | **0.855** |
 | | | | **100%** | **10.755** |
 

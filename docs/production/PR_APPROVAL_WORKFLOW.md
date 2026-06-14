@@ -645,7 +645,7 @@ Before requesting review:
   ☐ All tests passing locally
   ☐ Coverage ≥80%
   ☐ Linters passing (pylint, flake8, mypy)
-  ☐ No hardcoded secrets
+  ☐ No hardcoded secrets  # pragma: allowlist secret
   ☐ Documentation updated
   ☐ Commit messages follow conventions
   ☐ PR description includes what/why/testing evidence

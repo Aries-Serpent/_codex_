@@ -232,7 +232,7 @@ API Endpoints Returning 5xx
   ├─ Database connectivity issue?
   │   ├─ Check: telnet $DB_HOST 5432
   │   ├─ Verify: Connection pool status
-  │   └─ Common causes: RDS failover, firewall rule, expired password
+  │   └─ Common causes: RDS failover, firewall rule, expired password  # pragma: allowlist secret
   │
   ├─ Resource exhaustion?
   │   ├─ Check: kubectl top pods -n production

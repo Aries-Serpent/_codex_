@@ -42,13 +42,13 @@ Total Modules:          956 modules
 |--------|----------|-------|--------|--------|
 | `codex/_version.py` | **100.00%** | 2/2 | ≥80% | ✅ PASS |
 | `codex_ml/registry/data_loaders.py` | **100.00%** | 6/6 | ≥80% | ✅ PASS |
-| `codex_ml/tokenization/_protocols.py` | **100.00%** | 15/15 | ≥80% | ✅ PASS |
-| `codex_ml/tokenization/_types.py` | **100.00%** | 6/6 | ≥80% | ✅ PASS |
-| `tokenization/adapter.py` | **100.00%** | 3/3 | ≥80% | ✅ PASS |
+| `codex_ml/tokenization/_protocols.py` | **100.00%** | 15/15 | ≥80% | ✅ PASS | <!-- pragma: allowlist secret -->
+| `codex_ml/tokenization/_types.py` | **100.00%** | 6/6 | ≥80% | ✅ PASS | <!-- pragma: allowlist secret -->
+| `tokenization/adapter.py` | **100.00%** | 3/3 | ≥80% | ✅ PASS | <!-- pragma: allowlist secret -->
 | `utils/checkpointing.py` | **100.00%** | 6/6 | ≥80% | ✅ PASS |
 | `codex_ml/plugins/base.py` | **92.86%** | 13/14 | ≥80% | ✅ PASS |
 | `mcp/adapters/base_adapter.py` | **81.82%** | 36/42 | ≥80% | ✅ PASS |
-| `tokenization/sentencepiece_adapter.py` | **80.00%** | 8/10 | ≥80% | ✅ PASS |
+| `tokenization/sentencepiece_adapter.py` | **80.00%** | 8/10 | ≥80% | ✅ PASS | <!-- pragma: allowlist secret -->
 
 **Metrics:**
 - Modules at target: 9/9 (100%)

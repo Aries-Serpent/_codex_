@@ -43,7 +43,7 @@ Security Alert Detected
   │   ├─ YES → CRITICAL - Immediate response
   │   └─ NO → Continue
   │
-  ├─ Credentials/tokens exposed?
+  ├─ Credentials/tokens exposed?  # pragma: allowlist secret
   │   ├─ YES → HIGH - Escalate immediately
   │   └─ NO → Continue
   │
@@ -547,7 +547,7 @@ WHAT WE DID:
 - Enhanced monitoring to prevent recurrence
 
 WHAT YOU SHOULD DO:
-- [If password reset needed]: "We recommend you change your password"
+- [If password reset needed]: "We recommend you change your password"  # pragma: allowlist secret
 - [If data breach]: "Monitor accounts for suspicious activity"
 - [If service disrupted]: "No action needed, service is now restored"
 

@@ -52,7 +52,7 @@ Phase 6 Batch 2 has successfully completed the comprehensive secrets and credent
 |-----|---------------|---------------|--------|
 | CODEX_MASTER_KEY | 2026-03-15 | 2026-06-14 | 🟡 DUE |
 | CODEX_BACKUP_KEY | 2026-05-14 | 2026-06-14 | 🟡 DUE |
-| github.token | 2026-05-14 | 2026-06-14 | 🟡 DUE |
+| github.token | 2026-05-14 | 2026-06-14 | 🟡 DUE | <!-- pragma: allowlist secret -->
 
 ### 2. Key Rotation Runbook
 
@@ -116,27 +116,27 @@ Phase 4 (1:30-2:00): Verify all systems operational
 
 **Secrets Inventory**:
 ```
-PRODUCTION (6 secrets, isolated)
+PRODUCTION (6 secrets, isolated)  # pragma: allowlist secret
 ├── CODEX_MASTER_KEY
 ├── CODEX_BACKUP_KEY
-├── GITHUB_TOKEN
+├── GITHUB_TOKEN  # pragma: allowlist secret
 ├── DEPLOYMENT_KEY_PRODUCTION
-├── DB_PASSWORD_PRODUCTION
-└── API_KEY_PRODUCTION
+├── DB_PASSWORD_PRODUCTION  # pragma: allowlist secret
+└── API_KEY_PRODUCTION  # pragma: allowlist secret
 
-STAGING (5 secrets, isolated)
+STAGING (5 secrets, isolated)  # pragma: allowlist secret
 ├── CODEX_MASTER_KEY_STAGING
-├── GITHUB_TOKEN_STAGING
+├── GITHUB_TOKEN_STAGING  # pragma: allowlist secret
 ├── DEPLOYMENT_KEY_STAGING
-├── DB_PASSWORD_STAGING
-└── API_KEY_STAGING
+├── DB_PASSWORD_STAGING  # pragma: allowlist secret
+└── API_KEY_STAGING  # pragma: allowlist secret
 
-DEVELOPMENT (5 secrets, isolated)
+DEVELOPMENT (5 secrets, isolated)  # pragma: allowlist secret
 ├── CODEX_MASTER_KEY_DEV
-├── GITHUB_TOKEN_DEV
+├── GITHUB_TOKEN_DEV  # pragma: allowlist secret
 ├── DEPLOYMENT_KEY_DEV
-├── DB_PASSWORD_DEV
-└── API_KEY_DEV
+├── DB_PASSWORD_DEV  # pragma: allowlist secret
+└── API_KEY_DEV  # pragma: allowlist secret
 ```
 
 ### 4. Token Expiration Policy
@@ -157,11 +157,11 @@ DEVELOPMENT (5 secrets, isolated)
 - Emergency rotation procedures
 
 **Alert Configuration**:
-| Token | Rotation | Alert Threshold | Alert Schedule |
+| Token | Rotation | Alert Threshold | Alert Schedule | <!-- pragma: allowlist secret -->
 |-------|----------|-----------------|-----------------|
 | CODEX_MASTER_KEY | 90 days | 75+ days | Day 75, 80, 85, 90 |
 | CODEX_BACKUP_KEY | 30 days | 25+ days | Day 25, 28, 29, 30 |
-| github.token | 30 days | 30 days | Day 30 |
+| github.token | 30 days | 30 days | Day 30 | <!-- pragma: allowlist secret -->
 
 **Notification Channels**:
 - ✅ Slack notifications
@@ -237,14 +237,14 @@ CODEX_MASTER_KEY Rotation:
 ✅ Zero-downtime capable
 ✅ Incident procedures defined
 
-GitHub Secrets Scope:
-✅ All secrets properly scoped
+GitHub Secrets Scope:  # pragma: allowlist secret
+✅ All secrets properly scoped  # pragma: allowlist secret
 ✅ No cross-environment sharing
 ✅ Environment-specific credentials
 ✅ Access permissions documented
-✅ Secrets inventory documented
+✅ Secrets inventory documented  # pragma: allowlist secret
 
-Token Expiration Tracking:
+Token Expiration Tracking:  # pragma: allowlist secret
 ✅ Tracking operational
 ✅ Alerts configured (30 days)
 ✅ Expiration testing ready
@@ -282,10 +282,10 @@ Credential Audit Logging:
 
 | Component | Status | Evidence |
 |-----------|--------|----------|
-| Inventory documented | ✅ PASS | 16 secrets properly categorized |
-| Production isolated | ✅ PASS | 6 secrets prod-only, no cross-env |
-| Staging isolated | ✅ PASS | 5 secrets staging-only, no cross-env |
-| Development isolated | ✅ PASS | 5 secrets dev-only, no cross-env |
+| Inventory documented | ✅ PASS | 16 secrets properly categorized | <!-- pragma: allowlist secret -->
+| Production isolated | ✅ PASS | 6 secrets prod-only, no cross-env | <!-- pragma: allowlist secret -->
+| Staging isolated | ✅ PASS | 5 secrets staging-only, no cross-env | <!-- pragma: allowlist secret -->
+| Development isolated | ✅ PASS | 5 secrets dev-only, no cross-env | <!-- pragma: allowlist secret -->
 | Validation rules | ✅ PASS | Python validation scripts |
 | Enforcement mechanism | ✅ PASS | GitHub Actions + pre-commit hooks |
 | Quarterly audit | ✅ PASS | Procedure documented |
@@ -303,8 +303,8 @@ Credential Audit Logging:
 | Notification channels | ✅ PASS | Slack, Email, GitHub Issues |
 | Daily check workflow | ✅ PASS | GitHub Actions workflow designed |
 | Alert escalation | ✅ PASS | Multi-level escalation defined |
-| Test procedures | ✅ PASS | Test token procedures provided |
-| Incident response | ✅ PASS | Expired token response procedures |
+| Test procedures | ✅ PASS | Test token procedures provided | <!-- pragma: allowlist secret -->
+| Incident response | ✅ PASS | Expired token response procedures | <!-- pragma: allowlist secret -->
 
 **Operational Status**: READY FOR DEPLOYMENT
 
@@ -437,8 +437,8 @@ Credential Audit Logging:
 Category                              Status   Evidence
 ─────────────────────────────────────────────────────────────
 CODEX_MASTER_KEY Rotation            ✅ PASS  All 5 items met
-GitHub Secrets Scope Management      ✅ PASS  All 5 items met
-Token Expiration Tracking             ✅ PASS  All 4 items met
+GitHub Secrets Scope Management      ✅ PASS  All 5 items met  # pragma: allowlist secret
+Token Expiration Tracking             ✅ PASS  All 4 items met  # pragma: allowlist secret
 Credential Audit Logging              ✅ PASS  All 4 items met
 ─────────────────────────────────────────────────────────────
 TOTAL ACCEPTANCE CRITERIA            ✅ PASS  18/18 (100%)
@@ -461,12 +461,12 @@ TOTAL ACCEPTANCE CRITERIA            ✅ PASS  18/18 (100%)
 
 | # | Document | Location | Status | Lines | Size |
 |---|----------|----------|--------|-------|------|
-| 1 | Secrets Management Plan | `.codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md` | ✅ | 795 | 23 KB |
+| 1 | Secrets Management Plan | `.codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md` | ✅ | 795 | 23 KB | <!-- pragma: allowlist secret -->
 | 2 | Key Rotation Runbook | `docs/production/KEY_ROTATION_RUNBOOK.md` | ✅ | 546 | 14 KB |
-| 3 | Secrets Scope Policy | `docs/production/SECRETS_SCOPE_POLICY.md` | ✅ | 494 | 13 KB |
-| 4 | Token Expiration Policy | `docs/production/TOKEN_EXPIRATION_POLICY.md` | ✅ | 44 | 934 B |
-| 5 | Audit Procedures | `docs/operations/SECRETS_AUDIT_PROCEDURES.md` | ✅ | 336 | 9.3 KB |
-| 6 | Validation Results | `.codex/aftermath/batch2_secrets_audit.json` | ✅ | 447 | 14 KB |
+| 3 | Secrets Scope Policy | `docs/production/SECRETS_SCOPE_POLICY.md` | ✅ | 494 | 13 KB | <!-- pragma: allowlist secret -->
+| 4 | Token Expiration Policy | `docs/production/TOKEN_EXPIRATION_POLICY.md` | ✅ | 44 | 934 B | <!-- pragma: allowlist secret -->
+| 5 | Audit Procedures | `docs/operations/SECRETS_AUDIT_PROCEDURES.md` | ✅ | 336 | 9.3 KB | <!-- pragma: allowlist secret -->
+| 6 | Validation Results | `.codex/aftermath/batch2_secrets_audit.json` | ✅ | 447 | 14 KB | <!-- pragma: allowlist secret -->
 | | **TOTAL DOCUMENTATION** | | | **2,662** | **74 KB** |
 
 ---

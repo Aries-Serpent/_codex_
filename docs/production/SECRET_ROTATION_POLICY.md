@@ -48,15 +48,15 @@ This policy applies to:
 
 ### Master Schedule
 
-| Secret Type | Frequency | Last Rotated | Next Rotation | Emergency Window |
+| Secret Type | Frequency | Last Rotated | Next Rotation | Emergency Window | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|
 | CODEX_MASTER_KEY | Quarterly | 2026-03-15 | 2026-06-15 | Immediate |
-| GitHub OAuth Token | Monthly | 2026-05-14 | 2026-06-14 | 4 hours |
+| GitHub OAuth Token | Monthly | 2026-05-14 | 2026-06-14 | 4 hours | <!-- pragma: allowlist secret -->
 | Database Credentials | Quarterly | 2026-03-14 | 2026-06-14 | 24 hours |
 | API Keys (External) | Monthly | 2026-05-14 | 2026-06-14 | 4 hours |
 | JWT Signing Key | Quarterly | 2026-03-14 | 2026-06-14 | 12 hours |
 | TLS Certificates | Annually | 2026-01-15 | 2027-01-15 | 48 hours |
-| Service Account Tokens | Monthly | 2026-05-14 | 2026-06-14 | 4 hours |
+| Service Account Tokens | Monthly | 2026-05-14 | 2026-06-14 | 4 hours | <!-- pragma: allowlist secret -->
 | Webhook Signing Keys | Quarterly | 2026-03-14 | 2026-06-14 | 12 hours |
 
 ### Frequency Rationale
@@ -521,9 +521,9 @@ python scripts/rotate_secret.py \
 
 **Format**:
 ```
-date,secret_type,old_key_id,new_key_id,reason,status,duration_hours
+date,secret_type,old_key_id,new_key_id,reason,status,duration_hours  # pragma: allowlist secret
 2026-06-14,CODEX_MASTER_KEY,mk-2026-03-14-001,mk-2026-06-14-001,scheduled,success,72
-2026-06-14,GITHUB_TOKEN,ghp_old123,ghp_new456,scheduled,success,48
+2026-06-14,GITHUB_TOKEN,ghp_old123,ghp_new456,scheduled,success,48  # pragma: allowlist secret
 ```
 
 ### Audit Logging

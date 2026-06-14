@@ -295,8 +295,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 ✅ Check distribution
 
 🔍 Publish to PyPI
-Requesting OIDC token from GitHub
-✅ Token received
+Requesting OIDC token from GitHub  # pragma: allowlist secret
+✅ Token received  # pragma: allowlist secret
 Uploading distributions to https://upload.pypi.org/legacy/
 Uploading codex_ml-0.0.0-py3-none-any.whl
 ✅ Successfully uploaded codex_ml-0.0.0-py3-none-any.whl
@@ -361,7 +361,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 1. **Navigate to token management:**
    ```
-   https://pypi.org/manage/account/token/
+   https://pypi.org/manage/account/token/  # pragma: allowlist secret
    ```
 
 2. **Find token:** "Initial codex-ml upload"
@@ -452,7 +452,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 **Error:**
 ```
-Trusted publishing exchange failure: Token request failed
+Trusted publishing exchange failure: Token request failed  # pragma: allowlist secret
 ```
 
 **Diagnosis:**

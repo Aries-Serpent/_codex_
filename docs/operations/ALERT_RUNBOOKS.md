@@ -43,7 +43,7 @@ All CRITICAL alerts require immediate action. These runbooks are designed to res
 | **Database Errors** | Check DB connectivity, check slow queries | [See DB Runbook](#critical-database-connection-failed) |
 | **Timeout Errors** | Check upstream service latency, check resources | Scale pods or increase timeout |
 | **Validation Errors** | Check recent deployments, check data | Rollback recent deployment |
-| **Auth Errors** | Check auth service, check tokens | Restart auth-service, check token storage |
+| **Auth Errors** | Check auth service, check tokens | Restart auth-service, check token storage | <!-- pragma: allowlist secret -->
 
 **Escalation** (After 5 minutes):
 ```

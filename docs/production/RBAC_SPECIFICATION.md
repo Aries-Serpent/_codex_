@@ -63,7 +63,7 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 │  Level 1 (Privileged)                           │
 │  ├─ Admin (system)                              │
 │  │  • Deployment                                 │
-│  │  • Secrets management                         │
+│  │  • Secrets management                         │  # pragma: allowlist secret
 │  │  • Security policies                          │
 │  │  • 4-hour time limit (auto-expiry)            │
 │  │  • Requires MFA + approval                    │
@@ -92,13 +92,13 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 │  │  • View documentation                         │
 │  │  • Read public files                          │
 │  │  • View metrics/logs (non-sensitive)          │
-│  │  • No secrets access                          │
+│  │  • No secrets access                          │  # pragma: allowlist secret
 │  │                                               │
 │  Level 4 (Service Accounts)                     │
 │  ├─ Service Account (scoped)                    │
 │  │  • Specific actions only                      │
 │  │  • No human access                            │
-│  │  • Time-limited tokens                        │
+│  │  • Time-limited tokens                        │  # pragma: allowlist secret
 │  │  • Automatic rotation                         │
 │  │                                               │
 └──────────────────────────────────────────────────┘
@@ -146,10 +146,10 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Others |
 |---|---|---|---|---|
-| `secret:read` | Read secrets | ✅ | ✅ | ❌ |
-| `secret:write` | Create/update secrets | ✅ | ✅ | ❌ |
-| `secret:rotate` | Rotate secrets | ✅ | ✅ | ❌ |
-| `secret:delete` | Delete secrets | ✅ | ❌ | ❌ |
+| `secret:read` | Read secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
+| `secret:write` | Create/update secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
+| `secret:rotate` | Rotate secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
+| `secret:delete` | Delete secrets | ✅ | ❌ | ❌ | <!-- pragma: allowlist secret -->
 
 ### Security & Compliance
 
@@ -275,11 +275,11 @@ Require: 2/2 Approval (different teams)
     ├─ Security Team: Security implications review
     └─ Operations Team: Business justification review
     ↓
-[If approved] Generate temporary admin token (4 hours)
+[If approved] Generate temporary admin token (4 hours)  # pragma: allowlist secret
     ↓
     [User performs privileged action]
     ↓
-    [Token auto-expires after 4 hours]
+    [Token auto-expires after 4 hours]  # pragma: allowlist secret
     ↓
     [Action logged with full audit trail]
 ```
@@ -381,7 +381,7 @@ Permissions automatically removed when:
 6. First-day setup
    └─ SSH key registration
    └─ Local environment setup
-   └─ Secrets management training
+   └─ Secrets management training  # pragma: allowlist secret
 ```
 
 ### Offboarding (Departing Team Member)
@@ -392,13 +392,13 @@ Permissions automatically removed when:
 1. Disable GitHub account access
    └─ Immediate (no grace period)
    
-2. Revoke all API tokens
+2. Revoke all API tokens  # pragma: allowlist secret
    └─ Immediate
    
 3. Disable SSH keys
    └─ Immediate
    
-4. Clear local secrets/credentials
+4. Clear local secrets/credentials  # pragma: allowlist secret
    └─ Assisted by IT
    
 5. Archive access history

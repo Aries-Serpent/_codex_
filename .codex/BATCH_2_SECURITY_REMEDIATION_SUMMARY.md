@@ -33,7 +33,7 @@ From MASTER_REMEDIATION_PLAN.md (Run #26992144518):
 | CodeQL Python | 107 | 42 ❌ → 0 ✅ | 6 → 0 ✅ | REMEDIATED |
 | Semgrep | 88 | 15 ❌ → 0 ✅ | 8 → 0 ✅ | REMEDIATED |
 | pip-audit | 2 | 0 ✅ | 2 → 0 ✅ | FIXED |
-| detect-secrets | 667 | 0 ✅ | 0 ✅ | TRIAGED |
+| detect-secrets | 667 | 0 ✅ | 0 ✅ | TRIAGED | <!-- pragma: allowlist secret -->
 | SBOM | 338 components | 0 ✅ | 0 ✅ | MONITORED |
 | **TOTAL** | **204** | **57 → 0** | **16 → 0** | **✅ COMPLETE** |
 
@@ -50,12 +50,12 @@ From MASTER_REMEDIATION_PLAN.md (Run #26992144518):
 **Evidence**:
 ```python
 # BEFORE (VULNERABLE):
-logger.info(f"Secret token: {api_key}")  # ❌ Logs raw secret
+logger.info(f"Secret token: {api_key}")  # ❌ Logs raw secret  # pragma: allowlist secret
 
 # AFTER (SECURED):
-from codex.security.log_sanitizer import mask_sensitive
-safe_msg = mask_sensitive(api_key)
-logger.info(f"Secret token: {safe_msg}")  # ✅ Redacted
+from codex.security.log_sanitizer import mask_sensitive  # pragma: allowlist secret
+safe_msg = mask_sensitive(api_key)  # pragma: allowlist secret
+logger.info(f"Secret token: {safe_msg}")  # ✅ Redacted  # pragma: allowlist secret
 ```
 
 **Files Remediated**:
@@ -79,13 +79,13 @@ logger.info(f"Secret token: {safe_msg}")  # ✅ Redacted
 **Evidence**:
 ```python
 # BEFORE (VULNERABLE):
-with open("secrets.txt", "w") as f:
-    f.write(api_key)  # ❌ Plaintext file storage
+with open("secrets.txt", "w") as f:  # pragma: allowlist secret
+    f.write(api_key)  # ❌ Plaintext file storage  # pragma: allowlist secret
 
 # AFTER (SECURED):
 from codex.security.storage import SecureStorage
 storage = SecureStorage()
-storage.store_secret("api_key.enc", api_key)  # ✅ Encrypted
+storage.store_secret("api_key.enc", api_key)  # ✅ Encrypted  # pragma: allowlist secret
 ```
 
 **Test Coverage**: `tests/security/test_secure_storage.py` (NEW) — 8 test cases
@@ -142,10 +142,10 @@ Found 0 vulnerabilities
 
 ### 2.1 Rotation Frequency Matrix
 
-| Secret Type | Frequency | Trigger | Owner | Emergency Rotation |
+| Secret Type | Frequency | Trigger | Owner | Emergency Rotation | <!-- pragma: allowlist secret -->
 |-------------|-----------|---------|-------|-------------------|
 | CODEX_MASTER_KEY | Quarterly | 90 days OR compromise | Security Lead | IMMEDIATE |
-| GitHub OAuth Token | Monthly | 30 days OR PR approval | CI/CD Lead | 4 hours |
+| GitHub OAuth Token | Monthly | 30 days OR PR approval | CI/CD Lead | 4 hours | <!-- pragma: allowlist secret -->
 | Database Credentials | Quarterly | 90 days OR access audit | DBA | 24 hours |
 | API Keys | Monthly | 30 days OR usage review | Service Owner | 4 hours |
 | JWT Signing Key | Quarterly | 90 days OR key rotation | Auth Team | 12 hours |
@@ -255,7 +255,7 @@ python scripts/rotate_jwt_secret.py --emergency --backup-archive
 | Role | Permissions | Purpose | Examples |
 |------|-------------|---------|----------|
 | **Owner** | `*` (all) | Repository administration | Repo settings, key rotation, compliance |
-| **Admin** | `repo:admin`, `secret:read`, `secret:write` | System administration | Deployment, emergency response |
+| **Admin** | `repo:admin`, `secret:read`, `secret:write` | System administration | Deployment, emergency response | <!-- pragma: allowlist secret -->
 | **Editor** | `repo:write`, `branch:protect:bypass` | Feature development | PR merge, hotfixes |
 | **Reviewer** | `repo:read`, `pr:review`, `signature:write` | Code review | Approval, compliance sign-off |
 | **Operator** | `deploy:write`, `logs:read`, `alerts:read` | Production operations | Deployments, monitoring |
@@ -305,7 +305,7 @@ python scripts/rotate_jwt_secret.py --emergency --backup-archive
 **Test Scenarios Validated**:
 ```
 ✅ User attempts privilege escalation → BLOCKED
-✅ Service account attempts to read prod secrets → BLOCKED
+✅ Service account attempts to read prod secrets → BLOCKED  # pragma: allowlist secret
 ✅ Elevated session expires after 4 hours → EXPIRED
 ✅ Cross-repository access attempt → BLOCKED
 ✅ Failed authentication logged → AUDIT TRAIL
@@ -326,7 +326,7 @@ Test Suite: `tests/security/test_privilege_escalation.py` (12 test cases)
 **Containment** (Immediate):
 ```
 1. Revoke compromised credential immediately
-2. Generate audit trail for token usage
+2. Generate audit trail for token usage  # pragma: allowlist secret
 3. Identify affected systems/data
 4. Block suspicious IPs (24-hour ban)
 5. Enable enhanced logging
@@ -422,7 +422,7 @@ Test Suite: `tests/security/test_privilege_escalation.py` (12 test cases)
 **Containment** (Immediate):
 ```
 1. Block suspicious IP address (24 hours)
-2. Revoke attacker's session tokens
+2. Revoke attacker's session tokens  # pragma: allowlist secret
 3. Enable enhanced logging
 4. Review system access logs
 ```
@@ -505,13 +505,13 @@ Timeline: [Estimated resolution time]
 
 | Control | Test Case | Result | Evidence |
 |---------|-----------|--------|----------|
-| Sensitive logging redaction | Audit logs don't contain raw secrets | ✅ PASS | `tests/security/test_log_sanitizer.py::test_redaction_complete` |
-| Secret storage encryption | Secrets encrypted at rest | ✅ PASS | `tests/security/test_secure_storage.py::test_encryption_verified` |
+| Sensitive logging redaction | Audit logs don't contain raw secrets | ✅ PASS | `tests/security/test_log_sanitizer.py::test_redaction_complete` | <!-- pragma: allowlist secret -->
+| Secret storage encryption | Secrets encrypted at rest | ✅ PASS | `tests/security/test_secure_storage.py::test_encryption_verified` | <!-- pragma: allowlist secret -->
 | Privilege escalation prevention | Escalation requires approval | ✅ PASS | `tests/security/test_privilege_escalation.py::test_escalation_blocked` |
 | MFA enforcement | Disabled auth without MFA | ✅ PASS | `tests/security/test_mfa_enforcement.py::test_mfa_required` |
 | Rate limiting | Brute force blocked | ✅ PASS | `tests/security/test_rate_limiting.py::test_brute_force_blocked` |
 | Audit logging | All privileged actions logged | ✅ PASS | `tests/security/test_audit_logging.py::test_all_actions_logged` |
-| Secret rotation | Key rotation succeeds without data loss | ✅ PASS | `tests/security/test_secret_rotation.py::test_rotation_complete` |
+| Secret rotation | Key rotation succeeds without data loss | ✅ PASS | `tests/security/test_secret_rotation.py::test_rotation_complete` | <!-- pragma: allowlist secret -->
 | RBAC enforcement | Users can only access assigned roles | ✅ PASS | `tests/security/test_rbac_enforcement.py::test_role_boundaries` |
 
 ### 5.2 Incident Response Tabletop Exercises

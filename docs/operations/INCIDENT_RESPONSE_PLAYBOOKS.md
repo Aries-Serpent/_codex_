@@ -64,12 +64,12 @@ This document provides step-by-step procedures for responding to security incide
 
 | Category | Examples | Detection Method |
 |---|---|---|
-| **Credential Compromise** | Leaked API key, stolen token | Monitoring alerts, external reports |
+| **Credential Compromise** | Leaked API key, stolen token | Monitoring alerts, external reports | <!-- pragma: allowlist secret -->
 | **Unauthorized Access** | Brute force, SSRF attack | Failed auth logs, anomaly detection |
 | **Data Breach** | Data exfiltration, unauthorized access | Data access monitoring, logs |
 | **Service Degradation** | CPU spike, memory leak, DoS | Performance monitoring, alerts |
 | **Supply Chain** | Malicious dependency, compromised dev tool | Dependency scanning, integrity checks |
-| **Configuration Error** | Exposed secrets, bad firewall rule | Compliance scanning, audits |
+| **Configuration Error** | Exposed secrets, bad firewall rule | Compliance scanning, audits | <!-- pragma: allowlist secret -->
 
 ---
 

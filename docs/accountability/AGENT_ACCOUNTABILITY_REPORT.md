@@ -16,7 +16,7 @@ Synthesize Phase 8-10 production deployment framework documentation (1,006+ line
 | Item | Scope | Status |
 |------|-------|--------|
 | **PHASE_8_10_DETAILED_IMPLEMENTATION_PLAN.md** | 780 lines, 23 KB comprehensive executive plan | ✅ COMPLETE |
-| **Secrets baseline false positives** | 11 locations across 9 files, pragma comments added | ✅ COMPLETE |
+| **Secrets baseline false positives** | 11 locations across 9 files, pragma comments added | ✅ COMPLETE | <!-- pragma: allowlist secret -->
 | **YAML trailing spaces** | copilot-setup-steps.yml line 209 | ✅ FIXED |
 | **CI failures remediation** | Identified pre-flight-validation compliance requirements | 🔄 IN PROGRESS |
 
@@ -73,7 +73,7 @@ Synthesize Phase 8-10 production deployment framework documentation (1,006+ line
 |------|-------------|--------|
 | REQ-4 | AGENT_ACCOUNTABILITY_REPORT.md in last commit | 🔄 IN PROGRESS |
 | REQ-5 | CHANGELOG.md in last commit | 🔄 IN PROGRESS |
-| Secrets baseline | False positives resolved with pragmas | ✅ COMPLETE |
+| Secrets baseline | False positives resolved with pragmas | ✅ COMPLETE | <!-- pragma: allowlist secret -->
 | YAML validation | copilot-setup-steps.yml valid | ✅ COMPLETE |
 | File documentation | Implementation plan documented | ✅ COMPLETE |
 

@@ -33,7 +33,7 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 | Component | Status | Action |
 |-----------|--------|--------|
 | Iterative Self-Healing CI | ✅ Deployed (S154) | Extend with Copilot escalation |
-| Agent Token Delegation | ✅ Deployed (S110) | Add session concurrency guard |
+| Agent Token Delegation | ✅ Deployed (S110) | Add session concurrency guard | <!-- pragma: allowlist secret -->
 | Session Chain Workflow | ✅ Deployed (S163) | Add lock/unlock mechanism |
 | PR Template | ✅ Deployed | Add "Multiple Sessions" checkbox |
 | Session Concurrency Gate | 🆕 NEW | Design & implement |
@@ -1071,7 +1071,7 @@ flowchart TD
 |---------|----------|------------|
 | GitHub API rate limiting on variable updates | Medium | Batch updates, exponential backoff |
 | Copilot agent not responding to `@copilot` trigger | High | Retry with different model suffix |
-| Branch protection preventing auto-push | Medium | Use `CODEX_MASTER_KEY` token (already configured) |
+| Branch protection preventing auto-push | Medium | Use `CODEX_MASTER_KEY` token (already configured) | <!-- pragma: allowlist secret -->
 | Concurrent variable writes (race condition) | Medium | Use GitHub API conditional update (ETag) |
 | PR template size limit | Low | Move detailed docs to separate file, keep template concise |
 | Merge conflict on sentinel files during multi-session | Medium | Default single-session prevents; multi-session uses rebase+auto-resolve |
@@ -1239,7 +1239,7 @@ grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && 
 
 | Workflow | Purpose | Trigger | Concurrency |
 |----------|---------|---------|-------------|
-| `agent-auth-delegation.yml` | Token delegation + 11-gate compliance | PR opened/edited, review, dispatch | Branch-based, cancel-in-progress |
+| `agent-auth-delegation.yml` | Token delegation + 11-gate compliance | PR opened/edited, review, dispatch | Branch-based, cancel-in-progress | <!-- pragma: allowlist secret -->
 | `iterative-self-healing-ci.yml` | Auto-fix CI failures | workflow_run (any failure) | Branch-based, cancel-in-progress |
 | `copilot-session-chain.yml` | Auto-open next session | PR closed+merged, dispatch | Per-PR, no cancel |
 | `create-sub-pr-to-0D_base_.yml` | Manual sub-PR creation | dispatch | Per-branch, no cancel |

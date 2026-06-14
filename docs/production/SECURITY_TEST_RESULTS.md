@@ -232,16 +232,16 @@ Result:   ✅ PASS — Data URLs validated
 
 **Test 9.1: Token Generation on Request**
 ```
-Requirement: New token generated per form
-Result:      ✅ PASS — Unique token per request
-Token Format: base64 encoded, 32 bytes random
+Requirement: New token generated per form  # pragma: allowlist secret
+Result:      ✅ PASS — Unique token per request  # pragma: allowlist secret
+Token Format: base64 encoded, 32 bytes random  # pragma: allowlist secret
 Validation:  ✅ PASS
 ```
 
 **Test 9.2: Token Persistence**
 ```
-Requirement: Token remains valid throughout session
-Result:      ✅ PASS — Same token across multiple requests
+Requirement: Token remains valid throughout session  # pragma: allowlist secret
+Result:      ✅ PASS — Same token across multiple requests  # pragma: allowlist secret
 Consistency: ✅ PASS
 ```
 
@@ -253,16 +253,16 @@ Consistency: ✅ PASS
 
 **Test 10.1: Missing Token Rejection**
 ```
-Request:  POST /api/action (no token)
+Request:  POST /api/action (no token)  # pragma: allowlist secret
 Expected: Request rejected with 403
-Result:   ✅ PASS — Missing token rejected
+Result:   ✅ PASS — Missing token rejected  # pragma: allowlist secret
 ```
 
 **Test 10.2: Invalid Token Rejection**
 ```
-Request:  POST /api/action (tampered token)
+Request:  POST /api/action (tampered token)  # pragma: allowlist secret
 Expected: Request rejected with 403
-Result:   ✅ PASS — Invalid token rejected
+Result:   ✅ PASS — Invalid token rejected  # pragma: allowlist secret
 ```
 
 **Status:** ✅ **2/2 PASS** — Token validation working correctly
@@ -273,16 +273,16 @@ Result:   ✅ PASS — Invalid token rejected
 
 **Test 11.1: Token Expiration After Timeout**
 ```
-Token Lifetime: 3600 seconds (1 hour)
-After Expiry:   Token rejected
-Result:         ✅ PASS — Expired tokens rejected
+Token Lifetime: 3600 seconds (1 hour)  # pragma: allowlist secret
+After Expiry:   Token rejected  # pragma: allowlist secret
+Result:         ✅ PASS — Expired tokens rejected  # pragma: allowlist secret
 ```
 
 **Test 11.2: Token Renewal After Expiration**
 ```
-New Request:    Generates new token
-Old Token:      No longer accepted
-Result:         ✅ PASS — New tokens generated
+New Request:    Generates new token  # pragma: allowlist secret
+Old Token:      No longer accepted  # pragma: allowlist secret
+Result:         ✅ PASS — New tokens generated  # pragma: allowlist secret
 ```
 
 **Status:** ✅ **2/2 PASS** — Token expiration working correctly

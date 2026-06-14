@@ -516,11 +516,11 @@ ab -n 500000 -c 500 http://${API_ENDPOINT}/...
 
 | Issue | Root Cause | Quick Check | Fix |
 |-------|-----------|-------------|-----|
-| High response time | DB overload | `PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT count(*) FROM pg_stat_activity WHERE state='active';"` | Add DB replicas, optimize queries |
+| High response time | DB overload | `PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT count(*) FROM pg_stat_activity WHERE state='active';"` | Add DB replicas, optimize queries | <!-- pragma: allowlist secret -->
 | High error rate | OOM killer | `kubectl describe pod pod-name \| grep OOMKilled` | Increase memory, find leak |
 | CPU spike | Runaway process | `kubectl top pods -n production` | Kill pod, deploy fix |
 | Cache misses | Invalid strategy | `redis-cli INFO stats` | Adjust cache key pattern |
-| Slow API | N+1 queries | `PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT query, calls FROM pg_stat_statements ORDER BY calls DESC LIMIT 10;"` | Use JOIN, add index |
+| Slow API | N+1 queries | `PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT query, calls FROM pg_stat_statements ORDER BY calls DESC LIMIT 10;"` | Use JOIN, add index | <!-- pragma: allowlist secret -->
 
 ---
 

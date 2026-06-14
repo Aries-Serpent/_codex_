@@ -211,7 +211,7 @@ These require remediation:
 | API | Module | Status | Last Verified |
 |-----|--------|--------|---|
 | `CacheManager.get_async()` | src/codex/cache/ | ✅ CURRENT | 2026-06-14 |
-| `TokenManager.refresh()` | src/codex/auth/ | ✅ CURRENT | 2026-06-14 |
+| `TokenManager.refresh()` | src/codex/auth/ | ✅ CURRENT | 2026-06-14 | <!-- pragma: allowlist secret -->
 | `RAGIndexer.query()` | src/codex/rag/ | ✅ CURRENT | 2026-06-14 |
 | `WorkflowExecutor.run()` | src/codex/workflow/ | ✅ CURRENT | 2026-06-14 |
 | `MetricsCollector.record()` | src/codex/monitoring/ | ✅ CURRENT | 2026-06-14 |
@@ -233,7 +233,7 @@ These require remediation:
 | RAG indexing example | docs/rag/RAG_QUICKSTART.md | ✅ | ✅ | ✅ |
 | Health check setup | docs/production/HEALTH_CHECKS_SPECIFICATION.md | ✅ | ✅ | ✅ |
 | Alert configuration | docs/operations/ALERT_RUNBOOKS.md | ✅ | ✅ | ✅ |
-| Token rotation | docs/security/TOKEN_ROTATION_GUIDE.md | ✅ | ✅ | ✅ |
+| Token rotation | docs/security/TOKEN_ROTATION_GUIDE.md | ✅ | ✅ | ✅ | <!-- pragma: allowlist secret -->
 | Logging setup | docs/development/LOGGING_GUIDE.md | ✅ | ✅ | ✅ |
 | Config example | docs/configuration/HYDRA_GUIDE.md | ✅ | ✅ | ✅ |
 | Deployment script | docs/deployment/README.md | ✅ | ✅ | ✅ |

@@ -81,7 +81,7 @@ async def test_json_rpc_timeout_handling():
         "method": "mcp.listTools",
         "params": {},
     }
-    
+
     try:
         response = await asyncio.wait_for(
             server.handle_request(request), timeout=5.0

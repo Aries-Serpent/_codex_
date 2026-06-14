@@ -50,7 +50,7 @@ Subject: **Phase 6 COMPLETE — Go-Live Authorization Request for Aries-Serpent/
 ║    • Testing & QA ...................... 10/10 ✅             ║
 ║    • Performance & Optimization ........ 10/10 ✅             ║
 ║    • Governance & Enforcement .......... 10/10 ✅             ║
-║    • Secrets Management ................ 10/10 ✅             ║
+║    • Secrets Management ................ 10/10 ✅             ║  # pragma: allowlist secret
 ║    • Documentation & Operations ........ 9.5/10 ✅            ║
 ║                                                                ║
 ║  PRODUCTION STATUS:    ✅ READY FOR DEPLOYMENT               ║
@@ -107,15 +107,15 @@ Subject: **Phase 6 COMPLETE — Go-Live Authorization Request for Aries-Serpent/
 ✅ docs/production/SECURITY_AUDIT_REPORT.md
 ✅ .codex/BATCH_2_SECURITY_REMEDIATION_SUMMARY.md
 ✅ .codex/BATCH_2_GOVERNANCE_FRAMEWORK.md
-✅ .codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md
-✅ .codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md
+✅ .codex/BATCH_2_SECRETS_MANAGEMENT_PLAN.md  # pragma: allowlist secret
+✅ .codex/BATCH_2_SECRETS_MANAGEMENT_COMPLETION_SUMMARY.md  # pragma: allowlist secret
 ✅ docs/production/RBAC_POLICY.md
 ✅ docs/production/INCIDENT_RESPONSE_PLAYBOOK.md
 ✅ docs/production/PRIVILEGE_ESCALATION_CONTROL.md
-✅ docs/production/SECRET_ROTATION_PROCEDURES.md
+✅ docs/production/SECRET_ROTATION_PROCEDURES.md  # pragma: allowlist secret
 ✅ docs/production/COMPLIANCE_CHECKLIST.md
 ✅ .codex/aftermath/batch2_security_audit.json
-✅ .codex/aftermath/batch2_secrets_audit.json
+✅ .codex/aftermath/batch2_secrets_audit.json  # pragma: allowlist secret
 ✅ .codex/aftermath/batch2_governance_audit.json
 ```
 

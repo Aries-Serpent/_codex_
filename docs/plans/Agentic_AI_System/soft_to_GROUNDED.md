@@ -327,7 +327,7 @@ and A2A protocol fields:
 |-------|-------|
 | **From** | `{delegating_agent}` |
 | **To** | `{receiving_agent}` |
-| **Task** | #{task_id} |
+| **Task** | #{task_id} | <!-- pragma: allowlist secret -->
 | **Model** | `{operating_model}` |
 | **Tier** | `{current_enforcement_tier}` |
 | **Timestamp** | {handoff_timestamp} |

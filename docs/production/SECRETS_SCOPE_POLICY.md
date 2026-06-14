@@ -26,9 +26,9 @@ This policy defines the scoping and isolation requirements for GitHub Secrets ac
 |------|-------|----------|---------|
 | Master Keys | Production only | Quarterly | CODEX_MASTER_KEY |
 | Environment Keys | Per-environment | Monthly | CODEX_MASTER_KEY_STAGING |
-| Service Tokens | Environment-specific | Monthly | github.token |
-| Database Passwords | Per-environment | Quarterly | DB_PASSWORD |
-| API Keys | Per-environment | Annual | API_KEY_* |
+| Service Tokens | Environment-specific | Monthly | github.token | <!-- pragma: allowlist secret -->
+| Database Passwords | Per-environment | Quarterly | DB_PASSWORD | <!-- pragma: allowlist secret -->
+| API Keys | Per-environment | Annual | API_KEY_* | <!-- pragma: allowlist secret -->
 | TLS Certificates | Production | Annual | TLS_CERT_* |
 
 ### 1.2 Criticality Levels
@@ -48,14 +48,14 @@ This policy defines the scoping and isolation requirements for GitHub Secrets ac
 ```
 CODEX_MASTER_KEY
 CODEX_BACKUP_KEY
-GITHUB_TOKEN
-GITHUB_TOKEN_PRODUCTION
+GITHUB_TOKEN  # pragma: allowlist secret
+GITHUB_TOKEN_PRODUCTION  # pragma: allowlist secret
 DEPLOYMENT_KEY_PRODUCTION
-DB_PASSWORD_PRODUCTION
-API_KEY_PRODUCTION
+DB_PASSWORD_PRODUCTION  # pragma: allowlist secret
+API_KEY_PRODUCTION  # pragma: allowlist secret
 SLACK_WEBHOOK_PRODUCTION
 GCP_SA_KEY_PRODUCTION
-DOCKER_HUB_TOKEN_PRODUCTION
+DOCKER_HUB_TOKEN_PRODUCTION  # pragma: allowlist secret
 TLS_CERT_PRODUCTION
 ```
 
@@ -75,13 +75,13 @@ TLS_CERT_PRODUCTION
 **Allowed Secrets**:
 ```
 CODEX_MASTER_KEY_STAGING
-GITHUB_TOKEN_STAGING
+GITHUB_TOKEN_STAGING  # pragma: allowlist secret
 DEPLOYMENT_KEY_STAGING
-DB_PASSWORD_STAGING
-API_KEY_STAGING
+DB_PASSWORD_STAGING  # pragma: allowlist secret
+API_KEY_STAGING  # pragma: allowlist secret
 SLACK_WEBHOOK_STAGING
 GCP_SA_KEY_STAGING
-DOCKER_HUB_TOKEN_STAGING
+DOCKER_HUB_TOKEN_STAGING  # pragma: allowlist secret
 ```
 
 **Forbidden Patterns**:
@@ -100,10 +100,10 @@ DOCKER_HUB_TOKEN_STAGING
 **Allowed Secrets**:
 ```
 CODEX_MASTER_KEY_DEV
-GITHUB_TOKEN_DEV
+GITHUB_TOKEN_DEV  # pragma: allowlist secret
 DEPLOYMENT_KEY_DEV
-DB_PASSWORD_DEV
-API_KEY_DEV
+DB_PASSWORD_DEV  # pragma: allowlist secret
+API_KEY_DEV  # pragma: allowlist secret
 SLACK_WEBHOOK_DEV
 ```
 
@@ -124,23 +124,23 @@ SLACK_WEBHOOK_DEV
 ### 3.1 GitHub Secrets Hierarchy
 
 ```
-Repository Secrets
+Repository Secrets  # pragma: allowlist secret
 ├── CODEX_MASTER_KEY (shared across environments)
 ├── CODEX_BACKUP_KEY
-├── GITHUB_TOKEN
+├── GITHUB_TOKEN  # pragma: allowlist secret
 └── Environment-specific:
     ├── Production Environment
     │   ├── DEPLOYMENT_KEY_PRODUCTION
-    │   ├── DB_PASSWORD_PRODUCTION
-    │   └── API_KEY_PRODUCTION
+    │   ├── DB_PASSWORD_PRODUCTION  # pragma: allowlist secret
+    │   └── API_KEY_PRODUCTION  # pragma: allowlist secret
     ├── Staging Environment
     │   ├── DEPLOYMENT_KEY_STAGING
-    │   ├── DB_PASSWORD_STAGING
-    │   └── API_KEY_STAGING
+    │   ├── DB_PASSWORD_STAGING  # pragma: allowlist secret
+    │   └── API_KEY_STAGING  # pragma: allowlist secret
     └── Development Environment
         ├── DEPLOYMENT_KEY_DEV
-        ├── DB_PASSWORD_DEV
-        └── API_KEY_DEV
+        ├── DB_PASSWORD_DEV  # pragma: allowlist secret
+        └── API_KEY_DEV  # pragma: allowlist secret
 ```
 
 ### 3.2 Secret Isolation Implementation
@@ -182,44 +182,44 @@ protection_rules:
 
 ```python
 #!/usr/bin/env python3
-# .github/scripts/validate_secrets_scope.py
+# .github/scripts/validate_secrets_scope.py  # pragma: allowlist secret
 
 import os
 import sys
 
 ENVIRONMENT = os.getenv("GITHUB_ENVIRONMENT", "unknown")
-ACCESSIBLE_SECRETS = {
+ACCESSIBLE_SECRETS = {  # pragma: allowlist secret
     "production": {
         "CODEX_MASTER_KEY",
         "CODEX_BACKUP_KEY",
-        "GITHUB_TOKEN",
+        "GITHUB_TOKEN",  # pragma: allowlist secret
         "DEPLOYMENT_KEY_PRODUCTION",
-        "DB_PASSWORD_PRODUCTION",
-        "API_KEY_PRODUCTION",
+        "DB_PASSWORD_PRODUCTION",  # pragma: allowlist secret
+        "API_KEY_PRODUCTION",  # pragma: allowlist secret
     },
     "staging": {
         "CODEX_MASTER_KEY_STAGING",
-        "GITHUB_TOKEN_STAGING",
+        "GITHUB_TOKEN_STAGING",  # pragma: allowlist secret
         "DEPLOYMENT_KEY_STAGING",
-        "DB_PASSWORD_STAGING",
-        "API_KEY_STAGING",
+        "DB_PASSWORD_STAGING",  # pragma: allowlist secret
+        "API_KEY_STAGING",  # pragma: allowlist secret
     },
     "development": {
         "CODEX_MASTER_KEY_DEV",
-        "GITHUB_TOKEN_DEV",
+        "GITHUB_TOKEN_DEV",  # pragma: allowlist secret
         "DEPLOYMENT_KEY_DEV",
-        "DB_PASSWORD_DEV",
-        "API_KEY_DEV",
+        "DB_PASSWORD_DEV",  # pragma: allowlist secret
+        "API_KEY_DEV",  # pragma: allowlist secret
     }
 }
 
-def check_forbidden_secrets():
-    """Check that environment doesn't have cross-environment secrets"""
-    if ENVIRONMENT not in ACCESSIBLE_SECRETS:
+def check_forbidden_secrets():  # pragma: allowlist secret
+    """Check that environment doesn't have cross-environment secrets"""  # pragma: allowlist secret
+    if ENVIRONMENT not in ACCESSIBLE_SECRETS:  # pragma: allowlist secret
         print(f"❌ Unknown environment: {ENVIRONMENT}")
         sys.exit(1)
     
-    allowed = ACCESSIBLE_SECRETS[ENVIRONMENT]
+    allowed = ACCESSIBLE_SECRETS[ENVIRONMENT]  # pragma: allowlist secret
     
     # Check for forbidden patterns
     forbidden_patterns = {
@@ -229,17 +229,17 @@ def check_forbidden_secrets():
     }
     
     for pattern in forbidden_patterns[ENVIRONMENT]:
-        for secret in os.environ:
-            if pattern in secret:
-                print(f"❌ Forbidden secret detected: {secret}")
+        for secret in os.environ:  # pragma: allowlist secret
+            if pattern in secret:  # pragma: allowlist secret
+                print(f"❌ Forbidden secret detected: {secret}")  # pragma: allowlist secret
                 print(f"   Environment: {ENVIRONMENT}")
                 print(f"   Pattern: {pattern}")
                 sys.exit(1)
     
-    print(f"✅ No cross-environment secrets detected in {ENVIRONMENT}")
+    print(f"✅ No cross-environment secrets detected in {ENVIRONMENT}")  # pragma: allowlist secret
 
 if __name__ == "__main__":
-    check_forbidden_secrets()
+    check_forbidden_secrets()  # pragma: allowlist secret
 ```
 
 ---
@@ -326,19 +326,19 @@ from datetime import datetime
 
 report = {
     "timestamp": datetime.utcnow().isoformat() + "Z",
-    "audit_type": "secrets_scope_compliance",
+    "audit_type": "secrets_scope_compliance",  # pragma: allowlist secret
     "compliance_checks": {
-        "no_cross_environment_secrets": {
+        "no_cross_environment_secrets": {  # pragma: allowlist secret
             "status": "PASS",
-            "description": "No production secrets found in staging/dev"
+            "description": "No production secrets found in staging/dev"  # pragma: allowlist secret
         },
         "no_hardcoded_credentials": {
             "status": "PASS",
             "description": "No credentials found in source code"
         },
-        "all_secrets_encrypted": {
+        "all_secrets_encrypted": {  # pragma: allowlist secret
             "status": "PASS",
-            "description": "All secrets encrypted at rest in GitHub"
+            "description": "All secrets encrypted at rest in GitHub"  # pragma: allowlist secret
         },
         "rotation_schedules_active": {
             "status": "PASS",
@@ -346,14 +346,14 @@ report = {
         },
         "audit_logging_enabled": {
             "status": "PASS",
-            "description": "Audit logging active for all secret access"
+            "description": "Audit logging active for all secret access"  # pragma: allowlist secret
         }
     },
     "overall_status": "COMPLIANT",
     "next_audit": "2026-07-14"
 }
 
-with open(".codex/aftermath/secrets_compliance_report.json", "w") as f:
+with open(".codex/aftermath/secrets_compliance_report.json", "w") as f:  # pragma: allowlist secret
     json.dump(report, f, indent=2)
 
 print(json.dumps(report, indent=2))
@@ -383,10 +383,10 @@ print(json.dumps(report, indent=2))
 
 | Action | Production | Staging | Development |
 |--------|-----------|---------|-------------|
-| Add Secret | 2 approvals (sec + ops) | 1 approval (devops) | Self-service |
-| Modify Secret | 2 approvals + 30min delay | 1 approval | Self-service |
-| Delete Secret | 2 approvals + security lead | 1 approval | Self-service |
-| Rotate Secret | Scheduled + approved | On-demand | On-demand |
+| Add Secret | 2 approvals (sec + ops) | 1 approval (devops) | Self-service | <!-- pragma: allowlist secret -->
+| Modify Secret | 2 approvals + 30min delay | 1 approval | Self-service | <!-- pragma: allowlist secret -->
+| Delete Secret | 2 approvals + security lead | 1 approval | Self-service | <!-- pragma: allowlist secret -->
+| Rotate Secret | Scheduled + approved | On-demand | On-demand | <!-- pragma: allowlist secret -->
 
 ---
 
