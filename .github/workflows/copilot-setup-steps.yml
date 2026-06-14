@@ -143,10 +143,10 @@ jobs:
       # See docs/agent/COPILOT_SETUP_STEPS_GUARD.md for change history.
       # ============================================================================
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        run: |
-          if ! python3 .github/scripts/session_preload.py; then
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          fi
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        run: python3 .github/scripts/session_preload.py || {
+          echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+         }
 
       # ============================================================================
       # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
