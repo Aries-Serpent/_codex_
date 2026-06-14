@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "capacity": 1000,
+  "entries": [
+    {
+      "id": "LTM-SEC-001",
+      "key": "CODEQL-UNDEFINED-EXPORT",
+      "improvement_area": "security",
+      "confidence": 0.9,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-SEC-002",
+      "key": "CODEQL-UNTRUSTED-CHECKOUT-SUPPRESSION",
+      "improvement_area": "security",
+      "confidence": 0.9,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-SEC-003",
+      "key": "MLFLOW-CVE-BUMP",
+      "improvement_area": "security",
+      "confidence": 0.9,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-SEC-004",
+      "key": "WORKFLOW-ACTION-PINNING",
+      "improvement_area": "security",
+      "confidence": 0.9,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-SEC-005",
+      "key": "DETECT-SECRETS-VENV-FP",
+      "improvement_area": "security",
+      "confidence": 0.9,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-COV-001",
+      "key": "COVERAGE-MCP-SERVER",
+      "improvement_area": "coverage",
+      "confidence": 0.85,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-COV-002",
+      "key": "COVERAGE-RESTORE-PIPELINE",
+      "improvement_area": "coverage",
+      "confidence": 0.85,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-COV-003",
+      "key": "COVERAGE-COGNITIVE-EXPERIMENTS",
+      "improvement_area": "coverage",
+      "confidence": 0.85,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-COV-004",
+      "key": "COVERAGE-RAG-ANALYTICS",
+      "improvement_area": "coverage",
+      "confidence": 0.85,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-COV-005",
+      "key": "FAIL-UNDER-CALIBRATION",
+      "improvement_area": "coverage",
+      "confidence": 0.85,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-CI-011",
+      "key": "ACTION-REQUIRED-IS-COPILOT-GATE",
+      "improvement_area": "ci-stability",
+      "confidence": 0.92,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-CI-012",
+      "key": "SELF-HEALING-CASCADE-CHECK",
+      "improvement_area": "ci-stability",
+      "confidence": 0.92,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    },
+    {
+      "id": "LTM-CI-013",
+      "key": "PRECOMMIT-NOT-IN-CI-RUNNER",
+      "improvement_area": "ci-stability",
+      "confidence": 0.92,
+      "status": "consolidated",
+      "timestamp": "2026-06-14T18:32:20Z",
+      "session_id": "PROD-READINESS-CAMPAIGN-20260614"
+    }
+  ],
+  "meta": {
+    "ltm_count_after": 13,
+    "entries_pruned": 0,
+    "fill_rate": 0.013,
+    "health": "green",
+    "last_sync": "2026-06-14T18:32:20Z",
+    "campaign": "PROD-READINESS-CAMPAIGN-20260614",
+    "dashboard_metrics": {
+      "security_patterns": 5,
+      "coverage_patterns": 5,
+      "ci_stability_patterns": 3,
+      "total_patterns": 13,
+      "fill_rate": 0.013,
+      "health": "green"
+    }
+  }
+}
