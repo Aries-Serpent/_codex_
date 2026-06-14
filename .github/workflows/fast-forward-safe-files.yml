@@ -101,11 +101,6 @@ permissions:
   pull-requests: write   # needed to open the fast-forward PR
   actions: read
 
-concurrency:
-  # One fast-forward at a time per target branch
-  group: fast-forward-${{ inputs.target_branch || 'main' }}
-  cancel-in-progress: false
-
 jobs:
   preflight:
     name: "🔍 Preflight — classify PR #${{ inputs.pr_number }} files"
