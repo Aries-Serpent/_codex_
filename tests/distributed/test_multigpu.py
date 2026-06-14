@@ -276,7 +276,7 @@ class TestPipelineParallelism(unittest.TestCase):
         optimizer.zero_grad()
 
         num_micro_batches = 4
-        for i in range(num_micro_batches):
+        for _i in range(num_micro_batches):
             x = torch.randn(8, 10)
             y = model(x)
             loss = y.sum() / num_micro_batches

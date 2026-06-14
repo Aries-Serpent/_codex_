@@ -192,7 +192,7 @@ class TestHistogramMetrics:
         buckets = [0.01, 0.05, 0.1, 0.5, 1.0]
         value = 0.3
         # Value should fall in bucket 0.5
-        for i, b in enumerate(buckets):
+        for _i, b in enumerate(buckets):
             if value <= b:
                 assert b == 0.5
                 break

@@ -267,7 +267,7 @@ class TestPhase2_LoopCoverage:
     def test_loop_single_iteration(self):
         """Test loop with single iteration"""
         count = 0
-        for i in range(1):
+        for _i in range(1):
             count += 1
         assert count == 1
 
@@ -301,8 +301,8 @@ class TestPhase2_LoopCoverage:
     def test_nested_loop_coverage(self):
         """Test nested loop execution"""
         total = 0
-        for i in range(3):
-            for j in range(4):
+        for _i in range(3):
+            for _j in range(4):
                 total += 1
         assert total == 12
 

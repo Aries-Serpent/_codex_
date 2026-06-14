@@ -206,7 +206,7 @@ class TestInferenceServerWithAuth:
         # Make requests to hit rate limit
         # Default is 1000 requests per 60 seconds
         # We won't test the full limit here, just verify the mechanism exists
-        for i in range(3):
+        for _i in range(3):
             resp = client.post("/predict", json={"inputs": ["test"]})
             # First few should succeed
             assert resp.status_code == 200

@@ -211,7 +211,7 @@ class TestHelpers:
 
     def test_allowed_tasks_has_entries(self):
         assert len(ALLOWED_TASKS) >= 1
-        for name, (func, desc) in ALLOWED_TASKS.items():
+        for _name, (func, desc) in ALLOWED_TASKS.items():
             assert callable(func)
             assert isinstance(desc, str)
 

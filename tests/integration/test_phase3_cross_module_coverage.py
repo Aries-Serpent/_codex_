@@ -193,7 +193,7 @@ class TestConfigToTrainingFlow:
         # Simulate training steps
         for epoch in range(3):
             state["epoch"] = epoch
-            for step in range(10):
+            for _step in range(10):
                 state["global_step"] += 1
                 current_loss = 1.0 / (state["global_step"] + 1)
                 if current_loss < state["best_loss"]:

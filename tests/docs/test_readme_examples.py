@@ -70,7 +70,7 @@ class TestREADMECodeBlocks:
         ]
 
         syntax_errors = []
-        for lang, code in python_blocks:
+        for _lang, code in python_blocks:
             # Skip snippets with ellipsis or incomplete code
             if "..." in code or "# ..." in code:
                 continue

@@ -105,7 +105,7 @@ class TestEndToEndWorkflows:
         """Test health check propagation through system."""
         # Propagate health checks
         overall_health = "healthy"
-        for service, status in mock_services.items():
+        for _service, status in mock_services.items():
             if status["health"] != "healthy":
                 overall_health = "degraded"
                 break

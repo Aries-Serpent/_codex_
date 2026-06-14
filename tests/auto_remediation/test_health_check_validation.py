@@ -112,7 +112,7 @@ class TestLivenessProbes:
         max_failures = failure_threshold
 
         # Simulate consecutive failures
-        for i in range(max_failures):
+        for _i in range(max_failures):
             failures += 1
 
         assert failures >= failure_threshold
@@ -204,7 +204,7 @@ class TestReadinessProbes:
 
         consecutive_successes = 0
         # Simulate checks
-        for i in range(success_threshold):
+        for _i in range(success_threshold):
             consecutive_successes += 1
 
         assert consecutive_successes >= success_threshold

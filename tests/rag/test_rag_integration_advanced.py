@@ -95,7 +95,7 @@ class TestComplexWorkflows:
             doc_count = 0
 
             for batch_size in batch_sizes:
-                for i in range(batch_size):
+                for _i in range(batch_size):
                     doc_id = f"doc_{doc_count}"
                     content = f"Document content {doc_count}"
                     try:

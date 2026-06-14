@@ -344,7 +344,7 @@ class TestPhase2_EdgeCases_Loops:
     def test_zero_iterations(self):
         """Test loop with zero iterations"""
         count = 0
-        for i in range(0):
+        for _i in range(0):
             count += 1
         assert count == 0
 

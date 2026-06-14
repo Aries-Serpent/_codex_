@@ -313,7 +313,7 @@ class TestEnergyLandscapeIntegration:
             )
 
         # Run simulated annealing
-        for iteration in range(20):
+        for _iteration in range(20):
             landscape.cool_system(cooling_rate=0.9)
 
         # After cooling, select best state

@@ -73,7 +73,7 @@ class TestNetworkFailuresAndRetries:
         attempts = 0
         last_error = None
 
-        for retry in range(max_retries):
+        for _retry in range(max_retries):
             try:
                 mock_api_call()
                 break
@@ -115,7 +115,7 @@ class TestNetworkFailuresAndRetries:
         max_attempts = 5
         result = None
 
-        for attempt in range(max_attempts):
+        for _attempt in range(max_attempts):
             try:
                 result = unreliable_network_call()
                 break
@@ -322,7 +322,7 @@ class TestResourceExhaustionScenarios:
         num_chunks = 100
 
         with open(large_file, 'w') as f:
-            for i in range(num_chunks):
+            for _i in range(num_chunks):
                 chunk = "x" * chunk_size
                 f.write(chunk)
 

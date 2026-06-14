@@ -32,7 +32,7 @@ def test_prepare_data_deterministic(tmp_path: Path) -> None:
         second["splits"]["train"]["path"]
     ).read_text(encoding="utf-8")
     manifest = json.loads(Path(first["manifest"]).read_text(encoding="utf-8"))
-    for name, meta in first["splits"].items():
+    for _name, meta in first["splits"].items():
         split_path = Path(meta["path"])
         lines = [ln for ln in split_path.read_text(encoding="utf-8").splitlines() if ln]
         assert len(lines) == meta["count"]

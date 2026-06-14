@@ -107,7 +107,7 @@ class TestMarkdownQuality:
             content = doc.read_text(encoding="utf-8", errors="ignore")
             links = internal_link_pattern.findall(content)
 
-            for link_text, link_target in links[:5]:  # Check first 5 links
+            for _link_text, link_target in links[:5]:  # Check first 5 links
                 # Skip external links and anchors
                 if link_target.startswith(("http://", "https://", "#", "mailto:")):
                     continue

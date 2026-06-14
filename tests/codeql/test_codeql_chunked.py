@@ -64,7 +64,7 @@ def temp_sarif_dir(sample_sarif: dict[str, Any]) -> Generator[Path, None, None]:
         tmppath = Path(tmpdir)
 
         # Create multiple SARIF files
-        for i, name in enumerate(["core", "ml", "agents"]):
+        for _i, name in enumerate(["core", "ml", "agents"]):
             sarif_file = tmppath / f"results-{name}.sarif"
             modified_sarif = sample_sarif.copy()
             modified_sarif["runs"] = [

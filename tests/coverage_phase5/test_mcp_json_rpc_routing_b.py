@@ -83,7 +83,7 @@ async def test_json_rpc_timeout_handling():
     }
 
     try:
-        response = await asyncio.wait_for(
+        await asyncio.wait_for(
             server.handle_request(request), timeout=5.0
         )
     except asyncio.TimeoutError:

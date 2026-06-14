@@ -115,7 +115,7 @@ class TestRAGIndexingQueryPipeline:
             embeddings[doc["id"]] = embedding
 
         assert len(embeddings) == 5
-        for doc_id, emb in embeddings.items():
+        for _doc_id, emb in embeddings.items():
             assert len(emb) == 10
             assert all(isinstance(v, float) for v in emb)
 
@@ -369,7 +369,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.5)
 
         lrs = []
-        for epoch in range(5):
+        for _epoch in range(5):
             lrs.append(optimizer.param_groups[0]["lr"])
             scheduler.step()
 
@@ -388,7 +388,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
         # Train for a few steps
         train_losses = []
-        for step in range(5):
+        for _step in range(5):
             input_data = torch.randn(4, 10)
             target = torch.randn(4, 5)
 
