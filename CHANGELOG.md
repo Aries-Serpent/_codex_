@@ -2,6 +2,39 @@
 
 ## [Unreleased]
 
+### Added (Coverage Wave 1 — PROD-READINESS-CAMPAIGN-20260614, 2026-06-14)
+- **179 new test functions** across 10 new test files targeting highest-priority untested modules
+- `tests/mcp/server/test_json_rpc.py` — 27 tests covering `JsonRpcHandler`, `JsonRpcRequest`, `JsonRpcResponse`, `JsonRpcError`, batch handling, notifications
+- `tests/mcp/server/test_safety_checks.py` — 10 tests for `live_tests_enabled()` env-var logic
+- `tests/mcp/server/test_tracing.py` — 15 tests for `init_tracing`, `ensure_request_id`, `drift_span`, `record_drift_event`
+- `tests/mcp/server/test_middleware_auth.py` — 10 tests for `APIKeyAuthMiddleware` (****** X-API-Key auth paths)
+- `tests/restore_pipeline/test_config.py` — 23 tests for `PipelineConfig` defaults and overrides
+- `tests/restore_pipeline/test_metrics.py` — 12 tests for `psnr`, `ssim`, `compute_all`
+- `tests/restore_pipeline/test_cli.py` — 26 tests for argument parser and `_collect_inputs`
+- `tests/cognitive_brain/experiments/test_exp1_validation.py` — 21 tests for `get_ground_truth`, `generate_audit_scenarios`
+- `tests/cognitive_brain/experiments/test_exp3_validation.py` — 22 tests for `TestCase`, `generate_test_suite`, `run_traditional_approach`
+- `tests/codex/rag/analytics/test_metrics_db.py` — 16 tests for `MetricsDatabase.log_query`, `get_stats`, `get_percentiles`
+- `tests/restore_pipeline/__init__.py` — init for new test package
+- `tests/codex/rag/analytics/__init__.py` — init for new test package
+- Estimated coverage uplift: **17.98% → >20%** (based on modules covered)
+
+### Fixed (CodeQL Error + Security Alerts — copilot/codeql-error-fixes-20260614, 2026-06-14)
+- **`py/undefined-export` (8 alerts) — `src/codex/retrieval/__init__.py`**:
+  Restructured `__all__` so optional vector-store symbols (`FAISSStore`, `PGVectorStore`,
+  `WeaviateStore`) are only appended to `__all__` when their backing library is installed
+  (not None).  CodeQL's `py/undefined-export` fires when `__all__` contains a name that
+  resolves to `None`; the conditional-append pattern eliminates all 8 alerts (#13539–#13546).
+- **`py/uninitialized-local-variable` (1 alert) — `tests/unit/test_peft_utils.py:25`**:
+  `loaded_bundle = None` initialization before the `try` block ensures the variable is
+  always defined regardless of exception path.  Alert ID: #13430.
+- **`actions/untrusted-checkout/medium` (2 alerts)**:
+  - `.github/workflows/forward-sync-autogen.yml`: Added `# codeql[actions/untrusted-checkout]`
+    suppression comment confirming `persist-credentials: false` and that the ref is an
+    internally-resolved branch (not a fork user-input ref).  Alert ID: #13242.
+  - `.github/workflows/app-package-download.yml`: Added `# codeql[actions/untrusted-checkout]`
+    suppression comment confirming branch-name whitelist validation and
+    `persist-credentials: false`.  Alert ID: #13241.
+
 ### Fixed (CodeQL Workflow Security — copilot/workflow-compliance-20260614, 2026-06-14)
 - **Pinned 56 unpinned action tag references** across 14 GitHub Actions workflow files (CodeQL `actions/unpinned-tag` alerts)
   - Replaced `actions/checkout@v6.0.3` / `@v5` → SHA `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2) in all occurrences
