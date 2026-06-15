@@ -255,7 +255,7 @@ def discover_tests(
 
         if rel:
             p = REPO_ROOT / rel
-            if p.exists():
+            if p.exists() and p.suffix == ".py" and "tests" in p.parts:
                 seen.add(p)
     return list(seen)
 

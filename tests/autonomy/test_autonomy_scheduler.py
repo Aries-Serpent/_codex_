@@ -42,6 +42,7 @@ class TestBudgetCap:
         assert fast() == "done"
 
     @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision")
+    @pytest.mark.timeout(90)
     def test_budget_cap_raises_on_timeout(self):
         mod = _import_scheduler()
         if not hasattr(mod, "budget_cap"):

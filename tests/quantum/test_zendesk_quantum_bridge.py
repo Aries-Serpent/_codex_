@@ -44,7 +44,24 @@ def test_prioritize_tickets_edge_cases():
 
 
 def test_rag_bridge_deterministic_ordering():
-    bridge = ZendeskRAGBridge()
+    class _StubResult:
+        def __init__(self, ticket_id: int, content: str, score: float) -> None:
+            self.metadata = {"ticket_id": ticket_id}
+            self.content = content
+            self.score = score
+
+    class _StubRetriever:
+        def retrieve_from_chunks(self, query, chunks, top_k=5):
+            ranked = []
+            q = query.lower()
+            for chunk in chunks:
+                content = chunk.content
+                score = 1.0 if q in content.lower() else 0.1
+                ranked.append(_StubResult(chunk.metadata.get("ticket_id", -1), content, score))
+            ranked.sort(key=lambda item: (-item.score, item.metadata["ticket_id"]))
+            return ranked[:top_k]
+
+    bridge = ZendeskRAGBridge(retriever=_StubRetriever())
     tickets = [
         ZendeskTicket(
             ticket_id=10,
