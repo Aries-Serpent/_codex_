@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (SN — PR #4920, 2026-06-15T03:42Z)
+- Addressed copilot-setup-steps workflow alerts by removing trailing-whitespace hotspots and wrapping long env/shell lines in YAML-safe multiline form.
+- Reverted `.codex/session_context_latest.md` to the base-branch version to resolve the outstanding review thread on unintended session digest-only changes.
+- Updated accountability/session documentation for this PR follow-up.
+
 ### Fixed (auto-update — PR #4910)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4910 (SHA `b79b753d`) at 2026-06-14T20:46Z [auto-generated]
 
