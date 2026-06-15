@@ -241,11 +241,19 @@ def discover_tests(
         print(_red("  ✗ pytest --collect-only timed out after 120 s"))
         return []
 
-    # Parse file paths from collected item ids (format: path::class::test)
+    # Parse file paths from collected item ids.
+    # Pytest output formats differ by version:
+    # - pytest<9: path::class::test
+    # - pytest>=9 with -q collect-only: path: <count>
     seen: set[Path] = set()
     for line in result.stdout.splitlines():
+        rel: str | None = None
         if "::" in line:
             rel = line.split("::")[0].strip()
+        elif ".py:" in line:
+            rel = line.split(":", 1)[0].strip()
+
+        if rel:
             p = REPO_ROOT / rel
             if p.exists():
                 seen.add(p)

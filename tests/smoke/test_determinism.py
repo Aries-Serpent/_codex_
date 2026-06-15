@@ -21,9 +21,20 @@ def test_enable_determinism_repeats():
     nums2 = (random.randint(0, 10_000), random.randint(0, 10_000))
 
     assert nums1 == nums2
-    # presence keys exist
-    assert "torch" in s1 and "numpy" in s1
-    assert "torch" in s2 and "numpy" in s2
+    # return contract is stable
+    assert s1["seed"] == 123
+    assert s2["seed"] == 123
+    assert s1["deterministic"] is True
+    assert s2["deterministic"] is True
+    assert {"torch", "numpy", "random", "seed", "deterministic"} <= set(s1)
+    assert {"torch", "numpy", "random", "seed", "deterministic"} <= set(s2)
+
+
+def test_enable_determinism_seed_none_does_not_report_random_seed():
+    state = enable_determinism(seed=None, deterministic=True)
+    assert state["seed"] is None
+    assert state["deterministic"] is True
+    assert "random" not in state
 
 
 def test_enable_determinism_cudnn_flags_toggle():
