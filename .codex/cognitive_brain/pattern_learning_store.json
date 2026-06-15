@@ -332,7 +332,10 @@
       "fix": "Replace != success with == failure in conditional checks; skipped is neutral not failed",
       "confidence": 0.95,
       "effectiveness": 1.0,
-      "occurrences": 1
+      "occurrences": 1,
+      "category": "ci_failure",
+      "success_rate": 0.89,
+      "improvement_area": "CI_SELF_HEALING"
     },
     "python_version_venv_mismatch": {
       "id": "python_version_venv_mismatch",
@@ -344,7 +347,10 @@
       "fix": "Use setup-python@v5 directly instead of composite venv-cache action for jobs with own deps",
       "confidence": 0.98,
       "effectiveness": 1.0,
-      "occurrences": 1
+      "occurrences": 1,
+      "category": "testing",
+      "success_rate": 0.84,
+      "improvement_area": "CI_SELF_HEALING"
     },
     "ci_poll_timeout_pattern": {
       "id": "ci_poll_timeout_pattern",
@@ -356,7 +362,10 @@
       "fix": "Reduce maxAttempts*pollInterval to 3*30s=90s; fail fast with re-run instructions",
       "confidence": 0.97,
       "effectiveness": 1.0,
-      "occurrences": 1
+      "occurrences": 1,
+      "category": "ci_failure",
+      "success_rate": 0.87,
+      "improvement_area": "CI_SELF_HEALING"
     },
     "premerge_scope_validation": {
       "id": "premerge_scope_validation",
@@ -368,7 +377,10 @@
       "fix": "Scope to tests/capabilities/ci_test/ (~50 tests, ~30s); full suite in main validation pipeline",
       "confidence": 0.99,
       "effectiveness": 1.0,
-      "occurrences": 1
+      "occurrences": 1,
+      "category": "validation",
+      "success_rate": 0.91,
+      "improvement_area": "SECURITY_HARDENING"
     },
     "sparse_checkout_setup_python": {
       "id": "SCP-001",
