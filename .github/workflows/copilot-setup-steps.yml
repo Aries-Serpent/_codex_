@@ -464,6 +464,7 @@ jobs:
           which ruff && echo "✅ ruff available" || echo "⚠️ ruff not available (non-blocking)"
           which black && echo "✅ black available" || echo "⚠️ black not available (non-blocking)"
           which pytest && echo "✅ pytest available" || echo "⚠️ pytest not available (non-blocking)"
+
       - name: "📊 Session Lifecycle Metrics"
         continue-on-error: true
         run: |
