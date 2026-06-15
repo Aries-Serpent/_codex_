@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (CCA Environment Variables & Workflow Hardening — PR #4917, 2026-06-15T03:16Z)
+- Fixed runner profile condition in `copilot-setup-steps.yml` to properly check for empty environment variables using `!= ''` guard
+- Converted session preload step to use block-scalar YAML syntax (`run: |`) to prevent YAML parsing issues with shell braces
+- Auto-fixed PDA iteration entry for session tracking and merge-readiness compliance
+- Updated accountability report and documentation for PR #4917 completion
+
 ### Fixed (auto-update — PR #4917)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4917 (SHA `0b938bb0`) at 2026-06-15T01:28Z [auto-generated]
 
