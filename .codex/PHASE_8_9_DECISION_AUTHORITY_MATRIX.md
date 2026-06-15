@@ -85,7 +85,7 @@ Step 4: Campaign Lead: Request deeper analysis OR approve with risk doc
 | **Dependency CVE** | CRITICAL (CVSS >9.0) | Tier 1 | Security Lead → Campaign Lead → VP Engineering | 15 min |
 | **Dependency CVE** | HIGH (CVSS 7.0-8.9) | Tier 2 | Security Lead → Campaign Lead | 1 hr |
 | **Dependency CVE** | MEDIUM/LOW (CVSS <7.0) | Tier 3 | Security Lead (auto-approve) | 4 hr |
-| **Secret Detected** | Any secret detected | Tier 1 | Security Lead → Campaign Lead (immediate) | 5 min |
+| **Secret Detected** | Any secret detected | Tier 1 | Security Lead → Campaign Lead (immediate) | 5 min | <!-- pragma: allowlist secret -->
 
 **Example:** *CodeQL finds SQL injection vulnerability*
 ```

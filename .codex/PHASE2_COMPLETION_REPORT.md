@@ -25,9 +25,9 @@ Phase 2 has been **successfully completed**. All 15 Dependabot commits have been
 | # | Hash | Dependency | Version | Status | Notes |
 |---|------|-----------|---------|--------|-------|
 | 1 | 34e225e | actions/upload-artifact | 7.0.1 | ✅ APPLIED | Conflicts resolved: CHANGELOG, workflows, session context |
-| 2 | ac4ea6d | aquasecurity/trivy-action | 0.36.0 | ✅ RESOLVED | Conflicts: 6 files (manifests, workflows, secrets baseline) |
+| 2 | ac4ea6d | aquasecurity/trivy-action | 0.36.0 | ✅ RESOLVED | Conflicts: 6 files (manifests, workflows, secrets baseline) | <!-- pragma: allowlist secret -->
 | 3 | 716b99a | codecov/codecov-action | 7.0.0 | ✅ RESOLVED | Conflicts: 9 files (auth, tests, RAG, manifests) |
-| 4 | 2a6bbd3 | docker/login-action | 4.2.0 | ✅ RESOLVED | Conflicts: 4 files (build workflow, secrets, manifest) |
+| 4 | 2a6bbd3 | docker/login-action | 4.2.0 | ✅ RESOLVED | Conflicts: 4 files (build workflow, secrets, manifest) | <!-- pragma: allowlist secret -->
 | 5 | 3c6b6f7 | docker/setup-qemu-action | 4.1.0 | ✅ RESOLVED | Conflicts: 3 files (build workflow, manifest, changelog) |
 
 **Category Status**: 5/5 ✅ Complete

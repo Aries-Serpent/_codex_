@@ -71,7 +71,7 @@ This ensures:
 | pypi-publish.yml | ~1.8 KB | ✅ Valid | <1ms | None |
 | auth-tests.yml | ~3.2 KB | ✅ Valid | <1ms | None |
 | codex-manifest-refresh.yml | ~2.1 KB | ✅ Valid | <1ms | None |
-| agent-task-janitor.yml | ~1.9 KB | ✅ Valid | <1ms | None |
+| agent-task-janitor.yml | ~1.9 KB | ✅ Valid | <1ms | None | <!-- pragma: allowlist secret -->
 | session-context-capture.yml | ~2.3 KB | ✅ Valid | <1ms | None |
 | codeql-analysis.yml | ~4.1 KB | ✅ Valid | <1ms | None |
 | security-scanning-suite.yml | ~3.7 KB | ✅ Valid | <1ms | None |
