@@ -197,7 +197,7 @@ print(f"   rm -f {output_file}")
 # Test 1: Fingerprinting function
 $ python3 -c "
 import hashlib
-token = 'ghp_test1234567890abcdefghij'
+token = 'ghp_test1234567890abcdefghij'  # pragma: allowlist secret
 fingerprint = hashlib.sha256(token.encode()).hexdigest()[:16]
 print(f'Token fingerprint: {fingerprint}...')
 # Output: Token fingerprint: a1f2c3d4e5f6... (safe to log)
