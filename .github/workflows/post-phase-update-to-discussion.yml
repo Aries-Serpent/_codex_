@@ -1,0 +1,120 @@
+name: Post Phase Update to Discussion
+
+on:
+  workflow_dispatch:
+    inputs:
+      discussion_number:
+        description: 'Discussion number (e.g., 4872)'
+        required: true
+        default: '4872'
+      file_path:
+        description: 'Path to markdown file to post'
+        required: true
+        default: '.codex/PHASE_5A_CONSOLIDATION_UPDATE.md'
+
+jobs:
+  post-discussion:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      discussions: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read markdown file
+        id: read-file
+        run: |
+          FILE_CONTENT=$(cat "${{ github.event.inputs.file_path }}")
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$FILE_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post to Discussion
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const filePath = '${{ github.event.inputs.file_path }}';
+            const discussionNumber = ${{ github.event.inputs.discussion_number }};
+            
+            // Read the file content
+            const content = fs.readFileSync(filePath, 'utf8');
+            
+            // Get repository info
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            
+            console.log(`📝 Posting to Discussion #${discussionNumber}...`);
+            console.log(`Repository: ${owner}/${repo}`);
+            console.log(`File: ${filePath}`);
+            console.log(`Content length: ${content.length} characters`);
+            
+            // Use GraphQL to post the comment
+            const query = `
+              mutation AddDiscussionComment($discussionId: ID!, $body: String!) {
+                addDiscussionComment(input: {
+                  discussionId: $discussionId
+                  body: $body
+                }) {
+                  comment {
+                    id
+                    body
+                    createdAt
+                  }
+                }
+              }
+            `;
+            
+            try {
+              // First, get the discussion node ID
+              const discussionQuery = `
+                query GetDiscussion($owner: String!, $repo: String!, $number: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    discussion(number: $number) {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              const discussionResult = await github.graphql(discussionQuery, {
+                owner: owner,
+                repo: repo,
+                number: discussionNumber
+              });
+              
+              const discussionId = discussionResult.repository.discussion.id;
+              console.log(`Discussion ID: ${discussionId}`);
+              
+              // Post the comment
+              const result = await github.graphql(query, {
+                discussionId: discussionId,
+                body: content
+              });
+              
+              const commentId = result.addDiscussionComment.comment.id;
+              const createdAt = result.addDiscussionComment.comment.createdAt;
+              
+              console.log(`✅ SUCCESS: Comment posted to Discussion #${discussionNumber}`);
+              console.log(`Comment ID: ${commentId}`);
+              console.log(`Created at: ${createdAt}`);
+              
+              core.setOutput('success', 'true');
+              core.setOutput('comment_id', commentId);
+              core.setOutput('created_at', createdAt);
+            } catch (error) {
+              console.error(`❌ Error posting to discussion: ${error.message}`);
+              if (error.errors) {
+                console.error('GraphQL Errors:');
+                error.errors.forEach(err => console.error(`  - ${err.message}`));
+              }
+              core.setFailed(`Failed to post to discussion: ${error.message}`);
+            }
+
+      - name: Report success
+        if: steps.post-discussion.outputs.success == 'true'
+        run: |
+          echo "✅ Discussion update posted successfully!"
+          echo "Comment ID: ${{ steps.post-discussion.outputs.comment_id }}"
+          echo "URL: https://github.com/${{ github.repository }}/discussions/${{ github.event.inputs.discussion_number }}"
