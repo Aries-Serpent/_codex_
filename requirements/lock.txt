@@ -875,7 +875,7 @@ virtualenv==21.2.4
     #   nox
     #   pre-commit
     #   ray
-wandb==0.25.1
+wandb==0.27.2
     # via codex-ml (pyproject.toml)
 watchdog==6.0.0
     # via evidently

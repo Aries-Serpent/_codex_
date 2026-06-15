@@ -28,7 +28,7 @@ sentencepiece>=0.1.99
 
 # Monitoring and tracking
 tensorboard>=2.13.0
-wandb>=0.15.0
+wandb>=0.27.2
 opentelemetry-sdk>=1.24
 
 # Security: IP-005 dependency updates

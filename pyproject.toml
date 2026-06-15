@@ -238,7 +238,7 @@ tokenizers = [
 ]
 tracking = [
     "mlflow>=2.22.4,<4",
-    "wandb>=0.16",
+    "wandb>=0.27.2",
     "pandas>=2.3.3,<3",
 ]
 train = [
@@ -295,7 +295,7 @@ all = [
     "tomli>=2.0; python_version < '3.11'",
     "torch>=2.6.0,<3.0.0",
     "transformers>=5.10.2,<6",
-    "wandb>=0.16",
+    "wandb>=0.27.2",
 ]
 
 [project.scripts]
