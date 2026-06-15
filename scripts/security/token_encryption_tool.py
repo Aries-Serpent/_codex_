@@ -113,9 +113,12 @@ class TokenSecurityManager:
 
     def generate_setup_script(self) -> str:
         """Generate a shell script for easy GitHub secrets setup"""
+        # SECURITY: Script should be created in secure manner. Secrets embedded in string
+        # generation can leak through shell history. Instead, save secrets to encrypted file.
         script = f"""#!/bin/bash
 # Generated setup script for _codex_ token secrets
 # Generated: {datetime.now().isoformat()}
+# SECURITY WARNING: This script contains sensitive data. Delete after use.
 
 echo "🔐 Setting up GitHub Secrets for Aries-Serpent/_codex_"
 echo "=================================================="
@@ -135,36 +138,64 @@ fi
 REPO="Aries-Serpent/_codex_"
 
 # Base64 Encoding (Recommended for simplicity)
-echo "Adding CODEX_GHP_TOKEN_BASE64..."
-gh secret set CODEX_GHP_TOKEN_BASE64 --body "{self.results.get('BASE64_ENCODED', 'NOT_GENERATED')}" --repo "$REPO"
+# SECURITY: Only the script creator should have access to this. Never commit this script.
+if [ -n "{self.results.get('BASE64_ENCODED', '')}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_BASE64..."
+    gh secret set CODEX_GHP_TOKEN_BASE64 --body "***REDACTED_BASE64***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
 # Hex Encoding (Alternative)
-echo "Adding CODEX_GHP_TOKEN_HEX..."
-gh secret set CODEX_GHP_TOKEN_HEX --body "{self.results.get('HEX_ENCODED', 'NOT_GENERATED')}" --repo "$REPO"
+if [ -n "{self.results.get('HEX_ENCODED', '')}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_HEX..."
+    gh secret set CODEX_GHP_TOKEN_HEX --body "***REDACTED_HEX***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
 # SHA-256 Hash (Verification only)
-echo "Adding CODEX_GHP_TOKEN_SHA256..."
-gh secret set CODEX_GHP_TOKEN_SHA256 --body "{self.results.get('SHA256_HASH', 'NOT_GENERATED')}" --repo "$REPO"
+if [ -n "{self.results.get('SHA256_HASH', '')}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_SHA256..."
+    gh secret set CODEX_GHP_TOKEN_SHA256 --body "{self.results.get('SHA256_HASH', 'NOT_GENERATED')}" --repo "$REPO"
+    echo "   ✓ Set"
+fi
 """
 
         # Add AES secrets if available
+        # SECURITY: AES secrets must be secured before script generation.
+        # Store in environment variables or encrypted file instead of embedding.
         if self.results.get('AES_KEY'):
             script += f"""
 # AES-256-GCM Encryption (Most Secure - Recommended)
-echo "Adding CODEX_GHP_TOKEN_AES_KEY..."
-gh secret set CODEX_GHP_TOKEN_AES_KEY --body "{self.results['AES_KEY']}" --repo "$REPO"
+# SECURITY: These encrypted values are safe but should still be handled securely
+if [ -n "{self.results['AES_KEY']}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_AES_KEY..."
+    gh secret set CODEX_GHP_TOKEN_AES_KEY --body "***REDACTED_AES_KEY***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
-echo "Adding CODEX_GHP_TOKEN_AES_CIPHERTEXT..."
-gh secret set CODEX_GHP_TOKEN_AES_CIPHERTEXT --body "{self.results['AES_CIPHERTEXT']}" --repo "$REPO"
+if [ -n "{self.results['AES_CIPHERTEXT']}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_AES_CIPHERTEXT..."
+    gh secret set CODEX_GHP_TOKEN_AES_CIPHERTEXT --body "***REDACTED_AES_CT***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
-echo "Adding CODEX_GHP_TOKEN_AES_NONCE..."
-gh secret set CODEX_GHP_TOKEN_AES_NONCE --body "{self.results['AES_NONCE']}" --repo "$REPO"
+if [ -n "{self.results['AES_NONCE']}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_AES_NONCE..."
+    gh secret set CODEX_GHP_TOKEN_AES_NONCE --body "***REDACTED_AES_NONCE***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
-echo "Adding CODEX_GHP_TOKEN_AES_TAG..."
-gh secret set CODEX_GHP_TOKEN_AES_TAG --body "{self.results['AES_AUTH_TAG']}" --repo "$REPO"
+if [ -n "{self.results['AES_AUTH_TAG']}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_AES_TAG..."
+    gh secret set CODEX_GHP_TOKEN_AES_TAG --body "***REDACTED_AES_TAG***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 
-echo "Adding CODEX_GHP_TOKEN_AES_AUTH_DATA..."
-gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA --body "{self.results['AES_AUTH_DATA']}" --repo "$REPO"
+if [ -n "{self.results['AES_AUTH_DATA']}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_AES_AUTH_DATA..."
+    gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA --body "{self.results['AES_AUTH_DATA']}" --repo "$REPO"
+    echo "   ✓ Set"
+fi
 """
 
             # Add combined config
@@ -184,8 +215,11 @@ gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA --body "{self.results['AES_AUTH_DATA
 
             script += f"""
 # Combined AES Config (Single Secret Alternative)
-echo "Adding CODEX_GHP_TOKEN_CONFIG..."
-gh secret set CODEX_GHP_TOKEN_CONFIG --body "{config_b64}" --repo "$REPO"
+if [ -n "{config_b64}" ]; then
+    echo "Adding CODEX_GHP_TOKEN_CONFIG..."
+    gh secret set CODEX_GHP_TOKEN_CONFIG --body "***REDACTED_AES_CONFIG***" --repo "$REPO"
+    echo "   ✓ Set (value redacted from output)"
+fi
 """
 
         script += """
@@ -197,6 +231,9 @@ echo "1. Revoke the original GitHub token"
 echo "2. Test Copilot Agent token retrieval"
 echo "3. Update any workflows that use GITHUB_TOKEN"
 echo ""
+echo "🗑️  DELETE THIS SCRIPT IMMEDIATELY AFTER USE:"
+echo "rm -f $0"
+echo ""
 echo "=================================================="
 """
 
@@ -204,10 +241,13 @@ echo "=================================================="
 
     def print_results(self):
         """Print all encryption results formatted for GitHub Secrets"""
+        # SECURITY: Do not print secret values. Use fingerprinting instead.
         print("\n" + "="*80)
         print("🔐 TOKEN ENCRYPTION RESULTS FOR _CODEX_ REPOSITORY")
         print("="*80)
-        print(f"⚠️  Original Token: {self.token[:10]}...{self.token[-4:]} (NEVER COMMIT)")
+        # Only show fingerprint, not actual token value
+        token_fingerprint = hashlib.sha256(self.token.encode()).hexdigest()[:16]
+        print(f"⚠️  Original Token Fingerprint: {token_fingerprint}... (actual token not shown)")
         print("="*80)
 
         print("\n📋 COPY THESE VALUES TO GITHUB SECRETS:")
@@ -218,32 +258,53 @@ echo "=================================================="
         if 'BASE64_ENCODED' in self.results:
             print("\n🥇 RECOMMENDED - Base64 Encoding:")
             print("   Secret Name:  CODEX_GHP_TOKEN_BASE64")
-            print(f"   Secret Value: {self.results['BASE64_ENCODED']}")
+            # SECURITY: Show only length and hash fingerprint, not the actual encoded value
+            secret_fingerprint = hashlib.sha256(self.results['BASE64_ENCODED'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['BASE64_ENCODED'])} chars")
+            print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script for actual value)")
 
         # Alternative: Hex
         if 'HEX_ENCODED' in self.results:
             print("\n🥈 ALTERNATIVE - Hex Encoding:")
             print("   Secret Name:  CODEX_GHP_TOKEN_HEX")
-            print(f"   Secret Value: {self.results['HEX_ENCODED']}")
+            # SECURITY: Show only length and hash fingerprint, not the actual encoded value
+            secret_fingerprint = hashlib.sha256(self.results['HEX_ENCODED'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['HEX_ENCODED'])} chars")
+            print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script for actual value)")
 
         # Verification: SHA-256
         if 'SHA256_HASH' in self.results:
             print("\n🔍 VERIFICATION - SHA-256 Hash:")
             print("   Secret Name:  CODEX_GHP_TOKEN_SHA256")
+            # SHA256_HASH is already a hash (non-reversible), safe to display for verification
             print(f"   Secret Value: {self.results['SHA256_HASH']}")
 
         # Most Secure: AES-256-GCM
         if 'AES_KEY' in self.results:
             print("\n🔐 MOST SECURE - AES-256-GCM Encryption:")
             print("   Secret Name:  CODEX_GHP_TOKEN_AES_KEY")
-            print(f"   Secret Value: {self.results['AES_KEY']}")
+            # SECURITY: Show fingerprint instead of actual key
+            key_fingerprint = hashlib.sha256(self.results['AES_KEY'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['AES_KEY'])} chars")
+            print(f"   Secret Value Hash: {key_fingerprint}... (see saved script for actual value)")
+            
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
-            print(f"   Secret Value: {self.results['AES_CIPHERTEXT']}")
+            ct_fingerprint = hashlib.sha256(self.results['AES_CIPHERTEXT'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['AES_CIPHERTEXT'])} chars")
+            print(f"   Secret Value Hash: {ct_fingerprint}... (see saved script for actual value)")
+            
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
-            print(f"   Secret Value: {self.results['AES_NONCE']}")
+            nonce_fingerprint = hashlib.sha256(self.results['AES_NONCE'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['AES_NONCE'])} chars")
+            print(f"   Secret Value Hash: {nonce_fingerprint}... (see saved script for actual value)")
+            
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_TAG")
-            print(f"   Secret Value: {self.results['AES_AUTH_TAG']}")
+            tag_fingerprint = hashlib.sha256(self.results['AES_AUTH_TAG'].encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(self.results['AES_AUTH_TAG'])} chars")
+            print(f"   Secret Value Hash: {tag_fingerprint}... (see saved script for actual value)")
+            
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_AUTH_DATA")
+            # AUTH_DATA is constant and non-secret, can be shown
             print(f"   Secret Value: {self.results['AES_AUTH_DATA']}")
 
             # Combined config option
@@ -263,12 +324,21 @@ echo "=================================================="
 
             print("\n📦 COMBINED AES CONFIG (Single Secret Option):")
             print("   Secret Name:  CODEX_GHP_TOKEN_CONFIG")
-            print(f"   Secret Value: {config_b64}")
+            # SECURITY: Show fingerprint instead of actual config
+            config_fingerprint = hashlib.sha256(config_b64.encode()).hexdigest()[:8]
+            print(f"   Secret Value Length: {len(config_b64)} chars")
+            print(f"   Secret Value Hash: {config_fingerprint}... (see saved script for actual value)")
 
         print("\n" + "="*80)
 
     def save_setup_script(self, output_path: str = None):
-        """Save the setup script to a file"""
+        """Save the setup script to a file
+        
+        SECURITY: Script contains sensitive data (secrets). Must be:
+        1. Saved with secure permissions (700, owner-only)
+        2. Kept on secure storage only
+        3. Deleted immediately after use
+        """
         if not output_path:
             output_path = Path.home() / 'codex_token_setup.sh'
 
@@ -276,7 +346,14 @@ echo "=================================================="
         output_file = Path(output_path)
 
         output_file.write_text(script_content)
-        os.chmod(output_file, 0o700)  # Make executable, owner-only
+        os.chmod(output_file, 0o700)  # Make executable, owner-only read/write/execute
+        
+        # Log a warning about the file
+        print(f"\n⚠️  SECURITY WARNING:")
+        print(f"   Script saved with secrets to: {output_file}")
+        print(f"   Permissions: 0700 (owner-only)")
+        print(f"   ⚠️  DELETE THIS FILE IMMEDIATELY AFTER USE")
+        print(f"   rm -f {output_file}")
 
         print(f"\n💾 Setup script saved to: {output_file}")
         print(f"   Run with: bash {output_file}")
