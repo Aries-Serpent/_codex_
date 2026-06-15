@@ -68,7 +68,7 @@ All Phase 5 remediation and consolidation documents are located in `.codex/` and
 |--------|--------|----------|--------|
 | CRITICAL CVEs Eliminated | 0 | **28 total (20 CRITICAL + 8 HIGH)** | ✅ EXCEEDED |
 | CodeQL HIGH Findings Resolved | 42 | **42/42** | ✅ MET |
-| Secrets Logging Hardened | 100% | **100%** | ✅ MET |
+| Secrets Logging Hardened | 100% | **100%** | ✅ MET | <!-- pragma: allowlist secret -->
 
 ### Testing Metrics ✅
 | Metric | Target | Achieved | Status |
