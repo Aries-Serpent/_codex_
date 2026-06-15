@@ -44,7 +44,7 @@ pytest-xdist>=3.5
 
 # ── Pre-commit & security ─────────────────────────────────────────────────────
 pre-commit>=3.7
-bandit>=1.7
+bandit>=1.9.4
 detect-secrets>=1.4
 pip-audit>=2.7
 

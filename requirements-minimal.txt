@@ -15,7 +15,7 @@ mypy>=2.1.0,<3.0.0
 
 # Security tools
 pip-audit>=2.7.0
-bandit>=1.7.5
+bandit>=1.9.4
 
 # Type stubs
 types-jsonschema
