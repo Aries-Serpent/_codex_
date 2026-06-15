@@ -181,7 +181,7 @@ This document defines the escalation procedures, decision authority chains, and 
 Issue Discovered (Day 5, 12:00 UTC)
   ↓
 Campaign Lead Assessment (12:15 UTC)
-  - Fixable by 17:00 UTC? → Path B (Major decision)
+  - Fixable by 17:00 UTC? → Path C (Major decision)
   - Cannot fix? → Path D (Critical decision)
   ↓
 If Fixable:
@@ -204,7 +204,7 @@ If Cannot Fix:
 Gap Identified (Day 4, 16:00 UTC)
   ↓
 Severity Assessment:
-  - Can fix by Day 5, 12:00 UTC? → Path B (Major)
+  - Can fix by Day 5, 12:00 UTC? → Path C (Major)
   - Cannot fix? → Path D (Critical)
   ↓
 If Fixable:

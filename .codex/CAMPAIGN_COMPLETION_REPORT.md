@@ -188,7 +188,7 @@ See detailed analysis: `.codex/CAMPAIGN_LESSONS_LEARNED.md`
 - ✅ Post-campaign lessons learned documented
 
 ### Audit Trail
-- **Location:** `.codex/campaign_artifacts/post_campaign/CAMPAIGN_AUDIT_TRAIL.md`
+- **Location:** .codex/CAMPAIGN_AUDIT_TRAIL.md
 - **Retention Period:** 365 days
 - **Access Control:** @mbaetiong, Compliance Team
 

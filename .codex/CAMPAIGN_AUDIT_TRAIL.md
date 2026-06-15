@@ -29,7 +29,7 @@ This audit trail serves as the **immutable chronological record** of all decisio
 ### Cross-References
 - **Escalation Procedures:** [PHASE_8_9_ESCALATION_PROCEDURES.md](./PHASE_8_9_ESCALATION_PROCEDURES.md)
 - **Decision Authority Matrix:** [PHASE_8_9_DECISION_AUTHORITY_MATRIX.md](./PHASE_8_9_DECISION_AUTHORITY_MATRIX.md)
-- **Gate Approval Forms:** Gate 1, Gate 2, Gate 3 forms in `.codex/forms/`
+- **Gate Approval Forms:** Gate 1, Gate 2, Gate 3 forms in .codex/
 - **Daily Standup Reports:** `.codex/dailys/PHASE_8_9_DAILY_[DAY_N].md`
 
 ---
@@ -611,7 +611,7 @@ This audit trail integrates with:
 |----------|---------|------|
 | Escalation Procedures | When/how to escalate issues | `.codex/PHASE_8_9_ESCALATION_PROCEDURES.md` |
 | Decision Authority Matrix | Who can make what decisions | `.codex/PHASE_8_9_DECISION_AUTHORITY_MATRIX.md` |
-| Gate Approval Forms | Gate 1, 2, 3 decision forms | `.codex/forms/GATE_*_APPROVAL_FORM.md` |
+| Gate Approval Forms | Gate 1, 2, 3 decision forms | `.codex/PHASE_*_APPROVAL*.md` |
 | Daily Standup Reports | Daily operational summary | `.codex/dailys/PHASE_8_9_DAILY_[N].md` |
 | Track Deployment Plans | Track A-E deployment details | `.codex/tracks/TRACK_*_DEPLOYMENT.md` |
 | Incident RCA Template | Post-incident root cause analysis | `.codex/RCA_TEMPLATE.md` |

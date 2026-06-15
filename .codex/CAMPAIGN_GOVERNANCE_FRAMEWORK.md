@@ -178,12 +178,12 @@
 
 | Track | Agent | Role | Responsibilities |
 |-------|-------|------|---|
-| **1: Backup** | artifacts-monitor-agent | Track Owner | Execute backup procedures, verify restoration, report completion status |
+| **1: Backup** | autonomous-test-healer-agent | Track Owner | Execute backup procedures, verify restoration, report completion status |
 | **2: Infrastructure** | workflow-health-monitor | Track Owner | Validate infrastructure, generate readiness report, gate completion |
 | **3: Quality Gates** | unified-coverage-agent | Track Owner | Execute quality gates, report passing/failing, escalate blockers |
 | **4: Security Audit** | unified-security-scanner | Track Owner | Complete security scans, remediate findings, gate approval |
 | **5: Documentation** | unified-doc-agent | Track Owner | Verify documentation, test links/examples, gate completion |
-| **6: Orchestration** | orchestrator-agent | Track Owner | Monitor all tracks, coordinate gates, escalate blockers |
+| **6: Orchestration** | self-healing-orchestrator-agent | Track Owner | Monitor all tracks, coordinate gates, escalate blockers |
 | **7: Release Eng** | ci-failure-resolution-agent | Track Owner | Tag release, build artifacts, manage artifacts signing |
 | **8: Staged Rollout** | self-healing-orchestrator-agent | Track Owner | Execute canary/regional/prod deployments, manage rollback |
 | **9: Monitoring** | workflow-health-monitor | Track Owner | Setup dashboards, monitor all stages, report health |
