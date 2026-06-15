@@ -13,13 +13,13 @@ sacrebleu>=2.6.0
 
 # LoRA/PEFT adapters
 peft>=0.7.0
-accelerate>=0.20.0
+accelerate>=1.14.0
 
 # Distributed training
 torch-distributed>=2.0.0  # Usually bundled with pytorch
 
 # Advanced model features
-transformers>=5.10.2  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
+transformers>=5.12.0  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
 sentencepiece>=0.1.99
 
 # Vector stores (stubbed - see docs/data/VectorStores.md)
