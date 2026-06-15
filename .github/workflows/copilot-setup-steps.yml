@@ -105,8 +105,9 @@ jobs:
             (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
       LFS_FETCH_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}"
       LFS_TARGETED_ENABLED: >-
-        ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode ==
-            'targeted' && inputs.lfs_include_paths != '' }}
+        ${{ github.event_name == 'workflow_dispatch' &&
+            inputs.lfs_mode == 'targeted' &&
+            inputs.lfs_include_paths != '' }}
       LFS_FULL_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}"
 
     steps:
@@ -265,8 +266,7 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)."
-            echo "Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
             echo ""
             echo "── Open CI failure issues: ──"
             gh issue list --repo "$REPO" --label "ci-failure" --state open \
