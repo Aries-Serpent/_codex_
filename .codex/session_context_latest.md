@@ -1,32 +1,32 @@
-# Session Context — 2026-06-15T03:31:06Z
-**Branch:** `copilot/explore-codebase`  **PR:** #4919  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-15T03:41:17Z
+**Branch:** `copilot/explore-codebase`  **PR:** #4920  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4574` (✅)
-- GraphQL remaining: `4984` (✅)
+- REST remaining: `4447` (✅)
+- GraphQL remaining: `4970` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4919 — 🔍 Repository Health: 1 offload candidates found
-State: `open`  Draft: `False`  Branch: `automated/repository-health-20` → `main`
+## 📋 PR #4920 — feat: integrate CCA environment variables with YAML parsing fixes
+State: `open`  Draft: `False`  Branch: `copilot/explore-codebase` → `0D_base_`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
+- **Validation Pipeline** — `failure` on `copilot/explore-codebase` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 
 ## 📝 Recent Commits
+- `d3e9c46b` Merge branch 'main' into copilot/explore-codebase — Statix (2026-06-15)
+- `49934f95` chore: begin CCA environment variables integration plan — copilot-swe-agent[bot] (2026-06-15)
 - `721c9c2f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-15)
-- `56114443` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-14)
-- `cdf75257` Merge pull request #4909 from Aries-Serpent/0D_base_ — Statix (2026-06-14)
-- `ee72f447` Merge pull request #4908 from Aries-Serpent/copilot/resume-discussion-4872 — Statix (2026-06-14)
-- `dd973c75` Merge branch '0D_base_' into copilot/resume-discussion-4872 — Statix (2026-06-14)
-- `038dd157` Merge pull request #4907 from Aries-Serpent/copilot/resume-discussion-4872 — Statix (2026-06-14)
-- `a68c45ff` fix(tests): clean up BaseAdapter import alias in mcp adapter test — copilot-swe-agent[bot] (2026-06-14)
-- `56749ca4` fix(ci): fix YAML parse error in copilot-setup-steps.yml and ruff errors in test — copilot-swe-agent[bot] (2026-06-14)
+- `eb891f50` Add session lifecycle metrics step to workflow — Statix (2026-06-15)
+- `50aa2935` Update print statement from 'Hello' to 'Goodbye' — Statix (2026-06-15)
+- `789ae65b` Add COPILOT_AGENT_CCA_VERSION_LOCK and deduplication vars — Statix (2026-06-15)
+- `210668f4` Fix runner profile condition in workflow setup — Statix (2026-06-14)
+- `309d8a81` Fix indentation in session preload step — Statix (2026-06-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
