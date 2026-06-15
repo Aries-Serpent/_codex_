@@ -193,6 +193,9 @@ manifests/k8s/*/secret.yaml
 !.codex/lessons_learned/**
 !.codex/checkpoints/
 !.codex/checkpoints/**
+# Campaign artifacts — governance framework implementation outputs
+!.codex/campaign_artifacts/
+!.codex/campaign_artifacts/**
 !scripts/ci/session_bootstrap.py
 !scripts/ci/ci_triage_repro.sh
 !docs/ci/CI_TRIAGE_REPRO_S145.md

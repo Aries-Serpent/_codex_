@@ -1,36 +1,36 @@
-# Session Context — 2026-06-15T08:22:52Z
-**Branch:** `copilot/explore-codebase-implementation-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-15T14:59:13Z
+**Branch:** `copilot/explore-codebase-and-implementation-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4819` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4985` (✅)
+- GraphQL remaining: `4984` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
-- **Agent Token Delegation** — `failure` on `copilot/production-readiness-escalation-security-fix` (2026-06-15)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-15)
 
 ## 📝 Recent Commits
+- `1f55a764` Apply remaining changes — copilot-swe-agent[bot] (2026-06-15)
+- `99fb1e45` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-15)
+- `57cf8327` Merge pull request #4924 from Aries-Serpent/copilot/explore-codebase-implementat — Statix (2026-06-15)
+- `b3d58074` Merge branch '0D_base_' into copilot/explore-codebase-implementation-plan — Statix (2026-06-15)
+- `22c5b4cf` Implement Campaign Governance & Approval Chain for Phase 8-9 production deployme — copilot-swe-agent[bot] (2026-06-15)
+- `de6c8c64` init(campaign-governance): Phase 8-9 approval chain framework — copilot-swe-agent[bot] (2026-06-15)
+- `022d4263` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-15)
 - `1cd64c44` Apply remaining changes — copilot-swe-agent[bot] (2026-06-15)
-- `95e2df72` feat(phase6): Wave 1 workflow health monitoring complete, CI validation in progr — copilot-swe-agent[bot] (2026-06-15)
-- `287c8695` init(campaign): Phase 6-9 production readiness execution framework — copilot-swe-agent[bot] (2026-06-15)
-- `47e3a4dc` Apply remaining changes — copilot-swe-agent[bot] (2026-06-15)
-- `1c630b41` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-15)
-- `fd670d4e` Merge pull request #4923 from Aries-Serpent/copilot/production-readiness-escalat — Statix (2026-06-15)
-- `74a52720` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-15)
-- `f445b305` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1395`
-- `CODEX_CI_FAILURE_RATE` = `1.5:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `ae8fc8e45a488c354e4127f98f2984367f117b45`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1400`
+- `CODEX_CI_FAILURE_RATE` = `6.8:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `70c3a1a61486229fa6ff8c47303dc61f1bea789e`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
