@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (PR #4929 CodeQL action pinning — 2026-06-15T09:52Z)
+- Pinned `aquasecurity/trivy-action` in `.github/workflows/container-scan.yml` to immutable commit `ed142fd0673e97e23eac54620cfb913e5ce36c25` (`v0.36.0`) to resolve the CodeQL "Unpinned tag for a non-immutable Action" alert.
+- Refreshed accountability/session metadata so the latest commit satisfies REQ-4 / REQ-5 freshness checks for this PR.
+
 ### Fixed (auto-update — PR #4929)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4929 (SHA `c68106b6`) at 2026-06-15T09:13Z [auto-generated]
 
