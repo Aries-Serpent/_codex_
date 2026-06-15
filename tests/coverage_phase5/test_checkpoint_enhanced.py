@@ -9,7 +9,7 @@ Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
 
 import pytest
-from typing import Dict, Any, Optional # pragma: allowlist secret # pragma: allowlist secret
+from typing import Dict, Any, Optional # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
