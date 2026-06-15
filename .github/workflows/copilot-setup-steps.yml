@@ -11,6 +11,7 @@ name: Copilot Agent Environment Setup
 # Documentation: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
+# CRITICAL FIX (Session 1294): Added COPILOT_AGENT_CCA_VERSION_LOCK + deduplication vars
 
 "on":
   workflow_dispatch:
@@ -117,7 +118,24 @@ jobs:
       # See: .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3
       CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
       CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
-      # Repo-wide LFS baseline stays opt-in: initial checkout skips blobs unless
+      # ── CCA VERSION LOCK & DEDUPLICATION (Session 1294 fix) ────────────────────
+      # CRITICAL: These three variables MUST be set for multi-turn agentic loops.
+      # Without them, the Copilot Cloud Agent (CCA) runtime:
+      #   - Cannot activate PayloadDeduplicator (function call deduplication)
+      #   - Cannot enforce TurnState isolation (turn-state segregation)
+      #   - Falls back to unsafe defaults (no duplicate protection)
+      # Result: Agent fast-fails on turn 2+ with "Duplicate function call ID" error.
+      #
+      # See .github/copilot-evolution/integrated_system.py for implementation:
+      #   - PayloadDeduplicator (lines 43-164): Removes duplicate function calls
+      #   - TurnState (lines 28-42): Isolates state between agentic turns
+      #   - deduplicate_agentic_payload() (line 242): Public API for deduplication
+      #
+      # Reference: .codex/CODEBASE_AGENCY_POLICY.md § Session Integrity
+      COPILOT_AGENT_CCA_VERSION_LOCK: "stable"
+      COPILOT_AGENT_DEDUPLICATION_ENABLED: "true"
+      COPILOT_AGENT_TURN_ISOLATION_ENABLED: "true"
+      # ── Repo-wide LFS baseline stays opt-in: initial checkout skips blobs unless
       # a workflow_dispatch run explicitly requests targeted/full materialization.
       LFS_DIAGNOSTICS_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}"
       LFS_FETCH_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}"
