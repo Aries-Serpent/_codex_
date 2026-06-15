@@ -99,9 +99,14 @@ jobs:
       COPILOT_AGENT_CCA_VERSION_LOCK: "stable"
       COPILOT_AGENT_DEDUPLICATION_ENABLED: "true"
       COPILOT_AGENT_TURN_ISOLATION_ENABLED: "true"
-      LFS_DIAGNOSTICS_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}"
+      LFS_DIAGNOSTICS_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' &&
+            (inputs.lfs_mode == 'full' ||
+            (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
       LFS_FETCH_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}"
-      LFS_TARGETED_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}"
+      LFS_TARGETED_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode ==
+            'targeted' && inputs.lfs_include_paths != '' }}
       LFS_FULL_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}"
 
     steps:
@@ -197,7 +202,7 @@ jobs:
         run: |
           echo "── §0.4: Inspecting PR for merge conflicts ──"
           BASE="${BASE_REF}"
-          
+
           if [ -n "$PR_NUMBER" ]; then
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
@@ -212,7 +217,7 @@ jobs:
               echo "COPILOT_MERGE_CONFLICT=unknown" >> "$GITHUB_ENV"
             fi
           fi
-          
+
           if [ -n "$BASE" ]; then
             BEHIND=$(git rev-list --count "HEAD..origin/${BASE}" 2>/dev/null || echo "0")
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
@@ -225,7 +230,7 @@ jobs:
               echo "COPILOT_BRANCH_BEHIND=0" >> "$GITHUB_ENV"
             fi
           fi
-          
+
           if [ -n "$BASE" ] && git rev-parse "origin/${BASE}" >/dev/null 2>&1; then
             MERGE_BASE=$(git merge-base HEAD "origin/${BASE}" 2>/dev/null || echo "")
             if [ -n "$MERGE_BASE" ]; then
@@ -237,7 +242,7 @@ jobs:
               fi
             fi
           fi
-          
+
           echo "── §0.4 merge conflict pre-check complete ──"
 
       - name: "🚨 CI Failure Issue Check (session start)"
@@ -247,20 +252,21 @@ jobs:
         run: |
           echo "── §0.2: Checking for open CI failure report issues ──"
           REPO="Aries-Serpent/_codex_"
-          
+
           CI_FAILURES=$(gh issue list --repo "$REPO" --label "ci-failure" --state open \
             --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
           echo "Open ci-failure issues: ${CI_FAILURES}"
-          
+
           HEALTH_ALERTS=$(gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
             --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
           echo "Open ci-health-alert issues: ${HEALTH_ALERTS}"
-          
+
           TOTAL=$((CI_FAILURES + HEALTH_ALERTS))
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
-          
+
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)."
+            echo "Agent should review these for patterns affecting this PR."
             echo ""
             echo "── Open CI failure issues: ──"
             gh issue list --repo "$REPO" --label "ci-failure" --state open \
@@ -270,7 +276,7 @@ jobs:
           else
             echo "✅ No open CI failure report issues"
           fi
-          
+
           echo "── §0.2 CI failure issue check complete ──"
 
       - name: "🔍 Validate repo JSON files (non-blocking)"
@@ -279,7 +285,7 @@ jobs:
           echo "── Validating JSON files in .codex/ and docs/ ──"
           FAIL=0
           INVALID_FILES=""
-          
+
           while IFS= read -r -d '' f; do
             if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
               echo "::warning file=${f}::Invalid JSON detected (non-blocking): ${f}"
@@ -287,7 +293,7 @@ jobs:
               FAIL=$((FAIL + 1))
             fi
           done < <(find .codex docs -name "*.json" -not -path "*/__pycache__/*" -print0 2>/dev/null)
-          
+
           if [ "$FAIL" -gt 0 ]; then
             echo "::warning::⚠️ Found ${FAIL} invalid JSON file(s) — these will be addressed by agent session"
             echo "--- Invalid JSON Files ---"
