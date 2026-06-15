@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4943)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4943 (SHA `003a7190`) at 2026-06-15T15:33Z [auto-generated]
+
+### Fixed (auto-update — PR #4923)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4923 (SHA `cefc3042`) at 2026-06-15T05:43Z [auto-generated]
+
+### Fixed (auto-update — PR #4921)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4921 (SHA `5082f7d4`) at 2026-06-15T04:25Z [auto-generated]
+
+### Fixed (SN — PR #4920, 2026-06-15T03:42Z)
+- Addressed copilot-setup-steps workflow alerts by removing trailing-whitespace hotspots and wrapping long env/shell lines in YAML-safe multiline form.
+- Reverted `.codex/session_context_latest.md` to the base-branch version to resolve the outstanding review thread on unintended session digest-only changes.
+- Updated accountability/session documentation for this PR follow-up.
+
 ### Fixed (auto-update — PR #4910)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4910 (SHA `b79b753d`) at 2026-06-14T20:46Z [auto-generated]
 
