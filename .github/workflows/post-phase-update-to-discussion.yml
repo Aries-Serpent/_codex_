@@ -12,9 +12,18 @@ on:
         required: true
         default: '.codex/PHASE_5A_CONSOLIDATION_UPDATE.md'
 
+permissions:
+  contents: read
+  discussions: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   post-discussion:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       discussions: write
@@ -31,6 +40,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Post to Discussion
+        id: post-discussion
         uses: actions/github-script@v8
         with:
           script: |

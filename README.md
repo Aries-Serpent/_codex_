@@ -463,7 +463,7 @@ Test Coverage: 275/320 (86%)
 ### 📖 Documentation
 - 📊 **[Phase 8 Status (v2)](.github/agents/archive/cognitive-brain/COGNITIVE_BRAIN_PHASE8_STATUS_V2.md)** - Complete overview + reviews
 - 🗺️ **[Phase 8 Roadmap](docs/ROADMAP.md)** - Full specifications (8.2-8.4)
-- 📈 **[K1 Strategy](/.github/agents/K1_OPTIMIZATION_STRATEGY.md)** - Rayleigh criterion
+- 📈 **[K1 Strategy](./.github/agents/K1_OPTIMIZATION_STRATEGY.md)** - Rayleigh criterion
 - 🧪 **[EXP-1B](src/cognitive_brain/experiments/exp1b_revalidation.py)** | **[EXP-5](src/cognitive_brain/experiments/exp5_validation.py)** - Validations
 
 ### 🔬 Key Metrics

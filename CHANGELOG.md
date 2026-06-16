@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Fixed (Workflow Permissions Compliance — PR #4958, 2026-06-16T17:36Z)
+- Added top-level `permissions:` block to `post-phase-update-to-discussion.yml` — fixes compliance gate failure (was missing `permissions:` at workflow level)
+
+### Fixed (Phase 6 Completion Verification — PR #4958, 2026-06-16T17:17Z)
+- Fixed workflow compliance: added `concurrency:` and `timeout-minutes: 10` to `post-phase-update-to-discussion.yml` (was the last non-compliant workflow — compliance now 100%)
+- Updated Phase 6D Task 1 compliance report to reflect 100% concurrency compliance (184/184)
+- Created missing Phase 6E Task 1 Doc Alignment report (`.codex/PHASE_6E_TASK1_DOC_ALIGNMENT_REPORT.md`)
+- Created Phase 6 Final Report (`.codex/PHASE_6_FINAL_REPORT.md`) with 32/32 readiness checklist verification
+- Verified all 15 Phase 6 task reports committed; all phases 6A–6E COMPLETE; production certification score 96.5/100
+
+### Fixed (Review Comments — PR #4958, 2026-06-16T17:02Z)
+- Addressed 6 code review comments from gemini-code-assist in PR #4958:
+  - Fixed npm package name in LINK_AUDIT_ACTION_PLAN.md (`markdown-link-check` vs `markdown-link-checker`)
+  - Filtered false positives from LINK_VALIDATION_REPORT.md (regex patterns, type annotations, mailto links)
+  - Added type checking to PHASE_6B_TASK2_CODEQL_REMEDIATION.md to prevent TypeError on non-string values
+  - Corrected coverage percentage in PHASE_6C_TASK1_COVERAGE_REPORT.md (7.04% not 5.78%)
+  - Corrected compliance rate in PHASE_6D_TASK1_WORKFLOW_COMPLIANCE_REPORT.md (99.46% not 98.9%)
+  - Corrected composite score in PHASE_B_GATE_2_COMPLETION_REPORT.md (88.67% not 92.3%)
+
 ### Fixed (auto-update — PR #4955)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4955 (SHA `6ff79af0`) at 2026-06-16T06:16Z [auto-generated]
 

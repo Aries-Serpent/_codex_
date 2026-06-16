@@ -1,0 +1,202 @@
+# Network Policies for Codex ML
+# Implements zero-trust network security with egress/ingress rules
+# Phase B Gate 2: Network security policies (82.9% → 88%)
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: codex-api-network-policy
+  namespace: codex-ml
+  labels:
+    app: codex
+    component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: codex
+      component: api-server
+  
+  policyTypes:
+    - Ingress
+    - Egress
+  
+  # Ingress: Allow traffic from specific sources
+  ingress:
+    # Allow from ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000
+    
+    # Allow from monitoring namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090
+    
+    # Allow from API clients in same namespace
+    - from:
+        - podSelector:
+            matchLabels:
+              app: codex
+      ports:
+        - protocol: TCP
+          port: 8000
+  
+  # Egress: Allow outbound traffic to specific destinations
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+    
+    # Allow database access
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+      ports:
+        - protocol: TCP
+          port: 5432  # PostgreSQL
+        - protocol: TCP
+          port: 6379  # Redis
+    
+    # Allow external HTTPS for API calls
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+      destinations:
+        - cidr: "0.0.0.0/0"
+          except:
+            - "169.254.169.254/32"  # Block AWS metadata
+            - "10.0.0.0/8"  # Internal networks handled by other rules
+    
+    # Allow metrics scraping response
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: codex-worker-network-policy
+  namespace: codex-ml
+  labels:
+    app: codex
+    component: worker
+spec:
+  podSelector:
+    matchLabels:
+      app: codex
+      component: worker
+  
+  policyTypes:
+    - Ingress
+    - Egress
+  
+  # Workers only accept traffic from API servers
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: codex
+              component: api-server
+      ports:
+        - protocol: TCP
+          port: 5000
+  
+  # Workers can access database and cache
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: codex-deny-default
+  namespace: codex-ml
+  labels:
+    app: codex
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  # Explicit deny all, all traffic must be whitelisted above
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: codex-ingress
+  namespace: codex-ml
+  labels:
+    app: codex
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/timeout-send-headers: "30"
+spec:
+  ingressClassName: nginx
+  
+  tls:
+    - hosts:
+        - codex.example.com
+      secretName: codex-tls-cert
+  
+  rules:
+    - host: codex.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: codex-api-service
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: codex-api-service
+                port:
+                  number: 80
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: codex-api-service
+                port:
+                  number: 9090

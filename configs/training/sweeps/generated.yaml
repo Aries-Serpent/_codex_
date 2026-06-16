@@ -1,0 +1,22 @@
+defaults:
+- _self_
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: .codex/hydra/runs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: .codex/hydra/multirun/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.override_dirname}
+  sweeper:
+    params:
+      training.seed: '42'
+locked_overrides: {}
+reproducibility:
+  base_config: configs/training/base.yaml
+  dataset_hash: null
+  dataset_version: null
+  generated_at: '2026-06-16T15:53:35.040802+00:00'
+  git_sha: 5aedd3d
+  seeds:
+  - 42
