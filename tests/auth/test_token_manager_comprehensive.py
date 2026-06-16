@@ -9,7 +9,7 @@ Tests for token management including:
 """
 
 from __future__ import annotations
-
+ # pragma: allowlist secret # pragma: allowlist secret
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
