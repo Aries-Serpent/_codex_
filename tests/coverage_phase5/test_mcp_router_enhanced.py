@@ -295,7 +295,8 @@ class TestRouteRegistration:
     def test_register_valid_route(self):
         """✅ PATTERN: Registration with property assertions."""
         router = JSONRPCRouter()
-        handler = lambda x: "result"
+        def handler(_x):
+            return "result"
 
         router.register_route("test.method", handler)
 
@@ -323,7 +324,8 @@ class TestRouteRegistration:
     def test_register_empty_method_rejected(self):
         """✅ PATTERN: Edge case - empty method name."""
         router = JSONRPCRouter()
-        handler = lambda x: "result"
+        def handler(_x):
+            return "result"
 
         with pytest.raises(ValueError) as exc_info:
             router.register_route("", handler)

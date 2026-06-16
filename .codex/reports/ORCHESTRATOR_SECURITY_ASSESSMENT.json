@@ -1,0 +1,2091 @@
+{
+  "metadata": {
+    "timestamp": "2026-06-15T18:11:45.017787Z",
+    "repository": "Aries-Serpent/_codex_",
+    "scan_tools": [
+      "CodeQL",
+      "Semgrep",
+      "pip-audit",
+      "detect-secrets"
+    ],
+    "assessment_version": "1.0.0"
+  },
+  "findings_by_severity": {
+    "ERROR": [
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+        "severity": "ERROR",
+        "file": "src/codex_ml/plugins/registry.py",
+        "line": 90,
+        "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evalu",
+        "recommendation": "Review and address python.lang.security.audit.exec-detected.exec-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+        "severity": "ERROR",
+        "file": "tests/test_readme_examples.py",
+        "line": 34,
+        "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evalu",
+        "recommendation": "Review and address python.lang.security.audit.exec-detected.exec-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "codeql",
+        "rule_id": "py/log-injection",
+        "severity": "ERROR",
+        "count": 6,
+        "description": "Log injection vulnerability (6 occurrences)",
+        "category": "critical_injection_vulnerabilities",
+        "recommendation": "Address py/log-injection violations across 6 locations."
+      }
+    ],
+    "HIGH": [
+      {
+        "cve_id": "CVE-2025-69872",
+        "package": "diskcache",
+        "version": "5.6.3",
+        "severity": "HIGH",
+        "category": "insecure_deserialization",
+        "description": "DiskCache uses Python pickle for serialization by default. Attacker with write access to cache directory can achieve arbitrary code execution.",
+        "affected_file": "requirements.txt",
+        "affected_line": "diskcache==5.6.3",
+        "vulnerability_type": "arbitrary_code_execution",
+        "fix_versions": [
+          "5.6.4+"
+        ],
+        "recommendation": "Upgrade diskcache to patched version (5.6.4+). Consider using alternative serialization (JSON, MessagePack).",
+        "affected_code_paths": [
+          "src/codex_ml/utils/checkpoint_core.py",
+          "src/caching/disk_cache_wrapper.py"
+        ]
+      },
+      {
+        "cve_id": "CVE-2024-35515",
+        "package": "sqlitedict",
+        "version": "2.1.0",
+        "severity": "HIGH",
+        "category": "insecure_deserialization",
+        "description": "Insecure deserialization in sqlitedict up to v2.1.0 allows attackers to execute arbitrary code.",
+        "affected_file": "requirements.txt",
+        "affected_line": "sqlitedict==2.1.0",
+        "vulnerability_type": "arbitrary_code_execution",
+        "fix_versions": [
+          "2.1.1+"
+        ],
+        "recommendation": "Upgrade sqlitedict to patched version (2.1.1+). Validate all persisted data from untrusted sources.",
+        "affected_code_paths": [
+          "src/db/persistence.py",
+          "src/codex_ml/utils/data_cache.py"
+        ]
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "cognitive_app/src/server/cli_api_server.py",
+        "line": 1320,
+        "message": "Detected a python logger call with a potential hardcoded secret \"github_token: App installation token failed (%s), falling back\" being logged. This may lead to secret credentials being exposed. Make s",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "cognitive_app/src/server/cli_api_server.py",
+        "line": 1326,
+        "message": "Detected a python logger call with a potential hardcoded secret \"github_token: using %s as PAT\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not loggin",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "services/msp_gateway/middleware/rate_limit.py",
+        "line": 250,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Token quota exhausted for tenant: %s (requested=%s, available=%s)\" being logged. This may lead to secret credentials being exposed. Mak",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "services/msp_gateway/middleware/rate_limit.py",
+        "line": 348,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Error processing token usage: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not log",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "services/msp_gateway/routers/infer.py",
+        "line": 231,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Inference %s completed, tokens: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not l",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/api/auth_routes.py",
+        "line": 338,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Token refresh failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  se",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/api/auth_routes.py",
+        "line": 340,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Unexpected error during token refresh: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger i",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/archive/sigstore_client.py",
+        "line": 102,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Could not fetch GitHub OIDC token: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is no",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/auth/authenticator.py",
+        "line": 295,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Password changed for user_id=%s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logg",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/auth/authenticator.py",
+        "line": 313,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Admin password reset for user_id=%s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/autonomy/token_broker.py",
+        "line": 145,
+        "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: skipping %s \u2014 ceiling %s < required %s\" being logged. This may lead to secret credentials being exposed. Make sure that th",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/autonomy/token_broker.py",
+        "line": 155,
+        "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: resolved %s via %s (ceiling=%s)\" being logged. This may lead to secret credentials being exposed. Make sure that the logge",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/autonomy/token_broker.py",
+        "line": 165,
+        "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive i",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/cli.py",
+        "line": 1867,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Failed to load cached credentials file: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex/zendesk/apply.py",
+        "line": 104,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Missing Zendesk credentials for environment '%s'.\" being logged. This may lead to secret credentials being exposed. Make sure that the ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/interfaces/tokenizer.py",
+        "line": 442,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to WhitespaceTokenizer due to load error for '%s': %s\" being logged. This may lead to secret credentials being exposed. Ma",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/pipeline.py",
+        "line": 74,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Using tokenizer: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensiti",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/pipeline.py",
+        "line": 77,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to WhitespaceTokenizer: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/safety/filters.py",
+        "line": 790,
+        "message": "Detected a python logger call with a potential hardcoded secret \"safety.filters: failed to assign neg_inf for token %s (%s)\" being logged. This may lead to secret credentials being exposed. Make sure ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/utils/safe_pickle.py",
+        "line": 154,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Using existing pickle secret key at %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is n",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/codex_ml/utils/safe_pickle.py",
+        "line": 158,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Generating new pickle secret key at %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is n",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/hhg_logistics/model/peft_utils.py",
+        "line": 87,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to slow tokenizer for %s because fast tokenizer is unavailable: %s\" being logged. This may lead to secret credentials bein",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/modeling.py",
+        "line": 259,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer '%s' has no pad_token; falling back to eos_token. \"\n                \"This may affect training behaviour.\" being logged. This ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 439,
+        "message": "Detected a python logger call with a potential hardcoded secret \"GitHub API returned %d when creating installation token: %s\" being logged. This may lead to secret credentials being exposed. Make sure",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 450,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Failed to create GitHub installation token: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the log",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 481,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Updating GitHub token scopes for %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 524,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Failed to update token scopes: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not lo",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 578,
+        "message": "Detected a python logger call with a potential hardcoded secret \"revoke_secret() failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/security/providers/github_provider.py",
+        "line": 629,
+        "message": "Detected a python logger call with a potential hardcoded secret \"list_secrets() failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  s",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/training/engine_hf_trainer.py",
+        "line": 1074,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer from '%s' has no pad_token; falling back to eos_token. \"\n            \"This may affect training behaviour.\" being logged. This",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+        "severity": "HIGH",
+        "file": "src/training/functional_training.py",
+        "line": 313,
+        "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer '%s' has no pad_token; falling back to eos_token. \"\n                \"This may affect training behaviour.\" being logged. This ",
+        "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+        "category": "sensitive_data_exposure"
+      },
+      {
+        "tool": "codeql",
+        "rule_id": "py/clear-text-logging-sensitive-data",
+        "severity": "HIGH",
+        "count": 30,
+        "description": "Clear-text logging of sensitive data (30 occurrences)",
+        "category": "sensitive_data_exposure",
+        "recommendation": "Address py/clear-text-logging-sensitive-data violations across 30 locations."
+      },
+      {
+        "tool": "codeql",
+        "rule_id": "py/clear-text-storage-sensitive-data",
+        "severity": "HIGH",
+        "count": 12,
+        "description": "Clear-text storage of sensitive data (12 occurrences)",
+        "category": "sensitive_data_exposure",
+        "recommendation": "Address py/clear-text-storage-sensitive-data violations across 12 locations."
+      }
+    ],
+    "MEDIUM": [
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/codex_reviewer/github_client.py",
+        "line": 162,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/codex_reviewer/github_client.py",
+        "line": 232,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/codex_reviewer/github_client.py",
+        "line": 257,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/codex_reviewer/github_client.py",
+        "line": 283,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/github-guru-agent/github_client.py",
+        "line": 110,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/github-guru-agent/github_client.py",
+        "line": 162,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/agents/github-guru-agent/guru_adapter.py",
+        "line": 384,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/copilot-cascade/mcp_server.py",
+        "line": 553,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": ".github/copilot-cascade/mcp_server.py",
+        "line": 702,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+        "severity": "MEDIUM",
+        "file": ".github/security-tools/bootstrap_extractor.py",
+        "line": 103,
+        "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+        "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_file_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+        "severity": "MEDIUM",
+        "file": "cli/script_polish.py",
+        "line": 703,
+        "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+        "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_file_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+        "severity": "MEDIUM",
+        "file": "src/bridge_manager.py",
+        "line": 359,
+        "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+        "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_file_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/agents/brain_client.py",
+        "line": 157,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/auth/github_app.py",
+        "line": 284,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/auth/github_app.py",
+        "line": 353,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/auth/github_app.py",
+        "line": 402,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/github/mcp_poster.py",
+        "line": 186,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/github/mcp_poster.py",
+        "line": 1482,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/github/mcp_poster.py",
+        "line": 1933,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/github/mcp_poster.py",
+        "line": 1987,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+        "severity": "MEDIUM",
+        "file": "src/codex/release/api.py",
+        "line": 142,
+        "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+        "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_file_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+        "severity": "MEDIUM",
+        "file": "src/codex/session/accountability_autoupdate.py",
+        "line": 206,
+        "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/codex/skills/telemetry.py",
+        "line": 369,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+        "severity": "MEDIUM",
+        "file": "src/codex_bridge/github_client.py",
+        "line": 52,
+        "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/data/splits.py",
+        "line": 27,
+        "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/checkpoint_core.py",
+        "line": 370,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/checkpoint_core.py",
+        "line": 372,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/checkpoint_core.py",
+        "line": 425,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/checkpointing.py",
+        "line": 289,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/checkpointing.py",
+        "line": 295,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/safe_pickle.py",
+        "line": 75,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/safe_pickle.py",
+        "line": 116,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "src/codex_ml/utils/safe_pickle.py",
+        "line": 129,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "src/services/crawler/zendesk_sync.py",
+        "line": 232,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/security/test_security_utilities.py",
+        "line": 87,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/security/test_security_utilities.py",
+        "line": 100,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/security/test_security_utilities.py",
+        "line": 118,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/security/test_security_utilities.py",
+        "line": 135,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+        "severity": "MEDIUM",
+        "file": "tests/test_actions_server_smoke.py",
+        "line": 17,
+        "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+        "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+        "category": "unsafe_dynamic_operations"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/test_checkpoint_manager.py",
+        "line": 46,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/test_checkpoint_save_resume.py",
+        "line": 34,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/test_codex_ml_safe_pickle.py",
+        "line": 40,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/test_codex_ml_safe_pickle.py",
+        "line": 54,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "tests/training/test_training_edge_cases_phase26.py",
+        "line": 507,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+        "severity": "MEDIUM",
+        "file": "tests/utils/test_hash_utils.py",
+        "line": 30,
+        "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+        "severity": "MEDIUM",
+        "file": "tests/utils/test_hash_utils.py",
+        "line": 31,
+        "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+        "severity": "MEDIUM",
+        "file": "tests/utils/test_hash_utils.py",
+        "line": 136,
+        "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+        "severity": "MEDIUM",
+        "file": "tests/utils/test_hash_utils.py",
+        "line": 147,
+        "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+        "severity": "MEDIUM",
+        "file": "tests/utils/test_hash_utils.py",
+        "line": 157,
+        "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+        "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+        "category": "weak_cryptography"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "utils/safe_pickle.py",
+        "line": 72,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "utils/safe_pickle.py",
+        "line": 145,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "semgrep",
+        "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+        "severity": "MEDIUM",
+        "file": "utils/safe_pickle.py",
+        "line": 171,
+        "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+        "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+        "category": "insecure_deserialization"
+      },
+      {
+        "tool": "codeql",
+        "rule_id": "py/uninitialized-local-variable",
+        "severity": "MEDIUM",
+        "count": 46,
+        "description": "Uninitialized local variables (46 occurrences)",
+        "category": "code_quality_issues",
+        "recommendation": "Address py/uninitialized-local-variable violations across 46 locations."
+      }
+    ],
+    "LOW": [
+      {
+        "tool": "codeql",
+        "rule_id": "py/cyclic-import",
+        "severity": "LOW",
+        "count": 4,
+        "description": "Cyclic imports (4 occurrences)",
+        "category": "code_quality_issues",
+        "recommendation": "Address py/cyclic-import violations across 4 locations."
+      }
+    ],
+    "INFO": []
+  },
+  "findings_by_category": {
+    "critical_injection_vulnerabilities": {
+      "count": 6,
+      "findings": [
+        {
+          "tool": "codeql",
+          "rule_id": "py/log-injection",
+          "severity": "ERROR",
+          "count": 6,
+          "description": "Log injection vulnerability (6 occurrences)",
+          "category": "critical_injection_vulnerabilities",
+          "recommendation": "Address py/log-injection violations across 6 locations."
+        }
+      ],
+      "description": "XXE, SQL injection, command injection, RCE"
+    },
+    "sensitive_data_exposure": {
+      "count": 73,
+      "findings": [
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "cognitive_app/src/server/cli_api_server.py",
+          "line": 1320,
+          "message": "Detected a python logger call with a potential hardcoded secret \"github_token: App installation token failed (%s), falling back\" being logged. This may lead to secret credentials being exposed. Make s",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "cognitive_app/src/server/cli_api_server.py",
+          "line": 1326,
+          "message": "Detected a python logger call with a potential hardcoded secret \"github_token: using %s as PAT\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not loggin",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "services/msp_gateway/middleware/rate_limit.py",
+          "line": 250,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Token quota exhausted for tenant: %s (requested=%s, available=%s)\" being logged. This may lead to secret credentials being exposed. Mak",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "services/msp_gateway/middleware/rate_limit.py",
+          "line": 348,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Error processing token usage: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not log",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "services/msp_gateway/routers/infer.py",
+          "line": 231,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Inference %s completed, tokens: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not l",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/api/auth_routes.py",
+          "line": 338,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Token refresh failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  se",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/api/auth_routes.py",
+          "line": 340,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Unexpected error during token refresh: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger i",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/archive/sigstore_client.py",
+          "line": 102,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Could not fetch GitHub OIDC token: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is no",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/auth/authenticator.py",
+          "line": 295,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Password changed for user_id=%s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logg",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/auth/authenticator.py",
+          "line": 313,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Admin password reset for user_id=%s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/autonomy/token_broker.py",
+          "line": 145,
+          "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: skipping %s \u2014 ceiling %s < required %s\" being logged. This may lead to secret credentials being exposed. Make sure that th",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/autonomy/token_broker.py",
+          "line": 155,
+          "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: resolved %s via %s (ceiling=%s)\" being logged. This may lead to secret credentials being exposed. Make sure that the logge",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/autonomy/token_broker.py",
+          "line": 165,
+          "message": "Detected a python logger call with a potential hardcoded secret \"TokenBroker: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive i",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/cli.py",
+          "line": 1867,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Failed to load cached credentials file: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex/zendesk/apply.py",
+          "line": 104,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Missing Zendesk credentials for environment '%s'.\" being logged. This may lead to secret credentials being exposed. Make sure that the ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/interfaces/tokenizer.py",
+          "line": 442,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to WhitespaceTokenizer due to load error for '%s': %s\" being logged. This may lead to secret credentials being exposed. Ma",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/pipeline.py",
+          "line": 74,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Using tokenizer: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensiti",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/pipeline.py",
+          "line": 77,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to WhitespaceTokenizer: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/safety/filters.py",
+          "line": 790,
+          "message": "Detected a python logger call with a potential hardcoded secret \"safety.filters: failed to assign neg_inf for token %s (%s)\" being logged. This may lead to secret credentials being exposed. Make sure ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/utils/safe_pickle.py",
+          "line": 154,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Using existing pickle secret key at %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is n",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/codex_ml/utils/safe_pickle.py",
+          "line": 158,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Generating new pickle secret key at %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is n",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/hhg_logistics/model/peft_utils.py",
+          "line": 87,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Falling back to slow tokenizer for %s because fast tokenizer is unavailable: %s\" being logged. This may lead to secret credentials bein",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/modeling.py",
+          "line": 259,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer '%s' has no pad_token; falling back to eos_token. \"\n                \"This may affect training behaviour.\" being logged. This ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 439,
+          "message": "Detected a python logger call with a potential hardcoded secret \"GitHub API returned %d when creating installation token: %s\" being logged. This may lead to secret credentials being exposed. Make sure",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 450,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Failed to create GitHub installation token: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the log",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 481,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Updating GitHub token scopes for %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 524,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Failed to update token scopes: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not lo",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 578,
+          "message": "Detected a python logger call with a potential hardcoded secret \"revoke_secret() failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/security/providers/github_provider.py",
+          "line": 629,
+          "message": "Detected a python logger call with a potential hardcoded secret \"list_secrets() failed: %s\" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  s",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/training/engine_hf_trainer.py",
+          "line": 1074,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer from '%s' has no pad_token; falling back to eos_token. \"\n            \"This may affect training behaviour.\" being logged. This",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure",
+          "severity": "HIGH",
+          "file": "src/training/functional_training.py",
+          "line": 313,
+          "message": "Detected a python logger call with a potential hardcoded secret \"Tokenizer '%s' has no pad_token; falling back to eos_token. \"\n                \"This may affect training behaviour.\" being logged. This ",
+          "recommendation": "Review and address python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure finding. See Semgrep rule documentation for specific guidance.",
+          "category": "sensitive_data_exposure"
+        },
+        {
+          "tool": "codeql",
+          "rule_id": "py/clear-text-logging-sensitive-data",
+          "severity": "HIGH",
+          "count": 30,
+          "description": "Clear-text logging of sensitive data (30 occurrences)",
+          "category": "sensitive_data_exposure",
+          "recommendation": "Address py/clear-text-logging-sensitive-data violations across 30 locations."
+        },
+        {
+          "tool": "codeql",
+          "rule_id": "py/clear-text-storage-sensitive-data",
+          "severity": "HIGH",
+          "count": 12,
+          "description": "Clear-text storage of sensitive data (12 occurrences)",
+          "category": "sensitive_data_exposure",
+          "recommendation": "Address py/clear-text-storage-sensitive-data violations across 12 locations."
+        }
+      ],
+      "description": "Cleartext logging/storage of secrets, credentials"
+    },
+    "insecure_deserialization": {
+      "count": 22,
+      "findings": [
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/checkpoint_core.py",
+          "line": 370,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/checkpoint_core.py",
+          "line": 372,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/checkpoint_core.py",
+          "line": 425,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/checkpointing.py",
+          "line": 289,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/checkpointing.py",
+          "line": 295,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/safe_pickle.py",
+          "line": 75,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/safe_pickle.py",
+          "line": 116,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/utils/safe_pickle.py",
+          "line": 129,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/security/test_security_utilities.py",
+          "line": 87,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/security/test_security_utilities.py",
+          "line": 100,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/security/test_security_utilities.py",
+          "line": 118,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/security/test_security_utilities.py",
+          "line": 135,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/test_checkpoint_manager.py",
+          "line": 46,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/test_checkpoint_save_resume.py",
+          "line": 34,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/test_codex_ml_safe_pickle.py",
+          "line": 40,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/test_codex_ml_safe_pickle.py",
+          "line": 54,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "tests/training/test_training_edge_cases_phase26.py",
+          "line": 507,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "utils/safe_pickle.py",
+          "line": 72,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "utils/safe_pickle.py",
+          "line": 145,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.deserialization.pickle.avoid-pickle",
+          "severity": "MEDIUM",
+          "file": "utils/safe_pickle.py",
+          "line": 171,
+          "message": "Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relev",
+          "recommendation": "Review and address python.lang.security.deserialization.pickle.avoid-pickle finding. See Semgrep rule documentation for specific guidance.",
+          "category": "insecure_deserialization"
+        }
+      ],
+      "description": "Pickle, unsafe deserialization (CVE-2025-69872, CVE-2024-35515)"
+    },
+    "weak_cryptography": {
+      "count": 8,
+      "findings": [
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+          "severity": "MEDIUM",
+          "file": "src/codex/session/accountability_autoupdate.py",
+          "line": 206,
+          "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+          "severity": "MEDIUM",
+          "file": "src/codex_bridge/github_client.py",
+          "line": 52,
+          "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1",
+          "severity": "MEDIUM",
+          "file": "src/codex_ml/data/splits.py",
+          "line": 27,
+          "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+          "severity": "MEDIUM",
+          "file": "tests/utils/test_hash_utils.py",
+          "line": 30,
+          "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+          "severity": "MEDIUM",
+          "file": "tests/utils/test_hash_utils.py",
+          "line": 31,
+          "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+          "severity": "MEDIUM",
+          "file": "tests/utils/test_hash_utils.py",
+          "line": 136,
+          "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+          "severity": "MEDIUM",
+          "file": "tests/utils/test_hash_utils.py",
+          "line": 147,
+          "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5",
+          "severity": "MEDIUM",
+          "file": "tests/utils/test_hash_utils.py",
+          "line": 157,
+          "message": "Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.",
+          "recommendation": "Review and address python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5 finding. See Semgrep rule documentation for specific guidance.",
+          "category": "weak_cryptography"
+        }
+      ],
+      "description": "MD5, SHA1, other weak crypto algorithms"
+    },
+    "hardcoded_secrets": {
+      "count": 0,
+      "findings": [],
+      "description": "API keys, tokens, credentials in source code"
+    },
+    "unsafe_dynamic_operations": {
+      "count": 22,
+      "findings": [
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/codex_reviewer/github_client.py",
+          "line": 162,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/codex_reviewer/github_client.py",
+          "line": 232,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/codex_reviewer/github_client.py",
+          "line": 257,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/codex_reviewer/github_client.py",
+          "line": 283,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/github-guru-agent/github_client.py",
+          "line": 110,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/github-guru-agent/github_client.py",
+          "line": 162,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/agents/github-guru-agent/guru_adapter.py",
+          "line": 384,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/copilot-cascade/mcp_server.py",
+          "line": 553,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": ".github/copilot-cascade/mcp_server.py",
+          "line": 702,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/agents/brain_client.py",
+          "line": 157,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/auth/github_app.py",
+          "line": 284,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/auth/github_app.py",
+          "line": 353,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/auth/github_app.py",
+          "line": 402,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/github/mcp_poster.py",
+          "line": 186,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/github/mcp_poster.py",
+          "line": 1482,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/github/mcp_poster.py",
+          "line": 1933,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/github/mcp_poster.py",
+          "line": 1987,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/codex/skills/telemetry.py",
+          "line": 369,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+          "severity": "ERROR",
+          "file": "src/codex_ml/plugins/registry.py",
+          "line": 90,
+          "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evalu",
+          "recommendation": "Review and address python.lang.security.audit.exec-detected.exec-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "src/services/crawler/zendesk_sync.py",
+          "line": 232,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected",
+          "severity": "MEDIUM",
+          "file": "tests/test_actions_server_smoke.py",
+          "line": 17,
+          "message": "Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib call",
+          "recommendation": "Review and address python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.exec-detected.exec-detected",
+          "severity": "ERROR",
+          "file": "tests/test_readme_examples.py",
+          "line": 34,
+          "message": "Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evalu",
+          "recommendation": "Review and address python.lang.security.audit.exec-detected.exec-detected finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_dynamic_operations"
+        }
+      ],
+      "description": "Dynamic URL construction, unsafe exec/eval, dynamic imports"
+    },
+    "unsafe_file_operations": {
+      "count": 4,
+      "findings": [
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+          "severity": "MEDIUM",
+          "file": ".github/security-tools/bootstrap_extractor.py",
+          "line": 103,
+          "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+          "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_file_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+          "severity": "MEDIUM",
+          "file": "cli/script_polish.py",
+          "line": 703,
+          "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+          "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_file_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+          "severity": "MEDIUM",
+          "file": "src/bridge_manager.py",
+          "line": 359,
+          "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+          "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_file_operations"
+        },
+        {
+          "tool": "semgrep",
+          "rule_id": "python.lang.security.audit.insecure-file-permissions.insecure-file-permissions",
+          "severity": "MEDIUM",
+          "file": "src/codex/release/api.py",
+          "line": 142,
+          "message": "These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyo",
+          "recommendation": "Review and address python.lang.security.audit.insecure-file-permissions.insecure-file-permissions finding. See Semgrep rule documentation for specific guidance.",
+          "category": "unsafe_file_operations"
+        }
+      ],
+      "description": "Insecure file permissions, world-readable files"
+    },
+    "code_quality_issues": {
+      "count": 50,
+      "findings": [
+        {
+          "tool": "codeql",
+          "rule_id": "py/uninitialized-local-variable",
+          "severity": "MEDIUM",
+          "count": 46,
+          "description": "Uninitialized local variables (46 occurrences)",
+          "category": "code_quality_issues",
+          "recommendation": "Address py/uninitialized-local-variable violations across 46 locations."
+        },
+        {
+          "tool": "codeql",
+          "rule_id": "py/cyclic-import",
+          "severity": "LOW",
+          "count": 4,
+          "description": "Cyclic imports (4 occurrences)",
+          "category": "code_quality_issues",
+          "recommendation": "Address py/cyclic-import violations across 4 locations."
+        }
+      ],
+      "description": "Uninitialized variables, cyclic imports, unused variables"
+    },
+    "dependency_vulnerabilities": {
+      "count": 2,
+      "findings": [
+        {
+          "cve_id": "CVE-2025-69872",
+          "package": "diskcache",
+          "version": "5.6.3",
+          "severity": "HIGH",
+          "category": "insecure_deserialization",
+          "description": "DiskCache uses Python pickle for serialization by default. Attacker with write access to cache directory can achieve arbitrary code execution.",
+          "affected_file": "requirements.txt",
+          "affected_line": "diskcache==5.6.3",
+          "vulnerability_type": "arbitrary_code_execution",
+          "fix_versions": [
+            "5.6.4+"
+          ],
+          "recommendation": "Upgrade diskcache to patched version (5.6.4+). Consider using alternative serialization (JSON, MessagePack).",
+          "affected_code_paths": [
+            "src/codex_ml/utils/checkpoint_core.py",
+            "src/caching/disk_cache_wrapper.py"
+          ]
+        },
+        {
+          "cve_id": "CVE-2024-35515",
+          "package": "sqlitedict",
+          "version": "2.1.0",
+          "severity": "HIGH",
+          "category": "insecure_deserialization",
+          "description": "Insecure deserialization in sqlitedict up to v2.1.0 allows attackers to execute arbitrary code.",
+          "affected_file": "requirements.txt",
+          "affected_line": "sqlitedict==2.1.0",
+          "vulnerability_type": "arbitrary_code_execution",
+          "fix_versions": [
+            "2.1.1+"
+          ],
+          "recommendation": "Upgrade sqlitedict to patched version (2.1.1+). Validate all persisted data from untrusted sources.",
+          "affected_code_paths": [
+            "src/db/persistence.py",
+            "src/codex_ml/utils/data_cache.py"
+          ]
+        }
+      ],
+      "description": "Known CVEs in third-party dependencies"
+    }
+  },
+  "summary": {
+    "error_count": 3,
+    "high_count": 35,
+    "medium_count": 53,
+    "low_count": 1,
+    "info_count": 0,
+    "total_findings": 92,
+    "critical_categories": [
+      {
+        "category": "sensitive_data_exposure",
+        "count": 73,
+        "description": "Cleartext logging/storage of secrets, credentials"
+      },
+      {
+        "category": "code_quality_issues",
+        "count": 50,
+        "description": "Uninitialized variables, cyclic imports, unused variables"
+      },
+      {
+        "category": "insecure_deserialization",
+        "count": 22,
+        "description": "Pickle, unsafe deserialization (CVE-2025-69872, CVE-2024-35515)"
+      },
+      {
+        "category": "unsafe_dynamic_operations",
+        "count": 22,
+        "description": "Dynamic URL construction, unsafe exec/eval, dynamic imports"
+      },
+      {
+        "category": "weak_cryptography",
+        "count": 8,
+        "description": "MD5, SHA1, other weak crypto algorithms"
+      },
+      {
+        "category": "critical_injection_vulnerabilities",
+        "count": 6,
+        "description": "XXE, SQL injection, command injection, RCE"
+      },
+      {
+        "category": "unsafe_file_operations",
+        "count": 4,
+        "description": "Insecure file permissions, world-readable files"
+      },
+      {
+        "category": "dependency_vulnerabilities",
+        "count": 2,
+        "description": "Known CVEs in third-party dependencies"
+      }
+    ],
+    "by_tool": {
+      "codeql": 8,
+      "semgrep": 88,
+      "pip_audit": 2,
+      "secrets": 1083
+    }
+  },
+  "remediation_roadmap": [
+    {
+      "phase": 1,
+      "priority": "CRITICAL",
+      "focus": "Dependency Vulnerabilities",
+      "findings": 2,
+      "items": [
+        {
+          "issue": "CVE-2025-69872 (diskcache pickle deserialization)",
+          "action": "Upgrade diskcache to 5.6.4+",
+          "impact": "Prevents arbitrary code execution via cache directory",
+          "effort": "LOW"
+        },
+        {
+          "issue": "CVE-2024-35515 (sqlitedict deserialization)",
+          "action": "Upgrade sqlitedict to 2.1.1+",
+          "impact": "Prevents arbitrary code execution via database",
+          "effort": "LOW"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "priority": "HIGH",
+      "focus": "Sensitive Data Exposure",
+      "findings": 73,
+      "items": [
+        {
+          "issue": "Clear-text logging of sensitive data (30 occurrences in CodeQL)",
+          "action": "Audit logger calls, use redaction/masking",
+          "impact": "Prevents credential exposure in logs",
+          "effort": "MEDIUM"
+        },
+        {
+          "issue": "Clear-text storage of sensitive data (12 occurrences)",
+          "action": "Implement encryption for sensitive data at rest",
+          "impact": "Secures stored credentials and tokens",
+          "effort": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "priority": "HIGH",
+      "focus": "Insecure Deserialization",
+      "findings": 22,
+      "items": [
+        {
+          "issue": "Pickle usage for serialization (20 occurrences)",
+          "action": "Replace pickle with JSON/MessagePack",
+          "impact": "Eliminates deserialization RCE vector",
+          "effort": "MEDIUM"
+        },
+        {
+          "issue": "CVE-2025-69872 & CVE-2024-35515 (2 high-severity CVEs)",
+          "action": "Upgrade diskcache and sqlitedict to patched versions",
+          "impact": "Patches known RCE vulnerabilities",
+          "effort": "LOW"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "priority": "MEDIUM",
+      "focus": "Weak Cryptography",
+      "findings": 8,
+      "items": [
+        {
+          "issue": "MD5 and SHA1 hash usage (8 occurrences)",
+          "action": "Migrate to SHA-256 or stronger algorithms",
+          "impact": "Uses cryptographically secure hashing",
+          "effort": "LOW"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "priority": "MEDIUM",
+      "focus": "Unsafe Dynamic Operations",
+      "findings": 22,
+      "items": [
+        {
+          "issue": "Dynamic URL construction (20 occurrences)",
+          "action": "Validate and sanitize URL inputs",
+          "impact": "Prevents URL injection attacks",
+          "effort": "MEDIUM"
+        }
+      ]
+    }
+  ]
+}
