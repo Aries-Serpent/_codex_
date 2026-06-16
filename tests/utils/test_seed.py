@@ -11,7 +11,7 @@ import random
 
 import pytest
 
-from codex_ml.utils.seed import set_seed
+from codex_ml.utils.seed import deterministic_shuffle, set_seed
 
 
 def _optional_import(module: str):
@@ -41,6 +41,18 @@ def test_seed_repro_numpy() -> None:
     set_seed(123)
     second = np.random.randint(0, 100000)
     assert first == second == 15725
+
+
+def test_deterministic_shuffle_reproducible_and_non_mutating() -> None:
+    original = [1, 2, 3, 4, 5]
+    shuffled_a = deterministic_shuffle(original, seed=10)
+    shuffled_b = deterministic_shuffle(original, seed=10)
+    shuffled_c = deterministic_shuffle(original, seed=11)
+
+    assert shuffled_a == shuffled_b
+    assert shuffled_a != shuffled_c
+    assert original == [1, 2, 3, 4, 5]
+    assert sorted(shuffled_a) == sorted(original)
 
 
 @pytest.mark.skipif(_optional_import("torch") is None, reason="torch not installed")

@@ -106,7 +106,7 @@ def rg_search(pattern):
         # fallback to git grep
         try:
             p = run(["git", "grep", "-n", "-E", pattern])
-            if p.returncode == 0:
+            if p.stdout:
                 hits = []
                 for ln in p.stdout.splitlines():
                     parts = ln.split(":", 2)
@@ -114,7 +114,11 @@ def rg_search(pattern):
                         line_txt = parts[2]
                         if len(line_txt) > 240:
                             line_txt = line_txt[:240] + "..."
-                        hits.append({"file": parts[0], "line_no": int(parts[1]), "line": line_txt})
+                        try:
+                            line_no = int(parts[1])
+                        except ValueError:
+                            continue
+                        hits.append({"file": parts[0], "line_no": line_no, "line": line_txt})
                 return hits
             return []
         except Exception:

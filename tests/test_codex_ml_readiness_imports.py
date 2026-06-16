@@ -13,6 +13,17 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
+
+
+def _assert_import_contract(mod: object, module_name: str) -> None:
+    """Assert stronger import guarantees than a simple non-None check."""
+    assert mod.__name__ == module_name
+    assert hasattr(mod, "__spec__")
+    # A real imported module should expose at least one public attribute.
+    public_names = [name for name in dir(mod) if not name.startswith("_")]
+    assert public_names
+
+
 @pytest.fixture(autouse=True)
 def stub_optional_dependencies(monkeypatch, tmp_path):
     """Stub heavy/optional deps so imports remain lightweight."""
@@ -139,7 +150,7 @@ def stub_optional_dependencies(monkeypatch, tmp_path):
 )
 def test_utils_modules_import(module_name):
     mod = importlib.import_module(module_name)
-    assert mod is not None
+    _assert_import_contract(mod, module_name)
 
 
 def test_seeding_and_worker_seed(monkeypatch):
@@ -161,7 +172,7 @@ def test_seeding_and_worker_seed(monkeypatch):
 )
 def test_analysis_modules(module_name):
     mod = importlib.import_module(module_name)
-    assert mod is not None
+    _assert_import_contract(mod, module_name)
 
     if hasattr(mod, "parse_tiered"):
         result = mod.parse_tiered("def f():\n    return 1")
@@ -173,7 +184,9 @@ def test_tracking_helpers(tmp_path):
 
     uri = init_offline.init_mlflow_offline(local_dir=str(tmp_path / "mlruns"))
     assert uri.startswith("file:")
-    assert init_offline.init_wandb_offline(project="demo") is not None
+    wandb_run = init_offline.init_wandb_offline(project="demo")
+    assert isinstance(wandb_run, dict)
+    assert "run" in wandb_run
 
     tracker = mlflow_wrapper.MLflowTracker(enabled=True)
     with tracker.start_run():
@@ -205,7 +218,7 @@ def test_tracking_helpers(tmp_path):
 )
 def test_cli_entrypoints_import(module_name):
     mod = importlib.import_module(module_name)
-    assert mod is not None
+    _assert_import_contract(mod, module_name)
 
 
 @pytest.mark.parametrize(
@@ -224,7 +237,7 @@ def test_cli_entrypoints_import(module_name):
 )
 def test_metrics_and_eval_imports(module_name):
     mod = importlib.import_module(module_name)
-    assert mod is not None
+    _assert_import_contract(mod, module_name)
 
 
 @pytest.mark.parametrize(
@@ -238,7 +251,7 @@ def test_metrics_and_eval_imports(module_name):
 )
 def test_tokenization_modules(module_name, monkeypatch):
     mod = importlib.import_module(module_name)
-    assert mod is not None
+    _assert_import_contract(mod, module_name)
 
     adapter_cls = getattr(mod, "HFTokenizerAdapter", None)
     if adapter_cls is not None:
@@ -278,7 +291,7 @@ def test_safety_and_deployment_imports():
     result = sandbox.run_in_sandbox(["echo", "hi"], timeout=2)
     assert result.returncode == 0
 
-    assert package is not None
-    assert serving is not None
-    assert exp_summary is not None
-    assert capability_detectors is not None
+    _assert_import_contract(package, "codex_ml.deployment.package")
+    _assert_import_contract(serving, "codex_ml.serving.deployment")
+    _assert_import_contract(exp_summary, "codex_ml.detectors.experiment_summary")
+    _assert_import_contract(capability_detectors, "codex_ml.detectors.capability_detectors")
