@@ -13,7 +13,7 @@
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| **Overall Line Coverage** | 5.78% | ≥15% | ⚠️ Below threshold (agents subsystem only) |
+| **Overall Line Coverage** | 7.04% | ≥15% | ⚠️ Below threshold (agents subsystem only) |
 | **Core Modules Coverage** | 29.7% | ≥15% | ✅ PASS |
 | **Phase 5 Baseline** | 17.57% | Maintain | ✅ MAINTAINED |
 | **Statements Covered** | 7,068 | N/A | ✅ TRACKED |

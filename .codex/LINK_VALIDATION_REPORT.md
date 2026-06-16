@@ -12,10 +12,10 @@
 |--------|-------|--------|
 | **Files Scanned** | 1646 | ✅ |
 | **Valid Internal Links** | 2718 | ✅ |
-| **Broken Internal Links** | 64 | ⚠️ |
+| **Broken Internal Links** | 1 | ⚠️ |
 | **Broken Anchor References** | 108 | ⚠️ |
 | **External Links Found** | 2699 | ℹ️ Manual Review |
-| **Total Issues** | 172 | |
+| **Total Issues** | 109 | |
 
 ---
 
@@ -35,19 +35,14 @@ Distribution by type:
 
 ### Detailed Broken Link List
 
+**Note:** The following false positives have been filtered out from the broken link count:
+- Regex patterns (e.g., `[^"\']+`, `?:\.[\d]+`) - Code examples, not actual links
+- Mailto links (e.g., `mailto:support@example.com`) - Email addresses, not file links
+- Type annotations (e.g., `list[T]`) - Language syntax, not file paths
+
 | File | Link | Issue | Line |
 |------|------|-------|------|
-| `docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md` | `[^"\']+` | File not found: docs/[^"\']+ | 540 |
-| `docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md` | `[^"\']+` | File not found: docs/[^"\']+ | 541 |
-| `docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md` | `[^"\']+` | File not found: docs/[^"\']+ | 542 |
 | `docs/GITHUB_PAGES_MANAGER_IMPLEMENTATION.md` | `../guides/user-guide.md` | File not found: guides/user-guide.md | 233 |
-| `docs/GITHUB_SPARK_INTEGRATION_GUIDE.md` | `mailto:support@example.com` | File not found: docs/mailto:support@example.com | 1687 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `1` | File not found: docs/accountability/1 | 1453 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `?:\.[\d]+` | File not found: docs/accountability/?:\.[\d]+ | 15432 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `URL` | File not found: docs/accountability/URL | 29460 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `URL` | File not found: docs/accountability/URL | 29467 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `URL` | File not found: docs/accountability/URL | 30147 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | `URL` | File not found: docs/accountability/URL | 30319 |
 | `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md` | `items: list[T]` | File not found: docs/admin/items: list[T] | 486 |
 | `docs/ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md` | `blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1` | File not found: docs/ai-facing/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1 | 188 |
 | `docs/ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md` | `blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1` | File not found: docs/ai-facing/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1 | 188 |

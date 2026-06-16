@@ -14,7 +14,7 @@ Comprehensive audit of all GitHub Actions workflows across the repository to val
 |--------|--------|
 | **Total Workflows Scanned** | 185 |
 | **Active Workflows Validated** | 184 |
-| **Compliance Rate** | 98.9% ✅ |
+| **Compliance Rate** | 99.46% ✅ |
 | **Deprecated Actions (v1/v2)** | 0 Found ✅ |
 | **Branch-scoped Concurrency** | 183/184 Enabled ✅ |
 | **Job Timeout Coverage** | 98.1% ✅ |

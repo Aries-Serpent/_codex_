@@ -121,8 +121,8 @@ curl -I https://github.com
 ### Automated Validation
 Add to CI/CD pipeline:
 ```bash
-npm install -g markdown-link-checker
-markdown-link-checker docs/**/*.md
+npm install -g markdown-link-check
+markdown-link-check docs/**/*.md
 ```
 
 ---

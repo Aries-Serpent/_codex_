@@ -64,7 +64,7 @@ print(f"API response: {response_body}")  # Contains authorization header
 **After:**
 ```python
 # codeql[py/clear-text-logging-sensitive-data]
-response_safe = {k: v[:8] + "…" if k in ["auth", "token"] else v for k, v in response_body.items()}
+response_safe = {k: (v[:8] + "…" if isinstance(v, str) else "…") if k in ["auth", "token"] else v for k, v in response_body.items()}
 print(f"API response: {response_safe}")
 ```
 
