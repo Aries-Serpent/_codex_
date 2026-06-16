@@ -2,12 +2,14 @@
 """CLI package — exposes main() entry point for the Codex training CLI."""
 
 from __future__ import annotations
-
 import argparse
 from collections.abc import Sequence
 from typing import Optional
 
-__all__ = ["main"]
+# Import train_codex for backward compatibility
+from cli import train_codex
+
+__all__ = ["main", "train_codex"]
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
