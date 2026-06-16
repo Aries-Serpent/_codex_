@@ -78,7 +78,7 @@ The campaign framework makes production readiness repeatable and scalable. The p
 ```
 tests/unit/test_checkpoint_core_resume.py        (13 tests, 350 LOC)
 tests/unit/test_training_callbacks.py            (21+ tests, 400 LOC)
-tests/unit/test_tokenization_edges.py            (18+ tests, 297 LOC)
+tests/unit/test_tokenization_edges.py            (18+ tests, 297 LOC)  # pragma: allowlist secret
 tests/integration/test_device_strategy_fallback.py (11+ tests, 320 LOC)
 tests/integration/test_event_integration_e2e.py  (11+ tests, 380 LOC)
 tests/integration/test_checkpoint_resume_e2e.py  (14+ tests, 393 LOC)

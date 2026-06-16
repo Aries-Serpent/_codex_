@@ -27,7 +27,7 @@
 | Progressive Validation Suite | completed | action_required | ⚠️ Review needed |
 | GitHub Guru Agent | completed | action_required | ⚠️ Review needed |
 | PR Comment Review Gate | completed | action_required | ⚠️ Review needed |
-| Secrets False-Positive Healer | completed | action_required | ⚠️ Review needed |
+| Secrets False-Positive Healer | completed | action_required | ⚠️ Review needed | <!-- pragma: allowlist secret -->
 | Coverage with Timeout Guards | completed | action_required | ⚠️ Review needed |
 | Deferral Language Gate | completed | action_required | ⚠️ Review needed |
 | PR Auto-Fix Check | completed | action_required | ⚠️ Review needed |
