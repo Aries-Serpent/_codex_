@@ -9,7 +9,7 @@
 
 Phase 6B Task 3 has **successfully completed** with **ZERO critical findings**. The secrets detection and baseline verification audit confirms:
 
-- ✅ **Zero new secrets** detected outside the baseline # pragma: allowlist secret
+- ✅ **Zero new secrets** detected outside the baseline # pragma: allowlist secret # pragma: allowlist secret
 - ✅ **100% baseline compliance** verified
 - ✅ **1,090 established secrets** catalogued and allowlisted
 - ✅ **259 files affected** properly categorized and documented
