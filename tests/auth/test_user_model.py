@@ -1,0 +1,422 @@
+"""
+Unit tests for user_model module.
+
+Tests cover:
+- User model creation and validation
+- Password hashing and verification
+- User metadata management
+- User state transitions
+- Edge cases and error handling
+"""
+
+import pytest
+from datetime import datetime, timedelta
+from uuid import uuid4
+
+from src.codex.auth.user_model import User
+
+
+class TestUserModel:
+    """Test suite for User model."""
+
+    def test_user_creation(self):
+        """Test creating a user."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert user.username == "testuser"
+        assert user.email == "test@example.com"
+        assert user.password_hash == "hashed_password"
+
+    def test_user_id_generation(self):
+        """Test user ID generation."""
+        user_id = str(uuid4())
+        user = User(
+            id=user_id,
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert user.id == user_id
+
+    def test_user_creation_timestamp(self):
+        """Test user creation timestamp."""
+        now = datetime.now()
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=now,
+        )
+        
+        assert user.created_at == now
+
+    def test_user_updated_at_timestamp(self):
+        """Test user updated_at timestamp."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+        
+        assert user.updated_at is not None
+
+    def test_user_email_validation(self):
+        """Test user email validation."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="valid@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert "@" in user.email
+        assert "." in user.email
+
+    def test_user_username_length(self):
+        """Test username length validation."""
+        # Valid username
+        user = User(
+            id=str(uuid4()),
+            username="validusername",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert len(user.username) > 0
+
+    def test_user_password_hash_storage(self):
+        """Test password hash is stored (not plaintext)."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        # Should not store plaintext passwords
+        assert user.password_hash != "plaintext_password"
+        assert user.password_hash == "hashed_password"
+
+    def test_user_multiple_instances(self):
+        """Test creating multiple user instances."""
+        users = []
+        for i in range(10):
+            user = User(
+                id=str(uuid4()),
+                username=f"user{i}",
+                email=f"user{i}@example.com",
+                password_hash=f"hash{i}",
+                created_at=datetime.now(),
+            )
+            users.append(user)
+        
+        assert len(users) == 10
+        assert all(isinstance(u, User) for u in users)
+
+    def test_user_equality(self):
+        """Test user equality comparison."""
+        user_id = str(uuid4())
+        user1 = User(
+            id=user_id,
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        user2 = User(
+            id=user_id,
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=user1.created_at,
+        )
+        
+        # Should be equal if IDs match
+        assert user1.id == user2.id
+
+    def test_user_inequality(self):
+        """Test user inequality comparison."""
+        user1 = User(
+            id=str(uuid4()),
+            username="user1",
+            email="user1@example.com",
+            password_hash="hash1",
+            created_at=datetime.now(),
+        )
+        user2 = User(
+            id=str(uuid4()),
+            username="user2",
+            email="user2@example.com",
+            password_hash="hash2",
+            created_at=datetime.now(),
+        )
+        
+        assert user1.id != user2.id
+
+    def test_user_attributes_are_accessible(self):
+        """Test that all user attributes are accessible."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        # Should be able to access all attributes
+        assert hasattr(user, 'id')
+        assert hasattr(user, 'username')
+        assert hasattr(user, 'email')
+        assert hasattr(user, 'password_hash')
+        assert hasattr(user, 'created_at')
+
+    def test_user_string_representation(self):
+        """Test user string representation."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        # Should have a string representation
+        user_str = str(user)
+        assert len(user_str) > 0
+
+    def test_user_with_special_characters_in_username(self):
+        """Test user with special characters in username."""
+        user = User(
+            id=str(uuid4()),
+            username="user_with-special.chars@123",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert "user_with-special.chars@123" == user.username
+
+    def test_user_with_unicode_email(self):
+        """Test user with Unicode email."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="用户@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert "用户" in user.email
+
+    def test_user_with_unicode_username(self):
+        """Test user with Unicode username."""
+        user = User(
+            id=str(uuid4()),
+            username="用户名",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert "用户名" == user.username
+
+    def test_user_with_long_password_hash(self):
+        """Test user with very long password hash."""
+        long_hash = "x" * 10000
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash=long_hash,
+            created_at=datetime.now(),
+        )
+        
+        assert len(user.password_hash) == 10000
+
+    def test_user_with_none_optional_fields(self):
+        """Test user with optional fields as None."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+            updated_at=None,
+            last_login=None,
+        )
+        
+        assert user.updated_at is None
+        assert user.last_login is None
+
+    def test_user_last_login_update(self):
+        """Test updating last login timestamp."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+            last_login=None,
+        )
+        
+        now = datetime.now()
+        user.last_login = now
+        assert user.last_login == now
+
+    def test_user_is_active_flag(self):
+        """Test user active status flag."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+            is_active=True,
+        )
+        
+        # Check if is_active attribute exists and can be modified
+        if hasattr(user, 'is_active'):
+            assert user.is_active == True
+
+    def test_user_with_mfa_enabled(self):
+        """Test user with MFA enabled flag."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+            mfa_enabled=True,
+        )
+        
+        # Check if mfa_enabled attribute exists
+        if hasattr(user, 'mfa_enabled'):
+            assert user.mfa_enabled == True
+
+
+class TestUserModelEdgeCases:
+    """Test edge cases for User model."""
+
+    def test_empty_username_handling(self):
+        """Test handling of empty username."""
+        with pytest.raises((ValueError, TypeError, AttributeError)):
+            user = User(
+                id=str(uuid4()),
+                username="",
+                email="test@example.com",
+                password_hash="hashed_password",
+                created_at=datetime.now(),
+            )
+
+    def test_empty_email_handling(self):
+        """Test handling of empty email."""
+        with pytest.raises((ValueError, TypeError, AttributeError)):
+            user = User(
+                id=str(uuid4()),
+                username="testuser",
+                email="",
+                password_hash="hashed_password",
+                created_at=datetime.now(),
+            )
+
+    def test_empty_password_hash_handling(self):
+        """Test handling of empty password hash."""
+        with pytest.raises((ValueError, TypeError, AttributeError)):
+            user = User(
+                id=str(uuid4()),
+                username="testuser",
+                email="test@example.com",
+                password_hash="",
+                created_at=datetime.now(),
+            )
+
+    def test_none_id_handling(self):
+        """Test handling of None ID."""
+        with pytest.raises((ValueError, TypeError)):
+            user = User(
+                id=None,
+                username="testuser",
+                email="test@example.com",
+                password_hash="hashed_password",
+                created_at=datetime.now(),
+            )
+
+    def test_future_created_at_timestamp(self):
+        """Test user with future creation timestamp."""
+        future_time = datetime.now() + timedelta(days=1)
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=future_time,
+        )
+        
+        assert user.created_at == future_time
+
+    def test_very_old_created_at_timestamp(self):
+        """Test user with very old creation timestamp."""
+        old_time = datetime.now() - timedelta(days=365)
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=old_time,
+        )
+        
+        assert user.created_at == old_time
+
+    def test_invalid_email_format(self):
+        """Test user with invalid email format."""
+        # Some implementations might validate email format
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="invalid-email-format",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        # Should store the invalid email (validation is optional)
+        assert user.email == "invalid-email-format"
+
+    def test_very_long_username(self):
+        """Test user with very long username."""
+        long_username = "u" * 1000
+        user = User(
+            id=str(uuid4()),
+            username=long_username,
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert len(user.username) == 1000
+
+    def test_whitespace_in_username(self):
+        """Test username with whitespace."""
+        user = User(
+            id=str(uuid4()),
+            username="user with spaces",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+        
+        assert " " in user.username

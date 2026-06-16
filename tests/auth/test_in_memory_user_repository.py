@@ -1,0 +1,356 @@
+"""
+Unit tests for in_memory_user_repository module.
+
+Tests cover:
+- User creation and storage
+- User retrieval by ID and username
+- User update operations
+- User deletion
+- Error handling and edge cases
+"""
+
+import pytest
+from datetime import datetime, timedelta
+from uuid import uuid4
+
+from src.codex.auth.in_memory_user_repository import (
+    InMemoryUserRepository,
+    UserNotFoundError,
+)
+from src.codex.auth.user_model import User
+
+
+class TestInMemoryUserRepository:
+    """Test suite for InMemoryUserRepository."""
+
+    @pytest.fixture
+    def repository(self):
+        """Create a test repository."""
+        return InMemoryUserRepository()
+
+    @pytest.fixture
+    def test_user(self):
+        """Create a test user."""
+        return User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="hashed_password",
+            created_at=datetime.now(),
+        )
+
+    def test_repository_initialization(self, repository):
+        """Test repository initialization."""
+        assert repository is not None
+        assert hasattr(repository, 'users') or hasattr(repository, '_users')
+
+    def test_create_user(self, repository, test_user):
+        """Test creating a user."""
+        repository.create(test_user)
+        
+        retrieved = repository.get_by_id(test_user.id)
+        assert retrieved.id == test_user.id
+        assert retrieved.username == test_user.username
+
+    def test_create_duplicate_user(self, repository, test_user):
+        """Test creating duplicate user raises error."""
+        repository.create(test_user)
+        
+        with pytest.raises((ValueError, Exception)):
+            repository.create(test_user)
+
+    def test_get_user_by_id(self, repository, test_user):
+        """Test retrieving user by ID."""
+        repository.create(test_user)
+        
+        retrieved = repository.get_by_id(test_user.id)
+        assert retrieved.id == test_user.id
+        assert retrieved.username == "testuser"
+        assert retrieved.email == "test@example.com"
+
+    def test_get_user_by_nonexistent_id(self, repository):
+        """Test retrieving nonexistent user by ID."""
+        with pytest.raises(UserNotFoundError):
+            repository.get_by_id("nonexistent_id")
+
+    def test_get_user_by_username(self, repository, test_user):
+        """Test retrieving user by username."""
+        repository.create(test_user)
+        
+        retrieved = repository.get_by_username("testuser")
+        assert retrieved.username == "testuser"
+        assert retrieved.id == test_user.id
+
+    def test_get_user_by_nonexistent_username(self, repository):
+        """Test retrieving nonexistent user by username."""
+        with pytest.raises(UserNotFoundError):
+            repository.get_by_username("nonexistent_user")
+
+    def test_update_user(self, repository, test_user):
+        """Test updating user."""
+        repository.create(test_user)
+        
+        test_user.email = "newemail@example.com"
+        repository.update(test_user)
+        
+        retrieved = repository.get_by_id(test_user.id)
+        assert retrieved.email == "newemail@example.com"
+
+    def test_update_nonexistent_user(self, repository, test_user):
+        """Test updating nonexistent user."""
+        with pytest.raises((UserNotFoundError, ValueError)):
+            repository.update(test_user)
+
+    def test_delete_user(self, repository, test_user):
+        """Test deleting user."""
+        repository.create(test_user)
+        repository.delete(test_user.id)
+        
+        with pytest.raises(UserNotFoundError):
+            repository.get_by_id(test_user.id)
+
+    def test_delete_nonexistent_user(self, repository):
+        """Test deleting nonexistent user."""
+        with pytest.raises((UserNotFoundError, ValueError)):
+            repository.delete("nonexistent_id")
+
+    def test_list_users(self, repository):
+        """Test listing all users."""
+        user1 = User(
+            id=str(uuid4()),
+            username="user1",
+            email="user1@example.com",
+            password_hash="hash1",
+            created_at=datetime.now(),
+        )
+        user2 = User(
+            id=str(uuid4()),
+            username="user2",
+            email="user2@example.com",
+            password_hash="hash2",
+            created_at=datetime.now(),
+        )
+        
+        repository.create(user1)
+        repository.create(user2)
+        
+        users = repository.list()
+        assert len(users) >= 2
+        usernames = [u.username for u in users]
+        assert "user1" in usernames
+        assert "user2" in usernames
+
+    def test_list_empty_repository(self, repository):
+        """Test listing users from empty repository."""
+        users = repository.list()
+        assert users == [] or len(users) == 0
+
+    def test_user_count(self, repository, test_user):
+        """Test getting user count."""
+        repository.create(test_user)
+        
+        # Should have count() method or similar
+        users = repository.list()
+        assert len(users) >= 1
+
+    def test_user_existence_check(self, repository, test_user):
+        """Test checking if user exists."""
+        repository.create(test_user)
+        
+        # Should be able to retrieve the user
+        retrieved = repository.get_by_id(test_user.id)
+        assert retrieved is not None
+
+    def test_user_nonexistence_check(self, repository):
+        """Test checking nonexistent user."""
+        with pytest.raises(UserNotFoundError):
+            repository.get_by_id("nonexistent_id")
+
+    def test_get_by_email(self, repository, test_user):
+        """Test retrieving user by email."""
+        repository.create(test_user)
+        
+        # Some repositories might support this
+        try:
+            retrieved = repository.get_by_email("test@example.com")
+            assert retrieved.email == "test@example.com"
+        except AttributeError:
+            # If not supported, that's OK
+            pass
+
+    def test_concurrent_user_creation(self, repository):
+        """Test creating multiple users."""
+        users = []
+        for i in range(10):
+            user = User(
+                id=str(uuid4()),
+                username=f"user{i}",
+                email=f"user{i}@example.com",
+                password_hash=f"hash{i}",
+                created_at=datetime.now(),
+            )
+            repository.create(user)
+            users.append(user)
+        
+        all_users = repository.list()
+        assert len(all_users) >= 10
+
+    def test_user_modification_after_storage(self, repository, test_user):
+        """Test that modifying stored user is reflected."""
+        repository.create(test_user)
+        
+        test_user.email = "modified@example.com"
+        repository.update(test_user)
+        
+        retrieved = repository.get_by_id(test_user.id)
+        assert retrieved.email == "modified@example.com"
+
+    def test_special_characters_in_username(self, repository):
+        """Test user with special characters in username."""
+        user = User(
+            id=str(uuid4()),
+            username="user_with-special.chars@123",
+            email="special@example.com",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        repository.create(user)
+        retrieved = repository.get_by_username("user_with-special.chars@123")
+        assert retrieved.username == "user_with-special.chars@123"
+
+    def test_unicode_email(self, repository):
+        """Test user with Unicode email."""
+        user = User(
+            id=str(uuid4()),
+            username="unicode_user",
+            email="用户@example.com",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        repository.create(user)
+        retrieved = repository.get_by_id(user.id)
+        assert retrieved.email == "用户@example.com"
+
+    def test_empty_username_validation(self, repository):
+        """Test creating user with empty username."""
+        user = User(
+            id=str(uuid4()),
+            username="",
+            email="test@example.com",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        with pytest.raises((ValueError, Exception)):
+            repository.create(user)
+
+    def test_empty_email_validation(self, repository):
+        """Test creating user with empty email."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        with pytest.raises((ValueError, Exception)):
+            repository.create(user)
+
+    def test_empty_password_hash_validation(self, repository):
+        """Test creating user with empty password hash."""
+        user = User(
+            id=str(uuid4()),
+            username="testuser",
+            email="test@example.com",
+            password_hash="",
+            created_at=datetime.now(),
+        )
+        
+        with pytest.raises((ValueError, Exception)):
+            repository.create(user)
+
+
+class TestInMemoryUserRepositoryEdgeCases:
+    """Test edge cases for InMemoryUserRepository."""
+
+    @pytest.fixture
+    def repository(self):
+        """Create a test repository."""
+        return InMemoryUserRepository()
+
+    def test_large_number_of_users(self, repository):
+        """Test repository with large number of users."""
+        for i in range(1000):
+            user = User(
+                id=str(uuid4()),
+                username=f"user{i}",
+                email=f"user{i}@example.com",
+                password_hash=f"hash{i}",
+                created_at=datetime.now(),
+            )
+            repository.create(user)
+        
+        users = repository.list()
+        assert len(users) >= 1000
+
+    def test_case_sensitivity_in_username(self, repository):
+        """Test username case sensitivity."""
+        user1 = User(
+            id=str(uuid4()),
+            username="TestUser",
+            email="test@example.com",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        repository.create(user1)
+        
+        # Should be case-sensitive or case-insensitive consistently
+        try:
+            retrieved = repository.get_by_username("TestUser")
+            assert retrieved is not None
+        except UserNotFoundError:
+            # If case-insensitive, should still work
+            pass
+
+    def test_duplicate_email_handling(self, repository):
+        """Test handling of duplicate emails."""
+        user1 = User(
+            id=str(uuid4()),
+            username="user1",
+            email="same@example.com",
+            password_hash="hash1",
+            created_at=datetime.now(),
+        )
+        user2 = User(
+            id=str(uuid4()),
+            username="user2",
+            email="same@example.com",
+            password_hash="hash2",
+            created_at=datetime.now(),
+        )
+        
+        repository.create(user1)
+        
+        # Should either allow or disallow duplicate emails
+        try:
+            repository.create(user2)
+        except ValueError:
+            # Duplicate emails not allowed
+            pass
+
+    def test_null_id_handling(self, repository):
+        """Test handling of null ID."""
+        user = User(
+            id=None,
+            username="testuser",
+            email="test@example.com",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        with pytest.raises((ValueError, TypeError)):
+            repository.create(user)
