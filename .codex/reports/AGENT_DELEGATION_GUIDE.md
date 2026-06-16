@@ -133,7 +133,7 @@ data = RestrictedUnpickler(io.BytesIO(untrusted_bytes)).load()
 import hmac
 message, tag = untrusted_bytes.rsplit(b':', 1)
 if not hmac.compare_digest(
-    hmac.new(secret_key, message).hexdigest().encode(),
+    hmac.new(secret_key, message).hexdigest().encode(),  # pragma: allowlist secret
     tag
 ):
     raise ValueError("Invalid HMAC")
@@ -189,7 +189,7 @@ target_count: <10 remaining after task
 |----------|-------|----------|-----------|
 | Insecure Deserialization | 22 | Convert pickle → JSON + validation | 1.5h |
 | Critical Injection (XXE, SQL) | 6 | Implement safe parsing / ORM usage | 1.5h |
-| Sensitive Data Exposure | 4 | Migrate secrets → env vars | 0.5h |
+| Sensitive Data Exposure | 4 | Migrate secrets → env vars | 0.5h | <!-- pragma: allowlist secret -->
 | Unsafe File Operations | 3 | Fix permissions + add validation | 0.5h |
 
 **Remediation by Category**:
@@ -249,17 +249,17 @@ cursor.execute(query, {"user_id": user_id})
 **Sensitive Data (4 findings)**:
 ```python
 # BEFORE
-API_KEY = "sk-1234567890abcdef"  # Hardcoded! ← Bad
-PASSWORD = "admin123"  # Hardcoded! ← Bad
-logger.info(f"Login as {username}:{password}")  # Leaks password! ← Bad
+API_KEY = "sk-1234567890abcdef"  # Hardcoded! ← Bad  # pragma: allowlist secret
+PASSWORD = "admin123"  # Hardcoded! ← Bad  # pragma: allowlist secret
+logger.info(f"Login as {username}:{password}")  # Leaks password! ← Bad  # pragma: allowlist secret
 
 # AFTER
 import os
-API_KEY = os.getenv("API_KEY")
-if not API_KEY:
-    raise ValueError("API_KEY environment variable not set")
+API_KEY = os.getenv("API_KEY")  # pragma: allowlist secret
+if not API_KEY:  # pragma: allowlist secret
+    raise ValueError("API_KEY environment variable not set")  # pragma: allowlist secret
 
-PASSWORD = os.getenv("PASSWORD")
+PASSWORD = os.getenv("PASSWORD")  # pragma: allowlist secret
 logger.info(f"Login as {username}:***")  # Redacted
 ```
 
@@ -268,18 +268,18 @@ logger.info(f"Login as {username}:***")  # Redacted
 # BEFORE
 os.chmod(filepath, 0o777)  # World-readable! ← Bad
 with open(filepath, 'w') as f:
-    f.write(secret_data)  # Default permissions (644)! ← Bad
+    f.write(secret_data)  # Default permissions (644)! ← Bad  # pragma: allowlist secret
 
 # AFTER
 os.chmod(filepath, 0o600)  # Owner read/write only
 with open(filepath, 'w') as f:
     os.fchmod(f.fileno(), 0o600)  # Ensure permissions before write
-    f.write(secret_data)
+    f.write(secret_data)  # pragma: allowlist secret
 
 # Or use secure tempfile
 import tempfile
 with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-    f.write(secret_data)
+    f.write(secret_data)  # pragma: allowlist secret
     os.chmod(f.name, 0o600)
 ```
 
@@ -293,7 +293,7 @@ result = eval(trusted_expression)  # lgtm[py/eval-detected]
 # Use: # nosec B101
 assert False, "Should not reach here"  # nosec B101
 
-# For secret scanning false positives
+# For secret scanning false positives  # pragma: allowlist secret
 # Use: # pragma: allowlist secret
 API_KEY = "test-key-do-not-use"  # pragma: allowlist secret
 ```
@@ -490,7 +490,7 @@ import hashlib
 hash_value = hashlib.sha256(data).hexdigest()  # Secure
 
 # HARDCODED KEY BEFORE
-ENCRYPTION_KEY = "my-secret-key-1234"  # Bad practice
+ENCRYPTION_KEY = "my-secret-key-1234"  # Bad practice  # pragma: allowlist secret
 
 # HARDCODED KEY AFTER
 import os
@@ -595,14 +595,14 @@ cache = dc.Cache('/tmp/mycache')
 # Store with HMAC
 def store_safe(key, obj):
     pickled = pickle.dumps(obj)
-    tag = hmac.new(secret_key, pickled).digest()
+    tag = hmac.new(secret_key, pickled).digest()  # pragma: allowlist secret
     cache[key] = (pickled, tag)
 
 # Load with validation
 def load_safe(key):
     pickled, stored_tag = cache[key]
     if not hmac.compare_digest(
-        hmac.new(secret_key, pickled).digest(),
+        hmac.new(secret_key, pickled).digest(),  # pragma: allowlist secret
         stored_tag
     ):
         raise ValueError("Pickle data was tampered with!")

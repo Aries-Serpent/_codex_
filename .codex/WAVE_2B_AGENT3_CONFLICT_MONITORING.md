@@ -40,7 +40,7 @@ marshmallow     >= 3.7.1,<5       [⚠️ Known conflict with GE on 4.x]
 pydantic        >= 2.4            [Config management, required by hydra]
 jinja2          >= 3.1.6          [Sandbox escape RCE CVE-2024-56326]
 urllib3         >= 2.7.0          [Proxy/redirect security issues]
-pyjwt           >= 2.13.1,<3      [JWT token handling]
+pyjwt           >= 2.13.1,<3      [JWT token handling]  # pragma: allowlist secret
 pip             [latest pinned]    [Package manager security updates]
 idna            >= 3.15           [DoS via quadratic complexity]
 twisted         [latest compat]    [Network protocol support]

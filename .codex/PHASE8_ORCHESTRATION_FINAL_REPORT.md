@@ -35,7 +35,7 @@
 
 | Agent | Duration | Score | Status | Key Finding |
 |-------|----------|-------|--------|-------------|
-| 🔒 Security | 8 min | 96/100 | ✅ PASS | 0 CVEs, 0 CodeQL, 0 secrets |
+| 🔒 Security | 8 min | 96/100 | ✅ PASS | 0 CVEs, 0 CodeQL, 0 secrets | <!-- pragma: allowlist secret -->
 | 📊 Coverage | 12 min | 71.8/100 | ❌ FAIL | 24.14% vs 70% target (-45.86pp) |
 | ⚙️ CI/CD | 10 min | 93.6/100 | ⚠️ COND | 6 concurrency issues, auto-healable |
 | 🏗️ Infrastructure | 15 min | ~90/100 | ⏳ PEND | 4+ runners, cache, backups, rollback |

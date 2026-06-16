@@ -44,7 +44,7 @@ cryptography    49.0.0    150+ encryption ops
 jinja2          3.1.2     100+ template renders
 urllib3         2.0.7     200+ HTTP operations
 requests        2.31.0    120+ API calls
-pyjwt           2.13.0    100+ token operations
+pyjwt           2.13.0    100+ token operations  # pragma: allowlist secret
 ```
 
 ---
@@ -218,9 +218,9 @@ TOTAL                 550        0       4.2         10       ✅ STABLE
 
 **Operations Tested Under Load:**
 ```
-✅ JWT token encoding (concurrent)
-✅ JWT token decoding and validation
-✅ Token expiration handling
+✅ JWT token encoding (concurrent)  # pragma: allowlist secret
+✅ JWT token decoding and validation  # pragma: allowlist secret
+✅ Token expiration handling  # pragma: allowlist secret
 ✅ Header verification
 ✅ Payload validation
 ```
@@ -231,7 +231,7 @@ Operation              Operations  Failed  Avg Lat(ms)  P95(ms)  Status
 ─────────────────────────────────────────────────────────────────────────
 JWT encode             100        0       5.0         10       ✅ STABLE
 JWT decode             100        0       6.0         12       ✅ STABLE
-Token validation       80         0       4.0         8        ✅ STABLE
+Token validation       80         0       4.0         8        ✅ STABLE  # pragma: allowlist secret
 Header verify          60         0       3.0         6        ✅ STABLE
 Payload validation     60         0       4.5         10       ✅ STABLE
 ─────────────────────────────────────────────────────────────────────────

@@ -116,7 +116,7 @@ SECURITY BASELINE:
   [ ] ≤10 HIGH findings (from current 35)
   [ ] ≤15 MEDIUM findings (from current 53)
   [ ] All CVE dependencies patched
-  [ ] Secrets baseline reconciled
+  [ ] Secrets baseline reconciled  # pragma: allowlist secret
 
 QUALITY & STABILITY:
   [ ] CI failure rate <10% (from 66.7%)

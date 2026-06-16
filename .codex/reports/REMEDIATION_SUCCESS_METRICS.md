@@ -110,7 +110,7 @@ python3 -m pytest -x --tb=short
 | Coverage | ≥10% | 3.61% → ≥10% | 🟡 Gate: 3x improvement |
 | No new failures | Zero regressions | — | 🔴 Gate: Absolute |
 | CVE patches applied | 100% | 0% → 100% | 🔴 Gate: All patched |
-| Secrets triage | ≥50% processed | 667 → ≤300 | 🟡 Gate: Half addressed |
+| Secrets triage | ≥50% processed | 667 → ≤300 | 🟡 Gate: Half addressed | <!-- pragma: allowlist secret -->
 
 **Actions Required:**
 
@@ -170,7 +170,7 @@ python3 -m codex.cli coverage-report --format html,json
 | MEDIUM findings | ≤15 remaining | — |
 | Coverage | ≥15% | — |
 | CI failure rate | <5% | — |
-| Secrets fully triaged | 0 false positives | — |
+| Secrets fully triaged | 0 false positives | — | <!-- pragma: allowlist secret -->
 | Documentation complete | All findings documented | — |
 
 **Actions (If Time Permits):**
@@ -205,7 +205,7 @@ python3 -m codex.cli generate-remediation-report --phase final
 | **NEW security findings introduced** | 🔴 CRITICAL | Investigate root cause, don't continue | ci-testing-agent | Require code review + security sign-off |
 | **Test coverage DECREASES >5%** | 🟠 HIGH | Rollback to checkpoint, investigate | unified-coverage-agent | Require remediation before proceeding |
 | **Dependency patch causes build failure** | 🟠 HIGH | Isolate issue, try compatible version | dependency-conflict-agent | Require version conflict resolution |
-| **Secrets baseline explodes >50 new items** | 🟠 HIGH | Triage immediately, may indicate code leak | secret-detection-agent | Human review required |
+| **Secrets baseline explodes >50 new items** | 🟠 HIGH | Triage immediately, may indicate code leak | secret-detection-agent | Human review required | <!-- pragma: allowlist secret -->
 | **Task runtime exceeds 4 hours** | 🟡 MEDIUM | Document in checkpoint, request extension | orchestrator-agent | Extend timeline, no auto-escalation needed |
 | **Failing pre-merge validation check** | 🟡 MEDIUM | Fix check locally, validate before pushing | pr-check-remediation-agent | Run validation checklist before next push |
 | **Skipped tests preventing progress** | 🟡 MEDIUM | Audit skip reasons, re-enable if possible | ci-testing-agent | Update checkpoint with skip investigation |
@@ -521,7 +521,7 @@ The CVE remediation sprint is **SUCCESSFUL** when ALL three parts are satisfied:
 ✓ ≤10 HIGH findings (with documented mitigation)
 ✓ ≤15 MEDIUM findings
 ✓ All CVE dependencies patched (diskcache 5.6.4+, sqlitedict 2.1.1+)
-✓ Secrets baseline triaged (no true positives)
+✓ Secrets baseline triaged (no true positives)  # pragma: allowlist secret
 ```
 
 #### Part 2: Quality & Stability Restored ✅

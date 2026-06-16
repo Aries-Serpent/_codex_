@@ -221,10 +221,10 @@ Navigate to: https://github.com/Aries-Serpent/_codex_/discussions/4872
 ```
 .codex/reports/
 ├── DISCUSSION_4872_CAMPAIGN_UPDATE_CONSOLIDATED.md  ← Main document to post
-├── TASK_4_1_DISCUSSION_POSTING_SUMMARY.md           ← Content breakdown
+├── TASK_4_1_DISCUSSION_POSTING_SUMMARY.md           ← Content breakdown  # pragma: allowlist secret
 ├── DISCUSSION_POSTING_INSTRUCTIONS.md               ← How to post
-├── PHASE_4_TASK_4_1_EXECUTIVE_SUMMARY.md            ← Complete overview
-├── README_TASK_4_1_START_HERE.md                    ← This file
+├── PHASE_4_TASK_4_1_EXECUTIVE_SUMMARY.md            ← Complete overview  # pragma: allowlist secret
+├── README_TASK_4_1_START_HERE.md                    ← This file  # pragma: allowlist secret
 │
 ├── ORCHESTRATOR_SECURITY_ASSESSMENT.json            ← Referenced in update
 ├── CI_STABILITY_ASSESSMENT.json                     ← Referenced in update

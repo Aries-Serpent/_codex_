@@ -9,14 +9,13 @@ Covers CVE fixes:
   - CVE-2026-48522: Unsafe request handling
 """
 
-import datetime # pragma: allowlist secret # pragma: allowlist secret
+import datetime  # pragma: allowlist secret # pragma: allowlist secret
 import json
 import time
-from unittest.mock import Mock, patch
 
 import pytest
 
-from codex.auth.token_manager import TokenClaims, TokenManager
+from codex.auth.token_manager import TokenManager
 
 
 class TestPyJWTTokenValidation:

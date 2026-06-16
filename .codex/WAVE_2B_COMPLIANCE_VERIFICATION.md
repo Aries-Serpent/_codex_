@@ -290,7 +290,7 @@ Timeline Alignment Check:
                                - Phase 1-4 checklist ready
                                - Matches WAVE_2B_DISPATCH_READY.md
 
-2026-06-15T16:52:30Z  e2d98ad ✅ fix(ci): auto-sync .secrets.baseline
+2026-06-15T16:52:30Z  e2d98ad ✅ fix(ci): auto-sync .secrets.baseline  # pragma: allowlist secret
                                - Add pragma to test false-positives
                                - Cleanup & maintenance task
 ```

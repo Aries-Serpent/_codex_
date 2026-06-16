@@ -162,7 +162,7 @@ ab1b300  phase2-agent2: artifact monitoring complete; agent1 integration tests r
 6736e3b  WAVE_2B_PHASE_1: Complete dependency validation with conflict monitoring
 3d7f8d3  WAVE_2B: Campaign plan initiation - Phase 1-4 checklist ready
 db442f6  WAVE 2B BATCH 3 COMPLETE: Final report generated - 47+ CVEs eliminated (102% of baseline)
-e2d98ad  fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives
+e2d98ad  fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives  # pragma: allowlist secret
 ```
 
 **Timeline Verification:**

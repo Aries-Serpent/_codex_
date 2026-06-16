@@ -131,18 +131,18 @@
 ✅ Pattern 2:  Unused Variables             — PASS
 ✅ Pattern 3:  YAML Indentation            — PASS
 ✅ Pattern 4:  Coverage Thresholds         — PASS
-✅ Pattern 5:  Tokenizer Fallbacks         — PASS
+✅ Pattern 5:  Tokenizer Fallbacks         — PASS  # pragma: allowlist secret
 ✅ Pattern 6:  Test Assertions             — PASS
 ✅ Pattern 7:  Redundant Imports           — PASS
 ✅ Pattern 8:  CodeQL Scanning Alerts      — PASS
 ...
 ✅ Pattern 21: Node.js 20 Actions          — FIXED ✨
 ✅ Pattern 22: Tracked File Sync           — PASS
-✅ Pattern 23: Secrets Baseline Plugins    — PASS
-✅ Pattern 24: Codecov Token Missing       — PASS
+✅ Pattern 23: Secrets Baseline Plugins    — PASS  # pragma: allowlist secret
+✅ Pattern 24: Codecov Token Missing       — PASS  # pragma: allowlist secret
 ✅ Pattern 25: Last-Commit Accountability  — FIXED ✨
 ✅ Pattern 26: Auto-Post Rebase Race       — PASS
-✅ Pattern 27: Secrets FP Scan             — PASS
+✅ Pattern 27: Secrets FP Scan             — PASS  # pragma: allowlist secret
 ✅ Pattern 28: Copilot Sandbox Guard       — PASS
 ✅ Pattern 29: PR Comment Triage           — PASS
 ✅ Pattern 30: Merge Readiness Dimensions  — FIXED ✨ (100/100)
@@ -150,7 +150,7 @@
 ✅ Pattern 32: Bare Type Ignore Assign     — PASS
 ✅ Pattern 33: Rate Limit Checkpoint       — PASS
 ✅ Pattern 34: Missing Newline at EOF      — PASS
-✅ Pattern 35: Markdown FP Secrets         — PASS
+✅ Pattern 35: Markdown FP Secrets         — PASS  # pragma: allowlist secret
 
 📊 SUMMARY: 3/4 issues fixed, all 35 patterns now GREEN ✅
 ```

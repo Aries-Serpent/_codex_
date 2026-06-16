@@ -114,7 +114,7 @@ Agent: codeql-alert-resolution-agent
 
 CVE-2025-69872 (diskcache 5.6.3 → 5.6.4+):
   Affected: src/codex_ml/utils/checkpoint_core.py
-           src/caching/disk_cache_wrapper.py
+           src/caching/disk_cache_wrapper.py  # pragma: allowlist secret
   Actions: Upgrade, test checkpoint save/load
   Timeline: 2-4 hours
 
