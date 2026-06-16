@@ -2,6 +2,23 @@
 
 
 
+## SESSION SUMMARY — 2026-06-16T17:41Z · PR #4958 actionlint Compliance Fix — post-discussion step id
+
+**Session:** PR #4958 - Fix actionlint step-id reference error | **Agent:** @copilot | **Date:** 2026-06-16
+
+### Objective
+Fix actionlint CI failure: `post-phase-update-to-discussion.yml` "Report success" step references `steps.post-discussion.outputs.*` but the "Post to Discussion" step had no `id` — only `id: read-file` existed on the preceding step.
+
+### Actions Taken
+1. **Diagnosed actionlint failure** — CI log for run 27636388596 showed: `property "post-discussion" is not defined in object type {read-file: ...}` at lines 121–122
+2. **Fixed workflow** — Added `id: post-discussion` to the "Post to Discussion" step in `.github/workflows/post-phase-update-to-discussion.yml`
+
+### Result
+- `steps.post-discussion.outputs.success` and `steps.post-discussion.outputs.comment_id` references now resolve correctly
+- actionlint should report 0 errors for this file
+
+---
+
 ## SESSION SUMMARY — 2026-06-16T17:36Z · PR #4958 Workflow Permissions Compliance Fix
 
 **Session:** PR #4958 - Fix workflow permissions compliance | **Agent:** @copilot | **Date:** 2026-06-16
