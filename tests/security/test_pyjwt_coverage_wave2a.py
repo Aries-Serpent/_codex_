@@ -9,7 +9,7 @@ Covers CVE fixes:
   - CVE-2026-48522: Unsafe request handling
 """
 
-import datetime # pragma: allowlist secret # pragma: allowlist secret
+import datetime # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import json
 import time
 from unittest.mock import Mock, patch
