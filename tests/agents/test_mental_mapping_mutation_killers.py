@@ -11,13 +11,12 @@ This test module focuses on catching mutations in critical mental mapping code p
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 
 import pytest
 
 from agents.mental_mapping import (
     EdgeType,
-    MentalEdge,
     MentalMappingModel,
     MentalNode,
     NodeType,
@@ -192,12 +191,12 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        
+
         assert node.quality_score == 0.0
         assert node.review_count == 0
 
         node.review(new_quality_score=0.85, notes="Good node")
-        
+
         assert node.quality_score == 0.85
         assert node.review_count == 1
         assert node.needs_review is False
@@ -349,10 +348,10 @@ class TestMentalMappingClockMutationKillers:
         reset_clock()  # Ensure we're using default
 
         timestamp = get_timestamp()
-        
+
         # Should be ISO format
         assert "T" in timestamp  # ISO format includes T
-        
+
         # Should be parseable
         datetime.fromisoformat(timestamp)
 
@@ -363,7 +362,7 @@ class TestMentalMappingClockMutationKillers:
         assert get_timestamp() == custom_time
 
         reset_clock()
-        
+
         # After reset, should return actual ISO timestamp
         timestamp = get_timestamp()
         assert timestamp != custom_time
@@ -432,14 +431,14 @@ class TestMentalMappingEndToEnd:
         assert len(model.nodes) == 4
         assert model.nodes.get("problem") is not None
         assert model.nodes.get("evidence1") is not None
-        
+
         # Verify edges exist (check by node pairing)
         edge_pairs = [
             ("problem", "evidence1"),
             ("problem", "evidence2"),
             ("evidence1", "solution"),
         ]
-        
+
         for source, target in edge_pairs:
             found = any(
                 edge.source_id == source and edge.target_id == target

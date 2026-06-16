@@ -17,14 +17,14 @@ def build_parser() -> argparse.ArgumentParser:
         description="Train the Codex model",
         prog="train-codex"
     )
-    
+
     # Add common training arguments
     parser.add_argument("--train-file", type=str, help="Path to training file")
     parser.add_argument("--output-dir", type=str, help="Output directory for model")
     parser.add_argument("--use-lora", action="store_true", help="Use LoRA for training")
     parser.add_argument("--fp16", action="store_true", help="Use mixed precision training")
     parser.add_argument("--allow-remote", action="store_true", help="Allow remote training")
-    
+
     return parser
 
 
@@ -34,14 +34,14 @@ def _merge(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
     CLI arguments take precedence over config values when provided.
     """
     result = config.copy()
-    
+
     # Update result with provided CLI arguments
     for key, value in vars(args).items():
         if value is not None:
             # Convert underscore to dash for config keys
             config_key = key.replace("_", "_")
             result[config_key] = value
-    
+
     return result
 
 

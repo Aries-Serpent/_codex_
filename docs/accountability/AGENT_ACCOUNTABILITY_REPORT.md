@@ -56,7 +56,7 @@ Address discussion comment #17325638 on Discussion #4872 — verify and complete
 |------|--------|
 | Phase 6B Task 1: Security Audit | ✅ Complete |
 | Phase 6B Task 2: CodeQL Resolution | ✅ Complete (30 fixed, 12 escalated) |
-| Phase 6B Task 3: Secrets Detection | ✅ Complete |
+| Phase 6B Task 3: Secrets Detection | ✅ Complete | <!-- pragma: allowlist secret -->
 | Phase 6C Task 1: Coverage Validation | ✅ Complete (17.57%) |
 | Phase 6C Task 2: Test Healer | ✅ Complete (224/224 passing) |
 | Phase 6C Task 3: Test Patterns | ✅ Complete (99.7% compliance) |

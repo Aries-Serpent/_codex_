@@ -10,16 +10,13 @@ Comprehensive test coverage for codex_ml/cli/codex_cli.py focusing on:
 - Edge cases and boundary conditions
 """
 
-import os
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 
 try:
-    from click.testing import CliRunner
     import click
+    from click.testing import CliRunner
     HAS_CLICK = True
 except ImportError:
     HAS_CLICK = False
@@ -27,12 +24,12 @@ except ImportError:
 try:
     from codex_ml.cli.codex_cli import (
         codex,
-        tokenizer,
-        train,
-        resume,
+        config_sweep,
         evaluate,
         prepare_data,
-        config_sweep,
+        resume,
+        tokenizer,
+        train,
     )
     HAS_CODEX_CLI = True
 except ImportError:

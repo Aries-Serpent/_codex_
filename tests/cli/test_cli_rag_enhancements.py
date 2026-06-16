@@ -10,8 +10,6 @@ This file contains enhanced test coverage for CLI RAG module focusing on:
 """
 
 import json
-import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest

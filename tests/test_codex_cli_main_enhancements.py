@@ -12,22 +12,20 @@ Comprehensive test coverage for src/codex/cli/main.py focusing on:
 """ # pragma: allowlist secret
 
 import json
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 try:
-    from typer.testing import CliRunner
     import typer
+    from typer.testing import CliRunner
     HAS_TYPER = True
 except ImportError:
     HAS_TYPER = False
 
 try:
     # This may fail if typer is not available
-    from codex.cli.main import app, TYPER_AVAILABLE
+    from codex.cli.main import TYPER_AVAILABLE, app
     HAS_CODEX_CLI = True
 except ImportError:
     HAS_CODEX_CLI = False
@@ -50,7 +48,7 @@ def temp_repo_dir(tmp_path):
     """Create a temporary repository directory."""
     repo_dir = tmp_path / "test_repo"
     repo_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create sample Python file
     (repo_dir / "sample.py").write_text("""
 def hello(name: str) -> str:
@@ -61,7 +59,7 @@ class Calculator:
     def add(self, a: int, b: int) -> int:
         return a + b
 """)
-    
+
     return repo_dir
 
 
@@ -104,7 +102,7 @@ class TestIngestCommand:
                 snapshot_dir=temp_repo_dir,
                 content_hash="abc123def456"
             )
-            
+
             result = cli_runner.invoke(
                 app,
                 ["ingest", str(temp_repo_dir / "sample.py")]
@@ -120,7 +118,7 @@ class TestIngestCommand:
                 snapshot_dir=temp_repo_dir,
                 content_hash="xyz789"
             )
-            
+
             result = cli_runner.invoke(
                 app,
                 [
@@ -139,7 +137,7 @@ class TestIngestCommand:
                 snapshot_dir=temp_repo_dir,
                 content_hash="custom_hash"
             )
-            
+
             result = cli_runner.invoke(
                 app,
                 [
@@ -195,7 +193,7 @@ class TestAnalyzeCommand:
                 "issues": [],
                 "metrics": {"complexity": 5}
             }
-            
+
             result = cli_runner.invoke(
                 app,
                 ["analyze", "snap_123"]
@@ -251,7 +249,7 @@ class TestTransformCommand:
                 "snapshot_id": "snap_123",
                 "changes": [{"file": "test.py", "type": "refactor"}]
             }
-            
+
             result = cli_runner.invoke(
                 app,
                 ["transform", "snap_123"]
@@ -304,7 +302,7 @@ class TestVerifyCommand:
                 "differences": [],
                 "status": "identical"
             }
-            
+
             result = cli_runner.invoke(
                 app,
                 ["verify", "snap_baseline", "--patched", "snap_patched"]
@@ -345,7 +343,7 @@ class TestListCommand:
                 {"id": "snap_1", "name": "project1"},
                 {"id": "snap_2", "name": "project2"}
             ]
-            
+
             result = cli_runner.invoke(app, ["list"])
             assert result.exit_code == 0
 
@@ -395,7 +393,7 @@ class TestShowCommand:
                 "files": ["test.py"],
                 "created_at": "2026-01-16T10:00:00Z"
             }
-            
+
             result = cli_runner.invoke(app, ["show", "snap_123"])
             assert result.exit_code == 0
 
@@ -486,7 +484,7 @@ class TestOutputFormats:
                 "issues": [],
                 "metrics": {"complexity": 5}
             }
-            
+
             result = cli_runner.invoke(
                 app,
                 ["analyze", "snap_123", "--format", "json"]
@@ -524,14 +522,14 @@ class TestCLIIntegration:
                     content_hash="hash123"
                 )
                 mock_analyze.return_value = {"issues": []}
-                
+
                 # Ingest
                 ingest_result = cli_runner.invoke(
                     app,
                     ["ingest", str(temp_repo_dir)]
                 )
                 assert ingest_result.exit_code == 0
-                
+
                 # Analyze
                 analyze_result = cli_runner.invoke(
                     app,
@@ -603,7 +601,7 @@ class TestEdgeCases:
         special_dir = tmp_path / "dir with spaces & special-chars"
         special_dir.mkdir()
         (special_dir / "test.py").write_text("print('test')")
-        
+
         with patch("codex.ingest.ingest"):
             result = cli_runner.invoke(
                 app,
@@ -616,7 +614,7 @@ class TestEdgeCases:
         unicode_dir = tmp_path / "目录_测试_🚀"
         unicode_dir.mkdir()
         (unicode_dir / "测试.py").write_text("# Test")
-        
+
         with patch("codex.ingest.ingest"):
             result = cli_runner.invoke(
                 app,
