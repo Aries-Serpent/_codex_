@@ -43,7 +43,7 @@
 | Test Category | Status | Details |
 |---|---|---|
 | API Communication | ✅ PASSED | Request/response patterns verified |
-| JWT Authentication | ✅ PASSED | Cross-service token exchange verified |
+| JWT Authentication | ✅ PASSED | Cross-service token exchange verified | <!-- pragma: allowlist secret -->
 | Encrypted Exchange | ✅ PASSED | Service-to-service encryption verified |
 | Service Integration | ✅ PASSED | 250+ integration tests passed |
 | Cross-Module Workflows | ✅ PASSED | 350+ cross-module tests passed |
@@ -53,7 +53,7 @@
 | Service A | Service B | Interface | Status |
 |-----------|-----------|-----------|--------|
 | API | Crypto | Encrypted requests | ✅ OK |
-| Auth | API | JWT tokens | ✅ OK |
+| Auth | API | JWT tokens | ✅ OK | <!-- pragma: allowlist secret -->
 | Web | Auth | Session management | ✅ OK |
 | Worker | API | HTTP calls | ✅ OK |
 | Cache | Data | Connection pooling | ✅ OK |
@@ -93,7 +93,7 @@
 | Secure Encryption | ✅ Functional | cryptography 49.0.0 | Fernet + symmetric verified |
 | Template Rendering | ✅ Functional | jinja2 3.1.2 | Complex templates working |
 | HTTP Client | ✅ Functional | urllib3 2.0.7 + requests 2.31.0 | Pool management stable |
-| Service Auth | ✅ Functional | pyjwt 2.13.0 | Token generation/validation OK |
+| Service Auth | ✅ Functional | pyjwt 2.13.0 | Token generation/validation OK | <!-- pragma: allowlist secret -->
 | End-to-End | ✅ Functional | All packages | Integrated workflow OK |
 
 **Critical Path Operations:**
@@ -162,7 +162,7 @@ Security Checks:
 ├── Semgrep scan        ✅ Passed - No regressions
 ├── Dependency check    ✅ Passed - Clean
 ├── SAST analysis       ✅ Passed - OK
-└── Secrets check       ✅ Passed - None found
+└── Secrets check       ✅ Passed - None found  # pragma: allowlist secret
 
 Result: ✅ SECURE - All 47 CVEs verified as closed
 ```

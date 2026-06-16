@@ -150,8 +150,8 @@ mod = __import__(module_name, fromlist=[cls_name])
 ### Sensitive Data Handling
 ```python
 # ✅ IMPLEMENTED: src/utils/sensitive_data.py
-def mask_token(token: str, visible_chars: int = 4) -> str:
-    """Mask API keys/tokens for safe logging."""
+def mask_token(token: str, visible_chars: int = 4) -> str:  # pragma: allowlist secret
+    """Mask API keys/tokens for safe logging."""  # pragma: allowlist secret
     ...
 ```
 

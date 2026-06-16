@@ -248,10 +248,10 @@ Parallel Execution Timeline:
 ```
 Critical Vulnerabilities: 0 ✅
 High-Severity Issues: 0 ✅
-Exposed Secrets: 0 ✅
+Exposed Secrets: 0 ✅  # pragma: allowlist secret
 Phase 1 Fixes (100% intact):
   • XXE/Command Injection: VERIFIED
-  • Token Logging: VERIFIED
+  • Token Logging: VERIFIED  # pragma: allowlist secret
   • Weak Hashing: VERIFIED
   • URL Validation: VERIFIED
 ```

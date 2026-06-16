@@ -94,7 +94,7 @@ The following 14 agents remain archived but accessible for legacy support:
 | Capability | Status | Details |
 |-----------|--------|---------|
 | CVE Scanning | ✅ Active | NVD + GitHub Advisory DB integration |
-| Secret Detection | ✅ Active | GitLeaks + custom regex patterns |
+| Secret Detection | ✅ Active | GitLeaks + custom regex patterns | <!-- pragma: allowlist secret -->
 | GHAS Alert Triage | ✅ Active | CodeQL + Dependabot alert processing |
 | SBOM Generation | ✅ Active | CycloneDX + SPDX format support |
 | Auto-Remediation | ✅ Active | Dependency pinning + upgrade automation |

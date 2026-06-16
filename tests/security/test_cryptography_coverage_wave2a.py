@@ -10,14 +10,14 @@ Covers CVE fixes:
 """
 
 import os
+
 import pytest
-from unittest.mock import Mock, patch
 
 try:
-    from cryptography.hazmat.primitives import hashes, serialization
-    from cryptography.hazmat.primitives.asymmetric import rsa, padding
-    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import padding, rsa
+    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     HAS_CRYPTOGRAPHY = True
 except ImportError:
     HAS_CRYPTOGRAPHY = False
@@ -164,7 +164,7 @@ class TestCryptographyEncryption:
 
     def test_aes_encryption_decryption_cbc(self, sample_data):
         """Test AES encryption in CBC mode."""
-        import os
+        pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
         iv = os.urandom(16)   # 128-bit IV
 

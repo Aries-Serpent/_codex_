@@ -211,7 +211,7 @@ T+03:00 ─── PR comment posted
 |-------------|-----------|-----------|----------|
 | API rate limit | Low | HTTP 429 | Exponential backoff |
 | NVD unavailable | Very low | Connection timeout | Use cached DB |
-| Secret pattern false positive | Low | Pattern review | Manual override |
+| Secret pattern false positive | Low | Pattern review | Manual override | <!-- pragma: allowlist secret -->
 
 **Recovery Confidence:** 🟢 High
 

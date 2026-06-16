@@ -8,14 +8,14 @@ Phase: P3 - Batch 3 Conflict Monitoring
 Generated: 2026-06-24T14:30:00Z
 """
 
-import subprocess
 import json
-import sys
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass, asdict
 import logging
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -70,7 +70,7 @@ class ConflictMonitor:
         logger.info("=" * 80)
 
         results = []
-        
+
         # Trigger 1: Resolver Timeout
         logger.info("\n[1/6] Checking resolver timeout...")
         success1, msg1 = self.check_resolver_timeout()
@@ -117,7 +117,7 @@ class ConflictMonitor:
         Threshold: >120 seconds indicates backtracking issues
         """
         logger.info("  Running pip install --dry-run on requirements.txt...")
-        
+
         try:
             start_time = datetime.now()
             result = subprocess.run(
@@ -166,7 +166,7 @@ class ConflictMonitor:
         Uses pipdeptree to detect cycles
         """
         logger.info("  Checking for circular dependencies with pipdeptree...")
-        
+
         try:
             # First ensure pipdeptree is available
             subprocess.run(
@@ -214,7 +214,7 @@ class ConflictMonitor:
         Checks for conflicting version requirements
         """
         logger.info("  Analyzing for unresolvable constraints...")
-        
+
         try:
             result = subprocess.run(
                 ["python3", "-m", "pip", "install", "-vv", "--dry-run", "-r", "requirements.txt"],
@@ -225,7 +225,7 @@ class ConflictMonitor:
             )
 
             output = result.stdout + result.stderr
-            
+
             # Check for unresolvable constraint messages
             error_patterns = [
                 "unresolvable",
@@ -233,7 +233,7 @@ class ConflictMonitor:
                 "does not satisfy",
                 "incompatible"
             ]
-            
+
             for pattern in error_patterns:
                 if pattern.lower() in output.lower():
                     event = ConflictEvent(
@@ -260,7 +260,7 @@ class ConflictMonitor:
         Uses pip-audit to detect HIGH/CRITICAL CVEs
         """
         logger.info("  Scanning for security CVEs with pip-audit...")
-        
+
         try:
             # Install pip-audit if needed
             subprocess.run(
@@ -282,9 +282,9 @@ class ConflictMonitor:
                 try:
                     audit_data = json.loads(result.stdout)
                     vulns = audit_data.get("vulnerabilities", [])
-                    
+
                     critical_or_high = [v for v in vulns if v.get("severity") in ["CRITICAL", "HIGH"]]
-                    
+
                     if critical_or_high:
                         for vuln in critical_or_high:
                             event = ConflictEvent(
@@ -300,7 +300,7 @@ class ConflictMonitor:
                         return False, f"Found {len(critical_or_high)} HIGH/CRITICAL CVEs"
                     else:
                         logger.info(f"  ✅ No HIGH/CRITICAL CVEs detected (found {len(vulns)} total)")
-                        return True, f"No HIGH/CRITICAL CVEs (OK)"
+                        return True, "No HIGH/CRITICAL CVEs (OK)"
                 except json.JSONDecodeError:
                     logger.warning("  ⚠️  Could not parse pip-audit output")
                     return True, "CVE check skipped (parse error)"
@@ -318,7 +318,7 @@ class ConflictMonitor:
         Checks for >5% test failure regression
         """
         logger.info("  Running test suite...")
-        
+
         try:
             result = subprocess.run(
                 ["python3", "-m", "pytest", "--tb=short", "-q"],
@@ -329,23 +329,23 @@ class ConflictMonitor:
             )
 
             output = result.stdout + result.stderr
-            
+
             # Parse test results (pytest summary line)
             # Format: "N passed, M failed, K errors in 1.23s"
             import re
             match = re.search(r'(\d+) passed', output)
             passed = int(match.group(1)) if match else 0
-            
+
             match = re.search(r'(\d+) failed', output)
             failed = int(match.group(1)) if match else 0
-            
+
             total = passed + failed
             if total == 0:
                 logger.info("  ℹ️  No test results available")
                 return True, "No test results available"
 
             pass_rate = passed / total if total > 0 else 0
-            
+
             if pass_rate < self.baseline_metrics["test_pass_rate"]:
                 regression = self.baseline_metrics["test_pass_rate"] - pass_rate
                 event = ConflictEvent(
@@ -375,7 +375,7 @@ class ConflictMonitor:
         Checks for >2% drop in test coverage
         """
         logger.info("  Checking test coverage...")
-        
+
         try:
             result = subprocess.run(
                 ["python3", "-m", "pytest", "--cov=src", "--cov=scripts", "--cov-report=json"],
@@ -391,7 +391,7 @@ class ConflictMonitor:
                 with open(coverage_file) as f:
                     coverage_data = json.load(f)
                     coverage = coverage_data.get("totals", {}).get("percent_covered", 0)
-                    
+
                     if coverage < (self.baseline_metrics["coverage"] - self.baseline_metrics["coverage_regression_threshold"]):
                         event = ConflictEvent(
                             severity="MEDIUM",
@@ -403,7 +403,7 @@ class ConflictMonitor:
                         self.events.append(event)
                         logger.error(f"  ⚠️  Coverage regression: {coverage:.1f}%")
                         return False, f"Coverage regression: {coverage:.1f}%"
-                    
+
                     logger.info(f"  ✅ Coverage maintained: {coverage:.1f}%")
                     return True, f"Coverage: {coverage:.1f}% (OK)"
             else:
@@ -467,7 +467,7 @@ def main():
     report_file.parent.mkdir(parents=True, exist_ok=True)
     with open(report_file, "w") as f:
         f.write(report)
-    
+
     logger.info(f"\n📝 Report written to: {report_file}")
 
     sys.exit(0 if success else 1)

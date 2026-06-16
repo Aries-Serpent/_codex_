@@ -12,7 +12,7 @@
 🟠 ≤10 HIGH findings (currently 35) 
 🟡 ≤15 MEDIUM findings (currently 53)
 ✅ All CVE dependencies patched
-✅ Secrets baseline reconciled (≤50 violations)
+✅ Secrets baseline reconciled (≤50 violations)  # pragma: allowlist secret
 ```
 
 ### ✅ Part 2: Quality & Stability Restored
@@ -120,7 +120,7 @@ SECURITY:
   - ERROR: [count] remaining
   - HIGH: [count] remaining
   - MEDIUM: [count] remaining
-  - Secrets: [count] violations
+  - Secrets: [count] violations  # pragma: allowlist secret
 
 QUALITY:
   - CI failure rate: [%]

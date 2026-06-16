@@ -194,7 +194,7 @@ Before posting, verify:
 
 | Issue | Solution |
 |-------|----------|
-| Token permission denied | Use GitHub UI method (Method 1) instead |
+| Token permission denied | Use GitHub UI method (Method 1) instead | <!-- pragma: allowlist secret -->
 | File not found | Verify file path: `.codex/reports/DISCUSSION_4872_CAMPAIGN_UPDATE_CONSOLIDATED.md` |
 | Markdown rendering issues | Review raw file; check for unescaped special characters |
 | GitHub rate limit | Wait 1 hour and retry |

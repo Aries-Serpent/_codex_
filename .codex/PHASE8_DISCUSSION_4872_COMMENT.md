@@ -35,7 +35,7 @@ Phase 8 pre-deployment validation orchestration has **completed successfully** a
 |---------|--------|
 | CVE Count (0 critical/high) | ✅ PASS |
 | CodeQL High/Critical | ✅ PASS (0 findings) |
-| Exposed Secrets | ✅ PASS (0 detected) |
+| Exposed Secrets | ✅ PASS (0 detected) | <!-- pragma: allowlist secret -->
 | Infrastructure Security | ✅ PASS (95/100) |
 | Perimeter Security | ✅ PASS |
 

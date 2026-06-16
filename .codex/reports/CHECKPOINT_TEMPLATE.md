@@ -66,7 +66,7 @@
 |------|--------|-------|
 | diskcache 5.6.4+ | 🔴/✅ | CVE-2025-69872 |
 | sqlitedict 2.1.1+ | 🔴/✅ | CVE-2024-35515 |
-| Secret Baseline | 🔴/🟡/✅ | [n] violations triaged |
+| Secret Baseline | 🔴/🟡/✅ | [n] violations triaged | <!-- pragma: allowlist secret -->
 | Suppressions Documented | 🔴/✅ | .codex/SECURITY_SUPPRESSIONS.md |
 
 **Progress Notes:**

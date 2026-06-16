@@ -114,10 +114,10 @@ Code Quality Checks:
 **Scans Included**
 ```
 Security Scanning:
-  ├── Secret Scanning (gitleaks)
+  ├── Secret Scanning (gitleaks)  # pragma: allowlist secret
   │   ├── API keys
   │   ├── Credentials
-  │   ├── Tokens
+  │   ├── Tokens  # pragma: allowlist secret
   │   └── Private keys
   ├── Static Analysis (semgrep)
   │   ├── Security rules
@@ -137,7 +137,7 @@ Security Scanning:
 ✅ Security Gate Status: OPERATIONAL
    ├── Configured: Yes
    ├── Enforced on PRs: Yes
-   ├── Secret detection: Active
+   ├── Secret detection: Active  # pragma: allowlist secret
    ├── Vulnerability scanning: Active
    └── Alert handling: Automated + human review
 ```
@@ -149,7 +149,7 @@ Security Scanning:
 | Critical Issues | 0 | ✅ |
 | High Issues | 0 | ✅ |
 | Medium Issues | 0 | ✅ |
-| Secrets Detected | 0 | ✅ |
+| Secrets Detected | 0 | ✅ | <!-- pragma: allowlist secret -->
 | Vulnerable Dependencies | 0 (patched) | ✅ |
 
 ---

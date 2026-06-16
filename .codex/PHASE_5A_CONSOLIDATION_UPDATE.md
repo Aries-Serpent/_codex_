@@ -25,7 +25,7 @@ Phase 5A (Final Security Audit Gate) completed 2026-02-21 with all objectives me
 ```
 Critical Vulnerabilities:        0 ✅
 High-Severity Issues:            0 ✅
-Exposed Secrets:                 0 ✅
+Exposed Secrets:                 0 ✅  # pragma: allowlist secret
 Code Quality Issues:            67 ⚠️ (informational)
 Dependency Advisories:          37 ⚠️ (transitive, non-blocking)
 Baseline Regression Detected:    0 ✅

@@ -47,7 +47,7 @@ Current Status: SECURITY BLOCKS PHASE 9 (12 CVEs) → NO-GO until remediation
 |-----------|--------|--------|-----------|--------|
 | **1.1: Critical CVEs resolved** | 0 | **12 UNRESOLVED** | ❌ FAIL | 0/1 |
 | **1.2: High CVEs resolved** | 0 | **12 UNRESOLVED** | ❌ FAIL | 0/1 |
-| **1.3: Secrets not introduced** | PASS | PASS (0 detected) | ✅ PASS | 1/1 |
+| **1.3: Secrets not introduced** | PASS | PASS (0 detected) | ✅ PASS | 1/1 | <!-- pragma: allowlist secret -->
 | **1.4: Credentials not hardcoded** | PASS | PASS (0 hardcoded) | ✅ PASS | 1/1 |
 | **1.5: Supply chain integrity** | PASS | PASS (no new deps) | ✅ PASS | 1/1 |
 
@@ -428,7 +428,7 @@ Implication:                      Known vulnerabilities under remediation for 6+
 | Agent | Task | Verdict | Score | Status | Next Action |
 |-------|------|---------|-------|--------|-------------|
 | **Coverage** | Lock 10.7% coverage, validate zero regression | ✅ PASS | 5/5 | GO | Proceed (Phase 10: target 15%) |
-| **Security** | Audit CVEs, CodeQL, secrets, GitHub Actions | 🛑 FAIL | 0/5 | NO-GO | **REMEDIATE CVEs (2–3 days)** |
+| **Security** | Audit CVEs, CodeQL, secrets, GitHub Actions | 🛑 FAIL | 0/5 | NO-GO | **REMEDIATE CVEs (2–3 days)** | <!-- pragma: allowlist secret -->
 | **Workflow** | Validate YAML, concurrency, timeouts, REQ-4/5 | 🟡 COND | 4/5 | GO w/ CONDITIONS | Auto-heal (45 min) |
 | **Healer** | Configure 3/hr rate, 31 patterns, 3 rollback triggers | ✅ PASS | 5/5 | GO | Deploy for Phase 9 canary |
 

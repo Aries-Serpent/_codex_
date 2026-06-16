@@ -149,11 +149,11 @@
 | # | File | Size | Type | Status | Purpose |
 |---|------|------|------|--------|---------|
 | 1 | DISCUSSION_4872_CAMPAIGN_UPDATE_CONSOLIDATED.md | 10.7 KB | Markdown | ✅ Ready | Main document to post |
-| 2 | README_TASK_4_1_START_HERE.md | 11.6 KB | Markdown | ✅ Ready | Quick start guide |
-| 3 | TASK_4_1_DISCUSSION_POSTING_SUMMARY.md | 11 KB | Markdown | ✅ Ready | Content breakdown |
+| 2 | README_TASK_4_1_START_HERE.md | 11.6 KB | Markdown | ✅ Ready | Quick start guide | <!-- pragma: allowlist secret -->
+| 3 | TASK_4_1_DISCUSSION_POSTING_SUMMARY.md | 11 KB | Markdown | ✅ Ready | Content breakdown | <!-- pragma: allowlist secret -->
 | 4 | DISCUSSION_POSTING_INSTRUCTIONS.md | 7.3 KB | Markdown | ✅ Ready | How to post |
-| 5 | PHASE_4_TASK_4_1_EXECUTIVE_SUMMARY.md | 12 KB | Markdown | ✅ Ready | Executive overview |
-| 6 | INDEX_TASK_4_1_DELIVERABLES.md | 8.5 KB | Markdown | ✅ Ready | This index |
+| 5 | PHASE_4_TASK_4_1_EXECUTIVE_SUMMARY.md | 12 KB | Markdown | ✅ Ready | Executive overview | <!-- pragma: allowlist secret -->
+| 6 | INDEX_TASK_4_1_DELIVERABLES.md | 8.5 KB | Markdown | ✅ Ready | This index | <!-- pragma: allowlist secret -->
 | 7 | ORCHESTRATOR_SECURITY_ASSESSMENT.json | 133 KB | JSON | ✅ Complete | Security findings (92 items) |
 | 8 | CI_STABILITY_ASSESSMENT.json | 11 KB | JSON | ✅ Complete | CI failure analysis (66.7%) |
 | 9 | COVERAGE_READINESS_ASSESSMENT.json | 12 KB | JSON | ✅ Complete | Coverage analysis (3.61%) |

@@ -20,7 +20,7 @@
 | Critical/High CVEs | 0 | **12** | ❌ **FAIL** |
 | New Dependency Vulns | 0 | **12** | ❌ **FAIL** |
 | CodeQL High/Critical | 0 | TBD | ⏳ **PENDING** |
-| Secrets Detected | 0 | 0 | ✅ **PASS** |
+| Secrets Detected | 0 | 0 | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | GitHub Actions v5+ | 100% | ~15% | ❌ **FAIL** |
 
 ### Finding Summary
@@ -314,7 +314,7 @@ uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
 |----------|---------|---------|---|--------|
 | Dependency CVEs | 12 | 12 | 0 | ❌ No Progress |
 | CodeQL Issues | 107 | 107 | 0 | ❌ No Progress |
-| Secrets Detected | 0 | 0 | 0 | ✅ Maintained |
+| Secrets Detected | 0 | 0 | 0 | ✅ Maintained | <!-- pragma: allowlist secret -->
 | GitHub Actions Upgrades | 0 | 0 | 0 | ❌ No Action |
 | Deployment Readiness | NO-GO | NO-GO | N/A | ❌ **BLOCKED** |
 
@@ -432,7 +432,7 @@ pip-audit:        latest (from security-suite-artifacts)
 safety:           v3.8.1
 github-codeql:    Latest (via GitHub Actions)
 gitleaks:         v8.18.0 (implicit)
-detect-secrets:   v1.4.0 (implicit)
+detect-secrets:   v1.4.0 (implicit)  # pragma: allowlist secret
 ```
 
 ### B. Scan Parameters

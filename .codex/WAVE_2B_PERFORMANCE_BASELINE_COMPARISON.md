@@ -116,7 +116,7 @@ Operation                  Duration (ms)   Change from Baseline
 ─────────────────────────────────────────────────────────────
 JWT encode                 0.005          ✅ 0% (no change)
 JWT decode                 0.006          ✅ 0% (no change)
-Token validation           0.002          ✅ 0% (no change)
+Token validation           0.002          ✅ 0% (no change)  # pragma: allowlist secret
 ─────────────────────────────────────────────────────────────
 Overall Performance        0.004 avg      ✅ 0% (no change)
 ```
@@ -134,7 +134,7 @@ Overall Performance        0.004 avg      ✅ 0% (no change)
 | # | Test | Duration (s) | Category | Reason |
 |---|------|-------------|----------|---------|
 | 1 | test_dependency_checker_runs | 62.95 | CLI | Complex dep analysis |
-| 2 | test_zendesk_sync_error_handling | 31.29 | Service | External service sim |
+| 2 | test_zendesk_sync_error_handling | 31.29 | Service | External service sim | <!-- pragma: allowlist secret -->
 | 3 | test_cli_archive_help | 2.25 | CLI | Help generation |
 | 4 | test_cli_invalid_command | 2.23 | CLI | Error handling |
 | 5 | test_cli_help_command | 2.20 | CLI | Help system |
@@ -205,7 +205,7 @@ Overall Performance        0.004 avg      ✅ 0% (no change)
 | Timeout Events | 0 | ✅ Stable |
 | Memory Leaks | None detected | ✅ Stable |
 | Connection Pooling | Stable | ✅ Stable |
-| Token Generation | Stable | ✅ Stable |
+| Token Generation | Stable | ✅ Stable | <!-- pragma: allowlist secret -->
 
 **Result:** ✅ System remains stable under realistic load
 
