@@ -276,7 +276,7 @@ class TestUserUpdate:
         new_password = "NewPass123!"
         updated_user = user_store.update_user(
             user.user_id,
-            ******
+            password=new_password
         )
         # New password should work
         authenticated = user_store.authenticate("tina", new_password)
@@ -291,7 +291,7 @@ class TestUserUpdate:
         updated_user = user_store.update_user(
             user.user_id,
             email="uma.new@example.com",
-            ******
+            password="Str0ngPass!"
         )
         assert updated_user.email == "uma.new@example.com"
         # Verify new password works
@@ -538,7 +538,7 @@ class TestIntegration:
         assert "admin" in updated.roles
 
         # Change password
-        updated = user_store.update_user(user.user_id, ******)
+        updated = user_store.update_user(user.user_id, password="NewPass123!")
         authenticated = user_store.authenticate("emma", "NewPass123!")
         assert authenticated.user_id == user.user_id
 
