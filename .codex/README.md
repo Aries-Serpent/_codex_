@@ -232,7 +232,7 @@
 | CRITICAL CVEs | 20 | 0 | 0 | ✅ MET |
 | HIGH CVEs | 8 | 0 | 0 | ✅ MET |
 | CodeQL HIGH Findings | 42 | 0 | 0 | ✅ MET |
-| Secrets in Cleartext | 30 | 0 | 0 | ✅ MET |
+| Secrets in Cleartext | 30 | 0 | 0 | ✅ MET | <!-- pragma: allowlist secret -->
 
 ### Test Quality Metrics
 | Metric | Before | After | Target | Status |

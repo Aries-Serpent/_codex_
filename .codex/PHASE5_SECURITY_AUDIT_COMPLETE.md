@@ -18,7 +18,7 @@ Phase 5 comprehensive security audit reveals **CRITICAL FINDINGS** that must be 
 | **Dependency Vulnerabilities** | 🔴 FAIL | 51 total | 20 CRITICAL, 8 HIGH, 23 MEDIUM/LOW |
 | **Critical/High Severity** | 🔴 FAIL | 28 | Active in current environment |
 | **Environment Status** | 🔴 FAIL | MISMATCH | Requirements upgraded; runtime still vulnerable |
-| **Secrets Baseline** | 🟢 PASS | 1088 | All in baseline (excluded); no new leaks detected |
+| **Secrets Baseline** | 🟢 PASS | 1088 | All in baseline (excluded); no new leaks detected | <!-- pragma: allowlist secret -->
 | **CodeQL Findings** | 🟡 PARTIAL | 107 total | 42 HIGH, 6 MEDIUM (security-critical), 59 LOW |
 | **Phase 1 Remediation** | 🔴 INCOMPLETE | 14 vulnerabilities | Files updated but not deployed |
 
@@ -127,7 +127,7 @@ CRITICAL BLOCKERS:
 | CVE/ID | Severity | Description | Fix Version |
 |--------|----------|-------------|------------|
 | **PYSEC-2026-120** | CRITICAL | Critical header parameter not validated | 2.12.0 |
-| **PYSEC-2026-179** | CRITICAL | Token verification bypass | 2.13.0 |
+| **PYSEC-2026-179** | CRITICAL | Token verification bypass | 2.13.0 | <!-- pragma: allowlist secret -->
 | **PYSEC-2026-177** | CRITICAL | JWKS client URI injection | 2.13.0 |
 | **PYSEC-2026-175** | CRITICAL | JWKS key resolution bypass | 2.13.0 |
 
@@ -245,8 +245,8 @@ CRITICAL BLOCKERS:
 
 | Rule | Count | Category | Example |
 |------|-------|----------|---------|
-| **py/clear-text-logging-sensitive-data** | 30 | Security | Logging secrets without redaction |
-| **py/clear-text-storage-sensitive-data** | 12 | Security | Storing secrets in plaintext |
+| **py/clear-text-logging-sensitive-data** | 30 | Security | Logging secrets without redaction | <!-- pragma: allowlist secret -->
+| **py/clear-text-storage-sensitive-data** | 12 | Security | Storing secrets in plaintext | <!-- pragma: allowlist secret -->
 
 **Affected Files** (Top 5):
 1. `scripts/catalog_workflows.py` - 7 findings
@@ -329,7 +329,7 @@ semgrep --config=p/security-audit --json src/ scripts/
 | P0 | Unpatched Cryptography | 8 | Runtime | ✅ YES |
 | P0 | Unpatched JWT | 6 | Runtime | ✅ YES |
 | P0 | Unpatched urllib3 | 6 | Runtime | ✅ YES |
-| P1 | CodeQL Secrets Logging | 42 | Code | ⚠️ MEDIUM |
+| P1 | CodeQL Secrets Logging | 42 | Code | ⚠️ MEDIUM | <!-- pragma: allowlist secret -->
 | P1 | Unpatched jinja2 | 5 | Runtime | ✅ YES |
 | P2 | CodeQL Log Injection | 6 | Code | ⚠️ MEDIUM |
 
@@ -488,12 +488,12 @@ Production deployment BLOCKED due to critical security findings.
 ### Summary
 - 28 Critical/High vulnerabilities in active dependencies
 - Environment/requirement file mismatch (files updated, runtime not rebuilt)
-- 42 CodeQL HIGH findings (secrets logging without redaction)
+- 42 CodeQL HIGH findings (secrets logging without redaction)  # pragma: allowlist secret
 - 14 Phase 1 remediation items not deployed
 
 ### Blocking Issues
 1. Environment rebuild required - 20 CRITICAL vulnerabilities
-2. CodeQL findings unresolved - secrets in cleartext logs
+2. CodeQL findings unresolved - secrets in cleartext logs  # pragma: allowlist secret
 3. Verification not completed - cannot confirm zero-critical
 
 ### Full Audit Report
@@ -519,7 +519,7 @@ Production deployment cannot proceed until SECURITY PASS is achieved.
 | Repository | Aries-Serpent/_codex_ |
 | Branch | HEAD (default branch) |
 | Duration | ~5 minutes |
-| Tools Used | pip-audit, CodeQL baseline, .secrets.baseline |
+| Tools Used | pip-audit, CodeQL baseline, .secrets.baseline | <!-- pragma: allowlist secret -->
 | Coverage | 100% (all requirement files, all dependencies) |
 
 ---

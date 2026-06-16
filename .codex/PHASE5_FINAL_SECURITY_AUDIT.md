@@ -23,7 +23,7 @@ This comprehensive security audit validates all vulnerability remediations execu
 | **HIGH CVEs** | 8 | 0 | ✅ RESOLVED |
 | **CodeQL HIGH Findings** | 42 | <5 | ✅ RESOLVED |
 | **Phase 1 Deployments** | 0 | 14 | ✅ DEPLOYED |
-| **Secret Logging Issues** | 42 | 0 | ✅ FIXED |
+| **Secret Logging Issues** | 42 | 0 | ✅ FIXED | <!-- pragma: allowlist secret -->
 | **Direct Dependencies Patched** | 6 | 6 | ✅ ALL AT TARGET |
 | **Security Packages Verified** | 0 | 6 | ✅ ALL VERIFIED |
 
@@ -129,8 +129,8 @@ These packages are:
 
 | Finding Type | Count | Remediation | Status |
 |--------------|-------|-------------|--------|
-| Direct secret logging | 14 | SHA-256 fingerprinting | ✅ FIXED |
-| Embedded secrets in scripts | 16 | Redaction placeholders | ✅ FIXED |
+| Direct secret logging | 14 | SHA-256 fingerprinting | ✅ FIXED | <!-- pragma: allowlist secret -->
+| Embedded secrets in scripts | 16 | Redaction placeholders | ✅ FIXED | <!-- pragma: allowlist secret -->
 | Environment variable access | 12 | No fix needed (secure) | ✅ SAFE |
 | **TOTAL** | **42** | | **✅ RESOLVED** |
 
@@ -294,7 +294,7 @@ From PHASE1_REMEDIATION_VERIFICATION.md:
 | **HIGH CVEs (Direct Dependencies)** | 8 | 0 | -8 | ✅ RESOLVED |
 | **CodeQL HIGH Findings** | 42 | <5 | -37+ | ✅ RESOLVED |
 | **Phase 1 Deployments** | 0 | 14 | +14 | ✅ DEPLOYED |
-| **Secret Logging Issues** | 42 | 0 | -42 | ✅ FIXED |
+| **Secret Logging Issues** | 42 | 0 | -42 | ✅ FIXED | <!-- pragma: allowlist secret -->
 | **Remaining Non-Critical Vulns** | N/A | 15 | N/A | ✅ ACCEPTABLE |
 | **Package Coverage** | 6/6 at old versions | 6/6 at target | 100% | ✅ COMPLETE |
 
@@ -306,7 +306,7 @@ SECURITY POSTURE: SIGNIFICANTLY IMPROVED ✅
 Critical Vulnerabilities:    [■■■■■■■■■■] 20 → 0    100% ELIMINATION
 High Vulnerabilities:        [■■■■■■■■] 8  → 0     100% ELIMINATION
 CodeQL Findings:             [██████████] 42 → <5   >90% RESOLUTION
-Secret Logging Issues:       [■■■■■■■■■■] 42 → 0   100% ELIMINATION
+Secret Logging Issues:       [■■■■■■■■■■] 42 → 0   100% ELIMINATION  # pragma: allowlist secret
 Phase 1 CVE Deployments:     [□□□□□□□□□□] 0 → 14  140% TARGET MET
 
 OVERALL: ✅ PRODUCTION READY
@@ -343,17 +343,17 @@ OVERALL: ✅ PRODUCTION READY
 **Before Remediation**:
 ```python
 # INSECURE (Track 2 finding)
-print(f"⚠️  Original Token: {self.token[:10]}...{self.token[-4:]}")
-print(f"   Secret Value: {self.results['BASE64_ENCODED']}")
+print(f"⚠️  Original Token: {self.token[:10]}...{self.token[-4:]}")  # pragma: allowlist secret
+print(f"   Secret Value: {self.results['BASE64_ENCODED']}")  # pragma: allowlist secret
 ```
 
 **After Remediation**:
 ```python
 # SECURE (Fixed in Track 2)
-token_fingerprint = hashlib.sha256(self.token.encode()).hexdigest()[:16]
-print(f"⚠️  Original Token Fingerprint: {token_fingerprint}...")
-print(f"   Secret Value Length: {len(self.results['BASE64_ENCODED'])} chars")
-print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script)")
+token_fingerprint = hashlib.sha256(self.token.encode()).hexdigest()[:16]  # pragma: allowlist secret
+print(f"⚠️  Original Token Fingerprint: {token_fingerprint}...")  # pragma: allowlist secret
+print(f"   Secret Value Length: {len(self.results['BASE64_ENCODED'])} chars")  # pragma: allowlist secret
+print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script)")  # pragma: allowlist secret
 ```
 
 ---
@@ -373,7 +373,7 @@ BEFORE REMEDIATION:
 ├── setuptools:          68.1.2  (1 CRITICAL CVE)
 ├── requests:            2.31.0  (8 HIGH CVEs)
 ├── CodeQL HIGH:         42 findings
-└── Secret Logging:      42 violations
+└── Secret Logging:      42 violations  # pragma: allowlist secret
 
 TOTAL ATTACK SURFACE: 28 CVEs + 42 findings + 42 logging issues
 ```
@@ -389,7 +389,7 @@ AFTER REMEDIATION:
 ├── setuptools:          78.1.1  (0 CVEs) ✅
 ├── requests:            2.32.4  (0 CVEs) ✅
 ├── CodeQL HIGH:         <5 findings ✅
-└── Secret Logging:      0 violations ✅
+└── Secret Logging:      0 violations ✅  # pragma: allowlist secret
 
 TOTAL ATTACK SURFACE: 0 CVEs in critical packages ✅
 ```
@@ -474,7 +474,7 @@ All remediations follow standard patching procedures. No special deployment step
 |-----------|-----------|--------|
 | Critical vulnerabilities | NONE | ✅ RESOLVED |
 | High vulnerabilities | NONE | ✅ RESOLVED |
-| Secret exposure | NONE | ✅ SECURED |
+| Secret exposure | NONE | ✅ SECURED | <!-- pragma: allowlist secret -->
 | Incompatibilities | NONE | ✅ VALIDATED |
 | Deployment constraints | NONE | ✅ CLEAR |
 
@@ -494,7 +494,7 @@ All remediations follow standard patching procedures. No special deployment step
 ║  CRITICAL VULNERABILITIES:         0 (was 20)   ✅ PASS           ║
 ║  HIGH VULNERABILITIES:              0 (was 8)   ✅ PASS           ║
 ║  CodeQL HIGH FINDINGS:              <5          ✅ PASS           ║
-║  Secret Logging Issues:             0 (was 42)  ✅ PASS           ║
+║  Secret Logging Issues:             0 (was 42)  ✅ PASS           ║  # pragma: allowlist secret
 ║  Package Version Compliance:        6/6         ✅ PASS           ║
 ║  Test Coverage:                     155+ tests  ✅ PASS           ║
 ║  CI/CD Stability:                   Verified    ✅ PASS           ║
@@ -560,7 +560,7 @@ All remediations follow standard patching procedures. No special deployment step
 |--------|--------|-------|---------------|
 | Unfixed CVEs | 28 | 0 | 100% |
 | CodeQL findings | 42 | <5 | >90% |
-| Secret logging violations | 42 | 0 | 100% |
+| Secret logging violations | 42 | 0 | 100% | <!-- pragma: allowlist secret -->
 | Critical packages patched | 0/6 | 6/6 | 100% |
 | Test coverage | Baseline | 155+ tests | +155% |
 | Documentation completeness | N/A | 100% | Complete |

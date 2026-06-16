@@ -63,8 +63,8 @@ The Phase 5 Security Remediation Campaign executed a comprehensive, multi-track 
 #### Improvement Actions
 | Category | Finding Count | Remediation |
 |----------|---------------|-----------|
-| Direct secret logging | 30 | Replace with fingerprints/hashing |
-| Hardcoded secret refs | 12 | Remove or use env var patterns |
+| Direct secret logging | 30 | Replace with fingerprints/hashing | <!-- pragma: allowlist secret -->
+| Hardcoded secret refs | 12 | Remove or use env var patterns | <!-- pragma: allowlist secret -->
 | Script embedding | Multiple | Sanitize generated scripts |
 | API headers | Multiple | Never log authentication headers |
 

@@ -297,7 +297,7 @@ All 8 architectural layers verified:
 | **cognitive-preflight** | Validate §0 pre-session review | ✅ PASS | Integration branch model (0D_base_) enforced; CI checks verified in workflow |
 | **deferral-language-gate** | Detect deferral + agent-bypass trigger phrases | ✅ PASS | ML classifier (scikit-learn, offline-safe) + regex patterns active |
 | **parallel_validation** | Concurrent code review + CodeQL security scan | ✅ PASS | Pre-merge gate active; all PRs scanned before merge |
-| **Secret Detection** | `unified-security-scanner` detects committed secrets | ✅ PASS | Zero secrets detected in last 100 commits |
+| **Secret Detection** | `unified-security-scanner` detects committed secrets | ✅ PASS | Zero secrets detected in last 100 commits | <!-- pragma: allowlist secret -->
 
 ---
 

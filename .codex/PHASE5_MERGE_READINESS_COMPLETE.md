@@ -38,7 +38,7 @@ All 13 compliance gates (REQ-1 through REQ-13) are **VERIFIED and PASSING**. The
 | **3** | Type Checking | ✅ PASS | mypy baseline configured; advisory errors documented | NO |
 | **4** | Accountability Report | ✅ PASS | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (3.2 MB) present & current | NO |
 | **5** | CHANGELOG | ✅ PASS | `CHANGELOG.md` (973 KB) present & updated for commit | NO |
-| **6** | Secrets Detection | ✅ PASS | GitLeaks validation; no credentials detected; pragma allowlist applied | NO |
+| **6** | Secrets Detection | ✅ PASS | GitLeaks validation; no credentials detected; pragma allowlist applied | NO | <!-- pragma: allowlist secret -->
 | **7** | Permissions Policy | ✅ PASS | `.codex/CODEBASE_AGENCY_POLICY.md` enforced; agency control validated | NO |
 | **8** | Workflow Compliance | ✅ PASS | 184 workflow files validated; 100% YAML syntax valid | NO |
 | **9** | CodeQL Security | ✅ PASS | Security alerts reviewed; no blocking CVEs for merge | NO |

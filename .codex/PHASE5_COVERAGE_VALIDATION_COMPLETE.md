@@ -133,7 +133,7 @@ Statement Uncovered:   96.39%
 | Security | 11 | 1,156 | 2.41% | Low |
 | Configuration | 8 | 892 | 15.3% | Medium |
 | Services | 15 | 2,841 | 0.00% | Uncovered |
-| Tokenization | 6 | 544 | 8.27% | Low |
+| Tokenization | 6 | 544 | 8.27% | Low | <!-- pragma: allowlist secret -->
 | Common | 9 | 847 | 5.12% | Low |
 
 ### Top Covered Modules
