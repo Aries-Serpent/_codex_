@@ -430,7 +430,7 @@ All documentation links have been validated, corrected, and verified. The codeba
 - [Broken Links Report (Legacy)](./BROKEN_LINKS_REPORT.md)
 - [Link Validation Summary (Legacy)](./LINK_VALIDATION_SUMMARY_2026-01-26.md)
 - [MkDocs Fix Plan](../mkdocs_fix_plan.md)
-- [Documentation Coverage Report](./DOCUMENTATION_COVERAGE_REPORT.md)
+- [Documentation Coverage Report](../DOCUMENTATION_COVERAGE_REPORT.md)
 
 ---
 

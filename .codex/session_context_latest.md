@@ -29,7 +29,7 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-secrets-baseline-failure` �
 - `06c82fad` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-16)
 - `ccf0fa19` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-16)
 - `5756f774` fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007) — github-actions[bot] (2026-06-16)
-- `f2599c24` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-16)
+- `f2599c24` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] — copilot-swe-agent[bot] (2026-06-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

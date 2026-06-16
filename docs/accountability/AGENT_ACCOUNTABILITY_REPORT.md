@@ -150,6 +150,37 @@ All Phase 5 remediation and consolidation documents are located in `.codex/` and
 
 ---
 
+## SESSION SUMMARY — 2026-06-16T05:33Z · PR #4952 Dependency Submission Fix + AI Review Follow-up
+
+**Session ID:** pr-4952-dependency-submission-fix  
+**Agent:** @copilot (Copilot Coding Agent)  
+**Branch:** `copilot/fix-secrets-baseline-failure`  
+**Duration:** ~25 minutes
+
+### Objective
+Fix the failing `dynamic / submit-pypi (dynamic)` GitHub Actions job by identifying the root cause from Actions logs and address the linked `copilot-pull-request-reviewer` review findings with the smallest safe patch.
+
+### Agents Deployed (1 Total)
+- Primary investigation support: `ci-testing-agent` — confirmed the invalid dependency metadata root cause from job `81586728520`
+
+### Key Deliverables
+
+| Item | Scope | Status |
+|------|-------|--------|
+| **CI root-cause fix** | Replaced nonexistent `cryptography` 49.2.0 constraints with published 49.0.0-based metadata in `requirements.txt`, `requirements-dev.txt`, and `pyproject.toml` | ✅ COMPLETE |
+| **Workflow review fix** | Restricted `.codex/` auto-fix matching in `secrets-baseline-enforcer.yml` to Markdown docs and updated the adjacent comment to match behavior | ✅ COMPLETE |
+| **Snapshot review fix** | Restored the full `[skip ci]` commit text in `.codex/session_context_latest.md` | ✅ COMPLETE |
+| **Targeted validation** | Confirmed `cryptography==49.0.0` resolves from PyPI, verified workflow regex behavior, and confirmed clean patch formatting | ✅ COMPLETE |
+| **REQ-5 update** | Added this session summary to `CHANGELOG.md` | ✅ COMPLETE |
+| **REQ-4 update** | Added this accountability entry | ✅ THIS ENTRY |
+
+### Status
+- Failing job root cause traced to invalid dependency metadata, not PyPI publish workflow logic
+- Linked AI review findings addressed in the same patch set
+- Session documentation updated for wrap-up compliance
+
+---
+
 ## SESSION SUMMARY — 2026-06-15T03:42Z · PR #4920 CI Rescue + Review Follow-up
 
 **Session ID:** pr-4920-ci-rescue-review-followup  
@@ -795,7 +826,7 @@ Execute Phase 3 of the production readiness campaign: CI/Workflow Stability hard
 
 ### Validation
 - YAML parsing: 183/183 workflows ✅
-- yamllint validation: ✅ 
+- yamllint validation: ✅
 - Shell escaping: 287 patterns scanned, 0 actual issues ✅
 - Action versions: 2 deprecated actions fixed ✅
 - Node.js versioning: Primary v22 confirmed ✅
