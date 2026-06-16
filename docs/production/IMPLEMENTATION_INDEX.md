@@ -8,7 +8,7 @@
 
 ### Core Documentation (Read in this order)
 
-1. **[Framework Specification](.codex/BATCH_1_MONITORING_CONFIG.md)** (START HERE)
+1. **[Framework Specification](../../.codex/BATCH_1_MONITORING_CONFIG.md)** (START HERE)
    - Complete framework overview
    - Architecture and design decisions
    - All 5 components specified in detail
@@ -38,7 +38,7 @@
    - Prometheus alerting rules
    - Grafana provisioning configs
 
-6. **[Validation Report](.codex/aftermath/batch1_monitoring_metrics.json)**
+6. **[Validation Report](../../.codex/aftermath/batch1_monitoring_metrics.json)**
    - Implementation checklist
    - Success metrics
    - Expected impact projections
@@ -49,7 +49,7 @@
 ## 🎯 Implementation Sections
 
 ### 1. Structured Logging
-**Files**: 
+**Files**:
 - `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 1️⃣
 - `docs/production/HEALTH_CHECKS_SPECIFICATION.md` → Not applicable
 

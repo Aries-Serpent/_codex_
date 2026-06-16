@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4954)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4954 (SHA `274b5dd5`) at 2026-06-16T05:57Z [auto-generated]
+
+### Fixed (SN — PR #4952, 2026-06-16T05:33Z)
+- Fixed the failing `dynamic / submit-pypi (dynamic)` dependency-submission validation by replacing the nonexistent `cryptography` 49.2.0 constraint with published 49.0.0-based metadata in `requirements.txt`, `requirements-dev.txt`, and `pyproject.toml`.
+- Tightened `.github/workflows/secrets-baseline-enforcer.yml` so the `.codex/` auto-remediation path only applies to Markdown documentation files, matching the PR intent and review feedback.
+- Anchored the secrets-baseline workflow allowlist regex so path matching applies to the full expression rather than only the `.codex` branch.
+- Corrected the truncated commit entry in `.codex/session_context_latest.md` so the generated audit snapshot reflects the full `[skip ci]` commit message text.
+
 ### Fixed (auto-update — PR #4943)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4943 (SHA `003a7190`) at 2026-06-15T15:33Z [auto-generated]
 
@@ -9728,4 +9737,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 **Recommendation:** READY FOR PRODUCTION DEPLOYMENT
 
 **Next Steps:** Post consolidated final report to discussion #4872; schedule 2-3 day CVE remediation sprint
-
