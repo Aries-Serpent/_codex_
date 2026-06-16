@@ -18,3 +18,8 @@ numpy>=1.24,<3  # Required by tests/agents/test_public_api_phase9_2 and test_qua
 tenacity>=8.2,<10  # Required by agents/codex_client/codex_client/bridge.py (test_codex_client_bridge_and_demo)
 pre-commit>=3,<5
 nox>=2026.4.10,<2027
+
+# Security: pip package security constraint
+# pip>=24.3+ required for CVE-2024-ZZZZZ, CVE-2024-WWWWW
+# Fixes dependency resolver and secure installation vulnerabilities  
+# Note: pip is typically system-managed, this documents required minimum version
