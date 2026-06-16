@@ -12,9 +12,14 @@ on:
         required: true
         default: '.codex/PHASE_5A_CONSOLIDATION_UPDATE.md'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   post-discussion:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       discussions: write
