@@ -123,12 +123,18 @@ jobs:
           clean: true
           show-progress: true
 
+      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # Canonical form: block scalar run: | with if ! ...; then syntax.
+      # This step has been broken 4+ times by agents converting it to flow scalar
+      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
+      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
+      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true
+        continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
-          python3 .github/scripts/session_preload.py || {
+          if ! python3 .github/scripts/session_preload.py; then
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          }
+          fi
 
       - name: "🔌 Session Access Probe (token inventory + rate limits)"
         id: access_probe
@@ -383,7 +389,7 @@ jobs:
           INCLUDES="${{ inputs.lfs_include_paths }}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
-          
+
           for i in 1 2 3; do
             echo "Attempt $i: git lfs fetch --include=\"$INCLUDES_CLEAN\" origin"
             if git lfs fetch --include="$INCLUDES_CLEAN" origin; then
@@ -394,7 +400,7 @@ jobs:
               sleep $((i * 5))
             fi
           done
-          
+
           git lfs checkout --include="$INCLUDES_CLEAN" || true
 
       - name: "🌐 Full LFS fetch & checkout (guarded)"
@@ -411,7 +417,7 @@ jobs:
               sleep $((i * 5))
             fi
           done
-          
+
           git lfs checkout || true
 
       - name: "🔍 Detect Environment Type"
@@ -439,7 +445,7 @@ jobs:
         run: |
           trap '' PIPE
           set +o pipefail
-          
+
           echo "==================== Environment Validation ===================="
           echo "Python Version: $(python --version 2>&1)"
           echo "Pip Version: $(pip --version 2>&1)"
