@@ -1,0 +1,305 @@
+# Codex ML Deployment Manifest
+# Production-grade Kubernetes deployment with full observability, scaling, and reliability
+# Phase B Gate 2: Infrastructure validation (82.9% → 88%)
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: codex-ml
+  labels:
+    app: codex
+    phase: production
+    tier: application
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codex-app-config
+  namespace: codex-ml
+  labels:
+    app: codex
+    component: configuration
+data:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+  CODEX_LOG_LEVEL: "INFO"
+  CODEX_ENVIRONMENT: "production"
+  CODEX_WORKER_THREADS: "8"
+  CODEX_CACHE_ENABLED: "true"
+  CODEX_CACHE_TTL: "3600"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codex-api-server
+  namespace: codex-ml
+  labels:
+    app: codex
+    component: api-server
+    version: "1.0.0"
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    app.kubernetes.io/managed-by: "terraform"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: codex
+      component: api-server
+  template:
+    metadata:
+      labels:
+        app: codex
+        component: api-server
+        version: "1.0.0"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      # Pod disruption budget for high availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - codex
+                    - key: component
+                      operator: In
+                      values:
+                        - api-server
+                topologyKey: kubernetes.io/hostname
+      
+      # Service account for RBAC
+      serviceAccountName: codex-api
+      
+      # Security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      
+      # Image pull secrets for private registries
+      imagePullSecrets:
+        - name: dockercfg-secret
+      
+      containers:
+        - name: api-server
+          image: codex:1.0.0
+          imagePullPolicy: IfNotPresent
+          
+          # Container security context
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          
+          # Ports
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          
+          # Environment variables from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: codex-app-config
+          
+          # Additional environment variables
+          env:
+            - name: CODEX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: codex-secrets
+                  key: api-key
+            - name: CODEX_DB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: codex-secrets
+                  key: db-connection-string
+            - name: CODEX_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: codex-secrets
+                  key: redis-url
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          
+          # Resource requests and limits (critical for scheduling and QoS)
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+          
+          # Startup probe: allows time for app initialization
+          startupProbe:
+            httpGet:
+              path: /health/startup
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 30  # 30 * 10s = 5 minutes max startup time
+          
+          # Liveness probe: restart if application hangs
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+          
+          # Readiness probe: prevent traffic if app is degraded
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 2
+          
+          # Volumes for temp files
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /app/cache
+      
+      # Pod termination grace period for graceful shutdown
+      terminationGracePeriodSeconds: 30
+      
+      # Volumes
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: cache
+          emptyDir:
+            sizeLimit: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codex-api-service
+  namespace: codex-ml
+  labels:
+    app: codex
+    component: api-server
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  type: LoadBalancer
+  selector:
+    app: codex
+    component: api-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 8000
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: codex-api-pdb
+  namespace: codex-ml
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: codex
+      component: api-server
+  unhealthyPodEvictionPolicy: AlwaysAllow
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: codex-api
+  namespace: codex-ml
+  labels:
+    app: codex
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: codex-api-role
+  namespace: codex-ml
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: codex-api-rolebinding
+  namespace: codex-ml
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: codex-api-role
+subjects:
+  - kind: ServiceAccount
+    name: codex-api
+    namespace: codex-ml
