@@ -168,7 +168,7 @@ Fix the failing `dynamic / submit-pypi (dynamic)` GitHub Actions job by identify
 | Item | Scope | Status |
 |------|-------|--------|
 | **CI root-cause fix** | Replaced nonexistent `cryptography` 49.2.0 constraints with published 49.0.0-based metadata in `requirements.txt`, `requirements-dev.txt`, and `pyproject.toml` | ✅ COMPLETE |
-| **Workflow review fix** | Restricted `.codex/` auto-fix matching in `secrets-baseline-enforcer.yml` to Markdown docs and updated the adjacent comment to match behavior | ✅ COMPLETE |
+| **Workflow review fix** | Restricted `.codex/` auto-fix matching in `secrets-baseline-enforcer.yml` to Markdown docs, anchored the full allowlist regex correctly, and updated the adjacent comment to match behavior | ✅ COMPLETE |
 | **Snapshot review fix** | Restored the full `[skip ci]` commit text in `.codex/session_context_latest.md` | ✅ COMPLETE |
 | **Targeted validation** | Confirmed `cryptography==49.0.0` resolves from PyPI, verified workflow regex behavior, and confirmed clean patch formatting | ✅ COMPLETE |
 | **REQ-5 update** | Added this session summary to `CHANGELOG.md` | ✅ COMPLETE |
