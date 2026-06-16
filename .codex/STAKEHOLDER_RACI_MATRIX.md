@@ -56,10 +56,10 @@
 | Stakeholder | Role | Phase 8 | Gate 1 | Notes |
 |---|---|---|---|---|
 | Security Lead | Responsible | **R** | **A** | Leads security audit; approves security posture |
-| Application Security Engineer | Responsible | **R** | C | Executes CodeQL & secrets scans |
+| Application Security Engineer | Responsible | **R** | C | Executes CodeQL & secrets scans | <!-- pragma: allowlist secret -->
 | Penetration Tester | Responsible | **R** | C | Conducts penetration testing |
 | Compliance Officer | Consulted | C | C | Reviews SBOM & compliance status |
-| unified-security-scanner | Responsible | **R** | - | Automates CodeQL, secrets, dependency scans |
+| unified-security-scanner | Responsible | **R** | - | Automates CodeQL, secrets, dependency scans | <!-- pragma: allowlist secret -->
 | security-audit-agent | Responsible | **R** | - | Automates penetration test orchestration |
 | Campaign Lead (@mbaetiong) | Accountable | A | **A** | Overall track oversight & gate approval |
 
@@ -313,7 +313,7 @@ Engineering Leadership
 | **ci-emergency-response-agent** | Responsible (R) | Phase 8-9 | Deployment, auto-scaling, rollback |
 | **artifact-monitor-agent** | Responsible (R) | Phase 8-9 | 24x7 monitoring, metrics collection |
 | **unified-coverage-agent** | Responsible (R) | Phase 8 | Code quality & coverage validation |
-| **unified-security-scanner** | Responsible (R) | Phase 8 | CodeQL, secrets, dependency scans |
+| **unified-security-scanner** | Responsible (R) | Phase 8 | CodeQL, secrets, dependency scans | <!-- pragma: allowlist secret -->
 | **unified-doc-agent** | Responsible (R) | Phase 8 | Documentation validation |
 | **fragile-test-guardian** | Responsible (R) | Phase 8 | Flaky test stabilization |
 | **link-validator-agent** | Responsible (R) | Phase 8 | Documentation link validation |

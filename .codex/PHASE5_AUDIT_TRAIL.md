@@ -96,14 +96,14 @@ Security scan results:
 
 **File 1**: `scripts/security/token_encryption_tool.py`
 ```python
-# BEFORE: Direct secret logging (HIGH vulnerability)
-def print_results(token):
-    print(f"Token: {token}")  # ❌ Secrets in cleartext
+# BEFORE: Direct secret logging (HIGH vulnerability)  # pragma: allowlist secret
+def print_results(token):  # pragma: allowlist secret
+    print(f"Token: {token}")  # ❌ Secrets in cleartext  # pragma: allowlist secret
 
 # AFTER: Hardened logging (secure)
-def print_results(token):
-    fingerprint = hashlib.sha256(token.encode()).hexdigest()[:16]
-    print(f"Token fingerprint: {fingerprint}")  # ✅ Safe logging
+def print_results(token):  # pragma: allowlist secret
+    fingerprint = hashlib.sha256(token.encode()).hexdigest()[:16]  # pragma: allowlist secret
+    print(f"Token fingerprint: {fingerprint}")  # ✅ Safe logging  # pragma: allowlist secret
 ```
 
 **Finding Categories Fixed**:
@@ -118,7 +118,7 @@ def print_results(token):
 ```
 CodeQL scanning results:
 - HIGH findings: 42
-  - Secrets logging: 30
+  - Secrets logging: 30  # pragma: allowlist secret
   - Hardcoded references: 12
 - Total CodeQL issues: 42
 ```

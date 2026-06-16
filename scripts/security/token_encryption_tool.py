@@ -287,22 +287,22 @@ echo "=================================================="
             key_fingerprint = hashlib.sha256(self.results['AES_KEY'].encode()).hexdigest()[:8]
             print(f"   Secret Value Length: {len(self.results['AES_KEY'])} chars")
             print(f"   Secret Value Hash: {key_fingerprint}... (see saved script for actual value)")
-            
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
             ct_fingerprint = hashlib.sha256(self.results['AES_CIPHERTEXT'].encode()).hexdigest()[:8]
             print(f"   Secret Value Length: {len(self.results['AES_CIPHERTEXT'])} chars")
             print(f"   Secret Value Hash: {ct_fingerprint}... (see saved script for actual value)")
-            
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
             nonce_fingerprint = hashlib.sha256(self.results['AES_NONCE'].encode()).hexdigest()[:8]
             print(f"   Secret Value Length: {len(self.results['AES_NONCE'])} chars")
             print(f"   Secret Value Hash: {nonce_fingerprint}... (see saved script for actual value)")
-            
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_TAG")
             tag_fingerprint = hashlib.sha256(self.results['AES_AUTH_TAG'].encode()).hexdigest()[:8]
             print(f"   Secret Value Length: {len(self.results['AES_AUTH_TAG'])} chars")
             print(f"   Secret Value Hash: {tag_fingerprint}... (see saved script for actual value)")
-            
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_AUTH_DATA")
             # AUTH_DATA is constant and non-secret, can be shown
             print(f"   Secret Value: {self.results['AES_AUTH_DATA']}")
@@ -347,12 +347,12 @@ echo "=================================================="
 
         output_file.write_text(script_content)
         os.chmod(output_file, 0o700)  # Make executable, owner-only read/write/execute
-        
+
         # Log a warning about the file
-        print(f"\n⚠️  SECURITY WARNING:")
+        print("\n⚠️  SECURITY WARNING:")
         print(f"   Script saved with secrets to: {output_file}")
-        print(f"   Permissions: 0700 (owner-only)")
-        print(f"   ⚠️  DELETE THIS FILE IMMEDIATELY AFTER USE")
+        print("   Permissions: 0700 (owner-only)")
+        print("   ⚠️  DELETE THIS FILE IMMEDIATELY AFTER USE")
         print(f"   rm -f {output_file}")
 
         print(f"\n💾 Setup script saved to: {output_file}")

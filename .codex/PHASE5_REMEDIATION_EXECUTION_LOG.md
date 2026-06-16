@@ -30,7 +30,7 @@
 | Track | Name | Status | Completion % | Primary Artifact | Key Results | Commit SHA |
 |-------|------|--------|--------------|-----------------|-------------|-----------|
 | **1** | Environment Rebuild & CVE Remediation | ✅ COMPLETE | 100% | ENVIRONMENT_REBUILD_VERIFICATION.md | **0 CRITICAL** / **0 HIGH** CVEs; 6 packages upgraded | a1b2c3d |
-| **2** | CodeQL Security Fixes (Secrets Logging) | ✅ COMPLETE | 100% | CODEQL_REMEDIATION_SUMMARY.md | **42/42 HIGH** findings resolved; 2 files hardened | e4f5g6h |
+| **2** | CodeQL Security Fixes (Secrets Logging) | ✅ COMPLETE | 100% | CODEQL_REMEDIATION_SUMMARY.md | **42/42 HIGH** findings resolved; 2 files hardened | e4f5g6h | <!-- pragma: allowlist secret -->
 | **3** | Phase 1 Remediation Deployment | ✅ COMPLETE | 100% | PHASE1_REMEDIATION_VERIFICATION.md | All remediation patterns deployed; verified in CI | i7j8k9l |
 | **4** | Test Enhancement & Mutation Testing | ✅ COMPLETE | 100% | COVERAGE_PHASE5_RESULTS.md | **≥75% mutation score** in 5 lanes; 100% semantic assertions | m0n1o2p |
 | **5A** | Workflow Health Monitoring | ✅ COMPLETE | 100% | WORKFLOW_HEALTH_MONITORING_REPORT.md | **49 workflows** monitored; health metrics established | q3r4s5t |
@@ -262,7 +262,7 @@
 | **CRITICAL CVEs Eliminated** | 20 | ✅ TARGET: 0 |
 | **HIGH CVEs Eliminated** | 8 | ✅ TARGET: 0 |
 | **CodeQL HIGH Findings Resolved** | 42/42 | ✅ TARGET: 42/42 |
-| **Secrets Logging Hardened** | 100% | ✅ TARGET: 100% |
+| **Secrets Logging Hardened** | 100% | ✅ TARGET: 100% | <!-- pragma: allowlist secret -->
 
 ### Testing & Quality
 | Metric | Value | Status |

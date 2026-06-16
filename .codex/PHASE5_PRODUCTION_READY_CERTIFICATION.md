@@ -40,7 +40,7 @@
 | CRITICAL CVEs (Direct Deps) | 20 | 0 | ✅ ELIMINATED |
 | HIGH CVEs (Direct Deps) | 8 | 0 | ✅ ELIMINATED |
 | CodeQL HIGH Findings | 42 | <5 | ✅ RESOLVED |
-| Secret Logging Violations | 42 | 0 | ✅ ELIMINATED |
+| Secret Logging Violations | 42 | 0 | ✅ ELIMINATED | <!-- pragma: allowlist secret -->
 | **TOTAL CRITICAL/HIGH** | **28** | **0** | **✅ 100% RESOLUTION** |
 
 ### ✅ Direct Dependency Patching (6/6)
@@ -108,11 +108,11 @@ requests              2.31.0  →  2.32.4     ✅ DEPLOYED
 **Code Changes**:
 ```python
 # Before: INSECURE
-print(f"Token: {self.token}")  # ❌ Plaintext secret
+print(f"Token: {self.token}")  # ❌ Plaintext secret  # pragma: allowlist secret
 
 # After: SECURE  
-token_fp = hashlib.sha256(self.token.encode()).hexdigest()[:16]
-print(f"Token Fingerprint: {token_fp}...")  # ✅ Hashed fingerprint only
+token_fp = hashlib.sha256(self.token.encode()).hexdigest()[:16]  # pragma: allowlist secret
+print(f"Token Fingerprint: {token_fp}...")  # ✅ Hashed fingerprint only  # pragma: allowlist secret
 ```
 
 **Result**: ✅ **100% OF SECRET LOGGING VIOLATIONS FIXED**
@@ -159,7 +159,7 @@ print(f"Token Fingerprint: {token_fp}...")  # ✅ Hashed fingerprint only
 | Category | Requirement | Status | Evidence |
 |----------|------------|--------|----------|
 | Vulnerability Patching | 0 CRITICAL/HIGH | ✅ PASS | pip-audit results, package versions |
-| Secret Protection | No plaintext secrets | ✅ PASS | Code review, SHA-256 fingerprinting |
+| Secret Protection | No plaintext secrets | ✅ PASS | Code review, SHA-256 fingerprinting | <!-- pragma: allowlist secret -->
 | Code Quality | CodeQL findings <5 | ✅ PASS | CodeQL remediation summary |
 | Test Coverage | >150 semantic tests | ✅ PASS | Enhanced test files |
 | CI/CD Stability | Zero blocking issues | ✅ PASS | Workflow health monitoring |
@@ -188,7 +188,7 @@ print(f"Token Fingerprint: {token_fp}...")  # ✅ Hashed fingerprint only
 ```
 SECURITY POSTURE:           EXCELLENT    (20 CVEs → 0 CVEs)
 CODE QUALITY:               GOOD         (<5 CodeQL findings)
-SECRET PROTECTION:          EXCELLENT    (42 issues → 0)
+SECRET PROTECTION:          EXCELLENT    (42 issues → 0)  # pragma: allowlist secret
 TEST COVERAGE:              GOOD         (155+ semantic tests)
 CI/CD STABILITY:            EXCELLENT    (Zero blocking issues)
 DOCUMENTATION:              EXCELLENT    (100% complete)
@@ -272,9 +272,9 @@ Status:  ✅ >90% RESOLVED
 
 **Secret Logging Issues**:
 ```
-Before:  42 plaintext secret violations
+Before:  42 plaintext secret violations  # pragma: allowlist secret
 Day 2:   SHA-256 fingerprinting implemented
-After:   0 plaintext secrets in logging
+After:   0 plaintext secrets in logging  # pragma: allowlist secret
 Status:  ✅ 100% RESOLVED
 ```
 

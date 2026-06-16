@@ -20,6 +20,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 class CampaignStatus(Enum):
     """Campaign execution status."""
+
     IDLE = "idle"
     ACTIVATED = "activated"
     PHASE_RUNNING = "phase_running"
@@ -32,6 +33,7 @@ class CampaignStatus(Enum):
 @dataclass
 class CampaignPhase:
     """Definition of a campaign phase with agents and gate condition."""
+
     phase_id: str
     name: str
     description: str
@@ -45,6 +47,7 @@ class CampaignPhase:
 @dataclass
 class CampaignDefinition:
     """High-level campaign definition with objectives and phases."""
+
     campaign_id: str
     name: str
     description: str
@@ -59,6 +62,7 @@ class CampaignDefinition:
 @dataclass
 class PhaseExecutionResult:
     """Result of executing a single phase."""
+
     phase_id: str
     status: str  # "passed" | "failed" | "timeout"
     agent_results: Dict[str, Dict[str, Any]] = field(default_factory=dict)
@@ -70,6 +74,7 @@ class PhaseExecutionResult:
 @dataclass
 class CampaignExecution:
     """Runtime state of campaign execution."""
+
     campaign_id: str
     activation_time: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     current_phase_index: int = 0
@@ -88,7 +93,7 @@ class CampaignExecution:
 class CampaignOrchestrator:
     """
     Orchestrate multi-phase campaigns with parallel agent delegation.
-    
+
     Responsibilities:
     1. Load campaign definitions from registry
     2. Activate campaigns and dispatch phases
@@ -106,7 +111,7 @@ class CampaignOrchestrator:
         pattern_store_path: Path = Path(".codex/cognitive_brain/pattern_learning_store.json"),
     ):
         """Initialize campaign orchestrator.
-        
+
         Args:
             campaign_def: Campaign definition with phases and objectives
             artifact_dir: Directory to store campaign artifacts
@@ -128,22 +133,25 @@ class CampaignOrchestrator:
         """Activate campaign and prepare for phase execution."""
         self.execution.status = CampaignStatus.ACTIVATED
         self.execution.activation_time = datetime.now(timezone.utc)
-        
+
         # Log activation
-        self._log_event("campaign_activated", {
-            "campaign_id": self.campaign.campaign_id,
-            "name": self.campaign.name,
-            "phases_count": len(self.campaign.phases),
-            "timestamp": self.execution.activation_time.isoformat(),
-        })
+        self._log_event(
+            "campaign_activated",
+            {
+                "campaign_id": self.campaign.campaign_id,
+                "name": self.campaign.name,
+                "phases_count": len(self.campaign.phases),
+                "timestamp": self.execution.activation_time.isoformat(),
+            },
+        )
 
     def execute_phase(self, phase_index: int) -> List[str]:
         """
         Execute a phase by launching agents in parallel.
-        
+
         Args:
             phase_index: Index of phase to execute (0-based)
-        
+
         Returns:
             List of agent_ids launched (can be used for monitoring)
         """
@@ -155,23 +163,29 @@ class CampaignOrchestrator:
         self.execution.status = CampaignStatus.PHASE_RUNNING
 
         # Log phase start
-        self._log_event("phase_started", {
-            "campaign_id": self.campaign.campaign_id,
-            "phase_id": phase.phase_id,
-            "phase_name": phase.name,
-            "agents_count": len(phase.parallel_agents),
-            "timeout_seconds": phase.timeout_seconds,
-        })
+        self._log_event(
+            "phase_started",
+            {
+                "campaign_id": self.campaign.campaign_id,
+                "phase_id": phase.phase_id,
+                "phase_name": phase.name,
+                "agents_count": len(phase.parallel_agents),
+                "timeout_seconds": phase.timeout_seconds,
+            },
+        )
 
         # In production: use task() tool to launch agents
         # For now, return list of agent IDs that would be launched
         agent_ids = phase.parallel_agents.copy()
-        
-        self._log_event("phase_agents_dispatched", {
-            "campaign_id": self.campaign.campaign_id,
-            "phase_id": phase.phase_id,
-            "agent_ids": agent_ids,
-        })
+
+        self._log_event(
+            "phase_agents_dispatched",
+            {
+                "campaign_id": self.campaign.campaign_id,
+                "phase_id": phase.phase_id,
+                "agent_ids": agent_ids,
+            },
+        )
 
         return agent_ids
 
@@ -182,11 +196,11 @@ class CampaignOrchestrator:
     ) -> Dict[str, Any]:
         """
         Poll agents until completion or timeout.
-        
+
         Args:
             agent_ids: List of agent IDs to monitor
             timeout_seconds: Maximum time to wait for all agents
-        
+
         Returns:
             Dictionary mapping agent_id to execution result
         """
@@ -222,11 +236,11 @@ class CampaignOrchestrator:
     def verify_gate(self, phase_index: int, agent_results: Dict[str, Any]) -> bool:
         """
         Evaluate gate condition for phase completion.
-        
+
         Args:
             phase_index: Index of phase to verify
             agent_results: Results from agent execution
-        
+
         Returns:
             True if gate passes, False otherwise
         """
@@ -239,32 +253,37 @@ class CampaignOrchestrator:
         # If no gate condition defined, all results passing = gate passes
         if phase.gate_condition is None:
             gate_pass = all(
-                result.get("status") == "completed"
-                for result in agent_results.values()
+                result.get("status") == "completed" for result in agent_results.values()
             )
         else:
             # Evaluate custom gate condition
             try:
                 gate_pass = phase.gate_condition(agent_results)
             except Exception as e:
-                self._log_event("gate_evaluation_error", {
-                    "phase_id": phase.phase_id,
-                    "error": str(e),
-                })
+                self._log_event(
+                    "gate_evaluation_error",
+                    {
+                        "phase_id": phase.phase_id,
+                        "error": str(e),
+                    },
+                )
                 gate_pass = False
 
-        self._log_event("gate_evaluated", {
-            "phase_id": phase.phase_id,
-            "gate_pass": gate_pass,
-            "agent_count": len(agent_results),
-        })
+        self._log_event(
+            "gate_evaluated",
+            {
+                "phase_id": phase.phase_id,
+                "gate_pass": gate_pass,
+                "agent_count": len(agent_results),
+            },
+        )
 
         return gate_pass
 
     def collect_artifacts(self, phase_index: int) -> None:
         """
         Collect artifacts produced by agents in a phase.
-        
+
         Args:
             phase_index: Index of phase whose artifacts to collect
         """
@@ -272,25 +291,24 @@ class CampaignOrchestrator:
             return
 
         phase = self.campaign.phases[phase_index]
-        phase_dir = (
-            self.artifact_dir
-            / self.campaign.campaign_id
-            / f"phase_{phase.phase_id}"
-        )
+        phase_dir = self.artifact_dir / self.campaign.campaign_id / f"phase_{phase.phase_id}"
         phase_dir.mkdir(parents=True, exist_ok=True)
 
         # In production: iterate through phase.artifacts and copy from agent results
         self.execution.artifacts_collected[f"phase_{phase.phase_id}"] = phase_dir
 
-        self._log_event("artifacts_collected", {
-            "phase_id": phase.phase_id,
-            "artifact_count": len(phase.artifacts),
-        })
+        self._log_event(
+            "artifacts_collected",
+            {
+                "phase_id": phase.phase_id,
+                "artifact_count": len(phase.artifacts),
+            },
+        )
 
     def escalate(self, reason: str) -> None:
         """
         Escalate campaign to human with full context.
-        
+
         Args:
             reason: Human-readable reason for escalation
         """
@@ -299,11 +317,14 @@ class CampaignOrchestrator:
 
         issue_body = self._generate_escalation_issue(reason)
 
-        self._log_event("campaign_escalated", {
-            "campaign_id": self.campaign.campaign_id,
-            "reason": reason,
-            "iterations": self.execution.iterations,
-        })
+        self._log_event(
+            "campaign_escalated",
+            {
+                "campaign_id": self.campaign.campaign_id,
+                "reason": reason,
+                "iterations": self.execution.iterations,
+            },
+        )
 
         # In production: use engine-tools-reply_to_comment or create GitHub issue
         # For now, just log
@@ -328,8 +349,8 @@ class CampaignOrchestrator:
 
 **Agent Results Summary:**
 - Total agents executed: {len(self.execution.agent_results)}
-- Successful agents: {sum(1 for r in self.execution.agent_results.values() if r.get('status') == 'completed')}
-- Failed agents: {sum(1 for r in self.execution.agent_results.values() if r.get('status') == 'failed')}
+- Successful agents: {sum(1 for r in self.execution.agent_results.values() if r.get("status") == "completed")}
+- Failed agents: {sum(1 for r in self.execution.agent_results.values() if r.get("status") == "failed")}
 
 **Recommendations:**
 1. Review agent logs in artifacts directory
@@ -338,12 +359,12 @@ class CampaignOrchestrator:
 4. Consider manual intervention or phase-specific fixes
 
 cc: @mbaetiong
-"""
+"""  # noqa: E501
 
     def finalize(self, status: CampaignStatus) -> None:
         """
         Finalize campaign execution and record learnings.
-        
+
         Args:
             status: Final status (COMPLETE, FAILED, or ESCALATED)
         """
@@ -404,7 +425,7 @@ cc: @mbaetiong
     def _save_execution_record(self) -> None:
         """Save campaign execution record to JSONL log."""
         executions_log = self.artifact_dir.parent / "campaign_executions.jsonl"
-        
+
         record = {
             "campaign_id": self.campaign.campaign_id,
             "status": self.execution.status.value,

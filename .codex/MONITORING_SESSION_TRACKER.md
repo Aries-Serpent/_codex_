@@ -84,7 +84,7 @@
 ### Tier 1 - High Flakiness (>10%)
 | Test | Module | Cause | Fix Status |
 |------|--------|-------|-----------|
-| test_bpe_with_rare_tokens | tokenization | Race condition in cache | Pending |
+| test_bpe_with_rare_tokens | tokenization | Race condition in cache | Pending | <!-- pragma: allowlist secret -->
 | test_meta_tensor_materialization | ML initialization | GPU memory pressure | Pending |
 | test_concurrent_retrieval | RAG module | Semaphore timeout | Pending |
 
