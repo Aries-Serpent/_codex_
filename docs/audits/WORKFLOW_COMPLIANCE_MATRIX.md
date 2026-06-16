@@ -195,6 +195,13 @@
 | GROUNDED workflows     | 61 |
 | PARTIAL workflows      | 34 |
 | SOFT workflows         | 90 |
+| **Total workflows**    | **185** |
 | Cascade risk           | 0 |
 | Missing concurrency    | 0 |
 | Missing timeout        | 16 |
+
+> **Note on compliance tiers:** `GROUNDED` = fully compliant (concurrency + timeout + no cascade risk).
+> `PARTIAL` = concurrency ✅ + timeout ✅ but additional checks pending.
+> `SOFT` = concurrency ✅ but timeout ❌ (non-blocking).
+> **Concurrency gate (production blocker): 0 missing — 100% compliant.**
+> Missing timeout (16) are SOFT-tier and non-blocking for production deployment.
