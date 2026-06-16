@@ -59,8 +59,10 @@ except ImportError:
 # Import logging utilities
 try:
     from codex.logging.session_logger import log_message
+    LOGGING_AVAILABLE = True
 
 except ImportError:
+    LOGGING_AVAILABLE = False
     logger.warning("Failed to import session logger; using print fallback", exc_info=True)
 
     # Fallback to print if logging not available
@@ -871,7 +873,7 @@ def test_main_imports():
             os.makedirs(output_dir, exist_ok=True)
         except OSError as e:
             logger.debug(f"OSError: {e}")
-            raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
+            raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}") from e
 
         # Verify directory is valid and writable after creation/access
         if not os.path.isdir(output_dir):

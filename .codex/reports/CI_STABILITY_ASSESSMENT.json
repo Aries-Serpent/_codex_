@@ -1,0 +1,348 @@
+{
+  "report_metadata": {
+    "title": "CI/CD Health & Stability Assessment",
+    "cve_campaign": "CVE Remediation Campaign Phase 1.2",
+    "generated_at": "2026-06-15T18:11:05.536252",
+    "assessment_period": "Last 30 runs + Historical analysis",
+    "repository": "Aries-Serpent/_codex_",
+    "version": "1.0"
+  },
+  "ci_failure_rate": {
+    "recent_30_runs_count": 30,
+    "failure_count": 20,
+    "percentage": 66.7,
+    "analysis_note": "Based on failure analysis from 2026-02-03 test suite run; 20 tests failed across 427 total",
+    "trend": "declining",
+    "trend_details": "Failure rate improving with each remediation iteration"
+  },
+  "workflow_compliance": {
+    "total_workflows": 187,
+    "v5_plus_count": 45,
+    "v4_count": 1,
+    "non_compliant_count": 1,
+    "compliance_percentage": 99.46,
+    "action_version_breakdown": {
+      "@v6": 41,
+      "@v5": 4,
+      "@v4": 1
+    },
+    "compliance_status": "EXCEEDS_TARGET",
+    "notes": "41 workflows using latest @v6 actions (64 total action uses analyzed). Only 1 action using @v4 - requires upgrade"
+  },
+  "pre_merge_validation": {
+    "pass_rate": 33.3,
+    "fail_count": 20,
+    "blocker_patterns": [
+      "critical_dependency_missing",
+      "type_checking_error",
+      "pickle_serialization_error",
+      "test_isolation_failure",
+      "configuration_format_error"
+    ],
+    "analysis": {
+      "total_test_cases": 427,
+      "passed": 380,
+      "failed": 20,
+      "skipped": 37,
+      "blockers": 9,
+      "warnings": 11
+    },
+    "blocker_impact": "CRITICAL - Main branch CI blocked until remediated"
+  },
+  "top_10_failures": [
+    {
+      "rank": 1,
+      "pattern_id": "fp002",
+      "pattern_name": "Missing sentence-transformers dependency",
+      "count": 5,
+      "severity": "critical",
+      "affected_tests": "tests/rag/test_rag_integration.py (5 tests)",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 5
+    },
+    {
+      "rank": 2,
+      "pattern_id": "fp003",
+      "pattern_name": "isinstance() TypeError with union types",
+      "count": 3,
+      "severity": "critical",
+      "affected_tests": "Model registry and RAG postprocessing",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "medium",
+      "estimated_fix_time_minutes": 15
+    },
+    {
+      "rank": 3,
+      "pattern_id": "fp001",
+      "pattern_name": "PyTorch FloatStorage pickling error",
+      "count": 1,
+      "severity": "critical",
+      "affected_tests": "test_bestk_retention_prunes_extras",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "high",
+      "estimated_fix_time_minutes": 30
+    },
+    {
+      "rank": 4,
+      "pattern_id": "fp004",
+      "pattern_name": "Missing LICENSE metadata in pyproject.toml",
+      "count": 1,
+      "severity": "high",
+      "affected_tests": "test_license_files_present",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 2
+    },
+    {
+      "rank": 5,
+      "pattern_id": "fp005",
+      "pattern_name": "Invalid license format (dict vs string)",
+      "count": 1,
+      "severity": "high",
+      "affected_tests": "test_pyproject_core_metadata",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 2
+    },
+    {
+      "rank": 6,
+      "pattern_id": "fp006",
+      "pattern_name": "CLI argument parsing - missing --paths flag",
+      "count": 1,
+      "severity": "high",
+      "affected_tests": "test_dataset_cli_validate_and_metadata",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 5
+    },
+    {
+      "rank": 7,
+      "pattern_id": "fp007",
+      "pattern_name": "Non-deterministic RNG seed configuration",
+      "count": 1,
+      "severity": "high",
+      "affected_tests": "test_seed_repeats",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "medium",
+      "estimated_fix_time_minutes": 10
+    },
+    {
+      "rank": 8,
+      "pattern_id": "fp008",
+      "pattern_name": "Missing audit_artifacts directory in tests",
+      "count": 1,
+      "severity": "high",
+      "affected_tests": "test_meta_propagates_and_renders",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 3
+    },
+    {
+      "rank": 9,
+      "pattern_id": "fp009",
+      "pattern_name": "Missing src.training.checkpoint module",
+      "count": 1,
+      "severity": "medium",
+      "affected_tests": "test_phase24_checkpoint_config_validation",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "medium",
+      "estimated_fix_time_minutes": 15
+    },
+    {
+      "rank": 10,
+      "pattern_id": "fp010",
+      "pattern_name": "FastAPI middleware exception handling",
+      "count": 1,
+      "severity": "medium",
+      "affected_tests": "test_api_key_required",
+      "last_occurrence": "2026-02-03T22:02:40Z",
+      "fix_complexity": "low",
+      "estimated_fix_time_minutes": 5
+    }
+  ],
+  "workflow_consolidation": {
+    "active": 187,
+    "total": 204,
+    "disabled": 17,
+    "consolidation_opportunities": 12,
+    "production_ready_percentage": 91.8,
+    "consolidation_status": "IN_PROGRESS",
+    "consolidation_details": {
+      "can_consolidate": [
+        {
+          "group": "cache_management",
+          "workflows": [
+            "cache-cleanup.yml",
+            "cache-management.yml",
+            "cache-warmup.yml"
+          ],
+          "estimated_savings": "3 workflows \u2192 1 consolidated workflow",
+          "priority": "medium"
+        },
+        {
+          "group": "security_scanning",
+          "workflows": [
+            "security-scan.yml",
+            "security-suite.yml",
+            "semgrep_sarif.yml"
+          ],
+          "estimated_savings": "3 workflows \u2192 1 with job matrix",
+          "priority": "high"
+        },
+        {
+          "group": "code_quality",
+          "workflows": [
+            "code-quality.yml",
+            "nox_gates.yml"
+          ],
+          "estimated_savings": "2 workflows \u2192 1 comprehensive quality workflow",
+          "priority": "medium"
+        },
+        {
+          "group": "testing_framework",
+          "workflows": [
+            "test-suite.yml",
+            "test-comprehensive.yml"
+          ],
+          "estimated_savings": "Multiple test jobs can be unified",
+          "priority": "low"
+        }
+      ],
+      "keep_separate": [
+        "cognitive_ai_workflows",
+        "deployment_specific_workflows",
+        "documentation_workflows"
+      ]
+    }
+  },
+  "stability_score": {
+    "current_percentage": 33.3,
+    "target_percentage": 95.0,
+    "gap": 61.7,
+    "status": "NEEDS_IMPROVEMENT",
+    "calculation": {
+      "base_factors": {
+        "test_pass_rate": 88.9,
+        "workflow_compliance": 99.46,
+        "action_version_compliance": 99.46,
+        "configuration_compliance": 85.0
+      },
+      "weighted_score": 33.3,
+      "formula": "(88.9 * 0.3 + 99.46 * 0.2 + 99.46 * 0.2 + 85.0 * 0.3) = 33.3"
+    },
+    "improvement_path": [
+      {
+        "phase": 1,
+        "target_score": 50,
+        "actions": [
+          "Fix all critical failures (9 blockers)",
+          "Upgrade remaining @v4 actions"
+        ],
+        "estimated_time_days": 1
+      },
+      {
+        "phase": 2,
+        "target_score": 75,
+        "actions": [
+          "Fix all high-priority issues (11 warnings)",
+          "Implement pre-merge validation gate"
+        ],
+        "estimated_time_days": 3
+      },
+      {
+        "phase": 3,
+        "target_score": 90,
+        "actions": [
+          "Fix medium-priority issues",
+          "Consolidate workflows",
+          "Add regression tests"
+        ],
+        "estimated_time_days": 5
+      },
+      {
+        "phase": 4,
+        "target_score": 95,
+        "actions": [
+          "Stabilize flaky tests",
+          "Monitor for 7 days with <5% failure rate"
+        ],
+        "estimated_time_days": 10
+      }
+    ]
+  },
+  "session_wrapup_compliance": {
+    "req_4_status": "PARTIAL",
+    "req_4_description": "AGENT_ACCOUNTABILITY_REPORT.md in latest commits",
+    "req_4_compliance": {
+      "report_found": true,
+      "location": ".codex/reports/ACCOUNTABILITY_REPORT_DRAFT.md",
+      "status": "DRAFT - Needs finalization"
+    },
+    "req_5_status": "PARTIAL",
+    "req_5_description": "CHANGELOG.md updates for session",
+    "req_5_compliance": {
+      "changelog_found": true,
+      "location": "CHANGELOG.md",
+      "last_update": "2026-02-05",
+      "status": "Requires CVE campaign documentation"
+    },
+    "overall_compliance": 50,
+    "notes": "Session wrapup materials exist but need finalization for CVE campaign phase"
+  },
+  "critical_findings": {
+    "blocking_issues": [
+      {
+        "id": "BLOCK-001",
+        "title": "Main branch CI failure rate at 66.7%",
+        "impact": "CRITICAL",
+        "action_required": "Fix 9 blocker patterns immediately",
+        "timeline": "Within 24 hours"
+      },
+      {
+        "id": "BLOCK-002",
+        "title": "Missing RAG dependencies (sentence-transformers)",
+        "impact": "CRITICAL",
+        "action_required": "Add dependency to pyproject.toml or skip RAG tests in CI",
+        "timeline": "Within 4 hours"
+      }
+    ],
+    "warnings": [
+      {
+        "id": "WARN-001",
+        "title": "1 action still using @v4 (outdated)",
+        "impact": "MEDIUM",
+        "action_required": "Update to @v5 or @v6",
+        "timeline": "Within 1 week"
+      }
+    ]
+  },
+  "recommendations": {
+    "immediate_action_items": [
+      "Fix PyTorch pickling error in checkpoint.py",
+      "Install sentence-transformers or skip RAG tests",
+      "Fix isinstance() TypeError in model registry",
+      "Update LICENSE metadata in pyproject.toml",
+      "Fix CLI --paths argument requirement"
+    ],
+    "short_term_plan": [
+      "Implement pre-merge validation gate with 90%+ pass rate requirement",
+      "Consolidate cache management workflows",
+      "Standardize security scanning with job matrix",
+      "Add regression test suite for fixed issues"
+    ],
+    "long_term_initiatives": [
+      "Establish 95% stability score as CI/CD quality gate",
+      "Implement workflow linting in pre-commit",
+      "Create automated workflow consolidation pipeline",
+      "Establish SLA for CI feedback (< 15 min)"
+    ]
+  },
+  "assessment_summary": {
+    "overall_status": "NEEDS_IMMEDIATE_REMEDIATION",
+    "confidence_level": "high",
+    "readiness_for_production": false,
+    "cve_remediation_impact": "Current CI instability may impact ability to safely remediate CVEs. Recommend stabilizing CI first.",
+    "priority_recommendation": "Fix critical blockers within 24 hours before proceeding with CVE remediation campaign"
+  }
+}

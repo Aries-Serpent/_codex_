@@ -64,6 +64,27 @@ def test_authenticator_generate_session_token():
     assert token == token2
 
 
+def test_authenticator_authenticate_handles_empty_and_valid_credentials():
+    """Authenticate should reject empty credentials and accept non-empty values."""
+    auth = MCPAuthenticator()
+
+    assert auth.authenticate(None) is None
+    assert auth.authenticate("") is None
+
+    principal = auth.authenticate("valid-credential")
+    assert principal is not None
+    assert len(principal.principal_id) == 64
+
+
+def test_authenticator_authenticate_accepts_bytes_credentials():
+    """Authenticate should accept bytes credentials through principal hashing."""
+    auth = MCPAuthenticator()
+
+    principal = auth.authenticate(b"bytes-credential")
+    assert principal is not None
+    assert len(principal.principal_id) == 64
+
+
 def test_authorizer_authorize():
     """Test MCPAuthorizer authorization logic."""
     authorizer = MCPAuthorizer()
@@ -72,6 +93,15 @@ def test_authorizer_authorize():
     # Default behavior: allow all authenticated principals
     assert authorizer.authorize(principal, "tool1")
     assert authorizer.authorize(principal, "tool2", payload={"param": "value"})
+
+
+def test_authorizer_confirm_authorization_with_confirmation_required():
+    """Confirm authorization should follow base authorization when confirmation is required."""
+    authorizer = MCPAuthorizer()
+    principal = Principal(principal_id="user123")
+
+    assert authorizer.confirm_authorization(principal, "tool1", require_confirm=True)
+    assert not authorizer.confirm_authorization(None, "tool1", require_confirm=True)
 
 
 def test_authorizer_permission_hash():

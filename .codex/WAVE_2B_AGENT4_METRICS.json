@@ -1,0 +1,168 @@
+{
+  "report_metadata": {
+    "timestamp": "2026-06-16T01:04:15.144581Z",
+    "report_type": "per_package_metrics",
+    "baseline_total_cves": 46
+  },
+  "top_7_vulnerable_packages": {
+    "cryptography": {
+      "rank": 1,
+      "current_version": "41.0.7",
+      "cve_count": 9,
+      "cves": [
+        "PYSEC-2024-225",
+        "PYSEC-2024-225",
+        "PYSEC-2026-35",
+        "PYSEC-2026-35",
+        "CVE-2023-50782",
+        "CVE-2024-0727",
+        "GHSA-h4gh-qq45-vh27",
+        "CVE-2026-26007",
+        "GHSA-537c-gmf6-5ccf"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 9,
+        "LOW": 0
+      },
+      "remediation_priority": "P1"
+    },
+    "urllib3": {
+      "rank": 2,
+      "current_version": "2.0.7",
+      "cve_count": 6,
+      "cves": [
+        "PYSEC-2026-141",
+        "CVE-2024-37891",
+        "CVE-2025-50181",
+        "CVE-2025-66418",
+        "CVE-2025-66471",
+        "CVE-2026-21441"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 6,
+        "LOW": 0
+      },
+      "remediation_priority": "P1"
+    },
+    "jinja2": {
+      "rank": 3,
+      "current_version": "3.1.2",
+      "cve_count": 5,
+      "cves": [
+        "CVE-2024-22195",
+        "CVE-2024-34064",
+        "CVE-2024-56326",
+        "CVE-2024-56201",
+        "CVE-2025-27516"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 5,
+        "LOW": 0
+      },
+      "remediation_priority": "P1"
+    },
+    "pip": {
+      "rank": 4,
+      "current_version": "24.0",
+      "cve_count": 5,
+      "cves": [
+        "PYSEC-2026-196",
+        "CVE-2025-8869",
+        "CVE-2026-1703",
+        "CVE-2026-3219",
+        "CVE-2026-6357"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 5,
+        "LOW": 0
+      },
+      "remediation_priority": "P1"
+    },
+    "twisted": {
+      "rank": 5,
+      "current_version": "24.3.0",
+      "cve_count": 4,
+      "cves": [
+        "PYSEC-2024-75",
+        "PYSEC-2026-160",
+        "PYSEC-2026-160",
+        "CVE-2024-41671"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 4,
+        "LOW": 0
+      },
+      "remediation_priority": "P2"
+    },
+    "idna": {
+      "rank": 6,
+      "current_version": "3.6",
+      "cve_count": 3,
+      "cves": [
+        "PYSEC-2024-60",
+        "PYSEC-2024-60",
+        "CVE-2026-45409"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 3,
+        "LOW": 0
+      },
+      "remediation_priority": "P2"
+    },
+    "requests": {
+      "rank": 7,
+      "current_version": "2.31.0",
+      "cve_count": 3,
+      "cves": [
+        "CVE-2024-35195",
+        "CVE-2024-47081",
+        "CVE-2026-25645"
+      ],
+      "severity_breakdown": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 3,
+        "LOW": 0
+      },
+      "remediation_priority": "P2"
+    }
+  },
+  "severity_summary": {
+    "CRITICAL": 0,
+    "HIGH": 0,
+    "MEDIUM": 46,
+    "LOW": 0
+  },
+  "remediation_guidance": {
+    "cryptography": {
+      "current": "41.0.7",
+      "recommended": ">=48.0.1",
+      "expected_cve_reduction": 9,
+      "rationale": "Critical security updates for cryptographic operations"
+    },
+    "urllib3": {
+      "current": "2.0.7",
+      "recommended": ">=2.7.0",
+      "expected_cve_reduction": 6,
+      "rationale": "Fixes proxy/redirect vulnerabilities"
+    },
+    "jinja2": {
+      "current": "3.1.2",
+      "recommended": ">=3.1.6",
+      "expected_cve_reduction": 5,
+      "rationale": "Fixes RCE via sandbox escape"
+    }
+  }
+}
