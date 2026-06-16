@@ -2,6 +2,22 @@
 
 
 
+## SESSION SUMMARY — 2026-06-16T17:36Z · PR #4958 Workflow Permissions Compliance Fix
+
+**Session:** PR #4958 - Fix workflow permissions compliance | **Agent:** @copilot | **Date:** 2026-06-16
+
+### Objective
+Fix CI failure: `post-phase-update-to-discussion.yml` missing top-level `permissions:` block (compliance gate exit code 1).
+
+### Actions Taken
+1. **Diagnosed CI failure** — Workflow Compliance Gate reported `FAIL: 1 compliance violation(s) found: post-phase-update-to-discussion.yml: missing top-level permissions: block`
+2. **Fixed workflow** — Added top-level `permissions: { contents: read, discussions: write }` to `.github/workflows/post-phase-update-to-discussion.yml`
+
+### Result
+- Workflow compliance: 185/185 (100%) — all required blocks present (permissions, concurrency, timeout-minutes)
+
+---
+
 ## SESSION SUMMARY — 2026-06-16T17:17Z · PR #4958 Phase 6 Completion Verification
 
 **Session:** PR #4958 - Phase 6 Production Readiness Verification | **Agent:** @copilot | **Date:** 2026-06-16

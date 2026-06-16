@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (Workflow Permissions Compliance — PR #4958, 2026-06-16T17:36Z)
+- Added top-level `permissions:` block to `post-phase-update-to-discussion.yml` — fixes compliance gate failure (was missing `permissions:` at workflow level)
+
 ### Fixed (Phase 6 Completion Verification — PR #4958, 2026-06-16T17:17Z)
 - Fixed workflow compliance: added `concurrency:` and `timeout-minutes: 10` to `post-phase-update-to-discussion.yml` (was the last non-compliant workflow — compliance now 100%)
 - Updated Phase 6D Task 1 compliance report to reflect 100% concurrency compliance (184/184)

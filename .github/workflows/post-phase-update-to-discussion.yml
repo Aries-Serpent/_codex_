@@ -12,6 +12,10 @@ on:
         required: true
         default: '.codex/PHASE_5A_CONSOLIDATION_UPDATE.md'
 
+permissions:
+  contents: read
+  discussions: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
