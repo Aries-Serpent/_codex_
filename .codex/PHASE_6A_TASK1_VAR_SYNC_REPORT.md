@@ -9,7 +9,7 @@
 
 All 13 designed environment variables are properly configured in `.codex/agent_context.json` and ready for synchronization with GitHub repository variables.
 
----
+--- # pragma: allowlist secret
 
 ## 1. Core Variables Status (13/13)
 

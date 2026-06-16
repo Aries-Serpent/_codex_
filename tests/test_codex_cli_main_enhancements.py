@@ -9,7 +9,7 @@ Comprehensive test coverage for src/codex/cli/main.py focusing on:
 - Integration with ingestion pipeline
 - Help and error output
 - Exit codes and status reporting
-"""
+""" # pragma: allowlist secret
 
 import json
 import sys
