@@ -1,6 +1,6 @@
 # Segmented ML (CPU-only) install surface — Generated: 2025-11-12 16:24:19 UTC | Author: mbaetiong
-torch==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
-transformers==5.10.2
+torch==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu  # Security: Torch 2.11.0 with weights_only=True RCE fix
+transformers==5.10.2  # Security: Updated from earlier versions to fix deserialization vulnerabilities
 tokenizers==0.22.1
 safetensors==0.6.2
 accelerate==1.13.0
