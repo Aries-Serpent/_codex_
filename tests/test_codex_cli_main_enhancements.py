@@ -431,11 +431,13 @@ class TestMainEntry:
         with patch("sys.argv", ["codex", "--help"]):
             with patch("typer.run"):
                 # Main should handle help
+                pass
 
     def test_main_no_args(self):
         """Test main with no arguments."""
         with patch("sys.argv", ["codex"]):
             # Main should show help or error
+            pass
 
 
 # ============================================================================
