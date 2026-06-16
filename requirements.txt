@@ -19,7 +19,7 @@ transformers>=5.10.2  # Security: Updated from 4.41 to fix deserialization vulne
 defusedxml>=0.7.1,<1.0.0
 pyyaml>=6.0
 # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
-jinja2>=3.1.8  # Security: Fixes CVE-2024-56326, CVE-2024-56201, CVE-2024-XXXXX, CVE-2024-YYYYY (RCE via sandbox escape, template injection)
+jinja2>=3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201, CVE-2024-XXXXX, CVE-2024-YYYYY (RCE via sandbox escape, template injection)
 certifi>=2024.7.4  # Security: Fixes CVE-2024-39689 (root cert trust issue)
 filelock>=3.29.0  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
 idna>=3.15  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
