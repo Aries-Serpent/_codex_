@@ -9,7 +9,7 @@ Comprehensive coverage for training pipeline functionality including:
 
 from __future__ import annotations
 
-import json
+import json # pragma: allowlist secret
 import logging
 import tempfile
 from pathlib import Path

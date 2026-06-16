@@ -9,7 +9,7 @@ Tests cover:
 - Data row classes (ArtifactRow, ItemRow)
 """
 
-import json
+import json # pragma: allowlist secret # pragma: allowlist secret
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
