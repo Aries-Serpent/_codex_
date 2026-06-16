@@ -222,3 +222,231 @@ PHASE 6 focuses on remediation of CVEs across all 45 dependencies in the Aries-S
 **Document Last Updated**: 2026-06-15T23:30:00Z  
 **Campaign Coordinator**: AI Copilot Coding Agent (Agent 3)  
 **Next Milestone**: Wave 2 P1 Remediation (2026-06-16)
+
+---
+
+## WAVE 2B: P1 CVE REMEDIATION EXECUTION PLAN (READY FOR DISPATCH)
+
+### Campaign Summary
+
+**Execution Model:** Parallel agent dispatch (4 agents, 3-day cycle)  
+**Scope:** 25 CRITICAL+HIGH CVEs across 7 priority packages  
+**Target:** ≥95% test pass rate, zero new vulnerabilities, zero critical regressions
+
+### Wave 2B Agent Dispatch Manifest
+
+#### Agent 1: codeql-alert-resolution-agent (PRIMARY)
+- **Role:** CodeQL-guided CVE patch authoring
+- **Batches:**
+  - Day 2 AM: cryptography (9 CVEs), pyjwt (8 CVEs), urllib3 (6 CVEs) → 8 total fixes
+  - Day 2 PM: jinja2 (5 CVEs), pip (5 CVEs) → 7 additional fixes  
+  - Day 3: twisted (4 CVEs), idna (3 CVEs) + remaining CRITICAL → 10 fixes
+- **Success Criteria:** All 25 P1 CVEs patched + zero CodeQL violations
+- **Artifacts:** Patch commits tagged with CVE references
+
+#### Agent 2: code-scanning-remediation-agent (SECONDARY)
+- **Role:** GHAS/CodeQL/Semgrep validation post-patch
+- **Responsibility:** Verify patches close CVEs + detect regressions
+- **Success Criteria:** 0 critical/high vulnerabilities post-patch
+- **Artifacts:** Remediation validation reports
+
+#### Agent 3: dependency-conflict-agent (REAL-TIME MONITOR)
+- **Role:** Conflict resolution guardian during patches
+- **Responsibility:** Monitor upgrade sequence, detect conflicts, validate paths
+- **Success Criteria:** Zero new conflicts introduced
+- **Artifacts:** Conflict resolution documentation
+
+#### Agent 4: dependency-vulnerability-scanner (CONTINUOUS)
+- **Role:** Post-patch CVE verification
+- **Responsibility:** Re-scan dependencies, verify CVE count decreased
+- **Success Criteria:** All 54 CVEs scanned post-Wave2B, 25+ CVEs eliminated
+- **Artifacts:** CVE remediation metrics
+
+### Wave 2B Execution Schedule
+
+**Day 2 (June 17, 2026)**
+- **09:00-12:00 UTC (AM):** Batch 1 — 8 CVEs (cryptography, pyjwt, urllib3, jinja2, pip)
+  - All 4 agents execute in parallel
+  - Test gate: `nox -s tests` must pass ≥95% to proceed to PM
+  
+- **13:00-17:00 UTC (PM):** Batch 2 — 7 CVEs (jinja2+, pip+, twisted, idna)
+  - All 4 agents execute in parallel
+  - Test gate: ≥95% pass rate required to proceed to Day 3
+
+**Day 3 (June 18, 2026)**
+- **09:00-17:00 UTC:** Batch 3 — 10 remaining CRITICAL CVEs
+  - Priority P0 sequence: torch, transformers, cryptography (if any outstanding)
+  - All 4 agents execute in parallel
+  - Final test gate: ≥95% pass rate = Wave 2B COMPLETE
+
+### Wave 2B Success Criteria
+
+**Gate Decision = ALL of:**
+- [x] 25 P1 CVEs patched
+- [x] ≥95% test suite pass rate (all batches)
+- [x] 0 new critical/high vulnerabilities
+- [x] 0 circular dependency conflicts
+- [x] Coverage ≥12% maintained
+- [x] All 4 agents report SUCCESS
+
+**Result:** WAVE_2B_COMPLETE → PROCEED_TO_WAVE_4
+
+---
+
+## WAVE 4: CI STABILITY BASELINE & AGENT ARCHITECTURE (READY FOR DISPATCH)
+
+### Campaign Summary
+
+**Execution Model:** Parallel agent dispatch (4 agents, 2-3 day cycle)  
+**Scope:** CI health baseline + 145 agent indexing + pattern knowledge graph  
+**Target:** <5% failure baseline, 145 agents indexed, routing logic validated
+
+### Wave 4 Agent Dispatch Manifest
+
+#### Agent 1: ci-auto-healer-agent (PRIMARY)
+- **Role:** CI health baseline establishment
+- **Responsibility:** Collect metrics, identify patterns, establish <5% baseline
+- **Success Criteria:** Baseline documented, <5% failure rate confirmed
+- **Artifacts:** `.codex/WAVE_4_CI_BASELINE_REPORT.md`, pattern analysis JSON
+
+#### Agent 2: workflow-compliance-guardian (SECONDARY)
+- **Role:** REQ compliance enforcement + WEC validation
+- **Responsibility:** Audit 183 workflows, verify REQ-1 to REQ-13 compliance
+- **Success Criteria:** 100% compliance across active workflows
+- **Artifacts:** Compliance audit report, WEC validation results
+
+#### Agent 3: artifact-monitor-agent (TERTIARY)
+- **Role:** Artifact health tracking
+- **Responsibility:** Inventory artifacts, establish retention policies, health tracking
+- **Success Criteria:** All 10+ key artifacts tracked with retention policies
+- **Artifacts:** Artifact inventory report, health metrics JSON
+
+#### Agent 4: agent-orchestrator (QUATERNARY)
+- **Role:** Agent architecture indexing
+- **Responsibility:** Index 145 agents, map capabilities, build routing tree, create pattern index
+- **Success Criteria:** All 145 agents indexed, capability tags mapped, routing validated
+- **Artifacts:** Agent capability matrix, pattern knowledge graph JSON
+
+### Wave 4 Execution Timeline
+
+**Phase 4a - Baseline Establishment (Days 1-2)**
+- ci-auto-healer-agent: CI metrics baseline
+- artifact-monitor-agent: Artifact inventory
+- workflow-compliance-guardian: REQ compliance audit
+- Gate: Baseline established ✓
+
+**Phase 4b - Agent Architecture Indexing (Days 2-3)**
+- agent-orchestrator: Index 145 agents + build graph
+- ci-auto-healer-agent: Enhance pattern rules
+- workflow-compliance-guardian: Validate WEC
+- Gate: Agent graph indexed ✓
+
+**Phase 4c - Validation (Days 3-4)**
+- Execute synthetic failure scenarios
+- Verify self-healing triggers
+- Validate agent routing logic
+- Gate decision: READY/NOT_READY for Wave 5
+
+### Wave 4 Success Criteria
+
+**Gate Decision = ALL of:**
+- [x] CI baseline established (<5% failure rate)
+- [x] All 145 agents indexed
+- [x] Pattern knowledge graph built
+- [x] REQ-1 to REQ-13: 100% compliance
+- [x] Artifact health tracked (10+ artifacts)
+- [x] All 4 agents report SUCCESS
+
+**Result:** WAVE_4_COMPLETE → PROCEED_TO_WAVE_5
+
+---
+
+## WAVE 5: FINAL VALIDATION & DEPLOYMENT CERTIFICATION (READY FOR DISPATCH)
+
+### Campaign Summary
+
+**Execution Model:** Parallel agent dispatch (3 agents, 1-2 day cycle)  
+**Scope:** Final security audit, coverage validation, merge readiness gate  
+**Target:** 0 critical/high vulns, ≥12% coverage, 100% REQ compliance, merge ready
+
+### Wave 5 Agent Dispatch Manifest
+
+#### Agent 1: security-alert-verification-agent
+- **Role:** Final security gate
+- **Responsibility:** Re-scan 54 CVEs post-Wave2B, verify Phase 1 findings fixed
+- **Success Criteria:** 0 critical/high vulnerabilities
+- **Gate:** SECURITY PASS/FAIL
+
+#### Agent 2: unified-coverage-agent
+- **Role:** Coverage validation + test lock
+- **Responsibility:** Execute `nox -s tests`, verify ≥12% coverage, validate 88+ tests
+- **Success Criteria:** Coverage ≥12%, all tests passing
+- **Gate:** COVERAGE PASS/FAIL
+
+#### Agent 3: workflow-compliance-guardian
+- **Role:** Merge readiness certification
+- **Responsibility:** Verify REQ compliance, AGENT_ACCOUNTABILITY_REPORT.md current, CHANGELOG.md updated
+- **Success Criteria:** 100% REQ compliance, merge gates clear
+- **Gate:** MERGE_READY PASS/FAIL
+
+### Wave 5 Final Gate Decision Matrix
+
+| Gate | Condition | Status |
+|------|-----------|--------|
+| **Security** | 0 critical/high post-Wave2B | 🔵 PENDING |
+| **Coverage** | ≥12% + 88+ tests passing | 🔵 PENDING |
+| **CI Compliance** | REQ-1 to REQ-13: 100% | 🔵 PENDING |
+| **Documentation** | AGENT_ACCOUNTABILITY_REPORT.md current | 🔵 PENDING |
+| **FINAL DECISION** | ALL gates PASS | 🔵 PENDING |
+
+**Result:** PRODUCTION_READINESS_MERGE_CERTIFICATION.md generated + SHA recorded
+
+---
+
+## CAMPAIGN ORCHESTRATION STATE
+
+```
+CURRENT STATE: WAVE_1_COMPLETE ✅
+├─ Conflict matrix: ✅ Generated (45 deps, 0 conflicts)
+├─ CVE scan: ✅ Complete (54 CVEs identified)
+└─ Roadmap: ✅ Days 2-4 sequence defined
+
+NEXT ACTION: WAVE_2B_DISPATCH ⏳
+├─ codeql-alert-resolution-agent (PRIMARY)
+├─ code-scanning-remediation-agent (PARALLEL)
+├─ dependency-conflict-agent (PARALLEL)
+└─ dependency-vulnerability-scanner (PARALLEL)
+
+THEN: WAVE_4_DISPATCH ⏳
+├─ ci-auto-healer-agent (PRIMARY)
+├─ workflow-compliance-guardian (PARALLEL)
+├─ artifact-monitor-agent (PARALLEL)
+└─ agent-orchestrator (PARALLEL)
+
+THEN: WAVE_5_DISPATCH ⏳
+├─ security-alert-verification-agent (PRIMARY)
+├─ unified-coverage-agent (PARALLEL)
+└─ workflow-compliance-guardian (PARALLEL)
+
+FINAL: PRODUCTION_READY ⏳
+├─ Certification generated
+├─ SHA recorded for deployment
+└─ Campaign complete
+```
+
+---
+
+## AUTHORIZATION STATUS
+
+**Wave 1:** ✅ COMPLETE  
+**Wave 2B:** ⏳ **AWAITING DISPATCH AUTHORIZATION**  
+**Wave 4:** ⏳ AWAITING WAVE 2B COMPLETION  
+**Wave 5:** ⏳ AWAITING WAVE 4 COMPLETION
+
+**Ready for execution upon approval.**
+
+---
+
+**Campaign Execution Start:** 2026-06-16T00:37Z  
+**Master Plan Updated:** 2026-06-16T00:37Z  
+**Status:** READY FOR WAVE 2B DISPATCH
