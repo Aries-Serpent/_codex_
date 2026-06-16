@@ -9,7 +9,7 @@ Tests cover:
 - Error handling and exceptions
 """
 
-import pytest
+import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timedelta
 
