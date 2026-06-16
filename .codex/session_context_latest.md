@@ -1,10 +1,10 @@
-# Session Context — 2026-06-16T23:31:10Z
+# Session Context — 2026-06-16T23:36:21Z
 **Branch:** `copilot/0d-base-cherry-pick-diffs`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4925` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4739` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Authentication Tests** — `failure` on `copilot/0d-base-cherry-pick-diffs` (2026-06-16)
 
 ## 📝 Recent Commits
+- `3e2a2617` Apply remaining changes — copilot-swe-agent[bot] (2026-06-16)
 - `5d768339` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-16)
 - `6f9da5aa` Phase 7A Wave 1 Lane 1.2: Gap Analysis Complete (P1 modules identified, 130-145  — copilot-swe-agent[bot] (2026-06-16)
 - `2f1dc6bf` Phase 7A Wave 1 ALL 4 Lanes Now Active: Baseline (✅), Validation (🟡), Gap Fillin — copilot-swe-agent[bot] (2026-06-16)
@@ -23,7 +24,6 @@
 - `e54edaf1` Phase 7A Campaign: Wave 1 Initialization & Agent Delegation (7.04% → 95%+ Covera — copilot-swe-agent[bot] (2026-06-16)
 - `b753144b` Phase B Continuation: Complete Gate 1 validation + Gate 2 planning + workflow ap — copilot-swe-agent[bot] (2026-06-16)
 - `53f0d782` Phase B Continuation: Session initialization and planning — copilot-swe-agent[bot] (2026-06-16)
-- `5ed8fc8b` Apply remaining changes — copilot-swe-agent[bot] (2026-06-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
