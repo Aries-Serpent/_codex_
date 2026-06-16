@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4954)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4954 (SHA `274b5dd5`) at 2026-06-16T05:57Z [auto-generated]
+
 ### Fixed (SN — PR #4952, 2026-06-16T05:33Z)
 - Fixed the failing `dynamic / submit-pypi (dynamic)` dependency-submission validation by replacing the nonexistent `cryptography` 49.2.0 constraint with published 49.0.0-based metadata in `requirements.txt`, `requirements-dev.txt`, and `pyproject.toml`.
 - Tightened `.github/workflows/secrets-baseline-enforcer.yml` so the `.codex/` auto-remediation path only applies to Markdown documentation files, matching the PR intent and review feedback.
