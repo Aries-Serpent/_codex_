@@ -63,7 +63,7 @@ Extended/Other Modules:    973 tests    (39%)
 |---|------|-------------|--------|----------|
 | 5 | **CodeQL Findings** | 0 critical/high remaining | ✅ ZERO | 107 findings processed, 107 fixed, 0 open |
 | 6 | **Semgrep Findings** | 0 critical/high remaining | ✅ ZERO | 88 findings processed, 82 fixed, 6 confirmed FP |
-| 7 | **Secret Scanning** | No secrets in source | ✅ CLEAN | 204 findings audited, all resolved; 0 true secrets |
+| 7 | **Secret Scanning** | No secrets in source | ✅ CLEAN | 204 findings audited, all resolved; 0 true secrets | <!-- pragma: allowlist secret -->
 | 8 | **Security Remediation** | All plans closed | ✅ CLOSED | Remediation closure report: 2026-06-12 SIGNED-OFF |
 | 9 | **Vulnerability Audit** | No open vulnerabilities | ✅ VERIFIED | Phase 6 verified: 0 critical, 0 high, <5 low |
 
@@ -308,7 +308,7 @@ Extended/Other Modules:    973 tests    (39%)
 |------|-------|-------|----|----|--------|
 | CodeQL | 107 | 107 | 0 | 0 | ✅ CLOSED |
 | Semgrep | 88 | 82 | 6 | 0 | ✅ CLOSED |
-| detect-secrets | 9 | 9 | — | 0 | ✅ CLOSED |
+| detect-secrets | 9 | 9 | — | 0 | ✅ CLOSED | <!-- pragma: allowlist secret -->
 | **Total** | **204** | **198** | **6** | **0** | **✅ CLOSED** |
 
 **Key Findings:**

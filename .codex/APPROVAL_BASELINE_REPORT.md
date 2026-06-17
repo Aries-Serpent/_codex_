@@ -187,7 +187,7 @@ Priority 2: CODEX_MASTER_KEY (GitHub App)
     ↓ (fallback if not available)
 Priority 3: CODEX_BACKUP_KEY (PAT)
     ↓ (fallback if not available)
-Priority 4: github.token (default runner token)
+Priority 4: github.token (default runner token)  # pragma: allowlist secret
 ```
 
 **Location:** `scripts/ci/approve_pending_runs.py`, lines 105-135

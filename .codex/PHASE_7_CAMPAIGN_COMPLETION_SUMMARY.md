@@ -228,13 +228,13 @@ tests/
 ├── security/ (287 tests)
 │   ├── test_security_core_comprehensive.py
 │   ├── test_scope_validator_comprehensive.py
-│   ├── test_token_rotation_comprehensive.py
+│   ├── test_token_rotation_comprehensive.py  # pragma: allowlist secret
 │   ├── test_decorators_comprehensive.py
 │   └── test_cve_monitor_comprehensive.py
 ├── auth/ (356 tests)
 │   ├── test_user_store_comprehensive.py
 │   ├── test_mfa_provider_comprehensive.py
-│   ├── test_token_manager_comprehensive.py
+│   ├── test_token_manager_comprehensive.py  # pragma: allowlist secret
 │   ├── test_authenticator_comprehensive.py
 │   └── ... (8 total auth test files)
 ├── cli/ (192+ tests)

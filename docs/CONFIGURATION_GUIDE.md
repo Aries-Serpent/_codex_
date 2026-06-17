@@ -15,7 +15,7 @@ configs/
 │   ├── default.yaml
 │   ├── bert.yaml
 │   ├── gpt.yaml
-│   └── tokenizer/
+│   └── tokenizer/  # pragma: allowlist secret
 │       └── offline/
 │           └── tiny_vocab.yaml
 ├── data/

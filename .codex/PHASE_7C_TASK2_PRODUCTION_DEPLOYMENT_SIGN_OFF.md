@@ -159,8 +159,8 @@ python3 scripts/ci/mypy_baseline.py → 0 errors vs baseline 122
 | **CodeQL** | ✅ Passed | 0 findings |
 | **Semgrep** | ✅ Passed | 0 findings |
 | **Bandit** | ✅ Configured | 8 pre-existing (no new) |
-| **Gitleaks** | ✅ Passed | 0 secrets detected |
-| **Detect-Secrets** | ✅ Passed | 0 real secrets (.secrets.baseline consistent) |
+| **Gitleaks** | ✅ Passed | 0 secrets detected | <!-- pragma: allowlist secret -->
+| **Detect-Secrets** | ✅ Passed | 0 real secrets (.secrets.baseline consistent) | <!-- pragma: allowlist secret -->
 | **Dependency Advisory DB** | ✅ Reviewed | 0 critical vulnerabilities in Phase 7 changes |
 
 **Security Metrics:**
@@ -564,7 +564,7 @@ The codebase has been comprehensively validated and meets all requirements for p
 |------|-------------|--------|-----------|
 | **Service degradation** | <1% | Medium | Monitoring + Rollback ready |
 | **Data integrity** | <0.1% | High | Backup verified + Recovery tested |
-| **Security breach** | <0.01% | Critical | 5-layer defense (CodeQL, Semgrep, Bandit, SAST, Secrets) |
+| **Security breach** | <0.01% | Critical | 5-layer defense (CodeQL, Semgrep, Bandit, SAST, Secrets) | <!-- pragma: allowlist secret -->
 | **Performance regression** | <2% | Low | Baseline metrics established + Monitoring active |
 
 **Overall Risk Level:** 🟢 **LOW** (<2% probability of any issue)

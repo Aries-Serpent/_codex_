@@ -45,7 +45,7 @@ The Approval Consolidation Campaign consolidates 5 fragmented approval workflows
 │  ┌──────────────────────────────────────────────────┐   │
 │  │ 1. Input Sanitization (sed-based)                │   │
 │  │ 2. Rule Engine Evaluation (5-tier, deterministic) │   │
-│  │ 3. Token Chain Resolution (4-tier fallback)      │   │
+│  │ 3. Token Chain Resolution (4-tier fallback)      │   │  # pragma: allowlist secret
 │  │ 4. Approval Execution (GitHub API)               │   │
 │  │ 5. Audit Trail Publishing (approvals.jsonl)     │   │
 │  └──────────────────────────────────────────────────┘   │
@@ -102,12 +102,12 @@ return DENY;
 
 **4-Tier Token Fallback Strategy:**
 
-| Tier | Token Source | Scope | TTL | Security | Used When |
+| Tier | Token Source | Scope | TTL | Security | Used When | <!-- pragma: allowlist secret -->
 |------|--------------|-------|-----|----------|-----------|
 | 1 | Cognitive Brain App (auto-rotating) | repo+workflow | 9 min | ⭐⭐⭐⭐⭐ PREFERRED | Available |
 | 2 | CODEX_MASTER_KEY (PAT) | repo+workflow+actions:write | 1 year | ⭐⭐⭐⭐ PRIMARY | CB unavail |
 | 3 | CODEX_BACKUP_KEY (PAT) | repo+workflow+actions | 1 year | ⭐⭐⭐ SECONDARY | Master unavail |
-| 4 | github.token (installation) | limited (actions:write only) | 60 min | ⭐⭐ LAST RESORT | PATs unavail |
+| 4 | github.token (installation) | limited (actions:write only) | 60 min | ⭐⭐ LAST RESORT | PATs unavail | <!-- pragma: allowlist secret -->
 
 **Security Controls:**
 - ✅ No token leakage in audit logs (tokens stripped before appending)
@@ -201,7 +201,7 @@ Manual Approvals:      91.2%   (114 of 125 manual)
 Approval Latency P50:   2.5h   (median human response time)
 Approval Latency P95:   6.2h   (95th percentile)
 Approval Latency P99:  12.1h   (99th percentile, overnight block)
-Token Chain Fallback:  40%     (many using github.token, low-scope)
+Token Chain Fallback:  40%     (many using github.token, low-scope)  # pragma: allowlist secret
 Error Rate:             7.6%   (approval execution failures)
 Code Duplication:      40%     (240+ redundant lines across 5 workflows)
 Audit Trail:           None    (no compliance logging)

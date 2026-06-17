@@ -16,15 +16,15 @@ Generated 709 comprehensive unit tests across 16 test files covering authenticat
 | Component | Tests | Focus Areas |
 |-----------|-------|------------|
 | Authenticator | 51 | User registration validation, login/logout, MFA integration, session management |
-| OAuth Manager | 47 | Authorization code flow, token exchange, scope handling, state validation |
-| OAuth Extended | 61 | Advanced OAuth2 flows, OpenID Connect, PKCE, token introspection, provider management |
+| OAuth Manager | 47 | Authorization code flow, token exchange, scope handling, state validation | <!-- pragma: allowlist secret -->
+| OAuth Extended | 61 | Advanced OAuth2 flows, OpenID Connect, PKCE, token introspection, provider management | <!-- pragma: allowlist secret -->
 | MFA Provider | 54 | TOTP generation/validation, backup codes, provisioning, recovery flows |
-| User Store | 57 | User CRUD, password hashing, authentication, role management, concurrent access |
-| Middleware | 49 | Token extraction, request validation, error responses, security headers |
-| Middleware Advanced | 75 | Advanced headers, CORS, rate limiting, session handling, token validation |
-| GitHub App | 33 | App installation, permissions, token exchange, webhooks, state |
+| User Store | 57 | User CRUD, password hashing, authentication, role management, concurrent access | <!-- pragma: allowlist secret -->
+| Middleware | 49 | Token extraction, request validation, error responses, security headers | <!-- pragma: allowlist secret -->
+| Middleware Advanced | 75 | Advanced headers, CORS, rate limiting, session handling, token validation | <!-- pragma: allowlist secret -->
+| GitHub App | 33 | App installation, permissions, token exchange, webhooks, state | <!-- pragma: allowlist secret -->
 | Repositories | 29 | In-memory and SQLite implementations, persistence, transactions |
-| Token Manager Supplement | 44 | JWT creation, validation, refresh, revocation, claims, JTI |
+| Token Manager Supplement | 44 | JWT creation, validation, refresh, revocation, claims, JTI | <!-- pragma: allowlist secret -->
 | User Model Supplement | 30 | Model validation, bulk operations, data integrity, special cases |
 | Auth Integration | 38 | Complete workflows, error paths, state transitions, concurrent access |
 | Security Edge Cases | 33 | Injection attacks, crypto security, timing attacks, resource exhaustion |
@@ -91,7 +91,7 @@ tests/
 │   ├── test_middleware_comprehensive.py (522 lines, 49 tests)
 │   ├── test_github_app_comprehensive.py (487 lines, 33 tests)
 │   ├── test_repositories_comprehensive.py (518 lines, 29 tests)
-│   ├── test_token_manager_supplement.py (471 lines, 44 tests)
+│   ├── test_token_manager_supplement.py (471 lines, 44 tests)  # pragma: allowlist secret
 │   ├── test_user_model_supplement.py (557 lines, 30 tests)
 │   ├── test_auth_integration.py (502 lines, 38 tests)
 │   ├── test_security_edge_cases.py (542 lines, 33 tests)
@@ -155,10 +155,10 @@ def test_registration_duplicate_username(self):
 
 ### 3. Security Tests
 ```python
-def test_password_not_stored_plaintext(self):
-    """Passwords should be hashed, not plaintext."""
-    # 1. Register user with password
-    # 2. Verify password_hash ≠ plaintext password
+def test_password_not_stored_plaintext(self):  # pragma: allowlist secret
+    """Passwords should be hashed, not plaintext."""  # pragma: allowlist secret
+    # 1. Register user with password  # pragma: allowlist secret
+    # 2. Verify password_hash ≠ plaintext password  # pragma: allowlist secret
 ```
 
 ### 4. Integration Tests
@@ -167,8 +167,8 @@ def test_oauth_complete_flow(self):
     """Complete OAuth authorization flow."""
     # 1. Get authorization URL
     # 2. Simulate user approval
-    # 3. Exchange code for token
-    # 4. Verify token valid
+    # 3. Exchange code for token  # pragma: allowlist secret
+    # 4. Verify token valid  # pragma: allowlist secret
 ```
 
 ### 5. Concurrent Access Tests

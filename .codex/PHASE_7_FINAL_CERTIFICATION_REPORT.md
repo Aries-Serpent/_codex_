@@ -148,7 +148,7 @@ ACHIEVEMENT:                      EXCEEDED by 1-5 percentage points
 | High-Severity Issues | 0 | ✅ CLEAR |
 | Code Scanning Alerts | 0 unresolved | ✅ CLEAR |
 | Dependency Vulnerabilities | 0 critical | ✅ CLEAR |
-| Secret Detection | 0 active | ✅ CLEAR |
+| Secret Detection | 0 active | ✅ CLEAR | <!-- pragma: allowlist secret -->
 | Policy Compliance | 100% | ✅ CLEAR |
 
 **Status:** ✅ PRODUCTION SECURITY CLEARED

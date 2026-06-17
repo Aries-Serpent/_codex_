@@ -189,7 +189,7 @@ def check_approval_throttle(workflow_id):
 | **T1** | Cognitive Brain App | `repo`, `workflow`, `actions:write` | 9 min (auto) | Very Low | 1 (Use First) |
 | **T2** | CODEX_MASTER_KEY PAT | `repo`, `workflow`, `actions:write` | Manual (None) | High | 2 |
 | **T3** | CODEX_BACKUP_KEY PAT | `repo`, `workflow`, `actions:write` | Manual (None) | High | 3 |
-| **T4** | github.token | `contents:read`, `statuses:read` | Session | Low | 4 (Fail-Safe) |
+| **T4** | github.token | `contents:read`, `statuses:read` | Session | Low | 4 (Fail-Safe) | <!-- pragma: allowlist secret -->
 
 ### 2.2 Scope Analysis
 
@@ -203,10 +203,10 @@ def check_approval_throttle(workflow_id):
 
 | Risk Category | Mitigation | Status |
 |---------------|-----------|--------|
-| Logging leak (token in error messages) | Explicit masking in approve_pending_runs.py | ⚠️ Needs verification |
-| GitHub secret rotation | GitHub encrypts at rest; audit trail exists | ✅ Adequate |
+| Logging leak (token in error messages) | Explicit masking in approve_pending_runs.py | ⚠️ Needs verification | <!-- pragma: allowlist secret -->
+| GitHub secret rotation | GitHub encrypts at rest; audit trail exists | ✅ Adequate | <!-- pragma: allowlist secret -->
 | PAT expiration | No expiration set on CODEX_MASTER_KEY; should set 1-year TTL | ❌ Missing |
-| Secrets scanning | GitHub Advanced Security should detect leaked PATs | ✅ Enabled (assume) |
+| Secrets scanning | GitHub Advanced Security should detect leaked PATs | ✅ Enabled (assume) | <!-- pragma: allowlist secret -->
 | Scope validation | Test PAT permissions after rotation | ⚠️ Manual process |
 
 ### 2.4 Priority Logic Validation
@@ -406,7 +406,7 @@ def check_approval_throttle(workflow_id):
 | **AC-2** | Change management (approval workflow) | ✅ Implemented (auto-approve-workflows.yml) | No formal change log or review board |
 | **AU-1** | Audit logging (approval trail) | ⚠️ Partial (.codex/approvals.jsonl exists) | No formal retention policy; no signing |
 | **IR-1** | Incident response (anomaly alerting) | ⚠️ Limited (GitHub audit log only) | No automated alert for unusual approval patterns |
-| **UP-1** | User authentication (token validation) | ✅ Implemented (token chain) | Tier 2-3 PAT rotation not enforced |
+| **UP-1** | User authentication (token validation) | ✅ Implemented (token chain) | Tier 2-3 PAT rotation not enforced | <!-- pragma: allowlist secret -->
 
 **Compliance Status:** ~70% of core controls implemented. Recommend quarterly SOC 2 audits to verify control effectiveness.
 

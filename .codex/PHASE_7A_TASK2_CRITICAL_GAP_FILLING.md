@@ -261,7 +261,7 @@ Successfully executed Phase 7A Task 2 - Critical Module Gap Filling by generatin
 
 | Module | Status | Tests | Lines | Coverage Focus |
 |--------|--------|-------|-------|-----------------|
-| `oauth_manager.py` | ✅ NEW | 26 | 415 | OAuth 2.0 flows, token exchange |
+| `oauth_manager.py` | ✅ NEW | 26 | 415 | OAuth 2.0 flows, token exchange | <!-- pragma: allowlist secret -->
 | `in_memory_user_repository.py` | ✅ NEW | 29 | 101 | CRUD operations, user storage |
 | `user_model.py` | ✅ NEW | 29 | 142 | Model validation, data integrity |
 | `user_repository.py` | ✅ NEW | 30 | 89 | Abstract interface, contract testing |
@@ -270,8 +270,8 @@ Successfully executed Phase 7A Task 2 - Critical Module Gap Filling by generatin
 
 | Module | Status | Tests | Focus |
 |--------|--------|-------|-------|
-| Input Validators | ✅ ENHANCED | 70 | Email, URL, username, password, integer, string |
-| Security Validators | ✅ ENHANCED | 49 | Token, auth flow, MFA, cryptography |
+| Input Validators | ✅ ENHANCED | 70 | Email, URL, username, password, integer, string | <!-- pragma: allowlist secret -->
+| Security Validators | ✅ ENHANCED | 49 | Token, auth flow, MFA, cryptography | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -289,13 +289,13 @@ Validation Module Tests:          70 tests (30%)
   - Email Validation:            10 tests
   - URL Validation:              10 tests
   - Username Validation:         10 tests
-  - Password Validation:          9 tests
+  - Password Validation:          9 tests  # pragma: allowlist secret
   - Integer Validation:          11 tests
   - String Validation:           12 tests
   - Edge Cases:                   8 tests
 
 Security Edge Case Tests:         49 tests (21%)
-  - Token Security:              10 tests
+  - Token Security:              10 tests  # pragma: allowlist secret
   - Auth Flows:                  10 tests
   - MFA:                          8 tests
   - Error Handling:               7 tests

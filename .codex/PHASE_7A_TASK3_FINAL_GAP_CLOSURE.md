@@ -48,7 +48,7 @@ Expected Final:       ≥20% (need ~13,003 tested statements)
 |-----------|-------|-------|------------|
 | `test_security_core_comprehensive.py` | 107 | 842 | Sanitization, input validation, CSRF protection |
 | `test_scope_validator_comprehensive.py` | 55 | 487 | Hierarchical scopes, permission validation |
-| `test_token_rotation_comprehensive.py` | 55 | 579 | Token lifecycle, rotation policies |
+| `test_token_rotation_comprehensive.py` | 55 | 579 | Token lifecycle, rotation policies | <!-- pragma: allowlist secret -->
 | `test_decorators_comprehensive.py` | 40 | 562 | Auth, permission, rate limiting decorators |
 | `test_cve_monitor_comprehensive.py` | 30 | 692 | Security vulnerability monitoring |
 | **SUBTOTAL** | **287** | **3,762** | **Security-focused testing** |
@@ -59,10 +59,10 @@ Expected Final:       ≥20% (need ~13,003 tested statements)
 |-----------|-------|-------|------------|
 | `test_user_store_comprehensive.py` | 57 | 620 | User management, CRUD operations |
 | `test_mfa_provider_comprehensive.py` | 54 | 526 | TOTP, backup codes, MFA flows |
-| `test_token_manager_comprehensive.py` | 52 | 536 | Token creation, validation, refresh, revocation |
+| `test_token_manager_comprehensive.py` | 52 | 536 | Token creation, validation, refresh, revocation | <!-- pragma: allowlist secret -->
 | `test_authenticator_comprehensive.py` | 51 | 463 | Login/logout, user registration workflows |
 | `test_middleware_comprehensive.py` | 49 | 523 | Auth middleware, request validation |
-| `test_oauth_manager_comprehensive.py` | 36 | 570 | OAuth2 flows, authorization, token exchange |
+| `test_oauth_manager_comprehensive.py` | 36 | 570 | OAuth2 flows, authorization, token exchange | <!-- pragma: allowlist secret -->
 | `test_repositories_comprehensive.py` | 29 | 519 | User repository interfaces, persistence |
 | `test_github_app_comprehensive.py` | 28 | 488 | GitHub App authentication, webhook handling |
 | **SUBTOTAL** | **356** | **4,245** | **Auth/identity management** |
@@ -74,7 +74,7 @@ Expected Final:       ≥20% (need ~13,003 tested statements)
 | `test_cli_comprehensive.py` | 44 | 684 | CLI argument parsing, main commands |
 | `test_codex_ml_cli_comprehensive.py` | 34 | 503 | ML CLI operations, training commands |
 | `test_cli_rag_comprehensive.py` | 33 | 459 | RAG CLI, indexing, retrieval |
-| `test_tokenization_cli_comprehensive.py` | 29 | 468 | Tokenizer CLI, token generation |
+| `test_tokenization_cli_comprehensive.py` | 29 | 468 | Tokenizer CLI, token generation | <!-- pragma: allowlist secret -->
 | `test_archive_cli_comprehensive.py` | 23 | 356 | Archive operations, backup/restore |
 | `test_quantum_orchestrator_cli_comprehensive.py` | 30 | 394 | Quantum operations CLI |
 | **SUBTOTAL** | **192** | **2,864** | **CLI & infrastructure** |

@@ -51,7 +51,7 @@ Final Expected Target:       ≥20% coverage ACHIEVED
 tests/security/
   ├── test_security_core_comprehensive.py       (107 tests)
   ├── test_scope_validator_comprehensive.py     (55 tests)
-  ├── test_token_rotation_comprehensive.py      (55 tests)
+  ├── test_token_rotation_comprehensive.py      (55 tests)  # pragma: allowlist secret
   ├── test_decorators_comprehensive.py          (40 tests)
   └── test_cve_monitor_comprehensive.py         (30 tests)
 ```
@@ -61,7 +61,7 @@ tests/security/
 tests/auth/
   ├── test_user_store_comprehensive.py          (57 tests)
   ├── test_mfa_provider_comprehensive.py        (54 tests)
-  ├── test_token_manager_comprehensive.py       (52 tests)
+  ├── test_token_manager_comprehensive.py       (52 tests)  # pragma: allowlist secret
   ├── test_authenticator_comprehensive.py       (51 tests)
   ├── test_middleware_comprehensive.py          (49 tests)
   ├── test_oauth_manager_comprehensive.py       (36 tests)
@@ -75,7 +75,7 @@ tests/cli/
   ├── test_cli_comprehensive.py                 (44 tests)
   ├── test_codex_ml_cli_comprehensive.py        (34 tests)
   ├── test_cli_rag_comprehensive.py             (33 tests)
-  ├── test_tokenization_cli_comprehensive.py    (29 tests)
+  ├── test_tokenization_cli_comprehensive.py    (29 tests)  # pragma: allowlist secret
   ├── test_archive_cli_comprehensive.py         (23 tests)
   └── test_quantum_orchestrator_cli_comprehensive.py (30 tests)
 ```

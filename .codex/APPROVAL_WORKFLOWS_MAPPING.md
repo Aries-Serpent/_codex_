@@ -410,16 +410,16 @@ stateDiagram-v2
 
 | Current | Event | Condition | Next | Action |
 |---------|-------|-----------|------|--------|
-| INITIAL | Approval trigger | ID valid | AUTHORIZED | Mint token |
+| INITIAL | Approval trigger | ID valid | AUTHORIZED | Mint token | <!-- pragma: allowlist secret -->
 | AUTHORIZED | Gate check | WEC checked | PENDING_GATE | Check eligibility |
 | PENDING_GATE | Eligibility pass | Label or rule match | PENDING_APPROVAL | Queue for execution |
 | PENDING_GATE | Eligibility fail | Non-owner, denied policy | BLOCKED | Log denial |
-| PENDING_APPROVAL | GitHub API ready | Token available | APPROVING | Execute approval |
+| PENDING_APPROVAL | GitHub API ready | Token available | APPROVING | Execute approval | <!-- pragma: allowlist secret -->
 | APPROVING | HTTP 200 | Success response | APPROVED | Mark approved |
 | APPROVING | HTTP 409/422 | Already approved | APPROVED_IDEMPOTENT | Accept as success |
-| APPROVING | HTTP 401/403 | Token permission | BLOCKED | Log error |
+| APPROVING | HTTP 401/403 | Token permission | BLOCKED | Log error | <!-- pragma: allowlist secret -->
 | APPROVED/APPROVED_IDEMPOTENT | Audit write | Log complete | AUDIT_LOGGED | Finished |
-| BLOCKED | Manual intervention | Token refreshed | TERMINATED | Escalate |
+| BLOCKED | Manual intervention | Token refreshed | TERMINATED | Escalate | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -506,7 +506,7 @@ graph TB
 | 4 | **Maintainer Implicit Approval** | Approver is maintainer (team:maintainers) | Auto-approve without explicit label | auto-approve-workflows, self-approve-pending-runs | P2 | pull_request_review, schedule |
 | 5 | **Schedule Sweep Auto-Approve** | 5-minute schedule trigger fires | Approve all action_required across all open PRs | self-approve-pending-runs | P3 | schedule (*/5 * * * *) |
 | 6 | **Workflow Cascade Auto-Approve** | Any workflow completes (workflow_run event) | Approve remaining queued runs for same PR | self-approve-pending-runs | P3 | workflow_run |
-| 7 | **Agent Auth Delegation** | Owner approval via PR body checkbox | Conditional approval with TTL-based token delegation | agent-auth-delegation | P1 | pull_request (open/edit) |
+| 7 | **Agent Auth Delegation** | Owner approval via PR body checkbox | Conditional approval with TTL-based token delegation | agent-auth-delegation | P1 | pull_request (open/edit) | <!-- pragma: allowlist secret -->
 | 8 | **Workflow Execution Gate** | WEC checkbox `- [x] Enable Workflow` set | Approve and dispatch selected workflow per checkbox | workflow-execution-gate | P2 | pull_request (edited) |
 
 **Priority Tiers**:
@@ -594,7 +594,7 @@ agent-auth-delegation:
 | Auto-Approval Rate | 8.8% | <20% | (approved / action_required) |
 | Approval Latency (p50) | <5 min | <3 min | Time from action_required → approval |
 | Approval Success Rate | 50% | >95% | (successful / attempted) |
-| Token Chain Fallback Rate | <5% | <2% | (fallback tokens used / total) |
+| Token Chain Fallback Rate | <5% | <2% | (fallback tokens used / total) | <!-- pragma: allowlist secret -->
 | Audit Trail Completeness | ~95% | 100% | Approvals logged to .codex/evidence/ |
 
 **Service Level Objectives**:
@@ -610,7 +610,7 @@ agent-auth-delegation:
 | Symptom | Root Cause | Verification | Fix |
 |---------|-----------|--------------|-----|
 | Approval hangs >10 min | Concurrency group blocking | `gh run list -w self-approve --status in_progress` | Wait for running sweep to complete |
-| Token error (403) | Invalid/expired token | Check `CODEX_MASTER_KEY` permissions | Refresh CODEX_MASTER_KEY secret |
+| Token error (403) | Invalid/expired token | Check `CODEX_MASTER_KEY` permissions | Refresh CODEX_MASTER_KEY secret | <!-- pragma: allowlist secret -->
 | Dispatch not received | Hub not triggered | Check `gh run list -w auto-approve-workflows` | Manual: `gh workflow run auto-approve-workflows.yml` |
 | Duplicate approvals | Idempotency not working | Check HTTP 409/422 handling | Idempotent by design (safe to ignore) |
 | WEC checkbox ignored | Gate not parsing | Check `.codex/wec_parser.py` output | Verify checkbox format: `- [x] Workflow Name` |
