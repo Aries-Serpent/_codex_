@@ -151,9 +151,9 @@ permissions:
   contents: read
 
 jobs:
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Section 1a: Push Event Approval Handler
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Handles approval on push events (workflow_dispatch is handled by evaluate-approval below).
   # This job allows the workflow to execute successfully when triggered by push events.
 
@@ -208,9 +208,9 @@ jobs:
             exit 0
           }
 
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Section 2: Enhanced Approval Rule Engine (5-tier priority system)
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # This new job implements the unified approval hub rule evaluation logic.
   # Only runs when invoked via workflow_dispatch with new approval_source input.
 
@@ -259,9 +259,9 @@ jobs:
           # Sanitize approval_reason to prevent injection
           SAFE_REASON=$(echo "$APPROVAL_REASON" | sed 's/[^a-zA-Z0-9:_.-]/ /g' | head -c 256)
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 1: Force Deny Intent (instant deny, no processing)
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           if [ "$APPROVAL_INTENT" = "force_deny" ]; then
             echo "decision=DENY" >> $GITHUB_OUTPUT
             echo "rule=force_deny_intent" >> $GITHUB_OUTPUT
@@ -272,9 +272,9 @@ jobs:
             exit 0
           fi
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 2: Persistent Label Rule (wec:auto-approve)
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
           if echo "$LABELS" | grep -q "^wec:auto-approve$"; then
             echo "decision=APPROVE" >> $GITHUB_OUTPUT
@@ -286,10 +286,10 @@ jobs:
             exit 0
           fi
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 3: Single-Session Label Rule (wec:auto-approve-once)
           # Time-limited approval window based on TTL
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           if echo "$LABELS" | grep -q "^wec:auto-approve-once$"; then
             CREATED_AT=$(gh pr view "$TARGET_PR" --repo "$REPO" --json createdAt -q '.createdAt' 2>/dev/null || echo "")
             if [ -z "$CREATED_AT" ]; then
@@ -325,10 +325,10 @@ jobs:
             fi
           fi
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 4: Maintainer Approval Rule
           # Check if PR has been approved by maintainer (@mbaetiong)
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           APPROVER=$(gh pr view "$TARGET_PR" --repo "$REPO" --json reviews -q '.reviews[] | select(.state=="APPROVED") | .author.login' 2>/dev/null | head -1 || echo "")
           if [ "$APPROVER" = "mbaetiong" ]; then
             echo "decision=APPROVE" >> $GITHUB_OUTPUT
@@ -340,10 +340,10 @@ jobs:
             exit 0
           fi
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 5: Low-Risk Approval Reason Rule
           # Patterns: docs:, chore:, etc.
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           if [[ "$SAFE_REASON" =~ ^(docs|chore|test|refactor) ]]; then
             echo "decision=APPROVE" >> $GITHUB_OUTPUT
             echo "rule=low_risk_reason_rule" >> $GITHUB_OUTPUT
@@ -354,9 +354,9 @@ jobs:
             exit 0
           fi
           
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           # Fallback: No matching rule — default DENY
-          # ────────────────────────────────────────────────────────────────────
+          # ─────────────────────────────────────────────────────────────────────────
           echo "decision=DENY" >> $GITHUB_OUTPUT
           echo "rule=no_matching_rule" >> $GITHUB_OUTPUT
           echo "confidence=0.0" >> $GITHUB_OUTPUT
@@ -364,9 +364,9 @@ jobs:
           echo "should_proceed=false" >> $GITHUB_OUTPUT
           echo "⛔ Fallback: No matching approval rule found"
 
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Section 2b: Enhanced Approval Execution Job
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # This job executes the approval after rule evaluation, with token chain
   # resolution and audit logging.
 
@@ -501,7 +501,7 @@ jobs:
           
           # Create audit log entry (JSONL format for append-only)
           cat >> .codex/approvals.jsonl << EOF
-          {"approval_id":"$APPROVAL_ID","timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","run_id":"${{ github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_evaluated":"$RULE_MATCHED","approval_reason":"$APPROVAL_REASON","token_chain_resolution":{"token_source":"$TOKEN_SOURCE"},"confidence_score":$CONFIDENCE,"action_taken":"approved","actor":"${{ github.actor }}"}
+          {"approval_id":"$APPROVAL_ID","timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","run_id":"${{ github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","confidence":$CONFIDENCE}
           EOF
           
           # Commit audit log (best effort, non-fatal if fails)
@@ -511,9 +511,9 @@ jobs:
           git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR #$TARGET_PR, rule: $RULE_MATCHED)" || true
           git push || true
 
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Section 2c: Cleanup Job
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   cleanup-single-session:
     name: "🧹 Cleanup Single-Session Label"
     needs: [evaluate-approval, execute-approval]
@@ -521,8 +521,8 @@ jobs:
     if: |
       always() &&
       needs.evaluate-approval.outputs.should_proceed == 'true' &&
-      github.event.inputs.approval_source == 'self-approve-pending-runs' ||
-      github.event.inputs.approval_source == 'trigger-on-approval'
+      (github.event.inputs.approval_source == 'self-approve-pending-runs' ||
+       github.event.inputs.approval_source == 'trigger-on-approval')
     permissions:
       pull-requests: write
     steps:
@@ -546,9 +546,9 @@ jobs:
               echo "⚠️ Could not remove label (non-fatal)"
           fi
 
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Section 3: Telemetry & Monitoring
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   publish-metrics:
     name: "📊 Publish Approval Metrics"
     needs: [evaluate-approval, execute-approval]
@@ -574,7 +574,7 @@ jobs:
           
           # Append hourly metric (JSONL format)
           cat >> .codex/metrics/hourly.jsonl << EOF
-          {"timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","decision":"$DECISION","confidence":$CONFIDENCE,"latency_ms":$((SECONDS * 1000)),"actor":"${{ github.actor }}"}
+          {"timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","decision":"$DECISION","confidence":$CONFIDENCE}
           EOF
           
           # Commit metrics (best effort)
@@ -584,10 +584,11 @@ jobs:
           git commit -m "metric: Approval telemetry for $APPROVAL_SOURCE" || true
           git push || true
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # Original Auto-Approve Job (backward compatibility - continues to work)
-  # ────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Section 4: Original Auto-Approve Job (backward compatibility)
+  # ─────────────────────────────────────────────────────────────────────────────
 
+  approve-original:
     name: "⚡ Approve pending workflow runs"
     runs-on: ubuntu-latest
     timeout-minutes: 75
@@ -999,53 +1000,3 @@ jobs:
             echo "::error::Workflow failures detected during active Copilot session monitor window."
             exit 1
           fi
-
-      # ── Step 4: One-session cleanup after a Copilot agent session completes ─
-      #
-      # If the PR carried the `wec:auto-approve-once` label, it means the owner
-      # wanted auto-approve for exactly ONE Copilot session.  Now that the session
-      # has ended, remove the label and uncheck the PR body checkbox so the feature
-      # is disabled for the next session.
-      - name: "One-session cleanup"
-        if: github.event_name == 'workflow_run' && steps.resolve.outputs.skip != 'true'
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${PR_NUMBER:-}" ]; then
-            exit 0
-          fi
-
-          # Check whether the one-session label is still present
-          HAS_ONCE=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" \
-            --json labels -q '[.labels[].name] | join(",")' 2>/dev/null \
-            | grep -qF 'wec:auto-approve-once' && echo "true" || echo "false")
-
-          if [ "${HAS_ONCE}" != "true" ]; then
-            exit 0
-          fi
-
-          echo "🔔 One-session mode complete — disabling auto-approve for PR #${PR_NUMBER}..."
-
-          # Remove the one-session label
-          gh api --method DELETE \
-            "repos/${REPO}/issues/${PR_NUMBER}/labels/wec%3Aauto-approve-once" \
-            2>/dev/null && echo "✅ Label 'wec:auto-approve-once' removed." \
-            || echo "::warning::Could not remove label (may already be gone)."
-
-          # Uncheck [x] auto-approve-workflows in the PR body
-          BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body -q '.body // ""' 2>/dev/null || echo "")
-          if [ -n "${BODY}" ]; then
-            printf '%s' "${BODY}" > /tmp/_aaw_cleanup_body.txt
-            python3 -c "import re,sys; b=open('/tmp/_aaw_cleanup_body.txt').read(); b=re.sub(r'(?m)(^[ \t]*-[ \t]*\[)x\]([ \t]+auto-approve-workflows)',r'\1 ]\2',b); sys.stdout.write(b)" \
-              > /tmp/_aaw_cleanup_out.txt
-            gh pr edit "${PR_NUMBER}" --repo "${REPO}" \
-              --body "$(cat /tmp/_aaw_cleanup_out.txt)" \
-              && echo "✅ PR body updated: [ ] auto-approve-workflows (one-session complete)." \
-              || echo "::warning::Could not update PR body (non-fatal)."
-          fi
-
-          echo "🏁 One-session auto-approve complete for PR #${PR_NUMBER}."
