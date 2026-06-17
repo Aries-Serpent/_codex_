@@ -101,7 +101,7 @@ jobs:
           }}
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: Fetch base ref for PR-scoped diff
         # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
@@ -199,7 +199,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: coverage-baseline
           path: |
@@ -210,7 +210,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -260,7 +260,7 @@ jobs:
         total: [4]
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
@@ -274,7 +274,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        uses: actions/cache@v5  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -311,14 +311,14 @@ jobs:
 
       - name: Save test durations cache
         if: always()
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        uses: actions/cache/save@v5  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |

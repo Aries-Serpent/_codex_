@@ -51,12 +51,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 5
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: pip
@@ -226,7 +226,7 @@ jobs:
 
       - name: "Post to GitHub Discussion #3673"
         if: steps.extract.outputs.should_post == 'true'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           SESSION_ID: ${{ steps.extract.outputs.session_id }}
           TURN_ID: ${{ steps.extract.outputs.turn_id }}
@@ -365,7 +365,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

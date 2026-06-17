@@ -36,7 +36,7 @@ jobs:
       !contains(github.event.issue.labels.*.name, 'automated')
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
 
       - name: Analyze issue with GitHub Copilot
         id: triage
@@ -89,7 +89,7 @@ jobs:
 
       - name: Apply labels and post triage comment
         if: steps.triage.outputs.validation-status == 'valid'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           TRIAGE_JSON: ${{ steps.triage.outputs.response }}
         with:

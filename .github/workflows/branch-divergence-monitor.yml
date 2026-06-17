@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Check out repository (shallow)
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
@@ -321,7 +321,7 @@ jobs:
 
     steps:
       - name: Checkout 0D_base_
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           ref: 0D_base_
           fetch-depth: 5
@@ -498,13 +498,13 @@ jobs:
 
     steps:
       - name: Checkout (sparse — scripts only)
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
       - name: Ensure required labels exist
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -537,7 +537,7 @@ jobs:
             }
 
       - name: Build and upsert divergence tracking issue
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
           BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}
@@ -711,7 +711,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

@@ -63,12 +63,12 @@ jobs:
       contents: read
     steps:
       - name: "Checkout (needed for session_wrapup_autofix.py)"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
 
       - name: "Set up Python"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           cache: pip
           python-version: "3.12"
@@ -214,7 +214,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 50  # Enough for commit-count check (REQ-7); avoids full-clone cost
 
@@ -266,7 +266,7 @@ jobs:
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -393,7 +393,7 @@ jobs:
 
       # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
       - name: Post Mandatory Agent Checklist to PR
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
@@ -549,7 +549,7 @@ jobs:
       # and injects matching enforcement items into the agent checklist.
       # Policy: .github/docs/SessionContinuityPolicy.md | WF-002
       - name: Surface Session-Type Directives to Checklist
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
@@ -1137,7 +1137,7 @@ jobs:
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -1347,7 +1347,7 @@ jobs:
           github.event_name == 'pull_request_review'
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -1557,7 +1557,7 @@ jobs:
     # Dependabot actors cannot access CODEX_MASTER_KEY so the job must be skipped for them.
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -1567,7 +1567,7 @@ jobs:
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
         id: set_vars
         continue-on-error: true
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -1634,7 +1634,7 @@ jobs:
       # Route the agent token delegation decision to the unified approval hub.
       # This centralizes token delegation approval logging and audit trail.
       - name: "Dispatch hub for token delegation approval (agent-auth-delegation)"
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -1726,7 +1726,7 @@ jobs:
       # GitHub Guru acts as the "codebase maintainer" that audits the variable
       # state and posts a structured PR comment confirming the change is visible.
       - name: "Dispatch GitHub Guru (maintainer verification)"
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -1839,7 +1839,7 @@ jobs:
       # TTL: 12 hours (43200 seconds) — stale locks are auto-cleared after 12h.
       - name: "Session Concurrency Gate"
         id: session_gate
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -2056,7 +2056,7 @@ jobs:
       - name: "Post @copilot continue"
         id: post_copilot_comment
         if: steps.session_gate.outputs.acquired == 'true'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
         with:
@@ -2208,7 +2208,7 @@ jobs:
 
     steps:
       - name: "Checkout (for approve_pending_runs.py)"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -2223,7 +2223,7 @@ jobs:
           private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
 
       - name: "Set up Python"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           cache: pip
           python-version: "3.12"
@@ -2257,13 +2257,13 @@ jobs:
 
     steps:
       - name: "Checkout repository for shared helpers"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           persist-credentials: false
 
       - name: "Release COPILOT_ACTIVE_SESSION and trigger next queued PR"
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -2443,7 +2443,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1

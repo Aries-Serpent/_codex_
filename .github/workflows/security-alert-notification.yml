@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
 
       - name: CacheManager health check
         continue-on-error: true
@@ -37,7 +37,7 @@ jobs:
       - name: Get Dependabot alerts
         id: get-alerts
         continue-on-error: true
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -101,7 +101,7 @@ jobs:
       - name: Create security summary
         id: create-summary
         if: steps.get-alerts.outputs.has-alerts == 'true'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
@@ -172,7 +172,7 @@ jobs:
 
       - name: Create GitHub Issue for new alerts
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           # Pass outputs via env vars to avoid backtick/apostrophe injection in JS
           # template literals. DRQ-S105: review comment — security-alert-notification.yml:51-59

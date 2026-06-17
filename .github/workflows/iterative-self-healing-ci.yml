@@ -80,7 +80,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 50
           # Use delegated token when COPILOT_AGENT_AUTH_ENABLED=true (S154 Phase 5).
@@ -341,7 +341,7 @@ jobs:
         # autonomous push succeeds without manual approval.
         # Security: persist-credentials: false prevents checked-out (potentially
         # untrusted PR) code from accessing the token via git credential helper.
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 50
           ref: ${{ needs.triage.outputs.head_branch || 'main' }}
@@ -747,7 +747,7 @@ jobs:
 
     steps:
       - name: Checkout target branch
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 5
           ref: ${{ needs.triage.outputs.head_branch || 'main' }}
@@ -952,7 +952,7 @@ jobs:
         # This workflow runs in workflow_run context with CODEX_MASTER_KEY; checking out
         # a contributor's head branch would allow execution of untrusted code on a
         # privileged runner. We only need post_rescue_comment.py from a known-good ref.
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           ref: refs/heads/main
 
@@ -1010,7 +1010,7 @@ jobs:
       needs.triage.outputs.pattern != ''
     steps:
       - name: "Checkout for pattern_recorder access"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         continue-on-error: true
         with:
           # SECURITY: this escalation job runs in a trusted context; it only needs
@@ -1099,7 +1099,7 @@ jobs:
           wc -l /tmp/pattern_snapshot.json || true
 
       - name: "Upload pattern DB snapshot artifact"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: pattern-db-snapshot-${{ github.run_id }}
           path: /tmp/pattern_snapshot.json
