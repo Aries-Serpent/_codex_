@@ -1,6 +1,5 @@
 """Additional error handling tests - Phase 7A Lane 2.3 Extended"""
 
-import pytest
 from fastapi import HTTPException
 
 
