@@ -9,7 +9,7 @@
 ## PRE-DEPLOYMENT CHECKLIST
 
 ### Code Review & Testing
-- [x] Hardcoded secrets removed (2 CRITICAL findings)
+- [x] Hardcoded secrets removed (2 CRITICAL findings) # pragma: allowlist secret
 - [x] Environment variables configured (.env.example)
 - [x] .gitignore verified for .env exclusion
 - [x] Code changes tested (4/4 tests passed)

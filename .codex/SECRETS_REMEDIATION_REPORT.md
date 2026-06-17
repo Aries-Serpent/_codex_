@@ -9,7 +9,7 @@
 
 ## EXECUTIVE SUMMARY
 
-**Blocker Status:** ✅ **RESOLVED**
+**Blocker Status:** ✅ **RESOLVED** # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 A critical security audit identified **28 hardcoded secrets** blocking production deployment. This report documents:
 

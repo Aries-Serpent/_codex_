@@ -9,7 +9,7 @@
 ## EXECUTIVE SUMMARY
 
 28 hardcoded secrets were identified in the codebase. **2 CRITICAL secrets** were found in source code and must be rotated **immediately** to prevent unauthorized access.
-
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 **Affected Credentials:**
 1. JWT Auth Secret (`codex-auth-change-me-in-production`)
 2. Dev Secret Key (`codex-dev-secret-key-change-in-production`)

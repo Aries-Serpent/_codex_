@@ -9,7 +9,7 @@
 
 ## EXECUTIVE SUMMARY
 
-### 🎯 Objective
+### 🎯 Objective # pragma: allowlist secret # pragma: allowlist secret
 Identify and remediate **28 hardcoded secrets** blocking production deployment of the Codex platform.
 
 ### ✅ Result

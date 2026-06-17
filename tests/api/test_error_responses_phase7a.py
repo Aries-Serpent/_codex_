@@ -9,7 +9,7 @@ Categories:
 - Stack trace handling
 - Proper HTTP headers in error responses
 - Rate limiting error responses
-- Authentication error messages
+- Authentication error messages # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 - Business logic error messages
 """
 

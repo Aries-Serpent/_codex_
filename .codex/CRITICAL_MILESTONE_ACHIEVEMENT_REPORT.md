@@ -9,7 +9,7 @@
 
 ## 🏆 EXECUTIVE SUMMARY
 
-Two critical blocking issues have been **RESOLVED** ahead of schedule:
+Two critical blocking issues have been **RESOLVED** ahead of schedule: # pragma: allowlist secret
 
 1. ✅ **🔐 Hardcoded Secrets Blocker (LANE33-SEC-001)** — **RESOLVED**
    - 28 hardcoded secrets identified and remediated

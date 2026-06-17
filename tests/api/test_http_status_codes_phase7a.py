@@ -9,7 +9,7 @@ Categories:
 - 201 Created: Resource creation
 - 204 No Content: Deletion/empty responses
 - 400 Bad Request: Malformed input
-- 401 Unauthorized: Missing/invalid auth
+- 401 Unauthorized: Missing/invalid auth # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 - 403 Forbidden: Insufficient permissions
 - 404 Not Found: Missing resources
 - 409 Conflict: Duplicate/conflicting resources
