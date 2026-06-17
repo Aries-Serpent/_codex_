@@ -11,12 +11,12 @@ Reference Documents:
 """
 
 import json
-import pytest
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
-import os
+from unittest.mock import patch
 
+import pytest
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Test Fixtures
@@ -139,7 +139,7 @@ class TestApprovalRuleEngine:
         """Evaluate single-session label with TTL."""
         if 'wec:auto-approve-once' not in labels:
             return 'SKIP', 0.0
-        
+
         age_hours = (datetime.utcnow() - created_at).total_seconds() / 3600
         if age_hours <= ttl_hours:
             return 'APPROVE', 1.0
@@ -172,7 +172,7 @@ class TestApprovalRuleEngine:
             return 'APPROVE'
         if reason.startswith(('docs:', 'chore:')):
             return 'APPROVE'
-        
+
         return 'DENY'
 
 
@@ -230,15 +230,15 @@ class TestTokenChainResolution:
         app_token = os.environ.get('COGNITIVE_BRAIN_APP_TOKEN', '').strip()
         if app_token:
             return app_token, 'COGNITIVE_BRAIN_APP'
-        
+
         master = os.environ.get('CODEX_MASTER_KEY', '').strip()
         if master:
             return master, 'CODEX_MASTER_KEY'
-        
+
         backup = os.environ.get('CODEX_BACKUP_KEY', '').strip()
         if backup:
             return backup, 'CODEX_BACKUP_KEY'
-        
+
         return 'github-token-default', 'github_token'
 
 
@@ -252,7 +252,7 @@ class TestAuditTrailLogging:
     def test_audit_entry_structure(self, tmp_path):
         """Test: Audit entry has required fields."""
         audit_file = tmp_path / "approvals.jsonl"
-        
+
         entry = {
             'approval_id': 'uuid-123',
             'timestamp': '2026-01-26T14:32:15.123Z',
@@ -262,10 +262,10 @@ class TestAuditTrailLogging:
             'rule_evaluated': 'persistent_label_rule',
             'action_taken': 'approved'
         }
-        
+
         audit_log = self._create_audit_log(audit_file)
         audit_log.write(entry)
-        
+
         lines = audit_log.read_all()
         assert len(lines) > 0
         logged_entry = json.loads(lines[-1])
@@ -276,15 +276,15 @@ class TestAuditTrailLogging:
         """Test: Audit log is append-only."""
         audit_file = tmp_path / "approvals.jsonl"
         audit_log = self._create_audit_log(audit_file)
-        
+
         entry1 = {'approval_id': 'id-1', 'action': 'approved'}
         entry2 = {'approval_id': 'id-2', 'action': 'denied'}
-        
+
         audit_log.write(entry1)
         initial_lines = len(audit_log.read_all())
         audit_log.write(entry2)
         final_lines = len(audit_log.read_all())
-        
+
         assert final_lines == initial_lines + 1
         assert json.loads(audit_log.read_all()[0])['approval_id'] == 'id-1'
         assert json.loads(audit_log.read_all()[1])['approval_id'] == 'id-2'
@@ -293,16 +293,16 @@ class TestAuditTrailLogging:
         """Test: Token not included in audit log."""
         audit_file = tmp_path / "approvals.jsonl"
         audit_log = self._create_audit_log(audit_file)
-        
+
         entry = {
             'approval_id': 'uuid-123',
             'token_chain_resolution': {'token_source': 'CODEX_MASTER_KEY'},
             'action_taken': 'approved'
         }
-        
+
         audit_log.write(entry)
         logged = json.loads(audit_log.read_all()[-1])
-        
+
         # Verify token not in output
         assert 'token' not in logged
         assert logged['token_chain_resolution']['token_source'] == 'CODEX_MASTER_KEY'
@@ -313,17 +313,17 @@ class TestAuditTrailLogging:
             def __init__(self, file_path):
                 self.file_path = Path(file_path)
                 self.file_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             def write(self, entry):
                 with open(self.file_path, 'a') as f:
                     f.write(json.dumps(entry) + '\n')
-            
+
             def read_all(self):
                 if not self.file_path.exists():
                     return []
                 with open(self.file_path, 'r') as f:
                     return f.read().strip().split('\n')
-        
+
         return AuditLog(path)
 
 
@@ -339,13 +339,13 @@ class TestIntegrationPoints:
         """Test: trigger-on-approval.yml dispatches auto-approve-workflows.yml."""
         pr_number = 456
         reviewer = 'mbaetiong'
-        
+
         self._dispatch_hub(
             approval_source='trigger-on-approval',
             target_pr=pr_number,
             approval_reason=f'Code review approval from @{reviewer}'
         )
-        
+
         # Verify dispatch was called
         mock_run.assert_called()
 
@@ -403,7 +403,7 @@ class TestSecurityValidation:
         """Test: Dangerous characters in approval_reason are sanitized."""
         dangerous_input = 'Approval"; echo hacked #'
         sanitized = self._sanitize_approval_reason(dangerous_input)
-        
+
         assert 'echo' not in sanitized
         assert '";' not in sanitized
 
@@ -414,7 +414,7 @@ class TestSecurityValidation:
             'label<script>',
             'label|command',
         ]
-        
+
         for label in invalid_labels:
             with pytest.raises(ValueError):
                 self._validate_label_name(label)

@@ -11,17 +11,16 @@ Tests cover:
 - Concurrent operations
 """
 
-import pytest
 import threading
-from unittest.mock import Mock, patch
 
-from codex.auth.user_store import UserStore, User, PasswordHasher
+import pytest
+
 from codex.auth.exceptions import (
     InvalidCredentialsError,
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-
+from codex.auth.user_store import PasswordHasher, User, UserStore
 
 # ============================================================================
 # Fixtures
@@ -104,11 +103,11 @@ class TestPasswordHasher:
     def test_timing_safe_comparison(self, password_hasher):
         password = "Str0ngPass!"
         hashed = password_hasher.hash_password(password)
-        
+
         # Both should complete without timing differences
         is_valid1 = password_hasher.verify_password(password, hashed)
         is_valid2 = password_hasher.verify_password("Wrong!!!!!!!!", hashed)
-        
+
         assert is_valid1
         assert not is_valid2
 
@@ -395,7 +394,7 @@ class TestConcurrentAccess:
             try:
                 user = user_store.authenticate("alice", "Str0ngPass!")
                 results.append(user)
-            except Exception:
+            except Exception as _err:
                 results.append(None)
 
         threads = [threading.Thread(target=authenticate) for _ in range(10)]

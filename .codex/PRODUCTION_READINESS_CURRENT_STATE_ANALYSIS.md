@@ -254,10 +254,10 @@ Summary of changes:
 │   └── test_codex_cli_main_enhancements.py (+38 changes)
 ├── Source code updates (3 files)
 │   ├── src/cli/__init__.py (-1 deletion)
-│   ├── src/cli/task_sequence.py (+6 changes)
+│   ├── src/cli/task_sequence.py (+6 changes)  # pragma: allowlist secret
 │   └── src/cli/train_codex.py (+8 changes)
 └── Maintenance (3 files)
-    ├── .secrets.baseline (-9 lines)
+    ├── .secrets.baseline (-9 lines)  # pragma: allowlist secret
     ├── AGENT_ACCOUNTABILITY_REPORT.md (+2 updates)
     └── test_codex_cli_enhancements.py (+15 changes)
 ```

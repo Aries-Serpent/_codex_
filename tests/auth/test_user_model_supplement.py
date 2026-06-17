@@ -10,13 +10,12 @@ Tests cover:
 - Complex queries
 """
 
-import pytest
-from unittest.mock import Mock, patch
-from codex.auth.user_model import User, PasswordHasher
-from codex.auth.user_repository import UserRepository
-from codex.auth.in_memory_user_repository import InMemoryUserRepository
 import time
 
+import pytest
+
+from codex.auth.in_memory_user_repository import InMemoryUserRepository
+from codex.auth.user_model import PasswordHasher, User
 
 # ============================================================================
 # User Model Extended Tests
@@ -116,14 +115,14 @@ class TestPasswordHasherExtended:
     def test_hash_consistency_across_instances(self):
         hasher1 = PasswordHasher()
         hasher2 = PasswordHasher()
-        
+
         password = "Str0ngPass!"
         hash1 = hasher1.hash_password(password)
         hash2 = hasher2.hash_password(password)
-        
+
         # Different hashes due to random salt
         assert hash1 != hash2
-        
+
         # But both should verify the same password
         assert hasher1.verify_password(password, hash1)
         assert hasher2.verify_password(password, hash2)
@@ -150,10 +149,10 @@ class TestPasswordHasherExtended:
         hasher = PasswordHasher()
         password1 = "Pass123!"
         password2 = "Pass124!"  # One character different
-        
+
         hash1 = hasher.hash_password(password1)
         hash2 = hasher.hash_password(password2)
-        
+
         # Hashes should be completely different
         assert not hasher.verify_password(password2, hash1)
         assert not hasher.verify_password(password1, hash2)
@@ -174,7 +173,7 @@ class TestRepositoryAdvanced:
     def test_bulk_create_users(self, repo):
         hasher = PasswordHasher()
         users = []
-        
+
         for i in range(50):
             user = User(
                 user_id=f"user{i}",
@@ -184,13 +183,13 @@ class TestRepositoryAdvanced:
             )
             repo.create_user(user)
             users.append(user)
-        
+
         assert repo.get_user_count() == 50
 
     def test_bulk_delete_users(self, repo):
         hasher = PasswordHasher()
         user_ids = []
-        
+
         for i in range(10):
             user = User(
                 user_id=f"user{i}",
@@ -200,15 +199,15 @@ class TestRepositoryAdvanced:
             )
             repo.create_user(user)
             user_ids.append(user.user_id)
-        
+
         for user_id in user_ids:
             repo.delete_user(user_id)
-        
+
         assert repo.get_user_count() == 0
 
     def test_bulk_update_emails(self, repo):
         hasher = PasswordHasher()
-        
+
         for i in range(10):
             user = User(
                 user_id=f"user{i}",
@@ -217,7 +216,7 @@ class TestRepositoryAdvanced:
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)
-        
+
         for i in range(10):
             user = repo.get_by_user_id(f"user{i}")
             updated = User(
@@ -227,7 +226,7 @@ class TestRepositoryAdvanced:
                 password_hash=user.password_hash,
             )
             repo.update_user(updated)
-        
+
         # Verify updates
         for i in range(10):
             user = repo.get_by_user_id(f"user{i}")
@@ -235,14 +234,14 @@ class TestRepositoryAdvanced:
 
     def test_search_by_partial_username(self, repo):
         hasher = PasswordHasher()
-        
+
         users_data = [
             ("alice", "alice@example.com"),
             ("alicia", "alicia@example.com"),
             ("bob", "bob@example.com"),
             ("bobby", "bobby@example.com"),
         ]
-        
+
         for username, email in users_data:
             user = User(
                 user_id=f"user_{username}",
@@ -251,14 +250,14 @@ class TestRepositoryAdvanced:
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)
-        
+
         # Exact match
         alice = repo.get_by_username("alice")
         assert alice.username == "alice"
 
     def test_list_with_pagination(self, repo):
         hasher = PasswordHasher()
-        
+
         for i in range(30):
             user = User(
                 user_id=f"user{i:03d}",
@@ -267,16 +266,16 @@ class TestRepositoryAdvanced:
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)
-        
+
         # Get all users
         users = repo.list_users()
         assert len(users) == 30
 
     def test_filter_by_creation_date(self, repo):
         hasher = PasswordHasher()
-        
+
         before_time = time.time()
-        
+
         for i in range(5):
             user = User(
                 user_id=f"old_user{i}",
@@ -285,7 +284,7 @@ class TestRepositoryAdvanced:
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)
-        
+
         after_time = time.time()
 
 
@@ -303,7 +302,7 @@ class TestConcurrentRepositoryOperations:
 
     def test_concurrent_reads(self, repo):
         import threading
-        
+
         hasher = PasswordHasher()
         user = User(
             user_id="concurrent_user",
@@ -312,28 +311,28 @@ class TestConcurrentRepositoryOperations:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user)
-        
+
         results = []
-        
+
         def read_user():
             try:
                 u = repo.get_by_username("concurrent")
                 results.append(u)
             except Exception as e:
                 results.append(e)
-        
+
         threads = [threading.Thread(target=read_user) for _ in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # All reads should succeed
         assert len([r for r in results if isinstance(r, User)]) == 10
 
     def test_concurrent_mixed_operations(self, repo):
         import threading
-        
+
         def mixed_ops():
             hasher = PasswordHasher()
             user_id = f"concurrent_{threading.current_thread().name}"
@@ -346,7 +345,7 @@ class TestConcurrentRepositoryOperations:
             repo.create_user(user)
             retrieved = repo.get_by_user_id(user_id)
             assert retrieved.user_id == user_id
-        
+
         threads = [
             threading.Thread(target=mixed_ops, name=f"worker-{i}")
             for i in range(5)
@@ -378,7 +377,7 @@ class TestDataIntegrity:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(original)
-        
+
         updated = User(
             user_id="user1",
             username="alice",
@@ -386,7 +385,7 @@ class TestDataIntegrity:
             password_hash=hasher.hash_password("NewPass123!"),
         )
         repo.update_user(updated)
-        
+
         retrieved = repo.get_by_user_id("user1")
         assert retrieved.email == "alice.new@example.com"
         assert retrieved.user_id == "user1"
@@ -401,13 +400,13 @@ class TestDataIntegrity:
         )
         repo.create_user(user)
         repo.delete_user("temp_user")
-        
+
         with pytest.raises(Exception):
             repo.get_by_user_id("temp_user")
 
     def test_unique_constraints_enforced(self, repo):
         hasher = PasswordHasher()
-        
+
         user1 = User(
             user_id="user1",
             username="alice",
@@ -415,14 +414,14 @@ class TestDataIntegrity:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user1)
-        
+
         user2 = User(
             user_id="user2",
             username="alice",  # Duplicate username
             email="alice2@example.com",
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
-        
+
         with pytest.raises(Exception):
             repo.create_user(user2)
 
@@ -448,7 +447,7 @@ class TestUserStateTransitions:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user)
-        
+
         retrieved = repo.get_by_user_id("new_user")
         # New user should be enabled
         assert retrieved is not None
@@ -462,7 +461,7 @@ class TestUserStateTransitions:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user)
-        
+
         # User created with unverified email
         retrieved = repo.get_by_user_id("verify_user")
         assert retrieved.email == "verify@example.com"
@@ -476,10 +475,10 @@ class TestUserStateTransitions:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user)
-        
+
         # Deactivate by deletion
         repo.delete_user("active_user")
-        
+
         with pytest.raises(Exception):
             repo.get_by_user_id("active_user")
 
@@ -499,7 +498,7 @@ class TestSpecialCases:
     def test_user_with_system_reserved_username(self, repo):
         hasher = PasswordHasher()
         reserved_names = ["admin", "root", "system", "guest"]
-        
+
         for name in reserved_names:
             try:
                 user = User(
@@ -510,12 +509,12 @@ class TestSpecialCases:
                 )
                 repo.create_user(user)
                 # Either allowed or rejected
-            except Exception:
+            except Exception as _err:
                 pass  # Rejection is acceptable
 
     def test_user_with_null_bytes_in_fields(self, repo):
         hasher = PasswordHasher()
-        
+
         # Should handle or reject null bytes
         try:
             user = User(
@@ -525,7 +524,7 @@ class TestSpecialCases:
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)
-        except Exception:
+        except Exception as _err:
             pass  # Rejection is acceptable
 
     def test_user_email_with_plus_addressing(self, repo):
@@ -537,7 +536,7 @@ class TestSpecialCases:
             password_hash=hasher.hash_password("Str0ngPass!"),
         )
         repo.create_user(user)
-        
+
         retrieved = repo.get_by_email("user+test@example.com")
         assert retrieved.email == "user+test@example.com"
 
@@ -553,5 +552,5 @@ class TestSpecialCases:
             repo.create_user(user)
             retrieved = repo.get_by_email("user@münchen.de")
             assert retrieved.email == "user@münchen.de"
-        except Exception:
+        except Exception as _err:
             pass  # International domains may not be supported

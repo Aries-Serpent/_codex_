@@ -9,15 +9,16 @@ Tests cover:
 - Error handling and exceptions
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timedelta
+from unittest.mock import MagicMock, patch
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 from src.codex.auth.oauth_manager import (
-    OAuthManager,
     OAuthConfig,
-    OAuthToken,
     OAuthException,
+    OAuthManager,
+    OAuthToken,
 )
 
 
@@ -50,7 +51,7 @@ class TestOAuthManager:
     def test_get_authorization_url(self, oauth_manager):
         """Test authorization URL generation."""
         auth_url = oauth_manager.get_authorization_url(state="test_state")
-        
+
         assert "client_id=test_client_id" in auth_url
         assert "redirect_uri=https" in auth_url
         assert "state=test_state" in auth_url
@@ -60,10 +61,10 @@ class TestOAuthManager:
         """Test authorization URL with custom scopes."""
         custom_scopes = ["read:user"]
         auth_url = oauth_manager.get_authorization_url(
-            state="test_state", 
+            state="test_state",
             scopes=custom_scopes
         )
-        
+
         assert "state=test_state" in auth_url
         assert oauth_manager.config.client_id in auth_url
 
@@ -81,7 +82,7 @@ class TestOAuthManager:
         mock_post.return_value = mock_response
 
         token = oauth_manager.exchange_code_for_token("auth_code_123")
-        
+
         assert token.access_token == "test_token"
         assert token.token_type == "Bearer"
         assert token.expires_in == 3600
@@ -113,7 +114,7 @@ class TestOAuthManager:
             expires_in=1,  # Expires in 1 second
             expires_at=datetime.now() + timedelta(seconds=1),
         )
-        
+
         assert not token.is_expired()
 
     def test_token_is_expired(self, oauth_manager):
@@ -124,7 +125,7 @@ class TestOAuthManager:
             expires_in=-1,  # Already expired
             expires_at=datetime.now() - timedelta(seconds=1),
         )
-        
+
         assert token.is_expired()
 
     def test_scope_validation(self, oauth_manager):
@@ -176,7 +177,7 @@ class TestOAuthManager:
         )
 
         new_token = oauth_manager.refresh_token(old_token)
-        
+
         assert new_token.access_token == "new_token"
         assert new_token.token_type == "Bearer"
 
@@ -184,7 +185,7 @@ class TestOAuthManager:
         """Test state parameter generation for CSRF protection."""
         state1 = oauth_manager.generate_state()
         state2 = oauth_manager.generate_state()
-        
+
         assert state1 != state2
         assert len(state1) > 10
         assert len(state2) > 10
@@ -198,7 +199,7 @@ class TestOAuthManager:
         """Test state parameter validation failure."""
         state1 = oauth_manager.generate_state()
         state2 = oauth_manager.generate_state()
-        
+
         assert not oauth_manager.validate_state(state1, state2)
 
     @patch('requests.post')
@@ -216,7 +217,7 @@ class TestOAuthManager:
         mock_post.return_value = mock_response
 
         token = oauth_manager.exchange_code_for_token("auth_code_123")
-        
+
         assert token.access_token == "test_token"
         assert token.refresh_token == "refresh_123"
 
@@ -251,7 +252,7 @@ class TestOAuthToken:
             token_type="Bearer",
             expires_in=3600,
         )
-        
+
         assert token.access_token == "test_token"
         assert token.token_type == "Bearer"
         assert token.expires_in == 3600
@@ -264,7 +265,7 @@ class TestOAuthToken:
             expires_in=3600,
             refresh_token="refresh_123",
         )
-        
+
         assert token.refresh_token == "refresh_123"
 
     def test_oauth_token_expiration_datetime(self):
@@ -274,7 +275,7 @@ class TestOAuthToken:
             token_type="Bearer",
             expires_in=3600,
         )
-        
+
         assert token.expires_at is not None
         assert token.expires_at > datetime.now()
 
@@ -299,14 +300,14 @@ class TestOAuthEdgeCases:
         oauth_manager = OAuthManager(oauth_config)
         state = "state_with_special_chars_!@#$%"
         auth_url = oauth_manager.get_authorization_url(state=state)
-        
+
         assert "state=" in auth_url
 
     def test_authorization_url_encoding(self, oauth_config):
         """Test that authorization URL is properly encoded."""
         oauth_manager = OAuthManager(oauth_config)
         auth_url = oauth_manager.get_authorization_url(state="test state with spaces")
-        
+
         # Should be URL encoded
         assert "test%20state%20with%20spaces" in auth_url or "test+state+with+spaces" in auth_url
 
@@ -314,7 +315,7 @@ class TestOAuthEdgeCases:
     def test_token_exchange_with_large_token(self, mock_post, oauth_config):
         """Test token exchange with very large token value."""
         oauth_manager = OAuthManager(oauth_config)
-        
+
         large_token = "x" * 10000
         mock_response = MagicMock()
         mock_response.json.return_value = {
@@ -338,5 +339,5 @@ class TestOAuthEdgeCases:
             token_url="https://oauth.example.com/token",
             scopes=["read:user", "repo"],
         )
-        
+
         assert "🔐" in config.client_id

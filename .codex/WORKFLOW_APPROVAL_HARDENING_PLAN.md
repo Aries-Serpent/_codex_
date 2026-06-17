@@ -303,7 +303,7 @@ Day 5: Monitor & iterate
 Day 6: Implement decision rule engine
 Day 7: Add security-aware escalation
 Day 8: Add dependency-aware escalation
-Day 9: Add secret detection escalation
+Day 9: Add secret detection escalation  # pragma: allowlist secret
 Day 10: Full integration testing
 ```
 
@@ -379,7 +379,7 @@ Day 14: Documentation & training
 | Security Scanning Suite | Manual | CONDITIONAL | New CRITICAL/HIGH CVE |
 | Agent Vars Bootstrap | Manual | CONDITIONAL | Sensitive var change |
 | Resilient Dependency Submission | Manual | CONDITIONAL | Major version bump |
-| Secrets Baseline Enforcer | Manual | CONDITIONAL | New secrets in code |
+| Secrets Baseline Enforcer | Manual | CONDITIONAL | New secrets in code | <!-- pragma: allowlist secret -->
 | Iterative Self-Healing CI | Manual escalation | YES | Policy violation |
 | Any Custom Approval | Manual | YES (contextual) | Threshold exceeded |
 

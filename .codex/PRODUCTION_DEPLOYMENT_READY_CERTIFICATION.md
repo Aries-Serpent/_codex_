@@ -140,7 +140,7 @@ ACHIEVEMENT:                    ✅ EXCEEDED by 1-5 percentage points
 | High-Severity Issues | ✅ CLEAR (0 found) |
 | Code Scanning Alerts | ✅ RESOLVED (0 unresolved) |
 | Dependency Vulnerabilities | ✅ CLEAR (0 critical) |
-| Secret Detection | ✅ CLEAN (0 active secrets) |
+| Secret Detection | ✅ CLEAN (0 active secrets) | <!-- pragma: allowlist secret -->
 | Policy Compliance | ✅ 100% COMPLIANT |
 | Data Protection | ✅ VERIFIED |
 | Access Controls | ✅ ENFORCED |

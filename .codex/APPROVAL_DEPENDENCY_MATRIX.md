@@ -256,9 +256,9 @@ actions/enforce-concurrency/action.yml
 
 **Recommendation**: Create GitHub action for token resolution
 ```
-actions/resolve-github-token/action.yml
-├─ Inputs: prefer-app-token (boolean), fallback-secret (string)
-├─ Outputs: token, source (app/CODEX_MASTER_KEY/CODEX_BACKUP_KEY/github.token)
+actions/resolve-github-token/action.yml  # pragma: allowlist secret
+├─ Inputs: prefer-app-token (boolean), fallback-secret (string)  # pragma: allowlist secret
+├─ Outputs: token, source (app/CODEX_MASTER_KEY/CODEX_BACKUP_KEY/github.token)  # pragma: allowlist secret
 └─ Uses github-script to implement priority chain
 ```
 

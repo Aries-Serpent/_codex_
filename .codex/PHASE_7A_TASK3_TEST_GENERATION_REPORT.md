@@ -379,10 +379,10 @@ All new test files compile successfully and follow the repository's testing conv
 ### Syntax Validation
 ```
 ✓ test_security_core_comprehensive.py - PASS
-✓ test_token_rotation_comprehensive.py - PASS
+✓ test_token_rotation_comprehensive.py - PASS  # pragma: allowlist secret
 ✓ test_scope_validator_comprehensive.py - PASS
 ✓ test_decorators_comprehensive.py - PASS
-✓ test_token_manager_comprehensive.py - PASS
+✓ test_token_manager_comprehensive.py - PASS  # pragma: allowlist secret
 ```
 
 ### Files Generated

@@ -9,18 +9,18 @@ This guide covers integrating Codex ML with popular ML platforms and tools.
 ### Loading Models from Hub
 
 ```python
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer  # pragma: allowlist secret
 from src.codex_ml.models import CodexMLModel
 
 # Load pretrained model
 model_name = "bert-base-uncased"
 model = AutoModel.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)  # pragma: allowlist secret
 
 # Wrap in Codex pipeline
 codex_model = CodexMLModel(
     model=model,
-    tokenizer=tokenizer
+    tokenizer=tokenizer  # pragma: allowlist secret
 )
 ```
 
@@ -282,17 +282,17 @@ default_args = {
 with DAG('codex_ml_pipeline', default_args=default_args) as dag:
     # Tasks
     t_ingest = PythonOperator(
-        task_id='ingest',
+        task_id='ingest',  # pragma: allowlist secret
         python_callable=ingest_data
     )
     
     t_embed = PythonOperator(
-        task_id='embed',
+        task_id='embed',  # pragma: allowlist secret
         python_callable=generate_embeddings
     )
     
     t_train = PythonOperator(
-        task_id='train',
+        task_id='train',  # pragma: allowlist secret
         python_callable=train_model
     )
     
@@ -433,7 +433,7 @@ import openai
 from src.rag.pipelines.retrieval import RetrieverPipeline
 
 # Initialize
-openai.api_key = "sk-..."
+openai.api_key = "sk-..."  # pragma: allowlist secret
 retriever = RetrieverPipeline(k=5)
 
 # RAG workflow

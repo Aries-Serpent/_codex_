@@ -426,8 +426,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_enabled(self):
         """Test should_capture with enabled tracing."""
-        from codex_ml.train_loop import ReasoningRuntime
         from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -443,8 +443,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_zero_limit(self):
         """Test should_capture with zero limit (unlimited)."""
-        from codex_ml.train_loop import ReasoningRuntime
         from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -460,8 +460,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_exceeded_limit(self):
         """Test should_capture when limit is exceeded."""
-        from codex_ml.train_loop import ReasoningRuntime
         from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -478,8 +478,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_on_new_epoch(self):
         """Test on_new_epoch resets counter."""
-        from codex_ml.train_loop import ReasoningRuntime
         from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -497,8 +497,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_bind_model(self):
         """Test bind_model attaches to harness."""
-        from codex_ml.train_loop import ReasoningRuntime
         from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         mock_harness = MagicMock()
         config = ReasoningConfig(enabled=True)

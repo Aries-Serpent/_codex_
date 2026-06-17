@@ -17,8 +17,7 @@ import logging
 import random
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -65,20 +64,20 @@ class TestCheckpointUtilities:
     def test_checkpoint_integrity_check(self):
         """Test checkpoint integrity verification."""
         from codex_ml.utils.checksum import sha256sum
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "test.txt"
             test_file.write_text("test content", encoding="utf-8")
-            
+
             # Compute checksum
             checksum1 = sha256sum(test_file)
             assert checksum1
             assert len(checksum1) == 64  # SHA256 hex string
-            
+
             # Same file should have same checksum
             checksum2 = sha256sum(test_file)
             assert checksum1 == checksum2
-            
+
             # Modified file should have different checksum
             test_file.write_text("modified content", encoding="utf-8")
             checksum3 = sha256sum(test_file)
@@ -101,11 +100,11 @@ class TestCheckpointUtilities:
         """Test torch save/load cycle with simple tensor."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "model.pt"
-            
+
             # Create simple state dict
             state = {"tensor": torch.tensor([1.0, 2.0, 3.0])}
             torch.save(state, path)
-            
+
             loaded = torch.load(path, weights_only=False)
             assert "tensor" in loaded
             assert torch.allclose(loaded["tensor"], state["tensor"])
@@ -115,12 +114,12 @@ class TestCheckpointUtilities:
         with tempfile.TemporaryDirectory() as tmpdir:
             checkpoint_dir = Path(tmpdir) / "checkpoints"
             checkpoint_dir.mkdir()
-            
+
             # Create checkpoint marker
             ckpt_path = checkpoint_dir / "checkpoint_1.json"
             metadata = {"epoch": 1, "step": 100}
             ckpt_path.write_text(json.dumps(metadata))
-            
+
             assert ckpt_path.exists()
             loaded = json.loads(ckpt_path.read_text())
             assert loaded["epoch"] == 1
@@ -134,12 +133,12 @@ class TestCheckpointUtilities:
             {"epoch": 4, "path": "ckpt_4.pt"},
             {"epoch": 5, "path": "ckpt_5.pt"},
         ]
-        
+
         # Keep last 2
         keep_last = 2
         to_keep = checkpoints[-keep_last:]
         to_remove = checkpoints[:-keep_last]
-        
+
         assert len(to_keep) == 2
         assert len(to_remove) == 3
         assert to_keep[-1]["epoch"] == 5
@@ -157,10 +156,10 @@ class TestRNGStateManagement:
         """Test Python random seeding works."""
         random.seed(42)
         val1 = random.random()
-        
+
         random.seed(42)
         val2 = random.random()
-        
+
         assert val1 == val2
 
     def test_python_random_state_preservation(self):
@@ -168,14 +167,14 @@ class TestRNGStateManagement:
         random.seed(42)
         _ = random.random()
         state1 = random.getstate()
-        
+
         # Continue generating random numbers
         vals = [random.random() for _ in range(5)]
-        
+
         # Restore state and compare
         random.setstate(state1)
         vals_restored = [random.random() for _ in range(5)]
-        
+
         assert vals == vals_restored
 
     @pytest.mark.skipif(not HAS_TORCH, reason="torch required")
@@ -183,10 +182,10 @@ class TestRNGStateManagement:
         """Test torch RNG seeding."""
         torch.manual_seed(42)
         t1 = torch.randn(3, 3)
-        
+
         torch.manual_seed(42)
         t2 = torch.randn(3, 3)
-        
+
         assert torch.allclose(t1, t2)
 
     @pytest.mark.skipif(not HAS_TORCH, reason="torch required")
@@ -195,12 +194,12 @@ class TestRNGStateManagement:
         torch.manual_seed(42)
         _ = torch.randn(5)
         state1 = torch.get_rng_state()
-        
+
         vals = [torch.randn(1).item() for _ in range(5)]
-        
+
         torch.set_rng_state(state1)
         vals_restored = [torch.randn(1).item() for _ in range(5)]
-        
+
         assert all(
             abs(v1 - v2) < 1e-6
             for v1, v2 in zip(vals, vals_restored)
@@ -209,10 +208,10 @@ class TestRNGStateManagement:
     def test_seed_set_deterministically(self):
         """Test seed setting produces deterministic results."""
         from codex_ml.train_loop import _set_seed
-        
+
         seed1 = _set_seed(42)
         assert seed1 == 42
-        
+
         seed2 = _set_seed(None)  # Should use default
         assert seed2 == 1234  # Default seed from train_loop
 
@@ -228,7 +227,7 @@ class TestDeterminismHelpers:
     def test_cudnn_determinism_disabled_by_default(self):
         """Test CUDNN determinism is optional."""
         from codex_ml.train_loop import set_cudnn_deterministic
-        
+
         # Should not raise
         set_cudnn_deterministic(False)
 
@@ -236,31 +235,31 @@ class TestDeterminismHelpers:
     def test_torch_determinism_setting(self):
         """Test torch determinism settings."""
         import os
-        
+
         # Set CUBLAS_WORKSPACE_CONFIG if available
         os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
-        
+
         torch.use_deterministic_algorithms(False)  # Start with False
         assert not torch.are_deterministic_algorithms_enabled()
 
     def test_dtype_resolution(self):
         """Test dtype resolution from string."""
         from codex_ml.train_loop import _resolve_dtype
-        
+
         # Test valid dtypes
         dtype_fp32 = _resolve_dtype("float32")
         assert dtype_fp32 is not None or dtype_fp32 is None  # May be None if torch unavailable
-        
+
         dtype_bf16 = _resolve_dtype("bfloat16")
         assert dtype_bf16 is not None or dtype_bf16 is None
 
     def test_device_resolution(self):
         """Test device resolution from string."""
         from codex_ml.train_loop import _resolve_device
-        
+
         device_cpu = _resolve_device("cpu")
         assert device_cpu is not None or device_cpu is None
-        
+
         device_cuda = _resolve_device("cuda")
         # Should return None if cuda unavailable
 
@@ -278,7 +277,7 @@ class TestModelInitialization:
         mock_model = MagicMock()
         mock_model.to = MagicMock(return_value=mock_model)
         mock_model.eval = MagicMock(return_value=mock_model)
-        
+
         result = mock_model.to("cpu")
         assert result is mock_model
         mock_model.to.assert_called_once_with("cpu")
@@ -290,7 +289,7 @@ class TestModelInitialization:
             "layer1.bias": MagicMock(shape=(10,)),
             "layer2.weight": MagicMock(shape=(5, 3)),
         }
-        
+
         assert "layer1.weight" in state_dict
         assert len(state_dict) == 3
 
@@ -302,10 +301,10 @@ class TestModelInitialization:
             "vocab_size": 50257,
             "max_position_embeddings": 2048,
         }
-        
+
         json_str = json.dumps(config)
         loaded = json.loads(json_str)
-        
+
         assert loaded["hidden_size"] == 768
         assert loaded["num_layers"] == 12
 
@@ -314,15 +313,15 @@ class TestModelInitialization:
         """Test model loading through registry."""
         mock_model = MagicMock()
         mock_instantiate.return_value = mock_model
-        
+
         from codex_ml.train_loop import _load_or_create_model
-        
+
         model = _load_or_create_model(
             identifier="gpt2",
             device="cpu",
             dtype="float32"
         )
-        
+
         # Mock was called (if registry available)
         assert mock_model is not None or model is not None
 
@@ -341,19 +340,19 @@ class TestModelInitialization:
                         param_count *= dim
                     total += param_count
             return total
-        
+
         state_dict = {
             "layer1": MagicMock(numel=MagicMock(return_value=100)),
             "layer2": MagicMock(numel=MagicMock(return_value=50)),
         }
-        
+
         # Mock numel calls
         for key, tensor in state_dict.items():
             if key == "layer1":
                 tensor.numel.return_value = 100
             else:
                 tensor.numel.return_value = 50
-        
+
         params = count_params(state_dict)
         assert params == 150
 
@@ -369,20 +368,20 @@ class TestTrainingConfiguration:
     def test_training_config_creation(self):
         """Test training config can be created with default values."""
         from training.trainer import TrainingState
-        
+
         state = TrainingState()
         assert state is not None
 
     def test_training_args_parsing(self):
         """Test training arguments can be parsed."""
         from training.engine_hf_trainer import build_training_args
-        
+
         args = build_training_args(
             output_dir="/tmp/test",
             num_train_epochs=1,
             per_device_train_batch_size=8,
         )
-        
+
         assert args.num_train_epochs == 1
         assert args.per_device_train_batch_size == 8
 
@@ -394,22 +393,22 @@ class TestTrainingConfiguration:
             "learning_rate": 1e-4,
             "warmup_steps": 100,
         }
-        
+
         snapshot = json.dumps(config)
         loaded = json.loads(snapshot)
-        
+
         assert loaded == config
 
     def test_hf_trainer_config_validation(self):
         """Test HuggingFace trainer config validation."""
         from training.engine_hf_trainer import HFTrainerConfig
-        
+
         config = HFTrainerConfig(
             output_dir="/tmp/test",
             num_train_epochs=1,
             per_device_train_batch_size=8,
         )
-        
+
         assert config.num_train_epochs == 1
         assert config.output_dir == "/tmp/test"
 
@@ -424,38 +423,38 @@ class TestCapabilityDetectors:
 
     def test_path_exists_check(self):
         """Test path existence checking."""
-        import tempfile
-        
+        pass  # removed redundant `import tempfile` (top-level import used)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             test_path = Path(tmpdir)
             assert test_path.exists()
-            
+
             nonexistent = Path(tmpdir) / "nonexistent"
             assert not nonexistent.exists()
 
     def test_file_counting(self):
         """Test file counting in directory."""
-        import tempfile
-        
+        pass  # removed redundant `import tempfile` (top-level import used)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
-            
+
             # Create test files
             (tmppath / "file1.py").touch()
             (tmppath / "file2.py").touch()
             (tmppath / "file3.txt").touch()
-            
+
             py_files = list(tmppath.glob("*.py"))
             assert len(py_files) == 2
 
     def test_content_pattern_matching(self):
         """Test content pattern matching in files."""
-        import tempfile
-        
+        pass  # removed redundant `import tempfile` (top-level import used)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "test.py"
             test_file.write_text("import torch\nimport transformers\n")
-            
+
             content = test_file.read_text()
             assert "torch" in content
             assert "transformers" in content
@@ -463,7 +462,7 @@ class TestCapabilityDetectors:
     def test_detector_result_scoring(self):
         """Test capability detector result scoring."""
         from codex_ml.detectors.core import clamp01
-        
+
         # Test clamping to [0, 1]
         assert clamp01(0.5) == 0.5
         assert clamp01(-0.5) == 0.0
@@ -474,13 +473,13 @@ class TestCapabilityDetectors:
     def test_detector_result_structure(self):
         """Test DetectorResult has expected structure."""
         from codex_ml.detectors.core import DetectorResult
-        
+
         result = DetectorResult(
             score=0.75,
             category="testing",
             evidence=["test_created", "test_passing"],
         )
-        
+
         assert result.score == 0.75
         assert result.category == "testing"
         assert len(result.evidence) == 2
@@ -503,7 +502,7 @@ class TestMetricsAndLogging:
             "epoch": 1,
             "step": 100,
         }
-        
+
         assert "loss" in metrics
         assert metrics["loss"] == 0.5
 
@@ -515,10 +514,10 @@ class TestMetricsAndLogging:
             "perplexity": 42.0,
             "timestamp": "2024-01-01",
         }
-        
+
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
-        
+
         assert loaded["epoch"] == 1
         assert loaded["loss"] == 0.5
 
@@ -529,7 +528,7 @@ class TestMetricsAndLogging:
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
         handler.setFormatter(formatter)
-        
+
         assert handler.formatter is not None
 
     def test_metrics_aggregation(self):
@@ -539,7 +538,7 @@ class TestMetricsAndLogging:
             {"loss": 0.4, "batch": 2},
             {"loss": 0.45, "batch": 3},
         ]
-        
+
         avg_loss = sum(m["loss"] for m in batch_metrics) / len(batch_metrics)
         assert 0.45 - 0.01 < avg_loss < 0.45 + 0.01
 
@@ -560,7 +559,7 @@ class TestEvaluationUtilities:
             "eval_f1": 0.93,
             "eval_runtime": 10.5,
         }
-        
+
         assert "eval_loss" in eval_metrics
         assert eval_metrics["eval_loss"] == 0.45
 
@@ -568,21 +567,21 @@ class TestEvaluationUtilities:
         """Test prediction tensor shapes."""
         batch_size = 32
         num_classes = 10
-        
+
         predictions = MagicMock()
         predictions.shape = (batch_size, num_classes)
-        
+
         assert predictions.shape[0] == batch_size
         assert predictions.shape[1] == num_classes
 
     def test_metric_computation_mock(self):
         """Test metric computation with mocked predictions."""
         from training.engine_hf_trainer import _compute_metrics
-        
+
         predictions = MagicMock()
         predictions.predictions = [[0.1, 0.9], [0.8, 0.2]]
         predictions.label_ids = [1, 0]
-        
+
         # Should not raise
         result = _compute_metrics(predictions)
         assert result is not None
@@ -590,11 +589,11 @@ class TestEvaluationUtilities:
     def test_eval_dataset_preparation(self):
         """Test evaluation dataset preparation."""
         texts = ["sample text 1", "sample text 2", "sample text 3"]
-        
+
         # Mock tokenizer
         tokenizer = MagicMock()
         tokenizer.return_value = {"input_ids": [[1, 2, 3]]}
-        
+
         assert len(texts) == 3
 
 
@@ -608,22 +607,22 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_empty_checkpoint_directory(self):
         """Test handling of empty checkpoint directory."""
-        import tempfile
-        
+        pass  # removed redundant `import tempfile` (top-level import used)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ckpt_dir = Path(tmpdir)
-            
+
             checkpoints = list(ckpt_dir.glob("checkpoint_*.pt"))
             assert len(checkpoints) == 0
 
     def test_corrupted_metadata_file(self):
         """Test handling of corrupted metadata."""
-        import tempfile
-        
+        pass  # removed redundant `import tempfile` (top-level import used)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             meta_file = Path(tmpdir) / "metadata.json"
             meta_file.write_text("{ invalid json }")
-            
+
             with pytest.raises(json.JSONDecodeError):
                 json.loads(meta_file.read_text())
 
@@ -633,13 +632,13 @@ class TestEdgeCasesAndErrorHandling:
             "num_epochs": 3,
             # Missing "batch_size"
         }
-        
+
         assert "batch_size" not in config
 
     def test_invalid_dtype_specification(self):
         """Test handling of invalid dtype."""
         from codex_ml.train_loop import _resolve_dtype
-        
+
         # Should handle gracefully
         result = _resolve_dtype("invalid_dtype")
         assert result is None or result is not None  # Graceful handling
@@ -648,7 +647,7 @@ class TestEdgeCasesAndErrorHandling:
         """Test handling of nonexistent model."""
         with patch("codex_ml.train_loop.instantiate_model") as mock_inst:
             mock_inst.side_effect = ValueError("Model not found")
-            
+
             with pytest.raises(ValueError):
                 from codex_ml.train_loop import _load_or_create_model
                 _load_or_create_model("nonexistent_model")
@@ -656,14 +655,14 @@ class TestEdgeCasesAndErrorHandling:
     def test_zero_batch_size_handling(self):
         """Test handling of zero batch size."""
         batch_size = 0
-        
+
         # Should handle or raise appropriate error
         assert batch_size == 0
 
     def test_negative_learning_rate_handling(self):
         """Test handling of negative learning rate."""
         lr = -1e-4
-        
+
         # Should fail validation
         assert lr < 0
 

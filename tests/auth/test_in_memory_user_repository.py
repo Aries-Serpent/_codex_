@@ -9,9 +9,10 @@ Tests cover:
 - Error handling and edge cases
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import uuid4
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 from src.codex.auth.in_memory_user_repository import (
     InMemoryUserRepository,
@@ -47,7 +48,7 @@ class TestInMemoryUserRepository:
     def test_create_user(self, repository, test_user):
         """Test creating a user."""
         repository.create(test_user)
-        
+
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved.id == test_user.id
         assert retrieved.username == test_user.username
@@ -55,14 +56,14 @@ class TestInMemoryUserRepository:
     def test_create_duplicate_user(self, repository, test_user):
         """Test creating duplicate user raises error."""
         repository.create(test_user)
-        
+
         with pytest.raises((ValueError, Exception)):
             repository.create(test_user)
 
     def test_get_user_by_id(self, repository, test_user):
         """Test retrieving user by ID."""
         repository.create(test_user)
-        
+
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved.id == test_user.id
         assert retrieved.username == "testuser"
@@ -76,7 +77,7 @@ class TestInMemoryUserRepository:
     def test_get_user_by_username(self, repository, test_user):
         """Test retrieving user by username."""
         repository.create(test_user)
-        
+
         retrieved = repository.get_by_username("testuser")
         assert retrieved.username == "testuser"
         assert retrieved.id == test_user.id
@@ -89,10 +90,10 @@ class TestInMemoryUserRepository:
     def test_update_user(self, repository, test_user):
         """Test updating user."""
         repository.create(test_user)
-        
+
         test_user.email = "newemail@example.com"
         repository.update(test_user)
-        
+
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved.email == "newemail@example.com"
 
@@ -105,7 +106,7 @@ class TestInMemoryUserRepository:
         """Test deleting user."""
         repository.create(test_user)
         repository.delete(test_user.id)
-        
+
         with pytest.raises(UserNotFoundError):
             repository.get_by_id(test_user.id)
 
@@ -130,10 +131,10 @@ class TestInMemoryUserRepository:
             password_hash="hash2",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user1)
         repository.create(user2)
-        
+
         users = repository.list()
         assert len(users) >= 2
         usernames = [u.username for u in users]
@@ -148,7 +149,7 @@ class TestInMemoryUserRepository:
     def test_user_count(self, repository, test_user):
         """Test getting user count."""
         repository.create(test_user)
-        
+
         # Should have count() method or similar
         users = repository.list()
         assert len(users) >= 1
@@ -156,7 +157,7 @@ class TestInMemoryUserRepository:
     def test_user_existence_check(self, repository, test_user):
         """Test checking if user exists."""
         repository.create(test_user)
-        
+
         # Should be able to retrieve the user
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved is not None
@@ -169,7 +170,7 @@ class TestInMemoryUserRepository:
     def test_get_by_email(self, repository, test_user):
         """Test retrieving user by email."""
         repository.create(test_user)
-        
+
         # Some repositories might support this
         try:
             retrieved = repository.get_by_email("test@example.com")
@@ -191,17 +192,17 @@ class TestInMemoryUserRepository:
             )
             repository.create(user)
             users.append(user)
-        
+
         all_users = repository.list()
         assert len(all_users) >= 10
 
     def test_user_modification_after_storage(self, repository, test_user):
         """Test that modifying stored user is reflected."""
         repository.create(test_user)
-        
+
         test_user.email = "modified@example.com"
         repository.update(test_user)
-        
+
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved.email == "modified@example.com"
 
@@ -214,7 +215,7 @@ class TestInMemoryUserRepository:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_username("user_with-special.chars@123")
         assert retrieved.username == "user_with-special.chars@123"
@@ -228,7 +229,7 @@ class TestInMemoryUserRepository:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_id(user.id)
         assert retrieved.email == "用户@example.com"
@@ -242,7 +243,7 @@ class TestInMemoryUserRepository:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         with pytest.raises((ValueError, Exception)):
             repository.create(user)
 
@@ -255,7 +256,7 @@ class TestInMemoryUserRepository:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         with pytest.raises((ValueError, Exception)):
             repository.create(user)
 
@@ -268,7 +269,7 @@ class TestInMemoryUserRepository:
             password_hash="",
             created_at=datetime.now(),
         )
-        
+
         with pytest.raises((ValueError, Exception)):
             repository.create(user)
 
@@ -292,7 +293,7 @@ class TestInMemoryUserRepositoryEdgeCases:
                 created_at=datetime.now(),
             )
             repository.create(user)
-        
+
         users = repository.list()
         assert len(users) >= 1000
 
@@ -305,9 +306,9 @@ class TestInMemoryUserRepositoryEdgeCases:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user1)
-        
+
         # Should be case-sensitive or case-insensitive consistently
         try:
             retrieved = repository.get_by_username("TestUser")
@@ -332,9 +333,9 @@ class TestInMemoryUserRepositoryEdgeCases:
             password_hash="hash2",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user1)
-        
+
         # Should either allow or disallow duplicate emails
         try:
             repository.create(user2)
@@ -351,6 +352,6 @@ class TestInMemoryUserRepositoryEdgeCases:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         with pytest.raises((ValueError, TypeError)):
             repository.create(user)

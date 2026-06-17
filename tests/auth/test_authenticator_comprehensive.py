@@ -11,19 +11,16 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
 
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.exceptions import (
     InvalidCredentialsError,
     MFARequiredError,
-    MFAVerificationError,
     UserAlreadyExistsError,
 )
 from codex.auth.mfa_provider import MFAProvider
 from codex.auth.token_manager import TokenManager, TokenType
-from codex.auth.user_store import UserStore, User
-
+from codex.auth.user_store import User, UserStore
 
 # ============================================================================
 # Fixtures

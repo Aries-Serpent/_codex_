@@ -52,7 +52,7 @@ Approval Sources (4 workflows)
     ↓
 Unified Hub (auto-approve-workflows.yml)
     ├─ Centralized approval logic
-    ├─ Token chain management
+    ├─ Token chain management  # pragma: allowlist secret
     ├─ Audit trail logging
     └─ Approval execution
     ↓
@@ -69,7 +69,7 @@ GitHub Actions API
 | **Code Reduction** | Eliminate 40% duplication | Reduce 1,200 SLOC → 700 SLOC |
 | **Unified Audit Trail** | Single approval record source | Log 100% of approvals to `.codex/evidence/` |
 | **Maintenance Burden** | Fix once, propagate everywhere | Reduce issue resolution time by 60% |
-| **Token Management** | Centralized token chain | Single point for token configuration |
+| **Token Management** | Centralized token chain | Single point for token configuration | <!-- pragma: allowlist secret -->
 | **Testing Coverage** | Single approval engine to test | Increase coverage from 60% → 95% |
 | **Observability** | Centralized metrics export | Real-time dashboard for approval rate |
 

@@ -10,17 +10,17 @@ Tests cover:
 - Error cases and edge conditions
 """
 
-import pytest
 import time
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
+import pytest
+
 from codex.auth.oauth_manager import (
+    OAuthConfig,
     OAuthManager,
     OAuthToken,
-    OAuthConfig,
 )
-
 
 # ============================================================================
 # Fixtures

@@ -10,7 +10,7 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
+
 from codex.auth.middleware import AuthMiddleware
 from codex.auth.token_manager import TokenManager
 
@@ -292,7 +292,6 @@ class TestRequestValidation:
 
     def test_request_body_validation(self):
         """Validate request body."""
-        import json
         body = {"name": "Alice", "email": "alice@example.com"}
         # Should validate schema
         assert "name" in body

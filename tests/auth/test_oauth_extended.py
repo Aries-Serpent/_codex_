@@ -10,9 +10,9 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
-from codex.auth.oauth_manager import OAuthManager, OAuthProvider
-from codex.auth.token_manager import TokenManager, TokenType
+
+from codex.auth.oauth_manager import OAuthManager
+from codex.auth.token_manager import TokenManager
 
 
 class TestOAuth2AdvancedFlows:
@@ -33,7 +33,7 @@ class TestOAuth2AdvancedFlows:
         # Setup mock credentials
         client_id = "test_client_id"
         client_secret = "test_client_secret"
-        
+
         # Would normally exchange for token
         assert client_id
         assert client_secret
@@ -42,7 +42,7 @@ class TestOAuth2AdvancedFlows:
         """Test resource owner password grant."""
         username = "testuser"
         password = "testpass"
-        
+
         # Would normally exchange for token
         assert username
         assert password
@@ -51,21 +51,21 @@ class TestOAuth2AdvancedFlows:
         """Test device authorization flow."""
         device_code = "device_code_1234"
         user_code = "user_code_5678"
-        
+
         assert device_code
         assert user_code
 
     def test_refresh_token_rotation(self, oauth):
         """Test refresh token rotation."""
         initial_refresh = "refresh_token_1"
-        
+
         # Should rotate token
         assert initial_refresh
 
     def test_token_introspection(self, oauth):
         """Test token introspection."""
         token = "some_access_token"
-        
+
         # Check token details
         assert token
 
@@ -73,7 +73,7 @@ class TestOAuth2AdvancedFlows:
         """Test token revocation."""
         token = "revoke_me"
         token_type_hint = "access_token"
-        
+
         # Should revoke
         assert token
         assert token_type_hint
@@ -84,7 +84,7 @@ class TestOAuth2AdvancedFlows:
             "custom_param": "value",
             "another_param": "another_value"
         }
-        
+
         # Should handle custom params
         assert params
 
@@ -95,7 +95,7 @@ class TestOAuth2AdvancedFlows:
             "https://app2.example.com/callback",
             "https://localhost:3000/callback"
         ]
-        
+
         # Should validate against registered URIs
         assert len(uris) == 3
 
@@ -110,7 +110,7 @@ class TestOAuth2AdvancedFlows:
             "server_error",
             "temporarily_unavailable"
         ]
-        
+
         assert len(errors) == 7
 
     def test_state_parameter_validation(self, oauth):
@@ -131,7 +131,7 @@ class TestPKCEAdvanced:
         """Test S256 PKCE flow."""
         code_verifier = oauth.generate_code_verifier()
         code_challenge = oauth.create_code_challenge(code_verifier, "S256")
-        
+
         assert code_verifier
         assert code_challenge
 
@@ -139,13 +139,13 @@ class TestPKCEAdvanced:
         """Test plain PKCE flow."""
         code_verifier = oauth.generate_code_verifier()
         code_challenge = oauth.create_code_challenge(code_verifier, "plain")
-        
+
         assert code_challenge == code_verifier
 
     def test_pkce_invalid_method(self, oauth):
         """Test invalid PKCE method."""
         code_verifier = oauth.generate_code_verifier()
-        
+
         # Should only accept S256 or plain
         try:
             oauth.create_code_challenge(code_verifier, "invalid")
@@ -161,14 +161,14 @@ class TestPKCEAdvanced:
         """Test PKCE with incorrect verifier."""
         code_verifier1 = oauth.generate_code_verifier()
         code_verifier2 = oauth.generate_code_verifier()
-        
+
         # Different verifiers should not match
         assert code_verifier1 != code_verifier2
 
     def test_pkce_verifier_length_validation(self, oauth):
         """Test PKCE verifier length."""
         verifier = oauth.generate_code_verifier()
-        
+
         # Should be between 43-128 characters
         assert 43 <= len(verifier) <= 128
 
@@ -176,7 +176,7 @@ class TestPKCEAdvanced:
         """Test PKCE challenge encoding."""
         verifier = oauth.generate_code_verifier()
         challenge = oauth.create_code_challenge(verifier, "S256")
-        
+
         # Challenge should be different from verifier for S256
         assert challenge != verifier
 
@@ -186,7 +186,7 @@ class TestPKCEAdvanced:
             oauth.create_code_challenge(oauth.generate_code_verifier(), "S256")
             for _ in range(10)
         ]
-        
+
         # All should be unique
         assert len(set(challenges)) == 10
 
@@ -213,13 +213,13 @@ class TestOpenIDConnect:
             "aud": "client_id",
             "iss": "https://auth.example.com"
         }
-        
+
         assert claims["sub"] == user_id
 
     def test_userinfo_endpoint(self, oauth):
         """Test UserInfo endpoint."""
         access_token = "access_token_123"
-        
+
         # Should retrieve user info
         assert access_token
 
@@ -242,7 +242,7 @@ class TestOpenIDConnect:
     def test_acr_values(self, oauth):
         """Test authentication context class reference."""
         acr_values = ["urn:mace:incommon:iap:silver", "urn:mace:incommon:iap:gold"]
-        
+
         assert len(acr_values) == 2
 
     def test_claims_request(self, oauth):
@@ -254,7 +254,7 @@ class TestOpenIDConnect:
                 "name": None
             }
         }
-        
+
         assert "email" in claims_request["userinfo"]
 
 
@@ -270,7 +270,7 @@ class TestScopeManagement:
         """Test scope request validation."""
         requested = ["read", "write", "admin"]
         available = ["read", "write", "delete", "admin"]
-        
+
         valid = all(scope in available for scope in requested)
         assert valid
 
@@ -278,14 +278,14 @@ class TestScopeManagement:
         """Test incremental consent."""
         initial_scopes = ["read"]
         additional_scopes = ["write"]
-        
+
         all_scopes = set(initial_scopes) | set(additional_scopes)
         assert len(all_scopes) == 2
 
     def test_scope_revocation(self, oauth):
         """Test scope revocation."""
         current_scopes = ["read", "write", "admin"]
-        
+
         # Revoke admin
         revoked = [s for s in current_scopes if s != "admin"]
         assert "admin" not in revoked
@@ -295,7 +295,7 @@ class TestScopeManagement:
         """Test scope downgrade."""
         requested = ["read", "write"]
         approved = ["read"]
-        
+
         # Should only grant approved
         assert set(approved).issubset(set(requested))
 
@@ -303,7 +303,7 @@ class TestScopeManagement:
         """Test preventing scope upgrade."""
         current = ["read"]
         requested = ["read", "write", "admin"]
-        
+
         # Should not auto-approve higher scopes
         upgradeable = False
         assert not upgradeable
@@ -311,7 +311,7 @@ class TestScopeManagement:
     def test_dynamic_scope_registration(self, oauth):
         """Test dynamic scope registration."""
         new_scope = "custom:scope"
-        
+
         # System should allow custom scopes
         assert new_scope
 
@@ -319,7 +319,7 @@ class TestScopeManagement:
         """Test scope parameter encoding."""
         scopes = ["read:user", "write:repo"]
         encoded = "+".join(scopes)
-        
+
         assert encoded == "read:user+write:repo"
 
 
@@ -329,7 +329,7 @@ class TestProviderManagement:
     def test_multiple_providers(self):
         """Test multiple OAuth providers."""
         providers = ["google", "github", "microsoft", "facebook"]
-        
+
         assert len(providers) == 4
 
     def test_provider_discovery(self):
@@ -349,14 +349,14 @@ class TestProviderManagement:
                 }
             ]
         }
-        
+
         assert len(jwks["keys"]) == 1
 
     def test_provider_configuration_caching(self):
         """Test provider config caching."""
         cache = {}
         provider = "google"
-        
+
         # Cache should store config
         cache[provider] = {"cached": True}
         assert cache[provider]["cached"]
@@ -365,7 +365,7 @@ class TestProviderManagement:
         """Test provider fallback."""
         primary = None
         fallback = "github"
-        
+
         provider = primary or fallback
         assert provider == "github"
 
@@ -373,7 +373,7 @@ class TestProviderManagement:
         """Test provider rate limiting."""
         requests = 0
         max_requests = 100
-        
+
         assert requests < max_requests
 
 
@@ -439,7 +439,7 @@ class TestCrossOriginOAuth:
         """Test callback domain validation."""
         registered = ["https://app1.example.com"]
         callback = "https://app1.example.com/callback"
-        
+
         is_valid = any(callback.startswith(d) for d in registered)
         assert is_valid
 
@@ -447,21 +447,21 @@ class TestCrossOriginOAuth:
         """Test subdomain in callback."""
         allowed = "*.example.com"
         callback = "https://api.example.com/callback"
-        
+
         # Wildcard domains
         assert callback
 
     def test_localhost_callback_in_development(self):
         """Test localhost callback in development."""
         dev_callback = "http://localhost:3000/callback"
-        
+
         # Should allow in development
         assert "localhost" in dev_callback
 
     def test_deep_link_oauth_callback(self):
         """Test deep link OAuth callback."""
         deep_link = "myapp://callback?code=auth_code"
-        
+
         assert "myapp://" in deep_link
 
 

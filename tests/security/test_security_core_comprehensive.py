@@ -11,15 +11,12 @@ This module provides extensive coverage of core security functions including:
 
 from __future__ import annotations
 
-import asyncio
-import hashlib
-import hmac
 import json
 import logging
 import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -36,7 +33,6 @@ from security.core import (
     verify_csrf_token,
     verify_session_integrity,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -501,7 +497,7 @@ class TestHmacCompare:
         """Test timing-resistant comparison."""
         # This is a security property - should take similar time
         import timeit
-        
+
         t1 = timeit.timeit(
             lambda: hmac_compare("a" * 100, "a" * 100),
             number=100
@@ -530,11 +526,11 @@ class TestRateLimiter:
     def test_rate_limiter_allows_calls_within_limit(self):
         """Test allowing calls within limit."""
         decorator = rate_limiter(max_calls=3, time_window=1)
-        
+
         @decorator
         def test_func():
             return "success"
-        
+
         # First 3 calls should succeed
         for _ in range(3):
             result = test_func()
@@ -543,15 +539,15 @@ class TestRateLimiter:
     def test_rate_limiter_blocks_calls_exceeding_limit(self):
         """Test blocking calls exceeding limit."""
         decorator = rate_limiter(max_calls=2, time_window=60)
-        
+
         @decorator
         def test_func():
             return "success"
-        
+
         # First 2 calls succeed
         test_func()
         test_func()
-        
+
         # Third call should raise
         with pytest.raises(Exception):
             test_func()
@@ -559,22 +555,22 @@ class TestRateLimiter:
     def test_rate_limiter_resets_after_time_window(self):
         """Test reset after time window expires."""
         decorator = rate_limiter(max_calls=1, time_window=1)
-        
+
         @decorator
         def test_func():
             return "success"
-        
+
         # First call succeeds
         result = test_func()
         assert result == "success"
-        
+
         # Second call fails
         with pytest.raises(Exception):
             test_func()
-        
+
         # Wait for window to expire
         time.sleep(1.1)
-        
+
         # Should succeed again
         result = test_func()
         assert result == "success"
@@ -582,16 +578,16 @@ class TestRateLimiter:
     def test_rate_limiter_per_user_tracking(self):
         """Test per-user rate limit tracking."""
         decorator = rate_limiter(max_calls=2, time_window=60, per_user=True)
-        
+
         @decorator
         def test_func(user_id):
             return "success"
-        
+
         # Different users have separate limits
         assert test_func("user1") == "success"
         assert test_func("user2") == "success"
         assert test_func("user1") == "success"
-        
+
         # user1 exceeds limit
         with pytest.raises(Exception):
             test_func("user1")
@@ -599,22 +595,22 @@ class TestRateLimiter:
     def test_rate_limiter_zero_calls(self):
         """Test with max_calls=0."""
         decorator = rate_limiter(max_calls=0, time_window=60)
-        
+
         @decorator
         def test_func():
             return "success"
-        
+
         with pytest.raises(Exception):
             test_func()
 
     def test_rate_limiter_large_window(self):
         """Test with large time window."""
         decorator = rate_limiter(max_calls=1000, time_window=3600)
-        
+
         @decorator
         def test_func():
             return "success"
-        
+
         # Should allow many calls
         for _ in range(100):
             result = test_func()
@@ -710,7 +706,7 @@ class TestLogSecurityEvent:
             "account_locked",
             "suspicious_activity",
         ]
-        
+
         for event_type in event_types:
             result = log_security_event(event_type, "user123", "info")
             assert result is None or isinstance(result, dict)

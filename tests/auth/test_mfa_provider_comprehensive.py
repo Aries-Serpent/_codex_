@@ -10,16 +10,15 @@ Tests cover:
 - Error handling and edge cases
 """
 
-import pytest
 import time
-from unittest.mock import Mock, patch
-import pyotp
+from unittest.mock import patch
+
+import pytest
 
 from codex.auth.mfa_provider import (
     MFAProvider,
     MFASecret,
 )
-
 
 # ============================================================================
 # Fixtures
