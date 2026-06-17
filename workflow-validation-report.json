@@ -1,0 +1,201 @@
+{
+  "timestamp": "2026-06-17T20:52:55.652783+00:00",
+  "validated_workflows": 5,
+  "results": {
+    "security-scanning-suite.yml": {
+      "syntax": "valid",
+      "jobs": 7,
+      "triggers": [
+        "push",
+        "pull_request",
+        "schedule",
+        "workflow_dispatch",
+        "workflow_call"
+      ]
+    }
+  },
+  "summary": {
+    "total": 5,
+    "valid": 1,
+    "invalid": 0
+  },
+  "cache_stats": {
+    "total_caches": 7,
+    "by_tier": {
+      "live": {
+        "count": 0,
+        "total_size_mb": 0.0
+      },
+      "common": {
+        "count": 0,
+        "total_size_mb": 0.0
+      },
+      "ephemeral": {
+        "count": 0,
+        "total_size_mb": 0.0
+      },
+      "other": {
+        "count": 7,
+        "total_size_mb": 9371.123100280762
+      }
+    }
+  },
+  "workflow_performance": {
+    "Iterative Self-Healing CI": {
+      "total": 5,
+      "success_rate": 0.0
+    },
+    "E\u2192D Transition Readiness Gate": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "\ud83d\udea8 Deferral Language Gate": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Coverage Ratchet": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Data Quality & Determinism Suite": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "QA Walkthrough Agent": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Root Organization Validation": {
+      "total": 1,
+      "success_rate": 0.0
+    },
+    "Progressive Validation Suite": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "CI Checkpoint Validation": {
+      "total": 1,
+      "success_rate": 0.0
+    },
+    "Pre-Merge Validation": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Agent Vars Bootstrap": {
+      "total": 4,
+      "success_rate": 0.0
+    },
+    "Validation Pipeline": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "PR Size Analyzer": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "\u26a1 Auto-Approve Pending Workflow Runs": {
+      "total": 4,
+      "success_rate": 0.0
+    },
+    "Copilot Agent Environment Setup": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "PR Auto-Fix Check": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "\ud83d\udd16 Required Actions Version Enforcer": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Pre-Flight CI Validation": {
+      "total": 4,
+      "success_rate": 0.0
+    },
+    "\ud83d\udd0d Issue Resolution Gate": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "GitHub Guru Agent": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "\ud83e\uddf9 Cleanup Stale PR Comments": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Workflow Compliance Audit (actionlint)": {
+      "total": 1,
+      "success_rate": 0.0
+    },
+    "Resilient Dependency Submission": {
+      "total": 4,
+      "success_rate": 0.0
+    },
+    "\ud83d\udd00 Branch Rebase Gate": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "\ud83d\udce6 Dependabot Auto-Absorb": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Documentation Link Checker": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "PR Comment Review Gate": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Auto-Fix Common CI Issues": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Coverage with Timeout Guards": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Code Quality & Coverage Suite": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Resilient Validation Suite": {
+      "total": 3,
+      "success_rate": 0.0
+    },
+    "Workflow Compliance Gate": {
+      "total": 1,
+      "success_rate": 0.0
+    },
+    "\ud83d\udd10 Secrets Baseline Enforcer": {
+      "total": 5,
+      "success_rate": 0.0
+    },
+    "\ud83d\udd17 Reference Integrity + Agent Size Gate": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Rust-Python Hybrid Swarm CI/CD": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "CI Health Monitor": {
+      "total": 1,
+      "success_rate": 0.0
+    },
+    "Security Scanning Suite": {
+      "total": 2,
+      "success_rate": 0.0
+    },
+    "Automatic Dependency Submission (Python)": {
+      "total": 2,
+      "success_rate": 100.0
+    },
+    "Copilot Evolution & Review (Unified)": {
+      "total": 1,
+      "success_rate": 100.0
+    }
+  }
+}
