@@ -177,7 +177,20 @@ class RefreshResponse(BaseModel):
 # Router factory
 # ---------------------------------------------------------------------------
 
-_DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105  # pragma: allowlist secret
+def _get_default_secret() -> str:
+    """Get a default JWT secret from environment or generate one for development."""
+    import secrets
+    # Try environment variable first
+    env_secret = os.environ.get("CODEX_AUTH_SECRET")
+    if env_secret:
+        return env_secret
+    
+    # Generate a secure random secret for development
+    logger.warning(
+        "CODEX_AUTH_SECRET not set. Generating temporary development secret. "
+        "Set CODEX_AUTH_SECRET environment variable for persistent key."
+    )
+    return secrets.token_urlsafe(32)
 
 
 def create_auth_router(
@@ -218,11 +231,7 @@ def create_auth_router(
     * **429** — Rate limit exceeded.
     """
     if authenticator is None:
-        resolved_secret = secret_key or os.environ.get("CODEX_AUTH_SECRET") or _DEFAULT_SECRET
-        if resolved_secret == _DEFAULT_SECRET:
-            logger.warning(
-                "Using default JWT signing material — configure a dedicated production key"
-            )
+        resolved_secret = secret_key or _get_default_secret()
         store = UserStore()
         tokens = TokenManager(secret_key=resolved_secret)
         authenticator = Authenticator(user_store=store, token_manager=tokens)
