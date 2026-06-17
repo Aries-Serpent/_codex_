@@ -1,10 +1,10 @@
-# Session Context — 2026-06-17T15:56:10Z
+# Session Context — 2026-06-17T16:04:22Z
 **Branch:** `copilot/explore-codebase-and-implementation-plan`  **PR:** #4974  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4651` (✅)
-- GraphQL remaining: `4984` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `4979` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -19,14 +19,14 @@ State: `open`  Draft: `True`  Branch: `copilot/explore-codebase-and-implementati
 - **Running Copilot cloud agent** — `failure` on `copilot/explore-codebase-and-implementation-plan` (2026-06-17)
 
 ## 📝 Recent Commits
+- `2e5e8689` fix(ci): restore copilot-setup-steps.yml from canonical baseline (1102 lines) — copilot-swe-agent[bot] (2026-06-17)
+- `fad67fd8` fix(ci): restore copilot-setup-steps.yml from canonical baseline (1102 lines) — copilot-swe-agent[bot] (2026-06-17)
 - `b8afd980` PHASE_7A: Master status report — Campaign 56% complete, Wave 2 100% delivered — Unified Coverage Agent (2026-06-17)
 - `95969164` PHASE_7A: WAVE 2 COMPLETE — All 4 lanes delivered (5,978 tests), 92% target exce — Unified Coverage Agent (2026-06-17)
 - `a99418d6` PHASE_7A: Proactive next-session prep staged for Day 9-10 continuation — Unified Coverage Agent (2026-06-17)
 - `d372cf90` feat(security): Phase 7A Wave 2 Lane 2.1 - 962 security-critical tests generated — Unified Coverage Agent (2026-06-17)
 - `833769c6` docs: Add comprehensive Phase 7A Wave 2 Lane 2.1 final report with complete metr — Unified Coverage Agent (2026-06-17)
 - `1371042b` Merge branch '0D_base_' into copilot/explore-codebase-and-implementation-plan — Statix (2026-06-17)
-- `4c885336` feat: Phase 7A Wave 2 Lane 2.1 - Security-Critical Test Generation (962 tests) — Unified Coverage Agent (2026-06-17)
-- `d58efbaa` Add Phase 7A Wave 2 Lane 2.4 completion summary — copilot-swe-agent[bot] (2026-06-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
