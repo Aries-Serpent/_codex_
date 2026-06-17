@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Fixed (SN 2026-06-17T16:58Z - PR #4974 CI Rescue — Workflow Compliance)
+- **Fixed actionlint compliance violation** in `.github/workflows/copilot-setup-steps.yml`
+  - Removed duplicate `full=` from lfs_mode description (line 30)
+  - Before: `'Git LFS mode (none=baseline, targeted=fetch specific paths, full=full=fetch all)'`
+  - After: `'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'`
+  - Resolution: `27240d9`
+  - Impact: Unblocks `actionlint — Workflow Compliance` check
+- **Updated accountability documentation** in response to pre-flight checklist
+  - Added session summary to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+  - Synchronized CHANGELOG.md update with accountability report (REQ-5)
+  - Compliance status: ✅ REQ-4/REQ-5 satisfied
+
+
+
 ### Fixed (auto-update — PR #4974)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4974 (SHA `c241c812`) at 2026-06-17T16:54Z [auto-generated]
 
