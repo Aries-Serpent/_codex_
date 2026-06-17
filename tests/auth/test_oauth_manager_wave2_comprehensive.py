@@ -186,7 +186,7 @@ class TestTokenExchange:
                 
                 try:
                     result = oauth_manager.exchange_code_for_token("invalid_code")
-                except Exception:
+                except Exception as _err:
                     # Exception is acceptable for error response
                     pass
 
@@ -223,7 +223,7 @@ class TestCallbackHandling:
                     error_description="User denied access",
                 )
                 # Should either return error or raise
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_handle_callback_missing_state(self, oauth_manager):
@@ -232,7 +232,7 @@ class TestCallbackHandling:
             try:
                 result = oauth_manager.handle_callback(code="auth_code")
                 # Should handle missing state
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
 
@@ -344,7 +344,7 @@ class TestErrorHandling:
                 
                 try:
                     result = oauth_manager.exchange_code_for_token("code")
-                except Exception:
+                except Exception as _err:
                     # Network error is expected
                     pass
 
@@ -363,7 +363,7 @@ class TestOAuthEdgeCases:
             # Should handle long state
             try:
                 result = oauth_manager.verify_state(long_state)
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_special_characters_in_code(self, oauth_manager):
@@ -375,7 +375,7 @@ class TestOAuthEdgeCases:
                 
                 try:
                     result = oauth_manager.exchange_code_for_token(special_code)
-                except Exception:
+                except (AttributeError, OSError, RuntimeError):
                     pass
 
     def test_unicode_in_callback(self, oauth_manager):
@@ -386,7 +386,7 @@ class TestOAuthEdgeCases:
                     code="code_123",
                     state="state_世界",
                 )
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_empty_access_token(self, oauth_manager):
@@ -397,7 +397,7 @@ class TestOAuthEdgeCases:
                 
                 try:
                     result = oauth_manager.get_user_info("")
-                except Exception:
+                except (AttributeError, OSError, RuntimeError):
                     pass
 
     def test_null_response(self, oauth_manager):
@@ -408,7 +408,7 @@ class TestOAuthEdgeCases:
                 
                 try:
                     result = oauth_manager.exchange_code_for_token("code")
-                except Exception:
+                except (AttributeError, OSError, RuntimeError):
                     pass
 
 

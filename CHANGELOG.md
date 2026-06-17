@@ -1,6 +1,20 @@
 # Changelog
 
-## [0.1.1] - 2026-06-17
+## [Unreleased]
+
+### Fixed (PR #4970 - Merge Conflict Remediation)
+- **Resolved unresolved merge conflict markers** in 8 test files that caused `SyntaxError` on import
+  - `tests/security/test_storage_comprehensive.py` — kept clean `import stat`
+  - `tests/security/test_log_sanitizer_comprehensive.py` — kept clean `import pytest`
+  - `tests/codex_ml/test_data_comprehensive.py` — kept deterministic HEAD assertions for `test_stable_fold_case_sensitive`
+  - `tests/codex_ml/test_metrics_comprehensive.py` — kept explicit TP/FP/FN breakdown assertions
+  - `tests/codex_ml/test_rag_comprehensive.py` — kept expanded whitespace-normalization assertions
+  - `tests/auth/test_user_store_wave2_comprehensive.py` — kept `pytest.raises(ValueError)` for duplicate user test
+  - `tests/auth/test_oauth_manager_wave2_comprehensive.py` — fixed `test_handle_invalid_redirect_uri` to use `OAuthConfig` dataclass with `OAuthManager(config=config)` pattern
+  - `tests/api/test_api_contracts_phase7a.py` — kept `"""API contract tests - 50 tests"""` docstring and all 48 `test_contract_validation_*` methods
+- **Separated incorrectly merged session summaries** in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (PR #4968 and PR #4962 were merged into a single section)
+
+
 
 ### Fixed (PR #4968 - Code Quality Review)
 - **Unreachable code warnings** in API error handling tests (10 CodeQL alerts)
