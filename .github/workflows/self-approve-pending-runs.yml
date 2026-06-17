@@ -185,27 +185,53 @@ jobs:
             echo "skip=false"  >> "$GITHUB_OUTPUT"
           fi
 
-      # ── Run approve_pending_runs.py ───────────────────────────────────────
-      - name: "Set up Python"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
-        with:
-          cache: pip
-          python-version: "3.12"
-
-      - name: "Approve pending (action_required) runs"
-        if: steps.target.outputs.skip != 'true'
+      # ── Replace approve_pending_runs.py call with hub dispatch ─────────────────
+      - name: "Get pending runs (sweep)"
+        id: pending
         env:
-          GH_TOKEN:                 ${{ steps.token.outputs.token }}
-          GITHUB_APP_PRIVATE_KEY:   ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-          GITHUB_APP_ID:            ${{ secrets._GITHUB_APP_ID }}
-          GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
-          REPO:                     ${{ github.repository }}
-          HEAD_SHA:                 ${{ steps.target.outputs.head_sha || '' }}
-          PR_NUMBER:                ${{ steps.target.outputs.pr_number || '' }}
-          DRY_RUN:                  ${{ github.event.inputs.dry_run || 'false' }}
-          MAX_WAIT_SEC:             "30"
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
-          python scripts/ci/approve_pending_runs.py
+          PENDING_RUNS=$(gh run list --status action_required --json databaseId,name,workflowName 2>/dev/null | wc -l)
+          echo "count=$((PENDING_RUNS - 1))" >> "$GITHUB_OUTPUT"
+          echo "ℹ️  Found ${PENDING_RUNS:-0} pending runs"
+
+      - name: "Skip if no pending runs"
+        if: steps.pending.outputs.count == '0'
+        run: |
+          echo "No pending runs detected; skipping hub dispatch"
+          exit 0
+
+      - name: "Dispatch hub for batch approval (self-approve-pending-runs)"
+        if: steps.pending.outputs.count != '0'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        with:
+          github-token: ${{ steps.token.outputs.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pendingCount = parseInt('${{ steps.pending.outputs.count }}', 10) || 0;
+             
+            core.info(`Dispatching auto-approve-workflows.yml for batch approval (${pendingCount} pending runs)`);
+             
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner,
+                repo,
+                workflow_id: 'auto-approve-workflows.yml',
+                ref: 'main',
+                inputs: {
+                  approval_source: 'self-approve-pending-runs',
+                  approval_intent: 'auto_approve_action_required',
+                  approval_reason: `Batch approval sweep: ${pendingCount} pending runs detected`,
+                  approval_ttl_hours: '0.5',
+                  dry_run: 'false'
+                }
+              });
+              core.info(`✅ auto-approve-workflows.yml dispatched for batch of ${pendingCount} runs`);
+            } catch (err) {
+              core.warning(`Hub dispatch failed: ${err.message}`);
+            }
+        continue-on-error: true
 
       # ── Write job summary ─────────────────────────────────────────────────
       - name: "Job summary"

@@ -91,26 +91,47 @@ jobs:
           cache: pip
           python-version: '3.12'
 
-      # ── 2. Auto-approve all action_required runs for PR HEAD ─────────────────
-      # Mirrors agent-auth-delegation.yml "Approve action_required runs" step.
-      # approve_pending_runs.py uses CODEX_MASTER_KEY (actions:write) to call
-      # POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve for each pending run.
-      - name: Auto-approve pending workflow runs + clear stale Copilot 👀
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-          GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
-          GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
-          REPO: ${{ github.repository }}
-          HEAD_SHA: ${{ steps.ctx.outputs.pr_sha }}
-          PR_NUMBER: ${{ steps.ctx.outputs.pr_num }}
-          CLEANUP_COPILOT_EYES: "true"
-        run: |
-          echo "Approving action_required runs for SHA $HEAD_SHA (PR #$PR_NUMBER)..."
-          python scripts/ci/approve_pending_runs.py
-        continue-on-error: true  # approval failure must never block the dispatch steps
+      # ── 2. Dispatch unified approval hub ───────────────────────────────────────
+      # Route approval intent to the unified hub (auto-approve-workflows.yml)
+      # instead of directly approving via approve_pending_runs.py. This centralizes
+      # approval logic, audit trail, and token management.
+      - name: Dispatch unified approval hub
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);
+            const prSha = '${{ steps.ctx.outputs.pr_sha }}';
+            const reviewer = '${{ steps.ctx.outputs.reviewer }}';
+             
+            core.info(`Dispatching auto-approve-workflows.yml for PR #${prNumber} @ ${prSha.slice(0,8)}`);
+             
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner,
+                repo,
+                workflow_id: 'auto-approve-workflows.yml',
+                ref: 'main',
+                inputs: {
+                  approval_source: 'trigger-on-approval',
+                  approval_intent: 'dispatch_validation_suite',
+                  target_pr: prNumber.toString(),
+                  approval_reason: `Code review approval from @${reviewer}`,
+                  approval_ttl_hours: '2',
+                  dry_run: 'false'
+                }
+              });
+              core.info('✅ auto-approve-workflows.yml dispatched');
+            } catch (err) {
+              core.warning(`Hub dispatch failed: ${err.message}`);
+            }
+        continue-on-error: true  # dispatch failure must never block validation workflows
 
       # ── 3. Dispatch validate.yml (Validation Pipeline — fast mode) ───────────
+      # Keep validation workflows: validate.yml and pre-merge-validation.yml
+      # These run in parallel with the unified approval hub dispatch above.
       - name: Dispatch Validation Pipeline (validate.yml)
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
         with:
@@ -238,7 +259,7 @@ jobs:
           echo "  Token  : ${{ steps.ctx.outputs.token_tier }} (CODEX_MASTER_KEY chain)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo ""                                                                 | tee -a "$GITHUB_STEP_SUMMARY"
           echo "  Steps executed:"                                                | tee -a "$GITHUB_STEP_SUMMARY"
-          echo "    1. Auto-approve action_required runs  (approve_pending_runs.py)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "    1. Dispatch unified approval hub    (auto-approve-workflows.yml)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "    2. validate.yml dispatched            (fast mode)"            | tee -a "$GITHUB_STEP_SUMMARY"
           echo "    3. pre-merge-validation.yml dispatched"                       | tee -a "$GITHUB_STEP_SUMMARY"
           echo "    4. codeql-alert-fetcher.yml dispatched (security_events scope)" | tee -a "$GITHUB_STEP_SUMMARY"

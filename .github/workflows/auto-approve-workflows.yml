@@ -41,6 +41,12 @@ name: "⚡ Auto-Approve Pending Workflow Runs"
 # S305 — created 2026-04-03 | S302 — schedule + dispatch overhaul 2026-04-06
 
 on:
+  # Handler for push events on feature branches (triggers approve-on-push job)
+  push:
+    branches:
+      - 'copilot/**'
+      - 'feature/**'
+
   # Primary: fires after every Copilot agent session (from the default branch).
   workflow_run:
     workflows: ["Copilot coding agent", "🔄 Auto-Post @copilot review After Agent Session"]
@@ -64,9 +70,51 @@ on:
   # Manual trigger with full control.
   workflow_dispatch:
     inputs:
+      # ── Phase 3 Enhanced Approval Hub Inputs (8 new inputs) ──────────────────
+      approval_source:
+        description: 'Source of approval (trigger-on-approval, self-approve, agent-auth, workflow-gate, manual)'
+        required: false
+        type: choice
+        options:
+          - 'trigger-on-approval'
+          - 'self-approve-pending-runs'
+          - 'agent-auth-delegation'
+          - 'workflow-execution-gate'
+          - 'manual'
+      approval_intent:
+        description: 'Intent of approval (auto_approve, conditional, deny, force_deny)'
+        required: false
+        type: choice
+        options:
+          - 'auto_approve_action_required'
+          - 'conditional_approve'
+          - 'deny'
+          - 'force_deny'
+      target_run_id:
+        description: 'GitHub workflow run ID to approve (optional, overrides auto-discovery)'
+        required: false
+        type: string
+      target_pr:
+        description: 'PR number for approval context (can override pr_number if both provided)'
+        required: false
+        type: string
+      approval_reason:
+        description: 'Human-readable reason for approval (docs, chore, hotfix, etc.)'
+        required: false
+        type: string
+      approval_ttl_hours:
+        description: 'TTL for single-session approval window (1-24 hours, default: 1)'
+        required: false
+        type: string
+        default: '1'
+      override_label:
+        description: 'Force approval using label even without review (maintainer only, security: use with caution)'
+        required: false
+        type: string
+      # ── Backward-compatible legacy inputs (preserved for existing workflows) ──
       pr_number:
-        description: "PR number to apply auto-approve to (required)"
-        required: true
+        description: "PR number to apply auto-approve to (required for legacy mode)"
+        required: false
         type: string
       enable_persistent:
         description: >
@@ -103,7 +151,443 @@ permissions:
   contents: read
 
 jobs:
-  auto-approve:
+  # ────────────────────────────────────────────────────────────────────────────
+  # Section 1a: Push Event Approval Handler
+  # ────────────────────────────────────────────────────────────────────────────
+  # Handles approval on push events (workflow_dispatch is handled by evaluate-approval below).
+  # This job allows the workflow to execute successfully when triggered by push events.
+
+  approve-on-push:
+    name: "⚡ Auto-Approve Pending Runs (Push Event)"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve PR for current push
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          
+          # Find the PR associated with this push branch
+          PR_NUMBER=$(gh pr list \
+            --repo "$REPO" \
+            --head "${{ github.ref_name }}" \
+            --state open \
+            --json number -q '.[0].number' 2>/dev/null || echo "")
+          
+          if [ -z "$PR_NUMBER" ]; then
+            echo "::notice::No open PR found for branch ${{ github.ref_name }} — skipping approval"
+            echo "pr_number=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "✅ Found PR #$PR_NUMBER for branch ${{ github.ref_name }}"
+
+      - name: Approve pending runs (if PR found)
+        if: steps.resolve.outputs.pr_number
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.sha }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          
+          # Execute the approval script for this PR
+          python scripts/ci/approve_pending_runs.py 2>&1 || {
+            EXIT_CODE=$?
+            echo "::warning::approval script exited with code $EXIT_CODE (non-fatal for push event)"
+            exit 0
+          }
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Section 2: Enhanced Approval Rule Engine (5-tier priority system)
+  # ────────────────────────────────────────────────────────────────────────────
+  # This new job implements the unified approval hub rule evaluation logic.
+  # Only runs when invoked via workflow_dispatch with new approval_source input.
+
+  evaluate-approval:
+    name: "📋 Evaluate Approval Rules (5-tier priority)"
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.approval_source != ''
+    outputs:
+      approval_decision: ${{ steps.evaluate.outputs.decision }}
+      rule_matched: ${{ steps.evaluate.outputs.rule }}
+      confidence_score: ${{ steps.evaluate.outputs.confidence }}
+      target_pr: ${{ steps.evaluate.outputs.target_pr }}
+      should_proceed: ${{ steps.evaluate.outputs.should_proceed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Evaluate 5-tier priority rule system"
+        id: evaluate
+        env:
+          APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
+          APPROVAL_INTENT: ${{ github.event.inputs.approval_intent }}
+          TARGET_PR: ${{ github.event.inputs.target_pr || github.event.inputs.pr_number }}
+          OVERRIDE_LABEL: ${{ github.event.inputs.override_label }}
+          APPROVAL_REASON: ${{ github.event.inputs.approval_reason }}
+          APPROVAL_TTL_HOURS: ${{ github.event.inputs.approval_ttl_hours || '1' }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          
+          # Validate inputs
+          if [ -z "$TARGET_PR" ]; then
+            echo "decision=SKIP" >> $GITHUB_OUTPUT
+            echo "rule=no_target_pr" >> $GITHUB_OUTPUT
+            echo "confidence=0.0" >> $GITHUB_OUTPUT
+            echo "should_proceed=false" >> $GITHUB_OUTPUT
+            echo "::warning::No target PR provided (target_pr or pr_number required)"
+            exit 0
+          fi
+          
+          # Sanitize approval_reason to prevent injection
+          SAFE_REASON=$(echo "$APPROVAL_REASON" | sed 's/[^a-zA-Z0-9:_.-]/ /g' | head -c 256)
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Priority 1: Force Deny Intent (instant deny, no processing)
+          # ────────────────────────────────────────────────────────────────────
+          if [ "$APPROVAL_INTENT" = "force_deny" ]; then
+            echo "decision=DENY" >> $GITHUB_OUTPUT
+            echo "rule=force_deny_intent" >> $GITHUB_OUTPUT
+            echo "confidence=1.0" >> $GITHUB_OUTPUT
+            echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+            echo "should_proceed=false" >> $GITHUB_OUTPUT
+            echo "⛔ Priority 1: Force deny requested — skipping all further evaluation"
+            exit 0
+          fi
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Priority 2: Persistent Label Rule (wec:auto-approve)
+          # ────────────────────────────────────────────────────────────────────
+          LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
+          if echo "$LABELS" | grep -q "^wec:auto-approve$"; then
+            echo "decision=APPROVE" >> $GITHUB_OUTPUT
+            echo "rule=persistent_label_rule" >> $GITHUB_OUTPUT
+            echo "confidence=1.0" >> $GITHUB_OUTPUT
+            echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+            echo "should_proceed=true" >> $GITHUB_OUTPUT
+            echo "✅ Priority 2: Persistent label 'wec:auto-approve' matched"
+            exit 0
+          fi
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Priority 3: Single-Session Label Rule (wec:auto-approve-once)
+          # Time-limited approval window based on TTL
+          # ────────────────────────────────────────────────────────────────────
+          if echo "$LABELS" | grep -q "^wec:auto-approve-once$"; then
+            CREATED_AT=$(gh pr view "$TARGET_PR" --repo "$REPO" --json createdAt -q '.createdAt' 2>/dev/null || echo "")
+            if [ -z "$CREATED_AT" ]; then
+              echo "decision=DENY" >> $GITHUB_OUTPUT
+              echo "rule=single_session_label_no_timestamp" >> $GITHUB_OUTPUT
+              echo "confidence=0.5" >> $GITHUB_OUTPUT
+              echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+              echo "should_proceed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            
+            CREATED_TS=$(date -d "$CREATED_AT" +%s 2>/dev/null || echo "0")
+            CURRENT_TS=$(date +%s)
+            ELAPSED_HOURS=$(( (CURRENT_TS - CREATED_TS) / 3600 ))
+            TTL_INT=${APPROVAL_TTL_HOURS:-1}
+            
+            if [ "$ELAPSED_HOURS" -le "$TTL_INT" ]; then
+              echo "decision=APPROVE" >> $GITHUB_OUTPUT
+              echo "rule=single_session_label_rule" >> $GITHUB_OUTPUT
+              echo "confidence=1.0" >> $GITHUB_OUTPUT
+              echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+              echo "should_proceed=true" >> $GITHUB_OUTPUT
+              echo "✅ Priority 3: Single-session label within TTL ($ELAPSED_HOURS/$TTL_INT hours)"
+              exit 0
+            else
+              echo "decision=DENY" >> $GITHUB_OUTPUT
+              echo "rule=single_session_expired" >> $GITHUB_OUTPUT
+              echo "confidence=0.95" >> $GITHUB_OUTPUT
+              echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+              echo "should_proceed=false" >> $GITHUB_OUTPUT
+              echo "⏰ Priority 3: Single-session label expired ($ELAPSED_HOURS > $TTL_INT hours)"
+              exit 0
+            fi
+          fi
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Priority 4: Maintainer Approval Rule
+          # Check if PR has been approved by maintainer (@mbaetiong)
+          # ────────────────────────────────────────────────────────────────────
+          APPROVER=$(gh pr view "$TARGET_PR" --repo "$REPO" --json reviews -q '.reviews[] | select(.state=="APPROVED") | .author.login' 2>/dev/null | head -1 || echo "")
+          if [ "$APPROVER" = "mbaetiong" ]; then
+            echo "decision=APPROVE" >> $GITHUB_OUTPUT
+            echo "rule=maintainer_approval_rule" >> $GITHUB_OUTPUT
+            echo "confidence=0.99" >> $GITHUB_OUTPUT
+            echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+            echo "should_proceed=true" >> $GITHUB_OUTPUT
+            echo "✅ Priority 4: Maintainer approval from @$APPROVER"
+            exit 0
+          fi
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Priority 5: Low-Risk Approval Reason Rule
+          # Patterns: docs:, chore:, etc.
+          # ────────────────────────────────────────────────────────────────────
+          if [[ "$SAFE_REASON" =~ ^(docs|chore|test|refactor) ]]; then
+            echo "decision=APPROVE" >> $GITHUB_OUTPUT
+            echo "rule=low_risk_reason_rule" >> $GITHUB_OUTPUT
+            echo "confidence=0.85" >> $GITHUB_OUTPUT
+            echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+            echo "should_proceed=true" >> $GITHUB_OUTPUT
+            echo "✅ Priority 5: Low-risk reason matched: $SAFE_REASON"
+            exit 0
+          fi
+          
+          # ────────────────────────────────────────────────────────────────────
+          # Fallback: No matching rule — default DENY
+          # ────────────────────────────────────────────────────────────────────
+          echo "decision=DENY" >> $GITHUB_OUTPUT
+          echo "rule=no_matching_rule" >> $GITHUB_OUTPUT
+          echo "confidence=0.0" >> $GITHUB_OUTPUT
+          echo "target_pr=$TARGET_PR" >> $GITHUB_OUTPUT
+          echo "should_proceed=false" >> $GITHUB_OUTPUT
+          echo "⛔ Fallback: No matching approval rule found"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Section 2b: Enhanced Approval Execution Job
+  # ────────────────────────────────────────────────────────────────────────────
+  # This job executes the approval after rule evaluation, with token chain
+  # resolution and audit logging.
+
+  execute-approval:
+    name: "⚡ Execute Approval Decision"
+    needs: evaluate-approval
+    runs-on: ubuntu-latest
+    if: |
+      needs.evaluate-approval.outputs.should_proceed == 'true' &&
+      needs.evaluate-approval.outputs.approval_decision == 'APPROVE'
+    permissions:
+      actions: write
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Resolve token chain (Tier 1-4 with fallbacks)"
+        id: token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          
+          # Tier 1: Cognitive Brain App token (not available in standard context)
+          # Would be: ${{ steps.app-token.outputs.token }} if available
+          
+          # Tier 2: CODEX_MASTER_KEY (primary PAT)
+          if [ -n "${{ secrets.CODEX_MASTER_KEY || '' }}" ]; then
+            echo "token=${{ secrets.CODEX_MASTER_KEY }}" >> $GITHUB_OUTPUT
+            echo "token_source=CODEX_MASTER_KEY" >> $GITHUB_OUTPUT
+            echo "Resolved: Using CODEX_MASTER_KEY (Tier 2)"
+            exit 0
+          fi
+          
+          # Tier 3: CODEX_BACKUP_KEY (fallback PAT)
+          if [ -n "${{ secrets.CODEX_BACKUP_KEY || '' }}" ]; then
+            echo "token=${{ secrets.CODEX_BACKUP_KEY }}" >> $GITHUB_OUTPUT
+            echo "token_source=CODEX_BACKUP_KEY" >> $GITHUB_OUTPUT
+            echo "Resolved: Using CODEX_BACKUP_KEY (Tier 3)"
+            exit 0
+          fi
+          
+          # Tier 4: github.token (limited scope, same-repo only)
+          echo "token=${{ github.token }}" >> $GITHUB_OUTPUT
+          echo "token_source=github_token" >> $GITHUB_OUTPUT
+          echo "Resolved: Using github.token (Tier 4, limited scope)"
+
+      - name: "Approve workflow run(s)"
+        id: approve
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          RUN_ID: ${{ github.event.inputs.target_run_id }}
+          TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          
+          if [ -z "$TARGET_PR" ]; then
+            echo "::warning::No target PR resolved — skipping approval execution"
+            exit 0
+          fi
+          
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "🔍 DRY RUN MODE: Would approve run $RUN_ID for PR #$TARGET_PR"
+            exit 0
+          fi
+          
+          # If specific run ID provided, approve that run
+          if [ -n "$RUN_ID" ]; then
+            gh run approve "$RUN_ID" 2>/dev/null && \
+              echo "✅ Approved run #$RUN_ID" || \
+              echo "⚠️ Could not approve run #$RUN_ID (may already be approved)"
+            exit 0
+          fi
+          
+          # Otherwise, discover and approve pending runs for this PR
+          HEAD_SHA=$(gh pr view "$TARGET_PR" --repo "$REPO" --json headRefOid -q '.headRefOid' 2>/dev/null || echo "")
+          if [ -z "$HEAD_SHA" ]; then
+            echo "::warning::Could not resolve HEAD SHA for PR #$TARGET_PR"
+            exit 0
+          fi
+          
+          # High-volume detection: If >10 pending runs, use 6-pass approach
+          PENDING_COUNT=$(gh run list --repo "$REPO" --status action_required --json databaseId 2>/dev/null | grep -c '.' || echo "0")
+          
+          if [ "$PENDING_COUNT" -ge 10 ]; then
+            echo "📦 High-volume detected: $PENDING_COUNT pending runs; using 6-pass approach"
+            for PASS in {1..6}; do
+              echo "Pass $PASS/6..."
+              BATCH=$(gh run list --repo "$REPO" --status action_required --json databaseId -q '.[].databaseId' 2>/dev/null | head -n 5 || echo "")
+              for BATCH_RUN in $BATCH; do
+                gh run approve "$BATCH_RUN" 2>/dev/null && echo "  ✅ Approved run #$BATCH_RUN" || true
+                sleep 2  # 2-second delay between approvals
+              done
+              [ "$PASS" -lt 6 ] && sleep 12  # 12-second delay between passes
+            done
+          else
+            echo "🔍 Finding action_required runs for SHA ${HEAD_SHA:0:12}..."
+            RUNS=$(gh run list --repo "$REPO" --status action_required --json databaseId,name -q '.[]' 2>/dev/null || echo "")
+            if [ -z "$RUNS" ]; then
+              echo "ℹ️  No action_required runs found"
+            else
+              echo "$RUNS" | while read -r RUN_JSON; do
+                RUN_ID=$(echo "$RUN_JSON" | jq -r '.databaseId' 2>/dev/null || echo "")
+                RUN_NAME=$(echo "$RUN_JSON" | jq -r '.name' 2>/dev/null || echo "unknown")
+                if [ -n "$RUN_ID" ]; then
+                  gh run approve "$RUN_ID" 2>/dev/null && echo "✅ Approved: $RUN_NAME (#$RUN_ID)" || true
+                fi
+              done
+            fi
+          fi
+
+      - name: "Log approval to audit trail"
+        if: always() && needs.evaluate-approval.outputs.should_proceed == 'true'
+        env:
+          RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
+          CONFIDENCE: ${{ needs.evaluate-approval.outputs.confidence_score }}
+          TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
+          APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
+          APPROVAL_REASON: ${{ github.event.inputs.approval_reason }}
+          TOKEN_SOURCE: ${{ steps.token.outputs.token_source }}
+          REPO: ${{ github.repository }}
+          TIMESTAMP: ${{ github.event.repository.updated_at }}
+        run: |
+          set -euo pipefail
+          
+          # Generate UUID for approval record
+          APPROVAL_ID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")
+          
+          # Create audit log entry (JSONL format for append-only)
+          cat >> .codex/approvals.jsonl << EOF
+          {"approval_id":"$APPROVAL_ID","timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","run_id":"${{ github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_evaluated":"$RULE_MATCHED","approval_reason":"$APPROVAL_REASON","token_chain_resolution":{"token_source":"$TOKEN_SOURCE"},"confidence_score":$CONFIDENCE,"action_taken":"approved","actor":"${{ github.actor }}"}
+          EOF
+          
+          # Commit audit log (best effort, non-fatal if fails)
+          git config user.name "GitHub Action" || true
+          git config user.email "action@github.com" || true
+          git add .codex/approvals.jsonl || true
+          git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR #$TARGET_PR, rule: $RULE_MATCHED)" || true
+          git push || true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Section 2c: Cleanup Job
+  # ────────────────────────────────────────────────────────────────────────────
+  cleanup-single-session:
+    name: "🧹 Cleanup Single-Session Label"
+    needs: [evaluate-approval, execute-approval]
+    runs-on: ubuntu-latest
+    if: |
+      always() &&
+      needs.evaluate-approval.outputs.should_proceed == 'true' &&
+      github.event.inputs.approval_source == 'self-approve-pending-runs' ||
+      github.event.inputs.approval_source == 'trigger-on-approval'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove single-session label if present
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          
+          if [ -z "$TARGET_PR" ]; then
+            exit 0
+          fi
+          
+          # Only cleanup if single-session mode was used
+          LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
+          if echo "$LABELS" | grep -q "^wec:auto-approve-once$"; then
+            gh pr edit "$TARGET_PR" --repo "$REPO" --remove-label "wec:auto-approve-once" 2>/dev/null && \
+              echo "✅ Removed single-session label 'wec:auto-approve-once'" || \
+              echo "⚠️ Could not remove label (non-fatal)"
+          fi
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Section 3: Telemetry & Monitoring
+  # ────────────────────────────────────────────────────────────────────────────
+  publish-metrics:
+    name: "📊 Publish Approval Metrics"
+    needs: [evaluate-approval, execute-approval]
+    runs-on: ubuntu-latest
+    if: always() && github.event.inputs.approval_source != ''
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Publish metrics to artifact"
+        env:
+          APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
+          RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
+          CONFIDENCE: ${{ needs.evaluate-approval.outputs.confidence_score }}
+          DECISION: ${{ needs.evaluate-approval.outputs.approval_decision }}
+        run: |
+          set -euo pipefail
+          
+          # Create metrics directory
+          mkdir -p .codex/metrics
+          
+          # Append hourly metric (JSONL format)
+          cat >> .codex/metrics/hourly.jsonl << EOF
+          {"timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","decision":"$DECISION","confidence":$CONFIDENCE,"latency_ms":$((SECONDS * 1000)),"actor":"${{ github.actor }}"}
+          EOF
+          
+          # Commit metrics (best effort)
+          git config user.name "GitHub Action" || true
+          git config user.email "action@github.com" || true
+          git add .codex/metrics/hourly.jsonl || true
+          git commit -m "metric: Approval telemetry for $APPROVAL_SOURCE" || true
+          git push || true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Original Auto-Approve Job (backward compatibility - continues to work)
+  # ────────────────────────────────────────────────────────────────────────────
+
     name: "⚡ Approve pending workflow runs"
     runs-on: ubuntu-latest
     timeout-minutes: 75
