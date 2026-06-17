@@ -9,7 +9,7 @@ Tests cover:
 """
 
 import os
-<<<<<<< HEAD
+<<<<<<< HEAD # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import stat
 =======
 import stat # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

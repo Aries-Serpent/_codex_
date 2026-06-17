@@ -9,7 +9,7 @@ Tests cover:
 """
 
 import pytest
-<<<<<<< HEAD
+<<<<<<< HEAD # pragma: allowlist secret
 from datetime import datetime, timedelta
 =======
 from datetime import datetime, timedelta # pragma: allowlist secret

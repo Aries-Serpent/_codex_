@@ -9,7 +9,7 @@ Tests cover:
 - Edge cases
 """
 
-<<<<<<< HEAD
+<<<<<<< HEAD # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 =======
 import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
