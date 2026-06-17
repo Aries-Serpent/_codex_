@@ -326,7 +326,7 @@ All development sessions must comply with our strict accountability and changelo
 Before finalizing your work, you must verify compliance using the wrap-up autofix tool:
 
 ```bash
-python scripts/session_wrapup_autofix.py
+python scripts/ci/session_wrapup_autofix.py
 ```
 
 This script will:

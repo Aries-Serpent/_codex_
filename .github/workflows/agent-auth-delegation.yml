@@ -1557,11 +1557,37 @@ jobs:
     # Dependabot actors cannot access CODEX_MASTER_KEY so the job must be skipped for them.
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5 # v5
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
+
+      - name: "Validate/Refresh Session ID (CAPI Readiness Check)"
+        id: session_validation
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          if [ -n "${COPILOT_AGENT_SESSION_ID:-}" ]; then
+            echo "Checking session validity..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: ******" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}" \
+              2>/dev/null || echo "000")
+            
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Session valid. Proceeding with reuse."
+              echo "session_status=valid" >> "$GITHUB_OUTPUT"
+            else
+              echo "⚠️ Session expired (HTTP ${HTTP_CODE}). Clearing for refresh."
+              unset COPILOT_AGENT_SESSION_ID
+              echo "session_status=refreshed" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "ℹ️ No session in environment. Will be created fresh."
+            echo "session_status=fresh" >> "$GITHUB_OUTPUT"
+          fi
 
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"

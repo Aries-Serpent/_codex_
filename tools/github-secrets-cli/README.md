@@ -177,13 +177,13 @@ Tokens are stored securely using the system keyring:
 ### Audit Trail
 
 All operations are logged to `~/.config/github-secrets-cli/audit.log`:
-```json
+```jsonc
 {
   "timestamp": "2026-01-13T20:15:00Z",
   "operation": "set",
   "scope": "repository",
   "target": "Aries-Serpent/_codex_",
-  "secret_name": "CODEX_MASTER_KEY", <!-- pragma: allowlist secret -->
+  "secret_name": "CODEX_MASTER_KEY", // pragma: allowlist secret
   "user": "mbaetiong",
   "success": true
 }
