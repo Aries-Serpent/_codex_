@@ -9,7 +9,7 @@ Tests cover:
 - Edge cases
 """
 
-import pytest
+import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.auth.user_store import UserStore, User
 from codex.auth.user_model import PasswordHasher
 from codex.auth.exceptions import InvalidCredentialsError
