@@ -94,29 +94,21 @@ class TestStableFold:
         assert 0 <= fold2 <= 99
 
     def test_stable_fold_case_sensitive(self):
-<<<<<<< HEAD
         """Test stable fold is case sensitive and deterministic."""
         # Test 1: Verify case sensitivity - different cases should produce different fold values
         fold1 = stable_fold("TestId")
         fold2 = stable_fold("testid")
         assert fold1 != fold2
-        
+
         # Test 2: Verify fold values are in valid range (0-99)
         assert 0 <= fold1 <= 99
         assert 0 <= fold2 <= 99
-        
+
         # Test 3: Verify deterministic behavior (same input produces same output)
         fold1_repeat = stable_fold("TestId")
         fold2_repeat = stable_fold("testid")
         assert fold1 == fold1_repeat
         assert fold2 == fold2_repeat
-=======
-        """Test stable fold is case sensitive."""
-        fold1 = stable_fold("TestId")
-        fold2 = stable_fold("testid")
-        # Different cases should likely give different results
-        assert fold1 != fold2 or fold1 == fold2  # Statistical
->>>>>>> origin/main
 
     def test_stable_fold_empty_string(self):
         """Test stable fold with empty string."""

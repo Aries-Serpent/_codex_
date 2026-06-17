@@ -9,11 +9,7 @@ Tests cover:
 - Edge cases
 """
 
-<<<<<<< HEAD # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
-=======
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
->>>>>>> origin/main
 from codex.auth.user_store import UserStore, User
 from codex.auth.user_model import PasswordHasher
 from codex.auth.exceptions import InvalidCredentialsError
@@ -103,12 +99,8 @@ class TestUserCreation:
         """Test that duplicate username raises error."""
         user_store.create_user("alice", "alice@example.com", "Pass123!")
         
-<<<<<<< HEAD
         # Assert a specific exception is raised instead of the generic Exception class
         with pytest.raises(ValueError):
-=======
-        with pytest.raises(Exception):  # Should raise some exception for duplicate
->>>>>>> origin/main
             user_store.create_user("alice", "alice2@example.com", "Pass123!")
 
     def test_create_user_password_hashing(self, user_store):

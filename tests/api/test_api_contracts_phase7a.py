@@ -14,11 +14,7 @@ class UserModel(BaseModel):
 
 
 class TestAPIContracts:
-<<<<<<< HEAD
-    """API contract tests"""
-=======
     """API contract tests - 50 tests"""
->>>>>>> origin/main
     
     def test_user_model_valid(self):
         """Test user model with valid data"""
@@ -30,8 +26,6 @@ class TestAPIContracts:
         """Test user model uses defaults"""
         user = UserModel(id=1, name="John", email="john@example.com")
         assert user.active is True
-<<<<<<< HEAD
-=======
 
     def test_contract_validation_0(self):
         """Test contract validation 0"""
@@ -416,4 +410,3 @@ class TestAPIContracts:
         
         model = Model47()
         assert model.value == 47
->>>>>>> origin/main
