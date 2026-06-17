@@ -1,0 +1,342 @@
+{
+  "metadata": {
+    "phase": "Phase 7A Campaign Wave 1 Lane 1.1",
+    "report_type": "High-Impact Coverage Gaps",
+    "generated_date": "2026-06-17",
+    "total_gaps_identified": 89,
+    "priority_tiers": 4
+  },
+  "priority_1_critical": {
+    "tier_name": "Security-Critical APIs",
+    "risk_level": "CRITICAL",
+    "count": 8,
+    "recommendation": "Must cover before production deployment",
+    "functions": [
+      {
+        "id": "gap_001",
+        "module": "src/security/core.py",
+        "function": "verify_session_integrity_with_mfa",
+        "type": "Authentication",
+        "impact": "Session validation for MFA flows",
+        "risk": "Authentication bypass if uncovered",
+        "priority_score": 9.8,
+        "estimated_tests_needed": 12
+      },
+      {
+        "id": "gap_002",
+        "module": "src/security/token_rotation.py",
+        "function": "execute_emergency_rotation",
+        "type": "Token Management",
+        "impact": "Security event-triggered token rotation",
+        "risk": "Token compromise exposure",
+        "priority_score": 9.7,
+        "estimated_tests_needed": 8
+      },
+      {
+        "id": "gap_003",
+        "module": "src/security/scope_validator.py",
+        "function": "validate_admin_scope_chain",
+        "type": "Authorization",
+        "impact": "Admin permission hierarchy validation",
+        "risk": "Privilege escalation if untested",
+        "priority_score": 9.6,
+        "estimated_tests_needed": 10
+      },
+      {
+        "id": "gap_004",
+        "module": "src/security/decorators.py",
+        "function": "require_scope_with_fallback",
+        "type": "Authorization",
+        "impact": "Scope requirement enforcement",
+        "risk": "Authorization bypass via fallback",
+        "priority_score": 9.5,
+        "estimated_tests_needed": 8
+      },
+      {
+        "id": "gap_005",
+        "module": "src/security/cve_monitor.py",
+        "function": "check_vulnerability_status",
+        "type": "Security Monitoring",
+        "impact": "CVE detection and alerting",
+        "risk": "Missed security vulnerabilities",
+        "priority_score": 9.4,
+        "estimated_tests_needed": 7
+      },
+      {
+        "id": "gap_006",
+        "module": "src/security/core.py",
+        "function": "verify_hmac_signature_with_nonce",
+        "type": "Cryptography",
+        "impact": "HMAC verification with nonce",
+        "risk": "Signature spoofing attacks",
+        "priority_score": 9.3,
+        "estimated_tests_needed": 9
+      },
+      {
+        "id": "gap_007",
+        "module": "src/security/token_rotation.py",
+        "function": "validate_rotation_policy_constraints",
+        "type": "Policy Enforcement",
+        "impact": "Token rotation policy validation",
+        "risk": "Policy violations undetected",
+        "priority_score": 9.2,
+        "estimated_tests_needed": 6
+      },
+      {
+        "id": "gap_008",
+        "module": "src/security/scope_validator.py",
+        "function": "parse_scope_from_token",
+        "type": "Token Parsing",
+        "impact": "Scope extraction from JWT/OAuth tokens",
+        "risk": "Incorrect scope assignment",
+        "priority_score": 9.1,
+        "estimated_tests_needed": 8
+      }
+    ],
+    "total_estimated_tests": 68
+  },
+  "priority_2_high": {
+    "tier_name": "Authentication Module Gaps",
+    "risk_level": "HIGH",
+    "count": 15,
+    "recommendation": "Cover in Wave 2 Lane 1.3",
+    "functions": [
+      {
+        "id": "gap_101",
+        "module": "src/auth/mfa_provider.py",
+        "function": "generate_backup_codes",
+        "type": "MFA",
+        "impact": "MFA backup code generation",
+        "risk": "MFA recovery mechanism failure",
+        "priority_score": 8.8,
+        "estimated_tests_needed": 8
+      },
+      {
+        "id": "gap_102",
+        "module": "src/auth/oauth_manager.py",
+        "function": "verify_state_parameter",
+        "type": "OAuth",
+        "impact": "OAuth state parameter verification",
+        "risk": "CSRF attack via OAuth flow",
+        "priority_score": 8.7,
+        "estimated_tests_needed": 7
+      },
+      {
+        "id": "gap_103",
+        "module": "src/auth/authenticator.py",
+        "function": "enforce_session_timeout",
+        "type": "Session Management",
+        "impact": "Session timeout enforcement",
+        "risk": "Session hijacking from timeout bypass",
+        "priority_score": 8.6,
+        "estimated_tests_needed": 9
+      },
+      {
+        "id": "gap_104",
+        "module": "src/auth/token_manager.py",
+        "function": "revoke_token_cascade",
+        "type": "Token Lifecycle",
+        "impact": "Token revocation cascades",
+        "risk": "Orphaned tokens remain active",
+        "priority_score": 8.5,
+        "estimated_tests_needed": 10
+      },
+      {
+        "id": "gap_105",
+        "module": "src/auth/oauth_manager.py",
+        "function": "handle_multi_provider_auth",
+        "type": "OAuth",
+        "impact": "Multi-provider authentication flows",
+        "risk": "Provider-specific auth bypass",
+        "priority_score": 8.4,
+        "estimated_tests_needed": 12
+      },
+      {
+        "id": "gap_106",
+        "module": "src/auth/mfa_provider.py",
+        "function": "validate_totp_window",
+        "type": "MFA",
+        "impact": "TOTP time window validation",
+        "risk": "TOTP token replay attacks",
+        "priority_score": 8.3,
+        "estimated_tests_needed": 6
+      },
+      {
+        "id": "gap_107",
+        "module": "src/auth/authenticator.py",
+        "function": "validate_multi_factor_completion",
+        "type": "MFA",
+        "impact": "Multi-factor requirement validation",
+        "risk": "Single factor accepted as multi-factor",
+        "priority_score": 8.2,
+        "estimated_tests_needed": 8
+      },
+      {
+        "id": "gap_108",
+        "module": "src/auth/middleware.py",
+        "function": "verify_request_signature",
+        "type": "Request Validation",
+        "impact": "Request signature verification",
+        "risk": "Forged request acceptance",
+        "priority_score": 8.1,
+        "estimated_tests_needed": 7
+      },
+      {
+        "id": "gap_109",
+        "module": "src/auth/user_store.py",
+        "function": "handle_password_rotation_enforcement",
+        "type": "Password Management",
+        "impact": "Password rotation policy enforcement",
+        "risk": "Expired passwords accepted",
+        "priority_score": 8.0,
+        "estimated_tests_needed": 7
+      },
+      {
+        "id": "gap_110",
+        "module": "src/auth/github_app.py",
+        "function": "verify_webhook_signature",
+        "type": "Webhook Security",
+        "impact": "GitHub webhook signature verification",
+        "risk": "Spoofed webhook acceptance",
+        "priority_score": 7.9,
+        "estimated_tests_needed": 6
+      },
+      {
+        "id": "gap_111",
+        "module": "src/auth/token_manager.py",
+        "function": "handle_token_refresh_deadlock",
+        "type": "Token Lifecycle",
+        "impact": "Concurrent refresh protection",
+        "risk": "Token refresh deadlock scenarios",
+        "priority_score": 7.8,
+        "estimated_tests_needed": 8
+      },
+      {
+        "id": "gap_112",
+        "module": "src/auth/oauth_manager.py",
+        "function": "validate_token_expiry_chain",
+        "type": "OAuth",
+        "impact": "OAuth token expiry cascade",
+        "risk": "Expired refresh tokens accepted",
+        "priority_score": 7.7,
+        "estimated_tests_needed": 7
+      },
+      {
+        "id": "gap_113",
+        "module": "src/auth/authenticator.py",
+        "function": "enforce_lockout_policy",
+        "type": "Access Control",
+        "impact": "Account lockout policy enforcement",
+        "risk": "Brute force attacks succeed",
+        "priority_score": 7.6,
+        "estimated_tests_needed": 9
+      },
+      {
+        "id": "gap_114",
+        "module": "src/auth/repositories.py",
+        "function": "validate_repository_permissions_scope",
+        "type": "Authorization",
+        "impact": "Repository permission validation",
+        "risk": "Unauthorized repository access",
+        "priority_score": 7.5,
+        "estimated_tests_needed": 10
+      },
+      {
+        "id": "gap_115",
+        "module": "src/auth/in_memory_user_repository.py",
+        "function": "handle_concurrent_user_updates",
+        "type": "Concurrency",
+        "impact": "Thread-safe user store operations",
+        "risk": "Data corruption from concurrent updates",
+        "priority_score": 7.4,
+        "estimated_tests_needed": 8
+      }
+    ],
+    "total_estimated_tests": 126
+  },
+  "priority_3_medium": {
+    "tier_name": "Infrastructure & Data Handling",
+    "risk_level": "MEDIUM",
+    "count": 24,
+    "recommendation": "Cover in Wave 2 Lanes 2.1-2.2",
+    "summary": "RAG vector search fallbacks, data validation at API boundaries, error recovery in CLI, concurrent operations, large dataset handling",
+    "critical_examples": [
+      {
+        "id": "gap_201",
+        "module": "src/cli/rag.py",
+        "function": "fallback_to_keyword_search",
+        "impact": "Vector search fallback when embeddings unavailable"
+      },
+      {
+        "id": "gap_202",
+        "module": "src/data/validation.py",
+        "function": "validate_api_input_boundary",
+        "impact": "Input validation at API entry points"
+      },
+      {
+        "id": "gap_203",
+        "module": "src/cli/core.py",
+        "function": "error_recovery_and_retry",
+        "impact": "CLI error recovery mechanisms"
+      },
+      {
+        "id": "gap_204",
+        "module": "src/async_operations.py",
+        "function": "handle_concurrent_edge_cases",
+        "impact": "Concurrent operation edge cases"
+      },
+      {
+        "id": "gap_205",
+        "module": "src/data/handlers.py",
+        "function": "process_large_dataset_pagination",
+        "impact": "Large dataset processing (>10K items)"
+      }
+    ],
+    "total_estimated_tests": 180
+  },
+  "priority_4_low": {
+    "tier_name": "Extended Module Coverage",
+    "risk_level": "LOW",
+    "count": 42,
+    "recommendation": "Cover in Wave 3 for comprehensive coverage",
+    "summary": "Agent orchestration edge cases, capability negotiation failures, training system fault tolerance, integration point error handling",
+    "examples": [
+      {
+        "module": "src/agents/orchestrator.py",
+        "function": "handle_agent_coordination_failure",
+        "impact": "Multi-agent coordination edge cases"
+      },
+      {
+        "module": "src/capabilities/negotiator.py",
+        "function": "handle_capability_mismatch",
+        "impact": "Capability negotiation failures"
+      },
+      {
+        "module": "src/training/system.py",
+        "function": "recover_from_training_failure",
+        "impact": "Training system fault tolerance"
+      },
+      {
+        "module": "src/integration/bridge.py",
+        "function": "handle_cross_service_error",
+        "impact": "Integration point error handling"
+      }
+    ],
+    "total_estimated_tests": 250
+  },
+  "summary": {
+    "total_gaps": 89,
+    "priority_1_critical_gaps": 8,
+    "priority_1_estimated_tests": 68,
+    "priority_2_high_gaps": 15,
+    "priority_2_estimated_tests": 126,
+    "priority_3_medium_gaps": 24,
+    "priority_3_estimated_tests": 180,
+    "priority_4_low_gaps": 42,
+    "priority_4_estimated_tests": 250,
+    "total_estimated_additional_tests": 624,
+    "cumulative_target_coverage_with_gaps": "30-35%",
+    "wave_2_focus": "Priority 1 (Critical) + Priority 2 (High)",
+    "wave_3_focus": "Priority 3 (Medium) + Priority 4 (Low)"
+  }
+}
