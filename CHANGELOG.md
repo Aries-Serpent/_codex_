@@ -66,6 +66,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4962)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4962 (SHA `047a2cfc`) at 2026-06-17T01:30Z [auto-generated]
+
 ### Fixed (Workflow Permissions Compliance — PR #4958, 2026-06-16T17:36Z)
 - Added top-level `permissions:` block to `post-phase-update-to-discussion.yml` — fixes compliance gate failure (was missing `permissions:` at workflow level)
 
