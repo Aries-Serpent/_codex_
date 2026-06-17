@@ -1,10 +1,10 @@
-# Session Context — 2026-06-17T02:09:18Z
+# Session Context — 2026-06-17T02:17:36Z
 **Branch:** `copilot/phase-7a-coverage-implementation-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4989` (✅)
-- GraphQL remaining: `4971` (✅)
+- REST remaining: `4967` (✅)
+- GraphQL remaining: `4963` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-17)
 
 ## 📝 Recent Commits
+- `c6ad4f1f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-17)
 - `baea49d3` Refactor comments and formatting in workflow file — Statix (2026-06-17)
 - `32267ef1` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-17)
 - `041deacb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-17)
@@ -23,7 +24,6 @@
 - `eade3daf` Merge dabfe7603c6c7c0a4603ba136b66e620baa97b95 into ac3f026d48bc0962e186c368cc21 — Statix (2026-06-17)
 - `dabfe760` Merge branch '0D_base_' into main — Statix (2026-06-17)
 - `f2f7efe7` Merge pull request #4960 from Aries-Serpent/copilot/0d-base-cherry-pick-diffs — Statix (2026-06-17)
-- `ac3f026d` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
