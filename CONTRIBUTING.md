@@ -311,3 +311,27 @@ Rollback Signal: `[PLACEHOLDER:rollback_signal]` crossing threshold
 - Reference the filled template in pull requests for reviewer context.
 
 For questions, mention `@maintainer` in the Architecture Review forum or open a discussion thread.
+
+## Session Wrap-up Compliance Guide
+
+All development sessions must comply with our strict accountability and changelog standards before completion. This ensures that every autonomous or human-led action is properly documented for future reference and compliance tracking.
+
+### REQ-4 & REQ-5 Requirements
+
+*   **REQ-4 (Accountability Reporting):** Every session must log its accomplishments, files changed, and commands executed in `AGENT_ACCOUNTABILITY_REPORT.md` (or the respective phase report). This guarantees complete traceability of AI and human modifications.
+*   **REQ-5 (Changelog Updates):** You must add an entry to `CHANGELOG.md` detailing the semantic changes introduced in the session.
+
+### Automated Compliance Checking
+
+Before finalizing your work, you must verify compliance using the wrap-up autofix tool:
+
+```bash
+python scripts/session_wrapup_autofix.py
+```
+
+This script will:
+1. Verify that `AGENT_ACCOUNTABILITY_REPORT.md` has been updated with the current session's changes.
+2. Verify that `CHANGELOG.md` has a corresponding entry.
+3. Attempt to automatically append missing entries if they are easily inferred, but **manual updates are preferred**.
+
+**Failure to meet REQ-4 and REQ-5 will result in your pull request or session being flagged and potentially rejected during CI/CD checks.**
