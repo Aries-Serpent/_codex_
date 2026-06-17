@@ -357,7 +357,9 @@ class TestMetricsIntegration:
         prec = precision(preds, labels)
         rec = recall(preds, labels)
         
-        # Assert that both are in valid range and within expected values
+        # With preds=[1,1,1,0,0,0] and labels=[1,1,0,0,0,1]:
+        # TP=2 (pos 0,1), FP=1 (pos 2), FN=1 (pos 5)
+        # precision = TP/(TP+FP) = 2/3, recall = TP/(TP+FN) = 2/3
         assert np.isclose(prec, 2.0 / 3.0)
         assert np.isclose(rec, 2.0 / 3.0)
 
