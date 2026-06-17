@@ -423,7 +423,7 @@ class TestHeaderHandling:
         token3 = middleware.extract_token(headers3)
 
         # All should work (implementation dependent)
-        assert token1 or True  # May or may not normalize case
+        assert token1 is None or isinstance(token1, str)  # Valid return type (token or None)
 
     def test_custom_header_extraction(self, middleware):
         headers = {

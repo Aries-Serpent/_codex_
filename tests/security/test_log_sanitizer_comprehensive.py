@@ -9,7 +9,7 @@ Tests cover:
 - Integration with sensitive patterns
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest
 from codex.security.log_sanitizer import (
     mask_sensitive,
     safe_log,

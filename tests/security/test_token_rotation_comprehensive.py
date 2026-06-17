@@ -452,7 +452,7 @@ class TestRotationScenarios:
 
         # Further rotation should be blocked or handled
         result = manager.rotate_token("token_123")
-        assert result is not None or result is None
+        assert result is None or hasattr(result, "success")  # Blocked (None) or RotationEvent
 
 
 # ============================================================================
