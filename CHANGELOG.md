@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Fixed (SN 2026-06-17T17:18Z - PR #4974 CI Rescue follow-up)
+- **Fixed actionlint undefined-step context** in `.github/workflows/auto-approve-workflows.yml`
+  - Removed `${{ steps.app-token.outputs.token }}` reference from a `run` script comment in `execute-approval` job (step `app-token` is not defined in that job scope).
+- **Fixed workflow compliance gate violations** in `.github/workflows/auto-approve-workflows.yml`
+  - Added missing `timeout-minutes` to jobs:
+    - `approve-on-push`: `20`
+    - `evaluate-approval`: `20`
+    - `execute-approval`: `45`
+    - `cleanup-single-session`: `10`
+    - `publish-metrics`: `15`
+
 ### Fixed (SN 2026-06-17T16:58Z - PR #4974 CI Rescue — Workflow Compliance)
 - **Fixed actionlint compliance violation** in `.github/workflows/copilot-setup-steps.yml`
   - Removed duplicate `full=` from lfs_mode description (line 30)

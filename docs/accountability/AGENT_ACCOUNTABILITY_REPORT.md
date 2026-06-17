@@ -1,5 +1,34 @@
 # PHASE 5 SECURITY REMEDIATION CAMPAIGN — AGENT ACCOUNTABILITY REPORT
 
+## SESSION SUMMARY — 2026-06-17T17:18Z · PR #4974 CI Rescue (actionlint + workflow compliance)
+
+**Session:** PR #4974 - CI rescue follow-up | **Agent:** @copilot | **Date:** 2026-06-17
+
+### Objective
+Resolve latest failing checks on PR #4974 (`actionlint — Workflow Compliance`, `⚙️ Workflow Compliance Check`, and blocking comment-review gate items).
+
+### Actions Taken
+1. Pulled failing GitHub Actions logs for runs `27706238057`, `27706057766`, and `27706057744`.
+2. Fixed `actionlint` context error in `.github/workflows/auto-approve-workflows.yml` by removing runtime expression reference to `steps.app-token` in a job where that step is not defined.
+3. Added required `timeout-minutes` to non-stub jobs flagged by compliance gate:
+   - `approve-on-push` (20)
+   - `evaluate-approval` (20)
+   - `execute-approval` (45)
+   - `cleanup-single-session` (10)
+   - `publish-metrics` (15)
+4. Ran targeted validation:
+   - local `actionlint` on updated workflow — ✅ pass
+   - `python scripts/ci/mypy_baseline.py --require-baseline` — ✅ pass
+   - `python scripts/ci/session_wrapup_autofix.py --check --pr-number 4974` — ✅ REQ-4/REQ-5/REQ-14 pass
+
+### Notes
+- `python -m ruff check src/ tests/ --fix` could not run in this container because `ruff` is not installed.
+
+### Result
+- Workflow file now satisfies both reported CI failure signatures for this PR branch.
+
+---
+
 ## SESSION SUMMARY — 2026-06-17T06:34Z · PR #4970 Code Quality Remediation
 
 **Session:** PR #4970 - Code Quality Remediation | **Agent:** @copilot | **Date:** 2026-06-17
