@@ -221,27 +221,49 @@ jobs:
             RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "unknown")
             echo "::warning::GitHub API rate limit critically low (${REMAINING} remaining, resets at ${RESET_AT}). dispatch-checked may be throttled."
           fi
-      - name: Dispatch & auto-approve newly-checked workflows
-        # wec_enforcer --dispatch-checked now:
-        #   1. Dispatches the workflow via POST /dispatches
-        #   2. Polls for the new run in action_required state (up to 45 s)
-        #   3. Calls POST /runs/{id}/approve immediately so the run starts
-        #      without waiting for the 5-min auto-approve-workflows schedule.
-        # CODEX_MASTER_KEY is required: github.token lacks actions:write scope
-        # needed for both workflow dispatch and run approval.
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO: ${{ github.repository }}
-          HEAD_BRANCH: ${{ github.head_ref }}
-          NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          echo "Dispatching and auto-approving newly-checked workflows..."
-          python scripts/ci/wec_enforcer.py \
-            --dispatch-checked \
-            --pr "${PR_NUMBER}" \
-            --head-sha "${{ github.event.pull_request.head.sha }}" \
-            --repo "${REPO}"
+      - name: Dispatch hub for WEC decision routing
+        # Each newly-checked workflow gets a hub dispatch that will:
+        #   1. Dispatch the target workflow
+        #   2. Approve any resulting action_required runs
+        #   3. Log the dispatch to the audit trail
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const newlyChecked = JSON.parse('${{ needs.detect-wec-changes.outputs.newly_checked }}' || '[]');
+            const prNumber = parseInt('${{ github.event.pull_request.number }}', 10);
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+             
+            if (!newlyChecked || newlyChecked.length === 0) {
+              core.info('No newly-checked workflows — skipping dispatch');
+              return;
+            }
+             
+            core.info(`Dispatching hub for ${newlyChecked.length} newly-checked workflows`);
+             
+            for (const workflow of newlyChecked) {
+              try {
+                await github.rest.actions.createWorkflowDispatch({
+                  owner,
+                  repo,
+                  workflow_id: 'auto-approve-workflows.yml',
+                  ref: 'main',
+                  inputs: {
+                    approval_source: 'workflow-execution-gate',
+                    approval_intent: 'conditional_approve',
+                    target_pr: prNumber.toString(),
+                    approval_reason: `WEC checkbox decision: enable ${workflow}`,
+                    approval_ttl_hours: '24',
+                    dry_run: 'false'
+                  }
+                });
+                core.info(`✅ Hub dispatch for '${workflow}'`);
+              } catch (err) {
+                core.warning(`Hub dispatch failed for '${workflow}': ${err.message}`);
+              }
+            }
+        continue-on-error: true
 
       # ── Persist owner opt-ins as labels so they survive PR body rewrites ──────
       - name: Persist owner-selected flags as labels
