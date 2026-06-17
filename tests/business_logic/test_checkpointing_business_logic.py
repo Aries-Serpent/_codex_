@@ -400,7 +400,7 @@ class TestAtomicOperations:
             states.append("optimizer")
             states.append("scheduler")
             success = True
-        except Exception:
+        except Exception as _err:
             states.clear()
             success = False
         
