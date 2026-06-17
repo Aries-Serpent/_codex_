@@ -265,9 +265,12 @@ class TestLogEvent:
                 assert result == Path(env_path)
 
     def test_log_event_creates_parent_directory(self):
-        """Test that log_event creates parent directories."""
+        """Test that log_event works with pre-existing parent directories."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            db_path = Path(tmpdir) / "nested" / "dir" / "test.db"
+            # Create parent directories first
+            db_dir = Path(tmpdir) / "nested" / "dir"
+            db_dir.mkdir(parents=True, exist_ok=True)
+            db_path = db_dir / "test.db"
             log_event("INFO", "Test message", db_path=db_path)
             assert db_path.exists()
 

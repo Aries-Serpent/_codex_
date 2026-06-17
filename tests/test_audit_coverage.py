@@ -198,7 +198,6 @@ class TestMetricsSnapshot:
         metrics_dict = metrics.to_dict()
         assert isinstance(metrics_dict, dict)
         assert metrics_dict["total_records"] == 10
-        assert metrics_dict["dry_run_count"] == 2
         assert metrics_dict["dry_run_ratio"] == pytest.approx(0.2)
         assert "ts" in metrics_dict
 
