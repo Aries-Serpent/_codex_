@@ -2,6 +2,7 @@
 """CLI package — exposes main() entry point for the Codex training CLI."""
 
 from __future__ import annotations
+
 import argparse
 from collections.abc import Sequence
 from typing import Optional
