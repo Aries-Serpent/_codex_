@@ -1,4 +1,8 @@
 import pytest
+
+pytestmark = pytest.mark.integration
+
+import pytest
 from pathlib import Path
 from src.codex_ml.utils.stub_cleanup import StubAnalyzer, generate_stub_report, find_stubs, prioritize_stubs
 

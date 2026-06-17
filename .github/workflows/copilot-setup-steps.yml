@@ -12,7 +12,7 @@ name: Copilot Agent Environment Setup
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       environment_type:
@@ -102,7 +102,7 @@ jobs:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
-      pull-requests: write # Allow agent to post PR review comments
+      pull-requests: write  # Allow agent to post PR review comments
       # NOTE: actions:write does NOT grant access to the Actions Variables API.
       # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
       # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
@@ -169,7 +169,7 @@ jobs:
           GITHUB_TOKEN:     ${{ github.token }}
         run: |
           echo "::group::Session Access Probe"
-          python3 scripts/ci/session_access_probe.py || {
+          if ! python3 scripts/ci/session_access_probe.py; then
             echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
             # Emit safe defaults so downstream steps have the vars even if probe fails
             echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
@@ -177,7 +177,7 @@ jobs:
             echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
             echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
             echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
-          }
+          fi
           echo "::endgroup::"
 
       # ============================================================================
@@ -199,11 +199,10 @@ jobs:
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "::group::Autonomous RAG Context Build"
-          python3 scripts/ci/autonomous_rag_context.py \
-            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }} \
-            || {
+          if ! python3 scripts/ci/autonomous_rag_context.py \
+            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }}; then
               echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
-            }
+          fi
           # Print access strategy for agent log
           if [ -f .codex/session_access_strategy.json ]; then
             echo "--- Access Strategy ---"
@@ -592,7 +591,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -1091,7 +1090,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
