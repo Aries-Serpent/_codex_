@@ -14,19 +14,18 @@ Tests cover:
 import json
 import logging
 import os
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 
 # Handle imports for optional dependencies
 try:
     from bridge_manager import (
+        BridgeLock,
         BridgeManager,
         BridgeMode,
         ContextMessage,
-        BridgeLock,
         bridge_lock,
     )
     HAS_BRIDGE_MANAGER = True

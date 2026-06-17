@@ -13,25 +13,24 @@ Focuses on increasing coverage of:
 - PhysicsCalculatorSuite
 """
 
-import pytest
 import math
-from unittest.mock import Mock, patch, MagicMock
-from dataclasses import dataclass
+
+import pytest
 
 # Test imports with proper error handling
 try:
     import sys
     sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
     from agents.physics_orchestrator import (
-        QuantumState,
         EntangledDependency,
-        QuantumWalkExplorer,
-        SuperpositionExplorer,
+        HamiltonianEvolver,
+        PathIntegralCalculator,
+        PhysicsCalculatorSuite,
         PINNValidator,
         QuantumPhysicsOrchestrator,
-        PathIntegralCalculator,
-        HamiltonianEvolver,
-        PhysicsCalculatorSuite,
+        QuantumState,
+        QuantumWalkExplorer,
+        SuperpositionExplorer,
     )
 except ImportError as e:
     pytest.skip(f"Failed to import from physics_orchestrator: {e}", allow_module_level=True)
@@ -52,7 +51,7 @@ class TestQuantumState:
         """Test that amplitudes are normalized after initialization."""
         amplitudes = {'state_a': complex(3, 0), 'state_b': complex(4, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         # Check normalization: sum of |α|² should be 1
         norm_sum = sum(abs(a) ** 2 for a in state.amplitudes.values())
         assert abs(norm_sum - 1.0) < 0.001
@@ -61,11 +60,11 @@ class TestQuantumState:
         """Test Born rule probability calculation: P = |α|²."""
         amplitudes = {'head': complex(0.6, 0), 'tail': complex(0.8, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         # After normalization, probabilities should sum to 1
         prob_head = state.probability('head')
         prob_tail = state.probability('tail')
-        
+
         assert 0 <= prob_head <= 1
         assert 0 <= prob_tail <= 1
         assert abs(prob_head + prob_tail - 1.0) < 0.001
@@ -74,7 +73,7 @@ class TestQuantumState:
         """Test probability for state not in superposition."""
         amplitudes = {'a': complex(1, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         prob = state.probability('nonexistent')
         assert prob == 0.0
 
@@ -82,7 +81,7 @@ class TestQuantumState:
         """Test getting full probability distribution."""
         amplitudes = {'x': complex(0.5, 0.5), 'y': complex(0.5, 0.5)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         probs = state.get_probabilities()
         assert isinstance(probs, dict)
         assert 'x' in probs
@@ -93,7 +92,7 @@ class TestQuantumState:
         """Test measurement collapses superposition to single state."""
         amplitudes = {'option_a': complex(0.9, 0), 'option_b': complex(0.436, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         collapsed = state.collapse()
         assert collapsed in state.amplitudes
         # Should collapse to highest probability state
@@ -103,11 +102,11 @@ class TestQuantumState:
         """Test applying quantum phase rotation."""
         amplitudes = {'state': complex(1, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        
+
         initial_amp = state.amplitudes['state']
         phase = math.pi / 2  # 90 degree rotation
         state.apply_phase('state', phase)
-        
+
         rotated_amp = state.amplitudes['state']
         # Magnitude should be preserved, phase should rotate
         assert abs(abs(initial_amp) - abs(rotated_amp)) < 0.001
@@ -116,7 +115,7 @@ class TestQuantumState:
         """Test basis states are properly set."""
         amplitudes = {'a': complex(0.707, 0), 'b': complex(0.707, 0)}
         state = QuantumState(amplitudes=amplitudes, basis_states=['a', 'b'])
-        
+
         assert 'a' in state.basis_states
         assert 'b' in state.basis_states
 
@@ -142,11 +141,11 @@ class TestEntangledDependency:
             decision_a='x', decision_b='y',
             correlation=1.0, strength=1.0
         )
-        
+
         # Same outcomes should have high probability
         prob_same = dep.joint_probability(True, True)
         prob_diff = dep.joint_probability(True, False)
-        
+
         assert prob_same > prob_diff
         assert 0 <= prob_same <= 1
         assert 0 <= prob_diff <= 1
@@ -157,11 +156,11 @@ class TestEntangledDependency:
             decision_a='a', decision_b='b',
             correlation=-1.0, strength=1.0
         )
-        
+
         # Different outcomes should have higher probability
         prob_diff = dep.joint_probability(True, False)
         prob_same = dep.joint_probability(True, True)
-        
+
         assert prob_diff > prob_same
 
     def test_joint_probability_no_correlation(self):
@@ -170,7 +169,7 @@ class TestEntangledDependency:
             decision_a='d1', decision_b='d2',
             correlation=0.0, strength=0.0
         )
-        
+
         # All outcomes should have equal probability (0.25)
         prob = dep.joint_probability(True, True)
         assert abs(prob - 0.25) < 0.001
@@ -181,7 +180,7 @@ class TestEntangledDependency:
             decision_a='x', decision_b='y',
             correlation=0.5, strength=0.5
         )
-        
+
         prob = dep.joint_probability(True, True)
         # Should be between 0.25 and something higher
         assert 0.25 <= prob <= 0.5
@@ -440,11 +439,11 @@ class TestQuantumPhysicsIntegration:
             # Create initial superposition
             amplitudes = {'ground': complex(0.707, 0), 'excited': complex(0.707, 0)}
             state = QuantumState(amplitudes=amplitudes)
-            
+
             # Apply phase and collapse
             state.apply_phase('ground', math.pi/4)
             result = state.collapse()
-            
+
             assert result in state.amplitudes
         except Exception as e:
             pytest.skip(f"Quantum evolution failed: {e}")
@@ -459,11 +458,11 @@ class TestQuantumPhysicsIntegration:
                 correlation=0.9,
                 strength=1.0
             )
-            
+
             # Get joint probability
             prob = entanglement.joint_probability(True, True)
             assert 0 <= prob <= 1
-            
+
             # Check consistency
             prob_sum = sum(
                 entanglement.joint_probability(a, b)
@@ -478,13 +477,13 @@ class TestQuantumPhysicsIntegration:
         """Test that multiple collapses give consistent probabilities."""
         try:
             amplitudes = {'outcome_a': complex(0.6, 0.6), 'outcome_b': complex(0.5, 0)}
-            
+
             collapses = []
             for _ in range(5):
                 state = QuantumState(amplitudes=amplitudes)
                 collapsed = state.collapse()
                 collapses.append(collapsed)
-            
+
             # Should always collapse to same state (deterministic)
             assert len(set(collapses)) == 1
         except Exception as e:

@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 class TaskSequence:
     """Manages a sequence of tasks to be executed."""
-    
+
     def __init__(self, tasks: Optional[List[Dict[str, Any]]] = None):
         """Initialize task sequence.
         
@@ -20,11 +20,11 @@ class TaskSequence:
             tasks: Optional list of task dictionaries
         """
         self.tasks = tasks or []
-    
+
     def add_task(self, task: Dict[str, Any]) -> None:
         """Add a task to the sequence."""
         self.tasks.append(task)
-    
+
     def execute(self) -> List[Dict[str, Any]]:
         """Execute the task sequence."""
         results = []

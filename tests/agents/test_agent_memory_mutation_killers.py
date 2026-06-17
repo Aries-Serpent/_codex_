@@ -11,15 +11,10 @@ This test module focuses on catching mutations in critical code paths:
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
-from pathlib import Path
-from typing import Any
-
 import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    AgentMemorySystem,
     ContextFrame,
     MemoryEntry,
     PatternLibrary,
@@ -303,7 +298,7 @@ class TestPatternLibraryMutationKillers:
         assert "p1" in library.pattern_index["tag1"]
         assert "p1" in library.pattern_index["tag2"]
         assert "p1" in library.pattern_index["tag3"]
-        
+
         # Verify pattern is indexed under all tags
         assert len([t for t in library.pattern_index if "p1" in library.pattern_index.get(t, [])]) == 3
 
@@ -356,7 +351,7 @@ class TestAgentMemoryMutationKillers:
         )
 
         retrieved = memory.retrieve_memory(memory_id="test_entry")
-        
+
         assert retrieved is not None
         assert retrieved.category == "test_category"
         assert retrieved.content == "test content"
