@@ -9,7 +9,7 @@ Tests cover:
 """
 
 import pytest
-from datetime import datetime, timedelta # pragma: allowlist secret
+from datetime import datetime, timedelta # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import patch, MagicMock, Mock
 from codex.auth.oauth_manager import OAuthManager, OAuthConfig
 
