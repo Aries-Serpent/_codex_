@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4974)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4974 (SHA `c241c812`) at 2026-06-17T16:54Z [auto-generated]
+
 ### Fixed (SN 2026-06-17T06:34Z - PR #4970 Code Quality Remediation)
 - **Added explanatory comments** to 7 empty except blocks in `tests/auth/test_oauth_manager_wave2_comprehensive.py` (lines 226, 235, 366, 378, 389, 400, 411)
   - Each except block now includes comment: "Expected: method may not exist or raise implementation errors"
