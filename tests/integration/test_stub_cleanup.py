@@ -136,3 +136,32 @@ def calculate():
     # Test __str__ explicit
     assert "bad.py" in str(stubs[0])
     
+
+def test_stub_cleanup_ast_attributes(tmp_path):
+    source_dir = tmp_path / "src"
+    source_dir.mkdir()
+    
+    file_ast = source_dir / "ast_test.py"
+    file_ast.write_text("""
+import abc
+import typing
+
+class MyABC(abc.ABC):
+    @abc.abstractmethod
+    def must_impl(self):
+        raise NotImplementedError("abstract")
+
+class MyProto(typing.Protocol):
+    def proto_impl(self):
+        raise NotImplementedError("abstract proto")
+        
+@abc.abstractmethod
+def standalone():
+    raise NotImplementedError("standalone")
+    """)
+    
+    analyzer = StubAnalyzer([source_dir])
+    stubs = analyzer.analyze()
+    # these are abstract, so stubs should be 0
+    assert len(stubs) == 0
+
