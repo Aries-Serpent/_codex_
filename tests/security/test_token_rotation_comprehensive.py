@@ -11,7 +11,6 @@ This module tests automated token rotation including:
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -22,7 +21,6 @@ from security.token_rotation import (
     TokenMetadata,
     TokenState,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -415,9 +413,9 @@ class TestRotationScenarios:
         token_manager.register_token(token_metadata)
         old_metadata = token_manager.get_token("token_123")
         assert old_metadata.state == TokenState.ACTIVE
-        
+
         token_manager.rotate_token("token_123")
-        
+
         # Old token should be in grace period or revoked
         updated = token_manager.get_token("token_123")
         assert updated.state in [TokenState.ROTATING, TokenState.REVOKED]
@@ -432,10 +430,10 @@ class TestRotationScenarios:
             )
             for i in range(5)
         ]
-        
+
         for token in tokens:
             token_manager.register_token(token)
-        
+
         all_tokens = token_manager.list_tokens()
         assert len(all_tokens) == 5
 
@@ -443,7 +441,7 @@ class TestRotationScenarios:
         """Test max rotation count enforcement."""
         policy = RotationPolicy(max_rotation_count=3)
         manager = TokenManager(policy=policy)
-        
+
         metadata = TokenMetadata(
             token_id="token_123",
             created_at=datetime.now(UTC),
@@ -451,7 +449,7 @@ class TestRotationScenarios:
             rotation_count=3,  # At max
         )
         manager.register_token(metadata)
-        
+
         # Further rotation should be blocked or handled
         result = manager.rotate_token("token_123")
         assert result is not None or result is None

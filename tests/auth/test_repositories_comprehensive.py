@@ -10,15 +10,14 @@ Tests cover:
 - Migration and schema
 """
 
-import pytest
-import tempfile
 import os
-from pathlib import Path
+import tempfile
+
+import pytest
 
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
-from codex.auth.user_model import User, PasswordHasher
-
+from codex.auth.user_model import PasswordHasher, User
 
 # ============================================================================
 # InMemoryUserRepository Tests
@@ -100,7 +99,7 @@ class TestInMemoryUserRepository:
         )
 
         repo.create_user(user)
-        
+
         updated_user = User(
             user_id="user6",
             username="eve",
@@ -108,7 +107,7 @@ class TestInMemoryUserRepository:
             password_hash=hasher.hash_password("NewPass123!"),
         )
         repo.update_user(updated_user)
-        
+
         retrieved = repo.get_by_user_id("user6")
         assert retrieved.email == "eve.new@example.com"
 
@@ -169,7 +168,7 @@ class TestInMemoryUserRepository:
         )
 
         repo.create_user(user)
-        
+
         # Begin transaction
         with repo.transaction():
             retrieved = repo.get_by_username("txuser")

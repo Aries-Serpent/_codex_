@@ -10,12 +10,12 @@ Tests cover:
 - Error cases
 """
 
-import pytest
-from unittest.mock import Mock, patch, AsyncMock
 import json
+from unittest.mock import Mock, patch
+
+import pytest
 
 from codex.auth.github_app import GitHubApp, GitHubInstallation
-
 
 # ============================================================================
 # Fixtures
@@ -275,8 +275,8 @@ class TestWebhookHandling:
     """GitHub App webhook handling."""
 
     def test_verify_webhook_signature(self, github_app):
-        import hmac
         import hashlib
+        import hmac
 
         payload = json.dumps({"action": "opened"}).encode()
         secret = github_app.webhook_secret.encode()
@@ -380,8 +380,8 @@ class TestIntegration:
         payload_bytes = json.dumps(payload).encode()
 
         # Verify signature
-        import hmac
         import hashlib
+        import hmac
         secret = github_app.webhook_secret.encode()
         signature = "sha256=" + hmac.new(
             secret, payload_bytes, hashlib.sha256

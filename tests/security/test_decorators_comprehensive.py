@@ -9,7 +9,6 @@ Tests for security decorators including:
 
 from __future__ import annotations
 
-import functools
 import logging
 from unittest.mock import MagicMock, patch
 
@@ -22,7 +21,6 @@ from security.decorators import (
     require_auth,
     require_permission,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -58,7 +56,7 @@ class TestRequireAuth:
         @require_auth
         def func(token):
             return "success"
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func(token="valid_token")
             assert result == "success"
@@ -68,7 +66,7 @@ class TestRequireAuth:
         @require_auth
         def func(token):
             return "success"
-        
+
         with patch('security.decorators.verify_token', return_value=False):
             with pytest.raises((ValueError, Exception)):
                 func(token="invalid_token")
@@ -78,7 +76,7 @@ class TestRequireAuth:
         @require_auth
         def func():
             return "success"
-        
+
         with pytest.raises((ValueError, TypeError)):
             func()
 
@@ -87,7 +85,7 @@ class TestRequireAuth:
         @require_auth
         def my_function():
             return "success"
-        
+
         # Should use functools.wraps
         assert hasattr(my_function, '__name__')
 
@@ -96,7 +94,7 @@ class TestRequireAuth:
         @require_auth
         def func(token, arg1, arg2):
             return arg1 + arg2
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func(token="valid", arg1=1, arg2=2)
             assert result == 3
@@ -106,7 +104,7 @@ class TestRequireAuth:
         @require_auth
         def func(token, **kwargs):
             return kwargs.get("value")
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func(token="valid", value="test")
             assert result == "test"
@@ -125,7 +123,7 @@ class TestRequirePermission:
         @require_permission("read")
         def func():
             return "success"
-        
+
         with patch('security.decorators.check_user_permission', return_value=True):
             result = func()
             assert result == "success"
@@ -135,7 +133,7 @@ class TestRequirePermission:
         @require_permission("write")
         def func():
             return "success"
-        
+
         with patch('security.decorators.check_user_permission', return_value=False):
             with pytest.raises((PermissionError, Exception)):
                 func()
@@ -145,7 +143,7 @@ class TestRequirePermission:
         @require_permission(["read", "write"])
         def func():
             return "success"
-        
+
         with patch('security.decorators.check_user_permission', return_value=True):
             result = func()
             assert result == "success"
@@ -155,7 +153,7 @@ class TestRequirePermission:
         @require_permission("admin", error_message="You must be admin")
         def func():
             return "success"
-        
+
         with patch('security.decorators.check_user_permission', return_value=False):
             with pytest.raises((PermissionError, Exception)):
                 func()
@@ -165,7 +163,7 @@ class TestRequirePermission:
         @require_permission("read")
         def func(arg):
             return arg * 2
-        
+
         with patch('security.decorators.check_user_permission', return_value=True):
             result = func(5)
             assert result == 10
@@ -189,7 +187,7 @@ class TestRateLimit:
         @rate_limit(calls=3, period=60)
         def func():
             return "success"
-        
+
         for _ in range(3):
             result = func()
             assert result == "success"
@@ -199,10 +197,10 @@ class TestRateLimit:
         @rate_limit(calls=2, period=60)
         def func():
             return "success"
-        
+
         func()
         func()
-        
+
         with pytest.raises(Exception):
             func()
 
@@ -211,14 +209,14 @@ class TestRateLimit:
         @rate_limit(calls=2, period=60, per_user=True)
         def func(user_id):
             return "success"
-        
+
         # Different users have separate limits
         func("user1")
         func("user1")
-        
+
         with pytest.raises(Exception):
             func("user1")
-        
+
         # Different user should still be able to call
         result = func("user2")
         assert result == "success"
@@ -228,11 +226,11 @@ class TestRateLimit:
         @rate_limit(calls=1, period=1)
         def func():
             return "success"
-        
+
         func()
         with pytest.raises(Exception):
             func()
-        
+
         # After timeout, should work again
         import time
         time.sleep(1.1)
@@ -244,7 +242,7 @@ class TestRateLimit:
         @rate_limit(calls=1, period=60, error_message="Too many requests")
         def func():
             return "success"
-        
+
         func()
         with pytest.raises(Exception):
             func()
@@ -263,7 +261,7 @@ class TestCheckScope:
         @check_scope("read:repo")
         def func():
             return "success"
-        
+
         with patch('security.decorators.verify_scope', return_value=True):
             result = func()
             assert result == "success"
@@ -273,7 +271,7 @@ class TestCheckScope:
         @check_scope("write:repo")
         def func():
             return "success"
-        
+
         with patch('security.decorators.verify_scope', return_value=False):
             with pytest.raises((PermissionError, Exception)):
                 func()
@@ -283,7 +281,7 @@ class TestCheckScope:
         @check_scope(["read:repo", "write:repo"])
         def func():
             return "success"
-        
+
         with patch('security.decorators.verify_scope', return_value=True):
             result = func()
             assert result == "success"
@@ -293,7 +291,7 @@ class TestCheckScope:
         @check_scope("read:repo")
         def func():
             return "success"
-        
+
         # Admin scope should imply read scope
         with patch('security.decorators.verify_scope', return_value=True):
             result = func()
@@ -313,7 +311,7 @@ class TestAuditLog:
         @audit_log
         def func(user_id):
             return "success"
-        
+
         with patch('security.decorators.log_audit_event') as mock_log:
             result = func("user123")
             assert result == "success"
@@ -324,7 +322,7 @@ class TestAuditLog:
         @audit_log(event_type="user_action")
         def func(user_id):
             return "success"
-        
+
         with patch('security.decorators.log_audit_event') as mock_log:
             result = func("user123")
             assert result == "success"
@@ -334,7 +332,7 @@ class TestAuditLog:
         @audit_log(log_result=True)
         def func():
             return "success_result"
-        
+
         with patch('security.decorators.log_audit_event') as mock_log:
             result = func()
             assert result == "success_result"
@@ -344,7 +342,7 @@ class TestAuditLog:
         @audit_log(log_exceptions=True)
         def func():
             raise ValueError("test error")
-        
+
         with patch('security.decorators.log_audit_event') as mock_log:
             with pytest.raises(ValueError):
                 func()
@@ -355,7 +353,7 @@ class TestAuditLog:
         @audit_log
         def func(a, b):
             return a + b
-        
+
         with patch('security.decorators.log_audit_event'):
             result = func(2, 3)
             assert result == 5
@@ -365,7 +363,7 @@ class TestAuditLog:
         @audit_log(fields=["user_id", "action"])
         def func(user_id, action):
             return "success"
-        
+
         with patch('security.decorators.log_audit_event') as mock_log:
             result = func("user123", "create")
             assert result == "success"
@@ -385,7 +383,7 @@ class TestDecoratorComposition:
         @require_auth
         def func(token):
             return "success"
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             with patch('security.decorators.check_user_permission', return_value=True):
                 result = func(token="valid")
@@ -397,12 +395,12 @@ class TestDecoratorComposition:
         @require_auth
         def func(token):
             return "success"
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             for _ in range(3):
                 result = func(token="valid")
                 assert result == "success"
-            
+
             with pytest.raises(Exception):
                 func(token="valid")
 
@@ -415,7 +413,7 @@ class TestDecoratorComposition:
         @require_auth
         def func(token):
             return "success"
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             with patch('security.decorators.check_user_permission', return_value=True):
                 with patch('security.decorators.verify_scope', return_value=True):
@@ -440,7 +438,7 @@ def test_require_permission_parametrized(permission):
     @require_permission(permission)
     def func():
         return "success"
-    
+
     with patch('security.decorators.check_user_permission', return_value=True):
         result = func()
         assert result == "success"
@@ -457,7 +455,7 @@ def test_rate_limit_parametrized(calls, period):
     @rate_limit(calls=calls, period=period)
     def func():
         return "success"
-    
+
     # First call should always succeed
     result = func()
     assert result == "success"
@@ -475,7 +473,7 @@ def test_check_scope_parametrized(scope):
     @check_scope(scope)
     def func():
         return "success"
-    
+
     with patch('security.decorators.verify_scope', return_value=True):
         result = func()
         assert result == "success"
@@ -494,7 +492,7 @@ class TestEdgeCases:
         @require_auth
         def func():
             return "success"
-        
+
         # This should still require token somehow
         with pytest.raises((TypeError, ValueError)):
             func()
@@ -504,7 +502,7 @@ class TestEdgeCases:
         @require_auth
         def func(token, a, b, c, d, e):
             return a + b + c + d + e
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func("valid", 1, 2, 3, 4, 5)
             assert result == 15
@@ -514,7 +512,7 @@ class TestEdgeCases:
         @require_auth
         def func(token, *args):
             return sum(args)
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func("valid", 1, 2, 3, 4, 5)
             assert result == 15
@@ -524,7 +522,7 @@ class TestEdgeCases:
         @require_auth
         def func(token, **kwargs):
             return kwargs.get("result")
-        
+
         with patch('security.decorators.verify_token', return_value=True):
             result = func("valid", result=42)
             assert result == 42
@@ -536,18 +534,18 @@ class TestEdgeCases:
         @require_auth
         def func1(token):
             return "success"
-        
+
         # Auth should be checked before rate limit
         @require_auth
         @rate_limit(calls=1, period=60)
         def func2(token):
             return "success"
-        
+
         # Both should behave correctly
         with patch('security.decorators.verify_token', return_value=True):
             result1 = func1("valid")
             assert result1 == "success"
-            
+
             result2 = func2("valid")
             assert result2 == "success"
 
@@ -556,6 +554,6 @@ class TestEdgeCases:
         @require_auth
         async def async_func(token):
             return "success"
-        
+
         # Should handle async functions
         assert callable(async_func)

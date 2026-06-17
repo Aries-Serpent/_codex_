@@ -11,12 +11,13 @@ Tests cover:
 - CORS and security headers
 """
 
-import pytest
-from unittest.mock import Mock, patch
-from codex.auth.middleware import AuthMiddleware, TokenExtractor
-from codex.auth.token_manager import TokenManager, TokenType
-from codex.auth.exceptions import InvalidCredentialsError
+from unittest.mock import patch
 
+import pytest
+
+from codex.auth.exceptions import InvalidCredentialsError
+from codex.auth.middleware import AuthMiddleware
+from codex.auth.token_manager import TokenManager, TokenType
 
 # ============================================================================
 # Fixtures
@@ -149,15 +150,15 @@ class TestRequestAuthentication:
             token_type=TokenType.ACCESS,
         )
         headers = {
-            "Authorization": f"******"
+            "Authorization": "******"
         }
-        
+
         result = middleware.authenticate_request(headers)
         assert result.user_id == "user123"
 
     def test_authenticate_request_missing_token(self, middleware):
         headers = {}
-        
+
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(headers)
 
@@ -165,18 +166,18 @@ class TestRequestAuthentication:
         headers = {
             "Authorization": "******"
         }
-        
+
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(headers)
 
     def test_authenticate_request_expired_token(self, middleware, token_manager):
         with patch.object(token_manager, 'validate_token') as mock_validate:
             mock_validate.side_effect = Exception("Token expired")
-            
+
             headers = {
                 "Authorization": "******"
             }
-            
+
             with pytest.raises(Exception):
                 middleware.authenticate_request(headers)
 
@@ -229,7 +230,7 @@ class TestScopeAndPermissions:
             token_type=TokenType.ACCESS,
             scope="user:read user:write"
         )
-        
+
         is_valid = middleware.verify_scope(token, "user:read")
         assert is_valid
 
@@ -239,7 +240,7 @@ class TestScopeAndPermissions:
             token_type=TokenType.ACCESS,
             scope="user:read"
         )
-        
+
         is_valid = middleware.verify_scope(token, "user:write")
         assert not is_valid
 
@@ -249,7 +250,7 @@ class TestScopeAndPermissions:
             token_type=TokenType.ACCESS,
             scope="user:read user:write admin:read"
         )
-        
+
         # Has both required scopes
         assert middleware.verify_scope(token, "user:read")
         assert middleware.verify_scope(token, "user:write")
@@ -261,7 +262,7 @@ class TestScopeAndPermissions:
             token_type=TokenType.ACCESS,
             scope="user:read"
         )
-        
+
         is_valid = middleware.verify_scope(token, "admin:write")
         assert not is_valid
 
@@ -276,7 +277,7 @@ class TestRateLimiting:
     def test_rate_limit_tracking(self, middleware):
         user_id = "user123"
         ip_address = "192.168.1.1"
-        
+
         # First request
         is_limited = middleware.is_rate_limited(user_id, ip_address)
         assert not is_limited
@@ -284,7 +285,7 @@ class TestRateLimiting:
     def test_rate_limit_exceeded(self, middleware):
         user_id = "user456"
         ip_address = "192.168.1.2"
-        
+
         # Simulate multiple requests
         with patch.object(middleware, 'get_request_count', return_value=1000):
             is_limited = middleware.is_rate_limited(user_id, ip_address)
@@ -293,7 +294,7 @@ class TestRateLimiting:
     def test_rate_limit_reset(self, middleware):
         user_id = "user789"
         ip_address = "192.168.1.3"
-        
+
         middleware.reset_rate_limit(user_id, ip_address)
         is_limited = middleware.is_rate_limited(user_id, ip_address)
         assert not is_limited
@@ -302,14 +303,14 @@ class TestRateLimiting:
         # Different users should have separate rate limit tracking
         middleware.is_rate_limited("user1", "192.168.1.1")
         middleware.is_rate_limited("user2", "192.168.1.1")
-        
+
         # Should not affect each other
 
     def test_rate_limit_per_ip(self, middleware):
         # Different IPs should have separate rate limit tracking
         middleware.is_rate_limited("user1", "192.168.1.1")
         middleware.is_rate_limited("user1", "192.168.1.2")
-        
+
         # Should not affect each other
 
 
@@ -325,10 +326,10 @@ class TestTokenTypeValidation:
             subject="user123",
             token_type=TokenType.ACCESS,
         )
-        
+
         # Should accept ACCESS tokens
         result = middleware.authenticate_request(
-            {"Authorization": f"******"},
+            {"Authorization": "******"},
             required_token_type=TokenType.ACCESS
         )
         assert result
@@ -338,11 +339,11 @@ class TestTokenTypeValidation:
             subject="user123",
             token_type=TokenType.REFRESH,
         )
-        
+
         # Should reject REFRESH token when ACCESS is required
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(
-                {"Authorization": f"******"},
+                {"Authorization": "******"},
                 required_token_type=TokenType.ACCESS
             )
 
@@ -351,10 +352,10 @@ class TestTokenTypeValidation:
             subject="user123",
             token_type=TokenType.SESSION,
         )
-        
+
         # Should accept SESSION tokens
         result = middleware.authenticate_request(
-            {"Authorization": f"******"},
+            {"Authorization": "******"},
             required_token_type=TokenType.SESSION
         )
         assert result
@@ -376,14 +377,14 @@ class TestSecurityHeaders:
     def test_cors_origin_validation(self, middleware):
         allowed_origins = ["https://example.com", "https://app.example.com"]
         origin = "https://example.com"
-        
+
         is_valid = middleware.is_allowed_origin(origin, allowed_origins)
         assert is_valid
 
     def test_cors_origin_denied(self, middleware):
         allowed_origins = ["https://example.com"]
         origin = "https://malicious.com"
-        
+
         is_valid = middleware.is_allowed_origin(origin, allowed_origins)
         assert not is_valid
 
@@ -391,7 +392,7 @@ class TestSecurityHeaders:
         # Wildcard origin is generally not recommended but may be allowed
         allowed_origins = ["*"]
         origin = "https://any.domain.com"
-        
+
         is_valid = middleware.is_allowed_origin(origin, allowed_origins)
         assert is_valid
 
@@ -399,7 +400,7 @@ class TestSecurityHeaders:
         # null origin (from file:// URLs)
         allowed_origins = ["null"]
         origin = "null"
-        
+
         is_valid = middleware.is_allowed_origin(origin, allowed_origins)
         assert is_valid
 
@@ -416,11 +417,11 @@ class TestHeaderHandling:
         headers1 = {"Authorization": "******"}
         headers2 = {"authorization": "******"}
         headers3 = {"AUTHORIZATION": "******"}
-        
+
         token1 = middleware.extract_token(headers1)
         token2 = middleware.extract_token(headers2)
         token3 = middleware.extract_token(headers3)
-        
+
         # All should work (implementation dependent)
         assert token1 or True  # May or may not normalize case
 
@@ -428,7 +429,7 @@ class TestHeaderHandling:
         headers = {
             "X-Auth-Token": "custom_token_123"
         }
-        
+
         # Should be able to extract from custom header
         token = middleware.extract_token(headers, header_name="X-Auth-Token")
         if token:
@@ -449,28 +450,28 @@ class TestMiddlewareIntegration:
             token_type=TokenType.ACCESS,
             scope="user:read user:write"
         )
-        
+
         # Extract from headers
-        headers = {"Authorization": f"******"}
+        headers = {"Authorization": "******"}
         extracted = middleware.extract_token(headers)
         assert extracted == token
-        
+
         # Authenticate request
         result = middleware.authenticate_request(headers)
         assert result.user_id == "user123"
-        
+
         # Verify scope
         assert middleware.verify_scope(result, "user:read")
 
     def test_authentication_failure_flow(self, middleware):
         headers = {"Authorization": "******"}
-        
+
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(headers)
 
     def test_missing_token_flow(self, middleware):
         headers = {}
-        
+
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(headers)
 
@@ -484,15 +485,15 @@ class TestEdgeCases:
 
     def test_very_long_token(self, middleware):
         long_token = "x" * 10000
-        headers = {"Authorization": f"******"}
-        
+        headers = {"Authorization": "******"}
+
         token = middleware.extract_token(headers)
         assert token
 
     def test_token_with_special_characters(self, middleware):
         special_token = "token._-~!@#$%"
-        headers = {"Authorization": f"******"}
-        
+        headers = {"Authorization": "******"}
+
         token = middleware.extract_token(headers)
         assert token
 
@@ -501,7 +502,7 @@ class TestEdgeCases:
         headers = {
             "Authorization": "****** ******"
         }
-        
+
         token = middleware.extract_token(headers)
         # Should extract first or raise error
 
@@ -509,7 +510,7 @@ class TestEdgeCases:
         headers = {
             "Authorization": "   ******   "
         }
-        
+
         token = middleware.extract_token(headers)
         # Should handle gracefully
 
@@ -517,6 +518,6 @@ class TestEdgeCases:
         headers = {
             "Authorization": "******"
         }
-        
+
         token = middleware.extract_token(headers)
         assert token

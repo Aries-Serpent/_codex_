@@ -10,13 +10,11 @@ Tests cover:
 - Edge cases
 """
 
-import pytest
 import time
-from unittest.mock import Mock, patch
-import jwt
 
-from codex.auth.token_manager import TokenManager, TokenType, TokenClaims
+import pytest
 
+from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
 
 # ============================================================================
 # Fixtures
@@ -221,14 +219,14 @@ class TestTokenRevocation:
     def test_revoke_token(self, token_manager):
         token = token_manager.create_token("user123", TokenType.SESSION)
         token_manager.revoke_token(token)
-        
+
         with pytest.raises(Exception):
             token_manager.validate_token(token)
 
     def test_revoke_prevents_reuse(self, token_manager):
         token = token_manager.create_token("user123", TokenType.SESSION)
         token_manager.revoke_token(token)
-        
+
         with pytest.raises(Exception):
             token_manager.validate_token(token)
 
@@ -239,12 +237,12 @@ class TestTokenRevocation:
     def test_revoke_multiple_tokens(self, token_manager):
         token1 = token_manager.create_token("user1", TokenType.SESSION)
         token2 = token_manager.create_token("user2", TokenType.SESSION)
-        
+
         token_manager.revoke_token(token1)
-        
+
         with pytest.raises(Exception):
             token_manager.validate_token(token1)
-        
+
         # token2 should still be valid
         claims = token_manager.validate_token(token2)
         assert claims.sub == "user2"
@@ -304,10 +302,10 @@ class TestTokenIdentifier:
     def test_token_has_unique_jti(self, token_manager):
         token1 = token_manager.create_token("user123", TokenType.ACCESS)
         token2 = token_manager.create_token("user123", TokenType.ACCESS)
-        
+
         claims1 = token_manager.validate_token(token1)
         claims2 = token_manager.validate_token(token2)
-        
+
         # Should have different JTI
         if claims1.jti and claims2.jti:
             assert claims1.jti != claims2.jti
@@ -315,7 +313,7 @@ class TestTokenIdentifier:
     def test_jti_in_revocation(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        
+
         if claims.jti:
             # Can use JTI for revocation tracking
             token_manager.revoke_by_jti(claims.jti)
@@ -382,14 +380,14 @@ class TestTokenManagementFlow:
             TokenType.REFRESH,
             expires_in=86400  # 24 hours
         )
-        
+
         # Create initial access token
         access_token = token_manager.create_token(
             "user123",
             TokenType.ACCESS,
             expires_in=3600  # 1 hour
         )
-        
+
         # Validate both
         assert token_manager.validate_token(access_token)
         assert token_manager.validate_token(refresh_token)
@@ -401,14 +399,14 @@ class TestTokenManagementFlow:
             TokenType.SESSION,
             expires_in=7200
         )
-        
+
         # Use session
         claims = token_manager.validate_token(session_token)
         assert claims.sub == "user123"
-        
+
         # Logout (revoke)
         token_manager.revoke_token(session_token)
-        
+
         # Verify revoked
         with pytest.raises(Exception):
             token_manager.validate_token(session_token)
@@ -417,14 +415,14 @@ class TestTokenManagementFlow:
         # Same user multiple sessions
         token1 = token_manager.create_token("user1", TokenType.SESSION)
         token2 = token_manager.create_token("user1", TokenType.SESSION)
-        
+
         # Both valid
         assert token_manager.validate_token(token1)
         assert token_manager.validate_token(token2)
-        
+
         # Revoke one
         token_manager.revoke_token(token1)
-        
+
         # Other still valid
         assert token_manager.validate_token(token2)
 
@@ -437,30 +435,30 @@ class TestPerformance:
     """Performance characteristics."""
 
     def test_token_creation_performance(self, token_manager):
-        import time
-        
+        pass  # removed redundant `import time` (top-level import used)
+
         start = time.time()
         for _ in range(100):
             token_manager.create_token(f"user{_}", TokenType.ACCESS)
         elapsed = time.time() - start
-        
+
         # Should complete in reasonable time
         assert elapsed < 10  # 10 seconds for 100 tokens
 
     def test_token_validation_performance(self, token_manager):
-        import time
-        
+        pass  # removed redundant `import time` (top-level import used)
+
         # Pre-create tokens
         tokens = [
             token_manager.create_token(f"user{i}", TokenType.ACCESS)
             for i in range(100)
         ]
-        
+
         start = time.time()
         for token in tokens:
             token_manager.validate_token(token)
         elapsed = time.time() - start
-        
+
         # Should validate quickly
         assert elapsed < 10
 

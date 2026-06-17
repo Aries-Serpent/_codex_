@@ -9,13 +9,13 @@ Tests cover:
 - Repository implementations
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from abc import abstractmethod
 from datetime import datetime
 from uuid import uuid4
 
-from src.codex.auth.user_repository import UserRepository
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from src.codex.auth.user_model import User
+from src.codex.auth.user_repository import UserRepository
 
 
 class TestUserRepositoryContract:
@@ -64,7 +64,7 @@ class TestUserRepositoryContract:
             class TestRepo(UserRepository):
                 # Don't implement methods
                 pass
-            
+
             TestRepo()
 
     def test_user_repository_update_is_abstract(self):
@@ -77,7 +77,7 @@ class TestUserRepositoryContract:
                 def list(self): pass
                 def get_by_username(self, username): pass
                 # Missing update implementation
-            
+
             TestRepo()
 
     def test_user_repository_delete_is_abstract(self):
@@ -90,7 +90,7 @@ class TestUserRepositoryContract:
                 def list(self): pass
                 def get_by_username(self, username): pass
                 # Missing delete implementation
-            
+
             TestRepo()
 
 
@@ -174,7 +174,7 @@ class TestUserRepositoryImplementation:
         repository.create(test_user)
         test_user.email = "new@example.com"
         repository.update(test_user)
-        
+
         retrieved = repository.get_by_id(test_user.id)
         assert retrieved.email == "new@example.com"
 
@@ -182,7 +182,7 @@ class TestUserRepositoryImplementation:
         """Test deleting user."""
         repository.create(test_user)
         repository.delete(test_user.id)
-        
+
         with pytest.raises(KeyError):
             repository.get_by_id(test_user.id)
 
@@ -202,10 +202,10 @@ class TestUserRepositoryImplementation:
             password_hash="hash2",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user1)
         repository.create(user2)
-        
+
         users = repository.list()
         assert len(users) == 2
 
@@ -218,7 +218,7 @@ class TestUserRepositoryImplementation:
     def test_repository_create_duplicate_raises_error(self, repository, test_user):
         """Test creating duplicate user raises error."""
         repository.create(test_user)
-        
+
         with pytest.raises((ValueError, KeyError)):
             repository.create(test_user)
 
@@ -263,23 +263,23 @@ class TestUserRepositoryImplementation:
             password_hash="hash2",
             created_at=datetime.now(),
         )
-        
+
         # Create
         repository.create(user1)
         repository.create(user2)
-        
+
         # List
         users = repository.list()
         assert len(users) == 2
-        
+
         # Update
         user1.email = "updated@example.com"
         repository.update(user1)
-        
+
         # Get
         retrieved = repository.get_by_id(user1.id)
         assert retrieved.email == "updated@example.com"
-        
+
         # Delete
         repository.delete(user1.id)
         users = repository.list()
@@ -298,7 +298,7 @@ class TestUserRepositoryImplementation:
             )
             repository.create(user)
             users.append(user)
-        
+
         all_users = repository.list()
         assert len(all_users) == 100
 
@@ -311,10 +311,10 @@ class TestUserRepositoryImplementation:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_username("unique_user")
-        
+
         assert retrieved.id == user.id
 
     def test_repository_preserves_user_data_on_update(self, repository):
@@ -326,13 +326,13 @@ class TestUserRepositoryImplementation:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(original_user)
-        
+
         # Update only email
         original_user.email = "new@example.com"
         repository.update(original_user)
-        
+
         # Verify other fields are preserved
         retrieved = repository.get_by_id(original_user.id)
         assert retrieved.username == "testuser"
@@ -357,7 +357,7 @@ class TestUserRepositoryEdgeCases:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_username("user_with-special.chars@123")
         assert retrieved.username == user.username
@@ -371,7 +371,7 @@ class TestUserRepositoryEdgeCases:
             password_hash="hash",
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_username("用户名")
         assert retrieved.username == "用户名"
@@ -386,7 +386,7 @@ class TestUserRepositoryEdgeCases:
             password_hash=long_hash,
             created_at=datetime.now(),
         )
-        
+
         repository.create(user)
         retrieved = repository.get_by_id(user.id)
         assert len(retrieved.password_hash) == 10000

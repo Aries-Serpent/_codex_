@@ -9,9 +9,10 @@ Tests cover:
 - Edge cases and error handling
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from datetime import datetime, timedelta
 from uuid import uuid4
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 from src.codex.auth.user_model import User
 
@@ -28,7 +29,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert user.username == "testuser"
         assert user.email == "test@example.com"
         assert user.password_hash == "hashed_password"
@@ -43,7 +44,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert user.id == user_id
 
     def test_user_creation_timestamp(self):
@@ -56,7 +57,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=now,
         )
-        
+
         assert user.created_at == now
 
     def test_user_updated_at_timestamp(self):
@@ -69,7 +70,7 @@ class TestUserModel:
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        
+
         assert user.updated_at is not None
 
     def test_user_email_validation(self):
@@ -81,7 +82,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert "@" in user.email
         assert "." in user.email
 
@@ -95,7 +96,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert len(user.username) > 0
 
     def test_user_password_hash_storage(self):
@@ -107,7 +108,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         # Should not store plaintext passwords
         assert user.password_hash != "plaintext_password"
         assert user.password_hash == "hashed_password"
@@ -124,7 +125,7 @@ class TestUserModel:
                 created_at=datetime.now(),
             )
             users.append(user)
-        
+
         assert len(users) == 10
         assert all(isinstance(u, User) for u in users)
 
@@ -145,7 +146,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=user1.created_at,
         )
-        
+
         # Should be equal if IDs match
         assert user1.id == user2.id
 
@@ -165,7 +166,7 @@ class TestUserModel:
             password_hash="hash2",
             created_at=datetime.now(),
         )
-        
+
         assert user1.id != user2.id
 
     def test_user_attributes_are_accessible(self):
@@ -177,7 +178,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         # Should be able to access all attributes
         assert hasattr(user, 'id')
         assert hasattr(user, 'username')
@@ -194,7 +195,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         # Should have a string representation
         user_str = str(user)
         assert len(user_str) > 0
@@ -208,7 +209,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert "user_with-special.chars@123" == user.username
 
     def test_user_with_unicode_email(self):
@@ -220,7 +221,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert "用户" in user.email
 
     def test_user_with_unicode_username(self):
@@ -232,7 +233,7 @@ class TestUserModel:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert "用户名" == user.username
 
     def test_user_with_long_password_hash(self):
@@ -245,7 +246,7 @@ class TestUserModel:
             password_hash=long_hash,
             created_at=datetime.now(),
         )
-        
+
         assert len(user.password_hash) == 10000
 
     def test_user_with_none_optional_fields(self):
@@ -259,7 +260,7 @@ class TestUserModel:
             updated_at=None,
             last_login=None,
         )
-        
+
         assert user.updated_at is None
         assert user.last_login is None
 
@@ -273,7 +274,7 @@ class TestUserModel:
             created_at=datetime.now(),
             last_login=None,
         )
-        
+
         now = datetime.now()
         user.last_login = now
         assert user.last_login == now
@@ -288,7 +289,7 @@ class TestUserModel:
             created_at=datetime.now(),
             is_active=True,
         )
-        
+
         # Check if is_active attribute exists and can be modified
         if hasattr(user, 'is_active'):
             assert user.is_active == True
@@ -303,7 +304,7 @@ class TestUserModel:
             created_at=datetime.now(),
             mfa_enabled=True,
         )
-        
+
         # Check if mfa_enabled attribute exists
         if hasattr(user, 'mfa_enabled'):
             assert user.mfa_enabled == True
@@ -366,7 +367,7 @@ class TestUserModelEdgeCases:
             password_hash="hashed_password",
             created_at=future_time,
         )
-        
+
         assert user.created_at == future_time
 
     def test_very_old_created_at_timestamp(self):
@@ -379,7 +380,7 @@ class TestUserModelEdgeCases:
             password_hash="hashed_password",
             created_at=old_time,
         )
-        
+
         assert user.created_at == old_time
 
     def test_invalid_email_format(self):
@@ -392,7 +393,7 @@ class TestUserModelEdgeCases:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         # Should store the invalid email (validation is optional)
         assert user.email == "invalid-email-format"
 
@@ -406,7 +407,7 @@ class TestUserModelEdgeCases:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert len(user.username) == 1000
 
     def test_whitespace_in_username(self):
@@ -418,5 +419,5 @@ class TestUserModelEdgeCases:
             password_hash="hashed_password",
             created_at=datetime.now(),
         )
-        
+
         assert " " in user.username

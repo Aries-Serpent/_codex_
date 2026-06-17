@@ -9,8 +9,6 @@ This module tests scope validation and authorization including:
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from security.scope_validator import (
@@ -20,7 +18,6 @@ from security.scope_validator import (
     ScopeValidator,
     TokenScope,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -362,8 +359,8 @@ class TestScopeCombinations:
     def test_combine_multiple_scopes(self):
         """Test combining multiple scopes."""
         scopes = (
-            TokenScope.READ_REPO | 
-            TokenScope.WRITE_ISSUES | 
+            TokenScope.READ_REPO |
+            TokenScope.WRITE_ISSUES |
             TokenScope.ADMIN_WORKFLOW
         )
         assert TokenScope.READ_REPO in scopes
@@ -374,7 +371,7 @@ class TestScopeCombinations:
         """Test scope intersection."""
         scope1 = TokenScope.READ_REPO | TokenScope.WRITE_REPO
         scope2 = TokenScope.WRITE_REPO | TokenScope.ADMIN_REPO
-        
+
         # Both should have WRITE_REPO
         result = scope_validator.check_scope(scope1, TokenScope.WRITE_REPO)
         assert result is True
@@ -384,7 +381,7 @@ class TestScopeCombinations:
         scope1 = TokenScope.READ_REPO
         scope2 = TokenScope.WRITE_REPO
         union = scope1 | scope2
-        
+
         assert TokenScope.READ_REPO in union
         assert TokenScope.WRITE_REPO in union
 

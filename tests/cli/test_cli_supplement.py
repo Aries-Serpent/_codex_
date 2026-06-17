@@ -187,7 +187,7 @@ class TestConfigurationVariations:
 
     def test_config_environment_variable(self, runner):
         import click
-        import os
+        pass  # removed redundant `import os` (top-level import used)
 
         @click.command()
         def cmd():

@@ -9,12 +9,13 @@ Tests cover:
 - Performance and benchmarks
 """
 
+import json
+import os
+import tempfile
+import time
+
 import pytest
 from click.testing import CliRunner
-import tempfile
-import os
-import json
-import time
 
 
 class TestAdvancedCLIPatterns:
@@ -107,8 +108,9 @@ class TestCLILogging:
         return CliRunner()
 
     def test_command_with_logging(self, runner):
-        import click
         import logging
+
+        import click
 
         @click.command()
         @click.option('--verbose', is_flag=True)
@@ -136,7 +138,7 @@ class TestCLILogging:
 
     def test_structured_logging(self, runner):
         import click
-        import json
+        pass  # removed redundant `import json` (top-level import used)
 
         @click.command()
         def cmd():

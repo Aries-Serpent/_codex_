@@ -9,19 +9,20 @@ Tests cover:
 - Error handling
 """
 
+from typing import Any
+
 import pytest
-from typing import Any, List, Dict
 
 # Import validators module
 try:
     from src.codex.utils.validators import (
+        ValidationError,
         validate_email,
+        validate_integer,
+        validate_password,
+        validate_string,
         validate_url,
         validate_username,
-        validate_password,
-        validate_integer,
-        validate_string,
-        ValidationError,
     )
 except ImportError:
     # If specific functions don't exist, create mock validators
@@ -61,9 +62,9 @@ except ImportError:
         if not isinstance(value, str):
             raise ValidationError("Not a string")
         if min_length is not None and len(value) < min_length:
-            raise ValidationError(f"String too short")
+            raise ValidationError("String too short")
         if max_length is not None and len(value) > max_length:
-            raise ValidationError(f"String too long")
+            raise ValidationError("String too long")
         return True
 
 

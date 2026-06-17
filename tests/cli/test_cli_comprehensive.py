@@ -11,12 +11,11 @@ Tests cover:
 - Exit codes
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from click.testing import CliRunner
-import tempfile
 import os
+import tempfile
 
+import pytest
+from click.testing import CliRunner
 
 # ============================================================================
 # CLI Testing Utilities
@@ -495,8 +494,9 @@ class TestOutputFormatting:
         assert 'Alice' in result.output
 
     def test_json_output(self, cli_runner):
-        import click
         import json
+
+        import click
 
         @click.command()
         def json_output():
@@ -567,6 +567,7 @@ class TestConfigurationLoading:
 
     def test_load_json_config(self, cli_runner, temp_dir):
         import json
+
         import click
 
         config_file = os.path.join(temp_dir, 'config.json')

@@ -9,14 +9,13 @@ Tests for token management including:
 """
 
 from __future__ import annotations
- # pragma: allowlist secret # pragma: allowlist secret
-from datetime import UTC, datetime, timedelta
-from unittest.mock import MagicMock, patch
+
+# pragma: allowlist secret # pragma: allowlist secret
+from datetime import datetime
 
 import pytest
 
 from codex.auth.token_manager import TokenManager, TokenType
-
 
 # ============================================================================
 # FIXTURES
@@ -254,7 +253,7 @@ class TestTokenRevocation:
         ]
         for token in tokens:
             token_manager.revoke_token(token)
-        
+
         # All should be revoked
         for token in tokens:
             result = token_manager.validate_token(token)
@@ -277,7 +276,7 @@ class TestTokenRevocation:
         """Test checking if token is revoked."""
         token = token_manager.create_access_token("user123")
         assert token_manager.is_token_revoked(token) is False
-        
+
         token_manager.revoke_token(token)
         assert token_manager.is_token_revoked(token) is True
 
@@ -287,9 +286,9 @@ class TestTokenRevocation:
             token_manager.create_access_token("user123"),
             token_manager.create_refresh_token("user123"),
         ]
-        
+
         token_manager.revoke_all_user_tokens("user123")
-        
+
         for token in tokens:
             assert token_manager.is_token_revoked(token) is True
 
@@ -367,11 +366,11 @@ class TestSecretKeyManagement:
         """Test rotating secret key."""
         # Create token with old key
         token = token_manager.create_access_token("user123")
-        
+
         # Rotate key
         new_secret = TokenManager.generate_secret_key()
         token_manager.rotate_secret_key(new_secret)
-        
+
         # Token should still be valid (during transition period)
         result = token_manager.validate_token(token)
         assert result is not None or result is None
@@ -380,13 +379,13 @@ class TestSecretKeyManagement:
         """Test different secret keys create different tokens."""
         tm1 = TokenManager(secret_key="key1")
         tm2 = TokenManager(secret_key="key2")
-        
+
         token1 = tm1.create_access_token("user123")
         token2 = tm2.create_access_token("user123")
-        
+
         # Tokens should be different
         assert token1 != token2
-        
+
         # Each token should only validate with its manager
         assert tm1.validate_token(token1) is not None
         assert tm2.validate_token(token1) is None
@@ -412,7 +411,7 @@ class TestTokenScopes:
         """Test validating token has required scopes."""
         scopes = ["read:repo", "write:repo"]
         token = token_manager.create_access_token("user123", scopes=scopes)
-        
+
         # Token should have these scopes
         claims = token_manager.validate_token(token)
         assert claims is not None
@@ -509,9 +508,9 @@ class TestEdgeCases:
         for i in range(100):
             token = token_manager.create_access_token(f"user_{i}")
             tokens.append(token)
-        
+
         assert len(tokens) == 100
-        
+
         # All should be valid
         for token in tokens:
             assert token_manager.validate_token(token) is not None
@@ -519,12 +518,12 @@ class TestEdgeCases:
     def test_token_refresh_multiple_times(self, token_manager):
         """Test refreshing token multiple times."""
         refresh = token_manager.create_refresh_token("user123")
-        
+
         tokens = []
         for _ in range(10):
             token = token_manager.refresh_access_token(refresh)
             tokens.append(token)
-        
+
         assert len(tokens) == 10
         assert all(t is not None for t in tokens)
 

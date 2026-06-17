@@ -10,8 +10,8 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
 
+from codex.auth.authenticator import Authenticator
 from codex.auth.exceptions import (
     InvalidCredentialsError,
     MFARequiredError,
@@ -19,11 +19,9 @@ from codex.auth.exceptions import (
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-from codex.auth.authenticator import Authenticator
+from codex.auth.mfa_provider import MFAProvider
 from codex.auth.token_manager import TokenManager, TokenType
 from codex.auth.user_store import UserStore
-from codex.auth.mfa_provider import MFAProvider
-
 
 # ============================================================================
 # Exception Tests
@@ -257,7 +255,7 @@ class TestStateTransitions:
 
     def test_user_state_after_registration(self, auth_system):
         user = auth_system.register("mike", "mike@example.com", "Str0ngPass!")
-        
+
         # User should be retrievable
         retrieved = auth_system.user_store.get_by_username("mike")
         assert retrieved.user_id == user.user_id
@@ -322,7 +320,6 @@ class TestConcurrentAccess:
 
         def register():
             try:
-                import time
                 user = auth_system.register(
                     f"user{threading.current_thread().ident}",
                     f"user{threading.current_thread().ident}@example.com",
@@ -377,7 +374,7 @@ class TestConcurrentAccess:
             try:
                 auth_system.token_manager.validate_token(result.access_token)
                 operations.append('validate')
-            except Exception:
+            except Exception as _err:
                 operations.append('error')
 
         threads = [threading.Thread(target=token_op) for _ in range(20)]
@@ -454,7 +451,7 @@ class TestEdgeCaseCombinations:
 
         # Rapid changes
         for i in range(5):
-            old_pass = f"Pass{i}!" 
+            old_pass = f"Pass{i}!"
             new_pass = f"Pass{i+1}!"
             auth_system.change_password(user.user_id, old_pass, new_pass)
 
