@@ -594,7 +594,7 @@ class TestLoggingIntegration:
         event = Event(event_id="test", event_type="test")
         
         # Create second manager with same database
-        pass  # removed redundant `import tempfile` (top-level import used)
+        # Note: removed redundant `import tempfile` (top-level import used)
         with tempfile.NamedTemporaryFile(suffix=".db") as f:
             manager2 = DatabaseManager(db_path=f.name)
             

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (SN 2026-06-17T06:34Z - PR #4970 Code Quality Remediation)
+- **Added explanatory comments** to 7 empty except blocks in `tests/auth/test_oauth_manager_wave2_comprehensive.py` (lines 226, 235, 366, 378, 389, 400, 411)
+  - Each except block now includes comment: "Expected: method may not exist or raise implementation errors"
+  - Satisfies code quality requirements while preserving defensive exception handling patterns
+- **Removed unnecessary pass statement** in `tests/logging/test_causal_event_logger_comprehensive.py` (line 597)
+  - Preserved explanatory comment about removed redundant import
+  - Improved code clarity without changing test functionality
+
 ### Fixed (SN 2026-06-17T06:16Z - PR #4970 CI Rescue)
 - **Completed final validation** for PR #4970
   - Ran `python scripts/ci/mypy_baseline.py --require-baseline` — ✅ PASS (0 errors)
