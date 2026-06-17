@@ -97,8 +97,8 @@ class TestStableFold:
         """Test stable fold is case sensitive."""
         fold1 = stable_fold("TestId")
         fold2 = stable_fold("testid")
-        # Different cases should likely give different results
-        assert fold1 != fold2 or fold1 == fold2  # Statistical
+        # Assert that different cases produce different fold values
+        assert fold1 != fold2
 
     def test_stable_fold_empty_string(self):
         """Test stable fold with empty string."""

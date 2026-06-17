@@ -568,7 +568,7 @@ class TestRAGIntegration:
         norm1 = normalize_text(text1)
         norm2 = normalize_text(text2)
         
-        assert norm1 == norm2 or isinstance(norm1, str)
+        assert norm1 == norm2
 
 
 if __name__ == "__main__":

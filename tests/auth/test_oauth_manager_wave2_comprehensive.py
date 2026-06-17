@@ -326,7 +326,7 @@ class TestErrorHandling:
         """Test handling invalid redirect URI."""
         oauth_config["redirect_uri"] = "invalid"
         manager = OAuthManager(**oauth_config)
-        # Should either raise or store as-is
+        assert manager.redirect_uri == "invalid"
 
     def test_network_error_handling(self, oauth_manager):
         """Test handling of network errors."""

@@ -356,9 +356,10 @@ class TestMetricsIntegration:
 
         prec = precision(preds, labels)
         rec = recall(preds, labels)
-        # When we predict all positives, recall increases but precision decreases
-        assert prec <= 1.0
-        assert rec >= 0.0
+        
+        # Assert that both are in valid range and within expected values
+        assert np.isclose(prec, 2.0 / 3.0)
+        assert np.isclose(rec, 2.0 / 3.0)
 
     def test_f1_is_harmonic_mean(self):
         """Test that F1 is harmonic mean of precision and recall."""

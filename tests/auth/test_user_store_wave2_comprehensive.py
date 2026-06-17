@@ -99,7 +99,8 @@ class TestUserCreation:
         """Test that duplicate username raises error."""
         user_store.create_user("alice", "alice@example.com", "Pass123!")
         
-        with pytest.raises(Exception):  # Should raise some exception for duplicate
+        # Assert a specific exception is raised instead of the generic Exception class
+        with pytest.raises(ValueError):
             user_store.create_user("alice", "alice2@example.com", "Pass123!")
 
     def test_create_user_password_hashing(self, user_store):
