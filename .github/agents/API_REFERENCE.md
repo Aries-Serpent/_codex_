@@ -461,7 +461,7 @@ from codex_reviewer.secret_patterns import SecretPatterns, has_high_entropy
 
 # Check for secrets
 patterns = SecretPatterns.get_compiled_patterns()
-code = 'API_KEY = "sk_test_1234567890abcdef"'
+code = 'API_KEY = "sk_test_1234567890abcdef"' <!-- pragma: allowlist secret -->
 
 for name, pattern in patterns.items():
     if pattern.search(code):

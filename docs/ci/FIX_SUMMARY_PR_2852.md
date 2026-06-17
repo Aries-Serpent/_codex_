@@ -79,7 +79,7 @@ self.log_task("setup_secrets", "success", f"Secrets configuration complete: {sec
 ### Sanitization Barriers Implemented
 
 1. **Dictionary Redaction**: `redact_dict_with_secret_keys()`
-   - Transforms `{"SECRET_NAME": "value"}` → `{"secret_1": "value"}`
+   - Transforms `{"SECRET_NAME": "value"}` → `{"secret_1": "value"}` <!-- pragma: allowlist secret -->
    - Creates clean data for downstream operations
 
 2. **Generic Logging Messages**:

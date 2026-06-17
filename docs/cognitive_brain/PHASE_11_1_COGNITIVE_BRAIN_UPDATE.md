@@ -141,7 +141,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
 2. **Environment Configuration**:
    ```bash
    export GITHUB_CLIENT_ID="your_client_id"
-   export GITHUB_CLIENT_SECRET="your_client_secret"
+   export GITHUB_CLIENT_SECRET="your_client_secret" <!-- pragma: allowlist secret -->
    export GITHUB_REDIRECT_URI="https://yourapp.com/callback"
    export TOKEN_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(64))')"
    export CODEX_ENV="production"

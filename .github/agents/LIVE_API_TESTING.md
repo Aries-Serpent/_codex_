@@ -196,7 +196,7 @@ git checkout -b test/agent-review-$(date +%s)
 # Add test file with intentional issues
 cat > test_file.py << 'PYEOF'
 # Test file for agent review
-API_KEY = "sk_test_1234567890abcdefghij"  # Secret (should be detected)
+API_KEY = "sk_test_1234567890abcdefghij"  # Secret (should be detected) <!-- pragma: allowlist secret -->
 
 def vulnerable_query(user_input):
     query = f"SELECT * FROM users WHERE id = {user_input}"  # SQL injection

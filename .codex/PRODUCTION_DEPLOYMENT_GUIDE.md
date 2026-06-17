@@ -229,9 +229,9 @@ if __name__ == "__main__":
 **Environment Variables (Development Only):**
 
 ```bash
-export JWT_SECRET_KEY="dev-secret-do-not-use-in-prod"
+export JWT_SECRET_KEY="dev-secret-do-not-use-in-prod" <!-- pragma: allowlist secret -->
 export DATABASE_URL="postgresql://user:pass@localhost/codex" <!-- pragma: allowlist secret -->
-export OPENAI_API_KEY="sk-..."
+export OPENAI_API_KEY="sk-..." <!-- pragma: allowlist secret -->
 ```
 
 **Production: Secrets Manager Integration**

@@ -112,7 +112,7 @@ github-secrets-cli audit \
 
 # Output format:
 # {
-#   "secret_name": "SECRET_NAME",
+#   "secret_name": "SECRET_NAME", <!-- pragma: allowlist secret -->
 #   "scope": "repository",
 #   "created_at": "2026-01-13T20:00:00Z",
 #   "updated_at": "2026-01-13T20:05:00Z",
@@ -183,7 +183,7 @@ All operations are logged to `~/.config/github-secrets-cli/audit.log`:
   "operation": "set",
   "scope": "repository",
   "target": "Aries-Serpent/_codex_",
-  "secret_name": "CODEX_MASTER_KEY",
+  "secret_name": "CODEX_MASTER_KEY", <!-- pragma: allowlist secret -->
   "user": "mbaetiong",
   "success": true
 }

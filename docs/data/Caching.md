@@ -23,7 +23,7 @@ Generate a stable cache key from parameters:
 from codex_ml.data.cache import derive_key
 
 key = derive_key("imdb", "train", "42")  # dataset, split, seed
-# Returns: '4f3d2e1a0b9c8d7e'  (16-char hex)
+# Returns: '4f3d2e1a0b9c8d7e'  (16-char hex) <!-- pragma: allowlist secret -->
 ```text
 
 ### cache_records

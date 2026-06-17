@@ -82,7 +82,7 @@ elif name.endswith((".egg-info", ".dist-info")):
 ```python
 # Before (fails - api_key attribute removed)
 def test_initialization_from_env(self):
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):
+    with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}): <!-- pragma: allowlist secret -->
         provider = OpenAIEmbeddingProvider()
         assert provider.api_key == "env-key"  # FAILS
 
@@ -99,7 +99,7 @@ def test_initialization_from_env(self):
 ```python
 # Before
 def test_destructor_clears_key(self):
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}): <!-- pragma: allowlist secret -->
         provider = OpenAIEmbeddingProvider()
         assert provider.api_key is not None  # FAILS
         del provider

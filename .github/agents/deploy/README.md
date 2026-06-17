@@ -71,11 +71,11 @@ aws secretsmanager create-secret \
 ```bash
 # GitHub App credentials
 export TF_VAR_github_app_id="123456"
-export TF_VAR_github_webhook_secret="your-webhook-secret-here"
+export TF_VAR_github_webhook_secret="your-webhook-secret-here" <!-- pragma: allowlist secret -->
 
 # AWS credentials (if not using aws configure)
 export AWS_ACCESS_KEY_ID="your-access-key"
-export AWS_SECRET_ACCESS_KEY="your-secret-key"
+export AWS_SECRET_ACCESS_KEY="your-secret-key" <!-- pragma: allowlist secret -->
 export AWS_DEFAULT_REGION="us-east-1"
 ```
 

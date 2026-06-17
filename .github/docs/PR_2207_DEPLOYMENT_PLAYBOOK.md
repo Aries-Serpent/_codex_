@@ -83,7 +83,7 @@ grep -E "(torch|cuda|tensorflow)" uv.lock | wc -l
 
 **Expected Results:**
 - Bandit: 0 HIGH/CRITICAL issues
-- Secrets: "No new secrets detected"
+- Secrets: "No new secrets detected" <!-- pragma: allowlist secret -->
 - GPU Check: "0"
 
 **If Issues Found:**

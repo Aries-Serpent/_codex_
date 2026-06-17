@@ -166,7 +166,7 @@ from src.security.decorators import get_token_scopes
 def test_valid_token_with_scopes():
     """Test valid token with scopes."""
     # Generate test token
-    secret = "test_secret"
+    secret = "test_secret" <!-- pragma: allowlist secret -->
     payload = {
         'sub': 'user123',
         'scopes': ['read', 'write'],

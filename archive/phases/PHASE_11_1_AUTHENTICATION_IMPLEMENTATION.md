@@ -87,7 +87,7 @@ manager = OAuthManager()
 # Create GitHub configuration
 config = manager.create_github_config(
     client_id="your_github_client_id",
-    client_secret="your_github_client_secret",
+    client_secret="your_github_client_secret", <!-- pragma: allowlist secret -->
     redirect_uri="http://localhost:8000/callback",
     scope="repo user"
 )
@@ -389,9 +389,9 @@ sequenceDiagram
 2. **Environment Variables**
    ```bash
    export GITHUB_CLIENT_ID="your_client_id"
-   export GITHUB_CLIENT_SECRET="your_client_secret"
+   export GITHUB_CLIENT_SECRET="your_client_secret" <!-- pragma: allowlist secret -->
    export GITHUB_REDIRECT_URI="http://localhost:8000/callback"
-   export TOKEN_SECRET_KEY="your_random_secret_key"
+   export TOKEN_SECRET_KEY="your_random_secret_key" <!-- pragma: allowlist secret -->
    ```
 
 3. **Python Dependencies**

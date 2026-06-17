@@ -115,7 +115,7 @@ I need help remediating a security vulnerability in the Codex repository.
    **Hardcoded Secrets:**
    ```python
    # ❌ Vulnerable
-   API_KEY = "sk_live_abc123..."
+   API_KEY = "sk_live_abc123..." <!-- pragma: allowlist secret -->
 
    # ✅ Fixed: Use environment variables
    import os

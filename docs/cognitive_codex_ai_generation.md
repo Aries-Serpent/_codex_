@@ -121,7 +121,7 @@ router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "your-secret-key-here"
+SECRET_KEY = "your-secret-key-here" <!-- pragma: allowlist secret -->
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

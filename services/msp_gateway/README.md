@@ -97,7 +97,7 @@ curl -X POST http://127.0.0.1:8080/admin/tenants \
   -d '{
     "tenant_id": "my-tenant",
     "name": "My Tenant",
-    "api_key": "my-secret-key",
+    "api_key": "my-secret-key", <!-- pragma: allowlist secret -->
     "quota": {
       "requests_per_minute": 60,
       "tokens_per_minute": 10000
