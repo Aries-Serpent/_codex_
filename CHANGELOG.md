@@ -2,6 +2,13 @@
 
 ## [0.1.1] - 2026-06-17
 
+### Fixed (PR #4968 - Code Quality Review)
+- **Unreachable code warnings** in API error handling tests (10 CodeQL alerts)
+  - Replaced `pytest.raises()` context managers with explicit try/except blocks
+  - Fixed assertions in `tests/api/test_api_error_handling_phase7a.py` and `tests/api/test_api_error_scenarios_phase7a.py`
+  - Removed unused imports (pytest, Mock, patch, status) per ruff standards
+  - All test files now compile without syntax errors and pass linting
+
 ### Added (Approval Workflow Hub — Phases 1-4 Complete)
 - **Phase 1**: Unified approval workflow hub architecture & design documentation
 - **Phase 2**: Approval integration framework with comprehensive security validation (RBAC + audit trail)
@@ -66,11 +73,8 @@
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4966)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4966 (SHA `26e79c9e`) at 2026-06-17T02:03Z [auto-generated]
-
-### Fixed (auto-update — PR #4962)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4962 (SHA `047a2cfc`) at 2026-06-17T01:30Z [auto-generated]
+### Fixed (auto-update — PR #4968)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4968 (SHA `cae9ef03`) at 2026-06-17T04:35Z [auto-generated]
 
 ### Fixed (Workflow Permissions Compliance — PR #4958, 2026-06-16T17:36Z)
 - Added top-level `permissions:` block to `post-phase-update-to-discussion.yml` — fixes compliance gate failure (was missing `permissions:` at workflow level)
