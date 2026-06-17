@@ -10,10 +10,10 @@
 
 | Component | Status | Progress | ETA |
 |-----------|--------|----------|-----|
-| **Lane 3.1 (Edge Cases)** | 🚀 ACTIVE | 0% | 2026-07-04 (Day 19) |
-| **Lane 3.2 (Mutations)** | 🚀 ACTIVE | 0% | 2026-07-03 (Day 18) |
-| **Lane 3.3 (Validation)** | 🚀 ACTIVE | 0% | 2026-07-04 (Day 19) |
-| **Wave 3 Overall** | 🚀 ACTIVE | 0% | 2026-07-04 (Day 19) |
+| **Lane 3.1 (Edge Cases)** | 🚀 ACTIVE | 12% | 2026-07-04 (Day 19) |
+| **Lane 3.2 (Mutations)** | ✅ PHASE 1-2 COMPLETE | 40% (prep done) | 2026-07-03 (Day 18) |
+| **Lane 3.3 (Validation)** | 🚀 ACTIVE | 15% | 2026-07-04 (Day 19) |
+| **Wave 3 Overall** | 🚀 ACTIVE | 23% | 2026-07-04 (Day 19) |
 
 ---
 
@@ -199,9 +199,9 @@ Generated in `.codex/` per campaign standards (never in `/tmp/`):
 
 | Lane | Agent ID | Start Time | Mode | Status |
 |------|----------|-----------|------|--------|
-| 3.1 | `wave-3-lane-3-1-edge-cases` | 2026-06-17T16:05:00Z | background | 🚀 ACTIVE |
-| 3.2 | `wave-3-lane-3-2-mutations` | 2026-06-17T16:05:00Z | background | 🚀 ACTIVE |
-| 3.3 | `wave-3-lane-3-3-validation` | 2026-06-17T16:05:00Z | background | 🚀 ACTIVE |
+| 3.1 | `wave-3-lane-3-1-edge-cases` | 2026-06-17T16:05:00Z | background | 🚀 ACTIVE (12% complete) |
+| 3.2 | `wave-3-lane-3-2-mutations` | 2026-06-17T16:05:00Z | background | ✅ PHASE 1-2 DONE (40% overall) |
+| 3.3 | `wave-3-lane-3-3-validation` | 2026-06-17T16:05:00Z | background | 🚀 ACTIVE (15% complete) |
 
 **Monitoring:** Use `read_agent` with each agent_id to check progress  
 **Escalation:** On failure, use `ci-emergency-response-agent` for rapid remediation
