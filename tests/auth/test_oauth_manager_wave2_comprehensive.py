@@ -9,7 +9,11 @@ Tests cover:
 """
 
 import pytest
+<<<<<<< HEAD
 from datetime import datetime, timedelta
+=======
+from datetime import datetime, timedelta # pragma: allowlist secret
+>>>>>>> origin/main
 from unittest.mock import patch, MagicMock, Mock
 from codex.auth.oauth_manager import OAuthManager
 
@@ -326,7 +330,11 @@ class TestErrorHandling:
         """Test handling invalid redirect URI."""
         oauth_config["redirect_uri"] = "invalid"
         manager = OAuthManager(**oauth_config)
+<<<<<<< HEAD
         assert manager.redirect_uri == "invalid"
+=======
+        # Should either raise or store as-is
+>>>>>>> origin/main
 
     def test_network_error_handling(self, oauth_manager):
         """Test handling of network errors."""

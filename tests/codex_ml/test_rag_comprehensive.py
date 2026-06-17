@@ -564,6 +564,7 @@ class TestRAGIntegration:
         
         text1 = "Machine LEARNING is great"
         text2 = "machine learning is great"
+<<<<<<< HEAD
         text3 = "  machine   learning   is   great  "
         
         norm1 = normalize_text(text1)
@@ -576,6 +577,13 @@ class TestRAGIntegration:
         assert norm2 == norm3
         # Explicitly verify no excessive whitespace remains
         assert '  ' not in norm3
+=======
+        
+        norm1 = normalize_text(text1)
+        norm2 = normalize_text(text2)
+        
+        assert norm1 == norm2 or isinstance(norm1, str)
+>>>>>>> origin/main
 
 
 if __name__ == "__main__":

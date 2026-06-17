@@ -9,7 +9,11 @@ Tests cover:
 """
 
 import os
+<<<<<<< HEAD
 import stat
+=======
+import stat # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+>>>>>>> origin/main
 import tempfile
 from pathlib import Path
 from unittest.mock import patch, MagicMock
