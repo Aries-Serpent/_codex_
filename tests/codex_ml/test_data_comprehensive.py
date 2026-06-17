@@ -95,12 +95,12 @@ class TestStableFold:
 
     def test_stable_fold_case_sensitive(self):
         """Test stable fold is case sensitive and deterministic."""
-        # Test 1: Different cases produce different fold values
+        # Test 1: Verify case sensitivity - different cases should produce different fold values
         fold1 = stable_fold("TestId")
         fold2 = stable_fold("testid")
         assert fold1 != fold2
         
-        # Test 2: Verify fold values are in valid range
+        # Test 2: Verify fold values are in valid range (0-99)
         assert 0 <= fold1 <= 99
         assert 0 <= fold2 <= 99
         

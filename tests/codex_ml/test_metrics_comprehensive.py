@@ -357,8 +357,10 @@ class TestMetricsIntegration:
         prec = precision(preds, labels)
         rec = recall(preds, labels)
         
-        # With preds=[1,1,1,0,0,0] and labels=[1,1,0,0,0,1]:
-        # TP=2 (pos 0,1), FP=1 (pos 2), FN=1 (pos 5)
+        # Calculation breakdown:
+        # TP=2 (indices 0,1: both predicted and labeled as 1)
+        # FP=1 (index 2: predicted 1 but labeled 0)
+        # FN=1 (index 5: predicted 0 but labeled 1)
         # precision = TP/(TP+FP) = 2/3, recall = TP/(TP+FN) = 2/3
         assert np.isclose(prec, 2.0 / 3.0)
         assert np.isclose(rec, 2.0 / 3.0)

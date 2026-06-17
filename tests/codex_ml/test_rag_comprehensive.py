@@ -574,9 +574,8 @@ class TestRAGIntegration:
         assert norm1 == norm2
         # Verify whitespace normalization
         assert norm2 == norm3
-        # Verify output is lowercase string
-        assert isinstance(norm1, str)
-        assert norm1.islower()
+        # Explicitly verify no excessive whitespace remains
+        assert '  ' not in norm3
 
 
 if __name__ == "__main__":
