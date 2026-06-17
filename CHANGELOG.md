@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4975)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4975 (SHA `4119a0af`) at 2026-06-17T23:46Z [auto-generated]
+
 ### Fixed (SN 2026-06-17T17:18Z - PR #4974 CI Rescue follow-up)
 - **Fixed actionlint undefined-step context** in `.github/workflows/auto-approve-workflows.yml`
   - Removed `${{ steps.app-token.outputs.token }}` reference from a `run` script comment in `execute-approval` job (step `app-token` is not defined in that job scope).
