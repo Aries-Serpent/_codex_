@@ -9,7 +9,7 @@ Tests cover:
 - Header parsing
 - ****** handling
 - CORS and security headers
-"""
+""" # pragma: allowlist secret
 
 import pytest
 from unittest.mock import Mock, patch

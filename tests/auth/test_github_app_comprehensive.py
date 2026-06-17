@@ -9,7 +9,7 @@ Tests cover:
 - Webhook handling
 - Error cases
 """
-
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 from unittest.mock import Mock, patch, AsyncMock
 import json

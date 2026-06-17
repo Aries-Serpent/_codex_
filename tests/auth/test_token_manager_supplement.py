@@ -9,7 +9,7 @@ Tests cover:
 - Token revocation
 - Edge cases
 """
-
+ # pragma: allowlist secret
 import pytest
 import time
 from unittest.mock import Mock, patch

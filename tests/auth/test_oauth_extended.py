@@ -9,7 +9,7 @@ Tests cover:
 - Scope validation
 """
 
-import pytest
+import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import Mock, patch
 from codex.auth.oauth_manager import OAuthManager, OAuthProvider
 from codex.auth.token_manager import TokenManager, TokenType

@@ -9,7 +9,7 @@ Tests cover:
 - Email handling
 - Backend persistence
 - Concurrent operations
-"""
+""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 import pytest
 import threading

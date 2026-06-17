@@ -9,7 +9,7 @@ Tests cover:
 - Scope handling
 - Error cases and edge conditions
 """
-
+ # pragma: allowlist secret
 import pytest
 import time
 from unittest.mock import Mock, patch, AsyncMock

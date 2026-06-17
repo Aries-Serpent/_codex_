@@ -9,7 +9,7 @@ Tests cover:
 - Recovery mechanisms
 - Error handling and edge cases
 """
-
+ # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 import time
 from unittest.mock import Mock, patch

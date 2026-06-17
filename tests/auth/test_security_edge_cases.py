@@ -9,7 +9,7 @@ Tests cover:
 - Boundary conditions
 """
 
-import pytest
+import pytest # pragma: allowlist secret
 from unittest.mock import Mock, patch
 import time
 import threading

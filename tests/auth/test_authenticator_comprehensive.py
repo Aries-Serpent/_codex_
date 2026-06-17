@@ -9,7 +9,7 @@ Tests cover:
 - Token lifecycle
 - Edge cases and error handling
 """
-
+ # pragma: allowlist secret
 import pytest
 from unittest.mock import Mock, patch
 

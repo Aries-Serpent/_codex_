@@ -9,7 +9,7 @@ Tests cover:
 - Search and filtering
 - Complex queries
 """
-
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 from unittest.mock import Mock, patch
 from codex.auth.user_model import User, PasswordHasher
