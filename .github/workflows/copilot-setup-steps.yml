@@ -27,7 +27,7 @@ on:
           - documentation
       # Selectively reintroduce LFS behavior behind guards (safe defaults kept)
       lfs_mode:
-        description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=full=fetch all)'
+        description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'
         required: false
         default: 'none'
         type: choice
