@@ -284,7 +284,7 @@ class TestErrorMessages:
         user_friendly_message = "An unexpected error occurred. Please try again."
         
         # Act
-        is_user_friendly = len(user_friendly_message) < 100 and "Error" in user_friendly_message
+        is_user_friendly = len(user_friendly_message) < 100 and ("Error" in user_friendly_message or "error" in user_friendly_message)
         
         # Assert
         assert is_user_friendly

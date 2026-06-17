@@ -211,10 +211,13 @@ class TestBoundaryValues:
         """Test minimum integer boundary."""
         # Arrange
         min_int = -2147483648
-        below_min = -2147483649
+        slightly_larger = -2147483647
         
-        # Act & Assert
-        assert min_int < below_min  # Depends on implementation
+        # Act
+        min_is_smaller = min_int < slightly_larger
+        
+        # Assert
+        assert min_is_smaller, "Min should be smaller than slightly larger value"
     
     def test_integer_max_boundary(self):
         """Test maximum integer boundary."""

@@ -59,13 +59,24 @@ class TestRBACBoundary:
     def test_role_inheritance_loop_prevention(self):
         """Test prevention of role inheritance loops."""
         # Arrange
+        # Simulate circular dependency detection
         role_hierarchy = {"admin": "user", "user": "guest", "guest": "admin"}
         
         # Act
-        has_loop = "admin" in role_hierarchy and role_hierarchy[role_hierarchy["admin"]] == "admin"
+        def has_loop(hierarchy, start, visited=None):
+            if visited is None:
+                visited = set()
+            if start in visited:
+                return True
+            if start not in hierarchy:
+                return False
+            visited.add(start)
+            return has_loop(hierarchy, hierarchy[start], visited)
+        
+        loop_detected = has_loop(role_hierarchy, "admin")
         
         # Assert
-        assert has_loop, "Should detect inheritance loop"
+        assert loop_detected, "Should detect inheritance loop"
     
     def test_zero_privilege_scenario(self):
         """Test user with zero privileges."""

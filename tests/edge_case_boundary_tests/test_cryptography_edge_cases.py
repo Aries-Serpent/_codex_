@@ -59,16 +59,18 @@ class TestEncryptionDecryption:
     def test_padding_oracle_detection(self):
         """Test detection of padding oracle vulnerability."""
         # Arrange
-        valid_padded = b"hello\x0b" * 11  # PKCS7 padding
-        invalid_padded = b"hello\xff"  # Invalid padding
+        plaintext = b"hello"  # 5 bytes
+        padding_needed = 16 - (len(plaintext) % 16)  # 11 bytes
+        valid_padded = plaintext + bytes([padding_needed] * padding_needed)  # PKCS7 padding
+        invalid_padded = plaintext + b"\xff"  # Invalid padding
         
         # Act
         valid_length = len(valid_padded)
         invalid_length = len(invalid_padded)
         
         # Assert
-        assert valid_length % 16 == 0
-        assert invalid_length % 16 != 0
+        assert valid_length % 16 == 0, "Valid padding should align to block size"
+        assert invalid_length % 16 != 0, "Invalid padding should not align to block size"
     
     def test_non_utf8_binary_data_encryption(self):
         """Test encryption of non-UTF8 binary data."""
