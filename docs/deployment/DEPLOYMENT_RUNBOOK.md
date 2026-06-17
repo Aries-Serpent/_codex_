@@ -17,7 +17,7 @@ This runbook documents the deployment process for the Codex platform, including 
 
 ### 1. Code Quality Gates
 
-- [ ] All tests pass (24500+ tests)
+- [ ] All tests pass (26500+ tests)
 - [ ] Coverage threshold met (75%)
 - [ ] CodeQL security scan passes
 - [ ] Ruff linting passes
