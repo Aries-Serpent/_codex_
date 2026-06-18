@@ -610,12 +610,23 @@ class TfidfEmbeddingProvider:
             logger.info(f"Fitting TF-IDF vectorizer on {n_docs} texts")
             try:
                 # Guard against small corpora:
-                # When max_df is a fraction and corpus is tiny, adjust both min_df and max_df
-                # to prevent "After pruning, no terms remain" error.
-                if isinstance(self.vectorizer.max_df, float) and n_docs < 5:
-                    # For very small corpora, allow all terms (min_df=1, max_df=1.0)
-                    self.vectorizer.set_params(min_df=1, max_df=1.0)
-                    logger.debug(f"Small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0")
+                # When the corpus is small relative to max_df, pruning can eliminate all terms.
+                # Adjust max_df to be proportional to corpus size to prevent "After pruning, 
+                # no terms remain" error.
+                if isinstance(self.vectorizer.max_df, float):
+                    # If corpus is small or max_df would filter too aggressively, adjust it
+                    # For n_docs < 50, use a more lenient max_df
+                    if n_docs < 10:
+                        # Very small corpus: allow all terms
+                        self.vectorizer.set_params(min_df=1, max_df=1.0)
+                        logger.debug(f"Very small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0")
+                    elif n_docs < 50:
+                        # Small corpus: use more lenient max_df to avoid over-pruning
+                        # Set max_df to not filter out most common terms
+                        adjusted_max_df = max(1.0, min(0.95, (n_docs - 1) / n_docs))
+                        self.vectorizer.set_params(min_df=1, max_df=adjusted_max_df)
+                        logger.debug(f"Small corpus detected ({n_docs} docs); adjusted max_df={adjusted_max_df}")
+                
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(

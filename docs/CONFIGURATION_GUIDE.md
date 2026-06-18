@@ -427,4 +427,4 @@ python train.py --config-path configs/hardware \
 - [Hydra Documentation](https://hydra.cc/)
 - [OmegaConf Documentation](https://omegaconf.readthedocs.io/)
 - [Quickstart Guide](./QUICKSTART.md)
-- [Training Guide](./TRAINING_GUIDE.md)
+- [Training Guide](./distributed_training_guide.md)
