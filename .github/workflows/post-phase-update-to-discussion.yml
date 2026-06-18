@@ -47,19 +47,19 @@ jobs:
             const fs = require('fs');
             const filePath = '${{ github.event.inputs.file_path }}';
             const discussionNumber = ${{ github.event.inputs.discussion_number }};
-            
+
             // Read the file content
             const content = fs.readFileSync(filePath, 'utf8');
-            
+
             // Get repository info
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            
+
             console.log(`📝 Posting to Discussion #${discussionNumber}...`);
             console.log(`Repository: ${owner}/${repo}`);
             console.log(`File: ${filePath}`);
             console.log(`Content length: ${content.length} characters`);
-            
+
             // Use GraphQL to post the comment
             const query = `
               mutation AddDiscussionComment($discussionId: ID!, $body: String!) {
@@ -75,7 +75,7 @@ jobs:
                 }
               }
             `;
-            
+
             try {
               // First, get the discussion node ID
               const discussionQuery = `
@@ -87,29 +87,29 @@ jobs:
                   }
                 }
               `;
-              
+
               const discussionResult = await github.graphql(discussionQuery, {
                 owner: owner,
                 repo: repo,
                 number: discussionNumber
               });
-              
+
               const discussionId = discussionResult.repository.discussion.id;
               console.log(`Discussion ID: ${discussionId}`);
-              
+
               // Post the comment
               const result = await github.graphql(query, {
                 discussionId: discussionId,
                 body: content
               });
-              
+
               const commentId = result.addDiscussionComment.comment.id;
               const createdAt = result.addDiscussionComment.comment.createdAt;
-              
+
               console.log(`✅ SUCCESS: Comment posted to Discussion #${discussionNumber}`);
               console.log(`Comment ID: ${commentId}`);
               console.log(`Created at: ${createdAt}`);
-              
+
               core.setOutput('success', 'true');
               core.setOutput('comment_id', commentId);
               core.setOutput('created_at', createdAt);

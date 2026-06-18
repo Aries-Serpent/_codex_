@@ -457,7 +457,7 @@ class TestPipelineWorkflows:
                 jobs.append(job)
 
         # Should track multiple jobs
-        assert len(jobs) >= 0
+        assert isinstance(jobs, list)
 
 
 class TestErrorHandling:

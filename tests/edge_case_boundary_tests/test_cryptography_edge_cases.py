@@ -291,7 +291,7 @@ class TestDigitalSignatures:
         # Act
         for sig in invalid_signatures:
             is_short = len(sig) < 32
-            assert is_short or True, "Should detect invalid signatures"
+            assert is_short, "Should detect invalid signatures"
 
     def test_signature_key_mismatch(self):
         """Test signature verification with wrong key."""

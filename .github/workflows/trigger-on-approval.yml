@@ -105,9 +105,9 @@ jobs:
             const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);
             const prSha = '${{ steps.ctx.outputs.pr_sha }}';
             const reviewer = '${{ steps.ctx.outputs.reviewer }}';
-             
+
             core.info(`Dispatching auto-approve-workflows.yml for PR #${prNumber} @ ${prSha.slice(0,8)}`);
-             
+
             try {
               await github.rest.actions.createWorkflowDispatch({
                 owner,

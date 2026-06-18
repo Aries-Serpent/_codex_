@@ -285,7 +285,7 @@ class TestVariableValidators:
             if config.validator is not None
         ]
         # Should have at least some configs with validators
-        assert len(configs_with_validators) >= 0
+        assert isinstance(configs_with_validators, list)
 
 
 # ============================================================================

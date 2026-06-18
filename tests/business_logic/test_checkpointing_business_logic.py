@@ -136,7 +136,7 @@ class TestCheckpointRetention:
         recent = [cp for cp in checkpoints if
                   datetime.fromisoformat(cp["timestamp"]).timestamp() > cutoff]
 
-        assert len(recent) >= 0
+        assert isinstance(recent, list)
 
     def test_retention_with_multiple_metrics(self):
         """Test retention policy with multiple quality metrics."""

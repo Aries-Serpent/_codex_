@@ -210,9 +210,9 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const pendingCount = parseInt('${{ steps.pending.outputs.count }}', 10) || 0;
-             
+
             core.info(`Dispatching auto-approve-workflows.yml for batch approval (${pendingCount} pending runs)`);
-             
+
             try {
               await github.rest.actions.createWorkflowDispatch({
                 owner,

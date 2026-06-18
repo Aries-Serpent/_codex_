@@ -234,14 +234,14 @@ jobs:
             const prNumber = parseInt('${{ github.event.pull_request.number }}', 10);
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-             
+
             if (!newlyChecked || newlyChecked.length === 0) {
               core.info('No newly-checked workflows — skipping dispatch');
               return;
             }
-             
+
             core.info(`Dispatching hub for ${newlyChecked.length} newly-checked workflows`);
-             
+
             for (const workflow of newlyChecked) {
               try {
                 await github.rest.actions.createWorkflowDispatch({
