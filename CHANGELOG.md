@@ -1,5 +1,32 @@
 # Changelog
 
+## [2026-06-18] — PR #4985 Branch Alignment with main
+
+### Fixed
+- Merged `origin/main` (commits `ffc08791d`, `0f68b413c`) into branch: clean merge, 2 test files updated with `<!-- pragma: allowlist secret -->` annotations
+- Resolved `🚦 Comment review gate` failure by replying to blocking comment #4746531534
+- Branch is now 0 behind / 4 ahead of main, ready for merge
+
+### Session
+- PR #4985 branch alignment + comment gate resolution
+- Agent: @copilot
+- HEAD: merge commit (sync with main)
+
+---
+
+## [2026-06-18] — PR #4985 CI Gate Compliance Restore
+
+### Fixed
+- Restored REQ-4/REQ-5 compliance (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+  in latest commit after approval dispatch merge commit omitted these files
+
+### Session
+- PR #4985 CI compliance restore after `@copilot continue` approval dispatch
+- Agent: @copilot
+- HEAD: 32b06bdc
+
+---
+
 ## [2026-06-18] — PR #4985 mypy Anti-Regression Gate Fix
 
 ### Fixed
