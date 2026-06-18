@@ -288,7 +288,6 @@ def test_secrets_baseline_sync(repo_root: Path) -> TestResult:
     
     # Basic check: file should be valid JSON
     try:
-        import json
         with open(baseline_path, 'r') as f:
             _ = json.load(f)
         
