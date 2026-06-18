@@ -3,7 +3,7 @@
 
 class Hashing:
     """Comprehensive hashing implementation."""
-    
+
     def __init__(self):
         """Initialize Hashing."""
         self._data = {}

@@ -3,13 +3,19 @@ import pytest
 pytestmark = pytest.mark.integration
 
 import pytest
-from pathlib import Path
-from src.codex_ml.utils.stub_cleanup import StubAnalyzer, generate_stub_report, find_stubs, prioritize_stubs
+
+from src.codex_ml.utils.stub_cleanup import (
+    StubAnalyzer,
+    find_stubs,
+    generate_stub_report,
+    prioritize_stubs,
+)
+
 
 def test_integration_stub_cleanup(tmp_path):
     source_dir = tmp_path / "src"
     source_dir.mkdir()
-    
+
     # Create some files with real code patterns
     file1 = source_dir / "file1.py"
     file1.write_text("""
@@ -53,7 +59,7 @@ def standalone():
 def standalone_abstract():
     raise NotImplementedError
     """)
-    
+
     file3 = source_dir / "file3.py"
     file3.write_text("""
 class Invalid:
@@ -63,21 +69,21 @@ class Invalid:
     def another(self):
         raise NotImplementedError()
     """)
-    
+
     # Analyze with all source dirs
     analyzer = StubAnalyzer(source_dirs=[source_dir])
     stubs = analyzer.analyze()
-    
+
     # find_stubs convenience function
     stubs2 = find_stubs([source_dir])
     assert len(stubs) == len(stubs2)
-    
+
     assert len(stubs) > 0
-    
+
     # Test prioritize_stubs
     prioritized = prioritize_stubs(stubs)
     assert prioritized[0].priority == "P0"
-    
+
     # Test summary
     summary = analyzer.get_summary()
     assert summary["total"] == len(stubs)
@@ -87,11 +93,11 @@ class Invalid:
     assert summary["by_type"]["NotImplementedError"] > 0
     assert summary["by_type"]["TODO"] > 0
     assert summary["by_type"]["FIXME"] > 0
-    
+
     # Test generate_stub_report
     report_file = tmp_path / "report.md"
     generate_stub_report(report_file, source_dirs=[source_dir])
-    
+
     assert report_file.exists()
     report_content = report_file.read_text()
     assert "Total Stubs" in report_content
@@ -101,20 +107,20 @@ class Invalid:
 def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
     # Change cwd so that default dirs "src" and "training" don't analyze the real codebase
     monkeypatch.chdir(tmp_path)
-    
+
     # Create fake src and training dirs
     src_dir = tmp_path / "src"
     src_dir.mkdir()
     (src_dir / "test.py").write_text("raise NotImplementedError('foo')\n")
-    
+
     training_dir = tmp_path / "training"
     training_dir.mkdir()
     (training_dir / "test2.py").write_text("# TODO: something\n")
-    
+
     analyzer = StubAnalyzer()
     stubs = analyzer.analyze()
     assert len(stubs) == 2
-    
+
     report_file = tmp_path / "report.md"
     generate_stub_report(report_file)
     assert report_file.exists()
@@ -123,7 +129,7 @@ def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
 def test_stub_cleanup_edge_cases(tmp_path):
     source_dir = tmp_path / "src"
     source_dir.mkdir()
-    
+
     # Unparseable python file containing NotImplementedError
     file_bad = source_dir / "bad.py"
     file_bad.write_text("""
@@ -131,20 +137,20 @@ def calculate():
     raise NotImplementedError
     this is invalid python syntax ++==--
     """)
-    
+
     analyzer = StubAnalyzer([source_dir])
     stubs = analyzer.analyze()
     assert len(stubs) == 1
     assert str(stubs[0]).startswith("P0")
-    
+
     # Test __str__ explicit
     assert "bad.py" in str(stubs[0])
-    
+
 
 def test_stub_cleanup_ast_attributes(tmp_path):
     source_dir = tmp_path / "src"
     source_dir.mkdir()
-    
+
     file_ast = source_dir / "ast_test.py"
     file_ast.write_text("""
 import abc
@@ -163,7 +169,7 @@ class MyProto(typing.Protocol):
 def standalone():
     raise NotImplementedError("standalone")
     """)
-    
+
     analyzer = StubAnalyzer([source_dir])
     stubs = analyzer.analyze()
     # these are abstract, so stubs should be 0

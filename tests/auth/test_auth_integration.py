@@ -173,7 +173,7 @@ class TestAuthenticationIntegration:
         user = auth_system.register("frank", "frank@example.com", "Str0ngPass!")
 
         # Setup MFA
-        secret = auth_system.mfa_provider.register_mfa(user.user_id, "sha256")
+        auth_system.mfa_provider.register_mfa(user.user_id, "sha256")
         codes = auth_system.mfa_provider.generate_backup_codes(user.user_id)
 
         # Use backup code (instead of TOTP)
@@ -447,7 +447,7 @@ class TestEdgeCaseCombinations:
         assert user.username == "sam"
 
     def test_rapid_password_changes(self, auth_system):
-        user = auth_system.register("sam", "sam@example.com", "Pass1!")
+        user = auth_system.register("sam", "sam@example.com", "Pass0!")
 
         # Rapid changes
         for i in range(5):

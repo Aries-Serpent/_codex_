@@ -9,11 +9,11 @@ Tests cover:
 - Edge cases
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from codex.auth.user_store import UserStore, User
-from codex.auth.user_model import PasswordHasher
-from codex.auth.exceptions import InvalidCredentialsError
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
+from codex.auth.exceptions import InvalidCredentialsError
+from codex.auth.user_model import PasswordHasher
+from codex.auth.user_store import User, UserStore
 
 # ============================================================================
 # Fixtures
@@ -98,7 +98,7 @@ class TestUserCreation:
     def test_create_duplicate_username_raises_error(self, user_store):
         """Test that duplicate username raises error."""
         user_store.create_user("alice", "alice@example.com", "Pass123!")
-        
+
         # Assert a specific exception is raised instead of the generic Exception class
         with pytest.raises(ValueError):
             user_store.create_user("alice", "alice2@example.com", "Pass123!")
@@ -107,7 +107,7 @@ class TestUserCreation:
         """Test that password is hashed, not stored plaintext."""
         password = "PlainTextPassword123!"
         user = user_store.create_user("charlie", "charlie@example.com", password)
-        
+
         # Password hash should not be the plaintext
         assert user.password_hash != password
 
@@ -123,7 +123,7 @@ class TestUserRetrieval:
         """Test retrieving user by username."""
         created = user_store.create_user("dave", "dave@example.com", "Pass123!")
         retrieved = user_store.get_user_by_username("dave")
-        
+
         assert retrieved is not None
         assert retrieved.username == "dave"
         assert retrieved.user_id == created.user_id
@@ -132,7 +132,7 @@ class TestUserRetrieval:
         """Test retrieving user by email."""
         created = user_store.create_user("eve", "eve@example.com", "Pass123!")
         retrieved = user_store.get_user_by_email("eve@example.com")
-        
+
         assert retrieved is not None
         assert retrieved.email == "eve@example.com"
 
@@ -140,7 +140,7 @@ class TestUserRetrieval:
         """Test retrieving user by ID."""
         created = user_store.create_user("frank", "frank@example.com", "Pass123!")
         retrieved = user_store.get_user_by_id(created.user_id)
-        
+
         assert retrieved is not None
         assert retrieved.user_id == created.user_id
 
@@ -153,7 +153,7 @@ class TestUserRetrieval:
         """Test retrieving all users."""
         user_store.create_user("user1", "user1@example.com", "Pass123!")
         user_store.create_user("user2", "user2@example.com", "Pass123!")
-        
+
         users = user_store.get_all_users()
         assert len(users) >= 2
 
@@ -161,7 +161,7 @@ class TestUserRetrieval:
         """Test retrieving users by role."""
         user_store.create_user("admin1", "admin1@example.com", "Pass123!", roles=["admin"])
         user_store.create_user("user1", "user1@example.com", "Pass123!", roles=["user"])
-        
+
         admins = user_store.get_users_by_role("admin")
         assert any(u.username == "admin1" for u in admins)
 
@@ -177,7 +177,7 @@ class TestPasswordVerification:
         """Test verifying correct password."""
         password = "CorrectPassword123!"
         user = user_store.create_user("alice", "alice@example.com", password)
-        
+
         # Verify with user_store method
         verified_user = user_store.get_user_by_username("alice")
         assert verified_user is not None
@@ -185,7 +185,7 @@ class TestPasswordVerification:
     def test_verify_incorrect_password(self, user_store):
         """Test that incorrect password fails verification."""
         user_store.create_user("bob", "bob@example.com", "CorrectPass123!")
-        
+
         # Try to authenticate with wrong password
         with pytest.raises(InvalidCredentialsError):
             user_store.verify_password("bob", "WrongPassword123!")
@@ -193,7 +193,7 @@ class TestPasswordVerification:
     def test_verify_null_password_fails(self, user_store):
         """Test that None password fails verification."""
         user_store.create_user("charlie", "charlie@example.com", "Pass123!")
-        
+
         with pytest.raises(Exception):
             user_store.verify_password("charlie", None)
 
@@ -201,7 +201,7 @@ class TestPasswordVerification:
         """Test that passwords are case-sensitive."""
         password = "SecurePass123!"
         user_store.create_user("dave", "dave@example.com", password)
-        
+
         # Wrong case should fail
         with pytest.raises(InvalidCredentialsError):
             user_store.verify_password("dave", "securepass123!")
@@ -219,7 +219,7 @@ class TestUserUpdates:
         user = user_store.create_user("eve", "eve@example.com", "Pass123!")
         user.email = "eve_new@example.com"
         updated = user_store.update_user(user)
-        
+
         assert updated.email == "eve_new@example.com"
 
     def test_update_user_roles(self, user_store):
@@ -227,7 +227,7 @@ class TestUserUpdates:
         user = user_store.create_user("frank", "frank@example.com", "Pass123!")
         user.roles = ["admin", "moderator"]
         updated = user_store.update_user(user)
-        
+
         assert "admin" in updated.roles
 
     def test_update_user_metadata(self, user_store):
@@ -235,7 +235,7 @@ class TestUserUpdates:
         user = user_store.create_user("grace", "grace@example.com", "Pass123!")
         user.metadata = {"department": "sales"}
         updated = user_store.update_user(user)
-        
+
         assert updated.metadata.get("department") == "sales"
 
     def test_update_nonexistent_user_raises_error(self, user_store):
@@ -246,7 +246,7 @@ class TestUserUpdates:
             email="fake@example.com",
             password_hash="fake_hash",
         )
-        
+
         with pytest.raises(Exception):
             user_store.update_user(fake_user)
 
@@ -262,7 +262,7 @@ class TestUserDeletion:
         """Test deleting a user."""
         user = user_store.create_user("henry", "henry@example.com", "Pass123!")
         user_store.delete_user(user.user_id)
-        
+
         assert user_store.get_user_by_id(user.user_id) is None
 
     def test_delete_nonexistent_user_raises_error(self, user_store):
@@ -274,7 +274,7 @@ class TestUserDeletion:
         """Test deleting user by username."""
         user_store.create_user("iris", "iris@example.com", "Pass123!")
         user_store.delete_user_by_username("iris")
-        
+
         assert user_store.get_user_by_username("iris") is None
 
 
@@ -290,7 +290,7 @@ class TestPasswordHashing:
         hasher = PasswordHasher()
         password = "TestPassword123!"
         hash1 = hasher.hash_password(password)
-        
+
         assert hash1 != password
         assert len(hash1) > len(password)
 
@@ -300,7 +300,7 @@ class TestPasswordHashing:
         password = "TestPassword123!"
         hash1 = hasher.hash_password(password)
         hash2 = hasher.hash_password(password)
-        
+
         # Hashes should be different due to random salt
         assert hash1 != hash2
 
@@ -309,7 +309,7 @@ class TestPasswordHashing:
         hasher = PasswordHasher()
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
-        
+
         assert hasher.verify_password(password, hashed)
 
     def test_verify_password_failure(self):
@@ -317,7 +317,7 @@ class TestPasswordHashing:
         hasher = PasswordHasher()
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
-        
+
         assert not hasher.verify_password("WrongPassword123!", hashed)
 
     def test_verify_password_case_sensitive(self):
@@ -325,7 +325,7 @@ class TestPasswordHashing:
         hasher = PasswordHasher()
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
-        
+
         assert not hasher.verify_password("testpassword123!", hashed)
 
 
@@ -339,9 +339,9 @@ class TestThreadSafety:
     def test_concurrent_user_creation(self, user_store):
         """Test concurrent user creation."""
         import threading
-        
+
         users_created = []
-        
+
         def create_user(username):
             user = user_store.create_user(
                 username,
@@ -349,41 +349,41 @@ class TestThreadSafety:
                 "Pass123!",
             )
             users_created.append(user)
-        
+
         threads = []
         for i in range(5):
             t = threading.Thread(target=create_user, args=(f"thread_user_{i}",))
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         assert len(users_created) == 5
 
     def test_concurrent_user_retrieval(self, user_store):
         """Test concurrent user retrieval."""
         import threading
-        
+
         # Create some users
         for i in range(5):
             user_store.create_user(f"user_{i}", f"user_{i}@example.com", "Pass123!")
-        
+
         results = []
-        
+
         def get_user(username):
             user = user_store.get_user_by_username(username)
             results.append(user)
-        
+
         threads = []
         for i in range(5):
             t = threading.Thread(target=get_user, args=(f"user_{i}",))
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         assert len(results) == 5
         assert all(u is not None for u in results)
 
@@ -452,16 +452,16 @@ class TestUserStoreIntegration:
         # Create user
         user = user_store.create_user("mia", "mia@example.com", "Pass123!")
         assert user is not None
-        
+
         # Retrieve user
         retrieved = user_store.get_user_by_username("mia")
         assert retrieved is not None
-        
+
         # Update user
         retrieved.email = "mia_new@example.com"
         updated = user_store.update_user(retrieved)
         assert updated.email == "mia_new@example.com"
-        
+
         # Delete user
         user_store.delete_user(user.user_id)
         assert user_store.get_user_by_id(user.user_id) is None
@@ -476,16 +476,16 @@ class TestUserStoreIntegration:
                 "Pass123!",
             )
             users.append(user)
-        
+
         # Verify all created
         all_users = user_store.get_all_users()
         assert len(all_users) >= 10
-        
+
         # Update some
         for user in users[:5]:
             user.roles.append("premium")
             user_store.update_user(user)
-        
+
         # Delete some
         for user in users[5:]:
             user_store.delete_user(user.user_id)
@@ -496,10 +496,10 @@ class TestUserStoreIntegration:
         user_store.create_user("admin1", "admin1@example.com", "Pass123!", roles=["admin"])
         user_store.create_user("mod1", "mod1@example.com", "Pass123!", roles=["moderator"])
         user_store.create_user("user1", "user1@example.com", "Pass123!", roles=["user"])
-        
+
         # Search operations
         all_users = user_store.get_all_users()
         assert len(all_users) >= 3
-        
+
         admins = user_store.get_users_by_role("admin")
         assert any(u.username == "admin1" for u in admins)

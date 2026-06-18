@@ -7,7 +7,6 @@ Tests cover AlertSeverity enum, AlertEvent dataclass, and AlertChannel ABC.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from unittest.mock import MagicMock, Mock
 
 import pytest
 

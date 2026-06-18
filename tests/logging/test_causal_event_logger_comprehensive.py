@@ -7,21 +7,19 @@ Tests cover:
 - Causal event logging
 """
 
-import pytest
 import tempfile
-import json
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
-from codex.logging.session_logger import SessionLogger
-from codex.logging.db_manager import DatabaseManager
+import pytest
+
 from codex.logging.causal_event_logger import (
-    Event,
     CausalLink,
     CausalRelationType,
+    Event,
 )
-
+from codex.logging.db_manager import DatabaseManager
+from codex.logging.session_logger import SessionLogger
 
 # ============================================================================
 # Fixtures
@@ -86,28 +84,28 @@ class TestEventClass:
         """Test event hashing."""
         event1 = Event(event_id="event_001", event_type="test")
         event2 = Event(event_id="event_001", event_type="test")
-        
+
         assert hash(event1) == hash(event2)
 
     def test_event_equality(self):
         """Test event equality."""
         event1 = Event(event_id="event_001", event_type="test")
         event2 = Event(event_id="event_001", event_type="test")
-        
+
         assert event1 == event2
 
     def test_event_inequality_different_id(self):
         """Test event inequality with different IDs."""
         event1 = Event(event_id="event_001", event_type="test")
         event2 = Event(event_id="event_002", event_type="test")
-        
+
         assert event1 != event2
 
     def test_event_inequality_different_type(self):
         """Test event inequality with different types."""
         event1 = Event(event_id="event_001", event_type="type1")
         event2 = Event(event_id="event_001", event_type="type2")
-        
+
         assert event1 != event2
 
     def test_event_timestamp_default(self):
@@ -256,7 +254,7 @@ class TestCausalLinkClass:
             strength=0.0,
         )
         assert 0.0 <= link_weak.strength <= 1.0
-        
+
         link_strong = CausalLink(
             cause_event_id="event_001",
             effect_event_id="event_002",
@@ -323,7 +321,7 @@ class TestDatabaseManager:
         """Test database persistence."""
         manager1 = DatabaseManager(db_path=temp_db_file)
         manager2 = DatabaseManager(db_path=temp_db_file)
-        
+
         # Both should point to same database
         assert manager1 is not None
         assert manager2 is not None
@@ -339,19 +337,19 @@ class TestCausalEventLogging:
     def test_event_creation_workflow(self):
         """Test creating events in workflow."""
         events = []
-        
+
         event1 = Event(event_id="login", event_type="user_login")
         events.append(event1)
-        
+
         event2 = Event(event_id="query", event_type="database_query")
         events.append(event2)
-        
+
         link = CausalLink(
             cause_event_id="login",
             effect_event_id="query",
             relation_type=CausalRelationType.DIRECT_CAUSE,
         )
-        
+
         assert len(events) == 2
         assert link.cause_event_id == "login"
         assert link.effect_event_id == "query"
@@ -364,7 +362,7 @@ class TestCausalEventLogging:
             Event(event_id="B", event_type="reaction"),
             Event(event_id="C", event_type="consequence"),
         ]
-        
+
         links = [
             CausalLink(
                 cause_event_id="A",
@@ -377,7 +375,7 @@ class TestCausalEventLogging:
                 relation_type=CausalRelationType.DIRECT_CAUSE,
             ),
         ]
-        
+
         assert len(events) == 3
         assert len(links) == 2
 
@@ -386,7 +384,7 @@ class TestCausalEventLogging:
         events = []
         for i in range(5):
             events.append(Event(event_id=f"event_{i}", event_type="type"))
-        
+
         # Create various relationships
         links = [
             CausalLink(
@@ -405,7 +403,7 @@ class TestCausalEventLogging:
                 relation_type=CausalRelationType.CONTRIBUTING,
             ),
         ]
-        
+
         assert len(links) == 3
 
 
@@ -428,7 +426,7 @@ class TestEventSerialization:
             "event_type": event.event_type,
             "timestamp": event.timestamp.isoformat(),
         }
-        
+
         assert event_dict["event_id"] == "event_001"
 
     def test_event_with_complex_data(self):
@@ -454,7 +452,7 @@ class TestEventSerialization:
             strength=0.8,
             confidence=0.9,
         )
-        
+
         link_dict = {
             "cause_event_id": link.cause_event_id,
             "effect_event_id": link.effect_event_id,
@@ -462,7 +460,7 @@ class TestEventSerialization:
             "strength": link.strength,
             "confidence": link.confidence,
         }
-        
+
         assert link_dict["cause_event_id"] == "event_001"
         assert link_dict["strength"] == 0.8
 
@@ -548,7 +546,7 @@ class TestLoggingIntegration:
             Event(event_id="event_2", event_type="process"),
             Event(event_id="event_3", event_type="end"),
         ]
-        
+
         links = [
             CausalLink(
                 cause_event_id="event_1",
@@ -561,15 +559,15 @@ class TestLoggingIntegration:
                 relation_type=CausalRelationType.DIRECT_CAUSE,
             ),
         ]
-        
+
         assert len(events) == 3
         assert len(links) == 2
-        
+
         # Verify chain integrity
         for link in links:
             cause_event = next((e for e in events if e.event_id == link.cause_event_id), None)
             effect_event = next((e for e in events if e.event_id == link.effect_event_id), None)
-            
+
             assert cause_event is not None
             assert effect_event is not None
 
@@ -577,11 +575,11 @@ class TestLoggingIntegration:
         """Test complete logging workflow."""
         # Create session logger
         assert session_logger is not None
-        
+
         # Log events
         event1 = Event(event_id="session_start", event_type="session_init")
         event2 = Event(event_id="user_action", event_type="action")
-        
+
         # Events should be creatable
         assert event1 is not None
         assert event2 is not None
@@ -589,15 +587,15 @@ class TestLoggingIntegration:
     def test_database_persistence_workflow(self, db_manager):
         """Test database persistence workflow."""
         manager1 = db_manager
-        
+
         # Simulate data logging
         event = Event(event_id="test", event_type="test")
-        
+
         # Create second manager with same database
         # Note: removed redundant `import tempfile` (top-level import used)
         with tempfile.NamedTemporaryFile(suffix=".db") as f:
             manager2 = DatabaseManager(db_path=f.name)
-            
+
             # Both managers should access same database
             assert manager1 is not None
             assert manager2 is not None

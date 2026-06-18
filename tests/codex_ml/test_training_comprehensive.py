@@ -7,7 +7,7 @@ Test Categories: Unit (110), Integration (50), Edge Cases (25), Error Handling (
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -15,7 +15,6 @@ from codex_ml.training.engine import (
     TrainingEngine,
     _normalize_params,
 )
-
 
 # ============================================================================
 # FIXTURES

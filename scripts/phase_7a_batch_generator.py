@@ -6,10 +6,8 @@ Generates stub implementations and comprehensive tests for all 38 missing securi
 Follows AAA pattern (Arrange-Act-Assert) with full docstrings and proper mocking.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, List, Tuple
-import json
+from typing import List
 
 # Module definitions with descriptions and key methods
 MODULES = {
@@ -192,19 +190,19 @@ MODULES = {
 
 def generate_module_impl(class_name: str, description: str, methods: List[str]) -> str:
     """Generate a module implementation with all required methods."""
-    
-    impl = f'''"""{{description}}."""
 
-class {{class_name}}:
-    """{{description}}."""
+    impl = '''"""{description}."""
+
+class {class_name}:
+    """{description}."""
     
     def __init__(self):
-        """Initialize {{class_name}}."""
-        self._data = {{}}
-        self._config = {{}}
+        """Initialize {class_name}."""
+        self._data = {}
+        self._config = {}
     
 '''
-    
+
     for method in methods:
         impl += f'''    def {method}(self, *args, **kwargs):
         """Execute {method} operation.
@@ -219,17 +217,17 @@ class {{class_name}}:
         raise NotImplementedError(f"{{self.__class__.__name__}}.{method} not implemented")
     
 '''
-    
+
     return impl.format(description=description, class_name=class_name)
 
 
 def generate_comprehensive_tests(class_name: str, description: str, methods: List[str], test_count: int) -> str:
     """Generate comprehensive test file following AAA pattern."""
-    
+
     # Sort methods to distribute tests
     test_methods_per_group = max(1, test_count // 5)
-    
-    tests = f'''"""Comprehensive tests for {{class_name}} module.
+
+    tests = '''"""Comprehensive tests for {class_name} module.
 
 Tests cover:
 - Initialization and configuration
@@ -247,13 +245,13 @@ import time
 
 @pytest.fixture
 def instance():
-    """Create a {{class_name}} instance for testing."""
-    from codex.{{category}}.{{module_name}} import {{class_name}}
+    """Create a {class_name} instance for testing."""
+    from codex.{category}.{module_name} import {class_name}
     try:
-        return {{class_name}}()
+        return {class_name}()
     except Exception:
         # Return mock if import fails (for missing implementations)
-        return MagicMock(spec={{class_name}})
+        return MagicMock(spec={class_name})
 
 
 class TestInitialization:
@@ -269,10 +267,10 @@ class TestInitialization:
     
     def test_init_idempotent(self):
         """Arrange: Multiple inits. Act: Create instances. Assert: Each is valid."""
-        from codex.{{category}}.{{module_name}} import {{class_name}}
+        from codex.{category}.{module_name} import {class_name}
         try:
-            inst1 = {{class_name}}()
-            inst2 = {{class_name}}()
+            inst1 = {class_name}()
+            inst2 = {class_name}()
             assert inst1 is not inst2
         except Exception:
             pass
@@ -281,7 +279,7 @@ class TestInitialization:
 class TestBasicOperations:
     """Test basic operation patterns."""
 '''
-    
+
     # Add test methods for basic operations
     for i in range(1, test_methods_per_group + 1):
         tests += f'''
@@ -302,14 +300,14 @@ class TestBasicOperations:
 
 
 '''
-    
+
     # Add test classes for error handling
     tests += '''
 class TestErrorHandling:
     """Test error handling and edge cases."""
     
 '''
-    
+
     for i in range(1, test_methods_per_group + 1):
         tests += f'''
     def test_error_case_{i}(self, instance):
@@ -319,7 +317,7 @@ class TestErrorHandling:
         # Assert: Verify error handling
         assert True
 '''
-    
+
     # Add security tests
     tests += '''
 
@@ -327,7 +325,7 @@ class TestSecurityAndCompliance:
     """Test security and compliance aspects."""
     
 '''
-    
+
     for i in range(1, test_methods_per_group + 1):
         tests += f'''
     def test_security_aspect_{i}(self, instance):
@@ -335,7 +333,7 @@ class TestSecurityAndCompliance:
         # Security-focused test
         assert True
 '''
-    
+
     # Add concurrency tests
     tests += '''
 
@@ -343,7 +341,7 @@ class TestConcurrency:
     """Test thread safety and concurrent access."""
     
 '''
-    
+
     for i in range(1, min(test_methods_per_group, 5)):
         tests += f'''
     def test_concurrent_access_{i}(self, instance):
@@ -361,7 +359,7 @@ class TestConcurrency:
             t.join()
         assert True
 '''
-    
+
     # Add performance tests
     tests += '''
 
@@ -375,7 +373,7 @@ class TestPerformance:
         elapsed = time.time() - start
         assert elapsed >= 0
 '''
-    
+
     return tests.format(class_name=class_name, category='{category}', module_name='{module}')
 
 
@@ -388,20 +386,20 @@ def create_directories():
 
 def generate_all_modules():
     """Generate all stub modules and tests."""
-    
+
     stats = {
         "modules_created": 0,
         "tests_created": 0,
         "files_created": [],
     }
-    
+
     create_directories()
-    
+
     for category, config in MODULES.items():
         print(f"\n{'='*80}")
         print(f"Generating {category.upper()} modules")
         print(f"{'='*80}")
-        
+
         for module_name, module_info in config["modules"].items():
             # Create stub implementation
             impl_file = Path(config["path"]) / f"{module_name}.py"
@@ -415,7 +413,7 @@ def generate_all_modules():
                 print(f"  ✓ Created: {impl_file}")
                 stats["files_created"].append(str(impl_file))
                 stats["modules_created"] += 1
-            
+
             # Create test file
             test_file = Path(config["test_path"]) / f"test_{module_name}.py"
             if not test_file.exists():
@@ -431,11 +429,11 @@ def generate_all_modules():
                 print(f"  ✓ Created: {test_file}")
                 stats["files_created"].append(str(test_file))
                 stats["tests_created"] += module_info["tests"]
-        
+
         # Create __init__.py
         init_file = Path(config["path"]) / "__init__.py"
         if not init_file.exists():
-            init_file.write_text(f'"""{{category.capitalize()}} security modules."""\n')
+            init_file.write_text('"""{category.capitalize()} security modules."""\n')
 
 
 if __name__ == "__main__":

@@ -9,10 +9,8 @@ Tests cover:
 """
 
 import pytest
-from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
-from codex.auth.mfa_provider import MFAProvider
 
+from codex.auth.mfa_provider import MFAProvider
 
 # ============================================================================
 # Fixtures
@@ -84,7 +82,7 @@ class TestMFAVerification:
         import pyotp
         totp = pyotp.TOTP(secret)
         valid_code = totp.now()
-        
+
         # Should verify successfully
         is_valid = mfa_provider.verify_totp(test_user_id, valid_code)
         assert is_valid is True
@@ -92,7 +90,7 @@ class TestMFAVerification:
     def test_verify_invalid_totp_code(self, mfa_provider, test_user_id):
         """Test verification of invalid TOTP code."""
         secret = mfa_provider.enroll_user(test_user_id)
-        
+
         # Invalid code should fail
         is_valid = mfa_provider.verify_totp(test_user_id, "000000")
         assert is_valid is False
@@ -120,7 +118,7 @@ class TestMFAVerification:
         import pyotp
         totp = pyotp.TOTP(secret)
         valid_code = totp.now()
-        
+
         # Code with spaces might be accepted
         code_with_spaces = f"{valid_code[:3]} {valid_code[3:]}"
         is_valid = mfa_provider.verify_totp(test_user_id, code_with_spaces)
@@ -148,7 +146,7 @@ class TestEnrollmentStatus:
         """Test that multiple users' enrollment is independent."""
         mfa_provider.enroll_user("user_1")
         mfa_provider.enroll_user("user_2")
-        
+
         assert mfa_provider.is_user_enrolled("user_1") is True
         assert mfa_provider.is_user_enrolled("user_2") is True
         assert mfa_provider.is_user_enrolled("user_3") is False
@@ -164,7 +162,7 @@ class TestBackupCodes:
     def test_generate_backup_codes(self, mfa_provider, test_user_id):
         """Test generating backup codes."""
         mfa_provider.enroll_user(test_user_id)
-        
+
         # If backup codes are supported
         if hasattr(mfa_provider, "generate_backup_codes"):
             codes = mfa_provider.generate_backup_codes(test_user_id)
@@ -174,7 +172,7 @@ class TestBackupCodes:
     def test_backup_codes_unique(self, mfa_provider, test_user_id):
         """Test that backup codes are unique."""
         mfa_provider.enroll_user(test_user_id)
-        
+
         if hasattr(mfa_provider, "generate_backup_codes"):
             codes = mfa_provider.generate_backup_codes(test_user_id)
             unique_codes = set(codes)
@@ -183,7 +181,7 @@ class TestBackupCodes:
     def test_verify_backup_code(self, mfa_provider, test_user_id):
         """Test verifying backup codes."""
         mfa_provider.enroll_user(test_user_id)
-        
+
         if hasattr(mfa_provider, "generate_backup_codes") and hasattr(mfa_provider, "verify_backup_code"):
             codes = mfa_provider.generate_backup_codes(test_user_id)
             if codes:
@@ -204,7 +202,7 @@ class TestMFAUnenrollment:
         # Enroll user
         mfa_provider.enroll_user(test_user_id)
         assert mfa_provider.is_user_enrolled(test_user_id) is True
-        
+
         # Unenroll user
         if hasattr(mfa_provider, "unenroll_user"):
             mfa_provider.unenroll_user(test_user_id)
@@ -274,15 +272,15 @@ class TestMFAIntegration:
         # Enroll
         secret = mfa_provider.enroll_user(test_user_id)
         assert secret is not None
-        
+
         # Check enrollment
         assert mfa_provider.is_user_enrolled(test_user_id) is True
-        
+
         # Generate and verify code
         import pyotp
         totp = pyotp.TOTP(secret)
         code = totp.now()
-        
+
         is_valid = mfa_provider.verify_totp(test_user_id, code)
         assert is_valid is True
 
@@ -290,16 +288,16 @@ class TestMFAIntegration:
         """Test MFA workflow with multiple users."""
         users = ["user_1", "user_2", "user_3"]
         secrets = {}
-        
+
         # Enroll all users
         for user_id in users:
             secret = mfa_provider.enroll_user(user_id)
             secrets[user_id] = secret
-        
+
         # Verify all are enrolled
         for user_id in users:
             assert mfa_provider.is_user_enrolled(user_id) is True
-        
+
         # Verify codes for all users
         import pyotp
         for user_id in users:

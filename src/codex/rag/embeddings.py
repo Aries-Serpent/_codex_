@@ -611,7 +611,7 @@ class TfidfEmbeddingProvider:
             try:
                 # Guard against small corpora:
                 # When the corpus is small relative to max_df, pruning can eliminate all terms.
-                # Adjust max_df to be proportional to corpus size to prevent "After pruning, 
+                # Adjust max_df to be proportional to corpus size to prevent "After pruning,
                 # no terms remain" error.
                 if isinstance(self.vectorizer.max_df, float):
                     # If corpus is small or max_df would filter too aggressively, adjust it
@@ -619,14 +619,18 @@ class TfidfEmbeddingProvider:
                     if n_docs < 10:
                         # Very small corpus: allow all terms
                         self.vectorizer.set_params(min_df=1, max_df=1.0)
-                        logger.debug(f"Very small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0")
+                        logger.debug(
+                            f"Very small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0"  # noqa: E501
+                        )
                     elif n_docs < 50:
                         # Small corpus: use more lenient max_df to avoid over-pruning
                         # Set max_df to not filter out most common terms
                         adjusted_max_df = max(1.0, min(0.95, (n_docs - 1) / n_docs))
                         self.vectorizer.set_params(min_df=1, max_df=adjusted_max_df)
-                        logger.debug(f"Small corpus detected ({n_docs} docs); adjusted max_df={adjusted_max_df}")
-                
+                        logger.debug(
+                            f"Small corpus detected ({n_docs} docs); adjusted max_df={adjusted_max_df}"  # noqa: E501
+                        )
+
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(

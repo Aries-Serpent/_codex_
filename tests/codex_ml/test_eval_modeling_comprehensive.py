@@ -6,13 +6,11 @@ Test Categories: Unit (70), Integration (40), Edge Cases (15), Error Handling (1
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
+import numpy as np
 import pytest
+
 import torch
 import torch.nn as nn
-import numpy as np
-
 
 # ============================================================================
 # FIXTURES
@@ -85,44 +83,44 @@ class TestPerplexityCalculation:
     def test_perplexity_perfect_predictions(self):
         """Test perplexity with perfect predictions."""
         from codex_ml.eval.metrics import perplexity
-        
+
         # Perfect predictions: log probability = 0
         predictions = np.array([[1.0, 0.0, 0.0]])  # One-hot for class 0
         targets = np.array([0])
-        
+
         ppl = perplexity(predictions, targets)
         assert ppl >= 1.0  # Perplexity is always >= 1
 
     def test_perplexity_uniform_predictions(self):
         """Test perplexity with uniform predictions."""
         from codex_ml.eval.eval_runner import perplexity
-        
+
         # Uniform predictions: log probability = log(0.1)
         predictions = np.ones((10, 10)) / 10.0
         targets = np.zeros(10, dtype=int)
-        
+
         ppl = perplexity(predictions, targets)
         assert ppl > 1.0
 
     def test_perplexity_invalid_shape(self):
         """Test perplexity with mismatched shapes."""
         from codex_ml.eval.metrics import MetricError, perplexity
-        
+
         predictions = np.random.rand(10, 5)
         targets = np.zeros(8)  # Different length
-        
+
         with pytest.raises((MetricError, ValueError)):
             perplexity(predictions, targets)
 
     def test_perplexity_batch_processing(self):
         """Test perplexity with batch of data."""
         from codex_ml.eval.eval_runner import perplexity
-        
+
         batch_size = 32
         num_classes = 1000
         predictions = np.random.rand(batch_size, num_classes)
         targets = np.random.randint(0, num_classes, batch_size)
-        
+
         ppl = perplexity(predictions, targets)
         assert isinstance(ppl, (float, np.floating))
 
@@ -138,14 +136,14 @@ class TestSyntheticDataHandling:
     def test_synthetic_summary_initialization(self):
         """Test SyntheticSummary initializes."""
         from codex_ml.eval.evaluator import SyntheticSummary
-        
+
         summary = SyntheticSummary()
         assert summary is not None
 
     def test_encode_tokens_function(self):
         """Test _encode_tokens function."""
         from codex_ml.eval.evaluator import _encode_tokens
-        
+
         tokens = ["hello", "world", "test"]
         encoded = _encode_tokens(tokens)
         assert encoded is not None
@@ -162,14 +160,14 @@ class TestReasoningMetrics:
     def test_reasoning_metrics_initialization(self):
         """Test ReasoningMetrics initializes."""
         from codex_ml.eval.reasoning_metrics import ReasoningMetrics
-        
+
         metrics = ReasoningMetrics()
         assert metrics is not None
 
     def test_calculate_win_rate_50_percent(self):
         """Test calculate_win_rate with 50% wins."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         outcomes = ["win", "loss", "win", "loss"]
         win_rate = calculate_win_rate(outcomes)
         assert win_rate == 0.5
@@ -177,7 +175,7 @@ class TestReasoningMetrics:
     def test_calculate_win_rate_100_percent(self):
         """Test calculate_win_rate with 100% wins."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         outcomes = ["win", "win", "win"]
         win_rate = calculate_win_rate(outcomes)
         assert win_rate == 1.0
@@ -185,7 +183,7 @@ class TestReasoningMetrics:
     def test_calculate_win_rate_0_percent(self):
         """Test calculate_win_rate with 0% wins."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         outcomes = ["loss", "loss", "loss"]
         win_rate = calculate_win_rate(outcomes)
         assert win_rate == 0.0
@@ -193,7 +191,7 @@ class TestReasoningMetrics:
     def test_calculate_win_rate_empty(self):
         """Test calculate_win_rate with empty outcomes."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         with pytest.raises((ValueError, ZeroDivisionError)):
             calculate_win_rate([])
 
@@ -228,7 +226,7 @@ class TestModelingClasses:
         output = simple_model(batch)
         loss = output.sum()
         loss.backward()
-        
+
         # Check gradients were computed
         for param in simple_model.parameters():
             if param.grad is not None:
@@ -273,7 +271,7 @@ class TestModelingIntegration:
         """Test switching between train and eval modes."""
         simple_model.train()
         assert simple_model.training is True
-        
+
         simple_model.eval()
         assert simple_model.training is False
 
@@ -289,7 +287,7 @@ class TestModelingIntegration:
         # CPU only test (no CUDA required)
         device = torch.device("cpu")
         simple_model = simple_model.to(device)
-        
+
         batch = torch.randn(32, 10).to(device)
         output = simple_model(batch)
         assert output.device.type == device.type
@@ -297,11 +295,11 @@ class TestModelingIntegration:
     def test_model_state_dict_save_load(self, simple_model, tmp_path):
         """Test saving and loading model state."""
         state_path = tmp_path / "model_state.pt"
-        
+
         # Save state
         torch.save(simple_model.state_dict(), state_path)
         assert state_path.exists()
-        
+
         # Load state
         new_model = nn.Sequential(
             nn.Linear(10, 64),
@@ -309,7 +307,7 @@ class TestModelingIntegration:
             nn.Linear(64, 10),
         )
         new_model.load_state_dict(torch.load(state_path))
-        
+
         # Verify same parameters
         with torch.no_grad():
             batch = torch.randn(32, 10)
@@ -329,27 +327,27 @@ class TestTextProcessing:
     def test_load_texts_from_file(self, tmp_path):
         """Test loading texts from file."""
         from codex_ml.eval.run_eval import _load_texts
-        
+
         # Create test file
         text_path = tmp_path / "texts.txt"
         texts = ["Hello world", "Test text", "Another line"]
         text_path.write_text("\n".join(texts))
-        
+
         loaded = _load_texts(str(text_path))
         assert len(loaded) > 0
 
     def test_summarise_log_function(self, tmp_path):
         """Test log summarization function."""
         from codex_ml.eval.run_eval import _summarise_log
-        
+
         # Create test log file
         log_path = tmp_path / "eval.log"
         log_path.write_text("evaluation complete")
-        
+
         # Should not raise
         try:
             _summarise_log(str(log_path))
-        except Exception as e:
+        except Exception as _err:
             # May fail depending on implementation
             pass
 
@@ -365,17 +363,17 @@ class TestEvalEdgeCases:
     def test_perplexity_single_sample(self):
         """Test perplexity with single sample."""
         from codex_ml.eval.metrics import perplexity
-        
+
         predictions = np.array([[0.1, 0.9]])
         targets = np.array([1])
-        
+
         ppl = perplexity(predictions, targets)
         assert ppl > 0
 
     def test_win_rate_ties(self):
         """Test win rate calculation with ties."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         outcomes = ["tie", "tie", "tie"]
         try:
             win_rate = calculate_win_rate(outcomes)
@@ -410,11 +408,11 @@ class TestEvalErrorHandling:
     def test_perplexity_invalid_probabilities(self):
         """Test perplexity with invalid probability values."""
         from codex_ml.eval.metrics import perplexity
-        
+
         # Probabilities should sum to 1 but don't
         predictions = np.array([[10.0, 20.0]])
         targets = np.array([0])
-        
+
         # Should handle gracefully or raise appropriate error
         try:
             ppl = perplexity(predictions, targets)
@@ -424,7 +422,7 @@ class TestEvalErrorHandling:
     def test_reasoning_metrics_invalid_outcome(self):
         """Test reasoning metrics with invalid outcome."""
         from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        
+
         outcomes = ["win", "invalid_outcome"]
         try:
             calculate_win_rate(outcomes)
@@ -443,7 +441,7 @@ class TestEvalUtils:
     def test_materialise_sequence(self):
         """Test _materialise function."""
         from codex_ml.eval.metrics import _materialise
-        
+
         items = [1, 2, 3, 4, 5]
         result = _materialise(iter(items))
         assert result == [1, 2, 3, 4, 5]
@@ -451,7 +449,7 @@ class TestEvalUtils:
     def test_ensure_equal_length_match(self):
         """Test _ensure_equal_length with matching lengths."""
         from codex_ml.eval.metrics import _ensure_equal_length
-        
+
         a = [1, 2, 3]
         b = [4, 5, 6]
         # Should not raise
@@ -460,10 +458,10 @@ class TestEvalUtils:
     def test_ensure_equal_length_mismatch(self):
         """Test _ensure_equal_length with mismatched lengths."""
         from codex_ml.eval.metrics import _ensure_equal_length
-        
+
         a = [1, 2, 3]
         b = [4, 5]
-        
+
         with pytest.raises((ValueError, AssertionError)):
             _ensure_equal_length(a, b, "test_metric")
 
@@ -497,7 +495,7 @@ class TestModelingUtils:
     def test_model_no_grad_mode(self, simple_model):
         """Test no_grad mode disables gradients."""
         batch = torch.randn(32, 10)
-        
+
         with torch.no_grad():
             output = simple_model(batch)
             assert output.requires_grad is False

@@ -3,7 +3,7 @@
 
 class SecretValidator:
     """Comprehensive secret_validator implementation."""
-    
+
     def __init__(self):
         """Initialize SecretValidator."""
         self._data = {}
