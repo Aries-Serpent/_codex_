@@ -637,7 +637,10 @@ def test_hardcoded_secrets(workflow_path: str) -> TestResult:
         suspicious_patterns = [
             # Match only quoted base64-like payloads to avoid false positives from
             # workflow divider lines (e.g. repeated "=====") and other unquoted text.
-            (r'["\'][A-Za-z0-9+/]{32,}={0,2}["\']', "Potential base64-encoded secret"),
+            (
+                r'["\'](?:[A-Za-z0-9+/]{4}){8,}(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?["\']',
+                "Potential base64-encoded secret"
+            ),
             (r'(password|secret|token|key):\s*["\'][^"\']+["\']', "Potential hardcoded credential"),
             (r'ghp_[A-Za-z0-9]{36}', "GitHub Personal Access Token pattern"),
             (r'ghu_[A-Za-z0-9]{36}', "GitHub User Token pattern"),
