@@ -1,25 +1,22 @@
-# Session Context — 2026-06-18T09:08:35Z
+# Session Context — 2026-06-18T21:05:46Z
 **Branch:** `copilot/fix-copilot-setup-validation-job`  **PR:** #4985  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4733` (✅)
-- GraphQL remaining: `4996` (✅)
+- REST remaining: `4641` (✅)
+- GraphQL remaining: `4981` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4985 — Fix false-positive secret detection in Copilot Setup Validation
-State: `open`  Draft: `True`  Branch: `copilot/fix-copilot-setup-validation-job` → `main`
+## 📋 PR #4985 — feat: merge all auth CI rescue changes from dependabot/npm_and_yarn-1736ff5bb3 into copilot/fix-copilot-setup-validation-job
+State: `open`  Draft: `False`  Branch: `copilot/fix-copilot-setup-validation-job` → `main`
 
-### ❌ 12 Failing CI Check(s)
+### ❌ 5 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
 - `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
 - `Activate token delegation` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Dispatch & Auto-Approve Newly-Checked Workflows` (cancelled)
-- `Cancel Runs for Unchecked Workflows` (cancelled)
-- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `🚦 Comment review gate` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
@@ -29,14 +26,14 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-copilot-setup-validation-job`
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
-- `83c64a5d` refactor: tighten base64 secret detection regex in setup validator — copilot-swe-agent[bot] (2026-06-18)
-- `0dc39071` fix: avoid false positive in copilot setup hardcoded secret scan — copilot-swe-agent[bot] (2026-06-18)
-- `6fca4bd4` chore: start CI failure investigation — copilot-swe-agent[bot] (2026-06-18)
-- `de30e6c6` Initial plan — copilot-swe-agent[bot] (2026-06-18)
-- `77b6e166` Merge pull request #4984 from Aries-Serpent/copilot/fix-github-actions-failure — Statix (2026-06-18)
-- `4750b10e` Fix shellcheck SC2059: use printf '%s' instead of printf with variable format st — copilot-swe-agent[bot] (2026-06-18)
-- `ed0d3b7d` Fix shellcheck warning in copilot-setup-steps.yml: unsafe printf format string — copilot-swe-agent[bot] (2026-06-18)
-- `186118cc` Merge pull request #4982 from Aries-Serpent/copilot/revert-copilot-setup-steps — Statix (2026-06-18)
+- `78491397` Merge branch 'main' into copilot/fix-copilot-setup-validation-job — Statix (2026-06-18)
+- `b5506774` feat: merge all 143 missing files from dependabot branch #4987 into copilot/fix- — copilot-swe-agent[bot] (2026-06-18)
+- `6e6e24ce` fix(deps): integrate npm/yarn dependabot updates + PR #4985 CHANGELOG entry — copilot-swe-agent[bot] (2026-06-18)
+- `8013c139` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
+- `6ab2a641` fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007) — github-actions[bot] (2026-06-18)
+- `80cb8e72` Merge 50c32dad4ebf5221998d95828885bd7a91e1469f into cc249f5e2381302bf3f5636dfbd3 — dependabot[bot] (2026-06-18)
+- `50c32dad` Adjust auth APIs and tests for CI auth module pass — copilot-swe-agent[bot] (2026-06-18)
+- `8f64509f` Fix auth module CI compatibility failures — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
