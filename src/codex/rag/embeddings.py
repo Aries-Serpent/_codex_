@@ -609,11 +609,13 @@ class TfidfEmbeddingProvider:
             n_docs = len(texts)
             logger.info(f"Fitting TF-IDF vectorizer on {n_docs} texts")
             try:
-                # Guard: when max_df is a fraction, max_df * n_docs can be < min_df for
-                # very small corpora (e.g. max_df=0.95, n_docs=1 → floor(0.95)=0 < min_df=1).
-                # Clamp max_df to 1.0 for tiny corpora to avoid ValueError.
-                if isinstance(self.vectorizer.max_df, float) and n_docs < 3:
-                    self.vectorizer.set_params(max_df=1.0)
+                # Guard against small corpora:
+                # When max_df is a fraction and corpus is tiny, adjust both min_df and max_df
+                # to prevent "After pruning, no terms remain" error.
+                if isinstance(self.vectorizer.max_df, float) and n_docs < 5:
+                    # For very small corpora, allow all terms (min_df=1, max_df=1.0)
+                    self.vectorizer.set_params(min_df=1, max_df=1.0)
+                    logger.debug(f"Small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0")
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(

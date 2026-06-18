@@ -1,3 +1,4 @@
+# yamllint disable rule:line-length
 name: Copilot Agent Environment Setup
 
 # This workflow customizes the ephemeral GitHub Actions environment where GitHub Copilot's
@@ -11,7 +12,6 @@ name: Copilot Agent Environment Setup
 # Documentation: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
 # Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
 # Updated: S108 — added CODEX_MASTER_KEY + CODEX_BACKUP_KEY secret injection
-# CRITICAL FIX (Session 1294-1295): Added CCA version lock + removed hard-blocking exit 1 calls
 
 "on":
   workflow_dispatch:
@@ -26,6 +26,7 @@ name: Copilot Agent Environment Setup
           - ml-heavy
           - security-scan
           - documentation
+      # Selectively reintroduce LFS behavior behind guards (safe defaults kept)
       lfs_mode:
         description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'
         required: false
@@ -59,70 +60,85 @@ name: Copilot Agent Environment Setup
 env:
   PYTHON_VERSION: "3.12"
   NODE_VERSION: "22"
-  RUST_VERSION: "stable"
+  RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
-    runs-on: ${{ (vars.COPILOT_RUNNER_PROFILE != '' && vars.COPILOT_RUNNER_PROFILE) || 'ubuntu-latest' }}
+    # AAIS-aligned autonomous runner switch.
+    # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
+    #   Group : AS Larger Runners | Platform: Linux x64
+    #   Image : Ubuntu Latest (24.04) | Custom image generation: Enabled (Preview)
+    #   Custom image generation (Preview) allows building a tailored runner snapshot
+    #   with project dependencies pre-baked, cutting cold-start time to near zero.
+    #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
+    #
+    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Set repo variable COPILOT_RUNNER_PROFILE to override:
+    #   ubuntu-latest-m → standard sessions (default)
+    #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
+    #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
+    # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
+    # (using CODEX_MASTER_KEY) before dispatching a heavy session.
+    # See: docs/plans/larger-runners-upgrade.md § 4 — Autonomous Switch
+    #
+    # Runner fallback chain:
+    #   1. COPILOT_RUNNER_PROFILE repo variable (e.g. ubuntu-latest-m, ubuntu-8-core)
+    #   2. ubuntu-latest — GitHub-hosted, always available, prevents "no runner" failures
+    #
+    # Root cause of "✅ Validate Environment Setup" failures (sessions f62db13c etc.):
+    #   ubuntu-latest-m may not be available in all runner groups/regions, causing
+    #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
+    #   the Copilot agent session can always start; larger runners remain opt-in.
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
     timeout-minutes: 59
     permissions:
       contents: read
-      actions: write
-      issues: write
-      pull-requests: write
+      actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
+      issues: write        # Allow agent to post @copilot follow-up comments
+      pull-requests: write  # Allow agent to post PR review comments
+      # NOTE: actions:write does NOT grant access to the Actions Variables API.
+      # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
+      # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
+    # Baseline stability: skip LFS smudge and do not fetch LFS during initial checkout
     env:
       GIT_LFS_SKIP_SMUDGE: "1"
-      CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
-      CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
-      # ── CCA VERSION LOCK & DEDUPLICATION (Session 1294 fix) ────────────────────
-      # CRITICAL: These three variables MUST be set for multi-turn agentic loops.
-      # Without them, the Copilot Cloud Agent (CCA) runtime:
-      #   - Cannot activate PayloadDeduplicator (function call deduplication)
-      #   - Cannot enforce TurnState isolation (turn-state segregation)
-      #   - Falls back to unsafe defaults (no duplicate protection)
-      # Result: Agent fast-fails on turn 2+ with "Duplicate function call ID" error.
-      #
-      # See .github/copilot-evolution/integrated_system.py for implementation:
-      #   - PayloadDeduplicator (lines 43-164): Removes duplicate function calls
-      #   - TurnState (lines 28-42): Isolates state between agentic turns
-      #   - deduplicate_agentic_payload() (line 242): Public API for deduplication
-      #
-      # Reference: .codex/CODEBASE_AGENCY_POLICY.md § Session Integrity
-      COPILOT_AGENT_CCA_VERSION_LOCK: "stable"
-      COPILOT_AGENT_DEDUPLICATION_ENABLED: "true"
-      COPILOT_AGENT_TURN_ISOLATION_ENABLED: "true"
-      LFS_DIAGNOSTICS_ENABLED: >-
-        ${{ github.event_name == 'workflow_dispatch' &&
-            (inputs.lfs_mode == 'full' ||
-            (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
-      LFS_FETCH_ENABLED: "${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}"
-      LFS_TARGETED_ENABLED: >-
-        ${{ github.event_name == 'workflow_dispatch' &&
-            inputs.lfs_mode == 'targeted' &&
-            inputs.lfs_include_paths != '' }}
-      LFS_FULL_ENABLED: "${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}"
+      # ── Cognitive Brain secret injection ──────────────────────────────────────
+      # Referencing these org secrets here causes GitHub Copilot coding agent to
+      # inject them as env vars (COPILOT_AGENT_INJECTED_SECRET_NAMES) so that
+      # GitHubMCPPoster and structural_policy_manager can use them autonomously.
+      # See: .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3
+      CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+      CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
 
     steps:
       # ============================================================================
       # Phase 1: Repository & Code Setup
       # ============================================================================
+
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        uses: actions/checkout@v5  # v5
         with:
-          fetch-depth: 0
-          lfs: false
-          persist-credentials: true
+          fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
+          lfs: false                     # Baseline stability: avoid LFS fetch during setup
+          persist-credentials: true      # Keep token for any subsequent git operations
           clean: true
           show-progress: true
 
+      # ============================================================================
+      # 🧠 MANDATORY SESSION CONTEXT PRE-LOAD — runs before ANY other work
+      # Injects: agentic state, codebase policy, accountability report, PDA loop
+      # aftermath, and stored memories into the agent's environment.
+      # This is the automated equivalent of "load memory, load accountability,
+      # load codebase policies and follow" — it must run unconditionally.
+      # ============================================================================
       # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
       # Canonical form: block scalar run: | with if ! ...; then syntax.
       # This step has been broken 4+ times by agents converting it to flow scalar
@@ -136,17 +152,27 @@ jobs:
             echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
           fi
 
+      # ============================================================================
+      # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
+      # Discovers every available connection method (REST, GraphQL, gh CLI,
+      # CodeQL, Playwright, MCP) and their current rate-limit status.
+      # Writes ACCESS_* env vars for the whole session and a machine-readable
+      # manifest at .codex/session_access_manifest.json.
+      # The agent MUST read this manifest before making any API call so it
+      # knows the live trickle-down order: REST → GraphQL → gh CLI → CodeQL → FS.
+      # ============================================================================
       - name: "🔌 Session Access Probe (token inventory + rate limits)"
         id: access_probe
-        continue-on-error: true
+        continue-on-error: true        # never block agent startup on probe failure
         env:
-          CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
-          CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
-          GITHUB_TOKEN: "${{ github.token }}"
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
         run: |
           echo "::group::Session Access Probe"
           if ! python3 scripts/ci/session_access_probe.py; then
             echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
+            # Emit safe defaults so downstream steps have the vars even if probe fails
             echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
             echo "ACCESS_GRAPHQL=unknown"       >> "$GITHUB_ENV"
             echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
@@ -155,43 +181,72 @@ jobs:
           fi
           echo "::endgroup::"
 
+      # ============================================================================
+      # 🧠 AUTONOMOUS RAG CONTEXT BUILD — runs after access probe
+      # Uses the access manifest to pull the freshest available GitHub context
+      # (PR details, failing checks, review threads, recent commits) via the
+      # trickle-down chain, queries the FAISS RAG index for relevant patterns,
+      # and re-embeds only files changed since last session (incremental update).
+      # Writes .codex/session_context_latest.md for agent pickup and exports
+      # ACCESS_STRATEGY + SESSION_PR_NUMBER to GITHUB_ENV.
+      # ============================================================================
       - name: "🧠 Autonomous RAG Context Build (PR context + RAG query + incremental index)"
         id: rag_context
-        continue-on-error: true
+        continue-on-error: true        # never block agent startup on RAG failure
         env:
-          CODEX_MASTER_KEY: "${{ secrets.CODEX_MASTER_KEY }}"
-          CODEX_BACKUP_KEY: "${{ secrets.CODEX_BACKUP_KEY }}"
-          GITHUB_TOKEN: "${{ github.token }}"
-          GITHUB_PR_NUMBER: "${{ github.event.pull_request.number }}"
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "::group::Autonomous RAG Context Build"
-          if [ -n "${GITHUB_PR_NUMBER:-}" ]; then
-            if ! python3 scripts/ci/autonomous_rag_context.py --pr "${GITHUB_PR_NUMBER}"; then
+          if ! python3 scripts/ci/autonomous_rag_context.py \
+            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }}; then
               echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
-            fi
-          elif ! python3 scripts/ci/autonomous_rag_context.py; then
-            echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
           fi
+          # Print access strategy for agent log
           if [ -f .codex/session_access_strategy.json ]; then
             echo "--- Access Strategy ---"
             cat .codex/session_access_strategy.json
           fi
           echo "::endgroup::"
 
+      # Configure git for non-interactive operation in the CI agent environment.
+      # core.editor=true: prevents 'git rebase --continue' and similar commands
+      # from opening an interactive editor (e.g. nano) and hanging the runner.
+      # advice.mergeConflict=false: suppresses verbose rebase/merge hint spam.
       - name: "⚙️ Configure git for non-interactive CI operation"
         run: |
           git config --global core.editor "true"
           git config --global advice.mergeConflict false
           echo "✅ git configured: core.editor=true, advice.mergeConflict=false"
 
+      # Fix: actions/checkout only fetches the checked-out branch even with
+      # fetch-depth: 0. The Copilot coding agent's internal diff (report_progress)
+      # needs the PR base branch ref to be resolvable as a *local* branch name.
+      # Without this, git fails:
+      #   "fatal: ambiguous argument '<base_branch>': unknown revision"
+      # Step 1: shallow-fetch all remote branch tips into remote tracking refs
+      #         so 'origin/main' (and friends) resolve.
+      # Step 2: promote 'origin/main' to a local branch ref so that bare 'main'
+      #         also resolves (git-diff, git-log, git-show etc. require a local ref
+      #         or the full 'origin/main' spelling; DWIM does NOT map 'main' →
+      #         'refs/remotes/origin/main').
+      # Step 3: promote the PR base branch (${{ github.base_ref }}) to a local ref
+      #         so that 'git diff <base_ref>' always resolves — even when the base
+      #         branch is not 'main' (e.g. copilot/resolve-failing-checks).
+      # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
             && echo "✅ Remote branch refs fetched (as origin/*)" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
+          # Always promote 'main' to a local branch ref.
           git branch -f main origin/main 2>/dev/null \
             && echo "✅ main available as local branch ref" \
             || echo "⚠️ Could not create local main ref (non-blocking)"
+          # Promote the PR base branch to a local ref so 'git diff <base_ref>'
+          # resolves correctly regardless of which branch the PR targets.
           BASE="${{ github.base_ref }}"
           if [ -n "$BASE" ] && [ "$BASE" != "main" ]; then
             git branch -f "$BASE" "origin/$BASE" 2>/dev/null \
@@ -199,6 +254,11 @@ jobs:
               || echo "⚠️ Could not create local $BASE ref (non-blocking)"
           fi
 
+      # ── Merge Conflict Pre-Check (§0.4 CODEBASE_AGENCY_POLICY.md) ──────────
+      # Every Copilot session MUST start conflict-free. This step detects existing
+      # merge conflicts and branch divergence BEFORE the agent begins any work.
+      # If conflicts are found, a warning annotation is emitted so the agent can
+      # resolve them as its first action (per §0.4).
       - name: "🔀 Merge Conflict Pre-Check (session start)"
         continue-on-error: true
         env:
@@ -209,7 +269,9 @@ jobs:
         run: |
           echo "── §0.4: Inspecting PR for merge conflicts ──"
           BASE="${BASE_REF}"
+          HEAD="${HEAD_REF}"
 
+          # 1. Check PR mergeable status via GitHub API
           if [ -n "$PR_NUMBER" ]; then
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
@@ -225,6 +287,7 @@ jobs:
             fi
           fi
 
+          # 2. Check branch divergence (behind/ahead)
           if [ -n "$BASE" ]; then
             BEHIND=$(git rev-list --count "HEAD..origin/${BASE}" 2>/dev/null || echo "0")
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
@@ -238,6 +301,7 @@ jobs:
             fi
           fi
 
+          # 3. Dry-run merge-tree check for potential file-level conflicts
           if [ -n "$BASE" ] && git rev-parse "origin/${BASE}" >/dev/null 2>&1; then
             MERGE_BASE=$(git merge-base HEAD "origin/${BASE}" 2>/dev/null || echo "")
             if [ -n "$MERGE_BASE" ]; then
@@ -252,6 +316,10 @@ jobs:
 
           echo "── §0.4 merge conflict pre-check complete ──"
 
+      # ── CI Failure Issue Check (§0.2 CODEBASE_AGENCY_POLICY.md) ─────────────
+      # Check for open CI failure report issues that may contain relevant failure
+      # patterns. These issues are auto-created by ci-failure-issue-creator.yml
+      # and ci-health-monitor.yml when workflows fail on main.
       - name: "🚨 CI Failure Issue Check (session start)"
         continue-on-error: true
         env:
@@ -260,10 +328,12 @@ jobs:
           echo "── §0.2: Checking for open CI failure report issues ──"
           REPO="Aries-Serpent/_codex_"
 
+          # Check for ci-failure issues (per-workflow failure reports)
           CI_FAILURES=$(gh issue list --repo "$REPO" --label "ci-failure" --state open \
             --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
           echo "Open ci-failure issues: ${CI_FAILURES}"
 
+          # Check for ci-health-alert issues (high failure rate alerts)
           HEALTH_ALERTS=$(gh issue list --repo "$REPO" --label "ci-health-alert" --state open \
             --json number,title,updatedAt --jq 'length' 2>/dev/null || echo "0")
           echo "Open ci-health-alert issues: ${HEALTH_ALERTS}"
@@ -273,6 +343,8 @@ jobs:
 
           if [ "$TOTAL" -gt 0 ]; then
             echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+
+            # List issue titles for agent context
             echo ""
             echo "── Open CI failure issues: ──"
             gh issue list --repo "$REPO" --label "ci-failure" --state open \
@@ -285,43 +357,44 @@ jobs:
 
           echo "── §0.2 CI failure issue check complete ──"
 
-      - name: "🔍 Validate repo JSON files (non-blocking)"
-        continue-on-error: true
+      - name: "🔍 Validate repo JSON files"
         run: |
           echo "── Validating JSON files in .codex/ and docs/ ──"
           FAIL=0
-          INVALID_FILES=""
-
           while IFS= read -r -d '' f; do
             if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
-              echo "::warning file=${f}::Invalid JSON detected (non-blocking): ${f}"
-              INVALID_FILES="${INVALID_FILES}${f}\n"
+              echo "::error file=${f}::Invalid JSON: ${f}"
               FAIL=$((FAIL + 1))
             fi
           done < <(find .codex docs -name "*.json" -not -path "*/__pycache__/*" -print0 2>/dev/null)
-
           if [ "$FAIL" -gt 0 ]; then
-            echo "::warning::⚠️ Found ${FAIL} invalid JSON file(s) — these will be addressed by agent session"
-            echo "--- Invalid JSON Files ---"
-            printf "$INVALID_FILES"
-            echo "--- Agent will remediate these errors ---"
-          else
-            echo "✅ All JSON files valid"
+            echo "::error::${FAIL} invalid JSON file(s) found — fix before proceeding"
+            exit 1
           fi
+          echo "✅ All JSON files valid"
 
+      # Guard: git show <base_sha> -- <file> exits 128 for files added after
+      # the base commit.  Make the safe wrapper available on PATH so any CI
+      # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        continue-on-error: true
-        run: |
-          if [ ! -f .github/scripts/inject_context_vars.py ]; then
-            echo "::warning::inject_context_vars.py not found (non-blocking)"
+        run: |  # pragma: allowlist secret
+          if [ -f .codex/agent_context.json ]; then
+            echo "Injecting repo variable context from .codex/agent_context.json"
+            # base64-encoded Python script: reads agent_context.json and writes all
+            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
+            # session sees them as environment variables.
+            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
           else
-            python3 .github/scripts/inject_context_vars.py || {
-              echo "::warning::Failed to inject context vars (non-blocking) — agent will proceed with defaults"
-            }
+            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
 
       - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
-        continue-on-error: true
+        # Supplement agent_context.json injection with live vars.* values for the
+        # critical cascade-control knobs added in S183d. These may not yet be in
+        # agent_context.json if vars-bootstrap hasn't run since the variables were
+        # first created. The explicit injection here ensures agent sessions always
+        # see the current values regardless of the bootstrap timing.
         env:
           CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
           CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
@@ -331,6 +404,9 @@ jobs:
           COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
           CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
         run: |
+          # Write non-empty values to GITHUB_ENV (live override of agent_context.json).
+          # ${!var} is bash indirect expansion: given var="FOO", ${!var} expands to
+          # the VALUE of the variable named FOO (i.e. the same as ${FOO}).
           for var in \
             CODEX_MAX_HEALER_RUNS_PER_HOUR \
             CODEX_SWEEP_SKIP_MAIN \
@@ -348,86 +424,96 @@ jobs:
           echo "── Cascade-control var injection complete ──"
 
       - name: "🛡️ Install safe-git-show guard on PATH"
-        continue-on-error: true
         run: |
+          set -euo pipefail
           if [ ! -f scripts/ci/safe_git_show.sh ]; then
-            echo "::warning::scripts/ci/safe_git_show.sh not found (non-blocking) — agent will proceed without guard"
-          else
-            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh 2>/dev/null || {
-              echo "::warning::Failed to install safe_git_show (non-blocking) — agent will proceed"
-            }
-            ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show 2>/dev/null || true
-            echo "✅ safe_git_show installed at $(command -v safe_git_show 2>/dev/null || echo 'UNKNOWN')"
+            echo "::error::scripts/ci/safe_git_show.sh is missing — cannot install git-show guard"
+            exit 1
           fi
+          install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+          ln -sf /usr/local/bin/safe_git_show.sh /usr/local/bin/safe_git_show
+          echo "✅ safe_git_show installed at $(command -v safe_git_show)"
+          # Smoke-test: source and call with a known-good ref
+          # shellcheck source=/dev/null
+          source /usr/local/bin/safe_git_show.sh
+          safe_git_show HEAD ".github/workflows/copilot-setup-steps.yml" > /dev/null \
+            && echo "✅ safe_git_show smoke-test passed" \
+            || echo "⚠️ safe_git_show smoke-test failed (non-blocking)"
 
+      # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
-        if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
-        continue-on-error: true
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
         run: |
+          set -euo pipefail
           echo "Git version: $(git --version)"
-          echo "LFS version: $(git lfs version 2>/dev/null || echo 'git-lfs not installed')"
+          echo "LFS version: $(git lfs version || echo 'git-lfs not installed')"
           git status || true
           git lfs ls-files || true
 
       - name: "📥 Install git-lfs (if needed)"
-        if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
-        continue-on-error: true
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}
         run: |
+          set -euo pipefail
           if ! command -v git-lfs >/dev/null 2>&1; then
             if command -v apt-get >/dev/null 2>&1; then
-              sudo apt-get update && sudo apt-get install -y git-lfs || {
-                echo "::warning::Failed to install git-lfs (non-blocking)"
-              }
+              sudo apt-get update && sudo apt-get install -y git-lfs
             fi
           fi
           git lfs install --local || true
 
       - name: "🎯 Targeted LFS fetch & checkout (guarded)"
-        if: ${{ env.LFS_TARGETED_ENABLED == 'true' }}
-        continue-on-error: true
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
+        continue-on-error: ${{ inputs.lfs_continue_on_error }}
         run: |
+          set -euo pipefail
+          # Convert comma-separated include patterns into git-lfs include string
           INCLUDES="${{ inputs.lfs_include_paths }}"
           INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
           echo "Targeted LFS includes: $INCLUDES_CLEAN"
 
+          # Retry LFS fetch to handle transient network issues
           for i in 1 2 3; do
             echo "Attempt $i: git lfs fetch --include=\"$INCLUDES_CLEAN\" origin"
             if git lfs fetch --include="$INCLUDES_CLEAN" origin; then
               echo "git lfs fetch succeeded"
               break
             else
-              echo "git lfs fetch failed on attempt $i (non-blocking)"
+              echo "git lfs fetch failed on attempt $i"
               sleep $((i * 5))
             fi
           done
 
+          # Checkout only targeted LFS files
           git lfs checkout --include="$INCLUDES_CLEAN" || true
 
       - name: "🌐 Full LFS fetch & checkout (guarded)"
-        if: ${{ env.LFS_FULL_ENABLED == 'true' }}
-        continue-on-error: true
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}
+        continue-on-error: ${{ inputs.lfs_continue_on_error }}
         run: |
+          set -euo pipefail
+          # Retry LFS fetch --all; guarded to avoid hard failure if repository has missing blobs
           for i in 1 2 3; do
             echo "Attempt $i: git lfs fetch --all origin"
             if git lfs fetch --all origin; then
               echo "git lfs fetch --all succeeded"
               break
             else
-              echo "git lfs fetch --all failed on attempt $i (non-blocking)"
+              echo "git lfs fetch --all failed on attempt $i"
               sleep $((i * 5))
             fi
           done
 
+          # Materialize LFS files
           git lfs checkout || true
 
       - name: "🔍 Detect Environment Type"
         id: detect_env
-        continue-on-error: true
         env:
           HEAD_REF: ${{ github.head_ref }}
           INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
         run: |
           ENV_TYPE="${INPUT_ENV_TYPE}"
+          # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
             if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
               ENV_TYPE="ml-heavy"
@@ -440,11 +526,336 @@ jobs:
           echo "environment_type=$ENV_TYPE" >> "$GITHUB_OUTPUT"
           echo "✅ Detected environment type: $ENV_TYPE"
 
-      - name: "✅ Validate Environment Setup"
-        continue-on-error: true
+      - name: "🧠 AAIS Runner Adequacy Check"
+        id: runner_check
+        # AAIS alignment: Runtime Introspection (Pillar 3 — Observability).
+        # Classifies the active runner tier against the detected environment type,
+        # emits an AAIS-formatted assessment, and sets runner_adequate output.
+        # If the runner tier is insufficient, the step logs a clear recommendation
+        # but does NOT fail — setup continues on whatever runner is available.
+        # The runner_adequate output is consumed by "✅ Validate Environment Setup"
+        # (Phase 7) which surfaces it in the AAIS environment summary.
         run: |
-          trap '' PIPE
-          set +o pipefail
+          set -euo pipefail
+
+          # ── Detect runner hardware tier ────────────────────────────────────
+          CPUS=$(nproc)
+          MEM_KB=$(grep MemTotal /proc/meminfo 2>/dev/null | awk '{print $2}' || echo "0")
+          MEM_GB=$(( ${MEM_KB:-0} / 1024 / 1024 ))
+
+          if   [[ $CPUS -ge 16 ]]; then RUNNER_TIER="large"
+          elif [[ $CPUS -ge  8 ]]; then RUNNER_TIER="medium"
+          elif [[ $CPUS -ge  4 ]]; then RUNNER_TIER="standard-plus"
+          else                          RUNNER_TIER="standard"
+          fi
+
+          echo "runner_tier=$RUNNER_TIER"  >> "$GITHUB_OUTPUT"
+          echo "runner_cpus=$CPUS"         >> "$GITHUB_OUTPUT"
+          echo "runner_mem_gb=$MEM_GB"     >> "$GITHUB_OUTPUT"
+
+          # ── Map env type → minimum required tier ──────────────────────────
+          ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+
+          case "$ENV_TYPE" in
+            ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
+            security-scan)    MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
+            documentation)    MIN_TIER="standard"     ; MIN_CPUS=2  ; RECOMMENDED="ubuntu-latest-m"  ;;
+            *)                MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
+          esac
+
+          # ── AAIS Runtime Introspection output ─────────────────────────────
+          echo ""
+          echo "╔══════════════════════════════════════════════════════════════╗"
+          echo "║  🧠 AAIS Runner Adequacy Assessment (Pillar 3: Observability) ║"
+          echo "╠══════════════════════════════════════════════════════════════╣"
+          echo "║  Active runner    : ${RUNNER_PROFILE} (${CPUS} vCPU / ${MEM_GB} GB RAM)"
+          echo "║  Runner tier      : ${RUNNER_TIER}"
+          echo "║  Environment type : ${ENV_TYPE}"
+          echo "║  Required tier    : ${MIN_TIER} (≥ ${MIN_CPUS} vCPU)"
+          echo "╠══════════════════════════════════════════════════════════════╣"
+
+          if [[ $CPUS -ge $MIN_CPUS ]]; then
+            echo "║  ✅ ADEQUATE — runner meets requirements for ${ENV_TYPE}"
+            echo "runner_adequate=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "║  ⚠️  UNDER-PROVISIONED — ${ENV_TYPE} needs ≥ ${MIN_CPUS} vCPU (got ${CPUS})"
+            echo "║     → Set repo variable COPILOT_RUNNER_PROFILE=${RECOMMENDED}"
+            echo "║     → See docs/plans/larger-runners-upgrade.md"
+            echo "runner_adequate=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "╚══════════════════════════════════════════════════════════════╝"
+          echo ""
+
+      # ============================================================================
+      # Phase 2: Language Runtimes Setup
+      # ============================================================================
+
+      - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
+        uses: actions/setup-python@v6   # v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION || '3.12' }}
+          # No automatic pip cache — managed explicitly below so keys match
+          # the 4-layer hierarchy in .github/actions/setup-python-cached and
+          # all CI workflows share the same cache entries.
+
+      # ── Cache alignment: shared with .github/actions/setup-python-cached ────
+      # L1 — pip download cache: same key format as setup-python-cached so
+      # packages downloaded by any workflow are available to the agent session.
+      - name: "💾 L1 — pip download cache (~/.cache/pip)"
+        uses: actions/cache@v5  # v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-
+
+      # L3 — installed venv (.venv_ci): same key as setup-python-cached (extras=dev).
+      # Populating .venv_ci here means CI workflows immediately benefit from the
+      # agent-warmed venv and vice-versa.
+      - name: "💾 L3 — installed venv (.venv_ci)"
+        id: cache-venv
+        uses: actions/cache@v5  # v5
+        with:
+          path: .venv_ci
+          key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
+
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e   # v6
+        with:
+          node-version: ${{ env.NODE_VERSION || '20' }}
+          cache: 'npm'
+        if: hashFiles('package.json') != ''
+
+      - name: "🦀 Set up Rust ${{ env.RUST_VERSION || 'stable' }}"
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+        with:
+          toolchain: ${{ env.RUST_VERSION || 'stable' }}
+        if: hashFiles('Cargo.toml') != ''
+
+      # ============================================================================
+      # Phase 3: System Dependencies
+      # ============================================================================
+
+      - name: "📚 Install System Dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libffi-dev \
+            libssl-dev \
+            sqlite3 \
+            jq \
+            ripgrep \
+            fd-find
+          # ML-specific dependencies
+          if [[ "${{ steps.detect_env.outputs.environment_type }}" == "ml-heavy" ]]; then
+            sudo apt-get install -y \
+              libblas-dev \
+              liblapack-dev \
+              gfortran
+          fi
+
+      # ============================================================================
+      # Phase 4: Python Dependencies (Environment-Specific)
+      # ============================================================================
+
+      - name: "🔧 Upgrade pip and install build tools"
+        run: |
+          # Create .venv_ci if it wasn't restored from cache, or if the
+          # restored venv has a broken Python binary (cross-patch-version
+          # cache artifact — see #3565/#3569 for the failure pattern).
+          if [ ! -d ".venv_ci" ] || [ ! -x ".venv_ci/bin/python" ] || ! .venv_ci/bin/python --version &>/dev/null; then
+            if [ -d ".venv_ci" ]; then
+              echo "::warning::Stale or broken venv detected — rebuilding from scratch"
+              chmod -R u+w .venv_ci 2>/dev/null || true
+              rm -rf .venv_ci
+            fi
+            python -m venv .venv_ci
+            if [ ! -x ".venv_ci/bin/python" ]; then
+              echo "::error::Venv creation failed — .venv_ci/bin/python does not exist"
+              exit 1
+            fi
+          fi
+          PYTHON_BIN=".venv_ci/bin/python"
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          # Add venv to PATH for all subsequent steps in this job
+          echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
+
+      - name: "📦 Install Python Dependencies (Standard)"
+        if: steps.detect_env.outputs.environment_type == 'standard'
+        env:
+          VENV_CACHE_HIT: ${{ steps.cache-venv.outputs.cache-hit }}
+        run: |
+          # Install core project deps into .venv_ci (skip full rebuild on exact cache hit)
+          if [ "${VENV_CACHE_HIT}" != "true" ]; then
+            pip install --cache-dir ~/.cache/pip \
+              pytest==8.4.2 pytest-timeout==2.4.0 pytest-xdist==3.8.0 \
+              pytest-cov==5.0.0 pytest-asyncio==1.3.0 pytest-mock==3.15.1 \
+              pytest-randomly pytest-rerunfailures --quiet
+            pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
+          else
+            pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
+          fi
+          # Install additional agent tooling
+          pip install --cache-dir ~/.cache/pip \
+            ruff black mypy --quiet
+
+      - name: "🤖 Install Python Dependencies (ML-Heavy)"
+        if: steps.detect_env.outputs.environment_type == 'ml-heavy'
+        run: |
+          # Force CPU-only PyTorch for faster installs
+          pip install --cache-dir ~/.cache/pip \
+            torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --quiet
+          # Install with ML extras
+          pip install --cache-dir ~/.cache/pip -e ".[dev,ml]" --quiet
+          # Install ML-specific tools
+          pip install --cache-dir ~/.cache/pip \
+            transformers sentence-transformers scikit-learn mlflow --quiet
+
+      - name: "🔒 Install Python Dependencies (Security-Scan)"
+        if: steps.detect_env.outputs.environment_type == 'security-scan'
+        run: |
+          pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
+          # Install security scanning tools
+          pip install --cache-dir ~/.cache/pip \
+            bandit safety pip-audit semgrep --quiet
+
+      - name: "📝 Install Python Dependencies (Documentation)"
+        if: steps.detect_env.outputs.environment_type == 'documentation'
+        run: |
+          pip install --cache-dir ~/.cache/pip -e ".[dev,docs]" --quiet
+          # Install documentation tools
+          pip install --cache-dir ~/.cache/pip \
+            mkdocs mkdocs-material mkdocstrings mkdocstrings-python --quiet
+
+      # ============================================================================
+      # Phase 5: Rust Dependencies
+      # ============================================================================
+
+      - name: "🦀 Build Rust Components"
+        if: hashFiles('Cargo.toml') != ''
+        run: |
+          cargo build --release
+          echo "RUST_BACKTRACE=1" >> "$GITHUB_ENV"
+
+      # ============================================================================
+      # Phase 5b: L6 — Copilot Agent Lean Venv (.venv_agent)
+      # ============================================================================
+      # A purpose-built, cacheable virtualenv containing only what the Copilot
+      # coding agent needs: lint, test, docs, auth, CI scripts.
+      # No PyTorch / heavy ML — cold build ~75 s; cache hit ~4 s.
+      # Pre-warmed weekly by build-agent-env-cache.yml so hits are the norm.
+
+      - name: "🤖 L6 — Setup Copilot agent env (.venv_agent)"
+        id: agent-env
+        uses: ./.github/actions/setup-agent-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          enable-brain-cache: 'true'
+          install-editable: 'true'
+          verify: 'true'
+
+      - name: "ℹ️ Agent env cache status"
+        run: |
+          echo "Agent venv mode  : ${{ steps.agent-env.outputs.mode }}"
+          echo "Agent venv python: ${{ steps.agent-env.outputs.venv-python }}"
+          echo "Cache hit        : ${{ steps.agent-env.outputs.cache-hit }}"
+          # Surface both venvs on PATH — agent scripts prefer .venv_agent
+          # while existing test steps continue to use .venv_ci
+          echo "AGENT_VENV_PATH=${GITHUB_WORKSPACE}/.venv_agent" >> "$GITHUB_ENV"
+
+      # ============================================================================
+      # Phase 6: Environment Variables & Configuration
+      # ============================================================================
+
+      - name: "⚙️ Set Codex Environment Variables"
+        run: |
+          # Core configuration
+          echo "CODEX_ENV=copilot-agent" >> "$GITHUB_ENV"
+          echo "CODEX_FORCE_CPU=1" >> "$GITHUB_ENV"
+          echo "RAG_EMBEDDING_PROVIDER=tfidf" >> "$GITHUB_ENV"
+          echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH" >> "$GITHUB_ENV"
+          # Logging configuration
+          echo "CODEX_LOG_LEVEL=INFO" >> "$GITHUB_ENV"
+          echo "CODEX_SESSION_LOG_DIR=${{ github.workspace }}/.codex/sessions" >> "$GITHUB_ENV"
+          # Database paths
+          echo "CODEX_DB_PATH=${{ github.workspace }}/.codex/codex.db" >> "$GITHUB_ENV"
+          # Disable interactive prompts
+          echo "DEBIAN_FRONTEND=noninteractive" >> "$GITHUB_ENV"
+          echo "PIP_NO_INPUT=1" >> "$GITHUB_ENV"
+          # GitHub-specific
+          echo "CI=true" >> "$GITHUB_ENV"
+          echo "GITHUB_COPILOT_AGENT=true" >> "$GITHUB_ENV"
+
+      - name: "🔑 Export Auth Tokens to Agent Environment"
+        # CRITICAL: CODEX_MASTER_KEY and CODEX_BACKUP_KEY are declared in the
+        # job-level env: block (from org secrets) so they are available to steps
+        # in this workflow — but they are NOT automatically written to GITHUB_ENV.
+        # The Copilot agent process reads its environment from GITHUB_ENV, not the
+        # job-level env block. This step bridges that gap.
+        #
+        # Token priority for GitHub API calls:
+        #   1. CODEX_MASTER_KEY  — full PAT (repo scope); required for variables API
+        #   2. CODEX_BACKUP_KEY  — fallback PAT
+        #   3. GITHUB_TOKEN      — scoped installation token (actions:write only)
+        #
+        # See docs/agent/COPILOT_TOKEN_GUIDE.md for complete reference.
+        run: |
+          echo "── Auth token export ──────────────────────────────────────────"
+          # Export CODEX_MASTER_KEY (full PAT — needed for variables/secrets API)
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            echo "CODEX_MASTER_KEY=${CODEX_MASTER_KEY}" >> "$GITHUB_ENV"
+            echo "  ✅ CODEX_MASTER_KEY → GITHUB_ENV (${#CODEX_MASTER_KEY} chars)"
+          else
+            echo "  ⚠️  CODEX_MASTER_KEY not set — variable writes will fall back to GITHUB_TOKEN"
+            echo "     Set org secret CODEX_MASTER_KEY (classic PAT, repo scope)"
+          fi
+          # Export CODEX_BACKUP_KEY
+          if [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            echo "CODEX_BACKUP_KEY=${CODEX_BACKUP_KEY}" >> "$GITHUB_ENV"
+            echo "  ✅ CODEX_BACKUP_KEY → GITHUB_ENV (${#CODEX_BACKUP_KEY} chars)"
+          fi
+          # Always export GITHUB_TOKEN under a stable name for agent use.
+          # GITHUB_TOKEN is auto-provided by Actions and has actions:write (set above).
+          echo "AGENT_GITHUB_TOKEN=${GITHUB_TOKEN}" >> "$GITHUB_ENV"
+          echo "  ✅ AGENT_GITHUB_TOKEN → GITHUB_ENV (${#GITHUB_TOKEN} chars)"
+          echo "     Scopes: actions:write (trigger workflows, manage runs, download artifacts)"
+          echo "     NOTE: AGENT_GITHUB_TOKEN/GITHUB_TOKEN cannot access the variables API."
+          echo "           Variable create/update/delete requires CODEX_MASTER_KEY (PAT, repo scope)."
+          echo "── Auth token export complete ─────────────────────────────────"
+
+      - name: "⚙️ Load Custom Agent Configuration"
+        if: hashFiles('.codex/agent_environment_config.yaml') != ''
+        run: |
+          if [ -f .codex/agent_environment_config.yaml ]; then
+            echo "✅ Loading custom agent configuration..."
+            cat .codex/agent_environment_config.yaml
+          fi
+
+      # ============================================================================
+      # Phase 7: Validation & Diagnostics
+      # ============================================================================
+
+      - name: "✅ Validate Environment Setup"
+        run: |
+          # ── Root-cause fix for Copilot Coding Agent "Validate Environment
+          # Setup" failures (every session).
+          # GitHub Actions bash defaults to `set -eo pipefail`.  When `pip list`
+          # outputs 100+ packages and `head -20` closes the pipe after 20 lines,
+          # pip receives SIGPIPE → exit 141 → pipefail treats the whole pipeline
+          # as failed → the step exits non-zero → the Copilot agent reports
+          # "custom setup step failed".
+          #
+          # Fix: suppress SIGPIPE (this is a diagnostic step, not a build step)
+          # and guard every pipe command so partial reads never fail the step.
+          trap '' PIPE          # ignore SIGPIPE for this step
+          set +o pipefail       # don't fail on SIGPIPE in pipelines
 
           echo "==================== Environment Validation ===================="
           echo "Python Version: $(python --version 2>&1)"
@@ -457,25 +868,32 @@ jobs:
           echo "..."
           echo ""
           echo "==================== Environment Variables ===================="
-          env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB|COPILOT)" | sort || true
+          env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB)" | sort || true
           echo ""
           echo "==================== Disk Space ===================="
           df -h | grep -E "^/dev" || true
           echo ""
+          echo "==================== AAIS Runner Summary ===================="
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
+          echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
+          echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"
+          echo "Runner adequate  : ${{ steps.runner_check.outputs.runner_adequate }}"
           echo "✅ Environment setup complete for type: ${{ steps.detect_env.outputs.environment_type }}"
 
       - name: "🏥 Run Health Check"
-        continue-on-error: true
         run: |
           echo "Checking critical paths..."
-          test -d src/codex && echo "✅ src/codex exists" || echo "⚠️ src/codex missing (non-blocking)"
-          test -d .codex && echo "✅ .codex exists" || echo "⚠️ .codex missing (non-blocking)"
-          test -d tests && echo "✅ tests exists" || echo "⚠️ tests missing (non-blocking)"
-          test -f pyproject.toml && echo "✅ pyproject.toml exists" || echo "⚠️ pyproject.toml missing (non-blocking)"
-          python -c "import codex; print('✅ codex package importable')" 2>/dev/null || echo "⚠️ codex package import failed (non-blocking)"
-          which ruff && echo "✅ ruff available" || echo "⚠️ ruff not available (non-blocking)"
-          which black && echo "✅ black available" || echo "⚠️ black not available (non-blocking)"
-          which pytest && echo "✅ pytest available" || echo "⚠️ pytest not available (non-blocking)"
+          test -d src/codex && echo "✅ src/codex exists" || echo "❌ src/codex missing"
+          test -d .codex && echo "✅ .codex exists" || echo "❌ .codex missing"
+          test -d tests && echo "✅ tests exists" || echo "❌ tests missing"
+          test -f pyproject.toml && echo "✅ pyproject.toml exists" || echo "❌ pyproject.toml missing"
+          # Verify Python imports work
+          python -c "import codex; print('✅ codex package importable')" || echo "⚠️  codex package import failed"
+          # Verify tools are available
+          which ruff && echo "✅ ruff available" || echo "⚠️  ruff not available"
+          which black && echo "✅ black available" || echo "⚠️  black not available"
+          which pytest && echo "✅ pytest available" || echo "⚠️  pytest not available"
 
       - name: "📊 Session Lifecycle Metrics"
         continue-on-error: true
@@ -497,6 +915,7 @@ jobs:
       # ============================================================================
       # Phase 8: Cache Preparation (Optional)
       # ============================================================================
+
       - name: "💾 Prepare Cache Artifacts"
         run: |
           mkdir -p .codex/cache
@@ -523,6 +942,7 @@ jobs:
       # ============================================================================
       # Phase 9: Agent-Specific Initialization
       # ============================================================================
+
       - name: "🔄 Rotate Cognitive Brain Status Files"
         continue-on-error: true
         run: |
@@ -531,7 +951,6 @@ jobs:
           fi
 
       - name: "🤖 Initialize Cognitive Brain Context"
-        continue-on-error: true   # Phase 3 hardening: optional init (ls|head SIGPIPE) must not block agent startup
         run: |
           if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then
             echo "✅ Loading specialized agents from registry..."
@@ -633,12 +1052,29 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
+        uses: actions/upload-artifact@v5  # v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
+
+  # ============================================================================
+  # Workflow Metadata
+  # ============================================================================
+  # Version: 1.1.0
+  # Created: 2026-01-28
+  # Updated: 2026-01-30
+  # Baseline stability maintained:
+  # - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
+  # - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
+  # Selective adoption (guarded via workflow_dispatch inputs):
+  # - lfs_mode: targeted/full with retries and continue-on-error option
+  # - lfs_include_paths: limit LFS scope to required areas
+  # - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
+  # Policy: .codex/CODEBASE_AGENCY_POLICY.md
+  # Integration: Cognitive Brain Phase objectives
+  # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
@@ -655,7 +1091,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+        uses: actions/checkout@v5   # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
