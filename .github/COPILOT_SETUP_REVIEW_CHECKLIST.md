@@ -124,9 +124,8 @@ Comments:
 
 ## Related Documents
 
-- **Validation Plan**: [Pre-Merge Testing Plan](#implementing-pre-merge-testing-plan-for-copilot-setup-steps-yml)
+- **Validation Workflow**: [copilot-setup-validation.yml](workflows/copilot-setup-validation.yml)
 - **Guard Documentation**: [COPILOT_SETUP_STEPS_GUARD.md](../docs/agent/COPILOT_SETUP_STEPS_GUARD.md)
-- **Validation Tests**: [copilot-setup-validation.yml](.github/workflows/copilot-setup-validation.yml)
 - **Baseline Commit**: `12f7a861`
 - **Canonical Blob**: `8c84a8c1`
 

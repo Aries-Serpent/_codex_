@@ -21,11 +21,10 @@ import argparse
 import json
 import logging
 import re
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -59,7 +58,7 @@ class TestResult:
         self.passed = passed
         self.severity = severity
         self.message = message
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     def to_dict(self) -> Dict:
         return {
@@ -265,7 +264,7 @@ def test_no_circular_dependencies(workflow_path: Path, dependent_workflows: List
         dependencies = {}
         
         with open(workflow_path, 'r') as f:
-            main_workflow = yaml.safe_load(f)
+            _ = yaml.safe_load(f)
         
         dependencies[str(workflow_path)] = []
         

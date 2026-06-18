@@ -456,10 +456,10 @@ The PR can only be merged when ALL of the following are true:
 
 ## Related Documents
 
-- **Review Checklist**: [.github/COPILOT_SETUP_REVIEW_CHECKLIST.md](../COPILOT_SETUP_REVIEW_CHECKLIST.md)
+- **Review Checklist**: [.github/COPILOT_SETUP_REVIEW_CHECKLIST.md](../../.github/COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - **Guard Documentation**: [docs/agent/COPILOT_SETUP_STEPS_GUARD.md](COPILOT_SETUP_STEPS_GUARD.md)
-- **Validation Workflow**: [.github/workflows/copilot-setup-validation.yml](../../workflows/copilot-setup-validation.yml)
-- **CCA Integration**: [.codex/CODEBASE_AGENCY_POLICY.md](../../.codex/CODEBASE_AGENCY_POLICY.md)
+- **Validation Workflow**: [.github/workflows/copilot-setup-validation.yml](../../.github/workflows/copilot-setup-validation.yml)
+- **CCA Integration**: [.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ## Questions?
 

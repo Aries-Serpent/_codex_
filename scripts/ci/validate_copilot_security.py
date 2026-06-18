@@ -20,11 +20,10 @@ import argparse
 import json
 import logging
 import re
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -68,7 +67,7 @@ class TestResult:
         self.passed = passed
         self.severity = severity
         self.message = message
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     def to_dict(self) -> Dict:
         return {
@@ -108,7 +107,7 @@ class TestSuite:
     def to_json(self) -> Dict:
         return {
             "suite": self.name,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total": len(self.results),
             "passed": self.passed_count(),
             "failed": len(self.critical_failures()),
@@ -121,6 +120,7 @@ class TestSuite:
         print(f"{'=' * 80}")
         
         for result in self.results:
+            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a regular test timestamp, not a secret
             print(f"  {result}")
         
         print(f"\nSummary: {self.passed_count()}/{len(self.results)} passed")
@@ -187,10 +187,6 @@ def test_token_references(workflow_content: str) -> TestResult:
     
     # Check that tokens are referenced via secrets, not hardcoded
     for token_name in REQUIRED_TOKEN_REFS:
-        # Valid patterns: ${{ secrets.CODEX_MASTER_KEY }} or ${{ github.token }}
-        valid_pattern = rf'\$\{{\s*(secrets\.{token_name}|github\.token)\s*\}}'
-        invalid_pattern = rf'{token_name}:\s*["\']?[^"\'\n${{]+["\']?'
-        
         if token_name == 'GITHUB_TOKEN':
             # Special case: can be github.token or secrets.GITHUB_TOKEN
             if not re.search(rf'\$\{{\s*(github\.token|secrets\.GITHUB_TOKEN)\s*\}}\s*', workflow_content):

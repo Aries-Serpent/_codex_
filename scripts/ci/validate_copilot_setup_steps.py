@@ -20,11 +20,10 @@ import argparse
 import json
 import logging
 import re
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, List, Tuple
+from typing import Dict, List
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Setup logging
@@ -89,7 +88,7 @@ class TestResult:
         self.passed = passed
         self.severity = severity  # "error", "warning", or "info"
         self.message = message
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     def to_dict(self) -> Dict:
         return {
@@ -137,7 +136,7 @@ class TestSuite:
     def to_json(self) -> Dict:
         return {
             "suite": self.name,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total": len(self.results),
             "passed": self.passed_count(),
             "failed": len(self.critical_failures()),
@@ -151,6 +150,7 @@ class TestSuite:
         print(f"{'=' * 80}")
         
         for result in self.results:
+            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a regular test timestamp, not a secret
             print(f"  {result}")
         
         print(f"\nSummary: {self.passed_count()}/{len(self.results)} passed")
@@ -233,7 +233,6 @@ def test_cca_variables(workflow_path: str) -> TestResult:
             content = f.read()
         
         missing = []
-        incorrect = []
         
         for var_name, var_value in REQUIRED_CCA_VARIABLES.items():
             pattern = rf'{var_name}:\s*["\']?{re.escape(var_value)}["\']?'
@@ -309,7 +308,7 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
     """Test 1.3: Git diff analysis — verify protected sections unchanged."""
     try:
         # Check if we're in a git repo
-        result = subprocess.run(
+        _ = subprocess.run(
             ['git', 'diff', '--no-index', '/dev/null', workflow_path],
             capture_output=True,
             text=True,
@@ -325,7 +324,7 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
         
         # Check CCA variables (lines 99-101 area)
         cca_found = False
-        for i, line in enumerate(lines[95:105], start=95):
+        for _i, line in enumerate(lines[95:105], start=95):
             if 'COPILOT_AGENT_CCA_VERSION_LOCK' in line:
                 cca_found = True
         
@@ -334,7 +333,7 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
         
         # Check session preload (lines 132-137 area)
         preload_found = False
-        for i, line in enumerate(lines[125:145], start=125):
+        for _i, line in enumerate(lines[125:145], start=125):
             if 'Session Context Pre-load' in line:
                 preload_found = True
         
@@ -618,7 +617,7 @@ def test_hardcoded_secrets(workflow_path: str) -> TestResult:
             if re.search(pattern, content):
                 # Additional check: these should only be in comments or template strings
                 # For now, just flag as potential issues
-                pass
+                found_issues.append(description)
         
         if found_issues:
             return TestResult(
@@ -664,7 +663,7 @@ def test_token_references(workflow_path: str) -> TestResult:
                 pass
             else:
                 # Token is not found — might be optional
-                pass
+                missing_tokens.append(token_name)
         
         # At minimum, GITHUB_TOKEN should be present
         if 'GITHUB_TOKEN' not in content and 'github.token' not in content:
