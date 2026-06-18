@@ -1,29 +1,35 @@
-# Session Context — 2026-06-18T08:16:49Z
-**Branch:** `copilot/fix-github-actions-failure`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-18T15:46:27Z
+**Branch:** `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-1736ff5bb3`  **PR:** #4987  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4359` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4486` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #4987 — Bump the npm_and_yarn group across 2 directories with 4 updates
+State: `open`  Draft: `False`  Branch: `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-1736ff5bb3` → `main`
+
+### ❌ 1 Failing CI Check(s)
+- `🚦 Comment review gate` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
+- **PR Comment Review Gate** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-1736ff5bb3` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `5da8b74e` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-06-18)
+- `4e78247f` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
+- `06e0a7a3` Bump the npm_and_yarn group across 2 directories with 4 updates — dependabot[bot] (2026-06-18)
+- `cc249f5e` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
+- `77b6e166` Merge pull request #4984 from Aries-Serpent/copilot/fix-github-actions-failure — Statix (2026-06-18)
+- `4750b10e` Fix shellcheck SC2059: use printf '%s' instead of printf with variable format st — copilot-swe-agent[bot] (2026-06-18)
+- `ed0d3b7d` Fix shellcheck warning in copilot-setup-steps.yml: unsafe printf format string — copilot-swe-agent[bot] (2026-06-18)
 - `186118cc` Merge pull request #4982 from Aries-Serpent/copilot/revert-copilot-setup-steps — Statix (2026-06-18)
-- `69919dc4` All 6 remaining review comments addressed with resolving commit SHAs — copilot-swe-agent[bot] (2026-06-18)
-- `58d4b588` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-18)
-- `56319ff1` Fix: Remove redundant json import in test_secrets_baseline_sync — copilot-swe-agent[bot] (2026-06-18)
-- `d4662541` Fix CodeQL alert #14036 and #14037: Remove sensitive timestamp field exposure in — copilot-swe-agent[bot] (2026-06-18)
-- `f75c7064` Fixing CodeQL clear-text-logging vulnerabilities and addressing all review comme — copilot-swe-agent[bot] (2026-06-18)
-- `cb2e2832` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
-- `0bbab0c2` Fix remaining linting and documentation issues from PR review — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
