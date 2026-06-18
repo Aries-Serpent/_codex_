@@ -269,7 +269,7 @@ aws iam create-access-key --user-name codex-bot
 aws secretsmanager update-secret \
   --secret-id codex/aws-credentials \
   --secret-string "{
-    \"AWS_ACCESS_KEY_ID\": \"AKIAIOSFODNN7NEWEXAMPLE\",
+    \"AWS_ACCESS_KEY_ID\": \"AKIAIOSFODNN7NEWEXAMPLE\",  <!-- pragma: allowlist secret -->
     \"AWS_SECRET_ACCESS_KEY\": \"new-secret-key-here\"
   }"
 
@@ -281,7 +281,7 @@ gh secret set AWS_SECRET_ACCESS_KEY --body "new-secret-key-here"
 **Step 3: Verify new credentials work**
 ```bash
 export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7NEWEXAMPLE"
-export AWS_SECRET_ACCESS_KEY="new-secret-key-here"
+export AWS_SECRET_ACCESS_KEY="new-secret-key-here"  <!-- pragma: allowlist secret -->
 
 # Test AWS access
 aws sts get-caller-identity
@@ -298,7 +298,7 @@ aws sts get-caller-identity
 # 5. After 24h, click "Delete"
 
 # Or via CLI:
-aws iam delete-access-key --user-name codex-bot --access-key-id AKIAIOSFODNN7OLDEXAMPLE
+aws iam delete-access-key --user-name codex-bot --access-key-id AKIAIOSFODNN7OLDEXAMPLE  <!-- pragma: allowlist secret -->
 ```
 
 ---

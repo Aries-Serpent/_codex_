@@ -54,7 +54,7 @@ Used multi-pattern detection across all source directories:
 - **Line:** 180
 - **Original Code:** 
   ```python
-  _DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105
+  _DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105  <!-- pragma: allowlist secret -->
   ```
 - **Status:** ✅ **REMEDIATED**
 - **Replacement:** Dynamic generation from environment or secure random
@@ -65,7 +65,7 @@ Used multi-pattern detection across all source directories:
 - **Line:** 100
 - **Original Code:**
   ```python
-  self._secret_key = "codex-dev-secret-key-change-in-production"  # nosec B105
+  self._secret_key = "codex-dev-secret-key-change-in-production"  # nosec B105  <!-- pragma: allowlist secret -->
   ```
 - **Status:** ✅ **REMEDIATED**
 - **Replacement:** Secure random generation with `secrets.token_urlsafe(32)`
@@ -188,7 +188,7 @@ OPENAI_API_KEY=sk-your-openai-api-key
 GITHUB_TOKEN=ghp_your-github-token
 PINECONE_API_KEY=your-pinecone-key
 STRIPE_API_KEY=sk_live_your-stripe-key
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE  <!-- pragma: allowlist secret -->
 
 # Database credentials
 DATABASE_URL=******localhost:5432/codex
@@ -341,7 +341,7 @@ pre-commit run detect-secrets --all-files
 # Expected: ✅ 0 secrets detected
 
 # Test with synthetic secret (verify detection works)
-echo 'API_KEY="sk_live_test123456789"' > /tmp/test_secret.py
+echo 'API_KEY="sk_live_test123456789"' > /tmp/test_secret.py  <!-- pragma: allowlist secret -->
 detect-secrets scan /tmp/test_secret.py
 # Expected: ✅ Secret detected and flagged
 ```
@@ -419,7 +419,7 @@ aws secretsmanager update-secret --secret-id codex/auth-secret-key \
 gh secret set AUTH_SECRET_KEY --body "new-secure-jwt-secret-here"
 
 # For Vault:
-vault kv put secret/codex/auth AUTH_SECRET_KEY="new-secure-jwt-secret-here"
+vault kv put secret/codex/auth AUTH_SECRET_KEY="new-secure-jwt-secret-here"  <!-- pragma: allowlist secret -->
 ```
 
 #### Step 3: Rotate in Production

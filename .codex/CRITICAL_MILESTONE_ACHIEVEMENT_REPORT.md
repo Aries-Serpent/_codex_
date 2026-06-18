@@ -78,7 +78,7 @@ Two critical blocking issues have been **RESOLVED** ahead of schedule: # pragma:
    - Sign-off requirements
 
 **What Was Fixed:**
-- Removed: `_DEFAULT_SECRET = "codex-auth-change-me-in-production"`
+- Removed: `_DEFAULT_SECRET = "codex-auth-change-me-in-production"`  <!-- pragma: allowlist secret -->
 - Removed: `"codex-dev-secret-key-change-in-production"`
 - Added: Secure environment variable support for all credentials
 - Added: `.env.example` template with 20+ credential placeholders
