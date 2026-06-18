@@ -9,7 +9,7 @@ Categories:
 - Invalid/malformed request bodies
 - Type mismatches
 - Missing required fields
-- Extra unexpected fields # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+- Extra unexpected fields # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 - Boundary value testing
 - Special characters in strings
 - Parameter validation

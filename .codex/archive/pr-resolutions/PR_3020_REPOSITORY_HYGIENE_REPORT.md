@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-### Repository Health Score: **78/100** 🟡
+### Repository Health Score: **78/100** 🟡 # pragma: allowlist secret
 
 **Total Issues Found:** 3,118 issues across 6 categories
 - **Critical (P0):** 0 ✅ *All resolved in previous session*

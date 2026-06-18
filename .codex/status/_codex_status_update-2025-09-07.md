@@ -9,7 +9,7 @@
 - SHA-256: `e67a1e5bcc8aa1284276d98acaf2f065beb5d066c36e602dd61871761e3a34b0`
 ```text
 # codex-universal
-
+ # pragma: allowlist secret
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.

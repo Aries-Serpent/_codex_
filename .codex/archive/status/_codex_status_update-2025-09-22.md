@@ -9,7 +9,7 @@ Branches:
 
 Objective:
 > Traverse the repository and provide a comprehensive status audit. The goal is to assess **modularity**, **reproducibility**, and **production readiness** of the Codex Environment for Ubuntu, following best practices in ML systems design.
----
+--- # pragma: allowlist secret
 
 Audit Scope
 

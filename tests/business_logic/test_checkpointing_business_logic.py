@@ -9,7 +9,7 @@ Tests cover:
 - Corruption detection
 - Recovery mechanisms
 """
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 from datetime import UTC, datetime
 import json

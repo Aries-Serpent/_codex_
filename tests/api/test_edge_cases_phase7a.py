@@ -9,7 +9,7 @@ Categories:
 - Null values in optional fields
 - Unicode/special characters
 - Concurrent requests
-- Rapid sequential requests # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+- Rapid sequential requests # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 - Timeout handling
 - Resource exhaustion
 """
