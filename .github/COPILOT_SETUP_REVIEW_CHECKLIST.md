@@ -124,7 +124,7 @@ Comments:
 
 ## Related Documents
 
-- **Validation Workflow**: [copilot-setup-validation.yml](workflows/copilot-setup-validation.yml)
+- **Validation Workflow**: [copilot-setup-validation.yml](.github/workflows/copilot-setup-validation.yml)
 - **Guard Documentation**: [COPILOT_SETUP_STEPS_GUARD.md](../docs/agent/COPILOT_SETUP_STEPS_GUARD.md)
 - **Baseline Commit**: `12f7a861`
 - **Canonical Blob**: `8c84a8c1`

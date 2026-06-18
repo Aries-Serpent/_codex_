@@ -120,7 +120,8 @@ class TestSuite:
         print(f"{'=' * 80}")
         
         for result in self.results:
-            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a regular test timestamp, not a secret
+            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a
+            # regular test timestamp, not a secret
             print(f"  {result}")
         
         print(f"\nSummary: {self.passed_count()}/{len(self.results)} passed")
@@ -167,11 +168,12 @@ def test_hardcoded_secrets(workflow_content: str) -> TestResult:
     
     if found_issues:
         unique_issues = set(found_issues)
+        patterns = ', '.join(sorted(unique_issues)[:3])
         return TestResult(
             "Hardcoded Secrets Scan (5.1)",
             False,
             severity="error",
-            message=f"Found {len(unique_issues)} secret patterns: {', '.join(sorted(unique_issues)[:3])}"
+            message=f"Found {len(unique_issues)} secret patterns: {patterns}"
         )
     
     return TestResult(
@@ -189,13 +191,15 @@ def test_token_references(workflow_content: str) -> TestResult:
     for token_name in REQUIRED_TOKEN_REFS:
         if token_name == 'GITHUB_TOKEN':
             # Special case: can be github.token or secrets.GITHUB_TOKEN
-            if not re.search(rf'\$\{{\s*(github\.token|secrets\.GITHUB_TOKEN)\s*\}}\s*', workflow_content):
+            pattern = r'\$\{\s*(github\.token|secrets\.GITHUB_TOKEN)\s*\}\s*'
+            if not re.search(pattern, workflow_content):
                 # Might be defined as env var without reference — check for that
                 if 'GITHUB_TOKEN:' not in workflow_content:
-                    issues.append(f"No GITHUB_TOKEN reference found")
+                    issues.append("No GITHUB_TOKEN reference found")
         else:
             # For CODEX tokens, verify they're referenced via secrets
-            if not re.search(rf'\$\{{\s*secrets\.{token_name}\s*\}}\s*', workflow_content):
+            token_pattern = rf'\$\{{\s*secrets\.{token_name}\s*\}}\s*'
+            if not re.search(token_pattern, workflow_content):
                 # Check if it's at least mentioned (might be inherited from env)
                 if token_name not in workflow_content:
                     issues.append(f"{token_name} not referenced in workflow")
@@ -255,11 +259,12 @@ def test_yaml_injection_prevention(workflow_content: str) -> TestResult:
                             issues.append(f"Line {line_num}: Unquoted value with special chars")
     
     if issues:
+        count = len(issues)
         return TestResult(
             "YAML Injection Prevention (5.3)",
             False,
             severity="warning",
-            message=f"Found {len(issues)} potentially unquoted values that could be injection vectors"
+            message=f"Found {count} potentially unquoted values that could be injection vectors"
         )
     
     return TestResult(
@@ -285,7 +290,7 @@ def test_secrets_baseline_sync(repo_root: Path) -> TestResult:
     try:
         import json
         with open(baseline_path, 'r') as f:
-            baseline = json.load(f)
+            _ = json.load(f)
         
         return TestResult(
             "Secrets Baseline Sync",
@@ -306,7 +311,9 @@ def test_secrets_baseline_sync(repo_root: Path) -> TestResult:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Security and secrets validation for copilot-setup-steps.yml")
+    parser = argparse.ArgumentParser(
+        description="Security and secrets validation for copilot-setup-steps.yml"
+    )
     parser.add_argument('--workflow', default='.github/workflows/copilot-setup-steps.yml')
     parser.add_argument('--repo-root', default='.')
     parser.add_argument('--json-output', help='Output JSON results')

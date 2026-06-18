@@ -24,7 +24,7 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -136,7 +136,9 @@ def test_yaml_validity(file_path: Path) -> Tuple[bool, Optional[str]]:
         return False, str(e)
 
 
-def test_workflow_references(workflow_content: str, dependent_workflows: List[str], repo_root: Path) -> TestResult:
+def test_workflow_references(
+    workflow_content: str, dependent_workflows: List[str], repo_root: Path
+) -> TestResult:
     """Test 2.1: Verify dependent workflows exist and are valid YAML."""
     missing = []
     invalid = []
@@ -255,7 +257,9 @@ def test_env_var_propagation(workflow_content: str, expected_vars: List[str]) ->
     )
 
 
-def test_no_circular_dependencies(workflow_path: Path, dependent_workflows: List[str], repo_root: Path) -> TestResult:
+def test_no_circular_dependencies(
+    workflow_path: Path, dependent_workflows: List[str], repo_root: Path
+) -> TestResult:
     """Test for circular dependency patterns."""
     try:
         import yaml
@@ -300,7 +304,9 @@ def test_no_circular_dependencies(workflow_path: Path, dependent_workflows: List
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Validate copilot-setup-steps.yml integration dependencies")
+    parser = argparse.ArgumentParser(
+        description="Validate copilot-setup-steps.yml integration dependencies"
+    )
     parser.add_argument('--workflow', default='.github/workflows/copilot-setup-steps.yml')
     parser.add_argument('--repo-root', default='.')
     parser.add_argument('--json-output', help='Output JSON results')

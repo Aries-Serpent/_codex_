@@ -20,6 +20,7 @@ import argparse
 import json
 import logging
 import re
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -55,8 +56,16 @@ REQUIRED_CCA_VARIABLES = {
 
 # Protected sections in the workflow
 PROTECTED_SECTIONS = {
-    "cca_variables": {"start": 99, "end": 101, "description": "CCA variables (lines 99-101)"},
-    "session_preload": {"start": 132, "end": 137, "description": "Session preload step (lines 132-137)"},
+    "cca_variables": {
+        "start": 99,
+        "end": 101,
+        "description": "CCA variables (lines 99-101)"
+    },
+    "session_preload": {
+        "start": 132,
+        "end": 137,
+        "description": "Session preload step (lines 132-137)"
+    },
 }
 
 # Dependent workflows that must exist
@@ -150,7 +159,8 @@ class TestSuite:
         print(f"{'=' * 80}")
         
         for result in self.results:
-            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a regular test timestamp, not a secret
+            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a
+            # regular test timestamp, not a secret
             print(f"  {result}")
         
         print(f"\nSummary: {self.passed_count()}/{len(self.results)} passed")
@@ -222,7 +232,7 @@ def test_yaml_indentation(workflow_path: str) -> TestResult:
         return TestResult(
             "YAML Indentation",
             False,
-            message=f"Error checking indentation: {str(e)[:100]}"
+            message="Error checking indentation: " + str(e)[:100]
         )
 
 
@@ -250,7 +260,7 @@ def test_cca_variables(workflow_path: str) -> TestResult:
         return TestResult(
             "Critical CCA Variables",
             True,
-            message=f"All 3 CCA variables present and correct"
+            message="All 3 CCA variables present and correct"
         )
     except Exception as e:
         return TestResult(
@@ -270,7 +280,10 @@ def test_session_preload_syntax(workflow_path: str) -> TestResult:
         # Look for session preload step with block scalar
         if 'Session Context Pre-load' in content:
             # Extract the step
-            pattern = r'- name: ["\']?🧠 Session Context Pre-load.*?\n(.*?)(?=\n      - name:|\nenv:|\njobs:|\Z)'
+            pattern = (
+                r'- name: ["\']?🧠 Session Context Pre-load.*?\n(.*?)'
+                r'(?=\n      - name:|\nenv:|\njobs:|\Z)'
+            )
             match = re.search(pattern, content, re.DOTALL)
             
             if match:
@@ -282,11 +295,15 @@ def test_session_preload_syntax(workflow_path: str) -> TestResult:
                         message="Uses correct block scalar syntax (run: |)"
                     )
                 else:
+                    msg = (
+                        "Session preload does NOT use block scalar (run: |) — "
+                        "uses flow scalar instead"
+                    )
                     return TestResult(
                         "Session Preload Block Scalar",
                         False,
                         severity="error",
-                        message="Session preload does NOT use block scalar (run: |) — uses flow scalar instead"
+                        message=msg
                     )
         
         return TestResult(
@@ -400,7 +417,7 @@ def test_dependent_workflows(repo_root: str = ".") -> TestResult:
         return TestResult(
             "Dependent Workflows Validation",
             True,
-            message=f"All 5 dependent workflows valid and accessible"
+            message="All 5 dependent workflows valid and accessible"
         )
     except Exception as e:
         return TestResult(
@@ -448,7 +465,7 @@ def test_supporting_scripts(repo_root: str = ".") -> TestResult:
         return TestResult(
             "Supporting Scripts Check",
             True,
-            message=f"All 3 supporting scripts present and syntactically valid"
+            message="All 3 supporting scripts present and syntactically valid"
         )
     except Exception as e:
         return TestResult(
@@ -484,19 +501,30 @@ def test_file_size_regression(workflow_path: str) -> TestResult:
             )
         
         if line_count > WARNING_THRESHOLD:
+            threshold = WARNING_THRESHOLD
+            msg = (
+                f"File larger than warning threshold: {line_count} lines "
+                f"(threshold: {threshold})"
+            )
             return TestResult(
                 "File Size Regression",
                 False,
                 severity="warning",
-                message=f"File larger than warning threshold: {line_count} lines (threshold: {WARNING_THRESHOLD})"
+                message=msg
             )
         
-        percent_of_baseline = ((line_count - BASELINE_LINE_COUNT) / BASELINE_LINE_COUNT) * 100
+        percent_of_baseline = (
+            ((line_count - BASELINE_LINE_COUNT) / BASELINE_LINE_COUNT) * 100
+        )
         
+        baseline_info = (
+            f"{line_count} lines "
+            f"({percent_of_baseline:+.1f}% from baseline {BASELINE_LINE_COUNT})"
+        )
         return TestResult(
             "File Size Regression",
             True,
-            message=f"{line_count} lines ({percent_of_baseline:+.1f}% from baseline {BASELINE_LINE_COUNT})"
+            message=baseline_info
         )
     except Exception as e:
         return TestResult(
@@ -531,11 +559,12 @@ def test_complexity_analysis(workflow_path: str) -> TestResult:
         
         if total_steps > 30 and total_steps < 50:
             # Warning: more than 30 steps
+            steps_info = f"{job_count} jobs, {total_steps} steps"
             return TestResult(
                 "Complexity Analysis",
                 False,
                 severity="warning",
-                message=f"{job_count} jobs, {total_steps} steps (warning: >30 steps may indicate bloat)"
+                message=f"{steps_info} (warning: >30 steps may indicate bloat)"
             )
         
         if total_steps > 50:
