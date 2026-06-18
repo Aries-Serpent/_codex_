@@ -12,8 +12,8 @@ import pytest
 import torch
 
 try:
-    from codex.rag import embeddings, indexer, retriever
-    from codex.rag.utils import compute_similarity, normalize_text
+    __import__("codex.rag")
+    __import__("codex.rag.utils")
     RAG_AVAILABLE = True
 except ImportError:
     RAG_AVAILABLE = False
@@ -380,7 +380,7 @@ class TestMonitoring:
         """Test monitoring retrieval statistics."""
         try:
             from codex.rag.monitoring import track_retrieval
-            with track_retrieval() as monitor:
+            with track_retrieval():
                 # Simulate retrieval
                 pass
         except (ImportError, RuntimeError, AttributeError):

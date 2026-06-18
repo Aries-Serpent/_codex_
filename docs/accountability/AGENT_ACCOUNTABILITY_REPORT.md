@@ -41,6 +41,26 @@ Resolve failing CI checks on PR #4973 (CodeQL clear-text logging, Comment review
 
 ---
 
+## SESSION SUMMARY — 2026-06-18T15:58Z PR #4987 CI Rescue
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] Reviewed failing CI checks for commit `5da8b74e5ad9ef10dab06ff80d513210e50e385f` via GitHub Actions logs.
+- [x] Reviewed blocking PR comments from `@mbaetiong` and `github-code-quality[bot]`.
+- [x] Updated code and documentation required by REQ-4/REQ-5 freshness gates.
+
+### Work Completed
+1. Removed unused imports in `run_mutation_tests.py` and `tests/codex_ml/test_rag_comprehensive.py`.
+2. Replaced top-level availability imports in `tests/codex_ml/test_rag_comprehensive.py` with import checks via `__import__` to avoid unused-symbol lint failures.
+3. Updated `CHANGELOG.md` and this report to satisfy last-commit freshness requirements.
+
+### Validation
+- `python -m ruff check run_mutation_tests.py tests/codex_ml/test_rag_comprehensive.py` ✅
+- `python -m pytest tests/codex_ml/test_rag_comprehensive.py -q` ❌ (environment missing dependency: `numpy`)
+- `python scripts/ci/mypy_baseline.py --require-baseline` ❌ (repo baseline currently +9 over target in this environment)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ❌ (pre-existing repository-wide issues reported)
+
+---
+
 
 
 

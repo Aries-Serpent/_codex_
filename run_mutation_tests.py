@@ -4,11 +4,9 @@ Phase 7A Wave 3 Lane 3.2: Comprehensive Mutation Testing Script
 Executes mutation testing on Wave 1+2 tests to achieve ≥75% mutation score
 """
 
-import json
 import subprocess
 import sys
 from datetime import datetime
-from pathlib import Path
 
 
 def run_mutation_tests(config_file):
