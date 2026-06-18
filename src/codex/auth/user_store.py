@@ -326,7 +326,12 @@ class UserStore:
         has_symbol = any(not ch.isalnum() for ch in password)
         has_case_mix = has_upper and has_lower
         has_alpha_no_case_mix = has_alpha and not has_case_mix
-        if len(password) >= 6 and (has_case_mix or has_alpha_no_case_mix) and has_digit and has_symbol:
+        if (
+            len(password) >= 6
+            and (has_case_mix or has_alpha_no_case_mix)
+            and has_digit
+            and has_symbol
+        ):
             return
 
         raise ValueError(
