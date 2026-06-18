@@ -347,7 +347,7 @@ class TestTextProcessing:
         # Should not raise
         try:
             _summarise_log(str(log_path))
-        except Exception:
+        except Exception as _err:
             # May fail depending on implementation
             pass
 
