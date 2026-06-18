@@ -1,24 +1,28 @@
-# Session Context — 2026-06-18T21:56:53Z
+# Session Context — 2026-06-18T22:10:48Z
 **Branch:** `copilot/fix-copilot-setup-validation-job`  **PR:** #4985  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4740` (✅)
-- GraphQL remaining: `4985` (✅)
+- REST remaining: `4642` (✅)
+- GraphQL remaining: `4973` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4985 — feat: merge all auth CI rescue changes from dependabot/npm_and_yarn-1736ff5bb3 into copilot/fix-copilot-setup-validation-job
 State: `open`  Draft: `False`  Branch: `copilot/fix-copilot-setup-validation-job` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `🚦 Comment review gate` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
-- **mypy Baseline (Type-Check Anti-Regression)** — `failure` on `copilot/fix-copilot-setup-validation-job` (2026-06-18)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `32b06bdc` Apply remaining changes — copilot-swe-agent[bot] (2026-06-18)
 - `4c0194ca` fix(auth): resolve mypy Anti-Regression Gate — add None guards in github_app.py, — copilot-swe-agent[bot] (2026-06-18)
 - `58e4fc1e` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-18)
 - `82f0def2` fix(auth): address all code review round 2 — duplicate pragmas, empty token vali — copilot-swe-agent[bot] (2026-06-18)
@@ -26,7 +30,6 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-copilot-setup-validation-job
 - `420807bf` fix(auth): address code review — simplify refresh_token, fix OAuthConfig __post_ — copilot-swe-agent[bot] (2026-06-18)
 - `0e677856` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-18)
 - `c8d77364` fix(auth): add GitHubInstallation, UserNotFoundError, OAuthException + fix P19 i — copilot-swe-agent[bot] (2026-06-18)
-- `0c9a0af8` Merge remote-tracking branch 'origin/copilot/fix-copilot-setup-validation-job' i — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

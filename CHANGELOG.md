@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-06-18] — PR #4985 CI Gate Compliance Restore
+
+### Fixed
+- Restored REQ-4/REQ-5 compliance (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+  in latest commit after approval dispatch merge commit omitted these files
+
+### Session
+- PR #4985 CI compliance restore after `@copilot continue` approval dispatch
+- Agent: @copilot
+- HEAD: 32b06bdc
+
+---
+
 ## [2026-06-18] — PR #4985 mypy Anti-Regression Gate Fix
 
 ### Fixed
