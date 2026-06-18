@@ -159,9 +159,9 @@ class TestSuite:
         print(f"{'=' * 80}")
         
         for result in self.results:
-            # codeql[py/clear-text-logging-sensitive-data]: result.timestamp is a
-            # regular test timestamp, not a secret
-            print(f"  {result}")
+            # Construct status indicator without exposing timestamp field
+            status = "✅" if result.passed else ("⚠️ " if result.severity == "warning" else "❌")
+            print(f"  {status} {result.name}: {result.message}")
         
         print(f"\nSummary: {self.passed_count()}/{len(self.results)} passed")
         
