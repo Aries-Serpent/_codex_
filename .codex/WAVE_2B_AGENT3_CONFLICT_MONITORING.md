@@ -298,7 +298,7 @@ Dependency Change Detected
 {
   "timestamp": "2026-06-16T12:30:00Z",
   "batch": 1,
-  "commit_sha": "abc1234def5678",
+  "commit_sha": "abc1234def5678",  <!-- pragma: allowlist secret -->
   "commit_message": "patch: CVE-2024-XXXXX cryptography upgrade",
   "conflict_type": "version_constraint | circular_dependency | sequence_violation",
   "severity": "CRITICAL | HIGH | MEDIUM | LOW",

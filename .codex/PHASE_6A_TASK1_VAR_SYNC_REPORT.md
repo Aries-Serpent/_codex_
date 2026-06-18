@@ -232,7 +232,7 @@ gh variable set COPILOT_AGENT_TURN_ISOLATION_ENABLED --body "true"
 # CODEX_* variables (7 total)
 gh variable set CODEX_CI_FAILURE_RATE --body "6.8:ok"
 gh variable set CODEX_CI_FAILURE_THRESHOLD --body "10.0"
-gh variable set CODEX_CI_LAST_GREEN_SHA --body "70c3a1a61486229fa6ff8c47303dc61f1bea789e"
+gh variable set CODEX_CI_LAST_GREEN_SHA --body "70c3a1a61486229fa6ff8c47303dc61f1bea789e"  <!-- pragma: allowlist secret -->
 gh variable set CODEX_CLI_API_URL --body "http://localhost:8765"
 gh variable set CODEX_COVERAGE_THRESHOLD --body "80"
 gh variable set CODEX_LOG_LEVEL --body "INFO"

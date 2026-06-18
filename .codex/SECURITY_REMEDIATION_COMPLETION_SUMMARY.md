@@ -48,12 +48,12 @@ Identify and remediate **28 hardcoded secrets** blocking production deployment o
 **Files Modified:**
 
 1. **src/codex/api/auth_routes.py** (Lines 180-228)
-   - ❌ REMOVED: `_DEFAULT_SECRET = "codex-auth-change-me-in-production"`
+   - ❌ REMOVED: `_DEFAULT_SECRET = "codex-auth-change-me-in-production"`  <!-- pragma: allowlist secret -->
    - ✅ ADDED: `_get_default_secret()` function
    - ✅ FEATURE: Secure random generation + environment variable override
 
 2. **src/codex/auth/middleware.py** (Lines 88-105)
-   - ❌ REMOVED: `self._secret_key = "codex-dev-secret-key-change-in-production"`
+   - ❌ REMOVED: `self._secret_key = "codex-dev-secret-key-change-in-production"`  <!-- pragma: allowlist secret -->
    - ✅ ADDED: `secrets.token_urlsafe(32)` for secure generation
 
 3. **.env.example** (Comprehensive update)

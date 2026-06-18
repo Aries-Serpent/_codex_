@@ -98,7 +98,7 @@ curl https://staging.codex.example.com/health
 # 2. Verify authentication works
 curl -X POST https://staging.codex.example.com/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"test"}'
+  -d '{"email":"test@example.com","password":"test"}'  <!-- pragma: allowlist secret -->
 
 # 3. Check logs for errors
 kubectl logs -f deployment/codex-api -n staging

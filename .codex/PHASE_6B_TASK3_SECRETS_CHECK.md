@@ -228,7 +228,7 @@ JSON/YAML configuration exports and deployment manifests:
 | Pattern | Trigger | Allowlist Method | Examples |
 |---------|---------|------------------|----------|
 | Build artifact hashes | Hex > 32 chars | Baseline entry | Status update files |
-| Test fixtures | `secret = "test_..."` | Baseline + pragma | test_security_utils.py |
+| Test fixtures | `secret = "test_..."` | Baseline + pragma | test_security_utils.py |  <!-- pragma: allowlist secret -->
 | UUIDs | UUID-like patterns | Baseline entry | Config manifests |
 | Commit SHAs | Hex 40 chars | Baseline entry | Status reports |
 | Version IDs | High entropy strings | Baseline entry | Repository exports |
