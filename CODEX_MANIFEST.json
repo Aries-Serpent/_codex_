@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-18T07:41:04Z",
+  "generated_at": "2026-06-18T15:25:25Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1284,6 +1284,11 @@
       "has_concurrency": true
     },
     {
+      "name": "copilot-setup-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "cost-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2255,5 +2260,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "a5eee6c94fb1eaba33e7e516fc73b1a25f0b7c2adf88560911fcf7858212fe6c"
+  "integrity_sha256": "85a689bb4461674b4f83962fd0d7a98142ca059918d6a78b4dcc66d21422dfa8"
 }

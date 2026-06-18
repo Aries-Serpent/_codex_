@@ -18,8 +18,7 @@ Categories:
 - 503 Service Unavailable: Service issues
 """
 
-import json
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -27,12 +26,10 @@ pytest.importorskip("fastapi")
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from codex.api.app import create_app
 from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

@@ -13,7 +13,6 @@ Categories:
 - Error Handling
 """
 
-from unittest.mock import Mock, patch
 
 import pytest
 

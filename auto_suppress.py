@@ -1,5 +1,5 @@
-import re
 import os
+import re
 
 files = [
     ".github/agents/admin-automation-agent/src/agent.py",
@@ -23,15 +23,15 @@ files = [
 for file in files:
     if not os.path.exists(file):
         continue
-        
+
     with open(file, 'r') as f:
         lines = f.readlines()
-        
+
     changed = False
     for i, line in enumerate(lines):
         if 'codeql[py/clear-text-logging-sensitive-data]' in line:
             continue
-            
+
         if re.search(r'(print|logger\.[a-z]+)\(', line):
             if re.search(r'(secret|token|password|key)', line, re.IGNORECASE):
                 # Ensure we don't mess up existing comments
@@ -40,7 +40,7 @@ for file in files:
                 else:
                     lines[i] = line + '  # codeql[py/clear-text-logging-sensitive-data]'
                 changed = True
-                
+
     if changed:
         with open(file, 'w') as f:
             f.writelines(lines)

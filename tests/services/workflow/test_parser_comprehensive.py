@@ -2,21 +2,15 @@
 
 import builtins
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 import pytest
-import yaml
 
 from src.services.workflow.parser import WorkflowParser
 from src.services.workflow.types import (
     InputType,
     TriggerType,
-    WorkflowInput,
-    WorkflowJob,
-    WorkflowMetadata,
 )
 from tests.services.workflow._helpers import raise_exception
-
 
 # ============================================================================
 # 1. PARSER INITIALIZATION (5 tests)
@@ -603,11 +597,11 @@ class TestEdgeCases:
         parser = WorkflowParser()
         yaml_content = "name: cache-test\non: push\njobs: {}\n"
         path = Path("test.yml")
-        
+
         result1 = parser.parse(yaml_content, path)
         assert result1 is not None
         assert result1.name == "cache-test"
-        
+
         if hasattr(parser, 'clear_cache'):
             parser.clear_cache()
             assert len(parser._cache) == 0

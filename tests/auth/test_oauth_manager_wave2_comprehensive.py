@@ -8,11 +8,11 @@ Tests cover:
 - Error handling
 """
 
-import pytest
-from datetime import datetime, timedelta # pragma: allowlist secret # pragma: allowlist secret
-from unittest.mock import patch, MagicMock, Mock
-from codex.auth.oauth_manager import OAuthManager, OAuthConfig
+from unittest.mock import patch
 
+import pytest
+
+from codex.auth.oauth_manager import OAuthConfig, OAuthManager
 
 # ============================================================================
 # Fixtures
@@ -92,7 +92,7 @@ class TestAuthorizationUrl:
         """Test authorization URL with scopes."""
         oauth_config["scopes"] = ["read:user", "write:repo"]
         manager = OAuthManager(**oauth_config)
-        
+
         if hasattr(manager, "get_authorization_url"):
             url = manager.get_authorization_url()
             if url and "scope" in url.lower():
@@ -157,7 +157,7 @@ class TestTokenExchange:
                     "token_type": "Bearer",
                     "expires_in": 3600,
                 }
-                
+
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
                     assert "access_token" in result or result is not None
@@ -170,7 +170,7 @@ class TestTokenExchange:
                     "access_token": "test_token_value",
                     "token_type": "Bearer",
                 }
-                
+
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
                     assert result
@@ -183,7 +183,7 @@ class TestTokenExchange:
                     "error": "invalid_code",
                     "error_description": "The code is invalid",
                 }
-                
+
                 try:
                     result = oauth_manager.exchange_code_for_token("invalid_code")
                 except Exception as _err:
@@ -206,7 +206,7 @@ class TestCallbackHandling:
                     "access_token": "token",
                     "token_type": "Bearer",
                 }
-                
+
                 result = oauth_manager.handle_callback(
                     code="auth_code",
                     state="valid_state",
@@ -254,7 +254,7 @@ class TestUserInfoRetrieval:
                     "name": "Test User",
                     "email": "test@example.com",
                 }
-                
+
                 result = oauth_manager.get_user_info("access_token")
                 if result:
                     assert "id" in result or "name" in result or result is not None
@@ -267,7 +267,7 @@ class TestUserInfoRetrieval:
                     "login": "testuser",
                     "id": 123,
                 }
-                
+
                 result = oauth_manager.get_user_info("test_token")
                 if result:
                     assert result is not None
@@ -289,7 +289,7 @@ class TestTokenRefresh:
                     "refresh_token": "new_refresh_token",
                     "expires_in": 3600,
                 }
-                
+
                 result = oauth_manager.refresh_token("refresh_token_value")
                 if result:
                     assert "access_token" in result or result is not None
@@ -302,7 +302,7 @@ class TestTokenRefresh:
                     "access_token": "new_token",
                     "expires_in": 3600,
                 }
-                
+
                 result = oauth_manager.refresh_token("refresh_token")
                 if result and "expires_in" in result:
                     assert result["expires_in"] > 0
@@ -343,7 +343,7 @@ class TestErrorHandling:
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
                 mock_post.side_effect = Exception("Network error")
-                
+
                 try:
                     result = oauth_manager.exchange_code_for_token("code")
                 except Exception as _err:
@@ -375,7 +375,7 @@ class TestOAuthEdgeCases:
             special_code = "code_with_!@#$%^&*()"
             with patch("requests.post") as mock_post:
                 mock_post.return_value.json.return_value = {"error": "invalid_code"}
-                
+
                 try:
                     result = oauth_manager.exchange_code_for_token(special_code)
                 except (AttributeError, OSError, RuntimeError):
@@ -399,7 +399,7 @@ class TestOAuthEdgeCases:
         if hasattr(oauth_manager, "get_user_info"):
             with patch("requests.get") as mock_get:
                 mock_get.return_value.json.return_value = {}
-                
+
                 try:
                     result = oauth_manager.get_user_info("")
                 except (AttributeError, OSError, RuntimeError):
@@ -411,7 +411,7 @@ class TestOAuthEdgeCases:
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
                 mock_post.return_value.json.return_value = None
-                
+
                 try:
                     result = oauth_manager.exchange_code_for_token("code")
                 except (AttributeError, OSError, RuntimeError):
@@ -442,7 +442,7 @@ class TestOAuthIntegration:
                     "token_type": "Bearer",
                     "expires_in": 3600,
                 }
-                
+
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
                     assert result is not None
@@ -455,7 +455,7 @@ class TestOAuthIntegration:
                     "id": "user_123",
                     "login": "testuser",
                 }
-                
+
                 result = oauth_manager.get_user_info("access_token")
                 if result:
                     assert result is not None
@@ -463,11 +463,11 @@ class TestOAuthIntegration:
     def test_multiple_oauth_managers_independent(self, oauth_config):
         """Test that multiple OAuth managers are independent."""
         manager1 = OAuthManager(**oauth_config)
-        
+
         custom_config = oauth_config.copy()
         custom_config["client_id"] = "other_client_id"
         manager2 = OAuthManager(**custom_config)
-        
+
         assert manager1 is not manager2
         assert manager1 is not None
         assert manager2 is not None

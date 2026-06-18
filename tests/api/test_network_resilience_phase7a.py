@@ -13,14 +13,12 @@ Categories:
 - Error Recovery
 """
 
-from unittest.mock import Mock, patch, MagicMock
 import time
+from unittest.mock import Mock, patch
 
 import pytest
 
 pytest.importorskip("fastapi")
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 
 
 # ---------------------------------------------------------------------------
@@ -57,7 +55,7 @@ class TestConnectionAndTimeouts:
         def slow_response(*args, **kwargs):
             time.sleep(0.5)
             return Mock(status_code=200)
-        
+
         with patch("requests.post", side_effect=slow_response):
             # Should complete within timeout
             assert True
@@ -108,14 +106,14 @@ class TestRetryLogic:
     def test_retry_on_transient_error(self):
         """Retry on transient errors."""
         call_count = 0
-        
+
         def flaky_operation():
             nonlocal call_count
             call_count += 1
             if call_count < 3:
                 raise ConnectionError("Transient")
             return Mock(status_code=200)
-        
+
         with patch("requests.post", side_effect=flaky_operation):
             # Should retry and eventually succeed
             assert True
@@ -123,12 +121,12 @@ class TestRetryLogic:
     def test_no_retry_on_permanent_error(self):
         """Don't retry on permanent errors."""
         call_count = 0
-        
+
         def permanent_error():
             nonlocal call_count
             call_count += 1
             raise ValueError("Permanent error")
-        
+
         with patch("requests.post", side_effect=permanent_error):
             # Should not retry
             assert True
@@ -151,7 +149,7 @@ class TestRetryLogic:
         response = Mock()
         response.headers = {"Retry-After": "60"}
         response.status_code = 429
-        
+
         with patch("requests.post", return_value=response):
             # Should respect Retry-After
             assert True
@@ -159,14 +157,14 @@ class TestRetryLogic:
     def test_retry_on_500_error(self):
         """Retry on 500 Internal Server Error."""
         call_count = 0
-        
+
         def flaky_500():
             nonlocal call_count
             call_count += 1
             response = Mock()
             response.status_code = 500 if call_count < 2 else 200
             return response
-        
+
         with patch("requests.post", side_effect=flaky_500):
             # Should retry on 500
             assert True
@@ -183,14 +181,14 @@ class TestRetryLogic:
     def test_retry_on_503_error(self):
         """Retry on 503 Service Unavailable."""
         call_count = 0
-        
+
         def flaky_503():
             nonlocal call_count
             call_count += 1
             response = Mock()
             response.status_code = 503 if call_count < 2 else 200
             return response
-        
+
         with patch("requests.post", side_effect=flaky_503):
             # Should retry on 503
             assert True

@@ -99,8 +99,11 @@ class APIKeyValidator:
                     )
                     # SECURITY: Use a generated development key instead of hardcoded value
                     import secrets
+
                     self._secret_key = secrets.token_urlsafe(32)
-                    logger.info(f"Generated development secret key. Set AUTH_SECRET_KEY env var to override.")
+                    logger.info(
+                        "Generated development secret key. Set AUTH_SECRET_KEY env var to override."
+                    )
                 else:
                     raise ValueError(
                         "AUTH_SECRET_KEY environment variable must be set in production. "

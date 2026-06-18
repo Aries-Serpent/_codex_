@@ -5,9 +5,7 @@ Phase 7A Wave 2 Lane 2.1 - Automated Test Generation Script
 Generates stub implementations and comprehensive tests for 38 missing security modules.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Define modules to generate
 MODULES_CONFIG = {
@@ -65,13 +63,13 @@ MODULES_CONFIG = {
 
 def generate_stub_module(module_name: str, class_name: str, description: str) -> str:
     """Generate a stub implementation for a module."""
-    stub = f'''"""{{description}}."""
+    stub = '''"""{description}."""
 
-class {{class_name}}:
-    """{{description}}."""
+class {class_name}:
+    """{description}."""
     
     def __init__(self):
-        """Initialize {{class_name.lower()}}."""
+        """Initialize {class_name.lower()}."""
         pass
 '''
     return stub.format(
@@ -82,7 +80,7 @@ class {{class_name}}:
 
 def generate_test_file(module_name: str, class_name: str, test_count: int) -> str:
     """Generate a comprehensive test file."""
-    
+
     test_file = f'''"""
 Comprehensive tests for {class_name} module.
 
@@ -119,38 +117,38 @@ class TestInitialization:
 
 
 '''
-    
+
     # Add placeholder test methods (actual implementation would be module-specific)
     for i in range(2, test_count):
         if i % 10 == 0:
             test_file += f"\nclass TestFeature{i // 10}:\n"
             test_file += f'    """Test feature group {i // 10}."""\n'
-        
+
         test_file += f'''
     def test_scenario_{i}(self, {class_name.lower()}):
         """Test scenario {i}."""
         assert True
 '''
-    
+
     return test_file
 
 
 def main():
     """Generate all stub modules and tests."""
-    
+
     total_modules = 0
     total_tests = 0
     files_created = []
-    
+
     for category, config in MODULES_CONFIG.items():
         print(f"\n{'=' * 80}")
         print(f"Generating {category.upper()} modules")
         print(f"{'=' * 80}")
-        
+
         # Create directories
         Path(config["path"]).mkdir(parents=True, exist_ok=True)
         Path(config["test_path"]).mkdir(parents=True, exist_ok=True)
-        
+
         for module_file, class_name, description in config["modules"]:
             # Create stub implementation
             stub_path = Path(config["path"]) / module_file
@@ -160,7 +158,7 @@ def main():
                 print(f"  ✓ Created: {stub_path}")
                 files_created.append(str(stub_path))
                 total_modules += 1
-            
+
             # Create test file
             test_file = module_file.replace(".py", "")
             test_path = Path(config["test_path"]) / f"test_{test_file}.py"
@@ -170,21 +168,21 @@ def main():
                 print(f"  ✓ Created: {test_path}")
                 files_created.append(str(test_path))
                 total_tests += config["test_count_per_module"]
-    
+
     # Create __init__.py files
     for category, config in MODULES_CONFIG.items():
         init_path = Path(config["path"]) / "__init__.py"
         if not init_path.exists():
-            init_path.write_text(f'"""{{category.capitalize()}} security modules."""\n')
+            init_path.write_text('"""{category.capitalize()} security modules."""\n')
             print(f"  ✓ Created: {init_path}")
-    
+
     print(f"\n{'=' * 80}")
-    print(f"GENERATION SUMMARY")
+    print("GENERATION SUMMARY")
     print(f"{'=' * 80}")
     print(f"Modules created: {total_modules}")
     print(f"Test functions generated: {total_tests}")
     print(f"Files created: {len(files_created)}")
-    print(f"\nFiles created:")
+    print("\nFiles created:")
     for f in files_created:
         print(f"  {f}")
 

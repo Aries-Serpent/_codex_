@@ -10,14 +10,14 @@ Tests cover:
 """
 
 import os
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 from codex.config.env_vars import (
     EnvironmentManager,
     EnvVarConfig,
 )
-
 
 # ============================================================================
 # Fixtures
@@ -91,7 +91,7 @@ class TestEnvVarConfig:
         """Test creating config with validator."""
         def is_number(value):
             return value.isdigit()
-        
+
         config = EnvVarConfig(
             name="TEST_VAR",
             validator=is_number,
@@ -231,7 +231,7 @@ class TestLanguageVersionConfigs:
             "CODEX_ENV_GO_VERSION",
             "CODEX_ENV_SWIFT_VERSION",
         ]
-        
+
         for var in version_vars:
             if var in env_manager.ENV_VARS:
                 config = env_manager.ENV_VARS[var]
@@ -269,7 +269,7 @@ class TestVariableValidators:
                 return 0 < port < 65536
             except ValueError:
                 return False
-        
+
         config = EnvVarConfig(
             name="PORT",
             validator=validate_port,
@@ -388,7 +388,7 @@ class TestEnvironmentManagerMethods:
             assert var_name is not None
             assert config is not None
             count += 1
-        
+
         assert count > 0
 
 
@@ -426,13 +426,13 @@ class TestEnvironmentConfigIntegration:
             "CODEX_SESSION_ID": "test-123",
             "CODEX_ENV_NODE_VERSION": "18.0.0",
         }
-        
+
         with patch.dict(os.environ, env_vars):
             manager = EnvironmentManager()
-            
+
             # Manager should be created
             assert manager is not None
-            
+
             # Should have access to configs
             assert "CODEX_ENV_PYTHON_VERSION" in manager.ENV_VARS
 
@@ -440,7 +440,7 @@ class TestEnvironmentConfigIntegration:
         """Test that multiple managers are independent."""
         manager1 = EnvironmentManager()
         manager2 = EnvironmentManager()
-        
+
         # Should have same structure but be different objects
         assert manager1 is not manager2
         assert len(manager1.ENV_VARS) == len(manager2.ENV_VARS)
@@ -468,7 +468,7 @@ class TestConfigDocumentation:
 
 
 # ============================================================================
-# Boolean Configuration Tests  
+# Boolean Configuration Tests
 # ============================================================================
 
 class TestBooleanConfigs:
@@ -482,7 +482,7 @@ class TestBooleanConfigs:
             "COPILOT_AGENT_DEDUPLICATION_ENABLED",
             "COPILOT_AGENT_TURN_ISOLATION_ENABLED",
         ]
-        
+
         for config_name in possible_bool_configs:
             if config_name in env_manager.ENV_VARS:
                 config = env_manager.ENV_VARS[config_name]

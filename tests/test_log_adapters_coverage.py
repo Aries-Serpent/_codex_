@@ -10,9 +10,7 @@ import os
 import sqlite3
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 from codex.monkeypatch.log_adapters import (
     _ensure_table,

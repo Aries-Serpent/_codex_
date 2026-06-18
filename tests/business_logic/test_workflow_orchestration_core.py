@@ -8,14 +8,14 @@ Tests cover:
 - State management across phases
 """
 
-import pytest
+from datetime import UTC, datetime
+
 from codex_ml.workflow.track_c_workflow import (
     CapabilityPlan,
     CapabilityRouter,
     ErrorRecord,
     WorkflowContext,
 )
-from datetime import UTC, datetime
 
 
 class TestWorkflowContextBasics:
@@ -180,16 +180,16 @@ class TestRollbackMechanism:
     def test_rollback_registration(self):
         """Test registering rollback actions."""
         ctx = WorkflowContext(capability="test")
-        
+
         def cleanup_action_1(context):
             context.notes.append("Cleanup 1")
-        
+
         def cleanup_action_2(context):
             context.notes.append("Cleanup 2")
-        
+
         ctx.register_rollback("action_1", cleanup_action_1)
         ctx.register_rollback("action_2", cleanup_action_2)
-        
+
         assert len(ctx.rollbacks) == 2
         assert ctx.rollbacks[0][0] == "action_1"
         assert ctx.rollbacks[1][0] == "action_2"
@@ -198,22 +198,22 @@ class TestRollbackMechanism:
         """Test rollbacks execute in LIFO order."""
         ctx = WorkflowContext(capability="test")
         execution_order = []
-        
+
         def action_1(context):
             execution_order.append(1)
-        
+
         def action_2(context):
             execution_order.append(2)
-        
+
         def action_3(context):
             execution_order.append(3)
-        
+
         ctx.register_rollback("first", action_1)
         ctx.register_rollback("second", action_2)
         ctx.register_rollback("third", action_3)
-        
+
         ctx.apply_rollbacks()
-        
+
         # Should execute in reverse order (LIFO)
         assert execution_order == [3, 2, 1]
 
@@ -221,14 +221,14 @@ class TestRollbackMechanism:
         """Test rollback actions can modify context state."""
         ctx = WorkflowContext(capability="test")
         ctx.artifacts = ["artifact1", "artifact2"]
-        
+
         def remove_artifacts(context):
             context.artifacts.clear()
             context.notes.append("Artifacts removed")
-        
+
         ctx.register_rollback("cleanup", remove_artifacts)
         ctx.apply_rollbacks()
-        
+
         assert ctx.artifacts == []
         assert "Artifacts removed" in ctx.notes
 
@@ -236,19 +236,19 @@ class TestRollbackMechanism:
         """Test rollbacks continue even if one fails."""
         ctx = WorkflowContext(capability="test")
         executed = []
-        
+
         def failing_action(context):
             raise RuntimeError("Rollback failed")
-        
+
         def safe_action(context):
             executed.append("executed")
-        
+
         ctx.register_rollback("safe_1", safe_action)
         ctx.register_rollback("failing", failing_action)
         ctx.register_rollback("safe_2", safe_action)
-        
+
         ctx.apply_rollbacks()
-        
+
         # Should have executed 2 safe actions despite failure
         assert executed.count("executed") == 2
         # Failed rollback should be recorded
@@ -257,29 +257,29 @@ class TestRollbackMechanism:
     def test_rollback_emptying_list(self):
         """Test rollbacks list is emptied after execution."""
         ctx = WorkflowContext(capability="test")
-        
+
         def dummy_action(context):
             pass
-        
+
         ctx.register_rollback("action", dummy_action)
         assert len(ctx.rollbacks) == 1
-        
+
         ctx.apply_rollbacks()
         assert len(ctx.rollbacks) == 0
 
     def test_multiple_rollbacks_same_label(self):
         """Test multiple rollbacks with different labels."""
         ctx = WorkflowContext(capability="test")
-        
+
         def action_a(context):
             context.notes.append("Action A")
-        
+
         def action_b(context):
             context.notes.append("Action B")
-        
+
         ctx.register_rollback("phase_1", action_a)
         ctx.register_rollback("phase_2", action_b)
-        
+
         assert ctx.rollbacks[0][0] == "phase_1"
         assert ctx.rollbacks[1][0] == "phase_2"
 
@@ -351,10 +351,10 @@ class TestCapabilityPlan:
         """Test get_action returns custom phase actions."""
         def custom_preparation(context, plan):
             context.notes.append("Custom preparation")
-        
+
         def custom_search(context, plan):
             context.notes.append("Custom search")
-        
+
         plan = CapabilityPlan(
             name="custom_feature",
             phase_overrides={
@@ -362,7 +362,7 @@ class TestCapabilityPlan:
                 "Search & Mapping": custom_search
             }
         )
-        
+
         assert plan.get_action("Preparation") is custom_preparation
         assert plan.get_action("Search & Mapping") is custom_search
         assert plan.get_action("Finalization") is None
@@ -396,7 +396,7 @@ class TestCapabilityRouter:
         plan1 = CapabilityPlan(name="auth")
         plan2 = CapabilityPlan(name="payment")
         router = CapabilityRouter(plans=[plan1, plan2])
-        
+
         # Router should register both plans
         assert router._plans is not None
 
@@ -444,7 +444,7 @@ class TestWorkflowStateInvariants:
         ]
         for phase in phases:
             ctx.phase_history.append(phase)
-        
+
         # Verify order is preserved
         for i, phase in enumerate(phases):
             assert ctx.phase_history[i] == phase
@@ -455,14 +455,14 @@ class TestWorkflowStateInvariants:
         ctx.artifacts.append("routes.py")
         ctx.routes["api_v1"] = ["GET /users", "POST /users"]
         ctx.routes["api_v2"] = ["GET /items", "POST /items"]
-        
+
         assert len(ctx.artifacts) > 0
         assert len(ctx.routes) == 2
 
     def test_error_failure_tracking(self):
         """Test errors are tracked alongside failed phases."""
         ctx = WorkflowContext(capability="test")
-        
+
         # Record error
         error = ErrorRecord(
             timestamp=datetime.now(UTC),
@@ -474,7 +474,7 @@ class TestWorkflowStateInvariants:
         )
         ctx.errors.append(error)
         ctx.failed_phases.append("Construction")
-        
+
         assert len(ctx.errors) == len(ctx.failed_phases)
         assert ctx.errors[0].phase == ctx.failed_phases[0]
 
@@ -482,7 +482,7 @@ class TestWorkflowStateInvariants:
         """Test pruned items are tracked."""
         ctx = WorkflowContext(capability="test")
         ctx.pruned.extend(["legacy_code.py", "old_endpoint.py", "deprecated_api.py"])
-        
+
         assert len(ctx.pruned) == 3
         assert all(item.endswith(".py") for item in ctx.pruned)
 
@@ -492,7 +492,7 @@ class TestWorkflowStateInvariants:
         ctx.summary["version"] = "1.0"
         ctx.summary["author"] = "system"
         ctx.summary["timestamp"] = "2024-01-01T00:00:00Z"
-        
+
         assert ctx.summary["version"] == "1.0"
         assert ctx.summary["author"] == "system"
 
@@ -503,11 +503,11 @@ class TestComplexWorkflows:
     def test_workflow_with_multiple_error_recovery(self):
         """Test workflow that encounters and recovers from errors."""
         ctx = WorkflowContext(capability="feature")
-        
+
         # Simulate phases with errors
         ctx.phase_history.append("Preparation")
         ctx.artifacts.append("setup.py")
-        
+
         # First error and recovery
         error1 = ErrorRecord(
             timestamp=datetime.now(UTC),
@@ -518,13 +518,13 @@ class TestComplexWorkflows:
             exception_type="DependencyError"
         )
         ctx.errors.append(error1)
-        
+
         # Recovery action
         def recover_from_dependency_error(context):
             context.notes.append("Added missing dependency")
-        
+
         ctx.register_rollback("recover_dep", recover_from_dependency_error)
-        
+
         # Second error
         error2 = ErrorRecord(
             timestamp=datetime.now(UTC),
@@ -535,32 +535,32 @@ class TestComplexWorkflows:
             exception_type="CompileError"
         )
         ctx.errors.append(error2)
-        
+
         assert len(ctx.errors) == 2
         assert len(ctx.rollbacks) == 1
 
     def test_workflow_artifact_generation_pipeline(self):
         """Test workflow that generates multiple artifacts."""
         ctx = WorkflowContext(capability="complete_feature")
-        
+
         # Phase 1: Preparation
         ctx.phase_history.append("Preparation")
         ctx.artifacts.append("config.yaml")
-        
+
         # Phase 2: Search & Mapping
         ctx.phase_history.append("Search & Mapping")
         ctx.routes["handlers"] = ["request_handler", "response_handler"]
         ctx.artifacts.append("handlers.py")
-        
+
         # Phase 3: Construction
         ctx.phase_history.append("Best-Effort Construction")
         ctx.artifacts.append("implementation.py")
         ctx.artifacts.append("tests.py")
-        
+
         # Phase 4: Pruning
         ctx.phase_history.append("Controlled Pruning")
         ctx.pruned.append("debug_code.py")
-        
+
         assert len(ctx.phase_history) == 4
         assert len(ctx.artifacts) == 4
         assert len(ctx.routes) == 1
@@ -569,13 +569,13 @@ class TestComplexWorkflows:
     def test_workflow_with_conditional_pruning(self):
         """Test workflow with conditional pruning rules."""
         ctx = WorkflowContext(capability="feature")
-        
+
         def should_prune_debug(item):
             return "debug" in item.lower()
-        
+
         def should_prune_deprecated(item):
             return "deprecated" in item.lower()
-        
+
         items = [
             "main_logic.py",
             "debug_helpers.py",
@@ -583,13 +583,13 @@ class TestComplexWorkflows:
             "core_feature.py",
             "debug_tests.py"
         ]
-        
+
         for item in items:
             if should_prune_debug(item) or should_prune_deprecated(item):
                 ctx.pruned.append(item)
             else:
                 ctx.artifacts.append(item)
-        
+
         assert len(ctx.pruned) == 3
         assert len(ctx.artifacts) == 2
         assert "main_logic.py" in ctx.artifacts
@@ -598,7 +598,7 @@ class TestComplexWorkflows:
     def test_workflow_phase_progression(self):
         """Test workflow progresses through all phases correctly."""
         ctx = WorkflowContext(capability="full_feature")
-        
+
         phases = [
             "Preparation",
             "Search & Mapping",
@@ -607,10 +607,10 @@ class TestComplexWorkflows:
             "Error Capture",
             "Finalization"
         ]
-        
+
         for phase in phases:
             ctx.phase_history.append(phase)
-        
+
         assert ctx.phase_history == phases
         assert len(ctx.phase_history) == 6
 
@@ -649,10 +649,10 @@ class TestEdgeCases:
         """Test handling of special characters in names."""
         ctx = WorkflowContext(capability="test-feature_v2.0")
         assert ctx.capability == "test-feature_v2.0"
-        
+
         ctx.artifacts.append("module-core_impl.py")
         ctx.routes["api/v2"] = ["endpoint-1", "endpoint_2"]
-        
+
         assert "module-core_impl.py" in ctx.artifacts
         assert "api/v2" in ctx.routes
 
@@ -661,14 +661,14 @@ class TestEdgeCases:
         ctx = WorkflowContext(capability="功能特性")
         ctx.notes.append("处理成功 ✓")
         ctx.artifacts.append("文件名.py")
-        
+
         assert "处理成功 ✓" in ctx.notes
         assert "文件名.py" in ctx.artifacts
 
     def test_none_values_in_optional_fields(self):
         """Test handling of operations with None."""
         ctx = WorkflowContext(capability="test")
-        
+
         # Test that routes can handle various operations
         ctx.routes["route1"] = []
         assert ctx.routes["route1"] == []
@@ -676,13 +676,13 @@ class TestEdgeCases:
     def test_concurrent_modifications(self):
         """Test multiple concurrent operations on context."""
         ctx = WorkflowContext(capability="test")
-        
+
         # Simulate concurrent operations
         ctx.artifacts.append("file1.py")
         ctx.routes["api"] = ["method1"]
         ctx.notes.append("Note 1")
         ctx.pruned.append("old.py")
-        
+
         assert len(ctx.artifacts) == 1
         assert len(ctx.routes) == 1
         assert len(ctx.notes) == 1

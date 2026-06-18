@@ -10,9 +10,7 @@ from __future__ import annotations
 import hashlib
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
-
-import pytest
+from unittest.mock import patch
 
 from codex.analysis.duplication import (
     DEFAULT_EXTENSIONS,

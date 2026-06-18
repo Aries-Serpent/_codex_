@@ -63,6 +63,20 @@ class InvalidCredentialsError(AuthenticationError):
         super().__init__(message, "invalid_credentials")
 
 
+class UserAlreadyExistsError(AuthError, ValueError):
+    """User registration conflicts with an existing account."""
+
+    def __init__(self, message: str = "User already exists"):
+        super().__init__(message, "user_already_exists")
+
+
+class UserNotFoundError(AuthError, KeyError):
+    """Requested user could not be found."""
+
+    def __init__(self, message: str = "User not found"):
+        super().__init__(message, "user_not_found")
+
+
 class MFARequiredError(AuthenticationError):
     """MFA verification is required."""
 

@@ -13,10 +13,7 @@ from typing import Any, Dict, Optional
 
 def build_parser() -> argparse.ArgumentParser:
     """Build argument parser for training CLI."""
-    parser = argparse.ArgumentParser(
-        description="Train the Codex model",
-        prog="train-codex"
-    )
+    parser = argparse.ArgumentParser(description="Train the Codex model", prog="train-codex")
 
     # Add common training arguments
     parser.add_argument("--train-file", type=str, help="Path to training file")
@@ -30,7 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _merge(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
     """Merge CLI arguments with configuration dictionary.
-    
+
     CLI arguments take precedence over config values when provided.
     """
     result = config.copy()
@@ -46,17 +43,15 @@ def _merge(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def run_training(
-    config: Dict[str, Any],
-    output_path: Optional[str] = None,
-    resume: bool = False
+    config: Dict[str, Any], output_path: Optional[str] = None, resume: bool = False
 ) -> Dict[str, Any]:
     """Run training with the provided configuration.
-    
+
     Args:
         config: Training configuration
         output_path: Optional path to save the model
         resume: Whether to resume from checkpoint
-    
+
     Returns:
         Dictionary with training results
     """

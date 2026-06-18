@@ -45,6 +45,20 @@
 
 ## [Unreleased]
 
+### Fixed (SN 2026-06-18T17:19Z - PR #4987 CI Rescue Auth Tests)
+- Restored auth exception compatibility by adding `UserAlreadyExistsError` and `UserNotFoundError` in `src/codex/auth/exceptions.py`.
+- Mapped duplicate-user registration errors to `UserAlreadyExistsError` in `src/codex/auth/user_store.py`.
+- Added backward-compatible auth API shims used by `tests/auth/test_auth_integration.py`:
+  - `Authenticator` public aliases and `mfa_code` login support
+  - `UserStore` aliases (`get_by_username`, `get_by_user_id`, `add_role`)
+  - `MFAProvider.register_mfa(...)` alias
+  - `TokenManager.refresh_token(...)` and `TokenManager.create_token(...)` compatibility methods
+- Added MFA SHA1 fallback compatibility during verification and adjusted password-policy compatibility for complex 6-character passwords (including Unicode letter + digit + symbol combinations).
+- Validation: `PYTHONPATH=src python -m pytest tests/auth/test_auth_integration.py -q` (38 passed), `ruff` on changed auth files, and `mypy_baseline` passed.
+
+### Fixed (auto-update — PR #4987)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4987 (SHA `f62a1d00`) at 2026-06-18T15:25Z [auto-generated]
+
 ### Fixed (auto-update — PR #4973)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4973 (SHA `cc9618d0`) at 2026-06-18T00:48Z [auto-generated]
 
@@ -9942,3 +9956,8 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 **Recommendation:** READY FOR PRODUCTION DEPLOYMENT
 
 **Next Steps:** Post consolidated final report to discussion #4872; schedule 2-3 day CVE remediation sprint
+
+### Fixed (PR #4987 CI rescue — 2026-06-18T15:58Z)
+- Removed unused imports in `run_mutation_tests.py` and `tests/codex_ml/test_rag_comprehensive.py` to resolve blocking review feedback and comment-review gate follow-up.
+- Switched the RAG availability check in `tests/codex_ml/test_rag_comprehensive.py` to `importlib.import_module(...)` with `ImportError` handling for explicit import-time validation.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for REQ-4/REQ-5 last-commit freshness compliance.
