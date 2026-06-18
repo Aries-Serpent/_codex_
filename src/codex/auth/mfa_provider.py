@@ -155,6 +155,10 @@ class MFAProvider:
 
         return mfa_secret
 
+    def register_mfa(self, user_id: str, algorithm: str = "SHA256") -> MFASecret:
+        """Backward-compatible alias for creating an MFA secret."""
+        return self.generate_totp_secret(user_id=user_id, algorithm=algorithm)
+
     def _get_hotp_token(
         self,
         secret: str,

@@ -19,6 +19,17 @@
 
 ## [Unreleased]
 
+### Fixed (SN 2026-06-18T17:19Z - PR #4987 CI Rescue Auth Tests)
+- Restored auth exception compatibility by adding `UserAlreadyExistsError` and `UserNotFoundError` in `src/codex/auth/exceptions.py`.
+- Mapped duplicate-user registration errors to `UserAlreadyExistsError` in `src/codex/auth/user_store.py`.
+- Added backward-compatible auth API shims used by `tests/auth/test_auth_integration.py`:
+  - `Authenticator` public aliases and `mfa_code` login support
+  - `UserStore` aliases (`get_by_username`, `get_by_user_id`, `add_role`)
+  - `MFAProvider.register_mfa(...)` alias
+  - `TokenManager.refresh_token(...)` and `TokenManager.create_token(...)` compatibility methods
+- Added MFA SHA1 fallback compatibility during verification and adjusted password-policy compatibility for complex 6-character passwords (including Unicode letter + digit + symbol combinations).
+- Validation: `PYTHONPATH=src python -m pytest tests/auth/test_auth_integration.py -q` (38 passed), `ruff` on changed auth files, and `mypy_baseline` passed.
+
 ### Fixed (auto-update — PR #4987)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4987 (SHA `f62a1d00`) at 2026-06-18T15:25Z [auto-generated]
 

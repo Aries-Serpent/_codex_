@@ -379,6 +379,42 @@ class TokenManager:
         # Generate new access token
         return self.generate_access_token(claims.sub, claims.scope)
 
+    def refresh_token(self, refresh_token: str) -> str:
+        """Backward-compatible alias for :meth:`refresh_access_token`."""
+        return self.refresh_access_token(refresh_token)
+
+    def create_token(
+        self,
+        user_id: str,
+        token_type: TokenType,
+        expires_in: Optional[int] = None,
+        scope: Optional[str] = None,
+    ) -> str:
+        """Create a token with optional custom expiry for compatibility."""
+        now = time.time()
+        expiry_map = {
+            TokenType.ACCESS: self.ACCESS_TOKEN_EXPIRY,
+            TokenType.REFRESH: self.REFRESH_TOKEN_EXPIRY,
+            TokenType.SESSION: self.SESSION_TOKEN_EXPIRY,
+        }
+        jti = secrets.token_urlsafe(16)
+        claims = TokenClaims(
+            sub=user_id,
+            iat=now,
+            exp=now + (expires_in if expires_in is not None else expiry_map[token_type]),
+            type=token_type,
+            scope=scope,
+            jti=jti,
+        )
+        if token_type == TokenType.SESSION:
+            self._sessions[jti] = SessionInfo(
+                session_id=jti,
+                user_id=user_id,
+                created_at=now,
+                last_activity=now,
+            )
+        return self._encode_token(claims)
+
     def revoke_token(self, token: str) -> bool:
         """
         Revoke a token.
