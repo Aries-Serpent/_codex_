@@ -303,7 +303,7 @@ jobs:
           if [ "$FAIL" -gt 0 ]; then
             echo "::warning::⚠️ Found ${FAIL} invalid JSON file(s) — these will be addressed by agent session"
             echo "--- Invalid JSON Files ---"
-            printf "$INVALID_FILES"
+            printf '%s' "$INVALID_FILES"
             echo "--- Agent will remediate these errors ---"
           else
             echo "✅ All JSON files valid"
