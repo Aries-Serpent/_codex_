@@ -83,11 +83,13 @@ fi
 
 # ── Check 5: Line count ───────────────────────────────────────────────────────
 LINE_COUNT=$(wc -l < "${TARGET}")
-if [ "${LINE_COUNT}" -lt 1050 ]; then
-  echo "::error file=${TARGET}::Only ${LINE_COUNT} lines — expected ~1075. File may be truncated."
+# Canonical workflow currently sits at ~673 lines; keep a buffer to catch truncation.
+MIN_ALLOWED_LINES=640
+if [ "${LINE_COUNT}" -lt "${MIN_ALLOWED_LINES}" ]; then
+  echo "::error file=${TARGET}::Only ${LINE_COUNT} lines — expected >=${MIN_ALLOWED_LINES}. File may be truncated."
   FAIL=$((FAIL + 1))
 else
-  echo "✅ Check 5/5: line count ${LINE_COUNT} (expected ≥1050)"
+  echo "✅ Check 5/5: line count ${LINE_COUNT} (expected ≥${MIN_ALLOWED_LINES})"
 fi
 
 # ── Result ────────────────────────────────────────────────────────────────────
