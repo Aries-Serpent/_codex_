@@ -1,29 +1,32 @@
-# Session Context — 2026-06-18T08:16:49Z
-**Branch:** `copilot/fix-github-actions-failure`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-18T08:32:54Z
+**Branch:** `copilot/fix-copilot-setup-validation-job`  **PR:** #4985  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4359` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4943` (✅)
+- GraphQL remaining: `4989` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #4985 — [WIP] Fix failing GitHub Actions job Copilot Setup Validation
+State: `open`  Draft: `True`  Branch: `copilot/fix-copilot-setup-validation-job` → `main`
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-06-18)
+- **Copilot Setup Steps Validation** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `de30e6c6` Initial plan — copilot-swe-agent[bot] (2026-06-18)
+- `77b6e166` Merge pull request #4984 from Aries-Serpent/copilot/fix-github-actions-failure — Statix (2026-06-18)
+- `4750b10e` Fix shellcheck SC2059: use printf '%s' instead of printf with variable format st — copilot-swe-agent[bot] (2026-06-18)
+- `ed0d3b7d` Fix shellcheck warning in copilot-setup-steps.yml: unsafe printf format string — copilot-swe-agent[bot] (2026-06-18)
 - `186118cc` Merge pull request #4982 from Aries-Serpent/copilot/revert-copilot-setup-steps — Statix (2026-06-18)
 - `69919dc4` All 6 remaining review comments addressed with resolving commit SHAs — copilot-swe-agent[bot] (2026-06-18)
 - `58d4b588` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-18)
 - `56319ff1` Fix: Remove redundant json import in test_secrets_baseline_sync — copilot-swe-agent[bot] (2026-06-18)
-- `d4662541` Fix CodeQL alert #14036 and #14037: Remove sensitive timestamp field exposure in — copilot-swe-agent[bot] (2026-06-18)
-- `f75c7064` Fixing CodeQL clear-text-logging vulnerabilities and addressing all review comme — copilot-swe-agent[bot] (2026-06-18)
-- `cb2e2832` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
-- `0bbab0c2` Fix remaining linting and documentation issues from PR review — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
