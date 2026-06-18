@@ -1,29 +1,32 @@
-# Session Context — 2026-06-18T02:55:57Z
-**Branch:** `copilot/fix-test-rag-failures`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-18T03:27:09Z
+**Branch:** `copilot/fix-test-rag-failures`  **PR:** #4978  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4664` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `4842` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
+
+## 📋 PR #4978 — Fix TF-IDF vectorizer pruning error for small corpora in RAG embeddings
+State: `open`  Draft: `False`  Branch: `copilot/fix-test-rag-failures` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-06-18)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
-- `ee6af4cb` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-18)
+- `b4404c5e` Implement TF-IDF vectorizer guard fix for small corpora — copilot-swe-agent[bot] (2026-06-18)
+- `4cfdf1c8` Plan: Fix TF-IDF vectorizer guard for small corpora in RAG embeddings — copilot-swe-agent[bot] (2026-06-18)
+- `ee6af4cb` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] — copilot-swe-agent[bot] (2026-06-18)
 - `9809c3c4` Merge pull request #4973 from Aries-Serpent/0D_base_ — Statix (2026-06-18)
 - `aba17dce` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-18)
 - `2a66d51a` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-18)
 - `94ff15dd` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-18)
 - `34e50d0b` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-18)
-- `defed8b2` fix: remove unreachable code from test_recover_from_corruption — copilot-swe-agent[bot] (2026-06-18)
-- `bbabc7eb` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

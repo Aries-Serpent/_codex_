@@ -616,7 +616,6 @@ class TfidfEmbeddingProvider:
                     # For very small corpora, allow all terms (min_df=1, max_df=1.0)
                     self.vectorizer.set_params(min_df=1, max_df=1.0)
                     logger.debug(f"Small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0")
-                
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(
