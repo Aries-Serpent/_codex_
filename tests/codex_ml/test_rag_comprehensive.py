@@ -6,17 +6,20 @@ Test Categories: Unit (80), Integration (50), Edge Cases (15), Error Handling (5
 
 from __future__ import annotations
 
+import importlib
+
 import numpy as np
 import pytest
 
 import torch
 
 try:
-    __import__("codex.rag")
-    __import__("codex.rag.utils")
-    RAG_AVAILABLE = True
+    importlib.import_module("codex.rag")
+    importlib.import_module("codex.rag.utils")
 except ImportError:
     RAG_AVAILABLE = False
+else:
+    RAG_AVAILABLE = True
 
 
 # ============================================================================

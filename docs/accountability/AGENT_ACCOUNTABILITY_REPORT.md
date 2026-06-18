@@ -50,8 +50,9 @@ Resolve failing CI checks on PR #4973 (CodeQL clear-text logging, Comment review
 
 ### Work Completed
 1. Removed unused imports in `run_mutation_tests.py` and `tests/codex_ml/test_rag_comprehensive.py`.
-2. Replaced top-level availability imports in `tests/codex_ml/test_rag_comprehensive.py` with import checks via `__import__` to avoid unused-symbol lint failures.
+2. Replaced top-level availability imports in `tests/codex_ml/test_rag_comprehensive.py` with `importlib.import_module(...)` checks to avoid unused-symbol lint failures while preserving import-time validation.
 3. Updated `CHANGELOG.md` and this report to satisfy last-commit freshness requirements.
+4. Refined the RAG availability probe to use `importlib.import_module(...)` with `ImportError` handling so availability reflects real import success.
 
 ### Validation
 - `python -m ruff check run_mutation_tests.py tests/codex_ml/test_rag_comprehensive.py` ✅
