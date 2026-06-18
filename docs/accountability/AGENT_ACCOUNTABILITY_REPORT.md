@@ -53399,3 +53399,12 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+
+## Session: auth-rescue-commit (2026-06-18)
+
+- Added `GitHubInstallation` dataclass and new methods to `github_app.py`
+- Added `UserNotFoundError` to `in_memory_user_repository.py`
+- Added `OAuthException`, updated `OAuthConfig`/`OAuthToken`/`OAuthManager` in `oauth_manager.py`
+- Fixed P19 imports and `id`→`user_id` in auth test files
+- Resolves Authentication Tests and Coverage Ratchet CI failures
