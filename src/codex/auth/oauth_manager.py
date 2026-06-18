@@ -144,7 +144,7 @@ class OAuthManager:
         self, code: str, config: Optional["OAuthConfig"] = None
     ) -> "OAuthToken":
         """Exchange an authorization code for an access token (uses requests)."""
-        import requests  # type: ignore[import]
+        import requests
 
         cfg = config or self.config
         if cfg is None:

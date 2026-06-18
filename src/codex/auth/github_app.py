@@ -354,6 +354,8 @@ class GitHubApp:
                 f"expiry_seconds must be ≤ {_JWT_MAX_EXPIRY_SECONDS} "
                 f"(GitHub App JWT maximum); got {expiry_seconds}"
             )
+        if self._config is None:
+            raise AuthenticationError("GitHubAppConfig is required to generate a JWT")
 
         now = int(time.time())
         header = {"alg": "RS256", "typ": "JWT"}
@@ -458,6 +460,8 @@ class GitHubApp:
         repositories: Optional[list[str]],
     ) -> InstallationToken:
         """Call the GitHub API to create an installation access token."""
+        if self._config is None:
+            raise AuthenticationError("GitHubAppConfig is required to fetch an installation token")
         jwt = self.generate_jwt()
         url = self._validated_api_url(
             f"{self._config.api_base_url}/app/installations/{installation_id}/access_tokens"
@@ -545,6 +549,8 @@ class GitHubApp:
 
     def _api_get(self, path: str, bearer: str) -> Any:
         """Low-level GET using an explicit bearer token (e.g. App JWT)."""
+        if self._config is None:
+            raise AuthenticationError("GitHubAppConfig is required for API calls")
         url = self._validated_api_url(self._config.api_base_url + path)
         req = urllib.request.Request(
             url,
@@ -603,7 +609,7 @@ class GitHubApp:
                     "Accept": "application/vnd.github+json",
                     "Authorization": f"Bearer {token_value}",
                     "X-GitHub-Api-Version": "2022-11-28",
-                    "User-Agent": f"codex-github-app/{self._config.app_id}",
+                    "User-Agent": f"codex-github-app/{self._config.app_id if self._config else 'unknown'}",
                 },
             )
             try:

@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026-06-18] — PR #4985 mypy Anti-Regression Gate Fix
+
+### Fixed
+- **Fixed 8 mypy type errors introduced by auth CI rescue changes**
+  - `src/codex/auth/github_app.py`: Added `if self._config is None` guards in
+    `generate_jwt`, `_fetch_installation_token`, and `_api_get` to prevent
+    `union-attr` errors on `GitHubAppConfig | None`; narrowed `pat_api_get`
+    `User-Agent` to use conditional expression for `self._config`
+  - `src/codex/auth/oauth_manager.py`: Removed stale `# type: ignore[import]`
+    on `import requests` (now covered by `types-requests` stubs)
+  - Restores mypy error count to ≤ baseline 122 in CI environment
+
+### Session
+- PR #4985 mypy Anti-Regression Gate rescue
+- Agent: @copilot
+- Resolves: `🔎 mypy Anti-Regression Gate` CI failure on commit `c8d7736`
+
+---
+
 ## [2026-06-18] — PR #4985 False-Positive Secret Detection Fix
 
 ### Fixed

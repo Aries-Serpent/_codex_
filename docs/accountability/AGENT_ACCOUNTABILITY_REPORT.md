@@ -1,8 +1,34 @@
 # PHASE 5 SECURITY REMEDIATION CAMPAIGN — AGENT ACCOUNTABILITY REPORT
 
 
+## SESSION SUMMARY — 2026-06-18T21:48Z · PR #4985 mypy Anti-Regression Gate Fix
 
-## SESSION SUMMARY — 2026-06-18T21:12Z [auto-generated]
+**Session:** PR #4985 - mypy type error fix | **Agent:** @copilot | **Date:** 2026-06-18
+
+### Objective
+Fix 8 mypy type errors introduced by auth CI rescue changes to restore the mypy Anti-Regression Gate.
+
+### Pre-flight Checklist
+- [x] **0a.** Reviewed all new blocking comments (#4746129289, #4746333554)
+- [x] **0b.** Fetched CI failure logs for `🔎 mypy Anti-Regression Gate`
+- [x] **1.** Updated accountability report (this document)
+- [x] **2.** Fixed all mypy type errors in `src/codex/auth/`
+- [x] **3.** Updated `CHANGELOG.md` with session entry
+
+### Actions Taken
+1. **Fixed `src/codex/auth/github_app.py`**: Added `if self._config is None` guards in
+   `generate_jwt`, `_fetch_installation_token`, `_api_get`; narrowed `pat_api_get` User-Agent
+   — resolved 7 `union-attr` errors
+2. **Fixed `src/codex/auth/oauth_manager.py`**: Removed stale `# type: ignore[import]` on
+   `import requests` — resolved 1 `unused-ignore` error
+3. **Verified** ruff passes on all modified auth files
+4. **Baseline unchanged** at 122 — CI environment error count returns to ≤ 122
+
+### Pattern Classification
+- **RP-MYPY-UNION-ATTR**: `GitHubAppConfig | None` attribute access without None guard
+- **Resolution**: Explicit `if self._config is None: raise AuthenticationError(...)` guards
+
+
 
 **Session:** auto-20260618T2112-run4781 | **Run:** 27789244917 | **Date:** 2026-06-18
 
