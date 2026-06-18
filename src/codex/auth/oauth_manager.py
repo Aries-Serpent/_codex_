@@ -77,10 +77,13 @@ class OAuthConfig:
 
     def __post_init__(self) -> None:
         """Normalize legacy aliases and validate required fields."""
+        # authorization_url and token_url may legitimately be empty for PKCE
+        # discovery flows where the URLs are fetched from a provider metadata
+        # endpoint at runtime.  Populate from legacy alias when present.
         if self.authorize_url and not self.authorization_url:
-            object.__setattr__(self, "authorization_url", self.authorize_url)
+            self.authorization_url = self.authorize_url
         if self.scopes and not self.scope:
-            object.__setattr__(self, "scope", " ".join(self.scopes))
+            self.scope = " ".join(self.scopes)
         if not self.client_id:
             raise ValueError("client_id is required")
 
@@ -415,7 +418,8 @@ class OAuthManager:
         Refresh an access token using a refresh token.
 
         Args:
-            refresh_token: The refresh token or OAuthToken containing one
+            refresh_token: The refresh token string or an OAuthToken whose
+                ``refresh_token`` field contains the token.
             config: OAuth configuration (uses self.config if not provided)
 
         Returns:
@@ -423,62 +427,49 @@ class OAuthManager:
 
         Raises:
             ValueError: If refresh fails
+            OAuthException: If the provider returns a non-200 response
         """
         if config is None:
             config = self.config
-
         if config is None:
             raise ValueError("OAuth configuration is required")
         if refresh_token is None:
             raise ValueError("Refresh token is required")
 
-        original_refresh_token = refresh_token
+        # Normalise: always work with the raw token string from here on.
         if isinstance(refresh_token, OAuthToken):
             if not refresh_token.refresh_token:
                 raise ValueError("Refresh token is required")
-            original_refresh_token = refresh_token.refresh_token
-
-            import requests  # type: ignore[import]
-
-            response = requests.post(
-                config.token_url,
-                data={
-                    "client_id": config.client_id,
-                    "client_secret": config.client_secret or "",
-                    "refresh_token": original_refresh_token,
-                    "grant_type": "refresh_token",
-                },
-                headers={"Accept": "application/json"},
-            )
-            if response.status_code != 200:
-                raise OAuthException(f"Token refresh failed: {response.status_code}")
-            token_response = response.json()
+            raw_token: str = refresh_token.refresh_token
         else:
-            refresh_data = {
-                "client_id": config.client_id,
-                "client_secret": config.client_secret,
-                "refresh_token": refresh_token,
-                "grant_type": "refresh_token",
-            }
+            raw_token = refresh_token
 
-            headers = {
-                "Accept": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
+        refresh_data = {
+            "client_id": config.client_id,
+            "client_secret": config.client_secret or "",
+            "refresh_token": raw_token,
+            "grant_type": "refresh_token",
+        }
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
 
-            try:
-                with httpx.Client() as client:
-                    response = client.post(
-                        config.token_url,
-                        data=refresh_data,
-                        headers=headers,
-                        timeout=30.0,
-                    )
-                    response.raise_for_status()
-                    token_response = response.json()
-            except httpx.HTTPError as e:
-                error_msg = sanitize_log_message(f"Token refresh failed: {e!s}")
-                raise ValueError(error_msg) from e
+        try:
+            with httpx.Client() as client:
+                response = client.post(
+                    config.token_url,
+                    data=refresh_data,
+                    headers=headers,
+                    timeout=30.0,
+                )
+                response.raise_for_status()
+                token_response = response.json()
+        except httpx.HTTPStatusError as e:
+            raise OAuthException(f"Token refresh failed: {e.response.status_code}") from e
+        except httpx.HTTPError as e:
+            error_msg = sanitize_log_message(f"Token refresh failed: {e!s}")
+            raise ValueError(error_msg) from e
 
         access_token = token_response.get("access_token")
         if not access_token:
@@ -488,9 +479,7 @@ class OAuthManager:
             access_token=access_token,
             token_type=token_response.get("token_type", "bearer"),
             expires_in=token_response.get("expires_in", 0),
-            refresh_token=token_response.get(
-                "refresh_token", original_refresh_token
-            ),
+            refresh_token=token_response.get("refresh_token", raw_token),
             scope=token_response.get("scope"),
         )
 

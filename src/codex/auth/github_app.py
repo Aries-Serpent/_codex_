@@ -142,7 +142,12 @@ class GitHubInstallation:
 
 
 class _AwaitableDict(dict[str, Any]):
-    """Dict-like result that can also be awaited in compatibility tests."""
+    """Dict-like result that can also be awaited in compatibility tests.
+
+    This is an internal helper that allows the same result object to be
+    consumed either synchronously (as a plain dict) or asynchronously via
+    ``await``.  It is intentionally *not* part of the public API.
+    """
 
     def __init__(self, *args: Any, loader: Any = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -189,8 +194,11 @@ class GitHubApp:
         webhook_secret: Optional[str] = None,
         private_key: Optional[str] = None,
     ) -> None:
+        # Exactly one of (config, app_id) must be supplied.
         if config is None and not app_id:
-            raise ValueError("app_id is required when config is not provided")
+            raise ValueError(
+                "Either a GitHubAppConfig object or an app_id keyword argument is required"
+            )
         if private_key is not None and "PRIVATE KEY" not in private_key:
             raise ValueError("private_key must be a valid PEM-encoded RSA private key")
         self._config = config

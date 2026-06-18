@@ -157,8 +157,8 @@ class TestOAuthManager:
                 token_url="https://oauth.example.com/token",
             )
 
-    @patch('requests.post')
-    def test_refresh_token(self, mock_post, oauth_manager):
+    @patch('httpx.Client')
+    def test_refresh_token(self, mock_client_class, oauth_manager):
         """Test token refresh."""
         mock_response = MagicMock()
         mock_response.json.return_value = {
@@ -166,8 +166,12 @@ class TestOAuthManager:
             "token_type": "Bearer",
             "expires_in": 3600,
         }
-        mock_response.status_code = 200
-        mock_post.return_value = mock_response
+        mock_response.raise_for_status = MagicMock()
+        mock_client = MagicMock()
+        mock_client.__enter__ = MagicMock(return_value=mock_client)
+        mock_client.__exit__ = MagicMock(return_value=False)
+        mock_client.post.return_value = mock_response
+        mock_client_class.return_value = mock_client
 
         old_token = OAuthToken(
             access_token="old_token",

@@ -136,7 +136,7 @@ class TestInMemoryUserRepository:
         repository.create(user2)
 
         users = repository.list_all()
-        assert len(users) >= 2
+        assert len(users) == 2
         usernames = [u.username for u in users]
         assert "user1" in usernames
         assert "user2" in usernames
