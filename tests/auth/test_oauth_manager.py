@@ -9,10 +9,10 @@ Tests cover:
 - Error handling and exceptions
 """
 
-from datetime import datetime, timedelta # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from datetime import datetime, timedelta  # pragma: allowlist secret
 from unittest.mock import MagicMock, patch
 
-import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest  # pragma: allowlist secret
 
 from codex.auth.oauth_manager import (
     OAuthConfig,

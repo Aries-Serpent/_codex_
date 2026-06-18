@@ -9,6 +9,7 @@ Python ``dict`` keyed by ``user_id``.  Thread-safe via an internal
 from __future__ import annotations
 
 import threading
+from typing import Optional
 
 from ..security_utils import sanitize_log_message
 from .user_model import User
@@ -31,6 +32,26 @@ class InMemoryUserRepository(UserRepository):
         self._lock: threading.RLock = threading.RLock()
 
     # ------------------------------------------------------------------ #
+    # Private helpers (must be called with self._lock already held)       #
+    # ------------------------------------------------------------------ #
+
+    def _find_by_username(self, username: str) -> Optional[User]:
+        """Return the user with *username*, or ``None`` (lock must be held)."""
+        username = username.strip()
+        for user in self._users.values():
+            if user.username == username:
+                return user
+        return None
+
+    def _find_by_email(self, email: str) -> Optional[User]:
+        """Return the user with *email*, or ``None`` (lock must be held)."""
+        email = email.strip().lower()
+        for user in self._users.values():
+            if user.email == email:
+                return user
+        return None
+
+    # ------------------------------------------------------------------ #
     # Write operations                                                     #
     # ------------------------------------------------------------------ #
 
@@ -50,20 +71,14 @@ class InMemoryUserRepository(UserRepository):
             raise ValueError("Password hash must not be empty")
 
         with self._lock:
-            try:
-                self.get_by_username(user.username)
+            if self._find_by_username(user.username) is not None:
                 raise ValueError(
                     f"Username '{sanitize_log_message(user.username)}' is already taken"
                 )
-            except UserNotFoundError:
-                pass
-            try:
-                self.get_by_email(user.email)
+            if self._find_by_email(user.email) is not None:
                 raise ValueError(
                     f"Email '{sanitize_log_message(user.email)}' is already registered"
                 )
-            except UserNotFoundError:
-                pass
             self._users[user.user_id] = user
         return user
 
@@ -102,20 +117,18 @@ class InMemoryUserRepository(UserRepository):
             return user
 
     def get_by_username(self, username: str) -> User:
-        username = username.strip()
         with self._lock:
-            for user in self._users.values():
-                if user.username == username:
-                    return user
-        raise UserNotFoundError(f"User with username '{username}' not found")
+            user = self._find_by_username(username)
+        if user is None:
+            raise UserNotFoundError(f"User with username '{username.strip()}' not found")
+        return user
 
     def get_by_email(self, email: str) -> User:
-        email = email.strip().lower()
         with self._lock:
-            for user in self._users.values():
-                if user.email == email:
-                    return user
-        raise UserNotFoundError(f"User with email '{email}' not found")
+            user = self._find_by_email(email)
+        if user is None:
+            raise UserNotFoundError(f"User with email '{email.strip().lower()}' not found")
+        return user
 
     def list_all(self) -> list[User]:
         with self._lock:

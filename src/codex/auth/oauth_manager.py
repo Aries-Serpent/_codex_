@@ -442,6 +442,8 @@ class OAuthManager:
                 raise ValueError("Refresh token is required")
             raw_token: str = refresh_token.refresh_token
         else:
+            if not refresh_token.strip():
+                raise ValueError("Refresh token must not be empty")
             raw_token = refresh_token
 
         refresh_data = {

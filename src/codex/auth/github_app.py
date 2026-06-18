@@ -194,10 +194,13 @@ class GitHubApp:
         webhook_secret: Optional[str] = None,
         private_key: Optional[str] = None,
     ) -> None:
-        # Exactly one of (config, app_id) must be supplied.
+        # ``config`` takes precedence over keyword args when both are supplied.
+        # At least one initialisation path must be provided.
         if config is None and not app_id:
             raise ValueError(
-                "Either a GitHubAppConfig object or an app_id keyword argument is required"
+                "Either a GitHubAppConfig object (positional) or an "
+                "app_id keyword argument is required. When both are "
+                "supplied, config takes precedence."
             )
         if private_key is not None and "PRIVATE KEY" not in private_key:
             raise ValueError("private_key must be a valid PEM-encoded RSA private key")
