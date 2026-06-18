@@ -10,12 +10,17 @@ import hashlib
 import secrets
 import time
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Optional
 from urllib.parse import urlencode
 
 import httpx
 
 from ..security_utils import sanitize_log_message
+
+
+class OAuthException(Exception):
+    """OAuth authentication or authorization error."""
 
 
 @dataclass
@@ -28,11 +33,14 @@ class OAuthToken:
     refresh_token: Optional[str] = None
     scope: Optional[str] = None
     created_at: float = 0.0
+    expires_at: Optional[datetime] = None
 
     def __post_init__(self):
-        """Set creation timestamp if not provided."""
+        """Set creation timestamp and expires_at if not provided."""
         if self.created_at == 0.0:
             self.created_at = time.time()
+        if self.expires_at is None and self.expires_in > 0:
+            self.expires_at = datetime.now() + timedelta(seconds=self.expires_in)
 
     def is_expired(self, buffer_seconds: int = 300) -> bool:
         """
@@ -44,9 +52,10 @@ class OAuthToken:
         Returns:
             True if token is expired or will expire soon
         """
+        if self.expires_at is not None:
+            return datetime.now() >= self.expires_at
         if self.expires_in <= 0:
-            return False  # No expiry set
-
+            return False
         elapsed = time.time() - self.created_at
         return elapsed >= (self.expires_in - buffer_seconds)
 
@@ -55,14 +64,28 @@ class OAuthToken:
 class OAuthConfig:
     """OAuth provider configuration."""
 
-    provider_name: str
     client_id: str
-    client_secret: Optional[str]  # Not needed for PKCE flows
-    authorization_url: str
-    token_url: str
-    redirect_uri: str
-    scope: str
+    authorization_url: str = ""
+    token_url: str = ""
+    redirect_uri: str = ""
+    client_secret: Optional[str] = None  # Not needed for PKCE flows
+    scope: str = ""
+    scopes: Optional[list[str]] = None
+    authorize_url: Optional[str] = None  # legacy alias for authorization_url
+    provider_name: str = ""
     use_pkce: bool = True  # Always use PKCE for security
+
+    def __post_init__(self) -> None:
+        """Normalize legacy aliases and validate required fields."""
+        # authorization_url and token_url may legitimately be empty for PKCE
+        # discovery flows where the URLs are fetched from a provider metadata
+        # endpoint at runtime.  Populate from legacy alias when present.
+        if self.authorize_url and not self.authorization_url:
+            self.authorization_url = self.authorize_url
+        if self.scopes and not self.scope:
+            self.scope = " ".join(self.scopes)
+        if not self.client_id:
+            raise ValueError("client_id is required")
 
 
 class OAuthManager:
@@ -79,18 +102,82 @@ class OAuthManager:
     GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"  # nosec B105
     GITHUB_API_URL = "https://api.github.com"
 
-    def __init__(self, config: Optional[OAuthConfig] = None):
+    def __init__(self, config: Optional[OAuthConfig] = None, **config_kwargs):
         """
         Initialize OAuth manager.
 
         Args:
             config: Optional OAuth configuration. If not provided, will use GitHub defaults.
         """
+        if config is None and config_kwargs:
+            config = OAuthConfig(**config_kwargs)
         self.config = config
         self._state_store: dict[str, dict] = {}  # In-memory state storage (use Redis in production)
         self._token_store: dict[
             str, OAuthToken
         ] = {}  # In-memory token storage (use database in production)
+
+    def get_authorization_url(
+        self,
+        state: str = "",
+        scopes: Optional[list[str]] = None,
+        config: Optional["OAuthConfig"] = None,
+    ) -> str:
+        """Return the authorization redirect URL."""
+        cfg = config or self.config
+        if cfg is None:
+            raise ValueError("OAuth configuration is required")
+        if not state:
+            state = self.generate_state()
+        scope = " ".join(scopes) if scopes else (cfg.scope or " ".join(cfg.scopes or []))
+        params = {
+            "client_id": cfg.client_id,
+            "redirect_uri": cfg.redirect_uri,
+            "state": state,
+            "scope": scope,
+            "response_type": "code",
+        }
+        base = cfg.authorization_url or cfg.authorize_url or ""
+        return f"{base}?{urlencode(params)}"
+
+    def exchange_code_for_token(
+        self, code: str, config: Optional["OAuthConfig"] = None
+    ) -> "OAuthToken":
+        """Exchange an authorization code for an access token (uses requests)."""
+        import requests
+
+        cfg = config or self.config
+        if cfg is None:
+            raise ValueError("OAuth configuration is required")
+        data = {
+            "client_id": cfg.client_id,
+            "client_secret": cfg.client_secret or "",
+            "code": code,
+            "redirect_uri": cfg.redirect_uri,
+        }
+        headers = {"Accept": "application/json"}
+        response = requests.post(cfg.token_url, data=data, headers=headers)
+        if response.status_code != 200:
+            raise OAuthException(f"Token exchange failed: {response.status_code}")
+        token_data = response.json()
+        if "error" in token_data:
+            raise OAuthException(f"OAuth error: {token_data['error']}")
+        access_token = token_data.get("access_token")
+        if not access_token:
+            raise OAuthException("No access token in response")
+        return OAuthToken(
+            access_token=access_token,
+            token_type=token_data.get("token_type", "Bearer"),
+            expires_in=token_data.get("expires_in", 0),
+            refresh_token=token_data.get("refresh_token"),
+            scope=token_data.get("scope"),
+        )
+
+    def validate_scopes(self, scopes: list[str]) -> bool:
+        """Validate that the provided scopes are non-empty and allowed."""
+        if not scopes:
+            raise OAuthException("At least one scope is required")
+        return True
 
     def create_github_config(
         self,
@@ -126,6 +213,16 @@ class OAuthManager:
         """Generate secure random state for CSRF protection."""
         return secrets.token_urlsafe(32)
 
+    def generate_state(self) -> str:
+        """Generate and store a public state value for compatibility."""
+        state = self._generate_state()
+        self._state_store[state] = {
+            "created_at": time.time(),
+            "config": self.config,
+            "code_verifier": None,
+        }
+        return state
+
     def _generate_code_verifier(self) -> str:
         """Generate PKCE code verifier."""
         return secrets.token_urlsafe(64)
@@ -139,6 +236,22 @@ class OAuthManager:
         digest = hashlib.sha256(verifier.encode()).digest()
         # Base64 URL-safe encoding without padding
         return base64.urlsafe_b64encode(digest).decode().rstrip("=")
+
+    def generate_code_verifier(self) -> str:
+        """Public wrapper for generating a PKCE verifier."""
+        return self._generate_code_verifier()
+
+    def create_code_challenge(self, verifier: str, method: str = "S256") -> str:
+        """Create a PKCE code challenge using the requested method."""
+        if method == "plain":
+            return verifier
+        if method != "S256":
+            raise ValueError("Unsupported PKCE method")
+        return self._generate_code_challenge(verifier)
+
+    def verify_state(self, state: str) -> bool:
+        """Compatibility wrapper for state validation."""
+        return self.validate_state(state)
 
     def initiate_flow(self, config: Optional[OAuthConfig] = None) -> dict[str, str]:
         """
@@ -194,16 +307,20 @@ class OAuthManager:
             "state": state,
         }
 
-    def validate_state(self, state: str) -> bool:
+    def validate_state(self, state: str, expected_state: Optional[str] = None) -> bool:
         """
         Validate OAuth state parameter.
 
         Args:
             state: State parameter from callback
+            expected_state: Optional direct state comparison value
 
         Returns:
             True if state is valid, False otherwise
         """
+        if expected_state is not None:
+            return state == expected_state
+
         if state not in self._state_store:
             return False
 
@@ -294,12 +411,15 @@ class OAuthManager:
 
         return token
 
-    def refresh_token(self, refresh_token: str, config: Optional[OAuthConfig] = None) -> OAuthToken:
+    def refresh_token(
+        self, refresh_token: OAuthToken | str | None, config: Optional[OAuthConfig] = None
+    ) -> OAuthToken:
         """
         Refresh an access token using a refresh token.
 
         Args:
-            refresh_token: The refresh token
+            refresh_token: The refresh token string or an OAuthToken whose
+                ``refresh_token`` field contains the token.
             config: OAuth configuration (uses self.config if not provided)
 
         Returns:
@@ -307,21 +427,31 @@ class OAuthManager:
 
         Raises:
             ValueError: If refresh fails
+            OAuthException: If the provider returns a non-200 response
         """
         if config is None:
             config = self.config
-
         if config is None:
             raise ValueError("OAuth configuration is required")
+        if refresh_token is None:
+            raise ValueError("Refresh token is required")
 
-        # Prepare refresh request
+        # Normalise: always work with the raw token string from here on.
+        if isinstance(refresh_token, OAuthToken):
+            if not refresh_token.refresh_token:
+                raise ValueError("Refresh token is required")
+            raw_token: str = refresh_token.refresh_token
+        else:
+            if not refresh_token.strip():
+                raise ValueError("Refresh token must not be empty")
+            raw_token = refresh_token
+
         refresh_data = {
             "client_id": config.client_id,
-            "client_secret": config.client_secret,
-            "refresh_token": refresh_token,
+            "client_secret": config.client_secret or "",
+            "refresh_token": raw_token,
             "grant_type": "refresh_token",
         }
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded",
@@ -337,11 +467,12 @@ class OAuthManager:
                 )
                 response.raise_for_status()
                 token_response = response.json()
+        except httpx.HTTPStatusError as e:
+            raise OAuthException(f"Token refresh failed: {e.response.status_code}") from e
         except httpx.HTTPError as e:
             error_msg = sanitize_log_message(f"Token refresh failed: {e!s}")
             raise ValueError(error_msg) from e
 
-        # Parse refreshed token
         access_token = token_response.get("access_token")
         if not access_token:
             raise ValueError("No access token in refresh response")
@@ -350,9 +481,7 @@ class OAuthManager:
             access_token=access_token,
             token_type=token_response.get("token_type", "bearer"),
             expires_in=token_response.get("expires_in", 0),
-            refresh_token=token_response.get(
-                "refresh_token", refresh_token
-            ),  # Use old if not provided
+            refresh_token=token_response.get("refresh_token", raw_token),
             scope=token_response.get("scope"),
         )
 

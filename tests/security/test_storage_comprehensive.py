@@ -9,20 +9,18 @@ Tests cover:
 """
 
 import os
-import stat # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import stat  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from codex.security.storage import (
     SecureStorage,
-    generate_key,
     derive_key_from_password,
-    EncryptionAlgorithm,
+    generate_key,
 )
-
 
 # ============================================================================
 # Fixtures
@@ -284,10 +282,10 @@ class TestFernetEncryption:
         """Test that decryption with wrong key raises error."""
         storage1 = SecureStorage(key=encryption_key, algorithm="fernet")
         encrypted = storage1.encrypt("test")
-        
+
         other_key = generate_key()
         storage2 = SecureStorage(key=other_key, algorithm="fernet")
-        
+
         with pytest.raises(Exception):  # InvalidToken
             storage2.decrypt(encrypted)
 
@@ -370,34 +368,34 @@ class TestFileStorage:
         """Test storing and loading a secret."""
         secret = "my_secret_value"
         filepath = os.path.join(temp_dir, "secret.enc")
-        
+
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
-        
+
         assert loaded == secret
 
     def test_store_secret_creates_file(self, fernet_storage, temp_dir):
         """Test that store_secret creates the file."""
         filepath = os.path.join(temp_dir, "secret.enc")
         assert not Path(filepath).exists()
-        
+
         fernet_storage.store_secret(filepath, "test")
-        
+
         assert Path(filepath).exists()
 
     def test_store_secret_creates_parent_dirs(self, fernet_storage, temp_dir):
         """Test that store_secret creates parent directories."""
         filepath = os.path.join(temp_dir, "subdir1", "subdir2", "secret.enc")
-        
+
         fernet_storage.store_secret(filepath, "test")
-        
+
         assert Path(filepath).exists()
 
     def test_store_secret_sets_permissions(self, fernet_storage, temp_dir):
         """Test that store_secret sets secure file permissions."""
         filepath = os.path.join(temp_dir, "secret.enc")
         fernet_storage.store_secret(filepath, "test")
-        
+
         # Check permissions: should be 0o600 (owner read/write only)
         file_stat = os.stat(filepath)
         perms = stat.filemode(file_stat.st_mode)
@@ -408,7 +406,7 @@ class TestFileStorage:
     def test_load_nonexistent_file_raises_error(self, fernet_storage, temp_dir):
         """Test that loading nonexistent file raises error."""
         filepath = os.path.join(temp_dir, "nonexistent.enc")
-        
+
         with pytest.raises(FileNotFoundError):
             fernet_storage.load_secret(filepath)
 
@@ -416,29 +414,29 @@ class TestFileStorage:
         """Test storing unicode secret."""
         secret = "Secret: 世界 🌍"
         filepath = os.path.join(temp_dir, "unicode_secret.enc")
-        
+
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
-        
+
         assert loaded == secret
 
     def test_store_large_secret(self, fernet_storage, temp_dir):
         """Test storing large secret."""
         secret = "x" * 1000000  # 1MB
         filepath = os.path.join(temp_dir, "large_secret.enc")
-        
+
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
-        
+
         assert loaded == secret
 
     def test_store_secret_overwrites_existing(self, fernet_storage, temp_dir):
         """Test that store_secret overwrites existing file."""
         filepath = os.path.join(temp_dir, "secret.enc")
-        
+
         fernet_storage.store_secret(filepath, "first")
         fernet_storage.store_secret(filepath, "second")
-        
+
         loaded = fernet_storage.load_secret(filepath)
         assert loaded == "second"
 
@@ -446,13 +444,13 @@ class TestFileStorage:
         """Test secret_exists returns True for existing file."""
         filepath = os.path.join(temp_dir, "secret.enc")
         fernet_storage.store_secret(filepath, "test")
-        
+
         assert fernet_storage.secret_exists(filepath)
 
     def test_secret_exists_returns_false(self, fernet_storage, temp_dir):
         """Test secret_exists returns False for nonexistent file."""
         filepath = os.path.join(temp_dir, "nonexistent.enc")
-        
+
         assert not fernet_storage.secret_exists(filepath)
 
 
@@ -467,9 +465,9 @@ class TestCrossAlgorithmCompatibility:
         """Test that Fernet-encrypted data cannot be decrypted by AES-GCM."""
         fernet = SecureStorage(key=encryption_key, algorithm="fernet")
         encrypted = fernet.encrypt("test")
-        
+
         aes = SecureStorage(key=encryption_key, algorithm="aes-gcm")
-        
+
         # Should raise an error (authentication failure)
         with pytest.raises(Exception):
             aes.decrypt(encrypted)
@@ -477,15 +475,15 @@ class TestCrossAlgorithmCompatibility:
     def test_different_algorithms_same_plaintext(self, encryption_key):
         """Test that different algorithms produce different ciphertexts."""
         plaintext = "test_plaintext"
-        
+
         fernet = SecureStorage(key=encryption_key, algorithm="fernet")
         aes = SecureStorage(key=encryption_key, algorithm="aes-gcm")
         chacha = SecureStorage(key=encryption_key, algorithm="chacha20")
-        
+
         encrypted_fernet = fernet.encrypt(plaintext)
         encrypted_aes = aes.encrypt(plaintext)
         encrypted_chacha = chacha.encrypt(plaintext)
-        
+
         # All should decrypt to same value
         assert fernet.decrypt(encrypted_fernet) == plaintext
         assert aes.decrypt(encrypted_aes) == plaintext
@@ -513,7 +511,7 @@ class TestEdgeCasesAndErrors:
         """Test key derivation from empty password."""
         key, salt = derive_key_from_password("")
         storage = SecureStorage(key=key, algorithm="fernet")
-        
+
         # Should still work
         encrypted = storage.encrypt("test")
         decrypted = storage.decrypt(encrypted)
@@ -522,10 +520,10 @@ class TestEdgeCasesAndErrors:
     def test_store_secret_with_special_filename(self, fernet_storage, temp_dir):
         """Test storing secret with special characters in filename."""
         filepath = os.path.join(temp_dir, "secret_with-special.chars_123.enc")
-        
+
         fernet_storage.store_secret(filepath, "test")
         loaded = fernet_storage.load_secret(filepath)
-        
+
         assert loaded == "test"
 
 
@@ -540,55 +538,55 @@ class TestStorageIntegration:
         """Test complete workflow: generate key, derive, encrypt, store, load."""
         # Generate key
         key = generate_key()
-        
+
         # Create storage
         storage = SecureStorage(key=key, algorithm="fernet")
-        
+
         # Store secret
         filepath = os.path.join(temp_dir, "workflow_secret.enc")
         secret = "my_important_secret"
         storage.store_secret(filepath, secret)
-        
+
         # Load secret
         loaded = storage.load_secret(filepath)
-        
+
         assert loaded == secret
 
     def test_password_based_workflow(self, temp_dir):
         """Test workflow using password-based key derivation."""
         password = "MySecurePassword123!"
-        
+
         # Derive key
         key, salt = derive_key_from_password(password)
-        
+
         # Create storage and store secret
         storage = SecureStorage(key=key, algorithm="fernet")
         filepath = os.path.join(temp_dir, "password_secret.enc")
         secret = "database_password"
         storage.store_secret(filepath, secret)
-        
+
         # Recreate key from password and salt
         key2, _ = derive_key_from_password(password, salt=salt)
         storage2 = SecureStorage(key=key2, algorithm="fernet")
-        
+
         # Load secret
         loaded = storage2.load_secret(filepath)
-        
+
         assert loaded == secret
 
     def test_multi_algorithm_storage(self, encryption_key, temp_dir):
         """Test storing with one algorithm, attempting load with another."""
         secret = "test_secret"
         filepath = os.path.join(temp_dir, "secret.enc")
-        
+
         # Store with Fernet
         fernet = SecureStorage(key=encryption_key, algorithm="fernet")
         fernet.store_secret(filepath, secret)
-        
+
         # Try to load with Fernet (should work)
         loaded = fernet.load_secret(filepath)
         assert loaded == secret
-        
+
         # Try to load with AES-GCM (should fail)
         aes = SecureStorage(key=encryption_key, algorithm="aes-gcm")
         with pytest.raises(Exception):

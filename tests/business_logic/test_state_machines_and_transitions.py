@@ -32,20 +32,20 @@ class TestStateBasics:
             "current_state": TrainingState.INITIALIZED,
             "history": []
         }
-        
+
         assert state_machine["current_state"] == TrainingState.INITIALIZED
 
     def test_state_tracking(self):
         """Test state machine tracks all states."""
         machine = {"current": TrainingState.INITIALIZED}
         states_visited = [machine["current"]]
-        
+
         machine["current"] = TrainingState.LOADING_DATA
         states_visited.append(machine["current"])
-        
+
         machine["current"] = TrainingState.TRAINING
         states_visited.append(machine["current"])
-        
+
         assert len(states_visited) == 3
 
     def test_state_equality(self):
@@ -53,7 +53,7 @@ class TestStateBasics:
         state1 = TrainingState.TRAINING
         state2 = TrainingState.TRAINING
         state3 = TrainingState.VALIDATING
-        
+
         assert state1 == state2
         assert state1 != state3
 
@@ -61,13 +61,13 @@ class TestStateBasics:
         """Test multiple independent state machines."""
         machine1 = {"state": TrainingState.TRAINING}
         machine2 = {"state": TrainingState.INITIALIZED}
-        
+
         assert machine1["state"] != machine2["state"]
 
     def test_state_representation(self):
         """Test state string representation."""
         state = TrainingState.TRAINING
-        
+
         assert str(state.value) == "training"
         assert state.name == "TRAINING"
 
@@ -79,12 +79,12 @@ class TestStateTransitions:
         """Test valid forward state transition."""
         current = TrainingState.INITIALIZED
         next_state = TrainingState.LOADING_DATA
-        
+
         valid_transitions = {
             TrainingState.INITIALIZED: [TrainingState.LOADING_DATA],
             TrainingState.LOADING_DATA: [TrainingState.TRAINING],
         }
-        
+
         can_transition = next_state in valid_transitions.get(current, [])
         assert can_transition is True
 
@@ -92,7 +92,7 @@ class TestStateTransitions:
         """Test invalid backward state transition."""
         current = TrainingState.TRAINING
         next_state = TrainingState.INITIALIZED
-        
+
         valid_transitions = {
             TrainingState.TRAINING: [
                 TrainingState.VALIDATING,
@@ -100,7 +100,7 @@ class TestStateTransitions:
                 TrainingState.FAILED
             ]
         }
-        
+
         can_transition = next_state in valid_transitions.get(current, [])
         assert can_transition is False
 
@@ -108,24 +108,24 @@ class TestStateTransitions:
         """Test transition to error/failed state."""
         current = TrainingState.TRAINING
         error_occurred = True
-        
+
         if error_occurred:
             next_state = TrainingState.FAILED
         else:
             next_state = TrainingState.VALIDATING
-        
+
         assert next_state == TrainingState.FAILED
 
     def test_transition_from_failed_state(self):
         """Test recovery from failed state."""
         current = TrainingState.FAILED
-        
+
         # Can retry or terminate
         recovery_options = [
             TrainingState.INITIALIZED,  # Retry
             TrainingState.COMPLETED,    # Terminate
         ]
-        
+
         assert TrainingState.INITIALIZED in recovery_options
 
     def test_transition_sequence(self):
@@ -138,10 +138,10 @@ class TestStateTransitions:
             TrainingState.CHECKPOINTING,
             TrainingState.COMPLETED,
         ]
-        
+
         for i, state in enumerate(transitions):
             assert state is not None
-        
+
         assert transitions[0] == TrainingState.INITIALIZED
         assert transitions[-1] == TrainingState.COMPLETED
 
@@ -153,31 +153,31 @@ class TestTransitionGuards:
         """Test transition guard checks data is loaded."""
         data_loaded = True
         current_state = TrainingState.LOADING_DATA
-        
+
         can_start_training = (
-            current_state == TrainingState.LOADING_DATA and 
+            current_state == TrainingState.LOADING_DATA and
             data_loaded
         )
-        
+
         assert can_start_training is True
 
     def test_guard_model_initialized(self):
         """Test transition guard checks model is initialized."""
         model_ready = True
         can_train = model_ready
-        
+
         assert can_train is True
 
     def test_guard_fails_without_precondition(self):
         """Test guard fails without required precondition."""
         checkpoint_saved = False
         current_state = TrainingState.TRAINING
-        
+
         can_finalize = (
-            current_state == TrainingState.TRAINING and 
+            current_state == TrainingState.TRAINING and
             checkpoint_saved
         )
-        
+
         assert can_finalize is False
 
     def test_multiple_guards(self):
@@ -185,22 +185,22 @@ class TestTransitionGuards:
         data_ready = True
         model_ready = True
         resources_available = True
-        
+
         can_start = (
-            data_ready and 
-            model_ready and 
+            data_ready and
+            model_ready and
             resources_available
         )
-        
+
         assert can_start is True
 
     def test_guard_timeout(self):
         """Test guard checks timeout conditions."""
         max_training_time = 3600
         elapsed_time = 2000
-        
+
         time_limit_ok = elapsed_time < max_training_time
-        
+
         assert time_limit_ok is True
 
 
@@ -211,41 +211,41 @@ class TestEventHandling:
         """Test event triggers state transition."""
         event = "data_loaded"
         state = TrainingState.LOADING_DATA
-        
+
         event_handlers = {
             "data_loaded": TrainingState.TRAINING,
             "error": TrainingState.FAILED,
         }
-        
+
         if event in event_handlers:
             next_state = event_handlers[event]
         else:
             next_state = state
-        
+
         assert next_state == TrainingState.TRAINING
 
     def test_unhandled_event_ignored(self):
         """Test unhandled events are ignored."""
         event = "unknown_event"
         state = TrainingState.TRAINING
-        
+
         event_handlers = {
             "validation_complete": TrainingState.CHECKPOINTING,
             "error": TrainingState.FAILED,
         }
-        
+
         next_state = event_handlers.get(event, state)
-        
+
         assert next_state == state
 
     def test_event_queue(self):
         """Test event queue for pending events."""
         event_queue = []
-        
+
         event_queue.append("data_loaded")
         event_queue.append("training_complete")
         event_queue.append("checkpoint_saved")
-        
+
         while event_queue:
             event = event_queue.pop(0)
             assert event is not None
@@ -258,7 +258,7 @@ class TestEventHandling:
             "message": "Training failed",
             "timestamp": "2024-01-01T00:00:00Z"
         }
-        
+
         assert event["error_code"] == 500
         assert event["type"] == "error"
 
@@ -269,7 +269,7 @@ class TestStateInvariants:
     def test_only_one_current_state(self):
         """Test machine has exactly one current state."""
         machine = {"current_state": TrainingState.TRAINING}
-        
+
         assert machine["current_state"] is not None
         assert isinstance(machine["current_state"], TrainingState)
 
@@ -277,7 +277,7 @@ class TestStateInvariants:
         """Test state values are immutable."""
         state = TrainingState.TRAINING
         original_state = state
-        
+
         # States are immutable enums
         assert state == original_state
         assert id(state) == id(original_state)
@@ -293,20 +293,20 @@ class TestStateInvariants:
             TrainingState.COMPLETED,
             TrainingState.FAILED,
         ]
-        
+
         assert len(valid_states) == 7
 
     def test_no_undefined_states(self):
         """Test no undefined states are used."""
         machine_state = TrainingState.TRAINING
-        
+
         try:
             # Attempt to create invalid state would raise error
             invalid = TrainingState["INVALID"]
             valid = False
         except KeyError:
             valid = True
-        
+
         assert valid is True
 
 
@@ -316,63 +316,63 @@ class TestStateCallbacks:
     def test_on_enter_callback(self):
         """Test callback when entering state."""
         callbacks = []
-        
+
         def on_enter_training(context):
             callbacks.append("entered_training")
-        
+
         # Simulate entering training state
         on_enter_training({})
-        
+
         assert "entered_training" in callbacks
 
     def test_on_exit_callback(self):
         """Test callback when exiting state."""
         callbacks = []
-        
+
         def on_exit_training(context):
             callbacks.append("exited_training")
-        
+
         # Simulate exiting training state
         on_exit_training({})
-        
+
         assert "exited_training" in callbacks
 
     def test_on_transition_callback(self):
         """Test callback for transitions."""
         callbacks = []
-        
+
         def on_transition(from_state, to_state):
             callbacks.append({
                 "from": from_state,
                 "to": to_state
             })
-        
+
         on_transition(TrainingState.LOADING_DATA, TrainingState.TRAINING)
-        
+
         assert len(callbacks) == 1
         assert callbacks[0]["from"] == TrainingState.LOADING_DATA
 
     def test_callback_execution_order(self):
         """Test callbacks execute in correct order."""
         execution_order = []
-        
+
         # on_exit -> on_transition -> on_enter
         execution_order.append("on_exit")
         execution_order.append("on_transition")
         execution_order.append("on_enter")
-        
+
         assert execution_order == ["on_exit", "on_transition", "on_enter"]
 
     def test_callback_with_error_handling(self):
         """Test callback error handling."""
         callbacks = []
-        
+
         try:
             # Callback that fails
             raise ValueError("Callback failed")
         except ValueError:
             callbacks.append("error_handled")
-        
+
         assert "error_handled" in callbacks
 
 
@@ -382,39 +382,39 @@ class TestConcurrentStateTransitions:
     def test_atomic_state_transition(self):
         """Test state transitions are atomic."""
         state = TrainingState.TRAINING
-        
+
         # Atomically transition
         new_state = TrainingState.VALIDATING
         state = new_state
-        
+
         assert state == TrainingState.VALIDATING
 
     def test_prevent_concurrent_transitions(self):
         """Test preventing concurrent state changes."""
         lock = {"locked": False}
         state = TrainingState.TRAINING
-        
+
         if not lock["locked"]:
             lock["locked"] = True
             state = TrainingState.VALIDATING
             lock["locked"] = False
-        
+
         assert state == TrainingState.VALIDATING
 
     def test_transition_queue_order(self):
         """Test queued transitions maintain order."""
         transition_queue = []
-        
+
         transition_queue.append(
             (TrainingState.TRAINING, TrainingState.VALIDATING)
         )
         transition_queue.append(
             (TrainingState.VALIDATING, TrainingState.CHECKPOINTING)
         )
-        
+
         current = TrainingState.TRAINING
         while transition_queue:
             from_state, to_state = transition_queue.pop(0)
             current = to_state
-        
+
         assert current == TrainingState.CHECKPOINTING

@@ -175,20 +175,20 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          
+
           # Find the PR associated with this push branch
           PR_NUMBER=$(gh pr list \
             --repo "$REPO" \
             --head "${{ github.ref_name }}" \
             --state open \
             --json number -q '.[0].number' 2>/dev/null || echo "")
-          
+
           if [ -z "$PR_NUMBER" ]; then
             echo "::notice::No open PR found for branch ${{ github.ref_name }} — skipping approval"
             echo "pr_number=" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "✅ Found PR #$PR_NUMBER for branch ${{ github.ref_name }}"
 
@@ -201,7 +201,7 @@ jobs:
           PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
         run: |
           set -euo pipefail
-          
+
           # Execute the approval script for this PR
           python scripts/ci/approve_pending_runs.py 2>&1 || {
             EXIT_CODE=$?
@@ -220,7 +220,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     if: |
-      github.event_name == 'workflow_dispatch' && 
+      github.event_name == 'workflow_dispatch' &&
       github.event.inputs.approval_source != ''
     outputs:
       approval_decision: ${{ steps.evaluate.outputs.decision }}
@@ -247,7 +247,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          
+
           # Validate inputs
           if [ -z "$TARGET_PR" ]; then
             echo "decision=SKIP" >> $GITHUB_OUTPUT
@@ -257,10 +257,10 @@ jobs:
             echo "::warning::No target PR provided (target_pr or pr_number required)"
             exit 0
           fi
-          
+
           # Sanitize approval_reason to prevent injection
           SAFE_REASON=$(echo "$APPROVAL_REASON" | sed 's/[^a-zA-Z0-9:_.-]/ /g' | head -c 256)
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Priority 1: Force Deny Intent (instant deny, no processing)
           # ─────────────────────────────────────────────────────────────────────────
@@ -273,7 +273,7 @@ jobs:
             echo "⛔ Priority 1: Force deny requested — skipping all further evaluation"
             exit 0
           fi
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Priority 2: Persistent Label Rule (wec:auto-approve)
           # ─────────────────────────────────────────────────────────────────────────
@@ -287,7 +287,7 @@ jobs:
             echo "✅ Priority 2: Persistent label 'wec:auto-approve' matched"
             exit 0
           fi
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Priority 3: Single-Session Label Rule (wec:auto-approve-once)
           # Time-limited approval window based on TTL
@@ -302,12 +302,12 @@ jobs:
               echo "should_proceed=false" >> $GITHUB_OUTPUT
               exit 0
             fi
-            
+
             CREATED_TS=$(date -d "$CREATED_AT" +%s 2>/dev/null || echo "0")
             CURRENT_TS=$(date +%s)
             ELAPSED_HOURS=$(( (CURRENT_TS - CREATED_TS) / 3600 ))
             TTL_INT=${APPROVAL_TTL_HOURS:-1}
-            
+
             if [ "$ELAPSED_HOURS" -le "$TTL_INT" ]; then
               echo "decision=APPROVE" >> $GITHUB_OUTPUT
               echo "rule=single_session_label_rule" >> $GITHUB_OUTPUT
@@ -326,7 +326,7 @@ jobs:
               exit 0
             fi
           fi
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Priority 4: Maintainer Approval Rule
           # Check if PR has been approved by maintainer (@mbaetiong)
@@ -341,7 +341,7 @@ jobs:
             echo "✅ Priority 4: Maintainer approval from @$APPROVER"
             exit 0
           fi
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Priority 5: Low-Risk Approval Reason Rule
           # Patterns: docs:, chore:, etc.
@@ -355,7 +355,7 @@ jobs:
             echo "✅ Priority 5: Low-risk reason matched: $SAFE_REASON"
             exit 0
           fi
-          
+
           # ─────────────────────────────────────────────────────────────────────────
           # Fallback: No matching rule — default DENY
           # ─────────────────────────────────────────────────────────────────────────
@@ -394,10 +394,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          
+
           # Tier 1: Cognitive Brain App token (not available in this job context)
           # (available in approve-original job via step id "app-token")
-          
+
           # Tier 2: CODEX_MASTER_KEY (primary PAT)
           if [ -n "${{ secrets.CODEX_MASTER_KEY || '' }}" ]; then
             echo "token=${{ secrets.CODEX_MASTER_KEY }}" >> $GITHUB_OUTPUT
@@ -405,7 +405,7 @@ jobs:
             echo "Resolved: Using CODEX_MASTER_KEY (Tier 2)"
             exit 0
           fi
-          
+
           # Tier 3: CODEX_BACKUP_KEY (fallback PAT)
           if [ -n "${{ secrets.CODEX_BACKUP_KEY || '' }}" ]; then
             echo "token=${{ secrets.CODEX_BACKUP_KEY }}" >> $GITHUB_OUTPUT
@@ -413,7 +413,7 @@ jobs:
             echo "Resolved: Using CODEX_BACKUP_KEY (Tier 3)"
             exit 0
           fi
-          
+
           # Tier 4: github.token (limited scope, same-repo only)
           echo "token=${{ github.token }}" >> $GITHUB_OUTPUT
           echo "token_source=github_token" >> $GITHUB_OUTPUT
@@ -429,17 +429,17 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          
+
           if [ -z "$TARGET_PR" ]; then
             echo "::warning::No target PR resolved — skipping approval execution"
             exit 0
           fi
-          
+
           if [ "$DRY_RUN" = "true" ]; then
             echo "🔍 DRY RUN MODE: Would approve run $RUN_ID for PR #$TARGET_PR"
             exit 0
           fi
-          
+
           # If specific run ID provided, approve that run
           if [ -n "$RUN_ID" ]; then
             gh run approve "$RUN_ID" 2>/dev/null && \
@@ -447,17 +447,17 @@ jobs:
               echo "⚠️ Could not approve run #$RUN_ID (may already be approved)"
             exit 0
           fi
-          
+
           # Otherwise, discover and approve pending runs for this PR
           HEAD_SHA=$(gh pr view "$TARGET_PR" --repo "$REPO" --json headRefOid -q '.headRefOid' 2>/dev/null || echo "")
           if [ -z "$HEAD_SHA" ]; then
             echo "::warning::Could not resolve HEAD SHA for PR #$TARGET_PR"
             exit 0
           fi
-          
+
           # High-volume detection: If >10 pending runs, use 6-pass approach
           PENDING_COUNT=$(gh run list --repo "$REPO" --status action_required --json databaseId 2>/dev/null | grep -c '.' || echo "0")
-          
+
           if [ "$PENDING_COUNT" -ge 10 ]; then
             echo "📦 High-volume detected: $PENDING_COUNT pending runs; using 6-pass approach"
             for PASS in {1..6}; do
@@ -498,15 +498,15 @@ jobs:
           TIMESTAMP: ${{ github.event.repository.updated_at }}
         run: |
           set -euo pipefail
-          
+
           # Generate UUID for approval record
           APPROVAL_ID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")
-          
+
           # Create audit log entry (JSONL format for append-only)
           cat >> .codex/approvals.jsonl << EOF
           {"approval_id":"$APPROVAL_ID","timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","run_id":"${{ github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","confidence":$CONFIDENCE}
           EOF
-          
+
           # Commit audit log (best effort, non-fatal if fails)
           git config user.name "GitHub Action" || true
           git config user.email "action@github.com" || true
@@ -537,11 +537,11 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          
+
           if [ -z "$TARGET_PR" ]; then
             exit 0
           fi
-          
+
           # Only cleanup if single-session mode was used
           LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
           if echo "$LABELS" | grep -q "^wec:auto-approve-once$"; then
@@ -573,15 +573,15 @@ jobs:
           DECISION: ${{ needs.evaluate-approval.outputs.approval_decision }}
         run: |
           set -euo pipefail
-          
+
           # Create metrics directory
           mkdir -p .codex/metrics
-          
+
           # Append hourly metric (JSONL format)
           cat >> .codex/metrics/hourly.jsonl << EOF
           {"timestamp":"$(date -u +'%Y-%m-%dT%H:%M:%S.%3NZ')","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","decision":"$DECISION","confidence":$CONFIDENCE}
           EOF
-          
+
           # Commit metrics (best effort)
           git config user.name "GitHub Action" || true
           git config user.email "action@github.com" || true

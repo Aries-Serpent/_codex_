@@ -9,16 +9,16 @@ Tests cover:
 - Integration with sensitive patterns
 """
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from codex.security.log_sanitizer import (
+    mask_secrets,
     mask_sensitive,
     safe_log,
     safe_log_message,
     sanitize_dict_for_log,
     sanitize_log,
-    mask_secrets,
 )
-
 
 # ============================================================================
 # Fixtures
@@ -298,7 +298,7 @@ class TestMaskSensitiveJwt:
     def test_jwt_in_bearer_pattern(self):
         """Test JWT in ******"""
         jwt = "******"
-        result = mask_sensitive(f"******")
+        result = mask_sensitive("******")
         assert "***" in result
 
 

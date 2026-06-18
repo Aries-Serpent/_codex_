@@ -76,7 +76,7 @@ class TestEmbeddingAccuracy:
             # Fit on all texts together to ensure consistent vocabulary
             all_texts = [text1, text2, text3]
             embeddings = provider.encode(all_texts)
-            
+
             emb1 = embeddings[0]
             emb2 = embeddings[1]
             emb3 = embeddings[2]

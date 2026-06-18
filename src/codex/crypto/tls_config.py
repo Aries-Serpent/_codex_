@@ -3,7 +3,7 @@
 
 class TLSConfig:
     """Comprehensive tls_config implementation."""
-    
+
     def __init__(self):
         """Initialize TLSConfig."""
         self._data = {}

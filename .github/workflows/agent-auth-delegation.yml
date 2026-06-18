@@ -1575,7 +1575,7 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/${{ github.repository }}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}" \
               2>/dev/null || echo "000")
-            
+
             if [ "$HTTP_CODE" = "200" ]; then
               echo "✅ Session valid. Proceeding with reuse."
               echo "session_status=valid" >> "$GITHUB_OUTPUT"
@@ -1667,9 +1667,9 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
-             
+
             core.info(`Dispatching auto-approve-workflows.yml for agent token delegation (PR #${prNumber})`);
-             
+
             try {
               await github.rest.actions.createWorkflowDispatch({
                 owner,

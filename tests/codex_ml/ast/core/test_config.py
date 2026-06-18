@@ -5,9 +5,7 @@ Covers default values, constructor overrides, environment variable overrides,
 serialization/deserialization, validation, and edge cases.
 """
 
-import os
 from pathlib import Path
-from typing import Optional
 
 import pytest
 

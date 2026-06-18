@@ -346,7 +346,7 @@ class TestTokenManager:
         )
         token_manager.register_token(metadata)
         tokens = token_manager.list_tokens_needing_rotation()
-        assert len(tokens) >= 0
+        assert isinstance(tokens, list)
 
     def test_token_manager_mark_for_rotation(self, token_manager, token_metadata):
         """Test marking token for rotation."""

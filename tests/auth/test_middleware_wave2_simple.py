@@ -2,8 +2,6 @@
 Quick auth middleware tests to meet 100+ requirement.
 """
 
-import pytest
-from unittest.mock import Mock, patch
 
 
 class TestAuthMiddlewareBasic:

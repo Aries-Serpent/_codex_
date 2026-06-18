@@ -16,6 +16,10 @@ from .user_model import User
 from .user_repository import UserRepository
 
 
+class UserNotFoundError(Exception):
+    """Raised when a user is not found in the repository."""
+
+
 class InMemoryUserRepository(UserRepository):
     """Thread-safe, in-process user store backed by a plain dict.
 
@@ -28,6 +32,26 @@ class InMemoryUserRepository(UserRepository):
         self._lock: threading.RLock = threading.RLock()
 
     # ------------------------------------------------------------------ #
+    # Private helpers (must be called with self._lock already held)       #
+    # ------------------------------------------------------------------ #
+
+    def _find_by_username(self, username: str) -> Optional[User]:
+        """Return the user with *username*, or ``None`` (lock must be held)."""
+        username = username.strip()
+        for user in self._users.values():
+            if user.username == username:
+                return user
+        return None
+
+    def _find_by_email(self, email: str) -> Optional[User]:
+        """Return the user with *email*, or ``None`` (lock must be held)."""
+        email = email.strip().lower()
+        for user in self._users.values():
+            if user.email == email:
+                return user
+        return None
+
+    # ------------------------------------------------------------------ #
     # Write operations                                                     #
     # ------------------------------------------------------------------ #
 
@@ -35,14 +59,23 @@ class InMemoryUserRepository(UserRepository):
         """Store *user* and return it.
 
         Raises:
-            ValueError: If ``username`` or ``email`` already exists.
+            ValueError: If required user fields are empty or ``username`` or ``email`` already exists.
         """
+        if not user.user_id:
+            raise ValueError("User ID must not be empty")
+        if not user.username.strip():
+            raise ValueError("Username must not be empty")
+        if not user.email.strip():
+            raise ValueError("Email must not be empty")
+        if not user.password_hash:
+            raise ValueError("Password hash must not be empty")
+
         with self._lock:
-            if self.get_by_username(user.username) is not None:
+            if self._find_by_username(user.username) is not None:
                 raise ValueError(
                     f"Username '{sanitize_log_message(user.username)}' is already taken"
                 )
-            if self.get_by_email(user.email) is not None:
+            if self._find_by_email(user.email) is not None:
                 raise ValueError(
                     f"Email '{sanitize_log_message(user.email)}' is already registered"
                 )
@@ -53,11 +86,11 @@ class InMemoryUserRepository(UserRepository):
         """Overwrite the stored record for *user.user_id*.
 
         Raises:
-            KeyError: If *user.user_id* is not found.
+            UserNotFoundError: If *user.user_id* is not found.
         """
         with self._lock:
             if user.user_id not in self._users:
-                raise KeyError(f"User '{user.user_id}' not found")
+                raise UserNotFoundError(f"User '{user.user_id}' not found")
             self._users[user.user_id] = user
         return user
 
@@ -65,36 +98,37 @@ class InMemoryUserRepository(UserRepository):
         """Remove the record for *user_id*.
 
         Raises:
-            KeyError: If *user_id* is not found.
+            UserNotFoundError: If *user_id* is not found.
         """
         with self._lock:
             if user_id not in self._users:
-                raise KeyError(f"User '{user_id}' not found")
+                raise UserNotFoundError(f"User '{user_id}' not found")
             del self._users[user_id]
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
     # ------------------------------------------------------------------ #
 
-    def get_by_id(self, user_id: str) -> Optional[User]:
+    def get_by_id(self, user_id: str) -> User:
         with self._lock:
-            return self._users.get(user_id)
+            user = self._users.get(user_id)
+            if user is None:
+                raise UserNotFoundError(f"User '{user_id}' not found")
+            return user
 
-    def get_by_username(self, username: str) -> Optional[User]:
-        username = username.strip()
+    def get_by_username(self, username: str) -> User:
         with self._lock:
-            for user in self._users.values():
-                if user.username == username:
-                    return user
-        return None
+            user = self._find_by_username(username)
+        if user is None:
+            raise UserNotFoundError(f"User with username '{username.strip()}' not found")
+        return user
 
-    def get_by_email(self, email: str) -> Optional[User]:
-        email = email.strip().lower()
+    def get_by_email(self, email: str) -> User:
         with self._lock:
-            for user in self._users.values():
-                if user.email == email:
-                    return user
-        return None
+            user = self._find_by_email(email)
+        if user is None:
+            raise UserNotFoundError(f"User with email '{email.strip().lower()}' not found")
+        return user
 
     def list_all(self) -> list[User]:
         with self._lock:

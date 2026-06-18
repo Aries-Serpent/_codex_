@@ -247,7 +247,7 @@ class TestSupportsFeature:
         """Test non-string inputs handling."""
         # Non-string feature name returns False
         assert supports_feature(123, "1.0") is False
-        
+
         # Non-string version causes TypeError
         with pytest.raises(TypeError):
             supports_feature("basic_tools", 1.0)
@@ -287,7 +287,7 @@ class TestValidateVersion:
     def test_validate_version_non_string(self):
         """Test validation with non-string input."""
         assert validate_version(None) is False
-        
+
         # Non-string numeric input causes TypeError
         with pytest.raises(TypeError):
             validate_version(1.0)
@@ -347,20 +347,20 @@ class TestVersioningIntegration:
         """Test full version negotiation workflow."""
         # Client supports multiple versions
         client_versions = ["1.0", "2.0", "1.5"]
-        
+
         # Negotiate
         agreed_version = negotiate_version(client_versions)
-        
+
         # Validate the agreed version
         assert validate_version(agreed_version)
-        
+
         # Check features available
         assert supports_feature("basic_tools", agreed_version)
 
     def test_incompatible_versions_flow(self):
         """Test flow with incompatible versions."""
         client_versions = ["2.0", "3.0"]
-        
+
         with pytest.raises(ValueError):
             negotiate_version(client_versions)
 
@@ -368,7 +368,7 @@ class TestVersioningIntegration:
         """Test that negotiation properly sanitizes input."""
         # Mix of valid and invalid
         client_versions = ["1.0", "invalid", "2.0"]
-        
+
         # Should still work by filtering
         result = negotiate_version(client_versions)
         assert result == "1.0"
@@ -376,7 +376,7 @@ class TestVersioningIntegration:
     def test_feature_availability_by_version(self):
         """Test checking all features for supported versions."""
         features = ["basic_tools", "streaming"]
-        
+
         for version in MCP_VERSIONS:
             assert validate_version(version)
             for feature in features:
@@ -388,10 +388,10 @@ class TestVersioningIntegration:
         """Test version negotiation round-trip."""
         # Client proposes version
         client_versions = ["1.0"]
-        
+
         # Server negotiates
         agreed = negotiate_version(client_versions)
-        
+
         # Both sides validate the agreed version
         assert validate_version(agreed)
         assert agreed in MCP_VERSIONS

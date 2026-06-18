@@ -6,15 +6,10 @@ Test Categories: Unit (60), Integration (30), Edge Cases (25), Error Handling (1
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-
 import numpy as np
 import pytest
-import torch
 
-from codex_ml.metrics.base import BaseMetric
+import torch
 from codex_ml.metrics.classification import (
     StreamingAccuracy,
     accuracy,
@@ -23,7 +18,6 @@ from codex_ml.metrics.classification import (
     recall,
 )
 from codex_ml.metrics.core import Metric, MetricRegistry
-
 
 # ============================================================================
 # FIXTURES (Reusable test data and mocks)

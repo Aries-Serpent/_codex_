@@ -15,9 +15,6 @@ Categories:
 - Parameter validation
 """
 
-import json
-from typing import Any, Dict
-from unittest.mock import Mock, patch
 
 import pytest
 
@@ -29,7 +26,6 @@ from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

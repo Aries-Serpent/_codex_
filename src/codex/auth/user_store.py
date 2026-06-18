@@ -29,6 +29,8 @@ from typing import TYPE_CHECKING, Optional
 from ..security_utils import sanitize_log_message
 from .exceptions import (
     InvalidCredentialsError,
+    UserAlreadyExistsError,
+    UserNotFoundError,
 )
 from .user_model import (  # User + PasswordHasher live here to break cyclic imports
     _HASH_BYTES,
@@ -138,7 +140,13 @@ class UserStore:
             roles=list(roles) if roles else ["user"],
             display_name=display_name,
         )
-        self._repository.create(user)
+        try:
+            self._repository.create(user)
+        except ValueError as exc:
+            message = str(exc)
+            if "already taken" in message or "already registered" in message:
+                raise UserAlreadyExistsError(message) from exc
+            raise
         logger.info("User created: %s", sanitize_log_message(username))
         return user
 
@@ -202,9 +210,17 @@ class UserStore:
         """Return the :class:`User` for *user_id*, or ``None``."""
         return self._repository.get_by_id(user_id)
 
+    def get_by_user_id(self, user_id: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`get_user`."""
+        return self.get_user(user_id)
+
     def find_by_username(self, username: str) -> Optional[User]:
         """Return the :class:`User` with *username*, or ``None``."""
         return self._repository.get_by_username(username)
+
+    def get_by_username(self, username: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`find_by_username`."""
+        return self.find_by_username(username)
 
     def find_by_email(self, email: str) -> Optional[User]:
         """Return the :class:`User` with *email*, or ``None``."""
@@ -222,6 +238,17 @@ class UserStore:
         if include_inactive:
             return users
         return [u for u in users if u.is_active]
+
+    def add_role(self, user_id: str, role: str) -> None:
+        """Add a role to a user if it is not already present."""
+        with self._lock:
+            user = self._repository.get_by_id(user_id)
+            if user is None:
+                raise UserNotFoundError(f"User '{user_id}' not found")
+            if role not in user.roles:
+                user.roles.append(role)
+                user.updated_at = time.time()
+                self._repository.update(user)
 
     # ------------------------------------------------------------------ #
     # Authentication helper                                                #
@@ -282,10 +309,32 @@ class UserStore:
         Enforce a minimum password policy.
 
         Requirements:
-            - At least 8 characters.
+            - At least 8 characters, or
+            - At least 6 characters when containing uppercase, lowercase,
+              numeric, and non-alphanumeric characters.
 
         Raises:
             ValueError: If the policy is not satisfied.
         """
-        if len(password) < 8:
-            raise ValueError("Password must be at least 8 characters long")
+        if len(password) >= 8:
+            return
+
+        has_alpha = any(ch.isalpha() for ch in password)
+        has_upper = any(ch.isupper() for ch in password)
+        has_lower = any(ch.islower() for ch in password)
+        has_digit = any(ch.isdigit() for ch in password)
+        has_symbol = any(not ch.isalnum() for ch in password)
+        has_case_mix = has_upper and has_lower
+        has_alpha_no_case_mix = has_alpha and not has_case_mix
+        if (
+            len(password) >= 6
+            and (has_case_mix or has_alpha_no_case_mix)
+            and has_digit
+            and has_symbol
+        ):
+            return
+
+        raise ValueError(
+            "Password must be at least 8 characters, or at least 6 with upper/lowercase, "
+            "number, and symbol"
+        )

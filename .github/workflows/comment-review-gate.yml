@@ -196,7 +196,7 @@ jobs:
     timeout-minutes: 5
     needs: [scan-and-post, gate]
     if: failure()
-    
+
     permissions:
       pull-requests: write
       issues: write

@@ -3,7 +3,7 @@
 
 class AccessControl:
     """Comprehensive access_control implementation."""
-    
+
     def __init__(self):
         """Initialize AccessControl."""
         self._data = {}
