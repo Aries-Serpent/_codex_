@@ -1,35 +1,32 @@
-# Session Context — 2026-06-18T01:11:17Z
+# Session Context — 2026-06-18T01:14:12Z
 **Branch:** `0D_base_`  **PR:** #4973  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4991` (✅)
-- GraphQL remaining: `4969` (✅)
+- REST remaining: `4932` (✅)
+- GraphQL remaining: `4958` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4973 — 0 d base
+## 📋 PR #4973 — Fix CodeQL security alert and undefined test module exports
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
+- **PR Comment Review Gate** — `failure` on `0D_base_` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `b4493e55` fix: remove undefined exports from edge case boundary tests __all__ — copilot-swe-agent[bot] (2026-06-18)
+- `50209138` fix: remove undefined exports from edge case boundary tests __all__ — copilot-swe-agent[bot] (2026-06-18)
 - `40e9446b` fix(security): remove sensitive token expiration timestamp from logs (CodeQL ale — copilot-swe-agent[bot] (2026-06-18)
 - `c223981c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-18)
 - `49c3d7a5` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-18)
 - `9e8e8a9f` Potential fix for pull request finding 'CodeQL / Clear-text logging of sensitive — Statix (2026-06-18)
 - `e7a9e785` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-18)
 - `8be61915` Merge pull request #4976 from Aries-Serpent/copilot/fix-secrets-baseline-job — Statix (2026-06-18)
-- `aca66ac4` fix(ci): update .secrets.baseline after pragma verification [skip ci] — copilot-swe-agent[bot] (2026-06-18)
-- `a1d66b4b` fix(ci): add pragmas to false-positive secrets in documentation — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
