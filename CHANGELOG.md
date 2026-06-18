@@ -1,5 +1,19 @@
 # Changelog
 
+## [2026-06-18] — PR #4985 Branch Alignment with main
+
+### Fixed
+- Merged `origin/main` (commits `ffc08791d`, `0f68b413c`) into branch: clean merge, 2 test files updated with `<!-- pragma: allowlist secret -->` annotations
+- Resolved `🚦 Comment review gate` failure by replying to blocking comment #4746531534
+- Branch is now 0 behind / 4 ahead of main, ready for merge
+
+### Session
+- PR #4985 branch alignment + comment gate resolution
+- Agent: @copilot
+- HEAD: merge commit (sync with main)
+
+---
+
 ## [2026-06-18] — PR #4985 CI Gate Compliance Restore
 
 ### Fixed
