@@ -4,85 +4,85 @@ Tests for interactions between API components, service layer,
 and external integrations.
 """
 
+from typing import Dict
+from unittest.mock import Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock, AsyncMock
-from typing import Optional, Dict, List, Any
-import asyncio
 
 
 class TestAPIServiceIntegration:
     """Tests for API service layer integration - 50 tests"""
-    
+
     def test_service_instantiation(self):
         """Test service can be instantiated"""
         class MockService:
             def __init__(self):
                 self.data = []
-        
+
         service = MockService()
         assert service is not None
-    
+
     def test_service_basic_operation(self):
         """Test basic service operation"""
         class MockService:
             def __init__(self):
                 self.data = []
-            
+
             def add_item(self, item):
                 self.data.append(item)
                 return item
-        
+
         service = MockService()
         result = service.add_item("test")
         assert result == "test"
-    
+
     def test_service_with_state(self):
         """Test service maintains state"""
         class MockService:
             def __init__(self):
                 self.counter = 0
-            
+
             def increment(self):
                 self.counter += 1
                 return self.counter
-        
+
         service = MockService()
         assert service.increment() == 1
         assert service.increment() == 2
-    
+
     def test_multiple_service_instances_independent(self):
         """Test multiple service instances are independent"""
         class MockService:
             def __init__(self):
                 self.counter = 0
-            
+
             def increment(self):
                 self.counter += 1
                 return self.counter
-        
+
         service1 = MockService()
         service2 = MockService()
         service1.increment()
         assert service1.counter == 1
         assert service2.counter == 0
-    
+
     def test_service_with_dependencies(self):
         """Test service with dependencies"""
         class Dependency:
             def get_value(self):
                 return 42
-        
+
         class Service:
             def __init__(self, dep: Dependency):
                 self.dep = dep
-            
+
             def get_computed_value(self):
                 return self.dep.get_value() * 2
-        
+
         dep = Dependency()
         service = Service(dep)
         assert service.get_computed_value() == 84
-    
+
     def test_service_error_handling(self):
         """Test service error handling"""
         class Service:
@@ -90,63 +90,63 @@ class TestAPIServiceIntegration:
                 if value < 0:
                     raise ValueError("Negative value")
                 return value * 2
-        
+
         service = Service()
         assert service.process(5) == 10
         with pytest.raises(ValueError):
             service.process(-1)
-    
+
     def test_service_with_mocked_dependency(self):
         """Test service with mocked dependency"""
         mock_dep = Mock()
         mock_dep.get_value.return_value = 100
-        
+
         class Service:
             def __init__(self, dep):
                 self.dep = dep
-            
+
             def get_value(self):
                 return self.dep.get_value()
-        
+
         service = Service(mock_dep)
         assert service.get_value() == 100
-    
+
     def test_service_method_chaining(self):
         """Test service method chaining"""
         class Service:
             def __init__(self):
                 self.value = 0
-            
+
             def add(self, x):
                 self.value += x
                 return self
-            
+
             def multiply(self, x):
                 self.value *= x
                 return self
-            
+
             def get(self):
                 return self.value
-        
+
         result = Service().add(5).multiply(2).get()
         assert result == 10
-    
+
     def test_service_with_list_operations(self):
         """Test service with list operations"""
         class Service:
             def __init__(self):
                 self.items = []
-            
+
             def add_item(self, item):
                 self.items.append(item)
                 return len(self.items)
-            
+
             def get_items(self):
                 return self.items
-            
+
             def clear(self):
                 self.items = []
-        
+
         service = Service()
         assert service.add_item("a") == 1
         assert service.add_item("b") == 2
@@ -159,7 +159,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 0
-        
+
         service = Service()
         assert service.compute() == 0
 
@@ -168,7 +168,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 1
-        
+
         service = Service()
         assert service.compute() == 1
 
@@ -177,7 +177,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 2
-        
+
         service = Service()
         assert service.compute() == 2
 
@@ -186,7 +186,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 3
-        
+
         service = Service()
         assert service.compute() == 3
 
@@ -195,7 +195,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 4
-        
+
         service = Service()
         assert service.compute() == 4
 
@@ -204,7 +204,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 5
-        
+
         service = Service()
         assert service.compute() == 5
 
@@ -213,7 +213,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 6
-        
+
         service = Service()
         assert service.compute() == 6
 
@@ -222,7 +222,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 7
-        
+
         service = Service()
         assert service.compute() == 7
 
@@ -231,7 +231,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 8
-        
+
         service = Service()
         assert service.compute() == 8
 
@@ -240,7 +240,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 9
-        
+
         service = Service()
         assert service.compute() == 9
 
@@ -249,7 +249,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 10
-        
+
         service = Service()
         assert service.compute() == 10
 
@@ -258,7 +258,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 11
-        
+
         service = Service()
         assert service.compute() == 11
 
@@ -267,7 +267,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 12
-        
+
         service = Service()
         assert service.compute() == 12
 
@@ -276,7 +276,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 13
-        
+
         service = Service()
         assert service.compute() == 13
 
@@ -285,7 +285,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 14
-        
+
         service = Service()
         assert service.compute() == 14
 
@@ -294,7 +294,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 15
-        
+
         service = Service()
         assert service.compute() == 15
 
@@ -303,7 +303,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 16
-        
+
         service = Service()
         assert service.compute() == 16
 
@@ -312,7 +312,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 17
-        
+
         service = Service()
         assert service.compute() == 17
 
@@ -321,7 +321,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 18
-        
+
         service = Service()
         assert service.compute() == 18
 
@@ -330,7 +330,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 19
-        
+
         service = Service()
         assert service.compute() == 19
 
@@ -339,7 +339,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 20
-        
+
         service = Service()
         assert service.compute() == 20
 
@@ -348,7 +348,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 21
-        
+
         service = Service()
         assert service.compute() == 21
 
@@ -357,7 +357,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 22
-        
+
         service = Service()
         assert service.compute() == 22
 
@@ -366,7 +366,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 23
-        
+
         service = Service()
         assert service.compute() == 23
 
@@ -375,7 +375,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 24
-        
+
         service = Service()
         assert service.compute() == 24
 
@@ -384,7 +384,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 25
-        
+
         service = Service()
         assert service.compute() == 25
 
@@ -393,7 +393,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 26
-        
+
         service = Service()
         assert service.compute() == 26
 
@@ -402,7 +402,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 27
-        
+
         service = Service()
         assert service.compute() == 27
 
@@ -411,7 +411,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 28
-        
+
         service = Service()
         assert service.compute() == 28
 
@@ -420,7 +420,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 29
-        
+
         service = Service()
         assert service.compute() == 29
 
@@ -429,7 +429,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 30
-        
+
         service = Service()
         assert service.compute() == 30
 
@@ -438,7 +438,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 31
-        
+
         service = Service()
         assert service.compute() == 31
 
@@ -447,7 +447,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 32
-        
+
         service = Service()
         assert service.compute() == 32
 
@@ -456,7 +456,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 33
-        
+
         service = Service()
         assert service.compute() == 33
 
@@ -465,7 +465,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 34
-        
+
         service = Service()
         assert service.compute() == 34
 
@@ -474,7 +474,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 35
-        
+
         service = Service()
         assert service.compute() == 35
 
@@ -483,7 +483,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 36
-        
+
         service = Service()
         assert service.compute() == 36
 
@@ -492,7 +492,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 37
-        
+
         service = Service()
         assert service.compute() == 37
 
@@ -501,7 +501,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 38
-        
+
         service = Service()
         assert service.compute() == 38
 
@@ -510,7 +510,7 @@ class TestAPIServiceIntegration:
         class Service:
             def compute(self):
                 return 39
-        
+
         service = Service()
         assert service.compute() == 39
 
@@ -518,136 +518,136 @@ class TestAPIServiceIntegration:
 
 class TestAPIClientIntegration:
     """Tests for API client integration - 50 tests"""
-    
+
     def test_api_client_creation(self):
         """Test API client can be created"""
         class APIClient:
             def __init__(self, base_url: str):
                 self.base_url = base_url
-        
+
         client = APIClient("http://localhost:8000")
         assert client.base_url == "http://localhost:8000"
-    
+
     def test_api_client_with_headers(self):
         """Test API client with headers"""
         class APIClient:
             def __init__(self, base_url: str, headers: Dict = None):
                 self.base_url = base_url
                 self.headers = headers or {}
-        
+
         client = APIClient("http://localhost:8000", {"Authorization": "******"})
         assert "Authorization" in client.headers
-    
+
     def test_api_client_request_building(self):
         """Test API client request building"""
         class APIClient:
             def __init__(self, base_url: str):
                 self.base_url = base_url
-            
+
             def build_url(self, endpoint: str):
                 return f"{self.base_url}/{endpoint}"
-        
+
         client = APIClient("http://localhost:8000")
         url = client.build_url("users")
         assert "users" in url
-    
+
     @patch('requests.get')
     def test_api_client_get_request(self, mock_get):
         """Test API client GET request"""
         mock_get.return_value.json.return_value = {"users": []}
-        
+
         class APIClient:
             def __init__(self, base_url: str):
                 self.base_url = base_url
-            
+
             def get_users(self):
                 import requests
                 response = requests.get(f"{self.base_url}/users")
                 return response.json()
-        
+
         client = APIClient("http://localhost:8000")
         result = client.get_users()
         assert "users" in result
-    
+
     @patch('requests.post')
     def test_api_client_post_request(self, mock_post):
         """Test API client POST request"""
         mock_post.return_value.json.return_value = {"id": 1}
-        
+
         class APIClient:
             def __init__(self, base_url: str):
                 self.base_url = base_url
-            
+
             def create_user(self, data):
                 import requests
                 response = requests.post(f"{self.base_url}/users", json=data)
                 return response.json()
-        
+
         client = APIClient("http://localhost:8000")
         result = client.create_user({"name": "John"})
         assert result["id"] == 1
-    
+
     def test_api_client_error_handling(self):
         """Test API client error handling"""
         class APIClient:
             def __init__(self, base_url: str):
                 self.base_url = base_url
-            
+
             def handle_error(self, error):
                 if "404" in str(error):
                     raise ValueError("Not found")
                 return None
-        
+
         client = APIClient("http://localhost:8000")
         with pytest.raises(ValueError):
             client.handle_error("404 Not Found")
-    
+
     def test_api_client_retry_logic(self):
         """Test API client retry logic"""
         class APIClient:
             def __init__(self, max_retries: int = 3):
                 self.max_retries = max_retries
                 self.attempt = 0
-            
+
             def retry_request(self):
                 for i in range(self.max_retries):
                     self.attempt = i
                     if i == self.max_retries - 1:
                         return True
                 return False
-        
+
         client = APIClient()
         assert client.retry_request() == True
-    
+
     def test_api_client_caching(self):
         """Test API client caching"""
         class APIClient:
             def __init__(self):
                 self.cache = {}
-            
+
             def get_cached(self, key, fetcher):
                 if key not in self.cache:
                     self.cache[key] = fetcher()
                 return self.cache[key]
-        
+
         client = APIClient()
         result1 = client.get_cached("test", lambda: "value")
         result2 = client.get_cached("test", lambda: "different")
         assert result1 == result2 == "value"
-    
+
     def test_api_client_connection_pooling(self):
         """Test API client connection pooling"""
         class ConnectionPool:
             def __init__(self, max_size: int = 10):
                 self.max_size = max_size
                 self.connections = []
-            
+
             def get_connection(self):
                 return "connection"
-            
+
             def return_connection(self, conn):
                 pass
-        
+
         pool = ConnectionPool()
         conn = pool.get_connection()
         assert conn == "connection"
@@ -657,7 +657,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 0
-        
+
         client = Client()
         assert client.id == 0
 
@@ -666,7 +666,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 1
-        
+
         client = Client()
         assert client.id == 1
 
@@ -675,7 +675,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 2
-        
+
         client = Client()
         assert client.id == 2
 
@@ -684,7 +684,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 3
-        
+
         client = Client()
         assert client.id == 3
 
@@ -693,7 +693,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 4
-        
+
         client = Client()
         assert client.id == 4
 
@@ -702,7 +702,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 5
-        
+
         client = Client()
         assert client.id == 5
 
@@ -711,7 +711,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 6
-        
+
         client = Client()
         assert client.id == 6
 
@@ -720,7 +720,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 7
-        
+
         client = Client()
         assert client.id == 7
 
@@ -729,7 +729,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 8
-        
+
         client = Client()
         assert client.id == 8
 
@@ -738,7 +738,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 9
-        
+
         client = Client()
         assert client.id == 9
 
@@ -747,7 +747,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 10
-        
+
         client = Client()
         assert client.id == 10
 
@@ -756,7 +756,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 11
-        
+
         client = Client()
         assert client.id == 11
 
@@ -765,7 +765,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 12
-        
+
         client = Client()
         assert client.id == 12
 
@@ -774,7 +774,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 13
-        
+
         client = Client()
         assert client.id == 13
 
@@ -783,7 +783,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 14
-        
+
         client = Client()
         assert client.id == 14
 
@@ -792,7 +792,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 15
-        
+
         client = Client()
         assert client.id == 15
 
@@ -801,7 +801,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 16
-        
+
         client = Client()
         assert client.id == 16
 
@@ -810,7 +810,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 17
-        
+
         client = Client()
         assert client.id == 17
 
@@ -819,7 +819,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 18
-        
+
         client = Client()
         assert client.id == 18
 
@@ -828,7 +828,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 19
-        
+
         client = Client()
         assert client.id == 19
 
@@ -837,7 +837,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 20
-        
+
         client = Client()
         assert client.id == 20
 
@@ -846,7 +846,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 21
-        
+
         client = Client()
         assert client.id == 21
 
@@ -855,7 +855,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 22
-        
+
         client = Client()
         assert client.id == 22
 
@@ -864,7 +864,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 23
-        
+
         client = Client()
         assert client.id == 23
 
@@ -873,7 +873,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 24
-        
+
         client = Client()
         assert client.id == 24
 
@@ -882,7 +882,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 25
-        
+
         client = Client()
         assert client.id == 25
 
@@ -891,7 +891,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 26
-        
+
         client = Client()
         assert client.id == 26
 
@@ -900,7 +900,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 27
-        
+
         client = Client()
         assert client.id == 27
 
@@ -909,7 +909,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 28
-        
+
         client = Client()
         assert client.id == 28
 
@@ -918,7 +918,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 29
-        
+
         client = Client()
         assert client.id == 29
 
@@ -927,7 +927,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 30
-        
+
         client = Client()
         assert client.id == 30
 
@@ -936,7 +936,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 31
-        
+
         client = Client()
         assert client.id == 31
 
@@ -945,7 +945,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 32
-        
+
         client = Client()
         assert client.id == 32
 
@@ -954,7 +954,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 33
-        
+
         client = Client()
         assert client.id == 33
 
@@ -963,7 +963,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 34
-        
+
         client = Client()
         assert client.id == 34
 
@@ -972,7 +972,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 35
-        
+
         client = Client()
         assert client.id == 35
 
@@ -981,7 +981,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 36
-        
+
         client = Client()
         assert client.id == 36
 
@@ -990,7 +990,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 37
-        
+
         client = Client()
         assert client.id == 37
 
@@ -999,7 +999,7 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 38
-        
+
         client = Client()
         assert client.id == 38
 
@@ -1008,6 +1008,6 @@ class TestAPIClientIntegration:
         class Client:
             def __init__(self):
                 self.id = 39
-        
+
         client = Client()
         assert client.id == 39

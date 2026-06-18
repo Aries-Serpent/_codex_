@@ -3,7 +3,7 @@
 
 class ScopeValidator:
     """Comprehensive scope_validator implementation."""
-    
+
     def __init__(self):
         """Initialize ScopeValidator."""
         self._data = {}

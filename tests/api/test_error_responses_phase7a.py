@@ -13,7 +13,7 @@ Categories:
 - Business logic error messages
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -25,7 +25,6 @@ from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

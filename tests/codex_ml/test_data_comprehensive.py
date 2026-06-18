@@ -10,19 +10,16 @@ import json
 import tempfile
 import time
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
-from codex_ml.data.cache import SimpleCache, write_jsonl_with_crc, derive_key
+from codex_ml.data.cache import SimpleCache, write_jsonl_with_crc
 from codex_ml.data.splits import (
     SPLITS,
     SplitDistribution,
     assign_split,
     stable_fold,
-    train_val_test_split,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -278,7 +275,7 @@ class TestSimpleCacheBasic:
         simple_cache.set("float", 3.14)
         simple_cache.set("list", [1, 2, 3])
         simple_cache.set("dict", {"a": 1})
-        
+
         assert simple_cache.get("int") == 42
         assert simple_cache.get("float") == 3.14
         assert simple_cache.get("list") == [1, 2, 3]
@@ -426,7 +423,7 @@ class TestWriteJsonlWithCrc:
         """Test writing basic records."""
         output_path = temp_dir / "output.jsonl"
         result_path = write_jsonl_with_crc(output_path, sample_records)
-        
+
         assert output_path.exists()
         assert result_path == output_path
 
@@ -434,7 +431,7 @@ class TestWriteJsonlWithCrc:
         """Test written file contains all records."""
         output_path = temp_dir / "output.jsonl"
         write_jsonl_with_crc(output_path, sample_records)
-        
+
         lines = output_path.read_text().strip().split("\n")
         assert len(lines) == len(sample_records)
 
@@ -442,7 +439,7 @@ class TestWriteJsonlWithCrc:
         """Test written records are valid JSON."""
         output_path = temp_dir / "output.jsonl"
         write_jsonl_with_crc(output_path, sample_records)
-        
+
         with open(output_path) as f:
             for line in f:
                 data = json.loads(line)
@@ -452,7 +449,7 @@ class TestWriteJsonlWithCrc:
         """Test CRC32 sidecar file is created."""
         output_path = temp_dir / "output.jsonl"
         write_jsonl_with_crc(output_path, sample_records)
-        
+
         crc_path = output_path.with_suffix(".jsonl.crc32")
         # Implementation may vary - file might not exist if crc32_file not mocked
 
@@ -460,7 +457,7 @@ class TestWriteJsonlWithCrc:
         """Test writing empty record list."""
         output_path = temp_dir / "empty.jsonl"
         write_jsonl_with_crc(output_path, [])
-        
+
         assert output_path.exists()
         content = output_path.read_text()
         assert content == ""
@@ -474,7 +471,7 @@ class TestWriteJsonlWithCrc:
         ]
         output_path = temp_dir / "unicode.jsonl"
         write_jsonl_with_crc(output_path, records)
-        
+
         # Read back and verify unicode is preserved
         lines = output_path.read_text(encoding="utf-8").strip().split("\n")
         assert len(lines) == 3
@@ -487,7 +484,7 @@ class TestWriteJsonlWithCrc:
         ]
         output_path = temp_dir / "large.jsonl"
         write_jsonl_with_crc(output_path, large_records)
-        
+
         assert output_path.exists()
 
     def test_write_nested_structures(self, temp_dir):
@@ -501,7 +498,7 @@ class TestWriteJsonlWithCrc:
         ]
         output_path = temp_dir / "nested.jsonl"
         write_jsonl_with_crc(output_path, records)
-        
+
         lines = output_path.read_text().strip().split("\n")
         data = json.loads(lines[0])
         assert data["nested"]["a"] == 1
@@ -510,7 +507,7 @@ class TestWriteJsonlWithCrc:
         """Test that write_jsonl_with_crc creates parent directories."""
         output_path = temp_dir / "subdir" / "deep" / "output.jsonl"
         write_jsonl_with_crc(output_path, [{"test": 1}])
-        
+
         assert output_path.parent.exists()
         assert output_path.exists()
 

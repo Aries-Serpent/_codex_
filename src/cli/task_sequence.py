@@ -15,7 +15,7 @@ class TaskSequence:
 
     def __init__(self, tasks: Optional[List[Dict[str, Any]]] = None):
         """Initialize task sequence.
-        
+
         Args:
             tasks: Optional list of task dictionaries
         """

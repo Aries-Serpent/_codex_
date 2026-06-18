@@ -6,11 +6,12 @@ Tests cover:
 - StandardizedASTNode: creation, ID generation, parent-child relationships, weakref behavior, tree traversal (60 tests)
 - Finding: creation, severity validation, ID generation, serialization (30 tests)
 """
-import pytest
 import json
-import weakref
 from pathlib import Path
-from codex_ml.ast.core.node import SourceLocation, StandardizedASTNode, Finding
+
+import pytest
+
+from codex_ml.ast.core.node import Finding, SourceLocation, StandardizedASTNode
 
 
 class TestSourceLocation:
@@ -484,15 +485,15 @@ class TestStandardizedASTNode:
         class1 = StandardizedASTNode(node_id="class1", type="class", name="MyClass")
         method1 = StandardizedASTNode(node_id="method1", type="function", name="method1")
         method2 = StandardizedASTNode(node_id="method2", type="function", name="method2")
-        
+
         root.add_child(class1)
         class1.add_child(method1)
         class1.add_child(method2)
-        
+
         # Walk should visit all nodes
         walked = root.walk()
         assert len(walked) == 4
-        
+
         # Find by type should work
         funcs = root.find_by_type("function")
         assert len(funcs) == 2

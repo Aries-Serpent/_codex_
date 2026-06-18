@@ -10,13 +10,11 @@ Tests cover:
 - Type handling
 """
 
-import pytest
 from codex.security.sanitization import (
     sanitize_html,
     sanitize_integer,
     sanitize_string,
 )
-
 
 # ============================================================================
 # HTML Sanitization Tests
@@ -523,6 +521,6 @@ class TestSanitizationIntegration:
         html = '<img src="x" onerror="alert(\'xss\')">Test'
         html_clean = sanitize_html(html)
         string_clean = sanitize_string(html_clean)
-        
+
         assert "onerror" not in string_clean
         assert "Test" in string_clean

@@ -9,7 +9,6 @@ Tests cover:
 - Integration scenarios with nested structures
 """
 
-from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -17,6 +16,7 @@ from pydantic import ValidationError
 
 from src.services.workflow.types import (
     InputType,
+    InventoryStats,
     TriggerType,
     WorkflowDependency,
     WorkflowInput,
@@ -26,7 +26,6 @@ from src.services.workflow.types import (
     WorkflowRun,
     WorkflowStep,
     WorkflowTrigger,
-    InventoryStats,
 )
 
 

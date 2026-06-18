@@ -6,18 +6,14 @@ Test Categories: Unit (80), Integration (50), Edge Cases (15), Error Handling (5
 
 from __future__ import annotations
 
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
-
 import numpy as np
 import pytest
+
 import torch
 
 try:
-    from codex.rag import embeddings, retriever, indexer
-    from codex.rag.utils import normalize_text, compute_similarity
+    from codex.rag import embeddings, indexer, retriever
+    from codex.rag.utils import compute_similarity, normalize_text
     RAG_AVAILABLE = True
 except ImportError:
     RAG_AVAILABLE = False
@@ -70,7 +66,7 @@ class TestTextProcessing:
     def test_normalize_text_basic(self):
         """Test basic text normalization."""
         from codex.rag.utils import normalize_text
-        
+
         text = "The Quick BROWN Fox"
         normalized = normalize_text(text)
         assert isinstance(normalized, str)
@@ -78,7 +74,7 @@ class TestTextProcessing:
     def test_normalize_text_lowercasing(self):
         """Test text normalization lowercases."""
         from codex.rag.utils import normalize_text
-        
+
         text = "UPPERCASE TEXT"
         normalized = normalize_text(text)
         assert normalized.islower()
@@ -86,7 +82,7 @@ class TestTextProcessing:
     def test_normalize_text_whitespace_handling(self):
         """Test whitespace normalization."""
         from codex.rag.utils import normalize_text
-        
+
         text = "Text    with     extra     spaces"
         normalized = normalize_text(text)
         assert "    " not in normalized
@@ -94,14 +90,14 @@ class TestTextProcessing:
     def test_normalize_text_empty_string(self):
         """Test normalizing empty string."""
         from codex.rag.utils import normalize_text
-        
+
         result = normalize_text("")
         assert result == ""
 
     def test_normalize_text_unicode(self):
         """Test unicode text normalization."""
         from codex.rag.utils import normalize_text
-        
+
         text = "Héllo Wørld 你好"
         result = normalize_text(text)
         assert isinstance(result, str)
@@ -119,9 +115,9 @@ class TestSimilarityComputation:
     def test_compute_similarity_cosine(self, sample_query_embedding, sample_embeddings):
         """Test cosine similarity computation."""
         from codex.rag.utils import compute_similarity
-        
+
         similarities = compute_similarity(
-            sample_query_embedding, 
+            sample_query_embedding,
             sample_embeddings,
             metric="cosine"
         )
@@ -131,37 +127,37 @@ class TestSimilarityComputation:
     def test_compute_similarity_identical_vectors(self):
         """Test similarity of identical vectors."""
         from codex.rag.utils import compute_similarity
-        
+
         vec1 = np.array([1, 0, 0], dtype=np.float32)
         vec2 = np.array([[1, 0, 0]], dtype=np.float32)
-        
+
         sim = compute_similarity(vec1, vec2)
         assert np.isclose(sim[0], 1.0, atol=1e-5)
 
     def test_compute_similarity_orthogonal_vectors(self):
         """Test similarity of orthogonal vectors."""
         from codex.rag.utils import compute_similarity
-        
+
         vec1 = np.array([1, 0, 0], dtype=np.float32)
         vec2 = np.array([[0, 1, 0]], dtype=np.float32)
-        
+
         sim = compute_similarity(vec1, vec2)
         assert np.isclose(sim[0], 0.0, atol=1e-5)
 
     def test_compute_similarity_opposite_vectors(self):
         """Test similarity of opposite vectors."""
         from codex.rag.utils import compute_similarity
-        
+
         vec1 = np.array([1, 0, 0], dtype=np.float32)
         vec2 = np.array([[-1, 0, 0]], dtype=np.float32)
-        
+
         sim = compute_similarity(vec1, vec2)
         assert np.isclose(sim[0], -1.0, atol=1e-5)
 
     def test_compute_similarity_batch(self, sample_embeddings):
         """Test batch similarity computation."""
         from codex.rag.utils import compute_similarity
-        
+
         query = np.random.randn(768).astype(np.float32)
         similarities = compute_similarity(query, sample_embeddings)
         assert similarities.shape[0] == sample_embeddings.shape[0]
@@ -251,7 +247,7 @@ class TestIndexing:
             indexer = RagIndex()
             for i, text in enumerate(sample_texts):
                 indexer.add_document(f"doc_{i}", text)
-            
+
             results = indexer.search(sample_query, k=3)
             assert len(results) <= 3
         except (ImportError, RuntimeError, TypeError, AttributeError):
@@ -264,7 +260,7 @@ class TestIndexing:
             indexer = RagIndex()
             for i, text in enumerate(sample_texts):
                 indexer.add_document(f"doc_{i}", text)
-            
+
             index_path = tmp_path / "index"
             indexer.save(str(index_path))
             assert index_path.exists() or index_path.with_suffix(".pt").exists()
@@ -417,7 +413,7 @@ class TestMLUtils:
         """Test batch processing utilities."""
         data = list(range(100))
         batch_size = 32
-        
+
         batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
         assert len(batches) == 4  # 100 items / 32 batch size
         assert len(batches[-1]) == 4  # Last batch has remainder
@@ -426,7 +422,7 @@ class TestMLUtils:
         """Test metric computation."""
         predictions = np.array([0.9, 0.1, 0.8, 0.2])
         labels = np.array([1, 0, 1, 0])
-        
+
         accuracy = np.mean(predictions.round() == labels)
         assert 0 <= accuracy <= 1
 
@@ -542,26 +538,26 @@ class TestRAGIntegration:
     def test_full_rag_pipeline(self, sample_texts, sample_query):
         """Test full RAG pipeline."""
         try:
-            from codex.rag.retriever import Retriever
             from codex.rag.prompt import generate_prompt
-            
+            from codex.rag.retriever import Retriever
+
             retriever = Retriever()
-            
+
             # Retrieve documents
             results = retriever.retrieve(sample_query, k=3)
-            
+
             # Generate prompt
             context = [r.get("text", str(r)) for r in results]
             prompt = generate_prompt(sample_query, context)
-            
+
             assert len(prompt) > 0
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Full RAG pipeline not available")
 
     def test_utils_chain(self):
         """Test utils function chaining."""
-        from codex.rag.utils import normalize_text, compute_similarity
-        
+        from codex.rag.utils import normalize_text
+
         text1 = "Machine LEARNING is great"
         text2 = "machine learning is great"
         text3 = "  machine   learning   is   great  "

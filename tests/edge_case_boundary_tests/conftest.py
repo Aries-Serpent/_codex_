@@ -4,13 +4,9 @@ Pytest configuration and fixtures for edge case and boundary testing.
 Provides shared fixtures, parametrization, and test utilities for Phase 7A Wave 3 Lane 3.1.
 """
 
-import pytest
-import sys
-from datetime import datetime, timedelta
-from unittest.mock import Mock, MagicMock, patch
-import threading
-from collections import namedtuple
+from unittest.mock import MagicMock
 
+import pytest
 
 # ============================================================================
 # AUTHENTICATION FIXTURES

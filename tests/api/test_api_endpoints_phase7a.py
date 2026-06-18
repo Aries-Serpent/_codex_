@@ -4,12 +4,11 @@ This module contains 200+ tests for REST API endpoints, request/response handlin
 and basic endpoint functionality.
 """
 
+from typing import Optional
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, ValidationError
-import json
-from typing import Any, Dict, List, Optional
 
 
 class MockRequest(BaseModel):
@@ -26,12 +25,12 @@ class MockResponse(BaseModel):
 
 class TestAPIEndpointBasics:
     """Tests for basic API endpoint functionality - 50 tests"""
-    
+
     def test_endpoint_creation(self):
         """Test basic endpoint can be created"""
         app = FastAPI()
         assert app is not None
-    
+
     def test_endpoint_with_get_method(self):
         """Test GET endpoint"""
         app = FastAPI()
@@ -39,7 +38,7 @@ class TestAPIEndpointBasics:
         def test_get():
             return {"status": "ok"}
         assert app is not None
-    
+
     def test_endpoint_with_post_method(self):
         """Test POST endpoint"""
         app = FastAPI()
@@ -47,7 +46,7 @@ class TestAPIEndpointBasics:
         def test_post(req: MockRequest):
             return {"received": req.data}
         assert app is not None
-    
+
     def test_endpoint_with_put_method(self):
         """Test PUT endpoint"""
         app = FastAPI()
@@ -55,7 +54,7 @@ class TestAPIEndpointBasics:
         def test_put(id: int, req: MockRequest):
             return {"id": id, "updated": req.data}
         assert app is not None
-    
+
     def test_endpoint_with_delete_method(self):
         """Test DELETE endpoint"""
         app = FastAPI()
@@ -63,7 +62,7 @@ class TestAPIEndpointBasics:
         def test_delete(id: int):
             return {"deleted": id}
         assert app is not None
-    
+
     def test_endpoint_with_patch_method(self):
         """Test PATCH endpoint"""
         app = FastAPI()
@@ -71,7 +70,7 @@ class TestAPIEndpointBasics:
         def test_patch(id: int, req: MockRequest):
             return {"id": id, "patched": req.data}
         assert app is not None
-    
+
     def test_endpoint_with_path_parameter(self):
         """Test endpoint with path parameter"""
         app = FastAPI()
@@ -79,7 +78,7 @@ class TestAPIEndpointBasics:
         def get_user(user_id: int):
             return {"id": user_id}
         assert app is not None
-    
+
     def test_endpoint_with_query_parameter(self):
         """Test endpoint with query parameter"""
         app = FastAPI()
@@ -87,7 +86,7 @@ class TestAPIEndpointBasics:
         def search(q: str = ""):
             return {"query": q}
         assert app is not None
-    
+
     def test_endpoint_with_multiple_path_params(self):
         """Test endpoint with multiple path parameters"""
         app = FastAPI()
@@ -95,7 +94,7 @@ class TestAPIEndpointBasics:
         def get_user_post(user_id: int, post_id: int):
             return {"user_id": user_id, "post_id": post_id}
         assert app is not None
-    
+
     def test_endpoint_with_mixed_params(self):
         """Test endpoint with mixed parameters"""
         app = FastAPI()
@@ -430,27 +429,27 @@ class TestAPIEndpointBasics:
 
 class TestAPIRequestValidation:
     """Tests for request validation - 50 tests"""
-    
+
     def test_valid_request_body(self):
         """Test valid request body"""
         req = MockRequest(data="test")
         assert req.data == "test"
-    
+
     def test_valid_request_with_optional_field(self):
         """Test valid request with optional field"""
         req = MockRequest(data="test", value=42)
         assert req.value == 42
-    
+
     def test_valid_request_optional_field_defaults(self):
         """Test optional field defaults"""
         req = MockRequest(data="test")
         assert req.value is None
-    
+
     def test_invalid_request_missing_required_field(self):
         """Test invalid request missing required field"""
         with pytest.raises(ValidationError):
             MockRequest(value=42)
-    
+
     def test_request_with_extra_fields_ignored(self):
         """Test extra fields in request"""
         try:
@@ -459,27 +458,27 @@ class TestAPIRequestValidation:
             assert req.data == "test"
         except ValidationError:
             pass
-    
+
     def test_request_type_coercion_int_to_string(self):
         """Test type coercion"""
         req = MockRequest(data="123")
         assert req.data == "123"
-    
+
     def test_request_validation_empty_string(self):
         """Test validation of empty string"""
         req = MockRequest(data="")
         assert req.data == ""
-    
+
     def test_request_with_unicode_characters(self):
         """Test request with unicode"""
         req = MockRequest(data="こんにちは世界")
         assert req.data == "こんにちは世界"
-    
+
     def test_request_with_special_characters(self):
         """Test request with special characters"""
         req = MockRequest(data="!@#$%^&*()")
         assert req.data == "!@#$%^&*()"
-    
+
     def test_request_with_whitespace(self):
         """Test request with whitespace"""
         req = MockRequest(data="  spaces  ")

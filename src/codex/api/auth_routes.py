@@ -177,14 +177,16 @@ class RefreshResponse(BaseModel):
 # Router factory
 # ---------------------------------------------------------------------------
 
+
 def _get_default_secret() -> str:
     """Get a default JWT secret from environment or generate one for development."""
     import secrets
+
     # Try environment variable first
     env_secret = os.environ.get("CODEX_AUTH_SECRET")
     if env_secret:
         return env_secret
-    
+
     # Generate a secure random secret for development
     logger.warning(
         "CODEX_AUTH_SECRET not set. Generating temporary development secret. "

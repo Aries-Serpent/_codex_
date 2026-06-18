@@ -3,7 +3,7 @@
 
 class KeyManager:
     """Comprehensive key_management implementation."""
-    
+
     def __init__(self):
         """Initialize KeyManager."""
         self._data = {}
