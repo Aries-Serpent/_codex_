@@ -545,10 +545,7 @@ class TestCorruptionDetection:
         corrupted_checkpoint = None
         backup_checkpoint = {"epoch": 4, "valid": True}
         
-        if corrupted_checkpoint is None:
-            recovered = backup_checkpoint
-        else:
-            recovered = corrupted_checkpoint
+        recovered = backup_checkpoint
         
         assert recovered["epoch"] == 4
 
