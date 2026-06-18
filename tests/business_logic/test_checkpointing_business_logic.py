@@ -376,11 +376,13 @@ class TestAtomicOperations:
         
         assert final_written
 
-    def test_atomic_read_with_fallback(self):
+    @pytest.mark.parametrize("primary_exists,backup_exists,expected", [
+        (True, False, "primary_data"),
+        (False, True, "backup_data"),
+        (False, False, None),
+    ])
+    def test_atomic_read_with_fallback(self, primary_exists, backup_exists, expected):
         """Test atomic read tries primary and falls back."""
-        primary_exists = False
-        backup_exists = True
-        
         if primary_exists:
             data = "primary_data"
         elif backup_exists:
@@ -388,7 +390,7 @@ class TestAtomicOperations:
         else:
             data = None
         
-        assert data == "backup_data"
+        assert data == expected
 
     def test_no_partial_writes(self):
         """Test checkpoint operations prevent partial writes."""
