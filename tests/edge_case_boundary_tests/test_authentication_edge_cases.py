@@ -150,7 +150,7 @@ class TestTokenStructure:
             parts = invalid_jwt.split(".")
             is_valid_base64 = all(part.replace("-", "+").replace("_", "/") for part in parts)
             validation_passed = True
-        except Exception:
+        except Exception as _err:
             validation_passed = False
         
         # Assert - should handle gracefully

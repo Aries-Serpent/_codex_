@@ -78,14 +78,14 @@ jobs:
 
     steps:
       - name: "📥 Checkout (sparse — script only)"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/branch_cleanup.py
           sparse-checkout-cone-mode: false
 
       - name: "🐍 Set up Python"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           # No cache: 'pip' — sparse checkout omits requirements.txt/pyproject.toml
@@ -155,7 +155,7 @@ jobs:
 
       - name: "📦 Upload JSON report as artifact"
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: branch-cleanup-report-${{ github.run_number }}
           path: /tmp/branch_cleanup_report.json

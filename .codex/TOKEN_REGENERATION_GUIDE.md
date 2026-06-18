@@ -89,7 +89,7 @@ gh api -X POST /user/tokens \
 ### Method 1: GitHub UI
 
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
-2. Find existing secret: `CODEX_MASTER_KEY`
+2. Find existing secret: `CODEX_MASTER_KEY` <!-- pragma: allowlist secret -->
 3. Click "Update" (or create if doesn't exist)
 4. Paste new token value
 5. Click "Update secret"

@@ -33,9 +33,9 @@ The original `.secrets.baseline` (committed at HEAD before this task) contained 
 | Hex High Entropy String | 344 | Git commit SHAs and SHA-256 file-integrity hashes in operational JSONL/JSON files and scripts |
 | Secret Keyword | 27 | Test fixtures, GitHub Actions secret references (`${{ secrets.X }}`), env-var name strings |
 | Base64 High Entropy String | 4 | SRI integrity hash (viz_html.py), test token fixtures already carrying `# pragma: allowlist secret` |
-| AWS Access Key | 1 | `AKIAIOSFODNN7EXAMPLE` — the canonical AWS documentation placeholder, in test file with pragma |
-| Private Key | 1 | `-----BEGIN RSA PRIVATE KEY-----\nMIIE...` — test fixture for sanitizer test, has pragma |
-| GitHub Token | 1 | `ghp_testtoken1234567890123456789012345678` — test fixture in test_providers.py |
+| AWS Access Key | 1 | `AKIAIOSFODNN7EXAMPLE` — the canonical AWS documentation placeholder, in test file with pragma  <!-- pragma: allowlist secret --> |
+| Private Key | 1 | `-----BEGIN RSA PRIVATE KEY-----\nMIIE...` — test fixture for sanitizer test, has pragma  <!-- pragma: allowlist secret --> |
+| GitHub Token | 1 | `ghp_testtoken1234567890123456789012345678` — test fixture in test_providers.py  <!-- pragma: allowlist secret --> |
 
 ### File-by-File Findings (Original Baseline)
 
@@ -43,7 +43,7 @@ The original `.secrets.baseline` (committed at HEAD before this task) contained 
 |------|---------|---------|-----------|
 | `.codex/aftermath/pda_iterations.jsonl` | 4 | Hex | Git SHAs in session-iteration records |
 | `.codex/evidence/archive_ops.jsonl` | 33 | Hex | SHA-256 integrity hashes of archived files |
-| `.codex/webhook_config.json` | 2 | Secret Keyword | `"secret_env": "WEBHOOK_SECRET"` and missing-variables doc entry — env-var name, not value |
+| `.codex/webhook_config.json` | 2 | Secret Keyword | `"secret_env": "WEBHOOK_SECRET"` and missing-variables doc entry — env-var name, not value  <!-- pragma: allowlist secret --> |
 | `.codex/agent_context.json` | 1 | Hex | `integrity_sha256` hash field |
 | `.github/workflows/codeql-alert-fetcher.yml` | 1 | Secret Keyword | `${{ secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY }}` — GH Actions secret reference |
 | `.github/workflows/security-scanning-suite.yml` | 1 | Secret Keyword | Step name "Generate secret-scan summary" — text keyword, no value |
@@ -56,17 +56,17 @@ The original `.secrets.baseline` (committed at HEAD before this task) contained 
 | `tests/safety/test_sanitizers_coverage.py` | 3 | Base64, AWS Key, Private Key | Three test fixtures for sanitizer tests — all carry `# pragma: allowlist secret` |
 | `tests/serving/test_inference_enhanced.py` | 1 | Secret Keyword | `AuthManager(jwt_secret="my-secret")` — carries `# pragma: allowlist secret` |
 | `tests/test_token_verification.py` | 1 | Secret Keyword | `ghp_SECRETTOKEN123456789` — carries `# pragma: allowlist secret` |
-| `tests/auth/test_mfa_provider.py` | 1 | Secret Keyword | `MFASecret(secret="JBSWY3DPEHPK3PXP")` — Base32-encoded TOTP seed, test fixture |
-| `tests/auth/test_token_manager.py` | 1 | Secret Keyword | `secret = "test_secret_key_123"` — test fixture for TokenManager |
-| `tests/api/test_auth_mfa_expiry.py` | 1 | Secret Keyword | `"password": "Str0ngPass!"` — test fixture |
+| `tests/auth/test_mfa_provider.py` | 1 | Secret Keyword | `MFASecret(secret="JBSWY3DPEHPK3PXP")` — Base32-encoded TOTP seed, test fixture  <!-- pragma: allowlist secret --> |
+| `tests/auth/test_token_manager.py` | 1 | Secret Keyword | `secret = "test_secret_key_123"` — test fixture for TokenManager  <!-- pragma: allowlist secret --> |
+| `tests/api/test_auth_mfa_expiry.py` | 1 | Secret Keyword | `"password": "Str0ngPass!"` — test fixture  <!-- pragma: allowlist secret --> |
 | `tests/branch_coverage/test_branch_coverage_config.py` | 1 | Secret Keyword | `os.environ["CODEX_API_KEY"]` key-name reference, no value |
-| `tests/agents/test_msp_client_phase9_1.py` | 1 | Secret Keyword | `MSPClient(api_key="test")` — test placeholder |
+| `tests/agents/test_msp_client_phase9_1.py` | 1 | Secret Keyword | `MSPClient(api_key="test")` — test placeholder  <!-- pragma: allowlist secret --> |
 | `tests/ci/test_post_rescue_comment.py` | 4 | Hex | SHA hashes as test data (`abc123def456abc123...`) |
-| `tests/test_fast_forward_safe_files.py` | 1 | Hex | `source_sha == "abc123def456"` — test assertion fixture |
+| `tests/test_fast_forward_safe_files.py` | 1 | Hex | `source_sha == "abc123def456"` — test assertion fixture  <!-- pragma: allowlist secret --> |
 | `tests/security/test_providers.py` | 15 | Secret Keyword, GitHub Token | Test fixtures for RotationResult, AWS provider, GitHub provider — all placeholder values |
 | `tests/services/test_api_main_phase_e.py` | 1 | Base64 | `sk-abcdefghij1234567890` in masking test |
 | `coverage_tests/test_security_providers_unittest.py` | 1 | Secret Keyword | `get_secret_value` return value `"plain"` — test mock data |
-| `tools/codex_apply_modeling_monitoring_api.py` | 1 | Secret Keyword | `API_KEY_ENV = "CODEX_API_KEY"` — environment variable name string, no value |
+| `tools/codex_apply_modeling_monitoring_api.py` | 1 | Secret Keyword | `API_KEY_ENV = "CODEX_API_KEY"` — environment variable name string, no value  <!-- pragma: allowlist secret --> |
 
 **Result: 378/378 entries confirmed false positive. Zero real secrets.**
 
@@ -91,7 +91,7 @@ The original baseline was generated when the repository was smaller and only cov
 | Hex High Entropy String | 12,431 | Git SHAs + SHA-256 integrity hashes across validation manifests, status files, asset manifests |
 | Secret Keyword | 235 | Test fixtures, docs, CI workflow references — all placeholder/template values |
 | Base64 High Entropy String | 29 | SRI hashes, test token fixtures |
-| AWS Access Key | 15 | Test/example patterns (e.g. `AKIAIOSFODNN7EXAMPLE`, `AKIAABCDEFGHIJKLMNOP`) in tests and docs |
+| AWS Access Key | 15 | Test/example patterns (e.g. `AKIAIOSFODNN7EXAMPLE`, `AKIAABCDEFGHIJKLMNOP`) in tests and docs  <!-- pragma: allowlist secret --> |
 | Private Key | 9 | PEM header patterns in tests (`-----BEGIN RSA PRIVATE KEY-----`) and documentation |
 | GitHub Token | 7 | Test fixtures (`ghp_testtoken...`, `ghp_xxxxxxxxxxxx`) in tests and docs |
 | Basic Auth Credentials | 5 | DSN templates (`******host/db`) in docs/config/K8s templates |
@@ -111,10 +111,10 @@ To provide belt-and-suspenders protection for the CI `secrets-baseline-enforcer.
 |------|----------------|---------|
 | `.codex/COMPREHENSIVE_WORKFLOW_CONSOLIDATION_PLAN.md` | 529 | `DATABASE_URL=******...` — template DSN |
 | `.codex/PRODUCTION_DEPLOYMENT_GUIDE.md` | 233 | `export DATABASE_URL="******..."` — template |
-| `.codex/PR_3248_ATTEMPT_20_STATUS.md` | 118, 119 | Test-case names referencing `AKIAABCDEFGHIJKLMNOP` / `ASIAABCDEFGHIJKLMNOP` |
+| `.codex/PR_3248_ATTEMPT_20_STATUS.md` | 118, 119 | Test-case names referencing `AKIAABCDEFGHIJKLMNOP` / `ASIAABCDEFGHIJKLMNOP`  <!-- pragma: allowlist secret --> |
 | `.codex/TOKEN_REGENERATION_GUIDE.md` | 101 | `export NEW_TOKEN="******"` — placeholder |
 | `.codex/cognitive_brain/diagrams/index_sharding_distribution.md` | 201 | `connection_string: "******host/db"` — example |
-| `.github/agents/secret-detection-agent.md` | 44, 47, 48, 71 | Pattern table rows: `AKIAIOSFODNN7EXAMPLE`, `-----BEGIN PRIVATE KEY-----`, DSN example |
+| `.github/agents/secret-detection-agent.md` | 44, 47, 48, 71 | Pattern table rows: `AKIAIOSFODNN7EXAMPLE`, `-----BEGIN PRIVATE KEY-----`, DSN example  <!-- pragma: allowlist secret --> |
 | `docs/ADMIN_IMPLEMENTATION_GUIDE.md` | 287 | `-----BEGIN RSA PRIVATE KEY-----` in key-format verification guide |
 | `docs/FollowUp_Implementation_Plan.md` | 67, 68 | Test-masking table rows with example `AKIAABCDEFGHIJKLMNOP` patterns |
 | `docs/admin/SECRETS_CONFIGURATION.md` | 293 | `# Should show: -----BEGIN RSA PRIVATE KEY-----` — verification comment |

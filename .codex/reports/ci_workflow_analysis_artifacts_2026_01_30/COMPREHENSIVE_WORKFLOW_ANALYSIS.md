@@ -229,7 +229,7 @@ tests:
 grep -rn "# nosec" src/ --include="*.py"
 
 # Ensure each has proper format:
-# password = "temporary"  # nosec B105 - test fixture only
+# password = "temporary"  # nosec B105 - test fixture only <!-- pragma: allowlist secret -->
 ```
 
 **Priority**: 🔥 IMMEDIATE (blocks security validation)

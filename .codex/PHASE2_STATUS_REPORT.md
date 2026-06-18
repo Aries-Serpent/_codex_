@@ -90,7 +90,7 @@ Phase 2 advanced automation tasks initiated per user request. Environment valida
 
 1. **Set CODEX_MASTER_KEY as GitHub Token**
    - Navigate to: Repository Settings → Secrets and variables → Actions
-   - Create new repository secret: `CODEX_MASTER_KEY`
+   - Create new repository secret: `CODEX_MASTER_KEY` <!-- pragma: allowlist secret -->
    - Value: Your GitHub Personal Access Token (PAT)
    - Scopes needed: `repo`, `workflow`, `write:discussion`
 

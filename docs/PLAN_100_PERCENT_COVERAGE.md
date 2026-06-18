@@ -82,7 +82,7 @@ def test_openai_not_installed():
     """Test OpenAI provider when openai package missing"""
     with patch.dict('sys.modules', {'openai': None}):
         with pytest.raises(ImportError):
-            OpenAIEmbeddingProvider(api_key="test")
+            OpenAIEmbeddingProvider(api_key="test") <!-- pragma: allowlist secret -->
 ```
 
 #### 1.2 File I/O Edge Cases
@@ -346,7 +346,7 @@ pytest tests/test_rag_edge_cases.py::TestExtremeParameters -v --cov=src/codex/ra
 ```python
 def test_openai_provider_destructor():
     """Test that destructor properly clears API key"""
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}): <!-- pragma: allowlist secret -->
         provider = OpenAIEmbeddingProvider()
         assert provider.api_key == "test-key"
 

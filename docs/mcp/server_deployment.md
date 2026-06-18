@@ -612,7 +612,7 @@ export class RateLimiterDO {
   "dockerfile": "Dockerfile",
   "ports": [8080],
   "env": {
-    "MCP_API_KEY": "copilot-space-key",
+    "MCP_API_KEY": "copilot-space-key", <!-- pragma: allowlist secret -->
     "MCP_OFFLINE": "true"
   },
   "volumes": {

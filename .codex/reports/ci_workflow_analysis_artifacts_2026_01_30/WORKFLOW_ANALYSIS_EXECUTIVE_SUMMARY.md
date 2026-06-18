@@ -171,7 +171,7 @@ tests:
 grep -rn "# nosec[^B]" src/ --include="*.py"
 
 # Add proper justifications:
-# password = "test"  # nosec B105 - test fixture only
+# password = "test"  # nosec B105 - test fixture only <!-- pragma: allowlist secret -->
 ```
 
 ### Validation

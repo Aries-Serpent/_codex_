@@ -185,7 +185,7 @@ flattened-repo-{run_number}/
   "run_number": "42",
   "repository": "Aries-Serpent/_codex_",
   "ref": "refs/heads/main",
-  "sha": "abc123def456",
+  "sha": "abc123def456", <!-- pragma: allowlist secret -->
   "output_format": "xml",
   "file_size_bytes": 5242880,
   "file_size_mb": 5.00,

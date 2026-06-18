@@ -89,7 +89,7 @@ print('Model loaded successfully')
 echo $CODEX_API_KEYS
 
 # Solution: Set valid API keys (comma-separated)
-export CODEX_API_KEYS="key1,key2,key3"
+export CODEX_API_KEYS="key1,key2,key3" <!-- pragma: allowlist secret -->
 ```
 
 **Cause**: JWT token expired

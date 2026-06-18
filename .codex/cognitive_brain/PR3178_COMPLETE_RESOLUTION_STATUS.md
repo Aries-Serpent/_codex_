@@ -204,7 +204,7 @@ None - autonomous execution
 ### Post-Merge (Owner Action Required)
 1. **Verify HF_TOKEN Exists:**
    - Navigate to: Settings → Secrets and variables → Actions
-   - Create secret: `HF_TOKEN`
+   - Create secret: `HF_TOKEN` <!-- pragma: allowlist secret -->
    - Source: https://huggingface.co/settings/tokens
 
 2. **Monitor CI Execution:**

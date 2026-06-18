@@ -96,7 +96,7 @@ jobs:
 
     steps:
       - name: "Checkout (for approve_pending_runs.py)"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           # Always checkout default branch — the script lives there
@@ -203,7 +203,7 @@ jobs:
 
       - name: "Dispatch hub for batch approval (self-approve-pending-runs)"
         if: steps.pending.outputs.count != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ steps.token.outputs.token }}
           script: |

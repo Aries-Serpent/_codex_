@@ -76,7 +76,7 @@ pip install -r requirements.txt
 
 ```bash
 # Get API key from: https://notebooklm.google.com/settings/api
-export NOTEBOOKLM_API_KEY="nlm_your_api_key_here"
+export NOTEBOOKLM_API_KEY="nlm_your_api_key_here" <!-- pragma: allowlist secret -->
 ```
 
 ### 3. Generate NotebookLM Sources

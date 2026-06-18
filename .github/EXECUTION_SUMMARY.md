@@ -100,7 +100,7 @@ result = fetch_check_run_logs({
 runs = list_check_runs({
     "owner": "Aries-Serpent",
     "repo": "_codex_",
-    "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d"
+    "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d" <!-- pragma: allowlist secret -->
 })
 ```
 **Status**: Tools ready for AI agent registration

@@ -144,7 +144,7 @@ For comprehensive development capabilities, use this full configuration:
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-brave-search"],
       "env": {
-        "BRAVE_API_KEY": "optional_brave_search_api_key"
+        "BRAVE_API_KEY": "optional_brave_search_api_key" <!-- pragma: allowlist secret -->
       }
     }
   }

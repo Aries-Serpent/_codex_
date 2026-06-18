@@ -201,8 +201,8 @@ with open("api_key.txt", "w") as f:
     f.write(api_key)  # ❌ Plain text file
 
 config = {
-    "api_key": "sk_live_abc123",  # ❌ Hard-coded secret
-    "password": "admin123"  # ❌ Plain text in config
+    "api_key": "sk_live_abc123",  # ❌ Hard-coded secret <!-- pragma: allowlist secret -->
+    "password": "admin123"  # ❌ Plain text in config <!-- pragma: allowlist secret -->
 }
 
 # In .env file:

@@ -134,7 +134,7 @@ def load_config():
   },
   "auth": {
     "enabled": true,
-    "api_key_header": "X-API-Key"
+    "api_key_header": "X-API-Key" <!-- pragma: allowlist secret -->
   }
 }
 ```
@@ -371,7 +371,7 @@ print(f"Config types: {result['meta']['config_types']}")
    api_key = os.getenv("MCP_API_KEY")
 
    # Avoid
-   api_key = "hardcoded-secret-key"
+   api_key = "hardcoded-secret-key" <!-- pragma: allowlist secret -->
    ```
 
 3. **Encrypt Sensitive Configuration**

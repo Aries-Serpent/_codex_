@@ -377,7 +377,7 @@ environment_variables:
 optimization_targets:
   - cache_hit_rate: ">80%"
   - workflow_duration: "<10m"
-  - secret_rotation: "monthly"
+  - secret_rotation: "monthly" <!-- pragma: allowlist secret -->
   - api_rate_limit_usage: "<70%"
 auto_apply: false  # Requires PR review
 outputs:

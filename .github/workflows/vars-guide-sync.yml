@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
@@ -155,7 +155,7 @@ jobs:
       # ── Upload variable_audit_latest.md as artifact (not committed to git) ──
       - name: Upload audit report artifact
         if: steps.detect.outputs.changed == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: variable-audit-report-${{ github.run_number }}
           path: docs/admin/variable_audit_latest.md
@@ -185,7 +185,7 @@ jobs:
       # ── Open issue if blockers found ─────────────────────────────────────
       - name: Open blocker issue if absent required variables
         if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |

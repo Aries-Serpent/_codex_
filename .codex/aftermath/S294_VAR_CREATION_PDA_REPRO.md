@@ -312,7 +312,7 @@ Cannot browse `github.com` settings pages. Use for: testing local dev server UI.
 
 ### Cognitive Brain GitHub App — CI only
 
-Credentials available as CI secrets: `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`,
+Credentials available as CI secrets: `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`, <!-- pragma: allowlist secret -->
 `_GITHUB_APP_INSTALLATION_ID`. Generate token via `actions/create-github-app-token@v1`.
 Has the widest permission set of any available token — use as the default write token
 in all CI workflows that need to write variables, create PRs, or update code.

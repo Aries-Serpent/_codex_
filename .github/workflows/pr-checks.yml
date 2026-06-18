@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -36,7 +36,7 @@ jobs:
 
       # SECURITY: Read-only cache from main branch
       - name: Restore cache from main (read-only)
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5
+        uses: actions/cache/restore@v5  # v5
         with:
           path: /tmp/uv-cache
           key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
@@ -93,7 +93,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

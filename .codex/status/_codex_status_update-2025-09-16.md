@@ -151,7 +151,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 -) -> None:
 -    """Run demo training loop with optional MLflow and telemetry."""
 -    set_reproducible()
--    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"
+-    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c" <!-- pragma: allowlist secret -->
 -    best = {"epoch": -1, "acc": -1.0}
 -    if telemetry_enable:
 -        start_metrics_server(port=telemetry_port)

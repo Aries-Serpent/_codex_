@@ -503,7 +503,7 @@ class TestErrorHandling:
                 if config is not None:
                     job = pipeline.trigger_retrain(config)
                     assert job is not None
-            except Exception:
+            except Exception as _err:
                 # Expected for some invalid configs
                 pass
 
@@ -521,7 +521,7 @@ class TestErrorHandling:
             if path:
                 try:
                     pipeline.promote(path, registry={})
-                except Exception:
+                except Exception as _err:
                     # Expected for invalid paths
                     pass
 

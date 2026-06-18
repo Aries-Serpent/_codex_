@@ -717,7 +717,7 @@ def test_dashboard_with_har_cache():
 **Error Example**:
 ```
 fatal: path 'scripts/planning_components.py' exists on disk,
-but not in 'db45016d98daf73e5cab5b73d88b39602343d6e5'
+but not in 'db45016d98daf73e5cab5b73d88b39602343d6e5' <!-- pragma: allowlist secret -->
 ```
 
 **Root Cause**: New files added in later commits aren't in base commit.

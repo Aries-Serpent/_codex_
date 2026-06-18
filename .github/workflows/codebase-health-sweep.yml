@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           ref: refs/heads/main
           fetch-depth: 10
@@ -261,7 +261,7 @@ jobs:
 
       - name: Checkout 0D_base_
         if: steps.branch_check.outputs.exists == 'true'
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           ref: refs/heads/0D_base_
           fetch-depth: 10
@@ -351,7 +351,7 @@ jobs:
     if: always() && github.event_name == 'schedule'
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           ref: refs/heads/main
           fetch-depth: 1
@@ -390,7 +390,7 @@ jobs:
 
       - name: Open/update tracking issue for manual-only problems
         if: steps.manual_check.outputs.manual_review != '0'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           TOTAL: ${{ steps.manual_check.outputs.total }}
           MANUAL: ${{ steps.manual_check.outputs.manual_review }}

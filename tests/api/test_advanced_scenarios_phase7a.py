@@ -478,7 +478,7 @@ class TestNetworkFailureRecoveryPatterns:
                 for func in [primary_func] + self.fallbacks:
                     try:
                         return func()
-                    except Exception:
+                    except Exception as _err:
                         continue
                 raise Exception("All fallbacks failed")
         

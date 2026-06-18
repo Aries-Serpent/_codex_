@@ -290,7 +290,7 @@ c950240e0 - docs: establish PR #3178 CI fix plan for branch 0D_base_
 
 **Action Required:**
 1. Navigate to: `Settings → Secrets and variables → Actions`
-2. Create new secret: `HF_TOKEN`
+2. Create new secret: `HF_TOKEN` <!-- pragma: allowlist secret -->
 3. Value: Get from https://huggingface.co/settings/tokens
 4. Permission level: Read-only sufficient
 
