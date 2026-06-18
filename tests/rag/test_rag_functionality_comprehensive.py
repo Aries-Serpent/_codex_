@@ -68,21 +68,30 @@ class TestEmbeddingAccuracy:
             provider = TfidfEmbeddingProvider()
 
             # Similar texts
-            text1 = ["The cat sits on the mat"]
-            text2 = ["A cat is sitting on a mat"]
+            text1 = "The cat sits on the mat"
+            text2 = "A cat is sitting on a mat"
             # Different text
-            text3 = ["Python programming language"]
+            text3 = "Python programming language"
 
-            emb1 = provider.encode(text1)
-            emb2 = provider.encode(text2)
-            emb3 = provider.encode(text3)
+            # Fit on all texts together to ensure consistent vocabulary
+            all_texts = [text1, text2, text3]
+            embeddings = provider.encode(all_texts)
+            
+            emb1 = embeddings[0]
+            emb2 = embeddings[1]
+            emb3 = embeddings[2]
 
-            # Calculate cosine similarity
+            # Calculate cosine similarity with NaN safety
             def cosine_sim(a, b):
-                return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
+                norm_a = np.linalg.norm(a)
+                norm_b = np.linalg.norm(b)
+                # Handle zero-norm vectors (shouldn't happen after our TF-IDF fix, but be safe)
+                if norm_a == 0 or norm_b == 0:
+                    return 0.0
+                return np.dot(a, b.T) / (norm_a * norm_b)
 
-            sim_12 = cosine_sim(emb1[0], emb2[0])
-            sim_13 = cosine_sim(emb1[0], emb3[0])
+            sim_12 = cosine_sim(emb1, emb2)
+            sim_13 = cosine_sim(emb1, emb3)
 
             # Similar texts should be more similar
             assert sim_12 > sim_13, "Similar texts should have higher similarity"
