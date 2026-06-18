@@ -1,10 +1,10 @@
-# Session Context — 2026-06-18T06:22:05Z
+# Session Context — 2026-06-18T06:33:37Z
 **Branch:** `copilot/revert-copilot-setup-steps`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4645` (✅)
-- GraphQL remaining: `4994` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4989` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `4408fa1d` Apply remaining changes — copilot-swe-agent[bot] (2026-06-18)
 - `ce8417ee` Merge pull request #4981 from Aries-Serpent/copilot/fix-github-actions-failures — Statix (2026-06-18)
 - `e6a4c8ae` Fix broken documentation link and RAG embedding test issues — copilot-swe-agent[bot] (2026-06-18)
 - `94217b5e` reverting back to version from 2 days ago — Statix (2026-06-18)
@@ -23,7 +24,6 @@
 - `38a250f1` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-18)
 - `b453fd73` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-18)
 - `5b9fa7c9` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-18)
-- `9670e803` Merge main into copilot/fix-test-rag-failures — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
