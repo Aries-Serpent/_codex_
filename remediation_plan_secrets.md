@@ -77,19 +77,19 @@
 - **Files receiving exact-line allowlist pragmas (Python):**
   - `tests/security/test_providers.py` — 15 lines: test-fixture secret values (fake AWS keys, GitHub tokens, env var assignments used in provider unit tests)
   - `tests/ci/test_post_rescue_comment.py` — 4 lines: hardcoded Git SHA test fixtures flagged as Hex High Entropy
-  - `tests/api/test_auth_mfa_expiry.py` — 1 line: `"password": "Str0ngPass!"` in auth test fixture
-  - `tests/auth/test_mfa_provider.py` — 1 line: `secret="JBSWY3DPEHPK3PXP"` (standard IETF RFC 6238 TOTP test seed)
-  - `tests/auth/test_token_manager.py` — 1 line: `secret = "test_secret_key_123"` test fixture
+  - `tests/api/test_auth_mfa_expiry.py` — 1 line: `"password": "Str0ngPass!"` in auth test fixture <!-- pragma: allowlist secret -->
+  - `tests/auth/test_mfa_provider.py` — 1 line: `secret="JBSWY3DPEHPK3PXP"` (standard IETF RFC 6238 TOTP test seed) <!-- pragma: allowlist secret -->
+  - `tests/auth/test_token_manager.py` — 1 line: `secret = "test_secret_key_123"` test fixture <!-- pragma: allowlist secret -->
   - `tests/branch_coverage/test_branch_coverage_config.py` — 1 line: env-var dict literal used in test
-  - `tests/agents/test_msp_client_phase9_1.py` — 1 line: `api_key="test"` in unit test
+  - `tests/agents/test_msp_client_phase9_1.py` — 1 line: `api_key="test"` in unit test <!-- pragma: allowlist secret -->
   - `coverage_tests/test_security_providers_unittest.py` — 1 line: mock `get_secret_value` return in unittest
   - `tests/unit/test_alerting.py` — 1 line: SMTP port assertion (keyword over-match)
   - `tests/unit/utils/test_reproducibility_hardening.py` — 1 line: `mock_git_commit` fixture value
   - `tests/unit/utils/test_safe_pickle.py` — 1 line: `b"env_secret"` assertion string
   - `tests/services/test_api_main_phase_e.py` — 1 line: `monkeypatch.setenv("DISABLE_SECRET_FILTER", ...)` test setup
-  - `tests/test_fast_forward_safe_files.py` — 1 line: `"abc123def456"` SHA fixture (peer of the already-pragmaed line 118)
+  - `tests/test_fast_forward_safe_files.py` — 1 line: `"abc123def456"` SHA fixture (peer of the already-pragmaed line 118) <!-- pragma: allowlist secret -->
   - `scripts/space_traversal/viz_html.py` — 1 line: `integrity="sha384-..."` SRI hash attribute in HTML template
-  - `tools/codex_apply_modeling_monitoring_api.py` — 1 line: `API_KEY_ENV = "CODEX_API_KEY"` env-var name constant
+  - `tools/codex_apply_modeling_monitoring_api.py` — 1 line: `API_KEY_ENV = "CODEX_API_KEY"` env-var name constant <!-- pragma: allowlist secret -->
 - **Files receiving exact-line allowlist pragmas (YAML workflow):**
   - `.github/workflows/codeql-alert-fetcher.yml` — 1 line: `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` (GitHub Actions secret reference, not a credential value)
   - `.github/workflows/security-scanning-suite.yml` — 1 line: `id: detect-secrets` step identifier (keyword over-match)
@@ -106,7 +106,7 @@
 - **Active-path findings triaged:** 6 baseline entries across 3 active test files, all confirmed as **false positives** already covered by existing exact-line allowlist pragmas. No new source changes were needed.
 - **Revalidated active test files:**
   - `tests/safety/test_sanitizers_coverage.py` — 4 findings (`ghp_*`, `AKIA*`, `sk-*`, PEM block) used as sanitizer-detection test vectors; all already exact-line allowlisted.
-  - `tests/serving/test_inference_enhanced.py` — 1 finding: `jwt_secret="my-secret"` auth test fixture already exact-line allowlisted.
+  - `tests/serving/test_inference_enhanced.py` — 1 finding: `jwt_secret="my-secret"` auth test fixture already exact-line allowlisted. <!-- pragma: allowlist secret -->
   - `tests/test_token_verification.py` — 1 finding: `ghp_SECRETTOKEN123456789` negative test token already exact-line allowlisted.
 - **Baseline-only evidence noise revalidated:**
   - `.codex/evidence/archive_ops.jsonl` — 24 `Hex High Entropy String` hits are SHA256 values in archive/evidence records, not credentials; no inline suppression is possible or warranted for this JSONL evidence file.

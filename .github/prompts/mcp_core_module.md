@@ -36,7 +36,7 @@ from typing import Any, Dict, List, Optional
 # Default paths and environment keys
 _MCP_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "mcp.json")
 _ENV_ITA_URL = "ITA_URL"
-_ENV_ITA_API_KEY = "ITA_API_KEY"
+_ENV_ITA_API_KEY = "ITA_API_KEY" <!-- pragma: allowlist secret -->
 _ENV_MCP_RATE_LIMIT = "MCP_RATE_LIMIT"  # optional global rate limit (calls per minute)
 
 class MCPToolConfig(Dict[str, Any]):

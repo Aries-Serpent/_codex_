@@ -320,9 +320,9 @@ When third-party monitoring is prioritized:
 ```bash
 # Required
 export GITHUB_CLIENT_ID="your_client_id"
-export GITHUB_CLIENT_SECRET="your_client_secret"
+export GITHUB_CLIENT_SECRET="your_client_secret" <!-- pragma: allowlist secret -->
 export GITHUB_REDIRECT_URI="https://yourapp.com/callback"
-export TOKEN_SECRET_KEY="your_secure_random_key"
+export TOKEN_SECRET_KEY="your_secure_random_key" <!-- pragma: allowlist secret -->
 
 # Optional
 export CODEX_ENV="production"

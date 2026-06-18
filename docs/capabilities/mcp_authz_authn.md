@@ -330,17 +330,17 @@ Configure authentication via environment:
 
 ```bash
 # API Key settings
-export MCP_API_KEY_HASH_ALGORITHM="sha256"
+export MCP_API_KEY_HASH_ALGORITHM="sha256" <!-- pragma: allowlist secret -->
 export MCP_API_KEY_MIN_LENGTH="32"
 
 # JWT settings
-export MCP_JWT_SECRET="your-secret-key"
+export MCP_JWT_SECRET="your-secret-key" <!-- pragma: allowlist secret -->
 export MCP_JWT_ALGORITHM="HS256"
 export MCP_JWT_EXPIRY_SECONDS="3600"
 
 # OAuth settings
 export MCP_OAUTH_CLIENT_ID="your-client-id"
-export MCP_OAUTH_CLIENT_SECRET="your-client-secret"
+export MCP_OAUTH_CLIENT_SECRET="your-client-secret" <!-- pragma: allowlist secret -->
 ```
 
 ### Configuration File

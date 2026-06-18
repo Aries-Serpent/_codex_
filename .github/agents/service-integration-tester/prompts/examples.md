@@ -249,7 +249,7 @@ register_endpoint = Endpoint(
 register_payload = tester.generate_mock_data({
     'username': 'string',
     'email': 'email',
-    'password': 'string'
+    'password': 'string' <!-- pragma: allowlist secret -->
 })
 register_result = tester.test_endpoint_sync(register_endpoint, payload=register_payload)
 

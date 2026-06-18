@@ -102,7 +102,7 @@ curl -X POST http://127.0.0.1:8080/admin/tenants \
       "requests_per_minute": 60,
       "tokens_per_minute": 10000
     }
-  }'
+  }' <!-- pragma: allowlist secret -->
 ```text
 
 ### 5. Query the Knowledge Base

@@ -79,7 +79,7 @@ S145 addressed the P2 tasks from N17/N18 in the S144 next-phase plan:
 
 | File | Line | Type | Reason |
 |------|------|------|--------|
-| `examples/authentication/03_token_management.py` | 41 | Secret Keyword | `secret_key = "demo_..."` — demo value, not a real secret |
+| `examples/authentication/03_token_management.py` | 41 | Secret Keyword | `secret_key = "demo_..."` — demo value, not a real secret  <!-- pragma: allowlist secret --> |
 | `services/api/main.py` | 155 | Secret Keyword | `"codex-auth-change-me-in-production"` — dev placeholder, already `# nosec B105` |
 | `services/api/main.py` | 177 | Secret Keyword | `_AWS_SECRET_PATTERN` — pattern variable name in security scanner, not a real key |
 

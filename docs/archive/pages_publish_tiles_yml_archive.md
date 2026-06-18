@@ -38,10 +38,10 @@ The archival operation was logged in `.codex/evidence/archive_ops.jsonl`:
 {
   "action": "ARCHIVE",
   "actor": "copilot",
-  "commit": "295acc84fccd6b8d35780695e7b37f159be7b747",
+  "commit": "295acc84fccd6b8d35780695e7b37f159be7b747", <!-- pragma: allowlist secret -->
   "path": ".github/workflows/pages_publish_tiles.yml",
   "repo": "_codex_",
-  "sha256": "f9abea9ee43487a639343027cf399d6fb36e3ab36a38afd4f60d69d01bc1fd68",
+  "sha256": "f9abea9ee43487a639343027cf399d6fb36e3ab36a38afd4f60d69d01bc1fd68", <!-- pragma: allowlist secret -->
   "size": 1217,
   "tombstone": "7b799ac3-9da9-4d47-9d51-9e052c74a9d1",
   "ts": "2025-11-02T23:29:34Z"

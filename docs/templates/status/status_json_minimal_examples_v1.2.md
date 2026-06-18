@@ -6,7 +6,7 @@ Purpose
 - Provide minimal but valid JSON snippets for common authoring scenarios.
 
 Minimal Skeleton (valid against v1.2)
-```json
+```jsonc
 {
   "metadata": {
     "title": "📍 `_codex_` : Status Update 2025-11-02-15:29:UTC",
@@ -41,7 +41,7 @@ Minimal Skeleton (valid against v1.2)
       "coverage_percent": 0,
       "coverage_threshold": 0,
       "coverage_by_module": {},
-      "quality_gates": {"lint":"skip","typecheck":"skip","security_sast":"skip","security_secrets":"skip","security_deps":"skip","format":"skip","docs":"skip"},
+     "quality_gates": {"lint":"skip","typecheck":"skip","security_sast":"skip","security_secrets":"skip","security_deps":"skip","format":"skip","docs":"skip"}, // pragma: allowlist secret
       "nox_sessions": {"lint":"skip","tests":"skip","gates":"skip","typecheck":"skip","precommit":"skip"},
       "reproducibility": "",
       "missing_tests": []

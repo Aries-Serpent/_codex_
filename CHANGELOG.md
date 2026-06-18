@@ -1,6 +1,57 @@
 # Changelog
 
+## [2026-06-18] — PR #4973 CI Rescue Session
+
+### Fixed
+- Converted unreachable code test `test_atomic_read_with_fallback` in `test_checkpointing_business_logic.py` to parametrized test exercising all three fallback paths
+- Addressed CodeQL alert for unreachable code statement via parametrized test conversion
+- Updated comment responses for blocking GitHub Code Quality alerts
+
+### Changed
+- Test structure: Single hardcoded boolean test → parametrized test with 3 cases
+
+### Session
+- PR #4973: Fix CodeQL security alert and undefined test module exports
+- Agent: @copilot-swe-agent[bot]
+- Commits: e3f2c164 (fix: convert unreachable code test to parametrized test)
+
+---
+
 ## [Unreleased]
+
+### Fixed (auto-update — PR #4973)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4973 (SHA `cc9618d0`) at 2026-06-18T00:48Z [auto-generated]
+
+### Fixed (auto-update — PR #4975)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4975 (SHA `4119a0af`) at 2026-06-17T23:46Z [auto-generated]
+
+### Fixed (SN 2026-06-17T17:18Z - PR #4974 CI Rescue follow-up)
+- **Fixed actionlint undefined-step context** in `.github/workflows/auto-approve-workflows.yml`
+  - Removed `${{ steps.app-token.outputs.token }}` reference from a `run` script comment in `execute-approval` job (step `app-token` is not defined in that job scope).
+- **Fixed workflow compliance gate violations** in `.github/workflows/auto-approve-workflows.yml`
+  - Added missing `timeout-minutes` to jobs:
+    - `approve-on-push`: `20`
+    - `evaluate-approval`: `20`
+    - `execute-approval`: `45`
+    - `cleanup-single-session`: `10`
+    - `publish-metrics`: `15`
+
+### Fixed (SN 2026-06-17T16:58Z - PR #4974 CI Rescue — Workflow Compliance)
+- **Fixed actionlint compliance violation** in `.github/workflows/copilot-setup-steps.yml`
+  - Removed duplicate `full=` from lfs_mode description (line 30)
+  - Before: `'Git LFS mode (none=baseline, targeted=fetch specific paths, full=full=fetch all)'`
+  - After: `'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'`
+  - Resolution: `27240d9`
+  - Impact: Unblocks `actionlint — Workflow Compliance` check
+- **Updated accountability documentation** in response to pre-flight checklist
+  - Added session summary to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+  - Synchronized CHANGELOG.md update with accountability report (REQ-5)
+  - Compliance status: ✅ REQ-4/REQ-5 satisfied
+
+
+
+### Fixed (auto-update — PR #4974)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4974 (SHA `c241c812`) at 2026-06-17T16:54Z [auto-generated]
 
 ### Fixed (SN 2026-06-17T06:34Z - PR #4970 Code Quality Remediation)
 - **Added explanatory comments** to 7 empty except blocks in `tests/auth/test_oauth_manager_wave2_comprehensive.py` (lines 226, 235, 366, 378, 389, 400, 411)

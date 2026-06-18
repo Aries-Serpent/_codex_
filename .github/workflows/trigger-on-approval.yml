@@ -79,14 +79,14 @@ jobs:
 
       # ── 1. Checkout (needed by approve_pending_runs.py) ─────────────────────
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Set up Python (for approve_pending_runs.py)
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           cache: pip
           python-version: '3.12'
@@ -96,7 +96,7 @@ jobs:
       # instead of directly approving via approve_pending_runs.py. This centralizes
       # approval logic, audit trail, and token management.
       - name: Dispatch unified approval hub
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -133,7 +133,7 @@ jobs:
       # Keep validation workflows: validate.yml and pre-merge-validation.yml
       # These run in parallel with the unified approval hub dispatch above.
       - name: Dispatch Validation Pipeline (validate.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -156,7 +156,7 @@ jobs:
 
       # ── 4. Dispatch pre-merge-validation.yml ────────────────────────────────
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -181,7 +181,7 @@ jobs:
       # Requires CODEX_MASTER_KEY (security_events scope). Produces fresh CodeQL
       # artifact for the agent session to review. Non-fatal if token is unavailable.
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -214,7 +214,7 @@ jobs:
       # wake the Copilot cloud agent so it can pick up the approved PR and implement
       # any remaining changes as a maintainer (elevated via CODEX_MASTER_KEY chain).
       - name: Post @copilot continue (resume agent session)
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |

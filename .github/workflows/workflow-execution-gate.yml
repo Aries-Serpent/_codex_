@@ -53,13 +53,13 @@ jobs:
       GH_TRICKLE_POLITE_SLEEP: "0.3"
       GH_TRICKLE_MIN_REMAINING: "50"
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/
             pyproject.toml
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -100,13 +100,13 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/
             pyproject.toml
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -201,13 +201,13 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/
             pyproject.toml
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -226,7 +226,7 @@ jobs:
         #   1. Dispatch the target workflow
         #   2. Approve any resulting action_required runs
         #   3. Log the dispatch to the audit trail
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -302,13 +302,13 @@ jobs:
     timeout-minutes: 5
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/
             pyproject.toml
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+      - uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -586,7 +586,7 @@ jobs:
 
     steps:
       - name: Checkout fast-forward script
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/fast_forward_safe_files.py
@@ -595,7 +595,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        uses: actions/setup-python@v6 # v6
         with:
           python-version: "3.12"
           cache: pip  # aais-cache: pip
@@ -640,7 +640,7 @@ jobs:
 
       - name: Upload fast-forward result artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{ github.run_id }}
           path: ${{ runner.temp }}/ff_result.json

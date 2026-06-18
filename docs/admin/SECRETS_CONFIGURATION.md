@@ -92,7 +92,7 @@ aws secretsmanager create-secret \
     --description "GitHub App configuration" \
     --secret-string '{
         "app_id": "123456",
-        "webhook_secret": "your-webhook-secret-here"
+        "webhook_secret": "your-webhook-secret-here" <!-- pragma: allowlist secret -->
     }' \
     --region us-east-1
 ```
@@ -106,7 +106,7 @@ aws secretsmanager create-secret \
 ```bash
 # Export required variables
 export TF_VAR_github_app_id="123456"
-export TF_VAR_github_webhook_secret="your-webhook-secret-from-step-1"
+export TF_VAR_github_webhook_secret="your-webhook-secret-from-step-1" <!-- pragma: allowlist secret -->
 export AWS_PROFILE="default"  # or your AWS profile name
 export AWS_REGION="us-east-1"
 
@@ -124,7 +124,7 @@ Add to `~/.bashrc` or `~/.zshrc`:
 ```bash
 # Add to end of file
 export TF_VAR_github_app_id="123456"
-export TF_VAR_github_webhook_secret="your-secret-here"
+export TF_VAR_github_webhook_secret="your-secret-here" <!-- pragma: allowlist secret -->
 
 # Reload
 source ~/.bashrc  # or source ~/.zshrc
@@ -316,21 +316,21 @@ ssh-keygen -p -m PEM -f private-key.pem
 ### Development
 ```bash
 export TF_VAR_github_app_id="123456"
-export TF_VAR_github_webhook_secret="dev-secret"
+export TF_VAR_github_webhook_secret="dev-secret" <!-- pragma: allowlist secret -->
 aws secretsmanager create-secret --name github-app-private-key-dev --secret-string file://dev-key.pem
 ```
 
 ### Staging
 ```bash
 export TF_VAR_github_app_id="123457"
-export TF_VAR_github_webhook_secret="staging-secret"
+export TF_VAR_github_webhook_secret="staging-secret" <!-- pragma: allowlist secret -->
 aws secretsmanager create-secret --name github-app-private-key-staging --secret-string file://staging-key.pem
 ```
 
 ### Production
 ```bash
 export TF_VAR_github_app_id="123458"
-export TF_VAR_github_webhook_secret="prod-secret"
+export TF_VAR_github_webhook_secret="prod-secret" <!-- pragma: allowlist secret -->
 aws secretsmanager create-secret --name github-app-private-key-prod --secret-string file://prod-key.pem
 ```
 

@@ -306,7 +306,7 @@ Generates cryptographically secure random key using `openssl rand -base64`.
 ```python
 secrets_mgr = GitHubSecretsManager(owner, repo, token)
 key = secrets_mgr.generate_secure_key(length=32)
-# Returns: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6=="
+# Returns: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6==" <!-- pragma: allowlist secret -->
 ```
 
 #### `set_secret(name: str, value: str, method: str = "api", force: bool = False) -> bool`
@@ -361,7 +361,7 @@ Automated setup of all Phase 10 required secrets.
 **Example:**
 ```python
 result = secrets_mgr.setup_phase10_secrets(force=False)
-# Returns: {"secret_1": "configured", "secret_2": "configured", ...}
+# Returns: {"secret_1": "configured", "secret_2": "configured", ...} <!-- pragma: allowlist secret -->
 ```
 
 ---
@@ -432,7 +432,7 @@ on:
 gh workflow run phase10-automated-secrets-setup.yml \
   -f gdrive_service_account_json="$(cat service-account.json)" \
   -f google_client_id="123456.apps.googleusercontent.com" \
-  -f google_client_secret="GOCSPX-abc123"
+  -f google_client_secret="GOCSPX-abc123" <!-- pragma: allowlist secret -->
 ```
 
 ### 3. Admin Automation Agent Integration

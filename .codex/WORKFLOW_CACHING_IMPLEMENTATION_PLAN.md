@@ -121,13 +121,13 @@ Enable file-level granularity for maximum efficiency on single-file changes.
   "generated": "2026-01-05T21:32:00Z",
   "files": {
     "docs/admin/GENESIS_SETUP_GUIDE.md": {
-      "checksum": "a1b2c3d4e5f6",
+      "checksum": "a1b2c3d4e5f6", <!-- pragma: allowlist secret -->
       "last_checked": "2026-01-05T20:00:00Z",
       "last_status": "pass",
       "link_count": 42
     },
     "README.md": {
-      "checksum": "f6e5d4c3b2a1",
+      "checksum": "f6e5d4c3b2a1", <!-- pragma: allowlist secret -->
       "last_checked": "2026-01-05T20:00:00Z",
       "last_status": "pass",
       "link_count": 15

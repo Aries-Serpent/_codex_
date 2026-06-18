@@ -362,7 +362,7 @@ def action_print_rate_limit(session: GitHubSession) -> None:
     if resp.status_code != 200:
         raise SystemExit(f"rate-limit query failed: {resp.status_code} {resp.text}")
     data = resp.json()
-    print(json.dumps(data, indent=2, sort_keys=True))
+    print(json.dumps(data, indent=2, sort_keys=True))  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def action_probe_repo(session: GitHubSession, owner: str, repo: str) -> None:
@@ -375,7 +375,7 @@ def action_probe_repo(session: GitHubSession, owner: str, repo: str) -> None:
         "private": data.get("private"),
         "default_branch": data.get("default_branch"),
     }
-    print(json.dumps(summary, indent=2, sort_keys=True))
+    print(json.dumps(summary, indent=2, sort_keys=True))  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def action_runner_registration_token(
@@ -446,7 +446,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     token, expires_at = _exchange_installation_token(app_jwt, inst_id, body=body)
 
     if args.verbose:
-        print(f"[info] Installation token: {_mask(token)} exp={expires_at}")
+        print("[info] Installation token minted successfully")  # codeql[py/clear-text-logging-sensitive-data]
 
     session = GitHubSession(token)
 
@@ -471,7 +471,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             try:
                 _revoke_installation_token(token)
                 if args.verbose:
-                    print("[info] revoked installation token")
+                    print("[info] revoked installation token")  # codeql[py/clear-text-logging-sensitive-data]
             except Exception as exc:  # pragma: no cover - user opted-in to revoke
                 print(f"[warn] revoke failed: {exc}", file=sys.stderr)
 

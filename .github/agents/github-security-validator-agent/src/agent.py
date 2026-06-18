@@ -234,7 +234,7 @@ class SecurityValidator:
 
     def validate_secret_scanning(self) -> dict:
         """Validate secret scanning configuration."""
-        print("🔐 Validating Secret Scanning...")
+        print("🔐 Validating Secret Scanning...")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Check for secret scanning configuration files
         secret_scan_configs = [

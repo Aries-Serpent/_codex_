@@ -134,9 +134,9 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'apply-vars'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - name: Cache pip downloads
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@v5 # v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-infra-${{ hashFiles('pyproject.toml') }}
@@ -191,7 +191,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'apply-webhooks'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - name: Configure webhooks
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -216,7 +216,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'list-vars'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - name: List variables and post to PR
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -249,7 +249,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'list-webhooks'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - name: List webhooks
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -267,7 +267,7 @@ jobs:
       (needs.auth-check.outputs.operation == 'app-status' ||
        needs.auth-check.outputs.operation == 'app-manifest')
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
 
       - name: Show app status or generate manifest URL
         env:

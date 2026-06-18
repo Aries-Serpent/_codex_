@@ -139,9 +139,9 @@ link = generate_link_metadata(
   "repo": "_codex_",
   "path": "src/module.py",
   "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
-  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", <!-- pragma: allowlist secret -->
   "size": 4096,
-  "commit": "abc123def456",
+  "commit": "abc123def456", <!-- pragma: allowlist secret -->
   "schemaVersion": "2.0",
   "standardizationMetadata": {
     "schema_version": "2.0",

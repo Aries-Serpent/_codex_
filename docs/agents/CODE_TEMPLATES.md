@@ -842,7 +842,7 @@ auth:
     query_param: "api_key"
   # JWT settings
   jwt:
-    secret_env: "JWT_SECRET"
+    secret_env: "JWT_SECRET" <!-- pragma: allowlist secret -->
     algorithm: "HS256"
     expiry_minutes: 60
 

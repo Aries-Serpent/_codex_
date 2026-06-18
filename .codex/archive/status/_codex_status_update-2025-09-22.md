@@ -75,7 +75,7 @@ Audit Scope
 +from codex_ml.utils.env import environment_summary
 +from codex_ml.utils.provenance import export_environment
 @@
--    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
+-    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501 <!-- pragma: allowlist secret -->
 +    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
 +    export_environment(art_dir, seed=resolved_seed, command="codex_ml.train_loop")
 ```text

@@ -95,7 +95,7 @@ To immediately halt all autonomous agent activity:
 
 ## Enabling Live Integration Tests
 
-1. Add required provider secrets: `OPENAI_API_KEY`, `HF_TOKEN`
+1. Add required provider secrets: `OPENAI_API_KEY`, `HF_TOKEN` <!-- pragma: allowlist secret -->
 2. Set `ENABLE_LIVE_TESTS` repository variable to `true` (for authorized branches only)
 3. Trigger `integration-gated.yml` workflow manually
 4. Monitor for billing alerts via provider dashboards

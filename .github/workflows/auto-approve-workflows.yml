@@ -160,6 +160,7 @@ jobs:
   approve-on-push:
     name: "⚡ Auto-Approve Pending Runs (Push Event)"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.event_name == 'push'
     steps:
       - name: Checkout code
@@ -217,6 +218,7 @@ jobs:
   evaluate-approval:
     name: "📋 Evaluate Approval Rules (5-tier priority)"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: |
       github.event_name == 'workflow_dispatch' && 
       github.event.inputs.approval_source != ''
@@ -374,6 +376,7 @@ jobs:
     name: "⚡ Execute Approval Decision"
     needs: evaluate-approval
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     if: |
       needs.evaluate-approval.outputs.should_proceed == 'true' &&
       needs.evaluate-approval.outputs.approval_decision == 'APPROVE'
@@ -392,8 +395,8 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Tier 1: Cognitive Brain App token (not available in standard context)
-          # Would be: ${{ steps.app-token.outputs.token }} if available
+          # Tier 1: Cognitive Brain App token (not available in this job context)
+          # (available in approve-original job via step id "app-token")
           
           # Tier 2: CODEX_MASTER_KEY (primary PAT)
           if [ -n "${{ secrets.CODEX_MASTER_KEY || '' }}" ]; then
@@ -518,6 +521,7 @@ jobs:
     name: "🧹 Cleanup Single-Session Label"
     needs: [evaluate-approval, execute-approval]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: |
       always() &&
       needs.evaluate-approval.outputs.should_proceed == 'true' &&
@@ -553,6 +557,7 @@ jobs:
     name: "📊 Publish Approval Metrics"
     needs: [evaluate-approval, execute-approval]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: always() && github.event.inputs.approval_source != ''
     permissions:
       contents: write
@@ -751,7 +756,7 @@ jobs:
         id: approve
         if: steps.resolve.outputs.skip != 'true'
         continue-on-error: true  # transient rate-limits must not fail the job
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        uses: actions/github-script@v8 # v9
         env:
           MODE: ${{ steps.resolve.outputs.mode }}
           PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}

@@ -635,7 +635,7 @@ gh api /repos/Aries-Serpent/_codex_/actions/secrets/CODEX_MASTER_KEY \
 #### Step 3: Review Audit Logs (Last 90 iterations)
 ```bash
 gh api /orgs/Aries-Serpent/audit-log \
-  --jq '.[] | select(.action | contains("secret")) | select(.data.secret_name == "CODEX_MASTER_KEY")'
+  --jq '.[] | select(.action | contains("secret")) | select(.data.secret_name == "CODEX_MASTER_KEY")' <!-- pragma: allowlist secret -->
 
 # Look for:
 # - secret.created

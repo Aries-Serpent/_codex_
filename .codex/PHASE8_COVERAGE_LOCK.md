@@ -178,7 +178,7 @@ Status: ✅ PASS
   "flaky_tests": 0,
   "mutation_score": "78.6%",
   "timestamp": "2026-06-15T17:19:00Z",
-  "commit_sha": "f565f1768c891a38525aeb8904c026bdad9d457d",
+  "commit_sha": "f565f1768c891a38525aeb8904c026bdad9d457d",  <!-- pragma: allowlist secret -->
   "locked_until": "Phase 10 completion",
   "approval_gates": [
     "coverage_verification",

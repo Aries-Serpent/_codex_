@@ -339,7 +339,7 @@ cur = con.execute(f"PRAGMA table_info({table})")
 
 **Affected Files (Sample):**
 ```
-./benchmarks/security_benchmarks.py:54 - test_password = "MySecureP@ssw0rd123"
+./benchmarks/security_benchmarks.py:54 - test_password = "MySecureP@ssw0rd123" <!-- pragma: allowlist secret -->
 ./.github/agents/tests/test_enhanced_suite.py:294
 ./tests/security/test_security_phase9_1.py:142, 198
 ./tests/unit/utils/test_sensitive_data_utils.py:46

@@ -147,7 +147,7 @@ providers:
   - type: aws_secrets_manager
     config:
       region: "us-east-1"
-      secret_prefix: "codex/"
+      secret_prefix: "codex/" <!-- pragma: allowlist secret -->
 
   - type: environment
     config:

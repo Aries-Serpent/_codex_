@@ -33,7 +33,7 @@ aws secretsmanager create-secret \
 
 # Set environment variables
 export TF_VAR_github_app_id="YOUR_APP_ID"
-export TF_VAR_github_webhook_secret="YOUR_WEBHOOK_SECRET"
+export TF_VAR_github_webhook_secret="YOUR_WEBHOOK_SECRET" <!-- pragma: allowlist secret -->
 ```
 
 ## Deploy

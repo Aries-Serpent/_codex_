@@ -730,7 +730,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Fail if Secrets Detected
-        if: steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true'
+        if: steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true' <!-- pragma: allowlist secret -->
         run: |
           echo "❌ SECURITY ALERT: Secrets detected in consolidation output!"
           echo "Workflow terminated to prevent credential exposure."

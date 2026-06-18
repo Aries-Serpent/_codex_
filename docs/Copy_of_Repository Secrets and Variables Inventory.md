@@ -382,7 +382,7 @@ Click path: **Settings** → **Secrets and variables** → **Actions** → **Sec
 4. **`CODEX_REPO_ID`**
    - Click **New repository secret**
    - Name: `CODEX_REPO_ID`
-   - Secret: `928754154` *(your actual numeric repository ID; find via `gh api repos/Aries-Serpent/_codex_ --jq .id`)*
+   - Secret: `928754154` *(your actual numeric repository ID; find via `gh api repos/Aries-Serpent/_codex_ --jq .id`)* <!-- pragma: allowlist secret -->
    - Click **Add secret**
    - Purpose: Used for API calls requiring numeric repo ID
 
@@ -1183,7 +1183,7 @@ After completing all above sections, validate the configuration:
 ### Oldest Items Requiring Rotation/Audit Attention
 - `AUDIT_RETENTION_DAYS` (stale policy review)
 - `CODEX_AGENT_NAME`, `CODEX_API_VERSION`, `CODEX_NETWORK_MODE` (long-lived static config; verify intentional)
-- Aged org secrets: `CODECOV_TOKEN`, `HF_TOKEN`, `NPM_TOKEN`, `PYPI_TOKEN`, `_CODEX_ACTION_RUNNER`
+- Aged org secrets: `CODECOV_TOKEN`, `HF_TOKEN`, `NPM_TOKEN`, `PYPI_TOKEN`, `_CODEX_ACTION_RUNNER` <!-- pragma: allowlist secret -->
 
 ---
 

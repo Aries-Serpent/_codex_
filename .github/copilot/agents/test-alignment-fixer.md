@@ -107,7 +107,7 @@ spec:
     - name: update_to_behavior_validation
       description: "Replace implementation checks with behavior validation"
       examples:
-        - old: "assert provider.api_key == 'test-key'"
+        - old: "assert provider.api_key == 'test-key'" <!-- pragma: allowlist secret -->
           new: "assert provider.client is not None"
           reason: "API key no longer stored (security refactoring)"
 
@@ -129,11 +129,11 @@ spec:
       description: "Update tests after security-driven refactoring"
       patterns:
         - removed_credential_storage:
-            old: "assert obj.password == 'secret'"
+            old: "assert obj.password == 'secret'" <!-- pragma: allowlist secret -->
             new: "assert obj.client is not None  # Password not stored (security)"
 
         - removed_api_key_storage:
-            old: "assert provider.api_key == 'key'"
+            old: "assert provider.api_key == 'key'" <!-- pragma: allowlist secret -->
             new: "assert provider.client is not None  # API key not stored (security)"
 
   analysis:
@@ -275,7 +275,7 @@ graph TB
 ```python
 # ❌ Test Failure
 def test_initialization_from_env(self):
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):
+    with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}): <!-- pragma: allowlist secret -->
         provider = OpenAIEmbeddingProvider()
         assert provider.api_key == "env-key"  # AttributeError: no attribute 'api_key'
 
