@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026-06-18] — PR #4973 CI Rescue Session
+
+### Fixed
+- Converted unreachable code test `test_atomic_read_with_fallback` in `test_checkpointing_business_logic.py` to parametrized test exercising all three fallback paths
+- Addressed CodeQL alert for unreachable code statement via parametrized test conversion
+- Updated comment responses for blocking GitHub Code Quality alerts
+
+### Changed
+- Test structure: Single hardcoded boolean test → parametrized test with 3 cases
+
+### Session
+- PR #4973: Fix CodeQL security alert and undefined test module exports
+- Agent: @copilot-swe-agent[bot]
+- Commits: e3f2c164 (fix: convert unreachable code test to parametrized test)
+
+---
+
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #4973)
