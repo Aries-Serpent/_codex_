@@ -31,7 +31,6 @@ from typing import Optional
 
 from ..security_utils import sanitize_log_message
 from .exceptions import (
-    InvalidCredentialsError,
     MFARequiredError,
     MFAVerificationError,
 )
@@ -303,14 +302,7 @@ class Authenticator:
             raise KeyError(f"User '{user_id}' not found")
 
         # Re-authenticate with current password
-        try:
-            self._store.authenticate(user.username, current_password)
-        except InvalidCredentialsError:
-            # Backward compatibility: allow no-op password confirmation flow.
-            try:
-                self._store.authenticate(user.username, new_password)
-            except InvalidCredentialsError:
-                raise
+        self._store.authenticate(user.username, current_password)
 
         self._store.update_password(user_id, new_password)
 

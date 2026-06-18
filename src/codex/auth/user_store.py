@@ -30,6 +30,7 @@ from ..security_utils import sanitize_log_message
 from .exceptions import (
     InvalidCredentialsError,
     UserAlreadyExistsError,
+    UserNotFoundError,
 )
 from .user_model import (  # User + PasswordHasher live here to break cyclic imports
     _HASH_BYTES,
@@ -243,7 +244,7 @@ class UserStore:
         with self._lock:
             user = self._repository.get_by_id(user_id)
             if user is None:
-                raise KeyError(f"User '{user_id}' not found")
+                raise UserNotFoundError(f"User '{user_id}' not found")
             if role not in user.roles:
                 user.roles.append(role)
                 user.updated_at = time.time()
@@ -324,8 +325,8 @@ class UserStore:
         has_digit = any(ch.isdigit() for ch in password)
         has_symbol = any(not ch.isalnum() for ch in password)
         has_case_mix = has_upper and has_lower
-        has_unicode_letter_mix = has_alpha and not has_case_mix
-        if len(password) >= 6 and (has_case_mix or has_unicode_letter_mix) and has_digit and has_symbol:
+        has_alpha_no_case_mix = has_alpha and not has_case_mix
+        if len(password) >= 6 and (has_case_mix or has_alpha_no_case_mix) and has_digit and has_symbol:
             return
 
         raise ValueError(

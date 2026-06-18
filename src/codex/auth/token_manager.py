@@ -397,6 +397,8 @@ class TokenManager:
             TokenType.REFRESH: self.REFRESH_TOKEN_EXPIRY,
             TokenType.SESSION: self.SESSION_TOKEN_EXPIRY,
         }
+        if token_type not in expiry_map:
+            raise ValueError(f"Unsupported token type: {token_type!r}")
         jti = secrets.token_urlsafe(16)
         claims = TokenClaims(
             sub=user_id,
