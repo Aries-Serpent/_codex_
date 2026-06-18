@@ -1,18 +1,15 @@
-# Session Context — 2026-06-18T07:47:35Z
+# Session Context — 2026-06-18T08:01:31Z
 **Branch:** `copilot/revert-copilot-setup-steps`  **PR:** #4982  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4655` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4476` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4982 — Exploring codebase for copilot-setup-steps changes
+## 📋 PR #4982 — Fix CodeQL clear-text logging alerts by excluding sensitive timestamp fields
 State: `open`  Draft: `False`  Branch: `copilot/revert-copilot-setup-steps` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **pages build and deployment** — `failure` on `main` (2026-06-18)
@@ -22,14 +19,14 @@ State: `open`  Draft: `False`  Branch: `copilot/revert-copilot-setup-steps` → 
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `56319ff1` Fix: Remove redundant json import in test_secrets_baseline_sync — copilot-swe-agent[bot] (2026-06-18)
+- `d4662541` Fix CodeQL alert #14036 and #14037: Remove sensitive timestamp field exposure in — copilot-swe-agent[bot] (2026-06-18)
+- `f75c7064` Fixing CodeQL clear-text-logging vulnerabilities and addressing all review comme — copilot-swe-agent[bot] (2026-06-18)
 - `0bbab0c2` Fix remaining linting and documentation issues from PR review — copilot-swe-agent[bot] (2026-06-18)
 - `951f9cbb` Fix all code review and CodeQL issues: imports, timestamps, unused vars, test lo — copilot-swe-agent[bot] (2026-06-18)
 - `de4954a6` Plan: Fix CodeQL security alerts and all code review feedback — copilot-swe-agent[bot] (2026-06-18)
 - `b98e1d2f` COMPLETE: Pre-merge testing infrastructure for copilot-setup-steps.yml implement — copilot-swe-agent[bot] (2026-06-18)
 - `d07be298` Phase 1-3 complete: Core validation scripts created and tested — copilot-swe-agent[bot] (2026-06-18)
-- `95bd55fe` WIP: Initialize pre-merge testing plan for copilot-setup-steps.yml — copilot-swe-agent[bot] (2026-06-18)
-- `865d8278` Add comprehensive validation summary: 19/19 tests passed, production-ready — copilot-swe-agent[bot] (2026-06-18)
-- `64017872` Create comprehensive implementation plan for copilot-setup-steps integration — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
