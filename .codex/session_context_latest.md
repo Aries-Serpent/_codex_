@@ -1,24 +1,28 @@
-# Session Context — 2026-06-18T07:30:29Z
+# Session Context — 2026-06-18T07:47:35Z
 **Branch:** `copilot/revert-copilot-setup-steps`  **PR:** #4982  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4823` (✅)
-- GraphQL remaining: `4984` (✅)
+- REST remaining: `4655` (✅)
+- GraphQL remaining: `4977` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #4982 — Exploring codebase for copilot-setup-steps changes
 State: `open`  Draft: `False`  Branch: `copilot/revert-copilot-setup-steps` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `CodeQL` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
+- **pages build and deployment** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
-- **🔖 Required Actions Version Enforcer** — `failure` on `copilot/revert-copilot-setup-steps` (2026-06-18)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `copilot/revert-copilot-setup-steps` (2026-06-18)
-- **Validation Pipeline** — `failure` on `copilot/revert-copilot-setup-steps` (2026-06-18)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-18)
 
 ## 📝 Recent Commits
+- `0bbab0c2` Fix remaining linting and documentation issues from PR review — copilot-swe-agent[bot] (2026-06-18)
 - `951f9cbb` Fix all code review and CodeQL issues: imports, timestamps, unused vars, test lo — copilot-swe-agent[bot] (2026-06-18)
 - `de4954a6` Plan: Fix CodeQL security alerts and all code review feedback — copilot-swe-agent[bot] (2026-06-18)
 - `b98e1d2f` COMPLETE: Pre-merge testing infrastructure for copilot-setup-steps.yml implement — copilot-swe-agent[bot] (2026-06-18)
@@ -26,7 +30,6 @@ State: `open`  Draft: `False`  Branch: `copilot/revert-copilot-setup-steps` → 
 - `95bd55fe` WIP: Initialize pre-merge testing plan for copilot-setup-steps.yml — copilot-swe-agent[bot] (2026-06-18)
 - `865d8278` Add comprehensive validation summary: 19/19 tests passed, production-ready — copilot-swe-agent[bot] (2026-06-18)
 - `64017872` Create comprehensive implementation plan for copilot-setup-steps integration — copilot-swe-agent[bot] (2026-06-18)
-- `8c23af8a` docs: add restoration completion report and verification summary — copilot-swe-agent[bot] (2026-06-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
