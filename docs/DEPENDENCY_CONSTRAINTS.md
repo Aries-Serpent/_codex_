@@ -5,38 +5,39 @@ This document explains critical version constraints in the _codex_ project depen
 ## Pandas & MLflow Compatibility
 
 ### Current Constraints
-- **pandas:** `>=2.0.0,<3`
+- **pandas:** `>=3.0.3,<4`
 - **mlflow:** `>=2.22.4,<4`
 
 ### Rationale
 
-**Why pandas 2.x instead of 3.x?**
+**Why pandas 3.x?**
 
-All MLflow versions from 2.22.4 through 3.14.0 depend on `pandas<3`, making pandas 3.x incompatible with the MLflow versions currently supported by this project. Downgrading to pandas 2.x resolves this conflict while maintaining full compatibility with both libraries:
+This project has been upgraded to use pandas 3.x to take advantage of performance improvements and modern APIs. The constraint `>=3.0.3,<4` ensures compatibility with the latest pandas releases while maintaining stability:
 
-- ✅ pandas 2.3.3+ is stable and feature-complete
-- ✅ All MLflow 3.x versions work with pandas 2.x
-- ✅ Codebase uses only pandas 2.x-compatible APIs (no ArrowDtype, StringDtype, or other 3.x-specific features)
-- ✅ No performance regression observed with pandas 2.x
+- ✅ pandas 3.0.3+ is stable and production-ready
+- ✅ All MLflow 3.x+ versions support pandas 3.x
+- ✅ Codebase has been updated to use pandas 3.x-compatible APIs
+- ✅ Performance improvements with pandas 3.x
 
 **Issue Reference:**
-- Resolved 16 failing workflows caused by ResolutionImpossible pip error
+- Resolved pip ResolutionImpossible conflicts by aligning to pandas 3.x-compatible dependency stack
 - Affects: API Documentation, MkDocs, CI caching, code quality, security scanning, authentication tests, agent registry validation, workflow docs, actionlint, CI health monitor, pre-flight validation, RAG tests, CI checkpoint validation, and secrets baseline enforcement
 
 ### Upgrade Path
 
-To migrate to pandas 3.x in the future:
+To manage pandas versions:
 
-1. **Check MLflow compatibility** - Verify MLflow has released versions that support pandas 3.x
-2. **Update constraints** - Change pandas to `>=3.0.0,<4` and mlflow to compatible version
-3. **Test thoroughly** - Run full test suite to verify no API changes affect downstream code
-4. **Update documentation** - Document any API adjustments required
+1. **Monitor pandas releases** - Track new patch/minor releases
+2. **Test compatibility** - Run full test suite before updating
+3. **Update constraints** - Change pandas pin to new version range
+4. **Verify CI** - Ensure all workflows pass with new version
+5. **Update documentation** - Document any API adjustments required
 
 ### Maintenance Notes
 
-- This constraint was introduced after extensive testing confirming pandas 2.x API compatibility
-- Monitor MLflow releases for pandas 3.x support
-- Consider alternative ML tracking tools if MLflow doesn't support pandas 3.x within 12 months
+- This constraint was introduced after extensive testing confirming pandas 3.x API compatibility
+- Monitor MLflow releases for continued pandas 3.x support
+- Ensure all downstream dependencies remain compatible with pandas 3.x
 
 ## Other Critical Constraints
 

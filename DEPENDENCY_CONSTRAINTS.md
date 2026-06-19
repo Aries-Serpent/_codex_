@@ -169,9 +169,6 @@ Example: pandas 3.0.3 → requires numpy 2.4.6+, which affects all files
    # Update pyproject.toml first
    edit pyproject.toml  # Update [project.dependencies]
    
-   # Sync to all requirements files
-   python scripts/ci/sync_dependencies.py --from pyproject.toml
-   
    # Validate consistency
    python scripts/ci/validate_dependency_consistency.py
    
@@ -182,22 +179,24 @@ Example: pandas 3.0.3 → requires numpy 2.4.6+, which affects all files
 2. **Multi-Package Update** (like PR #5004):
    ```bash
    # Update all packages in pyproject.toml
-   # Then run sync script
-   python scripts/ci/sync_dependencies.py --validate-all
+   # Then validate
+   python scripts/ci/validate_dependency_consistency.py
    ```
 
-3. **Cross-File Manual Sync** (when auto-sync fails):
+3. **Cross-File Manual Sync** (when validation detects mismatches):
    ```bash
-   # Edit each file individually
+   # Edit each file individually to match expected versions
    # Verify afterward
-   python scripts/ci/validate_dependency_consistency.py --fix-suggestions
+   python scripts/ci/validate_dependency_consistency.py
    ```
 
 ---
 
 ## Pre-Commit Hook Integration
 
-**Hook Location**: `.pre-commit-config.yaml` (to be created)
+**Hook Location**: `.pre-commit-config.yaml` (existing file)
+
+To add the dependency consistency check to your pre-commit hooks, add the following entry to the `repos:` section of `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: local
@@ -208,6 +207,13 @@ Example: pandas 3.0.3 → requires numpy 2.4.6+, which affects all files
       language: python
       files: (pyproject.toml|requirements.*\.txt)$
       stages: [commit]
+```
+
+Then run:
+```bash
+pre-commit install
+pre-commit run --all-files  # Test the hook
+```
 ```
 
 **Effect**: Prevents commits that violate dependency constraints without manual override.
