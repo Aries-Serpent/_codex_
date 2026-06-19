@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0
 
@@ -282,7 +282,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Check out repository (shallow)
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
@@ -321,7 +321,7 @@ jobs:
 
     steps:
       - name: Checkout 0D_base_
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           ref: 0D_base_
           fetch-depth: 5
@@ -498,7 +498,7 @@ jobs:
 
     steps:
       - name: Checkout (sparse — scripts only)
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: .github
           sparse-checkout-cone-mode: false
@@ -711,7 +711,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -155,7 +155,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -241,7 +241,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

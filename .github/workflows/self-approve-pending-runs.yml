@@ -96,7 +96,7 @@ jobs:
 
     steps:
       - name: "Checkout (for approve_pending_runs.py)"
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 1
           # Always checkout default branch — the script lives there

@@ -35,7 +35,7 @@ jobs:
       run_coverage: ${{ steps.filter.outputs.run_coverage }}
       run_quality: ${{ steps.filter.outputs.run_quality }}
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0
 
@@ -114,7 +114,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'coverage-only' || inputs.mode == 'full-suite'))
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
 
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
@@ -197,7 +197,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 0  # Need full history for baseline comparison
 
@@ -278,7 +278,7 @@ jobs:
 
     steps:
       - name: Checkout for cache health
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: scripts/ci
 
@@ -318,7 +318,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

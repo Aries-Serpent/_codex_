@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: scripts/ci/check_pr_comments.py
           sparse-checkout-cone-mode: false
@@ -203,7 +203,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
