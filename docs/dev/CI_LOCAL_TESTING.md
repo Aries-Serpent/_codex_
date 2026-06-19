@@ -75,7 +75,7 @@ bash scripts/ci_local.sh <subcommand>
 
 | CI Workflow | YAML file | Subcommand | When to run |
 |---|---|---|---|
-| Art_Validation / fast | `validate.yml` | `fast` | Every commit |
+| Validation / fast | `validate.yml` | `fast` | Every commit |
 | Resilient Suite — quick | `resilient_validation.yml` | `quick` | Every commit |
 | Resilient Suite — slow | `resilient_validation.yml` | `slow` | Before opening a PR |
 | Resilient Suite — integration | `resilient_validation.yml` | `integration` | Before opening a PR |
@@ -86,7 +86,7 @@ bash scripts/ci_local.sh <subcommand>
 
 ### Subcommand details
 
-#### `fast` — Art_Validation Pipeline
+#### `fast` — Validation Pipeline
 
 ```bash
 bash scripts/ci_local.sh fast

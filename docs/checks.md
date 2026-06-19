@@ -1519,7 +1519,7 @@ actionlint checks proper label is used at `runs-on:` configuration. Even if an e
 `runs-on: ${{ matrix.foo }}`, actionlint parses the expression and resolves the possible values, then validates the values.
 
 When you define some custom labels for your self-hosted runner, actionlint does not know the labels. Please set the label
-names in [`actionlint.yaml` configuration file](config.md) to let actionlint know them.
+names in [`actionlint.yaml` configuration file](./config/INDEX.md) to let actionlint know them.
 
 In addition to checking label values, actionlint checks combinations of labels. `runs-on:` section can be an array that contains
 multiple labels. In this case, a runner which has all the labels will be selected. However, those labels combinations can have
@@ -2637,7 +2637,7 @@ characters around `${{ }}`.
 
 ---
 
-[Installation](install.md) | [Usage](usage.md) | [Configuration](config.md) | [Go API](api.md) | [References](reference.md)
+[Usage](usage.md) | [Configuration](./config/INDEX.md) | [Go API](api.md) | [References](./reference/INDEX.md)
 
 [yamllint]: https://github.com/adrienverge/yamllint
 [issue-form]: https://github.com/rhysd/actionlint/issues/new

@@ -26,7 +26,7 @@
 
 | File | Name | Trigger |
 |------|------|---------|
-| `self-healing.yml` | Art_Self-Healing CI/CD | push, pull_request |
+| `self-healing.yml` | Self-Healing CI/CD | push, pull_request |
 | `self_healing_ci.yml` | Self-Healing CI | push, pull_request |
 | `iterative-self-healing-ci.yml` | Iterative Self-Healing CI | push, schedule |
 
@@ -50,10 +50,10 @@ is the current canonical one (S172 cascade fix applied here). The other two are 
 |------|------|---------|
 | `pre-flight-validation.yml` | Pre-Flight CI Validation | push, pull_request |
 | `pre-merge-validation.yml` | Pre-Merge Validation | pull_request |
-| `post-merge-validation-optimized.yml` | Art_Post-Merge Validation | push |
+| `post-merge-validation-optimized.yml` | Post-Merge Validation | push |
 | `progressive-validation.yml` | Progressive Validation Suite | pull_request |
 | `resilient_validation.yml` | Resilient Validation Suite | pull_request |
-| `validate.yml` | Art_Validation Pipeline | pull_request |
+| `validate.yml` | Validation Pipeline | pull_request |
 | `optimized-ci.yml` | (CI optimized runner) | — |
 
 **Problem:** 6–7 overlapping validation workflows run on the same events. This burns

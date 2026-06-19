@@ -231,7 +231,7 @@ Should print App ID, installation ID, and permissions.
 ## W-106 Session Update (2026-03-04 — CI fix + merge safety assessment)
 
 ### W-106 — Art_Validation CI Fix
-Two `Art_Validation / Fast Validation` failures (run 22685833400) resolved:
+Two `Validation / Fast Validation` failures (run 22685833400) resolved:
 1. **end-of-file-fixer**: `CODEX_MANIFEST.json` missing trailing newline — added (same pattern as W-097a)
 2. **detect-secrets Secret Keyword**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry with `integrity_sha256` keyword) — added `<!-- pragma: allowlist secret -->` inline suppressor
 
@@ -287,7 +287,7 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
 
 ### W-102 — detect-secrets baseline fix (Art_Validation run 22683254031)
 
-`Art_Validation / Fast Validation` failed: detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml`:
+`Validation / Fast Validation` failed: detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml`:
 - **Line 559**: base64-encoded Python script — REQ-8 memory health check (`urllib` ping to localhost:8765)
 - **Line 590**: base64-encoded Python script — REQ-9 YAML parse helper (`yaml.safe_load` glob over workflows)
 

@@ -158,7 +158,7 @@ flowchart TD
 | Workflow | Root Cause | Status |
 |----------|-----------|--------|
 | Build & Push Preview Image | GHCR package write permissions | ⏳ Admin required |
-| Art_"CodeQL" | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches | ⏳ Admin required |
+| CodeQL | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches | ⏳ Admin required |
 | Automatic Dependency Submission | Transient GitHub API 500 | ⏳ Transient/infra |
 | Copilot coding agent | Internal Copilot infrastructure | ⏳ Copilot infra |
 
@@ -285,7 +285,7 @@ Agent Token Delegation enabled
 
 ### Phase 10 — Infrastructure Failures (requires admin action)
 - [ ] GHCR package write permissions for `GITHUB_TOKEN` (Build & Push Preview Image)
-- [ ] CodeQL configuration on feature branches (Art_"CodeQL")
+- [ ] CodeQL configuration on feature branches (CodeQL)
 - [ ] Transient GitHub API 500 stability (Automatic Dependency Submission)
 - [ ] Copilot coding agent internal infrastructure (Copilot coding agent workflow)
 

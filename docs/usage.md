@@ -192,7 +192,7 @@ Note that special characters escaped with back slash like `\n` in the format str
 <a name="on-github-actions"></a>
 ## Use actionlint on GitHub Actions
 
-Preparing `actionlint` executable with the download script is recommended. See [the instruction](install.md#download-script) for
+Preparing `actionlint` executable with the download script is recommended. See [the installation instructions](#installation) for
 more details. It sets an absolute file path of downloaded executable to `executable` output in order to use the executable in the
 following steps easily.
 
@@ -377,7 +377,7 @@ As alternatives to `actionlint` hook, `actionlint-docker` or `actionlint-system`
 |-|-|
 | `actionlint` | Automatically installs `actionlint` command in isolated `$GOPATH` directory using [Go toolchain][go-install]. |
 | `actionlint-docker` | Automatically pulls [the actionlint Docker image](#docker). |
-| `actionlint-system` | Uses system-installed `actionlint` command. The command is necessary to be [installed manually](install.md). |
+| `actionlint-system` | Uses system-installed `actionlint` command. The command is necessary to be installed manually (see installation documentation). |
 
 ### VS Code
 
@@ -428,7 +428,7 @@ You can also see actionlint issues inline in VS Code via the [Trunk VS Code exte
 
 ---
 
-[Checks](checks.md) | [Installation](install.md) | [Configuration](config.md) | [Go API](api.md) | [References](reference.md)
+[Checks](checks.md) | [Configuration](./config/INDEX.md) | [Go API](api.md) | [References](./reference/INDEX.md)
 
 [reviewdog-actionlint]: https://github.com/reviewdog/action-actionlint
 [reviewdog]: https://github.com/reviewdog/reviewdog

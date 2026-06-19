@@ -459,7 +459,7 @@ The PR can only be merged when ALL of the following are true:
 - **Review Checklist**: [.github/COPILOT_SETUP_REVIEW_CHECKLIST.md](../../.github/COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - **Guard Documentation**: [docs/agent/COPILOT_SETUP_STEPS_GUARD.md](COPILOT_SETUP_STEPS_GUARD.md)
 - **Validation Workflow**: [.github/workflows/copilot-setup-validation.yml](../../.github/workflows/copilot-setup-validation.yml)
-- **CCA Integration**: [.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
+- **CCA Integration**: [CODEBASE_AGENCY_POLICY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/CODEBASE_AGENCY_POLICY.md)
 
 ## Questions?
 
