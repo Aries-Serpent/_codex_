@@ -101,7 +101,7 @@ These actions should ideally use semantic versioning instead of SHA pins:
 | `actions/upload-artifact` | 1 | `330a01c` | copilot-setup-steps.yml |
 | `actions/upload-pages-artifact` | 1 | `fc324d3` | pages-mkdocs.yml |
 | `actions/setup-node` | 4 | `48b55a0` | 4 workflows |
-| `actions/create-github-app-token` | 4 | `bcd2ba4` | 4 workflows |
+| `actions/create-github-app-token` | 4 | `bcd2ba4` | 4 workflows | <!-- pragma: allowlist secret -->
 | `github/codeql-action/*` | 9 | `5e31633` | 6 workflows |
 
 **Recommendation**: Migrate SHA pins to semantic versions (v5, v6, v8, etc.)
