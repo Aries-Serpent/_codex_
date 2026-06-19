@@ -332,7 +332,7 @@ class TestAPIAuthRoutes:
         try:
             router = AuthRouter()
             with pytest.raises((TypeError, ValueError)):
-                result = router.authenticate(username=None, ******
+                result = router.authenticate(username=None, password='test')
         except (AttributeError, NotImplementedError):
             pass
     
@@ -342,7 +342,7 @@ class TestAPIAuthRoutes:
         try:
             router = AuthRouter()
             long_password = 'p' * 10000
-            result = router.authenticate(username='user', ******
+            result = router.authenticate(username='user', password='long')
             # Should reject or timeout, not crash
         except (ValueError, TimeoutError, AttributeError):
             pass
