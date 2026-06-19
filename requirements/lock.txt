@@ -104,7 +104,7 @@ cuda-bindings==13.3.1
     # via torch
 cuda-pathfinder==1.5.5
     # via cuda-bindings
-cuda-toolkit==13.0.2
+cuda-toolkit==13.3.0
     # via torch
 cycler==0.12.1
     # via matplotlib
