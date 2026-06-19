@@ -1,6 +1,9 @@
 # Changelog
 
-## [Unreleased] — 2026-06-19
+## [Unreleased] 
+### Fixed (auto-update — PR #5014)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5014 (SHA `22e26cb9`) at 2026-06-19T21:12Z [auto-generated]
+— 2026-06-19
 
 ### Phase 7B Campaign Launch
 
