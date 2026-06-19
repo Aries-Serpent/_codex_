@@ -14,7 +14,7 @@
 | Severity | Count | Examples | Impact |
 |----------|-------|----------|--------|
 | 🔴 **CRITICAL** | 65 | Validation Pipeline (5), RAG Tests (5), Auth Tests (5), Pre-Merge (5), Resilient Suite (5) | **BLOCKS ALL PRs** |
-| 🟠 **HIGH** | 15 | mypy Type-Check (2), Secrets (2+4), Coverage Ratchet (5) | Breaks CI/CD quality gates |
+| 🟠 **HIGH** | 15 | mypy Type-Check (2), Secrets (2+4), Coverage Ratchet (5) | Breaks CI/CD quality gates | <!-- pragma: allowlist secret -->
 | 🟡 **MEDIUM** | 8 | Pages deployment (1), RAG Quality (1), Copilot Triage (1) | Warnings, documentation |
 
 ### Key Finding: Root Cause Concentration
@@ -423,7 +423,7 @@ gh workflow view <workflow-id> --json status
 | 8 | Pre-Merge Validation | 5 | 🔴 | #7532 | 0D_base_ | Accountability metadata (P25) |
 | 9 | Resilient Validation Suite | 5 | 🔴 | #4157 | 0D_base_ | Accountability metadata (P25) |
 | 10 | Copilot Issue Triage | 1 | 🟡 | #452 | main | Bot API permissions |
-| 11 | Agent Token Delegation | 5 | 🔴 | #10651 | 0D_base_ | Accountability metadata (P25) |
+| 11 | Agent Token Delegation | 5 | 🔴 | #10651 | 0D_base_ | Accountability metadata (P25) | <!-- pragma: allowlist secret -->
 | 12 | Workflow Compliance Audit | 5 | 🔴 | #2328 | main | YAML validation |
 | 13 | CODEX Manifest Auto-Refresh | 1 | 🟡 | #1194 | main | Manifest schema |
 | 14 | mypy Baseline (Type-Check) | 2 | 🟠 | #2000 | copilot/fix-* | Type hints |
@@ -431,12 +431,12 @@ gh workflow view <workflow-id> --json status
 | 16 | PR Comment Review Gate | 5 | 🔴 | #10569 | copilot/fix-* | Accountability metadata (P25) |
 | 17 | Workflow Execution Gate | 5 | 🔴 | #6258 | 0D_base_ | Accountability metadata (P25) |
 | 18 | 🔍 Proactive CI Monitor | 4 | 🟠 | #1686 | main | Python 3.12 setup |
-| 19 | 🔐 Secrets Baseline Enforcer | 2 | 🟠 | #5530 | 0D_base_ | Genuine secrets |
+| 19 | 🔐 Secrets Baseline Enforcer | 2 | 🟠 | #5530 | 0D_base_ | Genuine secrets | <!-- pragma: allowlist secret -->
 | 20 | 🔖 Required Actions Enforcer | 1 | 🟡 | #1863 | copilot/revert-* | Action version drift |
 | 21 | Admin Action T-03 Security | 5 | 🟡 | #14137 | main | Auth scope |
 | 22 | Coverage Ratchet | 5 | 🔴 | #538 | 0D_base_ | Coverage regression |
 | 23 | RAG Quality Nightly Gate | 1 | 🟡 | #22 | main | RAG freshness SLA |
-| 24 | 🩹 Secrets False-Positive Healer | 4 | 🟠 | #198 | 0D_base_ | FP detection rules |
+| 24 | 🩹 Secrets False-Positive Healer | 4 | 🟠 | #198 | 0D_base_ | FP detection rules | <!-- pragma: allowlist secret -->
 | 25 | Copilot Setup Steps Validation | 1 | 🟡 | #3 | main | Setup config |
 
 **Total:** 88 failures across 25 workflows
