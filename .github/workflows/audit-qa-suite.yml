@@ -208,6 +208,7 @@ jobs:
           # schedule/workflow_dispatch events, fall back to the default branch HEAD (trusted).
           ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || github.sha || '' }}
 
+      # codeql[py/untrusted-checkout-exec-pr-code]
       - name: Overlay trusted action + script from main (security)
         # SECURITY: issue_comment events run with write permissions. Overlay the composite
         # action definition and QA walkthrough script from the trusted default branch so
