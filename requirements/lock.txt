@@ -509,7 +509,7 @@ pillow==12.2.0
     # via
     #   matplotlib
     #   tensorboard
-platformdirs==4.9.4
+platformdirs==4.10.0
     # via
     #   black
     #   jupyter-core
