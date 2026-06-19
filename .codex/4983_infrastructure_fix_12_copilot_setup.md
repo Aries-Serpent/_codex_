@@ -88,8 +88,8 @@ echo "  Agent should review these for patterns affecting this PR."
 | Git Diff Protection | ✅ | Protected sections verified |
 | Dependent Workflows | ✅ | All 5 dependent workflows valid |
 | Supporting Scripts | ✅ | All 3 supporting scripts present and valid |
-| Hardcoded Secrets | ✅ | No obvious hardcoded secrets detected |
-| Token References | ✅ | Valid references (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY) |
+| Hardcoded Secrets | ✅ | No obvious hardcoded secrets detected | <!-- pragma: allowlist secret -->
+| Token References | ✅ | Valid references (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY) | <!-- pragma: allowlist secret -->
 | File Size Regression | ✅ | 679 lines (+0.9% from baseline 673) — within acceptable range |
 | Complexity Analysis | ✅ | 2 jobs, 29 steps — within acceptable bounds |
 | LFS Configuration | ✅ | GIT_LFS_SKIP_SMUDGE=1 correctly set |
@@ -115,10 +115,10 @@ echo "  Agent should review these for patterns affecting this PR."
 
 | Test | Status | Details |
 |------|--------|---------|
-| Hardcoded Secrets (5.1) | ✅ | No hardcoded secrets in workflow |
-| Token References (5.2) | ✅ | All token references properly use GitHub secrets |
+| Hardcoded Secrets (5.1) | ✅ | No hardcoded secrets in workflow | <!-- pragma: allowlist secret -->
+| Token References (5.2) | ✅ | All token references properly use GitHub secrets | <!-- pragma: allowlist secret -->
 | YAML Injection Prevention (5.3) | ⚠️ | 35 potentially unquoted values (expected, not security risk) |
-| Secrets Baseline Sync | ✅ | .secrets.baseline is valid and current |
+| Secrets Baseline Sync | ✅ | .secrets.baseline is valid and current | <!-- pragma: allowlist secret -->
 
 **Summary:** 3/4 passed (75% success rate, warning is informational)
 
