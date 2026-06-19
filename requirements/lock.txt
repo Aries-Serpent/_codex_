@@ -9,7 +9,7 @@ accelerate==1.14.0
     #   peft
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.14.0
+aiohttp==3.14.1
     # via
     #   -c (workspace)
     #   aiohttp-cors
@@ -851,7 +851,7 @@ typing-inspection==0.4.2
     #   pydantic-settings
 tzdata==2025.3
     # via pandas
-ujson==5.12.1
+ujson==5.13.0
     # via evidently
 urllib3==2.7.0
     # via
