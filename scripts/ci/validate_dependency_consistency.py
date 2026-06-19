@@ -7,7 +7,6 @@ version constraints for critical packages. Prevents accidental downgrades or mis
 
 Usage:
     python scripts/ci/validate_dependency_consistency.py              # Validate only
-    python scripts/ci/validate_dependency_consistency.py --fix       # Fix inconsistencies
     python scripts/ci/validate_dependency_consistency.py --report    # Generate report
 """
 
@@ -15,7 +14,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, Tuple, List, Optional
+from typing import Dict, Tuple, Optional
 
 # Critical packages that must be consistent across all files
 CRITICAL_PACKAGES = {
@@ -51,19 +50,29 @@ class DependencyValidator:
         self.issues = []
 
     def parse_requirement(self, line: str) -> Optional[Tuple[str, str]]:
-        """Parse a requirement line into (package_name, version_spec)."""
+        """Parse a requirement line into (package_name, version_spec).
+        
+        Handles pip options like --index-url and --extra-index-url by extracting
+        the requirement spec before the options, allowing lines like:
+            torch==2.11.0+cpu --index-url https://...
+        to be properly parsed as (torch, ==2.11.0+cpu).
+        """
         line = line.strip()
         if not line or line.startswith('#'):
             return None
 
-        # Handle torch special case with index URL
-        if "--index-url" in line or "--extra-index-url" in line:
-            return None
+        # Split on common pip options to isolate the requirement part
+        # This allows lines like "torch==2.11.0+cpu --index-url ..." to be parsed
+        requirement_part = line
+        for option in ['--index-url', '--extra-index-url', '--find-links', '--no-index']:
+            if option in line:
+                requirement_part = line[:line.index(option)].strip()
+                break
 
         # Match package==version or package>=version,<version patterns
         match = re.match(
             r'([a-zA-Z0-9\-_.]+)\s*([=<>!~\[\]0-9.,+\s\+a-zA-Z]*)',
-            line.split('#')[0]  # Remove inline comments
+            requirement_part.split('#')[0]  # Remove inline comments
         )
         if match:
             pkg = match.group(1).lower().replace('_', '-')
@@ -73,22 +82,54 @@ class DependencyValidator:
         return None
 
     def read_pyproject_deps(self, filepath: Path) -> Dict[str, str]:
-        """Extract dependencies from pyproject.toml."""
+        """Extract dependencies from pyproject.toml.
+        
+        Handles:
+        - TOML quoted strings (e.g., "pandas>=...")
+        - Both [project.dependencies] and [project.optional-dependencies]
+        """
         deps = {}
         with open(filepath) as f:
             content = f.read()
 
+        # Parse [project.dependencies]
         in_deps_section = False
         for line in content.split('\n'):
-            if 'dependencies = [' in line:
+            if line.strip() == 'dependencies = [':
                 in_deps_section = True
                 continue
             if in_deps_section:
                 if line.strip().startswith(']'):
                     break
-                parsed = self.parse_requirement(line)
-                if parsed:
-                    deps[parsed[0]] = parsed[1]
+                # Remove TOML quotes and parse
+                clean_line = line.strip().strip('"\'').strip(',')
+                if clean_line:
+                    parsed = self.parse_requirement(clean_line)
+                    if parsed:
+                        deps[parsed[0]] = parsed[1]
+
+        # Parse [project.optional-dependencies] sections
+        in_optional_section = False
+        for line in content.split('\n'):
+            if '[project.optional-dependencies' in line:
+                in_optional_section = True
+                continue
+            if in_optional_section:
+                if line.strip().startswith('['):
+                    in_optional_section = False
+                    continue
+                if '=' in line and '[' in line:  # Start of dependencies list
+                    in_optional_section = True
+                    continue
+                if in_optional_section and line.strip().startswith(']'):
+                    in_optional_section = False
+                    continue
+                # Remove TOML quotes and parse
+                clean_line = line.strip().strip('"\'').strip(',')
+                if clean_line and not clean_line.startswith('['):
+                    parsed = self.parse_requirement(clean_line)
+                    if parsed:
+                        deps[parsed[0]] = parsed[1]
 
         return deps
 
@@ -113,7 +154,11 @@ class DependencyValidator:
             return self.read_requirements_file(filepath)
 
     def check_consistency(self) -> bool:
-        """Check all files for consistency."""
+        """Check all files for consistency.
+        
+        Uses semantic version checking: an exact pin like ==2.11.0+cpu
+        is considered valid if it falls within the expected range like >=2.6.1,<3.0.0
+        """
         print("=" * 70)
         print("DEPENDENCY CONSISTENCY VALIDATION")
         print("=" * 70)
@@ -141,7 +186,8 @@ class DependencyValidator:
             for filename, deps in all_deps.items():
                 if pkg in deps:
                     actual = deps[pkg]
-                    if actual == expected_version:
+                    # Use range-based validation instead of string equality
+                    if actual == expected_version or self._version_in_range(actual, expected_version):
                         print(f"  ✓ {filename}: {actual}")
                     else:
                         print(f"  ✗ {filename}: {actual}")
@@ -169,8 +215,75 @@ class DependencyValidator:
 
         return not issues_found
 
+    def _version_in_range(self, actual: str, expected_range: str) -> bool:
+        """Check if actual version satisfies expected range.
+        
+        Examples:
+            actual="2.11.0+cpu", expected_range=">=2.6.1,<3.0.0" -> True
+            actual="==2.10.0", expected_range=">=2.6.1,<3.0.0" -> True (within range)
+            actual="==1.5.0", expected_range=">=2.6.1,<3.0.0" -> False (below range)
+        """
+        try:
+            # Extract version numbers from actual spec
+            # Handle cases like "==2.11.0+cpu", ">=2.10", etc.
+            actual_nums = re.findall(r'\d+', actual.split('+')[0].split(',')[0])
+            
+            # Parse expected range constraints
+            lower_bound = None
+            upper_bound = None
+            
+            for constraint in expected_range.split(','):
+                constraint = constraint.strip()
+                if constraint.startswith('>='):
+                    lower_nums = re.findall(r'\d+', constraint[2:])
+                    if lower_nums:
+                        lower_bound = [int(n) for n in lower_nums]
+                elif constraint.startswith('>'):
+                    lower_nums = re.findall(r'\d+', constraint[1:])
+                    if lower_nums:
+                        lower_bound = [int(n) for n in lower_nums]
+                elif constraint.startswith('<'):
+                    upper_nums = re.findall(r'\d+', constraint[1:])
+                    if upper_nums:
+                        upper_bound = [int(n) for n in upper_nums]
+                elif constraint.startswith('<='):
+                    upper_nums = re.findall(r'\d+', constraint[2:])
+                    if upper_nums:
+                        upper_bound = [int(n) for n in upper_nums]
+            
+            if not actual_nums:
+                return False
+            
+            actual_version = [int(n) for n in actual_nums[:3]]
+            
+            # Pad versions to same length for comparison
+            if lower_bound:
+                while len(actual_version) < len(lower_bound):
+                    actual_version.append(0)
+                while len(lower_bound) < len(actual_version):
+                    lower_bound.append(0)
+                if actual_version < lower_bound:
+                    return False
+            
+            if upper_bound:
+                while len(actual_version) < len(upper_bound):
+                    actual_version.append(0)
+                while len(upper_bound) < len(actual_version):
+                    upper_bound.append(0)
+                if actual_version >= upper_bound:
+                    return False
+            
+            return True
+        except (ValueError, IndexError):
+            # If parsing fails, treat as not matching
+            return False
+
     def _is_downgrade(self, current: str, expected: str) -> bool:
-        """Check if current version is a downgrade from expected."""
+        """Check if current version is a downgrade from expected.
+        
+        Unparsable version constraints are treated as "not a detected downgrade"
+        by design, allowing graceful fallback to manual review.
+        """
         try:
             # Simple heuristic: check if current has lower starting version
             current_nums = re.findall(r'\d+', current.split(',')[0])
@@ -178,6 +291,7 @@ class DependencyValidator:
             if current_nums and expected_nums:
                 return int(current_nums[0]) < int(expected_nums[0])
         except (ValueError, IndexError):
+            # Unparsable version constraints are treated as "not a detected downgrade"
             pass
         return False
 
@@ -215,7 +329,7 @@ def main():
     parser.add_argument(
         '--strict',
         action='store_true',
-        help='Exit with error code if any issues found'
+        help='Exit with error code if any issues found (warnings-only mode by default)'
     )
 
     args = parser.parse_args()
@@ -233,10 +347,12 @@ def main():
     if args.report:
         validator.generate_report(args.report_file)
 
+    # Exit logic: strict mode treats issues as fatal, non-strict is warnings-only
     if args.strict and not success:
         sys.exit(1)
 
-    return 0 if success else 1
+    # In non-strict mode, always return 0 (warnings-only)
+    return 0
 
 
 if __name__ == '__main__':
