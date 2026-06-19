@@ -84,7 +84,7 @@ jobs:
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           persist-credentials: false
           ref: ${{ steps.branch.outputs.branch }}

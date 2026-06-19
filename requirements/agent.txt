@@ -46,7 +46,7 @@ pytest-xdist>=3.5
 pre-commit>=3.7
 bandit>=1.7
 detect-secrets>=1.4
-pip-audit>=2.7
+pip-audit>=2.10.1
 
 # ── Docs (MkDocs + Material) ──────────────────────────────────────────────────
 mkdocs>=1.6
@@ -65,7 +65,7 @@ pydantic>=2.7
 pyjwt[crypto]>=2.13.0    # GitHub App JWT minting (RS256); keep aligned to current secure baseline
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
-rich>=13.7              # terminal output in agent scripts
+rich>=15.0.0              # terminal output in agent scripts
 click>=8.1              # CLI entry points
 python-dotenv>=1.2.2
 tomli>=2.0; python_version < "3.11"

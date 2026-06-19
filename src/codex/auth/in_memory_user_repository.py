@@ -60,7 +60,7 @@ class InMemoryUserRepository(UserRepository):
 
         Raises:
             ValueError: If required user fields are empty or ``username`` or ``email`` already exists.
-        """
+        """  # noqa: E501
         if not user.user_id:
             raise ValueError("User ID must not be empty")
         if not user.username.strip():

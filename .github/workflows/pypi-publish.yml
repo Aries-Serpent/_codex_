@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
 
       - name: CacheManager health check
         continue-on-error: true

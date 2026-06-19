@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: "Checkout PR branch"
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

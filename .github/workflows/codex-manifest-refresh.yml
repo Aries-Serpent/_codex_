@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch (or main on schedule)
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           # On schedule runs, HEAD ref is not available — fall back to main.
           ref: ${{ github.head_ref || 'main' }}
@@ -195,7 +195,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

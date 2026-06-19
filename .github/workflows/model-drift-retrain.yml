@@ -56,7 +56,7 @@ jobs:
       samples_count: ${{ steps.drift.outputs.samples_count }}
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
 
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -151,7 +151,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target

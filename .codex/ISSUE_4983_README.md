@@ -41,7 +41,7 @@
 | Fix Category | Count | Agent | Status |
 |---|---|---|---|
 | Type Annotations | 16 | `python-312-type-fixer` | ✅ Fixed |
-| Secrets Baseline | 6 | `codeql-alert-resolution-agent` | ✅ Fixed |
+| Secrets Baseline | 6 | `codeql-alert-resolution-agent` | ✅ Fixed | <!-- pragma: allowlist secret -->
 | Coverage Regression | 5 | `unified-coverage-agent` | ✅ Fixed |
 | Documentation Links | 9 | `link-validator-agent` | ✅ Fixed |
 | **Total Resolved** | **36** | **4 agents** | **✅ 41%** |
@@ -59,7 +59,7 @@
 ```
 Pattern Compliance:      100/100 ✅
 Type Safety:             All mypy checks pass ✅
-Security:                No genuine secrets detected ✅
+Security:                No genuine secrets detected ✅  # pragma: allowlist secret
 Code Quality:            All ruff checks pass ✅
 Test Coverage:           Maintained (no regression) ✅
 ```
@@ -184,7 +184,7 @@ Once infrastructure team completes steps 1-2:
 | Commit | Message | Scope |
 |--------|---------|-------|
 | 114f59d | Type annotation fixes | Phase 2 (Type errors) |
-| 64ec707 | Secrets baseline fixes | Phase 2 (Secrets) |
+| 64ec707 | Secrets baseline fixes | Phase 2 (Secrets) | <!-- pragma: allowlist secret -->
 | d5e7847 | Coverage regression fixes | Phase 2 (Coverage) |
 | 647f9e2 | Documentation links fixes | Phase 2 (Links) |
 | 203f844 | Phase 1 triage analysis | Phase 1 (Triage) |

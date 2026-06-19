@@ -19,7 +19,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

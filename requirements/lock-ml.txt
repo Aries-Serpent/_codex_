@@ -1,9 +1,9 @@
 # Pinned ML optional dependencies (cpu) — generated for reproducibility
 # Source: requirements-ml-cpu.txt
-accelerate==1.13.0
+accelerate==1.14.0
 peft==0.19.1
 safetensors==0.6.2
 sentencepiece==0.2.1
 tokenizers==0.22.1
 torch==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
-transformers==5.10.2
+transformers==5.12.1

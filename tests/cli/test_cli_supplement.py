@@ -9,12 +9,12 @@ Tests cover:
 - Performance considerations
 """
 
+import json
+import os
+import tempfile
+
 import pytest
 from click.testing import CliRunner
-import tempfile
-import os
-import json
-
 
 # ============================================================================
 # Advanced Argument Tests
@@ -507,11 +507,11 @@ class TestPerformanceAndLimits:
             @click.command()
             def cmd(**kwargs):
                 click.echo(f'Options: {len(kwargs)}')
-            
+
             # Apply option decorators dynamically
             for i in range(20):
                 cmd = click.option(f'--opt{i}', default=f'val{i}')(cmd)
-            
+
             return cmd
 
         cmd = create_command_with_options()
@@ -532,8 +532,9 @@ class TestPerformanceAndLimits:
         assert '10000' in result.output
 
     def test_command_execution_time(self, runner):
-        import click
         import time
+
+        import click
 
         @click.command()
         def cmd():
