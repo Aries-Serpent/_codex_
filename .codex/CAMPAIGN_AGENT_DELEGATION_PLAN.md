@@ -58,6 +58,43 @@ Execute 4-phase remediation:
 
 ## PHASE 4-7A PARALLEL EXECUTION
 
+### NEW Delegation #1.5: Phase 7A Code Validation Lane (T+0 to T+60 min - PARALLEL)
+**Agents:** `qa-walkthrough-agent` + `code-analysis-agent` (Agent ID: code-validation-lane-3-3)  
+**Status:** 🚀 ACTIVE (background execution, runs in parallel with Phases 4-7A)  
+**Lane Completion:** NEW—Comprehensive code validation (syntax, spacing, formatting)
+
+**Tasks:**
+1. **Rapid Syntax Check (T+0-15 min)**
+   - Python compile validation across src/ + tests/
+   - YAML schema validation (.github/workflows/*.yml)
+   - JSON/TOML syntax check (.codex/*.json, pyproject.toml)
+   - Identify blockers before main execution
+
+2. **Comprehensive Walkthrough (T+15-45 min)**
+   - 15-category validation matrix (Python, YAML, Config, Docs, JSON)
+   - Categorize findings by severity (CRITICAL/HIGH/MEDIUM/LOW)
+   - Generate detailed file-by-file report with line numbers
+   - Identify auto-fixable vs manual review issues
+
+3. **Handoff Preparation (T+45-60 min)**
+   - Correlate findings from both agents
+   - Prepare auto-fix queue for Lane 3.1 (autonomous-test-healer-agent)
+   - Post findings to accountability report
+
+**Success Criteria:**
+- ✅ 500+ files validated
+- ✅ All findings categorized and severity-ranked
+- ✅ Completion within 60 minutes
+- ✅ Confidence >95% in reported issues
+- ✅ No blocking issues for Phase 7A execution
+
+**Documentation:**
+- `.codex/PHASE_7A_CODE_VALIDATION_LANE.md` (comprehensive lane spec)
+- `.codex/PHASE_7A_LANE_3.3_VALIDATION_REPORT.md` (detailed findings)
+- `.codex/code-validation-findings.json` (machine-readable results)
+
+---
+
 ### Delegation #2: Phase 4 Agent Registry Verification (T+2-4 hours)
 **Agent:** `skills-master-agent` (Agent ID: phase4-agent-registry)  
 **Status:** 🚀 ACTIVE (background execution, starts after Python fix)  
