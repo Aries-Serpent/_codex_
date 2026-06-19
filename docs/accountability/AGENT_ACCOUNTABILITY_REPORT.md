@@ -165,7 +165,7 @@ The workflow `admin-action-notifier.yml` (reusable workflow called by `admin-act
 
 ## SESSION SUMMARY — 2026-06-19T00:45Z · Issue #4983 CI Failure Triage (88 failures × 25 workflows)
 
-**Session:** Issue #4983 — CI Failure Triage Analysis & Batch Fix | **Agent:** @copilot + specialized agents | **Date:** 2026-06-19
+**Session:** Issue #4983 — CI Failure Triage Analysis & Batch Fix | **Agent:** ci-failure-resolution-agent | **Date:** 2026-06-19
 
 ### Objective
 Diagnose and fix 88 CI failures across 25 workflows (Validation Pipeline, RAG Tests, Auth Tests, Coverage, Secrets, mypy baseline).
