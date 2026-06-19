@@ -61,7 +61,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: "pip"
       - name: 🔋 Rate-limit pre-check
         env:
@@ -108,7 +108,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: "pip"
       - name: Rate-limit pre-check
         env:
@@ -209,7 +209,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: "pip"
       - name: Rate-limit pre-check
         env:
@@ -310,7 +310,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: "pip"
       - name: Rate-limit pre-check
         env:
@@ -597,7 +597,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           cache: pip  # aais-cache: pip
 
       - name: Install PyYAML

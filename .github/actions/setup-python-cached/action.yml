@@ -17,7 +17,7 @@ inputs:
   python-version:
     description: 'Python version to use'
     required: false
-    default: '3.12'
+    default: '3.12.13'
   extras:
     description: 'Package extras to install from pyproject.toml (e.g. "dev")'
     required: false

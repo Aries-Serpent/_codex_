@@ -116,7 +116,7 @@ jobs:
         uses: actions/setup-python@v6 # v6
         with:
           cache: pip
-          python-version: "3.12"
+          python-version: "3.12.13"
 
       - name: Run repo variable tests
         env:
@@ -165,7 +165,7 @@ jobs:
         uses: actions/setup-python@v6 # v6
         with:
           cache: pip
-          python-version: "3.12"
+          python-version: "3.12.13"
 
       - name: Run org variable tests
         env:

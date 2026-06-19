@@ -112,7 +112,7 @@ jobs:
       - name: Setup Python (stdlib — no pip install)
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
       - name: 🔋 Rate-limit pre-check (Pattern A)
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

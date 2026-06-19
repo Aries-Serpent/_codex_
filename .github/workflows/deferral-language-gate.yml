@@ -55,7 +55,7 @@ jobs:
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1
           # (which is off by default).  In the common case nothing is installed,
           # ~/.cache/pip is never created, and the post-step fails with

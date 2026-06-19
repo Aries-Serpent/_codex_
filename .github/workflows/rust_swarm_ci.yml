@@ -255,7 +255,7 @@ jobs:
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
 
       - name: Install Rust toolchain
@@ -501,7 +501,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.12']
+        python-version: ['3.12.13']
 
     steps:
       - uses: actions/checkout@v7 # v6.0.3

@@ -76,7 +76,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           # NOTE: no cache: pip here — intentional.  The mypy gate must run in a
           # clean, reproducible environment so the error count is stable across
           # runners.  Any cached site-packages from other jobs (torch, pydantic,

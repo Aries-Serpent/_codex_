@@ -67,7 +67,7 @@ jobs:
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           extras: 'dev'
 
       - name: "🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)"
@@ -186,7 +186,7 @@ jobs:
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           extras: 'dev'
 
       - name: Run full validation

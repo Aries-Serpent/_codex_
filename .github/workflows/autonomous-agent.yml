@@ -76,7 +76,7 @@ jobs:
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: live  # Autonomous agent is critical - use live tier
 
       - name: Install dependencies

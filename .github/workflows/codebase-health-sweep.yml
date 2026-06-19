@@ -95,7 +95,7 @@ jobs:
         if: steps.rate.outputs.skip != 'true'
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
@@ -271,7 +271,7 @@ jobs:
         if: steps.branch_check.outputs.exists == 'true'
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
@@ -360,7 +360,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 

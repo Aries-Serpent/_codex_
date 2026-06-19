@@ -135,7 +135,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'live'
 
       - name: Install dependencies
@@ -224,7 +224,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'common'
 
       - name: Install QA dependencies

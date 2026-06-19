@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ['3.12.13']
 
     steps:
       - name: Checkout code
@@ -114,7 +114,7 @@ jobs:
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
 
       - name: Install dependencies

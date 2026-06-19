@@ -50,7 +50,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           # No pip cache — script uses stdlib only, no external deps required
 
       - name: Run cleanup
