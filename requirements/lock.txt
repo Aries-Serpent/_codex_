@@ -138,7 +138,7 @@ distro==1.9.0
     # via iterative-telemetry
 docker==7.1.0
     # via mlflow
-duckdb==1.5.3
+duckdb==1.5.4
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -485,7 +485,7 @@ packaging==26.1
     #   tensorboard
     #   transformers
     #   wandb
-pandas==2.3.3
+pandas==3.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   datasets
@@ -704,7 +704,7 @@ safetensors==0.6.2
     #   accelerate
     #   peft
     #   transformers
-scikit-learn==1.8.0
+scikit-learn==1.9.0
     # via
     #   codex-ml (pyproject.toml)
     #   evidently

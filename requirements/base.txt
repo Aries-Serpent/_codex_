@@ -1,4 +1,4 @@
-duckdb==1.5.3
+duckdb==1.5.4
 torch==2.11.0  # Standard (GPU/CUDA) torch; intentionally diverges from requirements-ml-cpu.txt (torch==2.11.0+cpu — CPU-only build from a separate index)
 transformers==5.10.2
 peft==0.19.1
