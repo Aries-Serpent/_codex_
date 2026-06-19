@@ -11,9 +11,9 @@ numpy>=2.4.6,<3
 # Pin torch to stable CPU-only versions to avoid pulling CUDA/NVIDIA stacks during P0.
 # - torchvision/torchaudio compatibility matrix
 # - Dependabot update failures on bleeding edge versions
-# Security: Updated to >=2.6.0 to fix CVE-2024-XXXXX (RCE in torch.load with weights_only=True)
+# Security: Updated to >=2.6.1 to fix CVE-2024-XXXXX (RCE in torch.load with weights_only=True)
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.6.0+cpu
+torch>=2.6.1,<3.0.0; sys_platform == "linux" or sys_platform == "darwin"  # CPU-only for Linux/macOS
 transformers>=5.12.1,<6  # Security: Updated from 4.41 to fix deserialization vulnerabilities
 # Security: XML parsing protection against XXE attacks
 defusedxml>=0.7.1,<1.0.0
