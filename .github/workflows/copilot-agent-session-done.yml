@@ -1,1012 +1,591 @@
-name: "🔄 Auto-Post @copilot review After Agent Session"
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-# Fires when a GitHub Coding Agent (copilot-swe-agent[bot]) workflow run
-# completes on a PR branch.  If the PR is open and Agent Token Delegation
-# is enabled (COPILOT_AGENT_AUTH_ENABLED repo variable = 'true'), this
-# workflow either:
-#
-#   A) Re-triggers any unanswered CI rescue comment (priority path), OR
-#   B) Posts "@copilot review" to start a review cycle
-#
-# WHY the rescue-comment re-trigger is needed:
-#   When an agent session is running and a new @copilot rescue comment arrives,
-#   GitHub queues the rescue session.  If the running session then pushes NEW
-#   commits to the branch, GitHub invalidates the queued session (it was tied to
-#   the earlier commit context).  Without re-triggering, that rescue comment is
-#   silently dropped and no new session starts.
-#
-# Loop (review path):
-#   Coding agent commits → workflow_run completed → post "@copilot review"
-#     → Copilot review generates N comments
-#       → copilot-review-responder.yml fires
-#         → post "@copilot apply changes based on the comments in the review thread"
-#           → coding agent session starts → loop repeats
-#
-# Guard: does NOT post if the most-recent comment is already "@copilot review"
-# (prevents infinite review-review loops when the agent didn't push changes).
-
-on:
+name: "\U0001F504 Auto-Post @copilot review After Agent Session"
+true:
   workflow_run:
-    # Fires when the Copilot coding agent session completes, OR when CodeQL finishes.
-    #
-    # WHY CodeQL is included:
-    #   CodeQL completes AFTER the agent session ends.  By watching it we can:
-    #   (1) Immediately auto-approve any pending Copilot sessions that were queued
-    #       after the agent pushed new commits — honoring `- [x] copilot-agent-session-done.yml`
-    #       as maintainer pre-approval, eliminating "awaiting approval from a maintainer".
-    #   (2) Compile fresh CodeQL findings into the bot-feedback thread for the next session.
-    #
-    # The "Copilot coding agent" trigger handles the primary review-cycle loop.
-    # The "CodeQL" trigger handles the delayed auto-approve + CodeQL finding compilation.
-    #
-    # NOTE: workflow_run listeners only execute from the default branch (main).
-    workflows: ["Copilot coding agent", "CodeQL"]
-    types: [completed]
-
+    workflows:
+    - Copilot coding agent
+    - CodeQL
+    types:
+    - completed
 concurrency:
-  # Use PR number if available, fall back to workflow_run ID to avoid
-  # unrelated runs sharing the same concurrency key (null PR number issue).
-  # cancel-in-progress: false ensures a queued re-trigger isn't dropped when
-  # two sessions end in rapid succession.
-  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id }}
-  cancel-in-progress: false
-
+  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] &&
+    github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id
+    }}
+  cancel-in-progress: true
 permissions:
   pull-requests: write
   issues: write
   contents: write
-  security-events: read    # needed by append-code-quality-to-rescue job
-
+  security-events: read
 jobs:
-  # ── Job 1: Auto-fix pre-flight requirements when 🔄 checkbox is checked ─────
-  # When `- [x] 🔄 Auto-Post @copilot review After Agent Session` is checked in
-  # the PR body, this job runs session_wrapup_autofix.py to ensure REQ-4/REQ-5
-  # (accountability report + CHANGELOG touched in last commit) are satisfied
-  # before the review trigger is posted.  Commit is tagged [skip ci] to avoid
-  # triggering another full workflow run.
   preflight-autofix:
-    name: "Pre-flight auto-fix (🔄 Auto-Post gate)"
+    name: "Pre-flight auto-fix (\U0001F504 Auto-Post gate)"
     runs-on: ubuntu-latest
     timeout-minutes: 8
-    if: |
-      github.event.workflow_run.pull_requests != null &&
+    if: 'github.event.workflow_run.pull_requests != null &&
+
       github.event.workflow_run.pull_requests[0] != null
+
+      '
     outputs:
       autofix_ran: ${{ steps.autofix.outputs.autofix_ran }}
-
     steps:
-      - name: "Checkout PR branch"
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 2
-          # Security: persist-credentials: false prevents checked-out (potentially
-          # untrusted fork/PR) code from accessing the elevated token via git credential helper.
-          persist-credentials: false
-
-      - name: Overlay trusted scripts from main (security)
-        # SECURITY: workflow_run events run with write permissions. Overlay the fix
-        # scripts from the trusted default branch so the autofix step cannot execute
-        # untrusted code from the checked-out PR branch.
-        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alert 13175).
-        run: |
-          git fetch origin main --depth=3 --no-tags 2>/dev/null || true
-          git restore --source=origin/main -- \
-            scripts/ci/session_wrapup_autofix.py \
-            scripts/ci/sync_tracked_files.py \
-            2>/dev/null || echo "⚠️ Some scripts not on origin/main — using checkout versions"
-          echo "✅ Trusted scripts overlaid from origin/main"
-
-      - name: "Auto-fix pre-flight REQ-4/5 when 🔄 Auto-Post checkbox is checked"
-        id: autofix
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
-          TARGET_BRANCH: ${{ github.event.workflow_run.head_branch }}
-          RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          GIT_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          set -euo pipefail
-          echo "autofix_ran=false" >> "$GITHUB_OUTPUT"
-
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "No PR number — skipping pre-flight auto-fix."
-            exit 0
-          fi
-
-          # Check if the 🔄 Auto-Post checkbox is checked in the PR body
-          PR_BODY=$(gh pr view "${PR_NUMBER}" \
-            --repo "${{ github.repository }}" \
-            --json body -q '.body // ""' 2>/dev/null || echo "")
-
-          if ! printf '%s' "$PR_BODY" | grep -qiE '\-\s*\[x\]\s*.*Auto-Post.*@copilot'; then
-            echo "🔄 Auto-Post checkbox not checked — skipping pre-flight auto-fix."
-            exit 0
-          fi
-
-          echo "🔄 Auto-Post checkbox is CHECKED — running pre-flight auto-fix..."
-
-          # Determine which REQ fixes are needed by inspecting the last commit
-          LAST_COMMIT_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
-          FIX_ARGS=""
-
-          if ! echo "$LAST_COMMIT_FILES" | grep -q "AGENT_ACCOUNTABILITY_REPORT.md"; then
-            FIX_ARGS="$FIX_ARGS --fix-accountability"
-            echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md needs auto-fix"
-          else
-            echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md already updated — OK"
-          fi
-
-          if ! echo "$LAST_COMMIT_FILES" | grep -q "CHANGELOG.md"; then
-            FIX_ARGS="$FIX_ARGS --fix-changelog"
-            echo "  REQ-5: CHANGELOG.md needs auto-fix"
-          else
-            echo "  REQ-5: CHANGELOG.md already updated — OK"
-          fi
-
-          # MANDATORY session-close gate (S177): ALWAYS refresh PR description with
-          # scorecard + follow-up + WEC — regardless of whether REQ-4/5 need fixing.
-          # This was the root cause of stale PR bodies: when REQ-4/5 were already
-          # satisfied, the early-exit skipped --fix-all which includes update_pr_description().
-          echo "📊 Refreshing PR description (scorecard + follow-up + WEC)..."
-          python3 scripts/ci/session_wrapup_autofix.py \
-            --update-pr-description \
-            --pr-number "${PR_NUMBER}" \
-            || echo "⚠️  PR description update failed (non-fatal — continuing)"
-
-          if [ -z "$FIX_ARGS" ]; then
-            echo "✅ REQ-4/5 already satisfied — no requirement files need fixing."
-          else
-            # Run the session_wrapup_autofix.py script with --fix-all
-            # This covers ALL missing components in one call:
-            #   REQ-4  — AGENT_ACCOUNTABILITY_REPORT.md
-            #   REQ-5  — CHANGELOG.md
-            #   REQ-6  — .secrets.baseline ↔ CODEX_MANIFEST.json sync
-            #   WEC    — PR body Workflow Execution Checklist block
-            python3 scripts/ci/session_wrapup_autofix.py \
-              --pr-number "${PR_NUMBER}" \
-              --sha "${GIT_SHA:0:8}" \
-              --run-url "${RUN_URL}" \
-              --fix-all
-          fi
-
-          # SCP-RESCUE-5: sync_tracked_files is the authoritative tool for
-          # computing the correct detect-secrets hashed_secret for CODEX_MANIFEST.
-          # Run it here (after session_wrapup_autofix) to guarantee .secrets.baseline
-          # is never stale regardless of which other bot workflows ran during the session.
-          python3 scripts/ci/sync_tracked_files.py --fix --manifest-only || \
-            echo "⚠️  sync_tracked_files non-zero (non-blocking)"
-
-          # Commit and push the auto-fixed files back to the branch
-          # Reconfigure remote with token since persist-credentials: false was used on checkout.
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md .secrets.baseline 2>/dev/null || true
-
-          if git diff --cached --quiet; then
-            echo "✅ No changes to commit — files already satisfied requirements."
-          else
-            git commit -m "fix(docs): auto-post pre-flight auto-fix: REQ-4/5 [auto-post-copilot-review][skip ci]"
-            git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
-            git push origin HEAD:refs/heads/"${TARGET_BRANCH}"
-            echo "✅ Pre-flight auto-fix committed and pushed to ${TARGET_BRANCH}."
-            echo "autofix_ran=true" >> "$GITHUB_OUTPUT"
-          fi
-
+    - name: Checkout PR branch
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.workflow_run.head_sha }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 2
+        persist-credentials: false
+    - name: Overlay trusted scripts from main (security)
+      run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
+        \ --source=origin/main -- \\\n  scripts/ci/session_wrapup_autofix.py \\\n\
+        \  scripts/ci/sync_tracked_files.py \\\n  2>/dev/null || echo \"\u26A0\uFE0F\
+        \ Some scripts not on origin/main \u2014 using checkout versions\"\necho \"\
+        \u2705 Trusted scripts overlaid from origin/main\"\n"
+    - name: "Auto-fix pre-flight REQ-4/5 when \U0001F504 Auto-Post checkbox is checked"
+      id: autofix
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        TARGET_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id
+          }}
+        GIT_SHA: ${{ github.event.workflow_run.head_sha }}
+      run: "set -euo pipefail\necho \"autofix_ran=false\" >> \"$GITHUB_OUTPUT\"\n\n\
+        if [ -z \"${PR_NUMBER}\" ]; then\n  echo \"No PR number \u2014 skipping pre-flight\
+        \ auto-fix.\"\n  exit 0\nfi\n\n# Check if the \U0001F504 Auto-Post checkbox\
+        \ is checked in the PR body\nPR_BODY=$(gh pr view \"${PR_NUMBER}\" \\\n  --repo\
+        \ \"${{ github.repository }}\" \\\n  --json body -q '.body // \"\"' 2>/dev/null\
+        \ || echo \"\")\n\nif ! printf '%s' \"$PR_BODY\" | grep -qiE '\\-\\s*\\[x\\\
+        ]\\s*.*Auto-Post.*@copilot'; then\n  echo \"\U0001F504 Auto-Post checkbox\
+        \ not checked \u2014 skipping pre-flight auto-fix.\"\n  exit 0\nfi\n\necho\
+        \ \"\U0001F504 Auto-Post checkbox is CHECKED \u2014 running pre-flight auto-fix...\"\
+        \n\n# Determine which REQ fixes are needed by inspecting the last commit\n\
+        LAST_COMMIT_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo \"\
+        \")\nFIX_ARGS=\"\"\n\nif ! echo \"$LAST_COMMIT_FILES\" | grep -q \"AGENT_ACCOUNTABILITY_REPORT.md\"\
+        ; then\n  FIX_ARGS=\"$FIX_ARGS --fix-accountability\"\n  echo \"  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md\
+        \ needs auto-fix\"\nelse\n  echo \"  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md\
+        \ already updated \u2014 OK\"\nfi\n\nif ! echo \"$LAST_COMMIT_FILES\" | grep\
+        \ -q \"CHANGELOG.md\"; then\n  FIX_ARGS=\"$FIX_ARGS --fix-changelog\"\n  echo\
+        \ \"  REQ-5: CHANGELOG.md needs auto-fix\"\nelse\n  echo \"  REQ-5: CHANGELOG.md\
+        \ already updated \u2014 OK\"\nfi\n\n# MANDATORY session-close gate (S177):\
+        \ ALWAYS refresh PR description with\n# scorecard + follow-up + WEC \u2014\
+        \ regardless of whether REQ-4/5 need fixing.\n# This was the root cause of\
+        \ stale PR bodies: when REQ-4/5 were already\n# satisfied, the early-exit\
+        \ skipped --fix-all which includes update_pr_description().\necho \"\U0001F4CA\
+        \ Refreshing PR description (scorecard + follow-up + WEC)...\"\npython3 scripts/ci/session_wrapup_autofix.py\
+        \ \\\n  --update-pr-description \\\n  --pr-number \"${PR_NUMBER}\" \\\n  ||\
+        \ echo \"\u26A0\uFE0F  PR description update failed (non-fatal \u2014 continuing)\"\
+        \n\nif [ -z \"$FIX_ARGS\" ]; then\n  echo \"\u2705 REQ-4/5 already satisfied\
+        \ \u2014 no requirement files need fixing.\"\nelse\n  # Run the session_wrapup_autofix.py\
+        \ script with --fix-all\n  # This covers ALL missing components in one call:\n\
+        \  #   REQ-4  \u2014 AGENT_ACCOUNTABILITY_REPORT.md\n  #   REQ-5  \u2014 CHANGELOG.md\n\
+        \  #   REQ-6  \u2014 .secrets.baseline \u2194 CODEX_MANIFEST.json sync\n \
+        \ #   WEC    \u2014 PR body Workflow Execution Checklist block\n  python3\
+        \ scripts/ci/session_wrapup_autofix.py \\\n    --pr-number \"${PR_NUMBER}\"\
+        \ \\\n    --sha \"${GIT_SHA:0:8}\" \\\n    --run-url \"${RUN_URL}\" \\\n \
+        \   --fix-all\nfi\n\n# SCP-RESCUE-5: sync_tracked_files is the authoritative\
+        \ tool for\n# computing the correct detect-secrets hashed_secret for CODEX_MANIFEST.\n\
+        # Run it here (after session_wrapup_autofix) to guarantee .secrets.baseline\n\
+        # is never stale regardless of which other bot workflows ran during the session.\n\
+        python3 scripts/ci/sync_tracked_files.py --fix --manifest-only || \\\n  echo\
+        \ \"\u26A0\uFE0F  sync_tracked_files non-zero (non-blocking)\"\n\n# Commit\
+        \ and push the auto-fixed files back to the branch\n# Reconfigure remote with\
+        \ token since persist-credentials: false was used on checkout.\ngit remote\
+        \ set-url origin \"https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git\"\
+        \ngit config user.name  \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\ngit add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\
+        \ CHANGELOG.md .secrets.baseline 2>/dev/null || true\n\nif git diff --cached\
+        \ --quiet; then\n  echo \"\u2705 No changes to commit \u2014 files already\
+        \ satisfied requirements.\"\nelse\n  git commit -m \"fix(docs): auto-post\
+        \ pre-flight auto-fix: REQ-4/5 [auto-post-copilot-review][skip ci]\"\n  git\
+        \ pull --rebase --autostash origin \"${TARGET_BRANCH}\" || true\n  git push\
+        \ origin HEAD:refs/heads/\"${TARGET_BRANCH}\"\n  echo \"\u2705 Pre-flight\
+        \ auto-fix committed and pushed to ${TARGET_BRANCH}.\"\n  echo \"autofix_ran=true\"\
+        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
   post-review-trigger:
-    name: "Post @copilot review after agent session"
+    name: Post @copilot review after agent session
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: preflight-autofix
     env:
-      GH_TRICKLE_POLITE_SLEEP: "0.5"   # GraphQL + paginated REST — use polite sleep between calls
-    # PRE-APPROVED: The WEC checkbox `- [x] copilot-agent-session-done.yml` in the PR body
-    # constitutes maintainer pre-approval.  This job MUST run even when preflight-autofix
-    # fails — `always()` ensures the posting is never blocked by an upstream job outcome.
-    # Only skip when there is no associated PR.
-    if: |
-      always() &&
+      GH_TRICKLE_POLITE_SLEEP: '0.5'
+    if: 'always() &&
+
       github.event.workflow_run.pull_requests != null &&
+
       github.event.workflow_run.pull_requests[0] != null
 
+      '
     steps:
-      - name: "Re-trigger unanswered rescue comments OR post @copilot review"
-        uses: actions/github-script@v8 # v9
-        with:
-          # Must use CODEX_MASTER_KEY (PAT for @mbaetiong) so the comment appears as a
-          # human user that GitHub Copilot will respond to.  github-actions[bot] comments
-          # are silently ignored by Copilot Coding Agent.
-          # Fallback to CODEX_BACKUP_KEY, then GITHUB_TOKEN as a graceful-degradation last
-          # resort (the comment will still be posted; Copilot may not pick it up immediately
-          # but the comment serves as a record for manual review).
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            // Gate check: proceed if EITHER the WEC checkbox is checked OR COPILOT_AGENT_AUTH_ENABLED is set.
-            // This ensures the workflow always posts @copilot review when the user explicitly selects
-            // `- [x] copilot-agent-session-done.yml` in the PR Workflow Execution Checklist,
-            // even when COPILOT_AGENT_AUTH_ENABLED is unset (e.g. token unavailable environment).
-
-            // When triggered by CodeQL completion, skip the @copilot review post entirely.
-            // The auto-approve-pending-runs and compile-bot-feedback jobs handle CodeQL triggers.
-            const triggeringWorkflow = context.payload.workflow_run.name;
-            if (triggeringWorkflow === 'CodeQL') {
-              console.log(`Triggered by "${triggeringWorkflow}" — skipping @copilot review post (auto-approve + compile-bot-feedback handle this trigger).`);
-              return;
-            }
-
-            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const prs   = context.payload.workflow_run.pull_requests;
-            if (!prs || prs.length === 0) {
-              console.log('No associated PRs — skipping.');
-              return;
-            }
-            const pr = prs[0].number;
-
-            // Fetch PR body to check the WEC checkbox for copilot-agent-session-done.yml
-            let wecChecked = false;
-            try {
-              const { data: prDataForWec } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
-              const prBody = prDataForWec.body || '';
-              // Match: `- [x] copilot-agent-session-done.yml` (case-insensitive, optional leading spaces)
-              wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prBody);
-              console.log(`WEC checkbox (copilot-agent-session-done.yml): ${wecChecked}`);
-            } catch (e) {
-              console.log(`Could not fetch PR body for WEC check (non-fatal): ${e.message}`);
-            }
-
-            if (!wecChecked && authEnabled !== 'true' && authEnabled !== '1') {
-              console.log('copilot-agent-session-done.yml WEC checkbox not checked AND COPILOT_AGENT_AUTH_ENABLED not set — skipping.');
-              return;
-            }
-
-            // Verify the PR is still open
-            let prData;
-            try {
-              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
-              prData = data;
-            } catch (e) {
-              console.log(`Could not fetch PR ${pr}: ${e.message}`);
-              return;
-            }
-            if (prData.state !== 'open') {
-              console.log(`PR #${pr} is ${prData.state} — skipping.`);
-              return;
-            }
-
-            // ── STEP 1: Fetch the last 20 PR comments to check for unaddressed rescue ──
-            // Uses GraphQL because REST listComments returns pages in ascending order
-            // (per_page:5 gives OLDEST 5, not newest).
-            // Includes rateLimit check to circuit-break if remaining < 20.
-            let allNodes = [];
-            try {
-              const result = await github.graphql(
-                `query($owner: String!, $repo: String!, $pr: Int!) {
-                  rateLimit {
-                    remaining
-                    resetAt
-                  }
-                  repository(owner: $owner, name: $repo) {
-                    pullRequest(number: $pr) {
-                      comments(last: 20) {
-                        nodes {
-                          id
-                          databaseId
-                          body
-                          createdAt
-                          author { login }
-                        }
-                      }
-                    }
-                  }
-                }`,
-                { owner, repo, pr }
-              );
-              // Circuit-break if rate limit is low
-              const rlRemaining = result?.rateLimit?.remaining ?? 999;
-              const rlResetAt = result?.rateLimit?.resetAt ?? 'unknown';
-              if (rlRemaining < 20) {
-                core.warning(`GraphQL rate limit low (${rlRemaining} remaining, resets ${rlResetAt}) — skipping comment analysis`);
-                return;
-              }
-              allNodes = result?.repository?.pullRequest?.comments?.nodes || [];
-            } catch (e) {
-              console.log(`Could not fetch PR comments (non-blocking): ${e.message}`);
-            }
-
-            // ── STEP 2: Find unanswered CI rescue comments ──────────────────────────
-            // A rescue comment is any comment containing "## 🚨 CI Rescue", posted by
-            // any author EXCEPT the coding agent itself (to avoid treating agent quotes
-            // of the rescue marker as a new rescue).  This covers:
-            //   - github-actions[bot] (automated CI via GITHUB_TOKEN)
-            //   - Any human admin using a PAT (e.g. the repo owner's token shows their login)
-            // An "answer" is any subsequent @copilot bot reply that contains "Fixed in"
-            // or "Addressed in" after the rescue comment.
-            //
-            // Key insight: when the agent pushes new commits, GitHub may silently drop
-            // the queued session tied to an older rescue comment.  We detect this case
-            // by checking whether a rescue comment has NO bot reply AFTER it.
-            const RESCUE_MARKER = '## 🚨 CI Rescue';
-            const AGENT_LOGINS = new Set([
-              'copilot-swe-agent[bot]',
-              'github-copilot[bot]',
-              'copilot[bot]',
-            ]);
-
-            // Find the most-recent unanswered rescue comment (from any non-agent author)
-            let pendingRescueComment = null;
-            for (let i = allNodes.length - 1; i >= 0; i--) {
-              const node = allNodes[i];
-              const body = node.body || '';
-              const authorLogin = node.author?.login || '';
-
-              // Accept rescue comments from ANY author except the coding agent
-              // (to avoid treating agent's quote-reply as a new rescue)
-              if (body.includes(RESCUE_MARKER) && !AGENT_LOGINS.has(authorLogin)) {
-                // Check if any agent comment AFTER this rescue comment addresses it
-                const answeredAfter = allNodes.slice(i + 1).some(later => {
-                  const laterLogin = later.author?.login || '';
-                  const laterBody  = (later.body || '').toLowerCase();
-                  return (
-                    AGENT_LOGINS.has(laterLogin) &&
-                    (laterBody.includes('fixed in') || laterBody.includes('addressed in'))
-                  );
-                });
-
-                if (!answeredAfter) {
-                  pendingRescueComment = node;
-                  break;  // use the most-recent unanswered rescue
-                }
-              }
-            }
-
-            if (pendingRescueComment) {
-              // ── PATH A: Re-trigger the unanswered rescue comment ────────────────
-              // Post a targeted @copilot continue comment that references the rescue
-              // comment so the new session picks it up immediately.
-              const rescueUrl = `https://github.com/${owner}/${repo}/pull/${pr}#issuecomment-${pendingRescueComment.databaseId}`;
-              const retriggerBody = [
-                `@copilot+claude-sonnet-4.6 continue`,
-                ``,
-                `<!-- session-done-retrigger -->`,
-                `A previous agent session pushed new commits after the CI rescue comment below`,
-                `was posted, which caused GitHub to silently drop the queued rescue session.`,
-                ``,
-                `**Please address the rescue comment immediately:**`,
-                `${rescueUrl}`,
-                ``,
-                `> _Auto-posted by \`copilot-agent-session-done.yml\` (session-done retrigger path)_`,
-              '',
-              '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-              ].join('\n');
-
-              // Guard: don't re-post if we already re-triggered this rescue comment
-              const alreadyRetriggered = allNodes.some(c => {
-                const body = c.body || '';
-                return body.includes('<!-- session-done-retrigger -->') &&
-                  body.includes(`issuecomment-${pendingRescueComment.databaseId}`);
-              });
-              if (alreadyRetriggered) {
-                console.log(
-                  `Rescue comment ${pendingRescueComment.databaseId} was already re-triggered — skipping.`
-                );
-              } else {
-                await github.rest.issues.createComment({
-                  owner, repo, issue_number: pr, body: retriggerBody,
-                });
-                console.log(
-                  `Re-triggered rescue comment ${pendingRescueComment.databaseId} on PR #${pr}.`
-                );
-                return;  // don't also post review
-              }
-            }
-
-            // ── PATH B: No pending rescue — post "@copilot review" as usual ────────
-            // Guard 1: do not post if the most recent comment is already a review trigger
-            const reviewTriggers = new Set([
-              '@copilot review',
-              '@copilot+claude-sonnet-4.6 review',
-            ]);
-            const recentTriggerCount = allNodes.slice(-10).filter(c => {
-              const body = (c.body || '').trim();
-              return reviewTriggers.has(body);
-            }).length;
-
-            // Guard 2: review-loop detection — if 3+ of the last 10 comments are
-            // @copilot review triggers with no meaningful work in between, break the
-            // loop by posting a diagnostic comment instead of another review trigger.
-            if (recentTriggerCount >= 3) {
-              const loopBreaker = [
-                `@copilot+claude-sonnet-4.6 continue`,
-                ``,
-                `<!-- session-done-loop-break -->`,
-                `⚠️ **Review-loop detected**: ${recentTriggerCount} consecutive \`@copilot review\` triggers`,
-                `were posted without a resolved rescue or meaningful commit in between.`,
-                ``,
-                `**Possible causes:**`,
-                `1. A CI failure is blocking the session from completing work`,
-                `2. The agent is not receiving the review trigger (token issue)`,
-                `3. The rescue comment chain is exhausted without a fix`,
-                ``,
-                `**Requested action:** Please check the latest CI failure and address it directly.`,
-                `Check \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` for patterns.`,
-                ``,
-                `> _Auto-posted by \`copilot-agent-session-done.yml\` (loop-break guard)_`,
-              '',
-              '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-              ].join('\n');
-
-              // Only post loop-breaker once per review-loop cycle
-              const alreadyBroke = allNodes.slice(-5).some(c => {
-                return (c.body || '').includes('<!-- session-done-loop-break -->');
-              });
-              if (!alreadyBroke) {
-                await github.rest.issues.createComment({
-                  owner, repo, issue_number: pr, body: loopBreaker,
-                });
-                console.log(`Loop-break comment posted to PR #${pr} (${recentTriggerCount} review triggers detected).`);
-              } else {
-                console.log(`Loop-break already posted — skipping to avoid double-loop.`);
-              }
-              return;
-            }
-
-            const alreadyPosted = allNodes.slice(-5).some(c => {
-              const body = (c.body || '').trim();
-              // Only treat agent-posted review triggers as "already posted".
-              // A human writing exactly "@copilot+claude-sonnet-4.6 review" would
-              // be intentional and should NOT suppress a new trigger.
-              return reviewTriggers.has(body) && AGENT_LOGINS.has(c.author?.login || '');
-            });
-            if (alreadyPosted) {
-              console.log('Most recent comment is already a "@copilot review" — skipping to avoid loop.');
-              return;
-            }
-
-            // P2-A (S299): SHA-scoped dedup marker — one session-done trigger per commit.
-            // When two workflow_run events fire for the same SHA (e.g. Copilot coding agent
-            // + CodeQL), without this guard both would post "@copilot review" a few seconds
-            // apart. The marker is stored as an HTML comment inside the trigger body so it
-            // is not rendered but can be searched across allNodes.
-            // Note: allNodes is limited to last 20 comments (GraphQL comments(last:20)) so
-            // the scan is bounded O(20) and does not degrade on large comment histories.
-            const rawHeadSha = context.payload.workflow_run.head_sha || '';
-            if (!rawHeadSha) {
-              console.log('head_sha is unavailable — skipping SHA-scoped dedup check and proceeding without marker.');
-            }
-            const sessionDoneSha = rawHeadSha.slice(0, 12);
-            const SESSION_DONE_MARKER = rawHeadSha
-              ? `<!-- session-done-dedup:${sessionDoneSha} -->`
-              : '';
-            if (SESSION_DONE_MARKER) {
-              const alreadyTriggeredForSha = allNodes.some(c =>
-                (c.body || '').includes(SESSION_DONE_MARKER)
-              );
-              if (alreadyTriggeredForSha) {
-                console.log(`Session-done trigger already posted for SHA ${sessionDoneSha} — skipping duplicate.`);
-                return;
-              }
-            }
-
-            const reviewBody = SESSION_DONE_MARKER
-              ? `@copilot+claude-sonnet-4.6 review\n\n${SESSION_DONE_MARKER}`
-              : '@copilot+claude-sonnet-4.6 review';
-
-            await github.rest.issues.createComment({
-              owner, repo, issue_number: pr,
-              body: reviewBody,
-            });
-            console.log(`@copilot review posted to PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);
-
-  # ── Job 3: Auto-approve all pending workflow runs on last commit SHA ────────
-  # Fires when `- [x] auto-approve-workflows` is checked in the PR body.
-  # Trigger point: after the "Copilot [finished work] on behalf of [mbaetiong]"
-  # event (i.e., immediately after this workflow_run trigger fires).
-  # Uses: GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}&status=action_required
-  #       POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve
-  # Requires: CODEX_MASTER_KEY or CODEX_BACKUP_KEY with workflow approval scope.
+    - name: Re-trigger unanswered rescue comments OR post @copilot review
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          secrets.GITHUB_TOKEN }}
+        script: "// Gate check: proceed if EITHER the WEC checkbox is checked OR COPILOT_AGENT_AUTH_ENABLED\
+          \ is set.\n// This ensures the workflow always posts @copilot review when\
+          \ the user explicitly selects\n// `- [x] copilot-agent-session-done.yml`\
+          \ in the PR Workflow Execution Checklist,\n// even when COPILOT_AGENT_AUTH_ENABLED\
+          \ is unset (e.g. token unavailable environment).\n\n// When triggered by\
+          \ CodeQL completion, skip the @copilot review post entirely.\n// The auto-approve-pending-runs\
+          \ and compile-bot-feedback jobs handle CodeQL triggers.\nconst triggeringWorkflow\
+          \ = context.payload.workflow_run.name;\nif (triggeringWorkflow === 'CodeQL')\
+          \ {\n  console.log(`Triggered by \"${triggeringWorkflow}\" \u2014 skipping\
+          \ @copilot review post (auto-approve + compile-bot-feedback handle this\
+          \ trigger).`);\n  return;\n}\n\nconst authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED\
+          \ }}';\nconst owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          const prs   = context.payload.workflow_run.pull_requests;\nif (!prs || prs.length\
+          \ === 0) {\n  console.log('No associated PRs \u2014 skipping.');\n  return;\n\
+          }\nconst pr = prs[0].number;\n\n// Fetch PR body to check the WEC checkbox\
+          \ for copilot-agent-session-done.yml\nlet wecChecked = false;\ntry {\n \
+          \ const { data: prDataForWec } = await github.rest.pulls.get({ owner, repo,\
+          \ pull_number: pr });\n  const prBody = prDataForWec.body || '';\n  // Match:\
+          \ `- [x] copilot-agent-session-done.yml` (case-insensitive, optional leading\
+          \ spaces)\n  wecChecked = /[-*]\\s*\\[x\\]\\s*copilot-agent-session-done\\\
+          .yml/i.test(prBody);\n  console.log(`WEC checkbox (copilot-agent-session-done.yml):\
+          \ ${wecChecked}`);\n} catch (e) {\n  console.log(`Could not fetch PR body\
+          \ for WEC check (non-fatal): ${e.message}`);\n}\n\nif (!wecChecked && authEnabled\
+          \ !== 'true' && authEnabled !== '1') {\n  console.log('copilot-agent-session-done.yml\
+          \ WEC checkbox not checked AND COPILOT_AGENT_AUTH_ENABLED not set \u2014\
+          \ skipping.');\n  return;\n}\n\n// Verify the PR is still open\nlet prData;\n\
+          try {\n  const { data } = await github.rest.pulls.get({ owner, repo, pull_number:\
+          \ pr });\n  prData = data;\n} catch (e) {\n  console.log(`Could not fetch\
+          \ PR ${pr}: ${e.message}`);\n  return;\n}\nif (prData.state !== 'open')\
+          \ {\n  console.log(`PR #${pr} is ${prData.state} \u2014 skipping.`);\n \
+          \ return;\n}\n\n// \u2500\u2500 STEP 1: Fetch the last 20 PR comments to\
+          \ check for unaddressed rescue \u2500\u2500\n// Uses GraphQL because REST\
+          \ listComments returns pages in ascending order\n// (per_page:5 gives OLDEST\
+          \ 5, not newest).\n// Includes rateLimit check to circuit-break if remaining\
+          \ < 20.\nlet allNodes = [];\ntry {\n  const result = await github.graphql(\n\
+          \    `query($owner: String!, $repo: String!, $pr: Int!) {\n      rateLimit\
+          \ {\n        remaining\n        resetAt\n      }\n      repository(owner:\
+          \ $owner, name: $repo) {\n        pullRequest(number: $pr) {\n         \
+          \ comments(last: 20) {\n            nodes {\n              id\n        \
+          \      databaseId\n              body\n              createdAt\n       \
+          \       author { login }\n            }\n          }\n        }\n      }\n\
+          \    }`,\n    { owner, repo, pr }\n  );\n  // Circuit-break if rate limit\
+          \ is low\n  const rlRemaining = result?.rateLimit?.remaining ?? 999;\n \
+          \ const rlResetAt = result?.rateLimit?.resetAt ?? 'unknown';\n  if (rlRemaining\
+          \ < 20) {\n    core.warning(`GraphQL rate limit low (${rlRemaining} remaining,\
+          \ resets ${rlResetAt}) \u2014 skipping comment analysis`);\n    return;\n\
+          \  }\n  allNodes = result?.repository?.pullRequest?.comments?.nodes || [];\n\
+          } catch (e) {\n  console.log(`Could not fetch PR comments (non-blocking):\
+          \ ${e.message}`);\n}\n\n// \u2500\u2500 STEP 2: Find unanswered CI rescue\
+          \ comments \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\n// A rescue comment is any comment containing \"## \U0001F6A8\
+          \ CI Rescue\", posted by\n// any author EXCEPT the coding agent itself (to\
+          \ avoid treating agent quotes\n// of the rescue marker as a new rescue).\
+          \  This covers:\n//   - github-actions[bot] (automated CI via GITHUB_TOKEN)\n\
+          //   - Any human admin using a PAT (e.g. the repo owner's token shows their\
+          \ login)\n// An \"answer\" is any subsequent @copilot bot reply that contains\
+          \ \"Fixed in\"\n// or \"Addressed in\" after the rescue comment.\n//\n//\
+          \ Key insight: when the agent pushes new commits, GitHub may silently drop\n\
+          // the queued session tied to an older rescue comment.  We detect this case\n\
+          // by checking whether a rescue comment has NO bot reply AFTER it.\nconst\
+          \ RESCUE_MARKER = '## \U0001F6A8 CI Rescue';\nconst AGENT_LOGINS = new Set([\n\
+          \  'copilot-swe-agent[bot]',\n  'github-copilot[bot]',\n  'copilot[bot]',\n\
+          ]);\n\n// Find the most-recent unanswered rescue comment (from any non-agent\
+          \ author)\nlet pendingRescueComment = null;\nfor (let i = allNodes.length\
+          \ - 1; i >= 0; i--) {\n  const node = allNodes[i];\n  const body = node.body\
+          \ || '';\n  const authorLogin = node.author?.login || '';\n\n  // Accept\
+          \ rescue comments from ANY author except the coding agent\n  // (to avoid\
+          \ treating agent's quote-reply as a new rescue)\n  if (body.includes(RESCUE_MARKER)\
+          \ && !AGENT_LOGINS.has(authorLogin)) {\n    // Check if any agent comment\
+          \ AFTER this rescue comment addresses it\n    const answeredAfter = allNodes.slice(i\
+          \ + 1).some(later => {\n      const laterLogin = later.author?.login ||\
+          \ '';\n      const laterBody  = (later.body || '').toLowerCase();\n    \
+          \  return (\n        AGENT_LOGINS.has(laterLogin) &&\n        (laterBody.includes('fixed\
+          \ in') || laterBody.includes('addressed in'))\n      );\n    });\n\n   \
+          \ if (!answeredAfter) {\n      pendingRescueComment = node;\n      break;\
+          \  // use the most-recent unanswered rescue\n    }\n  }\n}\n\nif (pendingRescueComment)\
+          \ {\n  // \u2500\u2500 PATH A: Re-trigger the unanswered rescue comment\
+          \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\n  // Post a targeted @copilot continue comment\
+          \ that references the rescue\n  // comment so the new session picks it up\
+          \ immediately.\n  const rescueUrl = `https://github.com/${owner}/${repo}/pull/${pr}#issuecomment-${pendingRescueComment.databaseId}`;\n\
+          \  const retriggerBody = [\n    `@copilot+claude-sonnet-4.6 continue`,\n\
+          \    ``,\n    `<!-- session-done-retrigger -->`,\n    `A previous agent\
+          \ session pushed new commits after the CI rescue comment below`,\n    `was\
+          \ posted, which caused GitHub to silently drop the queued rescue session.`,\n\
+          \    ``,\n    `**Please address the rescue comment immediately:**`,\n  \
+          \  `${rescueUrl}`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
+          ` (session-done retrigger path)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow\
+          \ run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \  ].join('\\n');\n\n  // Guard: don't re-post if we already re-triggered\
+          \ this rescue comment\n  const alreadyRetriggered = allNodes.some(c => {\n\
+          \    const body = c.body || '';\n    return body.includes('<!-- session-done-retrigger\
+          \ -->') &&\n      body.includes(`issuecomment-${pendingRescueComment.databaseId}`);\n\
+          \  });\n  if (alreadyRetriggered) {\n    console.log(\n      `Rescue comment\
+          \ ${pendingRescueComment.databaseId} was already re-triggered \u2014 skipping.`\n\
+          \    );\n  } else {\n    await github.rest.issues.createComment({\n    \
+          \  owner, repo, issue_number: pr, body: retriggerBody,\n    });\n    console.log(\n\
+          \      `Re-triggered rescue comment ${pendingRescueComment.databaseId} on\
+          \ PR #${pr}.`\n    );\n    return;  // don't also post review\n  }\n}\n\n\
+          // \u2500\u2500 PATH B: No pending rescue \u2014 post \"@copilot review\"\
+          \ as usual \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Guard 1:\
+          \ do not post if the most recent comment is already a review trigger\nconst\
+          \ reviewTriggers = new Set([\n  '@copilot review',\n  '@copilot+claude-sonnet-4.6\
+          \ review',\n]);\nconst recentTriggerCount = allNodes.slice(-10).filter(c\
+          \ => {\n  const body = (c.body || '').trim();\n  return reviewTriggers.has(body);\n\
+          }).length;\n\n// Guard 2: review-loop detection \u2014 if 3+ of the last\
+          \ 10 comments are\n// @copilot review triggers with no meaningful work in\
+          \ between, break the\n// loop by posting a diagnostic comment instead of\
+          \ another review trigger.\nif (recentTriggerCount >= 3) {\n  const loopBreaker\
+          \ = [\n    `@copilot+claude-sonnet-4.6 continue`,\n    ``,\n    `<!-- session-done-loop-break\
+          \ -->`,\n    `\u26A0\uFE0F **Review-loop detected**: ${recentTriggerCount}\
+          \ consecutive \\`@copilot review\\` triggers`,\n    `were posted without\
+          \ a resolved rescue or meaningful commit in between.`,\n    ``,\n    `**Possible\
+          \ causes:**`,\n    `1. A CI failure is blocking the session from completing\
+          \ work`,\n    `2. The agent is not receiving the review trigger (token issue)`,\n\
+          \    `3. The rescue comment chain is exhausted without a fix`,\n    ``,\n\
+          \    `**Requested action:** Please check the latest CI failure and address\
+          \ it directly.`,\n    `Check \\`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\\\
+          ` for patterns.`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
+          ` (loop-break guard)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \  ].join('\\n');\n\n  // Only post loop-breaker once per review-loop cycle\n\
+          \  const alreadyBroke = allNodes.slice(-5).some(c => {\n    return (c.body\
+          \ || '').includes('<!-- session-done-loop-break -->');\n  });\n  if (!alreadyBroke)\
+          \ {\n    await github.rest.issues.createComment({\n      owner, repo, issue_number:\
+          \ pr, body: loopBreaker,\n    });\n    console.log(`Loop-break comment posted\
+          \ to PR #${pr} (${recentTriggerCount} review triggers detected).`);\n  }\
+          \ else {\n    console.log(`Loop-break already posted \u2014 skipping to\
+          \ avoid double-loop.`);\n  }\n  return;\n}\n\nconst alreadyPosted = allNodes.slice(-5).some(c\
+          \ => {\n  const body = (c.body || '').trim();\n  // Only treat agent-posted\
+          \ review triggers as \"already posted\".\n  // A human writing exactly \"\
+          @copilot+claude-sonnet-4.6 review\" would\n  // be intentional and should\
+          \ NOT suppress a new trigger.\n  return reviewTriggers.has(body) && AGENT_LOGINS.has(c.author?.login\
+          \ || '');\n});\nif (alreadyPosted) {\n  console.log('Most recent comment\
+          \ is already a \"@copilot review\" \u2014 skipping to avoid loop.');\n \
+          \ return;\n}\n\n// P2-A (S299): SHA-scoped dedup marker \u2014 one session-done\
+          \ trigger per commit.\n// When two workflow_run events fire for the same\
+          \ SHA (e.g. Copilot coding agent\n// + CodeQL), without this guard both\
+          \ would post \"@copilot review\" a few seconds\n// apart. The marker is\
+          \ stored as an HTML comment inside the trigger body so it\n// is not rendered\
+          \ but can be searched across allNodes.\n// Note: allNodes is limited to\
+          \ last 20 comments (GraphQL comments(last:20)) so\n// the scan is bounded\
+          \ O(20) and does not degrade on large comment histories.\nconst rawHeadSha\
+          \ = context.payload.workflow_run.head_sha || '';\nif (!rawHeadSha) {\n \
+          \ console.log('head_sha is unavailable \u2014 skipping SHA-scoped dedup\
+          \ check and proceeding without marker.');\n}\nconst sessionDoneSha = rawHeadSha.slice(0,\
+          \ 12);\nconst SESSION_DONE_MARKER = rawHeadSha\n  ? `<!-- session-done-dedup:${sessionDoneSha}\
+          \ -->`\n  : '';\nif (SESSION_DONE_MARKER) {\n  const alreadyTriggeredForSha\
+          \ = allNodes.some(c =>\n    (c.body || '').includes(SESSION_DONE_MARKER)\n\
+          \  );\n  if (alreadyTriggeredForSha) {\n    console.log(`Session-done trigger\
+          \ already posted for SHA ${sessionDoneSha} \u2014 skipping duplicate.`);\n\
+          \    return;\n  }\n}\n\nconst reviewBody = SESSION_DONE_MARKER\n  ? `@copilot+claude-sonnet-4.6\
+          \ review\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-sonnet-4.6 review';\n\
+          \nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
+          \ pr,\n  body: reviewBody,\n});\nconsole.log(`@copilot review posted to\
+          \ PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);\n"
   auto-approve-pending-runs:
-    name: "⚡ Auto-Approve pending workflow runs"
+    name: "\u26A1 Auto-Approve pending workflow runs"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: preflight-autofix
-    if: |
-      github.event.workflow_run.pull_requests != null &&
+    if: 'github.event.workflow_run.pull_requests != null &&
+
       github.event.workflow_run.pull_requests[0] != null
+
+      '
     steps:
-      - name: "Approve all action_required workflow runs for head SHA"
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "No PR number — skipping auto-approve."
-            exit 0
-          fi
-
-          # Check which checkboxes are ticked.
-          # Auto-approve is enabled when EITHER:
-          #   1. `- [x] auto-approve-workflows` is checked (explicit approval, always approve)
-          #   2. `- [x] copilot-agent-session-done.yml` is checked (WEC pre-approval)
-          #      The WEC checkbox IS the maintainer's pre-approval — checking it means "run
-          #      this workflow and approve whatever it needs", eliminating the
-          #      "This workflow is awaiting approval from a maintainer" gate.
-          PR_BODY=$(gh pr view "${PR_NUMBER}" \
-            --repo "${REPO}" \
-            --json body -q '.body // ""' 2>/dev/null || echo "")
-
-          AUTO_APPROVE_CHECKED=0
-          SESSION_DONE_CHECKED=0
-          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows' && AUTO_APPROVE_CHECKED=1 || true
-          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*copilot-agent-session-done\.yml' && SESSION_DONE_CHECKED=1 || true
-
-          if [ "$AUTO_APPROVE_CHECKED" = "0" ] && [ "$SESSION_DONE_CHECKED" = "0" ]; then
-            echo "⚡ Neither auto-approve-workflows nor copilot-agent-session-done.yml is checked — skipping."
-            exit 0
-          fi
-
-          if [ "$AUTO_APPROVE_CHECKED" = "1" ]; then
-            echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
-          else
-            echo "⚡ copilot-agent-session-done.yml WEC checkbox is CHECKED (pre-approval) — auto-approving pending runs for SHA ${HEAD_SHA:0:12}..."
-          fi
-
-          # Fetch all workflow runs for this commit that require approval
-          PENDING_RUNS=$(gh api \
-            "repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100" \
-            --jq '.workflow_runs[].id' 2>/dev/null || echo "")
-
-          if [ -z "$PENDING_RUNS" ]; then
-            echo "✅ No pending workflow runs requiring approval for SHA ${HEAD_SHA:0:12}."
-            printf '### ⚡ Auto-Approve\n\nNo action_required runs found for commit `%s`.\n' "${HEAD_SHA:0:12}" >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-
-          APPROVED=0
-          FAILED=0
-          SUMMARY_LINES=""
-
-          while IFS= read -r RUN_ID; do
-            [ -z "$RUN_ID" ] && continue
-            RUN_NAME=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" --jq '.name // "unknown"' 2>/dev/null || echo "unknown")
-            if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" 2>/dev/null; then
-              echo "  ✅ Approved run #${RUN_ID} (${RUN_NAME})"
-              APPROVED=$((APPROVED + 1))
-              SUMMARY_LINES="${SUMMARY_LINES}\n- ✅ Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID}) — ${RUN_NAME}"
-            else
-              echo "  ⚠️  Failed to approve run #${RUN_ID} (${RUN_NAME}) — may require owner approval"
-              FAILED=$((FAILED + 1))
-              SUMMARY_LINES="${SUMMARY_LINES}\n- ⚠️ Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID}) — ${RUN_NAME} (approval failed)"
-            fi
-          done <<< "$PENDING_RUNS"
-
-          printf '### ⚡ Auto-Approve Results\n\n**Approved:** %d | **Failed:** %d\n%b\n' \
-            "$APPROVED" "$FAILED" "$SUMMARY_LINES" >> "$GITHUB_STEP_SUMMARY"
-
-          if [ "$APPROVED" -gt 0 ]; then
-            echo "✅ Auto-approved ${APPROVED} pending workflow run(s) for PR #${PR_NUMBER}."
-          fi
-          if [ "$FAILED" -gt 0 ]; then
-            echo "⚠️  ${FAILED} run(s) could not be approved — owner approval may be required."
-          fi
-
-  # ── Job 4: Compile bot feedback into a single @copilot continue comment ─────
-  # Fires after the agent session completes.  Collects all Code Quality, Security,
-  # and Copilot AI review findings from bot comments / PR reviews that have NOT
-  # already been compiled into a continue comment.  Posts a single thread as
-  # @mbaetiong directing Copilot to continue with ALL tasks + the bot concerns.
-  #
-  # Bot comment sources detected:
-  #   - github-copilot[bot] / copilot-pull-request-reviewer[bot] review COMMENTS (PR reviews)
-  #   - github-actions[bot] comments that include quality/security markers
-  #   - Any comment containing the <!-- code-quality-report --> or <!-- security-findings --> markers
-  #
-  # Guard: does NOT post if the most recent compile comment is identical to what
-  # would be posted (de-duplicate by SHA fingerprint).
+    - name: Approve all action_required workflow runs for head SHA
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        REPO: ${{ github.repository }}
+      run: "set -euo pipefail\n\nif [ -z \"${PR_NUMBER}\" ]; then\n  echo \"No PR\
+        \ number \u2014 skipping auto-approve.\"\n  exit 0\nfi\n\n# Check which checkboxes\
+        \ are ticked.\n# Auto-approve is enabled when EITHER:\n#   1. `- [x] auto-approve-workflows`\
+        \ is checked (explicit approval, always approve)\n#   2. `- [x] copilot-agent-session-done.yml`\
+        \ is checked (WEC pre-approval)\n#      The WEC checkbox IS the maintainer's\
+        \ pre-approval \u2014 checking it means \"run\n#      this workflow and approve\
+        \ whatever it needs\", eliminating the\n#      \"This workflow is awaiting\
+        \ approval from a maintainer\" gate.\nPR_BODY=$(gh pr view \"${PR_NUMBER}\"\
+        \ \\\n  --repo \"${REPO}\" \\\n  --json body -q '.body // \"\"' 2>/dev/null\
+        \ || echo \"\")\n\nAUTO_APPROVE_CHECKED=0\nSESSION_DONE_CHECKED=0\nprintf\
+        \ '%s' \"$PR_BODY\" | grep -qiE '^\\-\\s*\\[x\\]\\s*auto-approve-workflows'\
+        \ && AUTO_APPROVE_CHECKED=1 || true\nprintf '%s' \"$PR_BODY\" | grep -qiE\
+        \ '^\\-\\s*\\[x\\]\\s*copilot-agent-session-done\\.yml' && SESSION_DONE_CHECKED=1\
+        \ || true\n\nif [ \"$AUTO_APPROVE_CHECKED\" = \"0\" ] && [ \"$SESSION_DONE_CHECKED\"\
+        \ = \"0\" ]; then\n  echo \"\u26A1 Neither auto-approve-workflows nor copilot-agent-session-done.yml\
+        \ is checked \u2014 skipping.\"\n  exit 0\nfi\n\nif [ \"$AUTO_APPROVE_CHECKED\"\
+        \ = \"1\" ]; then\n  echo \"\u26A1 auto-approve-workflows is CHECKED \u2014\
+        \ approving pending runs for SHA ${HEAD_SHA:0:12}...\"\nelse\n  echo \"\u26A1\
+        \ copilot-agent-session-done.yml WEC checkbox is CHECKED (pre-approval) \u2014\
+        \ auto-approving pending runs for SHA ${HEAD_SHA:0:12}...\"\nfi\n\n# Fetch\
+        \ all workflow runs for this commit that require approval\nPENDING_RUNS=$(gh\
+        \ api \\\n  \"repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100\"\
+        \ \\\n  --jq '.workflow_runs[].id' 2>/dev/null || echo \"\")\n\nif [ -z \"\
+        $PENDING_RUNS\" ]; then\n  echo \"\u2705 No pending workflow runs requiring\
+        \ approval for SHA ${HEAD_SHA:0:12}.\"\n  printf '### \u26A1 Auto-Approve\\\
+        n\\nNo action_required runs found for commit `%s`.\\n' \"${HEAD_SHA:0:12}\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n  exit 0\nfi\n\nAPPROVED=0\nFAILED=0\nSUMMARY_LINES=\"\
+        \"\n\nwhile IFS= read -r RUN_ID; do\n  [ -z \"$RUN_ID\" ] && continue\n  RUN_NAME=$(gh\
+        \ api \"repos/${REPO}/actions/runs/${RUN_ID}\" --jq '.name // \"unknown\"\
+        ' 2>/dev/null || echo \"unknown\")\n  if gh api --method POST \"repos/${REPO}/actions/runs/${RUN_ID}/approve\"\
+        \ 2>/dev/null; then\n    echo \"  \u2705 Approved run #${RUN_ID} (${RUN_NAME})\"\
+        \n    APPROVED=$((APPROVED + 1))\n    SUMMARY_LINES=\"${SUMMARY_LINES}\\n-\
+        \ \u2705 Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID})\
+        \ \u2014 ${RUN_NAME}\"\n  else\n    echo \"  \u26A0\uFE0F  Failed to approve\
+        \ run #${RUN_ID} (${RUN_NAME}) \u2014 may require owner approval\"\n    FAILED=$((FAILED\
+        \ + 1))\n    SUMMARY_LINES=\"${SUMMARY_LINES}\\n- \u26A0\uFE0F Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID})\
+        \ \u2014 ${RUN_NAME} (approval failed)\"\n  fi\ndone <<< \"$PENDING_RUNS\"\
+        \n\nprintf '### \u26A1 Auto-Approve Results\\n\\n**Approved:** %d | **Failed:**\
+        \ %d\\n%b\\n' \\\n  \"$APPROVED\" \"$FAILED\" \"$SUMMARY_LINES\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nif [ \"$APPROVED\" -gt 0 ]; then\n  echo \"\u2705 Auto-approved ${APPROVED}\
+        \ pending workflow run(s) for PR #${PR_NUMBER}.\"\nfi\nif [ \"$FAILED\" -gt\
+        \ 0 ]; then\n  echo \"\u26A0\uFE0F  ${FAILED} run(s) could not be approved\
+        \ \u2014 owner approval may be required.\"\nfi\n"
   compile-bot-feedback:
-    name: "Compile bot feedback → @copilot continue thread"
+    name: "Compile bot feedback \u2192 @copilot continue thread"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: post-review-trigger
-    # PRE-APPROVED: always() ensures this job runs even if post-review-trigger failed.
-    # The WEC checkbox constitutes maintainer pre-approval — no additional gate needed.
-    if: |
-      always() &&
+    if: 'always() &&
+
       github.event.workflow_run.pull_requests != null &&
+
       github.event.workflow_run.pull_requests[0] != null
 
+      '
     steps:
-      - name: "Collect bot findings and post consolidated @copilot continue comment"
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const prs   = context.payload.workflow_run.pull_requests;
-            if (!prs || prs.length === 0) return;
-            const prNumber = prs[0].number;
-            const MAX_COMMENT_LENGTH = 65536;
-            // Branch-head SHA used for a SHA-scoped upsert marker.
-            //
-            // Use the PR head SHA (not workflow_run.head_sha) because pull_request
-            // workflow_run events often carry ephemeral merge-preview SHAs.  Those
-            // merge-preview SHAs can change within one agent session even when the
-            // PR branch head has not, causing multiple @mbaetiong continuation
-            // comments instead of one same-session thread.
-            let headSha = (context.payload.workflow_run.head_sha || '').slice(0, 12);
-
-            // Gate: only run when copilot-agent-session-done.yml WEC checkbox is checked
-            let wecChecked = false;
-            try {
-              const { data: prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
-              if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is closed — skipping.`); return; }
-              wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prInfo.body || '');
-              const prHeadSha = (prInfo.head && prInfo.head.sha) ? prInfo.head.sha : '';
-              headSha = (prHeadSha || context.payload.workflow_run.head_sha || '').slice(0, 12);
-            } catch (e) {
-              console.log(`Cannot fetch PR for gate check: ${e.message}`); return;
-            }
-            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
-            if (!wecChecked && authEnabled !== 'true' && authEnabled !== '1') {
-              console.log('WEC checkbox not checked — skipping compile-bot-feedback.'); return;
-            }
-
-            // ── Collect PR Review comments from Copilot AI reviewer ──────────────
-            const BOT_REVIEW_AUTHORS = new Set([
-              'copilot-pull-request-reviewer[bot]',
-              'github-copilot[bot]',
-              'copilot[bot]',
-            ]);
-            const BOT_COMMENT_AUTHORS = new Set([
-              'github-actions[bot]',
-              'copilot-pull-request-reviewer[bot]',
-              'github-copilot[bot]',
-              'github-code-quality[bot]',
-              'github-advanced-security[bot]',
-            ]);
-            // Quality/security markers commonly emitted by CI bots
-            const BOT_CONTENT_MARKERS = [
-              '<!-- code-quality-report -->',
-              '<!-- security-findings -->',
-              '<!-- ci-code-quality',     // upserted code-quality section marker
-              'semgrep',
-              'codeql',
-              '🔒 security',
-              '⚠️ code quality',
-              'code scanning',
-              'code quality',
-              'security scan',
-              'potential problem',
-              'github-code-quality',
-            ];
-
-            let findings = [];
-
-            // 1. PR review comments (Copilot AI review findings)
-            try {
-              const reviews = await github.paginate(github.rest.pulls.listReviews, {
-                owner, repo, pull_number: prNumber, per_page: 50,
-              });
-              for (const review of reviews) {
-                const login = review.user?.login || '';
-                if (!BOT_REVIEW_AUTHORS.has(login)) continue;
-                // Collect the review body if it has content
-                if (review.body && review.body.trim().length > 20) {
-                  findings.push({ source: `Copilot AI Review (${review.submitted_at?.slice(0,10)})`, body: review.body.trim() });
-                }
-              }
-
-              // Also collect inline review comments (diff comments)
-              const reviewComments = await github.paginate(github.rest.pulls.listReviewComments, {
-                owner, repo, pull_number: prNumber, per_page: 100, sort: 'created', direction: 'desc',
-              });
-              const recent = reviewComments.slice(0, 20);
-              for (const rc of recent) {
-                const login = rc.user?.login || '';
-                if (!BOT_REVIEW_AUTHORS.has(login)) continue;
-                findings.push({ source: `Copilot Review Comment (${rc.path}:${rc.line || rc.original_line || '?'})`, body: rc.body.trim() });
-              }
-            } catch (e) {
-              console.log(`Could not fetch reviews (non-fatal): ${e.message}`);
-            }
-
-            // 2. Issue comments from quality/security bots
-            try {
-              const { data: issueComments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: prNumber,
-                per_page: 50, sort: 'created', direction: 'desc',
-              });
-              // direction:'desc' gives newest-first; take the first 30 (most recent)
-              const recent = issueComments.slice(0, 30);
-              for (const c of recent) {
-                const login = c.user?.login || '';
-                const body  = c.body || '';
-                const isBotAuthor = BOT_COMMENT_AUTHORS.has(login);
-                const hasBotMarker = BOT_CONTENT_MARKERS.some(m => body.toLowerCase().includes(m.toLowerCase()));
-                // Skip the compile-thread itself to avoid re-including old compilations
-                // (matches both legacy `<!-- compiled-bot-feedback -->` and new SHA-scoped variant)
-                if (body.includes('<!-- compiled-bot-feedback')) continue;
-                if ((isBotAuthor || hasBotMarker) && body.trim().length > 40) {
-                  // Truncate very long bot comments to first 500 chars
-                  const excerpt = body.length > 500 ? body.slice(0, 497) + '…' : body;
-                  findings.push({ source: `Bot Comment (${login}, ${c.created_at?.slice(0,10)})`, body: excerpt });
-                }
-              }
-            } catch (e) {
-              console.log(`Could not fetch issue comments (non-fatal): ${e.message}`);
-            }
-
-            if (findings.length === 0) {
-              console.log(`No bot findings detected for PR #${prNumber} — skipping compile-bot-feedback.`);
-              return;
-            }
-
-            // ── Build compiled continuation comment ──────────────────────────────
-            const findingsList = findings
-              .map((f, i) => `**${i + 1}. ${f.source}**\n\n> ${(f.body || '').replace(/\n/g, '\n> ')}`)
-              .join('\n\n---\n\n');
-
-            const PR_MARKER = `<!-- compiled-bot-feedback:pr-${prNumber} -->`;
-            const HEAD_MARKER = `<!-- compiled-bot-feedback-head:${headSha} -->`;
-            const RUN_MARKER = `<!-- compiled-bot-feedback-run:${context.runId} -->`;
-            const MARKER_PREFIX = `<!-- compiled-bot-feedback`;
-            const compiledBody = [
-              PR_MARKER,
-              HEAD_MARKER,
-              `@copilot continue with all current priority 1, 2, 3, and 4 tasks as well as addressing all code quality and security concerns listed below.`,
-              ``,
-              `**📋 Bot-reported findings (${findings.length} item${findings.length > 1 ? 's' : ''}):**`,
-              ``,
-              findingsList,
-              ``,
-              `---`,
-              `> _Compiled by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
-              `> _[🔗 Workflow run](https://github.com/${owner}/${repo}/actions/runs/${context.runId})_`,
-            ].join('\n');
-
-            // Upsert guard: scan every PR comment page for either the new PR-scoped
-            // marker or any legacy compiled-bot-feedback marker.  A busy PR can have
-            // more than 100 comments, so newest-only GraphQL windows can miss the
-            // existing thread and create another @copilot request for the same issue.
-            // PR-scoped upsert keeps all same-session bot findings in one appended
-            // thread even when follow-up [skip ci] commits change the branch head SHA.
-            // Rate-limit guard: check remaining before each page; break if < 20.
-            let existingCommentId = null;
-            let existingCommentBody = '';
-            try {
-              for (let page = 1; ; page += 1) {
-                // Rate-limit guard before each page
-                try {
-                  const rl = await github.rest.rateLimit.get();
-                  const remaining = rl.data?.resources?.core?.remaining ?? 999;
-                  if (remaining < 20) {
-                    core.warning(`REST rate limit low (${remaining} remaining) — stopping upsert scan at page ${page}`);
-                    break;
-                  }
-                } catch (_) { /* non-fatal — proceed */ }
-
-                const { data: comments } = await github.rest.issues.listComments({
-                  owner, repo, issue_number: prNumber, per_page: 100, page,
-                });
-                if (!Array.isArray(comments) || comments.length === 0) break;
-                for (const comment of comments) {
-                  const body = comment.body || '';
-                  if (body.includes(PR_MARKER) || body.includes(MARKER_PREFIX)) {
-                    existingCommentId = comment.id;
-                    existingCommentBody = body;
-                  }
-                }
-                if (comments.length < 100) break;
-              }
-            } catch (e) {
-              console.log(`Upsert lookup failed (non-fatal): ${e.message}`);
-            }
-
-            if (existingCommentId) {
-              if (existingCommentBody.includes(RUN_MARKER)) {
-                console.log(`compile-bot-feedback already appended run ${context.runId} for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
-                return;
-              }
-              let normalizedExistingBody = existingCommentBody.trimEnd();
-              if (!normalizedExistingBody.includes(PR_MARKER)) {
-                normalizedExistingBody = `${PR_MARKER}\n${normalizedExistingBody}`;
-              }
-              if (!normalizedExistingBody.includes(HEAD_MARKER)) {
-                normalizedExistingBody = normalizedExistingBody.replace(PR_MARKER, `${PR_MARKER}\n${HEAD_MARKER}`);
-              }
-              const appendParts = [normalizedExistingBody];
-              appendParts.push(
-                ``,
-                `---`,
-                RUN_MARKER,
-                `### 🔄 Same-session bot feedback update`,
-                ``,
-                `Additional request/run: [#${context.runId}](https://github.com/${owner}/${repo}/actions/runs/${context.runId})`,
-                ``,
-                findingsList,
-                ``,
-                `> _Appended by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
-              );
-              const appendBody = appendParts.join('\n');
-              await github.rest.issues.updateComment({
-                owner, repo, comment_id: existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),
-              });
-              console.log(`Appended ${findings.length} bot finding(s) to existing @copilot continue comment #${existingCommentId} for PR #${prNumber}.`);
-              return;
-            }
-
-            await github.rest.issues.createComment({
-              owner, repo, issue_number: prNumber, body: `${compiledBody}\n${RUN_MARKER}`,
-            });
-            console.log(`Compiled ${findings.length} bot finding(s) into @copilot continue comment on PR #${prNumber}.`);
-
-  # ── Job 5: Append code-quality / CodeQL alerts to the rescue comment ────────
-  # Fires only when the "CodeQL" workflow completes.  Queries the code scanning
-  # API for open alerts on the current HEAD SHA and appends a structured section
-  # to the existing <!-- ci-rescue-sha:{pr}:{sha} --> comment so that ALL
-  # failures and code-quality findings for the same commit live in ONE thread.
-  # If no rescue comment exists yet (all CI passed, only quality issues) the job
-  # creates a dedicated quality-findings comment rather than staying silent.
+    - name: Collect bot findings and post consolidated @copilot continue comment
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          secrets.GITHUB_TOKEN }}
+        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          const prs   = context.payload.workflow_run.pull_requests;\nif (!prs || prs.length\
+          \ === 0) return;\nconst prNumber = prs[0].number;\nconst MAX_COMMENT_LENGTH\
+          \ = 65536;\n// Branch-head SHA used for a SHA-scoped upsert marker.\n//\n\
+          // Use the PR head SHA (not workflow_run.head_sha) because pull_request\n\
+          // workflow_run events often carry ephemeral merge-preview SHAs.  Those\n\
+          // merge-preview SHAs can change within one agent session even when the\n\
+          // PR branch head has not, causing multiple @mbaetiong continuation\n//\
+          \ comments instead of one same-session thread.\nlet headSha = (context.payload.workflow_run.head_sha\
+          \ || '').slice(0, 12);\n\n// Gate: only run when copilot-agent-session-done.yml\
+          \ WEC checkbox is checked\nlet wecChecked = false;\ntry {\n  const { data:\
+          \ prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber\
+          \ });\n  if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is\
+          \ closed \u2014 skipping.`); return; }\n  wecChecked = /[-*]\\s*\\[x\\]\\\
+          s*copilot-agent-session-done\\.yml/i.test(prInfo.body || '');\n  const prHeadSha\
+          \ = (prInfo.head && prInfo.head.sha) ? prInfo.head.sha : '';\n  headSha\
+          \ = (prHeadSha || context.payload.workflow_run.head_sha || '').slice(0,\
+          \ 12);\n} catch (e) {\n  console.log(`Cannot fetch PR for gate check: ${e.message}`);\
+          \ return;\n}\nconst authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';\n\
+          if (!wecChecked && authEnabled !== 'true' && authEnabled !== '1') {\n  console.log('WEC\
+          \ checkbox not checked \u2014 skipping compile-bot-feedback.'); return;\n\
+          }\n\n// \u2500\u2500 Collect PR Review comments from Copilot AI reviewer\
+          \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\nconst BOT_REVIEW_AUTHORS = new Set([\n  'copilot-pull-request-reviewer[bot]',\n\
+          \  'github-copilot[bot]',\n  'copilot[bot]',\n]);\nconst BOT_COMMENT_AUTHORS\
+          \ = new Set([\n  'github-actions[bot]',\n  'copilot-pull-request-reviewer[bot]',\n\
+          \  'github-copilot[bot]',\n  'github-code-quality[bot]',\n  'github-advanced-security[bot]',\n\
+          ]);\n// Quality/security markers commonly emitted by CI bots\nconst BOT_CONTENT_MARKERS\
+          \ = [\n  '<!-- code-quality-report -->',\n  '<!-- security-findings -->',\n\
+          \  '<!-- ci-code-quality',     // upserted code-quality section marker\n\
+          \  'semgrep',\n  'codeql',\n  '\U0001F512 security',\n  '\u26A0\uFE0F code\
+          \ quality',\n  'code scanning',\n  'code quality',\n  'security scan',\n\
+          \  'potential problem',\n  'github-code-quality',\n];\n\nlet findings =\
+          \ [];\n\n// 1. PR review comments (Copilot AI review findings)\ntry {\n\
+          \  const reviews = await github.paginate(github.rest.pulls.listReviews,\
+          \ {\n    owner, repo, pull_number: prNumber, per_page: 50,\n  });\n  for\
+          \ (const review of reviews) {\n    const login = review.user?.login || '';\n\
+          \    if (!BOT_REVIEW_AUTHORS.has(login)) continue;\n    // Collect the review\
+          \ body if it has content\n    if (review.body && review.body.trim().length\
+          \ > 20) {\n      findings.push({ source: `Copilot AI Review (${review.submitted_at?.slice(0,10)})`,\
+          \ body: review.body.trim() });\n    }\n  }\n\n  // Also collect inline review\
+          \ comments (diff comments)\n  const reviewComments = await github.paginate(github.rest.pulls.listReviewComments,\
+          \ {\n    owner, repo, pull_number: prNumber, per_page: 100, sort: 'created',\
+          \ direction: 'desc',\n  });\n  const recent = reviewComments.slice(0, 20);\n\
+          \  for (const rc of recent) {\n    const login = rc.user?.login || '';\n\
+          \    if (!BOT_REVIEW_AUTHORS.has(login)) continue;\n    findings.push({\
+          \ source: `Copilot Review Comment (${rc.path}:${rc.line || rc.original_line\
+          \ || '?'})`, body: rc.body.trim() });\n  }\n} catch (e) {\n  console.log(`Could\
+          \ not fetch reviews (non-fatal): ${e.message}`);\n}\n\n// 2. Issue comments\
+          \ from quality/security bots\ntry {\n  const { data: issueComments } = await\
+          \ github.rest.issues.listComments({\n    owner, repo, issue_number: prNumber,\n\
+          \    per_page: 50, sort: 'created', direction: 'desc',\n  });\n  // direction:'desc'\
+          \ gives newest-first; take the first 30 (most recent)\n  const recent =\
+          \ issueComments.slice(0, 30);\n  for (const c of recent) {\n    const login\
+          \ = c.user?.login || '';\n    const body  = c.body || '';\n    const isBotAuthor\
+          \ = BOT_COMMENT_AUTHORS.has(login);\n    const hasBotMarker = BOT_CONTENT_MARKERS.some(m\
+          \ => body.toLowerCase().includes(m.toLowerCase()));\n    // Skip the compile-thread\
+          \ itself to avoid re-including old compilations\n    // (matches both legacy\
+          \ `<!-- compiled-bot-feedback -->` and new SHA-scoped variant)\n    if (body.includes('<!--\
+          \ compiled-bot-feedback')) continue;\n    if ((isBotAuthor || hasBotMarker)\
+          \ && body.trim().length > 40) {\n      // Truncate very long bot comments\
+          \ to first 500 chars\n      const excerpt = body.length > 500 ? body.slice(0,\
+          \ 497) + '\u2026' : body;\n      findings.push({ source: `Bot Comment (${login},\
+          \ ${c.created_at?.slice(0,10)})`, body: excerpt });\n    }\n  }\n} catch\
+          \ (e) {\n  console.log(`Could not fetch issue comments (non-fatal): ${e.message}`);\n\
+          }\n\nif (findings.length === 0) {\n  console.log(`No bot findings detected\
+          \ for PR #${prNumber} \u2014 skipping compile-bot-feedback.`);\n  return;\n\
+          }\n\n// \u2500\u2500 Build compiled continuation comment \u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\nconst findingsList = findings\n  .map((f, i) => `**${i\
+          \ + 1}. ${f.source}**\\n\\n> ${(f.body || '').replace(/\\n/g, '\\n> ')}`)\n\
+          \  .join('\\n\\n---\\n\\n');\n\nconst PR_MARKER = `<!-- compiled-bot-feedback:pr-${prNumber}\
+          \ -->`;\nconst HEAD_MARKER = `<!-- compiled-bot-feedback-head:${headSha}\
+          \ -->`;\nconst RUN_MARKER = `<!-- compiled-bot-feedback-run:${context.runId}\
+          \ -->`;\nconst MARKER_PREFIX = `<!-- compiled-bot-feedback`;\nconst compiledBody\
+          \ = [\n  PR_MARKER,\n  HEAD_MARKER,\n  `@copilot continue with all current\
+          \ priority 1, 2, 3, and 4 tasks as well as addressing all code quality and\
+          \ security concerns listed below.`,\n  ``,\n  `**\U0001F4CB Bot-reported\
+          \ findings (${findings.length} item${findings.length > 1 ? 's' : ''}):**`,\n\
+          \  ``,\n  findingsList,\n  ``,\n  `---`,\n  `> _Compiled by \\`copilot-agent-session-done.yml\\\
+          ` \xB7 compile-bot-feedback job_`,\n  `> _[\U0001F517 Workflow run](https://github.com/${owner}/${repo}/actions/runs/${context.runId})_`,\n\
+          ].join('\\n');\n\n// Upsert guard: scan every PR comment page for either\
+          \ the new PR-scoped\n// marker or any legacy compiled-bot-feedback marker.\
+          \  A busy PR can have\n// more than 100 comments, so newest-only GraphQL\
+          \ windows can miss the\n// existing thread and create another @copilot request\
+          \ for the same issue.\n// PR-scoped upsert keeps all same-session bot findings\
+          \ in one appended\n// thread even when follow-up [skip ci] commits change\
+          \ the branch head SHA.\n// Rate-limit guard: check remaining before each\
+          \ page; break if < 20.\nlet existingCommentId = null;\nlet existingCommentBody\
+          \ = '';\ntry {\n  for (let page = 1; ; page += 1) {\n    // Rate-limit guard\
+          \ before each page\n    try {\n      const rl = await github.rest.rateLimit.get();\n\
+          \      const remaining = rl.data?.resources?.core?.remaining ?? 999;\n \
+          \     if (remaining < 20) {\n        core.warning(`REST rate limit low (${remaining}\
+          \ remaining) \u2014 stopping upsert scan at page ${page}`);\n        break;\n\
+          \      }\n    } catch (_) { /* non-fatal \u2014 proceed */ }\n\n    const\
+          \ { data: comments } = await github.rest.issues.listComments({\n      owner,\
+          \ repo, issue_number: prNumber, per_page: 100, page,\n    });\n    if (!Array.isArray(comments)\
+          \ || comments.length === 0) break;\n    for (const comment of comments)\
+          \ {\n      const body = comment.body || '';\n      if (body.includes(PR_MARKER)\
+          \ || body.includes(MARKER_PREFIX)) {\n        existingCommentId = comment.id;\n\
+          \        existingCommentBody = body;\n      }\n    }\n    if (comments.length\
+          \ < 100) break;\n  }\n} catch (e) {\n  console.log(`Upsert lookup failed\
+          \ (non-fatal): ${e.message}`);\n}\n\nif (existingCommentId) {\n  if (existingCommentBody.includes(RUN_MARKER))\
+          \ {\n    console.log(`compile-bot-feedback already appended run ${context.runId}\
+          \ for SHA ${headSha} on PR #${prNumber} \u2014 skipping duplicate.`);\n\
+          \    return;\n  }\n  let normalizedExistingBody = existingCommentBody.trimEnd();\n\
+          \  if (!normalizedExistingBody.includes(PR_MARKER)) {\n    normalizedExistingBody\
+          \ = `${PR_MARKER}\\n${normalizedExistingBody}`;\n  }\n  if (!normalizedExistingBody.includes(HEAD_MARKER))\
+          \ {\n    normalizedExistingBody = normalizedExistingBody.replace(PR_MARKER,\
+          \ `${PR_MARKER}\\n${HEAD_MARKER}`);\n  }\n  const appendParts = [normalizedExistingBody];\n\
+          \  appendParts.push(\n    ``,\n    `---`,\n    RUN_MARKER,\n    `### \U0001F504\
+          \ Same-session bot feedback update`,\n    ``,\n    `Additional request/run:\
+          \ [#${context.runId}](https://github.com/${owner}/${repo}/actions/runs/${context.runId})`,\n\
+          \    ``,\n    findingsList,\n    ``,\n    `> _Appended by \\`copilot-agent-session-done.yml\\\
+          ` \xB7 compile-bot-feedback job_`,\n  );\n  const appendBody = appendParts.join('\\\
+          n');\n  await github.rest.issues.updateComment({\n    owner, repo, comment_id:\
+          \ existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),\n  });\n\
+          \  console.log(`Appended ${findings.length} bot finding(s) to existing @copilot\
+          \ continue comment #${existingCommentId} for PR #${prNumber}.`);\n  return;\n\
+          }\n\nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
+          \ prNumber, body: `${compiledBody}\\n${RUN_MARKER}`,\n});\nconsole.log(`Compiled\
+          \ ${findings.length} bot finding(s) into @copilot continue comment on PR\
+          \ #${prNumber}.`);\n"
   append-code-quality-to-rescue:
-    name: "Append code-quality findings to rescue comment"
+    name: Append code-quality findings to rescue comment
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: |
-      github.event.workflow_run.pull_requests != null &&
+    if: 'github.event.workflow_run.pull_requests != null &&
+
       github.event.workflow_run.pull_requests[0] != null &&
-      contains(github.event.workflow_run.name, 'CodeQL')
+
+      contains(github.event.workflow_run.name, ''CodeQL'')
+
+      '
     steps:
-      - name: "Fetch alerts and upsert into rescue comment"
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const owner    = context.repo.owner;
-            const repo     = context.repo.repo;
-            const prs      = context.payload.workflow_run.pull_requests;
-            const prNumber = prs[0].number;
-            const headSha  = context.payload.workflow_run.head_sha || '';
-            const headShort = headSha.slice(0, 12);
-            const now      = new Date().toISOString();
-
-            // ── 1. Fetch open code scanning alerts for this SHA ──────────────
-            let alerts = [];
-            try {
-              // Use REST API — requires security-events:read permission (set on workflow).
-              const { data } = await github.rest.codeScanning.listAlertsForRepo({
-                owner, repo, ref: headSha, state: 'open', per_page: 20,
-              });
-              alerts = data || [];
-            } catch (e) {
-              // 403 means Advanced Security is not enabled or token lacks permission.
-              // 404 means no alerts endpoint for this repo.  Both are non-fatal.
-              console.log(`Code scanning alerts unavailable (${e.status || e.message}) — skipping.`);
-              return;
-            }
-
-            if (alerts.length === 0) {
-              console.log(`No open code scanning alerts for SHA ${headShort} — nothing to append.`);
-              return;
-            }
-
-            // ── 2. Build the quality section ────────────────────────────────
-            // Dedup marker — one section per SHA (keyed by sha12 + alert count to
-            // refresh if new alerts appear on the same commit after a re-scan).
-            const QUALITY_MARKER = `<!-- ci-code-quality:${headShort}:${alerts.length} -->`;
-
-            const alertLines = alerts.slice(0, 15).map(a => {
-              const rule = a.rule?.id || 'unknown';
-              const desc = a.rule?.description || a.most_recent_instance?.message?.text || 'See alert';
-              const file = a.most_recent_instance?.location?.path || '';
-              const line = a.most_recent_instance?.location?.start_line || '';
-              const loc  = file ? ` · \`${file}${line ? ':' + line : ''}\`` : '';
-              return `- **${rule}**${loc} — ${desc} ([view](${a.html_url}))`;
-            });
-            if (alerts.length > 15) alertLines.push(`- _…and ${alerts.length - 15} more — [view all](https://github.com/${owner}/${repo}/security/code-scanning)_`);
-
-            const qualitySection = [
-              ``,
-              `---`,
-              ``,
-              QUALITY_MARKER,
-              `<details><summary>🔵 <code>github-code-quality</code> — ${alerts.length} alert(s) · ${now}</summary>`,
-              ``,
-              `**${alerts.length} open alert(s) on commit \`${headShort}\`** — fix before merging:`,
-              ``,
-              ...alertLines,
-              ``,
-              `> Run \`python -m ruff check .\` + \`python -m mypy src\` locally, or view the`,
-              `> [Security → Code scanning](https://github.com/${owner}/${repo}/security/code-scanning) tab.`,
-              ``,
-              `</details>`,
-            ].join('\n');
-
-            // ── 3. Find existing rescue comment for this SHA ─────────────────
-            // Rate-limit guard: check remaining before each page.
-            const rescueMarker = `<!-- ci-rescue-sha:${prNumber}:${headShort} -->`;
-            let page = 1, existingComment = null;
-            while (!existingComment) {
-              // Rate-limit guard before each page
-              try {
-                const rl = await github.rest.rateLimit.get();
-                const rlRemaining = rl.data?.resources?.core?.remaining ?? 999;
-                if (rlRemaining < 20) {
-                  core.warning(`REST rate limit low (${rlRemaining} remaining) — stopping rescue scan at page ${page}`);
-                  break;
-                }
-              } catch (_) { /* non-fatal — proceed */ }
-
-              const { data: batch } = await github.rest.issues.listComments({
-                owner, repo, issue_number: prNumber, per_page: 100, page,
-              });
-              if (!batch || batch.length === 0) break;
-              existingComment = batch.find(c => (c.body || '').includes(rescueMarker));
-              if (batch.length < 100) break;
-              page++;
-            }
-
-            // ── 4. Upsert ────────────────────────────────────────────────────
-            if (existingComment) {
-              // Idempotent: skip if same marker already present (same alert count)
-              if (existingComment.body.includes(QUALITY_MARKER)) {
-                console.log(`Quality section for SHA ${headShort} already up-to-date — skipping.`);
-                return;
-              }
-              // Remove any previous quality section (different alert count) and re-append.
-              // Regex matches the exact marker format: <!-- ci-code-quality:{sha12}:{N} -->
-              // {12} is intentional: headShort is always sha.slice(0,12) — exactly 12 hex chars.
-              const withoutOldQuality = existingComment.body.replace(
-                /\n\n---\n\n<!-- ci-code-quality:[a-f0-9]{12}:\d+ -->[^]*$/,
-                ''
-              );
-              const updated = (withoutOldQuality.trimEnd() + qualitySection).slice(0, 65536);
-              await github.rest.issues.updateComment({
-                owner, repo, comment_id: existingComment.id, body: updated,
-              });
-              console.log(`✅ Appended/updated ${alerts.length} code scanning alert(s) in rescue comment for SHA ${headShort}.`);
-            } else {
-              // No rescue comment yet (CI passed but quality issues found) — create standalone
-              const standaloneBody = [
-                rescueMarker,
-                `## 🔵 Code Quality Findings — @copilot Fix Required`,
-                ``,
-                `**Branch:** \`${context.payload.workflow_run.head_branch}\` | **Commit:** \`${headSha}\``,
-                ``,
-                `@copilot Code scanning found **${alerts.length} alert(s)** on commit \`${headShort}\` that must be resolved before this PR can merge.`,
-                ``,
-                `<details><summary>📋 Steps to resolve</summary>`,
-                ``,
-                `1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)`,
-                `2. Review each alert linked below and apply the minimal fix`,
-                `3. Push the fix and confirm the Security tab shows 0 open alerts`,
-                `4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\``,
-                ``,
-                `</details>`,
-                ``,
-                `---`,
-                ``,
-                QUALITY_MARKER,
-                `<details><summary>🔵 <code>github-code-quality</code> — ${alerts.length} alert(s) · ${now}</summary>`,
-                ``,
-                `**${alerts.length} open alert(s) on commit \`${headShort}\`:**`,
-                ``,
-                ...alertLines,
-                ``,
-                `</details>`,
-              ].join('\n');
-              const { data: created } = await github.rest.issues.createComment({
-                owner, repo, issue_number: prNumber, body: standaloneBody.slice(0, 65536),
-              });
-              console.log(`✅ Created quality-findings comment: ${created.html_url}`);
-            }
+    - name: Fetch alerts and upsert into rescue comment
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          secrets.GITHUB_TOKEN }}
+        script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
+          const prs      = context.payload.workflow_run.pull_requests;\nconst prNumber\
+          \ = prs[0].number;\nconst headSha  = context.payload.workflow_run.head_sha\
+          \ || '';\nconst headShort = headSha.slice(0, 12);\nconst now      = new\
+          \ Date().toISOString();\n\n// \u2500\u2500 1. Fetch open code scanning alerts\
+          \ for this SHA \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\nlet alerts = [];\ntry {\n  // Use REST API \u2014\
+          \ requires security-events:read permission (set on workflow).\n  const {\
+          \ data } = await github.rest.codeScanning.listAlertsForRepo({\n    owner,\
+          \ repo, ref: headSha, state: 'open', per_page: 20,\n  });\n  alerts = data\
+          \ || [];\n} catch (e) {\n  // 403 means Advanced Security is not enabled\
+          \ or token lacks permission.\n  // 404 means no alerts endpoint for this\
+          \ repo.  Both are non-fatal.\n  console.log(`Code scanning alerts unavailable\
+          \ (${e.status || e.message}) \u2014 skipping.`);\n  return;\n}\n\nif (alerts.length\
+          \ === 0) {\n  console.log(`No open code scanning alerts for SHA ${headShort}\
+          \ \u2014 nothing to append.`);\n  return;\n}\n\n// \u2500\u2500 2. Build\
+          \ the quality section \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Dedup\
+          \ marker \u2014 one section per SHA (keyed by sha12 + alert count to\n//\
+          \ refresh if new alerts appear on the same commit after a re-scan).\nconst\
+          \ QUALITY_MARKER = `<!-- ci-code-quality:${headShort}:${alerts.length} -->`;\n\
+          \nconst alertLines = alerts.slice(0, 15).map(a => {\n  const rule = a.rule?.id\
+          \ || 'unknown';\n  const desc = a.rule?.description || a.most_recent_instance?.message?.text\
+          \ || 'See alert';\n  const file = a.most_recent_instance?.location?.path\
+          \ || '';\n  const line = a.most_recent_instance?.location?.start_line ||\
+          \ '';\n  const loc  = file ? ` \xB7 \\`${file}${line ? ':' + line : ''}\\\
+          `` : '';\n  return `- **${rule}**${loc} \u2014 ${desc} ([view](${a.html_url}))`;\n\
+          });\nif (alerts.length > 15) alertLines.push(`- _\u2026and ${alerts.length\
+          \ - 15} more \u2014 [view all](https://github.com/${owner}/${repo}/security/code-scanning)_`);\n\
+          \nconst qualitySection = [\n  ``,\n  `---`,\n  ``,\n  QUALITY_MARKER,\n\
+          \  `<details><summary>\U0001F535 <code>github-code-quality</code> \u2014\
+          \ ${alerts.length} alert(s) \xB7 ${now}</summary>`,\n  ``,\n  `**${alerts.length}\
+          \ open alert(s) on commit \\`${headShort}\\`** \u2014 fix before merging:`,\n\
+          \  ``,\n  ...alertLines,\n  ``,\n  `> Run \\`python -m ruff check .\\` +\
+          \ \\`python -m mypy src\\` locally, or view the`,\n  `> [Security \u2192\
+          \ Code scanning](https://github.com/${owner}/${repo}/security/code-scanning)\
+          \ tab.`,\n  ``,\n  `</details>`,\n].join('\\n');\n\n// \u2500\u2500 3. Find\
+          \ existing rescue comment for this SHA \u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Rate-limit\
+          \ guard: check remaining before each page.\nconst rescueMarker = `<!-- ci-rescue-sha:${prNumber}:${headShort}\
+          \ -->`;\nlet page = 1, existingComment = null;\nwhile (!existingComment)\
+          \ {\n  // Rate-limit guard before each page\n  try {\n    const rl = await\
+          \ github.rest.rateLimit.get();\n    const rlRemaining = rl.data?.resources?.core?.remaining\
+          \ ?? 999;\n    if (rlRemaining < 20) {\n      core.warning(`REST rate limit\
+          \ low (${rlRemaining} remaining) \u2014 stopping rescue scan at page ${page}`);\n\
+          \      break;\n    }\n  } catch (_) { /* non-fatal \u2014 proceed */ }\n\
+          \n  const { data: batch } = await github.rest.issues.listComments({\n  \
+          \  owner, repo, issue_number: prNumber, per_page: 100, page,\n  });\n  if\
+          \ (!batch || batch.length === 0) break;\n  existingComment = batch.find(c\
+          \ => (c.body || '').includes(rescueMarker));\n  if (batch.length < 100)\
+          \ break;\n  page++;\n}\n\n// \u2500\u2500 4. Upsert \u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \nif (existingComment) {\n  // Idempotent: skip if same marker already present\
+          \ (same alert count)\n  if (existingComment.body.includes(QUALITY_MARKER))\
+          \ {\n    console.log(`Quality section for SHA ${headShort} already up-to-date\
+          \ \u2014 skipping.`);\n    return;\n  }\n  // Remove any previous quality\
+          \ section (different alert count) and re-append.\n  // Regex matches the\
+          \ exact marker format: <!-- ci-code-quality:{sha12}:{N} -->\n  // {12} is\
+          \ intentional: headShort is always sha.slice(0,12) \u2014 exactly 12 hex\
+          \ chars.\n  const withoutOldQuality = existingComment.body.replace(\n  \
+          \  /\\n\\n---\\n\\n<!-- ci-code-quality:[a-f0-9]{12}:\\d+ -->[^]*$/,\n \
+          \   ''\n  );\n  const updated = (withoutOldQuality.trimEnd() + qualitySection).slice(0,\
+          \ 65536);\n  await github.rest.issues.updateComment({\n    owner, repo,\
+          \ comment_id: existingComment.id, body: updated,\n  });\n  console.log(`\u2705\
+          \ Appended/updated ${alerts.length} code scanning alert(s) in rescue comment\
+          \ for SHA ${headShort}.`);\n} else {\n  // No rescue comment yet (CI passed\
+          \ but quality issues found) \u2014 create standalone\n  const standaloneBody\
+          \ = [\n    rescueMarker,\n    `## \U0001F535 Code Quality Findings \u2014\
+          \ @copilot Fix Required`,\n    ``,\n    `**Branch:** \\`${context.payload.workflow_run.head_branch}\\\
+          ` | **Commit:** \\`${headSha}\\``,\n    ``,\n    `@copilot Code scanning\
+          \ found **${alerts.length} alert(s)** on commit \\`${headShort}\\` that\
+          \ must be resolved before this PR can merge.`,\n    ``,\n    `<details><summary>\U0001F4CB\
+          \ Steps to resolve</summary>`,\n    ``,\n    `1. Load \\`.codex/CODEBASE_AGENCY_POLICY.md\\\
+          ` (\xA70 \u2014 fix ALL issues found)`,\n    `2. Review each alert linked\
+          \ below and apply the minimal fix`,\n    `3. Push the fix and confirm the\
+          \ Security tab shows 0 open alerts`,\n    `4. Update \\`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\\\
+          ``,\n    ``,\n    `</details>`,\n    ``,\n    `---`,\n    ``,\n    QUALITY_MARKER,\n\
+          \    `<details><summary>\U0001F535 <code>github-code-quality</code> \u2014\
+          \ ${alerts.length} alert(s) \xB7 ${now}</summary>`,\n    ``,\n    `**${alerts.length}\
+          \ open alert(s) on commit \\`${headShort}\\`:**`,\n    ``,\n    ...alertLines,\n\
+          \    ``,\n    `</details>`,\n  ].join('\\n');\n  const { data: created }\
+          \ = await github.rest.issues.createComment({\n    owner, repo, issue_number:\
+          \ prNumber, body: standaloneBody.slice(0, 65536),\n  });\n  console.log(`\u2705\
+          \ Created quality-findings comment: ${created.html_url}`);\n}\n"

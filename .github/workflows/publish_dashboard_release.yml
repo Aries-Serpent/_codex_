@@ -1,17 +1,12 @@
 name: Publish Status Dashboard Release
-
-on:
-  workflow_dispatch:
+true:
+  workflow_dispatch: null
   schedule:
-    - cron: "15 10 * * 1" # weekly Monday 10:15 UTC
-
-
+  - cron: 15 10 * * 1
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
-
+  cancel-in-progress: false
 permissions: read-all
-
 jobs:
   publish-dashboard:
     runs-on: ubuntu-latest
@@ -19,13 +14,15 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow publish_dashboard_release 2>/dev/null || echo "Cache health: check skipped"
-      - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
+    - uses: actions/checkout@v7
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow publish_dashboard_release
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    - name: Setup Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common

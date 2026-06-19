@@ -1,77 +1,64 @@
 name: Build & Push Preview Image
-# aais-cache: docker  # pip install runs inside Docker layer cache (line 160 — GHA layer cache)
-
-on:
+true:
   push:
     branches:
-      - main
+    - main
     paths:
-      - "Dockerfile.preview"
-      - "src/codex/auth/**"
-      - "cognitive_app/**"
-      - "pyproject.toml"
-      - ".devcontainer/**"
+    - Dockerfile.preview
+    - src/codex/auth/**
+    - cognitive_app/**
+    - pyproject.toml
+    - .devcontainer/**
   pull_request:
     paths:
-      - "Dockerfile.preview"
-      - "src/codex/auth/**"
-      - "cognitive_app/**"
-      - ".devcontainer/**"
+    - Dockerfile.preview
+    - src/codex/auth/**
+    - cognitive_app/**
+    - .devcontainer/**
   workflow_dispatch:
     inputs:
       push_image:
-        description: "Push image to GHCR (default: true on main)"
+        description: 'Push image to GHCR (default: true on main)'
         required: false
-        default: "true"
+        default: 'true'
         type: boolean
       image_tag:
-        description: "Image tag override (default: git SHA short)"
+        description: 'Image tag override (default: git SHA short)'
         required: false
         type: string
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   packages: write
-
 jobs:
-  # ── 💰 Cost Gate ─────────────────────────────────────────────────────────────
-  # RED tier: ubuntu-latest-m (2× rate) × 30 min × 2 matrix jobs + GHCR push
-  # = 120 effective minutes. Requires stakeholder checkbox in PR description.
   cost-gate:
-    name: "💰 Cost Gate"
+    name: "\U0001F4B0 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name: "Build & Push Preview Image"
-      runner: "ubuntu-latest-m"
+      workflow_name: Build & Push Preview Image
+      runner: ubuntu-latest-m
       timeout_minutes: 30
       matrix_count: 2
       pushes_to_ghcr: true
     permissions:
       contents: read
       pull-requests: write
-
-  # ── Lint Dockerfile ──────────────────────────────────────────────────────────
+    timeout-minutes: 60
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: cost-gate
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-
-      - name: Hadolint — Dockerfile linter
-        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
-        with:
-          dockerfile: Dockerfile.preview
-          failure-threshold: error
-          ignore: DL3008,DL3013  # apt pin / pip upgrade — acceptable in dev images
-
-  # ── Build all targets ────────────────────────────────────────────────────────
+    - uses: actions/checkout@v7
+    - name: "Hadolint \u2014 Dockerfile linter"
+      uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
+      with:
+        dockerfile: Dockerfile.preview
+        failure-threshold: error
+        ignore: DL3008,DL3013
   build:
     name: Build preview image (${{ matrix.target }})
     runs-on: ubuntu-latest-m
@@ -81,115 +68,80 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - preview
-          - preview-dev
-
+        - preview
+        - preview-dev
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+    - uses: actions/checkout@v7
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
+      with:
+        platforms: arm64
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      with:
+        driver-opts: image=moby/buildkit:latest
+    - name: Compute image tags
+      id: tags
+      run: "REPO=\"ghcr.io/$(echo \"${{ github.repository_owner }}\" | tr '[:upper:]'\
+        \ '[:lower:]')/codex\"\nSHORT_SHA=\"${{ github.sha }}\"\nSHORT_SHA=\"${SHORT_SHA:0:7}\"\
+        \nINPUT_TAG=\"${{ github.event.inputs.image_tag }}\"\nTAG=\"${INPUT_TAG:-$SHORT_SHA}\"\
+        \nTARGET=\"${{ matrix.target }}\"\n\nif [[ \"${{ github.ref }}\" == \"refs/heads/main\"\
+        \ ]]; then\n  echo \"tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=true\" >> \"$GITHUB_OUTPUT\"\
+        \n  # Multi-arch on main: build both amd64 and arm64\n  echo \"platforms=linux/amd64,linux/arm64\"\
+        \ >> \"$GITHUB_OUTPUT\"\nelif [[ \"${{ github.event_name }}\" == \"workflow_dispatch\"\
+        \ && \"${{ github.event.inputs.push_image }}\" == \"true\" ]]; then\n  echo\
+        \ \"tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}\" >> \"$GITHUB_OUTPUT\"\
+        \n  echo \"should_push=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"platforms=linux/amd64,linux/arm64\"\
+        \ >> \"$GITHUB_OUTPUT\"\nelif [[ \"${{ github.event_name }}\" == \"workflow_dispatch\"\
+        \ && \"${{ github.event.inputs.push_image }}\" != \"true\" ]]; then\n  # workflow_dispatch\
+        \ with push_image=false (or unset): local smoke-test only.\n  # github.event.number\
+        \ is EMPTY for workflow_dispatch \u2014 use run_id instead to\n  # guarantee\
+        \ a unique, non-empty tag (fixes Copilot review r2920097250).\n  echo \"tags=${REPO}/${TARGET}:manual-${{\
+        \ github.run_id }}-${TAG}\" >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  # load=true is incompatible with multi-platform;\
+        \ amd64 only for local runs\n  echo \"platforms=linux/amd64\" >> \"$GITHUB_OUTPUT\"\
+        \nelse\n  # Pull request\n  echo \"tags=${REPO}/${TARGET}:pr-${{ github.event.number\
+        \ }}-${TAG}\" >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=false\" >> \"$GITHUB_OUTPUT\"\
+        \n  # PR builds: amd64 only \u2014 load=true is incompatible with multi-platform\
+        \ builds\n  echo \"platforms=linux/amd64\" >> \"$GITHUB_OUTPUT\"\nfi\necho\
+        \ \"cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml')\
+        \ }}\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Log in to GHCR
+      if: steps.tags.outputs.should_push == 'true'
+      uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build (and push on main)
+      uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
+      with:
+        context: .
+        file: Dockerfile.preview
+        target: ${{ matrix.target }}
+        push: ${{ steps.tags.outputs.should_push == 'true' }}
+        load: ${{ steps.tags.outputs.should_push != 'true' }}
+        platforms: ${{ steps.tags.outputs.platforms }}
+        tags: ${{ steps.tags.outputs.tags }}
+        cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
+        cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
+        labels: 'org.opencontainers.image.revision=${{ github.sha }}
 
-      # QEMU is required for cross-platform emulation (linux/arm64 on amd64 runners).
-      # Only needed when building multi-platform images (main / workflow_dispatch push).
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
-        with:
-          platforms: arm64
+          org.opencontainers.image.created=${{ github.event.head_commit.timestamp
+          }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
-        with:
-          driver-opts: image=moby/buildkit:latest
-
-      - name: Compute image tags
-        id: tags
-        run: |
-          REPO="ghcr.io/$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')/codex"
-          SHORT_SHA="${{ github.sha }}"
-          SHORT_SHA="${SHORT_SHA:0:7}"
-          INPUT_TAG="${{ github.event.inputs.image_tag }}"
-          TAG="${INPUT_TAG:-$SHORT_SHA}"
-          TARGET="${{ matrix.target }}"
-
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
-            echo "should_push=true" >> "$GITHUB_OUTPUT"
-            # Multi-arch on main: build both amd64 and arm64
-            echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true" ]]; then
-            echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
-            echo "should_push=true" >> "$GITHUB_OUTPUT"
-            echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true" ]]; then
-            # workflow_dispatch with push_image=false (or unset): local smoke-test only.
-            # github.event.number is EMPTY for workflow_dispatch — use run_id instead to
-            # guarantee a unique, non-empty tag (fixes Copilot review r2920097250).
-            echo "tags=${REPO}/${TARGET}:manual-${{ github.run_id }}-${TAG}" >> "$GITHUB_OUTPUT"
-            echo "should_push=false" >> "$GITHUB_OUTPUT"
-            # load=true is incompatible with multi-platform; amd64 only for local runs
-            echo "platforms=linux/amd64" >> "$GITHUB_OUTPUT"
-          else
-            # Pull request
-            echo "tags=${REPO}/${TARGET}:pr-${{ github.event.number }}-${TAG}" >> "$GITHUB_OUTPUT"
-            echo "should_push=false" >> "$GITHUB_OUTPUT"
-            # PR builds: amd64 only — load=true is incompatible with multi-platform builds
-            echo "platforms=linux/amd64" >> "$GITHUB_OUTPUT"
-          fi
-          echo "cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml') }}" >> "$GITHUB_OUTPUT"
-
-      - name: Log in to GHCR
-        if: steps.tags.outputs.should_push == 'true'
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build (and push on main)
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
-        with:
-          context: .
-          file: Dockerfile.preview
-          target: ${{ matrix.target }}
-          push: ${{ steps.tags.outputs.should_push == 'true' }}
-          # load=true exports the image to the local Docker daemon on PR builds so
-          # the smoke-test step can run it without pulling from GHCR (which would
-          # fail because the image has not been pushed yet on non-main branches).
-          # NOTE: load=true is INCOMPATIBLE with multi-platform builds; PR builds
-          # therefore use platforms=linux/amd64 only (set in Compute image tags step).
-          load: ${{ steps.tags.outputs.should_push != 'true' }}
-          # platforms: amd64 only for PR builds (load=true); amd64+arm64 for main/dispatch
-          platforms: ${{ steps.tags.outputs.platforms }}
-          tags: ${{ steps.tags.outputs.tags }}
-          # GHA layer cache — Docker build layers (including pip install) are cached
-          # across runs keyed on Dockerfile.preview + pyproject.toml hash.
-          cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
-          cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-
-      - name: Smoke-test — run health check
-        if: matrix.target == 'preview'
-        run: |
-          docker run --rm -d --name codex-preview-smoke -p 18765:8765 \
-            -e CODEX_DB_PATH=/tmp/codex.db \
-            $(echo "${{ steps.tags.outputs.tags }}" | cut -d, -f1)
-
-          echo "Waiting for server to start…"
-          for i in $(seq 1 12); do
-            sleep 5
-            if curl -sf http://localhost:18765/api/health; then
-              echo "✅ Health check passed"
-              docker stop codex-preview-smoke
-              exit 0
-            fi
-            echo "Attempt $i/12 — not ready yet"
-          done
-          docker logs codex-preview-smoke
-          docker stop codex-preview-smoke
-          echo "❌ Health check timed out"
-          exit 1
-
-  # ── Publish summary ──────────────────────────────────────────────────────────
+          '
+    - name: "Smoke-test \u2014 run health check"
+      if: matrix.target == 'preview'
+      run: "docker run --rm -d --name codex-preview-smoke -p 18765:8765 \\\n  -e CODEX_DB_PATH=/tmp/codex.db\
+        \ \\\n  $(echo \"${{ steps.tags.outputs.tags }}\" | cut -d, -f1)\n\necho \"\
+        Waiting for server to start\u2026\"\nfor i in $(seq 1 12); do\n  sleep 5\n\
+        \  if curl -sf http://localhost:18765/api/health; then\n    echo \"\u2705\
+        \ Health check passed\"\n    docker stop codex-preview-smoke\n    exit 0\n\
+        \  fi\n  echo \"Attempt $i/12 \u2014 not ready yet\"\ndone\ndocker logs codex-preview-smoke\n\
+        docker stop codex-preview-smoke\necho \"\u274C Health check timed out\"\n\
+        exit 1\n"
   summary:
     name: Image build summary
     runs-on: ubuntu-latest
@@ -197,46 +149,48 @@ jobs:
     needs: build
     if: always()
     steps:
-      - name: Write summary
-        run: |
-          echo "## 🐳 Preview Image Build Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Target | Result |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| \`preview\` | ${{ needs.build.result == 'success' && '✅ passed' || '❌ failed' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| \`preview-dev\` | ${{ needs.build.result == 'success' && '✅ passed' || '❌ failed' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Images pushed to: \`ghcr.io/aries-serpent/codex/preview\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "Devcontainer spec: \`.devcontainer/devcontainer.json\`" >> "$GITHUB_STEP_SUMMARY"
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: Write summary
+      run: "echo \"## \U0001F433 Preview Image Build Summary\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Target | Result |\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"|--------|--------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| \\`preview\\` | ${{ needs.build.result == 'success' && '\u2705\
+        \ passed' || '\u274C failed' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|\
+        \ \\`preview-dev\\` | ${{ needs.build.result == 'success' && '\u2705 passed'\
+        \ || '\u274C failed' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"Images pushed to: \\`ghcr.io/aries-serpent/codex/preview\\`\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"Devcontainer spec: \\`.devcontainer/devcontainer.json\\\
+        `\" >> \"$GITHUB_STEP_SUMMARY\"\n"
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: summary
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Build Preview Image"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Build Preview Image
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
