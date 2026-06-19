@@ -69,7 +69,7 @@ jobs:
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
           # No pip cache: sparse checkout contains only the rebase-check script
           # which uses stdlib only.  Enabling cache: 'pip' fails because no
           # requirements files exist in the checkout and ~/.cache/pip is never

@@ -87,7 +87,7 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'common'
 
       - name: Get PR information
@@ -152,7 +152,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'common'
 
       - name: Install evolution dependencies

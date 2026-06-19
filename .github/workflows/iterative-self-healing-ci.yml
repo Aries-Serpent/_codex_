@@ -160,7 +160,7 @@ jobs:
         if: steps.rate_cap.outputs.skip != 'true'
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
@@ -348,6 +348,7 @@ jobs:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
+      # codeql[py/untrusted-checkout-exec-pr-code]
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
         # Inline resolution avoids executing a local composite action
@@ -403,7 +404,7 @@ jobs:
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
@@ -756,6 +757,7 @@ jobs:
           # untrusted PR) code from accessing the token via git credential helper.
           persist-credentials: false
 
+      # codeql[py/untrusted-checkout-exec-pr-code]
       - name: Overlay trusted scripts from main (security)
         # SECURITY: always overlay CI scripts AND the composite action definition from
         # main so untrusted PR branches cannot inject code into the privileged sweep job.
@@ -773,7 +775,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 

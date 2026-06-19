@@ -50,7 +50,6 @@ jobs:
   check-t03:
     name: Check T-03 — security_events scope
     uses: ./.github/workflows/admin-action-notifier.yml
-    timeout-minutes: 10
     secrets: inherit  # pragma: allowlist secret
     with:
       gap_id: "T-03"

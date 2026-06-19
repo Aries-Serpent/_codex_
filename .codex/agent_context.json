@@ -27,13 +27,15 @@
   "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",
   "COPILOT_AGENT_TURN_ISOLATION_ENABLED": "true",
   "_meta": {
-    "generated_at": "2026-06-19T08:08:48.813332+00:00",
+    "generated_at": "2026-06-19T07:32:47.369183+00:00",
     "workflow": "repo-var-sync-schedule",
     "sha": "f6be2d30",
     "ref": "refs/heads/main",
     "actor": "mbaetiong",
     "run_id": "27813754019",
     "repo_variables_count": 27,
-    "drift_entries": 3
-  }
+    "drift_entries": 3,
+    "reason": "Emergency Python 3.12 setup fix - cache v2\u2192v3 migration"
+  },
+  "CODEX_CACHE_VERSION": "v3"
 }

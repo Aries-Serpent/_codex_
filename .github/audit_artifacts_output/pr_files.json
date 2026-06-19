@@ -1,8 +1,3 @@
-Analyzing PR #2449 (0D_base_ branch)...
-Found 6865 commits
-Found 216 changed files
-docs/capabilities: 11 files
-audit_artifacts: 9 files
 {
   "pr_number": 2449,
   "head_branch": "0D_base_",

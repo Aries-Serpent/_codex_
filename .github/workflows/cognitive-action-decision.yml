@@ -71,7 +71,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'common'
 
       - name: Install cognitive brain dependencies
@@ -134,7 +134,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           cache-tier: 'common'
 
       - name: Download decision artifacts (if from decision job)

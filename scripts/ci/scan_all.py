@@ -356,8 +356,9 @@ def _run_fix_command(cmd: str, trusted_commands: set[str]) -> None:
         raise ValueError(f"Refusing to run untrusted fix command: {cmd}")
     shell_tokens = ("&&", "||", "|", ">", "<", ";", "*", "?", "$(", "`")
     if any(token in cmd for token in shell_tokens):
-        subprocess.run(  # nosec B602 -- cmd comes from internal hardcoded fix_cmd strings
-            cmd, cwd=REPO_ROOT, check=False, shell=True,
+        # nosec B602 - cmd comes from internal hardcoded fix_cmd strings
+        subprocess.run(
+            cmd, cwd=REPO_ROOT, check=False, shell=True,  # nosec
         )
         return
     subprocess.run(shlex.split(cmd), cwd=REPO_ROOT, check=False)

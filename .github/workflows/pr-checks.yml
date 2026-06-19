@@ -32,7 +32,7 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
 
       # SECURITY: Read-only cache from main branch
       - name: Restore cache from main (read-only)

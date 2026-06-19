@@ -505,7 +505,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
         # No pip cache — sparse-checkout job; no packages installed via pip
 
       - name: Find target PR for dashboard post

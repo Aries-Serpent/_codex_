@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           extras: 'dev'
 
       - name: Run Phase B smoke tests (no GPU required)
@@ -67,7 +67,7 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           extras: 'dev'
 
       - name: Install OpenVINO runtime (if available)

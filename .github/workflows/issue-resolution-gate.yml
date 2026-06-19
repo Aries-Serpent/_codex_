@@ -70,7 +70,7 @@ jobs:
         uses: actions/setup-python@v6 # v6
         with:
           cache: pip
-          python-version: "3.12"
+          python-version: "3.12.13"
 
       # ── Determine which issues/PRs to check ────────────────────────────────
       - name: Extract issue references from PR body

@@ -37,7 +37,7 @@ jobs:
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.12'
+          python-version: '3.12.13'
           extras: 'dev'
 
       - name: Run auto-fix check
