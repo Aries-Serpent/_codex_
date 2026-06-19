@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml requirements/base.txt --extra dev --extra test --extra ml --extra logging --extra tracking --extra train --extra cli --extra monitoring --extra ops --extra perf --extra tokenizers --extra tokenizer --extra configs --extra dist --python-version 3.12 --output-file requirements/lock.txt
 absl-py==2.4.0
     # via tensorboard
-accelerate==1.13.0
+accelerate==1.14.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -797,7 +797,7 @@ traitlets==5.14.3
     # via
     #   jupyter-core
     #   nbformat
-transformers==5.10.2
+transformers==5.12.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
