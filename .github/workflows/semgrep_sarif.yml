@@ -1,31 +1,13 @@
-# ⛔ DISABLED 2026-05-21 — Consolidated into security-scanning-suite.yml
-#
-# semgrep_sarif.yml (standalone Semgrep SAST scanner) was absorbed into the
-# Security Scanning Suite (Phase 3.1).  The semgrep job in that suite runs the
-# same chunked-SARIF upload logic and is triggered by the suite's broader event
-# set (push to main/develop/copilot/**, PR to main/develop, weekly schedule,
-# workflow_dispatch, workflow_call).
-#
-# Archive copy:  .github/workflow-archive/disabled/semgrep_sarif.yml
-# Consolidated into: .github/workflows/security-scanning-suite.yml
-# Session: Workflow Portfolio Triage Phase 3 — semgrep consolidation
-
 name: Semgrep SAST (SARIF Upload)
-
-# ARCHIVED 2026-05-21 — consolidated into security-scanning-suite.yml
-# See: .github/workflow-archive/disabled/semgrep_sarif.yml
-
-on:
-  workflow_dispatch:  # manual-only; effectively disabled
-
+true:
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions: {}
-
 jobs:
   noop:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "disabled — stub only"
+    - run: "echo \"disabled \u2014 stub only\""
+    timeout-minutes: 60

@@ -1,53 +1,202 @@
 # Quick Start Guide for _codex_ Contributors
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2025-12-11  
-> **Audience**: New contributors, AI agents, developers
+> **Version**: 2.0.0  
+> **Last Updated**: 2026-06-20  
+> **Audience**: New contributors, AI agents, developers  
+> **⏱️ Setup Time:** 5-15 minutes (30 min with Docker)
 
 ---
 
-## 🚀 5-Minute Setup
+## 🚀 CHOOSE YOUR SETUP PATH
 
-### Prerequisites
+### Path A: Local Development (Recommended for Development) — 5-10 minutes
 
+Best for: Active code development, rapid iteration, debugging
+
+### Path B: Docker Development — 10-15 minutes
+
+Best for: Isolated environment, reproducible setup, avoiding dependency conflicts
+
+### Path C: Minimal Setup (Code Examples Only) — 5 minutes
+
+Best for: Testing examples, simple scripts, learning
+
+---
+
+## 📋 Prerequisites
+
+| Requirement | Linux | macOS | Windows | Notes |
+|-------------|-------|-------|---------|-------|
+| **Python 3.10+** | ✅ apt/dnf | ✅ Homebrew | ✅ winget/Chocolatey | `python --version` |
+| **Git 2.30+** | ✅ apt/dnf | ✅ Homebrew | ✅ winget | `git --version` |
+| **C/C++ compiler** | ✅ gcc/g++ | ✅ Xcode CLT | ⚠️ MSVC | For PyTorch compilation |
+| **~2 GB free disk** | Required | Required | Required | Source + dependencies |
+
+**Check prerequisites:**
 ```bash
-# Required
-Python 3.10+
-Git 2.30+
-uv (recommended) or pip
-
-# Optional
-Docker (for containerized development)
+python --version  # Should be 3.10+
+git --version     # Should be 2.30+
+gcc --version     # (Linux only) Should be 9.0+
 ```
 
-### Quick Install
+---
+
+## PATH A: Local Development Setup (Recommended)
+
+### Step 1: Clone Repository
 
 ```bash
-# Clone repository
+git clone https://github.com/Aries-Serpent/_codex_.git
+cd _codex_
+```
+
+**Troubleshooting:**
+- `fatal: not a git repository`: Make sure you're in the cloned directory
+- `Permission denied`: Use `ssh` key or `https` with PAT token
+
+### Step 2: Install Dependencies
+
+**Using `uv` (Recommended - Faster):**
+```bash
+# Install uv if needed
+curl https://astral.sh/uv/install.sh | sh
+
+# Install dependencies
+uv pip install -e ".[dev]"
+
+# Install optional dependencies (ML stack)
+uv pip install -e ".[ml,dev]"
+```
+
+**Using `pip` (Standard):**
+```bash
+# Create virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -e ".[dev]"
+
+# Install optional ML stack
+pip install -e ".[ml,dev]"
+```
+
+**Troubleshooting Common Issues:**
+
+| Error | Solution |
+|-------|----------|
+| `ModuleNotFoundError: No module named 'setuptools'` | Run `pip install --upgrade pip setuptools` |
+| `error: legacy-install-failure` (on pip install) | Use `uv pip install` or update pip: `pip install --upgrade pip` |
+| `CUDA not available` (PyTorch warning) | Normal if no GPU; CPU-only is fine for development |
+| `Permission denied` on `/usr/local` | Use `python -m pip install --user -e ".[dev]"` |
+
+### Step 3: Verify Installation
+
+```bash
+# Test Python imports
+python -c "import codex; print(f'✅ _codex_ {codex.__version__} installed')"
+
+# Test CLI
+codex-cli --help
+
+# Test core modules
+python -c "import codex_ml; import src.mcp; print('✅ All core modules loaded')"
+```
+
+**Expected output:**
+```
+✅ _codex_ 0.1.0 installed
+✅ All core modules loaded
+```
+
+### Step 4: Run Quick Tests
+
+```bash
+# Quick validation (1-2 minutes)
+pytest tests/unit/test_imports.py -v
+
+# Run specific test suite (2-5 minutes)
+pytest tests/unit/ -v --tb=short -k "not slow"
+
+# Full test suite (10-15 minutes)
+pytest tests/ -v
+```
+
+**Troubleshooting:**
+
+| Error | Solution |
+|-------|----------|
+| `ModuleNotFoundError` in tests | Re-run `uv pip install -e ".[dev]"` |
+| `Segmentation fault` (PyTorch) | Likely environment issue; try Docker path |
+| Tests timeout | Run with `--timeout=60` or use Path B (Docker) |
+
+---
+
+## PATH B: Docker Development Setup
+
+### Step 1: Install Docker
+
+**Linux (Ubuntu/Debian):**
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER  # Add user to docker group
+```
+
+**macOS:**
+```bash
+brew install docker docker-compose
+# OR download Docker Desktop from https://www.docker.com/products/docker-desktop
+```
+
+**Windows:**
+```bash
+# Download Docker Desktop: https://www.docker.com/products/docker-desktop
+# OR use winget: winget install Docker.DockerDesktop
+```
+
+### Step 2: Build & Run Docker Container
+
+```bash
+# Clone and enter directory
 git clone https://github.com/Aries-Serpent/_codex_.git
 cd _codex_
 
-# Install dependencies (using uv - recommended)
-uv pip install -e ".[dev]"
+# Build Docker image (first time: 5-10 minutes)
+docker build -t codex-dev:latest -f Dockerfile.dev .
 
-# Or using pip
-pip install -e ".[dev]"
+# Run container with volume mount (interactive development)
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -w /workspace \
+  codex-dev:latest \
+  bash
 
-# Verify installation
+# Inside container:
 python -c "import codex; print(codex.__version__)"
+pytest tests/unit/ -v
 ```
 
-### Run Tests
+**Troubleshooting:**
+
+| Error | Solution |
+|-------|----------|
+| `docker: command not found` | Docker not installed or not in PATH |
+| `permission denied` | Run with `sudo` OR add user to docker group: `sudo usermod -aG docker $USER` |
+| `image not found` | Rebuild with `docker build ...` or pull from registry |
+
+---
+
+## PATH C: Minimal Setup (Code Examples Only)
+
+**For running code examples without full development environment:**
 
 ```bash
-# Quick test (essential tests only)
-pytest tests/unit/ -v --tb=short
+# Install minimal dependencies
+pip install transformers torch numpy
 
-# Full test suite
-nox -s tests
-
-# ML-specific tests
-nox -s ml_tests
+# Test basic import
+python -c "from transformers import AutoTokenizer; print('✅ Ready for examples')"
 ```
 
 ---
@@ -56,22 +205,36 @@ nox -s ml_tests
 
 ```
 _codex_/
-├── agents/                 # AI Agent infrastructure
-│   ├── agent_memory.py     # Persistent memory system
-│   ├── self_healing.py     # Automated remediation
+├── agents/                     # AI Agent infrastructure
+│   ├── agent_memory.py         # Persistent memory system
+│   ├── self_healing.py         # Automated remediation
 │   ├── quantum_game_theory.py  # Physics-inspired decision making
-│   └── prompts/            # Prompt templates
-├── src/codex_ml/           # Core ML framework
-│   ├── evaluation/         # Model evaluation
-│   ├── features/           # Feature store
-│   ├── integrations/       # External integrations
-│   ├── plugins/            # Plugin system
-│   ├── serving/            # Model serving
-│   └── utils/              # Utilities
-├── scripts/                # Automation scripts
-├── tests/                  # Test suites
-├── docs/                   # Documentation
-└── .github/workflows/      # CI/CD
+│   └── prompts/                # Prompt templates
+├── src/
+│   ├── codex_ml/               # Core ML framework
+│   │   ├── evaluation/         # Model evaluation
+│   │   ├── training/           # Training pipeline
+│   │   ├── serving/            # Model serving (FastAPI + Ray Serve)
+│   │   └── utils/              # Utilities
+│   ├── mcp/                    # Model Context Protocol (MCP) system
+│   │   ├── server/             # MCP server implementation
+│   │   ├── backends/           # Backend adapters (Pinecone, Redis, etc.)
+│   │   └── embeddings/         # Embedding system
+│   └── codex_cli/              # Command-line interface
+├── tests/                      # Test suites
+│   ├── unit/                   # Unit tests
+│   ├── integration/            # Integration tests
+│   └── fixtures/               # Test fixtures
+├── docs/                       # Documentation (you are here!)
+│   ├── onboarding/             # Getting started guides
+│   ├── deployment/             # Production deployment guides
+│   ├── api/                    # API references
+│   └── troubleshooting/        # Troubleshooting guides
+├── scripts/                    # Automation scripts
+├── docker/                     # Docker configurations
+├── .github/workflows/          # CI/CD workflows
+├── pyproject.toml              # Python project metadata
+└── README.md                   # Root project README
 ```
 
 ---

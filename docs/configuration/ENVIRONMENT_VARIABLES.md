@@ -1,185 +1,320 @@
-# Environment Variables for CRM SaaS Integration
+# Environment Variables Reference
 
-## Zendesk Configuration
-
-### Required for Knowledge Sync Service
-
-```bash
-# Zendesk API Credentials
-ZENDESK_URL=https://your-subdomain.zendesk.com
-ZENDESK_USER=your-email@example.com/token
-ZENDESK_TOKEN=your_api_token_here
-
-# Optional: Sync Configuration
-ZENDESK_SYNC_INTERVAL=3600  # Seconds between syncs (default: 3600)
-ZENDESK_RATE_LIMIT=100      # API calls per minute (default: 100)
-```
-
-### Obtaining Credentials
-
-1. Log in to your Zendesk instance as an admin
-2. Navigate to Admin Center > Apps and integrations > APIs > Zendesk API
-3. Enable Token Access
-4. Click "Add API token"
-5. Copy the token and set as `ZENDESK_TOKEN`
-
-## Dynamics 365 Configuration
-
-### Required for SLA Policy Integration
-
-```bash
-# Dynamics 365 API Credentials
-D365_URL=https://your-org.crm.dynamics.com
-D365_CLIENT_ID=your_client_id_here
-D365_CLIENT_SECRET=your_client_secret_here
-D365_TENANT_ID=your_tenant_id_here
-```
-
-> **Note:** Use `CODEX_D365_POLICIES_PATH` (defined in the MLOps section below) as the SLA policy config path.
-> The legacy `D365_SLA_POLICY_PATH` GitHub repo variable is a duplicate and is pending deletion
-> (see `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §13`).
-
-### Obtaining Credentials
-
-1. Register an application in Azure AD
-2. Grant API permissions for Dynamics 365
-3. Generate a client secret
-4. Note the Client ID, Tenant ID, and Secret
-
-## Bridge Security
-
-### Secure IPC Configuration
-
-```bash
-# Bridge Manager Configuration
-CODEX_BRIDGE_MODE=named_pipe  # or unix_socket
-CODEX_BRIDGE_DIR=/tmp/codex_secure_bridge
-CODEX_BRIDGE_OWNER_ONLY=true  # Enforce 0o600 permissions
-```
-
-## MLOps & Training
-
-### Training Data Sources
-
-```bash
-# Knowledge Loader Configuration
-CODEX_ZENDESK_DOCS_ROOT=docs/vendors/zendesk
-CODEX_D365_POLICIES_PATH=configs/deployment/d365/sla_policies.json
-
-# MLflow Configuration (optional)
-MLFLOW_EXPERIMENT_NAME=saas_knowledge_training
-```
-
-## DVC Configuration
-
-### Data Version Control
-
-```bash
-# DVC Remote Storage
-DVC_REMOTE_URL=s3://your-bucket/codex-dvc  # or other DVC remote
-AWS_ACCESS_KEY_ID=your_aws_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret
-
-# Or for local testing
-DVC_REMOTE_URL=/path/to/dvc/storage
-```
-
-## GitHub Actions Secrets
-
-### Required Secrets in Repository
-
-Set these in GitHub: Settings > Secrets and variables > Actions
-
-```
-ZENDESK_URL
-ZENDESK_USER  
-ZENDESK_TOKEN
-D365_URL
-D365_CLIENT_ID
-D365_CLIENT_SECRET
-D365_TENANT_ID
-CODEX_MASTER_KEY  # For production deployments
-```
-
-## Security Best Practices
-
-1. **Never commit secrets to git**
-   - Use `.env` file locally (in `.gitignore`)
-   - Use GitHub Secrets for CI/CD
-   - Use environment-specific configs
-
-2. **Rotate credentials regularly**
-   - API tokens: Every 90 iterations
-   - Client secrets: Every 180 iterations
-   - Document rotation dates
-
-3. **Principle of least privilege**
-   - Grant only required API permissions
-   - Use read-only tokens where possible
-   - Separate dev/prod credentials
-
-4. **Audit access**
-   - Log all API calls with credentials
-   - Review access logs monthly
-   - Monitor for unusual activity
-
-## Example: Local Development Setup
-
-Create `.env` file in repository root:
-
-```bash
-# .env (DO NOT COMMIT)
-ZENDESK_URL=https://codex-test.zendesk.com
-ZENDESK_USER=test@example.com/token
-ZENDESK_TOKEN=test_token_12345
-
-D365_URL=https://codex-test.crm.dynamics.com
-D365_CLIENT_ID=test-client-id
-D365_CLIENT_SECRET=test-secret
-D365_TENANT_ID=test-tenant-id
-
-CODEX_BRIDGE_MODE=named_pipe
-CODEX_BRIDGE_OWNER_ONLY=true
-```
-
-Load with:
-
-```bash
-source .env
-# or
-export $(cat .env | xargs)
-```
-
-## Validation
-
-Test environment variables:
-
-```bash
-# Test Zendesk connection
-python scripts/test_zendesk_connection.py
-
-# Test D365 connection
-python scripts/test_d365_connection.py
-
-# Test bridge security
-python -c "from src.bridge_manager import BridgeManager; BridgeManager().validate_security()"
-```
-
-## Troubleshooting
-
-### Issue: "No module named 'pydantic'"
-**Solution:** Install dependencies: `pip install -e .`
-
-### Issue: "Zendesk authentication failed"
-**Solution:** Verify `ZENDESK_TOKEN` is correct and not expired
-
-### Issue: "D365 permission denied"
-**Solution:** Check Azure AD app permissions include required APIs
-
-### Issue: "Bridge permission denied"
-**Solution:** Ensure `CODEX_BRIDGE_OWNER_ONLY=true` and running as correct user
+> **Version**: 2.0.0  
+> **Last Updated**: 2026-06-20  
+> **Scope**: Complete environment variables documentation
 
 ---
 
-**Last Updated:** 2026-01-08
-**Maintainer:** Lead Systems Architect & Integration Engineer
+## Quick Setup
+
+```bash
+# Copy template
+cp .env.example .env
+
+# Edit with your values
+nano .env
+
+# Verify setup
+python -c "from dotenv import load_dotenv; load_dotenv(); print('✅ Env loaded')"
+```
+
+---
+
+## Core Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ENVIRONMENT` | String | `development` | Environment: development, staging, production |
+| `DEBUG` | Boolean | `False` | Enable debug mode (production: always False) |
+| `LOG_LEVEL` | String | `INFO` | Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL |
+| `SECRET_KEY` | String | **REQUIRED** | Django secret key (production: strong random) |
+| `ALLOWED_HOSTS` | String | `localhost` | Comma-separated allowed hosts |
+| `WORKERS` | Integer | `4` | Number of worker processes |
+
+**Example:**
+```bash
+ENVIRONMENT=production
+DEBUG=False
+LOG_LEVEL=INFO
+SECRET_KEY=your-super-secret-key-here
+ALLOWED_HOSTS=example.com,api.example.com
+WORKERS=8
+```
+
+---
+
+## Database Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `DATABASE_URL` | String | `sqlite:///codex.db` | Database connection URL |
+| `DB_HOST` | String | `localhost` | Database host |
+| `DB_PORT` | Integer | `5432` | Database port (PostgreSQL) |
+| `DB_NAME` | String | `codex` | Database name |
+| `DB_USER` | String | **REQUIRED** | Database username |
+| `DB_PASSWORD` | String | **REQUIRED** | Database password |
+| `DB_POOL_SIZE` | Integer | `10` | Database connection pool size |
+| `DB_ECHO` | Boolean | `False` | Log all SQL queries |
+
+**Example (PostgreSQL):**
+```bash
+DATABASE_URL=******localhost:5432/codex
+# Or individual variables:
+DB_HOST=db.example.com
+DB_PORT=5432
+DB_NAME=codex_production
+DB_USER=codex_user
+DB_PASSWORD=secure_password
+DB_POOL_SIZE=20
+```
+
+---
+
+## MCP Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `MCP_BACKEND` | String | `mock` | Backend type: mock, pinecone, redis, custom |
+| `MCP_WORKERS` | Integer | `4` | Number of MCP worker processes |
+| `MCP_BATCH_SIZE` | Integer | `32` | Batch size for processing |
+| `MCP_TIMEOUT` | Integer | `30` | Request timeout in seconds |
+
+**For Pinecone Backend:**
+```bash
+MCP_BACKEND=pinecone
+PINECONE_API_KEY=your-api-key
+PINECONE_ENVIRONMENT=us-west4-gcp
+PINECONE_INDEX=codex-prod
+PINECONE_DIMENSION=1536
+```
+
+**For Redis Backend:**
+```bash
+MCP_BACKEND=redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=
+```
+
+---
+
+## Ray Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `RAY_ADDRESS` | String | `None` | Ray cluster address (localhost for local) |
+| `RAY_NUM_CPUS` | Integer | `auto` | Number of CPUs for Ray |
+| `RAY_NUM_GPUS` | Integer | `0` | Number of GPUs for Ray |
+| `RAY_MEMORY` | Integer | `auto` | Memory allocation in bytes |
+
+**Example:**
+```bash
+# Local Ray
+RAY_ADDRESS=local
+
+# Remote Ray cluster
+RAY_ADDRESS=ray://cluster.example.com:10001
+RAY_NUM_CPUS=16
+RAY_NUM_GPUS=2
+RAY_MEMORY=67108864000  # 62.5 GB
+```
+
+---
+
+## API Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `API_HOST` | String | `0.0.0.0` | API server host |
+| `API_PORT` | Integer | `8000` | API server port |
+| `API_WORKERS` | Integer | `4` | Number of API workers |
+| `CORS_ORIGINS` | String | `*` | CORS allowed origins (comma-separated) |
+| `API_RATE_LIMIT` | Integer | `100` | Requests per minute per IP |
+
+**Example:**
+```bash
+API_HOST=0.0.0.0
+API_PORT=8000
+API_WORKERS=8
+CORS_ORIGINS=https://example.com,https://admin.example.com
+API_RATE_LIMIT=1000
+```
+
+---
+
+## Monitoring & Observability
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `SENTRY_DSN` | String | `None` | Sentry error tracking URL |
+| `PROMETHEUS_PORT` | Integer | `8001` | Prometheus metrics port |
+| `JAEGER_ENABLED` | Boolean | `False` | Enable distributed tracing |
+| `JAEGER_AGENT_HOST` | String | `localhost` | Jaeger agent host |
+| `JAEGER_AGENT_PORT` | Integer | `6831` | Jaeger agent port |
+
+**Example:**
+```bash
+SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
+PROMETHEUS_PORT=9090
+JAEGER_ENABLED=True
+JAEGER_AGENT_HOST=jaeger.monitoring.svc
+JAEGER_AGENT_PORT=6831
+```
+
+---
+
+## Security Configuration
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `JWT_SECRET` | String | **REQUIRED** | JWT signing secret |
+| `JWT_EXPIRY` | Integer | `3600` | JWT token expiry in seconds |
+| `SSL_CERT_PATH` | String | `None` | Path to SSL certificate |
+| `SSL_KEY_PATH` | String | `None` | Path to SSL private key |
+| `SESSION_TIMEOUT` | Integer | `1800` | Session timeout in seconds |
+
+**Example:**
+```bash
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRY=7200  # 2 hours
+SSL_CERT_PATH=/etc/ssl/certs/server.crt
+SSL_KEY_PATH=/etc/ssl/private/server.key
+SESSION_TIMEOUT=3600  # 1 hour
+```
+
+---
+
+## External Services
+
+### OpenAI / LLM Configuration
+
+```bash
+OPENAI_API_KEY=sk-xxx...
+OPENAI_MODEL=gpt-4
+OPENAI_MAX_TOKENS=2000
+OPENAI_TEMPERATURE=0.7
+```
+
+### Model Registry
+
+```bash
+MODEL_REGISTRY_URL=http://registry.example.com
+MODEL_DOWNLOAD_PATH=/models
+HUGGINGFACE_TOKEN=hf_xxx...
+```
+
+---
+
+## Development Configuration
+
+```bash
+# Development
+ENVIRONMENT=development
+DEBUG=True
+LOG_LEVEL=DEBUG
+DATABASE_URL=sqlite:///dev.db
+MCP_BACKEND=mock
+
+# Testing
+ENVIRONMENT=testing
+DEBUG=False
+LOG_LEVEL=WARNING
+DATABASE_URL=sqlite:///:memory:
+MCP_BACKEND=mock
+```
+
+---
+
+## Production Configuration
+
+```bash
+# Production requirements
+ENVIRONMENT=production
+DEBUG=False  # ⚠️ NEVER set to True in production
+LOG_LEVEL=WARNING
+DATABASE_URL=******db.production.svc/codex
+MCP_BACKEND=pinecone
+SSL_CERT_PATH=/etc/ssl/certs/server.crt
+SSL_KEY_PATH=/etc/ssl/private/server.key
+JWT_SECRET=generated-random-secret-key
+SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
+```
+
+---
+
+## Loading Environment Variables
+
+### Python (dotenv)
+
+```python
+from dotenv import load_dotenv
+import os
+
+# Load from .env file
+load_dotenv()
+
+# Access variables
+database_url = os.getenv("DATABASE_URL")
+debug = os.getenv("DEBUG", "False").lower() == "true"
+workers = int(os.getenv("WORKERS", "4"))
+```
+
+### Docker
+
+```dockerfile
+# Use .env file
+ENV_FILE=.env.production
+RUN --mount=type=secret,id=env \
+    source /run/secrets/env && \
+    echo "Database: ${DATABASE_URL}"
+```
+
+### Docker Compose
+
+```yaml
+services:
+  api:
+    env_file: .env.production
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=False
+```
+
+---
+
+## Validation
+
+```bash
+# Check all required variables are set
+python -c "
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+required = ['ENVIRONMENT', 'DATABASE_URL', 'SECRET_KEY']
+missing = [var for var in required if not os.getenv(var)]
+
+if missing:
+    print(f'❌ Missing variables: {missing}')
+else:
+    print('✅ All required variables set')
+"
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Variables not loading | Check .env file exists, verify path |
+| Wrong values | Check .env syntax, no quotes needed unless spaces |
+| Database connection fails | Verify DATABASE_URL format and credentials |
+| MCP not connecting | Check MCP_BACKEND and credentials |
+
+---
+
+**Last Updated:** 2026-06-20

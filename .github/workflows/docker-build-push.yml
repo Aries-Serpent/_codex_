@@ -1,331 +1,289 @@
-# Policy-proof workflow: NO external Marketplace actions used.
-# Uses raw git and docker CLI so it cannot be blocked by org/repo action restrictions.
-
-name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE)
-
+name: "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)"
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
-
+  cancel-in-progress: false
 permissions:
   contents: read
   packages: write
-
-
-on:
+true:
   push:
-    branches: ["main"]
+    branches:
+    - main
   pull_request:
-    branches: ["main"]
+    branches:
+    - main
   workflow_dispatch:
     inputs:
       approval_duration:
-        description: 'OWNER_APPROVED_DURATION (e.g., "24h")'
+        description: OWNER_APPROVED_DURATION (e.g., "24h")
         required: false
-        default: ""
+        default: ''
       approval_until:
-        description: 'OWNER_APPROVED_UNTIL (ISO8601 Z, e.g., "2025-10-21T00:00:00Z")'
+        description: OWNER_APPROVED_UNTIL (ISO8601 Z, e.g., "2025-10-21T00:00:00Z")
         required: false
-        default: ""
+        default: ''
       push_platforms:
-        description: 'PUSH_PLATFORMS (e.g., "linux/amd64,linux/arm64")'
+        description: PUSH_PLATFORMS (e.g., "linux/amd64,linux/arm64")
         required: false
-        default: ""
+        default: ''
       check_only:
         type: boolean
-        description: 'Run approval check only (skip build and push)'
+        description: Run approval check only (skip build and push)
         required: false
         default: false
-
 env:
-  OWNER_APPROVED_DURATION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_duration != '' && github.event.inputs.approval_duration || vars.OWNER_APPROVED_DURATION }}
-  OWNER_APPROVED_UNTIL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_until != '' && github.event.inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
-  PUSH_PLATFORMS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push_platforms != '' && github.event.inputs.push_platforms || vars.PUSH_PLATFORMS }}
+  OWNER_APPROVED_DURATION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_duration
+    != '' && github.event.inputs.approval_duration || vars.OWNER_APPROVED_DURATION
+    }}
+  OWNER_APPROVED_UNTIL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_until
+    != '' && github.event.inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
+  PUSH_PLATFORMS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push_platforms
+    != '' && github.event.inputs.push_platforms || vars.PUSH_PLATFORMS }}
   BUILDX_CACHE_DIR: /var/tmp/codex-buildx-cache
-
 jobs:
-  # ── 💰 Cost Gate (OBJ-001 T-006) ─────────────────────────────────────────
-  # Uses self-hosted runner (0 billed min) but pushes to GHCR → RED tier.
-  # Stakeholder must tick "💰 Cost Proposal Approved" in PR description.
-  # Bypassed automatically on workflow_dispatch (owner already approved).
   cost-gate:
-    name: "💰 Cost Gate"
+    name: "\U0001F4B0 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name: "Build & Push Docker (GHCR)"
-      runner: "self-hosted"
+      workflow_name: Build & Push Docker (GHCR)
+      runner: self-hosted
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
     permissions:
       contents: read
       pull-requests: write
-
+    timeout-minutes: 60
   approval-check:
     needs: cost-gate
-    name: Owner approval — check-only gate
-    runs-on: [self-hosted, linux]
+    name: "Owner approval \u2014 check-only gate"
+    runs-on:
+    - self-hosted
+    - linux
     timeout-minutes: 10
     steps:
-      - name: Raw checkout (git)
-        shell: bash
-        run: bash scripts/ci/raw_checkout.sh
-
-      - name: Show owner approval context
-        shell: bash
-        run: |
-          echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
-          echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
-          if [ -f .github/OWNER_APPROVAL.yml ]; then
-            echo ".github/OWNER_APPROVAL.yml present"
-          else
-            echo ".github/OWNER_APPROVAL.yml missing"
-          fi
-
-      - name: Evaluate owner approval (guard)
-        shell: bash
-        run: bash scripts/ci/owner_approval_guard.sh
-        env:
-          TOOL_KEY: docker-build-push
-          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
-          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
-
-      - name: Write approval status to summary
-        shell: bash
-        run: bash scripts/ci/owner_approval_summary.sh docker-build-push
-
+    - name: Raw checkout (git)
+      shell: bash
+      run: bash scripts/ci/raw_checkout.sh
+    - name: Show owner approval context
+      shell: bash
+      run: "echo \"OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}\"\necho \"OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}\"\
+        \nif [ -f .github/OWNER_APPROVAL.yml ]; then\n  echo \".github/OWNER_APPROVAL.yml\
+        \ present\"\nelse\n  echo \".github/OWNER_APPROVAL.yml missing\"\nfi\n"
+    - name: Evaluate owner approval (guard)
+      shell: bash
+      run: bash scripts/ci/owner_approval_guard.sh
+      env:
+        TOOL_KEY: docker-build-push
+        OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+        OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+    - name: Write approval status to summary
+      shell: bash
+      run: bash scripts/ci/owner_approval_summary.sh docker-build-push
   build-and-smoke:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
-    needs: [cost-gate, approval-check]
+    if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only
+      == 'true' || github.event.inputs.check_only == true)) }}
+    needs:
+    - cost-gate
+    - approval-check
     name: Build image and run smoke test
-    runs-on: [self-hosted, linux]
+    runs-on:
+    - self-hosted
+    - linux
     timeout-minutes: 45
     steps:
-      - name: Raw checkout (git)
-        shell: bash
-        run: bash scripts/ci/raw_checkout.sh
+    - name: Raw checkout (git)
+      shell: bash
+      run: bash scripts/ci/raw_checkout.sh
+    - name: Show owner approval context (no-op)
+      shell: bash
+      run: "echo \"OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}\"\necho \"OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}\"\
+        \nif [ -f .github/OWNER_APPROVAL.yml ]; then\n  echo \".github/OWNER_APPROVAL.yml\
+        \ present\"\nelse\n  echo \".github/OWNER_APPROVAL.yml missing\"\nfi\n"
+    - name: Show owner approval status (helper)
+      shell: bash
+      run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+    - name: Check OWNER approval window
+      shell: bash
+      run: bash scripts/ci/owner_approval_guard.sh
+      env:
+        TOOL_KEY: docker-build-push
+        OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+        OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+    - name: Ensure Buildx and builder
+      shell: bash
+      run: 'set -euo pipefail
 
-      - name: Show owner approval context (no-op)
-        shell: bash
-        run: |
-          echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
-          echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
-          if [ -f .github/OWNER_APPROVAL.yml ]; then
-            echo ".github/OWNER_APPROVAL.yml present"
-          else
-            echo ".github/OWNER_APPROVAL.yml missing"
-          fi
+        bash scripts/ci/buildx_setup.sh
 
-      - name: Show owner approval status (helper)
-        shell: bash
-        run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+        '
+    - name: Set up QEMU (optional for multi-arch)
+      if: env.PUSH_PLATFORMS != ''
+      shell: bash
+      run: 'set -euo pipefail
 
-      - name: Check OWNER approval window
-        shell: bash
-        run: bash scripts/ci/owner_approval_guard.sh
-        env:
-          TOOL_KEY: docker-build-push
-          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
-          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+        bash scripts/ci/qemu_setup.sh
 
-      - name: Ensure Buildx and builder
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash scripts/ci/buildx_setup.sh
+        '
+    - name: Restore local buildx cache directory (best-effort)
+      shell: bash
+      run: 'set -euo pipefail
 
-      - name: Set up QEMU (optional for multi-arch)
-        if: env.PUSH_PLATFORMS != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash scripts/ci/qemu_setup.sh
+        mkdir -p "${BUILDX_CACHE_DIR}"
 
-      - name: Restore local buildx cache directory (best-effort)
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "${BUILDX_CACHE_DIR}"
-
-      - name: Build image (local load for smoke test) with cache and OCI labels
-        shell: bash
-        run: |
-          set -euo pipefail
-          SRC="${BUILDX_CACHE_DIR}"
-          DST="${BUILDX_CACHE_DIR}.new"
-          rm -rf "${DST}"
-          docker buildx build \
-            --file Dockerfile \
-            --tag codex:ci \
-            --load \
-            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            --label "org.opencontainers.image.ref.name=${{ github.ref_name }}" \
-            --cache-from "type=local,src=${SRC}" \
-            --cache-to "type=local,dest=${DST},mode=max" \
-            .
-          rm -rf "${SRC}"
-          mv "${DST}" "${SRC}"
-
-      - name: Smoke test container
-        shell: bash
-        run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
-
+        '
+    - name: Build image (local load for smoke test) with cache and OCI labels
+      shell: bash
+      run: "set -euo pipefail\nSRC=\"${BUILDX_CACHE_DIR}\"\nDST=\"${BUILDX_CACHE_DIR}.new\"\
+        \nrm -rf \"${DST}\"\ndocker buildx build \\\n  --file Dockerfile \\\n  --tag\
+        \ codex:ci \\\n  --load \\\n  --label \"org.opencontainers.image.source=${{\
+        \ github.server_url }}/${{ github.repository }}\" \\\n  --label \"org.opencontainers.image.revision=${{\
+        \ github.sha }}\" \\\n  --label \"org.opencontainers.image.ref.name=${{ github.ref_name\
+        \ }}\" \\\n  --cache-from \"type=local,src=${SRC}\" \\\n  --cache-to \"type=local,dest=${DST},mode=max\"\
+        \ \\\n  .\nrm -rf \"${SRC}\"\nmv \"${DST}\" \"${SRC}\"\n"
+    - name: Smoke test container
+      shell: bash
+      run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
   push:
-    if: ${{ github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
+    if: ${{ github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch'
+      && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only
+      == true)) }}
     name: Push image to GHCR (on main)
-    needs: [build-and-smoke]
-    runs-on: [self-hosted, linux]
+    needs:
+    - build-and-smoke
+    runs-on:
+    - self-hosted
+    - linux
     timeout-minutes: 45
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Raw checkout (git)
-        shell: bash
-        run: bash scripts/ci/raw_checkout.sh
+    - name: Raw checkout (git)
+      shell: bash
+      run: bash scripts/ci/raw_checkout.sh
+    - name: Ensure Buildx and builder
+      shell: bash
+      run: 'set -euo pipefail
 
-      - name: Ensure Buildx and builder
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash scripts/ci/buildx_setup.sh
+        bash scripts/ci/buildx_setup.sh
 
-      - name: Set up QEMU (optional for multi-arch)
-        if: env.PUSH_PLATFORMS != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash scripts/ci/qemu_setup.sh
+        '
+    - name: Set up QEMU (optional for multi-arch)
+      if: env.PUSH_PLATFORMS != ''
+      shell: bash
+      run: 'set -euo pipefail
 
-      - name: Derive tags (lowercase for GHCR)
-        id: vars
-        shell: bash
-        run: |
-          set -euo pipefail
-          REPO_IMAGE="ghcr.io/${{ github.repository }}"
-          REPO_IMAGE_LC="$(echo "${REPO_IMAGE}" | tr '[:upper:]' '[:lower:]')"
-          SHA_TAG="${REPO_IMAGE_LC}:sha-${GITHUB_SHA::12}"
-          BRANCH="${GITHUB_REF_NAME}"
-          if [ "${BRANCH}" = "main" ]; then
-            BRANCH_TAG="${REPO_IMAGE_LC}:latest"
-          else
-            SAFE_BRANCH="${BRANCH//\//-}"
-            SAFE_BRANCH_LC="$(echo "${SAFE_BRANCH}" | tr '[:upper:]' '[:lower:]')"
-            BRANCH_TAG="${REPO_IMAGE_LC}:${SAFE_BRANCH_LC}"
-          fi
-          {
-            echo "image_sha=${SHA_TAG}"
-            echo "image_branch=${BRANCH_TAG}"
-          } >> "${GITHUB_OUTPUT}"
+        bash scripts/ci/qemu_setup.sh
 
-      - name: Check OWNER approval window (push)
-        shell: bash
-        run: bash scripts/ci/owner_approval_guard.sh
-        env:
-          TOOL_KEY: docker-build-push
-          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
-          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+        '
+    - name: Derive tags (lowercase for GHCR)
+      id: vars
+      shell: bash
+      run: "set -euo pipefail\nREPO_IMAGE=\"ghcr.io/${{ github.repository }}\"\nREPO_IMAGE_LC=\"\
+        $(echo \"${REPO_IMAGE}\" | tr '[:upper:]' '[:lower:]')\"\nSHA_TAG=\"${REPO_IMAGE_LC}:sha-${GITHUB_SHA::12}\"\
+        \nBRANCH=\"${GITHUB_REF_NAME}\"\nif [ \"${BRANCH}\" = \"main\" ]; then\n \
+        \ BRANCH_TAG=\"${REPO_IMAGE_LC}:latest\"\nelse\n  SAFE_BRANCH=\"${BRANCH//\\\
+        //-}\"\n  SAFE_BRANCH_LC=\"$(echo \"${SAFE_BRANCH}\" | tr '[:upper:]' '[:lower:]')\"\
+        \n  BRANCH_TAG=\"${REPO_IMAGE_LC}:${SAFE_BRANCH_LC}\"\nfi\n{\n  echo \"image_sha=${SHA_TAG}\"\
+        \n  echo \"image_branch=${BRANCH_TAG}\"\n} >> \"${GITHUB_OUTPUT}\"\n"
+    - name: Check OWNER approval window (push)
+      shell: bash
+      run: bash scripts/ci/owner_approval_guard.sh
+      env:
+        TOOL_KEY: docker-build-push
+        OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+        OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+    - name: Show owner approval status (helper, push)
+      shell: bash
+      run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+    - name: Login to GHCR with GITHUB_TOKEN
+      shell: bash
+      env:
+        CR_PAT: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: 'set -euo pipefail
 
-      - name: Show owner approval status (helper, push)
-        shell: bash
-        run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+        echo "${CR_PAT}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
 
-      - name: Login to GHCR with GITHUB_TOKEN
-        shell: bash
-        env:
-          CR_PAT: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          set -euo pipefail
-          echo "${CR_PAT}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+        '
+    - name: Build and push (single-arch)
+      if: env.PUSH_PLATFORMS == ''
+      shell: bash
+      run: "set -euo pipefail\ndocker buildx build \\\n  --file Dockerfile \\\n  --label\
+        \ \"org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository\
+        \ }}\" \\\n  --label \"org.opencontainers.image.revision=${{ github.sha }}\"\
+        \ \\\n  --label \"org.opencontainers.image.ref.name=${{ github.ref_name }}\"\
+        \ \\\n  --tag \"${{ steps.vars.outputs.image_sha }}\" \\\n  --tag \"${{ steps.vars.outputs.image_branch\
+        \ }}\" \\\n  --push \\\n  .\n"
+    - name: Build and push (multi-arch)
+      if: env.PUSH_PLATFORMS != ''
+      shell: bash
+      run: "set -euo pipefail\ndocker buildx build \\\n  --platform \"${PUSH_PLATFORMS}\"\
+        \ \\\n  --file Dockerfile \\\n  --label \"org.opencontainers.image.source=${{\
+        \ github.server_url }}/${{ github.repository }}\" \\\n  --label \"org.opencontainers.image.revision=${{\
+        \ github.sha }}\" \\\n  --label \"org.opencontainers.image.ref.name=${{ github.ref_name\
+        \ }}\" \\\n  --tag \"${{ steps.vars.outputs.image_sha }}\" \\\n  --tag \"\
+        ${{ steps.vars.outputs.image_branch }}\" \\\n  --push \\\n  .\n"
+    - name: GHCR pull and smoke test (branch/latest tag)
+      shell: bash
+      env:
+        PULLED_IMAGE: ${{ steps.vars.outputs.image_branch }}
+      run: 'set -euo pipefail
 
-      - name: Build and push (single-arch)
-        if: env.PUSH_PLATFORMS == ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker buildx build \
-            --file Dockerfile \
-            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            --label "org.opencontainers.image.ref.name=${{ github.ref_name }}" \
-            --tag "${{ steps.vars.outputs.image_sha }}" \
-            --tag "${{ steps.vars.outputs.image_branch }}" \
-            --push \
-            .
+        echo "[post-push] docker pull ${PULLED_IMAGE}"
 
-      - name: Build and push (multi-arch)
-        if: env.PUSH_PLATFORMS != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker buildx build \
-            --platform "${PUSH_PLATFORMS}" \
-            --file Dockerfile \
-            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${{ github.sha }}" \
-            --label "org.opencontainers.image.ref.name=${{ github.ref_name }}" \
-            --tag "${{ steps.vars.outputs.image_sha }}" \
-            --tag "${{ steps.vars.outputs.image_branch }}" \
-            --push \
-            .
+        docker pull "${PULLED_IMAGE}"
 
-      - name: GHCR pull and smoke test (branch/latest tag)
-        shell: bash
-        env:
-          PULLED_IMAGE: ${{ steps.vars.outputs.image_branch }}
-        run: |
-          set -euo pipefail
-          echo "[post-push] docker pull ${PULLED_IMAGE}"
-          docker pull "${PULLED_IMAGE}"
-          echo "[post-push] smoke test ${PULLED_IMAGE} on host port 18001"
-          bash scripts/ci/container_smoke.sh "${PULLED_IMAGE}" 8000 18001
+        echo "[post-push] smoke test ${PULLED_IMAGE} on host port 18001"
 
-      - name: Summary — published image tags
-        if: always()
-        shell: bash
-        run: |
-          {
-            echo "## Docker push results"
-            echo
-            echo "- Image (sha): ${{ steps.vars.outputs.image_sha }}"
-            echo "- Image (branch/latest): ${{ steps.vars.outputs.image_branch }}"
-          } >> "${GITHUB_STEP_SUMMARY}"
+        bash scripts/ci/container_smoke.sh "${PULLED_IMAGE}" 8000 18001
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow docker-build-push --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        '
+    - name: "Summary \u2014 published image tags"
+      if: always()
+      shell: bash
+      run: "{\n  echo \"## Docker push results\"\n  echo\n  echo \"- Image (sha):\
+        \ ${{ steps.vars.outputs.image_sha }}\"\n  echo \"- Image (branch/latest):\
+        \ ${{ steps.vars.outputs.image_branch }}\"\n} >> \"${GITHUB_STEP_SUMMARY}\"\
+        \n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow docker-build-push
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: push
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Docker Build & Push"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Docker Build & Push
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py

@@ -1,232 +1,217 @@
 name: Progressive Validation Suite
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+    - opened
+    - synchronize
+    - reopened
   workflow_dispatch:
     inputs:
       force_full:
-        description: 'Force full validation (ignore PR size)'
+        description: Force full validation (ignore PR size)
         required: false
         default: 'false'
         type: boolean
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
-  # Analyze PR size first
   analyze:
     uses: ./.github/workflows/pr-size-analyzer.yml
     permissions:
       contents: read
       pull-requests: write
-
-  # Layer 1: Smoke Tests (Always run - fast validation)
+    timeout-minutes: 60
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install minimal dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        # Pin pytest plugins (PR #3248)
 
-      - name: Install minimal dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Pin pytest plugins (PR #3248)
-          # Pin pytest plugins before package install (PR #3248 stability fix)
-          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
+        # Pin pytest plugins before package install (PR #3248 stability fix)
+
+        pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0
+        pytest-asyncio==1.3.0
 
 
-          pip install pytest pytest-timeout
 
-      - name: Run import validation
-        id: imports
-        continue-on-error: false
-        run: |
-          echo "Testing basic imports..."
-          python -c "import sys; print(f'Python: {sys.version}')"
+        pip install pytest pytest-timeout
 
-          # Test core module imports
-          python -c "import pathlib; import json; import subprocess" || exit 1
+        '
+    - name: Run import validation
+      id: imports
+      continue-on-error: false
+      run: "echo \"Testing basic imports...\"\npython -c \"import sys; print(f'Python:\
+        \ {sys.version}')\"\n\n# Test core module imports\npython -c \"import pathlib;\
+        \ import json; import subprocess\" || exit 1\n\necho \"\u2713 Import validation\
+        \ passed\"\n"
+    - name: Run smoke tests
+      run: "# Quick syntax and basic functionality tests\n# These should complete\
+        \ in <2 minutes\npytest tests/ -k \"smoke or quick\" \\\n  --timeout=60 \\\
+        \n  -v \\\n  --tb=short \\\n  -x \\\n  || echo \"smoke_failed=true\" >> $GITHUB_OUTPUT\n"
+    - name: Report smoke results
+      if: always()
+      run: 'echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
 
-          echo "✓ Import validation passed"
+        echo "**Status:** Layer 1 validation" >> $GITHUB_STEP_SUMMARY
 
-      - name: Run smoke tests
-        run: |
-          # Quick syntax and basic functionality tests
-          # These should complete in <2 minutes
-          pytest tests/ -k "smoke or quick" \
-            --timeout=60 \
-            -v \
-            --tb=short \
-            -x \
-            || echo "smoke_failed=true" >> $GITHUB_OUTPUT
+        echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report smoke results
-        if: always()
-        run: |
-          echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Layer 1 validation" >> $GITHUB_STEP_SUMMARY
-          echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
-
-  # Layer 2: Unit Tests (Conditional based on PR size)
+        '
   unit-tests:
-    needs: [analyze, smoke-tests]
-    if: |
-      needs.analyze.outputs.pr_size == 'small' ||
-      needs.analyze.outputs.pr_size == 'medium' ||
-      github.event.inputs.force_full == 'true'
+    needs:
+    - analyze
+    - smoke-tests
+    if: 'needs.analyze.outputs.pr_size == ''small'' ||
+
+      needs.analyze.outputs.pr_size == ''medium'' ||
+
+      github.event.inputs.force_full == ''true''
+
+      '
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 20
-
     strategy:
       matrix:
-        shard: [1, 2, 3]
+        shard:
+        - 1
+        - 2
+        - 3
       fail-fast: false
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install pytest pytest-timeout pytest-xdist
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-timeout pytest-xdist
-          pip install -e .
+        pip install -e .
 
-      - name: Run unit tests (shard ${{ matrix.shard }})
-        run: |
-          pytest tests/ \
-            --timeout=180 \
-            -m "not slow and not integration" \
-            --dist=loadfile \
-            -n auto \
-            --shard-id=$((${{ matrix.shard }} - 1)) \
-            --num-shards=3 \
-            -v \
-            || echo "unit_failed=true" >> $GITHUB_OUTPUT
+        '
+    - name: Run unit tests (shard ${{ matrix.shard }})
+      run: "pytest tests/ \\\n  --timeout=180 \\\n  -m \"not slow and not integration\"\
+        \ \\\n  --dist=loadfile \\\n  -n auto \\\n  --shard-id=$((${{ matrix.shard\
+        \ }} - 1)) \\\n  --num-shards=3 \\\n  -v \\\n  || echo \"unit_failed=true\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Report unit results
+      if: always()
+      run: 'echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report unit results
-        if: always()
-        run: |
-          echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
 
-  # Layer 3: Integration Tests (Only for small PRs or forced)
+        '
   integration-tests:
-    needs: [analyze, unit-tests]
-    if: |
-      needs.analyze.outputs.pr_size == 'small' ||
-      github.event.inputs.force_full == 'true'
+    needs:
+    - analyze
+    - unit-tests
+    if: 'needs.analyze.outputs.pr_size == ''small'' ||
+
+      github.event.inputs.force_full == ''true''
+
+      '
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 30
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install pytest pytest-timeout
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-timeout
-          pip install -e .
+        pip install -e .
 
-      - name: Run integration tests
-        run: |
-          pytest tests/ \
-            --timeout=300 \
-            -m "integration and not slow" \
-            -v \
-            --tb=short \
-            || echo "integration_failed=true" >> $GITHUB_OUTPUT
+        '
+    - name: Run integration tests
+      run: "pytest tests/ \\\n  --timeout=300 \\\n  -m \"integration and not slow\"\
+        \ \\\n  -v \\\n  --tb=short \\\n  || echo \"integration_failed=true\" >> $GITHUB_OUTPUT\n"
+    - name: Report integration results
+      if: always()
+      run: 'echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report integration results
-        if: always()
-        run: |
-          echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
 
-  # Layer 4: Slow Tests (Only on-demand or for small PRs with force)
+        '
   slow-tests:
-    needs: [analyze, integration-tests]
-    if: |
-      github.event.inputs.force_full == 'true' &&
-      needs.analyze.outputs.pr_size == 'small'
+    needs:
+    - analyze
+    - integration-tests
+    if: 'github.event.inputs.force_full == ''true'' &&
+
+      needs.analyze.outputs.pr_size == ''small''
+
+      '
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 60
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install pytest pytest-timeout
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-timeout
-          pip install -e .
+        pip install -e .
 
-      - name: Run slow tests
-        run: |
-          pytest tests/ \
-            --timeout=600 \
-            -m "slow" \
-            -v \
-            --tb=short \
-            || echo "slow_failed=true" >> $GITHUB_OUTPUT
+        '
+    - name: Run slow tests
+      run: "pytest tests/ \\\n  --timeout=600 \\\n  -m \"slow\" \\\n  -v \\\n  --tb=short\
+        \ \\\n  || echo \"slow_failed=true\" >> $GITHUB_OUTPUT\n"
+    - name: Report slow results
+      if: always()
+      run: 'echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report slow results
-        if: always()
-        run: |
-          echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
 
-  # Summary and reporting
+        '
   validation-summary:
-    needs: [analyze, smoke-tests, unit-tests, integration-tests, slow-tests]
+    needs:
+    - analyze
+    - smoke-tests
+    - unit-tests
+    - integration-tests
+    - slow-tests
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -234,85 +219,70 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - name: Checkout (needed for post-pr-summary action)
-        uses: actions/checkout@v7 # v6.0.3
-
-      - name: Generate summary
-        id: gen-summary
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const prSize = '${{ needs.analyze.outputs.pr_size }}';
-            const validationStrategy = '${{ needs.analyze.outputs.validation_strategy }}';
-
-            const layerResults = {
-              smoke: '${{ needs.smoke-tests.result }}',
-              unit: '${{ needs.unit-tests.result }}',
-              integration: '${{ needs.integration-tests.result }}',
-              slow: '${{ needs.slow-tests.result }}'
-            };
-
-            const statusEmoji = {
-              'success': '✅',
-              'failure': '❌',
-              'skipped': '⏭️',
-              'cancelled': '🚫'
-            };
-
-            const anyFailed = Object.values(layerResults).some(r => r === 'failure');
-            const overallStatus = anyFailed ? 'failure' : 'success';
-
-            const summaryLine = `${prSize} PR · ${validationStrategy} · smoke=${layerResults.smoke} unit=${layerResults.unit}`;
-            const details = [
-              `| Layer | Status | Notes |`,
-              `|-------|--------|-------|`,
-              `| 🔥 Smoke | ${statusEmoji[layerResults.smoke] || '❓'} ${layerResults.smoke} | Always runs |`,
-              `| 🧪 Unit | ${statusEmoji[layerResults.unit] || '❓'} ${layerResults.unit} | Small/Medium PRs |`,
-              `| 🔗 Integration | ${statusEmoji[layerResults.integration] || '❓'} ${layerResults.integration} | Small PRs only |`,
-              `| 🐌 Slow | ${statusEmoji[layerResults.slow] || '❓'} ${layerResults.slow} | On-demand |`,
-            ].join('\n');
-
-            core.setOutput('status', overallStatus);
-            core.setOutput('summary-line', summaryLine);
-            core.setOutput('details', details);
-
-      - name: Post to PR Status Dashboard
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: 'Progressive Validation'
-          status: ${{ steps.gen-summary.outputs.status }}
-          summary: ${{ steps.gen-summary.outputs.summary-line }}
-          details: ${{ steps.gen-summary.outputs.details }}
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: Checkout (needed for post-pr-summary action)
+      uses: actions/checkout@v7
+    - name: Generate summary
+      id: gen-summary
+      uses: actions/github-script@v8
+      with:
+        script: "const prSize = '${{ needs.analyze.outputs.pr_size }}';\nconst validationStrategy\
+          \ = '${{ needs.analyze.outputs.validation_strategy }}';\n\nconst layerResults\
+          \ = {\n  smoke: '${{ needs.smoke-tests.result }}',\n  unit: '${{ needs.unit-tests.result\
+          \ }}',\n  integration: '${{ needs.integration-tests.result }}',\n  slow:\
+          \ '${{ needs.slow-tests.result }}'\n};\n\nconst statusEmoji = {\n  'success':\
+          \ '\u2705',\n  'failure': '\u274C',\n  'skipped': '\u23ED\uFE0F',\n  'cancelled':\
+          \ '\U0001F6AB'\n};\n\nconst anyFailed = Object.values(layerResults).some(r\
+          \ => r === 'failure');\nconst overallStatus = anyFailed ? 'failure' : 'success';\n\
+          \nconst summaryLine = `${prSize} PR \xB7 ${validationStrategy} \xB7 smoke=${layerResults.smoke}\
+          \ unit=${layerResults.unit}`;\nconst details = [\n  `| Layer | Status |\
+          \ Notes |`,\n  `|-------|--------|-------|`,\n  `| \U0001F525 Smoke | ${statusEmoji[layerResults.smoke]\
+          \ || '\u2753'} ${layerResults.smoke} | Always runs |`,\n  `| \U0001F9EA\
+          \ Unit | ${statusEmoji[layerResults.unit] || '\u2753'} ${layerResults.unit}\
+          \ | Small/Medium PRs |`,\n  `| \U0001F517 Integration | ${statusEmoji[layerResults.integration]\
+          \ || '\u2753'} ${layerResults.integration} | Small PRs only |`,\n  `| \U0001F40C\
+          \ Slow | ${statusEmoji[layerResults.slow] || '\u2753'} ${layerResults.slow}\
+          \ | On-demand |`,\n].join('\\n');\n\ncore.setOutput('status', overallStatus);\n\
+          core.setOutput('summary-line', summaryLine);\ncore.setOutput('details',\
+          \ details);\n"
+    - name: Post to PR Status Dashboard
+      if: github.event_name == 'pull_request'
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: Progressive Validation
+        status: ${{ steps.gen-summary.outputs.status }}
+        summary: ${{ steps.gen-summary.outputs.summary-line }}
+        details: ${{ steps.gen-summary.outputs.details }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: validation-summary
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Progressive Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Progressive Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
