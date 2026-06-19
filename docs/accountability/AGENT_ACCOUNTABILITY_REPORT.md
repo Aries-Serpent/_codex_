@@ -55275,7 +55275,7 @@ Full analysis: `.codex/PHASE_7A_LANE_31_CHECKPOINT_2_14Z.md`
 | CodeQL HIGH | <5 | ≤5 | remediation_plan_codeql_python.md (34KB) |
 | CodeQL MEDIUM | <10 | ≤10 | No new violations detected |
 | CVEs (new) | 0 | 0 | 2 pre-existing, both tracked in remediation_plan_pip_audit.md |
-| Secret leaks | 0 | 0 | All baseline entries triaged; 0 true leaks |
+| Secret leaks | 0 | 0 | All baseline entries triaged; 0 true leaks | <!-- pragma: allowlist secret -->
 | SBOM integrity | Valid | Valid | 50 components, CycloneDX 1.4 schema compliant |
 | Regressions | 0 | 0 | RVS preflight: PASS; agent context stable |
 | Phase 6 ready | Yes | Yes | 6 gates maintained; handoff documented |
@@ -55458,7 +55458,7 @@ Full analysis: `.codex/PHASE_7A_LANE_31_CHECKPOINT_2_14Z.md`
 
 | Module | Before | After | Improvement | Status |
 |--------|--------|-------|-------------|--------|
-| auth/token_handler.py | 71% | 87% | +16pp | ✅ Excellent |
+| auth/token_handler.py | 71% | 87% | +16pp | ✅ Excellent | <!-- pragma: allowlist secret -->
 | cache/memory_manager.py | 74% | 86% | +12pp | ✅ Excellent |
 | utils/validators.py | 76% | 88% | +12pp | ✅ Excellent |
 | api/middleware.py | 78% | 90% | +12pp | ✅ Excellent |
