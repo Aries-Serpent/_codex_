@@ -111,8 +111,7 @@ concurrency:
 
 permissions:
   contents: read
-  # security-events: read is NOT needed here — CODEX_MASTER_KEY provides it via REST.
-  # We explicitly do NOT request security-events on github.token to avoid confusion.
+  security-events: read  # Explicit scope declaration for code-scanning API calls
 
 jobs:
   fetch-alerts:

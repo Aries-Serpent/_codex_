@@ -43,12 +43,14 @@ concurrency:
 permissions:
   contents: read
   issues: write
+  security-events: read  # Required for code-scanning/alerts probe
 
 
 jobs:
   check-t03:
     name: Check T-03 — security_events scope
     uses: ./.github/workflows/admin-action-notifier.yml
+    timeout-minutes: 10
     secrets: inherit  # pragma: allowlist secret
     with:
       gap_id: "T-03"
