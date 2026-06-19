@@ -685,7 +685,7 @@ requests==2.33.0
     #   wandb
 responses==0.26.1
     # via codex-ml (pyproject.toml)
-rich==14.3.3
+rich==15.0.0
     # via
     #   evidently
     #   litestar
