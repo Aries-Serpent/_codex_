@@ -284,7 +284,7 @@ class IngestionPipeline:
 
     def ingest_file(
         self,
-        file_path: str | Path,
+        file_path: Union[str, Path],
         document_id: Optional[str] = None,
         metadata: Optional[dict[str, Any]] = None,
     ) -> IngestionResult:
