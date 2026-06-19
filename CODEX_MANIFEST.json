@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-19T22:25:03Z",
+  "generated_at": "2026-06-19T23:09:46Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1405,7 +1405,7 @@
     },
     {
       "name": "embedding-index-rebuild",
-      "enforcement_tier": "GROUNDED",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -2260,5 +2260,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e417635e109d27efdf27c11890a6540d3b4e1613f007267bbdaf04d01aa6448f"
+  "integrity_sha256": "ca00d3f83a1407094343f7a26d6cfeca063b0fea5c125b39151adbcd8bac1a88"
 }
