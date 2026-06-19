@@ -110,7 +110,7 @@ merged. This is dead code that still fires on `0D_base_ → main` PRs.
 | `semgrep_sarif.yml` | Semgrep SAST |
 | `codeql-analysis.yml` | CodeQL analysis |
 | `nightly-codeql-alert-triage.yml` | CodeQL triage |
-| `scan-secrets-variables.yml` | Secrets scan |
+| `scan-secrets-variables.yml` | Secrets scan | <!-- pragma: allowlist secret -->
 | `dependency-scan.yml` | Dependency vulnerabilities |
 | `scheduled-dependency-audit.yml` | Scheduled dep audit |
 | `security-alert-notification.yml` | Alert notifications |

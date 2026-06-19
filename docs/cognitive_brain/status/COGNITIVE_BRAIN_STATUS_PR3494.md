@@ -212,17 +212,17 @@ Should print App ID, installation ID, and permissions.
 | W-096c | auto_promote_tier.py — guard + write path | ✅ |
 | W-096d | CODEX_MANIFEST.json refreshed | ✅ |
 | W-097a | CODEX_MANIFEST.json EOF newline | ✅ |
-| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | ✅ |
+| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | ✅ | <!-- pragma: allowlist secret -->
 | W-097c | auto_promote_tier.py docstring correction | ✅ |
 | W-098a | test_auto_promote_tier.py — 15 tests | ✅ |
-| W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ |
+| W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ | <!-- pragma: allowlist secret -->
 | W-099 | agent-auth-delegation.yml checkout ref fix | ✅ |
 | W-100 | test_auto_promote_tier.py ruff lint fix | ✅ |
 | W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | ✅ |
-| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ |
+| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ | <!-- pragma: allowlist secret -->
 | W-104a | AGENT_REGISTRY.yaml v1.9.2 — workflow-ci-fixer D_CAPABLE | ✅ |
 | W-104b | ADR-20260304-second-d-capable-promotion.md | ✅ |
-| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated | ✅ |
+| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated | ✅ | <!-- pragma: allowlist secret -->
 | W-104d | Status / follow-up prompt updated (P2 → ✅ COMPLETE) | ✅ |
 | W-104e | REQ-4 + REQ-5 updated | ✅ |
 

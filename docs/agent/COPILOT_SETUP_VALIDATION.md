@@ -303,8 +303,8 @@ Test Suite: Copilot Setup Steps Validation
   ✅ Dependent Workflows (2.1): All 5 dependent workflows valid
   ✅ Supporting Scripts (2.2): All 3 supporting scripts valid
   ✅ Environment Variables (2.3): All 10 critical environment variables properly defined
-  ✅ Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow
-  ✅ Token Reference Validation (5.2): All token references properly use GitHub secrets
+  ✅ Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow  # pragma: allowlist secret
+  ✅ Token Reference Validation (5.2): All token references properly use GitHub secrets  # pragma: allowlist secret
   ✅ YAML Injection Prevention (5.3): YAML injection prevention check passed
   ✅ File Size Regression: 673 lines (+0.0% from baseline 673)
   ✅ Complexity Analysis: 2 jobs, 27 steps (within acceptable bounds)

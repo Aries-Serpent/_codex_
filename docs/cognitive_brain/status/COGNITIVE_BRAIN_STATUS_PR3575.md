@@ -220,7 +220,7 @@ that the scanner is designed to catch. These appear as plain text (not code span
 ## Architecture Diagram: Auto-Fix Flow
 
 ```
-Agent Token Delegation enabled
+Agent Token Delegation enabled  # pragma: allowlist secret
          │
          ▼
 ┌─────────────────────────────────────────────────────────┐
