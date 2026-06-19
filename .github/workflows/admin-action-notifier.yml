@@ -85,6 +85,7 @@ concurrency:
 permissions:
   contents: read
   issues: write
+  security-events: read  # Required for probing code-scanning API
 
 
 jobs:

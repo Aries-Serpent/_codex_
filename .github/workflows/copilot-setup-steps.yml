@@ -214,7 +214,9 @@ jobs:
             MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable -q .mergeable 2>/dev/null || echo "UNKNOWN")
             echo "PR #${PR_NUMBER} mergeable status: ${MERGEABLE}"
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
-              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER} has merge conflicts with base branch '${BASE}'. Agent MUST resolve these before any other work."
+              echo "::warning::§0.4 MERGE CONFLICT DETECTED — PR #${PR_NUMBER}"
+              echo "  has merge conflicts with base branch '${BASE}'."
+              echo "  Agent MUST resolve these before any other work."
               echo "COPILOT_MERGE_CONFLICT=true" >> "$GITHUB_ENV"
             elif [ "$MERGEABLE" = "MERGEABLE" ]; then
               echo "✅ No merge conflicts detected"
@@ -230,7 +232,9 @@ jobs:
             AHEAD=$(git rev-list --count "origin/${BASE}..HEAD" 2>/dev/null || echo "0")
             echo "Branch status: ${BEHIND} behind, ${AHEAD} ahead of ${BASE}"
             if [ "$BEHIND" -gt 0 ]; then
-              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND} commit(s) behind '${BASE}'. Agent should rebase or merge base before starting work."
+              echo "::warning::§0.4 BRANCH DIVERGED — Branch is ${BEHIND}"
+              echo "  commit(s) behind '${BASE}'."
+              echo "  Agent should rebase or merge base before starting work."
               echo "COPILOT_BRANCH_BEHIND=${BEHIND}" >> "$GITHUB_ENV"
             else
               echo "✅ Branch is up-to-date with ${BASE}"
@@ -272,7 +276,9 @@ jobs:
           echo "COPILOT_CI_FAILURE_ISSUES=${TOTAL}" >> "$GITHUB_ENV"
 
           if [ "$TOTAL" -gt 0 ]; then
-            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s) found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert). Agent should review these for patterns affecting this PR."
+            echo "::warning::§0.2 OPEN CI FAILURE ISSUES — ${TOTAL} open issue(s)"
+            echo "  found (${CI_FAILURES} ci-failure, ${HEALTH_ALERTS} ci-health-alert)."
+            echo "  Agent should review these for patterns affecting this PR."
             echo ""
             echo "── Open CI failure issues: ──"
             gh issue list --repo "$REPO" --label "ci-failure" --state open \
