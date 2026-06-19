@@ -15,7 +15,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, Tuple, Optional
+from typing import Dict, Optional, Tuple
 
 # Critical packages that must be consistent across all files
 CRITICAL_PACKAGES = {
@@ -52,7 +52,7 @@ class DependencyValidator:
 
     def parse_requirement(self, line: str) -> Optional[Tuple[str, str]]:
         """Parse a requirement line into (package_name, version_spec).
-        
+
         Handles pip options like --index-url and --extra-index-url by extracting
         the requirement spec before the options, allowing lines like:
             torch==2.11.0+cpu --index-url https://...
@@ -84,7 +84,7 @@ class DependencyValidator:
 
     def read_pyproject_deps(self, filepath: Path) -> Dict[str, str]:
         """Extract dependencies from pyproject.toml.
-        
+
         Handles:
         - TOML quoted strings (e.g., "pandas>=...")
         - Both [project.dependencies] and [project.optional-dependencies]
@@ -156,7 +156,7 @@ class DependencyValidator:
 
     def check_consistency(self) -> bool:
         """Check all files for consistency.
-        
+
         Uses semantic version checking: an exact pin like ==2.11.0+cpu
         is considered valid if it falls within the expected range like >=2.6.1,<3.0.0
         """
@@ -218,7 +218,7 @@ class DependencyValidator:
 
     def _version_in_range(self, actual: str, expected_range: str) -> bool:
         """Check if actual version satisfies expected range.
-        
+
         Examples:
             actual="2.11.0+cpu", expected_range=">=2.6.1,<3.0.0" -> True
             actual="==2.10.0", expected_range=">=2.6.1,<3.0.0" -> True (within range)
@@ -228,11 +228,11 @@ class DependencyValidator:
             # Extract version numbers from actual spec
             # Handle cases like "==2.11.0+cpu", ">=2.10", etc.
             actual_nums = re.findall(r'\d+', actual.split('+')[0].split(',')[0])
-            
+
             # Parse expected range constraints
             lower_bound = None
             upper_bound = None
-            
+
             for constraint in expected_range.split(','):
                 constraint = constraint.strip()
                 if constraint.startswith('>='):
@@ -251,12 +251,12 @@ class DependencyValidator:
                     upper_nums = re.findall(r'\d+', constraint[2:])
                     if upper_nums:
                         upper_bound = [int(n) for n in upper_nums]
-            
+
             if not actual_nums:
                 return False
-            
+
             actual_version = [int(n) for n in actual_nums[:3]]
-            
+
             # Pad versions to same length for comparison
             if lower_bound:
                 while len(actual_version) < len(lower_bound):
@@ -265,7 +265,7 @@ class DependencyValidator:
                     lower_bound.append(0)
                 if actual_version < lower_bound:
                     return False
-            
+
             if upper_bound:
                 while len(actual_version) < len(upper_bound):
                     actual_version.append(0)
@@ -273,7 +273,7 @@ class DependencyValidator:
                     upper_bound.append(0)
                 if actual_version >= upper_bound:
                     return False
-            
+
             return True
         except (ValueError, IndexError):
             # If parsing fails, treat as not matching

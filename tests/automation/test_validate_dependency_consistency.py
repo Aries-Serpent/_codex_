@@ -8,15 +8,13 @@ Tests cover the following improvements:
 5. --strict flag behavior (warnings-only by default)
 """
 
-import re
+# Import the validator
+import sys
 import tempfile
 from pathlib import Path
-from typing import Optional, Tuple
 
 import pytest
 
-# Import the validator
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'ci'))
 from validate_dependency_consistency import DependencyValidator
 
@@ -40,7 +38,7 @@ class TestParseRequirement:
 
     def test_parse_requirement_with_index_url(self):
         """Test parsing requirement with --index-url option.
-        
+
         This is the key fix in PR #5008: lines like
             torch==2.11.0+cpu --index-url https://download.pytorch.org
         should be parsed as (torch, ==2.11.0+cpu) instead of being ignored.
@@ -158,7 +156,7 @@ dependencies = [
 
     def test_read_pyproject_deps_with_optional_dependencies(self):
         """Test reading optional-dependencies section.
-        
+
         PR #5008 adds support for [project.optional-dependencies] sections,
         which should be parsed in addition to [project.dependencies].
         """
@@ -205,7 +203,7 @@ test = [
 
 class TestVersionInRange:
     """Test _version_in_range() semantic version checking.
-    
+
     This is the key feature added in PR #5008 for proper version range validation.
     """
 
@@ -220,7 +218,7 @@ class TestVersionInRange:
 
     def test_version_in_range_with_local_version(self):
         """Test version with local identifier (+cpu) within range.
-        
+
         This is a common pattern with PyTorch: ==2.11.0+cpu
         """
         result = self.validator._version_in_range('2.11.0+cpu', '>=2.6.1,<3.0.0')
@@ -269,7 +267,7 @@ class TestVersionInRange:
 
     def test_version_in_range_less_than_or_equal_constraint(self):
         """Test less-than-or-equal constraint parsing.
-        
+
         NOTE: Known limitation in _version_in_range() - the <= constraint
         is implemented using >= comparison, which rejects the boundary value.
         This test documents the actual behavior (conservative validation).
@@ -297,7 +295,7 @@ class TestVersionInRange:
 
 class TestIsDowngrade:
     """Test _is_downgrade() version comparison.
-    
+
     PR #5008 adds explanatory comments about graceful fallback for unparsable versions.
     """
 
@@ -327,7 +325,7 @@ class TestIsDowngrade:
 
     def test_is_downgrade_unparsable_versions_gracefully_fail(self):
         """Test that unparsable versions gracefully return False.
-        
+
         This is the design principle from PR #5008: unparsable version constraints
         are treated as "not a detected downgrade" by design, allowing graceful
         fallback to manual review.
@@ -356,7 +354,7 @@ class TestConsistencyValidation:
 
     def test_consistency_uses_version_range_checking(self):
         """Test that consistency checking uses _version_in_range().
-        
+
         This is a key PR #5008 feature: using semantic version checking
         instead of string equality.
         """
@@ -378,7 +376,7 @@ class TestConsistencyValidation:
                     actual = deps['torch']
                     # The validation should use _version_in_range
                     is_valid = (
-                        actual == expected or 
+                        actual == expected or
                         self.validator._version_in_range(actual, expected)
                     )
                     assert is_valid, f"torch version mismatch: {actual} not in {expected}"
@@ -386,7 +384,7 @@ class TestConsistencyValidation:
 
 class TestStrictFlagBehavior:
     """Test --strict flag behavior changes from PR #5008.
-    
+
     Key change: --strict is now opt-in, warnings-only by default.
     """
 
@@ -394,8 +392,9 @@ class TestStrictFlagBehavior:
         """Test that --strict flag is properly documented."""
         # The help text should indicate warnings-only by default
         # This is implicit in the main() function
-        import scripts.ci.validate_dependency_consistency as val_module
         import inspect
+
+        import scripts.ci.validate_dependency_consistency as val_module
 
         source = inspect.getsource(val_module.main)
         # Should have explanatory text about warnings-only mode
