@@ -93,7 +93,7 @@ class TestEmailRedaction:
 
         assert "john" not in redacted
         assert "doe" not in redacted
-        assert "example.com" in redacted
+        assert "example.com" in redacted  # codeql[py/incomplete-url-substring-sanitization]  # pragma: allowlist secret
         assert redacted.startswith("j")
 
     def test_redact_email_short_local(self):

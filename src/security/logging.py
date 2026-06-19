@@ -326,7 +326,8 @@ if __name__ == "__main__":
     print()
 
     test_password = "MyS3cur3P@ssw0rd!"
-    print(f"Original password: {test_password}")
+    # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Original password: {test_password}")  # nosec
     print(f"Redacted password: {redact_password(test_password)}")
     print()
 
