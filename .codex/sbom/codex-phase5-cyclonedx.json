@@ -1,0 +1,600 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:codex-phase5-2026-01-23",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-19T07:35:37.797659+00:00",
+    "tools": [
+      {
+        "vendor": "GitHub",
+        "name": "Advisory Database",
+        "version": "2025-01"
+      },
+      {
+        "vendor": "Aries-Serpent",
+        "name": "Codex Phase 5 Scanner",
+        "version": "1.0.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "pkg:github/aries-serpent/codex@0.9.0",
+      "type": "application",
+      "name": "codex-ml",
+      "version": "0.9.0",
+      "description": "Codex ML training, evaluation, and plugin framework",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "supplier": {
+        "name": "Aries Serpent"
+      }
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/torch@2.6.1",
+      "type": "library",
+      "name": "torch",
+      "version": "2.6.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/torch@2.6.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/transformers@5.12.1",
+      "type": "library",
+      "name": "transformers",
+      "version": "5.12.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/transformers@5.12.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/numpy@2.4.6",
+      "type": "library",
+      "name": "numpy",
+      "version": "2.4.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/numpy@2.4.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/sentence-transformers@5.5.1",
+      "type": "library",
+      "name": "sentence-transformers",
+      "version": "5.5.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/sentence-transformers@5.5.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/faiss-cpu@1.7.4",
+      "type": "library",
+      "name": "faiss-cpu",
+      "version": "1.7.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/faiss-cpu@1.7.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/cryptography@49.0.0",
+      "type": "library",
+      "name": "cryptography",
+      "version": "49.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/cryptography@49.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/defusedxml@0.7.1",
+      "type": "library",
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Python-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/defusedxml@0.7.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyyaml@6.0",
+      "type": "library",
+      "name": "pyyaml",
+      "version": "6.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pyyaml@6.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/certifi@2024.7.4",
+      "type": "library",
+      "name": "certifi",
+      "version": "2024.7.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MPL-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/certifi@2024.7.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/filelock@3.29.0",
+      "type": "library",
+      "name": "filelock",
+      "version": "3.29.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Unlicense"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/filelock@3.29.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/fastapi@0.135.3",
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.135.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/fastapi@0.135.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/requests@2.34.2",
+      "type": "library",
+      "name": "requests",
+      "version": "2.34.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/requests@2.34.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/urllib3@2.7.0",
+      "type": "library",
+      "name": "urllib3",
+      "version": "2.7.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/urllib3@2.7.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/httpx@0.26.0",
+      "type": "library",
+      "name": "httpx",
+      "version": "0.26.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/httpx@0.26.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/idna@3.15",
+      "type": "library",
+      "name": "idna",
+      "version": "3.15",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/idna@3.15"
+    },
+    {
+      "bom-ref": "pkg:pypi/pydantic@2.4.0",
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.4.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pydantic@2.4.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/hydra-core@1.3.2",
+      "type": "library",
+      "name": "hydra-core",
+      "version": "1.3.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/hydra-core@1.3.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/jinja2@3.1.6",
+      "type": "library",
+      "name": "jinja2",
+      "version": "3.1.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/jinja2@3.1.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/jsonschema@4.26.0",
+      "type": "library",
+      "name": "jsonschema",
+      "version": "4.26.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/jsonschema@4.26.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytest@9.0.3",
+      "type": "library",
+      "name": "pytest",
+      "version": "9.0.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pytest@9.0.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytest-cov@5.0.0",
+      "type": "library",
+      "name": "pytest-cov",
+      "version": "5.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pytest-cov@5.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytest-xdist@3.8.0",
+      "type": "library",
+      "name": "pytest-xdist",
+      "version": "3.8.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pytest-xdist@3.8.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/hypothesis@6.152.4",
+      "type": "library",
+      "name": "hypothesis",
+      "version": "6.152.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MPL-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/hypothesis@6.152.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/coverage@7.10.6",
+      "type": "library",
+      "name": "coverage",
+      "version": "7.10.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/coverage@7.10.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/typer@0.12.0",
+      "type": "library",
+      "name": "typer",
+      "version": "0.12.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/typer@0.12.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/click@8.1.0",
+      "type": "library",
+      "name": "click",
+      "version": "8.1.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/click@8.1.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/tenacity@8.2.0",
+      "type": "library",
+      "name": "tenacity",
+      "version": "8.2.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/tenacity@8.2.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/pyo3@0.24.1",
+      "type": "library",
+      "name": "pyo3",
+      "version": "0.24.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/pyo3@0.24.1"
+    },
+    {
+      "bom-ref": "pkg:cargo/tokio@1.36.0",
+      "type": "library",
+      "name": "tokio",
+      "version": "1.36.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/tokio@1.36.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/rayon@1.8.1",
+      "type": "library",
+      "name": "rayon",
+      "version": "1.8.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/rayon@1.8.1"
+    },
+    {
+      "bom-ref": "pkg:cargo/crossbeam@0.8.4",
+      "type": "library",
+      "name": "crossbeam",
+      "version": "0.8.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/crossbeam@0.8.4"
+    },
+    {
+      "bom-ref": "pkg:cargo/parking_lot@0.12.0",
+      "type": "library",
+      "name": "parking_lot",
+      "version": "0.12.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/parking_lot@0.12.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/serde@1.0.197",
+      "type": "library",
+      "name": "serde",
+      "version": "1.0.197",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/serde@1.0.197"
+    },
+    {
+      "bom-ref": "pkg:cargo/rmp-serde@1.1.2",
+      "type": "library",
+      "name": "rmp-serde",
+      "version": "1.1.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/rmp-serde@1.1.2"
+    },
+    {
+      "bom-ref": "pkg:cargo/lz4@1.24.0",
+      "type": "library",
+      "name": "lz4",
+      "version": "1.24.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT OR Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/lz4@1.24.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/zstd@0.13.0",
+      "type": "library",
+      "name": "zstd",
+      "version": "0.13.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/zstd@0.13.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/flate2@1.1.0",
+      "type": "library",
+      "name": "flate2",
+      "version": "1.1.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT OR Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/flate2@1.1.0"
+    },
+    {
+      "bom-ref": "pkg:cargo/dashmap@5.5.3",
+      "type": "library",
+      "name": "dashmap",
+      "version": "5.5.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/dashmap@5.5.3"
+    },
+    {
+      "bom-ref": "pkg:cargo/anyhow@1.0.80",
+      "type": "library",
+      "name": "anyhow",
+      "version": "1.0.80",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/anyhow@1.0.80"
+    },
+    {
+      "bom-ref": "pkg:cargo/tracing@0.1.40",
+      "type": "library",
+      "name": "tracing",
+      "version": "0.1.40",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:cargo/tracing@0.1.40"
+    }
+  ]
+}
