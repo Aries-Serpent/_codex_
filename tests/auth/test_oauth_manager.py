@@ -9,7 +9,10 @@ Tests cover:
 - Error handling and exceptions
 """
 
-from datetime import datetime, timedelta  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from datetime import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    datetime,
+    timedelta,
+)
 from unittest.mock import MagicMock, patch
 
 import pytest  # pragma: allowlist secret

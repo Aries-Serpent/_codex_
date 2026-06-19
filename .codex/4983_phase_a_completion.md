@@ -38,7 +38,7 @@ Phase A successfully coordinates the validation cascade reset across all 8 affec
 | 3. Resilient Validation Suite | resilient-validation.yml | 5 | 🔴 BLOCKED |
 | 4. Auto-Fix Common CI Issues | auto-fix-common-issues.yml | 5 | 🔴 BLOCKED |
 | 5. PR Auto-Fix Check | auto-fix-pr-check.yml | 5 | 🔴 BLOCKED |
-| 6. Agent Token Delegation | agent-token-delegation.yml | 5 | 🔴 BLOCKED |
+| 6. Agent Token Delegation | agent-token-delegation.yml | 5 | 🔴 BLOCKED | <!-- pragma: allowlist secret -->
 | 7. PR Comment Review Gate | pr-comment-review-gate.yml | 5 | 🔴 BLOCKED |
 | 8. Workflow Execution Gate | workflow-execution-gate.yml | 5 | 🔴 BLOCKED |
 
@@ -165,7 +165,7 @@ Cascade Status: ✅ RESET
 ├─ Resilient Validation Suite (5 failures) → ✅ AUTO-RESOLVED
 ├─ Auto-Fix Common CI Issues (5 failures) → ✅ AUTO-RESOLVED
 ├─ PR Auto-Fix Check (5 failures) → ✅ AUTO-RESOLVED
-├─ Agent Token Delegation (5 failures) → ✅ AUTO-RESOLVED
+├─ Agent Token Delegation (5 failures) → ✅ AUTO-RESOLVED  # pragma: allowlist secret
 ├─ PR Comment Review Gate (5 failures) → ✅ AUTO-RESOLVED
 └─ Workflow Execution Gate (5 failures) → ✅ AUTO-RESOLVED
 ```
@@ -183,7 +183,7 @@ Cascade Status: ✅ RESET
 ✅ Pattern 2:  Unused Variables — ✓ No issues
 ✅ Pattern 3:  YAML Indentation — ✓ No issues
 ✅ Pattern 4:  Coverage Thresholds — ✓ No issues
-✅ Pattern 5:  Tokenizer Fallbacks — ✓ No issues
+✅ Pattern 5:  Tokenizer Fallbacks — ✓ No issues  # pragma: allowlist secret
 ✅ Pattern 6:  Test Assertions — ✓ No issues
 ✅ Pattern 7:  Redundant Imports — ✓ No issues
 ✅ Pattern 8:  CodeQL Alerts — ✓ No issues
@@ -201,11 +201,11 @@ Cascade Status: ✅ RESET
 ✅ Pattern 20: Dependency Conflicts — ✓ No issues
 ✅ Pattern 21: Test Collection — ✓ No issues
 ✅ Pattern 22: Tracked File Sync — ✓ No issues
-✅ Pattern 23: Secrets Baseline Plugins — ✓ No issues
-✅ Pattern 24: Codecov Token — ✓ No issues
+✅ Pattern 23: Secrets Baseline Plugins — ✓ No issues  # pragma: allowlist secret
+✅ Pattern 24: Codecov Token — ✓ No issues  # pragma: allowlist secret
 ⚠️  Pattern 25: Accountability Metadata — ⚠️ 1 ISSUE (cascade blocker)
 ✅ Pattern 26: Auto-Post Rebase Race — ✓ No issues
-✅ Pattern 27: Secrets FP Scan — ✓ No issues
+✅ Pattern 27: Secrets FP Scan — ✓ No issues  # pragma: allowlist secret
 ✅ Pattern 28: Copilot Sandbox Guard — ✓ No issues
 ✅ Pattern 29: PR Comment Triage — ✓ No issues
 ✅ Pattern 30: Merge Readiness — ✓ 85/100 (all green)
@@ -213,7 +213,7 @@ Cascade Status: ✅ RESET
 ✅ Pattern 32: Bare Type Ignore Assign — ✓ No issues
 ✅ Pattern 33: Rate Limit Checkpoint — ✓ No issues
 ✅ Pattern 34: Missing Newline at EOF — ✓ No issues
-✅ Pattern 35: Markdown FP Secrets — ✓ No issues
+✅ Pattern 35: Markdown FP Secrets — ✓ No issues  # pragma: allowlist secret
 
 Summary: 1 auto-fixable issue (Pattern 25) — ready for cascade reset
 ```
@@ -228,7 +228,7 @@ aeaaf77 docs: Add Issue #4983 agent delegation plan and execution tracking
 
 + Previous Phase 2 fixes:
   114f59d Type annotation fixes (16 failures)
-  64ec707 Secrets baseline fixes (6 failures)
+  64ec707 Secrets baseline fixes (6 failures)  # pragma: allowlist secret
   d5e7847 Coverage regression fixes (5 failures)
   647f9e2 Documentation links fixes (9 failures)
 ```

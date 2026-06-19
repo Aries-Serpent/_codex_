@@ -65,7 +65,7 @@ jobs:
 Output:
 
 ```
-test.yaml:6:5: unexpected key "default" for "job" section. expected one of "concurrency", "container", "continue-on-error", "defaults", "env", "environment", "if", "name", "needs", "outputs", "permissions", "runs-on", "secrets", "services", "steps", "strategy", "timeout-minutes", "uses", "with" [syntax-check]
+test.yaml:6:5: unexpected key "default" for "job" section. expected one of "concurrency", "container", "continue-on-error", "defaults", "env", "environment", "if", "name", "needs", "outputs", "permissions", "runs-on", "secrets", "services", "steps", "strategy", "timeout-minutes", "uses", "with" [syntax-check]  # pragma: allowlist secret
   |
 6 |     default:
   |     ^~~~~~~~
@@ -399,7 +399,7 @@ jobs:
 Output:
 
 ```
-test.yaml:7:24: undefined variable "unknown_context". available variables are "env", "github", "job", "matrix", "needs", "runner", "secrets", "steps", "strategy", "vars" [expression]
+test.yaml:7:24: undefined variable "unknown_context". available variables are "env", "github", "job", "matrix", "needs", "runner", "secrets", "steps", "strategy", "vars" [expression]  # pragma: allowlist secret
   |
 7 |       - run: echo '${{ unknown_context }}'
   |                        ^~~~~~~~~~~~~~~
@@ -1858,13 +1858,13 @@ jobs:
 Output:
 
 ```
-test.yaml:10:19: "password" section in "container" section should be specified via secrets. do not put password value directly [credentials]
+test.yaml:10:19: "password" section in "container" section should be specified via secrets. do not put password value directly [credentials]  # pragma: allowlist secret
    |
-10 |         password: pass
+10 |         password: pass  # pragma: allowlist secret
    |                   ^~~~
-test.yaml:17:21: "password" section in "redis" service should be specified via secrets. do not put password value directly [credentials]
+test.yaml:17:21: "password" section in "redis" service should be specified via secrets. do not put password value directly [credentials]  # pragma: allowlist secret
    |
-17 |           password: pass
+17 |           password: pass  # pragma: allowlist secret
    |                     ^~~~
 ```
 
@@ -1941,7 +1941,7 @@ test.yaml:4:14: "write" is invalid for permission for all the scopes. available 
   |
 4 | permissions: write
   |              ^~~~~
-test.yaml:11:7: unknown permission scope "check". all available permission scopes are "actions", "checks", "contents", "deployments", "discussions", "id-token", "issues", "packages", "pages", "pull-requests", "repository-projects", "security-events", "statuses" [permissions]
+test.yaml:11:7: unknown permission scope "check". all available permission scopes are "actions", "checks", "contents", "deployments", "discussions", "id-token", "issues", "packages", "pages", "pull-requests", "repository-projects", "security-events", "statuses" [permissions]  # pragma: allowlist secret
    |
 11 |       check: write
    |       ^~~~~~
@@ -2062,7 +2062,7 @@ jobs:
 Output:
 
 ```
-test.yaml:6:5: when a reusable workflow is called with "uses", "runs-on" is not available. only following keys are allowed: "name", "uses", "with", "secrets", "needs", "if", and "permissions" in job "job1" [syntax-check]
+test.yaml:6:5: when a reusable workflow is called with "uses", "runs-on" is not available. only following keys are allowed: "name", "uses", "with", "secrets", "needs", "if", and "permissions" in job "job1" [syntax-check]  # pragma: allowlist secret
   |
 6 |     runs-on: ubuntu-latest
   |     ^~~~~~~~
@@ -2132,7 +2132,7 @@ test.yaml:20:23: property "uri" is not defined in object type {url: string; luck
    |                       ^~~~~~~~~~
 test.yaml:23:22: property "credentials" is not defined in object type {credential: string} [expression]
    |
-23 |           TOKEN: ${{ secrets.credentials }}
+23 |           TOKEN: ${{ secrets.credentials }}  # pragma: allowlist secret
    |                      ^~~~~~~~~~~~~~~~~~~
 ```
 
@@ -2295,7 +2295,7 @@ test.yaml:6:11: input "name" is required by "./.github/workflows/reusable.yaml" 
   |
 6 |     uses: ./.github/workflows/reusable.yaml
   |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-test.yaml:6:11: secret "password" is required by "./.github/workflows/reusable.yaml" reusable workflow [workflow-call]
+test.yaml:6:11: secret "password" is required by "./.github/workflows/reusable.yaml" reusable workflow [workflow-call]  # pragma: allowlist secret
   |
 6 |     uses: ./.github/workflows/reusable.yaml
   |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2303,9 +2303,9 @@ test.yaml:9:7: input "user" is not defined in "./.github/workflows/reusable.yaml
   |
 9 |       user: rhysd
   |       ^~~~~
-test.yaml:13:7: secret "credentials" is not defined in "./.github/workflows/reusable.yaml" reusable workflow. defined secret is "password" [workflow-call]
+test.yaml:13:7: secret "credentials" is not defined in "./.github/workflows/reusable.yaml" reusable workflow. defined secret is "password" [workflow-call]  # pragma: allowlist secret
    |
-13 |       credentials: my-token
+13 |       credentials: my-token  # pragma: allowlist secret
    |       ^~~~~~~~~~~~
 test.yaml:22:11: input "id" is typed as number by reusable workflow "./.github/workflows/reusable.yaml". bool value cannot be assigned [expression]
    |
@@ -2480,7 +2480,7 @@ test.yaml:14:17: context "runner" is not allowed here. available contexts are "g
    |
 14 |           - ${{ runner.temp }}
    |                 ^~~~~~~~~~~
-test.yaml:18:17: context "env" is not allowed here. available contexts are "github", "inputs", "matrix", "needs", "secrets", "strategy", "vars". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]
+test.yaml:18:17: context "env" is not allowed here. available contexts are "github", "inputs", "matrix", "needs", "secrets", "strategy", "vars". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]  # pragma: allowlist secret
    |
 18 |       NAME: ${{ env.NAME }}
    |                 ^~~~~~~~
