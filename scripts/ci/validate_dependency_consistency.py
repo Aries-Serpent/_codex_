@@ -62,7 +62,7 @@ class DependencyValidator:
 
         # Match package==version or package>=version,<version patterns
         match = re.match(
-            r'([a-zA-Z0-9\-_.]+)\s*([=<>!~\[\]0-9.,+\s\+]*)',
+            r'([a-zA-Z0-9\-_.]+)\s*([=<>!~\[\]0-9.,+\s\+a-zA-Z]*)',
             line.split('#')[0]  # Remove inline comments
         )
         if match:
