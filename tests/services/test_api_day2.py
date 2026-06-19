@@ -1,5 +1,4 @@
 """Day 2: services - API tests"""
-import pytest
 
 class TestServiceAPI:
     def test_api_endpoint_routing(self): pass

@@ -1,5 +1,4 @@
 """Day 2: Performance and stress tests"""
-import pytest
 
 class TestPerformance:
     def test_baseline_performance(self): pass

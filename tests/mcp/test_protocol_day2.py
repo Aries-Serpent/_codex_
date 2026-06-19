@@ -1,5 +1,4 @@
 """Day 2: mcp - Protocol tests"""
-import pytest
 
 class TestMCPProtocol:
     def test_message_serialization(self): pass

@@ -1,5 +1,4 @@
 """Day 2: Utilities and helpers"""
-import pytest
 
 class TestUtilities:
     def test_string_utilities(self): pass

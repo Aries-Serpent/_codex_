@@ -2,10 +2,8 @@ from __future__ import annotations
 
 import math
 import sys
-from typing import Any
 
 import pytest
-
 
 # ============================================================================
 # PATTERN 1: NUMERIC BOUNDARY CONDITIONS (50 tests)
@@ -726,8 +724,8 @@ class TestTypeCoercion:
         # None comparisons
         assert None == None
         assert None is None
-        assert not (None is True)
-        assert not (None is False)
+        assert None is not True
+        assert None is not False
 
     def test_none_propagation_through_chain(self):
         """Test None behavior through function chains."""

@@ -4,16 +4,17 @@ Corrected with actual API signatures
 Target: 120+ additional tests
 """
 
-import pytest
-from datetime import datetime
 import sys
+from datetime import datetime
+
+import pytest
 
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
 
 try:
-    from agents.agent_memory import MemoryEntry, ContextFrame, PatternLibrary
-    from agents.physics_orchestrator import ActionType, ForceVector, ActionPath
+    from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
+    from agents.physics_orchestrator import ActionPath, ActionType, ForceVector
 except ImportError as e:
     pytest.skip(f"Import failed: {e}", allow_module_level=True)
 
@@ -444,7 +445,7 @@ class TestIntegrationScenarios:
     def test_memory_entry_context_frame_lifecycle(self):
         """Full lifecycle: create memory, add to context frame"""
         now = datetime.now().isoformat()
-        
+
         # Create entries
         entries = []
         for i in range(3):
@@ -452,13 +453,13 @@ class TestIntegrationScenarios:
                 f"mem{i}", f"cat{i}", f"content{i}", {}
             )
             entries.append(e.memory_id)
-        
+
         # Create frame with active memories
         frame = ContextFrame(
             "frame1", "task", now,
             active_memories=entries
         )
-        
+
         assert len(frame.active_memories) == 3
 
 

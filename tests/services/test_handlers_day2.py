@@ -1,5 +1,4 @@
 """Day 2: services - Handler tests"""
-import pytest
 
 class TestServiceHandlers:
     def test_request_handler(self): pass

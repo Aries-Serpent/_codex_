@@ -1,5 +1,4 @@
 """Day 2: cognitive_brain - Memory tests"""
-import pytest
 
 class TestCognitiveBrainMemory:
     def test_short_term_memory(self): pass

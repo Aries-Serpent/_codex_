@@ -277,7 +277,7 @@ class TestCacheBoundaryConditions:
         Ensures exact boundary checking at expiry moment.
         """
         embedding = np.zeros(10)
-        
+
         # Entry that expired exactly 1 second ago
         entry = EmbeddingEntry(
             key="expired",
@@ -285,7 +285,7 @@ class TestCacheBoundaryConditions:
             expires_at=time.time() - 1.0
         )
         assert entry.is_expired is True
-        
+
         # Entry that expires in 1 second
         entry2 = EmbeddingEntry(
             key="not_expired",
@@ -298,18 +298,18 @@ class TestCacheBoundaryConditions:
         """Kill: '>=' vs '>' mutations in size checks"""
         config = EmbeddingCacheConfig(max_entries=5)
         cache = EmbeddingCache(config)
-        
+
         # Fill to exactly max
         for i in range(5):
             embedding = np.random.rand(10)
             cache.put(f"key{i}", embedding)
-        
+
         assert len(cache) == 5
-        
+
         # Adding one more should trigger eviction
         embedding = np.random.rand(10)
         cache.put("key_overflow", embedding)
-        
+
         # Cache size should not exceed max_entries
         assert len(cache) <= 5
 
@@ -321,11 +321,11 @@ class TestCacheBoundaryConditions:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.zeros(10)
-        
+
         # Put with TTL that expires in 0.1 seconds
         cache.put("ttl_test", embedding, ttl_seconds=0.1)
         assert cache.get("ttl_test") is not None
-        
+
         # Wait for expiry
         time.sleep(0.15)
         assert cache.get("ttl_test") is None
@@ -341,17 +341,17 @@ class TestCacheBooleanConditions:
         """
         config = EmbeddingCacheConfig(max_entries=3)
         cache = EmbeddingCache(config)
-        
+
         # Add entries
         embeddings = [np.random.rand(10) for _ in range(3)]
         cache.put("key1", embeddings[0])
         time.sleep(0.1)
         cache.put("key2", embeddings[1])
         cache.put("key3", embeddings[2])
-        
+
         # Cache should have exactly 3 entries
         assert len(cache) == 3
-        
+
         # Add one more - should evict oldest
         cache.put("key4", np.random.rand(10))
         assert len(cache) == 3
@@ -362,9 +362,9 @@ class TestCacheBooleanConditions:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.zeros(10)
-        
+
         cache.put("exists", embedding)
-        
+
         # Exact boolean checks
         assert ("exists" in cache) is True
         assert ("does_not_exist" in cache) is False
@@ -378,10 +378,10 @@ class TestCacheReturnValues:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.array([1.0, 2.0, 3.0], dtype=np.float32)
-        
+
         cache.put("test", embedding)
         result = cache.get("test")
-        
+
         # Exact type check
         assert isinstance(result, np.ndarray)
         assert result.dtype == np.float32
@@ -391,7 +391,7 @@ class TestCacheReturnValues:
         """Kill: return value mutations on missing keys"""
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
-        
+
         result = cache.get("nonexistent")
         assert result is None  # NOT False, NOT empty array
 
@@ -400,9 +400,9 @@ class TestCacheReturnValues:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.zeros(10)
-        
+
         cache.put("test", embedding)
-        
+
         # Exact boolean returns
         assert cache.__contains__("test") is True
         assert cache.__contains__("missing") is False

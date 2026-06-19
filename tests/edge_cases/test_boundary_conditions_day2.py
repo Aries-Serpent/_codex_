@@ -1,5 +1,4 @@
 """Day 2: Edge cases and boundary conditions"""
-import pytest
 
 class TestEdgeCases:
     def test_empty_inputs(self): pass
