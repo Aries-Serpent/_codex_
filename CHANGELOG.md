@@ -149,6 +149,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4996)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4996 (SHA `c913405b`) at 2026-06-19T02:33Z [auto-generated]
+
 ### Fixed (SN 2026-06-18T17:19Z - PR #4987 CI Rescue Auth Tests)
 - Restored auth exception compatibility by adding `UserAlreadyExistsError` and `UserNotFoundError` in `src/codex/auth/exceptions.py`.
 - Mapped duplicate-user registration errors to `UserAlreadyExistsError` in `src/codex/auth/user_store.py`.
