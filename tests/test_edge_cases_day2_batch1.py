@@ -33,36 +33,26 @@ class TestMemoryEntryBoundaryConditions:
 
     def test_confidence_lower_bound_zero(self):
         """MemoryEntry with confidence=0.0 (lower bound)"""
-        entry = MemoryEntry(
-            key="test_key",
-            value="test_value",
-            confidence=0.0,
-            access_count=0,
-            tags=set()
+        entry = MemoryEntry(content="test_value", metadata={"key": "test_key", "confidence": 0.0})
         )
         assert entry.confidence == 0.0
         assert entry.access_count == 0
 
     def test_confidence_upper_bound_one(self):
         """MemoryEntry with confidence=1.0 (upper bound)"""
-        entry = MemoryEntry(
-            key="test_key",
-            value="test_value",
-            confidence=1.0,
-            access_count=0,
-            tags=set()
+        entry = MemoryEntry(content="test_value", metadata={"key": "test_key", "confidence": 1.0})
         )
         assert entry.confidence == 1.0
 
     def test_confidence_midpoint(self):
         """MemoryEntry with confidence at 0.5"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=1, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         assert entry.confidence == 0.5
 
     def test_confidence_overflow_rejected(self):
         """MemoryEntry should reject confidence > 1.0"""
         with pytest.raises((ValueError, AssertionError, TypeError)):
-            MemoryEntry(key="k", value="v", confidence=1.1, access_count=0, tags=set())
+            MemoryEntry(content="v", metadata={"key": "k", "confidence": 1.1}))
 
     def test_confidence_underflow_rejected(self):
         """MemoryEntry should reject confidence < 0.0"""
@@ -71,12 +61,12 @@ class TestMemoryEntryBoundaryConditions:
 
     def test_access_count_zero(self):
         """MemoryEntry with access_count=0 (never accessed)"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         assert entry.access_count == 0
 
     def test_access_count_large_value(self):
         """MemoryEntry with very large access_count"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=999999, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         assert entry.access_count == 999999
 
     def test_access_count_negative_rejected(self):
@@ -115,31 +105,31 @@ class TestMemoryEntryBoundaryConditions:
 
     def test_tags_empty_set(self):
         """MemoryEntry with empty tag set"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         assert entry.tags == set()
 
     def test_tags_single_tag(self):
         """MemoryEntry with single tag"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags={"important"})
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5})
         assert "important" in entry.tags
 
     def test_tags_multiple_tags(self):
         """MemoryEntry with many tags"""
         tags = {"tag1", "tag2", "tag3", "tag4", "tag5"}
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=tags)
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5})
         assert entry.tags == tags
 
     def test_created_at_timestamp(self):
         """MemoryEntry created_at tracking"""
         before = datetime.now()
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         after = datetime.now()
         assert hasattr(entry, "created_at")
         assert before <= entry.created_at <= after
 
     def test_timestamp_persistence(self):
         """MemoryEntry timestamp unchanged after access"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         original_time = entry.created_at
         entry.access_count += 1
         assert entry.created_at == original_time
@@ -150,13 +140,13 @@ class TestMemoryEntryCircularReferences:
 
     def test_related_memories_empty(self):
         """MemoryEntry with no related memories"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         if hasattr(entry, "related_memories"):
             assert entry.related_memories == set() or entry.related_memories == []
 
     def test_related_memories_self_reference_rejected(self):
         """MemoryEntry should reject self-reference in related_memories"""
-        entry = MemoryEntry(key="k", value="v", confidence=0.5, access_count=0, tags=set())
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
         if hasattr(entry, "add_related_memory"):
             try:
                 entry.add_related_memory(entry)
@@ -168,9 +158,9 @@ class TestMemoryEntryCircularReferences:
 
     def test_related_memories_circular_chain(self):
         """MemoryEntry chain: A->B->C->A should not create infinite loop"""
-        entry_a = MemoryEntry(key="a", value="va", confidence=0.5, access_count=0, tags=set())
-        entry_b = MemoryEntry(key="b", value="vb", confidence=0.5, access_count=0, tags=set())
-        entry_c = MemoryEntry(key="c", value="vc", confidence=0.5, access_count=0, tags=set())
+        entry_a = MemoryEntry(content="va", metadata={"key": "a", "confidence": 0.5}))
+        entry_b = MemoryEntry(content="vb", metadata={"key": "b", "confidence": 0.5}))
+        entry_c = MemoryEntry(content="vc", metadata={"key": "c", "confidence": 0.5}))
         
         if hasattr(entry_a, "add_related_memory"):
             try:
@@ -662,7 +652,7 @@ class TestRegressionPrevention:
     def test_memory_entry_creation_still_works(self):
         """MemoryEntry creation regression test"""
         try:
-            entry = MemoryEntry(key="test", value="test", confidence=0.5, access_count=0, tags=set())
+            entry = MemoryEntry(content="test", metadata={"key": "test", "confidence": 0.5}))
             assert entry.key == "test"
         except Exception as e:
             pytest.fail(f"MemoryEntry creation regression: {e}")
