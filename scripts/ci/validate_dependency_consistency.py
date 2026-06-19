@@ -7,7 +7,8 @@ version constraints for critical packages. Prevents accidental downgrades or mis
 
 Usage:
     python scripts/ci/validate_dependency_consistency.py              # Validate only
-    python scripts/ci/validate_dependency_consistency.py --report    # Generate report
+    python scripts/ci/validate_dependency_consistency.py --report    # Generate JSON report
+    python scripts/ci/validate_dependency_consistency.py --strict    # Fail on any issues
 """
 
 import json
@@ -280,7 +281,7 @@ class DependencyValidator:
 
     def _is_downgrade(self, current: str, expected: str) -> bool:
         """Check if current version is a downgrade from expected.
-        
+
         Unparsable version constraints are treated as "not a detected downgrade"
         by design, allowing graceful fallback to manual review.
         """
@@ -291,7 +292,9 @@ class DependencyValidator:
             if current_nums and expected_nums:
                 return int(current_nums[0]) < int(expected_nums[0])
         except (ValueError, IndexError):
-            # Unparsable version constraints are treated as "not a detected downgrade"
+            # Unparsable version constraints are gracefully treated as not a downgrade.
+            # This allows manual review of edge cases (e.g., pre-releases, local versions)
+            # without blocking validation.
             pass
         return False
 
@@ -347,12 +350,12 @@ def main():
     if args.report:
         validator.generate_report(args.report_file)
 
-    # Exit logic: strict mode treats issues as fatal, non-strict is warnings-only
+    # Exit logic: strict mode fails on any issues, non-strict mode is warnings-only (always succeeds)
     if args.strict and not success:
         sys.exit(1)
 
     # In non-strict mode, always return 0 (warnings-only)
-    return 0
+    sys.exit(0)
 
 
 if __name__ == '__main__':
