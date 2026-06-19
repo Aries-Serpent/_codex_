@@ -115,7 +115,7 @@ jobs:
       # Phase 1: Repository & Code Setup
       # ============================================================================
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@93cb6efe3a8e34b1ecce4e7b5b2e9c0f5f8f6f3a # v3.0.0 canonical baseline
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v3.0.0 canonical baseline SHA:93cb6efe3a8e34b1ecce4e7b5b2e9c0f5f8f6f3a
         with:
           fetch-depth: 0
           lfs: false
