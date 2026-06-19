@@ -33,7 +33,9 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: write       # For manifest file creation and push
+  pull-requests: read   # For querying active PRs to prevent conflicts
+  actions: write        # For triggering pages-mkdocs.yml workflow
 
 jobs:
   refresh-manifest:
