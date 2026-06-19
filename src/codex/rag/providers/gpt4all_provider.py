@@ -74,7 +74,7 @@ class GPT4AllEmbeddingProvider:
 
     def encode(
         self,
-        texts: str | list[str],
+        texts: Union[str, list[str]],
         batch_size: int = 32,
         show_progress: bool = False,
     ) -> np.ndarray:
