@@ -426,14 +426,14 @@ class TestEmbeddingCacheBoundaryMutations:
         config = EmbeddingCacheConfig(default_ttl=0.1)
         cache = EmbeddingCache(config)
         embedding = np.random.rand(5).astype(np.float32)
-        
+
         cache.put("text_boundary", embedding)
         time.sleep(0.09)  # Just under TTL
-        
+
         result = cache.get("text_boundary")
         # MUST NOT be expired - kills > vs >= mutation
         assert result is not None, "Entry should NOT be expired just before TTL expiry"
-    
+
     def test_cache_size_exact_max_entries(self):
         """Kill: Size comparison mutations (> vs >=).
         
@@ -442,12 +442,12 @@ class TestEmbeddingCacheBoundaryMutations:
         config = EmbeddingCacheConfig(max_entries=2)
         cache = EmbeddingCache(config)
         embedding = np.random.rand(5).astype(np.float32)
-        
+
         # Add exactly max_entries
         cache.put("text1", embedding)
         cache.put("text2", embedding)
         assert len(cache) == 2
-        
+
         # Add one more - should trigger eviction
         cache.put("text3", embedding)
         # MUST respect max_entries boundary
@@ -465,22 +465,22 @@ class TestEmbeddingCacheBooleanMutations:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.random.rand(10).astype(np.float32)
-        
+
         cache.put("key1", embedding)
         result = cache.contains("key1")
-        
+
         # Exact assertions kill mutations
         assert result is True, "MUST be exact True"
         assert type(result) is bool, "MUST be bool type"
         assert result != 1, "MUST not be numeric 1"
-    
+
     def test_contains_exact_false_not_falsy(self):
         """Kill: Return value mutations (False -> 0, None, empty)."""
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
-        
+
         result = cache.contains("nonexistent_key")
-        
+
         # Exact assertions kill mutations
         assert result is False, "MUST be exact False"
         assert type(result) is bool, "MUST be bool type"
@@ -498,10 +498,10 @@ class TestEmbeddingCacheReturnValueMutations:
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.random.rand(384).astype(np.float32)
-        
+
         cache.put("embed1", embedding)
         result = cache.get("embed1")
-        
+
         # Exact type assertions kill mutations
         assert isinstance(result, np.ndarray), "MUST return ndarray"
         assert not isinstance(result, bool), "MUST NOT return bool"
@@ -509,7 +509,7 @@ class TestEmbeddingCacheReturnValueMutations:
         assert result is not None, "MUST NOT be None"
         # Verify actual array content
         assert result.shape == (384,), "MUST have correct shape"
-    
+
     def test_get_missing_returns_none_exactly(self):
         """Kill: Return value mutation (None -> False, 0, empty array).
         
@@ -517,35 +517,35 @@ class TestEmbeddingCacheReturnValueMutations:
         """
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
-        
+
         result = cache.get("missing_key")
-        
+
         # Exact assertions kill mutations
         assert result is None, "MUST be exact None"
         assert result is not False, "MUST NOT be False"
-        assert result is not 0, "MUST NOT be 0"
+        assert result != 0, "MUST NOT be 0"
         assert not isinstance(result, np.ndarray), "MUST NOT be ndarray"
-    
+
     def test_delete_returns_bool_true(self):
         """Kill: Delete return mutation (True -> None/False/1)."""
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
         embedding = np.random.rand(10).astype(np.float32)
-        
+
         cache.put("deleteme", embedding)
         result = cache.delete("deleteme")
-        
+
         # Exact assertions
         assert result is True, "MUST be exact True"
         assert type(result) is bool, "MUST be bool type"
-    
+
     def test_delete_missing_returns_bool_false(self):
         """Kill: Delete return mutation (False -> None/True/0)."""
         config = EmbeddingCacheConfig(max_entries=10)
         cache = EmbeddingCache(config)
-        
+
         result = cache.delete("nonexistent")
-        
+
         # Exact assertions
         assert result is False, "MUST be exact False"
         assert type(result) is bool, "MUST be bool type"

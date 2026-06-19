@@ -9,9 +9,10 @@ import json
 from datetime import datetime
 from typing import Dict, List
 
+
 class MutationHardeningReport:
     """Generate comprehensive mutation hardening analysis and recommendations"""
-    
+
     def __init__(self):
         self.report = {
             'generated': datetime.now().isoformat(),
@@ -21,7 +22,7 @@ class MutationHardeningReport:
             'integrated_tests': 167,
             'total_assertions': 142,
         }
-    
+
     # Weak assertion patterns identified in Track B tests
     WEAK_ASSERTION_PATTERNS = {
         'insufficient_value_checks': {
@@ -70,7 +71,7 @@ class MutationHardeningReport:
             'suggested_enhancement': '+10 assertions',
         },
     }
-    
+
     # Module-specific mutation assessment
     MODULE_ASSESSMENTS = {
         'src/codex_ml/': {
@@ -134,10 +135,10 @@ class MutationHardeningReport:
             ],
         },
     }
-    
+
     def generate_section_track_b_integration(self):
         """Generate Track B integration section"""
-        
+
         section = """
 ## 1. TRACK B TEST INTEGRATION SUMMARY
 
@@ -163,16 +164,16 @@ class MutationHardeningReport:
 - Additional hardening needed: +4pp → 90%+
 """
         return section
-    
+
     def generate_section_weak_patterns(self):
         """Generate weak assertion patterns section"""
-        
+
         section = "\n## 2. WEAK ASSERTION PATTERNS IDENTIFIED\n\n"
-        
+
         section += "### 📋 Assessment Results\n\n"
         section += "Current Track B Test Suite: 142 total assertions (0.8 per test average)\n"
         section += "**Assessment:** ⚠️ NEEDS ENHANCEMENT - Target: 2.5+ assertions/test\n\n"
-        
+
         for pattern_key, pattern in self.WEAK_ASSERTION_PATTERNS.items():
             section += f"### {pattern_key.replace('_', ' ').title()}\n\n"
             section += f"**Description:** {pattern['description']}\n\n"
@@ -183,18 +184,18 @@ class MutationHardeningReport:
             section += f"**Priority:** {pattern['fix_priority']}\n"
             section += f"**Suggested Enhancement:** {pattern['suggested_enhancement']}\n\n"
             section += "---\n\n"
-        
+
         return section
-    
+
     def generate_section_module_roadmap(self):
         """Generate module-by-module hardening roadmap"""
-        
+
         section = "\n## 3. MODULE-BY-MODULE HARDENING ROADMAP\n\n"
-        
+
         total_suggested_assertions = 0
         total_estimated_mutations = 0
         total_expected_killed = 0
-        
+
         for module_name, assessment in self.MODULE_ASSESSMENTS.items():
             section += f"### {module_name}\n\n"
             section += f"- **Baseline Coverage:** {assessment['baseline_coverage']}%\n"
@@ -202,25 +203,25 @@ class MutationHardeningReport:
             section += f"- **Estimated Mutations:** {assessment['estimated_mutations']}\n"
             section += f"- **Expected Kill Rate:** {assessment['expected_kill_rate']*100:.0f}%\n"
             section += f"- **Weak Patterns:** {', '.join(assessment['weak_patterns'])}\n\n"
-            
+
             section += "**Recommendations:**\n"
             for i, rec in enumerate(assessment['recommendations'], 1):
                 section += f"{i}. {rec}\n"
-            
+
             section += "\n"
-            
+
             total_estimated_mutations += assessment['estimated_mutations']
             total_expected_killed += int(assessment['estimated_mutations'] * assessment['expected_kill_rate'])
-        
-        section += f"### Summary\n"
+
+        section += "### Summary\n"
         section += f"- **Total Estimated Mutations:** {total_estimated_mutations}\n"
         section += f"- **Projected Killed:** {total_expected_killed} ({100*total_expected_killed/total_estimated_mutations:.1f}%)\n"
-        
+
         return section
-    
+
     def generate_section_hardening_plan(self):
         """Generate detailed hardening execution plan"""
-        
+
         section = """
 ## 4. MUTATION HARDENING EXECUTION PLAN
 
@@ -296,10 +297,10 @@ class MutationHardeningReport:
 - Track B test suite (167 tests) ✓
 """
         return section
-    
+
     def generate_section_quality_metrics(self):
         """Generate quality metrics dashboard"""
-        
+
         section = """
 ## 5. QUALITY METRICS DASHBOARD
 
@@ -406,10 +407,10 @@ Current State:          82%
 6. Verify new assertion catches the mutation
 """
         return section
-    
+
     def generate_full_report(self):
         """Generate complete mutation hardening report"""
-        
+
         report_content = f"""# PHASE 7B TRACK C: MUTATION HARDENING REPORT
 
 **Generated:** {self.report['generated']}
@@ -450,27 +451,27 @@ This targets weak mutation patterns and achieves 90%+ score.
 
 ---
 """
-        
+
         report_content += self.generate_section_track_b_integration()
         report_content += self.generate_section_weak_patterns()
         report_content += self.generate_section_module_roadmap()
         report_content += self.generate_section_hardening_plan()
         report_content += self.generate_section_quality_metrics()
-        
+
         return report_content
 
 def main():
     report_gen = MutationHardeningReport()
     report = report_gen.generate_full_report()
-    
+
     # Print to console
     print(report)
-    
+
     # Save to file
     report_path = '.codex/PHASE_7B_TRACK_C_MUTATION_HARDENING_REPORT.md'
     with open(report_path, 'w') as f:
         f.write(report)
-    
+
     print("\n" + "="*80)
     print(f"✅ Report saved to: {report_path}")
     print("="*80)

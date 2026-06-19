@@ -10,10 +10,9 @@ This module contains comprehensive tests for:
 
 CRITICAL: These tests validate disaster recovery capability.
 """
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock, call
-from typing import Any, Dict, List
-import json
 
 
 class TestDatabaseRollback:
@@ -241,10 +240,10 @@ class TestServiceVersionRollback:
 
         # Step 1: Stop v2
         v2_stopped = v2_instance.stop()
-        
+
         # Step 2: Reroute traffic to v1
         load_balancer.update_distribution({"v1": 100, "v2": 0})
-        
+
         # Step 3: Start v1
         v1_started = v1_instance.start()
 
@@ -313,7 +312,7 @@ class TestConfigurationRollback:
 
         # Action: Detect problem and rollback
         current_config = config_manager.get_current()
-        
+
         # Rollback
         restored_config = config_manager.restore_previous()
         restart_result = service_manager.restart_with_config(restored_config)
@@ -330,9 +329,9 @@ class TestConfigurationRollback:
         Validate configuration is valid after rollback.
         """
         config_validator = Mock()
-        
+
         restored_config = {"db_pool_size": 10, "timeout": 30}
-        
+
         config_validator.validate.return_value = {
             "valid": True,
             "errors": []

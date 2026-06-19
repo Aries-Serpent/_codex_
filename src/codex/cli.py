@@ -366,23 +366,25 @@ def logs_query(sql: str, db: str) -> None:
 )
 def logs_export_data(output: str, format: str, db: str) -> None:
     """Export logs data to file.
-    
+
     Exports all session logs from the SQLite database to a specified format
     (JSONL, JSON, or CSV) for analysis or archival.
     """
     try:
         import sqlite3
-        
+
         click.echo(f"📦 Exporting logs from {db} to {output} ({format})...")
-        
+
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
-        
+
         # Get all log entries
         cursor.execute("SELECT * FROM session_events LIMIT 1000")
-        columns = [description[0] for description in cursor.description] if cursor.description else []
+        columns = (
+            [description[0] for description in cursor.description] if cursor.description else []
+        )
         rows = cursor.fetchall()
-        
+
         if format == "jsonl":
             output_path = Path(output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -397,6 +399,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
             output_path.write_text(json.dumps(data, indent=2))
         elif format == "csv":
             import csv
+
             output_path = Path(output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, "w", newline="") as f:
@@ -404,7 +407,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
                 writer.writeheader()
                 for row in rows:
                     writer.writerow(dict(zip(columns, row)))
-        
+
         conn.close()
         click.echo(f"✅ Exported {len(rows)} records to {output}")
     except Exception as exc:
@@ -752,12 +755,12 @@ def tokenizer_stats(tokenizer_path: str | None) -> None:
 @tokenizer_group.command("list-models")
 def tokenizer_list_models() -> None:
     """List available tokenizer models.
-    
+
     Displays all preconfigured tokenizer models that can be loaded.
     """
     try:
         from codex_ml.tokenization import list_available_models
-        
+
         models = list_available_models()
         if models:
             click.echo("Available tokenizer models:")
@@ -770,7 +773,6 @@ def tokenizer_list_models() -> None:
         logger.debug(f"Exception: {exc}")
         click.echo(f"⚠️  Could not list tokenizer models: {exc}", err=True)
         click.echo("Hint: Ensure codex_ml is installed with tokenization extras.")
-
 
 
 @cli.group(
@@ -865,20 +867,21 @@ def repro_system(path: Path) -> None:
 )
 def repro_checkpoint(path: Path, include_weights: bool) -> None:
     """Capture checkpoint metadata for reproducibility.
-    
+
     Records model state, training configuration, and system metrics
     to enable checkpoint resumption and exact reproduction.
     """
     try:
-        from codex_ml.monitoring.codex_logging import _codex_sample_system
         import datetime
-        
+
+        from codex_ml.monitoring.codex_logging import _codex_sample_system
+
         checkpoint_data = {
             "timestamp": datetime.datetime.now().isoformat(),
             "python_version": sys.version,
             "system": _codex_sample_system() if include_weights else None,
         }
-        
+
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(checkpoint_data, indent=2), encoding="utf-8")
         click.echo(f"✅ Checkpoint metadata saved to {path}")
@@ -887,7 +890,6 @@ def repro_checkpoint(path: Path, include_weights: bool) -> None:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to create checkpoint: {exc}", err=True)
         sys.exit(1)
-
 
 
 def _register_tokenizer_pipeline_commands() -> None:
@@ -1728,22 +1730,21 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
 )
 def duplication_baseline(report: str, output: str, tag: str | None) -> None:
     """Create a duplication baseline from a report.
-    
+
     Establishes a baseline duplication metric that can be used for
     future comparisons to detect regressions.
     """
     try:
-        import shutil
         from pathlib import Path as PathLib
-        
+
         report_path = PathLib(report)
         if not report_path.exists():
             click.echo(f"❌ Report file not found: {report}", err=True)
             sys.exit(1)
-        
+
         baseline_path = PathLib(output)
         baseline_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Read report and create baseline
         report_data = {}
         try:
@@ -1751,15 +1752,15 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         except Exception:
             # If not JSON, just copy as reference
             pass
-        
+
         # Add baseline metadata
         baseline_data = {
             "baseline_tag": tag or "manual",
-            "created_at": __import__('datetime').datetime.now().isoformat(),
+            "created_at": __import__("datetime").datetime.now().isoformat(),
             "source_report": str(report_path.absolute()),
             "duplication_metrics": report_data,
         }
-        
+
         baseline_path.write_text(json.dumps(baseline_data, indent=2))
         click.echo(f"✅ Baseline created: {output}")
         click.echo(f"   Tag: {baseline_data['baseline_tag']}")
@@ -2009,32 +2010,32 @@ def auth_status() -> None:
 )
 def auth_refresh_token(session_token: str | None) -> None:
     """Refresh authentication token.
-    
+
     Refreshes the current authentication token to extend the session
     or obtain a new access token.
     """
     try:
         import datetime
-        
+
         creds = _load_cached_credentials()
         if not creds:
             click.echo("❌ No cached credentials found.", err=True)
             click.echo("   Run 'codex auth login' first.", err=True)
             sys.exit(1)
-        
+
         refresh_token = creds.get("refresh_token")
         if not refresh_token:
             click.echo("❌ No refresh token available.", err=True)
             sys.exit(1)
-        
+
         # Simulate token refresh
         click.echo(f"🔄 Refreshing token for {creds['username']}...")
-        
+
         # In a real implementation, this would call an OAuth endpoint
         # For now, we simulate success
         creds["last_refresh"] = datetime.datetime.now().isoformat()
         _cache_credentials(creds["username"], creds["access_token"], refresh_token)
-        
+
         click.echo("✅ Token refreshed successfully")
         click.echo(f"   User: {creds['username']}")
         click.echo("   Credentials updated in cache")
