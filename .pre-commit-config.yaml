@@ -228,6 +228,17 @@ repos:
         pass_filenames: false
         # Detects 8 common patterns: unused imports, coverage thresholds, YAML issues, etc.
 
+      # Dependency Consistency Validator - PR #5008
+      - id: check-dependency-consistency
+        name: Check Dependency Consistency (pyproject.toml vs requirements*.txt)
+        entry: python scripts/ci/validate_dependency_consistency.py
+        language: system
+        files: (pyproject\.toml|requirements.*\.txt)$
+        pass_filenames: false
+        stages: [commit]
+        # Validates that critical packages have consistent version constraints
+        # across all dependency files (pyproject.toml and requirements*.txt)
+
       # PR #3248 Preventive Tooling - Link validation
       - id: markdown-link-check
         name: Markdown Link Checker (sample docs)

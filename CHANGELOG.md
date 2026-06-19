@@ -1,5 +1,27 @@
 # Changelog
 
+## [2026-06-19] — Dependency Downgrade Remediation & Alignment (IP-006)
+
+### Fixed
+
+- **Dependency Alignment (IP-006)**: Remediated unintended pandas downgrade across all dependency files.
+  - Aligned `pyproject.toml` pandas from `2.0.0` to `3.0.3,<4` per PR #5004 baseline
+  - Updated numpy from `1.24` to `2.4.6,<3` for pandas 3.0.3 compatibility
+  - Added version upper bounds for critical packages (transformers, torch, accelerate, peft)
+  - Synchronized 8 requirements files for cross-file consistency
+  - Created `DEPENDENCY_CONSTRAINTS.md` as canonical source of truth
+  - Implemented automated validation script `validate_dependency_consistency.py`
+  - Fixed 11 version inconsistencies across all requirement files
+  - Details: `.codex/DEPENDENCY_ALIGNMENT_REPORT.md`
+
+### Session
+- Dependency Management Task: Comprehensive audit and remediation
+- Agents Deployed: dependency-security-review-agent, integration-test-runner, unified-security-scanner
+- Artifacts: DEPENDENCY_CONSTRAINTS.md, .codex/DEPENDENCY_ALIGNMENT_REPORT.md, validate_dependency_consistency.py
+- Validation: ✅ Automated consistency checks pass (0 issues)
+
+---
+
 ## [2026-06-19] — Issue #4983 CI Failure Triage Report (88 failures → 36 direct fixes)
 
 ### Fixed
@@ -148,6 +170,9 @@
 ---
 
 ## [Unreleased]
+
+### Fixed (auto-update — PR #5008)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5008 (SHA `c792b472`) at 2026-06-19T05:48Z [auto-generated]
 
 ### Fixed (auto-update — PR #5000)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5000 (SHA `b121f1c7`) at 2026-06-19T02:35Z [auto-generated]

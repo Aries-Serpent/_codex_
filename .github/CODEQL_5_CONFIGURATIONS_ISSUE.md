@@ -11,8 +11,8 @@ The "Code scanning results / CodeQL" check reports "5 configurations not found" 
 ## Investigation Results
 
 ### Workflow Status
-- **Art_"CodeQL"** workflow: ✅ SUCCESS (2 languages: Python, JavaScript)
-- **Art_Security Scanning Suite** workflow: ✅ SUCCESS (2 languages: Python, JavaScript)
+- **CodeQL** workflow: ✅ SUCCESS (2 languages: Python, JavaScript)
+- **Security Scanning Suite** workflow: ✅ SUCCESS (2 languages: Python, JavaScript)
 - Both workflows complete successfully and upload SARIF results
 
 ### Expected vs Actual

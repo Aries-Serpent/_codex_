@@ -303,8 +303,8 @@ Test Suite: Copilot Setup Steps Validation
   ✅ Dependent Workflows (2.1): All 5 dependent workflows valid
   ✅ Supporting Scripts (2.2): All 3 supporting scripts valid
   ✅ Environment Variables (2.3): All 10 critical environment variables properly defined
-  ✅ Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow
-  ✅ Token Reference Validation (5.2): All token references properly use GitHub secrets
+  ✅ Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow  # pragma: allowlist secret
+  ✅ Token Reference Validation (5.2): All token references properly use GitHub secrets  # pragma: allowlist secret
   ✅ YAML Injection Prevention (5.3): YAML injection prevention check passed
   ✅ File Size Regression: 673 lines (+0.0% from baseline 673)
   ✅ Complexity Analysis: 2 jobs, 27 steps (within acceptable bounds)
@@ -459,7 +459,7 @@ The PR can only be merged when ALL of the following are true:
 - **Review Checklist**: [.github/COPILOT_SETUP_REVIEW_CHECKLIST.md](../../.github/COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - **Guard Documentation**: [docs/agent/COPILOT_SETUP_STEPS_GUARD.md](COPILOT_SETUP_STEPS_GUARD.md)
 - **Validation Workflow**: [.github/workflows/copilot-setup-validation.yml](../../.github/workflows/copilot-setup-validation.yml)
-- **CCA Integration**: [.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
+- **CCA Integration**: [CODEBASE_AGENCY_POLICY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/CODEBASE_AGENCY_POLICY.md)
 
 ## Questions?
 

@@ -212,17 +212,17 @@ Should print App ID, installation ID, and permissions.
 | W-096c | auto_promote_tier.py — guard + write path | ✅ |
 | W-096d | CODEX_MANIFEST.json refreshed | ✅ |
 | W-097a | CODEX_MANIFEST.json EOF newline | ✅ |
-| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | ✅ |
+| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | ✅ | <!-- pragma: allowlist secret -->
 | W-097c | auto_promote_tier.py docstring correction | ✅ |
 | W-098a | test_auto_promote_tier.py — 15 tests | ✅ |
-| W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ |
+| W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ | <!-- pragma: allowlist secret -->
 | W-099 | agent-auth-delegation.yml checkout ref fix | ✅ |
 | W-100 | test_auto_promote_tier.py ruff lint fix | ✅ |
 | W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | ✅ |
-| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ |
+| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ | <!-- pragma: allowlist secret -->
 | W-104a | AGENT_REGISTRY.yaml v1.9.2 — workflow-ci-fixer D_CAPABLE | ✅ |
 | W-104b | ADR-20260304-second-d-capable-promotion.md | ✅ |
-| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated | ✅ |
+| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated | ✅ | <!-- pragma: allowlist secret -->
 | W-104d | Status / follow-up prompt updated (P2 → ✅ COMPLETE) | ✅ |
 | W-104e | REQ-4 + REQ-5 updated | ✅ |
 
@@ -231,7 +231,7 @@ Should print App ID, installation ID, and permissions.
 ## W-106 Session Update (2026-03-04 — CI fix + merge safety assessment)
 
 ### W-106 — Art_Validation CI Fix
-Two `Art_Validation / Fast Validation` failures (run 22685833400) resolved:
+Two `Validation / Fast Validation` failures (run 22685833400) resolved:
 1. **end-of-file-fixer**: `CODEX_MANIFEST.json` missing trailing newline — added (same pattern as W-097a)
 2. **detect-secrets Secret Keyword**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry with `integrity_sha256` keyword) — added `<!-- pragma: allowlist secret -->` inline suppressor
 
@@ -287,7 +287,7 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
 
 ### W-102 — detect-secrets baseline fix (Art_Validation run 22683254031)
 
-`Art_Validation / Fast Validation` failed: detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml`:
+`Validation / Fast Validation` failed: detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml`:
 - **Line 559**: base64-encoded Python script — REQ-8 memory health check (`urllib` ping to localhost:8765)
 - **Line 590**: base64-encoded Python script — REQ-9 YAML parse helper (`yaml.safe_load` glob over workflows)
 
