@@ -284,9 +284,9 @@ class IngestionPipeline:
 
     def ingest_file(
         self,
-        file_path: Union[str, Path],
-        document_id: Optional[str] = None,
-        metadata: Optional[dict[str, Any]] = None,
+        file_path: str | Path,
+        document_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> IngestionResult:
         """
         Ingest a single file.
@@ -380,7 +380,7 @@ class IngestionPipeline:
 
     def ingest_files(
         self,
-        file_paths: Sequence[Union[str, Path]],
+        file_paths: Sequence[str | Path],
         parallel: bool = True,
     ) -> BatchIngestionResult:
         """
@@ -438,7 +438,7 @@ class IngestionPipeline:
 
     def ingest_directory(
         self,
-        directory: Union[str, Path],
+        directory: str | Path,
         pattern: str = "*",
         recursive: bool = True,
     ) -> BatchIngestionResult:
@@ -468,7 +468,7 @@ class IngestionPipeline:
 
         return self.ingest_files(files)
 
-    def _ingest_with_retry(self, file_path: Union[str, Path]) -> IngestionResult:
+    def _ingest_with_retry(self, file_path: str | Path) -> IngestionResult:
         """Ingest file with retry logic."""
         last_error = None
 

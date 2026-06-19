@@ -14,7 +14,7 @@ class OutputProcessor:
     """Processes model outputs for safety and attribution"""
 
     @staticmethod
-    def scrub_output(text: str, redaction_rules: Optional[list[dict[str, str]]] = None) -> str:
+    def scrub_output(text: str, redaction_rules: list[dict[str, str]] | None = None) -> str:
         """Scrub sensitive information from output
 
         Args:
@@ -137,8 +137,8 @@ class OutputProcessor:
 
 def postprocess_output(
     output: str,
-    retrieved_docs: Optional[list[dict[str, Any]]] = None,
-    redaction_rules: Optional[list[dict[str, str]]] = None,
+    retrieved_docs: list[dict[str, Any]] | None = None,
+    redaction_rules: list[dict[str, str]] | None = None,
     include_citations: bool = True,
     citation_style: str = "inline",
 ) -> tuple[str, list[dict[str, Any]]]:

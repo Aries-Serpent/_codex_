@@ -399,11 +399,11 @@ class GitHubApp:
 
     def get_installation_token(
         self,
-        installation_id: Union[int, str],
-        permissions: Optional[dict[str, str]] = None,
-        repositories: Optional[list[str]] = None,
+        installation_id: int | str,
+        permissions: dict[str, str] | None = None,
+        repositories: list[str] | None = None,
         force_refresh: bool = False,
-    ) -> Union[InstallationToken, dict[str, Any]]:
+    ) -> InstallationToken | dict[str, Any]:
         """
         Obtain an installation access token, using the in-process cache.
 

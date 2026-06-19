@@ -2,19 +2,16 @@
 Test Monitoring Mlflow Utils
 
 Test module for monitoring mlflow utils.
-
-NOTE: This test is temporarily skipped due to module loading issues
-during test collection (Issue #4983).
 """
 
 import pytest
 
-# Skip this module temporarily - pending module initialization
-pytest.skip("Module import issues pending resolution", allow_module_level=True)
+try:
+    from codex_ml.monitoring import mlflow_utils
+except ImportError:
+    pytest.skip("codex_ml.monitoring module not available", allow_module_level=True)
 
 from unittest import mock
-
-from codex_ml.monitoring import mlflow_utils
 
 
 def test_maybe_start_run_none_without_uri(monkeypatch):
