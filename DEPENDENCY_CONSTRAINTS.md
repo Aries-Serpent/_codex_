@@ -16,6 +16,25 @@ This document establishes the canonical version constraints for all critical dep
 
 ---
 
+## ⚠️ CRITICAL COMPATIBILITY NOTE (PR #5008)
+
+**pandas 3.0.3 requires mlflow to be OPTIONAL**
+
+mlflow 2.22.4 and all current versions require `pandas<3`, which is incompatible with our required `pandas>=3.0.3,<4`. 
+
+**Solution**: mlflow is now an optional dependency available through extras: `tracking`, `train`, `perf`, `all`.
+
+**For users needing mlflow**:
+```bash
+# Install with mlflow support (requires downgrading pandas to 2.x)
+pip install -e ".[tracking]"  # Then downgrade: pip install "pandas<3"
+
+# OR use pandas 3.0.3 without mlflow (no experiment tracking via mlflow)
+pip install -e .
+```
+
+---
+
 ## Critical Dependencies (PR #5004 Consolidated)
 
 These versions were established in PR #5004 and must remain consistent across all files.
@@ -37,11 +56,11 @@ These versions were established in PR #5004 and must remain consistent across al
 | **accelerate** | >=1.14.0,<2 | Distributed training support; compatible with torch 2.6.1+ and transformers 5.12.1+ | PR #5004 | DO NOT downgrade below 1.14.0 |
 | **datasets** | >=5.0.0,<6 | Hugging Face datasets; compatible with transformers 5.12.1+ | PR #5004 | Major version API changes expected in 6.x |
 
-### Monitoring & Tracking
+### Monitoring & Tracking (OPTIONAL - Incompatible with pandas 3.0.3)
 
 | Package | Version | Rationale | First Pinned | Notes |
 |---------|---------|-----------|--------------|-------|
-| **mlflow** | >=2.22.4,<4 | Experiment tracking; 2.22.4 baseline with security patches; 3.x API compatible | PR #5004 | See CVE section for version guidance |
+| **mlflow** | >=2.22.4,<4 | Experiment tracking; 2.22.4 baseline; OPTIONAL - requires pandas<3 | PR #5004 | ⚠️ INCOMPATIBLE with pandas 3.0.3; Available in optional extras: 'tracking', 'train', 'perf', 'all'. If pandas 2.x is used, mlflow can be installed via these extras. |
 
 ### Core Frameworks
 
