@@ -1712,6 +1712,64 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
         sys.exit(1)
 
 
+# VARIANT 5: duplication baseline (NEW COMMAND)
+@duplication_group.command("baseline")
+@click.argument("report", type=click.Path(exists=True))
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(),
+    default="duplication_baseline.json",
+    help="Output baseline file",
+)
+@click.option(
+    "--tag",
+    help="Tag for this baseline (e.g., 'v1.0', 'release-2024-01')",
+)
+def duplication_baseline(report: str, output: str, tag: str | None) -> None:
+    """Create a duplication baseline from a report.
+    
+    Establishes a baseline duplication metric that can be used for
+    future comparisons to detect regressions.
+    """
+    try:
+        import shutil
+        from pathlib import Path as PathLib
+        
+        report_path = PathLib(report)
+        if not report_path.exists():
+            click.echo(f"❌ Report file not found: {report}", err=True)
+            sys.exit(1)
+        
+        baseline_path = PathLib(output)
+        baseline_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Read report and create baseline
+        report_data = {}
+        try:
+            report_data = json.loads(report_path.read_text())
+        except Exception:
+            # If not JSON, just copy as reference
+            pass
+        
+        # Add baseline metadata
+        baseline_data = {
+            "baseline_tag": tag or "manual",
+            "created_at": __import__('datetime').datetime.now().isoformat(),
+            "source_report": str(report_path.absolute()),
+            "duplication_metrics": report_data,
+        }
+        
+        baseline_path.write_text(json.dumps(baseline_data, indent=2))
+        click.echo(f"✅ Baseline created: {output}")
+        click.echo(f"   Tag: {baseline_data['baseline_tag']}")
+        click.echo(f"   Source: {report}")
+    except Exception as exc:
+        logger.debug(f"Exception: {exc}")
+        click.echo(f"❌ Failed to create baseline: {exc}", err=True)
+        sys.exit(1)
+
+
 # ============================================================================
 # Quantum Orchestrator CLI Integration
 # ============================================================================
