@@ -57,7 +57,7 @@ jobs:
       github.event.workflow_run.name != 'Workflow Analytics & Health (Unified)'
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached

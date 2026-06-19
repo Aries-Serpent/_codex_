@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -46,7 +46,7 @@ jobs:
     # Run on explicit monthly schedule or manual dispatch
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 1 * *' }}
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -94,7 +94,7 @@ jobs:
     timeout-minutes: 15
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 1 * *' }}
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"

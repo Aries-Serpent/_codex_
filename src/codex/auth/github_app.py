@@ -235,7 +235,9 @@ class GitHubApp:
         """Return the GitHub App installation URL."""
         from urllib.parse import urlencode
 
-        client_id = self._kw_client_id or str(self._kw_app_id or (self._config.app_id if self._config else ""))
+        client_id = self._kw_client_id or str(
+            self._kw_app_id or (self._config.app_id if self._config else "")
+        )
         params: dict[str, str] = {"client_id": str(client_id), "state": "install"}
         if scopes:
             params["scope"] = " ".join(scopes)
@@ -273,7 +275,9 @@ class GitHubApp:
                 raise Exception(data.get("error", "Invalid code"))
             return data
 
-        return _AwaitableDict({"access_token": "", "installation_id": "", "code": code}, loader=_load)
+        return _AwaitableDict(
+            {"access_token": "", "installation_id": "", "code": code}, loader=_load
+        )
 
     def verify_webhook_signature(self, payload: bytes, signature_header: str) -> bool:
         """Verify a webhook signature using the configured secret."""
@@ -442,7 +446,9 @@ class GitHubApp:
                     raise Exception(data.get("error", "Failed to get installation token"))
                 return data
 
-            return _AwaitableDict({"token": "", "installation_id": installation_id_str}, loader=_load)
+            return _AwaitableDict(
+                {"token": "", "installation_id": installation_id_str}, loader=_load
+            )
 
         installation_id_int = int(installation_id)
         cached = self._token_cache.get(installation_id_int)
@@ -609,7 +615,7 @@ class GitHubApp:
                     "Accept": "application/vnd.github+json",
                     "Authorization": f"Bearer {token_value}",
                     "X-GitHub-Api-Version": "2022-11-28",
-                    "User-Agent": f"codex-github-app/{self._config.app_id if self._config else 'unknown'}",
+                    "User-Agent": f"codex-github-app/{self._config.app_id if self._config else 'unknown'}",  # noqa: E501
                 },
             )
             try:

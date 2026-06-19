@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           # Use branch ref (not SHA) so we can push back heal commits (RP-009)
           ref: ${{ github.head_ref || github.event.pull_request.head.ref }}
@@ -316,7 +316,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

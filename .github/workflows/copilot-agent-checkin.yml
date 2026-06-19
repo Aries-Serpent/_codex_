@@ -114,7 +114,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 1
 
@@ -183,7 +183,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 1
 
@@ -645,7 +645,7 @@ jobs:
             // Unified marker format (S294): <!-- ci-rescue-sha:{pr_number}:{sha12} -->
             //   All workflows now use this single canonical format.
             //   Posted by scripts/ci/post_rescue_comment.py — called by every
-            //   rescue-comment job via actions/checkout@v5 + python step.
+            //   rescue-comment job via actions/checkout@v7 + python step.
             //   SHA-scoped: multiple workflows failing on the same commit APPEND
             //   to the same comment rather than posting new threads.
             //
@@ -1061,7 +1061,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           fetch-depth: 1
 
@@ -1093,7 +1093,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 1

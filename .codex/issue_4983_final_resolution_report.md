@@ -76,7 +76,7 @@ The remaining 52 failures fall into two categories:
 ✅ mypy baseline: 0 new errors
 ✅ ruff linting: 0 violations
 ✅ Type checking: All patterns pass
-✅ Secrets baseline: Clean (no genuine secrets)
+✅ Secrets baseline: Clean (no genuine secrets)  # pragma: allowlist secret
 ```
 
 **Validation Results:**
@@ -127,8 +127,8 @@ The remaining 52 failures fall into two categories:
 | Issue | Workflow | Root Cause | Team | Action |
 |-------|----------|-----------|------|--------|
 | 1 | Pages Deployment | Deployment branch/env | DevOps | Review `.github/workflows/pages-build-deployment.yml` |
-| 2 | Copilot Triage | Bot API perms | GitHub | Ensure GITHUB_TOKEN has `issues:write` |
-| 3 | CODEX Manifest | Manifest API | GitHub | Check API access, update token scope |
+| 2 | Copilot Triage | Bot API perms | GitHub | Ensure GITHUB_TOKEN has `issues:write` | <!-- pragma: allowlist secret -->
+| 3 | CODEX Manifest | Manifest API | GitHub | Check API access, update token scope | <!-- pragma: allowlist secret -->
 | 4 | CI Failure Creator | Issue creation | GitHub | Add `issues:write` permission |
 | 5 | Actions Enforcer | Version drift | DevOps | Update pinned action SHAs |
 | 6-10 | Admin Action T-03 (5×) | Security scope | Admin | Enable `security: 'read'` permission |

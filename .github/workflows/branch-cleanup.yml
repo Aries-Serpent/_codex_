@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: "📥 Checkout (sparse — script only)"
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/branch_cleanup.py

@@ -14,7 +14,7 @@ isort>=5.13.0
 mypy>=2.1.0,<3.0.0
 
 # Security tools
-pip-audit>=2.7.0
+pip-audit>=2.10.1
 bandit>=1.7.5
 
 # Type stubs

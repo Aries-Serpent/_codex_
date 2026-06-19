@@ -101,7 +101,7 @@ jobs:
           }}
 
     steps:
-      - uses: actions/checkout@v5  # v6.0.3
+      - uses: actions/checkout@v7  # v6.0.3
 
       - name: Fetch base ref for PR-scoped diff
         # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
@@ -260,7 +260,7 @@ jobs:
         total: [4]
 
     steps:
-      - uses: actions/checkout@v5  # v6.0.3
+      - uses: actions/checkout@v7  # v6.0.3
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached

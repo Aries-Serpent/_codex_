@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: |
             scripts/ci/cleanup_stale_branches.py

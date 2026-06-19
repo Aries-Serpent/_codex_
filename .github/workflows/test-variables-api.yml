@@ -107,7 +107,7 @@ jobs:
       ORG: ${{ github.repository_owner }}
     steps:
       - name: Checkout scripts
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: scripts/ci/test_variables_api.py
           sparse-checkout-cone-mode: false
@@ -156,7 +156,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout scripts
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           sparse-checkout: scripts/ci/test_variables_api.py
           sparse-checkout-cone-mode: false

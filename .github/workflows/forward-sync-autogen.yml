@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           ref: main
           fetch-depth: 1
@@ -71,7 +71,7 @@ jobs:
 
       - name: "📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})"
         if: steps.check-target.outputs.skip != 'true'
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v7 # v6.0.3
         with:
           persist-credentials: false
           ref: ${{ steps.resolve-target.outputs.branch }}
