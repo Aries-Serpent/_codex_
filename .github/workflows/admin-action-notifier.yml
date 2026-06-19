@@ -85,6 +85,7 @@ concurrency:
 permissions:
   contents: read
   issues: write
+  security-events: read  # Required for probing code-scanning API
 
 
 jobs:
@@ -123,6 +124,7 @@ jobs:
             "import json,sys,os; d=json.load(open(os.environ['RESPONSE_FILE'])); print(d.get('message','(no message)'))" \
             2>/dev/null || echo "(no message)")
           echo "RESPONSE_MSG=${RESPONSE_MSG}" >> "$GITHUB_ENV"
+          echo "response_msg=${RESPONSE_MSG}"  >> "$GITHUB_OUTPUT"
 
           if [ "${HTTP_STATUS}" = "${EXPECTED_OK}" ]; then
             echo "scope_ok=true"    >> "$GITHUB_OUTPUT"
@@ -236,9 +238,11 @@ jobs:
       - name: Step summary
         if: always()
         env:
-          GAP_ID:      ${{ inputs.gap_id }}
-          SCOPE_OK:    ${{ steps.probe.outputs.scope_ok }}
-          ISSUE_NUM:   ${{ steps.notify.outputs.issue_number }}
+          GAP_ID:       ${{ inputs.gap_id }}
+          SCOPE_OK:     ${{ steps.probe.outputs.scope_ok }}
+          ISSUE_NUM:    ${{ steps.notify.outputs.issue_number }}
+          HTTP_STATUS:  ${{ steps.probe.outputs.http_status }}
+          RESPONSE_MSG: ${{ steps.probe.outputs.response_msg }}
         run: |
           {
             echo "## 🔐 Admin Action Gate — \`${GAP_ID}\`"

@@ -412,7 +412,7 @@ class OAuthManager:
         return token
 
     def refresh_token(
-        self, refresh_token: OAuthToken | str | None, config: Optional[OAuthConfig] = None
+        self, refresh_token: OAuthToken | str | None, config: OAuthConfig | None = None
     ) -> OAuthToken:
         """
         Refresh an access token using a refresh token.

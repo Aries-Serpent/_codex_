@@ -285,8 +285,8 @@ class IngestionPipeline:
     def ingest_file(
         self,
         file_path: str | Path,
-        document_id: Optional[str] = None,
-        metadata: Optional[dict[str, Any]] = None,
+        document_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> IngestionResult:
         """
         Ingest a single file.

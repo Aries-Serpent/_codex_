@@ -3,12 +3,11 @@
 Tests the Click-based CLI surface in ``src/codex/cli.py``.
 Uses :class:`click.testing.CliRunner` to exercise commands without
 spawning subprocesses, so they run reliably in minimal environments.
+
+NOTE: This test module may be skipped if required dependencies are unavailable.
 """
 
 from __future__ import annotations
-
-import inspect
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -17,6 +16,9 @@ try:
     from click.testing import CliRunner
 except ImportError:
     pytest.skip("click not available", allow_module_level=True)
+
+import inspect
+from unittest.mock import MagicMock, patch
 
 from codex.cli import (
     ALLOWED_TASKS,

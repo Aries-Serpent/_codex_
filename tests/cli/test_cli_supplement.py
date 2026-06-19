@@ -502,11 +502,19 @@ class TestPerformanceAndLimits:
     def test_command_with_many_options(self, runner):
         import click
 
-        @click.command()
-        for i in range(20):
-            exec(f"@click.option('--opt{i}', default='val{i}')\n")
-        def cmd(**kwargs):
-            click.echo(f'Options: {len(kwargs)}')
+        # Dynamically create command with many options using functools.wraps
+        def create_command_with_options():
+            @click.command()
+            def cmd(**kwargs):
+                click.echo(f'Options: {len(kwargs)}')
+            
+            # Apply option decorators dynamically
+            for i in range(20):
+                cmd = click.option(f'--opt{i}', default=f'val{i}')(cmd)
+            
+            return cmd
+
+        cmd = create_command_with_options()
 
         # Command should handle many options
         result = runner.invoke(cmd, ['--opt0', 'v0', '--opt1', 'v1'])

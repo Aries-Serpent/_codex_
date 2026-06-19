@@ -400,8 +400,8 @@ class GitHubApp:
     def get_installation_token(
         self,
         installation_id: int | str,
-        permissions: Optional[dict[str, str]] = None,
-        repositories: Optional[list[str]] = None,
+        permissions: dict[str, str] | None = None,
+        repositories: list[str] | None = None,
         force_refresh: bool = False,
     ) -> InstallationToken | dict[str, Any]:
         """

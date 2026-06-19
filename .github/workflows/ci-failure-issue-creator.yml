@@ -47,10 +47,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  issues: write
-  pull-requests: write
-  contents: write   # create fix branch
-  actions: read
+  issues: write          # For creating and labeling CI failure issues
+  pull-requests: write   # For creating PRs and posting comments
+  contents: write        # For creating fix branches
+  actions: read          # For reading workflow run status
 
 # ── Global serialisation lock ─────────────────────────────────────────────────
 # One instance at a time across ALL workflow names — enforces the single-branch

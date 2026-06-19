@@ -19,8 +19,9 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  issues: write
-  contents: read
+  issues: write      # For comment creation and label application
+  contents: read     # For reading repository content
+  pull-requests: read # For potential future PR context
 
 
 jobs:
