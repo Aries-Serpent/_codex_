@@ -73,15 +73,15 @@ class UserRepository(ABC):
     # ------------------------------------------------------------------ #
 
     @abstractmethod
-    def get_by_id(self, user_id: str) -> User | None:
+    def get_by_id(self, user_id: str) -> Optional[User]:
         """Return the user with *user_id*, or ``None`` if not found."""
 
     @abstractmethod
-    def get_by_username(self, username: str) -> User | None:
+    def get_by_username(self, username: str) -> Optional[User]:
         """Return the user with *username*, or ``None`` if not found."""
 
     @abstractmethod
-    def get_by_email(self, email: str) -> User | None:
+    def get_by_email(self, email: str) -> Optional[User]:
         """Return the user with *email*, or ``None`` if not found."""
 
     @abstractmethod

@@ -380,7 +380,7 @@ class IngestionPipeline:
 
     def ingest_files(
         self,
-        file_paths: Sequence[str | Path],
+        file_paths: Sequence[Union[str, Path]],
         parallel: bool = True,
     ) -> BatchIngestionResult:
         """
@@ -438,7 +438,7 @@ class IngestionPipeline:
 
     def ingest_directory(
         self,
-        directory: str | Path,
+        directory: Union[str, Path],
         pattern: str = "*",
         recursive: bool = True,
     ) -> BatchIngestionResult:
@@ -468,7 +468,7 @@ class IngestionPipeline:
 
         return self.ingest_files(files)
 
-    def _ingest_with_retry(self, file_path: str | Path) -> IngestionResult:
+    def _ingest_with_retry(self, file_path: Union[str, Path]) -> IngestionResult:
         """Ingest file with retry logic."""
         last_error = None
 

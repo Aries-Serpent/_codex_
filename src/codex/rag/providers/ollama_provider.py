@@ -5,6 +5,7 @@ Provides embeddings using Ollama server (local LLM runtime).
 """
 
 import logging
+from typing import Union
 
 import numpy as np
 
@@ -90,7 +91,7 @@ class OllamaEmbeddingProvider:
 
     def encode(
         self,
-        texts: str | list[str],
+        texts: Union[str, list[str]],
         batch_size: int = 32,
         show_progress: bool = False,
     ) -> np.ndarray:
