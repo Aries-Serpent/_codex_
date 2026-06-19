@@ -54,6 +54,7 @@ jobs:
       contents: read
     if: |
       github.event_name == 'pull_request' ||
+      github.event_name == 'pull_request_review' ||
       (github.event_name == 'workflow_dispatch' && inputs.mode == 'fast') ||
       github.event_name == 'push'
     timeout-minutes: 15
@@ -141,7 +142,7 @@ jobs:
     needs: fast-validation
     if: |
       failure() &&
-      github.event_name == 'pull_request' &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') &&
       github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
