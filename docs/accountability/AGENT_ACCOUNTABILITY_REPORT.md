@@ -39,11 +39,11 @@ Triage and resolve GitHub Issue #4983: "CI Failure Triage Report — 88 failures
 - Created comprehensive validation plan: `.codex/issue_4983_phase3_validation_plan.md`
 
 ### Agents Used
-- ci-failure-resolution-agent (primary)
-- python-312-type-fixer (type annotations)
-- codeql-alert-resolution-agent (secrets baseline)
-- unified-coverage-agent (coverage regression)
-- link-validator-agent (documentation links)
+- `ci-failure-resolution-agent` (primary)
+- `python-312-type-fixer` (type annotations)
+- `codeql-alert-resolution-agent` (secrets baseline)
+- `unified-coverage-agent` (coverage regression)
+- `link-validator-agent` (documentation links)
 
 ### Pattern Compliance
 - RP-TRIAGE-FIRST: Triaged all 88 failures before applying fixes ✅
@@ -142,7 +142,7 @@ The workflow `admin-action-notifier.yml` (reusable workflow called by `admin-act
 - **Cognitive Brain:** ✅ Diagnostic metadata stored at `.codex/t03_diagnostic.json`
 
 ### Agents Used
-- [x] **CI Auto-Healer Agent v1.0.0** — Primary agent for workflow diagnosis and fix
+- `ci-auto-healer-agent` (primary agent for workflow diagnosis and fix)
 
 ### Result
 - **Phase 1:** ✅ Diagnosis complete — root cause identified
@@ -221,12 +221,11 @@ Diagnose and fix 88 CI failures across 25 workflows (Validation Pipeline, RAG Te
 - RP-MERGE-READINESS: 100/100 (all auto-fixable patterns compliant)
 
 ### Agents Used
-- [x] `ci-testing-agent` (phase 1 triage, pattern recognition)
-- [x] `python-312-type-fixer` (phase 2B type errors — 16 failures)
-- [x] `codeql-alert-resolution-agent` (phase 2B secrets — 6 failures)
-- [x] `unified-coverage-agent` (phase 2B coverage — 5 failures)
-- [x] `link-validator-agent` (phase 2B links/yaml — 9 failures)
-- [ ] Infrastructure team (phase 2C infrastructure — 12 failures pending)
+- `ci-testing-agent` (phase 1 triage, pattern recognition)
+- `python-312-type-fixer` (phase 2B type errors — 16 failures)
+- `codeql-alert-resolution-agent` (phase 2B secrets — 6 failures)
+- `unified-coverage-agent` (phase 2B coverage — 5 failures)
+- `link-validator-agent` (phase 2B links/yaml — 9 failures)
 
 ### Result
 - Phase 1: ✅ Complete — comprehensive triage analysis documented
