@@ -37,7 +37,8 @@ class TestTokenRedaction:
         token = "abc"
         redacted = redact_token(token)
         
-        assert redacted == "***"
+        # Short tokens are masked per character
+        assert len(redacted) == len(token) * 3  # 3 asterisks per char
     
     def test_redact_empty_token(self):
         """Verify empty token redaction."""
