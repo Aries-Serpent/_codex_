@@ -37,11 +37,11 @@ PHASE 7B Campaign Launch: 2026-06-20 08:00Z
 │
 ├─ TRACK C: Mutation Hardening (82% → 90%+)
 │  ├─ Agent C1: mutation-testing-agent
-│  ├─ Agent C2: test-enhancement-agent
+│  ├─ Agent C2: test-pattern-guardian
 │  └─ ETA: 2026-06-21 15:00Z (31h sprint)
 │
 ├─ TRACK D: CI Stabilization (<1% → 0.5%)
-│  ├─ Agent D1: ci-failure-resolution-agent
+│  ├─ Agent D1: ci-auto-healer-agent
 │  ├─ Agent D2: workflow-compliance-guardian
 │  └─ ETA: 2026-06-21 18:00Z (34h sprint)
 │
@@ -98,8 +98,8 @@ task(agent_type="codeql-alert-resolution-agent", name="phase7b-codeql-final", mo
 task(agent_type="unified-coverage-agent", name="phase7b-coverage-acceleration", mode="background")
 task(agent_type="autonomous-test-healer-agent", name="phase7b-edge-case-tests", mode="background")
 task(agent_type="mutation-testing-agent", name="phase7b-mutation-hardening", mode="background")
-task(agent_type="test-enhancement-agent", name="phase7b-quality-metrics", mode="background")
-task(agent_type="ci-failure-resolution-agent", name="phase7b-ci-stabilization", mode="background")
+task(agent_type="test-pattern-guardian", name="phase7b-quality-metrics", mode="background")
+task(agent_type="ci-auto-healer-agent", name="phase7b-ci-stabilization", mode="background")
 task(agent_type="workflow-compliance-guardian", name="phase7b-workflow-audit", mode="background")
 task(agent_type="unified-doc-agent", name="phase7b-documentation-hub", mode="background")
 task(agent_type="session-analysis-agent", name="phase7b-accountability-report", mode="background")
@@ -114,8 +114,8 @@ task(agent_type="session-analysis-agent", name="phase7b-accountability-report", 
 | **B1** | B | unified-coverage-agent | phase7b-coverage-acceleration | `.codex/PHASE_7B_TRACK_B_BRIEF.md` | 🔄 READY | 2026-06-21 09:00Z |
 | **B2** | B | autonomous-test-healer-agent | phase7b-edge-case-tests | `.codex/PHASE_7B_TRACK_B_BRIEF.md` | 🔄 READY | 2026-06-21 09:00Z |
 | **C1** | C | mutation-testing-agent | phase7b-mutation-hardening | `.codex/PHASE_7B_TRACK_C_BRIEF.md` | 🔄 READY | 2026-06-21 15:00Z |
-| **C2** | C | test-enhancement-agent | phase7b-quality-metrics | `.codex/PHASE_7B_TRACK_C_BRIEF.md` | 🔄 READY | 2026-06-21 15:00Z |
-| **D1** | D | ci-failure-resolution-agent | phase7b-ci-stabilization | `.codex/PHASE_7B_TRACK_D_BRIEF.md` | 🔄 READY | 2026-06-21 18:00Z |
+| **C2** | C | test-pattern-guardian | phase7b-quality-metrics | `.codex/PHASE_7B_TRACK_C_BRIEF.md` | 🔄 READY | 2026-06-21 15:00Z |
+| **D1** | D | ci-auto-healer-agent | phase7b-ci-stabilization | `.codex/PHASE_7B_TRACK_D_BRIEF.md` | 🔄 READY | 2026-06-21 18:00Z |
 | **D2** | D | workflow-compliance-guardian | phase7b-workflow-audit | `.codex/PHASE_7B_TRACK_D_BRIEF.md` | 🔄 READY | 2026-06-21 18:00Z |
 | **E1** | E | unified-doc-agent | phase7b-documentation-hub | `.codex/PHASE_7B_TRACK_E_BRIEF.md` | 🔄 READY | 2026-06-21 21:00Z |
 | **E2** | E | session-analysis-agent | phase7b-accountability-report | `.codex/PHASE_7B_TRACK_E_BRIEF.md` | 🔄 READY | 2026-06-21 21:00Z |

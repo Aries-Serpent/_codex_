@@ -2,7 +2,7 @@
 
 **Agent Pair Mission Charter**
 
-**Track Lead:** ci-failure-resolution-agent + workflow-compliance-guardian  
+**Track Lead:** ci-auto-healer-agent + workflow-compliance-guardian  
 **Mission IDs:** phase7b-ci-stabilization | phase7b-workflow-audit  
 **Launch Date:** 2026-06-20T08:00Z UTC  
 **ETA Completion:** 2026-06-21T18:00Z UTC (34-hour sprint)  
@@ -32,7 +32,7 @@ Conduct comprehensive CI/CD health audit to identify + fix remaining failure pat
 
 ## 🚀 MISSION ACTIVITIES (2 AGENTS, PARALLEL)
 
-### Agent D1: ci-failure-resolution-agent
+### Agent D1: ci-auto-healer-agent
 
 **Mission ID:** phase7b-ci-stabilization  
 **Scope:** CI failure pattern analysis + root cause remediation  

@@ -2,7 +2,7 @@
 
 **Agent Pair Mission Charter**
 
-**Track Lead:** mutation-testing-agent + test-enhancement-agent  
+**Track Lead:** mutation-testing-agent + test-pattern-guardian  
 **Mission IDs:** phase7b-mutation-hardening | phase7b-quality-metrics  
 **Launch Date:** 2026-06-20T08:00Z UTC  
 **ETA Completion:** 2026-06-21T15:00Z UTC (31-hour sprint)  
@@ -51,7 +51,7 @@ Conduct comprehensive mutation testing refinement to eliminate weak test asserti
 - Weak module audit (identify modules <90% kill rate)
 - Mutation report (detailed breakdown + recommendations)
 
-### Agent C2: test-enhancement-agent
+### Agent C2: test-pattern-guardian
 
 **Mission ID:** phase7b-quality-metrics  
 **Scope:** Test assertion enhancement + quality metrics  

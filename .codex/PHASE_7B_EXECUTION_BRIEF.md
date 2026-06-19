@@ -54,10 +54,10 @@ Phase 7B: Final 4-5pp Sprint (2026-06-20 to 2026-06-21)
 │
 ├─ Track C: Mutation Hardening (82% → 90%+)
 │  ├─ mutation-testing-agent (Mission: phase7b-mutation-hardening)
-│  └─ test-enhancement-agent (Mission: phase7b-quality-metrics)
+│  └─ test-pattern-guardian (Mission: phase7b-quality-metrics)
 │
 ├─ Track D: CI Stabilization (<1% → 0.5%)
-│  ├─ ci-failure-resolution-agent (Mission: phase7b-ci-stabilization)
+│  ├─ ci-auto-healer-agent (Mission: phase7b-ci-stabilization)
 │  └─ workflow-compliance-guardian (Mission: phase7b-workflow-audit)
 │
 └─ Track E: Documentation & Meta (Release Prep)
@@ -109,8 +109,8 @@ Track E Output: Consolidated metrics → FINAL GATE VALIDATION
 | **B1** | unified-coverage-agent | phase7b-coverage-acceleration | `.codex/PHASE_7B_TRACK_B_BRIEF.md` |
 | **B2** | autonomous-test-healer-agent | phase7b-edge-case-tests | `.codex/PHASE_7B_TRACK_B_BRIEF.md` |
 | **C1** | mutation-testing-agent | phase7b-mutation-hardening | `.codex/PHASE_7B_TRACK_C_BRIEF.md` |
-| **C2** | test-enhancement-agent | phase7b-quality-metrics | `.codex/PHASE_7B_TRACK_C_BRIEF.md` |
-| **D1** | ci-failure-resolution-agent | phase7b-ci-stabilization | `.codex/PHASE_7B_TRACK_D_BRIEF.md` |
+| **C2** | test-pattern-guardian | phase7b-quality-metrics | `.codex/PHASE_7B_TRACK_C_BRIEF.md` |
+| **D1** | ci-auto-healer-agent | phase7b-ci-stabilization | `.codex/PHASE_7B_TRACK_D_BRIEF.md` |
 | **D2** | workflow-compliance-guardian | phase7b-workflow-audit | `.codex/PHASE_7B_TRACK_D_BRIEF.md` |
 | **E1** | unified-doc-agent | phase7b-documentation-hub | `.codex/PHASE_7B_TRACK_E_BRIEF.md` |
 | **E2** | session-analysis-agent | phase7b-accountability-report | `.codex/PHASE_7B_TRACK_E_BRIEF.md` |
@@ -213,10 +213,10 @@ task(agent_type="autonomous-test-healer-agent", name="phase7b-edge-case-tests", 
 
 # Track C
 task(agent_type="mutation-testing-agent", name="phase7b-mutation-hardening", mode="background")
-task(agent_type="test-enhancement-agent", name="phase7b-quality-metrics", mode="background")
+task(agent_type="test-pattern-guardian", name="phase7b-quality-metrics", mode="background")
 
 # Track D
-task(agent_type="ci-failure-resolution-agent", name="phase7b-ci-stabilization", mode="background")
+task(agent_type="ci-auto-healer-agent", name="phase7b-ci-stabilization", mode="background")
 task(agent_type="workflow-compliance-guardian", name="phase7b-workflow-audit", mode="background")
 
 # Track E
