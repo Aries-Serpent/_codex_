@@ -1405,7 +1405,7 @@
     },
     {
       "name": "embedding-index-rebuild",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
