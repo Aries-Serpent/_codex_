@@ -9,7 +9,7 @@ Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock # pragma: allowlist secret
 from typing import Optional, List, Dict, Any
 import tempfile
 from pathlib import Path

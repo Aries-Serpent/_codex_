@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 
 class TestLegacyEndpointDeprecationHeaders:
-    """Test suite for RFC 8594 deprecation headers on legacy endpoints."""
+    """Test suite for RFC 8594 deprecation headers on legacy endpoints.""" # pragma: allowlist secret # pragma: allowlist secret
 
     @pytest.fixture
     def client(self):
