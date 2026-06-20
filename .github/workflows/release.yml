@@ -45,7 +45,6 @@ jobs:
     permissions:
       contents: read
       actions: write
-    timeout-minutes: 60
   release:
     name: Create GitHub Release
     needs:
