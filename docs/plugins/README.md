@@ -215,7 +215,7 @@ def handle_event(event):
 
 ## Related Documentation
 
-- [Plugin Development Guide](./plugin-development.md)
+- [Plugin API Reference](./Plugin_API_Broader.md)
 - [API Reference](../api/)
 - [Extension System](../extensibility/)
 - [Configuration Guide](../configuration/)
