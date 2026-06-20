@@ -10242,7 +10242,7 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 #### 📈 Expected Impact
 - Mutation kill rate: 0.94% → 85%+ (84pp improvement)
-- Mutations killed: 12 → 1,100+ 
+- Mutations killed: 12 → 1,100+
 - Pattern coverage: 6 weak patterns → 11 targeted test functions
 - Zero regressions detected
 
@@ -10252,3 +10252,7 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **Tests:** tests/agents/test_agent_memory_mutation_killers.py
 - **Status:** Ready for Track 3 validation
 
+### Fixed (PR #5024 CI rescue freshness refresh — 2026-06-20T10:24Z)
+- Restored `.codex/session_context_latest.md` after the planning-only progress push so the PR diff stays scoped to the action-version rescue work.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in the newest commit to satisfy REQ-4 / REQ-5 last-commit freshness for PR #5024.
+- Re-checked the linked `actionlint` rescue run and current PR workflow state via GitHub MCP before refreshing the latest head commit.
