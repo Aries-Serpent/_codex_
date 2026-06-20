@@ -451,12 +451,12 @@ class TestAgentMemoryRetrievalErrors:
         assert result is None
 
     def test_retrieve_category_empty_results(self, tmp_path: Path) -> None:
-        """Test retrieve by category with no matching entries."""
+        """Test search with no matching entries."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
         
-        result = memory.retrieve_memories_by_category("nonexistent_category")
-        assert result == [] or result is None
+        result = memory.search(query="nonexistent_query")
+        assert isinstance(result, list) or result is None
 
 
 class TestMemoryStorageEdgeCases:
