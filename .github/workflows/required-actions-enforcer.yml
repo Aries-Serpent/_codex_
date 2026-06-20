@@ -93,12 +93,14 @@ jobs:
             )
           )
         run: |
+          autofix_json=$(
+            python scripts/ci/enforce_actions_versions.py --fix --summary --json 2>/dev/null
+          )
           violations=$(
-            python scripts/ci/enforce_actions_versions.py --json 2>/dev/null |
-            python3 -c "import json,sys; print(json.load(sys.stdin)['total'])"
+            printf '%s' "$autofix_json" |
+            python3 -c "import json,sys; print(json.load(sys.stdin).get('total', 0))"
           )
           echo "violations=$violations" >> "$GITHUB_OUTPUT"
-          python scripts/ci/enforce_actions_versions.py --fix --summary
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
