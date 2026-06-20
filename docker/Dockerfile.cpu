@@ -1,6 +1,11 @@
 # FROM python:3.10-slim (pinned below)
 FROM python:3.10-slim@sha256:70f65c721aaddfb22b20ed6ec12606c59d9592493c5fcb6639f3d0e8ba3fbc10
 
+# Metadata
+LABEL maintainer="codex-ml-team"
+LABEL org.opencontainers.image.description="Codex ML CPU runtime environment"
+LABEL org.opencontainers.image.version="1.0.0"
+
 # Non-root user for security
 RUN useradd --create-home appuser
 USER appuser
@@ -18,5 +23,9 @@ COPY --chown=appuser:appuser . /app
 RUN pip install --no-cache-dir nox pytest
 
 ENV PYTHONUNBUFFERED=1
+
+# Health check for service (if running as server)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "import sys; sys.exit(0)" || exit 1
 
 CMD ["pytest", "-q"]

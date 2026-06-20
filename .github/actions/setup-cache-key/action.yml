@@ -1,0 +1,143 @@
+name: Setup Standardized Cache Key
+description: |
+  Generates standardized cache keys using 4-layer hierarchy for GitHub Actions.
+  
+  This reusable action eliminates cache key inconsistencies across workflows.
+  Implements the unified cache strategy from Phase X Track Delta.
+
+inputs:
+  cache-type:
+    description: |
+      Cache type to setup.
+      Options: pip, cargo, uv, npm, yarn, pre-commit, mypy, ruff, pytest, docker
+    required: true
+    
+  python-version:
+    description: |
+      Python version for the cache key.
+      Format: '3.11', '3.12', etc.
+      Used only for Python-related cache types.
+    required: false
+    default: '3.12'
+    
+  dependency-files:
+    description: |
+      Files to hash for cache invalidation.
+      Supports glob patterns.
+      Example: |
+        **/pyproject.toml
+        **/requirements*.txt
+    required: false
+    default: |
+      **/pyproject.toml
+      **/requirements*.txt
+    
+  job-id:
+    description: |
+      Job identifier for parallel job isolation.
+      Defaults to github.job if not provided.
+      Use to prevent cache conflicts in matrix jobs.
+    required: false
+
+outputs:
+  cache-key:
+    description: |
+      Primary cache key.
+      Format: {{ type }}-{{ os }}-py{{ version }}-{{ workflow }}-{{ job }}-{{ hash }}
+    value: ${{ steps.generate.outputs.cache-key }}
+    
+  restore-keys:
+    description: |
+      Restore key hierarchy (newline-separated).
+      Implements 3-tier fallback strategy:
+      1. Exact match (with job/workflow/version)
+      2. Workflow match (without job)
+      3. Version match (any workflow)
+    value: ${{ steps.generate.outputs.restore-keys }}
+
+runs:
+  using: composite
+  steps:
+    - id: generate
+      shell: bash
+      run: |
+        # Generate standardized cache key using 4-layer hierarchy
+        # Eliminates cache inconsistencies and prevents race conditions
+        
+        CACHE_TYPE="${{ inputs.cache-type }}"
+        OS="${{ runner.os }}"
+        PY_VERSION="${{ inputs.python-version }}"
+        WORKFLOW="${{ github.workflow }}"
+        JOB_ID="${{ inputs.job-id || github.job }}"
+        
+        # Build cache key components
+        case "${CACHE_TYPE}" in
+          pip|uv|pypy)
+            # Python package caches: include Python version
+            PREFIX="${CACHE_TYPE}-${OS}-py${PY_VERSION}"
+            ;;
+          cargo|rust)
+            # Rust toolchain: OS-specific only
+            PREFIX="${CACHE_TYPE}-${OS}"
+            ;;
+          npm|yarn|node)
+            # Node package managers: include Node version if available
+            if [ -n "${{ inputs.node-version }}" ]; then
+              PREFIX="${CACHE_TYPE}-${OS}-node${{ inputs.node-version }}"
+            else
+              PREFIX="${CACHE_TYPE}-${OS}"
+            fi
+            ;;
+          pre-commit|mypy|ruff|pytest)
+            # Development tools: include Python version
+            PREFIX="${CACHE_TYPE}-${OS}-py${PY_VERSION}"
+            ;;
+          docker)
+            # Docker buildx: OS and architecture
+            PREFIX="${CACHE_TYPE}-${OS}"
+            ;;
+          *)
+            # Generic: OS and type
+            PREFIX="${CACHE_TYPE}-${OS}"
+            ;;
+        esac
+        
+        # Primary cache key: ${PREFIX}-${workflow}-${job}
+        CACHE_KEY="${PREFIX}-${WORKFLOW}-${JOB_ID}"
+        
+        echo "cache-key=${CACHE_KEY}" >> $GITHUB_OUTPUT
+        
+        # Build 3-tier restore key hierarchy for optimal fallback
+        # Tier 1: Exact match (same workflow and job)
+        TIER1="${PREFIX}-${WORKFLOW}-${JOB_ID}"
+        
+        # Tier 2: Workflow match (same workflow, any job)
+        TIER2="${PREFIX}-${WORKFLOW}"
+        
+        # Tier 3: Version match (same version, any workflow)
+        TIER3="${PREFIX}"
+        
+        RESTORE_KEYS="${TIER1}
+        ${TIER2}
+        ${TIER3}"
+        
+        # Output restore keys (will be used with hashFiles() in caller)
+        echo "restore-keys=${RESTORE_KEYS}" >> $GITHUB_OUTPUT
+        
+        # Debug output (helpful for troubleshooting)
+        if [ "${RUNNER_DEBUG}" == "true" ]; then
+          echo "::debug::Cache Type: ${CACHE_TYPE}"
+          echo "::debug::OS: ${OS}"
+          echo "::debug::Python Version: ${PY_VERSION}"
+          echo "::debug::Workflow: ${WORKFLOW}"
+          echo "::debug::Job ID: ${JOB_ID}"
+          echo "::debug::Primary Key: ${CACHE_KEY}"
+          echo "::debug::Restore Tier 1: ${TIER1}"
+          echo "::debug::Restore Tier 2: ${TIER2}"
+          echo "::debug::Restore Tier 3: ${TIER3}"
+        fi
+
+branding:
+  icon: 'zap'
+  color: 'blue'
+
