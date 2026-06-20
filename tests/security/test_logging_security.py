@@ -251,7 +251,7 @@ class TestLoggingFilter:
 
     def test_log_filter_redacts_github_token(self):
         """Verify filter redacts GitHub tokens."""
-        import logging
+        pass  # removed redundant `import logging` (top-level import used)
 
         logger = logging.getLogger("test_filter")
         logger.handlers = []  # Clear existing handlers

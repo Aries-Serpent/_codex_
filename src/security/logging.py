@@ -40,19 +40,19 @@ def redact_token(
 ) -> str:
     """
     Redact a token/secret by showing only the prefix.
-    
+
     Args:
         value: The token or secret to redact
         prefix_len: Number of characters to show from start (default: 4)
         suffix_visible: Whether to show last 4 chars (default: False)
-    
+
     Returns:
         Redacted version like "ghp_****" or "ghp_****89ab"
-    
+
     Examples:
         >>> redact_token("ghp_1234567890abcdefghij1234567890")
         'ghp_****'
-        
+
         >>> redact_token("ghp_1234567890abcdefghij1234567890", suffix_visible=True)
         'ghp_****7890'
     """
@@ -68,13 +68,13 @@ def redact_token(
 def redact_password(value: str) -> str:
     """
     Redact a password by masking most characters.
-    
+
     Args:
         value: The password to redact
-    
+
     Returns:
         Redacted password (masked entirely for security)
-    
+
     Examples:
         >>> redact_password("my_secret_password")
         '[REDACTED_PASSWORD]'
@@ -85,13 +85,13 @@ def redact_password(value: str) -> str:
 def redact_email(email: str) -> str:
     """
     Redact an email address showing only domain.
-    
+
     Args:
         email: The email address to redact
-    
+
     Returns:
         Partially redacted email like u****@example.com
-    
+
     Examples:
         >>> redact_email("user@example.com")
         'u****@example.com'
@@ -109,18 +109,18 @@ def redact_email(email: str) -> str:
 def redact_pii(value: str, pii_type: str = "generic") -> str:
     """
     Redact personally identifiable information.
-    
+
     Args:
         value: The PII value to redact
         pii_type: Type of PII (email, phone, ssn, credit_card, etc.)
-    
+
     Returns:
         Redacted PII value
-    
+
     Examples:
         >>> redact_pii("555-123-4567", "phone")
         '***-***-4567'
-        
+
         >>> redact_pii("john.doe@example.com", "email")
         'j****@example.com'
     """
@@ -149,16 +149,16 @@ def redact_pii(value: str, pii_type: str = "generic") -> str:
 def hash_token(value: str, length: int = 8) -> str:
     """
     Create a hash fingerprint of a token for logging.
-    
+
     This allows identifying which token was used without exposing it.
-    
+
     Args:
         value: The token to hash
         length: Length of hash to show (default: 8)
-    
+
     Returns:
         Hex hash of the token
-    
+
     Examples:
         >>> hash_token("ghp_1234567890abcdef")[:8]
         '3f4a7b2c'
@@ -173,37 +173,37 @@ def hash_token(value: str, length: int = 8) -> str:
 def sanitize_for_logging(value: Any) -> str:
     """
     Sanitize a value for safe logging (remove newlines, control chars).
-    
+
     This prevents log injection attacks by removing special characters.
-    
+
     Args:
         value: The value to sanitize
-    
+
     Returns:
         Sanitized string suitable for logging
-    
+
     Examples:
         >>> sanitize_for_logging("normal text")
         'normal text'
-        
+
         >>> sanitize_for_logging("injection\\nattack")
         'injection attack'
     """
     value_str = str(value)
     # Remove newlines, carriage returns, and control characters
-    sanitized = re.sub(r'[\n\r\x00-\x1f\x7f]', ' ', value_str)
+    sanitized = re.sub(r"[\n\r\x00-\x1f\x7f]", " ", value_str)
     # Collapse multiple spaces
-    sanitized = re.sub(r' +', ' ', sanitized)
+    sanitized = re.sub(r" +", " ", sanitized)
     return sanitized.strip()
 
 
 def create_log_filter() -> logging.Filter:
     """
     Create a logging filter that redacts common secrets.
-    
+
     Returns:
         A logging.Filter instance that sanitizes log records
-    
+
     Usage:
         >>> logger = logging.getLogger(__name__)
         >>> filter_instance = create_log_filter()
@@ -216,10 +216,10 @@ def create_log_filter() -> logging.Filter:
         def filter(self, record: logging.LogRecord) -> bool:
             """
             Filter and redact sensitive data from log records.
-            
+
             Args:
                 record: The log record to process
-            
+
             Returns:
                 Always True to allow the record through (after redaction)
             """
@@ -237,8 +237,7 @@ def create_log_filter() -> logging.Filter:
                         record.args[key] = self._redact_string(value)
             elif isinstance(record.args, (list, tuple)):
                 record.args = tuple(
-                    self._redact_string(arg) if isinstance(arg, str) else arg
-                    for arg in record.args
+                    self._redact_string(arg) if isinstance(arg, str) else arg for arg in record.args
                 )
 
             return True
@@ -249,10 +248,7 @@ def create_log_filter() -> logging.Filter:
             for pattern in TOKEN_PATTERNS:
                 # Replace tokens with redacted version
                 text = re.sub(
-                    pattern,
-                    lambda m: redact_token(m.group(0)),
-                    text,
-                    flags=re.IGNORECASE
+                    pattern, lambda m: redact_token(m.group(0)), text, flags=re.IGNORECASE
                 )
             return text
 
@@ -265,11 +261,11 @@ def setup_secure_logging(
 ) -> None:
     """
     Setup a logger with security filters.
-    
+
     Args:
         logger_instance: The logger to configure
         add_redaction_filter: Whether to add automatic redaction filter
-    
+
     Usage:
         >>> import logging
         >>> logger = logging.getLogger(__name__)
@@ -308,7 +304,7 @@ SECURE LOGGING GUIDELINES:
 7. SETUP secure logging in application entry points:
    ```python
    import logging
-   from src.security.logging import setup_secure_logging
+   from security.logging import setup_secure_logging
    
    logger = logging.getLogger(__name__)
    setup_secure_logging(logger)

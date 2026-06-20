@@ -2,10 +2,10 @@
 Additional comprehensive test suite for PHASE 7 LANE 1
 Additional 60+ tests for specialized modules and corner cases
 """
-import pytest
-from unittest.mock import Mock, MagicMock, patch
 import sys
 from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
@@ -19,7 +19,7 @@ class TestAdvancedIndexingExtended:
             result = idx.search(field="content", value="test", limit=10)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_search_pagination(self):
         try:
             from codex.retrieval.stores.advanced_indexing import AdvancedIndexing
@@ -28,7 +28,7 @@ class TestAdvancedIndexingExtended:
             r2 = idx.search("test", offset=10, limit=10)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_search_with_filters(self):
         try:
             from codex.retrieval.stores.advanced_indexing import AdvancedIndexing
@@ -36,7 +36,7 @@ class TestAdvancedIndexingExtended:
             result = idx.search("test", filters={"type": "document"})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_search_with_fuzzy_matching(self):
         try:
             from codex.retrieval.stores.advanced_indexing import AdvancedIndexing
@@ -44,7 +44,7 @@ class TestAdvancedIndexingExtended:
             result = idx.search("tst", fuzzy=True)  # Typo
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_index_with_metadata(self):
         try:
             from codex.retrieval.stores.advanced_indexing import AdvancedIndexing
@@ -53,7 +53,7 @@ class TestAdvancedIndexingExtended:
             idx.index(docs)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_delete_document(self):
         try:
             from codex.retrieval.stores.advanced_indexing import AdvancedIndexing
@@ -75,7 +75,7 @@ class TestWorkflowOptimizerExtended:
             opt.optimize(wf)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_resources(self):
         try:
             from codex.cognitive.workflow_optimizer import WorkflowOptimizer
@@ -86,7 +86,7 @@ class TestWorkflowOptimizerExtended:
             opt.optimize(wf)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_large_workflow(self):
         try:
             from codex.cognitive.workflow_optimizer import WorkflowOptimizer
@@ -95,7 +95,7 @@ class TestWorkflowOptimizerExtended:
             opt.optimize({"tasks": tasks})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_failure_handlers(self):
         try:
             from codex.cognitive.workflow_optimizer import WorkflowOptimizer
@@ -107,7 +107,7 @@ class TestWorkflowOptimizerExtended:
             opt.optimize(wf)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_conditions(self):
         try:
             from codex.cognitive.workflow_optimizer import WorkflowOptimizer
@@ -128,7 +128,7 @@ class TestRetrievalOptimizerExtended:
             result = opt.optimize_query("query", context={"domain": "tech"})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_multi_language(self):
         try:
             from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
@@ -136,7 +136,7 @@ class TestRetrievalOptimizerExtended:
             result = opt.optimize_query("中文查询", language="zh")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_synonyms(self):
         try:
             from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
@@ -144,7 +144,7 @@ class TestRetrievalOptimizerExtended:
             result = opt.optimize_query("car", expand_synonyms=True)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_complex_query(self):
         try:
             from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
@@ -163,7 +163,7 @@ class TestLLMClientExtended:
             client.generate("query", system_prompt="You are helpful")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_stop_sequences(self):
         try:
             from codex.intent.llm_client import LLMClient
@@ -171,7 +171,7 @@ class TestLLMClientExtended:
             client.generate("query", stop=["\n\n", "END"])
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_presence_penalty(self):
         try:
             from codex.intent.llm_client import LLMClient
@@ -179,7 +179,7 @@ class TestLLMClientExtended:
             client.generate("query", presence_penalty=0.5)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_streaming(self):
         try:
             from codex.intent.llm_client import LLMClient
@@ -201,7 +201,7 @@ class TestIntentInfererExtended:
             inferer.infer("current", history=history)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_with_confidence_threshold(self):
         try:
             from codex.intent.inferer import IntentInferer
@@ -209,7 +209,7 @@ class TestIntentInfererExtended:
             result = inferer.infer("query", min_confidence=0.8)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_batch(self):
         try:
             from codex.intent.inferer import IntentInferer
@@ -229,7 +229,7 @@ class TestAutonomousExecutorExtended:
             exec.execute({"id": "t1"}, context={"var": "value"})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_with_timeout(self):
         try:
             from codex.cognitive.autonomous_executor import AutonomousExecutor
@@ -237,7 +237,7 @@ class TestAutonomousExecutorExtended:
             exec.execute({"id": "t1", "timeout": 30})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_with_rollback(self):
         try:
             from codex.cognitive.autonomous_executor import AutonomousExecutor
@@ -256,7 +256,7 @@ class TestOKRTrackerExtended:
                 tracker.create_okr(f"obj_{i}", 0.8)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_update_multiple_keyresults(self):
         try:
             from codex.cognitive.okr_tracker import OKRTracker
@@ -266,7 +266,7 @@ class TestOKRTrackerExtended:
                 tracker.update_progress(okr, 0.1 * i)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_get_okr_metrics(self):
         try:
             from codex.cognitive.okr_tracker import OKRTracker
@@ -285,7 +285,7 @@ class TestTaskRouterExtended:
             router.route({"id": "t1", "weight": 5})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_with_affinity(self):
         try:
             from codex.cognitive.task_router import TaskRouter
@@ -293,7 +293,7 @@ class TestTaskRouterExtended:
             router.route({"id": "t1", "affinity": "agent_type"})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_with_constraints(self):
         try:
             from codex.cognitive.task_router import TaskRouter
@@ -311,7 +311,7 @@ class TestSessionManagerExtended:
             mgr.create_session("sess1", name="my_session")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_session_context_manager(self):
         try:
             from codex.logging.whiteheadian_session_manager import SessionManager
@@ -320,7 +320,7 @@ class TestSessionManagerExtended:
                 pass
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_session_isolation(self):
         try:
             from codex.logging.whiteheadian_session_manager import SessionManager
@@ -339,7 +339,7 @@ class TestEventLoggerExtended:
             logger.log_event("event", {"key": "value", "num": 42})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_log_with_causality(self):
         try:
             from codex.logging.causal_event_logger import CausalEventLogger
@@ -348,7 +348,7 @@ class TestEventLoggerExtended:
             logger.log_event("e2", {}, caused_by=e1)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_query_events_by_time(self):
         try:
             from codex.logging.causal_event_logger import CausalEventLogger

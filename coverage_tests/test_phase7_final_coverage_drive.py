@@ -1,37 +1,38 @@
 """
 Final test suite for PHASE 7 LANE 1 to reach 200+ test target
 """
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 
 class TestFinalComprehensive:
     """Final 20+ tests to reach 200+ total"""
-    
+
     def test_validation_email(self):
         try:
             from codex.config.env_vars import validate_email
             validate_email("test@example.com")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_validation_url(self):
         try:
             from codex.config.env_vars import validate_url
             validate_url("https://example.com")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_validation_port(self):
         try:
             from codex.config.env_vars import validate_port
             validate_port(8080)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_validation_port_invalid(self):
         try:
             from codex.config.env_vars import validate_port
@@ -39,7 +40,7 @@ class TestFinalComprehensive:
                 validate_port(-1)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_retry_logic_success(self):
         try:
             from codex.utils.error_logging import retry
@@ -49,7 +50,7 @@ class TestFinalComprehensive:
             result = may_fail()
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_retry_logic_exhausted(self):
         try:
             from codex.utils.error_logging import retry
@@ -60,7 +61,7 @@ class TestFinalComprehensive:
                 always_fails()
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_caching_mechanism(self):
         try:
             from codex.utils.error_logging import cached
@@ -71,7 +72,7 @@ class TestFinalComprehensive:
             r2 = expensive_op(5)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_batching_operations(self):
         try:
             from codex.utils.trackers import batch
@@ -80,7 +81,7 @@ class TestFinalComprehensive:
                 assert len(batch_items) <= 10
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_metrics_collection(self):
         try:
             from codex.metrics import Metrics
@@ -88,7 +89,7 @@ class TestFinalComprehensive:
             m.record("op", 100)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_metrics_aggregation(self):
         try:
             from codex.metrics import Metrics
@@ -98,7 +99,7 @@ class TestFinalComprehensive:
             stats = m.get_stats("op")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_logging_setup(self):
         try:
             from codex.utils.logging_factory import LoggingFactory
@@ -106,7 +107,7 @@ class TestFinalComprehensive:
             logger = factory.create_logger("test")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_logging_levels(self):
         try:
             from codex.utils.logging_factory import LoggingFactory
@@ -118,7 +119,7 @@ class TestFinalComprehensive:
             logger.error("error")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_json_serialization(self):
         try:
             from codex.utils.trackers import json_serialize
@@ -126,7 +127,7 @@ class TestFinalComprehensive:
             result = json_serialize(data)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_json_deserialization(self):
         try:
             from codex.utils.trackers import json_deserialize
@@ -134,7 +135,7 @@ class TestFinalComprehensive:
             result = json_deserialize(json_str)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_async_task_scheduling(self):
         try:
             from codex.services.workflow.parser import async_task
@@ -144,7 +145,7 @@ class TestFinalComprehensive:
             task = background_op()
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_context_manager_protocol(self):
         try:
             from codex.services.mcp.lifecycle import ManagedContext
@@ -152,7 +153,7 @@ class TestFinalComprehensive:
                 pass
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_state_machine_transitions(self):
         try:
             from codex.utils.trackers import StateMachine
@@ -161,7 +162,7 @@ class TestFinalComprehensive:
             sm.transition("running", "stopped")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_dependency_injection(self):
         try:
             from codex.utils.registry import Registry
@@ -170,7 +171,7 @@ class TestFinalComprehensive:
             svc = reg.get("service")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_observer_pattern(self):
         try:
             from codex.utils.trackers import EventBus
@@ -179,7 +180,7 @@ class TestFinalComprehensive:
             bus.publish("event", "data")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_visitor_pattern(self):
         try:
             from codex.ast_adapters.yaml_adapter import YAMLVisitor

@@ -8,9 +8,9 @@ This module validates all deployment scenarios:
 - Canary deployment
 - Rolling deployment
 """
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, List
 
 
 class TestStandardDeployment:

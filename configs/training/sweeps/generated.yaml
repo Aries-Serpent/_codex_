@@ -16,7 +16,7 @@ reproducibility:
   base_config: configs/training/base.yaml
   dataset_hash: null
   dataset_version: null
-  generated_at: '2026-06-16T15:53:35.040802+00:00'
-  git_sha: 5aedd3d
+  generated_at: '2026-06-20T01:06:24.747128+00:00'
+  git_sha: 02dc25f
   seeds:
   - 42

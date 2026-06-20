@@ -9,14 +9,10 @@ Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, MagicMock, patch, AsyncMock
-from dataclasses import dataclass
-from typing import Optional, List, Dict, Any
-import sys
-from pathlib import Path
+from unittest.mock import patch
 
+import pytest
 
 # ============================================================================
 # PHASE_1: CRITICAL 0% COVERAGE MODULES (60-80 tests)
@@ -28,25 +24,25 @@ from pathlib import Path
 
 class TestBaseAdapterErrorHandling:
     """Test error conditions and edge cases in adapter initialization"""
-    
+
     def test_adapter_init_with_none_config(self):
         """Should handle None config gracefully"""
         from codex.agent.adapters.base_adapter import BaseAdapter
         with pytest.raises((TypeError, ValueError, AttributeError)):
             adapter = BaseAdapter(config=None)
-    
+
     def test_adapter_init_with_invalid_config_type(self):
         """Should reject non-dict config"""
         from codex.agent.adapters.base_adapter import BaseAdapter
         with pytest.raises((TypeError, ValueError)):
             adapter = BaseAdapter(config="not_a_dict")
-    
+
     def test_adapter_with_missing_required_fields(self):
         """Should validate required config fields"""
         from codex.agent.adapters.base_adapter import BaseAdapter
         with pytest.raises((KeyError, ValueError)):
             adapter = BaseAdapter(config={})  # Missing required fields
-    
+
     def test_adapter_method_not_implemented(self):
         """Should raise NotImplementedError for abstract methods"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -58,7 +54,7 @@ class TestBaseAdapterErrorHandling:
 
 class TestBaseAdapterBoundaryConditions:
     """Test boundary values and input validation"""
-    
+
     def test_adapter_with_empty_string_name(self):
         """Should handle empty adapter name"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -68,7 +64,7 @@ class TestBaseAdapterBoundaryConditions:
             assert hasattr(adapter, 'name')
         except ValueError:
             pass  # Expected
-    
+
     def test_adapter_with_very_long_name(self):
         """Should handle extremely long adapter name"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -78,7 +74,7 @@ class TestBaseAdapterBoundaryConditions:
             assert len(adapter.name) == 10000
         except ValueError:
             pass  # Expected
-    
+
     def test_adapter_with_special_chars_in_name(self):
         """Should handle special characters in adapter name"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -93,7 +89,7 @@ class TestBaseAdapterBoundaryConditions:
 
 class TestBaseAdapterIntegration:
     """Integration tests with other components"""
-    
+
     def test_adapter_lifecycle(self):
         """Test adapter initialization, execution, and cleanup"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -105,7 +101,7 @@ class TestBaseAdapterIntegration:
                     assert a is not None
         except (NotImplementedError, TypeError):
             pass  # Expected if abstract
-    
+
     def test_adapter_state_isolation(self):
         """Multiple adapters should maintain separate state"""
         from codex.agent.adapters.base_adapter import BaseAdapter
@@ -123,21 +119,21 @@ class TestBaseAdapterIntegration:
 
 class TestOrchestratorCommandDispatch:
     """Test command routing and dispatch logic"""
-    
+
     def test_orchestrator_with_empty_command(self):
         """Should handle empty command gracefully"""
         from codex.agents.orchestrator import Orchestrator
         with pytest.raises((ValueError, TypeError, AttributeError)):
             orch = Orchestrator()
             orch.execute(command='')
-    
+
     def test_orchestrator_with_none_command(self):
         """Should reject None command"""
         from codex.agents.orchestrator import Orchestrator
         with pytest.raises((TypeError, ValueError)):
             orch = Orchestrator()
             orch.execute(command=None)
-    
+
     def test_orchestrator_with_unknown_command(self):
         """Should handle unknown command gracefully"""
         from codex.agents.orchestrator import Orchestrator
@@ -153,7 +149,7 @@ class TestOrchestratorCommandDispatch:
 
 class TestOrchestratorStateManagement:
     """Test state transitions and coordination"""
-    
+
     def test_orchestrator_initialization_state(self):
         """Orchestrator should initialize in valid state"""
         from codex.agents.orchestrator import Orchestrator
@@ -165,7 +161,7 @@ class TestOrchestratorStateManagement:
                 assert orch.state in ['idle', 'ready', 'initialized', None]
         except (NotImplementedError, TypeError):
             pass
-    
+
     def test_orchestrator_concurrent_commands(self):
         """Should handle concurrent command execution safely"""
         from codex.agents.orchestrator import Orchestrator
@@ -188,7 +184,7 @@ class TestOrchestratorStateManagement:
 
 class TestCLIArgumentParsing:
     """Test CLI argument parsing and validation"""
-    
+
     def test_cli_with_empty_args(self):
         """Should handle empty argument list"""
         from codex.cli import parse_arguments
@@ -198,13 +194,13 @@ class TestCLIArgumentParsing:
             assert args is not None
         except (SystemExit, ValueError):
             pass  # Expected
-    
+
     def test_cli_with_none_args(self):
         """Should reject None arguments"""
         from codex.cli import parse_arguments
         with pytest.raises((TypeError, ValueError)):
             parse_arguments(argv=None)
-    
+
     def test_cli_with_invalid_flag(self):
         """Should handle invalid flags"""
         from codex.cli import parse_arguments
@@ -217,7 +213,7 @@ class TestCLIArgumentParsing:
 
 class TestCLICommandExecution:
     """Test CLI command execution paths"""
-    
+
     @pytest.mark.parametrize('command', ['help', 'version', 'info'])
     def test_cli_standard_commands(self, command):
         """Test standard CLI commands"""
@@ -229,7 +225,7 @@ class TestCLICommandExecution:
             assert result is not None or command == 'version'
         except (NotImplementedError, AttributeError, SystemExit):
             pass
-    
+
     def test_cli_with_very_long_input(self):
         """Should handle extremely long input"""
         from codex.cli import parse_arguments
@@ -247,19 +243,19 @@ class TestCLICommandExecution:
 
 class TestGitHubLogsAPIErrors:
     """Test GitHub logs API error handling"""
-    
+
     def test_github_logs_with_invalid_token(self):
         """Should handle invalid GitHub token"""
         from codex.api.github_logs import GitHubLogsAPI
         with pytest.raises((ValueError, AttributeError)):
             api = GitHubLogsAPI(token='')
-    
+
     def test_github_logs_with_none_token(self):
         """Should reject None token"""
         from codex.api.github_logs import GitHubLogsAPI
         with pytest.raises((TypeError, ValueError)):
             api = GitHubLogsAPI(token=None)
-    
+
     @pytest.mark.asyncio
     async def test_github_logs_network_timeout(self):
         """Should handle network timeouts gracefully"""
@@ -276,7 +272,7 @@ class TestGitHubLogsAPIErrors:
 
 class TestGitHubLogsBoundaryValues:
     """Test boundary conditions for GitHub logs"""
-    
+
     def test_github_logs_with_zero_run_id(self):
         """Should handle zero as run ID"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -286,7 +282,7 @@ class TestGitHubLogsBoundaryValues:
             # May raise ValueError or return empty
         except (ValueError, AttributeError):
             pass
-    
+
     def test_github_logs_with_negative_run_id(self):
         """Should reject negative run ID"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -296,7 +292,7 @@ class TestGitHubLogsBoundaryValues:
                 result = api.get_logs(run_id=-1)
         except AttributeError:
             pass
-    
+
     def test_github_logs_with_empty_repo(self):
         """Should handle empty repository name"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -314,7 +310,7 @@ class TestGitHubLogsBoundaryValues:
 
 class TestBridgeTypesValidation:
     """Test bridge types edge cases"""
-    
+
     def test_bridge_type_with_empty_string(self):
         """Should validate empty bridge type"""
         from codex.bridge_types import BridgeType
@@ -323,13 +319,13 @@ class TestBridgeTypesValidation:
             # May raise or return None
         except ValueError:
             pass
-    
+
     def test_bridge_type_with_none_value(self):
         """Should reject None bridge type"""
         from codex.bridge_types import BridgeType
         with pytest.raises((TypeError, ValueError)):
             bt = BridgeType(value=None)
-    
+
     def test_bridge_type_with_invalid_type(self):
         """Should reject non-string types"""
         from codex.bridge_types import BridgeType
@@ -342,7 +338,7 @@ class TestBridgeTypesValidation:
 
 class TestCLIPipelineExecution:
     """Test CLI pipeline execution"""
-    
+
     def test_pipeline_with_empty_steps(self):
         """Should handle pipeline with no steps"""
         from codex.cli.pipeline import Pipeline
@@ -352,13 +348,13 @@ class TestCLIPipelineExecution:
             # Should return empty result or error
         except (ValueError, TypeError):
             pass
-    
+
     def test_pipeline_with_none_steps(self):
         """Should reject None steps"""
         from codex.cli.pipeline import Pipeline
         with pytest.raises((TypeError, ValueError)):
             pipeline = Pipeline(steps=None)
-    
+
     def test_pipeline_with_invalid_step_type(self):
         """Should validate step types"""
         from codex.cli.pipeline import Pipeline
@@ -371,7 +367,7 @@ class TestCLIPipelineExecution:
 
 class TestConfigEnvironmentVariables:
     """Test config and environment variable handling"""
-    
+
     def test_env_var_with_empty_string(self):
         """Should handle empty environment variables"""
         from codex.config.env_vars import load_env_config
@@ -379,7 +375,7 @@ class TestConfigEnvironmentVariables:
             config = load_env_config()
             # Should handle gracefully
             assert config is not None
-    
+
     def test_env_var_with_invalid_json(self):
         """Should handle invalid JSON in env var"""
         from codex.config.env_vars import load_env_config
@@ -389,7 +385,7 @@ class TestConfigEnvironmentVariables:
                 # May raise or skip invalid
             except (ValueError, json.JSONDecodeError):
                 pass
-    
+
     def test_env_var_missing_required_vars(self):
         """Should handle missing required env vars"""
         from codex.config.env_vars import load_env_config
@@ -407,7 +403,7 @@ class TestConfigEnvironmentVariables:
 
 class TestAsyncConcurrencyPatterns:
     """Test async and concurrency edge cases"""
-    
+
     @pytest.mark.asyncio
     async def test_concurrent_api_calls(self):
         """Should handle multiple concurrent API calls"""
@@ -426,7 +422,7 @@ class TestAsyncConcurrencyPatterns:
                 pass
         except (NotImplementedError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_async_timeout_handling(self):
         """Should handle async timeouts"""
@@ -434,7 +430,7 @@ class TestAsyncConcurrencyPatterns:
             # Create an async task that times out
             async def long_running():
                 await asyncio.sleep(10)
-            
+
             with pytest.raises(asyncio.TimeoutError):
                 await asyncio.wait_for(long_running(), timeout=0.1)
         except (NotImplementedError, AttributeError):
@@ -443,26 +439,28 @@ class TestAsyncConcurrencyPatterns:
 
 class TestMultiModuleIntegration:
     """Test integration between multiple modules"""
-    
+
     def test_cli_to_adapter_flow(self):
         """Test flow from CLI through adapter"""
         try:
-            from codex.cli import CLI
             from codex.agent.adapters.base_adapter import BaseAdapter
-            
+
+            from codex.cli import CLI
+
             cli = CLI()
             # Attempt to use adapter through CLI
             # Should not crash even if incomplete
             assert cli is not None
         except (NotImplementedError, ImportError, TypeError):
             pass
-    
+
     def test_config_to_orchestrator_flow(self):
         """Test config loading and orchestrator initialization"""
         try:
-            from codex.config.env_vars import load_env_config
             from codex.agents.orchestrator import Orchestrator
-            
+
+            from codex.config.env_vars import load_env_config
+
             config = load_env_config()
             orch = Orchestrator()
             # Should initialize without error
@@ -473,34 +471,34 @@ class TestMultiModuleIntegration:
 
 class TestErrorPropagation:
     """Test error handling and propagation"""
-    
+
     def test_error_in_nested_call(self):
         """Should propagate errors from nested calls"""
         try:
             from codex.api.github_logs import GitHubLogsAPI
-            
+
             api = GitHubLogsAPI(token='dummy_token')
             # Call with invalid params should raise
             with pytest.raises((ValueError, TypeError, AttributeError)):
                 api.fetch_logs(repo=None, run_id=None)
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_exception_chaining(self):
         """Should maintain exception chain"""
         try:
             def inner():
                 raise ValueError("Inner error")
-            
+
             def outer():
                 try:
                     inner()
                 except ValueError as e:
                     raise RuntimeError("Outer error") from e
-            
+
             with pytest.raises(RuntimeError) as exc_info:
                 outer()
-            
+
             # Should have chained cause
             assert exc_info.value.__cause__ is not None
         except (NotImplementedError, AttributeError):
@@ -513,31 +511,31 @@ class TestErrorPropagation:
 
 class TestRegressionPrevention:
     """Tests to prevent regressions in existing functionality"""
-    
+
     def test_adapter_does_not_modify_config(self):
         """Adapter should not mutate input config"""
         from codex.agent.adapters.base_adapter import BaseAdapter
         try:
             original_config = {'name': 'test', 'value': 42}
             config_copy = original_config.copy()
-            
+
             try:
                 adapter = BaseAdapter(config=original_config)
             except (NotImplementedError, TypeError):
                 pass
-            
+
             # Config should not be modified
             assert original_config == config_copy
         except (NotImplementedError, ImportError):
             pass
-    
+
     def test_orchestrator_state_isolation(self):
         """Multiple orchestrator instances should not share state"""
         from codex.agents.orchestrator import Orchestrator
         try:
             orch1 = Orchestrator()
             orch2 = Orchestrator()
-            
+
             # Set state on orch1
             if hasattr(orch1, 'state'):
                 orch1.state = 'test_state_1'

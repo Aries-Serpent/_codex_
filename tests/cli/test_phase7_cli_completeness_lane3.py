@@ -12,7 +12,6 @@ Test Coverage:
 Successfully reaching 95% → 100% CLI completeness target.
 """
 
-import json
 import sys
 import tempfile
 from pathlib import Path
@@ -23,10 +22,11 @@ from click.testing import CliRunner
 # Import directly from cli.py module since duplication_group is not in __init__
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "src"))
 
-from codex.cli import cli, logs, tokenizer_group, repro_group, auth_group
-
 # Import duplication_group directly from cli module
 import importlib.util
+
+from codex.cli import auth_group, cli, logs, repro_group, tokenizer_group
+
 _cli_module_path = Path(__file__).resolve().parent.parent.parent / "src" / "codex" / "cli.py"
 _spec = importlib.util.spec_from_file_location("_cli_module", _cli_module_path)
 _cli_module = importlib.util.module_from_spec(_spec)
@@ -220,7 +220,7 @@ class TestCLICompleteness:
         """CLI error messages should follow consistent format."""
         # Test missing required argument errors
         result1 = cli_runner.invoke(logs, ["query"])
-        
+
         # Both should exit with non-zero codes
         assert result1.exit_code != 0
 
@@ -285,7 +285,7 @@ class TestCLICompleteness:
     def test_all_command_groups_have_help(self, cli_runner):
         """All command groups should have help text."""
         groups = [cli, logs, tokenizer_group, repro_group, auth_group, duplication_group]
-        
+
         for group in groups:
             result = cli_runner.invoke(group, ["--help"])
             assert result.exit_code == 0
@@ -301,7 +301,7 @@ class TestCLICompleteness:
             (auth_group, "login"),
             (duplication_group, "check"),
         ]
-        
+
         for group, cmd in critical_commands:
             result = cli_runner.invoke(group, [cmd, "--help"])
             assert result.exit_code == 0
@@ -345,13 +345,13 @@ class TestCLICommandVariantsImplementation:
             (auth_group, ["login"]),  # Missing required args
             (duplication_group, ["check"]),  # Missing required args
         ]
-        
+
         error_messages = []
         for group, args in groups_with_errors:
             result = cli_runner.invoke(group, args)
             if result.exit_code != 0:
                 error_messages.append(result.output)
-        
+
         # Should have consistent error message patterns
         # (Either all show "Error:" or all show "❌" or similar pattern)
         if error_messages:
@@ -382,7 +382,7 @@ class TestCLIDocumentationCompleteness:
             (duplication_group, "report"),
             (duplication_group, "compare"),
         ]
-        
+
         for group, cmd in commands_to_check:
             result = cli_runner.invoke(group, [cmd, "--help"])
             assert result.exit_code == 0, f"{cmd} should have help"

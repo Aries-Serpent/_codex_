@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+r"""
 PHASE 7 LANE 3 TASK 3.5 — Cross-Platform Validation Test Suite
 
 Comprehensive cross-platform compatibility tests (Windows, macOS, Linux).
@@ -30,15 +30,14 @@ Constraints:
 from __future__ import annotations
 
 import os
+import platform as platform_module
 import sys
 import tempfile
-import platform as platform_module
-from pathlib import Path, PureWindowsPath, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
+from typing import Iterator
 from unittest import mock
-from typing import Iterator, Optional
 
 import pytest
-
 
 # ============================================================================
 # PLATFORM MOCK FIXTURES
@@ -100,7 +99,7 @@ class TestWindowsPathNormalization:
         assert normalized == "C:/Users/admin/Documents/file.txt"
 
     def test_windows_unc_path_format(self):
-        """Test Windows UNC path format (\\server\share)."""
+        """Test Windows UNC path format (\\server\\share)."""
         unc_path = r"\\server\share\file.txt"
         assert unc_path.startswith("\\\\")
         parts = unc_path.split("\\")
@@ -123,7 +122,7 @@ class TestWindowsPathNormalization:
         """Test Windows relative path normalization."""
         relative = r".\subfolder\file.txt"
         absolute = r"C:\root\.\subfolder\file.txt"
-        
+
         # Remove current dir reference
         relative_norm = relative.replace(".\\", "")
         assert relative_norm == r"subfolder\file.txt"
@@ -250,7 +249,7 @@ class TestPlatformEnvironmentVariables:
         with mock.patch.dict(os.environ, {"TEMP": r"C:\Temp", "TMP": r"C:\Windows\Temp"}):
             temp = os.environ.get("TEMP")
             assert temp == r"C:\Temp"
-        
+
         # Unix uses TMPDIR
         with mock.patch.dict(os.environ, {"TMPDIR": "/tmp"}):
             tmpdir = os.environ.get("TMPDIR")
@@ -262,7 +261,7 @@ class TestPlatformEnvironmentVariables:
         with mock.patch.dict(os.environ, {"USERNAME": "admin"}):
             user = os.environ.get("USERNAME")
             assert user == "admin"
-        
+
         # Unix uses USER
         with mock.patch.dict(os.environ, {"USER": "admin"}):
             user = os.environ.get("USER")
@@ -301,7 +300,7 @@ class TestShellCompatibility:
         # Unix uses ; or && or ||
         unix_cmd = "cmd1; cmd2 && cmd3 || cmd4"
         assert ";" in unix_cmd or "&&" in unix_cmd
-        
+
         # Windows uses & (synchronous) or && (conditional)
         win_cmd = r"cmd1 & cmd2 && cmd3"
         assert "&" in win_cmd
@@ -311,7 +310,7 @@ class TestShellCompatibility:
         # Unix uses $VAR or ${VAR}
         unix_env = "$HOME/documents"
         assert "$HOME" in unix_env or "${HOME}" in unix_env
-        
+
         # Windows uses %VAR%
         win_env = r"%USERPROFILE%\Documents"
         assert "%USERPROFILE%" in win_env
@@ -327,13 +326,13 @@ class TestFileIOCrossPlatform:
     def test_line_ending_normalization(self, temp_dir):
         """Test line ending handling (CRLF vs LF)."""
         text_file = temp_dir / "test.txt"
-        
+
         # Unix line endings
         unix_content = "line1\nline2\nline3\n"
         text_file.write_text(unix_content)
         read_content = text_file.read_text()
         assert "\n" in read_content
-        
+
         # Count newlines
         assert read_content.count("\n") == 3
 
@@ -341,14 +340,14 @@ class TestFileIOCrossPlatform:
         """Test binary vs text mode file operations."""
         bin_file = temp_dir / "test.bin"
         text_file = temp_dir / "test.txt"
-        
+
         # Binary mode preserves exact bytes
         data = b"line1\r\nline2\r\nline3\r\n"
         bin_file.write_bytes(data)
         read_data = bin_file.read_bytes()
         assert read_data == data
         assert b"\r\n" in read_data
-        
+
         # Text mode may normalize line endings
         content = "line1\nline2\nline3\n"
         text_file.write_text(content)
@@ -359,14 +358,14 @@ class TestFileIOCrossPlatform:
         """Test file permissions handling."""
         test_file = temp_dir / "executable.sh"
         test_file.write_text("#!/bin/bash\necho 'test'\n")
-        
+
         # Get current permissions
         stat_info = test_file.stat()
         mode = stat_info.st_mode
-        
+
         # Permissions are available on all platforms
         assert hasattr(stat_info, "st_mode")
-        
+
         # On Unix, can check execution bit
         if sys.platform != "win32":
             executable = mode & 0o111
@@ -378,15 +377,15 @@ class TestFileIOCrossPlatform:
         # Create nested structure
         nested = temp_dir / "level1" / "level2" / "level3"
         nested.mkdir(parents=True, exist_ok=True)
-        
+
         # Create file
         test_file = nested / "file.txt"
         test_file.write_text("test content")
-        
+
         # Verify it exists and is readable
         assert test_file.exists()
         assert test_file.read_text() == "test content"
-        
+
         # Verify parent references work
         assert test_file.parent == nested
         assert nested.parent.name == "level2"
@@ -400,7 +399,7 @@ class TestFileIOCrossPlatform:
             "file123.txt",
             "file.multiple.dots.txt",
         ]
-        
+
         for name in safe_names:
             test_file = temp_dir / name
             test_file.write_text("test")
@@ -414,11 +413,11 @@ class TestFileIOCrossPlatform:
         subdir.mkdir()
         test_file = subdir / "file.txt"
         test_file.write_text("content")
-        
+
         # Traverse up and back down
         current = test_file.parent.resolve()
         parent = current.parent.resolve()
-        
+
         assert current.name == "subdir"
         assert parent == temp_dir.resolve()
 
@@ -435,7 +434,7 @@ class TestCaseSensitivity:
         # On Linux (case-sensitive), these are different
         path1 = "/home/user/File.txt"
         path2 = "/home/user/file.txt"
-        
+
         # String comparison shows they're different
         assert path1 != path2
         assert path1.lower() == path2.lower()
@@ -444,7 +443,7 @@ class TestCaseSensitivity:
         """Test Windows case-insensitive path handling."""
         win_path1 = r"C:\Users\Admin\file.txt"
         win_path2 = r"C:\users\admin\FILE.TXT"
-        
+
         # On Windows, these are equivalent (case-insensitive)
         # String comparison shows they're different
         assert win_path1 != win_path2
@@ -457,7 +456,7 @@ class TestCaseSensitivity:
         # APFS can be either depending on format
         test_file = temp_dir / "TestFile.txt"
         test_file.write_text("content")
-        
+
         assert test_file.exists()
         # Case is preserved in the filesystem
         assert test_file.name == "TestFile.txt"
@@ -468,16 +467,16 @@ class TestCaseSensitivity:
         file1 = temp_dir / "test.txt"
         file2 = temp_dir / "Test.txt"
         file3 = temp_dir / "TEST.txt"
-        
+
         file1.write_text("file1")
         file2.write_text("file2")
         file3.write_text("file3")
-        
+
         # All three should exist on Linux
         assert file1.exists()
         assert file2.exists()
         assert file3.exists()
-        
+
         # Different content
         assert file1.read_text() == "file1"
         assert file2.read_text() == "file2"
@@ -503,10 +502,10 @@ class TestSymlinksAndJunctions:
         """Test symlink creation on Unix systems."""
         if sys.platform == "win32":
             pytest.skip("Symlinks require Unix or admin on Windows")
-        
+
         target = temp_dir / "target.txt"
         target.write_text("target content")
-        
+
         link = temp_dir / "link.txt"
         try:
             link.symlink_to(target)
@@ -520,11 +519,11 @@ class TestSymlinksAndJunctions:
         """Test symlink path resolution."""
         if sys.platform == "win32":
             pytest.skip("Symlinks require Unix or admin on Windows")
-        
+
         target = temp_dir / "target" / "file.txt"
         target.parent.mkdir(parents=True)
         target.write_text("content")
-        
+
         link = temp_dir / "link"
         try:
             link.symlink_to(target)
@@ -538,10 +537,10 @@ class TestSymlinksAndJunctions:
         """Test detecting and reading symlinks."""
         if sys.platform == "win32":
             pytest.skip("Symlinks require Unix or admin on Windows")
-        
+
         target = temp_dir / "target.txt"
         target.write_text("target")
-        
+
         link = temp_dir / "link.txt"
         try:
             link.symlink_to(target)
@@ -554,7 +553,7 @@ class TestSymlinksAndJunctions:
         # Windows uses junctions instead of symlinks for directories
         # Junctions are created with: mklink /J link target
         # Symlinks require admin privileges
-        
+
         # On mock Windows, we just verify the concept
         assert sys.platform == "win32" or True  # Would be true on actual Windows
 
@@ -574,7 +573,7 @@ class TestExecutablePathResolution:
             "#!/usr/bin/env python",
             "#! /usr/bin/env python3",
         ]
-        
+
         for shebang in shebangs:
             assert shebang.startswith("#!")
             path = shebang[2:].strip()
@@ -599,10 +598,10 @@ class TestExecutablePathResolution:
         """Test PATH search for executables."""
         path_var = os.environ.get("PATH", "")
         assert path_var
-        
+
         paths = path_var.split(os.pathsep)
         assert len(paths) > 0
-        
+
         # Each path should be non-empty
         for path in paths:
             if path:  # Skip empty entries
@@ -618,12 +617,12 @@ class TestTemporaryDirectoryHandling:
 
     def test_tempfile_module_location(self):
         """Test tempfile module creates in platform-specific location."""
-        import tempfile as tf
-        
+        tf = tempfile
+
         with tf.TemporaryDirectory() as tmpdir:
             assert tmpdir
             assert Path(tmpdir).exists()
-            
+
             # On Windows: usually C:\Users\...\AppData\Local\Temp
             # On Unix: usually /tmp or /var/tmp
             if sys.platform == "win32":
@@ -633,36 +632,36 @@ class TestTemporaryDirectoryHandling:
 
     def test_multiple_temp_files(self):
         """Test creating multiple temporary files."""
-        import tempfile as tf
-        
+        tf = tempfile
+
         with tf.TemporaryDirectory() as tmpdir:
             tmp_path = Path(tmpdir)
-            
+
             # Create multiple temp files
             files = []
             for i in range(5):
                 f = tmp_path / f"temp_{i}.txt"
                 f.write_text(f"content_{i}")
                 files.append(f)
-            
+
             # All should exist
             assert all(f.exists() for f in files)
             assert all(f.is_file() for f in files)
 
     def test_temp_file_cleanup(self):
         """Test temporary file cleanup."""
-        import tempfile as tf
-        
+        tf = tempfile
+
         tmpdir_path = None
         with tf.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
             assert tmpdir_path.exists()
-            
+
             # Create a file inside
             test_file = tmpdir_path / "test.txt"
             test_file.write_text("test")
             assert test_file.exists()
-        
+
         # After context exit, temp dir should be cleaned
         assert not tmpdir_path.exists()
 
@@ -678,10 +677,10 @@ class TestFileEncoding:
         """Test UTF-8 file encoding."""
         test_file = temp_dir / "utf8.txt"
         content = "Hello, 世界! 🌍"
-        
+
         test_file.write_text(content, encoding="utf-8")
         read_content = test_file.read_text(encoding="utf-8")
-        
+
         assert read_content == content
         assert "世界" in read_content
         assert "🌍" in read_content
@@ -690,20 +689,20 @@ class TestFileEncoding:
         """Test ASCII file encoding."""
         test_file = temp_dir / "ascii.txt"
         content = "Hello, World!"
-        
+
         test_file.write_text(content, encoding="ascii")
         read_content = test_file.read_text(encoding="ascii")
-        
+
         assert read_content == content
 
     def test_encoding_errors_handling(self, temp_dir):
         """Test encoding error handling."""
         test_file = temp_dir / "mixed.txt"
         content = "Hello, 世界!"
-        
+
         # Write with UTF-8
         test_file.write_text(content, encoding="utf-8")
-        
+
         # Try to read with ASCII should handle errors
         try:
             read_content = test_file.read_text(encoding="ascii")

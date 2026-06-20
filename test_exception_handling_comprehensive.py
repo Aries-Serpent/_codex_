@@ -13,27 +13,27 @@ Author: Automated Test Generator
 from __future__ import annotations
 
 import json
+import tempfile
 import threading
 import time
-import tempfile
-from io import StringIO, BytesIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 from unittest import mock
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
 
 class DataValidator:
     """Helper class for data validation in test scenarios."""
-    
+
     def validate_type(self, value: Any, expected_type: type) -> bool:
         """Validate value type matches expected type."""
         if not isinstance(value, expected_type):
             raise TypeError(f"Expected {expected_type.__name__}, got {type(value).__name__}")
         return True
-    
+
     def validate_value_range(self, value: int, min_val: int, max_val: int) -> bool:
         """Validate value is within acceptable range."""
         if not isinstance(value, int):
@@ -41,11 +41,11 @@ class DataValidator:
         if not min_val <= value <= max_val:
             raise ValueError(f"Value {value} out of range [{min_val}, {max_val}]")
         return True
-    
+
     def validate_port(self, port: int) -> bool:
         """Validate port number is in valid range."""
         return self.validate_value_range(port, 0, 65535)
-    
+
     def validate_choice(self, value: str, allowed: set[str]) -> bool:
         """Validate value is in allowed choices."""
         if value not in allowed:
@@ -55,19 +55,19 @@ class DataValidator:
 
 class DataProcessor:
     """Helper class for data processing in test scenarios."""
-    
+
     def process_json(self, data: str) -> dict:
         """Parse and validate JSON string."""
         if not isinstance(data, str):
             raise TypeError(f"Expected str, got {type(data).__name__}")
         return json.loads(data)
-    
+
     def process_list(self, items: list) -> list:
         """Process list and validate it's hashable elements."""
         if not isinstance(items, list):
             raise TypeError(f"Expected list, got {type(items).__name__}")
         return items
-    
+
     def state_transition(self, current_state: str, next_state: str) -> bool:
         """Validate state machine transition."""
         valid_states = {"idle", "initialized", "processing", "completed"}
@@ -77,27 +77,27 @@ class DataProcessor:
             "processing": {"completed", "idle"},
             "completed": {"idle"},
         }
-        
+
         if current_state not in valid_states:
             raise ValueError(f"Invalid current state: {current_state}")
         if next_state not in valid_states:
             raise ValueError(f"Invalid next state: {next_state}")
         if next_state not in valid_transitions[current_state]:
             raise RuntimeError(f"Cannot transition from {current_state} to {next_state}")
-        
+
         return True
 
 
 class FileHandler:
     """Helper class for file operations in test scenarios."""
-    
+
     def read_file(self, filepath: str) -> str:
         """Read file contents."""
         path = Path(filepath)
         if not path.exists():
             raise FileNotFoundError(f"File not found: {filepath}")
         return path.read_text(encoding="utf-8")
-    
+
     def write_file(self, filepath: str, content: str) -> None:
         """Write content to file."""
         path = Path(filepath)
@@ -105,7 +105,7 @@ class FileHandler:
             path.write_text(content, encoding="utf-8")
         except PermissionError:
             raise PermissionError(f"Permission denied writing to {filepath}")
-    
+
     def read_binary(self, filepath: str) -> bytes:
         """Read binary file."""
         path = Path(filepath)
@@ -116,7 +116,7 @@ class FileHandler:
 
 class TestTypeErrorAndAttributeError:
     """Tests for TypeError and AttributeError exception handling."""
-    
+
     @pytest.mark.parametrize("value,expected_type,should_raise", [
         (42, str, True),
         ("hello", int, True),
@@ -134,7 +134,7 @@ class TestTypeErrorAndAttributeError:
                 validator.validate_type(value, expected_type)
         else:
             assert validator.validate_type(value, expected_type) is True
-    
+
     @pytest.mark.parametrize("obj,attr", [
         ({}, "nonexistent_key"),
         ([], "nonexistent_method"),
@@ -145,7 +145,7 @@ class TestTypeErrorAndAttributeError:
         """Test accessing non-existent attributes."""
         with pytest.raises(AttributeError):
             getattr(obj, attr)
-    
+
     @pytest.mark.parametrize("value,attr", [
         (None, "upper"),
         (None, "strip"),
@@ -156,7 +156,7 @@ class TestTypeErrorAndAttributeError:
         """Test accessing attributes on None."""
         with pytest.raises(AttributeError, match="'NoneType'"):
             getattr(value, attr)
-    
+
     @pytest.mark.parametrize("container,index", [
         ([1, 2, 3], 5),
         ("abc", 10),
@@ -167,7 +167,7 @@ class TestTypeErrorAndAttributeError:
         """Test indexing with out-of-bounds indices."""
         with pytest.raises(IndexError):
             _ = container[index]
-    
+
     @pytest.mark.parametrize("dict_obj,key", [
         ({}, "missing"),
         ({"a": 1}, "b"),
@@ -177,7 +177,7 @@ class TestTypeErrorAndAttributeError:
         """Test accessing missing dictionary keys."""
         with pytest.raises(KeyError):
             _ = dict_obj[key]
-    
+
     @pytest.mark.parametrize("unhashable", [
         [1, 2, 3],
         {"a": 1},
@@ -188,18 +188,18 @@ class TestTypeErrorAndAttributeError:
         """Test using unhashable types as dict keys."""
         with pytest.raises(TypeError, match="unhashable"):
             _ = {unhashable: "value"}
-    
+
     def test_operation_type_error_direct(self):
         """Test invalid operations on typed values using operators."""
         with pytest.raises(TypeError):
             _ = 5 + "a"  # int + str raises TypeError
-        
+
         with pytest.raises(TypeError):
             _ = "text" + 5  # str + int raises TypeError
-        
+
         with pytest.raises(TypeError):
             _ = {"a": 1} + [1]  # dict + list raises TypeError
-    
+
     @pytest.mark.parametrize("data,key", [
         ({"nested": {"level": 1}}, "missing"),
         ([{"a": 1}], "key"),
@@ -212,16 +212,16 @@ class TestTypeErrorAndAttributeError:
         else:
             with pytest.raises((KeyError, TypeError)):
                 _ = data[0][key]
-    
+
     def test_function_argument_type_error(self):
         """Test function called with wrong number of arguments."""
         def some_function(x: int, y: str) -> str:
             return f"{x}: {y}"
-        
+
         # Too few arguments raises TypeError
         with pytest.raises(TypeError):
             some_function(42)  # Missing required argument 'y'
-    
+
     @pytest.mark.parametrize("mutable_default", [
         lambda x=[]: x.append(1),
         lambda x={}: x.update({"key": "val"}),
@@ -239,7 +239,7 @@ class TestTypeErrorAndAttributeError:
 
 class TestValueErrorAndRuntimeError:
     """Tests for ValueError and RuntimeError exception handling."""
-    
+
     @pytest.mark.parametrize("value,min_val,max_val", [
         (100, 0, 50),
         (-5, 0, 100),
@@ -250,7 +250,7 @@ class TestValueErrorAndRuntimeError:
         validator = DataValidator()
         with pytest.raises(ValueError, match="out of range"):
             validator.validate_value_range(value, min_val, max_val)
-    
+
     @pytest.mark.parametrize("port", [
         -1,
         65536,
@@ -261,7 +261,7 @@ class TestValueErrorAndRuntimeError:
         validator = DataValidator()
         with pytest.raises(ValueError):
             validator.validate_port(port)
-    
+
     @pytest.mark.parametrize("choice,allowed", [
         ("invalid", {"a", "b", "c"}),
         ("xyz", {"x", "y"}),
@@ -272,7 +272,7 @@ class TestValueErrorAndRuntimeError:
         validator = DataValidator()
         with pytest.raises(ValueError, match="not in"):
             validator.validate_choice(choice, allowed)
-    
+
     @pytest.mark.parametrize("json_string", [
         '{"trailing": "comma",}',
         "{'single': 'quotes'}",
@@ -285,7 +285,7 @@ class TestValueErrorAndRuntimeError:
         processor = DataProcessor()
         with pytest.raises(json.JSONDecodeError):
             processor.process_json(json_string)
-    
+
     @pytest.mark.parametrize("current,next_state", [
         ("idle", "completed"),  # Invalid transition
         ("processing", "initialized"),  # Invalid transition
@@ -296,7 +296,7 @@ class TestValueErrorAndRuntimeError:
         processor = DataProcessor()
         with pytest.raises(RuntimeError, match="Cannot transition"):
             processor.state_transition(current, next_state)
-    
+
     @pytest.mark.parametrize("invalid_state", [
         "unknown",
         "initial",
@@ -307,7 +307,7 @@ class TestValueErrorAndRuntimeError:
         processor = DataProcessor()
         with pytest.raises(ValueError, match="Invalid"):
             processor.state_transition(invalid_state, "idle")
-    
+
     @pytest.mark.parametrize("encoding_error", [
         (b'\xff\xfe', 'utf-8'),  # Invalid UTF-8
         (b'\x80\x81', 'ascii'),  # Non-ASCII in ASCII
@@ -317,7 +317,7 @@ class TestValueErrorAndRuntimeError:
         data, encoding = encoding_error
         with pytest.raises(UnicodeDecodeError):
             data.decode(encoding)
-    
+
     @pytest.mark.parametrize("invalid_int", [
         "not_a_number",
         "123abc",
@@ -332,7 +332,7 @@ class TestValueErrorAndRuntimeError:
 
 class TestFileAndIOErrors:
     """Tests for file I/O and file-related exception handling."""
-    
+
     @pytest.mark.parametrize("filepath", [
         "/nonexistent/path/file.txt",
         "missing_file.txt",
@@ -343,14 +343,14 @@ class TestFileAndIOErrors:
         handler = FileHandler()
         with pytest.raises((FileNotFoundError, IsADirectoryError)):  # Both are valid for /dev/null/...
             handler.read_file(filepath)
-    
+
     def test_permission_denied_error(self):
         """Test PermissionError when writing to restricted location."""
         handler = FileHandler()
         with patch.object(Path, 'write_text', side_effect=PermissionError("Access denied")):
             with pytest.raises(PermissionError):
                 handler.write_file("/restricted/file.txt", "content")
-    
+
     @pytest.mark.parametrize("encoding_error", [
         (b'\x80\x81\x82', "ascii"),
         (b'\xff\xfe' + "test".encode('utf-8'), "ascii"),
@@ -360,18 +360,18 @@ class TestFileAndIOErrors:
         data, encoding = encoding_error
         with pytest.raises(UnicodeDecodeError):
             data.decode(encoding)
-    
+
     def test_is_a_directory_error(self):
         """Test IsADirectoryError when reading directory."""
         with pytest.raises(IsADirectoryError):
             Path("/tmp").read_text()
-    
+
     def test_not_a_directory_error(self):
         """Test NotADirectoryError in path operations."""
         with patch('pathlib.Path.is_dir', return_value=False):
             handler = FileHandler()
             # This would fail in real scenario
-    
+
     def test_file_exists_error(self):
         """Test FileExistsError in file creation."""
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
@@ -381,21 +381,21 @@ class TestFileAndIOErrors:
                 Path(tmp_path).mkdir()
         finally:
             Path(tmp_path).unlink()
-    
+
     def test_io_error_file_operations(self):
         """Test IOError during file operations."""
         with patch.object(Path, 'read_text', side_effect=IOError("I/O error")):
             handler = FileHandler()
             with pytest.raises(IOError):
                 handler.read_file("any_file.txt")
-    
+
     def test_oserror_permission_denied(self):
         """Test OSError with permission denied."""
         with patch.object(Path, 'write_text', side_effect=OSError(13, "Permission denied")):
             handler = FileHandler()
             with pytest.raises(OSError):
                 handler.write_file("file.txt", "data")
-    
+
     def test_closed_file_error(self):
         """Test ValueError when operating on closed file."""
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
@@ -408,7 +408,7 @@ class TestFileAndIOErrors:
                     f.read()
         finally:
             Path(tmp_path).unlink()
-    
+
     def test_binary_mode_write_string_error(self):
         """Test TypeError when writing string to binary mode file."""
         with tempfile.NamedTemporaryFile(mode='wb', delete=False) as tmp:
@@ -419,7 +419,7 @@ class TestFileAndIOErrors:
                     f.write("string data")
         finally:
             Path(tmp_path).unlink()
-    
+
     @pytest.mark.parametrize("bad_path", [
         "/path/with/../../../etc/passwd",
         "",
@@ -438,12 +438,12 @@ class TestFileAndIOErrors:
 
 class TestTimeoutAndResourceErrors:
     """Tests for timeout and resource-related exception handling."""
-    
+
     def test_timeout_error_basic(self):
         """Test TimeoutError in basic scenario."""
         with pytest.raises(TimeoutError):
             raise TimeoutError("Operation timed out")
-    
+
     @pytest.mark.parametrize("sleep_time,timeout", [
         (2, 1),
         (5, 2),
@@ -451,41 +451,41 @@ class TestTimeoutAndResourceErrors:
     def test_timeout_with_thread(self, sleep_time, timeout):
         """Test timeout detection with threading."""
         result = {"completed": False}
-        
+
         def long_operation():
             time.sleep(sleep_time)
             result["completed"] = True
-        
+
         thread = threading.Thread(target=long_operation)
         thread.daemon = True
         thread.start()
         thread.join(timeout=timeout)
-        
+
         if thread.is_alive():
             # Timeout occurred
             assert not result["completed"]
-    
+
     def test_memory_error_simulation(self):
         """Test MemoryError exception."""
         with pytest.raises(MemoryError):
             raise MemoryError("Out of memory")
-    
+
     def test_recursive_depth_error(self):
         """Test RecursionError from deep recursion."""
         def infinite_recursion(n=0):
             return infinite_recursion(n + 1)
-        
+
         with pytest.raises(RecursionError):
             infinite_recursion()
-    
+
     def test_runtime_error_custom(self):
         """Test custom RuntimeError."""
         def failing_operation():
             raise RuntimeError("Custom runtime error")
-        
+
         with pytest.raises(RuntimeError, match="Custom runtime"):
             failing_operation()
-    
+
     @pytest.mark.parametrize("resource_type", [
         "file_descriptor",
         "memory",
@@ -497,35 +497,35 @@ class TestTimeoutAndResourceErrors:
         with pytest.warns(ResourceWarning, match=resource_type):
             import warnings
             warnings.warn(f"Resource {resource_type} exhausted", ResourceWarning)
-    
+
     def test_broken_pipe_error(self):
         """Test BrokenPipeError."""
         with pytest.raises(BrokenPipeError):
             raise BrokenPipeError("Connection lost")
-    
+
     def test_connection_error(self):
         """Test ConnectionError."""
         with pytest.raises(ConnectionError):
             raise ConnectionError("Network unreachable")
-    
+
     def test_timeout_exception_in_context(self):
         """Test TimeoutError in context manager."""
         class TimeoutContext:
             def __enter__(self):
                 return self
-            
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 return False
-            
+
             def operation(self, should_timeout=False):
                 if should_timeout:
                     raise TimeoutError("Operation timeout")
-        
+
         ctx = TimeoutContext()
         with pytest.raises(TimeoutError):
             with ctx:
                 ctx.operation(should_timeout=True)
-    
+
     @pytest.mark.parametrize("deadline,operation_time", [
         (1.0, 2.0),
         (0.5, 1.5),
@@ -534,21 +534,21 @@ class TestTimeoutAndResourceErrors:
         """Test deadline exceeded scenarios."""
         start = time.time()
         elapsed = 0
-        
+
         def mock_operation():
             nonlocal elapsed
             elapsed = time.time() - start
             if elapsed > deadline:
                 raise TimeoutError(f"Deadline {deadline}s exceeded after {elapsed:.2f}s")
-        
+
         with pytest.raises(TimeoutError):
             time.sleep(operation_time)
             mock_operation()
-    
+
     def test_resource_cleanup_on_exception(self):
         """Test resource cleanup when exception occurs."""
         cleanup_called = False
-        
+
         try:
             try:
                 raise RuntimeError("Operation failed")
@@ -556,31 +556,31 @@ class TestTimeoutAndResourceErrors:
                 cleanup_called = True
         except RuntimeError:
             pass
-        
+
         assert cleanup_called is True
-    
+
     def test_context_manager_exception_handling(self):
         """Test exception handling in context managers."""
         class ManagedResource:
             def __init__(self):
                 self.entered = False
                 self.exited = False
-            
+
             def __enter__(self):
                 self.entered = True
                 return self
-            
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 self.exited = True
                 return False
-        
+
         resource = ManagedResource()
         with pytest.raises(ValueError):
             with resource:
                 raise ValueError("Operation failed")
-        
+
         assert resource.entered and resource.exited
-    
+
     def test_multiple_exception_handling(self):
         """Test handling multiple exception types."""
         def operation_with_choices(choice):
@@ -590,16 +590,16 @@ class TestTimeoutAndResourceErrors:
                 raise MemoryError("Out of memory")
             elif choice == "runtime":
                 raise RuntimeError("Runtime error")
-        
+
         with pytest.raises(TimeoutError):
             operation_with_choices("timeout")
-        
+
         with pytest.raises(MemoryError):
             operation_with_choices("memory")
-        
+
         with pytest.raises(RuntimeError):
             operation_with_choices("runtime")
-    
+
     def test_exception_chaining_preserve_context(self):
         """Test exception chaining preserves context."""
         try:
@@ -610,7 +610,7 @@ class TestTimeoutAndResourceErrors:
         except RuntimeError as e:
             assert e.__cause__ is not None
             assert isinstance(e.__cause__, ValueError)
-    
+
     def test_exception_in_finally_block(self):
         """Test exception raised in finally block."""
         with pytest.raises(RuntimeError, match="finally"):
@@ -618,12 +618,12 @@ class TestTimeoutAndResourceErrors:
                 raise ValueError("Initial error")
             finally:
                 raise RuntimeError("Error in finally")
-    
+
     def test_keyboard_interrupt_handling(self):
         """Test KeyboardInterrupt exception."""
         with pytest.raises(KeyboardInterrupt):
             raise KeyboardInterrupt()
-    
+
     @pytest.mark.parametrize("exception_type", [
         SystemExit,
         KeyboardInterrupt,
@@ -632,22 +632,22 @@ class TestTimeoutAndResourceErrors:
         """Test system exit exceptions."""
         with pytest.raises(exception_type):
             raise exception_type()
-    
+
     def test_assertion_error(self):
         """Test AssertionError."""
         with pytest.raises(AssertionError, match="assertion"):
             assert False, "assertion failed"
-    
+
     def test_stopiteration_in_generator(self):
         """Test StopIteration in generator."""
         def empty_generator():
             return
             yield  # pragma: no cover
-        
+
         gen = empty_generator()
         with pytest.raises(StopIteration):
             next(gen)
-    
+
     def test_exception_reraise(self):
         """Test re-raising exceptions."""
         with pytest.raises(ValueError):
@@ -655,7 +655,7 @@ class TestTimeoutAndResourceErrors:
                 raise ValueError("Original")
             except ValueError:
                 raise  # Re-raise same exception
-    
+
     @pytest.mark.parametrize("exception_info", [
         ("ValueError", ValueError("Test error")),
         ("RuntimeError", RuntimeError("Runtime issue")),
@@ -666,15 +666,15 @@ class TestTimeoutAndResourceErrors:
         exc_type_name, exc = exception_info
         with pytest.raises(type(exc)):
             raise exc
-    
+
     def test_custom_exception_handler(self):
         """Test custom exception handler."""
         class CustomException(Exception):
             pass
-        
+
         with pytest.raises(CustomException):
             raise CustomException("Custom error message")
-    
+
     def test_exception_message_preservation(self):
         """Test exception message is preserved."""
         message = "Detailed error message with context"
@@ -684,7 +684,7 @@ class TestTimeoutAndResourceErrors:
 
 class TestComprehensiveEdgeCases:
     """Comprehensive edge case exception testing for all exception types."""
-    
+
     @pytest.mark.parametrize("unhashable_type,value", [
        (list, [1, 2, 3]),
        (dict, {"key": "val"}),
@@ -695,7 +695,7 @@ class TestComprehensiveEdgeCases:
        """Test unhashable types cannot be added to sets."""
        with pytest.raises(TypeError):
            {value}
-    
+
     @pytest.mark.parametrize("none_operation", [
        lambda: None.real,
        lambda: None.imag,
@@ -707,7 +707,7 @@ class TestComprehensiveEdgeCases:
        """Test accessing attributes on None raises AttributeError."""
        with pytest.raises((AttributeError, TypeError)):
            none_operation()
-    
+
     @pytest.mark.parametrize("container,index", [
        ([1, 2, 3], "invalid"),  # invalid slice index type
        ("string", [1, 2]),  # invalid index type
@@ -717,7 +717,7 @@ class TestComprehensiveEdgeCases:
        """Test invalid slicing operations."""
        with pytest.raises((TypeError, ValueError)):
            _ = container[index]
-    
+
     @pytest.mark.parametrize("string_method,args", [
        ("index", ("x",)),  # substring not in string
        ("count", (None,)),  # None cannot be counted
@@ -735,7 +735,7 @@ class TestComprehensiveEdgeCases:
        elif string_method == "endswith":
            with pytest.raises(TypeError):
                getattr(s, string_method)(*args)
-    
+
     @pytest.mark.parametrize("invalid_int_op", [
        lambda: int("not_a_number"),
        lambda: int("12.34"),
@@ -746,7 +746,7 @@ class TestComprehensiveEdgeCases:
        """Test invalid int conversions."""
        with pytest.raises((ValueError, TypeError)):
            invalid_int_op()
-    
+
     @pytest.mark.parametrize("invalid_float_op", [
        lambda: float("infinity"),  # This actually works!
        lambda: float("not_a_float"),
@@ -761,7 +761,7 @@ class TestComprehensiveEdgeCases:
            assert result is not None
        except (ValueError, TypeError):
            pass  # Expected for invalid conversions
-    
+
     @pytest.mark.parametrize("dict_key", [
        [1, 2],
        {"a": 1},
@@ -772,7 +772,7 @@ class TestComprehensiveEdgeCases:
        """Test dict operations with unhashable keys."""
        with pytest.raises(TypeError):
            {dict_key: "value"}
-    
+
     @pytest.mark.parametrize("invalid_comparison", [
        (3, "3"),
        ([1], 1),
@@ -787,7 +787,7 @@ class TestComprehensiveEdgeCases:
            result = a < b
        except TypeError:
            pass  # Expected
-    
+
     @pytest.mark.parametrize("import_name", [
        "nonexistent_module_12345",
        "fake..double_dot_module",
@@ -797,7 +797,7 @@ class TestComprehensiveEdgeCases:
        """Test module import failures."""
        with pytest.raises((ImportError, ModuleNotFoundError, ValueError)):
            __import__(import_name)
-    
+
     @pytest.mark.parametrize("invalid_json", [
        "{'single': 'quotes'}",
        "{double: \"quotes\"}",
@@ -812,7 +812,7 @@ class TestComprehensiveEdgeCases:
        import json
        with pytest.raises(json.JSONDecodeError):
            json.loads(invalid_json)
-    
+
     @pytest.mark.parametrize("division_error", [
        (lambda: 1 / 0),
        (lambda: 1.0 / 0.0),
@@ -823,7 +823,7 @@ class TestComprehensiveEdgeCases:
        """Test division by zero errors."""
        with pytest.raises(ZeroDivisionError):
            division_error()
-    
+
     @pytest.mark.parametrize("recursive_depth", [100, 500, 1000])
     def test_recursion_depth(self, recursive_depth):
        """Test recursion depth limits."""
@@ -835,12 +835,12 @@ class TestComprehensiveEdgeCases:
                if n <= 0:
                    return 0
                return recursive_func(n - 1) + 1
-            
+
            with pytest.raises(RecursionError):
                recursive_func(recursive_depth)
        finally:
            sys.setrecursionlimit(old_limit)
-    
+
     @pytest.mark.parametrize("namespace_conflict", [
        {"a": 1, "b": 2},
        {"x": 10, "y": 20},
@@ -850,7 +850,7 @@ class TestComprehensiveEdgeCases:
        """Test namespace operations."""
        # This tests that namespace access works correctly
        assert "a" not in namespace_conflict or namespace_conflict["a"] == 1
-    
+
     @pytest.mark.parametrize("encoding_combo", [
        ("utf-8", "Hello 🌍", True),
        ("ascii", "Hello World", True),
@@ -871,7 +871,7 @@ class TestComprehensiveEdgeCases:
        else:
            with pytest.raises(UnicodeEncodeError):
                text.encode(encoding)
-    
+
     @pytest.mark.parametrize("container_index", [
        ([1, 2, 3], 5),
        ("hello", 10),
@@ -883,7 +883,7 @@ class TestComprehensiveEdgeCases:
        container, index = container_index
        with pytest.raises(IndexError):
            _ = container[index]
-    
+
     @pytest.mark.parametrize("negative_index", [
        ([1, 2, 3], -1),
        ("hello", -1),
@@ -895,17 +895,17 @@ class TestComprehensiveEdgeCases:
        # Negative indexing should work
        result = container[index]
        assert result is not None
-    
+
     def test_unpacking_errors(self):
         """Test unpacking errors."""
         # Test too few values
         with pytest.raises(ValueError):
            a, b = [1]
-        
-        # Test too many values  
+
+        # Test too many values
         with pytest.raises(ValueError):
            x, y = [1, 2, 3]
-    
+
     @pytest.mark.parametrize("method_call_error", [
        ([], "append", [1]),  # Valid
        ({}, "update", [{"a": 1}]),  # Valid
@@ -917,7 +917,7 @@ class TestComprehensiveEdgeCases:
        obj, method, args = method_call_error
        result = getattr(obj, method)(*args)
        assert result is not None or method == "append" or method == "update"
-    
+
     @pytest.mark.parametrize("context_manager_error", [
        lambda: open("/nonexistent/file.txt").__enter__(),
     ])
@@ -925,7 +925,7 @@ class TestComprehensiveEdgeCases:
        """Test context manager errors."""
        with pytest.raises((FileNotFoundError, OSError)):
            context_manager_error()
-    
+
     @pytest.mark.parametrize("arithmetic_overflow", [
        (10 ** 1000, 10 ** 1000),  # Large numbers (Python handles these!)
        (float('inf'), 1),
@@ -940,7 +940,7 @@ class TestComprehensiveEdgeCases:
            assert result is not None
        except OverflowError:
            pass
-    
+
     @pytest.mark.parametrize("lambda_expr", [
        lambda x: x + 1,
        lambda x, y: x * y,
@@ -958,7 +958,7 @@ class TestComprehensiveEdgeCases:
        elif lambda_expr.__code__.co_varnames[:2] == ('x', 'y'):
            result = lambda_expr(2, 3)
        assert result is not None
-    
+
     @pytest.mark.parametrize("generator_behavior", [
        list(range(5)),
        list(reversed([1, 2, 3])),
@@ -968,7 +968,7 @@ class TestComprehensiveEdgeCases:
     def test_generator_and_iterator_behavior(self, generator_behavior):
        """Test generators and iterators work correctly."""
        assert len(generator_behavior) > 0
-    
+
     @pytest.mark.parametrize("comprehension_test", [
        [x * 2 for x in range(5)],
        {x: x**2 for x in range(3)},
@@ -983,7 +983,7 @@ class TestComprehensiveEdgeCases:
            assert len(comprehension_test) == 3
        elif isinstance(comprehension_test, set):
            assert len(comprehension_test) == 3
-    
+
     @pytest.mark.parametrize("valid_list_op", [
         ([1, 2, 3], "append", [4]),
         ([1, 2, 3], "extend", [[4, 5]]),
@@ -1006,7 +1006,7 @@ class TestComprehensiveEdgeCases:
             # Others like index, count return values
         except Exception as e:
             pytest.fail(f"List operation {method} failed: {e}")
-    
+
     @pytest.mark.parametrize("dict_operation", [
         ({}, "keys"),
         ({}, "values"),
@@ -1027,7 +1027,7 @@ class TestComprehensiveEdgeCases:
         else:
             d, method = dict_operation
             args = ()
-        
+
         d_copy = d.copy()
         try:
             if args:
@@ -1038,7 +1038,7 @@ class TestComprehensiveEdgeCases:
             # clear() returns None, which is ok
             if method not in ("clear", "pop"):  # pop might fail on empty dicts
                 pytest.fail(f"Dict operation {method} failed: {e}")
-    
+
     @pytest.mark.parametrize("set_operation", [
         ({1, 2, 3}, "add", [4]),
         ({1, 2, 3}, "remove", [1]),
@@ -1057,7 +1057,7 @@ class TestComprehensiveEdgeCases:
             s = set_operation[0]
             method = set_operation[1]
             args = []
-        
+
         s_copy = s.copy()
         try:
             if args:
@@ -1066,7 +1066,7 @@ class TestComprehensiveEdgeCases:
                 result = getattr(s_copy, method)()
         except Exception as e:
             pytest.fail(f"Set operation {method} failed: {e}")
-    
+
     @pytest.mark.parametrize("string_operation", [
         ("hello", "upper"),
         ("HELLO", "lower"),
@@ -1089,7 +1089,7 @@ class TestComprehensiveEdgeCases:
             args = []
         elif len(string_operation) == 3:
             s, method, args = string_operation
-        
+
         try:
             if args:
                 result = getattr(s, method)(*args)
@@ -1097,7 +1097,7 @@ class TestComprehensiveEdgeCases:
                 result = getattr(s, method)()
         except Exception as e:
             pytest.fail(f"String operation {method} failed: {e}")
-    
+
     @pytest.mark.parametrize("numeric_operation", [
         (5, "__add__", 3),
         (5, "__sub__", 3),
@@ -1126,7 +1126,7 @@ class TestComprehensiveEdgeCases:
                 result = getattr(num, op)()
             except Exception as e:
                 pytest.fail(f"Numeric operation {op} failed: {e}")
-    
+
     @pytest.mark.parametrize("boolean_logic", [
         (True and False, False),
         (True or False, True),
@@ -1140,7 +1140,7 @@ class TestComprehensiveEdgeCases:
         """Test boolean operations."""
         result, expected = boolean_logic
         assert result == expected
-    
+
     @pytest.mark.parametrize("comparison", [
         (5 > 3, True),
         (5 < 3, False),

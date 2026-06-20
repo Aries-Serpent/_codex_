@@ -61,9 +61,7 @@ def build_service_package(
         "files": sorted(p.name for p in model_root.glob("*")),
         "metadata": dict(metadata or {}),
         # codeql[py/clear-text-storage-sensitive-data]
-        "secrets": [
-            hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets
-        ],  # nosec - hashed identifiers only — no secret values stored
+        "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # nosec - hashed identifiers only — no secret values stored
     }
     manifest_path = staging / "manifest.json"
     # codeql[py/clear-text-storage-sensitive-data]

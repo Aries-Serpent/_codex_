@@ -7,9 +7,9 @@ This module contains integration tests for validating:
 - Failure scenario handling
 - End-to-end workflow validation
 """
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Any
 
 
 class TestCrossServiceIntegration:
@@ -45,7 +45,7 @@ class TestCrossServiceIntegration:
         assert service_b.transform.called
         assert service_c.validate.called
         assert persistence.store.called
-        
+
         # Verify data transformation
         assert result_a["data"] == "processed_by_a"
         assert result_b["data"] == "processed_by_b"
@@ -221,7 +221,7 @@ class TestDataPipelineIntegration:
         Input -> Transform Step 1 -> Transform Step 2 -> Output
         """
         input_data = {"age": "25", "score": "98.5"}
-        
+
         def transform_step_1(data):
             """Convert string values to appropriate types."""
             return {
@@ -398,7 +398,7 @@ class TestCircuitBreaker:
             """Simulate service call."""
             if circuit_breaker["state"] == "OPEN":
                 raise Exception("Circuit breaker is OPEN")
-            
+
             # Simulate random failures
             circuit_breaker["call_count"] += 1
             if circuit_breaker["call_count"] % 2 == 0:  # Fail every other call
@@ -413,10 +413,10 @@ class TestCircuitBreaker:
             except ConnectionError:
                 circuit_breaker["failure_count"] += 1
                 errors += 1
-                
+
                 if circuit_breaker["failure_count"] >= circuit_breaker["failure_threshold"]:
                     circuit_breaker["state"] = "OPEN"
-            except Exception:
+            except Exception as _err:
                 break
 
         # Assert: Circuit breaker opened

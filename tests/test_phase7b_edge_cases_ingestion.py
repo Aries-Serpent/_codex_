@@ -9,13 +9,10 @@ Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
 
-import pytest
-from unittest.mock import Mock, MagicMock, patch, mock_open
-from typing import Optional, Dict, List, Any
-import io
-import tempfile
 import os
+import tempfile
 
+import pytest
 
 # ============================================================================
 # Ingestion Module Tests (20-25 tests)
@@ -23,7 +20,7 @@ import os
 
 class TestFileIngestorEdgeCases:
     """Test file ingestion edge cases"""
-    
+
     def test_ingest_empty_file(self):
         """Should handle empty file"""
         from codex.ingestion.file_ingestor import FileIngestor
@@ -37,7 +34,7 @@ class TestFileIngestorEdgeCases:
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
-    
+
     def test_ingest_nonexistent_file(self):
         """Should handle nonexistent file"""
         from codex.ingestion.file_ingestor import FileIngestor
@@ -47,7 +44,7 @@ class TestFileIngestorEdgeCases:
                 ingestor.ingest('/nonexistent/file/path.txt')
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_ingest_permission_denied(self):
         """Should handle permission denied"""
         from codex.ingestion.file_ingestor import FileIngestor
@@ -65,7 +62,7 @@ class TestFileIngestorEdgeCases:
                     os.unlink(f.name)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_ingest_very_large_file(self):
         """Should handle very large file"""
         from codex.ingestion.file_ingestor import FileIngestor
@@ -85,7 +82,7 @@ class TestFileIngestorEdgeCases:
 
 class TestCSVIngestorEdgeCases:
     """Test CSV ingestion edge cases"""
-    
+
     def test_csv_empty_file(self):
         """Should handle empty CSV file"""
         from codex.ingestion.csv_ingestor import CSVIngestor
@@ -99,7 +96,7 @@ class TestCSVIngestorEdgeCases:
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
-    
+
     def test_csv_no_headers(self):
         """Should handle CSV without headers"""
         from codex.ingestion.csv_ingestor import CSVIngestor
@@ -113,7 +110,7 @@ class TestCSVIngestorEdgeCases:
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
-    
+
     def test_csv_malformed_rows(self):
         """Should handle malformed CSV rows"""
         from codex.ingestion.csv_ingestor import CSVIngestor
@@ -129,7 +126,7 @@ class TestCSVIngestorEdgeCases:
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
-    
+
     def test_csv_with_null_values(self):
         """Should handle null values in CSV"""
         from codex.ingestion.csv_ingestor import CSVIngestor
@@ -149,7 +146,7 @@ class TestCSVIngestorEdgeCases:
 
 class TestJSONIngestorEdgeCases:
     """Test JSON ingestion edge cases"""
-    
+
     def test_json_invalid_syntax(self):
         """Should handle invalid JSON syntax"""
         from codex.ingestion.json_ingestor import JSONIngestor
@@ -163,7 +160,7 @@ class TestJSONIngestorEdgeCases:
             os.unlink(f.name)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_json_empty_object(self):
         """Should handle empty JSON object"""
         from codex.ingestion.json_ingestor import JSONIngestor
@@ -177,7 +174,7 @@ class TestJSONIngestorEdgeCases:
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
-    
+
     def test_json_deeply_nested(self):
         """Should handle deeply nested JSON"""
         from codex.ingestion.json_ingestor import JSONIngestor
@@ -187,7 +184,7 @@ class TestJSONIngestorEdgeCases:
             nested = {'level1': {'level2': {'level3': {'level4': 'value'}}}}
             for _ in range(100):
                 nested = {'nested': nested}
-            
+
             with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
                 json.dump(nested, f)
                 f.flush()
@@ -204,7 +201,7 @@ class TestJSONIngestorEdgeCases:
 
 class TestTokenizerInitialization:
     """Test tokenizer initialization edge cases"""
-    
+
     def test_tokenizer_with_empty_vocab(self):
         """Should handle empty vocabulary"""
         from codex.tokenization.loader import TokenizerLoader
@@ -214,7 +211,7 @@ class TestTokenizerInitialization:
                 tokenizer = loader.load(vocab_path='')
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_tokenizer_with_none_vocab(self):
         """Should reject None vocabulary"""
         from codex.tokenization.loader import TokenizerLoader
@@ -224,7 +221,7 @@ class TestTokenizerInitialization:
                 tokenizer = loader.load(vocab_path=None)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_tokenizer_with_invalid_vocab_file(self):
         """Should handle invalid vocab file"""
         from codex.tokenization.loader import TokenizerLoader
@@ -242,7 +239,7 @@ class TestTokenizerInitialization:
 
 class TestTokenizationEdgeCases:
     """Test tokenization edge cases"""
-    
+
     def test_tokenize_empty_text(self):
         """Should handle empty text tokenization"""
         from codex.tokenization.api import Tokenizer
@@ -253,7 +250,7 @@ class TestTokenizationEdgeCases:
             assert len(tokens) == 0 or tokens == [0]  # Empty or BOS token
         except (ValueError, AttributeError):
             pass
-    
+
     def test_tokenize_none_text(self):
         """Should reject None text"""
         from codex.tokenization.api import Tokenizer
@@ -263,7 +260,7 @@ class TestTokenizationEdgeCases:
                 tokenizer.encode(None)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_tokenize_special_characters(self):
         """Should handle special characters"""
         from codex.tokenization.api import Tokenizer
@@ -274,7 +271,7 @@ class TestTokenizationEdgeCases:
             assert tokens is not None
         except (ValueError, AttributeError):
             pass
-    
+
     def test_tokenize_unicode_text(self):
         """Should handle Unicode text"""
         from codex.tokenization.api import Tokenizer
@@ -285,7 +282,7 @@ class TestTokenizationEdgeCases:
             assert tokens is not None
         except (ValueError, AttributeError, UnicodeError):
             pass
-    
+
     def test_detokenize_empty_tokens(self):
         """Should handle empty token list"""
         from codex.tokenization.api import Tokenizer
@@ -296,7 +293,7 @@ class TestTokenizationEdgeCases:
             assert text == ''
         except (ValueError, AttributeError):
             pass
-    
+
     def test_detokenize_invalid_tokens(self):
         """Should handle invalid tokens"""
         from codex.tokenization.api import Tokenizer
@@ -315,7 +312,7 @@ class TestTokenizationEdgeCases:
 
 class TestAPIAuthRoutes:
     """Test authentication API routes"""
-    
+
     def test_auth_with_empty_credentials(self):
         """Should reject empty credentials"""
         from codex.api.auth_routes import AuthRouter
@@ -325,7 +322,7 @@ class TestAPIAuthRoutes:
                 result = router.authenticate(username='', password='')
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_auth_with_none_credentials(self):
         """Should reject None credentials"""
         from codex.api.auth_routes import AuthRouter
@@ -335,7 +332,7 @@ class TestAPIAuthRoutes:
                 result = router.authenticate(username=None, password='test')
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_auth_with_very_long_password(self):
         """Should handle very long password"""
         from codex.api.auth_routes import AuthRouter
@@ -346,7 +343,7 @@ class TestAPIAuthRoutes:
             # Should reject or timeout, not crash
         except (ValueError, TimeoutError, AttributeError):
             pass
-    
+
     def test_auth_with_sql_injection_attempt(self):
         """Should protect against SQL injection"""
         from codex.api.auth_routes import AuthRouter
@@ -361,7 +358,7 @@ class TestAPIAuthRoutes:
 
 class TestAPIRAGEndpoints:
     """Test RAG API endpoint edge cases"""
-    
+
     def test_rag_query_empty_string(self):
         """Should handle empty query"""
         from codex.api.rag_api import RAGAPI
@@ -371,7 +368,7 @@ class TestAPIRAGEndpoints:
                 result = api.query('')
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_rag_query_none_query(self):
         """Should reject None query"""
         from codex.api.rag_api import RAGAPI
@@ -381,7 +378,7 @@ class TestAPIRAGEndpoints:
                 result = api.query(None)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_rag_query_very_long_input(self):
         """Should handle very long query"""
         from codex.api.rag_api import RAGAPI
@@ -392,7 +389,7 @@ class TestAPIRAGEndpoints:
             # Should handle or reject gracefully
         except (ValueError, TimeoutError, AttributeError):
             pass
-    
+
     def test_rag_index_empty_documents(self):
         """Should handle indexing empty documents"""
         from codex.api.rag_api import RAGAPI
@@ -402,7 +399,7 @@ class TestAPIRAGEndpoints:
             assert result is not None
         except (ValueError, AttributeError):
             pass
-    
+
     def test_rag_index_none_documents(self):
         """Should reject None documents"""
         from codex.api.rag_api import RAGAPI
@@ -420,7 +417,7 @@ class TestAPIRAGEndpoints:
 
 class TestUtilityFunctionBoundaries:
     """Test utility functions with boundary values"""
-    
+
     def test_util_parse_empty_string(self):
         """Should handle empty string parsing"""
         from codex.codex.archive.util import parse_value
@@ -429,7 +426,7 @@ class TestUtilityFunctionBoundaries:
             assert result is not None or result is None
         except (ValueError, AttributeError):
             pass
-    
+
     def test_util_parse_none_value(self):
         """Should handle None value"""
         from codex.archive.util import parse_value
@@ -438,7 +435,7 @@ class TestUtilityFunctionBoundaries:
             assert result is None
         except (ValueError, AttributeError, TypeError):
             pass
-    
+
     def test_util_format_empty_dict(self):
         """Should format empty dictionary"""
         from codex.archive.util import format_data
@@ -447,7 +444,7 @@ class TestUtilityFunctionBoundaries:
             assert result is not None
         except (ValueError, AttributeError):
             pass
-    
+
     def test_util_format_nested_dict(self):
         """Should format deeply nested dictionary"""
         from codex.archive.util import format_data
@@ -465,7 +462,7 @@ class TestUtilityFunctionBoundaries:
 
 class TestPerformanceUnderStress:
     """Test module behavior under stress conditions"""
-    
+
     def test_high_volume_ingestion(self):
         """Should handle high volume ingestion"""
         from codex.ingestion.file_ingestor import FileIngestor
@@ -480,7 +477,7 @@ class TestPerformanceUnderStress:
             os.unlink(f.name)
         except (ValueError, AttributeError, MemoryError):
             pass
-    
+
     def test_tokenizer_batch_processing(self):
         """Should handle batch tokenization"""
         from codex.tokenization.api import Tokenizer
