@@ -1,31 +1,25 @@
-# Session Context — 2026-06-19T23:44:44Z
+# Session Context — 2026-06-20T00:14:52Z
 **Branch:** `copilot/fix-copilot-agent-environment-preparation`  **PR:** #5019  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `3408` (✅)
-- GraphQL remaining: `4963` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5019 — deps(deps): bump pydantic-settings from 2.14.1 to 2.14.2
 State: `open`  Draft: `False`  Branch: `dependabot/pip/pydantic-settings-2.14.2` → `main`
 
-### ❌ 5 Failing CI Check(s)
-- `copilot` (failure)
-- `🚦 Comment review gate` (failure)
-- `🧠 Cognitive Pre-flight Check` (failure)
-- `Fast Validation` (failure)
-- `Final Pre-Merge Checks` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-06-19)
-- **.github/workflows/documentation-quality-check.yml** — `failure` on `main` (2026-06-19)
-- **.github/workflows/release.yml** — `failure` on `main` (2026-06-19)
-- **.github/workflows/cache-health-monitor.yml** — `failure` on `main` (2026-06-19)
-- **.github/workflows/cache-validation.yml** — `failure` on `main` (2026-06-19)
+- **.github/workflows/unified-deployment.yml** — `failure` on `copilot/fix-copilot-agent-environment-preparation` (2026-06-19)
+- **.github/workflows/cache-health-monitor.yml** — `failure` on `copilot/fix-copilot-agent-environment-preparation` (2026-06-19)
+- **.github/workflows/cache-validation.yml** — `failure` on `copilot/fix-copilot-agent-environment-preparation` (2026-06-19)
+- **.github/workflows/semgrep_sarif.yml** — `failure` on `copilot/fix-copilot-agent-environment-preparation` (2026-06-19)
+- **.github/workflows/copilot-agent-session-done.yml** — `failure` on `copilot/fix-copilot-agent-environment-preparation` (2026-06-19)
 
 ## 📝 Recent Commits
+- `408682ce` Apply remaining changes — copilot-swe-agent[bot] (2026-06-19)
 - `faf2866f` Merge pull request #5017 from Aries-Serpent/copilot/consolidate-dependabot-prs — Statix (2026-06-19)
 - `61669858` fix(docs): Resolve 9 review comment issues — copilot-swe-agent[bot] (2026-06-19)
 - `95808e26` fix(workflow): Add pull_request_review event to validate.yml job conditions — copilot-swe-agent[bot] (2026-06-19)
@@ -33,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/pydantic-settings-2.14.2`
 - `5c62c002` docs: add Dependabot consolidation final report with PR closure plan — copilot-swe-agent[bot] (2026-06-19)
 - `b49a65ab` feat(deps): consolidate aiohttp, ujson, jupyterlab Dependabot PRs into single up — copilot-swe-agent[bot] (2026-06-19)
 - `2a43b1b6` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-19)
-- `bc0cac24` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
