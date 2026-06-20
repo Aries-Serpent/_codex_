@@ -231,10 +231,10 @@ jobs:
           echo "Prometheus health:"
           kubectl exec -n monitoring -it deployment/prometheus -- curl -s http://localhost:9090/-/healthy || true
           
-          echo "\nGrafana health:"
+          printf "\nGrafana health:\n"
           kubectl exec -n monitoring -it deployment/grafana -- curl -s http://localhost:3000/api/health || true
           
-          echo "\nAlertManager health:"
+          printf "\nAlertManager health:\n"
           kubectl exec -n monitoring -it deployment/alertmanager -- curl -s http://localhost:9093/-/healthy || true
 
       - name: Generate setup report
