@@ -15,8 +15,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -37,8 +35,8 @@ class TestSeedRegistry:
     def test_register_seed_snapshot_none_state(self):
         """Test registering with None state (no-op)."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         register_seed_snapshot()
@@ -48,8 +46,8 @@ class TestSeedRegistry:
     def test_register_seed_snapshot_python_state(self):
         """Test registering Python RNG state."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         test_state = (42, 0, 0)
@@ -61,8 +59,8 @@ class TestSeedRegistry:
     def test_register_seed_snapshot_numpy_state(self):
         """Test registering NumPy RNG state."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         test_state = {"type": "numpy", "data": [1, 2, 3]}
@@ -73,8 +71,8 @@ class TestSeedRegistry:
     def test_register_seed_snapshot_torch_state(self):
         """Test registering PyTorch RNG state."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         test_state = {"type": "torch", "data": [1, 2, 3]}
@@ -85,8 +83,8 @@ class TestSeedRegistry:
     def test_register_seed_snapshot_torch_cuda_state(self):
         """Test registering PyTorch CUDA RNG state."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         test_state = {"type": "torch_cuda", "data": [1, 2, 3]}
@@ -97,8 +95,8 @@ class TestSeedRegistry:
     def test_register_all_states_simultaneously(self):
         """Test registering all RNG states at once."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         py_state = (42, 0, 0)
@@ -122,8 +120,8 @@ class TestSeedRegistry:
     def test_register_overwrites_previous_state(self):
         """Test that new registrations overwrite previous ones."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         register_seed_snapshot(python_state=(1, 0, 0))
@@ -137,10 +135,6 @@ class TestSeedRegistry:
     def test_get_last_seed_snapshot_initial_state(self):
         """Test initial snapshot returns all None values."""
         from codex_ml.utils.seed_registry import (
-            _LAST_SEEDED_PYTHON_STATE,
-            _LAST_SEEDED_NUMPY_STATE,
-            _LAST_SEEDED_TORCH_STATE,
-            _LAST_SEEDED_TORCH_CUDA_STATE,
             get_last_seed_snapshot,
         )
 
@@ -152,8 +146,8 @@ class TestSeedRegistry:
     def test_get_last_seed_snapshot_returns_copy(self):
         """Test that get_last_seed_snapshot returns a copy, not reference."""
         from codex_ml.utils.seed_registry import (
-            register_seed_snapshot,
             get_last_seed_snapshot,
+            register_seed_snapshot,
         )
 
         state1 = {"test": "state"}
@@ -193,7 +187,7 @@ class TestMetricsRegistry:
         from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
-        
+
         def dummy_metric(x):
             return x * 2
 
@@ -208,7 +202,7 @@ class TestMetricsRegistry:
         from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
-        
+
         def dummy_metric(x):
             return x * 2
 
@@ -216,7 +210,7 @@ class TestMetricsRegistry:
             registry.register("dummy", dummy_metric)
             retrieved = registry.get("dummy")
             assert retrieved is not None
-        except Exception:
+        except Exception as _err:
             pass  # Registry might not have get method yet
 
     def test_metrics_registry_list_metrics(self):
@@ -227,7 +221,7 @@ class TestMetricsRegistry:
         try:
             metrics = registry.list()
             assert isinstance(metrics, (list, dict))
-        except Exception:
+        except Exception as _err:
             pass  # Registry might not have list method yet
 
     def test_metrics_registry_error_on_duplicate(self):
@@ -235,7 +229,7 @@ class TestMetricsRegistry:
         from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
-        
+
         def metric1(x):
             return x
 
@@ -247,7 +241,7 @@ class TestMetricsRegistry:
             # This might raise an error or overwrite
             registry.register("metric", metric2)
             assert True  # Both registration styles are valid
-        except Exception:
+        except Exception as _err:
             pass  # Error on duplicate is also valid
 
 
@@ -273,7 +267,7 @@ class TestOptional:
             json_module = get_optional_module("json")
             assert json_module is not None
             assert hasattr(json_module, "loads")
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_optional_get_missing_module(self):
@@ -295,7 +289,7 @@ class TestOptional:
             default = {"default": "value"}
             result = get_optional_module("nonexistent_xyz", default=default)
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -320,7 +314,7 @@ class TestOptionalDependencies:
         try:
             result = check_optional("sys")
             assert result is True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_check_optional_missing(self):
@@ -330,7 +324,7 @@ class TestOptionalDependencies:
         try:
             result = check_optional("nonexistent_xyz_module_123")
             assert result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_check_optional_with_version(self):
@@ -340,7 +334,7 @@ class TestOptionalDependencies:
         try:
             result = check_optional("sys", ">=0")
             assert result is True or result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -375,7 +369,7 @@ class TestSeed:
         try:
             set_seed(0)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_set_seed_with_large_number(self):
@@ -385,13 +379,14 @@ class TestSeed:
         try:
             set_seed(2**31 - 1)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_set_seed_reproducibility(self):
         """Test that same seed produces reproducible results."""
-        from codex_ml.utils.seed import set_seed
         import random
+
+        from codex_ml.utils.seed import set_seed
 
         set_seed(42)
         val1 = random.random()
@@ -409,7 +404,7 @@ class TestSeed:
             # Try setting with devices parameter if supported
             set_seed(42)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -434,7 +429,7 @@ class TestHFRevision:
         try:
             result = normalize_hf_revision("v1.0")
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_normalize_hf_revision_with_branch(self):
@@ -444,7 +439,7 @@ class TestHFRevision:
         try:
             result = normalize_hf_revision("main")
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_normalize_hf_revision_with_commit(self):
@@ -454,7 +449,7 @@ class TestHFRevision:
         try:
             result = normalize_hf_revision("abc123def456")
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -480,7 +475,7 @@ class TestYamlSupport:
             yaml_str = "key: value\nnested:\n  key: value2"
             result = load_yaml(yaml_str)
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_load_yaml_with_lists(self):
@@ -491,7 +486,7 @@ class TestYamlSupport:
             yaml_str = "items:\n  - item1\n  - item2\n  - item3"
             result = load_yaml(yaml_str)
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_load_yaml_empty_string(self):
@@ -502,7 +497,7 @@ class TestYamlSupport:
             result = load_yaml("")
             # Should return None or empty dict
             assert result is None or result == {}
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -589,7 +584,7 @@ class TestEdgeCases:
             yaml_str = 'text: "value with: special | chars"'
             result = load_yaml(yaml_str)
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_hf_revision_with_special_chars(self):
@@ -599,7 +594,7 @@ class TestEdgeCases:
         try:
             result = normalize_hf_revision("v1.0-beta+build.123")
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 

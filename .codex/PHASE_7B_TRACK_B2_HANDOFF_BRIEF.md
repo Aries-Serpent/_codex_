@@ -25,7 +25,7 @@ Track B.1 has completed:
 ```
 tests/test_phase7b_gap_fill_batch1.py    70+ tests (seed, optional, metrics)
 tests/test_phase7b_gap_fill_batch2.py    60+ tests (mlflow, quantum, peft)
-tests/test_phase7b_gap_fill_batch3.py    60+ tests (cache, tokenizer, dataloader)
+tests/test_phase7b_gap_fill_batch3.py    60+ tests (cache, tokenizer, dataloader)  # pragma: allowlist secret
 Total: 179 tests
 ```
 
@@ -68,8 +68,8 @@ Focus on error paths and integration scenarios.
 Work these after Tier 1-2 complete.
 
 ```
-token_cache.py          42.50% → 100%
-tokenizer_hf.py         42.11% → 100%
+token_cache.py          42.50% → 100%  # pragma: allowlist secret
+tokenizer_hf.py         42.11% → 100%  # pragma: allowlist secret
 dataloader_utils.py     41.67% → 100%
 manifest.py             41.56% → 100%
 registry/base.py        41.44% → 100%

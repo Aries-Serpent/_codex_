@@ -15,8 +15,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -47,7 +45,7 @@ class TestMLflowGuard:
         try:
             guard = MLflowGuard()
             assert guard is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_context_manager(self):
@@ -57,7 +55,7 @@ class TestMLflowGuard:
         try:
             with MLflowGuard() as guard:
                 assert guard is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_enable_tracking(self):
@@ -68,7 +66,7 @@ class TestMLflowGuard:
             guard = MLflowGuard()
             guard.enable()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_disable_tracking(self):
@@ -79,7 +77,7 @@ class TestMLflowGuard:
             guard = MLflowGuard()
             guard.disable()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_log_metric(self):
@@ -90,7 +88,7 @@ class TestMLflowGuard:
             guard = MLflowGuard()
             guard.log_metric("test_metric", 42.0)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_log_param(self):
@@ -101,7 +99,7 @@ class TestMLflowGuard:
             guard = MLflowGuard()
             guard.log_param("test_param", "value")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_with_exception_handling(self):
@@ -123,7 +121,7 @@ class TestMLflowGuard:
             for i in range(10):
                 guard.log_metric(f"metric_{i}", float(i))
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_batch_logging(self):
@@ -135,7 +133,7 @@ class TestMLflowGuard:
             metrics = {"metric1": 1.0, "metric2": 2.0, "metric3": 3.0}
             guard.log_metrics(metrics)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -160,7 +158,7 @@ class TestQuantumBase:
         try:
             engine = QuantumDecisionEngine()
             assert engine is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_with_config(self):
@@ -171,7 +169,7 @@ class TestQuantumBase:
             config = {"k1": 0.332, "k2": 0.5}
             engine = QuantumDecisionEngine(config=config)
             assert engine is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_measure_state(self):
@@ -182,7 +180,7 @@ class TestQuantumBase:
             engine = QuantumDecisionEngine()
             state = engine.measure()
             assert state is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_superposition(self):
@@ -195,7 +193,7 @@ class TestQuantumBase:
             states = ["state1", "state2", "state3"]
             result = engine.superposition(states)
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_entanglement(self):
@@ -207,7 +205,7 @@ class TestQuantumBase:
             # Test entangling multiple values
             result = engine.entangle(["val1", "val2"])
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_collapse_probability(self):
@@ -218,7 +216,7 @@ class TestQuantumBase:
             engine = QuantumDecisionEngine()
             result = engine.collapse_to_probability(0.5)
             assert 0 <= result <= 1
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_decision_with_bias(self):
@@ -229,7 +227,7 @@ class TestQuantumBase:
             engine = QuantumDecisionEngine()
             decision = engine.decide_with_bias(bias=0.7)
             assert decision is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_multiple_decisions(self):
@@ -240,7 +238,7 @@ class TestQuantumBase:
             engine = QuantumDecisionEngine()
             decisions = [engine.measure() for _ in range(10)]
             assert len(decisions) == 10
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_reset_state(self):
@@ -251,7 +249,7 @@ class TestQuantumBase:
             engine = QuantumDecisionEngine()
             engine.reset()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -276,7 +274,7 @@ class TestPEFTHooks:
         try:
             hooks = PEFTHooks()
             assert hooks is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_register_hook(self):
@@ -285,13 +283,13 @@ class TestPEFTHooks:
 
         try:
             hooks = PEFTHooks()
-            
+
             def dummy_hook(*args, **kwargs):
                 pass
 
             hooks.register("pre_forward", dummy_hook)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_trigger_hook(self):
@@ -300,14 +298,14 @@ class TestPEFTHooks:
 
         try:
             hooks = PEFTHooks()
-            
+
             def dummy_hook(*args, **kwargs):
                 return "executed"
 
             hooks.register("test_hook", dummy_hook)
             result = hooks.trigger("test_hook")
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_multiple_hooks(self):
@@ -319,7 +317,7 @@ class TestPEFTHooks:
             for i in range(5):
                 hooks.register(f"hook_{i}", lambda: f"hook_{i}")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_hook_with_args(self):
@@ -328,14 +326,14 @@ class TestPEFTHooks:
 
         try:
             hooks = PEFTHooks()
-            
+
             def hook_with_args(x, y):
                 return x + y
 
             hooks.register("math_hook", hook_with_args)
             result = hooks.trigger("math_hook", args=(1, 2))
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_hook_with_kwargs(self):
@@ -344,14 +342,14 @@ class TestPEFTHooks:
 
         try:
             hooks = PEFTHooks()
-            
+
             def hook_with_kwargs(a=1, b=2):
                 return a * b
 
             hooks.register("kwarg_hook", hook_with_kwargs)
             result = hooks.trigger("kwarg_hook", kwargs={"a": 3, "b": 4})
             assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_remove_hook(self):
@@ -363,7 +361,7 @@ class TestPEFTHooks:
             hooks.register("removable", lambda: "test")
             hooks.remove("removable")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_list_hooks(self):
@@ -376,7 +374,7 @@ class TestPEFTHooks:
                 hooks.register(f"hook_{i}", lambda: None)
             hook_list = hooks.list()
             assert hook_list is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -401,7 +399,7 @@ class TestSecurityTypes:
         try:
             ctx = SecurityContext()
             assert ctx is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_with_user(self):
@@ -411,7 +409,7 @@ class TestSecurityTypes:
         try:
             ctx = SecurityContext(user="test_user")
             assert ctx.user == "test_user"
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_with_permissions(self):
@@ -422,7 +420,7 @@ class TestSecurityTypes:
             perms = ["read", "write", "execute"]
             ctx = SecurityContext(permissions=perms)
             assert ctx.permissions == perms
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_check_permission(self):
@@ -433,7 +431,7 @@ class TestSecurityTypes:
             ctx = SecurityContext(permissions=["read", "write"])
             result = ctx.has_permission("read")
             assert result is True or result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_grant_permission(self):
@@ -444,7 +442,7 @@ class TestSecurityTypes:
             ctx = SecurityContext(permissions=[])
             ctx.grant_permission("read")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_revoke_permission(self):
@@ -455,7 +453,7 @@ class TestSecurityTypes:
             ctx = SecurityContext(permissions=["read", "write"])
             ctx.revoke_permission("read")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_set_role(self):
@@ -466,7 +464,7 @@ class TestSecurityTypes:
             ctx = SecurityContext()
             ctx.set_role("admin")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_clear(self):
@@ -477,7 +475,7 @@ class TestSecurityTypes:
             ctx = SecurityContext(user="test", permissions=["read"])
             ctx.clear()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_is_authenticated(self):
@@ -488,7 +486,7 @@ class TestSecurityTypes:
             ctx = SecurityContext(user="test")
             result = ctx.is_authenticated()
             assert result is True or result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -513,7 +511,7 @@ class TestDPConfig:
         try:
             config = DPConfig()
             assert config is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_with_backend(self):
@@ -523,7 +521,7 @@ class TestDPConfig:
         try:
             config = DPConfig(backend="nccl")
             assert config is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_set_world_size(self):
@@ -534,7 +532,7 @@ class TestDPConfig:
             config = DPConfig()
             config.set_world_size(4)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_set_rank(self):
@@ -545,7 +543,7 @@ class TestDPConfig:
             config = DPConfig()
             config.set_rank(0)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_enable_fp16(self):
@@ -556,7 +554,7 @@ class TestDPConfig:
             config = DPConfig()
             config.enable_fp16()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_get_device(self):
@@ -567,7 +565,7 @@ class TestDPConfig:
             config = DPConfig()
             device = config.get_device()
             assert device is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_validate(self):
@@ -578,7 +576,7 @@ class TestDPConfig:
             config = DPConfig()
             result = config.validate()
             assert result is True or result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_to_dict(self):
@@ -589,7 +587,7 @@ class TestDPConfig:
             config = DPConfig()
             config_dict = config.to_dict()
             assert isinstance(config_dict, dict)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_from_dict(self):
@@ -600,7 +598,7 @@ class TestDPConfig:
             config_dict = {"backend": "nccl", "world_size": 4}
             config = DPConfig.from_dict(config_dict)
             assert config is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -626,7 +624,7 @@ class TestRNGCheckpoint:
             checkpoint = RNGCheckpoint()
             checkpoint.save()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_rng_checkpoint_load(self):
@@ -637,7 +635,7 @@ class TestRNGCheckpoint:
             checkpoint = RNGCheckpoint()
             checkpoint.load()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_rng_checkpoint_restore_state(self):
@@ -648,7 +646,7 @@ class TestRNGCheckpoint:
             checkpoint = RNGCheckpoint()
             checkpoint.restore()
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
 
@@ -667,7 +665,7 @@ class TestIntegrationAndErrors:
         try:
             guard = MLflowGuard(config=None)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_with_invalid_states(self):
@@ -678,7 +676,7 @@ class TestIntegrationAndErrors:
             engine = QuantumDecisionEngine()
             result = engine.measure()
             assert result is not None or result is None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_nonexistent_hook(self):
@@ -689,7 +687,7 @@ class TestIntegrationAndErrors:
             hooks = PEFTHooks()
             result = hooks.trigger("nonexistent")
             assert result is None or isinstance(result, Exception)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_multiple_role_changes(self):
@@ -701,7 +699,7 @@ class TestIntegrationAndErrors:
             for role in ["admin", "user", "guest", "admin"]:
                 ctx.set_role(role)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_with_invalid_backend(self):
@@ -731,7 +729,7 @@ class TestBoundaryAndEdgeCases:
             guard = MLflowGuard()
             guard.log_metric("zero", 0.0)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_mlflow_guard_negative_metrics(self):
@@ -742,7 +740,7 @@ class TestBoundaryAndEdgeCases:
             guard = MLflowGuard()
             guard.log_metric("negative", -1.5)
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_quantum_engine_boundary_probability(self):
@@ -754,7 +752,7 @@ class TestBoundaryAndEdgeCases:
             for prob in [0.0, 0.5, 1.0]:
                 result = engine.collapse_to_probability(prob)
                 assert result is not None
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_peft_hooks_empty_hook_name(self):
@@ -765,7 +763,7 @@ class TestBoundaryAndEdgeCases:
             hooks = PEFTHooks()
             hooks.register("", lambda: "empty")
             assert True
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_security_context_empty_permissions(self):
@@ -776,7 +774,7 @@ class TestBoundaryAndEdgeCases:
             ctx = SecurityContext(permissions=[])
             result = ctx.has_permission("read")
             assert result is False
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_dp_config_zero_world_size(self):

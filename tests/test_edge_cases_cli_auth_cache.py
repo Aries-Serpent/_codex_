@@ -8,13 +8,11 @@ Generated: 150+ parameterized edge case tests
 Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock # pragma: allowlist secret
-from typing import Optional, List, Dict, Any
+import json
 import tempfile
 from pathlib import Path
-import json
 
+import pytest
 
 # ============================================================================
 # FIXTURES: CLI & Command Edge Cases
@@ -22,7 +20,7 @@ import json
 
 class CLIFixtures:
     """Fixtures for CLI command edge cases"""
-    
+
     COMMAND_ARGS = [
         [],                              # No arguments
         ['help'],                        # Single arg
@@ -34,7 +32,7 @@ class CLIFixtures:
         ['--flag', ''],                  # Empty value
         [None, 'arg', None],             # Args with None
     ]
-    
+
     ENV_VARS = [
         {},                              # No env vars
         {'KEY': 'value'},                # Single var
@@ -68,10 +66,10 @@ class TestCLICommandParsing:
                 if not args:
                     return {'command': None, 'args': {}}
                 return {'command': args[0], 'args': args[1:]}
-        
+
         parser = CommandParser()
         result = parser.parse([])
-        
+
         assert result['command'] is None
         assert result['args'] == {}
 
@@ -82,7 +80,7 @@ class TestCLICommandParsing:
                 if not args:
                     return None
                 return args[0]
-        
+
         parser = CommandParser()
         result = parser.parse(['help'])
         assert result == 'help'
@@ -93,10 +91,10 @@ class TestCLICommandParsing:
             def parse(self, args):
                 if not args:
                     return {}
-                
+
                 result = {'command': args[0]}
                 flags = {}
-                
+
                 i = 1
                 while i < len(args):
                     if args[i].startswith('--'):
@@ -109,13 +107,13 @@ class TestCLICommandParsing:
                             i += 1
                     else:
                         i += 1
-                
+
                 result['flags'] = flags
                 return result
-        
+
         parser = CommandParser()
         result = parser.parse(['cmd', '--verbose', '--output', 'file.txt'])
-        
+
         assert result['command'] == 'cmd'
         assert result['flags']['verbose'] is True
         assert result['flags']['output'] == 'file.txt'
@@ -123,7 +121,7 @@ class TestCLICommandParsing:
     def test_command_args_with_special_chars(self, command_args):
         """Test command arguments with special characters"""
         args = command_args
-        
+
         # Should handle various arg types
         if args and args != [None, 'arg', None]:
             # Filter out None values
@@ -146,7 +144,7 @@ class TestCLICommandParsing:
             def parse_arg(self, arg):
                 if not arg:
                     return None
-                
+
                 if arg.startswith('--'):
                     if '=' in arg:
                         flag, value = arg.split('=', 1)
@@ -155,7 +153,7 @@ class TestCLICommandParsing:
                         return {'flag': arg[2:], 'value': None}
                 else:
                     return {'value': arg}
-        
+
         parser = ArgParser()
         result = parser.parse_arg(arg_string)
         assert result is not None or arg_string == ''
@@ -175,9 +173,9 @@ class TestAuthenticationEdgeCases:
                 if not username or not password:
                     return False
                 return username == 'admin' and password == 'secret'
-        
+
         auth = Authenticator()
-        
+
         assert not auth.authenticate('', 'password')
         assert not auth.authenticate('user', '')
         assert not auth.authenticate('', '')
@@ -190,16 +188,16 @@ class TestAuthenticationEdgeCases:
                     return False
                 # Just check if they're not empty
                 return len(username) > 0 and len(password) > 0
-        
+
         auth = Authenticator()
-        
+
         special_creds = [
             ('user@domain', 'pass!@#$%'),
             ('user"quote', 'pass\'single'),
             ('user;drop', 'pass;--'),
             ('user\x00null', 'pass\n'),
         ]
-        
+
         for user, pwd in special_creds:
             result = auth.authenticate(user, pwd)
             assert result is True
@@ -212,15 +210,15 @@ class TestAuthenticationEdgeCases:
                 if len(username) > 10000 or len(password) > 10000:
                     return False
                 return True
-        
+
         auth = Authenticator()
-        
+
         long_user = 'u' * 5000
         long_pass = 'p' * 5000
-        
+
         result = auth.authenticate(long_user, long_pass)
         assert result is True
-        
+
         # Over limit
         over_user = 'u' * 15000
         result = auth.authenticate(over_user, 'password')
@@ -241,17 +239,17 @@ class TestAuthenticationEdgeCases:
             def validate(self, token):
                 if not token:
                     return False
-                
+
                 if not token.startswith('Bearer '):
                     return False
-                
+
                 token_part = token[7:]
                 # Very basic validation
                 return len(token_part) > 10
-        
+
         validator = TokenValidator()
         result = validator.validate(token)
-        
+
         if token and token.startswith('Bearer ') and len(token) > 17:
             assert result is True
         else:
@@ -270,15 +268,15 @@ class TestCacheOperationsEdgeCases:
         class SimpleCache:
             def __init__(self):
                 self.data = {}
-            
+
             def get(self, key, default=None):
                 return self.data.get(key, default)
-        
+
         cache = SimpleCache()
-        
+
         result = cache.get('missing')
         assert result is None
-        
+
         result = cache.get('missing', 'default')
         assert result == 'default'
 
@@ -287,15 +285,15 @@ class TestCacheOperationsEdgeCases:
         class SimpleCache:
             def __init__(self):
                 self.data = {}
-            
+
             def set(self, key, value):
                 self.data[key] = value
-            
+
             def get(self, key):
                 return self.data.get(key)
-        
+
         cache = SimpleCache()
-        
+
         cache.set('key', 'value')
         result = cache.get('key')
         assert result == 'value'
@@ -305,22 +303,22 @@ class TestCacheOperationsEdgeCases:
         class SimpleCache:
             def __init__(self):
                 self.data = {}
-            
+
             def set(self, key, value):
                 self.data[key] = value
-            
+
             def get(self, key):
                 if key in self.data:
                     return self.data[key]
                 return None
-        
+
         cache = SimpleCache()
-        
+
         # Store None explicitly
         cache.set('key', None)
         result = cache.get('key')
         assert result is None
-        
+
         # Key should exist even though value is None
         assert 'key' in cache.data
 
@@ -330,21 +328,21 @@ class TestCacheOperationsEdgeCases:
             def __init__(self, max_size=2):
                 self.data = {}
                 self.max_size = max_size
-            
+
             def set(self, key, value):
                 if len(self.data) >= self.max_size and key not in self.data:
                     # Evict first item (simple FIFO)
                     first_key = next(iter(self.data))
                     del self.data[first_key]
-                
+
                 self.data[key] = value
-        
+
         cache = LimitedCache(max_size=2)
-        
+
         cache.set('key1', 'value1')
         cache.set('key2', 'value2')
         assert len(cache.data) == 2
-        
+
         cache.set('key3', 'value3')
         # One key should be evicted
         assert len(cache.data) == 2
@@ -356,17 +354,17 @@ class TestCacheOperationsEdgeCases:
         class SimpleCache:
             def __init__(self):
                 self.data = {}
-            
+
             def populate(self, size):
                 for i in range(size):
                     self.data[f'key_{i}'] = f'value_{i}'
-            
+
             def size(self):
                 return len(self.data)
-        
+
         cache = SimpleCache()
         cache.populate(cache_size)
-        
+
         assert cache.size() == cache_size
 
 
@@ -384,7 +382,7 @@ class TestConfigurationLoadingEdgeCases:
                 if not config:
                     return {}
                 return config
-        
+
         loader = ConfigLoader()
         result = loader.load({})
         assert result == {}
@@ -397,19 +395,19 @@ class TestConfigurationLoadingEdgeCases:
                 'port': 8080,
                 'host': 'localhost',
             }
-            
+
             def load(self, config):
                 result = self.DEFAULTS.copy()
                 if config:
                     result.update(config)
                 return result
-        
+
         loader = ConfigLoader()
-        
+
         result = loader.load({})
         assert result['debug'] is False
         assert result['port'] == 8080
-        
+
         result = loader.load({'debug': True})
         assert result['debug'] is True
         assert result['port'] == 8080
@@ -422,15 +420,15 @@ class TestConfigurationLoadingEdgeCases:
                 'key': 'value',
                 'number': 42,
             }))
-            
+
             class ConfigLoader:
                 def load_file(self, filepath):
                     with open(filepath, 'r') as f:
                         return json.load(f)
-            
+
             loader = ConfigLoader()
             config = loader.load_file(config_file)
-            
+
             assert config['key'] == 'value'
             assert config['number'] == 42
 
@@ -439,14 +437,14 @@ class TestConfigurationLoadingEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = Path(tmpdir) / 'bad_config.json'
             config_file.write_text('{ invalid json }')
-            
+
             class ConfigLoader:
                 def load_file(self, filepath):
                     with open(filepath, 'r') as f:
                         return json.load(f)
-            
+
             loader = ConfigLoader()
-            
+
             with pytest.raises(json.JSONDecodeError):
                 loader.load_file(config_file)
 
@@ -455,26 +453,26 @@ class TestConfigurationLoadingEdgeCases:
         class ConfigValidator:
             def validate(self, config):
                 errors = []
-                
+
                 if 'port' in config:
                     if not isinstance(config['port'], int):
                         errors.append('port must be integer')
                     elif config['port'] < 0 or config['port'] > 65535:
                         errors.append('port out of range')
-                
+
                 if 'timeout' in config:
                     if config['timeout'] < 0:
                         errors.append('timeout must be non-negative')
-                
+
                 return len(errors) == 0, errors
-        
+
         validator = ConfigValidator()
-        
+
         # Valid config
         valid, errors = validator.validate({'port': 8080, 'timeout': 30})
         assert valid is True
         assert errors == []
-        
+
         # Invalid port
         valid, errors = validator.validate({'port': 99999})
         assert valid is False
@@ -497,12 +495,12 @@ class TestErrorMessageHandlingEdgeCases:
                 if context is None:
                     return str(error)
                 return f'{error} ({context})'
-        
+
         formatter = ErrorFormatter()
-        
+
         result = formatter.format(None)
         assert result == 'Unknown error'
-        
+
         result = formatter.format('Error message', None)
         assert result == 'Error message'
 
@@ -512,12 +510,12 @@ class TestErrorMessageHandlingEdgeCases:
             def format(self, error):
                 # Escape special characters
                 return str(error).replace('\n', '\\n').replace('\t', '\\t')
-        
+
         formatter = ErrorFormatter()
-        
+
         result = formatter.format('Error\nwith\nnewlines')
         assert '\\n' in result
-        
+
         result = formatter.format('Error\twith\ttabs')
         assert '\\t' in result
 
@@ -525,18 +523,18 @@ class TestErrorMessageHandlingEdgeCases:
         """Test very long error messages"""
         class ErrorFormatter:
             MAX_LENGTH = 1000
-            
+
             def format(self, error):
                 error_str = str(error)
                 if len(error_str) > self.MAX_LENGTH:
                     return error_str[:self.MAX_LENGTH] + '...'
                 return error_str
-        
+
         formatter = ErrorFormatter()
-        
+
         long_error = 'x' * 2000
         result = formatter.format(long_error)
-        
+
         assert len(result) == 1003  # 1000 + '...'
 
 
@@ -550,60 +548,60 @@ class TestConcurrentAccessEdgeCases:
     def test_shared_resource_read_only(self):
         """Test shared resource with read-only access"""
         import threading
-        
+
         class SharedResource:
             def __init__(self, value):
                 self.value = value
                 self.lock = threading.RLock()
-            
+
             def read(self):
                 with self.lock:
                     return self.value
-        
+
         resource = SharedResource(42)
-        
+
         results = []
         def reader():
             results.append(resource.read())
-        
+
         threads = [threading.Thread(target=reader) for _ in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert all(r == 42 for r in results)
 
     def test_shared_resource_write_protection(self):
         """Test shared resource with write protection"""
         import threading
-        
+
         class SharedResource:
             def __init__(self, value):
                 self.value = value
                 self.lock = threading.Lock()
-            
+
             def write(self, new_value):
                 with self.lock:
                     self.value = new_value
-            
+
             def read(self):
                 with self.lock:
                     return self.value
-        
+
         resource = SharedResource(0)
-        
+
         def increment():
             for _ in range(10):
                 current = resource.read()
                 resource.write(current + 1)
-        
+
         threads = [threading.Thread(target=increment) for _ in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Due to race conditions without proper locking, this might not be 50
         # but should be > 0
         assert resource.read() > 0

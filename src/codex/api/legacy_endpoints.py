@@ -14,10 +14,9 @@ RFC 8594 Headers:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -67,24 +66,24 @@ def _add_deprecation_headers(
     """
     # RFC 8594: Deprecation header (must be "true")
     response.headers["Deprecation"] = "true"
-    
+
     # RFC 8594: Sunset header (RFC 5322 date format)
     response.headers["Sunset"] = sunset_date
-    
+
     # RFC 8594: Link header with successor-version relation
     if not successor_url.startswith("http"):
         successor_url = f"<{successor_url}>"
     else:
         successor_url = f"<{successor_url}>"
     response.headers["Link"] = f'{successor_url}; rel="successor-version"'
-    
+
     # RFC 8594: Warning header (complementary, not required but recommended)
     response.headers["Warning"] = f'299 - "{reason}"'
-    
+
     # Additional headers for client guidance
     response.headers["X-API-Lifecycle"] = "deprecated"
     response.headers["X-Sunset-Date"] = sunset_date
-    
+
     return response
 
 
@@ -115,7 +114,7 @@ async def legacy_login_v1(body: LegacyLoginRequest, request: Request) -> JSONRes
         "token": "",
         "user_id": "",
     }
-    
+
     response = JSONResponse(status_code=410, content=response_data)
     return _add_deprecation_headers(
         response,
@@ -165,7 +164,7 @@ async def legacy_train_v1(body: LegacyTrainRequest, request: Request) -> JSONRes
         "status": "deprecated",
         "estimated_time": 0,
     }
-    
+
     response = JSONResponse(status_code=410, content=response_data)
     return _add_deprecation_headers(
         response,
@@ -212,7 +211,7 @@ async def legacy_predict_v1(body: LegacyPredictRequest, request: Request) -> JSO
         "prediction": "",
         "confidence": 0.0,
     }
-    
+
     response = JSONResponse(status_code=410, content=response_data)
     return _add_deprecation_headers(
         response,

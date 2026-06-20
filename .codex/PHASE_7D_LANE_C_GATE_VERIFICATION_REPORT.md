@@ -582,7 +582,7 @@ This report documents comprehensive QA verification across all **32 production g
 |---------|-----------|----------|--------|----------|------------|
 | 1.1 | CVE Count | Security | ✅ PASS | Security policy + audit trail | None |
 | 1.2 | CodeQL Findings | Security | ✅ PASS | 186 workflows, remediation plan | None |
-| 1.3 | Secrets Detection | Security | ✅ PASS | GitHub Advanced Security | None |
+| 1.3 | Secrets Detection | Security | ✅ PASS | GitHub Advanced Security | None | <!-- pragma: allowlist secret -->
 | 1.4 | Dependency Vulns | Security | ✅ PASS | pip-audit results (0 high) | None |
 | 1.5 | SAST Analysis | Security | ✅ PASS | Semgrep + remediation | None |
 | 1.6 | Code Review Coverage | Security | ✅ PASS | 100% reviewed (>95% target) | None |

@@ -78,8 +78,8 @@ From `src/codex_ml/__init__.py`:
 | # | Name | Type | Module | CLI Dep? | Test Dep | Priority | Impact |
 |---|------|------|--------|----------|----------|----------|--------|
 | 1 | `set_reproducible` | Function | `utils.repro` | **YES** | 0 | P1 | CLI fails without this |
-| 2 | `load_tokenizer` | Function | `tokenization` | **YES** | 0 | P1 | CLI tokenization blocked |
-| 3 | `list_available_models` | Function | `tokenization` | **YES** | 0 | P1 | CLI model listing blocked |
+| 2 | `load_tokenizer` | Function | `tokenization` | **YES** | 0 | P1 | CLI tokenization blocked | <!-- pragma: allowlist secret -->
+| 3 | `list_available_models` | Function | `tokenization` | **YES** | 0 | P1 | CLI model listing blocked | <!-- pragma: allowlist secret -->
 | 4 | `set_seed` | Function | `utils.repro` | **YES** | 0 | P1 | Reproducibility broken |
 | 5 | `CheckpointManager` | Class | `utils.checkpointing` | NO | 0 | P2 | Core training feature |
 | 6 | `load_checkpoint` | Function | `utils.checkpointing` | NO | 0 | P2 | Model loading blocked |
@@ -120,8 +120,8 @@ From `src/codex_ml/__init__.py`:
 - **Current Status:** NOT exported
 - **CLI Usage:**
   ```python
-  from codex_ml.tokenization import load_tokenizer
-  # Used in: src/codex/cli.py (tokenizer subcommands)
+  from codex_ml.tokenization import load_tokenizer  # pragma: allowlist secret
+  # Used in: src/codex/cli.py (tokenizer subcommands)  # pragma: allowlist secret
   ```
 - **Impact:** CLI tokenizer validation tests fail completely
 - **Dependency Chain:** CLI → load_tokenizer → model registry → HF models
@@ -134,7 +134,7 @@ From `src/codex_ml/__init__.py`:
 - **Current Status:** NOT exported
 - **CLI Usage:**
   ```python
-  from codex_ml.tokenization import list_available_models
+  from codex_ml.tokenization import list_available_models  # pragma: allowlist secret
   # Used in: src/codex/cli.py (model listing)
   ```
 - **Impact:** CLI cannot list available models
@@ -237,7 +237,7 @@ From `src/codex_ml/__init__.py`:
 # These MUST be added to __all__ immediately
 __all__ += [
     "set_reproducible",
-    "load_tokenizer", 
+    "load_tokenizer",  # pragma: allowlist secret 
     "list_available_models",
     "set_seed"
 ]
@@ -291,7 +291,7 @@ Add these to `src/codex_ml/__init__.py`:
 # Priority 1 - CLI-Critical (BLOCKING)
 __all__ += [
     "set_reproducible",
-    "load_tokenizer",
+    "load_tokenizer",  # pragma: allowlist secret
     "list_available_models", 
     "set_seed"
 ]
@@ -326,8 +326,8 @@ _EXPORT_MAP = {
     
     # CLI Critical (P1)
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
-    "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),
-    "list_available_models": ("codex_ml.tokenization", "list_available_models"),
+    "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),  # pragma: allowlist secret
+    "list_available_models": ("codex_ml.tokenization", "list_available_models"),  # pragma: allowlist secret
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
     
     # Core ML (P2)
@@ -358,14 +358,14 @@ _EXPORT_MAP = {
 **Imports Currently Failing:**
 ```python
 Line ~234:  from codex_ml.utils.repro import set_reproducible  # ❌ Missing
-Line ~247:  from codex_ml.tokenization import load_tokenizer  # ❌ Missing
-Line ~289:  from codex_ml.tokenization import list_available_models  # ❌ Missing  
+Line ~247:  from codex_ml.tokenization import load_tokenizer  # ❌ Missing  # pragma: allowlist secret
+Line ~289:  from codex_ml.tokenization import list_available_models  # ❌ Missing  # pragma: allowlist secret  
 Line ~251:  from codex_ml.utils.checkpointing import set_seed  # ❌ Missing
 ```
 
 **These should be:**
 ```python
-from codex_ml import set_reproducible, load_tokenizer, list_available_models, set_seed
+from codex_ml import set_reproducible, load_tokenizer, list_available_models, set_seed  # pragma: allowlist secret
 ```
 
 ### Module Structure
@@ -377,8 +377,8 @@ src/codex_ml/
 │   ├── repro.py            [HAS: set_reproducible, set_seed, DatasetManifest]
 │   ├── checkpointing.py    [HAS: CheckpointManager, load_checkpoint, save_checkpoint]
 │   └── __init__.py
-├── tokenization/
-│   ├── __init__.py         [HAS: load_tokenizer, list_available_models]
+├── tokenization/  # pragma: allowlist secret
+│   ├── __init__.py         [HAS: load_tokenizer, list_available_models]  # pragma: allowlist secret
 │   └── ...
 ├── model_registry.py       [HAS: get_model, register_model, list_models]
 ├── monitoring/
@@ -409,7 +409,7 @@ src/codex_ml/
 ```
 tests/ml/
 ├── test_training_reproducibility.py     [WILL USE: set_seed, set_reproducible]
-└── test_model_validation.py             [WILL USE: get_model, load_tokenizer]
+└── test_model_validation.py             [WILL USE: get_model, load_tokenizer]  # pragma: allowlist secret
 ```
 
 ---
@@ -481,8 +481,8 @@ This analysis is **COMPLETE and READY for autonomous-test-healer-agent** to impl
 codex_ml.__init__.py
 ├── P1 Critical Exports
 │   ├── set_reproducible (utils.repro)
-│   ├── load_tokenizer (tokenization)
-│   ├── list_available_models (tokenization)
+│   ├── load_tokenizer (tokenization)  # pragma: allowlist secret
+│   ├── list_available_models (tokenization)  # pragma: allowlist secret
 │   └── set_seed (utils.repro)
 │
 ├── P2 High Priority

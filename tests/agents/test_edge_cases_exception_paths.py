@@ -12,19 +12,16 @@ Comprehensive exception and error handling testing for:
 
 from __future__ import annotations
 
+import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-import sqlite3
-import tempfile
-from typing import Any
-from unittest.mock import patch, MagicMock
 
 import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
+    MemoryEntry,
     PatternLibrary,
 )
 
@@ -188,10 +185,10 @@ class TestAgentMemoryDatabaseErrors:
         """Test storing to read-only database."""
         db_path = tmp_path / "readonly.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Make database read-only
         db_path.chmod(0o444)
-        
+
         try:
             entry = MemoryEntry(
                 memory_id="test",
@@ -209,11 +206,11 @@ class TestAgentMemoryDatabaseErrors:
     def test_retrieve_from_corrupted_database(self, tmp_path: Path) -> None:
         """Test retrieving from corrupted database."""
         db_path = tmp_path / "corrupted.db"
-        
+
         # Create and corrupt the database
         with open(db_path, "w") as f:
             f.write("CORRUPTED DATA\x00\x01\x02")
-        
+
         # Attempting to read should handle error gracefully
         with pytest.raises((sqlite3.DatabaseError, sqlite3.NotSupportedError)):
             AgentMemory(db_path=db_path)
@@ -223,7 +220,7 @@ class TestAgentMemoryDatabaseErrors:
         db_path = tmp_path / "concurrent.db"
         memory1 = AgentMemory(db_path=db_path)
         memory2 = AgentMemory(db_path=db_path)
-        
+
         entry1 = MemoryEntry(
             memory_id="entry1",
             category="test",
@@ -236,11 +233,11 @@ class TestAgentMemoryDatabaseErrors:
             content="content2",
             context={},
         )
-        
+
         # Store from both memory instances
         memory1.store_memory(entry1)
         memory2.store_memory(entry2)
-        
+
         # Both should be retrievable
         assert memory1.retrieve_memory("entry1") is not None
         assert memory2.retrieve_memory("entry2") is not None
@@ -262,7 +259,7 @@ class TestPatternLibraryExceptions:
             examples=[],
             tags=["test"],
         )
-        
+
         # Test with invalid success rate values
         for invalid_rate in [-0.1, 1.1, -1.0]:
             matches = lib.match_patterns("trigger", min_success_rate=invalid_rate)
@@ -435,7 +432,7 @@ class TestAgentMemoryRetrievalErrors:
         """Test retrieve memory with SQL injection attempt."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Try SQL injection
         malicious_id = "'; DROP TABLE memories; --"
         result = memory.retrieve_memory(malicious_id)
@@ -445,7 +442,7 @@ class TestAgentMemoryRetrievalErrors:
         """Test retrieve with very long memory ID."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         long_id = "x" * 100000
         result = memory.retrieve_memory(long_id)
         assert result is None
@@ -454,7 +451,7 @@ class TestAgentMemoryRetrievalErrors:
         """Test search with no matching entries."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         result = memory.search(query="nonexistent_query")
         assert isinstance(result, list) or result is None
 
@@ -466,7 +463,7 @@ class TestMemoryStorageEdgeCases:
         """Test storing memory with unicode content."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="unicode_test",
             category="test",
@@ -474,7 +471,7 @@ class TestMemoryStorageEdgeCases:
             context={},
         )
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("unicode_test")
         assert retrieved is not None
         assert "你好世界" in retrieved.content
@@ -483,7 +480,7 @@ class TestMemoryStorageEdgeCases:
         """Test storing memory with null bytes."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Content with null bytes
         content = "Before\x00After"
         entry = MemoryEntry(
@@ -492,7 +489,7 @@ class TestMemoryStorageEdgeCases:
             content=content,
             context={},
         )
-        
+
         try:
             memory.store_memory(entry)
             retrieved = memory.retrieve_memory("null_test")
@@ -505,7 +502,7 @@ class TestMemoryStorageEdgeCases:
         """Test storing memory with duplicate key (should overwrite)."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry1 = MemoryEntry(
             memory_id="duplicate",
             category="test",
@@ -518,10 +515,10 @@ class TestMemoryStorageEdgeCases:
             content="content2",
             context={},
         )
-        
+
         memory.store_memory(entry1)
         memory.store_memory(entry2)
-        
+
         retrieved = memory.retrieve_memory("duplicate")
         assert retrieved is not None
         # Should have the latest content

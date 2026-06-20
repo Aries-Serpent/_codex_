@@ -12,19 +12,14 @@ Comprehensive return value testing for:
 
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 from pathlib import Path
-import json
-import sqlite3
-import tempfile
-from typing import Any
-
-import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
+    MemoryEntry,
     PatternLibrary,
 )
 
@@ -46,12 +41,12 @@ class TestMemoryEntryReturnValues:
             tags=["tag1", "tag2"],
             related_memories=["mem1", "mem2"],
         )
-        
+
         result = entry.to_dict()
-        
+
         # Verify it's a dict
         assert isinstance(result, dict)
-        
+
         # Verify all fields present
         required_fields = [
             "memory_id", "category", "content", "context", "confidence",
@@ -72,9 +67,9 @@ class TestMemoryEntryReturnValues:
             tags=["important", "decision"],
             related_memories=["prev_decision"],
         )
-        
+
         result = entry.to_dict()
-        
+
         assert result["memory_id"] == "id123"
         assert result["category"] == "decision"
         assert result["content"] == "Made decision X"
@@ -92,13 +87,13 @@ class TestMemoryEntryReturnValues:
             content="test",
             context={"nested": {"value": 123}},
         )
-        
+
         data = entry.to_dict()
-        
+
         # Should be JSON serializable
         json_str = json.dumps(data)
         assert isinstance(json_str, str)
-        
+
         # Should be deserializable back
         deserialized = json.loads(json_str)
         assert deserialized["memory_id"] == "test"
@@ -117,9 +112,9 @@ class TestMemoryEntryReturnValues:
             "tags": [],
             "related_memories": [],
         }
-        
+
         result = MemoryEntry.from_dict(data)
-        
+
         assert isinstance(result, MemoryEntry)
         assert result.memory_id == "test"
 
@@ -137,9 +132,9 @@ class TestMemoryEntryReturnValues:
             "tags": ["tag1", "tag2", "tag3"],
             "related_memories": ["mem1", "mem2"],
         }
-        
+
         result = MemoryEntry.from_dict(data)
-        
+
         assert result.memory_id == "test_id"
         assert result.category == "test_cat"
         assert result.content == "test_content"
@@ -167,11 +162,11 @@ class TestContextFrameReturnValues:
             actions_taken=5,
             errors_encountered=1,
         )
-        
+
         result = frame.to_dict()
-        
+
         assert isinstance(result, dict)
-        
+
         required_fields = [
             "frame_id", "task_description", "start_time", "end_time",
             "status", "active_memories", "decisions_made", "lessons_learned",
@@ -185,7 +180,7 @@ class TestContextFrameReturnValues:
         """Test to_dict preserves all values."""
         start = datetime.now(UTC).isoformat()
         end = datetime.now(UTC).isoformat()
-        
+
         frame = ContextFrame(
             frame_id="frame_test",
             task_description="Complex task",
@@ -199,9 +194,9 @@ class TestContextFrameReturnValues:
             actions_taken=10,
             errors_encountered=2,
         )
-        
+
         result = frame.to_dict()
-        
+
         assert result["frame_id"] == "frame_test"
         assert result["task_description"] == "Complex task"
         assert result["start_time"] == start
@@ -221,12 +216,12 @@ class TestContextFrameReturnValues:
             task_description="test",
             start_time=datetime.now(UTC).isoformat(),
         )
-        
+
         data = frame.to_dict()
-        
+
         json_str = json.dumps(data)
         assert isinstance(json_str, str)
-        
+
         deserialized = json.loads(json_str)
         assert deserialized["frame_id"] == "test"
 
@@ -237,9 +232,9 @@ class TestContextFrameReturnValues:
             task_description="test",
             start_time=datetime.now(UTC).isoformat(),
         )
-        
+
         result = frame.to_dict()
-        
+
         assert result["active_memories"] == []
         assert result["decisions_made"] == []
         assert result["lessons_learned"] == []
@@ -257,9 +252,9 @@ class TestContextFrameReturnValues:
             repository=None,
             branch=None,
         )
-        
+
         result = frame.to_dict()
-        
+
         assert result["end_time"] is None
         assert result["repository"] is None
         assert result["branch"] is None
@@ -281,9 +276,9 @@ class TestPatternLibraryReturnValues:
             examples=[],
             tags=["test"],
         )
-        
+
         result = lib.match_patterns("trigger")
-        
+
         assert isinstance(result, list)
 
     def test_match_patterns_returns_match_dicts(self) -> None:
@@ -299,12 +294,12 @@ class TestPatternLibraryReturnValues:
             examples=[{"situation": "user login"}],
             tags=["auth"],
         )
-        
+
         result = lib.match_patterns("authentication required")
-        
+
         assert len(result) > 0
         match = result[0]
-        
+
         # Check match structure
         assert "pattern" in match
         assert "match_score" in match
@@ -323,16 +318,16 @@ class TestPatternLibraryReturnValues:
             examples=[],
             tags=["test"],
         )
-        
+
         result = lib.match_patterns("completely unrelated text")
-        
+
         assert isinstance(result, list)
         assert len(result) == 0
 
     def test_match_patterns_sorted_by_score(self) -> None:
         """Test match_patterns results are sorted by score."""
         lib = PatternLibrary()
-        
+
         # Add patterns with different trigger match potential
         lib.add_pattern(
             pattern_id="p1",
@@ -344,7 +339,7 @@ class TestPatternLibraryReturnValues:
             examples=[],
             tags=["security"],
         )
-        
+
         lib.add_pattern(
             pattern_id="p2",
             name="Pattern 2",
@@ -355,9 +350,9 @@ class TestPatternLibraryReturnValues:
             examples=[],
             tags=["security"],
         )
-        
+
         result = lib.match_patterns("authentication and security")
-        
+
         # Results should be sorted by match score descending
         if len(result) > 1:
             scores = [m["match_score"] for m in result]
@@ -376,9 +371,9 @@ class TestPatternLibraryReturnValues:
             examples=[],
             tags=["test"],
         )
-        
+
         result = lib.to_dict()
-        
+
         assert isinstance(result, dict)
         assert "patterns" in result
         assert "pattern_index" in result
@@ -402,9 +397,9 @@ class TestPatternLibraryReturnValues:
             },
             "pattern_index": {"test": ["p1"]},
         }
-        
+
         result = PatternLibrary.from_dict(data)
-        
+
         assert isinstance(result, PatternLibrary)
         assert "p1" in result.patterns
 
@@ -416,7 +411,7 @@ class TestAgentMemoryReturnValues:
         """Test retrieve_memory returns MemoryEntry or None."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="test",
             category="test",
@@ -424,13 +419,13 @@ class TestAgentMemoryReturnValues:
             context={},
         )
         memory.store_memory(entry)
-        
+
         # Existing entry
         result = memory.retrieve_memory("test")
         assert isinstance(result, MemoryEntry) or result is None
         if result:
             assert result.memory_id == "test"
-        
+
         # Non-existent entry
         result = memory.retrieve_memory("nonexistent")
         assert result is None
@@ -439,7 +434,7 @@ class TestAgentMemoryReturnValues:
         """Test retrieve_memory returns entry with all fields."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="complete",
             category="test",
@@ -451,9 +446,9 @@ class TestAgentMemoryReturnValues:
             related_memories=["mem1"],
         )
         memory.store_memory(entry)
-        
+
         result = memory.retrieve_memory("complete")
-        
+
         assert result is not None
         assert result.memory_id == "complete"
         assert result.category == "test"
@@ -470,7 +465,7 @@ class TestAgentMemoryReturnValues:
         """Test search returns list."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store memories
         for i in range(5):
             entry = MemoryEntry(
@@ -480,9 +475,9 @@ class TestAgentMemoryReturnValues:
                 context={},
             )
             memory.store_memory(entry)
-        
+
         result = memory.search(query="Decision")
-        
+
         assert isinstance(result, list) or result is None
         if result:
             for item in result:
@@ -492,17 +487,17 @@ class TestAgentMemoryReturnValues:
         """Test store_memory behavior (should not raise)."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="test",
             category="test",
             content="content",
             context={},
         )
-        
+
         # Should complete without raising
         memory.store_memory(entry)
-        
+
         # Verify it was stored
         retrieved = memory.retrieve_memory("test")
         assert retrieved is not None
@@ -519,9 +514,9 @@ class TestSerializationOutputValidation:
             content="test",
             context={"type": "string", "number": 123, "boolean": True, "null": None},
         )
-        
+
         data = entry.to_dict()
-        
+
         # Verify types in serialized form
         assert isinstance(data["memory_id"], str)
         assert isinstance(data["category"], str)
@@ -537,9 +532,9 @@ class TestSerializationOutputValidation:
             task_description="test",
             start_time=datetime.now(UTC).isoformat(),
         )
-        
+
         data = frame.to_dict()
-        
+
         # Timestamps should be ISO format strings
         assert isinstance(data["start_time"], str)
         assert "T" in data["start_time"]  # ISO format contains T
@@ -557,10 +552,10 @@ class TestSerializationOutputValidation:
             examples=[{"example": "test"}],
             tags=["tag1"],
         )
-        
+
         data = lib.to_dict()
         pattern = data["patterns"]["format_test"]
-        
+
         # Verify structure
         assert isinstance(pattern["pattern_id"], str)
         assert isinstance(pattern["name"], str)
@@ -580,9 +575,9 @@ class TestOutputValidationEdgeCases:
             content="",
             context={},
         )
-        
+
         data = entry.to_dict()
-        
+
         assert data["memory_id"] == ""
         assert data["category"] == ""
         assert data["content"] == ""
@@ -595,9 +590,9 @@ class TestOutputValidationEdgeCases:
             content='Content with "quotes" and \'apostrophes\'',
             context={"key": "value\nwith\nnewlines"},
         )
-        
+
         data = entry.to_dict()
-        
+
         assert data["memory_id"] == "id_with_special!@#$%"
         assert '"quotes"' in data["content"]
         assert "apostrophes" in data["content"]
@@ -610,9 +605,9 @@ class TestOutputValidationEdgeCases:
             content="Unicode: 你好世界 🌍 مرحبا בעולם",
             context={"emoji": "🎉🎊🎈"},
         )
-        
+
         data = entry.to_dict()
-        
+
         assert "你好世界" in data["content"]
         assert "🌍" in data["content"]
         assert "🎉" in data["context"]["emoji"]
@@ -620,7 +615,7 @@ class TestOutputValidationEdgeCases:
     def test_list_return_values_preserve_order(self) -> None:
         """Test list return values preserve insertion order."""
         lib = PatternLibrary()
-        
+
         for i in range(10):
             lib.add_pattern(
                 pattern_id=f"pattern_{i}",
@@ -632,9 +627,9 @@ class TestOutputValidationEdgeCases:
                 examples=[],
                 tags=[],
             )
-        
+
         data = lib.to_dict()
-        
+
         # Patterns should be in dictionary
         pattern_ids = list(data["patterns"].keys())
         # Verify we got all patterns

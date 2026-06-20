@@ -14,16 +14,11 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-import sqlite3
-import tempfile
-from typing import Any
-
-import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
+    MemoryEntry,
     PatternLibrary,
 )
 
@@ -35,7 +30,7 @@ class TestMemoryContextFrameIntegration:
         """Test context frame can reference stored memories."""
         db_path = tmp_path / "integration.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store memories
         memory_ids = []
         for i in range(5):
@@ -47,7 +42,7 @@ class TestMemoryContextFrameIntegration:
             )
             memory.store_memory(entry)
             memory_ids.append(f"memory_{i}")
-        
+
         # Create context frame that references these memories
         frame = ContextFrame(
             frame_id="frame_1",
@@ -55,9 +50,9 @@ class TestMemoryContextFrameIntegration:
             start_time=datetime.now(UTC).isoformat(),
             active_memories=memory_ids,
         )
-        
+
         assert len(frame.active_memories) == 5
-        
+
         # Verify all referenced memories exist
         for mem_id in frame.active_memories:
             retrieved = memory.retrieve_memory(mem_id)
@@ -67,7 +62,7 @@ class TestMemoryContextFrameIntegration:
         """Test multiple context frames can reference same memory."""
         db_path = tmp_path / "shared_memory.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store shared memory
         shared_entry = MemoryEntry(
             memory_id="shared_memory",
@@ -77,7 +72,7 @@ class TestMemoryContextFrameIntegration:
             confidence=0.95,
         )
         memory.store_memory(shared_entry)
-        
+
         # Create multiple frames referencing it
         frames = []
         for i in range(3):
@@ -88,7 +83,7 @@ class TestMemoryContextFrameIntegration:
                 active_memories=["shared_memory"],
             )
             frames.append(frame)
-        
+
         # All frames reference the same memory
         for frame in frames:
             retrieved = memory.retrieve_memory("shared_memory")
@@ -99,7 +94,7 @@ class TestMemoryContextFrameIntegration:
         """Test context frame tracks memory access patterns."""
         db_path = tmp_path / "access_pattern.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store memory
         entry = MemoryEntry(
             memory_id="accessed_memory",
@@ -109,13 +104,13 @@ class TestMemoryContextFrameIntegration:
             access_count=0,
         )
         memory.store_memory(entry)
-        
+
         # Create frames that track access
         for i in range(5):
             # "Access" the memory by retrieving it
             retrieved = memory.retrieve_memory("accessed_memory")
             assert retrieved is not None
-            
+
             # Simulate tracking in context frame
             frame = ContextFrame(
                 frame_id=f"frame_{i}",
@@ -123,12 +118,12 @@ class TestMemoryContextFrameIntegration:
                 start_time=datetime.now(UTC).isoformat(),
                 active_memories=["accessed_memory"],
             )
-            
+
             # Update access count
             entry.access_count += 1
             entry.last_accessed = datetime.now(UTC).isoformat()
             memory.store_memory(entry)
-        
+
         # Verify final access count
         final = memory.retrieve_memory("accessed_memory")
         assert final is not None
@@ -142,7 +137,7 @@ class TestPatternLibraryMemoryIntegration:
         """Test patterns can reference and recommend stored memories."""
         db_path = tmp_path / "pattern_memory.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store memory about successful approach
         success_memory = MemoryEntry(
             memory_id="success_pattern",
@@ -152,7 +147,7 @@ class TestPatternLibraryMemoryIntegration:
             confidence=0.95,
         )
         memory.store_memory(success_memory)
-        
+
         # Create pattern that references this
         lib = PatternLibrary()
         lib.add_pattern(
@@ -168,7 +163,7 @@ class TestPatternLibraryMemoryIntegration:
             examples=[{"situation": "success_pattern"}],
             tags=["proven"],
         )
-        
+
         # Pattern should reference stored memory
         pattern = lib.patterns["working_pattern"]
         assert "success_pattern" in str(pattern["recommended_actions"])
@@ -177,7 +172,7 @@ class TestPatternLibraryMemoryIntegration:
         """Test pattern usage updates related memory confidence."""
         db_path = tmp_path / "pattern_confidence.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store pattern memory
         pattern_memory = MemoryEntry(
             memory_id="pattern_memory_1",
@@ -187,7 +182,7 @@ class TestPatternLibraryMemoryIntegration:
             confidence=0.5,
         )
         memory.store_memory(pattern_memory)
-        
+
         # Create pattern
         lib = PatternLibrary()
         lib.add_pattern(
@@ -200,18 +195,18 @@ class TestPatternLibraryMemoryIntegration:
             examples=[],
             tags=["test"],
         )
-        
+
         # Record successful pattern usage
         for _ in range(10):
             lib.record_pattern_usage("pattern1", success=True)
-        
+
         # Pattern success rate increases
         assert lib.patterns["pattern1"]["success_rate"] > 0.7
-        
+
         # Update related memory confidence
         pattern_memory.confidence = 0.85
         memory.store_memory(pattern_memory)
-        
+
         # Verify memory was updated
         retrieved = memory.retrieve_memory("pattern_memory_1")
         assert retrieved is not None
@@ -221,7 +216,7 @@ class TestPatternLibraryMemoryIntegration:
         """Test pattern matching considers multiple stored memories."""
         db_path = tmp_path / "multi_pattern.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store related memories
         for i in range(5):
             entry = MemoryEntry(
@@ -231,7 +226,7 @@ class TestPatternLibraryMemoryIntegration:
                 context={"related": True},
             )
             memory.store_memory(entry)
-        
+
         # Create pattern that could match these contexts
         lib = PatternLibrary()
         lib.add_pattern(
@@ -244,7 +239,7 @@ class TestPatternLibraryMemoryIntegration:
             examples=[],
             tags=["context"],
         )
-        
+
         # Match pattern
         matches = lib.match_patterns("This is related context information")
         assert len(matches) > 0
@@ -259,10 +254,10 @@ class TestMemoryDataMigration:
         """Test migrating memories from one database to another."""
         old_db = tmp_path / "old.db"
         new_db = tmp_path / "new.db"
-        
+
         # Store memories in old database
         old_memory = AgentMemory(db_path=old_db)
-        
+
         entries = []
         for i in range(10):
             entry = MemoryEntry(
@@ -274,18 +269,18 @@ class TestMemoryDataMigration:
             )
             entries.append(entry)
             old_memory.store_memory(entry)
-        
+
         # Migrate to new database
         new_memory = AgentMemory(db_path=new_db)
-        
+
         for entry in entries:
             new_memory.store_memory(entry)
-        
+
         # Verify all memories migrated
         for i in range(10):
             old_retrieved = old_memory.retrieve_memory(f"migrated_{i}")
             new_retrieved = new_memory.retrieve_memory(f"migrated_{i}")
-            
+
             assert old_retrieved is not None
             assert new_retrieved is not None
             assert old_retrieved.content == new_retrieved.content
@@ -294,10 +289,10 @@ class TestMemoryDataMigration:
         """Test backup and restore of memories."""
         original_db = tmp_path / "original.db"
         backup_db = tmp_path / "backup.db"
-        
+
         # Create original memories
         original = AgentMemory(db_path=original_db)
-        
+
         original_entries = []
         for i in range(5):
             entry = MemoryEntry(
@@ -308,14 +303,14 @@ class TestMemoryDataMigration:
             )
             original_entries.append(entry)
             original.store_memory(entry)
-        
+
         # Backup by copying database
         import shutil
         shutil.copy(original_db, backup_db)
-        
+
         # Restore from backup
         restored = AgentMemory(db_path=backup_db)
-        
+
         # Verify all data restored
         for i in range(5):
             retrieved = restored.retrieve_memory(f"backup_{i}")
@@ -326,7 +321,7 @@ class TestMemoryDataMigration:
         """Test memory consolidation and pruning."""
         db_path = tmp_path / "consolidate.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store memories with varying confidence
         for i in range(20):
             confidence = 1.0 - (i * 0.05)  # Decreasing confidence
@@ -339,14 +334,14 @@ class TestMemoryDataMigration:
                 last_accessed=(datetime.now(UTC) - timedelta(days=i)).isoformat(),
             )
             memory.store_memory(entry)
-        
+
         # Get all memories
         all_memories = []
         for i in range(20):
             retrieved = memory.retrieve_memory(f"consolidate_{i}")
             if retrieved:
                 all_memories.append(retrieved)
-        
+
         # Verify we have memories with varying confidence
         confidences = [m.confidence for m in all_memories]
         assert max(confidences) > 0.8
@@ -356,7 +351,7 @@ class TestMemoryDataMigration:
         """Test deduplication of identical memories."""
         db_path = tmp_path / "dedupe.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store duplicate content with different IDs
         for i in range(5):
             entry = MemoryEntry(
@@ -366,7 +361,7 @@ class TestMemoryDataMigration:
                 context={"duplicate": True},
             )
             memory.store_memory(entry)
-        
+
         # All should be stored
         for i in range(5):
             retrieved = memory.retrieve_memory(f"duplicate_{i}")
@@ -376,7 +371,7 @@ class TestMemoryDataMigration:
         """Test memory versioning and updates."""
         db_path = tmp_path / "versions.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Create initial memory
         entry = MemoryEntry(
             memory_id="versioned",
@@ -385,17 +380,17 @@ class TestMemoryDataMigration:
             context={"version": 1},
         )
         memory.store_memory(entry)
-        
+
         # Update to version 2
         entry.content = "Version 2"
         entry.context["version"] = 2
         memory.store_memory(entry)
-        
+
         # Update to version 3
         entry.content = "Version 3"
         entry.context["version"] = 3
         memory.store_memory(entry)
-        
+
         # Final version should be 3
         retrieved = memory.retrieve_memory("versioned")
         assert retrieved is not None
@@ -410,7 +405,7 @@ class TestBatchOperationsAtomicity:
         """Test batch storage maintains atomicity."""
         db_path = tmp_path / "batch.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Prepare batch
         batch_entries = []
         for i in range(10):
@@ -421,11 +416,11 @@ class TestBatchOperationsAtomicity:
                 context={"batch_id": "batch_001"},
             )
             batch_entries.append(entry)
-        
+
         # Store all
         for entry in batch_entries:
             memory.store_memory(entry)
-        
+
         # Verify all stored
         for i in range(10):
             retrieved = memory.retrieve_memory(f"batch_{i}")
@@ -435,7 +430,7 @@ class TestBatchOperationsAtomicity:
         """Test consistency when batch has partial failures."""
         db_path = tmp_path / "partial_batch.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         batch_entries = []
         for i in range(10):
             entry = MemoryEntry(
@@ -445,15 +440,15 @@ class TestBatchOperationsAtomicity:
                 context={},
             )
             batch_entries.append(entry)
-        
+
         # Store first half
         for entry in batch_entries[:5]:
             memory.store_memory(entry)
-        
+
         # Store second half
         for entry in batch_entries[5:]:
             memory.store_memory(entry)
-        
+
         # All should be accessible
         for i in range(10):
             retrieved = memory.retrieve_memory(f"partial_{i}")
@@ -469,9 +464,9 @@ class TestCrossComponentDataConsistency:
         """Test consistency across Memory, ContextFrame, and PatternLibrary."""
         db_path = tmp_path / "cross_component.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Create interconnected data
-        
+
         # 1. Store memories
         memory1 = MemoryEntry(
             memory_id="cross_1",
@@ -480,7 +475,7 @@ class TestCrossComponentDataConsistency:
             context={"component": "memory"},
         )
         memory.store_memory(memory1)
-        
+
         # 2. Create context frame referencing memory
         frame = ContextFrame(
             frame_id="cross_frame",
@@ -488,7 +483,7 @@ class TestCrossComponentDataConsistency:
             start_time=datetime.now(UTC).isoformat(),
             active_memories=["cross_1"],
         )
-        
+
         # 3. Create pattern that matches situation
         lib = PatternLibrary()
         lib.add_pattern(
@@ -501,16 +496,16 @@ class TestCrossComponentDataConsistency:
             examples=[],
             tags=["cross_component"],
         )
-        
+
         # 4. Verify cross-component consistency
-        
+
         # Memory is accessible
         retrieved_memory = memory.retrieve_memory("cross_1")
         assert retrieved_memory is not None
-        
+
         # Frame references the memory
         assert "cross_1" in frame.active_memories
-        
+
         # Pattern can match and recommend the memory
         matches = lib.match_patterns("Important fact")
         assert len(matches) > 0
@@ -519,7 +514,7 @@ class TestCrossComponentDataConsistency:
         """Test system-wide data integrity."""
         db_path = tmp_path / "integrity.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store complex data structure
         complex_entry = MemoryEntry(
             memory_id="complex",
@@ -537,13 +532,13 @@ class TestCrossComponentDataConsistency:
             tags=["complex", "nested", "deep"],
             related_memories=["memory_1", "memory_2", "memory_3"],
         )
-        
+
         memory.store_memory(complex_entry)
-        
+
         # Retrieve and verify integrity
         retrieved = memory.retrieve_memory("complex")
         assert retrieved is not None
-        
+
         # Check all nested data preserved
         assert retrieved.context["nested"]["deep"]["value"] == "important"
         assert retrieved.context["list"] == [1, 2, 3, 4, 5]
@@ -558,7 +553,7 @@ class TestDataIntegrityEdgeCases:
         """Test memory with circular references."""
         db_path = tmp_path / "circular.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Create memories that reference each other
         entry1 = MemoryEntry(
             memory_id="mem_a",
@@ -567,7 +562,7 @@ class TestDataIntegrityEdgeCases:
             context={},
             related_memories=["mem_b"],
         )
-        
+
         entry2 = MemoryEntry(
             memory_id="mem_b",
             category="test",
@@ -575,14 +570,14 @@ class TestDataIntegrityEdgeCases:
             context={},
             related_memories=["mem_a"],
         )
-        
+
         memory.store_memory(entry1)
         memory.store_memory(entry2)
-        
+
         # Both should be retrievable
         retrieved_a = memory.retrieve_memory("mem_a")
         retrieved_b = memory.retrieve_memory("mem_b")
-        
+
         assert retrieved_a is not None
         assert retrieved_b is not None
         assert "mem_b" in retrieved_a.related_memories
@@ -594,7 +589,7 @@ class TestDataIntegrityEdgeCases:
         """Test reference integrity when related memory is deleted."""
         db_path = tmp_path / "reference_integrity.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Create related memories
         entry1 = MemoryEntry(
             memory_id="parent",
@@ -603,17 +598,17 @@ class TestDataIntegrityEdgeCases:
             context={},
             related_memories=["child"],
         )
-        
+
         entry2 = MemoryEntry(
             memory_id="child",
             category="child",
             content="Child memory",
             context={},
         )
-        
+
         memory.store_memory(entry1)
         memory.store_memory(entry2)
-        
+
         # Parent still references child even if child is updated
         updated_child = MemoryEntry(
             memory_id="child",
@@ -622,7 +617,7 @@ class TestDataIntegrityEdgeCases:
             context={"updated": True},
         )
         memory.store_memory(updated_child)
-        
+
         # Parent reference should still be valid
         parent = memory.retrieve_memory("parent")
         assert "child" in parent.related_memories

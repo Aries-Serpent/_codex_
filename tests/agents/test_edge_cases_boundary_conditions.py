@@ -14,16 +14,11 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
-import sqlite3
-import tempfile
-from typing import Any
-
-import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
+    MemoryEntry,
     PatternLibrary,
 )
 
@@ -536,7 +531,7 @@ class TestAgentMemoryStorageBoundaries:
         """Test storing memory with max confidence."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="max_conf",
             category="test",
@@ -545,7 +540,7 @@ class TestAgentMemoryStorageBoundaries:
             confidence=1.0,
         )
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("max_conf")
         assert retrieved is not None
         assert retrieved.confidence == 1.0
@@ -554,7 +549,7 @@ class TestAgentMemoryStorageBoundaries:
         """Test storing memory with min confidence."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="min_conf",
             category="test",
@@ -563,7 +558,7 @@ class TestAgentMemoryStorageBoundaries:
             confidence=0.0,
         )
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("min_conf")
         assert retrieved is not None
         assert retrieved.confidence == 0.0
@@ -572,7 +567,7 @@ class TestAgentMemoryStorageBoundaries:
         """Test storing memory with large access count."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="large_access",
             category="test",
@@ -581,7 +576,7 @@ class TestAgentMemoryStorageBoundaries:
             access_count=999999,
         )
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("large_access")
         assert retrieved is not None
         assert retrieved.access_count == 999999
@@ -590,7 +585,7 @@ class TestAgentMemoryStorageBoundaries:
         """Test storing many memories."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Store 1000 memories
         for i in range(1000):
             entry = MemoryEntry(
@@ -600,7 +595,7 @@ class TestAgentMemoryStorageBoundaries:
                 context={"index": i},
             )
             memory.store_memory(entry)
-        
+
         # Verify retrieval
         retrieved = memory.retrieve_memory("memory_500")
         assert retrieved is not None
@@ -610,7 +605,7 @@ class TestAgentMemoryStorageBoundaries:
         """Test retrieving non-existent memory."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         retrieved = memory.retrieve_memory("nonexistent")
         assert retrieved is None
 

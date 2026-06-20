@@ -151,7 +151,7 @@ Security-critical:   ~50 modules
 |----------|-------|--------|
 | **CodeQL Findings** | 10/10 | ✅ SECURE |
 | **Dependency CVEs** | 10/10 | ✅ SECURE |
-| **Secrets Detection** | 10/10 | ✅ SECURE |
+| **Secrets Detection** | 10/10 | ✅ SECURE | <!-- pragma: allowlist secret -->
 | **Suppression Quality** | 9/10 | ✅ EXCELLENT |
 | **OVERALL** | **9.2/10** | ✅ PRODUCTION READY |
 

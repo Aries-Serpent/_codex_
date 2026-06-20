@@ -334,9 +334,23 @@ Campaign ETA: 2026-06-23T13:00Z
 - **Campaign:** Phase 7D Production Readiness (96.5/100 → 100/100)
 - **Status:** ✅ Track 1 Execution Complete
 
-**For Blocking Issues:** Contact @mbaetiong  
-**Discussion Reference:** #4872  
-**Campaign Dashboard:** `.codex/PHASE_7D_CAMPAIGN_DASHBOARD.md`
+## Appendix A: Detailed Coverage by Module (Top 20 Modules by Size)
+
+| Module | Total Lines | Executed | Coverage % |
+|--------|-------------|----------|-----------|
+| src/training/engine_hf_trainer.py | 605 | 63 | 10.41% |
+| src/training/functional_training.py | 535 | 53 | 9.91% |
+| src/training/trainer.py | 457 | 56 | 12.25% |
+| src/training/checkpoint_manager.py | 229 | 20 | 8.73% |
+| src/training/checkpointing.py | 186 | 28 | 15.05% |
+| src/training/data_utils.py | 171 | 26 | 15.20% |
+| src/codex/config/schemas.py | 168 | 34 | 20.24% |
+| agents/advanced_physics_calculators.py | 159 | 28 | 17.61% |
+| src/services/workflow/types.py | 138 | 7 | 5.07% |
+| src/zendesk/json_generator.py | 137 | 35 | 25.55% |
+| src/services/github/client.py | 211 | 46 | 21.81% |
+| src/tokenization/cli.py | 275 | 35 | 12.73% | <!-- pragma: allowlist secret -->
+| src/training/config.py | 153 | 29 | 18.95% |
 
 ---
 

@@ -40,7 +40,7 @@ frame = memory.start_task("Fix security vulnerability")
 
 # Store a decision
 memory_id = memory.store_decision(
-    task_id="task_001",
+    task_id="task_001",  # pragma: allowlist secret
     decision="Use input validation",
     rationale="Prevents injection attacks",
     context={"file": "auth.py"}
@@ -48,7 +48,7 @@ memory_id = memory.store_decision(
 
 # Retrieve similar contexts
 contexts = memory.retrieve_similar_context(
-    task_description="security input validation",
+    task_description="security input validation",  # pragma: allowlist secret
     limit=5
 )
 
@@ -66,9 +66,9 @@ memory.complete_task(success=True, summary="Fixed vulnerability")
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
-| `start_task` | `task_description: str` | `ContextFrame` | Start a new task context |
-| `store_decision` | `task_id, decision, rationale, context` | `str` | Store decision, returns memory ID |
-| `retrieve_similar_context` | `task_description, limit=5` | `List[Dict]` | Find relevant past contexts |
+| `start_task` | `task_description: str` | `ContextFrame` | Start a new task context | <!-- pragma: allowlist secret -->
+| `store_decision` | `task_id, decision, rationale, context` | `str` | Store decision, returns memory ID | <!-- pragma: allowlist secret -->
+| `retrieve_similar_context` | `task_description, limit=5` | `List[Dict]` | Find relevant past contexts | <!-- pragma: allowlist secret -->
 | `get_pattern_library` | None | `List[Dict]` | Get all decision patterns |
 | `invalidate_stale_contexts` | `age_days=30` | `int` | Clean old contexts, returns count |
 | `record_decision` | `decision, alternatives, confidence, reasoning` | `MemoryEntry` | Record decision with alternatives |
