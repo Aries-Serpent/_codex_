@@ -1,0 +1,10 @@
+{
+  "dashboards_generated": 3,
+  "dashboards": [
+    "system.json",
+    "application.json",
+    "kubernetes.json"
+  ],
+  "total_panels": 13,
+  "output_directory": "/home/runner/work/_codex_/_codex_/manifests/monitoring/grafana/dashboards"
+}

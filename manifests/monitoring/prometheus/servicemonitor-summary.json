@@ -1,0 +1,17 @@
+{
+  "servicemonitors_generated": 5,
+  "servicemonitors": [
+    "app-service-http",
+    "app-service-prometheus",
+    "kubernetes-apiserver",
+    "kubernetes-kubelet",
+    "custom-app-metrics"
+  ],
+  "scrape_targets": [
+    "prometheus",
+    "kubernetes-apiservers",
+    "kubernetes-nodes",
+    "kubernetes-pods"
+  ],
+  "output_directory": "/home/runner/work/_codex_/_codex_/manifests/monitoring/prometheus/servicemonitors"
+}

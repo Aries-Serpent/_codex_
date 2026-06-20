@@ -1,0 +1,180 @@
+groups:
+- interval: 30s
+  name: application_alerts
+  rules:
+  - alert: HighErrorRate
+    annotations:
+      description: Error rate is {{ $value | humanizePercentage }} for {{ $labels.service
+        }}
+      summary: High error rate detected
+    expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+    for: 5m
+    labels:
+      component: application
+      severity: critical
+  - alert: HighLatency
+    annotations:
+      description: P95 latency is {{ $value }}s for {{ $labels.service }}
+      summary: High latency detected
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+      > 1.0
+    for: 5m
+    labels:
+      component: application
+      severity: warning
+  - alert: ServiceDown
+    annotations:
+      description: Service {{ $labels.kubernetes_pod_name }} in {{ $labels.kubernetes_namespace
+        }} is down
+      summary: Service is down
+    expr: up{job='kubernetes-pods'} == 0
+    for: 1m
+    labels:
+      component: application
+      severity: critical
+- interval: 30s
+  name: resource_alerts
+  rules:
+  - alert: HighCPUUsage
+    annotations:
+      description: Container {{ $labels.container_name }} CPU usage is {{ $value |
+        humanizePercentage }}
+      summary: High CPU usage
+    expr: rate(container_cpu_usage_seconds_total[5m]) > 0.85
+    for: 5m
+    labels:
+      component: infrastructure
+      severity: warning
+  - alert: HighMemoryUsage
+    annotations:
+      description: Container {{ $labels.container_name }} memory usage is {{ $value
+        | humanizePercentage }}
+      summary: High memory usage
+    expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+    for: 5m
+    labels:
+      component: infrastructure
+      severity: warning
+  - alert: DiskSpaceRunningOut
+    annotations:
+      description: Disk {{ $labels.device }} on {{ $labels.node }} has only {{ $value
+        | humanizePercentage }} free space
+      summary: Disk space running out
+    expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.15
+    for: 5m
+    labels:
+      component: infrastructure
+      severity: critical
+  - alert: HighNetworkTraffic
+    annotations:
+      description: Network traffic on {{ $labels.device }} is {{ $value | humanize
+        }}B/s
+      summary: High network traffic
+    expr: rate(node_network_transmit_bytes_total[5m]) > 100000000
+    for: 5m
+    labels:
+      component: infrastructure
+      severity: warning
+- interval: 30s
+  name: kubernetes_alerts
+  rules:
+  - alert: PodCrashLooping
+    annotations:
+      description: Pod {{ $labels.pod }} in {{ $labels.namespace }} is crash looping
+      summary: Pod crash looping
+    expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.1
+    for: 5m
+    labels:
+      component: kubernetes
+      severity: critical
+  - alert: NodeNotReady
+    annotations:
+      description: Node {{ $labels.node }} is not in Ready state
+      summary: Node not ready
+    expr: kube_node_status_condition{condition='Ready',status='true'} == 0
+    for: 5m
+    labels:
+      component: kubernetes
+      severity: critical
+  - alert: PVCAlmostFull
+    annotations:
+      description: PVC {{ $labels.persistentvolumeclaim }} is {{ $value | humanizePercentage
+        }} full
+      summary: PVC almost full
+    expr: (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes)
+      > 0.85
+    for: 5m
+    labels:
+      component: kubernetes
+      severity: warning
+  - alert: StatefulSetReplicasMismatch
+    annotations:
+      description: StatefulSet {{ $labels.statefulset }} has {{ $value }} replicas
+        not ready
+      summary: StatefulSet replicas mismatch
+    expr: kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas
+    for: 5m
+    labels:
+      component: kubernetes
+      severity: warning
+- interval: 30s
+  name: alertmanager_alerts
+  rules:
+  - alert: AlertmanagerConfigReloadFailed
+    annotations:
+      description: AlertManager failed to reload configuration
+      summary: AlertManager config reload failed
+    expr: alertmanager_config_last_reload_successful == 0
+    for: 5m
+    labels:
+      component: monitoring
+      severity: critical
+  - alert: AlertmanagerFilingNotifications
+    annotations:
+      description: AlertManager is failing to send {{ $value | humanizePercentage
+        }} of notifications
+      summary: AlertManager filing notifications
+    expr: rate(alertmanager_notifications_failed_total[5m]) > 0.01
+    for: 5m
+    labels:
+      component: monitoring
+      severity: warning
+- interval: 30s
+  name: http_requests
+  rules:
+  - expr: rate(http_requests_total[1m])
+    record: http:requests:rate1m
+  - expr: rate(http_requests_total[5m])
+    record: http:requests:rate5m
+  - expr: rate(http_requests_total{status=~"5.."}[5m])
+    record: http:errors:rate5m
+  - expr: histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))
+    record: http:latency:p50
+  - expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+    record: http:latency:p95
+  - expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))
+    record: http:latency:p99
+- interval: 30s
+  name: cpu_memory
+  rules:
+  - expr: 1 - rate(node_cpu_seconds_total{mode='idle'}[5m])
+    record: node:cpu:usage
+  - expr: 1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+    record: node:memory:usage
+  - expr: rate(container_cpu_usage_seconds_total[5m])
+    record: container:cpu:usage
+  - expr: container_memory_usage_bytes / container_spec_memory_limit_bytes
+    record: container:memory:usage
+- interval: 30s
+  name: disk_network
+  rules:
+  - expr: 1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)
+    record: node:disk:usage
+  - expr: rate(node_disk_reads_completed_total[5m])
+    record: node:disk:iops_read
+  - expr: rate(node_disk_writes_completed_total[5m])
+    record: node:disk:iops_write
+  - expr: rate(node_network_receive_bytes_total[5m])
+    record: node:network:in
+  - expr: rate(node_network_transmit_bytes_total[5m])
+    record: node:network:out

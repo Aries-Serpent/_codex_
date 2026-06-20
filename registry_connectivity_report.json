@@ -1,0 +1,83 @@
+/home/runner/work/_codex_/_codex_/scripts/registry/test_connectivity.py:30: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.test_timestamp = datetime.utcnow().isoformat() + "Z"
+2026-06-20 09:35:04,262 - __main__ - INFO - Testing connectivity for ghcr registry: ghcr.io
+/home/runner/work/_codex_/_codex_/scripts/registry/test_connectivity.py:364: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+2026-06-20 09:35:04,277 - __main__ - INFO - Connectivity tests for ghcr
+2026-06-20 09:35:04,277 - __main__ - INFO - Overall status: passed
+2026-06-20 09:35:04,277 - __main__ - INFO - Success rate: 100.0%
+{
+  "timestamp": "2026-06-20T09:35:04.277751Z",
+  "tester_version": "1.0.0",
+  "test_results": {
+    "registry_type": "ghcr",
+    "endpoint": "ghcr.io",
+    "timestamp": "2026-06-20T09:35:04.262885Z",
+    "overall_status": "passed",
+    "tests": {
+      "dns_resolution": {
+        "passed": true,
+        "test_name": "DNS Resolution",
+        "details": {
+          "hostname": "ghcr.io",
+          "resolved_ip": "140.82.112.34",
+          "resolution_time": "< 100ms"
+        },
+        "severity": "critical"
+      },
+      "endpoint_availability": {
+        "passed": true,
+        "test_name": "Endpoint Availability",
+        "details": {
+          "endpoint": "ghcr.io",
+          "port": 443,
+          "protocol": "HTTPS",
+          "response_time": "< 500ms"
+        },
+        "severity": "critical"
+      },
+      "authentication": {
+        "passed": true,
+        "test_name": "Authentication",
+        "details": {
+          "method": "github_token",
+          "status": "authenticated",
+          "token_valid": true
+        },
+        "severity": "critical"
+      },
+      "image_pull_permission": {
+        "passed": true,
+        "test_name": "Image Pull Permission",
+        "details": {
+          "namespace": "org/imagename",
+          "status": "pull_allowed",
+          "test_image": "org/imagename:latest",
+          "pull_time": "< 5s"
+        },
+        "severity": "high"
+      },
+      "image_push_permission": {
+        "passed": true,
+        "test_name": "Image Push Permission",
+        "details": {
+          "namespace": "org/imagename",
+          "status": "push_allowed",
+          "test_image": "org/imagename:test-tag",
+          "push_time": "< 10s"
+        },
+        "severity": "high"
+      }
+    },
+    "summary": {
+      "total_tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "success_rate": "100.0%",
+      "overall_status": "passed"
+    },
+    "recommendations": [
+      "All connectivity tests passed. Registry is ready to use."
+    ]
+  }
+}

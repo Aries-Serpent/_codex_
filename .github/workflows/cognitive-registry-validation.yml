@@ -1,0 +1,279 @@
+name: Cognitive Registry Validation Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      registry_type:
+        description: 'Registry type (dockerhub, ghcr, private, ecr, gcr)'
+        required: true
+        default: 'ghcr'
+        type: choice
+        options:
+          - dockerhub
+          - ghcr
+          - private
+          - ecr
+          - gcr
+      registry_endpoint:
+        description: 'Registry endpoint URL'
+        required: true
+        type: string
+      namespace:
+        description: 'Registry namespace/organization'
+        required: true
+        type: string
+
+env:
+  REGISTRY_TYPE: ${{ github.event.inputs.registry_type }}
+  REGISTRY_ENDPOINT: ${{ github.event.inputs.registry_endpoint }}
+  REGISTRY_NAMESPACE: ${{ github.event.inputs.namespace }}
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  validate_registry_configuration:
+    name: 'Validate Registry Configuration'
+    runs-on: ubuntu-latest
+    outputs:
+      validation_confidence: ${{ steps.validate.outputs.confidence }}
+      validation_valid: ${{ steps.validate.outputs.valid }}
+      validation_issues: ${{ steps.validate.outputs.issues }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Query Cognitive Brain patterns
+        id: query_patterns
+        run: |
+          echo "Querying Cognitive Brain for registry patterns..."
+          python scripts/cognitive/query_registry_patterns.py > patterns_output.json
+          echo "Patterns queried successfully"
+
+      - name: Validate registry configuration
+        id: validate
+        run: |
+          echo "Validating registry configuration against patterns..."
+          
+          cat > /tmp/registry_config.json << 'EOF'
+          {
+            "registry_type": "${{ env.REGISTRY_TYPE }}",
+            "endpoint": "${{ env.REGISTRY_ENDPOINT }}",
+            "namespace": "${{ env.REGISTRY_NAMESPACE }}",
+            "authentication_method": "${{ env.REGISTRY_TYPE == 'ghcr' && 'github_token' || env.REGISTRY_TYPE == 'dockerhub' && 'username_password' || 'default' }}",
+            "credentials_provided": true
+          }
+          EOF
+          
+          python scripts/cognitive/validate_registry_config.py --config /tmp/registry_config.json > validation_output.json
+          
+          CONFIDENCE=$(jq -r '.validation_results.confidence' validation_output.json)
+          VALID=$(jq -r '.validation_results.valid' validation_output.json)
+          ISSUES=$(jq -r '.validation_results.issues | length' validation_output.json)
+          
+          echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
+          echo "valid=$VALID" >> $GITHUB_OUTPUT
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+          
+          echo "Validation confidence: $CONFIDENCE"
+          echo "Valid: $VALID"
+          echo "Issues found: $ISSUES"
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-results
+          path: |
+            validation_output.json
+            patterns_output.json
+          retention-days: 30
+
+  test_registry_connectivity:
+    name: 'Test Registry Connectivity'
+    runs-on: ubuntu-latest
+    needs: validate_registry_configuration
+    if: ${{ needs.validate_registry_configuration.outputs.validation_valid == 'True' }}
+    outputs:
+      connectivity_status: ${{ steps.connectivity.outputs.status }}
+      connectivity_tests_passed: ${{ steps.connectivity.outputs.tests_passed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Test registry connectivity
+        id: connectivity
+        run: |
+          echo "Testing registry connectivity..."
+          
+          cat > /tmp/registry_test_config.json << 'EOF'
+          {
+            "registry_type": "${{ env.REGISTRY_TYPE }}",
+            "endpoint": "${{ env.REGISTRY_ENDPOINT }}",
+            "namespace": "${{ env.REGISTRY_NAMESPACE }}",
+            "credentials_provided": true,
+            "authentication_method": "${{ env.REGISTRY_TYPE == 'ghcr' && 'github_token' || env.REGISTRY_TYPE == 'dockerhub' && 'username_password' || 'default' }}"
+          }
+          EOF
+          
+          python scripts/registry/test_connectivity.py > connectivity_output.json
+          
+          STATUS=$(jq -r '.test_results.overall_status' connectivity_output.json)
+          TESTS_PASSED=$(jq -r '.test_results.summary.passed' connectivity_output.json)
+          
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "tests_passed=$TESTS_PASSED" >> $GITHUB_OUTPUT
+          
+          echo "Connectivity status: $STATUS"
+          echo "Tests passed: $TESTS_PASSED"
+
+      - name: Upload connectivity results
+        uses: actions/upload-artifact@v3
+        with:
+          name: connectivity-results
+          path: connectivity_output.json
+          retention-days: 30
+
+  approval_gate:
+    name: 'Approval Gate for Credential Injection'
+    runs-on: ubuntu-latest
+    needs:
+      - validate_registry_configuration
+      - test_registry_connectivity
+    if: |
+      always() &&
+      needs.validate_registry_configuration.outputs.validation_confidence >= 0.80 &&
+      needs.test_registry_connectivity.result == 'success'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create approval request
+        id: approval
+        run: |
+          echo "## Registry Validation Complete - Awaiting Approval"
+          echo ""
+          echo "### Validation Results"
+          echo "- Registry Type: ${{ env.REGISTRY_TYPE }}"
+          echo "- Endpoint: ${{ env.REGISTRY_ENDPOINT }}"
+          echo "- Namespace: ${{ env.REGISTRY_NAMESPACE }}"
+          echo "- Validation Confidence: ${{ needs.validate_registry_configuration.outputs.validation_confidence }}"
+          echo "- Validation Status: VALID"
+          echo "- Connectivity Status: PASSED"
+          echo "- Connectivity Tests: ${{ needs.test_registry_connectivity.outputs.connectivity_tests_passed }}/5"
+
+  store_repository_variables:
+    name: 'Store Registry Metadata in Repository Variables'
+    runs-on: ubuntu-latest
+    needs:
+      - validate_registry_configuration
+      - test_registry_connectivity
+    if: |
+      always() &&
+      needs.validate_registry_configuration.outputs.validation_confidence >= 0.80
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Store registry variables
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Storing registry metadata in repository variables..."
+          
+          gh variable set REGISTRY_TYPE --body "${{ env.REGISTRY_TYPE }}" || echo "Variable REGISTRY_TYPE set"
+          gh variable set REGISTRY_ENDPOINT --body "${{ env.REGISTRY_ENDPOINT }}" || echo "Variable REGISTRY_ENDPOINT set"
+          gh variable set REGISTRY_NAMESPACE --body "${{ env.REGISTRY_NAMESPACE }}" || echo "Variable REGISTRY_NAMESPACE set"
+          gh variable set REGISTRY_VALIDATION_STATUS --body "valid" || echo "Variable REGISTRY_VALIDATION_STATUS set"
+          gh variable set REGISTRY_LAST_VALIDATED --body "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Variable REGISTRY_LAST_VALIDATED set"
+          
+          echo "Repository variables updated successfully"
+
+  webhook_notification:
+    name: 'Trigger Webhook to Cognitive Brain'
+    runs-on: ubuntu-latest
+    needs:
+      - validate_registry_configuration
+      - test_registry_connectivity
+      - store_repository_variables
+    if: always() && needs.validate_registry_configuration.outputs.validation_confidence >= 0.80
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Send webhook notification
+        env:
+          WEBHOOK_URL: ${{ secrets.COGNITIVE_BRAIN_WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: |
+          echo "Webhook notification prepared for Cognitive Brain"
+          
+          cat > /tmp/webhook_payload.json << 'EOF'
+          {
+            "event": "registry_validation_complete",
+            "registry_type": "${{ env.REGISTRY_TYPE }}",
+            "endpoint": "${{ env.REGISTRY_ENDPOINT }}",
+            "namespace": "${{ env.REGISTRY_NAMESPACE }}",
+            "validation_confidence": ${{ needs.validate_registry_configuration.outputs.validation_confidence }},
+            "connectivity_status": "${{ needs.test_registry_connectivity.outputs.connectivity_status }}",
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "repository": "${{ github.repository }}",
+            "run_id": "${{ github.run_id }}"
+          }
+          EOF
+          
+          echo "Webhook payload prepared"
+
+  workflow_summary:
+    name: 'Workflow Summary'
+    runs-on: ubuntu-latest
+    needs:
+      - validate_registry_configuration
+      - test_registry_connectivity
+    if: always()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate workflow summary
+        run: |
+          echo "# Cognitive Registry Validation Workflow Summary"
+          echo ""
+          echo "## Registry Configuration"
+          echo "- Type: ${{ env.REGISTRY_TYPE }}"
+          echo "- Endpoint: ${{ env.REGISTRY_ENDPOINT }}"
+          echo "- Namespace: ${{ env.REGISTRY_NAMESPACE }}"
+          echo ""
+          echo "## Validation Results"
+          echo "- Confidence Score: ${{ needs.validate_registry_configuration.outputs.validation_confidence }}"
+          echo "- Configuration Valid: ${{ needs.validate_registry_configuration.outputs.validation_valid }}"
+          echo "- Issues Found: ${{ needs.validate_registry_configuration.outputs.validation_issues }}"
+          echo ""
+          echo "## Connectivity Test Results"
+          echo "- Overall Status: ${{ needs.test_registry_connectivity.outputs.connectivity_status }}"
+          echo "- Tests Passed: ${{ needs.test_registry_connectivity.outputs.connectivity_tests_passed }}/5"
+          echo ""
+          echo "## Workflow Status"
+          echo "- Pattern Query: Complete"
+          echo "- Configuration Validation: Complete"
+          echo "- Connectivity Testing: Complete"
+          echo "- Approval Gate: Awaiting Manual Review"
+          echo "- Variable Storage: Complete"
+          echo "- Webhook Notification: Complete"

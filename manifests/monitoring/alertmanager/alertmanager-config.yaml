@@ -1,0 +1,71 @@
+alertmanager:
+  global:
+    pagerduty_url: https://events.pagerduty.com/v2/enqueue
+    resolve_timeout: 5m
+    slack_api_url: ''
+  inhibit_rules:
+  - equal:
+    - alertname
+    - cluster
+    - service
+    source_match:
+      severity: warning
+    target_match:
+      severity: info
+  - equal:
+    - alertname
+    - cluster
+    - service
+    source_match:
+      severity: critical
+    target_match:
+      severity: warning
+  receivers:
+  - email_configs:
+    - auth_password: password
+      auth_username: alertmanager@example.com
+      from: alertmanager@example.com
+      smarthost: smtp.example.com:587
+      to: alerts@example.com
+    name: default
+  - name: slack-warnings
+    slack_configs:
+    - channel: '#alerts-warning'
+      text: '{{ range .Alerts }}{{ .Annotations.description }}
+
+        {{ end }}'
+      title: 'Alert: {{ .GroupLabels.alertname }}'
+  - name: pagerduty
+    pagerduty_configs:
+    - description: '{{ .GroupLabels.alertname }}'
+      details:
+        cluster: '{{ .GroupLabels.cluster }}'
+        severity: '{{ .GroupLabels.severity }}'
+      service_key: YOUR_PAGERDUTY_SERVICE_KEY
+  route:
+    group_by:
+    - alertname
+    - cluster
+    - service
+    group_interval: 10s
+    group_wait: 10s
+    receiver: default
+    repeat_interval: 12h
+    routes:
+    - continue: true
+      group_wait: 0s
+      match:
+        severity: critical
+      receiver: pagerduty
+      repeat_interval: 4h
+    - group_wait: 30s
+      match:
+        severity: warning
+      receiver: slack-warnings
+      repeat_interval: 24h
+    - match:
+        severity: info
+      receiver: default
+      repeat_interval: 7d
+  templates:
+  - /etc/alertmanager/templates/*.tmpl

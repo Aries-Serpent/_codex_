@@ -1,0 +1,247 @@
+{
+  "timestamp": "2026-06-20T09:32:41.165878Z",
+  "source": "Cognitive Brain Pattern Repository",
+  "total_registries": 5,
+  "patterns": {
+    "dockerhub": {
+      "name": "DockerHub",
+      "registry_type": "dockerhub",
+      "endpoint": "docker.io",
+      "best_practices": [
+        "Use official Docker images when available",
+        "Pin image tags to specific versions (avoid 'latest')",
+        "Implement rate limiting awareness (100 2026-06-20 09:32:41,166 - __main__ - INFO - Patterns saved to /home/runner/work/_codex_/_codex_/registry_patterns.json
+2026-06-20 09:32:41,166 - __main__ - INFO - Querying all registry patterns from Cognitive Brain
+2026-06-20 09:32:41,166 - __main__ - INFO - Successfully queried 5 registry patterns
+2026-06-20 09:32:41,166 - __main__ - INFO - Average confidence score: 0.92
+2026-06-20 09:32:41,166 - __main__ - INFO - Total best practices documented: 31
+{
+  "timestamp": "2026-06-20T09:32:41.165878Z",
+  "source": "Cognitive Brain Pattern Repository",
+  "total_registries": 5,
+  "patterns": {
+    "dockerhub": {
+      "name": "DockerHub",
+      "registry_type": "dockerhub",
+      "endpoint": "docker.io",
+      "best_practices": [
+        "Use official Docker images when available",
+        "Pin image tags to specific versions (avoid 'latest')",
+        "Implement rate limiting awareness (100 pulls/6h for anonymous)",
+        "Use pull-through cache registry for mirrors",
+        "Authenticate even for public images to increase rate limits",
+        "Use image scanning for vulnerability detection"
+      ],
+      "authentication": {
+        "method": "username_password",
+        "env_variables": [
+          "DOCKER_USERNAME",
+          "DOCKER_PASSWORD"
+        ],
+        "credentials_location": "~/.docker/config.json"
+      },
+      "namespace_structure": "username/imagename",
+      "typical_pull_policy": "IfNotPresent",
+      "retention_policy": "Keep last 50 tags per repository",
+      "performance_notes": "Rate limiting applies; consider caching",
+      "security_concerns": [
+        "Image signing recommended (Docker Content Trust)",
+        "Scan images for vulnerabilities before use",
+        "Monitor for supply chain attacks"
+      ],
+      "cost_model": "Free with rate limits; Docker Desktop Pro for unlimited",
+      "confidence_score": 0.95,
+      "evidence_sources": [
+        "Docker official documentation",
+        "Docker rate limiting analysis",
+        "Community best practices"
+      ]
+    },
+    "ghcr": {
+      "name": "GitHub Container Registry",
+      "registry_type": "ghcr",
+      "endpoint": "ghcr.io",
+      "best_practices": [
+        "Use GitHub token with packages:write scope",
+        "Organize images by organization/repository",
+        "Leverage GitHub Actions for CI/CD integration",
+        "Use container signing with Sigstore",
+        "Implement image vulnerability scanning via GHAS",
+        "Configure SBOM generation for compliance"
+      ],
+      "authentication": {
+        "method": "github_token",
+        "env_variables": [
+          "GITHUB_TOKEN",
+          "GITHUB_USER"
+        ],
+        "token_scopes": [
+          "packages:write",
+          "packages:read"
+        ],
+        "credentials_location": "$HOME/.docker/config.json"
+      },
+      "namespace_structure": "ghcr.io/owner/imagename",
+      "typical_pull_policy": "IfNotPresent",
+      "retention_policy": "Automatic cleanup of untagged images after 90 days",
+      "performance_notes": "No rate limits for authenticated requests",
+      "security_concerns": [
+        "Token rotation recommended quarterly",
+        "GHAS scanning enabled by default",
+        "Supply chain security integration available"
+      ],
+      "cost_model": "Free for public repositories; included in GitHub",
+      "confidence_score": 0.98,
+      "evidence_sources": [
+        "GitHub official documentation",
+        "GitHub Actions ecosystem integration",
+        "Container security best practices"
+      ]
+    },
+    "private": {
+      "name": "Private Docker Registry",
+      "registry_type": "private",
+      "endpoint": "registry.company.internal",
+      "best_practices": [
+        "Use TLS/HTTPS for all registry communication",
+        "Implement authentication via HTTP Basic or OAuth2",
+        "Configure storage backend (filesystem, S3, GCS)",
+        "Enable garbage collection for unused layers",
+        "Implement backup and disaster recovery",
+        "Use reverse proxy (nginx) for load balancing",
+        "Monitor registry metrics and performance"
+      ],
+      "authentication": {
+        "method": "http_basic_or_oauth2",
+        "env_variables": [
+          "REGISTRY_USERNAME",
+          "REGISTRY_PASSWORD"
+        ],
+        "credentials_location": "$HOME/.docker/config.json"
+      },
+      "namespace_structure": "registry.company.internal/team/imagename",
+      "typical_pull_policy": "IfNotPresent",
+      "retention_policy": "User-configurable; recommend keeping 30 days",
+      "performance_notes": "Performance depends on infrastructure",
+      "security_concerns": [
+        "TLS certificate management critical",
+        "Network segmentation recommended",
+        "Access control lists per namespace",
+        "Regular security audits"
+      ],
+      "cost_model": "Infrastructure-dependent; self-hosted costs",
+      "confidence_score": 0.85,
+      "evidence_sources": [
+        "Docker registry documentation",
+        "Enterprise deployment patterns",
+        "Security best practices"
+      ]
+    },
+    "ecr": {
+      "name": "Amazon Elastic Container Registry",
+      "registry_type": "ecr",
+      "endpoint": "account.dkr.ecr.region.amazonaws.com",
+      "best_practices": [
+        "Use IAM roles for authentication (not access keys)",
+        "Implement ECR image scanning for vulnerabilities",
+        "Use lifecycle policies for image retention",
+        "Enable cross-account access for multi-account setups",
+        "Integrate with CloudTrail for audit logging",
+        "Use image replication across regions"
+      ],
+      "authentication": {
+        "method": "iam_role_or_access_key",
+        "env_variables": [
+          "AWS_ACCOUNT_ID",
+          "AWS_REGION"
+        ],
+        "credentials_location": "~/.aws/credentials or IAM role"
+      },
+      "namespace_structure": "account.dkr.ecr.region.amazonaws.com/imagename",
+      "typical_pull_policy": "IfNotPresent",
+      "retention_policy": "Configurable lifecycle policies (e.g., keep 50 tags)",
+      "performance_notes": "High performance within AWS; cross-region available",
+      "security_concerns": [
+        "IAM policy least privilege required",
+        "Image scanning enabled for vulnerabilities",
+        "KMS encryption for at-rest data",
+        "VPC endpoints for private access"
+      ],
+      "cost_model": "$0.07 per GB stored; data transfer costs apply",
+      "confidence_score": 0.92,
+      "evidence_sources": [
+        "AWS official documentation",
+        "AWS best practices guide",
+        "Container security patterns"
+      ]
+    },
+    "gcr": {
+      "name": "Google Container Registry",
+      "registry_type": "gcr",
+      "endpoint": "gcr.io",
+      "best_practices": [
+        "Use service accounts for authentication",
+        "Implement Artifact Analysis for vulnerability scanning",
+        "Use Binary Authorization for deployment policies",
+        "Enable image signing with KMS",
+        "Organize with multi-regional bucket settings",
+        "Implement VPC Service Controls"
+      ],
+      "authentication": {
+        "method": "service_account_key",
+        "env_variables": [
+          "GOOGLE_APPLICATION_CREDENTIALS"
+        ],
+        "credentials_location": "$HOME/.docker/config.json"
+      },
+      "namespace_structure": "gcr.io/project-id/imagename",
+      "typical_pull_policy": "IfNotPresent",
+      "retention_policy": "Configurable; recommend 60 day retention",
+      "performance_notes": "Integrated with Google Cloud ecosystem",
+      "security_concerns": [
+        "Service account rotation recommended",
+        "Binary Authorization enforced",
+        "VPC Service Controls for network isolation",
+        "Cloud Audit Logs integration"
+      ],
+      "cost_model": "Free storage; egress charges apply",
+      "confidence_score": 0.9,
+      "evidence_sources": [
+        "Google Cloud documentation",
+        "GCP security best practices",
+        "Container orchestration patterns"
+      ]
+    }
+  },
+  "summary": {
+    "average_confidence": 0.92,
+    "registry_types_covered": [
+      "dockerhub",
+      "ghcr",
+      "private",
+      "ecr",
+      "gcr"
+    ],
+    "total_best_practices": 31,
+    "security_recommendations": [
+      "Access control lists",
+      "Binary Authorization enforced",
+      "Cloud Audit Logs",
+      "GHAS scanning enabled",
+      "IAM policy least",
+      "Image scanning enabled",
+      "Image signing recommended",
+      "KMS encryption for",
+      "Monitor for supply",
+      "Network segmentation recommended",
+      "Regular security audits",
+      "Scan images for",
+      "Service account rotation",
+      "Supply chain security",
+      "TLS certificate management",
+      "Token rotation recommended",
+      "VPC Service Controls",
+      "VPC endpoints for"
+    ]
+  }
+}
