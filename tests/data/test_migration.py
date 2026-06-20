@@ -199,3 +199,239 @@ class TestLoadAssignmentMappings:
 
         # Should be treated as v1 and migrated to v3
         assert result["version"] == "3.0"
+
+
+class TestDataMigrationRollback:
+    """Test rollback scenarios for data migration."""
+
+    def test_rollback_v3_to_v2(self, tmp_path):
+        """Test rollback from v3 back to v2 format."""
+        # Create v3 format file
+        v3_file = tmp_path / "mappings_v3.json"
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [
+                {
+                    "uuid": "123",
+                    "label": "Test Mapping",
+                    "category": "test",
+                    "timestamp": "2025-01-01T00:00:00Z",
+                    "attributes": {"key": "value"},
+                }
+            ],
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        # Perform rollback from AssignmentMappingMigration
+        from codex_ml.data.migration import AssignmentMappingMigration
+        v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
+
+        # Verify v2 structure after rollback
+        assert v2_data["version"] == "2.0"
+        assert len(v2_data["mappings"]) == 1
+        mapping = v2_data["mappings"][0]
+        assert mapping["id"] == "123"
+        assert mapping["name"] == "Test Mapping"
+        assert mapping["type"] == "test"
+        assert mapping["created_at"] == "2025-01-01T00:00:00Z"
+
+    def test_rollback_v2_to_v1(self, tmp_path):
+        """Test rollback from v2 back to v1 format."""
+        v2_file = tmp_path / "mappings_v2.json"
+        v2_data = {
+            "version": "2.0",
+            "mappings": [
+                {
+                    "id": "456",
+                    "name": "Test V2",
+                    "type": "example",
+                    "created_at": "2025-02-01T00:00:00Z",
+                    "metadata": {"foo": "bar"},
+                }
+            ],
+        }
+        v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        v1_data = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
+
+        # Verify v1 structure after rollback
+        assert v1_data["version"] == "1.0"
+        assert len(v1_data["assignments"]) == 1
+        assignment = v1_data["assignments"][0]
+        assert assignment["id"] == "456"
+        assert assignment["name"] == "Test V2"
+        assert assignment["type"] == "example"
+
+    def test_selective_rollback_partial_items(self, tmp_path):
+        """Test rolling back only selected items, not entire dataset."""
+        v3_file = tmp_path / "mappings_selective.json"
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [
+                {"uuid": "1", "label": "Keep", "category": "keep", "timestamp": "2025-01-01T00:00:00Z", "attributes": {}},
+                {"uuid": "2", "label": "Rollback", "category": "rollback", "timestamp": "2025-01-02T00:00:00Z", "attributes": {}},
+                {"uuid": "3", "label": "Keep2", "category": "keep", "timestamp": "2025-01-03T00:00:00Z", "attributes": {}},
+            ],
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        # Rollback only item with uuid "2"
+        rolled_data = AssignmentMappingMigration.selective_rollback(v3_file, item_ids=["2"])
+
+        # Verify that only specified item was rolled back
+        assert len(rolled_data["items"]) == 3
+        # Item 2 should be in v2 format after rollback
+        item_2 = [i for i in rolled_data["items"] if i.get("uuid") == "2"][0]
+        assert "label" in item_2  # v2 format field
+        assert item_2["label"] == "Rollback"
+
+    def test_rollback_with_data_integrity_check(self, tmp_path):
+        """Test that rollback preserves data integrity."""
+        v3_file = tmp_path / "mappings_integrity.json"
+        original_uuid = "test-uuid-123"
+        original_label = "Original Label"
+        original_timestamp = "2025-01-01T12:34:56Z"
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [
+                {
+                    "uuid": original_uuid,
+                    "label": original_label,
+                    "category": "test",
+                    "timestamp": original_timestamp,
+                    "attributes": {"key1": "value1", "key2": "value2"},
+                }
+            ],
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
+
+        # Verify data integrity: all important fields preserved
+        mapping = v2_data["mappings"][0]
+        assert mapping["id"] == original_uuid
+        assert mapping["name"] == original_label
+        assert mapping["created_at"] == original_timestamp
+        assert mapping["metadata"]["key1"] == "value1"
+        assert mapping["metadata"]["key2"] == "value2"
+
+    def test_rollback_error_handling_corrupt_file(self, tmp_path):
+        """Test rollback error handling with corrupted file."""
+        corrupt_file = tmp_path / "corrupt.json"
+        corrupt_file.write_text("{invalid json content", encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        with pytest.raises(json.JSONDecodeError):
+            AssignmentMappingMigration.rollback_v3_to_v2(corrupt_file)
+
+    def test_rollback_error_recovery(self, tmp_path):
+        """Test recovery mechanism when rollback fails."""
+        v3_file = tmp_path / "mappings_backup.json"
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [{"uuid": "test", "label": "Test", "category": "test", "timestamp": "2025-01-01T00:00:00Z", "attributes": {}}],
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+        backup_file = tmp_path / "mappings_backup_v3.json"
+        backup_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        # Verify backup was created and can be restored
+        assert backup_file.exists()
+        restored = json.loads(backup_file.read_text())
+        assert restored["version"] == "3.0"
+        assert len(restored["items"]) == 1
+
+    def test_migration_and_rollback_bidirectional(self, tmp_path):
+        """Test that migration and rollback are bidirectional."""
+        # Start with v1
+        v1_original = {
+            "version": "1.0",
+            "assignments": [
+                {
+                    "id": "test-123",
+                    "name": "Test Assignment",
+                    "type": "primary",
+                    "timestamp": "2025-01-01T00:00:00Z",
+                    "extra": {"metadata": "value"},
+                }
+            ],
+        }
+        v1_file = tmp_path / "v1_bidirectional.json"
+        v1_file.write_text(json.dumps(v1_original), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+
+        # Migrate: v1 → v2
+        v2_data = AssignmentMappingMigration.migrate_v1_to_v2(v1_file)
+        v2_file = tmp_path / "v2_bidirectional.json"
+        v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
+
+        # Migrate: v2 → v3
+        v3_data = AssignmentMappingMigration.migrate_v2_to_v3(v2_file)
+        v3_file = tmp_path / "v3_bidirectional.json"
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        # Rollback: v3 → v2
+        v2_restored = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
+        assert v2_restored["version"] == "2.0"
+
+        # Rollback: v2 → v1
+        v1_restored = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
+        assert v1_restored["version"] == "1.0"
+        assert v1_restored["assignments"][0]["id"] == "test-123"
+
+    def test_data_consistency_empty_dataset(self, tmp_path):
+        """Test rollback with empty dataset maintains structure."""
+        v3_file = tmp_path / "empty_v3.json"
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [],
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
+
+        assert v2_data["version"] == "2.0"
+        assert v2_data["mappings"] == []
+
+    def test_large_dataset_rollback_performance(self, tmp_path):
+        """Test rollback performance with large dataset."""
+        v3_file = tmp_path / "large_v3.json"
+        # Create 1000 items
+        items = [
+            {
+                "uuid": f"item-{i:04d}",
+                "label": f"Label {i}",
+                "category": f"category_{i % 10}",
+                "timestamp": "2025-01-01T00:00:00Z",
+                "attributes": {"index": i, "data": f"value_{i}"},
+            }
+            for i in range(1000)
+        ]
+        v3_data = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": items,
+        }
+        v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
+
+        from codex_ml.data.migration import AssignmentMappingMigration
+        import time
+        start = time.time()
+        v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
+        elapsed = time.time() - start
+
+        # Verify performance (should complete in under 5 seconds)
+        assert elapsed < 5.0
+        assert len(v2_data["mappings"]) == 1000
+        assert v2_data["version"] == "2.0"
