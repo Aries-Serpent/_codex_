@@ -284,10 +284,15 @@ class TestDataMigrationRollback:
 
         # Verify that only specified item was rolled back
         assert len(rolled_data["items"]) == 3
-        # Item 2 should be in v2 format after rollback
-        item_2 = [i for i in rolled_data["items"] if i.get("uuid") == "2"][0]
-        assert "label" in item_2  # v2 format field
-        assert item_2["label"] == "Rollback"
+        # Item 2 should be in v2 format after rollback (uses "id" instead of "uuid")
+        item_2_v3 = [i for i in rolled_data["items"] if i.get("uuid") == "2"]
+        item_2_v2 = [i for i in rolled_data["items"] if i.get("id") == "2"]
+        # Should be in v2 format
+        assert len(item_2_v2) == 1
+        item_2 = item_2_v2[0]
+        assert "name" in item_2  # v2 format field
+        assert item_2["name"] == "Rollback"
+        assert item_2["id"] == "2"
 
     def test_rollback_with_data_integrity_check(self, tmp_path):
         """Test that rollback preserves data integrity."""
