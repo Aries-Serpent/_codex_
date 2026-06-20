@@ -1,21 +1,22 @@
-# Session Context — 2026-06-20T06:24:07Z
+# Session Context — 2026-06-20T06:32:17Z
 **Branch:** `copilot/explore-codebase-and-implement-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4755` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4744` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/cache-validation.yml** — `failure` on `main` (2026-06-20)
-- **.github/workflows/documentation-quality-check.yml** — `failure` on `main` (2026-06-20)
-- **.github/workflows/unified-deployment.yml** — `failure` on `main` (2026-06-20)
-- **.github/workflows/progressive-validation.yml** — `failure` on `main` (2026-06-20)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `main` (2026-06-20)
+- **.github/workflows/maturity-check.yml** — `failure` on `copilot/explore-codebase-and-implement-plan` (2026-06-20)
+- **.github/workflows/cache-validation.yml** — `failure` on `copilot/explore-codebase-and-implement-plan` (2026-06-20)
+- **.github/workflows/copilot-agent-session-done.yml** — `failure` on `copilot/explore-codebase-and-implement-plan` (2026-06-20)
+- **.github/workflows/copilot-automation.yml** — `failure` on `copilot/explore-codebase-and-implement-plan` (2026-06-20)
+- **.github/workflows/documentation-quality-check.yml** — `failure` on `copilot/explore-codebase-and-implement-plan` (2026-06-20)
 
 ## 📝 Recent Commits
+- `93f13281` Apply remaining changes — copilot-swe-agent[bot] (2026-06-20)
 - `902f2b90` Merge pull request #5022 from Aries-Serpent/copilot/campaign-implementation-plan — Statix (2026-06-20)
 - `a35683fb` docs: update CHANGELOG & AGENT_ACCOUNTABILITY_REPORT for PR review comment respo — copilot-swe-agent[bot] (2026-06-20)
 - `e71cc6d2` chore: reply to all review comments with resolving commit SHA d81b669 — copilot-swe-agent[bot] (2026-06-20)
@@ -23,7 +24,6 @@
 - `a29db173` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-20)
 - `e2b29e0f` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-20)
 - `22820512` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-06-20)
-- `046c0b09` Merge branch 'main' into copilot/campaign-implementation-plan — Statix (2026-06-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
