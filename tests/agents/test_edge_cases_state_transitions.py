@@ -12,21 +12,16 @@ Comprehensive state management testing for:
 
 from __future__ import annotations
 
+import sqlite3
+import threading
+import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-import sqlite3
-import tempfile
-import time
-from typing import Any
-from unittest.mock import patch, MagicMock
-import threading
-
-import pytest
 
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
+    MemoryEntry,
     PatternLibrary,
 )
 
@@ -43,11 +38,11 @@ class TestContextFrameStateTransitions:
             status="active",
         )
         assert frame.status == "active"
-        
+
         # Simulate completion
         frame.status = "completed"
         frame.end_time = datetime.now(UTC).isoformat()
-        
+
         assert frame.status == "completed"
         assert frame.end_time is not None
 
@@ -72,7 +67,7 @@ class TestContextFrameStateTransitions:
         )
         frame.status = "paused"
         assert frame.status == "paused"
-        
+
         frame.status = "active"
         assert frame.status == "active"
 
@@ -87,7 +82,7 @@ class TestContextFrameStateTransitions:
         frame.status = "failed"
         frame.end_time = datetime.now(UTC).isoformat()
         frame.errors_encountered += 1
-        
+
         assert frame.status == "failed"
         assert frame.errors_encountered == 1
 
@@ -102,7 +97,7 @@ class TestContextFrameStateTransitions:
         # Recovery transition
         frame.status = "completed"
         frame.errors_encountered = 1  # Still records the error
-        
+
         assert frame.status == "completed"
         assert frame.errors_encountered == 1
 
@@ -114,7 +109,7 @@ class TestContextFrameStateTransitions:
             start_time=datetime.now(UTC).isoformat(),
             status="active",
         )
-        
+
         transitions = [
             ("active", "paused"),
             ("paused", "active"),
@@ -124,7 +119,7 @@ class TestContextFrameStateTransitions:
             ("active", "failed"),
             ("failed", "completed"),
         ]
-        
+
         for from_state, to_state in transitions:
             frame.status = from_state
             frame.status = to_state
@@ -138,7 +133,7 @@ class TestMemoryEntryLifecycle:
         """Test memory entry creation and access updates."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="lifecycle_test",
             category="test",
@@ -147,15 +142,15 @@ class TestMemoryEntryLifecycle:
             access_count=0,
         )
         assert entry.access_count == 0
-        
+
         memory.store_memory(entry)
-        
+
         # Simulate access
         entry.access_count += 1
         entry.last_accessed = datetime.now(UTC).isoformat()
-        
+
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("lifecycle_test")
         assert retrieved is not None
         assert retrieved.access_count == 1
@@ -164,7 +159,7 @@ class TestMemoryEntryLifecycle:
         """Test memory entry confidence decrease over time."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="confidence_test",
             category="fact",
@@ -173,17 +168,17 @@ class TestMemoryEntryLifecycle:
             confidence=1.0,
         )
         memory.store_memory(entry)
-        
+
         # Simulate confidence degradation
         entry.confidence = 0.9
         entry.last_accessed = (datetime.now(UTC) - timedelta(days=30)).isoformat()
         memory.store_memory(entry)
-        
+
         # Simulate further degradation
         entry.confidence = 0.7
         entry.last_accessed = (datetime.now(UTC) - timedelta(days=90)).isoformat()
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("confidence_test")
         assert retrieved is not None
         assert retrieved.confidence == 0.7
@@ -192,7 +187,7 @@ class TestMemoryEntryLifecycle:
         """Test that memory entry updates are atomic."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="atomic_test",
             category="test",
@@ -200,15 +195,15 @@ class TestMemoryEntryLifecycle:
             context={},
         )
         memory.store_memory(entry)
-        
+
         # Update multiple fields
         entry.content = "updated"
         entry.confidence = 0.5
         entry.access_count = 5
         entry.tags = ["updated"]
-        
+
         memory.store_memory(entry)
-        
+
         retrieved = memory.retrieve_memory("atomic_test")
         assert retrieved is not None
         assert retrieved.content == "updated"
@@ -232,12 +227,12 @@ class TestPatternLibraryStateTransitions:
             examples=[],
             tags=["test"],
         )
-        
+
         assert lib.patterns["pattern1"]["usage_count"] == 0
-        
+
         lib.record_pattern_usage("pattern1", success=True)
         assert lib.patterns["pattern1"]["usage_count"] == 1
-        
+
         lib.record_pattern_usage("pattern1", success=True)
         assert lib.patterns["pattern1"]["usage_count"] == 2
 
@@ -254,9 +249,9 @@ class TestPatternLibraryStateTransitions:
             examples=[],
             tags=["test"],
         )
-        
+
         initial_rate = lib.patterns["pattern1"]["success_rate"]
-        
+
         # Record success
         lib.record_pattern_usage("pattern1", success=True)
         new_rate = lib.patterns["pattern1"]["success_rate"]
@@ -275,9 +270,9 @@ class TestPatternLibraryStateTransitions:
             examples=[],
             tags=["test"],
         )
-        
+
         initial_rate = lib.patterns["pattern1"]["success_rate"]
-        
+
         # Record failure
         lib.record_pattern_usage("pattern1", success=False)
         new_rate = lib.patterns["pattern1"]["success_rate"]
@@ -296,11 +291,11 @@ class TestPatternLibraryStateTransitions:
             examples=[],
             tags=["test"],
         )
-        
+
         # Record many successes
         for _ in range(100):
             lib.record_pattern_usage("pattern1", success=True)
-        
+
         final_rate = lib.patterns["pattern1"]["success_rate"]
         assert final_rate > 0.8  # Should be significantly higher
 
@@ -317,11 +312,11 @@ class TestPatternLibraryStateTransitions:
             examples=[],
             tags=["test"],
         )
-        
+
         # Record many failures
         for _ in range(100):
             lib.record_pattern_usage("pattern1", success=False)
-        
+
         final_rate = lib.patterns["pattern1"]["success_rate"]
         assert final_rate < 0.2  # Should be significantly lower
 
@@ -332,7 +327,7 @@ class TestConcurrentStateAccess:
     def test_concurrent_memory_writes(self, tmp_path: Path) -> None:
         """Test concurrent writes to memory."""
         db_path = tmp_path / "concurrent.db"
-        
+
         def write_memory(memory_id: str):
             memory = AgentMemory(db_path=db_path)
             entry = MemoryEntry(
@@ -342,19 +337,19 @@ class TestConcurrentStateAccess:
                 context={},
             )
             memory.store_memory(entry)
-        
+
         # Write from multiple threads
         threads = [
             threading.Thread(target=write_memory, args=(f"entry_{i}",))
             for i in range(10)
         ]
-        
+
         for t in threads:
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         # Verify all writes succeeded
         memory = AgentMemory(db_path=db_path)
         for i in range(10):
@@ -365,7 +360,7 @@ class TestConcurrentStateAccess:
         """Test concurrent reads from memory."""
         db_path = tmp_path / "concurrent_read.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Write initial data
         for i in range(10):
             entry = MemoryEntry(
@@ -375,26 +370,26 @@ class TestConcurrentStateAccess:
                 context={},
             )
             memory.store_memory(entry)
-        
+
         read_results = []
-        
+
         def read_memory(memory_id: str):
             memory = AgentMemory(db_path=db_path)
             entry = memory.retrieve_memory(memory_id)
             read_results.append(entry)
-        
+
         # Read from multiple threads
         threads = [
             threading.Thread(target=read_memory, args=(f"entry_{i}",))
             for i in range(10)
         ]
-        
+
         for t in threads:
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         # All reads should succeed
         assert len(read_results) == 10
         assert all(r is not None for r in read_results)
@@ -403,7 +398,7 @@ class TestConcurrentStateAccess:
         """Test read-write race conditions."""
         db_path = tmp_path / "race.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Initial entry
         entry = MemoryEntry(
             memory_id="race_test",
@@ -413,9 +408,9 @@ class TestConcurrentStateAccess:
             access_count=0,
         )
         memory.store_memory(entry)
-        
+
         results = {"reads": [], "writes": []}
-        
+
         def writer():
             for i in range(5):
                 entry = MemoryEntry(
@@ -428,24 +423,24 @@ class TestConcurrentStateAccess:
                 memory.store_memory(entry)
                 results["writes"].append(i)
                 time.sleep(0.001)
-        
+
         def reader():
             for _ in range(5):
                 entry = memory.retrieve_memory("race_test")
                 if entry:
                     results["reads"].append(entry.access_count)
                 time.sleep(0.001)
-        
+
         # Run concurrent read/write
         t_write = threading.Thread(target=writer)
         t_read = threading.Thread(target=reader)
-        
+
         t_write.start()
         t_read.start()
-        
+
         t_write.join()
         t_read.join()
-        
+
         # Verify we got reads
         assert len(results["reads"]) > 0
         assert len(results["writes"]) == 5
@@ -462,15 +457,15 @@ class TestIncompleteStateRecovery:
             start_time=datetime.now(UTC).isoformat(),
             status="active",
         )
-        
+
         # Transition to paused
         frame.status = "paused"
         frame.end_time = datetime.now(UTC).isoformat()
-        
+
         # Recover by resuming
         frame.status = "active"
         frame.end_time = None
-        
+
         assert frame.status == "active"
         assert frame.end_time is None
 
@@ -483,11 +478,11 @@ class TestIncompleteStateRecovery:
             status="failed",
             errors_encountered=3,
         )
-        
+
         # Clear errors and retry
         frame.status = "active"
         frame.errors_encountered = 0
-        
+
         assert frame.status == "active"
         assert frame.errors_encountered == 0
 
@@ -495,7 +490,7 @@ class TestIncompleteStateRecovery:
         """Test recovery from partial memory update."""
         db_path = tmp_path / "partial.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         entry = MemoryEntry(
             memory_id="partial_test",
             category="test",
@@ -503,12 +498,12 @@ class TestIncompleteStateRecovery:
             context={"version": 1},
         )
         memory.store_memory(entry)
-        
+
         # Simulate partial update
         entry.content = "updated"
         entry.context["version"] = 2
         memory.store_memory(entry)
-        
+
         # Verify recovery
         retrieved = memory.retrieve_memory("partial_test")
         assert retrieved is not None
@@ -531,11 +526,11 @@ class TestStateConsistencyVerification:
             tags=["tag1", "tag2"],
             related_memories=["mem1", "mem2"],
         )
-        
+
         # Roundtrip through dict
         data = entry.to_dict()
         reconstructed = MemoryEntry.from_dict(data)
-        
+
         # Verify consistency
         assert reconstructed.memory_id == entry.memory_id
         assert reconstructed.category == entry.category
@@ -561,9 +556,9 @@ class TestStateConsistencyVerification:
             decisions_made=[{"decision": "choice1"}],
             lessons_learned=["lesson1"],
         )
-        
+
         data = frame.to_dict()
-        
+
         # Verify all fields present
         assert data["frame_id"] == frame.frame_id
         assert data["task_description"] == frame.task_description
@@ -586,10 +581,10 @@ class TestStateConsistencyVerification:
             examples=[],
             tags=["test"],
         )
-        
+
         data = lib.to_dict()
         reconstructed = PatternLibrary.from_dict(data)
-        
+
         # Verify consistency
         assert "pattern1" in reconstructed.patterns
         assert reconstructed.patterns["pattern1"]["name"] == "Pattern 1"
@@ -603,23 +598,23 @@ class TestDatabaseStateConsistency:
         """Test database schema remains consistent."""
         db_path = tmp_path / "schema_test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Verify schema exists
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
-            
+
             # Check memories table
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='memories'"
             )
             assert cursor.fetchone() is not None
-            
+
             # Check context_frames table
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='context_frames'"
             )
             assert cursor.fetchone() is not None
-            
+
             # Check patterns table
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='patterns'"
@@ -630,7 +625,7 @@ class TestDatabaseStateConsistency:
         """Test database state consistency after many operations."""
         db_path = tmp_path / "state_test.db"
         memory = AgentMemory(db_path=db_path)
-        
+
         # Perform many operations
         for i in range(100):
             entry = MemoryEntry(
@@ -640,7 +635,7 @@ class TestDatabaseStateConsistency:
                 context={"index": i},
             )
             memory.store_memory(entry)
-        
+
         # Verify database is still consistent
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()

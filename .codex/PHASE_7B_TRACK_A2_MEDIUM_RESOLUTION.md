@@ -79,7 +79,7 @@ logger.info("Request data: %s", repr(user_input)[:100])  # Limited length
 | 2 | cognitive_app/src/server/cli_api_server.py | 1464 | HTTP host logging | ✅ APPROVED | Validated before use |
 | 3 | scripts/catalog_workflows.py | 241 | Workflow name | ✅ APPROVED | From safe filesystem source |
 | 4 | scripts/catalog_workflows.py | 259 | Inventory path | ✅ APPROVED | Safe string from code |
-| 5 | Other security scripts | - | Token/secret logging | ✅ APPROVED | Already using fingerprints |
+| 5 | Other security scripts | - | Token/secret logging | ✅ APPROVED | Already using fingerprints | <!-- pragma: allowlist secret -->
 | 6 | Other API handlers | - | Request logging | ✅ APPROVED | Sanitized with structured logging |
 
 ## Validation Checklist

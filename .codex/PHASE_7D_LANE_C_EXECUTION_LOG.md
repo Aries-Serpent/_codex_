@@ -13,7 +13,7 @@
 | Subtask | Start | Duration | Result |
 |---------|-------|----------|--------|
 | CodeQL Analysis | 2026-06-20 01:00Z | 15 min | ✅ PASS (1 HIGH archived) |
-| Secrets Detection | 2026-06-20 01:15Z | 10 min | ✅ PASS (0 exposed) |
+| Secrets Detection | 2026-06-20 01:15Z | 10 min | ✅ PASS (0 exposed) | <!-- pragma: allowlist secret -->
 | Dependency Scan | 2026-06-20 01:30Z | 12 min | ✅ PASS (0 critical) |
 | SAST Analysis | 2026-06-20 01:45Z | 10 min | ✅ PASS (All checks green) |
 | Regression Check | 2026-06-20 02:00Z | 8 min | ✅ PASS (No new vulns) |

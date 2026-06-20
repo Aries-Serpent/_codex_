@@ -8,13 +8,9 @@ Generated: 150+ parameterized edge case tests
 Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Any, Optional, List, Dict, Union
 import json
-import tempfile
-from pathlib import Path
 
+import pytest
 
 # ============================================================================
 # FIXTURES: Advanced Validation Edge Cases

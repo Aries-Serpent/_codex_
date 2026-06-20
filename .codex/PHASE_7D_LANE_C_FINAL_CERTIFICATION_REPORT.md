@@ -209,7 +209,7 @@ SECURITY CERTIFICATION SUMMARY
 Finding Category          │ Status      │ Confidence │ Risk Level
 ──────────────────────────┼─────────────┼────────────┼───────────
 CodeQL Analysis           │ ✅ PASS     │ 100%       │ MINIMAL
-Secrets Detection         │ ✅ PASS     │ 100%       │ NONE
+Secrets Detection         │ ✅ PASS     │ 100%       │ NONE  # pragma: allowlist secret
 Dependency Audit          │ ✅ PASS     │ 99%        │ MINIMAL
 SAST Analysis             │ ✅ PASS     │ 99%        │ MINIMAL
 Regression Check          │ ✅ PASS     │ 100%       │ NONE
@@ -354,7 +354,7 @@ OVERALL                   │ ✅ CERTIFIED │ 99.8%      │ MINIMAL
 | Gate | Requirement | Status | Result |
 |------|-------------|--------|--------|
 | **CodeQL** | 0 critical/high | ✅ Pass | 1 HIGH (archived) |
-| **Secrets** | 0 exposed | ✅ Pass | 0 exposed |
+| **Secrets** | 0 exposed | ✅ Pass | 0 exposed | <!-- pragma: allowlist secret -->
 | **Dependencies** | CVSS ≤7.0 | ✅ Pass | 0 high-severity |
 | **Code Quality** | Pass all checks | ✅ Pass | All passing |
 | **Compliance** | 100% adherence | ✅ Pass | 100% verified |
@@ -565,7 +565,7 @@ This certification is **BINDING** and authorizes immediate production deployment
 ### Security Score Breakdown
 ```
 CodeQL Analysis          : 10/10 ✅
-Secrets Detection        : 10/10 ✅
+Secrets Detection        : 10/10 ✅  # pragma: allowlist secret
 Dependency Audit         : 10/10 ✅
 SAST Analysis            : 10/10 ✅
 Regression Verification  : 10/10 ✅

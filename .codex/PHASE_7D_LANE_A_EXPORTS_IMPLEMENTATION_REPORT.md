@@ -28,7 +28,7 @@ All CLI-critical (P1) exports are now accessible from the main `codex_ml` packag
 | Export | Source Module | Status | CLI Impact |
 |--------|---------------|--------|-----------|
 | `set_reproducible` | `codex_ml.utils.repro` | ✅ ACTIVE | Reproducible training |
-| `load_tokenizer` | `codex_ml.tokenization` | ✅ ACTIVE | Tokenizer loading |
+| `load_tokenizer` | `codex_ml.tokenization` | ✅ ACTIVE | Tokenizer loading | <!-- pragma: allowlist secret -->
 | `set_seed` | `codex_ml.utils.repro` | ✅ ACTIVE | RNG seeding |
 
 #### Priority 2 (High) - 5/5 Implemented ✅
@@ -65,7 +65,7 @@ _EXPORT_MAP = {
     
     # P1 - CLI-Critical Exports (BLOCKING)
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
-    "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),
+    "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),  # pragma: allowlist secret
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
     
     # P2 - Core ML Functionality (High Priority)
@@ -97,7 +97,7 @@ _EXPORT_MAP = {
 **Result:** ✅ 11/11 PASS
 ```
 ✓ set_reproducible
-✓ load_tokenizer
+✓ load_tokenizer  # pragma: allowlist secret
 ✓ set_seed
 ✓ CheckpointManager
 ✓ load_checkpoint
@@ -159,7 +159,7 @@ The analysis report identified 15 exports, but 4 could not be implemented:
 
 | Export | Reason | Status |
 |--------|--------|--------|
-| `list_available_models` | Does not exist in `codex_ml.tokenization` | ❌ SKIPPED |
+| `list_available_models` | Does not exist in `codex_ml.tokenization` | ❌ SKIPPED | <!-- pragma: allowlist secret -->
 | `get_model` | `codex_ml.model_registry` has torch dependency (PyTorch not installed) | ⚠️ DEFERRED |
 | `register_model` | `codex_ml.model_registry` has torch dependency | ⚠️ DEFERRED |
 | `list_models` | `codex_ml.model_registry` has torch dependency | ⚠️ DEFERRED |
@@ -343,7 +343,7 @@ Modified: src/codex_ml/__init__.py
 feat(ml): export 11 new ML module functions from main package
 
 Implements Phase 7D Lane A export strategy:
-- P1 (CLI-critical): set_reproducible, load_tokenizer, set_seed
+- P1 (CLI-critical): set_reproducible, load_tokenizer, set_seed  # pragma: allowlist secret
 - P2 (High): checkpoint management functions (5 exports)
 - P3 (Medium): logging & telemetry functions (3 exports)
 

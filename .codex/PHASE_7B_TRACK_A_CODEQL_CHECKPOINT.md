@@ -82,18 +82,18 @@ Target completion: T+2h 15m | **Actual: T+1h 45m**
 **Remediation Strategy:**
 ```python
 # BEFORE (VULNERABLE):
-logger.info(f"Secret token: {api_token}")
-print(f"Password: {user_password}")
+logger.info(f"Secret token: {api_token}")  # pragma: allowlist secret
+print(f"Password: {user_password}")  # pragma: allowlist secret
 
 # AFTER (SECURE):
 # Option 1: Redaction with fingerprint
-logger.info(f"Secret token: {api_token[:8]}...{api_token[-4:]}")
+logger.info(f"Secret token: {api_token[:8]}...{api_token[-4:]}")  # pragma: allowlist secret
 
 # Option 2: Generic redaction
-logger.info("Secret token: [REDACTED]")
+logger.info("Secret token: [REDACTED]")  # pragma: allowlist secret
 
 # Option 3: Suppress with justification (test-only code)
-logger.info(f"Secret token: {api_token}")  # codeql[py/clear-text-logging-sensitive-data]
+logger.info(f"Secret token: {api_token}")  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 ```
 
 **Implementation Pattern:**
@@ -113,24 +113,24 @@ logger.info(f"Secret token: {api_token}")  # codeql[py/clear-text-logging-sensit
 **Remediation Strategy:**
 ```python
 # BEFORE (VULNERABLE):
-secrets_dict = {
-    "api_key": api_key,
-    "token": token
+secrets_dict = {  # pragma: allowlist secret
+    "api_key": api_key,  # pragma: allowlist secret
+    "token": token  # pragma: allowlist secret
 }
 
 # AFTER (SECURE - Option 1: Use environment):
-secrets = {
-    "api_key": os.environ.get("API_KEY"),
+secrets = {  # pragma: allowlist secret
+    "api_key": os.environ.get("API_KEY"),  # pragma: allowlist secret
 }
 
 # AFTER (SECURE - Option 2: Hash/fingerprint):
-secrets = {
-    "api_key_fingerprint": hashlib.sha256(api_key.encode()).hexdigest(),
+secrets = {  # pragma: allowlist secret
+    "api_key_fingerprint": hashlib.sha256(api_key.encode()).hexdigest(),  # pragma: allowlist secret
 }
 
 # AFTER (SECURE - Option 3: Mark as sanitized):
-secrets = {
-    "api_key": "[REDACTED FOR SECURITY]",
+secrets = {  # pragma: allowlist secret
+    "api_key": "[REDACTED FOR SECURITY]",  # pragma: allowlist secret
 }
 ```
 
@@ -251,22 +251,22 @@ Target completion: T+4h 0m
 ### Template 1: Secret Redaction (Logging)
 ```python
 # BEFORE:
-logger.info(f"Token: {token}")
+logger.info(f"Token: {token}")  # pragma: allowlist secret
 
 # AFTER:
-_token_fp = token[:8] + "..." if token else "[none]"
-logger.info("Token: %s", _token_fp)  # codeql[py/clear-text-logging-sensitive-data]
+_token_fp = token[:8] + "..." if token else "[none]"  # pragma: allowlist secret
+logger.info("Token: %s", _token_fp)  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 ```
 
 ### Template 2: Storage Pattern
 ```python
 # BEFORE:
-secrets = {"api_key": api_key, "token": token}
+secrets = {"api_key": api_key, "token": token}  # pragma: allowlist secret
 
 # AFTER (environment-based):
-secrets = {
-    "api_key": os.environ.get("API_KEY", "[not-set]"),
-    "token": os.environ.get("TOKEN", "[not-set]"),
+secrets = {  # pragma: allowlist secret
+    "api_key": os.environ.get("API_KEY", "[not-set]"),  # pragma: allowlist secret
+    "token": os.environ.get("TOKEN", "[not-set]"),  # pragma: allowlist secret
 }
 ```
 

@@ -452,7 +452,7 @@ class TestIntegrationErrorPropagation:
                 try:
                     result = tokenizer.encode(text)
                     results.append(result)
-                except Exception:
+                except Exception as _err:
                     results.append(None)
 
             # Should have processed all items

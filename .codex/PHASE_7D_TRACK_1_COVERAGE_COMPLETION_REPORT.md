@@ -366,7 +366,7 @@ According to Phase 7D execution plan, the following 209 pre-generated edge-case 
 | src/services/workflow/types.py | 138 | 7 | 5.07% |
 | src/zendesk/json_generator.py | 137 | 35 | 25.55% |
 | src/services/github/client.py | 211 | 46 | 21.81% |
-| src/tokenization/cli.py | 275 | 35 | 12.73% |
+| src/tokenization/cli.py | 275 | 35 | 12.73% | <!-- pragma: allowlist secret -->
 | src/training/config.py | 153 | 29 | 18.95% |
 
 ---

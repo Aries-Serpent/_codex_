@@ -347,7 +347,6 @@ class TestDataMigrationRollback:
         backup_file = tmp_path / "mappings_backup_v3.json"
         backup_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
-        from codex_ml.data.migration import AssignmentMappingMigration
         # Verify backup was created and can be restored
         assert backup_file.exists()
         restored = json.loads(backup_file.read_text())
@@ -430,8 +429,9 @@ class TestDataMigrationRollback:
         }
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
-        from codex_ml.data.migration import AssignmentMappingMigration
         import time
+
+        from codex_ml.data.migration import AssignmentMappingMigration
         start = time.time()
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
         elapsed = time.time() - start

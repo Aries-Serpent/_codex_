@@ -8,13 +8,11 @@ Generated: 200+ parameterized edge case tests
 Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
-import pytest
-from unittest.mock import Mock, MagicMock, patch, AsyncMock
-from typing import Any, Optional, List, Dict, Callable
-import tempfile
 import json
+import tempfile
 from pathlib import Path
 
+import pytest
 
 # ============================================================================
 # FIXTURES: Domain-Specific Edge Cases
@@ -22,7 +20,7 @@ from pathlib import Path
 
 class TrainingLoopFixtures:
     """Fixtures for training loop edge cases"""
-    
+
     # Training state boundaries
     LEARNING_RATES = [
         0.0,           # No learning
@@ -33,7 +31,7 @@ class TrainingLoopFixtures:
         10.0,          # Too high
         float('inf'),  # Infinity
     ]
-    
+
     # Batch sizes
     BATCH_SIZES = [
         0,             # No batch (edge case)
@@ -42,7 +40,7 @@ class TrainingLoopFixtures:
         256,           # Large batch
         1000000,       # Memory stress test
     ]
-    
+
     # Epoch counts
     EPOCH_COUNTS = [
         0,             # No epochs
@@ -50,7 +48,7 @@ class TrainingLoopFixtures:
         -1,            # Negative (invalid)
         1000000,       # Many epochs
     ]
-    
+
     # Loss values
     LOSS_VALUES = [
         0.0,           # Perfect
@@ -60,7 +58,7 @@ class TrainingLoopFixtures:
         1e-10,         # Vanishing loss
         1e10,          # Exploding loss
     ]
-    
+
     # Metrics edge cases
     METRIC_COMBINATIONS = [
         {},            # No metrics
@@ -105,7 +103,7 @@ class TestTrainingLoopBoundaries:
     def test_learning_rate_boundaries(self, learning_rate):
         """Test LR at various boundaries"""
         lr = learning_rate
-        
+
         # LR >= 0 validation
         if lr == 0.0:
             # Zero LR means no update
@@ -116,11 +114,11 @@ class TestTrainingLoopBoundaries:
         elif lr == float('inf'):
             # Inf LR should be flagged
             assert lr == float('inf')
-    
+
     def test_batch_size_boundaries(self, batch_size):
         """Test batch size edge cases"""
         bs = batch_size
-        
+
         if bs == 0:
             # Zero batch size invalid
             with pytest.raises((ValueError, AssertionError)):
@@ -129,11 +127,11 @@ class TestTrainingLoopBoundaries:
         else:
             # Valid batch size
             assert bs > 0 or bs < 0
-    
+
     def test_epoch_count_boundaries(self, epoch_count):
         """Test epoch count edge cases"""
         epochs = epoch_count
-        
+
         if epochs <= 0:
             # Invalid epoch count
             with pytest.raises((ValueError, AssertionError)):
@@ -141,11 +139,11 @@ class TestTrainingLoopBoundaries:
                     raise ValueError('epochs must be > 0')
         else:
             assert epochs > 0
-    
+
     def test_loss_value_boundaries(self, loss_value):
         """Test loss value edge cases"""
         loss = loss_value
-        
+
         if loss == float('inf'):
             assert loss == float('inf')
         elif loss == float('-inf'):
@@ -155,13 +153,13 @@ class TestTrainingLoopBoundaries:
             assert loss != loss
         elif loss >= 0:
             assert loss >= 0
-    
+
     def test_metric_dict_edge_cases(self, metric_dict):
         """Test metrics dictionary edge cases"""
         metrics = metric_dict
-        
+
         assert isinstance(metrics, dict)
-        
+
         if not metrics:
             # Empty metrics
             assert len(metrics) == 0
@@ -204,19 +202,19 @@ class TestTrainingLoopBoundaries:
                 self.base_lr = base_lr
                 self.decay_rate = decay_rate
                 self.step = 0
-            
+
             def get_lr(self):
                 if self.decay_rate == 0:
                     return self.base_lr
                 return self.base_lr / (1 + self.decay_rate * self.step)
-            
+
             def step_epoch(self):
                 self.step += 1
-        
+
         # Test with zero decay
         scheduler = LRScheduler(0.1, 0.0)
         assert scheduler.get_lr() == 0.1
-        
+
         # Test with decay
         scheduler = LRScheduler(0.1, 0.01)
         lr1 = scheduler.get_lr()
@@ -236,11 +234,11 @@ class TestCheckpointingEdgeCases:
         """Test creating checkpoint with empty state"""
         checkpoint = {}
         assert len(checkpoint) == 0
-        
+
         # Serialize empty checkpoint
         json_str = json.dumps(checkpoint)
         assert json_str == '{}'
-        
+
         # Deserialize
         loaded = json.loads(json_str)
         assert loaded == {}
@@ -248,11 +246,11 @@ class TestCheckpointingEdgeCases:
     def test_large_checkpoint_serialization(self):
         """Test serializing large checkpoint"""
         checkpoint = {f'key_{i}': f'value_{i}' * 100 for i in range(1000)}
-        
+
         # Serialize
         json_str = json.dumps(checkpoint)
         assert len(json_str) > 1000
-        
+
         # Deserialize
         loaded = json.loads(json_str)
         assert len(loaded) == 1000
@@ -267,10 +265,10 @@ class TestCheckpointingEdgeCases:
             'small': 1e-10,
             'large': 1e10,
         }
-        
+
         json_str = json.dumps(checkpoint)
         loaded = json.loads(json_str)
-        
+
         assert loaded['zero'] == 0
         assert loaded['negative'] == -1
         assert loaded['float'] == 1.5
@@ -280,30 +278,30 @@ class TestCheckpointingEdgeCases:
         class CheckpointManager:
             def __init__(self, checkpoint_path):
                 self.path = Path(checkpoint_path)
-            
+
             def save(self, state):
                 with open(self.path, 'w') as f:
                     json.dump(state, f)
-            
+
             def load(self):
                 with open(self.path, 'r') as f:
                     return json.load(f)
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = CheckpointManager(Path(tmpdir) / 'checkpoint.json')
-            
+
             # Save valid checkpoint
             state = {'epoch': 10, 'step': 100}
             manager.save(state)
-            
+
             # Load it back
             loaded = manager.load()
             assert loaded == state
-            
+
             # Corrupt checkpoint
             with open(manager.path, 'w') as f:
                 f.write('invalid json {')
-            
+
             # Try to load corrupted
             with pytest.raises(json.JSONDecodeError):
                 manager.load()
@@ -312,10 +310,10 @@ class TestCheckpointingEdgeCases:
     def test_checkpoint_size_scaling(self, state_size):
         """Test checkpoint operations at different sizes"""
         state = {f'key_{i}': i for i in range(state_size)}
-        
+
         json_str = json.dumps(state)
         loaded = json.loads(json_str)
-        
+
         assert len(loaded) == state_size
 
 
@@ -329,7 +327,7 @@ class TestMetricsWriterEdgeCases:
     def test_write_empty_metrics(self):
         """Test writing empty metrics"""
         metrics = {}
-        
+
         # Should handle gracefully
         assert len(metrics) == 0
         json_str = json.dumps(metrics)
@@ -338,7 +336,7 @@ class TestMetricsWriterEdgeCases:
     def test_write_nan_metrics(self):
         """Test writing NaN metrics - should handle specially"""
         metrics = {'loss': float('nan')}
-        
+
         # JSON doesn't support NaN natively
         with pytest.raises((ValueError, TypeError)):
             json.dumps(metrics)
@@ -346,7 +344,7 @@ class TestMetricsWriterEdgeCases:
     def test_write_infinite_metrics(self):
         """Test writing infinite metrics"""
         metrics = {'loss': float('inf'), 'accuracy': float('-inf')}
-        
+
         # JSON doesn't support Infinity natively
         with pytest.raises((ValueError, TypeError)):
             json.dumps(metrics)
@@ -362,10 +360,10 @@ class TestMetricsWriterEdgeCases:
             'bool_metric': True,
             'none_metric': None,
         }
-        
+
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
-        
+
         assert loaded['int_metric'] == 10
         assert loaded['string_metric'] == 'N/A'
         assert loaded['none_metric'] is None
@@ -380,10 +378,10 @@ class TestMetricsWriterEdgeCases:
             'é': 5.0,                   # Unicode
             '🔥': 6.0,                  # Emoji
         }
-        
+
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
-        
+
         assert len(loaded) == 6
         assert loaded[''] == 1.0
 
@@ -400,12 +398,12 @@ class TestOrchestratorStateEdgeCases:
         class SimpleOrchestrator:
             def __init__(self):
                 self.tasks = []
-            
+
             def get_next_task(self):
                 if not self.tasks:
                     return None
                 return self.tasks.pop(0)
-        
+
         orch = SimpleOrchestrator()
         assert orch.get_next_task() is None
 
@@ -415,19 +413,19 @@ class TestOrchestratorStateEdgeCases:
             def __init__(self):
                 self.tasks = []
                 self.completed = []
-            
+
             def add_task(self, task):
                 self.tasks.append(task)
-            
+
             def execute_next(self):
                 task = self.tasks.pop(0) if self.tasks else None
                 if task:
                     self.completed.append(task)
                 return task
-        
+
         orch = SimpleOrchestrator()
         orch.add_task('task_1')
-        
+
         result = orch.execute_next()
         assert result == 'task_1'
         assert len(orch.tasks) == 0
@@ -438,17 +436,17 @@ class TestOrchestratorStateEdgeCases:
         class SimpleOrchestrator:
             def __init__(self):
                 self.tasks = []
-            
+
             def add_task(self, task):
                 self.tasks.append(task)
-            
+
             def get_order(self):
                 return [t for t in self.tasks]
-        
+
         orch = SimpleOrchestrator()
         for i in range(10):
             orch.add_task(f'task_{i}')
-        
+
         order = orch.get_order()
         assert order == [f'task_{i}' for i in range(10)]
 
@@ -458,59 +456,59 @@ class TestOrchestratorStateEdgeCases:
         class SimpleOrchestrator:
             def __init__(self):
                 self.tasks = []
-            
+
             def add_tasks(self, tasks):
                 self.tasks.extend(tasks)
-            
+
             def task_count(self):
                 return len(self.tasks)
-        
+
         orch = SimpleOrchestrator()
         tasks = [f'task_{i}' for i in range(task_count)]
         orch.add_tasks(tasks)
-        
+
         assert orch.task_count() == task_count
 
     def test_orchestrator_state_transitions(self):
         """Test orchestrator state transitions"""
         class Orchestrator:
             STATES = ['idle', 'running', 'paused', 'stopped']
-            
+
             def __init__(self):
                 self.state = 'idle'
-            
+
             def start(self):
                 if self.state == 'idle':
                     self.state = 'running'
                     return True
                 return False
-            
+
             def pause(self):
                 if self.state == 'running':
                     self.state = 'paused'
                     return True
                 return False
-            
+
             def resume(self):
                 if self.state == 'paused':
                     self.state = 'running'
                     return True
                 return False
-        
+
         orch = Orchestrator()
-        
+
         # Idle -> running
         assert orch.start()
         assert orch.state == 'running'
-        
+
         # Running -> paused
         assert orch.pause()
         assert orch.state == 'paused'
-        
+
         # Paused -> running
         assert orch.resume()
         assert orch.state == 'running'
-        
+
         # Invalid transition
         assert not orch.start()
         assert orch.state == 'running'
@@ -529,19 +527,19 @@ class TestErrorRecoveryEdgeCases:
             def __init__(self, max_retries=3):
                 self.max_retries = max_retries
                 self.attempts = 0
-            
+
             def execute(self, func):
                 for attempt in range(self.max_retries):
                     try:
                         return func()
-                    except Exception as e:
+                    except Exception:
                         self.attempts = attempt + 1
                         if attempt == self.max_retries - 1:
                             raise
                         continue
-        
+
         handler = RetryHandler(max_retries=3)
-        
+
         call_count = 0
         def failing_func():
             nonlocal call_count
@@ -549,7 +547,7 @@ class TestErrorRecoveryEdgeCases:
             if call_count < 3:
                 raise ValueError('transient failure')
             return 'success'
-        
+
         result = handler.execute(failing_func)
         assert result == 'success'
         assert handler.attempts == 2
@@ -559,21 +557,21 @@ class TestErrorRecoveryEdgeCases:
         class RetryHandler:
             def __init__(self, max_retries=2):
                 self.max_retries = max_retries
-            
+
             def execute(self, func):
                 for attempt in range(self.max_retries):
                     try:
                         return func()
-                    except Exception:
+                    except Exception as _err:
                         if attempt == self.max_retries - 1:
                             raise
                         continue
-        
+
         handler = RetryHandler(max_retries=2)
-        
+
         def always_fails():
             raise ValueError('permanent failure')
-        
+
         with pytest.raises(ValueError):
             handler.execute(always_fails)
 
@@ -582,17 +580,17 @@ class TestErrorRecoveryEdgeCases:
         class RetryHandler:
             def __init__(self, max_retries=0):
                 self.max_retries = max_retries
-            
+
             def execute(self, func):
                 if self.max_retries == 0:
                     return func()
                 # ... retry logic
-        
+
         handler = RetryHandler(max_retries=0)
-        
+
         def func():
             return 'result'
-        
+
         result = handler.execute(func)
         assert result == 'result'
 
@@ -611,7 +609,7 @@ class TestDataPipelineEdgeCases:
                 if not batch:
                     return []
                 return [x * 2 for x in batch]
-        
+
         pipeline = DataPipeline()
         result = pipeline.process([])
         assert result == []
@@ -621,7 +619,7 @@ class TestDataPipelineEdgeCases:
         class DataPipeline:
             def process(self, batch):
                 return [x * 2 for x in batch]
-        
+
         pipeline = DataPipeline()
         result = pipeline.process([5])
         assert result == [10]
@@ -631,11 +629,11 @@ class TestDataPipelineEdgeCases:
         class DataPipeline:
             def process(self, batch):
                 return [x * 2 for x in batch]
-        
+
         pipeline = DataPipeline()
         large_batch = list(range(10000))
         result = pipeline.process(large_batch)
-        
+
         assert len(result) == 10000
         assert result[0] == 0
         assert result[-1] == 19998
@@ -645,11 +643,11 @@ class TestDataPipelineEdgeCases:
         class DataPipeline:
             def process(self, batch):
                 return [x * 2 if x is not None else None for x in batch]
-        
+
         pipeline = DataPipeline()
         batch = [1, None, 3, None, 5]
         result = pipeline.process(batch)
-        
+
         assert result == [2, None, 6, None, 10]
 
     @pytest.mark.parametrize('batch_size', [1, 10, 100, 1000])
@@ -658,11 +656,11 @@ class TestDataPipelineEdgeCases:
         class DataPipeline:
             def process(self, batch):
                 return len(batch)
-        
+
         pipeline = DataPipeline()
         batch = list(range(batch_size))
         result = pipeline.process(batch)
-        
+
         assert result == batch_size
 
 

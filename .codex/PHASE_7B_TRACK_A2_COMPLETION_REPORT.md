@@ -99,12 +99,12 @@
 
 ### Patterns Applied
 ```python
-# Pattern 1: Token Fingerprinting
-_token_fp = token[:8] + "..." if token else "[none]"
-logger.info("Token: %s", _token_fp)
+# Pattern 1: Token Fingerprinting  # pragma: allowlist secret
+_token_fp = token[:8] + "..." if token else "[none]"  # pragma: allowlist secret
+logger.info("Token: %s", _token_fp)  # pragma: allowlist secret
 
 # Pattern 2: Environment Variables
-secrets = {"api_key": os.environ.get("API_KEY", "[not-set]")}
+secrets = {"api_key": os.environ.get("API_KEY", "[not-set]")}  # pragma: allowlist secret
 
 # Pattern 3: Input Validation
 if validate_workflow_name(name):

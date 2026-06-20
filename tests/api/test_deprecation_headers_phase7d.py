@@ -31,7 +31,7 @@ class TestLegacyEndpointDeprecationHeaders:
             response = client.post(endpoint, json=payload)
         elif method == "GET":
             response = client.get(endpoint)
-        
+
         # Legacy endpoints should return 410 Gone
         assert response.status_code == 410, f"Expected 410 for {endpoint}, got {response.status_code}"
 
@@ -46,7 +46,7 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_deprecation_header_present(self, client, endpoint, payload):
         """Test that Deprecation header is present on legacy endpoints."""
         response = client.post(endpoint, json=payload)
-        
+
         assert "deprecation" in response.headers, f"Deprecation header missing from {endpoint}"
         assert response.headers["deprecation"].lower() == "true", \
             f"Deprecation header should be 'true', got {response.headers['deprecation']}"
@@ -62,7 +62,7 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_sunset_header_present(self, client, endpoint, payload):
         """Test that Sunset header is present on legacy endpoints."""
         response = client.post(endpoint, json=payload)
-        
+
         assert "sunset" in response.headers, f"Sunset header missing from {endpoint}"
         # Should be a valid RFC 5322 date
         sunset_value = response.headers["sunset"]
@@ -79,7 +79,7 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_link_header_present_with_successor(self, client, endpoint, payload):
         """Test that Link header points to successor-version."""
         response = client.post(endpoint, json=payload)
-        
+
         assert "link" in response.headers, f"Link header missing from {endpoint}"
         link_value = response.headers["link"]
         assert "rel=" in link_value, f"Link header missing rel= attribute for {endpoint}"
@@ -97,7 +97,7 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_warning_header_present(self, client, endpoint, payload):
         """Test that Warning header is present on legacy endpoints."""
         response = client.post(endpoint, json=payload)
-        
+
         assert "warning" in response.headers, f"Warning header missing from {endpoint}"
         warning_value = response.headers["warning"]
         assert "299" in warning_value, f"Warning header should start with 299 code for {endpoint}"
@@ -105,13 +105,13 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_deprecation_info_endpoint(self, client):
         """Test that deprecation info endpoint provides guidance."""
         response = client.get("/api/v1/deprecation-info")
-        
+
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
-        
+
         assert "deprecated_endpoints" in data, "Response should contain deprecated_endpoints"
         assert len(data["deprecated_endpoints"]) >= 3, "Should have at least 3 deprecated endpoints"
-        
+
         # Verify each endpoint has required fields
         for endpoint_info in data["deprecated_endpoints"]:
             assert "endpoint" in endpoint_info
@@ -130,7 +130,7 @@ class TestLegacyEndpointDeprecationHeaders:
     def test_link_header_points_to_correct_successor(self, client, endpoint, expected_successor, payload):
         """Test that Link header points to correct successor endpoint."""
         response = client.post(endpoint, json=payload)
-        
+
         link_value = response.headers["link"]
         assert expected_successor in link_value, \
             f"Link header should contain {expected_successor}, got {link_value}"
@@ -142,10 +142,10 @@ class TestLegacyEndpointDeprecationHeaders:
             ("/api/v1/train", {"data_path": "/data", "model_name": "test_model", "epochs": 10}),
             ("/api/v1/predict", {"text": "test input"}),
         ]
-        
+
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
-            
+
             assert "x-api-lifecycle" in response.headers, \
                 f"X-API-Lifecycle header missing from {endpoint}"
             assert response.headers["x-api-lifecycle"] == "deprecated", \
@@ -158,10 +158,10 @@ class TestLegacyEndpointDeprecationHeaders:
             ("/api/v1/train", {"data_path": "/data", "model_name": "test_model", "epochs": 10}),
             ("/api/v1/predict", {"text": "test input"}),
         ]
-        
+
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
-            
+
             assert "x-sunset-date" in response.headers, \
                 f"X-Sunset-Date header missing from {endpoint}"
             assert len(response.headers["x-sunset-date"]) > 0, \
@@ -172,24 +172,24 @@ class TestLegacyEndpointDeprecationHeaders:
         # Get list of documented legacy endpoints
         response = client.get("/api/v1/deprecation-info")
         documented = {ep["endpoint"] for ep in response.json()["deprecated_endpoints"]}
-        
+
         # Verify all legacy endpoints are documented
         legacy_endpoints = {
             "POST /api/v1/login",
             "POST /api/v1/train",
             "POST /api/v1/predict",
         }
-        
+
         for endpoint in legacy_endpoints:
             assert endpoint in documented, f"{endpoint} should be documented in deprecation-info"
 
     def test_deprecated_endpoint_response_format(self, client):
         """Test that deprecated endpoints return valid JSON responses."""
         endpoints = ["/api/v1/login", "/api/v1/train", "/api/v1/predict"]
-        
+
         for endpoint in endpoints:
             response = client.post(endpoint, json={"data": "test"})
-            
+
             # Should be valid JSON
             try:
                 data = response.json()
@@ -203,7 +203,7 @@ class TestLegacyEndpointDeprecationHeaders:
             "/api/v1/login",
             json={"username": "test", "password": "password123"}
         )
-        
+
         assert response.status_code == 410
         data = response.json()
         assert data["status"] == "deprecated"
@@ -216,7 +216,7 @@ class TestLegacyEndpointDeprecationHeaders:
             "/api/v1/train",
             json={"data_path": "/data", "model_name": "model", "epochs": 10}
         )
-        
+
         assert response.status_code == 410
         data = response.json()
         assert data["status"] == "deprecated"
@@ -229,7 +229,7 @@ class TestLegacyEndpointDeprecationHeaders:
             "/api/v1/predict",
             json={"text": "test input"}
         )
-        
+
         assert response.status_code == 410
         data = response.json()
         assert "Deprecation" in response.headers
@@ -242,10 +242,10 @@ class TestLegacyEndpointDeprecationHeaders:
             ("/api/v1/train", {"data_path": "/data", "model_name": "test_model"}),
             ("/api/v1/predict", {"text": "test"}),
         ]
-        
+
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
-            
+
             # All should have consistent headers
             headers = response.headers
             assert headers.get("Deprecation") == "true"
@@ -266,14 +266,14 @@ class TestDeprecationHeadersRFC8594Compliance:
     def test_deprecation_header_value_is_true(self, client):
         """RFC 8594: Deprecation header must have value 'true'."""
         response = client.post("/api/v1/login", json={"username": "testuser", "password": "pass123456"})
-        
+
         # Per RFC 8594, value must be "true"
         assert response.headers.get("Deprecation") == "true"
 
     def test_sunset_header_is_rfc5322_date(self, client):
         """RFC 8594: Sunset header must be RFC 5322 date."""
         response = client.post("/api/v1/login", json={"username": "testuser", "password": "pass123456"})
-        
+
         sunset = response.headers.get("Sunset")
         # Should be a valid RFC 5322 date format
         assert sunset is not None
@@ -283,7 +283,7 @@ class TestDeprecationHeadersRFC8594Compliance:
     def test_link_header_has_successor_relation(self, client):
         """RFC 8594: Link header should use successor-version relation."""
         response = client.post("/api/v1/login", json={"username": "testuser", "password": "pass123456"})
-        
+
         link = response.headers.get("Link")
         assert link is not None
         assert "rel=" in link
@@ -292,7 +292,7 @@ class TestDeprecationHeadersRFC8594Compliance:
     def test_warning_header_has_299_code(self, client):
         """RFC 8594: Warning header should use 299 code."""
         response = client.post("/api/v1/login", json={"username": "testuser", "password": "pass123456"})
-        
+
         warning = response.headers.get("Warning")
         assert warning is not None
         assert warning.startswith("299")
