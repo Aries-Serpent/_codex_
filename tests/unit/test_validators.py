@@ -373,7 +373,7 @@ class TestValidatorsReturnValueMutations:
 
         try:
             result = validate_file_structure(temp_path)
-            
+
             # Exact dict structure verification
             assert isinstance(result, dict), "MUST return dict"
             expected_keys = {
@@ -385,7 +385,7 @@ class TestValidatorsReturnValueMutations:
                 "valid_syntax"
             }
             assert set(result.keys()) == expected_keys, "MUST have exact keys"
-            
+
             # All values must be boolean
             for key, value in result.items():
                 assert isinstance(value, bool), f"Key {key} MUST be bool, got {type(value)}"

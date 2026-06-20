@@ -4,10 +4,11 @@ PHASE 7 LANE 1 coverage closure mission
 Generated: 2026-06-20
 Target: 40-50 tests for critical infrastructure
 """
-import pytest
-from unittest.mock import Mock, MagicMock, patch
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -19,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 class TestAdvancedIndexing:
     """Test suite for advanced indexing module - core RAG infrastructure"""
-    
+
     def test_initialization_with_empty_config(self):
         """Test initialization with empty/minimal configuration"""
         try:
@@ -29,7 +30,7 @@ class TestAdvancedIndexing:
             assert indexing is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_initialization_with_none_config(self):
         """Test initialization with None config - should use defaults"""
         try:
@@ -38,7 +39,7 @@ class TestAdvancedIndexing:
             assert indexing is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_index_empty_documents(self):
         """Test indexing empty document list"""
         try:
@@ -49,7 +50,7 @@ class TestAdvancedIndexing:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_index_single_document(self):
         """Test indexing single document"""
         try:
@@ -61,7 +62,7 @@ class TestAdvancedIndexing:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_index_with_unicode_content(self):
         """Test indexing documents with unicode characters"""
         try:
@@ -73,7 +74,7 @@ class TestAdvancedIndexing:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_search_empty_query(self):
         """Test search with empty query string"""
         try:
@@ -84,7 +85,7 @@ class TestAdvancedIndexing:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_search_special_characters(self):
         """Test search with special regex characters"""
         try:
@@ -95,7 +96,7 @@ class TestAdvancedIndexing:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_index_document_without_required_fields(self):
         """Test indexing document missing required fields"""
         try:
@@ -115,7 +116,7 @@ class TestAdvancedIndexing:
 
 class TestWorkflowOptimizer:
     """Test suite for workflow optimizer - orchestration hub"""
-    
+
     def test_initialization(self):
         """Test WorkflowOptimizer initialization"""
         try:
@@ -124,7 +125,7 @@ class TestWorkflowOptimizer:
             assert optimizer is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_empty_workflow(self):
         """Test optimizing empty workflow"""
         try:
@@ -135,7 +136,7 @@ class TestWorkflowOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_workflow_with_circular_dependency(self):
         """Test optimization with circular task dependencies"""
         try:
@@ -157,7 +158,7 @@ class TestWorkflowOptimizer:
         except (ValueError, RuntimeError):
             # Expected for circular deps
             pass
-    
+
     def test_optimize_workflow_with_single_task(self):
         """Test optimizing workflow with single task"""
         try:
@@ -169,7 +170,7 @@ class TestWorkflowOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_workflow_with_long_chain(self):
         """Test optimizing workflow with long sequential chain"""
         try:
@@ -187,7 +188,7 @@ class TestWorkflowOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_null_values(self):
         """Test optimization with None/null values in workflow"""
         try:
@@ -199,7 +200,7 @@ class TestWorkflowOptimizer:
                 optimizer.optimize(workflow)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_with_invalid_types(self):
         """Test optimization with invalid data types"""
         try:
@@ -218,7 +219,7 @@ class TestWorkflowOptimizer:
 
 class TestRetrievalOptimizer:
     """Test suite for retrieval optimizer - query optimization"""
-    
+
     def test_initialization(self):
         """Test RetrievalOptimizer initialization"""
         try:
@@ -227,7 +228,7 @@ class TestRetrievalOptimizer:
             assert opt is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_empty_query(self):
         """Test optimization with empty query"""
         try:
@@ -238,7 +239,7 @@ class TestRetrievalOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_very_long_query(self):
         """Test optimization with very long query (1000+ chars)"""
         try:
@@ -250,7 +251,7 @@ class TestRetrievalOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_query_with_special_characters(self):
         """Test optimization with special characters"""
         try:
@@ -262,7 +263,7 @@ class TestRetrievalOptimizer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_query_with_null(self):
         """Test optimization with None query"""
         try:
@@ -273,7 +274,7 @@ class TestRetrievalOptimizer:
                 opt.optimize_query(None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_optimize_query_with_unicode(self):
         """Test optimization with unicode query"""
         try:
@@ -293,7 +294,7 @@ class TestRetrievalOptimizer:
 
 class TestLLMClient:
     """Test suite for LLM client - LLM communication layer"""
-    
+
     def test_initialization_with_defaults(self):
         """Test LLMClient initialization with default parameters"""
         try:
@@ -302,7 +303,7 @@ class TestLLMClient:
             assert client is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_initialization_with_custom_model(self):
         """Test LLMClient initialization with custom model"""
         try:
@@ -311,7 +312,7 @@ class TestLLMClient:
             assert client is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_empty_prompt(self):
         """Test generation with empty prompt"""
         try:
@@ -322,7 +323,7 @@ class TestLLMClient:
                 client.generate("")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_none_prompt(self):
         """Test generation with None prompt"""
         try:
@@ -333,7 +334,7 @@ class TestLLMClient:
                 client.generate(None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_max_tokens_zero(self):
         """Test generation with max_tokens=0"""
         try:
@@ -344,7 +345,7 @@ class TestLLMClient:
                 client.generate("prompt", max_tokens=0)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_negative_temperature(self):
         """Test generation with negative temperature"""
         try:
@@ -355,7 +356,7 @@ class TestLLMClient:
                 client.generate("prompt", temperature=-0.5)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_with_temperature_over_limit(self):
         """Test generation with temperature > 2.0"""
         try:
@@ -374,7 +375,7 @@ class TestLLMClient:
 
 class TestIntentInferer:
     """Test suite for intent inferer - intent detection"""
-    
+
     def test_initialization(self):
         """Test IntentInferer initialization"""
         try:
@@ -383,7 +384,7 @@ class TestIntentInferer:
             assert inferer is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_empty_message(self):
         """Test intent inference with empty message"""
         try:
@@ -397,7 +398,7 @@ class TestIntentInferer:
             pytest.skip("Module not importable")
         except (ValueError, RuntimeError):
             pass
-    
+
     def test_infer_none_message(self):
         """Test intent inference with None message"""
         try:
@@ -408,7 +409,7 @@ class TestIntentInferer:
                 inferer.infer(None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_very_long_message(self):
         """Test intent inference with very long message"""
         try:
@@ -420,7 +421,7 @@ class TestIntentInferer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_with_special_characters(self):
         """Test intent inference with special characters"""
         try:
@@ -432,7 +433,7 @@ class TestIntentInferer:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_infer_with_unicode_message(self):
         """Test intent inference with unicode message"""
         try:

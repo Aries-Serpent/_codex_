@@ -9,14 +9,11 @@ Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, MagicMock, patch, AsyncMock
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import threading
-import time
-from typing import Optional, Dict, List, Any
+from unittest.mock import patch
 
+import pytest
 
 # ============================================================================
 # Async/Await Pattern Tests (20-25 tests)
@@ -24,7 +21,7 @@ from typing import Optional, Dict, List, Any
 
 class TestAsyncInitialization:
     """Test async context managers and initialization"""
-    
+
     @pytest.mark.asyncio
     async def test_async_context_empty_resource(self):
         """Should handle async context with no resource"""
@@ -34,7 +31,7 @@ class TestAsyncInitialization:
                 assert api is not None
         except (NotImplementedError, TypeError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_async_context_exception_cleanup(self):
         """Should cleanup properly on async exception"""
@@ -46,7 +43,7 @@ class TestAsyncInitialization:
             # Cleanup should occur even with exception
         except (NotImplementedError, TypeError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_nested_async_contexts(self):
         """Should handle nested async contexts"""
@@ -62,39 +59,39 @@ class TestAsyncInitialization:
 
 class TestAsyncConcurrency:
     """Test concurrent async operations"""
-    
+
     @pytest.mark.asyncio
     async def test_concurrent_api_operations(self):
         """Should handle concurrent API calls"""
         from codex.api.github_logs import GitHubLogsAPI
         try:
             api = GitHubLogsAPI(token='dummy_token')
-            
+
             async def fetch_log(run_id):
                 try:
                     return await api.fetch_logs(repo='test/repo', run_id=run_id)
-                except Exception:
+                except Exception as _err:
                     return None
-            
+
             # Create 10 concurrent tasks
             tasks = [fetch_log(i) for i in range(10)]
             results = await asyncio.gather(*tasks, return_exceptions=True)
-            
+
             # Should complete without deadlock
             assert len(results) == 10
         except (NotImplementedError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_async_timeout_handling(self):
         """Should handle async operation timeout"""
         async def slow_operation():
             await asyncio.sleep(5)
             return 'result'
-        
+
         with pytest.raises(asyncio.TimeoutError):
             await asyncio.wait_for(slow_operation(), timeout=0.1)
-    
+
     @pytest.mark.asyncio
     async def test_async_cancellation(self):
         """Should handle async task cancellation"""
@@ -103,11 +100,11 @@ class TestAsyncConcurrency:
                 await asyncio.sleep(10)
             except asyncio.CancelledError:
                 raise
-        
+
         task = asyncio.create_task(long_running())
         await asyncio.sleep(0.1)
         task.cancel()
-        
+
         with pytest.raises(asyncio.CancelledError):
             await task
 
@@ -118,16 +115,16 @@ class TestAsyncConcurrency:
 
 class TestThreadSafety:
     """Test thread-safe operations"""
-    
+
     def test_shared_state_race_condition(self):
         """Should handle concurrent access to shared state"""
         from codex.agents.orchestrator import Orchestrator
-        
+
         try:
             orch = Orchestrator()
             results = []
             errors = []
-            
+
             def worker(worker_id):
                 try:
                     # Attempt concurrent state modification
@@ -135,55 +132,55 @@ class TestThreadSafety:
                         orch.execute(command=f'cmd_{worker_id}')
                 except (ValueError, RuntimeError, AttributeError):
                     errors.append(worker_id)
-            
+
             # Run 5 threads concurrently
             threads = [
                 threading.Thread(target=worker, args=(i,))
                 for i in range(5)
             ]
-            
+
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             # Should not crash
             assert True
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_lock_contention(self):
         """Should handle lock contention"""
-        import threading
+        pass  # removed redundant `import threading` (top-level import used)
         lock = threading.Lock()
         counter = {'value': 0}
-        
+
         def increment():
             for _ in range(1000):
                 with lock:
                     counter['value'] += 1
-        
+
         threads = [threading.Thread(target=increment) for _ in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # All increments should succeed
         assert counter['value'] == 10000
 
 
 class TestResourceExhaustion:
     """Test behavior under resource exhaustion"""
-    
+
     def test_many_concurrent_connections(self):
         """Should handle many concurrent connections gracefully"""
         from codex.archive.dal import ArchiveDAL
-        
+
         try:
             connections = []
             errors = []
-            
+
             try:
                 for i in range(100):
                     try:
@@ -193,22 +190,22 @@ class TestResourceExhaustion:
                         errors.append(str(e))
             except Exception as e:
                 errors.append(str(e))
-            
+
             # Should either succeed or fail gracefully
             assert len(errors) >= 0
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_large_batch_processing(self):
         """Should handle large batch processing"""
         from codex.tokenization.api import Tokenizer
-        
+
         try:
             tokenizer = Tokenizer()
-            
+
             # Create 1000 large texts
             texts = ['word ' * 1000 for _ in range(1000)]
-            
+
             try:
                 results = tokenizer.batch_encode(texts)
                 # Should complete or fail gracefully
@@ -225,21 +222,21 @@ class TestResourceExhaustion:
 
 class TestErrorRecovery:
     """Test error recovery mechanisms"""
-    
+
     def test_retry_on_transient_error(self):
         """Should retry on transient errors"""
         from codex.api.rag_api import RAGAPI
-        
+
         try:
             api = RAGAPI()
             call_count = {'value': 0}
-            
+
             def mock_call():
                 call_count['value'] += 1
                 if call_count['value'] < 3:
                     raise ConnectionError('Transient error')
                 return 'success'
-            
+
             with patch.object(api, 'query', side_effect=mock_call):
                 try:
                     result = api.query('test')
@@ -248,19 +245,19 @@ class TestErrorRecovery:
                     pass
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_circuit_breaker_pattern(self):
         """Should implement circuit breaker pattern"""
         from codex.archive.retry import RetryPolicy
-        
+
         try:
             policy = RetryPolicy(max_retries=3, backoff_factor=0.1)
             call_count = {'value': 0}
-            
+
             def failing_operation():
                 call_count['value'] += 1
                 raise RuntimeError('Operation failed')
-            
+
             try:
                 policy.execute(failing_operation)
             except RuntimeError:
@@ -272,37 +269,37 @@ class TestErrorRecovery:
 
 class TestGracefulDegradation:
     """Test graceful degradation on errors"""
-    
+
     def test_fallback_on_api_error(self):
         """Should fallback on API error"""
         from codex.api.rag_api import RAGAPI
-        
+
         try:
             api = RAGAPI()
-            
+
             with patch.object(api, 'query', side_effect=RuntimeError('API down')):
                 result = api.query('test', fallback_result=None)
                 # Should return fallback or raise
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_partial_success_handling(self):
         """Should handle partial success in batch operations"""
         from codex.tokenization.api import Tokenizer
-        
+
         try:
             tokenizer = Tokenizer()
-            
+
             texts = ['valid', None, 'text', '', 'more']
             results = []
-            
+
             for text in texts:
                 try:
                     result = tokenizer.encode(text)
                     results.append(result)
                 except (TypeError, ValueError):
                     results.append(None)
-            
+
             # Should have mixed success/failure
             assert len(results) == len(texts)
         except (NotImplementedError, AttributeError):
@@ -315,15 +312,15 @@ class TestGracefulDegradation:
 
 class TestStateManagement:
     """Test state management across operations"""
-    
+
     def test_state_isolation_between_instances(self):
         """Multiple instances should not share state"""
         from codex.api.rag_api import RAGAPI
-        
+
         try:
             api1 = RAGAPI()
             api2 = RAGAPI()
-            
+
             # Set state on api1
             if hasattr(api1, '_state'):
                 api1._state = {'custom': 'value1'}
@@ -332,20 +329,20 @@ class TestStateManagement:
                     assert api2._state != api1._state
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_cleanup_on_exception(self):
         """Resources should cleanup on exception"""
         from codex.archive.dal import ArchiveDAL
-        
+
         try:
             dal = ArchiveDAL(connection_string='dummy')
-            
+
             try:
                 with dal.transaction():
                     raise RuntimeError('Test error')
             except RuntimeError:
                 pass
-            
+
             # Should be able to reuse after exception
             try:
                 with dal.transaction():
@@ -362,58 +359,58 @@ class TestStateManagement:
 
 class TestEndToEndWorkflows:
     """Test end-to-end integration workflows"""
-    
+
     def test_cli_to_api_flow(self):
         """Test flow from CLI through API"""
         try:
-            from codex.cli import CLI
             from codex.api.rag_api import RAGAPI
-            
+            from codex.cli import CLI
+
             cli = CLI()
             api = RAGAPI()
-            
+
             # Simulate CLI triggering API call
             # Should not crash even if incomplete
             assert cli is not None
             assert api is not None
         except (NotImplementedError, ImportError, AttributeError):
             pass
-    
+
     def test_ingest_tokenize_embed_flow(self):
         """Test full ingest->tokenize->embed pipeline"""
         try:
             from codex.ingestion.file_ingestor import FileIngestor
-            from codex.tokenization.api import Tokenizer
             from codex.rag.pipelines.embedding import EmbeddingGenerator
-            
+            from codex.tokenization.api import Tokenizer
+
             ingestor = FileIngestor()
             tokenizer = Tokenizer()
             embedder = EmbeddingGenerator()
-            
+
             # All components should initialize
             assert ingestor is not None
             assert tokenizer is not None
             assert embedder is not None
         except (NotImplementedError, ImportError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_async_api_chain(self):
         """Test chained async API calls"""
         try:
             from codex.api.rag_api import RAGAPI
-            
+
             api = RAGAPI()
-            
+
             # Chain multiple async operations
             async def workflow():
                 try:
                     result1 = await api.query('query1')
                     result2 = await api.query('query2')
                     return result1, result2
-                except Exception:
+                except Exception as _err:
                     return None, None
-            
+
             result = await workflow()
             # Should complete or fail gracefully
         except (NotImplementedError, AttributeError):
@@ -422,16 +419,16 @@ class TestEndToEndWorkflows:
 
 class TestIntegrationErrorPropagation:
     """Test error propagation through integration flows"""
-    
+
     def test_error_in_pipeline_stage(self):
         """Should propagate error from pipeline stage"""
         try:
             from codex.ingestion.file_ingestor import FileIngestor
             from codex.tokenization.api import Tokenizer
-            
+
             ingestor = FileIngestor()
             tokenizer = Tokenizer()
-            
+
             # Simulate error in middle stage
             try:
                 data = ingestor.ingest('nonexistent_file.txt')
@@ -441,23 +438,23 @@ class TestIntegrationErrorPropagation:
                 pass
         except (NotImplementedError, AttributeError):
             pass
-    
+
     def test_partial_failure_in_batch(self):
         """Should handle partial failure in batch operations"""
         try:
             from codex.tokenization.api import Tokenizer
-            
+
             tokenizer = Tokenizer()
             texts = ['valid', 'also_valid']
-            
+
             results = []
             for text in texts:
                 try:
                     result = tokenizer.encode(text)
                     results.append(result)
-                except Exception as e:
+                except Exception:
                     results.append(None)
-            
+
             # Should have processed all items
             assert len(results) == len(texts)
         except (NotImplementedError, AttributeError):
@@ -470,31 +467,31 @@ class TestIntegrationErrorPropagation:
 
 class TestBoundaryConditions:
     """Test boundary conditions in multi-module scenarios"""
-    
+
     def test_zero_timeout(self):
         """Should handle zero timeout"""
         from codex.archive.dal import ArchiveDAL
-        
+
         try:
             dal = ArchiveDAL(connection_string='dummy', timeout=0)
             # Should either fail immediately or use default
         except (ValueError, TimeoutError, AttributeError):
             pass
-    
+
     def test_negative_timeout(self):
         """Should reject negative timeout"""
         from codex.archive.dal import ArchiveDAL
-        
+
         try:
             with pytest.raises((ValueError, TypeError)):
                 dal = ArchiveDAL(connection_string='dummy', timeout=-1)
         except (AttributeError, NotImplementedError):
             pass
-    
+
     def test_max_int_batch_size(self):
         """Should handle maximum batch size"""
         from codex.tokenization.api import Tokenizer
-        
+
         try:
             tokenizer = Tokenizer()
             # Attempt batch with very large size
@@ -513,38 +510,38 @@ class TestBoundaryConditions:
 
 class TestEdgeCaseCombinations:
     """Test combinations of edge cases"""
-    
+
     def test_concurrent_empty_operations(self):
         """Test concurrent empty operations"""
         from codex.tokenization.api import Tokenizer
-        
+
         try:
             tokenizer = Tokenizer()
-            
+
             def worker():
                 try:
                     tokenizer.encode('')
-                except Exception:
+                except (AttributeError, OSError, RuntimeError):
                     pass
-            
+
             threads = [threading.Thread(target=worker) for _ in range(10)]
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             # Should complete without crash
         except (NotImplementedError, AttributeError):
             pass
-    
+
     @pytest.mark.asyncio
     async def test_async_with_timeout_and_cancellation(self):
         """Test async operation with both timeout and cancellation"""
         async def slow_op():
             await asyncio.sleep(10)
-        
+
         task = asyncio.create_task(slow_op())
-        
+
         try:
             await asyncio.wait_for(task, timeout=0.1)
         except asyncio.TimeoutError:
@@ -553,15 +550,15 @@ class TestEdgeCaseCombinations:
                 await task
             except asyncio.CancelledError:
                 pass  # Expected
-    
+
     def test_resource_cleanup_with_exception_and_retry(self):
         """Test resource cleanup with exception and retry"""
         from codex.archive.dal import ArchiveDAL
-        
+
         try:
             dal = ArchiveDAL(connection_string='dummy')
             attempt_count = {'value': 0}
-            
+
             for attempt in range(3):
                 try:
                     attempt_count['value'] += 1
@@ -576,7 +573,7 @@ class TestEdgeCaseCombinations:
                         pass  # Retry
                     else:
                         raise
-            
+
             assert attempt_count['value'] == 3
         except (NotImplementedError, AttributeError):
             pass

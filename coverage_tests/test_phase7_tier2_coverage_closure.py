@@ -4,10 +4,11 @@ PHASE 7 LANE 1 coverage closure mission
 Generated: 2026-06-20
 Target: 30-40 tests for cognitive infrastructure
 """
-import pytest
-from unittest.mock import Mock, MagicMock, patch
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -19,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 class TestAutonomousExecutor:
     """Test suite for autonomous executor - agent execution engine"""
-    
+
     def test_initialization(self):
         """Test AutonomousExecutor initialization"""
         try:
@@ -28,7 +29,7 @@ class TestAutonomousExecutor:
             assert executor is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_empty_task(self):
         """Test executing empty task"""
         try:
@@ -39,7 +40,7 @@ class TestAutonomousExecutor:
                 executor.execute({})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_with_none_task(self):
         """Test executing None task"""
         try:
@@ -50,7 +51,7 @@ class TestAutonomousExecutor:
                 executor.execute(None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_task_with_zero_timeout(self):
         """Test executing task with timeout=0"""
         try:
@@ -65,7 +66,7 @@ class TestAutonomousExecutor:
             pytest.skip("Module not importable")
         except (ValueError, RuntimeError, TimeoutError):
             pass
-    
+
     def test_execute_task_with_negative_timeout(self):
         """Test executing task with negative timeout"""
         try:
@@ -77,7 +78,7 @@ class TestAutonomousExecutor:
                 executor.execute(task)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_execute_task_with_invalid_retry_count(self):
         """Test executing task with invalid retry count"""
         try:
@@ -97,7 +98,7 @@ class TestAutonomousExecutor:
 
 class TestOKRTracker:
     """Test suite for OKR tracker - goal tracking"""
-    
+
     def test_initialization(self):
         """Test OKRTracker initialization"""
         try:
@@ -106,7 +107,7 @@ class TestOKRTracker:
             assert tracker is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_okr_with_empty_name(self):
         """Test creating OKR with empty name"""
         try:
@@ -117,7 +118,7 @@ class TestOKRTracker:
                 tracker.create_okr(name="", goal=0.8)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_okr_with_goal_above_100(self):
         """Test creating OKR with goal > 1.0"""
         try:
@@ -128,7 +129,7 @@ class TestOKRTracker:
                 tracker.create_okr(name="test", goal=1.5)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_okr_with_negative_goal(self):
         """Test creating OKR with negative goal"""
         try:
@@ -139,7 +140,7 @@ class TestOKRTracker:
                 tracker.create_okr(name="test", goal=-0.5)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_update_progress_with_none_value(self):
         """Test updating progress with None value"""
         try:
@@ -150,7 +151,7 @@ class TestOKRTracker:
                 tracker.update_progress("okr1", None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_get_progress_nonexistent_okr(self):
         """Test getting progress for nonexistent OKR"""
         try:
@@ -169,7 +170,7 @@ class TestOKRTracker:
 
 class TestTaskRouter:
     """Test suite for task router - task distribution logic"""
-    
+
     def test_initialization(self):
         """Test TaskRouter initialization"""
         try:
@@ -178,7 +179,7 @@ class TestTaskRouter:
             assert router is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_empty_task(self):
         """Test routing empty task"""
         try:
@@ -189,7 +190,7 @@ class TestTaskRouter:
                 router.route({})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_task_with_none_priority(self):
         """Test routing task with None priority"""
         try:
@@ -201,7 +202,7 @@ class TestTaskRouter:
                 router.route(task)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_task_with_negative_priority(self):
         """Test routing task with negative priority"""
         try:
@@ -213,7 +214,7 @@ class TestTaskRouter:
                 router.route(task)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_route_task_to_nonexistent_agent(self):
         """Test routing task to nonexistent agent"""
         try:
@@ -233,7 +234,7 @@ class TestTaskRouter:
 
 class TestWhiteheadianSessionManager:
     """Test suite for session manager - lifecycle management"""
-    
+
     def test_initialization(self):
         """Test SessionManager initialization"""
         try:
@@ -242,7 +243,7 @@ class TestWhiteheadianSessionManager:
             assert mgr is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_session_with_empty_id(self):
         """Test creating session with empty ID"""
         try:
@@ -253,7 +254,7 @@ class TestWhiteheadianSessionManager:
                 mgr.create_session(session_id="")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_session_with_none_id(self):
         """Test creating session with None ID"""
         try:
@@ -264,7 +265,7 @@ class TestWhiteheadianSessionManager:
                 mgr.create_session(session_id=None)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_get_nonexistent_session(self):
         """Test getting nonexistent session"""
         try:
@@ -275,7 +276,7 @@ class TestWhiteheadianSessionManager:
                 mgr.get_session("nonexistent")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_close_session_invalid_id(self):
         """Test closing session with invalid ID"""
         try:
@@ -294,7 +295,7 @@ class TestWhiteheadianSessionManager:
 
 class TestCausalEventLogger:
     """Test suite for event logger - event telemetry"""
-    
+
     def test_initialization(self):
         """Test CausalEventLogger initialization"""
         try:
@@ -303,7 +304,7 @@ class TestCausalEventLogger:
             assert logger is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_log_event_with_empty_name(self):
         """Test logging event with empty name"""
         try:
@@ -314,7 +315,7 @@ class TestCausalEventLogger:
                 logger.log_event(name="", data={})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_log_event_with_none_name(self):
         """Test logging event with None name"""
         try:
@@ -325,7 +326,7 @@ class TestCausalEventLogger:
                 logger.log_event(name=None, data={})
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_log_event_with_huge_data(self):
         """Test logging event with very large data payload"""
         try:
@@ -337,7 +338,7 @@ class TestCausalEventLogger:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_log_event_with_circular_reference(self):
         """Test logging event with circular reference in data"""
         try:
@@ -353,7 +354,7 @@ class TestCausalEventLogger:
             pytest.skip("Module not importable")
         except (ValueError, RuntimeError, TypeError):
             pass
-    
+
     def test_get_events_with_invalid_filter(self):
         """Test getting events with invalid filter"""
         try:

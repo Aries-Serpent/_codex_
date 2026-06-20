@@ -4,11 +4,12 @@ PHASE 7 LANE 1 coverage closure mission
 Generated: 2026-06-20
 Target: 60+ tests for config/utils and CLI/API entry points
 """
-import pytest
-from unittest.mock import Mock, MagicMock, patch
+import os
 import sys
 from pathlib import Path
-import os
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -20,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 class TestRefactoringDeterritorialization:
     """Test suite for deterritorialization engine"""
-    
+
     def test_initialization(self):
         """Test engine initialization"""
         try:
@@ -29,7 +30,7 @@ class TestRefactoringDeterritorialization:
             assert engine is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_transform_empty_code(self):
         """Test transforming empty code"""
         try:
@@ -39,7 +40,7 @@ class TestRefactoringDeterritorialization:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_transform_invalid_code(self):
         """Test transforming invalid Python code"""
         try:
@@ -57,7 +58,7 @@ class TestRefactoringDeterritorialization:
 
 class TestHashTable:
     """Test suite for hash table utility"""
-    
+
     def test_initialization(self):
         """Test HashTable initialization"""
         try:
@@ -66,7 +67,7 @@ class TestHashTable:
             assert ht is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_insert_none_key(self):
         """Test inserting None key"""
         try:
@@ -76,7 +77,7 @@ class TestHashTable:
                 ht.insert(None, "value")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_insert_none_value(self):
         """Test inserting None value"""
         try:
@@ -86,7 +87,7 @@ class TestHashTable:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_get_nonexistent_key(self):
         """Test getting nonexistent key"""
         try:
@@ -97,7 +98,7 @@ class TestHashTable:
             assert result is None or True
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_insert_many_collisions(self):
         """Test hash table with many collisions"""
         try:
@@ -112,7 +113,7 @@ class TestHashTable:
 
 class TestConfigEnvVars:
     """Test suite for environment variables config"""
-    
+
     def test_load_missing_env_vars(self):
         """Test loading when required env vars are missing"""
         try:
@@ -130,7 +131,7 @@ class TestConfigEnvVars:
                     os.environ["TEST_VAR"] = old_val
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_load_with_invalid_values(self):
         """Test loading config with invalid env var values"""
         try:
@@ -145,7 +146,7 @@ class TestConfigEnvVars:
 
 class TestFileUtils:
     """Test suite for file utilities"""
-    
+
     def test_read_nonexistent_file(self):
         """Test reading nonexistent file"""
         try:
@@ -154,7 +155,7 @@ class TestFileUtils:
                 read_file("/nonexistent/file/path.txt")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_read_directory_as_file(self):
         """Test reading directory as file"""
         try:
@@ -163,7 +164,7 @@ class TestFileUtils:
                 read_file("/tmp")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_write_to_readonly_path(self):
         """Test writing to read-only path"""
         try:
@@ -183,7 +184,7 @@ class TestFileUtils:
 
 class TestOrchestratorAgent:
     """Test suite for multi-agent orchestrator"""
-    
+
     def test_initialization(self):
         """Test Orchestrator initialization"""
         try:
@@ -192,7 +193,7 @@ class TestOrchestratorAgent:
             assert orch is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_orchestrate_empty_tasks(self):
         """Test orchestrating empty task list"""
         try:
@@ -202,7 +203,7 @@ class TestOrchestratorAgent:
                 orch.orchestrate([])
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_orchestrate_with_none_tasks(self):
         """Test orchestrating None tasks"""
         try:
@@ -216,7 +217,7 @@ class TestOrchestratorAgent:
 
 class TestPROperator:
     """Test suite for PR workflow automation"""
-    
+
     def test_initialization(self):
         """Test PROperator initialization"""
         try:
@@ -225,7 +226,7 @@ class TestPROperator:
             assert op is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_pr_with_no_changes(self):
         """Test creating PR with no file changes"""
         try:
@@ -235,7 +236,7 @@ class TestPROperator:
                 op.create_pr(files=[])
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_create_pr_with_invalid_branch(self):
         """Test creating PR with invalid branch"""
         try:
@@ -249,7 +250,7 @@ class TestPROperator:
 
 class TestQualityCLI:
     """Test suite for quality assessment CLI"""
-    
+
     def test_assess_empty_path(self):
         """Test assessing empty path"""
         try:
@@ -258,7 +259,7 @@ class TestQualityCLI:
                 assess_quality("")
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_assess_nonexistent_path(self):
         """Test assessing nonexistent path"""
         try:
@@ -271,7 +272,7 @@ class TestQualityCLI:
 
 class TestReportingCLI:
     """Test suite for report generation CLI"""
-    
+
     def test_generate_report_no_data(self):
         """Test generating report with no data"""
         try:
@@ -281,7 +282,7 @@ class TestReportingCLI:
             assert result is not None
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_generate_report_invalid_format(self):
         """Test generating report with invalid format"""
         try:
@@ -294,7 +295,7 @@ class TestReportingCLI:
 
 class TestGitHubAPI:
     """Test suite for GitHub API integration"""
-    
+
     def test_fetch_logs_invalid_pr(self):
         """Test fetching logs for invalid PR"""
         try:
@@ -303,7 +304,7 @@ class TestGitHubAPI:
                 fetch_logs(pr_number=-1)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_fetch_logs_no_auth(self):
         """Test fetching logs without authentication"""
         try:
@@ -328,43 +329,45 @@ class TestGitHubAPI:
 
 class TestErrorHandling:
     """Test suite for error handling across modules"""
-    
+
     def test_concurrent_access_patterns(self):
         """Test concurrent access to shared resources"""
         try:
             import threading
+
             from codex.utils.hash_table import HashTable
-            
+
             ht = HashTable()
             errors = []
-            
+
             def worker():
                 try:
                     for i in range(10):
                         ht.insert(f"key{i}", f"value{i}")
                 except Exception as e:
                     errors.append(e)
-            
+
             threads = [threading.Thread(target=worker) for _ in range(5)]
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             # Should handle concurrent access
             assert len(errors) == 0 or all(True for e in errors)
         except ImportError:
             pytest.skip("Module not importable")
-    
+
     def test_timeout_handling(self):
         """Test timeout handling in long operations"""
         try:
             import signal
+
             from codex.cognitive.autonomous_executor import AutonomousExecutor
-            
+
             executor = AutonomousExecutor()
             task = {"id": "task1", "timeout": 0.001}  # 1ms timeout
-            
+
             # Should timeout
             result = executor.execute(task)
             assert result is not None
