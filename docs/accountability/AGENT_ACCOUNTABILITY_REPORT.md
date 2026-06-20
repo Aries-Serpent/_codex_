@@ -1,3 +1,26 @@
+## PR #5020 CI Rescue Wrap-up — 2026-06-20T02:02Z
+
+**Session Type:** CI rescue + merge-readiness restoration  
+**Authority:** @mbaetiong  
+**Status:** ✅ COMPLETE — RP-007, Coverage Ratchet, and Final Pre-Merge Checks remediated
+
+### Actions Completed
+- ✅ Reproduced and confirmed the clean-venv mypy regression fix already present on branch (`abdd6dee`)
+- ✅ Fixed RP-007 markdown false positives in `.codex/PHASE_7D_LANE_B_DEPRECATION_HEADERS_REPORT.md`
+- ✅ Registered the missing `deployment` pytest marker in `pytest.ini` to unblock Coverage Ratchet collection
+- ✅ Replaced the placeholder determinism test in `tests/test_edge_cases_phase7b_track_b2.py` with AST-based assertions
+- ✅ Removed the `from src.` example in `src/security/logging.py`
+- ✅ Removed unused imports in `tests/test_edge_cases_queues_async_api.py`
+- ✅ Removed `W293` blank-line whitespace from `tests/test_edge_cases_validation_serialization.py` for Final Pre-Merge Checks
+- ✅ Replied to the blocking maintainer comment with the resolving commit SHA
+
+### Validation
+- ✅ `detect-secrets-hook --baseline .secrets.baseline .codex/PHASE_7D_LANE_B_DEPRECATION_HEADERS_REPORT.md`
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` → Merge Readiness `100/100`
+- ✅ `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5020` pending only until this last-commit refresh
+
+---
+
 ## Phase 7B Campaign Launch — 2026-06-19T19:23Z
 
 **Session Type:** Campaign Planning + Agent Delegation Framework  
