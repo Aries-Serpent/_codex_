@@ -1,39 +1,49 @@
-# Session Context — 2026-06-20T05:20:11Z
-**Branch:** `copilot/campaign-implementation-plan`  **PR:** #5022  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-20T10:21:36Z
+**Branch:** `copilot/fix-check-action-versions`  **PR:** #5024  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4951` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `4762` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5022 — Phase 7D Campaign: 100/100 Production Readiness Certification & v0.1.0-final Deployment Approval
-State: `open`  Draft: `False`  Branch: `copilot/campaign-implementation-plan` → `main`
+## 📋 PR #5024 — Self-heal action version drift on Copilot and automated branch pushes
+State: `open`  Draft: `True`  Branch: `copilot/fix-check-action-versions` → `main`
+
+### ❌ 12 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `🛡️ Restore required PR checkboxes` (cancelled)
+- `Post rescue comment on failure` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/campaign-implementation-plan` (2026-06-20)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/campaign-implementation-plan` (2026-06-20)
-- **.github/workflows/unified-deployment.yml** — `failure` on `copilot/campaign-implementation-plan` (2026-06-20)
-- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/campaign-implementation-plan` (2026-06-20)
-- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/campaign-implementation-plan` (2026-06-20)
+- **.github/workflows/cache-validation.yml** — `failure` on `copilot/fix-check-action-versions` (2026-06-20)
+- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/fix-check-action-versions` (2026-06-20)
+- **.github/workflows/semgrep_sarif.yml** — `failure` on `copilot/fix-check-action-versions` (2026-06-20)
+- **.github/workflows/semgrep_sarif.yml** — `failure` on `copilot/fix-check-action-versions` (2026-06-20)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/fix-check-action-versions` (2026-06-20)
 
 ## 📝 Recent Commits
-- `e71cc6d2` chore: reply to all review comments with resolving commit SHA d81b669 — copilot-swe-agent[bot] (2026-06-20)
-- `d81b6691` fix: correct MemoryEntry constructor calls, mutmut config, and checkout SHA guar — copilot-swe-agent[bot] (2026-06-20)
-- `a29db173` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-20)
-- `e2b29e0f` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-20)
-- `22820512` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-06-20)
-- `046c0b09` Merge branch 'main' into copilot/campaign-implementation-plan — Statix (2026-06-20)
-- `5aebc4b2` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-06-20)
-- `f546332f` 🎉 Phase 7D Campaign Complete: Final Summary — 100/100 Production Readiness Certi — copilot-swe-agent[bot] (2026-06-20)
+- `91bfd6c8` fix(ci): streamline action version autofix path — copilot-swe-agent[bot] (2026-06-20)
+- `1e8a3d3c` fix(ci): self-heal action version drift on bot branches — copilot-swe-agent[bot] (2026-06-20)
+- `6bab23b7` Initial plan — copilot-swe-agent[bot] (2026-06-20)
+- `22a55467` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-20)
+- `ad52ee9d` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-20)
+- `b685c152` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-06-20)
+- `902f2b90` Merge pull request #5022 from Aries-Serpent/copilot/campaign-implementation-plan — Statix (2026-06-20)
+- `a35683fb` docs: update CHANGELOG & AGENT_ACCOUNTABILITY_REPORT for PR review comment respo — copilot-swe-agent[bot] (2026-06-20)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1417`
-- `CODEX_CI_FAILURE_RATE` = `0:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `56c77861b9b86dd65e468675b62cce07c68bce79`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1420`
+- `CODEX_CI_FAILURE_RATE` = `6.0:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `0728b5d804f41db6bf800d5c8e88c24f4329e7b2`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
