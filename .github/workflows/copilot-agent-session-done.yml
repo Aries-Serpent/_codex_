@@ -1,5 +1,5 @@
 name: "\U0001F504 Auto-Post @copilot review After Agent Session"
-true:
+on:
   workflow_run:
     workflows:
     - Copilot coding agent
