@@ -18,6 +18,7 @@
 - ✅ `detect-secrets-hook --baseline .secrets.baseline .codex/PHASE_7D_LANE_B_DEPRECATION_HEADERS_REPORT.md`
 - ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` → Merge Readiness `100/100`
 - ✅ `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5020` pending only until this last-commit refresh
+- ✅ Follow-up review cleanup: replaced `type(value) is expected_type` with `==` in `tests/test_edge_cases_phase7b_track_b2.py`
 
 ---
 
