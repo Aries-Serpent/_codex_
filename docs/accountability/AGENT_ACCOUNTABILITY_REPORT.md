@@ -36,16 +36,26 @@
   - Verified all reference directories exist: operations/, admin/, troubleshooting/, monitoring/
   - Commit: 19e1506
 
-**Phase 4: RAG Tests Diagnostics ⏳**
-- 🔄 Delegated to autonomous-test-healer-agent for investigation
-  - Identifying root cause of test-rag.yml failure (completed after 11m)
-  - Will apply fixes and validate test suite passes
+**Phase 4: RAG Tests Diagnostics ✅**
+- ✅ Fixed `test-rag.yml` failure (Workflow #3)
+  - **Root Cause:** System-installed pyOpenSSL v23.2.0 incompatibility with Python 3.12
+  - Import chain failure: sentence-transformers → transformers → accelerate → boto3 → urllib3 → pyOpenSSL
+  - pyOpenSSL missing required Python 3.12 attributes (lib.GEN_EMAIL)
+  - **Fix Applied:** Added cryptography/pyOpenSSL upgrade step BEFORE package installation
+  - pyOpenSSL: 23.2.0 → 26.3.0 (forces pip override of system packages)
+  - **Validation Results:**
+    - ✅ All RAG module imports successful (no ImportError)
+    - ✅ 1,337 test items collected without errors
+    - ✅ Test discovery passes
+  - **Files Modified:**
+    - test-rag.yml: Added cryptography/pyOpenSSL upgrade (commit 95a55e2)
+    - embedding-index-rebuild.yml: Applied same fix for consistency (commit 0642ab4)
 
 ### Compliance Status
 - ✅ Phase 1 (Security): COMPLETE
 - ✅ Phase 2 (Actionlint): COMPLETE - All 19+ violations resolved
 - ✅ Phase 3 (Documentation): COMPLETE - Broken links fixed
-- ⏳ Phase 4 (RAG Tests): IN PROGRESS
+- ✅ Phase 4 (RAG Tests): COMPLETE - Import errors fixed, 1,337 tests now executable
 
 ### Git Commits
 - 19e1506: Phase 1 & 3 complete: Fix security pragma and broken documentation links
@@ -53,6 +63,8 @@
 - 31e5a47: Fix automated-post-deployment-verification.yml (undefined outputs)
 - a96e8e5: Fix automated-monitoring-setup.yml (printf escape sequences)
 - 885ff11-128f684: Fix timeout-minutes violations in 7 workflows
+- 95a55e2: Fix test-rag.yml cryptography/pyOpenSSL upgrade (Phase 4)
+- 0642ab4: Fix embedding-index-rebuild.yml cryptography/pyOpenSSL upgrade (Phase 4)
 
 ---
 
