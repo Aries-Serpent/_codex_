@@ -3,11 +3,11 @@ name: 🔖 Required Actions Version Enforcer
 # Validates that every workflow file uses the approved version of each
 # GitHub Action (e.g., actions/checkout@v4, not v3 or v5-beta).
 #
-# On push / PR:   exits 1 if violations found.
-# On schedule:    auto-fixes and commits.
+# On PRs and protected-branch pushes: exits 1 if violations found.
+# On Copilot / automated branch pushes and schedule: auto-fixes and commits.
 # On workflow_dispatch: --fix or check only (input-controlled).
 
-on:
+'on':
   push:
     branches:
       - "automated/**"
@@ -52,31 +52,55 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@v7  # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
       - name: Set up Python
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6  # v6
         with:
           cache: pip
           python-version: "3.12.13"
 
-      # ── Check-only on PRs and push ────────────────────────────────────────
+      # ── Check-only on PRs and protected-branch pushes ────────────────
       - name: Check action versions (PR / push)
-        if: github.event_name != 'schedule' && github.event.inputs.fix != 'true'
+        if: |
+          github.event_name != 'schedule' &&
+          github.event.inputs.fix != 'true' &&
+          !(
+            github.event_name == 'push' &&
+            (
+              startsWith(github.ref, 'refs/heads/copilot/') ||
+              startsWith(github.ref, 'refs/heads/automated/')
+            )
+          )
         run: |
           python scripts/ci/enforce_actions_versions.py --summary
-          echo "check_exit=$?" >> "$GITHUB_ENV"
         continue-on-error: false
 
-      # ── Auto-fix on schedule or manual dispatch with fix=true ─────────────
+      # ── Auto-fix on schedule, manual dispatch, or Copilot / automated pushes
       - name: Auto-fix action versions
         id: autofix
-        if: github.event_name == 'schedule' || github.event.inputs.fix == 'true'
+        if: |
+          github.event_name == 'schedule' ||
+          github.event.inputs.fix == 'true' ||
+          (
+            github.event_name == 'push' &&
+            (
+              startsWith(github.ref, 'refs/heads/copilot/') ||
+              startsWith(github.ref, 'refs/heads/automated/')
+            )
+          )
         run: |
-          python scripts/ci/enforce_actions_versions.py --fix --summary
+          autofix_json=$(
+            python scripts/ci/enforce_actions_versions.py --fix --summary --json 2>/dev/null
+          )
+          violations=$(
+            printf '%s' "$autofix_json" |
+            python3 -c "import json,sys; print(json.load(sys.stdin).get('total', 0))"
+          )
+          echo "violations=$violations" >> "$GITHUB_OUTPUT"
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -89,8 +113,7 @@ jobs:
           git config user.name  "copilot-swe-agent[bot]"
           git config user.email "198982749+Copilot@users.noreply.github.com"
           git add .github/workflows/ .github/misc/
-          VIOLATIONS=$(python scripts/ci/enforce_actions_versions.py --json 2>/dev/null | \
-            python3 -c "import json,sys; d=json.load(sys.stdin); print(d['total'])" 2>/dev/null || echo "?")
+          VIOLATIONS="${{ steps.autofix.outputs.violations }}"
           git commit -m "fix(ci): auto-update ${VIOLATIONS} action version(s) to approved pins [skip ci]"
           git push
           echo "✅ Committed action version fixes"
@@ -100,7 +123,7 @@ jobs:
         if: |
           failure() &&
           github.event_name == 'pull_request'
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
