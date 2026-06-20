@@ -22,7 +22,7 @@ from pathlib import Path
 
 class ValidationFixtures:
     """Fixtures for advanced validation edge cases"""
-    
+
     VALIDATION_VALUES = [
         (None, False),                  # None is invalid for most types
         ('', False),                    # Empty string for non-empty
@@ -35,7 +35,7 @@ class ValidationFixtures:
         ('very_long_' * 1000, True),   # Very long valid string
         ('string_with_special_!@#', True),  # Special chars
     ]
-    
+
     NUMERIC_RANGES = [
         (0, 100, 0, True),              # Min boundary
         (0, 100, 100, True),            # Max boundary
@@ -72,28 +72,28 @@ class TestDataValidationEdgeCases:
             def validate(self, email):
                 if not email or not isinstance(email, str):
                     return False
-                
+
                 if '@' not in email:
                     return False
-                
+
                 parts = email.split('@')
                 if len(parts) != 2:
                     return False
-                
+
                 local, domain = parts
                 if not local or not domain:
                     return False
-                
+
                 if '.' not in domain:
                     return False
-                
+
                 return True
-        
+
         validator = EmailValidator()
-        
+
         # Valid emails
         assert validator.validate('user@example.com')
-        
+
         # Invalid emails
         assert not validator.validate('')
         assert not validator.validate(None)
@@ -108,15 +108,15 @@ class TestDataValidationEdgeCases:
             def validate(self, phone):
                 if not phone:
                     return False
-                
+
                 # Remove common separators
                 digits = ''.join(c for c in str(phone) if c.isdigit())
-                
+
                 # Valid length (10-15 digits for international)
                 return 10 <= len(digits) <= 15
-        
+
         validator = PhoneValidator()
-        
+
         assert validator.validate('1234567890')
         assert validator.validate('+1 234 567 8900')
         assert not validator.validate('')
@@ -128,14 +128,14 @@ class TestDataValidationEdgeCases:
             def validate(self, url):
                 if not url or not isinstance(url, str):
                     return False
-                
+
                 if not url.startswith(('http://', 'https://')):
                     return False
-                
+
                 return len(url) > 10
-        
+
         validator = URLValidator()
-        
+
         assert validator.validate('https://example.com')
         assert not validator.validate('')
         assert not validator.validate(None)
@@ -156,10 +156,10 @@ class TestDataValidationEdgeCases:
                 if not isinstance(s, str):
                     return False
                 return min_len <= len(s) <= max_len
-        
+
         validator = StringValidator()
         result = validator.validate(test_str, min_len, max_len)
-        
+
         if min_len <= len(test_str) <= max_len:
             assert result is True
         else:
@@ -168,16 +168,16 @@ class TestDataValidationEdgeCases:
     def test_numeric_range_validation(self, numeric_range):
         """Test numeric range validation"""
         min_val, max_val, test_val, expected = numeric_range
-        
+
         class RangeValidator:
             def validate(self, value, min_v, max_v):
                 if value < min_v or value > max_v:
                     return False
                 return True
-        
+
         validator = RangeValidator()
         result = validator.validate(test_val, min_val, max_val)
-        
+
         assert result == expected
 
 
@@ -193,7 +193,7 @@ class TestSerializationEdgeCases:
         data = {'key': None}
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
-        
+
         assert loaded['key'] is None
 
     def test_serialize_empty_collections(self):
@@ -203,10 +203,10 @@ class TestSerializationEdgeCases:
             'empty_dict': {},
             'empty_string': '',
         }
-        
+
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
-        
+
         assert loaded['empty_list'] == []
         assert loaded['empty_dict'] == {}
         assert loaded['empty_string'] == ''
@@ -223,13 +223,13 @@ class TestSerializationEdgeCases:
                     elif obj == float('-inf'):
                         return '-Infinity'
                 return super().default(obj)
-        
+
         data = {'inf': float('inf'), 'nan': float('nan')}
-        
+
         # Standard JSON should fail
         with pytest.raises((ValueError, TypeError)):
             json.dumps(data)
-        
+
         # Custom encoder should work
         json_str = json.dumps(data, cls=SafeJSONEncoder)
         assert 'Infinity' in json_str or 'NaN' in json_str
@@ -242,10 +242,10 @@ class TestSerializationEdgeCases:
             'arabic': 'مرحبا',
             'mixed': 'hello🔥мир',
         }
-        
+
         json_str = json.dumps(data, ensure_ascii=False)
         loaded = json.loads(json_str)
-        
+
         assert loaded['emoji'] == '🔥⭐'
         assert loaded['chinese'] == '你好'
 
@@ -257,15 +257,15 @@ class TestSerializationEdgeCases:
         for i in range(1, 100):
             current['nested'] = {'level': i}
             current = current['nested']
-        
+
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
-        
+
         # Navigate to deepest level
         current = loaded
         for _ in range(99):
             current = current['nested']
-        
+
         assert current['level'] == 99
 
     def test_serialize_circular_reference_detection(self):
@@ -273,7 +273,7 @@ class TestSerializationEdgeCases:
         # Create circular reference
         data = {'a': 1}
         data['self'] = data  # Circular reference
-        
+
         # JSON can't serialize circular references
         with pytest.raises((ValueError, TypeError)):
             json.dumps(data)
@@ -288,11 +288,11 @@ class TestSerializationEdgeCases:
             '',
             'null',  # Valid but might be edge case
         ]
-        
+
         for json_str in malformed[:-1]:  # Skip 'null' which is valid
             with pytest.raises(json.JSONDecodeError):
                 json.loads(json_str)
-        
+
         # Valid edge cases
         assert json.loads('null') is None
         assert json.loads('[]') == []
@@ -341,7 +341,7 @@ class TestTypeCoercionEdgeCases:
             [None, None],
             [[1, 2], [3, 4]],
         ]
-        
+
         for lst in test_lists:
             tup = tuple(lst)
             assert len(tup) == len(lst)
@@ -356,7 +356,7 @@ class TestTypeCoercionEdgeCases:
             {'list': [1, 2, 3]},
             {'mixed': {'a': [1, {'b': 2}]}},
         ]
-        
+
         for d in dicts:
             json_str = json.dumps(d)
             loaded = json.loads(json_str)
@@ -393,12 +393,12 @@ class TestPerformanceBoundaries:
         lst = [0]
         for i in range(1, depth):
             lst = [lst]
-        
+
         # Navigate to deepest
         current = lst
         for _ in range(depth - 1):
             current = current[0]
-        
+
         assert current == 0
 
     def test_string_concatenation_scaling(self):
@@ -406,7 +406,7 @@ class TestPerformanceBoundaries:
         # Using list join is more efficient than concatenation
         parts = [f'part_{i}' for i in range(1000)]
         result = ''.join(parts)
-        
+
         assert len(result) > 0
         assert 'part_0' in result
         assert 'part_999' in result
@@ -414,12 +414,12 @@ class TestPerformanceBoundaries:
     def test_dict_lookup_scaling(self):
         """Test dict lookup performance at scale"""
         d = {f'key_{i}': i for i in range(10000)}
-        
+
         # Random lookups
         assert d['key_0'] == 0
         assert d['key_5000'] == 5000
         assert d['key_9999'] == 9999
-        
+
         # Missing key
         assert d.get('key_missing') is None
 
@@ -435,7 +435,7 @@ class TestDefaultValueEdgeCases:
         """Test function with None default parameter"""
         def func(value=None):
             return value if value is not None else 'default'
-        
+
         assert func() == 'default'
         assert func(None) == 'default'
         assert func('provided') == 'provided'
@@ -444,7 +444,7 @@ class TestDefaultValueEdgeCases:
         """Test function with falsy default parameters"""
         def func(value=0):
             return value
-        
+
         assert func() == 0
         assert func(1) == 1
         assert func(0) == 0
@@ -456,11 +456,11 @@ class TestDefaultValueEdgeCases:
                 items = []
             items.append(1)
             return items
-        
+
         # Correct implementation
         result1 = func()
         result2 = func()
-        
+
         # Should be independent
         assert result1 == [1]
         assert result2 == [1]
@@ -472,10 +472,10 @@ class TestDefaultValueEdgeCases:
                 'a': kwargs.get('a', 'default_a'),
                 'b': kwargs.get('b', 'default_b'),
             }
-        
+
         result = func()
         assert result['a'] == 'default_a'
-        
+
         result = func(a='custom')
         assert result['a'] == 'custom'
         assert result['b'] == 'default_b'
@@ -483,7 +483,7 @@ class TestDefaultValueEdgeCases:
     def test_dict_get_with_default(self):
         """Test dict.get() with various defaults"""
         d = {'key': 'value'}
-        
+
         assert d.get('key') == 'value'
         assert d.get('missing') is None
         assert d.get('missing', 'default') == 'default'
@@ -507,13 +507,13 @@ class TestBoundaryConditionCombinations:
             ([], lambda x: [y * 2 for y in x]),  # Map on empty
             ([], lambda x: [y for y in x if y > 0]),  # Filter on empty
         ]
-        
+
         for inp, op in operations:
             if callable(op):
                 result = op(inp)
             else:
                 result = op(inp)
-            
+
             if inp == []:
                 assert result == []
             elif inp == {}:
@@ -528,12 +528,12 @@ class TestBoundaryConditionCombinations:
         assert len(lst) == 1
         assert lst[0] == 1
         assert lst[-1] == 1
-        
+
         # Single key in dict
         d = {'key': 'value'}
         assert len(d) == 1
         assert d['key'] == 'value'
-        
+
         # Single char string
         s = 'x'
         assert len(s) == 1
@@ -550,7 +550,7 @@ class TestBoundaryConditionCombinations:
                 return 'truthy'
             else:
                 return 'falsy'
-        
+
         assert process(None) == 'none'
         assert process(False) == 'false'
         assert process(0) == 'falsy'
