@@ -63,7 +63,7 @@
 ❌ src/codex/utils/hash_table.py ....................... 0.00%
 ❌ src/codex/utils/subprocess.py ....................... 0.00%
 ❌ src/codex/utils/type_utils.py ....................... 0.00%
-❌ src/codex/secrets/*.py (ALL) ....................... 0.00%
+❌ src/codex/secrets/*.py (ALL) ....................... 0.00%  # pragma: allowlist secret
 ❌ src/codex/zendesk/agent.py .......................... 0.00%
 ```
 
@@ -99,7 +99,7 @@
 2. tests/agents/test_codex_client_bridge_and_demo.py  Missing 'tenacity'
 3. tests/logging/test_causal_event_logger_comprehensive.py  Missing 'DatabaseManager'
 4. tests/security/test_decorators_comprehensive.py  Import error
-5. tests/security/test_token_rotation_comprehensive.py  Import error
+5. tests/security/test_token_rotation_comprehensive.py  Import error  # pragma: allowlist secret
 6. tests/services/msp_gateway/test_rate_limit*.py (3)  Import errors
 7. tests/space_traversal/test_peft_comprehensive (3)  Missing dependencies
 ```
@@ -137,7 +137,7 @@ Current Impact:    209 pre-generated edge-case tests execution
 | `src/codex/utils/subprocess.py` | 0.00% | +40 tests |
 | `src/codex/retrieval/stores/` | 6-30% | +80 tests |
 | `src/codex/training.py` | 8.39% | +120 tests |
-| `src/codex/secrets/` | 0.00% | +60 tests |
+| `src/codex/secrets/` | 0.00% | +60 tests | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -232,7 +232,7 @@ Overall Mutation Confidence Score: ⭐⭐⭐⭐ (82-85%)
 #### Immediate Actions (to reach 20%+)
 ```
 Option A: Add 76 targeted tests
-1. Focus: src/codex/secrets/ (0% coverage - add 15 tests)
+1. Focus: src/codex/secrets/ (0% coverage - add 15 tests)  # pragma: allowlist secret
 2. Focus: src/codex/utils/subprocess.py (0% coverage - add 20 tests)
 3. Focus: src/codex/utils/hash_table.py (0% coverage - add 20 tests)
 4. Focus: src/codex/retrieval/stores/ (6-30% coverage - add 21 tests)
