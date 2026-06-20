@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-06-20T09:45:00Z",
+  "total_policies": 8,
+  "passed_policies": 8,
+  "failed_policies": 0,
+  "compliance_score": 1.0,
+  "status": "compliant",
+  "violations": []
+}

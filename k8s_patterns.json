@@ -1,0 +1,389 @@
+{
+  "aws-dev": {
+    "cloud_provider": "aws",
+    "environment": "dev",
+    "cluster_name": "codex-dev-eks",
+    "kubernetes_version": "1.28.0",
+    "region": "us-east-1",
+    "availability_zones": 2,
+    "resource_sizing": {
+      "recommended_nodes": 2,
+      "node_machine_type": "t3.medium",
+      "cpu_per_node": "2",
+      "memory_per_node": "4Gi",
+      "disk_per_node": "20Gi",
+      "use_spot_instances": true,
+      "spot_percentage": 100,
+      "cost_optimization_potential": 0.65
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "public+private",
+      "dns_provider": "aws-route53",
+      "ingress_controller": "aws-load-balancer-controller",
+      "service_mesh": "none",
+      "network_policies_enabled": false,
+      "security_groups_count": 2
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "restricted",
+      "network_policies": false,
+      "secret_encryption": "aws-kms",
+      "audit_logging": false,
+      "container_scanning": true,
+      "image_registry_requirements": "ecr-optional"
+    },
+    "autoscaling": {
+      "min_nodes": 2,
+      "max_nodes": 5,
+      "target_cpu_utilization": 70,
+      "target_memory_utilization": 75,
+      "scale_down_delay_minutes": 5,
+      "scale_up_speed": "fast"
+    },
+    "monitoring_enabled": false,
+    "logging_provider": "cloudwatch",
+    "backup_enabled": false,
+    "backup_frequency": "never",
+    "cost_estimate_monthly": 45.0,
+    "confidence_score": 0.92,
+    "best_practices": [
+      "Use spot instances for cost savings in dev",
+      "Enable RBAC for access control",
+      "Use CloudWatch for basic monitoring",
+      "Configure ALB ingress for load balancing",
+      "Implement pod resource limits"
+    ],
+    "known_issues": [
+      "Spot instances may be interrupted",
+      "EBS volumes have performance limits",
+      "Cross-AZ networking incurs data transfer costs"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783737"
+  },
+  "aws-prod": {
+    "cloud_provider": "aws",
+    "environment": "prod",
+    "cluster_name": "codex-prod-eks",
+    "kubernetes_version": "1.28.0",
+    "region": "us-east-1",
+    "availability_zones": 3,
+    "resource_sizing": {
+      "recommended_nodes": 6,
+      "node_machine_type": "t3.large",
+      "cpu_per_node": "2",
+      "memory_per_node": "8Gi",
+      "disk_per_node": "50Gi",
+      "use_spot_instances": false,
+      "spot_percentage": 0,
+      "cost_optimization_potential": 0.15
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "public+private+isolated",
+      "dns_provider": "aws-route53",
+      "ingress_controller": "aws-load-balancer-controller",
+      "service_mesh": "istio",
+      "network_policies_enabled": true,
+      "security_groups_count": 4
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "restricted",
+      "network_policies": true,
+      "secret_encryption": "aws-kms",
+      "audit_logging": true,
+      "container_scanning": true,
+      "image_registry_requirements": "ecr-required"
+    },
+    "autoscaling": {
+      "min_nodes": 6,
+      "max_nodes": 20,
+      "target_cpu_utilization": 60,
+      "target_memory_utilization": 70,
+      "scale_down_delay_minutes": 30,
+      "scale_up_speed": "medium"
+    },
+    "monitoring_enabled": true,
+    "logging_provider": "cloudwatch+prometheus",
+    "backup_enabled": true,
+    "backup_frequency": "daily",
+    "cost_estimate_monthly": 350.0,
+    "confidence_score": 0.95,
+    "best_practices": [
+      "Use on-demand instances for stability",
+      "Implement multi-AZ deployment",
+      "Enable comprehensive RBAC",
+      "Use service mesh for traffic management",
+      "Enable all security and audit logging",
+      "Implement pod disruption budgets",
+      "Configure horizontal pod autoscaler",
+      "Use managed node groups"
+    ],
+    "known_issues": [
+      "Service mesh adds operational complexity",
+      "Higher cost for production-grade setup",
+      "Requires dedicated infrastructure team"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783782"
+  },
+  "gcp-dev": {
+    "cloud_provider": "gcp",
+    "environment": "dev",
+    "cluster_name": "codex-dev-gke",
+    "kubernetes_version": "1.28.0",
+    "region": "us-central1",
+    "availability_zones": 2,
+    "resource_sizing": {
+      "recommended_nodes": 2,
+      "node_machine_type": "e2-medium",
+      "cpu_per_node": "2",
+      "memory_per_node": "4Gi",
+      "disk_per_node": "20Gi",
+      "use_spot_instances": true,
+      "spot_percentage": 100,
+      "cost_optimization_potential": 0.7
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "default",
+      "dns_provider": "cloud-dns",
+      "ingress_controller": "gce-ingress",
+      "service_mesh": "none",
+      "network_policies_enabled": false,
+      "security_groups_count": 1
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "restricted",
+      "network_policies": false,
+      "secret_encryption": "gcp-cloud-kms",
+      "audit_logging": false,
+      "container_scanning": true,
+      "image_registry_requirements": "gcr-optional"
+    },
+    "autoscaling": {
+      "min_nodes": 2,
+      "max_nodes": 5,
+      "target_cpu_utilization": 70,
+      "target_memory_utilization": 75,
+      "scale_down_delay_minutes": 5,
+      "scale_up_speed": "fast"
+    },
+    "monitoring_enabled": false,
+    "logging_provider": "stackdriver",
+    "backup_enabled": false,
+    "backup_frequency": "never",
+    "cost_estimate_monthly": 40.0,
+    "confidence_score": 0.9,
+    "best_practices": [
+      "Use Compute Engine preemptible VMs for cost savings",
+      "Enable Workload Identity for pod auth",
+      "Use Cloud Logging for monitoring",
+      "Configure Google Cloud Load Balancing",
+      "Implement pod resource limits"
+    ],
+    "known_issues": [
+      "Preemptible VMs may be preempted",
+      "GCS bucket access requires service accounts",
+      "Cross-region networking is complex"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783803"
+  },
+  "gcp-prod": {
+    "cloud_provider": "gcp",
+    "environment": "prod",
+    "cluster_name": "codex-prod-gke",
+    "kubernetes_version": "1.28.0",
+    "region": "us-central1",
+    "availability_zones": 3,
+    "resource_sizing": {
+      "recommended_nodes": 6,
+      "node_machine_type": "n2-standard-2",
+      "cpu_per_node": "2",
+      "memory_per_node": "8Gi",
+      "disk_per_node": "50Gi",
+      "use_spot_instances": false,
+      "spot_percentage": 0,
+      "cost_optimization_potential": 0.1
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "vpc-native",
+      "dns_provider": "cloud-dns",
+      "ingress_controller": "gce-ingress",
+      "service_mesh": "istio",
+      "network_policies_enabled": true,
+      "security_groups_count": 3
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "restricted",
+      "network_policies": true,
+      "secret_encryption": "gcp-cloud-kms",
+      "audit_logging": true,
+      "container_scanning": true,
+      "image_registry_requirements": "gcr-required"
+    },
+    "autoscaling": {
+      "min_nodes": 6,
+      "max_nodes": 20,
+      "target_cpu_utilization": 60,
+      "target_memory_utilization": 70,
+      "scale_down_delay_minutes": 30,
+      "scale_up_speed": "medium"
+    },
+    "monitoring_enabled": true,
+    "logging_provider": "stackdriver+prometheus",
+    "backup_enabled": true,
+    "backup_frequency": "daily",
+    "cost_estimate_monthly": 330.0,
+    "confidence_score": 0.94,
+    "best_practices": [
+      "Use standard VMs for production stability",
+      "Enable Workload Identity for pod authentication",
+      "Implement comprehensive RBAC",
+      "Use service mesh for traffic control",
+      "Enable audit logging and Cloud Logging",
+      "Implement pod disruption budgets",
+      "Configure horizontal pod autoscaler",
+      "Use regional clusters for high availability"
+    ],
+    "known_issues": [
+      "Service mesh increases operational overhead",
+      "Higher cost for production setup",
+      "Requires expertise in GKE administration"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783820"
+  },
+  "azure-dev": {
+    "cloud_provider": "azure",
+    "environment": "dev",
+    "cluster_name": "codex-dev-aks",
+    "kubernetes_version": "1.28.0",
+    "region": "eastus",
+    "availability_zones": 1,
+    "resource_sizing": {
+      "recommended_nodes": 2,
+      "node_machine_type": "Standard_B2s",
+      "cpu_per_node": "2",
+      "memory_per_node": "4Gi",
+      "disk_per_node": "30Gi",
+      "use_spot_instances": true,
+      "spot_percentage": 100,
+      "cost_optimization_potential": 0.6
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "standard",
+      "dns_provider": "azure-dns",
+      "ingress_controller": "azure-application-gateway",
+      "service_mesh": "none",
+      "network_policies_enabled": false,
+      "security_groups_count": 1
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "baseline",
+      "network_policies": false,
+      "secret_encryption": "azure-key-vault",
+      "audit_logging": false,
+      "container_scanning": true,
+      "image_registry_requirements": "acr-optional"
+    },
+    "autoscaling": {
+      "min_nodes": 2,
+      "max_nodes": 5,
+      "target_cpu_utilization": 70,
+      "target_memory_utilization": 75,
+      "scale_down_delay_minutes": 10,
+      "scale_up_speed": "fast"
+    },
+    "monitoring_enabled": false,
+    "logging_provider": "azure-monitor",
+    "backup_enabled": false,
+    "backup_frequency": "never",
+    "cost_estimate_monthly": 35.0,
+    "confidence_score": 0.88,
+    "best_practices": [
+      "Use spot instances for cost savings",
+      "Enable Azure RBAC for access control",
+      "Use Azure Monitor for basic monitoring",
+      "Configure Application Gateway for ingress",
+      "Implement pod resource limits"
+    ],
+    "known_issues": [
+      "Spot instances can be evicted",
+      "Limited spot instance availability",
+      "Key Vault integration requires setup"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783835"
+  },
+  "azure-prod": {
+    "cloud_provider": "azure",
+    "environment": "prod",
+    "cluster_name": "codex-prod-aks",
+    "kubernetes_version": "1.28.0",
+    "region": "eastus",
+    "availability_zones": 3,
+    "resource_sizing": {
+      "recommended_nodes": 6,
+      "node_machine_type": "Standard_D4s_v3",
+      "cpu_per_node": "4",
+      "memory_per_node": "16Gi",
+      "disk_per_node": "50Gi",
+      "use_spot_instances": false,
+      "spot_percentage": 0,
+      "cost_optimization_potential": 0.12
+    },
+    "networking": {
+      "vpc_cidr": "10.0.0.0/16",
+      "subnet_strategy": "advanced",
+      "dns_provider": "azure-dns",
+      "ingress_controller": "nginx-ingress",
+      "service_mesh": "istio",
+      "network_policies_enabled": true,
+      "security_groups_count": 3
+    },
+    "security": {
+      "rbac_enabled": true,
+      "pod_security_policy": "restricted",
+      "network_policies": true,
+      "secret_encryption": "azure-key-vault",
+      "audit_logging": true,
+      "container_scanning": true,
+      "image_registry_requirements": "acr-required"
+    },
+    "autoscaling": {
+      "min_nodes": 6,
+      "max_nodes": 20,
+      "target_cpu_utilization": 60,
+      "target_memory_utilization": 70,
+      "scale_down_delay_minutes": 30,
+      "scale_up_speed": "medium"
+    },
+    "monitoring_enabled": true,
+    "logging_provider": "azure-monitor+prometheus",
+    "backup_enabled": true,
+    "backup_frequency": "daily",
+    "cost_estimate_monthly": 400.0,
+    "confidence_score": 0.93,
+    "best_practices": [
+      "Use standard VMs for production",
+      "Enable Azure RBAC and pod identity",
+      "Implement comprehensive network policies",
+      "Use service mesh for traffic management",
+      "Enable audit logging to Log Analytics",
+      "Implement pod disruption budgets",
+      "Configure horizontal pod autoscaler",
+      "Use availability zones for resilience"
+    ],
+    "known_issues": [
+      "Service mesh adds complexity",
+      "Higher operational cost",
+      "Requires Azure infrastructure expertise"
+    ],
+    "last_updated": "2026-06-20T09:41:51.783850"
+  }
+}
