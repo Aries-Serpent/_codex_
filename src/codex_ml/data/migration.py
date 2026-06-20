@@ -76,96 +76,100 @@ class AssignmentMappingMigration:
 
     @staticmethod
     def rollback_v3_to_v2(v3_path: Path) -> dict[str, Any]:
-       """Rollback v3 assignment mappings to v2 format.
+        """Rollback v3 assignment mappings to v2 format.
 
-       Args:
-           v3_path: Path to v3 assignment mapping file
+        Args:
+            v3_path: Path to v3 assignment mapping file
 
-       Returns:
-           dict containing v2 format assignment mappings
-       """
-       with open(v3_path, encoding="utf-8") as f:
-           v3_data = json.load(f)
+        Returns:
+            dict containing v2 format assignment mappings
+        """
+        with open(v3_path, encoding="utf-8") as f:
+            v3_data = json.load(f)
 
-       # Transform v3 structure back to v2
-       v2_data: dict[str, Any] = {"version": "2.0", "mappings": []}
+        # Transform v3 structure back to v2
+        v2_data: dict[str, Any] = {"version": "2.0", "mappings": []}
 
-       for item in v3_data.get("items", []):
-           v2_data["mappings"].append(
-               {
-                   "id": item["uuid"],
-                   "name": item.get("label", ""),
-                   "type": item.get("category", "general"),
-                   "created_at": item.get("timestamp", ""),
-                   "metadata": item.get("attributes", {}),
-               }
-           )
+        for item in v3_data.get("items", []):
+            v2_data["mappings"].append(
+                {
+                    "id": item["uuid"],
+                    "name": item.get("label", ""),
+                    "type": item.get("category", "general"),
+                    "created_at": item.get("timestamp", ""),
+                    "metadata": item.get("attributes", {}),
+                }
+            )
 
-       return v2_data
+        return v2_data
 
     @staticmethod
     def rollback_v2_to_v1(v2_path: Path) -> dict[str, Any]:
-       """Rollback v2 assignment mappings to v1 format.
+        """Rollback v2 assignment mappings to v1 format.
 
-       Args:
-           v2_path: Path to v2 assignment mapping file
+        Args:
+            v2_path: Path to v2 assignment mapping file
 
-       Returns:
-           dict containing v1 format assignment mappings
-       """
-       with open(v2_path, encoding="utf-8") as f:
-           v2_data = json.load(f)
+        Returns:
+            dict containing v1 format assignment mappings
+        """
+        with open(v2_path, encoding="utf-8") as f:
+            v2_data = json.load(f)
 
-       # Transform v2 structure back to v1
-       v1_data: dict[str, Any] = {"version": "1.0", "assignments": []}
+        # Transform v2 structure back to v1
+        v1_data: dict[str, Any] = {"version": "1.0", "assignments": []}
 
-       for mapping in v2_data.get("mappings", []):
-           v1_data["assignments"].append(
-               {
-                   "id": mapping["id"],
-                   "name": mapping.get("name", ""),
-                   "type": mapping.get("type", "default"),
-                   "timestamp": mapping.get("created_at", ""),
-                   "extra": mapping.get("metadata", {}),
-               }
-           )
+        for mapping in v2_data.get("mappings", []):
+            v1_data["assignments"].append(
+                {
+                    "id": mapping["id"],
+                    "name": mapping.get("name", ""),
+                    "type": mapping.get("type", "default"),
+                    "timestamp": mapping.get("created_at", ""),
+                    "extra": mapping.get("metadata", {}),
+                }
+            )
 
-       return v1_data
+        return v1_data
 
     @staticmethod
     def selective_rollback(v3_path: Path, item_ids: list[str]) -> dict[str, Any]:
-       """Rollback only selected items to v2 format.
+        """Rollback only selected items to v2 format.
 
-       Args:
-           v3_path: Path to v3 assignment mapping file
-           item_ids: List of item UUIDs to rollback
+        Args:
+            v3_path: Path to v3 assignment mapping file
+            item_ids: List of item UUIDs to rollback
 
-       Returns:
-           dict with mixed v3 (kept) and v2 (rolled back) items
-       """
-       with open(v3_path, encoding="utf-8") as f:
-           v3_data = json.load(f)
+        Returns:
+            dict with mixed v3 (kept) and v2 (rolled back) items
+        """
+        with open(v3_path, encoding="utf-8") as f:
+            v3_data = json.load(f)
 
-       result = {"version": "3.0", "schema": "assignment_mapping_v3", "items": []}
+        result: dict[str, Any] = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [],
+        }
 
-       for item in v3_data.get("items", []):
-           item_id = item["uuid"]
-           if item_id in item_ids:
-               # Rollback this item to v2 format
-               result["items"].append(
-                   {
-                       "id": item_id,
-                       "name": item.get("label", ""),
-                       "type": item.get("category", "general"),
-                       "created_at": item.get("timestamp", ""),
-                       "metadata": item.get("attributes", {}),
-                   }
-               )
-           else:
-               # Keep in v3 format
-               result["items"].append(item)
+        for item in v3_data.get("items", []):
+            item_id = item["uuid"]
+            if item_id in item_ids:
+                # Rollback this item to v2 format
+                result["items"].append(
+                    {
+                        "id": item_id,
+                        "name": item.get("label", ""),
+                        "type": item.get("category", "general"),
+                        "created_at": item.get("timestamp", ""),
+                        "metadata": item.get("attributes", {}),
+                    }
+                )
+            else:
+                # Keep in v3 format
+                result["items"].append(item)
 
-       return result
+        return result
 
 
 def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> dict[str, Any]:
