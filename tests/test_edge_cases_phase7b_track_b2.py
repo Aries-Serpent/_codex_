@@ -16,6 +16,7 @@ Author: autonomous-test-healer-agent (v2.0.0-s228)
 Created: 2026-06-20
 """
 
+import ast
 import asyncio
 import tempfile
 import threading
@@ -999,8 +1000,28 @@ class TestSuiteMetadata:
 
 def test_all_tests_are_deterministic():
     """Verify tests are deterministic (no flakiness markers)"""
-    # For now, just verify the test runs
-    assert True
+    source = Path(__file__).read_text(encoding='utf-8')
+    module = ast.parse(source)
+
+    imported_modules = {
+        alias.name
+        for node in ast.walk(module)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    imported_modules.update(
+        node.module or ''
+        for node in ast.walk(module)
+        if isinstance(node, ast.ImportFrom)
+    )
+
+    assert 'random' not in imported_modules
+    assert not any(
+        isinstance(decorator, ast.Attribute) and decorator.attr == 'flaky'
+        for node in ast.walk(module)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        for decorator in node.decorator_list
+    )
 
 
 if __name__ == '__main__':

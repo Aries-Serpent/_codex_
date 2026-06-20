@@ -304,7 +304,7 @@ SECURE LOGGING GUIDELINES:
 7. SETUP secure logging in application entry points:
    ```python
    import logging
-   from src.security.logging import setup_secure_logging
+   from security.logging import setup_secure_logging
    
    logger = logging.getLogger(__name__)
    setup_secure_logging(logger)

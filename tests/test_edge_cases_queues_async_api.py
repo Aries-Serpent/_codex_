@@ -9,8 +9,6 @@ Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
 import pytest
-from unittest.mock import Mock, AsyncMock, patch
-from typing import Any, Optional, List
 from collections import deque
 import asyncio
 import threading

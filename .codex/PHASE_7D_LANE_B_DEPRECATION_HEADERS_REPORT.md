@@ -44,7 +44,7 @@ This report documents the successful implementation of RFC 8594 compliant deprec
   ```json
   {
     "username": "string",
-    "password": "string"
+    "password": "string" <!-- pragma: allowlist secret -->
   }
   ```
 - **New Endpoint Features:**
@@ -385,7 +385,7 @@ Warning: 299 - "Use /api/auth/login for modern token management"
 ```bash
 curl -X POST https://api.codex.dev/api/v1/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "user", "password": "pass"}'
+  -d '{"username": "user", "password": "pass"}' <!-- pragma: allowlist secret -->
 ```
 
 **New Endpoint:**
@@ -394,7 +394,7 @@ curl -X POST https://api.codex.dev/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "username_or_email": "user@example.com",
-    "password": "pass",
+    "password": "pass", <!-- pragma: allowlist secret -->
     "totp_code": "123456"
   }'
 ```
