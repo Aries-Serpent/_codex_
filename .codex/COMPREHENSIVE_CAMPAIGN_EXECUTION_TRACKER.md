@@ -12,7 +12,7 @@
 ### Phase 1: Immediate Blockers ✅ COMPLETE
 **Status:** COMPLETE (10:57:24Z)
 - ✅ Pre-flight validation fixes applied (timeout-minutes added to automated-post-deployment-verification.yml)
-- ✅ Setuptools version pin fixed (setuptools>=78.1.1,<82 to satisfy torch 2.12.1 constraint)
+- ✅ Setuptools version pin fixed (setuptools>=78.1.1,<82 as defined in pyproject.toml build-system requirements)
 - ✅ Pre-flight validation passes: 6/6 checks passing
 - ✅ Commit: 53a1549 (Phase 1 blocker fixes)
 
@@ -29,7 +29,7 @@
 **Duration:** 2 hours (Target: 12:57:24Z)  
 **Dependencies:** None (independent execution)
 
-**Mission:** Gap-fill coverage 70%→85%+
+**Mission:** Gap-fill coverage 17.57%→85%+
 **Expected Deliverables:**
 - Gap-filling tests for low-coverage modules
 - Updated .coverage-baseline
@@ -116,7 +116,7 @@
 **Duration:** 4 hours (Target: 18:57:24Z)  
 **Dependencies:** Tracks 1, 3A, 3B (post-execution consolidation)
 
-**Mission:** Consolidate 314→<200 workflows
+**Mission:** Consolidate workflows (see `.github/workflows/INDEX.md` for current count)→achieve <200 target
 **Expected Deliverables:**
 - Consolidated workflow suite
 - Cache optimization report
@@ -136,7 +136,7 @@
 ### Coverage (Track 1)
 | Metric | Current | Target | Track |
 |--------|---------|--------|-------|
-| Code Coverage | ~70% | >85% | Track 1 |
+| Code Coverage | 17.57% | >85% | Track 1 |
 | Gap-filled Modules | 0 | 15+ | Track 1 |
 | New Test Count | 0 | 50+ | Track 1 |
 | No Regressions | ✅ | ✅ | Track 1 |
@@ -168,7 +168,7 @@
 ### CI/CD Pipeline (Track 4)
 | Metric | Current | Target | Track |
 |--------|---------|--------|-------|
-| Active Workflows | 314 | <200 | Track 4 |
+| Active Workflows | See `.github/workflows/INDEX.md` | <200 | Track 4 |
 | CI Stability | 99.4% | >99.9% | Track 4 |
 | Critical Path | ~32 min | <20 min | Track 4 |
 | Parallelism Efficiency | ~75% | >90% | Track 4 |
@@ -209,12 +209,12 @@ T+7h:00m → Final verification gate runs ⏳ PENDING
 
 | Dimension | Current | Target | Status | Track |
 |-----------|---------|--------|--------|-------|
-| **Coverage** | ~70% | >85% | ⏳ Track 1 | 1 |
+| **Coverage** | 17.57% | >85% | ⏳ Track 1 | 1 |
 | **Security** | 0 critical/high | 0 | ⏳ Track 2 | 2 |
 | **Documentation** | ~96% | 99%+ | ⏳ Track 3A | 3A |
 | **Functionality** | ~94-96% E2E | 100% | ⏳ Track 3B | 3B |
 | **CI/CD Stability** | 99.4% | >99.9% | ⏳ Track 4 | 4 |
-| **Workflow Count** | 314 | <200 | ⏳ Track 4 | 4 |
+| **Workflow Count** | See `.github/workflows/INDEX.md` | <200 | ⏳ Track 4 | 4 |
 | **Critical Path** | ~32 min | <20 min | ⏳ Track 4 | 4 |
 | **Production Ready** | ~85% | 100% | ⏳ TRACKS 1-4 | All |
 
