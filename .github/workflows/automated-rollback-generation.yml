@@ -198,7 +198,7 @@ jobs:
       # Step 8: Commit changes
       - name: Commit generated procedures
         id: commit
-        if: steps.validation.outputs.validation_passed == 'true'
+        if: steps.validate.outputs.validation_passed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
