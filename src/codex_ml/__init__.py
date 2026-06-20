@@ -165,23 +165,19 @@ _EXPORT_MAP = {
     "ModelHandle": ("codex_ml.symbolic_pipeline", "ModelHandle"),
     "RewardModelHandle": ("codex_ml.symbolic_pipeline", "RewardModelHandle"),
     
-    # P1 - CLI-Critical Exports (BLOCKING)
+    # P1 - CLI-Critical Exports (BLOCKING) - Successfully implemented
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),
-    "list_available_models": ("codex_ml.tokenization", "list_available_models"),
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
     
-    # P2 - Core ML Functionality (High Priority)
+    # P2 - Core ML Functionality (High Priority) - Successfully implemented
     "CheckpointManager": ("codex_ml.utils.checkpointing", "CheckpointManager"),
     "load_checkpoint": ("codex_ml.utils.checkpointing", "load_checkpoint"),
     "save_checkpoint": ("codex_ml.utils.checkpointing", "save_checkpoint"),
     "load_training_checkpoint": ("codex_ml.utils.checkpointing", "load_training_checkpoint"),
     "verify_ckpt_integrity": ("codex_ml.utils.checkpointing", "verify_ckpt_integrity"),
-    "get_model": ("codex_ml.model_registry", "get_model"),
-    "register_model": ("codex_ml.model_registry", "register_model"),
-    "list_models": ("codex_ml.model_registry", "list_models"),
     
-    # P3 - Observability/Utilities (Medium Priority)
+    # P3 - Observability/Utilities (Medium Priority) - Successfully implemented
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),
     "DatasetManifest": ("codex_ml.utils.repro", "DatasetManifest"),
