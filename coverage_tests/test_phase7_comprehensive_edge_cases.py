@@ -5,11 +5,8 @@ PHASE 7 LANE 1 coverage closure mission
 Generated: 2026-06-20
 Target: 100+ additional tests for comprehensive edge-case coverage
 """
-import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
-from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 
@@ -188,7 +185,7 @@ class TestMemoryAndResourceHandling:
     def test_file_handle_leak(self):
         """Test for potential file handle leaks"""
         try:
-            from codex.file_utils import read_file, write_file
+            from codex.file_utils import write_file
             # Multiple file operations
             for i in range(100):
                 try:
