@@ -41,7 +41,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    timeout-minutes: 60
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
