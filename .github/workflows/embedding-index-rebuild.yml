@@ -21,7 +21,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    timeout-minutes: 60
   rebuild:
     name: Rebuild FAISS Embedding Index
     runs-on: ubuntu-latest
