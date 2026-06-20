@@ -43,10 +43,10 @@ jobs:
       validation_issues: ${{ steps.validate.outputs.issues }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -88,7 +88,7 @@ jobs:
           echo "Issues found: $ISSUES"
 
       - name: Upload validation results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: validation-results
           path: |
@@ -106,10 +106,10 @@ jobs:
       connectivity_tests_passed: ${{ steps.connectivity.outputs.tests_passed }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -140,7 +140,7 @@ jobs:
           echo "Tests passed: $TESTS_PASSED"
 
       - name: Upload connectivity results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: connectivity-results
           path: connectivity_output.json
@@ -158,7 +158,7 @@ jobs:
       needs.test_registry_connectivity.result == 'success'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create approval request
         id: approval
@@ -185,7 +185,7 @@ jobs:
       needs.validate_registry_configuration.outputs.validation_confidence >= 0.80
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Store registry variables
         env:
@@ -211,10 +211,10 @@ jobs:
     if: always() && needs.validate_registry_configuration.outputs.validation_confidence >= 0.80
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -250,7 +250,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate workflow summary
         run: |

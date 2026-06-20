@@ -30,10 +30,10 @@ jobs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Upload Patterns
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: k8s-patterns
           path: k8s_patterns.json
@@ -58,15 +58,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Download Patterns
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: k8s-patterns
 
@@ -75,7 +75,7 @@ jobs:
           python scripts/deployment/validate_infrastructure_policy.py
 
       - name: Upload Compliance Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: compliance-report
           path: infrastructure_compliance_report.json
@@ -87,15 +87,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Download Patterns
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: k8s-patterns
 
@@ -104,7 +104,7 @@ jobs:
           python scripts/deployment/estimate_infrastructure_cost.py
 
       - name: Upload Cost Estimate
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cost-estimate
           path: cost_estimate.json
@@ -116,15 +116,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Download Patterns
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: k8s-patterns
 
@@ -133,7 +133,7 @@ jobs:
           python scripts/deployment/generate_tf_config.py
 
       - name: Upload Terraform Modules
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: terraform-modules
           path: infrastructure/terraform/
@@ -145,15 +145,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Download Terraform Modules
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: terraform-modules
           path: infrastructure/terraform/
@@ -168,7 +168,7 @@ jobs:
           python scripts/deployment/run_terraform_plan.py
 
       - name: Upload Plan Summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: terraform-plan
           path: terraform_plan_summary.md
@@ -187,10 +187,10 @@ jobs:
       name: infrastructure-approval
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download All Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
 
       - name: Generate Approval Summary
         run: |
@@ -226,7 +226,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate Completion Report
         run: |
@@ -242,7 +242,7 @@ jobs:
           echo "- Cluster provisioning plan" >> completion_report.md
 
       - name: Upload Completion Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: completion-report
           path: completion_report.md

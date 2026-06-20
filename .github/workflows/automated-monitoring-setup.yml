@@ -35,12 +35,12 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -290,7 +290,7 @@ jobs:
           cat setup-report.md
 
       - name: Upload setup report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: monitoring-setup-report
           path: setup-report.md
@@ -316,7 +316,7 @@ jobs:
 
       - name: Upload deployment logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: monitoring-deployment-logs
           path: logs/
@@ -324,7 +324,7 @@ jobs:
 
       - name: Post deployment status
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
