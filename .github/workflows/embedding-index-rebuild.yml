@@ -66,7 +66,12 @@ jobs:
         age_hours={age_hours:.1f}\\n\")\n    f.write(f\"generated_at={generated_at_str}\\\
         n\")\nPYEOF\n"
     - name: Install embedding dependencies
-      run: pip install sentence-transformers faiss-cpu numpy --quiet
+      run: |
+        # Upgrade cryptography and pyOpenSSL first to fix compatibility issues
+        # with transformers/sentence-transformers on Python 3.12
+        # (S228: fixes OpenSSL/cryptography mismatch in system packages)
+        pip install --upgrade cryptography pyOpenSSL --quiet
+        pip install sentence-transformers faiss-cpu numpy --quiet
     - name: Rebuild embedding index
       id: rebuild
       run: "python scripts/ci/build_embeddings.py\npython3 -c \"\nimport json\nmeta\
