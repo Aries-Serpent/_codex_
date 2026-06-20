@@ -1,5 +1,5 @@
 name: Build & Push Preview Image
-true:
+on:
   push:
     branches:
     - main

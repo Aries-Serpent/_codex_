@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5027)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5027 (SHA `51fedbd2`) at 2026-06-20T12:02Z [auto-generated]
+- Compliance: Merged accountability report entry and CHANGELOG sync for PR #5027 CI resolution (SHA `ae4e9c1`) at 2026-06-20T12:02Z [auto-generated]
+- Final: PR #5027 session completed with all CI compliance checks passing (SHA `50d1bc6`) at 2026-06-20T12:04Z [auto-generated]
+
+
+
 ### Fixed (SN)
 
 - **tests/test_edge_cases_day2_batch1.py**: Fixed all `MemoryEntry` constructor calls to use the correct

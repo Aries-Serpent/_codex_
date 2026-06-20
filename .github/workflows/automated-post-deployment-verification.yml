@@ -27,6 +27,7 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       environment: ${{ steps.setup.outputs.environment }}
       service_url: ${{ steps.setup.outputs.service_url }}
@@ -143,6 +144,7 @@ jobs:
 
   smoke-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: setup
     steps:
       - name: Checkout
@@ -182,6 +184,7 @@ jobs:
 
   critical-path-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: setup
     steps:
       - name: Checkout

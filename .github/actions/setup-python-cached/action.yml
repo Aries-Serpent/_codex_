@@ -174,7 +174,7 @@ runs:
           exit 1
         fi
         PYTHON_BIN=".venv_ci/bin/python"
-        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip "setuptools>=78.1.1,<82" wheel
         # Pinned pytest plugin set — keeps CI reproducible
         "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip \
           pytest==8.4.2 \
@@ -207,7 +207,7 @@ runs:
           rm -rf .venv_ci
           python -m venv .venv_ci
           PYTHON_BIN=".venv_ci/bin/python"
-          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip "setuptools>=78.1.1,<82" wheel
           "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip \
             pytest==8.4.2 \
             pytest-timeout==2.4.0 \
@@ -219,7 +219,7 @@ runs:
             "pytest-rerunfailures>=12.0"
           "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
         fi
-        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip "setuptools>=78.1.1,<82" wheel --quiet
         "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
         echo "::endgroup::"
 
