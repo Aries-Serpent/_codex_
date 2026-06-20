@@ -3,11 +3,18 @@
 # Provides pre-built dependency layers for fast CI runs
 # =============================================================================
 
+# Metadata labels (applied to all stages)
+ARG VERSION="1.0.0"
+ARG BUILD_DATE="unknown"
+
 # -----------------------------------------------------------------------------
 # Stage 1: Base Python with UV
 # -----------------------------------------------------------------------------
 # FROM python:3.14-slim (pinned below)
 FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97 as base
+
+LABEL maintainer="codex-ml-team"
+LABEL stage="base"
 
 # Install UV globally
 RUN pip install --no-cache-dir uv
@@ -19,10 +26,15 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash codex
+
 # -----------------------------------------------------------------------------
 # Stage 2: Minimal dependencies
 # -----------------------------------------------------------------------------
 FROM base as minimal
+
+LABEL stage="minimal"
 
 COPY requirements-minimal.txt ./
 RUN uv pip install --system -r requirements-minimal.txt
@@ -32,6 +44,8 @@ RUN uv pip install --system -r requirements-minimal.txt
 # -----------------------------------------------------------------------------
 FROM minimal as test
 
+LABEL stage="test"
+
 COPY requirements-test.txt ./
 RUN uv pip install --system -r requirements-test.txt
 
@@ -39,6 +53,8 @@ RUN uv pip install --system -r requirements-test.txt
 # Stage 4: Full dependencies
 # -----------------------------------------------------------------------------
 FROM test as full
+
+LABEL stage="full"
 
 COPY requirements.txt ./
 RUN uv pip install --system -r requirements.txt
@@ -48,11 +64,26 @@ RUN uv pip install --system -r requirements.txt
 # -----------------------------------------------------------------------------
 FROM full as dev
 
+LABEL maintainer="codex-ml-team"
+LABEL stage="dev"
+LABEL org.opencontainers.image.description="Codex ML CI/CD development image"
+LABEL org.opencontainers.image.version="1.0.0"
+
 COPY requirements-dev.txt ./
 RUN uv pip install --system -r requirements-dev.txt
 
 # Copy application code
 COPY . .
+
+# Fix ownership of all files for non-root user
+RUN chown -R codex:codex /app
+
+# Switch to non-root user
+USER codex
+
+# Health check for CI image
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "import sys; sys.exit(0)" || exit 1
 
 # Default command
 CMD ["python", "-m", "pytest", "tests/"]

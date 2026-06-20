@@ -1,0 +1,24 @@
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      app: custom-metrics
+    name: custom-app-metrics
+    namespace: default
+  spec:
+    endpoints:
+    - interval: 30s
+      port: metrics
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __meta_kubernetes_namespace
+        targetLabel: namespace
+      - action: replace
+        sourceLabels:
+        - __meta_kubernetes_pod_name
+        targetLabel: pod
+      scrapeTimeout: 10s
+    selector:
+      matchLabels:
+        app: custom-metrics

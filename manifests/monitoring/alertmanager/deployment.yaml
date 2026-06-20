@@ -1,0 +1,236 @@
+---
+# ServiceAccount for AlertManager
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager
+  namespace: monitoring
+---
+# ConfigMap for AlertManager configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+      slack_api_url: '' # Set to Slack webhook URL
+      pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+    
+    # Define templates for notifications
+    templates:
+      - '/etc/alertmanager/templates/*.tmpl'
+    
+    # The root route with all parameters, which is used as a template for child routes that are not fully specified.
+    route:
+      receiver: 'default'
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      
+      routes:
+        # Critical alerts - send to PagerDuty
+        - match:
+            severity: critical
+          receiver: 'pagerduty'
+          continue: true
+          group_wait: 0s
+          repeat_interval: 4h
+        
+        # Warning alerts - send to Slack
+        - match:
+            severity: warning
+          receiver: 'slack-warnings'
+          group_wait: 30s
+          repeat_interval: 24h
+        
+        # Info alerts - send to default
+        - match:
+            severity: info
+          receiver: 'default'
+          repeat_interval: 7d
+    
+    receivers:
+      # Default receiver (email)
+      - name: 'default'
+        email_configs:
+          - to: 'alerts@example.com'
+            from: 'alertmanager@example.com'
+            smarthost: 'smtp.example.com:587'
+            auth_username: 'alertmanager@example.com'
+            auth_password: 'password'
+      
+      # Slack receiver
+      - name: 'slack-warnings'
+        slack_configs:
+          - channel: '#alerts-warning'
+            title: 'Alert: {{ .GroupLabels.alertname }}'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+      
+      # PagerDuty receiver
+      - name: 'pagerduty'
+        pagerduty_configs:
+          - service_key: 'YOUR_PAGERDUTY_SERVICE_KEY'
+            description: '{{ .GroupLabels.alertname }}'
+            details:
+              severity: '{{ .GroupLabels.severity }}'
+              cluster: '{{ .GroupLabels.cluster }}'
+    
+    # Inhibition rules
+    inhibit_rules:
+      # Inhibit info alerts when warning alerts are present
+      - source_match:
+          severity: 'warning'
+        target_match:
+          severity: 'info'
+        equal: ['alertname', 'cluster', 'service']
+      
+      # Inhibit warning alerts when critical alerts are present
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'cluster', 'service']
+---
+# PersistentVolume for AlertManager data
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: alertmanager-pv
+  namespace: monitoring
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  hostPath:
+    path: /data/alertmanager
+---
+# PersistentVolumeClaim for AlertManager
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alertmanager-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 10Gi
+---
+# AlertManager Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  labels:
+    app: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      serviceAccountName: alertmanager
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.25.0
+          args:
+            - '--config.file=/etc/alertmanager/alertmanager.yml'
+            - '--storage.path=/alertmanager'
+            - '--cluster.listen-address=0.0.0.0:9094'
+            - '--web.external-url=http://alertmanager.local'
+          ports:
+            - containerPort: 9093
+              name: web
+              protocol: TCP
+            - containerPort: 9094
+              name: cluster
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - name: alertmanager-config
+              mountPath: /etc/alertmanager
+            - name: alertmanager-storage
+              mountPath: /alertmanager
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9093
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9093
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+      volumes:
+        - name: alertmanager-config
+          configMap:
+            name: alertmanager-config
+        - name: alertmanager-storage
+          persistentVolumeClaim:
+            claimName: alertmanager-pvc
+---
+# Service for AlertManager
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  labels:
+    app: alertmanager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9093
+      targetPort: 9093
+      protocol: TCP
+      name: web
+    - port: 9094
+      targetPort: 9094
+      protocol: TCP
+      name: cluster
+  selector:
+    app: alertmanager
+---
+# Ingress for AlertManager
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: alertmanager.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: alertmanager
+                port:
+                  number: 9093

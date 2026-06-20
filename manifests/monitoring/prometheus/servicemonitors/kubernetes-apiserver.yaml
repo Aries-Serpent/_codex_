@@ -1,0 +1,20 @@
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      k8s-app: apiserver
+    name: kubernetes-apiserver
+    namespace: kube-system
+  spec:
+    endpoints:
+    - interval: 60s
+      port: https
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __meta_kubernetes_namespace
+        targetLabel: kubernetes_namespace
+      scrapeTimeout: 10s
+    selector:
+      matchLabels:
+        component: kube-apiserver

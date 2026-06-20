@@ -292,7 +292,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if not all_violations:
         total = len(collect_workflows())
-        print(f"✅ {total} workflow file(s) checked — all action versions approved.")
+        print(
+            f"✅ {total} workflow file(s) checked — all action versions approved.",
+            file=sys.stderr if args.json_out else sys.stdout,
+        )
 
     return 0
 

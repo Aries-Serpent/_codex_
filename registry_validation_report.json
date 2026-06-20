@@ -1,0 +1,113 @@
+/home/runner/work/_codex_/_codex_/scripts/cognitive/validate_registry_config.py:31: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.validation_timestamp = datetime.utcnow().isoformat() + "Z"
+/home/runner/work/_codex_/_codex_/scripts/cognitive/validate_registry_config.py:426: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+2026-06-20 09:33:38,207 - __main__ - INFO - Validation confidence: 0.75
+2026-06-20 09:33:38,207 - __main__ - INFO - Valid: False
+{
+  "timestamp": "2026-06-20T09:33:38.207438Z",
+  "validator_version": "1.0.0",
+  "validation_results": {
+    "valid": false,
+    "confidence": 0.75,
+    "registry_type": "ghcr",
+    "checks": [
+      {
+        "name": "Required Fields Check",
+        "passed": false,
+        "details": {
+          "required": [
+            "github_token",
+            "github_user"
+          ],
+          "present": [
+            "github_token"
+          ],
+          "missing": [
+            "github_user"
+          ]
+        },
+        "weight": 0.25
+      },
+      {
+        "name": "Endpoint Check",
+        "passed": true,
+        "details": {
+          "endpoint": "ghcr.io",
+          "validated": true
+        },
+        "weight": 0.2
+      },
+      {
+        "name": "Authentication Method Check",
+        "passed": true,
+        "details": {
+          "provided": "github_token",
+          "expected": "github_token",
+          "match": true
+        },
+        "weight": 0.15
+      },
+      {
+        "name": "Credentials Storage Check",
+        "passed": true,
+        "details": {
+          "credentials_provided": true,
+          "note": "Credentials should be stored in GitHub Secrets, not config"
+        },
+        "weight": 0.2
+      },
+      {
+        "name": "Namespace Structure Check",
+        "passed": true,
+        "details": {
+          "provided": "org/imagename",
+          "expected_format": "",
+          "has_namespace": true
+        },
+        "weight": 0.1
+      },
+      {
+        "name": "Security Settings Check",
+        "passed": true,
+        "details": {
+          "required": [
+            "ghas_scanning_enabled",
+            "container_signing_enabled"
+          ],
+          "enabled": [
+            "ghas_scanning_enabled",
+            "container_signing_enabled"
+          ],
+          "coverage": 1.0
+        },
+        "weight": 0.1
+      }
+    ],
+    "issues": [
+      {
+        "check": "Required Fields Check",
+        "details": {
+          "required": [
+            "github_token",
+            "github_user"
+          ],
+          "present": [
+            "github_token"
+          ],
+          "missing": [
+            "github_user"
+          ]
+        }
+      }
+    ],
+    "recommendations": [
+      "Provide all required configuration fields"
+    ],
+    "timestamp": "2026-06-20T09:33:38.207392Z"
+  },
+  "sample_configuration": {
+    "note": "This is a sample validation result",
+    "threshold": 0.8
+  }
+}

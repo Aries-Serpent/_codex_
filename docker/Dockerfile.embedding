@@ -2,15 +2,32 @@
 # FROM python:3.14-slim (pinned below)
 FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97
 
+# Metadata
+LABEL maintainer="codex-ml-team"
+LABEL org.opencontainers.image.description="Embedding worker for Codex ML"
+LABEL org.opencontainers.image.version="1.0.0"
+
 WORKDIR /app
 COPY pyproject.toml pyproject.toml
-# Install minimal runtime deps (user may extend)
-RUN pip install --upgrade pip
-RUN pip install fastapi pytest
+
+# Install minimal runtime deps (user may extend) — combined RUN for fewer layers
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir fastapi pytest
 
 # Copy source
 COPY src/ src/
 
 ENV PYTHONPATH=/app
+
+# Create non-root user for security
+RUN useradd -m -u 1000 -s /bin/bash worker && \
+    chown -R worker:worker /app
+
+# Switch to non-root user
+USER worker
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "from src.workers import embedding_worker; print('ok')" || exit 1
 
 ENTRYPOINT ["python", "-m", "src.workers.embedding_worker"]

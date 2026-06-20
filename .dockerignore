@@ -4,6 +4,7 @@
 .git
 .gitignore
 .github
+.gitattributes
 **/*.pyc
 **/*.pyo
 **/*.pyd
@@ -17,9 +18,45 @@ mlruns
 .pytest_cache
 .env
 .env.*
+.env.local
+.env.*.local
 .DS_Store
 Thumbs.db
 # Additional build/cache artefacts
 *.egg-link
 **/.eggs
 node_modules
+
+# IDE and editor caches
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python caching
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+
+# Build artifacts and wheels
+wheels/
+*.whl
+
+# Test coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Temporary directories
+tmp/
+temp/
+.cache/
+
+# Package managers
+.npm/
+.yarn/cache/
+.pnp

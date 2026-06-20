@@ -1,0 +1,355 @@
+{
+  "campaign_id": "docker-build-2026-06-20",
+  "execution_phase": "2B",
+  "generated_at": "2026-06-20T07:05:48Z",
+  "total_variants": 8,
+  "execution_strategy": "parallel_with_dependencies",
+  "estimated_total_duration_hours": 7,
+  "cache_strategy": "multi_layer_reuse",
+  
+  "execution_groups": [
+    {
+      "group_number": 1,
+      "name": "Foundation Build",
+      "execution_type": "sequential",
+      "duration_minutes": 45,
+      "variants": [
+        {
+          "variant_id": "prod-base",
+          "variant_name": "production",
+          "dockerfile": "Dockerfile",
+          "target": "base",
+          "tags": [
+            "codex:prod-base",
+            "ariesserp/codex:prod-base-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:prod-base-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [],
+          "depends_on": [],
+          "description": "Foundation layer - base OS + core dependencies",
+          "estimated_size_mb": 850,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "group_number": 2,
+      "name": "Production Runtime Variants",
+      "execution_type": "parallel",
+      "duration_minutes": 30,
+      "max_parallel": 3,
+      "variants": [
+        {
+          "variant_id": "prod-cpu",
+          "variant_name": "production-cpu",
+          "dockerfile": "Dockerfile",
+          "target": "cpu-runtime",
+          "tags": [
+            "codex:prod-cpu",
+            "ariesserp/codex:prod-cpu-v0.1.0",
+            "ariesserp/codex:latest"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:prod-cpu-v0.1.0",
+            "ghcr.io/aries-serpent/codex:latest"
+          ],
+          "cache_strategy": "max",
+          "build_args": [],
+          "depends_on": ["prod-base"],
+          "description": "CPU-optimized runtime (no GPU dependencies)",
+          "estimated_size_mb": 1200,
+          "cache_hit_rate_percent": 85,
+          "priority": 2
+        },
+        {
+          "variant_id": "prod-gpu",
+          "variant_name": "production-gpu",
+          "dockerfile": "Dockerfile",
+          "target": "gpu-runtime",
+          "tags": [
+            "codex:prod-gpu",
+            "ariesserp/codex:prod-gpu-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:prod-gpu-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "ENABLE_GPU=1",
+            "CUDA_VERSION=12.1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "GPU-optimized runtime (CUDA 12.1, cuDNN)",
+          "estimated_size_mb": 2100,
+          "cache_hit_rate_percent": 80,
+          "priority": 3
+        },
+        {
+          "variant_id": "prod-test",
+          "variant_name": "production-test",
+          "dockerfile": "Dockerfile",
+          "target": "test",
+          "tags": [
+            "codex:prod-test",
+            "ariesserp/codex:prod-test-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:prod-test-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "INCLUDE_TEST_DEPS=1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "Test environment (includes pytest, coverage, dev deps)",
+          "estimated_size_mb": 1500,
+          "cache_hit_rate_percent": 85,
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "group_number": 3,
+      "name": "Specialized Variants",
+      "execution_type": "parallel",
+      "duration_minutes": 25,
+      "max_parallel": 4,
+      "variants": [
+        {
+          "variant_id": "optimized",
+          "variant_name": "optimized",
+          "dockerfile": "docker/Dockerfile.optimized",
+          "target": "runtime",
+          "tags": [
+            "codex:optimized",
+            "ariesserp/codex:optimized-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:optimized-v0.1.0"
+          ],
+          "cache_strategy": "inline",
+          "build_args": [
+            "OPTIMIZE_LAYERS=1",
+            "MINIMIZE_SIZE=1",
+            "ENABLE_LTO=1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "Optimized for size and performance (multi-stage, LTO enabled)",
+          "estimated_size_mb": 950,
+          "cache_hit_rate_percent": 78,
+          "priority": 5
+        },
+        {
+          "variant_id": "cpu-variant",
+          "variant_name": "cpu",
+          "dockerfile": "docker/Dockerfile.cpu",
+          "target": "runtime",
+          "tags": [
+            "codex:cpu",
+            "ariesserp/codex:cpu-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:cpu-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "CPU_ARCH=x86_64",
+            "OPTIMIZE_FOR_CPU=1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "CPU-specific optimizations (AVX2, SSE4.2)",
+          "estimated_size_mb": 1100,
+          "cache_hit_rate_percent": 72,
+          "priority": 6
+        },
+        {
+          "variant_id": "gpu-variant",
+          "variant_name": "gpu",
+          "dockerfile": "docker/Dockerfile.gpu",
+          "target": "runtime",
+          "tags": [
+            "codex:gpu",
+            "ariesserp/codex:gpu-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:gpu-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "ENABLE_GPU=1",
+            "CUDA_COMPUTE_CAPABILITY=8.6,8.9"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "GPU-specific optimizations (Ampere arch support)",
+          "estimated_size_mb": 1950,
+          "cache_hit_rate_percent": 68,
+          "priority": 7
+        },
+        {
+          "variant_id": "embedding",
+          "variant_name": "embedding",
+          "dockerfile": "docker/Dockerfile.embedding",
+          "target": "runtime",
+          "tags": [
+            "codex:embedding",
+            "ariesserp/codex:embedding-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:embedding-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "INCLUDE_EMBEDDING_MODELS=1",
+            "ONNX_RUNTIME_VERSION=1.16"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "Embedding service (ONNX Runtime, embedding models)",
+          "estimated_size_mb": 1400,
+          "cache_hit_rate_percent": 76,
+          "priority": 8
+        }
+      ]
+    },
+    {
+      "group_number": 4,
+      "name": "CI & Development Variants",
+      "execution_type": "parallel",
+      "duration_minutes": 20,
+      "max_parallel": 2,
+      "variants": [
+        {
+          "variant_id": "ci-build",
+          "variant_name": "ci",
+          "dockerfile": "docker/Dockerfile.ci",
+          "target": "builder",
+          "tags": [
+            "codex:ci",
+            "ariesserp/codex:ci-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:ci-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "INCLUDE_BUILD_TOOLS=1",
+            "INCLUDE_DEV_DEPS=1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "CI environment (build tools, compilers, dev deps)",
+          "estimated_size_mb": 1800,
+          "cache_hit_rate_percent": 80,
+          "priority": 9
+        },
+        {
+          "variant_id": "preview",
+          "variant_name": "preview",
+          "dockerfile": "docker/Dockerfile.preview",
+          "target": "preview",
+          "tags": [
+            "codex:preview",
+            "ariesserp/codex:preview-v0.1.0"
+          ],
+          "docker_registry_tags": [
+            "ghcr.io/aries-serpent/codex:preview-v0.1.0"
+          ],
+          "cache_strategy": "max",
+          "build_args": [
+            "PREVIEW_MODE=1",
+            "ENABLE_DEV_UI=1"
+          ],
+          "depends_on": ["prod-base"],
+          "description": "Preview environment (lightweight, dev UI enabled)",
+          "estimated_size_mb": 750,
+          "cache_hit_rate_percent": 82,
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "group_number": 5,
+      "name": "Local Development Variant",
+      "execution_type": "sequential",
+      "duration_minutes": 25,
+      "variants": [
+        {
+          "variant_id": "local-dev",
+          "variant_name": "local-dev",
+          "dockerfile": "docker/Dockerfile.dev",
+          "target": "dev-environment",
+          "tags": [
+            "codex:dev",
+            "ariesserp/codex:dev-local"
+          ],
+          "docker_registry_tags": [],
+          "cache_strategy": "max",
+          "build_args": [
+            "INCLUDE_DEV_UI=1",
+            "ENABLE_HOT_RELOAD=1",
+            "INCLUDE_DEBUG_TOOLS=1"
+          ],
+          "depends_on": [],
+          "description": "Local dev environment (not pushed to registry, local use only)",
+          "estimated_size_mb": 2200,
+          "cache_hit_rate_percent": 0,
+          "priority": 11,
+          "registry_push": false,
+          "local_only": true
+        }
+      ]
+    }
+  ],
+
+  "execution_summary": {
+    "total_variants": 8,
+    "parallel_groups": 3,
+    "sequential_phases": 2,
+    "estimated_total_time_hours": 7,
+    "critical_path": "prod-base -> prod-gpu (foundation + longest runtime)",
+    "push_variants": 7,
+    "local_only_variants": 1
+  },
+
+  "failure_recovery": {
+    "max_retries_per_variant": 3,
+    "retry_strategy": "exponential_backoff",
+    "fallback_on_failure": [
+      {
+        "variant": "optimized",
+        "fallback_to": "prod-cpu"
+      },
+      {
+        "variant": "gpu-variant",
+        "fallback_to": "prod-gpu"
+      }
+    ]
+  },
+
+  "cache_configuration": {
+    "strategy": "multi_layer_reuse",
+    "driver": "local",
+    "location": ".docker/buildx/cache",
+    "reuse_across_variants": true,
+    "mode": "max"
+  },
+
+  "registry_config": {
+    "primary_registry": "ghcr.io",
+    "secondary_registry": "ariesserp/codex (DockerHub)",
+    "auth_required": true,
+    "parallel_pushes": 2
+  },
+
+  "build_metrics": {
+    "baseline_build_times": {
+      "prod_base": "45 minutes",
+      "prod_cpu": "30 minutes",
+      "prod_gpu": "35 minutes",
+      "prod_test": "30 minutes"
+    },
+    "expected_cache_efficiency": "72-85%",
+    "estimated_total_artifacts_size_gb": 10.5
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-06-20T09:46:00Z",
+  "cluster_name": "codex-dev-eks",
+  "environment": "dev",
+  "region": "us-east-1",
+  "cost_summary": {
+    "monthly": 78.73599999999999,
+    "yearly": 944.8319999999999,
+    "3year": 2834.4959999999996
+  },
+  "cost_breakdown": {
+    "EC2 Instances": 60.736,
+    "Storage (EBS)": 2.0,
+    "Network Load Balancer": 16.0
+  },
+  "resources": [
+    {
+      "resource_type": "EC2 Instances",
+      "quantity": 2,
+      "unit_cost_monthly": 30.368,
+      "total_monthly": 60.736
+    },
+    {
+      "resource_type": "Storage (EBS)",
+      "quantity": 40,
+      "unit_cost_monthly": 0.05,
+      "total_monthly": 2.0
+    },
+    {
+      "resource_type": "Network Load Balancer",
+      "quantity": 1,
+      "unit_cost_monthly": 16.0,
+      "total_monthly": 16.0
+    }
+  ],
+  "optimization_opportunities": [
+    "Implement resource quotas to prevent cost overruns",
+    "Schedule dev clusters to stop during off-hours"
+  ],
+  "projections": {
+    "month_1": 78.73599999999999,
+    "month_6": 472.41599999999994,
+    "month_12": 944.8319999999999,
+    "year_3": 2834.4959999999996
+  }
+}

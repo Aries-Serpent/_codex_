@@ -1,0 +1,27 @@
+{
+  "alert_rules": 4,
+  "alert_rules_count": 13,
+  "recording_rules": 3,
+  "recording_rules_count": 15,
+  "alert_groups": [
+    "application_alerts",
+    "resource_alerts",
+    "kubernetes_alerts",
+    "alertmanager_alerts"
+  ],
+  "recording_groups": [
+    "http_requests",
+    "cpu_memory",
+    "disk_network"
+  ],
+  "alert_severities": [
+    "critical",
+    "warning",
+    "info"
+  ],
+  "notification_channels": [
+    "email",
+    "slack",
+    "pagerduty"
+  ]
+}

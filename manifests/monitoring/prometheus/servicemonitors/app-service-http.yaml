@@ -1,0 +1,25 @@
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      monitoring: enabled
+    name: app-service-http
+    namespace: default
+  spec:
+    endpoints:
+    - interval: 30s
+      port: http
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __meta_kubernetes_namespace
+        targetLabel: kubernetes_namespace
+      - action: replace
+        sourceLabels:
+        - __meta_kubernetes_pod_name
+        targetLabel: kubernetes_pod_name
+      scrapeTimeout: 10s
+    selector:
+      matchLabels:
+        app: backend
+        metrics-port: http

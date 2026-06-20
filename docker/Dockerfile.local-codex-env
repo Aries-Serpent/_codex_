@@ -3,24 +3,38 @@
 # FROM python:3.14-slim (pinned below)
 FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97
 
+# Metadata
+LABEL maintainer="codex-ml-team"
+LABEL org.opencontainers.image.description="Local Codex environment scaffolding image"
+LABEL org.opencontainers.image.version="1.0.0"
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN useradd -ms /bin/bash codex
 WORKDIR /workspace
 
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /workspace
 
-RUN pip install --upgrade pip && \
+# Install Python dependencies (combined RUN for better caching)
+RUN pip install --no-cache-dir --upgrade pip && \
     if [ -f "pyproject.toml" ] || [ -f "setup.cfg" ] || [ -f "setup.py" ]; then \
         pip install -e . || echo "Editable install failed; continuing for local use."; \
     fi && \
-    pip install pytest pyyaml || echo "Test deps installation failed; continuing."
+    pip install --no-cache-dir pytest pyyaml || echo "Test deps installation failed; continuing."
+
+# Fix workspace ownership for non-root user
+RUN chown -R codex:codex /workspace
 
 USER codex
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "import sys; sys.exit(0)" || exit 1
 
 CMD ["/bin/bash", "-lc", "echo 'Codex local env container. Example: pytest tests -q; python -m codex_ml.cli.codex_env health'"]

@@ -53,6 +53,13 @@ RUN mkdir -p /app/.codex/logs \
              /app/.codex/tenants \
              /app/artifacts/emb
 
+# Create non-root user for security
+RUN useradd -m -u 1000 -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
 # Environment variables (defaults)
 ENV MSP_OFFLINE=1 \
     MSP_HOST=0.0.0.0 \

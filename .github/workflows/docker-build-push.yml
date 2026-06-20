@@ -230,9 +230,24 @@ jobs:
         PULLED_IMAGE: ${{ steps.vars.outputs.image_branch }}
       run: 'set -euo pipefail
 
-        echo "[post-push] docker pull ${PULLED_IMAGE}"
+        echo "[post-push] docker pull ${PULLED_IMAGE} with retry logic"
 
-        docker pull "${PULLED_IMAGE}"
+        # Exponential backoff retry for image pull (handles rate limiting)
+        for attempt in 1 2 3; do
+          if docker pull "${PULLED_IMAGE}"; then
+            echo "[post-push] Pull succeeded on attempt $attempt"
+            break
+          else
+            if [ $attempt -lt 3 ]; then
+              delay=$((2 ** ($attempt - 1)))
+              echo "[post-push] Pull failed on attempt $attempt, retrying in ${delay}s..."
+              sleep $delay
+            else
+              echo "[post-push] Pull failed after 3 attempts"
+              exit 1
+            fi
+          fi
+        done
 
         echo "[post-push] smoke test ${PULLED_IMAGE} on host port 18001"
 
