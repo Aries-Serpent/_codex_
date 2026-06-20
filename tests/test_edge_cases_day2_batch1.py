@@ -34,25 +34,23 @@ class TestMemoryEntryBoundaryConditions:
     def test_confidence_lower_bound_zero(self):
         """MemoryEntry with confidence=0.0 (lower bound)"""
         entry = MemoryEntry(content="test_value", metadata={"key": "test_key", "confidence": 0.0})
-        )
         assert entry.confidence == 0.0
         assert entry.access_count == 0
 
     def test_confidence_upper_bound_one(self):
         """MemoryEntry with confidence=1.0 (upper bound)"""
         entry = MemoryEntry(content="test_value", metadata={"key": "test_key", "confidence": 1.0})
-        )
         assert entry.confidence == 1.0
 
     def test_confidence_midpoint(self):
         """MemoryEntry with confidence at 0.5"""
-        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5})
         assert entry.confidence == 0.5
 
     def test_confidence_overflow_rejected(self):
         """MemoryEntry should reject confidence > 1.0"""
         with pytest.raises((ValueError, AssertionError, TypeError)):
-            MemoryEntry(content="v", metadata={"key": "k", "confidence": 1.1}))
+            MemoryEntry(content="v", metadata={"key": "k", "confidence": 1.1})
 
     def test_confidence_underflow_rejected(self):
         """MemoryEntry should reject confidence < 0.0"""
@@ -61,12 +59,12 @@ class TestMemoryEntryBoundaryConditions:
 
     def test_access_count_zero(self):
         """MemoryEntry with access_count=0 (never accessed)"""
-        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5})
         assert entry.access_count == 0
 
     def test_access_count_large_value(self):
         """MemoryEntry with very large access_count"""
-        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5}))
+        entry = MemoryEntry(content="v", metadata={"key": "k", "confidence": 0.5})
         assert entry.access_count == 999999
 
     def test_access_count_negative_rejected(self):
