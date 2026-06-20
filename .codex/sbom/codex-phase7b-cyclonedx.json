@@ -1,0 +1,698 @@
+{
+  "bom-version": 1,
+  "spec-version": "1.5",
+  "serialNumber": "urn:uuid:codex-20260620001732",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-20T00:17:32.777643+00:00",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "CodeQL Security Audit",
+        "version": "1.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "pkg:github/Aries-Serpent/_codex_",
+      "type": "application",
+      "name": "_codex_",
+      "version": "0.1.0",
+      "description": "Aries-Serpent Machine Learning Codebase",
+      "scope": "required"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/annotated-doc@0.0.4",
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/annotated-types@0.7.0",
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/anyio@4.14.0",
+      "type": "library",
+      "name": "anyio",
+      "version": "4.14.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/argcomplete@3.6.3",
+      "type": "library",
+      "name": "argcomplete",
+      "version": "3.6.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/attrs@23.2.0",
+      "type": "library",
+      "name": "attrs",
+      "version": "23.2.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/Automat@22.10.0",
+      "type": "library",
+      "name": "Automat",
+      "version": "22.10.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/Babel@2.10.3",
+      "type": "library",
+      "name": "Babel",
+      "version": "2.10.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/bcc@0.29.1",
+      "type": "library",
+      "name": "bcc",
+      "version": "0.29.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/bcrypt@3.2.2",
+      "type": "library",
+      "name": "bcrypt",
+      "version": "3.2.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/blinker@1.7.0",
+      "type": "library",
+      "name": "blinker",
+      "version": "1.7.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/boto3@1.34.46",
+      "type": "library",
+      "name": "boto3",
+      "version": "1.34.46",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/botocore@1.34.46",
+      "type": "library",
+      "name": "botocore",
+      "version": "1.34.46",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/certifi@2023.11.17",
+      "type": "library",
+      "name": "certifi",
+      "version": "2023.11.17",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/chardet@5.2.0",
+      "type": "library",
+      "name": "chardet",
+      "version": "5.2.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/click@8.1.6",
+      "type": "library",
+      "name": "click",
+      "version": "8.1.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/cloud-init@26.1",
+      "type": "library",
+      "name": "cloud-init",
+      "version": "26.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/colorama@0.4.6",
+      "type": "library",
+      "name": "colorama",
+      "version": "0.4.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/command-not-found@0.3",
+      "type": "library",
+      "name": "command-not-found",
+      "version": "0.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/configobj@5.0.8",
+      "type": "library",
+      "name": "configobj",
+      "version": "5.0.8",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/constantly@23.10.4",
+      "type": "library",
+      "name": "constantly",
+      "version": "23.10.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/cryptography@41.0.7",
+      "type": "library",
+      "name": "cryptography",
+      "version": "41.0.7",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/dbus-python@1.3.2",
+      "type": "library",
+      "name": "dbus-python",
+      "version": "1.3.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/distro@1.9.0",
+      "type": "library",
+      "name": "distro",
+      "version": "1.9.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/distro-info@1.7+build1",
+      "type": "library",
+      "name": "distro-info",
+      "version": "1.7+build1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/fastapi@0.137.2",
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.137.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/h11@0.16.0",
+      "type": "library",
+      "name": "h11",
+      "version": "0.16.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/httpcore@1.0.9",
+      "type": "library",
+      "name": "httpcore",
+      "version": "1.0.9",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/httplib2@0.20.4",
+      "type": "library",
+      "name": "httplib2",
+      "version": "0.20.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/httpx@0.28.1",
+      "type": "library",
+      "name": "httpx",
+      "version": "0.28.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/hyperlink@21.0.0",
+      "type": "library",
+      "name": "hyperlink",
+      "version": "21.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/idna@3.6",
+      "type": "library",
+      "name": "idna",
+      "version": "3.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/incremental@22.10.0",
+      "type": "library",
+      "name": "incremental",
+      "version": "22.10.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/Jinja2@3.1.2",
+      "type": "library",
+      "name": "Jinja2",
+      "version": "3.1.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/jmespath@1.0.1",
+      "type": "library",
+      "name": "jmespath",
+      "version": "1.0.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/jsonpatch@1.32",
+      "type": "library",
+      "name": "jsonpatch",
+      "version": "1.32",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/jsonpointer@2.0",
+      "type": "library",
+      "name": "jsonpointer",
+      "version": "2.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/jsonschema@4.10.3",
+      "type": "library",
+      "name": "jsonschema",
+      "version": "4.10.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/launchpadlib@1.11.0",
+      "type": "library",
+      "name": "launchpadlib",
+      "version": "1.11.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/lazr.restfulclient@0.14.6",
+      "type": "library",
+      "name": "lazr.restfulclient",
+      "version": "0.14.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/lazr.uri@1.0.6",
+      "type": "library",
+      "name": "lazr.uri",
+      "version": "1.0.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/markdown-it-py@3.0.0",
+      "type": "library",
+      "name": "markdown-it-py",
+      "version": "3.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/MarkupSafe@2.1.5",
+      "type": "library",
+      "name": "MarkupSafe",
+      "version": "2.1.5",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/mdurl@0.1.2",
+      "type": "library",
+      "name": "mdurl",
+      "version": "0.1.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/mercurial@6.7.2",
+      "type": "library",
+      "name": "mercurial",
+      "version": "6.7.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/netaddr@0.8.0",
+      "type": "library",
+      "name": "netaddr",
+      "version": "0.8.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/netifaces@0.11.0",
+      "type": "library",
+      "name": "netifaces",
+      "version": "0.11.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/oauthlib@3.2.2",
+      "type": "library",
+      "name": "oauthlib",
+      "version": "3.2.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/packaging@24.0",
+      "type": "library",
+      "name": "packaging",
+      "version": "24.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/passlib@1.7.4",
+      "type": "library",
+      "name": "passlib",
+      "version": "1.7.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pexpect@4.9.0",
+      "type": "library",
+      "name": "pexpect",
+      "version": "4.9.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pip@24.0",
+      "type": "library",
+      "name": "pip",
+      "version": "24.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pipx@1.14.0",
+      "type": "library",
+      "name": "pipx",
+      "version": "1.14.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/platformdirs@4.10.0",
+      "type": "library",
+      "name": "platformdirs",
+      "version": "4.10.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/ptyprocess@0.7.0",
+      "type": "library",
+      "name": "ptyprocess",
+      "version": "0.7.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyasn1@0.4.8",
+      "type": "library",
+      "name": "pyasn1",
+      "version": "0.4.8",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyasn1-modules@0.2.8",
+      "type": "library",
+      "name": "pyasn1-modules",
+      "version": "0.2.8",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pydantic@2.13.4",
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.13.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pydantic_core@2.46.4",
+      "type": "library",
+      "name": "pydantic_core",
+      "version": "2.46.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/Pygments@2.17.2",
+      "type": "library",
+      "name": "Pygments",
+      "version": "2.17.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/PyGObject@3.48.2",
+      "type": "library",
+      "name": "PyGObject",
+      "version": "3.48.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/PyHamcrest@2.1.0",
+      "type": "library",
+      "name": "PyHamcrest",
+      "version": "2.1.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/PyJWT@2.7.0",
+      "type": "library",
+      "name": "PyJWT",
+      "version": "2.7.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyOpenSSL@23.2.0",
+      "type": "library",
+      "name": "pyOpenSSL",
+      "version": "23.2.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyparsing@3.1.1",
+      "type": "library",
+      "name": "pyparsing",
+      "version": "3.1.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyparted@3.12.0",
+      "type": "library",
+      "name": "pyparted",
+      "version": "3.12.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyrsistent@0.20.0",
+      "type": "library",
+      "name": "pyrsistent",
+      "version": "0.20.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyserial@3.5",
+      "type": "library",
+      "name": "pyserial",
+      "version": "3.5",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/python-apt@2.7.7+ubuntu5.2",
+      "type": "library",
+      "name": "python-apt",
+      "version": "2.7.7+ubuntu5.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/python-dateutil@2.8.2",
+      "type": "library",
+      "name": "python-dateutil",
+      "version": "2.8.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/python-debian@0.1.49+ubuntu2",
+      "type": "library",
+      "name": "python-debian",
+      "version": "0.1.49+ubuntu2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/python-magic@0.4.27",
+      "type": "library",
+      "name": "python-magic",
+      "version": "0.4.27",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytz@2024.1",
+      "type": "library",
+      "name": "pytz",
+      "version": "2024.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/PyYAML@6.0.1",
+      "type": "library",
+      "name": "PyYAML",
+      "version": "6.0.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/requests@2.31.0",
+      "type": "library",
+      "name": "requests",
+      "version": "2.31.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/rich@13.7.1",
+      "type": "library",
+      "name": "rich",
+      "version": "13.7.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/s3transfer@0.10.1",
+      "type": "library",
+      "name": "s3transfer",
+      "version": "0.10.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/service-identity@24.1.0",
+      "type": "library",
+      "name": "service-identity",
+      "version": "24.1.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/setuptools@68.1.2",
+      "type": "library",
+      "name": "setuptools",
+      "version": "68.1.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/six@1.16.0",
+      "type": "library",
+      "name": "six",
+      "version": "1.16.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/sos@4.10.2",
+      "type": "library",
+      "name": "sos",
+      "version": "4.10.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/ssh-import-id@5.11",
+      "type": "library",
+      "name": "ssh-import-id",
+      "version": "5.11",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/starlette@1.3.1",
+      "type": "library",
+      "name": "starlette",
+      "version": "1.3.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/systemd-python@235",
+      "type": "library",
+      "name": "systemd-python",
+      "version": "235",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/Twisted@24.3.0",
+      "type": "library",
+      "name": "Twisted",
+      "version": "24.3.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/typing_extensions@4.15.0",
+      "type": "library",
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/typing-inspection@0.4.2",
+      "type": "library",
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/ubuntu-pro-client@8001",
+      "type": "library",
+      "name": "ubuntu-pro-client",
+      "version": "8001",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/ufw@0.36.2",
+      "type": "library",
+      "name": "ufw",
+      "version": "0.36.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/urllib3@2.0.7",
+      "type": "library",
+      "name": "urllib3",
+      "version": "2.0.7",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/userpath@1.9.2",
+      "type": "library",
+      "name": "userpath",
+      "version": "1.9.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/uvicorn@0.49.0",
+      "type": "library",
+      "name": "uvicorn",
+      "version": "0.49.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/wadllib@1.3.6",
+      "type": "library",
+      "name": "wadllib",
+      "version": "1.3.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/WALinuxAgent@2.15.0.1",
+      "type": "library",
+      "name": "WALinuxAgent",
+      "version": "2.15.0.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/wheel@0.42.0",
+      "type": "library",
+      "name": "wheel",
+      "version": "0.42.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/zope.interface@6.1",
+      "type": "library",
+      "name": "zope.interface",
+      "version": "6.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:pypi/zstandard@0.22.0",
+      "type": "library",
+      "name": "zstandard",
+      "version": "0.22.0",
+      "scope": "required"
+    }
+  ]
+}

@@ -1,0 +1,1170 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: _codex_ Security Bill of Materials
+DocumentNamespace: https://github.com/Aries-Serpent/_codex_/sbom/2026-06-20
+Creator: Tool: CodeQL-Security-Audit
+Created: 2026-06-20T00:17:32.778645+00:00
+
+PackageName: _codex_
+SPDXID: SPDXRef-Package
+PackageVersion: 0.1.0
+PackageSupplier: Organization: Aries-Serpent
+PackageDownloadLocation: https://github.com/Aries-Serpent/_codex_
+FilesAnalyzed: false
+PackageLicenseConcluded: Apache-2.0
+PackageLicenseDeclared: Apache-2.0
+PackageCopyrightText: Copyright 2026 Aries-Serpent Contributors
+
+
+PackageName: annotated-doc
+SPDXID: SPDXRef-Package-1
+PackageVersion: 0.0.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/annotated-doc/0.0.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-1
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-1
+
+PackageName: annotated-types
+SPDXID: SPDXRef-Package-2
+PackageVersion: 0.7.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/annotated-types/0.7.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-2
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-2
+
+PackageName: anyio
+SPDXID: SPDXRef-Package-3
+PackageVersion: 4.14.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/anyio/4.14.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-3
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-3
+
+PackageName: argcomplete
+SPDXID: SPDXRef-Package-4
+PackageVersion: 3.6.3
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/argcomplete/3.6.3/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-4
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-4
+
+PackageName: attrs
+SPDXID: SPDXRef-Package-5
+PackageVersion: 23.2.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/attrs/23.2.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-5
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-5
+
+PackageName: Automat
+SPDXID: SPDXRef-Package-6
+PackageVersion: 22.10.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/Automat/22.10.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-6
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-6
+
+PackageName: Babel
+SPDXID: SPDXRef-Package-7
+PackageVersion: 2.10.3
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/Babel/2.10.3/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-7
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-7
+
+PackageName: bcc
+SPDXID: SPDXRef-Package-8
+PackageVersion: 0.29.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/bcc/0.29.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-8
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-8
+
+PackageName: bcrypt
+SPDXID: SPDXRef-Package-9
+PackageVersion: 3.2.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/bcrypt/3.2.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-9
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-9
+
+PackageName: blinker
+SPDXID: SPDXRef-Package-10
+PackageVersion: 1.7.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/blinker/1.7.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-10
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-10
+
+PackageName: boto3
+SPDXID: SPDXRef-Package-11
+PackageVersion: 1.34.46
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/boto3/1.34.46/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-11
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-11
+
+PackageName: botocore
+SPDXID: SPDXRef-Package-12
+PackageVersion: 1.34.46
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/botocore/1.34.46/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-12
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-12
+
+PackageName: certifi
+SPDXID: SPDXRef-Package-13
+PackageVersion: 2023.11.17
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/certifi/2023.11.17/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-13
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-13
+
+PackageName: chardet
+SPDXID: SPDXRef-Package-14
+PackageVersion: 5.2.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/chardet/5.2.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-14
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-14
+
+PackageName: click
+SPDXID: SPDXRef-Package-15
+PackageVersion: 8.1.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/click/8.1.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-15
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-15
+
+PackageName: cloud-init
+SPDXID: SPDXRef-Package-16
+PackageVersion: 26.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/cloud-init/26.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-16
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-16
+
+PackageName: colorama
+SPDXID: SPDXRef-Package-17
+PackageVersion: 0.4.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/colorama/0.4.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-17
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-17
+
+PackageName: command-not-found
+SPDXID: SPDXRef-Package-18
+PackageVersion: 0.3
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/command-not-found/0.3/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-18
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-18
+
+PackageName: configobj
+SPDXID: SPDXRef-Package-19
+PackageVersion: 5.0.8
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/configobj/5.0.8/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-19
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-19
+
+PackageName: constantly
+SPDXID: SPDXRef-Package-20
+PackageVersion: 23.10.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/constantly/23.10.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-20
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-20
+
+PackageName: cryptography
+SPDXID: SPDXRef-Package-21
+PackageVersion: 41.0.7
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/cryptography/41.0.7/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-21
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-21
+
+PackageName: dbus-python
+SPDXID: SPDXRef-Package-22
+PackageVersion: 1.3.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/dbus-python/1.3.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-22
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-22
+
+PackageName: distro
+SPDXID: SPDXRef-Package-23
+PackageVersion: 1.9.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/distro/1.9.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-23
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-23
+
+PackageName: distro-info
+SPDXID: SPDXRef-Package-24
+PackageVersion: 1.7+build1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/distro-info/1.7+build1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-24
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-24
+
+PackageName: fastapi
+SPDXID: SPDXRef-Package-25
+PackageVersion: 0.137.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/fastapi/0.137.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-25
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-25
+
+PackageName: h11
+SPDXID: SPDXRef-Package-26
+PackageVersion: 0.16.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/h11/0.16.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-26
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-26
+
+PackageName: httpcore
+SPDXID: SPDXRef-Package-27
+PackageVersion: 1.0.9
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/httpcore/1.0.9/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-27
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-27
+
+PackageName: httplib2
+SPDXID: SPDXRef-Package-28
+PackageVersion: 0.20.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/httplib2/0.20.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-28
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-28
+
+PackageName: httpx
+SPDXID: SPDXRef-Package-29
+PackageVersion: 0.28.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/httpx/0.28.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-29
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-29
+
+PackageName: hyperlink
+SPDXID: SPDXRef-Package-30
+PackageVersion: 21.0.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/hyperlink/21.0.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-30
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-30
+
+PackageName: idna
+SPDXID: SPDXRef-Package-31
+PackageVersion: 3.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/idna/3.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-31
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-31
+
+PackageName: incremental
+SPDXID: SPDXRef-Package-32
+PackageVersion: 22.10.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/incremental/22.10.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-32
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-32
+
+PackageName: Jinja2
+SPDXID: SPDXRef-Package-33
+PackageVersion: 3.1.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/Jinja2/3.1.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-33
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-33
+
+PackageName: jmespath
+SPDXID: SPDXRef-Package-34
+PackageVersion: 1.0.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/jmespath/1.0.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-34
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-34
+
+PackageName: jsonpatch
+SPDXID: SPDXRef-Package-35
+PackageVersion: 1.32
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/jsonpatch/1.32/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-35
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-35
+
+PackageName: jsonpointer
+SPDXID: SPDXRef-Package-36
+PackageVersion: 2.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/jsonpointer/2.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-36
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-36
+
+PackageName: jsonschema
+SPDXID: SPDXRef-Package-37
+PackageVersion: 4.10.3
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/jsonschema/4.10.3/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-37
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-37
+
+PackageName: launchpadlib
+SPDXID: SPDXRef-Package-38
+PackageVersion: 1.11.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/launchpadlib/1.11.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-38
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-38
+
+PackageName: lazr.restfulclient
+SPDXID: SPDXRef-Package-39
+PackageVersion: 0.14.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/lazr.restfulclient/0.14.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-39
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-39
+
+PackageName: lazr.uri
+SPDXID: SPDXRef-Package-40
+PackageVersion: 1.0.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/lazr.uri/1.0.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-40
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-40
+
+PackageName: markdown-it-py
+SPDXID: SPDXRef-Package-41
+PackageVersion: 3.0.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/markdown-it-py/3.0.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-41
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-41
+
+PackageName: MarkupSafe
+SPDXID: SPDXRef-Package-42
+PackageVersion: 2.1.5
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/MarkupSafe/2.1.5/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-42
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-42
+
+PackageName: mdurl
+SPDXID: SPDXRef-Package-43
+PackageVersion: 0.1.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/mdurl/0.1.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-43
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-43
+
+PackageName: mercurial
+SPDXID: SPDXRef-Package-44
+PackageVersion: 6.7.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/mercurial/6.7.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-44
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-44
+
+PackageName: netaddr
+SPDXID: SPDXRef-Package-45
+PackageVersion: 0.8.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/netaddr/0.8.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-45
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-45
+
+PackageName: netifaces
+SPDXID: SPDXRef-Package-46
+PackageVersion: 0.11.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/netifaces/0.11.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-46
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-46
+
+PackageName: oauthlib
+SPDXID: SPDXRef-Package-47
+PackageVersion: 3.2.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/oauthlib/3.2.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-47
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-47
+
+PackageName: packaging
+SPDXID: SPDXRef-Package-48
+PackageVersion: 24.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/packaging/24.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-48
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-48
+
+PackageName: passlib
+SPDXID: SPDXRef-Package-49
+PackageVersion: 1.7.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/passlib/1.7.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-49
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-49
+
+PackageName: pexpect
+SPDXID: SPDXRef-Package-50
+PackageVersion: 4.9.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pexpect/4.9.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-50
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-50
+
+PackageName: pip
+SPDXID: SPDXRef-Package-51
+PackageVersion: 24.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pip/24.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-51
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-51
+
+PackageName: pipx
+SPDXID: SPDXRef-Package-52
+PackageVersion: 1.14.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pipx/1.14.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-52
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-52
+
+PackageName: platformdirs
+SPDXID: SPDXRef-Package-53
+PackageVersion: 4.10.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/platformdirs/4.10.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-53
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-53
+
+PackageName: ptyprocess
+SPDXID: SPDXRef-Package-54
+PackageVersion: 0.7.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/ptyprocess/0.7.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-54
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-54
+
+PackageName: pyasn1
+SPDXID: SPDXRef-Package-55
+PackageVersion: 0.4.8
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyasn1/0.4.8/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-55
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-55
+
+PackageName: pyasn1-modules
+SPDXID: SPDXRef-Package-56
+PackageVersion: 0.2.8
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyasn1-modules/0.2.8/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-56
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-56
+
+PackageName: pydantic
+SPDXID: SPDXRef-Package-57
+PackageVersion: 2.13.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pydantic/2.13.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-57
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-57
+
+PackageName: pydantic_core
+SPDXID: SPDXRef-Package-58
+PackageVersion: 2.46.4
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pydantic_core/2.46.4/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-58
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-58
+
+PackageName: Pygments
+SPDXID: SPDXRef-Package-59
+PackageVersion: 2.17.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/Pygments/2.17.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-59
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-59
+
+PackageName: PyGObject
+SPDXID: SPDXRef-Package-60
+PackageVersion: 3.48.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/PyGObject/3.48.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-60
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-60
+
+PackageName: PyHamcrest
+SPDXID: SPDXRef-Package-61
+PackageVersion: 2.1.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/PyHamcrest/2.1.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-61
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-61
+
+PackageName: PyJWT
+SPDXID: SPDXRef-Package-62
+PackageVersion: 2.7.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/PyJWT/2.7.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-62
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-62
+
+PackageName: pyOpenSSL
+SPDXID: SPDXRef-Package-63
+PackageVersion: 23.2.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyOpenSSL/23.2.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-63
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-63
+
+PackageName: pyparsing
+SPDXID: SPDXRef-Package-64
+PackageVersion: 3.1.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyparsing/3.1.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-64
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-64
+
+PackageName: pyparted
+SPDXID: SPDXRef-Package-65
+PackageVersion: 3.12.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyparted/3.12.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-65
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-65
+
+PackageName: pyrsistent
+SPDXID: SPDXRef-Package-66
+PackageVersion: 0.20.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyrsistent/0.20.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-66
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-66
+
+PackageName: pyserial
+SPDXID: SPDXRef-Package-67
+PackageVersion: 3.5
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pyserial/3.5/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-67
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-67
+
+PackageName: python-apt
+SPDXID: SPDXRef-Package-68
+PackageVersion: 2.7.7+ubuntu5.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/python-apt/2.7.7+ubuntu5.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-68
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-68
+
+PackageName: python-dateutil
+SPDXID: SPDXRef-Package-69
+PackageVersion: 2.8.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/python-dateutil/2.8.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-69
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-69
+
+PackageName: python-debian
+SPDXID: SPDXRef-Package-70
+PackageVersion: 0.1.49+ubuntu2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/python-debian/0.1.49+ubuntu2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-70
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-70
+
+PackageName: python-magic
+SPDXID: SPDXRef-Package-71
+PackageVersion: 0.4.27
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/python-magic/0.4.27/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-71
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-71
+
+PackageName: pytz
+SPDXID: SPDXRef-Package-72
+PackageVersion: 2024.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/pytz/2024.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-72
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-72
+
+PackageName: PyYAML
+SPDXID: SPDXRef-Package-73
+PackageVersion: 6.0.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/PyYAML/6.0.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-73
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-73
+
+PackageName: requests
+SPDXID: SPDXRef-Package-74
+PackageVersion: 2.31.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/requests/2.31.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-74
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-74
+
+PackageName: rich
+SPDXID: SPDXRef-Package-75
+PackageVersion: 13.7.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/rich/13.7.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-75
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-75
+
+PackageName: s3transfer
+SPDXID: SPDXRef-Package-76
+PackageVersion: 0.10.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/s3transfer/0.10.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-76
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-76
+
+PackageName: service-identity
+SPDXID: SPDXRef-Package-77
+PackageVersion: 24.1.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/service-identity/24.1.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-77
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-77
+
+PackageName: setuptools
+SPDXID: SPDXRef-Package-78
+PackageVersion: 68.1.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/setuptools/68.1.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-78
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-78
+
+PackageName: six
+SPDXID: SPDXRef-Package-79
+PackageVersion: 1.16.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/six/1.16.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-79
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-79
+
+PackageName: sos
+SPDXID: SPDXRef-Package-80
+PackageVersion: 4.10.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/sos/4.10.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-80
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-80
+
+PackageName: ssh-import-id
+SPDXID: SPDXRef-Package-81
+PackageVersion: 5.11
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/ssh-import-id/5.11/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-81
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-81
+
+PackageName: starlette
+SPDXID: SPDXRef-Package-82
+PackageVersion: 1.3.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/starlette/1.3.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-82
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-82
+
+PackageName: systemd-python
+SPDXID: SPDXRef-Package-83
+PackageVersion: 235
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/systemd-python/235/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-83
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-83
+
+PackageName: Twisted
+SPDXID: SPDXRef-Package-84
+PackageVersion: 24.3.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/Twisted/24.3.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-84
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-84
+
+PackageName: typing_extensions
+SPDXID: SPDXRef-Package-85
+PackageVersion: 4.15.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/typing_extensions/4.15.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-85
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-85
+
+PackageName: typing-inspection
+SPDXID: SPDXRef-Package-86
+PackageVersion: 0.4.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/typing-inspection/0.4.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-86
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-86
+
+PackageName: ubuntu-pro-client
+SPDXID: SPDXRef-Package-87
+PackageVersion: 8001
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/ubuntu-pro-client/8001/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-87
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-87
+
+PackageName: ufw
+SPDXID: SPDXRef-Package-88
+PackageVersion: 0.36.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/ufw/0.36.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-88
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-88
+
+PackageName: urllib3
+SPDXID: SPDXRef-Package-89
+PackageVersion: 2.0.7
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/urllib3/2.0.7/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-89
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-89
+
+PackageName: userpath
+SPDXID: SPDXRef-Package-90
+PackageVersion: 1.9.2
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/userpath/1.9.2/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-90
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-90
+
+PackageName: uvicorn
+SPDXID: SPDXRef-Package-91
+PackageVersion: 0.49.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/uvicorn/0.49.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-91
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-91
+
+PackageName: wadllib
+SPDXID: SPDXRef-Package-92
+PackageVersion: 1.3.6
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/wadllib/1.3.6/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-92
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-92
+
+PackageName: WALinuxAgent
+SPDXID: SPDXRef-Package-93
+PackageVersion: 2.15.0.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/WALinuxAgent/2.15.0.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-93
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-93
+
+PackageName: wheel
+SPDXID: SPDXRef-Package-94
+PackageVersion: 0.42.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/wheel/0.42.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-94
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-94
+
+PackageName: zope.interface
+SPDXID: SPDXRef-Package-95
+PackageVersion: 6.1
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/zope.interface/6.1/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-95
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-95
+
+PackageName: zstandard
+SPDXID: SPDXRef-Package-96
+PackageVersion: 0.22.0
+PackageSupplier: Organization: PyPI
+PackageDownloadLocation: https://pypi.org/project/zstandard/0.22.0/
+FilesAnalyzed: false
+PackageLicenseConcluded: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-96
+Relationship: SPDXRef-Package DEPENDS_ON SPDXRef-Package-96
