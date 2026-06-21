@@ -861,8 +861,8 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 ## Related Documentation
 
-- **Migration Guide:** [HYDRA_MIGRATION_GUIDE.md](HYDRA_MIGRATION_GUIDE.md)
-- **Migration Mapping:** [MIGRATION_MAPPING.md](MIGRATION_MAPPING.md)
+- **Migration Guide:** [HYDRA_MIGRATION_GUIDE.md](configuration/HYDRA_MIGRATION_GUIDE.md)
+- **Migration Mapping:** [MIGRATION_MAPPING.md](configuration/MIGRATION_MAPPING.md)
 - **Troubleshooting:** [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 - **PS-01 Planset:** `.github/plans/PLANSET_01_CONFIGURATION_CONSOLIDATION.md`
 

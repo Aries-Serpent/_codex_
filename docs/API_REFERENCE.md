@@ -1601,11 +1601,11 @@ APIs follow semantic versioning:
 
 ## See Also
 
-- [Architecture Blueprint](../ARCHITECTURE_BLUEPRINT.md)
+- [Architecture Blueprint](ARCHITECTURE_BLUEPRINT.md)
 - [Contributing Guide](../CONTRIBUTING.md)
-- [Deployment Guide](../guides/production_deployment.md)
-- [Agent Documentation](../agent/INDEX.md)
-- [Quick Start](../mcp/QUICK_START.md)
+- [Deployment Guide](guides/production_deployment.md)
+- [Agent Documentation](agent/INDEX.md)
+- [Quick Start](mcp/QUICK_START.md)
 
 
 

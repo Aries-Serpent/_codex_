@@ -5,10 +5,10 @@ This directory contains documentation for the command-line interface (CLI) tools
 ## Contents
 
 ### CLI Reference
-- **[CLI Overview](../../CLI.md)** - Introduction to CLI tools
-- **[CLI Command Reference](./cli.md)** - Complete command reference
-- **[Cognitive Brain CLI](./cognitive_brain_cli.md)** - Cognitive Brain console commands
-- **[MCP Packager CLI](./mcp_packager.md)** - MCP packaging tool commands
+- **[CLI Overview](../CLI.md)** - Introduction to CLI tools
+- **[CLI Status Audit](./status_audit.md)** - Complete CLI status
+- **[Dataset CLI](./dataset_cli.md)** - Dataset management commands
+- **[Minimal Workflow](./minimal_train_eval_workflow.md)** - Quick start workflow
 
 ### Getting Started
 - CLI installation instructions
@@ -72,16 +72,15 @@ Package management and distribution tool.
 ## Tutorials
 
 ### Getting Started
-1. [Installation](./getting-started.md)
-2. [Basic Usage](./basic-usage.md)
-3. [Configuration](./configuration.md)
-4. [Running Your First Training](./first-training.md)
+1. [Installation Instructions](README.md)
+2. [Status Audit](./status_audit.md)
+3. [Dataset CLI](./dataset_cli.md)
+4. [Minimal Workflow](./minimal_train_eval_workflow.md)
 
 ### Advanced Usage
-1. [Custom Configurations](./advanced-config.md)
-2. [Scripting and Automation](./scripting.md)
-3. [Integration with CI/CD](./ci-integration.md)
-4. [Performance Tuning](./performance-tuning.md)
+1. [Status and Audit Information](./status_audit.md)
+2. [Dataset Management](./dataset_cli.md)
+3. [Workflow Examples](./minimal_train_eval_workflow.md)
 
 ## Troubleshooting
 
