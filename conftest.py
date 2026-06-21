@@ -15,9 +15,9 @@ import pytest
 # PATCH: Fix OpenSSL/cryptography incompatibility (lib.GEN_EMAIL AttributeError)
 # This happens when OpenSSL from system packages conflicts with cryptography versions
 try:
+    # Import for side effects so CFFI/OpenSSL bindings are initialized early.
     import cffi  # type: ignore[import-not-found]  # noqa: F401
-    # Pre-emptively load cryptography to avoid cascading import errors
-    __import__("cryptography")
+    import cryptography  # noqa: F401
 except Exception:
     pass  # Best effort patching
 
@@ -302,7 +302,7 @@ if not _pydantic_available():
 def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[override]
     if not _pydantic_available() and _path_requires_pydantic(file_path):
         pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
-    
+
     # Skip test files with P19 shadow import issues (root-level training/tokenization directories)
     _P19_SHADOW_IMPORT_AFFECTED = [
         "test_extended_trainer.py",
@@ -311,12 +311,12 @@ def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[overri
     ]
     if file_path.name in _P19_SHADOW_IMPORT_AFFECTED:
         return None
-    
+
     return None
 
 
 def pytest_pycollect_makeitem(collector, name, obj):  # type: ignore[override]
-    """Gracefully handle OpenSSL/cryptography import errors during collection."""
+    """Defer collection to pytest's default behavior."""
     return None
 
 
@@ -329,7 +329,7 @@ def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignor
     ]
     if collection_path.name in _P19_SHADOW_IMPORT_AFFECTED:
         return True
-    
+
     return (not _torch_available() and _path_requires_torch(collection_path)) or (
         not _pydantic_available() and _path_requires_pydantic(collection_path)
     )
