@@ -103,22 +103,20 @@ class MockUserRepository(UserRepository):
 
     def create(self, user: User) -> User:
         """Create a user."""
-        if user.id in self._users:
+        if user.user_id in self._users:
             raise ValueError("User already exists")
-        self._users[user.id] = user
+        self._users[user.user_id] = user
         return user
 
-    def get_by_id(self, user_id: str) -> User:
+    def get_by_id(self, user_id: str) -> User | None:
         """Get user by ID."""
-        if user_id not in self._users:
-            raise KeyError("User not found")
-        return self._users[user_id]
+        return self._users.get(user_id)
 
     def update(self, user: User) -> User:
         """Update a user."""
-        if user.id not in self._users:
+        if user.user_id not in self._users:
             raise KeyError("User not found")
-        self._users[user.id] = user
+        self._users[user.user_id] = user
         return user
 
     def delete(self, user_id: str) -> None:
@@ -162,22 +160,24 @@ class TestUserRepositoryImplementation:
     def test_user(self):
         """Create a test user."""
         return User(
-            id=str(uuid4()),
+            user_id=str(uuid4()),
             username="testuser",
             email="test@example.com",
             password_hash="hashed_password",
-            created_at=datetime.now(),
+            created_at=datetime.now().timestamp(),
         )
 
     def test_mock_repository_create(self, repository, test_user):
         """Test creating user in mock repository."""
         user = repository.create(test_user)
-        assert user.id == test_user.id
+        assert user.user_id == test_user.user_id
 
     def test_mock_repository_get_by_id(self, repository, test_user):
         """Test getting user by ID."""
         repository.create(test_user)
-        retrieved = repository.get_by_id(test_user.id)
+        retrieved = repository.get_by_id(test_user.user_id)
+        assert retrieved is not None
+        assert retrieved.user_id == test_user.user_id
         assert retrieved.username == "testuser"
 
     def test_mock_repository_update(self, repository, test_user):
@@ -186,16 +186,16 @@ class TestUserRepositoryImplementation:
         test_user.email = "new@example.com"
         repository.update(test_user)
 
-        retrieved = repository.get_by_id(test_user.id)
+        retrieved = repository.get_by_id(test_user.user_id)
         assert retrieved.email == "new@example.com"
 
     def test_mock_repository_delete(self, repository, test_user):
         """Test deleting user."""
         repository.create(test_user)
-        repository.delete(test_user.id)
+        repository.delete(test_user.user_id)
 
         with pytest.raises(KeyError):
-            repository.get_by_id(test_user.id)
+            repository.get_by_id(test_user.user_id)
 
     def test_mock_repository_list(self, repository):
         """Test listing users."""
@@ -224,7 +224,7 @@ class TestUserRepositoryImplementation:
         """Test getting user by username."""
         repository.create(test_user)
         retrieved = repository.get_by_username("testuser")
-        assert retrieved.id == test_user.id
+        assert retrieved.user_id == test_user.user_id
 
     def test_repository_create_duplicate_raises_error(self, repository, test_user):
         """Test creating duplicate user raises error."""
@@ -288,11 +288,11 @@ class TestUserRepositoryImplementation:
         repository.update(user1)
 
         # Get
-        retrieved = repository.get_by_id(user1.id)
+        retrieved = repository.get_by_id(user1.user_id)
         assert retrieved.email == "updated@example.com"
 
         # Delete
-        repository.delete(user1.id)
+        repository.delete(user1.user_id)
         users = repository.list()
         assert len(users) == 1
 
@@ -326,7 +326,7 @@ class TestUserRepositoryImplementation:
         repository.create(user)
         retrieved = repository.get_by_username("unique_user")
 
-        assert retrieved.id == user.id
+        assert retrieved.user_id == user.user_id
 
     def test_repository_preserves_user_data_on_update(self, repository):
         """Test that all user data is preserved on update."""
@@ -345,7 +345,7 @@ class TestUserRepositoryImplementation:
         repository.update(original_user)
 
         # Verify other fields are preserved
-        retrieved = repository.get_by_id(original_user.id)
+        retrieved = repository.get_by_id(original_user.user_id)
         assert retrieved.username == "testuser"
         assert retrieved.password_hash == "hash"
         assert retrieved.email == "new@example.com"
@@ -399,5 +399,5 @@ class TestUserRepositoryEdgeCases:
         )
 
         repository.create(user)
-        retrieved = repository.get_by_id(user.id)
+        retrieved = repository.get_by_id(user.user_id)
         assert len(retrieved.password_hash) == 10000

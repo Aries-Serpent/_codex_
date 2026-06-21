@@ -254,7 +254,15 @@ class SqliteDAL(BaseDAL):
         # Reconstruct path from netloc + path to handle both:
         # - sqlite://relative/db.sqlite (netloc='relative', path='/db.sqlite')
         # - sqlite:///./.codex/archive.sqlite (netloc='', path='/./.codex/archive.sqlite')
+        # - sqlite:///:memory: (netloc='', path='/:memory:')
         full_path = parsed.netloc + parsed.path
+
+        # Special case for in-memory database
+        if full_path.endswith(":memory:") or full_path == ":memory:":
+            conn = sqlite3.connect(":memory:")
+            dal = SqliteDAL(conn, Path.cwd())
+            dal.ensure_schema()
+            return dal
 
         if not full_path:
             raise ValueError("SQLite URL must include a valid file path")
