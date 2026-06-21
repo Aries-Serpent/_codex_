@@ -43,6 +43,7 @@
 ---
 
 ## 1. Architecture Overview
+<!-- anchor: 1.-architecture-overview -->
 
 GitHub provides **six distinct storage layers** for variables and secrets. Choosing the wrong layer is the most common misconfiguration.
 
@@ -78,6 +79,7 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: all
 ---
 
 ## 2. How to Set Variables — Quick Links
+<!-- anchor: 2.-how-to-set-variables-—-quick-links -->
 
 | Storage Type | GitHub UI Location | API / CLI |
 |---|---|---|
@@ -93,6 +95,7 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: all
 ---
 
 ## 3. Organization Secrets
+<!-- anchor: 3.-organization-secrets -->
 
 > **Location:** [Aries-Serpent → Settings → Security → Secrets → Actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions)  
 > **Referenced in workflows as:** `${{ secrets.NAME }}`  
@@ -121,6 +124,7 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: all
 This is enforced by `_resolve_github_token()` in `src/codex/auth/github_app.py` and `scripts/tools/variable_manager.py`.
 
 ### GitHub App Authentication Secrets (`_GITHUB_APP_*`)
+<!-- anchor: github-app-authentication-secrets-_github_app_* -->
 
 The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–based authentication
 (RS256 JWT flow) as an alternative to PAT-based auth. They are consumed by `src/codex/auth/github_app.py`.
@@ -133,6 +137,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 ---
 
 ## 4. Repository Secrets
+<!-- anchor: 4.-repository-secrets -->
 
 > **Location:** [Settings → Secrets and variables → Actions → Secrets tab](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)  
 > **Referenced in workflows as:** `${{ secrets.NAME }}`
@@ -148,6 +153,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 | 7 | `_CODEX_BOT_RUNNER` | ✅ Present | **45 minutes ago** | Bot runner registration token | ✅ Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
 
 ### Token Decoder Priority Order
+<!-- anchor: token-decoder-priority-order -->
 
 ```
 1. CODEX_GHP_TOKEN_CONFIG   (Combined AES — not currently set)  # pragma: allowlist secret
@@ -159,6 +165,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 ---
 
 ## 5. Environment Secrets (`Aries_Serpent_codex_`)
+<!-- anchor: 5.-environment-secrets-aries_serpent_codex_ -->
 
 > **Location:** [Settings → Environments → Aries_Serpent_codex_](https://github.com/Aries-Serpent/_codex_/settings/environments)  
 > **Override scope:** These override org/repo secrets for jobs using `environment: Aries_Serpent_codex_`
@@ -179,6 +186,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 ---
 
 ## 6. Repository Variables
+<!-- anchor: 6.-repository-variables -->
 
 > **Location:** [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions)  
 > **Referenced in workflows as:** `${{ vars.NAME }}`  
@@ -188,6 +196,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 Variables are grouped by subsystem. Human-governance flags must **never** be overwritten by automation without explicit owner approval.
 
 ### 6a. 🧠 Cognitive Brain
+<!-- anchor: 6a.-🧠-cognitive-brain -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -200,6 +209,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `120` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
 
 ### 6b. 🖥️ Copilot Agent Runtime
+<!-- anchor: 6b.-🖥️-copilot-agent-runtime -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -212,6 +222,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `COPILOT_CLI_ENABLED` | ✅ | `true` | Enable CLI API server integration |
 
 ### 6c. ⚙️ CI/CD Health
+<!-- anchor: 6c.-⚙️-ci-cd-health -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -224,6 +235,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 7 | `EMBEDDING_INDEX_AUTO_REBUILD` | ✅ | `true` | Auto-rebuild FAISS embedding index on changes |
 
 ### 6d. 🔒 Identity & Static Config
+<!-- anchor: 6d.-🔒-identity-&-static-config -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -237,6 +249,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 8 | `GENESIS_TIMESTAMP` | ✅ | `2025-12-26T16:04:45Z` | Repository genesis timestamp (immutable) |
 
 ### 6e. 🐍 Runtime / Build Config
+<!-- anchor: 6e.-🐍-runtime---build-config -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -258,6 +271,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 16 | `ENABLE_LIVE_TESTS` | ✅ | `true` | Enable live/integration tests in CI |
 
 ### 6f. 🤖 ML / HuggingFace / Weights & Biases
+<!-- anchor: 6f.-🤖-ml---huggingface---weights-&-biases -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -273,6 +287,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) | <!-- pragma: allowlist secret -->
 
 ### 6g. Webhook / Infra
+<!-- anchor: 6g.-webhook---infra -->
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
@@ -314,6 +329,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 - When unset, the system falls back to default local backends (`SQLiteBackend` / `InMemoryBackend`).
 
 ### 6h. 🤖 Autonomous Agent Config
+<!-- anchor: 6h.-🤖-autonomous-agent-config -->
 
 Variables controlling the 7-phase autonomous agent framework introduced in S116 (PR #3508).
 All scripts fall back to safe coded defaults when variables are unset.
@@ -357,6 +373,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 ---
 
 ## 7. Environment Variables (`Aries_Serpent_codex_`)
+<!-- anchor: 7.-environment-variables-aries_serpent_codex_ -->
 
 > **Location:** [Settings → Environments → Aries_Serpent_codex_](https://github.com/Aries-Serpent/_codex_/settings/environments)  
 > **Override scope:** These **override** repository variables of the same name for jobs using `environment: Aries_Serpent_codex_`
@@ -380,6 +397,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 ---
 
 ## 8. Codespace Secrets
+<!-- anchor: 8.-codespace-secrets -->
 
 > **Location (org):** [Settings → Codespaces → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces)  
 > **Location (user):** [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces)  
@@ -387,6 +405,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 > **When:** Only available inside an active GitHub Codespace session
 
 ### 🚀 Quick Start — Active Codespace
+<!-- anchor: 🚀-quick-start-—-active-codespace -->
 
 | | |
 |---|---|
@@ -423,6 +442,7 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 > **Note (2026-03-06):** `CODEX_MASTER_KEY` was briefly set as a *repository-level* Codespace secret (overriding the org secret). That repo-level override has been **removed** by @mbaetiong — the org-level Codespace secret is now active directly. Secret was re-rotated at this time.
 
 ### ✅ All Codespace secrets confirmed (SAR-G01 COMPLETE 2026-03-07)
+<!-- anchor: ✅-all-codespace-secrets-confirmed-sar-g01-complete-2026-03-07 -->
 
 All 9 Codespace secrets were set by @mbaetiong as **user-level** Codespace secrets on 2026-03-06/07.
 No further admin action is required for Codespace agent sessions.
@@ -443,6 +463,7 @@ gh secret set WEBHOOK_RECEIVER_URL         --app codespaces  # user-level
 ---
 
 ## 9. Workflow-Defined `env:` Variables
+<!-- anchor: 9.-workflow-defined-env:-variables -->
 
 These are **not** stored in GitHub Settings — they are defined inline in workflow files and can reference secrets/variables.
 
@@ -459,8 +480,10 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 ---
 
 ## 10. Known Issues & Inconsistencies
+<!-- anchor: 10.-known-issues-&-inconsistencies -->
 
 ### ✅ Issue 1 — `CODEX_ENV_NODE_VERSION` stored as a Secret — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-1-—-codex_env_node_version-stored-as-a-secret-—-**resolved-2026-03-06** -->
 
 | | Detail |
 |---|---|
@@ -468,6 +491,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | **Resolution** | `CODEX_ENV_NODE_VERSION` env secret has been **deleted**. A replacement env *variable* was created under `Aries_Serpent_codex_` (verified in 2026-03-06 export). The active baseline value is now `22`; older `18` references are historical migration context. Agents and logs can read this value. | <!-- pragma: allowlist secret -->
 
 ### ✅ Issue 2 — Python version conflict: `3.12` vs `3.11` — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-2-—-python-version-conflict:-3.12-vs-3.11-—-**resolved-2026-03-06** -->
 
 | | Detail |
 |---|---|
@@ -475,6 +499,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | **Resolution** | `CODEX_ENV_PYTHON_VERSION` updated to `3.12` (verified in 2026-03-06 export). Both layers now agree on Python 3.12. CI should no longer have version discrepancies between environment and non-environment jobs. |
 
 ### ✅ Issue 3 — Duplicate path variable: `CODEX_D365_POLICIES_PATH` and `D365_SLA_POLICY_PATH` — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-3-—-duplicate-path-variable:-codex_d365_policies_path-and-d365_sla_policy_path-—-**resolved-2026-03-06** -->
 
 | | Detail |
 |---|---|
@@ -482,6 +507,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | **Resolution** | `D365_SLA_POLICY_PATH` has been **deleted** from GitHub repo variables (confirmed absent in 2026-03-06 live export). `CODEX_D365_POLICIES_PATH` remains as the canonical name. |
 
 ### ✅ Issue 4 — Stale secrets (> 90-day rotation guideline) — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-4-—-stale-secrets->-90-day-rotation-guideline-—-**resolved-2026-03-06** -->
 
 | Secret | Previous Age | Resolution | <!-- pragma: allowlist secret -->
 |---|---|---|
@@ -493,6 +519,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | `CODEX_RUNNER_SHA256` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). |
 
 ### ✅ Issue 5 — `CODEX_ADMIN_KEY` missing — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-5-—-codex_admin_key-missing-—-**resolved-2026-03-06** -->
 
 | | Detail |
 |---|---|
@@ -500,6 +527,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 3 hours before 2026-03-06 export). `webhook_configurator.py` can now use least-privilege webhook management without falling back to `CODEX_MASTER_KEY`. | <!-- pragma: allowlist secret -->
 
 ### ✅ Issue 6 — `WEBHOOK_RECEIVER_URL` missing — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-6-—-webhook_receiver_url-missing-—-**resolved-2026-03-06** -->
 
 | | Detail |
 |---|---|
@@ -507,6 +535,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | **Resolution** | `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by `.devcontainer/scripts/post-start.sh`. Canonical format: `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`; some environments may surface `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` (Codespaces forwarding variant). The `POST /webhook/github` endpoint is now implemented in `cognitive_app/src/server/cli_api_server.py` with HMAC-SHA256 verification. For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace. |
 
 ### ✅ Issue 7 — Codespace secrets confirmation — **RESOLVED 2026-03-07**
+<!-- anchor: ✅-issue-7-—-codespace-secrets-confirmation-—-**resolved-2026-03-07** -->
 
 | | Detail |
 |---|---|
@@ -518,8 +547,10 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 ---
 
 ## 11. Troubleshooting
+<!-- anchor: 11.-troubleshooting -->
 
 ### "Variables API returns 403 / 404"
+<!-- anchor: "variables-api-returns-403---404" -->
 
 ```
 Symptom: VariableManager or brain_client raises AuthenticationError on variable read/write
@@ -532,6 +563,7 @@ Fix:
 ```
 
 ### "Webhooks return 403 on create/update"
+<!-- anchor: "webhooks-return-403-on-create-update" -->
 
 ```
 Symptom: webhook_configurator.py fails with HTTP 403 on webhook API calls
@@ -543,6 +575,7 @@ Fix:
 ```
 
 ### "Python version mismatch between jobs"
+<!-- anchor: "python-version-mismatch-between-jobs" -->
 
 ```
 Symptom: Tests pass in some jobs, fail in others due to Python syntax/type differences
@@ -552,6 +585,7 @@ If you still see version mismatches, confirm no other variable overrides exist.
 ```
 
 ### "CODEX_ENV_NODE_VERSION appears as *** in logs"
+<!-- anchor: "codex_env_node_version-appears-as-***-in-logs" -->
 
 ```
 Symptom: Node.js version appears masked in CI logs
@@ -561,6 +595,7 @@ Current required value: `22` (major-only).
 ```
 
 ### "Codespace starts but CLI API server not running"
+<!-- anchor: "codespace-starts-but-cli-api-server-not-running" -->
 
 ```
 Symptom: post-start.sh health check fails; uvicorn :8765 not reachable
@@ -570,6 +605,7 @@ Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — s
 ```
 
 ### "CODEX_CI_FAILURE_RATE shows stale value"
+<!-- anchor: "codex_ci_failure_rate-shows-stale-value" -->
 
 ```
 Symptom: CODEX_CI_FAILURE_RATE hasn't updated in > 24 hours
@@ -581,6 +617,7 @@ Fix:
 ```
 
 ### "Secret rotation — CODEX_MASTER_KEY / CODEX_BACKUP_KEY"
+<!-- anchor: "secret-rotation-—-codex_master_key---codex_backup_key" -->
 
 ```
 Full runbook: docs/ops/secrets_rotation_runbook.md  # pragma: allowlist secret
@@ -593,6 +630,7 @@ Quick summary:
 ```
 
 ### "Incorrect variable format"
+<!-- anchor: "incorrect-variable-format" -->
 
 ```
 Variable: CODEX_CI_FAILURE_RATE
@@ -609,6 +647,7 @@ Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Se
 ---
 
 ## 12. Related Documentation
+<!-- anchor: 12.-related-documentation -->
 
 | Document | Scope | Notes |
 |---|---|---|
@@ -629,12 +668,14 @@ Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Se
 ---
 
 ## 13. ✅ Previously Missing — All Resolved (2026-03-07)
+<!-- anchor: 13.-✅-previously-missing-—-all-resolved-2026-03-07 -->
 
 All previously-blocked items are now **resolved**. This section is retained as an audit trail.
 
 ---
 
 ### ✅ WEBHOOK_RECEIVER_URL (Repo Variable) — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-webhook_receiver_url-repo-variable-—-**resolved-2026-03-06** -->
 
 **Resolution:** `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by
 `.devcontainer/scripts/post-start.sh`. The URL format is:
@@ -646,12 +687,14 @@ For webhook delivery to work, port 8765 must be set to **public** visibility in 
 ---
 
 ### ✅ Issue 3 — Delete duplicate `D365_SLA_POLICY_PATH` repo variable — **RESOLVED 2026-03-06**
+<!-- anchor: ✅-issue-3-—-delete-duplicate-d365_sla_policy_path-repo-variable-—-**resolved-2026-03-06** -->
 
 `D365_SLA_POLICY_PATH` is absent from the 2026-03-06 live export — the variable has been deleted.
 
 ---
 
 ### ✅ Codespace Secrets (9 items) — **RESOLVED 2026-03-07** (SAR-G01 COMPLETE)
+<!-- anchor: ✅-codespace-secrets-9-items-—-**resolved-2026-03-07**-sar-g01-complete -->
 
 All 9 Codespace secrets confirmed set by @mbaetiong as user-level Codespace secrets.
 See [§8](#8-codespace-secrets) for the complete confirmed status table.
@@ -671,6 +714,7 @@ See [§8](#8-codespace-secrets) for the complete confirmed status table.
 ---
 
 ### ✅ Autonomous Agent Config Variables (8 items) — **RESOLVED 2026-03-07**
+<!-- anchor: ✅-autonomous-agent-config-variables-8-items-—-**resolved-2026-03-07** -->
 
 All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6h](#6h--autonomous-agent-config) for details.
 
@@ -682,13 +726,16 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 ---
 
 ## Summary Checklist
+<!-- anchor: summary-checklist -->
 
 ### ✅ Previously Blocked — All Resolved (2026-03-07)
+<!-- anchor: ✅-previously-blocked-—-all-resolved-2026-03-07 -->
 
 - [x] ~~**Set 9 Codespace secrets**~~ — **RESOLVED 2026-03-07** (SAR-G01 COMPLETE) — all set as user Codespace secrets by @mbaetiong; see [§8](#8-codespace-secrets)
 - [x] ~~**Set 8 autonomous agent repo variables**~~ — **RESOLVED 2026-03-07** — all 8 set: `AGENT_KILL_SWITCH=0`, `AUTONOMY_BUDGET_SECONDS=90`, `AUTONOMY_MAX_ITERATIONS=3`, `AUTONOMY_DRY_RUN=0`, `AGENT_RUNNER_BUDGET_SECONDS=180`, `AGENT_RUNNER_ITERATIONS=2`, `AGENT_RUNNER_DRY_RUN=0`, `UNCERTAINTY_BUDGET_SECONDS=20`; see [§6h](#6h--autonomous-agent-config)
 
 ### ✅ Resolved
+<!-- anchor: ✅-resolved -->
 
 - [x] ~~Fix Issue 1: Delete `CODEX_ENV_NODE_VERSION` env secret; recreate as env variable~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 2: Update `CODEX_ENV_PYTHON_VERSION` env variable from `3.11` → `3.12`~~ — **Done 2026-03-06**
@@ -699,6 +746,7 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 - [x] ~~Document autonomous agent env vars (§6h)~~ — **Done 2026-03-07** (S116 PR #3508, 8 variables: `AGENT_KILL_SWITCH`, `AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`, `AUTONOMY_DRY_RUN`, `AGENT_RUNNER_BUDGET_SECONDS`, `AGENT_RUNNER_ITERATIONS`, `AGENT_RUNNER_DRY_RUN`, `UNCERTAINTY_BUDGET_SECONDS`)
 
 ### 🟢 Monitor / Maintenance
+<!-- anchor: 🟢-monitor---maintenance -->
 
 - [ ] Rotate `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` before **2026-06-04** (rotated 2026-03-06 — 90-day window)
 - [ ] Rotate `_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` before **2026-06-04**

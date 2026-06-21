@@ -640,3 +640,1767 @@ When proposing architectural changes:
 ---
 
 **Questions or suggestions?** Open a discussion or submit for AI Assistant autonomous review
+
+
+---
+## 📎 Consolidated from: docs/Architecture.md
+
+# Architecture: Shim Governance & Canonical Import Policy (v1.2.9)
+
+> Generated: 2025-12-05 | Author: mbaetiong  
+> Status: Active | Readiness: 85% → 99% path
+
+🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
+
+## Overview
+
+This document defines the governance policy for import shims and canonical module paths during the convergence from split-brain architecture to a unified `src.*` canonical structure.
+
+## Policy Summary
+
+- **Canonical Location**: All runtime modules should ultimately live under `src/`
+- **Legacy Shims**: Temporary shims may exist in root paths (e.g., `training/`) during convergence
+- **Shim Implementation**: Shims MUST re-export from `src.*` and maintain API equivalence
+- **Identity Requirements**: `training.X` must resolve to equivalent functionality as `src.training.X`
+- **CI Enforcement**: Strict conflict detection enabled; duplicates allowed only if whitelisted
+
+## Current State (v1.2.9)
+
+### Import Reduction Progress
+- **Baseline**: 99 legacy import occurrences
+- **Current**: 42 occurrences (57.6% reduction ✅)
+- **Tokenization**: 100% migrated to `src.*` (13 → 0)
+- **Training**: 79% migrated to `src.*` (53 → 11)
+- **Models**: 50% migrated to `src.*` (4 → 2)
+- **Hydra**: config_legacy fallbacks (29 preserved for compatibility)
+
+### Shim Architecture
+
+**Active Shims** (as of v1.2.9):
+- `src/training/engine_hf_trainer.py` → forwards to `training.engine_hf_trainer`
+- `src/training/functional_training.py` → forwards to `training.functional_training`
+- `src/training/data_utils.py` → forwards to `training.data_utils`
+- `src/training/checkpoint_manager.py` → forwards to `training.checkpoint_manager`
+- `src/training/config.py` → forwards to `training.config`
+- `src/tokenization/train_tokenizer.py` → forwards to `tokenization.train_tokenizer`
+
+**Shim Pattern**:
+```python
+"""Canonical import shim for src.training.module_name"""
+from importlib import import_module as _im
+
+_mod = _im("training.module_name")
+globals().update({k: getattr(_mod, k) for k in dir(_mod) if not k.startswith("_")})
+__all__ = [k for k in globals() if not k.startswith("_")]
+```
+
+## Governance Rules
+
+### Rule 1: Canonicalization Priority
+
+| Priority | Action | Timeline |
+|----------|--------|----------|
+| P0 | Migrate high-usage runtime modules to `src/` | Phase 1 (Current Cycle) |
+| P1 | Keep minimal, documented shims during transition | Until migration complete |
+| P2 | Deprecate and remove shims after migration | Phase 2 (Current Cycle) |
+
+### Rule 2: Shim Requirements
+All shims MUST:
+- Re-export ALL public APIs from the legacy module
+- Maintain API equivalence (validated by `test_shim_equivalence.py`)
+- Include deprecation date in `.github/SHIM_INVENTORY.yaml`
+- Document rationale and ownership
+
+### Rule 3: CI Gating
+- **Strict Mode**: Enabled in CI via `verify_conflicts.py --mode strict`
+- **Whitelist**: Duplicates allowed only if listed in `.github/SHIM_INVENTORY.yaml`
+- **PR Blocking**: Non-whitelisted duplicates block merge
+- **Shim-Aware Mode**: Available for local debugging only
+
+### Rule 4: Decision Gates for Consolidation
+Before moving a module from legacy to `src/`:
+
+| Gate | Requirement | Validation |
+|------|-------------|------------|
+| **Ownership** | Owner approved in SHIM_INVENTORY.yaml | Manual review |
+| **Usage Trend** | Legacy imports for module < 10% for 90 iterations | Nightly audit metrics |
+| **Test Equivalence** | test_shim_equivalence + full suite PASS | CI validation |
+| **No Split-Brain** | verify_conflicts strict shows no violations | CI check |
+| **Low Risk** | Affects < 10 tests | Impact analysis |
+| **Rollback Ready** | Backup branch + tested rollback script | Pre-consolidation prep |
+
+### Rule 5: Rollback Procedures
+Every consolidation PR MUST include:
+- Backup branch before changes
+- Tested rollback script
+- Rollback validation (tests + determinism)
+- Documented rollback steps in PR description
+
+## Tooling & Automation
+
+### Inventory Management
+```bash
+# Generate shim inventory
+python scripts/remediation/list_shims.py \
+  --roots training src/training tokenization src/tokenization \
+  --output .github/SHIM_INVENTORY.yaml
+```
+
+### Conflict Detection
+```bash
+# Strict mode (CI gating)
+python scripts/remediation/verify_conflicts.py \
+  --mode strict \
+  --output audit_artifacts/conflicts.json
+
+# Shim-aware mode (local debugging)
+python scripts/remediation/verify_conflicts.py \
+  --mode shim-aware \
+  --output audit_artifacts/conflicts.json
+```
+
+### Equivalence Testing
+```bash
+# Run shim equivalence tests
+pytest -q tests/validation/test_shim_equivalence.py
+
+# Strict identity mode (CI only)
+SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
+```
+
+### Nightly Audit
+- **Workflow**: `.github/workflows/nightly-audit.yml`
+- **Schedule**: Daily at 02:00 UTC
+- **Outputs**: Inventory, conflicts, legacy usage report
+- **Alerting**: Auto-creates issue on violations
+
+### Determinism Validation
+- **Workflow**: `.github/workflows/determinism.yml`
+- **Trigger**: Pull requests touching `src/`, `scripts/`, `tests/`, `training/`, `tokenization/`
+- **Checks**: Full audit, 2-run determinism, strict conflicts
+- **Artifacts**: Uploaded for review
+
+## Path to 99% Readiness
+
+### Current: 85% Ready (v1.2.9)
+✅ Split-brain resolved via shims  
+✅ All imports work correctly  
+✅ CI gating in place  
+✅ Inventory and governance established
+
+### Target: 99% Ready (v1.3.0)
+Two paths available:
+
+**Option A: Full Consolidation** (99% readiness)
+1. Move legacy modules from `training/` → `src/training/`
+2. Move legacy modules from `tokenization/` → `src/tokenization/`
+3. Update root `__init__.py` files as compatibility shims
+4. Remove canonical shim files (no longer needed)
+5. Update remaining legacy imports (11 training + 29 hydra)
+6. Final validation and baseline update
+
+**Option B: Shim Governance** (85-90% readiness, permanent)
+1. Keep shims as architectural pattern
+2. Formalize in ADR (Architecture Decision Record)
+3. Maintain via inventory and nightly audits
+4. System remains operational and maintainable
+
+## References
+
+- **Shim Inventory**: `.github/SHIM_INVENTORY.yaml`
+- **Consolidation Playbook**: `.github/CONSOLIDATION_PLAYBOOK.md`
+- **Wave 3 Convergence Plan**: `docs/validation/Wave3_SplitBrain_Convergence.md`
+- **v1.2.9 Validation Log**: `docs/validation/v1.2.9_Validation_Log.md`
+- **v1.3.0 Next Steps**: `.github/copilot_agent_task_prompt_v1.3.0.md`
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| v1.2.9 | 2025-12-05 | mbaetiong | Initial policy definition |
+
+---
+
+**Status**: Active | **Next Review**: Phase 1 (Current Cycle) or upon consolidation decision
+
+
+
+---
+## 📎 Consolidated from: docs/ARCHITECTURE_BLUEPRINT.md
+
+# Repository Architecture Blueprint and Roadmap
+
+**Document Version**: 1.0.0
+**Generated**: 2025-12-11
+**Branch Context**: `copilot/sub-pr-2459-again`
+**Author**: GitHub Copilot with mbaetiong
+**Audience**: Developer-Architects, AI Assistants/Agents, DevOps Engineers
+
+---
+
+## Executive Summary
+
+The `_codex_` repository is a Level 4 MLOps-certified, production-grade machine learning framework designed with AI Assistant/Agent intuitiveness as a core principle. This blueprint provides an exhaustive technical reference for understanding the repository's architecture, structure, and operational workflows, enabling effective collaboration between human developers and AI agents (GitHub Copilot, ChatGPT 5.1 Agent Mode).
+
+### Key Characteristics
+
+- **MLOps Maturity**: Level 4 Certified (100/100 Azure MLOps capabilities)
+- **Test Coverage**: 2,079+ test files, 10.7% coverage, 100% pass rate
+- **Documentation**: 693+ markdown files, 64KB added in recent PRs
+- **Architecture**: Plugin-driven, Hydra-configured, containerized
+- **AI Integration**: Native support for Copilot workflows, agent orchestration, tokenized workflows
+- **Security**: Zero known vulnerabilities, comprehensive scanning infrastructure
+- **Reproducibility**: Deterministic training with RNG checkpointing, environment snapshots
+
+### Purpose and Scope
+
+This blueprint serves multiple audiences:
+1. **Human Developers**: Comprehensive onboarding, architecture understanding, contribution guidelines
+2. **AI Agents**: Tokenized workflows, structured prompts, automated task execution
+3. **DevOps Engineers**: Deployment patterns, CI/CD configuration, infrastructure management
+4. **Architects**: System design, integration patterns, scalability considerations
+
+---
+
+## Table of Contents
+
+1. [Repository Structure](#repository-structure)
+2. [Architecture Overview](#architecture-overview)
+3. [Core Components](#core-components)
+4. <!-- BROKEN ANCHOR: [Runtime & Data Flow](#runtime-data-flow) -->
+5. <!-- BROKEN ANCHOR: [CI/CD & Testing](#cicd-testing) -->
+6. <!-- BROKEN ANCHOR: [Security & Compliance](#security-compliance) -->
+7. [AI Agent Integration](#ai-agent-integration)
+8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment-operations) -->
+9. [Development Workflows](#development-workflows)
+10. <!-- BROKEN ANCHOR: [Roadmap & Priorities](#roadmap-priorities) -->
+11. [Appendices](#appendices)
+
+---
+
+## Repository Structure
+
+### Root-Level Organization
+
+```
+_codex_/
+├── .codex/                      # Codex environment kit & setup scripts
+├── .github/                     # CI/CD workflows (gated for cost control)
+├── agents/                      # AI Agent infrastructure
+│   ├── prompts/                 # Pre-defined prompts library
+│   ├── workflow_navigator.py   # Tokenized workflow execution
+│   └── codex_client/           # Codex-GitHub bridge client
+├── src/codex_ml/               # Core ML framework
+│   ├── training/               # Training pipelines
+│   ├── evaluation/             # Evaluation metrics
+│   ├── connectors/             # Storage connectors
+│   └── plugins/                # Plugin system
+├── scripts/                     # Utility scripts (195+ files)
+│   └── space_traversal/        # Audit pipeline v1.5.5
+├── tests/                       # Test suite (2,079+ files)
+├── docs/                        # Documentation (693+ files)
+│   ├── mcp/                    # MCP (Model Context Protocol) docs
+│   ├── archive/                # Historical planning docs & session reports
+│   ├── api/                    # API reference documentation
+│   └── ADMIN_*.md              # Administrator guides
+├── reports/                     # Generated reports & diagnostics
+│   ├── codex/                  # Codex-specific reports
+│   └── diagnostics/            # Diagnostic outputs
+├── coverage_reports/            # Test coverage JSON reports
+├── training/                    # Training configurations
+├── services/                    # Microservices (ITA, etc.)
+├── cli/                         # CLI entrypoints
+├── configs/                     # Hydra configurations
+├── deploy/                      # Deployment manifests
+├── monitoring/                  # Observability tools
+├── audit_artifacts/            # Audit results & trends
+├── misc/                        # Archival & review
+│   └── repo-owner-review/      # Deprecated files for owner review
+└── [core config files]          # pyproject.toml, requirements*.txt, etc.
+```
+
+### Key Directories Deep Dive
+
+#### 1. Core ML Framework (`src/codex_ml/`)
+
+**Purpose**: Central machine learning framework with modular, extensible architecture.
+
+**Structure**:
+```
+src/codex_ml/
+├── training/
+│   ├── config.py              # TrainingConfig with gradient accumulation
+│   ├── engine_hf_trainer.py   # HuggingFace Trainer integration
+│   └── functional_training.py # Functional training pipeline
+├── evaluation/
+│   └── runner.py              # Evaluation orchestration
+├── connectors/
+│   └── base.py                # LocalConnector (async, path-validated)
+├── plugins/
+│   ├── plugin_registry.py     # Plugin system
+│   └── plugin_sandbox.py      # Sandboxed plugin execution
+├── metrics/
+│   └── api.py                 # NDJSON metrics aggregation
+└── utils/
+    └── stub_cleanup.py        # Stub analysis tool
+```
+
+**Key Features**:
+- Deterministic training with RNG state management
+- Async storage connectors with path traversal protection
+- Plugin-based extensibility for models, metrics, trainers
+- NDJSON metrics for standardized aggregation
+
+#### 2. AI Agent Infrastructure (`agents/`)
+
+**Purpose**: Enable AI Assistant/Agent workflows with structured prompts and orchestration.
+
+**Components**:
+```
+agents/
+├── prompts/                    # Prompt library
+│   ├── audit/                  # Audit operations
+│   ├── debugging/              # Debugging guides (26KB)
+│   ├── deployment/             # Deployment workflows
+│   ├── documentation/          # Doc generation
+│   └── organization/           # Repository organization
+├── workflow_navigator.py       # Token-based workflow execution
+├── physics_orchestrator.py    # Energy-based decision making
+├── mental_mapping.py           # Decision tracking
+├── TOKENIZED_WORKFLOWS.md     # Workflow documentation
+└── codex_client/              # API bridge for Codex-GitHub ops
+```
+
+**Workflow Tokens**:
+- `AUDIT_EXEC`: Full audit pipeline execution
+- `PHYS_DECIDE`: Physics-inspired decision-making
+- `DOC_GEN`: Documentation generation
+- `REPO_ORG`: Repository organization
+- `SELF_HEAL`: Automated feedback loops
+
+#### 3. Audit Pipeline (`scripts/space_traversal/`)
+
+**Purpose**: Deterministic capability tracking and trend analysis (v1.5.5).
+
+**Components**:
+```
+scripts/space_traversal/
+├── audit_runner.py            # Main orchestration
+├── trend_database.py          # SQLite trend storage
+├── performance.py             # Caching & profiling utilities
+├── ci_integration.py          # CI/CD integration
+├── migrations/                # Schema migrations
+├── viz_html.py                # HTML dashboards
+├── viz_ascii.py               # Terminal output
+├── viz_swagger.py             # OpenAPI docs
+└── viz_docs_hub.py            # Documentation hub
+```
+
+**Features**:
+- SQLite-based trend tracking with migrations
+- Multiple visualization formats (HTML, ASCII, Swagger)
+- Webhook notifications (Slack, Teams, generic)
+- CI/CD integration (GitHub Actions, GitLab CI, Jenkins)
+
+#### 4. Testing Infrastructure (`tests/`)
+
+**Purpose**: Comprehensive test coverage with multiple strategies.
+
+**Structure**:
+```
+tests/
+├── capabilities/              # Capability-specific tests
+├── tokenization/              # Tokenization parity tests
+├── space_traversal/           # Audit pipeline tests
+├── plugins/                   # Plugin system tests
+├── training/                  # Training pipeline tests
+└── [2,079+ test files]        # Unit, integration, smoke tests
+```
+
+**Test Categories**:
+- Unit tests: Individual function/class testing
+- Integration tests: Component interaction testing
+- Smoke tests: Quick sanity checks
+- Property-based tests: Hypothesis-driven testing
+- Capability tests: Feature-specific validation
+
+---
+
+## Architecture Overview
+
+### High-Level System Architecture
+
+```mermaid
+flowchart TB
+    subgraph Users["👥 Users"]
+        Dev[Developers]
+        Agent[AI Agents]
+        CI[CI/CD Systems]
+    end
+
+    subgraph Core["🔷 Codex Core"]
+        CLI[CLI Interface]
+        Logging[Session Logger]
+        Config[Configuration]
+    end
+
+    subgraph Pipeline["🔍 Audit Pipeline v1.5.5"]
+        Runner[Audit Runner]
+        Scanner[Code Scanner]
+        Metrics[Metrics Collector]
+        Trends[Trend Database]
+    end
+
+    subgraph ML["🤖 ML Framework"]
+        Training[Training Engine]
+        Eval[Evaluation]
+        Models[Model Registry]
+    end
+
+    subgraph Viz["📊 Visualization"]
+        Dashboard[HTML Dashboard]
+        Terminal[ASCII Terminal]
+        Reports[Markdown Reports]
+    end
+
+    subgraph Storage["💾 Storage"]
+        SQLite[(SQLite DB)]
+        Logs[Log Files]
+        Cache[Cache Layer]
+    end
+
+    Dev --> CLI
+    Agent --> Runner
+    CI --> Runner
+
+    CLI --> Training
+    CLI --> Eval
+
+    Runner --> Scanner
+    Scanner --> Metrics
+    Metrics --> Trends
+
+    Trends --> SQLite
+    Trends --> Viz
+
+    Training --> Models
+    Eval --> Models
+
+    Dashboard --> Reports
+```
+
+### Component Interaction Patterns
+
+#### 1. Training Pipeline Flow
+
+```
+Data Validation → Configuration → Model Init → Training Loop → Checkpoint → Metrics
+     ↓                 ↓              ↓             ↓              ↓          ↓
+validate_dataset   Hydra      model_registry  engine_hf    RNGState   metrics.api
+```
+
+#### 2. Audit Pipeline Flow
+
+```
+Trigger → Scan → Analyze → Score → Store → Visualize → Notify
+   ↓       ↓       ↓         ↓       ↓        ↓          ↓
+ CLI   Scanner  Metrics  Scorer  SQLite   viz_html  Webhooks
+```
+
+#### 3. Agent Workflow Flow
+
+```
+Request → Parse → Execute → Validate → Report → Learn
+   ↓        ↓        ↓         ↓         ↓        ↓
+ Agent  Navigator  Workflow   Tests   Progress  Mental Map
+```
+
+### Design Principles (Physics-Inspired)
+
+Based on the repository's physics-inspired orchestration (`agents/ORCHESTRATION.md`):
+
+1. **Energy Minimization**: Workflows optimize for minimum "energy" (time, resources)
+2. **Path Optimization**: Clear, non-redundant navigation paths through codebase
+3. **Field Theory**: Configuration fields create "force fields" for dynamic behavior
+4. **Pattern Reuse**: Reusable patterns reduce redundancy (DRY principle)
+5. **Balanced Operations**: Training vs monitoring, security vs usability
+6. **Entropy Management**: Order through structured documentation and organization
+
+---
+
+## Core Components
+
+### 1. Training Configuration (`training/config.py`)
+
+**Key Features**:
+```python
+@dataclass
+class TrainingConfig:
+    gradient_accumulation_steps: int = 1  # Exposed gradient accumulation
+    batch_size: int = 8
+    learning_rate: float = 5e-5
+    num_train_epochs: int = 3
+    precision: str = "fp32"  # fp32, fp16, bf16
+    deterministic: bool = True  # Reproducible training
+```
+
+**Validation**: Built-in constraints (gradient_accumulation_steps >= 1, etc.)
+
+### 2. Storage Connectors (`src/codex_ml/connectors/base.py`)
+
+**Security Features**:
+- Path traversal prevention with `_resolve()` method
+- Async I/O with `asyncio.to_thread`
+- Comprehensive error handling
+
+```python
+class LocalConnector(Connector):
+    async def read_file(self, path: str) -> bytes:
+        target = self._resolve(path)  # Validates path safety
+        if not target.exists():
+            raise ConnectorError(f"file does not exist: {path}")
+        return await asyncio.to_thread(target.read_bytes)
+```
+
+### 3. Plugin System (`src/codex_ml/plugins/`)
+
+**Abstract Base Pattern**:
+```python
+class Plugin(ABC):
+    @abstractmethod
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute plugin logic. Override in subclass."""
+        raise NotImplementedError
+```
+
+**Registry**: Dynamic plugin loading via entry points
+
+### 4. Metrics Aggregation (`src/codex_ml/metrics/api.py`)
+
+**NDJSON Format**: Newline-delimited JSON for streaming metrics
+**Standardization**: Consistent metric schema across training runs
+
+### 5. Workflow Navigator (`agents/workflow_navigator.py`)
+
+**Token-Based Execution**:
+```python
+navigator = WorkflowNavigator()
+navigator.execute('AUDIT_EXEC')  # Execute by token
+navigator.execute("Run audit pipeline")  # Natural language
+navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE'])  # Chaining
+```
+
+---
+
+## Runtime & Data Flow
+
+### Development Lifecycle
+
+```
+1. Setup Environment
+   └─> .codex/scripts/setup.sh
+       └─> UV lockfile resolution
+           └─> Virtual environment creation
+
+2. Code Development
+   └─> Local editing with Copilot
+       └─> Pre-commit hooks (ruff, black, mypy)
+           └─> Incremental validation
+
+3. Testing
+   └─> pytest tests/ -v
+       └─> Coverage reporting
+           └─> Test artifacts
+
+4. Training
+   └─> codex_exec train --config config.yaml
+       └─> Training loop with checkpoints
+           └─> Metrics emission (NDJSON)
+
+5. Audit
+   └─> python scripts/space_traversal/audit_runner.py run
+       └─> Capability scoring
+           └─> Trend storage (SQLite)
+
+6. Documentation
+   └─> Automated generation via agents/prompts/documentation/
+       └─> Wiki bundle creation
+           └─> Deployment to GitHub Wiki
+
+7. Deployment
+   └─> Docker build
+       └─> Container registry push
+           └─> Kubernetes/service deployment
+```
+
+### Data Flow Diagram
+
+```
+Source Code → Validation → Training → Checkpoints
+     ↓            ↓           ↓           ↓
+ Git Repo    validate.py  Training   RNGState
+                             ↓
+                          Metrics
+                             ↓
+                        Aggregation
+                             ↓
+                       Visualization
+```
+
+---
+
+## CI/CD & Testing
+
+### GitHub Actions (Gated)
+
+**Current State**: Workflows disabled by default for cost control
+
+**Enabled Workflows** (when activated):
+- `determinism.yml`: Deterministic audit execution
+- `pre-release-deployment.yml`: Release preparation
+- `self-healing-feedback-loop.yml`: Automated gap detection
+
+**Self-Hosted Runner Policy**: Required for all workflows to prevent cloud cost
+
+### Pre-Commit Hooks
+
+**Configuration**: `.pre-commit-config.yaml`
+
+**Hooks**:
+- `ruff`: Linting
+- `black`: Code formatting
+- `isort`: Import sorting
+- `mypy`: Type checking
+- Custom validators
+
+### Nox Sessions
+
+**Configuration**: `noxfile.py`
+
+**Sessions**:
+- `tests`: Run full test suite
+- `lint`: Linting with ruff
+- `type_check`: MyPy validation
+- `security`: Security scans (bandit, semgrep)
+
+### Testing Strategy
+
+**Pyramid Approach**:
+```
+        /\
+       /E2E\      ← 5% (End-to-end)
+      /------\
+     /Integ  \   ← 15% (Integration)
+    /--------\
+   /   Unit   \  ← 80% (Unit tests)
+  /------------\
+```
+
+**Test Execution**:
+```bash
+# Full suite
+pytest tests/ -v
+
+# Specific category
+pytest -k "tokenization" -v
+
+# With coverage
+pytest tests/ --cov=src/codex_ml --cov-report=html
+
+# Smoke tests only
+pytest -m smoke -v
+```
+
+---
+
+## Security & Compliance
+
+### Security Infrastructure
+
+**Scanning Tools**:
+- **Gitleaks**: Secret detection (`.gitleaks.toml`)
+- **Bandit**: Python security linter (`.bandit.yaml`)
+- **Semgrep**: Pattern-based scanning (`semgrep_rules/`)
+- **CodeQL**: Static analysis (GitHub Advanced Security)
+
+**Current Status**: ✅ Zero known vulnerabilities
+
+### Recent Security Fixes
+
+1. **XSS Prevention** (`scripts/planning_components.py`):
+   - Hash-based ID generation
+   - Type validation for user inputs
+   - `CSS.escape()` for selector safety
+
+2. **Path Traversal Prevention** (`src/codex_ml/connectors/base.py`):
+   - Path validation in `_resolve()`
+   - Common path verification
+
+### Secrets Management
+
+**Configuration**: `.codex/cache/secrets.status.json`
+
+**Best Practices**:
+- Environment variables for sensitive data
+- No hardcoded credentials
+- Token rotation policies
+- Least-privilege access
+
+### Compliance Artifacts
+
+- `SECURITY.md`: Security policy
+- `CODE_OF_CONDUCT.md`: Community standards
+- `GOVERNANCE.md`: Governance model
+- `security_allowlist.json`: Approved exceptions
+
+---
+
+## AI Agent Integration
+
+### Agent Architecture
+
+The repository is explicitly designed for AI Assistant/Agent intuitiveness:
+
+#### 1. Prompt Library (`agents/prompts/`)
+
+**Categories**:
+- **Audit**: Full audits, regression checks, trend analysis
+- **Debugging**: Test failures, merge conflicts, performance, security
+- **Deployment**: Pre-release preparation, validation
+- **Documentation**: Wiki generation, API docs
+- **Organization**: Cleanup, archival, structure analysis
+- **Self-Healing**: Feedback loops, gap detection
+
+**Recent Additions** (26KB):
+- `debugging/test-failure-debugging.md` (4.8KB)
+- `debugging/resolve-merge-conflicts.md` (6.3KB)
+- `debugging/performance-optimization.md` (7.0KB)
+- `debugging/security-remediation.md` (8.6KB)
+
+#### 2. Workflow Navigator
+
+**Tokenized Execution**:
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+navigator = WorkflowNavigator()
+
+# High-frequency workflows
+navigator.execute('AUDIT_EXEC')     # Audit pipeline
+navigator.execute('PHYS_DECIDE')    # Decision making
+navigator.execute('SELF_HEAL')      # Self-healing
+
+# Medium-frequency workflows
+navigator.execute('DOC_GEN')        # Documentation
+navigator.execute('MENTAL_REVIEW')  # Review decisions
+
+# Low-frequency workflows
+navigator.execute('REPO_ORG')       # Organization
+```
+
+#### 3. Physics-Inspired Orchestration
+
+**Energy-Based Decision Making** (`agents/physics_orchestrator.py`):
+- Assigns "energy" costs to actions
+- Optimizes workflow paths
+- Balances competing objectives
+
+**Mental Mapping** (`agents/mental_mapping.py`):
+- Tracks decision history
+- Learns from outcomes
+- Improves future decisions
+
+#### 4. Agent Control Interface
+
+**Generation**:
+```bash
+python scripts/space_traversal/audit_runner.py agent-interface --output agent_interface.html
+```
+
+**Features**:
+- Interactive HTML dashboard
+- Direct action triggers
+- Real-time status updates
+
+### Integration Patterns
+
+#### Pattern 1: Copilot-Driven Development
+
+```
+Developer + Copilot
+    ↓
+Code Changes
+    ↓
+Pre-Commit Validation
+    ↓
+Agent Review (via prompts/debugging/)
+    ↓
+Test Execution
+    ↓
+Audit Pipeline
+```
+
+#### Pattern 2: Automated Agent Tasks
+
+```
+Trigger (Schedule/Event)
+    ↓
+Workflow Navigator
+    ↓
+Tokenized Workflow Execution
+    ↓
+Results Collection
+    ↓
+Mental Mapping Update
+```
+
+#### Pattern 3: Self-Healing Loop
+
+```
+Gap Detection
+    ↓
+Priority Assessment
+    ↓
+Auto-Fix Attempt
+    ↓
+Validation
+    ↓
+Success → Document
+    ↓
+Failure → Escalate
+```
+
+---
+
+## Deployment & Operations
+
+### Containerization
+
+**Docker Variants**:
+- `Dockerfile`: Standard CPU image
+- `Dockerfile.gpu`: NVIDIA GPU support
+- `Dockerfile.local`: Local development
+- `Dockerfile.optimized`: Production-optimized
+
+**Docker Compose**: `docker-compose.yml` for local orchestration
+
+### Environment Management
+
+**UV Lockfiles**: Deterministic dependency resolution
+- `uv.lock`: Primary lockfile
+- Fallback to `requirements*.txt` if UV unavailable
+
+**Environment Variables**:
+- `CODEX_ENV_PYTHON_VERSION`: Python version selector
+- `CODEX_SESSION_ID`: Session identifier
+- `CODEX_LOG_DB_PATH`: SQLite database path
+- `CODEX_SQLITE_POOL`: Enable connection pooling
+
+### Deployment Patterns
+
+#### Pattern 1: Kubernetes Deployment
+
+```yaml
+# deploy/k8s/deployment.yaml (example)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codex-ml
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: codex-ml
+  template:
+    spec:
+      containers:
+      - name: codex-ml
+        image: codex-ml:latest
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+```
+
+#### Pattern 2: Self-Hosted Runner
+
+**Requirements**:
+- Dedicated runner machine
+- GitHub Actions runner software
+- Self-hosted label in workflows
+- Cost monitoring
+
+#### Pattern 3: Model Serving
+
+**Service Stack** (`services/`):
+- FastAPI-based REST API
+- Model registry integration
+- Health checks and metrics
+- Autoscaling policies
+
+### Monitoring & Observability
+
+**Tools**:
+- Prometheus metrics
+- Psutil for system monitoring
+- Evidently for drift detection
+- Custom metrics via `codex_ml.metrics.api`
+
+**Key Metrics**:
+- Training loss and accuracy
+- Model inference latency
+- Resource utilization (CPU, GPU, memory)
+- Capability maturity scores
+
+---
+
+## Development Workflows
+
+### Contributor Onboarding
+
+**Quick Start** (from `docs/CONTRIBUTOR_ONBOARDING.md`):
+```bash
+# 1. Clone repository
+git clone https://github.com/Aries-Serpent/_codex_.git
+cd _codex_
+
+# 2. Setup environment
+./.codex/scripts/setup.sh
+
+# 3. Install dependencies
+pip install -e .
+pip install -r requirements-dev.txt
+
+# 4. Run tests
+pytest tests/ -v
+
+# 5. Explore
+python -m codex.cli --help
+```
+
+### Common Tasks
+
+#### Task 1: Add New Feature
+
+```bash
+# 1. Create branch
+git checkout -b feature/my-feature
+
+# 2. Implement feature
+# ... code changes ...
+
+# 3. Add tests
+touch tests/test_my_feature.py
+# ... write tests ...
+
+# 4. Run tests
+pytest tests/test_my_feature.py -v
+
+# 5. Lint and format
+ruff check .
+black .
+isort .
+
+# 6. Commit
+git add .
+git commit -m "feat: Add my feature"
+
+# 7. Push
+git push origin feature/my-feature
+```
+
+#### Task 2: Fix Bug
+
+```bash
+# 1. Reproduce bug
+pytest tests/test_failing.py::test_specific -v
+
+# 2. Debug
+pytest tests/test_failing.py::test_specific -vv -s --pdb
+
+# 3. Fix
+# ... code changes ...
+
+# 4. Verify fix
+pytest tests/test_failing.py::test_specific -v
+
+# 5. Commit
+git add .
+git commit -m "fix: Fix specific bug"
+```
+
+#### Task 3: Run Audit
+
+```bash
+# Full audit
+python scripts/space_traversal/audit_runner.py run
+
+# Generate dashboard
+python scripts/generate_audit_dashboard.py
+
+# View results
+cat audit_artifacts/capabilities_scored.json | jq '.[] | select(.score < 0.85)'
+```
+
+### AI Agent Workflows
+
+**Using Workflow Navigator**:
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+# Initialize
+nav = WorkflowNavigator()
+
+# Execute workflows
+nav.execute('AUDIT_EXEC')
+nav.execute_chain(['AUDIT_EXEC', 'DOC_GEN', 'SELF_HEAL'])
+```
+
+**Using Prompts**:
+```bash
+# Refer to agents/prompts/ for specific scenarios
+# Example: Test failure debugging
+cat agents/prompts/debugging/test-failure-debugging.md
+```
+
+---
+
+## Roadmap & Priorities
+
+### Current Status
+
+**Achieved**:
+- ✅ Level 4 MLOps Certification (100/100)
+- ✅ 2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
+- ✅ Zero critical gaps (all P0 stubs are correct patterns)
+- ✅ Comprehensive documentation (693+ files)
+- ✅ AI Agent infrastructure operational
+
+**Metrics**:
+- MLOps Score: 100/100
+- Test Pass Rate: 100%
+- Security Vulnerabilities: 0
+- Documentation: 64KB added in recent PRs
+
+### Short-Term (0-4 phases)
+
+#### Priority 1: CI/CD Enablement
+- **Task**: Enable self-hosted CI workflows
+- **Components**: lint, type-check, unit tests, smoke training
+- **Effort**: 2-3 iterations
+- **Owner**: DevOps team
+
+#### Priority 2: Dependency Canonicalization
+- **Task**: Standardize on `pyproject.toml` + `uv.lock`
+- **Components**: Remove conflicting `requirements*.txt`
+- **Effort**: 1 iteration
+- **Owner**: Build team
+
+#### Priority 3: Secrets Hardening
+- **Task**: Centralized secrets management
+- **Components**: Pre-merge secret scanning, token rotation
+- **Effort**: 3-4 iterations
+- **Owner**: Security team
+
+#### Priority 4: Documentation Consolidation
+- **Task**: Organize 693 markdown files with index
+- **Components**: Active vs historical categorization
+- **Effort**: 2-3 iterations
+- **Owner**: Documentation team
+
+#### Priority 5: Stub Cleanup Enhancement
+- **Task**: AST-based abstract method detection
+- **Components**: Enhance `stub_cleanup.py`
+- **Effort**: 2 iterations
+- **Owner**: Code quality team
+
+### Mid-Term (1-3 Months)
+
+#### Priority 1: Deterministic Infrastructure
+- **Task**: Reproducible training harness
+- **Components**: Device placement, RNGState verification
+- **Effort**: 2 phases
+- **Owner**: ML team
+
+#### Priority 2: Artifact Signing
+- **Task**: Sign and version reproducibility manifests
+- **Components**: GPG signing, manifest versioning
+- **Effort**: 1 phase
+- **Owner**: Security team
+
+#### Priority 3: Security Hardening
+- **Task**: Automated security scanning in CI
+- **Components**: Semgrep, Bandit, baseline checks
+- **Effort**: 1 phase
+- **Owner**: Security team
+
+#### Priority 4: Agent Memory System
+- **Task**: Context preservation between invocations
+- **Components**: Agent memory store, context retrieval
+- **Effort**: 2 phases
+- **Owner**: AI team
+
+#### Priority 5: Performance Benchmarking
+- **Task**: Systematic performance regression testing
+- **Components**: Benchmark suite, CI integration
+- **Effort**: 1 phase
+- **Owner**: Performance team
+
+### Long-Term (3-9 Months)
+
+#### Priority 1: Production Serving Stack
+- **Task**: Scalable model serving
+- **Components**: Autoscaling, versioning, monitoring
+- **Effort**: 4-6 phases
+- **Owner**: Platform team
+
+#### Priority 2: MLOps Pipelines
+- **Task**: Continuous evaluation and monitoring
+- **Components**: Drift detection, retraining triggers
+- **Effort**: 6-8 phases
+- **Owner**: ML team
+
+#### Priority 3: Multi-Version Python Support
+- **Task**: CI testing across Python 3.9-3.12
+- **Components**: Matrix testing, compatibility checks
+- **Effort**: 2 phases
+- **Owner**: Build team
+
+#### Priority 4: HAR Integration
+- **Task**: Complete HAR file support
+- **Components**: Per `docs/HAR_INTEGRATION_PLAN.md`
+- **Effort**: 3-4 phases
+- **Owner**: Integration team
+
+#### Priority 5: Advanced Monitoring
+- **Task**: Production-grade observability
+- **Components**: Distributed tracing, alerting
+- **Effort**: 4 phases
+- **Owner**: SRE team
+
+### Implementation Checklist
+
+**Immediate Actions** (This Week):
+- [ ] Enable minimal self-hosted CI
+- [ ] Run security scan baseline
+- [ ] Create documentation index
+- [ ] Verify UV lockfile consistency
+
+**Next Sprint** (Next 2 phases):
+- [ ] Implement token rotation
+- [ ] Enhance stub_cleanup.py
+- [ ] Add performance benchmarks
+- [ ] Automate archival process
+
+**This Quarter** (Next 3 Months):
+- [ ] Complete agent memory system
+- [ ] Harden security infrastructure
+- [ ] Implement artifact signing
+- [ ] Launch deterministic CI
+
+---
+
+## Appendices
+
+### Appendix A: Key Files Reference
+
+| File | Purpose | Last Updated |
+|------|---------|-------------|
+| `COMPREHENSIVE_GAP_ANALYSIS.md` | Gap analysis with priority matrix | 2025-12-11 |
+| `PR_FINAL_SUMMARY.md` | PR summary with metrics | 2025-12-11 |
+| `docs/CONTRIBUTOR_ONBOARDING.md` | Onboarding guide | 2025-12-11 |
+| `AGENTS.md` | Agent operations playbook | 2025-12-10 |
+| `codex_gap_registry.yaml` | Known gaps tracking | 2025-12-11 |
+| `pyproject.toml` | Package configuration | Current |
+| `uv.lock` | Dependency lockfile | Current |
+
+### Appendix B: Command Reference
+
+**Environment Setup**:
+```bash
+./.codex/scripts/setup.sh
+source venv/bin/activate  # or .venv/bin/activate
+```
+
+**CLI Usage**:
+```bash
+python -m codex.cli --help
+python -m codex_ml.exec.codex_exec --help
+```
+
+**Testing**:
+```bash
+pytest tests/ -v
+pytest -k "pattern" -v
+pytest --cov=src/codex_ml --cov-report=html
+```
+
+**Auditing**:
+```bash
+python scripts/space_traversal/audit_runner.py run
+python scripts/generate_audit_dashboard.py
+```
+
+**Agent Workflows**:
+```python
+from agents.workflow_navigator import WorkflowNavigator
+nav = WorkflowNavigator()
+nav.execute('AUDIT_EXEC')
+```
+
+### Appendix C: Architecture Diagrams
+
+**System Components**:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         Users Layer                          │
+│  Developers │ AI Agents │ CI/CD │ Operators                  │
+└────────────┬────────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Interface Layer                         │
+│  CLI │ Workflow Navigator │ Agent Prompts                    │
+└────────────┬────────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Application Layer                       │
+│  Training │ Evaluation │ Audit Pipeline │ Documentation     │
+└────────────┬────────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Core Services                           │
+│  Plugin System │ Metrics │ Connectors │ Configuration       │
+└────────────┬────────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Storage Layer                           │
+│  SQLite │ File System │ Cache │ Logs                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Appendix D: Glossary
+
+- **codex_exec**: CLI entrypoint for tasks, training, audits
+- **RNGState**: Deterministic random seed snapshot for reproducibility
+- **NDJSON**: Newline-delimited JSON for metrics
+- **Self-Hosted Runner**: GitHub Actions runner to avoid cloud costs
+- **Workflow Token**: Short identifier for workflow execution (e.g., `AUDIT_EXEC`)
+- **Mental Mapping**: Decision tracking for agent learning
+- **Physics Orchestration**: Energy-based workflow optimization
+- **Capability Score**: Maturity metric (0.0-1.0 scale)
+- **Trend Database**: SQLite database tracking audit history
+- **Plugin Registry**: Dynamic plugin loading system
+
+### Appendix E: Metrics Schema
+
+**Audit Metrics**:
+```json
+{
+  "capability": "string",
+  "score": "float (0.0-1.0)",
+  "evidence": ["file paths"],
+  "timestamp": "ISO8601",
+  "trend": "increasing|stable|decreasing"
+}
+```
+
+**Training Metrics** (NDJSON):
+```json
+{"run_id": "uuid", "timestamp": "ISO8601", "metric": "loss", "value": 0.123}
+{"run_id": "uuid", "timestamp": "ISO8601", "metric": "accuracy", "value": 0.95}
+```
+
+**Reproducibility Manifest**:
+```json
+{
+  "run_id": "uuid",
+  "timestamp": "ISO8601",
+  "python_version": "3.12",
+  "dependencies": {"package": "version"},
+  "rng_state": "base64_encoded",
+  "checkpoint_uri": "path/to/checkpoint"
+}
+```
+
+### Appendix F: Security Checklist
+
+- [ ] No hardcoded secrets
+- [ ] Environment variables for sensitive data
+- [ ] Pre-merge secret scanning enabled
+- [ ] Token rotation policy documented
+- [ ] Self-hosted runners only
+- [ ] Branch protection enabled
+- [ ] Signed commits required
+- [ ] Security scans passing (Gitleaks, Bandit, Semgrep)
+- [ ] Dependency scanning enabled
+- [ ] Incident response procedures documented
+
+### Appendix G: Testing Checklist
+
+- [ ] Unit tests for new code
+- [ ] Integration tests for interactions
+- [ ] Smoke tests for quick validation
+- [ ] Property-based tests for edge cases
+- [ ] Capability tests for features
+- [ ] Security tests for vulnerabilities
+- [ ] Performance tests for regressions
+- [ ] Reproducibility tests for determinism
+
+---
+
+## Conclusion
+
+This blueprint provides a comprehensive technical reference for the `_codex_` repository. The repository has achieved Level 4 MLOps maturity with extensive documentation, testing, and AI Agent integration. The roadmap prioritizes CI/CD enablement, security hardening, and continued enhancement of the AI-friendly infrastructure.
+
+### Key Takeaways
+
+1. **Production-Ready**: Zero critical gaps, 100% test pass rate, comprehensive security
+2. **AI-Friendly**: Native support for Copilot workflows, tokenized workflows, structured prompts
+3. **Well-Documented**: 693+ markdown files, detailed guides, comprehensive onboarding
+4. **Secure**: Zero vulnerabilities, comprehensive scanning, path validation
+5. **Reproducible**: Deterministic training, RNG checkpointing, environment snapshots
+6. **Extensible**: Plugin system, modular architecture, clear interfaces
+
+### Next Steps
+
+**For Developers**:
+1. Read `docs/CONTRIBUTOR_ONBOARDING.md`
+2. Run `.codex/scripts/setup.sh`
+3. Explore `AGENTS.md` for workflows
+4. Contribute using Copilot-assisted development
+
+**For AI Agents**:
+1. Use `agents/workflow_navigator.py` for orchestration
+2. Refer to `agents/prompts/` for structured prompts
+3. Execute tokenized workflows (e.g., `AUDIT_EXEC`)
+4. Update mental mappings for learning
+
+**For Architects**:
+1. Review this blueprint for system understanding
+2. Assess roadmap priorities
+3. Plan infrastructure enhancements
+4. Ensure alignment with MLOps best practices
+
+---
+
+**Document Version**: 1.0.0
+**Maintenance**: Update quarterly or after major changes
+**Contact**: Repository owners (@mbaetiong)
+**Last Updated**: 2025-12-11
+
+
+
+---
+## 📎 Consolidated from: docs/ARCHITECTURE_INDEX.md
+
+# Architecture Documentation Index
+
+**Status**: Master index for all architecture documentation  
+**Last Updated**: 2026-06-20  
+**Maintainer**: @mbaetiong
+
+## Overview
+
+The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML framework. This index consolidates all architecture documentation and fixes broken references.
+
+---
+
+## 📋 Architecture Documents
+
+### Core Architecture Documents
+
+| Document | Purpose | Audience | Size |
+|----------|---------|----------|------|
+| [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | Comprehensive repository blueprint | Developers, Architects | 1162 lines |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | ML framework architecture overview | ML Engineers | 642 lines |
+| [Architecture.md](./Architecture.md) | Import shim governance & policy | Developers | 177 lines |
+| [architecture.md](./architecture.md) | Quick runtime flow diagrams | Quick Reference | 55 lines |
+
+### Supporting Architecture Documents
+
+- [REPOSITORY_ARCHITECTURE_DIAGRAMS.md](./REPOSITORY_ARCHITECTURE_DIAGRAMS.md) - Visual architecture diagrams
+- [docs/architecture/ARCHITECTURE_LAYERS.md](./architecture/ARCHITECTURE_LAYERS.md) - Layer-by-layer breakdown
+- [docs/architecture/INDEX.md](./architecture/INDEX.md) - Architecture directory index
+
+---
+
+## 🏗️ Architecture Layers
+
+The _codex_ system is organized in the following layers:
+
+### 1. **Interface Layer**
+- CLI (Command Line Interface)
+- Python API
+- REST API (optional)
+- Jupyter notebooks integration
+
+### 2. **Orchestration Layer**
+- Hydra configuration management
+- Workflow execution
+- Plugin system
+- Agent orchestration (145+ active agents)
+
+### 3. **Core Engine Layer**
+- Training pipelines (HuggingFace Trainer, custom loops)
+- Evaluation framework
+- Model inference
+- Data processing
+
+### 4. **Storage & Integration Layer**
+- Data connectors (S3, Azure, GCS)
+- Model registry
+- Experiment tracking (MLflow, W&B)
+- Checkpoint management
+
+### 5. **Infrastructure Layer**
+- Ray cluster support
+- Kubernetes deployment
+- Docker containerization
+- Git/GitHub integration
+
+### 6. **Observability Layer**
+- Logging and telemetry
+- Performance monitoring
+- Error tracking
+- Metrics collection
+
+---
+
+## 🔄 Runtime Data Flow
+
+```mermaid
+flowchart LR
+    A[Ingestion] --> B[Tokenizer]
+    B --> C[Datasets]
+    C --> D[Model Loader]
+    D --> E{Training Engine}
+    E --> F[Metrics]
+    F --> G[Logging]
+    G --> H[Experiment Tracking]
+    E --> I[Checkpoint Manager]
+    I --> J[Model Registry]
+```
+
+**Data Flow Steps:**
+
+1. **Ingestion**: Raw data ingestion from various sources
+2. **Tokenization**: Convert raw data to token sequences
+3. **Datasets**: Create training/validation/test splits
+4. **Model Loading**: Load model from local or Hugging Face Hub
+5. **Training Engine**: Execute training loop
+6. **Metrics**: Compute performance metrics
+7. **Logging**: Log metrics and metadata
+8. **Experiment Tracking**: Send to experiment tracking backend
+9. **Checkpoint Management**: Save and manage model checkpoints
+10. **Model Registry**: Register trained models
+
+---
+
+## 📁 Repository Structure
+
+```
+_codex_/
+├── .codex/                      # Codex environment configuration
+├── .github/                     # CI/CD workflows
+├── agents/                      # AI Agent infrastructure
+│   ├── prompts/                 # Pre-defined prompts
+│   └── codex_client/            # GitHub integration
+├── src/codex_ml/               # Core ML framework
+│   ├── training/               # Training pipelines
+│   ├── evaluation/             # Evaluation metrics
+│   ├── connectors/             # Storage connectors
+│   └── plugins/                # Plugin system
+├── scripts/                     # Utility scripts (195+)
+├── tests/                       # Test suite (2,079+)
+├── docs/                        # Documentation (693+)
+│   ├── mcp/                    # MCP documentation
+│   ├── api/                    # API reference
+│   ├── architecture/           # Architecture docs
+│   ├── deployment/             # Deployment guides
+│   ├── security/               # Security documentation
+│   └── operations/             # Operations guides
+├── config/                      # Configuration files
+│   └── training/               # Training configs
+├── requirements/                # Dependency specifications
+└── README.md                    # Project README
+```
+
+---
+
+## 🔌 Component Architecture
+
+### Core Components
+
+```mermaid
+classDiagram
+    class TrainingEngine {
+      +run(cfg)
+      +evaluate()
+      +save_checkpoint()
+    }
+    class DataHandling {
+      +iter_jsonl(path)
+      +deterministic_split()
+      +validate_schema()
+    }
+    class Metrics {
+      +batch_metrics()
+      +compute_accuracy()
+      +compute_loss()
+    }
+    class Checkpointing {
+      +save_checkpoint()
+      +load_checkpoint()
+      +resume_training()
+    }
+    class Logging {
+      +TBWriter
+      +wandb_logger
+      +file_logger
+    }
+    class ModelRegistry {
+      +register_model()
+      +load_model()
+      +list_versions()
+    }
+    TrainingEngine --> DataHandling
+    TrainingEngine --> Metrics
+    TrainingEngine --> Checkpointing
+    TrainingEngine --> Logging
+    TrainingEngine --> ModelRegistry
+```
+
+---
+
+## 🔐 Security & Compliance
+
+### Security Layers
+
+- **Code Security**: Bandit, CodeQL scanning
+- **Dependency Security**: Pip-audit, Dependabot
+- **Secret Management**: Git secrets scanning
+- **Access Control**: RBAC, GitHub teams
+- **Audit Logging**: Comprehensive activity logging
+
+### Compliance
+
+- **MLOps Maturity**: Level 4 Certified
+- **Test Coverage**: 2,079+ test files
+- **Documentation**: 693+ markdown files
+- **Reproducibility**: Deterministic training with RNG checkpointing
+
+---
+
+## 🚀 Deployment Architecture
+
+### Local Development
+
+```bash
+# Install dependencies
+pip install -e .
+
+# Run training
+codex train config/training.yaml
+
+# Evaluate model
+codex evaluate --model model.pth
+```
+
+### Docker Deployment
+
+```dockerfile
+FROM python:3.10
+WORKDIR /app
+COPY . .
+RUN pip install -e .
+CMD ["python", "-m", "codex.training"]
+```
+
+### Kubernetes Deployment
+
+- StatefulSet for training jobs
+- Service mesh integration
+- Pod autoscaling
+- Persistent volume management
+
+---
+
+## 🔧 Configuration Management
+
+The system uses Hydra for configuration management:
+
+```yaml
+# config/training.yaml
+defaults:
+  - override hydra/job_logging: custom
+
+model:
+  name: "bert-base"
+  pretrained: true
+  
+training:
+  learning_rate: 1e-4
+  batch_size: 32
+  epochs: 10
+  
+data:
+  dataset: "wikitext"
+  split: [0.8, 0.1, 0.1]
+```
+
+### Configuration Hierarchy
+
+1. **Base Configs**: defaults/
+2. **Overrides**: Command-line
+3. **Environment**: Environment variables
+4. **Local**: Local config.yaml
+
+---
+
+## 📊 Key Metrics
+
+| Metric | Target | Current |
+|--------|--------|---------|
+| Test Coverage | ≥90% | 10.7% |
+| Documentation Coverage | ≥95% | 85% |
+| Code Quality Score | ≥8.0 | 7.2 |
+| Security Score | 100% | 100% ✅ |
+| Availability | ≥99.9% | N/A |
+
+---
+
+## 🛣️ Development Workflows
+
+### Feature Development
+
+1. Create feature branch from `main`
+2. Implement feature with tests
+3. Run local validation
+4. Open pull request
+5. Pass CI/CD checks
+6. Get code review approval
+7. Merge to `main`
+
+### Release Process
+
+1. Bump version in setup.py
+2. Update CHANGELOG
+3. Create release branch
+4. Publish to PyPI
+5. Create GitHub release
+6. Update documentation
+
+---
+
+## 🔗 Integration Points
+
+### External Systems
+
+- **Hugging Face Hub**: Model and dataset storage
+- **MLflow**: Experiment tracking
+- **W&B**: Weights & Biases integration
+- **GitHub**: Version control and CI/CD
+- **Cloud Providers**: AWS, GCP, Azure support
+
+### APIs
+
+- **Python API**: Direct library usage
+- **CLI**: Command-line interface
+- **REST API**: HTTP endpoints (optional)
+- **GraphQL**: Query interface (optional)
+
+---
+
+## 📚 Documentation Links
+
+### Architecture-Related Docs
+
+- [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) - Full blueprint
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - ML architecture
+- [Architecture.md](./Architecture.md) - Import governance
+- [docs/architecture/](./architecture/) - Architecture directory
+
+### Other Key Docs
+
+- [API Reference](./api/) - API documentation
+- [Deployment Guides](./deployment/) - Deployment procedures
+- [Security Documentation](./security/) - Security policies
+- [Operations Guide](./operations/) - Operations procedures
+- [Development Guide](../CONTRIBUTING.md) - Contributing guidelines
+
+---
+
+## 🤖 AI Agent Integration
+
+The system includes native support for AI agents:
+
+- **Copilot Integration**: Native GitHub Copilot support
+- **Agent Orchestration**: 145+ active agents
+- **Tokenized Workflows**: Efficient token usage
+- **Structured Prompts**: Pre-defined prompt templates
+- **Agent Context**: Session-based context management
+
+---
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+**Q: Which architecture document should I read?**  
+A: Start with [architecture.md](./architecture.md) for quick overview, then [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for detailed information.
+
+**Q: How is the data flow organized?**  
+A: See [Runtime Data Flow](#-runtime-data-flow) section above.
+
+**Q: Where do I find deployment information?**  
+A: See [docs/deployment/](./deployment/) directory.
+
+**Q: How is security implemented?**  
+A: See [Security & Compliance](#-security--compliance) section and [docs/security/](./security/) directory.
+
+---
+
+## 🏗️ Future Roadmap
+
+### Short Term (1-3 months)
+- [ ] Improve test coverage to ≥50%
+- [ ] Complete API documentation
+- [ ] Add performance benchmarks
+
+### Medium Term (3-6 months)
+- [ ] Multi-GPU distributed training
+- [ ] Advanced monitoring dashboard
+- [ ] Enhanced plugin system
+
+### Long Term (6-12 months)
+- [ ] Production-grade monitoring
+- [ ] Advanced agent orchestration
+- [ ] Federated learning support
+
+---
+
+## 📞 Support
+
+For questions or clarifications about architecture:
+
+1. Check the relevant documentation file
+2. Search GitHub issues and discussions
+3. Open a new discussion or issue
+4. Contact the maintainers: @mbaetiong
+
+---
+
+## 📝 Maintenance
+
+- **Last Updated**: 2026-06-20
+- **Next Review**: 2026-07-20
+- **Owner**: @mbaetiong
+- **Contributing**: Please open issues for documentation improvements
+
+---
+
+**See Also**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for comprehensive technical reference
+

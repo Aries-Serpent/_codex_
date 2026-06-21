@@ -44,6 +44,7 @@ using a general YAML checker like [yamllint][].
 
 <a name="check-unexpected-keys"></a>
 ## Unexpected keys
+<!-- anchor: check-unexpected-keys -->
 
 Example input:
 
@@ -87,6 +88,7 @@ case-sensitivity mistakes.
 
 <a name="check-missing-required-duplicate-keys"></a>
 ## Missing required keys and key duplicates
+<!-- anchor: check-missing-required-duplicate-keys -->
 
 Example input:
 
@@ -128,6 +130,7 @@ actionlint checks these missing required keys and duplicate keys while parsing, 
 
 <a name="check-empty-mapping"></a>
 ## Unexpected empty mappings
+<!-- anchor: check-empty-mapping -->
 
 Example input:
 
@@ -154,6 +157,7 @@ error.
 
 <a name="check-mapping-values"></a>
 ## Unexpected mapping values
+<!-- anchor: check-mapping-values -->
 
 Example input:
 
@@ -200,6 +204,7 @@ specified.
 
 <a name="check-syntax-expression"></a>
 ## Syntax check for expression `${{ }}`
+<!-- anchor: check-syntax-expression -->
 
 Example input:
 
@@ -247,6 +252,7 @@ many syntax errors like invalid characters, missing parens, unexpected end of in
 
 <a name="check-type-check-expression"></a>
 ## Type checks for expression syntax in `${{ }}`
+<!-- anchor: check-type-check-expression -->
 
 actionlint checks types of expressions in `${{ }}` placeholders of templates. The following types are supported by the type
 checker.
@@ -370,6 +376,7 @@ In above example, environment variables mapping is expanded at `env:` section. a
 
 <a name="check-contexts-and-builtin-func"></a>
 ## Contexts and built-in functions
+<!-- anchor: check-contexts-and-builtin-func -->
 
 Example input:
 
@@ -444,6 +451,7 @@ Note that context names and function names are case insensitive. For example, `t
 
 <a name="check-contextual-step-object"></a>
 ## Contextual typing for `steps.<step_id>` objects
+<!-- anchor: check-contextual-step-object -->
 
 Example input:
 
@@ -595,6 +603,7 @@ so that actionlint can check incorrect property accesses like a typo in the outp
 
 <a name="check-contextual-matrix-object"></a>
 ## Contextual typing for `matrix` object
+<!-- anchor: check-contextual-matrix-object -->
 
 Example input:
 
@@ -681,6 +690,7 @@ steps:
 
 <a name="check-contextual-needs-object"></a>
 ## Contextual typing for `needs` object
+<!-- anchor: check-contextual-needs-object -->
 
 Example input:
 
@@ -750,6 +760,7 @@ actionlint defines a type of `needs` variable contextually by looking at each jo
 
 <a name="check-shellcheck-integ"></a>
 ## [shellcheck][] integration for `run:`
+<!-- anchor: check-shellcheck-integ -->
 
 Example input:
 
@@ -834,6 +845,7 @@ false positives can be avoided by showing the shell name explicitly. It is also 
 
 <a name="check-pyflakes-integ"></a>
 ## [pyflakes][] integration for `run:`
+<!-- anchor: check-pyflakes-integ -->
 
 Example input:
 
@@ -901,6 +913,7 @@ actionlint replaces `${{ }}` with underscores. For example `print('${{ matrix.os
 
 <a name="untrusted-inputs"></a>
 ## Script injection by potentially untrusted inputs
+<!-- anchor: untrusted-inputs -->
 
 Example input:
 
@@ -1010,6 +1023,7 @@ checks the input.
 
 <a name="check-job-deps"></a>
 ## Job dependencies validation
+<!-- anchor: check-job-deps -->
 
 Example input:
 
@@ -1083,6 +1097,7 @@ test.yaml:8:3: job "bar" needs job "unknown" which does not exist in this workfl
 
 <a name="check-matrix-values"></a>
 ## Matrix values
+<!-- anchor: check-matrix-values -->
 
 Example input:
 
@@ -1131,6 +1146,7 @@ combination of matrix values. actionlint checks
 
 <a name="check-webhook-events"></a>
 ## Webhook events validation
+<!-- anchor: check-webhook-events -->
 
 Example input:
 
@@ -1213,6 +1229,7 @@ by [a script][generate-webhook-events] and kept to the latest by CI workflow tri
 
 <a name="check-workflow-dispatch-events"></a>
 ## Workflow dispatch event validation
+<!-- anchor: check-workflow-dispatch-events -->
 
 Example input:
 
@@ -1361,6 +1378,7 @@ inputs:
 
 <a name="check-glob-pattern"></a>
 ## Glob filter pattern syntax validation
+<!-- anchor: check-glob-pattern -->
 
 Example input:
 
@@ -1418,6 +1436,7 @@ This rule can catch the mistake so that users can notice their mistakes.
 
 <a name="check-cron-syntax"></a>
 ## CRON syntax check at `schedule:`
+<!-- anchor: check-cron-syntax -->
 
 Example input:
 
@@ -1461,6 +1480,7 @@ When the job is run more frequently than once every 5 minutes, actionlint report
 
 <a name="check-runner-labels"></a>
 ## Runner labels
+<!-- anchor: check-runner-labels -->
 
 Example input:
 

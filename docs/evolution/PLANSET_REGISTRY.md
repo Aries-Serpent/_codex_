@@ -8,6 +8,7 @@
 ---
 
 ## 📋 Registry Overview
+<!-- anchor: 📋-registry-overview -->
 
 | PS ID | Name | Status | Date | Era | Category |
 |-------|------|--------|------|-----|----------|
@@ -36,8 +37,10 @@
 ---
 
 ## 📖 Detailed Records
+<!-- anchor: 📖-detailed-records -->
 
 ### PS-01: Configuration Consolidation
+<!-- anchor: ps-01:-configuration-consolidation -->
 
 | Field | Value |
 |-------|-------|
@@ -71,6 +74,7 @@
 ---
 
 ### PS-02: IPC Bridge Hardening
+<!-- anchor: ps-02:-ipc-bridge-hardening -->
 
 | Field | Value |
 |-------|-------|
@@ -94,6 +98,7 @@
 ---
 
 ### PS-03: Split Brain Elimination
+<!-- anchor: ps-03:-split-brain-elimination -->
 
 | Field | Value |
 |-------|-------|
@@ -116,6 +121,7 @@
 ---
 
 ### PS-04: Privacy-First Memory
+<!-- anchor: ps-04:-privacy-first-memory -->
 
 | Field | Value |
 |-------|-------|
@@ -138,6 +144,7 @@
 ---
 
 ### PS-05: Token Security Neutralization
+<!-- anchor: ps-05:-token-security-neutralization -->
 
 | Field | Value |
 |-------|-------|
@@ -158,6 +165,7 @@
 ---
 
 ### PS-06: Knowledge Crawler Service
+<!-- anchor: ps-06:-knowledge-crawler-service -->
 
 | Field | Value |
 |-------|-------|
@@ -179,6 +187,7 @@
 ---
 
 ### PS-06e: Knowledge Crawler Enhancement
+<!-- anchor: ps-06e:-knowledge-crawler-enhancement -->
 
 | Field | Value |
 |-------|-------|
@@ -199,6 +208,7 @@
 ---
 
 ### PS-07: Business Logic Elevation
+<!-- anchor: ps-07:-business-logic-elevation -->
 
 | Field | Value |
 |-------|-------|
@@ -222,6 +232,7 @@
 ---
 
 ### PS-08: Microservice Root Cleanup
+<!-- anchor: ps-08:-microservice-root-cleanup -->
 
 | Field | Value |
 |-------|-------|
@@ -243,6 +254,7 @@
 ---
 
 ### PS-09: Training Entry Point Unification
+<!-- anchor: ps-09:-training-entry-point-unification -->
 
 | Field | Value |
 |-------|-------|
@@ -264,6 +276,7 @@
 ---
 
 ### PS-10: Owner Guard CI/CD Enforcement
+<!-- anchor: ps-10:-owner-guard-ci-cd-enforcement -->
 
 | Field | Value |
 |-------|-------|
@@ -285,8 +298,10 @@
 ---
 
 ## 🚀 Advancement Era Plansets (Phase 11-12)
+<!-- anchor: 🚀-advancement-era-plansets-phase-11-12 -->
 
 ### PS-11: MCP Size Estimation
+<!-- anchor: ps-11:-mcp-size-estimation -->
 
 | Field | Value |
 |-------|-------|
@@ -321,6 +336,7 @@
 ---
 
 ### PS-12: MCP Exclude Patterns
+<!-- anchor: ps-12:-mcp-exclude-patterns -->
 
 | Field | Value |
 |-------|-------|
@@ -354,6 +370,7 @@
 ---
 
 ### PS-13: Agent Task Router
+<!-- anchor: ps-13:-agent-task-router -->
 
 | Field | Value |
 |-------|-------|
@@ -396,6 +413,7 @@
 ---
 
 ### PS-14: Cognitive Dashboard MSV
+<!-- anchor: ps-14:-cognitive-dashboard-msv -->
 
 | Field | Value |
 |-------|-------|
@@ -507,6 +525,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### PS-15: Advanced Infrastructure
+<!-- anchor: ps-15:-advanced-infrastructure -->
 
 | Field | Value |
 |-------|-------|
@@ -541,8 +560,10 @@ Current Scores (PS-14 Implementation):
 ---
 
 ## 📊 Analytics
+<!-- anchor: 📊-analytics -->
 
 ### By Category
+<!-- anchor: by-category -->
 
 | Category | Count | Status |
 |----------|-------|--------|
@@ -559,6 +580,7 @@ Current Scores (PS-14 Implementation):
 | Infrastructure (Adv) | 1 (PS-15) | ✅ Complete |
 
 ### PS-16: Production Readiness
+<!-- anchor: ps-16:-production-readiness -->
 
 - **ID**: PS-16
 - **Status**: 🟢 Active
@@ -592,6 +614,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### Completion Rate
+<!-- anchor: completion-rate -->
 
 - **Total Plansets**: 17 (including PS-06e)
 - **Completed**: 16/17 (94%)
@@ -605,6 +628,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### PS-17: Operational Excellence
+<!-- anchor: ps-17:-operational-excellence -->
 
 | Field | Value |
 |-------|-------|
@@ -635,6 +659,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### PS-18: Continuous Improvement
+<!-- anchor: ps-18:-continuous-improvement -->
 
 | Field | Value |
 |-------|-------|
@@ -660,6 +685,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### PS-19: Next Evolution Phase
+<!-- anchor: ps-19:-next-evolution-phase -->
 
 | Field | Value |
 |-------|-------|
@@ -684,6 +710,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ## 🔗 Cross-References
+<!-- anchor: 🔗-cross-references -->
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase-level view of all plansets in context
 - [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) — Visual representation
@@ -693,6 +720,7 @@ Current Scores (PS-14 Implementation):
 ---
 
 ### PS-20: V4.0 Scoring Implementation
+<!-- anchor: ps-20:-v4.0-scoring-implementation -->
 
 | Field | Value |
 |-------|-------|
