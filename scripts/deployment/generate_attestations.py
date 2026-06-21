@@ -24,14 +24,12 @@ Last Updated: 2026-06-20
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import json
 import logging
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 logger = logging.getLogger(__name__)
 

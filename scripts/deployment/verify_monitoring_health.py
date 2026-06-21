@@ -5,11 +5,11 @@ This script checks all monitoring components and reports on their status.
 """
 
 import json
-import sys
 import subprocess
-from pathlib import Path
+import sys
 from datetime import datetime
-from typing import Dict, Any, List, Tuple
+from pathlib import Path
+from typing import Any, Dict, Tuple
 
 
 def check_endpoint_health(url: str, timeout: int = 5) -> Tuple[bool, str]:
@@ -33,9 +33,9 @@ def check_endpoint_health(url: str, timeout: int = 5) -> Tuple[bool, str]:
 def check_prometheus_health() -> Dict[str, Any]:
     """Check Prometheus health."""
     print("🔍 Checking Prometheus...")
-    
+
     healthy, message = check_endpoint_health("http://prometheus:9090/-/healthy")
-    
+
     result = {
         "component": "Prometheus",
         "healthy": healthy,
@@ -43,7 +43,7 @@ def check_prometheus_health() -> Dict[str, Any]:
         "status": message,
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     if healthy:
         # Check if metrics are being scraped
         try:
@@ -62,16 +62,16 @@ def check_prometheus_health() -> Dict[str, Any]:
                 result["details"] = "Could not retrieve targets"
         except Exception as e:
             result["details"] = f"Error querying targets: {e}"
-    
+
     return result
 
 
 def check_grafana_health() -> Dict[str, Any]:
     """Check Grafana health."""
     print("🔍 Checking Grafana...")
-    
+
     healthy, message = check_endpoint_health("http://grafana:3000/api/health")
-    
+
     result = {
         "component": "Grafana",
         "healthy": healthy,
@@ -79,7 +79,7 @@ def check_grafana_health() -> Dict[str, Any]:
         "status": message,
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     if healthy:
         # Try to get Grafana version
         try:
@@ -96,16 +96,16 @@ def check_grafana_health() -> Dict[str, Any]:
                 result["details"] = "Could not retrieve version info"
         except Exception as e:
             result["details"] = f"Error querying health: {e}"
-    
+
     return result
 
 
 def check_alertmanager_health() -> Dict[str, Any]:
     """Check AlertManager health."""
     print("🔍 Checking AlertManager...")
-    
+
     healthy, message = check_endpoint_health("http://alertmanager:9093/-/healthy")
-    
+
     result = {
         "component": "AlertManager",
         "healthy": healthy,
@@ -113,7 +113,7 @@ def check_alertmanager_health() -> Dict[str, Any]:
         "status": message,
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     if healthy:
         # Check active alerts
         try:
@@ -133,20 +133,20 @@ def check_alertmanager_health() -> Dict[str, Any]:
                 result["details"] = "Could not retrieve alerts"
         except Exception as e:
             result["details"] = f"Error querying alerts: {e}"
-    
+
     return result
 
 
 def check_kubernetes_resources() -> Dict[str, Any]:
     """Check Kubernetes resources."""
     print("🔍 Checking Kubernetes resources...")
-    
+
     result = {
         "component": "Kubernetes Resources",
         "checks": [],
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     # Check namespace
     try:
         ns_result = subprocess.run(
@@ -161,7 +161,7 @@ def check_kubernetes_resources() -> Dict[str, Any]:
             result["checks"].append({"resource": "monitoring namespace", "status": "missing"})
     except Exception as e:
         result["checks"].append({"resource": "monitoring namespace", "status": f"error: {e}"})
-    
+
     # Check deployments
     try:
         deploy_result = subprocess.run(
@@ -182,7 +182,7 @@ def check_kubernetes_resources() -> Dict[str, Any]:
             result["checks"].append({"resource": "deployments", "status": "error"})
     except Exception as e:
         result["checks"].append({"resource": "deployments", "status": f"error: {e}"})
-    
+
     # Check PVCs
     try:
         pvc_result = subprocess.run(
@@ -201,20 +201,20 @@ def check_kubernetes_resources() -> Dict[str, Any]:
             result["checks"].append({"resource": "pvcs", "status": "error"})
     except Exception as e:
         result["checks"].append({"resource": "pvcs", "status": f"error: {e}"})
-    
+
     return result
 
 
 def check_metrics_collection() -> Dict[str, Any]:
     """Check if metrics are being collected."""
     print("🔍 Checking metrics collection...")
-    
+
     result = {
         "component": "Metrics Collection",
         "checks": [],
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     # Check if Prometheus has recent data
     try:
         curl_result = subprocess.run(
@@ -237,7 +237,7 @@ def check_metrics_collection() -> Dict[str, Any]:
             result["checks"].append({"metric": "up", "status": "connection failed"})
     except Exception as e:
         result["checks"].append({"metric": "up", "status": f"error: {e}"})
-    
+
     # Check for application metrics
     try:
         curl_result = subprocess.run(
@@ -263,20 +263,20 @@ def check_metrics_collection() -> Dict[str, Any]:
             result["checks"].append({"metric": "http_requests_total", "status": "connection failed"})
     except Exception as e:
         result["checks"].append({"metric": "http_requests_total", "status": f"error: {e}"})
-    
+
     return result
 
 
 def check_alert_rules() -> Dict[str, Any]:
     """Check if alert rules are loaded."""
     print("🔍 Checking alert rules...")
-    
+
     result = {
         "component": "Alert Rules",
         "checks": [],
         "timestamp": datetime.utcnow().isoformat(),
     }
-    
+
     # Check if alert rules are loaded in Prometheus
     try:
         curl_result = subprocess.run(
@@ -305,7 +305,7 @@ def check_alert_rules() -> Dict[str, Any]:
             result["checks"].append({"resource": "alert rules", "status": "connection failed"})
     except Exception as e:
         result["checks"].append({"resource": "alert rules", "status": f"error: {e}"})
-    
+
     return result
 
 
@@ -313,7 +313,7 @@ def main():
     """Main function."""
     print("🚀 Monitoring Stack Health Verification")
     print(f"⏰ Started at {datetime.utcnow().isoformat()}\n")
-    
+
     results = {
         "timestamp": datetime.utcnow().isoformat(),
         "checks": [],
@@ -323,7 +323,7 @@ def main():
             "failed": 0,
         },
     }
-    
+
     # Perform all health checks
     health_checks = [
         check_prometheus_health(),
@@ -333,9 +333,9 @@ def main():
         check_metrics_collection(),
         check_alert_rules(),
     ]
-    
+
     results["checks"].extend(health_checks)
-    
+
     # Count results
     for check in health_checks:
         if "healthy" in check:
@@ -351,7 +351,7 @@ def main():
                     results["summary"]["passed"] += 1
                 elif "error" in sub_check.get("status", "").lower():
                     results["summary"]["failed"] += 1
-    
+
     # Print results
     print("\n📊 Health Check Results:")
     for check in health_checks:
@@ -367,23 +367,23 @@ def main():
                 resource = sub_check.get("resource", "unknown")
                 status_msg = sub_check.get("status", "unknown")
                 print(f"   - {resource}: {status_msg}")
-    
+
     # Print summary
-    print(f"\n📈 Summary:")
+    print("\n📈 Summary:")
     print(f"   Total Checks: {results['summary']['total_checks']}")
     print(f"   Passed: {results['summary']['passed']}")
     print(f"   Failed: {results['summary']['failed']}")
-    
+
     overall_status = "✅ HEALTHY" if results["summary"]["failed"] == 0 else "⚠️  DEGRADED"
     print(f"\n   Overall Status: {overall_status}")
-    
+
     # Save report
     report_path = Path(".codex/MONITORING_HEALTH_VERIFICATION_REPORT.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\n✅ Report saved to: {report_path}")
-    
+
     return 0 if results["summary"]["failed"] == 0 else 1
 
 

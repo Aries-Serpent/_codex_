@@ -6,10 +6,11 @@ for comprehensive monitoring coverage.
 """
 
 import json
-import yaml
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict
+
+import yaml
 
 
 def generate_alert_rules() -> Dict[str, Any]:
@@ -365,12 +366,12 @@ def main():
 
     # Generate and write recording rules
     recording_rules = generate_recording_rules()
-    
+
     # Merge with alert rules for output
     merged_rules = {
         "groups": alert_rules["groups"] + recording_rules["groups"]
     }
-    
+
     with open(alert_rules_file, "w") as f:
         yaml.dump(merged_rules, f, default_flow_style=False)
     print(f"✅ Updated: {alert_rules_file.relative_to(Path.cwd())} (with recording rules)")
@@ -399,7 +400,7 @@ def main():
         json.dump(summary, f, indent=2)
     print(f"✅ Generated summary: {summary_file.relative_to(Path.cwd())}")
 
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"  - Alert Rule Groups: {summary['alert_rules']}")
     print(f"  - Alert Rules: {summary['alert_rules_count']}")
     print(f"  - Recording Rule Groups: {summary['recording_rules']}")

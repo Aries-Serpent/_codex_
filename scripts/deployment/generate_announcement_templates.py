@@ -23,12 +23,10 @@ Last Updated: 2026-06-20
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -442,7 +440,7 @@ Examples:
             version=args.version,
             output_dir=args.output,
         )
-        print(f"\n✅ Announcement templates generation complete")
+        print("\n✅ Announcement templates generation complete")
         print(f"   Templates saved to: {args.output}")
         for channel, path in results.items():
             print(f"   - {channel}: {path}")

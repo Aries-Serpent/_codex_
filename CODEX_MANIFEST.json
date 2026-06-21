@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-20T07:20:51Z",
+  "generated_at": "2026-06-21T00:47:58Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1059,6 +1059,26 @@
       "has_concurrency": true
     },
     {
+      "name": "automated-monitoring-setup",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
+      "name": "automated-post-deployment-verification",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
+      "name": "automated-release-creation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "automated-rollback-generation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "autonomous-agent",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1199,9 +1219,19 @@
       "has_concurrency": true
     },
     {
+      "name": "cognitive-k8s-provisioning",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "cognitive-perception",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "cognitive-registry-validation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "cognitive_brain_ci_feedback",
@@ -1375,7 +1405,7 @@
     },
     {
       "name": "docker-build-push",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2260,5 +2290,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "50a1dcf069e303a06e17b75dea8d2d1adf60f7153de71cf41feea454e635b95b"
+  "integrity_sha256": "8477bdd8aee4d382c34a69852d5fcabba36c7699458757de12194d43f0a0fd17"
 }

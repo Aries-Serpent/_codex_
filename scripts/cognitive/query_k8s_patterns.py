@@ -6,9 +6,9 @@ Queries Cognitive Brain for K8s cluster best practices and patterns.
 
 import json
 import logging
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional
+from dataclasses import asdict, dataclass
 from datetime import datetime
+from typing import Dict, List, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -97,7 +97,7 @@ class K8sPatternQueryer:
         self.patterns: Dict[str, K8sPattern] = {}
         logger.info("K8s Pattern Queryer initialized")
 
-    def query_patterns(self, 
+    def query_patterns(self,
                       cloud_provider: Optional[str] = None,
                       environment: Optional[str] = None) -> Dict[str, K8sPattern]:
         """
@@ -574,15 +574,15 @@ class K8sPatternQueryer:
 def main():
     """Main entry point."""
     queryer = K8sPatternQueryer()
-    
+
     # Query all patterns
     patterns = queryer.query_patterns()
-    
+
     # Save to file
     queryer.save_patterns("k8s_patterns.json")
-    
+
     # Display summary
-    print(f"\n✅ K8s Pattern Query Complete")
+    print("\n✅ K8s Pattern Query Complete")
     print(f"   Total Patterns: {len(patterns)}")
     for key, pattern in patterns.items():
         print(f"   - {key}: ${pattern.cost_estimate_monthly}/mo, confidence: {pattern.confidence_score}")

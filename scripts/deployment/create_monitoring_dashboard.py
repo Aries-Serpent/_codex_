@@ -8,7 +8,7 @@ Kubernetes, and business metrics visualization.
 import json
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict
 
 
 def create_system_dashboard() -> Dict[str, Any]:
@@ -412,7 +412,7 @@ def main():
         json.dump(summary, f, indent=2)
     print(f"✅ Generated summary: {summary_file.relative_to(Path.cwd())}")
 
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"  - Dashboards: {summary['dashboards_generated']}")
     print(f"  - Total Panels: {summary['total_panels']}")
     print(f"  - Output directory: {summary['output_directory']}")

@@ -10,9 +10,7 @@ Run with: pytest tests/e2e/smoke_tests.py -v
 
 from __future__ import annotations
 
-import json
 import time
-from typing import Any
 
 import pytest
 

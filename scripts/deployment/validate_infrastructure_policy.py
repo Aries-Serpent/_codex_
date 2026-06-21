@@ -6,8 +6,8 @@ Validates infrastructure configuration against organizational policies.
 
 import json
 import logging
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional
+from dataclasses import asdict, dataclass
+from typing import Dict, List
 
 logging.basicConfig(
     level=logging.INFO,
@@ -134,10 +134,10 @@ class InfrastructurePolicyValidator:
     def validate_infrastructure(self, terraform_config: Dict) -> ComplianceReport:
         """Validate infrastructure against policies."""
         logger.info("Starting infrastructure validation")
-        
+
         violations = []
         passed = 0
-        
+
         # Policy 1: Naming Conventions
         if self._check_naming_conventions(terraform_config):
             passed += 1
@@ -245,7 +245,7 @@ class InfrastructurePolicyValidator:
         total = len(self.policies)
         failed = len(violations)
         compliance_score = passed / total if total > 0 else 0.0
-        
+
         # Determine status
         if compliance_score >= 0.9:
             status = "compliant"
@@ -262,7 +262,7 @@ class InfrastructurePolicyValidator:
             compliance_score=compliance_score,
             status=status
         )
-        
+
         logger.info(f"Validation complete: {passed}/{total} policies passed (score: {compliance_score:.1%})")
         return report
 
@@ -327,14 +327,14 @@ class InfrastructurePolicyValidator:
 def main():
     """Main entry point."""
     validator = InfrastructurePolicyValidator()
-    
+
     # Load patterns
     with open("k8s_patterns.json", 'r') as f:
         patterns = json.load(f)
-    
+
     # Validate each pattern
     print("\n✅ Infrastructure Policy Validation Results\n")
-    
+
     for pattern_key, pattern in patterns.items():
         report = validator.validate_infrastructure(pattern)
         print(f"{pattern_key}:")
@@ -343,16 +343,16 @@ def main():
         if report.violations:
             print(f"  Violations: {len(report.violations)}")
         print()
-    
+
     # Save sample validation
     with open("k8s_patterns.json", 'r') as f:
         patterns = json.load(f)
     first_pattern = list(patterns.values())[0]
     report = validator.validate_infrastructure(first_pattern)
-    
+
     with open("infrastructure_compliance_report.json", 'w') as f:
         json.dump(validator.to_dict(report), f, indent=2)
-    
+
     print("✅ Validation complete - Report saved to infrastructure_compliance_report.json")
 
 

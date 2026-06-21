@@ -6,10 +6,11 @@ K8s system metrics, and custom application metrics.
 """
 
 import json
-import yaml
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
+import yaml
 
 
 def generate_servicemonitor_crd(
@@ -260,7 +261,7 @@ def main():
 
     # Generate ServiceMonitor resources
     monitors = generate_servicemonitors()
-    
+
     for monitor in monitors:
         filename = output_dir / f"{monitor['metadata']['name']}.yaml"
         with open(filename, "w") as f:
@@ -286,12 +287,12 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(summary, f, indent=2)
     print(f"✅ Generated summary: {summary_file.relative_to(Path.cwd())}")
-    
-    print(f"\n📊 Summary:")
+
+    print("\n📊 Summary:")
     print(f"  - ServiceMonitors: {summary['servicemonitors_generated']}")
     print(f"  - Scrape targets: {len(summary['scrape_targets'])}")
     print(f"  - Output directory: {summary['output_directory']}")
-    
+
     return 0
 
 

@@ -10,11 +10,8 @@ Usage:
 """
 
 import argparse
-import json
-from datetime import datetime
-from pathlib import Path
-from typing import Optional
 import logging
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -26,11 +23,11 @@ logger = logging.getLogger(__name__)
 
 class IncidentTemplateGenerator:
     """Generates incident communication templates."""
-    
+
     def __init__(self, output_dir: str = '.codex/incident-templates'):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     def generate_incident_report_template(self) -> str:
         """Generate incident report template."""
         template = '''# Incident Report
@@ -207,7 +204,7 @@ See: `ESCALATION_CONTACTS.md`
 
 '''
         return template
-    
+
     def generate_status_update_template(self) -> str:
         """Generate status update template."""
         template = '''# Incident Status Update
@@ -274,7 +271,7 @@ Expected in: [15 minutes | 30 minutes | 1 hour]
 
 '''
         return template
-    
+
     def generate_stakeholder_notification(self) -> str:
         """Generate stakeholder notification template."""
         template = '''Subject: [ACTION NEEDED] Service Incident - [INCIDENT-YYYYMMDD-HHmm]
@@ -334,7 +331,7 @@ Incident channel: #incident-[id] on Slack
 Incident Response Team
 '''
         return template
-    
+
     def generate_post_incident_review(self) -> str:
         """Generate post-incident review template."""
         template = '''# Post-Incident Review (PIR)
@@ -532,24 +529,24 @@ Incident Response Team
 
 '''
         return template
-    
+
     def generate_all_templates(self) -> bool:
         """Generate all incident templates."""
         try:
             logger.info("Generating incident communication templates...")
-            
+
             templates = {
                 'INCIDENT_REPORT_TEMPLATE.md': self.generate_incident_report_template(),
                 'STATUS_UPDATE_TEMPLATE.md': self.generate_status_update_template(),
                 'STAKEHOLDER_NOTIFICATION.txt': self.generate_stakeholder_notification(),
                 'POST_INCIDENT_REVIEW.md': self.generate_post_incident_review()
             }
-            
+
             for filename, content in templates.items():
                 filepath = self.output_dir / filename
                 filepath.write_text(content)
                 logger.info(f"✅ Generated {filename}")
-            
+
             # Generate README for templates directory
             readme = '''# Incident Communication Templates
 
@@ -650,11 +647,11 @@ Contact: incident-response@company.com
 '''
             readme_path = self.output_dir / 'README.md'
             readme_path.write_text(readme)
-            logger.info(f"✅ Generated README.md")
-            
+            logger.info("✅ Generated README.md")
+
             logger.info(f"✅ All templates generated in {self.output_dir}")
             return True
-            
+
         except Exception as e:
             logger.error(f"❌ Error generating templates: {e}", exc_info=True)
             return False
@@ -675,15 +672,15 @@ def main():
         action='store_true',
         help='Enable verbose logging'
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     generator = IncidentTemplateGenerator(args.output)
     success = generator.generate_all_templates()
-    
+
     import sys
     sys.exit(0 if success else 1)
 
