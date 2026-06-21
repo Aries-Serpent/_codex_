@@ -9,7 +9,7 @@
 
 ## 🎯 MISSION SUMMARY
 
-Execute comprehensive security audit and eliminate HIGH/CRITICAL vulnerabilities.
+Execute comprehensive security audit and eliminate HIGH/CRITICAL vulnerabilities. # pragma: allowlist secret
 
 **Result: MISSION ACCOMPLISHED ✅**
 

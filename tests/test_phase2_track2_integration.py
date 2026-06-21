@@ -9,7 +9,7 @@ Generate comprehensive test coverage for cross-module integration:
 - Edge cases and boundary conditions
 
 Target: 60+ test methods covering remaining coverage gaps
-"""
+""" # pragma: allowlist secret
 
 from datetime import datetime, timedelta
 

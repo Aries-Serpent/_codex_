@@ -9,7 +9,7 @@ Generate comprehensive test coverage for infrastructure validation:
 - Consistency checking
 
 Target: 70+ test methods covering 150+ statements
-"""
+""" # pragma: allowlist secret
 
 
 
