@@ -472,7 +472,8 @@ class TestEmbeddingCacheBooleanMutations:
         # Exact assertions kill mutations
         assert result is True, "MUST be exact True"
         assert type(result) is bool, "MUST be bool type"
-        assert result != 1, "MUST not be numeric 1"
+        # Note: In Python, True == 1, so we cannot use '!=' to distinguish them.
+        # Use 'is' and type() checks above instead.
 
     def test_contains_exact_false_not_falsy(self):
         """Kill: Return value mutations (False -> 0, None, empty)."""
@@ -484,7 +485,8 @@ class TestEmbeddingCacheBooleanMutations:
         # Exact assertions kill mutations
         assert result is False, "MUST be exact False"
         assert type(result) is bool, "MUST be bool type"
-        assert result != 0, "MUST not be numeric 0"
+        # Note: In Python, False == 0, so we cannot use '!=' to distinguish them.
+        # Use 'is' and type() checks above instead.
 
 
 class TestEmbeddingCacheReturnValueMutations:
