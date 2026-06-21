@@ -1,3 +1,18 @@
+"""Chat session logging and context management.
+
+This module provides the ChatSession context manager for tracking and logging
+conversation state during multi-turn interactions with users and assistants.
+
+Classes:
+    ChatSession: Context manager for managing a logged chat conversation.
+
+Examples:
+    >>> from codex.chat import ChatSession
+    >>> with ChatSession("my-session-id") as session:
+    ...     session.log_user("Hello, world!")
+    ...     session.log_assistant("Hello! How can I help?")
+"""
+
 from __future__ import annotations
 
 import logging

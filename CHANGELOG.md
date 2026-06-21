@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5037 review thread follow-up)
+- Corrected remaining review-thread inconsistencies in PR #5037 campaign artifacts/tests, including Phase 1A coverage wording, campaign/checkpoint metadata, workflow audit wording, and the targeted CLI/ingest test scaffolding called out in review.
+- Verified and normalized the touched PR #5037 campaign artifacts so their discussion #4872 references now describe targets/projections accurately within the reviewed scope.
+
 ### Fixed (CI Rescue: PR #5036 workflow reversion)
 - Reverted unintended workflow indentation edits from commit `14a3750` across 19 workflow files to restore valid GitHub Actions YAML parsing and unblock Actionlint/Fast Validation.
 - Corrected duplicate numbering in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` run URL list.
