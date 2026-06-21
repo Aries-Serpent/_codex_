@@ -9,7 +9,7 @@ Tests cover:
 - Repository implementations
 """
 
-from datetime import datetime
+from datetime import datetime # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from uuid import uuid4
 
 import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
