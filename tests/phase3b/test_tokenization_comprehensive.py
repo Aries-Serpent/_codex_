@@ -96,11 +96,12 @@ class TestTokenizationLoader:
         
         def load(path):
             if path not in cache:
-                cache[path] = {'loaded': True}
+                cache[path] = {'path': path, 'loaded': True}
             return cache[path]
         
         r1 = load('/path1')
         r2 = load('/path2')
+        assert r1['path'] != r2['path']
         assert r1 != r2
 
     def test_loader_invalid_path(self):
