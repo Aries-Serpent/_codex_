@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (CI Rescue: PR #5036 workflow reversion)
+- Reverted unintended workflow indentation edits from commit `14a3750` across 19 workflow files to restore valid GitHub Actions YAML parsing and unblock Actionlint/Fast Validation.
+- Corrected duplicate numbering in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` run URL list.
+
 ### Fixed (CI Emergency: RAG Module Tests)
 - **Issue #5034**: Fixed impossible boolean assertions in RAG embedding cache tests that relied on numeric inequality to distinguish `True` from `1` and `False` from `0`
   - **Root Cause:** In Python, `True == 1` and `False == 0` due to numeric equality, making assertions like `assert result != 1` impossible to satisfy
@@ -10511,4 +10515,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - REQ-4/REQ-5 compliance verified (AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md updated)
 
 **Status:** Phase 3 deployment ready
-

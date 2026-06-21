@@ -57398,8 +57398,8 @@ Resolve remaining actionlint workflow compliance violation (admin-action-t03.yml
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27908930676
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27908930672
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/27908930672
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note
@@ -57422,5 +57422,41 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-06-21T17:15Z SESSION 5036-FOLLOWUP
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] Reviewed blocking comments from `@mbaetiong` and `@github-actions[bot]`
+- [x] Reviewed failing CI checks (`Fast Validation`, `Actionlint Workflow Audit`) and logs
+- [x] Loaded required policy/context documents and session context
+
+### Work Completed
+1. Reverted unintended workflow indentation edits introduced in commit `14a3750` by restoring:
+   - `.github/workflows/benchmarks.yml`
+   - `.github/workflows/build-preview-image.yml`
+   - `.github/workflows/cache-health-monitor.yml`
+   - `.github/workflows/cache-validation.yml`
+   - `.github/workflows/copilot-agent-session-done.yml`
+   - `.github/workflows/copilot-automation.yml`
+   - `.github/workflows/data-quality-suite.yml`
+   - `.github/workflows/docker-build-push.yml`
+   - `.github/workflows/documentation-quality-check.yml`
+   - `.github/workflows/embedding-index-rebuild.yml`
+   - `.github/workflows/maturity-check.yml`
+   - `.github/workflows/progressive-validation.yml`
+   - `.github/workflows/publish_dashboard_release.yml`
+   - `.github/workflows/pypi-publish.yml`
+   - `.github/workflows/release.yml`
+   - `.github/workflows/rust_swarm_ci.yml`
+   - `.github/workflows/scheduled-archival.yml`
+   - `.github/workflows/semgrep_sarif.yml`
+   - `.github/workflows/unified-deployment.yml`
+2. Fixed duplicate numbering in the auto-generated run URL list in this report.
+
+### Expected Impact
+- Restores valid workflow YAML structure by removing accidental, malformed indentation edits.
+- Unblocks Actionlint/Fast Validation failures tied to those workflow changes.
 
 ---

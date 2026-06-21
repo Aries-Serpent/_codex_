@@ -38,17 +38,17 @@ jobs:
       candidates: ${{ steps.find.outputs.candidates }}
       count: ${{ steps.find.outputs.count }}
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-      - name: CacheManager health check
+    - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow scheduled-archival
         2>/dev/null || echo "Cache health: check skipped"
 
         '
-      - name: Find Archival Candidates
+    - name: Find Archival Candidates
       id: find
       run: "echo \"## Archival Candidate Analysis\"\necho \"\"\n\n# Find markdown\
         \ files older than 90 days with no recent modifications\nCANDIDATES=$(find\
@@ -72,9 +72,9 @@ jobs:
     needs: identify-candidates
     if: ${{ needs.identify-candidates.outputs.count > 0 }}
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
       uses: actions/checkout@v7
-      - name: Create Archival Issue
+    - name: Create Archival Issue
       if: ${{ github.event.inputs.dry_run != 'true' }}
       uses: actions/github-script@v8
       with:
@@ -93,7 +93,7 @@ jobs:
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `[Archival]\
           \ ${count} files proposed for archival`,\n  body: body,\n  labels: ['archival',\
           \ 'needs-review']\n});\n"
-      - name: Dry Run Summary
+    - name: Dry Run Summary
       if: ${{ github.event.inputs.dry_run == 'true' }}
       run: 'echo "## Dry Run Summary"
 
@@ -116,9 +116,9 @@ jobs:
     needs: identify-candidates
     if: ${{ github.event.inputs.dry_run != 'true' }}
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
       uses: actions/checkout@v7
-      - name: Find and Compress Large Files
+    - name: Find and Compress Large Files
       run: "echo \"## Large File Compression\"\necho \"\"\n\n# Find files larger than\
         \ 100KB in archive directories\nLARGE_FILES=$(find ./misc/repo-owner-review\
         \ -type f -size +100k 2>/dev/null || echo \"\")\n\nif [ -n \"$LARGE_FILES\"\

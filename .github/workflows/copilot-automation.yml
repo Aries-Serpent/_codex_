@@ -9,5 +9,5 @@ jobs:
   noop:
     runs-on: ubuntu-latest
     steps:
-      - run: "echo \"disabled \u2014 stub only\""
+    - run: "echo \"disabled \u2014 stub only\""
     timeout-minutes: 60

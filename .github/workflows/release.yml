@@ -22,18 +22,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
+    - name: Checkout
       uses: actions/checkout@v7
-      - name: Set up Python
+    - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
-      - name: Validate version tag
+    - name: Validate version tag
       run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\necho \"Release\
         \ tag: $TAG\"\nif [[ ! \"$TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+ ]]; then\n \
         \ echo \"::error::Invalid version tag format: $TAG (expected vX.Y.Z[-suffix])\"\
         \n  exit 1\nfi\n"
-      - name: Verify CHANGELOG entry
+    - name: Verify CHANGELOG entry
       run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\nVERSION=\"\
         ${TAG#v}\"\nif ! grep -q \"\\[$VERSION\\]\" CHANGELOG.md 2>/dev/null; then\n\
         \  echo \"::warning::No CHANGELOG.md entry found for version $VERSION\"\n\
@@ -48,14 +48,14 @@ jobs:
   release:
     name: Create GitHub Release
     needs:
-      - validate
-      - generate-sbom
+    - validate
+    - generate-sbom
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
+    - name: Checkout
       uses: actions/checkout@v7
-      - name: Determine tag
+    - name: Determine tag
       id: tag
       run: 'TAG="${{ github.event.inputs.tag || github.ref_name }}"
 
@@ -64,7 +64,7 @@ jobs:
         echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
         '
-      - name: Create Release
+    - name: Create Release
       uses: softprops/action-gh-release@v3
       with:
         tag_name: ${{ steps.tag.outputs.tag }}
