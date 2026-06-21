@@ -134,8 +134,10 @@ class TestDatabaseOperations:
             "thread_2": {"acquired": ["table_b"], "waiting": ["table_a"]}
         }
         deadlock = (
-            "table_a" in locks["thread_1"]["waiting"] and
-            "table_a" in locks["thread_2"]["acquired"]
+            "table_b" in locks["thread_1"]["waiting"] and
+            "table_a" in locks["thread_2"]["waiting"] and
+            "table_b" in locks["thread_2"]["acquired"] and
+            "table_a" in locks["thread_1"]["acquired"]
         )
         assert deadlock
 
