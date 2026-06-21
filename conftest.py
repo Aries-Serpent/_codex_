@@ -12,8 +12,8 @@ from pathlib import Path as _Path
 
 import pytest
 
-# PATCH: Fix OpenSSL/cryptography incompatibility (lib.GEN_EMAIL AttributeError)
-# This happens when OpenSSL from system packages conflicts with cryptography versions
+# PATCH: Pre-load cryptography when available to stabilize test-time imports
+# in environments where optional crypto dependencies may be missing.
 try:
     # Pre-emptively load cryptography to avoid cascading import errors
     import cryptography  # noqa: F401
