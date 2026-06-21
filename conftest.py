@@ -15,8 +15,7 @@ import pytest
 # PATCH: Fix OpenSSL/cryptography incompatibility (lib.GEN_EMAIL AttributeError)
 # This happens when OpenSSL from system packages conflicts with cryptography versions
 try:
-    # Import for side effects so CFFI/OpenSSL bindings are initialized early.
-    import cffi  # type: ignore[import-not-found]  # noqa: F401
+    # Pre-emptively load cryptography to avoid cascading import errors.
     import cryptography  # noqa: F401
 except Exception:
     pass  # Best effort patching
