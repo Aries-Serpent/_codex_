@@ -50,7 +50,7 @@ class EmbeddingEntry:
         """Check if entry has expired."""
         if self.expires_at is None:
             return False
-        return time.time() > self.expires_at
+        return bool(time.time() > self.expires_at)
 
     @property
     def dimension(self) -> int:
@@ -210,6 +210,7 @@ class EmbeddingCache:
         text: str,
         embedding: np.ndarray,
         ttl: Optional[float] = None,
+        ttl_seconds: Optional[float] = None,
         metadata: Optional[dict[str, Any]] = None,
     ) -> None:
         """
@@ -219,10 +220,13 @@ class EmbeddingCache:
             text: Text that was embedded
             embedding: Embedding vector
             ttl: Optional TTL in seconds
+            ttl_seconds: Optional TTL in seconds (alias for ttl, for backward compatibility)
             metadata: Optional metadata
         """
         key = self._generate_key(text)
-        ttl = ttl if ttl is not None else self.config.default_ttl
+        # Support both ttl and ttl_seconds parameters (ttl_seconds takes precedence if both provided)
+        effective_ttl = ttl_seconds if ttl_seconds is not None else ttl
+        effective_ttl = effective_ttl if effective_ttl is not None else self.config.default_ttl
 
         self._acquire_lock()
         try:
@@ -235,7 +239,7 @@ class EmbeddingCache:
                 key=key,
                 embedding=self._convert_embedding(embedding),
                 created_at=now,
-                expires_at=now + ttl if ttl > 0 else None,
+                expires_at=now + effective_ttl if effective_ttl > 0 else None,
                 metadata=metadata or {},
             )
 
@@ -330,7 +334,7 @@ class EmbeddingCache:
         try:
             if key not in self._cache:
                 return False
-            return not self._cache[key].is_expired
+            return bool(not self._cache[key].is_expired)
         finally:
             self._release_lock()
 
