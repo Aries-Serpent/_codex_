@@ -325,13 +325,11 @@ class TestOutputFormatting:
         """Test list snapshots output format."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Should display snapshot ID and source
-        pass
 
     def test_snapshot_details_format(self, sample_snapshot, artifacts_dir):
         """Test snapshot details format."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Should display ID, source, created, hash, file count
-        pass
 
 
 # =====================================================================
@@ -412,7 +410,6 @@ class TestAstVisualization:
         source_file.write_text("def foo(): pass")
 
         # ast-view should create HTML file
-        pass
 
     def test_ast_view_output_option(self):
         """Test ast-view --output option."""
@@ -478,14 +475,12 @@ class TestEdgeCases:
         empty_snap = artifacts_dir / "empty-snap-001"
         empty_snap.mkdir()
         # Should handle gracefully
-        pass
 
     def test_snapshot_without_metadata(self, artifacts_dir):
         """Test snapshot without metadata file."""
         snap_no_meta = artifacts_dir / "snap-no-meta"
         snap_no_meta.mkdir()
         # Should handle gracefully
-        pass
 
     def test_corrupted_metadata_file(self, artifacts_dir):
         """Test snapshot with corrupted metadata."""
@@ -494,7 +489,6 @@ class TestEdgeCases:
         meta_file = snap_corrupt / "snapshot-meta.json"
         meta_file.write_text("{ invalid json }")
         # Should handle gracefully
-        pass
 
     def test_very_long_snapshot_id(self, artifacts_dir):
         """Test snapshot with very long ID."""
@@ -502,7 +496,6 @@ class TestEdgeCases:
         snap_long = artifacts_dir / long_id
         snap_long.mkdir()
         # Should handle gracefully
-        pass
 
     def test_special_characters_in_snapshot_id(self, artifacts_dir):
         """Test snapshot with special characters in ID."""
@@ -527,7 +520,6 @@ class TestConsistency:
         """Test repeated list commands are consistent."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Multiple list commands should return same results
-        pass
 
     def test_snapshot_visibility_after_operations(self, sample_snapshot, artifacts_dir):
         """Test snapshot remains visible after operations."""

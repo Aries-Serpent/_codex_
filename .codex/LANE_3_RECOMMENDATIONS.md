@@ -16,7 +16,7 @@
 - [x] Cascade prevention implementation
 - [x] Issue #5035 failure analysis
 - [x] Pattern-based fixes applied
-- [x] <1% failure rate target achieved
+- [x] <1% failure rate target projected from current audit
 
 ### ✨ Success Metrics
 
@@ -53,7 +53,7 @@
 - name: Send trace to observability platform
   run: |
     curl -X POST https://api.observability.io/traces \
-      -H "Authorization: ****** secrets.OTEL_TOKEN }}" \
+      -H "Authorization: ${{ secrets.OTEL_TOKEN }}" \
       -d '{"workflow": "${{ github.workflow }}", "duration": $DURATION}'
 ```
 
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       over-budget: ${{ steps.check.outputs.over-budget }}
-  
+
   deploy:
     needs: cost-check
     if: needs.cost-check.outputs.over-budget == 'false'
@@ -250,14 +250,14 @@ jobs:
 
 ### Short-term (Month 1)
 
-- ✅ Failure rate < 1% sustained
+- 🟡 Failure rate projected below 1%
 - ✅ Cascade failures = 0
 - ✅ MTTR < 20 minutes
 - ✅ 100% workflow documentation
 
 ### Medium-term (Month 3)
 
-- ✅ Failure rate < 0.5%
+- 🎯 Failure rate < 0.5%
 - ✅ 80% automated failure healing
 - ✅ MTTR < 5 minutes
 - ✅ Real-time observability operational

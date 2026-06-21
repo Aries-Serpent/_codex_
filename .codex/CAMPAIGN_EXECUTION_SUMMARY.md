@@ -9,7 +9,7 @@
 
 | Agent ID | Lane | Task | Status | Started |
 |----------|------|------|--------|---------|
-| `lane-1-coverage-expansion` | 1 | Gap Closure: 35% → 22%+ | 🟢 ACTIVE | 18:08:45Z |
+| `lane-1-coverage-expansion` | 1 | Gap Closure: 19.78% → 22%+ | 🟢 ACTIVE | 18:08:45Z |
 | `lane-2-security-audit` | 2 | Full Security Audit | 🟢 ACTIVE | 18:09:02Z |
 | `lane-3-ci-stabilization` | 3 | Workflow Validation | 🟢 ACTIVE | 18:09:15Z |
 | `lane-4-documentation` | 4 | Documentation Audit | 🟢 ACTIVE | 18:09:28Z |
@@ -49,7 +49,7 @@ Checkpoints will be created at these intervals:
 ## LANE DETAILS
 
 ### LANE 1: Coverage Expansion (unified-coverage-agent)
-- **Phase:** 1A Gap Closure (35% → 22%)
+- **Phase:** 1A Gap Closure (19.78% → 22%+)
 - **Tasks:** 285 tests across 5 modules
 - **Duration:** 2-3 hours
 - **Target:** All tests passing, +2.22pp coverage gain
@@ -129,26 +129,26 @@ When first agent completes:
 ## EXPECTED OUTCOMES
 
 ### Phase 1 (All lanes complete 2-3h)
-✅ Coverage: 22%+  
-✅ Security: 0 critical/high  
-✅ CI: <2% failure rate  
-✅ Docs: 93%+ current  
-✅ Governance: 32/32 gates  
+- Target coverage: 22%+  
+- Target security posture: 0 critical/high  
+- Target CI stability: <2% failure rate  
+- Target docs freshness: 93%+ current  
+- Target governance gates: 32/32  
 
 ### Phase 2 (6+ hours)
-✅ Coverage: 35%+  
-✅ Tests: 1,000+ added  
-✅ Mutation: 85%+ kill rate  
+- Target coverage: 35%+  
+- Target tests added: 1,000+  
+- Target mutation kill rate: 85%+  
 
 ### Phase 3 (12+ hours)
-✅ Security: Final audit  
-✅ CI: <1% failure rate  
-✅ Docs: 100% current  
+- Planned security milestone: final audit  
+- Planned CI milestone: <1% failure rate  
+- Planned docs milestone: 100% current  
 
 ### Phase 4 (14+ hours)
-✅ v0.1.0-final released  
-✅ All checkpoints consolidated  
-✅ Discussion #4872 updated  
+- Planned release milestone: v0.1.0-final released  
+- Planned documentation milestone: all checkpoints consolidated  
+- Planned communication milestone: Discussion #4872 updated  
 
 ---
 

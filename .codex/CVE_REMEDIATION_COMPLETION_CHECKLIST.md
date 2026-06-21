@@ -16,7 +16,7 @@
 | **Jinja2** | 4 RCE/Injection | 3.1.2 → ≥3.1.6 | ✅ **FIXED** | requirements.txt, pyproject.toml |
 | **Cryptography** | 9 Security | 41.0.7 → ≥49.0.0 | ✅ **FIXED** | requirements.txt, requirements-dev.txt, pyproject.toml |
 | **setuptools** | 3 RCE/Traversal | 68.1.2 → ≥78.1.1 | ✅ **FIXED** | pyproject.toml [build-requires] |
-| **pip** | 5 Security | 24.0 → ≥26.1.2 | ⚠️ **SYSTEM** | N/A (system package, documented in requirements-dev.txt) |
+| **pip** | 5 Security | 24.0 → ≥24.3 | ⚠️ **SYSTEM** | N/A (system package, documented in requirements-dev.txt) |
 
 ### HIGH Priority Packages (3)
 
@@ -70,7 +70,7 @@
 - filelock>=3.29.0 ✓
 - idna>=3.15 ✓
 - urllib3>=2.7.0 ✓
-- requests>=2.32.4 ✓ (even stricter than requirements.txt)
+- requests>=2.32.4 ✓ (tracked separately from the stricter requirements.txt minimum)
 - **Status:** 6/6 core packages updated
 
 ### ✅ pyproject.toml [project.optional-dependencies.auth]
@@ -92,10 +92,10 @@
 - **MEDIUM/LOW:** 7+ packages (17 CVEs)
 
 ### After Fix (Current State)
-- **Total CVEs Resolved:** 46 ✅
-- **CRITICAL CVEs Remaining:** 0 ✅
-- **HIGH CVEs Remaining:** 0 ✅
-- **MEDIUM/LOW CVEs Remaining:** 0 ✅
+- **Direct/core dependency CVEs resolved:** 46 ✅
+- **CRITICAL CVEs Remaining in tracked requirements:** 0 ✅
+- **HIGH CVEs Remaining in tracked core dependencies:** 0 ✅
+- **Follow-up items:** system-managed/transitive verification only ⚠️
 
 ---
 
@@ -121,9 +121,8 @@
 - DoS attack vectors: REDUCED ✅
 
 ### Compliance Status
-- ✅ Zero CRITICAL CVEs
+- ✅ Zero CRITICAL CVEs in tracked requirements
 - ✅ Zero HIGH CVEs in core dependencies
 - ✅ SBOM generated (148 packages)
 - ✅ No exposed secrets
-- ✅ Production-ready for v0.1.0-final
-
+- ⚠️ Production-readiness sign-off remains subject to system/transitive package verification

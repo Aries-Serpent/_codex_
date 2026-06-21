@@ -7,7 +7,7 @@
     "total_workflows": 195,
     "valid_workflows": 195,
     "invalid_workflows": 0,
-    "workflows_with_timeout": 342,
+    "workflows_with_timeout": 195,
     "total_jobs": 366,
     "jobs_with_timeout": 366,
     "deprecated_actions_fixed": 8,
@@ -58,7 +58,7 @@
     "baseline_failure_rate": 0.015,
     "projected_failure_rate": 0.008,
     "target_failure_rate": 0.01,
-    "target_achieved": true,
+    "target_achieved": false,
     "improvement_percentage": 47
   },
   "success_criteria": {
@@ -66,7 +66,7 @@
     "action_versions": "✅ PASS",
     "artifact_retention": "✅ PASS",
     "cascade_prevention": "✅ PASS",
-    "failure_rate_target": "✅ PASS",
+    "failure_rate_target": "🟡 PROJECTED PASS",
     "overall_score": "9.3/10"
   }
 }

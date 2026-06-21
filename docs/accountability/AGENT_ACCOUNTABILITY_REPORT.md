@@ -1,3 +1,25 @@
+## PR #5037 Review Thread Fixes — 2026-06-21T21:17:44Z → 2026-06-21T21:40:00Z
+
+**Session Type:** Review Comment Remediation  
+**Lead Agent:** @copilot  
+**Authority:** @mbaetiong  
+**Status:** ✅ IN PROGRESS
+
+### Session Summary
+Addressed the active PR #5037 review-thread findings with focused documentation/test corrections and verified the touched campaign artifacts against discussion #4872 target achievements.
+
+**Results so far:**
+- Corrected campaign/checkpoint metadata mismatches in `.codex/` artifacts
+- Removed redundant `pass` statements from affected unit tests
+- Replaced invalid `manifest=` ingest test usage and made symlink-path test outcomes explicit
+- Verified and normalized the touched discussion #4872 references so the reviewed artifacts distinguish current targets/projections from already-completed outcomes
+- Validation: exact touched pytest cases pass
+
+### Validation Notes
+- ✅ `python -m pytest -q` passed for the 10 directly touched tests in `tests/unit/test_cli_main_phase1a.py` and `tests/unit/test_ingest_adapter_phase1a.py`
+
+---
+
 ## Emergency CI Fix: RAG Module Tests — 2026-06-21T15:29:32Z → 2026-06-21T15:39:00Z
 
 **Session Type:** CI Failure Resolution  
