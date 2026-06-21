@@ -17,7 +17,7 @@ import pytest
 try:
     # Pre-emptively load cryptography to avoid cascading import errors
     import cryptography  # noqa: F401
-except Exception:
+except (ImportError, ModuleNotFoundError):
     pass  # Best effort patching
 
 
