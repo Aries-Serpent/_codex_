@@ -16,10 +16,9 @@ Tests include basic functionality, fallback modes, error cases, integration scen
 
 
 import json
-import logging
 from pathlib import Path
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Any
+from unittest.mock import Mock, patch
 
 import pytest
 

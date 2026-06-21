@@ -17,13 +17,11 @@ Tests include basic functionality, edge cases, error paths, and integration scen
 
 import hashlib
 from pathlib import Path
-from typing import Any
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
 from src.codex.analysis.duplication import (
-    DEFAULT_EXTENSIONS,
     DuplicationReport,
     _assess_severity,
     _hash_file,

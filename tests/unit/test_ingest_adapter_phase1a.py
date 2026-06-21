@@ -18,7 +18,6 @@ and include edge case coverage, error paths, and integration scenarios.
 
 import hashlib
 import json
-import logging
 import tempfile
 import zipfile
 from datetime import datetime, timezone
