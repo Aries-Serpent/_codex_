@@ -20,7 +20,7 @@
 | **Coverage Increase** | 19.78% → 22%+ (+2.22pp) | Pending measurement | 🔄 |
 | **Mutation Kill Rate** | 85%+ | Pending validation | 🔄 |
 | **Regressions** | 0 | Pending validation | 🔄 |
-| **Quality Gates** | E,F,I clean + mypy + detect-secrets | Pending | 🔄 |
+| **Quality Gates** | E,F,I clean + mypy + detect-secrets | Pending | 🔄 | <!-- pragma: allowlist secret -->
 
 ---
 
