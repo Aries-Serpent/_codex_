@@ -15,7 +15,6 @@ Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
 """
 
-from __future__ import annotations
 
 import hashlib
 import json

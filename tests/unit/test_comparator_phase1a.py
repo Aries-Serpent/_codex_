@@ -14,7 +14,6 @@ Comprehensive test coverage for the behavior comparator module covering:
 Tests include basic functionality, edge cases, integration scenarios.
 """
 
-from __future__ import annotations
 
 import hashlib
 from datetime import datetime, timezone

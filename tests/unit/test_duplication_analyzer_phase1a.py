@@ -14,7 +14,6 @@ Comprehensive test coverage for the duplication analysis module covering:
 Tests include basic functionality, edge cases, error paths, and integration scenarios.
 """
 
-from __future__ import annotations
 
 import hashlib
 from pathlib import Path

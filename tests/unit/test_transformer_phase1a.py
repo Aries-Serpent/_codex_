@@ -14,7 +14,6 @@ Comprehensive test coverage for the transformer module covering:
 Tests include basic functionality, edge cases, integration scenarios.
 """
 
-from __future__ import annotations
 
 import difflib
 from datetime import datetime, timezone

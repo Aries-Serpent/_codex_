@@ -14,7 +14,6 @@ Comprehensive test coverage for the CLI main module covering:
 Tests include basic functionality, fallback modes, error cases, integration scenarios.
 """
 
-from __future__ import annotations
 
 import json
 import logging
