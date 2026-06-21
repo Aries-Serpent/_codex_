@@ -150,6 +150,28 @@ class UserStore:
         logger.info("User created: %s", sanitize_log_message(username))
         return user
 
+    def update_user(self, user: User) -> User:
+        """
+        Update an existing user record.
+
+        Args:
+            user: The user object with updated fields.
+
+        Returns:
+            The updated :class:`User`.
+
+        Raises:
+            KeyError: If the user does not exist.
+        """
+        with self._lock:
+            existing = self._repository.get_by_id(user.user_id)
+            if existing is None:
+                raise KeyError(f"User '{user.user_id}' not found")
+            user.updated_at = time.time()
+            self._repository.update(user)
+        logger.info("User updated: %s", sanitize_log_message(user.username))
+        return user
+
     def update_password(self, user_id: str, new_password: str) -> None:
         """
         Replace the stored password for *user_id*.

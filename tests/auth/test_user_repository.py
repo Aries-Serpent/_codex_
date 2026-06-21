@@ -131,12 +131,23 @@ class MockUserRepository(UserRepository):
         """List all users."""
         return list(self._users.values())
 
+    def list_all(self) -> list:
+        """List all users (abstract method implementation)."""
+        return list(self._users.values())
+
     def get_by_username(self, username: str) -> User:
         """Get user by username."""
         for user in self._users.values():
             if user.username == username:
                 return user
-        raise KeyError("User not found")
+        return None
+
+    def get_by_email(self, email: str) -> User:
+        """Get user by email."""
+        for user in self._users.values():
+            if user.email == email:
+                return user
+        return None
 
 
 class TestUserRepositoryImplementation:

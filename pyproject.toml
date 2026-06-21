@@ -549,7 +549,7 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-fail_under = 35
+fail_under = 70
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
