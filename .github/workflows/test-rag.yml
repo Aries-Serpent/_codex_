@@ -96,6 +96,10 @@ jobs:
         run: |
           PYTHON_BIN="${VENV_PYTHON:-python}"
           "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
+          # Upgrade cryptography and pyOpenSSL first to fix compatibility issues
+          # with transformers/sentence-transformers on Python 3.12
+          # (S228: fixes OpenSSL/cryptography mismatch in system packages)
+          "$PYTHON_BIN" -m pip install --upgrade cryptography pyOpenSSL
           # Install the main package FIRST (may install older plugin versions)
           "$PYTHON_BIN" -m pip install --no-cache-dir -e ".[rag,test]"
           # Then force reinstall pytest plugins with pinned versions

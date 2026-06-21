@@ -134,9 +134,9 @@ Key metrics to optimize:
 ## Related Documentation
 
 - [Operations Guide](../operations/)
-- [Performance Optimization](../performance/)
 - [Admin Documentation](../admin/)
 - [Troubleshooting Guide](../troubleshooting/)
+- [Monitoring Guide](../monitoring/)
 
 ## Tools Reference
 

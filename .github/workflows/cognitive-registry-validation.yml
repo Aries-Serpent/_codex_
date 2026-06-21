@@ -37,6 +37,7 @@ jobs:
   validate_registry_configuration:
     name: 'Validate Registry Configuration'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
       validation_confidence: ${{ steps.validate.outputs.confidence }}
       validation_valid: ${{ steps.validate.outputs.valid }}

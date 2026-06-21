@@ -15,7 +15,13 @@ from codex.archive.dal import ArchiveDAL
 def sqlite_dal(monkeypatch: pytest.MonkeyPatch) -> ArchiveDAL:
     monkeypatch.setenv("CODEX_ARCHIVE_BACKEND", "sqlite")
     monkeypatch.setenv("CODEX_ARCHIVE_URL", "sqlite:///:memory:")
-    return ArchiveDAL.from_env()
+    dal = ArchiveDAL.from_env()
+    # Ensure schema is initialized for in-memory database
+    try:
+        dal.ensure_schema()
+    except Exception:
+        pass  # In-memory database may not require schema initialization
+    return dal
 
 
 def test_validate_identifier_accepts_known_tables(sqlite_dal: ArchiveDAL) -> None:

@@ -45,7 +45,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    timeout-minutes: 60
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest

@@ -1200,3 +1200,799 @@ For architecture documentation, see:
 - [Phase 2: Reproducibility](architecture/phase_2_reproducibility.md)
 - [Phase 3: Autonomy](architecture/phase_3_autonomy.md)
 - [Phase 4: Excellence](architecture/phase_4_excellence.md)
+
+
+---
+## 📎 Consolidated from: docs/api/API_DOCUMENTATION.md
+
+# API Reference Documentation
+
+> **Version**: 1.0.0
+> **Generated**: 2025-12-11
+> **Auto-sync**: Updates with code changes via CI
+
+---
+
+## Overview
+
+This document provides comprehensive API documentation for the _codex_ repository, covering all public modules, classes, and functions.
+
+---
+
+## Table of Contents
+
+1. [Agent APIs](#agent-apis)
+2. [ML Core APIs](#ml-core-apis)
+3. [Integration APIs](#integration-apis)
+4. [Utility APIs](#utility-apis)
+
+---
+
+## Agent APIs
+
+### AgentMemorySystem
+
+**Module**: `agents.agent_memory`
+
+SQLite-backed persistent memory system for AI agents.
+
+```python
+from agents.agent_memory import AgentMemorySystem
+
+# Initialize
+memory = AgentMemorySystem(agent_id="my_agent", db_path=Path("memory.db"))
+
+# Start a task
+frame = memory.start_task("Fix security vulnerability")
+
+# Store a decision
+memory_id = memory.store_decision(
+    task_id="task_001",  # pragma: allowlist secret
+    decision="Use input validation",
+    rationale="Prevents injection attacks",
+    context={"file": "auth.py"}
+)
+
+# Retrieve similar contexts
+contexts = memory.retrieve_similar_context(
+    task_description="security input validation",  # pragma: allowlist secret
+    limit=5
+)
+
+# Get pattern library
+patterns = memory.get_pattern_library()
+
+# Invalidate old contexts
+count = memory.invalidate_stale_contexts(age_days=30)
+
+# Complete task
+memory.complete_task(success=True, summary="Fixed vulnerability")
+```
+
+#### Methods
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `start_task` | `task_description: str` | `ContextFrame` | Start a new task context | <!-- pragma: allowlist secret -->
+| `store_decision` | `task_id, decision, rationale, context` | `str` | Store decision, returns memory ID | <!-- pragma: allowlist secret -->
+| `retrieve_similar_context` | `task_description, limit=5` | `List[Dict]` | Find relevant past contexts | <!-- pragma: allowlist secret -->
+| `get_pattern_library` | None | `List[Dict]` | Get all decision patterns |
+| `invalidate_stale_contexts` | `age_days=30` | `int` | Clean old contexts, returns count |
+| `record_decision` | `decision, alternatives, confidence, reasoning` | `MemoryEntry` | Record decision with alternatives |
+| `record_lesson` | `lesson, success` | `MemoryEntry` | Record lesson learned |
+| `get_guidance` | `situation: str` | `Dict` | Get guidance for situation |
+| `complete_task` | `success, summary` | None | Complete current task |
+| `get_stats` | None | `Dict` | Get memory statistics |
+
+---
+
+### SelfHealingEngine
+
+**Module**: `agents.self_healing`
+
+Automated issue detection and remediation engine.
+
+```python
+from agents.self_healing import SelfHealingEngine
+
+# Initialize
+engine = SelfHealingEngine(repo_path=".")
+
+# Run health check
+report = engine.run_health_check()
+print(f"Health Score: {report.health_score}/100")
+
+# Get issues
+for issue in report.issues:
+    print(f"- {issue.issue_type}: {issue.description}")
+    print(f"  Fix: {issue.suggested_fix}")
+
+# Apply fixes (dry run)
+results = engine.apply_fixes(dry_run=True)
+```
+
+#### Methods
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `run_health_check` | None | `HealthReport` | Analyze repository health |
+| `detect_issues` | None | `List[Issue]` | Detect all issues |
+| `suggest_fixes` | `issues: List[Issue]` | `List[Fix]` | Generate fix suggestions |
+| `apply_fixes` | `dry_run=True` | `Dict` | Apply fixes to codebase |
+
+---
+
+### QuantumGameTheory
+
+**Module**: `agents.quantum_game_theory`
+
+Physics-inspired game theory for Blue/Red team simulations.
+
+```python
+from agents.quantum_game_theory import (
+    ClassicalGameEngine,
+    QuantumInspiredGameEngine,
+    BlueRedTeamSimulator
+)
+
+# Classical game
+classical = ClassicalGameEngine(
+    strategy_sizes=(3, 3),
+    payoff_a=[[3, 0, 5], [1, 2, 1], [0, 1, 4]],
+    payoff_b=[[3, 1, 0], [0, 2, 1], [5, 1, 4]]
+)
+eq = classical.find_nash_equilibrium()
+
+# Quantum-inspired game
+quantum = QuantumInspiredGameEngine(
+    strategy_sizes=(3, 3),
+    payoff_a=payoff_a,
+    payoff_b=payoff_b
+)
+quantum.apply_entanglement(strength=0.5)
+result = quantum.measure_strategy()
+
+# Blue/Red team simulation
+simulator = BlueRedTeamSimulator()
+results = simulator.run_simulation(rounds=100)
+```
+
+---
+
+## ML Core APIs
+
+### PluginSandbox
+
+**Module**: `src.codex_ml.plugins.plugin_sandbox`
+
+Secure plugin execution environment.
+
+```python
+from codex_ml.plugins.plugin_sandbox import PluginSandbox, PluginMetadata
+
+# Create sandbox
+sandbox = PluginSandbox(
+    max_memory_mb=512,
+    max_execution_time=30.0,
+    allowed_imports=["numpy", "pandas"]
+)
+
+# Register plugin
+sandbox.register_plugin(
+    name="my_plugin",
+    module_path="plugins/my_plugin.py"
+)
+
+# Execute plugin
+result = sandbox.execute_plugin(
+    name="my_plugin",
+    method="process",
+    args={"data": input_data}
+)
+
+# Check quarantine status
+metadata = sandbox.get_plugin_metadata("my_plugin")
+if metadata.is_quarantine_expired(quarantine_duration=3600):
+    sandbox.restore_plugin("my_plugin")
+```
+
+---
+
+### HARIntegration
+
+**Module**: `src.codex_ml.integrations.har_integration`
+
+HTTP Archive (HAR) recording and replay.
+
+```python
+from codex_ml.integrations.har_integration import (
+    HARRecorder,
+    HARCache,
+    HARReplayer
+)
+
+# Record HTTP transactions
+recorder = HARRecorder()
+recorder.start_recording()
+# ... make HTTP requests ...
+har_log = recorder.stop_recording()
+recorder.save("transactions.har")
+
+# Cache responses
+cache = HARCache(cache_dir=".har_cache")
+cache.cache_response(request, response)
+cached = cache.get_cached_response(request)
+
+# Replay transactions
+replayer = HARReplayer("transactions.har")
+for entry in replayer.entries:
+    response = replayer.replay_entry(entry)
+```
+
+---
+
+### Scalability Utilities
+
+**Module**: `src.codex_ml.utils.scalability`
+
+Performance and scalability utilities.
+
+```python
+from codex_ml.utils.scalability import (
+    LRUCache,
+    RateLimiter,
+    CircuitBreaker,
+    LoadBalancer,
+    ResourcePool,
+    PerformanceMonitor
+)
+
+# LRU Cache
+cache = LRUCache(max_size=1000)
+cache.put("key", "value")
+value = cache.get("key")
+
+# Rate Limiter
+limiter = RateLimiter(rate=100, per_seconds=1)
+if limiter.acquire():
+    # Process request
+    pass
+
+# Circuit Breaker
+breaker = CircuitBreaker(failure_threshold=5, reset_timeout=30)
+with breaker:
+    # Protected operation
+    result = risky_operation()
+
+# Load Balancer
+balancer = LoadBalancer(
+    endpoints=["server1", "server2", "server3"],
+    strategy="round_robin"
+)
+endpoint = balancer.get_endpoint()
+
+# Resource Pool
+pool = ResourcePool(factory=create_connection, max_size=10)
+with pool.acquire() as conn:
+    conn.execute(query)
+
+# Performance Monitor
+monitor = PerformanceMonitor()
+
+@monitor.timed("operation_name")
+def my_operation():
+    pass
+
+stats = monitor.get_stats("operation_name")
+```
+
+---
+
+## Integration APIs
+
+### Event System
+
+**Module**: `src.codex_ml.events.base`
+
+Event publishing and subscription.
+
+```python
+from codex_ml.events import EventPublisher, Event
+
+# Create publisher
+publisher = EventPublisher()
+
+# Subscribe to events
+def on_model_trained(event: Event):
+    print(f"Model trained: {event.data}")
+
+publisher.subscribe("model.trained", on_model_trained)
+
+# Publish events
+publisher.publish(Event(
+    type="model.trained",
+    data={"model_id": "model_001", "accuracy": 0.95}
+))
+```
+
+---
+
+## Utility APIs
+
+### Stub Cleanup
+
+**Module**: `scripts.stub_cleanup`
+
+AST-based stub detection and cleanup.
+
+```python
+from scripts.stub_cleanup import (
+    analyze_file,
+    analyze_directory,
+    generate_report,
+    StubDetector
+)
+
+# Analyze single file
+result = analyze_file(Path("src/module.py"))
+print(f"Found {result.total_stubs} stubs")
+
+# Analyze directory
+result = analyze_directory(
+    Path("src/"),
+    exclude_abstract=True,
+    exclude_patterns=["**/test_*.py"]
+)
+
+# Generate report
+report = generate_report(result, format="markdown")
+print(report)
+```
+
+---
+
+## Error Handling
+
+All APIs use consistent error handling:
+
+```python
+from codex_ml.exceptions import (
+    CodexError,          # Base exception
+    PluginError,         # Plugin-related errors
+    ValidationError,     # Input validation errors
+    ConfigurationError,  # Configuration errors
+    ResourceError,       # Resource allocation errors
+)
+
+try:
+    result = api_call()
+except ValidationError as e:
+    logger.error(f"Invalid input: {e}")
+except PluginError as e:
+    logger.error(f"Plugin failed: {e}")
+except CodexError as e:
+    logger.error(f"Operation failed: {e}")
+```
+
+---
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CODEX_SESSION_ID` | Session identifier | Auto-generated |
+| `CODEX_LOG_DB_PATH` | SQLite database path | `.codex/logs.db` |
+| `CODEX_FORCE_CPU` | Disable GPU | `0` |
+| `CODEX_BATCH_SIZE` | Default batch size | `32` |
+| `CODEX_MAX_MEMORY_MB` | Memory limit | `4096` |
+
+---
+
+## Versioning
+
+APIs follow semantic versioning:
+- **Major**: Breaking changes
+- **Minor**: New features, backward compatible
+- **Patch**: Bug fixes
+
+---
+
+## See Also
+
+- [Architecture Blueprint](../ARCHITECTURE_BLUEPRINT.md)
+- [Contributing Guide](../CONTRIBUTING.md)
+- [Deployment Guide](../guides/production_deployment.md)
+- [Agent Documentation](../agent/INDEX.md)
+- [Quick Start](../mcp/QUICK_START.md)
+
+
+
+---
+## 📎 Consolidated from: docs/INGESTION_API_REFERENCE.md
+
+# Ingestion Pipeline API Reference
+
+## Overview
+
+The ingestion pipeline provides a unified interface for processing multiple file formats (CSV, JSON, JSONL, TXT, MD) with comprehensive validation, transformation, and streaming support.
+
+**Module**: `src.ingestion.pipeline`
+**Version**: 1.0
+**Status**: Production Ready
+
+## Core Components
+
+### 1. PipelineConfig
+
+Configuration dataclass for the ingestion pipeline.
+
+```python
+from src.ingestion.pipeline import PipelineConfig
+
+config = PipelineConfig(
+    encoding='auto',           # File encoding detection
+    batch_size=1000,          # Records per batch
+    max_file_size_mb=100,     # Maximum file size
+    shuffle=False,            # Shuffle records
+    shuffle_seed=42,          # Random seed
+    lowercase=False,          # Lowercase text
+    strip_whitespace=True,    # Strip whitespace
+    skip_empty=True,          # Skip empty records
+    timeout_seconds=300,      # Operation timeout
+    validate_utf8=True        # Validate UTF-8
+)
+```
+
+**Attributes:**
+- `encoding` (str): File encoding. Use 'auto' for auto-detection
+- `batch_size` (int): Records per batch for streaming (default: 1000)
+- `max_file_size_mb` (int): Maximum file size in MB (default: 100)
+- `shuffle` (bool): Whether to shuffle records (default: False)
+- `shuffle_seed` (int): Random seed for reproducibility (default: 42)
+- `lowercase` (bool): Convert text to lowercase (default: False)
+- `strip_whitespace` (bool): Strip leading/trailing whitespace (default: True)
+- `skip_empty` (bool): Skip empty records (default: True)
+- `timeout_seconds` (int): Operation timeout in seconds (default: 300)
+- `validate_utf8` (bool): Validate UTF-8 encoding (default: True)
+
+### 2. PipelineResult
+
+Result of a pipeline operation.
+
+```python
+from src.ingestion.pipeline import PipelineResult
+
+result = pipeline.ingest_file('data.csv')
+
+# Access results
+print(result.success)               # bool
+print(result.records_processed)     # int
+print(result.records_skipped)       # int
+print(result.errors)                # List[str]
+print(result.duration_seconds)      # float
+print(result.output_path)           # str
+print(result.metadata)              # dict
+```
+
+**Attributes:**
+- `success` (bool): Whether operation succeeded
+- `records_processed` (int): Number of records processed
+- `records_skipped` (int): Number of records skipped
+- `errors` (List[str]): List of error messages
+- `duration_seconds` (float): Operation duration
+- `output_path` (str): Output file path (if applicable)
+- `metadata` (dict): Additional metadata
+
+### 3. IngestionPipeline
+
+Main pipeline class for data ingestion.
+
+```python
+from src.ingestion.pipeline import IngestionPipeline, PipelineConfig
+
+config = PipelineConfig(batch_size=500)
+pipeline = IngestionPipeline(config)
+```
+
+#### Methods
+
+##### `ingest_file()`
+
+Process a single file.
+
+```python
+result = pipeline.ingest_file(
+    input_path='data/input.csv',
+    output_path='data/output.jsonl',
+    transform_fn=None
+)
+```
+
+**Parameters:**
+- `input_path` (str|Path): Path to input file
+- `output_path` (str|Path, optional): Path to output file
+- `transform_fn` (Callable, optional): Custom transformation function
+
+**Returns:** `PipelineResult`
+
+**Raises:** 
+- `FileNotFoundError`: If input file not found
+- `ValueError`: If file exceeds max size
+- `TimeoutError`: If operation exceeds timeout
+
+**Example:**
+
+```python
+# Process with transformation
+def transform(record):
+    return {
+        'text': record.get('text', '').lower(),
+        'label': int(record.get('label', 0))
+    }
+
+result = pipeline.ingest_file(
+    'raw_data.csv',
+    'processed_data.jsonl',
+    transform_fn=transform
+)
+
+if result.success:
+    print(f"Processed {result.records_processed} records")
+else:
+    print(f"Errors: {result.errors}")
+```
+
+##### `ingest_directory()`
+
+Process all files in a directory.
+
+```python
+result = pipeline.ingest_directory(
+    input_dir='data/raw',
+    output_dir='data/processed',
+    pattern='*.csv'
+)
+```
+
+**Parameters:**
+- `input_dir` (str|Path): Input directory path
+- `output_dir` (str|Path): Output directory path
+- `pattern` (str): File pattern to match (default: '*')
+
+**Returns:** `PipelineResult` (aggregated)
+
+**Example:**
+
+```python
+result = pipeline.ingest_directory(
+    'data/raw',
+    'data/processed',
+    pattern='*.{csv,json}'
+)
+
+print(f"Total: {result.records_processed}")
+print(f"Failed: {len(result.errors)}")
+```
+
+##### `stream_records()`
+
+Stream records from a file (memory-efficient).
+
+```python
+for batch in pipeline.stream_records('data/large_file.csv'):
+    # Process batch (list of dicts)
+    process_batch(batch)
+```
+
+**Parameters:**
+- `input_path` (str|Path): Path to input file
+
+**Returns:** Iterator of record batches
+
+**Example:**
+
+```python
+# Process large file in batches
+batch_count = 0
+for batch in pipeline.stream_records('data/large_file.csv'):
+    batch_count += 1
+    process_batch(batch)
+    print(f"Processed batch {batch_count}")
+```
+
+## File Format Support
+
+### CSV Format
+
+Comma-separated values with headers.
+
+```python
+# Input: data.csv
+id,text,label
+1,Sample text,0
+2,Another example,1
+
+# Usage
+result = pipeline.ingest_file('data.csv', 'data.jsonl')
+
+# Output: data.jsonl
+{"id": "1", "text": "Sample text", "label": "0"}
+{"id": "2", "text": "Another example", "label": "1"}
+```
+
+### JSON Format
+
+Single JSON object or array.
+
+```python
+# Input: data.json
+{
+  "data": [
+    {"id": 1, "text": "Sample text", "label": 0},
+    {"id": 2, "text": "Another example", "label": 1}
+  ]
+}
+
+# Usage
+result = pipeline.ingest_file('data.json', 'data.jsonl')
+```
+
+### JSONL Format
+
+Newline-delimited JSON (one object per line).
+
+```
+# Input: data.jsonl
+{"id": 1, "text": "Sample text", "label": 0}
+{"id": 2, "text": "Another example", "label": 1}
+```
+
+### Text Format
+
+Plain text, one record per line.
+
+```
+# Input: data.txt
+Sample text
+Another example
+
+# Usage with transformation
+def text_to_record(line):
+    return {"text": line}
+
+result = pipeline.ingest_file('data.txt')
+```
+
+## Custom Ingestors
+
+### CSV Ingestor
+
+```python
+from src.ingestion.csv_ingestor import CSVIngestor
+
+ingestor = CSVIngestor(
+    encoding='utf-8',
+    delimiter=',',
+    quotechar='"'
+)
+
+records = ingestor.ingest('data.csv')
+```
+
+### JSON Ingestor
+
+```python
+from src.ingestion.json_ingestor import JSONIngestor
+
+ingestor = JSONIngestor(encoding='utf-8')
+records = ingestor.ingest('data.json')
+```
+
+### File Ingestor
+
+```python
+from src.ingestion.file_ingestor import FileIngestor
+
+ingestor = FileIngestor(encoding='utf-8')
+records = ingestor.ingest('data.txt')
+```
+
+## Error Handling
+
+### Common Errors
+
+**FileNotFoundError:**
+```python
+try:
+    result = pipeline.ingest_file('nonexistent.csv')
+except FileNotFoundError:
+    print("Input file not found")
+```
+
+**EncodingError:**
+```python
+config = PipelineConfig(encoding='utf-8', validate_utf8=True)
+pipeline = IngestionPipeline(config)
+result = pipeline.ingest_file('data_with_encoding_issues.csv')
+```
+
+**SizeError:**
+```python
+config = PipelineConfig(max_file_size_mb=50)
+pipeline = IngestionPipeline(config)
+result = pipeline.ingest_file('large_file.csv')  # Will fail if > 50MB
+```
+
+**TimeoutError:**
+```python
+config = PipelineConfig(timeout_seconds=60)
+pipeline = IngestionPipeline(config)
+try:
+    result = pipeline.ingest_file('data.csv')
+except TimeoutError:
+    print("Operation exceeded 60 second timeout")
+```
+
+## Performance Considerations
+
+1. **Batch Size**: Larger batches = faster processing but higher memory
+   ```python
+   config = PipelineConfig(batch_size=5000)  # Larger batches
+   ```
+
+2. **Streaming**: Use `stream_records()` for large files to save memory
+   ```python
+   for batch in pipeline.stream_records('large_file.csv'):
+       process_batch(batch)
+   ```
+
+3. **Parallel Processing**: Process multiple files simultaneously
+   ```python
+   from concurrent.futures import ProcessPoolExecutor
+   
+   files = ['file1.csv', 'file2.csv', 'file3.csv']
+   with ProcessPoolExecutor(max_workers=4) as executor:
+       results = executor.map(pipeline.ingest_file, files)
+   ```
+
+4. **Encoding Detection**: Auto-detection is slower than specifying encoding
+   ```python
+   config = PipelineConfig(encoding='utf-8')  # Faster
+   ```
+
+## Best Practices
+
+1. **Always validate input files**
+   ```python
+   from pathlib import Path
+   input_file = Path('data.csv')
+   assert input_file.exists(), f"{input_file} not found"
+   ```
+
+2. **Use deterministic shuffling for reproducibility**
+   ```python
+   config = PipelineConfig(shuffle=True, shuffle_seed=42)
+   ```
+
+3. **Log pipeline results**
+   ```python
+   result = pipeline.ingest_file('data.csv', 'output.jsonl')
+   logging.info(f"Processed: {result.records_processed}, "
+                f"Skipped: {result.records_skipped}")
+   ```
+
+4. **Handle errors gracefully**
+   ```python
+   if not result.success:
+       logging.error(f"Pipeline errors: {result.errors}")
+       # Implement fallback or retry logic
+   ```
+
+## See Also
+
+- [RAG Pipeline API Reference](./RAG_API_REFERENCE.md)
+- [Configuration Guide](./CONFIGURATION_GUIDE.md)
+- [Quickstart Guide](./QUICKSTART.md)
+

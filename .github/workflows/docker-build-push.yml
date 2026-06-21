@@ -5,7 +5,7 @@ concurrency:
 permissions:
   contents: read
   packages: write
-true:
+on:
   push:
     branches:
     - main
@@ -53,7 +53,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    timeout-minutes: 60
   approval-check:
     needs: cost-gate
     name: "Owner approval \u2014 check-only gate"

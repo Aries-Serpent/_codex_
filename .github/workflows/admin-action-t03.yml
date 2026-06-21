@@ -27,7 +27,7 @@ jobs:
   check-t03:
     name: "Check T-03 \u2014 security_events scope"
     uses: ./.github/workflows/admin-action-notifier.yml
-    secrets: inherit
+    secrets: inherit  # pragma: allowlist secret
     with:
       gap_id: T-03
       probe_url: https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?per_page=1
@@ -60,4 +60,3 @@ jobs:
         - Full token review: `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`\
         \ \xA7T-03\n- Pattern guide: `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md`\n\
         - PR context: [PR #4346](https://github.com/Aries-Serpent/_codex_/pull/4346)\n"
-    timeout-minutes: 60
