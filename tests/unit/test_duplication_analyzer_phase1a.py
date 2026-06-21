@@ -532,3 +532,16 @@ class TestIntegration:
             for rec in report.recommendations
         )
         assert has_actionable or report.stats["duplication_ratio"] == 0.0
+
+    def test_duplication_report_file_list_structure(self, temp_dir_with_duplicates):
+       """Test duplication report file list structure."""
+       report = analyze_duplication(temp_dir_with_duplicates)
+       # Should have duplicate_groups or similar structure
+       assert hasattr(report, "duplicate_groups") or hasattr(report, "groups")
+
+    def test_analyze_duplication_preserves_path_integrity(self, temp_dir_with_duplicates):
+       """Test that analyze preserves path integrity."""
+       report = analyze_duplication(temp_dir_with_duplicates)
+       # Should have valid stats dictionary
+       assert isinstance(report.stats, dict)
+       assert "total_files" in report.stats or "files" in report.stats

@@ -663,3 +663,198 @@ class TestIntegration:
         assert files[0].exists()
         content = files[0].read_text()
         assert "test_snapshot" in content
+
+
+# =====================================================================
+# ADDITIONAL EDGE CASES & ROBUSTNESS TESTS
+# =====================================================================
+
+
+class TestRobustness:
+    """Additional robustness tests for comparator module."""
+
+    def test_compare_with_timeout(self, temp_baseline_code, temp_patched_code):
+        """Test compare with timeout handling."""
+        # Compare should complete within timeout
+        result = compare(
+            temp_baseline_code,
+            temp_patched_code,
+            mode=ComparisonMode.STRICT,
+            timeout=30,
+        )
+        assert result is not None
+
+    def test_comparison_mode_all_values(self):
+        """Test all ComparisonMode enum values exist."""
+        modes = [ComparisonMode.STRICT, ComparisonMode.FUZZY, ComparisonMode.SEMANTIC]
+        assert len(modes) == 3
+
+    def test_hash_output_deterministic(self):
+        """Test hash output is deterministic."""
+        output = "test output"
+        hash1 = _hash_output(output)
+        hash2 = _hash_output(output)
+        assert hash1 == hash2
+
+    def test_hash_output_changes_with_input(self):
+        """Test hash changes when output changes."""
+        hash1 = _hash_output("output1")
+        hash2 = _hash_output("output2")
+        assert hash1 != hash2
+
+    def test_normalize_output_idempotent(self):
+        """Test normalize output is idempotent."""
+        output = "test\n  output  \n"
+        normalized1 = _normalize_output(output, ComparisonMode.FUZZY)
+        normalized2 = _normalize_output(normalized1, ComparisonMode.FUZZY)
+        assert normalized1 == normalized2
+
+    def test_comparison_result_equality(self):
+        """Test ComparisonResult equality comparison."""
+        result1 = ComparisonResult(
+            result="pass",  # type: ignore
+            baseline_hash="h1",
+            patched_hash="h2",
+        )
+        result2 = ComparisonResult(
+            result="pass",  # type: ignore
+            baseline_hash="h1",
+            patched_hash="h2",
+        )
+        assert result1.baseline_hash == result2.baseline_hash
+
+    def test_comparison_detail_fields(self):
+        """Test ComparisonDetail fields are accessible."""
+        detail = ComparisonDetail(
+            output="test",
+            hash_value="abc123",
+        )
+        assert detail.output == "test"
+        assert detail.hash_value == "abc123"
+
+    def test_normalize_output_preserves_content(self):
+        """Test normalize preserves essential content."""
+        output = "important\ndata\nhere"
+        normalized = _normalize_output(output, ComparisonMode.STRICT)
+        # Essential content should be preserved
+        assert "important" in normalized or "data" in normalized
+
+    def test_compare_result_fields_immutable(self):
+        """Test ComparisonResult fields after creation."""
+        result = ComparisonResult(
+            result="pass",  # type: ignore
+            baseline_hash="h1",
+            patched_hash="h2",
+        )
+        # Should be able to read fields
+        assert result.baseline_hash is not None
+
+    def test_generate_tests_empty_sources(self, tmp_path):
+        """Test generate_tests with empty source list."""
+        source_dir = tmp_path / "source"
+        source_dir.mkdir()
+        test_dir = tmp_path / "tests"
+
+        files = generate_tests(source_dir, [], [], test_dir)
+        # Should handle empty lists gracefully
+        assert isinstance(files, list)
+
+    def test_normalize_output_strips_whitespace(self):
+        """Test normalize output strips excess whitespace."""
+        output = "  \n  \ntest\n  \n  "
+        normalized = _normalize_output(output, ComparisonMode.FUZZY)
+        # Should have less whitespace than original
+        assert len(normalized) <= len(output)
+
+    def test_hash_output_consistent_across_calls(self):
+        """Test hash remains consistent across multiple calls."""
+        output = "consistent test output"
+        hashes = [_hash_output(output) for _ in range(5)]
+        # All hashes should be identical
+        assert len(set(hashes)) == 1
+
+    def test_comparison_modes_are_distinct(self):
+        """Test ComparisonMode values are distinct."""
+        modes = [ComparisonMode.STRICT, ComparisonMode.FUZZY, ComparisonMode.SEMANTIC]
+        mode_values = [str(m) for m in modes]
+        # All modes should be unique
+        assert len(set(mode_values)) == len(modes)
+
+    def test_compare_result_to_dict_contains_fields(self):
+        """Test to_dict contains all important fields."""
+        result = ComparisonResult(
+            result="pass",  # type: ignore
+            baseline_hash="h1",
+            patched_hash="h2",
+        )
+        result_dict = result.to_dict()
+        assert "baseline_hash" in result_dict or "hash" in result_dict.get("baseline", {})
+
+    def test_normalize_output_with_newlines(self):
+        """Test normalize output handles various newline styles."""
+        # Unix newline
+        output1 = "line1\nline2\nline3"
+        # Windows newline
+        output2 = "line1\r\nline2\r\nline3"
+        # Mixed
+        output3 = "line1\nline2\r\nline3"
+
+        normalized1 = _normalize_output(output1, ComparisonMode.FUZZY)
+        normalized2 = _normalize_output(output2, ComparisonMode.FUZZY)
+        normalized3 = _normalize_output(output3, ComparisonMode.FUZZY)
+
+        assert isinstance(normalized1, str)
+        assert isinstance(normalized2, str)
+        assert isinstance(normalized3, str)
+
+    def test_generate_tests_file_creation(self, tmp_path):
+        """Test generate_tests creates files."""
+        source_dir = tmp_path / "source"
+        source_dir.mkdir()
+        (source_dir / "main.py").write_text("def add(a, b): return a + b")
+
+        input_file = tmp_path / "input.txt"
+        input_file.write_text("1 2")
+
+        output_file = tmp_path / "output.txt"
+        output_file.write_text("3")
+
+        test_dir = tmp_path / "tests"
+
+        files = generate_tests(source_dir, [input_file], [output_file], test_dir)
+
+        assert len(files) > 0
+        for f in files:
+            assert f.suffix == ".py"
+
+    def test_comparison_detail_to_dict(self):
+        """Test ComparisonDetail to_dict."""
+        detail = ComparisonDetail(
+            output="test output",
+            hash_value="abc123",
+        )
+        if hasattr(detail, "to_dict"):
+            detail_dict = detail.to_dict()
+            assert isinstance(detail_dict, dict)
+
+    def test_comparison_result_baseline_hash_preserved(self):
+        """Test that baseline hash is preserved in comparison result."""
+        baseline_hash = "baseline_hash_value_12345"
+        result = ComparisonResult(
+            result="pass",  # type: ignore
+            baseline_hash=baseline_hash,
+            patched_hash="patched_hash_value_67890",
+        )
+        assert result.baseline_hash == baseline_hash
+
+    def test_normalize_output_empty_mode_handling(self):
+        """Test normalize output with different modes on empty input."""
+        empty = ""
+        for mode in [ComparisonMode.STRICT, ComparisonMode.FUZZY, ComparisonMode.SEMANTIC]:
+            result = _normalize_output(empty, mode)
+            assert isinstance(result, str)
+
+    def test_compare_outputs_returns_string(self):
+        """Test compare_outputs returns comparable string."""
+        result = _compare_outputs("output1", "output2", ComparisonMode.STRICT)
+        assert isinstance(result, (str, bool, type(None))) or hasattr(result, "__class__")

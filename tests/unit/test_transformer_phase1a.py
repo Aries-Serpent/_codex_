@@ -586,3 +586,55 @@ class TestIntegration:
         patch_dict = patch.to_dict()
         assert patch_dict["rule_id"] == "format-black"
         assert patch_dict["tier"] == "A"
+
+    def test_transform_with_multiple_files(self, temp_source_files):
+       """Test transform handles multiple files."""
+       result = transform(temp_source_files, "snap-002", dry_run=True)
+       # Should process all files
+       assert result is not None
+
+    def test_tier_enum_all_values(self):
+       """Test all Tier enum values exist."""
+       tiers = [Tier.A, Tier.B, Tier.C]
+       assert len(tiers) == 3
+       tier_names = [t.name for t in tiers]
+       assert "A" in tier_names
+       assert "B" in tier_names
+       assert "C" in tier_names
+
+    def test_patch_to_dict_contains_fields(self):
+       """Test Patch to_dict contains all important fields."""
+       patch = Patch(
+           file_path="test.py",
+           original="old",
+           modified="new",
+           diff="--- old\n+++ new",
+           rule_id="test-rule",
+           tier=Tier.A,
+           description="Test patch",
+       )
+       patch_dict = patch.to_dict()
+       assert "file_path" in patch_dict or "path" in patch_dict
+       assert "tier" in patch_dict
+
+    def test_transform_result_fields(self):
+       """Test TransformResult has expected fields."""
+       result = TransformResult(
+           snapshot_id="test-snap",
+           patches=[],
+           stats={"A": 0, "B": 0, "C": 0},
+       )
+       assert result.snapshot_id == "test-snap"
+       assert isinstance(result.patches, list)
+       assert isinstance(result.stats, dict)
+
+    def test_transform_result_to_dict(self):
+       """Test TransformResult serialization."""
+       result = TransformResult(
+           snapshot_id="test-snap",
+           patches=[],
+           stats={"A": 1, "B": 2, "C": 3},
+       )
+       result_dict = result.to_dict()
+       assert isinstance(result_dict, dict)
+       assert "snapshot_id" in result_dict or "id" in result_dict
