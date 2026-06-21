@@ -9,7 +9,7 @@ Comprehensive test coverage for the ingest adapter module covering:
   5. Archive extraction (ZIP, TAR safety)
   6. Git cloning with validation
   7. Main ingest() function with all source types
-  8. Error handling and edge cases # pragma: allowlist secret
+  8. Error handling and edge cases # pragma: allowlist secret # pragma: allowlist secret
 
 Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
