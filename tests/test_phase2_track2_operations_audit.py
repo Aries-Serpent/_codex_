@@ -11,9 +11,6 @@ Generate comprehensive test coverage for audit trail operations:
 Target: 50+ test methods covering 100+ statements
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
 
 

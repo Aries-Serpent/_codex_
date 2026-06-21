@@ -9,13 +9,14 @@ This test module implements timeout handling and performance boundary tests:
 Expected coverage gain: +0.5pp from timeout/recovery code paths
 """
 
-import pytest
-import signal
-import time
-import threading
-from contextlib import contextmanager
-from unittest.mock import patch, Mock, MagicMock
 import os
+import signal
+import threading
+import time
+from contextlib import contextmanager
+from unittest.mock import Mock
+
+import pytest
 
 
 @contextmanager
@@ -23,7 +24,7 @@ def timeout(seconds):
     """Context manager for timeout handling."""
     def signal_handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {seconds}s")
-    
+
     # Set the signal handler
     old_handler = signal.signal(signal.SIGALRM, signal_handler)
     signal.alarm(seconds)
@@ -51,31 +52,31 @@ class TestTimeoutHandling:
         """Test detection of operations that would timeout."""
         start_time = time.time()
         slow_threshold = 0.1
-        
+
         # Simulate slow operation
         time.sleep(slow_threshold * 2)
         elapsed = time.time() - start_time
-        
+
         assert elapsed >= slow_threshold
 
     def test_timeout_thread_termination(self):
         """Test thread termination on timeout."""
         result = []
-        
+
         def slow_task():
             time.sleep(0.5)
             result.append("completed")
-        
+
         thread = threading.Thread(target=slow_task, daemon=True)
         thread.start()
         thread.join(timeout=0.1)
-        
+
         assert thread.is_alive()
 
     def test_timeout_resource_cleanup(self):
         """Test resource cleanup after timeout."""
         file_handles = []
-        
+
         try:
             with timeout(10):
                 # Simulate resource allocation
@@ -84,14 +85,14 @@ class TestTimeoutHandling:
         finally:
             # Cleanup
             file_handles.clear()
-        
+
         assert len(file_handles) == 0
 
     def test_timeout_with_retry_logic(self):
         """Test timeout handling with retry logic."""
         attempt_count = 0
         max_attempts = 3
-        
+
         for attempt in range(max_attempts):
             attempt_count += 1
             try:
@@ -101,7 +102,7 @@ class TestTimeoutHandling:
             except TimeoutError:
                 if attempt == max_attempts - 1:
                     raise
-        
+
         assert attempt_count > 0
 
     def test_timeout_exception_propagation(self):
@@ -117,7 +118,7 @@ class TestResourceExhaustion:
         """Test handling under memory pressure."""
         memory_intensive = []
         max_items = 1000
-        
+
         try:
             for i in range(max_items):
                 memory_intensive.append([0] * 100)
@@ -131,7 +132,7 @@ class TestResourceExhaustion:
     def test_file_descriptor_exhaustion(self):
         """Test handling file descriptor limits."""
         import tempfile
-        
+
         file_handles = []
         try:
             # Try to open many files
@@ -151,7 +152,7 @@ class TestResourceExhaustion:
         """Test handling of thread limit."""
         threads = []
         max_threads = 10
-        
+
         try:
             for i in range(max_threads):
                 t = threading.Thread(target=lambda: time.sleep(0.1), daemon=True)
@@ -168,7 +169,7 @@ class TestResourceExhaustion:
             if depth >= max_depth:
                 return depth
             return recursive_func(depth + 1, max_depth)
-        
+
         try:
             result = recursive_func(0)
             assert result >= 0
@@ -183,38 +184,38 @@ class TestRecoveryPaths:
     def test_recovery_after_exception(self):
         """Test recovery after exception."""
         state = {"recovered": False}
-        
+
         try:
             raise ValueError("Test error")
         except ValueError:
             state["recovered"] = True
-        
+
         assert state["recovered"]
 
     def test_recovery_with_finally_block(self):
         """Test recovery using finally block."""
         cleaned_up = False
-        
+
         try:
             raise RuntimeError("Test error")
         except RuntimeError:
             pass
         finally:
             cleaned_up = True
-        
+
         assert cleaned_up
 
     def test_recovery_state_restoration(self):
         """Test state restoration after error."""
         state = {"value": 100, "status": "active"}
         original_state = state.copy()
-        
+
         try:
             state["value"] = 0
             raise Exception("Restore state")
         except Exception:
             state = original_state.copy()
-        
+
         assert state == original_state
 
     def test_recovery_retry_with_backoff(self):
@@ -222,7 +223,7 @@ class TestRecoveryPaths:
         attempts = []
         max_retries = 3
         base_delay = 0.01
-        
+
         for attempt in range(max_retries):
             attempts.append(attempt)
             delay = base_delay * (2 ** attempt)
@@ -238,19 +239,19 @@ class TestRecoveryPaths:
                 # Fallback to basic feature
                 return "basic"
             return "advanced"
-        
+
         level = get_feature_level()
         assert level in ("basic", "advanced")
 
     def test_recovery_error_logging(self):
         """Test error logging for recovery."""
         error_log = []
-        
+
         try:
             raise ValueError("Test error for logging")
         except ValueError as e:
             error_log.append(str(e))
-        
+
         assert len(error_log) > 0
         assert "Test error" in error_log[0]
 
@@ -262,13 +263,13 @@ class TestPerformanceBoundaries:
         """Test linear search performance."""
         items = list(range(10000))
         target = 5000
-        
+
         start = time.time()
         for item in items:
             if item == target:
                 break
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0  # Should be fast
 
     def test_list_creation_performance(self):
@@ -276,40 +277,40 @@ class TestPerformanceBoundaries:
         start = time.time()
         lst = list(range(100000))
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0
         assert len(lst) == 100000
 
     def test_dict_lookup_performance(self):
         """Test dictionary lookup performance."""
         dct = {i: i*2 for i in range(100000)}
-        
+
         start = time.time()
         for i in range(1000):
             _ = dct.get(i, None)
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.5
 
     def test_string_concatenation_performance(self):
         """Test string concatenation performance."""
         parts = ["part"] * 1000
-        
+
         start = time.time()
         result = "".join(parts)
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0
         assert len(result) > 0
 
     def test_sorting_performance(self):
         """Test sorting performance."""
         items = list(range(10000, 0, -1))
-        
+
         start = time.time()
         sorted_items = sorted(items)
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0
         assert sorted_items[0] == 1
 
@@ -321,7 +322,7 @@ class TestConcurrentRecovery:
         """Test that errors in one thread don't affect others."""
         results = []
         errors = []
-        
+
         def worker(worker_id):
             try:
                 if worker_id == 1:
@@ -329,16 +330,16 @@ class TestConcurrentRecovery:
                 results.append(worker_id)
             except Exception as e:
                 errors.append((worker_id, str(e)))
-        
+
         threads = []
         for i in range(5):
             t = threading.Thread(target=worker, args=(i,))
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         assert len(results) > 0
         assert len(errors) > 0
 
@@ -346,20 +347,20 @@ class TestConcurrentRecovery:
         """Test concurrent resource cleanup."""
         cleanup_count = {"count": 0}
         cleanup_lock = threading.Lock()
-        
+
         def cleanup():
             with cleanup_lock:
                 cleanup_count["count"] += 1
-        
+
         threads = []
         for i in range(10):
             t = threading.Thread(target=cleanup, daemon=True)
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join(timeout=1)
-        
+
         assert cleanup_count["count"] > 0
 
 
@@ -370,10 +371,10 @@ class TestLongRunningOperations:
         """Test handling of long-running loops."""
         iterations = 0
         start = time.time()
-        
+
         for i in range(10000):
             iterations += 1
-        
+
         elapsed = time.time() - start
         assert iterations == 10000
         assert elapsed < 5.0
@@ -388,28 +389,28 @@ class TestLongRunningOperations:
                 if i % 10 == 0:
                     time.sleep(0.001)
             return results
-        
+
         result = async_operation()
         assert len(result) == 100
 
     def test_background_task_monitoring(self):
         """Test monitoring of background tasks."""
         task_status = {"running": True, "progress": 0}
-        
+
         def background_task():
             for i in range(10):
                 task_status["progress"] = i * 10
                 time.sleep(0.01)
             task_status["running"] = False
-        
+
         t = threading.Thread(target=background_task, daemon=True)
         t.start()
-        
+
         # Monitor progress
         while task_status["running"]:
             assert task_status["progress"] >= 0
             time.sleep(0.01)
-        
+
         assert task_status["progress"] >= 0
 
 

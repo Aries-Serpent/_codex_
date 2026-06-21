@@ -1,8 +1,6 @@
 """Comprehensive test suite for zendesk agent module."""
 
-from unittest.mock import Mock, MagicMock, patch
-import pytest
-from typing import Any
+from unittest.mock import Mock, patch
 
 from src.codex.zendesk.agent import ZendeskAgentCore
 
@@ -41,7 +39,7 @@ class TestZendeskAgentCoreInitialization:
         """Test initialization with custom tool registry."""
         mock_registry = Mock()
         mock_registry.list_tools.return_value = []
-        
+
         agent = ZendeskAgentCore(tool_registry=mock_registry)
         assert agent.tool_registry is mock_registry
 
@@ -64,7 +62,7 @@ class TestZendeskAgentCoreInitialization:
         mock_tool1 = Mock()
         mock_tool1.name = "tool1"
         mock_tool1.handler = lambda: "tool1_result"
-        
+
         mock_registry = Mock()
         mock_registry.list_tools.return_value = [mock_tool1]
         mock_get_registry.return_value = mock_registry
@@ -358,7 +356,7 @@ class TestZendeskAgentCoreIntegration:
 
         agent = ZendeskAgentCore()
         agent.register_tool("tool1", lambda: "result1")
-        
+
         names = agent.get_tool_names()
         assert len(names) >= 1
 

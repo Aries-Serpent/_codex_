@@ -3,25 +3,24 @@
 import os
 import tempfile
 from pathlib import Path
-import pytest
 
 from src.codex.paths import (
-    CODEX_DIR,
-    SESSION_LOGS_DB,
     ANALYSIS_DB,
-    METRICS_DB,
     CACHE_DIR,
-    REPORTS_DIR,
+    CODEX_DIR,
     CONFIG_DIR,
+    METRICS_DB,
     PARSED_TREES_CACHE,
+    REPORTS_DIR,
+    SESSION_LOGS_DB,
     SIMILARITY_CACHE,
     ensure_codex_structure,
-    get_db_path,
+    get_analysis_db,
     get_cache_path,
+    get_db_path,
+    get_metrics_db,
     get_report_path,
     get_session_logs_db,
-    get_analysis_db,
-    get_metrics_db,
 )
 
 
@@ -191,10 +190,10 @@ class TestEnsureCodexStructure:
             os.chdir(tmpdir)
             ensure_codex_structure()
             first_mtime = Path(".codex/README.md").stat().st_mtime
-            
+
             ensure_codex_structure()
             second_mtime = Path(".codex/README.md").stat().st_mtime
-            
+
             # File should not have been rewritten
             assert first_mtime == second_mtime
 
@@ -418,11 +417,11 @@ class TestPathsIntegration:
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
             ensure_codex_structure()
-            
+
             logs_path = get_session_logs_db()
             analysis_path = get_analysis_db()
             metrics_path = get_metrics_db()
-            
+
             # All should be in .codex directory
             assert ".codex" in str(logs_path)
             assert ".codex" in str(analysis_path)
@@ -433,7 +432,7 @@ class TestPathsIntegration:
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
             ensure_codex_structure()
-            
+
             # Check all expected directories exist
             expected_dirs = [
                 ".codex",
@@ -444,7 +443,7 @@ class TestPathsIntegration:
                 ".codex/reports/archive",
                 ".codex/config",
             ]
-            
+
             for dir_path in expected_dirs:
                 assert Path(dir_path).exists()
 
@@ -452,9 +451,9 @@ class TestPathsIntegration:
         """Test that path retrieval is consistent."""
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
-            
+
             # Get paths multiple times
             path1 = get_session_logs_db()
             path2 = get_session_logs_db()
-            
+
             assert path1 == path2

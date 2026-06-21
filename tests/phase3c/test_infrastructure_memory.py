@@ -10,14 +10,12 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
-from typing import Any, Optional
-from unittest import mock
 
 import pytest
 
+from src.codex.agents.memory.backends import JSONLMemoryBackend
 from src.codex.agents.memory.manager import MemoryManager
 from src.codex.agents.memory.protocol import MemoryEntry, MemoryQuery
-from src.codex.agents.memory.backends import JSONLMemoryBackend
 
 
 class TestMemoryManagerBasics:
@@ -109,7 +107,7 @@ class TestMemoryRecall:
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         for i in range(3):
             manager.store(f"Memory {i}")
-        
+
         all_memories = manager.recall_all()
         assert len(all_memories) >= 3
 
@@ -118,7 +116,7 @@ class TestMemoryRecall:
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         for i in range(10):
             manager.store(f"Memory {i}")
-        
+
         memories = manager.recall_all(limit=5)
         assert len(memories) <= 5
 
@@ -126,13 +124,13 @@ class TestMemoryRecall:
         """Test recall filters by session ID."""
         manager1 = MemoryManager(agent_id="agent1", session_id="session1")
         manager2 = MemoryManager(agent_id="agent1", session_id="session2")
-        
+
         manager1.store("Session 1 memory")
         manager2.store("Session 2 memory")
-        
+
         session1_memories = manager1.recall_all()
         session2_memories = manager2.recall_all()
-        
+
         # At least verify we can recall from different sessions
         assert session1_memories is not None
         assert session2_memories is not None
@@ -141,13 +139,13 @@ class TestMemoryRecall:
         """Test recall filters by agent ID."""
         manager1 = MemoryManager(agent_id="agent1", session_id="session1")
         manager2 = MemoryManager(agent_id="agent2", session_id="session1")
-        
+
         manager1.store("Agent 1 memory")
         manager2.store("Agent 2 memory")
-        
+
         agent1_memories = manager1.recall_all()
         agent2_memories = manager2.recall_all()
-        
+
         assert agent1_memories is not None
         assert agent2_memories is not None
 
@@ -231,7 +229,7 @@ class TestJSONLBackend:
                 session_id="test-session"
             )
             backend.store(entry)
-            
+
             query = MemoryQuery(text="test", limit=10)
             results = backend.retrieve(query)
             assert len(results) >= 1
@@ -247,7 +245,7 @@ class TestJSONLBackend:
                     session_id="test-session"
                 )
                 backend.store(entry)
-            
+
             query = MemoryQuery(text="memory", limit=10)
             results = backend.retrieve(query)
             assert len(results) >= 5
@@ -268,7 +266,7 @@ class TestSessionManagement:
         manager = MemoryManager(agent_id="test-agent", session_id="session1")
         manager.store("Memory 1")
         manager.store("Memory 2")
-        
+
         count = manager.clear_session("session1")
         assert count >= 2
 
@@ -282,10 +280,10 @@ class TestSessionManagement:
         """Test clear_session only clears specified session."""
         manager1 = MemoryManager(agent_id="agent1", session_id="session1")
         manager2 = MemoryManager(agent_id="agent1", session_id="session2")
-        
+
         manager1.store("Session 1 memory")
         manager2.store("Session 2 memory")
-        
+
         manager1.clear_session("session1")
         # Session 2 memories should still exist
 
@@ -297,7 +295,7 @@ class TestMemoryStats:
         """Test get_stats returns statistics dictionary."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         manager.store("Memory 1")
-        
+
         stats = manager.get_stats()
         assert isinstance(stats, dict)
 
@@ -306,7 +304,7 @@ class TestMemoryStats:
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         for i in range(5):
             manager.store(f"Memory {i}")
-        
+
         stats = manager.get_stats()
         assert isinstance(stats, dict)
 
@@ -386,11 +384,11 @@ class TestMemoryIntegration:
     def test_multiple_stores_and_recalls(self):
         """Test multiple stores followed by recalls."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
-        
+
         # Store multiple memories
         for i in range(3):
             manager.store(f"Memory {i}", metadata={"index": i})
-        
+
         # Recall all
         all_memories = manager.recall_all()
         assert len(all_memories) >= 3
@@ -399,9 +397,9 @@ class TestMemoryIntegration:
         """Test storing in one session and recalling from another."""
         manager1 = MemoryManager(agent_id="test-agent", session_id="session1")
         manager2 = MemoryManager(agent_id="test-agent", session_id="session2")
-        
+
         manager1.store("Session 1 memory")
-        
+
         # Manager2 should have different memories
         memories2 = manager2.recall_all()
         assert isinstance(memories2, list)
@@ -410,12 +408,12 @@ class TestMemoryIntegration:
         """Test that backend persists data across manager instances."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend_path = Path(tmpdir) / "memories.jsonl"
-            
+
             # Store with first manager
             backend1 = JSONLMemoryBackend(backend_path)
             manager1 = MemoryManager(backend=backend1, agent_id="agent1", session_id="session1")
             manager1.store("Persistent memory")
-            
+
             # Retrieve with second manager using same backend
             backend2 = JSONLMemoryBackend(backend_path)
             manager2 = MemoryManager(backend=backend2, agent_id="agent1", session_id="session1")

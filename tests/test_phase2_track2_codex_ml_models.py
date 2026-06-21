@@ -11,12 +11,8 @@ Generate comprehensive test coverage for ML model components:
 Target: 80+ test methods covering 200+ statements
 """
 
-import pytest
 import json
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime
-import tempfile
 
 
 class TestModelRegistry:

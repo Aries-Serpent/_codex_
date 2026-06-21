@@ -1,7 +1,7 @@
 """Comprehensive test suite for type_utils module."""
 
-from typing import Optional, List, Dict, Union, Any
-import pytest
+from typing import Any, Dict, List, Optional, Union
+
 from src.codex.utils.type_utils import safe_isinstance
 
 

@@ -3,8 +3,7 @@ Target: src/ingestion/*.py - Increase coverage from 20-35% to 70%+
 Strategy: 80+ tests for ingestion utilities and operations
 """
 
-import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 
 class TestCSVIngestor:
@@ -19,7 +18,7 @@ class TestCSVIngestor:
         """Test parsing CSV line"""
         def parse_csv(line):
             return line.split(',')
-        
+
         result = parse_csv('a,b,c')
         assert len(result) == 3
 
@@ -30,7 +29,7 @@ class TestCSVIngestor:
             if '"' in line:
                 return [part.strip(' "') for part in line.split('","')]
             return line.split(',')
-        
+
         result = parse_csv('"a","b","c"')
         assert len(result) >= 2
 
@@ -38,7 +37,7 @@ class TestCSVIngestor:
         """Test parsing empty CSV line"""
         def parse_csv(line):
             return line.split(',') if line else []
-        
+
         result = parse_csv('')
         assert result == []
 
@@ -46,7 +45,7 @@ class TestCSVIngestor:
         """Test parsing CSV headers"""
         def parse_header(line):
             return line.split(',')
-        
+
         result = parse_header('name,age,city')
         assert 'name' in result
 
@@ -54,7 +53,7 @@ class TestCSVIngestor:
         """Test CSV with special characters"""
         def is_safe(line):
             return True  # For now just accept
-        
+
         assert is_safe('a,b,c!') is True
 
 
@@ -115,7 +114,7 @@ class TestFileIngestor:
         """Test reading text file"""
         def read_file(path):
             return {'path': path, 'type': 'text'}
-        
+
         result = read_file('/path/to/file.txt')
         assert result['type'] == 'text'
 
@@ -124,7 +123,7 @@ class TestFileIngestor:
         def read_file(path):
             is_binary = path.endswith(('.bin', '.pkl', '.jpg'))
             return {'binary': is_binary}
-        
+
         result = read_file('data.bin')
         assert result['binary'] is True
 
@@ -136,7 +135,7 @@ class TestFileIngestor:
                 return 'utf-8'
             except:
                 return 'latin-1'
-        
+
         result = detect_encoding(b'hello')
         assert result in ['utf-8', 'latin-1']
 
@@ -146,7 +145,7 @@ class TestFileIngestor:
             if not path:
                 return None
             return {'path': path}
-        
+
         result = read_file('')
         assert result is None
 
@@ -162,7 +161,7 @@ class TestEncodingDetection:
                 return 'utf-8'
             except:
                 return None
-        
+
         result = detect_encoding(b'hello')
         assert result == 'utf-8'
 
@@ -174,7 +173,7 @@ class TestEncodingDetection:
                 return 'latin-1'
             except:
                 return None
-        
+
         result = detect_encoding(b'\xc3\xa9')  # é in UTF-8
         assert result in ['utf-8', 'latin-1']
 
@@ -187,7 +186,7 @@ class TestEncodingDetection:
         """Test mixed encoding scenarios"""
         def is_mixed(data):
             return len(data) > 0
-        
+
         assert is_mixed(b'mixed') is True
 
 
@@ -198,7 +197,7 @@ class TestTextSplitting:
         """Test splitting by delimiter"""
         def split(text, delim):
             return text.split(delim)
-        
+
         result = split('a,b,c', ',')
         assert len(result) == 3
 
@@ -206,7 +205,7 @@ class TestTextSplitting:
         """Test splitting by lines"""
         def split_lines(text):
             return text.split('\n')
-        
+
         result = split_lines('line1\nline2\nline3')
         assert len(result) == 3
 
@@ -214,7 +213,7 @@ class TestTextSplitting:
         """Test splitting empty string"""
         def split(text):
             return text.split() if text else []
-        
+
         result = split('')
         assert result == []
 
@@ -222,7 +221,7 @@ class TestTextSplitting:
         """Test chunking text"""
         def chunk(text, size):
             return [text[i:i+size] for i in range(0, len(text), size)]
-        
+
         result = chunk('abcdefghij', 3)
         assert len(result) == 4
 
@@ -231,7 +230,7 @@ class TestTextSplitting:
         def chunk(text, size):
             chunks = [text[i:i+size] for i in range(0, len(text), size)]
             return ''.join(chunks)
-        
+
         original = 'hello world'
         result = chunk(original, 3)
         assert result == original
@@ -244,7 +243,7 @@ class TestIOOperations:
         """Test read operation"""
         def read(path):
             return {'op': 'read', 'path': path}
-        
+
         result = read('/file.txt')
         assert result['op'] == 'read'
 
@@ -252,7 +251,7 @@ class TestIOOperations:
         """Test write operation"""
         def write(path, data):
             return {'op': 'write', 'path': path, 'data': data}
-        
+
         result = write('/file.txt', 'content')
         assert result['op'] == 'write'
 
@@ -260,7 +259,7 @@ class TestIOOperations:
         """Test append operation"""
         def append(path, data):
             return {'op': 'append', 'path': path}
-        
+
         result = append('/file.txt', 'more')
         assert result['op'] == 'append'
 
@@ -268,7 +267,7 @@ class TestIOOperations:
         """Test seek operation"""
         def seek(file_obj, pos):
             return {'position': pos}
-        
+
         result = seek(None, 100)
         assert result['position'] == 100
 
@@ -285,7 +284,7 @@ class TestStreamProcessing:
         """Test reading from stream"""
         def read_stream(stream):
             return stream.read() if hasattr(stream, 'read') else None
-        
+
         mock_stream = Mock()
         mock_stream.read.return_value = 'data'
         result = read_stream(mock_stream)
@@ -297,7 +296,7 @@ class TestStreamProcessing:
             if hasattr(stream, 'write'):
                 return stream.write(data)
             return 0
-        
+
         mock_stream = Mock()
         mock_stream.write.return_value = 10
         result = write_stream(mock_stream, 'data')
@@ -310,7 +309,7 @@ class TestStreamProcessing:
                 stream.close()
                 return True
             return False
-        
+
         mock_stream = Mock()
         result = close_stream(mock_stream)
         mock_stream.close.assert_called_once()
@@ -323,7 +322,7 @@ class TestDataValidation:
         """Test validating non-empty data"""
         def is_valid(data):
             return data is not None and len(data) > 0
-        
+
         assert is_valid('data') is True
         assert is_valid('') is False
 
@@ -335,7 +334,7 @@ class TestDataValidation:
                 return True
             except:
                 return False
-        
+
         assert is_valid_int('123') is True
         assert is_valid_int('abc') is False
 
@@ -343,7 +342,7 @@ class TestDataValidation:
         """Test range validation"""
         def in_range(value, min_val, max_val):
             return min_val <= value <= max_val
-        
+
         assert in_range(50, 0, 100) is True
         assert in_range(-1, 0, 100) is False
 
@@ -351,7 +350,7 @@ class TestDataValidation:
         """Test format validation"""
         def is_email(s):
             return '@' in s and '.' in s.split('@')[1] if '@' in s else False
-        
+
         assert is_email('test@example.com') is True
         assert is_email('invalid') is False
 
@@ -366,7 +365,7 @@ class TestErrorHandling:
                 return {'data': 'content'}
             except:
                 return None
-        
+
         result = read_safe('/nonexistent')
         assert result is not None or result is None  # Either way is OK
 
@@ -377,7 +376,7 @@ class TestErrorHandling:
                 return data.decode(encoding)
             except:
                 return None
-        
+
         result = decode_safe(b'\xff\xfe', 'utf-8')
         assert result is None
 
@@ -391,7 +390,7 @@ class TestErrorHandling:
                 return None
             except:
                 return None
-        
+
         result = parse_safe('invalid json', 'json')
         assert result is None
 
@@ -408,7 +407,7 @@ class TestIngestionIntegration:
             items = content.split(',') if content else []
             # Process
             return len(items)
-        
+
         result = pipeline('a,b,c')
         assert result == 3
 
@@ -416,7 +415,7 @@ class TestIngestionIntegration:
         """Test file to stream conversion"""
         def file_to_stream(path):
             return {'source': 'file', 'target': 'stream'}
-        
+
         result = file_to_stream('/file.txt')
         assert result['source'] == 'file'
 
@@ -424,7 +423,7 @@ class TestIngestionIntegration:
         """Test stream to structured data"""
         def stream_to_data(stream):
             return {'type': 'structured', 'source': 'stream'}
-        
+
         result = stream_to_data(Mock())
         assert result['type'] == 'structured'
 
@@ -436,7 +435,7 @@ class TestIngestionEdgeCases:
         """Test empty input"""
         def process(data):
             return len(data) if data else 0
-        
+
         assert process('') == 0
         assert process(None) == 0
 
@@ -444,7 +443,7 @@ class TestIngestionEdgeCases:
         """Test very large file"""
         def can_process_size(size):
             return size < 10 * 1024 * 1024 * 1024  # 10GB limit
-        
+
         assert can_process_size(1024) is True
         assert can_process_size(10 * 1024 * 1024 * 1024 + 1) is False
 
@@ -462,7 +461,7 @@ class TestIngestionEdgeCases:
         """Test mixed line endings"""
         def split_lines(text):
             return text.replace('\r\n', '\n').split('\n')
-        
+
         result = split_lines('a\r\nb\nc\rd')
         assert len(result) >= 3
 
@@ -474,7 +473,7 @@ class TestIngestionMutationKillers:
         """Test exact counts"""
         def count(items):
             return len(items)
-        
+
         assert count([1, 2, 3]) == 3
         assert count([1, 2, 3]) != 2
         assert count([1, 2, 3]) != 4
@@ -483,7 +482,7 @@ class TestIngestionMutationKillers:
         """Test equality"""
         def equals(a, b):
             return a == b
-        
+
         assert equals('a', 'a') is True
         assert equals('a', 'b') is False
 
@@ -491,7 +490,7 @@ class TestIngestionMutationKillers:
         """Test boolean returns"""
         def is_valid(x):
             return x is not None
-        
+
         assert is_valid('data') is True
         assert is_valid(None) is False
 
@@ -499,7 +498,7 @@ class TestIngestionMutationKillers:
         """Test comparisons"""
         def greater(a, b):
             return a > b
-        
+
         assert greater(5, 3) is True
         assert greater(3, 5) is False
 

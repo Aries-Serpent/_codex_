@@ -8,13 +8,8 @@ Target: Add 50+ tests for data pipeline paths covering critical transformations
 
 from __future__ import annotations
 
-import json
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest import mock
-
-import pytest
 
 from src.codex.agents.memory.backends import JSONLMemoryBackend
 from src.codex.agents.memory.protocol import MemoryEntry, MemoryQuery
@@ -33,7 +28,7 @@ class TestDataIngestion:
                 session_id="ingestion-test"
             )
             backend.store(entry)
-            
+
             # Verify ingestion
             query = MemoryQuery(limit=10)
             results = backend.retrieve(query)
@@ -50,7 +45,7 @@ class TestDataIngestion:
                 session_id="ingestion-test"
             )
             backend.store(entry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 1
             assert results[0].content == data
@@ -59,7 +54,7 @@ class TestDataIngestion:
         """Test batch ingestion of multiple data items."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Ingest batch of 10 items
             for i in range(10):
                 entry = MemoryEntry(
@@ -68,7 +63,7 @@ class TestDataIngestion:
                     session_id="batch-test"
                 )
                 backend.store(entry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 10
 
@@ -76,7 +71,7 @@ class TestDataIngestion:
         """Test ingesting data with metadata enrichment."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             metadata = {
                 "source": "api",
                 "version": "1.0",
@@ -90,7 +85,7 @@ class TestDataIngestion:
                 metadata=metadata
             )
             backend.store(entry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 1
             assert results[0].metadata == metadata
@@ -99,14 +94,14 @@ class TestDataIngestion:
         """Test ingesting CSV-like data."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store multiple CSV records as dictionaries
             records = [
                 {"id": 1, "name": "Alice", "value": 100},
                 {"id": 2, "name": "Bob", "value": 200},
                 {"id": 3, "name": "Charlie", "value": 300},
             ]
-            
+
             for record in records:
                 entry = MemoryEntry(
                     content=record,
@@ -114,7 +109,7 @@ class TestDataIngestion:
                     session_id="csv-test"
                 )
                 backend.store(entry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 3
 
@@ -125,17 +120,17 @@ class TestDataTransformation:
     def test_transform_raw_text_to_structured(self):
         """Test transforming raw text to structured data."""
         raw_text = "User alice performed action login at 2024-01-01"
-        
+
         # Simulate transformation
         transformed = {
             "user": "alice",
             "action": "login",
             "timestamp": "2024-01-01"
         }
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store original
             entry_raw = MemoryEntry(
                 content=raw_text,
@@ -144,7 +139,7 @@ class TestDataTransformation:
                 metadata={"type": "raw"}
             )
             backend.store(entry_raw)
-            
+
             # Store transformed
             entry_transformed = MemoryEntry(
                 content=transformed,
@@ -153,7 +148,7 @@ class TestDataTransformation:
                 metadata={"type": "transformed"}
             )
             backend.store(entry_transformed)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 2
 
@@ -170,17 +165,17 @@ class TestDataTransformation:
                 }
             }
         }
-        
+
         # Flattened version
         flattened_data = {
             "user.profile.name": "Alice",
             "user.profile.email": "alice@example.com",
             "user.preferences.theme": "dark"
         }
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store both versions
             entry_nested = MemoryEntry(
                 content=nested_data,
@@ -188,14 +183,14 @@ class TestDataTransformation:
                 session_id="test"
             )
             backend.store(entry_nested)
-            
+
             entry_flat = MemoryEntry(
                 content=flattened_data,
                 agent_id="transformer",
                 session_id="test"
             )
             backend.store(entry_flat)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 2
 
@@ -203,7 +198,7 @@ class TestDataTransformation:
         """Test data aggregation transformation."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store individual measurements
             for i in range(5):
                 entry = MemoryEntry(
@@ -213,7 +208,7 @@ class TestDataTransformation:
                     metadata={"measurement": i}
                 )
                 backend.store(entry)
-            
+
             # Store aggregated result
             aggregated = {
                 "count": 5,
@@ -227,7 +222,7 @@ class TestDataTransformation:
                 metadata={"type": "aggregated"}
             )
             backend.store(entry_agg)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 6
 
@@ -235,7 +230,7 @@ class TestDataTransformation:
         """Test type conversion transformations."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store string representation
             entry_str = MemoryEntry(
                 content="123",
@@ -244,7 +239,7 @@ class TestDataTransformation:
                 metadata={"original_type": "string"}
             )
             backend.store(entry_str)
-            
+
             # Store numeric representation
             entry_num = MemoryEntry(
                 content=123,
@@ -253,7 +248,7 @@ class TestDataTransformation:
                 metadata={"original_type": "number"}
             )
             backend.store(entry_num)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 2
 
@@ -266,14 +261,14 @@ class TestDataPersistence:
         with tempfile.TemporaryDirectory() as tmpdir:
             file_path = Path(tmpdir) / "data.jsonl"
             backend = JSONLMemoryBackend(file_path)
-            
+
             entry = MemoryEntry(
                 content="Persistent data",
                 agent_id="test",
                 session_id="test"
             )
             backend.store(entry)
-            
+
             # Verify file was created and contains data
             assert file_path.exists()
             with open(file_path) as f:
@@ -285,7 +280,7 @@ class TestDataPersistence:
         with tempfile.TemporaryDirectory() as tmpdir:
             file_path = Path(tmpdir) / "data.jsonl"
             backend = JSONLMemoryBackend(file_path)
-            
+
             # Store multiple entries
             for i in range(5):
                 entry = MemoryEntry(
@@ -294,7 +289,7 @@ class TestDataPersistence:
                     session_id="test"
                 )
                 backend.store(entry)
-            
+
             # Verify all entries persisted
             with open(file_path) as f:
                 lines = f.readlines()
@@ -304,7 +299,7 @@ class TestDataPersistence:
         """Test persisting large data objects."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "data.jsonl")
-            
+
             # Create large data
             large_data = {
                 "items": [
@@ -312,14 +307,14 @@ class TestDataPersistence:
                     for i in range(100)
                 ]
             }
-            
+
             entry = MemoryEntry(
                 content=large_data,
                 agent_id="test",
                 session_id="test"
             )
             backend.store(entry)
-            
+
             # Retrieve and verify
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 1
@@ -328,13 +323,13 @@ class TestDataPersistence:
         """Test persisting and restoring with metadata."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "data.jsonl")
-            
+
             metadata = {
                 "source": "production",
                 "timestamp": "2024-01-01T00:00:00Z",
                 "tags": ["critical", "audit"]
             }
-            
+
             entry = MemoryEntry(
                 content="Critical data",
                 agent_id="test",
@@ -342,7 +337,7 @@ class TestDataPersistence:
                 metadata=metadata
             )
             backend.store(entry)
-            
+
             # Retrieve and verify metadata
             results = backend.retrieve(MemoryQuery(limit=10))
             assert results[0].metadata == metadata
@@ -355,7 +350,7 @@ class TestDataPipeline:
         """Test complete pipeline: ingest -> transform -> persist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "pipeline.jsonl")
-            
+
             # Step 1: Ingest raw data
             raw_data = "raw user event data"
             entry1 = MemoryEntry(
@@ -365,7 +360,7 @@ class TestDataPipeline:
                 metadata={"stage": "ingest"}
             )
             backend.store(entry1)
-            
+
             # Step 2: Transform
             transformed_data = {
                 "event_type": "user_action",
@@ -378,7 +373,7 @@ class TestDataPipeline:
                 metadata={"stage": "transform"}
             )
             backend.store(entry2)
-            
+
             # Step 3: Verify persistence
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 2
@@ -387,7 +382,7 @@ class TestDataPipeline:
         """Test data pipeline with branching."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "pipeline.jsonl")
-            
+
             # Initial data
             entry_input = MemoryEntry(
                 content={"value": 100},
@@ -395,7 +390,7 @@ class TestDataPipeline:
                 session_id="pipeline"
             )
             backend.store(entry_input)
-            
+
             # Branch 1: Process for analytics
             entry_analytics = MemoryEntry(
                 content={"processed_for": "analytics", "value": 100},
@@ -403,7 +398,7 @@ class TestDataPipeline:
                 session_id="pipeline"
             )
             backend.store(entry_analytics)
-            
+
             # Branch 2: Process for archival
             entry_archive = MemoryEntry(
                 content={"processed_for": "archive", "value": 100},
@@ -411,7 +406,7 @@ class TestDataPipeline:
                 session_id="pipeline"
             )
             backend.store(entry_archive)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 3
 
@@ -419,7 +414,7 @@ class TestDataPipeline:
         """Test filtering during pipeline."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "pipeline.jsonl")
-            
+
             # Store mixed priority data
             for i in range(10):
                 priority = "high" if i % 2 == 0 else "low"
@@ -430,7 +425,7 @@ class TestDataPipeline:
                     metadata={"priority": priority}
                 )
                 backend.store(entry)
-            
+
             # Retrieve all
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 10
@@ -439,7 +434,7 @@ class TestDataPipeline:
         """Test error handling in pipeline with retry capability."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "pipeline.jsonl")
-            
+
             # Record attempt 1 (failed)
             entry_fail = MemoryEntry(
                 content={"status": "failed", "attempt": 1},
@@ -448,7 +443,7 @@ class TestDataPipeline:
                 metadata={"event": "failure"}
             )
             backend.store(entry_fail)
-            
+
             # Record retry (success)
             entry_retry = MemoryEntry(
                 content={"status": "success", "attempt": 2},
@@ -457,7 +452,7 @@ class TestDataPipeline:
                 metadata={"event": "recovery"}
             )
             backend.store(entry_retry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert len(results) >= 2
 
@@ -475,17 +470,17 @@ class TestDataConsistency:
                 }
             }
         }
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             entry_original = MemoryEntry(
                 content=original_data,
                 agent_id="test",
                 session_id="test"
             )
             backend.store(entry_original)
-            
+
             results = backend.retrieve(MemoryQuery(limit=10))
             assert results[0].content == original_data
 
@@ -493,18 +488,18 @@ class TestDataConsistency:
         """Test consistency across multiple retrievals."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             entry = MemoryEntry(
                 content="Test data",
                 agent_id="test",
                 session_id="test"
             )
             backend.store(entry)
-            
+
             # Multiple retrievals should return same data
             results1 = backend.retrieve(MemoryQuery(limit=10))
             results2 = backend.retrieve(MemoryQuery(limit=10))
-            
+
             assert results1[0].content == results2[0].content
 
     def test_serialization_deserialization(self):
@@ -515,13 +510,13 @@ class TestDataConsistency:
             session_id="test",
             metadata={"meta": "data"}
         )
-        
+
         # Serialize
         data_dict = entry_original.to_dict()
-        
+
         # Deserialize
         entry_restored = MemoryEntry.from_dict(data_dict)
-        
+
         # Compare
         assert entry_restored.content == entry_original.content
         assert entry_restored.agent_id == entry_original.agent_id
@@ -536,7 +531,7 @@ class TestDataRetention:
         """Test querying retained data."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store multiple records
             for i in range(5):
                 entry = MemoryEntry(
@@ -545,7 +540,7 @@ class TestDataRetention:
                     session_id="retention"
                 )
                 backend.store(entry)
-            
+
             # Query should return all retained data
             results = backend.retrieve(MemoryQuery(limit=100))
             assert len(results) >= 5
@@ -554,7 +549,7 @@ class TestDataRetention:
         """Test that clearing session removes all data."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store data
             entry = MemoryEntry(
                 content="Test data",
@@ -562,7 +557,7 @@ class TestDataRetention:
                 session_id="session-1"
             )
             backend.store(entry)
-            
+
             # Clear session
             count = backend.clear_session("session-1")
             assert count >= 1
@@ -571,7 +566,7 @@ class TestDataRetention:
         """Test selective data retention by metadata."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
-            
+
             # Store records with different retention policies
             for i in range(3):
                 entry = MemoryEntry(
@@ -581,7 +576,7 @@ class TestDataRetention:
                     metadata={"retention": "permanent"}
                 )
                 backend.store(entry)
-            
+
             for i in range(3):
                 entry = MemoryEntry(
                     content=f"Temp {i}",
@@ -590,6 +585,6 @@ class TestDataRetention:
                     metadata={"retention": "temporary"}
                 )
                 backend.store(entry)
-            
+
             results = backend.retrieve(MemoryQuery(limit=100))
             assert len(results) >= 6

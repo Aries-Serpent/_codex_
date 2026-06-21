@@ -8,13 +8,8 @@ These tests provide additional comprehensive coverage for:
 - Additional utility and service modules
 """
 
-import pytest
-import tempfile
 import json
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
-import sys
 
 
 class TestBridgeProtocol:
@@ -324,7 +319,7 @@ class TestCachingAndPerformance:
         cache_size = 3
         cache = {}
         access_order = []
-        
+
         for key in ["a", "b", "c", "d"]:
             if len(cache) >= cache_size:
                 # Remove least recently used
@@ -332,7 +327,7 @@ class TestCachingAndPerformance:
                 del cache[lru_key]
             cache[key] = f"value_{key}"
             access_order.append(key)
-        
+
         assert "d" in cache
         assert "a" not in cache
 
@@ -347,7 +342,7 @@ class TestCachingAndPerformance:
             result = fibonacci(n-1) + fibonacci(n-2)
             memo[n] = result
             return result
-        
+
         assert fibonacci(5) == 5
 
     def test_batch_processing_efficiency(self):
@@ -362,13 +357,13 @@ class TestCachingAndPerformance:
         class LazyResource:
             def __init__(self):
                 self._data = None
-            
+
             @property
             def data(self):
                 if self._data is None:
                     self._data = list(range(1000))
                 return self._data
-        
+
         resource = LazyResource()
         assert resource._data is None  # Not loaded yet
         _ = resource.data  # Triggers load

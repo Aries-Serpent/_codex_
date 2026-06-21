@@ -1,7 +1,8 @@
 """Phase 3B: Comprehensive Security Core Module Tests"""
 
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch
 
 
 class TestSecurityContext:

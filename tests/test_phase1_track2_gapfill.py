@@ -6,13 +6,8 @@ These tests provide comprehensive coverage for previously untested modules:
 - 200+ test methods targeting 1000+ statement coverage
 """
 
-import pytest
-import tempfile
 import json
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime
-import sys
 
 
 class TestRestorePipelineLogic:

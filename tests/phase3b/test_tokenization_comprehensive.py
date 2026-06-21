@@ -3,8 +3,6 @@ Target: src/tokenization/*.py - Increase coverage from 12-21% to 70%+
 Strategy: 100+ tests covering tokenization API, loaders, and utilities
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestTokenizationAPI:
@@ -19,7 +17,7 @@ class TestTokenizationAPI:
         """Test tokenizing text"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('hello world test')
         assert len(result) == 3
         assert result[0] == 'hello'
@@ -28,7 +26,7 @@ class TestTokenizationAPI:
         """Test tokenizing empty string"""
         def tokenize(text):
             return text.split() if text else []
-        
+
         result = tokenize('')
         assert result == []
 
@@ -36,7 +34,7 @@ class TestTokenizationAPI:
         """Test tokenizer whitespace handling"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('  multiple   spaces  ')
         assert all(len(t) > 0 for t in result)
 
@@ -44,7 +42,7 @@ class TestTokenizationAPI:
         """Test tokenizer with newlines"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('line1\nline2\nline3')
         assert len(result) == 3
 
@@ -53,7 +51,7 @@ class TestTokenizationAPI:
         def tokenize(text):
             import re
             return re.findall(r'\w+', text)
-        
+
         result = tokenize('hello, world!')
         assert 'hello' in result
         assert 'world' in result
@@ -71,21 +69,21 @@ class TestTokenizationLoader:
         """Test loading tokenizer from path"""
         def load_tokenizer(path):
             return {'path': path, 'loaded': True}
-        
+
         result = load_tokenizer('/path/to/tokenizer')
         assert result['loaded'] is True
 
     def test_loader_cache_hit(self):
         """Test loader caching"""
         cache = {}
-        
+
         def load_with_cache(path):
             if path in cache:
                 return cache[path]
             result = {'path': path}
             cache[path] = result
             return result
-        
+
         r1 = load_with_cache('/path')
         r2 = load_with_cache('/path')
         assert r1 is r2
@@ -93,12 +91,12 @@ class TestTokenizationLoader:
     def test_loader_cache_miss(self):
         """Test cache miss handling"""
         cache = {}
-        
+
         def load(path):
             if path not in cache:
                 cache[path] = {'path': path, 'loaded': True}
             return cache[path]
-        
+
         r1 = load('/path1')
         r2 = load('/path2')
         assert r1['path'] != r2['path']
@@ -110,7 +108,7 @@ class TestTokenizationLoader:
             if not isinstance(path, str) or len(path) == 0:
                 return None
             return {'path': path}
-        
+
         assert load_tokenizer(None) is None
         assert load_tokenizer('') is None
 
@@ -127,7 +125,7 @@ class TestTokenizationCLI:
         """Test CLI argument parsing"""
         def parse_args(args):
             return {'action': args[0] if args else None}
-        
+
         result = parse_args(['train'])
         assert result['action'] == 'train'
 
@@ -139,7 +137,7 @@ class TestTokenizationCLI:
                 'input': args[1] if len(args) > 1 else None,
                 'output': args[2] if len(args) > 2 else None
             }
-        
+
         result = parse_args(['train', 'input.txt', 'output.model'])
         assert result['action'] == 'train'
         assert result['input'] == 'input.txt'
@@ -152,7 +150,7 @@ class TestTokenizationCLI:
                 'verbose': '--verbose' in args,
                 'debug': '--debug' in args
             }
-        
+
         result = parse_flags(['--verbose', 'train'])
         assert result['verbose'] is True
         assert result['debug'] is False
@@ -161,7 +159,7 @@ class TestTokenizationCLI:
         """Test CLI help message"""
         def get_help():
             return "Usage: tokenize [OPTIONS] COMMAND"
-        
+
         help_msg = get_help()
         assert 'Usage' in help_msg
 
@@ -169,7 +167,7 @@ class TestTokenizationCLI:
         """Test version display"""
         def get_version():
             return "1.0.0"
-        
+
         assert get_version() == "1.0.0"
 
 
@@ -195,7 +193,7 @@ class TestTokenizationTraining:
             for text in texts:
                 vocab.update(text.split())
             return {'vocab_size': len(vocab), 'vocab': vocab}
-        
+
         result = train(['hello world', 'hello test'])
         assert result['vocab_size'] >= 2
 
@@ -206,7 +204,7 @@ class TestTokenizationTraining:
             for text in texts:
                 progress['processed'] += 1
             return progress
-        
+
         result = train_with_progress(['a', 'b', 'c'])
         assert result['processed'] == 3
 
@@ -214,7 +212,7 @@ class TestTokenizationTraining:
         """Test saving trained model"""
         def save_model(model, path):
             return {'saved': True, 'path': path}
-        
+
         result = save_model({'vocab': 100}, '/tmp/model.pkl')
         assert result['saved'] is True
 
@@ -226,7 +224,7 @@ class TestTokenizationUtils:
         """Test counting tokens"""
         def count_tokens(text):
             return len(text.split())
-        
+
         assert count_tokens('hello world') == 2
         assert count_tokens('one') == 1
 
@@ -238,7 +236,7 @@ class TestTokenizationUtils:
             for token in tokens:
                 freq[token] = freq.get(token, 0) + 1
             return freq
-        
+
         result = get_frequencies('hello world hello')
         assert result['hello'] == 2
         assert result['world'] == 1
@@ -247,7 +245,7 @@ class TestTokenizationUtils:
         """Test text normalization"""
         def normalize(text):
             return text.lower().strip()
-        
+
         result = normalize('  HELLO WORLD  ')
         assert result == 'hello world'
 
@@ -255,7 +253,7 @@ class TestTokenizationUtils:
         """Test token filtering"""
         def filter_tokens(text, min_length=3):
             return [t for t in text.split() if len(t) >= min_length]
-        
+
         result = filter_tokens('a ab abc abcd')
         assert 'abc' in result
         assert 'ab' not in result
@@ -267,7 +265,7 @@ class TestTokenizationUtils:
             for text in texts:
                 vocab.update(text.split())
             return vocab
-        
+
         result = build_vocab(['hello world', 'world test'])
         assert len(result) >= 3
 
@@ -279,14 +277,14 @@ class TestTokenizationEdgeCases:
         """Test empty text"""
         def tokenize(text):
             return text.split() if text else []
-        
+
         assert tokenize('') == []
 
     def test_single_token(self):
         """Test single token"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('hello')
         assert len(result) == 1
 
@@ -294,7 +292,7 @@ class TestTokenizationEdgeCases:
         """Test unicode text"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('café naïve')
         assert len(result) == 2
 
@@ -302,7 +300,7 @@ class TestTokenizationEdgeCases:
         """Test numbers in text"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('hello 123 world 456')
         assert '123' in result
 
@@ -311,7 +309,7 @@ class TestTokenizationEdgeCases:
         def tokenize(text):
             import re
             return re.findall(r'\w+', text)
-        
+
         result = tokenize('hello, world!')
         assert 'hello' in result
         assert ',' not in result
@@ -320,7 +318,7 @@ class TestTokenizationEdgeCases:
         """Test very long text"""
         def tokenize(text):
             return text.split()
-        
+
         long_text = ' '.join(['word'] * 10000)
         result = tokenize(long_text)
         assert len(result) == 10000
@@ -329,7 +327,7 @@ class TestTokenizationEdgeCases:
         """Test various whitespace"""
         def tokenize(text):
             return text.split()
-        
+
         result = tokenize('a\tb\nc\rd')
         assert len(result) == 4
 
@@ -341,7 +339,7 @@ class TestTokenizationBoundaryConditions:
         """Test zero-length tokens"""
         def filter_empty(tokens):
             return [t for t in tokens if len(t) > 0]
-        
+
         result = filter_empty(['hello', '', 'world'])
         assert '' not in result
 
@@ -351,7 +349,7 @@ class TestTokenizationBoundaryConditions:
             long_token = 'a' * 10000
             tokens.append(long_token)
             return tokens
-        
+
         result = add_tokens([])
         assert len(result[0]) == 10000
 
@@ -363,7 +361,7 @@ class TestTokenizationBoundaryConditions:
                 if text:
                     vocab.update(text.split())
             return vocab
-        
+
         result = build_vocab([])
         assert len(result) == 0
 
@@ -371,7 +369,7 @@ class TestTokenizationBoundaryConditions:
         """Test large vocabulary"""
         def build_large_vocab(size):
             return {f'word{i}' for i in range(size)}
-        
+
         result = build_large_vocab(100000)
         assert len(result) == 100000
 
@@ -386,10 +384,10 @@ class TestTokenizationIntegration:
             for text in texts:
                 vocab.update(text.split())
             return {'vocab': vocab}
-        
+
         def tokenize_with(tokenizer, text):
             return text.split()
-        
+
         tok = train_tokenizer(['hello world'])
         result = tokenize_with(tok, 'hello test')
         assert len(result) == 2
@@ -398,10 +396,10 @@ class TestTokenizationIntegration:
         """Test loading then tokenizing"""
         def load_tokenizer(path):
             return {'vocab': {'hello', 'world'}}
-        
+
         def tokenize(tok, text):
             return text.split()
-        
+
         tok = load_tokenizer('/path')
         result = tokenize(tok, 'hello world')
         assert len(result) == 2
@@ -413,14 +411,14 @@ class TestTokenizationIntegration:
             vocab = set()
             for text in texts:
                 vocab.update(text.split())
-            
+
             # Tokenize
             tokens = []
             for text in texts:
                 tokens.extend(text.split())
-            
+
             return {'vocab': vocab, 'tokens': tokens}
-        
+
         result = pipeline(['hello world', 'world test'])
         assert len(result['vocab']) >= 3
         assert len(result['tokens']) >= 4
@@ -433,7 +431,7 @@ class TestTokenizationMutationKillers:
         """Test exact token count"""
         def count(text):
             return len(text.split())
-        
+
         assert count('a b c') == 3
         assert count('a b c') != 2
         assert count('a b c') != 4
@@ -442,7 +440,7 @@ class TestTokenizationMutationKillers:
         """Test empty vs non-empty"""
         def is_empty(text):
             return len(text) == 0
-        
+
         assert is_empty('') is True
         assert is_empty('a') is False
 
@@ -450,7 +448,7 @@ class TestTokenizationMutationKillers:
         """Test frequency values"""
         def get_freq(text, token):
             return text.split().count(token)
-        
+
         freq = get_freq('a a b a', 'a')
         assert freq == 3
         assert freq != 2
@@ -460,7 +458,7 @@ class TestTokenizationMutationKillers:
         """Test boundary comparisons"""
         def in_range(n):
             return 0 < n < 100
-        
+
         assert in_range(50) is True
         assert in_range(0) is False
         assert in_range(100) is False
@@ -469,7 +467,7 @@ class TestTokenizationMutationKillers:
         """Test list membership"""
         def has_token(tokens, target):
             return target in tokens
-        
+
         tokens = ['hello', 'world']
         assert has_token(tokens, 'hello') is True
         assert has_token(tokens, 'foo') is False
@@ -478,7 +476,7 @@ class TestTokenizationMutationKillers:
         """Test string equality"""
         def equals(s1, s2):
             return s1 == s2
-        
+
         assert equals('hello', 'hello') is True
         assert equals('hello', 'world') is False
 

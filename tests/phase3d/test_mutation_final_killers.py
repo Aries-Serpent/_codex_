@@ -11,10 +11,9 @@ Expected coverage gain: +0.5-1pp
 Target mutation kill rate: 85%+
 """
 
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock, call
-import sys
-import os
 
 
 class TestMutationKillerBoundaries:
@@ -25,7 +24,7 @@ class TestMutationKillerBoundaries:
         value = 0
         assert value == 0  # Will catch: == to !=
         assert not (value != 0)
-        
+
         value = 1
         assert value != 0  # Will catch: != to ==
         assert not (value == 0)
@@ -36,7 +35,7 @@ class TestMutationKillerBoundaries:
         assert value == -1
         assert value < 0
         assert value <= -1
-        
+
         value = 0
         assert value > -1
         assert not (value == -1)
@@ -47,7 +46,7 @@ class TestMutationKillerBoundaries:
         assert value == 1
         assert value > 0
         assert value <= 1
-        
+
         value = 2
         assert value != 1
         assert value > 1
@@ -91,13 +90,13 @@ class TestMutationKillerLogic:
         """Test mutation: 'and' to 'or'"""
         result_and = (True and True)
         assert result_and is True
-        
+
         result_and = (True and False)
         assert result_and is False
-        
+
         result_and = (False and True)
         assert result_and is False
-        
+
         result_and = (False and False)
         assert result_and is False
 
@@ -105,13 +104,13 @@ class TestMutationKillerLogic:
         """Test mutation: 'or' to 'and'"""
         result_or = (True or False)
         assert result_or is True
-        
+
         result_or = (False or True)
         assert result_or is True
-        
+
         result_or = (False or False)
         assert result_or is False
-        
+
         result_or = (True or True)
         assert result_or is True
 
@@ -119,10 +118,10 @@ class TestMutationKillerLogic:
         """Test mutation: 'not' to nothing"""
         result = not True
         assert result is False
-        
+
         result = not False
         assert result is True
-        
+
         result = not (not True)
         assert result is True
 
@@ -142,10 +141,10 @@ class TestMutationKillerReturnValues:
         """Test mutation: return True to return False"""
         def returns_true():
             return True
-        
+
         def returns_false():
             return False
-        
+
         assert returns_true() is True
         assert returns_false() is False
         assert returns_true() != returns_false()
@@ -154,17 +153,17 @@ class TestMutationKillerReturnValues:
         """Test mutation: return value swaps"""
         def return_one():
             return 1
-        
+
         def return_zero():
             return 0
-        
+
         def return_negative():
             return -1
-        
+
         assert return_one() == 1
         assert return_zero() == 0
         assert return_negative() == -1
-        
+
         # Verify they're different
         assert return_one() != return_zero()
         assert return_zero() != return_negative()
@@ -173,10 +172,10 @@ class TestMutationKillerReturnValues:
         """Test mutation: return None to return value"""
         def returns_none():
             return None
-        
+
         def returns_value():
             return 42
-        
+
         assert returns_none() is None
         assert returns_value() is not None
         assert returns_value() == 42
@@ -185,10 +184,10 @@ class TestMutationKillerReturnValues:
         """Test mutation: return [] to return None"""
         def returns_list():
             return [1, 2, 3]
-        
+
         def returns_empty():
             return []
-        
+
         assert len(returns_list()) == 3
         assert len(returns_empty()) == 0
         assert returns_list() != returns_empty()
@@ -197,10 +196,10 @@ class TestMutationKillerReturnValues:
         """Test mutation: return {} to return None"""
         def returns_dict():
             return {"key": "value"}
-        
+
         def returns_empty():
             return {}
-        
+
         assert len(returns_dict()) > 0
         assert len(returns_empty()) == 0
 
@@ -211,38 +210,38 @@ class TestMutationKillerConditions:
     def test_if_condition_negation(self):
         """Test mutation: if x to if not x"""
         executed_paths = []
-        
+
         if True:
             executed_paths.append("true_path")
         if not False:
             executed_paths.append("not_false_path")
-        
+
         assert "true_path" in executed_paths
         assert "not_false_path" in executed_paths
 
     def test_else_branch_execution(self):
         """Test mutation: skipping else branch"""
         result = None
-        
+
         if False:
             result = "if_path"
         else:
             result = "else_path"
-        
+
         assert result == "else_path"
 
     def test_elif_branch_selection(self):
         """Test mutation: skipping elif branches"""
         value = 5
         result = None
-        
+
         if value < 0:
             result = "negative"
         elif value == 0:
             result = "zero"
         elif value > 0:
             result = "positive"
-        
+
         assert result == "positive"
 
     def test_loop_condition_enforcement(self):
@@ -250,13 +249,13 @@ class TestMutationKillerConditions:
         count = 0
         while count < 5:
             count += 1
-        
+
         assert count == 5
-        
+
         count = 0
         while count <= 4:
             count += 1
-        
+
         assert count == 5
 
 
@@ -268,7 +267,7 @@ class TestMutationKillerArithmetic:
         result = 5 + 3
         assert result == 8
         assert result != 2  # Would pass if + mutated to -
-        
+
         result = 10 + (-5)
         assert result == 5
 
@@ -277,7 +276,7 @@ class TestMutationKillerArithmetic:
         result = 10 - 3
         assert result == 7
         assert result != 13  # Would pass if - mutated to +
-        
+
         result = 5 - (-3)
         assert result == 8
 
@@ -286,7 +285,7 @@ class TestMutationKillerArithmetic:
         result = 4 * 3
         assert result == 12
         assert result != pytest.approx(1.33)  # Would pass if * mutated to /
-        
+
         result = 2 * 5
         assert result == 10
 
@@ -295,7 +294,7 @@ class TestMutationKillerArithmetic:
         result = 12 / 3
         assert result == 4
         assert result != 36  # Would pass if / mutated to *
-        
+
         result = 20 / 4
         assert result == 5
 
@@ -327,11 +326,11 @@ class TestMutationKillerAssignments:
         """Test mutation: x = a to x = b"""
         a = 10
         b = 20
-        
+
         x = a
         assert x == 10
         assert x != 20
-        
+
         x = b
         assert x == 20
         assert x != 10
@@ -342,7 +341,7 @@ class TestMutationKillerAssignments:
         counter += 3
         assert counter == 8
         assert counter != 2  # Would pass if += mutated to -=
-        
+
         counter -= 2
         assert counter == 6
 
@@ -358,10 +357,10 @@ class TestMutationKillerAssignments:
         value = 100
         value *= 2
         assert value == 200
-        
+
         value //= 4
         assert value == 50
-        
+
         value %= 15
         assert value == 5
 
@@ -378,7 +377,7 @@ class TestMutationKillerExceptions:
         """Test mutation: wrong exception type"""
         with pytest.raises(ValueError):
             raise ValueError("test")
-        
+
         with pytest.raises(TypeError):
             raise TypeError("test")
 
@@ -398,12 +397,12 @@ class TestMutationKillerExceptions:
     def test_exception_caught_correctly(self):
         """Test mutation: wrong exception handler"""
         handled = False
-        
+
         try:
             raise ValueError("test")
         except ValueError:
             handled = True
-        
+
         assert handled
 
 
@@ -566,7 +565,7 @@ class TestMutationKillerMocks:
         mock()
         mock()
         mock()
-        
+
         assert mock.call_count == 3
         assert mock.call_count != 2
         assert mock.call_count != 4
@@ -575,7 +574,7 @@ class TestMutationKillerMocks:
         """Test mutation: call arguments"""
         mock = Mock()
         mock("arg1", "arg2", kwarg="value")
-        
+
         assert mock.called
         mock.assert_called_once()
         mock.assert_called_with("arg1", "arg2", kwarg="value")
@@ -584,7 +583,7 @@ class TestMutationKillerMocks:
         """Test mutation: return value"""
         mock = Mock(return_value=42)
         result = mock()
-        
+
         assert result == 42
         assert result != 0
         assert result != None
@@ -592,7 +591,7 @@ class TestMutationKillerMocks:
     def test_mock_side_effect_verification(self):
         """Test mutation: side effect"""
         mock = Mock(side_effect=[1, 2, 3])
-        
+
         assert mock() == 1
         assert mock() == 2
         assert mock() == 3

@@ -10,17 +10,17 @@ Expected coverage gain: +2-3 percentage points
 Target test count: 100+ tests
 """
 
-import pytest
-import sys
-import os
-from pathlib import Path
-from typing import Optional, List, Dict, Any
-import tempfile
 import io
-from contextlib import redirect_stdout, redirect_stderr
+import os
+import sys
+import tempfile
 import threading
 import time
-from unittest.mock import Mock, patch, MagicMock, PropertyMock
+from contextlib import redirect_stderr, redirect_stdout
+from pathlib import Path
+from unittest.mock import Mock
+
+import pytest
 
 
 class TestFileIOEdgeCases:
@@ -32,7 +32,7 @@ class TestFileIOEdgeCases:
             f.write("test content")
             f.flush()
             filename = f.name
-        
+
         try:
             assert os.path.exists(filename)
             with open(filename, 'r') as f:
@@ -45,7 +45,7 @@ class TestFileIOEdgeCases:
         """Test operations on empty file."""
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
             filename = f.name
-        
+
         try:
             with open(filename, 'r') as f:
                 content = f.read()
@@ -60,7 +60,7 @@ class TestFileIOEdgeCases:
             f.write(large_content)
             f.flush()
             filename = f.name
-        
+
         try:
             with open(filename, 'r') as f:
                 content = f.read()
@@ -75,7 +75,7 @@ class TestFileIOEdgeCases:
             f.write(binary_data)
             f.flush()
             filename = f.name
-        
+
         try:
             with open(filename, 'rb') as f:
                 data = f.read()
@@ -87,7 +87,7 @@ class TestFileIOEdgeCases:
         """Test handling of different line endings."""
         content_unix = "line1\nline2\nline3"
         content_windows = "line1\r\nline2\r\nline3"
-        
+
         # Test unix
         with tempfile.NamedTemporaryFile(mode='w', delete=False, newline='') as f:
             f.write(content_unix)
@@ -104,11 +104,11 @@ class TestFileIOEdgeCases:
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
             f.write("line1\n")
             filename = f.name
-        
+
         try:
             with open(filename, 'a') as f:
                 f.write("line2\n")
-            
+
             with open(filename, 'r') as f:
                 content = f.read()
             assert "line1" in content
@@ -120,10 +120,10 @@ class TestFileIOEdgeCases:
         """Test path operations with edge cases."""
         p = Path("/")
         assert p.is_absolute()
-        
+
         p = Path(".")
         assert not p.is_absolute()
-        
+
         p = Path("../../../")
         assert isinstance(p, Path)
 
@@ -453,7 +453,7 @@ class TestExceptionHandling:
                 result.append("inner_caught")
         except ValueError:
             result.append("outer_caught")
-        
+
         assert result == ["outer_caught"]
 
 
@@ -493,21 +493,21 @@ class TestConcurrencyEdgeCases:
     def test_thread_creation(self):
         """Test thread creation and joining."""
         result = []
-        
+
         def worker():
             result.append("done")
-        
+
         t = threading.Thread(target=worker)
         t.start()
         t.join(timeout=5)
-        
+
         assert len(result) == 1
 
     def test_thread_daemon(self):
         """Test daemon thread."""
         def worker():
             time.sleep(0.1)
-        
+
         t = threading.Thread(target=worker, daemon=True)
         t.start()
         assert t.daemon is True
@@ -515,10 +515,10 @@ class TestConcurrencyEdgeCases:
     def test_thread_lock(self):
         """Test thread locking."""
         lock = threading.Lock()
-        
+
         with lock:
             assert not lock.acquire(blocking=False)
-        
+
         assert lock.acquire(blocking=False)
         lock.release()
 
@@ -526,10 +526,10 @@ class TestConcurrencyEdgeCases:
         """Test thread event."""
         event = threading.Event()
         assert not event.is_set()
-        
+
         event.set()
         assert event.is_set()
-        
+
         event.clear()
         assert not event.is_set()
 

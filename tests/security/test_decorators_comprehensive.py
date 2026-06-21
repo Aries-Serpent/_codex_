@@ -18,11 +18,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Import only functions that exist in the module
-from security.decorators import (
-    require_scope,
-    require_any_scope,
-    optional_scope,
-)
 
 # Functions that are being tested but not yet implemented:
 # - audit_log

@@ -11,8 +11,6 @@ Generate comprehensive test coverage for cross-module integration:
 Target: 60+ test methods covering remaining coverage gaps
 """
 
-import pytest
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
 
 

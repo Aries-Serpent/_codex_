@@ -8,9 +8,7 @@ Additional comprehensive tests for:
 - Workflow orchestration
 """
 
-import pytest
 from datetime import datetime, timedelta
-import json
 
 
 class TestModelServing:

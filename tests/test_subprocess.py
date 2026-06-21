@@ -2,9 +2,10 @@
 
 import subprocess as _stdlib_subprocess
 from pathlib import Path
-from typing import Any
+
 import pytest
-from src.codex.utils.subprocess import run, CompletedProcess
+
+from src.codex.utils.subprocess import CompletedProcess, run
 
 
 class TestSubprocessRun:

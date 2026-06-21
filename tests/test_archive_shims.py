@@ -2,14 +2,13 @@
 
 import tempfile
 from pathlib import Path
-import pytest
 
 from src.codex.archive.shims import (
-    write_python_shim,
-    write_markdown_pointer,
-    write_json_pointer,
-    write_csv_pointer,
     _PY_WARN,
+    write_csv_pointer,
+    write_json_pointer,
+    write_markdown_pointer,
+    write_python_shim,
 )
 
 
@@ -96,16 +95,16 @@ class TestWritePythonShim:
         with tempfile.TemporaryDirectory() as tmpdir:
             shim1 = Path(tmpdir) / "shim1.py"
             shim2 = Path(tmpdir) / "shim2.py"
-            
+
             write_python_shim(shim1, "src.module1")
             write_python_shim(shim2, "src.module2")
-            
+
             assert shim1.exists()
             assert shim2.exists()
-            
+
             content1 = shim1.read_text()
             content2 = shim2.read_text()
-            
+
             assert "from module1 import *" in content1
             assert "from module2 import *" in content2
 
@@ -161,10 +160,10 @@ class TestWriteMarkdownPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             pointer1 = Path(tmpdir) / "readme1.md"
             pointer2 = Path(tmpdir) / "readme2.md"
-            
+
             write_markdown_pointer(pointer1, "docs/canonical1.md")
             write_markdown_pointer(pointer2, "docs/canonical2.md")
-            
+
             assert pointer1.exists()
             assert pointer2.exists()
 
@@ -186,7 +185,7 @@ class TestWriteJsonPointer:
             canonical_path = "canonical/config.json"
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
-            
+
             # Should be valid JSON
             import json
             data = json.loads(content)
@@ -224,10 +223,10 @@ class TestWriteJsonPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             json1 = Path(tmpdir) / "config1.json"
             json2 = Path(tmpdir) / "config2.json"
-            
+
             write_json_pointer(json1, "canonical/config1.json")
             write_json_pointer(json2, "canonical/config2.json")
-            
+
             assert json1.exists()
             assert json2.exists()
 
@@ -273,10 +272,10 @@ class TestWriteCsvPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             csv1 = Path(tmpdir) / "data1.csv"
             csv2 = Path(tmpdir) / "data2.csv"
-            
+
             write_csv_pointer(csv1, "canonical/data1.csv")
             write_csv_pointer(csv2, "canonical/data2.csv")
-            
+
             assert csv1.exists()
             assert csv2.exists()
 
@@ -315,12 +314,12 @@ class TestShimIntegration:
             md_pointer = Path(tmpdir) / "README.md"
             json_pointer = Path(tmpdir) / "config.json"
             csv_pointer = Path(tmpdir) / "data.csv"
-            
+
             write_python_shim(py_shim, "src.canonical")
             write_markdown_pointer(md_pointer, "docs/canonical.md")
             write_json_pointer(json_pointer, "canonical.json")
             write_csv_pointer(csv_pointer, "canonical.csv")
-            
+
             assert py_shim.exists()
             assert md_pointer.exists()
             assert json_pointer.exists()
@@ -331,7 +330,7 @@ class TestShimIntegration:
         with tempfile.TemporaryDirectory() as tmpdir:
             deep_path = Path(tmpdir) / "a" / "b" / "c" / "d" / "e"
             write_python_shim(deep_path / "module.py", "src.canonical")
-            
+
             assert (deep_path / "module.py").exists()
             assert (deep_path / "module.py").parent == deep_path
             assert deep_path.parent == Path(tmpdir) / "a" / "b" / "c" / "d"

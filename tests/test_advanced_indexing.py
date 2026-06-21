@@ -1,14 +1,13 @@
 """Comprehensive test suite for advanced_indexing module."""
 
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import numpy as np
 
 from src.codex.retrieval.stores.advanced_indexing import (
     HNSWConfig,
-    IVFPQConfig,
-    IndexType,
     HNSWIndex,
+    IndexType,
+    IVFPQConfig,
     IVFPQIndex,
 )
 

@@ -11,10 +11,6 @@ Generate comprehensive test coverage for infrastructure validation:
 Target: 70+ test methods covering 150+ statements
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
-from datetime import datetime
 
 
 class TestConfigurationValidation:
