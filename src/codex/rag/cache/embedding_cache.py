@@ -220,12 +220,18 @@ class EmbeddingCache:
             text: Text that was embedded
             embedding: Embedding vector
             ttl: Optional TTL in seconds
-            ttl_seconds: Optional TTL in seconds (takes precedence over ttl if both provided, for backward compatibility)
+            ttl_seconds: Optional TTL in seconds (takes precedence over ttl if both
+                provided, for backward compatibility)
             metadata: Optional metadata
         """
         key = self._generate_key(text)
-        # Support both ttl and ttl_seconds parameters (ttl_seconds takes precedence if both provided)
-        effective_ttl = ttl_seconds if ttl_seconds is not None else (ttl if ttl is not None else self.config.default_ttl)
+        # Support both ttl and ttl_seconds parameters
+        # (ttl_seconds takes precedence if both provided)
+        effective_ttl = (
+            ttl_seconds
+            if ttl_seconds is not None
+            else (ttl if ttl is not None else self.config.default_ttl)
+        )
 
         self._acquire_lock()
         try:
@@ -333,7 +339,7 @@ class EmbeddingCache:
         try:
             if key not in self._cache:
                 return False
-            return bool(not self._cache[key].is_expired)
+            return not self._cache[key].is_expired
         finally:
             self._release_lock()
 
