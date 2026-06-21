@@ -1,0 +1,622 @@
+{
+  "spec_version": "1.3",
+  "serialNumber": "urn:uuid:codex-sbom-2026-06-21T18:13:43.123986",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-21T18:13:43.124001",
+    "tools": [
+      {
+        "vendor": "pip",
+        "name": "pip",
+        "version": "24.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "Codex-ML",
+      "version": "0.1.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "anyio",
+      "version": "4.14.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "argcomplete",
+      "version": "3.6.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "attrs",
+      "version": "23.2.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Automat",
+      "version": "22.10.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Babel",
+      "version": "2.10.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "bcc",
+      "version": "0.29.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "bcrypt",
+      "version": "3.2.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "blinker",
+      "version": "1.7.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "boltons",
+      "version": "21.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "boolean.py",
+      "version": "5.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "boto3",
+      "version": "1.34.46",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "botocore",
+      "version": "1.34.46",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "bracex",
+      "version": "2.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "CacheControl",
+      "version": "0.14.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "certifi",
+      "version": "2023.11.17",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "chardet",
+      "version": "5.2.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "click",
+      "version": "8.1.8",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "click-option-group",
+      "version": "0.5.9",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "cloud-init",
+      "version": "26.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "colorama",
+      "version": "0.4.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "command-not-found",
+      "version": "0.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "configobj",
+      "version": "5.0.8",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "constantly",
+      "version": "23.10.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "cryptography",
+      "version": "41.0.7",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "cyclonedx-python-lib",
+      "version": "11.11.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "dbus-python",
+      "version": "1.3.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "detect-secrets",
+      "version": "1.5.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "distro",
+      "version": "1.9.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "distro-info",
+      "version": "1.7+build1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "exceptiongroup",
+      "version": "1.2.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "face",
+      "version": "26.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.138.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "filelock",
+      "version": "3.29.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "glom",
+      "version": "25.12.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "googleapis-common-protos",
+      "version": "1.75.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "h11",
+      "version": "0.16.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httpcore",
+      "version": "1.0.9",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httplib2",
+      "version": "0.20.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httpx",
+      "version": "0.28.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httpx-sse",
+      "version": "0.4.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "hyperlink",
+      "version": "21.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "idna",
+      "version": "3.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "importlib_metadata",
+      "version": "8.7.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "incremental",
+      "version": "22.10.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Jinja2",
+      "version": "3.1.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "jmespath",
+      "version": "1.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "jsonpatch",
+      "version": "1.32",
+      "licenses": [
+        {
+          "license": {
+            "name": "UNKNOWN"
+          }
+        }
+      ]
+    }
+  ]
+}
