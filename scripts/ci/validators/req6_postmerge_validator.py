@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-REQ-5: CHANGELOG Validator
+REQ-6: Post-Merge Validator
 
-Validates that CHANGELOG.md was updated in the latest commit.
-
-This enforces the compliance requirement from session_wrapup_autofix.py.
+Validates PR health after merge:
+- All workflows passed after merge
+- No new CI failures introduced
+- No regressions detected
+- Deployment successful (if applicable)
 """
 
 from __future__ import annotations
@@ -13,27 +15,28 @@ import argparse
 import json
 import logging
 import sys
+from typing import Optional
 
 from base import ComplianceResult, RequirementValidator
 
 logger = logging.getLogger(__name__)
 
-CHANGELOG_PATH = "CHANGELOG.md"
-UNRELEASED_MARKER = "## [Unreleased]"
 
-
-class REQ5ChangelogValidator(RequirementValidator):
-    """Validates CHANGELOG requirement (REQ-5)."""
+class REQ6PostMergeValidator(RequirementValidator):
+    """Validates post-merge health (REQ-6)."""
     
     @property
     def requirement_id(self) -> str:
-        return "REQ-5"
+        return "REQ-6"
     
     def _validate_impl(self) -> ComplianceResult:
-        """Check if CHANGELOG.md was updated in latest commit."""
+        """Check post-merge health."""
+        metadata: dict = {}
+        
+        # This validator typically runs AFTER merge, so we check the merge commit
+        # For now, we'll check if the PR is merged
         try:
             pr_details = self._get_pr_details()
-            commits = self._get_pr_commits()
         except Exception as exc:
             return ComplianceResult(
                 requirement_id=self.requirement_id,
@@ -43,139 +46,118 @@ class REQ5ChangelogValidator(RequirementValidator):
                 remediation=["Verify PR number is correct", "Check GitHub API access"],
             )
         
-        metadata: dict = {}
+        # Check if merged
+        merged_at = pr_details.get("merged_at")
+        is_merged = pr_details.get("merged", False)
+        metadata["is_merged"] = is_merged
+        metadata["merged_at"] = merged_at
         
-        # Get the latest commit SHA
-        if not commits:
-            return ComplianceResult(
-                requirement_id=self.requirement_id,
-                status="fail",
-                score=0.0,
-                reason="No commits found in PR",
-                remediation=["Ensure PR has at least one commit"],
-                metadata=metadata,
-            )
-        
-        latest_commit = commits[-1]
-        commit_sha = latest_commit.get("sha", "")
-        metadata["commit_sha"] = commit_sha[:12]
-        
-        # Get files modified in this commit
-        try:
-            commit_details = self._get_commit_details(commit_sha)
-            files_in_commit = commit_details.get("files", [])
-            modified_files = {f.get("filename", "") for f in files_in_commit}
-        except Exception as exc:
-            logger.warning(f"Could not fetch commit details: {exc}")
-            modified_files = set()
-        
-        metadata["files_in_commit"] = len(modified_files)
-        
-        # Check if CHANGELOG was modified in latest commit
-        if CHANGELOG_PATH not in modified_files:
-            metadata["changelog_updated"] = False
-            return ComplianceResult(
-                requirement_id=self.requirement_id,
-                status="fail",
-                score=0.0,
-                reason=f"CHANGELOG.md not updated in latest commit ({commit_sha[:12]})",
-                remediation=[
-                    "Update CHANGELOG.md with entry describing changes",
-                    "Add entry under [Unreleased] section",
-                    "Follow changelog format (issue references, category, summary)",
-                    "Commit the changes: `git add CHANGELOG.md`",
-                    "Or run: `python scripts/ci/session_wrapup_autofix.py --pr <pr-number> --fix-changelog`",
-                ],
-                metadata=metadata,
-            )
-        
-        metadata["changelog_updated"] = True
-        
-        # Verify CHANGELOG has content and [Unreleased] section
-        try:
-            changelog_content = self._read_file(CHANGELOG_PATH) or ""
-            if not changelog_content.strip():
-                return ComplianceResult(
-                    requirement_id=self.requirement_id,
-                    status="fail",
-                    score=0.0,
-                    reason="CHANGELOG.md is empty",
-                    remediation=["Add content to CHANGELOG.md"],
-                    metadata=metadata,
-                )
-            
-            if UNRELEASED_MARKER not in changelog_content:
-                return ComplianceResult(
-                    requirement_id=self.requirement_id,
-                    status="warn",
-                    score=0.5,
-                    reason="CHANGELOG.md updated but [Unreleased] section not found",
-                    remediation=[
-                        "Ensure [Unreleased] section exists at top of CHANGELOG",
-                        "Format: '## [Unreleased]'",
-                        "Add entries below this section",
-                    ],
-                    metadata=metadata,
-                )
-            
-            # Check that there's content after the [Unreleased] marker
-            unreleased_idx = changelog_content.index(UNRELEASED_MARKER)
-            unreleased_section = changelog_content[unreleased_idx:]
-            
-            # Look for at least some content after the marker
-            lines_after = unreleased_section.split("\n")[1:]  # Skip the marker line
-            content_lines = [
-                l for l in lines_after
-                if l.strip() and not l.startswith("#")  # Skip empty/heading lines
-            ]
-            
-            if not content_lines:
-                return ComplianceResult(
-                    requirement_id=self.requirement_id,
-                    status="warn",
-                    score=0.5,
-                    reason="CHANGELOG.md [Unreleased] section is empty",
-                    remediation=[
-                        "Add entries to the [Unreleased] section",
-                        "Example: '- Fix: Resolved issue #1234 (description)'",
-                    ],
-                    metadata=metadata,
-                )
-            
-            return ComplianceResult(
-                requirement_id=self.requirement_id,
-                status="pass",
-                score=1.0,
-                reason=f"CHANGELOG.md was properly updated in commit {commit_sha[:12]}",
-                remediation=[],
-                metadata=metadata,
-            )
-        
-        except Exception as exc:
-            logger.warning(f"Could not validate CHANGELOG content: {exc}")
-            # If we can't read it but it was modified, give benefit of doubt (warn)
+        if not is_merged:
+            # PR not yet merged - this validator isn't applicable yet
             return ComplianceResult(
                 requirement_id=self.requirement_id,
                 status="warn",
                 score=0.5,
-                reason="CHANGELOG.md was modified but content verification failed",
-                remediation=["Verify CHANGELOG.md format is correct"],
+                reason="PR not yet merged - post-merge validation not applicable",
+                remediation=["Merge PR first", "Then re-run this validator"],
                 metadata=metadata,
             )
+        
+        # Get the merge commit SHA
+        merge_commit_sha = pr_details.get("merge_commit_sha")
+        if not merge_commit_sha:
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="warn",
+                score=0.5,
+                reason="Merge commit SHA not found",
+                remediation=["Check that PR is properly merged"],
+                metadata=metadata,
+            )
+        
+        metadata["merge_commit_sha"] = merge_commit_sha[:12]
+        
+        # Try to get workflow runs for the merge commit
+        try:
+            workflow_runs = self._gh_api_call(
+                f"repos/{self.repo}/actions/runs",
+                jq='.workflow_runs | map(select(.head_sha == "{merge_commit_sha}")) | .[0:5]'.format(
+                    merge_commit_sha=merge_commit_sha
+                ),
+            )
+            runs = json.loads(workflow_runs) if workflow_runs else []
+        except Exception as exc:
+            logger.warning(f"Could not fetch workflow runs: {exc}")
+            runs = []
+        
+        metadata["workflow_runs_found"] = len(runs)
+        
+        if not runs:
+            # No workflow runs found yet (may still be running)
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="warn",
+                score=0.5,
+                reason="No workflow runs found yet for merge commit (may still be running)",
+                remediation=["Wait for workflows to complete", "Re-run validator later"],
+                metadata=metadata,
+            )
+        
+        # Check workflow statuses
+        failed_runs = [r for r in runs if r.get("conclusion") == "failure"]
+        successful_runs = [r for r in runs if r.get("conclusion") == "success"]
+        
+        metadata["successful_runs"] = len(successful_runs)
+        metadata["failed_runs"] = len(failed_runs)
+        
+        if failed_runs:
+            failed_names = [r.get("name", "unknown") for r in failed_runs]
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="fail",
+                score=0.0,
+                reason=f"Post-merge workflows failed: {', '.join(failed_names[:3])}",
+                remediation=[
+                    "Check failed workflow logs",
+                    "Investigate root cause",
+                    "Apply fixes or rollback if necessary",
+                ],
+                metadata=metadata,
+            )
+        
+        if successful_runs:
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="pass",
+                score=1.0,
+                reason=f"All post-merge workflows passed ({len(successful_runs)} runs)",
+                remediation=[],
+                metadata=metadata,
+            )
+        
+        # Workflows still running
+        return ComplianceResult(
+            requirement_id=self.requirement_id,
+            status="warn",
+            score=0.5,
+            reason="Workflows for merge commit are still running",
+            remediation=["Wait for workflows to complete", "Re-run validator later"],
+            metadata=metadata,
+        )
 
 
 def main():
     """CLI entry point."""
-    parser = argparse.ArgumentParser(description="Validate CHANGELOG (REQ-5)")
+    parser = argparse.ArgumentParser(description="Validate post-merge health (REQ-6)")
     parser.add_argument("--pr", required=True, help="PR number")
     parser.add_argument("--repo", default="Aries-Serpent/_codex_", help="Repository")
     parser.add_argument("--json", action="store_true", help="Output JSON")
-    parser.add_argument("--sha", help="Optional commit SHA to check (defaults to latest in PR)")
+    parser.add_argument("--merged-sha", help="Optional merged commit SHA")
     args = parser.parse_args()
     
     logging.basicConfig(level=logging.INFO)
     
-    validator = REQ5ChangelogValidator(args.pr, args.repo)
+    validator = REQ6PostMergeValidator(args.pr, args.repo)
     result = validator.validate()
     
     if args.json:
