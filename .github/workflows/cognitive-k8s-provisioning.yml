@@ -26,6 +26,7 @@ jobs:
   query-patterns:
     name: Query K8s Patterns
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
