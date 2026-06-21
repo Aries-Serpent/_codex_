@@ -15,10 +15,9 @@ import pytest
 # PATCH: Fix OpenSSL/cryptography incompatibility (lib.GEN_EMAIL AttributeError)
 # This happens when OpenSSL from system packages conflicts with cryptography versions
 try:
-    import sys as _sys_patch
-    import cffi as _cffi  # type: ignore[import-not-found]
+    import cffi  # type: ignore[import-not-found]  # noqa: F401
     # Pre-emptively load cryptography to avoid cascading import errors
-    import cryptography  # noqa: F401
+    __import__("cryptography")
 except Exception:
     pass  # Best effort patching
 
@@ -318,14 +317,6 @@ def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[overri
 
 def pytest_pycollect_makeitem(collector, name, obj):  # type: ignore[override]
     """Gracefully handle OpenSSL/cryptography import errors during collection."""
-    try:
-        # Attempt to collect the item normally
-        return None  # Let pytest handle it
-    except AttributeError as e:
-        # Catch the lib.GEN_EMAIL error that cascades from OpenSSL
-        if "GEN_EMAIL" in str(e):
-            # Return a skip marker instead of raising
-            return pytest.skip.Exception("OpenSSL/cryptography incompatibility (lib.GEN_EMAIL)")
     return None
 
 
