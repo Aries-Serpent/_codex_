@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5031)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5031 (SHA `274d224e`) at 2026-06-21T05:35Z [auto-generated]
+
 ### Phase 3: Coverage Optimization Campaign (Coverage 19.78% → 35%+) — 2026-06-21
 
 **Date:** 2026-06-21  
