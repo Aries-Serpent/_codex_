@@ -526,10 +526,20 @@ class TokenResolution:
     control_class: ControlClass
     is_dry_run: bool = False
     denial_reason: Optional[str] = None
+    health_check: Optional[TokenHealthCheck] = None  # Health status (2.1.1)
+    resolution_time_ms: float = 0.0  # Resolution latency (2.1.4)
 
     @property
     def available(self) -> bool:
         return self.token is not None or self.is_dry_run
+
+    @property
+    def is_healthy(self) -> bool:
+        """Check if token passed health check (if performed)."""
+        if self.health_check is None:
+            return True  # No health check means assume healthy
+        return self.health_check.status == TokenHealthStatus.HEALTHY
+
 
 
 class TokenBrokerError(RuntimeError):
@@ -540,18 +550,33 @@ class TokenBroker:
     """
     Resolves the least-privilege credential for a given mutation class.
 
+    Phase 2.1 enhancements:
+    - Health check integration (validates JWT, expiration, scopes)
+    - Circuit breaker (prevents cascade failures on dead tokens)
+    - Rotation scheduling (warns at 90-day expiration)
+    - Structured observability (metrics, state tracking)
+
     The broker respects the ``token_resolution_order`` from the autonomy
     registry and never escalates beyond what the mutation class requires.
     """
 
     def __init__(self, registry: Optional[AutonomyRegistry] = None) -> None:
         self._registry = registry or AutonomyRegistry.load()
+        # Phase 2.1 components
+        self._health_checker = TokenHealthChecker()
+        self._circuit_breaker = TokenCircuitBreaker()
+        self._rotation_scheduler = TokenRotationScheduler()
+        # Metrics (2.1.4)
+        self._resolution_count = 0
+        self._health_check_count = 0
+        self._circuit_breaker_opens = 0
 
     def resolve(
         self,
         control_class: ControlClass | str,
         *,
         require: bool = False,
+        enable_health_check: bool = True,
     ) -> TokenResolution:
         """
         Return the lowest-privilege token sufficient for *control_class*.
@@ -564,9 +589,20 @@ class TokenBroker:
             When True, raise :exc:`TokenBrokerError` if no usable credential
             is found (instead of returning a ``TokenResolution`` with
             ``token=None``).
+        enable_health_check:
+            When True (default), perform health check on resolved token.
+
+        Returns
+        -------
+        TokenResolution :
+            Resolution with token, source, health check result (if enabled),
+            and resolution latency metrics.
         """
+        start_time = time.time()
         cc = ControlClass(control_class) if isinstance(control_class, str) else control_class
         cc_lvl = _cc_level(cc)
+
+        self._resolution_count += 1
 
         # Dry-run mode — return a sentinel without looking up real credentials
         if self._registry.dry_run:
@@ -575,6 +611,7 @@ class TokenBroker:
                 token=None,
                 control_class=cc,
                 is_dry_run=True,
+                resolution_time_ms=(time.time() - start_time) * 1000,
             )
 
         resolution_order: list[str] = self._registry.token_resolution_order
@@ -583,10 +620,19 @@ class TokenBroker:
         ]
 
         for source in candidates:
+            # Check circuit breaker state
+            cb_state = self._circuit_breaker.get_state(source)
+            if cb_state == CircuitBreakerState.OPEN:
+                logger.debug(
+                    "Access broker: circuit open for %s — skipping (backoff=%.1fs)",
+                    source.value,
+                    self._circuit_breaker.get_backoff_seconds(source),
+                )
+                continue
+
             ceiling = _SOURCE_CEILING.get(source, ControlClass.READ_ONLY)
             if _cc_level(ceiling) < cc_lvl:
-                # This source's privilege ceiling is too low for the requested class
-                logger.debug(  # nosec B506 — logs enum name/ceiling labels, not credential values
+                logger.debug(
                     "Access broker: skipping %s — ceiling %s < required %s",
                     source.value,
                     ceiling.value,
@@ -595,18 +641,50 @@ class TokenBroker:
                 continue
 
             token = self._fetch(source)
-            if token:
-                logger.info(  # nosec B506 — logs control-class and source enum labels, not credential values
-                    "Access broker: resolved %s via %s (ceiling=%s)",
-                    cc.value,
-                    source.value,
-                    ceiling.value,
-                )
-                return TokenResolution(source=source, token=token, control_class=cc)
+            if not token:
+                self._circuit_breaker.record_failure(source)
+                continue
+
+            # Perform health check (Task 2.1.1)
+            health_check = None
+            if enable_health_check:
+                self._health_check_count += 1
+                health_check = self._health_checker.check_health(token, source, cc)
+                if health_check.status != TokenHealthStatus.HEALTHY:
+                    logger.warning(
+                        "Access broker: health check failed for %s: %s",
+                        source.value,
+                        health_check.message,
+                    )
+                    self._circuit_breaker.record_failure(source)
+                    continue
+
+            # Success: update circuit breaker and rotation scheduler
+            self._circuit_breaker.record_success(source)
+            self._rotation_scheduler.register_token(source)
+            self._rotation_scheduler.check_rotation_needed(source)
+
+            elapsed_ms = (time.time() - start_time) * 1000
+            logger.info(
+                "Access broker: resolved %s via %s (health=%s, latency=%.1fms)",
+                cc.value,
+                source.value,
+                health_check.status.value if health_check else "skipped",
+                elapsed_ms,
+            )
+
+            return TokenResolution(
+                source=source,
+                token=token,
+                control_class=cc,
+                health_check=health_check,
+                resolution_time_ms=elapsed_ms,
+            )
 
         # No credential found
         reason = f"No access source available for {cc.value} in resolution order {resolution_order}"
-        logger.warning("Access broker: %s", reason)  # nosec B506 — logs resolution-failure reason with enum names, not credential values
+        logger.warning("Access broker: %s", reason)
+        elapsed_ms = (time.time() - start_time) * 1000
         if require:
             raise TokenBrokerError(reason)
         return TokenResolution(
@@ -614,7 +692,27 @@ class TokenBroker:
             token=None,
             control_class=cc,
             denial_reason=reason,
+            resolution_time_ms=elapsed_ms,
         )
+
+    # ── Observability & State Access (Task 2.1.4) ──────────────────────────
+
+    def get_metrics(self) -> dict:
+        """Return metrics for monitoring: resolution count, health checks, CB state."""
+        return {
+            "resolution_count": self._resolution_count,
+            "health_check_count": self._health_check_count,
+            "circuit_breaker": self._circuit_breaker.to_dict(),
+            "rotation_schedule": self._rotation_scheduler.to_dict(),
+        }
+
+    def get_circuit_breaker_state(self, source: TokenSource) -> CircuitBreakerState:
+        """Query circuit breaker state for diagnostics."""
+        return self._circuit_breaker.get_state(source)
+
+    def get_rotation_info(self, source: TokenSource) -> TokenRotationInfo | None:
+        """Query token rotation schedule for diagnostics."""
+        return self._rotation_scheduler.get_rotation_info(source)
 
     # ── Internal ──────────────────────────────────────────────────────────────
 
