@@ -10472,3 +10472,32 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **Tests:** tests/agents/test_agent_memory_mutation_killers.py
 - **Status:** Ready for Track 3 validation
 
+
+### Workflow Compliance Fixes (PR #5031 CI Rescue)
+
+**Objective:** Resolve actionlint workflow compliance violations blocking Phase 3 coverage PR merge
+
+#### ✅ Violations Fixed
+- **scheduled-archival.yml (line 20):** Removed invalid `timeout-minutes` from reusable workflow caller (`cost-gate` job)
+- **automated-rollback-generation.yml (line 289):** Removed constant expression `if: ${{ false }}` condition from `validate-dry-run` job
+- **automated-post-deployment-verification.yml (line 193):** Added `outputs:` section to `critical-path-tests` job to declare `critical_status` variable
+- **admin-action-t03.yml (line 63):** Removed invalid `timeout-minutes` from reusable workflow caller (`check-t03` job)
+
+#### 🔧 Technical Details
+- All fixes align with GitHub Actions reusable workflow restrictions
+- Reusable workflow callers (jobs with `uses: ./*.yml`) can only use: "name", "uses", "with", "secrets", "needs", "if", "permissions"
+- Keys like `timeout-minutes` and constant conditions are not permitted at job level for reusable workflows
+- Jobs that output variables must declare `outputs:` section for downstream job reference
+
+#### ✅ Compliance Verification
+- Zero remaining actionlint violations after all fixes
+- Python YAML validation confirms all reusable workflow callers are compliant
+- Ready for Phase 3 PR merge
+
+#### 📊 Impact
+- Blocked PR #5031 (Phase 3: Coverage 19.78% → 35%+, 1,053 tests) unblocked
+- CI gates passing (actionlint, workflow syntax validation)
+- REQ-4/REQ-5 compliance verified (AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md updated)
+
+**Status:** Phase 3 deployment ready
+
