@@ -190,6 +190,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: setup
+    outputs:
+      critical_status: ${{ steps.critical.outputs.critical_status }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
