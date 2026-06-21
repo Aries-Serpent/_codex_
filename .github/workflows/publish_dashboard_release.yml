@@ -14,14 +14,14 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
-    - name: CacheManager health check
+      - uses: actions/checkout@v7
+      - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow publish_dashboard_release
         2>/dev/null || echo "Cache health: check skipped"
 
         '
-    - name: Setup Python
+      - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13

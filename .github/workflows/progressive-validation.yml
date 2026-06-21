@@ -30,15 +30,15 @@ jobs:
     permissions:
       contents: read
     steps:
-    - name: Checkout code
+      - name: Checkout code
       uses: actions/checkout@v7
-    - name: Set up Python
+      - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install minimal dependencies
+      - name: Install minimal dependencies
       run: 'python -m pip install --upgrade pip
 
         # Pin pytest plugins (PR #3248)
@@ -53,18 +53,18 @@ jobs:
         pip install pytest pytest-timeout
 
         '
-    - name: Run import validation
+      - name: Run import validation
       id: imports
       continue-on-error: false
       run: "echo \"Testing basic imports...\"\npython -c \"import sys; print(f'Python:\
         \ {sys.version}')\"\n\n# Test core module imports\npython -c \"import pathlib;\
         \ import json; import subprocess\" || exit 1\n\necho \"\u2713 Import validation\
         \ passed\"\n"
-    - name: Run smoke tests
+      - name: Run smoke tests
       run: "# Quick syntax and basic functionality tests\n# These should complete\
         \ in <2 minutes\npytest tests/ -k \"smoke or quick\" \\\n  --timeout=60 \\\
         \n  -v \\\n  --tb=short \\\n  -x \\\n  || echo \"smoke_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report smoke results
+      - name: Report smoke results
       if: always()
       run: 'echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
 
@@ -75,8 +75,8 @@ jobs:
         '
   unit-tests:
     needs:
-    - analyze
-    - smoke-tests
+      - analyze
+      - smoke-tests
     if: 'needs.analyze.outputs.pr_size == ''small'' ||
 
       needs.analyze.outputs.pr_size == ''medium'' ||
@@ -96,15 +96,15 @@ jobs:
         - 3
       fail-fast: false
     steps:
-    - name: Checkout code
+      - name: Checkout code
       uses: actions/checkout@v7
-    - name: Set up Python
+      - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout pytest-xdist
@@ -112,12 +112,12 @@ jobs:
         pip install -e .
 
         '
-    - name: Run unit tests (shard ${{ matrix.shard }})
+      - name: Run unit tests (shard ${{ matrix.shard }})
       run: "pytest tests/ \\\n  --timeout=180 \\\n  -m \"not slow and not integration\"\
         \ \\\n  --dist=loadfile \\\n  -n auto \\\n  --shard-id=$((${{ matrix.shard\
         \ }} - 1)) \\\n  --num-shards=3 \\\n  -v \\\n  || echo \"unit_failed=true\"\
         \ >> $GITHUB_OUTPUT\n"
-    - name: Report unit results
+      - name: Report unit results
       if: always()
       run: 'echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
 
@@ -126,8 +126,8 @@ jobs:
         '
   integration-tests:
     needs:
-    - analyze
-    - unit-tests
+      - analyze
+      - unit-tests
     if: 'needs.analyze.outputs.pr_size == ''small'' ||
 
       github.event.inputs.force_full == ''true''
@@ -138,15 +138,15 @@ jobs:
       contents: read
     timeout-minutes: 30
     steps:
-    - name: Checkout code
+      - name: Checkout code
       uses: actions/checkout@v7
-    - name: Set up Python
+      - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout
@@ -154,10 +154,10 @@ jobs:
         pip install -e .
 
         '
-    - name: Run integration tests
+      - name: Run integration tests
       run: "pytest tests/ \\\n  --timeout=300 \\\n  -m \"integration and not slow\"\
         \ \\\n  -v \\\n  --tb=short \\\n  || echo \"integration_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report integration results
+      - name: Report integration results
       if: always()
       run: 'echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
 
@@ -166,8 +166,8 @@ jobs:
         '
   slow-tests:
     needs:
-    - analyze
-    - integration-tests
+      - analyze
+      - integration-tests
     if: 'github.event.inputs.force_full == ''true'' &&
 
       needs.analyze.outputs.pr_size == ''small''
@@ -178,15 +178,15 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - name: Checkout code
+      - name: Checkout code
       uses: actions/checkout@v7
-    - name: Set up Python
+      - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout
@@ -194,10 +194,10 @@ jobs:
         pip install -e .
 
         '
-    - name: Run slow tests
+      - name: Run slow tests
       run: "pytest tests/ \\\n  --timeout=600 \\\n  -m \"slow\" \\\n  -v \\\n  --tb=short\
         \ \\\n  || echo \"slow_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report slow results
+      - name: Report slow results
       if: always()
       run: 'echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
 
@@ -206,11 +206,11 @@ jobs:
         '
   validation-summary:
     needs:
-    - analyze
-    - smoke-tests
-    - unit-tests
-    - integration-tests
-    - slow-tests
+      - analyze
+      - smoke-tests
+      - unit-tests
+      - integration-tests
+      - slow-tests
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -218,9 +218,9 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - name: Checkout (needed for post-pr-summary action)
+      - name: Checkout (needed for post-pr-summary action)
       uses: actions/checkout@v7
-    - name: Generate summary
+      - name: Generate summary
       id: gen-summary
       uses: actions/github-script@v8
       with:
@@ -243,7 +243,7 @@ jobs:
           \ | On-demand |`,\n].join('\\n');\n\ncore.setOutput('status', overallStatus);\n\
           core.setOutput('summary-line', summaryLine);\ncore.setOutput('details',\
           \ details);\n"
-    - name: Post to PR Status Dashboard
+      - name: Post to PR Status Dashboard
       if: github.event_name == 'pull_request'
       uses: ./.github/actions/post-pr-summary
       with:
@@ -267,12 +267,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v7
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 60
     needs: cost-gate
     steps:
-    - name: Free disk space
+      - name: Free disk space
       run: 'echo "=== Before cleanup ==="
 
         df -h
@@ -63,36 +63,36 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
-    - name: Install Rust toolchain
+      - uses: actions/checkout@v7
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
       with:
         toolchain: stable
         components: rustfmt, clippy
-    - name: Cache cargo registry
+      - name: Cache cargo registry
       uses: actions/cache@v5
       with:
         path: ~/.cargo/registry
         key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-    - name: Cache cargo index
+      - name: Cache cargo index
       uses: actions/cache@v5
       with:
         path: ~/.cargo/git
         key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-    - name: Cache cargo build
+      - name: Cache cargo build
       uses: actions/cache@v5
       with:
         path: target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-    - name: Validate Cargo.toml features
+      - name: Validate Cargo.toml features
       run: python scripts/ci/validate_cargo_features.py
-    - name: Run cargo fmt
+      - name: Run cargo fmt
       run: cargo fmt --all -- --check
-    - name: Run cargo clippy
+      - name: Run cargo clippy
       run: cargo clippy --all-targets --all-features --locked -- -D warnings
-    - name: Run unit tests
+      - name: Run unit tests
       run: cargo test --lib --release --locked --verbose
-    - name: Upload test results
+      - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -106,10 +106,10 @@ jobs:
     timeout-minutes: 60
     needs: rust_tests
     steps:
-    - uses: actions/checkout@v7
-    - name: Install Rust toolchain
+      - uses: actions/checkout@v7
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Run benchmarks
+      - name: Run benchmarks
       timeout-minutes: 12
       continue-on-error: true
       run: "# Run benchmarks with timeout to prevent hanging\n# Reduced sample size\
@@ -132,7 +132,7 @@ jobs:
         \ results\" >> benchmark_results.txt\n  done\nelse\n  echo \"\u26A0\uFE0F\
         \  No benchmark data available (timeout or failure)\" >> benchmark_results.txt\n\
         fi\n"
-    - name: Upload benchmark results
+      - name: Upload benchmark results
       uses: actions/upload-artifact@v5
       with:
         name: benchmark-results
@@ -150,7 +150,7 @@ jobs:
     timeout-minutes: 60
     needs: rust_tests
     steps:
-    - name: Free disk space
+      - name: Free disk space
       run: 'echo "=== Before cleanup ==="
 
         df -h
@@ -164,12 +164,12 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
-    - name: Install Rust toolchain
+      - uses: actions/checkout@v7
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Install tarpaulin
+      - name: Install tarpaulin
       run: cargo install cargo-tarpaulin
-    - name: Generate coverage
+      - name: Generate coverage
       run: "mkdir -p coverage\ncargo tarpaulin --out Lcov --out Xml --output-dir coverage\
         \ --release --timeout 600\n\n# Verify coverage files were created\nif [ -f\
         \ coverage/lcov.info ]; then\n  echo \"\u2705 Coverage generated: lcov.info\"\
@@ -177,14 +177,14 @@ jobs:
         \ not generated\"\nfi\n\nif [ -f coverage/cobertura.xml ]; then\n  echo \"\
         \u2705 Coverage generated: cobertura.xml\"\n  ls -lh coverage/cobertura.xml\n\
         else\n  echo \"\u26A0\uFE0F Warning: cobertura.xml not generated\"\nfi\n"
-    - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov
       uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
       if: always()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage/lcov.info
         fail_ci_if_error: false
-    - name: Upload coverage report
+      - name: Upload coverage report
       uses: actions/upload-artifact@v5
       with:
         name: coverage-report
@@ -198,7 +198,7 @@ jobs:
     timeout-minutes: 60
     needs: rust_tests
     steps:
-    - name: Free disk space
+      - name: Free disk space
       run: 'echo "=== Before cleanup ==="
 
         df -h
@@ -212,21 +212,21 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
-    - name: Set up Python 3.12 with tiered cache
+      - uses: actions/checkout@v7
+      - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
-    - name: Install Rust toolchain
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Install maturin and dependencies
+      - name: Install maturin and dependencies
       run: 'python -m pip install --upgrade pip
 
         pip install maturin pytest pytest-cov setuptools wheel virtualenv
 
         '
-    - name: Build Python extension with maturin
+      - name: Build Python extension with maturin
       run: "# Build and install the extension using extension-module feature\n# This\
         \ avoids linking libpython which causes issues in CI\nmaturin build --release\
         \ --features extension-module || {\n  echo \"\u26A0\uFE0F Maturin build failed\"\
@@ -237,7 +237,7 @@ jobs:
         \u2705 Extension imported successfully\")\nexcept ImportError as e:\n    print(f\"\
         \u26A0\uFE0F Import failed: {e}\")\n    print(\"This is expected if Python\
         \ bindings are not configured\")\n    raise SystemExit(0)\nPY\n"
-    - name: Run integration tests
+      - name: Run integration tests
       continue-on-error: true
       run: "# Check if integration tests exist\nif [ -d \"tests/integration\" ]; then\n\
         \  python -m pytest tests/integration/ -v --cov-report=html --cov-report=term\
@@ -249,7 +249,7 @@ jobs:
         <html>\n<head><title>Integration Test Coverage Report</title></head>\n<body>\n\
         <h1>Integration Test Coverage Report</h1>\n<p>No coverage data available -\
         \ tests not run or no tests found</p>\n</body>\n</html>\nEOF\nfi\n"
-    - name: Upload integration test results
+      - name: Upload integration test results
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -261,25 +261,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs:
-    - rust_benchmarks
+      - rust_benchmarks
     permissions:
       contents: read
       pull-requests: write
     steps:
-    - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
       with:
         fetch-depth: 0
-    - name: Download benchmark results
+      - name: Download benchmark results
       uses: actions/download-artifact@v5
       with:
         name: benchmark-results
-    - name: Verify benchmark results exist
+      - name: Verify benchmark results exist
       run: "echo \"=== Downloaded benchmark artifacts ===\"\nls -lah\n\nif [ -f \"\
         benchmark_results.txt\" ]; then\n  echo \"\u2705 Found benchmark_results.txt\"\
         \n  head -10 benchmark_results.txt\nelse\n  echo \"\u274C benchmark_results.txt\
         \ not found\"\n  echo \"Available files:\"\n  find . -name \"*.txt\" -o -name\
         \ \"*.json\"\n  exit 1\nfi\n"
-    - name: Compare with baseline
+      - name: Compare with baseline
       run: "# Create coverage directory for report output\nmkdir -p coverage\n\n#\
         \ Check if comparison script exists\nif [ -f \"scripts/validate_benchmarks.py\"\
         \ ]; then\n  echo \"Running benchmark validation...\"\n  python scripts/validate_benchmarks.py\
@@ -298,7 +298,7 @@ jobs:
         \ for future comparison\"\n  mkdir -p coverage\n  echo \"Benchmark validation\
         \ skipped - validation script not found\" > coverage/benchmark_validation_report.txt\n\
         fi\n"
-    - name: Comment on PR
+      - name: Comment on PR
       if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt')
         != '' }}
       continue-on-error: true
@@ -333,15 +333,15 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
-    - name: Install Rust toolchain
+      - uses: actions/checkout@v7
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Run cargo audit
+      - name: Run cargo audit
       uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
       continue-on-error: true
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    - name: Run cargo deny (if available)
+      - name: Run cargo deny (if available)
       continue-on-error: true
       run: "if ! command -v cargo-deny &> /dev/null; then\n  cargo install cargo-deny\
         \ --locked\nfi\ncargo deny check advisories\n"
@@ -352,14 +352,14 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
-    - name: Install Rust toolchain
+      - uses: actions/checkout@v7
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Build Rust docs
+      - name: Build Rust docs
       run: 'cargo doc --no-deps --document-private-items --all-features
 
         '
-    - name: Upload documentation
+      - name: Upload documentation
       uses: actions/upload-artifact@v5
       with:
         name: rust-documentation
@@ -371,9 +371,9 @@ jobs:
       contents: read
     timeout-minutes: 60
     needs:
-    - rust_tests
-    - python_integration
-    - code_coverage
+      - rust_tests
+      - python_integration
+      - code_coverage
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
       matrix:
@@ -382,8 +382,8 @@ jobs:
         python-version:
         - 3.12.13
     steps:
-    - uses: actions/checkout@v7
-    - name: Set up Python
+      - uses: actions/checkout@v7
+      - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
@@ -393,13 +393,13 @@ jobs:
           requirements*.txt
 
           '
-    - name: Install Rust toolchain
+      - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
-    - name: Install maturin
+      - name: Install maturin
       run: pip install maturin
-    - name: Build wheel
+      - name: Build wheel
       run: maturin build --release
-    - name: Upload wheel
+      - name: Upload wheel
       uses: actions/upload-artifact@v5
       with:
         name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
@@ -409,20 +409,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs:
-    - rust_tests
-    - rust_benchmarks
-    - code_coverage
-    - python_integration
-    - security_audit
+      - rust_tests
+      - rust_benchmarks
+      - code_coverage
+      - python_integration
+      - security_audit
     if: always()
     permissions:
       contents: read
     steps:
-    - name: Checkout for cache health
+      - name: Checkout for cache health
       uses: actions/checkout@v7
       with:
         sparse-checkout: scripts/ci
-    - name: Cache health report
+      - name: Cache health report
       continue-on-error: true
       run: 'pip install -q pip 2>/dev/null
 
@@ -430,7 +430,7 @@ jobs:
         --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
         '
-    - name: Check all jobs
+      - name: Check all jobs
       run: "echo \"All required jobs completed\"\n# Treat \"skipped\" as neutral \u2014\
         \ jobs are skipped when the cost gate\n# blocks execution on non-approved\
         \ RED-tier PRs.  Only \"failure\"\n# indicates an actual test regression.\n\
@@ -456,12 +456,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v7
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

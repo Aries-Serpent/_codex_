@@ -27,20 +27,20 @@ jobs:
     timeout-minutes: 15
     needs: cost-gate
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v7
       with:
         fetch-depth: 1
-    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+      - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
         \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
-    - name: Set up Python
+      - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
-    - name: Check RAG index freshness
+      - name: Check RAG index freshness
       id: freshness
       run: "python3 - <<'PYEOF'\nimport json, os, sys\nfrom datetime import datetime,\
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
@@ -65,28 +65,28 @@ jobs:
         ], \"a\") as f:\n    f.write(f\"freshness_status={status}\\n\")\n    f.write(f\"\
         age_hours={age_hours:.1f}\\n\")\n    f.write(f\"generated_at={generated_at_str}\\\
         n\")\nPYEOF\n"
-    - name: Install embedding dependencies
+      - name: Install embedding dependencies
       run: |
         # Upgrade cryptography and pyOpenSSL first to fix compatibility issues
         # with transformers/sentence-transformers on Python 3.12
         # (S228: fixes OpenSSL/cryptography mismatch in system packages)
         pip install --upgrade cryptography pyOpenSSL --quiet
         pip install sentence-transformers faiss-cpu numpy --quiet
-    - name: Rebuild embedding index
+      - name: Rebuild embedding index
       id: rebuild
       run: "python scripts/ci/build_embeddings.py\npython3 -c \"\nimport json\nmeta\
         \ = json.load(open('.codex/embeddings/codex_index_meta.json'))\nimport os\n\
         with open(os.environ['GITHUB_OUTPUT'], 'a') as f:\n    f.write(f\\\"chunk_count={meta['chunk_count']}\\\
         n\\\")\n    f.write(f\\\"build_time={meta['build_time_seconds']}\\n\\\")\n\
         \"\n"
-    - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
+      - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
       run: "CHUNK_COUNT=\"${{ steps.rebuild.outputs.chunk_count }}\"\nBUILD_TIME=\"\
         ${{ steps.rebuild.outputs.build_time }}\"\nif [ -z \"$CHUNK_COUNT\" ] || [\
         \ \"$CHUNK_COUNT\" -lt 100 ]; then\n  echo \"::error::REQ-10 corpus health:\
         \ chunk count ${CHUNK_COUNT} below threshold (expected \u2265100)\"\n  exit\
         \ 1\nelse\n  echo \"\u2705 REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed\
         \ in ${BUILD_TIME}s\"\nfi\n"
-    - name: "Active-PR guard \u2014 skip push when any open/draft PR targets the push\
+      - name: "Active-PR guard \u2014 skip push when any open/draft PR targets the push\
         \ target"
       id: pr_guard
       env:
@@ -102,7 +102,7 @@ jobs:
         \ embedding index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n \
         \   echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
         \ >> \"$GITHUB_OUTPUT\"\nfi\n"
-    - name: Commit updated index metadata
+      - name: Commit updated index metadata
       if: steps.pr_guard.outputs.pr_skip != 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -118,7 +118,7 @@ jobs:
         \ || \\\n  git commit -m \"chore(phase-3): update embedding index metadata\
         \ [skip ci]\"\ngit push origin HEAD:\"$_TARGET\"\necho \"\U0001F4E4 Pushed\
         \ to $_TARGET\"\n"
-    - name: Post rebuild summary
+      - name: Post rebuild summary
       if: always()
       run: "echo \"## \U0001F9E0 Embedding Index Rebuild\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\nif [ -f \".codex/embeddings/codex_index_meta.json\"\

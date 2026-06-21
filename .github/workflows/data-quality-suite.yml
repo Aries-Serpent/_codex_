@@ -68,13 +68,13 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
-    - name: Setup Python
+      - uses: actions/checkout@v7
+      - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: ephemeral
-    - name: Install validation dependencies
+      - name: Install validation dependencies
       run: 'python -m pip install --upgrade pip
 
         # Install codex package with test dependencies
@@ -93,7 +93,7 @@ jobs:
         pip install -e ".[test]"
 
         '
-    - name: Validate data manifests
+      - name: Validate data manifests
       run: "# Use validate_dataset.py which exists in the repository\nif [ ! -f \"\
         scripts/validate_dataset.py\" ]; then\n  echo \"\u274C Error: Dataset validation\
         \ script not found at scripts/validate_dataset.py\"\n  exit 1\nfi\n# Find\
@@ -103,12 +103,12 @@ jobs:
         \n  exit 0\nfi\nfail=0\nfor manifest in $manifests; do\n  echo \"Validating:\
         \ $manifest\"\n  python scripts/validate_dataset.py \"$manifest\" --check-splits\
         \ || fail=1\ndone\nexit $fail\n"
-    - name: Check for data drift
+      - name: Check for data drift
       run: "if [ -f \"scripts/check_data_drift.py\" ]; then\n  python scripts/check_data_drift.py\n\
         else\n  echo \"\u26A0\uFE0F  Warning: Data drift check script not found -\
         \ skipping drift analysis\"\n  echo \"This is expected if drift detection\
         \ is not yet implemented\"\nfi\n"
-    - name: Upload validation results
+      - name: Upload validation results
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -131,9 +131,9 @@ jobs:
 
       '
     steps:
-    - name: Checkout
+      - name: Checkout
       uses: actions/checkout@v7
-    - name: Free disk space for CI
+      - name: Free disk space for CI
       run: 'echo "=== Disk usage before cleanup ==="
 
         df -h
@@ -163,22 +163,22 @@ jobs:
         df -h
 
         '
-    - name: Setup Python
+      - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: live
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
         pip install -e ".[dev,test]"
 
         '
-    - name: Clear Python caches
+      - name: Clear Python caches
       run: "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true\n\
         find . -type f -name \"*.pyc\" -delete 2>/dev/null || true\nrm -rf .pytest_cache\n\
         echo \"\u2705 Python caches cleared\"\n"
-    - name: Run determinism validation
+      - name: Run determinism validation
       run: 'echo "=== Checking for deterministic behavior ==="
 
         echo "PYTHONHASHSEED=$PYTHONHASHSEED"
@@ -198,17 +198,17 @@ jobs:
         echo "- Thread count: $OMP_NUM_THREADS" >> $GITHUB_STEP_SUMMARY
 
         '
-    - name: Run determinism tests (first pass)
+      - name: Run determinism tests (first pass)
       id: test_pass1
       run: "set +e\npytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass1.log\
         \ 2>&1\necho \"$?\" > determinism_pass1_exit.txt\nset -e\necho \"\u2705 First\
         \ pass complete (exit code: $(cat determinism_pass1_exit.txt))\"\n"
-    - name: Run determinism tests (second pass)
+      - name: Run determinism tests (second pass)
       id: test_pass2
       run: "set +e\npytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass2.log\
         \ 2>&1\necho \"$?\" > determinism_pass2_exit.txt\nset -e\necho \"\u2705 Second\
         \ pass complete (exit code: $(cat determinism_pass2_exit.txt))\"\n"
-    - name: Compare results
+      - name: Compare results
       run: "EXIT1=$(cat determinism_pass1_exit.txt)\nEXIT2=$(cat determinism_pass2_exit.txt)\n\
         \n# Check if logs exist\nif [ ! -f \"determinism_pass1.log\" ] || [ ! -f \"\
         determinism_pass2.log\" ]; then\n  echo \"\u274C Missing log files - determinism\
@@ -267,7 +267,7 @@ jobs:
         \ Non-deterministic behavior detected\" >> $GITHUB_STEP_SUMMARY\n  echo '```diff'\
         \ >> $GITHUB_STEP_SUMMARY\n  head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY\n\
         \  echo '```' >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
-    - name: Upload determinism reports
+      - name: Upload determinism reports
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -293,21 +293,21 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
-    - name: Setup Python
+      - uses: actions/checkout@v7
+      - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: ephemeral
-    - name: Install DVC
+      - name: Install DVC
       run: 'python -m pip install --upgrade pip
 
         pip install dvc
 
         '
-    - name: Create workbench evidence directory
+      - name: Create workbench evidence directory
       run: mkdir -p workbench/evidence
-    - name: DVC pipeline reproducibility check
+      - name: DVC pipeline reproducibility check
       run: 'pip install dvc
 
         dvc repro --no-commit --dry 2>&1 || true
@@ -319,7 +319,7 @@ jobs:
         cat workbench/evidence/dvc_status.json >> "$GITHUB_STEP_SUMMARY"
 
         '
-    - name: Upload DVC status artifact
+      - name: Upload DVC status artifact
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -332,12 +332,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs:
-    - data_validation
-    - determinism_check
-    - dvc_pipeline
+      - data_validation
+      - determinism_check
+      - dvc_pipeline
     if: always()
     steps:
-    - name: Generate comprehensive summary
+      - name: Generate comprehensive summary
       run: "echo \"## \U0001F52C Data Quality & Determinism Summary\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode:** ${{ inputs.mode || github.event_name\
         \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\
@@ -350,7 +350,7 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\necho \"- Data drift analysis completed\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"- Determinism tests run twice for comparison\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"- DVC pipeline reproducibility verified (dry-run)\" >> $GITHUB_STEP_SUMMARY\n"
-    - name: Cache health report
+      - name: Cache health report
       if: always()
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow data-quality-suite
@@ -373,12 +373,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v7
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
