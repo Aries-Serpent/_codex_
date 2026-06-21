@@ -17,7 +17,7 @@ import pytest
 from security.token_rotation import (
     RotationPolicy,
     RotationTrigger,
-    TokenManager,
+    TokenRotationManager,
     TokenMetadata,
     TokenState,
 )
@@ -52,7 +52,7 @@ def token_metadata():
 @pytest.fixture
 def token_manager(rotation_policy):
     """Create a token manager."""
-    return TokenManager(policy=rotation_policy)
+    return TokenRotationManager(policy=rotation_policy)
 
 
 # ============================================================================
@@ -302,8 +302,8 @@ class TestRotationPolicy:
 # ============================================================================
 
 
-class TestTokenManager:
-    """Test TokenManager class."""
+class TestTokenRotationManager:
+    """Test TokenRotationManager class."""
 
     def test_token_manager_creation(self, token_manager):
         """Test creating a token manager."""
@@ -440,7 +440,7 @@ class TestRotationScenarios:
     def test_scenario_max_rotation_limit(self, token_manager, rotation_policy):
         """Test max rotation count enforcement."""
         policy = RotationPolicy(max_rotation_count=3)
-        manager = TokenManager(policy=policy)
+        manager = TokenRotationManager(policy=policy)
 
         metadata = TokenMetadata(
             token_id="token_123",

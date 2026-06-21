@@ -280,5 +280,8 @@ class DBManager:
             cls._CONNECTION_POOL.clear()
 
 
+# Alias for backward compatibility
+DatabaseManager = DBManager
+
 # Global instance
 db_manager = DBManager()
