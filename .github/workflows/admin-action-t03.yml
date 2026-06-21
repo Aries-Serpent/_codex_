@@ -60,4 +60,3 @@ jobs:
         - Full token review: `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`\
         \ \xA7T-03\n- Pattern guide: `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md`\n\
         - PR context: [PR #4346](https://github.com/Aries-Serpent/_codex_/pull/4346)\n"
-    timeout-minutes: 60
