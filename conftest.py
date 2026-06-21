@@ -313,12 +313,6 @@ def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[overri
 
     return None
 
-
-def pytest_pycollect_makeitem(collector, name, obj):  # type: ignore[override]
-    """Defer collection to pytest's default behavior."""
-    return None
-
-
 def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]
     # Skip P19 shadow import affected files
     _P19_SHADOW_IMPORT_AFFECTED = [
