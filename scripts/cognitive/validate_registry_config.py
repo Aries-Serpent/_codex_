@@ -7,12 +7,12 @@ discovered best practices and generating confidence scores.
 """
 
 import json
+import logging
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-import logging
-import re
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -40,7 +40,7 @@ class RegistryValidator:
                     return data.get("patterns", {})
             except Exception as e:
                 logger.warning(f"Failed to load patterns file: {e}")
-        
+
         # Return default patterns if file not found
         return self._get_default_patterns()
 
@@ -124,7 +124,7 @@ class RegistryValidator:
     def validate_registry_config(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """Validate a registry configuration."""
         registry_type = config.get("registry_type", "").lower()
-        
+
         if registry_type not in self.patterns:
             return {
                 "valid": False,
@@ -132,11 +132,11 @@ class RegistryValidator:
                 "error": f"Unknown registry type: {registry_type}",
                 "checks": [],
             }
-        
+
         pattern = self.patterns[registry_type]
         checks = self._run_checks(config, pattern, registry_type)
         confidence = self._calculate_confidence(checks)
-        
+
         return {
             "valid": confidence >= self.confidence_threshold,
             "confidence": round(confidence, 3),
@@ -152,25 +152,25 @@ class RegistryValidator:
     ) -> List[Dict[str, Any]]:
         """Run validation checks."""
         checks = []
-        
+
         # Check 1: Required fields
         checks.append(self._check_required_fields(config, pattern))
-        
+
         # Check 2: Endpoint validation
         checks.append(self._check_endpoint(config, pattern))
-        
+
         # Check 3: Authentication method
         checks.append(self._check_authentication(config, pattern))
-        
+
         # Check 4: Credentials present
         checks.append(self._check_credentials(config, pattern))
-        
+
         # Check 5: Namespace structure
         checks.append(self._check_namespace(config, pattern))
-        
+
         # Check 6: Security settings
         checks.append(self._check_security_settings(config, registry_type))
-        
+
         return checks
 
     @staticmethod
@@ -181,7 +181,7 @@ class RegistryValidator:
         required = pattern.get("required_fields", [])
         present = [f for f in required if f in config]
         missing = [f for f in required if f not in config]
-        
+
         return {
             "name": "Required Fields Check",
             "passed": len(missing) == 0,
@@ -200,7 +200,7 @@ class RegistryValidator:
         """Check endpoint configuration."""
         endpoint = config.get("endpoint", "")
         pattern_endpoint = pattern.get("endpoint", "")
-        
+
         if not endpoint:
             return {
                 "name": "Endpoint Check",
@@ -208,7 +208,7 @@ class RegistryValidator:
                 "details": {"error": "Endpoint not provided"},
                 "weight": 0.20,
             }
-        
+
         # Simple pattern matching for wildcards
         if "*" in pattern_endpoint:
             # Match pattern like *.dkr.ecr.*.amazonaws.com
@@ -242,7 +242,7 @@ class RegistryValidator:
         """Check authentication method."""
         auth_method = config.get("authentication_method", "")
         expected_method = pattern.get("authentication_method", "")
-        
+
         return {
             "name": "Authentication Method Check",
             "passed": auth_method == expected_method,
@@ -260,7 +260,7 @@ class RegistryValidator:
     ) -> Dict[str, Any]:
         """Check if credentials are securely stored."""
         has_credentials = bool(config.get("credentials_provided", False))
-        
+
         return {
             "name": "Credentials Storage Check",
             "passed": has_credentials,
@@ -278,7 +278,7 @@ class RegistryValidator:
         """Check namespace structure."""
         namespace = config.get("namespace", "")
         structure = pattern.get("namespace_structure", "")
-        
+
         return {
             "name": "Namespace Structure Check",
             "passed": bool(namespace),
@@ -315,10 +315,10 @@ class RegistryValidator:
                 "artifact_analysis_enabled",
             ],
         }
-        
+
         required_checks = security_checks.get(registry_type, [])
         enabled_checks = [c for c in required_checks if config.get(c, False)]
-        
+
         return {
             "name": "Security Settings Check",
             "passed": len(enabled_checks) > 0,
@@ -335,13 +335,13 @@ class RegistryValidator:
         """Calculate overall confidence score."""
         if not checks:
             return 0.0
-        
+
         total_weight = sum(c.get("weight", 0) for c in checks)
         weighted_score = sum(
             (1.0 if c.get("passed", False) else 0.0) * c.get("weight", 0)
             for c in checks
         )
-        
+
         return weighted_score / total_weight if total_weight > 0 else 0.0
 
     @staticmethod
@@ -360,7 +360,7 @@ class RegistryValidator:
     def _generate_recommendations(checks: List[Dict[str, Any]]) -> List[str]:
         """Generate recommendations based on failed checks."""
         recommendations = []
-        
+
         for check in checks:
             if not check.get("passed", False):
                 name = check.get("name", "")
@@ -388,14 +388,14 @@ class RegistryValidator:
                     recommendations.append(
                         "Enable recommended security features for this registry type"
                     )
-        
+
         return recommendations
 
 
 def validate_config_sample() -> Dict[str, Any]:
     """Create and validate a sample configuration."""
     validator = RegistryValidator()
-    
+
     # Sample GHCR configuration
     sample_config = {
         "registry_type": "ghcr",
@@ -408,7 +408,7 @@ def validate_config_sample() -> Dict[str, Any]:
         "ghas_scanning_enabled": True,
         "container_signing_enabled": True,
     }
-    
+
     return validator.validate_registry_config(sample_config)
 
 
@@ -417,10 +417,10 @@ def main():
     try:
         # Initialize validator
         validator = RegistryValidator()
-        
+
         # Generate sample validation
         validation_result = validate_config_sample()
-        
+
         # Create output
         output = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
@@ -431,14 +431,14 @@ def main():
                 "threshold": validator.confidence_threshold,
             },
         }
-        
+
         # Log results
         logger.info(f"Validation confidence: {validation_result['confidence']}")
         logger.info(f"Valid: {validation_result['valid']}")
-        
+
         # Print output
         print(json.dumps(output, indent=2))
-        
+
         return 0
     except Exception as e:
         logger.error(f"Error validating registry config: {e}", exc_info=True)

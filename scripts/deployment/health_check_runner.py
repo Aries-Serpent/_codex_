@@ -13,11 +13,10 @@ Output:
 """
 
 import json
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 
 class HealthCheckRunner:
@@ -299,7 +298,7 @@ def main():
 
     # Print summary
     print(f"\n{'='*50}")
-    print(f"Health Check Summary")
+    print("Health Check Summary")
     print(f"{'='*50}")
     print(f"Overall Status: {results['overall_status'].upper()}")
     print(f"Passed: {results['summary']['passed']}")
@@ -309,7 +308,7 @@ def main():
 
     # Save results
     files = runner.save_results(results, args.output)
-    print(f"\n✓ Health checks completed")
+    print("\n✓ Health checks completed")
     print(f"✓ Results saved to {args.output}/health-reports/")
 
 

@@ -30,7 +30,6 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -152,10 +151,10 @@ def generate_release_audit(
     # Collect release artifacts
     artifacts = []
     artifact_paths = [
-        Path(f".codex/release-notes.md"),
-        Path(f".codex/provenance.json"),
-        Path(f".codex/attestations/attestations.json"),
-        Path(f".codex/sbom/sbom_base-phase2-build.json"),
+        Path(".codex/release-notes.md"),
+        Path(".codex/provenance.json"),
+        Path(".codex/attestations/attestations.json"),
+        Path(".codex/sbom/sbom_base-phase2-build.json"),
     ]
 
     # Compute checksums

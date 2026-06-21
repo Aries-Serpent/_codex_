@@ -6,7 +6,7 @@ Estimates infrastructure costs and provides impact analysis.
 
 import json
 import logging
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Dict, List
 
 logging.basicConfig(
@@ -80,18 +80,18 @@ class InfrastructureCostEstimator:
     def estimate_cost(self, pattern: Dict) -> CostEstimate:
         """Estimate infrastructure costs."""
         logger.info(f"Estimating costs for {pattern['cluster_name']}")
-        
+
         provider = pattern['cloud_provider']
         environment = pattern['environment']
         sizing = pattern['resource_sizing']
-        
+
         resources = []
         total_monthly = 0.0
-        
+
         # Calculate node costs
         nodes = sizing['recommended_nodes']
         machine_type = sizing['node_machine_type']
-        
+
         if provider == "aws":
             hourly_cost = self.pricing["aws"].get(machine_type, 0.1)
             monthly_node_cost = hourly_cost * 730
@@ -102,7 +102,7 @@ class InfrastructureCostEstimator:
                 total_monthly=monthly_node_cost * nodes
             ))
             total_monthly += monthly_node_cost * nodes
-            
+
             # Add storage
             storage_gb = int(sizing['disk_per_node'].rstrip('Gi'))
             storage_cost = storage_gb * nodes * self.pricing["aws"]["instance_storage"]
@@ -113,7 +113,7 @@ class InfrastructureCostEstimator:
                 total_monthly=storage_cost
             ))
             total_monthly += storage_cost
-            
+
             # Add networking
             if "prod" in environment:
                 resources.append(ResourceCost(
@@ -123,7 +123,7 @@ class InfrastructureCostEstimator:
                     total_monthly=self.pricing["aws"]["nat_gateway"] * 2
                 ))
                 total_monthly += self.pricing["aws"]["nat_gateway"] * 2
-            
+
             # Add load balancer
             resources.append(ResourceCost(
                 resource_type="Network Load Balancer",
@@ -132,7 +132,7 @@ class InfrastructureCostEstimator:
                 total_monthly=self.pricing["aws"]["load_balancer"]
             ))
             total_monthly += self.pricing["aws"]["load_balancer"]
-            
+
         elif provider == "gcp":
             machine_pricing = self.pricing["gcp"].get(machine_type, 0.05)
             monthly_node_cost = machine_pricing * 730
@@ -143,7 +143,7 @@ class InfrastructureCostEstimator:
                 total_monthly=monthly_node_cost * nodes
             ))
             total_monthly += monthly_node_cost * nodes
-            
+
             # Add storage
             storage_gb = int(sizing['disk_per_node'].rstrip('Gi'))
             storage_cost = storage_gb * nodes * self.pricing["gcp"]["persistent_disk"]
@@ -154,7 +154,7 @@ class InfrastructureCostEstimator:
                 total_monthly=storage_cost
             ))
             total_monthly += storage_cost
-            
+
             # Add load balancer
             resources.append(ResourceCost(
                 resource_type="Cloud Load Balancer",
@@ -163,7 +163,7 @@ class InfrastructureCostEstimator:
                 total_monthly=self.pricing["gcp"]["load_balancer"]
             ))
             total_monthly += self.pricing["gcp"]["load_balancer"]
-            
+
         elif provider == "azure":
             machine_pricing = self.pricing["azure"].get(machine_type, 0.1)
             monthly_node_cost = machine_pricing * 730
@@ -174,7 +174,7 @@ class InfrastructureCostEstimator:
                 total_monthly=monthly_node_cost * nodes
             ))
             total_monthly += monthly_node_cost * nodes
-            
+
             # Add managed disk
             disk_cost = self.pricing["azure"]["managed_disk"] * nodes
             resources.append(ResourceCost(
@@ -184,7 +184,7 @@ class InfrastructureCostEstimator:
                 total_monthly=disk_cost
             ))
             total_monthly += disk_cost
-            
+
             # Add load balancer
             resources.append(ResourceCost(
                 resource_type="Load Balancer",
@@ -193,22 +193,22 @@ class InfrastructureCostEstimator:
                 total_monthly=self.pricing["azure"]["load_balancer"]
             ))
             total_monthly += self.pricing["azure"]["load_balancer"]
-        
+
         # Calculate projections
         total_yearly = total_monthly * 12
         total_3year = total_yearly * 3
-        
+
         # Cost breakdown
         cost_breakdown = {
             resource.resource_type: resource.total_monthly
             for resource in resources
         }
-        
+
         # Optimization opportunities
         optimization_opportunities = self._identify_optimizations(
             pattern, sizing, environment
         )
-        
+
         # Monthly projection
         monthly_projection = {
             "month_1": total_monthly,
@@ -216,7 +216,7 @@ class InfrastructureCostEstimator:
             "month_12": total_yearly,
             "year_3": total_3year,
         }
-        
+
         estimate = CostEstimate(
             cluster_name=pattern['cluster_name'],
             environment=environment,
@@ -229,29 +229,29 @@ class InfrastructureCostEstimator:
             optimization_opportunities=optimization_opportunities,
             monthly_projection=monthly_projection
         )
-        
+
         logger.info(f"Estimated cost: ${total_monthly:.2f}/month, ${total_yearly:.2f}/year")
         return estimate
 
     def _identify_optimizations(self, pattern: Dict, sizing: Dict, environment: str) -> List[str]:
         """Identify cost optimization opportunities."""
         opportunities = []
-        
+
         if environment == "dev":
             if not sizing.get('use_spot_instances', False):
                 opportunities.append("Use spot instances for 60-70% savings in dev")
         else:
             opportunities.append("Use reserved instances for 25-30% savings in production")
-        
+
         if sizing.get('recommended_nodes', 0) > 4:
             opportunities.append("Consider vertical scaling instead of horizontal")
-        
+
         if pattern.get('monitoring_enabled'):
             opportunities.append("Evaluate cloud-native monitoring (vs. third-party) for cost savings")
-        
+
         opportunities.append("Implement resource quotas to prevent cost overruns")
         opportunities.append("Schedule dev clusters to stop during off-hours")
-        
+
         return opportunities
 
     def to_dict(self, estimate: CostEstimate) -> Dict:
@@ -276,14 +276,14 @@ class InfrastructureCostEstimator:
 def main():
     """Main entry point."""
     estimator = InfrastructureCostEstimator()
-    
+
     # Load patterns
     with open("k8s_patterns.json", 'r') as f:
         patterns = json.load(f)
-    
+
     # Estimate costs for all patterns
     print("\n✅ Infrastructure Cost Estimates\n")
-    
+
     for pattern_key, pattern in patterns.items():
         estimate = estimator.estimate_cost(pattern)
         print(f"{pattern_key}:")
@@ -291,14 +291,14 @@ def main():
         print(f"  Yearly: ${estimate.total_yearly:,.2f}")
         print(f"  3-Year: ${estimate.total_3year:,.2f}")
         print()
-    
+
     # Save sample estimate
     first_pattern = list(patterns.values())[0]
     estimate = estimator.estimate_cost(first_pattern)
-    
+
     with open("cost_estimate.json", 'w') as f:
         json.dump(estimator.to_dict(estimate), f, indent=2)
-    
+
     print("✅ Cost estimates complete - Report saved to cost_estimate.json")
 
 

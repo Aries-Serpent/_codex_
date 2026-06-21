@@ -5,10 +5,9 @@ Generates Terraform configuration from K8s patterns.
 """
 
 import json
-import os
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 logging.basicConfig(
     level=logging.INFO,
@@ -617,14 +616,14 @@ output "kube_config" {
 def main():
     """Main entry point."""
     generator = TerraformConfigGenerator()
-    
+
     # Generate configurations for both dev and prod
     for env in ["dev", "prod"]:
         print(f"\nGenerating Terraform configs for {env}...")
         generator.generate_aws_eks_config(env)
         generator.generate_gcp_gke_config(env)
         generator.generate_azure_aks_config(env)
-    
+
     print("\n✅ Terraform Configuration Generation Complete")
     print("   Generated modules:")
     print("   - infrastructure/terraform/aws-eks/")

@@ -26,7 +26,6 @@ Last Updated: 2026-06-20
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import re
 import sys
@@ -189,7 +188,7 @@ def generate_release_notes(
     # Add executive summary
     notes += "## Executive Summary\n\n"
     if phase7d_metrics:
-        notes += f"This release is based on the Phase 7D campaign completion:\n"
+        notes += "This release is based on the Phase 7D campaign completion:\n"
         notes += f"- ✅ Phase Status: {phase7d_metrics.get('phase_status', 'COMPLETE')}\n"
         notes += f"- 📦 Docker Builds: {phase7d_metrics.get('builds_successful', 5)}/{phase7d_metrics.get('builds_total', 8)} successful\n"
         notes += f"- 📋 SBOM Files: {phase7d_metrics.get('sbom_files_generated', 5)} generated and included\n\n"

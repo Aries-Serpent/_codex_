@@ -6,14 +6,13 @@ This script triggers webhook notifications to the Cognitive Brain system
 with registry validation results and metadata.
 """
 
-import json
-import sys
 import hashlib
 import hmac
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, Optional
+import json
 import logging
+import sys
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -54,27 +53,27 @@ class WebhookNotifier:
                 "issues": validation_results.get("issues", []),
             },
         }
-        
+
         if connectivity_results:
             payload["connectivity"] = {
                 "overall_status": connectivity_results.get("overall_status", "unknown"),
                 "tests_summary": connectivity_results.get("summary", {}),
             }
-        
+
         return payload
 
     def sign_payload(self, payload: Dict[str, Any]) -> str:
         """Generate HMAC-SHA256 signature for payload."""
         if not self.secret:
             raise ValueError("Webhook secret not configured")
-        
+
         payload_json = json.dumps(payload, sort_keys=True)
         signature = hmac.new(
             self.secret.encode(),
             payload_json.encode(),
             hashlib.sha256
         ).hexdigest()
-        
+
         return f"sha256={signature}"
 
     def prepare_webhook_notification(
@@ -88,7 +87,7 @@ class WebhookNotifier:
         payload = self.create_webhook_payload(
             event, registry_config, validation_results, connectivity_results
         )
-        
+
         notification = {
             "payload": payload,
             "headers": {
@@ -96,30 +95,30 @@ class WebhookNotifier:
                 "X-Webhook-Event": event,
             },
         }
-        
+
         if self.secret:
             signature = self.sign_payload(payload)
             notification["headers"]["X-Webhook-Signature"] = signature
-        
+
         return notification
 
 
 def generate_sample_webhook_payload() -> Dict[str, Any]:
     """Generate sample webhook payload for testing."""
     notifier = WebhookNotifier(secret="test_secret_key")
-    
+
     sample_registry_config = {
         "registry_type": "ghcr",
         "endpoint": "ghcr.io",
         "namespace": "org/imagename",
     }
-    
+
     sample_validation_results = {
         "confidence": 0.95,
         "valid": True,
         "issues": [],
     }
-    
+
     sample_connectivity_results = {
         "overall_status": "passed",
         "summary": {
@@ -129,7 +128,7 @@ def generate_sample_webhook_payload() -> Dict[str, Any]:
             "success_rate": "100.0%",
         },
     }
-    
+
     return notifier.prepare_webhook_notification(
         "registry_validation_complete",
         sample_registry_config,
@@ -143,12 +142,12 @@ def main():
     try:
         # Generate sample webhook payload
         webhook_data = generate_sample_webhook_payload()
-        
+
         # Log webhook notification
         logger.info("Webhook notification prepared")
-        logger.info(f"Event: registry_validation_complete")
-        logger.info(f"Headers configured with HMAC signature")
-        
+        logger.info("Event: registry_validation_complete")
+        logger.info("Headers configured with HMAC signature")
+
         # Print payload
         output = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
@@ -161,9 +160,9 @@ def main():
                 "ready_for_delivery": True,
             },
         }
-        
+
         print(json.dumps(output, indent=2))
-        
+
         return 0
     except Exception as e:
         logger.error(f"Error preparing webhook notification: {e}", exc_info=True)

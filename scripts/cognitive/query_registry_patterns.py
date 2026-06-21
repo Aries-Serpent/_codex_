@@ -7,11 +7,11 @@ extracts configuration recommendations, and generates pattern confidence scores.
 """
 
 import json
+import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-import logging
+from typing import Any, Dict, List
 
 # Configure logging
 logging.basicConfig(
@@ -246,7 +246,7 @@ class RegistryPatternQueryer:
         avg_confidence = sum(
             p.get("confidence_score", 0) for p in self.patterns.values()
         ) / len(self.patterns)
-        
+
         return {
             "average_confidence": round(avg_confidence, 3),
             "registry_types_covered": list(self.patterns.keys()),
@@ -279,23 +279,23 @@ def main():
     try:
         # Initialize queryer
         queryer = RegistryPatternQueryer()
-        
+
         # Determine output path
         script_dir = Path(__file__).parent.parent.parent
         output_path = script_dir / "registry_patterns.json"
-        
+
         # Query and save patterns
         queryer.save_patterns(output_path)
-        
+
         # Log results
         patterns = queryer.query_all_patterns()
         logger.info(f"Successfully queried {patterns['total_registries']} registry patterns")
         logger.info(f"Average confidence score: {patterns['summary']['average_confidence']}")
         logger.info(f"Total best practices documented: {patterns['summary']['total_best_practices']}")
-        
+
         # Print summary
         print(json.dumps(patterns, indent=2))
-        
+
         return 0
     except Exception as e:
         logger.error(f"Error querying registry patterns: {e}", exc_info=True)

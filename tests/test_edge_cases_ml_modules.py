@@ -532,7 +532,7 @@ class TestErrorRecoveryEdgeCases:
                 for attempt in range(self.max_retries):
                     try:
                         return func()
-                    except Exception:
+                    except Exception as _err:
                         self.attempts = attempt + 1
                         if attempt == self.max_retries - 1:
                             raise
