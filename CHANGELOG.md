@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (CI Emergency: RAG Module Tests)
+- **Issue #5034**: Fixed impossible boolean assertions in RAG embedding cache tests that relied on numeric inequality to distinguish `True` from `1` and `False` from `0`
+  - **Root Cause:** In Python, `True == 1` and `False == 0` due to numeric equality, making assertions like `assert result != 1` impossible to satisfy
+  - **Solution:** Removed impossible numeric inequality checks; retained identity (`is`) and type checks which are sufficient for mutation testing
+  - **Result:** 2 failing tests fixed; all 85 cache module tests pass
+  - **Commit:** `707639d`
+  - **Duration:** ~10 minutes
+
 ### Fixed (auto-update — PR #5036)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5036 (SHA `990441c0`) at 2026-06-21T15:29Z [auto-generated]
 
