@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-22T00:47:39Z",
+  "generated_at": "2026-06-22T08:01:17Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -964,6 +964,11 @@
       "has_concurrency": true
     },
     {
+      "name": "adaptive-agent-delegation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "admin-action-notifier",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1879,6 +1884,16 @@
       "has_concurrency": true
     },
     {
+      "name": "unified-governance-check",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
+      "name": "validate-token-health",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "validate",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2290,5 +2305,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "fd381c8292c7d0d78acfeeaf4ea95f1f9a21664e127162413d2153bad3f207c1"
+  "integrity_sha256": "6533556815dcbe9cfec91256a36a45a17fff42648edfff566d9585f145f01469"
 }
