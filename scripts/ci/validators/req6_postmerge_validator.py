@@ -15,6 +15,7 @@ import argparse
 import json
 import logging
 import sys
+from typing import Optional
 
 from base import ComplianceResult, RequirementValidator
 
@@ -23,15 +24,15 @@ logger = logging.getLogger(__name__)
 
 class REQ6PostMergeValidator(RequirementValidator):
     """Validates post-merge health (REQ-6)."""
-
+    
     @property
     def requirement_id(self) -> str:
         return "REQ-6"
-
+    
     def _validate_impl(self) -> ComplianceResult:
         """Check post-merge health."""
         metadata: dict = {}
-
+        
         # This validator typically runs AFTER merge, so we check the merge commit
         # For now, we'll check if the PR is merged
         try:
@@ -44,13 +45,13 @@ class REQ6PostMergeValidator(RequirementValidator):
                 reason=f"Could not fetch PR details: {exc}",
                 remediation=["Verify PR number is correct", "Check GitHub API access"],
             )
-
+        
         # Check if merged
         merged_at = pr_details.get("merged_at")
         is_merged = pr_details.get("merged", False)
         metadata["is_merged"] = is_merged
         metadata["merged_at"] = merged_at
-
+        
         if not is_merged:
             # PR not yet merged - this validator isn't applicable yet
             return ComplianceResult(
@@ -61,7 +62,7 @@ class REQ6PostMergeValidator(RequirementValidator):
                 remediation=["Merge PR first", "Then re-run this validator"],
                 metadata=metadata,
             )
-
+        
         # Get the merge commit SHA
         merge_commit_sha = pr_details.get("merge_commit_sha")
         if not merge_commit_sha:
@@ -73,9 +74,9 @@ class REQ6PostMergeValidator(RequirementValidator):
                 remediation=["Check that PR is properly merged"],
                 metadata=metadata,
             )
-
+        
         metadata["merge_commit_sha"] = merge_commit_sha[:12]
-
+        
         # Try to get workflow runs for the merge commit
         try:
             workflow_runs = self._gh_api_call(
@@ -88,9 +89,9 @@ class REQ6PostMergeValidator(RequirementValidator):
         except Exception as exc:
             logger.warning(f"Could not fetch workflow runs: {exc}")
             runs = []
-
+        
         metadata["workflow_runs_found"] = len(runs)
-
+        
         if not runs:
             # No workflow runs found yet (may still be running)
             return ComplianceResult(
@@ -101,14 +102,14 @@ class REQ6PostMergeValidator(RequirementValidator):
                 remediation=["Wait for workflows to complete", "Re-run validator later"],
                 metadata=metadata,
             )
-
+        
         # Check workflow statuses
         failed_runs = [r for r in runs if r.get("conclusion") == "failure"]
         successful_runs = [r for r in runs if r.get("conclusion") == "success"]
-
+        
         metadata["successful_runs"] = len(successful_runs)
         metadata["failed_runs"] = len(failed_runs)
-
+        
         if failed_runs:
             failed_names = [r.get("name", "unknown") for r in failed_runs]
             return ComplianceResult(
@@ -123,7 +124,7 @@ class REQ6PostMergeValidator(RequirementValidator):
                 ],
                 metadata=metadata,
             )
-
+        
         if successful_runs:
             return ComplianceResult(
                 requirement_id=self.requirement_id,
@@ -133,7 +134,7 @@ class REQ6PostMergeValidator(RequirementValidator):
                 remediation=[],
                 metadata=metadata,
             )
-
+        
         # Workflows still running
         return ComplianceResult(
             requirement_id=self.requirement_id,
@@ -153,12 +154,12 @@ def main():
     parser.add_argument("--json", action="store_true", help="Output JSON")
     parser.add_argument("--merged-sha", help="Optional merged commit SHA")
     args = parser.parse_args()
-
+    
     logging.basicConfig(level=logging.INFO)
-
+    
     validator = REQ6PostMergeValidator(args.pr, args.repo)
     result = validator.validate()
-
+    
     if args.json:
         print(result.to_json())
     else:
@@ -168,7 +169,7 @@ def main():
             print("\nRemediation:")
             for step in result.remediation:
                 print(f"  - {step}")
-
+    
     return 0 if result.status == "pass" else (0 if result.status == "warn" else 1)
 
 

@@ -15,9 +15,11 @@ Tests include basic functionality, edge cases, integration scenarios.
 """
 
 
+import difflib
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import patch
+from typing import Any
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -30,6 +32,7 @@ from src.codex.transform.transformer import (
     _resolve_tool,
     transform,
 )
+
 
 # =====================================================================
 # FIXTURES

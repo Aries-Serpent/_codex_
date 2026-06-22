@@ -16,7 +16,9 @@ Tests include basic functionality, edge cases, integration scenarios.
 
 
 import hashlib
+from datetime import timezone
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -30,6 +32,7 @@ from src.codex.verify.comparator import (
     compare,
     generate_tests,
 )
+
 
 # =====================================================================
 # FIXTURES
@@ -543,8 +546,8 @@ class TestGenerateTests:
         outputs = [tmp_path / f"output{i}.txt" for i in range(3)]
 
         for inp, out in zip(inputs, outputs):
-            inp.write_text("input content")
-            out.write_text("output content")
+            inp.write_text(f"input content")
+            out.write_text(f"output content")
 
         output_dir = tmp_path / "tests"
 

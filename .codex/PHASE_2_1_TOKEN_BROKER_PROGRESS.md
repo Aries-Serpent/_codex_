@@ -14,9 +14,9 @@ Phase 2.1 Token Broker Enhancement has been **successfully completed** with all 
 
 | Deliverable | Status | Location |
 |-------------|--------|----------|
-| Enhanced token_broker.py | ✅ COMPLETE | `src/codex/autonomy/token_broker.py` | <!-- pragma: allowlist secret -->
-| Unit test suite (20+ tests) | ✅ COMPLETE | `tests/unit/test_token_broker_enhancements.py` | <!-- pragma: allowlist secret -->
-| Technical design document | ✅ COMPLETE | `.codex/PHASE_2_1_TOKEN_BROKER_DESIGN.md` | <!-- pragma: allowlist secret -->
+| Enhanced token_broker.py | ✅ COMPLETE | `src/codex/autonomy/token_broker.py` |
+| Unit test suite (20+ tests) | ✅ COMPLETE | `tests/unit/test_token_broker_enhancements.py` |
+| Technical design document | ✅ COMPLETE | `.codex/PHASE_2_1_TOKEN_BROKER_DESIGN.md` |
 | Backward compatibility | ✅ VERIFIED | 100% — No breaking changes |
 
 ---
@@ -46,8 +46,8 @@ Phase 2.1 Token Broker Enhancement has been **successfully completed** with all 
 
 **Log Output Examples:**
 ```
-WARNING - Token from github_app expiring in 5.2 days  # pragma: allowlist secret
-WARNING - Access broker: health check failed for github_app: Token expired at 1234567890  # pragma: allowlist secret
+WARNING - Token from github_app expiring in 5.2 days
+WARNING - Access broker: health check failed for github_app: Token expired at 1234567890
 ```
 
 ---
@@ -113,8 +113,8 @@ WARNING - Access broker: health check failed for github_app: Token expired at 12
 
 **Log Output Examples:**
 ```
-WARNING - Token rotation approaching for github_app in 9.8 days  # pragma: allowlist secret
-WARNING - Token rotation overdue for github_app: 5 days past expiration  # pragma: allowlist secret
+WARNING - Token rotation approaching for github_app in 9.8 days
+WARNING - Token rotation overdue for github_app: 5 days past expiration
 ```
 
 ---
@@ -179,8 +179,8 @@ WARNING - Token rotation overdue for github_app: 5 days past expiration  # pragm
 | Metric | Result | Notes |
 |--------|--------|-------|
 | Lines of code added | 950+ | Core + tests |
-| New classes | 5 | TokenHealthChecker, TokenCircuitBreaker, TokenRotationScheduler, + 2 dataclasses | <!-- pragma: allowlist secret -->
-| New enums | 2 | TokenHealthStatus, CircuitBreakerState | <!-- pragma: allowlist secret -->
+| New classes | 5 | TokenHealthChecker, TokenCircuitBreaker, TokenRotationScheduler, + 2 dataclasses |
+| New enums | 2 | TokenHealthStatus, CircuitBreakerState |
 | Public methods | 8+ | Broker.resolve() enhanced + 3 new diagnostic methods |
 | Type hints | 100% | All functions fully typed |
 | Docstrings | 100% | All classes and public methods documented |
@@ -202,9 +202,9 @@ WARNING - Token rotation overdue for github_app: 5 days past expiration  # pragm
 
 ```python
 # Old Phase 2 code continues to work without modification
-broker = TokenBroker(registry=reg)  # pragma: allowlist secret
+broker = TokenBroker(registry=reg)
 result = broker.resolve(ControlClass.ADVISORY_WRITE)
-# Returns TokenResolution as before  # pragma: allowlist secret
+# Returns TokenResolution as before
 # No health checks active (can enable with enable_health_check=True)
 ```
 
@@ -212,17 +212,17 @@ result = broker.resolve(ControlClass.ADVISORY_WRITE)
 
 ```python
 # New code uses Phase 2.1 features explicitly
-broker = TokenBroker(registry=reg)  # pragma: allowlist secret
+broker = TokenBroker(registry=reg)
 result = broker.resolve(
     ControlClass.ADVISORY_WRITE,
     enable_health_check=True,  # NEW parameter
 )
-# Returns enhanced TokenResolution with health_check and resolution_time_ms  # pragma: allowlist secret
+# Returns enhanced TokenResolution with health_check and resolution_time_ms
 
 # Access diagnostics
 metrics = broker.get_metrics()
-cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)  # pragma: allowlist secret
-rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)  # pragma: allowlist secret
+cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)
+rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)
 ```
 
 ### Breaking Changes
@@ -353,7 +353,7 @@ rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)  # pragma: allo
 
 | Scenario | Time |
 |----------|------|
-| Expired token detection | Immediate (next resolve) | <!-- pragma: allowlist secret -->
+| Expired token detection | Immediate (next resolve) |
 | Circuit open | After 3 failures (~100-300ms) |
 | Recovery probe | 5 minutes (configurable) |
 | Full recovery | 1 probe success = immediate |

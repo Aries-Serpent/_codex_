@@ -127,10 +127,10 @@
 
 | Metric | Target | Status |
 |--------|--------|--------|
-| Token broker enhancements deployed | ✅ Deployed | 🟡 In Progress | <!-- pragma: allowlist secret -->
+| Token broker enhancements deployed | ✅ Deployed | 🟡 In Progress |
 | Health checks detect all failure modes | ✅ 100% coverage | 🟡 In Progress |
 | Circuit breaker prevents cascades | ✅ Yes | 🟡 In Progress |
-| Secret injection workflow documented | ✅ Complete | 🟡 In Progress | <!-- pragma: allowlist secret -->
+| Secret injection workflow documented | ✅ Complete | 🟡 In Progress |
 | Validation script passes all tests | ✅ 100% pass | 🟡 In Progress |
 | Compliance validators enforcing REQ-1-6 | ✅ All 6 working | 🟡 In Progress |
 | Pre-merge blocker integrated | ✅ Yes | 🟡 In Progress |

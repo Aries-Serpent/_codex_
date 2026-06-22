@@ -1,0 +1,287 @@
+name: "Phase 8.3: Performance Monitoring"
+
+on:
+  schedule:
+    # Run every hour for continuous monitoring
+    - cron: "0 * * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".codex/PHASE_8_3_*"
+      - "scripts/ci/phase_8_3_*"
+      - ".github/workflows/phase-8-3-perf-monitor.yml"
+
+concurrency:
+  group: perf-monitoring
+  cancel-in-progress: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  collect-metrics:
+    name: Collect Performance Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      metrics-file: ${{ steps.collect.outputs.metrics-file }}
+      metrics-summary: ${{ steps.collect.outputs.summary }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet requests pyyaml
+
+      - name: Collect GitHub Actions metrics
+        id: collect
+        run: |
+          python scripts/ci/phase_8_3_benchmark_collector.py \
+            --owner Aries-Serpent \
+            --repo _codex_ \
+            --hours 24 \
+            --export-json metrics-current.json
+          
+          # Set outputs
+          echo "metrics-file=metrics-current.json" >> $GITHUB_OUTPUT
+          
+          # Extract summary
+          python -c "
+          import json
+          with open('metrics-current.json') as f:
+              data = json.load(f)
+              print(f\"Total runs: {data.get('total_runs_analyzed', 0)}\")
+          " | tee summary.txt
+          
+          echo "summary=$(cat summary.txt | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: performance-metrics
+          path: metrics-current.json
+          retention-days: 30
+
+  analyze-metrics:
+    name: Analyze Metrics Against Baseline
+    needs: collect-metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download current metrics
+        uses: actions/download-artifact@v5
+        with:
+          name: performance-metrics
+          path: .
+
+      - name: Run performance analysis
+        id: analyze
+        run: |
+          python scripts/ci/phase_8_3_perf_analyzer.py \
+            --current metrics-current.json \
+            --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \
+            --generate-report \
+            --export-json analysis-results.json || true
+          
+          cat analysis-results.json
+
+      - name: Upload analysis results
+        uses: actions/upload-artifact@v5
+        with:
+          name: performance-analysis
+          path: analysis-results.json
+          retention-days: 30
+
+  enforce-sla:
+    name: Enforce SLA Thresholds
+    needs: analyze-metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download metrics
+        uses: actions/download-artifact@v5
+        with:
+          name: performance-metrics
+          path: .
+
+      - name: Check SLA violations
+        id: sla
+        run: |
+          python scripts/ci/phase_8_3_sla_enforcer.py \
+            --metrics metrics-current.json \
+            --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \
+            --check-sla \
+            --export-json sla-violations.json || true
+          
+          cat sla-violations.json
+
+      - name: Comment on PR if regressions detected
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const violations = JSON.parse(fs.readFileSync('sla-violations.json', 'utf8'));
+            
+            if (violations.violations_count > 0) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `⚠️ Performance regression detected!\n\nFound ${violations.violations_count} SLA violation(s).`
+              });
+            }
+
+      - name: Upload SLA results
+        uses: actions/upload-artifact@v5
+        with:
+          name: sla-violations
+          path: sla-violations.json
+          retention-days: 30
+
+  update-dashboard:
+    name: Update Performance Dashboard
+    needs: [collect-metrics, analyze-metrics, enforce-sla]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+
+      - name: Generate dashboard
+        run: |
+          cat > .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md << 'EOF'
+          # Performance Monitoring Dashboard
+          
+          **Last Updated:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          **Status:** 🟢 Monitoring Active
+          
+          ## Recent Metrics
+          
+          - Performance metrics collected hourly
+          - Analysis results available in artifacts
+          - SLA enforcement active
+          
+          For detailed metrics, see:
+          - `performance-metrics/` — Raw metrics
+          - `performance-analysis/` — Analysis results
+          - `sla-violations/` — SLA violation reports
+          
+          [View Full Reports](./)
+          EOF
+
+      - name: Commit dashboard updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update performance dashboard [skip ci]"
+          file_pattern: ".codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md"
+          commit_options: "--no-verify"
+          skip_fetch: false
+          skip_checkout: false
+
+  notify:
+    name: Send Notifications
+    needs: [collect-metrics, analyze-metrics, enforce-sla]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check job statuses
+        run: |
+          echo "Collect Metrics: ${{ needs.collect-metrics.result }}"
+          echo "Analyze Metrics: ${{ needs.analyze-metrics.result }}"
+          echo "Enforce SLA: ${{ needs.enforce-sla.result }}"
+
+      - name: Send Slack notification on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "⚠️ Performance monitoring workflow failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Performance Monitoring Alert*\nWorkflow: ${{ github.workflow }}\nStatus: ❌ Failed"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  summary:
+    name: Summary Report
+    needs: [collect-metrics, analyze-metrics, enforce-sla]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    permissions:
+      actions: read
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## Performance Monitoring Summary"
+          echo ""
+          echo "- Collect Metrics: ${{ needs.collect-metrics.result }}"
+          echo "- Analyze Metrics: ${{ needs.analyze-metrics.result }}"
+          echo "- Enforce SLA: ${{ needs.enforce-sla.result }}"
+          echo ""
+          echo "✅ Monitoring cycle complete"

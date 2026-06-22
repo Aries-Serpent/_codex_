@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 
 class REQ3MergeValidator(RequirementValidator):
     """Validates PR merge authorization (REQ-3)."""
-
+    
     @property
     def requirement_id(self) -> str:
         return "REQ-3"
-
+    
     def _validate_impl(self) -> ComplianceResult:
         """Check PR merge authorization requirements."""
         try:
@@ -41,22 +41,22 @@ class REQ3MergeValidator(RequirementValidator):
                 reason=f"Could not fetch PR details: {exc}",
                 remediation=["Verify PR number is correct", "Check GitHub API access"],
             )
-
+        
         issues: list[str] = []
         metadata: dict = {}
-
+        
         # Check 1: Not a draft
         is_draft = pr_details.get("draft", False)
         metadata["is_draft"] = is_draft
         if is_draft:
             issues.append("PR is marked as draft")
-
+        
         # Check 2: No merge conflicts
         mergeable = pr_details.get("mergeable")
         metadata["mergeable"] = mergeable
         if mergeable is False:
             issues.append("PR has merge conflicts")
-
+        
         # Check 3: Check for blocking reviews
         blocking_reviews = [
             r for r in reviews
@@ -65,23 +65,23 @@ class REQ3MergeValidator(RequirementValidator):
         metadata["blocking_reviews"] = len(blocking_reviews)
         if blocking_reviews:
             issues.append(f"{len(blocking_reviews)} review(s) requesting changes")
-
+        
         # Check 4: Check for approvals
         approving_reviews = [
             r for r in reviews
             if r.get("state") == "APPROVED"
         ]
         metadata["approving_reviews"] = len(approving_reviews)
-
+        
         # At least one approval required (unless by owner/bot)
         author = pr_details.get("user", {}).get("login", "")
         if not approving_reviews and author not in ("github-actions[bot]", "dependabot[bot]"):
             issues.append("No approving reviews found")
-
+        
         # Check 5: Merge method allowed
         merge_allowed = pr_details.get("mergeable_state") == "clean"
         metadata["merge_allowed"] = merge_allowed
-
+        
         # Determine overall status
         if issues:
             if len(issues) == 1 and "approving reviews" in issues[0]:
@@ -98,7 +98,7 @@ class REQ3MergeValidator(RequirementValidator):
                     ],
                     metadata=metadata,
                 )
-
+            
             return ComplianceResult(
                 requirement_id=self.requirement_id,
                 status="fail",
@@ -112,7 +112,7 @@ class REQ3MergeValidator(RequirementValidator):
                 ],
                 metadata=metadata,
             )
-
+        
         return ComplianceResult(
             requirement_id=self.requirement_id,
             status="pass",
@@ -130,12 +130,12 @@ def main():
     parser.add_argument("--repo", default="Aries-Serpent/_codex_", help="Repository")
     parser.add_argument("--json", action="store_true", help="Output JSON")
     args = parser.parse_args()
-
+    
     logging.basicConfig(level=logging.INFO)
-
+    
     validator = REQ3MergeValidator(args.pr, args.repo)
     result = validator.validate()
-
+    
     if args.json:
         print(result.to_json())
     else:
@@ -145,7 +145,7 @@ def main():
             print("\nRemediation:")
             for step in result.remediation:
                 print(f"  - {step}")
-
+    
     return 0 if result.status == "pass" else (0 if result.status == "warn" else 1)
 
 

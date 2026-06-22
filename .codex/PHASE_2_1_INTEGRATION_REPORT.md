@@ -32,9 +32,9 @@
 
 | Deliverable | File | Status | Size | Notes |
 |-------------|------|--------|------|-------|
-| Enhanced token_broker.py | src/codex/autonomy/token_broker.py | ✅ | 950+ lines | 5 new classes + 2 enums | <!-- pragma: allowlist secret -->
-| Unit tests | tests/unit/test_token_broker_enhancements.py | ✅ | 30+ tests | 100% coverage of new components | <!-- pragma: allowlist secret -->
-| Technical design | .codex/PHASE_2_1_TOKEN_BROKER_DESIGN.md | ✅ | 19K words | Comprehensive architecture docs | <!-- pragma: allowlist secret -->
+| Enhanced token_broker.py | src/codex/autonomy/token_broker.py | ✅ | 950+ lines | 5 new classes + 2 enums |
+| Unit tests | tests/unit/test_token_broker_enhancements.py | ✅ | 30+ tests | 100% coverage of new components |
+| Technical design | .codex/PHASE_2_1_TOKEN_BROKER_DESIGN.md | ✅ | 19K words | Comprehensive architecture docs |
 
 **Integration Checks:**
 - ✅ Python syntax: VALID
@@ -57,11 +57,11 @@
 
 | Deliverable | File | Status | Size | Notes |
 |-------------|------|--------|------|-------|
-| Design document | .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md | ✅ | 24 KB | Step-by-step for @mbaetiong | <!-- pragma: allowlist secret -->
-| Validation script | scripts/ci/validate_token_setup.py | ✅ | 18 KB, 504 lines | JWT + scope + API testing | <!-- pragma: allowlist secret -->
-| CI workflow | .github/workflows/validate-token-health.yml | ✅ | 11 KB, 274 lines | Daily health checks | <!-- pragma: allowlist secret -->
+| Design document | .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md | ✅ | 24 KB | Step-by-step for @mbaetiong |
+| Validation script | scripts/ci/validate_token_setup.py | ✅ | 18 KB, 504 lines | JWT + scope + API testing |
+| CI workflow | .github/workflows/validate-token-health.yml | ✅ | 11 KB, 274 lines | Daily health checks |
 | Implementation summary | .codex/PHASE_2_1_IMPLEMENTATION_SUMMARY.md | ✅ | 13 KB | Comprehensive overview |
-| Audit infrastructure | .codex/audit/ | ✅ | - | token_rotation_log.md, incident_log.md | <!-- pragma: allowlist secret -->
+| Audit infrastructure | .codex/audit/ | ✅ | - | token_rotation_log.md, incident_log.md |
 
 **Integration Checks:**
 - ✅ Python syntax: VALID
@@ -140,15 +140,15 @@ All three agents' deliverables tested for:
 ```
 === PHASE 2.1 INTEGRATION VERIFICATION ===
 
-Agent 1 Deliverables (Token Broker):  # pragma: allowlist secret
-  ✅ token_broker.py exists  # pragma: allowlist secret
-  ✅ test_token_broker_enhancements.py exists  # pragma: allowlist secret
-  ✅ TOKEN_BROKER_DESIGN.md exists  # pragma: allowlist secret
+Agent 1 Deliverables (Token Broker):
+  ✅ token_broker.py exists
+  ✅ test_token_broker_enhancements.py exists
+  ✅ TOKEN_BROKER_DESIGN.md exists
 
-Agent 2 Deliverables (Secret Injection):  # pragma: allowlist secret
-  ✅ SECRET_INJECTION_DESIGN.md exists  # pragma: allowlist secret
-  ✅ validate_token_setup.py exists  # pragma: allowlist secret
-  ✅ validate-token-health.yml exists  # pragma: allowlist secret
+Agent 2 Deliverables (Secret Injection):
+  ✅ SECRET_INJECTION_DESIGN.md exists
+  ✅ validate_token_setup.py exists
+  ✅ validate-token-health.yml exists
 
 Agent 3 Deliverables (Compliance Framework):
   ✅ req1_eligibility_validator.py exists
@@ -161,13 +161,13 @@ Agent 3 Deliverables (Compliance Framework):
   ✅ unified-governance-check.yml exists
 
 Syntax Validation:
-  ✅ token_broker.py syntax OK  # pragma: allowlist secret
-  ✅ validate_token_setup.py syntax OK  # pragma: allowlist secret
+  ✅ token_broker.py syntax OK
+  ✅ validate_token_setup.py syntax OK
   ✅ validators syntax OK
   ✅ unified_compliance_check.py syntax OK
 
 YAML Syntax Validation:
-  ✅ validate-token-health.yml YAML OK  # pragma: allowlist secret
+  ✅ validate-token-health.yml YAML OK
   ✅ unified-governance-check.yml YAML OK
 
 === VERIFICATION COMPLETE ===
@@ -184,7 +184,7 @@ YAML Syntax Validation:
 | **Python Syntax** | 12 files | ✅ ALL VALID | Compiled without errors |
 | **YAML Syntax** | 2 files | ✅ ALL VALID | Parsed by yaml.safe_load() |
 | **Documentation** | 4 docs | ✅ ALL PRESENT | 24KB + 13KB + 19KB markdown |
-| **Type Hints** | Token Broker | ✅ 100% | All functions fully typed | <!-- pragma: allowlist secret -->
+| **Type Hints** | Token Broker | ✅ 100% | All functions fully typed |
 | **Backward Compatibility** | API level | ✅ VERIFIED | No breaking changes |
 | **Code Quality** | Architecture | ✅ GOOD | Modular, testable design |
 | **Integration Points** | Cross-module | ✅ CONNECTED | All modules communicate |

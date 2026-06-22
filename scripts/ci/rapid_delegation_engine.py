@@ -56,29 +56,29 @@ class RetryStrategy(Enum):
 @dataclass
 class DelegationTask:
     """Single delegated agent task."""
-
+    
     task_id: str  # Unique task ID
     agent_id: str  # Agent to delegate to
     status: TaskStatus = TaskStatus.QUEUED
-
+    
     # Execution timing
     queued_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
-
+    
     # Context
     context: Dict[str, Any] = field(default_factory=dict)
-
+    
     # Results
     output: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = None
-
+    
     # Retry info
     retry_strategy: RetryStrategy = RetryStrategy.EXPONENTIAL_BACKOFF
     fallback_agents: List[str] = field(default_factory=list)
     retry_count: int = 0
     max_retries: int = 3
-
+    
     # Metadata
     priority: str = "normal"  # low, normal, high, critical
     timeout_seconds: int = 300
@@ -88,22 +88,22 @@ class DelegationTask:
 @dataclass
 class AggregatedResult:
     """Aggregated result from multiple parallel tasks."""
-
+    
     result_id: str
     generated_at: str
-
+    
     # Summary
     total_tasks: int
     completed_tasks: int
     failed_tasks: int
     timeout_tasks: int
-
+    
     # Results
     task_results: List[DelegationTask] = field(default_factory=list)
-
+    
     # Coalesced output
     merged_output: Dict[str, Any] = field(default_factory=dict)
-
+    
     # Recommendations for next actions
     next_actions: List[Dict[str, Any]] = field(default_factory=list)
 

@@ -1,0 +1,124 @@
+name: Phase 8.2 Issue Triage
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - reopened
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: phase-8-2-issue-triage-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  classify-issue:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    name: Classify Issue
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -q requests
+
+      - name: Test classifier
+        run: |
+          cd scripts/ci
+          python3 phase_8_2_issue_classifier.py --test
+
+      - name: Add severity and category labels
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = (issue.title + ' ' + (issue.body || '')).toLowerCase();
+            const labels = ['triage-automated'];
+            
+            // Detect severity
+            let severity = 'P4';
+            if (body.includes('production outage') || body.includes('data loss') || body.includes('security breach') || body.includes('critical')) {
+              severity = 'P0';
+            } else if (body.includes('deployment blocked') || body.includes('test failure') || body.includes('ci broken')) {
+              severity = 'P1';
+            } else if (body.includes('significant') || body.includes('high priority')) {
+              severity = 'P2';
+            } else if (body.includes('minor bug') || body.includes('performance')) {
+              severity = 'P3';
+            }
+            labels.push(`severity-${severity}`);
+            
+            // Detect category
+            if (body.includes('bug') || body.includes('error') || body.includes('crash')) {
+              labels.push('category-bug');
+            } else if (body.includes('feature') || body.includes('enhancement')) {
+              labels.push('category-feature-request');
+            } else if (body.includes('doc') || body.includes('documentation')) {
+              labels.push('category-documentation');
+            } else if (body.includes('ci') || body.includes('deploy') || body.includes('workflow')) {
+              labels.push('category-infrastructure');
+            } else if (body.includes('security') || body.includes('vulnerability')) {
+              labels.push('category-security');
+            } else if (body.includes('performance') || body.includes('slow') || body.includes('optimize')) {
+              labels.push('category-performance');
+            } else if (body.includes('test') || body.includes('pytest')) {
+              labels.push('category-testing');
+            }
+            
+            // Apply unique labels
+            const uniqueLabels = [...new Set(labels)];
+            console.log(`Applying labels to issue #${context.issue.number}: ${uniqueLabels.join(', ')}`);
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: uniqueLabels,
+            });
+
+  update-dashboard:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    name: Update Triage Dashboard
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Generate dashboard
+        run: |
+          cd scripts/ci
+          python3 phase_8_2_triage_dashboard.py ../../.codex/PHASE_8_2_TRIAGE_DASHBOARD.md
+          echo "Dashboard updated at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Commit dashboard
+        run: |
+          if [ -n "$(git status --porcelain .codex/PHASE_8_2_TRIAGE_DASHBOARD.md)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .codex/PHASE_8_2_TRIAGE_DASHBOARD.md
+            git commit -m "docs: update Phase 8.2 triage dashboard [skip ci]"
+            git push
+            echo "Dashboard committed successfully"
+          else
+            echo "No changes to dashboard"
+          fi

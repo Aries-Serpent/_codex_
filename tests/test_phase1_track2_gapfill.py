@@ -382,7 +382,7 @@ class TestErrorHandling:
             try:
                 success = True
                 break
-            except Exception as _err:
+            except Exception:
                 retries += 1
         assert success
 

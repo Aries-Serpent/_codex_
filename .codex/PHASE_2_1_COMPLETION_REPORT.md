@@ -11,8 +11,8 @@
 
 | Agent | Task | Status | Completion | Ahead/Behind |
 |-------|------|--------|------------|--------------|
-| **Agent 1** | Token broker enhancements | ✅ COMPLETE | 2026-06-22 ~10:00 UTC | 2 hours early | <!-- pragma: allowlist secret -->
-| **Agent 2** | Secret injection design | ✅ COMPLETE | 2026-06-22 ~11:30 UTC | 2.5 hours early | <!-- pragma: allowlist secret -->
+| **Agent 1** | Token broker enhancements | ✅ COMPLETE | 2026-06-22 ~10:00 UTC | 2 hours early |
+| **Agent 2** | Secret injection design | ✅ COMPLETE | 2026-06-22 ~11:30 UTC | 2.5 hours early |
 | **Agent 3** | Compliance framework (REQ-1-6) | ✅ COMPLETE | 2026-06-22 ~13:50 UTC | 2.1 hours early |
 
 **Aggregate Timeline:** All 3 agents finished by 13:50 UTC on 2026-06-22 (4.25 hours ahead of original schedule)
@@ -140,7 +140,7 @@
 | **Agent 2 Completion** | 2026-06-22 14:00 | ~11:30 | ✅ 2.5h early |
 | **Agent 3 Completion** | 2026-06-22 16:00 | ~13:50 | ✅ 2.1h early |
 | **All deliverables present** | 13 core files | 13 delivered | ✅ 100% |
-| **Token health checks** | Detect 5 modes | 5 implemented | ✅ 100% | <!-- pragma: allowlist secret -->
+| **Token health checks** | Detect 5 modes | 5 implemented | ✅ 100% |
 | **Circuit breaker** | Prevent cascades | Exponential backoff | ✅ Working |
 | **Compliance validators** | 6 requirements | 6 validators | ✅ 100% |
 | **Test coverage** | 80%+ | 80%+ achieved | ✅ Met |
@@ -215,8 +215,8 @@
 ┌─────────────────────────────────────────────────────────────┐
 │ PHASE 2.1 COMPLETION DASHBOARD                             │
 ├─────────────────────────────────────────────────────────────┤
-│ Agent 1 (Token Broker):      ✅ COMPLETE (10:00 UTC)       │  # pragma: allowlist secret
-│ Agent 2 (Secret Injection):  ✅ COMPLETE (11:30 UTC)       │  # pragma: allowlist secret
+│ Agent 1 (Token Broker):      ✅ COMPLETE (10:00 UTC)       │
+│ Agent 2 (Secret Injection):  ✅ COMPLETE (11:30 UTC)       │
 │ Agent 3 (Compliance):        ✅ COMPLETE (13:50 UTC)       │
 ├─────────────────────────────────────────────────────────────┤
 │ Deliverables:                ✅ 13/13 files (100%)          │

@@ -229,7 +229,7 @@ class TestSecurityErrorHandling:
             ctx['provider'] = None
             ctx['scope'] = None
             assert True
-        except Exception as _err:
+        except Exception:
             pytest.fail("Context raised unexpected error")
 
     def test_validator_error_handling_none(self):

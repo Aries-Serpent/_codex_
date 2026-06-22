@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-22T08:01:17Z",
+  "generated_at": "2026-06-22T12:34:38Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1574,6 +1574,21 @@
       "has_concurrency": true
     },
     {
+      "name": "phase-8-1-health-monitor",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
+      "name": "phase-8-2-issue-triage",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "phase-8-3-perf-monitor",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "post-accountability-to-discussion",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2305,5 +2320,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6533556815dcbe9cfec91256a36a45a17fff42648edfff566d9585f145f01469"
+  "integrity_sha256": "896dea44c4bd762bcf5cf6286973408c9b2a9852d28d6c7f70481581a9fdaeb6"
 }

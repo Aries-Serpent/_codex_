@@ -17,15 +17,16 @@ Tests include basic functionality, fallback modes, error cases, integration scen
 
 import json
 from pathlib import Path
-from unittest.mock import patch
+from typing import Any
+from unittest.mock import Mock, patch
 
 import pytest
 
 # Try to import from main module
 try:
     from src.codex.cli.main import (
-        _TYPER_IMPORT_ERROR,
         TYPER_AVAILABLE,
+        _TYPER_IMPORT_ERROR,
         main,
     )
 except ImportError:
@@ -107,7 +108,7 @@ class TestCliCommandsWithTyper:
     def test_ingest_command_registered(self, mock_typer):
         """Test that ingest command is registered."""
         # Check if app exists
-        from src.codex.cli.main import TYPER_AVAILABLE, app
+        from src.codex.cli.main import app, TYPER_AVAILABLE
 
         if TYPER_AVAILABLE:
             assert hasattr(app, "command")

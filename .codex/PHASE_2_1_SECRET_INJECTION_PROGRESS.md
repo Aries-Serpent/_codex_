@@ -11,11 +11,11 @@
 
 | Component | Status | Owner | Deadline | Notes |
 |-----------|--------|-------|----------|-------|
-| **Design Document** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md | <!-- pragma: allowlist secret -->
-| **Validation Script** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | scripts/ci/validate_token_setup.py | <!-- pragma: allowlist secret -->
-| **CI Workflow** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | .github/workflows/validate-token-health.yml | <!-- pragma: allowlist secret -->
-| **Token Injection (Master)** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 1-2 in design doc | <!-- pragma: allowlist secret -->
-| **Token Injection (Backup)** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 5-6 in design doc | <!-- pragma: allowlist secret -->
+| **Design Document** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md |
+| **Validation Script** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | scripts/ci/validate_token_setup.py |
+| **CI Workflow** | ✅ COMPLETE | Copilot Agent | 2026-06-21 | .github/workflows/validate-token-health.yml |
+| **Token Injection (Master)** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 1-2 in design doc |
+| **Token Injection (Backup)** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 5-6 in design doc |
 | **Local Validation** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 7 in design doc |
 | **CI Workflow Test** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Follow Step 8 in design doc |
 | **Audit Trail Setup** | ⏳ PENDING | @mbaetiong | 2026-06-28 | Initialize .codex/audit/ files |
@@ -53,10 +53,10 @@
 **Completion Checklist:**
 ```
 After completing Phase 2.1.1, verify:
-✅ CODEX_MASTER_KEY exists in repository secrets  # pragma: allowlist secret
+✅ CODEX_MASTER_KEY exists in repository secrets
 ✅ CODEX_REPO_ID = 1040037790 exists
-✅ CODEX_WEBHOOK_SECRET exists (64 hex chars)  # pragma: allowlist secret
-✅ All three secrets visible in GitHub UI  # pragma: allowlist secret
+✅ CODEX_WEBHOOK_SECRET exists (64 hex chars)
+✅ All three secrets visible in GitHub UI
 ✅ "Last updated" timestamps are current (< 5 min old)
 ```
 
@@ -93,8 +93,8 @@ After completing Phase 2.1.1, verify:
 **Completion Checklist:**
 ```
 After completing Phase 2.1.2, verify:
-✅ CODEX_BACKUP_KEY exists in repository secrets  # pragma: allowlist secret
-✅ Token created within last 10 minutes  # pragma: allowlist secret
+✅ CODEX_BACKUP_KEY exists in repository secrets
+✅ Token created within last 10 minutes
 ✅ Rotation schedule documented
 ✅ Calendar reminders set
 ✅ Audit log file created
@@ -175,7 +175,7 @@ After completing Phase 2.1.4, verify:
 ```
 2026-06-21: Design & preparation artifacts created
 2026-06-22: Human review period (optional)
-2026-06-23–2026-06-27: Token injection window (flexible)  # pragma: allowlist secret
+2026-06-23–2026-06-27: Token injection window (flexible)
 2026-06-28: Phase 2.1 target completion
 2026-07-01: Phase 2.2 kickoff (Genesis Protocol Activation)
 ```
@@ -231,8 +231,8 @@ After completing Phase 2.1.4, verify:
 
 | Criterion | Status | Verification |
 |-----------|--------|--------------|
-| Both tokens created | ⏳ PENDING | Token list shows both tokens with correct names | <!-- pragma: allowlist secret -->
-| Token scopes verified | ⏳ PENDING | JSON report shows all required scopes | <!-- pragma: allowlist secret -->
+| Both tokens created | ⏳ PENDING | Token list shows both tokens with correct names |
+| Token scopes verified | ⏳ PENDING | JSON report shows all required scopes |
 | API operations pass | ⏳ PENDING | 5/5 API tests successful in report |
 | Failover chain working | ⏳ PENDING | Script confirms backup auto-activates |
 | CI workflow passes | ⏳ PENDING | All workflow steps marked ✅ |
@@ -247,11 +247,11 @@ After completing Phase 2.1.4, verify:
 
 ### Key Files
 ```
-.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md      Main procedure guide  # pragma: allowlist secret
-scripts/ci/validate_token_setup.py                Validation script  # pragma: allowlist secret
-.github/workflows/validate-token-health.yml       CI workflow  # pragma: allowlist secret
-.codex/audit/token_rotation_log.md                Rotation tracking  # pragma: allowlist secret
-.codex/audit/token_injection_log.jsonl            Injection history  # pragma: allowlist secret
+.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md      Main procedure guide
+scripts/ci/validate_token_setup.py                Validation script
+.github/workflows/validate-token-health.yml       CI workflow
+.codex/audit/token_rotation_log.md                Rotation tracking
+.codex/audit/token_injection_log.jsonl            Injection history
 .codex/audit/incident_log.md                      Emergency tracking
 ```
 

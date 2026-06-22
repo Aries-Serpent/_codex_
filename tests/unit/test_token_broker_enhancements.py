@@ -9,16 +9,26 @@ from __future__ import annotations
 
 import json
 import time
+from base64 import urlsafe_b64encode # pragma: allowlist secret
+from unittest.mock import patch
+
+import pytest
 
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry, ControlClass
 from codex.autonomy.token_broker import (
+    CircuitBreakerRecord,
     CircuitBreakerState,
     TokenBroker,
+    TokenBrokerError,
     TokenCircuitBreaker,
     TokenHealthChecker,
     TokenHealthStatus,
+    TokenResolution,
+    TokenRotationInfo,
     TokenRotationScheduler,
     TokenSource,
+    _SOURCE_CEILING,
+    _cc_level,
 )
 
 

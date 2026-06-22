@@ -30,7 +30,7 @@
 ```
 Primary:   CODEX_MASTER_KEY   (repo+workflow+actions:write)
 Fallback:  CODEX_BACKUP_KEY   (repo+workflow+actions:write)
-Ultimate:  github.token       (installation token, limited scope)  # pragma: allowlist secret
+Ultimate:  github.token       (installation token, limited scope)
 ```
 
 **Success Criteria:**
@@ -86,7 +86,7 @@ Ultimate:  github.token       (installation token, limited scope)  # pragma: all
 
 | Field | Value |
 |-------|-------|
-| **Token name** | `CODEX_MASTER_KEY_Aries_Serpent_2026Q3` | <!-- pragma: allowlist secret -->
+| **Token name** | `CODEX_MASTER_KEY_Aries_Serpent_2026Q3` |
 | **Expiration** | 90 days |
 | **Description** | Genesis Protocol - AI Agent auth for _codex_ autonomous operations (created: 2026-06-21) |
 | **Resource owner** | Select: `Aries-Serpent` organization |
@@ -102,11 +102,11 @@ Scroll down to **Repository permissions** and configure:
 | **Administration** | ✅ Read and write | Modify branch protection, org settings |
 | **Contents** | ✅ Read and write | Commit creation, push to branches |
 | **Deployments** | ✅ Read and write | Trigger deployments, manage environments |
-| **Environments** | ✅ Read and write | Set env secrets, manage runners | <!-- pragma: allowlist secret -->
+| **Environments** | ✅ Read and write | Set env secrets, manage runners |
 | **Issues** | ✅ Read and write | Create/update issues, manage projects |
 | **Metadata** | ✅ Read | Repository information (required by many APIs) |
 | **Pull requests** | ✅ Read and write | Create/merge PRs, manage reviews |
-| **Secrets** | ✅ Read and write | Create/update action secrets | <!-- pragma: allowlist secret -->
+| **Secrets** | ✅ Read and write | Create/update action secrets |
 | **Variables** | ✅ Read and write | Manage repository variables |
 | **Webhooks** | ✅ Read and write | Create/manage webhooks |
 | **Workflows** | ✅ Write | Approve workflows |
@@ -122,7 +122,7 @@ Scroll down to **Repository permissions** and configure:
 │ ☑ Issues               Read and write       │
 │ ☑ Metadata             Read                 │
 │ ☑ Pull requests        Read and write       │
-│ ☑ Secrets              Read and write       │  # pragma: allowlist secret
+│ ☑ Secrets              Read and write       │
 │ ☑ Variables            Read and write       │
 │ ☑ Webhooks             Read and write       │
 │ ☑ Workflows            Write                │
@@ -255,7 +255,7 @@ After completing Phase 2.1.1, verify:
 2. Try CODEX_BACKUP_KEY
    ├─ Success? Use it, alert @mbaetiong to refresh CODEX_MASTER_KEY
    └─ Failure? Try next:
-3. Fall back to github.token (limited scope)  # pragma: allowlist secret
+3. Fall back to github.token (limited scope)
    └─ Operations degrade, but don't fail
 ```
 
@@ -311,7 +311,7 @@ After completing Phase 2.1.1, verify:
 
 Set reminders in your calendar:
 
-| Token | Created | Expires | Reminder | Action | <!-- pragma: allowlist secret -->
+| Token | Created | Expires | Reminder | Action |
 |-------|---------|---------|----------|--------|
 | **CODEX_MASTER_KEY** | 2026-06-21 | 2026-09-19 | 2026-09-12 | Create new PAT, inject as CODEX_MASTER_KEY, revoke old |
 | **CODEX_BACKUP_KEY** | 2026-06-21 | 2026-09-20 | 2026-09-13 | Create new PAT, inject as CODEX_BACKUP_KEY, revoke old |
@@ -688,11 +688,11 @@ All token operations logged in `.codex/audit/` directory:
 
 ```
 .codex/audit/
-├── token_rotation_log.md          # Rotation history  # pragma: allowlist secret
-├── token_injection_log.jsonl      # Injection events (JSON Lines)  # pragma: allowlist secret
-├── token_access_log.jsonl          # Token usage events  # pragma: allowlist secret
+├── token_rotation_log.md          # Rotation history
+├── token_injection_log.jsonl      # Injection events (JSON Lines)
+├── token_access_log.jsonl          # Token usage events
 ├── incident_log.md                 # Security incidents
-└── token_expiration_monitor.json   # Current expiration tracking  # pragma: allowlist secret
+└── token_expiration_monitor.json   # Current expiration tracking
 ```
 
 ### Audit Log Format
@@ -749,10 +749,10 @@ Before considering Phase 2.1 complete:
 
 | Metric | Target | Status |
 |--------|--------|--------|
-| Token creation | Both tokens created | ✅ | <!-- pragma: allowlist secret -->
+| Token creation | Both tokens created | ✅ |
 | Scope validation | All required scopes verified | ✅ |
 | API operations | All 5+ test operations pass | ✅ |
-| Failover chain | Primary → Backup → github.token | ✅ | <!-- pragma: allowlist secret -->
+| Failover chain | Primary → Backup → github.token | ✅ |
 | CI integration | Validation workflow passes | ✅ |
 | Rotation schedule | Documented + calendar set | ✅ |
 | Audit trail | All events logged | ✅ |

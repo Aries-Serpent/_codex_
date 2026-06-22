@@ -18,14 +18,17 @@ and include edge case coverage, error paths, and integration scenarios.
 
 import hashlib
 import json
+import tempfile
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import Mock, patch
+from typing import Any
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
 from src.codex.ingest.adapter import (
+    ARTIFACTS_DIR,
     MAX_FILE_SIZE_MB,
     MAX_FILES_COUNT,
     MAX_TOTAL_SIZE_MB,
@@ -33,10 +36,12 @@ from src.codex.ingest.adapter import (
     _check_size_bounds,
     _clone_git_repo,
     _compute_content_hash,
+    _extract_tar,
     _extract_zip,
     _validate_path,
     ingest,
 )
+
 
 # =====================================================================
 # FIXTURES
