@@ -368,7 +368,7 @@ print(f"Config types: {result['meta']['config_types']}")
    ```
 
 2. **Use Environment Variables for Secrets**
-   ```python
+   ```text
    # Good
    api_key = os.getenv("MCP_API_KEY")
 

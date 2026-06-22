@@ -423,7 +423,7 @@ def test_happy_path_only():
    - `mutmut` (simple, good for CI)
 
 2. **Configure Mutation Operators**
-   ```python
+   ```text
    # mutpy configuration
    operators = [
        'AOR',  # Arithmetic Operator Replacement (+ → -)

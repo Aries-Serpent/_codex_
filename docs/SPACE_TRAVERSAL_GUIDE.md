@@ -50,7 +50,7 @@ export SUMMARY_ENABLE=1               # Emit knobs_effective.json sidecar
 
 ## Component Scoring Updates
 
-```python
+```text
 # v1.4.0 formulas (applied in stage_s4_scoring)
 consistency = base_consistency * similarity_index  # P5: token similarity multiplier
 tests = max(base_tests, coverage_percent)          # P5: coverage XML override

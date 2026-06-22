@@ -626,7 +626,7 @@ class DynamicToolRegistry(ToolRegistry):
 
 ### Unit Tests
 
-```python
+```text
 import pytest
 from mcp.server import ToolRegistry, Tool, ToolParameter
 

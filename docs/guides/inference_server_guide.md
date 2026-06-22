@@ -25,7 +25,7 @@ pip install fastapi uvicorn pydantic
 
 ### Basic Server
 
-```python
+```text
 from src.codex_ml.serving.inference_server import create_app
 
 # Create app

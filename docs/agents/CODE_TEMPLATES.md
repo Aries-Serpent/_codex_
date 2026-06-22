@@ -17,7 +17,7 @@
 
 ### TEMPLATE-M001: Basic MCP Capability Module
 
-```python
+```text
 """[Module Name] - [Brief description].
 
 This module provides:
@@ -155,7 +155,7 @@ def reset_[class_name]() -> None:
 
 ## TEMPLATE-M002: Async Service Module
 
-```python
+```text
 """[Service Name] - Async service implementation.
 
 This module provides an async service for [description].
@@ -286,7 +286,7 @@ class [ServiceName]:
 
 ### TEMPLATE-M003: State Machine Module
 
-```python
+```text
 """[StateMachine Name] - State machine implementation.
 
 Provides state management with validated transitions.
@@ -469,7 +469,7 @@ class [State]Machine:
 
 ### TEMPLATE-T001: Comprehensive Test Suite
 
-```python
+```text
 """Tests for [module_name] module.
 
 This test suite covers:
@@ -685,7 +685,7 @@ class Test[ClassName]Parametrized:
 
 ## TEMPLATE-T002: Async Test Suite
 
-```python
+```text
 """Async tests for [service_name] service."""
 
 import asyncio
@@ -892,7 +892,7 @@ environments:
 
 ## TEMPLATE-C002: Python Config Loader
 
-```python
+```text
 """Configuration loader for [component].
 
 Loads configuration from YAML files with environment overrides.

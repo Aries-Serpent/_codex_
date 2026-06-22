@@ -11,7 +11,7 @@ generated_utc: 2025-10-30T03:51:18Z
 
 ## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 """Unified Training Orchestrator (Superseding preliminary patch)
 

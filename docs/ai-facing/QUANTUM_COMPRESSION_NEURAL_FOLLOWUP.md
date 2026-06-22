@@ -168,7 +168,7 @@ where:
 ```
 
 **Adaptive Learning:**
-```python
+```text
 H_new = H_old - η∇E_access
 
 where η is learning rate

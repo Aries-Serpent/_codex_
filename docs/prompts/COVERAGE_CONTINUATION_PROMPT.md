@@ -98,7 +98,7 @@ python3 -m pytest tests/agents/ --cov=agents --cov-report=term-missing -q
 
 ### 4. For Files with 0% Coverage
 Create corresponding test files:
-```python
+```text
 # tests/{path}/test_{filename}.py
 import pytest
 from {module} import {classes}

@@ -104,7 +104,7 @@ Data ingestion, feature pipelines, training, evaluation, packaging, and deployme
 | **CI/CD Pipeline** | ✅ Complete | 100 GitHub Actions workflows active; Nox; pre-commit hooks; security scans | None |
 
 **Evidence:**
-```python
+```text
 # Automated training pipeline
 src/codex_ml/training/continuous_learning.py
   - ContinuousLearningPipeline class
@@ -237,7 +237,7 @@ Version control for code, data, models. Unit/integration/regression tests. CI/CD
 | **Zero-Downtime** | ✅ Complete | Health probes, graceful shutdown | None |
 
 **Evidence:**
-```python
+```text
 # Version control
 src/codex_ml/utils/repro.py:
   class DatasetManifest:

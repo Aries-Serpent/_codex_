@@ -12,7 +12,7 @@ This document serves as a comprehensive technical reference for AI Assistants an
 ### 1. Chaos Theory
 
 #### Logistic Map
-```python
+```text
 x_{n+1} = r * x_n * (1 - x_n)
 ```
 - **Domain**: x ∈ [0, 1]
@@ -21,7 +21,7 @@ x_{n+1} = r * x_n * (1 - x_n)
 - **Implementation**: `ChaoticAttractor._logistic_map()`
 
 #### Lorenz System
-```python
+```text
 dx/dt = σ(y - x)
 dy/dt = x(ρ - z) - y
 dz/dt = xy - βz
@@ -31,7 +31,7 @@ dz/dt = xy - βz
 - **Implementation**: `ChaoticAttractor._lorenz_system()`
 
 #### Hénon Map
-```python
+```text
 x_{n+1} = 1 - a*x_n^2 + y_n
 y_{n+1} = b*x_n
 ```
@@ -39,7 +39,7 @@ y_{n+1} = b*x_n
 - **Implementation**: `ChaoticAttractor._henon_map()`
 
 #### Lyapunov Exponent
-```python
+```text
 λ = lim_{n→∞} (1/n) * Σ log|f'(x_i)|
 ```
 - **Positive**: Chaotic behavior
@@ -48,7 +48,7 @@ y_{n+1} = b*x_n
 ### 2. Fractal Geometry
 
 #### Box-Counting Dimension
-```python
+```text
 D = lim_{ε→0} log(N(ε)) / log(1/ε)
 ```
 - **N(ε)**: Number of boxes of size ε needed to cover the set
@@ -110,7 +110,7 @@ transfer_rate = 0.1 * (max_ch.pressure - min_ch.pressure)
 - **Implementation**: `EMFieldRouter._recalculate_fields()`
 
 #### Electric Field
-```python
+```text
 E = -∇φ
 ```
 - **Numerical gradient**: `np.gradient(potential)`
@@ -133,7 +133,7 @@ if (val > neighbors).all():
 ## 5. Wave Propagation
 
 ### Wave Equation
-```python
+```text
 ∂²u/∂t² = c²∇²u - γ∂u/∂t
 ```
 - **c**: Wave speed
@@ -142,7 +142,7 @@ if (val > neighbors).all():
 - **Implementation**: `WavePropagator.propagate()`
 
 #### Laplacian (Finite Difference)
-```python
+```text
 ∇²u ≈ (u[i-1,j] + u[i+1,j] + u[i,j-1] + u[i,j+1] - 4*u[i,j])
 ```
 - **Implementation**: Using `np.roll()`

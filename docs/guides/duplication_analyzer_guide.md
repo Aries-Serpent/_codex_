@@ -42,7 +42,7 @@ python tools/duplication_analyzer.py --threshold 0.15
 
 ## Programmatic Usage
 
-```python
+```text
 from pathlib import Path
 from tools.duplication_analyzer import DuplicationAnalyzer
 

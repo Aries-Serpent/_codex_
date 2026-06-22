@@ -24,7 +24,7 @@ pip install faiss-cpu numpy
 
 ### Basic Usage
 
-```python
+```text
 from src.codex.retrieval.stores.faiss_store import FAISSStore
 import numpy as np
 

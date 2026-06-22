@@ -79,7 +79,7 @@ elif name.endswith((".egg-info", ".dist-info")):
 **Root Cause:** OpenAIEmbeddingProvider was refactored for security - API key no longer stored as instance attribute (lines 132-136 in embeddings.py)
 
 **Solution:**
-```python
+```text
 # Before (fails - api_key attribute removed)
 def test_initialization_from_env(self):
     with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}): <!-- pragma: allowlist secret -->
@@ -96,7 +96,7 @@ def test_initialization_from_env(self):
 
 ## Fix 2: `test_destructor_clears_key` (line 188)
 **Solution:**
-```python
+```text
 # Before
 def test_destructor_clears_key(self):
     with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}): <!-- pragma: allowlist secret -->

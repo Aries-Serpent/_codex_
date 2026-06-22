@@ -822,7 +822,7 @@ If Navigation Confused:
 
 **Script**: `scripts/mcp/generate_navigation_system.py`
 
-```python
+```text
 #!/usr/bin/env python3
 """
 Generate complete navigation system for full codebase package

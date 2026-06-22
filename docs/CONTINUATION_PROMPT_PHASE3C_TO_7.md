@@ -62,7 +62,7 @@ pytest tests/test_rag_indexer.py     # Run separately
    ```
 
 2. **Index Merging**
-   ```python
+   ```text
    def test_index_merging(tmp_path):
        """Test merging multiple indices."""
        # Create index1 with file1

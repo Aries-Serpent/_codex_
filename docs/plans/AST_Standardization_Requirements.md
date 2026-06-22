@@ -224,7 +224,7 @@ This document provides **requirements, architecture, and standardization strateg
 #### **Component 1: Universal AST Parser**
 **File:** `src/codex_ml/ast/parser.py`
 
-```python
+```text
 # Pseudo-code architecture
 class UniversalParser:
     """Language-agnostic AST parser using libcst + custom wrappers."""

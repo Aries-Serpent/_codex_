@@ -94,7 +94,7 @@ PRESERVE_CONTEXTS = [
 
 ### Replacement Patterns (Ordered)
 
-```python
+```text
 PLANNING_PATTERNS = [
     # Most specific patterns first
     r"\((Phase|Cycle)\s+\d+\s*\(Q[1-4]\s*20\d{2}\)\)" → "(Phase [n] (Current Cycle))",

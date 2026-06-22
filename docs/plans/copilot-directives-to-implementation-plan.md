@@ -1377,7 +1377,7 @@ jobs:
 
 **File**: `src/agents/orchestrator.py`
 
-```python
+```text
 """
 Multi-Agent Orchestrator for _codex_
 Coordinates multiple autonomous agents with shared resources
@@ -1917,7 +1917,7 @@ rule_categories:
 
 **File**: `scripts/security/score_alerts.py`
 
-```python
+```text
 """
 Risk scoring system for Semgrep alerts.
 
@@ -2601,7 +2601,7 @@ if __name__ == "__main__":
 
 **File**: `scripts/security/run_codemods.py`
 
-```python
+```text
 """
 Batch codemod runner for security fixes.
 

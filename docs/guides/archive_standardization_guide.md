@@ -123,7 +123,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 
 The system automatically detects record versions:
 
-```python
+```text
 from codex.archive.evidence_schema import EvidenceSchemaValidator
 
 validator = EvidenceSchemaValidator()

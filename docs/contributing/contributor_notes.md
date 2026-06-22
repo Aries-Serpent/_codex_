@@ -86,7 +86,7 @@ The project uses Hydra for configuration management:
 
 **Torch Import**: The repository excludes local `torch/` stubs. Always ensure torch imports from site-packages:
 
-```python
+```text
 import torch
 print(torch.__file__)  # Should show site-packages path
 ```text

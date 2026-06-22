@@ -160,7 +160,7 @@ _codex_ has an extensible plugin architecture:
 - **Discovery**: `codex-list-plugins`
 
 **Example plugin registration**:
-```python
+```text
 # In pyproject.toml
 [project.entry-points."codex_ml.metrics"]
 my_metric = "my_package.metrics:my_metric_function"

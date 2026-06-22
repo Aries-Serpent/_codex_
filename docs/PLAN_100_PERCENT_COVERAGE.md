@@ -65,7 +65,7 @@ This document provides a detailed, actionable plan to achieve 100% test coverage
 
 #### 1.1 Import Error Scenarios
 
-```python
+```text
 # File: tests/test_rag_edge_cases.py (new)
 
 def test_sentence_transformers_not_installed():
@@ -345,7 +345,7 @@ pytest tests/test_rag_edge_cases.py::TestExtremeParameters -v --cov=src/codex/ra
 
 #### 3.1 Destructor and Cleanup Code
 
-```python
+```text
 def test_openai_provider_destructor():
     """Test that destructor properly clears API key"""
     with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}): <!-- pragma: allowlist secret -->

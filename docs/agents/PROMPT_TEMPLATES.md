@@ -132,7 +132,7 @@ Test Categories Required:
 5. State transition tests (if applicable)
 
 Test Template:
-```python
+```text
 """Tests for [module_name] module."""
 
 import pytest

@@ -394,7 +394,7 @@ def setup_drift_alerts():
 
 ### 2. Alert on Drift
 
-```python
+```text
 def monitor_with_alerts(monitor, alerts):
     """Monitor and send alerts."""
 

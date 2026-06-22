@@ -340,7 +340,7 @@ pip install -e .
 
 **Step 3: Create Language Registry**
 
-```python
+```text
 # File: src/codex_ml/ast/language_registry.py
 from tree_sitter import Language
 

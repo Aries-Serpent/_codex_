@@ -81,7 +81,7 @@ graph TB
 - `OAuthManager` - OAuth flow orchestration
 
 **Usage Example**:
-```python
+```text
 from src.codex.auth.oauth_manager import OAuthManager
 
 # Initialize manager

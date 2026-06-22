@@ -25800,7 +25800,7 @@ Run 23694012554 ran on `0df8e84` (after S142 cross-reference fix). `detect-secre
 #### Fix 1 — `src/services/crawler/__init__.py` (critical)
 
 Changed from broken identical try/except to clean relative imports:
-```python
+```text
 # Before (broken): try/except both had identical 'from services.crawler.X import'
 
 
@@ -28360,7 +28360,7 @@ All items complete. See readiness matrix below.
    consumed `` ` `` `` and `` `` ` `` (positions 45–51), leaving `future task` exposed.
 
    Fix: Added outer-single-bt display wrapper as the **FIRST** alternative in `_INLINE_CODE_SPAN`:
-   ```python
+   ```text
    _INLINE_CODE_SPAN = re.compile(
        r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
        r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span

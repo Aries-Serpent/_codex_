@@ -226,7 +226,7 @@ A minimal and robust PyTorch evaluation loop should focus on clarity, correctnes
 - Restore training mode after evaluation: Use model.train() for subsequent training phases[1](https://www.compilenrun.com/docs/library/pytorch/pytorch-training-loop/pytorch-validation-loop/)[[2]](https://www.slingacademy.com/article/how-to-write-a-pytorch-testing-loop/)[[3]](https://apxml.com/courses/getting-started-with-pytorch/chapter-6-implementing-training-loop/implementing-evaluation-loop)[[4]](https://www.slingacademy.com/article/analyzing-model-performance-with-pytorch-testing-loops/)[[5]](https://www.codegenes.net/blog/pytorch-validation-loop/).
 
 Sample Pattern:
-```python
+```text
 def evaluate(model, data_loader, criterion, device):
     model.eval()
     running_loss, correct, total = 0.0, 0, 0
@@ -317,7 +317,7 @@ To use pip-audit in a Nox session and fail the session if high or critical vulne
 
 Below is a practical example noxfile.py illustrating these steps:
 
-```python
+```text
 import nox
 import json
 
@@ -702,7 +702,7 @@ To achieve deterministic machine learning (ML) experiments in Python and PyTorch
 
 #### Example Starter Script for Deterministic PyTorch Experiments
 
-```python
+```text
 import random
 import numpy as np
 import torch
