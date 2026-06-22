@@ -372,7 +372,7 @@ class TestSynchronization:
                             lock2.release()
                     else:
                         results['thread1'] = 'timeout'
-            except Exception as e:
+            except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
                 results['thread1'] = str(e)
 
         def thread2_work():
@@ -386,7 +386,7 @@ class TestSynchronization:
                             lock1.release()
                     else:
                         results['thread2'] = 'timeout'
-            except Exception as e:
+            except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
                 results['thread2'] = str(e)
 
         t1 = threading.Thread(target=thread1_work)
