@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-06-01T01:23:26.945042+00:00",
+    "scan_time": "2026-06-22T01:26:54.495301+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,25 +10,76 @@
     }
   },
   "summary": {
-    "total_candidates": 1,
+    "total_candidates": 6,
     "by_reason": {
-      "large": 1
+      "large": 6
     },
     "by_category": {
-      "unknown": 1
+      "unknown": 5,
+      "reports": 1
     },
-    "total_size_mb": 9.44
+    "total_size_mb": 63.67
   },
   "candidates": [
     {
       "path": "coverage.json",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 9.44,
+      "size_mb": 10.32,
       "reasons": [
-        "large_file_9.44mb"
+        "large_file_10.32mb"
       ],
       "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "coverage_reports/coverage.json",
+      "category": "reports",
+      "age_days": 0,
+      "size_mb": 3.4,
+      "reasons": [
+        "large_file_3.40mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": ".codex/sbom/sbom_base-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 20.08,
+      "reasons": [
+        "large_file_20.08mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_local-codex-env-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 16.67,
+      "reasons": [
+        "large_file_16.67mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_ci-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 10.29,
+      "reasons": [
+        "large_file_10.29mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_embedding-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.91,
+      "reasons": [
+        "large_file_2.91mb"
+      ],
+      "recommendation": "review_manually"
     }
   ]
 }
