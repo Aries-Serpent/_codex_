@@ -131,7 +131,7 @@ safe_extract_tarfile(archive_path, extract_dir)
 | #14 | scripts/space_traversal/audit_runner.py | 1081 | ✅ FIXED | Enabled autoescape |
 
 **Fix Applied for Exception Disclosure:**
-```python
+```text
 # Before:
 return Response(content=f"Error: {e}", status_code=500)
 

@@ -93,35 +93,35 @@ Create prioritization matrix:
 
 **Template Approach**:
 1. Identify import pattern:
-   ```python
-   # Before
-   from hydra.something import OldModule
-   ```
+```python
+# Before
+from hydra.something import OldModule
+```
 
 2. Create alias in `config_legacy/`:
-   ```python
-   # config_legacy/something.py
-   import warnings
-   warnings.warn(
-       "config_legacy.something is deprecated. Use hydra.something from site-packages.",
-       DeprecationWarning,
-       stacklevel=2
-   )
-   from hydra.something import OldModule
-   ```
+```python
+# config_legacy/something.py
+import warnings
+warnings.warn(
+    "config_legacy.something is deprecated. Use hydra.something from site-packages.",
+    DeprecationWarning,
+    stacklevel=2
+)
+from hydra.something import OldModule
+```
 
 3. Update imports gradually:
-   ```python
-   # After
-   from hydra.something import OldModule  # Now imports from site-packages
-   ```
+```python
+# After
+from hydra.something import OldModule  # Now imports from site-packages
+```
 
 4. Add test to verify no shadowing:
-   ```python
-   def test_no_hydra_shadowing():
-       import hydra
-       assert "site-packages" in hydra.__file__
-   ```
+```python
+def test_no_hydra_shadowing():
+    import hydra
+    assert "site-packages" in hydra.__file__
+```
 
 **Acceptance Criteria**:
 - [ ] Legacy import CSV generated

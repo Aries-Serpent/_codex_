@@ -172,17 +172,17 @@ Both are designed for intuitive navigation by users and AI agents, enabling deep
 ### For AI Agents
 
 1. **Parse the navigator structure:**
-   ```python
-   import requests
-   from bs4 import BeautifulSoup
+```python
+import requests
+from bs4 import BeautifulSoup
 
-   url = "https://aries-serpent.github.io/_codex_/interactive-codebase-navigator.html"
-   response = requests.get(url)
-   soup = BeautifulSoup(response.content, 'html.parser')
+url = "https://aries-serpent.github.io/_codex_/interactive-codebase-navigator.html"
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
 
-   # Extract navigation structure
-   nav_sections = soup.find_all('button', onclick=lambda x: x and 'showSection' in x)
-   ```
+# Extract navigation structure
+nav_sections = soup.find_all('button', onclick=lambda x: x and 'showSection' in x)
+```
 
 2. **Query capabilities:**
    - Read section headers for high-level organization

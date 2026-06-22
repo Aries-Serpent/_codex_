@@ -276,15 +276,15 @@ field: Union[str, np.ndarray, List] = default_value
    - **Usage:** 25+ fields
 
 3. **Optional Required Fields Pattern**
-   ```python
-   @dataclass
-   class Example:
-       required_field: str = ""
+```python
+@dataclass
+class Example:
+    required_field: str = ""
 
-       def __post_init__(self):
-           if not self.required_field:
-               self.required_field = generate_default()
-   ```
+    def __post_init__(self):
+        if not self.required_field:
+            self.required_field = generate_default()
+```
 
 ### Process Insights
 1. **Documentation ROI: 15% time, 100% value**

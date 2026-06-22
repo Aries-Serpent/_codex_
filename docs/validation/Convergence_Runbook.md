@@ -102,10 +102,10 @@ pytest tests/validation/ -v
 1. Review `reports/legacy_import_usage.csv` to find all legacy imports
 2. Refactor imports to use `src.training` instead of `training`
 3. Add deprecation warnings to root modules:
-   ```python
-   import warnings
-   warnings.warn("Module 'training' is deprecated. Use 'src.training' instead.", DeprecationWarning)
-   ```
+```python
+import warnings
+warnings.warn("Module 'training' is deprecated. Use 'src.training' instead.", DeprecationWarning)
+```
 
 ### Determinism Failure
 **Symptom**: `verify_determinism.py` reports mismatches between runs.

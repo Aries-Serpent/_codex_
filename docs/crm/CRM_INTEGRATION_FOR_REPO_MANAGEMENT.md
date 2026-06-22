@@ -211,49 +211,49 @@ graph LR
 AI agents (GitHub Copilot, custom agents) can:
 
 1. **Query CRM Data**
-   ```python
-   from codex_crm.zd_admin import ZendeskClient
+```python
+from codex_crm.zd_admin import ZendeskClient
 
-   client = ZendeskClient()
-   open_issues = client.search_tickets(status="open", tags=["bug", "p0"])
-   ```
+client = ZendeskClient()
+open_issues = client.search_tickets(status="open", tags=["bug", "p0"])
+```
 
 2. **Create Tickets from Code Analysis**
-   ```python
-   from codex_crm.zd_admin import create_ticket_from_issue
+```python
+from codex_crm.zd_admin import create_ticket_from_issue
 
-   # AI agent detects bug pattern
-   ticket = create_ticket_from_issue(
-       subject="Memory leak in src/quantum/orchestrator.py",
-       description="Detected unclosed resources...",
-       priority="high",
-       tags=["bug", "memory-leak", "quantum"]
-   )
-   ```
+# AI agent detects bug pattern
+ticket = create_ticket_from_issue(
+    subject="Memory leak in src/quantum/orchestrator.py",
+    description="Detected unclosed resources...",
+    priority="high",
+    tags=["bug", "memory-leak", "quantum"]
+)
+```
 
 3. **Auto-Assign Based on Skills**
-   ```python
-   from codex_crm.zd_admin import route_ticket
+```python
+from codex_crm.zd_admin import route_ticket
 
-   # AI analyzes file paths and routes to expert
-   route_ticket(
-       ticket_id=12345,
-       file_paths=["src/rag/pipelines/embedding.py"],
-       routing_strategy="skills-based"
-   )
-   ```
+# AI analyzes file paths and routes to expert
+route_ticket(
+    ticket_id=12345,
+    file_paths=["src/rag/pipelines/embedding.py"],
+    routing_strategy="skills-based"
+)
+```
 
 4. **Update Ticket Status Automatically**
-   ```python
-   from codex_crm.zd_admin import update_ticket
+```python
+from codex_crm.zd_admin import update_ticket
 
-   # AI agent fixes bug, updates ticket
-   update_ticket(
-       ticket_id=12345,
-       status="solved",
-       comment="Fixed in commit abc123. Root cause: ..."
-   )
-   ```
+# AI agent fixes bug, updates ticket
+update_ticket(
+    ticket_id=12345,
+    status="solved",
+    comment="Fixed in commit abc123. Root cause: ..."
+)
+```
 
 ### Agent Workflows
 

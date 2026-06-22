@@ -691,7 +691,7 @@ docs/
 
 **Use AST Analysis to Automatically Update Maturity Checklist:**
 
-```python
+```text
 # pseudo-code: auto-update_maturity_checklist.py
 
 def analyze_and_update_maturity():

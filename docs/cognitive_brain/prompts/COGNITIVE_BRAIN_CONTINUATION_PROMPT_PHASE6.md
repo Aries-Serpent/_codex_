@@ -54,7 +54,7 @@
 - Now: `KNOWN_MODEL_REVISIONS["sshleifer/tiny-gpt2"]` = real commit hash → works or graceful skip
 
 **If test_run_eval_cli STILL fails after this fix**, check:
-```python
+```text
 # src/codex_ml/eval/run_eval.py — does it also call get_hf_revision() explicitly?
 grep -n "get_hf_revision\|revision=" src/codex_ml/eval/run_eval.py
 ```

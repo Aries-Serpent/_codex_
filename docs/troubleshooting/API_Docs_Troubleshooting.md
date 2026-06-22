@@ -148,10 +148,10 @@ python tools/build_api_docs.py
    - Ensure all package directories have `__init__.py`
 
 2. **Namespace package configuration**
-   ```python
-   # In __init__.py
-   from . import submodule  # Explicit import
-   ```
+```python
+# In __init__.py
+from . import submodule  # Explicit import
+```
 
 3. **Dynamic imports not discovered**
    - pdoc scans static imports; ensure modules are imported in `__init__.py`
@@ -214,16 +214,16 @@ python tools/build_api_docs.py --output-dir /tmp/api_docs
 **Causes & Fixes**:
 
 1. **Missing docstrings**
-   ```python
-   # Add module-level docstring
-   """
-   Module description here.
-   """
+```python
+# Add module-level docstring
+"""
+Module description here.
+"""
 
-   def my_function():
-       """Function description."""
-       pass
-   ```
+def my_function():
+    """Function description."""
+    pass
+```
 
 2. **Private modules (starting with `_`)**
    - pdoc3 skips private modules by default

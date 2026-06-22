@@ -148,12 +148,12 @@ accelerator = Accelerator(mixed_precision="no")
    ```
 
 3. **Use CPU offloading**:
-   ```python
-   accelerator = Accelerator(
-       cpu_offload=True,
-       device_placement=True,
-   )
-   ```
+```python
+accelerator = Accelerator(
+    cpu_offload=True,
+    device_placement=True,
+)
+```
 
 ### 7. Uneven Batch Distribution
 
@@ -385,7 +385,7 @@ pytest -m "not integration"
 ### Common Init Guard Results
 
 **CPU-Only Environment:**
-```python
+```text
 AccelerateInitResult(
     success=False,
     skip_reason='cpu_only',
@@ -395,7 +395,7 @@ AccelerateInitResult(
 ```
 
 **Accelerate Not Installed:**
-```python
+```text
 AccelerateInitResult(
     success=False,
     skip_reason='no_accelerate',
@@ -405,7 +405,7 @@ AccelerateInitResult(
 ```
 
 **Successful Initialization:**
-```python
+```text
 AccelerateInitResult(
     success=True,
     backend='nccl',

@@ -10,7 +10,7 @@ from codex_ml.connectors.local import LocalConnector
 
 Remote endpoints are disabled in offline runs. Use the `RemoteConnector` shim to make this explicit in tests or tooling:
 
-```python
+```text
 from codex_ml.connectors.remote import RemoteConnector, ConnectorError
 
 remote = RemoteConnector()

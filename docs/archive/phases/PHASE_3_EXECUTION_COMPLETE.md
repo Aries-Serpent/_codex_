@@ -92,56 +92,56 @@ requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
 **Changes:**
 
 1. **Removed module-level imports:**
-   ```python
-   # REMOVED: import sys
-   ```
+```python
+# REMOVED: import sys
+```
 
 2. **Removed outdated skipif decorators:**
-   ```python
-   # BEFORE
-   @pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
-   class TestExceptionGroups:
+```text
+# BEFORE
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
+class TestExceptionGroups:
 
-   # AFTER
-   class TestExceptionGroups:
-   ```
+# AFTER
+class TestExceptionGroups:
+```
 
 3. **Simplified except* syntax test:**
-   ```python
-   # BEFORE
-   try:
-       compile(code, '<string>', 'exec')
-   except SyntaxError:
-       if sys.version_info >= (3, 11):
-           pytest.fail("except* syntax should be available in Python 3.11+")
-       else:
-           pytest.skip("except* syntax not available")
+```python
+# BEFORE
+try:
+    compile(code, '<string>', 'exec')
+except SyntaxError:
+    if sys.version_info >= (3, 11):
+        pytest.fail("except* syntax should be available in Python 3.11+")
+    else:
+        pytest.skip("except* syntax not available")
 
-   # AFTER
-   # This should compile without errors in Python 3.12
-   compile(code, '<string>', 'exec')
-   ```
+# AFTER
+# This should compile without errors in Python 3.12
+compile(code, '<string>', 'exec')
+```
 
 4. **Updated Python 3.12-specific test class:**
-   ```python
-   # BEFORE
-   @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific")
-   class TestPython312ExceptionImprovements:
+```text
+# BEFORE
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific")
+class TestPython312ExceptionImprovements:
 
-   # AFTER
-   @pytest.mark.skipif(False, reason="Python 3.12 is the standard version")
-   class TestPython312ExceptionImprovements:
-   ```
+# AFTER
+@pytest.mark.skipif(False, reason="Python 3.12 is the standard version")
+class TestPython312ExceptionImprovements:
+```
 
 5. **Removed integration test skipif:**
-   ```python
-   # BEFORE
-   @pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
-   def test_async_exception_group(self):
+```text
+# BEFORE
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
+def test_async_exception_group(self):
 
-   # AFTER
-   def test_async_exception_group(self):
-   ```
+# AFTER
+def test_async_exception_group(self):
+```
 
 **Impact:**
 - ✅ 4 skipif decorators removed

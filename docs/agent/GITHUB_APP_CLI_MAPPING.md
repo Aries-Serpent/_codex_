@@ -75,7 +75,7 @@ All components in the platform resolve GitHub tokens in the same order:
 
 ### 1 · Receiving Webhooks
 
-```python
+```text
 from codex.auth.github_app import WebhookVerifier
 
 verifier = WebhookVerifier(secret=os.environ["WEBHOOK_SECRET"])

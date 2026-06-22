@@ -717,7 +717,7 @@ result = invoke_agent(
 | curl | ≥7.0 | HTTP requests | For API calls |
 
 ### Python Dependencies
-```python
+```text
 # requirements.txt
 pyyaml>=6.0
 requests>=2.31.0

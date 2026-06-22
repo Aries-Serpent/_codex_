@@ -429,39 +429,39 @@ def test_predict():
 ## Best Practices
 
 1. **Always validate inputs**
-   ```python
-   # Server handles this automatically with Pydantic
-   ```
+```python
+# Server handles this automatically with Pydantic
+```
 
 2. **Monitor rate limits**
-   ```python
-   # Check metrics regularly
-   print(f"Total requests: {response.json()['total_requests']}")
-   ```
+```python
+# Check metrics regularly
+print(f"Total requests: {response.json()['total_requests']}")
+```
 
 3. **Handle errors gracefully**
-   ```python
-   try:
-       result = requests.post(url, json=data).json()
-   except Exception as e:
-       logger.error(f"Request failed: {e}")
-       result = {"error": str(e)}
-   ```
+```python
+try:
+    result = requests.post(url, json=data).json()
+except Exception as e:
+    logger.error(f"Request failed: {e}")
+    result = {"error": str(e)}
+```
 
 4. **Use health checks**
-   ```python
-   # Before making requests
-   health = requests.get(f"{base_url}/health").json()
-   if health["status"] != "healthy":
-       raise RuntimeError("Server unhealthy")
-   ```
+```python
+# Before making requests
+health = requests.get(f"{base_url}/health").json()
+if health["status"] != "healthy":
+    raise RuntimeError("Server unhealthy")
+```
 
 5. **Batch requests when possible**
-   ```python
-   # Instead of 100 single requests
-   inputs_batch = ["input1", "input2", ..., "input100"]
-   result = requests.post(url, json={"inputs": inputs_batch})
-   ```
+```python
+# Instead of 100 single requests
+inputs_batch = ["input1", "input2", ..., "input100"]
+result = requests.post(url, json={"inputs": inputs_batch})
+```
 
 ## Examples
 

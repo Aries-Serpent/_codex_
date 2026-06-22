@@ -104,7 +104,7 @@ while Pattern H reaches 0.85. Used `impact > 0.7` to distinguish safely.
 **Ground truth**: `pii ≥ 3 OR risk == "high" → REJECT`
 **Fix**: Simplified PII reject logic to match ground truth exactly. Added PII
 exemptions to Patterns A/C/D/H to prevent cross-pattern interference:
-```python
+```text
 if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
     return 0.01  # Let reject win for PII + high risk
 ```
@@ -112,7 +112,7 @@ if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
 #### Pattern F — Multi-Violation Severity (6 failures → 0)
 **Ground truth**: `severity = (1 - score) × violation_count × risk_multiplier`
 **Fix**: Priority reorder (F/B before H cost check) + `is_pattern_f_monitor` guard:
-```python
+```text
 is_pattern_f_monitor = (violation_count >= 5 AND impact > 0.70)
 ```
 Added `cost ≥ 3000` threshold to avoid catching Pattern D (cost ~2000).
@@ -246,7 +246,7 @@ if self.lightweight and len(state.decisions) <= 8:
 **Problem**: Raw k₁ = quantum_time / classical_time ignores accuracy advantage.
 A fast-but-40%-accurate classical system shouldn't be the "gold standard" baseline.
 **Solution**: Quality factor accounts for coherence, accuracy, and classical errors:
-```python
+```text
 quality_factor = (1 + coherence) × (1 − quantum_error) × (1 + classical_error)
 # = (1 + 0.791) × (1 − 0.0) × (1 + 0.6) = 2.865
 ```

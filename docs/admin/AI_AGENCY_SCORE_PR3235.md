@@ -81,14 +81,14 @@
    ```
 
 2. **Add Unit Tests**
-   ```python
-   # tests/scripts/test_validate_docs_links.py
-   def test_parse_markdown_links():
-       ...
+```python
+# tests/scripts/test_validate_docs_links.py
+def test_parse_markdown_links():
+    ...
 
-   def test_auto_fix_confidence():
-       ...
-   ```
+def test_auto_fix_confidence():
+    ...
+```
 
 3. **Add Requirements File**
    ```
@@ -157,23 +157,23 @@
    ```
 
 2. **Add Progress Reporting**
-   ```python
-   # In validate_docs_links.py
-   for i, md_file in enumerate(md_files, 1):
-       print(f"\rValidating {i}/{len(md_files)}...", end='', flush=True)
-       self._validate_markdown_file(md_file)
-   print()  # New line after progress
-   ```
+```python
+# In validate_docs_links.py
+for i, md_file in enumerate(md_files, 1):
+    print(f"\rValidating {i}/{len(md_files)}...", end='', flush=True)
+    self._validate_markdown_file(md_file)
+print()  # New line after progress
+```
 
 3. **Filter False Positives**
-   ```python
-   # Skip special link types
-   if url.startswith('mailto:'):
-       return  # Skip email links
+```text
+# Skip special link types
+if url.startswith('mailto:'):
+    return  # Skip email links
 
-   if in_code_block(md_file, line_num):
-       return  # Skip links in code examples
-   ```
+if in_code_block(md_file, line_num):
+    return  # Skip links in code examples
+```
 
 ---
 
@@ -392,24 +392,24 @@
    ```
 
 2. **Stale Content Detection**
-   ```python
-   # scripts/detect_stale_docs.py
-   def find_stale_content(age_threshold=90):
-       # Find files not modified in 90 days
-       # Create issue with list
-       # Suggest review or archive
-   ```
+```text
+# scripts/detect_stale_docs.py
+def find_stale_content(age_threshold=90):
+    # Find files not modified in 90 days
+    # Create issue with list
+    # Suggest review or archive
+```
 
 3. **Performance Optimization**
-   ```python
-   # Parallel validation
-   with ThreadPoolExecutor(max_workers=4) as executor:
-       results = executor.map(validate_file, files)
+```python
+# Parallel validation
+with ThreadPoolExecutor(max_workers=4) as executor:
+    results = executor.map(validate_file, files)
 
-   # Caching
-   cache = {}
-   cache_key = f"{file.stat().st_mtime}:{file.name}"
-   ```
+# Caching
+cache = {}
+cache_key = f"{file.stat().st_mtime}:{file.name}"
+```
 
 ---
 

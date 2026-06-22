@@ -321,42 +321,42 @@ store = FAISSStore(index_name="migrated-from-weaviate")
 ## Best Practices
 
 1. **Always save after creating index:**
-   ```python
-   store.create_index(embeddings, documents)
-   store.save()  # Persist immediately
-   ```
+```python
+store.create_index(embeddings, documents)
+store.save()  # Persist immediately
+```
 
 2. **Use health checks before operations:**
-   ```python
-   health = store.health_check()
-   if not health["healthy"]:
-       store.load()
-   ```
+```python
+health = store.health_check()
+if not health["healthy"]:
+    store.load()
+```
 
 3. **Validate embeddings before indexing:**
-   ```python
-   assert embeddings.ndim == 2
-   assert not np.isnan(embeddings).any()
-   assert not np.isinf(embeddings).any()
-   ```
+```python
+assert embeddings.ndim == 2
+assert not np.isnan(embeddings).any()
+assert not np.isinf(embeddings).any()
+```
 
 4. **Handle errors gracefully:**
-   ```python
-   try:
-       results = store.search(query)
-   except Exception as e:
-       logger.error(f"Search failed: {e}")
-       results = []  # Return empty results
-   ```
+```python
+try:
+    results = store.search(query)
+except Exception as e:
+    logger.error(f"Search failed: {e}")
+    results = []  # Return empty results
+```
 
 5. **Use descriptive index names:**
-   ```python
-   # Good
-   store = FAISSStore(index_name="product-embeddings-v2")
+```python
+# Good
+store = FAISSStore(index_name="product-embeddings-v2")
 
-   # Avoid
-   store = FAISSStore(index_name="index1")
-   ```
+# Avoid
+store = FAISSStore(index_name="index1")
+```
 
 ## Troubleshooting
 

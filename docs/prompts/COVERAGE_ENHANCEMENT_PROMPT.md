@@ -86,7 +86,7 @@ def test_{function_name}_branch_false():
 ### C. Class Coverage
 
 For each class:
-```python
+```text
 class Test{ClassName}:
     """Complete coverage for {ClassName}"""
 
@@ -128,7 +128,7 @@ For each file below 99% coverage:
 
 ### Template for 0% Coverage Files (No Tests)
 
-```python
+```text
 """
 Comprehensive tests for {module_name}
 

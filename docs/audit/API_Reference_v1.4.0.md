@@ -71,15 +71,15 @@ Parse a coverage XML file to coverage map format.
 
 **Returns**:
 - `dict`: Coverage map with structure:
-  ```python
-  {
-      "relative/path/file.py": {
-          "covered_lines": [1, 2, 5, 10],  # Line numbers with hits > 0
-          "percent": 0.75  # Coverage percentage [0.0, 1.0]
-      },
-      ...
-  }
-  ```
+```text
+{
+    "relative/path/file.py": {
+        "covered_lines": [1, 2, 5, 10],  # Line numbers with hits > 0
+        "percent": 0.75  # Coverage percentage [0.0, 1.0]
+    },
+    ...
+}
+```
 
 **Raises**:
 - `FileNotFoundError`: If xml_path doesn't exist
@@ -283,7 +283,7 @@ consistency_score = 1.0 - dup_ratio
 
 ### Coverage Map Schema
 
-```python
+```text
 {
     "file/path.py": {
         "covered_lines": [1, 2, 3, 10, 15],  # list[int]

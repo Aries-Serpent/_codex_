@@ -283,13 +283,13 @@ jobs:
    ```
 
 3. **Ignore Specific Issues Sparingly**
-   ```python
-   # Inline ignore (use only when necessary)
-   result = eval(user_input)  # noqa: S307
+```python
+# Inline ignore (use only when necessary)
+result = eval(user_input)  # noqa: S307
 
-   # Type ignore (document why)
-   value = some_untyped_library()  # type: ignore[no-untyped-call]
-   ```
+# Type ignore (document why)
+value = some_untyped_library()  # type: ignore[no-untyped-call]
+```
 
 4. **Configure Per-File Rules**
    ```toml
@@ -388,16 +388,16 @@ git commit -m "feat: add new feature"
    - Let Black handle formatting, Ruff handles linting logic
 
 2. **mypy type errors in third-party libraries**
-   ```python
-   # Add type stubs
-   pip install types-requests types-pyyaml
+```text
+# Add type stubs
+pip install types-requests types-pyyaml
 
-   # Or ignore module
-   # mypy.ini or pyproject.toml
-   [[tool.mypy.overrides]]
-   module = "untyped_library.*"
-   ignore_missing_imports = true
-   ```
+# Or ignore module
+# mypy.ini or pyproject.toml
+[[tool.mypy.overrides]]
+module = "untyped_library.*"
+ignore_missing_imports = true
+```
 
 3. **Pre-commit hooks too slow**
    ```bash

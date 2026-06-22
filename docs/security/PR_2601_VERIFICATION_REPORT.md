@@ -49,7 +49,7 @@ grep -n '\.\s\+[a-zA-Z_]' src/services/workflow/inventory.py
 - #2134: ✅ Fixed (position-aware validation added)
 
 **Changes Applied**:
-```python
+```text
 # Line 35 in tests/security/test_security_integration.py:
 - assert masked.endswith("example.com")
 + assert masked.endswith("@example.com"), f"Domain validation failed: {masked}"
@@ -86,7 +86,7 @@ pytest tests/security/test_security_integration.py::TestSecurityMasking::test_ma
 **Status**: ✅ FIXED AND VERIFIED
 
 **Changes Applied**:
-```python
+```text
 # In src/codex/security/log_sanitizer.py (lines 183-195):
 elif isinstance(value, (list, tuple)):
     if mask_secrets:

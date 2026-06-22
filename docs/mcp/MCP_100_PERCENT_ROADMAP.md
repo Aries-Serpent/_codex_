@@ -116,13 +116,13 @@ Enhance MCP modules with additional security safeguard keywords to improve detec
    - Add checksum for rate limit state
 
 6. **Create mcp/safeguards.py** (New File):
-   ```python
-   # Dedicated safeguards module
-   # Contains: sha256 utilities, checksum validation
-   # confirm/dry_run decorators, offline mode handlers
-   # RateLimitExceeded and Unauthorized wrappers
-   # seed/rng utilities for testing
-   ```
+```python
+# Dedicated safeguards module
+# Contains: sha256 utilities, checksum validation
+# confirm/dry_run decorators, offline mode handlers
+# RateLimitExceeded and Unauthorized wrappers
+# seed/rng utilities for testing
+```
 
 **Success Criteria**:
 - All 10 SAFEGUARD_KEYWORDS appear in at least 4 MCP evidence files

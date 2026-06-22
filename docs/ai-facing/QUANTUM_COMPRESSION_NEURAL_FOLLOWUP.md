@@ -133,7 +133,7 @@ This system should integrate with the existing quantum-enhanced RAG pipeline and
 
 Represent information in Hilbert space:
 
-```python
+```text
 # Information encoding
 
 |ψ⟩ = Σᵢ αᵢ|iⱼ⟩ ⊗ |kₖ⟩
@@ -157,7 +157,7 @@ and dim(H) is Hilbert space dimension
 
 Model information access as quantum tunneling:
 
-```python
+```text
 # Pathway strength
 P_pathway = |⟨ψ_target|U(t)|ψ_source⟩|²
 
@@ -179,7 +179,7 @@ and E_access is access energy cost
 
 Use Boltzmann distribution for information clustering:
 
-```python
+```text
 P(cluster_i) = exp(-E_i/kT) / Z
 
 where:
@@ -1096,7 +1096,7 @@ class QuantumCompressor:
 
 ### commit / pre-commit 2: Schmidt Decomposition & Testing
 
-````python name=test_quantum_compressor.py
+````text name=test_quantum_compressor.py
 import numpy as np
 import pytest
 from quantum_compressor_impl import QuantumCompressor, QuantumState
@@ -1244,7 +1244,7 @@ class OptimizedQuantumCompressor:
 
 ### commit / pre-commit 4: NeuralPathwayNetwork Implementation
 
-````python name=neural_pathways_impl.py
+````text name=neural_pathways_impl.py
 import numpy as np
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass

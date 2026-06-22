@@ -306,7 +306,7 @@ data_validation:
 
 **A**: Check import path:
 
-```python
+```text
 # Correct import
 from codex_ml.evaluation.runner import EvaluationRunner
 

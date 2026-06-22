@@ -56,7 +56,7 @@ D = lim_{ε→0} log(N(ε)) / log(1/ε)
 - **Method**: `FractalAnalyzer.box_counting_dimension()`
 
 #### Self-Similarity Score
-```python
+```text
 S = (avg_child_depth / (depth + 1)) * (1 / (1 + |log(branching_ratio + 1) - log(2)|))
 ```
 - **Range**: [0, 1]
@@ -103,7 +103,7 @@ transfer_rate = 0.1 * (max_ch.pressure - min_ch.pressure)
 ## 4. Electromagnetic Fields
 
 ### Poisson Potential
-```python
+```text
 φ(r) = Σ q_i / |r - r_i|
 ```
 - **Singularity avoidance**: Add 0.01 to r
@@ -148,7 +148,7 @@ if (val > neighbors).all():
 - **Implementation**: Using `np.roll()`
 
 #### Interference Factor (Fixed)
-```python
+```text
 expected_power = Σ amplitude_i²
 actual_power = mean(time_series²)
 interference_factor = actual_power / (expected_power + 1e-10)  # Epsilon prevents division by zero
@@ -166,7 +166,7 @@ coefficients = convolve(signal, wavelet)
 ### 6. Relativistic Effects
 
 #### Lorentz Factor
-```python
+```text
 γ = 1 / √(1 - v²/c²)
 ```
 - **Speed limit**: Clamp v < 0.9999*c

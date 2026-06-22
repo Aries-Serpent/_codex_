@@ -2762,36 +2762,36 @@ All of the following must be true before Phase 2 begins:
 ## Task 2 — validate_handoff_manifest.py
 
 - [ ] 2.1  Create `scripts/ci/validate_handoff_manifest.py`:
-           ```python
-           """
-           Validate an AgentHandoffManifest JSON payload against v1.1 schema.
-           Returns: list[str] of error messages (empty = valid)
-           CLI: python validate_handoff_manifest.py <manifest.json>
-           """
-           import json, pathlib, sys
-           import jsonschema
+```python
+"""
+Validate an AgentHandoffManifest JSON payload against v1.1 schema.
+Returns: list[str] of error messages (empty = valid)
+CLI: python validate_handoff_manifest.py <manifest.json>
+"""
+import json, pathlib, sys
+import jsonschema
 
-           SCHEMA_PATH = (
-               pathlib.Path(__file__).parents[2]
-               / ".codex/schemas/AgentHandoffManifest_v1.1.json"
-           )
+SCHEMA_PATH = (
+    pathlib.Path(__file__).parents[2]
+    / ".codex/schemas/AgentHandoffManifest_v1.1.json"
+)
 
-           def validate(manifest: dict) -> list[str]:
-               schema   = json.loads(SCHEMA_PATH.read_text())
-               errors   = []
-               validator = jsonschema.Draft7Validator(schema)
-               for err in validator.iter_errors(manifest):
-                   errors.append(f"{'.'.join(str(p) for p in err.path)}: {err.message}")
-               return errors
+def validate(manifest: dict) -> list[str]:
+    schema   = json.loads(SCHEMA_PATH.read_text())
+    errors   = []
+    validator = jsonschema.Draft7Validator(schema)
+    for err in validator.iter_errors(manifest):
+        errors.append(f"{'.'.join(str(p) for p in err.path)}: {err.message}")
+    return errors
 
-           if __name__ == "__main__":
-               data = json.loads(pathlib.Path(sys.argv[1]).read_text())
-               errs = validate(data)
-               if errs:
-                   for e in errs: print(f"❌ {e}")
-                   sys.exit(1)
-               print("✅ Handoff manifest valid")
-           ```
+if __name__ == "__main__":
+    data = json.loads(pathlib.Path(sys.argv[1]).read_text())
+    errs = validate(data)
+    if errs:
+        for e in errs: print(f"❌ {e}")
+        sys.exit(1)
+    print("✅ Handoff manifest valid")
+```
 - [ ] 2.2  Create a test valid manifest `tests/fixtures/valid_handoff.json`
            covering all 7 required fields + delegation_trace
 - [ ] 2.3  Create a test invalid manifest `tests/fixtures/invalid_handoff.json`
@@ -2814,11 +2814,11 @@ All of the following must be true before Phase 2 begins:
            using the pattern from `GROUNDED_DEEP_RESEARCH_CHUNK_3.md`
            Section 1 "Phase 2+3 bridge"
 - [ ] 3.2  If Phase 3 not yet complete: add a stub `query_corpus`:
-           ```python
-           # Stub until Phase 3 build_embeddings.py is complete
-           def query(query_text: str, top_k: int = 5) -> list[dict]:
-               return []   # returns empty — no prior context yet
-           ```
+```python
+# Stub until Phase 3 build_embeddings.py is complete
+def query(query_text: str, top_k: int = 5) -> list[dict]:
+    return []   # returns empty — no prior context yet
+```
 - [ ] 3.3  Verify `build_handoff_manifest()` function:
            - Calls `query()` for prior context (or returns empty list via stub)
            - Calls `validate()` before returning

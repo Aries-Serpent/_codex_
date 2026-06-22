@@ -620,7 +620,7 @@ AST similarity runs automatically on:
 #### Current Implementation
 
 Widespread pattern in codebase:
-```python
+```text
 # From scripts/space_traversal/audit_runner.py
 return p.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
 
@@ -1431,7 +1431,7 @@ Current pain points:
 **Implementation Plan:**
 
 **Phase 1: YAML Validation (Pre-commit 1-4)**
-```python
+```text
 # src/codex/parsers/yaml_parser.py
 
 from tree_sitter import Language, Parser

@@ -29,7 +29,7 @@ The detector analyzes directory structure to identify:
 
 ### Detection Algorithm
 
-```python
+```text
 # Pseudocode for structural integrity detection
 for each file in repository:
     extract directory structure
@@ -229,10 +229,10 @@ if result["meta"]["risk_level"] == "high":
    ```
 
 3. **Use explicit namespacing**:
-   ```python
-   # In root module
-   from src.mymodule import *  # Explicit delegation
-   ```
+```python
+# In root module
+from src.mymodule import *  # Explicit delegation
+```
 
 ### Resolving Library Shadowing
 
@@ -285,25 +285,25 @@ if result["meta"]["risk_level"] == "high":
 ### Detection Configuration
 
 1. **Evidence Limit**: Adjust for repository size
-   ```python
-   result = detect(file_index, evidence_limit=50)  # Larger repos
-   ```
+```python
+result = detect(file_index, evidence_limit=50)  # Larger repos
+```
 
 2. **Custom Shadow Risks**: Extend `KNOWN_SHADOW_RISKS`
-   ```python
-   KNOWN_SHADOW_RISKS = {
-       *KNOWN_SHADOW_RISKS,
-       "custom_lib", "internal_package"
-   }
-   ```
+```python
+KNOWN_SHADOW_RISKS = {
+    *KNOWN_SHADOW_RISKS,
+    "custom_lib", "internal_package"
+}
+```
 
 3. **Exclude Additional Directories**: Modify exclusion list
-   ```python
-   excluded = {
-       ".git", "tests", "docs", "scripts",
-       "vendor", "third_party"  # Add project-specific
-   }
-   ```
+```python
+excluded = {
+    ".git", "tests", "docs", "scripts",
+    "vendor", "third_party"  # Add project-specific
+}
+```
 
 ## Troubleshooting
 

@@ -2978,12 +2978,12 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 ## How to Add a Suppression
 
 1. **Create inline suppression** in code:
-   ```python
-   # nosemgrep:  rule-id
-   # SECURITY REVIEW: Explanation of why this is safe
-   # Reviewed by: @username on YYYY-MM-DD
-   code_here()
-   ```
+```python
+# nosemgrep:  rule-id
+# SECURITY REVIEW: Explanation of why this is safe
+# Reviewed by: @username on YYYY-MM-DD
+code_here()
+```
 
 2. **Document in this register** with:
    - Rule ID

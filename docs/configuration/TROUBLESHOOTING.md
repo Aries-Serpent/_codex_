@@ -24,18 +24,18 @@ MissingConfigException: Missing config file: conf/model/myconfig.yaml
    ```
 
 2. **Use correct config name (without .yaml extension):**
-   ```python
-   # Wrong
-   cfg = load_config("base.yaml", config_dir="conf/model")
+```python
+# Wrong
+cfg = load_config("base.yaml", config_dir="conf/model")
 
-   # Correct
-   cfg = load_config("base", config_dir="conf/model")
-   ```
+# Correct
+cfg = load_config("base", config_dir="conf/model")
+```
 
 3. **Enable fallback to legacy location:**
-   ```python
-   cfg = load_config("base", config_dir="conf/model", allow_fallback=True)
-   ```
+```python
+cfg = load_config("base", config_dir="conf/model", allow_fallback=True)
+```
 
 4. **Check if file is in legacy location:**
    ```bash
@@ -118,25 +118,25 @@ Config shows literal "${training.epochs}" instead of value
 **Solutions:**
 
 1. **Use ConfigLoader (not direct YAML loading):**
-   ```python
-   # Wrong
-   import yaml
-   with open("conf/training/base.yaml") as f:
-       cfg = yaml.safe_load(f)  # Interpolation won't work
+```python
+# Wrong
+import yaml
+with open("conf/training/base.yaml") as f:
+    cfg = yaml.safe_load(f)  # Interpolation won't work
 
-   # Correct
-   from codex.utils.config_loader import load_config
-   cfg = load_config("base", config_dir="conf/training")
-   ```
+# Correct
+from codex.utils.config_loader import load_config
+cfg = load_config("base", config_dir="conf/training")
+```
 
 2. **Check Hydra availability:**
-   ```python
-   try:
-       import hydra
-       print("Hydra available")
-   except ImportError:
-       print("Hydra not available - install with: pip install hydra-core")
-   ```
+```python
+try:
+    import hydra
+    print("Hydra available")
+except ImportError:
+    print("Hydra not available - install with: pip install hydra-core")
+```
 
 ---
 
@@ -208,16 +208,16 @@ Override "training.epochs=5" specified but value is still 10
 **Solutions:**
 
 1. **Check override syntax:**
-   ```python
-   # Wrong: Missing equals sign
-   overrides = ["training.epochs 5"]
+```python
+# Wrong: Missing equals sign
+overrides = ["training.epochs 5"]
 
-   # Wrong: Spaces around equals
-   overrides = ["training.epochs = 5"]
+# Wrong: Spaces around equals
+overrides = ["training.epochs = 5"]
 
-   # Correct
-   overrides = ["training.epochs=5"]
-   ```
+# Correct
+overrides = ["training.epochs=5"]
+```
 
 2. **Check key path:**
    ```yaml
@@ -234,10 +234,10 @@ Override "training.epochs=5" specified but value is still 10
    ```
 
 3. **Verify override is applied:**
-   ```python
-   cfg = load_config("base", overrides=["training.epochs=5"])
-   print(f"Epochs: {cfg['training']['epochs']}")  # Should print 5
-   ```
+```python
+cfg = load_config("base", overrides=["training.epochs=5"])
+print(f"Epochs: {cfg['training']['epochs']}")  # Should print 5
+```
 
 ---
 
@@ -258,13 +258,13 @@ ImportError: cannot import name 'MissingConfigException' from 'config_legacy.err
    ```
 
 2. **Use new import path:**
-   ```python
-   # Old (deprecated)
-   from config_legacy.errors import MissingConfigException
+```python
+# Old (deprecated)
+from config_legacy.errors import MissingConfigException
 
-   # New (recommended)
-   from codex.utils.config_loader import MissingConfigException
-   ```
+# New (recommended)
+from codex.utils.config_loader import MissingConfigException
+```
 
 ---
 
@@ -309,23 +309,23 @@ Config loading takes >1 second
 **Solutions:**
 
 1. **Profile loading time:**
-   ```python
-   import time
-   from codex.utils.config_loader import load_config
+```python
+import time
+from codex.utils.config_loader import load_config
 
-   start = time.time()
-   cfg = load_config("base", config_dir="conf/training")
-   print(f"Load time: {time.time() - start:.3f}s")
-   ```
+start = time.time()
+cfg = load_config("base", config_dir="conf/training")
+print(f"Load time: {time.time() - start:.3f}s")
+```
 
 2. **Cache loaded configs:**
-   ```python
-   # Create singleton loader
-   from codex.utils.config_loader import get_loader
+```python
+# Create singleton loader
+from codex.utils.config_loader import get_loader
 
-   loader = get_loader()  # Cached globally
-   cfg = loader.load_config("base", config_dir="conf/training")
-   ```
+loader = get_loader()  # Cached globally
+cfg = loader.load_config("base", config_dir="conf/training")
+```
 
 3. **Reduce config hierarchy depth:**
    - Flatten deeply nested defaults lists
@@ -367,27 +367,27 @@ Tests pass locally but fail in CI with MissingConfigException
 **Solutions:**
 
 1. **Use allow_fallback in tests:**
-   ```python
-   cfg = load_config("base", config_dir="conf/model", allow_fallback=True)
-   ```
+```python
+cfg = load_config("base", config_dir="conf/model", allow_fallback=True)
+```
 
 2. **Create test fixtures:**
-   ```python
-   @pytest.fixture
-   def test_config(tmp_path):
-       config_dir = tmp_path / "conf" / "model"
-       config_dir.mkdir(parents=True)
+```python
+@pytest.fixture
+def test_config(tmp_path):
+    config_dir = tmp_path / "conf" / "model"
+    config_dir.mkdir(parents=True)
 
-       config_file = config_dir / "base.yaml"
-       config_file.write_text("model:\n  name: test")
+    config_file = config_dir / "base.yaml"
+    config_file.write_text("model:\n  name: test")
 
-       return tmp_path
+    return tmp_path
 
-   def test_something(test_config):
-       from codex.utils.config_loader import ConfigLoader
-       loader = ConfigLoader(repo_root=test_config)
-       cfg = loader.load_config("base", config_dir="conf/model")
-   ```
+def test_something(test_config):
+    from codex.utils.config_loader import ConfigLoader
+    loader = ConfigLoader(repo_root=test_config)
+    cfg = loader.load_config("base", config_dir="conf/model")
+```
 
 ---
 

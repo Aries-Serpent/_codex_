@@ -227,7 +227,7 @@ because it has a __init__ constructor
 **Root Cause:** Dataclasses named with "Test" prefix confused pytest
 
 **Solution:** Renamed classes + backward compatibility:
-```python
+```text
 # Before
 class TestExecutionMetrics:  # ❌ Confuses pytest
 class TestExecutionPriority:

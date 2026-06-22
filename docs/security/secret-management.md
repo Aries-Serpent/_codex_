@@ -723,10 +723,10 @@ jobs:
 ## Best Practices
 
 1. **Never log secrets**: Use masking in logs
-   ```python
-   logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
-   logger.info(f"Auth: {api_key}")  # ❌ Never
-   ```
+```python
+logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
+logger.info(f"Auth: {api_key}")  # ❌ Never
+```
 
 2. **Use environment variables**: Not config files
    ```bash

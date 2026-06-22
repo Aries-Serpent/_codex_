@@ -206,7 +206,7 @@ with tracer.trace("handle_request") as span:
 
 ## Task 4: Manage Server Lifecycle
 
-```python
+```text
 from src.mcp.lifecycle import get_lifecycle_manager, ServerState
 
 # Get lifecycle manager

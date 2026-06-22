@@ -186,7 +186,7 @@ Centralized monitoring for model performance, data drift, latency, errors, and r
 
 **Score:** 78/100 ⚠️ (up from 72/100 — OTel stub active, SAR-G05 infrastructure ready)  
 **Remaining gap (SAR-G05):** Configure `OTEL_EXPORTER_OTLP_ENDPOINT` (Jaeger/Tempo) + multivariate drift.
-```python
+```text
 # Prometheus metrics
 src/codex_ml/monitoring/metrics.py:
   - request_count (counter)
@@ -293,7 +293,7 @@ DS, DE, and SWE collaborate on shared pipeline. System not dependent on "heroic"
 | **Team Handoff** | ⚠️ Partial | Documentation enables handoff | Could add runbooks |
 
 **Evidence:**
-```python
+```text
 # Self-service training (no DS heroics needed)
 $ python cli/train_codex.py \
     --config configs/training.yaml \
@@ -342,7 +342,7 @@ Audit trails, policy checks (fairness, PII, regulatory) codified as pipeline gat
 | **Regulatory Compliance** | ⚠️ Partial | Framework supports, not enforced | Policy gates needed |
 
 **Evidence:**
-```python
+```text
 # Audit trails
 src/codex_ml/training/continuous_learning.py:
   class ModelRegistry:
@@ -457,15 +457,15 @@ scripts/generate_sbom.py:
 
 **Tasks:**
 1. Create fairness metrics plugin:
-   ```python
-   # src/codex_ml/plugins/fairness_checker.py
-   class FairnessCheckerPlugin(Plugin):
-       def execute(self, predictions, sensitive_attributes):
-           # Demographic parity
-           # Equal opportunity
-           # Calibration checks
-           return fairness_metrics
-   ```
+```python
+# src/codex_ml/plugins/fairness_checker.py
+class FairnessCheckerPlugin(Plugin):
+    def execute(self, predictions, sensitive_attributes):
+        # Demographic parity
+        # Equal opportunity
+        # Calibration checks
+        return fairness_metrics
+```
 
 2. Integrate with A/B testing:
    - Fairness constraints in experiment design
@@ -492,16 +492,16 @@ scripts/generate_sbom.py:
 
 **Tasks:**
 1. Create compliance framework:
-   ```python
-   # src/codex_ml/governance/compliance_gates.py
-   class ComplianceGate:
-       def __init__(self, policy: str):
-           self.policy = policy  # "GDPR", "HIPAA", "SOC2"
+```text
+# src/codex_ml/governance/compliance_gates.py
+class ComplianceGate:
+    def __init__(self, policy: str):
+        self.policy = policy  # "GDPR", "HIPAA", "SOC2"
 
-       def validate(self, model, data, deployment):
-           # Policy-specific checks
-           # Return compliance report
-   ```
+    def validate(self, model, data, deployment):
+        # Policy-specific checks
+        # Return compliance report
+```
 
 2. Add policy templates:
    - GDPR: right to explanation, data minimization

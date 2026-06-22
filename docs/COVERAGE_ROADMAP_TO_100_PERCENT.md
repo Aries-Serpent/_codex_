@@ -376,7 +376,7 @@ tests/
 
 ### Test Naming Convention
 
-```python
+```text
 def test_<module>_<function>_<scenario>():
     """Test description."""
     pass

@@ -31,7 +31,7 @@ def main(argv=None) -> int:
 **Error:** `parse_args()` was defined to take no arguments, but `main()` tried to call it with `argv` parameter.
 
 **Fix Applied:**
-```python
+```text
 def parse_args(argv=None) -> argparse.Namespace:
     """Parse command line arguments.
 

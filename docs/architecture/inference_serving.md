@@ -392,7 +392,7 @@ graph TB
 - Error rate monitoring
 
 **Routing Logic:**
-```python
+```text
 if not blue_healthy and green_healthy:
     return "green"
 elif not green_healthy and blue_healthy:

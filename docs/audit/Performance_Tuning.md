@@ -87,7 +87,7 @@ scoring:
 
 **Solution 3**: Filter evidence files
 
-```python
+```text
 # In custom detector
 def detect(file_index):
     # Limit evidence to most relevant files

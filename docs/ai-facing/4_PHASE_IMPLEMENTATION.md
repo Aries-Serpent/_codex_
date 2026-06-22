@@ -161,7 +161,7 @@ for result in results:
 
 #### Usage Example
 
-```python
+```text
 from src.mcp.adapters import MockBackend
 from src.mcp.metrics import MCPMetrics
 
@@ -246,7 +246,7 @@ result = tool.execute(a=5, b=3, op="add")  # Returns 8
 
 #### Usage Example
 
-```python
+```text
 from src.agent import AgentCore, AgentConfig
 
 # Configure agent

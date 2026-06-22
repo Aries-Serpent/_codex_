@@ -11,7 +11,7 @@ generated_utc: 2025-10-29T16:45:54Z
 
 ## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 """Unified Training Orchestrator (Superseding preliminary patch)
 
@@ -33,7 +33,7 @@ Usage:
 
 ### >>> FILE: src/codex_ml/train_loop.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 per_epoch_limit: int
     top_k: int
@@ -56,7 +56,7 @@ per_epoch_limit: int
 
 ### >>> FILE: src/codex_ml/training/strategies.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 backend_name = "functional"
 
@@ -78,7 +78,7 @@ backend_name = "functional"
 
 ### >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 # Trace capture semantics are configured via `training.reasoning.trace_mode`
     # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
@@ -235,7 +235,7 @@ output:
 
 ## >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 metrics: dict[str, Any] = {}
     loss = getattr(outputs, "loss", None)
@@ -263,7 +263,7 @@ class _MetricAggregator:
 
 ### >>> FILE: src/codex_cli/app.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 help="Only include specified categories (can be repeated).",
         ),
@@ -285,7 +285,7 @@ help="Only include specified categories (can be repeated).",
 
 ### >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 click.echo("prometheus_client missing", err=True)
 
@@ -333,7 +333,7 @@ def repo_map(reasoning: bool) -> None:
 
 ### >>> FILE: src/codex_ml/cli/repo_map.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 section_key="evaluation",
                 summary_key="evaluation.preset",

@@ -115,11 +115,11 @@
   ```
 
 - ✅ **Manual security testing**
-  ```python
-  test_data = {'tokens': ['token=sk_live_abc', 'api_key=secret']}
-  result = sanitize_dict_for_log(test_data, mask_secrets=True)
-  # Result: {'tokens': ['token=***REDACTED***', 'api_key=***REDACTED***']}
-  ```
+```python
+test_data = {'tokens': ['token=sk_live_abc', 'api_key=secret']}
+result = sanitize_dict_for_log(test_data, mask_secrets=True)
+# Result: {'tokens': ['token=***REDACTED***', 'api_key=***REDACTED***']}
+```
 
 ### 5️⃣ Code Quality Tools (HIGH) ✅
 

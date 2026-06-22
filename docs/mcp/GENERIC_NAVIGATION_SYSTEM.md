@@ -1139,19 +1139,19 @@ To add a new agent:
 1. Create file: src/agents/my_new_agent.py
 2. Inherit from BaseAgent:
 
-   ```python
-   # src/agents/my_new_agent.py
-   from src.agents.base import BaseAgent
+```python
+# src/agents/my_new_agent.py
+from src.agents.base import BaseAgent
 
-   class MyNewAgent(BaseAgent):
-       def execute(self, task):
-           # Implementation
-           pass
+class MyNewAgent(BaseAgent):
+    def execute(self, task):
+        # Implementation
+        pass
 
-       def validate(self, input_data):
-           # Validation
-           pass
-   ```
+    def validate(self, input_data):
+        # Validation
+        pass
+```
 
 3. Register in AgentFactory (src/factories/agent_factory.py)
 4. Add tests in tests/agents/test_my_new_agent.py

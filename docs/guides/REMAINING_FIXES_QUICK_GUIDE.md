@@ -103,7 +103,7 @@ EOF
 ```
 
 **Step 3:** Or update test to use correct path
-```python
+```text
 # Check test file for config path
 grep -n "hydra/data/base" tests/config/test_hydra_defaults_tree.py
 ```

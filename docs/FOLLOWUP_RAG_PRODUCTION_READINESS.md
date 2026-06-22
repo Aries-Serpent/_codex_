@@ -53,39 +53,39 @@ python scripts/local/build_faiss.sh default docs docs/
 
 **Tasks**:
 1. **Implement Multi-Tenant Index Management**
-   ```python
-   # Add to src/codex/rag/indexer.py
-   def manage_tenant_indices(
-       tenant_id: str,
-       operation: str,  # 'create', 'update', 'delete', 'merge'
-       index_names: List[str],
-       index_dir: str = ".codex/tenants"
-   ) -> TenantOperationResult
-   ```
+```text
+# Add to src/codex/rag/indexer.py
+def manage_tenant_indices(
+    tenant_id: str,
+    operation: str,  # 'create', 'update', 'delete', 'merge'
+    index_names: List[str],
+    index_dir: str = ".codex/tenants"
+) -> TenantOperationResult
+```
 
 2. **Add Query Result Caching**
-   ```python
-   # Add to src/codex/rag/retriever.py
-   class CachedRetriever(Retriever):
-       def __init__(self, cache_ttl: int = 3600, ...):
-           self.query_cache = LRUCache(maxsize=1000)
+```text
+# Add to src/codex/rag/retriever.py
+class CachedRetriever(Retriever):
+    def __init__(self, cache_ttl: int = 3600, ...):
+        self.query_cache = LRUCache(maxsize=1000)
 
-       def query_with_cache(self, q: str, ...) -> List[Dict]:
-           # Check cache before FAISS lookup
-   ```
+    def query_with_cache(self, q: str, ...) -> List[Dict]:
+        # Check cache before FAISS lookup
+```
 
 3. **Implement Provenance Tracking**
-   ```python
-   # Add to src/codex/rag/utils.py
-   @dataclass
-   class ProvenanceMetadata:
-       source_file: Path
-       line_range: Tuple[int, int]
-       chunk_id: str
-       indexed_at: datetime
-       embedding_model: str
-       retrieval_score: float
-   ```
+```python
+# Add to src/codex/rag/utils.py
+@dataclass
+class ProvenanceMetadata:
+    source_file: Path
+    line_range: Tuple[int, int]
+    chunk_id: str
+    indexed_at: datetime
+    embedding_model: str
+    retrieval_score: float
+```
 
 ### Phase C: Custom Copilot Agents (Priority: P2)
 
@@ -135,7 +135,7 @@ graph LR
 ### Phase D: Monitoring & Observability (Priority: P2)
 
 **Metrics to Track**:
-```python
+```text
 # Add to src/codex/rag/monitoring.py
 class RAGMetrics:
     def track_query_latency(self, duration_ms: float)

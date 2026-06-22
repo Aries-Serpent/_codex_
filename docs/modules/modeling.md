@@ -42,7 +42,7 @@ environmental guardrails and focused test coverage introduced here.
 
 ## `load_causal_lm`
 
-```python
+```text
 load_causal_lm(
     repo_id,
     *,

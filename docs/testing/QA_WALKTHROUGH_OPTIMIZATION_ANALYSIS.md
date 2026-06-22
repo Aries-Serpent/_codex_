@@ -168,7 +168,7 @@ steps:
 
 **Mathematical Framework**:
 
-```python
+```text
 # Analysis Priority Score
 priority_score = (change_frequency * complexity_factor) / (time_since_last_change + 1)
 

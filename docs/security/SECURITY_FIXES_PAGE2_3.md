@@ -14,7 +14,7 @@ This document addresses 22 error-level issues from CodeQL scanning (Page 3) plus
 **Status:** ✅ FIXED
 
 **Problem:**
-```python
+```text
 last_exception = None
 for attempt in range(max_retries):
     try:
@@ -145,7 +145,7 @@ env = Environment(
 - `src/codex_ml/monitoring/metrics.py:183` - removed exception details from response
 - `services/ita/app/main.py:138` - sanitized error responses
 
-```python
+```text
 # Before:
 return Response(content=f"# Error: {e}\n", status_code=500)
 

@@ -20,7 +20,7 @@ Main class for managing features and feature groups.
 
 #### Constructor
 
-```python
+```text
 FeatureStore(store_path: Path | str)
 ```
 
@@ -141,7 +141,7 @@ Represents a single feature definition.
 
 #### Constructor
 
-```python
+```text
 Feature(
     name: str,
     transform_fn: Callable,
@@ -194,7 +194,7 @@ Collection of related features.
 
 ### Constructor
 
-```python
+```text
 FeatureGroup(
     name: str,
     features: List[Feature],
@@ -244,7 +244,7 @@ Metadata for a feature.
 
 #### Constructor
 
-```python
+```text
 FeatureMetadata(
     name: str,
     version: str,

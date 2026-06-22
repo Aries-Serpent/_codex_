@@ -249,51 +249,51 @@ pytest tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py -v
 - **Symptom**: `TypeError: missing required positional argument`
 - **Fix**: Update test to match actual method signature
 - **Example**:
-  ```python
-  # Test expects: method(arg1, arg2)
-  # Actual signature: method(arg1, arg2, arg3=default)
-  # Fix: Add arg3 or use default
-  ```
+```python
+# Test expects: method(arg1, arg2)
+# Actual signature: method(arg1, arg2, arg3=default)
+# Fix: Add arg3 or use default
+```
 
 **2. Attribute Access Errors** (~25% of failures)
 - **Symptom**: `AttributeError: object has no attribute 'x'`
 - **Fix**: Add missing attribute or use correct attribute name
 - **Example**:
-  ```python
-  # Test expects: obj.state
-  # Actual: obj._state or obj.get_state()
-  # Fix: Update test to use correct API
-  ```
+```python
+# Test expects: obj.state
+# Actual: obj._state or obj.get_state()
+# Fix: Update test to use correct API
+```
 
 **3. Assertion Logic Errors** (~20% of failures)
 - **Symptom**: `AssertionError: expected X, got Y`
 - **Fix**: Correct test expectations based on actual behavior
 - **Example**:
-  ```python
-  # Test expects: result == [1, 2, 3]
-  # Actual: result == (1, 2, 3)  # tuple instead of list
-  # Fix: assert result == (1, 2, 3)
-  ```
+```python
+# Test expects: result == [1, 2, 3]
+# Actual: result == (1, 2, 3)  # tuple instead of list
+# Fix: assert result == (1, 2, 3)
+```
 
 **4. Import Path Issues** (~15% of failures)
 - **Symptom**: `ImportError: cannot import name 'X'`
 - **Fix**: Correct import path or class name
 - **Example**:
-  ```python
-  # Test uses: from module import OldName
-  # Actual: from module import NewName
-  # Fix: Update import
-  ```
+```python
+# Test uses: from module import OldName
+# Actual: from module import NewName
+# Fix: Update import
+```
 
 **5. Edge Case Handling** (~10% of failures)
 - **Symptom**: Various errors with boundary conditions
 - **Fix**: Add proper edge case handling or adjust test
 - **Example**:
-  ```python
-  # Test: empty list
-  # Error: IndexError: list index out of range
-  # Fix: Add check or handle gracefully
-  ```
+```python
+# Test: empty list
+# Error: IndexError: list index out of range
+# Fix: Add check or handle gracefully
+```
 
 ---
 

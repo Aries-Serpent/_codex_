@@ -499,7 +499,7 @@ asyncio.run(semantic_search())
 
 ### Example 3: FastAPI Integration
 
-```python
+```text
 from fastapi import FastAPI
 from src.mcp import MCPServer
 from src.mcp.backends import PineconeBackend

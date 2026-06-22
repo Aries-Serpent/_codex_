@@ -415,13 +415,13 @@ Archive operations significantly slower after enabling standardization.
    ```
 
 3. Monitor with benchmarks:
-   ```python
-   import time
-   start = time.time()
-   # ... archive operation ...
-   elapsed = time.time() - start
-   print(f"Operation took {elapsed*1000:.2f}ms")
-   ```
+```python
+import time
+start = time.time()
+# ... archive operation ...
+elapsed = time.time() - start
+print(f"Operation took {elapsed*1000:.2f}ms")
+```
 
 ---
 

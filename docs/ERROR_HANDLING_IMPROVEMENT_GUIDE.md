@@ -159,7 +159,7 @@ def add_logging_to_bare_except(file_path: Path) -> bool:
 
 ### 1. Always Use Specific Exception Types
 
-```python
+```text
 # ❌ Too broad
 except Exception:
     pass

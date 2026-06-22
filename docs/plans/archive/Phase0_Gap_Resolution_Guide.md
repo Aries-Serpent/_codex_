@@ -1166,7 +1166,7 @@ class BaselineManager:
 **Blocker ID:** `BLOCK-ARCH-005`
 **Duration:** 1.5 iterations
 
-```python
+```text
 # File: src/codex_ml/ast/plugins.py
 from abc import ABC, abstractmethod
 from typing import Dict, Type

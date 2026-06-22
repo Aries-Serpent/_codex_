@@ -870,7 +870,7 @@ except Exception as e:
 ```
 
 **Disable Problematic Tool:**
-```python
+```text
 # Temporarily unregister failing tool
 registry.unregister("problematic_tool")
 

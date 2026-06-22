@@ -192,15 +192,15 @@ tokenization,tokenization.loader,src/codex/api/app.py,13
 
 ### Phase 2: Split-Brain Resolution (Priority: HIGH)
 1. **Mark root modules as deprecated**:
-   ```python
-   # training/__init__.py
-   import warnings
-   warnings.warn(
-       "Module 'training' is deprecated. Use 'src.training' instead.",
-       DeprecationWarning,
-       stacklevel=2
-   )
-   ```
+```python
+# training/__init__.py
+import warnings
+warnings.warn(
+    "Module 'training' is deprecated. Use 'src.training' instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
+```
 
 2. **Refactor imports** (53 training + 13 tokenization):
    - Bulk find/replace guided by CSV

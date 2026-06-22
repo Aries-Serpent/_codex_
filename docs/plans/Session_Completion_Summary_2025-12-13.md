@@ -162,31 +162,31 @@ From **Table 1** (Time Constraints):
 ### Test Patterns for Phase 2
 
 1. **Advanced Patterns** (physics_orchestrator):
-   ```python
-   def test_diffusion_flow_model():
-       """Test DiffusionFlowModel using Eq #11."""
-       from agents.physics_orchestrator import DiffusionFlowModel
-       model = DiffusionFlowModel()
-       assert model is not None
-   ```
+```python
+def test_diffusion_flow_model():
+    """Test DiffusionFlowModel using Eq #11."""
+    from agents.physics_orchestrator import DiffusionFlowModel
+    model = DiffusionFlowModel()
+    assert model is not None
+```
 
 2. **Game Engines** (quantum_game_theory):
-   ```python
-   def test_quantum_game_engine_strategies():
-       """Test game engines using Eq #11."""
-       from agents.quantum_game_theory import QuantumInspiredGameEngine
-       engine = QuantumInspiredGameEngine()
-       # Test strategy spaces, payoff matrices
-   ```
+```python
+def test_quantum_game_engine_strategies():
+    """Test game engines using Eq #11."""
+    from agents.quantum_game_theory import QuantumInspiredGameEngine
+    engine = QuantumInspiredGameEngine()
+    # Test strategy spaces, payoff matrices
+```
 
 3. **Graph Operations** (mental_mapping):
-   ```python
-   def test_graph_traversal():
-       """Test graph operations using Eq #39."""
-       from agents.mental_mapping import MentalMapping
-       mapping = MentalMapping()
-       # Test node/edge operations, traversal
-   ```
+```python
+def test_graph_traversal():
+    """Test graph operations using Eq #39."""
+    from agents.mental_mapping import MentalMapping
+    mapping = MentalMapping()
+    # Test node/edge operations, traversal
+```
 
 ---
 

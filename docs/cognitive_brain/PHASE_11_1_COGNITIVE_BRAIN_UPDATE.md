@@ -188,29 +188,29 @@ logger.info(f"ℹ️  Task info: {safe_message}")
 ### Deployment Steps
 
 1. **Database Migration**:
-   ```python
-   # migrations/001_auth_tables.py
-   from alembic import op
-   import sqlalchemy as sa
+```python
+# migrations/001_auth_tables.py
+from alembic import op
+import sqlalchemy as sa
 
-   def upgrade():
-       # Create tables (see schema above)
-       pass
-   ```
+def upgrade():
+    # Create tables (see schema above)
+    pass
+```
 
 2. **Replace In-Memory Stores**:
-   ```python
-   # config/production.py
-   MFA_STORAGE_BACKEND = 'postgresql'
-   SESSION_STORAGE_BACKEND = 'redis'
-   TOKEN_BLACKLIST_BACKEND = 'redis'
-   ```
+```python
+# config/production.py
+MFA_STORAGE_BACKEND = 'postgresql'
+SESSION_STORAGE_BACKEND = 'redis'
+TOKEN_BLACKLIST_BACKEND = 'redis'
+```
 
 3. **Enable Encryption at Rest**:
-   ```python
-   # Use AWS KMS, Azure Key Vault, or HashiCorp Vault
-   SECRET_ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
-   ```
+```python
+# Use AWS KMS, Azure Key Vault, or HashiCorp Vault
+SECRET_ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
+```
 
 4. **Deploy with Docker**:
    ```dockerfile

@@ -163,54 +163,54 @@ This living document tracks identified gaps, risks, incomplete implementations, 
 
 #### High Priority (P1) - Target: Next Sprint
 1. **Automatic parameter validation**
-   ```python
-   @dataclass
-   class ParameterValidator:
-       def validate_chaos_params(self, r: float) -> None:
-           if not 0 < r <= 4:
-               raise ValueError(f"Chaos parameter r={r} outside valid range (0, 4]")
+```python
+@dataclass
+class ParameterValidator:
+    def validate_chaos_params(self, r: float) -> None:
+        if not 0 < r <= 4:
+            raise ValueError(f"Chaos parameter r={r} outside valid range (0, 4]")
 
-       def validate_grid_resolution(self, res: int) -> None:
-           if not 10 <= res <= 1000:
-               raise ValueError(f"Grid resolution {res} outside valid range [10, 1000]")
-   ```
+    def validate_grid_resolution(self, res: int) -> None:
+        if not 10 <= res <= 1000:
+            raise ValueError(f"Grid resolution {res} outside valid range [10, 1000]")
+```
 
 2. **Numerical stability checks**
-   ```python
-   def _check_wave_stability(self, dt: float, dx: float) -> None:
-       """Ensure CFL condition for wave propagation."""
-       cfl = self.wave_speed * dt / dx
-       if cfl > 1.0:
-           warnings.warn(f"CFL={cfl} > 1, simulation may be unstable")
-   ```
+```python
+def _check_wave_stability(self, dt: float, dx: float) -> None:
+    """Ensure CFL condition for wave propagation."""
+    cfl = self.wave_speed * dt / dx
+    if cfl > 1.0:
+        warnings.warn(f"CFL={cfl} > 1, simulation may be unstable")
+```
 
 3. **Stress tests**
-   ```python
-   @pytest.mark.stress
-   def test_large_scale_em_field():
-       """Test EM field with 1000x1000 grid."""
-       router = EMFieldRouter(grid_resolution=1000)
-       # Add many charges
-       for i in range(100):
-           router.add_charge(random_position(), random_charge())
-       # Should complete without errors
-       router.prioritize_regions()
-   ```
+```python
+@pytest.mark.stress
+def test_large_scale_em_field():
+    """Test EM field with 1000x1000 grid."""
+    router = EMFieldRouter(grid_resolution=1000)
+    # Add many charges
+    for i in range(100):
+        router.add_charge(random_position(), random_charge())
+    # Should complete without errors
+    router.prioritize_regions()
+```
 
 4. **GPU acceleration (CuPy)**
-   ```python
-   try:
-       import cupy as cp
-       GPU_AVAILABLE = True
-   except ImportError:
-       import numpy as cp
-       GPU_AVAILABLE = False
+```python
+try:
+    import cupy as cp
+    GPU_AVAILABLE = True
+except ImportError:
+    import numpy as cp
+    GPU_AVAILABLE = False
 
-   class GPUAcceleratedEMField(EMFieldRouter):
-       def _recalculate_fields(self):
-           # Use CuPy for GPU acceleration
-           X, Y = cp.meshgrid(cp.linspace(0, 1, self.grid_resolution), ...)
-   ```
+class GPUAcceleratedEMField(EMFieldRouter):
+    def _recalculate_fields(self):
+        # Use CuPy for GPU acceleration
+        X, Y = cp.meshgrid(cp.linspace(0, 1, self.grid_resolution), ...)
+```
 
 #### Medium Priority (P2) - Target: Future Sprint
 5. **Adaptive grid resolution**

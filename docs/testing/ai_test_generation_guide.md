@@ -362,7 +362,7 @@ def test_orchestrate_invalid_input_raises_error(self):
 
 ### 8. Keep Tests Fast
 
-```python
+```text
 # Good - Use mocks for expensive operations
 def test_fast(self):
     with patch('agents.expensive_operation') as mock_op:

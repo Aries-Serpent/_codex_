@@ -22,7 +22,7 @@ This document provides a comprehensive analysis of the AI assistant's turn respo
 - **Time Saved**: ~5 minutes vs sequential approach  
 
 **Example**:
-```python
+```text
 # Simultaneously viewed multiple files to understand context
 view(archive_files.py:1-30)
 view(archive_files.py:100-130)

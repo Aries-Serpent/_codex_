@@ -665,26 +665,26 @@ except ImportError:
    - Full traceback
 
 2. **Gather information**
-   ```python
-   import sys
-   print(f"Python: {sys.version}")
-   import pkg; print(f"Package: {pkg.__version__}")
-   ```
+```python
+import sys
+print(f"Python: {sys.version}")
+import pkg; print(f"Package: {pkg.__version__}")
+```
 
 3. **Isolate the problem**
-   ```python
-   # Start with minimal reproduction
-   minimal_code = """
-   import x
-   y = x.something()
-   """
-   ```
+```python
+# Start with minimal reproduction
+minimal_code = """
+import x
+y = x.something()
+"""
+```
 
 4. **Test hypothesis**
-   ```python
-   # Try solution
-   # Verify it works
-   ```
+```python
+# Try solution
+# Verify it works
+```
 
 5. **Document and move on**
 

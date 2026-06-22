@@ -264,28 +264,28 @@ python tools/duplication_analyzer.py
    ```
 
 2. **Exclude Expected Duplicates**: Ignore package markers
-   ```python
-   # Filter __init__ files from results
-   real_dups = [
-       g for g in analysis['duplicate_groups']
-       if g['stem'] != '__init__'
-   ]
-   ```
+```python
+# Filter __init__ files from results
+real_dups = [
+    g for g in analysis['duplicate_groups']
+    if g['stem'] != '__init__'
+]
+```
 
 3. **Prioritize by Impact**: Focus on high-count duplicates
-   ```python
-   # Sort by count
-   sorted_groups = sorted(
-       analysis['duplicate_groups'],
-       key=lambda x: -x['count']
-   )
-   ```
+```python
+# Sort by count
+sorted_groups = sorted(
+    analysis['duplicate_groups'],
+    key=lambda x: -x['count']
+)
+```
 
 4. **Document Decisions**: Track why duplicates exist
-   ```python
-   # Add comments explaining legitimate duplicates
-   # e.g., "config.py duplicated per-service for isolation"
-   ```
+```python
+# Add comments explaining legitimate duplicates
+# e.g., "config.py duplicated per-service for isolation"
+```
 
 5. **Track Over Time**: Monitor trends
    ```bash

@@ -38,13 +38,13 @@ This plan addresses the architectural entropy caused by the "Split Brain" state 
 - **Problem:** Duplicate logic in `agents/zendesk_quantum_orchestrator.py` vs `src/codex/zendesk`
 - **Impact:** Inconsistent behavior, hardcoded dictionaries, no validation
 - **Evidence:**
-  ```python
-  # agents/zendesk_quantum_orchestrator.py (legacy)
-  ticket_data = {"subject": "...", "priority": "urgent"}  # No validation!
+```python
+# agents/zendesk_quantum_orchestrator.py (legacy)
+ticket_data = {"subject": "...", "priority": "urgent"}  # No validation!
 
-  # src/codex/zendesk/ (modern, but incomplete)
-  # Missing: Pydantic models, strict typing, validation
-  ```
+# src/codex/zendesk/ (modern, but incomplete)
+# Missing: Pydantic models, strict typing, validation
+```
 
 #### 3. Configuration Chaos
 - **Problem:** Business logic in CSV files (`configs/deployment/d365/slas.csv`)

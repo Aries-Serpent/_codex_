@@ -201,7 +201,7 @@ print(result)  # Output: 8
 
 ## Async Tool Invocation
 
-```python
+```text
 import asyncio
 
 async def async_tool(data: dict) -> dict:

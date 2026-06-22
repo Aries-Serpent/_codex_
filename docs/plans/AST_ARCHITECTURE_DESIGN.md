@@ -357,7 +357,7 @@ class MetricsAggregator:
 
 ### Plugin Registry
 
-```python
+```text
 from typing import Dict, Type, Callable
 from abc import ABC, abstractmethod
 

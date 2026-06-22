@@ -180,32 +180,32 @@ SAFEGUARD_KEYWORDS += [
 ### Step-by-Step
 
 1. **Create Detector File**
-   ```python
-   # scripts/space_traversal/detectors/ml_serving.py
-   def detect(file_index: dict) -> dict:
-       """Detect ML serving capability."""
-       files = file_index.get("files", [])
-       evidence = []
-       found_patterns = set()
-       required_patterns = ["serve", "predict", "api"]
+```python
+# scripts/space_traversal/detectors/ml_serving.py
+def detect(file_index: dict) -> dict:
+    """Detect ML serving capability."""
+    files = file_index.get("files", [])
+    evidence = []
+    found_patterns = set()
+    required_patterns = ["serve", "predict", "api"]
 
-       for meta in files:
-           path = meta["path"]
-           if any(k in path.lower() for k in ["serve", "api", "inference"]):
-               evidence.append(path)
-               if "serve" in path.lower():
-                   found_patterns.add("serve")
-               if "api" in path.lower():
-                   found_patterns.add("api")
+    for meta in files:
+        path = meta["path"]
+        if any(k in path.lower() for k in ["serve", "api", "inference"]):
+            evidence.append(path)
+            if "serve" in path.lower():
+                found_patterns.add("serve")
+            if "api" in path.lower():
+                found_patterns.add("api")
 
-       return {
-           "id": "ml-serving",
-           "evidence_files": sorted(set(evidence)),
-           "found_patterns": sorted(found_patterns),
-           "required_patterns": required_patterns,
-           "meta": {"layer": "inference", "priority": "high"}
-       }
-   ```
+    return {
+        "id": "ml-serving",
+        "evidence_files": sorted(set(evidence)),
+        "found_patterns": sorted(found_patterns),
+        "required_patterns": required_patterns,
+        "meta": {"layer": "inference", "priority": "high"}
+    }
+```
 
 2. **Enable Dynamic Loading** (in `workflow.yaml`)
    ```yaml

@@ -88,7 +88,7 @@ pytest -m "smoke and not requires_torch"
 
 #### Test Functions
 
-```python
+```text
 def test_<feature>_<scenario>_<expected_result>():
     """Clear docstring explaining what is tested."""
     pass

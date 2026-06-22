@@ -53,13 +53,13 @@ pytest tests/test_rag_indexer.py     # Run separately
 **Required Tests (15+ tests):**
 
 1. **Incremental Index Updates**
-   ```python
-   def test_incremental_index_update(tmp_path):
-       """Test adding documents to existing index."""
-       # Build initial index with file1
-       # Add file2 to existing index
-       # Verify ntotal increases
-   ```
+```python
+def test_incremental_index_update(tmp_path):
+    """Test adding documents to existing index."""
+    # Build initial index with file1
+    # Add file2 to existing index
+    # Verify ntotal increases
+```
 
 2. **Index Merging**
    ```text
@@ -72,120 +72,120 @@ pytest tests/test_rag_indexer.py     # Run separately
    ```
 
 3. **Metadata Persistence**
-   ```python
-   def test_metadata_persistence(tmp_path):
-       """Test metadata is saved and loaded correctly."""
-       # Build index with metadata
-       # Load metadata from disk
-       # Verify all fields match
-   ```
+```python
+def test_metadata_persistence(tmp_path):
+    """Test metadata is saved and loaded correctly."""
+    # Build index with metadata
+    # Load metadata from disk
+    # Verify all fields match
+```
 
 4. **Concurrent Index Writes**
-   ```python
-   def test_concurrent_index_writes(tmp_path):
-       """Test thread-safe index building."""
-       # Use 5 threads to build 5 separate indices
-       # Verify all indices exist and are valid
-   ```
+```python
+def test_concurrent_index_writes(tmp_path):
+    """Test thread-safe index building."""
+    # Use 5 threads to build 5 separate indices
+    # Verify all indices exist and are valid
+```
 
 5. **Large File Handling**
-   ```python
-   def test_large_file_handling(tmp_path):
-       """Test files >10MB."""
-       # Create 15MB file
-       # Build index
-       # Verify successful processing
-   ```
+```python
+def test_large_file_handling(tmp_path):
+    """Test files >10MB."""
+    # Create 15MB file
+    # Build index
+    # Verify successful processing
+```
 
 6. **Chunk Boundary Edge Cases**
-   ```python
-   def test_chunk_boundary_edge_cases():
-       """Test edge cases in chunking."""
-       # Text exactly at chunk size
-       # Text just over chunk size
-       # Empty text
-       # Verify chunk counts
-   ```
+```python
+def test_chunk_boundary_edge_cases():
+    """Test edge cases in chunking."""
+    # Text exactly at chunk size
+    # Text just over chunk size
+    # Empty text
+    # Verify chunk counts
+```
 
 7. **Tenant Isolation**
-   ```python
-   def test_tenant_isolation(tmp_path):
-       """Test indices are isolated by tenant."""
-       # Create tenant1/index1
-       # Create tenant2/index1 (same name, different tenant)
-       # Verify separate directories
-       # Verify no cross-contamination
-   ```
+```python
+def test_tenant_isolation(tmp_path):
+    """Test indices are isolated by tenant."""
+    # Create tenant1/index1
+    # Create tenant2/index1 (same name, different tenant)
+    # Verify separate directories
+    # Verify no cross-contamination
+```
 
 8. **Error Recovery**
-   ```python
-   def test_error_recovery_partial_success(tmp_path):
-       """Test partial success handling."""
-       # Pass mix of valid and invalid files
-       # Verify valid files processed
-       # Verify specific error messages for invalid files
-   ```
+```python
+def test_error_recovery_partial_success(tmp_path):
+    """Test partial success handling."""
+    # Pass mix of valid and invalid files
+    # Verify valid files processed
+    # Verify specific error messages for invalid files
+```
 
 9. **Manage Tenant Indices - CREATE**
-   ```python
-   def test_manage_tenant_indices_create(tmp_path):
-       """Test CREATE operation."""
-       # Call manage_tenant_indices with operation="create"
-       # Verify TenantOperationResult success=True
-       # Verify index exists on disk
-   ```
+```python
+def test_manage_tenant_indices_create(tmp_path):
+    """Test CREATE operation."""
+    # Call manage_tenant_indices with operation="create"
+    # Verify TenantOperationResult success=True
+    # Verify index exists on disk
+```
 
 10. **Manage Tenant Indices - UPDATE**
-    ```python
-    def test_manage_tenant_indices_update(tmp_path):
-        """Test UPDATE operation."""
-        # Create initial index
-        # Update with new files
-        # Verify index updated (ntotal increased)
-    ```
+```python
+def test_manage_tenant_indices_update(tmp_path):
+    """Test UPDATE operation."""
+    # Create initial index
+    # Update with new files
+    # Verify index updated (ntotal increased)
+```
 
 11. **Manage Tenant Indices - DELETE**
-    ```python
-    def test_manage_tenant_indices_delete(tmp_path):
-        """Test DELETE operation."""
-        # Create index
-        # Delete it
-        # Verify index removed from disk
-    ```
+```python
+def test_manage_tenant_indices_delete(tmp_path):
+    """Test DELETE operation."""
+    # Create index
+    # Delete it
+    # Verify index removed from disk
+```
 
 12. **Manage Tenant Indices - MERGE**
-    ```python
-    def test_manage_tenant_indices_merge(tmp_path):
-        """Test MERGE operation."""
-        # Create index1 and index2
-        # Merge them
-        # Verify merged index has combined content
-    ```
+```python
+def test_manage_tenant_indices_merge(tmp_path):
+    """Test MERGE operation."""
+    # Create index1 and index2
+    # Merge them
+    # Verify merged index has combined content
+```
 
 13. **Manage Tenant Indices - LIST**
-    ```python
-    def test_manage_tenant_indices_list(tmp_path):
-        """Test LIST operation."""
-        # Create 3 indices
-        # List them
-        # Verify all 3 returned
-    ```
+```python
+def test_manage_tenant_indices_list(tmp_path):
+    """Test LIST operation."""
+    # Create 3 indices
+    # List them
+    # Verify all 3 returned
+```
 
 14. **Invalid Operation Handling**
-    ```python
-    def test_invalid_operation(tmp_path):
-        """Test handling of invalid operations."""
-        # Call with operation="invalid"
-        # Verify error message specifies valid operations
-    ```
+```python
+def test_invalid_operation(tmp_path):
+    """Test handling of invalid operations."""
+    # Call with operation="invalid"
+    # Verify error message specifies valid operations
+```
 
 15. **Missing Required Parameters**
-    ```python
-    def test_missing_required_params(tmp_path):
-        """Test error when required params missing."""
-        # CREATE without files parameter
-        # Verify specific error message
-    ```
+```python
+def test_missing_required_params(tmp_path):
+    """Test error when required params missing."""
+    # CREATE without files parameter
+    # Verify specific error message
+```
 
 ### Step 3: Run Coverage
 ```bash

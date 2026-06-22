@@ -299,7 +299,7 @@ matrix:
 **Critical Finding:** PyTorch 2.6.0 has breaking changes in the profiler that affect Python 3.12 tests.
 
 **Issue:**
-```python
+```text
 RuntimeError: profiler::_record_function_exit() Expected a value of type
 '__torch__.torch.classes.profiler._RecordFunction' but instead found type 'ScriptObject'
 ```
