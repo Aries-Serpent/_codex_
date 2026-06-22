@@ -653,7 +653,6 @@ kubectl exec codex-xxxx -n production -- \
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Docker Documentation](https://docs.docker.com/)
 - [Helm Charts](https://helm.sh/docs/)
-- [Infrastructure Deployment Details](./deployment.md)
 - [API Reference](../api/API_DOCUMENTATION.md)
 - [Architecture Blueprint](../ARCHITECTURE_BLUEPRINT.md)
 

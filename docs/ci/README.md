@@ -6,9 +6,11 @@ This directory contains comprehensive documentation for the Continuous Integrati
 
 ### Core CI/CD Guides
 - **[CI Overview](../CI.md)** - Introduction to the CI/CD system
-- **[CI Strategy](./ci_cd_strategy.md)** - Strategic overview and architecture
-- **[Workflow Guard Audit](./workflow_guard_audit.md)** - Security audit of workflows
-- **[Health Monitoring](../workflow-health-monitor/)** - CI/CD pipeline health monitoring
+- **[Health Monitoring](../monitoring/)** - CI/CD pipeline health monitoring
+
+### Documentation in Progress
+- **CI Strategy** - Strategic overview and architecture
+- **Workflow Guard Audit** - Security audit of workflows
 
 ### Workflow Documentation
 - GitHub Actions workflow configuration
@@ -24,7 +26,6 @@ This directory contains comprehensive documentation for the Continuous Integrati
 
 ## Quick Links
 
-- [GitHub Actions Setup Guide](../operations/github-actions-setup.md)
 - [Deployment Guides](../deployment/)
 - [Security Scanning Configuration](../security/)
 - [Testing Documentation](../testing/)
@@ -71,7 +72,6 @@ This directory contains comprehensive documentation for the Continuous Integrati
 
 - [Testing Guidelines](../testing/)
 - [Security Compliance](../security/)
-- [Performance Optimization](../performance/)
 - [Operations Guide](../operations/)
 
 ## Maintenance

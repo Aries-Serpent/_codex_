@@ -5,12 +5,15 @@ This directory contains administrative and operational documentation for managin
 ## Contents
 
 ### Core Admin Guides
-- **[Admin Quick Start](./ADMIN_QUICKSTART.md)** - Getting started with administrative tasks
-- **[Admin Implementation Guide](./ADMIN_IMPLEMENTATION_GUIDE.md)** - Detailed implementation procedures
-- **[Admin Decisions](./ADMIN_DECISIONS_README.md)** - Record of admin decisions and rationale
-- **[Admin FAQ](./ADMIN_FAQ.md)** - Frequently asked questions for administrators
 
-### Related Resources
+This section contains administrative and operational guides. The following guides are planned for future implementation:
+
+- **Admin Quick Start** - Getting started with administrative tasks
+- **Admin Implementation Guide** - Detailed implementation procedures  
+- **Admin Decisions** - Record of admin decisions and rationale
+- **Admin FAQ** - Frequently asked questions for administrators
+
+For current admin resources, see:
 - [Operations Documentation](../operations/)
 - [Security Documentation](../security/)
 - [Runbooks](../runbooks/)
@@ -37,8 +40,6 @@ This directory contains administrative and operational documentation for managin
 - Data governance
 
 ## Navigation
-
-Start with [Admin Quick Start](./ADMIN_QUICKSTART.md) for an overview, then consult specific guides based on your needs.
 
 For operational runbooks, see [Operations > Runbooks](../operations/runbooks/).
 For security procedures, see [Security Documentation](../security/).

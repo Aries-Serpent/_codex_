@@ -525,10 +525,7 @@ async def search(query: list):
 
 ## Related Documentation
 
-- 🔗 [Backend Adapters Guide](./MCP_BACKENDS.md)
-- 🔗 [MCP Workers & Async](./MCP_WORKERS.md)
-- 🔗 [Performance Tuning](./MCP_PERFORMANCE.md)
-- 🔗 [Security Best Practices](./MCP_SECURITY.md)
+> **Note:** Additional MCP documentation modules (Backend Adapters, Workers & Async, Performance Tuning, Security Best Practices) are planned for future implementation. See [Continuation Roadmap](../admin/CONTINUATION_ROADMAP.md) for timeline.
 
 ---
 

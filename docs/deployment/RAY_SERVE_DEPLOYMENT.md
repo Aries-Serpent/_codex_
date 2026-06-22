@@ -557,9 +557,9 @@ class Model:
 ## Next Steps
 
 - 🔗 [Ray Serve Documentation](https://docs.ray.io/en/latest/serve/index.html)
-- 🔗 [Kubernetes Integration](./RAY_KUBERNETES.md)
 - 🔗 [Performance Tuning](../PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- 🔗 [Monitoring Guide](./RAY_MONITORING.md)
+
+**Additional guides for Kubernetes integration and monitoring are planned for future implementation.**
 
 ---
 
