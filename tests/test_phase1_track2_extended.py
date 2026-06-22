@@ -9,7 +9,7 @@ These tests provide additional comprehensive coverage for:
 """
 
 import json
-from datetime import datetime, timedelta # pragma: allowlist secret
+from datetime import datetime, timedelta # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestBridgeProtocol:
