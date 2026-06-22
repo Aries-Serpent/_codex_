@@ -1,32 +1,36 @@
-# Session Context — 2026-06-22T19:55:18Z
+# Session Context — 2026-06-22T20:23:07Z
 **Branch:** `copilot/fix-github-actions-jobs`  **PR:** #5059  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4655` (✅)
+- GraphQL remaining: `4987` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5059 — Update GitHub Actions versions and fix Python code block validation across documentation
 State: `open`  Draft: `False`  Branch: `copilot/fix-github-actions-jobs` → `main`
 
+### ❌ 2 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `Summary` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-22)
-- **Phase 8.3: Performance Monitoring** — `failure` on `main` (2026-06-22)
-- **Workflow Execution Gate** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
+- **Workflow Compliance Gate** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
+- **Unified Governance Check** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
+- **Code Example Validation** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
+- **Workflow Compliance Audit (actionlint)** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
 
 ## 📝 Recent Commits
+- `72f5d9aa` Fix review fence issue and tighten broad test exception handling — copilot-swe-agent[bot] (2026-06-22)
+- `0100e5cd` Merge main into copilot/fix-github-actions-jobs — copilot-swe-agent[bot] (2026-06-22)
+- `3f4100aa` Plan review thread fixes — copilot-swe-agent[bot] (2026-06-22)
 - `6f2c9ed2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-22)
+- `ba77deb7` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-22)
 - `598210ed` Prepare PR for validation and merge to main — copilot-swe-agent[bot] (2026-06-22)
 - `f0725d60` Fix Python code block validation errors across documentation — copilot-swe-agent[bot] (2026-06-22)
 - `c89bd269` Fix GitHub Actions versions across workflows - actions/checkout@v5, setup-node@v — copilot-swe-agent[bot] (2026-06-22)
-- `62565d1e` Delegate Python code blocks and Actions versions fixes to specialized agents — copilot-swe-agent[bot] (2026-06-22)
-- `9e9d7b85` Fix critical Python code block validation errors - Part 1: Physics guide and sec — copilot-swe-agent[bot] (2026-06-22)
-- `b2cee081` Initial diagnosis: Identified 5 CI job failures - Python syntax errors in docs,  — copilot-swe-agent[bot] (2026-06-22)
-- `4935b823` Merge pull request #5058 from Aries-Serpent/copilot/fix-github-actions-job-valid — Statix (2026-06-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
