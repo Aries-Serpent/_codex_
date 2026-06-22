@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5057 CI rescue follow-up)
+- Added an inline markdown allowlist pragma to `.codex/POST_MERGE_VALIDATION_SUMMARY_2026-06-22.md` for the AWS example token false positive.
+- Updated `unified-governance-check.yml` to create `.codex/compliance/` before writing `report.json` and fixed Python summary step parsing imports/output.
+- Updated `validate.yml` to run yamllint only against workflow YAML files changed in the PR diff.
+
 ### Fixed (auto-update — PR #5057)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5057 (SHA `c5d411fd`) at 2026-06-22T15:19Z [auto-generated]
 
@@ -10612,4 +10617,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Backward compatibility: 100% maintained
 - Emergency rollbacks: 0
 - Phase 2.1 completion variance: 18 hours early
-

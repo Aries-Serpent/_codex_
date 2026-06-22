@@ -187,7 +187,7 @@ Phase 9 implementation has **18% overall test coverage** vs. **70% required** by
 
 **Finding:**
 - File: `.codex/CREDENTIAL_ROTATION_PLAN.md`
-- Content: `AKIAIOSFODNN7EXAMPLE` (standard AWS placeholder)
+- Content: `AKIAIOSFODNN7EXAMPLE` (standard AWS placeholder) <!-- pragma: allowlist secret -->
 - Status: Marked safe with `<!-- pragma: allowlist secret -->`
 
 ---
