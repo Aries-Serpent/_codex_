@@ -1,5 +1,7 @@
 # D Model Activation Checklist
 
+**Last Updated:** 2026-06-22
+
 > **Purpose:** Step-by-step checklist for activating the D model (full autonomous operations)
 > after successful Genesis Phase 1 and Phase 2 completion.
 >

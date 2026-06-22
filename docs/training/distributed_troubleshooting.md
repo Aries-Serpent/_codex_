@@ -1,5 +1,7 @@
 # Distributed Training Troubleshooting
 
+**Last Updated:** 2026-06-22
+
 > Guide for diagnosing and resolving distributed training initialization issues
 
 ## Overview

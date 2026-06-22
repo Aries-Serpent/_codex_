@@ -1,5 +1,7 @@
 # Zendesk Developer Docs — Authoritative Index (Links & Endpoint Seeds)
 
+**Last Updated:** 2026-06-22
+
 > This catalog is a link index to the official Zendesk documentation used by `_codex_`.
 > It references canonical pages for each capability and lists representative endpoints
 > for discovery and training. Always consult the linked pages for the most current specs.

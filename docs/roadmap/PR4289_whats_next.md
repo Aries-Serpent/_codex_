@@ -1,5 +1,7 @@
 # _codex_ — What's Next: Roadmap After PR #4289
 
+**Last Updated:** 2026-06-22
+
 > **Status as of 2026-05-06T02:00Z** · S295 final · All CodeQL alerts addressed
 > **62 commits · 117 files · 2,015 ins · 384 del · 68 alerts → 0**
 

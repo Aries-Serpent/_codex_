@@ -1,5 +1,7 @@
 # Configuration reference
 
+**Last Updated:** 2026-06-22
+
 ## Hydra defaults
 
 - Root config: `conf/config.yaml` with grouped defaults for `model`, `data`,

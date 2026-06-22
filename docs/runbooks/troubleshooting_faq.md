@@ -1,7 +1,7 @@
 # MLOps Phase 6 - Troubleshooting FAQ
 
 **Version**: 1.0.0  
-**Last Updated**: 2025-12-07
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -618,5 +618,5 @@ Template:
 
 ---
 
-*Last updated: 2026-02-10*  
+*Last updated: 2026-06-22*  
 *Questions not answered here? Ask in #mlops-support!*

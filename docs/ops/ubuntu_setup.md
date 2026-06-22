@@ -1,5 +1,7 @@
 # Ubuntu Setup
 
+**Last Updated:** 2026-06-22
+
 This guide describes how to prepare an Ubuntu machine for the Codex project.
 
 ## System dependencies

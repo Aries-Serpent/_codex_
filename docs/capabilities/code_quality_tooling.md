@@ -1,5 +1,7 @@
 # Code Quality Tooling
 
+**Last Updated:** 2026-06-22
+
 > **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview

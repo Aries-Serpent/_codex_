@@ -2,6 +2,8 @@
 
 # Safety
 
+**Last Updated:** 2026-06-22
+
 Codex provides several layers of safeguards to reduce accidental leakage and
 harmful behaviour:
 

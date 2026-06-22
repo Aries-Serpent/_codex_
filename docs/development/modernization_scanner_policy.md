@@ -1,5 +1,7 @@
 # Modernization Scanner Policy
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The modernization scanner (`tools/modernization_scanner_v2.py`) automatically detects legacy Python patterns and suggests improvements. This document defines the policy for which patterns are auto-refactorable vs. suggestion-only.

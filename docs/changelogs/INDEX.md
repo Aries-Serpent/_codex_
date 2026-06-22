@@ -1,5 +1,7 @@
 # Changelogs
 
+**Last Updated:** 2026-06-22
+
 Historical changelogs and change tracking documentation.
 
 ## Changelogs

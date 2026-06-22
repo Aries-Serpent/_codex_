@@ -1,5 +1,7 @@
 # Archived Documentation
 
+**Last Updated:** 2026-06-22
+
 This directory contains archived documentation from various development phases and PR-specific reports.
 
 ## Contents

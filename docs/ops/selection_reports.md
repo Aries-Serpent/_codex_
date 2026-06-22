@@ -1,5 +1,7 @@
 # Local Selection Reports
 
+**Last Updated:** 2026-06-22
+
 Produce a local-only **SELECTION_REPORT.md** recommending the best assistant candidate (1–4) given an input summary JSON.
 
 ## Quick Start

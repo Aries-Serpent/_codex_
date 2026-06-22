@@ -1,5 +1,5 @@
 # ADR-20260304: Third D_CAPABLE Agent Promotion — `rust-error-validator`
-> Generated: 2026-03-04T23:18:00Z | Author: copilot-swe-agent[bot]
+> Generated: 2026-06-22T23:18:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3495
 > Predecessor ADR: ADR-20260304-third-d-capable-evaluation.md

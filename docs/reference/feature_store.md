@@ -1,5 +1,7 @@
 # Feature Store API Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Feature Store provides centralized management of feature definitions, versioning, and materialization for machine learning pipelines. It enables:

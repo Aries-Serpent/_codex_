@@ -1,5 +1,7 @@
 # Testing Best Practices Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents best practices for writing tests in the _codex_ repository, with special focus on handling optional dependencies, mocking strategies, and test organization.

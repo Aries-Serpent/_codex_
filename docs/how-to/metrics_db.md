@@ -1,5 +1,7 @@
 # Metrics DB Sinks (SQLite & DuckDB)
 
+**Last Updated:** 2026-06-22
+
 Use the metrics CLI to ingest NDJSON metrics into CSV, SQLite, or DuckDB targets.
 
 ## SQLite

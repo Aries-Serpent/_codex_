@@ -1,6 +1,6 @@
 # Semgrep Suppression Register
 
-> Last updated: 2026-02-10
+> Last updated: 2026-06-22
 > Maintained by: @mbaetiong
 
 ## Overview

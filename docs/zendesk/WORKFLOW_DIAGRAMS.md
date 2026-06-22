@@ -1,5 +1,7 @@
 # Zendesk Workflow Visual Guide
 
+**Last Updated:** 2026-06-22
+
 This document provides visual representations of the Zendesk administration workflows in _codex_.
 
 ## Core Workflow: Snapshot-Diff-Plan-Apply

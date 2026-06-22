@@ -1,5 +1,7 @@
 # RAG Pipeline API Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The RAG (Retrieval-Augmented Generation) pipeline provides components for semantic search, document retrieval, and embedding generation.

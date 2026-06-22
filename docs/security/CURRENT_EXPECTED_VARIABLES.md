@@ -3,7 +3,7 @@
 > ⚠️ **SUPERSEDED** — This document is preserved for historical reference only.  
 > **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
 
-**Generated**: 2026-01-01
+**Generated**: 2026-06-22
 **Status**: ✅ Verified Against Codebase
 **Purpose**: Reference document for all secrets and variables
 

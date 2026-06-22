@@ -1,5 +1,7 @@
 # Quantum Retrieval Physics Principles
 
+**Last Updated:** 2026-06-22
+
 **Document Version:** 1.0  
 **Author:** Copilot Agent  
 **Date:** 2025-12-24  

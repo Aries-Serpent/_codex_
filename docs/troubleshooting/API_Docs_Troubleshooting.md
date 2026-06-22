@@ -1,5 +1,7 @@
 # API Docs Build Troubleshooting
 
+**Last Updated:** 2026-06-22
+
 > Common Pitfalls & Fixes
 
 ## Overview

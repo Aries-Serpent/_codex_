@@ -1,5 +1,7 @@
 # Token Rotation Manual Procedure
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the _codex_ repository.

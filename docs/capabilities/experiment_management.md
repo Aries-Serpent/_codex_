@@ -1,5 +1,7 @@
 # Experiment Management
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The experiment management capability provides comprehensive experiment tracking, logging, and reproducibility infrastructure for ML workflows including hyperparameter tracking, metric logging, artifact storage, and experiment comparison.

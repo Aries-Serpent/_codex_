@@ -1,5 +1,7 @@
 # MCP Observability
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) observability capability provides comprehensive monitoring and visibility for MCP services, including structured logging, metrics collection, distributed tracing, health checks, and alerting integration.

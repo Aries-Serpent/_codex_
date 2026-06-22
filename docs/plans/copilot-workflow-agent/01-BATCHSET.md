@@ -3,7 +3,7 @@
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2025-12-16 | Version: 1.0.0  
+> Generated: 2026-06-22 | Version: 1.0.0  
 > Purpose: Work batches for iterative implementation with acceptance criteria
 
 ## Batch Overview

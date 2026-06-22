@@ -1,5 +1,7 @@
 # Duplication Detection and Analysis
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The duplication detection system analyzes code duplication across the repository to support consistency scoring in the capability audit pipeline. It provides two complementary methods for detecting duplication: stem-based analysis and token-similarity analysis.

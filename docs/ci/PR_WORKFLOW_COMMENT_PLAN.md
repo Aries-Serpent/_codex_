@@ -1,5 +1,7 @@
 # PR Workflow Comment Plan
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0.0  
 **Date:** 2026-04-05  
 **Purpose:** Unified architecture plan for consolidating per-SHA PR comments and

@@ -1,7 +1,7 @@
 # Production Monitoring Guide
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: SRE Team  
 **Primary Tools**: Prometheus, Grafana, Elasticsearch, PagerDuty  
 

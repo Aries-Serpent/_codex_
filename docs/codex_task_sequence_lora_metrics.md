@@ -1,5 +1,7 @@
 # Codex Sequential Execution Block: LoRA Integration, Metrics, Security, Packaging, Reproducibility
 
+**Last Updated:** 2026-06-22
+
 ## Phase 1 — Preparation
 1.1 Establish working directories (`logs/codex_tasks`, `reports/codex_tasks`) and timestamped run identifier.
 1.2 Parse `README.md` and linked guides to capture existing references to LoRA, metrics, security gates, packaging, and reproducibility. Persist structured notes to `logs/codex_tasks/readme_audit.json`.

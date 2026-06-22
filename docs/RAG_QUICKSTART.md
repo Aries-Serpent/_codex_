@@ -1,5 +1,7 @@
 # RAG Quickstart Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Codex RAG (Retrieval-Augmented Generation) system! This guide will get you up and running in minutes.
 
 ## Overview

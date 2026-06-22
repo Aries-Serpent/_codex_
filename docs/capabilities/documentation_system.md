@@ -1,5 +1,7 @@
 # Documentation System
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The documentation system capability provides comprehensive documentation infrastructure including automated documentation generation, validation, cross-referencing, and searchable documentation portals for the Codex ML platform.

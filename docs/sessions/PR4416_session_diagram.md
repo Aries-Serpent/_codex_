@@ -1,5 +1,7 @@
 # PR #4416 — Session Diagram
 
+**Last Updated:** 2026-06-22
+
 ```mermaid
 graph TD
   A[S952 Start<br/>PR #4395 merged 2026-05-11T17:57Z<br/>Branch: copilot/sync-docs-and-confirm-latest-state] --> B

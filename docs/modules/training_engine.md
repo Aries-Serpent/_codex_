@@ -1,5 +1,7 @@
 # Training Engine
 
+**Last Updated:** 2026-06-22
+
 The training engine abstracts model optimization.
 
 ## Modes

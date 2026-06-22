@@ -1,4 +1,6 @@
 # Deployment Readiness Checklist — `Aries-Serpent/_codex_`
+
+**Last Updated:** 2026-06-22
 <!-- session: S92 | date: 2026-02-28 | branch: copilot/sub-pr-3389 -->
 
 > **Purpose**: Gate document for creating the first versioned deployment package

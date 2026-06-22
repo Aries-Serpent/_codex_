@@ -1,5 +1,7 @@
 # Safety & Security Modules
 
+**Last Updated:** 2026-06-22
+
 The safety subsystem now consolidates validation, filtering, and secret management in `src/security`.
 
 ## Core Utilities

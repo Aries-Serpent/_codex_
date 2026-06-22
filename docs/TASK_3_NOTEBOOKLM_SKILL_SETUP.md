@@ -1,4 +1,6 @@
 # Task 3: Configure Agentic Troubleshooting Skill
+
+**Last Updated:** 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
 **Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code  

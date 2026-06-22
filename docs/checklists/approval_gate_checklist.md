@@ -1,5 +1,7 @@
 # Intent Validation Approval Gate Checklist
 
+**Last Updated:** 2026-06-22
+
 Use this checklist to review an Intent Validation & Plan of Action before any execution work begins.
 
 ## 1) Scope & Objectives

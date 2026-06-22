@@ -1,5 +1,7 @@
 # AI Agency Intuitiveness Score V3.0 — Cognitive Codebase Assessment
 
+**Last Updated:** 2026-06-22
+
 **Assessment Date**: 2026-02-24
 **Codebase**: Aries-Serpent/_codex_ (Cognitive Brain Initiative)
 **Version**: V3.2 — S83 Update (ACE-Aligned, Research-Backed)

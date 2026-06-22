@@ -1,5 +1,7 @@
 # Capability Contracts and Extension Guide
 
+**Last Updated:** 2026-06-22
+
 This document summarizes the formal contracts introduced for Track B (Capability Specialization) and how to extend them offline.
 
 ## Tokenization Contract

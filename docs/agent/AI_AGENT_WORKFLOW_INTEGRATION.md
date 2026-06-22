@@ -1,5 +1,7 @@
 # AI Agent Integration Guide for Consolidated Workflows
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide explains how AI agents can effectively use the new consolidated workflow suites. All consolidated workflows support `workflow_call` for programmatic invocation with fine-grained control.

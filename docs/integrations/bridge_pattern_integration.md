@@ -4,6 +4,8 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 
 # Bridge Pattern: Codex ↔ (shared tools) ↔ Copilot
 
+**Last Updated:** 2026-06-22
+
 ## 1) High-level architecture
 
 * **Internal Tools API (ITA)**: your HTTP service(s) that expose org knowledge & actions (e.g., search KB, repo hygiene, test/lint, PR ops). This is the **single source of truth** both agents call.

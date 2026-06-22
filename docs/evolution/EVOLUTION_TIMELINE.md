@@ -1,6 +1,6 @@
 # Evolution Timeline — _codex_ Cognitive AI Agency
 
-**Last Updated**: 2026-03-31  
+**Last Updated**: 2026-06-22  
 **Version**: 3.0.0  
 **Purpose**: Verified phase-by-phase history of the _codex_ project evolution, aligned with codebase evidence.  
 **Source of Truth**: Cross-referenced against `.codex/cognitive_brain/`, `docs/`, and `src/` artifacts.

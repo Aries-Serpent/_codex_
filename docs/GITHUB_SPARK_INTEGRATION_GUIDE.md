@@ -4,7 +4,7 @@
 >
 > **Target**: GitHub Spark developers building intelligent full-stack apps
 >
-> **Last Updated**: 2026-01-04
+> **Last Updated**: 2026-06-22
 
 ---
 

@@ -1,5 +1,7 @@
 # Cost Governance Policy
 
+**Last Updated:** 2026-06-22
+
 > **Subscription:** GitHub Team ($4/user/mo) + Copilot Pro Plus ($39/mo)
 > **Budget:** 3,000 Linux-equivalent Actions minutes/month · 2 GB artifact storage
 > **Policy version:** 1.0 | **Effective:** 2026-03-14 | **Owner:** @mbaetiong

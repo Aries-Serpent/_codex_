@@ -1,5 +1,7 @@
 # Ephemeral (Single-Job) Self-Hosted Runners — Codex Toolkit
 
+**Last Updated:** 2026-06-22
+
 This repository includes a toolkit so ChatGPT Codex can launch a self-hosted runner that processes **one** job and then automatically de-registers.
 
 Run `make codex-gates` locally or on a self-hosted runner to execute the standard lint and test suite. No GitHub-hosted minutes or workflow YAML are required. Ephemeral single-job runners (`config.sh --ephemeral`) are recommended for resilient pools.

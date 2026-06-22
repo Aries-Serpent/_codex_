@@ -1,6 +1,6 @@
 # Deployment Guide
 
-> Last updated: 2026-02-10
+> Last updated: 2026-06-22
 
 This guide covers deploying the _codex_ system in various environments.
 

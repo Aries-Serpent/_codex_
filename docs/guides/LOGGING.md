@@ -1,5 +1,7 @@
 # Structured JSON logging (stdlib only)
 
+**Last Updated:** 2026-06-22
+
 - One event per line (JSONL) emitted to **stderr**.
 - Core fields: `timestamp`, `log.level`, `log.logger`, `event.name`, `message`.
 - Error fields (ECS/OTel-friendly): `error.kind`, `error.message`, `error.stack`.

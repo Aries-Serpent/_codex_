@@ -1,5 +1,7 @@
 # Python 3.12 Migration Plan
 
+**Last Updated:** 2026-06-22
+
 **Status**: Temporary — `requires-python = ">=3.11,<3.13"` (supports both)
 **Target**: `requires-python = ">=3.12,<3.13"` (3.12-only, strict)
 **Blocker**: Base branch `copilot/investigate-coherence-issue` CI uses Python 3.11

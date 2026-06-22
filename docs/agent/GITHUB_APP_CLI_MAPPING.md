@@ -1,5 +1,7 @@
 # GitHub App ↔ cognitive_app CLI — Integration Mapping Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ NEW (PR #3503 W-126, 2026-03-05)  
 > **Audience:** Copilot Coding Agent sessions, integration engineers  
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `src/codex/auth/github_app.py`,

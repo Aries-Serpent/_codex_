@@ -1,5 +1,7 @@
 # Codex Release (Offline Pack → Verify → Unpack)
 
+**Last Updated:** 2026-06-22
+
 **Goal:** deterministically "roll up" a release from archived tombstones and materialize it on a target host—**offline**, **append-only evidence**, **never hard-delete**.
 
 ## Prereqs

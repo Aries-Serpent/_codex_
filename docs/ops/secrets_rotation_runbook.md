@@ -1,7 +1,7 @@
 # Secrets Rotation Runbook — `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY`
 
 > **Document**: `docs/ops/secrets_rotation_runbook.md`  
-> **Version**: 1.0 (P10-06 — S96 2026-02-28)  
+> **Version**: 1.0 (P10-06 — S96 2026-06-22)  
 > **Owner**: @mbaetiong  
 > **Status**: Production Readiness — Phase 10  
 > **Classification**: Internal — do not commit key material to source control

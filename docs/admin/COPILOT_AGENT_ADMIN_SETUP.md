@@ -1,5 +1,7 @@
 # Copilot Coding Agent — Complete Human Admin Setup Guide
 
+**Last Updated:** 2026-06-22
+
 > **Repository:** `Aries-Serpent/_codex_`
 > **Audience:** Human admin (`mbaetiong`) — every action in this file requires clicking in
 > the GitHub UI or running a terminal command. No code changes needed.

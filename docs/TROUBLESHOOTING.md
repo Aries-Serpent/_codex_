@@ -1,5 +1,7 @@
 # Troubleshooting Guide
 
+**Last Updated:** 2026-06-22
+
 ## Common Issues and Solutions
 
 ### Installation & Setup

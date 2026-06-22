@@ -1,5 +1,7 @@
 # Testing Guide
 
+**Last Updated:** 2026-06-22
+
 This document describes the testing infrastructure, conventions, and best practices for the _codex_ project.
 
 ## Table of Contents

@@ -1,5 +1,7 @@
 # Pinecone Adapter (Plan B) — Quick Guide
 
+**Last Updated:** 2026-06-22
+
 Env vars (document in .env.example):
 - PINECONE_API_KEY
 - PINECONE_ENV

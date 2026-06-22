@@ -1,5 +1,7 @@
 # A/B Testing Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The A/B Testing Framework enables scientific validation of model improvements through controlled experiments with statistical significance testing.

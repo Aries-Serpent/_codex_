@@ -1,5 +1,7 @@
 # API Reference
 
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 Complete API reference for all Cognitive Brain and Codex ML modules.
 
 ---

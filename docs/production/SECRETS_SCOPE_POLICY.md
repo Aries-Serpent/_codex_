@@ -1,5 +1,7 @@
 # GitHub Secrets Scope & Environment Policy
 
+**Last Updated:** 2026-06-22
+
 **Document**: Security & Compliance Policy  
 **Audience**: DevOps, Security, Platform Engineering  
 **Effective Date**: 2026-06-14  

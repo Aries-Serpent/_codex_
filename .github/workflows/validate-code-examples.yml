@@ -1,0 +1,245 @@
+name: Code Example Validation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'guides/**'
+      - '**/*.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'guides/**'
+  workflow_dispatch:
+
+jobs:
+  validate-python:
+    name: Validate Python Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Extract Python code blocks
+        run: |
+          python3 << 'EOF'
+          import re
+          from pathlib import Path
+          
+          docs_dir = Path('docs')
+          pattern = re.compile(r'```python\n(.*?)\n```', re.DOTALL)
+          
+          extracted = []
+          for md_file in docs_dir.rglob('*.md'):
+              with open(md_file) as f:
+                  for i, match in enumerate(pattern.finditer(f.read())):
+                      code = match.group(1).strip()
+                      extracted.append((str(md_file), i, code))
+          
+          print(f"Extracted {len(extracted)} Python code blocks")
+          
+          # Save to file for validation
+          import json
+          with open('python_blocks.json', 'w') as f:
+              json.dump(extracted, f)
+          EOF
+      
+      - name: Validate Python syntax
+        run: |
+          python3 << 'EOF'
+          import json
+          import tempfile
+          import os
+          
+          with open('python_blocks.json') as f:
+              blocks = json.load(f)
+          
+          errors = []
+          for file_path, idx, code in blocks:
+              try:
+                  compile(code, '<string>', 'exec')
+              except SyntaxError as e:
+                  errors.append(f"{file_path}:{idx}: {e}")
+          
+          if errors:
+              print("❌ Python syntax errors found:")
+              for err in errors[:10]:
+                  print(f"  {err}")
+              exit(1)
+          else:
+              print(f"✅ All {len(blocks)} Python code blocks are syntactically valid")
+          EOF
+      
+      - name: Check for missing imports
+        run: |
+          python3 << 'EOF'
+          import json
+          import re
+          
+          with open('python_blocks.json') as f:
+              blocks = json.load(f)
+          
+          common_modules = {
+              'os': ['os.'],
+              'sys': ['sys.'],
+              'json': ['json.'],
+              'requests': ['requests.', 'get(', 'post('],
+              'pathlib': ['Path('],
+              'typing': ['Dict', 'List', 'Optional'],
+          }
+          
+          issues = []
+          for file_path, idx, code in blocks:
+              lines = code.split('\n')
+              
+              # Skip if first line is import
+              if any('import' in line for line in lines[:3]):
+                  continue
+              
+              for module, patterns in common_modules.items():
+                  has_import = any(f'import {module}' in line for line in lines)
+                  if not has_import:
+                      for pattern in patterns:
+                          if pattern in code:
+                              issues.append(f"{file_path}:{idx}: Missing 'import {module}'")
+                              break
+          
+          if issues:
+              print("⚠️  Missing imports found:")
+              for issue in issues[:10]:
+                  print(f"  {issue}")
+              print(f"\nTotal: {len(issues)} blocks with missing imports")
+          else:
+              print("✅ No obvious missing imports detected")
+          EOF
+      
+  validate-bash:
+    name: Validate Bash Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Extract Bash code blocks
+        run: |
+          python3 << 'EOF'
+          import re
+          from pathlib import Path
+          
+          docs_dir = Path('docs')
+          pattern = re.compile(r'```bash\n(.*?)\n```', re.DOTALL)
+          
+          extracted = []
+          for md_file in docs_dir.rglob('*.md'):
+              with open(md_file) as f:
+                  for i, match in enumerate(pattern.finditer(f.read())):
+                      code = match.group(1).strip()
+                      extracted.append((str(md_file), i, code))
+          
+          print(f"Extracted {len(extracted)} Bash code blocks")
+          
+          # Save to file for validation
+          import json
+          with open('bash_blocks.json', 'w') as f:
+              json.dump(extracted, f)
+          EOF
+      
+      - name: Validate Bash syntax
+        run: |
+          python3 << 'EOF'
+          import json
+          import tempfile
+          import subprocess
+          import os
+          
+          with open('bash_blocks.json') as f:
+              blocks = json.load(f)
+          
+          errors = []
+          for file_path, idx, code in blocks:
+              with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
+                  f.write(code)
+                  f.flush()
+                  temp_file = f.name
+              
+              result = subprocess.run(['bash', '-n', temp_file], capture_output=True)
+              os.unlink(temp_file)
+              
+              if result.returncode != 0:
+                  errors.append(f"{file_path}:{idx}")
+          
+          if errors:
+              print(f"❌ Bash syntax errors found in {len(errors)} blocks")
+              for err in errors[:10]:
+                  print(f"  {err}")
+              exit(1)
+          else:
+              print(f"✅ All {len(blocks)} Bash code blocks are syntactically valid")
+          EOF
+  
+  validate-yaml:
+    name: Validate YAML Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Extract and validate YAML
+        run: |
+          pip install pyyaml
+          
+          python3 << 'EOF'
+          import re
+          import yaml
+          from pathlib import Path
+          
+          docs_dir = Path('docs')
+          pattern = re.compile(r'```ya?ml\n(.*?)\n```', re.DOTALL)
+          
+          errors = []
+          total = 0
+          
+          for md_file in docs_dir.rglob('*.md'):
+              with open(md_file) as f:
+                  for i, match in enumerate(pattern.finditer(f.read())):
+                      total += 1
+                      code = match.group(1).strip()
+                      try:
+                          yaml.safe_load(code)
+                      except yaml.YAMLError as e:
+                          errors.append(f"{md_file}:{i}: {e}")
+          
+          if errors:
+              print(f"❌ YAML errors found in {len(errors)} blocks:")
+              for err in errors[:10]:
+                  print(f"  {err}")
+              exit(1)
+          else:
+              print(f"✅ All {total} YAML code blocks are valid")
+          EOF
+  
+  summary:
+    name: Summary
+    needs: [validate-python, validate-bash, validate-yaml]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check validation results
+        run: |
+          if [[ "${{ needs.validate-python.result }}" == "failure" ]] || \
+             [[ "${{ needs.validate-bash.result }}" == "failure" ]] || \
+             [[ "${{ needs.validate-yaml.result }}" == "failure" ]]; then
+            echo "❌ Code example validation failed"
+            exit 1
+          else
+            echo "✅ All code example validations passed"
+          fi

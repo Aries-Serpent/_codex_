@@ -1,6 +1,6 @@
 # ChatGPT Project Packaging Guide
 
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Status**: ✅ Production Ready
 **Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
@@ -665,7 +665,7 @@ Edit `package_flatten.sh` to include custom metadata in manifest:
 ---
 
 **Document Version**: 2.0.0
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: Aries-Serpent/_codex_ team
 **Related Files**:
 - `scripts/mcp/select_components.py`

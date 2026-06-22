@@ -1,5 +1,7 @@
 # Threat Model
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 This document captures the major threats to the Codex platform and the controls that mitigate them.
 

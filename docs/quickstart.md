@@ -1,5 +1,7 @@
 # Codex Quickstart
 
+**Last Updated:** 2026-06-22
+
 This quickstart demonstrates an end-to-end workflow entirely on your local
 machine: tokenizer setup → training → evaluation.  All commands are
 copy-pasteable and avoid network access by default.

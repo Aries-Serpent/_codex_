@@ -1,6 +1,6 @@
 # Cognitive Evolution Tree — Process Mapping
 
-**Last Updated**: 2026-02-12
+**Last Updated**: 2026-06-22
 **Version**: 3.0.0  
 **Purpose**: Visual evolutionary process mapping of the _codex_ AI cognitive agency — from conception through emergence to autonomous operation.
 

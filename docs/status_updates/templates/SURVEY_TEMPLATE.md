@@ -1,6 +1,8 @@
 <!-- Use this as a writer's guide when constructing Codex survey prompts/output -->
 # Repo Survey — <branch> & PR <PR> — <YYYY-MM-DD> (UTC)
 
+**Last Updated:** 2026-06-22
+
 **Ref:** branch `<branch>`  commit `<short-sha>`  •  **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
 
 ---

@@ -1,5 +1,7 @@
 # Docker Build System Hardening Checklist
 
+**Last Updated:** 2026-06-22
+
 Phase 4 audits the CPU and GPU Dockerfiles plus `docker-compose.yml` to ensure
 they support offline builds, multi-stage caching, and GPU runtime hooks.
 

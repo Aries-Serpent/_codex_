@@ -1,5 +1,7 @@
 # Deferred Items
 
+**Last Updated:** 2026-06-22
+
 The following enhancements were intentionally deferred during various Codex hardening passes. Items from earlier planning notes
 have been merged with the more detailed backlog to give a single queue of follow-ups.
 

@@ -1,5 +1,7 @@
 # Archive Standardization - Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 > Phase 2 Implementation | SLSA L3 + Schema Versioning + Sigstore Integration
 
 ## What is This?

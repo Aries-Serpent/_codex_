@@ -1,5 +1,7 @@
 # GitHub Codespace — Copilot Agent Configuration Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ NEW (PR #3503 W-126, 2026-03-05)  
 > **Session:** S114  
 > **Audience:** Copilot Coding Agents, repository maintainers  

@@ -1,5 +1,7 @@
 # Codex Swarm Engine (Rust)
 
+**Last Updated:** 2026-06-22
+
 High-performance orchestration layer for the Codex AI Agent Swarm.
 
 ## Overview

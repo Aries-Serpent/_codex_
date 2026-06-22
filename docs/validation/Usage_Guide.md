@@ -1,5 +1,7 @@
 # Usage Guide: Codex ML Offline Workflow (v1.2.0)
 
+**Last Updated:** 2026-06-22
+
 This guide distills the end-to-end workflow for running Codex ML completely
 offline. Commands assume you are in the repository root.
 

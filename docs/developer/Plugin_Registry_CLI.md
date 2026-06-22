@@ -1,5 +1,7 @@
 # Plugin Registry CLI — Developer Notes
 
+**Last Updated:** 2026-06-22
+
 ## Entrypoints
 
 | Command | Purpose |

@@ -1,5 +1,7 @@
 # Test Taxonomy
 
+**Last Updated:** 2026-06-22
+
 ## Test Organization
 
 Tests are organized by type and purpose, with clear markers for categorization and filtering.

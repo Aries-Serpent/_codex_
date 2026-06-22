@@ -1,5 +1,7 @@
 # W-121/W-122: Copilot Agent — Larger Runner Upgrade
 
+**Last Updated:** 2026-06-22
+
 **Ref:** [GitHub Docs — Upgrading to larger GitHub-hosted GitHub Actions runners][gh-docs]
 **Date:** 2026-03-05 | **PR:** #3499 | **AAIS Impact:** +3.5 (Pillar 3: Operational Maturity)
 **Status:** ✅ LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`

@@ -1,5 +1,7 @@
 # Configuration Consolidation Guide (D4)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the unified configuration structure for the Codex ML project. All configurations have been consolidated under the `configs/` directory with a clear, hierarchical structure that supports both development and production use cases.

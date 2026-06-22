@@ -1,5 +1,7 @@
 # Secrets Configuration Guide
 
+**Last Updated:** 2026-06-22
+
 Complete guide for configuring all required secrets for the GitHub Agent PR Reviewer.
 
 ---

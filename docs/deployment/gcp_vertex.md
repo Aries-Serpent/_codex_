@@ -1,5 +1,7 @@
 # Google Cloud Vertex AI Deployment Guide
 
+**Last Updated:** 2026-06-22
+
 Deploy Codex ML models to Vertex AI for managed training and online prediction.
 
 ## 1. Upload model artefacts

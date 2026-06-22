@@ -1,5 +1,7 @@
 # PR Comment & Workflow Automation Lifecycle
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.0.0  
 > **Created:** 2026-03-31  
 > **Status:** ✅ Authoritative — reflects current state of `0D_base_` after S259 changes  

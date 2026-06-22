@@ -1,5 +1,7 @@
 # Minimal Train/Eval CLI Workflow for `_codex_`
 
+**Last Updated:** 2026-06-22
+
 This guide describes a small, **local-only** train→eval flow using the
 scaffolding CLIs:
 

@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Cognitive Brain Core! This guide will get you up and running in 5 minutes.
 
 ## Installation

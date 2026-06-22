@@ -1,5 +1,7 @@
 # Research Note 11 — Counter-Balance Required to Maintain Continuous Energy
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

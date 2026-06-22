@@ -22,7 +22,9 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 - **Fix**: Added `usedforsecurity=False` parameter
 - **Current Code**:
   ```python
-  hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
+from typing import List
+import subprocess
+hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
   ```
 - **Verification**: Lines 119 and 150 both use the secure pattern
 

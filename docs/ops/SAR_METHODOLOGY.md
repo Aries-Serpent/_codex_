@@ -1,4 +1,6 @@
 # Search and Rescue (SAR) Methodology — Aries-Serpent/_codex_
+
+**Last Updated:** 2026-06-22
 ## Codebase Alignment at Level 4 MLOps
 
 **Version:** 1.0.0  

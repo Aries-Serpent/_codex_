@@ -1,5 +1,7 @@
 # Ingestion Pipeline API Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The ingestion pipeline provides a unified interface for processing multiple file formats (CSV, JSON, JSONL, TXT, MD) with comprehensive validation, transformation, and streaming support.

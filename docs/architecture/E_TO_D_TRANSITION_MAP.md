@@ -1,6 +1,6 @@
 # E→D Transition Architecture Map
 
-> Phase 0 (WU-0.3) | Generated: 2026-03-02 | **Updated: 2026-03-03**
+> Phase 0 (WU-0.3) | Generated: 2026-06-22 | **Updated: 2026-06-22**
 > Source: `docs/plans/Agentic_AI_System/soft_to_GROUNDED.md` Domain 5
 
 ---
@@ -37,7 +37,7 @@
 | **C4** | `agent-handoff-gate.yml` deployed | Phase 2: Handoff protocol CI gate | Phase 2 |
 | **C5** | GROUNDED gate count ≥ 8 Tier-1 gates | Phase 1–2: Add `cognitive-preflight` REQs | Phases 1–2 |
 
-**Current score: 5/5 ✅** ← All phases complete (updated 2026-03-03)
+**Current score: 5/5 ✅** ← All phases complete (updated 2026-06-22)
 
 ---
 

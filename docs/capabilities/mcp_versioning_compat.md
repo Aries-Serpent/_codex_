@@ -1,5 +1,7 @@
 # MCP Versioning and Compatibility
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) versioning and compatibility system ensures seamless communication between different versions of MCP servers and clients. This capability provides version negotiation, backward compatibility, and graceful degradation when version mismatches occur.

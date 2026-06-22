@@ -1,5 +1,7 @@
 # How-to: Ingest training metrics (NDJSON → CSV/Parquet)
 
+**Last Updated:** 2026-06-22
+
 This guide demonstrates converting newline-delimited JSON (**NDJSON**) metrics into tidy tabular files for downstream analysis.
 
 ## Prerequisites

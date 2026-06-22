@@ -1,5 +1,7 @@
 # Reproducibility
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The reproducibility capability ensures ML experiments and training runs can be consistently reproduced with identical results through deterministic execution, environment capture, and comprehensive state tracking.

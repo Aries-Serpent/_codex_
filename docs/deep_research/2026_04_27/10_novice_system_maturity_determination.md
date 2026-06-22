@@ -1,5 +1,7 @@
 # Research Note 10 — Determining Maturity When Novice Systems Consistently Meet Targets
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

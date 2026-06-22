@@ -1,5 +1,7 @@
 # Codex Symbolic Pipeline — Example
 
+**Last Updated:** 2026-06-22
+
 The `codex_symbolic_pipeline` module is a **self-contained, dependency-free** reference
 implementation of the Pretraining → SFT → RLHF training workflow.  
 It uses deterministic bag-of-words models so that unit tests can exercise real token

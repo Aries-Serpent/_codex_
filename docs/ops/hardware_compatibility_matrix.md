@@ -1,5 +1,7 @@
 # Hardware Compatibility Matrix — Primary Test Machine
 
+**Last Updated:** 2026-06-22
+
 > **Policy**: The codebase MUST function as intended on the primary test machine.
 > Components that require hardware not present on this machine MUST be optional
 > and/or deferred — **never** forced. The workstation does not bend to fit the

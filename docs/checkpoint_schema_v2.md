@@ -1,5 +1,7 @@
 # Checkpoint Schema v2
 
+**Last Updated:** 2026-06-22
+
 **Intent**: deterministic, reproducible checkpoint metadata.
 
 - Canonical JSON for hashing/signing (see RFC 8785 / JCS).

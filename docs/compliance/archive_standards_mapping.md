@@ -1,6 +1,6 @@
 # Archive Standards Mapping
 
-> **Generated**: 2025-11-03 | **Author**: Archive Standardization Team | **Version**: 1.0
+> **Generated**: 2026-06-22 | **Author**: Archive Standardization Team | **Version**: 1.0
 
 ## Overview
 

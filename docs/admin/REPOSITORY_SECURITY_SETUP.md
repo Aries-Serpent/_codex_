@@ -2,7 +2,7 @@
 ## Complete Setup & Configuration for _codex_ Security Infrastructure
 
 **Document Version**: 2.0
-**Last Updated**: 2026-03-17
+**Last Updated**: 2026-06-22
 **Maintainer**: Security Team
 
 ---

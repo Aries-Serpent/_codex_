@@ -1,5 +1,7 @@
 # Root Organization CI/CD Validation
 
+**Last Updated:** 2026-06-22
+
 Automated validation workflow for root folder organization operations.
 
 ## Overview

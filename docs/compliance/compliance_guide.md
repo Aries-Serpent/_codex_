@@ -1,5 +1,7 @@
 # Compliance Guide
 
+**Last Updated:** 2026-06-22
+
 ## Supported Policies
 
 - GDPR (General Data Protection Regulation)

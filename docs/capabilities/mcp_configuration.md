@@ -1,5 +1,7 @@
 # MCP Configuration Management
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP configuration management capability provides centralized configuration handling for Model Context Protocol services, including environment variables, mcp.json schema, runtime settings, and multi-environment support.

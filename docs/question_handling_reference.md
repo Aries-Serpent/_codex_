@@ -1,5 +1,7 @@
 # Codex Research Question Handling Reference
 
+**Last Updated:** 2026-06-22
+
 This note provides a quick-access guide for ChatGPT Codex sessions to track, answer, and retire outstanding research questions. It consolidates where questions live, how we resolve them, and how to query their status while debugging.
 
 ## Canonical sources of truth

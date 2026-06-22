@@ -1,5 +1,7 @@
 # PR: Legacy Import Refactor — Batch 01 (example)
 
+**Last Updated:** 2026-06-22
+
 Branch: chore/legacy-refactor/batch-01-training-apply
 Base: main
 

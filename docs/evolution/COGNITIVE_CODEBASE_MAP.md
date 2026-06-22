@@ -1,6 +1,6 @@
 # Cognitive Codebase Map — AI Intuitiveness by Component
 
-**Last Updated**: 2026-02-11  
+**Last Updated**: 2026-06-22  
 **Version**: 1.0.0  
 **Purpose**: Component-level cognitive mapping of the _codex_ codebase for AI intuitiveness, enabling agents to navigate, understand, and operate autonomously.  
 **Methodology**: ACE-aligned scoring per component, cross-referenced with [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md)

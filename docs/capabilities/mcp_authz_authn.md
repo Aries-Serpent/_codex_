@@ -1,5 +1,7 @@
 # MCP Authentication and Authorization
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) authentication and authorization capability provides comprehensive security controls for MCP services, including API key verification, JWT token validation, OAuth integration, and role-based access control (RBAC).

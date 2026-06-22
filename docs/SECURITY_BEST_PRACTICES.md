@@ -1,5 +1,7 @@
 # Security Best Practices Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide provides security best practices for developers working on the _codex_ codebase. Following these practices helps maintain a secure, production-ready system.

@@ -1,5 +1,7 @@
 # Advanced Physics Implementation - Technical Reference
 
+**Last Updated:** 2026-06-22
+
 ## Purpose
 This document serves as a comprehensive technical reference for AI Assistants and Agents to intuitively apply and make corrections to the advanced physics calculators. It contains all validated physics equations, implementation patterns, and design decisions.
 

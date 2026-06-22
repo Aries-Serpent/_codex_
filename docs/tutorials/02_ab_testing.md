@@ -1,5 +1,7 @@
 # Tutorial 02 — Running A/B Tests on Model Outputs
 
+**Last Updated:** 2026-06-22
+
 **Estimated time:** 20 minutes  
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`  
 **Optional:** `scipy` (auto-detected; improves t-distribution accuracy)

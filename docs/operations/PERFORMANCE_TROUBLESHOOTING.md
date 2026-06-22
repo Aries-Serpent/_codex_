@@ -1,7 +1,7 @@
 # Performance Troubleshooting Playbook
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: Performance Engineering  
 **SLA Target**: Response time p95 < 200ms, p99 < 500ms  
 

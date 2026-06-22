@@ -2,6 +2,8 @@
 
 # Training Arguments (YAML/Hydra)
 
+**Last Updated:** 2026-06-22
+
 - **gradient_accumulation_steps** / **grad_accum**: accumulate before optimizer step; both keys are now honoured by the HF trainer entrypoint.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 - **reproducibility.cudnn_deterministic**: propagates to both custom and HF loops to toggle deterministic algorithms.

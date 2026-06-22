@@ -1,5 +1,7 @@
 # Metrics Core and Evaluation Tool
 
+**Last Updated:** 2026-06-22
+
 This document describes the lightweight metrics registry under
 `src/codex_ml/metrics/core.py` and its companion evaluation script
 `tools/codex_metrics_eval.py`.

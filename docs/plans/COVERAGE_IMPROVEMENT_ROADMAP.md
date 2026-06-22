@@ -1,5 +1,7 @@
 # Coverage Improvement Roadmap
 
+**Last Updated:** 2026-06-22
+
 **Current Coverage**: 15.9%  
 **Target Coverage**: 90%  
 **Gap**: 74.1 percentage points  

@@ -2,7 +2,7 @@
 
 **Audience**: Production operators, DevOps engineers, SREs  
 **Scope**: SQLite databases in Codex production deployment  
-**Last Updated**: 2025-01-20  
+**Last Updated**: 2026-06-22  
 **Version**: 1.0  
 
 ---

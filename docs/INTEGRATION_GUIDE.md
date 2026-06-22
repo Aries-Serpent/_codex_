@@ -1,5 +1,7 @@
 # Integration Guide
 
+**Last Updated:** 2026-06-22
+
 ## Third-Party Integrations
 
 This guide covers integrating Codex ML with popular ML platforms and tools.

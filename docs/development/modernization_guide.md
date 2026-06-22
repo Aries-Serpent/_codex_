@@ -1,5 +1,7 @@
 # Python Modernization Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide covers modern Python patterns and best practices for the _codex_ codebase targeting Python 3.10+.

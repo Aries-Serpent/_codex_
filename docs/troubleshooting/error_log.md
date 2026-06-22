@@ -1,5 +1,7 @@
 # Error Log
 
+**Last Updated:** 2026-06-22
+
 This consolidated log merges historical incident notes from `ERROR_LOG.md` and `error_log.md`. Each entry documents a failure
 state, its root cause, and the remediation that preserves intended behaviour.
 

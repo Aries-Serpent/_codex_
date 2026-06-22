@@ -1,5 +1,7 @@
 # Follow-Up Prompt: Physics-Inspired RAG Enhancement
 
+**Last Updated:** 2026-06-22
+
 ## Context
 
 The _codex_ repository now has a complete 4-phase implementation including:

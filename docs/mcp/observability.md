@@ -1,6 +1,6 @@
 # MCP Observability
 
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Status**: ✅ Prototype Implementation  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05
@@ -269,7 +269,7 @@ Observability is built around FastAPI middleware and JSON-RPC logging hooks.
 ---
 
 **Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Implementation**: `src/mcp/server/http.py` (FastAPI middleware)  
 **Validation**: `scripts/validate_mcp.py --run-http-smoke`  
 **Iteration Alignment**: Phase 12.3+ compatible  

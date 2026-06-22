@@ -1,5 +1,7 @@
 # Advanced Physics Paradigms Integration Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document describes the integration of six emerging physics paradigms into the Codex AI orchestration system, enabling physics-inspired decision making and software development.

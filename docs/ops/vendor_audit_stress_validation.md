@@ -1,5 +1,7 @@
 # Vendor Audit Stress Validation (2025-09-18)
 
+**Last Updated:** 2026-06-22
+
 This note captures a fresh stress validation pass for the `vendor_audit_setup.sh`
 and `vendor_audit_maint.sh` wrappers. The goal was to exercise the higher trial
 counts while remaining within offline policy constraints and confirm that the

@@ -1,5 +1,7 @@
 # Deprecated: Python Variant (FastAPI) — Reference Only
 
+**Last Updated:** 2026-06-22
+
 This repository standardizes on the **Node/Express** bridge (`.codex/copilot_bridge/bridge/server.js`) as the canonical implementation.
 
 If you previously tested a Python/FastAPI variant, consider it **archived**. The Node bridge:

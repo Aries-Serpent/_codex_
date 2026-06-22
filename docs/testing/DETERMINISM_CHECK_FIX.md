@@ -1,5 +1,7 @@
 # Determinism Check Fix - PR #3178
 
+**Last Updated:** 2026-06-22
+
 ## Problem Summary
 
 The determinism check job in PR #3178 was failing with pytest exit code 2 (internal error) instead of the expected exit code 5 (no tests collected).

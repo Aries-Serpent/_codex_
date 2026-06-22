@@ -1,5 +1,7 @@
 # Architecture overview
 
+**Last Updated:** 2026-06-22
+
 Track G adds small, composable building blocks rather than a monolithic
 training stack:
 

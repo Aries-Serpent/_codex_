@@ -1,5 +1,7 @@
 # [Doc]: Copilot Space Traversal Workflow (v1.1.0)
 
+**Last Updated:** 2026-06-22
+
  Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
 
 ## 1. Objective

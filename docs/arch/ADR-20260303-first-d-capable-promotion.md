@@ -1,5 +1,5 @@
 # ADR-20260303: First D_CAPABLE Agent Promotion — `ci-testing-agent`
-> Generated: 2026-03-04T02:25:00Z | Author: copilot-swe-agent[bot]
+> Generated: 2026-06-22T02:25:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3494
 

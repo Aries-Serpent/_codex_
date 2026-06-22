@@ -1,5 +1,7 @@
 # Codebase Archival & Hygiene Policy
 
+**Last Updated:** 2026-06-22
+
 > Consolidated on 2025-10-24. Former location: `docs/policies/archive-policy.md`.
 
 > Purpose: keep the working tree lean while preserving auditability and supply-chain integrity.

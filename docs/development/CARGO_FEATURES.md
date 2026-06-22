@@ -1,5 +1,7 @@
 # Cargo Features Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document explains the feature system in `Cargo.toml` for the Rust-Python hybrid swarm engine. Understanding these features is critical to prevent CI failures like the January 19, 2026 incident where 10 workflows failed due to missing feature declarations.

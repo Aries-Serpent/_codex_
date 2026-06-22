@@ -1,5 +1,7 @@
 # CI/CD Pipeline - Capability Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The CI/CD pipeline capability provides continuous integration and continuous deployment automation for the _codex_ project. This comprehensive system supports multiple CI/CD platforms including GitHub Actions, GitLab CI, Jenkins, CircleCI, and custom pipeline configurations.

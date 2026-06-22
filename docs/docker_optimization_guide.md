@@ -1,5 +1,7 @@
 # Docker Optimization Guide (D1)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the optimized Docker setup for Codex ML with multi-stage builds, security hardening, and conditional feature flags. All Dockerfiles follow security best practices and are production-ready.

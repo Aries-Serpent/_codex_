@@ -1,5 +1,7 @@
 # Bridge: Codex ↔ Copilot Co-op (Shared Internal Tools API)
 
+**Last Updated:** 2026-06-22
+
 This bridge pattern enables ChatGPT-Codex and GitHub Copilot to call the same Internal Tools API (ITA). The repository includes
 shared service code, agent clients, and operational documentation so that both assistants can operate through a unified,
 auditable backend.

@@ -1,5 +1,7 @@
 # GitHub Actions Log Fetcher
 
+**Last Updated:** 2026-06-22
+
 Complete implementation for fetching GitHub Actions logs via MCP, CLI, and API.
 
 ## Overview

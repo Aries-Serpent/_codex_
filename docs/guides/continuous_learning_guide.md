@@ -1,5 +1,7 @@
 # Continuous Learning Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Continuous Learning Pipeline enables automatic model retraining when drift is detected, maintaining model performance without manual intervention.

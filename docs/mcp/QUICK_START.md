@@ -1,5 +1,7 @@
 # MCP Package System - Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 **Get started in 5 minutes** with packaging your codebase for ChatGPT Projects.
 
 ---

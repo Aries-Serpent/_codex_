@@ -2,6 +2,8 @@
 
 # Concepts
 
+**Last Updated:** 2026-06-22
+
 - Data: Streaming JSONL/TXT loaders with validation.
 - Checkpointing: Save and resume training with retention policy.
 - Safety: Filters (block/allow/regex) and sandboxed execution.

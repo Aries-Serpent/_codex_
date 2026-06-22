@@ -1,5 +1,7 @@
 # Smoke Test Remediation Plan
 
+**Last Updated:** 2026-06-22
+
 ## Problem Statement
 
 Three smoke tests are currently failing in the test suite:

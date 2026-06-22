@@ -1,3 +1,5 @@
+**Last Updated:** 2026-06-22
+
 @codex implement plan
 title: "Run 0D_base_ audit and commit artifacts"
 on_conflict: "prefer-upstream"

@@ -1,5 +1,7 @@
 # Research Note 05 — Edge Cases, Failure Modes, and Worked Samples
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

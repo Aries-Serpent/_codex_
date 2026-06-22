@@ -1,5 +1,7 @@
 # Tutorial 03 — Setting Up Continuous Learning
 
+**Last Updated:** 2026-06-22
+
 **Estimated time:** 30 minutes  
 **Prerequisites:** Tutorials 01 and 02 recommended first
 

@@ -1,5 +1,7 @@
 # Method D — YAML Patch Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 Method D is the proven stable YAML pattern for the session preload step in

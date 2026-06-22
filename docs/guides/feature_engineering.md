@@ -1,5 +1,7 @@
 # Feature Engineering Guide
 
+**Last Updated:** 2026-06-22
+
 ## Introduction
 
 This guide provides best practices and patterns for feature engineering in the Codex ML platform. Feature engineering is the process of transforming raw data into features that better represent the underlying problem to predictive models.

@@ -1,5 +1,7 @@
 # CI Triage Reproducibility Reference — S145
 
+**Last Updated:** 2026-06-22
+
 > **Session:** S145 | **PR:** #3606 | **Date:** 2026-03-17
 > **Script:** `scripts/ci/ci_triage_repro.sh`
 > **Runbook:** Run `bash scripts/ci/ci_triage_repro.sh` to reproduce all checks in one pass.

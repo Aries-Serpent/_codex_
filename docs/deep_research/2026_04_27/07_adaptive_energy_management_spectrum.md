@@ -1,5 +1,7 @@
 # Research Note 07 — Adaptive Energy-Management Across Energy Spectra
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

@@ -1,5 +1,7 @@
 # MLflow: Offline-by-default Guard
 
+**Last Updated:** 2026-06-22
+
 This project prefers **local file-backed** MLflow tracking by default to avoid accidental remote logging.
 
 ## TL;DR

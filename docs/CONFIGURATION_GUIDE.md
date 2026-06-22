@@ -1,5 +1,7 @@
 # Configuration Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 Codex ML uses Hydra for configuration management, enabling flexible, reproducible experiments through YAML files and command-line overrides.

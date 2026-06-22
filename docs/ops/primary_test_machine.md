@@ -2,6 +2,8 @@
 
 # Primary Test Machine — Hardware Registration
 
+**Last Updated:** 2026-06-22
+
 > **Registered:** 2026-02-28  
 > **Status:** Active — primary local development and test runner  
 > **Maintained by:** @mbaetiong

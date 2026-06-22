@@ -1,5 +1,7 @@
 # Docker Guide — Offline & GPU Ready
 
+**Last Updated:** 2026-06-22
+
 This guide captures the Phase 4 hardening work for the Docker build system.
 
 ## Build images

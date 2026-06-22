@@ -1,5 +1,7 @@
 # Fast-Forward Safe Files + Auto-Approve Workflows Integration Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document explains how to use **fast-forward-safe-files.yml** and **auto-approve-workflows.yml** together to enable **immediate deployment of discussion-posting workflows** from PR → main, without waiting for full PR merge.

@@ -1,5 +1,7 @@
 # Local Quality Gates
 
+**Last Updated:** 2026-06-22
+
 All gates are **offline-friendly** and run without hosted services:
 
 ```bash

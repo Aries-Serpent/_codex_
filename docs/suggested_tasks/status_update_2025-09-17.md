@@ -1,5 +1,7 @@
 # *codex*: Status Update (2025-09-17)
 
+**Last Updated:** 2026-06-22
+
 ## 1. Repo Map
 
 | Category | Description |

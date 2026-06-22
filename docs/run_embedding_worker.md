@@ -1,5 +1,7 @@
 # Running the Embedding Worker (Local & Docker)
 
+**Last Updated:** 2026-06-22
+
 Local (dev/mock)
 - Ensure repo root is on PYTHONPATH:
   ```bash

@@ -1,7 +1,7 @@
 # RAG Module Device Placement Best Practices
 
 **Module**: `src/codex/rag/`  
-**Last Updated**: 2026-02-08  
+**Last Updated**: 2026-06-22  
 **Status**: Production Guidelines  
 
 ---
@@ -34,4 +34,4 @@ For complete documentation, see: `.codex/CODING_STANDARDS_ML_DEVICE_PLACEMENT.md
 **Linter**: `scripts/lint/check_device_placement.py`  
 **Tests**: `tests/rag/test_device_placement.py`
 
-Last updated: 2026-02-10
+Last updated: 2026-06-22

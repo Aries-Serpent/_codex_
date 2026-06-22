@@ -1,5 +1,7 @@
 # CI Rescue Pipeline — Golden Path Documentation
 
+**Last Updated:** 2026-06-22
+
 > **Status:** Canonical reference (S280, 2026-04-02)
 > **Scope:** End-to-end lifecycle from workflow failure to Copilot fix — including Proactive CI Monitor and Fast-Forward Safe-File Promotion
 > **Golden-path example:** PR [#3818](https://github.com/Aries-Serpent/_codex_/pull/3818) comment [#4158728043](https://github.com/Aries-Serpent/_codex_/pull/3818#issuecomment-4158728043)

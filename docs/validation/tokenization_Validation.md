@@ -1,5 +1,7 @@
 # Tokenization Validation Updates
 
+**Last Updated:** 2026-06-22
+
 Recent changes improve determinism and error handling across the tokenization stack:
 
 - `SentencePieceAdapter.add_special_tokens` now accepts a sequence of token strings, merges with any persisted mapping, returns a `Dict[str, int]`, and writes updates back to `*.special_tokens.json` for stable IDs across runs.

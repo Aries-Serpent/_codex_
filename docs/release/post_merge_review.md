@@ -1,5 +1,7 @@
 # Post-Merge Review Checklist
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This checklist ensures that merges to the main branch maintain quality and don't introduce regressions.

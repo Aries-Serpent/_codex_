@@ -1,5 +1,7 @@
 # Archive Standardization Framework
 
+**Last Updated:** 2026-06-22
+
 > **Status**: Phase 2 | **Effective**: 2025-11-02 | **Version**: 1.0
 
 ## Executive Overview

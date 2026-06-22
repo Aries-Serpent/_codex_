@@ -1,5 +1,7 @@
 # Plugin System Guide
 
+**Last Updated:** 2026-06-22
+
 This guide explains how to extend codex_ml with custom plugins using Python entry points.
 
 ## Overview

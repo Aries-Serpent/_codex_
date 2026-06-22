@@ -1,5 +1,7 @@
 # GitHub Copilot Agent: Coverage Enhancement Prompt
 
+**Last Updated:** 2026-06-22
+
 ## Comprehensive Reusable Prompt for Raising Test Coverage to 100%
 
 Use this prompt template to instruct GitHub Copilot Agent to systematically raise test coverage from any level below 99% to 100%.

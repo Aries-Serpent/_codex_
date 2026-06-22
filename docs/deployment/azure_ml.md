@@ -1,5 +1,7 @@
 # Azure Machine Learning Deployment Guide
 
+**Last Updated:** 2026-06-22
+
 Use Azure Machine Learning (Azure ML) to serve Codex ML models with managed compute and monitoring.
 
 ## 1. Register model artefacts

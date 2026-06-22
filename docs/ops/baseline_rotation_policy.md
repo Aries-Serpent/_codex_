@@ -1,5 +1,7 @@
 # Baseline Rotation Policy
 
+**Last Updated:** 2026-06-22
+
 > **Purpose**: Define retention and archival process for audit baselines to prevent repository growth.
 
 ## Storage Location

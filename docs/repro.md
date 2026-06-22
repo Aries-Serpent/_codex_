@@ -1,3 +1,5 @@
+**Last Updated:** 2026-06-22
+
 `set_reproducible()` seeds Python, NumPy and PyTorch, enables deterministic
 algorithms and disables cuDNN benchmarking. The custom training loop in
 `training/functional_training.py` asserts that `torch.backends.cudnn.deterministic`

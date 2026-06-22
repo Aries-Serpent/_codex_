@@ -1,7 +1,7 @@
 # CORS Configuration Guide
 
 **Document Version**: 1.0  
-**Last Updated**: 2026-01-13  
+**Last Updated**: 2026-06-22  
 **Status**: Active
 
 ## Overview

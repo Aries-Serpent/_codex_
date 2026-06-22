@@ -1,5 +1,7 @@
 # Contributor Onboarding Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Codex repository! This guide will help you get started as a contributor, whether you're a human developer or an AI Agent.
 
 ## Table of Contents

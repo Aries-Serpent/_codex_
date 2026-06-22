@@ -1,5 +1,7 @@
 # Why Diátaxis for Codex docs?
 
+**Last Updated:** 2026-06-22
+
 Codex documentation is being reorganized iteratively around the four complementary pillars of the Diátaxis framework:
 
 - **Tutorials** — learning-oriented walkthroughs that teach new capabilities.

@@ -1,5 +1,7 @@
 # Architecture Overview
 
+**Last Updated:** 2026-06-22
+
 This page sketches the core components and their relationships.
 
 ```mermaid

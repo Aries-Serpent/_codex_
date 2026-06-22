@@ -1,5 +1,7 @@
 # Legacy Code Migration Guide
 
+**Last Updated:** 2026-06-22
+
 **Created:** 2026-01-16  
 **Status:** Reference Documentation  
 **Version:** 1.0.0

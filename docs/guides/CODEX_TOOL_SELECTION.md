@@ -1,5 +1,7 @@
 # Codex Tool Selection Guide
 
+**Last Updated:** 2026-06-22
+
 > **Purpose**: Prevent wrong tool selection (CODEX-007) causing 45% session waste.  
 > **References**: RFC 3881, Git documentation, Bash reference manual
 

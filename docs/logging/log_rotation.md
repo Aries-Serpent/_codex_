@@ -1,5 +1,7 @@
 # Session Log Rotation
 
+**Last Updated:** 2026-06-22
+
 The SQLite database at `.codex/session_logs.db` stores session metadata. Without maintenance it can grow indefinitely.
 
 An index on `(session_id, ts)` is created automatically. This index

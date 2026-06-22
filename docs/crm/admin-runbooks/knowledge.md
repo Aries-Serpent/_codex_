@@ -1,5 +1,7 @@
 # Knowledge Pipeline (Offline)
 
+**Last Updated:** 2026-06-22
+
 ```bash
 python -m codex.cli knowledge build-kb --root docs --out artifacts/kb.ndjsonl
 python -m codex.cli knowledge archive-and-manifest artifacts/kb.ndjsonl --by "$USER"

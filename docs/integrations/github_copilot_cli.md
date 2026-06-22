@@ -2,6 +2,8 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 
 ## What you get
 
+**Last Updated:** 2026-06-22
+
 * Natural-language help for shell/git/`gh` commands:
 
   * Explain a command: `gh copilot explain "sudo apt-get"` ([GitHub Docs][1])

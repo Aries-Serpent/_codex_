@@ -2,6 +2,8 @@
 
 # Interfaces & Extensibility
 
+**Last Updated:** 2026-06-22
+
 This project defines abstract interfaces to allow **swappable implementations** without code changes.
 
 ## Interfaces

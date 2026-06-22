@@ -1,7 +1,7 @@
 # Codex Authentication System - User Guide
 
 **Version**: 1.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -74,4 +74,4 @@ See `examples/authentication/` directory for full working examples.
 ---
 
 **Document Version**: 1.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-06-22

@@ -1,5 +1,7 @@
 # W-123: Identify and Document Repository Webhooks
 
+**Last Updated:** 2026-06-22
+
 **Date:** 2026-03-05 | **PR:** #3499 | **Status:** ✅ AUDIT COMPLETE — 0 live hooks, config defined
 **Owner:** @copilot | **Reviewer:** @mbaetiong
 

@@ -1,6 +1,6 @@
 # 🤖 Copilot Agent Token Usage Guide
 
-> **Generated**: 2026-03-17
+> **Generated**: 2026-06-22
 > **Repository**: Aries-Serpent/_codex_
 > **Audience**: Copilot Agent, Automation Engineers
 > **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
@@ -451,7 +451,7 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Version**: 2.0.0
 **Maintainer**: Security Team
 

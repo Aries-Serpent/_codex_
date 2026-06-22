@@ -1,5 +1,7 @@
 # Newcomer Guide to _codex_
 
+**Last Updated:** 2026-06-22
+
 Welcome to **_codex_**! This guide will help you understand the repository structure, get started quickly, and navigate the codebase effectively.
 
 ## Table of Contents

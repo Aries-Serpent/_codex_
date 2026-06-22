@@ -1,5 +1,5 @@
 # [Validation]: Coverage Enforcement for Targeted Modules
-> Generated: 2025-11-11  
+> Generated: 2026-06-22  
 > Roles: QA Lead, Developer  
 
 ## Policy

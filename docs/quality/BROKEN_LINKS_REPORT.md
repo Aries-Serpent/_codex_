@@ -1,5 +1,7 @@
 # Broken Links Report
 
+**Last Updated:** 2026-06-22
+
 > **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
 >
 > **Current Status**: As of 2026-02-10, the validation system has been enhanced with:

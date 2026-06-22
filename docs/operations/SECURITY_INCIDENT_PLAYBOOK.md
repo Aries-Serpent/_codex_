@@ -1,7 +1,7 @@
 # Security Incident Response Playbook
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: Security Engineer  
 **Classification**: Confidential - Internal Use Only  
 

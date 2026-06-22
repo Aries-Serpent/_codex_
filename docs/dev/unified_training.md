@@ -1,5 +1,7 @@
 # Unified Training Orchestrator (Schema v2 Alignment)
 
+**Last Updated:** 2026-06-22
+
 The unified orchestrator consolidates legacy and functional loops behind a **single public API**.
 
 | Feature | Description |

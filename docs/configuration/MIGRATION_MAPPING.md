@@ -1,5 +1,7 @@
 # Configuration Migration Mapping - PS-01 Cycle 2
 
+**Last Updated:** 2026-06-22
+
 **Status:** Planning  
 **Created:** 2026-01-08  
 **Target:** Pre-commit Cycle 2

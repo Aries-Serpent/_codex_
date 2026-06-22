@@ -1,5 +1,7 @@
 # Codex Status Audit Command
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The `codex-status-audit` command provides a comprehensive status update audit report for the Codex repository. It traverses the codebase, runs capability audits, and generates detailed status reports.

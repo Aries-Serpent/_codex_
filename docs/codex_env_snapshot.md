@@ -1,5 +1,7 @@
 # _codex_ Environment Snapshot
 
+**Last Updated:** 2026-06-22
+
 ## Python
 
 - Version: `3.12.12 (main, Oct 24 2025, 00:40:08) [GCC 13.3.0]`

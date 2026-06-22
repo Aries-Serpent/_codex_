@@ -1,5 +1,7 @@
 # Tokenisation
 
+**Last Updated:** 2026-06-22
+
 `_codex_` uses a small adapter layer to provide a consistent interface across
 different tokeniser back‑ends.  All tokenisers implement the abstract
 `TokenizerAdapter` interface with four core methods: `encode`, `decode`,

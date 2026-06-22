@@ -1,5 +1,7 @@
 # Documentation Table Formatting Standard
 
+**Last Updated:** 2026-06-22
+
 **Version**: 1.0.0  
 **Effective**: 2026-02-10  
 **Status**: ✅ ACTIVE

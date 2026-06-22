@@ -1,5 +1,7 @@
 # ADR-20260304-copilot-agent-cli-api-gaps
 
+**Last Updated:** 2026-06-22
+
 ## Context
 
 **Date:** 2026-03-04  

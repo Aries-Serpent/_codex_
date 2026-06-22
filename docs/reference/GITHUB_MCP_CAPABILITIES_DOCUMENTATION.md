@@ -1,6 +1,6 @@
 # GitHub Copilot Agent & MCP Server Capabilities - Official Documentation
 
-> **Generated**: 2025-12-31T02:35:00Z  
+> **Generated**: 2026-06-22T00:00:00Z  
 > **Author**: mbaetiong (documented by GitHub Copilot Agent)  
 > **Type**: Reference Documentation  
 > **Source**: Official GitHub Documentation & Research  
@@ -619,7 +619,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
 ## 🔖 Metadata
 
 **Document Version**: 1.0.0  
-**Last Updated**: 2025-12-31T02:35:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Maintained By**: GitHub Copilot Agent (with human oversight)  
 **Review Cycle**: Quarterly or when GitHub releases major updates  
 **Related Files**:

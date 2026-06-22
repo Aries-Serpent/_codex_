@@ -1,5 +1,7 @@
 # ADR-20260313: UserStore Persistence Backend
 
+**Last Updated:** 2026-06-22
+
 **Status:** Proposed  
 **Date:** 2026-03-13  
 **Authors:** GitHub Copilot (Session 32, PR #3572)  

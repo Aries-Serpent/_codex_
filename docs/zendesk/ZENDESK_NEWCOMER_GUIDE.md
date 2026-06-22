@@ -1,5 +1,7 @@
 # Zendesk Support Administrator Newcomer Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to Zendesk administration with **_codex_**! This guide will help you understand how to manage Zendesk Support configurations as code, enabling reproducible, version-controlled administrative workflows.
 
 ## Table of Contents

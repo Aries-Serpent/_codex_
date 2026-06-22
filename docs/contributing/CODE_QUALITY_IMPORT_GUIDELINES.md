@@ -1,5 +1,7 @@
 # Code Quality: Import Organization Guidelines
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.0.0
 > **Created:** 2026-02-17
 > **Purpose:** Comprehensive import organization guidelines following E402/F821 systematic refactoring

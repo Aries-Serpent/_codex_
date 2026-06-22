@@ -2,7 +2,7 @@
 
 **Purpose**: Standardized protocol for AI agents to continue work across sessions using the cognitive brain for context and planning.
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
 **Status**: 🟢 Active
 

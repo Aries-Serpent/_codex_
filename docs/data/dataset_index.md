@@ -1,5 +1,7 @@
 # Dataset Index Tool
 
+**Last Updated:** 2026-06-22
+
 `tools/codex_dataset_index.py` scans a data directory (default: `data`) and
 produces two artifacts:
 

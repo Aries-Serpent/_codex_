@@ -44,6 +44,8 @@ using a general YAML checker like [yamllint][].
 
 <a name="check-unexpected-keys"></a>
 ## Unexpected keys
+
+**Last Updated:** 2026-06-22
 <!-- anchor: check-unexpected-keys -->
 
 Example input:

@@ -1,5 +1,7 @@
 # Reasoning Pod: Dry-Run Deployment Guide
 
+**Last Updated:** 2026-06-22
+
 This guide defines the **dry-run** flow for a reasoning pod. All steps are **local-first** and **offline-friendly**.
 
 ## Objectives

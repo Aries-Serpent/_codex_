@@ -1,5 +1,7 @@
 # Google Drive Integration — Future Scope (DEFERRED)
 
+**Last Updated:** 2026-06-22
+
 **Document Version**: 1.0.0
 **Created**: 2026-01-16T13:10:00Z
 **Deferral Type**: **HUMAN DEFERRAL** (requires manual external setup)

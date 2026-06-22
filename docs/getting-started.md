@@ -2,6 +2,8 @@
 
 # Getting Started (Ubuntu)
 
+**Last Updated:** 2026-06-22
+
 ## Prerequisites
 
 - Python 3.12+

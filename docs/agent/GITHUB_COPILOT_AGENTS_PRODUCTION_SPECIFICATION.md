@@ -1,5 +1,7 @@
 # GitHub Copilot Agents - Production Specification
 
+**Last Updated:** 2026-06-22
+
 **Version**: 2.0
 **Date**: 2024-01-16
 **Status**: Production Ready

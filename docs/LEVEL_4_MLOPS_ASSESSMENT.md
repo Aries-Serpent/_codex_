@@ -1,6 +1,6 @@
 # Level 4 MLOps Assessment
 
-**Generated**: 2025-12-28 | **Last Updated**: 2026-03-06 (W-139)  
+**Generated**: 2026-06-22 | **Last Updated**: 2026-06-22 (W-139)  
 **Author**: mbaetiong
 
 ## Overview
@@ -51,7 +51,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ---
 
-## CODEX Current Assessment: **Level 3.95** _(updated 2026-03-08 from 3.9 — W-142 S116 SAR sprint)_
+## CODEX Current Assessment: **Level 3.95** _(updated 2026-06-22 from 3.9 — W-142 S116 SAR sprint)_
 
 > **Progress since Dec 2025:** W-129–W-139 resolved CI failures, hardened cache hierarchy,
 > added `safe_json_loads`, closed variable-write gap (intent-file mailbox), wired

@@ -1,5 +1,7 @@
 # Cognitive App CLI — Copilot Agent Connection Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ VERIFIED 2026-03-05 (PR #3497 W-114 audit)
 > **Server:** `http://localhost:8765` (FastAPI — auto-started by `copilot-setup-steps.yml`)
 > **Frontend:** `https://aries-serpent.github.io/_codex_/cognitive_app` (GitHub Pages SPA)

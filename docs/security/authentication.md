@@ -1,5 +1,7 @@
 # Authentication & Secret Management
 
+**Last Updated:** 2026-06-22
+
 ## Principles
 - Prefer short-lived credentials with automatic rotation.
 - Never store secrets in source control; use environment variables and secret stores.

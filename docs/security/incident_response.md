@@ -1,5 +1,7 @@
 # Incident Response Plan
 
+**Last Updated:** 2026-06-22
+
 ## Classification
 
 | Severity | Description | Response Time |

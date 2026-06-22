@@ -1,5 +1,7 @@
 # CLI
 
+**Last Updated:** 2026-06-22
+
 The Click-based CLI groups common operations:
 
 ```bash

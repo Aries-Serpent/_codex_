@@ -1,5 +1,7 @@
 # Extending Codex ML via entry points
 
+**Last Updated:** 2026-06-22
+
 Codex ML exposes a lightweight plugin surface that lets external packages add
 optional metrics and tokenizers without modifying the core repository.  Plugin
 loading is entirely offline and best-effort: discovery failures are swallowed so

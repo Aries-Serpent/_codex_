@@ -1,5 +1,7 @@
 # _codex_ Admin FAQ
 
+**Last Updated:** 2026-06-22
+
 > Frequently Asked Questions for Repository Administrators
 
 ---

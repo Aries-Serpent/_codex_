@@ -1,5 +1,7 @@
 # Code Scanning Fixes - 2025-12-23
 
+**Last Updated:** 2026-06-22
+
 ## Summary
 
 Reviewed and verified 25 code scanning findings from Bandit, CodeQL, and Semgrep.

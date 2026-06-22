@@ -1,5 +1,7 @@
 # Security Best Practices Guide
 
+**Last Updated:** 2026-06-22
+
 ## Table of Contents
 1. [Sensitive Data Handling](#sensitive-data-handling)
 2. [Log Injection Prevention](#log-injection-prevention)

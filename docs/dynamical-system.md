@@ -1,6 +1,8 @@
 <!-- BEGIN: CODEX_DOCS_DYNAMICAL_SYSTEM -->
 # Codex Dynamics: a quantum-operational model for single-shot repo runs
 
+**Last Updated:** 2026-06-22
+
 ## Table of contents
 
 1. State space and observables

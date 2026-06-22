@@ -1,5 +1,7 @@
 # Safeguards Keywords Detection
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The safeguards keywords capability detects defensive programming patterns, validation checks, and security safeguards in the codebase through keyword analysis, providing metrics for code safety and robustness assessment.

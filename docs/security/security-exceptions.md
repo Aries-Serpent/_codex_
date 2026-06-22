@@ -1,6 +1,6 @@
 # Security Scan Exceptions and Intentional As-Is Code Registry
 
-**Last Updated**: 2026-01-30  
+**Last Updated**: 2026-06-22  
 **Purpose**: Document all intentionally left as-is code with security scan findings  
 **Policy**: ALL security findings must be justified or fixed - no exceptions without documented rationale
 

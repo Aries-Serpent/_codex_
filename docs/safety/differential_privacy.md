@@ -1,5 +1,7 @@
 # Differential Privacy & Secret Redaction
 
+**Last Updated:** 2026-06-22
+
 Codex ML includes first-class hooks for privacy-preserving fine-tuning. The `DifferentialPrivacyConfig`
 provides a lightweight façade over [Opacus](https://opacus.ai/) so you can enable DP-SGD with a single
 configuration block. The logging stack also performs automatic redaction to prevent accidental leakage of

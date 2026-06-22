@@ -1,5 +1,7 @@
 # Quantum-Relativistic-Dirac Orchestrator Architecture
 
+**Last Updated:** 2026-06-22
+
 ## System Overview
 
 The Quantum Orchestrator is a physics-inspired task scheduling and optimization system that applies quantum mechanical and relativistic principles to computational workflows.

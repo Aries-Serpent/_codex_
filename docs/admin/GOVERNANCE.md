@@ -1,5 +1,7 @@
 # Governance — _codex_
 
+**Last Updated:** 2026-06-22
+
 ## Purpose
 
 This document defines the governance structure, roles, and decision-making processes for the _codex_ project.

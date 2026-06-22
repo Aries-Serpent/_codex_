@@ -1,5 +1,7 @@
 # Plugin Registry Guide (D2)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the entry-point based plugin system for Codex ML. The system provides automatic discovery, validation, and management of plugins through Python entry points.

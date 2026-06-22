@@ -1,5 +1,7 @@
 # Structural Integrity Detection
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The structural integrity capability detects architectural anti-patterns and risks in repository structure, including split-brain architecture (duplicate modules in root and `src/`) and library shadowing (local directories that conflict with PyPI package names).

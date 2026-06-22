@@ -1,5 +1,7 @@
 # Physics Equations & Formulas Reference — Coverage Uplift Paths
 
+**Last Updated:** 2026-06-22
+
 > **Table 4 of 4**: Coverage uplift paths for achieving 95% test coverage
 > **Total Equations**: 53
 > **Focus**: Initialization tests, enum validations, property coverage, deep module testing

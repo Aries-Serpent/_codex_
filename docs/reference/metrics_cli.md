@@ -1,5 +1,7 @@
 # Reference: `codex_ml.cli metrics`
 
+**Last Updated:** 2026-06-22
+
 ## Synopsis
 ```bash
 python -m codex_ml.cli metrics <subcommand> [options]

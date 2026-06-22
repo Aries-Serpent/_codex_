@@ -1,4 +1,6 @@
 # Cognitive Brain Quickstart - Agent Entry Point
+
+**Last Updated:** 2026-06-22
 ## 🎯 Wave Function Collapse Point
 
 **Choose your basis state** to collapse the superposition of possibilities into definite understanding:

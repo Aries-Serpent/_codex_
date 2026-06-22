@@ -1,5 +1,7 @@
 # Codex Changelog
 
+**Last Updated:** 2026-06-22
+
 ## 2025-10-14 – Evaluation helper & tokenizer adapter refresh
 
 ### WHY

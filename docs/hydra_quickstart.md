@@ -1,5 +1,7 @@
 # Hydra Quickstart (Codex)
 
+**Last Updated:** 2026-06-22
+
 ## Run with defaults
 ```bash
 python -m codex_ml hydra-train

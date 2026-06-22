@@ -1,5 +1,7 @@
 # Experiment Logging
 
+**Last Updated:** 2026-06-22
+
 Codex writes all run artefacts to the `runs/` directory.  Each invocation of
 `run_functional_training` or the `codex codex train` CLI creates a new
 timestamped folder:

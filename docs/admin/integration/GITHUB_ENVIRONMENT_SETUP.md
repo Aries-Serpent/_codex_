@@ -2,7 +2,7 @@
 
 > **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
 > **Audience**: Human Administrators with org/repo admin permissions
-> **Last Updated**: 2026-03-17
+> **Last Updated**: 2026-06-22
 
 ---
 
@@ -546,7 +546,7 @@ if __name__ == "__main__":
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: @mbaetiong
 **Version**: 1.0.0
 

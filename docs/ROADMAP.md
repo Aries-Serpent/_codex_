@@ -1,5 +1,7 @@
 # _codex_ Roadmap
 
+**Last Updated:** 2026-06-22
+
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
 **Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + Agent Team

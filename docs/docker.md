@@ -1,5 +1,7 @@
 # Docker: Build, Run, Smoke, Scan
 
+**Last Updated:** 2026-06-22
+
 This repo ships a local-first Docker workflow that remains CI-gated by policy. Use these commands to build, run, smoke-test, and (optionally) generate security artifacts locally.
 
 ## Prereqs

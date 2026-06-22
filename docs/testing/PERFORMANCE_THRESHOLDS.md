@@ -1,5 +1,7 @@
 # Performance Thresholds Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document explains the performance thresholds used throughout the Codex codebase, with a focus on the Rust swarm engine performance tests. These thresholds are designed to catch catastrophic performance regressions while remaining stable across different execution environments.

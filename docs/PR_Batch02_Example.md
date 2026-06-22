@@ -1,5 +1,7 @@
 # PR: Legacy Import Refactor — Batch 02 (v1.2.7)
 
+**Last Updated:** 2026-06-22
+
 Branch: chore/legacy-refactor/batch-02-training-tokenization-models
 Base: main
 

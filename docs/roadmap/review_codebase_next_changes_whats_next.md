@@ -1,5 +1,7 @@
 # Review Codebase / Next Changes — What's Next
 
+**Last Updated:** 2026-06-22
+
 ## Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)
 
 | Item | Status | Result |

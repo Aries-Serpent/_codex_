@@ -1,5 +1,5 @@
 # [Reference]: P5 Scoring Integration & Severity Influence
-> Generated: 2025-11-06 19:34:45 UTC | Author: mbaetiong  
+> Generated: 2026-06-22 (audited) | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## 1. Added Metrics

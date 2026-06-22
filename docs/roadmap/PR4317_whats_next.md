@@ -1,5 +1,7 @@
 # _codex_ — What's Next: Roadmap After PR #4317
 
+**Last Updated:** 2026-06-22
+
 > **Status as of 2026-05-06T22:00Z** · S313 active · 62+ commits · 24/30 CI checks ✅ · 0 ❌
 > **Merge verdict: 🟢 MERGE READY — all blocking gates green, 3 startup_failures are expected opt-in infra**
 > **S313 Security Hardening: PBKDF2 600k ✅ · bandit 0 HIGH ✅ · CodeQL push already configured ✅ · mypy 126 baseline locked ✅**

@@ -1,5 +1,7 @@
 # Security
 
+**Last Updated:** 2026-06-22
+
 This project uses `detect-secrets` with a committed baseline (`.secrets.baseline`). Update the baseline with:
 
 ```text

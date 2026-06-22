@@ -6,6 +6,8 @@
 
 # GitHub Variables & Secrets — Master Reference Guide
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.7.0 (W-142/S116 phase 3, 2026-03-07)  
 > **Owner:** @mbaetiong  
 > **Status:** ✅ Current — reflects live state as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)  

@@ -1,5 +1,7 @@
 # _codex_ Documentation
 
+**Last Updated:** 2026-06-22
+
 > Comprehensive documentation for the _codex_ AI/ML platform
 
 ## 📚 Documentation Structure

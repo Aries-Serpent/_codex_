@@ -2,6 +2,8 @@
 
 # Model Card (Template)
 
+**Last Updated:** 2026-06-22
+
 ## Intended Use
 
 ## Training Data

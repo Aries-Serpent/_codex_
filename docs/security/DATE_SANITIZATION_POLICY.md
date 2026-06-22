@@ -44,7 +44,7 @@ Dates are **preserved** when they appear in these contexts:
    - `**Published:** 2026-01-05`
 
 5. **Historical Records**
-   - `Updated: 2026-01-05`
+   - `Updated: 2026-06-22`
    - `Committed: 2026-01-04`
    - `Date: 2026-01-06`
 

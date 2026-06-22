@@ -1,5 +1,7 @@
 # FAISS Vector Store - User Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The FAISS Vector Store provides local, CPU-based vector similarity search for embeddings. It includes comprehensive safeguards, validation, and error handling for production use.

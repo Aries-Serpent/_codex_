@@ -1,5 +1,5 @@
 # Guide: Offline Workflow and Reproducibility
-> Generated: 2026-03-17 (audited) | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 This guide defines a deterministic, offline-first workflow for running audits, tests, and training.
 

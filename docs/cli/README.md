@@ -1,5 +1,7 @@
 # CLI Documentation
 
+**Last Updated:** 2026-06-22
+
 This directory contains documentation for the command-line interface (CLI) tools provided by _codex_.
 
 ## Contents

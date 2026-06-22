@@ -1,5 +1,7 @@
 # MCP Rate Limiting
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) rate limiting capability provides comprehensive request throttling for MCP services, including token bucket algorithms, sliding window counters, quota management, and abuse prevention mechanisms.

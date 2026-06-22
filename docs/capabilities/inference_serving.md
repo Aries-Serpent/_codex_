@@ -1,5 +1,7 @@
 # Inference Serving
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The inference serving capability provides production-ready model serving infrastructure including FastAPI/Flask endpoints, batch inference, model versioning, and high-performance prediction APIs for deploying ML models.

@@ -1,5 +1,7 @@
 # Deployment Dry-Run — codex-reasoning-pod
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 - Kind: ReasoningPod
 - Version: 0

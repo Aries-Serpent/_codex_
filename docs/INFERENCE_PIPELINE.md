@@ -1,5 +1,7 @@
 # Deterministic Inference Pipeline (v1.0.0)
 
+**Last Updated:** 2026-06-22
+
 This pipeline provides reproducible, offline-only inference for pre-trained models. It is organized into deterministic stages (I1–I4) and produces hashes for inputs, model artifacts, and outputs.
 
 ## Usage

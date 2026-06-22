@@ -1,5 +1,7 @@
 # CI Policy (Codex Environment)
 
+**Last Updated:** 2026-06-22
+
 - **Web search:** allowed for research/documentation.
 - **Remote CI / GitHub Actions on hosted runners:** **disallowed** by default to avoid cost.
 - All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:

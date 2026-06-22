@@ -1,5 +1,7 @@
 # Workflow Consolidation Recommendations
 
+**Last Updated:** 2026-06-22
+
 ## Current State
 
 The repository contains **60+ GitHub Actions workflows**, creating complexity and maintenance burden.

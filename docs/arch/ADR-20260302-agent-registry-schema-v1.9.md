@@ -1,5 +1,5 @@
 # ADR-20260302: Agent Registry Schema Extension (v1.9.0)
-> Generated: 2026-03-02T07:00:00Z | Author: copilot-swe-agent[bot]
+> Generated: 2026-06-22T07:00:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3447
 

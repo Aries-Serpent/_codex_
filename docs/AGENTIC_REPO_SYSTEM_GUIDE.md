@@ -2,7 +2,7 @@
 > **Canonical Operating Reference** | Aries-Serpent/_codex_
 >
 > **Version**: 1.1.0  
-> **Generated**: 2026-03-02  
+> **Generated**: 2026-06-22  
 > **Status**: ✅ ACTIVE — All Phases 0–6 GROUNDED  
 > **Readiness Score**: 100/100 (broad 100-point audit) | **E→D Gate**: 5/5 conditions ✅
 

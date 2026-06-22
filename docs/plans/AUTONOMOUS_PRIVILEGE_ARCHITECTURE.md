@@ -1,5 +1,7 @@
 # Codebase-Wide Autonomy: PR Template · WEC · Workflows · Discussions · Elevated Privileges
 
+**Last Updated:** 2026-06-22
+
 > **Document:** `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`  
 > **Status:** ✅ Living document — 2026-05-08  
 > **Scope:** How every surface (PR template, WEC, GitHub Actions, Discussions, Webhooks) is wired

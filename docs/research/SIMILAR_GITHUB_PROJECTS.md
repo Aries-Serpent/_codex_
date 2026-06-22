@@ -1,5 +1,7 @@
 # Top 5 GitHub Public Projects Aligned with `_codex_` (codex-ml)
 
+**Last Updated:** 2026-06-22
+
 > **Research Date:** 2026-03-21  
 > **Session:** S170  
 > **Method:** Deep web search + live GitHub API data + APA citation compilation  

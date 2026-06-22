@@ -2,7 +2,7 @@
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2025-11-17T19:00:00Z  
+**Generated**: 2026-06-22T00:00:00Z  
 **Branch**: copilot/verify-current-branch-readiness  
 **Target**: main branch  
 **Verification Agent**: GitHub Copilot

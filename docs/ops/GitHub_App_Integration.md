@@ -1,5 +1,7 @@
 # [Guide]: GitHub App Integration (Local & Offline-Safe JWT Build)
 
+**Last Updated:** 2026-06-22
+
 > Scope: generate a short-lived installation token from a GitHub App, log in `gh`, and (optionally) register a self-hosted runner—without adding any workflows or Actions.
 
 ## Why GitHub App (vs PAT)

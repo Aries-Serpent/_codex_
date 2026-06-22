@@ -1,5 +1,7 @@
 # Phase 12 Continuation Prompt - Custom Agents & Production Hardening
 
+**Last Updated:** 2026-06-22
+
 @copilot This is the continuation prompt for Phase 12. Execute all tasks autonomously until completion, following the AI Agency Policy and Prime Directive. Use the `task` tool to delegate specialized work to custom agents as they become available.
 
 ---

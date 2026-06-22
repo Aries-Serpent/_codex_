@@ -1,5 +1,7 @@
 # Zendesk Admin Runbook
 
+**Last Updated:** 2026-06-22
+
 Codex ships offline-first utilities for Zendesk administrators. This runbook
 summarizes the happy path for promoting configuration changes with evidence and
 version tracking.

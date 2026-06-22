@@ -1,5 +1,7 @@
 # Model Regression and Keep-It-Honest Suites
 
+**Last Updated:** 2026-06-22
+
 This repository now ships an offline-first regression harness covering data, modeling, infrastructure, performance, and safety/honesty surfaces.
 
 ## Regression categories (R1–R5)

@@ -1,5 +1,7 @@
 # Deployment Infrastructure
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The deployment infrastructure capability provides comprehensive container orchestration, Kubernetes manifests, Docker configurations, and infrastructure-as-code templates for deploying Codex ML services in production environments.

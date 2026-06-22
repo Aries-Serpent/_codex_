@@ -1,5 +1,7 @@
 # Wheel Manifest & Baseline Management
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The wheel manifest system provides cryptographic verification of Python dependencies to ensure reproducible builds and detect supply chain drift.

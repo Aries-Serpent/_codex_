@@ -5,6 +5,8 @@ This document describes how to use [actionlint](..).
 
 ## `actionlint` command
 
+**Last Updated:** 2026-06-22
+
 With no argument, actionlint finds all workflow files in the current repository and checks them.
 
 ```sh

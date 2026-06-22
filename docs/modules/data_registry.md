@@ -1,5 +1,7 @@
 # Dataset Registry
 
+**Last Updated:** 2026-06-22
+
 `codex_ml.data.registry` exposes dataset loaders that can operate entirely
 offline. Each loader is registered by name and can be accessed through
 `codex_ml.data.registry.get_dataset` or Hydra configuration fragments.

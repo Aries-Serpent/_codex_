@@ -1,5 +1,7 @@
 # Migration Guide: v1.3.x to v1.4.0
 
+**Last Updated:** 2026-06-22
+
 **Target Audience**: Users upgrading from audit pipeline v1.3.x  
 **Migration Difficulty**: Easy  
 **Estimated Time**: 15-30 minutes

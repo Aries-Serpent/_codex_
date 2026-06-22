@@ -1,5 +1,7 @@
 # Offline Testing Matrix
 
+**Last Updated:** 2026-06-22
+
 This matrix documents which test targets run in a completely offline developer
 environment and which suites require optional dependencies or GPU support.
 It builds on the audit in [Optional Dependencies](optional_dependencies.md).

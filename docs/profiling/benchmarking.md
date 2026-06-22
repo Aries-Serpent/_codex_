@@ -1,5 +1,7 @@
 # Performance Benchmarking
 
+**Last Updated:** 2026-06-22
+
 The `codex_ml.perf.profiler.PerformanceProfiler` offers a minimal, dependency-free way to capture wall-clock
 statistics for critical sections in training, inference, and data loading workflows.
 

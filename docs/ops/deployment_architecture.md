@@ -1,5 +1,7 @@
 # Deployment Architecture
 
+**Last Updated:** 2026-06-22
+
 ## High-Level Components
 - **Ingress Controller** – Routes HTTPS traffic to the Codex API service.
 - **Codex API Deployment** – FastAPI application scaled via Kubernetes Deployment.

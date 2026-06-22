@@ -1,5 +1,5 @@
 # [Guide]: Security Artifacts (Opt-in, Offline-Friendly)
-> Generated: 2026-03-17 (audited) | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## Overview

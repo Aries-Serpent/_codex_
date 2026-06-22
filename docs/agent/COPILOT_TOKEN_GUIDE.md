@@ -1,5 +1,7 @@
 # Copilot Coding Agent — Token & Authentication Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
 > **Audience:** Copilot Coding Agent sessions, CI/CD pipeline authors
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `scripts/tools/variable_manager.py`

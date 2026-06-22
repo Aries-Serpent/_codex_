@@ -4,7 +4,7 @@
 
 
 > **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)  
-> **Generated**: 2025-11-10  
+> **Generated**: 2026-06-22  
 > **Purpose**: Executable implementation roadmap for AST standardization based on comprehensive blocker research
 
 ---

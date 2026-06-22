@@ -1,5 +1,7 @@
 # Quantum Orchestrator CLI Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Quantum Orchestrator CLI provides command-line access to the physics-inspired task orchestration framework. It implements quantum mechanics, special relativity, and quantum field theory concepts for task management.

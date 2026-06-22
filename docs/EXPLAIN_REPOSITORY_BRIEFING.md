@@ -1,5 +1,7 @@
 # Explain `_codex_` Repository Briefing
 
+**Last Updated:** 2026-06-22
+
 **Purpose**: Fast, canonical orientation for contributors and agents working in `Aries-Serpent/_codex_`.
 
 **Source-of-truth inputs used**:

@@ -7,6 +7,8 @@ summary: "Historical abstraction of archive governance."
 
 # Archive Policy Summary (v4, Deprecated)
 
+**Last Updated:** 2026-06-22
+
 Variant v4 experimented with more narrative language around archive governance. During consolidation all substantive content was
 migrated into the [Canonical Archiving Policy](../canonical-archiving-policy.md) and the accompanying index in this directory.
 

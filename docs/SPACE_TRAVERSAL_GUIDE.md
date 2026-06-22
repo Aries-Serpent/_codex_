@@ -1,6 +1,6 @@
 # Space Traversal Capability Audit Guide (v1.4.0)
 
-> Generated: 2025-11-09 | Author: Codex Audit System  
+> Generated: 2026-06-22 | Author: Codex Audit System  
 > Roles: [Audit Orchestrator], [Capability Cartographer]  
 > Energy: 5/5
 

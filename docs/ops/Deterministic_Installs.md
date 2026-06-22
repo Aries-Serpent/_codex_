@@ -1,5 +1,7 @@
 # [Guide]: Deterministic Installs (uv-first, offline-friendly)
 
+**Last Updated:** 2026-06-22
+
  Energy: 5/5
 
 ## Why

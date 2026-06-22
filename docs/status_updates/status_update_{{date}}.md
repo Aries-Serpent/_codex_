@@ -13,6 +13,8 @@ Audit Scope
 
 # 📍_codex_: Status Update ({{date}})
 
+**Last Updated:** 2026-06-22
+
 1. **Repo Map**
    - {{repo_map_summary}}
 

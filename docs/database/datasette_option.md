@@ -1,5 +1,7 @@
 # Option C: Datasette Lite
 
+**Last Updated:** 2026-06-22
+
 Host the `.artifacts/snippets.db` snapshot on a static file server that sends `Access-Control-Allow-Origin: *`.
 With the file available at a public URL, load it directly in the browser using [Datasette Lite](https://lite.datasette.io/):
 

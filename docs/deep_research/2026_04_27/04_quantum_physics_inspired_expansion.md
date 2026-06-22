@@ -1,5 +1,7 @@
 # Research Note 04 — Quantum and Physics-Inspired Expansion
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

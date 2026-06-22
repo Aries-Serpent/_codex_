@@ -1,5 +1,7 @@
 # Copilot Agent Session — Standard Operating Model
 
+**Last Updated:** 2026-06-22
+
 > **Cross-reference (Canonical Planset):** [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
 > **Lifecycle:** ACTIVE OPERATIONAL
 

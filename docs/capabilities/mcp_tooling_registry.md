@@ -1,5 +1,7 @@
 # MCP Tooling Registry
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP tooling registry capability provides centralized registration, discovery, and invocation of tools in Model Context Protocol services. Tools are reusable capabilities that can be dynamically loaded, configured, and executed.

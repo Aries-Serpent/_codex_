@@ -1,5 +1,7 @@
 # Archival & Bundling Capability Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The **archival-bundling** capability provides comprehensive functionality for packaging, versioning, and archiving ML artifacts including models, datasets, configurations, and experiment results. This system ensures reproducibility by creating self-contained archives that capture all dependencies and metadata needed to recreate experimental conditions.

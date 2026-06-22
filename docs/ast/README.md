@@ -1,5 +1,7 @@
 # Codex AST Analysis Module
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Codex AST Analysis module provides a unified framework for analyzing Abstract Syntax Trees (ASTs) across multiple languages. It offers language-agnostic representations, dependency analysis, code quality metrics, code smell detection, and multi-format export capabilities.

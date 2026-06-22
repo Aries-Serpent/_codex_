@@ -1,5 +1,7 @@
 # Codex ML - ChatGPT Assistant Setup Guide
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0.0  
 **Date:** Dec 6, 2025  
 **Purpose:** Enable ChatGPT Codex Assistant to effectively leverage the repository

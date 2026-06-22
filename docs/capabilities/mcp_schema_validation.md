@@ -1,5 +1,7 @@
 # MCP Schema Validation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP schema validation capability ensures that Model Context Protocol (MCP) services use strongly-typed schemas for requests, responses, and configurations. This includes Pydantic models for runtime validation and OpenAPI specifications for API documentation.

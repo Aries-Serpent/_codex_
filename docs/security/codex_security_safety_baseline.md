@@ -1,5 +1,7 @@
 # `_codex_` Security & Safety Baseline (Scaffolding)
 
+**Last Updated:** 2026-06-22
+
 This document captures the *initial*, local-only security and safety
 baseline for `_codex_`. It is not a full threat model, but it ties
 together the tooling included in this repo.

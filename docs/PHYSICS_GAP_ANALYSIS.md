@@ -1,5 +1,7 @@
 # Advanced Physics Implementation - Gap Analysis & Continuous Improvement
 
+**Last Updated:** 2026-06-22
+
 ## Document Purpose
 This living document tracks identified gaps, risks, incomplete implementations, and improvement opportunities for the advanced physics calculators. It follows an iterative cycle of analysis, prioritization, implementation, and validation.
 

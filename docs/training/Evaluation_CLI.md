@@ -1,5 +1,7 @@
 # Evaluation CLI — Dispatcher & Contracts
 
+**Last Updated:** 2026-06-22
+
 This document describes the evaluation entrypoints and expected IO behavior.
 
 ## Entrypoints

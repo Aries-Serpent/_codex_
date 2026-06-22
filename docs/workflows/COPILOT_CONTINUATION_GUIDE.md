@@ -1,5 +1,7 @@
 # Copilot Continuation System - Complete Guide
 
+**Last Updated:** 2026-06-22
+
 ## Table of Contents
 
 1. [Overview](#overview)

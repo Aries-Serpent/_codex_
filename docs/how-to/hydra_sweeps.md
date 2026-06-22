@@ -1,5 +1,7 @@
 # Hydra sweeps & defaults (Codex)
 
+**Last Updated:** 2026-06-22
+
 Codex uses Hydra defaults with `_self_` **first**, which preserves Hydra-1.0 semantics.
 This repo’s tests assume that ordering; keep it stable to avoid breakage.
 

@@ -1,5 +1,7 @@
 # CI Workflow Optimization Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the CI/CD optimization strategies implemented for the _codex_ repository to achieve fast, reliable automated validation.

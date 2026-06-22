@@ -1,5 +1,7 @@
 # ADR-2025-11-02: Archive Sigstore Keyless Signing Integration
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2025-11-02  
 **Status**: Accepted (Phase 2)  
 **Author**: Archive Standardization Team  

@@ -1,6 +1,6 @@
 # AI Emergence Storyboard — The _codex_ Story
 
-**Last Updated**: 2026-02-11  
+**Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
 **Purpose**: Biographical storyline illustrating the emergence of cognitive AI agency-autonomy in the _codex_ repository.  
 **Format**: Narrative storyboard with evidence-backed milestones.

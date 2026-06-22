@@ -1,6 +1,6 @@
 # Planset Registry — Historical Archive
 
-**Last Updated**: 2026-02-12
+**Last Updated**: 2026-06-22
 **Version**: 3.0.0
 **Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.
 **Format**: Structured for search, filtering, and AI agent consumption.

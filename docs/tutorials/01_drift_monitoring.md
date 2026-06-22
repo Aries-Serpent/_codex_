@@ -1,5 +1,7 @@
 # Tutorial 01 — Monitoring Data and Model Drift
 
+**Last Updated:** 2026-06-22
+
 **Estimated time:** 20 minutes  
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 

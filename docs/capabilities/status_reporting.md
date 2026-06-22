@@ -1,5 +1,7 @@
 # Status Reporting - Capability Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The status reporting capability provides comprehensive system status monitoring, health checks, and reporting mechanisms for the _codex_ project. This system enables real-time visibility into application health, performance metrics, and operational status across all components.

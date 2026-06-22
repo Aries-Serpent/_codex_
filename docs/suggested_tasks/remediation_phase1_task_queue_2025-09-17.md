@@ -1,5 +1,7 @@
 # Codex Remediation Task Queue – Phase 1 Execution Packet (2025-09-17)
 
+**Last Updated:** 2026-06-22
+
 ## 0. Orientation & Linkage
 
 This execution packet translates the phased remediation outline recorded in `docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md` into immediately actionable work items. The focus is on the first remediation phase, covering the top five urgent gates (U1–U5) and the top five quick wins (Cycle 1–Q5) that were enumerated in the foundational plan. Each task card below preserves the traceability back to the source findings (status update, capability audit, outstanding questions) while spelling out concrete steps, deliverables, instrumentation requirements, and forward-looking queue triggers that will cascade into the next remediation phase as soon as Phase 1 closes out.

@@ -1,6 +1,6 @@
 # Deep Research: GitHub Copilot Coding Agent — Discussion & Comment Posting Methodologies
 
-> **Generated**: 2026-03-03  
+> **Generated**: 2026-06-22  
 > **Scope**: Methodologies for GitHub Copilot Coding Agent to post discussions, PR comments,
 > code review annotations, and documentation comments — plus this repo's homepage.
 

@@ -1,5 +1,7 @@
 # How We Release
 
+**Last Updated:** 2026-06-22
+
 This repository uses **small, reviewable changes** and local-only checks. We do not enable any CI or paid services by default.
 
 ## Release steps (human-driven)

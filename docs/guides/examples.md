@@ -1,5 +1,7 @@
 # Examples
 
+**Last Updated:** 2026-06-22
+
 Comprehensive examples for all Cognitive Brain components.
 
 ## Table of Contents

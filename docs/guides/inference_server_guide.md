@@ -1,5 +1,7 @@
 # FastAPI Inference Server - User Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The FastAPI Inference Server provides ML model serving with comprehensive safeguards including rate limiting, input validation, health checks, and metrics collection.

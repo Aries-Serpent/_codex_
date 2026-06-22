@@ -1,5 +1,7 @@
 # Secrets and Environment Variables Documentation
 
+**Last Updated:** 2026-06-22
+
 > **Last Full Audit**: 2026-06-03T17:39:00Z | **Auditor**: @mbaetiong
 > **Total Tracked**: 113 (14 env vars · 76 repo vars · 3 env secrets · 7 repo secrets · 13 org secrets)
 > **Current Pass Scope**: Variables only (secrets unchanged in this pass)

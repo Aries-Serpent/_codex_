@@ -1,5 +1,7 @@
 # Duplication Analyzer - User Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Duplication Analyzer provides actionable insights into code duplication across your codebase. It detects duplicate files, identifies refactoring opportunities, and generates comprehensive reports.

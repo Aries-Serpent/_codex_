@@ -1,5 +1,7 @@
 # Hydra Defaults Audit
 
+**Last Updated:** 2026-06-22
+
 Audit Hydra YAML configs for defaults hygiene:
 
 - Verify `_self_` is present (and warn when it appears mid-list).

@@ -1,5 +1,7 @@
 # Continuous Improvement
 
+**Last Updated:** 2026-06-22
+
 This project includes maintenance utilities for pruning logs and keeping the repository tidy. The `tools/codex_maintenance.py` script is meant to run on a regular schedule so that artefacts do not accumulate.
 
 ## Local scheduling with cron

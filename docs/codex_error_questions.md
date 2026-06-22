@@ -1,3 +1,5 @@
+**Last Updated:** 2026-06-22
+
 > Question for ChatGPT @codex 2025-12-01T00:45:01Z:
 > While performing [3.3.1:For a selected subset of gaps (e.g. tokenization, training), generate per-gap docs stubs using codex_gap_bootstrap.py.], encountered the following error:
 > Return code: 2

@@ -1,5 +1,7 @@
 # Top 5 Quick Wins: Architectural Entropy Normalization Plan
 
+**Last Updated:** 2026-06-22
+
 **Date:** 2026-01-08  
 **Branch:** `copilot/sub-pr-2750-one-more-time`  
 **Context:** Addressing "Split Brain" state between legacy `agents/` and modern `src/codex/`  

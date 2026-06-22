@@ -1,5 +1,7 @@
 # Production Operations Runbook
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0.0  
 **Date:** 2026-06-14T04:05:00Z  
 **Owner:** Operations Team  

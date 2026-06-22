@@ -1,5 +1,5 @@
 # Example: Capability Matrix (v1.2)
-> Generated: 2025-11-02 15:23:05 UTC | Author: mbaetiong  
+> Generated: 2026-06-22 (audited) | Author: mbaetiong  
 🧠 Roles: [Primary: Example Author], [Secondary: Reviewer] ⚡ Energy: 5
 
 | ID | Name | Category | Status | Evidence | Gaps | Risks | Severity (1–5) | Confidence (1–5) | Tags | Owner | ETA |

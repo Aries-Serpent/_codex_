@@ -1,5 +1,7 @@
 # API Endpoints Reference
 
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 ## HTTP API (FastAPI)
 
 The Codex HTTP API provides REST endpoints for text generation and RAG operations.

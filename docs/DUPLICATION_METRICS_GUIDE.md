@@ -1,5 +1,7 @@
 # Duplication Metrics Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Duplication Metrics system provides automated detection, measurement, and tracking of code duplication in Python projects. It includes token-based detection via pylint integration, dual storage (JSON + SQLite), and comprehensive CLI commands for CI/CD integration.
@@ -313,6 +315,7 @@ print(f"Saved with ID: {result['sqlite_id']}")
 ### Advanced Detection
 
 ```python
+from pathlib import Path
 from codex.metrics.duplication import DuplicationDetector
 
 # Create detector with custom settings

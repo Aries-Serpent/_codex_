@@ -1,5 +1,7 @@
 # GPU Docker Build Guide
 
+**Last Updated:** 2026-06-22
+
 This guide explains how to build and run the GPU-enabled Docker image for codex-ml with opt-in CUDA PyTorch installation.
 
 ## Overview

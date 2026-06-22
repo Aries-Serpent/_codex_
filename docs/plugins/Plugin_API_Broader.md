@@ -1,5 +1,7 @@
 # Plugin API - Broader Factory System
 
+**Last Updated:** 2026-06-22
+
 > Comprehensive guide to the Codex plugin system and factory registries
 
 ## Overview

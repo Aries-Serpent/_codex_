@@ -1,5 +1,7 @@
 # CLI JSON Schemas
 
+**Last Updated:** 2026-06-22
+
 Two CLIs surface machine-readable JSON and are validated against schemas stored in `schemas/cli/`:
 
 - `python -m codex_ml.cli.list_plugins --format json`

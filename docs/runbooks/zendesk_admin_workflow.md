@@ -1,5 +1,7 @@
 # Zendesk Admin Workflow
 
+**Last Updated:** 2026-06-22
+
 This runbook describes the recommended workflow for managing Zendesk
 administrative configuration via `_codex_`. The workflow relies on
 snapshotting current state, computing diffs against desired state,

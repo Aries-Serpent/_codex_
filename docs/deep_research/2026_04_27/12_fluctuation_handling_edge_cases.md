@@ -1,5 +1,7 @@
 # Research Note 12 — Fluctuation-Handling Capability and Edge Cases
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

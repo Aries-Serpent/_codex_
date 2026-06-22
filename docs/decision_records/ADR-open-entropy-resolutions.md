@@ -1,5 +1,7 @@
 # ADR: "Open Entropy" Decisions — Local Gates, Reporting, and UX
 
+**Last Updated:** 2026-06-22
+
 ## Status
 Accepted — 2025-10-26
 

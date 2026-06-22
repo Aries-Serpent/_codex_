@@ -1,5 +1,7 @@
 # Offline Tracking Bootstrap CLI
 
+**Last Updated:** 2026-06-22
+
 Bootstrap a local-first tracking workspace:
 
 ```bash

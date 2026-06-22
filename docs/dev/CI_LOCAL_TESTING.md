@@ -1,5 +1,7 @@
 # CI/Local Testing Parity Guide
 
+**Last Updated:** 2026-06-22
+
 > **Goal:** catch CI failures *before* pushing by running the exact same checks
 > GitHub Actions runs on every PR.
 

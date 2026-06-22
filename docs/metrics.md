@@ -1,5 +1,7 @@
 # Metrics Guide
 
+**Last Updated:** 2026-06-22
+
 > Comprehensive guide to evaluation metrics in the Codex ML framework
 
 ## Overview

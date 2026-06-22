@@ -1,5 +1,7 @@
 # ChatGPT-5 Connectivity Recipes (CustomGPT Actions + Offline-first)
 
+**Last Updated:** 2026-06-22
+
 ## Branch Targeting
 > Preferred: call `/repo/most_recent_branch` and use the returned `branch` as `ref`.
 > Fallback: if unavailable, list from `/repo/branches` and approximate by recency.

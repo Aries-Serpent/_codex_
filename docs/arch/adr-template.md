@@ -1,5 +1,7 @@
 # ADR: <Title — imperative, short>
 
+**Last Updated:** 2026-06-22
+
 - **Status**: Proposed | Accepted | Superseded by ADR-XXXX | Rejected
 - **Date**: YYYY-MM-DD
 - **Decision Type**: Archive | Rescue | Deprecate

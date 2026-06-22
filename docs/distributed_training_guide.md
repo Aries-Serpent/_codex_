@@ -1,5 +1,7 @@
 # Distributed Training Guide (D3)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the multi-node distributed training support for Codex ML. The implementation provides PyTorch DistributedDataParallel (DDP) support with optional Ray Train integration for cluster-scale training.

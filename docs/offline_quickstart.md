@@ -1,5 +1,7 @@
 # Offline Quickstart & Reproducibility Guide
 
+**Last Updated:** 2026-06-22
+
 This guide shows how to run **fully offline**, emit local artifacts, and keep runs **deterministic**.
 
 ## 1) Determinism (PyTorch)

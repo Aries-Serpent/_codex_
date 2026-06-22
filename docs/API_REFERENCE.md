@@ -1,5 +1,7 @@
 # API Reference Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document provides comprehensive API reference for all Codex ML modules across Phases 1-4.

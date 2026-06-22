@@ -1,5 +1,7 @@
 # MCP Security Safeguards
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP security safeguards capability implements defensive programming patterns and security controls for Model Context Protocol services, including confirmation prompts, dry-run modes, input sanitization, and validation safeguards.

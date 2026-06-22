@@ -1,5 +1,7 @@
 # Checkpoint Integrity (Atomic Writes & Digests)
 
+**Last Updated:** 2026-06-22
+
 Codex checkpoints are persisted with **atomic write semantics** to avoid torn files:
 
 1. Data is written to a temporary file within the destination directory.

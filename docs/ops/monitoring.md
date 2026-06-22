@@ -1,5 +1,7 @@
 # Monitoring & Experiment Tracking
 
+**Last Updated:** 2026-06-22
+
 This project provides optional integration for:
 
 - **TensorBoard** (scalars, histograms): logs under `runs/<run-name>/tensorboard/`

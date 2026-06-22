@@ -1,5 +1,7 @@
 # Survey Reports (Ring/PR Ground Truth)
 
+**Last Updated:** 2026-06-22
+
 This folder captures **human-readable** surveys that embed raw, normalized output
 from Codex or other tools, without breaking Markdown rendering.
 

@@ -1,5 +1,7 @@
 # Code Style Guide
 
+**Last Updated:** 2026-06-22
+
 ## Philosophy
 - Clarity over cleverness
 - Explicit over implicit

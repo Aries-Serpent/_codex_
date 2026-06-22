@@ -1,5 +1,7 @@
 # Research Note 06 — Condensed Understanding
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Condensed synthesis note

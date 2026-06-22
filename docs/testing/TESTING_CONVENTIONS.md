@@ -1,5 +1,7 @@
 # Testing Conventions
 
+**Last Updated:** 2026-06-22
+
 This document outlines the testing conventions and best practices for the _codex_ repository. Following these conventions ensures consistency, maintainability, and prevents common configuration errors.
 
 ---

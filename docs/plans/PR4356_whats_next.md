@@ -1,5 +1,7 @@
 # PR #4356 — What's Next
 
+**Last Updated:** 2026-06-22
+
 > **PR:** [#4356 — Clarify webhook receiver URL format + autonomous privilege architecture](https://github.com/Aries-Serpent/_codex_/pull/4356)
 > **Session:** S867→S873 | **Date:** 2026-05-08 | **Branch:** `copilot/fix-webhook-receiver-url-format`
 > **Status:** ✅ CI passing (core gates) · **99/100 merge readiness** · 39/40 checks passing

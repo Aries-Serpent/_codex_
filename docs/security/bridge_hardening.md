@@ -1,5 +1,7 @@
 # Bridge Security Hardening - Phase 3.1
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The `src/bridge_manager.py` module provides a secure IPC bridge for Cognitive-Copilot communication, replacing the fragile file-based approach at `temp/bridge_codex_copilot_bridge`.

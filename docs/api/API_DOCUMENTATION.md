@@ -1,7 +1,9 @@
 # API Reference Documentation
 
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 > **Version**: 1.0.0
-> **Generated**: 2025-12-11
+> **Generated**: 2026-06-22
 > **Auto-sync**: Updates with code changes via CI
 
 ---

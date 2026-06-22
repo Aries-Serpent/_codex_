@@ -1,5 +1,7 @@
 # ADR-2025-11-03: Evidence Record Schema Versioning
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2025-11-03  
 **Status**: Accepted (Phase 2)  
 **Author**: Archive Standardization Team  

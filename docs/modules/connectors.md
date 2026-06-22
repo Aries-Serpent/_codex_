@@ -1,5 +1,7 @@
 # Connectors
 
+**Last Updated:** 2026-06-22
+
 Connectors provide async access to external data sources. The `LocalConnector` works with the local filesystem:
 
 ```python

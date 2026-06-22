@@ -1,5 +1,7 @@
 # ADR-20260304-third-d-capable-evaluation
 
+**Last Updated:** 2026-06-22
+
 ## Context
 
 **Date:** 2026-03-04

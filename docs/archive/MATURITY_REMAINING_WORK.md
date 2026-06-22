@@ -2,7 +2,7 @@
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2025-11-09  
+**Generated**: 2026-06-22  
 **Status**: Phases 1-3 Complete, Phases 4-6 Remaining  
 **Completion**: 75% (9 of 12 capabilities addressed)
 

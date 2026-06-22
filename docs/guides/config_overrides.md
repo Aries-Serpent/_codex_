@@ -1,5 +1,7 @@
 # Hydra overrides: the fast track
 
+**Last Updated:** 2026-06-22
+
 Codex uses a minimal **defaults list** so you can compose configs and tweak
 parameters straight from the command line. The root defaults live in
 `configs/base/hydra.yaml`:

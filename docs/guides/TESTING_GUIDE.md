@@ -1,5 +1,7 @@
 # Testing & Coverage Guide
 
+**Last Updated:** 2026-06-22
+
 ## Primary Test Runner: Pytest
 
 The project uses **pytest** as the primary test runner with comprehensive CI/CD integration.

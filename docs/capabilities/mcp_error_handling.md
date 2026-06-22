@@ -1,5 +1,7 @@
 # MCP Error Handling
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) error handling capability provides comprehensive error management for MCP services, including structured error classes, error codes, JSON-RPC error responses, retry mechanisms, and graceful degradation patterns.

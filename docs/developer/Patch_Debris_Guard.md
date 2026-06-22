@@ -1,5 +1,7 @@
 # Patch Debris Guard
 
+**Last Updated:** 2026-06-22
+
 The `patch_debris` nox session scans the working tree for stray diff markers such as `*** Begin Patch` or `diff --git`. Use it before committing patches assembled manually.
 
 ## Usage

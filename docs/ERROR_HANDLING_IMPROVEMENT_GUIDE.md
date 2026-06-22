@@ -1,5 +1,7 @@
 # Error Handling Improvement Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document provides guidelines for improving error handling patterns across the codebase, addressing security scanning alerts related to silent exception handling.

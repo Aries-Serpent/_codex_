@@ -1,0 +1,242 @@
+name: Link Health Monitoring
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/**/*.md'
+      - '.github/scripts/validate*.py'
+      - '.github/workflows/link-health-monitoring.yml'
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  link-health-check:
+    name: Check Link Health
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Run link validation
+        id: link_validation
+        run: |
+          echo "📋 Starting link validation..."
+          python .github/scripts/validate-links.py \
+            --fail-on-errors \
+            --report-file link-validation-report.json || true
+          
+          # Extract metrics
+          LINK_REPORT=$(cat link-validation-report.json)
+          echo "link_report=$LINK_REPORT" >> $GITHUB_OUTPUT
+
+      - name: Run anchor validation
+        id: anchor_validation
+        run: |
+          echo "⚓ Starting anchor validation..."
+          chmod +x .github/scripts/validate_doc_anchors.py
+          python .github/scripts/validate_doc_anchors.py \
+            --directory docs \
+            --report-file anchor-validation-report.json || true
+          
+          # Extract metrics
+          ANCHOR_REPORT=$(cat anchor-validation-report.json)
+          echo "anchor_report=$ANCHOR_REPORT" >> $GITHUB_OUTPUT
+
+      - name: Collect metrics
+        id: metrics
+        run: |
+          echo "📊 Collecting link health metrics..."
+          chmod +x .github/scripts/collect_link_health_metrics.py
+          python .github/scripts/collect_link_health_metrics.py \
+            --save \
+            --metrics-file .codex/link-health-metrics.json
+
+      - name: Generate summary report
+        id: summary
+        run: |
+          python << 'EOF'
+          import json
+          from pathlib import Path
+          
+          # Load reports
+          link_report = json.loads(Path('link-validation-report.json').read_text())
+          anchor_report = json.loads(Path('anchor-validation-report.json').read_text())
+          metrics = json.loads(Path('.codex/link-health-metrics.json').read_text())
+          
+          # Generate summary
+          current = metrics['current']
+          link_health = current['link_health']
+          anchor_health = current['anchor_health']
+          overall = current['overall_score']
+          
+          summary = f"""
+# 📊 Link Health Report
+
+**Timestamp:** {current['timestamp']}
+**Overall Score:** {overall:.1f}/100 {'✅' if overall == 100 else '⚠️' if overall >= 95 else '🔴'}
+
+## 🔗 Link Validation
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Total Links** | {link_health['total_links']} | ✅ |
+| **Valid Links** | {link_health['valid_links']} | ✅ |
+| **Broken Links** | {link_health['broken_links']} | {'✅' if link_health['broken_links'] == 0 else '🔴'} |
+| **Health %** | {link_health['health_percentage']:.1f}% | {'✅' if link_health['health_percentage'] == 100 else '⚠️'} |
+
+## ⚓ Anchor Validation
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Files Scanned** | {anchor_health['files_scanned']} | ✅ |
+| **Cross-References** | {anchor_health['cross_references']} | ✅ |
+| **Valid Anchors** | {anchor_health['valid_anchors']} | ✅ |
+| **Anchor Errors** | {anchor_health['anchor_errors']} | {'✅' if anchor_health['anchor_errors'] == 0 else '🔴'} |
+| **Health %** | {anchor_health['health_percentage']:.1f}% | {'✅' if anchor_health['health_percentage'] == 100 else '⚠️'} |
+
+## 📈 Trend
+
+Trend: {metrics['trend']['trend']}  
+Change: {metrics['trend']['change']:+.2f} points
+
+---
+
+For detailed results, see the generated reports.
+"""
+          
+          print(summary)
+          Path('LINK_HEALTH_SUMMARY.md').write_text(summary)
+          EOF
+
+      - name: Create Check Run
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const link_report = JSON.parse(fs.readFileSync('link-validation-report.json', 'utf8'));
+            const anchor_report = JSON.parse(fs.readFileSync('anchor-validation-report.json', 'utf8'));
+            
+            const link_status = link_report.errors_count === 0 ? 'completed' : 'completed';
+            const anchor_status = anchor_report.summary.error_count === 0 ? 'completed' : 'completed';
+            
+            const summary = `
+            ## Link Health Check Results
+            
+            ### Link Validation
+            - Total links: ${link_report.checked}
+            - Broken links: ${link_report.errors_count}
+            - Status: ${link_report.errors_count === 0 ? '✅ PASS' : '❌ FAIL'}
+            
+            ### Anchor Validation
+            - Files scanned: ${anchor_report.statistics.files_scanned}
+            - Cross-references: ${anchor_report.statistics.cross_references_found}
+            - Errors: ${anchor_report.statistics.errors}
+            - Status: ${anchor_report.statistics.errors === 0 ? '✅ PASS' : '⚠️ CHECK'}
+            `.trim();
+            
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Link Health',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: (link_report.errors_count === 0 && anchor_report.statistics.errors < 10) ? 'success' : 'neutral',
+              output: {
+                title: 'Link Health Check',
+                summary: summary
+              }
+            });
+
+      - name: Upload reports as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-health-reports
+          path: |
+            link-validation-report.json
+            anchor-validation-report.json
+            LINK_HEALTH_SUMMARY.md
+          retention-days: 30
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'push' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const summary = fs.readFileSync('LINK_HEALTH_SUMMARY.md', 'utf8');
+              console.log('Link Health Report:');
+              console.log(summary);
+            } catch (e) {
+              console.log('No summary available');
+            }
+
+  notification:
+    name: Send Notification
+    runs-on: ubuntu-latest
+    needs: link-health-check
+    if: always()
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: link-health-reports
+          path: reports
+
+      - name: Process results
+        id: process
+        run: |
+          python << 'EOF'
+          import json
+          from pathlib import Path
+          
+          try:
+            link_report = json.loads(Path('reports/link-validation-report.json').read_text())
+            anchor_report = json.loads(Path('reports/anchor-validation-report.json').read_text())
+            
+            broken_links = link_report.get('errors_count', 0)
+            anchor_errors = anchor_report.get('statistics', {}).get('errors', 0)
+            
+            # Alert if issues found
+            if broken_links > 0:
+              print(f"🔴 ALERT: {broken_links} broken links detected!")
+            if anchor_errors > 0:
+              print(f"⚠️ ALERT: {anchor_errors} anchor mismatches detected!")
+            
+            if broken_links == 0 and anchor_errors == 0:
+              print("✅ All link health checks PASSED!")
+          except Exception as e:
+            print(f"Error processing results: {e}")
+          EOF
+
+      - name: Create issue if needed
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔴 Link Health Check Failed',
+              body: 'Automated link health check detected issues. See CI artifacts for details.',
+              labels: ['documentation', 'automated']
+            });

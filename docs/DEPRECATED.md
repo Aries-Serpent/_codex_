@@ -1,5 +1,7 @@
 # Document Status
 
+**Last Updated:** 2026-06-22
+
 This document has been moved or deprecated as part of repository reorganization.
 
 Please refer to:

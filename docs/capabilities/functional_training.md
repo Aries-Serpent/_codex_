@@ -1,5 +1,7 @@
 # Functional Training
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The functional training capability provides modular, composable training functions and utilities for building ML training pipelines with clean separation of concerns, enabling testable and maintainable training code.

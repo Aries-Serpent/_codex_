@@ -1,5 +1,7 @@
 # TLS and Mutual TLS Configuration
 
+**Last Updated:** 2026-06-22
+
 This guide outlines common deployment patterns for securing Codex ML APIs with TLS and mutual TLS (mTLS).
 
 ## Self-signed certificates (development)

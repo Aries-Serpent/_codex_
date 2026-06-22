@@ -1,5 +1,7 @@
 # Extension registries
 
+**Last Updated:** 2026-06-22
+
 Codex ML exposes pluggable extension points for the critical components of the
 training stack.  The registries live under :mod:`codex_ml.registry` and provide
 a unified interface for both in-process registration and third-party discovery

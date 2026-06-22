@@ -1,5 +1,7 @@
 # Enhancements Guide: Advanced Features
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0
 **Date:** Dec 6, 2025
 **Status:** Production Ready

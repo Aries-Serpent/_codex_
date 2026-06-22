@@ -1,5 +1,7 @@
 # METHOD D SESSION MONITORING GUIDE — Real-Time Execution Verification
 
+**Last Updated:** 2026-06-22
+
 **Use this guide to monitor a live Copilot session executing the Method D patch.**
 
 **Purpose:** Watch for the exact log markers that prove Method D is working correctly in real-time.

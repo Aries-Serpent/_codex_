@@ -1,5 +1,7 @@
 # Code Review Patterns and Best Practices (PR #2750)
 
+**Last Updated:** 2026-06-22
+
 This document captures reusable patterns discovered during the code review and self-healing process for PR #2750.
 
 ## Security Patterns

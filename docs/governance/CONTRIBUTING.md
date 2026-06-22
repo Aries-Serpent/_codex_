@@ -1,5 +1,7 @@
 # Contributing
 
+**Last Updated:** 2026-06-22
+
 Thank you for improving `codex-universal`.
 
 ## Getting Started

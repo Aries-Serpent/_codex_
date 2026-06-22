@@ -1,5 +1,7 @@
 # Integrity & URIs
 
+**Last Updated:** 2026-06-22
+
 ## File URIs
 We normalize **file URIs** to the RFC-8089 triple-slash form: `file:///abs/path`.
 Helper: `codex_ml.tracking.guards._as_mlflow_file_uri`.

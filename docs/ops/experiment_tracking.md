@@ -1,5 +1,7 @@
 # Local Experiment Tracking (Offline)
 
+**Last Updated:** 2026-06-22
+
 Use the CLI to initialise a local tracking root:
 
 ```bash

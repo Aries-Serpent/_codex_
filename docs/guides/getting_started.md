@@ -1,5 +1,7 @@
 # Getting Started with Codex ML
 
+**Last Updated:** 2026-06-22
+
 Welcome to Codex ML! This guide will help you get started with the autonomous machine learning system.
 
 ## Table of Contents

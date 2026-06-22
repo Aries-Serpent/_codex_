@@ -1,5 +1,7 @@
 # Copilot Setup Steps Validation Guide
 
+**Last Updated:** 2026-06-22
+
 Complete documentation for the pre-merge testing infrastructure for `.github/workflows/copilot-setup-steps.yml`.
 
 ## Table of Contents

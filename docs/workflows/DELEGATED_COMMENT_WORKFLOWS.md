@@ -1,5 +1,7 @@
 # Delegated-Comment Workflows — Reference, Diagrams & Audit
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
 > **Scope:** Every GitHub Actions workflow that posts PR/issue comments on behalf of the maintainer or an autonomous agent.  
 > **Run-link attribution:** All comments now end with `_[🔗 Workflow run](URL)_` so every automated post can be traced to its exact run.

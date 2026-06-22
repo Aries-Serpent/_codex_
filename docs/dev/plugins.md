@@ -1,5 +1,7 @@
 # Plugin Architecture
 
+**Last Updated:** 2026-06-22
+
 Codex exposes first-class registries for tokenizers, models, data loaders,
 metrics and trainers.  Registries are case-insensitive and discover third-party
 components via Python entry points.

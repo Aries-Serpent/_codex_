@@ -1,5 +1,7 @@
 # Inference Serving Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Codex ML Inference Server provides a production-ready inference serving layer with built-in safeguards, rate limiting, and support for multiple model backends.

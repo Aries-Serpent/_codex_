@@ -1,5 +1,7 @@
 # Tools and Utilities
 
+**Last Updated:** 2026-06-22
+
 The project bundles a few command line helpers for working with conversation
 logs and development workflows.
 

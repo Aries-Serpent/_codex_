@@ -1,5 +1,7 @@
 # Artifact reference
 
+**Last Updated:** 2026-06-22
+
 - **Dataset cache**: `artifacts/cache/<dataset>/splits-<hash>.json` created by
   `codex_ml.codex_data.load_dataset`.
 - **Experiment runs**: `artifacts/experiments/<run_id>/` containing
