@@ -803,7 +803,7 @@ transformers==5.12.1
     #   codex-ml (pyproject.toml)
     #   peft
     #   sentence-transformers
-triton==3.6.0
+triton==3.7.1
     # via torch
 typer==0.20.1
     # via
