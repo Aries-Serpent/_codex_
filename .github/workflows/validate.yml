@@ -84,8 +84,8 @@ jobs:
             BASE_SHA="$(git rev-parse HEAD~1 2>/dev/null || true)"
           fi
           CHANGED_YAML="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}" -- \
-            '.github/workflows/*.yml' '.github/workflows/*.yaml' \
-            '.github/misc/*.yml' '.github/misc/*.yaml' || true)"
+            ':(glob).github/workflows/*.yml' ':(glob).github/workflows/*.yaml' \
+            ':(glob).github/misc/*.yml' ':(glob).github/misc/*.yaml' || true)"
           if [ -z "${CHANGED_YAML}" ]; then
             echo "No changed workflow YAML files to lint."
             exit 0

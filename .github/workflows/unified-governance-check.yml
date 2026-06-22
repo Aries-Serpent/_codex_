@@ -62,6 +62,9 @@ jobs:
 
               print(f"status={status}")
               print(f"score={score}")
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write(f"status={status}\n")
+                  output.write(f"score={score}\n")
 
               # Create summary
               summary = f"## Compliance Report\n\n"
@@ -78,11 +81,14 @@ jobs:
                   for step in report['next_steps']:
                       summary += f"- {step}\n"
 
-              with open(f"{os.environ['GITHUB_STEP_SUMMARY']}", 'a') as f:
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
                   f.write(summary)
 
           except Exception as e:
-              print(f"Error parsing report: {e}", file=sys.stderr)
+              print(
+                  f"Error parsing compliance report from .codex/compliance/report.json: {e}",
+                  file=sys.stderr,
+              )
               sys.exit(1)
         shell: python
         env:
