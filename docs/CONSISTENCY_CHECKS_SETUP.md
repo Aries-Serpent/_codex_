@@ -138,13 +138,13 @@ The workflow runs automatically on:
 - Pull requests to `main` or `0D_base_` branches
 - Changes to documentation files
 
-**Workflow file:** `../.github/workflows/consistency-checks.yml`
+**Workflow file:** `.github/workflows/consistency-checks.yml`
 
 ## Configuration
 
 ### Markdownlint Rules
 
-Configuration file: `../.markdownlintrc`
+Configuration file: `.markdownlintrc`
 
 Key rules enforced:
 - **MD003**: Consistent heading style (atx: `#`, not underlines)

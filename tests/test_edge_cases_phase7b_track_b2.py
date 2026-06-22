@@ -314,12 +314,10 @@ class TestCollectionBoundaries:
                     _ = col[0]
             else:
                 # Valid index - indexing should succeed and return an item (which may be None)
-                item = col[0]
-                # Just verify that indexing succeeded (the assignment is the real test)
-                
+                _ = col[0]
+
                 # Negative indexing
-                last = col[-1]
-                # Just verify that indexing succeeded (the assignment is the real test)
+                _ = col[-1]
 
     def test_empty_collection_operations(self):
         """Test operations on empty collections"""
