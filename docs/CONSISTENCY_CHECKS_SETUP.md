@@ -54,7 +54,7 @@ chmod +x .git/hooks/pre-commit
 
 ## Usage
 
-**Note**: All commands in this section should be run from the **repository root** directory unless otherwise specified.
+**Note**: All executable commands in the **Usage** section below should be run from the **repository root** directory unless otherwise specified.
 
 ### Local Validation
 
@@ -321,7 +321,7 @@ For merging PRs:
 1. **Run locally first:**
    ```bash
    markdownlint --fix docs/**/*.md
-   python3 ../.github/scripts/check-cross-references.py
+   python3 .github/scripts/check-cross-references.py
    ```
 
 2. **Review changes:**
