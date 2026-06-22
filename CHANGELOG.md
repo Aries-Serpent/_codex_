@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5051)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5051 (SHA `c204b2dd`) at 2026-06-22T09:20Z [auto-generated]
+
 ### Fixed (PR #5037 review thread follow-up)
 - Corrected remaining review-thread inconsistencies in PR #5037 campaign artifacts/tests, including Phase 1A coverage wording, campaign/checkpoint metadata, workflow audit wording, and the targeted CLI/ingest test scaffolding called out in review.
 - Verified and normalized the touched PR #5037 campaign artifacts so their discussion #4872 references now describe targets/projections accurately within the reviewed scope.
