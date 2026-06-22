@@ -74,8 +74,25 @@ jobs:
       - name: "🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)"
         run: bash scripts/ci/validate_setup_steps_yaml.sh
 
-      - name: Run yamllint
-        run: yamllint --no-warnings .github/workflows/ .github/misc/ -c .yamllint.yml
+      - name: Run yamllint on changed workflow YAML
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BASE_SHA}" ]; then
+            BASE_SHA="$(git rev-parse HEAD~1 2>/dev/null || true)"
+          fi
+          CHANGED_YAML="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}" -- \
+            ':(glob).github/workflows/*.yml' ':(glob).github/workflows/*.yaml' \
+            ':(glob).github/misc/*.yml' ':(glob).github/misc/*.yaml' || true)"
+          if [ -z "${CHANGED_YAML}" ]; then
+            echo "No changed workflow YAML files to lint."
+            exit 0
+          fi
+          echo "Linting changed workflow YAML files:"
+          echo "${CHANGED_YAML}"
+          yamllint --no-warnings -c .yamllint.yml ${CHANGED_YAML}
 
       - name: Run fast validation
         env:

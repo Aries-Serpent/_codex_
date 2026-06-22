@@ -87,6 +87,11 @@ nav:
   - Agents: agents.md
 - Agent Prompts:
   - Post-Merge Doc Alignment: agents/POST_MERGE_ALIGNMENT_PROMPT.md
+- 🚀 Phase 9 Execution:
+  - Coordination Dashboard: phase-9/PHASE_9_COORDINATION_DASHBOARD.md
+  - Daily Standup Template: phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE.md
+  - Post-Merge Action Plan: phase-9/POST_MERGE_ACTION_PLAN.md
+  - Phase 8-12 Master Plan: phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN.md
 - CI/CD Workflows:
   - Workflow Index: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md
   - Consolidation Guide: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md

@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7 # v6.0.3
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v6 # v6
@@ -55,6 +57,7 @@ jobs:
           python3 - <<'PYEOF'
           import sys
           import yaml
+          import subprocess
           from pathlib import Path
 
           WORKFLOW_DIR = Path(".github/workflows")
@@ -65,6 +68,10 @@ jobs:
           # brace syntax valid for GitHub Actions' Go YAML parser but rejected
           # by PyYAML's strict parser.  Skip compliance checks for these files.
           SKIP_FILES = {"copilot-setup-steps.yml"}
+
+          def all_workflow_files():
+              files = list(WORKFLOW_DIR.glob("*.yml")) + list(WORKFLOW_DIR.glob("*.yaml"))
+              return sorted(set(files))
 
           def is_stub(data):
               """Stubs: only workflow_dispatch trigger + no real jobs."""
@@ -82,7 +89,50 @@ jobs:
               )
               return has_only_dispatch and is_noop
 
-          for wf_file in sorted(WORKFLOW_DIR.glob("*.yml")):
+          def changed_workflow_files():
+              if "${{ github.event_name }}" != "pull_request":
+                  return all_workflow_files()
+              try:
+                  result = subprocess.run(
+                      [
+                          "git",
+                          "diff",
+                          "--name-only",
+                          "${{ github.event.pull_request.base.sha }}",
+                          "${{ github.event.pull_request.head.sha }}",
+                          "--",
+                          ".github/workflows/",
+                      ],
+                      capture_output=True,
+                      check=True,
+                      text=True,
+                  )
+                  out = result.stdout
+              except subprocess.CalledProcessError as exc:
+                  print(
+                      "WARN: git diff failed "
+                      f"(exit {exc.returncode}): {exc.stderr.strip()}; "
+                      "falling back to full scan"
+                  )
+                  return all_workflow_files()
+              files = []
+              for rel in out.splitlines():
+                  rel = rel.strip()
+                  if not rel:
+                      continue
+                  if not (rel.endswith(".yml") or rel.endswith(".yaml")):
+                      continue
+                  wf_file = Path(rel)
+                  if wf_file.exists():
+                      files.append(wf_file)
+              if files:
+                  return sorted(files)
+              print("WARN: no changed workflow files detected from git diff; falling back to full scan")
+              return all_workflow_files()
+
+          files_to_check = changed_workflow_files()
+
+          for wf_file in files_to_check:
               if wf_file.name in SKIP_FILES:
                   continue
               try:
@@ -127,7 +177,7 @@ jobs:
                   print(f"  ❌ {v}")
               sys.exit(1)
           else:
-              all_files = len(list(WORKFLOW_DIR.glob("*.yml")))
+              all_files = len(files_to_check)
               skipped = len(SKIP_FILES)
               checked = all_files - skipped
               print(

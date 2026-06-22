@@ -213,7 +213,7 @@ class TestRecoveryPaths:
         try:
             state["value"] = 0
             raise Exception("Restore state")
-        except Exception:
+        except Exception as _err:
             state = original_state.copy()
 
         assert state == original_state
