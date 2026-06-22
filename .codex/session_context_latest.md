@@ -1,35 +1,32 @@
-# Session Context — 2026-06-22T23:01:36Z
+# Session Context — 2026-06-22T23:07:43Z
 **Branch:** `copilot/fix-github-actions-jobs`  **PR:** #5060  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4533` (✅)
-- GraphQL remaining: `4987` (✅)
+- REST remaining: `4997` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5060 — Harden auto-fix patterns with edge case validation and GitHub Actions version standardization
+## 📋 PR #5060 — Fix PR #5060 CI failures: secrets false positive mitigation and governance compliance requirements
 State: `open`  Draft: `False`  Branch: `copilot/fix-github-actions-jobs` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `Governance Compliance` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
-- **Workflow Execution Gate** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
-- **Validation Pipeline** — `failure` on `copilot/fix-github-actions-jobs` (2026-06-22)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-22)
 
 ## 📝 Recent Commits
+- `f6266314` fix: add pragma allowlist to secret-management.md example (line 737 false positi — copilot-swe-agent[bot] (2026-06-22)
+- `9e3d833f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-22)
+- `9abde58d` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-22)
+- `8cb90135` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-22)
+- `1ad801ac` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-22)
+- `69ec0c0a` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-22)
 - `f0bca15d` Initial analysis of PR #5060 review comments — copilot-swe-agent[bot] (2026-06-22)
 - `7f66286d` Fix documentation validation issues in ce1a21a — copilot-swe-agent[bot] (2026-06-22)
-- `ce1a21aa` Fix all 10 review comments in PR #5060 — copilot-swe-agent[bot] (2026-06-22)
-- `b3bec094` WIP: Parallel agent delegation in progress — awaiting auto-fix, review, test, an — copilot-swe-agent[bot] (2026-06-22)
-- `d21fa789` Apply auto-fix corrections for patterns 6, 21, 25 — copilot-swe-agent[bot] (2026-06-22)
-- `3c004572` WIP: Planning comprehensive auto-fix hardening and parallel agent delegation — copilot-swe-agent[bot] (2026-06-22)
-- `e4180f46` fix: simplify relative paths in Architecture.md by removing unnecessary ./ prefi — copilot-swe-agent[bot] (2026-06-22)
-- `b73a4059` fix: clarify execution context scope and remove redundant inline comments (DRY) — copilot-swe-agent[bot] (2026-06-22)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
