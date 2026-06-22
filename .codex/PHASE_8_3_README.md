@@ -9,7 +9,7 @@
 ## Overview
 
 Phase 8.3 establishes production performance baselines for Codex v0.1.0-final and enables continuous performance monitoring with automated regression detection and SLA enforcement.
-
+ # pragma: allowlist secret
 ## Core Deliverables
 
 ### 1. Documentation Files
