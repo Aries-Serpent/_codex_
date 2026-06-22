@@ -691,7 +691,7 @@ rich==15.0.0
     #   litestar
     #   rich-click
     #   typer
-rich-click==1.9.7
+rich-click==1.9.8
     # via litestar
 rpds-py==0.30.0
     # via
