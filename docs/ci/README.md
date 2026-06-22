@@ -26,7 +26,7 @@ This directory contains comprehensive documentation for the Continuous Integrati
 
 ## Quick Links
 
-- [Deployment Guides](../deployment/production_deployment.md)
+- [Deployment Guides](../guides/production_deployment.md)
 - [Security Scanning Configuration](../security/)
 - [Testing Documentation](../testing/)
 
