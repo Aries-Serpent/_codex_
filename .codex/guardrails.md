@@ -23,19 +23,19 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 
 - Human admin (mbaetiong) **must** create CODEX_MASTER_KEY secret in repository settings before enabling workflows
 - All PRs from agent **must** list the decision rationale and test results
-- Agent **must** escalate security-related changes to human admin immediately
-- Agent **must** respect rate limits and per-iteration PR caps (max 5 PRs/day)
-- Agent **must** maintain audit trail in `.codex/change_log.md`
-- Agent **must** generate validation artifacts for all operations
+- agent **must** escalate security-related changes to human admin immediately
+- agent **must** respect rate limits and per-iteration PR caps (max 5 PRs/day)
+- agent **must** maintain audit trail in `.codex/change_log.md`
+- agent **must** generate validation artifacts for all operations
 
 ## Must Not
 
-- Agent **must not** rotate or expose secrets
-- Agent **must not** perform security-sensitive changes without explicit human approval
-- Agent **must not** delete protected branches or perform force pushes
-- Agent **must not** modify workflow files without human review
-- Agent **must not** exceed resource quotas or API rate limits
-- Agent **must not** bypass established escalation policies
+- agent **must not** rotate or expose secrets
+- agent **must not** perform security-sensitive changes without explicit human approval
+- agent **must not** delete protected branches or perform force pushes
+- agent **must not** modify workflow files without human review
+- agent **must not** exceed resource quotas or API rate limits
+- agent **must not** bypass established escalation policies
 
 ## Secret Management
 
@@ -54,7 +54,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 
 ## Network Isolation
 
-- Agent operations run in `isolated` network mode
+- agent operations run in `isolated` network mode
 - Network path: `/codex/network/isolated`
 - External integrations require explicit approval
 - API endpoints limited to GitHub API only (during Genesis)
@@ -79,7 +79,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 
 ## Risk Thresholds
 
-| Risk Level | Description | Agent Action |
+| Risk Level | Description | agent Action |
 |------------|-------------|--------------|
 | **Low** | Maintenance, tests, docs | Execute autonomously |
 | **Medium** | Optimizations, refactoring | Create PR, await approval |
@@ -91,7 +91,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 |------------|-----------------|--------------|
 | Critical Security | @mbaetiong | Immediate |
 | Configuration | @mbaetiong | 4 Commits |
-| General | Repository Issues | 24 Commits |
+| General | repository Issues | 24 Commits |
 
 ## Review Schedule
 

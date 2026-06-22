@@ -19,7 +19,7 @@
 
 ## Architecture Overview
 
-**Type**: Modular ML/AI Platform with Agent Orchestration
+**Type**: Modular ML/AI Platform with agent Orchestration
 **MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
 **Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **145 active agents** (post Phase-5 consolidation; registry total 159 — 14 archived), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
 
@@ -60,7 +60,7 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 
 **Flow**: Source → Ingest → Analyze → Transform → Verify → PR
 
-### 2. Agent System (`agents/`)
+### 2. agent System (`agents/`)
 **Purpose**: Autonomous AI agents with physics-inspired optimization
 
 **Key Agents**:
@@ -130,15 +130,15 @@ External Source → Ingest → Static Analysis → Runtime Analysis →
 LLM Intent Inference → Transformation → Verification → PR Creation
 ```
 
-### Agent Workflow
+### agent workflow
 ```
-Request → WorkflowNavigator → Agent Orchestration →
+Request → WorkflowNavigator → agent Orchestration →
 Task Execution → Verification → State Persistence
 ```
 
 ### MCP Packaging
 ```
-Human Request → Component Selection → File Flattening →
+Human Request → component Selection → File Flattening →
 Manifest Generation → ZIP Creation → ChatGPT Upload
 ```
 
@@ -169,7 +169,7 @@ Test Execution → Cache Management → Artifact Generation
 
 ### Key Workflows (`.github/workflows/`)
 
-| Workflow | Trigger | Purpose | Cache |
+| workflow | Trigger | Purpose | Cache |
 |----------|---------|---------|-------|
 | `status_validation.yml` | push, PR | Repo status | - |
 | `security_gates.yml` | push, PR | Security | - |
@@ -211,7 +211,7 @@ graph TB
         RB[_CODEX_BOT_RUNNER]
     end
     subgraph "Repo Variables (76)"
-        RV1[Agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
+        RV1[agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
         RV2[Copilot: COPILOT_AGENT_*, COPILOT_WEC_*]
         RV3[Cognitive Brain: COGNITIVE_BRAIN_*]
         RV4[CI/CD: CODEX_CI_*, CODEX_COVERAGE_THRESHOLD]
@@ -245,11 +245,11 @@ GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
 | Variable | Controls | Used By |
 |----------|---------|---------|
 | `AGENT_KILL_SWITCH` | Emergency halt all agents | All agent runners |
-| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | Agent autonomy ceiling (D=max) | Copilot coding agents |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | agent autonomy ceiling (D=max) | Copilot coding agents |
 | `CODEX_CI_FAILURE_RATE` | Live CI health signal | `ci-health-alert-agent`, WEC |
 | `CODEX_COVERAGE_THRESHOLD` | Coverage gate (80%) | `nox_gates.yml`, `coverage-with-timeout.yml` |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | Session context injection | `cognitive-brain-session-injector` |
-| `COPILOT_WEC_SELECTION_MATRIX` | Workflow trigger routing | `workflow-execution-gate.yml` |
+| `COPILOT_WEC_SELECTION_MATRIX` | workflow trigger routing | `workflow-execution-gate.yml` |
 | `CODEX_MASTER_KEY` | All write operations | All agents, `token_rule` |
 
 ### Secrets (GitHub UI injected)
@@ -269,11 +269,11 @@ GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
 **Exception**: `CODEX_BRIDGE_DIR=/tmp/codex_secure_bridge` is a runtime tmpfs mount (not tracked)
 **Doc**: `docs/system/ANTI_TMP_PROTECTION_SYSTEM.md`
 
-### Agent Variable Expectations
+### agent Variable Expectations
 
 Per-agent MUST/SHOULD variable requirements are documented in [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md). Key categories:
 
-| Agent Category | Key Variables |
+| agent Category | Key Variables |
 |----------------|--------------|
 | CI/CD agents | `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES`, `CODEX_COVERAGE_THRESHOLD` |
 | Self-healing agents | `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `AUTONOMOUS_ACTIONS_ENABLED` |
@@ -297,11 +297,11 @@ All agents universally MUST check `AGENT_KILL_SWITCH` at startup.
 
 ### Methodology Transfer (8 Capabilities)
 1. Python script development/deconstruction
-2. Workflow navigation & state management
+2. workflow navigation & state management
 3. Quantum game theory application
 4. API integration patterns
 5. CI/CD workflow optimization
-6. Agent-based architecture
+6. agent-based architecture
 7. TDD methodology
 8. Documentation generation
 
@@ -352,7 +352,7 @@ pytest tests/ --cov=src/
 # Quality
 nox -s lint|type|format
 
-# Agent
+# agent
 python -m scripts.space_traversal.audit_runner agent-interface
 ```
 
@@ -362,7 +362,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 |--------|-------|------|
 | Codex CLI | `python -m codex.cli` | Module |
 | MCP Package | `./scripts/mcp/mcp-package` | Script |
-| Agent Navigator | `agents.workflow_navigator` | Class |
+| agent Navigator | `agents.workflow_navigator` | Class |
 | Tests | `pytest` / `make docker-test` | Command |
 
 ---
@@ -402,7 +402,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-**Owner**: DevOps + Agent Development Team
+**Owner**: DevOps + agent Development Team
 **Review**: Monthly or after major changes
 **Last Reviewed**: 2026-01-23T08:42:00Z
 
@@ -411,7 +411,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 ## ⚖️ Verification Checklist
 
 ### Architecture Accuracy
-- [x] Component structure matches current repository layout
+- [x] component structure matches current repository layout
 - [x] Data flows reflect actual implementation
 - [x] Dependencies list is up-to-date
 - [x] Integration points correctly documented

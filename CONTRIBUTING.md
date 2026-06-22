@@ -11,7 +11,7 @@ Thank you for improving `_codex_`. This document highlights the workflow for usi
 - **[Code Style Guide](docs/dev/CODE_STYLE_GUIDE.md)** - Coding standards
 
 **For AI Agents**:
-- **[Agent Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)** - Session handoff
+- **[agent Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)** - Session handoff
 - **[Cognitive Brain](docs/system/)** - Context & navigation
 - **[Roadmap](docs/ROADMAP.md)** - Current and planned work
 
@@ -49,6 +49,90 @@ pre-commit run --all-files
 3. Commit again: `git commit`
 
 **Bypassing hooks** (only in emergencies): `git commit --no-verify`
+
+## Terminology Standards
+
+Consistent terminology across documentation and code reduces ambiguity and improves clarity. This repository enforces standardized terminology for key terms.
+
+### Standard Terms
+
+**Use these forms consistently in all documentation:**
+
+| Term | Recommended Form | When to Capitalize | Examples |
+|------|-----------------|-------------------|----------|
+| **agent** | lowercase `agent` | Only in titles/sentence starts | ✅ "The agent executed..." ✅ "CI Testing agent" ❌ "The agent executed..." |
+| **workflow** | lowercase `workflow` | Only in titles/sentence starts | ✅ "The workflow runs tests..." ✅ "Workflow Compliance Gate" ❌ "The workflow runs..." |
+| **pull request** / **PR** | `PR` (acronym) in most contexts | N/A | ✅ "This PR must pass checks" ✅ "in the pull request..." ❌ "pull request" in text |
+| **repository** | lowercase `repository` | Only in titles/sentence starts | ✅ "The repository contains..." ✅ "Repository Policy" ❌ "The repository contains..." |
+| **component** | lowercase `component` | Only in titles/sentence starts | ✅ "The component manages..." ✅ "Cache component" ❌ "The component manages..." |
+| **task** | lowercase `task` | Only in titles/sentence starts | ✅ "Each task has a status..." ✅ "High-Priority task" ❌ "Each task has..." |
+
+### Usage Rules
+
+**Capitalization:**
+- ✅ Use lowercase for general mentions mid-sentence
+- ✅ Capitalize only at sentence starts or in formal titles
+- ❌ Avoid capitalizing mid-sentence for consistency
+
+**Singular/Plural:**
+- Use naturally: `agent` / `agents`, `workflow` / `workflows`
+- Be consistent within the same section
+
+**Hyphenation:**
+- Use `pull request` or `PR`, never `pull request` in prose
+- Use `pull request` only in technical identifiers (URLs, JSON keys)
+- Use `agent-name` in hyphenated identifiers, `agent name` in prose
+
+**Context-Specific Guidance:**
+- **Code Comments:** Use lowercase and snake_case for identifiers
+- **Docstrings:** Use lowercase, capitalize as normal for sentences
+- **Markdown Headers:** Use Title Case (capitalize major words)
+- **URLs/Identifiers:** Use kebab-case (e.g., `workflow-compliance-gate.yml`)
+
+### Examples
+
+**❌ Incorrect Terminology Usage:**
+```markdown
+# Incorrect Examples
+
+The agent scans the repository and creates a workflow that runs Tests.
+Each workflow has many Tasks that execute in the PR.
+This component manages the Cache, and it uses another component for validation.
+Pull-requests require approval from the repository Manager.
+```
+
+**✅ Correct Terminology Usage:**
+```markdown
+# Correct Examples
+
+The agent scans the repository and creates a workflow that runs tests.
+Each workflow has many tasks that execute in the PR.
+This component manages the cache, and it uses another component for validation.
+Pull requests require approval from the repository manager.
+
+# Formal Titles (Capitalized)
+
+- Agent Accountability Report
+- Repository Policy Guidelines
+- Workflow Compliance Gate
+- Component Architecture Overview
+```
+
+### Automated Enforcement
+
+Terminology consistency is validated by:
+- **Markdownlint Rules:** Patterns checked against `.markdownlintrc`
+- **Pre-commit Hooks:** Terminology checker runs on `.md` files
+- **CI/CD workflow:** `unified-governance-check` validates terminology
+- **terminology-consistency-agent:** Autonomous enforcement and reporting
+
+### Complete Terminology Guide
+
+For comprehensive guidance on all standardized terms, usage rules, context-specific instructions, and migration information, see:
+
+**[.codex/TERMINOLOGY_GLOSSARY.md](.codex/TERMINOLOGY_GLOSSARY.md)**
+
+---
 
 ### Test File Naming Conventions
 
@@ -254,7 +338,7 @@ pre-commit run check-meta-tensors --all-files
 
 ### Resources
 
-- **Agent Documentation**: [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)
+- **agent Documentation**: [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)
 - **Utility Registry**: [.codex/AI_AGENT_UTILITIES_REGISTRY.md](.codex/AI_AGENT_UTILITIES_REGISTRY.md) - See `safe_model_load_v2()`
 - **Fix Summary**: [RAG_META_TENSOR_FIX_SUMMARY.md](.codex/RAG_META_TENSOR_FIX_SUMMARY.md) - Historical context
 
@@ -283,7 +367,7 @@ We maintain reusable templates under `docs/templates/` to streamline migrations,
 | Increasing CLI robustness and coverage | [Migration – CLI Hardening](docs/templates/Migration_CLIHardening.md) | Developer | Maintainer |
 | Capturing intent, risks, and validation before implementation | [Planning – Intent Validation](docs/templates/Planning_IntentValidation.md) | Developer | Maintainer |
 
-### Workflow
+### workflow
 
 1. **Developer drafts** the relevant template, replacing each `[PLACEHOLDER: ...]` marker with project context.
 2. **Maintainer reviews** the draft, confirms validation gates, and approves the plan.

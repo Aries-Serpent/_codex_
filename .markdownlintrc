@@ -1,0 +1,183 @@
+{
+  "default": true,
+  "extends": ["markdownlint/style/prettier"],
+  
+  "comments": "Terminology standardization and consistency rules",
+  
+  "line-length": {
+    "line_length": 120,
+    "heading_line_length": 120,
+    "headers": false,
+    "code_blocks": false,
+    "code_fence": false,
+    "tables": false
+  },
+  
+  "no-hard-tabs": true,
+  "no-trailing-spaces": true,
+  "no-multiple-spaces": false,
+  "no-multiple-blanks": true,
+  "no-missing-space-atx": true,
+  "no-space-in-code": true,
+  "no-space-in-emphasis": true,
+  "blanks-around-headings": true,
+  "blanks-around-lists": true,
+  "list-marker-space": true,
+  "ul-indent": {
+    "indent": 2
+  },
+  "code-block-style": {
+    "style": "fenced"
+  },
+  "emphasis-style": {
+    "style": "asterisk"
+  },
+  
+  "terminology": {
+    "enabled": true,
+    "rules": [
+      {
+        "pattern": " Agent ([a-z])",
+        "replacement": " agent $1",
+        "scope": "text",
+        "message": "Use lowercase 'agent' in mid-sentence contexts (unless it's a proper name)"
+      },
+      {
+        "pattern": "\\. Agent ",
+        "replacement": ". agent ",
+        "scope": "text",
+        "skip_sentences": false,
+        "message": "Use lowercase 'agent' after periods"
+      },
+      {
+        "pattern": " Workflow ([a-z])",
+        "replacement": " workflow $1",
+        "scope": "text",
+        "message": "Use lowercase 'workflow' in mid-sentence contexts (unless it's a proper name)"
+      },
+      {
+        "pattern": "\\. Workflow ",
+        "replacement": ". workflow ",
+        "scope": "text",
+        "message": "Use lowercase 'workflow' after periods"
+      },
+      {
+        "pattern": "pull-request",
+        "replacement": "PR or pull request",
+        "scope": "text",
+        "message": "Avoid 'pull-request' in prose; use 'PR' or 'pull request'"
+      },
+      {
+        "pattern": " Repository ([a-z])",
+        "replacement": " repository $1",
+        "scope": "text",
+        "message": "Use lowercase 'repository' in mid-sentence contexts"
+      },
+      {
+        "pattern": " Component ([a-z])",
+        "replacement": " component $1",
+        "scope": "text",
+        "message": "Use lowercase 'component' in mid-sentence contexts (unless it's a proper name)"
+      },
+      {
+        "pattern": " Task ([a-z])",
+        "replacement": " task $1",
+        "scope": "text",
+        "message": "Use lowercase 'task' in mid-sentence contexts (unless it's a proper name)"
+      }
+    ]
+  },
+  
+  "terminology-hints": {
+    "enabled": true,
+    "rules": [
+      {
+        "pattern": "the agent",
+        "context": "Acceptable: 'the agent' is lowercase"
+      },
+      {
+        "pattern": "the workflow",
+        "context": "Acceptable: 'the workflow' is lowercase"
+      },
+      {
+        "pattern": "the PR",
+        "context": "Acceptable: 'PR' is uppercase acronym"
+      },
+      {
+        "pattern": "the repository",
+        "context": "Acceptable: 'the repository' is lowercase"
+      }
+    ]
+  },
+  
+  "no-emphasis-as-heading": true,
+  "no-inline-html": false,
+  "no-bare-urls": false,
+  "heading-start-left": true,
+  "heading-fragment-link-text": true,
+  "proper-names": {
+    "names": [
+      "Aries-Serpent",
+      "_codex_",
+      "GitHub",
+      "GitHub Actions",
+      "GitHub Copilot",
+      "Copilot",
+      "AI",
+      "ML",
+      "RAG",
+      "PR",
+      "CI/CD",
+      "JSON",
+      "YAML",
+      "API",
+      "CLI",
+      "URL",
+      "XML",
+      "HTML",
+      "CSS",
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Node.js",
+      "PyTorch",
+      "SentenceTransformers",
+      "Hydra",
+      "OmegaConf",
+      "pytest",
+      "numpy",
+      "pandas",
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "GCP",
+      "Azure"
+    ]
+  },
+  
+  "rules": {
+    "MD003": {
+      "style": "consistent"
+    },
+    "MD007": {
+      "indent": 2,
+      "start_indented": false
+    },
+    "MD013": {
+      "line_length": 120,
+      "heading_line_length": 120,
+      "headers": false,
+      "code_blocks": false,
+      "code_fence": false,
+      "tables": false
+    },
+    "MD033": {
+      "allowed_elements": ["br", "hr", "a", "img", "div", "span", "details", "summary"]
+    },
+    "MD040": {
+      "languages": ["python", "javascript", "yaml", "json", "bash", "shell", "markdown", "typescript"]
+    }
+  },
+  
+  "ignore_custom_rules": []
+}

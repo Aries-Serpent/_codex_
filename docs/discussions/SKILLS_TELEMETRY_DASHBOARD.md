@@ -15,7 +15,7 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 
 ---
 
-## 🗺️ Skills-to-Agent Mapping
+## 🗺️ Skills-to-agent Mapping
 
 ```mermaid
 graph LR
@@ -85,7 +85,7 @@ graph LR
 
 ## 📋 Skill Registry Status
 
-| Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | Agent Consumers |
+| Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | agent Consumers |
 |----------|---------|------|------|-------------|--------------|--------|-----------------|
 | `doc.retriever.core` | 1.0.0 | 0.92 | 🟢 low | 1,000 | 200K | ✅ Active | doc-alignment, doc-quality, skills-master |
 | `doc.refresh.agent` | 1.0.0 | 0.90 | 🟡 medium | 200 | 500K | ✅ Active | doc-alignment, freshness-checker, skills-master |
@@ -144,7 +144,7 @@ flowchart LR
 
 ---
 
-## 🔀 Fusion Merge Options — Agent Consolidation Recommendations
+## 🔀 Fusion Merge Options — agent Consolidation Recommendations
 
 The Skills Master recommends these fusion merges based on overlapping capability_tags, shared
 consumers, and complementary execution patterns. Percentage = recommendation confidence.
@@ -238,7 +238,7 @@ stateDiagram-v2
 | CI workflow health analysis | `ci.health.analyzer` | 🔴 High | 📋 Planned |
 | Dependency vulnerability scan | `security.dep.scanner` | 🟡 Medium | 📋 Planned |
 | RAG index rebuild | `rag.index.rebuild` | 🟡 Medium | 📋 Planned |
-| Agent AAIS batch scorer | `agent.aais.batch` | 🟢 Low | 📋 Planned |
+| agent AAIS batch scorer | `agent.aais.batch` | 🟢 Low | 📋 Planned |
 
 ---
 
@@ -254,7 +254,7 @@ An agent or skill is a **retirement candidate** when:
 
 ### Currently Retired / Deprecated
 
-| Agent | Retired Date | Absorbed By | Reason |
+| agent | Retired Date | Absorbed By | Reason |
 |-------|-------------|-------------|--------|
 | `ci-failure-resolution-agent` | 2026-03-15 | `ci-testing-agent v4.0` | Full merge |
 | `ci-emergency-response-agent` | 2026-03-15 | `ci-testing-agent v4.0` | Full merge |
@@ -266,12 +266,12 @@ An agent or skill is a **retirement candidate** when:
 
 ### Retrain Queue
 
-| Agent | Current AAIS | Target AAIS | Retrain Method | ETA |
+| agent | Current AAIS | Target AAIS | Retrain Method | ETA |
 |-------|-------------|-------------|----------------|-----|
 | — | — | — | — | No agents currently queued |
 
 > Retrain is triggered when AAIS < 0.75. The Skills Master redesigns the agent
-> following the Agent Design Protocol (ADP) in `skills-master-agent.md`.
+> following the agent Design Protocol (ADP) in `skills-master-agent.md`.
 
 ---
 

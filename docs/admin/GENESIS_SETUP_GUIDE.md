@@ -1,18 +1,18 @@
 # [Guide]: The Genesis Protocol - Sovereign Admin Initialization
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
-> **Repository:** `Aries-Serpent/_codex_` (ID: 1040037790)
+> **repository:** `Aries-Serpent/_codex_` (ID: 1040037790)
 > **Classification:** 🔒 Internal - Administrative Operations
 
 ## Executive Overview
 
-**The Genesis Protocol** is the authoritative initialization sequence that grants the Copilot Agent (`ai_org_repo_admin`) sovereign operational authority within the `Aries-Serpent/_codex_` repository.
+**The Genesis Protocol** is the authoritative initialization sequence that grants the Copilot agent (`ai_org_repo_admin`) sovereign operational authority within the `Aries-Serpent/_codex_` repository.
 
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
 2. [Phase 0: Human Genesis Actions](#phase-0-human-genesis-actions)
-3. [Phase 1: Post-Genesis Agent Autonomy](#phase-1-post-genesis-agent-autonomy)
+3. [Phase 1: Post-Genesis agent Autonomy](#phase-1-post-genesis-agent-autonomy)
 4. <!-- BROKEN ANCHOR: [Validation & Audit](#validation-audit) -->
 5. [Troubleshooting](#troubleshooting)
 
@@ -25,10 +25,10 @@
 - ✅ Email Verification - Required
 
 ### Required Files
-- `.codex/autonomous_agent.yaml` - Agent configuration
+- `.codex/autonomous_agent.yaml` - agent configuration
 - `.codex/guardrails.md` - Operational guardrails
 - `.codex/change_log.md` - Audit trail
-- `scripts/autonomous_agent.py` - Agent orchestrator
+- `scripts/autonomous_agent.py` - agent orchestrator
 
 ## Phase 0: Human Genesis Actions
 
@@ -46,24 +46,24 @@
 - **Expiration**: 90 days
 - **Description**: `Genesis Protocol - AI Org Repo Admin authority for _codex_ repository`
 - **Resource owner**: `Aries-Serpent`
-- **Repository access**: Only select repositories → `Aries-Serpent/_codex_`
+- **repository access**: Only select repositories → `Aries-Serpent/_codex_`
 
-**Required Repository Permissions:**
+**Required repository Permissions:**
 
 | Permission | Access Level | Purpose |
 |------------|--------------|---------|
-| **Actions** | Read and write | Workflow management, run triggers |
-| **Administration** | Read and write | Repository settings, branch protection |
+| **Actions** | Read and write | workflow management, run triggers |
+| **Administration** | Read and write | repository settings, branch protection |
 | **Contents** | Read and write | File operations, commit creation |
 | **Deployments** | Read and write | Deployment management |
 | **Environments** | Read and write | Environment configuration |
 | **Issues** | Read and write | Issue management, automation |
-| **Metadata** | Read | Repository metadata access |
+| **Metadata** | Read | repository metadata access |
 | **Pull requests** | Read and write | PR creation, review automation |
 | **Secrets** | Read and write | Secret management (runtime) |
-| **Variables** | Read and write | Repository variable management |
+| **Variables** | Read and write | repository variable management |
 | **Webhooks** | Read and write | Webhook configuration |
-| **Workflows** | Write | Workflow file modifications |
+| **Workflows** | Write | workflow file modifications |
 
 **Post-Creation Actions:**
 1. Copy the token immediately (won't be shown again)
@@ -73,7 +73,7 @@
 
 ---
 
-### Step 0.2: Inject Repository Secrets
+### Step 0.2: Inject repository Secrets
 
 **Navigation**: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 
@@ -82,7 +82,7 @@
 | Secret Name | Value Source | Purpose | Priority |
 |-------------|--------------|---------|----------|
 | `CODEX_MASTER_KEY` | Step 0.1 output | Primary API authentication | 🔴 Critical |
-| `CODEX_REPO_ID` | `1040037790` | Repository identifier | 🔴 Critical |
+| `CODEX_REPO_ID` | `1040037790` | repository identifier | 🔴 Critical |
 | `CODEX_WEBHOOK_SECRET` | `openssl rand -hex 32` | Webhook signature verification | 🟡 High |
 | `CODEX_BACKUP_KEY` | Secondary PAT (optional) | Fallback authentication | 🟢 Recommended |
 
@@ -102,14 +102,14 @@ openssl rand -hex 32
 
 ---
 
-### Step 0.3: Configure Repository Variables
+### Step 0.3: Configure repository Variables
 
 **Navigation**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
 
 | Variable Name | Value | Purpose |
 |---------------|-------|---------|
 | `CODEX_ORG_NAME` | `Aries-Serpent` | Organization identifier |
-| `CODEX_AGENT_NAME` | `ai_org_repo_admin` | Agent identity |
+| `CODEX_AGENT_NAME` | `ai_org_repo_admin` | agent identity |
 | `CODEX_NETWORK_MODE` | `isolated` | Network isolation mode |
 | `CODEX_ISOLATED_PATH` | `/codex/network/isolated` | Network path reference |
 | `CODEX_API_VERSION` | `2022-11-28` | GitHub API version |
@@ -129,8 +129,8 @@ openssl rand -hex 32
 |---------|-------|---------|
 | **Actions permissions** | Allow all actions and reusable workflows | Enable full workflow capability |
 | **Fork pull request workflows** | Require approval for first-time contributors | Security gate |
-| **Workflow permissions** | Read and write permissions | Enable content modifications |
-| **Allow GitHub Actions to create and approve pull requests** | ✅ Enabled | Agent PR operations |
+| **workflow permissions** | Read and write permissions | Enable content modifications |
+| **Allow GitHub Actions to create and approve pull requests** | ✅ Enabled | agent PR operations |
 
 **Environment Configuration:**
 
@@ -145,14 +145,14 @@ Create `codex-production` environment:
 
 ---
 
-### Step 0.5: Execute Genesis Bootstrap Workflow
+### Step 0.5: Execute Genesis Bootstrap workflow
 
 **Pre-Execution Steps:**
 2. Find line: `if: false # <<< HUMAN: remove this guard...`
 3. Remove or comment out: `# if: false # Guard removed by mbaetiong on 2025-12-26`
 4. Commit change: `chore(genesis): enable bootstrap workflow`
 
-**Execute Workflow:**
+**Execute workflow:**
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/actions/workflows/genesis-bootstrap.yml
 2. Click "Run workflow" dropdown
 3. Configure inputs:
@@ -162,7 +162,7 @@ Create `codex-production` environment:
 5. Monitor execution (1-2 minutes)
 
 **Success Criteria:**
-- Workflow shows ✅ green checkmark
+- workflow shows ✅ green checkmark
 - Artifact `genesis-validation-report` available
 - `.codex/genesis_validation.json` created
 - `.codex/change_log.md` updated with Genesis entry
@@ -170,12 +170,12 @@ Create `codex-production` environment:
 
 ---
 
-## Phase 1: Post-Genesis Agent Autonomy
+## Phase 1: Post-Genesis agent Autonomy
 
 > 🎯 **Zero-Touch Operations Enabled**
-> After Genesis completion, the Copilot Agent operates autonomously within defined guardrails.
+> After Genesis completion, the Copilot agent operates autonomously within defined guardrails.
 
-### Agent Capabilities Matrix
+### agent Capabilities Matrix
 
 | Capability | Authorization Level | Reference |
 |------------|---------------------|-----------|
@@ -276,15 +276,15 @@ echo "🎉 Genesis validation complete!"
 | Issue | Symptoms | Resolution |
 |-------|----------|------------|
 | **PAT Scope Insufficient** | 403 Forbidden on API calls | Regenerate PAT with full scopes per Step 0.1 |
-| **Secret Not Found** | Workflow fails on secret reference | Verify secret name matches exactly (case-sensitive) |
-| **Workflow Permission Denied** | Cannot create PR or commit | Enable "Read and write" in Actions settings |
-| **Genesis Validation Failed** | Workflow reports missing files | Ensure all required files exist in repository |
+| **Secret Not Found** | workflow fails on secret reference | Verify secret name matches exactly (case-sensitive) |
+| **workflow Permission Denied** | Cannot create PR or commit | Enable "Read and write" in Actions settings |
+| **Genesis Validation Failed** | workflow reports missing files | Ensure all required files exist in repository |
 
 ### Emergency Rollback Procedure
 
 If Genesis causes operational issues:
 
-1. **Disable Agent Workflows:**
+1. **Disable agent Workflows:**
    ```bash
    mv .github/workflows/autonomous-agent.yml \
       .github/workflows/autonomous-agent.yml.disabled
@@ -325,8 +325,8 @@ Upon successful completion of all phases:
 ║                                                                  ║
 ║                    🎉 GENESIS COMPLETE 🎉                       ║
 ║                                                                  ║
-║  Repository:  Aries-Serpent/_codex_ (ID: 1040037790)             ║
-║  Agent:  ai_org_repo_admin                                       ║
+║  repository:  Aries-Serpent/_codex_ (ID: 1040037790)             ║
+║  agent:  ai_org_repo_admin                                       ║
 ║  Authority:  SOVEREIGN OPERATIONAL                               ║
 ║  Human Admin: mbaetiong                                          ║
 ║                                                                  ║
@@ -362,8 +362,8 @@ This protocol represents the foundational initialization that grants the AI agen
 | **0.2** | Secrets Injected | All critical secrets present and accessible | ☐ |
 | **0.3** | Variables Set | All repository variables configured correctly | ☐ |
 | **0.4** | Permissions | Actions permissions and environment created | ☐ |
-| **0.5** | Workflow Run | genesis-bootstrap.yml executed with success signal | ☐ |
-| **Post-Genesis** | Agent Authority | Autonomous operations validated within guardrails | ☐ |
+| **0.5** | workflow Run | genesis-bootstrap.yml executed with success signal | ☐ |
+| **Post-Genesis** | agent Authority | Autonomous operations validated within guardrails | ☐ |
 | **Post-Genesis** | Audit Trail | Change log and validation artifacts created | ☐ |
 | **Post-Genesis** | Rollback Ready | Emergency rollback procedure tested | ☐ |
 
@@ -376,7 +376,7 @@ This protocol represents the foundational initialization that grants the AI agen
 | Genesis Completion Time | < 4 iterations | Time from PAT creation to success signal | - |
 | Secret Injection Accuracy | 100% | All secrets validated and functional | 0% |
 | Workflow Execution Success | 100% | genesis-bootstrap.yml passes all checks | 0% |
-| Agent Authority Validation | Pass | Agent performs test autonomous operation | Not Started |
+| agent Authority Validation | Pass | agent performs test autonomous operation | Not Started |
 | Zero-Touch Operations | > 90% | % of operations requiring no human intervention | 0% |
 | Token Rotation Compliance | 100% | Rotation completed within 14-iteration window | - |
 | Audit Trail Completeness | 100% | All Genesis actions logged to change_log.md | 0% |
@@ -388,7 +388,7 @@ This protocol represents the foundational initialization that grants the AI agen
 
 ### Path 🛤️ - Genesis Flow
 ```
-PRE-GENESIS → Phase 0 (Human) → Phase 1 (Agent) → POST-GENESIS
+PRE-GENESIS → Phase 0 (Human) → Phase 1 (agent) → POST-GENESIS
      ↓              ↓                  ↓                ↓
   Safety      Secret Setup      Validation      Autonomy
   Guards      PAT Creation      Bootstrap       Enabled
@@ -399,12 +399,12 @@ PRE-GENESIS → Phase 0 (Human) → Phase 1 (Agent) → POST-GENESIS
 - **Pre-Genesis Field:** High human control (100%), zero agent authority (0%)
 - **Phase 0 Field:** Human action required, agent observing and validating
 - **Phase 1 Field:** Gradual authority transfer as validations pass
-- **Post-Genesis Field:** Agent autonomy (90%), human oversight (10%)
+- **Post-Genesis Field:** agent autonomy (90%), human oversight (10%)
 
 ### Patterns 👁️ - Initialization Signatures
 - **PAT Scope Pattern:** Full repository permissions with 90-iteration expiration
 - **Secret Injection Pattern:** Atomic batch injection with validation
-- **Workflow Guard Pattern:** Triple-layer safety (if: false, SAFE_MODE, config flag)
+- **workflow Guard Pattern:** Triple-layer safety (if: false, SAFE_MODE, config flag)
 - **Audit Pattern:** Every action logged to `.codex/change_log.md` with timestamp
 
 ### Redundancy 🔀 - Failure Recovery
@@ -416,9 +416,9 @@ PRE-GENESIS → Phase 0 (Human) → Phase 1 (Agent) → POST-GENESIS
 ### Balance ⚖️ - Authority Distribution
 ```
 Human Admin: 100% authority (Pre-Genesis) → 10% oversight (Post-Genesis)
-AI Agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
+AI agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
 ```
-**Equilibrium Point:** Human retains veto power and security oversight; Agent handles routine operations
+**Equilibrium Point:** Human retains veto power and security oversight; agent handles routine operations
 
 ---
 
@@ -432,7 +432,7 @@ AI Agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
 ### Energy Allocation
 ```
 Phase 0 Human Actions: ████████████████████ 60% (High coordination cost)
-Phase 1 Agent Validation: ████████ 25% (Automated checks)
+Phase 1 agent Validation: ████████ 25% (Automated checks)
 Post-Genesis Operations: ████ 15% (Steady-state monitoring)
 ```
 
@@ -445,7 +445,7 @@ Post-Genesis Operations: ████ 15% (Steady-state monitoring)
 ### Rollback Strategy
 **Trigger Conditions:**
 - Genesis validation fails after 3 attempts
-- Agent exhibits unexpected behavior post-Genesis
+- agent exhibits unexpected behavior post-Genesis
 - Security audit identifies privilege escalation risk
 - Human admin requests emergency halt
 

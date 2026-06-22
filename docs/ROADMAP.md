@@ -4,7 +4,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + Agent Team
+**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + agent Team
 > **Note**: Dates in this roadmap (including 2026 entries) are planning projections/targets and may not reflect externally verified historical events.
 
 ---
@@ -37,7 +37,7 @@
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
 | **Codex Ingestion Pipeline** | ✅ Complete | 100% | Ingest → Analyze → Transform → Verify |
-| **Agent System Core** | ✅ Complete | 100% | Workflow, quantum, physics orchestration |
+| **agent System Core** | ✅ Complete | 100% | workflow, quantum, physics orchestration |
 | **RAG & Verification** | ✅ Complete | 100% | CoVe, MCP adapters, embeddings |
 | **MCP Package System** | ✅ Complete | 100% | 9 topics, workflow automation, 93+ KB docs |
 | **CI/CD Infrastructure** | ✅ Complete | 100% | 100 workflows active, cache L1–L5 wired, self-healing CI |
@@ -46,7 +46,7 @@
 | **Documentation Hub** | ✅ Complete | 95% | 693+ files, evolution center, cognitive brain |
 | **Cognitive Brain** | ✅ Complete | 100% | 100+ files, 22 cognitive modules, pattern detection |
 | **Genesis Protocol** | 🟡 Foundation Ready | 80% | 3-layer safety, awaiting secret injection | <!-- pragma: allowlist secret -->
-| **Agent Autonomy** | 🟢 Active | 70% | 53+ agents deployed, coordination in progress |
+| **agent Autonomy** | 🟢 Active | 70% | 53+ agents deployed, coordination in progress |
 
 ### Infrastructure Maturity
 
@@ -79,7 +79,7 @@
 
 **Delivered**:
 1. ✅ Codex ingestion pipeline (Python code processing)
-2. ✅ Agent system core (workflow, quantum, physics)
+2. ✅ agent system core (workflow, quantum, physics)
 3. ✅ RAG & verification infrastructure
 4. ✅ CI/CD optimization (Phase 3C-Lite caching)
 5. ✅ Security infrastructure (secrets scan, SAST)
@@ -118,7 +118,7 @@
 
 **Deliverable**: ✅ Unified "cognitive brain" for AI agent navigation and context
 
-### ✅ Phase 8: Documentation Consolidation & Agent Enhancement (COMPLETE)
+### ✅ Phase 8: Documentation Consolidation & agent Enhancement (COMPLETE)
 
 **Timeline**: 2025-12-31 to 2026-01-03
 **Status**: ✅ Complete (100%)
@@ -202,7 +202,7 @@
 
 **Target**: 95%+ overall coverage, maintain 100% passing, with no critical component below 90%
 
-#### 3. **Agent System Enhancement** (Phase 12)
+#### 3. **agent System Enhancement** (Phase 12)
 **Timeline**: 2026-02-01 to 2026-03-15
 **Status**: 🟡 Planning
 **Effort**: 8-12 sessions (~250K-400K tokens)
@@ -210,7 +210,7 @@
 **Tasks**:
 - Advanced agent capabilities (multi-step reasoning)
 - Self-evolution infrastructure
-- Agent coordination protocols
+- agent coordination protocols
 - Learning from feedback loops
 - Enhanced context awareness
 
@@ -280,7 +280,7 @@
 **Timeline**: 2026-04-01 to 2026-04-30
 **Features**: Package merge (4 strategies), diff tool with multiple formats
 
-#### 3. **Agent Autonomy Expansion** (Phase 15)
+#### 3. **agent Autonomy Expansion** (Phase 15)
 **Timeline**: 2026-05-01 to 2026-06-15
 **Focus**: Multi-agent coordination, distributed execution, advanced reasoning
 
@@ -312,7 +312,7 @@
 **Timeline**: 2026-08-01 to 2026-09-15
 **Focus**: Multi-repository support, distributed agents, enterprise features
 
-#### 3. **Cross-Repository Agent Capabilities** (Phase 19)
+#### 3. **Cross-repository agent Capabilities** (Phase 19)
 **Timeline**: 2026-08-15 to 2026-09-30
 **Focus**: Multi-repo coordination, knowledge sharing, unified orchestration
 
@@ -369,7 +369,7 @@
 
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
-| **Agent Autonomy** | 70% | 70%+ | 85%+ | 95%+ |
+| **agent Autonomy** | 70% | 70%+ | 85%+ | 95%+ |
 | **Session Success Rate** | 85%+ | 90%+ | 95%+ | 98%+ |
 | **Iteration Cycle** | 1-2 iterations | 1 iteration | <1 iteration | <1 iteration |
 | **Blocker Resolution** | 100% | 100% | 100% | 100% |
@@ -422,9 +422,9 @@
 - **Quarterly**: Vision alignment, long-term planning
 
 ### Ownership
-- **Primary**: DevOps + Agent Development Team
+- **Primary**: DevOps + agent Development Team
 - **Human Admin**: @mbaetiong
-- **AI Agent**: GitHub Copilot (autonomous updates)
+- **AI agent**: GitHub Copilot (autonomous updates)
 
 ---
 
