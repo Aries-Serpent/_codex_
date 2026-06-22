@@ -29,7 +29,7 @@ pip install -e .
 
 # Set up pre-commit hooks
 pre-commit install
-```text
+```
 
 ## Running Tests
 
