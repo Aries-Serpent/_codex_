@@ -28,7 +28,7 @@ wheel>=0.47.0
 #   (actual install done via `pip install -e .` in the action)
 
 # ── Linting & formatting ──────────────────────────────────────────────────────
-ruff>=0.4.0
+ruff>=0.15.15
 black>=24.0
 isort>=5.13
 mypy>=2.1.0,<3.0.0

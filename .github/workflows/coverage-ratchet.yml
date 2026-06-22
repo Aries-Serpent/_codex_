@@ -83,7 +83,7 @@ jobs:
             --cov-fail-under="${THRESHOLD}" \
             -q \
             --timeout=120 \
-            -x \
+            --continue-on-collection-errors \
             tests/ \
             2>&1 | tee "$RUNNER_TEMP/coverage_output.txt"
           EXIT_CODE=${PIPESTATUS[0]}
