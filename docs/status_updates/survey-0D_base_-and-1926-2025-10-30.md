@@ -1730,7 +1730,7 @@ else:  # pragma: no cover - click fallback
 
 ## >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 from __future__ import annotations
 

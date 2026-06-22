@@ -253,31 +253,31 @@ class SentimentAnalysisApp:
         self.cfg = cfg
         self.model = SentimentAnalyzer(cfg.model)
         self.data_loader = DataLoader(cfg.data)
-        
+
         log.info(f"Initialized app with config:")
         log.info(OmegaConf.to_yaml(cfg))
-    
+
     def predict(self, text: str) -> dict:
         """Predict sentiment for text"""
         log.info(f"Processing text: {text[:50]}...")
-        
+
         # Preprocess
         processed = self.data_loader.preprocess_text(text)
-        
+
         # Predict
         prediction = self.model.predict(processed)
-        
+
         # Post-process
         result = self.format_result(prediction)
-        
+
         log.info(f"Result: {result}")
         return result
-    
+
     def format_result(self, prediction):
         """Format model output"""
         labels = ["negative", "neutral", "positive"]
         predicted_label = labels[prediction['label']]
-        
+
         return {
             "text": prediction.get('text'),
             "sentiment": predicted_label,
@@ -288,20 +288,20 @@ class SentimentAnalysisApp:
 def main():
     # Load configuration
     config_dir = str(Path(__file__).parent.parent / "configs")
-    
+
     with initialize_config_dir(config_dir=config_dir, version_base=None):
         cfg = compose(config_name="config")
-    
+
     # Create app
     app = SentimentAnalysisApp(cfg)
-    
+
     # Example predictions
     texts = [
         "This movie was amazing! I loved it.",
         "The service was okay, nothing special.",
         "Terrible experience, waste of money."
     ]
-    
+
     for text in texts:
         result = app.predict(text)
         print(f"\nText: {text}")
@@ -327,36 +327,36 @@ class SentimentAnalyzer:
     def __init__(self, cfg):
         self.cfg = cfg
         log.info(f"Loading model: {cfg.model_name}")
-        
+
         # Load pre-trained model
         self.pipeline = pipeline(
             "sentiment-analysis",
             model=cfg.model_name,
             device=0 if torch.cuda.is_available() else -1
         )
-    
+
     def predict(self, text: str) -> Dict:
         """Predict sentiment"""
         result = self.pipeline(text, truncation=True)[0]
-        
+
         # Map to standardized format
         label_map = {
             "POSITIVE": 2,
             "NEUTRAL": 1,
             "NEGATIVE": 0
         }
-        
+
         return {
             "text": text,
             "label": label_map.get(result['label'], 1),
             "confidence": result['score'],
             "scores": {"positive": result['score']}
         }
-    
+
     def predict_batch(self, texts: list) -> list:
         """Predict sentiment for multiple texts"""
         results = self.pipeline(texts, truncation=True, batch_size=32)
-        
+
         return [
             {
                 "text": text,
@@ -368,16 +368,16 @@ class SentimentAnalyzer:
 
 class ModelManager:
     """Manage model lifecycle"""
-    
+
     def __init__(self, model_dir: str = "models"):
         self.model_dir = model_dir
-    
+
     def save_model(self, model, name: str):
         """Save model to disk"""
         path = f"{self.model_dir}/{name}"
         model.save_pretrained(path)
         log.info(f"Model saved to {path}")
-    
+
     def load_model(self, name: str):
         """Load model from disk"""
         path = f"{self.model_dir}/{name}"
@@ -400,35 +400,35 @@ log = logging.getLogger(__name__)
 class DataLoader:
     def __init__(self, cfg):
         self.cfg = cfg
-    
+
     def load_csv(self, file_path: str) -> pd.DataFrame:
         """Load CSV file"""
         log.info(f"Loading data from {file_path}")
         return pd.read_csv(file_path)
-    
+
     def preprocess_text(self, text: str) -> str:
         """Preprocess text"""
         if self.cfg.preprocessing.lowercase:
             text = text.lower()
-        
+
         if self.cfg.preprocessing.remove_special_chars:
             import re
             text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-        
+
         return text.strip()
-    
+
     def prepare_dataset(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Split data into train/test"""
         split_idx = int(len(df) * self.cfg.split_ratio)
-        
+
         train = df[:split_idx]
         test = df[split_idx:]
-        
+
         log.info(f"Train samples: {len(train)}")
         log.info(f"Test samples: {len(test)}")
-        
+
         return train, test
-    
+
     def get_data_stats(self, df: pd.DataFrame) -> dict:
         """Get dataset statistics"""
         return {
@@ -531,21 +531,21 @@ import tqdm
 def batch_predict(csv_file: str, output_file: str):
     """Process CSV file and save predictions"""
     config_dir = str(Path(__file__).parent.parent / "configs")
-    
+
     with initialize_config_dir(config_dir=config_dir, version_base=None):
         cfg = compose(config_name="config")
-    
+
     app = SentimentAnalysisApp(cfg)
-    
+
     # Load data
     df = pd.read_csv(csv_file)
-    
+
     # Predict
     predictions = []
     for text in tqdm.tqdm(df['text']):
         pred = app.predict(text)
         predictions.append(pred)
-    
+
     # Save results
     results_df = pd.DataFrame(predictions)
     results_df.to_csv(output_file, index=False)

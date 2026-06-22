@@ -307,20 +307,20 @@ orchestrator.activate_campaign()
 for phase_idx, phase in enumerate(campaign_def.phases):
     # Dispatch agents
     agent_ids = orchestrator.execute_phase(phase_idx)
-    
+
     # Monitor execution
     results = orchestrator.monitor_agents(
         agent_ids,
         phase.timeout_seconds
     )
-    
+
     # Verify gate
     gate_pass = orchestrator.verify_gate(phase_idx, results)
-    
+
     if not gate_pass:
         # Retry or escalate
         pass
-    
+
     # Collect artifacts
     orchestrator.collect_artifacts(phase_idx)
 

@@ -428,20 +428,20 @@ from statistics import mean, stdev
 def run_query(query_type: str) -> float:
     """Execute query and return latency in ms."""
     conn = get_db_connection()
-    
+
     query = {
         "simple": "SELECT ... WHERE category = ?",
         "complex": "SELECT ... FROM ... JOIN ...",
     }[query_type]
-    
+
     params = [random.choice(test_data)]
-    
+
     start = time.perf_counter()
     cursor = conn.cursor()
     cursor.execute(query, params)
     results = cursor.fetchall()
     elapsed_ms = (time.perf_counter() - start) * 1000
-    
+
     conn.close()
     return elapsed_ms
 
@@ -452,7 +452,7 @@ def benchmark(query_type: str, num_queries: int = 100) -> dict:
             lambda _: run_query(query_type),
             range(num_queries)
         ))
-    
+
     latencies.sort()
     return {
         "query_type": query_type,
@@ -468,10 +468,10 @@ def benchmark(query_type: str, num_queries: int = 100) -> dict:
 if __name__ == "__main__":
     print("Benchmarking Simple Queries...")
     simple_results = benchmark("simple")
-    
+
     print("Benchmarking Complex Queries...")
     complex_results = benchmark("complex")
-    
+
     print(f"\nSimple: p99={simple_results['p99']:.1f}ms")
     print(f"Complex: p99={complex_results['p99']:.1f}ms")
 ```

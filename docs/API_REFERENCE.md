@@ -1953,7 +1953,7 @@ except TimeoutError:
 3. **Parallel Processing**: Process multiple files simultaneously
    ```python
    from concurrent.futures import ProcessPoolExecutor
-   
+
    files = ['file1.csv', 'file2.csv', 'file3.csv']
    with ProcessPoolExecutor(max_workers=4) as executor:
        results = executor.map(pipeline.ingest_file, files)

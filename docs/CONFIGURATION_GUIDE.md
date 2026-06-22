@@ -303,7 +303,7 @@ from omegaconf import DictConfig, OmegaConf
 def train(cfg: DictConfig):
     # Type-safe conversion
     train_cfg = OmegaConf.to_container(cfg.training)
-    
+
     batch_size = train_cfg['batch_size']
     lr = train_cfg['learning_rate']
 ```
@@ -317,7 +317,7 @@ from pydantic import BaseModel, validator
 class TrainingParams(BaseModel):
     batch_size: int
     learning_rate: float
-    
+
     @validator('batch_size')
     def batch_size_positive(cls, v):
         if v <= 0:

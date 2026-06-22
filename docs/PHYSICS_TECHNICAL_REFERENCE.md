@@ -64,7 +64,7 @@ S = (avg_child_depth / (depth + 1)) * (1 / (1 + |log(branching_ratio + 1) - log(
 - **Implementation**: `FractalAnalyzer._calculate_self_similarity()`
 
 #### Tree Fractal Dimension
-```python
+```text
 D ≈ log(nodes) / log(depth + 1)
 ```
 - **Capped at**: 3.0 (3D maximum)
@@ -82,7 +82,7 @@ Re = ρvL/μ
 - **Implementation**: `FluidChannel.reynolds_number()`
 
 #### Hagen-Poiseuille Pressure Drop
-```python
+```text
 ΔP = 8μLQ / (πr⁴)
 ```
 - **Simplified**: ΔP ∝ μLQ / r²

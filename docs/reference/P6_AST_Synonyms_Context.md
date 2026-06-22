@@ -21,7 +21,7 @@ All features are opt-in and deterministic.
 Detect structural code duplication beyond simple token similarity. Two files with different variable names but identical control flow structures will have high AST similarity.
 
 ### 2.2 Mechanism
-```python
+```text
 # Extract AST node type counts
 ast.parse(source) → {FunctionDef: 5, ClassDef: 2, Call: 12, ...}
 

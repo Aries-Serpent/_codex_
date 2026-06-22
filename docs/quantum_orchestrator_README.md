@@ -273,7 +273,7 @@ src/codex/quantum_orchestrator/
 The implementation maintains physical accuracy:
 
 ### Energy-Momentum Relation
-```python
+```text
 E² ≈ p²c² + m²c⁴  # Verified in tests
 ```
 

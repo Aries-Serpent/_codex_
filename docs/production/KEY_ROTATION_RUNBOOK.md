@@ -112,17 +112,17 @@ try:
     if len(decoded) != 32:
         print(f"❌ Key must be 32 bytes, got {len(decoded)}")
         sys.exit(1)
-    
+
     # Additional validation
     if not all(isinstance(b, int) for b in decoded):
         print("❌ Invalid byte sequence")
         sys.exit(1)
-    
+
     print("✅ Key validation passed")
     print(f"   Format: Valid base64")
     print(f"   Length: {len(decoded)} bytes")
     print(f"   Entropy: Good")
-    
+
 except Exception as e:
     print(f"❌ Validation failed: {e}")
     sys.exit(1)

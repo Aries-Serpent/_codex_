@@ -536,7 +536,7 @@ done
 ```python
 class MemoryManagedApp:
     """Application with memory management best practices."""
-    
+
     def __init__(self, memory_limit_mb: int = 1000):
         self.memory_limit = memory_limit_mb * 1024 * 1024
         self.cache = LRUCache(maxsize=10000)
@@ -544,21 +544,21 @@ class MemoryManagedApp:
             warning_threshold=0.75 * self.memory_limit,
             critical_threshold=0.85 * self.memory_limit,
         )
-    
+
     def process_request(self, request):
         """Process request with memory safety."""
         # Check memory before processing
         current = psutil.Process().memory_info().rss
         if current > self.memory_limit * 0.9:
             self.cache.clear()
-        
+
         # Use context manager for cleanup
         with MemoryBudget(request) as budget:
             result = self._process(request)
             assert budget.used() < self.memory_limit, "OOM risk"
-        
+
         return result
-    
+
     def _process(self, request):
         # Implementation with per-request limits
         pass

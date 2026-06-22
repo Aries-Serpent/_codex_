@@ -2378,7 +2378,7 @@ class IntegratedQuantumCompressionSystem:
 
 ## commit / pre-commit 10: End-to-End Testing & Benchmarks
 
-````python name=test_integration.py
+````text name=test_integration.py
 import numpy as np
 import pytest
 import time

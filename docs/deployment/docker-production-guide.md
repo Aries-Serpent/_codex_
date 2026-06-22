@@ -372,7 +372,7 @@ def ready():
         "model_loaded": check_model(),
         "gpu_available": check_gpu(),
     }
-    
+
     if all(checks.values()):
         return jsonify({"ready": True, "checks": checks}), 200
     else:
@@ -466,20 +466,20 @@ class JSONFormatter(logging.Formatter):
             "function": record.funcName,
             "line": record.lineno,
         }
-        
+
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
-        
+
         return json.dumps(log_data)
 
 def configure_logging():
     handler = logging.StreamHandler()
     handler.setFormatter(JSONFormatter())
-    
+
     logger = logging.getLogger('codex')
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
-    
+
     return logger
 ```
 

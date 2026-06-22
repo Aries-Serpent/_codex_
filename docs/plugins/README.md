@@ -56,10 +56,10 @@ from codex.plugins import BasePlugin
 class MyPlugin(BasePlugin):
     name = "my-plugin"
     version = "1.0.0"
-    
+
     def setup(self):
         self.register_handler("event.name", self.handle_event)
-    
+
     def handle_event(self, event):
         # Process event
         pass
@@ -193,10 +193,10 @@ class BasePlugin:
     name: str
     version: str
     description: str
-    
+
     def setup(self) -> None:
         """Initialize plugin"""
-        
+
     def teardown(self) -> None:
         """Clean up plugin"""
 ```
