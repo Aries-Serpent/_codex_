@@ -130,11 +130,90 @@ jobs:
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails
+        continue-on-error: true
         run: |
+          echo "::group::Unified Session Context Pre-load"
+
           if ! python3 .github/scripts/session_preload.py; then
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+            echo "⚠️ session_preload.py failed (non-blocking)"
           fi
+
+          # Component 5: Load aggregated context from data aggregation system
+          MANIFEST=".codex/session_context_manifest.json"
+
+          if [ -f "$MANIFEST" ]; then
+            echo "✅ Loading aggregated context from manifest"
+
+            # Parse manifest safely with fallback to defaults
+            PHASE=$(python3 -c "
+import json
+m = json.load(open('$MANIFEST'))
+phase = m.get('phase_state', {}).get('current_phase', 'unknown')
+if phase == 'unknown':
+  phase = m.get('current_phase', 'unknown')
+print(phase)
+" 2>/dev/null || echo "unknown")
+
+            AGENTS=$(python3 -c "
+import json
+m = json.load(open('$MANIFEST'))
+print(len(m.get('in_flight_agents', [])))
+" 2>/dev/null || echo "0")
+
+            PATTERNS=$(python3 -c "
+import json
+m = json.load(open('$MANIFEST'))
+print(len(m.get('recent_patterns', [])))
+" 2>/dev/null || echo "0")
+
+            LAST_UPDATED=$(python3 -c "
+import json
+m = json.load(open('$MANIFEST'))
+ts = m.get('generated_at', m.get('timestamp', 'unknown'))
+print(ts)
+" 2>/dev/null || echo "unknown")
+
+            RECOMMENDATIONS=$(python3 -c "
+import json
+m = json.load(open('$MANIFEST'))
+print(len(m.get('delegation_recommendations', [])))
+" 2>/dev/null || echo "0")
+
+            # Inject into environment
+            echo "SESSION_CONTEXT_PHASE=$PHASE" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_AGENTS_COUNT=$AGENTS" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_PATTERNS=$PATTERNS" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_LAST_UPDATED=$LAST_UPDATED" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_RECOMMENDATIONS=$RECOMMENDATIONS" >> "$GITHUB_ENV"
+
+            # Log summary
+            echo "✅ Context loaded:"
+            echo "   Phase: $PHASE"
+            echo "   In-flight agents: $AGENTS"
+            echo "   Recent patterns: $PATTERNS"
+            echo "   Recommendations: $RECOMMENDATIONS"
+            echo "   Generated: $LAST_UPDATED"
+
+            # Add to step summary for visibility
+            echo "## 🧠 Session Context Pre-loaded" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Phase | \`$PHASE\` |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| In-flight Agents | $AGENTS |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Recent Patterns | $PATTERNS |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Recommendations | $RECOMMENDATIONS |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Generated | $LAST_UPDATED |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "ℹ️ Aggregated context manifest not found"
+            echo "SESSION_CONTEXT_PHASE=unknown" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_AGENTS_COUNT=0" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_PATTERNS=0" >> "$GITHUB_ENV"
+            echo "SESSION_CONTEXT_RECOMMENDATIONS=0" >> "$GITHUB_ENV"
+          fi
+
+          echo "::endgroup::"
 
       - name: "🔌 Session Access Probe (token inventory + rate limits)"
         id: access_probe
