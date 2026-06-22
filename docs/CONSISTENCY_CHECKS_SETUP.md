@@ -371,9 +371,9 @@ If you encounter problems:
 ## Further Reading
 
 - [Markdownlint Rules](https://github.com/DavidAnson/markdownlint/blob/main/README.md)
-- [Repository Markdown Standards](../.markdownlintrc)
-- [Cross-Reference Validator Source](../.github/scripts/check-cross-references.py)
-- [Workflow Configuration](../.github/workflows/consistency-checks.yml)
+- [Repository Markdown Standards](.markdownlintrc)
+- [Cross-Reference Validator Source](.github/scripts/check-cross-references.py)
+- [Workflow Configuration](.github/workflows/consistency-checks.yml)
 
 ## Support
 
