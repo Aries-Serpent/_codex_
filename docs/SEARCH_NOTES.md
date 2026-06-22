@@ -1,5 +1,7 @@
 # Comparative Pattern Search Notes
 
+**Last Updated:** 2026-06-22
+
 **Scope:** Public documentation and widely cited discussions only. No cost-incurring or account-gated services were accessed.
 
 ## Sources Consulted (examples)

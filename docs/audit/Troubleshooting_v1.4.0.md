@@ -1,7 +1,7 @@
 # Troubleshooting Guide v1.4.0
 
 **Version**: 1.4.0  
-**Last Updated**: 2025-12-09
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -77,7 +77,7 @@ python scripts/space_traversal/audit_runner.py run --verbose 2>&1 | grep -i cove
 
 ---
 
-### Issue: Test Scores Unchanged After Enabling Coverage
+## Issue: Test Scores Unchanged After Enabling Coverage
 
 **Symptoms**:
 - coverage_map.json exists but test scores are same as before
@@ -118,7 +118,7 @@ cat audit_artifacts/coverage_map.json | jq 'keys[]' | head -10
 
 ---
 
-### Issue: Coverage XML Parse Error
+## Issue: Coverage XML Parse Error
 
 **Symptoms**:
 - Error: "Failed to parse coverage XML"
@@ -205,7 +205,7 @@ time python scripts/space_traversal/audit_runner.py stage S4
 
 ---
 
-### Issue: Scores Decreased Significantly After v1.4.0
+## Issue: Scores Decreased Significantly After v1.4.0
 
 **Symptoms**:
 - Overall scores lower than v1.3.x
@@ -253,7 +253,7 @@ cat audit_artifacts/coverage_map.json | jq '.[] | select(.percent < 0.5) | {perc
 
 ---
 
-### Issue: High Duplication Ratio Despite Unique Files
+## Issue: High Duplication Ratio Despite Unique Files
 
 **Symptoms**:
 - Duplication ratio > 0.8 but files are different
@@ -351,7 +351,7 @@ data["percent"] = 0.85  # type: ignore[assignment]
 
 ---
 
-### Issue: Audit Pipeline Hangs
+## Issue: Audit Pipeline Hangs
 
 **Symptoms**:
 - Pipeline appears to freeze
@@ -394,7 +394,7 @@ ls scripts/space_traversal/detectors/detector_*.py
 
 ---
 
-### Issue: Configuration Not Applied
+## Issue: Configuration Not Applied
 
 **Symptoms**:
 - Changes to workflow.yaml have no effect
@@ -475,7 +475,7 @@ cat audit_artifacts/audit_run_manifest.json | jq '.'
 # Look for warnings or errors
 ```
 
-### Verify Installation
+## Verify Installation
 
 ```bash
 # Check Python version
@@ -488,7 +488,7 @@ pip install pyyaml jinja2 pytest pytest-cov
 python -c "from scripts.space_traversal import coverage_ingest, dup_similarity"
 ```
 
-### Report Issues
+## Report Issues
 
 If problems persist:
 1. Gather audit.log

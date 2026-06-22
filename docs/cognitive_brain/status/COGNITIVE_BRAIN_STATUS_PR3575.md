@@ -30,6 +30,7 @@
 ## Deferral Scanner — Three-Tier Code Span Stripping Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR body text line", "Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"'}}%%
 flowchart TD
     PR["PR body text line"] --> S1
 
@@ -88,6 +89,7 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 ## Architecture Diagram: Auto-Fix Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Agent Token Delegation\nenabled", "cognitive-preflight job"'}}%%
 flowchart TD
     ATD["Agent Token Delegation\nenabled"] --> CPF
 

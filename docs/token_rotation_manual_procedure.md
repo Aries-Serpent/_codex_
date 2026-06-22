@@ -1,5 +1,7 @@
 # Token Rotation Manual Procedure
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the _codex_ repository.
@@ -65,7 +67,7 @@ python3 scripts/rotate_jwt_secret.py
 # This will create: .codex/secrets/backups/jwt_secret_<timestamp>.enc
 ```
 
-#### Step 2: Verify Current Configuration
+## Step 2: Verify Current Configuration
 ```bash
 # Check if current secret is set
 python3 scripts/rotate_jwt_secret.py --verify
@@ -76,7 +78,7 @@ python3 scripts/rotate_jwt_secret.py --verify
 # ✅ Backup directory exists
 ```
 
-#### Step 3: Perform Rotation
+## Step 3: Perform Rotation
 ```bash
 # Standard rotation (will backup automatically)
 python3 scripts/rotate_jwt_secret.py
@@ -85,7 +87,7 @@ python3 scripts/rotate_jwt_secret.py
 FORCE_ROTATION=true python3 scripts/rotate_jwt_secret.py
 ```
 
-#### Step 4: Verify New Secret
+## Step 4: Verify New Secret
 ```bash
 # Verify rotation succeeded
 python3 scripts/rotate_jwt_secret.py --verify
@@ -94,14 +96,14 @@ python3 scripts/rotate_jwt_secret.py --verify
 ls -lh .codex/secrets/backups/
 ```
 
-#### Step 5: Update GitHub Secrets
+## Step 5: Update GitHub Secrets
 The script automatically updates GitHub Secrets via API. Verify in GitHub UI:
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 2. Verify `TOKEN_SECRET_KEY` shows "Updated X minutes ago"
 3. Check backup secret `TOKEN_SECRET_KEY_BACKUP_<date>` exists
 
-#### Step 6: Test Authentication
+### Step 6: Test Authentication
 ```bash
 # Test JWT generation with new secret
 python3 -c "
@@ -123,11 +125,11 @@ print(f'✅ JWT verified: {decoded}')
 "
 ```
 
-### Rollback Procedure
+## Rollback Procedure
 
 If rotation fails or causes issues:
 
-#### Option A: Automatic Rollback (Recommended)
+### Option A: Automatic Rollback (Recommended)
 ```bash
 # Rollback to most recent backup
 python3 scripts/rotate_jwt_secret.py --rollback
@@ -136,7 +138,7 @@ python3 scripts/rotate_jwt_secret.py --rollback
 python3 scripts/rotate_jwt_secret.py --rollback --backup-file jwt_secret_20260117_120000.enc
 ```
 
-#### Option B: Manual Rollback via GitHub UI
+## Option B: Manual Rollback via GitHub UI
 1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 2. Find `TOKEN_SECRET_KEY_BACKUP_<date>` secret
 3. Copy value
@@ -169,7 +171,7 @@ python3 scripts/github_secrets_sync.py --backup
 ls -lh .codex/secrets/backups/secrets_backup_*.json.enc
 ```
 
-#### Step 2: List Secrets to Rotate
+## Step 2: List Secrets to Rotate
 ```bash
 # All secrets (default)
 python3 scripts/github_secrets_sync.py --rotate
@@ -178,7 +180,7 @@ python3 scripts/github_secrets_sync.py --rotate
 python3 scripts/github_secrets_sync.py --rotate --secrets "TOKEN_SECRET_KEY,SESSION_ENCRYPTION_KEY"
 ```
 
-#### Step 3: Perform Rotation
+## Step 3: Perform Rotation
 ```bash
 # Rotate all configured secrets
 python3 scripts/github_secrets_sync.py --rotate
@@ -190,24 +192,24 @@ python3 scripts/github_secrets_sync.py --rotate
 # 4. Create audit trail
 ```
 
-#### Step 4: Validate New Secrets
+## Step 4: Validate New Secrets
 ```bash
 # Validate all secrets are accessible
 python3 scripts/github_secrets_sync.py --validate
 
 # Expected output:
 # ✅ TOKEN_SECRET_KEY: accessible
-# ✅ GITHUB_OAUTH_CLIENT_SECRET: accessible  
+# ✅ GITHUB_OAUTH_CLIENT_SECRET: accessible
 # ✅ SESSION_ENCRYPTION_KEY: accessible
 ```
 
-#### Step 5: Sync to Downstream Systems
+## Step 5: Sync to Downstream Systems
 ```bash
 # Sync secrets to dependent systems (if configured)
 python3 scripts/github_secrets_sync.py --sync-downstream
 ```
 
-#### Step 6: Review Audit Trail
+## Step 6: Review Audit Trail
 ```bash
 # Check rotation was logged
 cat .codex/audit/phase10/secrets-rotation-*.log
@@ -244,7 +246,7 @@ python3 scripts/phase10/automated_secrets_manager.py \
 # 3. Optionally inject into GitHub Secrets
 ```
 
-#### Step 2: Set Existing Secret
+## Step 2: Set Existing Secret
 ```bash
 # Set secret with specific value
 python3 scripts/phase10/automated_secrets_manager.py \
@@ -259,7 +261,7 @@ python3 scripts/phase10/automated_secrets_manager.py \
 # - auto: Try API, fallback to CLI (default)
 ```
 
-#### Step 3: Verify Secret Was Set
+## Step 3: Verify Secret Was Set
 ```bash
 # Verify secret exists in GitHub
 python3 scripts/phase10/automated_secrets_manager.py \
@@ -270,7 +272,7 @@ python3 scripts/phase10/automated_secrets_manager.py \
 # ✅ SECRET_NAME exists in GitHub Secrets
 ```
 
-#### Step 4: List All Secrets
+## Step 4: List All Secrets
 ```bash
 # List all configured secrets (names only, no values)
 python3 scripts/phase10/automated_secrets_manager.py \
@@ -302,7 +304,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 # Save output securely!
 ```
 
-### Issue: "GITHUB_TOKEN required"
+## Issue: "GITHUB_TOKEN required"
 
 **Cause**: GitHub API token not set or invalid
 
@@ -316,7 +318,7 @@ gh api user
 # Should return your user info
 ```
 
-### Issue: "PyGithub not installed"
+## Issue: "PyGithub not installed"
 
 **Cause**: Missing Python dependencies
 
@@ -341,7 +343,7 @@ cat .codex/secrets/backups/*.log
 # Retry after fixing
 ```
 
-### Issue: "Resource not accessible by integration"
+## Issue: "Resource not accessible by integration"
 
 **Cause**: GitHub token lacks required scopes
 
@@ -441,7 +443,7 @@ python3 scripts/phase10/automated_secrets_manager.py --action set --name SECRET 
 python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECRET
 ```
 
-### File Locations
+## File Locations
 
 ```
 .codex/

@@ -1,4 +1,6 @@
 # Codebase Validation Certification Report
+
+**Last Updated:** 2026-06-22
 **Aries-Serpent/_codex_ v0.1.0 | 2026-05-27**
 
 ---

@@ -1,5 +1,30 @@
 # Physics Equations & Formulas Reference — Coverage Uplift Paths
 
+## Table of Contents
+
+- [Purpose](#purpose)
+- [Strategy Categories](#strategy-categories)
+- [Concise table with mapping to capabilities and alternative agent-focused use cases](#concise-table-with-mapping-to-capabilities-and-alternative-agent-focused-use-cases)
+- [Coverage Uplift Roadmap (Aligned to Requested Targets)](#coverage-uplift-roadmap-aligned-to-requested-targets)
+  - [Deep Coverage for physics_orchestrator Patterns](#deep-coverage-for-physics_orchestrator-patterns)
+  - [Complete quantum_game_theory Engines](#complete-quantum_game_theory-engines)
+  - [Full mental_mapping Graph Operations](#full-mental_mapping-graph-operations)
+  - [Codex_client Comprehensive Coverage](#codex_client-comprehensive-coverage)
+- [Test Pattern Templates](#test-pattern-templates)
+  - [Pattern 1: Initialization Test (Eq #1, #6, #20)](#pattern-1-initialization-test-eq-1-6-20)
+  - [Pattern 2: Enum Validation (Eq #2, #7, #29)](#pattern-2-enum-validation-eq-2-7-29)
+  - [Pattern 3: Property Coverage (Eq #3, #5, #17)](#pattern-3-property-coverage-eq-3-5-17)
+  - [Pattern 4: Deep Module Coverage (Eq #4, #8, #19)](#pattern-4-deep-module-coverage-eq-4-8-19)
+- [Usage Guidelines](#usage-guidelines)
+  - [For reaching 30% coverage (Phase 1 completion)](#for-reaching-30-coverage-phase-1-completion)
+  - [For reaching 50% coverage (Phase 2)](#for-reaching-50-coverage-phase-2)
+  - [For reaching 70% coverage (Phase 3)](#for-reaching-70-coverage-phase-3)
+  - [For reaching 95% coverage (Phases 4-5)](#for-reaching-95-coverage-phases-4-5)
+- [Validation Checklist](#validation-checklist)
+- [See Also](#see-also)
+
+**Last Updated:** 2026-06-22
+
 > **Table 4 of 4**: Coverage uplift paths for achieving 95% test coverage
 > **Total Equations**: 53
 > **Focus**: Initialization tests, enum validations, property coverage, deep module testing

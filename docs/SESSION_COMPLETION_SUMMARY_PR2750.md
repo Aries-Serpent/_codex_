@@ -132,7 +132,7 @@ from datetime import datetime, UTC
 timestamp = datetime.now(UTC).isoformat()  # Already includes +00:00
 ```
 
-### 2. Backward Compatibility Pattern
+## 2. Backward Compatibility Pattern
 ```python
 def _parse_ts(ts: str | None) -> float | None:
     """Handle both Z and +00:00 suffixes."""
@@ -155,7 +155,7 @@ class Ticket(BaseModel):
         extra = "forbid"  # Prevent hallucination
 ```
 
-### 4. Knowledge Sync Pattern
+## 4. Knowledge Sync Pattern
 ```python
 # Check and Pull - only sync changed articles
 if article_id not in local_index or remote_ts > local_index[article_id]:

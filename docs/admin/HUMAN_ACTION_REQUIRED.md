@@ -1,6 +1,79 @@
 # Human Action Required - Comprehensive Audit
 
-**Generated**: 2026-03-17  
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+  - [Statistics](#statistics)
+  - [Quick Actions](#quick-actions)
+- [1. CRITICAL - Immediate Action Required](#1-critical---immediate-action-required)
+  - [1.1 Stakeholder Alignment & Funding](#11-stakeholder-alignment--funding)
+  - [1.2 Security Configuration Review](#12-security-configuration-review)
+  - [1.3 Production Deployment Checklist](#13-production-deployment-checklist)
+- [2. HIGH - Action Required Soon](#2-high---action-required-soon)
+  - [2.1 Archived TODO Cleanup](#21-archived-todo-cleanup)
+  - [2.2 PR Error Log Action Items](#22-pr-error-log-action-items)
+  - [2.3 Historical Documentation Archival Notice](#23-historical-documentation-archival-notice)
+  - [2.4 Phase0 Risk Mitigation Plan](#24-phase0-risk-mitigation-plan)
+  - [2.5 HAR Integration Documentation](#25-har-integration-documentation)
+  - [2.6 Code TODOs in Source Files](#26-code-todos-in-source-files)
+  - [2.7 Plugin Quarantine Enhancement](#27-plugin-quarantine-enhancement)
+  - [2.8 Self-Review Checklist Compliance](#28-self-review-checklist-compliance)
+- [3. MEDIUM - Action Recommended](#3-medium---action-recommended)
+  - [3.1 Test Generation Guide Best Practices](#31-test-generation-guide-best-practices)
+  - [3.2 Audit Prompt Reference Examples](#32-audit-prompt-reference-examples)
+  - [3.3 Phase 1 Completion Skeleton Implementations](#33-phase-1-completion-skeleton-implementations)
+  - [3.4 AST Phase0 File Analysis TODOs](#34-ast-phase0-file-analysis-todos)
+- [TODO: Implement file analysis](#todo-implement-file-analysis)
+- [TODO: Implement directory analysis](#todo-implement-directory-analysis)
+- [3.5 Changelog TODO References](#35-changelog-todo-references)
+  - [3.6 PR Template Compliance Check](#36-pr-template-compliance-check)
+  - [3.7 Capability Mapping TODO Association](#37-capability-mapping-todo-association)
+  - [3.8 LoRA Metrics Task Sequence](#38-lora-metrics-task-sequence)
+- [4. LOW - Optional Improvements](#4-low---optional-improvements)
+  - [4.1 Archive Directory Organization](#41-archive-directory-organization)
+  - [4.2 Master Implementation Plan Status](#42-master-implementation-plan-status)
+  - [4.3 Component Gaps JSON Audit](#43-component-gaps-json-audit)
+  - [4.4 Schema Validation Implementation](#44-schema-validation-implementation)
+  - [4.5 Checkpoint Manager Coverage](#45-checkpoint-manager-coverage)
+  - [4.6 Codex Workflow Tool Coverage](#46-codex-workflow-tool-coverage)
+  - [4.7 Verification Tool Implementation](#47-verification-tool-implementation)
+  - [4.8 Data Loader Enhancement](#48-data-loader-enhancement)
+  - [4.9 Training Data Utils](#49-training-data-utils)
+  - [4.10 Historical Documentation Markers](#410-historical-documentation-markers)
+- [5. Source Code TODOs (11 instances)](#5-source-code-todos-11-instances)
+- [6. Configuration & Environment Setup](#6-configuration--environment-setup)
+  - [6.1 Encryption Key Configuration](#61-encryption-key-configuration)
+  - [6.2 Database Path Configuration](#62-database-path-configuration)
+  - [6.3 Security Validation Automation](#63-security-validation-automation)
+- [7. Recommendations](#7-recommendations)
+  - [7.1 TODO Tracking System](#71-todo-tracking-system)
+  - [7.2 Documentation Review Cycle](#72-documentation-review-cycle)
+  - [7.3 Code Quality Gates](#73-code-quality-gates)
+- [Appendix A: Full Search Results](#appendix-a-full-search-results)
+  - [Documentation TODOs (50+ instances)](#documentation-todos-50-instances)
+  - [Code TODOs (11 instances)](#code-todos-11-instances)
+  - [Action Keywords Found](#action-keywords-found)
+- [Appendix B: Priority Matrix](#appendix-b-priority-matrix)
+- [Appendix C: Contact & Ownership](#appendix-c-contact--ownership)
+- [Document Maintenance](#document-maintenance)
+- [Re-run audit and update this document](#re-run-audit-and-update-this-document)
+- [Then manually categorize and update this document](#then-manually-categorize-and-update-this-document)
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ - Action Resolution Flow](#path----action-resolution-flow)
+  - [Fields 🔄 - Priority Gradients](#fields----priority-gradients)
+  - [Patterns 👁️ - Action Signatures](#patterns----action-signatures)
+  - [Redundancy 🔀 - Tracking Safeguards](#redundancy----tracking-safeguards)
+  - [Balance ⚖️ - Action Load Distribution](#balance----action-load-distribution)
+- [⚡ Energy Distribution](#-energy-distribution)
+  - [Priority-Based Allocation](#priority-based-allocation)
+  - [Temporal Energy Flow](#temporal-energy-flow)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+  - [Action Tracking Rollback](#action-tracking-rollback)
+
+**Generated**: 2026-06-22  
 **Branch**: `copilot/fix-security-vulnerabilities`  
 **Repository**: `Aries-Serpent/_codex_`
 
@@ -183,7 +256,7 @@ This document catalogs all items requiring human intervention, code owner review
 **Impact**: AST analysis capabilities  
 **Estimated Time**: 4-6 hours
 
-### 3.5 Changelog TODO References
+## 3.5 Changelog TODO References
 **File**: `docs/CHANGELOG/changelog_codex.md`  
 **Lines**: 353, 382  
 **Action**: Verify gaps reports for TODOs and stubs have been generated  
@@ -432,7 +505,7 @@ grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" \
 
 ## Document Maintenance
 
-**Last Updated**: 2026-01-23T11:00:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Next Review**: 2026-02-23T11:00:00Z (monthly)  
 **Automation**: Can be regenerated by running comprehensive audit scripts
 

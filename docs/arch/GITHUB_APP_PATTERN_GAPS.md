@@ -1,5 +1,7 @@
 # GitHub App Design-Pattern Gap Analysis
 
+**Last Updated:** 2026-06-22
+
 **Produced by:** copilot-swe-agent (W-098d, PR #3494)
 **Date:** 2026-03-04
 **Reference:** [About creating GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/about-creating-github-apps/about-creating-github-apps)

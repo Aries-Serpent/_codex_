@@ -35,7 +35,7 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 
 **Rollback**: Set `if: false` to immediately disable.
 
-### Step 2: Script Guard (`autonomous_agent.py`)
+## Step 2: Script Guard (`autonomous_agent.py`)
 
 **Current**: `SAFE_MODE = True` (blocks autonomous actions)  
 **Target**: `SAFE_MODE = False` (enables supervised autonomous actions)
@@ -47,7 +47,7 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 
 **Rollback**: Set `SAFE_MODE = True` to immediately revert.
 
-### Step 3: Config Guard (`guardrails.md`)
+## Step 3: Config Guard (`guardrails.md`)
 
 **Current**: `autonomous_actions_enabled: false`  
 **Target**: `autonomous_actions_enabled: true`

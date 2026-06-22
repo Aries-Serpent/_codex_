@@ -2,6 +2,8 @@
 
 # Hydra Distributed Overrides
 
+**Last Updated:** 2026-06-22
+
 ## torchrun (single node)
 
 ```text

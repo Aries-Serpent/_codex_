@@ -1,5 +1,7 @@
 # CLI reference (offline-first)
 
+**Last Updated:** 2026-06-22
+
 ## Training
 
 - **Primary**: `codex-train` delegates to Hydra when installed and falls back to

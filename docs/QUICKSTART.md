@@ -1,5 +1,7 @@
 # Quickstart — Tokenizer CLI and Offline Utilities
 
+**Last Updated:** 2026-06-22
+
 This quickstart walks through training a tokenizer with the new Typer-based CLI
 and generating deterministic dataset splits using the offline-friendly helper
 functions.

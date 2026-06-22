@@ -27,6 +27,7 @@ This document presents all key architecture diagrams aligned with v0.1.0 pre-rel
 ### Current State (v0.1.0 Pre-Release)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing test-comprehensive.yml<br/>✅ 21,500+ Tests<br/>10.7% Coverage<br/>✅ pytest-rerunfailures, test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini'}}%%
 graph TB
     subgraph "codex-ml v0.1.0 CI/CD Pipeline"
         TC[test-comprehensive.yml<br/>✅ 21,500+ Tests<br/>10.7% Coverage<br/>✅ pytest-rerunfailures]
@@ -106,6 +107,7 @@ graph TB
 ### Component-Level Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Target Path<br/>src/codex/rag/, Mode Selection<br/>document/test/both/<br/>security/full/index'}}%%
 graph TB
     subgraph "Input Layer"
         TARGET[Target Path<br/>src/codex/rag/]
@@ -190,6 +192,7 @@ graph TB
 ### Interactive Documentation Hub
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Landing Page<br/>index.html<br/>Search + Stats + Nav, Real-time Search<br/>Filter by type/module/content'}}%%
 graph TB
     subgraph "HTML Index Components"
         LANDING[Landing Page<br/>index.html<br/>Search + Stats + Nav]
@@ -258,6 +261,7 @@ graph TB
 ### Multi-Tool Security Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
 sequenceDiagram
     participant Action as Doc-Test-Scribe Action
     participant Code as Source Code
@@ -304,6 +308,7 @@ sequenceDiagram
 ### Correct Setup Pattern (Fixed)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Start, Checkout Code'}}%%
 flowchart TD
     START[Workflow Start] --> CHECKOUT[Checkout Code]
 
@@ -339,6 +344,7 @@ flowchart TD
 ### Centralized Configuration Strategy
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing --timeout=300<br/>--timeout-method=thread, Test Markers<br/>smoke, slow, integration, etc.'}}%%
 graph TB
     subgraph "Global Configuration - pytest.ini"
         TIMEOUT[--timeout=300<br/>--timeout-method=thread]
@@ -404,6 +410,7 @@ graph TB
 ### Including Doc-Test-Scribe Action
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing doc-test-scribe-action<br/>🆕 GitHub Action<br/>Composite workflow, setup-python-cached<br/>Custom cache action<br/>✅ Fixed dependencies'}}%%
 graph TB
     subgraph "GitHub Actions Layer"
         DTS_ACTION[doc-test-scribe-action<br/>🆕 GitHub Action<br/>Composite workflow]
@@ -473,6 +480,7 @@ graph TB
 ### Problem → Solution Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title CI/CD Fixes Implementation Timeline
     dateFormat YYYY-MM-DD HH:mm
@@ -509,6 +517,7 @@ gantt
 ### Complete System Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((Codex Repository<br/>2026-01-17))
     CI/CD Infrastructure
@@ -629,6 +638,7 @@ mindmap
 ### Phase 20 Test Ecosystem (420 New Tests)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Phase 20.1<br/>Production Monitoring<br/>137 tests ✅, Phase 20.2<br/>Advanced Automation<br/>104 tests ✅'}}%%
 graph TB
     subgraph "Phase 20 Test Architecture - COMPLETE"
         P201[Phase 20.1<br/>Production Monitoring<br/>137 tests ✅]
@@ -694,6 +704,7 @@ graph TB
 ### Test Count Growth Across Phases
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Phase 14-19<br/>Foundation<br/>1817 tests, Phase 20<br/>Production Ready<br/>+420 tests<br/>Total: 2237'}}%%
 graph LR
     P14[Phase 14-19<br/>Foundation<br/>1817 tests]
     P20[Phase 20<br/>Production Ready<br/>+420 tests<br/>Total: 2237]
@@ -723,6 +734,7 @@ graph LR
 ### Phase 21 Test Categories (260+ Tests Planned)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Phase 21.0<br/>Performance Testing<br/>65+ tests planned, Phase 21.1<br/>Security Testing<br/>65+ tests planned'}}%%
 graph TB
     subgraph "Phase 21: Advanced Testing & Production Readiness"
         P210[Phase 21.0<br/>Performance Testing<br/>65+ tests planned]
@@ -800,6 +812,7 @@ graph TB
 ### Full Test Coverage Map (Phases 14-21)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Test Coverage Foundation<br/>545 tests, Advanced Testing & Quality<br/>220 tests'}}%%
 graph TB
     subgraph "Foundation (Phases 14-19) - 1817 tests"
         F1[Test Coverage Foundation<br/>545 tests]
@@ -883,6 +896,7 @@ This architecture documentation now reflects:
 > Cross-reference: `docs/CODEBASE_MERMAID_MAPS.md` §13-16 for full diagrams
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n5 autonomy surfaces, COPILOT_SESSION_HANDOFF_DESIGN.md\nstate machine + self-healing loop'}}%%
 graph TD
     subgraph "Phase 9 Deliverables (PR #4356)"
         D1[AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n5 autonomy surfaces]

@@ -1,5 +1,7 @@
 # Legacy Code Migration Guide
 
+**Last Updated:** 2026-06-22
+
 **Created:** 2026-01-16  
 **Status:** Reference Documentation  
 **Version:** 1.0.0
@@ -31,7 +33,7 @@ from config_legacy import compose, initialize_config_dir
 from hydra import compose, initialize_config_dir
 ```
 
-#### Files Using config_legacy (Current State)
+## Files Using config_legacy (Current State)
 
 The following files use the fallback pattern `try: import hydra except: import config_legacy`:
 
@@ -51,7 +53,7 @@ The following files use the fallback pattern `try: import hydra except: import c
 | `src/codex_ml/cli/config.py` | Fallback for ConfigStore |
 | `src/codex_ml/cli/hydra_main.py` | Fallback import for hydra |
 
-#### Migration Strategy
+### Migration Strategy
 
 Since `hydra-core>=1.3.2` is now explicitly required in `pyproject.toml`, the fallback imports should never be triggered in production. The fallback pattern provides safety during development and testing when hydra may not be installed.
 
@@ -82,7 +84,7 @@ from yaml_legacy import safe_load, safe_dump
 from yaml import safe_load, safe_dump
 ```
 
-#### Usage Status
+## Usage Status
 
 **No direct imports found** - The yaml_legacy module is not directly imported anywhere in the codebase. It can be safely removed in a future version.
 
@@ -104,7 +106,7 @@ python -c "import hydra; print(hydra.__version__)"
 python -c "import yaml; print(yaml.__version__)"
 ```
 
-### Run Tests to Verify Migration
+## Run Tests to Verify Migration
 
 ```bash
 # Run full test suite

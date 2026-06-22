@@ -213,7 +213,7 @@ jq '.traversal_summary.verified_paths | keys' skeleton_map.json
 
 ---
 
-### GEM Instructions Validation
+## GEM Instructions Validation
 
 ```bash
 grep -c "^### " GEM_INSTRUCTIONS.md
@@ -225,7 +225,7 @@ grep -c "^## " GEM_INSTRUCTIONS.md
 
 ---
 
-### Script Validation
+## Script Validation
 
 ```bash
 bash -n prepare_notebooklm.sh
@@ -290,7 +290,7 @@ git rev-parse --show-toplevel
 
 ---
 
-### Issue: JSON validation fails
+## Issue: JSON validation fails
 
 **Solution:**
 ```bash
@@ -304,7 +304,7 @@ jq . skeleton_map.json | head -20
 
 ---
 
-### Issue: NotebookLM doesn't cite file paths
+## Issue: NotebookLM doesn't cite file paths
 
 **Solution:**
 - Ensure `full_context.txt` has file path headers

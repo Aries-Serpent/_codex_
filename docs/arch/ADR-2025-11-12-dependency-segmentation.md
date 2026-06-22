@@ -1,5 +1,5 @@
 # ADR-2025-11-12: Dependency Segmentation & Archival-Aligned Hygiene  
-> Generated: 2025-11-12T16:40:00Z | Author: mbaetiong  
+> Generated: 2026-06-22T16:40:00Z | Author: mbaetiong  
 > Status: Accepted
 
 ## 1. Context

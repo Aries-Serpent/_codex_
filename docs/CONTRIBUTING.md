@@ -1,5 +1,7 @@
 # Contributing — Hooks, Line Endings, and Fast Commits
 
+**Last Updated:** 2026-06-22
+
 **AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All processes are automated and autonomous. The guidelines below support AI Assistant operations.
 
 ## One-time Setup

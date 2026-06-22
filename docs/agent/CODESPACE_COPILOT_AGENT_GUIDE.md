@@ -1,5 +1,7 @@
 # GitHub Codespace — Copilot Agent Configuration Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ NEW (PR #3503 W-126, 2026-03-05)  
 > **Session:** S114  
 > **Audience:** Copilot Coding Agents, repository maintainers  
@@ -324,7 +326,7 @@ for val, name in _resolve_github_token():
 # If missing: Settings → Codespaces → Secrets → add the secret
 ```
 
-### Import errors
+## Import errors
 ```bash
 bash .devcontainer/scripts/update-content.sh   # re-install deps
 ```

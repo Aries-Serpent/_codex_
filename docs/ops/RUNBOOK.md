@@ -1,5 +1,7 @@
 # docs/ops/RUNBOOK.md — Codex Run as a Dynamical System
 
+**Last Updated:** 2026-06-22
+
 > Treat a full Codex run as a hybrid dynamical system: continuous work (phase operators), discrete edits (patches), filtered by quality-gate projectors. This document gives you the mental model, the commands to run, and the minimal troubleshooting you’ll need.
 
 ## Table of contents

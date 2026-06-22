@@ -1,5 +1,7 @@
 # Pre-commit 1-2 Coverage Improvement Status Report
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2025-12-16  
 **Target**: 20% coverage  
 **Focus**: Core Training Functionality  
@@ -137,7 +139,7 @@ pytest tests/training/test_training_config_coverage.py -v
 pytest tests/training/ --cov=src/codex_ml/train_loop --cov=src/codex_ml/training
 ```
 
-### Coverage Reporting
+## Coverage Reporting
 Will be automatically included in test-suite.yml workflow once merged.
 
 ## Next Steps

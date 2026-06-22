@@ -1,5 +1,7 @@
 # AI Agency Score - GitHub Pages Validation Implementation
 
+**Last Updated:** 2026-06-22
+
 **Repository**: Aries-Serpent/_codex_  
 **PR**: #3235  
 **Evaluation Date**: 2026-02-10  
@@ -228,6 +230,7 @@
 
 2. **Agent Dependency Graph**
    ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing GitHub Pages Manager, Link Validator'}}%%
    graph TD
        A[GitHub Pages Manager] --> B[Link Validator]
        A --> C[Doc Consolidator]

@@ -1,5 +1,32 @@
 # DeepResearch: Google Home Script Editor — Automations, Templates, and File Formats
 
+## Table of Contents
+
+- [1. Executive Summary](#1-executive-summary)
+- [2. Repository Mapping](#2-repository-mapping)
+- [3. Top 5 Workflows from Design to Production](#3-top-5-workflows-from-design-to-production)
+  - [Workflow 1 — Schema Discovery and Template Extraction](#workflow-1--schema-discovery-and-template-extraction)
+  - [Workflow 2 — Schema and Template Design with Validation](#workflow-2--schema-and-template-design-with-validation)
+  - [Workflow 3 — Cognitive Pattern Recording for Automation Failures](#workflow-3--cognitive-pattern-recording-for-automation-failures)
+  - [Workflow 4 — Template Validation and Production Gate](#workflow-4--template-validation-and-production-gate)
+  - [Workflow 5 — Production Rollout with RAG-Assisted Context](#workflow-5--production-rollout-with-rag-assisted-context)
+- [4. Top 5 Custom Agents to Design or Enhance](#4-top-5-custom-agents-to-design-or-enhance)
+  - [Agent 1 — `google-home-script-agent` *(New)*](#agent-1--google-home-script-agent-new)
+  - [Agent 2 — `energy-conversion-agent` *(Enhance)*](#agent-2--energy-conversion-agent-enhance)
+  - [Agent 3 — `smart-home-template-guardian` *(New)*](#agent-3--smart-home-template-guardian-new)
+  - [Agent 4 — `cognitive-home-automation-agent` *(New)*](#agent-4--cognitive-home-automation-agent-new)
+  - [Agent 5 — `rag-home-knowledge-agent` *(New)*](#agent-5--rag-home-knowledge-agent-new)
+- [5. Top 5 Conceptual Usages and Integrations](#5-top-5-conceptual-usages-and-integrations)
+  - [Integration 1 — Pattern DB as Automation Failure Historian](#integration-1--pattern-db-as-automation-failure-historian)
+  - [Integration 2 — YAML Strict Gate for Template Deployments](#integration-2--yaml-strict-gate-for-template-deployments)
+  - [Integration 3 — Deepresearch Index as Automation Template Library](#integration-3--deepresearch-index-as-automation-template-library)
+  - [Integration 4 — Energy Conversion Agent as Home Energy Optimizer](#integration-4--energy-conversion-agent-as-home-energy-optimizer)
+  - [Integration 5 — RAG-Powered Automation Authoring Assistant](#integration-5--rag-powered-automation-authoring-assistant)
+- [6. Relevant Repo Files and Docs](#6-relevant-repo-files-and-docs)
+- [7. Constraints, Limitations, and Workarounds](#7-constraints-limitations-and-workarounds)
+- [8. Recommended Next Actions](#8-recommended-next-actions)
+- [Sources](#sources)
+
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
 > **Roles:** [Primary: Research Integrator], [Secondary: Agent Designer] ⚡ Energy: 8
 > **Linked Agent:** `.github/agents/energy-conversion-agent.md` (cross-domain automation patterns)

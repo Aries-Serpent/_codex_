@@ -1,5 +1,7 @@
 # _codex_ — What's Next: Roadmap After PR #4289
 
+**Last Updated:** 2026-06-22
+
 > **Status as of 2026-05-06T02:00Z** · S295 final · All CodeQL alerts addressed
 > **62 commits · 117 files · 2,015 ins · 384 del · 68 alerts → 0**
 
@@ -8,6 +10,7 @@
 ## 1. Gantt — Full Roadmap Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title _codex_ Roadmap — Post PR #4289
     dateFormat  YYYY-MM-DD
@@ -47,6 +50,7 @@ gantt
 ## 2. Priority 1 — Immediate (Current Session S295)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🎯 Priority 1 — S295 Session Tasks", "Resolve merge conflicts\nCODEX_MANIFEST.json timestamp divergence\n✅ DONE — no conflict markers in working tree"'}}%%
 flowchart TD
     P1(["🎯 Priority 1 — S295 Session Tasks"])
 
@@ -66,6 +70,7 @@ flowchart TD
 ## 3. Priority 2 — Near-Term Quality Backlog
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((Quality Backlog\nPost PR 4289))
     Security
@@ -120,6 +125,7 @@ mindmap
 ## 4. Priority 3 — Auto-Fix Pattern Expansion
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Current Suite\n18 auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30", "P33 — BLE001 src/\nEnable ruff BLE001\nnarrow broad handlers\nin production modules"'}}%%
 flowchart LR
     CURRENT["Current Suite\n18 auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30"]
 
@@ -138,6 +144,7 @@ flowchart LR
 ## 5. Priority 4 — Genesis Protocol State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> PreGenesis : PR 4289 merged
 
@@ -165,6 +172,7 @@ stateDiagram-v2
 ## 6. Dependency Chain — PR #4289 → Future Gates
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4289 merged\n68 alerts → 0\n117 files\n0 CI issues", "CodeQL baseline\nclean on main"'}}%%
 flowchart TD
     MERGED(["PR #4289 merged\n68 alerts → 0\n117 files\n0 CI issues"])
 
@@ -194,6 +202,7 @@ flowchart TD
 ## 7. PR Work Breakdown — Pie Chart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title PR #4289 — Work Breakdown by Category (Commits)
     "CodeQL Security Fixes" : 22
     "CI / Auto-Fix Patterns" : 12
@@ -209,6 +218,7 @@ pie title PR #4289 — Work Breakdown by Category (Commits)
 ## 8. CI Workflow Interaction Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "git push\nPR branch", "pre-merge-validation.yml\nruff · sync_tracked · baseline"'}}%%
 flowchart TD
     PUSH["git push\nPR branch"] --> PRE_MERGE["pre-merge-validation.yml\nruff · sync_tracked · baseline"]
     PUSH --> COMMENT_GATE["comment-review-gate.yml\nunresolved threads check"]
@@ -236,6 +246,7 @@ flowchart TD
 ## 9. Journey Diagram — Merge Readiness Path
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'User Journey'}}%%
 journey
     title PR #4289 Merge Readiness Journey
     section S293 Open
@@ -269,6 +280,7 @@ journey
 ## 10. Merge Readiness XY Chart — Score Over Sessions
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "PR open", "S293-review", "S293-warnings", "S293-security", "S294-open", "S294-fix", "S294-late", "S295-final", 78, 80, 83, 85, 83, 90, 93, 95'}}%%
 xychart-beta
     title "Merge Readiness Score Over PR Lifetime"
     x-axis ["PR open", "S293-review", "S293-warnings", "S293-security", "S294-open", "S294-fix", "S294-late", "S295-final"]
@@ -426,6 +438,7 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 ## 13. S296 Merge Conflict Resolution — Topological Annihilation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Conflict Detected\nCODEX_MANIFEST.json\norigin/main 7fea715e1, "Strategy: git merge origin/main -X ours\n(preserve PR branch changes)"'}}%%
 flowchart TD
     CONFLICT([Conflict Detected\nCODEX_MANIFEST.json\norigin/main 7fea715e1]) --> ANALYZE
     ANALYZE{Root Cause?}

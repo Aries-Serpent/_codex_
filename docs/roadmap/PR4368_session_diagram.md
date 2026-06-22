@@ -9,6 +9,7 @@
 ## Session Timeline (Mermaid)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title PR #4368 — Session Progression S889 → S899-cont
     dateFormat  YYYY-MM-DD
@@ -42,6 +43,7 @@ gantt
 ## Component Architecture (Mermaid)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔒 Security & Correctness", safe_pickle.py<br/>HMAC signing · allowlist<br/>atomic key-creation'}}%%
 graph TD
     subgraph Security["🔒 Security & Correctness"]
         SP[safe_pickle.py<br/>HMAC signing · allowlist<br/>atomic key-creation]
@@ -109,6 +111,7 @@ graph TD
 ## CI Health Snapshot (Mermaid)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Results — HEAD 6ec1c426 (S899-final)
     "success" : 18
     "in_progress" : 8
@@ -122,6 +125,7 @@ pie title CI Results — HEAD 6ec1c426 (S899-final)
 ## Test Frontier Summary (Mermaid)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "passed", "skipped", "xfailed", "xpassed", "failed", 729, 57, 5, 2, 0'}}%%
 xychart-beta
     title "Test Counts — PR #4368 Frontier (S899-final)"
     x-axis ["passed", "skipped", "xfailed", "xpassed", "failed"]
@@ -134,6 +138,7 @@ xychart-beta
 ## Workflow Cascade Root Cause (Mermaid)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing skip ci, skip ci'}}%%
 sequenceDiagram
     participant RP as report_progress
     participant GH as GitHub

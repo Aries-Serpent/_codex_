@@ -27,7 +27,7 @@ python -m pip install -e . --no-deps
 python -m codex.cli health-check
 ```
 
-### Phase 2: Documentation & GitHub Pages Sync (10-15 min)
+## Phase 2: Documentation & GitHub Pages Sync (10-15 min)
 Update live documentation after merge validation:
 
 ```bash
@@ -45,7 +45,7 @@ gh workflow run post-merge-doc-alignment.yml \
 # Verify Phase 9 completion dashboards are live
 ```
 
-### Phase 3: CI/CD Validation Suite (15-20 min)
+## Phase 3: CI/CD Validation Suite (15-20 min)
 Run comprehensive validation pipeline:
 
 ```bash
@@ -64,31 +64,31 @@ python scripts/ci/validate_copilot_setup_steps.py
 python scripts/ci/enforce_actions_versions.py
 ```
 
-### Phase 4: Phase 9 Final Coordination Tasks (Ongoing)
+## Phase 4: Phase 9 Final Coordination Tasks (Ongoing)
 Continue Phase 9 execution per coordination dashboard:
 
 ```bash
 # 1. Execute Phase 9 Track 9.1 agent authorization validation
 # Delegate to: orchestrator-agent
 # Command:
-#   @copilot Use orchestrator-agent to validate 9 authorized agents 
-#            per PHASE_9_1_DECISION_FRAMEWORK.md §3.2
+# @copilot Use orchestrator-agent to validate 9 authorized agents
+# per PHASE_9_1_DECISION_FRAMEWORK.md §3.2
 
 # 2. Execute Phase 9 Track 9.2 self-healing cascade verification
 # Delegate to: self-healing-orchestrator-agent
 # Command:
-#   @copilot Use self-healing-orchestrator-agent to verify 8 CI 
-#            patterns and 50%+ auto-fix coverage per 
-#            PHASE_8_12_MASTER_EXECUTION_PLAN.md §5.2
+# @copilot Use self-healing-orchestrator-agent to verify 8 CI
+# patterns and 50%+ auto-fix coverage per
+# PHASE_8_12_MASTER_EXECUTION_PLAN.md §5.2
 
 # 3. Execute Phase 9 Track 9.3 parallel router optimization
 # Delegate to: agent-orchestrator
 # Command:
-#   @copilot Use agent-orchestrator to optimize routing accuracy 
-#            to 95%+ per PHASE_9_COORDINATION_DASHBOARD.md §4.1
+# @copilot Use agent-orchestrator to optimize routing accuracy
+# to 95%+ per PHASE_9_COORDINATION_DASHBOARD.md §4.1
 ```
 
-### Phase 5: Daily Standup & Coordination (18:00 UTC daily, 2026-07-01 → 2026-07-05)
+## Phase 5: Daily Standup & Coordination (18:00 UTC daily, 2026-07-01 → 2026-07-05)
 Execute daily coordination standups per Phase 9 schedule:
 
 ```bash
@@ -107,7 +107,7 @@ Execute daily coordination standups per Phase 9 schedule:
 # - Next steps: [Tomorrow's priorities]
 ```
 
-### Phase 6: Verify Deployment Authority (Ongoing)
+## Phase 6: Verify Deployment Authority (Ongoing)
 Continue Phase 8/9 deployment coordination:
 
 ```bash

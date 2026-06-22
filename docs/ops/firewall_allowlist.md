@@ -2,6 +2,8 @@
 
 # Firewall Allow-List — _codex_ Repository
 
+**Last Updated:** 2026-06-22
+
 > **Registered:** 2026-02-28  
 > **Scope:** All outbound connections made by the codebase, CI/CD pipelines,  
 > and developer tooling on any machine running this repository.  

@@ -1,5 +1,7 @@
 # Checkpoint retention + RNG snapshots
 
+**Last Updated:** 2026-06-22
+
 ## Filename schema
 
 Checkpoints follow `epoch{E}-metric{VAL}.pt`.

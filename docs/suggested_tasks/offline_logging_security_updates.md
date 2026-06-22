@@ -1,5 +1,7 @@
 # Suggested Task: clarify offline safeguards across logging, security, and training stacks
 
+**Last Updated:** 2026-06-22
+
 ## Summary
 Strengthen repo documentation so contributors can exercise the new Hydra override and API middleware safeguards without
 network access. The patch below adds an actionable quickstart block that chains the deterministic tests we rely on for

@@ -257,6 +257,16 @@ repos:
         stages: [commit]
         # Runs full internal-link scan whenever .md files are staged; exits 1 on errors
 
+      # Phase 2: Anchor link validation
+      - id: validate-doc-anchors
+        name: Validate Documentation Anchors (Phase 2)
+        entry: python .github/scripts/validate_doc_anchors.py --directory docs
+        language: system
+        pass_filenames: false
+        files: '\.md$'
+        stages: [commit]
+        # Validates heading anchors and cross-references whenever .md files are staged
+
       # PR #3248 Preventive Tooling - Ruff linting
       - id: ruff-check
         name: Ruff Linting (F401, F841 - unused imports/variables)

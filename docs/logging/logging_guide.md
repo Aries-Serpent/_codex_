@@ -1,5 +1,7 @@
 # Local Logging & Tracking
 
+**Last Updated:** 2026-06-22
+
 This repository uses **local-only** logging:
 
 ## MLflow (file backend)

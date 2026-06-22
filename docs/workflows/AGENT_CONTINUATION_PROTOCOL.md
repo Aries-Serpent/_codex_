@@ -1,8 +1,8 @@
-# Agent Continuation Protocol
+# agent Continuation Protocol
 
 **Purpose**: Standardized protocol for AI agents to continue work across sessions using the cognitive brain for context and planning.
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
 **Status**: 🟢 Active
 
@@ -18,7 +18,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ---
 
-## 🎯 Session Workflow
+## 🎯 Session workflow
 
 ### Phase 1: Context Loading (First 2K tokens)
 
@@ -148,7 +148,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 **Example**:
 ```
-Task requested: Fix typo (500 tokens used)
+task requested: Fix typo (500 tokens used)
 Remaining capacity: 63.5K tokens
 Action: Fix typo, then continue with Phase 8 tasks
 Rationale: Maximize session value
@@ -166,20 +166,20 @@ When posting continuation prompts to PR comments:
 ## ✅ Session Summary
 
 **Completed Work**:
-- [x] Task 1 (commit abc123)
-- [x] Task 2 (commit def456)
+- [x] task 1 (commit abc123)
+- [x] task 2 (commit def456)
 
 **Progress**:
 - Phase [N]: [X]% complete
-- [Component]: Updated with [changes]
+- [component]: Updated with [changes]
 
 **Commits**: abc123, def456, ghi789
 
 ## 🎯 Next Steps
 
 **Priority Tasks**:
-1. [ ] Task A - [Brief description]
-2. [ ] Task B - [Brief description]
+1. [ ] task A - [Brief description]
+2. [ ] task B - [Brief description]
 
 **Cognitive Brain Status**:
 - Dashboard updated: [Yes/No]
@@ -238,9 +238,9 @@ When posting continuation prompts to PR comments:
 
 ## 🚦 Session Handoff Protocol
 
-### Between AI Agent Sessions
+### Between AI agent Sessions
 
-**Outgoing Agent** (end of session):
+**Outgoing agent** (end of session):
 1. Complete self-review (5 passes, 0 concerns)
 2. Update Dashboard with progress
 3. Commit all changes
@@ -250,17 +250,17 @@ When posting continuation prompts to PR comments:
    - Cognitive brain status
    - Known blockers
 
-**Incoming Agent** (start of session):
+**Incoming agent** (start of session):
 1. Read continuation prompt
 2. Load cognitive brain (Map, Dashboard, Roadmap)
 3. Validate current state matches Dashboard
 4. Resume from highest priority task
 
-### Between Human and AI Agent
+### Between Human and AI agent
 
 **Human Handoff**:
 ```
-@copilot [Task description]
+@copilot [task description]
 
 Context:
 - Current phase: [Phase N]
@@ -269,7 +269,7 @@ Context:
 - Blockers: [None/List]
 ```
 
-**AI Agent Response**:
+**AI agent Response**:
 1. Acknowledge task
 2. State current context (phase, status)
 3. Outline approach

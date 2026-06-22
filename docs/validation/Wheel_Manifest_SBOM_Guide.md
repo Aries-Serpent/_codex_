@@ -1,5 +1,7 @@
 # Wheel Manifest & Baseline Management
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The wheel manifest system provides cryptographic verification of Python dependencies to ensure reproducible builds and detect supply chain drift.
@@ -116,7 +118,7 @@ syft codex-ml:cpu-latest -o spdx-json=sbom.json
 syft dir:./wheelhouse -o cyclonedx-json=sbom.json
 ```
 
-### Scanning
+## Scanning
 
 Vulnerability scanning uses [Grype](https://github.com/anchore/grype):
 
@@ -128,7 +130,7 @@ grype codex-ml:cpu-latest --output sarif --file results.sarif
 grype sbom:sbom.json --fail-on critical
 ```
 
-### GitHub Security Integration
+## GitHub Security Integration
 
 - SARIF files automatically uploaded to GitHub Security tab
 - Alerts appear in Security > Code scanning alerts
@@ -199,7 +201,7 @@ ray==2.9.3 \
     --hash=sha256:abc123...
 ```
 
-### Baseline Storage
+## Baseline Storage
 
 For production systems, consider:
 - Store baseline manifests in repository (`baselines/manifest-YYYY-MM-DD.json`)

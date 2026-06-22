@@ -1,5 +1,7 @@
 # ADR: Introduce `nox` sessions & dev requirements (local-only)
 
+**Last Updated:** 2026-06-22
+
 ## Status
 Accepted — 2025-10-26
 

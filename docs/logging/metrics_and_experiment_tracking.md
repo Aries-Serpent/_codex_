@@ -1,5 +1,7 @@
 # Metrics & Experiment Tracking in `_codex_` (Scaffolding)
 
+**Last Updated:** 2026-06-22
+
 This document captures the current, lightweight approach to metrics logging
 and experiment indexing in `_codex_`.
 

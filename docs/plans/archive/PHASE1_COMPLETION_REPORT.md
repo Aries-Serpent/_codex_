@@ -55,7 +55,7 @@ Phase 1 (Quick Wins) has been successfully completed, delivering foundational AS
 
 ---
 
-### Task 2: StandardizedASTNode (✅ COMPLETE)
+## Task 2: StandardizedASTNode (✅ COMPLETE)
 
 **Files Created:**
 - `src/codex/ast/__init__.py` (438 bytes)

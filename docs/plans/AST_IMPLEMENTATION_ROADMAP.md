@@ -4,7 +4,7 @@
 
 
 > **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)  
-> **Generated**: 2025-11-10  
+> **Generated**: 2026-06-22  
 > **Purpose**: Executable implementation roadmap for AST standardization based on comprehensive blocker research
 
 ---
@@ -130,7 +130,7 @@ python -c "import libcst; import radon; import parso; print('✓ Dependencies OK
 
 ---
 
-### 2. Create StandardizedASTNode Dataclass (1 iteration)
+## 2. Create StandardizedASTNode Dataclass (1 iteration)
 
 **Blocker Resolved**: BLOCK-ARCH-001
 
@@ -225,7 +225,7 @@ def test_node_serialization():
 
 ---
 
-### 3. Implement Basic DependencyGraph (1 iteration)
+## 3. Implement Basic DependencyGraph (1 iteration)
 
 **Blocker Resolved**: BLOCK-ARCH-002
 
@@ -355,7 +355,7 @@ def test_topological_sort_dag():
 
 ---
 
-### 4. Add Simple MetricsAggregator (0.5 iterations)
+## 4. Add Simple MetricsAggregator (0.5 iterations)
 
 **Blocker Resolved**: BLOCK-ARCH-003
 
@@ -418,7 +418,7 @@ def test_metrics_aggregation():
 
 ---
 
-### 5. Create Basic Test Suite (1 iteration)
+## 5. Create Basic Test Suite (1 iteration)
 
 **Blocker Resolved**: BLOCK-TEST-001
 

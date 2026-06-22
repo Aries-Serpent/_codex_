@@ -1,7 +1,7 @@
 # Common Issues Troubleshooting Guide
 
 > **Version**: 1.0.0  
-> **Last Updated**: 2025-12-11
+> **Last Updated**: 2026-06-22
 
 ---
 
@@ -20,7 +20,7 @@ pip list | grep codex
 env | grep CODEX
 ```
 
-### Check Installation
+## Check Installation
 
 ```bash
 # Verify codex is importable
@@ -51,7 +51,7 @@ uv pip install -e .
 export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 ```
 
-### 2. Test Failures
+## 2. Test Failures
 
 **Symptom**: Tests fail with import errors or missing fixtures
 
@@ -68,7 +68,7 @@ PYTHONPATH=src pytest tests/ -v
 ls tests/conftest.py
 ```
 
-### 3. Database Connection Issues
+## 3. Database Connection Issues
 
 **Symptom**: `sqlite3.OperationalError` or connection timeouts
 
@@ -85,7 +85,7 @@ mkdir -p .codex
 rm -f .codex/agent_memory.db
 ```
 
-### 4. Memory/Performance Issues
+## 4. Memory/Performance Issues
 
 **Symptom**: High memory usage or slow execution
 
@@ -100,7 +100,7 @@ os.environ['CODEX_FORCE_CPU'] = '1'
 os.environ['CODEX_BATCH_SIZE'] = '16'
 ```
 
-### 5. CI/CD Pipeline Failures
+## 5. CI/CD Pipeline Failures
 
 **Symptom**: GitHub Actions workflow fails
 
@@ -119,7 +119,7 @@ export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 nox -s tests
 ```
 
-### 6. Linting/Formatting Errors
+## 6. Linting/Formatting Errors
 
 **Symptom**: Pre-commit hooks fail
 
@@ -134,7 +134,7 @@ isort src/ tests/
 ruff check src/codex_ml/path/to/file.py --fix
 ```
 
-### 7. Type Checking Errors
+## 7. Type Checking Errors
 
 **Symptom**: mypy reports type errors
 
@@ -177,7 +177,7 @@ mypy src/codex_ml/
 pytest tests/unit/ -v --tb=short
 ```
 
-### Log Analysis
+## Log Analysis
 
 ```bash
 # View recent logs
@@ -187,7 +187,7 @@ tail -f .codex/sessions/*.log
 grep -r "ERROR\|Exception" .codex/sessions/
 ```
 
-### Resource Usage
+## Resource Usage
 
 ```bash
 # Memory usage during tests

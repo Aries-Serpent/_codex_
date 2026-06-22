@@ -1,5 +1,7 @@
 # _codex_ Repository Architecture & Global Coding Guidelines
 
+**Last Updated:** 2026-06-22
+
 ## Project Overview
 
 **_codex_** is an advanced AI-powered development automation platform featuring:

@@ -2,6 +2,8 @@ All metrics logged to MLflow must include an explicit `step` parameter for prope
 
 ## Tracking URI
 
+**Last Updated:** 2026-06-22
+
 Codex utilities read the `CODEX_MLFLOW_URI` environment variable to determine
 where to store runs. If unset, a local file-based store `file:mlruns` is used so
 experiments can be tracked offline without additional setup:

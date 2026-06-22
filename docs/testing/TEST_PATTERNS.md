@@ -1,5 +1,7 @@
 # Test Patterns Guide
 
+**Last Updated:** 2026-06-22
+
 **Status**: Active  
 **Created**: 2026-01-18  
 **Phase**: 14.0 - Test Coverage Foundation
@@ -289,7 +291,7 @@ def test_user_creation_bad():
     assert user and user.name == "test" and user.email == "test@example.com"
 ```
 
-### Test Data Management
+## Test Data Management
 
 ```python
 # Good: Test data in fixtures
@@ -306,7 +308,7 @@ def test_create_user_bad():
     user = create_user(name="test", email="test@example.com")  # Duplicated data
 ```
 
-### Don't
+## Don't
 
 - Test implementation details
 - Use sleep() in tests (use polling or mocks)

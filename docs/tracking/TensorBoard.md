@@ -1,6 +1,6 @@
 # Docs: Optional TensorBoard Logging — Offline
 
-> Generated: 2025-11-05 | Author: mbaetiong
+> Generated: 2026-06-22 | Author: mbaetiong
 
 ## Overview
 
@@ -45,7 +45,7 @@ with get_tb_writer("runs/experiment_001") as writer:
             writer.add_scalar("train/loss", loss, step)
 ```text
 
-### In Training Loop
+## In Training Loop
 
 ```python
 from codex_ml.utils.tensorboard_logger import get_tb_writer
@@ -247,7 +247,7 @@ tb.add_scalar("loss", loss, step)
 tb.add_scalar("acc", acc, step)
 ```text
 
-### 3. Log at Appropriate Frequency
+## 3. Log at Appropriate Frequency
 
 ```python
 # Log every N steps, not every step
@@ -256,7 +256,7 @@ if step % log_interval == 0:
         tb.add_scalar("train/loss", loss, step)
 ```text
 
-### 4. Clean Up Old Runs
+## 4. Clean Up Old Runs
 
 ```bash
 # Remove old TensorBoard logs
@@ -276,7 +276,7 @@ pip install tensorboard
 pip install torch
 ```text
 
-### No Logs Appearing
+## No Logs Appearing
 
 **Issue**: TensorBoard UI shows no data
 
@@ -295,7 +295,7 @@ if tb:
     tb.flush()
 ```text
 
-### Permission Errors
+## Permission Errors
 
 **Issue**: Cannot write to log directory
 

@@ -1,5 +1,7 @@
 # Pipeline Smoke Test
 
+**Last Updated:** 2026-06-22
+
 The Codex training pipeline now ships with a deterministic implementation that
 runs entirely offline. You can exercise it either through the lightweight
 `tools/codex_cli.py` script or via the Hydra-powered CLI.

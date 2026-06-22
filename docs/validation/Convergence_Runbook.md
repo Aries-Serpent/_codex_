@@ -1,5 +1,5 @@
 # [Runbook]: Convergence & Audit Verification
-> Generated: 2025-12-04 | Author: mbaetiong
+> Generated: 2026-06-22 | Author: mbaetiong
 
 ## Commands
 
@@ -36,7 +36,7 @@ python scripts/remediation/cleanup_root.py --yes
 
 This moves all `*_REPORT.md` and `*_SUMMARY.md` files from the repository root to `reports/archive/`.
 
-### Phase 2: Structural Analysis
+## Phase 2: Structural Analysis
 Run the audit pipeline to analyze the codebase structure:
 ```bash
 # Full audit (all stages S1-S7)
@@ -54,7 +54,7 @@ make space-audit-fast
 - `reports/capability_matrix_<timestamp>.md` - Human-readable report
 - `audit_run_manifest.json` - Integrity manifest
 
-### Phase 3: Conflict Verification
+## Phase 3: Conflict Verification
 Check for import shadowing and split-brain conflicts:
 ```bash
 # Verify that hydra imports resolve to site-packages
@@ -66,7 +66,7 @@ python scripts/remediation/analyze_legacy_usage.py
 
 Review the generated `reports/legacy_import_usage.csv` for imports that need refactoring.
 
-### Phase 4: Quality Gates
+## Phase 4: Quality Gates
 Verify determinism and integrity:
 ```bash
 # Run pipeline twice and compare artifacts
@@ -402,14 +402,14 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 # audit_run_manifest.json
 sha256sum audit_run_manifest.json
 
-# capabilities_scored.json  
+# capabilities_scored.json
 sha256sum audit_artifacts/capabilities_scored.json
 
 # Baseline
 sha256sum audit_artifacts/baselines/capabilities_scored.json
 ```
 
-### Verification Commands
+## Verification Commands
 
 To validate Wave 2 remediation:
 ```bash

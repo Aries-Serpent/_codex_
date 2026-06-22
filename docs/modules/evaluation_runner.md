@@ -1,5 +1,7 @@
 # Evaluation Runner
 
+**Last Updated:** 2026-06-22
+
 `codex_ml.eval.eval_runner` evaluates saved models or generic text outputs. The
 runner now streams metrics through the shared `NdjsonWriter`, so each record
 matches the training schema (complete with UTC timestamps, run identifiers, and

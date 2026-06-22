@@ -1,5 +1,7 @@
 # Fetch messages sqlite_patch import change
 
+**Last Updated:** 2026-06-22
+
 - Import changed to: `from codex.db.sqlite_patch import auto_enable_from_env`
 - Kept a minimal no-op fallback to avoid hard failures in edge cases.
 - Pooling is controlled by `CODEX_SQLITE_POOL` (or `CODEX_DB_POOL` for compatibility).

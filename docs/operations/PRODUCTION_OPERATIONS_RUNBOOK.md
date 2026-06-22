@@ -1,5 +1,7 @@
 # Production Operations Runbook
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0.0  
 **Date:** 2026-06-14T04:05:00Z  
 **Owner:** Operations Team  
@@ -44,7 +46,7 @@ echo "\n=== Log Aggregation Check ==="
 curl -s $ELASTICSEARCH_URL/_cat/health && echo "✓ Log aggregation healthy"
 ```
 
-### Daily Backup Verification
+## Daily Backup Verification
 
 ```bash
 #!/bin/bash
@@ -74,7 +76,7 @@ echo "✓ Filesystem backups completed: $BACKUP_COUNT files"
 sha256sum -c /var/backups/BACKUP_CHECKSUMS.txt && echo "✓ All backup checksums valid"
 ```
 
-### Routine Maintenance
+## Routine Maintenance
 
 ```bash
 # Weekly: Update dependencies
@@ -121,7 +123,7 @@ kubectl rollout status deployment/codex-api
 kubectl get pods -l app=codex-api --watch
 ```
 
-### Vertical Scaling (Increase Resources)
+## Vertical Scaling (Increase Resources)
 
 ```bash
 # Edit deployment
@@ -129,11 +131,11 @@ kubectl edit deployment codex-api
 
 # Find 'resources:' section and update:
 # limits:
-#   cpu: "4"
-#   memory: "8Gi"
+# cpu: "4"
+# memory: "8Gi"
 # requests:
-#   cpu: "2"
-#   memory: "4Gi"
+# cpu: "2"
+# memory: "4Gi"
 
 # Apply changes
 kubectl rollout restart deployment/codex-api
@@ -142,7 +144,7 @@ kubectl rollout restart deployment/codex-api
 kubectl top pods -l app=codex-api
 ```
 
-### Database Performance Optimization
+## Database Performance Optimization
 
 ```bash
 # Check slow queries
@@ -162,7 +164,7 @@ mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
   "CREATE INDEX idx_session_created ON codex_sessions(created_at);"
 ```
 
-### Cache Optimization
+## Cache Optimization
 
 ```bash
 # Check cache hit rate
@@ -217,7 +219,7 @@ aws s3 cp $BACKUP_DIR s3://backups.codex.io/manual/$TIMESTAMP/ --recursive
 echo "✓ Backup completed: $BACKUP_DIR"
 ```
 
-### Recovery Procedure
+## Recovery Procedure
 
 ```bash
 #!/bin/bash
@@ -323,7 +325,7 @@ done
 # Update PagerDuty incident with status and resolution
 ```
 
-### P2 Incident: High Error Rate
+## P2 Incident: High Error Rate
 
 ```bash
 #!/bin/bash
@@ -391,7 +393,7 @@ kubectl rollout restart deployment/codex-api
 echo "✓ Secrets rotation complete"
 ```
 
-### Access Control Audit
+## Access Control Audit
 
 ```bash
 #!/bin/bash

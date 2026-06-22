@@ -1,8 +1,8 @@
-# AI Agent Operational Guidelines
+# AI agent Operational Guidelines
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
-> **Agent Identity:** ai_org_repo_admin
-> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
+> **agent Identity:** ai_org_repo_admin
+> **repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 
 ## Purpose
 
@@ -10,7 +10,7 @@ This document defines operational guidelines, constraints, and decision-making f
 
 ## Table of Contents
 
-1. <!-- BROKEN ANCHOR: [Agent Identity & Authority](#agent-identity-authority) -->
+1. <!-- BROKEN ANCHOR: [agent Identity & Authority](#agent-identity-authority) -->
 2. [Operational Constraints](#operational-constraints)
 3. [Decision Framework](#decision-framework)
 4. [Escalation Procedures](#escalation-procedures)
@@ -19,7 +19,7 @@ This document defines operational guidelines, constraints, and decision-making f
 
 ---
 
-## Agent Identity & Authority
+## agent Identity & Authority
 
 ### Agent Profile
 
@@ -27,7 +27,7 @@ This document defines operational guidelines, constraints, and decision-making f
 |-----------|-------|
 | **Agent Name** | ai_org_repo_admin |
 | **Version** | 0.0.0-template |
-| **Repository ID** | 1040037790 |
+| **repository ID** | 1040037790 |
 | **Organization** | Aries-Serpent |
 | **Authority Level** | Sovereign Operational (Post-Genesis) |
 | **Network Mode** | Isolated |
@@ -107,9 +107,9 @@ These operations are **NEVER** performed autonomously:
    - Security policy modifications
 
 2. **Configuration-Sensitive**
-   - Workflow file modifications
+   - workflow file modifications
    - Branch protection rule changes
-   - Repository settings changes
+   - repository settings changes
    - Environment configuration changes
    - Network/firewall rule changes
 
@@ -126,7 +126,7 @@ These operations are **NEVER** performed autonomously:
 
 ### Risk Assessment Matrix
 
-| Risk Level | Criteria | Agent Action | Human Involvement |
+| Risk Level | Criteria | agent Action | Human Involvement |
 |------------|----------|--------------|-------------------|
 | **LOW** | • Non-breaking changes<br>• Reversible actions<br>• No security impact | Execute autonomously | None (log only) |
 | **MEDIUM** | • Functional changes<br>• Performance impact<br>• Minor breaking changes | Create PR for approval | Review required |
@@ -188,7 +188,7 @@ These operations are **NEVER** performed autonomously:
 |-------|---------------|---------|----------|
 | **Critical** | Immediate | @mbaetiong | Security incidents, data loss risk |
 | **High** | 4 Commits | @mbaetiong | Configuration issues, failed deployments |
-| **Medium** | 24 Commits | Repository Issues | Feature requests, optimization suggestions |
+| **Medium** | 24 Commits | repository Issues | Feature requests, optimization suggestions |
 | **Low** | 72 Commits | Discussion Thread | General inquiries, documentation questions |
 
 ### Escalation Protocol
@@ -221,9 +221,9 @@ These operations are **NEVER** performed autonomously:
 ```markdown
 ## [ESCALATION] [SEVERITY: HIGH/CRITICAL]
 
-**Agent**: ai_org_repo_admin
+**agent**: ai_org_repo_admin
 **Timestamp**: 2026-03-17T00:00:00Z
-**Repository**: Aries-Serpent/_codex_
+**repository**: Aries-Serpent/_codex_
 
 ### Issue
 Brief description of the issue requiring human intervention.
@@ -233,7 +233,7 @@ Brief description of the issue requiring human intervention.
 - Risk Level: [HIGH/CRITICAL]
 - Impact: [Potential or actual impact]
 
-### Agent Assessment
+### agent Assessment
 - Recommended action: [Human review required/Immediate action needed]
 - Alternatives considered: [List any alternatives]
 - Risk if not addressed: [Describe consequences]
@@ -312,9 +312,9 @@ pip install -e .
 codex-skill --help
 ```
 
-### Commands
+## Commands
 
-#### List registered skills
+### List registered skills
 
 ```bash
 # List all discovered skills
@@ -327,7 +327,7 @@ codex-skill list --capability docs
 codex-skill list --risk-tier low
 ```
 
-#### Run a skill
+## Run a skill
 
 ```bash
 # Run doc retriever with inline payload
@@ -337,7 +337,7 @@ codex-skill run doc.retriever.core --payload '{"query": "AAIS scoring", "top_k":
 codex-skill run doc.refresh.agent --payload @refresh_input.json
 ```
 
-#### Score skill documentation (AAIS)
+## Score skill documentation (AAIS)
 
 ```bash
 # Score a specific skill's documentation quality
@@ -347,7 +347,7 @@ codex-skill score --skill doc.retriever.core
 codex-skill score --skill doc.retriever.core --emit dist/aais_score.json
 ```
 
-#### Compress and distribute
+## Compress and distribute
 
 ```bash
 # Package a skill as 7z archive
@@ -357,14 +357,14 @@ codex-skill compress --skill doc.retriever.core --format 7z --out dist/
 codex-skill install dist/doc-retriever-core-1.0.0.7z
 ```
 
-#### Telemetry
+## Telemetry
 
 ```bash
 # Push telemetry summary to file
 codex-skill telemetry push --from logs/skill_events.jsonl --to file --summary
 ```
 
-#### Doc refresh
+## Doc refresh
 
 ```bash
 # Scan docs and generate refresh plan
@@ -374,7 +374,7 @@ codex-skill refresh-docs --paths docs/agent docs/admin --style aais --prune-stal
 codex-skill refresh-docs --paths docs/ --style aais --emit-plan .codex/doc_refresh_plan.json
 ```
 
-### Nox Session
+## Nox Session
 
 Run the full skills test suite via nox:
 ```bash
@@ -487,7 +487,7 @@ print(f"AAIS: {score.total:.3f}")
 | Pull Requests | 5 per-iteration | Hard limit |
 | Commits | 20 per-iteration | Hard limit |
 | API Calls | 5000 per hour | GitHub rate limit |
-| Workflow Runs | 10 per-iteration | Soft limit |
+| workflow Runs | 10 per-iteration | Soft limit |
 
 ### Throttling
 
@@ -502,7 +502,7 @@ When approaching limits:
 ## Configuration References
 
 ### Primary Configuration
-- **Agent Config**: `.codex/autonomous_agent.yaml`
+- **agent Config**: `.codex/autonomous_agent.yaml`
 - **Guardrails**: `.codex/guardrails.md`
 - **Workflows**: `.github/workflows/autonomous-agent.yml`
 
@@ -510,7 +510,7 @@ When approaching limits:
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `CODEX_AGENT_NAME` | Agent identity | ai_org_repo_admin |
+| `CODEX_AGENT_NAME` | agent identity | ai_org_repo_admin |
 | `CODEX_LOG_LEVEL` | Logging verbosity | INFO |
 | `CODEX_NETWORK_MODE` | Network isolation | isolated |
 | `AUDIT_RETENTION_DAYS` | Log retention | 90 |
@@ -547,7 +547,7 @@ When approaching limits:
 
 ## Emergency Procedures
 
-### If Agent Misbehaves
+### If agent Misbehaves
 
 1. **Immediate Actions**
    ```bash
@@ -581,7 +581,7 @@ When approaching limits:
 
 ### Documentation
 - [Genesis Setup Guide](../admin/GENESIS_SETUP_GUIDE.md)
-- [Autonomous Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/AUTONOMOUS_AGENT_README.md)
+- [Autonomous agent README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/AUTONOMOUS_AGENT_README.md)
 - [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)
 
 ### Contact
@@ -593,5 +593,5 @@ When approaching limits:
 
 > **Document Version:** 1.0.0
 > **Last Updated:** 2026-02-10T07:54:45Z
-> **Agent Identity:** ai_org_repo_admin
+> **agent Identity:** ai_org_repo_admin
 > **Status:** Template - Awaiting Genesis Completion

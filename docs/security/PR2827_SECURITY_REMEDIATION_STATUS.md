@@ -1,5 +1,7 @@
 # PR #2827 Security Remediation Status
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2026-01-13  
 **Status**: In Progress  
 **Owner**: Security Team / @mbaetiong
@@ -111,7 +113,7 @@ app.add_middleware(
 )
 ```
 
-#### 4.3 urllib Usage - REVIEWED ✅
+## 4.3 urllib Usage - REVIEWED ✅
 - **Files Reviewed**: 10 instances found
 - **Status**: All instances have `# noqa: S310` comments or controlled URLs
 - **Examples**:

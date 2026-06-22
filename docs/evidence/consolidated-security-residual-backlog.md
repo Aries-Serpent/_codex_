@@ -1,5 +1,7 @@
 # Consolidated Security Residual Backlog
 
+**Last Updated:** 2026-06-22
+
 - Scope: cross-plan consolidation for `docs/security-open-findings-matrix.md`, `remediation_plan_codeql_python.md`, `remediation_plan_semgrep.md`, and `remediation_plan_secrets.md`
 - Branch / HEAD sampled: `copilot/explore-codebase-and-create-implementation-plan` @ `f96e1ce6b77411e4a690ba4fb312c9fcc84bda9a`
 - Purpose: keep one residual backlog so already-landed fixes are not reopened under multiple rule families.

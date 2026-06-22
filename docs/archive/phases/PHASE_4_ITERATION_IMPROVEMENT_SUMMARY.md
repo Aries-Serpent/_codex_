@@ -1,5 +1,7 @@
 # Phase 4 Iteration & Improvement Summary
 
+**Last Updated:** 2026-06-22
+
 ## Date: 2026-01-20
 
 ## Overview
@@ -98,7 +100,7 @@ def test_scope_hierarchical_admin_branch(self) -> None:
     # Uses mocks, doesn't test actual code
 ```
 
-#### ✅ What TO Do (Phase 5 Approach)
+## ✅ What TO Do (Phase 5 Approach)
 ```python
 # Module integration test - tests production code
 def test_token_scope_hierarchical_admin(self) -> None:
@@ -111,9 +113,9 @@ def test_token_scope_hierarchical_admin(self) -> None:
     assert scope & TokenScope.READ_REPO
 ```
 
-### Phase 5 Focus Areas
+## Phase 5 Focus Areas
 
-#### Priority 1: Training Module Integration (Target: +8% coverage)
+### Priority 1: Training Module Integration (Target: +8% coverage)
 **Why**: Largest, most complex modules with 0% coverage
 **Modules**:
 - `src/codex_ml/train_loop.py` (1,277 statements)

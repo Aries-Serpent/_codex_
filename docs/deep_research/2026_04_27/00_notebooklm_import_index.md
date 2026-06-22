@@ -1,5 +1,7 @@
 # NotebookLM Import Index — CpT, Enthalpy, and the Security–Access Counter-Balance
 
+**Last Updated:** 2026-06-22
+
 **Collection date:** 2026-04-27  
 **Primary topic:** Continuing the prior deep research on the counter-balance between security and unfettered access, now focused on **$C_pT$** as a thermodynamic lens for usable security, access energy, friction, enthalpy, and adaptive control.
 

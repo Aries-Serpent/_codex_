@@ -56,7 +56,7 @@ sed -i 's/version = ".*"/version = "X.Y.Z"/' pyproject.toml
 git commit -am "chore: bump version to X.Y.Z"
 ```
 
-### Step 2: Create Release Tag
+## Step 2: Create Release Tag
 
 ```bash
 # Create annotated tag
@@ -66,7 +66,7 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z: Phase 14-18 Test Coverage Complete"
 git push origin vX.Y.Z
 ```
 
-### Step 3: Build Release Artifacts
+## Step 3: Build Release Artifacts
 
 ```bash
 # Clean build
@@ -79,7 +79,7 @@ python -m build
 ls -la dist/
 ```
 
-### Step 4: Upload to Package Registry
+## Step 4: Upload to Package Registry
 
 ```bash
 # Upload to PyPI (production)
@@ -89,7 +89,7 @@ python -m twine upload dist/*
 python -m twine upload --repository-url https://your-registry/simple/ dist/*
 ```
 
-### Step 5: Deploy to Production
+## Step 5: Deploy to Production
 
 ```bash
 # Pull latest changes
@@ -121,14 +121,14 @@ git checkout vPREVIOUS_TAG
 pip install -e .
 ```
 
-### Database Rollback
+## Database Rollback
 
 ```bash
 # Rollback migrations
 python -m codex.cli migrate --rollback 1
 ```
 
-### Service Recovery
+## Service Recovery
 
 ```bash
 # Check service status

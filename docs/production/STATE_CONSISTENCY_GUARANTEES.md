@@ -1,5 +1,7 @@
 # State Consistency Guarantees: Technical Specification
 
+**Last Updated:** 2026-06-22
+
 **Version**: 1.0  
 **Date**: 2025-01-20  
 **Status**: APPROVED FOR PRODUCTION  
@@ -185,7 +187,7 @@ conn.execute("INSERT INTO users_history ...")
 conn.commit()  # All-or-nothing
 ```
 
-### Transaction Boundaries
+## Transaction Boundaries
 
 | Operation | Transaction Scope |
 |-----------|-------------------|

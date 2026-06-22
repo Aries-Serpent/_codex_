@@ -2,6 +2,8 @@
 
 # Safety
 
+**Last Updated:** 2026-06-22
+
 Codex provides several layers of safeguards to reduce accidental leakage and
 harmful behaviour:
 
@@ -15,7 +17,7 @@ harmful behaviour:
   [RealToxicityPrompts](https://huggingface.co/datasets/allenai/real-toxicity-prompts)
   and curated leaked‑credential corpora.
 
-### Guidelines
+## Guidelines
 
 1. Run `pre-commit run --all-files` before committing to catch security issues.
 2. Store secrets in environment variables; never hard-code credentials.
@@ -48,7 +50,7 @@ Apply the overrides by passing the YAML string to `sanitize_prompt` (or wiring
 them into the `SafetyConfig` used by training/evaluation tooling). Invalid or
 malicious YAML is ignored and the base policy remains in effect.
 
-### CLI defaults
+## CLI defaults
 
 Training and evaluation entrypoints now invoke the sanitiser automatically. The
 Hydra training profile exposes `training.sanitize_prompts` (default: `true`),

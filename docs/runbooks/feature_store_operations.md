@@ -1,7 +1,7 @@
 # Feature Store Operations Runbook
 
 **Version**: 1.0.0  
-**Last Updated**: 2025-12-07  
+**Last Updated**: 2026-06-22  
 **Owner**: ML Engineering Team
 
 ---
@@ -151,7 +151,7 @@ python scripts/initialize_feature_store.py --config configs/production/features.
 python -m codex_ml.cli.feature_store list
 ```
 
-### Issue: Stale Features
+## Issue: Stale Features
 
 **Symptoms**:
 - Health check shows feature age > 48 hours
@@ -181,7 +181,7 @@ python scripts/refresh_features.py --feature-group user_features
 tail -f logs/feature_pipeline.log
 ```
 
-### Issue: Feature Retrieval Slow
+## Issue: Feature Retrieval Slow
 
 **Symptoms**:
 - High p95 latency (> 100ms)
@@ -213,7 +213,7 @@ feature_store:
     host: redis.internal.company.com
 ```
 
-### Issue: Registry Corruption
+## Issue: Registry Corruption
 
 **Symptoms**:
 - Cannot list features
@@ -357,7 +357,7 @@ features:
 python scripts/restart_training.py
 ```
 
-### Emergency Disable Feature Store
+## Emergency Disable Feature Store
 
 ```bash
 # Quick disable in config

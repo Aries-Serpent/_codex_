@@ -1,5 +1,7 @@
 # [Validation]: Coverage Gate Remediation — Dependency & Marker Stabilization
 
+**Last Updated:** 2026-06-22
+
 ## Acceptance Criteria (Post-Remediation)
 
 | Gate | Criterion |

@@ -1,6 +1,6 @@
 # ChatGPT Project System Prompt Template
 
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Status**: ✅ Production Template
 **Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
@@ -72,6 +72,7 @@
 **Query Path**: User Question → Search Index → Analysis → Response Assembly → Provenance Annotation → Delivery
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing User Query, Parse Intent'}}%%
 graph TD
     A[User Query] --> B[Parse Intent]
     B --> C{Query Type}
@@ -431,7 +432,7 @@ Files affected:
 ---
 
 **Document Version**: 2.0.0
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Repository**: https://github.com/Aries-Serpent/_codex_
 **Packaging Tool**: scripts/mcp/package_flatten.sh
 **Iteration Alignment**: Phase 12.3+ compatible

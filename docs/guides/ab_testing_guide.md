@@ -1,5 +1,7 @@
 # A/B Testing Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The A/B Testing Framework enables scientific validation of model improvements through controlled experiments with statistical significance testing.
@@ -70,7 +72,7 @@ for request in production_requests:
     manager.record_result(variant, metrics)
 ```
 
-### 3. Statistical Significance
+## 3. Statistical Significance
 
 Check if results are statistically significant:
 
@@ -90,7 +92,7 @@ else:
     print("⏳ Not enough data or no significant difference")
 ```
 
-### 4. Gradual Rollout
+## 4. Gradual Rollout
 
 Safely deploy the winning variant:
 
@@ -135,7 +137,7 @@ config = ABTestConfig(
 manager = ABTestManager(config)
 ```
 
-### Step 2: Run Experiment
+## Step 2: Run Experiment
 
 ```python
 import random
@@ -450,7 +452,7 @@ n_required = calculate_required_sample_size(
 print(f"Required samples per variant: {n_required}")
 ```
 
-### 2. Multiple Testing Correction
+## 2. Multiple Testing Correction
 
 Adjust significance level for multiple comparisons:
 
@@ -470,7 +472,7 @@ if manager.is_significant(alpha=adjusted_alpha):
     print("Significant after multiple testing correction")
 ```
 
-### 3. Confidence Intervals
+## 3. Confidence Intervals
 
 Calculate confidence intervals for metrics:
 
@@ -492,7 +494,7 @@ ci = calculate_confidence_interval(control_accuracy)
 print(f"95% CI: [{ci[0]:.3f}, {ci[1]:.3f}]")
 ```
 
-### 4. Power Analysis
+## 4. Power Analysis
 
 Check if test has sufficient power:
 
@@ -581,7 +583,7 @@ config.min_samples = 2000
 config.primary_metric = "f1_score"  # More sensitive than accuracy
 ```
 
-### Issue: High Variance
+## Issue: High Variance
 
 **Problem:** Metrics have high variance, making it hard to detect differences
 

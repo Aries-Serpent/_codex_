@@ -1,6 +1,82 @@
 # [Guide]: GitHub MCP Integration for `_codex_`
 
-> **Generated**: 2026-03-17 | **Author**: mbaetiong
+## Table of Contents
+
+- [📋 Table of Contents](#-table-of-contents)
+- [Overview](#overview)
+  - [What is MCP in the Context of _codex_?](#what-is-mcp-in-the-context-of-_codex_)
+  - [Why MCP Enhances Copilot Agent](#why-mcp-enhances-copilot-agent)
+- [MCP Architecture in _codex_](#mcp-architecture-in-_codex_)
+  - [Current Directory Structure](#current-directory-structure)
+  - [MCP Service Components](#mcp-service-components)
+- [Copilot Agent Integration Patterns](#copilot-agent-integration-patterns)
+  - [Pattern 1: Direct HTTP Integration (Recommended for _codex_)](#pattern-1-direct-http-integration-recommended-for-_codex_)
+- [Copilot Agent script example](#copilot-agent-script-example)
+- [Authenticate with MCP service](#authenticate-with-mcp-service)
+- [Request focused context](#request-focused-context)
+- [Use dependencies for code generation context](#use-dependencies-for-code-generation-context)
+- [Pattern 2: GitHub Actions Integration](#pattern-2-github-actions-integration)
+- [.github/workflows/copilot-task.yml](#githubworkflowscopilot-taskyml)
+- [Pattern 3: VS Code Extension Integration (Local Development)](#pattern-3-vs-code-extension-integration-local-development)
+- [Current _codex_ MCP Implementation](#current-_codex_-mcp-implementation)
+  - [MCP Service Endpoints (as of 2025-12-29)](#mcp-service-endpoints-as-of-2025-12-29)
+  - [Implemented Capabilities](#implemented-capabilities)
+- [Authoritative Documentation](#authoritative-documentation)
+  - [GitHub Resources](#github-resources)
+  - [Third-Party Tools](#third-party-tools)
+  - [_codex_-Specific Documentation](#_codex_-specific-documentation)
+- [Advanced Configuration for Maximum Copilot Capability](#advanced-configuration-for-maximum-copilot-capability)
+- [Recommended Permissions & Security](#recommended-permissions--security)
+  - [GitHub Environment Variables Required](#github-environment-variables-required)
+  - [Required GitHub Token Scopes](#required-github-token-scopes)
+  - [Security Best Practices](#security-best-practices)
+- [Known Limitations & Workarounds](#known-limitations--workarounds)
+  - [Limitation 1: LLM Context Window Constraints](#limitation-1-llm-context-window-constraints)
+  - [Limitation 2: Secrets & Privacy Risks](#limitation-2-secrets--privacy-risks)
+  - [Limitation 3: API Rate Limits](#limitation-3-api-rate-limits)
+  - [Limitation 4: GitHub Actions Cache/Storage Limits](#limitation-4-github-actions-cachestorage-limits)
+  - [Limitation 5: Playwright Binary Size & Environment](#limitation-5-playwright-binary-size--environment)
+  - [Limitation 6: Copilot Product API Boundaries](#limitation-6-copilot-product-api-boundaries)
+- [Practical Implementation Checklist](#practical-implementation-checklist)
+  - [Phase 1: Setup & Authentication](#phase-1-setup--authentication)
+  - [Phase 2: MCP Service Deployment](#phase-2-mcp-service-deployment)
+  - [Phase 3: Cache Warming Automation](#phase-3-cache-warming-automation)
+  - [Phase 4: Copilot Integration](#phase-4-copilot-integration)
+  - [Phase 5: Monitoring & Optimization](#phase-5-monitoring--optimization)
+- [_codex_-Specific Integration Examples](#_codex_-specific-integration-examples)
+  - [Example 1: Dependency-Aware Code Generation](#example-1-dependency-aware-code-generation)
+- [Copilot Agent queries MCP for dependency context](#copilot-agent-queries-mcp-for-dependency-context)
+- [Returns: ">=2.2.2"](#returns-222)
+- [Generate version-aware code](#generate-version-aware-code)
+- [Example 2: Test Generation with Playwright](#example-2-test-generation-with-playwright)
+- [Create Playwright session via MCP](#create-playwright-session-via-mcp)
+- [Generate test code with session context](#generate-test-code-with-session-context)
+- [... (test code generation)](#-test-code-generation)
+- [Example 3: Cache-Aware Dependency Updates](#example-3-cache-aware-dependency-updates)
+- [Get current cache manifest](#get-current-cache-manifest)
+- [Propose updates](#propose-updates)
+- [Warm cache for new versions](#warm-cache-for-new-versions)
+- [Troubleshooting & Monitoring](#troubleshooting--monitoring)
+  - [Common Issues & Solutions](#common-issues--solutions)
+  - [Monitoring Metrics](#monitoring-metrics)
+- [References](#references)
+  - [External Documentation](#external-documentation)
+  - [Internal Documentation](#internal-documentation)
+  - [Support Channels](#support-channels)
+- [Appendix: Human Admin Actions Required](#appendix-human-admin-actions-required)
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ (Context Delivery Optimization)](#path--context-delivery-optimization)
+  - [Fields 🔄 (Information Flow Architecture)](#fields--information-flow-architecture)
+  - [Patterns 👁️ (Integration Recognition)](#patterns--integration-recognition)
+  - [Redundancy 🔀 (Fault Tolerance)](#redundancy--fault-tolerance)
+  - [Balance ⚖️ (Context vs Token Limits)](#balance--context-vs-token-limits)
+- [⚡ Energy Distribution](#-energy-distribution)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+
+> **Generated**: 2026-06-22 | **Author**: mbaetiong
 > **Repository**: `Aries-Serpent/_codex_` | **ID**: 1040037790
 > **Roles**: [Primary: DevOps Architect], [Secondary: Security Engineer]
 > **⚡ Energy**: 5/5 | **🧠 Context**: Production-Ready Implementation
@@ -46,6 +122,7 @@ GitHub Copilot (the product) provides AI-powered code suggestions using:
 **MCP augments this with _codex_-specific intelligence**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent, MCP Service'}}%%
 graph LR
     A[Copilot Agent] -->|Request Context| B[MCP Service]
     B -->|Index Dependencies| C[Python/Node Packages]
@@ -141,7 +218,7 @@ dependencies = response.json()
 # Use dependencies for code generation context
 ```
 
-### Pattern 2: GitHub Actions Integration
+## Pattern 2: GitHub Actions Integration
 
 ```yaml
 # .github/workflows/copilot-task.yml
@@ -171,7 +248,7 @@ jobs:
         run: |
 ```
 
-### Pattern 3: VS Code Extension Integration (Local Development)
+## Pattern 3: VS Code Extension Integration (Local Development)
 
 ```json
 // .vscode/settings.json
@@ -439,7 +516,7 @@ model = torch.nn.Linear(10, 5, device='cuda')
 model = torch.compile(model)  # New in 2.0+
 ```
 
-### Example 2: Test Generation with Playwright
+## Example 2: Test Generation with Playwright
 
 ```python
 # Create Playwright session via MCP
@@ -455,7 +532,7 @@ session_response = requests.post(
 # ... (test code generation)
 ```
 
-### Example 3: Cache-Aware Dependency Updates
+## Example 3: Cache-Aware Dependency Updates
 
 ```python
 # Get current cache manifest
@@ -534,7 +611,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: @mbaetiong
 **Status**: Production Ready ✅
 **Version**: 2.0.0

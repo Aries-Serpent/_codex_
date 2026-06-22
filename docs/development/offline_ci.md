@@ -1,5 +1,7 @@
 # Offline CI Runner
 
+**Last Updated:** 2026-06-22
+
 The GitHub Actions workflow `ci.yml` is intentionally disabled for base
 branches. Use `tools/offline_ci_runner.py` to reproduce the pipeline locally
 without enabling hosted runners.

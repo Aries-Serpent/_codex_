@@ -322,14 +322,14 @@ python3 -c "import pytest; import numpy; print('Dependencies OK')"
 python3 -m py_compile tests/agents/test_phase2_deep_coverage_batch4.py
 ```
 
-### Action 3: Coverage Baseline
+## Action 3: Coverage Baseline
 **Command:**
 ```bash
 # Run existing tests to establish baseline
 pytest tests/agents/test_phase2_*.py --cov=agents --cov-report=term
 ```
 
-### Action 4: Full Execution
+## Action 4: Full Execution
 **Command:**
 ```bash
 # Run all Phase 2 tests

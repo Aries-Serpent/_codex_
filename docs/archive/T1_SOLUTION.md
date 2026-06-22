@@ -2,7 +2,7 @@
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2025-12-06T07:24:00Z  
+**Generated**: 2026-06-22T00:00:00Z  
 **Author**: Copilot (based on guidance from @mbaetiong)  
 **Commit**: 2021bae000000000000000000000000000000000000
 

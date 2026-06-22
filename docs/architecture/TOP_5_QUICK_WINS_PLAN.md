@@ -1,5 +1,7 @@
 # Top 5 Quick Wins: Architectural Entropy Normalization Plan
 
+**Last Updated:** 2026-06-22
+
 **Date:** 2026-01-08  
 **Branch:** `copilot/sub-pr-2750-one-more-time`  
 **Context:** Addressing "Split Brain" state between legacy `agents/` and modern `src/codex/`  
@@ -208,7 +210,7 @@ if __name__ == "__main__":
     # service.run_forever()  # Resident mode for production
 ```
 
-#### Phase 1.2: Integration Points (Pre-commit Cycle 3)
+## Phase 1.2: Integration Points (Pre-commit Cycle 3)
 
 **File:** `src/codex/ingest/adapter.py`
 
@@ -262,7 +264,7 @@ def process_document(
     logger.info(f"Document {doc_id} staged at {doc_file}")
 ```
 
-#### Phase 1.3: Deployment Configuration (Pre-commit Cycle 4)
+### Phase 1.3: Deployment Configuration (Pre-commit Cycle 4)
 
 **File:** `.github/workflows/knowledge-crawler.yml`
 
@@ -661,7 +663,7 @@ from src.codex.zendesk.model.ticket import Ticket
 from src.codex.zendesk.client import ZendeskClient
 ```
 
-### Step 2: Replace Dictionary Usage
+## Step 2: Replace Dictionary Usage
 ```python
 # Before (legacy - no validation)
 ticket_data = {
@@ -680,7 +682,7 @@ ticket = Ticket(
 # Extra fields raise ValidationError
 ```
 
-### Step 3: Use Client for API Calls
+## Step 3: Use Client for API Calls
 ```python
 # Before (legacy)
 response = requests.post(f"{BASE_URL}/tickets.json", json=ticket_data)
@@ -698,7 +700,7 @@ created_ticket = client.create_ticket(ticket)
 5. **Testing**: Easy to validate with pytest
 ```
 
-#### Success Criteria
+### Success Criteria
 - ✅ All ticket operations use Pydantic models
 - ✅ Zero hardcoded dictionaries in production code
 - ✅ 100% test coverage on schema validation
@@ -846,7 +848,7 @@ def calculate_sla_deadline(
     return start_time + duration
 ```
 
-#### Phase 3.2: Deprecate CSV (Pre-commit Cycle 2)
+## Phase 3.2: Deprecate CSV (Pre-commit Cycle 2)
 
 **File:** `configs/deployment/d365/slas.csv.DEPRECATED`
 
@@ -861,7 +863,7 @@ normal,8,48
 low,24,72
 ```
 
-#### Success Criteria
+## Success Criteria
 - ✅ All SLA logic uses Policy Objects
 - ✅ CSV files deprecated with clear migration notes
 - ✅ Business rules validated at import time
@@ -995,7 +997,7 @@ def secure_bridge(bridge_name: str = "codex_copilot_bridge"):
         bridge.cleanup()
 ```
 
-#### Phase 4.2: Migration Script (Pre-commit Cycle 3)
+## Phase 4.2: Migration Script (Pre-commit Cycle 3)
 
 **File:** `scripts/migrate_bridge.py`
 
@@ -1042,7 +1044,7 @@ if __name__ == "__main__":
     migrate()
 ```
 
-#### Success Criteria
+### Success Criteria
 - ✅ Named pipes use 0o600 permissions
 - ✅ Authentication token required for all operations
 - ✅ Legacy bridge archived and deprecated

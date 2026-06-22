@@ -1,5 +1,7 @@
 # Configuration Validation Guide
 
+**Last Updated:** 2026-06-22
+
 This guide explains how to validate Codex configuration files against the bundled schemas and how the checks run locally and in CI.
 
 ## Quick Start

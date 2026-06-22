@@ -1,5 +1,7 @@
 # AWS SageMaker Deployment Guide
 
+**Last Updated:** 2026-06-22
+
 This document summarises the steps required to deploy Codex ML models on Amazon SageMaker.
 
 ## 1. Package the model artefacts

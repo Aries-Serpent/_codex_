@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3610 (S140)
 
-**Generated**: 2026-03-17T15:30Z  
+**Generated**: 2026-06-22T00:00:00Z  
 **Session**: S140  
 **PR**: #3610 (`copilot/sub-pr-3606`)  
 **Base PR**: #3606 (`0D_base_`)
@@ -50,6 +50,7 @@
 ## Architecture Diagram (Current)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR Comment Upsert<br/>(paginated, race-safe)", "Consolidator Dedup<br/>(newest-first merge)"'}}%%
 graph TD
     subgraph "CI/CD Robustness Layer (Phase 5)"
         UPSRT["PR Comment Upsert<br/>(paginated, race-safe)"]
@@ -103,6 +104,7 @@ graph TD
 ## Phase 5 Completion Status
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Cognitive Brain Phase Roadmap
     dateFormat  YYYY-MM-DD
@@ -142,6 +144,7 @@ gantt
 ## CB Dashboard v3 — Real-Time CI Metrics Widget (S143)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml<br/>pip cache ✅", "branch-rebase-gate.yml<br/>pip cache ✅"'}}%%
 graph TB
     subgraph "CI Health — S143 Baseline (2026-03-17)"
         direction LR
@@ -184,6 +187,7 @@ graph TB
 ### OTel Coherence Histogram — Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing 0.0, 1.0'}}%%
 sequenceDiagram
     participant CI as GitHub Actions Job
     participant OTel as otel_metrics.py

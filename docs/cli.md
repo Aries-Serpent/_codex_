@@ -1,5 +1,7 @@
 # CLI Guide (package-style)
 
+**Last Updated:** 2026-06-22
+
 Use the package-style CLI to avoid import coupling and keep the surface stable:
 
 ```bash

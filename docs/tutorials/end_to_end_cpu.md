@@ -2,6 +2,8 @@
 
 # End-to-End CPU Training
 
+**Last Updated:** 2026-06-22
+
 Train, evaluate, and inspect a full Codex symbolic pipeline on CPU — no GPU or cloud required.
 
 ## Prerequisites

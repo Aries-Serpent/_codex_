@@ -1,5 +1,7 @@
 # Control Surface: Internal Alpha Knob Contract
 
+**Last Updated:** 2026-06-22
+
 The `_codex_` control surface enumerates the product-facing knobs that
 Engineering and Product agree to expose in the ChatGPT-Codex UI. The
 same contract will be reused when we graduate to a standalone control

@@ -1,5 +1,7 @@
 # codex-universal
 
+**Last Updated:** 2026-06-22
+
 <!-- manifest-digest:start -->
 [![Manifest SHA256](https://img.shields.io/badge/manifest-unknown-blue)(#top)
 <!-- manifest-digest:end -->

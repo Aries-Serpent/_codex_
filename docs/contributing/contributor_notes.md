@@ -1,5 +1,7 @@
 # Contributor Notes
 
+**Last Updated:** 2026-06-22
+
 ## Quick Start
 
 Welcome to the _codex_ project! This guide helps you get started with contributing.
@@ -29,7 +31,7 @@ pip install -e .
 pre-commit install
 ```text
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -45,7 +47,7 @@ pytest -m "not slow"
 pytest tests/config/test_config_schema.py -v
 ```text
 
-### Code Quality
+## Code Quality
 
 ```bash
 # Run linting
@@ -58,9 +60,9 @@ nox -s typecheck
 nox -s gates
 ```text
 
-### Common Tasks
+## Common Tasks
 
-#### Adding a New Test
+### Adding a New Test
 
 1. Create test file in appropriate `tests/` subdirectory
 2. Use appropriate markers (see `pytest.ini`)
@@ -162,7 +164,7 @@ a shim will produce `[attr-defined]` errors that exceed the baseline threshold, 
 the PR. The shim/star-import pattern is tracked in the cognitive brain as pattern
 `mypy_shim_star_import_attr_not_found` (added S216, PR #3843).
 
-### `type: ignore` Hygiene
+## `type: ignore` Hygiene
 
 **Rule**: Do **not** add `# type: ignore` to bare import statements of packages that ship
 bundled type stubs (numpy ≥ 1.20, torch ≥ 1.8, transformers, etc.) or that are already

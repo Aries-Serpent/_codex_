@@ -1,5 +1,7 @@
 # Tutorial 03 — Setting Up Continuous Learning
 
+**Last Updated:** 2026-06-22
+
 **Estimated time:** 30 minutes  
 **Prerequisites:** Tutorials 01 and 02 recommended first
 
@@ -213,7 +215,7 @@ if loop.should_adapt():
         job = pipeline.trigger_retrain()
 ```
 
-### Full end-to-end loop
+## Full end-to-end loop
 
 ```python
 from codex_ml.monitoring.data_drift import DataDriftDetector

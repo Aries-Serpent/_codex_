@@ -28,6 +28,7 @@ The repository variables feed three subsystems: the **Cognitive Brain** (memory 
 the **Copilot CLI** (FastAPI cognitive_app at port 8765), and the **CI/CD health** automation layer.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Repository Variables", "🧠 Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"'}}%%
 graph TB
     subgraph GH["GitHub Repository Variables"]
         direction TB
@@ -136,9 +137,10 @@ Referenced by `AgentBrainInterface.query_patterns()` in `src/codex/cognitive/bra
 Controls which SQLite tiers are active for session recall. STM = short-term (deque),
 LTM = long-term (SQLite persist), `both` = full recall pipeline.
 
-### Wiring Diagram
+## Wiring Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000", "generate_manifest.py\nCONTEXT_WINDOW_BUDGET"'}}%%
 flowchart LR
     VAR_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000"] --> MANIFEST["generate_manifest.py\nCONTEXT_WINDOW_BUDGET"]
     VAR_LTM["COGNITIVE_BRAIN_LTM_RETENTION_DAYS\n= 90"] --> PRUNE["prune_corpus.py\nretention_days"]
@@ -193,6 +195,7 @@ Currently the gate score is 5/5 (D_CAPABLE unlocked) — this variable is the ru
 ### Wiring Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "COPILOT_CLI_BASE_URL\n= http://localhost:8765", "ApiClient.tsx\nXtermTerminal.tsx"'}}%%
 flowchart TD
     VAR_URL["COPILOT_CLI_BASE_URL\n= http://localhost:8765"] --> |VITE_CLI_API_URL| FE_API["ApiClient.tsx\nXtermTerminal.tsx"]
     VAR_URL --> |CI integration tests| TEST_SERVER["test API server\n(port override)"]
@@ -248,6 +251,7 @@ fully validated. Flip to `true` to enable automatic agent tier elevation.
 ### CI Health State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> ok : failure_rate < THRESHOLD(10.0)
     ok --> degraded : failure_rate >= THRESHOLD(10.0)
@@ -319,6 +323,7 @@ bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh
 ### Wiring Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "CODESPACES_APT_UPDATE_RETRY\n= true", "on-create.sh\napt_update_with_retry()"'}}%%
 flowchart TD
     RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --> ONCREATE["on-create.sh\napt_update_with_retry()"]
     CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --> ONCREATE
@@ -360,6 +365,8 @@ immediately after reading the current session number:
 ### Auto-Increment Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF: N
+    WF'}}%%
 sequenceDiagram
     participant PR as PR event
     participant WF as chatops_copilot_trigger.yml
@@ -387,6 +394,7 @@ The format spec `<float>:<status>` must be parsed consistently by all consumers.
 ### Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total", "ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"'}}%%
 flowchart TD
     TELEMETRY["telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total"] --> MONITOR
 
@@ -443,6 +451,7 @@ Files that need updating once variables are created:
 Shows which variables must exist before others can function correctly.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_CI_FAILURE_THRESHOLD", "CODEX_CI_FAILURE_RATE\n(parser)"'}}%%
 graph LR
     THRESHOLD["CODEX_CI_FAILURE_THRESHOLD"] --> |required by| RATE["CODEX_CI_FAILURE_RATE\n(parser)"]
     RATE --> |feeds| LAST_GREEN["CODEX_CI_LAST_GREEN_SHA\n(written when ok)"]

@@ -48,7 +48,7 @@
 
 **Reference**: `docs/ops/PYTHON312_MIGRATION_PLAN.md`, `docs/ops/PYTHON312_MIGRATION_PHASE1_COMPLETE.md`
 
-#### Task 1.2: Staging Bayesian Mode
+## Task 1.2: Staging Bayesian Mode
 ```bash
 CODEX_BAYESIAN_MODE=true CODEX_FUZZY_MODE=true \
 PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
@@ -57,7 +57,7 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 ```
 **Target**: FP reduction ≥20%, latency p99 ≤50ms.
 
-#### Task 1.3: Active Learning Graduation
+### Task 1.3: Active Learning Graduation
 ```bash
 CODEX_ACTIVE_LEARNING=true \
 PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \

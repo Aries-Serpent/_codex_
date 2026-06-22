@@ -1,12 +1,36 @@
-# Repository Architecture Blueprint and Roadmap
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
+
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `ARCHITECTURE.md` and `Architecture.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version with improved organization and cross-references.
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Repository Architecture Blueprint and Roadmap - ARCHIVED
 
 **Document Version**: 1.0.0
-**Generated**: 2025-12-11
+**Generated**: 2026-06-22
 **Branch Context**: `copilot/sub-pr-2459-again`
 **Author**: GitHub Copilot with mbaetiong
 **Audience**: Developer-Architects, AI Assistants/Agents, DevOps Engineers
-
----
+**Status**: ARCHIVED - See Consolidated Version
 
 ## Executive Summary
 
@@ -201,6 +225,7 @@ tests/
 ### High-Level System Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "👥 Users", Developers'}}%%
 flowchart TB
     subgraph Users["👥 Users"]
         Dev[Developers]
@@ -568,7 +593,7 @@ navigator.execute('MENTAL_REVIEW')  # Review decisions
 navigator.execute('REPO_ORG')       # Organization
 ```
 
-#### 3. Physics-Inspired Orchestration
+## 3. Physics-Inspired Orchestration
 
 **Energy-Based Decision Making** (`agents/physics_orchestrator.py`):
 - Assigns "energy" costs to actions
@@ -580,7 +605,7 @@ navigator.execute('REPO_ORG')       # Organization
 - Learns from outcomes
 - Improves future decisions
 
-#### 4. Agent Control Interface
+### 4. Agent Control Interface
 
 **Generation**:
 ```bash
@@ -691,7 +716,7 @@ spec:
             nvidia.com/gpu: 1
 ```
 
-#### Pattern 2: Self-Hosted Runner
+## Pattern 2: Self-Hosted Runner
 
 **Requirements**:
 - Dedicated runner machine
@@ -699,7 +724,7 @@ spec:
 - Self-hosted label in workflows
 - Cost monitoring
 
-#### Pattern 3: Model Serving
+### Pattern 3: Model Serving
 
 **Service Stack** (`services/`):
 - FastAPI-based REST API
@@ -747,9 +772,9 @@ pytest tests/ -v
 python -m codex.cli --help
 ```
 
-### Common Tasks
+## Common Tasks
 
-#### Task 1: Add New Feature
+### Task 1: Add New Feature
 
 ```bash
 # 1. Create branch
@@ -778,7 +803,7 @@ git commit -m "feat: Add my feature"
 git push origin feature/my-feature
 ```
 
-#### Task 2: Fix Bug
+## Task 2: Fix Bug
 
 ```bash
 # 1. Reproduce bug
@@ -798,7 +823,7 @@ git add .
 git commit -m "fix: Fix specific bug"
 ```
 
-#### Task 3: Run Audit
+## Task 3: Run Audit
 
 ```bash
 # Full audit
@@ -811,7 +836,7 @@ python scripts/generate_audit_dashboard.py
 cat audit_artifacts/capabilities_scored.json | jq '.[] | select(.score < 0.85)'
 ```
 
-### AI Agent Workflows
+## AI Agent Workflows
 
 **Using Workflow Navigator**:
 ```python
@@ -1159,4 +1184,4 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 **Document Version**: 1.0.0
 **Maintenance**: Update quarterly or after major changes
 **Contact**: Repository owners (@mbaetiong)
-**Last Updated**: 2025-12-11
+**Last Updated**: 2026-06-22

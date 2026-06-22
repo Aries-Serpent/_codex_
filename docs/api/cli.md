@@ -1,5 +1,9 @@
 # CLI API Reference
 
+**Last Updated:** 2026-06-22
+
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 ## Overview
 
 The Codex CLI provides command-line interfaces for:

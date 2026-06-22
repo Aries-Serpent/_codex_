@@ -1,5 +1,7 @@
 # Observability Documentation
 
+**Last Updated:** 2026-06-22
+
 This directory contains documentation for monitoring, observability, and telemetry.
 
 ## Contents
@@ -50,7 +52,7 @@ pip install codex-monitoring
 export MONITORING_ENDPOINT=http://monitoring:9090
 ```
 
-### Creating Dashboards
+## Creating Dashboards
 
 1. Log in to monitoring UI
 2. Create new dashboard

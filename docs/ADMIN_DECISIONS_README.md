@@ -1,5 +1,7 @@
 # Repository Admin Implementation Decisions - Documentation Guide
 
+**Last Updated:** 2026-06-22
+
 > Complete guide to physics-inspired configuration decisions for the _codex_ repository
 
 ---

@@ -1,5 +1,7 @@
 # Inference Serving
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The inference serving capability provides production-ready model serving infrastructure including FastAPI/Flask endpoints, batch inference, model versioning, and high-performance prediction APIs for deploying ML models.
@@ -80,7 +82,7 @@ class ServingConfig(BaseSettings):
         env_prefix = "INFERENCE_"
 ```
 
-### YAML Configuration
+## YAML Configuration
 
 ```yaml
 # config/inference.yaml
@@ -324,7 +326,7 @@ uvicorn app:app --host 0.0.0.0 --port 8080 --workers 4
 gunicorn app:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
 ```
 
-### Example 2: Make Predictions
+## Example 2: Make Predictions
 
 ```python
 import requests
@@ -343,7 +345,7 @@ batch_response = requests.post(
 print(batch_response.json())
 ```
 
-### Example 3: gRPC Inference
+## Example 3: gRPC Inference
 
 ```python
 # inference.proto
@@ -402,7 +404,7 @@ def serve():
     server.wait_for_termination()
 ```
 
-### Example 4: Streaming Inference
+## Example 4: Streaming Inference
 
 ```python
 from fastapi import WebSocket
@@ -589,7 +591,7 @@ print(prof.key_averages().table())
 torch.cuda.synchronize()
 ```
 
-### Out of Memory
+## Out of Memory
 
 ```python
 # Clear CUDA cache

@@ -63,7 +63,7 @@ pg_dump codex > backup_$(date +%Y%m%d).sql
 psql codex < backup_20260620.sql
 ```
 
-### Performance Tuning
+## Performance Tuning
 
 1. Analyze query performance
 2. Create necessary indexes

@@ -1,5 +1,7 @@
 # Façade (FastAPI) — Cloud Run & Local Run Notes
 
+**Last Updated:** 2026-06-22
+
 Overview
 - The MCP Façade exposes a JSON-RPC endpoint and health endpoints. It loads an adapter at startup via the `ADAPTER_CLASS` env var (defaults to the in-repo mock backend).
 

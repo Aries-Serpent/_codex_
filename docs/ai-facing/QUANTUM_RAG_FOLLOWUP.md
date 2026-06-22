@@ -1,5 +1,7 @@
 # Follow-Up Prompt: Physics-Inspired RAG Enhancement
 
+**Last Updated:** 2026-06-22
+
 ## Context
 
 The _codex_ repository now has a complete 4-phase implementation including:
@@ -50,7 +52,7 @@ where phase = energy_state / ℏ_effective
 P(select_doc) = |Ψ(doc)|²
 ```
 
-### Implementation Requirements
+## Implementation Requirements
 
 **File Location**: `src/rag/pipelines/quantum_retrieval.py`
 
@@ -496,7 +498,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### Testing Requirements
+## Testing Requirements
 
 **File Location**: `tests/rag/test_quantum_retrieval.py`
 

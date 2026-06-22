@@ -1,5 +1,5 @@
 # Agentic System Final KPI Report
-> **Generated**: 2026-03-02 | Aries-Serpent/_codex_
+> **Generated**: 2026-06-22 | Aries-Serpent/_codex_
 >
 > **Scope**: Soft→GROUNDED conversion, Phases 1–6 (complete)
 > **Registry**: v1.9.0 · 152 agents · GROUNDED: 8 · PARTIAL: 142 · SOFT: 2

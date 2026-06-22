@@ -1,5 +1,7 @@
 # Cognitive Brain Architecture - Quantum Agent Integration
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Cognitive Brain has been enhanced with a **Quantum Agent Framework** that implements agent behavior as a controlled dynamical system with energy minimization. This document describes how the quantum agent framework integrates with the existing 8-layer cognitive brain architecture.
@@ -7,6 +9,7 @@ The Cognitive Brain has been enhanced with a **Quantum Agent Framework** that im
 ## Integration Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing UI Layer 100%, AI Generation Layer 100%'}}%%
 graph TB
     subgraph "Cognitive Brain v3.1 - Quantum Enhanced"
         UI[UI Layer 100%]

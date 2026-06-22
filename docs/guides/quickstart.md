@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Cognitive Brain Core! This guide will get you up and running in 5 minutes.
 
 ## Installation
@@ -45,7 +47,7 @@ print(f"Reward: {result.cumulative_reward:.2f}")
 print(f"Success: {result.v_mu_pi:.2f}")
 ```
 
-### 2. Use Meta-Learning
+## 2. Use Meta-Learning
 
 ```python
 from github.agents.core.universal_intelligence import MetaPolicyRouter
@@ -64,7 +66,7 @@ result = execute_with_params(adapted_params)
 router.update_strategy_performance("maml", result.score, success=True)
 ```
 
-### 3. Monitor Safety
+## 3. Monitor Safety
 
 ```python
 from github.agents.core.universal_intelligence import SafetyMonitor
@@ -108,7 +110,7 @@ spec = TaskSpec(environment="bandit", ...)
 spec = TaskSpec(environment="classification", ...)
 ```
 
-### Complexity Estimation
+## Complexity Estimation
 
 ```python
 from github.agents.core.universal_intelligence import estimate_task_complexity
@@ -117,7 +119,7 @@ score, level = estimate_task_complexity(spec)
 # level: TaskComplexity.LOW | MEDIUM | HIGH | VERY_HIGH
 ```
 
-### Pattern Storage
+## Pattern Storage
 
 ```python
 from github.agents.core.universal_intelligence import (

@@ -1,5 +1,7 @@
 # Workflow Portfolio 7-Day Table
 
+**Last Updated:** 2026-06-22
+
 Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 
 > Exhaustive inventory lives in the CSV. This markdown view highlights the fields most useful

@@ -1,5 +1,7 @@
 # MLflow Offline Workflows
 
+**Last Updated:** 2026-06-22
+
 Codex keeps MLflow disabled by default to avoid accidental network calls.  When
 ready, opt in locally:
 

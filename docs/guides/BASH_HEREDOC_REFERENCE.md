@@ -1,5 +1,7 @@
 # Bash Heredoc Reference Guide
 
+**Last Updated:** 2026-06-22
+
 > **Purpose**: Resolve escape sequence confusion (CODEX-002, CODEX-009).  
 > **References**: Bash reference manual §3.1.7, POSIX Shell Command Language
 

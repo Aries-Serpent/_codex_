@@ -1,5 +1,7 @@
 # Local Codex Env Readiness Guide
 
+**Last Updated:** 2026-06-22
+
 This document describes how to use the **Codex Env** tooling to prepare and
 exercise a local `_codex_` environment.
 

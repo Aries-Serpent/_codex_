@@ -1,5 +1,7 @@
 # docs/plans/archive
 
+**Last Updated:** 2026-06-22
+
 Historical completion reports and status snapshots archived during the S869 documentation
 consolidation pass (2026-05-08).
 

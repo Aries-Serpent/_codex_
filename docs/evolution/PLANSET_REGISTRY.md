@@ -1,6 +1,37 @@
 # Planset Registry — Historical Archive
 
-**Last Updated**: 2026-02-12
+## Table of Contents
+
+- [📋 Registry Overview](#-registry-overview)
+- [📖 Detailed Records](#-detailed-records)
+  - [PS-01: Configuration Consolidation](#ps-01-configuration-consolidation)
+  - [PS-02: IPC Bridge Hardening](#ps-02-ipc-bridge-hardening)
+  - [PS-03: Split Brain Elimination](#ps-03-split-brain-elimination)
+  - [PS-04: Privacy-First Memory](#ps-04-privacy-first-memory)
+  - [PS-05: Token Security Neutralization](#ps-05-token-security-neutralization)
+  - [PS-06: Knowledge Crawler Service](#ps-06-knowledge-crawler-service)
+  - [PS-06e: Knowledge Crawler Enhancement](#ps-06e-knowledge-crawler-enhancement)
+  - [PS-07: Business Logic Elevation](#ps-07-business-logic-elevation)
+  - [PS-08: Microservice Root Cleanup](#ps-08-microservice-root-cleanup)
+  - [PS-09: Training Entry Point Unification](#ps-09-training-entry-point-unification)
+  - [PS-10: Owner Guard CI/CD Enforcement](#ps-10-owner-guard-cicd-enforcement)
+- [🚀 Advancement Era Plansets (Phase 11-12)](#-advancement-era-plansets-phase-11-12)
+  - [PS-11: MCP Size Estimation](#ps-11-mcp-size-estimation)
+  - [PS-12: MCP Exclude Patterns](#ps-12-mcp-exclude-patterns)
+  - [PS-13: Agent Task Router](#ps-13-agent-task-router)
+  - [PS-14: Cognitive Dashboard MSV](#ps-14-cognitive-dashboard-msv)
+  - [PS-15: Advanced Infrastructure](#ps-15-advanced-infrastructure)
+- [📊 Analytics](#-analytics)
+  - [By Category](#by-category)
+  - [PS-16: Production Readiness](#ps-16-production-readiness)
+  - [Completion Rate](#completion-rate)
+  - [PS-17: Operational Excellence](#ps-17-operational-excellence)
+  - [PS-18: Continuous Improvement](#ps-18-continuous-improvement)
+  - [PS-19: Next Evolution Phase](#ps-19-next-evolution-phase)
+- [🔗 Cross-References](#-cross-references)
+  - [PS-20: V4.0 Scoring Implementation](#ps-20-v40-scoring-implementation)
+
+**Last Updated**: 2026-06-22
 **Version**: 3.0.0
 **Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.
 **Format**: Structured for search, filtering, and AI agent consumption.

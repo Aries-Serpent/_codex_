@@ -4,7 +4,7 @@
 **PR**: #2639 / #2660  
 **Branch**: copilot/sub-pr-2639  
 **Status**: ✅ Implementation Complete - **ACTION REQUIRED**  
-**Generated**: 2026-03-17  
+**Generated**: 2026-06-22  
 **Priority**: 🔴 **HIGH** - Security Enhancement
 
 ---
@@ -52,7 +52,7 @@ cat docs/admin/security/COPILOT_TOKEN_USAGE.md     # 10.2KB copilot guide
 cat .github/workflows/security-tools-bootstrap.yml # 5.7KB workflow
 ```
 
-#### Task 1.2: Verify Files Are in Repository
+## Task 1.2: Verify Files Are in Repository
 
 ```bash
 git status
@@ -64,7 +64,7 @@ git log --oneline -3
 # f415d02 Add comprehensive Phase 4-8 continuation prompt for PR #2639
 ```
 
-#### Task 1.3: Test Tools Locally (Optional but Recommended)
+## Task 1.3: Test Tools Locally (Optional but Recommended)
 
 ```bash
 # Install dependencies
@@ -80,9 +80,9 @@ python3 scripts/security/copilot_token_decoder.py
 
 ---
 
-### 🔐 PHASE 2: Generate and Encrypt Token (Est. 15 min)
+## 🔐 PHASE 2: Generate and Encrypt Token (Est. 15 min)
 
-#### Task 2.1: Create GitHub Personal Access Token
+### Task 2.1: Create GitHub Personal Access Token
 
 1. Navigate to: https://github.com/settings/tokens/new
 2. Configure:
@@ -132,7 +132,7 @@ Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <!-- pragma: allowl
 💾 Setup script saved to: /home/user/codex_token_setup.sh
 ```
 
-#### Task 2.3: Save Secret Values
+## Task 2.3: Save Secret Values
 
 **IMPORTANT**: Keep the terminal window open or save the output to a secure location. You'll need these values in the next phase.
 
@@ -157,7 +157,7 @@ bash ~/codex_token_setup.sh
 # The script will automatically set all secrets
 ```
 
-#### Option B: Manual via GitHub CLI
+## Option B: Manual via GitHub CLI
 
 ```bash
 # Set secrets one by one
@@ -196,7 +196,7 @@ gh secret set CODEX_GHP_TOKEN_CONFIG \
   --repo Aries-Serpent/_codex_
 ```
 
-#### Option C: Manual via Web UI
+## Option C: Manual via Web UI
 
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 2. Click **New repository secret**
@@ -232,7 +232,7 @@ python3 scripts/security/copilot_token_decoder.py
 # ==============================================================
 ```
 
-#### Task 4.2: Test in Workflow (Optional)
+## Task 4.2: Test in Workflow (Optional)
 
 ```bash
 # Trigger a test workflow run
@@ -245,7 +245,7 @@ gh run list --workflow=copilot-automation.yml --limit 1
 # https://github.com/Aries-Serpent/_codex_/actions
 ```
 
-#### Task 4.3: Verify Secrets Are Set
+## Task 4.3: Verify Secrets Are Set
 
 ```bash
 # List all repository secrets
@@ -259,9 +259,9 @@ gh secret list --repo Aries-Serpent/_codex_
 
 ---
 
-### 🔒 PHASE 5: Security Cleanup (Est. 5 min)
+## 🔒 PHASE 5: Security Cleanup (Est. 5 min)
 
-#### Task 5.1: Revoke Old Token (CRITICAL)
+### Task 5.1: Revoke Old Token (CRITICAL)
 
 **This step is mandatory for security!**
 
@@ -282,7 +282,7 @@ rm ~/codex_token_setup.sh
 history -c  # Clears history in current session
 ```
 
-#### Task 5.3: Document Rotation Date
+## Task 5.3: Document Rotation Date
 
 ```bash
 # Create a reminder for token rotation (90 iterations)
@@ -318,7 +318,7 @@ pip3 install cryptography
 # Then run the encryption tool again
 ```
 
-### Issue: "gh CLI not found"
+## Issue: "gh CLI not found"
 
 **Solution**:
 ```bash
@@ -331,7 +331,7 @@ pip3 install cryptography
 gh auth login
 ```
 
-### Issue: Token retrieval fails with "No token found"
+## Issue: Token retrieval fails with "No token found"
 
 **Solution**:
 1. Verify secrets are set: `gh secret list --repo Aries-Serpent/_codex_`
@@ -415,7 +415,7 @@ Once all phases are complete, update this document:
 ---
 
 **Document Version**: 1.0  
-**Last Updated**: 2026-01-23T11:00:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Maintainer**: @mbaetiong  
 **Status**: 🟢 **READY FOR ADMIN ACTION**
 

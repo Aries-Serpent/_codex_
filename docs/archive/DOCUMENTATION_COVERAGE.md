@@ -2,7 +2,7 @@
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2025-12-07  
+**Generated**: 2026-06-22  
 **Current Coverage**: 92%  
 **Target**: 100%
 

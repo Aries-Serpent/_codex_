@@ -1,7 +1,7 @@
 # Incident Response Playbook
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: Incident Commander  
 **Escalation**: SRE Lead → Engineering Director → VP Engineering  
 
@@ -104,7 +104,7 @@ Incident Detected
 - Action: Alert on-call, check logs
 ```
 
-### 1.2 Manual Alert Criteria
+## 1.2 Manual Alert Criteria
 
 **Criteria for manual incident report**:
 - Received customer complaint about service issue
@@ -179,7 +179,7 @@ Initial findings:
 # Incident ID: INC-2024-01-15-001
 ```
 
-### 2.2 Investigation Phase (5-15 minutes)
+## 2.2 Investigation Phase (5-15 minutes)
 
 **Step 1: Collect Diagnostic Information**
 
@@ -327,7 +327,7 @@ kubectl patch service codex-api -n production --type='json' -p='[{"op": "replace
 kubectl apply -f k8s/rate-limit-emergency.yaml -n production
 ```
 
-### 3.2 Post-Mitigation Verification
+## 3.2 Post-Mitigation Verification
 
 **Verification Checklist**:
 - [ ] API endpoints responding (< 200ms response time)
@@ -554,7 +554,7 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
   -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle in transaction' AND query_start < now() - INTERVAL '5 minutes';"
 ```
 
-### Scenario 2: Memory Leak in Application
+## Scenario 2: Memory Leak in Application
 
 **Symptoms**:
 - Pod memory usage continuously increases
@@ -576,7 +576,7 @@ kubectl set resources deployment codex-api -n production --limits=memory=2Gi
 kubectl set image deployment/codex-api codex-api=$FIXED_IMAGE_VERSION -n production
 ```
 
-### Scenario 3: Cascading Failure (Service Dependency Chain)
+## Scenario 3: Cascading Failure (Service Dependency Chain)
 
 **Symptoms**:
 - One service goes down

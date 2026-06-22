@@ -1,5 +1,7 @@
 # D Model Activation Checklist
 
+**Last Updated:** 2026-06-22
+
 > **Purpose:** Step-by-step checklist for activating the D model (full autonomous operations)
 > after successful Genesis Phase 1 and Phase 2 completion.
 >
@@ -58,7 +60,7 @@ grep -n "TTL_SECONDS" .github/workflows/agent-auth-delegation.yml
 # Expected: const TTL_SECONDS = 3600; // 1 hour
 ```
 
-### 1.4 Safety Guard Status
+## 1.4 Safety Guard Status
 
 Verify safety guards are correctly configured:
 
@@ -128,7 +130,7 @@ Verify all checks pass:
 - [ ] Repository variables: ✅
 - [ ] Follow-up prompt file: ✅
 
-### 3.2 Session Health Checks
+## 3.2 Session Health Checks
 
 ```bash
 # Verify COPILOT_ACTIVE_SESSION was acquired and released correctly
@@ -148,7 +150,7 @@ print('Last SHA:', d.get('CODEX_CI_LAST_GREEN_SHA', '')[:12])
 "
 ```
 
-### 3.3 CI Health Check
+## 3.3 CI Health Check
 
 ```bash
 # Check for any failing workflows on HEAD
@@ -158,7 +160,7 @@ python3 scripts/ci/scan_failing_workflows.py --sha "$(git rev-parse HEAD)"
 python3 -m ruff check . --quiet && echo "Ruff: ✅ clean" || echo "Ruff: ❌ errors"
 ```
 
-### 3.4 Session Completion Attestation
+## 3.4 Session Completion Attestation
 
 Verify the completed session posted `<!-- session-completion-attestation -->` in a PR comment.
 If missing, the `copilot-agent-checkin.yml` incomplete-session guard will auto-retrigger.
@@ -188,7 +190,7 @@ gh api repos/Aries-Serpent/_codex_/actions/variables/COPILOT_SESSION_QUEUE 2>/de
 2. If queue is stuck: manually clear `COPILOT_SESSION_QUEUE` variable in repo settings
 3. If `agent-auth-delegation.yml` failed: check the run logs for token issues
 
-### Rescue Comment Not Triggering Session
+## Rescue Comment Not Triggering Session
 
 **Symptom:** CI failure posted rescue comment but Copilot never started.
 
@@ -204,7 +206,7 @@ gh api repos/Aries-Serpent/_codex_/issues/3854/comments \
 **Fix:** Ensure `CODEX_MASTER_KEY` is functional and has `issues:write` scope.
 Run Admin Setup Verification to confirm.
 
-### COPILOT_ACTIVE_SESSION Lock Stuck
+## COPILOT_ACTIVE_SESSION Lock Stuck
 
 **Symptom:** New sessions can't start because TTL hasn't expired yet.
 

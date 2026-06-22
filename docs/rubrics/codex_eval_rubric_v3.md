@@ -1,5 +1,7 @@
 # Codex Evaluator v3 — Rubric (Local-Only)
 
+**Last Updated:** 2026-06-22
+
 This page summarizes the evaluator rules captured in `manifests/codex_eval_rules.v3.json`.
 
 ## Dimensions & Weights

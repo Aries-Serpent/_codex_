@@ -1,5 +1,7 @@
 # Plugins Documentation
 
+**Last Updated:** 2026-06-22
+
 This directory contains documentation for the plugin system and available plugins.
 
 ## Contents
@@ -63,7 +65,7 @@ class MyPlugin(BasePlugin):
         pass
 ```
 
-### Plugin Types
+## Plugin Types
 
 - **Handlers**: React to system events
 - **Processors**: Transform data
@@ -99,7 +101,7 @@ plugins:
       option2: value2
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 PLUGIN_MY_PLUGIN_ENABLED=true

@@ -1,5 +1,44 @@
 # Workflow Portfolio Analysis (7-Day Window)
 
+## Table of Contents
+
+- [Dataset Artifacts](#dataset-artifacts)
+- [Executive Snapshot](#executive-snapshot)
+- [Portfolio Action Snapshot](#portfolio-action-snapshot)
+- [Mermaid Mapping — Workflow + Variable + Conflict Logic](#mermaid-mapping--workflow--variable--conflict-logic)
+- [Tokenized Variable Mapping (Top Frequency)](#tokenized-variable-mapping-top-frequency)
+- [WEC Workflow Mapping — Groups + Token Contracts](#wec-workflow-mapping--groups--token-contracts)
+- [Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)](#quantum-inspired-equations-depicting-workflow-logic-tokenized)
+- [Copilot Session Intended Process (Codeless, Workflow-Centric)](#copilot-session-intended-process-codeless-workflow-centric)
+- [Copilot Session Operating Envelope](#copilot-session-operating-envelope)
+- [Smoke-Test Posture and Expected Edge Cases](#smoke-test-posture-and-expected-edge-cases)
+- [Requested Findings Summary](#requested-findings-summary)
+  - [What works](#what-works)
+  - [What does not work](#what-does-not-work)
+  - [What is missing](#what-is-missing)
+  - [What needs to be improved](#what-needs-to-be-improved)
+- [Validated Disable / Keep / Archive Decisions](#validated-disable--keep--archive-decisions)
+  - [Disable-now (validated)](#disable-now-validated)
+  - [Keep-enabled after lifetime review](#keep-enabled-after-lifetime-review)
+  - [Archive-review bucket](#archive-review-bucket)
+- [Similar Logic / Overlap Groups](#similar-logic--overlap-groups)
+- [🚨 Branch-Update Conflict Dashboard](#-branch-update-conflict-dashboard)
+  - [Active Session Conflict Protocol](#active-session-conflict-protocol)
+  - [Mitigation Variables — Quick Reference](#mitigation-variables--quick-reference)
+  - [HIGH-Risk Workflows — Mandatory Mitigation](#high-risk-workflows--mandatory-mitigation)
+    - [🔴 `iterative-self-healing-ci.yml` — Iterative Self-Healing CI](#-iterative-self-healing-ciyml--iterative-self-healing-ci)
+    - [🔴 `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)](#-copilot-evolution-suiteyml--copilot-evolution--review-unified)
+    - [🔴 `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session](#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session)
+    - [🔴 `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)](#-agent-var-writeryml--agent-variable-writer-provenance-chain)
+    - [🔴 `copilot-session-chain.yml` — Copilot Session Chain](#-copilot-session-chainyml--copilot-session-chain)
+    - [🔴 `agent-orchestration-unified.yml` — Agent Orchestration (Unified)](#-agent-orchestration-unifiedyml--agent-orchestration-unified)
+  - [MEDIUM-Risk Workflows — Standard Mitigation](#medium-risk-workflows--standard-mitigation)
+  - [Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions](#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions)
+- [Top 20 Quick-Win Workflows to Update (Copilot Session First)](#top-20-quick-win-workflows-to-update-copilot-session-first)
+- [Perspective: Capability + Future Vision](#perspective-capability--future-vision)
+  - [What this codebase is capable of doing well](#what-this-codebase-is-capable-of-doing-well)
+  - [Future vision and path improvement](#future-vision-and-path-improvement)
+
 Generated at: 2026-05-16T15:26:16.938000+00:00  
 Repository: `Aries-Serpent/_codex_`
 
@@ -43,6 +82,7 @@ Repository: `Aries-Serpent/_codex_`
 ## Mermaid Mapping — Workflow + Variable + Conflict Logic
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Trigger Event, Workflow Entry'}}%%
 flowchart TD
   A[Trigger Event] --> B[Workflow Entry]
   B --> C{Guardrails}
@@ -60,6 +100,7 @@ flowchart TD
 ```
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing main branch update, PR branch behind'}}%%
 flowchart LR
   M[main branch update] --> G[PR branch behind]
   G --> H{Write-capable workflows?}
@@ -105,6 +146,7 @@ CODEX_HEALER_SKIP_SKIPCI]
 ## WEC Workflow Mapping — Groups + Token Contracts
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Copilot session start, "copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"'}}%%
 flowchart TD
   S[Copilot session start] --> SETUP["copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"]
   SETUP --> WEC["workflow-execution-gate.yml<br/>TSEC_CODEX_MASTER_KEY<br/>TSEC_CODEX_BACKUP_KEY<br/>TSEC_GITHUB_TOKEN"]
@@ -160,6 +202,7 @@ Where:
 ## Copilot Session Intended Process (Codeless, Workflow-Centric)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Copilot session starts, Read startup packet + conflict dashboard'}}%%
 flowchart LR
   S0[Copilot session starts] --> S1[Read startup packet + conflict dashboard]
   S1 --> S2{drift severity}
@@ -299,6 +342,7 @@ Detect drift (git log main..HEAD --oneline | wc -l):
 ```
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Active Copilot Session, LOW: Proceed normally'}}%%
 flowchart TD
   START([Active Copilot Session]) --> DETECT{Detect branch drift\ngit log main..HEAD}
   DETECT -->|0 commits| LOW[LOW: Proceed normally]

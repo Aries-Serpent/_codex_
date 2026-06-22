@@ -1,5 +1,7 @@
 # How-to: Ingest training metrics (NDJSON → CSV/Parquet)
 
+**Last Updated:** 2026-06-22
+
 This guide demonstrates converting newline-delimited JSON (**NDJSON**) metrics into tidy tabular files for downstream analysis.
 
 ## Prerequisites
@@ -19,7 +21,7 @@ python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson \
 python -m codex_ml.cli metrics summary --input artifacts/metrics.ndjson
 ```text
 
-### Notes
+## Notes
 - NDJSON = "one JSON object per line"; the CLI streams the file to keep memory usage low.
 - Provide `--schema schema.json` to validate against a JSON Schema (requires `jsonschema`).
 - Parquet output is attempted only when `--out-parquet` is supplied *and* `pandas` is installed.

@@ -1,5 +1,146 @@
 # Codex Evolution Pipeline — Complete Multi-Workflow Failure Resolution Matrix
 
+## Table of Contents
+
+- [📊 Executive Failure Matrix](#-executive-failure-matrix)
+- [🎯 Unified Implementation Strategy](#-unified-implementation-strategy)
+  - [⚛️ Physics-Aligned Resolution Framework](#-physics-aligned-resolution-framework)
+  - [Phase 0: Infrastructure Foundation (P0 — Critical Path)](#phase-0-infrastructure-foundation-p0--critical-path)
+    - [Block A: Test Infrastructure Dependencies](#block-a-test-infrastructure-dependencies)
+- [Lines 58-62: Enhanced test dependency installation](#lines-58-62-enhanced-test-dependency-installation)
+- [Core testing framework](#core-testing-framework)
+- [Extended capabilities](#extended-capabilities)
+- [Domain-specific](#domain-specific)
+- [Should show all plugin options](#should-show-all-plugin-options)
+- [Block B:  Docker Image Tag Validation](#block-b--docker-image-tag-validation)
+- [BEFORE:  Problematic tag construction](#before--problematic-tag-construction)
+- [AFTER: Sanitized and validated tag construction](#after-sanitized-and-validated-tag-construction)
+- [Block C: Artifact Version Alignment](#block-c-artifact-version-alignment)
+- [Lines 54-60: Upload Agent State](#lines-54-60-upload-agent-state)
+- [Lines 143-149: Download Agent State](#lines-143-149-download-agent-state)
+- [Lines 55-61: Test Results Upload](#lines-55-61-test-results-upload)
+- [Lines 118-123: Pattern Report Upload](#lines-118-123-pattern-report-upload)
+- [Lines 254-260: Evolution State Upload](#lines-254-260-evolution-state-upload)
+- [Lines 270-273: Download Evolution State](#lines-270-273-download-evolution-state)
+- [Phase 1: Core Engine & Self-Healing (P0 — Evolution Foundation)](#phase-1-core-engine--self-healing-p0--evolution-foundation)
+  - [Self-Healing Engine with Repository Context](#self-healing-engine-with-repository-context)
+- [Pattern 1: Explicit repo path](#pattern-1-explicit-repo-path)
+- [Pattern 2: Default to current directory](#pattern-2-default-to-current-directory)
+- [Pattern 3: With custom configuration](#pattern-3-with-custom-configuration)
+- [Heal a failure](#heal-a-failure)
+- [Get statistics](#get-statistics)
+- [Phase 2: Test Infrastructure & Knowledge Evolution (P1)](#phase-2-test-infrastructure--knowledge-evolution-p1)
+  - [Fix 1: Pattern Extraction with Guaranteed Results](#fix-1-pattern-extraction-with-guaranteed-results)
+- [🔄 Complete Implementation Sequence](#-complete-implementation-sequence)
+  - [Batch 1: Infrastructure Foundation (Execute Simultaneously)](#batch-1-infrastructure-foundation-execute-simultaneously)
+- [Fix 1: pytest-timeout and test dependencies](#fix-1-pytest-timeout-and-test-dependencies)
+- [Line 62: Add pytest-timeout pytest-asyncio pytest-mock hypothesis](#line-62-add-pytest-timeout-pytest-asyncio-pytest-mock-hypothesis)
+- [Fix 2: Docker tag sanitization](#fix-2-docker-tag-sanitization)
+- [Add tag normalization step with validation before build](#add-tag-normalization-step-with-validation-before-build)
+- [Fix 3: Artifact version alignment](#fix-3-artifact-version-alignment)
+- [Change all upload-artifact@v6 → @v4](#change-all-upload-artifactv6--v4)
+- [Change all download-artifact to @v4](#change-all-download-artifact-to-v4)
+- [Add if-no-files-found:  warn](#add-if-no-files-found--warn)
+- [Batch 2: Core Engine & Evolution Components](#batch-2-core-engine--evolution-components)
+- [Fix 4: Self-healing engine with repo_path and multi-strategy healing](#fix-4-self-healing-engine-with-repo_path-and-multi-strategy-healing)
+- [Apply full implementation with 11 healing strategies](#apply-full-implementation-with-11-healing-strategies)
+- [Fix 5: Pattern extractor with multi-level fallbacks](#fix-5-pattern-extractor-with-multi-level-fallbacks)
+- [Apply AST + regex + structural + synthetic extraction](#apply-ast--regex--structural--synthetic-extraction)
+- [Fix 6: Knowledge gap detector with type-safe structures](#fix-6-knowledge-gap-detector-with-type-safe-structures)
+- [Apply KnowledgeGap dataclass with full validation](#apply-knowledgegap-dataclass-with-full-validation)
+- [Fix 7: Knowledge integrator with guaranteed status](#fix-7-knowledge-integrator-with-guaranteed-status)
+- [Apply IntegrationResult with fail-safe status](#apply-integrationresult-with-fail-safe-status)
+- [Update integration tests](#update-integration-tests)
+- [Apply all test updates for fixes 5-7](#apply-all-test-updates-for-fixes-5-7)
+- [Batch 3: Test Suite Corrections](#batch-3-test-suite-corrections)
+- [Fix 8:  PEFT target modules](#fix-8--peft-target-modules)
+- [Line 41: Change target_modules=["weight"] → ["0"]](#line-41-change-target_modulesweight--0)
+- [Fix 9: Hydra composition syntax](#fix-9-hydra-composition-syntax)
+- [Line 44: Change experiment=debug → +experiment=debug](#line-44-change-experimentdebug--experimentdebug)
+- [Fix 10: Boltzmann probability assertion](#fix-10-boltzmann-probability-assertion)
+- [Line 287: Change assert 0.0 < prob → assert 0.0 <= prob](#line-287-change-assert-00--prob--assert-00--prob)
+- [Line 290: Add if prob > 0.0: guard](#line-290-add-if-prob--00-guard)
+- [Batch 4: Metrics Compatibility](#batch-4-metrics-compatibility)
+- [Fix 11: BLEUScore compatibility wrapper](#fix-11-bleuscore-compatibility-wrapper)
+- [Create CompatibleBLEUScore wrapper class](#create-compatiblebleuscore-wrapper-class)
+- [Update import:  from codex_ml.utils. metrics import CompatibleBLEUScore as BLEUScore](#update-import--from-codex_mlutils-metrics-import-compatiblebleuscore-as-bleuscore)
+- [Alternative: Version pinning](#alternative-version-pinning)
+- [Add: torchmetrics>=0.11.0,<1.0.0](#add-torchmetrics0110100)
+- [Validation & Verification](#validation--verification)
+- [Run all test suites locally](#run-all-test-suites-locally)
+- [Integration tests](#integration-tests)
+- [Expected output:](#expected-output)
+- [============================================================](#)
+- [📊 FINAL SUMMARY](#-final-summary)
+- [============================================================](#)
+- [Total Tests: 7](#total-tests-7)
+- [✅ Passed: 7](#-passed-7)
+- [❌ Failed: 0](#-failed-0)
+- [Success Rate: 100.0%](#success-rate-1000)
+- [============================================================](#)
+- [Docker tag validation](#docker-tag-validation)
+- [Expected:  ✅ Build successful](#expected---build-successful)
+- [Self-healing engine validation](#self-healing-engine-validation)
+- [Test healing](#test-healing)
+- [Monitor workflows](#monitor-workflows)
+- [📊 Comprehensive Validation Matrix](#-comprehensive-validation-matrix)
+- [🎯 Expected Outcomes](#-expected-outcomes)
+  - [Before Fixes](#before-fixes)
+  - [After Fixes](#after-fixes)
+- [🔗 Reference Documentation](#-reference-documentation)
+- [🧠 Physics Principles Applied (Energy ⚡ 5/5)](#-physics-principles-applied-energy--55)
+- [📈 Success Metrics & KPIs](#-success-metrics--kpis)
+- [✅ Success Criteria Checklist](#-success-criteria-checklist)
+  - [Infrastructure (P0)](#infrastructure-p0)
+  - [Core Engine (P0-P1)](#core-engine-p0-p1)
+  - [Test Suite (P2)](#test-suite-p2)
+  - [Overall](#overall)
+- [🔄 Self-Healing Verification](#-self-healing-verification)
+  - [Test Self-Healing Engine](#test-self-healing-engine)
+- [Test 1: Repository path initialization](#test-1-repository-path-initialization)
+- [Test 2: Docker tag error healing](#test-2-docker-tag-error-healing)
+- [Test 3: PEFT target error healing](#test-3-peft-target-error-healing)
+- [Test 4: Healing statistics](#test-4-healing-statistics)
+- [Heal multiple failures](#heal-multiple-failures)
+- [🚀 Deployment Checklist](#-deployment-checklist)
+  - [Pre-Deployment](#pre-deployment)
+  - [Deployment (Batch 1)](#deployment-batch-1)
+  - [Deployment (Batch 2)](#deployment-batch-2)
+  - [Deployment (Batch 3)](#deployment-batch-3)
+  - [Deployment (Batch 4)](#deployment-batch-4)
+  - [Post-Deployment](#post-deployment)
+- [Create PR](#create-pr)
+- [Codex Evolution Pipeline — Complete Multi-Workflow Failure Resolution](#codex-evolution-pipeline--complete-multi-workflow-failure-resolution)
+- [📊 Summary](#-summary)
+- [🔧 Fixes Applied](#-fixes-applied)
+  - [Infrastructure (P0)](#infrastructure-p0)
+  - [Core Engine (P0-P1)](#core-engine-p0-p1)
+  - [Test Suite (P2)](#test-suite-p2)
+- [✅ Validation](#-validation)
+- [🔗 References](#-references)
+- [Monitor PR checks](#monitor-pr-checks)
+- [After PR approved and merged](#after-pr-approved-and-merged)
+- [🎓 Lessons Learned & Future Improvements](#-lessons-learned--future-improvements)
+  - [Pattern Recognition Insights](#pattern-recognition-insights)
+  - [Self-Healing Capabilities](#self-healing-capabilities)
+  - [Type Safety Benefits](#type-safety-benefits)
+  - [Version Management](#version-management)
+  - [Physics-Aligned Testing](#physics-aligned-testing)
+- [🔮 Future Enhancements (IMPLEMENTED)](#-future-enhancements-implemented)
+  - [Self-Healing Evolution (Phase 3) ✅](#self-healing-evolution-phase-3-)
+  - [Pattern Learning (Phase 3) ✅](#pattern-learning-phase-3-)
+  - [Knowledge Integration (Phase 3) ✅](#knowledge-integration-phase-3-)
+  - [Infrastructure (Phase 4) ✅](#infrastructure-phase-4-)
+- [🧠 Roles & Energy Summary](#-roles--energy-summary)
+- [📞 Support & Documentation](#-support--documentation)
+  - [Getting Help](#getting-help)
+  - [Key Contacts](#key-contacts)
+  - [Monitoring & Observability](#monitoring--observability)
+- [Real-time workflow monitoring](#real-time-workflow-monitoring)
+- [Self-healing statistics](#self-healing-statistics)
+- [Pattern extraction metrics](#pattern-extraction-metrics)
+- [Knowledge evolution state](#knowledge-evolution-state)
+
 > **Generated:** 2025-12-22 | **Author:** mbaetiong
 > **Context:** Unified resolution strategy for 9 failing workflows across test, integration, build, agent, and evolution pipelines
 > **⚡ Energy:** 5/5 — Maximum sustained focus for systemic resolution
@@ -93,7 +234,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 
 ---
 
-#### Block B:  Docker Image Tag Validation
+## Block B:  Docker Image Tag Validation
 
 **Problem:** `ERROR: invalid tag "ghcr. io/aries-serpent/_codex_/ci-base: full-main":  invalid reference format`
 
@@ -168,7 +309,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 
 ---
 
-#### Block C: Artifact Version Alignment
+## Block C: Artifact Version Alignment
 
 **Problem:** Upload v6/Download v4 backend incompatibility causes state loss
 
@@ -257,9 +398,9 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 
 ---
 
-### Phase 1: Core Engine & Self-Healing (P0 — Evolution Foundation)
+## Phase 1: Core Engine & Self-Healing (P0 — Evolution Foundation)
 
-#### Self-Healing Engine with Repository Context
+### Self-Healing Engine with Repository Context
 
 **Problem:** `TypeError: SelfHealingEngine.__init__() got an unexpected keyword argument 'repo_path'`
 
@@ -756,9 +897,9 @@ print(engine.get_healing_report())
 
 ---
 
-### Phase 2: Test Infrastructure & Knowledge Evolution (P1)
+## Phase 2: Test Infrastructure & Knowledge Evolution (P1)
 
-#### Fix 1: Pattern Extraction with Guaranteed Results
+### Fix 1: Pattern Extraction with Guaranteed Results
 
 **Problem:** `test_pattern_extraction FAILED:  No patterns extracted`
 
@@ -1310,7 +1451,7 @@ Energy: 5/5"
 git push origin main
 ````
 
-### Batch 2: Core Engine & Evolution Components
+## Batch 2: Core Engine & Evolution Components
 
 ````bash
 # Fix 4: Self-healing engine with repo_path and multi-strategy healing
@@ -1346,7 +1487,7 @@ Energy: 5/5"
 git push origin main
 ````
 
-### Batch 3: Test Suite Corrections
+## Batch 3: Test Suite Corrections
 
 ````bash
 # Fix 8:  PEFT target modules
@@ -1373,7 +1514,7 @@ Energy: 5/5"
 git push origin main
 ````
 
-### Batch 4: Metrics Compatibility
+## Batch 4: Metrics Compatibility
 
 ````bash
 # Fix 11: BLEUScore compatibility wrapper
@@ -1400,7 +1541,7 @@ Energy: 5/5"
 git push origin main
 ````
 
-### Validation & Verification
+## Validation & Verification
 
 ````bash
 # Run all test suites locally
@@ -1622,7 +1763,7 @@ Overall Success Rate: 100% 🎉
 | **Workflows** |
 | Integration Tests | integration-gated.yml | [Link @ 554a00ac](https://github.com/Aries-Serpent/_codex_/blob/554a00acaa0e66628845eebbc7f2d9bc2da830bf/. github/workflows/integration-gated.yml) |
 | Container Build | build-container-cache.yml | [Link @ 93e0bc83](https://github.com/Aries-Serpent/_codex_/blob/93e0bc8353abe51a6263ae4a023812b8a35b723e/.github/workflows/build-container-cache.yml) |
-| Autonomous Agent | autonomous-agent.yml | [Link](https://github.com/Aries-Serpent/_codex_/. github/workflows/autonomous-agent. yml) |
+| Autonomous Agent | autonomous-agent.yml | [GitHub](https://github.com/Aries-Serpent/_codex_/. github/workflows/autonomous-agent. yml) |
 | Self-Evolution | copilot-self-evolution.yml | [Link @ 2be3df99](https://github.com/Aries-Serpent/_codex_/blob/2be3df992b821b1e13ba3f6771d5fff4ca33b0e8/.github/workflows/copilot-self-evolution.yml) |
 | Optimized CI | optimized-ci. yml | [Link @ 554a00ac](https://github.com/Aries-Serpent/_codex_/blob/554a00acaa0e66628845eebbc7f2d9bc2da830bf/. github/workflows/optimized-ci.yml) |
 | **Tests** |

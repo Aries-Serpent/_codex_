@@ -1,5 +1,7 @@
 # Safety policy guidance
 
+**Last Updated:** 2026-06-22
+
 The `codex_ml` demos ship with a default policy (`configs/base/safety/policy.yaml`) that implements
 three layers of defence:
 

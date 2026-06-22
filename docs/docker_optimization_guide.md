@@ -1,5 +1,7 @@
 # Docker Optimization Guide (D1)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the optimized Docker setup for Codex ML with multi-stage builds, security hardening, and conditional feature flags. All Dockerfiles follow security best practices and are production-ready.
@@ -35,7 +37,7 @@ docker build -f Dockerfile.optimized \
     -t codex:minimal .
 ```
 
-### Dockerfile.gpu
+## Dockerfile.gpu
 
 GPU-optimized build with CUDA support:
 
@@ -97,7 +99,7 @@ docker build -f Dockerfile.optimized \
     -t codex:1.0.0-ray .
 ```
 
-### Development Builds
+## Development Builds
 
 ```bash
 # Development with all features
@@ -114,7 +116,7 @@ docker build -f Dockerfile.optimized \
     -t codex:dev-minimal .
 ```
 
-### CI/CD Builds
+## CI/CD Builds
 
 ```bash
 # CI build with metadata
@@ -148,7 +150,7 @@ docker run --rm codex:latest id
 # uid=1000(appuser) gid=1000(appuser) groups=1000(appuser)
 ```
 
-### Minimal Base Images
+## Minimal Base Images
 
 - **CPU**: `python:3.11-slim` (smallest Python image)
 - **GPU**: `nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04` (CUDA runtime only, no dev tools)
@@ -165,7 +167,7 @@ docker run --env-file .env codex:latest
 docker run -v /path/to/secrets:/run/secrets codex:latest
 ```
 
-### Vulnerability Scanning
+## Vulnerability Scanning
 
 Use the provided security scanning script:
 
@@ -316,7 +318,7 @@ Example labels:
 pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt
 ```
 
-### Issue: Image too large
+## Issue: Image too large
 
 **Solution**: Use minimal build or specific features:
 
@@ -355,7 +357,7 @@ docker pull codex:latest
 docker pull codex:1.0.0
 ```
 
-### 2. Scan Before Deploying
+## 2. Scan Before Deploying
 
 ```bash
 # Always scan before production deployment
@@ -367,7 +369,7 @@ if [ $? -eq 0 ]; then
 fi
 ```
 
-### 3. Use Build Cache
+## 3. Use Build Cache
 
 ```bash
 # Build with cache
@@ -377,7 +379,7 @@ docker build --cache-from codex:latest -t codex:new .
 DOCKER_BUILDKIT=1 docker build -t codex:new .
 ```
 
-### 4. Minimize Layers
+## 4. Minimize Layers
 
 ```dockerfile
 # ❌ Multiple RUN commands

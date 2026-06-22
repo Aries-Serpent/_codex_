@@ -1,4 +1,6 @@
 # [Validation]: Gaps Coverage Checklist and Scripts
+
+**Last Updated:** 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Run after full S1–S7:

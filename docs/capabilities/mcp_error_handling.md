@@ -1,5 +1,7 @@
 # MCP Error Handling
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) error handling capability provides comprehensive error management for MCP services, including structured error classes, error codes, JSON-RPC error responses, retry mechanisms, and graceful degradation patterns.
@@ -426,7 +428,7 @@ export MCP_RETRY_MAX_DELAY="60.0"
 export MCP_ERROR_REPORTING_ENABLED="true"
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML for error handling configuration:
 
@@ -530,7 +532,7 @@ raise ValidationError("Email format is invalid", errors=["email"])
 raise Exception("Validation failed")
 ```
 
-### 2. Include Context in Errors
+## 2. Include Context in Errors
 
 ```python
 raise MCPError(

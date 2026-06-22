@@ -1,5 +1,7 @@
 # W-123: Identify and Document Repository Webhooks
 
+**Last Updated:** 2026-06-22
+
 **Date:** 2026-03-05 | **PR:** #3499 | **Status:** ✅ AUDIT COMPLETE — 0 live hooks, config defined
 **Owner:** @copilot | **Reviewer:** @mbaetiong
 
@@ -52,6 +54,7 @@ The following GitHub webhook event types are consumed across the 220 workflows.
 Each entry maps the event to the workflows that listen for it:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "GitHub Webhook Events fired to this repo", "issue_comment"'}}%%
 graph LR
     subgraph Events["GitHub Webhook Events fired to this repo"]
         E1["issue_comment"]
@@ -181,7 +184,7 @@ export CODEX_ADMIN_KEY=<fine-grained PAT with Webhooks:write>
 export GITHUB_REPOSITORY=Aries-Serpent/_codex_
 ```
 
-### `agent_infrastructure_manager.yml` — Comment Commands
+## `agent_infrastructure_manager.yml` — Comment Commands
 
 ```
 @agent-infra list-webhooks     # List current hooks via API
@@ -225,6 +228,7 @@ Notify Cognitive Brain when `copilot-setup-steps` completes so it can:
 The following documentation gaps need to be filled in a follow-up PR:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "W-123: Webhook Audit", "Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"'}}%%
 flowchart TD
     A["W-123: Webhook Audit"] --> B["Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"]
     A --> C["Audit webhook_config.json\nIs it populated? Are URLs live?"]

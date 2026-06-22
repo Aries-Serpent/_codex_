@@ -1,5 +1,7 @@
 # Status Update — Reasoning Readiness & Promotion Gate
 
+**Last Updated:** 2026-06-22
+
 > **When to use:** After each ring run (0A → 0D) or major PR affecting reasoning,
 > fill this template to create an auditable record of progress. Save as:
 > `docs/status_updates/<slug>-<YYYY-MM-DD>.md`.

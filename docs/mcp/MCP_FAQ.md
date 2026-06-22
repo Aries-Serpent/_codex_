@@ -1,7 +1,7 @@
 # MCP FAQ - Frequently Asked Questions
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Phase**: 12.3 - Strict Mode Evaluation
 
 ---
@@ -51,7 +51,7 @@ pip install -e .
 python3 -c "import mcp; print('✅ MCP installed successfully')"
 ```
 
-### What are the prerequisites?
+## What are the prerequisites?
 
 - **Python**: 3.8+
 - **Dependencies**: FastAPI, Pydantic, uvicorn
@@ -131,7 +131,7 @@ request = {
 response = server.handle_request(request)
 ```
 
-### What happens if tool execution fails?
+## What happens if tool execution fails?
 
 MCP returns a structured JSON-RPC error response:
 
@@ -168,7 +168,7 @@ auth.add_api_key("secure-key-123", roles=["admin"])
 is_valid = auth.authenticate(api_key="secure-key-123")
 ```
 
-### How do I implement rate limiting?
+## How do I implement rate limiting?
 
 Rate limiting is automatic when configured in `.mcp-config.json`:
 
@@ -424,7 +424,7 @@ Brevity (quick answers) ↔ Completeness (sufficient detail) ↔ Clarity (easy t
 
 ---
 
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Version**: 2.0
 **FAQ Count**: 42+
 **Status**: Production Ready ✅

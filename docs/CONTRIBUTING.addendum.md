@@ -1,5 +1,7 @@
 # CONTRIBUTING Addendum — Decision Gate & Local Quality Checks
 
+**Last Updated:** 2026-06-22
+
 This addendum introduces a lightweight approval gate and local-only checks for message/patch proposals.
 
 ## 1) Intent Validation & Plan of Action (Approval Gate)

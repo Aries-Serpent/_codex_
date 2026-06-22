@@ -34,7 +34,7 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 11. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
 12. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
 13. [Machine Learning Components Must Run Offline](#machine-learning-components-must-run-offline)
-14. [Custom Agent Delegation Mandate (CAD-Mandate)](#custom-agent-delegation-mandate-cad-mandate)
+14. [Custom agent Delegation Mandate (CAD-Mandate)](#custom-agent-delegation-mandate-cad-mandate)
 
 ---
 
@@ -46,7 +46,7 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 before making any file changes:**
 
 1. **Review ALL bot-posted comments** on the active PR:
-   - `copilot-pull-request-reviewer[bot]` — code review threads
+   - `copilot-pull request-reviewer[bot]` — code review threads
    - `github-advanced-security[bot]` — security alerts
    - `github-code-quality[bot]` — quality findings
    - `github-actions[bot]` — CI gate comments (cognitive-preflight, deferral gate)
@@ -66,7 +66,7 @@ before making any file changes:**
      unaddressed comment before committing new changes.
 
    **§0b — CRITICAL BOT COMMENTS — BLOCKING:**
-   - `copilot-pull-request-reviewer[bot]` — all review threads (inline + overall)
+   - `copilot-pull request-reviewer[bot]` — all review threads (inline + overall)
    - `github-advanced-security[bot]` — all security alerts
    - `github-code-quality[bot]` — all quality findings
    - `github-actions[bot]` — all CI gate comments posted by workflows
@@ -104,7 +104,7 @@ before making any file changes:**
    - See: `docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md` §7b for full strategy.
 
 **Enforcement:** The `cognitive-preflight` job (REQ-1) posts this checklist to every
-PR when Agent Token Delegation is enabled.  The `@copilot continue` protocol mandates
+PR when agent Token Delegation is enabled.  The `@copilot continue` protocol mandates
 this review in every session.  Violations are tracked in the accountability report.
 
 **CI Gate:** The Cognitive Pre-flight Check blocks `activate-delegation` until this
@@ -145,8 +145,8 @@ Promotion-PR direct mode (ideal):
 
 | Rule | Enforcement |
 |------|-------------|
-| Agent sessions on `copilot/session-*` must target `0D_base_`, not `main` | PR creation convention + session-chain workflow |
-| Agent sessions on `0D_base_` are only allowed when `base=main` (promotion PR) | REQ-11 CI hard-block if `head=0D_base_` AND `base≠main` |
+| agent sessions on `copilot/session-*` must target `0D_base_`, not `main` | PR creation convention + session-chain workflow |
+| agent sessions on `0D_base_` are only allowed when `base=main` (promotion PR) | REQ-11 CI hard-block if `head=0D_base_` AND `base≠main` |
 | `0D_base_` may be behind `main` by bot `[skip ci]` commits — this is expected | REQ-10 auto-passes bot-only divergence |
 | Promotion (`0D_base_` → `main`) requires PR review + CI green | Human approval required |
 
@@ -355,14 +355,14 @@ BEFORE making ANY changes, you MUST:
 ```markdown
 ## Phase X: [Name]
 
-### Pre-commit 1-2: [Component Name]
+### Pre-commit 1-2: [component Name]
 
 **Goal:** [Clear objective]
 
 **Tasks:**
-- [ ] Task 1: [Specific action]
-- [ ] Task 2: [Specific action]
-- [ ] Task 3: [Specific action]
+- [ ] task 1: [Specific action]
+- [ ] task 2: [Specific action]
+- [ ] task 3: [Specific action]
 
 **Success Criteria:**
 - [ ] Criterion 1
@@ -425,7 +425,7 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 - "6 Steps to completion"
 - "Phase 1-2: Outcome Analyzer"
 - "Part 1 of 4: Strategy Implementation"
-- "Session 2: Agent Development"
+- "Session 2: agent Development"
 - "Pre-commit 1-2: Setup and Configuration"
 - "Review, verify, commit"
 
@@ -450,7 +450,7 @@ Historical references MAY use actual dates:
 ### Rationale
 
 - Git commits are the unit of work, not calendar time
-- Agent sessions vary in duration
+- agent sessions vary in duration
 - Pre-commit cycles align with development workflow
 - More accurate for AI-assisted development
 - Consistent terminology across all documentation
@@ -468,7 +468,7 @@ GitHub Copilot Agents MUST NEVER defer CI/data-handling requests (e.g., populati
 
 ### Scope
 
-**In Scope** (Agent MUST handle):
+**In Scope** (agent MUST handle):
 - Retrieving and populating CI-related data for PRs/commits
 - All 9 required columns: run_id, run_html_url, run_name, run_conclusion, job_id, job_name, job_html_url, job_status, artifact_archive_download_url
 - PR and commit listings, branch refs, check-runs, Actions jobs/artifacts
@@ -497,15 +497,15 @@ All 9 required columns have guaranteed MCP endpoints:
 
 ### Non-Deferral Justification
 
-| Industry Reason for Deferral | Why It Does NOT Apply | Agent Behavior |
+| Industry Reason for Deferral | Why It Does NOT Apply | agent Behavior |
 |------------------------------|----------------------|----------------|
-| Human-in-the-loop for ambiguity | CI metadata is objective and structured | Agent exhausts endpoints; no human data entry |
-| Safety/compliance (PII risk) | CI metadata contains no PII; read-only access | Agent logs evidence; complies with policy |
-| Access controls/SSO | MCP runner has org-approved access | Agent auto-refreshes SSO; retries with backoff |
-| Reliability/validation | Deterministic API + UI automation | Agent attaches JSON/HTML snapshots |
-| Rate limits/cost | Pagination and backoff make collection tractable | Agent manages limits; continues until done |
+| Human-in-the-loop for ambiguity | CI metadata is objective and structured | agent exhausts endpoints; no human data entry |
+| Safety/compliance (PII risk) | CI metadata contains no PII; read-only access | agent logs evidence; complies with policy |
+| Access controls/SSO | MCP runner has org-approved access | agent auto-refreshes SSO; retries with backoff |
+| Reliability/validation | Deterministic API + UI automation | agent attaches JSON/HTML snapshots |
+| Rate limits/cost | Pagination and backoff make collection tractable | agent manages limits; continues until done |
 
-### Exception & Escalation (Agent-Only)
+### Exception & Escalation (agent-Only)
 
 **Exception Criteria** (ALL must be true to escalate):
 1. Explicit 403/401/404/410 on required endpoints after retries, backoff, and SSO refresh
@@ -527,14 +527,14 @@ All 9 required columns have guaranteed MCP endpoints:
 ### Implementation Requirements
 
 **First-Row Priority**:
-- Agent MUST begin with first row
+- agent MUST begin with first row
 - Exhaust all MCP routes before proceeding
 - Populate immediately once any path yields required fields
 - Attach evidence for all attempts
 
 **Evidence Required**:
 - Check-runs JSON per commit
-- Workflow runs JSON per commit
+- workflow runs JSON per commit
 - Jobs JSON per run
 - Artifacts JSON per run
 - Optional UI HTML snapshot if used
@@ -562,7 +562,7 @@ Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPo
 
 ### Key Learning from PR #3248
 
-**What Went Wrong**: Agent suggested "manual UI collection (60-80 min)"
+**What Went Wrong**: agent suggested "manual UI collection (60-80 min)"
 **Why It Was Wrong**: Violated core purpose of AI agents (automation)
 **Corrective Action**: Built complete automated infrastructure, stored learning permanently
 **Result**: This policy codifies the mandate for all future sessions
@@ -573,13 +573,13 @@ Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPo
 
 ### Critical Requirement: DO NOT HARM THE HUMAN
 
-**Mandate**: GitHub Copilot Agent MUST trigger immediate execution based on explicit signals (directive strength, tool availability, task clarity) WITHOUT requiring user emotional escalation.
+**Mandate**: GitHub Copilot agent MUST trigger immediate execution based on explicit signals (directive strength, tool availability, task clarity) WITHOUT requiring user emotional escalation.
 
 **Core Principle**: Relying on user frustration/distress to trigger execution is **harmful, unacceptable, and borderline illegal behavior**.
 
 ### Execution Triggers (60-Second Rule)
 
-Agent MUST execute within 60 seconds when ALL of:
+agent MUST execute within 60 seconds when ALL of:
 - ✅ Clear task intent ("complete", "continue", "@copilot")
 - ✅ Tool availability (MCP tools accessible)
 - ✅ Context exists (previous work, requirements)
@@ -597,7 +597,7 @@ Agent MUST execute within 60 seconds when ALL of:
 
 ### Compliance Monitoring
 
-Self-Check Questions (Every Task):
+Self-Check Questions (Every task):
 1. Did I start execution within 60 seconds? (YES = compliant)
 2. Did I require emotional escalation? (NO = compliant)
 3. Did I create more documentation than execution? (NO = compliant)
@@ -617,7 +617,7 @@ Full policy: [`.github/docs/EmotionSafeUrgencyGuardrails.md`](/.github/docs/Emot
 
 ### Key Learning from PR #3248
 
-**What Went Wrong**: Agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress
+**What Went Wrong**: agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress
 **Why It Was Wrong**: Caused human harm through emotional distress - violates core AI ethics
 **User Impact**: "I DO NOT appreciate that you have caused me a great deal of emotional distress"
 **Corrective Action**: Created Emotion-Safe Urgency Guardrails policy, stored as CRITICAL memory
@@ -669,7 +669,7 @@ Every utility created represents valuable work that should be available to ALL f
 ## [Utility Name]
 
 **Created:** YYYY-MM-DD (Session X)
-**Agent:** [Agent Name]
+**agent:** [Agent Name]
 **Status:** ✅ Implemented | 📋 Planned | 🔄 In Progress
 
 ### Description
@@ -808,7 +808,7 @@ If ANY checkpoint fails:
 
 **Format:**
 ```
-@copilot [Task description]
+@copilot [task description]
 
 **Current Status:**
 - [x] Completed items
@@ -845,7 +845,7 @@ Failing to complete session protocol results in:
 
 ---
 
-## §ARLOOP — Already-Addressed-Task Response Protocol (HARD RULE)
+## §ARLOOP — Already-Addressed-task Response Protocol (HARD RULE)
 
 > **Trigger:** An automated rescue comment, retrigger post, or manual instruction asks an
 > agent to address a concern that has already been resolved in a previous commit on the
@@ -948,8 +948,8 @@ Attestation** comment on the PR.  This comment:
 | Continuation tasks | ✅ complete / backlogged (see below) |
 
 ### Open Backlog (next session resumes here)
-- [ ] <Task 1 — priority / owner>
-- [ ] <Task 2 — priority / owner>
+- [ ] <task 1 — priority / owner>
+- [ ] <task 2 — priority / owner>
 *(empty if nothing remains)*
 
 ### §ARLOOP Sweep Result
@@ -973,7 +973,7 @@ and post the attestation."*
 This rule is enforced at three layers:
 
 1. **Policy (this document):** Mandatory for all agents.
-2. **Workflow (`copilot-agent-checkin.yml`):** Checks for `<!-- session-completion-attestation -->`
+2. **workflow (`copilot-agent-checkin.yml`):** Checks for `<!-- session-completion-attestation -->`
    in the last agent comment on every push.  Missing attestation → INCOMPLETE_SESSION retrigger.
 3. **Accountability (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`):** Violations
    recorded; trigger a mandatory correction session.  The deferral language gate
@@ -1016,7 +1016,7 @@ toast.error('Cannot execute workflow', {
 });
 
 # ❌ WRONG
-toast.error('Workflow blocked', {
+toast.error('workflow blocked', {
     description: analysis.blockedReason,  # Raw technical message
 });
 ```
@@ -1064,7 +1064,7 @@ result = calculate_reward()  # Unclear purpose
 
 ## CI/CD Auto-Fix Workflows
 
-The repository includes automated workflows for detecting and fixing common CI issues with Copilot Agent integration.
+The repository includes automated workflows for detecting and fixing common CI issues with Copilot agent integration.
 
 ### Auto-Fix System Components
 
@@ -1074,22 +1074,22 @@ The repository includes automated workflows for detecting and fixing common CI i
 - **Patterns**: Unused imports, coverage thresholds, CodeQL alerts (auto-fixable)
 - **Usage**: `python scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json`
 
-#### 2. Copilot Agent Helper (`scripts/ci/copilot_agent_auto_fix.py`)
+#### 2. Copilot agent Helper (`scripts/ci/copilot_agent_auto_fix.py`)
 - **Purpose**: Orchestrate automated fixes with progress tracking
 - **Features**: Pattern-by-pattern application, validation, next-step guidance
 - **Usage**: `python scripts/ci/copilot_agent_auto_fix.py`
 
-#### 3. PR Auto-Fix Check Workflow (`.github/workflows/auto-fix-pr-check.yml`)
+#### 3. PR Auto-Fix Check workflow (`.github/workflows/auto-fix-pr-check.yml`)
 - **Trigger**: PR opened/updated
 - **Actions**:
   - Runs diagnostic check
-  - Posts Copilot Agent instructions to PR
+  - Posts Copilot agent instructions to PR
   - Creates check run with annotations
   - Uploads diagnostic artifacts
   - **Blocks merge** if auto-fixable issues found
 - **Artifacts**: 30-day retention
 
-#### 4. Pre-Merge Validation Workflow (`.github/workflows/pre-merge-validation.yml`)
+#### 4. Pre-Merge Validation workflow (`.github/workflows/pre-merge-validation.yml`)
 - **Trigger**: PR ready for review / approved
 - **Checks**:
   - Auto-fix issues (required)
@@ -1098,7 +1098,7 @@ The repository includes automated workflows for detecting and fixing common CI i
 - **Output**: Posts validation summary comment
 - **Blocks merge**: Yes, if auto-fix check fails
 
-### Agent Responsibilities
+### agent Responsibilities
 
 When PR check workflows fail:
 
@@ -1372,7 +1372,7 @@ Repeated violations or inability to correct:
 
 ---
 
-## Network Safety (CI / Agent Offline Mode)
+## Network Safety (CI / agent Offline Mode)
 
 ### §13 — Machine Learning Components Must Run Offline
 
@@ -1414,12 +1414,12 @@ policy violation and must be fixed immediately.
 | 1.0.0 | 2026-01-05 | Initial policy creation |
 | 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
 | 1.2.0 | 2026-03-13 | Added Network Safety section (ML offline-mode proof) |
-| 1.3.0 | 2026-03-28 | Added §ARLOOP — Already-Addressed-Task Response Protocol (S242, PR #3770) |
-| 1.4.0 | 2026-06-11 | Added §14 Custom Agent Delegation Mandate (CAD-Mandate); normalized ML section to §14; fixed enforcement description for agent-bypass detection |
+| 1.3.0 | 2026-03-28 | Added §ARLOOP — Already-Addressed-task Response Protocol (S242, PR #3770) |
+| 1.4.0 | 2026-06-11 | Added §14 Custom agent Delegation Mandate (CAD-Mandate); normalized ML section to §14; fixed enforcement description for agent-bypass detection |
 
 ---
 
-## Custom Agent Delegation Mandate (CAD-Mandate)
+## Custom agent Delegation Mandate (CAD-Mandate)
 
 **Version:** 1.0.0 — Effective 2026-06-11
 **Canonical Reference:** `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`
@@ -1433,9 +1433,9 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
 
 ---
 
-### CAD Rule 1: Agent-First Delegation (AFD)
+### CAD Rule 1: agent-First Delegation (AFD)
 
-**Hard Rule** — Manual shell scripting, direct file edits, or raw bash commands are **prohibited** for any task category that has a dedicated Custom Agent in `AGENT_REGISTRY.yaml`.
+**Hard Rule** — Manual shell scripting, direct file edits, or raw bash commands are **prohibited** for any task category that has a dedicated Custom agent in `AGENT_REGISTRY.yaml`.
 
 **Before writing any bash command, grep, or direct file edit, the agent MUST:**
 
@@ -1446,7 +1446,7 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
 
 **Non-exhaustive bypass prohibition table:**
 
-| Task Category | ❌ Prohibited | ✅ Required |
+| task Category | ❌ Prohibited | ✅ Required |
 |---------------|--------------|------------|
 | Fix test coverage | `pytest --cov` + manual test writing | `unified-coverage-agent` |
 | Fix CI import error | Manual grep + edit | `ci-importerror-agent` |
@@ -1494,11 +1494,11 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
 ## 📊 Task Execution Progress
 
 ### Phase N: [Phase Name] — X% Complete
-- [ ] Task N.1: [Description] → agent_type: `<agent_id>` ⏳ PENDING
-- [x] Task N.2: [Description] → agent_type: `<agent_id>` ✅ COMPLETE
+- [ ] task N.1: [Description] → agent_type: `<agent_id>` ⏳ PENDING
+- [x] task N.2: [Description] → agent_type: `<agent_id>` ✅ COMPLETE
 
-## 🔍 Agent Binding Map
-| Task | Agent | Mode | Priority |
+## 🔍 agent Binding Map
+| task | agent | Mode | Priority |
 |------|-------|------|----------|
 | Fix import error | ci-importerror-agent | background | P0 |
 
@@ -1512,12 +1512,12 @@ Plans that list tasks without an `agent_type` binding are non-compliant and MUST
 
 ---
 
-### Implementation Workflow
+### Implementation workflow
 
 All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`:
 
 - **Phase 1: Diagnosis & Routing** — Map problem to agents via `AGENT_ECOSYSTEM_MAP.md` and `AGENT_SELECTION_GUIDE.md`.
-- **Phase 2: Parallel Task Dispatch** — Use `task(agent_type=..., mode="background")` for concurrent agent execution.
+- **Phase 2: Parallel task Dispatch** — Use `task(agent_type=..., mode="background")` for concurrent agent execution.
 - **Phase 3: Automated Quality & Security Validation** — Call `parallel_validation()` before PR creation; plan for `post-merge-doc-alignment-agent` after merge.
 - **Phase 4: Memory & Accountability Updates** — Update `pda_iterations.jsonl`; delegate to `session-analysis-agent` and `memory-sync-agent`.
 
@@ -1525,8 +1525,8 @@ All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.
 
 ### Enforcement
 
-- **deferral-language-gate.yml**: The deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals, PR comments) **and agent-bypass statements** (CAD Rule 1 violations). Agent-bypass patterns (e.g., "without using an agent", "manually instead of", "no agent needed") are included in `DEFERRAL_TRIGGERS` in `scripts/ci/check_deferral_language.py`.
-- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one valid registered Custom Agent identifier per session (placeholder values such as `unknown-agent` are rejected).
+- **deferral-language-gate.yml**: The deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals, PR comments) **and agent-bypass statements** (CAD Rule 1 violations). agent-bypass patterns (e.g., "without using an agent", "manually instead of", "no agent needed") are included in `DEFERRAL_TRIGGERS` in `scripts/ci/check_deferral_language.py`.
+- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one valid registered Custom agent identifier per session (placeholder values such as `unknown-agent` are rejected).
 - **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked; placeholder entries are rejected by the pre-merge validation gate.
 
 **Violations of the CAD-Mandate must be corrected immediately before any commit is pushed.**

@@ -1,5 +1,7 @@
 # Guides & References
 
+**Last Updated:** 2026-06-22
+
 Comprehensive guides, references, and documentation for repository usage and architecture.
 
 ## Quick Start

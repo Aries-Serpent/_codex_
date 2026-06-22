@@ -259,6 +259,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
 
 **Diagram**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing User Request, Auth Agent'}}%%
 graph TD
     User[User Request] --> Agent[Auth Agent]
     Agent --> OAuth[Create OAuth App]
@@ -284,6 +285,7 @@ graph TD
 
 **Diagram**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Weekly Trigger, Security Agent'}}%%
 graph TD
     Schedule[Weekly Trigger] --> Agent[Security Agent]
     Agent --> Tests[Run 23 Security Tests]
@@ -310,6 +312,7 @@ graph TD
 
 **Diagram**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Monthly/Alert, Rotation Agent'}}%%
 graph TD
     Trigger[Monthly/Alert] --> Agent[Rotation Agent]
     Agent --> Backup[Backup Current Keys]
@@ -468,11 +471,11 @@ grep -r "logger\." src/codex/auth/ | grep -v "sanitize"
 # Test token generation performance
 python -m timeit -s "from src.codex.auth import TokenManager; tm = TokenManager()" "tm.generate_access_token('user')"
 
-# Test TOTP generation performance  
+# Test TOTP generation performance
 python -m timeit -s "from src.codex.auth import MFAProvider; mfa = MFAProvider(); s = mfa.generate_totp_secret('u')" "mfa.generate_totp(s.secret)"
 ```
 
-### Continuous Improvement Areas
+## Continuous Improvement Areas
 
 **Identified Issues**:
 1. In-memory storage limits scalability → **Fixed in next phase**

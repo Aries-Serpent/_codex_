@@ -47,7 +47,7 @@ Oldest Cache: 2 days
 Warnings: 0
 ```
 
-### Pre-Deployment Warm-up
+## Pre-Deployment Warm-up
 
 Run 12 hours before production deployment to ensure hot cache:
 
@@ -121,7 +121,7 @@ gh workflow run cache-warmup.yml \
 # Output: Started workflow run <RUN_ID>
 ```
 
-#### Step 2: Monitor Warm-up Progress
+## Step 2: Monitor Warm-up Progress
 
 ```bash
 # Watch workflow in real-time
@@ -144,7 +144,7 @@ Warm-L3 (PY3.11)  queued
 Warm-L4 (Data)    queued
 ```
 
-#### Step 3: Verify Cache Population
+## Step 3: Verify Cache Population
 
 ```bash
 # Check cache size after warm-up
@@ -153,7 +153,7 @@ gh cache list --json key,sizeInBytes,createdAt --jq '.[] | select(.createdAt > n
 # Expected: New cache entries for each layer and Python version
 ```
 
-### 4. Post-Warm-up Validation
+## 4. Post-Warm-up Validation
 
 ```bash
 # Validate cache health
@@ -370,7 +370,7 @@ gh workflow run test-rag.yml \
 # - L4: RAG datasets and models
 ```
 
-### Emergency Cache Warm-up (Direct Cache Population)
+## Emergency Cache Warm-up (Direct Cache Population)
 
 For critical cache miss during incident:
 
@@ -450,7 +450,7 @@ while true; do
 done
 ```
 
-### Post-Warm-up Verification
+## Post-Warm-up Verification
 
 ```bash
 #!/bin/bash
@@ -511,7 +511,7 @@ jobs:
 gh run view <RUN_ID> --json jobs --jq '.jobs[] | select(.name == "warmup-l2") | .logs' | grep -i "timeout\|connection"
 ```
 
-### Issue: Cache Warm-up Uses Too Much GitHub Actions Minutes
+## Issue: Cache Warm-up Uses Too Much GitHub Actions Minutes
 
 **Symptoms:**
 ```
@@ -540,7 +540,7 @@ gh workflow run cache-warmup.yml \
 # - Monthly budget: 2,000 minutes (no issue if careful)
 ```
 
-### Issue: Cache Warm-up Reports Hit Rate Still < 90%
+## Issue: Cache Warm-up Reports Hit Rate Still < 90%
 
 **Symptoms:**
 ```
@@ -567,7 +567,7 @@ gh workflow run cache-warmup.yml \
 gh workflow run pr-checks.yml --repo Aries-Serpent/_codex_ --ref main
 ```
 
-### Issue: Cache Warm-up Fails with "No Space Left on Device"
+## Issue: Cache Warm-up Fails with "No Space Left on Device"
 
 **Symptoms:**
 ```
@@ -634,7 +634,7 @@ gh workflow run cache-warmup.yml \
 echo "⏳ Warm-up in progress. Check back in 30 minutes."
 ```
 
-### Incremental Cache Recovery
+## Incremental Cache Recovery
 
 For partial cache corruption:
 
@@ -658,7 +658,7 @@ gh workflow run cache-warmup.yml \
   --ref main
 ```
 
-### Incident Communication
+## Incident Communication
 
 When cache issues occur:
 

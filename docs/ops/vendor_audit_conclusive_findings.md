@@ -1,6 +1,22 @@
 # Knowledge Transfer — Vendor Audit Conclusive Findings
 
-> Generated: 2026-03-17 22:59:34 | Author: mbaetiong
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+- [Timeline of Recent Runs (progression and outcomes)](#timeline-of-recent-runs-progression-and-outcomes)
+- [Versioned Enhancements (v1.5.0 → v1.5.4)](#versioned-enhancements-v150--v154)
+- [Latest Run Metrics (representative)](#latest-run-metrics-representative)
+- [Conclusive Vendor Findings](#conclusive-vendor-findings)
+- [Egress/Network Posture](#egressnetwork-posture)
+- [Min/Max Capability Envelope (across last 5–10 runs)](#minmax-capability-envelope-across-last-510-runs)
+- [Known Failure Classes, Root Causes, and Resolutions](#known-failure-classes-root-causes-and-resolutions)
+- [Exhaustive Changeable Variables (CODEX_*) and Intended Use](#exhaustive-changeable-variables-codex_-and-intended-use)
+- [Artifacts and Schema (What to expect)](#artifacts-and-schema-what-to-expect)
+- [Dedicated VM Hardware Inventory (`system_caps.hardware`)](#dedicated-vm-hardware-inventory-system_capshardware)
+- [Operations Runbook](#operations-runbook)
+- [Troubleshooting Decision Tree](#troubleshooting-decision-tree)
+
+> Generated: 2026-06-22 22:59:34 | Author: mbaetiong
 
 ## Executive Summary
 - Current status: Setup and Maintenance audits complete successfully and persist artifacts.

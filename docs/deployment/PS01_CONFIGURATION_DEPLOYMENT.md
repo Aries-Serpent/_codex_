@@ -18,7 +18,7 @@ ls -la conf/
 # Should contain: errors/, model/, services/
 ```
 
-### Step 3: Test Configuration Loading
+## Step 3: Test Configuration Loading
 ```python
 from codex.utils.config_loader import load_config
 cfg = load_config("base", config_dir="conf/model")

@@ -1,5 +1,7 @@
 # Torch CPU Policy — Relaxing the “+cpu” suffix when CPU index is enforced
 
+**Last Updated:** 2026-06-22
+
 **Why:** PyTorch’s official CPU-only install path is to point pip at the CPU index URL and use a standard spec like `torch==2.8.0` (no `+cpu` suffix).  
 **So:** When `PIP_INDEX_URL` or `PIP_EXTRA_INDEX_URL` contains `download.pytorch.org/whl/cpu` (or `CODEX_FORCE_CPU=1`), the validator should accept a wheel **without** the `+cpu` suffix as compliant — provided CUDA is not available and `torch` imports successfully.
 

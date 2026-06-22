@@ -1,5 +1,7 @@
 # Quick Fix Guide for Remaining CI/CD Failures
 
+**Last Updated:** 2026-06-22
+
 **Status:** 8 remaining failures after Phase 1 fixes  
 **Estimated Time:** 2-3 hours total
 
@@ -73,7 +75,7 @@ from codex_ml import __version__
 
 ---
 
-### 4. Hydra Config Missing (30 minutes) 📝
+## 4. Hydra Config Missing (30 minutes) 📝
 **Test:** `tests/config/test_hydra_defaults_tree.py::test_hydra_compose_smoke`  
 **Priority:** P0 - Critical
 
@@ -108,7 +110,7 @@ grep -n "hydra/data/base" tests/config/test_hydra_defaults_tree.py
 
 ---
 
-### 5. Config Validation Schema (30 minutes) 📋
+## 5. Config Validation Schema (30 minutes) 📋
 **Test:** `tests/configs/test_validate_configs_cli.py::test_group_validation_report`  
 **Priority:** P0 - Critical
 
@@ -147,7 +149,7 @@ level: "info"  # Not "INFO" or "information"
 
 ---
 
-### 6. Agent Load Tests - Review Assertions (20 minutes) 🔍
+## 6. Agent Load Tests - Review Assertions (20 minutes) 🔍
 **Files:** `tests/agents/test_load_and_concurrent.py`  
 **Priority:** P1 - High
 
@@ -281,7 +283,7 @@ ruff check . --statistics
 python -m pytest tests/ --tb=no -q 2>&1 | tee test_results.txt
 ```
 
-### Expected Final Status
+## Expected Final Status
 ```
 ================== FINAL TEST RESULTS ==================
 Collected: 16700 items

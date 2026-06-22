@@ -1,5 +1,7 @@
 # Copilot Setup Steps Validation Guide
 
+**Last Updated:** 2026-06-22
+
 Complete documentation for the pre-merge testing infrastructure for `.github/workflows/copilot-setup-steps.yml`.
 
 ## Table of Contents
@@ -102,7 +104,7 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 
 ---
 
-### Phase 4: Integration Testing (Section 2.1-2.3)
+## Phase 4: Integration Testing (Section 2.1-2.3)
 
 **Purpose:** Verify dependent workflows and scripts are accessible and valid.
 
@@ -183,7 +185,7 @@ python3 --version
 pip install pyyaml yamllint
 ```
 
-### Run All Validation Suites
+## Run All Validation Suites
 
 ```bash
 # Run all three validation scripts
@@ -192,7 +194,7 @@ python scripts/ci/validate_copilot_dependencies.py --repo-root .
 python scripts/ci/validate_copilot_security.py --repo-root .
 ```
 
-### Run Individual Validation Suites
+## Run Individual Validation Suites
 
 ```bash
 # Core validation only
@@ -208,7 +210,7 @@ python scripts/ci/validate_copilot_security.py
 bash scripts/ci/validate_setup_steps_yaml.sh
 ```
 
-### Run Specific Tests Only
+## Run Specific Tests Only
 
 Each validation script supports filtering (add to scripts if needed):
 
@@ -220,7 +222,7 @@ python scripts/ci/validate_copilot_setup_steps.py --check-only
 python scripts/ci/validate_copilot_setup_steps.py --json-output results.json
 ```
 
-### Before Committing
+## Before Committing
 
 ```bash
 # Quick smoke test
@@ -364,7 +366,7 @@ Non-critical tests failed. Example output:
 git show 12f7a861:.github/workflows/copilot-setup-steps.yml > .github/workflows/copilot-setup-steps.yml
 ```
 
-### Problem: "Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK"
+## Problem: "Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK"
 
 **Cause:** CCA variables at lines 99-101 were deleted or commented out.
 

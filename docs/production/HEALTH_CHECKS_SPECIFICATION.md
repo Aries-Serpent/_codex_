@@ -1,4 +1,6 @@
 # Production Health Checks Specification
+
+**Last Updated:** 2026-06-22
 **Version**: 1.0.0
 **Status**: Deployment Ready
 **Date**: 2026-06-14
@@ -439,7 +441,7 @@ ab -n 50000 -c 100 http://localhost:8080/health/detailed
 - 0% errors
 - No timeouts
 
-### Failover Test: Dependency Degradation
+## Failover Test: Dependency Degradation
 
 ```bash
 # 1. Kill database connection
@@ -469,7 +471,7 @@ tc qdisc del dev eth0 root
 # Expected: readiness latency returns to normal
 ```
 
-### Chaos Testing: Failure Injection
+## Chaos Testing: Failure Injection
 
 ```python
 # Inject temporary failures for 1 minute, then recover

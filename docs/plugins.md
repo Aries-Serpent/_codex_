@@ -1,5 +1,7 @@
 # Plugin System
 
+**Last Updated:** 2026-06-22
+
 This project exposes a lightweight plugin mechanism built around two primitives:
 
 1. **Registries** for models, datasets, and metrics.

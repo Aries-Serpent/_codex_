@@ -1,5 +1,7 @@
 # FAISS Vector Store - User Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The FAISS Vector Store provides local, CPU-based vector similarity search for embeddings. It includes comprehensive safeguards, validation, and error handling for production use.
@@ -50,7 +52,7 @@ for result in results:
     print(f"Score: {result['score']:.4f}, Doc: {result['document']['text']}")
 ```text
 
-### Loading Existing Index
+## Loading Existing Index
 
 ```python
 # Load previously saved index
@@ -85,7 +87,7 @@ store = FAISSStore(
 )
 ```text
 
-### Index Naming
+## Index Naming
 
 Index names must be alphanumeric with dashes/underscores only:
 
@@ -218,7 +220,7 @@ store.create_index(raw_embeddings, documents)
 results = store.search(raw_query)  # normalized internally
 ```text
 
-### Batch Processing
+## Batch Processing
 
 Process large datasets in batches:
 
@@ -240,7 +242,7 @@ final_embeddings = np.vstack(all_embeddings)
 store.create_index(final_embeddings, all_docs)
 ```text
 
-### Memory Management
+## Memory Management
 
 For large indices:
 
@@ -303,7 +305,7 @@ store.create_index(embeddings, documents)
 store.save()
 ```text
 
-### From Weaviate Stub
+## From Weaviate Stub
 
 ```python
 # Old stub code
@@ -365,7 +367,7 @@ pip install faiss-cpu
 pip install faiss-gpu
 ```text
 
-### Corrupted Index
+## Corrupted Index
 ```python
 # Re-create from source data
 store = FAISSStore(index_name="recovered")
@@ -373,7 +375,7 @@ store.create_index(original_embeddings, original_documents)
 store.save()
 ```text
 
-### Checksum Mismatch
+## Checksum Mismatch
 ```python
 # Disable validation if needed
 store = FAISSStore(validate_checksums=False)

@@ -69,7 +69,7 @@ principal = authenticator.authenticate(api_key)
 - ✅ Never log plaintext credentials
 - ❌ Never store plaintext API keys
 
-### Authorization Patterns
+## Authorization Patterns
 
 **Role-Based Access Control (RBAC)**:
 ```python
@@ -98,7 +98,7 @@ permission_hash = authorizer.compute_permission_hash(
 # Verify against stored checksums
 ```
 
-### Secure Session Management
+## Secure Session Management
 
 **Session Token Generation with RNG**:
 ```python
@@ -153,7 +153,7 @@ if not limiter.allow(principal_id, tool_name):
 result = execute_tool(tool_name)
 ```
 
-### Security Best Practices
+## Security Best Practices
 
 - ✅ Set conservative default limits (5-10 req/sec)
 - ✅ Use burst capacity for legitimate spikes
@@ -293,7 +293,7 @@ def check_tenant_access(principal: Principal, resource):
         )
 ```
 
-### Tenant-Specific Rate Limits
+## Tenant-Specific Rate Limits
 
 ```python
 # Separate rate limiters per tenant
@@ -312,7 +312,7 @@ def get_tenant_limiter(tenant_id: str) -> MCPRateLimiter:
     return tenant_limiters[tenant_id]
 ```
 
-### Data Isolation
+## Data Isolation
 
 **Tenant-Scoped Queries**:
 ```python
@@ -443,7 +443,7 @@ log_security_event("authorization", "user123", "sensitive_tool", "denied")
 log_security_event("rate_limit", "user123", "api_call", "exceeded")
 ```
 
-### Metrics for Security Monitoring
+## Metrics for Security Monitoring
 
 ```python
 # Track security metrics
@@ -462,7 +462,7 @@ def increment_security_metric(metric_name: str):
         send_security_alert(metric_name, security_metrics[metric_name])
 ```
 
-### Request Tracing
+## Request Tracing
 
 **X-Request-Id Header**:
 ```python
@@ -549,7 +549,7 @@ python scripts/space_traversal/audit_runner.py run
 python scripts/space_traversal/audit_runner.py explain mcp-authz-authn
 ```
 
-### Incident Response
+## Incident Response
 
 **Security Incident Detection**:
 1. Monitor audit logs for suspicious patterns

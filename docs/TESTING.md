@@ -1,5 +1,7 @@
 # Testing Guide
 
+**Last Updated:** 2026-06-22
+
 This document describes the testing infrastructure, conventions, and best practices for the _codex_ project.
 
 ## Table of Contents
@@ -60,7 +62,7 @@ pytest tests/ -n auto
 pytest tests/ --reruns 2 --reruns-delay 1
 ```
 
-### Full CI-equivalent Test Run
+## Full CI-equivalent Test Run
 
 To run tests with all CI flags locally:
 ```bash

@@ -2,7 +2,7 @@
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2025-11-09  
+**Generated**: 2026-06-22  
 **Status**: Phases 1-3 Complete, Phases 4-6 Remaining  
 **Completion**: 75% (9 of 12 capabilities addressed)
 
@@ -189,7 +189,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 **5 Capabilities to Address**:
 
-#### 2.1 Documentation System (Score: 0.680)
+### 2.1 Documentation System (Score: 0.680)
 - **Current**: Test coverage 0.02
 - **Target**: 0.70+
 - **Action Items**:

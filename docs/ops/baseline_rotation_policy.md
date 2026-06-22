@@ -1,5 +1,7 @@
 # Baseline Rotation Policy
 
+**Last Updated:** 2026-06-22
+
 > **Purpose**: Define retention and archival process for audit baselines to prevent repository growth.
 
 ## Storage Location
@@ -34,7 +36,7 @@ git add audit_artifacts/baselines/
 git commit -m "chore: rotate old baselines to archive"
 ```text
 
-### Automated Rotation (Future)
+## Automated Rotation (Future)
 
 A rotation script will be added in a future PR to automate this process:
 

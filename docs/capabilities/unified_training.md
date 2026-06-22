@@ -1,5 +1,7 @@
 # Unified Training Capability
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The unified training capability provides a standardized, deterministic training infrastructure for ML models. It ensures reproducible results through careful management of random seeds, checksum verification, and manifest tracking.

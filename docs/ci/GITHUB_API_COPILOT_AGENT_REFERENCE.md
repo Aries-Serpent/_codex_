@@ -1,7 +1,7 @@
-# GitHub API Reference for Copilot Coding Agent
+# GitHub API Reference for Copilot Coding agent
 
 > **Scope:** Aries-Serpent/_codex_ repository  
-> **Audience:** GitHub Copilot Coding Agent (Web UI)  
+> **Audience:** GitHub Copilot Coding agent (Web UI)  
 > **Authority:** Acting on behalf of maintainer `@mbaetiong`  
 > **Last Updated:** 2026-04-05 — S-3876  
 > **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
@@ -99,7 +99,7 @@ existing_state = swa._extract_wec_state(body)
 # Returns: {"pre-merge-validation.yml": True, "resilient_validation.yml": False, ...}
 ```
 
-### Step 3 — Rebuild canonical WEC preserving maintainer selections
+## Step 3 — Rebuild canonical WEC preserving maintainer selections
 ```python
 new_wec_block = swa._build_wec_block(existing_state=existing_state)
 ```
@@ -213,7 +213,7 @@ GH_TOKEN="${CODEX_MASTER_KEY}" \
   gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/approve"
 ```
 
-### Cancel a run
+## Cancel a run
 ```bash
 gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/cancel"
 ```
@@ -252,7 +252,7 @@ gh api \
 ## 🔑 TOKEN DELEGATION — ACTING ON BEHALF OF MAINTAINER
 
 The `agent-auth-delegation.yml` workflow implements a secure provenance chain that
-grants the Copilot Coding Agent maintainer-equivalent authority within a TTL window.
+grants the Copilot Coding agent maintainer-equivalent authority within a TTL window.
 
 ### Activation Flow
 
@@ -269,7 +269,7 @@ Writes COPILOT_AGENT_STATE=ACTIVE, COPILOT_AGENT_SESSION_EXPIRES=<TTL>
         ↓
 Updates COGNITIVE_BRAIN_ALLOWED_ACTORS to include agent actor
         ↓
-Agent can now: approve runs, write vars, edit PR bodies, push commits
+agent can now: approve runs, write vars, edit PR bodies, push commits
 ```
 
 ### Session Token File (`.codex/agent_auth_session.json`)
@@ -335,7 +335,7 @@ installation_token = resp.json()["token"]
 # installation_token has same scopes as App installation permissions
 ```
 
-### GitHub Actions — Generate App Token (reusable pattern)
+## GitHub Actions — Generate App Token (reusable pattern)
 ```yaml
 - name: Generate Cognitive Brain App token
   id: app-token
@@ -473,7 +473,7 @@ ctx = resp.json()
 # ctx["session_number"] — current COGNITIVE_BRAIN_SESSION_NUMBER
 ```
 
-### AfterMath / PDA Loop Close (call at session end)
+## AfterMath / PDA Loop Close (call at session end)
 ```python
 # POST /api/v1/session/complete — records outcome, updates LTM
 httpx.post(f"{base_url}/api/v1/session/complete", json={
@@ -486,7 +486,7 @@ httpx.post(f"{base_url}/api/v1/session/complete", json={
 })
 ```
 
-### Memory Read/Write (SQLiteMemory)
+## Memory Read/Write (SQLiteMemory)
 ```python
 # GET /api/v1/memory?query=WEC&tier=LTM&limit=5
 resp = httpx.get(f"{base_url}/api/v1/memory",
@@ -501,7 +501,7 @@ httpx.post(f"{base_url}/api/v1/memory", json={
 })
 ```
 
-### CI Pattern Feed
+## CI Pattern Feed
 ```python
 # POST /api/v1/patterns/record — add CI failure pattern
 httpx.post(f"{base_url}/api/v1/patterns/record", json={
@@ -527,7 +527,7 @@ find .github/workflows/ -name "*.yml" -exec \
   sed -i 's/resilient-validation-suite\.yml/resilient_validation.yml/g' {} +
 ```
 
-### Pattern: Atomic multi-file Python edit via AST
+## Pattern: Atomic multi-file Python edit via AST
 ```python
 import ast, pathlib
 
@@ -556,7 +556,7 @@ detect-secrets scan --baseline .secrets.baseline
 python scripts/ci/check_deferral_language.py --pr-body "$(gh pr view $PR --json body -q .body)"
 ```
 
-### Pattern: Push a commit as agent (report_progress)
+## Pattern: Push a commit as agent (report_progress)
 ```
 # ALWAYS use report_progress tool — never git push directly
 report_progress(
@@ -596,11 +596,11 @@ Before ending any session the agent MUST verify:
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
-- [x] agent-auth-delegation.yml — Agent token delegation (always required)
+- [x] agent-auth-delegation.yml — agent token delegation (always required)
 - [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
 
 ### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)
-- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)
+- [x] copilot-agent-checkin.yml — agent check-in / S221 guard (fires on push)
 - [ ] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run; maintainer opt-in)
 - [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval; maintainer opt-in)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
@@ -633,11 +633,11 @@ Before ending any session the agent MUST verify:
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `startup_failure` on `workflow_run` workflows | Workflow can't start because the triggering run hasn't been approved | Approve via `auto-approve-workflows.yml` or manually in Actions tab |
+| `startup_failure` on `workflow_run` workflows | workflow can't start because the triggering run hasn't been approved | Approve via `auto-approve-workflows.yml` or manually in Actions tab |
 | `action_required` status on workflow runs | `workflow_run` trigger from an external actor requires maintainer approval | Run `auto-approve-workflows.yml` dispatch OR check `[x] auto-approve-workflows` in PR body |
 | `Validation Pipeline / Fast Validation` fails with detect-secrets | `.secrets.baseline` stale — new entropy strings added to tracked files | Run `detect-secrets scan --baseline .secrets.baseline && git add .secrets.baseline` |
-| `Pre-Merge Validation` skipped | Workflow has `if: false` guard or branch filter excludes the PR branch | Check workflow `on:` triggers and `if:` conditions |
-| `deferral-language-gate` fails | Agent wrote a deferral phrase in PR body, commit message, or comment | Remove all forbidden phrases; check `EXEMPTION_PATTERNS` in `check_deferral_language.py` |
+| `Pre-Merge Validation` skipped | workflow has `if: false` guard or branch filter excludes the PR branch | Check workflow `on:` triggers and `if:` conditions |
+| `deferral-language-gate` fails | agent wrote a deferral phrase in PR body, commit message, or comment | Remove all forbidden phrases; check `EXEMPTION_PATTERNS` in `check_deferral_language.py` |
 | `mypy Baseline` fails | New type errors introduced exceeding baseline count | Fix type errors OR run `python scripts/ci/mypy_baseline.py --update` if errors are pre-existing |
 | `RAG Module Tests` coverage below 95% | New code added without tests, or tests removed | Add targeted tests in `tests/rag/` covering uncovered lines via `coverage.py` |
 | `PR Comment Review Gate` fails | Unresolved blocking review threads | Resolve each thread via GitHub UI or `github.rest.pulls.resolveReviewThread` |
@@ -657,7 +657,7 @@ Before ending any session the agent MUST verify:
 
 | Scope | Variables | Actions Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| Repository | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT |
+| repository | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT |
 | Organization | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` |
 | Environment | ✅ `repo` PAT | ✅ `repo` PAT | ✗ | ✗ |
 | User (Codespaces) | ✗ | ✗ | ✗ | ✅ `codespace` |
@@ -684,7 +684,7 @@ gh api POST /repositories/$REPO_ID/environments/production/variables \
   -f name='MY_VAR' -f value='my_value'
 ```
 
-### MCP Server Gap — Secrets/Variables
+## MCP Server Gap — Secrets/Variables
 
 The GitHub MCP Server (`/mcp/readonly` in this repo's agent sessions) does **not**  
 support secret or variable CRUD. All write operations must use REST API or `gh` CLI  
@@ -698,4 +698,4 @@ NOT available via MCP: variable/secret create/update/delete
 
 ---
 
-*Document maintained by: Copilot Coding Agent (S-3876) | Source of truth: `.github/workflows/` + `scripts/ci/session_wrapup_autofix.py` + `docs/ci/PR_LIFECYCLE.md` + `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`*
+*Document maintained by: Copilot Coding agent (S-3876) | Source of truth: `.github/workflows/` + `scripts/ci/session_wrapup_autofix.py` + `docs/ci/PR_LIFECYCLE.md` + `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`*

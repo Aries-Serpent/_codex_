@@ -1,6 +1,7 @@
 # PR #4393 — Session Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Artifact Retrieved<br/>codeql-alerts-open-codeql-25648728868<br/>249 total alerts, S930 Batch 1<br/>Resolve top 50 fixable alerts'}}%%
 graph TD
   A[Artifact Retrieved<br/>codeql-alerts-open-codeql-25648728868<br/>249 total alerts] --> B
   B[S930 Batch 1<br/>Resolve top 50 fixable alerts] --> C
@@ -65,6 +66,7 @@ graph TD
 ## Next-Session Decision Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Start next session, Trigger fetcher and download alerts_summary.json'}}%%
 flowchart TD
     A[Start next session] --> B{Fresh codeql-alert-fetcher artifact on latest SHA?}
     B -->|No| C[Trigger fetcher and download alerts_summary.json]

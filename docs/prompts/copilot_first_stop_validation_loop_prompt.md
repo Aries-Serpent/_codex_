@@ -1,5 +1,7 @@
 # Copilot Prompt — First-Stop Validation Loop for CI Rescue
 
+**Last Updated:** 2026-06-22
+
 Use this prompt when CI or local validation exposes unrelated issues during a PR session and you need a repeatable stabilization loop.
 
 ```text

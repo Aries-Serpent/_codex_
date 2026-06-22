@@ -1,5 +1,7 @@
 # Codex CLI (Typer)
 
+**Last Updated:** 2026-06-22
+
 The `codex_cli` package exposes offline-friendly commands:
 
 * `python -m codex_cli.app --help` — discover available commands without installing a console script.

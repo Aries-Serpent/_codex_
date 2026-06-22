@@ -1,5 +1,7 @@
 # MCP Package System - Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 **Get started in 5 minutes** with packaging your codebase for ChatGPT Projects.
 
 ---
@@ -61,7 +63,7 @@ unzip -p package_mcp_*.zip manifest.json | jq '.files | length'
 
 **Expected**: Valid JSON manifest with file metadata (SHA256, sizes, paths)
 
-### Step 5: Upload to ChatGPT Project
+## Step 5: Upload to ChatGPT Project
 
 1. Go to ChatGPT (chatgpt.com)
 2. Create or open a Project
@@ -162,7 +164,7 @@ After workflow completes, download the artifact from the workflow run page.
 ./scripts/mcp/mcp-package --topic <name> --verbose
 ```
 
-### Available Topics
+## Available Topics
 
 | Topic | Description | Typical Files | Size |
 |-------|-------------|---------------|------|
@@ -226,7 +228,7 @@ package_<topic>.zip
 ./scripts/mcp/mcp-package --custom "tests/agents/**/*.py"
 ```
 
-### Issue: No Files Selected
+## Issue: No Files Selected
 
 **Cause**: Glob patterns didn't match any files
 
@@ -249,7 +251,7 @@ topic: custom
 glob_filters: "agents/**,tests/agents/**"
 ```
 
-### Issue: Invalid Manifest JSON
+## Issue: Invalid Manifest JSON
 
 **Solution**: Check with jq
 ```bash
@@ -284,7 +286,7 @@ Target <30 MB for optimal ChatGPT performance. Split large topics if needed.
 --output package.zip
 ```
 
-### 5. Validate Before Upload
+## 5. Validate Before Upload
 
 Always check manifest and file count before uploading to ChatGPT.
 
@@ -325,7 +327,7 @@ Always check manifest and file count before uploading to ChatGPT.
 # Upload to ChatGPT, use system prompt, done!
 ```
 
-### Example 2: Capability-Focused Package
+## Example 2: Capability-Focused Package
 
 ```bash
 # Package workflow navigation capability
@@ -334,14 +336,14 @@ Always check manifest and file count before uploading to ChatGPT.
   --output workflow_capability.zip
 ```
 
-### Example 3: Documentation Only
+## Example 3: Documentation Only
 
 ```bash
 # Package all docs for offline reference
 ./scripts/mcp/mcp-package --topic docs --output codex_docs.zip
 ```
 
-### Example 4: Automated via Workflow
+## Example 4: Automated via Workflow
 
 1. Go to Actions → Build ChatGPT Project Package
 2. Select topic: "agents"

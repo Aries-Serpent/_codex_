@@ -1,5 +1,7 @@
 # 🤖 Autonomous Self-Healing Agent — Comprehensive Design Proposal
 
+**Last Updated:** 2026-06-22
+
 > **Session:** S182 | **PR:** #3724 | **Status:** 📋 PROPOSAL (awaiting owner review)
 > **Author:** Copilot Coding Agent (claude-opus-4.6) | **Date:** 2026-03-23
 > **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
@@ -46,6 +48,7 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 ### Existing Self-Healing Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Any Workflow Fails, D-00 Triage'}}%%
 flowchart TD
     A[Any Workflow Fails] --> B{iterative-self-healing-ci.yml}
     B --> C[D-00 Triage]
@@ -97,6 +100,7 @@ fail or are not available.
 ### Branch & PR Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing copilot/session-*, copilot/sub-pr-*'}}%%
 flowchart LR
     subgraph "Agent Sessions"
         S1[copilot/session-*]
@@ -124,6 +128,9 @@ flowchart LR
 ### Detailed Merge Direction
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SubPR: ✅ All checks pass
+
+  '}}%%
 sequenceDiagram
     participant Agent as Copilot Agent
     participant SubPR as Sub-PR Branch
@@ -150,6 +157,7 @@ sequenceDiagram
 ### Workflow Relationships
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR Created/Edited, Workflow Failed'}}%%
 flowchart TB
     subgraph "Trigger Layer"
         PR[PR Created/Edited]
@@ -199,6 +207,7 @@ flowchart TB
 ### Resolve Push Target Algorithm
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing resolve-push-target, Push to main'}}%%
 flowchart TD
     START[resolve-push-target] --> A{0D_base_ exists?}
     A -->|no| MAIN[Push to main]
@@ -239,6 +248,7 @@ triggers from spawning parallel sessions on different PRs.
 ### Proposed Solution: Session Concurrency Gate
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "@copilot continue<br/>or auth-delegation trigger", Set COPILOT_ACTIVE_SESSION<br/>= PR# + timestamp'}}%%
 flowchart TD
     TRIGGER["@copilot continue<br/>or auth-delegation trigger"] --> CHECK{Check repo var<br/>COPILOT_ACTIVE_SESSION}
 
@@ -272,6 +282,8 @@ flowchart TD
 ### Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Gate: empty
+    Gate'}}%%
 sequenceDiagram
     participant PR1 as PR #3724
     participant Gate as Session Gate
@@ -308,6 +320,7 @@ The session gate integrates into `agent-auth-delegation.yml` at two points:
 2. **On session completion** (new workflow or job) — Release lock, trigger next
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation ✅ always-on'}}%%
 flowchart LR
     subgraph "agent-auth-delegation.yml"
         A[detect-checkbox] --> B[activate-delegation ✅ always-on]
@@ -379,6 +392,7 @@ fi
 ### End-to-End Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Failure, D-00 Triage<br/>collect_telemetry.py'}}%%
 flowchart TD
     subgraph "Layer 1: Detection"
         FAIL[Workflow Failure] --> TRIAGE[D-00 Triage<br/>collect_telemetry.py]
@@ -448,6 +462,7 @@ When auto-fix exhausts all iterations, the self-healing workflow posts a structu
 ### Self-Healing Decision Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CI Failure Detected, ruff --fix'}}%%
 flowchart TD
     F[CI Failure Detected] --> T{Triage Pattern}
 
@@ -528,6 +543,7 @@ infrastructure that handles them, and the new mechanisms this proposal adds.
 ### Conflict Taxonomy
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h, Concurrent agent sessions<br/>Two sessions edit same file'}}%%
 flowchart TD
     subgraph "Conflict Sources"
         CS1[Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h]
@@ -564,6 +580,7 @@ flowchart TD
 **File:** `scripts/ci/branch_rebase_check.py` (authoritative rebase gate)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize, ✅ REQ-10 PASS'}}%%
 flowchart TD
     PR[PR push/synchronize] --> CHECK{Compare base vs head}
 
@@ -639,7 +656,7 @@ else:
     conflict_score = 0.5    # None → GitHub still computing
 ```
 
-#### Layer 3: Concurrency Prevention via Workflow Groups
+## Layer 3: Concurrency Prevention via Workflow Groups
 
 All key workflows use `concurrency` groups to prevent parallel runs on the same branch:
 
@@ -652,7 +669,7 @@ concurrency:
 This ensures that if a self-healing commit triggers a re-run, the previous run is
 cancelled — preventing two runs from pushing conflicting commits to the same branch.
 
-#### Layer 4: Agent Session Sequential Model
+### Layer 4: Agent Session Sequential Model
 
 The sub-PR architecture is the primary structural defense against conflicts:
 
@@ -678,6 +695,7 @@ The **Session Concurrency Gate** (Section 4) prevents the most common conflict s
 - `CODEX_MANIFEST.json` (auto-regenerated)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Acquires lock'}}%%
 flowchart TD
     subgraph "Single-Session Mode (default)"
         S1[Session A starts] --> LOCK[Acquires lock]
@@ -698,6 +716,7 @@ flowchart TD
 ```
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Edits files'}}%%
 flowchart TD
     subgraph "Multi-Session Mode (opt-in)"
         M1[Session A starts] --> EDIT_MA[Edits files]
@@ -721,6 +740,8 @@ When the self-healing pipeline pushes a fix commit, it can conflict with in-prog
 agent work. The proposal adds a **pre-push conflict check**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SH: "3724|timestamp|run_id"
+'}}%%
 sequenceDiagram
     participant SH as Self-Healing CI
     participant API as GitHub API
@@ -782,12 +803,13 @@ This ensures that any `git pull` performed by the agent or `report_progress` too
 automatically rebases local work on top of remote changes, auto-stashing any
 uncommitted changes during the rebase.
 
-#### Enhancement 4: Post-Conflict Copilot Escalation
+## Enhancement 4: Post-Conflict Copilot Escalation
 
 When a merge conflict cannot be auto-resolved (rebase fails), the system posts a
 structured `@copilot` comment with conflict context:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Merge conflict detected, Identify conflicting files'}}%%
 flowchart TD
     CONFLICT[Merge conflict detected] --> ANALYZE[Identify conflicting files]
     ANALYZE --> CLASSIFY{Conflict type}
@@ -824,13 +846,14 @@ for f in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md; do
 done
 ```
 
-#### Enhancement 5: Session Boundary Conflict Guard (§0.4 Policy)
+## Enhancement 5: Session Boundary Conflict Guard (§0.4 Policy)
 
 Every Copilot Coding Agent session MUST inspect the PR for merge conflicts at both
 **session start** and **session end**. This is now codified as §0.4 in the
 Codebase Agency Policy and enforced via `copilot-setup-steps.yml`.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "@copilot continue triggers", copilot-setup-steps.yml runs'}}%%
 flowchart TD
     subgraph "Session START"
         A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
@@ -900,7 +923,7 @@ gh pr view "${PR_NUMBER}" --json mergeable -q .mergeable
 # Must output "MERGEABLE" — if "CONFLICTING", resolve before committing
 ```
 
-#### Enhancement 6: CI Failure Issue Inspection (§0.2 Policy)
+## Enhancement 6: CI Failure Issue Inspection (§0.2 Policy)
 
 Every Copilot session must check for open CI failure report issues that contain
 relevant failure patterns. Two issue labels are monitored:
@@ -911,6 +934,7 @@ relevant failure patterns. Two issue labels are monitored:
 | `ci-health-alert` | `ci-health-monitor.yml` / `telemetry-collection.yml` | High failure rate threshold exceeded |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing copilot-setup-steps.yml, "gh issue list --label ci-failure"'}}%%
 flowchart TD
     subgraph "Session Start — CI Issue Check"
         S1[copilot-setup-steps.yml] --> S2["gh issue list --label ci-failure"]
@@ -965,6 +989,7 @@ check whether CI failure issues exist.
 ### Conflict Prevention Architecture (Full Picture)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Session Concurrency Gate<br/>Single session default, Workflow concurrency groups<br/>cancel-in-progress: true'}}%%
 flowchart TB
     subgraph "Prevention Layer"
         P1[Session Concurrency Gate<br/>Single session default]
@@ -1015,6 +1040,7 @@ flowchart TB
 ### Edge Cases
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #1 checks gate, PR #2 checks gate'}}%%
 flowchart TD
     subgraph "Edge Case 1: Race Condition"
         EC1A[PR #1 checks gate] --> EC1B[PR #2 checks gate]
@@ -1086,6 +1112,7 @@ flowchart TD
 > **Updated:** All Phase 1–3 items implemented in S182. Phase 4 (verification) pending.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Implementation Roadmap
     dateFormat YYYY-MM-DD
@@ -1254,6 +1281,7 @@ grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && 
 ### Agent Ecosystem Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing orchestrator-agent, cognitive-brain-manager'}}%%
 flowchart TD
     subgraph "Orchestration Layer"
         ORCH[orchestrator-agent]
@@ -1312,6 +1340,7 @@ flowchart TD
 ### D_CAPABLE Agent Promotion Path
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing E Model<br/>Advisory Only, D_CAPABLE<br/>Autonomous'}}%%
 flowchart LR
     E[E Model<br/>Advisory Only] -->|5-gate check| D[D_CAPABLE<br/>Autonomous]
 

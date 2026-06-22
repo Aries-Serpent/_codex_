@@ -1,5 +1,7 @@
 # CLI
 
+**Last Updated:** 2026-06-22
+
 The Click-based CLI groups common operations:
 
 ```bash
@@ -8,7 +10,7 @@ python -m codex_ml.cli.codex_cli metrics-server --port 9000
 ```text
 Subcommands: `train`, `evaluate`, `tokenize`, `repo-map`, `metrics-server`.
 
-### Tokenizer commands
+## Tokenizer commands
 
 `codex tokenizer train` accepts streaming flags for large corpora:
 

@@ -1,5 +1,7 @@
 # Cognitive Codex Web Application
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Cognitive Codex App is a quantum-enhanced code generation platform with real-time cognitive brain visualization, built with React, TypeScript, and Vite.

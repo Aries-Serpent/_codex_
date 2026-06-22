@@ -1,5 +1,7 @@
 # Copilot Agent Session — Standard Operating Model
 
+**Last Updated:** 2026-06-22
+
 > **Cross-reference (Canonical Planset):** [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
 > **Lifecycle:** ACTIVE OPERATIONAL
 
@@ -13,6 +15,7 @@ reference; the machine-readable canonical planset lives at
 ## Session Lifecycle (Standard Operation)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Session Start, Pre-load Context'}}%%
 flowchart TD
   A[Session Start] --> B[Pre-load Context]
   B --> B2[Session Access Probe + Drift Severity]
@@ -32,6 +35,7 @@ flowchart TD
 ## 🧭 AI-Friendly Codeless Depiction of Intended Copilot Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Load session packet, Assess drift + health'}}%%
 flowchart TD
   A[Load session packet] --> B[Assess drift + health]
   B --> C{Risk posture}
@@ -245,7 +249,7 @@ python scripts/aftermath/living_doc_sync.py --dry-run
 python scripts/aftermath/update_cognitive_brain.py --mode living-doc-sync
 ```
 
-### Bootstrap Health Score
+## Bootstrap Health Score
 
 ```
 health_score = 100

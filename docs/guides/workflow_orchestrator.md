@@ -1,5 +1,7 @@
 # Track C Workflow Orchestrator
 
+**Last Updated:** 2026-06-22
+
 This guide documents the offline Track C workflow that now drives capability execution in Codex. The workflow is designed to be deterministic, auditable, and reversible (each phase registers a rollback action).
 
 ## Six-Phase Workflow

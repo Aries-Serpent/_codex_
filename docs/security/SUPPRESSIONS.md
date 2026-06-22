@@ -1,5 +1,7 @@
 # Security Scan Suppressions Registry
 
+**Last Updated:** 2026-06-22
+
 ## Purpose
 
 This document tracks all security scan suppressions with rationale for audit purposes.

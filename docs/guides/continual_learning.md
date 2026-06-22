@@ -1,5 +1,7 @@
 # Continual learning quickstart
 
+**Last Updated:** 2026-06-22
+
 ## Config presets
 
 - Hydra fragments live under `configs/training/continual/`. Combine them with your base config:

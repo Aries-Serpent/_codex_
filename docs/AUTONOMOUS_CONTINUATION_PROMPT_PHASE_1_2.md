@@ -124,7 +124,7 @@ done
 
 ---
 
-#### Task 1.2: Generate Workflow Documentation (Est: 1 iteration)
+## Task 1.2: Generate Workflow Documentation (Est: 1 iteration)
 
 **Objective**: Create README.md for each GitHub Actions workflow
 
@@ -210,7 +210,7 @@ python scripts/generate_workflow_docs.py
 
 ---
 
-#### Task 1.3: Batch Script Documentation (Est: 2 iterations)
+## Task 1.3: Batch Script Documentation (Est: 2 iterations)
 
 **Objective**: Add comprehensive headers to all 239 scripts
 
@@ -296,9 +296,9 @@ python scripts/add_script_headers.py
 
 ---
 
-### Phase 2: Automation (Begin After Phase 1 phase 1)
+## Phase 2: Automation (Begin After Phase 1 phase 1)
 
-#### Task 2.1: Audit Automation Coverage (Est: 1 iteration)
+### Task 2.1: Audit Automation Coverage (Est: 1 iteration)
 
 **Objective**: Verify actual automation level (claimed 75%)
 
@@ -352,7 +352,7 @@ EOF
 
 ---
 
-#### Task 2.2: Implement High-ROI Automations (Est: 1 phase)
+## Task 2.2: Implement High-ROI Automations (Est: 1 phase)
 
 **Priority Automations** (sorted by ROI):
 

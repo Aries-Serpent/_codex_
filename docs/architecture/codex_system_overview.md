@@ -1,5 +1,7 @@
 # Codex system overview
 
+**Last Updated:** 2026-06-22
+
 This document sketches the offline-first flow across training, inference, and tracking surfaces.
 
 ## Data and training flow

@@ -1,6 +1,6 @@
 # ChatGPT Project Packaging Guide
 
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Status**: ✅ Production Ready
 **Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
@@ -79,6 +79,7 @@
 **Workflow Path**: Repository → Selection → Staging → Flattening → Packaging → Validation → Upload → Verification
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Repository Files, Topic/Custom Selection'}}%%
 graph LR
     A[Repository Files] --> B[Topic/Custom Selection]
     B --> C[File Staging]
@@ -189,7 +190,7 @@ python scripts/mcp/select_components.py \
 # 4. Upload artifact manually
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Data Loss Prevention**:
 - Temp directory (`/tmp/stage`) persisted until successful packaging
@@ -217,7 +218,7 @@ jq . /tmp/manifest_test.json  # Identify JSON errors
 ./scripts/mcp/package_flatten.sh /tmp/stage package_fixed.zip --regenerate-manifest
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **Size Threshold Circuit**:
 - If package > 50 MB: Warn and abort (manual override available)
@@ -491,7 +492,7 @@ else
 fi
 ```
 
-### Validate Package Contents
+## Validate Package Contents
 
 ```bash
 # List all files in package
@@ -506,7 +507,7 @@ done
 unzip -p package_zendesk.zip index.md | head -20
 ```
 
-### Test Extraction
+## Test Extraction
 
 ```bash
 # Extract to temporary directory
@@ -574,7 +575,7 @@ python scripts/mcp/select_components.py \
     --output /tmp/subset.txt
 ```
 
-### Duplicate Flat Names
+## Duplicate Flat Names
 
 **Cause**: Two files with same name in different directories (e.g., `src/foo.py` and `tests/foo.py`)
 
@@ -626,7 +627,7 @@ python scripts/mcp/select_components.py \
     --output /tmp/combined.txt
 ```
 
-### Filter by Language
+## Filter by Language
 
 ```bash
 # Package only Python files from agents
@@ -635,7 +636,7 @@ python scripts/mcp/select_components.py \
     --output /tmp/agents_python.txt
 ```
 
-### Add Custom Metadata
+## Add Custom Metadata
 
 Edit `package_flatten.sh` to include custom metadata in manifest:
 - Repository commit SHA
@@ -665,7 +666,7 @@ Edit `package_flatten.sh` to include custom metadata in manifest:
 ---
 
 **Document Version**: 2.0.0
-**Last Updated**: 2026-01-23T11:45:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: Aries-Serpent/_codex_ team
 **Related Files**:
 - `scripts/mcp/select_components.py`

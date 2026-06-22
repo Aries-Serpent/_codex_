@@ -1,5 +1,7 @@
 # ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote
 
+**Last Updated:** 2026-06-22
+
 **Status:** Accepted
 **Date:** 2025-01-15
 **Deciders:** codex-ml platform team

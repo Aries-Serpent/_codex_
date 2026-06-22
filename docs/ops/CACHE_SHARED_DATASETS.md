@@ -1,6 +1,8 @@
 # Cache Shared Datasets — Aries-Serpent/_codex_
 
-> **Version**: 1.0.0 | **Created**: 2026-03-06 (W-132) | **Owner**: @mbaetiong
+**Last Updated:** 2026-06-22
+
+> **Version**: 1.0.0 | **Created**: 2026-06-22 (W-132) | **Owner**: @mbaetiong
 > **Purpose**: Single reference for every cache layer, shared dataset, and cross-agent
 > sync protocol used across GitHub Actions workflows, composite actions, and cognitive agents.
 
@@ -27,6 +29,7 @@ All layers are keyed with `CODEX_CACHE_VERSION` (repo variable, currently `v2`) 
 tiers never collide.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback", "Layer 2 — PyTorch CPU wheels\n~/.cache/torch-whl\nKeyed on torch major slot (2.x)\nOnly when install-torch=true\nSurvives pyproject.toml edits"'}}%%
 graph TD
     subgraph "setup-python-cached composite action"
         L1["Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback"]
@@ -64,7 +67,7 @@ gh variable set CODEX_CACHE_VERSION --body "v3" --repo Aries-Serpent/_codex_
 # L2 (PyTorch) and L4 (npm) are unaffected — bust those manually if needed.
 ```
 
-### Composite Action Usage
+## Composite Action Usage
 
 ```yaml
 # Recommended: pass CODEX_CACHE_VERSION and explicit tier
@@ -84,6 +87,7 @@ Defined in `.github/WORKFLOW_CACHE_TIERS.md`. Now **functional** — tier is emb
 L1/L3 keys, not just informational.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 LIVE Tier (permanent)", "copilot-setup-steps.yml"'}}%%
 graph LR
     subgraph LIVE["🟢 LIVE Tier (permanent)"]
         WF1["copilot-setup-steps.yml"]
@@ -133,6 +137,7 @@ These are **data artifacts** (not pip caches) that workflows read and write to e
 shared state across runs.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER", "ci-health-monitor.yml\nWrites: CODEX_CI_FAILURE_RATE,\nCODEX_CI_LAST_GREEN_SHA"'}}%%
 graph TB
     subgraph "Producers (write)"
         P1["copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER"]
@@ -202,6 +207,7 @@ This is separate from the GitHub Actions file cache and manages in-memory data
 like topology maps, pattern query results, and embedding lookups.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT", "L2: Cold entries\n(SQLite DB)\nCODEX_LOG_DB_PATH\nPersisted across runs"'}}%%
 graph LR
     subgraph "In-Process (CacheIntelligence)"
         M1["L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT"]
@@ -275,6 +281,7 @@ adding `cache-tier: common` with `setup-python-cached`:
 How caches are kept coherent across concurrent workflow runs:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF: ✅ Cache hit → skip venv '}}%%
 sequenceDiagram
     participant WF as Workflow (any tier)
     participant L1 as L1 pip cache
@@ -337,7 +344,7 @@ Workflows needing this most urgently:
 5. `iterative-self-healing-ci.yml` — self-healing requires fast startup
 6. `copilot-evolution-suite.yml` — AAIS scoring runs frequently
 
-### Gap 2 — `CODEX_CACHE_VERSION` Disconnected (FIXED in W-132)
+## Gap 2 — `CODEX_CACHE_VERSION` Disconnected (FIXED in W-132)
 
 **Finding**: `CODEX_CACHE_VERSION = v2` repo variable existed but was NOT wired into
 any workflow cache keys. Cache busting via the variable was non-functional.
@@ -396,7 +403,7 @@ gh workflow run cache-pruning.yml --field dry_run=true --field max_age_days=7
 gh workflow run cache-pruning.yml --field dry_run=false --field max_age_days=7
 ```
 
-### Bust entire cache hierarchy
+## Bust entire cache hierarchy
 
 ```bash
 # 1. Bump version (invalidates L1 + L3 for all tiers):
@@ -406,7 +413,7 @@ gh variable set CODEX_CACHE_VERSION --body "v3" --repo Aries-Serpent/_codex_
 gh workflow run cache-pruning.yml --field dry_run=false --field max_age_days=0
 ```
 
-### Check which workflows share a cache key
+## Check which workflows share a cache key
 
 ```bash
 grep -rh "key:.*pip\|key:.*venv" .github/workflows/ .github/actions/ | \

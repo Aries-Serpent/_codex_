@@ -1,5 +1,7 @@
 # ADR-20260304-copilot-agent-cli-api-gaps
 
+**Last Updated:** 2026-06-22
+
 ## Context
 
 **Date:** 2026-03-04  
@@ -197,7 +199,7 @@ if brain.is_available():
     print("\n".join(brain.git_log(5)))
 ```
 
-### From bash (via curl)
+## From bash (via curl)
 
 ```bash
 # Health check

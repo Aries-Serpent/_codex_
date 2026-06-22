@@ -1,6 +1,56 @@
 # GitHub Copilot Agent & MCP Server Capabilities - Official Documentation
 
-> **Generated**: 2025-12-31T02:35:00Z  
+## Table of Contents
+
+- [🎯 Executive Summary](#-executive-summary)
+- [📚 Official Documentation Sources](#-official-documentation-sources)
+  - [1. GitHub MCP Server - Official Repository](#1-github-mcp-server---official-repository)
+  - [2. GitHub Copilot Agent PR Comment Capabilities](#2-github-copilot-agent-pr-comment-capabilities)
+  - [3. GitHub MCP Server Write Operations](#3-github-mcp-server-write-operations)
+  - [4. Best Practices for Using GitHub Copilot](#4-best-practices-for-using-github-copilot)
+  - [5. Model Context Protocol (MCP) and Copilot Agent](#5-model-context-protocol-mcp-and-copilot-agent)
+  - [6. Remote GitHub MCP Server GA Announcement](#6-remote-github-mcp-server-ga-announcement)
+  - [7. VS Code MCP Servers Setup](#7-vs-code-mcp-servers-setup)
+  - [8. Five Ways MCP Transforms Workflow](#8-five-ways-mcp-transforms-workflow)
+  - [9. Microsoft Playwright MCP Server](#9-microsoft-playwright-mcp-server)
+  - [10. DeepWiki GitHub MCP Server Documentation](#10-deepwiki-github-mcp-server-documentation)
+- [🔧 Technical Implementation Details](#-technical-implementation-details)
+  - [GitHub MCP Server Tools (100+)](#github-mcp-server-tools-100)
+    - [1. Repository Tools](#1-repository-tools)
+    - [2. Issue Tools](#2-issue-tools)
+    - [3. Pull Request Tools ⭐ (Most Relevant)](#3-pull-request-tools--most-relevant)
+    - [4. CI/CD Tools](#4-cicd-tools)
+    - [5. Security Tools](#5-security-tools)
+- [🔐 Authentication & Security](#-authentication--security)
+  - [OAuth 2.1 + PKCE Support](#oauth-21--pkce-support)
+  - [Write Access Requirements](#write-access-requirements)
+- [📊 Evidence Summary Table](#-evidence-summary-table)
+- [🎯 Addressing the False Claim](#-addressing-the-false-claim)
+  - [The False Statement (Commit e4e9014)](#the-false-statement-commit-e4e9014)
+  - [Evidence This Claim is FALSE](#evidence-this-claim-is-false)
+  - [What Should Have Happened](#what-should-have-happened)
+- [Step 1: Attempt the operation](#step-1-attempt-the-operation)
+- [🚀 Correct Implementation Examples](#-correct-implementation-examples)
+  - [Method 1: Using `githubwrite` with Natural Language](#method-1-using-githubwrite-with-natural-language)
+- [Simple natural language request](#simple-natural-language-request)
+- [Method 2: Using GitHub MCP Server Directly](#method-2-using-github-mcp-server-directly)
+- [If MCP server configured with direct access](#if-mcp-server-configured-with-direct-access)
+- [Method 3: Using GitHub REST API via MCP](#method-3-using-github-rest-api-via-mcp)
+- [Direct API call (PRs are issues in GitHub API)](#direct-api-call-prs-are-issues-in-github-api)
+- [Expected Results](#expected-results)
+- [📋 Tool Availability Confirmation](#-tool-availability-confirmation)
+  - [Tools Available to GitHub Copilot Agent](#tools-available-to-github-copilot-agent)
+  - [Specific `githubwrite` Capabilities](#specific-githubwrite-capabilities)
+- [⚖️ Verdict & Corrective Actions](#-verdict--corrective-actions)
+  - [Factual Status: FALSE CLAIM CONFIRMED](#factual-status-false-claim-confirmed)
+  - [Required Corrective Actions](#required-corrective-actions)
+- [📖 Complete Reference List](#-complete-reference-list)
+  - [Official GitHub Documentation](#official-github-documentation)
+  - [Related Documentation](#related-documentation)
+- [🔖 Metadata](#-metadata)
+- [⚠️ Critical Lesson Learned](#-critical-lesson-learned)
+
+> **Generated**: 2026-06-22T00:00:00Z  
 > **Author**: mbaetiong (documented by GitHub Copilot Agent)  
 > **Type**: Reference Documentation  
 > **Source**: Official GitHub Documentation & Research  
@@ -296,17 +346,17 @@
 
 | Capability | Supported | Documentation Source | Direct Quote Evidence | URL |
 |-----------|-----------|---------------------|----------------------|-----|
-| **Post PR Comments** | ✅ YES | GitHub Changelog | "iterate by giving more instructions via PR comments with `@copilot`" | [Link](https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/) |
-| **Create PRs** | ✅ YES | GitHub MCP Server | "autonomously create branches... and open pull requests" | [Link](https://github.com/github/github-mcp-server) |
-| **Update PR Bodies** | ✅ YES | GitHub MCP Server | "Issue & PR Automation: file, triage, label, review, and merge" | [Link](https://github.com/github/github-mcp-server) |
-| **Merge PRs** | ✅ YES | GitHub MCP Server | "agents can... merge issues and pull requests" | [Link](https://github.com/github/github-mcp-server) |
-| **Create Issues** | ✅ YES | GitHub MCP Server | "Agents can file, triage, label, review" | [Link](https://github.com/github/github-mcp-server) |
-| **Comment on Issues** | ✅ YES | GitHub MCP Server | 100+ tools include issue commenting | [Link](https://deepwiki.com/github/github-mcp-server) |
-| **Request Reviews** | ✅ YES | GitHub Blog | "request reviews from users/teams" | [Link](https://github.blog/ai-and-ml/generative-ai/a-practical-guide-on-how-to-use-the-github-mcp-server/) |
-| **Manage Labels** | ✅ YES | GitHub MCP Server | "label management operations" | [Link](https://github.com/github/github-mcp-server) |
-| **Branch Operations** | ✅ YES | GitHub Blog | "autonomously create branches" | [Link](https://github.blog/ai-and-ml/generative-ai/a-practical-guide-on-how-to-use-the-github-mcp-server/) |
-| **CI/CD Triggers** | ✅ YES | GitHub MCP Server | "workflow triggers, job reruns" | [Link](https://github.com/github/github-mcp-server) |
-| **Write Access** | ✅ Required | GitHub Best Practices | "user... must have write access to the repository" | [Link](https://docs.github.com/en/copilot/tutorials/coding-agent/get-the-best-results) |
+| **Post PR Comments** | ✅ YES | GitHub Changelog | "iterate by giving more instructions via PR comments with `@copilot`" | [Github.Blog](https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/) |
+| **Create PRs** | ✅ YES | GitHub MCP Server | "autonomously create branches... and open pull requests" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Update PR Bodies** | ✅ YES | GitHub MCP Server | "Issue & PR Automation: file, triage, label, review, and merge" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Merge PRs** | ✅ YES | GitHub MCP Server | "agents can... merge issues and pull requests" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Create Issues** | ✅ YES | GitHub MCP Server | "Agents can file, triage, label, review" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Comment on Issues** | ✅ YES | GitHub MCP Server | 100+ tools include issue commenting | [Deepwiki](https://deepwiki.com/github/github-mcp-server) |
+| **Request Reviews** | ✅ YES | GitHub Blog | "request reviews from users/teams" | [Guide](https://github.blog/ai-and-ml/generative-ai/a-practical-guide-on-how-to-use-the-github-mcp-server/) |
+| **Manage Labels** | ✅ YES | GitHub MCP Server | "label management operations" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Branch Operations** | ✅ YES | GitHub Blog | "autonomously create branches" | [Guide](https://github.blog/ai-and-ml/generative-ai/a-practical-guide-on-how-to-use-the-github-mcp-server/) |
+| **CI/CD Triggers** | ✅ YES | GitHub MCP Server | "workflow triggers, job reruns" | [GitHub](https://github.com/github/github-mcp-server) |
+| **Write Access** | ✅ Required | GitHub Best Practices | "user... must have write access to the repository" | [GitHub](https://docs.github.com/en/copilot/tutorials/coding-agent/get-the-best-results) |
 
 ---
 
@@ -390,7 +440,7 @@ githubwrite(
 )
 ```
 
-### Method 2: Using GitHub MCP Server Directly
+## Method 2: Using GitHub MCP Server Directly
 
 ```python
 # If MCP server configured with direct access
@@ -402,7 +452,7 @@ mcp_github.post_pr_comment(
 )
 ```
 
-### Method 3: Using GitHub REST API via MCP
+## Method 3: Using GitHub REST API via MCP
 
 ```python
 # Direct API call (PRs are issues in GitHub API)
@@ -414,7 +464,7 @@ github_api.issues.create_comment(
 )
 ```
 
-### Expected Results
+## Expected Results
 
 **Success Response**:
 ```json
@@ -619,7 +669,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
 ## 🔖 Metadata
 
 **Document Version**: 1.0.0  
-**Last Updated**: 2025-12-31T02:35:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Maintained By**: GitHub Copilot Agent (with human oversight)  
 **Review Cycle**: Quarterly or when GitHub releases major updates  
 **Related Files**:

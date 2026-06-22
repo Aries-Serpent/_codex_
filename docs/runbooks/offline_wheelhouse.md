@@ -1,5 +1,7 @@
 # Offline Build & Use of a Wheelhouse (1-page runbook)
 
+**Last Updated:** 2026-06-22
+
 **Purpose:** Enable **hermetic, offline installs** and faster local CI by pre-building wheels into a project-local `./wheelhouse/`, then installing with `--no-index --find-links`. Uses `uv` when present, with safe fallbacks to `pip`.
 **Why:** Avoid network slowness/variance and rebuild churn; let Codex pick “fastest vs isolated” per task.
 

@@ -1,9 +1,106 @@
 # Phase 0: AST Implementation - Complete Guidance & Readiness Assessment
 
+## Table of Contents
+
+- [📋 Executive Summary: Phase 0 Completion Status](#-executive-summary-phase-0-completion-status)
+  - [Current State Assessment (2025-11-10 12:51:49 UTC)](#current-state-assessment-2025-11-10-125149-utc)
+- [Part 1: Phase 0 Completion Checklist (Pre-Phase 1)](#part-1-phase-0-completion-checklist-pre-phase-1)
+  - [Go/No-Go Gate Requirements](#gono-go-gate-requirements)
+  - [Phase 0 Critical Path (5 iterations to Gate Decision)](#phase-0-critical-path-5-iterations-to-gate-decision)
+- [Part 2: Phase 0 Deliverables Summary](#part-2-phase-0-deliverables-summary)
+  - [Research & Planning Documents (13 Total)](#research--planning-documents-13-total)
+- [Part 3: Deep Research Findings Summary](#part-3-deep-research-findings-summary)
+  - [Blocker Resolution Matrix (46 Total Blockers)](#blocker-resolution-matrix-46-total-blockers)
+    - [Critical Blockers (15) - With Recommended Solutions](#critical-blockers-15---with-recommended-solutions)
+    - [Implementation Issues (23 Total)](#implementation-issues-23-total)
+    - [Architectural Challenges (8 Total)](#architectural-challenges-8-total)
+- [Part 4: Phase 1 Full Implementation Context](#part-4-phase-1-full-implementation-context)
+  - [Phase 1: Quick Wins (5 iterations) - Complete Specification](#phase-1-quick-wins-5-iterations---complete-specification)
+    - [Task 1: Add Core Dependencies (0.5 iterations)](#task-1-add-core-dependencies-05-iterations)
+    - [Task 2: Create StandardizedASTNode Dataclass (1 iteration)](#task-2-create-standardizedastnode-dataclass-1-iteration)
+    - [Task 3: Implement DependencyGraph (1 iteration)](#task-3-implement-dependencygraph-1-iteration)
+    - [Task 4: Create MetricsAggregator (0.5 iterations)](#task-4-create-metricsaggregator-05-iterations)
+    - [Tasks 5-8: Test Suite, Documentation, CLI, Pre-commit (2 iterations)](#tasks-5-8-test-suite-documentation-cli-pre-commit-2-iterations)
+- [Part 5: Phase 0 Completion Timeline](#part-5-phase-0-completion-timeline)
+  - [Days 1-2: Stakeholder Alignment](#days-1-2-stakeholder-alignment)
+  - [Days 3-4: Final Readiness Check (If Approved)](#days-3-4-final-readiness-check-if-approved)
+  - [Day 5: Official Go/No-Go Gate](#day-5-official-gono-go-gate)
+- [Part 6: Phase 0 Success Criteria](#part-6-phase-0-success-criteria)
+- [Phase 0 Final Recommendation](#phase-0-final-recommendation)
+  - [✅ RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)](#-recommend-proceed-with-phase-1-5-iteration-quick-wins)
+  - [🔴 DEFER: Phase 2-3 to Dedicated Project](#-defer-phase-2-3-to-dedicated-project)
+- [Phase 1: AST Implementation Quick Wins - Complete Specification](#phase-1-ast-implementation-quick-wins---complete-specification)
+- [📋 Phase 1 Executive Summary](#-phase-1-executive-summary)
+- [Part 1: per-iteration Implementation Schedule](#part-1-per-iteration-implementation-schedule)
+  - [Day 1: Dependencies + Foundation (1 iteration)](#day-1-dependencies--foundation-1-iteration)
+  - [Day 2: Graph + Metrics (1 iteration)](#day-2-graph--metrics-1-iteration)
+  - [Day 3: Testing (1 iteration)](#day-3-testing-1-iteration)
+  - [Day 4: CLI + Documentation (1 iteration)](#day-4-cli--documentation-1-iteration)
+  - [Day 5: Validation + Integration (1 iteration)](#day-5-validation--integration-1-iteration)
+- [Part 2: Complete Code Implementation](#part-2-complete-code-implementation)
+  - [Module 1: `src/codex/ast/__init__.py` (NEW)](#module-1-srccodexast__init__py-new)
+  - [Module 2: `src/codex/ast/node.py` (COMPLETE - SEE ABOVE)](#module-2-srccodexastnodepy-complete---see-above)
+  - [Module 3: `src/codex/ast/graph.py` (COMPLETE - SEE ABOVE)](#module-3-srccodexastgraphpy-complete---see-above)
+  - [Module 4: `src/codex/ast/metrics.py` (COMPLETE - SEE ABOVE)](#module-4-srccodexastmetricspy-complete---see-above)
+  - [Module 5: `src/codex/ast/cli.py` (NEW)](#module-5-srccodexastclipy-new)
+  - [Test Files](#test-files)
+- [Part 3: Git Commit Strategy (5 Atomic Commits)](#part-3-git-commit-strategy-5-atomic-commits)
+  - [Commit 1: Dependencies](#commit-1-dependencies)
+  - [Commit 2: Foundation Modules](#commit-2-foundation-modules)
+  - [Commit 3: Comprehensive Tests](#commit-3-comprehensive-tests)
+  - [Commit 4: CLI + Documentation](#commit-4-cli--documentation)
+  - [Commit 5: Validation Report](#commit-5-validation-report)
+- [Part 4: Verification Checklist](#part-4-verification-checklist)
+  - [iteration-by-iteration Verification](#iteration-by-iteration-verification)
+- [Part 5: Success Criteria (Must All Be TRUE)](#part-5-success-criteria-must-all-be-true)
+  - [Functional Criteria](#functional-criteria)
+  - [Quality Criteria](#quality-criteria)
+  - [Process Criteria](#process-criteria)
+- [Part 6: Post-Phase 1 Next Steps](#part-6-post-phase-1-next-steps)
+  - [Immediately After Phase 1 Completion (Day 6)](#immediately-after-phase-1-completion-day-6)
+  - [Success Metrics Review](#success-metrics-review)
+- [AST Standardization Project: Stakeholder Approval & Governance Framework (Single Copilot Pro+ Seat)](#ast-standardization-project-stakeholder-approval--governance-framework-single-copilot-pro-seat)
+- [Generated: 2026-06-22 (audited) | Author: mbaetiong](#generated-2026-06-22-audited--author-mbaetiong)
+- [Purpose: Updated governance to reflect ONLY ONE (1) GitHub Copilot Pro+ subscription as the sole cost driver.](#purpose-updated-governance-to-reflect-only-one-1-github-copilot-pro-subscription-as-the-sole-cost-driver)
+- [Sources: GitHub Docs (Copilot individual plans, premium requests, model multipliers). "No need to reinvent the wheel" — leverages official pricing/allowance mechanics.](#sources-github-docs-copilot-individual-plans-premium-requests-model-multipliers-no-need-to-reinvent-the-wheel--leverages-official-pricingallowance-mechanics)
+- [============================================================================](#)
+- [SECTION 0: CONSOLIDATED COPILOT PRO+ SINGLE-SEAT COST MODEL (from COPILOT_COST_CALCULATION_MODEL_PROPLUS_SINGLE_SEAT.yaml)](#section-0-consolidated-copilot-pro-single-seat-cost-model-from-copilot_cost_calculation_model_proplus_single_seatyaml)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 1: STAKEHOLDER REGISTRY (Ranked by Approval Priority)](#section-1-stakeholder-registry-ranked-by-approval-priority)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 2: APPROVAL MATRIX (WHO APPROVES WHAT, WHEN)](#section-2-approval-matrix-who-approves-what-when)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 3: RESOURCE ALLOCATION & TEAM COMMITMENT (Single-Seat Execution)](#section-3-resource-allocation--team-commitment-single-seat-execution)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 4: BUDGET ESTIMATE & COST BREAKDOWN (Single-Seat Only)](#section-4-budget-estimate--cost-breakdown-single-seat-only)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 5: APPROVAL WORKFLOW TIMELINE (Single-Seat)](#section-5-approval-workflow-timeline-single-seat)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 6: GO/NO-GO DECISION CRITERIA](#section-6-gono-go-decision-criteria)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 7: APPROVAL SIGNATURE BLOCKS](#section-7-approval-signature-blocks)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 8: ESCALATION & CONTINGENCY](#section-8-escalation--contingency)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 9: APPROVAL HISTORY & AUDIT TRAIL](#section-9-approval-history--audit-trail)
+- [============================================================================](#)
+- [============================================================================](#)
+- [SECTION 10: SUMMARY & NEXT ACTIONS](#section-10-summary--next-actions)
+- [============================================================================](#)
+
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2025-11-10 12:51:49 UTC | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Implementation Architect], [Secondary: Research Lead] | ⚡ Energy: 5/5
 
@@ -838,7 +935,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 ```markdown name=AST_PHASE1_COMPLETE_IMPLEMENTATION.md
 # Phase 1: AST Implementation Quick Wins - Complete Specification
 
-> Generated: 2025-11-10 12:51:49 UTC | Author: mbaetiong | User: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong | User: mbaetiong
 
 **🧠 Roles:** [Primary: Implementation Lead], [Secondary: QA Lead] | ⚡ Energy: 5/5
 
@@ -1296,7 +1393,7 @@ tests:
 **STAKEHOLDER APPROVAL GOVERNANCE FORM**
 ```yaml name="STAKEHOLDER_APPROVAL_GOVERNANCE.yaml"
 # AST Standardization Project: Stakeholder Approval & Governance Framework (Single Copilot Pro+ Seat)
-# Generated: 2025-11-10 16:04:41 UTC | Author: mbaetiong
+# Generated: 2026-06-22 (audited) | Author: mbaetiong
 # Purpose: Updated governance to reflect ONLY ONE (1) GitHub Copilot Pro+ subscription as the sole cost driver.
 # Sources: GitHub Docs (Copilot individual plans, premium requests, model multipliers). "No need to reinvent the wheel" — leverages official pricing/allowance mechanics.
 

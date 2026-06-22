@@ -1,5 +1,7 @@
 # Large Download Prevention Strategy
 
+**Last Updated:** 2026-06-22
+
 ## Requirement
 Skip large downloads if they are over 1 GB or even 500+ MB to prevent disk space exhaustion.
 
@@ -63,7 +65,7 @@ sentencepiece>=0.1.99
 # Skip CUDA dependencies entirely
 ```text
 
-### Phase 3: Update Nox Sessions
+## Phase 3: Update Nox Sessions
 
 ```python
 # noxfile.py modifications
@@ -110,7 +112,7 @@ def tests_ml_full(session: nox.Session):
     session.run("pytest", "-m", "requires_torch")
 ```text
 
-### Phase 4: Pip Configuration
+## Phase 4: Pip Configuration
 
 Create `.pip.conf` or environment variable:
 ```ini
@@ -156,6 +158,7 @@ def estimate_package_sizes(requirements_file: Path) -> dict:
 
 ### Step 3: Selective Installation
 ```python
+import subprocess
 def install_with_size_limit(packages: list, max_size_mb: int = 500):
     """Install packages but skip those over size limit."""
     for package in packages:

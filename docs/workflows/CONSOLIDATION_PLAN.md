@@ -1,5 +1,52 @@
 # Workflow Consolidation Recommendations
 
+## Table of Contents
+
+- [Current State](#current-state)
+- [Issues with Current State](#issues-with-current-state)
+- [Consolidation Strategy](#consolidation-strategy)
+  - [Phase 1: Quick Wins (Immediate)](#phase-1-quick-wins-immediate)
+    - [1.1 Test Workflows → Unified Test Suite](#11-test-workflows--unified-test-suite)
+    - [1.2 Security Workflows → Unified Security Suite](#12-security-workflows--unified-security-suite)
+    - [1.3 Audit Workflows → Unified Audit Pipeline](#13-audit-workflows--unified-audit-pipeline)
+  - [Recommended Consolidations](#recommended-consolidations)
+  - [Priority 1 (Do First)](#priority-1-do-first)
+  - [Priority 2 (Do Next)](#priority-2-do-next)
+- [Success Metrics](#success-metrics)
+- [Implementation Plan](#implementation-plan)
+  - [Pre-commit 1-2: Test Suite Consolidation](#pre-commit-1-2-test-suite-consolidation)
+  - [Pre-commit 3-4: Security Suite Consolidation](#pre-commit-3-4-security-suite-consolidation)
+- [Next Steps](#next-steps)
+- [Related Documents](#related-documents)
+- [Session Update: Workflow Portfolio Triage (2026-05-21)](#session-update-workflow-portfolio-triage-2026-05-21)
+- [Session Actions Completed](#session-actions-completed)
+- [Full Archive Review Decision Matrix (41 Workflows)](#full-archive-review-decision-matrix-41-workflows)
+  - [⛔ Orphan Stubs Created (3)](#-orphan-stubs-created-3)
+  - [📦 Archived (2)](#-archived-2)
+  - [🔍 Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
+  - [⚠️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
+  - [✅ Keep Active (26)](#-keep-active-26)
+- [Phase 2 Consolidation Targets](#phase-2-consolidation-targets)
+- [Phase 3 Consolidation Decisions (2026-05-21)](#phase-3-consolidation-decisions-2026-05-21)
+  - [P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ✅](#p31--security-sast-semgrep_sarifyml--security-scanning-suiteyml-)
+  - [P3.2 — Discussion Poster Pair: KEEP as separate workflows](#p32--discussion-poster-pair-keep-as-separate-workflows)
+  - [P3.3 — Validation Cluster: KEEP as separate workflows](#p33--validation-cluster-keep-as-separate-workflows)
+- [Investigation Report: Workflow Portfolio Triage (Phase 1-2)](#investigation-report-workflow-portfolio-triage-phase-1-2)
+  - [Summary Table](#summary-table)
+  - [Phase 1 Evidence (Completed)](#phase-1-evidence-completed)
+    - [Files Inspected](#files-inspected)
+  - [Phase 2 Solution Scoring](#phase-2-solution-scoring)
+  - [Phase 3 Verification & Completion](#phase-3-verification--completion)
+    - [Success Criteria Met](#success-criteria-met)
+    - [Final Portfolio State](#final-portfolio-state)
+    - [Archive-Review Backlog](#archive-review-backlog)
+  - [Phase 4 Trigger Remediation (Issue #4524)](#phase-4-trigger-remediation-issue-4524)
+- [Phase 5 — Coverage + Agent + Cache Consolidation Iteration (2026-05-24)](#phase-5--coverage--agent--cache-consolidation-iteration-2026-05-24)
+  - [Phase 5 cache-aware workflow goals](#phase-5-cache-aware-workflow-goals)
+  - [Phase 5 deferrals](#phase-5-deferrals)
+
+**Last Updated:** 2026-06-22
+
 ## Current State
 
 The repository contains **60+ GitHub Actions workflows**, creating complexity and maintenance burden.

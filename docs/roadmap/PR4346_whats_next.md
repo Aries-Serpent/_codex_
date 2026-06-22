@@ -1,5 +1,60 @@
 # What's Next — PR #4346 · S864 · 2026-05-08
 
+## Table of Contents
+
+- [✅ S864 Delivery Summary](#-s864-delivery-summary)
+- [✅ S863 Delivery Summary](#-s863-delivery-summary)
+- [✅ S861-cont Delivery Summary](#-s861-cont-delivery-summary)
+- [✅ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
+- [✅ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
+- [⏳ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
+  - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
+- [🏆 Merge Readiness Scorecard (S862 · all review comments addressed)](#-merge-readiness-scorecard-s862--all-review-comments-addressed)
+- [🔄 Ideal Follow-Up Prompt (S863)](#-ideal-follow-up-prompt-s863)
+- [✅ S861-cont Delivery Summary](#-s861-cont-delivery-summary)
+- [✅ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
+- [✅ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
+- [⏳ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
+  - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
+- [🏆 Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)](#-merge-readiness-scorecard-s861-cont--ci-monitoring--ce4a6f44)
+  - [🔀 Continue This Session / Merge Decision](#-continue-this-session--merge-decision)
+    - [Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)](#option-a--merge-now-recommended-if-pre-merge--secrets-gate-pass)
+    - [Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)](#option-b--start-new-pr--session-s862-for-obj-b-after-t-03-resolved)
+- [🔗 Key Files Produced (All Sessions)](#-key-files-produced-all-sessions)
+- [🔄 WEC → Dispatch → Auto-Approve Flow (New)](#-wec--dispatch--auto-approve-flow-new)
+- [🔐 Security Fixes Applied](#-security-fixes-applied)
+- [📊 Documentation Link Checker — Before vs After](#-documentation-link-checker--before-vs-after)
+- [🏆 AAIS Score Trajectory](#-aais-score-trajectory)
+- [⏱ Session Gantt](#-session-gantt)
+- [🎯 Remaining Gap to AAIS 100.0](#-remaining-gap-to-aais-1000)
+- [🔗 Key Files Produced This Session](#-key-files-produced-this-session)
+- [🔐 Variable & Secret Governance — Copilot Cloud Agent Implementation Plan](#-variable--secret-governance--copilot-cloud-agent-implementation-plan)
+  - [📋 Implementation Checklist](#-implementation-checklist)
+    - [Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)](#phase-a--pre-flight-validation-admin-runs-manually-before-agent-engagement)
+    - [Phase B — Token Rotation (Admin action — GitHub UI required)](#phase-b--token-rotation-admin-action--github-ui-required)
+    - [Phase C — Add §10.9.1 Suggested New Variables (Copilot agent implements)](#phase-c--add-1091-suggested-new-variables-copilot-agent-implements)
+    - [Phase D — Implement T-02: `token-expiry-monitor.yml`](#phase-d--implement-t-02-token-expiry-monitoryml)
+- [token-expiry-monitor.yml — T-02 gap closure](#token-expiry-monitoryml--t-02-gap-closure)
+- [Checks CODEX_MASTER_KEY_EXPIRY_DATE and CODEX_BACKUP_KEY_EXPIRY_DATE daily.](#checks-codex_master_key_expiry_date-and-codex_backup_key_expiry_date-daily)
+- [Posts a GitHub issue 14 days before expiry.](#posts-a-github-issue-14-days-before-expiry)
+- [aais-cache: none](#aais-cache-none)
+- [Phase E — Implement §10.9.2 Clean-up Recommendations](#phase-e--implement-1092-clean-up-recommendations)
+  - [Phase F — Post-Implementation Verification](#phase-f--post-implementation-verification)
+  - [📊 Implementation Dependency Graph](#-implementation-dependency-graph)
+  - [🎯 Agent Prompt — Phase C+D Kickoff](#-agent-prompt--phase-cd-kickoff)
+- [Task: Variable & Secret Governance Implementation — Phases C + D  # pragma: allowlist secret](#task-variable--secret-governance-implementation--phases-c--d---pragma-allowlist-secret)
+  - [Phase C: Add 7 new repository variables via process-variable-intents.yml](#phase-c-add-7-new-repository-variables-via-process-variable-intentsyml)
+  - [Phase D: Create token-expiry-monitor.yml  # pragma: allowlist secret](#phase-d-create-token-expiry-monitoryml---pragma-allowlist-secret)
+  - [Verification:](#verification)
+  - [��️ Section Status](#-section-status)
+- [⚡ Rate-Limit Awareness — Workflow Improvement Plan](#-rate-limit-awareness--workflow-improvement-plan)
+  - [📊 Audit Summary — Workflows Requiring Improvement](#-audit-summary--workflows-requiring-improvement)
+  - [🔧 Implementation Checklist](#-implementation-checklist)
+    - [Phase RL-1 — P1 Workflows (highest blast radius)](#phase-rl-1--p1-workflows-highest-blast-radius)
+    - [Phase RL-2 — P2 Workflows (scheduled, self-healing)](#phase-rl-2--p2-workflows-scheduled-self-healing)
+    - [Phase RL-3 — Add Rate-Limit Monitoring Variables](#phase-rl-3--add-rate-limit-monitoring-variables)
+    - [Phase RL-4 — Verification](#phase-rl-4--verification)
+
 > **Branch:** `finding-autofix-faa8614c` → `main`  
 > **AAIS composite:** **100.0 / 100 (S+)** · **actionlint:** ✅ 0 · **ruff:** ✅ · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅  
 > **Latest session:** S864 · 2026-05-08T04:45Z  
@@ -58,6 +113,7 @@
 ## ✅ Admin Action Notifier — New Pattern (S861-cont)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted", "admin-action-t03.yml\n(gap caller)"'}}%%
 flowchart LR
     TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
     CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
@@ -168,6 +224,7 @@ After workflows complete:
 ## ✅ Admin Action Notifier — New Pattern (S861-cont)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted", "admin-action-t03.yml\n(gap caller)"'}}%%
 flowchart LR
     TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
     CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
@@ -291,6 +348,7 @@ Branch: finding-autofix-faa8614c (or new PR off main after merge)
 ## 🔄 WEC → Dispatch → Auto-Approve Flow (New)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🖊️ Agent checks\n- [x, "push → workflow-execution-gate.yml\ndetect-wec-changes job"'}}%%
 flowchart TD
     A["🖊️ Agent checks\n- [x] codeql-alert-fetcher.yml\nin PR WEC block"] --> B["push → workflow-execution-gate.yml\ndetect-wec-changes job"]
     B --> C{newly_checked\nnot empty?}
@@ -325,6 +383,7 @@ flowchart TD
 ## 🔐 Security Fixes Applied
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "self-healing.yml\non: workflow_run + workflow_dispatch\njobs.delegate:\n  uses: iterative-self-healing-ci.yml\n  ← no workflow_call trigger\n  ← permissions: contents: read only\n  ← no job-level permissions", "trigger-on-approval.yml\nrun: |\n  PR_REF='${{ github.event.pull_request.head.ref }}'\n  ← untrusted value in inline script\n  ← script injection vector"'}}%%
 flowchart LR
     subgraph "Before (❌ actionlint + CodeQL failures)"
         A1["self-healing.yml\non: workflow_run + workflow_dispatch\njobs.delegate:\n  uses: iterative-self-healing-ci.yml\n  ← no workflow_call trigger\n  ← permissions: contents: read only\n  ← no job-level permissions"]
@@ -350,6 +409,7 @@ flowchart LR
 ## 📊 Documentation Link Checker — Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "push: any *.md changed", "find . -name '*.md'\nentire repo\n~300-500 files\nincl. .github/workflows/*.md"'}}%%
 flowchart TB
     subgraph "Before — Full-repo scan on every push"
         direction TB
@@ -383,6 +443,7 @@ flowchart TB
 ## 🏆 AAIS Score Trajectory
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "Baseline", "S859 start", "CI/CD 100%", "Security 100%", "Reliability +self-healing", "actionlint fixed", "WEC dispatch+approve", "Final", 97.34, 97.34, 98.8, 99.1, 99.5, 99.7, 99.9, 99.9'}}%%
 xychart-beta
     title "AAIS Composite Score — PR #4346 progression"
     x-axis ["Baseline", "S859 start", "CI/CD 100%", "Security 100%", "Reliability +self-healing", "actionlint fixed", "WEC dispatch+approve", "Final"]
@@ -395,6 +456,7 @@ xychart-beta
 ## ⏱ Session Gantt
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title PR #4346 S859 — Work Timeline (2026-05-08)
     dateFormat HH:mm
@@ -433,6 +495,7 @@ gantt
 ## 🎯 Remaining Gap to AAIS 100.0
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title AAIS 99.9 — Remaining 0.1% gap breakdown
     "CI/CD Maturity 100.0" : 25
     "Security 100.0" : 25
@@ -709,7 +772,7 @@ jobs:
 
 ---
 
-#### Phase E — Implement §10.9.2 Clean-up Recommendations
+## Phase E — Implement §10.9.2 Clean-up Recommendations
 
 - [ ] **E-1** Audit callers of `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX`:
   ```bash
@@ -740,7 +803,7 @@ jobs:
 
 ---
 
-#### Phase F — Post-Implementation Verification
+### Phase F — Post-Implementation Verification
 
 - [ ] **F-1** Run `admin_setup_verification.yml` — verify all §2/§3 items present
 - [ ] **F-2** Run `vars-guide-sync.yml --layers=all` — refresh reference doc with new variables
@@ -756,6 +819,7 @@ jobs:
 ### 📊 Implementation Dependency Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "A-1 token-probe.yml\n✅ current tokens valid?", "A-2 scan-secrets-variables.yml\n📸 inventory snapshot"'}}%%
 flowchart TD
     A1["A-1 token-probe.yml\n✅ current tokens valid?"] --> B1
     A2["A-2 scan-secrets-variables.yml\n📸 inventory snapshot"] --> B1

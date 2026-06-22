@@ -1,5 +1,7 @@
 # Option B: DuckDB Parquet Export
 
+**Last Updated:** 2026-06-22
+
 Convert the `.artifacts/snippets.db` snapshot into a partitioned Parquet dataset for analysis with DuckDB.
 Install the requirement if needed:
 

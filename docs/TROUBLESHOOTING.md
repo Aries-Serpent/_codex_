@@ -1,5 +1,7 @@
 # Troubleshooting Guide
 
+**Last Updated:** 2026-06-22
+
 ## Common Issues and Solutions
 
 ### Installation & Setup
@@ -21,7 +23,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-#### 2. CUDA/GPU Not Detected
+## 2. CUDA/GPU Not Detected
 
 **Error**: `cuda is not available` or `No CUDA devices found`
 
@@ -43,7 +45,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 python -c "import torch; print(torch.cuda.is_available())"
 ```
 
-#### 3. Dependency Conflicts
+## 3. Dependency Conflicts
 
 **Error**: `ERROR: pip's dependency resolver does not currently take into account all the packages that are installed`
 
@@ -57,9 +59,9 @@ pip install -r requirements-minimal.txt
 pip install -r requirements-ml-lite.txt
 ```
 
-### Data Processing
+## Data Processing
 
-#### 4. Encoding Detection Failures
+### 4. Encoding Detection Failures
 
 **Error**: `UnicodeDecodeError: 'utf-8' codec can't decode byte 0x...`
 
@@ -79,7 +81,7 @@ config = PipelineConfig(encoding='auto', validate_utf8=False)
 pipeline = IngestionPipeline(config)
 ```
 
-#### 5. File Size Exceeds Maximum
+## 5. File Size Exceeds Maximum
 
 **Error**: `ValueError: File size exceeds maximum (100 MB)`
 
@@ -100,7 +102,7 @@ from src.ingestion.split import split_file
 split_file('large_file.csv', 'split_output/', chunk_size=50_000)
 ```
 
-#### 6. Empty Records After Processing
+## 6. Empty Records After Processing
 
 **Error**: All records skipped; `result.records_skipped == input_size`
 
@@ -149,7 +151,7 @@ python train.py model.name=distilbert-base-uncased
 python -c "import torch; torch.cuda.empty_cache()"
 ```
 
-#### 8. Training Diverges (Loss becomes NaN)
+## 8. Training Diverges (Loss becomes NaN)
 
 **Error**: `loss: nan`, training unstable
 
@@ -174,7 +176,7 @@ python scripts/validate_data.py data/train.jsonl
 python train.py training.batch_size=16
 ```
 
-#### 9. Model Not Improving
+## 9. Model Not Improving
 
 **Error**: Validation loss plateaus, no improvement
 
@@ -199,9 +201,9 @@ python train.py training.weight_decay=0.1 \
 python train.py training.num_epochs=5
 ```
 
-### RAG & Retrieval
+## RAG & Retrieval
 
-#### 10. Slow Retrieval Performance
+### 10. Slow Retrieval Performance
 
 **Error**: Each query takes >5 seconds
 
@@ -229,7 +231,7 @@ retriever = RetrieverPipeline(
 results = retriever.retrieve(query, ef_search=20)  # Faster but less accurate
 ```
 
-#### 11. Irrelevant Retrieval Results
+## 11. Irrelevant Retrieval Results
 
 **Error**: Retrieved documents don't match query
 
@@ -262,9 +264,9 @@ reranker = CrossEncoderReranker()
 reranked = reranker.rerank(query, results)
 ```
 
-### Configuration
+## Configuration
 
-#### 12. Config Errors
+### 12. Config Errors
 
 **Error**: `KeyError: 'training'` or invalid config
 
@@ -284,7 +286,7 @@ python train.py --config-name default
 python train.py +training.batch_size=32 +training.learning_rate=2e-5
 ```
 
-#### 13. Interpolation Issues
+## 13. Interpolation Issues
 
 **Error**: `MissingMandatoryValue` or unresolved references
 
@@ -305,9 +307,9 @@ experiment: exp_001
 output_dir: ${model.name}/${experiment}
 ```
 
-### Performance
+## Performance
 
-#### 14. Slow Data Loading
+### 14. Slow Data Loading
 
 **Error**: Training bottlenecked by I/O
 
@@ -328,7 +330,7 @@ python convert_to_parquet.py data/train.jsonl data/train.parquet
 python train.py data.prefetch_factor=4
 ```
 
-#### 15. Slow Inference
+## 15. Slow Inference
 
 **Error**: Model prediction takes too long
 
@@ -348,9 +350,9 @@ for text in texts:
 model = quantize_model(model)  # 4x faster
 ```
 
-### Debugging
+## Debugging
 
-#### Getting Help
+### Getting Help
 
 **Before reporting issues:**
 ```bash
@@ -370,7 +372,7 @@ python minimal_example.py
 # https://github.com/Aries-Serpent/_codex_/discussions
 ```
 
-#### Enabling Verbose Logging
+## Enabling Verbose Logging
 
 ```python
 import logging
@@ -384,7 +386,7 @@ logging:
   log_dir: ./logs_debug
 ```
 
-#### Common Warning Messages
+## Common Warning Messages
 
 **Warning**: `Some weights of BertForSequenceClassification were not initialized`
 

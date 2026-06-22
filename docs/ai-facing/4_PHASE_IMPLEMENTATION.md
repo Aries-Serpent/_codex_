@@ -1,5 +1,7 @@
 # 4-Phase RAG, Verification, and MCP Implementation
 
+**Last Updated:** 2026-06-22
+
 > **Status**: ✅ Complete  
 > **PR**: #2609, #2610  
 > **Date**: 2025-12-24  
@@ -53,11 +55,11 @@ retriever = RetrievalPipeline()
 results = retriever.retrieve(query="search query", chunks=embedded_chunks, top_k=5)
 ```
 
-### Phase 2: Verification Engine (CoVe)
+## Phase 2: Verification Engine (CoVe)
 
 **Location**: `src/verification/`
 
-#### Components
+### Components
 
 1. **ClaimExtractor** (`cove.py`)
    - Extracts verifiable claims from text
@@ -96,11 +98,11 @@ for result in results:
     print(f"Evidence: {result.evidence}")
 ```
 
-### Phase 3: MCP Integration
+## Phase 3: MCP Integration
 
 **Location**: `src/mcp/`
 
-#### Adapters
+### Adapters
 
 1. **BaseAdapter** (`adapters/base_adapter.py`)
    - Abstract interface for MCP adapters
@@ -183,11 +185,11 @@ metrics.record_query(
 )
 ```
 
-### Phase 4: Tool Registry
+## Phase 4: Tool Registry
 
 **Location**: `src/tools/`
 
-#### Components
+### Components
 
 1. **ToolRegistry** (`registry.py`)
    - Centralized tool registration
@@ -220,11 +222,11 @@ tool = registry.get_tool("calculator")
 result = tool.execute(a=5, b=3, op="add")  # Returns 8
 ```
 
-### Phase 5: Agent Core
+## Phase 5: Agent Core
 
 **Location**: `src/agent/`
 
-#### Components
+### Components
 
 1. **AgentCore** (`core.py`)
    - Central orchestration logic

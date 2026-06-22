@@ -1,7 +1,7 @@
 # Incident Response Procedures
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-11
+**Last Updated**: 2026-06-22
 **Classification**: Internal Operations
 
 ---
@@ -326,7 +326,7 @@ kubectl logs -f deployment/codex-ml
 kubectl rollout undo deployment/codex-ml
 ```
 
-### Key Dashboards
+## Key Dashboards
 
 - **System Health**: [URL]
 - **Error Rates**: [URL]

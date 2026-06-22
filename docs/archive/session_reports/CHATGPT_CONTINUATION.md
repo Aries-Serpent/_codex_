@@ -1,5 +1,7 @@
 # ChatGPT Continuation Protocol
 
+**Last Updated:** 2026-06-22
+
 This document defines the pagination and resume contract for handling long responses that exceed token budgets.
 
 ## Purpose

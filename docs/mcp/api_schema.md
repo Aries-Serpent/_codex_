@@ -1,6 +1,6 @@
 # MCP HTTP API Schema
 
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Status**: ✅ Prototype Specification  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05  
@@ -69,6 +69,7 @@
 **Request Path**: Client → Auth → Validation → Processing → Response
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing HTTP Request, Health Check'}}%%
 graph LR
     A[HTTP Request] --> B{Endpoint Router}
     B -->|/health| C[Health Check]
@@ -164,7 +165,7 @@ graph LR
 # Re-deploy with hardened auth
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Endpoint Failure**:
 ```bash
@@ -182,7 +183,7 @@ graph LR
 # Validate: Regression tests pass
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **VectorStore Timeout**:
 - If query takes >5s: Return 504 Gateway Timeout
@@ -236,7 +237,7 @@ export default {
 ---
 
 **Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Implementation**: `src/mcp/server/http.py`  
 **Iteration Alignment**: Phase 12.3+ compatible  
 **MCP Protocol**: 2024-11-05 specification

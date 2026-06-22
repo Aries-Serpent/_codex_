@@ -1,5 +1,7 @@
 # Root Organization CI/CD Validation
 
+**Last Updated:** 2026-06-22
+
 Automated validation workflow for root folder organization operations.
 
 ## Overview
@@ -117,7 +119,7 @@ gh workflow run root-org-validation.yml \
     python scripts/root_org/validate_references.py ${{ matrix.new_path }}
 ```
 
-### With Custom Agents
+## With Custom Agents
 
 ```yaml
 # Example: Use root-organizer-agent
@@ -191,7 +193,7 @@ git push origin feature/move-files
 # Create PR → Workflow runs automatically
 ```
 
-### Example 2: Manual Validation
+## Example 2: Manual Validation
 ```bash
 # Via GitHub CLI
 gh workflow run root-org-validation.yml \
@@ -205,7 +207,7 @@ gh run list --workflow=root-org-validation.yml --limit 1
 gh run download <run_id> -n root-org-validation-report
 ```
 
-### Example 3: Local Testing
+## Example 3: Local Testing
 ```bash
 # Install dependencies
 pip install pytest ruff mypy markdown-link-check
@@ -231,7 +233,7 @@ gh run view <run_id>
 gh run download <run_id>
 ```
 
-### Review PR Comments
+## Review PR Comments
 Workflow automatically comments on PRs with:
 - Validation status
 - Link to artifacts

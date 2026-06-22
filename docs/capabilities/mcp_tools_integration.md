@@ -1,5 +1,7 @@
 # MCP Tools Integration - Comprehensive Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP (Model Context Protocol) Tools Integration capability provides comprehensive tooling support for MCP servers, including tool registration, discovery, invocation, and lifecycle management. This system enables seamless integration of external tools and capabilities into MCP services for enhanced ML workflows.

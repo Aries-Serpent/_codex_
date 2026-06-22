@@ -1,5 +1,7 @@
 # Research Note 10 — Determining Maturity When Novice Systems Consistently Meet Targets
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note
@@ -78,6 +80,7 @@ Interpretation: Maturity rises when target success is repeatable, explainable, s
 | $F_fragility$, $D_drift$, $C_hidden$ | loss/degradation terms | sensitivity, aging, model drift, and hidden scaffolding |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Targets met, M_system'}}%%
 flowchart LR
     Targets[Targets met] --> Maturity[M_system]
     Consistency[R_consistency] --> Maturity
@@ -171,6 +174,7 @@ These bands are illustrative. Each organization should calibrate them against sa
 ## 9. Mermaid — Maturity Gate for Target-Meeting Novice Systems
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Targets consistently met, Level 1: reliable novice'}}%%
 flowchart TD
     Target[Targets consistently met] --> Known{Only known conditions?}
     Known -->|yes| Novice[Level 1: reliable novice]

@@ -1,6 +1,6 @@
 # AGENTS — Documentation Guides
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2026-06-22  
 **Scope**: docs/guides/**
 
 ---

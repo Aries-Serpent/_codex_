@@ -66,7 +66,7 @@ python3 scripts/ci/update_doc_freshness.py \
   --dry-run   # remove --dry-run to apply
 ```
 
-### Files Requiring Content Review (P1)
+## Files Requiring Content Review (P1)
 
 | Directory | Stale Count | Content Concern |
 |-----------|------------|----------------|

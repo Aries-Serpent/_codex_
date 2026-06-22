@@ -1,5 +1,7 @@
 # Cognitive Brain Status - Phase 11.1 Continuation
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2026-01-17  
 **Phase**: 11.1 (Building on 11.0 Workflow CI Fixes)  
 **Status**: IN PROGRESS  
@@ -116,6 +118,7 @@ Phase 11.1 continues the cognitive brain enhancement workflow, focusing on docum
 ## Cognitive Brain Architecture Update
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing MkDocs Build, Categorize'}}%%
 graph TB
     subgraph "Phase 11.1 - Documentation Quality"
         A[MkDocs Build] --> B{Warnings?}

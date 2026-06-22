@@ -1,5 +1,48 @@
 # PR #4323 — What's Next
 
+## Table of Contents
+
+- [Session 37 Summary (2026-05-07T20:16Z — post-approval workflow monitoring)](#session-37-summary-2026-05-07t2016z--post-approval-workflow-monitoring)
+- [Session 36 Summary (2026-05-07T20:10Z — CI comment triage + action-version remediation)](#session-36-summary-2026-05-07t2010z--ci-comment-triage--action-version-remediation)
+- [Session 35 Summary (2026-05-07T19:55Z — CodeQL/security remediation batch + workflow monitoring)](#session-35-summary-2026-05-07t1955z--codeqlsecurity-remediation-batch--workflow-monitoring)
+- [Session 34 Summary (2026-05-07T16:50Z — S34: RP-004 + RP-006 fix)](#session-34-summary-2026-05-07t1650z--s34-rp-004--rp-006-fix)
+- [Session 33 Summary (2026-05-07T16:19Z — S33: RP-006 EOF fix + comment-gate unblocked)](#session-33-summary-2026-05-07t1619z--s33-rp-006-eof-fix--comment-gate-unblocked)
+- [Session 32 Summary (2026-05-07T15:52Z — S32: sync drift fix + CI rescue + living docs)](#session-32-summary-2026-05-07t1552z--s32-sync-drift-fix--ci-rescue--living-docs)
+- [Session 31 Summary (2026-05-07T15:27Z — merge conflict + WEC fix)](#session-31-summary-2026-05-07t1527z--merge-conflict--wec-fix)
+- [Session 30 Summary (2026-05-07T15:15Z — merge-conflict resolution)](#session-30-summary-2026-05-07t1515z--merge-conflict-resolution)
+- [Session 29 Summary (2026-05-07T15:05Z — sync drift fix)](#session-29-summary-2026-05-07t1505z--sync-drift-fix)
+- [Session 28 Summary (2026-05-07T14:50Z — wrap-up)](#session-28-summary-2026-05-07t1450z--wrap-up)
+- [Session 27 Summary (2026-05-07T14:40Z)](#session-27-summary-2026-05-07t1440z)
+- [Session 25 Summary (2026-05-07T13:24Z)](#session-25-summary-2026-05-07t1324z)
+- [Session 24 Summary (2026-05-07T12:24Z)](#session-24-summary-2026-05-07t1224z)
+- [Session 23 Summary (2026-05-07T12:07Z)](#session-23-summary-2026-05-07t1207z)
+- [Session 22 Summary (2026-05-07T11:51Z)](#session-22-summary-2026-05-07t1151z)
+- [Session 21 Summary (2026-05-07T11:34Z)](#session-21-summary-2026-05-07t1134z)
+- [Session 20 Summary (2026-05-07T07:14Z)](#session-20-summary-2026-05-07t0714z)
+- [Session 19 Summary (2026-05-07T06:55Z)](#session-19-summary-2026-05-07t0655z)
+- [Session 18 Summary (2026-05-07T06:15Z)](#session-18-summary-2026-05-07t0615z)
+- [Session 14 Summary (2026-05-07T03:01Z)](#session-14-summary-2026-05-07t0301z)
+- [Session 13 Summary (2026-05-07T02:45Z)](#session-13-summary-2026-05-07t0245z)
+- [Session 12 Summary (2026-05-07T02:29Z)](#session-12-summary-2026-05-07t0229z)
+- [Session 11 Summary (2026-05-07T02:14Z)](#session-11-summary-2026-05-07t0214z)
+- [Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)](#completed-this-pr-wave-9--wave-10--codeql-pass)
+  - [Dependabot Alerts (#239–#246) — ✅ ALL RESOLVED](#dependabot-alerts-239246---all-resolved)
+  - [CodeQL Python Quality Fixes — Current Status](#codeql-python-quality-fixes--current-status)
+  - [Rate-Limit Hardening — ✅ NEW in Session 6](#rate-limit-hardening---new-in-session-6)
+  - [Local AST Sweep Findings (Session 4–5)](#local-ast-sweep-findings-session-45)
+- [Critical Finding: Sandbox Token Scope Constraint](#critical-finding-sandbox-token-scope-constraint)
+  - [Required Fix Path for Remaining 47 Alerts](#required-fix-path-for-remaining-47-alerts)
+- [In any workflow with CODEX_MASTER_KEY secret:](#in-any-workflow-with-codex_master_key-secret)
+- [Blocking CI Check (as of S28)](#blocking-ci-check-as-of-s28)
+- [Remaining (Next Session)](#remaining-next-session)
+- [Next Phases (Future PRs)](#next-phases-future-prs)
+  - [Phase A — CodeQL Zero-Alert (P1 · next PR after merge)](#phase-a--codeql-zero-alert-p1--next-pr-after-merge)
+  - [Phase B — Action Versions Hygiene (P2 · can fold into any PR)](#phase-b--action-versions-hygiene-p2--can-fold-into-any-pr)
+  - [Phase C — Merge PR #4323 (P2 · after Phase A complete)](#phase-c--merge-pr-4323-p2--after-phase-a-complete)
+  - [Phase D — Remaining Dependabot Backlog (P3 · ongoing)](#phase-d--remaining-dependabot-backlog-p3--ongoing)
+  - [Phase E — WEC CodeQL Fetcher Operationalization (P3 · future)](#phase-e--wec-codeql-fetcher-operationalization-p3--future)
+- [Key Files Changed This PR](#key-files-changed-this-pr)
+
 > **Last updated: 2026-05-07T20:16Z — Session 37 (post-approval workflow monitoring)**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
 

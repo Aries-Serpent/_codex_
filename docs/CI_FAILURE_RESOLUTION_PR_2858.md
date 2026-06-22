@@ -1,5 +1,7 @@
 # CI Failure Resolution Report - PR #2858
 
+**Last Updated:** 2026-06-22
+
 ## Executive Summary
 
 **PR**: #2858 - "0 d base"
@@ -83,12 +85,12 @@ pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 
 ---
 
-### 3. Performance Regression Detection Failure ❌ → ✅
+## 3. Performance Regression Detection Failure ❌ → ✅
 
 **Job ID**: 60538596681
 **Failure**: Shell syntax error in here-document
 
-#### Root Cause
+### Root Cause
 ```bash
 /home/runner/work/_temp/bfc1b1da-878b-4e2a-b9f4-18c8054cda38.sh: line 30: warning:
 here-document at line 13 delimited by end-of-file (wanted `EOFreport')
@@ -169,11 +171,11 @@ Added comprehensive documentation in `scripts/mfa_enrollment_automation.py`:
 
 ---
 
-### 6-8. Enabled `secrets: write` Permission ✅
+## 6-8. Enabled `secrets: write` Permission ✅
 
 **Issue**: Three workflows had commented-out `secrets: write` permission, preventing secret updates
 
-#### Files Fixed
+### Files Fixed
 1. `.github/workflows/auth-token-rotation.yml`
 2. `.github/workflows/auth-secret-rotation.yml`
 3. `.github/workflows/phase10-automated-secrets-setup.yml`
@@ -183,7 +185,7 @@ Added comprehensive documentation in `scripts/mfa_enrollment_automation.py`:
 # Before
 permissions:
   contents: write
-#  secrets: write  # Commented out
+# secrets: write  # Commented out
 
 # After
 permissions:
@@ -197,11 +199,11 @@ permissions:
 
 ---
 
-### 9. Missing Output Documentation ✅
+## 9. Missing Output Documentation ✅
 
 **Issue**: `rotate_jwt_secret.py` doesn't output `new_secret`, but workflow references it
 
-#### Resolution
+### Resolution
 Updated `.github/workflows/auth-token-rotation.yml` to document the intentional omission:
 ```yaml
 - name: Update GitHub Secrets
@@ -256,7 +258,7 @@ ruff check scripts/
 black --check scripts/
 ```
 
-### Expected CI Results
+## Expected CI Results
 - ✅ Security Audit: PASS
 - ✅ Rust Unit Tests: PASS (all 31 tests)
 - ✅ Build Documentation: PASS

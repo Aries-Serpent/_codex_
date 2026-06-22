@@ -2,6 +2,8 @@
 
 # Safety Filters & Sandbox
 
+**Last Updated:** 2026-06-22
+
 ## Filters
 
 - **Blocklist/Allowlist**: literal matches (case-insensitive).

@@ -1,5 +1,7 @@
 # Follow-Up Prompt for GitHub Copilot - RAG Production Readiness
 
+**Last Updated:** 2026-06-22
+
 @copilot This PR (#2750) has completed comprehensive code review remediation and self-healing iterations. The following production-ready tasks are recommended for the next phase:
 
 ## ✅ Completed in This Session
@@ -45,7 +47,7 @@ python scripts/local/build_faiss.sh default docs docs/
 - Performance benchmarks for embedding generation
 - Security scan results
 
-### Phase B: RAG Integration Enhancement (Priority: P1)
+## Phase B: RAG Integration Enhancement (Priority: P1)
 
 **Objective**: Strengthen expanded context workflow (64k–512k tokens)
 
@@ -119,6 +121,7 @@ triggers:
 
 **Implementation**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing GitHub Trigger, Agent Controller'}}%%
 graph LR
     A[GitHub Trigger] --> B[Agent Controller]
     B --> C[RAG Indexer]
@@ -150,7 +153,7 @@ class RAGMetrics:
 - Grafana dashboards for visualization
 - Alerting on index staleness or errors
 
-### Phase E: Documentation & Examples (Priority: P3)
+## Phase E: Documentation & Examples (Priority: P3)
 
 **Create**:
 1. `docs/RAG_QUICKSTART.md` - Getting started guide

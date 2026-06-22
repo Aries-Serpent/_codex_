@@ -1,5 +1,7 @@
 # _codex_ Reproducibility Checklist (Scaffolding)
 
+**Last Updated:** 2026-06-22
+
 This document tracks the core ingredients needed for **basic reproducibility**
 of experiments and gap-resolution runs in `_codex_`.
 

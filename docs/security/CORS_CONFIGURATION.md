@@ -1,7 +1,7 @@
 # CORS Configuration Guide
 
 **Document Version**: 1.0  
-**Last Updated**: 2026-01-13  
+**Last Updated**: 2026-06-22  
 **Status**: Active
 
 ## Overview
@@ -31,7 +31,7 @@ CORS_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
 ENVIRONMENT=development
 ```
 
-### Default Behavior
+## Default Behavior
 
 If `CORS_ORIGINS` is not set, the configuration defaults based on `ENVIRONMENT`:
 
@@ -121,7 +121,7 @@ uvicorn services.ita.app.main:app --reload
 # Access-Control-Allow-Methods: GET, POST, PUT, DELETE
 ```
 
-### Production Testing
+## Production Testing
 
 ```bash
 # Valid origin (should work)
@@ -143,7 +143,7 @@ ENV ENVIRONMENT=production
 ENV CORS_ORIGINS=https://yourdomain.com,https://app.yourdomain.com
 ```
 
-### Kubernetes
+## Kubernetes
 
 ```yaml
 # deployment.yaml
@@ -157,7 +157,7 @@ env:
         key: cors_origins
 ```
 
-### Docker Compose
+## Docker Compose
 
 ```yaml
 # docker-compose.yml
@@ -195,7 +195,7 @@ print('Allow-Origin:', response.headers.get('Access-Control-Allow-Origin'))
 print('Allow-Methods:', response.headers.get('Access-Control-Allow-Methods'))
 ```
 
-### Verify Configuration
+## Verify Configuration
 
 ```bash
 # Check current CORS origins

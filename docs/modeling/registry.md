@@ -1,5 +1,7 @@
 # Model registry guidelines
 
+**Last Updated:** 2026-06-22
+
 The Codex ML model registry provides a thin wrapper around Hugging Face models
 to ensure deterministic, offline-friendly loading semantics.
 

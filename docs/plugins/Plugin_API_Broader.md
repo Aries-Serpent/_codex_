@@ -1,5 +1,7 @@
 # Plugin API - Broader Factory System
 
+**Last Updated:** 2026-06-22
+
 > Comprehensive guide to the Codex plugin system and factory registries
 
 ## Overview
@@ -48,7 +50,7 @@ desc = get_description("metrics", "f1")
 print(f"F1 score: {desc}")
 ```
 
-### Entry Point Groups
+## Entry Point Groups
 
 The following entry point groups are **stable** and part of the public API:
 
@@ -93,7 +95,7 @@ if "my_component" in registry:
 - `register()` is **idempotent** - registering the same object twice is a no-op
 - Registry names are **case-sensitive**
 
-### Registration Lifecycle
+## Registration Lifecycle
 
 ```python
 from codex_addons.registry import Registry
@@ -151,7 +153,7 @@ custom_accuracy.__codex_api__ = "v1"
 custom_accuracy = "my_package.my_metrics:custom_accuracy"
 ```
 
-### Creating a Model Plugin
+## Creating a Model Plugin
 
 ```python
 # my_models.py
@@ -190,7 +192,7 @@ load_custom_model.__codex_api__ = "v1"
 custom = "my_package.my_models:load_custom_model"
 ```
 
-### Creating a Data Loader Plugin
+## Creating a Data Loader Plugin
 
 ```python
 # my_loaders.py
@@ -327,7 +329,7 @@ metrics = discover(group="codex_ml.metrics")
 print(f"Available metrics: {list(metrics.keys())}")
 ```
 
-### Using Registered Components
+## Using Registered Components
 
 ```python
 from codex_ml.metrics.registry import BUILTIN_METRICS
@@ -339,7 +341,7 @@ if "accuracy" in BUILTIN_METRICS:
     print(f"Accuracy: {score}")
 ```
 
-### Loading from Entry Points
+## Loading from Entry Points
 
 ```python
 from codex_ml.plugins.registry import Registry
@@ -398,7 +400,7 @@ registry.load_from_entry_points(
 @registry.register("model1")
 ```
 
-### 2. Provide Metadata
+## 2. Provide Metadata
 
 ```python
 @registry.register(
@@ -460,7 +462,7 @@ if "my_plugin" not in plugins:
     print("Plugin not found. Check entry point configuration.")
 ```
 
-### Import Errors
+## Import Errors
 
 ```python
 registry = Registry(kind="test")
@@ -471,7 +473,7 @@ for name, error in errors.items():
     print(f"Failed to load {name}: {error}")
 ```
 
-### Duplicate Registrations
+## Duplicate Registrations
 
 The registry will warn about duplicates but keep the first registration:
 

@@ -1,5 +1,7 @@
 # Testing Guide
 
+**Last Updated:** 2026-06-22
+
 This project uses **pytest** as the primary test runner with comprehensive CI/CD integration. Alternative automation is available via [nox](https://nox.thea.codes/).
 
 ## Quick Start with Pytest

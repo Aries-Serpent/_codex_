@@ -1,5 +1,7 @@
 # Quantum-Relativistic-Dirac Orchestrator Framework
 
+**Last Updated:** 2026-06-22
+
 A physics-inspired task orchestration framework implementing quantum mechanics, special relativity, and Dirac spinor dynamics for intelligent, self-healing task scheduling.
 
 ## Overview
@@ -189,7 +191,7 @@ efficiency = orch.flow_analyzer.flow_efficiency(
 print(f"System efficiency: {efficiency:.1%}")
 ```
 
-### 3. Physics Properties
+## 3. Physics Properties
 
 Access relativistic properties:
 ```python

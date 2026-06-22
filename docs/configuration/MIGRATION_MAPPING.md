@@ -1,5 +1,7 @@
 # Configuration Migration Mapping - PS-01 Cycle 2
 
+**Last Updated:** 2026-06-22
+
 **Status:** Planning  
 **Created:** 2026-01-08  
 **Target:** Pre-commit Cycle 2
@@ -217,7 +219,7 @@ from codex.utils.config_loader import load_config
 config = load_config("base", config_dir="conf/model")
 ```
 
-### CLI Updates
+## CLI Updates
 
 ```python
 # OLD (hardcoded paths)

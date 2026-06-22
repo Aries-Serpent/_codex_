@@ -261,7 +261,7 @@ debug = os.getenv("DEBUG", "False").lower() == "true"
 workers = int(os.getenv("WORKERS", "4"))
 ```
 
-### Docker
+## Docker
 
 ```dockerfile
 # Use .env file
@@ -271,7 +271,7 @@ RUN --mount=type=secret,id=env \
     echo "Database: ${DATABASE_URL}"
 ```
 
-### Docker Compose
+## Docker Compose
 
 ```yaml
 services:

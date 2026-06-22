@@ -1,5 +1,7 @@
 # Data Determinism
 
+**Last Updated:** 2026-06-22
+
 Goals:
 - Stable splits & shuffles (seeded RNG).
 - Canonical serialization for hashes/digests.

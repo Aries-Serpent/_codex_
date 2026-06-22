@@ -1,5 +1,7 @@
 # PR #4356 — Session Diagram (S867 + S868)
 
+**Last Updated:** 2026-06-22
+
 > **Sessions:** S867–S873 | **Branch:** `copilot/fix-webhook-receiver-url-format`
 > **Date:** 2026-05-08 | **Model:** claude-sonnet-4.x
 > **HEAD:** `047bf03b` · 99/100 merge readiness · 39/40 checks passing · 8/8 review threads resolved
@@ -9,6 +11,7 @@
 ## 🗺️ Full Session Flow (S867 → S873)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: validate ✅ · resilient ✅ '}}%%
 sequenceDiagram
     participant M as Maintainer (@mbaetiong)
     participant A as Copilot Agent (S867/S868)
@@ -75,6 +78,7 @@ sequenceDiagram
 ## 🏗️ Architecture Built (S867 + S868)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📄 New Documentation (S867/S868)", "AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n• Master mermaid privilege routing\n• 5-surface autonomy map\n• WEC controller anatomy\n• Full autonomy loop sequence\n• Operator quick-reference (no human gates)\n• Failure modes & fallback chains"'}}%%
 graph TD
     subgraph DOCS_NEW["📄 New Documentation (S867/S868)"]
         D1["AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n• Master mermaid privilege routing\n• 5-surface autonomy map\n• WEC controller anatomy\n• Full autonomy loop sequence\n• Operator quick-reference (no human gates)\n• Failure modes & fallback chains"]
@@ -115,6 +119,7 @@ graph TD
 ## 🔒 Security & CodeQL Status
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔍 CodeQL Status", "13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"'}}%%
 graph LR
     subgraph CODEQL["🔍 CodeQL Status"]
         A1["13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"]
@@ -149,6 +154,7 @@ graph LR
 ## 🔑 Privilege Tier Map (Established This Session)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_MASTER_KEY\n✅ Variables API\n✅ Workflow approve/dispatch\n✅ Force-push\n125 workflows", "CODEX_BACKUP_KEY\n✅ Read/write\n❌ Variables API\n115 workflows"'}}%%
 graph LR
     T1["CODEX_MASTER_KEY\n✅ Variables API\n✅ Workflow approve/dispatch\n✅ Force-push\n125 workflows"]
     T2["CODEX_BACKUP_KEY\n✅ Read/write\n❌ Variables API\n115 workflows"]
@@ -172,6 +178,7 @@ graph LR
 ## 🔄 WEC Self-Healing Loop (Verified This Session)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "git push to branch", "workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"'}}%%
 flowchart TD
     PUSH["git push to branch"]
     WEC_PARSE["workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"]
@@ -207,6 +214,7 @@ flowchart TD
 ## 🗓️ Session Handoff State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> Idle : no active session
 
@@ -280,6 +288,10 @@ stateDiagram-v2
 ## 🏁 S870 Final Status — Issue #4360 Triage
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📋 Issue #4360
+97 failures · 24 workflows", "🔐 Secrets Baseline Enforcer
+webhook_config.json lines 7+85
+'Secret Keyword' false positive"'}}%%
 graph TD
     I4360["📋 Issue #4360
 97 failures · 24 workflows"]
@@ -317,6 +329,7 @@ approved by maintainer"]
 ## S872 Review-Fix Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 8 Review Comments, subprocess.py\ninput type narrowing'}}%%
 graph LR
     RC[8 Review Comments] --> F1[subprocess.py\ninput type narrowing]
     RC --> F2[rate_limit_orchestrator.py\nreturn last status]
@@ -336,6 +349,7 @@ graph LR
 ## S873 CI Rescue + Approval Dispatch
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: 39/40 ✅ · 3 startup_failu'}}%%
 sequenceDiagram
     participant M as Maintainer
     participant BOT as Auto-Rescue Bot

@@ -1,5 +1,7 @@
 # 🚀 Campaign Execution Guide
 
+**Last Updated:** 2026-06-22
+
 This guide explains how to use the Campaign Framework to orchestrate multi-phase workflows with parallel agent delegation.
 
 ## Quick Start

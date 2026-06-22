@@ -1,5 +1,7 @@
 # Archive Standardization Framework
 
+**Last Updated:** 2026-06-22
+
 > **Status**: Phase 2 | **Effective**: 2025-11-02 | **Version**: 1.0
 
 ## Executive Overview
@@ -124,7 +126,7 @@ export SIGSTORE_ID_TOKEN=$(gh auth token)
 export CODEX_SCHEMA_DIR=/path/to/schemas
 ```text
 
-### GitHub Actions Integration
+## GitHub Actions Integration
 
 ```yaml
 permissions:
@@ -217,7 +219,7 @@ python -m codex.cli archive validate-standardization \
   --check-signatures
 ```text
 
-### Post-Deployment Verification
+## Post-Deployment Verification
 
 ```bash
 # Verify new archives have standardization
@@ -246,12 +248,12 @@ python -m codex.cli archive show-standardization-status
 # Schema Versions Supported: 1.0, 2.0
 #
 # Compliance:
-#   ✅ SLSA_L3
-#   ✅ IN_TOTO_READY
-#   ✅ SAA_COMPLIANT
+# ✅ SLSA_L3
+# ✅ IN_TOTO_READY
+# ✅ SAA_COMPLIANT
 ```text
 
-### Validate Evidence Records
+## Validate Evidence Records
 
 ```bash
 # Validate schema versions
@@ -264,7 +266,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 python -m codex.cli archive validate-standardization --check-schema-version --repair
 ```text
 
-### Migrate to v2 Schema
+## Migrate to v2 Schema
 
 ```bash
 # Interactive migration with confirmation
@@ -275,8 +277,8 @@ python -m codex.cli archive migrate-evidence-to-v2
 # 🔄 Starting migration v1 → v2...
 # 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
 # ✅ Migration complete: 1234 records converted
-#    v1 records: 0
-#    v2 records: 1234
+# v1 records: 0
+# v2 records: 1234
 ```text
 
 ## FAQ

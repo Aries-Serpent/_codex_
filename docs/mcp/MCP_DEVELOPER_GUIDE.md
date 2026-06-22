@@ -29,7 +29,7 @@ except ImportError as e:
 "
 ```
 
-### Quick Start
+## Quick Start
 
 ```python
 # Safe import pattern with error handling
@@ -110,7 +110,7 @@ registry.register_tool(
 )
 ```
 
-### Discovering Tools
+## Discovering Tools
 
 **List All Tools**:
 ```python
@@ -132,7 +132,7 @@ data_tools = [
 ]
 ```
 
-### Invoking Tools
+## Invoking Tools
 
 **Direct Invocation**:
 ```python
@@ -182,7 +182,7 @@ server = MCPJSONRPCServer(config)
 # - negotiateVersion: Agree on MCP protocol version
 ```
 
-### JSON-RPC Requests
+## JSON-RPC Requests
 
 **listTools Method**:
 ```python
@@ -195,9 +195,9 @@ request = {
 
 response = server.handle_request(request)
 # Returns: {
-#   "jsonrpc": "2.0",
-#   "id": 1,
-#   "result": [{"name": "tool1", ...}, ...]
+# "jsonrpc": "2.0",
+# "id": 1,
+# "result": [{"name": "tool1", ...}, ...]
 # }
 ```
 
@@ -215,9 +215,9 @@ request = {
 
 response = server.handle_request(request)
 # Returns: {
-#   "jsonrpc": "2.0",
-#   "id": 2,
-#   "result": "Hello, Bob!"
+# "jsonrpc": "2.0",
+# "id": 2,
+# "result": "Hello, Bob!"
 # }
 ```
 
@@ -234,13 +234,13 @@ request = {
 
 response = server.handle_request(request)
 # Returns: {
-#   "jsonrpc": "2.0",
-#   "id": 3,
-#   "result": "1.0"  # Highest compatible version
+# "jsonrpc": "2.0",
+# "id": 3,
+# "result": "1.0"  # Highest compatible version
 # }
 ```
 
-### Error Responses
+## Error Responses
 
 ```python
 # Tool not found error
@@ -348,7 +348,7 @@ negotiated = negotiate_version(client_versions)
 print(f"Negotiated version: {negotiated}")  # "1.0"
 ```
 
-### Version Mismatch Handling
+## Version Mismatch Handling
 
 ```python
 from mcp.errors import VersionMismatchError
@@ -396,7 +396,7 @@ logger.info("Tool invoked", extra={
 })
 ```
 
-### Request Tracing
+## Request Tracing
 
 ```python
 import uuid
@@ -448,7 +448,7 @@ def execute_with_metrics(tool_name: str):
         mcp_metrics["response_times"].append(elapsed)
 ```
 
-### Health Checks
+## Health Checks
 
 ```python
 def mcp_health_check():

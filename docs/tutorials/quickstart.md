@@ -2,6 +2,8 @@
 
 # Quickstart (CPU)
 
+**Last Updated:** 2026-06-22
+
 Get Codex running locally in under five minutes — no GPU required.
 
 ## Prerequisites

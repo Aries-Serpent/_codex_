@@ -1,5 +1,7 @@
 # Local Gate Runner and Experiment Index
 
+**Last Updated:** 2026-06-22
+
 This document summarizes the lightweight tooling that exercises local quality
 gates and indexes experiment metadata for quick review.
 

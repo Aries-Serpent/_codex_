@@ -1,5 +1,7 @@
 # Production Deployment Runbook
 
+**Last Updated:** 2026-06-22
+
 ## Prerequisites
 - Kubernetes cluster with GPU node pool available
 - Helm 3.x installed locally

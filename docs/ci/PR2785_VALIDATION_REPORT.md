@@ -1,4 +1,6 @@
 # PR #2785 Validation Report
+
+**Last Updated:** 2026-06-22
 **Date**: 2026-01-11
 **Branch**: `copilot/sub-pr-2782-692a999c-b097-4e37-96f8-231971bec2cd`
 **Commit**: `4ff8eb1f` (code fixes)
@@ -219,7 +221,7 @@ assert "No indices found" in result.message  # Added specific check
 
 **Status**: ✅ CORRECT - Test now validates the exact error message
 
-### Fix 2: test_merge_operation_nonexistent_indices
+## Fix 2: test_merge_operation_nonexistent_indices
 
 **File**: tests/test_rag_tenant_management.py
 **Lines**: 208-220
@@ -239,7 +241,7 @@ assert "No indices found" in result.message  # Added specific check
 
 **Status**: ✅ CORRECT - Test now validates error handling properly
 
-### Fix 3: test_list_operation_success
+## Fix 3: test_list_operation_success
 
 **File**: tests/test_rag_tenant_management.py
 **Lines**: 335-358
@@ -259,7 +261,7 @@ assert len(list_result.details["indices"]) == 2  # Added count check
 
 **Status**: ✅ CORRECT - More thorough validation
 
-### Fix 4: Cache miss tracking in retriever.py
+## Fix 4: Cache miss tracking in retriever.py
 
 **File**: src/codex/rag/retriever.py
 **Lines**: ~370-395 (approximate)

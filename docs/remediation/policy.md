@@ -1,4 +1,6 @@
 # [Playbook]: Gate Policy and Tuning
+
+**Last Updated:** 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Defaults:

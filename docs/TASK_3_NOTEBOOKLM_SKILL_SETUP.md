@@ -1,4 +1,6 @@
 # Task 3: Configure Agentic Troubleshooting Skill
+
+**Last Updated:** 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
 **Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code  
@@ -43,7 +45,7 @@ drwxr-xr-x  src/
 -rw-r--r--  setup.py
 ```
 
-### Step 2: Install Dependencies
+## Step 2: Install Dependencies
 
 ```bash
 # Create virtual environment (recommended)
@@ -57,7 +59,7 @@ pip install -r requirements.txt
 python -c "import notebooklm_skill; print('✅ Installation successful')"
 ```
 
-### Step 3: Google Authentication Setup
+## Step 3: Google Authentication Setup
 
 ```bash
 # Run authentication manager
@@ -97,7 +99,7 @@ python scripts/run.py auth_manager.py verify
 ✅ Credentials saved to: ~/.claude/skills/notebooklm/credentials.json
 ```
 
-### Step 4: Add _codex_ Notebook to Skill
+## Step 4: Add _codex_ Notebook to Skill
 
 **Prerequisites**:
 - NotebookLM notebook created (from Task 2)
@@ -171,7 +173,7 @@ Key Components:
 - pr_generator.py: Automates PR workflow
 ```
 
-### Step 5: Configure Smart Context Loading
+## Step 5: Configure Smart Context Loading
 
 ```bash
 # Enable automatic context loading for relevant queries
@@ -392,7 +394,7 @@ python scripts/run.py auth_manager.py setup
 # Ensure cookies enabled for accounts.google.com
 ```
 
-### Issue: Notebook Not Found
+## Issue: Notebook Not Found
 
 **Symptoms**: "Notebook ID not found" or "Access denied"
 
@@ -409,7 +411,7 @@ python scripts/run.py notebook_manager.py remove codex_architecture
 python scripts/run.py notebook_manager.py add --url [CORRECT_URL] --name codex_architecture
 ```
 
-### Issue: Queries Timeout
+## Issue: Queries Timeout
 
 **Symptoms**: "Query timeout exceeded" or "No response"
 
@@ -424,7 +426,7 @@ python scripts/run.py config.py set --query-timeout 60
 # Reduce query complexity or split into smaller queries
 ```
 
-### Issue: Skill Not Recognized in Claude Code
+## Issue: Skill Not Recognized in Claude Code
 
 **Symptoms**: `@architect` doesn't trigger skill
 

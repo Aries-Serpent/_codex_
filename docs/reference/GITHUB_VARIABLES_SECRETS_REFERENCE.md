@@ -2,7 +2,7 @@
 
 > **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05  
 > **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)  
-> **Wired for:** GitHub Copilot Coding Agent, Cognitive Brain CB connector, `wec_enforcer.py`, `agent-auth-delegation.yml`
+> **Wired for:** GitHub Copilot Coding agent, Cognitive Brain CB connector, `wec_enforcer.py`, `agent-auth-delegation.yml`
 
 ---
 
@@ -10,7 +10,7 @@
 
 | Scope | Variables | Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| **Repository** | ✅ | ✅ | ✅ | ✅ |
+| **repository** | ✅ | ✅ | ✅ | ✅ |
 | **Organization** | ✅ | ✅ | ✅ | ✅ |
 | **Environment** | ✅ | ✅ | ✗ | ✗ |
 | **User (Codespaces)** | ✗ | ✅ | ✗ | ✅ |
@@ -24,7 +24,7 @@
 > `GET /repos/{owner}/{repo}/actions/secrets/public-key`  
 > **API version header:** `X-GitHub-Api-Version: 2026-03-10`
 
-### 1a. Repository Scope
+### 1a. repository Scope
 
 #### Variables
 
@@ -200,7 +200,7 @@ curl -L \
 ### 2a. Secrets
 
 ```bash
-# Repository secret (default when inside a repo)
+# repository secret (default when inside a repo)
 gh secret set SECRET_NAME --repo OWNER/REPO
 echo "value" | gh secret set SECRET_NAME --repo OWNER/REPO
 
@@ -234,10 +234,10 @@ gh secret list --env ENVIRONMENT_NAME --repo OWNER/REPO
 gh secret delete SECRET_NAME --repo OWNER/REPO
 ```
 
-### 2b. Variables
+## 2b. Variables
 
 ```bash
-# Repository variable
+# repository variable
 gh variable set VAR_NAME --repo OWNER/REPO
 gh variable set VAR_NAME --body "value" --repo OWNER/REPO
 
@@ -260,7 +260,7 @@ gh variable delete VAR_NAME --repo OWNER/REPO
 
 > ⚠️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
 
-### 2c. Patterns Used in This Repository
+## 2c. Patterns Used in This repository
 
 ```bash
 # Read a repo variable (used in agent-auth-delegation.yml, copilot-agent-checkin.yml)
@@ -303,7 +303,7 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 | `pull_requests` | Create/update/read PRs, reviews, comments | ✅ |
 | `repos` | File content, branches, commits, releases | ✅ |
 | `users` | User lookup | ✅ |
-| `actions` | Workflow runs, jobs, artifacts | ❌ opt-in |
+| `actions` | workflow runs, jobs, artifacts | ❌ opt-in |
 | `secret_protection` | Secret scanning alerts (GHAS, read-only) | ❌ opt-in |
 | `dependabot` | Dependabot alerts (read-only) | ❌ opt-in |
 | `code_security` | Code scanning alerts (read-only) | ❌ opt-in |
@@ -326,7 +326,7 @@ As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, up
 | Codespaces secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
 | Secret scanning alerts (read) | ✅ | ✅ | ✅ (`secret_protection`) |
 | Dependabot alerts (read) | ✅ | ✅ | ✅ (`dependabot`) |
-| Workflow runs/jobs (read) | ✅ | ✅ | ✅ (`actions`) |
+| workflow runs/jobs (read) | ✅ | ✅ | ✅ (`actions`) |
 | PR comments (write) | ✅ | ✅ | ✅ (`pull_requests`) |
 
 ### 3c. MCP Server Configuration — Remote (VS Code / Copilot)
@@ -378,7 +378,7 @@ docker run -i --rm \
 | Lockdown mode | `X-MCP-Lockdown: true` | `--lockdown-mode` / `GITHUB_LOCKDOWN_MODE` |
 | Dynamic discovery | N/A | `--dynamic-toolsets` / `GITHUB_DYNAMIC_TOOLSETS` |
 
-### 3f. This Repository's MCP Wiring
+### 3f. This repository's MCP Wiring
 
 From `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` (verified 2026-04-05):
 
@@ -411,7 +411,7 @@ MCP aggregator :2301
 | Cancel workflow run | `repo` + `actions:write` |
 | Dispatch workflow | `repo` + `actions:write` |
 
-### Token Hierarchy for This Repository
+### Token Hierarchy for This repository
 
 | Priority | Token | Scopes | Use for |
 |---|---|---|---|

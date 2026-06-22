@@ -1,5 +1,7 @@
 # Zendesk AI Agent App Builder: Mathematical Model & Design Guide
 
+**Last Updated:** 2026-06-22
+
 This document provides a formal, physics-inspired mathematical model for understanding the capabilities, limitations, and optimal design patterns for **Zendesk AI Agent App Builder** (distinct from the traditional Zendesk App Framework/ZAF).
 
 > **Note**: For a visual-first overview with comprehensive ASCII diagrams and AI transparency notes, see [CANONICAL_CAPABILITY_MAP.md](CANONICAL_CAPABILITY_MAP.md).

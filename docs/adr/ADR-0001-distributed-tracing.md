@@ -1,5 +1,7 @@
 # ADR-0001: Distributed Tracing Strategy
 
+**Last Updated:** 2026-06-22
+
 **Date:** 2026-06-05
 **Status:** Deferred
 **Deciders:** Platform team

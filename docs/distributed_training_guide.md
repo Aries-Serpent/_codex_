@@ -1,5 +1,7 @@
 # Distributed Training Guide (D3)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the multi-node distributed training support for Codex ML. The implementation provides PyTorch DistributedDataParallel (DDP) support with optional Ray Train integration for cluster-scale training.
@@ -41,7 +43,7 @@ with distributed_context() as manager:
 python scripts/launch_distributed.py --num-gpus 4 train.py
 ```
 
-### Multi-Node Training
+## Multi-Node Training
 
 On each node, run:
 
@@ -90,7 +92,7 @@ config = DistributedConfig(
 env_vars = config.to_env()
 ```
 
-### DistributedManager
+## DistributedManager
 
 Main manager class for distributed training:
 
@@ -125,7 +127,7 @@ broadcasted = manager.broadcast(tensor, src=0)
 manager.cleanup()
 ```
 
-### Context Manager
+## Context Manager
 
 Recommended way to use distributed training:
 
@@ -290,7 +292,7 @@ with distributed_context() as manager:
 # Automatic cleanup
 ```
 
-### 2. Sync Only When Necessary
+## 2. Sync Only When Necessary
 
 Barriers are expensive. Use them sparingly:
 
@@ -307,7 +309,7 @@ for batch in dataloader:
 manager.barrier()  # Once per epoch is usually enough
 ```
 
-### 3. Main Process for Logging
+## 3. Main Process for Logging
 
 Only log from the main process to avoid duplicate output:
 
@@ -359,7 +361,7 @@ config = DistributedConfig.from_env()
 # Set longer timeout via environment before calling setup
 ```
 
-### Issue: "Different number of processes"
+## Issue: "Different number of processes"
 
 **Solution**: Ensure all nodes have the same `--num-nodes` and `--num-gpus`:
 

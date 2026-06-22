@@ -1,4 +1,106 @@
 # Phase 10+ Master Integration Promptset
+
+## Table of Contents
+
+- [GitHub Copilot Agent Continuation Instructions](#github-copilot-agent-continuation-instructions)
+- [Primary Continuation Prompt](#primary-continuation-prompt)
+  - [Current Status](#current-status)
+  - [Implementation Sequence](#implementation-sequence)
+    - [Week 1: Foundation (Tasks 1-2)](#week-1-foundation-tasks-1-2)
+- [Step 1: Create Repomix configuration](#step-1-create-repomix-configuration)
+- [File: repomix.config.json](#file-repomixconfigjson)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 1.2](#reference-phase_10_master_integration_plansetmd--task-12)
+- [Step 2: Create instruction file](#step-2-create-instruction-file)
+- [File: repomix-instruction.md](#file-repomix-instructionmd)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 1.3](#reference-phase_10_master_integration_plansetmd--task-13)
+- [Step 3: Create enhanced ignore file](#step-3-create-enhanced-ignore-file)
+- [File: .repomixignore](#file-repomixignore)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 1.4](#reference-phase_10_master_integration_plansetmd--task-14)
+- [Step 4: Test local consolidation](#step-4-test-local-consolidation)
+- [Step 5: Validate output](#step-5-validate-output)
+- [- Check file size < 5MB](#--check-file-size--5mb)
+- [- Verify no secrets in output](#--verify-no-secrets-in-output)
+- [- Validate XML structure](#--validate-xml-structure)
+- [Step 1: Setup Google Cloud (manual steps required)](#step-1-setup-google-cloud-manual-steps-required)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 2.1](#reference-phase_10_master_integration_plansetmd--task-21)
+- [Step 2: Configure GitHub Secrets (manual steps required)](#step-2-configure-github-secrets-manual-steps-required)
+- [Add: GDRIVE_SERVICE_ACCOUNT_JSON, GDRIVE_FOLDER_ID, NOTEBOOKLM_WEBHOOK_URL](#add-gdrive_service_account_json-gdrive_folder_id-notebooklm_webhook_url)
+- [Step 3: Create workflow file](#step-3-create-workflow-file)
+- [File: .github/workflows/notebooklm-sync.yml](#file-githubworkflowsnotebooklm-syncyml)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 2.3](#reference-phase_10_master_integration_plansetmd--task-23)
+- [Step 4: Test workflow](#step-4-test-workflow)
+- [Week 2: Integration (Tasks 3-4)](#week-2-integration-tasks-3-4)
+- [Step 1: Install notebooklm-skill](#step-1-install-notebooklm-skill)
+- [Step 2: Setup authentication](#step-2-setup-authentication)
+- [Step 3: Add _codex_ notebook](#step-3-add-_codex_-notebook)
+- [Step 4: Configure smart context](#step-4-configure-smart-context)
+- [Step 1: Create architect prompt](#step-1-create-architect-prompt)
+- [File: docs/ai-architect-prompt.md](#file-docsai-architect-promptmd)
+- [Reference: COGNITIVE_BRAIN_STATUS_V3.md § AI Architect Agent Configuration](#reference-cognitive_brain_status_v3md--ai-architect-agent-configuration)
+- [Step 2: Configure NotebookLM instructions (manual)](#step-2-configure-notebooklm-instructions-manual)
+- [Step 3: Create health check workflow](#step-3-create-health-check-workflow)
+- [File: .github/workflows/ai-architect-health-check.yml](#file-githubworkflowsai-architect-health-checkyml)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 4.3](#reference-phase_10_master_integration_plansetmd--task-43)
+- [Step 4: Create health check script](#step-4-create-health-check-script)
+- [File: scripts/ai_architect_check.py](#file-scriptsai_architect_checkpy)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 4.4](#reference-phase_10_master_integration_plansetmd--task-44)
+- [Step 5: Create report generator](#step-5-create-report-generator)
+- [File: scripts/generate_health_report.py](#file-scriptsgenerate_health_reportpy)
+- [Reference: PHASE_10_MASTER_INTEGRATION_PLANSET.md § Task 4.5](#reference-phase_10_master_integration_plansetmd--task-45)
+- [Week 3: Production Hardening](#week-3-production-hardening)
+- [Security audit of complete pipeline](#security-audit-of-complete-pipeline)
+- [Performance optimization](#performance-optimization)
+- [Documentation updates](#documentation-updates)
+- [Production deployment](#production-deployment)
+- [Validation Protocol](#validation-protocol)
+- [Format Python code](#format-python-code)
+- [Lint Python code](#lint-python-code)
+- [Validate YAML syntax](#validate-yaml-syntax)
+- [Check for secrets](#check-for-secrets)
+- [Test workflow](#test-workflow)
+- [Test scripts locally](#test-scripts-locally)
+- [Verify outputs](#verify-outputs)
+- [Scan for secrets](#scan-for-secrets)
+- [Validate permissions](#validate-permissions)
+- [Ensure no world-writable files](#ensure-no-world-writable-files)
+- [Progress Reporting](#progress-reporting)
+- [Phase 10 Master Integration Progress](#phase-10-master-integration-progress)
+  - [Week [N]: [Phase Name]](#week-n-phase-name)
+    - [Completed Tasks](#completed-tasks)
+    - [In Progress](#in-progress)
+    - [Next Steps](#next-steps)
+  - [Cognitive Brain Health](#cognitive-brain-health)
+  - [Error Handling & Rollback](#error-handling--rollback)
+  - [Cognitive Brain Self-Review](#cognitive-brain-self-review)
+  - [Integration with Existing Systems](#integration-with-existing-systems)
+  - [Documentation Requirements](#documentation-requirements)
+  - [Success Metrics Dashboard](#success-metrics-dashboard)
+  - [Communication & Collaboration](#communication--collaboration)
+  - [Contingency Planning](#contingency-planning)
+- [Secondary Prompts (Specific Scenarios)](#secondary-prompts-specific-scenarios)
+  - [Prompt: Task 1 Only](#prompt-task-1-only)
+  - [Prompt: Task 2 Only](#prompt-task-2-only)
+  - [Prompt: Task 3 Only](#prompt-task-3-only)
+  - [Prompt: Task 4 Only](#prompt-task-4-only)
+  - [Prompt: Security Audit](#prompt-security-audit)
+  - [Prompt: Performance Optimization](#prompt-performance-optimization)
+  - [Prompt: End-to-End Testing](#prompt-end-to-end-testing)
+  - [Prompt: Documentation Completion](#prompt-documentation-completion)
+  - [Prompt: Production Deployment](#prompt-production-deployment)
+- [Cognitive Brain Evolution Tracking](#cognitive-brain-evolution-tracking)
+  - [Pre-Phase 10 Baseline](#pre-phase-10-baseline)
+  - [Post-Phase 10 Targets](#post-phase-10-targets)
+  - [Evolution Milestones](#evolution-milestones)
+- [Phase 11+ Preview](#phase-11-preview)
+- [Final Checklist Before Completion](#final-checklist-before-completion)
+  - [Technical Completeness](#technical-completeness)
+  - [Documentation Completeness](#documentation-completeness)
+  - [Quality Assurance](#quality-assurance)
+  - [Integration Validation](#integration-validation)
+  - [Cognitive Brain Health](#cognitive-brain-health)
+- [Continuation Trigger](#continuation-trigger)
+
+**Last Updated:** 2026-06-22
 # GitHub Copilot Agent Continuation Instructions
 
 **Document Version**: 1.0.0  
@@ -90,7 +192,7 @@ gh run watch
 - [ ] Security scanning functional
 - [ ] Drive upload successful
 
-#### Week 2: Integration (Tasks 3-4)
+## Week 2: Integration (Tasks 3-4)
 
 **Task 3: Configure Agentic Skill** (Priority: HIGH)
 
@@ -143,7 +245,7 @@ python scripts/run.py config.py set --auto-context true
 - [ ] Reports auto-generated
 - [ ] Critical issues create GitHub issues
 
-#### Week 3: Production Hardening
+## Week 3: Production Hardening
 
 ```bash
 # Security audit of complete pipeline
@@ -152,7 +254,7 @@ python scripts/run.py config.py set --auto-context true
 # Production deployment
 ```
 
-### Validation Protocol
+## Validation Protocol
 
 After completing each task, perform the following validations:
 
@@ -195,7 +297,7 @@ detect-secrets scan [file]
 find . -type f -perm -002
 ```
 
-### Progress Reporting
+## Progress Reporting
 
 After completing each task, use `report_progress` with the following format:
 

@@ -1,5 +1,7 @@
 # Feature Store API Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Feature Store provides centralized management of feature definitions, versioning, and materialization for machine learning pipelines. It enables:
@@ -67,7 +69,7 @@ text_group = FeatureGroup(
 store.register_feature_group(text_group)
 ```
 
-##### `get_feature_group(name: str) -> Optional[FeatureGroup]`
+## `get_feature_group(name: str) -> Optional[FeatureGroup]`
 
 Retrieve a registered feature group by name.
 
@@ -84,7 +86,7 @@ if group:
     print(f"Group version: {group.version}")
 ```
 
-##### `materialize_features(group_name: str, inputs: Dict[str, Any]) -> Dict[str, Any]`
+### `materialize_features(group_name: str, inputs: Dict[str, Any]) -> Dict[str, Any]`
 
 Compute and cache features for a group.
 
@@ -102,7 +104,7 @@ features = store.materialize_features("text_features", inputs)
 # Returns: {"normalized_text": "hello world"}
 ```
 
-##### `get_cached_features(cache_key: str) -> Optional[Dict[str, Any]]`
+## `get_cached_features(cache_key: str) -> Optional[Dict[str, Any]]`
 
 Retrieve cached feature values.
 
@@ -122,7 +124,7 @@ else:
     features = store.materialize_features("text_features", inputs)
 ```
 
-##### `clear_cache() -> None`
+### `clear_cache() -> None`
 
 Clear all cached feature values.
 
@@ -186,11 +188,11 @@ result = word_count_feature.compute({"text": "Hello world"})
 
 ---
 
-### FeatureGroup
+## FeatureGroup
 
 Collection of related features.
 
-#### Constructor
+### Constructor
 
 ```python
 FeatureGroup(
@@ -375,14 +377,14 @@ features = store.materialize_features("text_statistics", inputs)
 print(features)
 # Output:
 # {
-#   "normalized_text": "hello world! this is a test.",
-#   "word_count": 6,
-#   "char_count": 33,
-#   "avg_word_length": 4.0
+# "normalized_text": "hello world! this is a test.",
+# "word_count": 6,
+# "char_count": 33,
+# "avg_word_length": 4.0
 # }
 ```
 
-### Numerical Feature Pipeline
+## Numerical Feature Pipeline
 
 ```python
 import numpy as np
@@ -466,7 +468,7 @@ group = FeatureGroup(
 )
 ```
 
-### 2. Caching Strategy
+## 2. Caching Strategy
 
 Use caching for expensive features:
 
@@ -481,7 +483,7 @@ else:
     features = store.materialize_features("expensive_features", inputs)
 ```
 
-### 3. Dependency Management
+## 3. Dependency Management
 
 Clearly specify dependencies:
 
@@ -501,7 +503,7 @@ feature = Feature(
 )
 ```
 
-### 4. Error Handling
+## 4. Error Handling
 
 Handle missing inputs gracefully:
 

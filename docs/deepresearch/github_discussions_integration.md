@@ -168,7 +168,7 @@ poster.find_discussion_comments_by_marker(
 **Purpose:** Allows an agent to **scan** all previous continuation chains in
 a Discussion thread to reconstruct project history.
 
-#### CLI 6 (Future): `discussion-digest` — Build a digest of all session chains
+## CLI 6 (Future): `discussion-digest` — Build a digest of all session chains
 
 ```bash
 python scripts/cognitive/discussion_digest.py \

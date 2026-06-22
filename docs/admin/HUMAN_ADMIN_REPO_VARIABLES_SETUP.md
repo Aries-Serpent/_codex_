@@ -27,6 +27,7 @@ from PR #3483. Each section has:
 ## Setup Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🚀 Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
 flowchart TD
     START([🚀 Start]) --> PREREQ{Prerequisites\nmet?}
     PREREQ -->|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
@@ -135,6 +136,7 @@ You should see the existing variables list. You will click **New repository vari
 ### Variable setup — Mermaid checklist map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((Variables\nto Create))
     Cognitive Brain
@@ -504,7 +506,7 @@ COPILOT_CLI_ENABLED                  true
 EMBEDDING_INDEX_AUTO_REBUILD         true
 ```
 
-### Verify via GitHub UI
+## Verify via GitHub UI
 
 👆 Click: <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
 
@@ -578,6 +580,7 @@ repository variable. To use it in a CI build:
 ## §5 — What Changes After Setup
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title Variable Setup Impact Timeline
     section Immediately

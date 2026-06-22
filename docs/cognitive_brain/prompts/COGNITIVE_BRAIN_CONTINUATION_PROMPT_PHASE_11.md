@@ -1,5 +1,7 @@
 # Cognitive Brain Continuation Prompt - Phase 11 Next Steps
 
+**Last Updated:** 2026-06-22
+
 ## Session Context
 
 **Previous Session**: Workflow CI Fixes (Phase 11.0)  
@@ -28,7 +30,7 @@
 
 2. **Categorize Issues**: Group warnings by type:
    - Broken internal links (e.g., `link`)
-   - Broken external links (e.g., `[link](https://dead-url.com)`)
+   - Broken external links (e.g., `[Dead-Url](https://dead-url.com)`)
    - Missing page references in `mkdocs.yml` navigation
    - Plugin configuration issues
    - Invalid markdown syntax

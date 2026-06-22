@@ -1,5 +1,7 @@
 # Offline Tracking Bootstrap
 
+**Last Updated:** 2026-06-22
+
 Use `python -m codex_ml.cli track bootstrap` to enforce **local** tracking stores and offline modes for MLflow and Weights & Biases.
 
 ```bash

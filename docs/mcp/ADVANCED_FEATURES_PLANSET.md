@@ -1,6 +1,158 @@
 # MCP Package System - Advanced Features Planset
 
-**Last Updated**: 2026-01-23T11:45:00Z  
+## Table of Contents
+
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ (Feature Development Flow)](#path--feature-development-flow)
+  - [Fields 🔄 (Feature Maturity States)](#fields--feature-maturity-states)
+  - [Patterns 👁️ (Implementation Patterns)](#patterns--implementation-patterns)
+  - [Redundancy 🔀 (Risk Mitigation)](#redundancy--risk-mitigation)
+  - [Balance ⚖️ (Resource Allocation)](#balance--resource-allocation)
+- [⚡ Energy Distribution](#-energy-distribution)
+  - [P0 Critical (25% - Foundation)](#p0-critical-25---foundation)
+  - [P1 High (40% - Phase 1 Features)](#p1-high-40---phase-1-features)
+  - [P2 Medium (25% - Phase 2 Features)](#p2-medium-25---phase-2-features)
+  - [P3 Low (10% - Phase 3 Features)](#p3-low-10---phase-3-features)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+  - [Rollback Strategies](#rollback-strategies)
+- [Revert feature implementation](#revert-feature-implementation)
+- [Remove feature flag](#remove-feature-flag)
+- [Restore previous version](#restore-previous-version)
+- [Rollback: Disable estimation flag](#rollback-disable-estimation-flag)
+- [Users can package normally without estimation](#users-can-package-normally-without-estimation)
+- [Root cause investigation](#root-cause-investigation)
+- [Check file size calculation accuracy](#check-file-size-calculation-accuracy)
+- [Verify overhead percentage correct](#verify-overhead-percentage-correct)
+- [Fix and re-release in next iteration](#fix-and-re-release-in-next-iteration)
+- [Rollback: Remove --exclude flag from CLI](#rollback-remove---exclude-flag-from-cli)
+- [Affected users use manual filtering](#affected-users-use-manual-filtering)
+- [Fix: Review glob pattern matching logic](#fix-review-glob-pattern-matching-logic)
+- [Test edge cases (nested exclusions, wildcards)](#test-edge-cases-nested-exclusions-wildcards)
+- [Re-release with comprehensive tests](#re-release-with-comprehensive-tests)
+- [Rollback: Mark interactive mode as experimental](#rollback-mark-interactive-mode-as-experimental)
+- [Provide terminal compatibility matrix](#provide-terminal-compatibility-matrix)
+- [Fallback: CLI-only mode remains available](#fallback-cli-only-mode-remains-available)
+- [Fix: Test on additional terminals](#fix-test-on-additional-terminals)
+- [Add compatibility detection](#add-compatibility-detection)
+- [Recovery Procedures](#recovery-procedures)
+- [Clean failed feature state](#clean-failed-feature-state)
+- [Reset to known good state](#reset-to-known-good-state)
+- [Verify base functionality](#verify-base-functionality)
+- [If breaking change introduced](#if-breaking-change-introduced)
+- [Provide migration script](#provide-migration-script)
+- [Generate migration report](#generate-migration-report)
+- [Document all changes](#document-all-changes)
+- [Offer legacy mode for transition period](#offer-legacy-mode-for-transition-period)
+- [Circuit Breakers](#circuit-breakers)
+- [Overview](#overview)
+- [Feature 1: Package Size Estimation](#feature-1-package-size-estimation)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Estimate before creating](#estimate-before-creating)
+- [Output: Estimated size: 28.5 MB (1,645 files)](#output-estimated-size-285-mb-1645-files)
+- [Warning: Approaching 50 MB limit](#warning-approaching-50-mb-limit)
+- [Adjust and re-estimate](#adjust-and-re-estimate)
+- [Output: Estimated size: 2.1 MB (145 files)](#output-estimated-size-21-mb-145-files)
+- [Implementation Details](#implementation-details)
+- [Feature 2: Exclude Patterns Support](#feature-2-exclude-patterns-support)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Package agents but exclude tests](#package-agents-but-exclude-tests)
+- [Package docs but exclude drafts](#package-docs-but-exclude-drafts)
+- [Multiple exclusions](#multiple-exclusions)
+- [Implementation Details](#implementation-details)
+- [Feature 3: Duplicate Flat Name Resolution](#feature-3-duplicate-flat-name-resolution)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Before: Error on duplicate flat names](#before-error-on-duplicate-flat-names)
+- [After: Automatic resolution](#after-automatic-resolution)
+- [Package with duplicates](#package-with-duplicates)
+- [Output:](#output)
+- [src__utils.py (original)](#src__utilspy-original)
+- [tests__utils_a3f2.py (duplicate resolved with hash)](#tests__utils_a3f2py-duplicate-resolved-with-hash)
+- [Implementation Details](#implementation-details)
+- [Enhanced flatten_filename function](#enhanced-flatten_filename-function)
+- [Feature 4: Package Diff Tool](#feature-4-package-diff-tool)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Compare two versions](#compare-two-versions)
+- [Output:](#output)
+- [Added: 5 files](#added-5-files)
+- [+ agents/new_orchestrator.py](#-agentsnew_orchestratorpy)
+- [+ tests/agents/test_new_orchestrator.py](#-testsagentstest_new_orchestratorpy)
+- [Removed: 2 files](#removed-2-files)
+- [- agents/deprecated_module.py](#--agentsdeprecated_modulepy)
+- [Modified: 8 files](#modified-8-files)
+- [≠ agents/workflow_navigator.py (SHA256 changed)](#-agentsworkflow_navigatorpy-sha256-changed)
+- [Implementation Details](#implementation-details)
+- [Feature 5: Package Merge Tool](#feature-5-package-merge-tool)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Merge agent and testing packages](#merge-agent-and-testing-packages)
+- [Conflict strategies:](#conflict-strategies)
+- [newest: Keep file with latest timestamp](#newest-keep-file-with-latest-timestamp)
+- [largest: Keep larger file](#largest-keep-larger-file)
+- [manual: Prompt for each conflict](#manual-prompt-for-each-conflict)
+- [rename: Keep both with suffixes](#rename-keep-both-with-suffixes)
+- [Implementation Details](#implementation-details)
+- [Feature 6: Interactive Mode](#feature-6-interactive-mode)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Launch interactive mode](#launch-interactive-mode)
+- [UI:](#ui)
+- [┌─ MCP Package Builder (Interactive) ─────────────────┐](#-mcp-package-builder-interactive-)
+- [│ Select files to package:                           │](#-select-files-to-package---------------------------)
+- [│                                                     │](#-----------------------------------------------------)
+- [│ [ ] agents/                            (15 MB)     │](#---agents----------------------------15-mb-----)
+- [│   [x] workflow_navigator.py            (29 KB)     │](#---x-workflow_navigatorpy------------29-kb-----)
+- [│   [ ] quantum_game_theory.py           (46 KB)     │](#-----quantum_game_theorypy-----------46-kb-----)
+- [│   [x] physics_orchestrator.py          (127 KB)    │](#---x-physics_orchestratorpy----------127-kb----)
+- [│ [x] tests/                             (5 MB)      │](#-x-tests-----------------------------5-mb------)
+- [│   [x] agents/                          (3 MB)      │](#---x-agents--------------------------3-mb------)
+- [│     [x] test_workflow*.py              (2.5 MB)    │](#-----x-test_workflowpy--------------25-mb----)
+- [│                                                     │](#-----------------------------------------------------)
+- [│ Selected: 156 files (4.2 MB)                       │](#-selected-156-files-42-mb-----------------------)
+- [│                                                     │](#-----------------------------------------------------)
+- [│ [Create Package] [Cancel]                          │](#-create-package-cancel--------------------------)
+- [└─────────────────────────────────────────────────────┘](#)
+- [Implementation Details](#implementation-details)
+- [Feature 7: Smart Topic Recommendation](#feature-7-smart-topic-recommendation)
+  - [Description](#description)
+  - [Use Case](#use-case)
+- [Check recent changes](#check-recent-changes)
+- [Output:](#output)
+- [Recommended topics based on recent activity:](#recommended-topics-based-on-recent-activity)
+- [1. agents (15 commits, 8 files changed)](#1-agents-15-commits-8-files-changed)
+- [2. testing (12 commits, 45 test files added)](#2-testing-12-commits-45-test-files-added)
+- [3. workflows (3 commits, 2 workflow files modified)](#3-workflows-3-commits-2-workflow-files-modified)
+- [Suggested package:](#suggested-package)
+- [./scripts/mcp/mcp-package --topic agents](#scriptsmcpmcp-package---topic-agents)
+- [Auto-package on change](#auto-package-on-change)
+- [Creates packages when >10 commits to a topic area](#creates-packages-when-10-commits-to-a-topic-area)
+- [Implementation Details](#implementation-details)
+- [Implementation Roadmap](#implementation-roadmap)
+  - [Phase 1: High Priority (Phase 1 (Current Cycle))](#phase-1-high-priority-phase-1-current-cycle)
+  - [Phase 2: Medium Priority (Phase 2 (Current Cycle))](#phase-2-medium-priority-phase-2-current-cycle)
+  - [Phase 3: Low Priority (Phase 3 (Current Cycle))](#phase-3-low-priority-phase-3-current-cycle)
+- [Success Metrics](#success-metrics)
+  - [Feature Adoption](#feature-adoption)
+  - [Quality Metrics](#quality-metrics)
+  - [Performance Metrics](#performance-metrics)
+- [Dependencies and Risks](#dependencies-and-risks)
+  - [Technical Dependencies](#technical-dependencies)
+  - [Risks](#risks)
+- [Testing Strategy](#testing-strategy)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+  - [User Acceptance Testing](#user-acceptance-testing)
+- [Documentation Updates](#documentation-updates)
+  - [Required Updates](#required-updates)
+  - [New Documents](#new-documents)
+
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Status**: ✅ Planning Phase - Iteration Roadmap Defined  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05
@@ -87,6 +239,7 @@
 **Development Path**: Planning → Implementation → Testing → Documentation → Release → Adoption → Feedback → Refinement
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Feature Identification, Requirements Definition'}}%%
 graph TD
     A[Feature Identification] --> B[Requirements Definition]
     B --> C[Implementation Design]
@@ -217,7 +370,7 @@ sed -i '/ENABLE_FEATURE_X/d' config.py
 # Add compatibility detection
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Data Integrity**:
 - All features operate on copies (temp directories)
@@ -247,7 +400,7 @@ rm -rf /tmp/mcp_feature_*
 # Offer legacy mode for transition period
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **Performance Degradation**:
 - If feature adds >20% overhead: Disable by default, opt-in flag
@@ -279,14 +432,14 @@ Add `--estimate` flag to predict package size before creation, enabling users to
 # Estimate before creating
 ./scripts/mcp/mcp-package --topic testing --estimate
 # Output: Estimated size: 28.5 MB (1,645 files)
-#         Warning: Approaching 50 MB limit
+# Warning: Approaching 50 MB limit
 
 # Adjust and re-estimate
 ./scripts/mcp/mcp-package --custom "tests/agents/**" --estimate
 # Output: Estimated size: 2.1 MB (145 files)
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/mcp-package` (enhance MCPPackager class)
 
@@ -343,7 +496,7 @@ Add `--exclude` parameter to filter out unwanted files from selection, complemen
 ./scripts/mcp/mcp-package --custom "src/**" --exclude "**/__pycache__/**,**/*.pyc,**/node_modules/**"
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/select_components.py`
 
@@ -400,11 +553,11 @@ Automatically detect and resolve duplicate flat names (e.g., `src/foo.py` and `t
 ./scripts/mcp/mcp-package --custom "src/utils.py,tests/utils.py"
 
 # Output:
-#   src__utils.py (original)
-#   tests__utils_a3f2.py (duplicate resolved with hash)
+# src__utils.py (original)
+# tests__utils_a3f2.py (duplicate resolved with hash)
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/package_flatten.sh`
 
@@ -466,15 +619,15 @@ Compare two packages to see what changed (added, removed, modified files).
 
 # Output:
 # Added: 5 files
-#   + agents/new_orchestrator.py
-#   + tests/agents/test_new_orchestrator.py
+# + agents/new_orchestrator.py
+# + tests/agents/test_new_orchestrator.py
 # Removed: 2 files
-#   - agents/deprecated_module.py
+# - agents/deprecated_module.py
 # Modified: 8 files
-#   ≠ agents/workflow_navigator.py (SHA256 changed)
+# ≠ agents/workflow_navigator.py (SHA256 changed)
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/package_diff.py`
 
@@ -565,13 +718,13 @@ Combine multiple packages into one, resolving conflicts intelligently.
   --conflict-strategy newest
 
 # Conflict strategies:
-#   newest: Keep file with latest timestamp
-#   largest: Keep larger file
-#   manual: Prompt for each conflict
-#   rename: Keep both with suffixes
+# newest: Keep file with latest timestamp
+# largest: Keep larger file
+# manual: Prompt for each conflict
+# rename: Keep both with suffixes
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/package_merge.py`
 
@@ -665,7 +818,7 @@ Interactive file selection UI with tree view, real-time size preview, and dynami
 # └─────────────────────────────────────────────────────┘
 ```
 
-### Implementation Details
+## Implementation Details
 
 **Dependencies**:
 - `blessed` or `rich` Python library for TUI
@@ -731,19 +884,19 @@ Analyze recent commits/changes to suggest relevant packaging topics automaticall
 
 # Output:
 # Recommended topics based on recent activity:
-#   1. agents (15 commits, 8 files changed)
-#   2. testing (12 commits, 45 test files added)
-#   3. workflows (3 commits, 2 workflow files modified)
+# 1. agents (15 commits, 8 files changed)
+# 2. testing (12 commits, 45 test files added)
+# 3. workflows (3 commits, 2 workflow files modified)
 #
 # Suggested package:
-#   ./scripts/mcp/mcp-package --topic agents
+# ./scripts/mcp/mcp-package --topic agents
 
 # Auto-package on change
 ./scripts/mcp/recommend_topics.py --auto-package --threshold 10
 # Creates packages when >10 commits to a topic area
 ```
 
-### Implementation Details
+## Implementation Details
 
 **File**: `scripts/mcp/recommend_topics.py`
 
@@ -946,7 +1099,7 @@ def recommend_packages(topic_scores: Dict[str, int],
 
 **Document Status**: ✅ Planning Phase - Approved for Execution  
 **Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Version**: 2.0  
 **Owner**: DevOps Team  
 **Reviewers**: Agent Development Team, Human Admin

@@ -11,6 +11,7 @@
 ## 🗺️ Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🔑 Token Rotation Start, "§1 Create new PAT\n(do NOT revoke old yet)"'}}%%
 flowchart TD
     START([🔑 Token Rotation Start]) --> ASSESS{Rotation reason?}
     ASSESS -->|Scheduled 90-day| SCHEDULED["§1 Create new PAT\n(do NOT revoke old yet)"]
@@ -193,7 +194,7 @@ If you believe the token was leaked (e.g., accidentally committed, exposed in lo
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 ```
 
-### `Failed to set variable: 403 Forbidden`
+## `Failed to set variable: 403 Forbidden`
 
 **Symptom:** `activate-delegation` job fails with 403  
 **Cause:** New PAT missing `variables:write` permission  

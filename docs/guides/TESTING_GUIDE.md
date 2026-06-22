@@ -1,5 +1,7 @@
 # Testing & Coverage Guide
 
+**Last Updated:** 2026-06-22
+
 ## Primary Test Runner: Pytest
 
 The project uses **pytest** as the primary test runner with comprehensive CI/CD integration.
@@ -138,7 +140,7 @@ pytest --cov=src --cov-report=xml
 pytest --cov=src --cov-report=json
 ```
 
-### CI Coverage Artifacts
+## CI Coverage Artifacts
 
 Coverage reports are automatically generated and uploaded in CI:
 

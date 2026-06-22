@@ -1,6 +1,6 @@
 # [Reference]: P6 Advanced Features — AST, Synonyms, Context, Federation
 
-> Generated: 2025-11-06 22:15:00 UTC | Author: copilot  
+> Generated: 2026-06-22 (audited) | Author: copilot  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## 1. Overview
@@ -29,7 +29,7 @@ ast.parse(source) → {FunctionDef: 5, ClassDef: 2, Call: 12, ...}
 ast_uniqueness = 1 - avg_pairwise_similarity
 ```text
 
-### 2.3 Integration (S4 Scoring)
+## 2.3 Integration (S4 Scoring)
 Consistency blend modes:
 - **multiply** (default): `consistency = (1 - dup_ratio) × token_sim × ast_unique`
 - **average**: `consistency = mean(1-dup, token_sim, ast_unique)`
@@ -81,7 +81,7 @@ found_patterns = ["train", "checkpoint"]
 found_patterns = ["train", "training", "epoch", "fit", "checkpoint", "save_checkpoint", ...]
 ```text
 
-### 3.4 Knobs
+## 3.4 Knobs
 
 | Knob | Default | Description |
 |------|---------|-------------|

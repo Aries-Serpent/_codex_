@@ -1,5 +1,7 @@
 # Quantum Orchestrator CLI Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Quantum Orchestrator CLI provides command-line access to the physics-inspired task orchestration framework. It implements quantum mechanics, special relativity, and quantum field theory concepts for task management.
@@ -65,7 +67,7 @@ python -m codex.cli quantum run --tasks 3 --steps 5 --verbose
 
 ---
 
-#### `benchmark` - Performance Benchmark
+## `benchmark` - Performance Benchmark
 
 Measures evolution speed and throughput for performance tuning and regression testing.
 
@@ -90,7 +92,7 @@ python -m codex.cli quantum benchmark --tasks 10 --iterations 100
 
 ---
 
-#### `inspect` - Inspect Quantum State
+## `inspect` - Inspect Quantum State
 
 Shows detailed information about a specific task's quantum state.
 
@@ -121,7 +123,7 @@ python -m codex.cli quantum inspect task_1 --format json
 
 ---
 
-#### `metrics` - Export Prometheus Metrics
+## `metrics` - Export Prometheus Metrics
 
 Generates Prometheus-formatted metrics for monitoring and observability.
 
@@ -148,11 +150,11 @@ python -m codex.cli quantum metrics --output metrics.txt
 
 ---
 
-### QFT Commands
+## QFT Commands
 
 Advanced commands using Quantum Field Theory extensions (second quantization, entanglement, path integrals).
 
-#### `qft spawn` - Spawn Tasks
+### `qft spawn` - Spawn Tasks
 
 Uses creation operators from second quantization to dynamically spawn new tasks.
 
@@ -176,7 +178,7 @@ python -m codex.cli quantum qft spawn --count 10 --mode parallel
 
 ---
 
-#### `qft entangle` - Create Entanglement
+## `qft entangle` - Create Entanglement
 
 Creates Bell state entanglement between two tasks for coordinated execution.
 
@@ -210,7 +212,7 @@ python -m codex.cli quantum qft entangle task_0 task_1 --bell-state psi_minus
 
 ---
 
-#### `qft optimize` - Path Integral Optimization
+## `qft optimize` - Path Integral Optimization
 
 Uses Feynman path integral formulation to find optimal execution strategies.
 
@@ -298,7 +300,7 @@ python -m codex.cli quantum inspect task_0 --format json
 python -m codex.cli quantum metrics --tasks 5 --output metrics.prom
 ```
 
-### Example 2: QFT Workflow
+## Example 2: QFT Workflow
 
 ```bash
 # 1. Spawn additional tasks
@@ -311,7 +313,7 @@ python -m codex.cli quantum qft entangle task_0 task_1 --bell-state phi_plus
 python -m codex.cli quantum qft optimize --paths 1000 --temperature 0.5
 ```
 
-### Example 3: Performance Testing
+## Example 3: Performance Testing
 
 ```bash
 # 1. Benchmark small system
@@ -354,7 +356,7 @@ pip install numpy
 pip install -e ".[dev]"
 ```
 
-### PyTorch Warnings
+## PyTorch Warnings
 
 The sitecustomize warnings about PyTorch can be safely ignored if you're not using PyTorch features:
 
@@ -382,7 +384,7 @@ orchestrator = create_observable_orchestrator(
 )
 ```
 
-### Monitoring Integration
+## Monitoring Integration
 
 Metrics can be exported to Prometheus for real-time monitoring:
 

@@ -1,5 +1,7 @@
 # Duplication Metrics Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Duplication Metrics system provides automated detection, measurement, and tracking of code duplication in Python projects. It includes token-based detection via pylint integration, dual storage (JSON + SQLite), and comprehensive CLI commands for CI/CD integration.
@@ -31,7 +33,7 @@ codex duplication check --threshold=0.15
 codex duplication check --output=duplication.json
 ```text
 
-### Generate Detailed Report
+## Generate Detailed Report
 
 ```bash
 # Generate JSON report
@@ -44,7 +46,7 @@ codex duplication report --format=text --output=report.txt
 codex duplication report --save-db --output=report.json
 ```text
 
-### Compare Against Baseline
+## Compare Against Baseline
 
 ```bash
 # Compare with baseline
@@ -66,7 +68,7 @@ pip install pylint
 pip install click
 ```text
 
-### Verification
+## Verification
 
 ```bash
 # Test CLI availability
@@ -137,7 +139,7 @@ codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
 
 ---
 
-### `codex duplication report`
+## `codex duplication report`
 
 Generate detailed duplication report with full block information.
 
@@ -233,7 +235,7 @@ DUPLICATE BLOCKS
 
 ---
 
-### `codex duplication compare`
+## `codex duplication compare`
 
 Compare current duplication metrics against baseline.
 
@@ -310,9 +312,10 @@ result = storage.save(ratio, commit_sha="abc123")
 print(f"Saved with ID: {result['sqlite_id']}")
 ```text
 
-### Advanced Detection
+## Advanced Detection
 
 ```python
+from pathlib import Path
 from codex.metrics.duplication import DuplicationDetector
 
 # Create detector with custom settings
@@ -337,7 +340,7 @@ for block in duplicates:
         print(f"  - {occ['file']}:{occ['start']}-{occ['end']}")
 ```text
 
-### Storage Operations
+## Storage Operations
 
 ```python
 from codex.metrics.storage import MetricStorage
@@ -437,7 +440,7 @@ repos:
         pass_filenames: false
 ```text
 
-### Baseline Tracking
+## Baseline Tracking
 
 ```bash
 #!/bin/bash
@@ -477,7 +480,7 @@ export CODEX_DUPLICATION_MIN_LINES=4
 export CODEX_DUPLICATION_THRESHOLD=0.10
 ```text
 
-### .codex/config.yaml (future)
+## .codex/config.yaml (future)
 
 ```yaml
 duplication:
@@ -543,7 +546,7 @@ database is locked
 codex duplication report --output=report.json  # Doesn't use --save-db
 ```text
 
-### Inconsistent results between runs
+## Inconsistent results between runs
 
 **Problem:**
 Duplication ratio varies slightly between runs.
@@ -572,7 +575,7 @@ THRESHOLD=$(echo "$CURRENT + 0.02" | bc)
 codex duplication check --threshold=$THRESHOLD
 ```text
 
-### 2. Track Trends
+## 2. Track Trends
 
 ```bash
 # Weekly cron job
@@ -590,7 +593,7 @@ for metric in history:
     print(f"{metric['timestamp']}: {metric['ratio']:.2%}")
 ```text
 
-### 3. Exclude Generated Code
+## 3. Exclude Generated Code
 
 Create `.duplicationignore`:
 ```text

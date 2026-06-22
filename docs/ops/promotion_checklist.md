@@ -1,5 +1,5 @@
 # Ops: Promotion Checklist (0D_base_ → main)
-> Generated: 2026-03-17 (audited) | Author: mbaetiong  
+> Generated: 2026-06-22 (audited) | Author: mbaetiong  
 🧠 Roles: [Primary: Release Manager], [Secondary: Auditor] ⚡ Energy: 5/5  
 ⚛️ Physics: Path🛤️ [Ring → Verify → Promote] Fields🔄 [nox, artifacts] Patterns👁️ [Determinism, Offline] Redundancy🔀 [Hash chain] Balance⚖️ [Safety vs. velocity]
 

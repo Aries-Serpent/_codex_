@@ -1,5 +1,7 @@
 # Codex Remediation Plan – Phased Outline (2025-09-17)
 
+**Last Updated:** 2026-06-22
+
 ## Purpose & Inputs
 
 This plan synthesizes the open items recorded in:

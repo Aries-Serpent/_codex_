@@ -72,7 +72,7 @@ chunks = chunk_text(text, chunk_size=1000, overlap=128)
 # Returns: [(start_pos, end_pos, chunk_text), ...]
 ```
 
-### 2. Multi-Provider Embeddings
+## 2. Multi-Provider Embeddings
 - **Local**: sentence-transformers (default: all-MiniLM-L6-v2)
 - **Cloud**: OpenAI (text-embedding-3-small/large)
 - **Abstract**: Protocol-based design for extensibility
@@ -226,7 +226,7 @@ pip install -e ".[rag]"
 pip install sentence-transformers faiss-cpu
 ```
 
-### Basic Usage
+## Basic Usage
 ```bash
 # 1. Build index
 ./scripts/local/build_faiss.sh default docs ./docs

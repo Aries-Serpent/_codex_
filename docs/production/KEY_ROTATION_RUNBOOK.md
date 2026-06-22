@@ -167,7 +167,7 @@ done
 echo "✅ All required approvals obtained"
 ```
 
-### Phase 2: Staging Deployment (T+0:30 to T+1:00)
+## Phase 2: Staging Deployment (T+0:30 to T+1:00)
 
 **Step 2a: Deploy to staging**
 ```bash
@@ -235,7 +235,7 @@ fi
 echo "✅ Staging environment healthy"
 ```
 
-### Phase 3: Production Cutover (T+1:00 to T+1:30, CRITICAL)
+## Phase 3: Production Cutover (T+1:00 to T+1:30, CRITICAL)
 
 **⚠️ CRITICAL PHASE - Follow exactly, no deviations**
 
@@ -384,7 +384,7 @@ fi
 echo "✅ New CODEX_MASTER_KEY verified as active"
 ```
 
-### Phase 4: Post-Rotation Validation (T+1:30 to T+2:00)
+## Phase 4: Post-Rotation Validation (T+1:30 to T+2:00)
 
 **Step 4a: Production validation**
 ```bash
@@ -484,7 +484,7 @@ investigation_required: true
 INC
 ```
 
-### Incident Investigation
+## Incident Investigation
 
 ```bash
 #!/bin/bash

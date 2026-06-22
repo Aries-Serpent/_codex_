@@ -1,5 +1,7 @@
 # Checkpointing Surfaces — Canonical vs Legacy
 
+**Last Updated:** 2026-06-22
+
 This guide clarifies the checkpointing modules and their intended usage. Canonical paths remain stable; legacy shims continue to work with deprecation guidance.
 
 ## Overview

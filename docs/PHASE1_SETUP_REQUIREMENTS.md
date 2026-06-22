@@ -1,5 +1,7 @@
 # Phase 1 Setup Requirements
 
+**Last Updated:** 2026-06-22
+
 ## Pre-flight Validation Checklist
 - [ ] Ensure all team members have access to the repository.
 - [ ] Validate that the latest version of the code is pulled.

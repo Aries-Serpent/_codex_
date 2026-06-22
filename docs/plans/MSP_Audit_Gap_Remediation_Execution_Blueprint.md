@@ -1,5 +1,7 @@
 # MSP Audit Gap Remediation Execution Blueprint (v1.2.0)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 This blueprint documents the implementation of gap surfacing, policy gates, enhanced reporting, and remediation guidance for the Copilot Space Capability Audit workflow.
 
@@ -99,7 +101,7 @@ make space-validate
 # Run validation scripts from docs/validation/Gaps_Coverage_Checklist_And_Scripts.md
 ```text
 
-### CI Testing
+## CI Testing
 **First run:**
 - Diff step logs "No baseline found" (expected)
 - Validate passes unless current repo has low maturity or missing detectors

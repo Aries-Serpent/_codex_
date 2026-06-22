@@ -1,5 +1,7 @@
 # Research Note 06 — Condensed Understanding
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Condensed synthesis note
@@ -36,6 +38,7 @@ H_sa = C_aΘΦ_context − μF + Ω_obs
 ## 4. Final Mermaid Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CpT: heat capacity times temperature, Specific enthalpy approximation'}}%%
 flowchart LR
     CpT[CpT: heat capacity times temperature] --> Enthalpy[Specific enthalpy approximation]
     Enthalpy --> Analogy[Security/access enthalpy]

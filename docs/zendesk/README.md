@@ -79,7 +79,7 @@ codex zendesk snapshot --env=dev
 ls -la snapshot/dev/latest/
 ```text
 
-### per-iteration Operations
+## per-iteration Operations
 ```bash
 # Snapshot current state
 codex zendesk snapshot --env=dev
@@ -102,7 +102,7 @@ codex zendesk apply triggers plans/triggers_plan.json --env=dev
 codex zendesk metrics
 ```text
 
-### Using Task Sequences
+## Using Task Sequences
 ```bash
 # Execute predefined workflow
 codex-task-sequence --sequence scripts/task_sequences/zendesk_first_cycle.yaml
@@ -156,7 +156,7 @@ codex zendesk snapshot --env=dev --verbose
 cat .codex/logs/zendesk_*.log
 ```text
 
-### Common Issues
+## Common Issues
 
 | Issue | Quick Fix |
 |-------|-----------|
@@ -256,7 +256,7 @@ codex zendesk list-groups --env=<env>
 codex zendesk list-schedules --env=<env>
 ```text
 
-### Task Sequence Automation
+## Task Sequence Automation
 ```bash
 # Run predefined sequence
 codex-task-sequence --sequence <yaml_file>
@@ -287,7 +287,7 @@ git commit -m "Add priority-based auto-assignment triggers"
 gh pr create --title "Add priority triggers" --body "Adds auto-assignment based on priority"
 ```text
 
-### With Monitoring
+## With Monitoring
 ```bash
 # Export metrics to Prometheus
 codex zendesk metrics --format json | \

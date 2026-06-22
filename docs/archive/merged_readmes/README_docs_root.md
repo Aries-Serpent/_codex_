@@ -1,5 +1,7 @@
 # [ARCHIVED] Documentation Hub
 
+**Last Updated:** 2026-06-22
+
 > **⚠️ ARCHIVED FILE**: This file has been merged into `docs/index.md`.
 > Links in this file are preserved for reference only and may not work.
 > For the current version, see [docs/index.md](../../index.md).

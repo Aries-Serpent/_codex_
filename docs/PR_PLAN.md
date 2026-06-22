@@ -1,5 +1,7 @@
 # PR Plan — Checkpoint Resume, Deterministic Splits, Local MLflow Smoke
 
+**Last Updated:** 2026-06-22
+
 ## Why
 - **Determinism/Reproducibility**: snapshot/restore RNG (CPU & CUDA) and deterministic `random_split(..., generator=...)`.
 - **Resilience**: checkpoint resume + best-K retention by metric avoids storage bloat and supports recovery.

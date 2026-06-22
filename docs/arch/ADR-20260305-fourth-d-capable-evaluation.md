@@ -1,5 +1,5 @@
 # ADR-20260305: Fourth D_CAPABLE Agent Evaluation — `workflow-health-monitor` Designated
-> Generated: 2026-03-05T01:30:00Z | Updated: 2026-03-05T01:45:00Z | Author: copilot-swe-agent[bot]
+> Generated: 2026-06-22T01:30:00Z | Updated: 2026-06-22T01:45:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted — fourth candidate designated; promotion PENDING C4 observation only (C8 gap resolved ✅)
 > Related PRs: #3496
 > Predecessor ADR: ADR-20260304-rust-error-validator-d-capable-promotion.md
@@ -145,4 +145,4 @@ unblocked pending only the C4 observation window (ends 2026-04-04).
 
 ---
 
-*Created: 2026-03-05 | Updated: 2026-03-05 (W-111 — C8 sign-off recorded) | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*
+*Created: 2026-03-05 | Updated: 2026-06-22 (W-111 — C8 sign-off recorded) | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*

@@ -1,5 +1,7 @@
 # Smoke Test Remediation Plan
 
+**Last Updated:** 2026-06-22
+
 ## Problem Statement
 
 Three smoke tests are currently failing in the test suite:
@@ -77,7 +79,7 @@ def _init_determinism_from_env():
     return {"determinism_enabled": False}
 ```
 
-#### For test_validate_ok/test_validate_bad:
+## For test_validate_ok/test_validate_bad:
 
 Fix the CLI invocation or update the app structure:
 
@@ -92,7 +94,7 @@ r = CliRunner().invoke(app.commands["file"], [str(cfg)])
 # Or update the CLI app in codex_ml.cli.validate to have "file" as a command
 ```
 
-### Option B: Skip Tests Temporarily (Quick Fix)
+## Option B: Skip Tests Temporarily (Quick Fix)
 
 Mark tests as expected failures until implementation is complete:
 

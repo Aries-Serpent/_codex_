@@ -1,7 +1,7 @@
 # MLOps Phase 6 - Troubleshooting FAQ
 
 **Version**: 1.0.0  
-**Last Updated**: 2025-12-07
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -26,7 +26,7 @@ All features are **opt-in** by default (disabled unless explicitly enabled).
 
 ---
 
-### Q: Will Phase 6 break my existing training scripts?
+## Q: Will Phase 6 break my existing training scripts?
 
 **A**: No! All Phase 6 features maintain 100% backward compatibility. Your existing code will continue to work without any modifications.
 
@@ -40,7 +40,7 @@ results = run_minimal_training(config, max_steps=10, run_dir="./runs")
 
 ---
 
-### Q: How do I disable a Phase 6 feature temporarily?
+## Q: How do I disable a Phase 6 feature temporarily?
 
 **A**: Set `enabled: false` in the relevant configuration file:
 
@@ -87,7 +87,7 @@ mlflow ui --backend-store-uri file://./mlruns
 
 ---
 
-### Q: Training is slower with MLflow enabled
+## Q: Training is slower with MLflow enabled
 
 **A**: Performance overhead should be <1%. If experiencing issues:
 
@@ -190,7 +190,7 @@ feature_store:
 
 ---
 
-### Q: Feature retrieval is slow
+## Q: Feature retrieval is slow
 
 **A**: Optimize performance:
 
@@ -252,7 +252,7 @@ python scripts/data_quality_analysis.py
 
 ---
 
-### Q: Validation is too slow
+## Q: Validation is too slow
 
 **A**: Optimize validation performance:
 
@@ -316,7 +316,7 @@ pip install -e .
 
 ---
 
-### Q: How do I add custom metrics?
+## Q: How do I add custom metrics?
 
 **A**: Define custom metric adapter:
 
@@ -341,7 +341,7 @@ runner = EvaluationRunner(
 
 ---
 
-### Q: Evaluation reports not generating
+## Q: Evaluation reports not generating
 
 **A**: Check configuration:
 
@@ -448,7 +448,7 @@ python -m pstats profile.stats
 
 ---
 
-### Q: High memory usage
+## Q: High memory usage
 
 **A**: Check these areas:
 
@@ -492,7 +492,7 @@ yamllint configs/production/tracking.yaml
 
 ---
 
-### Q: Environment variables not working
+## Q: Environment variables not working
 
 **A**: Check variable substitution:
 
@@ -529,7 +529,7 @@ python scripts/deploy_phase6.py --environment staging
 
 ---
 
-### Q: How do I rollback?
+## Q: How do I rollback?
 
 **A**: Quick rollback options:
 
@@ -618,5 +618,5 @@ Template:
 
 ---
 
-*Last updated: 2026-02-10*  
+*Last updated: 2026-06-22*  
 *Questions not answered here? Ask in #mlops-support!*

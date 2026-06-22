@@ -1,5 +1,7 @@
 # Codex Archive (Tombstone) — Runbook
 
+**Last Updated:** 2026-06-22
+
 **Goal:** Never hard-delete. Move dead/pruned code & docs into a portable SQL archive with append-only evidence. Supports SQLite (default), PostgreSQL, MariaDB.
 
 ## Backends

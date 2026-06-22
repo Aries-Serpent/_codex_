@@ -1,5 +1,7 @@
 # How-to: add capabilities safely
 
+**Last Updated:** 2026-06-22
+
 1. Start from the structured configs in `conf/` and extend the relevant group
    (for example, add a new file under `conf/model/` for a variant that requires
    quantization). Keep defaults explicit so sweeps are reproducible.

@@ -1,5 +1,7 @@
 # How-to: Repo Admin Bootstrap (Local, Dry-Run by Default)
 
+**Last Updated:** 2026-06-22
+
 This guide hardens a repository **without GitHub Actions** using local scripts:
 
 - Standard labels (create/update)

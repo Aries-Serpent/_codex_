@@ -1,5 +1,7 @@
 # Cache Policy — 4-Layer Hierarchy
 
+**Last Updated:** 2026-06-22
+
 > **Owner:** `cache-management-agent` (canonical) — supporting `workflow-optimization-agent`.
 > **Status:** Specification (Phase 5; YAML rollout in Phase 5b).
 > **Branch authored:** `copilot/analyze-test-coverage-and-documentation`

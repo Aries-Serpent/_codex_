@@ -187,7 +187,7 @@ python -m pytest tests/test_rag_*.py \
 python -m pytest tests/ -n 4 --dist=loadfile -v
 ```
 
-### 2. CI Validation (Primary)
+## 2. CI Validation (Primary)
 
 Monitor these workflows in PR:
 

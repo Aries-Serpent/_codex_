@@ -1,5 +1,7 @@
 # Tutorial 04 — Building Resilient ML Services
 
+**Last Updated:** 2026-06-22
+
 **Estimated time:** 25 minutes  
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 
@@ -72,7 +74,7 @@ def get_features(user_id: str) -> dict:
         return {"user_id": user_id, "segment": "default"}
 ```
 
-### Checking the state
+## Checking the state
 
 ```python
 from codex.resilience import CircuitState
@@ -169,7 +171,7 @@ def get_explanation(prediction_id: str) -> dict:
 explanation = get_explanation("pred_abc123")
 ```
 
-### Context manager pattern
+## Context manager pattern
 
 Use the context manager when the degraded block is more complex than a single
 function call:

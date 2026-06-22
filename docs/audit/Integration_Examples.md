@@ -1,7 +1,7 @@
 # Integration Examples
 
 **Version**: 1.4.0  
-**Last Updated**: 2025-12-09
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -75,7 +75,7 @@ jobs:
           fi
 ```
 
-### Advanced: Fail on Score Threshold
+## Advanced: Fail on Score Threshold
 
 ```yaml
 # .github/workflows/audit-gate.yml
@@ -190,7 +190,7 @@ repos:
         verbose: true
 ```
 
-### Pre-commit Script
+## Pre-commit Script
 
 ```bash
 # .git/hooks/pre-commit

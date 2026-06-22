@@ -1,4 +1,6 @@
 # Pull Request Audit Checklists
+
+**Last Updated:** 2026-06-22
 > **Repository**: Aries-Serpent/_codex_  
 > **Purpose**: Comprehensive PR validation templates for code quality and compliance
 

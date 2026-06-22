@@ -1,5 +1,7 @@
 # Configuration Consolidation Guide (D4)
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the unified configuration structure for the Codex ML project. All configurations have been consolidated under the `configs/` directory with a clear, hierarchical structure that supports both development and production use cases.
@@ -56,7 +58,7 @@ yaml_config = load_yaml("configs/base/training.yaml")
 print(f"Config directory: {CONFIG_PATH}")
 ```
 
-### Using Command Line
+## Using Command Line
 
 ```bash
 # Run with default config
@@ -92,7 +94,7 @@ python scripts/migrate_configs.py --dry-run
 python scripts/migrate_configs.py --execute
 ```
 
-### Migration Results
+## Migration Results
 
 - ✅ 11 legacy configuration files migrated to unified structure
 - ✅ Hydra configuration created at `configs/hydra/config.yaml`
@@ -121,7 +123,7 @@ training:
   learning_rate: 1e-4
 ```
 
-### 3. Use Composition
+## 3. Use Composition
 
 ```yaml
 # configs/hydra/config.yaml
@@ -134,7 +136,7 @@ defaults:
 env: development  # Override via CLI: env=production
 ```
 
-### 4. Document Your Configs
+## 4. Document Your Configs
 
 Add comments explaining non-obvious parameters:
 
@@ -179,7 +181,7 @@ get_config("training.yaml")
 get_config("base/training")  # No .yaml extension needed
 ```
 
-### Issue: "Hydra initialization error"
+## Issue: "Hydra initialization error"
 
 **Solution**: Make sure `hydra-core` and `omegaconf` are installed:
 

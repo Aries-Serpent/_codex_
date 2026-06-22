@@ -1,5 +1,7 @@
 # Repo Survey — 0D_base_ & PR 1926 — 2025-10-29 (UTC)
 
+**Last Updated:** 2026-06-22
+
 **Ref:** branch `0D_base_`  commit `a2deb8e0`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926`
 
 ---
@@ -404,7 +406,7 @@ and runtime allowances required by bespoke hosts.
    `ReasoningTrainer`.
 ```text
 
-### >>> RESULT: reasoning_pod asset check@0D_base_
+## >>> RESULT: reasoning_pod asset check@0D_base_
 ```text
 Docs reference `docs/deployment/reasoning_pod.md` and matching preset `configs/deploy/reasoning_pod.yaml`; both exist locally.
 ```text

@@ -1,5 +1,7 @@
 # Repository Admin Implementation Decisions - Executive Summary
 
+**Last Updated:** 2026-06-22
+
 > **Quick Reference Guide** | See [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_DECISIONS.md) for full analysis
 
 ---
@@ -90,7 +92,7 @@ code_smells:
   god_class: {methods: 20, lines: 500, severity: warning}
 ```
 
-### Parser Strategy
+## Parser Strategy
 ```yaml
 # configs/parsing.yaml
 parsing:
@@ -99,7 +101,7 @@ parsing:
   fallback: parso      # For error recovery
 ```
 
-### CI Configuration
+## CI Configuration
 ```yaml
 # .github/workflows/code-quality.yml
 AST_SIMILARITY_ENABLE: "1"    # Enable in CI
@@ -107,7 +109,7 @@ quality_gate_mode: "observe"  # Phase 1
 fail_on: [error, critical]    # Block on these severities
 ```
 
-### Export Formats
+## Export Formats
 ```python
 # Priority order
 1. JSON    - Default (automation)

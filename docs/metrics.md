@@ -1,5 +1,7 @@
 # Metrics Guide
 
+**Last Updated:** 2026-06-22
+
 > Comprehensive guide to evaluation metrics in the Codex ML framework
 
 ## Overview
@@ -33,7 +35,7 @@ score = accuracy(predictions, labels)
 print(f"Accuracy: {score:.4f}")
 ```text
 
-### Class-based metrics
+## Class-based metrics
 
 The `codex_ml.metrics.metric_implementations` module provides stateful metric
 classes used by the unified training loop. They accumulate batches and expose a
@@ -99,7 +101,7 @@ score = bleu(predictions, references)
 - Uses smoothing for short sequences
 - Returns `None` if `nltk` is not installed
 
-### ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation)
+## ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation)
 
 **Dependency:** `rouge-score>=0.1.2`
 
@@ -184,7 +186,7 @@ pip install rouge-score
 pip install nltk rouge-score
 ```text
 
-### Extras Group (if configured in pyproject.toml)
+## Extras Group (if configured in pyproject.toml)
 
 ```bash
 # Install with extras group
@@ -311,7 +313,7 @@ def metric(
     Returns:
         Float score or None if unavailable
     """
-    ...
+    pass  # Implementation details
 ```text
 
 ## Common Patterns

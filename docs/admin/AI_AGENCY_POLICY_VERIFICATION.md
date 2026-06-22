@@ -1,5 +1,7 @@
 # AI Agency Policy Verification Protocol
 
+**Last Updated:** 2026-06-22
+
 ## Prime Directive
 **"Leave the codebase better than you found it"**
 

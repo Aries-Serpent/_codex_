@@ -1,5 +1,7 @@
 # GitHub Copilot Agent: Coverage Continuation Prompt
 
+**Last Updated:** 2026-06-22
+
 ## 📍 CHECKPOINT: Session e97ffde
 
 This prompt enables GitHub Copilot Agent to resume coverage enhancement work from the last checkpoint.
@@ -57,31 +59,31 @@ python3 -m pytest tests/agents/ --tb=line -q 2>&1 | grep -E "TypeError|Attribute
 # RIGHT: memory.store_memory(key="key", value="value")
 ```
 
-#### For connect_nodes issues:
+## For connect_nodes issues:
 ```python
 # WRONG: model.connect_nodes(node1, node2, EdgeType.X, {})
 # RIGHT: model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.X)
 ```
 
-#### For EnergyState issues:
+## For EnergyState issues:
 ```python
 # WRONG: EnergyState(energy=10.0, entropy=0.5)
 # RIGHT: EnergyState(configuration={}, energy=10.0, entropy=0.5)
 ```
 
-#### For HamiltonianEvolver issues:
+## For HamiltonianEvolver issues:
 ```python
 # WRONG: evolver.harmonic_hamiltonian(omega=1.0)
 # RIGHT: evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=1.0)
 ```
 
-#### For expected_payoff issues:
+## For expected_payoff issues:
 ```python
 # WRONG: engine.expected_payoff()
 # RIGHT: engine.expected_payoff(TeamType.BLUE)
 ```
 
-#### For methods that don't exist:
+## For methods that don't exist:
 ```python
 if hasattr(obj, 'method_name'):
     result = obj.method_name(...)

@@ -44,7 +44,7 @@ Dates are **preserved** when they appear in these contexts:
    - `**Published:** 2026-01-05`
 
 5. **Historical Records**
-   - `Updated: 2026-01-05`
+   - `Updated: 2026-06-22`
    - `Committed: 2026-01-04`
    - `Date: 2026-01-06`
 
@@ -121,7 +121,7 @@ cat document.md | python scripts/security/date_sanitizer.py
 python scripts/security/date_sanitizer.py document.md 2> replacements.log
 ```
 
-### Python API
+## Python API
 
 ```python
 from scripts.security.date_sanitizer import sanitize_planning_dates
@@ -137,7 +137,7 @@ print(replacements)
 # Output: ["Quarter references (e.g., 'Q1 2026' -> 'Current Cycle Q[n]'): 'Q1 2026' -> 'Current Cycle Q[n]'"]
 ```
 
-### Integration with Cognitive Brain
+## Integration with Cognitive Brain
 
 ```python
 # In cognitive_app/document_processor.py

@@ -1,5 +1,7 @@
 # TOMBSTONE — <original_path>
 
+**Last Updated:** 2026-06-22
+
 This tombstone replaces the removed artifact `<original_path>`.
 
 - removed_on: <YYYY-MM-DDTHH:MM:SSZ>

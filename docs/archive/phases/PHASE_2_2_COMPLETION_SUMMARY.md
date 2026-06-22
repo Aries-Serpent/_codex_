@@ -52,7 +52,7 @@ Successfully generated and validated **181 comprehensive tests** across **7 test
 Total Runtime: < 1 second
 ```
 
-### CLI Module Tests  
+### CLI Module Tests
 ```
 ✅ 43 tests PASSED (lightweight mode)
 ⚠️  34 tests require typer (skipped in CI)
@@ -111,7 +111,7 @@ CODEX_CLI_LIGHTWEIGHT=1 pytest tests/cli/test_*_comprehensive.py -v
 pytest tests/data/test_*_comprehensive.py --cov=src/codex_ml/data
 ```
 
-### Dependencies
+## Dependencies
 - Core: pytest, pytest-cov
 - Optional: typer, pandas, torch, mlflow, hydra-core
 - Tests gracefully skip when optional deps missing

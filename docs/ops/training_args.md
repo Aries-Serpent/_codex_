@@ -2,6 +2,8 @@
 
 # Training Arguments (YAML/Hydra)
 
+**Last Updated:** 2026-06-22
+
 - **gradient_accumulation_steps** / **grad_accum**: accumulate before optimizer step; both keys are now honoured by the HF trainer entrypoint.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 - **reproducibility.cudnn_deterministic**: propagates to both custom and HF loops to toggle deterministic algorithms.
@@ -14,7 +16,7 @@ python training/run.py training=base epochs=2 gradient_accumulation_steps=4
 ```text
 To resume from a saved run, pass `resume_from=/path/to/checkpoint`.
 
-### Parameter sweeps
+## Parameter sweeps
 
 Hydra's multirun mode can explore hyperparameter grids. A sample sweep
 configuration is provided at `configs/training/sweep_example.yaml` and can be

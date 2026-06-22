@@ -1,5 +1,7 @@
 # Cognitive App CLI — Copilot Agent Connection Guide
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ VERIFIED 2026-03-05 (PR #3497 W-114 audit)
 > **Server:** `http://localhost:8765` (FastAPI — auto-started by `copilot-setup-steps.yml`)
 > **Frontend:** `https://aries-serpent.github.io/_codex_/cognitive_app` (GitHub Pages SPA)
@@ -439,7 +441,7 @@ brain.proxy_request(
 )
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # List environment variables (environment name: "production")
@@ -457,7 +459,7 @@ curl -s -X POST http://localhost:8765/api/request \
   }'
 ```
 
-### Org Variables
+## Org Variables
 
 ```bash
 # List org variables
@@ -475,7 +477,7 @@ curl -s -X POST http://localhost:8765/api/request \
   }'
 ```
 
-### Live Test Results (2026-03-05 PR #3497 W-117)
+## Live Test Results (2026-03-05 PR #3497 W-117)
 
 **Hierarchy demonstration — same operation via each tier:**
 
@@ -529,7 +531,7 @@ The server is normally auto-started by `copilot-setup-steps.yml`. If it failed:
 1. Check `$COGNITIVE_BRAIN_SERVER_LOG` for startup errors
 2. Verify `httpx`, `fastapi`, `uvicorn` are installed: `pip install fastapi uvicorn httpx`
 
-### Env vars not set
+## Env vars not set
 
 ```bash
 # Manual injection fallback
@@ -540,7 +542,7 @@ export COPILOT_CLI_BASE_URL=http://localhost:8765
 Root cause: `.codex/agent_context.json` missing or `copilot-setup-steps.yml` injection step
 skipped. See RC-1/RC-2 in `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md`.
 
-### Memory endpoints return 503
+## Memory endpoints return 503
 
 ```
 {"detail": "Memory server unavailable: CODEX_MASTER_KEY not set"}
@@ -580,7 +582,7 @@ For authenticated variable management, use the **primary mechanism** (MCP tools)
 when `CODEX_MASTER_KEY` is not available in the process env. The MCP tools carry their own
 credentials independently of this server.
 
-### detect-secrets baseline fails after touching `agent-auth-delegation.yml`
+## detect-secrets baseline fails after touching `agent-auth-delegation.yml`
 
 Run the targeted scan (never full-repo scan):
 ```bash

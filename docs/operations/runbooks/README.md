@@ -1,5 +1,7 @@
 # Operational Runbooks
 
+**Last Updated:** 2026-06-22
+
 Comprehensive incident response procedures for production ML operations.
 
 ## Available Runbooks

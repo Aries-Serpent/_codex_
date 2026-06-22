@@ -1,5 +1,7 @@
 # Evaluation Metrics Guide
 
+**Last Updated:** 2026-06-22
+
 This guide documents the built-in metrics available in the `codex_ml` evaluation framework and how to use them for model assessment.
 
 ## Overview
@@ -27,9 +29,9 @@ score = metric(predictions=[1, 2, 3], targets=[1, 2, 4], ignore_index=-100)
 - `targets`: Sequence of target token IDs
 - `ignore_index`: Token ID to ignore (default: -100)
 
-### Text-Level Metrics
+## Text-Level Metrics
 
-#### `exact_match`
+### `exact_match`
 Computes exact string match after normalization (lowercase, whitespace collapse).
 
 **Usage**:
@@ -45,7 +47,7 @@ score = metric(
 **Parameters**:
 - `remove_punct`: Whether to remove punctuation before comparison (default: False)
 
-#### `f1`
+## `f1`
 Computes average per-example F1 score over whitespace-tokenized words (bag-of-words).
 
 **Usage**:
@@ -58,14 +60,14 @@ score = metric(
 # Returns F1 based on token overlap
 ```text
 
-### Generative Metrics
+## Generative Metrics
 
 > ℹ️ When running via the Typer evaluation CLI, provide
 > `--prediction-transform` / `--target-transform` (or configure
 > `evaluation.prediction_transform`) so that raw model outputs are decoded to
 > text before these metrics are computed.
 
-#### `bleu`
+### `bleu`
 Computes corpus-level BLEU using a built-in, offline implementation with
 uniform n-gram weighting and exponential brevity penalty.
 
@@ -83,7 +85,7 @@ score = metric(
 - No external dependencies required.
 - Suitable for deterministic offline evaluation.
 
-#### `rouge_l`
+## `rouge_l`
 Computes ROUGE-L F-measure using an internal longest-common-subsequence
 implementation.
 
@@ -101,7 +103,7 @@ score = metric(
 - Offline and dependency-free.
 - Captures fluency-sensitive overlap via LCS.
 
-#### `chrf`
+## `chrf`
 Character-level F-score metric.
 
 **Optional dependencies**: `sacrebleu` (preferred) or `nltk`
@@ -113,9 +115,9 @@ score = metric(preds=["hello"], targets=["helo"])
 # Returns: chrF score or None
 ```text
 
-### Diversity Metrics
+## Diversity Metrics
 
-#### `dist-1` / `dist-2`
+### `dist-1` / `dist-2`
 Measures lexical diversity as the ratio of unique unigrams (dist-1) or bigrams (dist-2) to total tokens.
 
 **Usage**:
@@ -130,9 +132,9 @@ score = metric(preds=["the cat the dog", "test test"], targets=None)
 - Useful for assessing generation quality
 - `targets` parameter is ignored (not used for diversity)
 
-### Language Model Metrics
+## Language Model Metrics
 
-#### `ppl` / `perplexity`
+### `ppl` / `perplexity`
 Computes perplexity from negative log-likelihood values.
 
 **Usage**:
@@ -146,9 +148,9 @@ score = metric([2.3, 1.8, 2.1])  # Returns: exp(mean(nll))
 score = metric(nll_sum=100.0, n_tokens=50)  # Returns: exp(100/50)
 ```text
 
-### Offline Metrics
+## Offline Metrics
 
-#### `offline:weighted-accuracy`
+### `offline:weighted-accuracy`
 Weighted accuracy that loads class weights from a local JSON fixture.
 
 **Configuration**:
@@ -196,7 +198,7 @@ print(results["metrics"])
 # Output: {'exact_match': 0.85, 'f1': 0.92, 'bleu': 0.45, 'rougeL': 0.78}
 ```text
 
-### Listing Available Metrics
+## Listing Available Metrics
 
 ```python
 from codex_ml.metrics.registry import list_metrics

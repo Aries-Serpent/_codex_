@@ -3,7 +3,7 @@
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2025-12-17 | Author: mbaetiong
+> Generated: 2026-06-22 | Author: mbaetiong
 
 ## Overview
 
@@ -116,7 +116,7 @@ python -m codex.cli transform 20251217-abc123 --tier A --auto --no-dry-run
 | B | Apply with Tests | ✅ With tests | Type hints, function extraction |
 | C | Suggest Only | ❌ No | Async conversion, API redesign |
 
-### Step 4: Verify
+## Step 4: Verify
 
 Compares baseline and patched behavior.
 

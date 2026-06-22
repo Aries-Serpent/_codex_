@@ -7,6 +7,8 @@ summary: "Superseded condensed archive policy excerpt."
 
 # Archive Policy Summary (v2, Deprecated)
 
+**Last Updated:** 2026-06-22
+
 This short-form summary captured the same governance, cadence, and evidence expectations that now live in the
 [Canonical Archiving Policy](../canonical-archiving-policy.md). It is retained only for provenance so that historical audit
 artifacts referencing the "v2" summary still resolve to a readable document.

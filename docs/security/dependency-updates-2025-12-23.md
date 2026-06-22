@@ -1,5 +1,7 @@
 # Dependency Security Updates - 2025-12-23
 
+**Last Updated:** 2026-06-22
+
 ## Summary
 
 Verified all critical dependencies are at secure versions. No vulnerable versions found.

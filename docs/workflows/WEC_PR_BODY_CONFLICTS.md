@@ -1,5 +1,7 @@
 # WEC PR Body Append — Conflicts & Best Approach
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.0.0
 > **Created:** 2026-03-31 S260
 > **Status:** ✅ Authoritative — identified in S260, hardened in `session_wrapup_autofix.py`
@@ -102,7 +104,7 @@ pr_description = f"""{progress_checklist}
 # Then pass pr_description to report_progress(prDescription=pr_description, ...)
 ```
 
-### Pre-checked Always-Required Items
+## Pre-checked Always-Required Items
 
 These items are **always** `[x]` regardless of `existing_state` (enforced by `_WEC_ALWAYS_REQUIRED`):
 

@@ -1,5 +1,7 @@
 # Operational Templates Index
 
+**Last Updated:** 2026-06-22
+
 The `docs/templates/` directory curates reusable runbooks that combine execution guidance with customizable placeholders. Each template follows a role-gated workflow: **developers** draft the plan, **maintainers** execute or approve the rollout, and **reviewers** confirm success criteria using the embedded checklists.
 
 ## Available Templates

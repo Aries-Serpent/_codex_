@@ -1,5 +1,5 @@
 # ADR-20260304: Second D_CAPABLE Agent Promotion — `workflow-ci-fixer`
-> Generated: 2026-03-04T19:04:00Z | Author: copilot-swe-agent[bot]
+> Generated: 2026-06-22T19:04:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3494
 > Predecessor ADR: ADR-20260303-first-d-capable-promotion.md

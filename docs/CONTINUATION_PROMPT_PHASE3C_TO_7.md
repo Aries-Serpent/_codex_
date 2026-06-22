@@ -44,7 +44,7 @@ pytest tests/test_rag_monitoring.py  # Run separately
 pytest tests/test_rag_indexer.py     # Run separately
 ```
 
-#### Step 2: Expand Indexer Tests
+## Step 2: Expand Indexer Tests
 
 **Target Coverage:** Lines 447-738 in `src/codex/rag/indexer.py`
 
@@ -187,7 +187,7 @@ pytest tests/test_rag_indexer.py     # Run separately
         # Verify specific error message
     ```
 
-#### Step 3: Run Coverage
+### Step 3: Run Coverage
 ```bash
 pip install pytest-xdist -q  # Parallel testing
 pytest tests/test_rag_indexer_advanced.py \
@@ -548,7 +548,7 @@ def test_cache_effectiveness(retriever):
     assert hit_rate_2 > 0.70, "Cache hit rate below target"
 ```
 
-#### Step 2: Run Load Tests
+## Step 2: Run Load Tests
 ```bash
 # Create reports directory
 mkdir -p reports
@@ -569,7 +569,7 @@ pytest tests/load/test_rag_load.py::test_memory_leak_detection -v -s
 pytest tests/load/test_rag_load.py::test_cache_effectiveness -v -s
 ```
 
-#### Step 3: Generate Load Test Report
+## Step 3: Generate Load Test Report
 
 **File:** `docs/LOAD_TEST_REPORT.md`
 
@@ -630,7 +630,7 @@ pytest tests/load/test_rag_load.py::test_cache_effectiveness -v -s
 [List any performance improvements needed]
 ```
 
-#### Step 4: Commit & Report
+### Step 4: Commit & Report
 ```bash
 git add tests/load/ docs/LOAD_TEST_REPORT.md reports/
 git commit -m "Add load testing framework and execute 1M query test
@@ -728,7 +728,7 @@ Deploy RAG system across 3 AWS regions with:
 - Total: $N/month
 ```
 
-#### Step 2: Infrastructure as Code
+### Step 2: Infrastructure as Code
 
 **File:** `deploy/terraform/multi-region/main.tf`
 
@@ -848,7 +848,7 @@ resource "aws_s3_bucket_replication_configuration" "index_replication" {
 }
 ```
 
-#### Step 3: Index Sync Service
+## Step 3: Index Sync Service
 
 **File:** `src/codex/deployment/index_sync.py`
 
@@ -916,7 +916,7 @@ class IndexSyncService:
         pass
 ```
 
-#### Step 4: Deploy & Validate
+### Step 4: Deploy & Validate
 ```bash
 # Initialize Terraform
 cd deploy/terraform/multi-region
@@ -944,11 +944,11 @@ pytest tests/deployment/test_multi_region.py -v
 
 ---
 
-### Phase 7: Monitoring Dashboards (P2)
+## Phase 7: Monitoring Dashboards (P2)
 
 **Objective:** Create 5 Grafana dashboards with 10+ alert rules
 
-#### Dashboards
+### Dashboards
 
 1. **Executive Dashboard** - High-level KPIs
 2. **Operations Dashboard** - Detailed metrics

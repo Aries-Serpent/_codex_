@@ -1,5 +1,7 @@
 # Cargo Features Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This document explains the feature system in `Cargo.toml` for the Rust-Python hybrid swarm engine. Understanding these features is critical to prevent CI failures like the January 19, 2026 incident where 10 workflows failed due to missing feature declarations.
@@ -55,21 +57,21 @@ cargo test --lib
 # Result: Compiles without Python bindings
 ```
 
-### Scenario 2: Full Feature Testing (CI)
+## Scenario 2: Full Feature Testing (CI)
 ```bash
 cargo clippy --all-features
 # Features: default, python, extension-module
 # Result: Validates all code paths including Python bindings
 ```
 
-### Scenario 3: Python Extension Build
+## Scenario 3: Python Extension Build
 ```bash
 maturin build --release
 # Features: default, extension-module (auto-added)
 # Result: Creates Python .so/.pyd file
 ```
 
-### Scenario 4: Development Python Extension
+## Scenario 4: Development Python Extension
 ```bash
 maturin develop
 # Features: default, extension-module (auto-added)
@@ -89,7 +91,7 @@ cargo build --features python
 maturin build --features python
 ```
 
-### ❌ Pitfall 2: Missing Feature Declaration
+## ❌ Pitfall 2: Missing Feature Declaration
 **Problem**: Code uses `#[cfg(feature = "xyz")]` but `xyz` not in Cargo.toml.
 
 **Symptoms**:

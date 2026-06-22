@@ -64,7 +64,7 @@ pip install .
 
 ---
 
-### Issue 3: YAML Syntax Error
+## Issue 3: YAML Syntax Error
 
 **Symptom:**
 ```
@@ -165,7 +165,7 @@ epochs = cfg.get("training", {}).get("epochs", 10)
 
 ---
 
-### Issue 6: Duplicate Key Warning
+## Issue 6: Duplicate Key Warning
 
 **Symptom:**
 ```
@@ -355,7 +355,7 @@ from codex.utils.config_loader import MissingConfigException
 
 ---
 
-### Issue 12: Config Not Found in Tests
+## Issue 12: Config Not Found in Tests
 
 **Symptom:**
 ```
@@ -418,7 +418,7 @@ from pprint import pprint
 pprint(dict(cfg) if hasattr(cfg, 'items') else cfg)
 ```
 
-### Verify Interpolation Resolution
+## Verify Interpolation Resolution
 
 ```python
 from omegaconf import OmegaConf
@@ -449,7 +449,7 @@ if OmegaConf.is_interpolation(cfg, "epochs"):
 cat tests/test_config_loader.py
 ```
 
-### 3. Validate Config File
+## 3. Validate Config File
 ```bash
 # Check YAML syntax
 python -c "import yaml; yaml.safe_load(open('conf/model/base.yaml'))"
@@ -462,7 +462,7 @@ print('✓ Config loads successfully')
 "
 ```
 
-### 4. File an Issue
+## 4. File an Issue
 If problem persists:
 1. Create GitHub issue with label "configuration"
 2. Include:
@@ -494,7 +494,7 @@ find conf/ -name "*.yaml"
 grep -r "from config_legacy" src/ tests/
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # Suppress Hydra extras warning

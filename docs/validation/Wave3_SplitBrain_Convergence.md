@@ -1,5 +1,5 @@
 # [Wave 3]: Split-Brain Convergence & Canonical Imports (v1.2.9)
-> Generated: 2025-12-05 | Author: mbaetiong
+> Generated: 2026-06-22 | Author: mbaetiong
 
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
@@ -133,7 +133,7 @@ python scripts/space_traversal/audit_runner.py diff \
 pytest -q tests/validation/test_import_shims.py tests/validation/
 ```
 
-### 3. CI Integration
+## 3. CI Integration
 
 - Artifact upload and PR comment with metrics
 - Baseline comparison and regression tracking
@@ -209,7 +209,7 @@ mv training/config.py src/training/
 mv tokenization/train_tokenizer.py src/tokenization/
 ```
 
-### Phase 2: Shim Removal
+## Phase 2: Shim Removal
 
 After confirming all imports work:
 - Remove shim files (they become redundant)
@@ -272,7 +272,7 @@ from src.training.engine_hf_trainer import run_hf_trainer
 # → run_hf_trainer is available ✅
 ```
 
-### Shim Overhead
+## Shim Overhead
 
 - **First import**: One additional `import_module()` call
 - **Subsequent imports**: Zero (Python's module cache)

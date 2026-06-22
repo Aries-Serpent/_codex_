@@ -1,5 +1,7 @@
 # Branch Protection Checklist (Archive & Hygiene)
 
+**Last Updated:** 2026-06-22
+
 This checklist aligns GitHub Branch Protection with our Archive & Hygiene workflow so that merges are gated on evidence, provenance, and governance.
 
 > Apply to your default branch (usually `main`). Navigate: **Settings → Branches → Branch protection rules → Add rule**.

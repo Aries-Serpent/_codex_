@@ -1,5 +1,7 @@
 # Codebase-Wide Autonomy: PR Template · WEC · Workflows · Discussions · Elevated Privileges
 
+**Last Updated:** 2026-06-22
+
 > **Document:** `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`  
 > **Status:** ✅ Living document — 2026-05-08  
 > **Scope:** How every surface (PR template, WEC, GitHub Actions, Discussions, Webhooks) is wired
@@ -28,6 +30,7 @@
 ## 1. The Five Surfaces — Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🏗️ Five Autonomy Surfaces", "📋 PR Template\n• Agent context metadata\n• WEC checkbox block\n• Cost governance\n• Token delegation gate\n• Safety confirmations"'}}%%
 graph TD
     subgraph SURFACES["🏗️ Five Autonomy Surfaces"]
         PR["📋 PR Template\n• Agent context metadata\n• WEC checkbox block\n• Cost governance\n• Token delegation gate\n• Safety confirmations"]
@@ -67,6 +70,7 @@ graph TD
 ## 2. Master Privilege Routing Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing /"Agent needs to perform an operation"/, "Use CODEX_MASTER_KEY\n✅ Variables API\n✅ Secrets API"'}}%%
 flowchart TD
     OP[/"Agent needs to perform an operation"/]
 
@@ -104,6 +108,7 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) is the **single source of t
 ### 3.1 Template Anatomy
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📋 PR Template (v3.0.0)", "🤖 Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
 graph LR
     subgraph TEMPLATE["📋 PR Template (v3.0.0)"]
         META["🤖 Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
@@ -141,6 +146,7 @@ The WEC block is the **runtime control plane** for all 41 optional workflows. Ch
 ### 4.1 WEC Item Classification & Token Routing
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "WEC Checkbox Classes", "✅ ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"'}}%%
 graph TD
     subgraph WEC_CLASSES["WEC Checkbox Classes"]
         AR["✅ ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"]
@@ -177,6 +183,7 @@ graph TD
 ## 5. Workflow/Actions Privilege Matrix
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Tier 1 — Full Autonomous Authority (CODEX_MASTER_KEY)", "agent-auth-delegation.yml\n• Sets COPILOT_AGENT_AUTH_ENABLED\n• Adds agents to ALLOWED_ACTORS\n• Manages COPILOT_ACTIVE_SESSION lock\n• Dispatches sub-workflows"'}}%%
 graph TD
     subgraph TIER1["Tier 1 — Full Autonomous Authority (CODEX_MASTER_KEY)"]
         W1["agent-auth-delegation.yml\n• Sets COPILOT_AGENT_AUTH_ENABLED\n• Adds agents to ALLOWED_ACTORS\n• Manages COPILOT_ACTIVE_SESSION lock\n• Dispatches sub-workflows"]
@@ -228,6 +235,7 @@ Discussions serve two roles: **accountability surface** and **async command inbo
 ### 6.1 Discussion Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing Discussion Bridge'}}%%
 sequenceDiagram
     participant Agent as Copilot Agent
     participant WF as post-accountability-to-discussion.yml
@@ -269,6 +277,7 @@ Webhooks close the **feedback loop latency** from ~5 minutes (polling) to **<2 s
 ### 7.1 Webhook Architecture (Target State)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "GitHub Events", "push"'}}%%
 graph LR
     subgraph GH["GitHub Events"]
         E1["push"]
@@ -320,6 +329,7 @@ graph LR
 ### 7.3 Webhook → Repo Variable Feedback Loop
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "GitHub webhook\n(workflow_run event)", "Cognitive Brain\nPOST /webhook/github"'}}%%
 flowchart LR
     HOOK["GitHub webhook\n(workflow_run event)"] --> CB["Cognitive Brain\nPOST /webhook/github"]
     CB --> CLASSIFY["Classify event\n(success/failure/rate-limit)"]
@@ -369,6 +379,7 @@ Variables are the **persistent shared state** between sessions. The agent reads 
 ### 8.2 Variable Write Path
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Source of change\n(workflow / probe / admin)", "gh variable set NAME --body VALUE\n--repo Aries-Serpent/_codex_\nenv: GH_TOKEN=CODEX_MASTER_KEY"'}}%%
 flowchart LR
     SOURCE["Source of change\n(workflow / probe / admin)"] --> METHOD{"Write method"}
     METHOD -->|"Workflow step"| GH_CLI["gh variable set NAME --body VALUE\n--repo Aries-Serpent/_codex_\nenv: GH_TOKEN=CODEX_MASTER_KEY"]
@@ -385,6 +396,7 @@ flowchart LR
 ## 9. Full Autonomy Loop — End-to-End Sequence
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Copilot: GITHUB_ENV + sessio'}}%%
 sequenceDiagram
     participant Dev as Developer / Maintainer
     participant PR as GitHub PR
@@ -439,6 +451,7 @@ sequenceDiagram
 ## 10. Autonomy Decision Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Autonomous operation needed", "Use CODEX_MASTER_KEY\n→ 125 workflows pre-armed\n→ auto-approve fires on push\n→ action_required → approved instantly"'}}%%
 flowchart TD
     START(["Autonomous operation needed"]) --> AUTH_CHECK{"COPILOT_AGENT_AUTH_ENABLED\n= true? (permanent — always yes)"}
 
@@ -473,6 +486,7 @@ flowchart TD
 ## 11. Failure Modes & Fallback Chains
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Token Failure Cascade", "CODEX_MASTER_KEY expires\n→ 403 on Variables API\n→ 403 on workflow approve\n→ 403 on push\n→ ALL autonomous ops blocked"'}}%%
 graph TD
     subgraph FAILURE["Token Failure Cascade"]
         F1["CODEX_MASTER_KEY expires\n→ 403 on Variables API\n→ 403 on workflow approve\n→ 403 on push\n→ ALL autonomous ops blocked"]
@@ -514,11 +528,11 @@ and applies every allowed variable via `CODEX_MASTER_KEY`:
 gh pr comment <PR_NUMBER> --body "@agent-var-writer apply"
 
 # agent-var-writer.yml fires immediately:
-#   1. Validates .codex/agent_auth_session.json TTL (4h)
-#   2. Reads .codex/pending_var_updates.json
-#   3. PATCH /repos/.../actions/variables/{name} via CODEX_MASTER_KEY
-#   4. Writes confirmation to .codex/applied_var_updates.json
-#   5. Posts success summary as PR comment
+# 1. Validates .codex/agent_auth_session.json TTL (4h)
+# 2. Reads .codex/pending_var_updates.json
+# 3. PATCH /repos/.../actions/variables/{name} via CODEX_MASTER_KEY
+# 4. Writes confirmation to .codex/applied_var_updates.json
+# 5. Posts success summary as PR comment
 ```
 
 **Currently queued (will apply on next `@agent-var-writer apply`):**
@@ -536,7 +550,7 @@ gh pr comment <PR_NUMBER> --body "@agent-var-writer apply"
 | `CODEX_SESSION_HANDOFF_ENABLED` | `true` | Inject WEC+tasks+rate-limit into setup env |
 | `WEBHOOK_DOMAIN_VARIANT` | `preview.app.github.dev` | Active Codespaces domain suffix |
 
-### 12.2 Deploy Webhooks (No Human Needed)
+## 12.2 Deploy Webhooks (No Human Needed)
 
 `agent_infrastructure_manager.yml` fires on `issue_comment` — post a single PR comment:
 
@@ -545,12 +559,12 @@ gh pr comment <PR_NUMBER> --body "@agent-var-writer apply"
 gh pr comment <PR_NUMBER> --body "@agent-infra apply-webhooks"
 
 # agent_infrastructure_manager.yml fires:
-#   1. Auth-check: validates COPILOT_AGENT_AUTH_ENABLED=true
-#   2. Reads .codex/webhook_config.json
-#   3. Replaces placeholder URL with WEBHOOK_RECEIVER_URL repo variable
-#   4. POST /repos/.../hooks via CODEX_ADMIN_KEY (Webhooks:write)
-#   5. Updates .codex/webhook_registry.json with live hook IDs
-#   6. Posts deployment summary as PR comment
+# 1. Auth-check: validates COPILOT_AGENT_AUTH_ENABLED=true
+# 2. Reads .codex/webhook_config.json
+# 3. Replaces placeholder URL with WEBHOOK_RECEIVER_URL repo variable
+# 4. POST /repos/.../hooks via CODEX_ADMIN_KEY (Webhooks:write)
+# 5. Updates .codex/webhook_registry.json with live hook IDs
+# 6. Posts deployment summary as PR comment
 
 # Verify after deploy:
 gh pr comment <PR_NUMBER> --body "@agent-infra list-webhooks"
@@ -562,7 +576,7 @@ gh pr comment <PR_NUMBER> --body "@agent-infra list-webhooks"
 3. `copilot-agent-session-access-probe` — workflow_run, repo_dispatch
 4. `rate-limit-orchestration-trigger` — workflow_run, repo_dispatch *(new — added this session)*
 
-### 12.3 Arm WEC Validation Suite (No Human Needed)
+## 12.3 Arm WEC Validation Suite (No Human Needed)
 
 Check boxes in the WEC block of the PR body. `workflow-execution-gate.yml` detects
 newly-checked items and dispatches each one via `CODEX_MASTER_KEY`. `auto-approve-workflows`
@@ -599,7 +613,7 @@ python scripts/ci/rate_limit_orchestrator.py \
     --branch "$(git branch --show-current)"
 ```
 
-### 12.5 Full Autonomy Stack — One-Line Checklist
+## 12.5 Full Autonomy Stack — One-Line Checklist
 
 ```
 □ COPILOT_AGENT_AUTH_ENABLED=true            → confirmed ✅ (permanent)

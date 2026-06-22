@@ -15,6 +15,7 @@ The server prefers MCP protocol version **1.0** and negotiates via `mcp.negotiat
 ## Version Negotiation Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing "0.9", "1.0"'}}%%
 sequenceDiagram
     participant Client
     participant Server
@@ -175,7 +176,7 @@ async def handle_jsonrpc(request: Request):
     # Handle other methods...
 ```
 
-### Client Implementation (Python)
+## Client Implementation (Python)
 
 ```python
 import requests
@@ -222,7 +223,7 @@ client = MCPClient("https://api.example.com")
 client.connect()
 ```
 
-### Client Implementation (JavaScript)
+## Client Implementation (JavaScript)
 
 ```javascript
 class MCPClient {
@@ -699,7 +700,7 @@ class EmergencyVersionNegotiator(VersionNegotiator):
         return super().negotiate(client_versions)
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **High Negotiation Failure Rate:**
 1. Check logs for common client versions: `grep "negotiateVersion" logs/app.log | jq '.params.supported'`

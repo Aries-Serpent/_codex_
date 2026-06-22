@@ -1,12 +1,13 @@
 # Architecture Overview
 
-> Last updated: 2026-02-10
+> Last updated: 2026-06-22
 
 This document describes the high-level architecture of the _codex_ system.
 
 ## System Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Agent Core, Tool Orchestrator'}}%%
 graph TB
     subgraph "Agent Layer"
         AC[Agent Core]

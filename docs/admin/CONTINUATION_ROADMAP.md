@@ -1,5 +1,59 @@
 # Genesis Protocol - Continuation Roadmap
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Phase 1: Foundation ✅ COMPLETE](#phase-1-foundation--complete)
+  - [Completed Deliverables](#completed-deliverables)
+- [Phase 2: Advanced Automation (Next Priority)](#phase-2-advanced-automation-next-priority)
+  - [2.1 Integration Testing Framework](#21-integration-testing-framework)
+  - [2.2 Token Rotation Automation](#22-token-rotation-automation)
+  - [2.3 Genesis Status Monitoring Dashboard](#23-genesis-status-monitoring-dashboard)
+- [Phase 3: Advanced Features (Future)](#phase-3-advanced-features-future)
+  - [3.1 Intelligent Agent Decision Engine](#31-intelligent-agent-decision-engine)
+  - [3.2 Multi-Repository Support](#32-multi-repository-support)
+  - [3.3 Compliance & Audit Automation](#33-compliance--audit-automation)
+- [Implementation Guidelines](#implementation-guidelines)
+  - [Development Workflow](#development-workflow)
+  - [Code Quality Standards](#code-quality-standards)
+- [Example: Integration test structure](#example-integration-test-structure)
+- [Documentation Standards](#documentation-standards)
+- [Resource Requirements](#resource-requirements)
+  - [Technical Resources](#technical-resources)
+  - [Human Resources](#human-resources)
+- [Risk Assessment](#risk-assessment)
+  - [Phase 2 Risks](#phase-2-risks)
+  - [Mitigation Strategies](#mitigation-strategies)
+- [Success Metrics](#success-metrics)
+  - [Phase 2 KPIs](#phase-2-kpis)
+  - [Long-term Goals](#long-term-goals)
+- [Continuation Plan Summary](#continuation-plan-summary)
+  - [Immediate Next Steps (Pre-commit 1-4)](#immediate-next-steps-pre-commit-1-4)
+  - [Medium-term Goals (Month 1-3)](#medium-term-goals-month-1-3)
+  - [Long-term Vision (Quarter 2-4)](#long-term-vision-quarter-2-4)
+- [Open Questions & Decisions Needed](#open-questions--decisions-needed)
+  - [Technical Decisions](#technical-decisions)
+  - [Operational Decisions](#operational-decisions)
+- [Resources & References](#resources--references)
+  - [Documentation](#documentation)
+  - [External Resources](#external-resources)
+  - [Community](#community)
+- [Appendix: File Structure for Phase 2](#appendix-file-structure-for-phase-2)
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ - Iterative Evolution](#path----iterative-evolution)
+  - [Fields 🔄 - Capability Gradients](#fields----capability-gradients)
+  - [Patterns 👁️ - Implementation Signatures](#patterns----implementation-signatures)
+  - [Redundancy 🔀 - Development Safety](#redundancy----development-safety)
+  - [Balance ⚖️ - Innovation vs Stability](#balance----innovation-vs-stability)
+- [⚡ Energy Distribution](#-energy-distribution)
+  - [Priority Breakdown by Phase](#priority-breakdown-by-phase)
+  - [Effort Allocation (Phase 2)](#effort-allocation-phase-2)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+  - [Rollback Strategy (Phase-Specific)](#rollback-strategy-phase-specific)
+
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong  
 > **Status:** Foundation Set - Ready for Phase 2 Implementation  
 > **Repository:** Aries-Serpent/_codex_
@@ -275,7 +329,7 @@ class TestGenesisWorkflow:
         assert result.safety_guards_active
 ```
 
-### Documentation Standards
+## Documentation Standards
 
 - All new features must include README.md
 - API documentation for public functions

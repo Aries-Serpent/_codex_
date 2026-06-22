@@ -1,5 +1,7 @@
 # Hydra overrides: the fast track
 
+**Last Updated:** 2026-06-22
+
 Codex uses a minimal **defaults list** so you can compose configs and tweak
 parameters straight from the command line. The root defaults live in
 `configs/base/hydra.yaml`:
@@ -32,7 +34,7 @@ log:
     - ndjson
 ```text
 
-### Fresh override examples
+## Fresh override examples
 
 ```bash
 # change seed and enable deterministic mode (mirrors the trainer defaults list)
@@ -56,7 +58,7 @@ the full grammar; the snippets above map 1:1 to our defaults list.
 > **Tip**: combine overrides with `--config-name` to swap entire component trees,
 > then override individual leaves as needed.
 
-### Offline reproducibility checklist
+## Offline reproducibility checklist
 
 - Use `codex config --audit last` to ensure `_self_` sits at the end of the
   defaults list before shipping a preset. The helper surfaces unresolved

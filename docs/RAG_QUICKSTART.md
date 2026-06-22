@@ -1,5 +1,7 @@
 # RAG Quickstart Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Codex RAG (Retrieval-Augmented Generation) system! This guide will get you up and running in minutes.
 
 ## Overview
@@ -30,7 +32,7 @@ python --version
 pip install sentence-transformers faiss-cpu numpy
 ```
 
-### Install Codex RAG
+## Install Codex RAG
 
 ```bash
 # From repository root
@@ -74,7 +76,7 @@ Added 45 vectors to FAISS index
 ✅ Index created at: .codex/tenants/quickstart/my_docs
 ```
 
-### Step 2: Query Your Index
+## Step 2: Query Your Index
 
 ```python
 from codex.rag import Retriever
@@ -111,7 +113,7 @@ for i, result in enumerate(results, 1):
    Getting started is easy. First, install the required dependencies...
 ```
 
-### Step 3: Use Caching for Speed
+## Step 3: Use Caching for Speed
 
 ```python
 from codex.rag import CachedRetriever
@@ -163,7 +165,7 @@ for r in results:
     print(f"{r['file']}: {r['text'][:80]}...")
 ```
 
-### Use Case 2: Multi-Tenant Documentation
+## Use Case 2: Multi-Tenant Documentation
 
 ```python
 from codex.rag import manage_tenant_indices
@@ -188,7 +190,7 @@ acme_results = retriever_acme.query("API authentication")
 globex_results = retriever_globex.query("API authentication")
 ```
 
-### Use Case 3: Merge Multiple Indices
+## Use Case 3: Merge Multiple Indices
 
 ```python
 from codex.rag import manage_tenant_indices
@@ -242,7 +244,7 @@ build_index_from_files(
 )
 ```
 
-### Retrieval Settings
+## Retrieval Settings
 
 ```python
 # Adjust search parameters
@@ -253,7 +255,7 @@ results = retriever.query(
 )
 ```
 
-### Cache Settings
+## Cache Settings
 
 ```python
 cached = CachedRetriever(
@@ -285,7 +287,7 @@ print(f"Average query latency: {stats['query_latency']['mean_ms']:.2f}ms")
 print(f"Cache hit rate: {stats['cache']['hit_rate']:.1%}")
 ```
 
-### Export Metrics
+## Export Metrics
 
 ```python
 # Prometheus format
@@ -311,7 +313,7 @@ if not index_path.exists():
     build_index_from_files(...)
 ```
 
-### Issue: Slow queries
+## Issue: Slow queries
 
 ```python
 # Use CachedRetriever for repeated queries
@@ -321,7 +323,7 @@ cached = CachedRetriever(...)
 results = retriever.query("query", top_k=3)  # Faster than top_k=50
 ```
 
-### Issue: Out of memory
+## Issue: Out of memory
 
 ```python
 # Reduce chunk size or process files in batches

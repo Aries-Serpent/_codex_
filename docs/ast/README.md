@@ -1,5 +1,7 @@
 # Codex AST Analysis Module
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The Codex AST Analysis module provides a unified framework for analyzing Abstract Syntax Trees (ASTs) across multiple languages. It offers language-agnostic representations, dependency analysis, code quality metrics, code smell detection, and multi-format export capabilities.
@@ -50,7 +52,7 @@ for node in tree.walk():
     print(f"{node.type.value}: {node.name}")
 ```
 
-### Creating AST Nodes
+## Creating AST Nodes
 
 ```python
 from pathlib import Path
@@ -79,7 +81,7 @@ for n in node.walk():
     print(f"{n.name} at depth {n.get_depth()}")
 ```
 
-### Dependency Analysis
+## Dependency Analysis
 
 ```python
 from codex.ast import DependencyGraph
@@ -101,7 +103,7 @@ except ValueError as e:
     print(f"Cannot sort: {e}")
 ```
 
-### Code Metrics
+## Code Metrics
 
 ```python
 from codex.ast import CodeMetrics, MetricsAggregator
@@ -123,7 +125,7 @@ agg.store_metrics("function_1", metrics)
 summary = agg.summary()
 ```
 
-### Code Smell Detection
+## Code Smell Detection
 
 ```python
 from codex.ast import CodeSmellDetector, detect_smells
@@ -144,7 +146,7 @@ smells = detector.detect_file("path/to/file.py")
 results = detector.detect_directory("src/", exclude_patterns=["**/test_*.py"])
 ```
 
-#### Available Smell Rules
+## Available Smell Rules
 
 | Rule ID | Name | Category | Severity |
 |---------|------|----------|----------|
@@ -198,7 +200,7 @@ exporter.export(ExportFormat.SQLITE, "output/graph.db")
 exporter.export(ExportFormat.MARKDOWN, "output/report.md")
 ```
 
-#### Export Formats
+## Export Formats
 
 | Format | Extension | Use Case |
 |--------|-----------|----------|

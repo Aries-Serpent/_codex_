@@ -1,7 +1,9 @@
 # API Reference Documentation
 
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 > **Version**: 1.0.0
-> **Generated**: 2025-12-11
+> **Generated**: 2026-06-22
 > **Auto-sync**: Updates with code changes via CI
 
 ---
@@ -62,7 +64,7 @@ count = memory.invalidate_stale_contexts(age_days=30)
 memory.complete_task(success=True, summary="Fixed vulnerability")
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -104,7 +106,7 @@ for issue in report.issues:
 results = engine.apply_fixes(dry_run=True)
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -191,7 +193,7 @@ if metadata.is_quarantine_expired(quarantine_duration=3600):
 
 ---
 
-### HARIntegration
+## HARIntegration
 
 **Module**: `src.codex_ml.integrations.har_integration`
 
@@ -224,7 +226,7 @@ for entry in replayer.entries:
 
 ---
 
-### Scalability Utilities
+## Scalability Utilities
 
 **Module**: `src.codex_ml.utils.scalability`
 

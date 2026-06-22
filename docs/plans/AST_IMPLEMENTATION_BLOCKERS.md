@@ -1,9 +1,45 @@
 # AST Standardization Implementation - Blockers & Issues Report
 
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+- [1. Critical Blockers (Cannot Proceed Without Resolution)](#1-critical-blockers-cannot-proceed-without-resolution)
+  - [1.1 Dependency Gaps](#11-dependency-gaps)
+  - [1.2 Architecture Gaps](#12-architecture-gaps)
+  - [1.3 Performance Gaps](#13-performance-gaps)
+- [2. Implementation Issues (Can Work Around, But Problematic)](#2-implementation-issues-can-work-around-but-problematic)
+  - [2.1 Existing AST Usage Inconsistency](#21-existing-ast-usage-inconsistency)
+  - [2.2 Testing Infrastructure Gaps](#22-testing-infrastructure-gaps)
+  - [2.3 Documentation Gaps](#23-documentation-gaps)
+  - [2.4 Integration Gaps](#24-integration-gaps)
+- [3. Architectural Challenges](#3-architectural-challenges)
+  - [3.1 Offline-First Constraint](#31-offline-first-constraint)
+  - [3.2 Python Version Compatibility](#32-python-version-compatibility)
+  - [3.3 Performance vs. Accuracy Tradeoff](#33-performance-vs-accuracy-tradeoff)
+- [4. Scope & Effort Analysis](#4-scope--effort-analysis)
+  - [4.1 Implementation Phases Breakdown](#41-implementation-phases-breakdown)
+  - [4.2 Resource Requirements](#42-resource-requirements)
+- [5. Risk Assessment](#5-risk-assessment)
+  - [5.1 Technical Risks](#51-technical-risks)
+  - [5.2 Project Risks](#52-project-risks)
+- [6. Recommendations](#6-recommendations)
+  - [6.1 Primary Recommendation: **DEFER TO DEDICATED PROJECT**](#61-primary-recommendation-defer-to-dedicated-project)
+  - [6.2 Alternative: Minimal AST Enhancements (If Must Proceed)](#62-alternative-minimal-ast-enhancements-if-must-proceed)
+- [7. Detailed Issues by Category](#7-detailed-issues-by-category)
+  - [7.1 Missing Components](#71-missing-components)
+  - [7.2 Configuration Gaps](#72-configuration-gaps)
+  - [7.3 Testing Gaps](#73-testing-gaps)
+- [8. Contextualized Implementation Experiences](#8-contextualized-implementation-experiences)
+  - [8.1 Current Repository Capabilities](#81-current-repository-capabilities)
+  - [8.2 Lessons from Existing AST Usage](#82-lessons-from-existing-ast-usage)
+- [9. Conclusion](#9-conclusion)
+  - [9.1 Summary of Blockers](#91-summary-of-blockers)
+  - [9.2 Final Recommendation](#92-final-recommendation)
+
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-**Generated**: 2025-11-09  
+**Generated**: 2026-06-22  
 **Context**: Analysis of AST standardization requirements vs current _codex_ repository state  
 **Purpose**: Document explicit blockers, issues, and implementation challenges  
 **Status**: ASSESSMENT COMPLETE

@@ -1,4 +1,6 @@
 # Cognitive Brain Quickstart - Agent Entry Point
+
+**Last Updated:** 2026-06-22
 ## 🎯 Wave Function Collapse Point
 
 **Choose your basis state** to collapse the superposition of possibilities into definite understanding:
@@ -125,6 +127,7 @@ decision = coordinator.achieve_consensus(proposals)
 ### Quantum Cognitive Brain V9 Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Cognitive Brain V9, Phase 8.9: Emergent Behavior'}}%%
 graph TD
     A[Cognitive Brain V9] --> B[Phase 8.9: Emergent Behavior]
     A --> C[Phase 8.10: Production Deployment]
@@ -191,7 +194,7 @@ pip install -r requirements.txt
 pip install -r requirements-test.txt
 ```
 
-### Project Structure
+## Project Structure
 ```
 _codex_/
 ├── .github/agents/
@@ -226,7 +229,7 @@ pytest .github/agents/core/tests/ --cov=.github.agents.core --cov-report=html
 pytest .github/agents/core/tests/ --benchmark-only
 ```
 
-### Code Quality Checks
+## Code Quality Checks
 ```bash
 # Type checking
 mypy .github/agents/core/
@@ -241,7 +244,7 @@ ruff check .github/agents/core/
 black .github/agents/core/
 ```
 
-### Adding New Components
+## Adding New Components
 
 1. **Follow PDA Loop Pattern**:
 ```python
@@ -337,7 +340,7 @@ where:
 k₁ = 0.18 → Quantum Advantage = 1/k₁ = 5.56x
 ```
 
-### Key Metrics
+## Key Metrics
 
 | Metric | Formula | Current | Target |
 |--------|---------|---------|--------|
@@ -394,7 +397,7 @@ if performance_degraded:
     engine.rollback(action.action_id)
 ```
 
-### Phase 8.10: Production Deployment
+## Phase 8.10: Production Deployment
 
 **AgentMarketplace**
 ```python
@@ -429,7 +432,7 @@ throughput_rps = suite.measure_throughput(callable_func)
 regression = suite.detect_regression(current_metrics, baseline_metrics)
 ```
 
-### Phase 8.11: Advanced Reasoning
+## Phase 8.11: Advanced Reasoning
 
 **SymbolicReasoningEngine**
 ```python
@@ -465,7 +468,7 @@ counterfactual = system.counterfactual_query(
 )
 ```
 
-### Phase 8.12: Multi-Agent Ecosystems
+## Phase 8.12: Multi-Agent Ecosystems
 
 **AgentNegotiationProtocol**
 ```python
@@ -537,7 +540,7 @@ monitoring.collect_metric("agent_deployed", 1)
 security.log_security_event("deployment", "system", "success")
 ```
 
-### Task 3: Reason About Decisions
+## Task 3: Reason About Decisions
 ```python
 from agents.core.phase8_11_advanced_reasoning import (
     SymbolicReasoningEngine,
@@ -558,7 +561,7 @@ print(f"Decision valid: {valid}")
 print(f"Explanation: {explanation}")
 ```
 
-### Task 4: Coordinate Multiple Agents
+## Task 4: Coordinate Multiple Agents
 ```python
 from agents.core.phase8_12_multi_agent_ecosystems import (
     CoalitionFormation,

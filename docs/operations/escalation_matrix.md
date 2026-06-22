@@ -1,5 +1,7 @@
 # Escalation Matrix
 
+**Last Updated:** 2026-06-22
+
 ## Severity Definitions
 
 | Level | Definition | Response Time | Examples |

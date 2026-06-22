@@ -1,5 +1,7 @@
 # Privacy
 
+**Last Updated:** 2026-06-22
+
 Differential privacy training can be enabled via the training config:
 
 ```yaml

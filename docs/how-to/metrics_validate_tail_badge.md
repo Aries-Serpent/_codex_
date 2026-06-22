@@ -1,5 +1,7 @@
 # Metrics: Validate, Tail & Badge
 
+**Last Updated:** 2026-06-22
+
 This guide shows how to:
 
 - **Validate** NDJSON metrics with a JSON Schema (Draft-07)

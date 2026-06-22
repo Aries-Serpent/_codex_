@@ -1,5 +1,7 @@
 # Minimal _codex_ Run (Scaffolding)
 
+**Last Updated:** 2026-06-22
+
 This example describes a minimal local run using the scaffolding modules:
 
 ## 1. Prepare the gap registry (optional but recommended)

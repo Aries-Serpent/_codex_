@@ -1,8 +1,148 @@
 # 🔧 Phase 0: Gap Resolution Implementation Guide
 
+## Table of Contents
+
+- [📋 Executive Summary](#-executive-summary)
+- [🚨 Section 1: Dependency Resolution (Days 1-3)](#-section-1-dependency-resolution-days-1-3)
+  - [1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies](#11-task-block-dep-001-add-libcst-to-core-dependencies)
+    - [1.1.1 Implementation Steps](#111-implementation-steps)
+- [List current dependencies](#list-current-dependencies)
+- [Check if libcst installed](#check-if-libcst-installed)
+- [List all AST-related imports in codebase](#list-all-ast-related-imports-in-codebase)
+- [Create test environment](#create-test-environment)
+- [Install with new dependencies](#install-with-new-dependencies)
+- [Verify imports](#verify-imports)
+- [Check for dependency conflicts](#check-for-dependency-conflicts)
+- [1.1.2 Acceptance Criteria](#112-acceptance-criteria)
+  - [1.1.3 Rollback Procedure](#113-rollback-procedure)
+- [If dependency conflicts discovered:](#if-dependency-conflicts-discovered)
+- [1.1.4 Validation Command](#114-validation-command)
+- [Run this to verify task complete](#run-this-to-verify-task-complete)
+- [1.2 Task BLOCK-DEP-002: Install Language Parser Binaries](#12-task-block-dep-002-install-language-parser-binaries)
+  - [1.2.1 Implementation Steps](#121-implementation-steps)
+- [Install tree-sitter core](#install-tree-sitter-core)
+- [Install language-specific parsers](#install-language-specific-parsers)
+- [For SQL support (optional, deferred if conflicts)](#for-sql-support-optional-deferred-if-conflicts)
+- [Verify installation](#verify-installation)
+- [Check Python grammar](#check-python-grammar)
+- [Test parsing](#test-parsing)
+- [Most distributions come pre-built, but if needed:](#most-distributions-come-pre-built-but-if-needed)
+- [Add language submodules](#add-language-submodules)
+- [Build](#build)
+- [File: src/codex_ml/ast/language_registry.py](#file-srccodex_mlastlanguage_registrypy)
+- [1.2.2 Acceptance Criteria](#122-acceptance-criteria)
+  - [1.2.3 Validation Command](#123-validation-command)
+  - [1.3 Task BLOCK-DEP-003: Add radon for Metrics](#13-task-block-dep-003-add-radon-for-metrics)
+    - [1.3.1 Implementation Steps](#131-implementation-steps)
+- [Already added to pyproject.toml in 1.1.2, just verify](#already-added-to-pyprojecttoml-in-112-just-verify)
+- [Test radon functionality](#test-radon-functionality)
+- [Compute cyclomatic complexity](#compute-cyclomatic-complexity)
+- [Compute maintainability index](#compute-maintainability-index)
+- [1.3.2 Acceptance Criteria](#132-acceptance-criteria)
+  - [1.4 Task BLOCK-DEP-004: Move parso to Core Dependencies](#14-task-block-dep-004-move-parso-to-core-dependencies)
+    - [1.4.1 Implementation](#141-implementation)
+    - [1.4.2 Acceptance Criteria](#142-acceptance-criteria)
+  - [1.5 Task BLOCK-DEP-005: Configure SQLite Storage Layer](#15-task-block-dep-005-configure-sqlite-storage-layer)
+    - [1.5.1 Implementation Steps](#151-implementation-steps)
+- [File: src/codex_ml/ast/storage/schema.py](#file-srccodex_mlaststorageschemapy)
+- [File: src/codex_ml/ast/storage/manager.py](#file-srccodex_mlaststoragemanagerpy)
+- [tests/ast/test_storage.py](#testsasttest_storagepy)
+- [1.5.2 Acceptance Criteria](#152-acceptance-criteria)
+  - [1.5.3 Validation Command](#153-validation-command)
+- [🏗️ Section 2: Architecture Foundation (Days 4-10)](#-section-2-architecture-foundation-days-4-10)
+  - [2.1 Task BLOCK-ARCH-001: Design StandardizedASTNode](#21-task-block-arch-001-design-standardizedastnode)
+    - [2.1.1 Implementation](#211-implementation)
+- [File: src/codex_ml/ast/nodes.py](#file-srccodex_mlastnodespy)
+- [2.1.2 Acceptance Criteria](#212-acceptance-criteria)
+  - [2.2 Task BLOCK-ARCH-002: Design Dependency Graph](#22-task-block-arch-002-design-dependency-graph)
+    - [2.2.1 Implementation](#221-implementation)
+- [File: src/codex_ml/ast/graph.py](#file-srccodex_mlastgraphpy)
+- [2.2.2 Acceptance Criteria](#222-acceptance-criteria)
+  - [2.3 Task BLOCK-ARCH-003: Metrics Aggregation Layer](#23-task-block-arch-003-metrics-aggregation-layer)
+    - [2.3.1 Implementation](#231-implementation)
+- [File: src/codex_ml/ast/metrics_aggregator.py](#file-srccodex_mlastmetrics_aggregatorpy)
+- [2.3.2 Acceptance Criteria](#232-acceptance-criteria)
+  - [2.4 Task BLOCK-ARCH-004: Incremental Analysis Framework](#24-task-block-arch-004-incremental-analysis-framework)
+- [File: src/codex_ml/ast/incremental.py](#file-srccodex_mlastincrementalpy)
+- [2.4.2 Acceptance Criteria](#242-acceptance-criteria)
+  - [2.5 Task BLOCK-ARCH-005: Plugin Architecture](#25-task-block-arch-005-plugin-architecture)
+- [File: src/codex_ml/ast/plugins.py](#file-srccodex_mlastpluginspy)
+- [2.5.2 Acceptance Criteria](#252-acceptance-criteria)
+- [⚡ Section 3: Performance Baseline (Days 11-14)](#-section-3-performance-baseline-days-11-14)
+  - [3.1 Create Benchmark Suite](#31-create-benchmark-suite)
+- [File: tests/ast/benchmarks.py](#file-testsastbenchmarkspy)
+- [3.2 Profile Memory Usage](#32-profile-memory-usage)
+- [Create memory profiling script](#create-memory-profiling-script)
+- [Parse large codebase](#parse-large-codebase)
+- [📋 Section 4: Existing AST Usage Refactoring (Phased)](#-section-4-existing-ast-usage-refactoring-phased)
+  - [4.1 Audit Existing Usage](#41-audit-existing-usage)
+- [Find all existing AST usage](#find-all-existing-ast-usage)
+- [Count files](#count-files)
+- [Example output:](#example-output)
+- [src/cli/ast_upgrade.py:3:import ast](#srccliast_upgradepy3import-ast)
+- [scripts/analysis/ast_signature_similarity.py:1:from ast import parse](#scriptsanalysisast_signature_similaritypy1from-ast-import-parse)
+- [... (10+ files)](#-10-files)
+- [4.2 Create Migration Layer](#42-create-migration-layer)
+- [File: src/codex_ml/ast/compat.py](#file-srccodex_mlastcompatpy)
+- [Old API → New API mapping](#old-api--new-api-mapping)
+- [4.3 Phase 1 Refactoring (High Priority Files)](#43-phase-1-refactoring-high-priority-files)
+- [✅ Section 5: Testing Infrastructure Setup](#-section-5-testing-infrastructure-setup)
+  - [5.1 Create Test Fixtures](#51-create-test-fixtures)
+- [File: tests/ast/fixtures.py](#file-testsastfixturespy)
+- [📊 Go/No-Go Decision Framework](#-gono-go-decision-framework)
+  - [Pre-Conditions for Sprint 1 Start](#pre-conditions-for-sprint-1-start)
+  - [Sign-Off Required From](#sign-off-required-from)
+  - [Decision Gate: 2025-11-23 14:00 UTC](#decision-gate-2025-11-23-1400-utc)
+- [📈 Success Metrics](#-success-metrics)
+- [🚀 Phase 0 Timeline](#-phase-0-timeline)
+- [✅ Phase 0: Validation & Risk Mitigation Guide](#-phase-0-validation--risk-mitigation-guide)
+- [📋 Executive Summary](#-executive-summary)
+- [Section 1: Dependency Validation](#section-1-dependency-validation)
+  - [1.1 Conflict Detection](#11-conflict-detection)
+- [File: .github/scripts/validate_dependencies.py](#file-githubscriptsvalidate_dependenciespy)
+- [1.2 Version Compatibility Matrix](#12-version-compatibility-matrix)
+- [Section 2: Architecture Validation](#section-2-architecture-validation)
+  - [2.1 Design Review Checklist](#21-design-review-checklist)
+  - [2.2 Architecture Tests](#22-architecture-tests)
+- [tests/ast/test_architecture.py](#testsasttest_architecturepy)
+- [Section 3: Performance Validation](#section-3-performance-validation)
+  - [3.1 Performance Targets vs. Baselines](#31-performance-targets-vs-baselines)
+- [tests/ast/test_performance.py](#testsasttest_performancepy)
+- [Section 4: Test Infrastructure Validation](#section-4-test-infrastructure-validation)
+  - [4.1 Fixture Verification](#41-fixture-verification)
+- [Verify all fixtures available](#verify-all-fixtures-available)
+- [Expected output:](#expected-output)
+- [sample_python_file](#sample_python_file)
+- [large_codebase](#large_codebase)
+- [synthetic_graph](#synthetic_graph)
+- [decorated_class_code](#decorated_class_code)
+- [... etc](#-etc)
+- [4.2 Coverage Verification](#42-coverage-verification)
+- [Ensure >80% coverage before Phase 1](#ensure-80-coverage-before-phase-1)
+- [Section 5: Risk Mitigation Deployment](#section-5-risk-mitigation-deployment)
+  - [5.1 Offline-First Validation](#51-offline-first-validation)
+- [Disable network access and verify functionality](#disable-network-access-and-verify-functionality)
+- [Install offline](#install-offline)
+- [Verify parsers work offline](#verify-parsers-work-offline)
+- [5.2 Python Version Compatibility](#52-python-version-compatibility)
+- [.github/workflows/phase0_validation.yml](#githubworkflowsphase0_validationyml)
+- [5.3 Scope Creep Prevention](#53-scope-creep-prevention)
+- [Section 6: Sign-Off Process](#section-6-sign-off-process)
+  - [6.1 Technical Sign-Off Checklist](#61-technical-sign-off-checklist)
+  - [6.2 Sign-Off Meeting (2025-11-23 14:00 UTC)](#62-sign-off-meeting-2025-11-23-1400-utc)
+- [Section 7: Rollback Procedures](#section-7-rollback-procedures)
+  - [7.1 If Dependency Conflicts Detected](#71-if-dependency-conflicts-detected)
+- [Immediate rollback](#immediate-rollback)
+- [Investigation](#investigation)
+- [Manual resolution of conflicting versions](#manual-resolution-of-conflicting-versions)
+- [7.2 If Performance Targets Missed](#72-if-performance-targets-missed)
+- [Temporary workaround in parser.py](#temporary-workaround-in-parserpy)
+- [7.3 If Architecture Design Not Approved](#73-if-architecture-design-not-approved)
+- [Section 8: Success Metrics Dashboard](#section-8-success-metrics-dashboard)
+
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
-> Generated: 2025-11-09 23:13:57 UTC | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
 
@@ -116,7 +256,7 @@ nox -s test
 pytest tests/ -v --tb=short
 ```text
 
-#### 1.1.2 Acceptance Criteria
+## 1.1.2 Acceptance Criteria
 
 - [ ] `pip install -e ".[ast]"` succeeds without conflicts
 - [ ] All imports work: `libcst`, `radon`, `parso`
@@ -124,7 +264,7 @@ pytest tests/ -v --tb=short
 - [ ] No new vulnerabilities introduced (check with `pip audit`)
 - [ ] Version pins in `pyproject.toml` are compatible with all transitive deps
 
-#### 1.1.3 Rollback Procedure
+### 1.1.3 Rollback Procedure
 
 ```bash
 # If dependency conflicts discovered:
@@ -133,7 +273,7 @@ pip install -e .
 nox -s test  # Verify rollback
 ```text
 
-#### 1.1.4 Validation Command
+## 1.1.4 Validation Command
 
 ```bash
 # Run this to verify task complete
@@ -142,14 +282,14 @@ python .github/scripts/validate_dependencies.py --check-ast-core
 
 ---
 
-### 1.2 Task BLOCK-DEP-002: Install Language Parser Binaries
+## 1.2 Task BLOCK-DEP-002: Install Language Parser Binaries
 
 **Blocker ID:** `BLOCK-DEP-002`
 **Issue:** tree-sitter not available
 **Impact:** CRITICAL - Cannot implement language-agnostic parsing
 **Duration:** 4 hours
 
-#### 1.2.1 Implementation Steps
+### 1.2.1 Implementation Steps
 
 **Step 1: Set Up tree-sitter Installation**
 
@@ -248,7 +388,7 @@ class LanguageRegistry:
         return list(cls.LANGUAGES.keys())
 ```text
 
-#### 1.2.2 Acceptance Criteria
+## 1.2.2 Acceptance Criteria
 
 - [ ] All language parsers install without errors
 - [ ] Language registry loads parsers successfully
@@ -256,7 +396,7 @@ class LanguageRegistry:
 - [ ] No memory leaks in parser loading
 - [ ] Parsers cached for performance
 
-#### 1.2.3 Validation Command
+### 1.2.3 Validation Command
 
 ```bash
 python .github/scripts/validate_dependencies.py --check-language-parsers
@@ -302,7 +442,7 @@ print(f"Maintainability Index: {mi}")
 EOF
 ```text
 
-#### 1.3.2 Acceptance Criteria
+## 1.3.2 Acceptance Criteria
 
 - [ ] radon installed and importable
 - [ ] Can compute CC for sample functions
@@ -578,7 +718,7 @@ def test_store_and_retrieve_module():
         assert results[0]['file_path'] == 'src/example.py'
 ```text
 
-#### 1.5.2 Acceptance Criteria
+## 1.5.2 Acceptance Criteria
 
 - [ ] Database initializes without errors
 - [ ] All required tables created
@@ -586,7 +726,7 @@ def test_store_and_retrieve_module():
 - [ ] Relationships enforced correctly
 - [ ] Indexes created for performance
 
-#### 1.5.3 Validation Command
+### 1.5.3 Validation Command
 
 ```bash
 python .github/scripts/validate_dependencies.py --check-storage
@@ -712,7 +852,7 @@ class StandardizedASTNode:
         pass
 ```text
 
-#### 2.1.2 Acceptance Criteria
+## 2.1.2 Acceptance Criteria
 
 - [ ] All node types defined in NodeType enum
 - [ ] StandardizedASTNode instantiates correctly
@@ -844,7 +984,7 @@ class DependencyGraph:
         }
 ```text
 
-#### 2.2.2 Acceptance Criteria
+## 2.2.2 Acceptance Criteria
 
 - [ ] Graph adds nodes and edges correctly
 - [ ] Cycle detection accurate (100% recall on synthetic)
@@ -951,7 +1091,7 @@ class MetricsAggregator:
         }
 ```text
 
-#### 2.3.2 Acceptance Criteria
+## 2.3.2 Acceptance Criteria
 
 - [ ] Metrics stored and retrieved correctly
 - [ ] Correlations computed accurately
@@ -1013,7 +1153,7 @@ class BaselineManager:
         return delta
 ```text
 
-#### 2.4.2 Acceptance Criteria
+## 2.4.2 Acceptance Criteria
 
 - [ ] Baselines saved and loaded correctly
 - [ ] Delta computation accurate
@@ -1069,7 +1209,7 @@ class PluginRegistry:
         return list(cls._adapters.keys())
 ```text
 
-#### 2.5.2 Acceptance Criteria
+## 2.5.2 Acceptance Criteria
 
 - [ ] Multiple adapters can be registered
 - [ ] Adapters loaded and instantiated correctly
@@ -1139,7 +1279,7 @@ class TestParserBenchmarks:
 
 ---
 
-### 3.2 Profile Memory Usage
+## 3.2 Profile Memory Usage
 
 ```bash
 # Create memory profiling script
@@ -1188,7 +1328,7 @@ wc -l /tmp/ast_usage.txt
 # ... (10+ files)
 ```text
 
-### 4.2 Create Migration Layer
+## 4.2 Create Migration Layer
 
 ```python
 # File: src/codex_ml/ast/compat.py
@@ -1214,7 +1354,7 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
     return parser.parse(source, Path(filename))
 ```text
 
-### 4.3 Phase 1 Refactoring (High Priority Files)
+## 4.3 Phase 1 Refactoring (High Priority Files)
 
 - [ ] cli/ast_upgrade.py → use new layer
 - [ ] scripts/analysis/ast_signature_similarity.py → refactor
@@ -1341,7 +1481,7 @@ Now creating the detailed validation and risk mitigation guide:
 
 ```markdown name=Phase0_Validation_Copilot.md
 # ✅ Phase 0: Validation & Risk Mitigation Guide
-> Generated: 2025-11-09 23:13:57 UTC | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 **🧠 Roles:** [Primary: QA Lead], [Secondary: Risk Manager] | ⚡ Energy: 5/5
 
@@ -1457,7 +1597,7 @@ python .github/scripts/validate_dependencies.py
 
 ---
 
-### 1.2 Version Compatibility Matrix
+## 1.2 Version Compatibility Matrix
 
 | Dependency | Minimum | Tested | Maximum | Status |
 |-----------|---------|--------|---------|--------|
@@ -1604,7 +1744,7 @@ pytest --fixtures tests/ast/ | grep "sample\|fixture"
 # ... etc
 ```text
 
-### 4.2 Coverage Verification
+## 4.2 Coverage Verification
 
 ```bash
 pytest tests/ast/ --cov=src/codex_ml/ast --cov-report=term-missing
@@ -1631,7 +1771,7 @@ pip install -e ".[ast]" --no-index
 python -c "from codex_ml.ast import UniversalParser; p = UniversalParser(); print('OK')"
 ```text
 
-### 5.2 Python Version Compatibility
+## 5.2 Python Version Compatibility
 
 **Test Matrix:**
 
@@ -1650,7 +1790,7 @@ steps:
   - run: pytest tests/ast/ -v
 ```text
 
-### 5.3 Scope Creep Prevention
+## 5.3 Scope Creep Prevention
 
 **Scope Freeze Agreement:**
 
@@ -1739,7 +1879,7 @@ git diff HEAD -- pyproject.toml > /tmp/conflict.patch
 # Manual resolution of conflicting versions
 ```text
 
-### 7.2 If Performance Targets Missed
+## 7.2 If Performance Targets Missed
 
 **Action:** Defer optimization to Sprint 2
 **Fallback:** Use incremental analysis with caching
@@ -1757,7 +1897,7 @@ def parse(self, source, file_path):
     return result
 ```text
 
-### 7.3 If Architecture Design Not Approved
+## 7.3 If Architecture Design Not Approved
 
 **Action:** Schedule design review extension
 **Timeline:** Additional 3-5 iterations for revision

@@ -1,5 +1,5 @@
 # [Doc]: Configuration & Overrides Guide (Hydra-Compatible Patterns)
-> Generated: 2025-10-10 19:58:59 UTC | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## Purpose

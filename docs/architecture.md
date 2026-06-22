@@ -1,8 +1,12 @@
 # Architecture Overview
 
+**Last Updated:** 2026-06-22
+
 This page sketches the core components and their relationships.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
+    TrainingEng'}}%%
 classDiagram
     class TrainingEngine {
       +run(cfg)
@@ -36,6 +40,7 @@ classDiagram
 ## Runtime flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
 flowchart LR
     A[Ingestion] --> B[Tokenizer]
     B --> C[Datasets]

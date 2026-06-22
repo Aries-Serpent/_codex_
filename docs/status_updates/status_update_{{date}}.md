@@ -13,6 +13,8 @@ Audit Scope
 
 # 📍_codex_: Status Update ({{date}})
 
+**Last Updated:** 2026-06-22
+
 1. **Repo Map**
    - {{repo_map_summary}}
 
@@ -50,7 +52,7 @@ Audit Scope
 
 4. **Atomic Diffs**
 
-### Atomic Diff 1 — {{atomic_diff_1_title}}
+## Atomic Diff 1 — {{atomic_diff_1_title}}
 - **Why:** {{atomic_diff_1_why}}
 - **Risk:** {{atomic_diff_1_risk}}
 - **Rollback:** {{atomic_diff_1_rollback}}

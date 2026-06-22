@@ -1,6 +1,6 @@
 # Validation: Metrics — Generative (BLEU/ROUGE) Optional Behavior
 
-> Generated: 2025-11-05 07:27:25 | Author: mbaetiong
+> Generated: 2026-06-22 07:27:25 | Author: mbaetiong
 
 ## Objective
 
@@ -38,7 +38,7 @@ pytest -q tests/test_metrics_generative.py
 - `test_runner_handles_rouge_float_return` - Runner accepts float
 - `test_runner_handles_rouge_dict_return` - Runner accepts dict
 
-### 2. BLEU Available With Extras
+## 2. BLEU Available With Extras
 
 **Command**:
 ```bash
@@ -66,7 +66,7 @@ print(f'✓ BLEU available: score={score:.3f}')
 "
 ```text
 
-### 3. ROUGE-L Available With Extras
+## 3. ROUGE-L Available With Extras
 
 **Command**:
 ```bash
@@ -94,7 +94,7 @@ print(f'✓ ROUGE-L available: score={score:.3f}')
 "
 ```text
 
-### 4. Runner ROUGE-L Compatibility
+## 4. Runner ROUGE-L Compatibility
 
 **Command**:
 ```bash
@@ -191,7 +191,7 @@ pytest tests/test_metrics_generative.py -v
 # Expected: All 8 tests pass, BLEU/ROUGE return actual scores
 ```text
 
-### Scenario 2: Production Environment (Without Extras)
+## Scenario 2: Production Environment (Without Extras)
 
 ```bash
 # Setup (minimal install)
@@ -203,7 +203,7 @@ pytest tests/test_metrics_generative.py -v
 # Expected: All 8 tests pass, BLEU/ROUGE return None
 ```text
 
-### Scenario 3: Evaluation With Optional Metrics
+## Scenario 3: Evaluation With Optional Metrics
 
 ```bash
 # With extras installed

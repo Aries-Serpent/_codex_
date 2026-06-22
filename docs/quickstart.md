@@ -1,5 +1,7 @@
 # Codex Quickstart
 
+**Last Updated:** 2026-06-22
+
 This quickstart demonstrates an end-to-end workflow entirely on your local
 machine: tokenizer setup → training → evaluation.  All commands are
 copy-pasteable and avoid network access by default.
@@ -32,7 +34,7 @@ Install additional extras when you require GPU / tracking support:
 pip install -e '.[test,tracking,ml]'
 ```text
 
-### Offline-first testing
+## Offline-first testing
 
 Use pytest to validate the environment without network access:
 
@@ -70,7 +72,7 @@ All pull requests automatically run tests via `.github/workflows/ci-pytest.yml`:
 
 See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) and [`docs/guides/TESTING_GUIDE.md`](guides/TESTING_GUIDE.md) for detailed testing instructions.
 
-### Guarded experiment tracking
+## Guarded experiment tracking
 
 Set `CODEX_OFFLINE_MODE=1` to prevent Codex from touching MLflow even when the
 package is installed.  When unset the new `codex_ml.logging.mlflow_guard`
@@ -205,7 +207,7 @@ python examples/train_toy.py
 > `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
 > uploaded as run artefacts.
 
-### Structured configs & multirun sweeps
+## Structured configs & multirun sweeps
 
 The Hydra entrypoint registers a typed `AppConfig` in code, so overrides are
 validated before a run starts. Compose presets and ad-hoc flags side-by-side:

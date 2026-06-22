@@ -1,5 +1,7 @@
 # Workflow Fix Quick Reference
 
+**Last Updated:** 2026-06-22
+
 ## TL;DR
 ✅ Fixed 3 truncated CI workflows  
 ⏳ Commit created locally, needs push  

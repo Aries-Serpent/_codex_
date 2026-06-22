@@ -1,5 +1,7 @@
 # Removing tracked `.env` files
 
+**Last Updated:** 2026-06-22
+
 The repository no longer tracks a real `.env` file. Instead, secrets live in a
 local-only copy that every developer creates from the committed template:
 

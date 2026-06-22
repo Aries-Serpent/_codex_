@@ -114,6 +114,7 @@ Always include the full required sections in `prDescription`:
 ## 🔄 Self-Healing Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing report_progress overwrites PR body, ✅ No action needed'}}%%
 flowchart TD
     A[report_progress overwrites PR body] --> B{Checkboxes present?}
     B -->|Yes| C[✅ No action needed]

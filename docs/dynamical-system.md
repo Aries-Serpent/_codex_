@@ -1,6 +1,8 @@
 <!-- BEGIN: CODEX_DOCS_DYNAMICAL_SYSTEM -->
 # Codex Dynamics: a quantum-operational model for single-shot repo runs
 
+**Last Updated:** 2026-06-22
+
 ## Table of contents
 
 1. State space and observables
@@ -230,7 +232,7 @@ Quality gate projector `G(θ)` then acts only on tests/coverage; `Π_cov(θ)=1` 
 
 ---
 
-### One-line mnemonic
+## One-line mnemonic
 
 ```text
 “Drive ρ_t with U_phases while damping by J_errors,

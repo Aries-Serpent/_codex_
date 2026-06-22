@@ -1,5 +1,7 @@
 # Newcomer Guide to _codex_
 
+**Last Updated:** 2026-06-22
+
 Welcome to **_codex_**! This guide will help you understand the repository structure, get started quickly, and navigate the codebase effectively.
 
 ## Table of Contents
@@ -164,7 +166,7 @@ _codex_ has an extensible plugin architecture:
 my_metric = "my_package.metrics:my_metric_function"
 ```text
 
-### 3. Logging and Sessions
+## 3. Logging and Sessions
 
 Session-based logging tracks all operations:
 
@@ -226,7 +228,7 @@ codex-train +reasoning=baseline \
   training.output_dir=artifacts/runs/reasoning
 ```text
 
-### Evaluating a Model
+## Evaluating a Model
 
 ```bash
 # Basic evaluation
@@ -241,7 +243,7 @@ codex evaluate \
   --run-id my-eval-run
 ```text
 
-### Managing Configurations
+## Managing Configurations
 
 ```bash
 # List available reasoning templates
@@ -254,7 +256,7 @@ codex reasoning-templates explain baseline
 codex-validate-config --config configs/training/base.yaml
 ```text
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -271,7 +273,7 @@ HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
   nox -s tests_offline
 ```text
 
-### Pre-commit Checks
+## Pre-commit Checks
 
 ```bash
 # Install pre-commit hooks
@@ -297,12 +299,12 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 ### Zendesk Resources
 
 - **[Zendesk Configuration-as-Code Guide](zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
-- **[AI Agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
-- **[Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
+- **[AI agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI agent App Builder (not ZAF)
+- **[workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
 - **[Quick Start Script](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/quickstart.sh)** - Interactive setup automation
 - **[Examples & Templates](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/README.md)** - Configuration examples and templates
 
-### Quick Zendesk Workflow
+### Quick Zendesk workflow
 
 1. **Snapshot current state**:
    ```bash
@@ -331,10 +333,10 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 
 ### Key Zendesk Resources
 
-- [Zendesk Admin Workflow](./runbooks/zendesk_admin_workflow.md)
+- [Zendesk Admin workflow](./runbooks/zendesk_admin_workflow.md)
 - [End-to-End Support Workflows Plan](./runbooks/zendesk_e2e_support_workflows_plan.md)
-- [AI Agent App Builder Guide](./zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
-- [Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
+- [AI agent App Builder Guide](./zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
+- [workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
 - [Zendesk First Cycle Verification](./checklists/zendesk_first_cycle_verification.md)
 - [Zendesk API Reference](./zendesk_api_reference.md)
 
@@ -375,7 +377,7 @@ All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
 
 See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) for comprehensive testing instructions.
 
-### Code Quality Tools
+## Code Quality Tools
 
 | Tool | Purpose | Command |
 |------|---------|---------|
@@ -441,7 +443,7 @@ See `.github/copilot-instructions.md` for complete list.
 
 ### Getting Support
 
-- **Issues**: Repository-specific policy changes
+- **Issues**: repository-specific policy changes
 - **Discussions**: Architecture reviews, questions
 - **Maintainers**: Tag `@maintainer` in forums
 - **Security**: Follow escalation path in CONTRIBUTING.md
@@ -492,7 +494,7 @@ See `.github/copilot-instructions.md` for complete list.
 3. Explore docs locally with mkdocs
 4. Run test suite
 
-#### Path 2: ML Workflow Deep Dive (4-8 hours)
+#### Path 2: ML workflow Deep Dive (4-8 hours)
 1. Study Hydra configuration system
 2. Train model with various configurations
 3. Implement custom metric plugin
@@ -520,14 +522,14 @@ codex-generate          # Generation utilities
 codex-infer             # Inference
 codex-validate-config   # Config validation
 codex-list-plugins      # Plugin discovery
-codex-status-audit      # Repository audit
-codex-task-sequence     # Task automation
+codex-status-audit      # repository audit
+codex-task-sequence     # task automation
 ```text
 
 ### Common Operations
 
 ```bash
-# Repository status
+# repository status
 codex-status-audit
 codex repo-map --reasoning
 
@@ -572,7 +574,7 @@ nox -s tests
 - `mkdocs.yml`: Documentation site configuration
 - `conftest.py`: Pytest configuration and fixtures
 
-### Repository Conventions
+### repository Conventions
 
 1. **Local-first**: No GitHub Actions by default
 2. **Quality gates**: Run locally via pre-commit and nox

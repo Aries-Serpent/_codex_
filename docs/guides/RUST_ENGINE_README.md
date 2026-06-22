@@ -1,5 +1,7 @@
 # Codex Swarm Engine (Rust)
 
+**Last Updated:** 2026-06-22
+
 High-performance orchestration layer for the Codex AI Agent Swarm.
 
 ## Overview
@@ -43,7 +45,7 @@ maturin build --release
 pip install target/wheels/*.whl
 ```
 
-### Production
+## Production
 
 ```bash
 # Install from PyPI (future)
@@ -85,7 +87,7 @@ while True:
         state.set_agent_status("agent_1", "complete")
 ```
 
-### Agent Status Management
+## Agent Status Management
 
 ```python
 # Update status
@@ -125,7 +127,7 @@ pytest tests/test_rust_integration.py
 cargo bench
 ```
 
-### Building Documentation
+## Building Documentation
 
 ```bash
 # Rust docs

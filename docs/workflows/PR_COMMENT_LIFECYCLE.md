@@ -1,5 +1,7 @@
 # PR Comment & Workflow Automation Lifecycle
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.0.0  
 > **Created:** 2026-03-31  
 > **Status:** ✅ Authoritative — reflects current state of `0D_base_` after S259 changes  
@@ -64,6 +66,7 @@ Every push to a PR branch on `0D_base_` triggers a cascade of automated comment-
 ## PR Comment Lifecycle Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🔀 Git Push to 0D_base_, comment-review-gate.yml\nUpdates #4163909231 in-place\nScans for unaddressed blocking comments'}}%%
 flowchart TD
     PUSH[🔀 Git Push to 0D_base_] --> TRIGGERS
 
@@ -111,6 +114,7 @@ flowchart TD
 ## WEC Cross-Interaction Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "WEC Block Sources (writes)", ".github/PULL_REQUEST_TEMPLATE.md\n.github/pull_request_template.md\nInitial block on PR creation"'}}%%
 flowchart LR
     subgraph WEC_SOURCES["WEC Block Sources (writes)"]
         TEMPLATE[".github/PULL_REQUEST_TEMPLATE.md\n.github/pull_request_template.md\nInitial block on PR creation"]
@@ -149,6 +153,7 @@ flowchart LR
 **HTML marker pattern:** `<!-- ci-rescue:PR:COMMIT_SHA -->` — **unique per commit SHA**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: ci'}}%%
 sequenceDiagram
     participant P as Push (commit SHA-N)
     participant CRG as comment-review-gate.yml
@@ -173,6 +178,7 @@ sequenceDiagram
 **HTML marker:** ❌ **NONE**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing agent-file-size-gate.yml, POST new comment\nno dedup marker'}}%%
 flowchart LR
     PUSH --> FSGATE[agent-file-size-gate.yml]
     FSGATE --> |"> 30,000 chars"| POST_NEW[POST new comment\nno dedup marker]
@@ -192,6 +198,7 @@ flowchart LR
 **HTML marker:** `<!-- cognitive-preflight-checklist -->` (same marker every time)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Push SHA-1, POST comment with marker'}}%%
 flowchart TD
     PUSH1[Push SHA-1] --> CPF1[POST comment with marker]
     PUSH2[Push SHA-2] --> CPF2{Find existing comment\nwith same marker?}
@@ -221,6 +228,7 @@ flowchart TD
 ## Process Overlap & Consolidation Opportunities
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔴 OVERLAP 1: Three separate CI rescue channels", "ci-rescue:3835 — @copilot Fix Required\nAppends 🔄 sections per failure"'}}%%
 flowchart TD
     subgraph OVERLAP_1["🔴 OVERLAP 1: Three separate CI rescue channels"]
         CR1["ci-rescue:3835 — @copilot Fix Required\nAppends 🔄 sections per failure"]
@@ -289,6 +297,7 @@ flowchart TD
 ## WEC Inclusion Recommendations
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Current WEC Block (S259)", "✅ Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"'}}%%
 flowchart TD
     subgraph CURRENT_WEC["Current WEC Block (S259)"]
         V["✅ Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"]
@@ -323,6 +332,7 @@ flowchart TD
 ## Auto-Approve Wiring Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing x, x'}}%%
 sequenceDiagram
     participant M as Maintainer
     participant PR as PR Body (WEC)
@@ -355,6 +365,7 @@ sequenceDiagram
 ## Pre-flight Auto-Fix Coverage Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Triggers → session_wrapup_autofix.py --fix-all", "copilot-agent-session-done.yml\npreflight-autofix job (always)"'}}%%
 flowchart TD
     subgraph TRIGGERS["Triggers → session_wrapup_autofix.py --fix-all"]
         T1["copilot-agent-session-done.yml\npreflight-autofix job (always)"]
@@ -443,7 +454,7 @@ python scripts/ci/check_agent_file_sizes.py --check-markers
 pre-commit run --all-files
 ```
 
-### Merge Readiness Assessment (S259 state)
+## Merge Readiness Assessment (S259 state)
 - **Confidence Score:** 94% (just below 96% threshold)
 - **Blocking items:** Issues 1 & 2 above create ongoing comment spam that makes
   the Comment Review Gate noisy and hard to manage. Recommend fixing before merge.
@@ -458,6 +469,7 @@ pre-commit run --all-files
 > Generated: 2026-03-31T19:53Z | 84 total failures | 14 affected workflows
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Failure Distribution (PR #3835 / 0D_base_)
     "PR Comment Review Gate" : 20
     "Agent Token Delegation (REQ-4/5)" : 14

@@ -1,6 +1,6 @@
 # GitHub Pages Status Dashboard
 
-> **Last Updated**: 2026-04-06T20:30:00Z
+> **Last Updated**: 2026-06-22T00:00:00Z
 > **Updated by**: Copilot Coding Agent — Session S304 (PR #3901)
 > **Deployment**: MkDocs Material — sole authorised deployer
 
@@ -214,5 +214,5 @@
 
 **Dashboard Version**: 2.0.0
 **Agent**: Copilot Coding Agent — S304 (PR #3901)
-**Last Updated**: 2026-04-06T20:30:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Auto-Update**: Scheduled daily via `pages-scheduled-validation.yml`

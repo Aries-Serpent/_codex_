@@ -1,6 +1,6 @@
 # Business Rules
 
-> For AI Agents - Last updated: 2026-02-10
+> For AI Agents - Last updated: 2026-06-22
 
 This document defines business rules and constraints for the _codex_ system.
 

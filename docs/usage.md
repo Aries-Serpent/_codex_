@@ -5,6 +5,8 @@ This document describes how to use [actionlint](..).
 
 ## `actionlint` command
 
+**Last Updated:** 2026-06-22
+
 With no argument, actionlint finds all workflow files in the current repository and checks them.
 
 ```sh
@@ -392,7 +394,7 @@ while editing actions.
 ### trunk
 
 [trunk][trunk-io] is an extendable superlinter with a builtin language server and preexisting issue detection. Actionlint is
-integrated [here](https://github.com/trunk-io/plugins).
+integrated [GitHub](https://github.com/trunk-io/plugins).
 
 Once you have [initialized trunk in your repo](https://docs.trunk.io/docs/check-get-started), to enable at the latest actionlint
 version, just run:

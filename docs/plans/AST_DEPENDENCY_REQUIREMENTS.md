@@ -3,7 +3,7 @@
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-**Generated**: 2025-11-09  
+**Generated**: 2026-06-22  
 **Purpose**: Complete dependency specification for AST standardization project  
 **Status**: PLANNING - Not yet installed
 
@@ -78,7 +78,7 @@ pip install libcst>=1.0.0 radon>=6.0.0 parso>=0.8.0
 python -c "import libcst, radon, parso; print('✅ Core AST deps installed')"
 ```text
 
-### Phase 2: Optional Dependencies
+## Phase 2: Optional Dependencies
 
 ```bash
 # Install optional multi-language support
@@ -88,7 +88,7 @@ pip install tree-sitter>=0.20.0 tree-sitter-python>=0.20.0
 python -c "import tree_sitter; print('✅ tree-sitter installed')"
 ```text
 
-### Phase 3: Validation
+## Phase 3: Validation
 
 ```bash
 # Run full test suite with new dependencies
@@ -117,7 +117,7 @@ pip download libcst radon parso tree-sitter tree-sitter-python   -d /tmp/ast_dep
 pip install --no-index --find-links=/tmp/ast_deps/   libcst radon parso tree-sitter tree-sitter-python
 ```text
 
-### Grammar Files
+## Grammar Files
 
 tree-sitter requires pre-compiled grammar files:
 

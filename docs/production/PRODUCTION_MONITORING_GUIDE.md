@@ -1,7 +1,7 @@
 # Production Monitoring Guide
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: SRE Team  
 **Primary Tools**: Prometheus, Grafana, Elasticsearch, PagerDuty  
 
@@ -117,7 +117,7 @@ scrape_configs:
       - targets: ['redis-exporter:9121']
 ```
 
-### 1.2 Alert Rules Configuration
+## 1.2 Alert Rules Configuration
 
 **Alerting Rules**:
 
@@ -339,7 +339,7 @@ Panel: Customer Satisfaction (if available)
     summary: "API error rate {{ $value | humanizePercentage }} > 1%"
 ```
 
-### 3.3 Alert Routing (PagerDuty Integration)
+## 3.3 Alert Routing (PagerDuty Integration)
 
 **Alert Routing Configuration**:
 
@@ -458,7 +458,7 @@ PUT /logs-application-2024.01.15
 }
 ```
 
-### 4.2 Log Analysis Patterns
+## 4.2 Log Analysis Patterns
 
 **Common Log Queries**:
 
@@ -528,7 +528,7 @@ GET logs-application-*/_search
 }
 ```
 
-### 4.3 Log Retention Policies
+## 4.3 Log Retention Policies
 
 **Retention Strategy**:
 
@@ -634,7 +634,7 @@ curl -s http://alertmanager:9093/api/v1/alerts | jq '.data | length'
 echo ""
 ```
 
-### 5.2 Synthetic Monitoring
+## 5.2 Synthetic Monitoring
 
 **Uptime Monitoring**:
 

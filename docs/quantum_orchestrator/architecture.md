@@ -1,5 +1,7 @@
 # Quantum-Relativistic-Dirac Orchestrator Architecture
 
+**Last Updated:** 2026-06-22
+
 ## System Overview
 
 The Quantum Orchestrator is a physics-inspired task scheduling and optimization system that applies quantum mechanical and relativistic principles to computational workflows.
@@ -220,7 +222,7 @@ orch.add_task("task2", "Medium priority task", priority=0.5, rest_mass=1.5)
 results = orch.run(max_iterations=100)
 ```
 
-### QFT Task Spawning
+## QFT Task Spawning
 
 ```python
 from codex.quantum_orchestrator.qft.second_quantization import (
@@ -233,7 +235,7 @@ spawner = TaskSpawner(orch.state, statistics=ParticleStatistics.BOSON)
 new_ids = spawner.spawn("template_task", count=5)
 ```
 
-### Entanglement
+## Entanglement
 
 ```python
 from codex.quantum_orchestrator.qft.entanglement import (
@@ -249,7 +251,7 @@ manager.entangle(orch.state, "task_a", "task_b", BellState.PHI_PLUS)
 assert manager.is_entangled("task_a")
 ```
 
-### Path Optimization
+## Path Optimization
 
 ```python
 from codex.quantum_orchestrator.qft.path_integral import PathIntegralOptimizer

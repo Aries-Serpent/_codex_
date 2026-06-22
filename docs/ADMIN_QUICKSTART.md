@@ -1,5 +1,7 @@
 # _codex_ Admin Quick Start Guide
 
+**Last Updated:** 2026-06-22
+
 > ⏱️ **Time Required:** 5 minutes for critical items
 
 This is a condensed quick start guide. For complete documentation, see [ADMIN_IMPLEMENTATION_GUIDE.md](./ADMIN_IMPLEMENTATION_GUIDE.md).

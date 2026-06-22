@@ -1,4 +1,6 @@
 # Cognitive Brain Status — PR #3483
+
+**Last Updated:** 2026-06-22
 # SC2016/SC2012 Fix + Repo Variable Expansion + Mermaid Codebase Audit
 
 **Status:** ✅ COMPLETE  
@@ -33,6 +35,7 @@
 ## Architecture State (Post PR #3483)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "PR #3483 Deliverables", "✅ actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"'}}%%
 graph TB
     subgraph PR3483["PR #3483 Deliverables"]
         FIX1["✅ actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"]
@@ -87,6 +90,7 @@ graph TB
 ## Next Phase Plan
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR #3483\n✅ MERGED", "P1 — Immediate\n(next session)"'}}%%
 flowchart LR
     NOW["PR #3483\n✅ MERGED"] --> P1
 

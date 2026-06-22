@@ -1,5 +1,7 @@
 # Method D — Post-Deployment Validation Checklist
 
+**Last Updated:** 2026-06-22
+
 Use this checklist after deploying the Method D patch to
 `.github/workflows/copilot-setup-steps.yml` and before merging to `main`.
 

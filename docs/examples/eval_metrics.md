@@ -1,5 +1,7 @@
 # Evaluation & Metrics
 
+**Last Updated:** 2026-06-22
+
 Compute average evaluation loss, perplexity, and token-level accuracy per epoch.
 
 ```python

@@ -1,5 +1,5 @@
 # [How-to]: Repo Determinism Smoke (CPU-only)  
-> Generated: 2026-03-17 20:26:25 UTC | Author: mbaetiong  
+> Generated: 2026-06-22 (audited) | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 Purpose

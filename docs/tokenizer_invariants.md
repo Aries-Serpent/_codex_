@@ -1,5 +1,7 @@
 # Tokenizer Invariants & Canonical `max_seq_len`
 
+**Last Updated:** 2026-06-22
+
 This repo standardizes tokenizer behavior across models by pinning a **canonical `max_seq_len`** per model family and using explicit padding/truncation:
 
 ```python

@@ -1,6 +1,31 @@
-# Architecture: Shim Governance & Canonical Import Policy (v1.2.9)
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
 
-> Generated: 2025-12-05 | Author: mbaetiong  
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](../architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `ARCHITECTURE.md` and `ARCHITECTURE_BLUEPRINT.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](../architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version.
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Architecture: Shim Governance & Canonical Import Policy (v1.2.9) - ARCHIVED
+
+> Generated: 2026-06-22 | Author: mbaetiong  
 > Status: Active | Readiness: 85% → 99% path
 
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
@@ -99,7 +124,7 @@ python scripts/remediation/list_shims.py \
   --output .github/SHIM_INVENTORY.yaml
 ```
 
-### Conflict Detection
+## Conflict Detection
 ```bash
 # Strict mode (CI gating)
 python scripts/remediation/verify_conflicts.py \
@@ -112,7 +137,7 @@ python scripts/remediation/verify_conflicts.py \
   --output audit_artifacts/conflicts.json
 ```
 
-### Equivalence Testing
+## Equivalence Testing
 ```bash
 # Run shim equivalence tests
 pytest -q tests/validation/test_shim_equivalence.py
@@ -121,7 +146,7 @@ pytest -q tests/validation/test_shim_equivalence.py
 SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
 ```
 
-### Nightly Audit
+## Nightly Audit
 - **Workflow**: `.github/workflows/nightly-audit.yml`
 - **Schedule**: Daily at 02:00 UTC
 - **Outputs**: Inventory, conflicts, legacy usage report

@@ -1,5 +1,7 @@
 # Usage Guide: Codex ML Offline Workflow (v1.2.0)
 
+**Last Updated:** 2026-06-22
+
 This guide distills the end-to-end workflow for running Codex ML completely
 offline. Commands assume you are in the repository root.
 
@@ -108,7 +110,7 @@ make space-audit-fast
 python scripts/space_traversal/audit_runner.py stage S4
 ```
 
-#### CI Integration
+## CI Integration
 The audit runs automatically in CI:
 - **Pull Requests**: Fast audit + conflict verification
 - **Main branch pushes**: Full audit + determinism check
@@ -120,9 +122,9 @@ python scripts/remediation/verify_conflicts.py --expect-site-packages
 python scripts/remediation/analyze_legacy_usage.py
 ```
 
-### Remediation Commands
+## Remediation Commands
 
-#### Clean up repository root
+### Clean up repository root
 ```bash
 # Preview what will be moved
 python scripts/remediation/cleanup_root.py --dry-run
@@ -131,7 +133,7 @@ python scripts/remediation/cleanup_root.py --dry-run
 python scripts/remediation/cleanup_root.py --yes
 ```
 
-#### Verify import conflicts
+## Verify import conflicts
 ```bash
 # Check for hydra shadowing and split-brain imports
 python scripts/remediation/verify_conflicts.py --expect-site-packages
@@ -140,7 +142,7 @@ python scripts/remediation/verify_conflicts.py --expect-site-packages
 python scripts/remediation/analyze_legacy_usage.py
 ```
 
-### Verification Commands
+## Verification Commands
 
 ```bash
 # Verify determinism across multiple runs
@@ -153,9 +155,9 @@ python scripts/space_traversal/validate_template_hash.py
 pytest tests/validation/ -v
 ```
 
-### Advanced Features
+## Advanced Features
 
-#### Compare audit runs
+### Compare audit runs
 ```bash
 # Compare score changes
 python scripts/space_traversal/audit_runner.py diff \
@@ -163,13 +165,13 @@ python scripts/space_traversal/audit_runner.py diff \
   --new audit_artifacts/capabilities_scored_new.json
 ```
 
-#### Explain capability scores
+## Explain capability scores
 ```bash
 # Get detailed breakdown of how a score was calculated
 python scripts/space_traversal/audit_runner.py explain checkpointing
 ```
 
-### Expected Outputs
+## Expected Outputs
 
 - `audit_artifacts/context_index.json` - File inventory
 - `audit_artifacts/capabilities_raw.json` - Raw capability detection

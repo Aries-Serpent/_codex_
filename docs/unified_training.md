@@ -1,5 +1,7 @@
 # Unified Training Façade
 
+**Last Updated:** 2026-06-22
+
 This module introduces a single entry point:
 
 ```python

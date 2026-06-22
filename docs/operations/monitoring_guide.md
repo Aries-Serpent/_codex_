@@ -1,5 +1,7 @@
 # Monitoring Guide
 
+**Last Updated:** 2026-06-22
+
 ## Grafana Dashboards
 
 ### Setup
@@ -13,7 +15,7 @@ docker run -d -p 3000:3000 grafana/grafana
   -d @configs/grafana/dashboards/ml_operations.json
 ```
 
-### Available Dashboards
+## Available Dashboards
 
 1. **ML Operations** - Model performance, requests, errors
 2. **Drift Detection** - Data/config/model drift trends

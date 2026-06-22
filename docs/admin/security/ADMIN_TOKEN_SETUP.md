@@ -1,6 +1,6 @@
 # 🔐 Admin Token Setup Guide for _codex_
 
-> **Generated**: 2026-03-17
+> **Generated**: 2026-06-22
 > **Repository**: Aries-Serpent/_codex_
 > **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
 > **Roles**: [Org Admin], [Security Officer]
@@ -105,9 +105,9 @@ Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
    ...
 ```
 
-### Step 3: Add Secrets to GitHub
+## Step 3: Add Secrets to GitHub
 
-#### Option A: Automated (Recommended)
+### Option A: Automated (Recommended)
 
 The encryption tool generates a setup script:
 
@@ -116,7 +116,7 @@ The encryption tool generates a setup script:
 bash ~/codex_token_setup.sh
 ```
 
-#### Option B: Manual via GitHub CLI
+## Option B: Manual via GitHub CLI
 
 ```bash
 # Set repository secrets using gh CLI
@@ -127,7 +127,7 @@ gh secret set CODEX_GHP_TOKEN_AES_KEY --body "YOUR_AES_KEY" --repo Aries-Serpent
 # Add other secrets as needed...
 ```
 
-#### Option C: Manual via Web UI
+## Option C: Manual via Web UI
 
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 2. Click **New repository secret**
@@ -165,7 +165,7 @@ print('✅ Token retrieved successfully' if token else '❌ Token retrieval fail
 python3 scripts/security/copilot_token_decoder.py
 ```
 
-### Test in Workflow
+## Test in Workflow
 
 Trigger a test workflow run:
 
@@ -215,7 +215,7 @@ export CODEX_GHP_TOKEN_BASE64="your_base64_value"
 python3 scripts/security/copilot_token_decoder.py
 ```
 
-### Issue: "Token verification failed: invalid format or hash mismatch"
+## Issue: "Token verification failed: invalid format or hash mismatch"
 
 **Symptoms**: Token retrieved but fails validation
 
@@ -286,7 +286,7 @@ python3 scripts/security/copilot_token_decoder.py
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z
+**Last Updated**: 2026-06-22T00:00:00Z
 **Version**: 2.0.0
 **Maintainer**: Security Team
 

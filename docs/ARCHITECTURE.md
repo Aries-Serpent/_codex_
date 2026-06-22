@@ -1,15 +1,45 @@
-# Codex ML Architecture (v0.1.0)
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
+
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](./architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `Architecture.md` and `ARCHITECTURE_BLUEPRINT.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version with:
+- ✅ Unified system context and container architecture
+- ✅ Complete component documentation
+- ✅ repository structure guides
+- ✅ Deployment patterns
+- ✅ Cross-references to all guides
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Codex ML Architecture (v0.1.0) - ARCHIVED
 
 > **Version**: v0.1.0 Pre-Release
 > **Last Updated**: 2026-05-28
-> **Status**: Living Document
+> **Status**: Archived - See Consolidated Version
 > **Managed By**: AI Assistant Autonomous System
 
-**AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
+**AI-Managed repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
 
-**Package Name**: `codex-ml` (PyPI/Distribution) | Repository: `_codex_`
+**Package Name**: `codex-ml` (PyPI/Distribution) | repository: `_codex_`
 
-This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling.
+This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling. **(See consolidated version for updates)**
 
 ## Table of Contents
 - <!-- TODO: Add section or remove TOC entry - [System Context]() -->
@@ -29,9 +59,10 @@ The Codex ML system provides a comprehensive framework for ML model training, ev
 
 <!-- METRICS_LAST_UPDATED: 2026-05-28 S1292 Phase 10 progress -->
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Data Scientist / ML Engineer<br/>Platform User, GitHub Copilot<br/>AI Coding agent'}}%%
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
-    Copilot[GitHub Copilot<br/>AI Coding Agent]
+    Copilot[GitHub Copilot<br/>AI Coding agent]
     Agents[145 Active Autonomous Agents<br/>🤖 MCP-enabled]
 
     Codex[codex-ml<br/>Production-Ready ML Platform<br/>2,130 Test Files | 17.57% overall cov]
@@ -91,6 +122,7 @@ graph TB
 The system is organized into several logical containers (processes or deployable units). Version 0.1.0 introduces MCP system, Cognitive Brain, and autonomous agent orchestration.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point, Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training'}}%%
 graph TB
     subgraph "codex-ml v0.1.0 System"
         subgraph "Core ML Platform"
@@ -122,10 +154,10 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (145 Active Agents)"
-            AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
+        subgraph "agent System (145 Active Agents)"
+            AgentCore[agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
-            AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
+            AgentMemory[agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
         end
 
         subgraph "Infrastructure"
@@ -174,7 +206,7 @@ graph TB
     Transform --> Verify
     CLI --> Ingest
 
-    %% Agent System
+    %% agent System
     AgentCore --> ToolRegistry
     AgentCore --> AgentMemory
     AgentCore --> CICD
@@ -238,6 +270,7 @@ graph TB
 ### Core Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Trainer<br/>Main orchestrator, DataLoader<br/>Dataset preparation'}}%%
 graph TB
     subgraph "Training Engine"
         Trainer[Trainer<br/>Main orchestrator]
@@ -286,7 +319,7 @@ graph TB
     style SessionLogger fill:#845ef7
 ```text
 
-### Component Responsibilities
+### component Responsibilities
 
 #### Training Engine Components
 
@@ -322,6 +355,8 @@ graph TB
 ### Training Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>CLI: Resolved configuration
+'}}%%
 sequenceDiagram
     participant User
     participant CLI
@@ -354,6 +389,8 @@ sequenceDiagram
 ### Evaluation Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>CLI: Resolved configuration
+'}}%%
 sequenceDiagram
     participant User
     participant CLI
@@ -385,6 +422,7 @@ sequenceDiagram
 ### Configuration Resolution Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Default Configs<br/>config/, User Overrides<br/>CLI args'}}%%
 flowchart LR
     Defaults[Default Configs<br/>config/]
     User[User Overrides<br/>CLI args]
@@ -427,6 +465,7 @@ flowchart LR
 ### Observability
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Codex ML, Session Logs<br/>SQLite'}}%%
 graph LR
     App[Codex ML]
 
@@ -547,7 +586,7 @@ See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 - 🔄 src/training/trainer.py: 12.20% → 50% target
 - 📋 Adaptive Learning Phase 8.3: QEC k₁ tuning (80→100%)
 - 📋 AGENT_NAVIGATION.md + .codex/cognitive_brain/ status update
-- 📋 Workflow superseded-run cancellation hardening
+- 📋 workflow superseded-run cancellation hardening
 
 ### Medium-Term (Phase 11+)
 - 📋 Multi-modal support (vision + language)
@@ -589,7 +628,7 @@ For detailed architectural decisions and their rationale, see:
 
 The `tools/validate_fences.py` traverses Markdown inputs and surfaces fence issues for local contributors.
 
-### Component Overview
+### component Overview
 
 - **Target discovery (`iter_files`)**: Walks requested roots while skipping generated locations
 - **Line preparation (`_prepare_line`)**: Strips diff prefixes and indentation
@@ -597,6 +636,7 @@ The `tools/validate_fences.py` traverses Markdown inputs and surfaces fence issu
 - **Public entry points**: `validate_file` (Python API), `main` (CLI)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CLI or caller, _parse_args + _gather_targets'}}%%
 flowchart TD
     A[CLI or caller] -->|argv / path list| B[_parse_args + _gather_targets]
     B --> C{Targets?}
@@ -746,7 +786,7 @@ python scripts/remediation/list_shims.py \
   --output .github/SHIM_INVENTORY.yaml
 ```
 
-### Conflict Detection
+## Conflict Detection
 ```bash
 # Strict mode (CI gating)
 python scripts/remediation/verify_conflicts.py \
@@ -759,7 +799,7 @@ python scripts/remediation/verify_conflicts.py \
   --output audit_artifacts/conflicts.json
 ```
 
-### Equivalence Testing
+## Equivalence Testing
 ```bash
 # Run shim equivalence tests
 pytest -q tests/validation/test_shim_equivalence.py
@@ -768,14 +808,14 @@ pytest -q tests/validation/test_shim_equivalence.py
 SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
 ```
 
-### Nightly Audit
-- **Workflow**: `.github/workflows/nightly-audit.yml`
+## Nightly Audit
+- **workflow**: `.github/workflows/nightly-audit.yml`
 - **Schedule**: Daily at 02:00 UTC
 - **Outputs**: Inventory, conflicts, legacy usage report
 - **Alerting**: Auto-creates issue on violations
 
 ### Determinism Validation
-- **Workflow**: `.github/workflows/determinism.yml`
+- **workflow**: `.github/workflows/determinism.yml`
 - **Trigger**: Pull requests touching `src/`, `scripts/`, `tests/`, `training/`, `tokenization/`
 - **Checks**: Full audit, 2-run determinism, strict conflicts
 - **Artifacts**: Uploaded for review
@@ -828,7 +868,7 @@ Two paths available:
 ---
 ## 📎 Consolidated from: docs/ARCHITECTURE_BLUEPRINT.md
 
-# Repository Architecture Blueprint and Roadmap
+# repository Architecture Blueprint and Roadmap
 
 **Document Version**: 1.0.0
 **Generated**: 2025-12-11
@@ -840,7 +880,7 @@ Two paths available:
 
 ## Executive Summary
 
-The `_codex_` repository is a Level 4 MLOps-certified, production-grade machine learning framework designed with AI Assistant/Agent intuitiveness as a core principle. This blueprint provides an exhaustive technical reference for understanding the repository's architecture, structure, and operational workflows, enabling effective collaboration between human developers and AI agents (GitHub Copilot, ChatGPT 5.1 Agent Mode).
+The `_codex_` repository is a Level 4 MLOps-certified, production-grade machine learning framework designed with AI Assistant/agent intuitiveness as a core principle. This blueprint provides an exhaustive technical reference for understanding the repository's architecture, structure, and operational workflows, enabling effective collaboration between human developers and AI agents (GitHub Copilot, ChatGPT 5.1 agent Mode).
 
 ### Key Characteristics
 
@@ -870,7 +910,7 @@ This blueprint serves multiple audiences:
 4. <!-- BROKEN ANCHOR: [Runtime & Data Flow](#runtime-data-flow) -->
 5. <!-- BROKEN ANCHOR: [CI/CD & Testing](#cicd-testing) -->
 6. <!-- BROKEN ANCHOR: [Security & Compliance](#security-compliance) -->
-7. [AI Agent Integration](#ai-agent-integration)
+7. [AI agent Integration](#ai-agent-integration)
 8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment-operations) -->
 9. [Development Workflows](#development-workflows)
 10. <!-- BROKEN ANCHOR: [Roadmap & Priorities](#roadmap-priorities) -->
@@ -886,7 +926,7 @@ This blueprint serves multiple audiences:
 _codex_/
 ├── .codex/                      # Codex environment kit & setup scripts
 ├── .github/                     # CI/CD workflows (gated for cost control)
-├── agents/                      # AI Agent infrastructure
+├── agents/                      # AI agent infrastructure
 │   ├── prompts/                 # Pre-defined prompts library
 │   ├── workflow_navigator.py   # Tokenized workflow execution
 │   └── codex_client/           # Codex-GitHub bridge client
@@ -951,9 +991,9 @@ src/codex_ml/
 - Plugin-based extensibility for models, metrics, trainers
 - NDJSON metrics for standardized aggregation
 
-#### 2. AI Agent Infrastructure (`agents/`)
+#### 2. AI agent Infrastructure (`agents/`)
 
-**Purpose**: Enable AI Assistant/Agent workflows with structured prompts and orchestration.
+**Purpose**: Enable AI Assistant/agent workflows with structured prompts and orchestration.
 
 **Components**:
 ```
@@ -963,19 +1003,19 @@ agents/
 │   ├── debugging/              # Debugging guides (26KB)
 │   ├── deployment/             # Deployment workflows
 │   ├── documentation/          # Doc generation
-│   └── organization/           # Repository organization
+│   └── organization/           # repository organization
 ├── workflow_navigator.py       # Token-based workflow execution
 ├── physics_orchestrator.py    # Energy-based decision making
 ├── mental_mapping.py           # Decision tracking
-├── TOKENIZED_WORKFLOWS.md     # Workflow documentation
+├── TOKENIZED_WORKFLOWS.md     # workflow documentation
 └── codex_client/              # API bridge for Codex-GitHub ops
 ```
 
-**Workflow Tokens**:
+**workflow Tokens**:
 - `AUDIT_EXEC`: Full audit pipeline execution
 - `PHYS_DECIDE`: Physics-inspired decision-making
 - `DOC_GEN`: Documentation generation
-- `REPO_ORG`: Repository organization
+- `REPO_ORG`: repository organization
 - `SELF_HEAL`: Automated feedback loops
 
 #### 3. Audit Pipeline (`scripts/space_traversal/`)
@@ -1019,7 +1059,7 @@ tests/
 
 **Test Categories**:
 - Unit tests: Individual function/class testing
-- Integration tests: Component interaction testing
+- Integration tests: component interaction testing
 - Smoke tests: Quick sanity checks
 - Property-based tests: Hypothesis-driven testing
 - Capability tests: Feature-specific validation
@@ -1031,10 +1071,11 @@ tests/
 ### High-Level System Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "👥 Users", Developers'}}%%
 flowchart TB
     subgraph Users["👥 Users"]
         Dev[Developers]
-        Agent[AI Agents]
+        agent[AI Agents]
         CI[CI/CD Systems]
     end
 
@@ -1070,7 +1111,7 @@ flowchart TB
     end
 
     Dev --> CLI
-    Agent --> Runner
+    agent --> Runner
     CI --> Runner
 
     CLI --> Training
@@ -1089,7 +1130,7 @@ flowchart TB
     Dashboard --> Reports
 ```
 
-### Component Interaction Patterns
+### component Interaction Patterns
 
 #### 1. Training Pipeline Flow
 
@@ -1107,12 +1148,12 @@ Trigger → Scan → Analyze → Score → Store → Visualize → Notify
  CLI   Scanner  Metrics  Scorer  SQLite   viz_html  Webhooks
 ```
 
-#### 3. Agent Workflow Flow
+#### 3. agent workflow Flow
 
 ```
 Request → Parse → Execute → Validate → Report → Learn
    ↓        ↓        ↓         ↓         ↓        ↓
- Agent  Navigator  Workflow   Tests   Progress  Mental Map
+ agent  Navigator  workflow   Tests   Progress  Mental Map
 ```
 
 ### Design Principles (Physics-Inspired)
@@ -1180,7 +1221,7 @@ class Plugin(ABC):
 **NDJSON Format**: Newline-delimited JSON for streaming metrics
 **Standardization**: Consistent metric schema across training runs
 
-### 5. Workflow Navigator (`agents/workflow_navigator.py`)
+### 5. workflow Navigator (`agents/workflow_navigator.py`)
 
 **Token-Based Execution**:
 ```python
@@ -1355,11 +1396,11 @@ pytest -m smoke -v
 
 ---
 
-## AI Agent Integration
+## AI agent Integration
 
-### Agent Architecture
+### agent Architecture
 
-The repository is explicitly designed for AI Assistant/Agent intuitiveness:
+The repository is explicitly designed for AI Assistant/agent intuitiveness:
 
 #### 1. Prompt Library (`agents/prompts/`)
 
@@ -1377,7 +1418,7 @@ The repository is explicitly designed for AI Assistant/Agent intuitiveness:
 - `debugging/performance-optimization.md` (7.0KB)
 - `debugging/security-remediation.md` (8.6KB)
 
-#### 2. Workflow Navigator
+#### 2. workflow Navigator
 
 **Tokenized Execution**:
 ```python
@@ -1398,7 +1439,7 @@ navigator.execute('MENTAL_REVIEW')  # Review decisions
 navigator.execute('REPO_ORG')       # Organization
 ```
 
-#### 3. Physics-Inspired Orchestration
+## 3. Physics-Inspired Orchestration
 
 **Energy-Based Decision Making** (`agents/physics_orchestrator.py`):
 - Assigns "energy" costs to actions
@@ -1410,7 +1451,7 @@ navigator.execute('REPO_ORG')       # Organization
 - Learns from outcomes
 - Improves future decisions
 
-#### 4. Agent Control Interface
+### 4. agent Control Interface
 
 **Generation**:
 ```bash
@@ -1433,19 +1474,19 @@ Code Changes
     ↓
 Pre-Commit Validation
     ↓
-Agent Review (via prompts/debugging/)
+agent Review (via prompts/debugging/)
     ↓
 Test Execution
     ↓
 Audit Pipeline
 ```
 
-#### Pattern 2: Automated Agent Tasks
+#### Pattern 2: Automated agent Tasks
 
 ```
 Trigger (Schedule/Event)
     ↓
-Workflow Navigator
+workflow Navigator
     ↓
 Tokenized Workflow Execution
     ↓
@@ -1521,7 +1562,7 @@ spec:
             nvidia.com/gpu: 1
 ```
 
-#### Pattern 2: Self-Hosted Runner
+## Pattern 2: Self-Hosted Runner
 
 **Requirements**:
 - Dedicated runner machine
@@ -1529,7 +1570,7 @@ spec:
 - Self-hosted label in workflows
 - Cost monitoring
 
-#### Pattern 3: Model Serving
+### Pattern 3: Model Serving
 
 **Service Stack** (`services/`):
 - FastAPI-based REST API
@@ -1577,9 +1618,9 @@ pytest tests/ -v
 python -m codex.cli --help
 ```
 
-### Common Tasks
+## Common Tasks
 
-#### Task 1: Add New Feature
+### task 1: Add New Feature
 
 ```bash
 # 1. Create branch
@@ -1608,7 +1649,7 @@ git commit -m "feat: Add my feature"
 git push origin feature/my-feature
 ```
 
-#### Task 2: Fix Bug
+## task 2: Fix Bug
 
 ```bash
 # 1. Reproduce bug
@@ -1628,7 +1669,7 @@ git add .
 git commit -m "fix: Fix specific bug"
 ```
 
-#### Task 3: Run Audit
+## task 3: Run Audit
 
 ```bash
 # Full audit
@@ -1641,9 +1682,9 @@ python scripts/generate_audit_dashboard.py
 cat audit_artifacts/capabilities_scored.json | jq '.[] | select(.score < 0.85)'
 ```
 
-### AI Agent Workflows
+## AI agent Workflows
 
-**Using Workflow Navigator**:
+**Using workflow Navigator**:
 ```python
 from agents.workflow_navigator import WorkflowNavigator
 
@@ -1673,7 +1714,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 - ✅ 2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
 - ✅ Zero critical gaps (all P0 stubs are correct patterns)
 - ✅ Comprehensive documentation (693+ files)
-- ✅ AI Agent infrastructure operational
+- ✅ AI agent infrastructure operational
 
 **Metrics**:
 - MLOps Score: 100/100
@@ -1684,31 +1725,31 @@ cat agents/prompts/debugging/test-failure-debugging.md
 ### Short-Term (0-4 phases)
 
 #### Priority 1: CI/CD Enablement
-- **Task**: Enable self-hosted CI workflows
+- **task**: Enable self-hosted CI workflows
 - **Components**: lint, type-check, unit tests, smoke training
 - **Effort**: 2-3 iterations
 - **Owner**: DevOps team
 
 #### Priority 2: Dependency Canonicalization
-- **Task**: Standardize on `pyproject.toml` + `uv.lock`
+- **task**: Standardize on `pyproject.toml` + `uv.lock`
 - **Components**: Remove conflicting `requirements*.txt`
 - **Effort**: 1 iteration
 - **Owner**: Build team
 
 #### Priority 3: Secrets Hardening
-- **Task**: Centralized secrets management
+- **task**: Centralized secrets management
 - **Components**: Pre-merge secret scanning, token rotation
 - **Effort**: 3-4 iterations
 - **Owner**: Security team
 
 #### Priority 4: Documentation Consolidation
-- **Task**: Organize 693 markdown files with index
+- **task**: Organize 693 markdown files with index
 - **Components**: Active vs historical categorization
 - **Effort**: 2-3 iterations
 - **Owner**: Documentation team
 
 #### Priority 5: Stub Cleanup Enhancement
-- **Task**: AST-based abstract method detection
+- **task**: AST-based abstract method detection
 - **Components**: Enhance `stub_cleanup.py`
 - **Effort**: 2 iterations
 - **Owner**: Code quality team
@@ -1716,31 +1757,31 @@ cat agents/prompts/debugging/test-failure-debugging.md
 ### Mid-Term (1-3 Months)
 
 #### Priority 1: Deterministic Infrastructure
-- **Task**: Reproducible training harness
+- **task**: Reproducible training harness
 - **Components**: Device placement, RNGState verification
 - **Effort**: 2 phases
 - **Owner**: ML team
 
 #### Priority 2: Artifact Signing
-- **Task**: Sign and version reproducibility manifests
+- **task**: Sign and version reproducibility manifests
 - **Components**: GPG signing, manifest versioning
 - **Effort**: 1 phase
 - **Owner**: Security team
 
 #### Priority 3: Security Hardening
-- **Task**: Automated security scanning in CI
+- **task**: Automated security scanning in CI
 - **Components**: Semgrep, Bandit, baseline checks
 - **Effort**: 1 phase
 - **Owner**: Security team
 
-#### Priority 4: Agent Memory System
-- **Task**: Context preservation between invocations
-- **Components**: Agent memory store, context retrieval
+#### Priority 4: agent Memory System
+- **task**: Context preservation between invocations
+- **Components**: agent memory store, context retrieval
 - **Effort**: 2 phases
 - **Owner**: AI team
 
 #### Priority 5: Performance Benchmarking
-- **Task**: Systematic performance regression testing
+- **task**: Systematic performance regression testing
 - **Components**: Benchmark suite, CI integration
 - **Effort**: 1 phase
 - **Owner**: Performance team
@@ -1748,31 +1789,31 @@ cat agents/prompts/debugging/test-failure-debugging.md
 ### Long-Term (3-9 Months)
 
 #### Priority 1: Production Serving Stack
-- **Task**: Scalable model serving
+- **task**: Scalable model serving
 - **Components**: Autoscaling, versioning, monitoring
 - **Effort**: 4-6 phases
 - **Owner**: Platform team
 
 #### Priority 2: MLOps Pipelines
-- **Task**: Continuous evaluation and monitoring
+- **task**: Continuous evaluation and monitoring
 - **Components**: Drift detection, retraining triggers
 - **Effort**: 6-8 phases
 - **Owner**: ML team
 
 #### Priority 3: Multi-Version Python Support
-- **Task**: CI testing across Python 3.9-3.12
+- **task**: CI testing across Python 3.9-3.12
 - **Components**: Matrix testing, compatibility checks
 - **Effort**: 2 phases
 - **Owner**: Build team
 
 #### Priority 4: HAR Integration
-- **Task**: Complete HAR file support
+- **task**: Complete HAR file support
 - **Components**: Per `docs/HAR_INTEGRATION_PLAN.md`
 - **Effort**: 3-4 phases
 - **Owner**: Integration team
 
 #### Priority 5: Advanced Monitoring
-- **Task**: Production-grade observability
+- **task**: Production-grade observability
 - **Components**: Distributed tracing, alerting
 - **Effort**: 4 phases
 - **Owner**: SRE team
@@ -1808,7 +1849,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 | `COMPREHENSIVE_GAP_ANALYSIS.md` | Gap analysis with priority matrix | 2025-12-11 |
 | `PR_FINAL_SUMMARY.md` | PR summary with metrics | 2025-12-11 |
 | `docs/CONTRIBUTOR_ONBOARDING.md` | Onboarding guide | 2025-12-11 |
-| `AGENTS.md` | Agent operations playbook | 2025-12-10 |
+| `AGENTS.md` | agent operations playbook | 2025-12-10 |
 | `codex_gap_registry.yaml` | Known gaps tracking | 2025-12-11 |
 | `pyproject.toml` | Package configuration | Current |
 | `uv.lock` | Dependency lockfile | Current |
@@ -1840,7 +1881,7 @@ python scripts/space_traversal/audit_runner.py run
 python scripts/generate_audit_dashboard.py
 ```
 
-**Agent Workflows**:
+**agent Workflows**:
 ```python
 from agents.workflow_navigator import WorkflowNavigator
 nav = WorkflowNavigator()
@@ -1859,7 +1900,7 @@ nav.execute('AUDIT_EXEC')
              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                      Interface Layer                         │
-│  CLI │ Workflow Navigator │ Agent Prompts                    │
+│  CLI │ workflow Navigator │ agent Prompts                    │
 └────────────┬────────────────────────────────────────────────┘
              │
              ▼
@@ -1887,7 +1928,7 @@ nav.execute('AUDIT_EXEC')
 - **RNGState**: Deterministic random seed snapshot for reproducibility
 - **NDJSON**: Newline-delimited JSON for metrics
 - **Self-Hosted Runner**: GitHub Actions runner to avoid cloud costs
-- **Workflow Token**: Short identifier for workflow execution (e.g., `AUDIT_EXEC`)
+- **workflow Token**: Short identifier for workflow execution (e.g., `AUDIT_EXEC`)
 - **Mental Mapping**: Decision tracking for agent learning
 - **Physics Orchestration**: Energy-based workflow optimization
 - **Capability Score**: Maturity metric (0.0-1.0 scale)
@@ -1953,7 +1994,7 @@ nav.execute('AUDIT_EXEC')
 
 ## Conclusion
 
-This blueprint provides a comprehensive technical reference for the `_codex_` repository. The repository has achieved Level 4 MLOps maturity with extensive documentation, testing, and AI Agent integration. The roadmap prioritizes CI/CD enablement, security hardening, and continued enhancement of the AI-friendly infrastructure.
+This blueprint provides a comprehensive technical reference for the `_codex_` repository. The repository has achieved Level 4 MLOps maturity with extensive documentation, testing, and AI agent integration. The roadmap prioritizes CI/CD enablement, security hardening, and continued enhancement of the AI-friendly infrastructure.
 
 ### Key Takeaways
 
@@ -1988,7 +2029,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 
 **Document Version**: 1.0.0
 **Maintenance**: Update quarterly or after major changes
-**Contact**: Repository owners (@mbaetiong)
+**Contact**: repository owners (@mbaetiong)
 **Last Updated**: 2025-12-11
 
 
@@ -2039,9 +2080,9 @@ The _codex_ system is organized in the following layers:
 
 ### 2. **Orchestration Layer**
 - Hydra configuration management
-- Workflow execution
+- workflow execution
 - Plugin system
-- Agent orchestration (145+ active agents)
+- agent orchestration (145+ active agents)
 
 ### 3. **Core Engine Layer**
 - Training pipelines (HuggingFace Trainer, custom loops)
@@ -2072,6 +2113,7 @@ The _codex_ system is organized in the following layers:
 ## 🔄 Runtime Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
 flowchart LR
     A[Ingestion] --> B[Tokenizer]
     B --> C[Datasets]
@@ -2105,7 +2147,7 @@ flowchart LR
 _codex_/
 ├── .codex/                      # Codex environment configuration
 ├── .github/                     # CI/CD workflows
-├── agents/                      # AI Agent infrastructure
+├── agents/                      # AI agent infrastructure
 │   ├── prompts/                 # Pre-defined prompts
 │   └── codex_client/            # GitHub integration
 ├── src/codex_ml/               # Core ML framework
@@ -2135,6 +2177,8 @@ _codex_/
 ### Core Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
+    TrainingEng'}}%%
 classDiagram
     class TrainingEngine {
       +run(cfg)
@@ -2209,7 +2253,7 @@ codex train config/training.yaml
 codex evaluate --model model.pth
 ```
 
-### Docker Deployment
+## Docker Deployment
 
 ```dockerfile
 FROM python:3.10
@@ -2251,7 +2295,7 @@ data:
   split: [0.8, 0.1, 0.1]
 ```
 
-### Configuration Hierarchy
+## Configuration Hierarchy
 
 1. **Base Configs**: defaults/
 2. **Overrides**: Command-line
@@ -2333,15 +2377,15 @@ data:
 
 ---
 
-## 🤖 AI Agent Integration
+## 🤖 AI agent Integration
 
 The system includes native support for AI agents:
 
 - **Copilot Integration**: Native GitHub Copilot support
-- **Agent Orchestration**: 145+ active agents
+- **agent Orchestration**: 145+ active agents
 - **Tokenized Workflows**: Efficient token usage
 - **Structured Prompts**: Pre-defined prompt templates
-- **Agent Context**: Session-based context management
+- **agent Context**: Session-based context management
 
 ---
 

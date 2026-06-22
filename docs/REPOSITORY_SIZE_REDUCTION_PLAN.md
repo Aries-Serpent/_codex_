@@ -94,7 +94,7 @@ artifacts/coverage/*.xml
 .codex/validation/*/pre-commit.log
 ```
 
-### 4. Verification Steps
+## 4. Verification Steps
 
 Before moving files:
 1. ✅ Verify file is not imported/required by active code

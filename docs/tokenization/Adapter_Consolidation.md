@@ -1,5 +1,7 @@
 # [Guide]: Tokenizer Adapter Consolidation — Canonical HF Adapter
 
+**Last Updated:** 2026-06-22
+
 
 ## Summary
 - Canonical import: `from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter`

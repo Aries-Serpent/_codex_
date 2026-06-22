@@ -1,5 +1,7 @@
 # Phase 8+ Complete Implementation Master Plan
 
+**Last Updated:** 2026-06-22
+
 **Version**: 2.0  
 **Status**: Production-Ready Implementation Scope  
 **Owner**: @copilot  
@@ -30,6 +32,7 @@ This document provides complete implementation specifications for Phase 8 (Advan
 #### Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Run Completes, Trigger CI Diagnostic Agent'}}%%
 flowchart TD
     A[Workflow Run Completes] --> B{Status?}
     B -->|Failed| C[Trigger CI Diagnostic Agent]
@@ -198,7 +201,7 @@ gh api repos/:owner/:repo/issues/:pr_number/comments \
 gh run download <run-id> -n ci-diagnostic-report-<run-id>
 ```
 
-#### Success Criteria
+## Success Criteria
 
 - [ ] Workflow triggers on any CI failure
 - [ ] Logs downloaded successfully
@@ -465,7 +468,7 @@ pytest .github/agents/ci-diagnostic-agent/tests/ --cov=src --cov-report=html
 pytest .github/agents/ci-diagnostic-agent/tests/ -v -m integration
 ```
 
-#### Success Criteria
+## Success Criteria
 
 - [ ] All historical failure types detected with 85%+ accuracy
 - [ ] Confidence scoring within ±5% of expected
@@ -484,6 +487,7 @@ pytest .github/agents/ci-diagnostic-agent/tests/ -v -m integration
 #### Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Historical Data, Feature Extraction'}}%%
 flowchart LR
     A[Historical Data] --> B[Feature Extraction]
     B --> C[Training Pipeline]
@@ -883,7 +887,7 @@ if __name__ == "__main__":
     print(f"\nModel saved to: {args.output}")
 ```
 
-#### Training Data Collection
+## Training Data Collection
 
 **File**: `.github/agents/ml-threat-detector/scripts/collect_training_data.py`
 
@@ -994,7 +998,7 @@ if __name__ == "__main__":
     print(f"💾 Saved to {output_path}")
 ```
 
-#### Success Criteria
+### Success Criteria
 
 - [ ] Model trained with 85%+ accuracy
 - [ ] Precision ≥ 80% (minimize false positives)
@@ -1014,6 +1018,7 @@ if __name__ == "__main__":
 #### Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Data Sources, Collection Pipeline'}}%%
 flowchart TD
     A[Data Sources] --> B[Collection Pipeline]
 

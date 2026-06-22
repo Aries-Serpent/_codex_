@@ -1,5 +1,47 @@
 # AAIS Score 100 & 100% Test Coverage — Research-Backed Roadmap
 
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+- [Part 1 — AAIS Score: Current 98.5 → Target 100](#part-1--aais-score-current-985--target-100)
+  - [1.1 Score Breakdown (V3.2 Composite — last assessed 2026-02-24, updated Session 24)](#11-score-breakdown-v32-composite--last-assessed-2026-02-24-updated-session-24)
+  - [1.2 ACE Layer Gaps — What Closes Each](#12-ace-layer-gaps--what-closes-each)
+    - [L1: Aspirational Layer (96/100 — Gap -4)](#l1-aspirational-layer-96100--gap--4)
+    - [L2: Global Strategy (98/100 — Gap -2)](#l2-global-strategy-98100--gap--2)
+    - [L3: Agent Model / Self-Awareness (97/100 — Gap -3)](#l3-agent-model--self-awareness-97100--gap--3)
+    - [L4: Executive Function (98/100 — Gap -2)](#l4-executive-function-98100--gap--2)
+    - [L5: Cognitive Control (97/100 — Gap -3)](#l5-cognitive-control-97100--gap--3)
+    - [L6: Task Prosecution (96/100 — Gap -4)](#l6-task-prosecution-96100--gap--4)
+  - [1.3 MSV Gaps (Composite 93.8 → 100)](#13-msv-gaps-composite-938--100)
+  - [1.4 Agentic Metrics Gaps (Composite 94.7 → 100)](#14-agentic-metrics-gaps-composite-947--100)
+  - [1.5 Consolidated AAIS 100 Roadmap](#15-consolidated-aais-100-roadmap)
+- [Part 2 — Test Coverage: Current 72% → Target 100%](#part-2--test-coverage-current-72--target-100)
+  - [2.1 Coverage Landscape](#21-coverage-landscape)
+  - [2.2 Six-Phase Coverage Roadmap (per COVERAGE_PATH_70_TO_100_PERCENT.md)](#22-six-phase-coverage-roadmap-per-coverage_path_70_to_100_percentmd)
+  - [2.3 Branch Coverage Strategy (research-backed, Coverage.py 8 / 2026)](#23-branch-coverage-strategy-research-backed-coveragepy-8--2026)
+- [Step 1: Enable branch coverage + HTML report](#step-1-enable-branch-coverage--html-report)
+- [Step 2: Find lowest-covered modules](#step-2-find-lowest-covered-modules)
+- [Step 3: Mutation testing for surviving mutants (4% mutation gap)](#step-3-mutation-testing-for-surviving-mutants-4-mutation-gap)
+- [Using Mutatest or Cosmic Ray:](#using-mutatest-or-cosmic-ray)
+- [Step 4: Target surviving mutants with parameterized tests](#step-4-target-surviving-mutants-with-parameterized-tests)
+- [e.g. pytest.mark.parametrize for compound boolean branches](#eg-pytestmarkparametrize-for-compound-boolean-branches)
+- [2.4 Highest-Value Coverage Targets](#24-highest-value-coverage-targets)
+  - [Target 1: `src/codex/cognitive/brain_interface.py` (est. 75% → 100%)](#target-1-srccodexcognitivebrain_interfacepy-est-75--100)
+    - [Target 2: `src/codex/cognitive/agent_brain_api.py` (est. 70% → 100%)](#target-2-srccodexcognitiveagent_brain_apipy-est-70--100)
+    - [Target 3: `src/codex/auth/` modules (est. 85% → 100%)](#target-3-srccodexauth-modules-est-85--100)
+    - [Target 4: RAG + ML Training (est. 50-55% → 100%)](#target-4-rag--ml-training-est-50-55--100)
+  - [2.5 Mutation Testing: Closing the 4% Gap (96% → 100%)](#25-mutation-testing-closing-the-4-gap-96--100)
+- [Example: boundary-value test that kills the '>=' vs '>' mutant](#example-boundary-value-test-that-kills-the--vs--mutant)
+- [2.6 Covering Defensive / Platform-Specific Code](#26-covering-defensive--platform-specific-code)
+- [Platform-specific paths](#platform-specific-paths)
+- [Truly unreachable defensive code](#truly-unreachable-defensive-code)
+- [Type-narrowing guards (mypy-only)](#type-narrowing-guards-mypy-only)
+- [2.7 AI-Assisted Test Generation (2025/2026 best practice)](#27-ai-assisted-test-generation-20252026-best-practice)
+  - [2.8 SWE-bench Context (Why 100% Coverage ≠ Perfect AI)](#28-swe-bench-context-why-100-coverage--perfect-ai)
+- [Part 3 — Combined Score Impact](#part-3--combined-score-impact)
+- [Part 4 — Reference Architecture Diagram](#part-4--reference-architecture-diagram)
+- [Part 5 — Key References](#part-5--key-references)
+
 > **Generated:** 2026-03-14T05:15Z  
 > **Baseline:** AAIS 98.5/100 | Coverage 72% (branch target 70%+) | Mutation 96%  
 > **Framework:** ACE (arXiv:2310.06775) + MSV (TheWebConf 2026) + RagaAI AAEF  
@@ -38,6 +80,7 @@ The combined gap is **1.5 AAIS points** (98.5 → 100) and **28 coverage percent
 ### 1.2 ACE Layer Gaps — What Closes Each
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "L1 Aspirational\n96/100 → 100\nGap: -4", "L2 Global Strategy\n98/100 → 100\nGap: -2"'}}%%
 flowchart LR
     subgraph "ACE Layer Gaps → Improvements"
         L1["L1 Aspirational\n96/100 → 100\nGap: -4"]
@@ -163,6 +206,7 @@ flowchart LR
 ### 1.5 Consolidated AAIS 100 Roadmap
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title AAIS 98.5 → 100 Roadmap
     dateFormat YYYY-MM-DD
@@ -206,6 +250,7 @@ gantt
 ### 2.2 Six-Phase Coverage Roadmap (per COVERAGE_PATH_70_TO_100_PERCENT.md)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "72%\n~1500 tests\nNow", "80%\n+100 tests\nPhase 6\nRAG + ML Training\n+ CLI + Metrics"'}}%%
 graph LR
     C72["72%\n~1500 tests\nNow"] --> C80["80%\n+100 tests\nPhase 6\nRAG + ML Training\n+ CLI + Metrics"]
     C80 --> C85["85%\n+80 tests\nPhase 7\nIntegration\n+ E2E pipelines"]
@@ -238,9 +283,9 @@ mutatest --source src/codex/cognitive --runner pytest --output mutation_report.t
 
 ---
 
-### 2.4 Highest-Value Coverage Targets
+## 2.4 Highest-Value Coverage Targets
 
-#### Target 1: `src/codex/cognitive/brain_interface.py` (est. 75% → 100%)
+### Target 1: `src/codex/cognitive/brain_interface.py` (est. 75% → 100%)
 **Uncovered paths (inferred from test failures):**
 - `_calculate_match_score` with empty pattern list → 0.0
 - `_calculate_match_score` with empty query symptoms → 0.0
@@ -307,7 +352,7 @@ def test_match_score_threshold_boundary(score, threshold, expect_match):
 
 ---
 
-### 2.6 Covering Defensive / Platform-Specific Code
+## 2.6 Covering Defensive / Platform-Specific Code
 
 Some paths are legitimately uncovered because they require specific conditions. Use Coverage.py pragmas:
 
@@ -327,7 +372,7 @@ assert isinstance(x, str)  # pragma: no cover
 
 ---
 
-### 2.7 AI-Assisted Test Generation (2025/2026 best practice)
+## 2.7 AI-Assisted Test Generation (2025/2026 best practice)
 
 Per [dev.to/keploy — Coverage AI Agents 2025](https://dev.to/charlesuneze/utilizing-coverage-ai-agents-for-better-unit-tests-436c):
 
@@ -389,6 +434,7 @@ The goal of 100% coverage is **traceability and regression prevention**, not the
 ## Part 4 — Reference Architecture Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "L1: Ethics Module\nimperatives.yaml\nMoral reasoning engine\n+0.4 AAIS pts", "L2: OKR Automation\nokr_tracker.py\n+0.3 AAIS pts"'}}%%
 graph TB
     subgraph "AAIS 100 Requirements Map"
         subgraph "ACE Layers — Remaining Gaps"

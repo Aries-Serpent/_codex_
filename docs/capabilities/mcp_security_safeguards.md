@@ -1,5 +1,7 @@
 # MCP Security Safeguards
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP security safeguards capability implements defensive programming patterns and security controls for Model Context Protocol services, including confirmation prompts, dry-run modes, input sanitization, and validation safeguards.
@@ -65,7 +67,7 @@ else:
     print("Operation cancelled")
 ```
 
-### Dry-Run Mode
+## Dry-Run Mode
 
 ```python
 class Operation:
@@ -87,7 +89,7 @@ op = Operation(dry_run=True)
 op.execute("rm -rf /data")  # Safe, just previews
 ```
 
-### Input Sanitization
+## Input Sanitization
 
 ```python
 import re
@@ -125,7 +127,7 @@ except ValueError as e:
     print(f"Invalid input: {e}")
 ```
 
-### Bounds Checking
+## Bounds Checking
 
 ```python
 from typing import Union, Optional
@@ -150,7 +152,7 @@ def set_timeout(seconds: int):
     config.timeout = seconds
 ```
 
-### Safe Failure with Rollback
+## Safe Failure with Rollback
 
 ```python
 class Transaction:
@@ -369,7 +371,7 @@ python scripts/space_traversal/audit_runner.py explain mcp-security-safeguards
 python scripts/space_traversal/audit_runner.py run
 ```
 
-### Programmatic Detection
+## Programmatic Detection
 
 ```python
 from scripts.space_traversal.detectors import mcp_security_safeguards

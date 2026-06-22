@@ -59,7 +59,7 @@ pytest --cov=src/codex_ml --cov=src/codex --cov-report=xml --cov-report=html --c
 
 ---
 
-### 2. Security Gate Execution (HIGH PRIORITY - READY TO EXECUTE)
+## 2. Security Gate Execution (HIGH PRIORITY - READY TO EXECUTE)
 
 **Current State:**
 - Unified nox security session implemented (commit 749b1eb)
@@ -83,7 +83,7 @@ nox -s security
 
 ---
 
-### 3. Config Validator Execution (HIGH PRIORITY - READY TO EXECUTE)
+## 3. Config Validator Execution (HIGH PRIORITY - READY TO EXECUTE)
 
 **Current State:**
 - validate-configs nox session added (commit 749b1eb)
@@ -111,7 +111,7 @@ python tools/validate_experiments.py \
 
 ---
 
-### 4. Lint/Style Normalization (MEDIUM PRIORITY - PLANNED)
+## 4. Lint/Style Normalization (MEDIUM PRIORITY - PLANNED)
 
 **Current State:**
 - Repository follows general style guidelines
@@ -143,7 +143,7 @@ black .
 
 ---
 
-### 5. Type Checking (MEDIUM PRIORITY - PLANNED)
+## 5. Type Checking (MEDIUM PRIORITY - PLANNED)
 
 **Current State:**
 - Type hints present in most modules
@@ -171,7 +171,7 @@ mypy src/
 
 ---
 
-### 6. Determinism Tests (MEDIUM PRIORITY - PLANNED)
+## 6. Determinism Tests (MEDIUM PRIORITY - PLANNED)
 
 **Current State:**
 - CLI report command supports --compare for determinism check
@@ -197,7 +197,7 @@ mypy src/
 
 ---
 
-### 7. Artifacts Collection (HIGH PRIORITY - IN PROGRESS)
+## 7. Artifacts Collection (HIGH PRIORITY - IN PROGRESS)
 
 **Current State:**
 - IMPLEMENTATION_STATUS.md created

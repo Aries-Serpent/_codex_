@@ -1,6 +1,6 @@
 # Validation: Reproducibility — Seed, Env Snapshot, Checkpoint Metadata
 
-> Generated: 2025-11-05 07:27:25 | Author: mbaetiong
+> Generated: 2026-06-22 07:27:25 | Author: mbaetiong
 
 ## Objective
 
@@ -69,7 +69,7 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
 }
 ```text
 
-### 3. Checkpoint Metadata Version
+## 3. Checkpoint Metadata Version
 
 **Note**: This validation focuses on the checkpoint metadata format. The actual checkpoint tests are in Phase 1 (deferred).
 
@@ -153,7 +153,7 @@ pip install -e ".[metrics,test]"
 - Verify output directory permissions
 - Review test output for specific field that's missing
 
-### Performance
+## Performance
 
 Smoke tests should complete in < 10 seconds:
 - If slower, check for network calls (should be none)

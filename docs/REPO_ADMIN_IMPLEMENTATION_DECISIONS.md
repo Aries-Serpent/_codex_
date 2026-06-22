@@ -99,7 +99,7 @@ MAX_NESTING_THRESHOLD = 4     # levels
 GOD_CLASS_THRESHOLD = 20      # methods
 ```
 
-#### Analysis
+## Analysis
 
 **Industry Research Context:**
 - **Long Function**: Studies show 40-60 lines is the industry standard
@@ -155,7 +155,7 @@ class CodeMetrics:
 
 The maintainability index calculation already incorporates these factors, suggesting alignment with current thresholds.
 
-#### Recommendation
+## Recommendation
 
 **✅ KEEP CURRENT THRESHOLDS** - All four values are well-calibrated
 
@@ -201,9 +201,9 @@ For teams wanting to adjust:
 
 ---
 
-### Question 2: Export Formats - Are all 5 needed, or should some be removed?
+## Question 2: Export Formats - Are all 5 needed, or should some be removed?
 
-#### Current Export Formats
+### Current Export Formats
 Based on codebase analysis:
 1. **JSON** - Machine-readable structured data
 2. **YAML** - Human-friendly configuration and documentation
@@ -254,7 +254,7 @@ def export_session(session_id: str, fmt: str = "json", db: str | None = None) ->
 
 This shows JSON is already the default, with extensibility for other formats.
 
-#### Recommendation
+## Recommendation
 
 **✅ KEEP ALL 5 FORMATS** - Each serves distinct, non-overlapping use cases
 
@@ -297,9 +297,9 @@ codex-analyze --export csv --output metrics.csv
 ```
 
 ---
-### Question 3: LibCST vs AST - Should LibCST remain the primary parser?
+## Question 3: LibCST vs AST - Should LibCST remain the primary parser?
 
-#### Current Implementation
+### Current Implementation
 
 Based on `src/codex_ml/analysis/parsers.py`:
 ```python
@@ -360,7 +360,7 @@ dependencies = [
 
 LibCST is already a core dependency, not optional.
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - ELEVATE LibCST TO PRIMARY PARSER** (with AST as fast-path)
 
@@ -521,7 +521,7 @@ from agents.advanced_physics_calculators import RelativityScheduler
 | **Main Branch CI** | ✅ Yes | Track similarity trends over time |
 | **Nightly/per-phase** | ✅ Yes | Comprehensive analysis; generate refactoring reports |
 
-#### Recommendation
+## Recommendation
 
 **❌ NO - Keep DISABLED by default locally, ✅ YES - Enable in CI**
 
@@ -630,7 +630,7 @@ txt = p.read_text(encoding="utf-8", errors="ignore")
 
 Currently: **Silent failure** - Invalid UTF-8 bytes are replaced without notification
 
-#### Analysis
+## Analysis
 
 **Electromagnetic Fields Perspective** (Influence propagation):
 
@@ -666,7 +666,7 @@ from agents.advanced_physics_calculators import ElectromagneticField
 - **Fail-Fast Development**: Catch issues early in dev, graceful in prod
 - **Observability**: All errors should be logged for debugging
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - Log warnings for decode errors, use `errors="replace"`**
 
@@ -800,7 +800,7 @@ codex-ml = "codex_ml.cli.main:cli"
 - `codex-audit` - Security and quality audits
 - `codex-diff` - Code comparison and change analysis
 
-#### Analysis
+## Analysis
 
 **Wave Propagation Perspective** (Consensus building):
 
@@ -843,7 +843,7 @@ Analyzing existing scripts:
 # scripts/generate_audit_dashboard.py - Should be codex-dashboard
 ```
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - Register all CLI tools in pyproject.toml**
 
@@ -931,7 +931,7 @@ codex-analyze src/myfile.py --threshold 40
 codex-analyze . --format json | jq '.quality_score'
 ```
 
-### Audit & Security
+## Audit & Security
 ```bash
 # Run security audit
 codex-audit --check-dependencies --check-vulns
@@ -940,7 +940,7 @@ codex-audit --check-dependencies --check-vulns
 codex-dashboard --output audit_dashboard.html
 ```
 
-### Code Comparison
+## Code Comparison
 ```bash
 # Compare two versions
 codex-diff --base main --head feature-branch
@@ -949,7 +949,7 @@ codex-diff --base main --head feature-branch
 codex-diff main..HEAD --metrics-only
 ```
 
-### Quick Quality Check
+## Quick Quality Check
 ```bash
 # Run all checks (alias)
 codex-check
@@ -961,9 +961,9 @@ codex-smell && codex-complexity && codex-audit
 
 ---
 
-### Question 2: CI Integration - Should code smell detection block merges? Which severities?
+## Question 2: CI Integration - Should code smell detection block merges? Which severities?
 
-#### Current State
+### Current State
 
 CI workflows have linting and quality checks, but code smell detection is not yet integrated.
 
@@ -1014,7 +1014,7 @@ from agents.advanced_physics_calculators import ElectromagneticField
 - **Critical Paths**: Stricter (authentication, payment, data handling)
 - **Experimental**: Lenient (rapid prototyping)
 
-#### Recommendation
+## Recommendation
 
 **⚠️ WARNINGS ONLY for non-critical smells** - Don't block merges initially
 
@@ -1184,7 +1184,7 @@ CODEX_DB_PATH = ".codex/session_logs.db"
 # - Custom paths via CLI args
 ```
 
-#### Analysis
+## Analysis
 
 **Chaos Theory Perspective** (Stable attractors):
 
@@ -1218,7 +1218,7 @@ from agents.advanced_physics_calculators import ChaoticAttractor
 - **Node**: `node_modules/`, `.next/` (per-purpose)
 - **Database Tools**: Single DB with tables (PostgreSQL pattern)
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - Standardize on `.codex/` directory structure**
 
@@ -1372,7 +1372,7 @@ import tree_sitter_languages as tsl
 
 No systematic YAML/SQL parsing beyond basic text processing.
 
-#### Analysis
+## Analysis
 
 **Multi-Scale Pattern Recognition** (Fractal geometry):
 
@@ -1418,7 +1418,7 @@ Current pain points:
 # Cross-file dependencies - hard to track
 ```
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - High value addition, MEDIUM priority**
 
@@ -1539,9 +1539,9 @@ Current assessment: **MEDIUM** - Significant YAML usage, growing SQL queries
 
 ---
 
-### Question 2: Incremental Analysis - Is baseline storage for delta analysis needed?
+## Question 2: Incremental Analysis - Is baseline storage for delta analysis needed?
 
-#### Current State
+### Current State
 
 Analysis runs on full codebase every time:
 - No caching of previous results
@@ -1595,7 +1595,7 @@ from agents.advanced_physics_calculators import RelativityScheduler
 # Acceptable for SQLite or file-based storage
 ```
 
-#### Recommendation
+## Recommendation
 
 **✅ YES - Performance critical, HIGH priority**
 
@@ -1770,9 +1770,9 @@ jobs:
 
 ---
 
-### Question 3: Visualization - Should we add HTML report generation?
+## Question 3: Visualization - Should we add HTML report generation?
 
-#### Current State
+### Current State
 
 Reports are primarily:
 - JSON output for machine consumption

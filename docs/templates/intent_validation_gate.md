@@ -1,5 +1,7 @@
 # Intent Validation & Plan of Action Approval Gate
 
+**Last Updated:** 2026-06-22
+
 This template is used to front-load alignment, risks, and acceptance criteria **before** any code or docs changes are executed.
 
 > **Usage in _codex_**: Paste this in issues/PR descriptions when proposing changes, and get approval on the plan before execution. See also: `docs/decision_records/ADR-intent-approval-gate.md`.

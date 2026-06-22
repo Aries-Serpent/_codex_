@@ -1,5 +1,7 @@
 # Coverage Improvement Roadmap
 
+**Last Updated:** 2026-06-22
+
 **Current Coverage**: 15.9%  
 **Target Coverage**: 90%  
 **Gap**: 74.1 percentage points  
@@ -218,7 +220,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
     fi
 ```
 
-### Coverage Tracking Dashboard
+## Coverage Tracking Dashboard
 - Real-time coverage metrics
 - Module-by-module breakdown
 - Trend analysis (per commit cycle)

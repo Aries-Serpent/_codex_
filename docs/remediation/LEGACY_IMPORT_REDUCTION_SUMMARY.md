@@ -1,4 +1,6 @@
 # Legacy Import Reduction - Final Summary
+
+**Last Updated:** 2026-06-22
 > Branch: 0D_base_ (copilot/sub-pr-2390)  
 > Date: 2025-12-05  
 > Target: Reduce legacy imports 45 → ≤15

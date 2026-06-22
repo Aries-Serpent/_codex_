@@ -1,5 +1,7 @@
 # Internal Tools API Bridge Overview
 
+**Last Updated:** 2026-06-22
+
 The **Codex ↔ Copilot bridge** gives every automation surface—ChatGPT-Codex, GitHub Copilot, and
 future MCP agents—a single, auditable backend. The Internal Tools API (ITA) concentrates every
 privileged action behind a contract-first FastAPI service so that new clients only need to bring

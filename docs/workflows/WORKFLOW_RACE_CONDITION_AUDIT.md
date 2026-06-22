@@ -45,6 +45,7 @@ Additionally, `iterative-self-healing-ci` has **no marker-based dedup at all** o
 ### 1.1 Race Condition Architecture Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing git push / PR update, auto-fix-common-issues.yml'}}%%
 flowchart TD
     subgraph "Trigger Sources"
         PUSH[git push / PR update]
@@ -84,6 +85,7 @@ flowchart TD
 ### 1.2 Fix Architecture Diagram (Post-S227)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing git push, All N workflows fire'}}%%
 flowchart LR
     subgraph "Post-Fix Flow (S227 F-01 to F-13)"
         PUSH2[git push] --> WFN[All N workflows fire]
@@ -163,7 +165,7 @@ gh pr comment "${PR_NUMBER}" --repo Aries-Serpent/_codex_ --body "${BODY}"
 
 ---
 
-### 3.2 `copilot-issue-triage.yml` 🟠 HIGH
+## 3.2 `copilot-issue-triage.yml` 🟠 HIGH
 
 **Trigger:**
 ```yaml
@@ -296,7 +298,7 @@ The 4-attempt linear retry handles sequential retries within one run but cannot 
 
 ---
 
-### 3.6 `copilot-agent-checkin.yml` 🟡 MEDIUM
+## 3.6 `copilot-agent-checkin.yml` 🟡 MEDIUM
 
 **Trigger:**
 ```yaml

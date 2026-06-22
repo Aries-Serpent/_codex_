@@ -199,7 +199,7 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 ```
 
-### Raising JSON-RPC Errors
+## Raising JSON-RPC Errors
 
 ```python
 from fastapi import APIRouter
@@ -297,6 +297,7 @@ async def query_endpoint(
 ## Error Handling Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Request Received, Parse JSON-RPC'}}%%
 graph TD
     A[Request Received] --> B{Request Type?}
     B -->|JSON-RPC| C[Parse JSON-RPC]
@@ -727,7 +728,7 @@ if os.getenv("LOGGING_DISABLED") == "true":
     logger.disabled = True
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **High Error Rate Alert:**
 1. Check error logs for patterns: `grep "ERROR" logs/app.log | tail -100`

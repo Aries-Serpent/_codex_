@@ -1,5 +1,7 @@
 # Security Best Practices Guide
 
+**Last Updated:** 2026-06-22
+
 ## Table of Contents
 1. [Sensitive Data Handling](#sensitive-data-handling)
 2. [Log Injection Prevention](#log-injection-prevention)
@@ -30,7 +32,7 @@ logger.info(f"Password validation: {mask_password(password)}")
 # Output: "Password validation: ***"
 ```
 
-### ❌ DON'T: Log Sensitive Data in Plain Text
+## ❌ DON'T: Log Sensitive Data in Plain Text
 
 ```python
 # NEVER DO THIS
@@ -66,7 +68,7 @@ safe_output = sanitize_prompt(dangerous_input)  # Removes control chars, ANSI, H
 logger.info(f"Processed: {safe_output}")
 ```
 
-### ❌ DON'T: Use Unsanitized User Input in Logs
+## ❌ DON'T: Use Unsanitized User Input in Logs
 
 ```python
 # NEVER DO THIS
@@ -75,8 +77,8 @@ logger.info(f"User provided: {user_input}")  # ❌ Log injection vulnerability
 
 # Attacker input: "normal\nFAKE LOG ENTRY: Admin password reset"
 # Result in logs:
-#   User provided: normal
-#   FAKE LOG ENTRY: Admin password reset  # ← Injected by attacker
+# User provided: normal
+# FAKE LOG ENTRY: Admin password reset  # ← Injected by attacker
 
 # More attack vectors:
 # - Null byte: "data\x00hidden"  → String termination attacks
@@ -84,7 +86,7 @@ logger.info(f"User provided: {user_input}")  # ❌ Log injection vulnerability
 # - HTML/XSS: "<script>alert(1)</script>" → If logs are viewed in browser
 ```
 
-### 🛡️ Defense-in-Depth Strategy
+## 🛡️ Defense-in-Depth Strategy
 
 The `sanitize_prompt()` function provides multiple layers of protection:
 
@@ -125,7 +127,7 @@ safe = sanitize_prompt(malicious)
 # ✅ HTML escaped, prevents XSS execution
 ```
 
-### 📋 When to Use `sanitize_prompt()`
+## 📋 When to Use `sanitize_prompt()`
 
 **ALWAYS sanitize before:**
 - Writing to logs
@@ -178,7 +180,7 @@ storage.store_secret("secrets/db_password.enc", db_password)
 api_key = storage.load_secret("secrets/api_key.enc")
 ```
 
-### 🔐 Key Management Best Practices
+## 🔐 Key Management Best Practices
 
 ```bash
 # Generate encryption key
@@ -193,7 +195,7 @@ key, salt = derive_key_from_password("my_secure_password")
 # Store salt securely, regenerate key when needed
 ```
 
-### ❌ DON'T: Store Secrets in Plain Text
+## ❌ DON'T: Store Secrets in Plain Text
 
 ```python
 # NEVER DO THIS
@@ -228,7 +230,7 @@ pip install --upgrade nbconvert>=7.16.6
 pip freeze > requirements/lock.txt
 ```
 
-### 📋 Security Requirements
+## 📋 Security Requirements
 
 - **Critical/High CVEs**: Must be fixed within 7 iterations
 - **Moderate CVEs**: Should be fixed within 30 iterations
@@ -294,7 +296,7 @@ from codex.security import hash_secure
 token_hash = hash_secure(token, algorithm='sha256')
 ```
 
-### 2. Logging Exception Details
+## 2. Logging Exception Details
 
 ```python
 # ❌ WRONG (Phase 5 expose sensitive data in traceback)
@@ -311,7 +313,7 @@ except Exception as e:
     logger.debug(f"Error details: {type(e).__name__}")
 ```
 
-### 3. String Formatting in SQL
+## 3. String Formatting in SQL
 
 ```python
 # ❌ WRONG (SQL injection vulnerability)
@@ -323,7 +325,7 @@ query = "SELECT * FROM users WHERE username = ?"
 cursor.execute(query, (username,))
 ```
 
-### 4. Insecure File Permissions
+## 4. Insecure File Permissions
 
 ```python
 # ❌ WRONG (world-readable)
@@ -362,7 +364,7 @@ from codex.security import (
 from codex.security.storage import SecureStorage, generate_key
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # Required for encrypted storage

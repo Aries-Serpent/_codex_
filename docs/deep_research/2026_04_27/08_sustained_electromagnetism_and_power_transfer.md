@@ -1,5 +1,7 @@
 # Research Note 08 — Sustained Electromagnetism, Wireless Power, and Spectrum-Aware Control
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note
@@ -111,6 +113,7 @@ P_useful(λ,f,t) = P_incident(λ,f,t) · A_eff(λ,f) · η_capture · η_convert
 | usable output | $P_useful$ | electromagnetic-channel equivalent of $E_adapt,d$ |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing P_incident lambda f t, A_eff capture capacity'}}%%
 flowchart LR
     Incident[P_incident lambda f t] --> Aperture[A_eff capture capacity]
     Aperture --> Capture[eta_capture]
@@ -127,6 +130,7 @@ flowchart LR
 ## 6. Mermaid — Spectrum-Aware Energy Router
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Energy sources, Thermal'}}%%
 flowchart LR
     Sources[Energy sources] --> Thermal[Thermal]
     Sources --> Solar[Solar photons]

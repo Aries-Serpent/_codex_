@@ -1,5 +1,7 @@
 # Distributed Training Troubleshooting
 
+**Last Updated:** 2026-06-22
+
 > Guide for diagnosing and resolving distributed training initialization issues
 
 ## Overview
@@ -55,7 +57,7 @@ pip install "accelerate>=0.20"
 pip install -e ".[train]"
 ```
 
-### 2. Accelerate Version Compatibility
+## 2. Accelerate Version Compatibility
 
 **Symptom:**
 ```text
@@ -192,7 +194,7 @@ assert get_rank() == 0
 assert get_world_size() == 1
 ```
 
-### Skip Distributed Tests
+## Skip Distributed Tests
 
 When running tests in CI or minimal environments:
 
@@ -231,7 +233,7 @@ accelerate launch --num_processes=2 -m codex_ml.cli.train \
     --config configs/training/base.yaml
 ```
 
-### Multi-Node Training
+## Multi-Node Training
 
 ```bash
 # On master node (rank 0)
@@ -324,7 +326,7 @@ else:
     # Handle error or fall back to CPU
 ```
 
-### Diagnostic Mode
+## Diagnostic Mode
 
 Run the guard in diagnostic mode to check your environment:
 
@@ -369,7 +371,7 @@ ACCELERATE_TEST=1 pytest tests/integration/test_distributed_init.py
 pytest -m "not integration"
 ```
 
-### Environment Variable Reference for Safe Init
+## Environment Variable Reference for Safe Init
 
 | Variable | Purpose | Example |
 |----------|---------|---------|

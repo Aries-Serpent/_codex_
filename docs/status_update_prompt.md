@@ -1,5 +1,7 @@
 # Codex Status Update Prompt & Templates
 
+**Last Updated:** 2026-06-22
+
 ## Prompt
 Use the following prompt when generating a status update for the `_codex_` repository. This is the **mandated** template that aligns with the 2025-09-22 audit refresh.
 
@@ -152,7 +154,7 @@ Audit Scope
    3. ...
 
 4. **Atomic Diffs**
-### Atomic Diff 1 — {{title1}}
+## Atomic Diff 1 — {{title1}}
 - **Why:** {{why1}}
 - **Risk:** {{risk1}}
 - **Rollback:** {{rollback1}}

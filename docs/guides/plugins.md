@@ -1,5 +1,7 @@
 # Plugin System Guide
 
+**Last Updated:** 2026-06-22
+
 This guide explains how to extend codex_ml with custom plugins using Python entry points.
 
 ## Overview
@@ -86,7 +88,7 @@ def weighted_f1(predictions, targets, weights=None):
 - Type hints: Helps users understand expected inputs/outputs
 - Docstring: Explain parameters and return values
 
-### Step 2: Declare Entry Points
+## Step 2: Declare Entry Points
 
 Add entry points to your `pyproject.toml`:
 
@@ -110,7 +112,7 @@ pip install -e /path/to/my_package
 pip install my_package
 ```text
 
-### Step 4: Use Your Plugin
+## Step 4: Use Your Plugin
 
 ```python
 from codex_ml.metrics.registry import get_metric, list_metrics, init_metric_plugins
@@ -161,7 +163,7 @@ class CustomMetric:
 # custom_metric_plugin = "my_package.metrics:CustomMetric"
 ```text
 
-### Plugin with Optional Dependencies
+## Plugin with Optional Dependencies
 
 Handle optional dependencies gracefully:
 
@@ -327,7 +329,7 @@ def non_deterministic_metric(predictions, targets):
     return score(sample)
 ```text
 
-### 4. Optional Dependencies
+## 4. Optional Dependencies
 
 ```python
 def metric_with_optional_dep(predictions, targets):
@@ -364,7 +366,7 @@ count = init_metric_plugins(force=True)
 print(f"Loaded {count} plugins")
 ```text
 
-### Import Errors
+## Import Errors
 
 **Problem**: Plugin fails to load with ImportError
 
@@ -382,7 +384,7 @@ except ImportError as e:
     ) from e
 ```text
 
-### Registration Conflicts
+## Registration Conflicts
 
 **Problem**: Plugin name conflicts with built-in metric
 

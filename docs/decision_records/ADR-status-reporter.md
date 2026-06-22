@@ -1,5 +1,7 @@
 # ADR: Local Status Reporter (STATUS_REPORT.md)
 
+**Last Updated:** 2026-06-22
+
 ## Status
 Accepted — 2025-10-26
 

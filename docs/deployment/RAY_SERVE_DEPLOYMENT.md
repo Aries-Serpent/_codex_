@@ -126,7 +126,7 @@ docker build -t codex-ray-serve:latest .
 docker run -p 8000:8000 -p 8265:8265 codex-ray-serve:latest
 ```
 
-### Option 2: Kubernetes Deployment (Production)
+## Option 2: Kubernetes Deployment (Production)
 
 **Kubernetes YAML:**
 ```yaml
@@ -326,7 +326,7 @@ curl -X POST http://localhost:8000/predict \
   -d '{"text": "Hello world", "max_tokens": 100}'
 ```
 
-### Example 2: Multi-Model Deployment with Autoscaling
+## Example 2: Multi-Model Deployment with Autoscaling
 
 ```python
 from ray import serve
@@ -386,7 +386,7 @@ if __name__ == "__main__":
     print("✅ Dashboard: http://localhost:8265")
 ```
 
-### Example 3: Batch Processing
+## Example 3: Batch Processing
 
 ```python
 from ray import serve
@@ -433,7 +433,7 @@ ray dashboard
 # Or access in browser: http://localhost:8265
 ```
 
-### Monitor Metrics
+## Monitor Metrics
 
 ```python
 from ray import serve
@@ -452,7 +452,7 @@ for replica in metrics:
     print(f"Replica {replica.id}: {replica.state}")
 ```
 
-### Logging
+## Logging
 
 ```python
 import logging
@@ -557,9 +557,9 @@ class Model:
 ## Next Steps
 
 - 🔗 [Ray Serve Documentation](https://docs.ray.io/en/latest/serve/index.html)
-- 🔗 [Kubernetes Integration](./RAY_KUBERNETES.md)
-- 🔗 [Performance Tuning](../PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- 🔗 [Monitoring Guide](./RAY_MONITORING.md)
+- 🔗 [Performance Tuning](../performance.md)
+
+**Additional guides for Kubernetes integration and monitoring are planned for future implementation.**
 
 ---
 

@@ -1,6 +1,6 @@
 # Configuration Guide
 
-**Generated**: 2025-12-28 | **Author**: mbaetiong
+**Generated**: 2026-06-22 | **Author**: mbaetiong
 
 ## Overview
 
@@ -40,7 +40,7 @@ monitoring:
   log_level: ${LOG_LEVEL:-INFO}
 ```
 
-### Environment Variables (`.env`)
+## Environment Variables (`.env`)
 
 ```bash
 # Core settings

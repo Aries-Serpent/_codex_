@@ -1,5 +1,7 @@
 # Hydra Defaults & Sweeps
 
+**Last Updated:** 2026-06-22
+
 Codex ML relies on Hydra's [Defaults List](https://hydra.cc/docs/advanced/defaults_list/) to compose runtime configuration and supports Hydra's multirun sweeps.
 
 Example defaults list:

@@ -1,5 +1,7 @@
 # Knowledge Crawler Service - Operational Guide
 
+**Last Updated:** 2026-06-22
+
 **Service:** Zendesk Knowledge Synchronization  
 **Version:** 2.0  
 **Status:** Production Ready  

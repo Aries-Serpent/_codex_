@@ -1,5 +1,7 @@
 # Asset-Driven Instruction Playbook
 
+**Last Updated:** 2026-06-22
+
 This playbook codifies how to turn the Repo Map, Fix folder cadence, and Security Sweep prompts into reproducible instructions that lean on the repository's existing artefacts.
 
 ## 1. Repo Map & Quick Wins

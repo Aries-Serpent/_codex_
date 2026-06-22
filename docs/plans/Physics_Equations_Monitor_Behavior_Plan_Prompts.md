@@ -1,5 +1,11 @@
 # Physics Equations for Monitor Behavior Plan Prompt Entries
 
+## Table of Contents
+
+- [Each entry includes: Equation (canonical), Brief description, Unique "Agent" use case addressing “Monitor import behavior in production. Consider adding CI test explicitly validating minimal installs.for consistency, we should update the OTHER imports to also catch these exceptions. This makes the code more robust and consistent. Let me update all the exception handlers.”, and a clear path toward Future evolution.](#each-entry-includes-equation-canonical-brief-description-unique-agent-use-case-addressing-monitor-import-behavior-in-production-consider-adding-ci-test-explicitly-validating-minimal-installsfor-consistency-we-should-update-the-other-imports-to-also-catch-these-exceptions-this-makes-the-code-more-robust-and-consistent-let-me-update-all-the-exception-handlers-and-a-clear-path-toward-future-evolution)
+
+**Last Updated:** 2026-06-22
+
 ## Each entry includes: Equation (canonical), Brief description, Unique "Agent" use case addressing “Monitor import behavior in production. Consider adding CI test explicitly validating minimal installs.for consistency, we should update the OTHER imports to also catch these exceptions. This makes the code more robust and consistent. Let me update all the exception handlers.”, and a clear path toward Future evolution.
 
 1) Schrödinger — iħ ∂ψ/∂t = Ĥ ψ

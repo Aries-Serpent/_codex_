@@ -1,6 +1,6 @@
 # MCP Traversal Workflow
 
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Status**: ✅ Framework Specification  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05  
@@ -55,6 +55,7 @@
 **Traversal Path**: Init → State Load → Processing → State Update → Validation → Completion
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Initialize Context, Load State'}}%%
 graph LR
     A[Initialize Context] --> B[Load State]
     B --> C[Begin Traversal]

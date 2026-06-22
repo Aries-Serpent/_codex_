@@ -1,5 +1,7 @@
 # Codex Training Pipeline Scaffold
 
+**Last Updated:** 2026-06-22
+
 This document describes the Codex training pipeline in a form ready for incremental implementation. Each stage contains sample prompts for Codex and pseudocode skeletons that developers can expand.
 
 ## Stage 1: Pretraining

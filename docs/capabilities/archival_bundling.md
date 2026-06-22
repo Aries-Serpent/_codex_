@@ -1,5 +1,7 @@
 # Archival & Bundling Capability Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The **archival-bundling** capability provides comprehensive functionality for packaging, versioning, and archiving ML artifacts including models, datasets, configurations, and experiment results. This system ensures reproducibility by creating self-contained archives that capture all dependencies and metadata needed to recreate experimental conditions.
@@ -105,7 +107,7 @@ bundle = bundle_experiment(
 # bundle.checksum: "sha256:abc123..."
 ```
 
-#### `create_bundle()`
+## `create_bundle()`
 Create a custom bundle with specific artifacts.
 
 ```python
@@ -127,7 +129,7 @@ bundle = create_bundle(
 )
 ```
 
-#### `extract_bundle()`
+## `extract_bundle()`
 Extract and restore artifacts from a bundle.
 
 ```python
@@ -145,7 +147,7 @@ model = artifacts.models["model.pkl"]
 config = artifacts.configs["hyperparameters.yaml"]
 ```
 
-#### `list_bundles()`
+## `list_bundles()`
 Query available bundles with filtering.
 
 ```python
@@ -203,7 +205,7 @@ archival:
     cleanup_interval: 86400  # seconds
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # Storage paths
@@ -253,7 +255,7 @@ print(f"Size: {bundle.size_mb:.2f} MB")
 print(f"Checksum: {bundle.checksum}")
 ```
 
-### Example 2: Version Comparison Bundle
+## Example 2: Version Comparison Bundle
 
 ```python
 from codex.archival import create_bundle, compare_bundles
@@ -284,7 +286,7 @@ print(f"Size delta: {diff.size_delta_mb:.2f} MB")
 print(f"Metric improvement: {diff.metric_delta}")
 ```
 
-### Example 3: Restore from Archive
+## Example 3: Restore from Archive
 
 ```python
 from codex.archival import extract_bundle, validate_bundle
@@ -315,7 +317,7 @@ trainer.load_checkpoint(artifacts.checkpoints["latest.ckpt"])
 trainer.resume_training()
 ```
 
-### Example 4: Automated Archival Pipeline
+## Example 4: Automated Archival Pipeline
 
 ```python
 from codex.archival import BundleManager
@@ -447,7 +449,7 @@ bundle = bundle_experiment(
 )
 ```
 
-#### Extraction Failures
+## Extraction Failures
 
 **Problem**: Bundle fails to extract completely.
 
@@ -467,7 +469,7 @@ artifacts = extract_bundle(
 )
 ```
 
-#### Missing Dependencies
+## Missing Dependencies
 
 **Problem**: Restored experiment missing dependencies.
 

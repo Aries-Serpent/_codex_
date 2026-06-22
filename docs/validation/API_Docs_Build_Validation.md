@@ -115,7 +115,7 @@ pip install -e .
 export PYTHONPATH=$(pwd)/src:$PYTHONPATH
 ```text
 
-### Stale artifacts
+## Stale artifacts
 
 **Symptom**: Old documentation files still present
 
@@ -126,7 +126,7 @@ rm -rf artifacts/docs/api/*
 python tools/validate_api_docs.py --package codex.cli --out artifacts/docs/api --summary
 ```text
 
-### Source layout changes not reflected
+## Source layout changes not reflected
 
 **Symptom**: Documentation doesn't match current code structure
 

@@ -41,4 +41,4 @@ def load_my_dataset(path: str, *, seed: int = 1234) -> dict[str, list[dict[str, 
 - Update `docs/how-to` or `docs/training` sections with usage instructions when
   shipping new registries.
 
-*Last updated: 2026-02-10*
+*Last updated: 2026-06-22*

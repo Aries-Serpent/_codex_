@@ -1,5 +1,7 @@
 # Production Readiness Certification
 
+**Last Updated:** 2026-06-22
+
 **Repository**: Aries-Serpent/_codex_  
 **Branch**: copilot/review-implementation-gaps  
 **Date**: 2025-12-11  

@@ -1,5 +1,15 @@
 # Variable / Secret Audit Report
 
+## Table of Contents
+
+- [Summary](#summary)
+- [Layer: `org-secrets`](#layer-org-secrets)
+- [Layer: `repo-secrets`](#layer-repo-secrets)
+- [Layer: `env-secrets`](#layer-env-secrets)
+- [Layer: `repo-vars`](#layer-repo-vars)
+- [Layer: `env-vars`](#layer-env-vars)
+- [Layer: `codespace`](#layer-codespace)
+
 **Repository:** `Aries-Serpent/_codex_`  
 **Generated:** `2026-03-20T06:16:37.803611+00:00`  
 **Auth:** ❌ no token (expected-only mode)

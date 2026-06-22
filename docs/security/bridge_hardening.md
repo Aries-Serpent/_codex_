@@ -1,5 +1,7 @@
 # Bridge Security Hardening - Phase 3.1
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The `src/bridge_manager.py` module provides a secure IPC bridge for Cognitive-Copilot communication, replacing the fragile file-based approach at `temp/bridge_codex_copilot_bridge`.
@@ -21,7 +23,7 @@ os.mkfifo(str(self.pipe_path), 0o600 if self.owner_only else 0o666)
 os.chmod(self.bridge_dir, 0o700)  # Owner only: rwx------
 ```
 
-### 2. File-Based Locking (fcntl)
+## 2. File-Based Locking (fcntl)
 
 **Implementation:**
 - Exclusive locking using `fcntl.flock()` to prevent race conditions
@@ -33,7 +35,7 @@ os.chmod(self.bridge_dir, 0o700)  # Owner only: rwx------
 fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 ```
 
-### 3. Message Validation
+## 3. Message Validation
 
 **Implementation:**
 - Typed message format using Pydantic dataclasses
@@ -48,7 +50,7 @@ def validate(self) -> bool:
     return all(hasattr(self, field) for field in required_fields)
 ```
 
-### 4. Unix Domain Socket Support
+## 4. Unix Domain Socket Support
 
 **Implementation:**
 - Alternative to named pipes for higher throughput
@@ -107,7 +109,7 @@ received = bridge.read_message(timeout=5)
 bridge.cleanup()
 ```
 
-### Context Manager Usage
+## Context Manager Usage
 
 ```python
 from src.bridge_manager import bridge_lock
@@ -118,7 +120,7 @@ with bridge_lock(bridge.lock_path):
     bridge.write_message(message)
 ```
 
-### Convenience Functions
+## Convenience Functions
 
 ```python
 from src.bridge_manager import share_context_with_copilot
@@ -168,7 +170,7 @@ bridge_file = Path("temp/bridge_codex_copilot_bridge/context.json")
 bridge_file.write_text(json.dumps(context))  # World-readable!
 ```
 
-### New Approach (Secure)
+## New Approach (Secure)
 
 ```python
 from src.bridge_manager import share_context_with_copilot

@@ -1,5 +1,7 @@
 # Zendesk Docs Capture Pipeline (Offline)
 
+**Last Updated:** 2026-06-22
+
 ## TL;DR
 ```bash
 codex zendesk docs-sync --dry-run   # Inspect URLs

@@ -1,5 +1,7 @@
 # Quantum Retrieval Physics Principles
 
+**Last Updated:** 2026-06-22
+
 **Document Version:** 1.0  
 **Author:** Copilot Agent  
 **Date:** 2025-12-24  
@@ -407,7 +409,7 @@ for result in results:
     print(f"Entropy: {result.metadata['entropy_contribution']}")
 ```
 
-### Custom Physics Parameters
+## Custom Physics Parameters
 
 ```python
 from src.rag.pipelines.quantum_retrieval import (

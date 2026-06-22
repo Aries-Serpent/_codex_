@@ -1,6 +1,6 @@
 # Generic ChatGPT Project Navigation System
 
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Status**: ✅ Framework Ready - Implementation Pending  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05
@@ -76,6 +76,7 @@
 **User Navigation Path**: Question → Index Lookup → File Localization → Relationship Traversal → Context Assembly → Response Generation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing User Question, CODEBASE_MAP.md'}}%%
 graph TD
     A[User Question] --> B{Query Type}
     B -->|Structure| C[CODEBASE_MAP.md]
@@ -201,7 +202,7 @@ find . -name "*.py" > file_list.txt
 # Document in CODEBASE_MAP.md
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Index Corruption**:
 ```bash
@@ -237,7 +238,7 @@ python scripts/mcp/validate_navigation_consistency.py \
   --architecture ARCHITECTURE_GUIDE.md
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **Repository Size Limits**:
 - <1000 files: Full relationship graph
@@ -737,7 +738,7 @@ class WorkflowNavigator(BaseAgent):
     # ...
 ```
 
-### Provenance
+## Provenance
 Always include:
 - File location (original and flat)
 - Module context
@@ -1091,12 +1092,12 @@ cd /path/to/repository
 # 3. Use system prompt from docs/mcp/FULL_CODEBASE_SYSTEM_PROMPT.md
 
 # 4. Test ChatGPT's understanding:
-#    "Show me the repository structure"
-#    "Where is the workflow navigation implemented?"
-#    "How do I add a new agent?"
+# "Show me the repository structure"
+# "Where is the workflow navigation implemented?"
+# "How do I add a new agent?"
 ```
 
-### For ChatGPT Assistant
+## For ChatGPT Assistant
 
 When loaded with full codebase + navigation system:
 
@@ -1183,7 +1184,7 @@ See existing agent src__agents__workflow_navigator.py for reference.
 ---
 
 **Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
+**Last Updated**: 2026-06-22T00:00:00Z  
 **Version**: 2.0  
 **Status**: Framework Ready - Implementation Pending  
 **Related**: PACKAGEABLE_CAPABILITIES.md, PACKAGING_GUIDE.md

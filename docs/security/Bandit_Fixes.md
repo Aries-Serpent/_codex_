@@ -1,5 +1,7 @@
 # Bandit Fixes & Rationale (Offline)
 
+**Last Updated:** 2026-06-22
+
 This document summarises remediations applied after Bandit findings and provides
 context for future audits.
 

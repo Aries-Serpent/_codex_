@@ -1,5 +1,7 @@
 # System Architecture Overview
 
+**Last Updated:** 2026-06-22
+
 **Status**: Stub document - To be expanded  
 **Created**: 2026-01-17  
 **Phase**: 12.0 - Documentation Quality

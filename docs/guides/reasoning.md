@@ -1,5 +1,7 @@
 # Reasoning adapters and trace logging
 
+**Last Updated:** 2026-06-22
+
 Codex ML now ships structured configuration for reasoning-centric runs. The schemas live in
 `codex_ml.config` as `ReasoningConfig`, `ReasoningHeadConfig`, `ReasoningObjectiveConfig`, and
 `ToolAdapterConfig`. Hydra presets in `configs/training/reasoning/` compose these dataclasses with the

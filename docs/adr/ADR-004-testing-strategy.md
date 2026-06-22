@@ -1,5 +1,7 @@
 # ADR-004: Multi-Layer Testing: Unit + Integration + Regression + Property + Fuzz + Chaos
 
+**Last Updated:** 2026-06-22
+
 **Status:** Accepted
 **Date:** 2025-01-15
 **Deciders:** codex-ml platform team

@@ -1,5 +1,7 @@
 # Metrics utilities
 
+**Last Updated:** 2026-06-22
+
 Codex ML bundles lightweight helpers for computing evaluation metrics
 without pulling in heavy external dependencies.  The
 `codex_ml.metrics.evaluator` module focuses on deriving metrics directly

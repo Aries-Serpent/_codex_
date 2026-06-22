@@ -1,5 +1,7 @@
 # Quality Gates
 
+**Last Updated:** 2026-06-22
+
 Local gates to keep changes safe:
 - Lint, unit tests, docs build
 - Determinism checks

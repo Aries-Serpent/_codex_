@@ -22,7 +22,9 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 - **Fix**: Added `usedforsecurity=False` parameter
 - **Current Code**:
   ```python
-  hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
+from typing import List
+import subprocess
+hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
   ```
 - **Verification**: Lines 119 and 150 both use the secure pattern
 
@@ -144,25 +146,25 @@ grep -n "usedforsecurity" src/codex/ast/parser.py
 # Expected: Lines 119 and 150 with usedforsecurity=False
 ```
 
-### Check PyTorch Security
+## Check PyTorch Security
 ```bash
 grep -n "weights_only.*True" src/utils/checkpoint.py
 # Expected: Line 235 with weights_only=True
 ```
 
-### Check Subprocess Calls
+## Check Subprocess Calls
 ```bash
 grep -rn "subprocess.run.*shell=True" src/
 # Expected: No results (no shell=True usage)
 ```
 
-### Check XML Security
+## Check XML Security
 ```bash
 grep -n "defusedxml" src/codex/dynamics/solution_xml.py
 # Expected: Line 9 imports defusedxml
 ```
 
-### Check Bare Except Clauses
+## Check Bare Except Clauses
 ```bash
 python3 -c "
 import re

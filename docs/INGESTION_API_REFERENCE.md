@@ -1,5 +1,7 @@
 # Ingestion Pipeline API Reference
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The ingestion pipeline provides a unified interface for processing multiple file formats (CSV, JSON, JSONL, TXT, MD) with comprehensive validation, transformation, and streaming support.
@@ -71,7 +73,7 @@ print(result.metadata)              # dict
 - `output_path` (str): Output file path (if applicable)
 - `metadata` (dict): Additional metadata
 
-### 3. IngestionPipeline
+## 3. IngestionPipeline
 
 Main pipeline class for data ingestion.
 
@@ -82,9 +84,9 @@ config = PipelineConfig(batch_size=500)
 pipeline = IngestionPipeline(config)
 ```
 
-#### Methods
+### Methods
 
-##### `ingest_file()`
+#### `ingest_file()`
 
 Process a single file.
 
@@ -130,7 +132,7 @@ else:
     print(f"Errors: {result.errors}")
 ```
 
-##### `ingest_directory()`
+## `ingest_directory()`
 
 Process all files in a directory.
 
@@ -162,7 +164,7 @@ print(f"Total: {result.records_processed}")
 print(f"Failed: {len(result.errors)}")
 ```
 
-##### `stream_records()`
+### `stream_records()`
 
 Stream records from a file (memory-efficient).
 
@@ -208,7 +210,7 @@ result = pipeline.ingest_file('data.csv', 'data.jsonl')
 {"id": "2", "text": "Another example", "label": "1"}
 ```
 
-### JSON Format
+## JSON Format
 
 Single JSON object or array.
 
@@ -225,7 +227,7 @@ Single JSON object or array.
 result = pipeline.ingest_file('data.json', 'data.jsonl')
 ```
 
-### JSONL Format
+## JSONL Format
 
 Newline-delimited JSON (one object per line).
 
@@ -235,7 +237,7 @@ Newline-delimited JSON (one object per line).
 {"id": 2, "text": "Another example", "label": 1}
 ```
 
-### Text Format
+## Text Format
 
 Plain text, one record per line.
 

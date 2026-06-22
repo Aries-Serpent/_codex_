@@ -1,5 +1,7 @@
 # COPILOT_SETUP_STEPS_GUARD — Do Not Refactor
 
+**Last Updated:** 2026-06-22
+
 **Status:** HARD RULE — enforced by CI (`scripts/ci/validate_setup_steps_yaml.sh`)
 **Relevant file:** `.github/workflows/copilot-setup-steps.yml`
 **Canonical baseline:** commit `12f7a861` / blob `8c84a8c1` (~1,075 lines)

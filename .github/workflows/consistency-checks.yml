@@ -1,0 +1,239 @@
+name: Consistency Checks
+
+on:
+  push:
+    branches:
+      - main
+      - 0D_base_
+    paths:
+      - "docs/**"
+      - "*.md"
+      - ".github/scripts/check-cross-references.py"
+      - ".markdownlintrc"
+      - ".github/workflows/consistency-checks.yml"
+  pull_request:
+    branches:
+      - main
+      - 0D_base_
+    paths:
+      - "docs/**"
+      - "*.md"
+
+concurrency:
+  group: consistency-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  markdownlint:
+    name: Markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli@latest
+
+      - name: Run markdownlint
+        id: markdownlint
+        run: |
+          echo "## Markdownlint Report" >> $GITHUB_STEP_SUMMARY
+          
+          if markdownlint docs/*.md *.md 2>&1 | tee /tmp/md-lint-output.txt; then
+            echo "✅ All Markdown files pass linting" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "### ❌ Issues Found" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/md-lint-output.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Comment on PR (if markdown issues)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/md-lint-output.txt', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ⚠️ Markdown Linting Issues\n\n\`\`\`\n${output}\`\`\`\n\nPlease fix the linting errors. You can run \`markdownlint --fix docs/*.md *.md\` locally to auto-fix many issues.`
+            });
+
+  cross-references:
+    name: Cross-Reference Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run cross-reference checker
+        id: crossref
+        run: |
+          python3 .github/scripts/check-cross-references.py \
+            --repo-root="." \
+            --format=text \
+            --github-annotations \
+            --fail-on-errors 2>&1 | tee /tmp/crossref-report.txt || true
+
+      - name: Generate report
+        if: always()
+        run: |
+          echo "## Cross-Reference Validation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat /tmp/crossref-report.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-reference-report
+          path: /tmp/crossref-report.txt
+          retention-days: 30
+
+  heading-hierarchy:
+    name: Heading Hierarchy Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate heading hierarchy
+        id: heading
+        run: |
+          python3 - << 'EOF'
+          import re
+          from pathlib import Path
+          
+          def validate_heading_hierarchy(file_path):
+              """Validate that headings follow proper hierarchy (no skips)."""
+              issues = []
+              last_level = 0
+              
+              with open(file_path, 'r', encoding='utf-8') as f:
+                  lines = f.readlines()
+              
+              for line_num, line in enumerate(lines, 1):
+                  match = re.match(r'^(#+)\s+(.+)$', line.strip())
+                  if match:
+                      level = len(match.group(1))
+                      
+                      # Check if first heading is H1
+                      if last_level == 0 and level != 1:
+                          issues.append((line_num, level, f"First heading should be H1, got H{level}"))
+                      
+                      # Check for hierarchy jumps (e.g., H1 to H3 without H2)
+                      if last_level > 0 and level > last_level + 1:
+                          issues.append((line_num, level, f"Hierarchy jump from H{last_level} to H{level}"))
+                      
+                      last_level = level
+              
+              return issues
+          
+          all_issues = {}
+          md_files = list(Path('docs').rglob('*.md')) + list(Path('.').glob('*.md'))
+          
+          for md_file in sorted(set(md_files)):
+              if any(skip in str(md_file) for skip in ['node_modules', '.git', '.venv']):
+                  continue
+              
+              issues = validate_heading_hierarchy(md_file)
+              if issues:
+                  all_issues[md_file] = issues
+          
+          if all_issues:
+              print("## ⚠️ Heading Hierarchy Issues Found\n")
+              for file_path, issues in all_issues.items():
+                  print(f"\n### {file_path}")
+                  for line, level, message in issues:
+                      print(f"  Line {line}: {message}")
+              exit(1)
+          else:
+              print("## ✅ All heading hierarchies are valid!")
+              exit(0)
+          EOF
+        continue-on-error: true
+
+      - name: Report heading results
+        if: always()
+        run: |
+          echo "## Heading Hierarchy Validation" >> $GITHUB_STEP_SUMMARY
+          if [ ${{ steps.heading.outcome }} = 'success' ]; then
+            echo "✅ All heading hierarchies are valid" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Some heading hierarchy issues found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  consistency-summary:
+    name: Consistency Summary
+    runs-on: ubuntu-latest
+    needs: [markdownlint, cross-references, heading-hierarchy]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate consistency report
+        run: |
+          cat << 'EOF' > /tmp/consistency-summary.md
+          # 📊 Consistency Checks Summary
+          
+          | Check | Status |
+          |-------|--------|
+          | Markdownlint | ${{ needs.markdownlint.result == 'success' && '✅' || '⚠️' }} |
+          | Cross-References | ${{ needs.cross-references.result == 'success' && '✅' || '⚠️' }} |
+          | Heading Hierarchy | ${{ needs.heading-hierarchy.result == 'success' && '✅' || '⚠️' }} |
+          
+          **Overall Status**: ${{ (needs.markdownlint.result == 'success' && needs.cross-references.result == 'success' && needs.heading-hierarchy.result == 'success') && '✅ PASSED' || '⚠️ REVIEW NEEDED' }}
+          EOF
+          
+          cat /tmp/consistency-summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if any check failed
+        if: |
+          needs.markdownlint.result == 'failure' ||
+          needs.cross-references.result == 'failure' ||
+          needs.heading-hierarchy.result == 'failure'
+        run: |
+          echo "❌ Some consistency checks failed"
+          exit 1
+
+      - name: Success
+        if: |
+          needs.markdownlint.result == 'success' &&
+          needs.cross-references.result == 'success' &&
+          needs.heading-hierarchy.result == 'success'
+        run: |
+          echo "✅ All consistency checks passed!"

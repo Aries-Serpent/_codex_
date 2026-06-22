@@ -1,8 +1,65 @@
 # _codex_ Roadmap
 
+## Table of Contents
+
+- [🎯 Vision & Mission](#-vision--mission)
+- [📊 Status Legend](#-status-legend)
+- [🚀 Current State (2026-04-28)](#-current-state-2026-04-28)
+  - [Core Capabilities Status](#core-capabilities-status)
+  - [Infrastructure Maturity](#infrastructure-maturity)
+  - [Evolution Documentation](#evolution-documentation)
+- [📅 Iteration Plan](#-iteration-plan)
+  - [✅ Phase 1-5: Foundation (COMPLETE)](#-phase-1-5-foundation-complete)
+  - [✅ Phase 6: MCP Package System (COMPLETE)](#-phase-6-mcp-package-system-complete)
+  - [✅ Phase 7: Cognitive Brain Infrastructure (COMPLETE)](#-phase-7-cognitive-brain-infrastructure-complete)
+  - [✅ Phase 8: Documentation Consolidation & agent Enhancement (COMPLETE)](#-phase-8-documentation-consolidation--agent-enhancement-complete)
+  - [✅ Phase 9: Coverage & Performance Optimization (COMPLETE)](#-phase-9-coverage--performance-optimization-complete)
+  - [✅ Phase 10: Genesis Protocol Foundation (COMPLETE)](#-phase-10-genesis-protocol-foundation-complete)
+- [🎯 Phase 1 (Current Cycle) Objectives](#-phase-1-current-cycle-objectives)
+  - [High Priority](#high-priority)
+    - [1. **MCP Advanced Features** (Phase 11)](#1-mcp-advanced-features-phase-11)
+    - [2. **Coverage Improvement to 95%+** (Phase 9 extension)](#2-coverage-improvement-to-95-phase-9-extension)
+    - [3. **agent System Enhancement** (Phase 12)](#3-agent-system-enhancement-phase-12)
+  - [Medium Priority](#medium-priority)
+    - [4. **Performance Optimization** (Phase 9 focus)](#4-performance-optimization-phase-9-focus)
+    - [5. **Documentation Excellence**](#5-documentation-excellence)
+  - [Low Priority](#low-priority)
+    - [6. **MCP Interactive Mode** (Phase 13)](#6-mcp-interactive-mode-phase-13)
+    - [7. **Issue Template for MCP**](#7-issue-template-for-mcp)
+- [🎯 Phase 2 (Current Cycle) Objectives](#-phase-2-current-cycle-objectives)
+  - [High Priority](#high-priority)
+    - [1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS](#1-level-4-mlops-p1-gap-closure-sar-sprint--in-progress)
+    - [2. **MCP Package Merge & Diff Tools** (Phase 14)](#2-mcp-package-merge--diff-tools-phase-14)
+    - [3. **agent Autonomy Expansion** (Phase 15)](#3-agent-autonomy-expansion-phase-15)
+    - [4. **Self-Evolution Infrastructure** (Phase 16)](#4-self-evolution-infrastructure-phase-16)
+  - [Medium Priority](#medium-priority)
+    - [5. **Advanced Monitoring & Observability**](#5-advanced-monitoring--observability)
+    - [6. **Coverage to 95%+**](#6-coverage-to-95)
+- [🎯 Phase 3 (Current Cycle) Objectives](#-phase-3-current-cycle-objectives)
+  - [High Priority](#high-priority)
+    - [1. **MCP Smart Recommendations** (Phase 17)](#1-mcp-smart-recommendations-phase-17)
+    - [2. **Production Scaling Enhancements** (Phase 18)](#2-production-scaling-enhancements-phase-18)
+    - [3. **Cross-repository agent Capabilities** (Phase 19)](#3-cross-repository-agent-capabilities-phase-19)
+- [🔮 Long-term Vision (2026-Phase 4+)](#-long-term-vision-2026-phase-4)
+  - [Areas of Exploration](#areas-of-exploration)
+- [📊 Success Metrics](#-success-metrics)
+  - [Technical Metrics](#technical-metrics)
+  - [Operational Metrics](#operational-metrics)
+  - [Business Metrics](#business-metrics)
+- [🚧 Known Blockers & Dependencies](#-known-blockers--dependencies)
+  - [Current Blockers](#current-blockers)
+  - [Potential Blockers](#potential-blockers)
+- [🔄 Maintenance & Updates](#-maintenance--updates)
+  - [Update Frequency](#update-frequency)
+  - [Review Cycle](#review-cycle)
+  - [Ownership](#ownership)
+- [📚 Related Documents](#-related-documents)
+
+**Last Updated:** 2026-06-22
+
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + Agent Team
+**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + agent Team
 > **Note**: Dates in this roadmap (including 2026 entries) are planning projections/targets and may not reflect externally verified historical events.
 
 ---
@@ -35,7 +92,7 @@
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
 | **Codex Ingestion Pipeline** | ✅ Complete | 100% | Ingest → Analyze → Transform → Verify |
-| **Agent System Core** | ✅ Complete | 100% | Workflow, quantum, physics orchestration |
+| **agent System Core** | ✅ Complete | 100% | workflow, quantum, physics orchestration |
 | **RAG & Verification** | ✅ Complete | 100% | CoVe, MCP adapters, embeddings |
 | **MCP Package System** | ✅ Complete | 100% | 9 topics, workflow automation, 93+ KB docs |
 | **CI/CD Infrastructure** | ✅ Complete | 100% | 100 workflows active, cache L1–L5 wired, self-healing CI |
@@ -44,7 +101,7 @@
 | **Documentation Hub** | ✅ Complete | 95% | 693+ files, evolution center, cognitive brain |
 | **Cognitive Brain** | ✅ Complete | 100% | 100+ files, 22 cognitive modules, pattern detection |
 | **Genesis Protocol** | 🟡 Foundation Ready | 80% | 3-layer safety, awaiting secret injection | <!-- pragma: allowlist secret -->
-| **Agent Autonomy** | 🟢 Active | 70% | 53+ agents deployed, coordination in progress |
+| **agent Autonomy** | 🟢 Active | 70% | 53+ agents deployed, coordination in progress |
 
 ### Infrastructure Maturity
 
@@ -77,7 +134,7 @@
 
 **Delivered**:
 1. ✅ Codex ingestion pipeline (Python code processing)
-2. ✅ Agent system core (workflow, quantum, physics)
+2. ✅ agent system core (workflow, quantum, physics)
 3. ✅ RAG & verification infrastructure
 4. ✅ CI/CD optimization (Phase 3C-Lite caching)
 5. ✅ Security infrastructure (secrets scan, SAST)
@@ -116,7 +173,7 @@
 
 **Deliverable**: ✅ Unified "cognitive brain" for AI agent navigation and context
 
-### ✅ Phase 8: Documentation Consolidation & Agent Enhancement (COMPLETE)
+### ✅ Phase 8: Documentation Consolidation & agent Enhancement (COMPLETE)
 
 **Timeline**: 2025-12-31 to 2026-01-03
 **Status**: ✅ Complete (100%)
@@ -200,7 +257,7 @@
 
 **Target**: 95%+ overall coverage, maintain 100% passing, with no critical component below 90%
 
-#### 3. **Agent System Enhancement** (Phase 12)
+#### 3. **agent System Enhancement** (Phase 12)
 **Timeline**: 2026-02-01 to 2026-03-15
 **Status**: 🟡 Planning
 **Effort**: 8-12 sessions (~250K-400K tokens)
@@ -208,7 +265,7 @@
 **Tasks**:
 - Advanced agent capabilities (multi-step reasoning)
 - Self-evolution infrastructure
-- Agent coordination protocols
+- agent coordination protocols
 - Learning from feedback loops
 - Enhanced context awareness
 
@@ -278,7 +335,7 @@
 **Timeline**: 2026-04-01 to 2026-04-30
 **Features**: Package merge (4 strategies), diff tool with multiple formats
 
-#### 3. **Agent Autonomy Expansion** (Phase 15)
+#### 3. **agent Autonomy Expansion** (Phase 15)
 **Timeline**: 2026-05-01 to 2026-06-15
 **Focus**: Multi-agent coordination, distributed execution, advanced reasoning
 
@@ -310,7 +367,7 @@
 **Timeline**: 2026-08-01 to 2026-09-15
 **Focus**: Multi-repository support, distributed agents, enterprise features
 
-#### 3. **Cross-Repository Agent Capabilities** (Phase 19)
+#### 3. **Cross-repository agent Capabilities** (Phase 19)
 **Timeline**: 2026-08-15 to 2026-09-30
 **Focus**: Multi-repo coordination, knowledge sharing, unified orchestration
 
@@ -367,7 +424,7 @@
 
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
-| **Agent Autonomy** | 70% | 70%+ | 85%+ | 95%+ |
+| **agent Autonomy** | 70% | 70%+ | 85%+ | 95%+ |
 | **Session Success Rate** | 85%+ | 90%+ | 95%+ | 98%+ |
 | **Iteration Cycle** | 1-2 iterations | 1 iteration | <1 iteration | <1 iteration |
 | **Blocker Resolution** | 100% | 100% | 100% | 100% |
@@ -420,9 +477,9 @@
 - **Quarterly**: Vision alignment, long-term planning
 
 ### Ownership
-- **Primary**: DevOps + Agent Development Team
+- **Primary**: DevOps + agent Development Team
 - **Human Admin**: @mbaetiong
-- **AI Agent**: GitHub Copilot (autonomous updates)
+- **AI agent**: GitHub Copilot (autonomous updates)
 
 ---
 

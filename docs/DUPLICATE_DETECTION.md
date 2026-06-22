@@ -1,5 +1,7 @@
 # Duplicate Detection Inventory
 
+**Last Updated:** 2026-06-22
+
 Comprehensive duplicate detection system for identifying and managing code duplication across the entire codebase.
 
 ## Features
@@ -50,7 +52,7 @@ Comprehensive duplicate detection system for identifying and managing code dupli
 python tools/duplicate_inventory.py .
 ```
 
-### Specific Detection Modes
+## Specific Detection Modes
 
 ```bash
 # Exact duplicates only
@@ -63,7 +65,7 @@ python tools/duplicate_inventory.py . --modes exact,normalized,ast
 python tools/duplicate_inventory.py . --modes exact,normalized,ast,semantic
 ```
 
-### Output Options
+## Output Options
 
 ```bash
 # Specify output directory
@@ -73,7 +75,7 @@ python tools/duplicate_inventory.py . --output-dir ./dup_analysis
 python tools/duplicate_inventory.py . --formats yaml,json,markdown
 ```
 
-### Configuration
+## Configuration
 
 ```bash
 # Use configuration file

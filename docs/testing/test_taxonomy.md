@@ -1,5 +1,7 @@
 # Test Taxonomy
 
+**Last Updated:** 2026-06-22
+
 ## Test Organization
 
 Tests are organized by type and purpose, with clear markers for categorization and filtering.
@@ -76,9 +78,9 @@ pytest -m cpu_only
 pytest -m "smoke and not requires_torch"
 ```text
 
-### Test Naming Conventions
+## Test Naming Conventions
 
-#### Test Files
+### Test Files
 
 - `test_*.py` for test modules
 - Descriptive names: `test_config_schema.py`, not `test_stuff.py`
@@ -101,7 +103,7 @@ def test_model_raises_error_on_invalid_device():
     pass
 ```text
 
-### Test Structure (AAA Pattern)
+## Test Structure (AAA Pattern)
 
 ```python
 def test_example():

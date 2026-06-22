@@ -55,7 +55,7 @@ pip install -e ".[mcp]"
 python -c "from src.mcp import MCPServer; print('✅ MCP installed')"
 ```
 
-### Minimal Example (In-Memory Backend)
+## Minimal Example (In-Memory Backend)
 
 ```python
 from src.mcp import MCPServer
@@ -83,7 +83,7 @@ asyncio.run(demo())
 Retrieved: {"doc_id": "doc_1", "embedding": [0.1, 0.2, 0.3, 0.4]}
 ```
 
-### Next Step: Choose Your Backend
+## Next Step: Choose Your Backend
 
 - **For Development**: Use `MockBackend` (in-memory)
 - **For Production Vector Search**: Use `PineconeBackend`
@@ -208,7 +208,7 @@ server = MCPServer(
 )
 ```
 
-#### With Redis (Caching)
+## With Redis (Caching)
 
 ```python
 from src.mcp.backends import RedisBackend
@@ -222,7 +222,7 @@ backend = RedisBackend(
 server = MCPServer(backend=backend)
 ```
 
-#### With Mock Backend (Development)
+### With Mock Backend (Development)
 
 ```python
 from src.mcp.backends import MockBackend
@@ -323,7 +323,7 @@ backend = RedisBackend(
 - Temporary embeddings
 - Rate limiting state
 
-### Custom Backend (Your Implementation)
+## Custom Backend (Your Implementation)
 
 **Template:**
 ```python
@@ -525,10 +525,7 @@ async def search(query: list):
 
 ## Related Documentation
 
-- 🔗 [Backend Adapters Guide](./MCP_BACKENDS.md)
-- 🔗 [MCP Workers & Async](./MCP_WORKERS.md)
-- 🔗 [Performance Tuning](./MCP_PERFORMANCE.md)
-- 🔗 [Security Best Practices](./MCP_SECURITY.md)
+> **Note:** Additional MCP documentation modules (Backend Adapters, Workers & Async, Performance Tuning, Security Best Practices) are planned for future implementation. See the [Continuation Roadmap](../admin/CONTINUATION_ROADMAP.md) for timeline.
 
 ---
 

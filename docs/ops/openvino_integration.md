@@ -1,5 +1,7 @@
 # Intel OpenVINO Optional iGPU Acceleration Path
 
+**Last Updated:** 2026-06-22
+
 **Status**: 🟢 Phase C Complete — S100 (P10-05 / P11-03)
 - Phase A ✅ (architecture doc — S97)
 - Phase B ✅ (backend skeleton `src/codex_ml/backends/openvino_backend.py` + 11 smoke tests — S98)

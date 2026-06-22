@@ -1,5 +1,7 @@
 # Observability
 
+**Last Updated:** 2026-06-22
+
 Codex runs default to offline-friendly logging and metrics capture to avoid network egress. The telemetry module still exposes Prometheus counters when the local agent is launched, and can be enabled via the CLI:
 
 ```bash

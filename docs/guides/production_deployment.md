@@ -65,7 +65,7 @@ helm version
 psql --version
 ```
 
-### Network Configuration
+## Network Configuration
 
 - **Inbound**: HTTP (80), HTTPS (443), Admin (8000-9000)
 - **Outbound**: API access to GitHub, AWS/Azure/GCP APIs, PyPI
@@ -119,7 +119,7 @@ kubectl delete deployment codex-blue  # Only after 24h validation
 **Duration**: ~5-10 minutes  
 **Risk**: LOW
 
-### 2. Canary Deployment
+## 2. Canary Deployment
 
 Gradual rollout with monitoring:
 
@@ -145,7 +145,7 @@ kubectl rollout undo deployment/codex
 **Duration**: 30-120 minutes  
 **Risk**: MEDIUM
 
-### 3. Rolling Update
+## 3. Rolling Update
 
 Progressive replacement ensuring service availability:
 
@@ -204,7 +204,7 @@ docker tag codex-cpu:latest gcr.io/my-project/codex:v2.0.0
 docker push gcr.io/my-project/codex:v2.0.0
 ```
 
-#### Docker Best Practices
+## Docker Best Practices
 
 ```dockerfile
 # Use minimal base image
@@ -222,7 +222,7 @@ FROM python:3.11-slim
 COPY --from=builder /root/.local /home/codex/.local
 ```
 
-### Running Containers
+## Running Containers
 
 ```bash
 # Basic run
@@ -271,7 +271,7 @@ kubectl get nodes
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
-### Helm Chart Deployment
+## Helm Chart Deployment
 
 ```bash
 # Add chart repository
@@ -303,7 +303,7 @@ helm upgrade codex codex-charts/codex \
 helm rollback codex 1 -n production
 ```
 
-### Manual Kubernetes Deployment
+## Manual Kubernetes Deployment
 
 ```yaml
 apiVersion: apps/v1
@@ -432,7 +432,7 @@ export JWT_SECRET_KEY=$(openssl rand -hex 32)
 export GITHUB_TOKEN=<from-secrets-manager>
 ```
 
-### Configuration Files
+## Configuration Files
 
 ```yaml
 # config/production.yaml
@@ -488,7 +488,7 @@ groups:
       summary: "P95 latency > 1s"
 ```
 
-### Health Checks
+## Health Checks
 
 ```python
 # Application health endpoints
@@ -498,7 +498,7 @@ GET /metrics          # Prometheus metrics
 GET /version          # Version information
 ```
 
-### Observability Best Practices
+## Observability Best Practices
 
 1. **Structured Logging**: JSON format for log aggregation
 2. **Distributed Tracing**: OpenTelemetry for request flows
@@ -523,7 +523,7 @@ kubectl autoscale deployment codex --min=3 --max=20 --cpu-percent=70 -n producti
 kubectl get hpa codex -n production -w
 ```
 
-### Vertical Scaling
+## Vertical Scaling
 
 Adjust resource requests/limits in deployment manifest:
 
@@ -563,7 +563,7 @@ kubectl get pvc -n production
 kubectl get all -n production -o yaml > backup-manifests.yaml
 ```
 
-### Rollback Procedures
+## Rollback Procedures
 
 ```bash
 # Kubernetes rollback
@@ -576,7 +576,7 @@ helm rollback codex -n production
 psql -U codex -d codex_prod < backup-20260622.sql
 ```
 
-### Recovery Time Objectives (RTO)
+## Recovery Time Objectives (RTO)
 
 | Scenario | RTO | Procedure |
 |----------|-----|-----------|
@@ -607,7 +607,7 @@ kubectl logs codex-xxxx -n production --previous  # Previous crash
 # - CrashLoopBackOff: Check application logs for errors
 ```
 
-#### High Memory Usage
+## High Memory Usage
 
 ```bash
 # Check top processes
@@ -619,7 +619,7 @@ kubectl describe node | grep "Allocated resources"
 # Solution: Increase pod limits or scale horizontally
 ```
 
-#### Service Unavailable
+## Service Unavailable
 
 ```bash
 # Check service endpoints
@@ -632,7 +632,7 @@ kubectl get networkpolicy -n production
 kubectl get svc codex -n production -o wide
 ```
 
-#### Database Connection Errors
+## Database Connection Errors
 
 ```bash
 # Check database pod
@@ -653,9 +653,8 @@ kubectl exec codex-xxxx -n production -- \
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Docker Documentation](https://docs.docker.com/)
 - [Helm Charts](https://helm.sh/docs/)
-- [Infrastructure Deployment Details](./deployment.md)
-- [API Reference](../api/API_DOCUMENTATION.md)
-- [Architecture Blueprint](../ARCHITECTURE_BLUEPRINT.md)
+- [API Reference](../api/)
+- [Architecture Blueprint](../ARCHITECTURE.md)
 
 ---
 

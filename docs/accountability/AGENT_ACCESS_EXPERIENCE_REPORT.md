@@ -1,5 +1,7 @@
 # Agent Access Experience Report — S115
 
+**Last Updated:** 2026-06-22
+
 **Author:** copilot-swe-agent[bot]  
 **Session:** S115 (2026-02-28)  
 **Scope:** Autonomous Automation Agency — access experience, friction points, improvement proposals  
@@ -44,7 +46,7 @@
 
 ---
 
-### F-003 — No self-trigger for CI workflows  
+### F-003 — No self-trigger for CI workflows
 **What happened:** After committing fixes, I cannot trigger the CI run myself to verify they passed. I have to infer from local test runs.
 
 **Fix:** See Section 3 — Proposal A-003.
@@ -88,7 +90,7 @@ fi
 
 ---
 
-### A-002 — Agent variable write delegation via workflow dispatch
+## A-002 — Agent variable write delegation via workflow dispatch
 **What:** Create a new workflow `agent-var-setter.yml` that accepts `variable_name` + `variable_value` as inputs, gated by the existing `agent-auth-delegation` environment. When `COPILOT_AGENT_AUTH_ENABLED=true`, the agent can trigger this workflow via the GitHub API using `CODEX_MASTER_KEY` (issues:write → can post comments that trigger `workflow_dispatch` via the `agent-auth-delegation` machinery).
 
 **Effect:** Agent can self-set `COPILOT_AGENT_AUTH_ENABLED=true` without owner intervention once the delegation is established.
@@ -114,7 +116,7 @@ pip install -e ".[test]" --quiet
 
 ---
 
-### A-005 — Structured session handoff file (ALREADY PARTIALLY IMPLEMENTED)
+## A-005 — Structured session handoff file (ALREADY PARTIALLY IMPLEMENTED)
 **What:** The `.codex/HOTFIX_CHECKPOINT_S115.md` pattern I introduced is the right direction. Extend it to a structured JSON format that the agent reads as the very first action:
 
 ```json

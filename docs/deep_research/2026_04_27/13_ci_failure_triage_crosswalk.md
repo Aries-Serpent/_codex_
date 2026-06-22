@@ -56,6 +56,7 @@ Each family corresponds to a known packet failure mode (notes 09 §4 and 12 §3)
 ## 4. Cross-Walk Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Issue #4100<br/>26 workflows / 95 failures, Pattern clustering'}}%%
 flowchart LR
     Issue[Issue #4100<br/>26 workflows / 95 failures] --> Cluster[Pattern clustering]
     Cluster --> F1[F1 Observability friction<br/>Phi_d, O_observe]

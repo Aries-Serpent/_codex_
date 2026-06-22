@@ -1,5 +1,31 @@
 # Suggested Tasks — _codex_ Status Update (2025-09-16)
 
+## Table of Contents
+
+- [Execution Envelope & Baseline Gates](#execution-envelope--baseline-gates)
+- [Phase 1 — Modeling & Training Hardening](#phase-1--modeling--training-hardening)
+  - [Suggested Task ST-1.1 — Expose configurable LoRA defaults](#suggested-task-st-11--expose-configurable-lora-defaults)
+  - [Suggested Task ST-1.2 — Register offline pretrained model loading](#suggested-task-st-12--register-offline-pretrained-model-loading)
+  - [Suggested Task ST-1.3 — Unify training loops with experiment tracking](#suggested-task-st-13--unify-training-loops-with-experiment-tracking)
+  - [Suggested Task ST-1.4 — Add resume-from-checkpoint support to CLI](#suggested-task-st-14--add-resume-from-checkpoint-support-to-cli)
+  - [Suggested Task ST-1.5 — Surface optional telemetry dependency health](#suggested-task-st-15--surface-optional-telemetry-dependency-health)
+- [Phase 2 — Data Management & Evaluation](#phase-2--data-management--evaluation)
+  - [Suggested Task ST-2.1 — Introduce deterministic dataset split utilities](#suggested-task-st-21--introduce-deterministic-dataset-split-utilities)
+  - [Suggested Task ST-2.2 — Add dataset manifest caching & schema validation](#suggested-task-st-22--add-dataset-manifest-caching--schema-validation)
+  - [Suggested Task ST-2.3 — Expand evaluation metrics and runner](#suggested-task-st-23--expand-evaluation-metrics-and-runner)
+- [Phase 3 — Configuration, Safety & Governance](#phase-3--configuration-safety--governance)
+  - [Suggested Task ST-3.1 — Enrich TrainConfig & Hydra templates](#suggested-task-st-31--enrich-trainconfig--hydra-templates)
+  - [Suggested Task ST-3.2 — Enforce safety filters in training & generation](#suggested-task-st-32--enforce-safety-filters-in-training--generation)
+  - [Suggested Task ST-3.3 — Integrate security tooling into local gates](#suggested-task-st-33--integrate-security-tooling-into-local-gates)
+  - [Suggested Task ST-3.4 — Telemetry redaction & log rotation controls](#suggested-task-st-34--telemetry-redaction--log-rotation-controls)
+- [Phase 4 — Deployment, Documentation & Enablement](#phase-4--deployment-documentation--enablement)
+  - [Suggested Task ST-4.1 — Optimize offline Docker images & health checks](#suggested-task-st-41--optimize-offline-docker-images--health-checks)
+  - [Suggested Task ST-4.2 — Author quickstart & architecture docs](#suggested-task-st-42--author-quickstart--architecture-docs)
+  - [Suggested Task ST-4.3 — Strengthen examples & CLI help surface](#suggested-task-st-43--strengthen-examples--cli-help-surface)
+- [Phase 5 — Final Regression & Release Readiness](#phase-5--final-regression--release-readiness)
+
+**Last Updated:** 2026-06-22
+
 This execution blueprint sequences the follow-up work required to close the partially implemented capabilities, high-signal findings, and atomic diffs captured in the 2025-09-16 status update. Each suggested task references the existing artefacts to touch, explains how it mitigates the recorded risks and gaps, and lists the offline validation gates to run before hand-off.
 
 > **Status-update hygiene:** Every future Codex status report must embed the outstanding automation question log maintained in [`docs/status_update_outstanding_questions.md`](../status_update_outstanding_questions.md). Update dispositions there first, then copy the refreshed table into the report so the questions remain visible.

@@ -7,6 +7,7 @@ This guide covers low/no-cost hosting for the MCP HTTP prototype and how to alig
 ## Deployment Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Source Code, Cloudflare Workers'}}%%
 graph TB
     A[Source Code] --> B{Deployment Target}
     B -->|Edge| C[Cloudflare Workers]
@@ -108,7 +109,7 @@ flyctl auth login
 flyctl version
 ```
 
-### 1. Initialize Fly.io Application
+## 1. Initialize Fly.io Application
 
 ```bash
 # Launch app (creates fly.toml)
@@ -163,7 +164,7 @@ primary_region = "sjc"
   memory_mb = 256
 ```
 
-### 2. Create Dockerfile
+## 2. Create Dockerfile
 
 **`Dockerfile` for FastAPI MCP Server:**
 
@@ -206,7 +207,7 @@ CMD ["python", "-m", "uvicorn", "mcp.server.http:app", \
      "--host", "0.0.0.0", "--port", "8080"]
 ```
 
-### 3. Set Secrets
+## 3. Set Secrets
 
 <!-- pragma: allowlist secret -->
 ```bash
@@ -223,7 +224,7 @@ fly secrets list
 
 **⚠️ WARNING**: `<ita-key>` is a placeholder only. Replace with your actual secret value. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
 
-### 4. Deploy Application
+## 4. Deploy Application
 
 ```bash
 # Deploy to Fly.io
@@ -236,7 +237,7 @@ fly logs
 fly status
 ```
 
-### 5. Smoke Test
+## 5. Smoke Test
 
 ```bash
 # Test health endpoint
@@ -267,7 +268,7 @@ wrangler login
 wrangler --version
 ```
 
-### 1. Initialize Worker
+## 1. Initialize Worker
 
 <!-- pragma: allowlist secret -->
 ```bash
@@ -280,7 +281,7 @@ wrangler init codex-mcp-worker
 # - git: Yes
 ```
 
-### 2. Implement Worker
+## 2. Implement Worker
 
 **`src/index.ts` - Cloudflare Worker:**
 
@@ -425,7 +426,7 @@ echo "your-ita-key-here" | wrangler secret put CODEX_ITA_API_KEY
 wrangler secret list
 ```
 
-### 5. Deploy Worker
+## 5. Deploy Worker
 
 ```bash
 # Publish to Cloudflare
@@ -448,7 +449,7 @@ docker --version
 docker-compose --version
 ```
 
-### Docker Compose Configuration
+## Docker Compose Configuration
 
 **`docker-compose.yml`:**
 
@@ -548,7 +549,7 @@ fly volumes create mcp_data --size 1 --region sjc
 fly deploy
 ```
 
-### Cloudflare KV Setup
+## Cloudflare KV Setup
 
 ```bash
 # Create KV namespace
@@ -563,7 +564,7 @@ id = "your-namespace-id"
 wrangler kv:key put --binding=MCP_CACHE "key" "value"
 ```
 
-### Cloudflare Durable Objects
+## Cloudflare Durable Objects
 
 **Rate Limiter Durable Object:**
 
@@ -636,7 +637,7 @@ curl https://codex-mcp.fly.dev/ready
 curl https://codex-mcp.fly.dev/metrics
 ```
 
-### Fly.io Monitoring
+## Fly.io Monitoring
 
 ```bash
 # View metrics
@@ -652,7 +653,7 @@ fly status
 fly scale count 2
 ```
 
-### Cloudflare Analytics
+## Cloudflare Analytics
 
 ```bash
 # View analytics
@@ -877,7 +878,7 @@ docker-compose down
 docker-compose up -d
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Failed Deployment (Fly.io):**
 1. Check logs: `fly logs`
@@ -911,7 +912,7 @@ fly deploy --strategy immediate
 5. Deploy: `fly deploy`
 6. Verify health: `curl https://app.fly.dev/health`
 
-### Health Checks
+## Health Checks
 
 **Kubernetes-Style Probes:**
 

@@ -51,7 +51,7 @@ Update the PR description using the template in these scenarios:
 Template location: PR_TEMPLATE_COMPREHENSIVE.md
 ```text
 
-### Step 2: Identify Relevant Sections
+## Step 2: Identify Relevant Sections
 Based on the work performed, identify which capability sections apply:
 
 **Capability Sections (A-K):**

@@ -1,5 +1,7 @@
 # Security Policy (Offline-First)
 
+**Last Updated:** 2026-06-22
+
 ## Reporting Security Issues
 
 - Please avoid committing secrets. Run `python tools/security/scan_repo.py` before PRs.

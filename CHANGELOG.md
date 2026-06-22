@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5058 CodeQL security alerts resolution)
+- Added workflow-level `permissions:` block to `.github/workflows/validate-code-examples.yml` with minimal required scopes (`contents: read`, `actions: read`, `checks: write`) to satisfy CodeQL security alert requirements.
+- Resolved 4 CodeQL security comments with explicit commit SHA `abb568569d1d745527b7bb460f828ca724e69438` across all jobs in the workflow.
+- Commitment: All comments on PR #5058 have been explicitly replied to with resolution commit SHAs per user directive.
+
+### Fixed (auto-update — PR #5058)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5058 (SHA `fb0f44a4`) at 2026-06-22T17:57Z [auto-generated]
+
 ### Fixed (PR #5057 CI rescue follow-up 2)
 - Updated `.github/workflows/workflow-compliance-gate.yml` to evaluate compliance on PR-changed workflow files (with fallback to full scan outside PR context), preventing unrelated legacy workflow files from failing this PR.
 - Added top-level workflow `permissions` in `.github/workflows/unified-governance-check.yml` to satisfy workflow compliance policy.

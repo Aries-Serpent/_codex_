@@ -1,5 +1,7 @@
 # Checkpoint Manager
 
+**Last Updated:** 2026-06-22
+
 `CheckpointManager` keeps recent and best checkpoints.
 
 - `keep_last`: number of recent checkpoints to retain.

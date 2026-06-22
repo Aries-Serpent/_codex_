@@ -1,5 +1,7 @@
 # Safeguards Keywords Detection
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The safeguards keywords capability detects defensive programming patterns, validation checks, and security safeguards in the codebase through keyword analysis, providing metrics for code safety and robustness assessment.
@@ -207,7 +209,7 @@ if __name__ == "__main__":
             print(f"{py_file}: {len(safeguards)} safeguards found")
 ```
 
-### Example 2: Safeguard Density Calculation
+## Example 2: Safeguard Density Calculation
 
 ```python
 def calculate_safeguard_density(file_path: Path) -> float:
@@ -241,7 +243,7 @@ low_density = {k: v for k, v in densities.items() if v < 1.0}
 print(f"Files needing safeguard improvements: {len(low_density)}")
 ```
 
-### Example 3: Context-Aware Detection
+## Example 3: Context-Aware Detection
 
 ```python
 import ast
@@ -341,7 +343,7 @@ def detect(file_index: dict) -> dict:
     }
 ```
 
-### Example 5: Adding Safeguards to Code
+## Example 5: Adding Safeguards to Code
 
 ```python
 # Before: No safeguards
@@ -521,7 +523,7 @@ for f in Path('src').glob('**/*.py'):
 "
 ```
 
-### False Positives
+## False Positives
 
 ```python
 # Filter out test files and comments
@@ -548,7 +550,7 @@ repos:
         types: [python]
 ```
 
-### CI Integration
+## CI Integration
 
 ```yaml
 # .github/workflows/safeguards.yml

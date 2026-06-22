@@ -2,6 +2,8 @@
 
 # Environment (Ubuntu)
 
+**Last Updated:** 2026-06-22
+
 - Use `scripts/gpu/check_gpu.sh` to summarize GPU driver/CUDA availability.
 - Reproducibility: pin requirements and capture image digest when containerized.
 - All validation runs are local (no online CI activation).

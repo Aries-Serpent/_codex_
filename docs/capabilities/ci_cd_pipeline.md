@@ -1,5 +1,7 @@
 # CI/CD Pipeline - Capability Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The CI/CD pipeline capability provides continuous integration and continuous deployment automation for the _codex_ project. This comprehensive system supports multiple CI/CD platforms including GitHub Actions, GitLab CI, Jenkins, CircleCI, and custom pipeline configurations.
@@ -113,7 +115,7 @@ jobs:
           echo "Deploying to production"
 ```
 
-### Example 2: Multi-Stage Pipeline
+## Example 2: Multi-Stage Pipeline
 
 ```yaml
 # .github/workflows/full-pipeline.yml
@@ -177,7 +179,7 @@ jobs:
           kubectl apply -f k8s/production/
 ```
 
-### Example 3: GitLab CI Configuration
+## Example 3: GitLab CI Configuration
 
 ```yaml
 # .gitlab-ci.yml
@@ -268,7 +270,7 @@ pipeline:
     store_coverage_reports: true
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # CI/CD environment configuration
@@ -349,7 +351,7 @@ fi
     detect-secrets scan --baseline .secrets.baseline
 ```
 
-### Debugging Pipelines
+## Debugging Pipelines
 
 1. **Local Testing**: Test pipeline steps locally before pushing
    ```bash

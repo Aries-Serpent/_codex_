@@ -1,5 +1,7 @@
 # Documentation Link Validation TODO
 
+**Last Updated:** 2026-06-22
+
 **Purpose**: Track broken documentation links discovered during Phase 8 consolidation.
 
 **Created**: 2025-12-30  
@@ -46,7 +48,7 @@ python scripts/maintenance/check_doc_links.py
 # Output: List of broken links with sources
 ```
 
-### Step 2: Manual Triage
+## Step 2: Manual Triage
 For each broken link:
 1. Determine if target file exists elsewhere (moved/renamed)
 2. Check if link is obsolete (can be removed)

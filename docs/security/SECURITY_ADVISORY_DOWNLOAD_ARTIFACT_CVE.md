@@ -1,5 +1,7 @@
 # Security Advisory: CVE-2024-XXXX - Arbitrary File Write in actions/download-artifact
 
+**Last Updated:** 2026-06-22
+
 ## Vulnerability Summary
 
 **Component**: `actions/download-artifact`  

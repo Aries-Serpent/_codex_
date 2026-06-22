@@ -1,6 +1,8 @@
 # AAIS V4.0 Scoring Framework
 
-> **Status**: Draft | **Version**: 4.0.0-draft | **Date**: 2026-02-12
+**Last Updated:** 2026-06-22
+
+> **Status**: Draft | **Version**: 4.0.0-draft | **Date**: 2026-06-22
 
 ## Overview
 

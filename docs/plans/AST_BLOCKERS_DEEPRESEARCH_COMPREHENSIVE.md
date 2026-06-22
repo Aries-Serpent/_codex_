@@ -6,7 +6,7 @@ Let me create the comprehensive deep research document directly in the workbench
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2025-11-10 01:20:51 UTC | Author: mbaetiong
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Research Lead], [Secondary: Architecture Lead] | ⚡ Energy: 5/5
 
@@ -89,7 +89,7 @@ ast = [
 
 ---
 
-### Architecture Category (5 Blockers)
+## Architecture Category (5 Blockers)
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
@@ -170,7 +170,7 @@ class DependencyGraph:
 
 ---
 
-### Performance Category (3 Blockers)
+## Performance Category (3 Blockers)
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
@@ -490,7 +490,7 @@ pip check
 echo "✓ Dependency installation complete"
 ```text
 
-### 2. StandardizedASTNode + Parser
+## 2. StandardizedASTNode + Parser
 
 ```python
 # src/codex_ml/ast/nodes.py
@@ -544,7 +544,7 @@ class StandardizedASTNode:
         }
 ```text
 
-### 3. Tarjan's Cycle Detection Algorithm
+## 3. Tarjan's Cycle Detection Algorithm
 
 ```python
 # src/codex_ml/ast/graph.py
@@ -596,7 +596,7 @@ class DependencyGraph:
         return sccs
 ```text
 
-### 4. GitHub Actions Workflow
+## 4. GitHub Actions Workflow
 
 ```yaml
 # .github/workflows/ast_analysis.yml
@@ -638,7 +638,7 @@ jobs:
           path: audit_report.html
 ```text
 
-### 5. CLI Interface
+## 5. CLI Interface
 
 ```python
 # src/codex_ml/ast/cli.py
@@ -773,7 +773,7 @@ if __name__ == '__main__':
 ---
 
 **Status**: 🔴 READY TO START  
-**Generated**: 2025-11-10 01:20:51 UTC  
+**Generated**: 2026-06-22 01:20:51 UTC  
 **Author**: mbaetiong  
 **Repository**: Aries-Serpent/_codex_
 

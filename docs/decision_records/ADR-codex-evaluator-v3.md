@@ -1,5 +1,7 @@
 # ADR: Codex Evaluator v3 (Local-Only)
 
+**Last Updated:** 2026-06-22
+
 ## Status
 Accepted — 2025-10-26
 

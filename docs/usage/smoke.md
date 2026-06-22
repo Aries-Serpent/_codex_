@@ -1,5 +1,7 @@
 # Smoke tests
 
+**Last Updated:** 2026-06-22
+
 Run hermetic, network-free smoke tests locally:
 
 ```bash

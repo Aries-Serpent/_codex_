@@ -1,5 +1,5 @@
 # Space Traversal Audit Runbook (v1.4.0)
-> Updated: 2026-03-17 | Author: Audit System  
+> Updated: 2026-06-22 | Author: Audit System  
 🧠 Roles: [Primary: Audit Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 ## Purpose
@@ -47,7 +47,7 @@ pip install pyyaml jinja2
 python scripts/space_traversal/audit_runner.py --help
 ```
 
-### Execution
+## Execution
 ```bash
 # Full pipeline
 python scripts/space_traversal/audit_runner.py run
@@ -56,7 +56,7 @@ python scripts/space_traversal/audit_runner.py run
 make space-audit
 ```
 
-### Expected Outputs
+## Expected Outputs
 - `audit_artifacts/context_index.json` — File listing with hashes
 - `audit_artifacts/facets.json` — Domain-grouped files
 - `audit_artifacts/capabilities_raw.json` — Raw capability detection
@@ -79,7 +79,7 @@ python scripts/space_traversal/audit_runner.py validate
 make space-validate
 ```
 
-### Exit Codes
+## Exit Codes
 
 | Code | Meaning |
 |------|---------|
@@ -110,7 +110,7 @@ jq '.low_maturity[].id' audit_artifacts/gaps.json
 jq '.low_maturity[] | {id, score}' audit_artifacts/gaps.json
 ```
 
-### Fields
+## Fields
 - `low_maturity[]` — Capabilities with score < `thresholds.low` (0.70)
 - `low_threshold` — Active threshold value
 
@@ -126,7 +126,7 @@ jq '.component_gaps[] | select(.zero_components | length > 0) | {id, zero_compon
 jq '.component_gaps[] | select(.missing_patterns | length > 0) | {id, missing_patterns}' audit_artifacts/component_gaps.json
 ```
 
-### Fields
+## Fields
 - `id` — Capability ID
 - `score` — Current score
 - `zero_components` — Components with 0.0 value
@@ -149,7 +149,7 @@ jq '.warnings' audit_run_manifest.json
 jq '.normalized_weights' audit_run_manifest.json
 ```
 
-### Key Fields
+## Key Fields
 - `repo_root_sha` — Hash of sorted file list (detect additions/deletions)
 - `artifacts[]` — Per-artifact SHA256 hashes
 - `template_hash` — Jinja2 template hash
@@ -171,7 +171,7 @@ python scripts/space_traversal/audit_runner.py explain checkpointing
 make space-explain cap=checkpointing
 ```
 
-### Example Output
+## Example Output
 ```
 Explain: checkpointing
   functionality  value=0.8000 weight=0.250 contribution=0.2000
@@ -196,7 +196,7 @@ python scripts/space_traversal/audit_runner.py diff \
 make space-diff old=baseline/capabilities_scored.json new=audit_artifacts/capabilities_scored.json
 ```
 
-### Output Format
+## Output Format
 ```
 ID,OLD,NEW,DELTA
 checkpointing,0.72,0.73,+0.0100

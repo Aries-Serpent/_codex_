@@ -1,5 +1,7 @@
 # Python 3.12 Migration Phase 1 — Complete
 
+**Last Updated:** 2026-06-22
+
 > **Status**: Phase 1 COMPLETE
 > **Date**: 2026-02-19
 > **Branch**: `copilot/implement-production-hardening-phase-3`
@@ -37,7 +39,7 @@ requires-python = ">=3.11,<3.13"
 requires-python = ">=3.12"
 ```
 
-### 3. Progressive Validation CI
+## 3. Progressive Validation CI
 
 The `progressive-validation.yml` workflow already tests on the Python version
 specified in the matrix. With `>=3.11,<3.13`, both 3.11 and 3.12 runners pass.

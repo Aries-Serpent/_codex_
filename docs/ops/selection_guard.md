@@ -1,5 +1,7 @@
 # Selection Guard — Docs Surface + Guardrails
 
+**Last Updated:** 2026-06-22
+
 This guard ensures the **chosen** assistant message carries the required documentation surface and safety artifacts (rubric overview, ops doc, checklist/example, negative sample, presence-check tests), preventing regressions like “message #4 lacks docs surface while #3 has it”.
 
 ## What it checks

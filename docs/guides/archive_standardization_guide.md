@@ -1,6 +1,6 @@
 # Archive Standardization Guide
 
-> **Generated**: 2025-11-03 | **Author**: Archive Team | **Version**: 1.0
+> **Generated**: 2026-06-22 | **Author**: Archive Team | **Version**: 1.0
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ Compliance:
   ✅ IN_TOTO_READY
   ✅ SAA_COMPLIANT
 ```text
-### 2. Enable Standardization
+## 2. Enable Standardization
 
 **Local Development** (no signing):
 ```bash
@@ -134,7 +134,7 @@ version = validator.auto_detect_version(record)
 # Returns "2.0" if schemaVersion="2.0" or standardizationMetadata present
 ```text
 
-### Coexistence
+## Coexistence
 
 Both v1 and v2 records can exist in the same evidence log:
 
@@ -169,7 +169,7 @@ record = {
 enhanced = manager.enhance_evidence_record(record, "developer", sign_now=False)
 ```text
 
-### GitHub Actions (Production Signing)
+## GitHub Actions (Production Signing)
 
 **Workflow Configuration**:
 ```yaml
@@ -255,7 +255,7 @@ print(f"Schema version: {result['schema_version']}")
 print(f"Details: {result['verification_details']}")
 ```text
 
-### Expected Outputs
+## Expected Outputs
 
 **Success**:
 ```text
@@ -326,7 +326,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 tail -5 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ```text
 
-### Rollback
+## Rollback
 
 If migration fails or causes issues:
 
@@ -372,7 +372,7 @@ ls -la src/codex/archive/evidence_schema.py
 pip install -e .
 ```text
 
-### Issue: Signing fails in GitHub Actions
+## Issue: Signing fails in GitHub Actions
 
 **Symptom**:
 ```text
@@ -441,7 +441,7 @@ git commit -m "Archive legacy module per retention policy"
 vim .codex/evidence/archive_ops.jsonl
 ```text
 
-### 2. Schema Version Selection
+## 2. Schema Version Selection
 
 ✅ **DO**: Use v2 for new deployments
 ```bash
@@ -460,7 +460,7 @@ export CODEX_STANDARDIZATION_ENABLED=true
 # Prod: CODEX_STANDARDIZATION_ENABLED=false
 ```text
 
-### 3. Signing Strategy
+## 3. Signing Strategy
 
 ✅ **DO**: Enable signing in production (GitHub Actions)
 ```yaml
@@ -482,7 +482,7 @@ CODEX_ENABLE_SIGNING=true python -m codex.cli archive store ...
 # (unless SIGSTORE_ID_TOKEN provided)
 ```text
 
-### 4. Validation Frequency
+## 4. Validation Frequency
 
 ✅ **DO**: Validate in CI/CD pipelines
 ```yaml
@@ -504,7 +504,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 # Always validate after updates to standardization code
 ```text
 
-### 5. Evidence Log Maintenance
+## 5. Evidence Log Maintenance
 
 ✅ **DO**: Keep evidence log in version control
 ```bash
@@ -541,7 +541,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 python -m codex.cli archive migrate-evidence-to-v2
 ```text
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 CODEX_STANDARDIZATION_ENABLED=true   # Enable standardization

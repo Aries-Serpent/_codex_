@@ -1,5 +1,7 @@
 # Deployment Infrastructure
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The deployment infrastructure capability provides comprehensive container orchestration, Kubernetes manifests, Docker configurations, and infrastructure-as-code templates for deploying Codex ML services in production environments.
@@ -73,7 +75,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s \
 CMD ["python", "-m", "codex.serve"]
 ```
 
-### Kubernetes Deployment
+## Kubernetes Deployment
 
 ```yaml
 # deployment.yaml
@@ -119,7 +121,7 @@ spec:
           periodSeconds: 5
 ```
 
-### Helm Chart Values
+## Helm Chart Values
 
 ```yaml
 # values.yaml
@@ -172,7 +174,7 @@ docker run -d \
 docker inspect --format='{{.State.Health.Status}}' codex-ml
 ```
 
-### Example 2: Kubernetes Deployment
+## Example 2: Kubernetes Deployment
 
 ```bash
 # Apply manifests
@@ -187,7 +189,7 @@ kubectl rollout status deployment/codex-ml-service
 kubectl get pods -l app=codex-ml
 ```
 
-### Example 3: Helm Chart Installation
+## Example 3: Helm Chart Installation
 
 ```bash
 # Install with custom values
@@ -206,7 +208,7 @@ helm upgrade codex-ml ./charts/codex-ml \
 helm rollback codex-ml 1
 ```
 
-### Example 4: Blue-Green Deployment
+## Example 4: Blue-Green Deployment
 
 ```bash
 # Deploy green version
@@ -223,7 +225,7 @@ kubectl patch service codex-ml \
 kubectl delete deployment codex-ml-blue
 ```
 
-### Example 5: Canary Deployment
+## Example 5: Canary Deployment
 
 ```yaml
 # canary-deployment.yaml
@@ -318,7 +320,7 @@ kubectl logs <pod-name> -c <container-name>
 kubectl describe nodes | grep -A5 "Allocated resources"
 ```
 
-### Deployment Stuck
+## Deployment Stuck
 
 ```bash
 # Check rollout status
@@ -331,7 +333,7 @@ kubectl get deployment <name> -o jsonpath='{.status}'
 kubectl rollout undo deployment/<name>
 ```
 
-### Health Check Failures
+## Health Check Failures
 
 ```bash
 # Test health endpoint manually
@@ -364,7 +366,7 @@ deploy:
         kubectl rollout status deployment/codex-ml
 ```
 
-### Monitoring Integration
+## Monitoring Integration
 
 ```yaml
 # ServiceMonitor for Prometheus

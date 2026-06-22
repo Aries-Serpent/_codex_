@@ -1,5 +1,7 @@
 # GitHub MCP Service & Playwright Enhancement Plan
 
+**Last Updated:** 2026-06-22
+
 > **Status:** ✅ Active  
 > **Created:** S174 (2026-03-21)  
 > **Owner:** @mbaetiong  

@@ -1,7 +1,7 @@
 # Security Incident Response Playbook
 
 **Version**: 1.0  
-**Last Updated**: 2024-01-15  
+**Last Updated**: 2026-06-22  
 **Maintainer**: Security Engineer  
 **Classification**: Confidential - Internal Use Only  
 
@@ -262,7 +262,7 @@ aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
   --sse AES256 --storage-class GLACIER
 ```
 
-### 3.2 Root Cause Analysis
+## 3.2 Root Cause Analysis
 
 **Analysis Procedures**:
 
@@ -392,7 +392,7 @@ kubectl delete pod ${POD_NAME} -n production
 # Pod will restart with clean image from registry
 ```
 
-### 4.2 Eradication
+## 4.2 Eradication
 
 **Eradication Steps**:
 
@@ -460,7 +460,7 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
 ./tests/smoke-tests/critical-paths.sh
 ```
 
-### 5.2 Post-Incident Validation
+## 5.2 Post-Incident Validation
 
 **Validation Checklist**:
 

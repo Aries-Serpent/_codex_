@@ -1,4 +1,6 @@
 # Search and Rescue (SAR) Methodology — Aries-Serpent/_codex_
+
+**Last Updated:** 2026-06-22
 ## Codebase Alignment at Level 4 MLOps
 
 **Version:** 1.0.0  
@@ -40,6 +42,7 @@
 ### 1.1 Capability Radar
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram Configuration showing 0.92, 0.95, 0.85, 0.88'}}%%
 %%{init: {"theme": "dark", "quadrantChart": {"chartWidth": 500, "chartHeight": 500}}}%%
 quadrantChart
     title Level 4 MLOps Alignment — Aries-Serpent/_codex_ (2026-03-06)
@@ -83,6 +86,7 @@ quadrantChart
 ## 2. SAR Five-Layer Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "🧠 LAYER 5 — COGNITIVE BRAIN", "SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"'}}%%
 block-beta
   columns 1
   block:L5["🧠 LAYER 5 — COGNITIVE BRAIN"]
@@ -109,6 +113,7 @@ block-beta
 ### Layer SAR Responsibilities
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((SAR Layers))
     L1 Source Code
@@ -148,6 +153,7 @@ mindmap
 ## 3. End-to-End SAR Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🔔 SAR Trigger\nSchedule / PR / Manual / Alert, "Phase 1 — SEARCH 🔍"'}}%%
 flowchart TD
     TRIGGER([🔔 SAR Trigger\nSchedule / PR / Manual / Alert]) --> SEARCH
 
@@ -207,6 +213,7 @@ flowchart TD
 ### 4.1 Sensor Coverage by Layer
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title SAR Sensor Schedule — 2026 (Weekly View)
     dateFormat  HH:mm
@@ -243,6 +250,7 @@ gantt
 ### 4.2 Sensor Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Layer Sensors", variable_audit_cli.py'}}%%
 flowchart LR
     subgraph SENSORS["Layer Sensors"]
         VA[variable_audit_cli.py]
@@ -318,6 +326,7 @@ python scripts/cognitive/pattern_health_check.py --min-confidence 0.75
 ### 5.1 Decision Flowchart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly detected, 🔴 P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour'}}%%
 flowchart TD
     A([Anomaly detected]) --> B{Data loss or\nsecurity breach?}
     B -->|Yes| P0[🔴 P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour]
@@ -341,6 +350,7 @@ flowchart TD
 ### 5.2 Severity Matrix
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "Feature Store", "Auto-Retrain", "Data Drift", "Codespace Secrets", "Cache Wiring", "Observability", "Model Rollback", "Explainability", 9, 8, 8, 7, 5, 5, 6, 3'}}%%
 xychart-beta
     title "SAR Gap Severity Distribution — Current Backlog"
     x-axis ["Feature Store", "Auto-Retrain", "Data Drift", "Codespace Secrets", "Cache Wiring", "Observability", "Model Rollback", "Explainability"]
@@ -356,6 +366,7 @@ xychart-beta
 ### 6.1 Playbook Selection Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly Type, 📘 SAR-001\nMissing Variable'}}%%
 flowchart LR
     ANOMALY([Anomaly Type]) --> V{Variable\nmissing?}
     ANOMALY --> C{CI failure\nrate spike?}
@@ -382,6 +393,7 @@ flowchart LR
 ### 6.2 SAR-001 — Missing Variable (Sequence Diagram)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing VAR_A, VAR_B'}}%%
 sequenceDiagram
     participant Agent as Copilot Agent
     participant CLI as variable_audit_cli.py
@@ -411,6 +423,7 @@ sequenceDiagram
 ### 6.3 SAR-002 — CI Failure Recovery (State Diagram)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> Monitoring : CI completes
 
@@ -480,6 +493,7 @@ python scripts/tools/variable_audit_cli.py rotate-check --days 90
 ### 7.1 Validation Gate Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🚀 Begin Reintegration, ruff / black fix\nreturn to RESCUE'}}%%
 flowchart TD
     START([🚀 Begin Reintegration]) --> G1
 
@@ -551,6 +565,7 @@ python3 -c "import sys; sys.exit(1 if float('${RATE:-0}') > 10.0 else 0)" \
 ### 8.1 Watchdog Heartbeat
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title Watchdog Trigger Schedule (UTC)
     section Every Commit / PR
@@ -576,6 +591,7 @@ timeline
 ## 9. Watchdog Workflow Coverage Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📦 Layer 1 — Source Code", codeql-analysis.yml'}}%%
 flowchart TB
     subgraph L1["📦 Layer 1 — Source Code"]
         W_CQ[codeql-analysis.yml]
@@ -649,6 +665,7 @@ flowchart TB
 ### 10.2 Resolution Roadmap (Gantt)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title SAR Gap Resolution Roadmap — 2026
     dateFormat  YYYY-MM-DD
@@ -675,6 +692,7 @@ gantt
 ### 10.3 L4 Score Projection
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "W-139\n(3.7)", "W-140\n(3.9)", "W-142\n(3.95)", "After P2\n(3.98)", "Target\n(4.0)", 3.7, 3.9, 3.95, 3.98, 4.0'}}%%
 xychart-beta
     title "Level 4 Score Progress (Achieved vs Projected)"
     x-axis ["W-139\n(3.7)", "W-140\n(3.9)", "W-142\n(3.95)", "After P2\n(3.98)", "Target\n(4.0)"]
@@ -688,6 +706,7 @@ xychart-beta
 ## 11. Variable Audit Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📘 Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v1.4.0)"'}}%%
 flowchart TD
     subgraph GUIDE["📘 Source of Truth"]
         MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v1.4.0)"]

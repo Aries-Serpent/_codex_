@@ -1,5 +1,7 @@
 # Post-Merge Review Checklist
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This checklist ensures that merges to the main branch maintain quality and don't introduce regressions.
@@ -48,7 +50,7 @@ pip install -e .
 pip install -r requirements-dev.txt
 ```text
 
-### Step 2: Import Verification
+## Step 2: Import Verification
 
 ```bash
 # Verify torch import location
@@ -60,7 +62,7 @@ python -c "from src.codex_ml.training.unified_training import UnifiedTrainingCon
 python -c "from omegaconf import OmegaConf; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; OmegaConf.structured(UnifiedTrainingConfig())"
 ```text
 
-### Step 3: Run Critical Tests
+## Step 3: Run Critical Tests
 
 ```bash
 # Config tests
@@ -73,7 +75,7 @@ pytest tests/unit/test_data_cache_locking.py -v
 pytest -m smoke -v
 ```text
 
-### Step 4: Quality Gates
+## Step 4: Quality Gates
 
 ```bash
 # Run all gates
@@ -85,7 +87,7 @@ nox -s typecheck
 nox -s tests
 ```text
 
-### Step 5: Documentation Check
+## Step 5: Documentation Check
 
 ```bash
 # Run fence fixer in dry-run mode
@@ -105,7 +107,7 @@ If tests are taking significantly longer:
 pytest -m perf_smoke --durations=10
 ```text
 
-### Test Failure Regression
+## Test Failure Regression
 
 If new failures appear:
 
@@ -200,7 +202,7 @@ pytest -m smoke --tb=no -q && echo "✓ Smoke tests OK"
 python tools/fence_fixer.py . --dry-run | grep "Files changed: 0" && echo "✓ Fences OK"
 ```text
 
-### Monitoring
+## Monitoring
 
 Set up monitoring for:
 - GitHub Actions status

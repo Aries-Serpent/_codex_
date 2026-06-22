@@ -74,6 +74,7 @@ The _codex_ system is organized in the following layers:
 ## 🔄 Runtime Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
 flowchart LR
     A[Ingestion] --> B[Tokenizer]
     B --> C[Datasets]
@@ -137,6 +138,8 @@ _codex_/
 ### Core Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
+    TrainingEng'}}%%
 classDiagram
     class TrainingEngine {
       +run(cfg)
@@ -211,7 +214,7 @@ codex train config/training.yaml
 codex evaluate --model model.pth
 ```
 
-### Docker Deployment
+## Docker Deployment
 
 ```dockerfile
 FROM python:3.10
@@ -253,7 +256,7 @@ data:
   split: [0.8, 0.1, 0.1]
 ```
 
-### Configuration Hierarchy
+## Configuration Hierarchy
 
 1. **Base Configs**: defaults/
 2. **Overrides**: Command-line

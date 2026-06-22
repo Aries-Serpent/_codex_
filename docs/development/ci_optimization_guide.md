@@ -1,5 +1,7 @@
 # CI Workflow Optimization Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 This guide documents the CI/CD optimization strategies implemented for the _codex_ repository to achieve fast, reliable automated validation.
@@ -171,7 +173,7 @@ jobs:
 3. Move slow tests to separate workflow
 4. Use pytest-xdist for parallel test execution
 
-### Cache Issues
+## Cache Issues
 
 **Symptoms**: Every run shows "Cache not found"
 
@@ -191,7 +193,7 @@ restore-keys: |
   ${{ runner.os }}-deps-
 ```text
 
-### Flaky Tests
+## Flaky Tests
 
 **Symptoms**: Tests pass/fail intermittently
 

@@ -1,5 +1,7 @@
 # API Reference
 
+**Version:** 1.0.0 | **Release Date:** 2026-06-22
+
 Complete API reference for all Cognitive Brain and Codex ML modules.
 
 ---
@@ -21,7 +23,7 @@ SKIP_OPTIONAL=1 bash scripts/docs_build.sh
 FAIL_ON_MISSING=1 SKIP_OPTIONAL=0 bash scripts/docs_build.sh
 ```
 
-### Outputs
+## Outputs
 
 | Path | Description |
 |------|-------------|
@@ -110,7 +112,7 @@ result = uti.execute_task(spec)
 # Using nox (recommended - deterministic offline build)
 nox -s docs_build
 
-# Or using the build script directly  
+# Or using the build script directly
 bash scripts/docs_build.sh
 
 # Or using the Python tool directly
@@ -119,7 +121,7 @@ python tools/build_api_docs.py
 
 The generated documentation will be written to `artifacts/docs/api/` (local only, git-ignored).
 
-### Build Options
+## Build Options
 
 **Using the shell script (recommended):**
 
@@ -153,9 +155,9 @@ SKIP_OPTIONAL=1 nox -s docs_build
 FAIL_ON_MISSING=1 nox -s docs_build
 ```
 
-### Build Modes
+## Build Modes
 
-#### Default Mode
+### Default Mode
 - Includes all importable modules (core + optional ML when installed)
 - Gracefully skips unavailable optional modules
 - Exit code 0 on success
@@ -287,7 +289,7 @@ pip install pdoc3
 pip install pdoc3==0.10.0
 ```
 
-### Empty or Missing Documentation
+## Empty or Missing Documentation
 
 If modules appear without documentation:
 

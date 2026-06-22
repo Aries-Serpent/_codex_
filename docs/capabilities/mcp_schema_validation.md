@@ -1,5 +1,7 @@
 # MCP Schema Validation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The MCP schema validation capability ensures that Model Context Protocol (MCP) services use strongly-typed schemas for requests, responses, and configurations. This includes Pydantic models for runtime validation and OpenAPI specifications for API documentation.
@@ -72,7 +74,7 @@ class MCPToolResponse(BaseModel):
     execution_time_ms: float
 ```
 
-### OpenAPI Configuration
+## OpenAPI Configuration
 
 ```yaml
 # openapi.yaml
@@ -137,7 +139,7 @@ except ValidationError as e:
     print(f"✗ Validation error: {e}")
 ```
 
-### Example 2: Complex Nested Validation
+## Example 2: Complex Nested Validation
 
 ```python
 from typing import List, Optional
@@ -169,7 +171,7 @@ config = MCPServerConfig(
 )
 ```
 
-### Example 3: OpenAPI Auto-Generation
+## Example 3: OpenAPI Auto-Generation
 
 ```python
 from fastapi import FastAPI
@@ -193,7 +195,7 @@ async def health_check():
 # Export with: app.openapi()
 ```
 
-### Example 4: Schema Evolution
+## Example 4: Schema Evolution
 
 ```python
 from pydantic import BaseModel, Field
@@ -235,7 +237,7 @@ cat audit_artifacts/capabilities_raw.json | \
   jq '.capabilities[] | select(.id=="mcp-schema-validation")'
 ```
 
-### Programmatic Detection
+## Programmatic Detection
 
 ```python
 from scripts.space_traversal.detectors import mcp_schema_validation
@@ -397,7 +399,7 @@ async def track_validation(request, call_next):
 print(f"Validation failure rate: {validation_errors/total_requests:.2%}")
 ```
 
-### OpenAPI Coverage
+## OpenAPI Coverage
 
 ```bash
 # Check OpenAPI spec completeness

@@ -1,5 +1,7 @@
 # ADR-001: Use PSI + KL-Divergence for Data Drift, JSD for Model Drift
 
+**Last Updated:** 2026-06-22
+
 **Status:** Accepted
 **Date:** 2025-01-15
 **Deciders:** codex-ml platform team

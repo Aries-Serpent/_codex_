@@ -297,9 +297,9 @@ for result in results:
     print(f"Entropy: {result.metadata['entropy_contribution']:.4f}")
 ```
 
-#### Functions
+## Functions
 
-##### `record_scoring_pattern`
+### `record_scoring_pattern`
 
 Record quantum retrieval pattern in agent memory.
 
@@ -479,7 +479,7 @@ if patterns:
     )
 ```
 
-### With MCP Metrics
+## With MCP Metrics
 
 ```python
 from src.mcp.metrics.mcp_metrics import MCPMetrics
@@ -497,7 +497,7 @@ metrics.record_operation(
 )
 ```
 
-### With Quantum Game Theory
+## With Quantum Game Theory
 
 ```python
 from agents.quantum_game_theory import QuantumGame

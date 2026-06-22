@@ -1,5 +1,7 @@
 # Model registry
 
+**Last Updated:** 2026-06-22
+
 See [docs/modules/model_registry.md](./modules/model_registry.md) for the full list of supported models and LoRA settings.
 
 ## LoRA validation summary

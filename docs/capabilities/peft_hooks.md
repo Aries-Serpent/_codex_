@@ -1,5 +1,7 @@
 # PEFT Hooks - Parameter-Efficient Fine-Tuning
 
+**Last Updated:** 2026-06-22
+
 > **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🔍 Code Quality](code_quality_tooling.md)
 
 ## Overview
@@ -115,7 +117,7 @@ for epoch in range(num_epochs):
     train_epoch(model, train_loader, optimizer)
 ```
 
-### Adapter Layers
+## Adapter Layers
 
 ```python
 import torch
@@ -344,7 +346,7 @@ base_model = AutoModelForCausalLM.from_pretrained(
 model = apply_lora_to_model(base_model)
 ```
 
-### IA3 - Infused Adapter by Inhibiting and Amplifying Inner Activations
+## IA3 - Infused Adapter by Inhibiting and Amplifying Inner Activations
 ```python
 import torch
 from peft import IA3Config, get_peft_model, TaskType

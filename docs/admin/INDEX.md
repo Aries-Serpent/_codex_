@@ -1,5 +1,7 @@
 # Administrative Documentation
 
+**Last Updated:** 2026-06-22
+
 Administrative documentation including policies, governance, and tracking.
 
 ## 🔑 Variables & Secrets (Unified Reference)

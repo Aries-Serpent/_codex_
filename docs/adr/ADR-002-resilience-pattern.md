@@ -1,5 +1,7 @@
 # ADR-002: Three-Layer Resilience: Circuit Breaker + Retry + Graceful Degradation
 
+**Last Updated:** 2026-06-22
+
 **Status:** Accepted
 **Date:** 2025-01-15
 **Deciders:** codex-ml platform team

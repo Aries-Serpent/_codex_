@@ -1,5 +1,7 @@
 # Status Reporting - Capability Documentation
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The status reporting capability provides comprehensive system status monitoring, health checks, and reporting mechanisms for the _codex_ project. This system enables real-time visibility into application health, performance metrics, and operational status across all components.
@@ -145,7 +147,7 @@ def is_application_ready() -> bool:
     ])
 ```
 
-### Example 2: Kubernetes Health Probes
+## Example 2: Kubernetes Health Probes
 
 ```yaml
 # k8s/deployment.yml
@@ -191,7 +193,7 @@ spec:
           failureThreshold: 30
 ```
 
-### Example 3: Comprehensive Status Dashboard
+## Example 3: Comprehensive Status Dashboard
 
 ```python
 # src/monitoring/status_dashboard.py
@@ -335,7 +337,7 @@ class StatusDashboard:
         pass
 ```
 
-### Example 4: Alert Integration
+## Example 4: Alert Integration
 
 ```python
 # src/monitoring/alerts.py

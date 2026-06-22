@@ -10,6 +10,7 @@
 ## 🗺️ Session Flow Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4351 Created, S861: Initial Fixes'}}%%
 graph TD
     Start[PR #4351 Created] --> S861[S861: Initial Fixes]
     S861 --> S862[S862: Review Thread Resolution]
@@ -101,12 +102,12 @@ graph TD
 
 ---
 
-### S866: PR Review Comments Resolution ⭐ CURRENT
+## S866: PR Review Comments Resolution ⭐ CURRENT
 **Objective:** Address all 16 PR review comments  
 **Status:** ✅ Complete  
 **Key Changes:**
 
-#### 1. Fixed CodeQL Alerts (13 items)
+### 1. Fixed CodeQL Alerts (13 items)
 **File:** `tests/serving/test_inference_enhanced.py`  
 **Issue:** "Wrong number of arguments in a call" on `create_app(config)`  
 **Root Cause:** Stub `create_app()` had no parameters  
@@ -121,7 +122,7 @@ def create_app(config: Optional[ModelConfig] = None) -> None:  # ✅ Matches rea
     raise RuntimeError("FastAPI not installed...")
 ```
 
-#### 2. Fixed Callable Pattern (2 items)
+## 2. Fixed Callable Pattern (2 items)
 **File:** `src/codex_ml/evaluation/runner.py`  
 **Issue:** `getattr(self.model, "__call__", ...)` bypasses Python's special method resolution  
 **Fix:**
@@ -139,7 +140,7 @@ elif callable(self.model):
         raise ValueError(f"Model {type(self.model)} is callable but failed: {e}") from e
 ```
 
-#### 3. Enhanced Test Robustness (1 item)
+## 3. Enhanced Test Robustness (1 item)
 **File:** `tests/agents/test_phase2_deep_coverage_batch4.py`  
 **Issue:** Test silently skips on signature mismatch  
 **Fix:**
@@ -169,7 +170,7 @@ except TypeError:
 
 ---
 
-### S867: Rate-Limit Workflow Orchestration (PLANNED)
+## S867: Rate-Limit Workflow Orchestration (PLANNED)
 **Objective:** Implement rate-limit aware workflow management  
 **Status:** 📋 Planned  
 **Scope (from maintainer comment #4404122666):**

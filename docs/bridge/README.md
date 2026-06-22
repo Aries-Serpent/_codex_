@@ -1,5 +1,7 @@
 # Bridge: Codex ↔ Copilot Co-op (Shared Internal Tools API)
 
+**Last Updated:** 2026-06-22
+
 This bridge pattern enables ChatGPT-Codex and GitHub Copilot to call the same Internal Tools API (ITA). The repository includes
 shared service code, agent clients, and operational documentation so that both assistants can operate through a unified,
 auditable backend.
@@ -39,7 +41,7 @@ export ITA_API_KEY=$(python scripts/issue_api_key.py)
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 # health check
 ```text
-### 2. Try the Codex client demo
+## 2. Try the Codex client demo
 
 ```bash
 cd agents/codex_client
@@ -59,7 +61,7 @@ export ITA_API_KEY=$ITA_API_KEY
 npm start
 # POST requests from the Copilot extension will hit /ext/* and forward to the ITA
 ```text
-### 4. MCP (future) — placeholder server
+## 4. MCP (future) — placeholder server
 
 See `mcp/server/README.md` and `mcp/mcp.json` for wiring guidance.
 

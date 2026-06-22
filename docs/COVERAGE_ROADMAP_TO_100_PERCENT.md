@@ -1,5 +1,68 @@
 # Test Coverage Roadmap: Path from 0% to 100%
 
+## Table of Contents
+
+- [Autonomous Execution Readiness](#autonomous-execution-readiness)
+  - [Planset Status](#planset-status)
+  - [AI Agency Policy Compliance Checklist](#ai-agency-policy-compliance-checklist)
+- [Executive Summary](#executive-summary)
+- [Phase Overview](#phase-overview)
+- [Phase 14.0: Foundation (Current Phase)](#phase-140-foundation-current-phase)
+  - [Completed Items](#completed-items)
+  - [Exit Criteria - ALL MET ✅](#exit-criteria---all-met-)
+- [Phase 14.1: Core Modules (30% → 50%)](#phase-141-core-modules-30--50)
+  - [Priority Modules (High Impact)](#priority-modules-high-impact)
+  - [Top 10 Priority Modules (from Priority Matrix)](#top-10-priority-modules-from-priority-matrix)
+  - [Test Categories to Add](#test-categories-to-add)
+  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+  - [Exit Criteria](#exit-criteria)
+- [Phase 14.2: Training, Agents & RAG (50% → 70%)](#phase-142-training-agents--rag-50--70)
+  - [Priority Modules](#priority-modules)
+  - [Test Categories to Add](#test-categories-to-add)
+  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+  - [Exit Criteria](#exit-criteria)
+- [Phase 14.3: Integration & Edge Cases (70% → 85%)](#phase-143-integration--edge-cases-70--85)
+  - [Focus Areas](#focus-areas)
+  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+  - [Exit Criteria](#exit-criteria)
+- [Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)](#phase-144-final-gaps--branch-coverage-85--100)
+  - [Strategy](#strategy)
+  - [Final Push Categories](#final-push-categories)
+  - [Exit Criteria](#exit-criteria)
+- [Implementation Guidelines](#implementation-guidelines)
+  - [Test File Structure](#test-file-structure)
+  - [Test Naming Convention](#test-naming-convention)
+- [Examples:](#examples)
+- [Coverage Configuration](#coverage-configuration)
+- [Phase 14.0 (Current)](#phase-140-current)
+- [Phase 14.1](#phase-141)
+- [Phase 14.2](#phase-142)
+- [Phase 14.3](#phase-143)
+- [Phase 14.4](#phase-144)
+- [Post-14 (Final)](#post-14-final)
+- [Workflow Updates](#workflow-updates)
+- [.github/workflows/test-rag.yml](#githubworkflowstest-ragyml)
+- [Priority Test Proposals](#priority-test-proposals)
+  - [TP-001: Unit Tests for High-Priority Modules](#tp-001-unit-tests-for-high-priority-modules)
+  - [TP-002: Integration Tests for Cross-Module Interactions](#tp-002-integration-tests-for-cross-module-interactions)
+  - [TP-003: E2E Tests for Critical Workflows](#tp-003-e2e-tests-for-critical-workflows)
+- [Monitoring & Tracking](#monitoring--tracking)
+  - [Coverage Dashboard](#coverage-dashboard)
+  - [per-phase Check-ins](#per-phase-check-ins)
+- [Risk Mitigation](#risk-mitigation)
+  - [Common Blockers & Solutions](#common-blockers--solutions)
+  - [Exclusion Guidelines](#exclusion-guidelines)
+- [Acceptable exclusions:](#acceptable-exclusions)
+- [Unacceptable exclusions:](#unacceptable-exclusions)
+- [Success Metrics](#success-metrics)
+  - [Phase Completion Checklist](#phase-completion-checklist)
+  - [Quality Indicators](#quality-indicators)
+- [References](#references)
+- [Next Steps](#next-steps)
+  - [Phase 14.1 Implementation Checklist](#phase-141-implementation-checklist)
+- [Phase 14.2: Security Hardening - ✅ COMPLETE](#phase-142-security-hardening----complete)
+- [Phase 14.3: Integration & Edge Cases - ✅ COMPLETE](#phase-143-integration--edge-cases----complete)
+
 **Created:** 2026-01-18  
 **Updated:** 2026-01-18  
 **Current Baseline:** ~27.5% (estimated 196 of 714 modules covered)  
@@ -324,7 +387,7 @@ def test_retriever_query_network_timeout():
 def test_training_loop_early_stopping():
 ```
 
-### Coverage Configuration
+## Coverage Configuration
 
 **pyproject.toml updates by phase:**
 
@@ -349,7 +412,7 @@ fail_under = 85
 fail_under = 100
 ```
 
-### Workflow Updates
+## Workflow Updates
 
 Each phase should update the CI workflow thresholds:
 

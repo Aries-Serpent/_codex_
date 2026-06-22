@@ -30,6 +30,7 @@
 ## Architecture State (Post PR #3492)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "PR #3492 Deliverables", "✅ ZendeskAPIClient.update_user()\nPUT /api/v2/users/{id}.json\nRole/access-level changes"'}}%%
 graph TB
     subgraph PR3492["PR #3492 Deliverables"]
         API["✅ ZendeskAPIClient.update_user()\nPUT /api/v2/users/{id}.json\nRole/access-level changes"]
@@ -92,6 +93,7 @@ graph TB
 ## Next Phase Plan
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR #3492\n✅ ALL P2 WIRING COMPLETE", "P3 — First D_CAPABLE Promotion\n(future scope)"'}}%%
 flowchart LR
     NOW["PR #3492\n✅ ALL P2 WIRING COMPLETE"] --> P3
 

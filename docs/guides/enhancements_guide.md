@@ -1,5 +1,7 @@
 # Enhancements Guide: Advanced Features
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0
 **Date:** Dec 6, 2025
 **Status:** Production Ready
@@ -63,7 +65,7 @@ tracker.log_artifacts("checkpoints/")
 tracker.end_run()
 ```
 
-### Context Manager
+## Context Manager
 
 ```python
 from codex_ml.training.mlflow_integration import MLflowTracker
@@ -75,7 +77,7 @@ with MLflowTracker("my_exp", run_name="run_002") as tracker:
 # Run automatically ended
 ```
 
-### Graceful Degradation
+## Graceful Degradation
 
 MLflow integration automatically degrades if MLflow is unavailable:
 
@@ -88,7 +90,7 @@ tracker.log_metrics({"loss": 0.5})  # Silently skipped
 tracker.log_params({"lr": 0.001})   # Silently skipped
 ```
 
-### Testing
+## Testing
 
 ```bash
 # Run MLflow tests
@@ -98,7 +100,7 @@ nox -f nox_enhancements.py -s mlflow_tests
 pytest tests/test_mlflow_integration.py -v
 ```
 
-### MLflow UI
+## MLflow UI
 
 View experiment results:
 
@@ -140,12 +142,12 @@ result = benchmark_training_step(
 print(result)
 # Output:
 # training_step:
-#   Duration: 1250.45ms
-#   Throughput: 80.0 items/sec
-#   GPU Memory: 2048.5MB
+# Duration: 1250.45ms
+# Throughput: 80.0 items/sec
+# GPU Memory: 2048.5MB
 ```
 
-### Benchmark Inference
+## Benchmark Inference
 
 ```python
 from codex_ml.utils.performance_benchmark import benchmark_inference
@@ -194,7 +196,7 @@ suite.print_summary()
 suite.save_results("benchmarks/results.json")
 ```
 
-### Performance Context
+## Performance Context
 
 ```python
 from codex_ml.utils.performance_benchmark import PerformanceBenchmark
@@ -245,7 +247,7 @@ else:
 cleanup_distributed()
 ```
 
-### Wrap Model with DDP
+## Wrap Model with DDP
 
 ```python
 from codex_ml.training.distributed_setup import setup_ddp_model
@@ -256,7 +258,7 @@ model = MyModel()
 model = setup_ddp_model(model, find_unused_parameters=False)
 ```
 
-### Distributed Data Loading
+## Distributed Data Loading
 
 ```python
 from codex_ml.training.distributed_setup import get_distributed_sampler
@@ -278,7 +280,7 @@ dataloader = DataLoader(
 )
 ```
 
-### Reduce Metrics Across Processes
+## Reduce Metrics Across Processes
 
 ```python
 from codex_ml.training.distributed_setup import reduce_tensor
@@ -294,7 +296,7 @@ if is_main_process():
     logger.info(f"Average loss: {avg_loss.item()}")
 ```
 
-### Launch Multi-Process Training
+## Launch Multi-Process Training
 
 ```bash
 # Single-node, multi-GPU (using torchrun)
@@ -320,7 +322,7 @@ torchrun \
     cli/train_codex.py --config configs/training.yaml
 ```
 
-### Utilities
+## Utilities
 
 ```python
 from codex_ml.training.distributed_setup import (
@@ -345,7 +347,7 @@ log_once("This logs only on rank 0", level="info")
 barrier()
 ```
 
-### Testing
+## Testing
 
 ```bash
 # Run distributed tests
@@ -379,7 +381,7 @@ bash scripts/validate_notebooks.sh
 nox -f nox_enhancements.py -s validate_notebooks
 ```
 
-### Validation Output
+## Validation Output
 
 ```
 🔍 Validating Jupyter notebooks...
@@ -441,7 +443,7 @@ docker build -f docker/Dockerfile.optimized -t codex-ml:optimized .
 nox -f nox_enhancements.py -s docker_build
 ```
 
-### Image Features
+## Image Features
 
 - **Multi-stage build:** Separate builder and runtime stages
 - **Smaller size:** ~50% smaller than single-stage builds
@@ -459,7 +461,7 @@ nox -f nox_enhancements.py -s docker_test
 docker run --rm codex-ml:optimized python -m cli.train_codex --help
 ```
 
-### Run Training in Container
+## Run Training in Container
 
 ```bash
 # Run training
@@ -472,7 +474,7 @@ docker run --rm \
         --output-dir /checkpoints
 ```
 
-### Run with GPU
+## Run with GPU
 
 ```bash
 # Run with NVIDIA GPU support
@@ -482,7 +484,7 @@ docker run --rm --gpus all \
     python -m cli.train_codex --config /data/config.yaml
 ```
 
-### Image Sizes
+## Image Sizes
 
 Comparison of image sizes:
 
@@ -509,7 +511,7 @@ pip install --upgrade <package>
 nox -f nox_enhancements.py -s maintenance_check
 ```
 
-### Test Coverage
+## Test Coverage
 
 ```bash
 # Run tests with coverage
@@ -519,7 +521,7 @@ pytest tests/ --cov=src --cov=training --cov-report=html
 open htmlcov/index.html
 ```
 
-### Security Scanning
+## Security Scanning
 
 ```bash
 # Scan for vulnerabilities
@@ -584,7 +586,7 @@ docker info
 docker system prune -a
 ```
 
-### Distributed Training Issues
+## Distributed Training Issues
 
 - Ensure `MASTER_ADDR` and `MASTER_PORT` are set
 - Verify network connectivity between nodes

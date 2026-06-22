@@ -93,9 +93,9 @@ python scripts/security/verify_key_integrity.py
 # 1.2 Check deployment readiness
 python scripts/security/check_rotation_readiness.py
 # Expected output:
-#  ✅ All services can be updated
-#  ✅ Backup procedures ready
-#  ✅ Fallback key available
+# ✅ All services can be updated
+# ✅ Backup procedures ready
+# ✅ Fallback key available
 
 # 1.3 Test rotation scripts in staging
 nox -s security -- test-key-rotation-staging
@@ -111,10 +111,10 @@ python scripts/rotate_jwt_secret.py \
   --save-to=.env.new-key
 
 # Example output:
-#  New Key ID: mk-2026-06-14-001
-#  Entropy: 256-bit
-#  Algorithm: AES-256-GCM
-#  Created: 2026-06-14T14:30:00Z
+# New Key ID: mk-2026-06-14-001
+# Entropy: 256-bit
+# Algorithm: AES-256-GCM
+# Created: 2026-06-14T14:30:00Z
 
 # 2.2 Backup old key (encrypted)
 python scripts/security/backup_key.py \
@@ -133,8 +133,8 @@ gh secret set VAULT_CODEX_MASTER_KEY_NEW \
 # 3.2 Update deployment to use dual keys
 # In .github/workflows/deploy.yml:
 # env:
-#   CODEX_MASTER_KEY_PRIMARY: ${{ secrets.VAULT_CODEX_MASTER_KEY }}
-#   CODEX_MASTER_KEY_SECONDARY: ${{ secrets.VAULT_CODEX_MASTER_KEY_NEW }}
+# CODEX_MASTER_KEY_PRIMARY: ${{ secrets.VAULT_CODEX_MASTER_KEY }}
+# CODEX_MASTER_KEY_SECONDARY: ${{ secrets.VAULT_CODEX_MASTER_KEY_NEW }}
 
 # 3.3 Deploy dual-key version (accepts both old and new)
 git commit -m "security: enable dual-key rotation phase"
@@ -181,7 +181,7 @@ python scripts/security/revoke_key.py \
 echo "mk-2026-03-14-001 → mk-2026-06-14-001: SUCCESS" >> .codex/rotation.log
 ```
 
-#### Emergency Rotation (Compromised Key)
+## Emergency Rotation (Compromised Key)
 
 ```bash
 # IMMEDIATE ACTION: No dual-write phase
@@ -191,11 +191,11 @@ python scripts/rotate_jwt_secret.py \
   --notify-team
 
 # Output:
-#  ⚠️ EMERGENCY ROTATION INITIATED
-#  Old Key: mk-2026-03-14-001 [REVOKED]
-#  New Key: mk-2026-06-14-emerg-001 [ACTIVE]
-#  Grace Period: 60 minutes
-#  Action Required: Re-authenticate all active sessions
+# ⚠️ EMERGENCY ROTATION INITIATED
+# Old Key: mk-2026-03-14-001 [REVOKED]
+# New Key: mk-2026-06-14-emerg-001 [ACTIVE]
+# Grace Period: 60 minutes
+# Action Required: Re-authenticate all active sessions
 
 # 1. Create emergency ticket
 gh issue create \
@@ -219,13 +219,13 @@ python scripts/security/invalidate_sessions.py \
 
 ---
 
-### 2. GitHub OAuth Token Rotation
+## 2. GitHub OAuth Token Rotation
 
 **Frequency**: Monthly (30 days)  
 **Owner**: CI/CD Lead  
 **Duration**: 48 hours total (24h fallback + 24h revocation)
 
-#### Standard Rotation
+### Standard Rotation
 
 ```bash
 # 1. Generate new token in GitHub App settings
@@ -242,8 +242,8 @@ EOF)
 
 # 3. Deploy with fallback to old token (24 hours)
 # env:
-#   GITHUB_TOKEN_PRIMARY: ${{ secrets.GITHUB_TOKEN_NEW }}
-#   GITHUB_TOKEN_FALLBACK: ${{ secrets.GITHUB_TOKEN }}
+# GITHUB_TOKEN_PRIMARY: ${{ secrets.GITHUB_TOKEN_NEW }}
+# GITHUB_TOKEN_FALLBACK: ${{ secrets.GITHUB_TOKEN }}
 
 # 4. After 24 hours, swap primary
 gh secret set GITHUB_TOKEN --body="$OAUTH_TOKEN_NEW"
@@ -262,13 +262,13 @@ echo "OAuth Token: $(date +%Y-%m-%d)" >> .codex/rotation.log
 
 ---
 
-### 3. Database Credentials Rotation
+## 3. Database Credentials Rotation
 
 **Frequency**: Quarterly (90 days)  
 **Owner**: Database Administrator  
 **Duration**: 72 hours (24h dual + 48h grace)
 
-#### Rotation Procedure
+### Rotation Procedure
 
 ```bash
 # 1. Create new database user
@@ -295,8 +295,8 @@ gh secret set DATABASE_URL_NEW --body="$NEW_DB_URL"
 
 # 4. Deploy with fallback (24 hours)
 # env:
-#   DATABASE_URL: ${{ secrets.DATABASE_URL_NEW }}
-#   DATABASE_URL_FALLBACK: ${{ secrets.DATABASE_URL }}
+# DATABASE_URL: ${{ secrets.DATABASE_URL_NEW }}
+# DATABASE_URL_FALLBACK: ${{ secrets.DATABASE_URL }}
 
 # 5. Verify connectivity and performance (24 hours)
 python scripts/security/verify_db_rotation.py --duration=24h
@@ -316,13 +316,13 @@ python scripts/manage_db_credentials.py \
 
 ---
 
-### 4. API Keys (External Services)
+## 4. API Keys (External Services)
 
 **Frequency**: Monthly (30 days)  
 **Owner**: Service Owner (specific API)  
 **Duration**: 24 hours
 
-#### Rotation by Service
+### Rotation by Service
 
 **For Stable APIs** (most services):
 ```bash
@@ -345,13 +345,13 @@ gh secret set API_KEY_<SERVICE>_NEW --body="$NEW_KEY"
 
 ---
 
-### 5. JWT Signing Key Rotation
+## 5. JWT Signing Key Rotation
 
 **Frequency**: Quarterly (90 days)  
 **Owner**: Authentication Team  
 **Duration**: 7 days (key algorithm transition period)
 
-#### Procedure
+### Procedure
 
 ```bash
 # 1. Generate new JWT key
@@ -369,13 +369,13 @@ python scripts/rotate_jwt_key.py --generate
 
 ---
 
-### 6. TLS Certificates
+## 6. TLS Certificates
 
 **Frequency**: Annually (365 days) / Before Expiry  
 **Owner**: DevOps Team  
 **Duration**: Depends on certificate type
 
-#### Procedure
+### Procedure
 
 ```bash
 # 1. Check certificate expiry
@@ -503,7 +503,7 @@ python scripts/rotate_secret.py \
 # 4. Documentation updated
 ```
 
-### Emergency Contact List
+## Emergency Contact List
 
 | Role | Contact | Escalation |
 |------|---------|-------------|

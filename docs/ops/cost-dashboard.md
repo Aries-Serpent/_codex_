@@ -1,5 +1,7 @@
 # 💰 Cost Estimator Dashboard
 
+**Last Updated:** 2026-06-22
+
 > **Live dashboard** — Actions-minute consumption and cost-tier classification for every gated workflow in this repository.  
 > **Budget:** 3,000 Linux-equivalent minutes/month · GitHub Team + Copilot Pro Plus  
 > **Policy:** [Cost Governance Policy](COST_GOVERNANCE.md) · **OKR:** OBJ-001 (Production: 2026-04-01)

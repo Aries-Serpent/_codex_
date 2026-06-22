@@ -1,6 +1,6 @@
 # MCP Implementation Guide for AI Agents
 
-> Version: 1.0.0 | Generated: 2025-12-17 | Author: Copilot Agent
+> Version: 1.0.0 | Generated: 2026-06-22 | Author: Copilot Agent
 
 This guide provides step-by-step instructions for AI agents to implement, extend, and maintain MCP (Model Context Protocol) capabilities in the `_codex_` repository.
 
@@ -89,7 +89,7 @@ class NewCapability:
         return f"Result: {param}"
 ```
 
-### 2. Adding Tests for a Capability
+## 2. Adding Tests for a Capability
 
 ```python
 # tests/mcp/test_new_capability.py
@@ -127,7 +127,7 @@ class TestNewCapability:
         assert result == "Result: "
 ```
 
-### 3. Updating the Server to Support New Methods
+## 3. Updating the Server to Support New Methods
 
 ```python
 # In src/mcp/server/__init__.py, add to MCPServer.__init__:
@@ -168,7 +168,7 @@ tool = Tool(
 registry.register(tool)
 ```
 
-### Task 2: Implement Rate Limiting
+## Task 2: Implement Rate Limiting
 
 ```python
 from src.mcp.rate_limit import TokenBucketRateLimiter
@@ -188,7 +188,7 @@ else:
     raise Exception("Rate limit exceeded")
 ```
 
-### Task 3: Add Observability
+## Task 3: Add Observability
 
 ```python
 from src.mcp.observability import get_mcp_metrics, get_tracer
@@ -204,7 +204,7 @@ with tracer.trace("handle_request") as span:
     span.tags["method"] = "mcp.listTools"
 ```
 
-### Task 4: Manage Server Lifecycle
+## Task 4: Manage Server Lifecycle
 
 ```python
 from src.mcp.lifecycle import get_lifecycle_manager, ServerState

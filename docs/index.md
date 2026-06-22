@@ -2,7 +2,7 @@
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 
-**Last Updated**: 2026-03-31
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -178,4 +178,4 @@ This repository uses staged rollout rings to represent maturity and review state
 
 ---
 
-Last updated: 2026-02-10
+Last updated: 2026-06-22

@@ -1,5 +1,7 @@
 # Agent & Workflow Consolidation Planset — S174
 
+**Last Updated:** 2026-06-22
+
 > **Created:** 2026-03-21 (S173 / PR #3661)
 > **Scope:** GitHub Actions workflows (128 active) + Custom Agents (203 files)
 > **Goal:** Reduce operational surface, eliminate redundancy, lower CI-minutes cost

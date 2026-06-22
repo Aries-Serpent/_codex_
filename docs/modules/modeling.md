@@ -1,5 +1,7 @@
 # Modeling utilities
 
+**Last Updated:** 2026-06-22
+
 The modeling package exposes helpers for instantiating decoder-style language
 models with optional PEFT integration while remaining friendly to offline
 environments.

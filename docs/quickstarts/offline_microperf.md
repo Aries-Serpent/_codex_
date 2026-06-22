@@ -1,5 +1,7 @@
 # Offline micro-perf & observability (addendum)
 
+**Last Updated:** 2026-06-22
+
 This builds on the existing offline quickstart with a tiny perf harness and system samplers.
 
 ## One-liners
@@ -40,6 +42,7 @@ export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
 ## Flow at a glance
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CLI, Trainer / Bench'}}%%
 flowchart LR
   subgraph Local
     U[CLI] --> T[Trainer / Bench]

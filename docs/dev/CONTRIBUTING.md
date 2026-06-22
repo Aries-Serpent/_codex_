@@ -1,5 +1,7 @@
 # Contributing Guide
 
+**Last Updated:** 2026-06-22
+
 ## Development Environment
 1. Create a Python 3.10 virtualenv.
 2. Install dependencies:

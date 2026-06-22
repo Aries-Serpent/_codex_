@@ -1,6 +1,6 @@
 # Archive Standards Mapping
 
-> **Generated**: 2025-11-03 | **Author**: Archive Standardization Team | **Version**: 1.0
+> **Generated**: 2026-06-22 | **Author**: Archive Standardization Team | **Version**: 1.0
 
 ## Overview
 
@@ -232,7 +232,7 @@ python -m codex.cli archive show-standardization-status
 tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ```text
 
-### Expected Audit Outputs
+## Expected Audit Outputs
 
 **Clean Run**:
 ```text

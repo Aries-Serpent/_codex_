@@ -1,5 +1,7 @@
 # Soft → GROUNDED Conversion: Release Notes & User Guide
 
+**Last Updated:** 2026-06-22
+
 > **Version:** 1.0.0 | **Date:** 2026-03-02  
 > **Scope:** Complete enforcement infrastructure upgrade (Phases 0–6)  
 > **Impact:** All AI agent operations, CI/CD pipelines, and contributor workflows

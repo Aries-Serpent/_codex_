@@ -1,5 +1,7 @@
 # Deploy Codex Symbolic Pipeline
 
+**Last Updated:** 2026-06-22
+
 Run the deterministic symbolic training pipeline and verify reproducibility across environments.
 
 ## Overview

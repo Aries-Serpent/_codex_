@@ -1,5 +1,7 @@
 # Packaging and local Docker usage
 
+**Last Updated:** 2026-06-22
+
 This repository ships offline-first packaging metadata (see `pyproject.toml`) and a minimal local Docker recipe.
 
 ## Local installation

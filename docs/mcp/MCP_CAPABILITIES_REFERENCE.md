@@ -53,7 +53,7 @@ response = server.handle_request(request)
 
 ---
 
-### 2. mcp-schema-validation
+## 2. mcp-schema-validation
 
 **Description**: Pydantic models and OpenAPI schema validation for MCP tool definitions and parameters.
 
@@ -94,7 +94,7 @@ except ValidationError as e:
 
 ---
 
-### 3. mcp-tooling-registry
+## 3. mcp-tooling-registry
 
 **Description**: Tool discovery, registration, and introspection through MCPToolRegistry.
 
@@ -140,7 +140,7 @@ result = registry.get_tool("my_tool")("test", 42)
 
 ---
 
-### 4. mcp-authz-authn
+## 4. mcp-authz-authn
 
 **Description**: API key authentication and authorization mechanisms for MCP requests.
 
@@ -178,7 +178,7 @@ if authorizer.authorize(principal, "sensitive_tool"):
 
 ---
 
-### 5. mcp-rate-limiting
+## 5. mcp-rate-limiting
 
 **Description**: Token bucket rate limiter for MCP tool invocations.
 
@@ -217,7 +217,7 @@ else:
 
 ---
 
-### 6. mcp-error-handling
+## 6. mcp-error-handling
 
 **Description**: Structured error classes mapping JSON-RPC codes to HTTP statuses.
 
@@ -257,7 +257,7 @@ except ToolNotFound as e:
 
 ---
 
-### 7. mcp-observability
+## 7. mcp-observability
 
 **Description**: Logging, metrics, tracing, and monitoring for MCP operations.
 
@@ -305,7 +305,7 @@ metrics = {
 
 ---
 
-### 8. mcp-versioning-compat
+## 8. mcp-versioning-compat
 
 **Description**: MCP version negotiation and backward compatibility helpers.
 
@@ -338,7 +338,7 @@ print(f"Using MCP version: {negotiated}")
 
 ---
 
-### 9. mcp-multi-tenant
+## 9. mcp-multi-tenant
 
 **Description**: Tenant isolation patterns and multi-tenancy support.
 
@@ -376,7 +376,7 @@ def check_tenant_access(principal, resource):
 
 ---
 
-### 10. mcp-tools-integration
+## 10. mcp-tools-integration
 
 **Description**: Integration patterns between MCP tools and ITA endpoints.
 
@@ -454,7 +454,7 @@ request = {...}  # JSON-RPC request
 response = server.handle_request(request)
 ```
 
-### Secure Tool Execution
+## Secure Tool Execution
 
 ```python
 from mcp.auth import MCPAuthenticator, MCPAuthorizer

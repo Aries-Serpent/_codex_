@@ -1,7 +1,7 @@
 # Performance Tuning Guide
 
 **Version**: 1.4.0  
-**Last Updated**: 2025-12-09
+**Last Updated**: 2026-06-22
 
 ---
 
@@ -32,7 +32,7 @@ python scripts/space_traversal/audit_runner.py run --skip S2,S5,S7
 
 ---
 
-### 2. Disable Expensive Features
+## 2. Disable Expensive Features
 
 ```yaml
 # workflow.yaml
@@ -47,7 +47,7 @@ scoring:
 
 ---
 
-### 3. Run Specific Stages
+## 3. Run Specific Stages
 
 ```bash
 # Only run scoring (if context_index cached)
@@ -98,7 +98,7 @@ def detect(file_index):
 
 ---
 
-### For Frequent Runs (CI/Pre-commit)
+## For Frequent Runs (CI/Pre-commit)
 
 **Problem**: Full audit too slow for every commit
 
@@ -135,7 +135,7 @@ make space-audit-fast
 
 ---
 
-### For Resource-Constrained Environments
+## For Resource-Constrained Environments
 
 **Problem**: High memory usage with token-similarity
 
@@ -216,7 +216,7 @@ scoring:
 
 ---
 
-### CI Environment
+## CI Environment
 
 **Goal**: Balance speed and accuracy
 
@@ -236,7 +236,7 @@ scoring:
 
 ---
 
-### Pre-commit Hook
+## Pre-commit Hook
 
 **Goal**: Minimal delay, basic validation
 
@@ -253,7 +253,7 @@ scoring:
 
 ---
 
-### Production Audit (Nightly)
+## Production Audit (Nightly)
 
 **Goal**: Maximum accuracy
 
@@ -296,7 +296,7 @@ python -m cProfile -o audit.prof scripts/space_traversal/audit_runner.py run
 python -c "import pstats; p = pstats.Stats('audit.prof'); p.sort_stats('cumulative'); p.print_stats(20)"
 ```
 
-### Memory Profiling
+## Memory Profiling
 
 ```bash
 pip install memory_profiler
@@ -322,7 +322,7 @@ wait
 python scripts/space_traversal/audit_runner.py stage S3
 ```
 
-### 2. Cache Coverage Map
+## 2. Cache Coverage Map
 
 ```bash
 # Generate once, reuse multiple times
@@ -335,7 +335,7 @@ fi
 make space-audit
 ```
 
-### 3. Distributed Execution
+## 3. Distributed Execution
 
 ```bash
 # Split capabilities across workers
@@ -365,7 +365,7 @@ python scripts/space_traversal/audit_runner.py run --verbose 2>&1 | grep "Stage 
 
 ---
 
-### High Memory Usage
+## High Memory Usage
 
 **Diagnose**:
 ```bash
@@ -380,7 +380,7 @@ python scripts/space_traversal/audit_runner.py run --verbose 2>&1 | grep "Stage 
 
 ---
 
-### CPU at 100%
+## CPU at 100%
 
 This is **expected** during token-similarity computation (CPU-intensive).
 

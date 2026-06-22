@@ -1,5 +1,7 @@
 # CI notes: MCP mock-based testing
 
+**Last Updated:** 2026-06-22
+
 Purpose
 - Ensure MCP protocol tests run reliably in CI without external provider secrets by default.
 

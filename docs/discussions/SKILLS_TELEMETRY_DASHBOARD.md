@@ -15,9 +15,10 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 
 ---
 
-## 🗺️ Skills-to-Agent Mapping
+## 🗺️ Skills-to-agent Mapping
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv1.0.0", "doc.refresh.agent\nv1.0.0"'}}%%
 graph LR
     subgraph "Built-in Skills"
         S1["doc.retriever.core\nv1.0.0"]
@@ -85,7 +86,7 @@ graph LR
 
 ## 📋 Skill Registry Status
 
-| Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | Agent Consumers |
+| Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | agent Consumers |
 |----------|---------|------|------|-------------|--------------|--------|-----------------|
 | `doc.retriever.core` | 1.0.0 | 0.92 | 🟢 low | 1,000 | 200K | ✅ Active | doc-alignment, doc-quality, skills-master |
 | `doc.refresh.agent` | 1.0.0 | 0.90 | 🟡 medium | 200 | 500K | ✅ Active | doc-alignment, freshness-checker, skills-master |
@@ -96,6 +97,7 @@ graph LR
 ## 🎯 AAIS Scores — Radar Chart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram Configuration showing "Concision: 0.85", "Acronym: 0.95"'}}%%
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4CAF50'}}}%%
 graph TD
     subgraph "AAIS Breakdown — doc.retriever.core (0.92)"
@@ -128,6 +130,7 @@ graph TD
 ## 🔄 Stratified Routing — Scoring Formula
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Query Objective\n+ Capability Tags", "Match Score\n(Jaccard similarity)"'}}%%
 flowchart LR
     Q["Query Objective\n+ Capability Tags"] --> MATCH["Match Score\n(Jaccard similarity)"]
     Q --> FRESH["Freshness Score\n(1 − budget exhaustion)"]
@@ -144,7 +147,7 @@ flowchart LR
 
 ---
 
-## 🔀 Fusion Merge Options — Agent Consolidation Recommendations
+## 🔀 Fusion Merge Options — agent Consolidation Recommendations
 
 The Skills Master recommends these fusion merges based on overlapping capability_tags, shared
 consumers, and complementary execution patterns. Percentage = recommendation confidence.
@@ -167,6 +170,7 @@ consumers, and complementary execution patterns. Percentage = recommendation con
 ## 📈 Telemetry Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Skill Handler\n(handler.py)", "ExecutionEnvelope\n.run()"'}}%%
 flowchart TD
     SKILL["Skill Handler\n(handler.py)"] --> ENV["ExecutionEnvelope\n.run()"]
     ENV --> TEL["emit_event()"]
@@ -184,6 +188,7 @@ flowchart TD
 ## 🏗️ Agent Lifecycle Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Discovery: registry.discover()
     Discovery --> Scoring: AAISScorer.score()
@@ -238,7 +243,7 @@ stateDiagram-v2
 | CI workflow health analysis | `ci.health.analyzer` | 🔴 High | 📋 Planned |
 | Dependency vulnerability scan | `security.dep.scanner` | 🟡 Medium | 📋 Planned |
 | RAG index rebuild | `rag.index.rebuild` | 🟡 Medium | 📋 Planned |
-| Agent AAIS batch scorer | `agent.aais.batch` | 🟢 Low | 📋 Planned |
+| agent AAIS batch scorer | `agent.aais.batch` | 🟢 Low | 📋 Planned |
 
 ---
 
@@ -254,7 +259,7 @@ An agent or skill is a **retirement candidate** when:
 
 ### Currently Retired / Deprecated
 
-| Agent | Retired Date | Absorbed By | Reason |
+| agent | Retired Date | Absorbed By | Reason |
 |-------|-------------|-------------|--------|
 | `ci-failure-resolution-agent` | 2026-03-15 | `ci-testing-agent v4.0` | Full merge |
 | `ci-emergency-response-agent` | 2026-03-15 | `ci-testing-agent v4.0` | Full merge |
@@ -266,12 +271,12 @@ An agent or skill is a **retirement candidate** when:
 
 ### Retrain Queue
 
-| Agent | Current AAIS | Target AAIS | Retrain Method | ETA |
+| agent | Current AAIS | Target AAIS | Retrain Method | ETA |
 |-------|-------------|-------------|----------------|-----|
 | — | — | — | — | No agents currently queued |
 
 > Retrain is triggered when AAIS < 0.75. The Skills Master redesigns the agent
-> following the Agent Design Protocol (ADP) in `skills-master-agent.md`.
+> following the agent Design Protocol (ADP) in `skills-master-agent.md`.
 
 ---
 

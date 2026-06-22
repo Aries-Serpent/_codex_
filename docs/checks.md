@@ -43,7 +43,54 @@ Note that actionlint focuses on catching mistakes in workflow files. If you want
 using a general YAML checker like [yamllint][].
 
 <a name="check-unexpected-keys"></a>
-## Unexpected keys
+# Unexpected keys
+
+## Table of Contents
+
+- [Missing required keys and key duplicates](#missing-required-keys-and-key-duplicates)
+- [Unexpected empty mappings](#unexpected-empty-mappings)
+- [Unexpected mapping values](#unexpected-mapping-values)
+- [Syntax check for expression `${{ }}`](#syntax-check-for-expression--)
+- [Type checks for expression syntax in `${{ }}`](#type-checks-for-expression-syntax-in--)
+- [Contexts and built-in functions](#contexts-and-built-in-functions)
+- [Contextual typing for `steps.<step_id>` objects](#contextual-typing-for-stepsstep_id-objects)
+- [Contextual typing for `matrix` object](#contextual-typing-for-matrix-object)
+- [Contextual typing for `needs` object](#contextual-typing-for-needs-object)
+- [[shellcheck][] integration for `run:`](#shellcheck-integration-for-run)
+- [[pyflakes][] integration for `run:`](#pyflakes-integration-for-run)
+- [Script injection by potentially untrusted inputs](#script-injection-by-potentially-untrusted-inputs)
+- [Echo list of github.event.comment.body, github.event.pull_request.body, ...](#echo-list-of-githubeventcommentbody-githubeventpull_requestbody-)
+- [Job dependencies validation](#job-dependencies-validation)
+- [Matrix values](#matrix-values)
+- [Webhook events validation](#webhook-events-validation)
+- [Workflow dispatch event validation](#workflow-dispatch-event-validation)
+- [Glob filter pattern syntax validation](#glob-filter-pattern-syntax-validation)
+- [CRON syntax check at `schedule:`](#cron-syntax-check-at-schedule)
+- [Runner labels](#runner-labels)
+- [Action format in `uses:`](#action-format-in-uses)
+- [Local action inputs validation at `with:`](#local-action-inputs-validation-at-with)
+- [Popular action inputs validation at `with:`](#popular-action-inputs-validation-at-with)
+- [Shell name validation at `shell:`](#shell-name-validation-at-shell)
+- [Job ID and step ID uniqueness](#job-id-and-step-id-uniqueness)
+- [Hardcoded credentials](#hardcoded-credentials)
+- [Environment variable names](#environment-variable-names)
+- [Permissions](#permissions)
+- [ERROR: Available values for whole permissions are "write-all", "read-all" or "none"](#error-available-values-for-whole-permissions-are-write-all-read-all-or-none)
+- [Reusable workflows](#reusable-workflows)
+  - [Check input definitions of `workflow_call` event in reusable workflow](#check-input-definitions-of-workflow_call-event-in-reusable-workflow)
+  - [Check workflow call syntax](#check-workflow-call-syntax)
+  - [Check types of `inputs.*` and `secrets.*` in reusable workflow](#check-types-of-inputs-and-secrets-in-reusable-workflow)
+  - [Check outputs in reusable workflow](#check-outputs-in-reusable-workflow)
+  - [Check inputs and secrets in workflow call](#check-inputs-and-secrets-in-workflow-call)
+- [.github/workflows/reusable.yaml](#githubworkflowsreusableyaml)
+- [Check outputs of workflow call in downstream jobs](#check-outputs-of-workflow-call-in-downstream-jobs)
+- [.github/workflows/get-build-info.yaml](#githubworkflowsget-build-infoyaml)
+- [ID naming convention](#id-naming-convention)
+- [Contexts and special functions availability](#contexts-and-special-functions-availability)
+- [Check deprecated workflow commands](#check-deprecated-workflow-commands)
+- [Conditions always evaluated to true at `if:`](#conditions-always-evaluated-to-true-at-if)
+
+**Last Updated:** 2026-06-22
 <!-- anchor: check-unexpected-keys -->
 
 Example input:
@@ -2346,7 +2393,7 @@ When a type of input doesn't match to its definition, actionlint reports an erro
 
 Note that this check only works with local reusable workflow (it starts with `./`).
 
-### Check outputs of workflow call in downstream jobs
+## Check outputs of workflow call in downstream jobs
 
 Example reusable workflow:
 

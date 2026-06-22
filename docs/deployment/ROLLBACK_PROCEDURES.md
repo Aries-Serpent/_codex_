@@ -1,5 +1,7 @@
 # Rollback Procedures
 
+**Last Updated:** 2026-06-22
+
 **Version:** 1.0.0  
 **Created:** 2026-01-18  
 **Phase:** 18.3 - Deployment Automation  
@@ -33,6 +35,7 @@ This document outlines rollback procedures for the Codex platform. Follow these 
 ## Rollback Decision Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Issue Detected, Emergency Rollback'}}%%
 graph TD
     A[Issue Detected] --> B{Severity?}
     B -->|Critical| C[Emergency Rollback]
@@ -76,7 +79,7 @@ systemctl start codex-api
 # 4. Verify health
 ```
 
-### Scenario 2: Database Migration Failure
+## Scenario 2: Database Migration Failure
 
 **Symptoms:**
 - Database connection errors
@@ -98,7 +101,7 @@ python -m codex.cli db-check
 systemctl start codex-api codex-worker
 ```
 
-### Scenario 3: Performance Degradation
+## Scenario 3: Performance Degradation
 
 **Symptoms:**
 - Response times increasing
@@ -116,7 +119,7 @@ systemctl start codex-api codex-worker
 # 3. Verify performance
 ```
 
-### Scenario 4: Security Vulnerability
+## Scenario 4: Security Vulnerability
 
 **Symptoms:**
 - Security alert triggered

@@ -1,5 +1,7 @@
 # CI Triage Reproducibility Reference — S145
 
+**Last Updated:** 2026-06-22
+
 > **Session:** S145 | **PR:** #3606 | **Date:** 2026-03-17
 > **Script:** `scripts/ci/ci_triage_repro.sh`
 > **Runbook:** Run `bash scripts/ci/ci_triage_repro.sh` to reproduce all checks in one pass.
@@ -45,7 +47,7 @@ bash scripts/ci/ci_triage_repro.sh --check 1
 /tmp/actionlint .github/workflows/coherence-snapshot.yml 2>&1 | grep SC2072
 ```
 
-### Fix
+## Fix
 
 Replace the string comparison with `awk` arithmetic:
 
@@ -57,7 +59,7 @@ Replace the string comparison with `awk` arithmetic:
 --status "$(awk -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 99.7) ? "success" : "warning"}')"
 ```
 
-### Verification
+## Verification
 
 ```bash
 /tmp/actionlint .github/workflows/coherence-snapshot.yml 2>&1 | grep -c SC2072
@@ -99,7 +101,7 @@ bash scripts/ci/ci_triage_repro.sh --check 2
 ruff check --select I scripts/ci/aais_v4_scorer.py scripts/ci/pr_comment_consolidator.py
 ```
 
-### Fix
+## Fix
 
 ```bash
 ruff check --select I --fix scripts/ci/aais_v4_scorer.py scripts/ci/pr_comment_consolidator.py
@@ -135,7 +137,7 @@ if current_count > stored_baseline:
 The codebase had 282 type errors, so `282 > 0` → gate failed.
 The baseline was accidentally zeroed in a previous session.
 
-### Repro
+## Repro
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 3
@@ -144,7 +146,7 @@ cat .mypy_baseline
 python scripts/ci/mypy_baseline.py  # shows current count
 ```
 
-### Fix
+## Fix
 
 After auditing that existing errors are pre-existing (not regressions):
 
@@ -156,7 +158,7 @@ python scripts/ci/mypy_baseline.py --update
 **Policy:** baseline should only increase to unblock CI after a verified audit;
 ratchet it down incrementally as errors are fixed.
 
-### Verification
+## Verification
 
 ```bash
 python scripts/ci/mypy_baseline.py
@@ -189,7 +191,7 @@ bash scripts/ci/ci_triage_repro.sh --check 4
 python scripts/ci/auto_fix_common_issues.py --check-only
 ```
 
-### Fix
+## Fix
 
 ```bash
 python scripts/ci/auto_fix_common_issues.py        # apply all fixable patterns
@@ -232,7 +234,7 @@ correctly.  Only `failed_runs` and `total_runs` used `chr(34)` — always return
 alongside a non-zero `Failure Rate: 11.7%` — mathematically impossible unless the
 counts and rate came from different code paths.
 
-### Repro
+## Repro
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 5
@@ -281,7 +283,7 @@ FAILED_RUNS=21         ← correct
 TOTAL_RUNS=180         ← correct
 ```
 
-### Fix
+## Fix
 
 Re-encode the extraction script with plain string keys:
 
@@ -304,7 +306,7 @@ print(base64.b64encode(script.encode()).decode())
 # Use the output to replace the METRICS=\$(echo '...') payload in the workflow
 ```
 
-### Verification
+## Verification
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 5
@@ -342,7 +344,7 @@ bash scripts/ci/ci_triage_repro.sh --check 6
 grep -n "s+0\|threshold" .github/workflows/coherence-snapshot.yml
 ```
 
-### Fix
+## Fix
 
 Change the dashboard awk expression from `> 99.6` to `>= 99.7`:
 
@@ -354,7 +356,7 @@ Change the dashboard awk expression from `> 99.6` to `>= 99.7`:
 --status "$(awk -v s='...' 'BEGIN{print (s+0 >= 99.7) ? "success" : "warning"}')"
 ```
 
-### Verification
+## Verification
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 6
@@ -391,7 +393,7 @@ bash scripts/ci/ci_triage_repro.sh --check 7
 grep -n "PR #" CHANGELOG.md | head -30
 ```
 
-### Fix
+## Fix
 
 Remove the cross-PR auto-generated bullet and consolidate the section header
 to the correct PR number.

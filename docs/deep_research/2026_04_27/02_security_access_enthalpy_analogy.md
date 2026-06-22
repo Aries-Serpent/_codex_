@@ -1,5 +1,7 @@
 # Research Note 02 — Security/Access Enthalpy Analogy Using $C_pT$
 
+**Last Updated:** 2026-06-22
+
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note

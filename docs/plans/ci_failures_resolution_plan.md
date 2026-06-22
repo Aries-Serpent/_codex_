@@ -1,5 +1,7 @@
 # Plan for CI Failures Resolution
 
+**Last Updated:** 2026-06-22
+
 ## 1. Exec Summary
 **Core issues**
 1. `ml_comprehensive` marker missing from `pytest.ini`, causing strict-marker failures.

@@ -1,5 +1,7 @@
 # Distributed Minimal Hooks — Behavior & Expectations
 
+**Last Updated:** 2026-06-22
+
 This repository includes minimal distributed hooks intended to be environment-gated and no-op in unsupported contexts.
 
 ## Principles

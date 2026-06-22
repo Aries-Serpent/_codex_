@@ -1,5 +1,7 @@
 # Contributor Onboarding Guide
 
+**Last Updated:** 2026-06-22
+
 Welcome to the Codex repository! This guide will help you get started as a contributor, whether you're a human developer or an AI Agent.
 
 ## Table of Contents
@@ -41,7 +43,7 @@ pytest tests/ -v
 python -m codex.cli --help
 ```
 
-### For AI Agents
+## For AI Agents
 
 ```
 1. Read AGENTS.md for comprehensive agent guidance
@@ -111,7 +113,7 @@ Common variables:
 - `CODEX_SESSION_ID`: Session identifier
 - `CODEX_LOG_DB_PATH`: SQLite database path
 
-#### 2. Install Development Tools
+## 2. Install Development Tools
 
 ```bash
 # Install pre-commit hooks
@@ -125,7 +127,7 @@ pip install ruff black isort mypy
 pip install pytest pytest-cov hypothesis
 ```
 
-#### 3. Verify Installation
+## 3. Verify Installation
 
 ```bash
 # Check Python installation
@@ -138,7 +140,7 @@ pip list | grep -E "pytest|ruff|black"
 pytest tests/test_tokenization.py -v
 ```
 
-#### 4. IDE Setup
+## 4. IDE Setup
 
 **VS Code:**
 ```json
@@ -237,14 +239,14 @@ git checkout -b feature/your-feature-name
 git checkout -b fix/bug-description
 ```
 
-#### 3. Make Changes
+## 3. Make Changes
 
 - Follow existing code style
 - Add tests for new functionality
 - Update documentation if needed
 - Keep commits small and focused
 
-#### 4. Run Tests and Linters
+### 4. Run Tests and Linters
 
 ```bash
 # Format code
@@ -261,7 +263,7 @@ pytest tests/ -v
 mypy src/codex_ml/
 ```
 
-#### 5. Commit Changes
+## 5. Commit Changes
 
 ```bash
 # Stage changes
@@ -277,7 +279,7 @@ git commit -m "feat: Add feature description
 git push origin feature/your-feature-name
 ```
 
-#### 6. Create Pull Request
+## 6. Create Pull Request
 
 - Go to GitHub repository
 - Click "New Pull Request"
@@ -338,7 +340,7 @@ def test_with_fixture(sample_data):
     assert sample_data["key"] == "value"
 ```
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -357,7 +359,7 @@ pytest tests/ --cov=src/codex_ml --cov-report=term
 pytest -k "tokenization" -v
 ```
 
-### Test Categories
+## Test Categories
 
 - **Unit tests**: Test individual functions/classes
 - **Integration tests**: Test component interactions
@@ -416,7 +418,7 @@ navigator.execute('DOC_GEN')
 navigator.execute('SELF_HEAL')
 ```
 
-#### Pre-Defined Prompts
+## Pre-Defined Prompts
 
 Located in `agents/prompts/`:
 - **Audit**: audit/run-full-audit.md
@@ -424,7 +426,7 @@ Located in `agents/prompts/`:
 - **Organization**: organization/repository-cleanup.md
 - **Deployment**: deployment/pre-release-deployment.md
 
-#### Agent Guidelines
+### Agent Guidelines
 
 Read `AGENTS.md` for comprehensive guidance on:
 - Agent architecture
@@ -456,7 +458,7 @@ git add tests/test_new_feature.py
 git commit -m "test: Add tests for new feature"
 ```
 
-### Workflow 2: Fix Bug
+## Workflow 2: Fix Bug
 
 ```bash
 # 1. Reproduce bug
@@ -473,7 +475,7 @@ git add src/codex_ml/module.py
 git commit -m "fix: Fix issue with module"
 ```
 
-### Workflow 3: Run Audit Pipeline
+## Workflow 3: Run Audit Pipeline
 
 ```bash
 # Full audit
@@ -486,7 +488,7 @@ python scripts/generate_audit_dashboard.py
 cat audit_artifacts/capabilities_scored.json | jq '.[] | select(.score < 0.85)'
 ```
 
-### Workflow 4: Update Documentation
+## Workflow 4: Update Documentation
 
 ```bash
 # Edit documentation

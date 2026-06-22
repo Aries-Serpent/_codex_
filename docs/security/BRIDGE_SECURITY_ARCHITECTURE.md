@@ -61,7 +61,7 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 export CODEX_BRIDGE_TOKEN="your_generated_token_here"
 ```
 
-### 3. File-Based Locking
+## 3. File-Based Locking
 
 **Implementation:**
 - Uses `fcntl.flock()` for exclusive locking
@@ -189,7 +189,7 @@ export CODEX_BRIDGE_TOKEN="$(python -c 'import secrets; print(secrets.token_urls
 export CODEX_BRIDGE_DIR="/secure/path/to/bridge"
 ```
 
-### Development Configuration (Reduced Security)
+## Development Configuration (Reduced Security)
 
 ```python
 bridge = BridgeManager(
@@ -230,7 +230,7 @@ python -c "import keyring; keyring.set_password('codex', 'bridge_token', '$TOKEN
 - ❌ Configuration files (risk of accidental commit)
 - ❌ Source code (security violation)
 
-### Audit Log Monitoring
+## Audit Log Monitoring
 
 **Real-Time Monitoring:**
 ```bash
@@ -267,7 +267,7 @@ def check_suspicious_activity(audit_file: Path, threshold: int = 5):
     return False
 ```
 
-### Incident Response
+## Incident Response
 
 **AUTH_FAILURE Detection:**
 1. Review audit log for source and timestamp
@@ -309,7 +309,7 @@ pytest tests/integration/test_bridge_security.py -v
 pytest tests/ -k bridge -v
 ```
 
-### Manual Security Validation
+## Manual Security Validation
 
 **Permission Validation:**
 ```bash
@@ -428,7 +428,7 @@ os.environ["CODEX_BRIDGE_TOKEN"] = "your_secure_token"
 share_context_with_copilot(context)
 ```
 
-### Backward Compatibility
+## Backward Compatibility
 
 **Feature Flag (if needed):**
 ```python

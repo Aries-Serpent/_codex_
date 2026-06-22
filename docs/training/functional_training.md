@@ -1,5 +1,7 @@
 # Functional Training
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The **functional training** system provides a flexible, composable approach to machine learning model **training** using pure **functional programming** principles. It enables **deterministic**, **reproducible training** workflows with comprehensive **experiment tracking**, **checkpointing**, and **monitoring** capabilities.
@@ -69,7 +71,7 @@ train_functional(
 )
 ```
 
-### Training with Experiment Tracking
+## Training with Experiment Tracking
 
 ```python
 from training.functional_training import train_functional
@@ -98,7 +100,7 @@ with mlflow.start_run():
     )
 ```
 
-### Resuming from Checkpoint
+## Resuming from Checkpoint
 
 ```python
 from training.functional_training import train_functional

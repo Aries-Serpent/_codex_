@@ -1,5 +1,7 @@
 # [Validation]: Optional Dependencies Soft-Fail Mechanism
 
+**Last Updated:** 2026-06-22
+
 ## Mechanism
 
 | Component | Role | Behavior |

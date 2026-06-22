@@ -175,7 +175,7 @@ result = orchestrator.orchestrate(state, actions)
 print(f"Decision: {result['action_taken']}")
 ```
 
-#### Configuration
+## Configuration
 
 ```json
 {
@@ -212,7 +212,7 @@ print(f"Energy spent: {result['energy_spent']}")
 print(f"Momentum gained: {result['momentum_gained']}")
 ```
 
-#### Step-by-Step Workflow
+## Step-by-Step Workflow
 
 ```python
 # Phase 1: ASSESS - Identify deprecated imports
@@ -284,11 +284,11 @@ print(f"Steps to goal: {result['steps_to_goal']}")
 print(f"Convergence distance: {result['convergence_distance']:.4f}")
 ```
 
-### 2. EnergyLandscape
+## 2. EnergyLandscape
 
 Thermodynamic optimization using Gibbs distributions.
 
-#### Workflow Diagram
+### Workflow Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -348,11 +348,11 @@ result = landscape.integrate_with_self_appraisal(
 )
 ```
 
-### 3. SwarmIntelligence
+## 3. SwarmIntelligence
 
 Particle swarm optimization for multi-agent coordination.
 
-#### Workflow Diagram
+### Workflow Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -407,11 +407,11 @@ new_positions = swarm.coordinate_agents(
 )
 ```
 
-### 4. TaskDecomposer
+## 4. TaskDecomposer
 
 Parallel task decomposition with dependency management.
 
-#### Workflow Diagram
+### Workflow Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -472,11 +472,11 @@ print(f"Energy spent: {result['total_energy_spent']}")
 integration = decomposer.integrate_with_action_path(task)
 ```
 
-### 5. ReflectionLoop
+## 5. ReflectionLoop
 
 PID-controlled feedback for continuous learning.
 
-#### Workflow Diagram
+### Workflow Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -609,7 +609,7 @@ python -m scripts.space_traversal.audit_runner store-trend
 python -m scripts.space_traversal.audit_runner agent-interface --output agent.html
 ```
 
-### Import Migration (Python)
+## Import Migration (Python)
 
 ```python
 # Run from Python
@@ -624,7 +624,7 @@ result = orchestrator.run_migration_cycle(
 )
 ```
 
-### Workflow Navigation (Python)
+## Workflow Navigation (Python)
 
 ```python
 from agents import WorkflowNavigator
@@ -733,7 +733,7 @@ feedback.integrate_with_orchestrator(orchestrator)
 mental_map.save_mental_map(Path('decision_history/pr_2473.json'))
 ```
 
-### Combined Flow + Energy + Swarm Optimization
+## Combined Flow + Energy + Swarm Optimization
 
 ```python
 from agents import (
@@ -945,7 +945,7 @@ coherent = qop.coherent_state(alpha=complex(1.0, 0.5))
 evolved = qop.evolve_state(state, time=1.0)
 ```
 
-### ConservationLawChecker
+## ConservationLawChecker
 
 Validates that decisions respect fundamental conservation principles.
 
@@ -980,7 +980,7 @@ result = clc.check_resource_budget(
 print(f"Within budget: {result['conserved']}")  # True
 ```
 
-### PathIntegralCalculator
+## PathIntegralCalculator
 
 Evaluates all possible decision paths using Feynman path integral formalism.
 
@@ -1008,7 +1008,7 @@ action_paths = [
 result = pic.evaluate_decision_paths(action_paths)
 ```
 
-### HamiltonianEvolver
+## HamiltonianEvolver
 
 Evolves decision states through phase space using Hamiltonian mechanics.
 
@@ -1032,7 +1032,7 @@ result = he.analyze_decision_dynamics(path, time_horizon=50)
 print(f"Stable trajectory: {result['stable']}")
 ```
 
-### PhysicsCalculatorSuite
+## PhysicsCalculatorSuite
 
 Unified interface to all physics calculators for comprehensive analysis.
 
@@ -1118,7 +1118,7 @@ result = walker.explore_decision_tree(decisions, target_decision="Add test")
 print(f"Target probability: {result['target_probability']}")
 ```
 
-### SuperpositionExplorer
+## SuperpositionExplorer
 
 Explores multiple decision paths simultaneously using Grover-like amplitude amplification.
 
@@ -1139,7 +1139,7 @@ Explores multiple decision paths simultaneously using Grover-like amplitude ampl
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Usage
+### Usage
 
 ```python
 from agents import SuperpositionExplorer, ActionPath, ActionType
@@ -1163,7 +1163,7 @@ print(f"Selection probability: {result['selection_probability']:.2%}")
 print(f"Quantum speedup: {result['quantum_speedup']}")
 ```
 
-### PINNValidator
+## PINNValidator
 
 Validates decisions against physics-informed constraints, ensuring physically plausible outcomes.
 
@@ -1191,7 +1191,7 @@ Validates decisions against physics-informed constraints, ensuring physically pl
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Usage
+### Usage
 
 ```python
 from agents import PINNValidator, ActionPath, ActionType
@@ -1214,7 +1214,7 @@ for result in results['results']:
     print(f"  Recommendation: {result['recommendation']}")
 ```
 
-### QuantumPhysicsOrchestrator
+## QuantumPhysicsOrchestrator
 
 Unified orchestrator integrating all quantum and physics patterns.
 
@@ -1238,7 +1238,7 @@ Unified orchestrator integrating all quantum and physics patterns.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Usage
+### Usage
 
 ```python
 from agents import QuantumPhysicsOrchestrator, ActionPath, ActionType
@@ -1267,7 +1267,7 @@ print(f"Final decision: {result['final_decision']}")
 print(f"Physics validation: {result['physics_validation']['valid_paths']}/{result['physics_validation']['total_paths']} valid")
 ```
 
-### EntangledDependency
+## EntangledDependency
 
 Models correlations between decisions where measuring one affects the other.
 
@@ -1291,7 +1291,7 @@ p_b_given_a = entanglement.collapse_b_given_a(outcome_a=True)
 print(f"P(frontend succeeds | backend succeeds): {p_b_given_a:.2%}")
 ```
 
-### Quantum-Physics Equations Reference
+## Quantum-Physics Equations Reference
 
 | Pattern | Equation | Description |
 |---------|----------|-------------|

@@ -1,5 +1,7 @@
 # Fairness Evaluation Guide
 
+**Last Updated:** 2026-06-22
+
 ## Overview
 
 The fairness evaluation system provides tools for detecting and mitigating bias in ML models.

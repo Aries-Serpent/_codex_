@@ -1,5 +1,7 @@
 # ADR-2025-11-02: Archive Sigstore Keyless Signing Integration
 
+**Last Updated:** 2026-06-22
+
 **Date**: 2025-11-02  
 **Status**: Accepted (Phase 2)  
 **Author**: Archive Standardization Team  
@@ -106,7 +108,7 @@ export CODEX_ENABLE_SIGNING=true
 export SIGSTORE_ID_TOKEN=$(gh auth token)
 ```text
 
-### GitHub Actions Integration
+## GitHub Actions Integration
 
 ```yaml
 permissions:

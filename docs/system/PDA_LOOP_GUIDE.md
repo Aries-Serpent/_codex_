@@ -1,5 +1,7 @@
 # PDA Loop Guide
 
+**Last Updated:** 2026-06-22
+
 **Status**: Active  
 **Pattern ID**: P-PROC-001  
 **PDA**: Plan → Do → Assess

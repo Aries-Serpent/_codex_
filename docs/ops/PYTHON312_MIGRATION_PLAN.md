@@ -1,5 +1,7 @@
 # Python 3.12 Migration Plan
 
+**Last Updated:** 2026-06-22
+
 **Status**: Temporary — `requires-python = ">=3.11,<3.13"` (supports both)
 **Target**: `requires-python = ">=3.12,<3.13"` (3.12-only, strict)
 **Blocker**: Base branch `copilot/investigate-coherence-issue` CI uses Python 3.11
@@ -91,7 +93,7 @@ DecisionMap: TypeAlias = dict[str, float]
 type DecisionMap = dict[str, float]
 ```
 
-### 3.2 Generic classes with `[T]` syntax (PEP 695)
+## 3.2 Generic classes with `[T]` syntax (PEP 695)
 ```python
 # Before (3.11 style)
 from typing import Generic, TypeVar
@@ -102,14 +104,14 @@ class Stack(Generic[T]): ...
 class Stack[T]: ...
 ```
 
-### 3.3 `tomllib` — remove `tomli` fallback entries
+## 3.3 `tomllib` — remove `tomli` fallback entries
 Once `requires-python = ">=3.12"`, `tomllib` is always available (added in 3.11):
 ```toml
 # pyproject.toml — remove these lines:
 "tomli>=2.0; python_version < '3.11'",
 ```
 
-### 3.4 Remove `from __future__ import annotations` (optional)
+## 3.4 Remove `from __future__ import annotations` (optional)
 Since 3.12 evaluates annotations lazily by default for most use-cases, but removing
 `from __future__ import annotations` changes runtime behaviour — only do this after
 verifying no code relies on string-form annotations at runtime.

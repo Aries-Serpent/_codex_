@@ -1,5 +1,7 @@
 # Diagram and Visualization Update System
 
+**Last Updated:** 2026-06-22
+
 **Version**: 1.0.0
 **Created**: 2025-12-30
 **Purpose**: Systematic approach to maintaining diagrams and visualizations
@@ -37,7 +39,7 @@ python scripts/maintenance/update_diagrams.py --validate
 python scripts/maintenance/update_diagrams.py --update
 ```
 
-### What It Scans
+## What It Scans
 
 1. **Mermaid Diagrams** - Flow charts, graphs, sequences
 2. **PlantUML Diagrams** - UML diagrams
@@ -62,6 +64,7 @@ python scripts/maintenance/update_diagrams.py --update
 
 **Current Version**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Phase 6: MCP<br/>100% ✅, Phase 7: Cognitive Brain<br/>100% ✅'}}%%
 graph LR
     P6[Phase 6: MCP<br/>100% ✅] --> P7[Phase 7: Cognitive Brain<br/>100% ✅]
     P7 --> P8[Phase 8: Documentation<br/>100% ✅]
@@ -90,6 +93,7 @@ graph LR
 
 **Current Version**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Cognitive Map<br/>Architecture, Dashboard<br/>Status'}}%%
 graph TB
     subgraph "Cognitive Brain"
         CB_MAP[Cognitive Map<br/>Architecture]
@@ -141,6 +145,7 @@ graph TB
 
 **Current Version**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Current: 10.7%, Phase 9.1<br/>25%'}}%%
 graph LR
     START[Current: 10.7%] --> P91[Phase 9.1<br/>25%]
     P91 --> P92[Phase 9.2<br/>92%]
@@ -167,6 +172,7 @@ graph LR
 
 **Current Version**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Start, Scan Codebase'}}%%
 graph TD
     START([Start]) --> SCAN[Scan Codebase]
     SCAN --> TEST[Run Tests]
@@ -311,7 +317,7 @@ if [ $? -ne 0 ]; then
 fi
 ```
 
-### GitHub Actions Workflow (Future)
+## GitHub Actions Workflow (Future)
 ```yaml
 name: Diagram Validation
 on: [pull_request]

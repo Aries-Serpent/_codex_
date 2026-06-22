@@ -19,6 +19,7 @@ and escalation/blocking is handled by the security notification/gating workflows
 ## MTTR Escalation Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔍 Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)", "Severity Triage\ncritical / high / medium / low"'}}%%
 flowchart LR
     FIND["🔍 Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)"]
     TRIAGE["Severity Triage\ncritical / high / medium / low"]

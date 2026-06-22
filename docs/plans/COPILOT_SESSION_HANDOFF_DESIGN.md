@@ -70,6 +70,7 @@ The goal is a **zero-RTT context injection** system that gives the incoming agen
 ## 3. Full WEC Autonomy Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Agent Push / PR Edit, workflow-execution-gate.yml\ndetect-wec-changes job'}}%%
 flowchart TD
     A([Agent Push / PR Edit]) --> B{PR body edited?}
     B -- Yes --> C[workflow-execution-gate.yml\ndetect-wec-changes job]
@@ -106,6 +107,7 @@ flowchart TD
 ### WEC Item Classification
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Always Required (auto-checked)", pre-merge-validation.yml'}}%%
 graph LR
     subgraph ALWAYS["✅ Always Required (auto-checked)"]
         AR1[pre-merge-validation.yml]
@@ -143,6 +145,7 @@ graph LR
 ### Handoff State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> SessionStart : Copilot agent activated
 
@@ -214,6 +217,7 @@ stateDiagram-v2
 ### Handoff Sequence for Incoming Agent
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Setup: previous session cont'}}%%
 sequenceDiagram
     participant GH as GitHub
     participant Setup as copilot-setup-steps.yml
@@ -247,6 +251,7 @@ sequenceDiagram
 ## 5. Self-Healing Loop Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Any workflow fails, iterative-self-healing-ci.yml\ntriage job'}}%%
 flowchart TD
     FAIL([Any workflow fails]) --> TRIAGE[iterative-self-healing-ci.yml\ntriage job]
 
@@ -308,6 +313,7 @@ Agent Token Delegation
 ### Rate-Limit Decision Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing API call needed, github_api_trickle.py --status'}}%%
 flowchart TD
     START([API call needed]) --> CHECK[github_api_trickle.py --status]
 
@@ -335,6 +341,7 @@ flowchart TD
 ### Workflow Deduplication Decision
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing New push to branch, List in-progress runs\nfor each cancellable workflow'}}%%
 flowchart LR
     PUSH([New push to branch]) --> LIST[List in-progress runs\nfor each cancellable workflow]
     LIST --> COUNT{runs > 1?}
@@ -370,7 +377,7 @@ print('✅ WEC state injected')
     fi
 ```
 
-### Gap B — No Rate-Limit Orchestration at Setup
+## Gap B — No Rate-Limit Orchestration at Setup
 
 **Problem:** Agent starts work while dozens of redundant workflows are consuming API quota.  
 **Fix:** Add orchestration step early in setup.
@@ -393,7 +400,7 @@ print('✅ WEC state injected')
     fi
 ```
 
-### Gap C — No Session Chain Index
+## Gap C — No Session Chain Index
 
 **Problem:** No way to know "this is session 7 of this PR".  
 **Fix:** Read/increment `.codex/session_handoff.json` → `COPILOT_SESSION_INDEX`.

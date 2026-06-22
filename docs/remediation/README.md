@@ -1,4 +1,6 @@
 # [Guide]: Capability Remediation Playbooks (Index)
+
+**Last Updated:** 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Use these focused guides to raise maturity scores and clear CI gates:

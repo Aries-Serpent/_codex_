@@ -1,6 +1,6 @@
 # Space Traversal Capability Audit Guide (v1.4.0)
 
-> Generated: 2025-11-09 | Author: Codex Audit System  
+> Generated: 2026-06-22 | Author: Codex Audit System  
 > Roles: [Audit Orchestrator], [Capability Cartographer]  
 > Energy: 5/5
 
@@ -48,7 +48,7 @@ export PREFIX_VALIDATE_AUTO=1         # Run validate_prefixes.py in manifest sta
 export SUMMARY_ENABLE=1               # Emit knobs_effective.json sidecar
 ```text
 
-### Component Scoring Updates
+## Component Scoring Updates
 
 ```python
 # v1.4.0 formulas (applied in stage_s4_scoring)
@@ -382,7 +382,7 @@ python scripts/space_traversal/audit_runner.py validate
 DOMAIN_PATTERNS["gpu"] = re.compile(r"cuda|gpu|torch\.cuda", re.I)
 ```text
 
-### Q: Why is my capability score 0.00?
+## Q: Why is my capability score 0.00?
 **A**: Check these in order:
 1. Evidence files found? (Check `capabilities_raw.json`)
 2. Required patterns present? (Scan evidence file content)

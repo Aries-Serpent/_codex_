@@ -1,5 +1,7 @@
 # Open Questions & Next Steps — Run 4 (2025-10-05)
 
+**Last Updated:** 2026-06-22
+
 ## Offline Hardening Integration Notes
 - Deterministic dataset assignments now flow through `src/codex_ml/data/splits.py` and the JSONL/CSV loaders so every record carries a stable `split` keyed by its hashed identifier.
 - Evaluation runs can fan metrics into local CSV/NDJSON sinks via `codex evaluate --metrics-sink {csv|ndjson} --metrics-path <file>`; see `src/codex_ml/metrics/sinks.py`.

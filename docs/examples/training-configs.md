@@ -1,5 +1,7 @@
 # Example Training Configurations
 
+**Last Updated:** 2026-06-22
+
 The following configurations pair with the scripts under `examples/`:
 
 * [`configs/training/base.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/training/base.yaml) – default

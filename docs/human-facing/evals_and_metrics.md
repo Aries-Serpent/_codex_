@@ -1,6 +1,6 @@
 # Evals & Metrics
 
-> Last updated: 2026-02-10
+> Last updated: 2026-06-22
 
 This document describes the evaluation framework and metrics for the _codex_ system.
 
@@ -67,6 +67,7 @@ This document describes the evaluation framework and metrics for the _codex_ sys
 ## Evaluation Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Test Cases, Run Agent'}}%%
 graph LR
     A[Test Cases] --> B[Run Agent]
     B --> C[Collect Outputs]

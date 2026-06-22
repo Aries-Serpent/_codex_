@@ -1,5 +1,7 @@
 # CI Rescue Pipeline — Golden Path Documentation
 
+**Last Updated:** 2026-06-22
+
 > **Status:** Canonical reference (S280, 2026-04-02)
 > **Scope:** End-to-end lifecycle from workflow failure to Copilot fix — including Proactive CI Monitor and Fast-Forward Safe-File Promotion
 > **Golden-path example:** PR [#3818](https://github.com/Aries-Serpent/_codex_/pull/3818) comment [#4158728043](https://github.com/Aries-Serpent/_codex_/pull/3818#issuecomment-4158728043)
@@ -51,6 +53,7 @@ Allowed file patterns are governed by `.codex/fast_forward_allowlist.yaml`.
 ## 2. Complete Pipeline Flowchart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Push to PR branch, GitHub Actions triggers\nmonitored workflow'}}%%
 flowchart TD
     A([Push to PR branch]) --> B[GitHub Actions triggers\nmonitored workflow]
     B --> C{Workflow\nresult?}
@@ -115,6 +118,7 @@ flowchart TD
 ## 3. Comment Channel Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing auto-fix-pr-check.yml\nrescue-comment job, PATCH or POST\nci-rescue:NNN'}}%%
 graph LR
     subgraph "Channel A — Generic Fix Notice"
         A1[auto-fix-pr-check.yml\nrescue-comment job] --> A2[PATCH or POST\nci-rescue:NNN]
@@ -150,6 +154,7 @@ graph LR
 ## 4. Deduplication State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> NoRescue : branch has no open rescue comment
 
@@ -187,6 +192,7 @@ stateDiagram-v2
 This documents the **exact sequence** that produced the ideal rescue scenario — commit `1a9fcaab`, run [23772216208](https://github.com/Aries-Serpent/_codex_/actions/runs/23772216208), comment [#4158728043](https://github.com/Aries-Serpent/_codex_/pull/3818#issuecomment-4158728043):
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing skip ci, skip ci'}}%%
 sequenceDiagram
     autonumber
     actor Dev as Copilot Agent S243
@@ -250,6 +256,7 @@ sequenceDiagram
 ## 6. Rescue Comment Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
 
@@ -282,6 +289,7 @@ timeline
 ## 7. Workflow Dependency Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR Auto-Fix Check, Pre-Merge Validation'}}%%
 graph TD
     subgraph "Monitored Workflows — trigger ci-rescue.yml"
         W1[PR Auto-Fix Check]
@@ -334,6 +342,7 @@ graph TD
 ### Anti-Pattern 1: RP-004 Infinite Loop (Fixed in S244)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Bot auto-commit\nchore auth / chore d00, CODEX_MANIFEST\nhash drifts'}}%%
 graph LR
     subgraph "BEFORE fix — infinite loop"
         AP1[Bot auto-commit\nchore auth / chore d00] --> AP2[CODEX_MANIFEST\nhash drifts]
@@ -363,6 +372,7 @@ graph LR
 ### Anti-Pattern 2: Duplicate Retriggers (Fixed in S244)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing RCA Channel B posted\nat-copilot+claude-sonnet, Bot commit pushes\ntriggers checkin.yml'}}%%
 graph LR
     subgraph "BEFORE fix — competing sessions"
         D1[RCA Channel B posted\nat-copilot+claude-sonnet] --> D2[Bot commit pushes\ntriggers checkin.yml]
@@ -407,6 +417,7 @@ graph LR
 ## 10. Rules for Adding New Rescue Channels
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing New rescue channel needed, Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes'}}%%
 flowchart LR
     A([New rescue channel needed]) --> B{Can ci_rescue.py\nhandle this pattern?}
     B -->|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]

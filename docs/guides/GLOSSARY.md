@@ -1,5 +1,7 @@
 # Glossary
 
+**Last Updated:** 2026-06-22
+
 ## Quantum-Inspired Terms
 
 **k₁ (Kolmogorov Complexity Coefficient)**

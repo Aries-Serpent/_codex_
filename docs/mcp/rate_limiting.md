@@ -7,6 +7,7 @@ Rate limiting protects the MCP server and upstream providers from abuse and ensu
 ## Rate Limiting Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Client Request, Process Request'}}%%
 graph LR
     A[Client Request] --> B{Rate Limiter}
     B -->|Under Limit| C[Process Request]
@@ -203,7 +204,7 @@ async def context_endpoint(request: ContextRequest):
     return {"result": "success"}
 ```
 
-### Redis-Backed Rate Limiter
+## Redis-Backed Rate Limiter
 
 ```python
 import redis.asyncio as redis
@@ -260,7 +261,7 @@ redis_limiter = RedisRateLimiter(
 )
 ```
 
-### Cloudflare Workers Durable Objects Implementation
+## Cloudflare Workers Durable Objects Implementation
 
 ```javascript
 // Durable Object for rate limiting
@@ -648,7 +649,7 @@ async def check_rate_limit_with_metrics(api_key: str, endpoint_type: str):
     return allowed, retry_after
 ```
 
-### Alerts
+## Alerts
 
 ```yaml
 # Prometheus alerting rules
@@ -818,7 +819,7 @@ wrangler secret put MCP_RATE_LIMIT_RPM_READ
 fly deploy --strategy immediate
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Redis Connection Failure:**
 ```python

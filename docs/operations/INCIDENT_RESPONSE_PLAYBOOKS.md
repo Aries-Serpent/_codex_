@@ -147,7 +147,7 @@ python scripts/security/collect_incident_evidence.py \
 - [ ] Affected user/data scope
 - [ ] Root cause hypothesis
 
-### Phase 3: Containment (Immediate)
+## Phase 3: Containment (Immediate)
 
 **For Security Incidents**:
 ```
@@ -254,7 +254,7 @@ python scripts/incident/notify_team.py \
   --message="Credential compromised: $CREDENTIAL_TYPE, rotated and revoked"
 ```
 
-### P1 Response (1-4 hours)
+## P1 Response (1-4 hours)
 
 **Investigation Phase**:
 ```bash
@@ -314,12 +314,12 @@ echo "Credential compromised for: $COMPROMISE_DURATION seconds"
 # - Review code for malicious changes
 
 # 3. If malicious code found:
-#    - Revert commits
-#    - Re-deploy clean version
-#    - Notify team
+# - Revert commits
+# - Re-deploy clean version
+# - Notify team
 
 # 4. If data was accessed:
-#    - Begin data breach response (see Playbook: Data Breach)
+# - Begin data breach response (see Playbook: Data Breach)
 
 # 5. Monitor for reuse of same credential
 while true; do
@@ -330,7 +330,7 @@ while true; do
 done
 ```
 
-### Recovery Phase
+## Recovery Phase
 
 ```bash
 # 1. Deploy with new credential
@@ -354,7 +354,7 @@ python scripts/rotate_secret.py --verify $CREDENTIAL_TYPE
 echo "Credential compromise contained and remediated" >> incident.log
 ```
 
-### Post-Incident
+## Post-Incident
 
 ```bash
 # 1. Root cause analysis
@@ -428,7 +428,7 @@ python scripts/security/reset_mfa.py --user=$COMPROMISED_USER
 slack-notify "#security" "🚨 UNAUTHORIZED ACCESS: IP $ATTACKER_IP blocked, account locked"
 ```
 
-### Investigation Phase
+## Investigation Phase
 
 ```bash
 # 1. Analyze attack pattern
@@ -457,18 +457,18 @@ curl -H "Authorization: ******" \
 # - What was exfiltrated?
 ```
 
-### Containment & Recovery
+## Containment & Recovery
 
 ```bash
 # 1. If attacker didn't succeed:
-#    - Maintain IP block
-#    - Monitor for retry attempts
-#    - Strengthen targeted system
+# - Maintain IP block
+# - Monitor for retry attempts
+# - Strengthen targeted system
 
 # 2. If attacker got in:
-#    - Begin Data Breach response (see Playbook)
-#    - Review all recent activities
-#    - Check for persistent backdoors
+# - Begin Data Breach response (see Playbook)
+# - Review all recent activities
+# - Check for persistent backdoors
 
 # 3. Reset affected systems
 # - Force password reset
@@ -527,7 +527,7 @@ python scripts/security/analyze_data_access.py \
   --generate-report
 ```
 
-### Investigation Phase
+## Investigation Phase
 
 ```bash
 # 1. Determine breach timeline
@@ -564,7 +564,7 @@ EOF
 # - PCI DSS: Payment card data?
 ```
 
-### Response Phase
+## Response Phase
 
 ```bash
 # 1. Restore database to pre-breach state
@@ -614,9 +614,9 @@ python scripts/incident/diagnose_degradation.py \
   --metric="error_rate|latency|cpu|memory"
 
 # Output examples:
-#  ❌ Database connection pool exhausted (95/100)
-#  ❌ CPU spike due to runaway query
-#  ❌ Memory leak in cache layer
+# ❌ Database connection pool exhausted (95/100)
+# ❌ CPU spike due to runaway query
+# ❌ Memory leak in cache layer
 
 # 2. IMMEDIATE MITIGATION
 case "$ROOT_CAUSE" in
@@ -646,7 +646,7 @@ python scripts/incident/monitor_recovery.py \
 # Output: ✅ Service recovered
 ```
 
-### Investigation & Fix
+## Investigation & Fix
 
 ```bash
 # 1. Identify root cause

@@ -1,6 +1,6 @@
 # Cognitive Evolution Tree — Process Mapping
 
-**Last Updated**: 2026-02-12
+**Last Updated**: 2026-06-22
 **Version**: 3.0.0  
 **Purpose**: Visual evolutionary process mapping of the _codex_ AI cognitive agency — from conception through emergence to autonomous operation.
 
@@ -9,6 +9,7 @@
 ## 🌳 Master Evolution Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🏛️ Foundation Era (2025-Q4)", Phase 1-5: Foundation<br/>Ingestion · Agents · RAG · CI/CD · Security'}}%%
 graph TD
     subgraph Foundation["🏛️ Foundation Era (2025-Q4)"]
         P1[Phase 1-5: Foundation<br/>Ingestion · Agents · RAG · CI/CD · Security]
@@ -83,6 +84,7 @@ graph TD
 ## 🧬 Planset Dependency Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔒 Security Plansets", PS-02: IPC Bridge<br/>Hardening'}}%%
 graph LR
     subgraph Security["🔒 Security Plansets"]
         PS02[PS-02: IPC Bridge<br/>Hardening]
@@ -150,6 +152,7 @@ graph LR
 ## 🤖 Agent Evolution Lineage
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Generation 1: Standalone Agents", CI Testing Agent'}}%%
 graph TD
     subgraph Gen1["Generation 1: Standalone Agents"]
         A1[CI Testing Agent]
@@ -224,6 +227,7 @@ graph TD
 ## 📊 Capability Maturity Model
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Level 1: Reactive", Code Suggestions'}}%%
 graph LR
     subgraph L1["Level 1: Reactive"]
         L1a[Code Suggestions]
@@ -268,6 +272,7 @@ graph LR
 ## 🧪 Technology Stack Evolution
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title _codex_ Technology Evolution
     section Foundation (2025-Q4)
