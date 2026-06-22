@@ -71,7 +71,7 @@ jobs:
           GATED = [
             ("Build & Push Preview Image",  "ubuntu-latest-m", 30,  2, True),
             ("Data Quality Suite",           "ubuntu-latest",   60,  3, False),
-            ("Scheduled Archival",           "ubuntu-latest",   60,  3, False),
+            # Exclude schedule/workflow_dispatch-only workflows (not PR-triggered).
             ("Rust Swarm CI",                "ubuntu-latest",   60,  3, False),
             ("Docker Build & Push",          "ubuntu-latest-m", 30,  2, True),
             ("Embedding Index Rebuild",      "ubuntu-latest",   15,  1, False),
