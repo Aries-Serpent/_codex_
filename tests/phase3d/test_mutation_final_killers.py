@@ -391,7 +391,7 @@ class TestMutationKillerExceptions:
         try:
             result = 5 + 3
             assert result == 8
-        except Exception:
+        except Exception as _err:
             pytest.fail("Should not raise exception")
 
     def test_exception_caught_correctly(self):

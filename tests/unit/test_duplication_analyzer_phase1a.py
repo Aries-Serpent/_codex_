@@ -17,7 +17,6 @@ Tests include basic functionality, edge cases, error paths, and integration scen
 
 import hashlib
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -27,7 +26,6 @@ from src.codex.analysis.duplication import (
     _hash_file,
     analyze_duplication,
 )
-
 
 # =====================================================================
 # FIXTURES
