@@ -1,3 +1,58 @@
+# PR #5058 CodeQL Security Alert Resolution — 2026-06-22T18:17Z
+
+## Session Summary
+
+**Objective:** Resolve 4 CodeQL security comments on PR #5058 regarding missing `permissions:` blocks in `.github/workflows/validate-code-examples.yml`
+
+**Duration:** 2026-06-22T18:17Z → 2026-06-22T18:25Z (8 minutes)
+
+**Status:** ✅ COMPLETE
+
+## Changes Applied
+
+1. **Added workflow-level permissions block** to `.github/workflows/validate-code-examples.yml`
+   - `contents: read` - for repository code checkout operations
+   - `actions: read` - for workflow execution and metadata reading
+   - `checks: write` - for validation result reporting
+   - **Placement:** Workflow root level, after `on:` trigger definition, before `jobs:` key
+
+2. **Replied to all 4 CodeQL comments** with explicit commit SHA: `abb568569d1d745527b7bb460f828ca724e69438`
+   - Comment ID 3454378121 (line 122, validate-bash job)
+   - Comment ID 3454378131 (line 185, validate-yaml job)
+   - Comment ID 3454378140 (line 230, summary job line 230)
+   - Comment ID 3454378156 (line 245, summary job line 245)
+
+3. **Validated workflow YAML syntax** — File passes Python YAML parser validation
+
+## Technical Details
+
+### File Modified
+- **Path:** `.github/workflows/validate-code-examples.yml`
+- **Lines Added:** 5 (lines 17-20 + blank line)
+- **Type:** Workflow security hardening
+- **Impact:** Zero functional changes; pure security posture improvement
+
+### Commit Information
+- **Commit SHA:** `abb568569d1d745527b7bb460f828ca724e69438`
+- **Author:** copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>
+- **Message:** "fix: add permissions block to validate-code-examples workflow (resolves CodeQL alerts)"
+
+## Validation Notes
+
+✅ **YAML Validation:** Passed Python YAML parser
+✅ **Permissions Scope:** All permissions are minimal and necessary for the workflow operations
+✅ **All 4 Comments:** Explicitly replied with resolution commit SHA
+✅ **Compliance:** REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) updated in current commit
+
+## Governance
+
+**Scope:** CodeQL security alert remediation (non-breaking workflow maintenance)
+**Risk Level:** LOW (adds security, no functional changes)
+**Review:** Awaiting code review and CodeQL re-scan for compliance verification
+**Merge Readiness:** Pending CI checks completion
+
+---
+
 # PR #5057 CI Rescue Follow-up 2 — 2026-06-22T16:22:00Z → 2026-06-22T16:40:00Z
 
 ## Table of Contents
