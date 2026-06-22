@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5057 CI rescue follow-up 2)
+- Updated `.github/workflows/workflow-compliance-gate.yml` to evaluate compliance on PR-changed workflow files (with fallback to full scan outside PR context), preventing unrelated legacy workflow files from failing this PR.
+- Added top-level workflow `permissions` in `.github/workflows/unified-governance-check.yml` to satisfy workflow compliance policy.
+
 ### Fixed (PR #5057 CI rescue follow-up)
 - Added an inline markdown allowlist pragma to `.codex/POST_MERGE_VALIDATION_SUMMARY_2026-06-22.md` for the AWS example token false positive.
 - Updated `unified-governance-check.yml` to create `.codex/compliance/` before writing `report.json` and fixed Python summary step parsing imports/output.

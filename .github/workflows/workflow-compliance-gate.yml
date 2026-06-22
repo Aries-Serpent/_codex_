@@ -55,6 +55,7 @@ jobs:
           python3 - <<'PYEOF'
           import sys
           import yaml
+          import subprocess
           from pathlib import Path
 
           WORKFLOW_DIR = Path(".github/workflows")
@@ -82,7 +83,38 @@ jobs:
               )
               return has_only_dispatch and is_noop
 
-          for wf_file in sorted(WORKFLOW_DIR.glob("*.yml")):
+          def changed_workflow_files():
+              if "${{ github.event_name }}" != "pull_request":
+                  return sorted(WORKFLOW_DIR.glob("*.yml"))
+              try:
+                  out = subprocess.check_output(
+                      [
+                          "git",
+                          "diff",
+                          "--name-only",
+                          "HEAD^1",
+                          "HEAD",
+                          "--",
+                          ".github/workflows/*.yml",
+                          ".github/workflows/*.yaml",
+                      ],
+                      text=True,
+                  )
+              except Exception:
+                  return sorted(WORKFLOW_DIR.glob("*.yml"))
+              files = []
+              for rel in out.splitlines():
+                  rel = rel.strip()
+                  if not rel:
+                      continue
+                  wf_file = Path(rel)
+                  if wf_file.exists():
+                      files.append(wf_file)
+              return sorted(files) if files else sorted(WORKFLOW_DIR.glob("*.yml"))
+
+          files_to_check = changed_workflow_files()
+
+          for wf_file in files_to_check:
               if wf_file.name in SKIP_FILES:
                   continue
               try:
@@ -127,7 +159,7 @@ jobs:
                   print(f"  ❌ {v}")
               sys.exit(1)
           else:
-              all_files = len(list(WORKFLOW_DIR.glob("*.yml")))
+              all_files = len(files_to_check)
               skipped = len(SKIP_FILES)
               checked = all_files - skipped
               print(
