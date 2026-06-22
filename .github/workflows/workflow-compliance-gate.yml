@@ -67,6 +67,9 @@ jobs:
           # by PyYAML's strict parser.  Skip compliance checks for these files.
           SKIP_FILES = {"copilot-setup-steps.yml"}
 
+          def all_workflow_files():
+              return sorted(WORKFLOW_DIR.glob("*.yml"))
+
           def is_stub(data):
               """Stubs: only workflow_dispatch trigger + no real jobs."""
               triggers = data.get("on", {}) or {}
@@ -85,23 +88,24 @@ jobs:
 
           def changed_workflow_files():
               if "${{ github.event_name }}" != "pull_request":
-                  return sorted(WORKFLOW_DIR.glob("*.yml"))
+                  return all_workflow_files()
               try:
                   out = subprocess.check_output(
                       [
                           "git",
                           "diff",
                           "--name-only",
-                          "HEAD^1",
-                          "HEAD",
+                          "${{ github.event.pull_request.base.sha }}",
+                          "${{ github.event.pull_request.head.sha }}",
                           "--",
                           ".github/workflows/*.yml",
                           ".github/workflows/*.yaml",
                       ],
                       text=True,
                   )
-              except Exception:
-                  return sorted(WORKFLOW_DIR.glob("*.yml"))
+              except subprocess.CalledProcessError as exc:
+                  print(f"WARN: failed to diff changed workflows ({exc}); falling back to full scan")
+                  return all_workflow_files()
               files = []
               for rel in out.splitlines():
                   rel = rel.strip()
@@ -110,7 +114,7 @@ jobs:
                   wf_file = Path(rel)
                   if wf_file.exists():
                       files.append(wf_file)
-              return sorted(files) if files else sorted(WORKFLOW_DIR.glob("*.yml"))
+              return sorted(files) if files else all_workflow_files()
 
           files_to_check = changed_workflow_files()
 

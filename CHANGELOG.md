@@ -5,6 +5,7 @@
 ### Fixed (PR #5057 CI rescue follow-up 2)
 - Updated `.github/workflows/workflow-compliance-gate.yml` to evaluate compliance on PR-changed workflow files (with fallback to full scan outside PR context), preventing unrelated legacy workflow files from failing this PR.
 - Added top-level workflow `permissions` in `.github/workflows/unified-governance-check.yml` to satisfy workflow compliance policy.
+- Refined changed-workflow detection in `workflow-compliance-gate.yml` to diff `${{ github.event.pull_request.base.sha }}` → `${{ github.event.pull_request.head.sha }}` and log fallback warnings on diff failures.
 
 ### Fixed (PR #5057 CI rescue follow-up)
 - Added an inline markdown allowlist pragma to `.codex/POST_MERGE_VALIDATION_SUMMARY_2026-06-22.md` for the AWS example token false positive.
