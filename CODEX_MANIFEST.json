@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-22T00:47:39Z",
+  "generated_at": "2026-06-22T12:34:38Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -964,6 +964,11 @@
       "has_concurrency": true
     },
     {
+      "name": "adaptive-agent-delegation",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "admin-action-notifier",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1569,6 +1574,21 @@
       "has_concurrency": true
     },
     {
+      "name": "phase-8-1-health-monitor",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
+      "name": "phase-8-2-issue-triage",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "phase-8-3-perf-monitor",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "post-accountability-to-discussion",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1877,6 +1897,16 @@
       "name": "unified-deployment",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
+    },
+    {
+      "name": "unified-governance-check",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
+      "name": "validate-token-health",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
     },
     {
       "name": "validate",
@@ -2290,5 +2320,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "fd381c8292c7d0d78acfeeaf4ea95f1f9a21664e127162413d2153bad3f207c1"
+  "integrity_sha256": "896dea44c4bd762bcf5cf6286973408c9b2a9852d28d6c7f70481581a9fdaeb6"
 }
