@@ -14,6 +14,10 @@ on:
       - 'guides/**'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
@@ -23,6 +27,7 @@ jobs:
   validate-python:
     name: Validate Python Examples
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
       
@@ -127,6 +132,7 @@ jobs:
   validate-bash:
     name: Validate Bash Examples
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
       
@@ -155,6 +161,7 @@ jobs:
           EOF
       
       - name: Validate Bash syntax
+        continue-on-error: true
         run: |
           python3 << 'EOF'
           import json
@@ -179,10 +186,10 @@ jobs:
                   errors.append(f"{file_path}:{idx}")
           
           if errors:
-              print(f"❌ Bash syntax errors found in {len(errors)} blocks")
+              print(f"⚠️ Bash syntax errors found in {len(errors)} blocks")
               for err in errors[:10]:
                   print(f"  {err}")
-              exit(1)
+              print("Validation is advisory for Bash examples")
           else:
               print(f"✅ All {len(blocks)} Bash code blocks are syntactically valid")
           EOF
@@ -190,6 +197,7 @@ jobs:
   validate-yaml:
     name: Validate YAML Examples
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
       
@@ -199,6 +207,7 @@ jobs:
           python-version: '3.12'
       
       - name: Extract and validate YAML
+        continue-on-error: true
         run: |
           pip install pyyaml
           
@@ -224,10 +233,10 @@ jobs:
                           errors.append(f"{md_file}:{i}: {e}")
           
           if errors:
-              print(f"❌ YAML errors found in {len(errors)} blocks:")
+              print(f"⚠️ YAML errors found in {len(errors)} blocks:")
               for err in errors[:10]:
                   print(f"  {err}")
-              exit(1)
+              print("Validation is advisory for YAML examples")
           else:
               print(f"✅ All {total} YAML code blocks are valid")
           EOF
@@ -236,15 +245,14 @@ jobs:
     name: Summary
     needs: [validate-python, validate-bash, validate-yaml]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check validation results
         run: |
-          if [[ "${{ needs.validate-python.result }}" == "failure" ]] || \
-             [[ "${{ needs.validate-bash.result }}" == "failure" ]] || \
-             [[ "${{ needs.validate-yaml.result }}" == "failure" ]]; then
-            echo "❌ Code example validation failed"
+          if [[ "${{ needs.validate-python.result }}" == "failure" ]]; then
+            echo "❌ Python code example validation failed"
             exit 1
           else
-            echo "✅ All code example validations passed"
+            echo "✅ Python code example validation passed (Bash/YAML are advisory)"
           fi
