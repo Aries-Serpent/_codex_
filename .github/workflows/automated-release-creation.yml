@@ -116,7 +116,7 @@ jobs:
       - name: Create GitHub Release (Draft)
         if: github.event.inputs.dry_run == 'true'
         id: create-release-draft
-        uses: actions/create-release@v1.1.1
+        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -129,7 +129,7 @@ jobs:
       - name: Create GitHub Release (Published)
         if: github.event.inputs.dry_run == 'false'
         id: create-release
-        uses: actions/create-release@v1.1.1
+        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
