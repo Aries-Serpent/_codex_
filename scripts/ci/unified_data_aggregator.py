@@ -84,6 +84,7 @@ class UnifiedDataAggregator:
                         }
                     )
             except Exception:
+                # Silently skip files that cannot be parsed; continue aggregation
                 pass
 
         result["status"] = "complete"
@@ -113,6 +114,7 @@ class UnifiedDataAggregator:
                 result["last_agents"] = recent
                 result["status"] = "complete"
         except Exception as e:
+            # Log error but continue; report aggregation is non-critical
             result["error"] = str(e)
 
         return result
@@ -138,6 +140,7 @@ class UnifiedDataAggregator:
                             )
                             break
             except Exception:
+                # Silently skip phase files that cannot be parsed
                 pass
 
         # Parse dashboard if exists
@@ -150,6 +153,7 @@ class UnifiedDataAggregator:
                     if "PHASE 2.2" in content:
                         result["phase_2_2_status"] = "UNBLOCKED"
             except Exception:
+                # Dashboard parsing is optional; continue if missing or malformed
                 pass
 
         result["status"] = "complete"
@@ -203,6 +207,7 @@ class UnifiedDataAggregator:
                         "size_kb": mem_file.stat().st_size / 1024,
                     }
             except Exception:
+                # Skip memory files that cannot be read or parsed
                 pass
 
         result["status"] = "complete"
@@ -254,6 +259,7 @@ class UnifiedDataAggregator:
                             '"auto-fix'
                         )
             except Exception:
+                # CI pattern collection is optional; skip on parse errors
                 pass
 
         result["status"] = "complete"

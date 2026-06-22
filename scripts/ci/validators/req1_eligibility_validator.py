@@ -12,7 +12,6 @@ Validates that a PR meets basic structural requirements:
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 import re
