@@ -248,7 +248,7 @@ from scripts.ci.rapid_delegation_engine import DelegationEngine
 engine = DelegationEngine()
 results = engine.collect_results()
 
-for task in results.task_results:
+for task in results.task_results:  # pragma: allowlist secret
     if task.status.value == "completed":
         print(f"✅ {task.agent_id}: {task.output}")
     elif task.status.value == "failed":

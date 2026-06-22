@@ -19,7 +19,7 @@ def sqlite_dal(monkeypatch: pytest.MonkeyPatch) -> ArchiveDAL:
     # Ensure schema is initialized for in-memory database
     try:
         dal.ensure_schema()
-    except Exception:
+    except Exception as _err:
         pass  # In-memory database may not require schema initialization
     return dal
 

@@ -75,8 +75,8 @@
 
 | Task | Agent | Status | Completion | Evidence |
 |------|-------|--------|------------|----------|
-| 2.1.1: Token broker enhancements | Agent 1 | ✅ COMPLETE | 2026-06-22 ~10:00 | .codex/PHASE_2_1_INTEGRATION_REPORT.md |
-| 2.1.2: Secret injection design | Agent 2 | ✅ COMPLETE | 2026-06-22 ~11:30 | Verified syntax, YAML OK |
+| 2.1.1: Token broker enhancements | Agent 1 | ✅ COMPLETE | 2026-06-22 ~10:00 | .codex/PHASE_2_1_INTEGRATION_REPORT.md | <!-- pragma: allowlist secret -->
+| 2.1.2: Secret injection design | Agent 2 | ✅ COMPLETE | 2026-06-22 ~11:30 | Verified syntax, YAML OK | <!-- pragma: allowlist secret -->
 | 2.1.3: Compliance validators | Agent 3 | ✅ COMPLETE | 2026-06-22 ~13:50 | All validators compile |
 | 2.1.4: Integration testing | Copilot | ✅ PASS | 2026-06-22 00:15 | 24/24 files verified, syntax OK |
 | 2.1.5: Validation sweep | Copilot | ✅ PASS | 2026-06-22 00:15 | Python/YAML validation complete |
@@ -138,7 +138,7 @@
 |------|-----------|--------|
 | genesis-bootstrap.yml activation fails | Dry-run testing before GA | 🟡 Preparing |
 | Staged rollout encounters >5% errors | Automatic rollback trigger | 🟡 Ready |
-| Token health checker causes latency | <2ms overhead verified | ✅ OK |
+| Token health checker causes latency | <2ms overhead verified | ✅ OK | <!-- pragma: allowlist secret -->
 | Compliance validators false positives | <1% target, tuning iterative | 🟡 Ready |
 
 ---
@@ -162,7 +162,7 @@
 
 | Component | Health | Status |
 |-----------|--------|--------|
-| Token infrastructure | 🟢 Excellent | Integration OK |
+| Token infrastructure | 🟢 Excellent | Integration OK | <!-- pragma: allowlist secret -->
 | Compliance framework | 🟢 Excellent | All validators OK |
 | Workflow readiness | 🟢 Excellent | Phase 2.2 unblocked |
 | CI/CD pipeline | 🟢 Healthy | Ready for Phase 2.2 |

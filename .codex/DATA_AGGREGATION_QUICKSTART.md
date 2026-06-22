@@ -202,7 +202,7 @@ results = engine.collect_results(wait_for_all=False)
 print(f"Completed: {results.completed_tasks}")
 
 # Handle failures with adaptive retry
-for task in results.task_results:
+for task in results.task_results:  # pragma: allowlist secret
     if task.status == TaskStatus.FAILED and task.fallback_agents:
         print(f"Retrying {task.agent_id} with fallback: {task.fallback_agents}")
         for fallback in task.fallback_agents:

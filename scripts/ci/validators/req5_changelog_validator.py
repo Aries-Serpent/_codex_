@@ -10,7 +10,6 @@ This enforces the compliance requirement from session_wrapup_autofix.py.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 
@@ -24,11 +23,11 @@ UNRELEASED_MARKER = "## [Unreleased]"
 
 class REQ5ChangelogValidator(RequirementValidator):
     """Validates CHANGELOG requirement (REQ-5)."""
-    
+
     @property
     def requirement_id(self) -> str:
         return "REQ-5"
-    
+
     def _validate_impl(self) -> ComplianceResult:
         """Check if CHANGELOG.md was updated in latest commit."""
         try:
@@ -42,9 +41,9 @@ class REQ5ChangelogValidator(RequirementValidator):
                 reason=f"Could not fetch PR details: {exc}",
                 remediation=["Verify PR number is correct", "Check GitHub API access"],
             )
-        
+
         metadata: dict = {}
-        
+
         # Get the latest commit SHA
         if not commits:
             return ComplianceResult(
@@ -55,11 +54,11 @@ class REQ5ChangelogValidator(RequirementValidator):
                 remediation=["Ensure PR has at least one commit"],
                 metadata=metadata,
             )
-        
+
         latest_commit = commits[-1]
         commit_sha = latest_commit.get("sha", "")
         metadata["commit_sha"] = commit_sha[:12]
-        
+
         # Get files modified in this commit
         try:
             commit_details = self._get_commit_details(commit_sha)
@@ -68,9 +67,9 @@ class REQ5ChangelogValidator(RequirementValidator):
         except Exception as exc:
             logger.warning(f"Could not fetch commit details: {exc}")
             modified_files = set()
-        
+
         metadata["files_in_commit"] = len(modified_files)
-        
+
         # Check if CHANGELOG was modified in latest commit
         if CHANGELOG_PATH not in modified_files:
             metadata["changelog_updated"] = False
@@ -88,9 +87,9 @@ class REQ5ChangelogValidator(RequirementValidator):
                 ],
                 metadata=metadata,
             )
-        
+
         metadata["changelog_updated"] = True
-        
+
         # Verify CHANGELOG has content and [Unreleased] section
         try:
             changelog_content = self._read_file(CHANGELOG_PATH) or ""
@@ -103,7 +102,7 @@ class REQ5ChangelogValidator(RequirementValidator):
                     remediation=["Add content to CHANGELOG.md"],
                     metadata=metadata,
                 )
-            
+
             if UNRELEASED_MARKER not in changelog_content:
                 return ComplianceResult(
                     requirement_id=self.requirement_id,
@@ -117,18 +116,18 @@ class REQ5ChangelogValidator(RequirementValidator):
                     ],
                     metadata=metadata,
                 )
-            
+
             # Check that there's content after the [Unreleased] marker
             unreleased_idx = changelog_content.index(UNRELEASED_MARKER)
             unreleased_section = changelog_content[unreleased_idx:]
-            
+
             # Look for at least some content after the marker
             lines_after = unreleased_section.split("\n")[1:]  # Skip the marker line
             content_lines = [
                 l for l in lines_after
                 if l.strip() and not l.startswith("#")  # Skip empty/heading lines
             ]
-            
+
             if not content_lines:
                 return ComplianceResult(
                     requirement_id=self.requirement_id,
@@ -141,7 +140,7 @@ class REQ5ChangelogValidator(RequirementValidator):
                     ],
                     metadata=metadata,
                 )
-            
+
             return ComplianceResult(
                 requirement_id=self.requirement_id,
                 status="pass",
@@ -150,7 +149,7 @@ class REQ5ChangelogValidator(RequirementValidator):
                 remediation=[],
                 metadata=metadata,
             )
-        
+
         except Exception as exc:
             logger.warning(f"Could not validate CHANGELOG content: {exc}")
             # If we can't read it but it was modified, give benefit of doubt (warn)
@@ -172,12 +171,12 @@ def main():
     parser.add_argument("--json", action="store_true", help="Output JSON")
     parser.add_argument("--sha", help="Optional commit SHA to check (defaults to latest in PR)")
     args = parser.parse_args()
-    
+
     logging.basicConfig(level=logging.INFO)
-    
+
     validator = REQ5ChangelogValidator(args.pr, args.repo)
     result = validator.validate()
-    
+
     if args.json:
         print(result.to_json())
     else:
@@ -187,7 +186,7 @@ def main():
             print("\nRemediation:")
             for step in result.remediation:
                 print(f"  - {step}")
-    
+
     return 0 if result.status == "pass" else (0 if result.status == "warn" else 1)
 
 

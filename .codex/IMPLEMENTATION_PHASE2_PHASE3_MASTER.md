@@ -111,8 +111,8 @@
 | Timestamp | Milestone | Task | Status | Notes |
 |-----------|-----------|------|--------|-------|
 | 2026-06-21T23:32:53Z | 2.1 | Infrastructure setup | 🟢 COMPLETE | Master tracker created in .codex/ |
-| TBD | 2.1 | Token validation | 🟡 IN PROGRESS | Starting Phase 2.1 execution |
-| TBD | 2.1 | Token broker build | 🟡 PENDING | Delegating to agents |
+| TBD | 2.1 | Token validation | 🟡 IN PROGRESS | Starting Phase 2.1 execution | <!-- pragma: allowlist secret -->
+| TBD | 2.1 | Token broker build | 🟡 PENDING | Delegating to agents | <!-- pragma: allowlist secret -->
 
 ---
 

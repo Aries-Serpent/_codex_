@@ -12,9 +12,9 @@ Phase 2.1 enhances the Phase 2 Token Broker with production-grade reliability, o
 
 | Component | Purpose | Impact |
 |-----------|---------|--------|
-| **Health Checks** | Validate JWT structure, expiration, scopes | Prevent cascade failures on expired/revoked tokens |
+| **Health Checks** | Validate JWT structure, expiration, scopes | Prevent cascade failures on expired/revoked tokens | <!-- pragma: allowlist secret -->
 | **Circuit Breaker** | Implement exponential backoff for dead sources | Rapid recovery, 5-min recovery probing |
-| **Rotation Scheduling** | Track token creation/expiration dates | Warn at 80-day mark, schedule preventive rotation |
+| **Rotation Scheduling** | Track token creation/expiration dates | Warn at 80-day mark, schedule preventive rotation | <!-- pragma: allowlist secret -->
 | **Observability** | Structured metrics and state export | Real-time diagnostics, monitoring-ready |
 
 **Key Achievement:** TokenBroker now **self-heals** from token failures without external intervention, while maintaining 100% backward compatibility.
@@ -26,16 +26,16 @@ Phase 2.1 enhances the Phase 2 Token Broker with production-grade reliability, o
 ### Component Hierarchy
 
 ```
-TokenBroker (enhanced)
-├── TokenHealthChecker (NEW - Task 2.1.1)
+TokenBroker (enhanced)  # pragma: allowlist secret
+├── TokenHealthChecker (NEW - Task 2.1.1)  # pragma: allowlist secret
 │   ├── JWT validation (structure, expiration, scopes)
 │   ├── PAT format validation
 │   └── Master key format validation
-├── TokenCircuitBreaker (NEW - Task 2.1.2)
+├── TokenCircuitBreaker (NEW - Task 2.1.2)  # pragma: allowlist secret
 │   ├── State machine: CLOSED → OPEN → HALF_OPEN → CLOSED
 │   ├── Exponential backoff (1s → 2s → 4s ... 300s)
 │   └── Recovery probing every 5 minutes
-├── TokenRotationScheduler (NEW - Task 2.1.3)
+├── TokenRotationScheduler (NEW - Task 2.1.3)  # pragma: allowlist secret
 │   ├── Track creation, last rotation, next rotation
 │   ├── Warning at 80-day mark
 │   └── Fallback detection
@@ -50,22 +50,22 @@ TokenBroker (enhanced)
 ```
 broker.resolve(ADVISORY_WRITE)
   ↓
-For each token source (GITHUB_APP → OIDC → SCOPED_PAT → CODEX_MASTER):
+For each token source (GITHUB_APP → OIDC → SCOPED_PAT → CODEX_MASTER):  # pragma: allowlist secret
   ├─ [CB] Check circuit breaker state
   │  └─ If OPEN: skip (exponential backoff active)
   ├─ [CB] Check privilege ceiling
-  ├─ [FETCH] Read token from environment
+  ├─ [FETCH] Read token from environment  # pragma: allowlist secret
   ├─ [HC] Perform health check
   │  ├─ JWT: validate structure, expiration, scopes
   │  ├─ PAT: validate format
   │  └─ If failed: record failure in CB, continue to next source
   ├─ [CB] Record success (close circuit, reset backoff)
-  ├─ [RS] Register token creation timestamp
+  ├─ [RS] Register token creation timestamp  # pragma: allowlist secret
   ├─ [RS] Check rotation schedule
-  └─ Return TokenResolution with health check result, latency, metrics
+  └─ Return TokenResolution with health check result, latency, metrics  # pragma: allowlist secret
   ↓
 If no source succeeds:
-  └─ Return TokenResolution with source=NONE, token=None
+  └─ Return TokenResolution with source=NONE, token=None  # pragma: allowlist secret
 ```
 
 ---
@@ -75,7 +75,7 @@ If no source succeeds:
 ### TokenHealthStatus Enum
 
 ```python
-class TokenHealthStatus(str, Enum):
+class TokenHealthStatus(str, Enum):  # pragma: allowlist secret
     HEALTHY = "healthy"           # Valid, not expired
     EXPIRED = "expired"           # JWT exp claim in past
     REVOKED = "revoked"           # (Future: requires API call)
@@ -90,28 +90,28 @@ class TokenHealthStatus(str, Enum):
 #### Public API
 
 ```python
-class TokenHealthChecker:
+class TokenHealthChecker:  # pragma: allowlist secret
     def check_health(
         self,
-        token: Optional[str],
-        source: TokenSource,
+        token: Optional[str],  # pragma: allowlist secret
+        source: TokenSource,  # pragma: allowlist secret
         required_class: ControlClass,
-    ) -> TokenHealthCheck:
+    ) -> TokenHealthCheck:  # pragma: allowlist secret
         """
-        Check token health: structure, expiration, scopes, revocation.
+        Check token health: structure, expiration, scopes, revocation.  # pragma: allowlist secret
         
         Parameters
         ----------
-        token : str | None
-            Token string to validate (None → UNKNOWN)
-        source : TokenSource
+        token : str | None  # pragma: allowlist secret
+            Token string to validate (None → UNKNOWN)  # pragma: allowlist secret
+        source : TokenSource  # pragma: allowlist secret
             Source type (determines check strategy)
         required_class : ControlClass
             Required privilege level (for scope validation)
         
         Returns
         -------
-        TokenHealthCheck
+        TokenHealthCheck  # pragma: allowlist secret
             Status, message, issued/expiration times, scopes, diagnostics
         """
 ```
@@ -120,8 +120,8 @@ class TokenHealthChecker:
 
 ```python
 @dataclass
-class TokenHealthCheck:
-    status: TokenHealthStatus                 # Overall status
+class TokenHealthCheck:  # pragma: allowlist secret
+    status: TokenHealthStatus                 # Overall status  # pragma: allowlist secret
     message: str                              # Human-readable message
     issued_at: Optional[int] = None          # Unix timestamp (JWT iat)
     expires_at: Optional[int] = None         # Unix timestamp (JWT exp)
@@ -149,8 +149,8 @@ class TokenHealthCheck:
 broker.resolve(
     control_class=ControlClass.ADVISORY_WRITE,
     enable_health_check=True,  # Default: True (2.1.1)
-) → TokenResolution(
-    health_check=TokenHealthCheck(...),
+) → TokenResolution(  # pragma: allowlist secret
+    health_check=TokenHealthCheck(...),  # pragma: allowlist secret
     is_healthy=True  # Helper property
 )
 ```
@@ -164,7 +164,7 @@ broker.resolve(
 ```python
 class CircuitBreakerState(str, Enum):
     CLOSED = "closed"       # Normal operation
-    OPEN = "open"           # Token dead; skip for backoff period
+    OPEN = "open"           # Token dead; skip for backoff period  # pragma: allowlist secret
     HALF_OPEN = "half_open"  # Probing recovery
 ```
 
@@ -175,7 +175,7 @@ class CircuitBreakerState(str, Enum):
 #### Configuration Constants
 
 ```python
-class TokenCircuitBreaker:
+class TokenCircuitBreaker:  # pragma: allowlist secret
     _INITIAL_BACKOFF = 1              # Starting backoff (seconds)
     _MAX_BACKOFF = 300                # Max backoff (5 minutes)
     _FAILURE_THRESHOLD = 3            # Failures before opening
@@ -185,17 +185,17 @@ class TokenCircuitBreaker:
 #### Public API
 
 ```python
-class TokenCircuitBreaker:
-    def get_state(self, source: TokenSource) → CircuitBreakerState:
+class TokenCircuitBreaker:  # pragma: allowlist secret
+    def get_state(self, source: TokenSource) → CircuitBreakerState:  # pragma: allowlist secret
         """Get current state; transitions OPEN→HALF_OPEN after probe interval."""
     
-    def record_success(self, source: TokenSource) → None:
+    def record_success(self, source: TokenSource) → None:  # pragma: allowlist secret
         """Record success; close circuit and reset backoff."""
     
-    def record_failure(self, source: TokenSource) → None:
+    def record_failure(self, source: TokenSource) → None:  # pragma: allowlist secret
         """Record failure; open circuit if threshold exceeded."""
     
-    def get_backoff_seconds(self, source: TokenSource) → float:
+    def get_backoff_seconds(self, source: TokenSource) → float:  # pragma: allowlist secret
         """Get current backoff duration (0 if CLOSED)."""
     
     def to_dict(self) → dict:
@@ -239,8 +239,8 @@ for source in candidates:
                      source.value, backoff_seconds)
         continue
     
-    token = broker._fetch(source)
-    if token and health_check_passed:
+    token = broker._fetch(source)  # pragma: allowlist secret
+    if token and health_check_passed:  # pragma: allowlist secret
         broker._circuit_breaker.record_success(source)
     else:
         broker._circuit_breaker.record_failure(source)
@@ -257,30 +257,30 @@ for source in candidates:
 #### Configuration Constants
 
 ```python
-class TokenRotationScheduler:
+class TokenRotationScheduler:  # pragma: allowlist secret
     _WARNING_THRESHOLD_DAYS = 10      # Warn when < 10 days until expiration
-    _TOKEN_LIFETIME_DAYS = 90         # Assume 90-day token lifetime
+    _TOKEN_LIFETIME_DAYS = 90         # Assume 90-day token lifetime  # pragma: allowlist secret
 ```
 
 #### Public API
 
 ```python
-class TokenRotationScheduler:
-    def register_token(self, source: TokenSource, created_at: Optional[int] = None) → None:
-        """Register token with creation timestamp (Unix seconds)."""
+class TokenRotationScheduler:  # pragma: allowlist secret
+    def register_token(self, source: TokenSource, created_at: Optional[int] = None) → None:  # pragma: allowlist secret
+        """Register token with creation timestamp (Unix seconds)."""  # pragma: allowlist secret
     
-    def check_rotation_needed(self, source: TokenSource) → TokenRotationInfo | None:
+    def check_rotation_needed(self, source: TokenSource) → TokenRotationInfo | None:  # pragma: allowlist secret
         """
         Check if rotation is needed.
         
         Returns
         -------
-        TokenRotationInfo | None
+        TokenRotationInfo | None  # pragma: allowlist secret
             Info if overdue; None if still valid.
             Issues WARNING if approaching threshold.
         """
     
-    def get_rotation_info(self, source: TokenSource) → TokenRotationInfo | None:
+    def get_rotation_info(self, source: TokenSource) → TokenRotationInfo | None:  # pragma: allowlist secret
         """Retrieve rotation metadata for source."""
     
     def to_dict(self) → dict:
@@ -291,8 +291,8 @@ class TokenRotationScheduler:
 
 ```python
 @dataclass
-class TokenRotationInfo:
-    source: TokenSource
+class TokenRotationInfo:  # pragma: allowlist secret
+    source: TokenSource  # pragma: allowlist secret
     created_at: int                   # Unix timestamp
     last_rotated_at: int             # Unix timestamp
     next_rotation_at: int            # Unix timestamp
@@ -303,25 +303,25 @@ class TokenRotationInfo:
 #### Warning Behavior
 
 ```
-Token created/rotated at T:
+Token created/rotated at T:  # pragma: allowlist secret
   ├─ T + 80 days: WARNING logged (10 days until expiration)
-  │  └─ Message: "Token rotation approaching for {source} in {days:.1f} days"
+  │  └─ Message: "Token rotation approaching for {source} in {days:.1f} days"  # pragma: allowlist secret
   ├─ T + 90 days: Rotation due (overdue warning)
-  │  └─ Message: "Token rotation overdue for {source}: {days} days past expiration"
-  └─ T + 90 days: Future rotation check returns TokenRotationInfo
+  │  └─ Message: "Token rotation overdue for {source}: {days} days past expiration"  # pragma: allowlist secret
+  └─ T + 90 days: Future rotation check returns TokenRotationInfo  # pragma: allowlist secret
 ```
 
 #### Integration with TokenBroker
 
 ```python
 # After successful resolution:
-broker._rotation_scheduler.register_token(source)
+broker._rotation_scheduler.register_token(source)  # pragma: allowlist secret
 broker._rotation_scheduler.check_rotation_needed(source)
 
 # For diagnostics:
 rotation_info = broker.get_rotation_info(source)
 if rotation_info and rotation_info.days_until_rotation < 0:
-    # Token overdue for rotation
+    # Token overdue for rotation  # pragma: allowlist secret
     # Fallback: try CODEX_BACKUP_KEY if available
 ```
 
@@ -360,16 +360,16 @@ logger.info("Circuit breaker: %s recovered after %d failures",
 ```python
 logger.warning("Access broker: health check failed for %s: %s",
                source.value, health_check.message)
-logger.warning("Token from %s expiring in %.1f days",
+logger.warning("Token from %s expiring in %.1f days",  # pragma: allowlist secret
                source.value, days_until_expiry)
 ```
 
 #### Rotation Events
 
 ```python
-logger.warning("Token rotation approaching for %s in %.1f days",
+logger.warning("Token rotation approaching for %s in %.1f days",  # pragma: allowlist secret
                source.value, days_until_rotation)
-logger.warning("Token rotation overdue for %s: %d days past expiration",
+logger.warning("Token rotation overdue for %s: %d days past expiration",  # pragma: allowlist secret
                source.value, abs(int(days_until_rotation)))
 ```
 
@@ -379,14 +379,14 @@ logger.warning("Token rotation overdue for %s: %d days past expiration",
 
 ```python
 @dataclass
-class TokenResolution:
+class TokenResolution:  # pragma: allowlist secret
     # ... existing fields ...
-    health_check: Optional[TokenHealthCheck] = None      # 2.1.1
+    health_check: Optional[TokenHealthCheck] = None      # 2.1.1  # pragma: allowlist secret
     resolution_time_ms: float = 0.0                      # 2.1.4
     
     @property
     def is_healthy(self) -> bool:
-        """Check token health status."""
+        """Check token health status."""  # pragma: allowlist secret
 ```
 
 #### TokenBroker.get_metrics()
@@ -421,7 +421,7 @@ broker.get_metrics() → dict:
 
 ```python
 broker.get_circuit_breaker_state(source) → CircuitBreakerState
-broker.get_rotation_info(source) → TokenRotationInfo | None
+broker.get_rotation_info(source) → TokenRotationInfo | None  # pragma: allowlist secret
 ```
 
 ---
@@ -434,12 +434,12 @@ broker.get_rotation_info(source) → TokenRotationInfo | None
 
 ```python
 # Old code (Phase 2)
-broker = TokenBroker(registry=reg)
+broker = TokenBroker(registry=reg)  # pragma: allowlist secret
 result = broker.resolve(ControlClass.ADVISORY_WRITE)
 # No health checks, no circuit breaker — works as before
 
 # New code (Phase 2.1)
-broker = TokenBroker(registry=reg)
+broker = TokenBroker(registry=reg)  # pragma: allowlist secret
 result = broker.resolve(ControlClass.ADVISORY_WRITE, enable_health_check=True)
 # Health checks enabled, circuit breaker active, metrics available
 ```
@@ -452,7 +452,7 @@ broker.resolve(
     *,
     require: bool = False,                    # Existing
     enable_health_check: bool = True,         # NEW (2.1.1)
-) → TokenResolution:
+) → TokenResolution:  # pragma: allowlist secret
     # Returns health_check and resolution_time_ms fields if health check enabled
 ```
 
@@ -538,8 +538,8 @@ broker.get_rotation_info(source) → Info | None       # 2.1.3
 
 | Scenario | Detection | Action |
 |----------|-----------|--------|
-| Expired token | Immediate | Health check catches on next resolve |
-| Dead token source | After 3 failures | Circuit opens, backoff applied |
+| Expired token | Immediate | Health check catches on next resolve | <!-- pragma: allowlist secret -->
+| Dead token source | After 3 failures | Circuit opens, backoff applied | <!-- pragma: allowlist secret -->
 | Recovery opportunity | After 5 minutes | Recovery probe (HALF_OPEN state) |
 | Successful recovery | Immediate | Circuit closes, normal operation resumes |
 
@@ -550,22 +550,22 @@ broker.get_rotation_info(source) → Info | None       # 2.1.3
 ### Basic Usage (Phase 2.1)
 
 ```python
-from codex.autonomy.token_broker import TokenBroker
+from codex.autonomy.token_broker import TokenBroker  # pragma: allowlist secret
 from codex.autonomy.registry import AutonomyRegistry, ControlClass
 
 # Create broker (enhancements enabled by default)
 registry = AutonomyRegistry.load()
-broker = TokenBroker(registry=registry)
+broker = TokenBroker(registry=registry)  # pragma: allowlist secret
 
 # Resolve with health checks
 result = broker.resolve(ControlClass.ADVISORY_WRITE)
 
 if result.available:
-    print(f"Token resolved via: {result.source.value}")
-    print(f"Token health: {result.health_check.status.value}")
+    print(f"Token resolved via: {result.source.value}")  # pragma: allowlist secret
+    print(f"Token health: {result.health_check.status.value}")  # pragma: allowlist secret
     print(f"Resolution time: {result.resolution_time_ms:.1f}ms")
 else:
-    print(f"No token available: {result.denial_reason}")
+    print(f"No token available: {result.denial_reason}")  # pragma: allowlist secret
 ```
 
 ### Monitoring & Diagnostics
@@ -579,8 +579,8 @@ print(f"Circuit breaker state: {metrics['circuit_breaker']}")
 print(f"Rotation schedule: {metrics['rotation_schedule']}")
 
 # Query specific source
-cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)
-rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)
+cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)  # pragma: allowlist secret
+rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)  # pragma: allowlist secret
 ```
 
 ### Fallback on Dead Token

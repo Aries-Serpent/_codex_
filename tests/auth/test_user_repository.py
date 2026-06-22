@@ -9,7 +9,7 @@ Tests cover:
 - Repository implementations
 """
 
-from datetime import ( # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from datetime import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     datetime,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 from uuid import uuid4

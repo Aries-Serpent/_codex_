@@ -16,16 +16,14 @@ Usage:
 """
 
 import json
-import os
-import sys
-import subprocess
-import re
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from typing import Optional, Dict, List, Any
-from pathlib import Path
-import base64
 import logging
+import os
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -325,7 +323,7 @@ class TokenValidator:
         result = TokenValidationResult(token_name=token_name, valid=False)
 
         # 1. JWT decode / format check
-        self.log(f"  JWT decode...", "INFO")
+        self.log("  JWT decode...", "INFO")
         jwt_result = self.decode_jwt_payload(token)
         result.jwt_decode_pass = jwt_result.get("format_check", False)
         if not result.jwt_decode_pass:
@@ -333,7 +331,7 @@ class TokenValidator:
         self.log(f"    format_check: {result.jwt_decode_pass}")
 
         # 2. Scope verification
-        self.log(f"  Scope verification...", "INFO")
+        self.log("  Scope verification...", "INFO")
         scope_result = self.verify_scopes(token)
         result.scope_verification_pass = scope_result.get("verified", False)
         result.scopes = scope_result.get("scopes", [])
@@ -343,7 +341,7 @@ class TokenValidator:
         self.log(f"    scopes: {', '.join(result.scopes)}")
 
         # 3. Get expiration
-        self.log(f"  Checking expiration...", "INFO")
+        self.log("  Checking expiration...", "INFO")
         expiration = self.get_token_expiration(token)
         result.expiration_date = expiration
         if expiration:
@@ -352,10 +350,10 @@ class TokenValidator:
             result.days_until_expiration = days_left
             self.log(f"    expires: {expiration} ({days_left} days)")
         else:
-            self.log(f"    expires: (could not determine)")
+            self.log("    expires: (could not determine)")
 
         # 4. Test API operations
-        self.log(f"  Testing API operations...", "INFO")
+        self.log("  Testing API operations...", "INFO")
         api_results = self.test_api_operations(token)
         result.api_test_results = api_results
         result.api_operations_pass = all(api_results.values())
@@ -396,9 +394,9 @@ class TokenValidator:
                     "WARNING",
                 )
             else:
-                self.log(f"  ✅ Expiration staggering: Master expires first (recommended)")
+                self.log("  ✅ Expiration staggering: Master expires first (recommended)")
 
-        self.log(f"  ✅ Failover chain healthy")
+        self.log("  ✅ Failover chain healthy")
         return True
 
     def run_validation(self) -> ValidationReport:

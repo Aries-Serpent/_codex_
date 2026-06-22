@@ -201,12 +201,12 @@ python scripts/ci/validate_token_setup.py --dry-run
 ```
 .codex/audit/
 ├── .gitkeep
-├── token_rotation_log.md      ✅ Initialized
+├── token_rotation_log.md      ✅ Initialized  # pragma: allowlist secret
 ├── incident_log.md             ✅ Initialized
-├── token_injection_log.jsonl   (Created on first injection)
-├── token_health_check.jsonl    (Created by CI workflow)
-├── token_access_log.jsonl      (Created on token usage)
-└── token_expiration_monitor.json (Created by validation)
+├── token_injection_log.jsonl   (Created on first injection)  # pragma: allowlist secret
+├── token_health_check.jsonl    (Created by CI workflow)  # pragma: allowlist secret
+├── token_access_log.jsonl      (Created on token usage)  # pragma: allowlist secret
+└── token_expiration_monitor.json (Created by validation)  # pragma: allowlist secret
 ```
 
 ---
@@ -268,10 +268,10 @@ After completion, verify:
 
 | Criterion | Status | Verification |
 |-----------|--------|--------------|
-| CODEX_MASTER_KEY created | ⏳ PENDING | Token visible in GitHub PAT list |
-| CODEX_BACKUP_KEY created | ⏳ PENDING | Token visible in GitHub PAT list |
-| Both injected as secrets | ⏳ PENDING | Visible in repository settings |
-| Supporting secrets injected | ⏳ PENDING | CODEX_REPO_ID, CODEX_WEBHOOK_SECRET exist |
+| CODEX_MASTER_KEY created | ⏳ PENDING | Token visible in GitHub PAT list | <!-- pragma: allowlist secret -->
+| CODEX_BACKUP_KEY created | ⏳ PENDING | Token visible in GitHub PAT list | <!-- pragma: allowlist secret -->
+| Both injected as secrets | ⏳ PENDING | Visible in repository settings | <!-- pragma: allowlist secret -->
+| Supporting secrets injected | ⏳ PENDING | CODEX_REPO_ID, CODEX_WEBHOOK_SECRET exist | <!-- pragma: allowlist secret -->
 | Local validation passes | ⏳ PENDING | Script outputs: `status: PASSED` |
 | CI workflow passes | ⏳ PENDING | Workflow run shows ✅ on all steps |
 | JSON report complete | ⏳ PENDING | Report archived with full metadata |
@@ -312,7 +312,7 @@ After completion, verify:
 ```
 2026-06-21: Phase 2.1 design artifacts created (TODAY)
 2026-06-22: Optional human review period
-2026-06-23–2026-06-27: Token injection window (flexible)
+2026-06-23–2026-06-27: Token injection window (flexible)  # pragma: allowlist secret
 2026-06-28: Phase 2.1 target completion
 2026-07-01: Phase 2.2 kickoff (Genesis Protocol Activation)
 
@@ -406,7 +406,7 @@ Key Dates:
 | Design document quality | Actionable by non-technical user | ✅ Achieved |
 | Script test coverage | API ops + scope + expiration | ✅ Achieved |
 | CI workflow reliability | No false positives | ✅ Achieved |
-| Audit trail completeness | All token events tracked | ✅ Achieved |
+| Audit trail completeness | All token events tracked | ✅ Achieved | <!-- pragma: allowlist secret -->
 | Emergency procedures | Clear & executable | ✅ Achieved |
 | Documentation clarity | Plain English, no jargon | ✅ Achieved |
 

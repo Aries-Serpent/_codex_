@@ -76,8 +76,8 @@
 
 | Milestone | Task | Status | ETA |
 |-----------|------|--------|-----|
-| 2.1.1 | Token broker enhancements | 🟡 IN PROGRESS | 2026-06-22 12:00 |
-| 2.1.2 | Secret injection procedures | 🟡 IN PROGRESS | 2026-06-22 14:00 |
+| 2.1.1 | Token broker enhancements | 🟡 IN PROGRESS | 2026-06-22 12:00 | <!-- pragma: allowlist secret -->
+| 2.1.2 | Secret injection procedures | 🟡 IN PROGRESS | 2026-06-22 14:00 | <!-- pragma: allowlist secret -->
 | 2.1.3 | Compliance validators | 🟡 IN PROGRESS | 2026-06-22 16:00 |
 | 2.1.4 | Integration & testing | 🔴 BLOCKED | 2026-06-22 20:00 |
 | 2.1.5 | Validation sweep | 🔴 BLOCKED | 2026-06-22 22:00 |

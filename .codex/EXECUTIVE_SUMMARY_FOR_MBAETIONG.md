@@ -21,8 +21,8 @@ I've formally initiated the **100% Agentic Codebase Implementation Plan** by:
 
 | Agent | Task | Deliverables | ETA |
 |-------|------|--------------|-----|
-| **phase-2-1-token-broker-enhance** | Enhance token broker with production-grade reliability | Enhanced token_broker.py + health checks + circuit breaker + rotation scheduler + tests + design doc | 2026-06-22 12:00 |
-| **phase-2-1-secret-injection-wor** | Design secret injection workflow for token setup | Injection procedures + validation script + CI workflow + audit trails | 2026-06-22 14:00 |
+| **phase-2-1-token-broker-enhance** | Enhance token broker with production-grade reliability | Enhanced token_broker.py + health checks + circuit breaker + rotation scheduler + tests + design doc | 2026-06-22 12:00 | <!-- pragma: allowlist secret -->
+| **phase-2-1-secret-injection-wor** | Design secret injection workflow for token setup | Injection procedures + validation script + CI workflow + audit trails | 2026-06-22 14:00 | <!-- pragma: allowlist secret -->
 | **phase-2-3-compliance-framework** | Build compliance framework for REQ-1 through REQ-6 | 6 validators + master orchestrator + pre-merge blocker + dashboard | 2026-06-22 16:00 |
 
 ### 3. Documentation & Tracking (All in .codex/, NOT /tmp)
@@ -81,12 +81,12 @@ I've formally initiated the **100% Agentic Codebase Implementation Plan** by:
 
 | Date | Event | Duration | Your Action |
 |------|-------|----------|-----------|
-| 2026-06-22 12:00 | Agent 1 completes token broker | - | Review + approve |
-| 2026-06-22 14:00 | Agent 2 completes secret injection | - | Review procedures |
+| 2026-06-22 12:00 | Agent 1 completes token broker | - | Review + approve | <!-- pragma: allowlist secret -->
+| 2026-06-22 14:00 | Agent 2 completes secret injection | - | Review procedures | <!-- pragma: allowlist secret -->
 | 2026-06-22 16:00 | Agent 3 completes compliance | - | Review validators |
 | 2026-06-22 18:00-22:00 | Phase 2.1 Integration testing | 4h | Monitor (no action needed) |
 | 2026-06-23-24 | Phase 2.1 Stabilization (48h) | 48h | Monitor (standby for issues) |
-| 2026-06-25 | Phase 2.1 → Phase 2.2 Transition | - | Approve secret injection |
+| 2026-06-25 | Phase 2.1 → Phase 2.2 Transition | - | Approve secret injection | <!-- pragma: allowlist secret -->
 | 2026-06-25-26 | Phase 2.2 Workflow activation | 2-3 days | Monitor + approve stages |
 
 ### How to Track Progress

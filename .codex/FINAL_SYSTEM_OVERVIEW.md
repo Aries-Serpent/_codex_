@@ -125,7 +125,7 @@ QUEUED → RUNNING → COMPLETED
 engine = DelegationEngine()
 
 # Fire-and-forget delegation (non-blocking)
-task_id = engine.queue_agent("unified-coverage-agent", {}, priority="high")
+task_id = engine.queue_agent("unified-coverage-agent", {}, priority="high")  # pragma: allowlist secret
 
 # Collect results later (also non-blocking)
 results = engine.collect_results(wait_for_all=False)
