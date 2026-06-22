@@ -54,6 +54,8 @@ chmod +x .git/hooks/pre-commit
 
 ## Usage
 
+**Note**: All commands in this section should be run from the **repository root** directory unless otherwise specified.
+
 ### Local Validation
 
 #### Run Markdownlint
