@@ -14,6 +14,8 @@ Resolved the two reported failing checks on commit `3151558ededb`:
 - Updated `.github/workflows/workflow-compliance-gate.yml` so PR runs validate workflow compliance against PR-changed workflow files (with non-PR fallback to full scan).
 - Added top-level `permissions` to `.github/workflows/unified-governance-check.yml` to satisfy workflow compliance policy.
 - Refined changed-workflow diffing to use `${{ github.event.pull_request.base.sha }}` and `${{ github.event.pull_request.head.sha }}` with explicit fallback warning output for diff failures.
+- Added `fetch-depth: 0` to `workflow-compliance-gate.yml` checkout and included both `.yml`/`.yaml` in fallback full-scan matching.
+- Expanded `unified-governance-check.yml` job permissions with `contents: read` and `issues: write` for explicit API access used by PR comment update steps.
 
 ### Validation Notes
 - Retrieved and reviewed failing logs from runs `27966707354` and `27966708017`.

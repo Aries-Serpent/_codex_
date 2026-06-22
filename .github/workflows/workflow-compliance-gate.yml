@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7 # v6.0.3
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v6 # v6
@@ -68,7 +70,8 @@ jobs:
           SKIP_FILES = {"copilot-setup-steps.yml"}
 
           def all_workflow_files():
-              return sorted(WORKFLOW_DIR.glob("*.yml"))
+              files = list(WORKFLOW_DIR.glob("*.yml")) + list(WORKFLOW_DIR.glob("*.yaml"))
+              return sorted(set(files))
 
           def is_stub(data):
               """Stubs: only workflow_dispatch trigger + no real jobs."""
@@ -90,7 +93,7 @@ jobs:
               if "${{ github.event_name }}" != "pull_request":
                   return all_workflow_files()
               try:
-                  out = subprocess.check_output(
+                  result = subprocess.run(
                       [
                           "git",
                           "diff",
@@ -98,23 +101,34 @@ jobs:
                           "${{ github.event.pull_request.base.sha }}",
                           "${{ github.event.pull_request.head.sha }}",
                           "--",
-                          ".github/workflows/*.yml",
-                          ".github/workflows/*.yaml",
+                          ".github/workflows/",
                       ],
+                      capture_output=True,
+                      check=True,
                       text=True,
                   )
+                  out = result.stdout
               except subprocess.CalledProcessError as exc:
-                  print(f"WARN: failed to diff changed workflows ({exc}); falling back to full scan")
+                  print(
+                      "WARN: git diff failed "
+                      f"(exit {exc.returncode}): {exc.stderr.strip()}; "
+                      "falling back to full scan"
+                  )
                   return all_workflow_files()
               files = []
               for rel in out.splitlines():
                   rel = rel.strip()
                   if not rel:
                       continue
+                  if not (rel.endswith(".yml") or rel.endswith(".yaml")):
+                      continue
                   wf_file = Path(rel)
                   if wf_file.exists():
                       files.append(wf_file)
-              return sorted(files) if files else all_workflow_files()
+              if files:
+                  return sorted(files)
+              print("WARN: no changed workflow files detected from git diff; falling back to full scan")
+              return all_workflow_files()
 
           files_to_check = changed_workflow_files()
 
