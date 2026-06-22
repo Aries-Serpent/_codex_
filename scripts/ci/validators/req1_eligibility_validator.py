@@ -14,9 +14,6 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-import re
-from pathlib import Path
-from typing import Optional
 
 from base import ComplianceResult, RequirementValidator
 

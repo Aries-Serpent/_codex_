@@ -10,7 +10,6 @@ This enforces the compliance requirement from session_wrapup_autofix.py.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import subprocess
 import sys

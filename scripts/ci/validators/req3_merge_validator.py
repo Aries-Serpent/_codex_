@@ -13,10 +13,8 @@ Validates that a PR can legally be merged:
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
-from typing import Optional
 
 from base import ComplianceResult, RequirementValidator
 

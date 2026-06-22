@@ -13,11 +13,8 @@ Validates that a PR meets quality and security standards:
 from __future__ import annotations
 
 import argparse
-import json
 import logging
-import subprocess
 import sys
-from typing import Optional
 
 from base import ComplianceResult, RequirementValidator
 
