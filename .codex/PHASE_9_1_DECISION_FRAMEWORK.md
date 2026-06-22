@@ -229,45 +229,67 @@ Final Confidence = (
 
 ---
 
-## Part 3: Risk Categories & Thresholds
+## Part 3: Risk Categories & Authorized Agent Mapping
 
-### 3.1 Risk Category Definitions
+### 3.1 Risk Category Definitions & Agent Assignment
 
 #### Category 1: Observability & Alerts (0.5% risk)
 - **Agents:** ci-health-alert-agent
 - **Impact:** Alerts, notifications; no state changes
 - **Recovery:** Reverse alert; no system impact
 - **Policy:** Autonomous execution >70% confidence
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
 
 #### Category 2: Static Validation (2% risk)
 - **Agents:** packaging-validation-agent, rust-error-validator
 - **Impact:** Read-only validation; guidance generation
 - **Recovery:** Regenerate validation; no data loss
 - **Policy:** Autonomous execution >65% confidence
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
 
 #### Category 3: Workflow & Configuration (5% risk)
 - **Agents:** workflow-ci-fixer, test-pattern-guardian
 - **Impact:** Configuration changes; reversible via git
 - **Recovery:** Revert commit; restore from backup
 - **Policy:** Autonomous execution >70% confidence; escalate <70%
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
 
 #### Category 4: Test & Assertion Modifications (10% risk)
 - **Agents:** test-assertion-updater, ci-testing-agent
 - **Impact:** Test file changes; potential false negatives
 - **Recovery:** Review changes; revert if needed
 - **Policy:** Escalate if confidence <60%; mandatory audit trail
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
 
 #### Category 5: Session & Orchestration (8% risk)
 - **Agents:** copilot-session-chain
 - **Impact:** Multi-session coordination; state changes
 - **Recovery:** Reset session state; restart workflows
 - **Policy:** Escalate if confidence <60%; mandatory audit trail
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
 
 #### Category 6: Domain-Specific Computation (3% risk)
 - **Agents:** energy-conversion-agent
 - **Impact:** Scientific calculations; no system impact
 - **Recovery:** Recalculate; rerun simulations
 - **Policy:** Autonomous execution >65% confidence
+- **Authorization Status:** ✅ AUTHORIZED (D_CAPABLE)
+
+### 3.2 Confirmed Authorization Matrix (2026-06-22)
+
+**All 9 D_CAPABLE Agents Verified & Authorized:**
+
+| # | Agent ID | Risk Category | Risk Level | Escalation Threshold | Status |
+|---|----------|---------------|-----------|----------------------|--------|
+| 1 | ci-testing-agent | Test Modifications | MEDIUM | <60% | ✅ AUTHORIZED |
+| 2 | rust-error-validator | Static Validation | LOW | <70% | ✅ AUTHORIZED |
+| 3 | test-assertion-updater | Test Modifications | MEDIUM | <60% | ✅ AUTHORIZED |
+| 4 | test-pattern-guardian | Workflow & Config | LOW | <65% | ✅ AUTHORIZED |
+| 5 | workflow-ci-fixer | Workflow & Config | LOW | <70% | ✅ AUTHORIZED |
+| 6 | ci-health-alert-agent | Observability | LOW | <65% | ✅ AUTHORIZED |
+| 7 | copilot-session-chain | Session Orchestration | MEDIUM | <60% | ✅ AUTHORIZED |
+| 8 | packaging-validation-agent | Static Validation | LOW | <65% | ✅ AUTHORIZED |
+| 9 | energy-conversion-agent | Domain-Specific | LOW | <65% | ✅ AUTHORIZED |
 
 ---
 
