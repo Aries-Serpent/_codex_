@@ -72,14 +72,14 @@ markdownlint docs/my-doc.md
 ## Run Cross-Reference Checker
 
 ```bash
-# Check all links
-python3 ../.github/scripts/check-cross-references.py --repo-root="."
+# Check all links (run from repository root)
+python3 .github/scripts/check-cross-references.py --repo-root="."
 
 # Generate JSON report
-python3 ../.github/scripts/check-cross-references.py --repo-root="." --format=json
+python3 .github/scripts/check-cross-references.py --repo-root="." --format=json
 
 # GitHub Actions annotations
-python3 ../.github/scripts/check-cross-references.py --github-annotations --fail-on-errors
+python3 .github/scripts/check-cross-references.py --github-annotations --fail-on-errors
 ```
 
 ## Run Heading Validator

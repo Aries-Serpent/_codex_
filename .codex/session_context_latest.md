@@ -33,11 +33,6 @@
 - `CODEX_CI_LAST_GREEN_SHA` = `cd44a77429b6940b93da64247b0c98c37244e08f`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
-## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `RP-SUCCESS-RATE-TEST`: ?
-- [2026-06-22] `PDA-AUTO-20260622`: ?
-
 ## 📜 Codebase Agency Policy (excerpt)
 ```
 # AI Codebase Agency Policy
