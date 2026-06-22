@@ -199,7 +199,7 @@ Then use the Ray trainer:
 from codex_ml.training.ray_distributed import RayDistributedTrainer
 
 def train_loop(config):
-    model = config<!-- TODO: Add section or remove TOC entry - ["model_fn"]() -->
+    model = config["model_fn"]()
     # ... training code ...
 
 trainer = RayDistributedTrainer(

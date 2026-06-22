@@ -21,10 +21,10 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 - **Status**: ✅ **FIXED in commit f4e4e5e**
 - **Fix**: Added `usedforsecurity=False` parameter
 - **Current Code**:
-  ```python
-from typing import List
-import subprocess
-hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
+  ```
+  from typing import List
+  import subprocess
+  hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
   ```
 - **Verification**: Lines 119 and 150 both use the secure pattern
 
@@ -37,7 +37,7 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 - **Status**: ✅ **ALREADY SECURE**
 - **Finding**: File has proper security check via `_is_public_bind()` function
 - **Current Code**:
-  ```python
+  ```
   def _is_public_bind(host: str) -> bool:
       return host in {"0.0.0.0", "::"}
 

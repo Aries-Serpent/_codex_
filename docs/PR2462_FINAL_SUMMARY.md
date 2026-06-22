@@ -230,7 +230,7 @@ pytest tests/test_metadata_calculation.py -v
 ### Hypothesis-Based Reward Score: 0.89/1.00 (Excellent)
 
 **Calculation Breakdown**:
-```python
+```
 base_reward = 1.0 (21/21 comments) * 0.30 = 0.30
 automation = (6 tools) * 0.05 = 0.30
 manual_penalty = (7 interventions) * -0.02 = -0.12

@@ -94,18 +94,14 @@ Solution: Left-align all heredoc content
 ```
 
 #### Pattern 4: Secrets Management 🔐
-```python
 Learning: Never expose secrets in outputs/logs
 Practice: Use API calls for secret updates
 Security: No secrets in GITHUB_OUTPUT
-```
 
 #### Pattern 5: Placeholder Documentation 🚧
-```python
 Learning: Document incomplete features clearly
 Include: What's missing, why, production needs
 Security: Document implications explicitly
-```
 
 ### Cognitive Brain Health Metrics
 
