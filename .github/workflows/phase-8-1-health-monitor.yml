@@ -27,12 +27,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -53,7 +53,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Upload metrics artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: ci-metrics
@@ -70,17 +70,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
       - name: Download metrics
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
         with:
           name: ci-metrics
           path: .codex/metrics
@@ -110,17 +110,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
       - name: Download metrics
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
         with:
           name: ci-metrics
           path: .codex/metrics
@@ -146,17 +146,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
       - name: Download metrics
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
         with:
           name: ci-metrics
           path: .codex/metrics
@@ -203,7 +203,7 @@ No immediate action required. System is operating normally.
           EOF
 
       - name: Upload report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: daily-report
@@ -221,7 +221,7 @@ No immediate action required. System is operating normally.
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
