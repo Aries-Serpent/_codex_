@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-22T12:34:38Z",
+  "generated_at": "2026-06-22T15:19:57Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1576,12 +1576,12 @@
     {
       "name": "phase-8-1-health-monitor",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "phase-8-2-issue-triage",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "phase-8-3-perf-monitor",
@@ -1901,12 +1901,12 @@
     {
       "name": "unified-governance-check",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "validate-token-health",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "validate",
@@ -2320,5 +2320,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "896dea44c4bd762bcf5cf6286973408c9b2a9852d28d6c7f70481581a9fdaeb6"
+  "integrity_sha256": "ab0fc4c52532dd6e44b843758e6bcc81b7e3f7d74872bdfc0925a01706a987db"
 }
