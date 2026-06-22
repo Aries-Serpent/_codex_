@@ -8,10 +8,10 @@ This directory contains administrative and operational documentation for managin
 
 This section contains administrative and operational guides. The following guides are planned for future implementation:
 
-- **Admin Quick Start** - Getting started with administrative tasks
-- **Admin Implementation Guide** - Detailed implementation procedures  
-- **Admin Decisions** - Record of admin decisions and rationale
-- **Admin FAQ** - Frequently asked questions for administrators
+- Admin Quick Start (planned)
+- Admin Implementation Guide (planned)
+- Admin Decisions (planned)
+- Admin FAQ (planned)
 
 For current admin resources, see:
 - [Operations Documentation](../operations/)

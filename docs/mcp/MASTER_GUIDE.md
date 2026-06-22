@@ -525,7 +525,7 @@ async def search(query: list):
 
 ## Related Documentation
 
-> **Note:** Additional MCP documentation modules (Backend Adapters, Workers & Async, Performance Tuning, Security Best Practices) are planned for future implementation. See [Continuation Roadmap](../admin/CONTINUATION_ROADMAP.md) for timeline.
+> **Note:** Additional MCP documentation modules (Backend Adapters, Workers & Async, Performance Tuning, Security Best Practices) are planned for future implementation. See the [Continuation Roadmap](../admin/CONTINUATION_ROADMAP.md) for timeline.
 
 ---
 
