@@ -626,7 +626,7 @@ python-dateutil==2.9.0.post0
     #   graphene
     #   matplotlib
     #   pandas
-python-discovery==1.4.0
+python-discovery==1.4.2
     # via virtualenv
 python-dotenv==1.2.2
     # via
