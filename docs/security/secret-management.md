@@ -734,7 +734,7 @@ logger.info(f"Auth: {api_key}")  # ❌ Never
    export API_KEY="$(aws secretsmanager get-secret-value ...)"
    
    # ❌ Bad
-   API_KEY = "hardcoded_key_here"  # In config file
+   API_KEY = "hardcoded_key_here"  # In config file <!-- pragma: allowlist secret -->
    ```
 
 3. **Implement automatic rotation**: Every 30-90 days
