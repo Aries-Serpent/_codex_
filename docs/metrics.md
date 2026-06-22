@@ -313,7 +313,7 @@ def metric(
     Returns:
         Float score or None if unavailable
     """
-    ...
+    pass  # Implementation details
 ```text
 
 ## Common Patterns

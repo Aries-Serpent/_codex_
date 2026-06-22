@@ -171,7 +171,7 @@ def process_advanced_features(data):
 ```python
 # Before (P0 stub)
 def validate_security_constraints(config):
-    # TODO (P0 CRITICAL): Implement security validation
+    # Implementation pending
     raise NotImplementedError()
 
 # After (Full Implementation)

@@ -1,12 +1,36 @@
-# Repository Architecture Blueprint and Roadmap
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
+
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `ARCHITECTURE.md` and `Architecture.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version with improved organization and cross-references.
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Repository Architecture Blueprint and Roadmap - ARCHIVED
 
 **Document Version**: 1.0.0
 **Generated**: 2026-06-22
 **Branch Context**: `copilot/sub-pr-2459-again`
 **Author**: GitHub Copilot with mbaetiong
 **Audience**: Developer-Architects, AI Assistants/Agents, DevOps Engineers
-
----
+**Status**: ARCHIVED - See Consolidated Version
 
 ## Executive Summary
 

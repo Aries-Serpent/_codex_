@@ -1,15 +1,45 @@
-# Codex ML Architecture (v0.1.0)
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
+
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](./architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `Architecture.md` and `ARCHITECTURE_BLUEPRINT.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version with:
+- ✅ Unified system context and container architecture
+- ✅ Complete component documentation
+- ✅ Repository structure guides
+- ✅ Deployment patterns
+- ✅ Cross-references to all guides
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Codex ML Architecture (v0.1.0) - ARCHIVED
 
 > **Version**: v0.1.0 Pre-Release
 > **Last Updated**: 2026-05-28
-> **Status**: Living Document
+> **Status**: Archived - See Consolidated Version
 > **Managed By**: AI Assistant Autonomous System
 
 **AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
 
 **Package Name**: `codex-ml` (PyPI/Distribution) | Repository: `_codex_`
 
-This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling.
+This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling. **(See consolidated version for updates)**
 
 ## Table of Contents
 - <!-- TODO: Add section or remove TOC entry - [System Context]() -->

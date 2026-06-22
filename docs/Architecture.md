@@ -1,4 +1,29 @@
-# Architecture: Shim Governance & Canonical Import Policy (v1.2.9)
+# ⚠️ ARCHIVED: Consolidated Architecture Document Available
+
+> **Status**: ARCHIVED - Please use the consolidated document instead
+> **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](../architecture/ARCHITECTURE_CONSOLIDATED.md)
+> **Reason**: This content has been merged into a single authoritative architecture reference
+> **Last Updated**: 2026-06-22
+
+---
+
+## 🔗 Documentation Update
+
+This document has been **consolidated** with `ARCHITECTURE.md` and `ARCHITECTURE_BLUEPRINT.md` into a single comprehensive reference:
+
+### **→ [Read the Consolidated Architecture](../architecture/ARCHITECTURE_CONSOLIDATED.md)**
+
+All content from this document is now available in the consolidated version.
+
+---
+
+## Historical Content (Preserved for Reference)
+
+The original content below is preserved for historical purposes only. **Please refer to the consolidated document for current architecture information.**
+
+---
+
+# Architecture: Shim Governance & Canonical Import Policy (v1.2.9) - ARCHIVED
 
 > Generated: 2026-06-22 | Author: mbaetiong  
 > Status: Active | Readiness: 85% → 99% path

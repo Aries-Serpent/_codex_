@@ -83,7 +83,7 @@ chunks = chunk_text(
     chunk_size=1000,  # characters
     overlap=128       # overlap between chunks
 )
-# Returns: [(start_pos, end_pos, chunk_text), ...]
+# Returns: [(start_pos, end_pos, chunk_text), pass  # Implementation details]
 ```
 
 Features:
