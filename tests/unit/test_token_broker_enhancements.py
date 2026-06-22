@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import time
-from base64 import urlsafe_b64encode
+from base64 import urlsafe_b64encode # pragma: allowlist secret
 from unittest.mock import patch
 
 import pytest
