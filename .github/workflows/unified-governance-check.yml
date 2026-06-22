@@ -1,0 +1,186 @@
+name: Unified Governance Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  compliance-check:
+    name: Run compliance check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+      checks: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet pydantic requests
+      
+      - name: Run unified compliance check
+        id: compliance
+        run: |
+          python scripts/ci/unified_compliance_check.py \
+            --pr ${{ github.event.pull_request.number }} \
+            --json \
+            --output .codex/compliance/report.json \
+            --timeout 60
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Parse compliance report
+        id: parse
+        if: always()
+        run: |
+          import json
+          import sys
+          
+          try:
+              with open('.codex/compliance/report.json') as f:
+                  report = json.load(f)
+              
+              status = report.get('status', 'UNKNOWN')
+              score = report.get('overall_score', 0)
+              
+              print(f"status={status}", file=open(sys.stdout, 'a'))
+              print(f"score={score}", file=open(sys.stdout, 'a'))
+              
+              # Create summary
+              summary = f"## Compliance Report\n\n"
+              summary += f"**Status:** {status}\n"
+              summary += f"**Score:** {score:.1f}/100\n\n"
+              
+              summary += "### Validators\n"
+              for validator in report.get('validators', []):
+                  icon = "✅" if validator['status'] == "pass" else ("⚠️" if validator['status'] == "warn" else "❌")
+                  summary += f"- {icon} **{validator['requirement_id']}:** {validator['reason']}\n"
+              
+              if report.get('next_steps'):
+                  summary += "\n### Next Steps\n"
+                  for step in report['next_steps']:
+                      summary += f"- {step}\n"
+              
+              with open(f"{os.environ['GITHUB_STEP_SUMMARY']}", 'a') as f:
+                  f.write(summary)
+          
+          except Exception as e:
+              print(f"Error parsing report: {e}", file=sys.stderr)
+              sys.exit(1)
+        shell: python
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let report = {};
+            try {
+              report = JSON.parse(fs.readFileSync('.codex/compliance/report.json', 'utf8'));
+            } catch (e) {
+              console.error('Failed to parse report:', e);
+              return;
+            }
+            
+            const status = report.status || 'UNKNOWN';
+            const score = report.overall_score || 0;
+            const rationale = report.decision_rationale || '';
+            
+            let comment = `## 📋 Governance Compliance Check\n\n`;
+            comment += `**Status:** ${status === 'APPROVE' ? '✅' : status === 'WARN' ? '⚠️' : '❌'} ${status}\n`;
+            comment += `**Score:** ${score.toFixed(1)}/100\n`;
+            comment += `**Rationale:** ${rationale}\n\n`;
+            
+            comment += `### Requirement Status\n`;
+            for (const validator of report.validators || []) {
+              const icon = validator.status === 'pass' ? '✅' : validator.status === 'warn' ? '⚠️' : '❌';
+              comment += `- ${icon} **${validator.requirement_id}**: ${validator.reason}\n`;
+              if (validator.remediation && validator.remediation.length > 0) {
+                comment += `  - *Remediation:* ${validator.remediation.slice(0, 2).join(', ')}\n`;
+              }
+            }
+            
+            if (report.next_steps && report.next_steps.length > 0) {
+              comment += `\n### Recommended Next Steps\n`;
+              report.next_steps.forEach((step, i) => {
+                comment += `${i + 1}. ${step}\n`;
+              });
+            }
+            
+            // Try to find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(c => 
+              c.user.type === 'Bot' && c.body.includes('Governance Compliance Check')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment,
+              });
+            }
+      
+      - name: Set PR status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let report = {};
+            try {
+              report = JSON.parse(fs.readFileSync('.codex/compliance/report.json', 'utf8'));
+            } catch (e) {
+              console.log('Warning: Could not parse compliance report');
+              return;
+            }
+            
+            const status = report.status || 'UNKNOWN';
+            
+            // Set check run status
+            const state = status === 'BLOCK' ? 'failure' : status === 'WARN' ? 'neutral' : 'success';
+            
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Governance Compliance',
+              head_sha: context.payload.pull_request.head.sha,
+              status: 'completed',
+              conclusion: state === 'failure' ? 'failure' : state === 'neutral' ? 'neutral' : 'success',
+              output: {
+                title: `Governance Compliance: ${status}`,
+                summary: `Score: ${report.overall_score}/100\n\n${report.decision_rationale}`,
+              },
+            });
+            
+            // Block merge if BLOCK status
+            if (status === 'BLOCK') {
+              core.setFailed('Governance compliance check failed - merge blocked');
+            }
