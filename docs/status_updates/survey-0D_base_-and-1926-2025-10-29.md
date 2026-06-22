@@ -7,9 +7,9 @@ deployment_preset: reasoning_pod
 generated_utc: 2025-10-29T16:45:54Z
 ```text
 
-## File Survey: Branch 0D_base_ / PR #1926
+# File Survey: Branch 0D_base_ / PR #1926
 
-### >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
+## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -124,7 +124,7 @@ backend_name = "functional"
 [END CONTENT]
 ```text
 
-### >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
+## >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
 
 ```yaml
 [BEGIN CONTENT]
@@ -171,7 +171,7 @@ training:
 [END CONTENT]
 ```text
 
-### >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
+## >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
 
 ```yaml
 [BEGIN CONTENT]
@@ -233,7 +233,7 @@ output:
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
+## >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -601,7 +601,7 @@ pod:
 [END CONTENT]
 ```text
 
-### >>> FILE: docs/how-to/run_audit_0D_base_.md@0D_base_
+## >>> FILE: docs/how-to/run_audit_0D_base_.md@0D_base_
 
 ```markdown
 [BEGIN CONTENT]
@@ -632,7 +632,7 @@ Outputs (deterministic)
 [END CONTENT]
 ```text
 
-### >>> FILE: docs/index.md@0D_base_
+## >>> FILE: docs/index.md@0D_base_
 
 ```markdown
 [BEGIN CONTENT]

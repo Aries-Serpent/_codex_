@@ -65,7 +65,7 @@ docker run --gpus all codex-gpu:test python -c "import torch; print(torch.cuda.i
 # Check CUDA toolkit compatibility
 ```
 
-### **Recommendation**
+## **Recommendation**
 **🟡 HOLD FOR TESTING**
 - Test GPU workloads thoroughly
 - Validate backward compatibility

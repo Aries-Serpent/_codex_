@@ -76,7 +76,7 @@ gh run view <run-id> --log-failed
 
 ---
 
-### 🟡 Priority 2: Create CI Diagnostic Agent (HIGH)
+## 🟡 Priority 2: Create CI Diagnostic Agent (HIGH)
 
 **Purpose**: Automated CI failure analysis and remediation
 
@@ -270,7 +270,7 @@ jobs:
 
 ---
 
-### 🟢 Priority 4: Real-Time Monitoring Dashboard (MEDIUM)
+## 🟢 Priority 4: Real-Time Monitoring Dashboard (MEDIUM)
 
 **Purpose**: Visualize CI/CD and security health in real-time
 

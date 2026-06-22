@@ -1,5 +1,72 @@
 # Future Research Topics: Test Coverage & Quality Enhancement
 
+## Table of Contents
+
+- [🎯 Overview](#-overview)
+- [1. Automated Test Generation from Uncovered Code Paths](#1-automated-test-generation-from-uncovered-code-paths)
+  - [Research Topic Classification](#research-topic-classification)
+  - [Problem Statement](#problem-statement)
+  - [Research Keywords & Technologies](#research-keywords--technologies)
+    - [AI/ML Approaches](#aiml-approaches)
+    - [Code Analysis Technologies](#code-analysis-technologies)
+    - [Testing Frameworks](#testing-frameworks)
+  - [Potential Approaches](#potential-approaches)
+    - [Approach 1: LLM-Based Test Generator (Recommended)](#approach-1-llm-based-test-generator-recommended)
+- [scripts/testing/auto_test_generator.py](#scriptstestingauto_test_generatorpy)
+- [Approach 2: Template-Based Generation](#approach-2-template-based-generation)
+  - [Approach 3: Hybrid Approach](#approach-3-hybrid-approach)
+  - [Dependencies](#dependencies)
+  - [Implementation Roadmap](#implementation-roadmap)
+  - [Success Metrics](#success-metrics)
+  - [Research Questions](#research-questions)
+- [2. Test Quality Metrics and Mutation Testing](#2-test-quality-metrics-and-mutation-testing)
+  - [Research Topic Classification](#research-topic-classification)
+  - [Problem Statement](#problem-statement)
+- [Test 1: Achieves coverage but doesn't validate behavior](#test-1-achieves-coverage-but-doesnt-validate-behavior)
+- [Test 2: Too generic assertion](#test-2-too-generic-assertion)
+- [Test 3: Doesn't test edge cases](#test-3-doesnt-test-edge-cases)
+- [Research Keywords & Technologies](#research-keywords--technologies)
+  - [Mutation Testing](#mutation-testing)
+    - [Test Quality Metrics](#test-quality-metrics)
+    - [Advanced Analysis](#advanced-analysis)
+  - [Potential Approaches](#potential-approaches)
+    - [Approach 1: Mutation Testing Pipeline (Recommended)](#approach-1-mutation-testing-pipeline-recommended)
+- [scripts/testing/run_mutation_tests.py](#scriptstestingrun_mutation_testspy)
+- [.github/workflows/mutation-testing.yml](#githubworkflowsmutation-testingyml)
+- [Approach 2: Test Quality Dashboard](#approach-2-test-quality-dashboard)
+- [docs/testing/QUALITY_DASHBOARD.md](#docstestingquality_dashboardmd)
+- [Test Quality Dashboard](#test-quality-dashboard)
+  - [Dependencies](#dependencies)
+  - [Implementation Roadmap](#implementation-roadmap)
+  - [Success Metrics](#success-metrics)
+- [3. Property-Based Testing Expansion with Hypothesis](#3-property-based-testing-expansion-with-hypothesis)
+  - [Research Topic Classification](#research-topic-classification)
+  - [Problem Statement](#problem-statement)
+- [Example-based: Tests specific inputs](#example-based-tests-specific-inputs)
+- [Property-based: Tests invariants across many inputs](#property-based-tests-invariants-across-many-inputs)
+- [Research Keywords & Technologies](#research-keywords--technologies)
+  - [Property-Based Testing](#property-based-testing)
+    - [Testing Properties](#testing-properties)
+    - [Advanced Techniques](#advanced-techniques)
+  - [Potential Approaches](#potential-approaches)
+    - [Approach 1: Systematic Hypothesis Expansion](#approach-1-systematic-hypothesis-expansion)
+- [tests/property_based/test_string_processing.py](#testsproperty_basedtest_string_processingpy)
+- [Strategy for valid filesystem paths](#strategy-for-valid-filesystem-paths)
+- [Approach 2: Stateful Testing for Complex Systems](#approach-2-stateful-testing-for-complex-systems)
+  - [Dependencies](#dependencies)
+  - [Implementation Roadmap](#implementation-roadmap)
+  - [Success Metrics](#success-metrics)
+  - [Example Properties by Domain](#example-properties-by-domain)
+- [📊 Cross-Topic Synergies](#-cross-topic-synergies)
+  - [Automated Test Generation + Mutation Testing](#automated-test-generation--mutation-testing)
+  - [Property-Based + Automated Generation](#property-based--automated-generation)
+  - [All Three Together: Ultimate Test Suite](#all-three-together-ultimate-test-suite)
+- [🔖 Bookmark & Search Keywords](#-bookmark--search-keywords)
+- [📚 Recommended Reading](#-recommended-reading)
+  - [Papers](#papers)
+  - [Books](#books)
+  - [Tutorials](#tutorials)
+
 **Last Updated:** 2026-06-22
 
 **Version**: 1.0.0  
@@ -194,7 +261,7 @@ Output only the test code, no explanations."""
 - "Deep Learning for Source Code Modeling and Generation: Models, Applications and Challenges" (2020)
 - "A Survey on Deep Learning for Software Engineering" (2020)
 
-#### Approach 2: Template-Based Generation
+## Approach 2: Template-Based Generation
 **Method**: Extract patterns from existing tests, apply to uncovered code
 
 **Steps**:
@@ -206,7 +273,7 @@ Output only the test code, no explanations."""
 **Pros**: Faster, more predictable, no API costs  
 **Cons**: Less flexible, may miss complex edge cases
 
-#### Approach 3: Hybrid Approach
+### Approach 3: Hybrid Approach
 **Method**: Template-based for simple cases, LLM for complex cases
 
 **Decision Tree**:
@@ -324,9 +391,9 @@ def test_happy_path_only():
 
 **Need**: Metrics to measure test effectiveness beyond coverage.
 
-### Research Keywords & Technologies
+## Research Keywords & Technologies
 
-#### Mutation Testing
+### Mutation Testing
 - **Mutation operators**: Statement deletion, operator replacement, constant change
 - **Mutation score formula**: `(killed mutants) / (total mutants - equivalent mutants)`
 - **Tools**: `mutpy`, `cosmic-ray`, `mutmut`, `poodle`
@@ -499,7 +566,7 @@ jobs:
           path: mutation_report.html
 ```
 
-#### Approach 2: Test Quality Dashboard
+## Approach 2: Test Quality Dashboard
 
 **Metrics to Track**:
 1. **Coverage**: Line, branch, function coverage
@@ -607,9 +674,9 @@ def test_reverse_string_properties(s):
 - Finds edge cases developers didn't think of
 - Shrinks failing cases to minimal reproducible example
 
-### Research Keywords & Technologies
+## Research Keywords & Technologies
 
-#### Property-Based Testing
+### Property-Based Testing
 - **Hypothesis library**: Python's PBT framework
 - **Strategies**: Data generation strategies (`st.integers()`, `st.lists()`, etc.)
 - **Properties**: Invariants that should hold for all inputs
@@ -733,7 +800,7 @@ def test_flatten_path_properties(path):
     assert len(flattened) >= len(path.replace('/', ''))
 ```
 
-#### Approach 2: Stateful Testing for Complex Systems
+## Approach 2: Stateful Testing for Complex Systems
 
 **Use Case**: Test workflow navigator with state transitions
 

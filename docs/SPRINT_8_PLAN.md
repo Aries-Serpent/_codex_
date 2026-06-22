@@ -109,7 +109,7 @@ enable_deterministic_mode()
 # Your training code here
 ```
 
-### 2. Health Monitoring
+## 2. Health Monitoring
 
 ```python
 from codex_ml.serving.health import health_check, readiness_check
@@ -120,7 +120,7 @@ status = health_check()
 ready = readiness_check()
 ```
 
-### 3. Experiment Tracking (Offline)
+## 3. Experiment Tracking (Offline)
 
 ```python
 from codex_ml.utils.wandb_logger import init_wandb
@@ -233,7 +233,7 @@ success = manager.register_plugin(MyPlugin(config={"api_key": "..."}))
 Plugins are automatically disabled after 3 consecutive failures to prevent cascading issues.
 ```
 
-#### 3. Architecture Documentation
+### 3. Architecture Documentation
 
 **System Overview**
 - High-level architecture diagram
@@ -338,7 +338,7 @@ diff run1/metrics.json run2/metrics.json
 
 **Target:** Bit-exact reproducibility
 
-#### 5. Continuous Integration
+## 5. Continuous Integration
 
 All CI checks must pass:
 - ✅ Audit
@@ -348,7 +348,7 @@ All CI checks must pass:
 - ✅ Tests
 - ✅ Linting
 
-#### 6. Documentation Completeness
+### 6. Documentation Completeness
 
 - ✅ API documentation for all public classes/functions
 - ✅ User guides for key workflows

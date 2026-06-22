@@ -65,7 +65,7 @@ report = generate_migration_report()
 # Markdown report with recommendations
 ```
 
-#### Benefits
+## Benefits
 - ✅ Single config loading API across codebase
 - ✅ Clear deprecation path for old directories
 - ✅ Environment variable support
@@ -133,14 +133,14 @@ results = refactor_workflows(
 # Returns summary of changes
 ```
 
-#### Validation
+## Validation
 ```python
 # Validate workflow after changes
 validation = refactorer.validate_workflow(workflow_path)
 # Returns: {"valid": True, "has_workflow_dispatch": True, "compliance": True}
 ```
 
-#### Benefits
+## Benefits
 - ✅ Manual gating prevents unintended CI runs
 - ✅ Cost control with self-hosted runners
 - ✅ Automated workflow refactoring
@@ -188,11 +188,11 @@ files = distiller.scan_codebase()
 # Extract code structure
 structure = distiller.extract_code_structure(file_path)
 # Returns: {
-#   "path": "src/module.py",
-#   "lines": 250,
-#   "classes": ["MyClass", "AnotherClass"],
-#   "functions": ["my_func", "helper"],
-#   "imports": ["os", "pathlib", "typing"]
+# "path": "src/module.py",
+# "lines": 250,
+# "classes": ["MyClass", "AnotherClass"],
+# "functions": ["my_func", "helper"],
+# "imports": ["os", "pathlib", "typing"]
 # }
 ```
 
@@ -217,7 +217,7 @@ digest_path = generate_context_digest(
 )
 ```
 
-#### Digest Format
+## Digest Format
 
 ```markdown
 # Codebase Context Digest
@@ -252,7 +252,7 @@ src/
 ```
 ```
 
-#### Optional Sentencepiece Compression
+### Optional Sentencepiece Compression
 ```python
 # Compress with sentencepiece tokenization
 compressed = distiller.compress_with_sentencepiece(
@@ -261,7 +261,7 @@ compressed = distiller.compress_with_sentencepiece(
 )
 ```
 
-#### Benefits
+## Benefits
 - ✅ Automatic context generation for agents
 - ✅ Token budget management
 - ✅ Code structure extraction

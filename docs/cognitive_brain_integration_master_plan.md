@@ -38,6 +38,7 @@ This master plan integrates the GitHub Spark UI with the `Aries-Serpent/_codex_`
 ### System Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing React App, 5 Tabs'}}%%
 flowchart TB
     subgraph "GitHub Spark UI"
         A[React App] --> B[5 Tabs]
@@ -83,6 +84,8 @@ flowchart TB
 ### Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>API: Return cached result
+  '}}%%
 sequenceDiagram
     participant UI as React UI
     participant API as FastAPI
@@ -1189,7 +1192,7 @@ DATABASE_URL=sqlite:///.codex/session_logs.db
 VITE_CODEX_KEY=demo-key
 ```
 
-### Quick Start
+## Quick Start
 
 ```bash
 # Clone the repository

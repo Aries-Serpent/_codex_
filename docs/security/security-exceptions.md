@@ -33,13 +33,13 @@ All `nosec` comments MUST include inline justification:
 # GOOD ✅
 result = execute_sql(query)  # nosec B608 - User input sanitized via parameterized query
 
-# BAD ❌  
+# BAD ❌
 result = execute_sql(query)  # nosec B608
 ```
 
 **Required Format**: `# nosec <RULE_ID> - <REASON>: <MITIGATION>`
 
-### Nosec Categories and Standards
+## Nosec Categories and Standards
 
 | Rule | Category | Count | Justification Standard |
 |------|----------|-------|------------------------|
@@ -253,6 +253,7 @@ AI Assistant will automatically review this registry per-phase:
 ### Exception Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Security Finding, Fix Immediately'}}%%
 graph LR
     A[Security Finding] --> B{Can Fix?}
     B -->|Yes| C[Fix Immediately]

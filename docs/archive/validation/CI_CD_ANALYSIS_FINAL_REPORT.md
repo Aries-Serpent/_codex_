@@ -102,7 +102,7 @@ ruff check --fix --unsafe-fixes .codex/agents/
 
 ---
 
-### 2. F1 Score Test - RESOLVED  
+## 2. F1 Score Test - RESOLVED
 **File:** `tests/metrics/test_f1_score.py:33`  
 **Status:** ✅ **TEST PASSING**
 
@@ -243,7 +243,7 @@ TestExecutionPriority = ExecutionPriority
 
 ---
 
-### 6. Cognitive Brain Method Name - RESOLVED  
+## 6. Cognitive Brain Method Name - RESOLVED
 **File:** `tests/cognitive_brain/test_integration.py:207`  
 **Status:** ✅ **METHOD FIXED**
 
@@ -425,7 +425,7 @@ python -m pytest tests/cognitive_brain/test_integration.py::test_end_to_end_comp
 python -m pytest tests/ -v --tb=short
 ```
 
-### Check Linting
+## Check Linting
 ```bash
 # Agent files specifically
 ruff check .codex/agents/ --statistics

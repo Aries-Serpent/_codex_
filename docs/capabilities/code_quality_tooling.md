@@ -122,7 +122,7 @@ exclude_lines = [
 ]
 ```
 
-### Running Quality Checks Locally
+## Running Quality Checks Locally
 
 ```bash
 # Install development dependencies
@@ -145,7 +145,7 @@ ruff check --fix .
 black .
 ```
 
-### noxfile.py Sessions
+## noxfile.py Sessions
 
 ```python
 import nox
@@ -330,7 +330,7 @@ git add agents/new_feature.py tests/test_new_feature.py
 git commit -m "feat: add new feature"
 ```
 
-### CI/CD Pipeline Integration
+## CI/CD Pipeline Integration
 
 ```
 ┌─────────────┐

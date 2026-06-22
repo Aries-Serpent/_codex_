@@ -885,7 +885,7 @@ load_order = registry.dependency_graph.topological_sort()
 # Returns: ['core', 'mcp-metrics', 'physics-calc', 'rag-quantum']
 ```
 
-### Thermodynamic Task Scheduling
+## Thermodynamic Task Scheduling
 
 ```python
 # Tasks self-organize by free energy minimization

@@ -168,7 +168,7 @@ metadata = ToolMetadata(
 registry.register(metadata, analyze_code)
 ```
 
-### Example 2: Discover Tools
+## Example 2: Discover Tools
 
 ```python
 # List all tools
@@ -185,7 +185,7 @@ metadata, handler = registry.get_tool("code_analysis")
 print(f"Tool schema: {metadata.schema}")
 ```
 
-### Example 3: Invoke a Tool
+## Example 3: Invoke a Tool
 
 ```python
 def invoke_tool(tool_name: str, parameters: dict) -> dict:
@@ -228,7 +228,7 @@ response = invoke_tool(
 )
 ```
 
-### Example 4: Dynamic Tool Loading
+## Example 4: Dynamic Tool Loading
 
 ```python
 import importlib
@@ -258,7 +258,7 @@ def auto_discover_tools(tools_dir: str = "./tools"):
 auto_discover_tools()
 ```
 
-### Example 5: Tool Versioning
+## Example 5: Tool Versioning
 
 ```python
 class VersionedRegistry(ToolRegistry):
@@ -308,7 +308,7 @@ python scripts/space_traversal/audit_runner.py explain mcp-tooling-registry
 python scripts/space_traversal/audit_runner.py run
 ```
 
-### Programmatic Detection
+## Programmatic Detection
 
 ```python
 from scripts.space_traversal.detectors import mcp_tooling_registry

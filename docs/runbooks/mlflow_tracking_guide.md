@@ -39,7 +39,7 @@ with tracker:
     tracker.log_artifact("model.pt")
 ```
 
-### View Results
+## View Results
 
 ```bash
 # Start MLflow UI
@@ -62,7 +62,7 @@ tracking:
     experiment_name: "dev_experiments"
 ```
 
-### Production Environment
+## Production Environment
 
 ```yaml
 # configs/production/tracking.yaml
@@ -126,7 +126,7 @@ tracker.log_artifact("config.yaml")
 tracker.log_artifact("plots/loss_curve.png")
 ```
 
-### 5. Query Past Experiments
+## 5. Query Past Experiments
 
 ```python
 import mlflow
@@ -290,7 +290,7 @@ except Exception as e:
     raise
 ```
 
-### Monitor Run Duration
+## Monitor Run Duration
 
 ```python
 import time

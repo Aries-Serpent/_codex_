@@ -16,7 +16,7 @@ python training/run.py training=base epochs=2 gradient_accumulation_steps=4
 ```text
 To resume from a saved run, pass `resume_from=/path/to/checkpoint`.
 
-### Parameter sweeps
+## Parameter sweeps
 
 Hydra's multirun mode can explore hyperparameter grids. A sample sweep
 configuration is provided at `configs/training/sweep_example.yaml` and can be

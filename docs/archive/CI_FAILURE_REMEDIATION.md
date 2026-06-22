@@ -118,7 +118,7 @@ $ python -c "import codex_ml; import codex"
 ✅ codex package can be imported
 ```
 
-### Expected CI Behavior
+## Expected CI Behavior
 
 **Before Fix:**
 - ❌ All 40 jobs failing at "Install dependencies" step

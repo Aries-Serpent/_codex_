@@ -1,5 +1,30 @@
 # AI Agency Intuitiveness Score V3.0 — Cognitive Codebase Assessment
 
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+- [Scoring Framework V3.0](#scoring-framework-v30)
+  - [ACE-Aligned 6-Layer Assessment](#ace-aligned-6-layer-assessment)
+  - [Metacognitive State Vector (MSV)](#metacognitive-state-vector-msv)
+  - [Agentic Metrics (Microsoft/RagaAI)](#agentic-metrics-microsoftragaai)
+  - [Composite V3.0 Score](#composite-v30-score)
+- [Detailed Layer Assessment](#detailed-layer-assessment)
+  - [Layer 1: Aspirational — Ethics & Mission (90/100)](#layer-1-aspirational--ethics--mission-90100)
+  - [Layer 2: Global Strategy — Planning & Context (96/100)](#layer-2-global-strategy--planning--context-96100)
+  - [Layer 3: Agent Model — Self-Awareness & Memory (94/100)](#layer-3-agent-model--self-awareness--memory-94100)
+  - [Layer 4: Executive Function — Planning & Execution (95/100)](#layer-4-executive-function--planning--execution-95100)
+  - [Layer 5: Cognitive Control — Adaptive Execution (92/100)](#layer-5-cognitive-control--adaptive-execution-92100)
+  - [Layer 6: Task Prosecution — Action & Feedback (90/100)](#layer-6-task-prosecution--action--feedback-90100)
+- [Score Evolution Trajectory](#score-evolution-trajectory)
+  - [Score Delta Analysis](#score-delta-analysis)
+- [Path to 97.0 (A+) — 11 Concrete Improvements ✅ TARGET REACHED](#path-to-970-a--11-concrete-improvements--target-reached)
+  - [PS-14 Implementation Impact (2026-02-12)](#ps-14-implementation-impact-2026-02-12)
+  - [Score Update Estimate](#score-update-estimate)
+    - [S81–S83 Improvement Evidence](#s81s83-improvement-evidence)
+- [Research Sources](#research-sources)
+- [Cognitive App Integration](#cognitive-app-integration)
+- [🔗 Cross-References](#-cross-references)
+
 **Last Updated:** 2026-06-22
 
 **Assessment Date**: 2026-02-24
@@ -318,6 +343,7 @@ V3.4 (2026-02-12):  ████████████████████
 #### S81–S83 Improvement Evidence
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing L5: 93/100, L5: 97/100'}}%%
 graph LR
     subgraph "V3.1 → V3.2 Score Improvements"
         direction TB

@@ -90,7 +90,7 @@ def func_a():
     return func_b()
 ```
 
-### Issue: ImportError with Specific Message
+## Issue: ImportError with Specific Message
 
 **Error Message**:
 ```
@@ -162,7 +162,7 @@ if not config_path.exists():
     raise FileNotFoundError(f"Config not found: {config_path}")
 ```
 
-### Issue: Invalid YAML/JSON Syntax
+## Issue: Invalid YAML/JSON Syntax
 
 **Error Message**:
 ```
@@ -214,7 +214,7 @@ def validate_json(file_path):
         print(f"❌ {file_path} has syntax error: {e}")
 ```
 
-### Issue: Config Key Not Found
+## Issue: Config Key Not Found
 
 **Error Message**:
 ```
@@ -326,7 +326,7 @@ array = np.array([1.0, 2.0, 3.0])  # 8 bytes per element
 array = np.array([1.0, 2.0, 3.0], dtype=np.float32)  # 4 bytes per element
 ```
 
-### Issue: Memory Leak
+## Issue: Memory Leak
 
 **Diagnosis**:
 ```python
@@ -415,7 +415,7 @@ def request_with_retry(url, timeout=10, retries=3):
         raise
 ```
 
-### Issue: Function Timeout
+## Issue: Function Timeout
 
 **Error Message**:
 ```
@@ -529,7 +529,7 @@ def predict_batch(data_list):
     return model.predict(np.array(data_list))
 ```
 
-### Issue: High CPU Usage
+## Issue: High CPU Usage
 
 **Diagnosis**:
 ```bash
@@ -606,7 +606,7 @@ pip install pip-tools
 pip-compile requirements.in  # Generates pinned requirements.txt
 ```
 
-### Issue: Version Incompatibility
+## Issue: Version Incompatibility
 
 **Error Message**:
 ```

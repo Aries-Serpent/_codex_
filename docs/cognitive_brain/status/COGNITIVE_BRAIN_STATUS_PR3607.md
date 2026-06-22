@@ -24,6 +24,7 @@
 ## Phase 5 CI Robustness — Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR body submitted", "check_deferral_language.scan()"'}}%%
 flowchart TD
     PR["PR body submitted"] --> DL["check_deferral_language.scan()"]
 
@@ -56,6 +57,7 @@ flowchart TD
 ## `run_validation.sh` doc_metrics_sync Integration — S138
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing @'}}%%
 sequenceDiagram
     participant SH as run_validation.sh
     participant PC as PRECOMMIT_FILES[]
@@ -97,6 +99,7 @@ All 9 PR bot comment marker types now have race-safe upsert:
 ## Cognitive Brain Architecture — Phase 5 State
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "Input Layer", "GitHub Events\n(PR, Push, Issue)"'}}%%
 graph TB
     subgraph INPUT["Input Layer"]
         GH["GitHub Events\n(PR, Push, Issue)"]
@@ -155,6 +158,7 @@ graph TB
 ## Phase Progression
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Cognitive Brain Phase Roadmap
     dateFormat  YYYY-MM-DD

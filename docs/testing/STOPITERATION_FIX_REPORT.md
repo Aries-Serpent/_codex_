@@ -45,7 +45,7 @@ class MockModel(torch.nn.Module):  # ← Evaluated at import time!
 4. **PEP 479 in Python 3.12**: Stricter StopIteration handling converts it to RuntimeError in some contexts
 5. **Missing Dependency**: If torch isn't properly installed or has import issues, the chain fails
 
-### Contributing Factors
+## Contributing Factors
 
 1. **No Import Guards on Class Definitions**: Classes were defined unconditionally
 2. **pytestmark Set After Class Definitions**: The skip marker came too late
@@ -76,7 +76,7 @@ except ImportError:
 - Sets fallback values to prevent NameError
 - Early skip marker registration
 
-### Fix 2: Conditional Class Definitions
+## Fix 2: Conditional Class Definitions
 
 ```python
 # ✅ FIXED CODE
@@ -98,7 +98,7 @@ else:
 - Dummy classes prevent NameError in skipped test bodies
 - Tests properly skipped when dependencies missing
 
-### Fix 3: Safe Iterator Usage (test_train_loop_coverage.py)
+## Fix 3: Safe Iterator Usage (test_train_loop_coverage.py)
 
 ```python
 # ✅ ADDED SAFETY

@@ -208,9 +208,9 @@ pytest tests/test_metadata_calculation.py -v
 
 ---
 
-### Phase 4: Documentation & Infrastructure (95% Complete)
+## Phase 4: Documentation & Infrastructure (95% Complete)
 
-#### Completed Documentation:
+### Completed Documentation:
 - ✅ `.hypothesis/metrics.json` - Reward scoring (0.89/1.00)
 - ✅ `docs/PR2462_IMPLEMENTATION_STATUS.md` - Comprehensive tracking
 - ✅ `docs/AI_TURN_ANALYSIS_PR2462.md` - Turn analysis with lessons learned
@@ -344,7 +344,7 @@ python3 tests/test_metadata_calculation.py
 cat .hypothesis/metrics.json | python3 -m json.tool
 ```
 
-### Verify Metadata
+## Verify Metadata
 
 ```bash
 # Check relative paths

@@ -326,7 +326,7 @@ for val, name in _resolve_github_token():
 # If missing: Settings → Codespaces → Secrets → add the secret
 ```
 
-### Import errors
+## Import errors
 ```bash
 bash .devcontainer/scripts/update-content.sh   # re-install deps
 ```

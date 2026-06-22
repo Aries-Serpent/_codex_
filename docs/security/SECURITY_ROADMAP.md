@@ -45,7 +45,7 @@ pip list | grep -E "setuptools|mlflow|transformers|PyJWT|pytest"
 pip-audit --desc  # Requires pip-audit installation
 ```
 
-### 1.2 Dependency Version Pinning
+## 1.2 Dependency Version Pinning
 **Location:** `pyproject.toml` [dependencies], `requirements-*.txt`
 
 **Pinned Critical Packages:**
@@ -70,7 +70,7 @@ hydra-core==1.3.2
 
 **Rationale:** Ceiling versions prevent automatic upgrades to breaking releases.
 
-### 1.3 Dependency Lock File Enforcement
+## 1.3 Dependency Lock File Enforcement
 **Status:** ⚠️ Planned (Phase 9.1)  
 **Location:** `requirements.lock` (to be created)
 
@@ -125,7 +125,7 @@ semgrep --config=.semgrep . --json -o semgrep_results.json
 # See: .github/workflows/semgrep_sarif.yml
 ```
 
-### 2.2 SAST — CodeQL Integration
+## 2.2 SAST — CodeQL Integration
 **Status:** ✅ Implemented  
 **Location:** `.codeql/`, `.github/workflows/codeql.yml`
 
@@ -150,7 +150,7 @@ codeql database analyze codeql_db \
   python-code-scanning.qls
 ```
 
-### 2.3 Type Checking — Mypy
+## 2.3 Type Checking — Mypy
 **Status:** ✅ Implemented  
 **Location:** `mypy.ini`, `.mypy_baseline.txt`
 
@@ -209,7 +209,7 @@ gitleaks detect --source . --verbose --log-opts="--all"
 # CI scan (automatic on push via security-scanning-suite.yml using detect-secrets)
 ```
 
-### 3.2 Secrets Baseline
+## 3.2 Secrets Baseline
 **Status:** ✅ Implemented  
 **Location:** `.secrets.baseline`
 
@@ -227,7 +227,7 @@ detect-secrets scan --baseline .secrets.baseline src/ tests/
 detect-secrets audit .secrets.baseline
 ```
 
-### 3.3 Credential Management
+## 3.3 Credential Management
 **Best Practices:**
 - Use GitHub Secrets for CI/CD credentials
 - Environment variables for local development (see `.env.example`)
@@ -280,7 +280,7 @@ token = mgr.create_agent_token(  # pragma: allowlist secret
 )
 ```
 
-### 4.2 Rate Limiting & Request Throttling
+## 4.2 Rate Limiting & Request Throttling
 **Status:** ✅ Implemented  
 **Location:** `src/services/`, `slowapi>=0.1.9`
 
@@ -306,7 +306,7 @@ rate_limits:
     operations_per_minute: 100
 ```
 
-### 4.3 Audit Logging
+## 4.3 Audit Logging
 **Status:** ✅ Implemented  
 **Location:** `src/monitoring/audit_logger.py`, `.codex/audit_logs/`
 
@@ -357,7 +357,7 @@ safety check --json
 dependency-check --project codex --scan src/
 ```
 
-### 5.2 Build Integrity
+## 5.2 Build Integrity
 **Status:** ✅ Implemented  
 **Location:** `Dockerfile`, `docker-compose.yml`
 
@@ -383,7 +383,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN chmod 555 /app
 ```
 
-### 5.3 SBOM (Software Bill of Materials)
+## 5.3 SBOM (Software Bill of Materials)
 **Status:** ✅ Implemented  
 **Location:** `.github/workflows/sbom.yml`, `SBOM.json`
 
@@ -423,7 +423,7 @@ pytest tests/security/test_rate_limiting.py -v
 pytest tests/security/test_audit_logging.py -v
 ```
 
-### 6.2 Penetration Test Framework
+## 6.2 Penetration Test Framework
 **Status:** Planned (Phase 9.2)  
 **Tools:** OWASP ZAP, Burp Suite Community
 

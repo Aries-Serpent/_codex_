@@ -107,7 +107,7 @@ MASK_TOKEN_SHOW_CHARS=6
 SECURITY_CACHE_SIZE=10000
 ```
 
-### Generate Encryption Key
+## Generate Encryption Key
 
 ```python
 python3 << 'EOF'
@@ -305,7 +305,7 @@ pytest tests/security/ -v
 syft packages dir:. -o spdx-json > sbom.json
 ```
 
-### Vulnerability Response SLA
+## Vulnerability Response SLA
 
 | Severity | Response Time | Fix Time |
 |----------|---------------|----------|
@@ -337,7 +337,7 @@ pre-commit run --all-files
 pre-commit autoupdate
 ```
 
-### Verify Hooks Configuration
+## Verify Hooks Configuration
 
 File: `.pre-commit-config.yaml`
 
@@ -492,7 +492,7 @@ export ENCRYPTION_KEY="$(python3 -c 'from cryptography.fernet import Fernet; pri
 gh secret set ENCRYPTION_KEY --body "your-key-here"
 ```
 
-### Issue: Pre-commit Hooks Failing
+## Issue: Pre-commit Hooks Failing
 
 **Error**: `detect-secrets` or `gitleaks` fails
 
@@ -512,7 +512,7 @@ pre-commit install
 git commit --no-verify
 ```
 
-### Issue: CodeQL Analysis Timeout
+## Issue: CodeQL Analysis Timeout
 
 **Error**: CodeQL analysis takes >6 hours
 
@@ -525,7 +525,7 @@ git commit --no-verify
     queries: security-only  # Changed from security-and-quality
 ```
 
-### Issue: Dependabot PRs Not Auto-Merging
+## Issue: Dependabot PRs Not Auto-Merging
 
 **Solution**:
 1. Verify branch protection allows Dependabot PRs

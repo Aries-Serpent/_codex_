@@ -59,7 +59,7 @@
 grep -n "get_hf_revision\|revision=" src/codex_ml/eval/run_eval.py
 ```
 
-### P1.2: Python 3.12 Migration Phase 2
+## P1.2: Python 3.12 Migration Phase 2
 
 **Condition**: Only after base-branch (`copilot/investigate-coherence-issue`) CI is confirmed green.
 
@@ -129,7 +129,7 @@ def update_cpds_em(corpus: list[dict], learning_rate: float = 0.1) -> None:
     ...
 ```
 
-### Chain Prompting Integration Tests
+## Chain Prompting Integration Tests
 
 **Goal**: Validate multi-agent compliance workflows end-to-end.
 

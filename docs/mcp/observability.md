@@ -69,6 +69,7 @@
 **Monitoring Path**: Event → Log/Metric → Collection → Aggregation → Analysis → Alert/Dashboard
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing MCP Event, FastAPI Middleware'}}%%
 graph TD
     A[MCP Event] --> B{Event Type}
     B -->|HTTP Request| C[FastAPI Middleware]
@@ -195,7 +196,7 @@ export OTEL_SAMPLING_RATE=0.01  # From 1.0 (100%)
 # Restart with minimal tracing
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Log Rotation Failure**:
 ```bash
@@ -231,7 +232,7 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
 # Restart service
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **Log Write Circuit**:
 - If log write latency >100ms: Buffer logs in memory

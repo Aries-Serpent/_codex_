@@ -62,7 +62,7 @@ async def handle_request(data):
     return result
 ```text
 
-### Configuration
+## Configuration
 
 ```python
 # Low latency (interactive)
@@ -84,7 +84,7 @@ batching = BatchingMiddleware(
 )
 ```text
 
-### Performance Metrics
+## Performance Metrics
 
 ```python
 # Get batching metrics
@@ -98,7 +98,7 @@ print(f"Throughput: {metrics['throughput_rps']:.1f} req/s")
 print(f"Avg batch size: {metrics['average_batch_size']:.1f}")
 ```text
 
-### Trade-offs
+## Trade-offs
 
 **Pros:**
 - Significantly improves throughput (2-5x typical)
@@ -143,7 +143,7 @@ def predict_with_cache(input_data):
     return result
 ```text
 
-### Configuration
+## Configuration
 
 ```python
 # Short-lived cache (real-time data)
@@ -165,7 +165,7 @@ cache = ResponseCache(
 )
 ```text
 
-### Cache Metrics
+## Cache Metrics
 
 ```python
 metrics = cache.get_metrics()
@@ -193,7 +193,7 @@ if input_data in cache:
     print("Cached result available")
 ```text
 
-### Trade-offs
+## Trade-offs
 
 **Pros:**
 - Dramatic latency reduction (50-90% for cache hits)
@@ -233,7 +233,7 @@ optimized_store = OptimizedVectorStore(
 results = optimized_store.search(query_vector, k=10)
 ```text
 
-### Batch Search
+## Batch Search
 
 ```python
 # Search multiple queries efficiently
@@ -247,7 +247,7 @@ query_vectors = np.array([
 results = optimized_store.search_batch(query_vectors, k=10)
 ```text
 
-### Retrieval Metrics
+## Retrieval Metrics
 
 ```python
 metrics = optimized_store.get_metrics()
@@ -263,7 +263,7 @@ print(f"Hit rate: {metrics['cache']['hit_rate']:.1%}")
 print(f"Cache size: {metrics['cache']['total_size']}")
 ```text
 
-### Memory-Mapped Indices
+## Memory-Mapped Indices
 
 For large indices (>100MB), enable memory-mapped file access:
 
@@ -281,7 +281,7 @@ if should_mmap:
     # FAISS will automatically use memory mapping
 ```text
 
-### Trade-offs
+## Trade-offs
 
 **Pros:**
 - 30-70% latency reduction for repeated queries
@@ -325,7 +325,7 @@ except Exception as e:
     print(f"Circuit breaker: {e}")
 ```text
 
-### Retry with Exponential Backoff
+## Retry with Exponential Backoff
 
 Handle transient failures with automatic retries:
 
@@ -343,7 +343,7 @@ result = retry_with_backoff(
 )
 ```text
 
-### Fallback Handler
+## Fallback Handler
 
 Gracefully degrade with fallback strategies:
 
@@ -368,7 +368,7 @@ result = handler.call_with_fallback(
 )
 ```text
 
-### Combined Resilience
+## Combined Resilience
 
 ```python
 # Combine patterns for maximum reliability
@@ -459,7 +459,7 @@ results = model.predict(inputs)
 # Only add optimizations if needed based on metrics
 ```text
 
-### 2. Choose Appropriate Batch Sizes
+## 2. Choose Appropriate Batch Sizes
 
 ```python
 # GPU workloads: larger batches (32-128)
@@ -472,7 +472,7 @@ batching = BatchingMiddleware(max_batch_size=16)
 batching = BatchingMiddleware(max_batch_size=4, max_wait_time=0.02)
 ```text
 
-### 3. Set Appropriate TTLs
+## 3. Set Appropriate TTLs
 
 ```python
 # Static data: long TTL
@@ -485,7 +485,7 @@ cache = ResponseCache(default_ttl=60)  # 1 minute
 # Don't use cache for time-sensitive predictions
 ```text
 
-### 4. Monitor and Tune
+## 4. Monitor and Tune
 
 ```python
 # Regular monitoring

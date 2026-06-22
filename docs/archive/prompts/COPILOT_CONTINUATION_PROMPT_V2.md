@@ -50,7 +50,7 @@ gh run view <run-id> --log-failed
 3. Apply targeted fix
 4. Re-run validation
 
-### 2. RAG Test Optimization 🔧 (Priority: High)
+## 2. RAG Test Optimization 🔧 (Priority: High)
 
 **Issue**: Tests timing out after 4-6 minutes
 
@@ -122,7 +122,7 @@ pytest tests/rag/ -v --durations=10 --timeout=300
 - [ ] Total runtime < 2 minutes
 - [ ] No resource leaks
 
-### 3. Semgrep Full Validation 🔍 (Priority: Medium)
+## 3. Semgrep Full Validation 🔍 (Priority: Medium)
 
 **Task**: Run complete Semgrep scan with custom rules
 
@@ -163,7 +163,7 @@ EOF
 - [ ] < 5 WARNING-level findings
 - [ ] All findings documented/triaged
 
-### 4. Create CI Diagnostic Custom Agent 🤖 (Priority: High)
+## 4. Create CI Diagnostic Custom Agent 🤖 (Priority: High)
 
 **Purpose**: Automated CI failure analysis and remediation
 
@@ -269,7 +269,7 @@ cat diagnostic_report_$CI_RUN_ID.md
 - [ ] Auto-remediation works for common issues
 - [ ] Reports are actionable
 
-### 5. Performance Monitoring Dashboard 📊 (Priority: Medium)
+## 5. Performance Monitoring Dashboard 📊 (Priority: Medium)
 
 **Purpose**: Real-time CI/CD and security health monitoring
 
@@ -414,7 +414,7 @@ class ThreatDetectionML:
         }
 ```
 
-### 8.2: Auto-Remediation v2.0 🔧
+## 8.2: Auto-Remediation v2.0 🔧
 
 **Enhancements**:
 - More vulnerability patterns

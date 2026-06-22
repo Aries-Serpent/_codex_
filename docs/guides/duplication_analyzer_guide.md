@@ -40,7 +40,7 @@ python tools/duplication_analyzer.py --json --output dup_data.json
 python tools/duplication_analyzer.py --threshold 0.15
 ```text
 
-### Programmatic Usage
+## Programmatic Usage
 
 ```python
 from pathlib import Path
@@ -87,7 +87,7 @@ analyzer = DuplicationAnalyzer(
 )
 ```text
 
-### File Extensions
+## File Extensions
 
 ```python
 # Default extensions
@@ -216,7 +216,7 @@ python tools/duplication_analyzer.py --output review.md
 head -100 review.md
 ```text
 
-### 3. Consolidate
+## 3. Consolidate
 
 For Python files:
 ```python
@@ -244,7 +244,7 @@ config/staging.yaml # Extends base
 config/prod.yaml    # Extends base
 ```text
 
-### 4. Verify Reduction
+## 4. Verify Reduction
 
 ```bash
 # Re-run analysis
@@ -342,7 +342,7 @@ real_duplicates = [
 ]
 ```text
 
-### Content Duplicates in Tests
+## Content Duplicates in Tests
 
 Test fixtures Phase 5 legitimately duplicate:
 ```python
@@ -353,7 +353,7 @@ for dup in analysis['content_duplicates']:
         # Verify if consolidation makes sense
 ```text
 
-### Large Codebases
+## Large Codebases
 
 For very large projects, analyze incrementally:
 ```python

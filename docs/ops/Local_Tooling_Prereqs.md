@@ -9,8 +9,8 @@ Document external CLI dependencies used by local hygiene gates (opt-in) and how 
 
 | Tool | Used by | Install | Verify |
 |------|---------|---------|--------|
-| hadolint | nox docker_lint / make docker-hadolint | [https://github.com/hadolint/hadolint](https://github.com/hadolint/hadolint) | `hadolint --version` |
-| trivy | nox imagescan / make docker-trivy | [https://aquasecurity.github.io/trivy](https://aquasecurity.github.io/trivy) | `trivy --version` |
+| hadolint | nox docker_lint / make docker-hadolint | [GitHub](https://github.com/hadolint/hadolint) | `hadolint --version` |
+| trivy | nox imagescan / make docker-trivy | [GitHub Pages](https://aquasecurity.github.io/trivy) | `trivy --version` |
 
 Notes:
 - These sessions are optional. If the binaries are not found on PATH, sessions will log a skip message and exit cleanly.

@@ -102,7 +102,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 CMD ["python", "-m", "src.codex_ml.cli"]
 ```
 
-### CPU-Only Build
+## CPU-Only Build
 
 ```dockerfile
 FROM python:3.11-slim
@@ -185,7 +185,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 CMD ["python", "-m", "src.codex_ml.cli"]
 ```
 
-### Image Size Optimization
+## Image Size Optimization
 
 **Before Optimization**:
 - Builder stage: 2.1 GB
@@ -235,7 +235,7 @@ FEATURE_OFFLINE_MODE=true
 FEATURE_PROFILING=false
 ```
 
-### Using Environment Files
+## Using Environment Files
 
 **`.env.production`**:
 ```
@@ -292,7 +292,7 @@ docker run \
   codex-ml:latest
 ```
 
-### Docker Compose Volume Definition
+## Docker Compose Volume Definition
 
 ```yaml
 version: '3.8'
@@ -400,7 +400,7 @@ def check_gpu():
         return False
 ```
 
-### Liveness & Readiness Probes (Kubernetes)
+## Liveness & Readiness Probes (Kubernetes)
 
 ```yaml
 apiVersion: v1
@@ -483,7 +483,7 @@ def configure_logging():
     return logger
 ```
 
-### Log Output to Files
+## Log Output to Files
 
 ```dockerfile
 # Mount logs volume
@@ -503,7 +503,7 @@ docker run \
   codex-ml:latest
 ```
 
-### Metrics Endpoint
+## Metrics Endpoint
 
 ```python
 # src/codex_ml/metrics.py
@@ -534,7 +534,7 @@ RUN useradd -m -u 1000 -s /sbin/nologin codex
 USER codex
 ```
 
-### 2. Read-Only Root Filesystem
+## 2. Read-Only Root Filesystem
 
 ```bash
 docker run --read-only \
@@ -579,7 +579,7 @@ services:
       - API_KEY_FILE=/run/secrets/api_key
 ```
 
-### 6. Network Security
+## 6. Network Security
 
 ```dockerfile
 # Expose only necessary ports
@@ -594,7 +594,7 @@ docker run \
   codex-ml:latest
 ```
 
-### 7. Image Scanning
+## 7. Image Scanning
 
 ```bash
 # Scan with Trivy
@@ -627,7 +627,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ /app/src/
 ```
 
-### Build Arguments for Optimization
+## Build Arguments for Optimization
 
 ```dockerfile
 ARG PYTHON_VERSION=3.11
@@ -674,7 +674,7 @@ docker run -it --entrypoint /bin/bash codex-ml:latest
 docker image inspect codex-ml:latest
 ```
 
-### Out of Memory
+## Out of Memory
 
 ```bash
 # Monitor memory usage
@@ -687,7 +687,7 @@ docker run -m 8g codex-ml:latest
 python -m memory_profiler src/codex_ml/cli.py
 ```
 
-### GPU Not Available
+## GPU Not Available
 
 ```bash
 # Verify GPU support
@@ -700,7 +700,7 @@ docker run --rm nvidia/cuda:12.2.0-runtime-ubuntu22.04 nvidia-smi
 docker run --gpus all codex-ml:latest
 ```
 
-### Network Issues
+## Network Issues
 
 ```bash
 # Test connectivity

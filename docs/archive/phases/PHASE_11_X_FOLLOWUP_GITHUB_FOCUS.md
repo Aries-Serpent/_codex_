@@ -112,6 +112,7 @@
 
 **Diagram**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Scheduled/Manual, GitHub Auth Manager'}}%%
 graph TD
     Trigger[Scheduled/Manual] --> Agent[GitHub Auth Manager]
     Agent --> CheckMFA[Check MFA Status]
@@ -150,6 +151,7 @@ graph TD
 
 **Diagram**:
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Daily Scan, Security Enforcer'}}%%
 graph TD
     Schedule[Daily Scan] --> Agent[Security Enforcer]
     Agent --> ScanRepos[Scan All Repos]

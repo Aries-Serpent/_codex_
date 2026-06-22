@@ -127,6 +127,7 @@ Phase 14 autonomous execution has successfully completed phases 14.0-14.3, creat
 ### Existing Production-Ready Agents
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing test-coverage-agent.md, Gap Analysis'}}%%
 graph TD
     subgraph "Test Coverage Agent"
         TCA[test-coverage-agent.md]
@@ -160,6 +161,7 @@ graph TD
 ### Agent Interaction Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
 sequenceDiagram
     participant Dev as Developer
     participant CB as Cognitive Brain

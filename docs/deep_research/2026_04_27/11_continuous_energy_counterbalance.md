@@ -72,6 +72,7 @@ E_cont(t) ≥ E_min_margin for all critical time windows
 | $E_min_margin$ | continuity threshold | required reserve for mature fluctuation handling |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing P_in, Positive side'}}%%
 flowchart LR
     In[P_in] --> Positive[Positive side]
     Storage[P_storage] --> Positive
@@ -239,6 +240,7 @@ This control law applies to batteries, RF sensors, microgrids, thermal systems, 
 ## 10. Mermaid — Continuous Energy Counter-Balance
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Supply: generation / field / access context, Continuity balance'}}%%
 flowchart TD
     Supply[Supply: generation / field / access context] --> Balance[Continuity balance]
     Storage[Storage and reserve] --> Balance

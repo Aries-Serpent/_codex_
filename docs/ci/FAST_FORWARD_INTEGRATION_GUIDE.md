@@ -68,7 +68,7 @@ git push origin fix/add-discussion-posting
 # Open PR
 ```
 
-### Step 2: Run Fast-Forward Manually
+## Step 2: Run Fast-Forward Manually
 
 Once the PR is ready, manually trigger the fast-forward:
 

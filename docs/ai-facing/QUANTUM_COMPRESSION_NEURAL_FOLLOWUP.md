@@ -1,5 +1,100 @@
 # Quantum-Inspired Data Compression & Neural Organization Prompt
 
+## Table of Contents
+
+- [Objective](#objective)
+- [Physics-Inspired Compression Framework](#physics-inspired-compression-framework)
+  - [Core Principles](#core-principles)
+  - [Mathematical Foundation](#mathematical-foundation)
+    - [1. Quantum State Compression](#1-quantum-state-compression)
+- [Information encoding](#information-encoding)
+- [2. Neural Pathway Formation](#2-neural-pathway-formation)
+- [Pathway strength](#pathway-strength)
+- [3. Thermodynamic Organization](#3-thermodynamic-organization)
+- [Implementation Specification](#implementation-specification)
+  - [File Structure](#file-structure)
+- [Core Classes](#core-classes)
+  - [1. QuantumCompressor](#1-quantumcompressor)
+  - [2. NeuralPathwayNetwork](#2-neuralpathwaynetwork)
+  - [3. ThermodynamicOrganizer](#3-thermodynamicorganizer)
+- [Integration with Quantum RAG](#integration-with-quantum-rag)
+  - [Compression Pipeline](#compression-pipeline)
+- [Success Criteria](#success-criteria)
+  - [Performance Metrics](#performance-metrics)
+  - [Physics Validation](#physics-validation)
+  - [Integration Tests](#integration-tests)
+- [Implementation Phases](#implementation-phases)
+  - [Phase 1: Core Compression (iteration 1)](#phase-1-core-compression-iteration-1)
+  - [Phase 2: Neural Pathways (iteration 2)](#phase-2-neural-pathways-iteration-2)
+  - [Phase 3: Thermodynamic Organization (iteration 3)](#phase-3-thermodynamic-organization-iteration-3)
+  - [Phase 4: Integration (iteration 4)](#phase-4-integration-iteration-4)
+- [Expected Outcomes](#expected-outcomes)
+  - [Novel Capabilities](#novel-capabilities)
+  - [Research Contributions](#research-contributions)
+  - [Practical Benefits](#practical-benefits)
+- [References](#references)
+  - [Quantum Information](#quantum-information)
+  - [Neural Networks](#neural-networks)
+  - [Statistical Mechanics](#statistical-mechanics)
+- [Next Steps](#next-steps)
+- [Quantum Compression Implementation Guide](#quantum-compression-implementation-guide)
+- [🧠 Roles:  [Quantum Engineer], [Neural Architect] ⚡ Energy: 5](#-roles--quantum-engineer-neural-architect--energy-5)
+- [Executive Summary](#executive-summary)
+- [Phase 1: Core Compression (1-3)](#phase-1-core-compression-1-3)
+  - [commit / pre-commit 1: QuantumCompressor Foundation](#commit--pre-commit-1-quantumcompressor-foundation)
+  - [commit / pre-commit 2: Schmidt Decomposition & Testing](#commit--pre-commit-2-schmidt-decomposition--testing)
+  - [commit / pre-commit 3: Integration & Optimization](#commit--pre-commit-3-integration--optimization)
+- [Phase 2: Neural Pathways (4-6)](#phase-2-neural-pathways-4-6)
+  - [commit / pre-commit 4: NeuralPathwayNetwork Implementation](#commit--pre-commit-4-neuralpathwaynetwork-implementation)
+  - [commit / pre-commit 5: Hebbian Learning & Testing](#commit--pre-commit-5-hebbian-learning--testing)
+- [Phase 3: Thermodynamic Organization (7-8)](#phase-3-thermodynamic-organization-7-8)
+  - [commit / pre-commit 7: ThermodynamicOrganizer Implementation](#commit--pre-commit-7-thermodynamicorganizer-implementation)
+- [Phase 4: Integration & Testing (9-10)](#phase-4-integration--testing-9-10)
+  - [commit / pre-commit 9: Complete Integration](#commit--pre-commit-9-complete-integration)
+- [Import all components](#import-all-components)
+- [commit / pre-commit 10: End-to-End Testing & Benchmarks](#commit--pre-commit-10-end-to-end-testing--benchmarks)
+- [Benchmark script](#benchmark-script)
+- [Performance Optimizations & Best Practices](#performance-optimizations--best-practices)
+- [Performance Optimization Guide](#performance-optimization-guide)
+- [Critical Optimizations for 2-iteration iterations](#critical-optimizations-for-2-iteration-iterations)
+  - [1. Parallel Processing](#1-parallel-processing)
+  - [2. GPU Acceleration (Critical for Scale)](#2-gpu-acceleration-critical-for-scale)
+- [Install: pip install cupy-cuda11x](#install-pip-install-cupy-cuda11x)
+- [3. Caching & Memoization](#3-caching--memoization)
+  - [4. Sparse Matrix Operations](#4-sparse-matrix-operations)
+- [For pathway networks > 1000 nodes](#for-pathway-networks--1000-nodes)
+- [Fast operations](#fast-operations)
+- [Efficient storage](#efficient-storage)
+- [5. Numba JIT Compilation](#5-numba-jit-compilation)
+- [Memory Management](#memory-management)
+  - [1. Streaming Processing](#1-streaming-processing)
+  - [2. Memory-Mapped Arrays](#2-memory-mapped-arrays)
+- [For 10GB+ datasets](#for-10gb-datasets)
+- [Process in chunks](#process-in-chunks)
+- [Profiling & Monitoring](#profiling--monitoring)
+  - [1. Performance Profiling](#1-performance-profiling)
+- [CPU profiling](#cpu-profiling)
+- [Memory profiling](#memory-profiling)
+- [2. Real-time Monitoring](#2-real-time-monitoring)
+- [Bottleneck Solutions](#bottleneck-solutions)
+  - [Issue 1: SVD is Slow](#issue-1-svd-is-slow)
+- [10x faster for large matrices](#10x-faster-for-large-matrices)
+- [Issue 2: Graph Operations Scale Poorly](#issue-2-graph-operations-scale-poorly)
+- [Fast approximate shortest paths](#fast-approximate-shortest-paths)
+- [Issue 3: Annealing Takes Forever](#issue-3-annealing-takes-forever)
+- [Testing Strategy for Rapid Development](#testing-strategy-for-rapid-development)
+  - [1. Fast Unit Tests (Run in <1 second each)](#1-fast-unit-tests-run-in-1-second-each)
+  - [2. Integration Tests (Run nightly)](#2-integration-tests-run-nightly)
+  - [3. Continuous Benchmarking](#3-continuous-benchmarking)
+- [benchmark.py - Run on every commit](#benchmarkpy---run-on-every-commit)
+- [Track performance over time](#track-performance-over-time)
+- [Development iterations (Accelerated)](#development-iterations-accelerated)
+  - [iteration 1: Core Implementation](#iteration-1-core-implementation)
+  - [iteration 2: Integration & Deployment](#iteration-2-integration--deployment)
+- [Key Success Factors](#key-success-factors)
+- [Expected Performance Metrics](#expected-performance-metrics)
+- [Summary](#summary)
+
 **Last Updated:** 2026-06-22
 
 **Prompt ID:** QUANTUM_COMPRESS_NEURAL_001  
@@ -58,7 +153,7 @@ where N_original is uncompressed state count
 and dim(H) is Hilbert space dimension
 ```
 
-#### 2. Neural Pathway Formation
+## 2. Neural Pathway Formation
 
 Model information access as quantum tunneling:
 
@@ -80,7 +175,7 @@ where η is learning rate
 and E_access is access energy cost
 ```
 
-#### 3. Thermodynamic Organization
+## 3. Thermodynamic Organization
 
 Use Boltzmann distribution for information clustering:
 
@@ -2281,7 +2376,7 @@ class IntegratedQuantumCompressionSystem:
             self.organizer.reorganize("phase_transition", all_data)
 ````
 
-### commit / pre-commit 10: End-to-End Testing & Benchmarks
+## commit / pre-commit 10: End-to-End Testing & Benchmarks
 
 ````python name=test_integration.py
 import numpy as np
@@ -2538,7 +2633,7 @@ def gpu_schmidt_decomposition(data):
     return U. get(), S.get(), Vt.get()  # Transfer back to CPU
 ```
 
-### 3. Caching & Memoization
+## 3. Caching & Memoization
 
 ```python
 from functools import lru_cache
@@ -2573,7 +2668,7 @@ result = pathways.dot(vector)  # Optimized sparse multiplication
 save_npz('pathways.npz', pathways)
 ```
 
-### 5. Numba JIT Compilation
+## 5. Numba JIT Compilation
 
 ```python
 from numba import jit, vectorize, float64
@@ -2649,7 +2744,7 @@ def memory_intensive_function():
     pass
 ```
 
-### 2. Real-time Monitoring
+## 2. Real-time Monitoring
 
 ```python
 import psutil
@@ -2687,7 +2782,7 @@ svd = TruncatedSVD(n_components=64, algorithm='randomized')
 compressed = svd.fit_transform(data)
 ```
 
-### Issue 2: Graph Operations Scale Poorly
+## Issue 2: Graph Operations Scale Poorly
 **Solution:** Use approximate algorithms
 ```python
 import networkit as nk
@@ -2698,7 +2793,7 @@ apsp = nk.distance. APSP(g)
 apsp.run()
 ```
 
-### Issue 3: Annealing Takes Forever
+## Issue 3: Annealing Takes Forever
 **Solution:** Adaptive cooling & early stopping
 ```python
 def adaptive_anneal(data, target_time=60):

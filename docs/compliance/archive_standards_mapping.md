@@ -232,7 +232,7 @@ python -m codex.cli archive show-standardization-status
 tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ```text
 
-### Expected Audit Outputs
+## Expected Audit Outputs
 
 **Clean Run**:
 ```text

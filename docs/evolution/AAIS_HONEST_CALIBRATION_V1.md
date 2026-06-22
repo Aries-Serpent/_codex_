@@ -237,6 +237,7 @@ From the AAIS_100_AND_COVERAGE_100_ROADMAP.md + web research (ACE arXiv, ICLR 20
 ## §9 — Score Comparison Summary
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Claimed: 98.5/100\n(S+ Grade)\nSelf-assessed, plans credited,\nno CI-failure deduction", "Honest: 74/100\n(B− Grade)\nEvidence-gated, 3-gate rule,\nsubscription-adjusted"'}}%%
 graph LR
     subgraph "Claimed vs Honest — 2026-03-14"
         C["Claimed: 98.5/100\n(S+ Grade)\nSelf-assessed, plans credited,\nno CI-failure deduction"]

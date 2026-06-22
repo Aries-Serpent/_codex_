@@ -85,7 +85,7 @@ pytest tests/agents/test_phase2_*.py --cov=agents --cov-report=term
 **Expected Time:** 2-3 minutes
 **Dependencies:** pytest, pytest-cov, numpy
 
-#### Action 4: Full Execution
+## Action 4: Full Execution
 ```bash
 pytest tests/agents/test_phase2_deep_coverage_batch*.py -v --maxfail=5
 ```

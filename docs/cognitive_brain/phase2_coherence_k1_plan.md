@@ -182,7 +182,7 @@ winner (softmax argmax equals linear argmax), so **accuracy is unaffected**.
 
 The log-sum-exp trick (`s - max_score`) prevents numerical overflow.
 
-### Lightweight Fast Path: Gap-Based Coherence
+## Lightweight Fast Path: Gap-Based Coherence
 
 For benchmarking (lightweight mode), coherence is approximated from the score gap
 between winner and runner-up — avoiding 8 transcendental function calls:
@@ -253,7 +253,7 @@ quality_factor = (1 + coherence) × (1 − quantum_error) × (1 + classical_erro
 **Justification**: Per SPEC Quantum Benchmark methodology for hybrid systems where
 quantum advantage is in accuracy/quality rather than raw speed.
 
-#### 3. Lightweight Mode Architecture
+## 3. Lightweight Mode Architecture
 **Problem**: 5 `monitor.record_metric()` calls per assessment add ~20μs of DB I/O.
 **Solution**: `config.lightweight_mode = True` gates all monitoring calls:
 ```python
@@ -262,7 +262,7 @@ if self.monitor and not self.lightweight:
 ```
 **Impact**: Quantum time 0.08ms → 0.02ms (−75%)
 
-#### 4. Direct Scoring Fast Path
+### 4. Direct Scoring Fast Path
 **Problem**: Full engine path creates 4 Decision objects with lambdas,
 creates SuperpositionState (amplitude calculation), then calls create → evaluate →
 collapse → get_coherence — ~7μs of infrastructure overhead.

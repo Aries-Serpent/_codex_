@@ -270,13 +270,13 @@ pytest tests/agents/test_phase2_deep_coverage_batch*.py -v --cov=agents --cov-re
 python -c "import json; data=json.load(open('coverage.json')); print(f\"Coverage: {data['totals']['percent_covered']:.2f}%\")"
 ```
 
-#### Step 2: Gap Identification
+## Step 2: Gap Identification
 - Analyze coverage.json for uncovered lines
 - Identify missing branches
 - Document API mismatches
 - List integration gaps
 
-#### Step 3: Prioritization Matrix
+### Step 3: Prioritization Matrix
 ```
 Priority = Impact × Risk × Effort^(-1)
 

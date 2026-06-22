@@ -159,7 +159,7 @@ result = engine.evaluate_parallel([
 # Returns: collapsed state with highest coherence
 ```
 
-### 2. Code Ingestion Pipeline
+## 2. Code Ingestion Pipeline
 
 **Location**: `src/codex/`
 
@@ -209,7 +209,7 @@ result = navigator.execute('AUDIT_EXEC')
 # Executes: validation → analysis → report generation
 ```
 
-### 4. Memory Management
+## 4. Memory Management
 
 **Location**: `src/cognitive_brain/quantum/memory.py`
 
@@ -1491,7 +1491,7 @@ python -m codex.cli --help
 python -c "from src.cognitive_brain.quantum.superposition import SuperpositionEngine; print('✓ Cognitive brain loaded')"
 ```
 
-### Step 2: Start Backend API
+## Step 2: Start Backend API
 
 ```bash
 # Option A: Development mode (auto-reload)
@@ -1504,7 +1504,7 @@ uvicorn services.api.main:app --workers 4 --port 8000
 # Expected: {"status":"ok"}
 ```
 
-### Step 3: Create GitHub Spark App
+## Step 3: Create GitHub Spark App
 
 1. **Go to**: https://github.com/spark (or your GitHub Spark instance)
 
@@ -1544,13 +1544,13 @@ uvicorn services.api.main:app --reload --port 8000
 
 # Expected response:
 # {
-#   "code": "import re\n\ndef validate_email(email: str) -> bool: ...",
-#   "metadata": {"k1_factor": 0.34, ...},
-#   "quantum_metrics": {...}
+# "code": "import re\n\ndef validate_email(email: str) -> bool: ...",
+# "metadata": {"k1_factor": 0.34, ...},
+# "quantum_metrics": {...}
 # }
 ```
 
-### Step 5: Deploy
+## Step 5: Deploy
 
 **Backend Deployment** (choose one):
 

@@ -52,6 +52,7 @@ w_i + w_d + w_r + w_t + w_b + w_n = 1
 ## 4. Mermaid — CpT to Security/Access Mapping
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Cp: heat capacity at constant pressure, h approx CpT'}}%%
 flowchart TD
     Cp[Cp: heat capacity at constant pressure] --> H[h approx CpT]
     Temp[T: absolute temperature] --> H
@@ -70,6 +71,7 @@ flowchart TD
 ## 5. Mermaid — Adaptive Heat Exchanger
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Access Request, Context Sensors'}}%%
 flowchart LR
     Request[Access Request] --> Sensors[Context Sensors]
     Sensors --> Phi[Compute Phi_context]
@@ -94,6 +96,7 @@ flowchart LR
 ## 6. Mermaid — State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> Balanced
     Balanced --> Heated: threat temperature rises

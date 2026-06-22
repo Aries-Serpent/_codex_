@@ -450,6 +450,7 @@ pytest tests/services/ -v --cov
 ## Execution Order
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing B0: Plan Documentation, B1: GitHub API Client'}}%%
 graph TD
     B0[B0: Plan Documentation] --> B1[B1: GitHub API Client]
     B0 --> B2[B2: Workflow Inventory]

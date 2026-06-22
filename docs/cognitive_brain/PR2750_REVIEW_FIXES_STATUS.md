@@ -37,7 +37,7 @@ timestamp = datetime.now(UTC).isoformat()  # Outputs: 2026-01-08T21:58:07.834371
 - ISO 8601 format with `+00:00` is more standards-compliant than 'Z' suffix
 - Project requires Python >=3.11, so UTC constant is available
 
-### Issue 2: Naive `datetime.now()`
+## Issue 2: Naive `datetime.now()`
 **File Fixed:** `src/codex/dynamics/model/sla.py:259`
 
 **Solution:**
@@ -52,7 +52,7 @@ self.last_updated = datetime.now(UTC).isoformat()
 
 **Why:** Production systems should use timezone-aware timestamps
 
-### Issue 3: Duplicate Condition
+## Issue 3: Duplicate Condition
 **File Fixed:** `scripts/packaging/build_solution.py:83-84`
 
 **Solution:**
@@ -94,7 +94,7 @@ def test_initialization_from_env(self):
         assert provider.model_name == "text-embedding-3-small"
 ```
 
-### Fix 2: `test_destructor_clears_key` (line 188)
+## Fix 2: `test_destructor_clears_key` (line 188)
 **Solution:**
 ```python
 # Before
@@ -112,7 +112,7 @@ def test_destructor_clears_key(self):
         del provider
 ```
 
-### Fix 3: `test_openai_provider_api_error` (line 272)
+## Fix 3: `test_openai_provider_api_error` (line 272)
 **Root Cause:** Incorrect patch path - should patch where imported, not where defined
 
 **Solution:**
@@ -194,7 +194,7 @@ dt = datetime.now(UTC)
 - Standards-compliant ISO 8601 format
 - More explicit than 'Z' suffix
 
-### 2. Mock Patching Best Practices
+## 2. Mock Patching Best Practices
 **Rule:** Patch where the object is imported FROM, not where it's USED
 
 ```python
@@ -205,7 +205,7 @@ dt = datetime.now(UTC)
 @patch("openai.OpenAI")
 ```
 
-### 3. Test Alignment with Security Refactoring
+## 3. Test Alignment with Security Refactoring
 When class internals change for security:
 - Update tests to verify behavior, not implementation details
 - Check client initialization, not stored credentials

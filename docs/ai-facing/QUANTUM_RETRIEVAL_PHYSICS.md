@@ -409,7 +409,7 @@ for result in results:
     print(f"Entropy: {result.metadata['entropy_contribution']}")
 ```
 
-### Custom Physics Parameters
+## Custom Physics Parameters
 
 ```python
 from src.rag.pipelines.quantum_retrieval import (

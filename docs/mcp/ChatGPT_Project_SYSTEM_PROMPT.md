@@ -72,6 +72,7 @@
 **Query Path**: User Question → Search Index → Analysis → Response Assembly → Provenance Annotation → Delivery
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing User Query, Parse Intent'}}%%
 graph TD
     A[User Query] --> B[Parse Intent]
     B --> C{Query Type}

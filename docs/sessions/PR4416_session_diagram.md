@@ -3,6 +3,7 @@
 **Last Updated:** 2026-06-22
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S952 Start<br/>PR #4395 merged 2026-05-11T17:57Z<br/>Branch: copilot/sync-docs-and-confirm-latest-state, Download CodeQL artifact<br/>codeql-alerts-open-codeql-25688174911<br/>58 open alerts identified'}}%%
 graph TD
   A[S952 Start<br/>PR #4395 merged 2026-05-11T17:57Z<br/>Branch: copilot/sync-docs-and-confirm-latest-state] --> B
   B[Download CodeQL artifact<br/>codeql-alerts-open-codeql-25688174911<br/>58 open alerts identified] --> C

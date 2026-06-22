@@ -68,7 +68,7 @@ Before starting, load the cognitive brain for full context:
 # Commands to verify phase completion
 ```
 
-### Phase 2: [Phase Name] (Estimated: XK tokens, Y minutes)
+## Phase 2: [Phase Name] (Estimated: XK tokens, Y minutes)
 
 **Objective**: [What this phase accomplishes]
 
@@ -87,7 +87,7 @@ Before starting, load the cognitive brain for full context:
 # Commands to verify phase completion
 ```
 
-### Phase 3: [Phase Name] (Estimated: XK tokens, Y minutes)
+## Phase 3: [Phase Name] (Estimated: XK tokens, Y minutes)
 
 **Objective**: [What this phase accomplishes]
 
@@ -132,7 +132,7 @@ command3
 command4
 ```
 
-### Self-Review Protocol
+## Self-Review Protocol
 
 Before concluding, perform 5-pass self-review:
 

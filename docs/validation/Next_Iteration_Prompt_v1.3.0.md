@@ -58,11 +58,11 @@ python scripts/space_traversal/verify_determinism.py --runs 2
 
 ---
 
-### C.2: Legacy Import Analysis & Refactoring Plan
+## C.2: Legacy Import Analysis & Refactoring Plan
 
 **Objective**: Identify and prioritize legacy imports for refactoring.
 
-#### Step 1: Generate Import Report
+### Step 1: Generate Import Report
 ```bash
 python scripts/remediation/analyze_legacy_usage.py
 ```
@@ -78,7 +78,7 @@ head -20 reports/legacy_import_usage.csv
 wc -l reports/legacy_import_usage.csv
 ```
 
-#### Step 2: Categorize Imports
+## Step 2: Categorize Imports
 
 Create prioritization matrix:
 
@@ -89,7 +89,7 @@ Create prioritization matrix:
 | P3 | Internal-only imports | Document migration path | Low |
 | P4 | Test-only imports | Defer | Very Low |
 
-#### Step 3: Refactor High-Priority Imports
+### Step 3: Refactor High-Priority Imports
 
 **Template Approach**:
 1. Identify import pattern:
@@ -202,7 +202,7 @@ Create prioritization matrix:
 - Testing: All new code has test coverage
 - Documentation: Changes are documented
 
-#### Security Scan
+## Security Scan
 ```bash
 # Run CodeQL checker
 # (This will be done via the codeql_checker tool in the agent)
@@ -218,11 +218,11 @@ Create prioritization matrix:
 
 ---
 
-### C.5: Integration Testing & Final Validation
+## C.5: Integration Testing & Final Validation
 
 **Objective**: Comprehensive end-to-end validation.
 
-#### Full Pipeline Test
+### Full Pipeline Test
 ```bash
 # Clean environment
 rm -rf audit_artifacts/ audit_run_manifest.json
@@ -242,7 +242,7 @@ cat audit_run_manifest.json
 - [ ] Manifest includes integrity fields
 - [ ] No errors or warnings in logs
 
-#### Regression Test
+## Regression Test
 ```bash
 # Compare against baseline
 python scripts/space_traversal/audit_runner.py diff \
@@ -252,7 +252,7 @@ python scripts/space_traversal/audit_runner.py diff \
 
 **Expected**: No unexpected regressions
 
-#### Validation Test Suite
+## Validation Test Suite
 ```bash
 # Run all validation tests
 pytest tests/validation/ -v --tb=short

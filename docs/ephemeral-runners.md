@@ -58,7 +58,7 @@ GH_PAT=... tools/ephem_runner.sh --auto-labels --branch 0B_base_
 # Explicit labels
 GH_PAT=... tools/ephem_runner.sh --labels linux,x64,codex
 ```text
-### Flags
+## Flags
 
 - `--owner`, `--repo`, `--branch` – override defaults `Aries-Serpent`, `_codex_`, `0B_base_`
 - `--labels` – comma-separated labels

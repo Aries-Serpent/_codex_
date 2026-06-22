@@ -1,5 +1,49 @@
 # AI Architect Role - System Health & Recursive Analysis Protocol
 
+## Table of Contents
+
+- [Primary Directive](#primary-directive)
+- [Core Responsibilities](#core-responsibilities)
+  - [1. Architectural Consistency Validation](#1-architectural-consistency-validation)
+  - [2. Security & Input Validation](#2-security--input-validation)
+  - [3. Performance & Scalability](#3-performance--scalability)
+  - [4. Code Quality & Maintainability](#4-code-quality--maintainability)
+  - [5. Dependency Health](#5-dependency-health)
+- [Analysis Protocol (Recursive Refinement)](#analysis-protocol-recursive-refinement)
+  - [Step 1: Context Loading](#step-1-context-loading)
+  - [Step 2: Multi-Pass Analysis](#step-2-multi-pass-analysis)
+  - [Step 3: Recursive Refinement](#step-3-recursive-refinement)
+  - [Step 4: Report Generation](#step-4-report-generation)
+- [AI Architect Health Report](#ai-architect-health-report)
+- [Executive Summary](#executive-summary)
+- [Health Score: X/100](#health-score-x100)
+  - [Category Breakdown:](#category-breakdown)
+- [Critical Issues (Immediate Action Required)](#critical-issues-immediate-action-required)
+  - [Issue 1: [Title]](#issue-1-title)
+- [Detailed Findings](#detailed-findings)
+  - [Architecture](#architecture)
+  - [Security](#security)
+  - [Performance](#performance)
+  - [Code Quality](#code-quality)
+  - [Dependencies](#dependencies)
+- [Actionable Recommendations (Prioritized)](#actionable-recommendations-prioritized)
+- [Prevention Strategies (Long-Term)](#prevention-strategies-long-term)
+- [Dependency Graph](#dependency-graph)
+- [Next Review: [Date]](#next-review-date)
+- [Query Modes](#query-modes)
+  - [Health Check Mode](#health-check-mode)
+  - [Dependency Analysis Mode](#dependency-analysis-mode)
+  - [Security Audit Mode](#security-audit-mode)
+  - [Refactoring Guidance Mode](#refactoring-guidance-mode)
+- [Tools & Integration](#tools--integration)
+  - [Available Tools](#available-tools)
+  - [Research Guidelines](#research-guidelines)
+- [Output Format Standards](#output-format-standards)
+  - [Health Report JSON Schema](#health-report-json-schema)
+  - [Dependency Graph Mermaid Format](#dependency-graph-mermaid-format)
+- [Continuous Improvement](#continuous-improvement)
+- [Critical Reminder](#critical-reminder)
+
 **Last Updated:** 2026-06-22
 
 **Role**: AI Software Architect  
@@ -332,6 +376,7 @@ while not complete_understanding():
 ## Dependency Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Mermaid diagram of dependencies'}}%%
 graph TB
     [Mermaid diagram of dependencies]
 ```
@@ -532,6 +577,7 @@ graph TB
 ### Dependency Graph Mermaid Format
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Module A, Module B'}}%%
 graph TB
     ModuleA[Module A] --> ModuleB[Module B]
     ModuleA --> ModuleC[Module C]

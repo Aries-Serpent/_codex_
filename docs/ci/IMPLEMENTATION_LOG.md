@@ -163,7 +163,7 @@ python scripts/ci/auto_fix_with_rollback.py --apply --pattern 1
 
 ---
 
-#### 4. Coverage Timeout Guards Workflow ✅
+## 4. Coverage Timeout Guards Workflow ✅
 
 **File:** `.github/workflows/coverage-with-timeout.yml`
 
@@ -204,7 +204,7 @@ python scripts/ci/auto_fix_with_rollback.py --apply --pattern 1
 
 ---
 
-#### 5. Validation Test Suite ✅
+### 5. Validation Test Suite ✅
 
 **Files:**
 - `tests/ci/test_pr_size_analyzer.py` (15 tests)
@@ -443,7 +443,7 @@ python scripts/ci/workflow_orchestrator.py \
 
 **GitHub Step Summary Format:**
 ```markdown
-### CI Telemetry Analysis
+## CI Telemetry Analysis
 
 **Total Runs:** 100
 **Failed Runs:** 15

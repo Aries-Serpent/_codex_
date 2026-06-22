@@ -215,7 +215,7 @@ python scripts/generate_tests.py --spec quantum_game --output-dir tests/custom
 python scripts/generate_tests.py --module agents.physics_orchestrator --analyze
 ```
 
-### CLI Options
+## CLI Options
 
 | Option | Description | Example |
 |--------|-------------|---------|
@@ -375,7 +375,7 @@ def test_slow(self):
     # Test runs in seconds
 ```
 
-### 9. Make Tests Deterministic
+## 9. Make Tests Deterministic
 
 ```python
 # Good - Fixed seed for randomness
@@ -391,7 +391,7 @@ def test_flaky(self):
     assert result  # Might pass or fail randomly
 ```
 
-### 10. Document Test Intent
+## 10. Document Test Intent
 
 ```python
 def test_orchestrate_complex_scenario(self):
@@ -428,7 +428,7 @@ module_path="agents.physics_orchestrator"
 module_path="physics_orchestrator"  # Missing 'agents' package
 ```
 
-### Tests Don't Match Actual API
+## Tests Don't Match Actual API
 
 **Problem:** Generated tests call methods that don't exist or use wrong signatures.
 
@@ -446,7 +446,7 @@ inputs={
 }
 ```
 
-### Too Many/Few Tests Generated
+## Too Many/Few Tests Generated
 
 **Problem:** Generated test suite is too large or too small.
 
@@ -465,7 +465,7 @@ edge_cases=[
 ]
 ```
 
-### Tests Are TODOs
+## Tests Are TODOs
 
 **Problem:** Generated tests contain `# TODO` placeholders.
 
@@ -486,7 +486,7 @@ def test_method_edge_case(self):
     assert result == expected_output
 ```
 
-### Fixtures Don't Work
+## Fixtures Don't Work
 
 **Problem:** Fixtures are not recognized by pytest.
 

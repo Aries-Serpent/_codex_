@@ -19,6 +19,7 @@ and retrieval quality.  The SLA is enforced automatically by the workflows liste
 ## RAG Freshness & Quality Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "rag-freshness-scheduler.yml\nRuns: nightly 02:00 UTC\n+ every 6 hours on miss", "embedding-index-rebuild.yml\nFAISS index rebuilt from source"'}}%%
 flowchart TD
     SCHED["rag-freshness-scheduler.yml\nRuns: nightly 02:00 UTC\n+ every 6 hours on miss"]
     AGE{"Index Age\n> 24 hours?"}

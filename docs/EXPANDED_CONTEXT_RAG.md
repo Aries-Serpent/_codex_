@@ -30,7 +30,7 @@ pip install sentence-transformers faiss-cpu
 pip install openai
 ```
 
-### Build an Index
+## Build an Index
 
 Build a FAISS index from documentation:
 
@@ -45,7 +45,7 @@ Build a FAISS index from documentation:
 ./scripts/local/build_faiss.sh default ndjson data/kb.ndjson
 ```
 
-### Query the Index
+## Query the Index
 
 ```python
 from codex.rag.retriever import Retriever
@@ -91,7 +91,7 @@ Features:
 - Configurable overlap for context preservation
 - Position tracking for provenance
 
-#### Embedding Generation
+## Embedding Generation
 
 ```python
 from codex.rag.indexer import embed_chunks
@@ -106,7 +106,7 @@ embeddings = embed_chunks(
 # Returns: numpy array of shape (num_chunks, embedding_dim)
 ```
 
-#### Index Persistence
+## Index Persistence
 
 ```python
 from codex.rag.indexer import persist_index
@@ -126,7 +126,7 @@ Persists to `.codex/tenants/{tenant_id}/{index_name}/`:
 - `chunks.json` - Chunk metadata with provenance
 - `metadata.json` - Index metadata
 
-#### Complete Workflow
+### Complete Workflow
 
 ```python
 from codex.rag.indexer import build_index_from_files
@@ -171,7 +171,7 @@ results = retriever.query("semantic search query", top_k=5)
 # - text_hash: chunk content hash
 ```
 
-#### Multi-Index Retrieval
+## Multi-Index Retrieval
 
 Query across multiple indices:
 
@@ -190,11 +190,11 @@ results = retriever.query("query", top_k=10)
 # Returns merged results from all indices, sorted by score
 ```
 
-### Embeddings Module
+## Embeddings Module
 
 Provides embedding provider abstraction with caching:
 
-#### Local Provider
+### Local Provider
 
 ```python
 from codex.rag.embeddings import LocalSentenceTransformerProvider
@@ -253,7 +253,7 @@ stats = cached_provider.get_stats()
 print(f"Hit rate: {stats['hit_rate']:.2%}")
 ```
 
-#### Factory Function
+## Factory Function
 
 Convenience function for creating providers:
 

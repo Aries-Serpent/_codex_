@@ -94,9 +94,9 @@ safe_prompt = sanitizer.sanitize("<script>alert('xss')</script>")
 # Result: "[REDACTED]alert('xss')[REDACTED]"
 ```
 
-### Observability
+## Observability
 
-#### `codex_ml.serving.health`
+### `codex_ml.serving.health`
 
 Health and readiness check endpoints for Kubernetes/production deployments.
 
@@ -152,7 +152,7 @@ app.include_router(get_health_router())
 # GET /readyz - Kubernetes readiness
 ```
 
-#### `codex_ml.monitoring.metrics`
+## `codex_ml.monitoring.metrics`
 
 Prometheus metrics collection and export.
 
@@ -291,7 +291,7 @@ rng_state.restore()
 # Training continues from exact RNG state
 ```
 
-#### `codex_ml.utils.repro`
+## `codex_ml.utils.repro`
 
 Dataset integrity validation with SHA256 hashing.
 
@@ -371,7 +371,7 @@ if manifest.has_drift("data/train_manifest.json"):
     print(f"Added: {len(diff['added'])}")
 ```
 
-#### `codex_ml.utils.deterministic`
+## `codex_ml.utils.deterministic`
 
 Enforce deterministic algorithms for reproducibility.
 
@@ -410,7 +410,7 @@ with DeterministicContext():
     train_model()
 ```
 
-#### `codex_ml.utils.checkpoint_integrity_validation`
+## `codex_ml.utils.checkpoint_integrity_validation`
 
 Checkpoint corruption detection with SHA256 validation.
 
@@ -468,7 +468,7 @@ if not integrity.validate(strict=True):
     raise RuntimeError("Checkpoint corrupted!")
 ```
 
-#### `codex_ml.utils.config_drift`
+## `codex_ml.utils.config_drift`
 
 Configuration drift detection for reproducibility.
 
@@ -605,9 +605,9 @@ def train_with_recovery(batch_size):
     return train_model(batch_size=batch_size)
 ```
 
-### Drift Detection
+## Drift Detection
 
-#### `codex_ml.monitoring.drift_detection`
+### `codex_ml.monitoring.drift_detection`
 
 Comprehensive drift monitoring for data, config, and model performance.
 
@@ -751,7 +751,7 @@ trainer = Trainer(..., callbacks=callbacks)
 # EarlyStopping auto-injected with patience=3
 ```
 
-#### `codex_ml.utils.wandb_logger`
+## `codex_ml.utils.wandb_logger`
 
 Offline-first Weights & Biases logger with NDJSON fallback.
 
@@ -919,9 +919,9 @@ if monitor.has_critical_drift():
             pipeline.rollback()
 ```
 
-### A/B Testing
+## A/B Testing
 
-#### `codex_ml.training.ab_testing`
+### `codex_ml.training.ab_testing`
 
 A/B testing framework for model evaluation.
 
@@ -1002,9 +1002,9 @@ if manager.is_significant():
     manager.save_results("ab_test_results.json")
 ```
 
-### Plugin Sandbox
+## Plugin Sandbox
 
-#### `codex_ml.plugins.plugin_sandbox`
+### `codex_ml.plugins.plugin_sandbox`
 
 Sandboxed plugin execution with contract validation and auto-disable.
 
@@ -1095,12 +1095,12 @@ result = manager.execute_plugin("MyPlugin", data=input_data)
 # Check health
 health = manager.get_plugin_health_report()
 # {
-#   "total_plugins": 1,
-#   "enabled": 1,
-#   "disabled": 0,
-#   "plugins": {
-#     "MyPlugin": {"status": "enabled", "failure_count": 0, ...}
-#   }
+# "total_plugins": 1,
+# "enabled": 1,
+# "disabled": 0,
+# "plugins": {
+# "MyPlugin": {"status": "enabled", "failure_count": 0, ...}
+# }
 # }
 ```
 
@@ -1271,7 +1271,7 @@ count = memory.invalidate_stale_contexts(age_days=30)
 memory.complete_task(success=True, summary="Fixed vulnerability")
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -1313,7 +1313,7 @@ for issue in report.issues:
 results = engine.apply_fixes(dry_run=True)
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -1400,7 +1400,7 @@ if metadata.is_quarantine_expired(quarantine_duration=3600):
 
 ---
 
-### HARIntegration
+## HARIntegration
 
 **Module**: `src.codex_ml.integrations.har_integration`
 
@@ -1433,7 +1433,7 @@ for entry in replayer.entries:
 
 ---
 
-### Scalability Utilities
+## Scalability Utilities
 
 **Module**: `src.codex_ml.utils.scalability`
 
@@ -1687,7 +1687,7 @@ print(result.metadata)              # dict
 - `output_path` (str): Output file path (if applicable)
 - `metadata` (dict): Additional metadata
 
-### 3. IngestionPipeline
+## 3. IngestionPipeline
 
 Main pipeline class for data ingestion.
 
@@ -1698,9 +1698,9 @@ config = PipelineConfig(batch_size=500)
 pipeline = IngestionPipeline(config)
 ```
 
-#### Methods
+### Methods
 
-##### `ingest_file()`
+#### `ingest_file()`
 
 Process a single file.
 
@@ -1746,7 +1746,7 @@ else:
     print(f"Errors: {result.errors}")
 ```
 
-##### `ingest_directory()`
+## `ingest_directory()`
 
 Process all files in a directory.
 
@@ -1778,7 +1778,7 @@ print(f"Total: {result.records_processed}")
 print(f"Failed: {len(result.errors)}")
 ```
 
-##### `stream_records()`
+### `stream_records()`
 
 Stream records from a file (memory-efficient).
 
@@ -1824,7 +1824,7 @@ result = pipeline.ingest_file('data.csv', 'data.jsonl')
 {"id": "2", "text": "Another example", "label": "1"}
 ```
 
-### JSON Format
+## JSON Format
 
 Single JSON object or array.
 
@@ -1841,7 +1841,7 @@ Single JSON object or array.
 result = pipeline.ingest_file('data.json', 'data.jsonl')
 ```
 
-### JSONL Format
+## JSONL Format
 
 Newline-delimited JSON (one object per line).
 
@@ -1851,7 +1851,7 @@ Newline-delimited JSON (one object per line).
 {"id": 2, "text": "Another example", "label": 1}
 ```
 
-### Text Format
+## Text Format
 
 Plain text, one record per line.
 

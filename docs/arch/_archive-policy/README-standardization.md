@@ -28,7 +28,7 @@ export CODEX_STANDARDIZATION_ENABLED=true
 export CODEX_ENABLE_SIGNING=true
 ```text
 
-### 2. Check Status
+## 2. Check Status
 
 ```bash
 python -m codex.cli archive show-standardization-status
@@ -164,13 +164,13 @@ python -m json.tool schemas/archive_evidence_schema_v1.json
 python -m json.tool schemas/archive_evidence_schema_v2.json
 ```text
 
-### Module not found errors
+## Module not found errors
 ```bash
 # Install dependencies
 pip install jsonschema sigstore
 ```text
 
-### Backward compatibility concerns
+## Backward compatibility concerns
 ```bash
 # Run backward compatibility tests
 pytest tests/archive/test_standardization.py::TestBackwardCompatibility -v

@@ -1,5 +1,24 @@
 # Codex Remediation Task Queue – Phase 1 Execution Packet (2025-09-17)
 
+## Table of Contents
+
+- [0. Orientation & Linkage](#0-orientation--linkage)
+- [1. Execution Cadence for Phase 1](#1-execution-cadence-for-phase1)
+- [2. Phase 1A – Urgent Gate Activation (Top Five Urgent Tasks)](#2-phase1a--urgent-gate-activation-top-five-urgent-tasks)
+  - [Task U1 – Restore Gate Tooling for `pre-commit`](#task-u1--restore-gate-tooling-for-pre-commit)
+  - [Task U2 – Ensure `nox` Availability Across Phases](#task-u2--ensure-nox-availability-across-phases)
+  - [Task U3 – Stabilize Coverage Session (`pytest-cov` / gating)](#task-u3--stabilize-coverage-session-pytest-cov--gating)
+  - [Task U4 – Harden Test Suite Against Optional Dependency Drift](#task-u4--harden-test-suite-against-optional-dependency-drift)
+  - [Task U5 – Guard the Training CLI Against Missing `torch`](#task-u5--guard-the-training-cli-against-missing-torch)
+- [3. Phase 1B – Quick Win Activation (Top Five Quick Wins)](#3-phase1b--quick-win-activation-top-five-quick-wins)
+  - [Task Cycle 1 – Remove Duplicate `training.py01`](#task-cycle-1--remove-duplicate-trainingpy01)
+  - [Task Cycle 2 – Implement `load_latest` in Checkpointing](#task-cycle-2--implement-load_latest-in-checkpointing)
+  - [Task Cycle 3 – Deterministic Dataset Loader & Manifest](#task-cycle-3--deterministic-dataset-loader--manifest)
+  - [Task Cycle 4 – Introduce System Metrics Logger](#task-cycle-4--introduce-system-metrics-logger)
+  - [Task Q5 – Patch `tests_docs_links_audit` Script](#task-q5--patch-tests_docs_links_audit-script)
+- [4. Forward Queue Preparation (Phase 2 and Beyond)](#4-forward-queue-preparation-phase2-and-beyond)
+- [5. Logging & Reporting Checklist](#5-logging--reporting-checklist)
+
 **Last Updated:** 2026-06-22
 
 ## 0. Orientation & Linkage

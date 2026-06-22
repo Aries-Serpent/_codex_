@@ -189,7 +189,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 **5 Capabilities to Address**:
 
-#### 2.1 Documentation System (Score: 0.680)
+### 2.1 Documentation System (Score: 0.680)
 - **Current**: Test coverage 0.02
 - **Target**: 0.70+
 - **Action Items**:

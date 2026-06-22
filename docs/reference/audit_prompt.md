@@ -132,7 +132,7 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 # rollback
 # tests/docs
 ````
-### Local commands reference
+## Local commands reference
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate

@@ -184,7 +184,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 
 **Target**: ≥30% (Projected: 43.28%)
 
-### After Phase 2 Tests
+## After Phase 2 Tests
 
 ```bash
 # Run all tests
@@ -219,7 +219,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 python tools/coverage_physics_toolkit.py --mode analyze --module agents.codex_client.bridge
 ```
 
-### Generate Additional Tests
+## Generate Additional Tests
 
 ```bash
 # Generate test template
@@ -228,14 +228,14 @@ python tools/coverage_physics_toolkit.py --mode generate \
     --output tests/agents/test_codex_client_generated.py
 ```
 
-### Run Additional Tests
+## Run Additional Tests
 
 ```bash
 # Edit generated file to fix any issues, then run
 python -m pytest tests/agents/test_codex_client_generated.py -v
 ```
 
-### Measure Again
+## Measure Again
 
 ```bash
 python -m pytest tests/agents/ --cov=agents --cov-report=json -q
@@ -293,7 +293,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=html
 firefox htmlcov/index.html  # or your browser
 ```
 
-### Key Metrics to Check
+## Key Metrics to Check
 
 1. **Total Coverage**: Should be 49-52%
 2. **Per-Module Coverage**:

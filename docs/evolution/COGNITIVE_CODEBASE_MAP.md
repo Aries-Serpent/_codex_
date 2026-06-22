@@ -10,6 +10,7 @@
 ## 🧠 Cognitive Architecture Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "L1: Aspirational (Ethics & Mission)", ".codex/guardrails.md"'}}%%
 graph TD
     subgraph L1["L1: Aspirational (Ethics & Mission)"]
         E1[".codex/guardrails.md"]

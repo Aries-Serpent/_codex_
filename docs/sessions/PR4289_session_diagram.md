@@ -9,6 +9,7 @@
 ## 1. End-to-End Problem → Fix Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4289 opened\ndocs+deps+security\n265e11a, "Wave 1 — Initial Commit (74335117)"'}}%%
 flowchart TD
     START([PR #4289 opened\ndocs+deps+security\n265e11a]) --> WAVE1
 
@@ -91,6 +92,7 @@ flowchart TD
 ## 2. CodeQL Alert Lifecycle — State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     direction LR
 
@@ -137,6 +139,7 @@ stateDiagram-v2
 ## 3. Security Fix — Sequence Diagram (HTTP Request → Safe File Access)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing A-Za-z0-9._-, TAINT BROKEN'}}%%
 sequenceDiagram
     autonumber
     actor Client
@@ -170,6 +173,7 @@ sequenceDiagram
 ## 4. Security Helper Class Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Class Diagram showing A-Za-z0-9._-'}}%%
 classDiagram
     direction TB
 
@@ -247,6 +251,7 @@ classDiagram
 ## 5. Security Remediation Map — All 68 CodeQL Alerts
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "All Alerts at PR Open — 68 Total", "🔴 py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"'}}%%
 flowchart LR
     subgraph OPEN["All Alerts at PR Open — 68 Total"]
         A1["🔴 py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"]
@@ -284,6 +289,7 @@ flowchart LR
 ## 6. Exception Narrowing — Basis Decomposition Across 64 Files
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "113 × bare\nexcept Exception:\npass", "except\n(ImportError,\nAttributeError,\nModuleNotFoundError):\npass  # optional dep"'}}%%
 flowchart LR
     INPUT["113 × bare\nexcept Exception:\npass"] --> CLASSIFY{"Context\nClassifier\nff5b6a5"}
 
@@ -309,6 +315,7 @@ flowchart LR
 ## 7. Auto-Fix Pattern Evolution — Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "auto_fix_common_issues.py — Before PR", "16 auto-fixable patterns"'}}%%
 flowchart TD
     subgraph BEFORE["auto_fix_common_issues.py — Before PR"]
         B_N["16 auto-fixable patterns"]
@@ -336,6 +343,7 @@ flowchart TD
 ## 8. CI Health — Full Check Inventory Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing / Broken", "❌ Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"'}}%%
 flowchart LR
     subgraph BEFORE["Before PR — Failing / Broken"]
         direction TB
@@ -373,6 +381,7 @@ flowchart LR
 ## 9. Commit Activity Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title PR #4289 — Commit Activity by Phase
     2026-05-04 S293 Open  : 265e11a Initial plan
@@ -410,6 +419,7 @@ timeline
 ## 10. New Files & Artifacts Created
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((PR 4289\nNew Artifacts\n117 files touched))
     Workflows
@@ -453,6 +463,7 @@ mindmap
 ## 11. Dependency Consolidation — 10 Dependabot PRs
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "10 open Dependabot PRs\nat PR open time", "transformers\nversion bump"'}}%%
 flowchart TD
     DEP_IN(["10 open Dependabot PRs\nat PR open time"])
 
@@ -486,6 +497,7 @@ flowchart TD
 ## 12. Fix Complexity vs Security Impact — Quadrant Chart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing 0.75, 0.95, 0.55, 0.90'}}%%
 quadrantChart
     title Fix Complexity vs Security Impact
     x-axis Low Complexity --> High Complexity
@@ -514,6 +526,7 @@ quadrantChart
 ## 13. Commit Volume XY Chart (Cumulative Alerts Closed)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "S293 open", "Wave3-warnings", "Wave5-security", "S294-open", "S294-mid", "S294-late", "S295", 68, 28, 22, 19, 16, 7, 0'}}%%
 xychart-beta
     title "CodeQL Alert Count — Reduction Over Sessions"
     x-axis ["S293 open", "Wave3-warnings", "Wave5-security", "S294-open", "S294-mid", "S294-late", "S295"]
@@ -721,6 +734,7 @@ Merge readiness evolves toward a ground state `E₀ = 100` as each failing dimen
 ## 15. Full Commits Gitgraph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Git Graph'}}%%
 gitGraph
    commit id: "265e11a initial-plan"
    commit id: "74335117 docs+10-deps"
@@ -762,6 +776,7 @@ gitGraph
 ## 1. End-to-End Problem → Fix Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4289 opened\ndocs+deps+security, "Wave 1 — Initial PR (ad96c9422)"'}}%%
 flowchart TD
     START([PR #4289 opened\ndocs+deps+security]) --> WAVE1
 
@@ -845,6 +860,7 @@ flowchart TD
 ## 2. Security Remediation Map — All CodeQL Alerts
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "CodeQL Alerts at PR Open", "py/path-injection\n13339-13344\n13355-13357\n13359-13361\n13385-13391\n(18 alerts)"'}}%%
 flowchart LR
     subgraph CODEQL_OPEN["CodeQL Alerts at PR Open"]
         A1["py/path-injection\n13339-13344\n13355-13357\n13359-13361\n13385-13391\n(18 alerts)"]
@@ -888,6 +904,7 @@ flowchart LR
 ## 3. Exception Narrowing Classification (64 Test Files)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "except Exception:\n(113 instances)", "ImportError, AttributeError,\nModuleNotFoundError"'}}%%
 flowchart LR
     INPUT["except Exception:\n(113 instances)"] --> CLASSIFY{Classify\ntry-block context}
 
@@ -913,6 +930,7 @@ flowchart LR
 ## 4. Auto-Fix Pipeline — Patterns Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Before This PR", "auto_fixable_patterns\n16 entries"'}}%%
 flowchart TD
     subgraph BEFORE["Before This PR"]
         B_AUTO["auto_fixable_patterns\n16 entries"]
@@ -936,6 +954,7 @@ flowchart TD
 ## 5. CI Check Status — Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing", "Cleanup Stale PR Comments\nSyntaxError Python 3.12"'}}%%
 flowchart LR
     subgraph BEFORE["Before PR — Failing"]
         B1["Cleanup Stale PR Comments\nSyntaxError Python 3.12"]
@@ -967,6 +986,7 @@ flowchart LR
 ## 6. New Files & Artifacts Created
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map'}}%%
 mindmap
   root((PR #4289\nNew Artifacts))
     Workflows
@@ -988,6 +1008,7 @@ mindmap
 ## 7. Dependency Consolidation (10 Dependabot PRs)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "10 Dependabot PRs\npending at PR open", "transformers — version bump"'}}%%
 flowchart TD
     DEP_IN["10 Dependabot PRs\npending at PR open"]
 
@@ -1005,6 +1026,7 @@ flowchart TD
 ## 8. Commits Timeline (Meaningful Commits Only)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Git Graph'}}%%
 gitGraph
    commit id: "265e11a — Initial plan"
    commit id: "74335117 — docs+deps initial commit"
@@ -1040,6 +1062,7 @@ gitGraph
 ## 16. S296 Session Activity — Continuation Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S296 Start\n2026-05-06T02:11Z\ncomment 4384471249, "Verification Pass"'}}%%
 flowchart LR
     S296_START([S296 Start\n2026-05-06T02:11Z\ncomment 4384471249]) --> VERIFY
 
@@ -1075,6 +1098,7 @@ flowchart LR
 ## 17. Priority Resolution State Machine — All Priorities
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> P1_ACTIVE : session start
 
@@ -1162,6 +1186,7 @@ S(rho) = -Tr[rho * ln(rho)]  →  0   as system reaches DFS
 | Merge conflicts | `Gamma_merge` | 0 (in DFS) ✅ |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W2", "S294-W3", "S294-W4", "S295", "S296", 3.8, 2.9, 2.1, 1.4, 0.8, 0.2, 0.0'}}%%
 xychart-beta
     title "CI Entropy vs Session (von Neumann S(rho))"
     x-axis ["S293", "S294-W1", "S294-W2", "S294-W3", "S294-W4", "S295", "S296"]
@@ -1222,6 +1247,7 @@ where `t` is measured in sessions and `N(t)` is the open alert count.
 | `N(S296)` | **0** ✅ |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W3", "S294-W5", "S294-W7", "S295", "S296", 68, 50, 35, 20, 10, 6, 0'}}%%
 xychart-beta
     title "Alert Count — Quantum Decay Model"
     x-axis ["S293", "S294-W1", "S294-W3", "S294-W5", "S294-W7", "S295", "S296"]
@@ -1235,6 +1261,7 @@ xychart-beta
 ## 21. Wave 9 — Active-PR Guard Implementation (S296)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Root Cause Identified\ncodex-manifest-refresh.yml\nscheduled run @ 00:33Z\npushed to main while PR active, "Impact\nCODEX_MANIFEST.json generated_at\n+ integrity_sha256 diverge\nGitHub shows merge conflict on PR"'}}%%
 flowchart TD
     ROOT_CAUSE([Root Cause Identified\ncodex-manifest-refresh.yml\nscheduled run @ 00:33Z\npushed to main while PR active])
 
@@ -1264,6 +1291,7 @@ flowchart TD
 ## 22. Active-PR Guard — Decision Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Workflow: count=1 (PR #4289 '}}%%
 sequenceDiagram
     participant Scheduler as ⏱ Scheduler (cron)
     participant Workflow as 🔄 Auto-Push Workflow

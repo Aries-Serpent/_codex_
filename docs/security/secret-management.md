@@ -70,7 +70,7 @@ grep -r "API_KEY" . --include="*.py" --include="*.js" --include="*.ts"
 aws secretsmanager list-secret-version-ids --secret-id api-key
 ```
 
-#### Rotation Process
+## Rotation Process
 
 ```bash
 #!/bin/bash
@@ -135,11 +135,11 @@ echo "✅ API key rotation complete!"
 ./scripts/rotate_api_key.sh Stripe "prod_key_here" production
 ```
 
-### 2. Database Password Rotation
+## 2. Database Password Rotation
 
 **Scenario**: Rotate database credentials
 
-#### Rotation Process
+### Rotation Process
 
 ```bash
 #!/bin/bash
@@ -198,7 +198,7 @@ curl -s http://localhost:8000/health | jq . \
 echo "✅ Database password rotation complete!"
 ```
 
-### 3. OAuth Token Rotation
+## 3. OAuth Token Rotation
 
 **Scenario**: Rotate OAuth tokens (GitHub, Slack, etc.)
 
@@ -374,7 +374,7 @@ def get_api_key(secret_name: str) -> str:
         raise
 ```
 
-### 2. Audit Log Analysis
+## 2. Audit Log Analysis
 
 ```bash
 #!/bin/bash
@@ -643,7 +643,7 @@ gh secret set DB_PASSWORD --body "$DB_PASSWORD" --env production
 gh secret set PRIVATE_KEY --body "$(cat ~/.ssh/id_rsa)" --env production
 ```
 
-### 2. Using Secrets in Workflows
+## 2. Using Secrets in Workflows
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -677,7 +677,7 @@ jobs:
           ENVIRONMENT: production
 ```
 
-### 3. Rotating Secrets in Workflows
+## 3. Rotating Secrets in Workflows
 
 ```yaml
 # .github/workflows/rotate-secrets.yml
@@ -756,7 +756,7 @@ gh secret list
 gh secret set MISSING_SECRET --body "value"
 ```
 
-### Issue: Deployment fails with "Authentication failed"
+## Issue: Deployment fails with "Authentication failed"
 
 ```bash
 # Verify secret is set correctly

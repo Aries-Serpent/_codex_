@@ -218,7 +218,7 @@ PhysicsOrchestrator = PhysicsInspiredOrchestrator
 MentalMap = MentalMappingModel
 ```
 
-### 2. Physics-Guided Method Design
+## 2. Physics-Guided Method Design
 **Decision:** Implement methods using physics principles
 
 **Examples:**
@@ -266,7 +266,7 @@ if '@pytest.mark.skip' in lines[i]:
     del lines[i]
 ```
 
-### Pitfall 2: Coverage Percentage Denominator
+## Pitfall 2: Coverage Percentage Denominator
 **Problem:** Adding new methods temporarily reduces coverage %
 
 **Example:**
@@ -290,7 +290,7 @@ evolver.harmonic_hamiltonian(q=positions, p=momenta)
 
 **Mitigation:** Always check actual API signature before activating test
 
-### Pitfall 4: Batch Activation Without Rollback Plan
+## Pitfall 4: Batch Activation Without Rollback Plan
 **Problem:** Activating many tests at once makes it hard to identify issues
 
 **Mitigation:**

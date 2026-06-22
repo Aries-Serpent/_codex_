@@ -1,5 +1,77 @@
 # [Prompt Template]: Intent Validation & Plan of Action Approval Gate
 
+## Table of Contents
+
+- [Assumptions (✓ confirmed, ? uncertain, ⚠️ needs clarification)](#assumptions--confirmed--uncertain--needs-clarification)
+- [Open Questions → Resolved Answers (based on your feedback)](#open-questions--resolved-answers-based-on-your-feedback)
+- [Finalized Specs (frozen for Iterations 1–3)](#finalized-specs-frozen-for-iterations-13)
+- [Phases of Action](#phases-of-action)
+  - [Phase 0 — Research & Alignment (no code, research artifacts included below)](#phase-0--research--alignment-no-code-research-artifacts-included-below)
+  - [Phase 1 — Iteration 1 (Eval loop + logging wiring + pip‑audit + best‑k retention)](#phase-1--iteration-1-eval-loop--logging-wiring--pipaudit--bestk-retention)
+  - [Phase 2 — Iteration 2 (Quickstart + config schema + AST CLI integration)](#phase-2--iteration-2-quickstart--config-schema--ast-cli-integration)
+  - [Phase 3 — Iteration 3 (Style normalization + determinism polish + CPU Dockerfile)](#phase-3--iteration-3-style-normalization--determinism-polish--cpu-dockerfile)
+- [Risks and Mitigations](#risks-and-mitigations)
+- [Deliverables](#deliverables)
+- [Acceptance Criteria](#acceptance-criteria)
+- [Research Notes (Deep web search; reused patterns with citations)](#research-notes-deep-web-search-reused-patterns-with-citations)
+  - [Robust PyTorch evaluation loop and metrics logging](#robust-pytorch-evaluation-loop-and-metrics-logging)
+  - [1. Core Evaluation Loop Structure](#1-core-evaluation-loop-structure)
+  - [2. Best Practices for Metrics Logging](#2-best-practices-for-metrics-logging)
+  - [3. Additional Recommendations](#3-additional-recommendations)
+  - [Resources & References](#resources--references)
+  - [pip-audit in Nox; fail on High/Critical](#pip-audit-in-nox-fail-on-highcritical)
+  - [Notes:](#notes)
+  - [Why This Works & Best Practices](#why-this-works--best-practices)
+  - [Documentation & References](#documentation--references)
+  - [Safe best‑k checkpoint retention (atomic deletion pattern)](#safe-bestk-checkpoint-retention-atomic-deletion-pattern)
+  - [Key Principles](#key-principles)
+  - [Safe Implementation Steps](#safe-implementation-steps)
+    - [1. Save Checkpoint](#1-save-checkpoint)
+    - [2. Update Index/Metadata](#2-update-indexmetadata)
+    - [3. Find Top k](#3-find-top-k)
+    - [4. Delete Excess (Atomically)](#4-delete-excess-atomically)
+  - [Framework Examples](#framework-examples)
+  - [Additional Context and Best Practices](#additional-context-and-best-practices)
+  - [References and More Reading](#references-and-more-reading)
+  - [Typer CLI structure with subcommands (best practices)](#typer-cli-structure-with-subcommands-best-practices)
+- [1. Modular Structure: Split Commands Into Separate Modules](#1-modular-structure-split-commands-into-separate-modules)
+- [commands/create.py](#commandscreatepy)
+- [main.py](#mainpy)
+- [2. Use Groups and Nested Subcommands for Scalability](#2-use-groups-and-nested-subcommands-for-scalability)
+- [3. Only Use Explicit Command Names for Larger Interfaces](#3-only-use-explicit-command-names-for-larger-interfaces)
+- [4. Provide Consistent Help Text and Metadata](#4-provide-consistent-help-text-and-metadata)
+- [5. Leverage Type Hints Throughout](#5-leverage-type-hints-throughout)
+- [6. Group Related Commands and Use Consistent Naming](#6-group-related-commands-and-use-consistent-naming)
+- [7. Testing and Error Handling](#7-testing-and-error-handling)
+- [8. Common Patterns](#8-common-patterns)
+  - [Validate TOML and JSON against JSON Schema](#validate-toml-and-json-against-json-schema)
+  - [1. Load TOML and JSON Configurations into Python Dictionaries](#1-load-toml-and-json-configurations-into-python-dictionaries)
+  - [2. Load the JSON Schema](#2-load-the-json-schema)
+  - [3. Validate Configurations Using jsonschema](#3-validate-configurations-using-jsonschema)
+  - [4. Using Multi-Format Validators (Optional for Automation)](#4-using-multi-format-validators-optional-for-automation)
+  - [References and Further Reading](#references-and-further-reading)
+    - [Summary](#summary)
+  - [Deterministic ML experiments (PyTorch/Numpy/Seeds)](#deterministic-ml-experiments-pytorchnumpyseeds)
+  - [1. Seed All Random Generators](#1-seed-all-random-generators)
+  - [2. Control cuDNN Behavior (for GPU)](#2-control-cudnn-behavior-for-gpu)
+  - [3. Consistent Data Loading](#3-consistent-data-loading)
+  - [4. Log All Hyperparameters and Initial States](#4-log-all-hyperparameters-and-initial-states)
+  - [5. Version and Save Code and Data](#5-version-and-save-code-and-data)
+  - [6. Hardware and Environment Consistency](#6-hardware-and-environment-consistency)
+  - [7. Performance Trade-offs](#7-performance-trade-offs)
+  - [8. Use Comprehensive Deterministic Mode in Modern PyTorch](#8-use-comprehensive-deterministic-mode-in-modern-pytorch)
+    - [Example Starter Script for Deterministic PyTorch Experiments](#example-starter-script-for-deterministic-pytorch-experiments)
+- [For newer PyTorch releases](#for-newer-pytorch-releases)
+- [When creating DataLoader](#when-creating-dataloader)
+- [CPU-only Dockerfile mirroring local dev (nox/pytest) with caching](#cpu-only-dockerfile-mirroring-local-dev-noxpytest-with-caching)
+- [Security: non-root user](#security-non-root-user)
+- [Dependencies for caching](#dependencies-for-caching)
+- [For local dev (nox/pytest)](#for-local-dev-noxpytest)
+- [Environment variables](#environment-variables)
+- [Default: run tests (for CI), or override as needed](#default-run-tests-for-ci-or-override-as-needed)
+- [Tailored Copilot Prompt (Next Iteration: push coverage from 95% → 96–99%)](#tailored-copilot-prompt-next-iteration-push-coverage-from-95--9699)
+- [Rollback / Fallback Plan](#rollback--fallback-plan)
+
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
@@ -678,7 +750,7 @@ For deeper guides and troubleshooting, PyTorch’s official reproducibility note
 
 ---
 
-### CPU-only Dockerfile mirroring local dev (nox/pytest) with caching
+## CPU-only Dockerfile mirroring local dev (nox/pytest) with caching
 Here are best practices for creating an efficient, CPU-only Python Dockerfile that mirrors your local development environment (especially with tools like nox and pytest), while leveraging Docker build caching for faster, reproducible builds:
 
 1. Use the Official, Minimal Base Image

@@ -153,13 +153,13 @@ ruff check src/codex/security/log_sanitizer.py --select F401
 # OUTPUT: All checks passed! ✅
 ```
 
-### Return Value Consistency Check
+## Return Value Consistency Check
 ```bash
 ruff check src/codex/security/log_sanitizer.py --select RET
 # OUTPUT: All checks passed! ✅
 ```
 
-### Test File Quality Check
+## Test File Quality Check
 ```bash
 ruff check tests/security/test_security_integration.py --select F401,RET
 # OUTPUT: All checks passed! ✅

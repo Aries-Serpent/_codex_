@@ -18,6 +18,7 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 ## 🗺️ Skills-to-agent Mapping
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv1.0.0", "doc.refresh.agent\nv1.0.0"'}}%%
 graph LR
     subgraph "Built-in Skills"
         S1["doc.retriever.core\nv1.0.0"]
@@ -96,6 +97,7 @@ graph LR
 ## 🎯 AAIS Scores — Radar Chart
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram Configuration showing "Concision: 0.85", "Acronym: 0.95"'}}%%
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4CAF50'}}}%%
 graph TD
     subgraph "AAIS Breakdown — doc.retriever.core (0.92)"
@@ -128,6 +130,7 @@ graph TD
 ## 🔄 Stratified Routing — Scoring Formula
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Query Objective\n+ Capability Tags", "Match Score\n(Jaccard similarity)"'}}%%
 flowchart LR
     Q["Query Objective\n+ Capability Tags"] --> MATCH["Match Score\n(Jaccard similarity)"]
     Q --> FRESH["Freshness Score\n(1 − budget exhaustion)"]
@@ -167,6 +170,7 @@ consumers, and complementary execution patterns. Percentage = recommendation con
 ## 📈 Telemetry Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Skill Handler\n(handler.py)", "ExecutionEnvelope\n.run()"'}}%%
 flowchart TD
     SKILL["Skill Handler\n(handler.py)"] --> ENV["ExecutionEnvelope\n.run()"]
     ENV --> TEL["emit_event()"]
@@ -184,6 +188,7 @@ flowchart TD
 ## 🏗️ Agent Lifecycle Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Discovery: registry.discover()
     Discovery --> Scoring: AAISScorer.score()

@@ -101,7 +101,7 @@ retriever = QuantumEnhancedRetrieval()
 results = retriever.retrieve_from_chunks(query, chunks, top_k=10)
 ```
 
-### Pattern 2: Hybrid Approach
+## Pattern 2: Hybrid Approach
 
 Combine classical and quantum scoring:
 
@@ -122,7 +122,7 @@ quantum_results = quantum_retriever.retrieve_from_chunks(
 merged = merge_and_rerank(classical_results, quantum_results)
 ```
 
-### Pattern 3: Conditional Quantum Enhancement
+## Pattern 3: Conditional Quantum Enhancement
 
 Use quantum scoring only for specific query types:
 
@@ -188,7 +188,7 @@ if patterns:
     )
 ```
 
-### MCP Metrics Integration
+## MCP Metrics Integration
 
 Track quantum retrieval performance:
 
@@ -219,7 +219,7 @@ metrics.record_operation(
 )
 ```
 
-### Quantum Game Theory Integration
+## Quantum Game Theory Integration
 
 Use retrieval scores in strategic decision-making:
 
@@ -247,7 +247,7 @@ decision = game.evaluate_strategies(
 )
 ```
 
-### Chain of Verification (CoVe) Integration
+## Chain of Verification (CoVe) Integration
 
 Verify quantum retrieval results:
 
@@ -302,7 +302,7 @@ retriever = QuantumEnhancedRetrieval()
 retriever.quantum_scorer = scorer
 ```
 
-### Metadata Requirements
+## Metadata Requirements
 
 For optimal quantum scoring, provide these metadata fields:
 
@@ -451,7 +451,7 @@ scorer = QuantumRelevanceScorer(entropy_threshold=3.0)
 scorer = QuantumRelevanceScorer(alpha=0.8, beta=0.1, gamma=0.1)
 ```
 
-### Issue: Temporal Decay Too Aggressive
+## Issue: Temporal Decay Too Aggressive
 
 **Symptoms:** Only very recent documents returned
 
@@ -470,7 +470,7 @@ scorer = QuantumRelevanceScorer(
 )
 ```
 
-### Issue: Results Too Similar (Low Diversity)
+## Issue: Results Too Similar (Low Diversity)
 
 **Symptoms:** All results very similar content
 
@@ -483,7 +483,7 @@ retriever.quantum_scorer.entropy_threshold = 2.5  # Allow more entropy
 # (requires code modification)
 ```
 
-### Issue: Performance Too Slow
+## Issue: Performance Too Slow
 
 **Symptoms:** Retrieval takes too long
 
@@ -555,7 +555,7 @@ for i, result in enumerate(results, 1):
     print(f"   Entropy: {result.metadata['entropy_contribution']:.4f}")
 ```
 
-### Example 2: News Article Retrieval
+## Example 2: News Article Retrieval
 
 ```python
 # Configure for news (recency matters most)
@@ -584,7 +584,7 @@ results = retriever.retrieve_from_chunks(
 )
 ```
 
-### Example 3: Multi-Stage Retrieval
+## Example 3: Multi-Stage Retrieval
 
 ```python
 # Stage 1: Fast classical retrieval

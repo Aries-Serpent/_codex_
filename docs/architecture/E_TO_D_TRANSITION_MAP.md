@@ -44,6 +44,7 @@
 ## FSM State Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> ModelE : initial state
 

@@ -21,7 +21,7 @@ Reviewed and verified 25 code scanning findings from Bandit, CodeQL, and Semgrep
 hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 ```
 
-### 2. eval() Usage
+## 2. eval() Usage
 **Status**: ✅ NOT VULNERABLE
 **Reason**: All `eval()` calls are `model.eval()` - PyTorch's evaluation mode, NOT Python's dangerous eval() function.
 

@@ -104,7 +104,7 @@ pr_description = f"""{progress_checklist}
 # Then pass pr_description to report_progress(prDescription=pr_description, ...)
 ```
 
-### Pre-checked Always-Required Items
+## Pre-checked Always-Required Items
 
 These items are **always** `[x]` regardless of `existing_state` (enforced by `_WEC_ALWAYS_REQUIRED`):
 

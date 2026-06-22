@@ -62,9 +62,9 @@ os.getenv('CODEX_GHP_TOKEN_SHA256')
 
 ---
 
-### 2. Integration Points ✅
+## 2. Integration Points ✅
 
-#### A. Workflow Secrets
+### A. Workflow Secrets
 The tool correctly generates secrets that are used in:
 1. **Copilot Agent Workflows**: `copilot-with-mcp.yml` (4 occurrences)
 2. **Token Rotation**: `token-rotation.yml` (2 occurrences)
@@ -96,13 +96,13 @@ auth_data = b"_codex_ghp_token_v1_aries_serpent"
 ```
 ✅ **Matches decoder** (line 39 in `copilot_token_decoder.py`)
 
-#### B. Encryption Standards
+## B. Encryption Standards
 - ✅ AES-256-GCM (authenticated encryption)
 - ✅ 256-bit keys (32 bytes)
 - ✅ 96-bit nonce for GCM mode
 - ✅ Cryptographically secure random generation via `secrets` module
 
-#### C. Token Validation
+### C. Token Validation
 ```python
 # Lines 313-318: Validates GitHub token format
 if not token.startswith(('ghp_', 'gho_', 'ghs_', 'github_pat_')):
@@ -110,7 +110,7 @@ if not token.startswith(('ghp_', 'gho_', 'ghs_', 'github_pat_')):
 ```
 ✅ **Correct prefixes** for GitHub personal access tokens
 
-#### D. Secret Storage Recommendations
+## D. Secret Storage Recommendations
 The tool correctly recommends:
 1. **Primary**: AES-256-GCM (most secure)
 2. **Alternative**: Base64 (simple, adequate)
@@ -133,13 +133,13 @@ except ImportError:
 ```
 ✅ **Handles optional dependency gracefully**
 
-#### B. Error Handling
+## B. Error Handling
 - ✅ Validates token format before processing
 - ✅ Checks for CLI installation (`gh`)
 - ✅ Verifies authentication status
 - ✅ Provides clear error messages
 
-#### C. Usability
+### C. Usability
 - ✅ Interactive mode (prompts for token)
 - ✅ Environment variable support
 - ✅ Generates executable setup script
@@ -166,7 +166,7 @@ def generate_aes_gcm(self) -> dict:
     self.results['AES_METADATA'] = base64.b64encode(json.dumps(metadata).encode()).decode()
 ```
 
-#### B. Add Verification Script
+## B. Add Verification Script
 ```bash
 # Generate companion verification script
 def generate_verification_script(self) -> str:
@@ -184,7 +184,7 @@ fi
 """
 ```
 
-#### C. Add Rotation Reminder
+## C. Add Rotation Reminder
 ```python
 # Enhancement: Add to output
 print("\n⏰ TOKEN ROTATION REMINDER:")
@@ -197,7 +197,7 @@ print("   - Use: scripts/security/token_rotation.sh")
 
 ---
 
-### 6. Testing Verification ✅
+## 6. Testing Verification ✅
 
 ```bash
 # Tool executes successfully

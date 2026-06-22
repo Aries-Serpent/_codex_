@@ -115,7 +115,7 @@ def update_user_settings(request, user_id: int, settings: dict):
     return database.update_user(user_id, settings)
 ```
 
-### 2. Cryptographic Failures
+## 2. Cryptographic Failures
 
 **Risk**: Sensitive data exposed due to weak encryption
 
@@ -171,7 +171,7 @@ services:
       - HSTS_SECONDS=31536000
 ```
 
-### 3. Injection Attacks
+## 3. Injection Attacks
 
 **Risk**: Attacker injects malicious code (SQL, command, template)
 
@@ -224,7 +224,7 @@ def send_email(template_name: str, user_data: dict):
     return send_email_template(html)
 ```
 
-### 4. Insecure Design
+## 4. Insecure Design
 
 **Risk**: Application lacks security requirements in design phase
 
@@ -257,7 +257,7 @@ class PaymentThreatModel:
         return {"status": "success", "transaction_id": token}
 ```
 
-### 5. Security Misconfiguration
+## 5. Security Misconfiguration
 
 **Risk**: Default credentials, unnecessary services, verbose error messages
 
@@ -281,7 +281,7 @@ def handle_error(request, exc):
     }
 ```
 
-### 6. Vulnerable Components
+## 6. Vulnerable Components
 
 **Risk**: Using outdated dependencies with known vulnerabilities
 
@@ -298,7 +298,7 @@ safety check
 pip install --upgrade <package_name>
 ```
 
-### 7. Authentication Failures
+## 7. Authentication Failures
 
 **Risk**: Weak password policies, session management issues
 
@@ -369,7 +369,7 @@ def login(credentials: dict):
     return response
 ```
 
-### 8. Software Supply Chain
+## 8. Software Supply Chain
 
 **Risk**: Compromised dependencies or build artifacts
 
@@ -399,7 +399,7 @@ jobs:
         uses: github/super-linter@v4
 ```
 
-### 9. Identification and Authentication Failures
+## 9. Identification and Authentication Failures
 
 ```python
 # ✅ SECURE: Rate limiting for login attempts
@@ -419,7 +419,7 @@ def login(request: Request, credentials: dict):
     return create_session(user)
 ```
 
-### 10. Server-Side Request Forgery (SSRF)
+## 10. Server-Side Request Forgery (SSRF)
 
 ```python
 # ❌ VULNERABLE: No URL validation
@@ -534,7 +534,7 @@ validator = InputValidator(rules)
 is_valid, errors = validator.validate(user_input)
 ```
 
-### 2. HTML Escaping
+## 2. HTML Escaping
 
 ```python
 from markupsafe import escape
@@ -616,7 +616,7 @@ class SecurityConfig:
     session_timeout_minutes: int = 30
 ```
 
-### Pattern 2: Defense in Depth
+## Pattern 2: Defense in Depth
 
 ```python
 # Multiple layers: Auth → Input validation → Authorization → Encryption
@@ -659,7 +659,7 @@ bandit -r src/
 bandit -r src/ -f json -o security_report.json
 ```
 
-### 2. Dependency Scanning
+## 2. Dependency Scanning
 
 ```bash
 pip-audit

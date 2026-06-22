@@ -5,6 +5,7 @@
 ## Overview Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing GitHub Issues, Cognitive Brain Core'}}%%
 graph TB
     subgraph "Input Layer"
         A[GitHub Issues] --> CB[Cognitive Brain Core]
@@ -78,6 +79,9 @@ graph TB
 ## PDA Loop Detail
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>P: Historical Data
+
+    P'}}%%
 sequenceDiagram
     participant E as Environment
     participant P as Perception
@@ -118,6 +122,7 @@ sequenceDiagram
 ## Self-Healing Process Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Discovery
 
@@ -153,6 +158,7 @@ stateDiagram-v2
 ## Phase 11 Workflow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow CI Fixes, Fix 7 Workflows'}}%%
 graph LR
     subgraph "Phase 11.0 - Complete ✅"
         P110[Workflow CI Fixes]
@@ -200,6 +206,7 @@ graph LR
 ## Agent Integration Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Cognitive Brain, Workflow CI Fixer'}}%%
 graph TB
     subgraph "Core Agents"
         CB[Cognitive Brain] --> WCF[Workflow CI Fixer]
@@ -254,6 +261,7 @@ graph TB
 ## Knowledge Propagation Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Issue Encountered, Solution Applied'}}%%
 graph LR
     subgraph "Experience Capture"
         E1[Issue Encountered] --> E2[Solution Applied]
@@ -298,6 +306,7 @@ graph LR
 ## Continuous Improvement Cycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Trigger Event, Assess Current State'}}%%
 graph TB
     START[Trigger Event] --> ASSESS[Assess Current State]
     ASSESS --> ANALYZE[Analyze Gaps]
@@ -320,6 +329,7 @@ graph TB
 ## Version Evolution Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title Cognitive Brain Evolution
     Phase 10.1 : Security Fixes : CodeQL Remediation : CI Improvements

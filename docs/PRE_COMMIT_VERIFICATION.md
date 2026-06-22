@@ -50,7 +50,7 @@ pre-commit install
 git commit -m "Your message"
 ```
 
-### Manual Verification
+## Manual Verification
 
 ```bash
 # Check files (no failure on missing)

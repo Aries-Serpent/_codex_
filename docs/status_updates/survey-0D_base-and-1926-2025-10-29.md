@@ -406,7 +406,7 @@ and runtime allowances required by bespoke hosts.
    `ReasoningTrainer`.
 ```text
 
-### >>> RESULT: reasoning_pod asset check@0D_base_
+## >>> RESULT: reasoning_pod asset check@0D_base_
 ```text
 Docs reference `docs/deployment/reasoning_pod.md` and matching preset `configs/deploy/reasoning_pod.yaml`; both exist locally.
 ```text

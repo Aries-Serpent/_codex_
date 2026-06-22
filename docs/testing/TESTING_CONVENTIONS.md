@@ -250,7 +250,7 @@ pytest -m "not slow"
 pytest -m "integration and not_live"
 ```
 
-### Adding New Markers
+## Adding New Markers
 
 1. Add to `pytest.ini`:
 ```ini
@@ -368,7 +368,7 @@ pytest tests/
 
 ---
 
-### ❌ Pitfall 2: Wrong Plugin Package Name
+## ❌ Pitfall 2: Wrong Plugin Package Name
 
 **Problem**: Installing `pytest-retry` instead of `pytest-rerunfailures`
 
@@ -388,7 +388,7 @@ pip install pytest-rerunfailures
 
 ---
 
-### ❌ Pitfall 3: Conflicting Coverage Configurations
+## ❌ Pitfall 3: Conflicting Coverage Configurations
 
 **Problem**: Multiple coverage configurations in different places
 
@@ -517,7 +517,7 @@ pytest tests/ --cov=src --cov-report=html
 pytest tests/ -n auto --reruns=2
 ```
 
-### Check Configuration
+## Check Configuration
 ```bash
 # Show pytest configuration
 pytest --co -q

@@ -50,7 +50,7 @@ for idx, score, token in top_tokens:
     print(f"{token}: {score:.4f}")
 ```
 
-### MLP Analysis
+## MLP Analysis
 
 ```python
 from codex.interpretability import MLPScorer
@@ -121,7 +121,7 @@ analysis = scorer.analyze_attention(
 )
 ```
 
-### Attention Flow Visualization
+## Attention Flow Visualization
 
 ```python
 import matplotlib.pyplot as plt
@@ -147,7 +147,7 @@ plt.ylabel("Source Tokens")
 plt.show()
 ```
 
-### Comparing Different Inputs
+## Comparing Different Inputs
 
 ```python
 # Prepare two different inputs
@@ -170,7 +170,7 @@ print("Layer-wise correlation:", comparison['correlation'])
 print("Layer-wise L2 distance:", comparison['l2_distance'])
 ```
 
-### Activation Statistics
+## Activation Statistics
 
 ```python
 # Analyze MLP

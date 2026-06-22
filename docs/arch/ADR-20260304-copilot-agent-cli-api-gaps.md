@@ -199,7 +199,7 @@ if brain.is_available():
     print("\n".join(brain.git_log(5)))
 ```
 
-### From bash (via curl)
+## From bash (via curl)
 
 ```bash
 # Health check

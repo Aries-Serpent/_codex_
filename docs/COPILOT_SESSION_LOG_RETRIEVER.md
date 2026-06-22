@@ -226,7 +226,7 @@ summary = retriever.analyze_session("my-session")
 print(f"Verified: {summary.verified_files}/{len(summary.expected_files)}")
 ```
 
-### With CI/CD Workflows
+## With CI/CD Workflows
 
 Add verification to your workflows:
 

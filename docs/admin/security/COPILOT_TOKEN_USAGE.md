@@ -42,7 +42,7 @@ token = copilot_get_github_token()
 print(f"Token retrieved: {token[:10]}...")  # Safe to show prefix
 ```
 
-### Safe Retrieval (No Exception)
+## Safe Retrieval (No Exception)
 
 ```python
 from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
@@ -58,7 +58,7 @@ else:
     # Handle gracefully...
 ```
 
-### Advanced: Manual Method Selection
+## Advanced: Manual Method Selection
 
 ```python
 from scripts.security.copilot_token_decoder import CodexTokenDecoder
@@ -332,7 +332,7 @@ print(f"Token: {token}")
 print(f"Token: {token[:10]}... (length: {len(token)})")
 ```
 
-### 2. Use Try-Except for Production
+## 2. Use Try-Except for Production
 
 ```python
 try:
@@ -385,7 +385,7 @@ gh secret list --repo Aries-Serpent/_codex_
 # Expected: CODEX_GHP_TOKEN_BASE64 or similar
 ```
 
-### Issue: "AES decryption unavailable"
+## Issue: "AES decryption unavailable"
 
 **Cause**: `cryptography` library not installed
 
@@ -398,7 +398,7 @@ pip install cryptography
   run: pip install cryptography
 ```
 
-### Issue: "Token verification failed"
+## Issue: "Token verification failed"
 
 **Cause**: SHA-256 hash mismatch
 

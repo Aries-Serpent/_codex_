@@ -55,7 +55,7 @@ low_threshold = create_threshold_feature(10, "score")
 high_threshold = create_threshold_feature(50, "score")
 ```
 
-### Conditional Features
+## Conditional Features
 
 Handle missing or invalid data:
 
@@ -582,7 +582,7 @@ def valid_feature(inputs):
     return inputs["historical_mean"]
 ```
 
-### 2. Missing Value Handling
+## 2. Missing Value Handling
 
 **Bad:** Ignoring missing values
 
@@ -603,7 +603,7 @@ def good_feature(inputs):
     return value * 2
 ```
 
-### 3. Feature Versioning
+## 3. Feature Versioning
 
 **Bad:** Changing features without versioning
 
@@ -630,7 +630,7 @@ text_features_v2 = FeatureGroup(
 )
 ```
 
-### 4. Expensive Computations
+## 4. Expensive Computations
 
 **Bad:** Recomputing expensive features
 

@@ -75,7 +75,7 @@ python app.py db=postgresql            # Override db
 python app.py db=postgresql logging=debug compute=cpu  # Multiple overrides
 ```
 
-### 2. Optional Defaults with `?`
+## 2. Optional Defaults with `?`
 
 Include configurations optionally—don't fail if missing:
 
@@ -96,7 +96,7 @@ python app.py db=postgresql      # Only db
 python app.py experiment=tuning  # Only experiment
 ```
 
-### 3. Conditional Defaults with Packages
+## 3. Conditional Defaults with Packages
 
 Use packages to organize nested configurations:
 
@@ -123,7 +123,7 @@ training:
   optimizer: adam
 ```
 
-### 4. Include Strategy
+## 4. Include Strategy
 
 Merge configurations intelligently:
 
@@ -159,12 +159,12 @@ port: 3306
 
 # Result in final config:
 # db:
-#   driver: mysql
-#   host: localhost
-#   port: 3306
+# driver: mysql
+# host: localhost
+# port: 3306
 ```
 
-### Default Package Behavior
+## Default Package Behavior
 
 ```yaml
 # configs/cache/redis.yaml
@@ -176,7 +176,7 @@ port: 6379
 # Result: cache: { host: localhost, port: 6379 }
 ```
 
-### Root-Level Placement
+## Root-Level Placement
 
 ```yaml
 # configs/constants.yaml
@@ -191,7 +191,7 @@ DEFAULT_TIMEOUT: 30
 MAX_RETRIES: 3
 ```
 
-### Custom Package Paths
+## Custom Package Paths
 
 ```yaml
 # configs/models/resnet.yaml
@@ -202,12 +202,12 @@ pretrained: true
 
 # Result:
 # network:
-#   backbone:
-#     layers: 50
-#     pretrained: true
+# backbone:
+# layers: 50
+# pretrained: true
 ```
 
-### Structured Configs with Dataclasses
+## Structured Configs with Dataclasses
 
 ```python
 # configs/db_config.py
@@ -269,7 +269,7 @@ defaults:
 # Later items can override earlier items
 ```
 
-### Numeric Prefixes for Clarity
+## Numeric Prefixes for Clarity
 
 ```yaml
 defaults:
@@ -294,7 +294,7 @@ cache: redis
 logging: standard
 ```
 
-### Conditional Composition
+## Conditional Composition
 
 ```yaml
 # configs/config.yaml
@@ -307,7 +307,7 @@ defaults:
 training_mode: standard  # Can be overridden
 ```
 
-### Package Defaults
+## Package Defaults
 
 ```yaml
 # configs/config.yaml
@@ -327,10 +327,10 @@ max_connections: 100
 
 # Result:
 # database:
-#   mysql:
-#     driver: mysql
-#   connection:
-#     max_connections: 100
+# mysql:
+# driver: mysql
+# connection:
+# max_connections: 100
 ```
 
 ---
@@ -359,7 +359,7 @@ python app.py name="My App"  # string
 python app.py values=[1,2,3]  # list
 ```
 
-### Glob-Based Overrides
+## Glob-Based Overrides
 
 ```bash
 # Override all db.* parameters
@@ -369,7 +369,7 @@ python app.py 'db.*=@pkg:defaults'
 python app.py 'training.*.learning_rate=0.001'
 ```
 
-### Package-Based Overrides
+## Package-Based Overrides
 
 ```bash
 # Add package to override list
@@ -379,7 +379,7 @@ python app.py +db/cache=memcached
 python app.py 'pkg=+db/cache:memcached'
 ```
 
-### Dynamic Override Chains
+## Dynamic Override Chains
 
 ```python
 from hydra.core.override_list.override_list import OverrideList
@@ -398,7 +398,7 @@ def app(cfg):
 cfg = app(config_name="config", overrides=overrides)
 ```
 
-### Environment Variable Integration
+## Environment Variable Integration
 
 ```yaml
 # configs/config.yaml
@@ -456,7 +456,7 @@ python app.py environment=dev   # Development config
 python app.py environment=prod  # Production config
 ```
 
-### Recipe 2: Experiment Management
+## Recipe 2: Experiment Management
 
 ```yaml
 # configs/config.yaml
@@ -485,7 +485,7 @@ python train.py experiment=baseline
 python train.py experiment=tuned
 ```
 
-### Recipe 3: Model Selection with Composition
+## Recipe 3: Model Selection with Composition
 
 ```yaml
 # configs/model/resnet.yaml
@@ -509,7 +509,7 @@ defaults:
 model: resnet  # Override with model=vit
 ```
 
-### Recipe 4: Hierarchical Defaults
+## Recipe 4: Hierarchical Defaults
 
 ```yaml
 # configs/config.yaml
@@ -525,7 +525,7 @@ defaults:
 # Enables deep composition while maintaining clarity
 ```
 
-### Recipe 5: Feature Flags Configuration
+## Recipe 5: Feature Flags Configuration
 
 ```yaml
 # configs/features/base.yaml
@@ -583,7 +583,7 @@ def get_config_cached(overrides_tuple):
 config = get_config_cached(tuple(["db=mysql", "env=prod"]))
 ```
 
-### 3. Selective Config Loading
+## 3. Selective Config Loading
 
 ```yaml
 # configs/config.yaml
@@ -605,7 +605,7 @@ python app.py training=null evaluation=null
 python app.py training=standard evaluation=validation
 ```
 
-### 4. Config Validation with Structured Configs
+## 4. Config Validation with Structured Configs
 
 ```python
 from dataclasses import dataclass, field
@@ -660,7 +660,7 @@ db:  # This must exist
   port: 3306
 ```
 
-### Issue: Package Directive Ignored
+## Issue: Package Directive Ignored
 
 **Solution**: Ensure proper syntax:
 
@@ -672,7 +672,7 @@ package: db
 # @package db
 ```
 
-### Issue: Circular Dependencies
+## Issue: Circular Dependencies
 
 ```
 Error: Circular dependency detected in defaults list
@@ -690,7 +690,7 @@ defaults:
   - override /environment: prod
 ```
 
-### Issue: Type Mismatch in Overrides
+## Issue: Type Mismatch in Overrides
 
 ```
 Error: Cannot override 'epochs' of type int with string value

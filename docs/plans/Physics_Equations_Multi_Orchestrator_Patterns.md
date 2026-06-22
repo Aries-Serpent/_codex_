@@ -1,5 +1,23 @@
 # Physics Equations & Formulas Reference — Multi-Orchestrator / Multi-Agent Patterns
 
+## Table of Contents
+
+- [Purpose](#purpose)
+- [Strategy Categories](#strategy-categories)
+- [Concise table with mapping to capabilities and multi-orchestrator / multi-agent use cases](#concise-table-with-mapping-to-capabilities-and-multi-orchestrator--multi-agent-use-cases)
+- [Agent Patterns](#agent-patterns)
+  - [Pattern 1: Sentinel Agents (Eq #4, #16, #32, #33, #56)](#pattern-1-sentinel-agents-eq-4-16-32-33-56)
+  - [Pattern 2: Coherence-Arbiter Agents (Eq #15, #42, #54)](#pattern-2-coherence-arbiter-agents-eq-15-42-54)
+  - [Pattern 3: Workload Distribution (Eq #5, #17, #18)](#pattern-3-workload-distribution-eq-5-17-18)
+  - [Pattern 4: Transactional Semantics (Eq #9, #21, #53)](#pattern-4-transactional-semantics-eq-9-21-53)
+- [Integration Testing Roadmap](#integration-testing-roadmap)
+  - [Phase 3: Cross-Module Integration (50% → 70%)](#phase-3-cross-module-integration-50--70)
+- [Usage Guidelines](#usage-guidelines)
+  - [When to Apply Table 3](#when-to-apply-table-3)
+  - [Expected Gains](#expected-gains)
+- [Validation Checklist](#validation-checklist)
+- [See Also](#see-also)
+
 **Last Updated:** 2026-06-22
 
 > **Table 3 of 4**: Multi-orchestrator and multi-agent use cases

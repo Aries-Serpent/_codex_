@@ -255,7 +255,7 @@ coverage --version
 
 ---
 
-### Step 2: Execute Batch 13 Activation
+## Step 2: Execute Batch 13 Activation
 
 Once pytest is available, execute sequentially:
 
@@ -286,7 +286,7 @@ pytest tests/agents/ --cov=agents --cov-report=term
 
 ---
 
-### Step 3-6: Repeat for Batches 14-17
+## Step 3-6: Repeat for Batches 14-17
 
 Follow same pattern for each batch sequentially.
 

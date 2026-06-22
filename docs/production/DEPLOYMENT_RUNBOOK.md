@@ -774,7 +774,7 @@ watch -n 5 'kubectl top pods -n production'
 echo "Rollback completed at $(date)" >> /var/log/rollback.log
 ```
 
-### 10.2 Database Rollback
+## 10.2 Database Rollback
 
 **Procedure** (only if database migrations caused issues):
 
@@ -793,7 +793,7 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod -c "SELECT ve
 curl http://${API_ENDPOINT}/health
 ```
 
-### 10.3 Rollback Sign-Off
+## 10.3 Rollback Sign-Off
 
 **Rollback Approved By**: _________________________ Date: _________  
 **Reason for Rollback**: _______________________________________________  

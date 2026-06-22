@@ -28,6 +28,7 @@
 ## Architecture State (Post PR #3494)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "PR #3494 Deliverables", "✅ ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"'}}%%
 graph TB
     subgraph PR3494["PR #3494 Deliverables"]
         ADR["✅ ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]

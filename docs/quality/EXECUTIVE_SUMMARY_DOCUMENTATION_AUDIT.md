@@ -261,7 +261,7 @@ find docs -name "*.md" -exec markdown-link-check {} \;
 sphinx-apidoc -o docs/api src/
 ```
 
-### CI/CD Integration
+## CI/CD Integration
 
 ```yaml
 # .github/workflows/docs.yml

@@ -243,7 +243,7 @@ codex zendesk apply triggers \
   --env=dev
 ```text
 
-#### Step 6: Verify and Monitor
+## Step 6: Verify and Monitor
 
 ```bash
 # Check metrics
@@ -256,7 +256,7 @@ codex zendesk snapshot --env=dev
 diff snapshot/dev/<before>/triggers.json snapshot/dev/latest/triggers.json
 ```text
 
-### Workflow Automation
+## Workflow Automation
 
 Use task sequences for repeatable workflows:
 
@@ -610,7 +610,7 @@ codex zendesk metrics --since 2024-01-01 --until 2024-01-31
 codex zendesk metrics --format json > metrics.json
 ```text
 
-### Integration with Monitoring Systems
+## Integration with Monitoring Systems
 
 Export metrics to Prometheus/Grafana:
 
@@ -622,7 +622,7 @@ metrics = ZendeskMetrics()
 prometheus_metrics = metrics.export_prometheus()
 ```text
 
-### Key Metrics to Monitor
+## Key Metrics to Monitor
 
 | Metric | Target | Action if Below Target |
 |--------|--------|----------------------|
@@ -649,7 +649,7 @@ export ZENDESK_MAX_RETRIES=5
 codex zendesk apply triggers plans/triggers_plan.json --env=dev --rate-limit
 ```text
 
-#### Issue 2: Invalid Desired State JSON
+## Issue 2: Invalid Desired State JSON
 
 **Symptoms**: JSON parsing errors, validation failures
 
@@ -664,7 +664,7 @@ python tools/schema_validate.py \
   --schema schemas/zendesk_triggers.schema.json
 ```text
 
-#### Issue 3: Missing Group/Schedule IDs
+## Issue 3: Missing Group/Schedule IDs
 
 **Symptoms**: References to `GROUP_ID` or `SCHEDULE_ID` not resolved
 
@@ -680,7 +680,7 @@ codex zendesk list-schedules --env=dev
 sed -i 's/TIER_1_GROUP_ID/123456789/g' configs/desired/zendesk/triggers.json
 ```text
 
-#### Issue 4: Diff Shows Unexpected Changes
+## Issue 4: Diff Shows Unexpected Changes
 
 **Symptoms**: Diff includes changes you didn't make
 
@@ -696,7 +696,7 @@ diff snapshot/dev/<old>/triggers.json snapshot/dev/latest/triggers.json
 cat configs/desired/zendesk/triggers.json | jq
 ```text
 
-#### Issue 5: Apply Fails Partway Through
+## Issue 5: Apply Fails Partway Through
 
 **Symptoms**: Some objects updated, others failed
 
@@ -719,7 +719,7 @@ codex zendesk plan triggers --diff-file diffs/triggers_recovery_diff.json --outp
 codex zendesk apply triggers plans/recovery_plan.json --env=dev
 ```text
 
-### Debug Mode
+## Debug Mode
 
 Enable verbose logging:
 
@@ -754,7 +754,7 @@ git commit -m "Add high-priority auto-assignment trigger"
 git tag -a zendesk-release-v1.2.0 -m "Add new support workflows"
 ```text
 
-### 3. Code Review
+## 3. Code Review
 
 - **Require PR reviews** for all desired state changes
 - **Include diffs** in PR descriptions
@@ -775,7 +775,7 @@ mkdir -p archive/snapshots/prod
 cp -r snapshot/prod/<timestamp>/ archive/snapshots/prod/release-v1.0/
 ```text
 
-### 6. Secrets Management
+## 6. Secrets Management
 
 - **Never commit API tokens** to Git
 - **Use environment variables** or secret managers
@@ -824,7 +824,7 @@ tasks:
     command: codex zendesk metrics --since today
 ```text
 
-### Integration with CI/CD
+## Integration with CI/CD
 
 While _codex_ is designed for local-first workflows, you can integrate with CI/CD:
 
@@ -858,7 +858,7 @@ jobs:
           codex zendesk apply triggers plans/triggers_plan.json --env=staging
 ```text
 
-### ML-Assisted Configuration
+## ML-Assisted Configuration
 
 Optionally use ML to suggest optimizations:
 
@@ -878,7 +878,7 @@ codex-infer \
 
 See [docs/runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md) for ML integration details.
 
-### Webhook Testing
+## Webhook Testing
 
 Test webhooks locally before deploying:
 
@@ -897,7 +897,7 @@ codex zendesk apply webhooks plans/webhooks_plan.json --env=dev
 # Check webhook receiver logs
 ```text
 
-### Bulk Operations
+## Bulk Operations
 
 For large-scale changes, use batch processing:
 

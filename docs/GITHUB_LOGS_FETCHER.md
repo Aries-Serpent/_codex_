@@ -50,7 +50,7 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344 -o logs.txt
 codex github-logs check-run Aries-Serpent _codex_ 59990656344 -f json
 ```
 
-#### Fetch Job Logs
+## Fetch Job Logs
 
 ```bash
 # Basic usage
@@ -60,7 +60,7 @@ codex github-logs job Aries-Serpent _codex_ 12345678
 codex github-logs job Aries-Serpent _codex_ 12345678 -o job-logs.txt
 ```
 
-#### List Check Runs
+## List Check Runs
 
 ```bash
 # List all check runs for a commit
@@ -73,9 +73,9 @@ codex github-logs list-check-runs Aries-Serpent _codex_ main --status completed
 codex github-logs list-check-runs Aries-Serpent _codex_ main --name "CI Tests"
 ```
 
-### 2. API Usage
+## 2. API Usage
 
-#### Start the API Server
+### Start the API Server
 
 ```bash
 # Using FastAPI directly
@@ -86,7 +86,7 @@ from codex.api.github_logs import router
 app.include_router(router)
 ```
 
-#### API Endpoints
+## API Endpoints
 
 **Get Check Run Logs**
 ```bash
@@ -103,7 +103,7 @@ app.include_router(router)
   -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
-#### API Response Format
+### API Response Format
 
 **Check Run Logs Response:**
 ```json
@@ -150,7 +150,7 @@ for run in result["check_runs"]:
     print(f"{run['id']}: {run['name']} - {run['conclusion']}")
 ```
 
-#### AI Agent Integration
+## AI Agent Integration
 
 The MCP tools can be registered with AI agents for autonomous log fetching:
 

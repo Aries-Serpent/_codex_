@@ -1,5 +1,30 @@
 # Dependency Disk Pressure & Archival-Aligned Utilization Triage  
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
+## Table of Contents
+
+- [0. Archival & Retention Alignment (New Section)](#0-archival--retention-alignment-new-section)
+- [1. Scope & Source](#1-scope--source)
+- [2. Ranking Criteria (Extended with Archival Governance)](#2-ranking-criteria-extended-with-archival-governance)
+- [3. High-Impact Space Consumers (Approximate Wheel Sizes)](#3-high-impact-space-consumers-approximate-wheel-sizes)
+- [4. Dependency Utilization & Archival Table](#4-dependency-utilization--archival-table)
+- [5. Recommended Separation of Requirements](#5-recommended-separation-of-requirements)
+  - [a) Keep `requirements-dev.txt` Lean](#a-keep-requirements-devtxt-lean)
+  - [b) `requirements-ml-cpu.txt` (Install only in targeted nox session)](#b-requirements-ml-cputxt-install-only-in-targeted-nox-session)
+  - [c) `requirements-eval.txt`](#c-requirements-evaltxt)
+  - [d) `requirements-notebook.txt`](#d-requirements-notebooktxt)
+  - [e) Blocking GPU Vendor Wheels (Guard)](#e-blocking-gpu-vendor-wheels-guard)
+- [6. CI Adjustments](#6-ci-adjustments)
+- [7. Example Revised Nox Sessions](#7-example-revised-nox-sessions)
+- [8. Purge / Constrain Strategy Summary](#8-purge--constrain-strategy-summary)
+- [9. Priority Removal Order (Fastest Space Relief)](#9-priority-removal-order-fastest-space-relief)
+- [10. Proposed Minimal Baseline (CI Unit Coverage)](#10-proposed-minimal-baseline-ci-unit-coverage)
+- [11. Validation Checklist](#11-validation-checklist)
+- [12. Actionable Next Steps](#12-actionable-next-steps)
+- [13. Reference Links (Ref Commit)](#13-reference-links-ref-commit)
+- [14. Optional: Draft Minimal Replacement Dev Spec](#14-optional-draft-minimal-replacement-dev-spec)
+- [requirements-dev-min.txt](#requirements-dev-mintxt)
+- [15. Summary](#15-summary)
+
 Ref: f40ff2bbcacf567eef3dc6bd8c95733859b927dc
 
 ## 0. Archival & Retention Alignment (New Section)

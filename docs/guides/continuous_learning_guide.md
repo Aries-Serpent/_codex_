@@ -46,7 +46,7 @@ print(f"Metrics: {latest.metrics}")
 v1 = registry.get_by_version("v1.0")
 ```
 
-### 2. Drift Monitoring
+## 2. Drift Monitoring
 
 Monitor for data, config, and model drift:
 
@@ -74,7 +74,7 @@ if monitor.has_critical_drift():
     print(f"Critical alerts: {summary['critical_count']}")
 ```
 
-### 3. Auto-Retraining
+## 3. Auto-Retraining
 
 Automatically retrain when drift exceeds thresholds:
 
@@ -99,7 +99,7 @@ if pipeline.should_retrain(
     print(f"Metrics: {new_version.metrics}")
 ```
 
-### 4. Model Comparison
+## 4. Model Comparison
 
 Compare new model with production:
 
@@ -142,7 +142,7 @@ monitor = ComprehensiveDriftMonitor(
 )
 ```
 
-### Step 2: Continuous Monitoring
+## Step 2: Continuous Monitoring
 
 ```python
 import logging
@@ -448,7 +448,7 @@ def should_retrain_with_cooldown(cooldown_hours=24):
     return pipeline.should_retrain(...)
 ```
 
-### Issue: Model Performance Not Improving
+## Issue: Model Performance Not Improving
 
 **Problem:** New models don't improve over baseline
 
@@ -472,7 +472,7 @@ if not comparison["is_better"]:
     deploy_ensemble([new_version, baseline_version])
 ```
 
-### Issue: Drift False Positives
+## Issue: Drift False Positives
 
 **Problem:** Drift detected but data hasn't actually changed
 
@@ -565,7 +565,7 @@ spec:
               value: "1000"
 ```
 
-### 2. Monitoring
+## 2. Monitoring
 
 ```python
 # Setup Prometheus metrics

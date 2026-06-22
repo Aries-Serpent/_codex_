@@ -327,7 +327,7 @@ dependencies = [
 - Implement `UniversalParser` facade
 - Implement error handling framework
 
-### Phase 2-6: Core Implementation (Pre-commit 5-18)
+## Phase 2-6: Core Implementation (Pre-commit 5-18)
 
 **Incremental Approach**:
 - Start with `StandardizedASTNode` and `UniversalParser`

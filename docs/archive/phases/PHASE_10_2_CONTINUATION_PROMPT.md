@@ -149,9 +149,9 @@ cd ../..
 
 ---
 
-### Priority 1: Agent Integration (2-3 hours)
+## Priority 1: Agent Integration (2-3 hours)
 
-#### Task 6: Integrate CLI with Admin Automation Agent (1.5 hours)
+### Task 6: Integrate CLI with Admin Automation Agent (1.5 hours)
 
 **File**: `.github/agents/admin-automation-agent/src/agent.py`
 

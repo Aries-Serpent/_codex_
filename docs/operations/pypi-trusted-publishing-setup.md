@@ -311,7 +311,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-### Step 7: Verify Installation from PyPI
+## Step 7: Verify Installation from PyPI
 
 **Objective:** Confirm published package is installable.
 

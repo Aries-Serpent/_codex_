@@ -45,7 +45,7 @@ detector = DataDriftDetector(psi_threshold=0.2, kl_threshold=0.5)
 | `kl_threshold` | `0.5` | KL-divergence above which drift is flagged |
 | `epsilon` | `1e-8` | Smoothing constant (avoids log(0)) |
 
-### Step 2: Prepare distributions
+## Step 2: Prepare distributions
 
 Both methods accept plain Python lists (or any `Sequence[float]`).  Each list
 represents a binned probability distribution — values are **automatically
@@ -60,7 +60,7 @@ reference = [0.05, 0.20, 0.40, 0.25, 0.10]
 current   = [0.03, 0.15, 0.35, 0.32, 0.15]  # older users, slight shift
 ```
 
-### Step 3: Run PSI and KL checks
+## Step 3: Run PSI and KL checks
 
 ```python
 psi_result = detector.detect_psi(reference, current, feature_name="age_bucket")
@@ -85,13 +85,13 @@ from codex_ml.monitoring.data_drift import DriftResult  # already imported above
 
 print(psi_result.to_dict())
 # {
-#   "method": "psi",
-#   "score": 0.0412,
-#   "threshold": 0.2,
-#   "drifted": False,
-#   "severity": "none",
-#   "details": {"feature_name": "age_bucket", "num_bins": 5, ...},
-#   "detected_at": "2025-01-15T10:23:41+00:00"
+# "method": "psi",
+# "score": 0.0412,
+# "threshold": 0.2,
+# "drifted": False,
+# "severity": "none",
+# "details": {"feature_name": "age_bucket", "num_bins": 5, ...},
+# "detected_at": "2025-01-15T10:23:41+00:00"
 # }
 ```
 
@@ -103,7 +103,7 @@ print(psi_result.to_dict())
 | 0.1 – 0.2 | Slight change — monitor closely |
 | > 0.2 | Significant change — consider retraining |
 
-### Step 5: Epoch-level convenience wrapper
+## Step 5: Epoch-level convenience wrapper
 
 In a training loop you can call `check_epoch` to run both checks at once:
 
@@ -155,7 +155,7 @@ reference_probs = [
 detector.update_baseline(reference_probs)
 ```
 
-### Step 3: Check each production epoch
+## Step 3: Check each production epoch
 
 ```python
 # After a week of production traffic
@@ -172,7 +172,7 @@ print(f"JS divergence:  {result.js_divergence:.4f}")
 print(result.summary())
 ```
 
-### Step 4: React to the result
+## Step 4: React to the result
 
 ```python
 if result.drift_detected:

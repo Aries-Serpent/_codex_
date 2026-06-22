@@ -48,7 +48,7 @@ aws kms create-key \
 # Note the returned KeyId (e.g., "1234abcd-12ab-34cd-56ef-1234567890ab")
 ```
 
-### 2. Store in AWS Secrets Manager
+## 2. Store in AWS Secrets Manager
 
 ```bash
 # Generate a 256-bit secret value
@@ -62,7 +62,7 @@ aws secretsmanager create-secret \
   --kms-key-id "alias/codex-audit-hmac"
 ```
 
-### 3. Grant access to the runtime role
+## 3. Grant access to the runtime role
 
 ```bash
 aws secretsmanager put-resource-policy \
@@ -152,7 +152,7 @@ with open(f"audit_archive_{datetime.date.today()}.json", "w") as f:
 EOF
 ```
 
-### Step 4: Promote new key version
+## Step 4: Promote new key version
 
 ```bash
 aws secretsmanager update-secret-version-stage \

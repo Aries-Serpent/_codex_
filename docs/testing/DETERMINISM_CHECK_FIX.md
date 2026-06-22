@@ -65,7 +65,7 @@ if [ "$EXIT1" = "2" ] && [ "$EXIT2" = "2" ]; then
 fi
 ```
 
-### Logic Flow
+## Logic Flow
 
 1. **Both runs return exit code 2**: Check logs for `0 selected`
 2. **Both logs show `0 selected`**: Exit 0 (success) - no tests exist yet
@@ -127,7 +127,7 @@ echo $?  # Returns 2
 pytest tests/ -v -m determinism 2>&1 | grep "0 selected"
 ```
 
-### Expected Output
+## Expected Output
 
 ```
 collected 13229 items / 118 errors / 13229 deselected / 217 skipped / 0 selected

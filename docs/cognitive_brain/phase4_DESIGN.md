@@ -190,7 +190,7 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 # Expected: Accuracy 100%, Coherence 0.791, k₁ ≤ 0.35
 ```
 
-### Determinism Guarantee
+## Determinism Guarantee
 
 - `seed=42` produces identical output across all runs
 - No network I/O, no timestamps in scoring functions

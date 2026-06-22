@@ -82,7 +82,7 @@ python scripts/space_traversal/audit_runner.py --version
 # Should show v1.4.0 or confirm modules exist
 ```
 
-### Step 2: Backup Existing Results (Recommended)
+## Step 2: Backup Existing Results (Recommended)
 
 ```bash
 # Backup your current audit artifacts
@@ -93,7 +93,7 @@ cp -r reports reports.v1.3.backup
 cp workflow.yaml workflow.yaml.v1.3.backup
 ```
 
-### Step 3: Review Your Current Configuration
+## Step 3: Review Your Current Configuration
 
 ```bash
 # Check your current workflow.yaml
@@ -103,7 +103,7 @@ cat workflow.yaml
 # You don't need to change anything yet - v1.4.0 is backward compatible
 ```
 
-### Step 4: Test v1.4.0 (Without New Features)
+## Step 4: Test v1.4.0 (Without New Features)
 
 Run audit with your existing configuration:
 
@@ -165,7 +165,7 @@ ls -lh audit_artifacts/coverage_map.json
 cat audit_artifacts/capabilities_scored.json | jq '.capabilities[] | select(.tests.score > 0) | {id, tests: .tests.score}'
 ```
 
-### Option B: Enable Token-Similarity
+## Option B: Enable Token-Similarity
 
 **Step 1**: Edit `workflow.yaml` to enable token-similarity:
 
@@ -193,7 +193,7 @@ python scripts/space_traversal/audit_runner.py diff \
   audit_artifacts/capabilities_scored.json
 ```
 
-### Option C: Enable Both Features
+## Option C: Enable Both Features
 
 Combine both configurations in `workflow.yaml`:
 
@@ -225,7 +225,7 @@ python scripts/space_traversal/audit_runner.py diff \
   audit_artifacts/capabilities_scored.json
 ```
 
-### Expected Changes
+## Expected Changes
 
 **With Coverage Augmentation**:
 - Test scores should be closer to actual coverage percentages
@@ -289,7 +289,7 @@ python -c "import yaml; yaml.safe_load(open('workflow.yaml'))"
 python scripts/space_traversal/audit_runner.py run --verbose
 ```
 
-### Issue: Coverage not working
+## Issue: Coverage not working
 
 **Solutions**:
 - Ensure coverage.xml exists: `ls -lh coverage.xml`

@@ -71,7 +71,7 @@ train_functional(
 )
 ```
 
-### Training with Experiment Tracking
+## Training with Experiment Tracking
 
 ```python
 from training.functional_training import train_functional
@@ -100,7 +100,7 @@ with mlflow.start_run():
     )
 ```
 
-### Resuming from Checkpoint
+## Resuming from Checkpoint
 
 ```python
 from training.functional_training import train_functional

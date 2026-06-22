@@ -145,7 +145,7 @@ This document summarizes the complete implementation of the 4-stream autonomous 
     dependency-profile: 'test'
 ```
 
-### Stream B: Agent Runtime
+## Stream B: Agent Runtime
 ```bash
 # Trigger agent workflow
 gh workflow run agent-runtime.yml -f agent_task="Analyze codebase" -f model_preference="auto"
@@ -156,7 +156,7 @@ agent = AutonomousAgent()
 result = await agent.execute("Your task here")
 ```
 
-### Stream C: Security Remediation
+## Stream C: Security Remediation
 ```bash
 # Export and score alerts
 python scripts/security/export_semgrep_alerts.py
@@ -169,7 +169,7 @@ python scripts/security/run_codemods.py --dry-run
 python scripts/security/run_codemods.py --apply
 ```
 
-### Stream D: Code Scanning
+## Stream D: Code Scanning
 - CodeQL runs automatically on push/PR to main/develop
 - Weekly scheduled scans on Sunday 3 AM UTC
 - Results in GitHub Security tab

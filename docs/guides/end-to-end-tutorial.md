@@ -53,7 +53,7 @@ python --version  # 3.11+
 # 10GB disk space
 ```
 
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 # 1. Create virtual environment
@@ -109,7 +109,7 @@ touch __init__.py setup.py requirements.txt README.md
 └── README.md         # Documentation
 ```
 
-### 2. Create Python Package
+## 2. Create Python Package
 
 ```python
 # setup.py
@@ -134,7 +134,7 @@ setup(
 )
 ```
 
-### 3. Install Package Locally
+## 3. Install Package Locally
 
 ```bash
 pip install -e .
@@ -172,7 +172,7 @@ logging:
   format: json
 ```
 
-### 2. Create Model Configuration
+## 2. Create Model Configuration
 
 ```yaml
 # configs/model/transformer.yaml
@@ -189,7 +189,7 @@ num_layers: 2
 dropout: 0.1
 ```
 
-### 3. Create Data Configuration
+## 3. Create Data Configuration
 
 ```yaml
 # configs/data/default.yaml
@@ -206,7 +206,7 @@ preprocessing:
   remove_stopwords: false
 ```
 
-### 4. Create Environment-Specific Configs
+## 4. Create Environment-Specific Configs
 
 ```yaml
 # configs/environment/dev.yaml
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### 2. Create Model Module
+## 2. Create Model Module
 
 ```python
 # src/model.py
@@ -386,7 +386,7 @@ class ModelManager:
         return model
 ```
 
-### 3. Create Data Module
+## 3. Create Data Module
 
 ```python
 # src/data.py
@@ -443,7 +443,7 @@ class DataLoader:
         }
 ```
 
-### 4. Run the Application
+## 4. Run the Application
 
 ```bash
 # Run with default config
@@ -518,7 +518,7 @@ async def health():
 # Run with: uvicorn src.api:app --reload
 ```
 
-### 2. Add Batch Processing
+## 2. Add Batch Processing
 
 ```python
 # scripts/batch_predict.py
@@ -555,7 +555,7 @@ if __name__ == "__main__":
     batch_predict("data/test.csv", "data/predictions.csv")
 ```
 
-### 3. Add Testing
+## 3. Add Testing
 
 ```python
 # tests/test_sentiment.py
@@ -604,7 +604,7 @@ docker run -p 8000:8000 sentiment-analysis:0.1.0
 kubectl apply -f k8s/deployment.yaml
 ```
 
-### 2. Monitor Performance
+## 2. Monitor Performance
 
 ```bash
 # Check metrics
@@ -617,7 +617,7 @@ tail -f logs/app.log
 python -m src.debug --profile-type cpu
 ```
 
-### 3. Optimize
+## 3. Optimize
 
 - Add caching for repeated predictions
 - Batch predictions for throughput
@@ -654,7 +654,7 @@ device = -1  # Disable GPU
 cfg.inference.batch_size = 8
 ```
 
-### Issue: "Model download failed"
+## Issue: "Model download failed"
 
 **Solution**:
 ```bash

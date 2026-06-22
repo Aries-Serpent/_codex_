@@ -71,9 +71,9 @@ def test_concurrent_index_building():
     pass
 ```
 
-### 2. Retriever Module (`src/codex/rag/retriever.py`)
+## 2. Retriever Module (`src/codex/rag/retriever.py`)
 
-#### Uncovered Lines/Branches:
+### Uncovered Lines/Branches:
 - **Line 87-92**: Exception handling in `_load_index`
   - **Test needed**: Trigger various load failures
 
@@ -109,9 +109,9 @@ def test_extract_file_with_malformed_metadata():
     pass
 ```
 
-### 3. Embeddings Module (`src/codex/rag/embeddings.py`)
+## 3. Embeddings Module (`src/codex/rag/embeddings.py`)
 
-#### Uncovered Lines/Branches:
+### Uncovered Lines/Branches:
 - **OpenAI error handling**:
   - API rate limits
   - Network timeouts
@@ -161,9 +161,9 @@ def test_local_provider_model_download_failure():
     pass
 ```
 
-### 4. Integration Tests
+## 4. Integration Tests
 
-#### Missing Scenarios:
+### Missing Scenarios:
 ```python
 # Test 1: Full RAG pipeline
 def test_full_rag_pipeline_end_to_end():
@@ -257,7 +257,7 @@ pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=html
 # Target: 95%+ coverage
 ```
 
-### Phase 2: Add Priority 2 Tests (Week 2)
+## Phase 2: Add Priority 2 Tests (Week 2)
 ```bash
 # Create integration test file
 tests/test_rag_integration.py
@@ -270,7 +270,7 @@ pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=html
 # Target: 98%+ coverage
 ```
 
-### Phase 3: Add Priority 3 Tests (Week 3)
+## Phase 3: Add Priority 3 Tests (Week 3)
 ```bash
 # Create comprehensive test file
 tests/test_rag_comprehensive.py
@@ -309,7 +309,7 @@ jobs:
           files: ./coverage.xml
 ```
 
-### Pre-commit Hook
+## Pre-commit Hook
 ```bash
 # .pre-commit-config.yaml
 - repo: local

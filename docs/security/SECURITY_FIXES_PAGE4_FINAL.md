@@ -195,7 +195,7 @@ print(f'Success: {args.json}')
 "
 ```
 
-### Expected Output
+## Expected Output
 ```
 Success: test.json
 ```

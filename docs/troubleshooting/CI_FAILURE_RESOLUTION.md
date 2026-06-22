@@ -52,7 +52,7 @@ from pathlib import Path
 from typing import List, Tuple
 ```
 
-### Cascading Failures
+## Cascading Failures
 
 This single missing import caused a cascade of failures:
 
@@ -85,7 +85,7 @@ pre-commit run --all-files
 flake8 --select=F401,F811,F821 scripts/
 ```
 
-### 2. Local Testing
+## 2. Local Testing
 
 Always test CI scripts locally before pushing:
 
@@ -97,7 +97,7 @@ python scripts/ci/validate_cargo_features.py
 pytest tests/ci/test_validate_cargo_features.py -v
 ```
 
-### 3. Integration Testing
+## 3. Integration Testing
 
 Run integration tests that simulate the CI environment:
 
@@ -294,7 +294,7 @@ python = ["extension-module"]
 extension-module = ["pyo3/extension-module"]
 ```
 
-### Affected Issues
+## Affected Issues
 
 The following 10 issues were part of the batch failure group:
 - #2915, #2914, #2913, #2912, #2910, #2909, #2908, #2907, #2906, #2905

@@ -345,7 +345,7 @@ export MCP_OAUTH_CLIENT_ID="your-client-id"
 export MCP_OAUTH_CLIENT_SECRET="your-client-secret" <!-- pragma: allowlist secret -->
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML for authentication configuration:
 
@@ -470,7 +470,7 @@ def store_api_key(api_key: str) -> str:
     return hashlib.sha256(api_key.encode()).hexdigest()
 ```
 
-### 2. Use Constant-Time Comparison
+## 2. Use Constant-Time Comparison
 
 ```python
 import secrets

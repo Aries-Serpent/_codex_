@@ -59,7 +59,7 @@ gh copilot --help
 
 # 4) Daily usage (what users actually run)
 
-### 4.1 Explain a command
+## 4.1 Explain a command
 
 ```bash
 gh copilot explain "sudo apt-get"
@@ -88,7 +88,7 @@ After this, you can use:
 * `ghcs "find 10 largest files under /var/log, human-readable"` (suggest/execute)
   Official docs describe these aliases and why you should use the generator (not hand-written shell aliases) if you want **execution** to work. ([GitHub Docs][10])
 
-### 4.4 Configure behavior (confirmation & analytics)
+## 4.4 Configure behavior (confirmation & analytics)
 
 ```bash
 gh copilot config
@@ -146,7 +146,7 @@ From here, you can set the **default execution confirmation** (so `ghcs` won’t
 
 # 9) Full command cookbook (Ubuntu 24.x)
 
-### 9.1 Install and authenticate
+## 9.1 Install and authenticate
 
 ```bash
 sudo apt update && sudo apt install -y gh
@@ -173,7 +173,7 @@ ghcs "archive current dir to tar.gz excluding .git"  # choose Execute in the TUI
 ```text
 ([GitHub Docs][10])
 
-### 9.4 Configure confirmation & analytics
+## 9.4 Configure confirmation & analytics
 
 ```bash
 gh copilot config    # set default execution confirmation; toggle analytics

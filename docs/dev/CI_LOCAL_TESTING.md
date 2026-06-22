@@ -226,7 +226,7 @@ pip install -e .[dev]
 pip install <package>
 ```
 
-### pytest marker warning / no tests collected
+## pytest marker warning / no tests collected
 
 **Symptom:** `PytestUnknownMarkWarning` or `collected 0 items`
 
@@ -249,7 +249,7 @@ to your test.
 pytest tests/path/to/test.py -v --timeout=0
 ```
 
-### `ruff` lint errors
+## `ruff` lint errors
 
 **Symptom:** ruff reports F401 (unused import), E501 (line too long), etc.
 
@@ -325,7 +325,7 @@ pyenv install 3.12
 pyenv local 3.12
 ```
 
-### `.venv_ci` is broken / outdated
+## `.venv_ci` is broken / outdated
 
 Delete it and re-run setup:
 

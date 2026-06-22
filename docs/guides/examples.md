@@ -57,14 +57,14 @@ adapted = router.adapt_with_maml("regression_task", task_data)
 print(f"Adapted params: {adapted}")
 ```
 
-### Reptile Adaptation
+## Reptile Adaptation
 
 ```python
 # Adapt with Reptile (simpler, more stable)
 adapted = router.adapt_with_reptile("regression_task", task_data)
 ```
 
-### Strategy Selection
+## Strategy Selection
 
 ```python
 # Get probability distribution
@@ -112,7 +112,7 @@ similar = store.retrieve_by_similarity(query_pattern, threshold=0.7)
 cross_domain = store.retrieve_cross_domain("gridworld", limit=5)
 ```
 
-### Pattern Versioning
+## Pattern Versioning
 
 ```python
 # Update pattern version
@@ -160,7 +160,7 @@ if monitor.detect_forgetting("navigation", current_performance):
     print("✓ Domain isolated")
 ```
 
-### Safety Constraints
+## Safety Constraints
 
 ```python
 # Check if domain is isolated

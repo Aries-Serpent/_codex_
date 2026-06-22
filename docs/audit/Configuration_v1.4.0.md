@@ -58,7 +58,7 @@ ls -lh audit_artifacts/coverage_map.json
 # Should show a file with coverage data for your source files
 ```
 
-### Configuration Options
+## Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -300,7 +300,7 @@ cat audit_artifacts/coverage_map.json | jq 'keys | length'
 cat audit_artifacts/capabilities_scored.json | jq '.capabilities[0]'
 ```
 
-### Common Issues
+## Common Issues
 
 **Coverage not found**:
 - Check xml_patterns match your coverage file location

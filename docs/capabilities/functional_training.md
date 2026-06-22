@@ -250,7 +250,7 @@ for epoch in range(10):
     print(f"Epoch {epoch}: loss={metrics['loss']:.4f}")
 ```
 
-### Example 2: Composable Pipeline
+## Example 2: Composable Pipeline
 
 ```python
 from typing import Callable, List
@@ -302,7 +302,7 @@ def logging_stage(state):
 training_pipeline = compose_pipeline(setup_stage, batch_stage, logging_stage)
 ```
 
-### Example 3: Training with Callbacks
+## Example 3: Training with Callbacks
 
 ```python
 from abc import ABC, abstractmethod
@@ -567,7 +567,7 @@ for name, param in model.named_parameters():
         print(f"{name}: grad_norm={param.grad.norm():.4f}")
 ```
 
-### Out of Memory
+## Out of Memory
 
 ```python
 # Enable gradient checkpointing
@@ -580,7 +580,7 @@ def forward_with_checkpointing(model, x):
 torch.cuda.empty_cache()
 ```
 
-### Training Instability
+## Training Instability
 
 ```python
 # Lower learning rate

@@ -149,7 +149,7 @@ grep -rn "0D_base_" docs/ \
 
 For each hit, determine: is this a **current instruction** (fix → `main`) or **historical record** (preserve)?
 
-### 2B. Nav Entry Verification
+## 2B. Nav Entry Verification
 
 Run this check to find any `mkdocs.yml` nav paths that don't resolve to real files:
 

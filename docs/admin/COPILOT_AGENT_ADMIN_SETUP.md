@@ -1,5 +1,55 @@
 # Copilot Coding Agent — Complete Human Admin Setup Guide
 
+## Table of Contents
+
+- [⚡ 5-minute quick-start checklist](#-5-minute-quick-start-checklist)
+- [Section 1 — Create `CODEX_MASTER_KEY` (Fine-Grained PAT)](#section-1--create-codex_master_key-fine-grained-pat)
+  - [Step 1.1 — Generate the token](#step-11--generate-the-token)
+  - [Step 1.2 — Inject the secret into the repository](#step-12--inject-the-secret-into-the-repository)
+  - [Step 1.3 — Create `CODEX_BACKUP_KEY` (recommended)](#step-13--create-codex_backup_key-recommended)
+- [Section 2 — Repository Actions Permissions](#section-2--repository-actions-permissions)
+  - [Step 2.1 — Allow all actions](#step-21--allow-all-actions)
+  - [Step 2.2 — Set GITHUB_TOKEN permissions to read/write](#step-22--set-github_token-permissions-to-readwrite)
+  - [Step 2.3 — Fork / outside-contributor workflow approval](#step-23--fork--outside-contributor-workflow-approval)
+- [Section 3 — Branch Protection Rules](#section-3--branch-protection-rules)
+  - [Step 3.1 — Update `main` branch protection](#step-31--update-main-branch-protection)
+  - [Step 3.2 — Update `0D_base_` branch protection](#step-32--update-0d_base_-branch-protection)
+- [Section 4 — Copilot Coding Agent (Organisation Settings)](#section-4--copilot-coding-agent-organisation-settings)
+  - [Step 4.1 — Enable Copilot Coding Agent for the org](#step-41--enable-copilot-coding-agent-for-the-org)
+  - [Step 4.2 — Enable Copilot in the repository](#step-42--enable-copilot-in-the-repository)
+  - [Step 4.3 — Allow Copilot to edit files and open PRs (Copilot plan setting)](#step-43--allow-copilot-to-edit-files-and-open-prs-copilot-plan-setting)
+- [Section 5 — Repository Variables (13 required)](#section-5--repository-variables-13-required)
+  - [Step 5.1 — Batch create via GitHub CLI (fastest, ~2 minutes)](#step-51--batch-create-via-github-cli-fastest-2-minutes)
+  - [Step 5.2 — Verify variables were created](#step-52--verify-variables-were-created)
+  - [Step 5.3 — UI alternative (if CLI not available)](#step-53--ui-alternative-if-cli-not-available)
+- [Section 6 — `agent-auth-delegation` Environment](#section-6--agent-auth-delegation-environment)
+  - [Step 6.1 — Remove required reviewers from the environment](#step-61--remove-required-reviewers-from-the-environment)
+  - [Step 6.2 — Create the environment if it doesn't exist](#step-62--create-the-environment-if-it-doesnt-exist)
+- [Section 7 — Dependabot Access to `CODEX_MASTER_KEY`](#section-7--dependabot-access-to-codex_master_key)
+- [Section 8 — Enable Auto-Merge on the Repository](#section-8--enable-auto-merge-on-the-repository)
+- [Section 9 — Notification & Monitoring Setup](#section-9--notification--monitoring-setup)
+  - [Step 9.1 — Watch the repository](#step-91--watch-the-repository)
+  - [Step 9.2 — Subscribe to GitHub Actions failure notifications](#step-92--subscribe-to-github-actions-failure-notifications)
+- [Section 10 — One-Time Genesis Bootstrap](#section-10--one-time-genesis-bootstrap)
+  - [Step 10.1 — Trigger the genesis workflow](#step-101--trigger-the-genesis-workflow)
+  - [Step 10.2 — Verify genesis completed](#step-102--verify-genesis-completed)
+- [Section 11 — Verify Everything Works End-to-End](#section-11--verify-everything-works-end-to-end)
+- [Run from any directory with gh CLI authenticated](#run-from-any-directory-with-gh-cli-authenticated)
+- [↑ This should print NOTHING. Any "action_required" runs still need approval.](#-this-should-print-nothing-any-action_required-runs-still-need-approval)
+- [Section 12 — Troubleshooting](#section-12--troubleshooting)
+  - ["action_required" runs still appearing](#action_required-runs-still-appearing)
+- [Approve all pending runs for the current branch in bulk](#approve-all-pending-runs-for-the-current-branch-in-bulk)
+- [API](#http-403-when-workflows-call-the-rest-api)
+  - [Branch protection blocking merge](#branch-protection-blocking-merge)
+  - [Copilot doesn't respond to `@copilot` mentions](#copilot-doesnt-respond-to-copilot-mentions)
+  - [`agent-auth-delegation` waits indefinitely](#agent-auth-delegation-waits-indefinitely)
+- [Architecture Diagrams](#architecture-diagrams)
+  - [Auth Flow — How Copilot self-authorises (always-on, no human gates)](#auth-flow--how-copilot-self-authorises-always-on-no-human-gates)
+  - [Auto-Approve — Same-repo PR action_required clearance](#auto-approve--same-repo-pr-action_required-clearance)
+  - [WEC State — Workflow Execution Checklist (always-on)](#wec-state--workflow-execution-checklist-always-on)
+  - [PDA Loop — AfterMath auth-state logging](#pda-loop--aftermath-auth-state-logging)
+- [Summary Table — All Human Actions](#summary-table--all-human-actions)
+
 **Last Updated:** 2026-06-22
 
 > **Repository:** `Aries-Serpent/_codex_`
@@ -447,7 +497,7 @@ After completing Section 2, all future runs will auto-start.
 
 ---
 
-### HTTP 403 when workflows call the REST API
+## HTTP 403 when workflows call the REST API
 
 **Cause:** `CODEX_MASTER_KEY` secret is missing or has insufficient permissions.
 
@@ -489,6 +539,7 @@ If `copilot-swe-agent[bot]` is absent, re-do Steps 3.1–3.2.
 ### Auth Flow — How Copilot self-authorises (always-on, no human gates)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Push to PR branch, copilot-agent-checkin.yml'}}%%
 flowchart TD
     A[Push to PR branch] --> B[copilot-agent-checkin.yml]
     B --> C{COPILOT_AGENT_AUTH_ENABLED\nrepo var = true?}
@@ -507,6 +558,7 @@ flowchart TD
 ### Auto-Approve — Same-repo PR action_required clearance
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Schedule: every 5 min, auto-approve-workflows.yml'}}%%
 flowchart TD
     S[Schedule: every 5 min] --> AA[auto-approve-workflows.yml]
     P[PR push event] --> AA
@@ -522,6 +574,7 @@ flowchart TD
 ### WEC State — Workflow Execution Checklist (always-on)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Always Required (auto-checked by Copilot)", validate.yml'}}%%
 flowchart LR
     subgraph ALWAYS_REQUIRED["✅ Always Required (auto-checked by Copilot)"]
         V[validate.yml]
@@ -547,6 +600,7 @@ flowchart LR
 ### PDA Loop — AfterMath auth-state logging
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: pr'}}%%
 sequenceDiagram
     participant C as Copilot Session
     participant S as session_wrapup_autofix.py

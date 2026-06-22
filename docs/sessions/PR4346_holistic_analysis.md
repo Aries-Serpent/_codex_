@@ -161,6 +161,7 @@ $$
 ## 3. Change Graph — S855 → S860
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔴 Root Cause (S855)", CodeQL: py/call-to-non-callable'}}%%
 graph TD
     subgraph S855_ROOT["🔴 Root Cause (S855)"]
         A[CodeQL: py/call-to-non-callable]
@@ -215,6 +216,7 @@ graph TD
 ## 4. Rate-Limit Hardening — Workflow Coverage Matrix
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "wec-gate", "auto-approve", "promote-branch", "session-done", "cache-pruning", "batch-triage", "checkin", "batch-ci", 0, 17, 0, 0, 0, 0, 0, 0'}}%%
 xychart-beta
     title "API Calls vs Rate-Limit Guards (Pre/Post S860)"
     x-axis ["wec-gate", "auto-approve", "promote-branch", "session-done", "cache-pruning", "batch-triage", "checkin", "batch-ci"]
@@ -241,6 +243,7 @@ xychart-beta
 ## 5. Security Posture Delta
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing 0.85, 0.90, pre S860 partial_token_leak, 0.25, 0.35'}}%%
 quadrantChart
     title Security vs Observability (Pre/Post S860)
     x-axis "Low Observability" --> "High Observability"
@@ -267,6 +270,7 @@ quadrantChart
 ## 6. Variable Governance Intent Files (OBJ-2 + OBJ-4)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing ".codex/pending_ops/\nvariable_set_*.json\n(13 files)", "process-variable-intents.yml\n(mailbox workflow)"'}}%%
 flowchart LR
     A[".codex/pending_ops/\nvariable_set_*.json\n(13 files)"] --> B["process-variable-intents.yml\n(mailbox workflow)"]
     B --> C["GitHub REST API\nPATCH /repos/.../actions/variables"]
@@ -292,6 +296,7 @@ flowchart LR
 ## 7. PR Template Evolution
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title PR Template Version History
     v1.0 : 2025-Q3 : Basic checklist — commit format + safety confirmations
@@ -379,6 +384,7 @@ The system is in a **partially-collapsed superposition** — most dimensions pas
 pending operations remain in indeterminate states until GitHub Actions processes the intent files:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> PendingIntentFiles : 13 variable_set_*.json committed
     PendingIntentFiles --> VariablesSet : process-variable-intents.yml runs

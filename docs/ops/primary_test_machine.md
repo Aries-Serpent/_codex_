@@ -2,6 +2,34 @@
 
 # Primary Test Machine — Hardware Registration
 
+## Table of Contents
+
+- [Hardware Specifications](#hardware-specifications)
+- [Capability Assessment](#capability-assessment)
+  - [1. Python Runtime & Core Dependencies](#1-python-runtime--core-dependencies)
+  - [2. GPU / CUDA — ❌ Not Available](#2-gpu--cuda---not-available)
+- [PowerShell — set for current session](#powershell--set-for-current-session)
+- [3. TPU — ❌ Not Available](#3-tpu---not-available)
+  - [4. Distributed / Multi-GPU Training — ❌ Not Available](#4-distributed--multi-gpu-training---not-available)
+  - [5. Mixed Precision / Quantization — ❌ / ⚠️](#5-mixed-precision--quantization----)
+  - [6. Windows OS Compatibility](#6-windows-os-compatibility)
+    - [6a. Shell Scripts — ❌ Not Directly Runnable](#6a-shell-scripts---not-directly-runnable)
+    - [6b. POSIX-Only Python APIs](#6b-posix-only-python-apis)
+    - [6c. PyTorch on Windows](#6c-pytorch-on-windows)
+    - [6d. File Paths](#6d-file-paths)
+  - [7. Memory — 16 GB RAM](#7-memory--16-gb-ram)
+  - [8. Storage — 512 GB PCIe SSD](#8-storage--512-gb-pcie-ssd)
+  - [9. CPU Performance — Intel Core Ultra 5 135U](#9-cpu-performance--intel-core-ultra-5-135u)
+  - [10. What Is Fully Deferred on This Machine](#10-what-is-fully-deferred-on-this-machine)
+- [Recommended Local Environment Setup (Windows 11)](#recommended-local-environment-setup-windows-11)
+- [1. Install Python 3.12 for Windows from python.org](#1-install-python-312-for-windows-from-pythonorg)
+- [2. Clone the repo and create a venv](#2-clone-the-repo-and-create-a-venv)
+- [3. Install CPU-only torch first (avoids pulling CUDA wheels)](#3-install-cpu-only-torch-first-avoids-pulling-cuda-wheels)
+- [4. Install the project in editable mode](#4-install-the-project-in-editable-mode)
+- [5. Set machine-specific env vars (add to your shell profile)](#5-set-machine-specific-env-vars-add-to-your-shell-profile)
+- [6. Run the baseline test suite (no GPU/ML deps)](#6-run-the-baseline-test-suite-no-gpuml-deps)
+- [Environment Variables Summary](#environment-variables-summary)
+
 **Last Updated:** 2026-06-22
 
 > **Registered:** 2026-02-28  
@@ -70,7 +98,7 @@ $env:CODEX_ALLOW_TRITON_CPU = "1"
 
 ---
 
-### 3. TPU — ❌ Not Available
+## 3. TPU — ❌ Not Available
 
 There is no Google Cloud TPU, TPU Pod, or `torch_xla` runtime on this machine.
 

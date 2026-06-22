@@ -191,7 +191,7 @@ efficiency = orch.flow_analyzer.flow_efficiency(
 print(f"System efficiency: {efficiency:.1%}")
 ```
 
-### 3. Physics Properties
+## 3. Physics Properties
 
 Access relativistic properties:
 ```python

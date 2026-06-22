@@ -170,6 +170,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 | P3 | Observability | Emit OTEL span for `pr_comment_consolidator.py` upsert latency | Agent | ⏳ Backlog |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening ✅ COMPLETE", "PatternCompressor /health ✅"'}}%%
 flowchart TD
     subgraph P4["Phase 4 — Production Hardening ✅ COMPLETE"]
         P4A["PatternCompressor /health ✅"]

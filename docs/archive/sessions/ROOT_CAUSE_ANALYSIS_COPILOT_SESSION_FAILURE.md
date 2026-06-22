@@ -244,7 +244,7 @@ fi
 echo "✅ PASS: File $FILE exists and has content"
 ```
 
-### 2. Incremental Verification Protocol
+## 2. Incremental Verification Protocol
 
 After creating EACH file, immediately verify:
 
@@ -271,7 +271,7 @@ def create_and_verify(file_path, content):
     return file_path
 ```
 
-### 3. Pre-Report Validation
+## 3. Pre-Report Validation
 
 Before EVERY `report_progress` call, run:
 
@@ -311,7 +311,7 @@ echo "✅ All claimed files verified"
 exit 0
 ```
 
-### 4. Token Budget Planning
+## 4. Token Budget Planning
 
 At session start, allocate token budget:
 - 20% planning/analysis
@@ -351,7 +351,7 @@ echo "⚠️  Review this list carefully before proceeding"
 echo "Does this match what you described in PR? (yes/no)"
 ```
 
-### 6. Automated Post-Commit Validation
+## 6. Automated Post-Commit Validation
 
 Add to `.github/workflows/validate-pr-claims.yml`:
 

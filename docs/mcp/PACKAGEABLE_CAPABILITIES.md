@@ -1,5 +1,108 @@
 # Packagable Capabilities for ChatGPT Projects
 
+## Table of Contents
+
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ (Capability Transfer Flow)](#path--capability-transfer-flow)
+  - [Fields 🔄 (Knowledge State Evolution)](#fields--knowledge-state-evolution)
+  - [Patterns 👁️ (Observable Regularities)](#patterns--observable-regularities)
+  - [Redundancy 🔀 (Knowledge Reinforcement)](#redundancy--knowledge-reinforcement)
+  - [Balance ⚖️ (Information Density)](#balance--information-density)
+- [⚡ Energy Distribution](#-energy-distribution)
+  - [P0 Critical (35% - Core Capabilities)](#p0-critical-35---core-capabilities)
+  - [P1 High (30% - Emerging Capabilities)](#p1-high-30---emerging-capabilities)
+  - [P2 Medium (25% - Enhancement)](#p2-medium-25---enhancement)
+  - [P3 Low (10% - Experimental)](#p3-low-10---experimental)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+  - [Rollback Strategies](#rollback-strategies)
+- [Analyze failure](#analyze-failure)
+- [Common issues: Missing dependencies, incomplete docs, unclear examples](#common-issues-missing-dependencies-incomplete-docs-unclear-examples)
+- [Rollback: Enhance package](#rollback-enhance-package)
+- [1. Add more test examples](#1-add-more-test-examples)
+- [2. Expand methodology documentation](#2-expand-methodology-documentation)
+- [3. Include edge case handling](#3-include-edge-case-handling)
+- [4. Re-package and test](#4-re-package-and-test)
+- [Root cause: Insufficient examples or pattern diversity](#root-cause-insufficient-examples-or-pattern-diversity)
+- [Rollback: Enrich examples](#rollback-enrich-examples)
+- [1. Add property-based tests](#1-add-property-based-tests)
+- [2. Include edge case examples](#2-include-edge-case-examples)
+- [3. Document pattern variations](#3-document-pattern-variations)
+- [4. Re-validate with new prompts](#4-re-validate-with-new-prompts)
+- [Code evolved but package not updated](#code-evolved-but-package-not-updated)
+- [Rollback: Refresh package](#rollback-refresh-package)
+- [Identify changes](#identify-changes)
+- [Re-validate transfer success](#re-validate-transfer-success)
+- [Recovery Procedures](#recovery-procedures)
+- [Verify package integrity](#verify-package-integrity)
+- [If corrupt, regenerate from source](#if-corrupt-regenerate-from-source)
+- [Test assistant comprehension](#test-assistant-comprehension)
+- [Ask: "Explain [capability] methodology"](#ask-explain-capability-methodology)
+- [If unclear, enhance system prompt](#if-unclear-enhance-system-prompt)
+- [Add capability-specific guidance](#add-capability-specific-guidance)
+- [Re-upload with updated prompt](#re-upload-with-updated-prompt)
+- [Check manifest for complete dependency chain](#check-manifest-for-complete-dependency-chain)
+- [Add missing dependencies to topic definition](#add-missing-dependencies-to-topic-definition)
+- [Regenerate package](#regenerate-package)
+- [Circuit Breakers](#circuit-breakers)
+- [Overview](#overview)
+- [Methodology Transfer Framework](#methodology-transfer-framework)
+  - [What Makes a Capability Packageable?](#what-makes-a-capability-packageable)
+  - [How ChatGPT Assistant Learns from Packages](#how-chatgpt-assistant-learns-from-packages)
+- [Currently Packageable Capabilities](#currently-packageable-capabilities)
+  - [1. Python Script Development & Deconstruction ⭐](#1-python-script-development--deconstruction-)
+  - [2. Workflow Navigation & State Management](#2-workflow-navigation--state-management)
+  - [3. Quantum Game Theory Application](#3-quantum-game-theory-application)
+  - [4. Zendesk API Integration Patterns](#4-zendesk-api-integration-patterns)
+  - [5. CI/CD Workflow Optimization](#5-cicd-workflow-optimization)
+  - [6. Agent-Based System Architecture](#6-agent-based-system-architecture)
+  - [7. Test-Driven Development Methodology](#7-test-driven-development-methodology)
+  - [8. Documentation Generation](#8-documentation-generation)
+- [Creating New Packageable Capabilities](#creating-new-packageable-capabilities)
+  - [Step-by-Step Guide](#step-by-step-guide)
+    - [1. Identify the Capability](#1-identify-the-capability)
+    - [2. Gather Components](#2-gather-components)
+- [List related files](#list-related-files)
+- [Check test coverage](#check-test-coverage)
+- [Find documentation](#find-documentation)
+- [3. Create Capability Package](#3-create-capability-package)
+  - [4. Enhance with Methodology Documentation](#4-enhance-with-methodology-documentation)
+- [[Capability Name] Methodology](#capability-name-methodology)
+- [Overview](#overview)
+- [Key Concepts](#key-concepts)
+- [Implementation Patterns](#implementation-patterns)
+- [Usage Examples](#usage-examples)
+- [Extension Points](#extension-points)
+  - [5. Test the Package](#5-test-the-package)
+- [Preview](#preview)
+- [Create](#create)
+- [Validate](#validate)
+- [6. Upload and Verify](#6-upload-and-verify)
+- [Capability Package Template](#capability-package-template)
+  - [Template Structure](#template-structure)
+  - [Required Components Checklist](#required-components-checklist)
+- [Advanced Packaging Strategies](#advanced-packaging-strategies)
+  - [Strategy 1: Layered Packaging](#strategy-1-layered-packaging)
+- [Layer 1: Core concepts](#layer-1-core-concepts)
+- [Layer 2: Implementation](#layer-2-implementation)
+- [Layer 3: Advanced usage](#layer-3-advanced-usage)
+- [Strategy 2: Cross-Capability Packaging](#strategy-2-cross-capability-packaging)
+  - [Strategy 3: Problem-Solution Packaging](#strategy-3-problem-solution-packaging)
+- [Measuring Capability Transfer Success](#measuring-capability-transfer-success)
+  - [Verification Questions for ChatGPT](#verification-questions-for-chatgpt)
+  - [Success Criteria](#success-criteria)
+- [Future Capability Packaging Opportunities](#future-capability-packaging-opportunities)
+  - [Planned for Packaging](#planned-for-packaging)
+  - [Community Contributions](#community-contributions)
+- [Appendix: System Prompt Enhancements](#appendix-system-prompt-enhancements)
+  - [Capability-Specific Prompts](#capability-specific-prompts)
+- [[Capability Name] Specialization](#capability-name-specialization)
+  - [Key Patterns](#key-patterns)
+  - [Common Applications](#common-applications)
+- [Related Documentation](#related-documentation)
+
 **Last Updated**: 2026-06-22T00:00:00Z
 **Status**: ✅ Production Ready
 **Priority**: P2 (Supporting Documentation)
@@ -81,6 +184,7 @@
 **Transfer Path**: Code + Tests + Docs → Package → ChatGPT Upload → System Prompt → Learning → Application → Validation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Capability Identification, Component Gathering'}}%%
 graph TD
     A[Capability Identification] --> B[Component Gathering]
     B --> C[Package Creation]
@@ -201,7 +305,7 @@ git log --since="last_package_date" -- src/capability/**
 # Re-validate transfer success
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Package Corruption**:
 ```bash
@@ -228,7 +332,7 @@ unzip -p package.zip manifest.json | jq '.file_relationships'
 # Regenerate package
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **Comprehension Threshold**:
 - If verification score < 70%: Do not mark as validated
@@ -528,7 +632,7 @@ find tests/ -name "*capability_name*"
 find docs/ -name "*capability*"
 ```
 
-#### 3. Create Capability Package
+## 3. Create Capability Package
 
 Define a new topic or use custom filters:
 
@@ -549,7 +653,7 @@ Define a new topic or use custom filters:
 ./scripts/mcp/mcp-package --custom "path1/**,path2/**" --output capability_package.zip
 ```
 
-#### 4. Enhance with Methodology Documentation
+### 4. Enhance with Methodology Documentation
 
 Create `docs/capability/METHODOLOGY.md`:
 ```markdown
@@ -571,7 +675,7 @@ Create `docs/capability/METHODOLOGY.md`:
 [How to apply this methodology to new problems]
 ```
 
-#### 5. Test the Package
+### 5. Test the Package
 
 ```bash
 # Preview
@@ -585,7 +689,7 @@ unzip -l package_capability_name_*.zip
 unzip -p package_capability_name_*.zip manifest.json | jq .
 ```
 
-#### 6. Upload and Verify
+## 6. Upload and Verify
 
 1. Upload to ChatGPT Project
 2. Use system prompt from `docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md`
@@ -648,7 +752,7 @@ Package capabilities in layers for progressive learning:
 ./scripts/mcp/mcp-package --topic capability_full
 ```
 
-### Strategy 2: Cross-Capability Packaging
+## Strategy 2: Cross-Capability Packaging
 
 Package related capabilities together:
 

@@ -124,7 +124,7 @@ python scripts/remediation/list_shims.py \
   --output .github/SHIM_INVENTORY.yaml
 ```
 
-### Conflict Detection
+## Conflict Detection
 ```bash
 # Strict mode (CI gating)
 python scripts/remediation/verify_conflicts.py \
@@ -137,7 +137,7 @@ python scripts/remediation/verify_conflicts.py \
   --output audit_artifacts/conflicts.json
 ```
 
-### Equivalence Testing
+## Equivalence Testing
 ```bash
 # Run shim equivalence tests
 pytest -q tests/validation/test_shim_equivalence.py
@@ -146,7 +146,7 @@ pytest -q tests/validation/test_shim_equivalence.py
 SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
 ```
 
-### Nightly Audit
+## Nightly Audit
 - **Workflow**: `.github/workflows/nightly-audit.yml`
 - **Schedule**: Daily at 02:00 UTC
 - **Outputs**: Inventory, conflicts, legacy usage report

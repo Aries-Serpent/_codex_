@@ -64,6 +64,7 @@ Creating webhook 'runner-health-notification' ...
 ## Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Platform", "Aries-Serpent/_codex_"'}}%%
 graph TB
     subgraph GitHub["GitHub Platform"]
         REPO["Aries-Serpent/_codex_"]
@@ -119,6 +120,8 @@ once the Cognitive Brain API server is deployed.
 ### Hook 1: `cognitive-brain-ci-feedback`
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>CB: ack
+    CB'}}%%
 sequenceDiagram
     participant GH as GitHub
     participant WH as Webhook (Hook 1)
@@ -168,6 +171,7 @@ here for completeness — they are the upstream source of the POST payloads that
 external webhooks would relay.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run\n(copilot-setup-steps,\ncognitive_brain_ci_feedback)", "pull_request\n(opened, sync, close)"'}}%%
 graph LR
     subgraph "External Webhook Events (outbound POST to receiver)"
         WR["workflow_run\n(copilot-setup-steps,\ncognitive_brain_ci_feedback)"]
@@ -206,6 +210,7 @@ graph LR
 ## Security
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "GitHub\n(sender)", "Receiver endpoint"'}}%%
 graph LR
     GH["GitHub\n(sender)"] -->|POST + X-Hub-Signature-256| RECV["Receiver endpoint"]
     RECV -->|HMAC-SHA256(body, WEBHOOK_SECRET)| VERIFY{"Signature\nvalid?"}
@@ -239,7 +244,7 @@ graph LR
 python scripts/ci/webhook_configurator.py --list
 ```
 
-### Apply desired-state config (idempotent)
+## Apply desired-state config (idempotent)
 
 ```bash
 # Via ChatOps comment on any PR (uses WEBHOOK_RECEIVER_URL repo variable automatically):
@@ -261,7 +266,7 @@ python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --d
 > (`Settings → Variables → Repository variables`) so `@agent-infra apply-webhooks`
 > picks it up automatically without editing `.codex/webhook_config.json`.
 
-### Delete a hook
+## Delete a hook
 
 ```bash
 python scripts/ci/webhook_configurator.py --delete <hook_id>

@@ -46,7 +46,7 @@ test_cases = cnn.generate_test_parameters(param_ranges, num_tests=100)
 perturbed = cnn.inject_chaos(base_value=0.5, chaos_strength=0.2)
 ```
 
-### 2. Fractal Geometry
+## 2. Fractal Geometry
 
 **Purpose**: Multi-scale pattern recognition and complexity analysis
 
@@ -87,7 +87,7 @@ analysis = analyzer.analyze_code_tree(code_tree)
 anomalies = analyzer.detect_anomalies(structures, threshold=2.0)
 ```
 
-### 3. Fluid Dynamics
+## 3. Fluid Dynamics
 
 **Purpose**: Workflow optimization through flow modeling
 
@@ -129,7 +129,7 @@ bottlenecks = scheduler.detect_bottlenecks(threshold=0.8)
 result = scheduler.optimize_flow(iterations=10)
 ```
 
-### 4. Electromagnetic Fields
+## 4. Electromagnetic Fields
 
 **Purpose**: Influence-based routing and prioritization
 
@@ -175,7 +175,7 @@ trajectory = router.route_agent(
 regions = router.prioritize_regions(num_regions=5)
 ```
 
-### 5. Wave Propagation
+## 5. Wave Propagation
 
 **Purpose**: Signal broadcasting and consensus building
 
@@ -216,7 +216,7 @@ if interference['constructive'] > 0:
     print("Signals reinforce (agreement)")
 ```
 
-### 6. Relativistic Effects
+## 6. Relativistic Effects
 
 **Purpose**: Latency-aware scheduling for distributed systems
 
@@ -402,13 +402,13 @@ orchestrator = create_hybrid_orchestrator()
 # Check available capabilities
 capabilities = orchestrator.get_capabilities()
 # Returns: {
-#   'classical_physics': True,
-#   'chaos_theory': True,
-#   'fractal_geometry': True,
-#   'fluid_dynamics': True,
-#   'electromagnetic_fields': True,
-#   'wave_propagation': True,
-#   'relativistic_effects': True,
+# 'classical_physics': True,
+# 'chaos_theory': True,
+# 'fractal_geometry': True,
+# 'fluid_dynamics': True,
+# 'electromagnetic_fields': True,
+# 'wave_propagation': True,
+# 'relativistic_effects': True,
 # }
 
 # Use specific paradigm

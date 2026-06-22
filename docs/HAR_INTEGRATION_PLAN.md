@@ -518,7 +518,7 @@ def cmd_run(args, cfg):
         har_recorder.save()
 ```
 
-### 2. Dashboard Generator
+## 2. Dashboard Generator
 
 ```python
 # scripts/generate_audit_dashboard.py
@@ -534,7 +534,7 @@ def main():
     har_recorder.export("audit_artifacts/dashboard_session.har")
 ```
 
-### 3. GitHub API Client
+## 3. GitHub API Client
 
 ```python
 # New file: scripts/space_traversal/github_client.py
@@ -544,7 +544,7 @@ class GitHubClient:
         self.har_cache = HARCache(Path(".cache/github")) if har_cache_enabled else None
 ```
 
-### 4. Determinism Workflow
+## 4. Determinism Workflow
 
 ```yaml
 # .github/workflows/determinism.yml
@@ -666,7 +666,7 @@ def test_har_sanitization():
     assert sanitized["headers"]["authorization"] == "[REDACTED]"
 ```
 
-### Integration Tests
+## Integration Tests
 
 ```python
 def test_audit_with_har_recording():
@@ -710,7 +710,7 @@ def test_dashboard_with_har_cache():
     bandit -r scripts/ src/ -f json -o bandit-report.json
 ```
 
-#### 2. Git Command Failures in CI
+## 2. Git Command Failures in CI
 
 **Issue**: CI tries to access files across different commits.
 
@@ -736,7 +736,7 @@ but not in 'db45016d98daf73e5cab5b73d88b39602343d6e5' <!-- pragma: allowlist sec
     git diff --name-only origin/${{ github.base_ref }}...HEAD || true
 ```
 
-### Monitoring & Logging
+## Monitoring & Logging
 
 ```python
 # Add to har_utils.py
@@ -755,7 +755,7 @@ class HARRecorder:
             self.logger.debug(f"Response size: {len(response.content)} bytes")
 ```
 
-### Configuration
+## Configuration
 
 ```yaml
 # Add to config files

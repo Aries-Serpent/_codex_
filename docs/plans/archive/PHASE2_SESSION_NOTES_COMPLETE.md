@@ -1,5 +1,94 @@
 # Phase 2 Deep Coverage: Complete Session Notes & Lessons Learned
 
+## Table of Contents
+
+- [Session Overview](#session-overview)
+  - [Starting State](#starting-state)
+  - [Ending State](#ending-state)
+  - [Achievement Summary](#achievement-summary)
+- [Complete Workflow Executed](#complete-workflow-executed)
+  - [1. Discovery & Analysis (30 minutes)](#1-discovery--analysis-30-minutes)
+  - [2. Remediation Execution (60 minutes)](#2-remediation-execution-60-minutes)
+  - [3. Documentation & Delivery (30 minutes)](#3-documentation--delivery-30-minutes)
+- [All Lessons Learned (Complete List)](#all-lessons-learned-complete-list)
+  - [Technical Lessons](#technical-lessons)
+    - [1. API Discovery Must Precede Fixes](#1-api-discovery-must-precede-fixes)
+    - [2. Strategic Skipping vs. Heroic Fixing](#2-strategic-skipping-vs-heroic-fixing)
+    - [3. Automated Pattern Matching at Scale](#3-automated-pattern-matching-at-scale)
+- [String replacement](#string-replacement)
+- [Regex replacement](#regex-replacement)
+- [Conditional replacement](#conditional-replacement)
+- [4. Incremental Validation is Non-Negotiable](#4-incremental-validation-is-non-negotiable)
+  - [5. Coverage ≠ Test Count (The 354/23% Paradox)](#5-coverage--test-count-the-35423-paradox)
+    - [6. Enum Mismatches Are Extremely Common](#6-enum-mismatches-are-extremely-common)
+- [Always check first](#always-check-first)
+- [Then use](#then-use)
+- [7. Constructor Evolution Breaks Everything](#7-constructor-evolution-breaks-everything)
+- [Evolution 1 → 2 → 3](#evolution-1--2--3)
+- [8. Skip Decorators Are Living Documentation](#8-skip-decorators-are-living-documentation)
+  - [9. hasattr() Checks Are Insufficient](#9-hasattr-checks-are-insufficient)
+- [Option 1: inspect signature](#option-1-inspect-signature)
+- [Option 2: try/except](#option-2-tryexcept)
+- [10. Documentation Must Track Reality](#10-documentation-must-track-reality)
+  - [Process Lessons](#process-lessons)
+    - [11. Autonomous Execution Requires Trust](#11-autonomous-execution-requires-trust)
+    - [12. Commit Early, Commit Often](#12-commit-early-commit-often)
+    - [13. Reply to Comments with Concrete Results](#13-reply-to-comments-with-concrete-results)
+    - [14. Document Everything as You Go](#14-document-everything-as-you-go)
+  - [Strategic Lessons](#strategic-lessons)
+    - [15. Baseline Before Optimization](#15-baseline-before-optimization)
+    - [16. Technical Debt Is Inventory](#16-technical-debt-is-inventory)
+    - [17. Coverage Gaps Guide Implementation](#17-coverage-gaps-guide-implementation)
+    - [18. Test Intent Must Be Preserved](#18-test-intent-must-be-preserved)
+- [Remediation Patterns Discovered](#remediation-patterns-discovered)
+  - [Pattern 1: Import Error Cascade](#pattern-1-import-error-cascade)
+- [Before](#before)
+- [After](#after)
+- [Pattern 2: Method Rename](#pattern-2-method-rename)
+- [Before](#before)
+- [After](#after)
+- [Pattern 3: Constructor Parameter Mismatch](#pattern-3-constructor-parameter-mismatch)
+- [Before](#before)
+- [After](#after)
+- [Pattern 4: Missing Module/Class](#pattern-4-missing-moduleclass)
+  - [Pattern 5: Missing Method](#pattern-5-missing-method)
+- [Tools & Techniques Inventory](#tools--techniques-inventory)
+  - [Python Introspection](#python-introspection)
+- [Get signature](#get-signature)
+- [Get class members](#get-class-members)
+- [Get enum values](#get-enum-values)
+- [Check attributes](#check-attributes)
+- [Regex Pattern Matching](#regex-pattern-matching)
+- [Simple replacement](#simple-replacement)
+- [With capture groups](#with-capture-groups)
+- [With lambda for complex logic](#with-lambda-for-complex-logic)
+- [Count matches](#count-matches)
+- [File Manipulation](#file-manipulation)
+- [Read file](#read-file)
+- [Write file](#write-file)
+- [Process multiple files](#process-multiple-files)
+- [Pytest Commands](#pytest-commands)
+- [Run specific test file](#run-specific-test-file)
+- [Run with coverage](#run-with-coverage)
+- [Run with short traceback](#run-with-short-traceback)
+- [Run with no traceback (summary only)](#run-with-no-traceback-summary-only)
+- [Run with max failures](#run-with-max-failures)
+- [Git Commands](#git-commands)
+- [Check status](#check-status)
+- [View recent commits](#view-recent-commits)
+- [Check diff](#check-diff)
+- [Checkout previous version](#checkout-previous-version)
+- [Metrics & Results](#metrics--results)
+  - [Test Results Progression](#test-results-progression)
+  - [Coverage by Module (Final)](#coverage-by-module-final)
+  - [Time Investment](#time-investment)
+  - [Efficiency Metrics](#efficiency-metrics)
+- [Recommendations for Future Sessions](#recommendations-for-future-sessions)
+  - [For Similar Remediation Tasks](#for-similar-remediation-tasks)
+  - [For Coverage Improvement](#for-coverage-improvement)
+  - [For Test Suite Maintenance](#for-test-suite-maintenance)
+- [Final Success Metrics](#final-success-metrics)
+
 **Last Updated:** 2026-06-22
 
 **Session Date:** 2025-12-13  
@@ -19,7 +108,7 @@
 - No coverage baseline
 - User requested: "Execute Plans autonomously until completeness"
 
-### Ending State  
+### Ending State
 - 585 Phase 2 tests remediated
 - **354 tests passing (60.5%)**
 - **231 tests skipped (39.5%)** with documented reasons
@@ -144,7 +233,7 @@ content = re.sub(
 )
 ```
 
-#### 4. Incremental Validation is Non-Negotiable
+## 4. Incremental Validation is Non-Negotiable
 **Anti-Pattern:** Fix everything, then test  
 **Best Practice:** Fix one category, test, repeat
 
@@ -161,7 +250,7 @@ content = re.sub(
 - Maintains working baseline
 - Reduces debugging time by 5x
 
-#### 5. Coverage ≠ Test Count (The 354/23% Paradox)
+### 5. Coverage ≠ Test Count (The 354/23% Paradox)
 **Observation:** 354 passing tests = only 23.21% coverage  
 **Reality:** Most tests are shallow (initialization checks)  
 **Implication:** Need deeper tests for branches, exceptions, integrations
@@ -201,7 +290,7 @@ node = model.create_node(NodeType.PROBLEM, ...)  # Not CONCEPT
 - `EdgeType.RELATED` → `EdgeType.SIMILAR_TO`
 - `ActionType.ANALYZE` → `ActionType.RESEARCH`
 
-#### 7. Constructor Evolution Breaks Everything
+## 7. Constructor Evolution Breaks Everything
 **Problem:** Constructors change frequently during development  
 **Impact:** 100+ test failures from parameter changes
 
@@ -219,7 +308,7 @@ ActionPath(action_type, description, potential_energy, kinetic_energy, ...)  # v
 - Version constructors with deprecation warnings
 - Document constructor changes in ADRs
 
-#### 8. Skip Decorators Are Living Documentation
+## 8. Skip Decorators Are Living Documentation
 **Best Practice:** Every skip must explain WHY and WHAT
 
 **Bad:**
@@ -240,7 +329,7 @@ def test_feature(): ...
 - Progress tracking is transparent
 - Technical debt is visible
 
-#### 9. hasattr() Checks Are Insufficient
+### 9. hasattr() Checks Are Insufficient
 **Problem:** Existence ≠ Compatibility
 
 **Example:**
@@ -265,7 +354,7 @@ except TypeError as e:
     pass
 ```
 
-#### 10. Documentation Must Track Reality
+## 10. Documentation Must Track Reality
 **Gap Found:** ~40% of assumed APIs didn't exist or had wrong signatures  
 **Root Cause:** Tests written from design docs, not actual code  
 **Impact:** 585 test failures
@@ -383,7 +472,7 @@ from agents.developer_orchestrator import DeveloperOrchestrator
 from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 ```
 
-### Pattern 2: Method Rename
+## Pattern 2: Method Rename
 **Symptom:** `AttributeError: 'Class' object has no attribute 'old_method'`  
 **Fix:** Update method calls  
 **Automation:** Regex replacement  
@@ -396,7 +485,7 @@ memory.store(key, value)
 memory.store_memory(MemoryEntry(key=key, value=value))
 ```
 
-### Pattern 3: Constructor Parameter Mismatch
+## Pattern 3: Constructor Parameter Mismatch
 **Symptom:** `TypeError: __init__() got unexpected keyword argument`  
 **Fix:** Update constructor calls  
 **Automation:** Regex with capture groups  
@@ -405,11 +494,11 @@ memory.store_memory(MemoryEntry(key=key, value=value))
 # Before
 SwarmIntelligence(num_agents=10)
 
-# After  
+# After
 SwarmIntelligence(num_particles=10, dimensions=2)
 ```
 
-### Pattern 4: Missing Module/Class
+## Pattern 4: Missing Module/Class
 **Symptom:** `ImportError: cannot import name 'X' from 'module'`  
 **Fix:** Skip test with reason  
 **Automation:** Detect import in test, add decorator  
@@ -459,7 +548,7 @@ has_attr = hasattr(obj, 'attr')
 attr_value = getattr(obj, 'attr', default)
 ```
 
-### Regex Pattern Matching
+## Regex Pattern Matching
 ```python
 import re
 
@@ -484,7 +573,7 @@ content = re.sub(
 count = len(re.findall(pattern, content))
 ```
 
-### File Manipulation
+## File Manipulation
 ```python
 from pathlib import Path
 
@@ -504,7 +593,7 @@ for batch_file in batch_files:
     process_file(batch_file)
 ```
 
-### Pytest Commands
+## Pytest Commands
 ```bash
 # Run specific test file
 pytest tests/agents/test_phase2_batch1.py -v
@@ -522,7 +611,7 @@ pytest tests/ --tb=no
 pytest tests/ --maxfail=5
 ```
 
-### Git Commands
+## Git Commands
 ```bash
 # Check status
 git status --short

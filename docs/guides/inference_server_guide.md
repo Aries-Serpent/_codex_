@@ -37,7 +37,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```text
 
-### Start Server
+## Start Server
 
 ```bash
 # Method 1: Direct
@@ -50,7 +50,7 @@ uvicorn src.codex_ml.serving.inference_server:create_app --factory --reload
 python -c "from src.codex_ml.serving.inference_server import create_app; import uvicorn; uvicorn.run(create_app('my-model'), port=8000)"
 ```text
 
-### Make Requests
+## Make Requests
 
 ```python
 import requests
@@ -83,7 +83,7 @@ from src.codex_ml.serving.inference_server import (
 # Modify before import if needed
 ```text
 
-### Custom Rate Limiting
+## Custom Rate Limiting
 
 ```python
 from src.codex_ml.serving.inference_server import ModelServer, RateLimiter
@@ -96,7 +96,7 @@ server.rate_limiter = RateLimiter(
 )
 ```text
 
-### Model Loading
+## Model Loading
 
 ```python
 from src.codex_ml.serving.inference_server import ModelServer
@@ -223,7 +223,7 @@ else:
     pass
 ```text
 
-### Sliding Window
+## Sliding Window
 
 - Tracks requests per client (by IP)
 - Removes expired requests automatically
@@ -325,7 +325,7 @@ gunicorn -w 4 -k uvicorn.workers.UvicornWorker \
   --bind 0.0.0.0:8000
 ```text
 
-### With Docker
+## With Docker
 
 ```dockerfile
 FROM python:3.12-slim

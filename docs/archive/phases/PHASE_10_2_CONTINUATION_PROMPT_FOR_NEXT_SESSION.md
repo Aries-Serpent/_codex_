@@ -182,7 +182,7 @@ curl -X POST \
   -d '{"ref":"main","inputs":{"review_depth":"standard"}}'
 ```
 
-### Test Flatten-Repo Action
+## Test Flatten-Repo Action
 ```bash
 # Via GitHub CLI
 gh workflow run flatten-repo-download.yml \
@@ -193,7 +193,7 @@ gh workflow run flatten-repo-download.yml \
 gh run download <run-id>
 ```
 
-### Run Security Validation
+## Run Security Validation
 ```bash
 # Standalone validation (no pytest needed)
 python3 scripts/validate_security_utils.py
@@ -328,7 +328,7 @@ gh workflow run flatten-repo-download.yml
 gh run list --workflow=codebase-qa-walkthrough.yml
 ```
 
-### Support
+## Support
 - **Issues**: Report on GitHub repository
 - **Questions**: Post on PR or Issue
 - **Documentation**: Check agent README files

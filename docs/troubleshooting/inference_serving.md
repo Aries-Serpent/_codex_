@@ -74,9 +74,9 @@ print('Model loaded successfully')
 
 ---
 
-### 2. Authentication Failures
+## 2. Authentication Failures
 
-#### Symptoms
+### Symptoms
 - 401 Unauthorized responses
 - "Invalid API key" errors
 - Authentication exhaustion warnings
@@ -109,9 +109,9 @@ print(f"Expires: {decoded['exp']}")
 
 ---
 
-### 3. Circuit Breaker Issues
+## 3. Circuit Breaker Issues
 
-#### Symptoms
+### Symptoms
 - 503 Service Unavailable responses
 - "Circuit breaker open" in logs
 - `/health` reports unhealthy
@@ -125,7 +125,7 @@ print(f"Expires: {decoded['exp']}")
 # Check uptime ratio
 ```
 
-#### Solutions
+## Solutions
 
 **If circuit breaker is open:**
 1. Check underlying model health:
@@ -227,9 +227,9 @@ sizer = DynamicBatchSizer(
 
 ---
 
-### 5. Rate Limiting Issues
+## 5. Rate Limiting Issues
 
-#### Symptoms
+### Symptoms
 - 429 Too Many Requests responses
 - Requests rejected during load spikes
 - Uneven load distribution
@@ -241,7 +241,7 @@ sizer = DynamicBatchSizer(
 # Check request rate
 ```
 
-#### Solutions
+## Solutions
 
 **Increase rate limits:**
 ```bash
@@ -273,9 +273,9 @@ def predict_with_retry(data, max_retries=3):
 
 ---
 
-### 6. Connection/Network Issues
+## 6. Connection/Network Issues
 
-#### Symptoms
+### Symptoms
 - Connection refused errors
 - Timeout errors
 - Intermittent failures
@@ -339,7 +339,7 @@ def predict_with_retry(data, max_retries=3):
 # Check traffic weights
 ```
 
-#### Solutions
+## Solutions
 
 **Rollback triggered:**
 1. Check error rate threshold:
@@ -379,7 +379,7 @@ splitter.set_weights(blue=70, green=30)  # 70% blue, 30% green
 # Check cache metrics
 ```
 
-#### Solutions
+## Solutions
 
 **Low hit rate:**
 - Increase cache size (default: 3 models)
@@ -425,7 +425,7 @@ total_latency = 500ms
 └── Postprocessing: 35ms (7%)
 ```
 
-### Optimization Priority
+## Optimization Priority
 
 1. **Model inference (80%)**: Use quantization, GPU, smaller model
 2. **Preprocessing (10%)**: Vectorize operations, use compiled libraries

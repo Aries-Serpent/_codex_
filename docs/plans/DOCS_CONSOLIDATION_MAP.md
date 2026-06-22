@@ -136,6 +136,7 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 ## 🔗 Mermaid: Docs Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📝 New Doc Created\n(agent session)", "📌 Active Living Doc\n(updated each session)"'}}%%
 flowchart TD
     NEW["📝 New Doc Created\n(agent session)"]
     ACTIVE["📌 Active Living Doc\n(updated each session)"]

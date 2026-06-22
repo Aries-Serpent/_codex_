@@ -1,6 +1,7 @@
 # PR #4425 → #4427 — Session Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S966 Review Thread Remediation<br/>PR #4427 · Head: e874bbe<br/>All 11 unresolved review comments, Fix: scan_all.py trusted-command whitelist<br/>github_api_trickle.py split argv<br/>verify_living_files.py PR-number parameterization'}}%%
 graph TD
   A[S966 Review Thread Remediation<br/>PR #4427 · Head: e874bbe<br/>All 11 unresolved review comments] --> B
   B[Fix: scan_all.py trusted-command whitelist<br/>github_api_trickle.py split argv<br/>verify_living_files.py PR-number parameterization] --> C

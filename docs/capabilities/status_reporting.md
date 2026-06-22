@@ -147,7 +147,7 @@ def is_application_ready() -> bool:
     ])
 ```
 
-### Example 2: Kubernetes Health Probes
+## Example 2: Kubernetes Health Probes
 
 ```yaml
 # k8s/deployment.yml
@@ -193,7 +193,7 @@ spec:
           failureThreshold: 30
 ```
 
-### Example 3: Comprehensive Status Dashboard
+## Example 3: Comprehensive Status Dashboard
 
 ```python
 # src/monitoring/status_dashboard.py
@@ -337,7 +337,7 @@ class StatusDashboard:
         pass
 ```
 
-### Example 4: Alert Integration
+## Example 4: Alert Integration
 
 ```python
 # src/monitoring/alerts.py

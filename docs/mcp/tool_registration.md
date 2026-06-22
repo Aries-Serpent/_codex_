@@ -7,6 +7,7 @@ The MCP server exposes tools via the in-memory `ToolRegistry` (`src/mcp/server/_
 ## Tool Registry Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Tool Definition, ToolRegistry'}}%%
 graph TB
     A[Tool Definition] --> B[ToolRegistry]
     B --> C{Registration}
@@ -273,7 +274,7 @@ registry.register(context_tool, context_handler)
 server = MCPServer(tool_registry=registry)
 ```
 
-### Decorator-Based Registration
+## Decorator-Based Registration
 
 ```python
 from functools import wraps
@@ -878,7 +879,7 @@ fixed_tool = Tool(name="problematic_tool", ...)
 registry.register(fixed_tool, fixed_handler)
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Tool Execution Failure:**
 1. Check handler logs for exception details
@@ -907,7 +908,7 @@ registry.load_from_config(config)
 - Manual intervention to fix config
 - Retry reload after fix
 
-### Health Checks
+## Health Checks
 
 ```python
 @app.get("/health/tools")

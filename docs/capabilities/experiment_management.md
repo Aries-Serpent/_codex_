@@ -357,7 +357,7 @@ tracker.log_artifact("model.pt")
 tracker.end_run()
 ```
 
-### Example 2: MLflow Tracking
+## Example 2: MLflow Tracking
 
 ```python
 import mlflow
@@ -389,7 +389,7 @@ with mlflow.start_run(run_name="experiment-1"):
     mlflow.log_artifact("config.yaml")
 ```
 
-### Example 3: Experiment Comparison
+## Example 3: Experiment Comparison
 
 ```python
 def compare_experiments(exp_dirs: list) -> dict:
@@ -438,7 +438,7 @@ for name, data in results.items():
     print(f"  {name}: loss={loss}, lr={lr}")
 ```
 
-### Example 4: Reproducibility Logging
+## Example 4: Reproducibility Logging
 
 ```python
 import subprocess
@@ -487,7 +487,7 @@ tracker.start_run("reproducible-run")
 log_environment(tracker)
 ```
 
-### Example 5: Hyperparameter Sweep
+## Example 5: Hyperparameter Sweep
 
 ```python
 from itertools import product
@@ -614,7 +614,7 @@ ls -la experiments/
 mlflow ui --port 5000
 ```
 
-### Metric Logging Issues
+## Metric Logging Issues
 
 ```python
 # Check for NaN values

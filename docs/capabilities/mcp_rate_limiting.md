@@ -453,7 +453,7 @@ export MCP_RATE_LIMIT_THROTTLE_ENABLED="true"
 export MCP_RATE_LIMIT_THROTTLE_DELAY_MS="100"
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML for rate limiting configuration:
 
@@ -521,7 +521,7 @@ async def get_data():
     return {"data": "value"}
 ```
 
-### Example 2: Tiered Rate Limits
+## Example 2: Tiered Rate Limits
 
 ```python
 class TieredRateLimiter:
@@ -600,7 +600,7 @@ limiter = TokenBucket(rate=10, capacity=20)
 limiter = SlidingWindowCounter(limit=100, window_seconds=60)
 ```
 
-### 2. Implement Rate Limit Headers
+## 2. Implement Rate Limit Headers
 
 ```python
 def add_rate_limit_headers(response, limiter, client_id):
@@ -678,5 +678,5 @@ async def handle_rate_limited(request, retry_after):
 
 - [Rate Limiting Algorithms](https://blog.cloudflare.com/counting-things-a-lot-of-different-things/)
 - [Token Bucket Algorithm](https://en.wikipedia.org/wiki/Token_bucket)
-- [HTTP 429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)
+- [Developer.Mozilla.Org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)
 - [Rate Limiting Best Practices](https://cloud.google.com/architecture/rate-limiting-strategies-techniques)

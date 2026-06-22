@@ -1,5 +1,194 @@
 # Elevated Privileges Token & Process Review
 
+## Table of Contents
+
+- [📋 Table of Contents](#-table-of-contents)
+- [1. Token Inventory](#1-token-inventory)
+  - [1.1 Repository Secrets (as of 2026-05-08)](#11-repository-secrets-as-of-2026-05-08)
+  - [1.2 Token Chain (Canonical Pattern)](#12-token-chain-canonical-pattern)
+- [ALWAYS use this exact chain — never bare github.token for write operations](#always-use-this-exact-chain--never-bare-githubtoken-for-write-operations)
+- [2. Token Health Matrix](#2-token-health-matrix)
+  - [2.1 ✅ What Works](#21--what-works)
+  - [2.2 ❌ What Fails / Returns Errors](#22--what-fails--returns-errors)
+  - [2.3 ⚠️ Needs Implementation / Improvement](#23--needs-implementation--improvement)
+- [3. Step-by-Step Verification Playbook](#3-step-by-step-verification-playbook)
+  - [3.1 Verify CODEX_MASTER_KEY is Active](#31-verify-codex_master_key-is-active)
+  - [3.2 Verify Token Scopes via GitHub API](#32-verify-token-scopes-via-github-api)
+- [Step 1: Check CODEX_MASTER_KEY scopes (replace TOKEN with actual value)](#step-1-check-codex_master_key-scopes-replace-token-with-actual-value)
+- [Step 2: Check what scopes the token has](#step-2-check-what-scopes-the-token-has)
+- [Expected output: X-OAuth-Scopes: repo, workflow, ...](#expected-output-x-oauth-scopes-repo-workflow-)
+- [Check token rate-limit and validity](#check-token-rate-limit-and-validity)
+- [Test variable write (dry-run GET):](#test-variable-write-dry-run-get)
+- [3.3 Verify GitHub App (Cognitive Brain) is Active](#33-verify-github-app-cognitive-brain-is-active)
+  - [3.4 Rotate CODEX_MASTER_KEY (If Expired or Compromised)](#34-rotate-codex_master_key-if-expired-or-compromised)
+  - [3.5 Fix the 1 Workflow Using Bare github.token for Write Ops](#35-fix-the-1-workflow-using-bare-githubtoken-for-write-ops)
+- [Before (vulnerable to 403 on write ops):](#before-vulnerable-to-403-on-write-ops)
+- [After (correct pattern):](#after-correct-pattern)
+- [3.6 Add security_events Scope to CODEX_MASTER_KEY / CODEX_BACKUP_KEY](#36-add-security_events-scope-to-codex_master_key--codex_backup_key)
+- [Should return a rule ID, not a 403](#should-return-a-rule-id-not-a-403)
+- [3.7 Add Automated PAT Expiry Monitoring](#37-add-automated-pat-expiry-monitoring)
+- [aais-cache: none  # Python referenced in monitoring logic only](#aais-cache-none---python-referenced-in-monitoring-logic-only)
+- [4. Workflow-Level Privilege Audit](#4-workflow-level-privilege-audit)
+  - [4.1 Audit Summary](#41-audit-summary)
+  - [4.2 Workflows With Elevated Privilege Operations](#42-workflows-with-elevated-privilege-operations)
+  - [4.3 Highest-Risk Workflows](#43-highest-risk-workflows)
+- [5. GitHub App (Cognitive Brain) Audit](#5-github-app-cognitive-brain-audit)
+  - [5.1 App Configuration](#51-app-configuration)
+  - [5.2 App Permission Gaps](#52-app-permission-gaps)
+  - [5.3 App Token Refresh Pattern](#53-app-token-refresh-pattern)
+- [6. Identified Gaps & AAIS Improvement Tasks](#6-identified-gaps--aais-improvement-tasks)
+  - [6.1 Full Gap Register](#61-full-gap-register)
+  - [6.2 Fixing T-10 (Reliability ceiling — 1.6% CI failure rate)](#62-fixing-t-10-reliability-ceiling--16-ci-failure-rate)
+- [View current value:](#view-current-value)
+- [It will decrease naturally as CI stays green.](#it-will-decrease-naturally-as-ci-stays-green)
+- [To force a reset (human admin action required):](#to-force-a-reset-human-admin-action-required)
+- [7. Implementation Roadmap](#7-implementation-roadmap)
+  - [7.1 Quick Wins (Do Now — Each < 30 min)](#71-quick-wins-do-now--each--30-min)
+- [Open the file](#open-the-file)
+- [Find: GH_TOKEN: ${{ github.token }}](#find-gh_token--githubtoken-)
+- [Replace with: GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}](#replace-with-gh_token--secretscodex_master_key--secretscodex_backup_key--githubtoken-)
+- [Validate](#validate)
+- [Commit](#commit)
+- [8. Mermaid Architecture Diagrams](#8-mermaid-architecture-diagrams)
+  - [8.1 Token Authority Hierarchy](#81-token-authority-hierarchy)
+  - [8.2 What Happens When CODEX_MASTER_KEY Expires](#82-what-happens-when-codex_master_key-expires)
+  - [8.3 Optimal Token Routing (Target State)](#83-optimal-token-routing-target-state)
+  - [8.4 AAIS Score Impact of Token Health](#84-aais-score-impact-of-token-health)
+- [Quick Reference Links](#quick-reference-links)
+- [9. Token Refresh Alignment Guide](#9-token-refresh-alignment-guide)
+  - [9.1 Why Alignment Matters](#91-why-alignment-matters)
+  - [9.2 Master Refresh Checklist](#92-master-refresh-checklist)
+    - [A. Rotating `CODEX_MASTER_KEY`](#a-rotating-codex_master_key)
+    - [B. Rotating `CODEX_BACKUP_KEY`](#b-rotating-codex_backup_key)
+    - [C. Rotating the GitHub App (`_GITHUB_APP_PRIVATE_KEY`)](#c-rotating-the-github-app-_github_app_private_key)
+  - [9.3 Variables That Must Stay in Sync](#93-variables-that-must-stay-in-sync)
+- [List all repo variables (names + values)](#list-all-repo-variables-names--values)
+- [9.4 Files in the Repo That Must Be Checked](#94-files-in-the-repo-that-must-be-checked)
+  - [9.5 The `CODEX_MASTER_KEY_LAST_VERIFIED` Variable](#95-the-codex_master_key_last_verified-variable)
+- [After confirming the new key works (admin_setup_verification.yml passes):](#after-confirming-the-new-key-works-admin_setup_verificationyml-passes)
+- [9.6 Post-Rotation Verification Script](#96-post-rotation-verification-script)
+- [post_rotation_verify.sh — run after every token rotation](#post_rotation_verifysh--run-after-every-token-rotation)
+- [1. Confirm new CODEX_MASTER_KEY works against Variables API](#1-confirm-new-codex_master_key-works-against-variables-api)
+- [2. Confirm workflow approval capability](#2-confirm-workflow-approval-capability)
+- [3. Check for stale token values in repo variables](#3-check-for-stale-token-values-in-repo-variables)
+- [4. Check agent_context.json for leaked token fields](#4-check-agent_contextjson-for-leaked-token-fields)
+- [5. Confirm secrets baseline is clean](#5-confirm-secrets-baseline-is-clean)
+- [9.7 Alignment State Diagram](#97-alignment-state-diagram)
+  - [9.8 Simultaneous Multi-Token Rotation Order](#98-simultaneous-multi-token-rotation-order)
+  - [9.9 Scope Requirements Reference](#99-scope-requirements-reference)
+  - [9.10 Token Rotation Impact Summary](#910-token-rotation-impact-summary)
+- [Quick Reference Links](#quick-reference-links)
+- [10. Variable & Secret Governance — Complete Inventory and Operational Guide](#10-variable--secret-governance--complete-inventory-and-operational-guide)
+  - [10.1 Variable & Secret Taxonomy](#101-variable--secret-taxonomy)
+  - [10.2 Organization Secrets — Full Inventory](#102-organization-secrets--full-inventory)
+- [Requires org owner permissions](#requires-org-owner-permissions)
+- [10.3 Repository Secrets — Full Inventory](#103-repository-secrets--full-inventory)
+  - [10.4 Environment Secrets — Full Inventory](#104-environment-secrets--full-inventory)
+  - [10.5 Environment Variables — Full Inventory](#105-environment-variables--full-inventory)
+  - [10.6 Repository Variables — Full Annotated Inventory](#106-repository-variables--full-annotated-inventory)
+    - [10.6.1 Agent Autonomy & Control](#1061-agent-autonomy--control)
+    - [10.6.2 CI Behaviour & Quality Gates](#1062-ci-behaviour--quality-gates)
+    - [10.6.3 Cognitive Brain & Session Management](#1063-cognitive-brain--session-management)
+    - [10.6.4 LLM & ML Configuration](#1064-llm--ml-configuration)
+    - [10.6.5 Infrastructure & Docker](#1065-infrastructure--docker)
+    - [10.6.6 External Services & Integrations](#1066-external-services--integrations)
+    - [10.6.7 Repository Identity & Versioning](#1067-repository-identity--versioning)
+  - [10.7 Adding New Variables and Secrets](#107-adding-new-variables-and-secrets)
+    - [10.7.1 Decision Tree — Where to Put a New Value](#1071-decision-tree--where-to-put-a-new-value)
+    - [10.7.2 Naming Conventions](#1072-naming-conventions)
+    - [10.7.3 Adding a New Repo Variable](#1073-adding-a-new-repo-variable)
+- [1. Add the variable](#1-add-the-variable)
+- [2. Verify it was created](#2-verify-it-was-created)
+- [3. Reference it in a workflow:](#3-reference-it-in-a-workflow)
+- [jobs:](#jobs)
+- [my-job:](#my-job)
+- [env:](#env)
+- [MY_VAR: ${{ vars.MY_NEW_VARIABLE }}](#my_var--varsmy_new_variable-)
+- [4. Update agent_context.json if the CB CLI needs to read it:](#4-update-agent_contextjson-if-the-cb-cli-needs-to-read-it)
+- [Add to .codex/agent_context.json:](#add-to-codexagent_contextjson)
+- ["MY_NEW_VARIABLE": "my_value"](#my_new_variable-my_value)
+- [Then run:](#then-run)
+- [10.7.4 Adding a New Repository Secret](#1074-adding-a-new-repository-secret)
+- [1. Add the secret (never echo raw value — use file or stdin)](#1-add-the-secret-never-echo-raw-value--use-file-or-stdin)
+- [2. Verify the secret exists (values are never readable back)](#2-verify-the-secret-exists-values-are-never-readable-back)
+- [3. Reference it in a workflow:](#3-reference-it-in-a-workflow)
+- [jobs:](#jobs)
+- [my-job:](#my-job)
+- [steps:](#steps)
+- [- name: Use secret](#--name-use-secret)
+- [env:](#env)
+- [MY_SECRET: ${{ secrets.MY_NEW_SECRET }}](#my_secret--secretsmy_new_secret-)
+- [run: echo "Secret is set"  # never echo the value](#run-echo-secret-is-set---never-echo-the-value)
+- [4. Add to post_rotation_verify.sh scan list if token-like](#4-add-to-post_rotation_verifysh-scan-list-if-token-like)
+- [5. Document in §10.3 above](#5-document-in-103-above)
+- [10.7.5 Promoting a Repo Secret to Org Secret](#1075-promoting-a-repo-secret-to-org-secret)
+- [1. Add at org level with selected repo visibility](#1-add-at-org-level-with-selected-repo-visibility)
+- [2. Remove the repo-level duplicate (to avoid shadowing confusion)](#2-remove-the-repo-level-duplicate-to-avoid-shadowing-confusion)
+- [3. Verify the org secret is accessible from this repo:](#3-verify-the-org-secret-is-accessible-from-this-repo)
+- [The value will appear as ${{ secrets.MY_ORG_SECRET }} in workflows](#the-value-will-appear-as--secretsmy_org_secret--in-workflows)
+- [(org secrets automatically fall through to selected repos)](#org-secrets-automatically-fall-through-to-selected-repos)
+- [10.8 Auto-Managed Variables — Never Edit Manually](#108-auto-managed-variables--never-edit-manually)
+  - [10.9 Improving the Current Variable Set — Recommendations](#109-improving-the-current-variable-set--recommendations)
+    - [10.9.1 Suggested New Variables (not yet present)](#1091-suggested-new-variables-not-yet-present)
+    - [10.9.2 Variables That Should Be Reviewed / Potentially Removed](#1092-variables-that-should-be-reviewed--potentially-removed)
+    - [10.9.3 Security Hardening Recommendations](#1093-security-hardening-recommendations)
+  - [10.10 Variable Access Patterns in Workflows](#1010-variable-access-patterns-in-workflows)
+  - [10.11 Rotation Coverage Matrix](#1011-rotation-coverage-matrix)
+- [11. Workflow Configuration Catalog — Variable & Secret Management](#11-workflow-configuration-catalog--variable--secret-management)
+  - [11.1 Workflow Overview Map](#111-workflow-overview-map)
+  - [11.2 Detailed Workflow Catalog](#112-detailed-workflow-catalog)
+    - [11.2.1 `scan-secrets-variables.yml` — Inventory & Audit](#1121-scan-secrets-variablesyml--inventory--audit)
+    - [11.2.2 `token-probe.yml` — Token Health Validation](#1122-token-probeyml--token-health-validation)
+    - [11.2.3 `admin_setup_verification.yml` — Full Admin Setup Check](#1123-admin_setup_verificationyml--full-admin-setup-check)
+    - [11.2.4 `test-variables-api.yml` — Live Variables API CRUD Test](#1124-test-variables-apiyml--live-variables-api-crud-test)
+    - [11.2.5 `copilot-agent-vars-bootstrap.yml` — Agent Context Injection](#1125-copilot-agent-vars-bootstrapyml--agent-context-injection)
+    - [11.2.6 `repo-var-sync-schedule.yml` — Daily Variable Drift Detection](#1126-repo-var-sync-scheduleyml--daily-variable-drift-detection)
+    - [11.2.7 `vars-guide-sync.yml` — Auto-Sync Variables Master Guide](#1127-vars-guide-syncyml--auto-sync-variables-master-guide)
+- [Refresh all layers](#refresh-all-layers)
+- [Dry-run preview only](#dry-run-preview-only)
+- [11.2.8 `sync-env-vars.yml` — Environment Variable Sync](#1128-sync-env-varsyml--environment-variable-sync)
+- [Sync to production (live)](#sync-to-production-live)
+- [Preview only](#preview-only)
+- [11.2.9 `agent-var-writer.yml` — Provenance-Chain Autonomous Variable Writer](#1129-agent-var-writeryml--provenance-chain-autonomous-variable-writer)
+- [1. Write intent file](#1-write-intent-file)
+- [2. Commit and push](#2-commit-and-push)
+- [3. Post trigger comment on the PR:](#3-post-trigger-comment-on-the-pr)
+- [@agent-var-writer apply](#agent-var-writer-apply)
+- [11.2.10 `process-variable-intents.yml` — Mailbox Variable Intent Worker](#11210-process-variable-intentsyml--mailbox-variable-intent-worker)
+  - [11.2.11 `secrets-baseline-enforcer.yml` — Continuous Secrets Scanning](#11211-secrets-baseline-enforceryml--continuous-secrets-scanning)
+    - [11.2.12 `validate.yml` — Full Validation Pipeline](#11212-validateyml--full-validation-pipeline)
+    - [11.2.13 `codeql-alert-fetcher.yml` — CodeQL Security Scan (MASTER_KEY Required)](#11213-codeql-alert-fetcheryml--codeql-security-scan-master_key-required)
+    - [11.2.14 `security-scanning-suite.yml` — Full Security Audit](#11214-security-scanning-suiteyml--full-security-audit)
+    - [11.2.15 Stub Workflows (Require Completion — See §11.3)](#11215-stub-workflows-require-completion--see-113)
+  - [11.3 Recommended Workflow Execution Order for a Full Refresh](#113-recommended-workflow-execution-order-for-a-full-refresh)
+- [12. Rate-Limit Awareness — Workflow Improvement Guide](#12-rate-limit-awareness--workflow-improvement-guide)
+  - [12.1 Token Pools & Limits Reference](#121-token-pools--limits-reference)
+  - [12.2 Existing Rate-Limit Infrastructure](#122-existing-rate-limit-infrastructure)
+  - [12.3 Workflow Audit — Rate-Limit Gap Register](#123-workflow-audit--rate-limit-gap-register)
+    - [Priority 1 — High Gap, High Frequency (Fix First)](#priority-1--high-gap-high-frequency-fix-first)
+    - [Priority 2 — Medium Gap, Scheduled or Self-Healing](#priority-2--medium-gap-scheduled-or-self-healing)
+    - [Priority 3 — Lower Gap, Event-Driven](#priority-3--lower-gap-event-driven)
+    - [Currently Well-Handled (Reference Implementations)](#currently-well-handled-reference-implementations)
+  - [12.4 Improvement Patterns — Reusable Recipes](#124-improvement-patterns--reusable-recipes)
+    - [Pattern A — Pre-Call Rate-Limit Check (Single Step)](#pattern-a--pre-call-rate-limit-check-single-step)
+- [Then on each API step:](#then-on-each-api-step)
+- [Pattern B — Polite Sleep Between Batched Calls](#pattern-b--polite-sleep-between-batched-calls)
+  - [Pattern C — Retry with Exponential Backoff (for PATCH/POST)](#pattern-c--retry-with-exponential-backoff-for-patchpost)
+    - [Pattern D — Paginated Fetch with Rate-Limit Guard](#pattern-d--paginated-fetch-with-rate-limit-guard)
+    - [Pattern E — Respect `Retry-After` Header (for 429 responses)](#pattern-e--respect-retry-after-header-for-429-responses)
+  - [12.5 Per-Workflow Improvement Specifications](#125-per-workflow-improvement-specifications)
+    - [12.5.1 `workflow-execution-gate.yml` — Priority 1](#1251-workflow-execution-gateyml--priority-1)
+- [Add to dispatch-checked job, before first API call:](#add-to-dispatch-checked-job-before-first-api-call)
+- [12.5.2 `auto-approve-workflows.yml` — Priority 1](#1252-auto-approve-workflowsyml--priority-1)
+- [Add to job-level env:](#add-to-job-level-env)
+- [12.5.3 `promote-integration-branch.yml` — Priority 1](#1253-promote-integration-branchyml--priority-1)
+  - [12.5.4 `copilot-agent-session-done.yml` — Priority 1](#1254-copilot-agent-session-doneyml--priority-1)
+    - [12.5.5 `copilot-iterative-self-healing.yml` — Priority 2](#1255-copilot-iterative-self-healingyml--priority-2)
+    - [12.5.6 `codebase-health-sweep.yml` — Priority 2](#1256-codebase-health-sweepyml--priority-2)
+    - [12.5.7 `codeql.yml` + `codeql-analysis.yml` — Priority 2 (Deduplication)](#1257-codeqlyml--codeql-analysisyml--priority-2-deduplication)
+  - [12.6 Rate-Limit Monitoring — New Variable Recommendations](#126-rate-limit-monitoring--new-variable-recommendations)
+  - [12.7 Implementation Order Diagram](#127-implementation-order-diagram)
+
 **Last Updated:** 2026-06-22
 > **Session:** S859 | **Date:** 2026-05-08 | **PR:** #4346
 > **Author:** copilot-swe-agent[bot]
@@ -96,12 +285,12 @@ env:
 ### 3.1 Verify CODEX_MASTER_KEY is Active
 
 **Step 1:** Open the repository secrets page:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)
 
 **Step 2:** Confirm `CODEX_MASTER_KEY` appears in the list. Note the **Updated** date.
 
 **Step 3:** Open the Admin Setup Verification workflow to run a live test:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml)
 
 **Step 4:** Click **"Run workflow"** → select branch `main` → click **"Run workflow"** (green button).
 
@@ -142,18 +331,18 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 ---
 
-### 3.3 Verify GitHub App (Cognitive Brain) is Active
+## 3.3 Verify GitHub App (Cognitive Brain) is Active
 
 **Step 1:** Open the GitHub Apps settings for the org:
-> 🔗 [https://github.com/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps)
+> 🔗 [GitHub](https://github.com/organizations/Aries-Serpent/settings/apps)
 
 **Step 2:** Look for the **Cognitive Brain** app. Click it to view installation details.
 
 **Step 3:** Confirm the app is **Installed** on `Aries-Serpent/_codex_`.
-> 🔗 [https://github.com/settings/installations](https://github.com/settings/installations)
+> 🔗 [GitHub](https://github.com/settings/installations)
 
 **Step 4:** Verify the three secrets are present in the repo:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions)
 
 Look for: `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`
 
@@ -194,7 +383,7 @@ PYEOF
 ### 3.4 Rotate CODEX_MASTER_KEY (If Expired or Compromised)
 
 **Step 1:** Open GitHub PAT settings:
-> 🔗 [https://github.com/settings/tokens](https://github.com/settings/tokens)
+> 🔗 [GitHub](https://github.com/settings/tokens)
 
 **Step 2:** Find the existing `CODEX_MASTER_KEY` token entry. Note its expiry date.
 
@@ -211,12 +400,12 @@ PYEOF
 **Step 5:** Copy the new token value.
 
 **Step 6:** Update the repository secret:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit)
 
 Click **"Update secret"** → paste new token → **"Update secret"**.
 
 **Step 7:** Re-run `admin_setup_verification.yml` to confirm:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml)
 
 ---
 
@@ -258,17 +447,17 @@ git push
 
 ---
 
-### 3.6 Add security_events Scope to CODEX_MASTER_KEY / CODEX_BACKUP_KEY
+## 3.6 Add security_events Scope to CODEX_MASTER_KEY / CODEX_BACKUP_KEY
 
 > **Why:** CodeQL alert fetching requires `security_events` scope. Currently no PAT has it.
 
 **Step 1:** Open PAT settings:
-> 🔗 [https://github.com/settings/tokens](https://github.com/settings/tokens)
+> 🔗 [GitHub](https://github.com/settings/tokens)
 
 **Step 2:** Edit `CODEX_MASTER_KEY` → add **`security_events`** scope checkbox → **"Update token"**.
 
 **Step 3:** Update the secret value if the token regenerates:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit)
 
 **Step 4:** Test CodeQL alert access:
 ```bash
@@ -282,7 +471,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 ---
 
-### 3.7 Add Automated PAT Expiry Monitoring
+## 3.7 Add Automated PAT Expiry Monitoring
 
 > **Why:** When CODEX_MASTER_KEY expires, 125 workflows silently fail with 403.
 
@@ -331,7 +520,7 @@ git push
 ```
 
 **Step 3:** Enable the workflow in Actions tab:
-> 🔗 [https://github.com/Aries-Serpent/_codex_/actions/workflows/token-expiry-monitor.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/token-expiry-monitor.yml)
+> 🔗 [GitHub](https://github.com/Aries-Serpent/_codex_/actions/workflows/token-expiry-monitor.yml)
 
 ---
 
@@ -350,6 +539,7 @@ git push
 ### 4.2 Workflows With Elevated Privilege Operations
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing agent-auth-delegation.yml\nWorkflow approvals + token dispatch, session_wrapup_autofix.py\nPR body edits + variable writes'}}%%
 graph TD
     subgraph "🔑 CODEX_MASTER_KEY — 125 workflows"
         A[agent-auth-delegation.yml\nWorkflow approvals + token dispatch]
@@ -410,7 +600,7 @@ graph TD
 
 > **Verify app permissions:** Open the app settings page and confirm these four permissions
 > are granted at the **repository** permission level:
-> 🔗 [https://github.com/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps)
+> 🔗 [GitHub](https://github.com/organizations/Aries-Serpent/settings/apps)
 
 ### 5.3 App Token Refresh Pattern
 
@@ -474,6 +664,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 ## 7. Implementation Roadmap
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Elevated Privileges Remediation Roadmap
     dateFormat  YYYY-MM-DD
@@ -493,6 +684,7 @@ gantt
 ### 7.1 Quick Wins (Do Now — Each < 30 min)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "T-01\nFix workflow-link-validation.yml\n10 min", "T-03\nAdd security_events scope\n15 min"'}}%%
 flowchart LR
     A["T-01\nFix workflow-link-validation.yml\n10 min"] --> B["T-03\nAdd security_events scope\n15 min"]
     B --> C["T-02\nAdd token-expiry-monitor.yml\n30 min"]
@@ -522,6 +714,7 @@ git commit -m "fix(auth): canonical token chain in workflow-link-validation.yml 
 ### 8.1 Token Authority Hierarchy
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push", "🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"'}}%%
 graph TD
     subgraph "Tier 1 — Full Write Authority"
         MK["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push"]
@@ -549,6 +742,7 @@ graph TD
 ### 8.2 What Happens When CODEX_MASTER_KEY Expires
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing MASTER_KEY ❌ EXPIRED, MASTER_KEY ❌'}}%%
 sequenceDiagram
     participant Push as git push
     participant AutoApprove as auto-approve-workflows.yml
@@ -574,6 +768,7 @@ sequenceDiagram
 ### 8.3 Optimal Token Routing (Target State)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing /"Operation Type"/, "CODEX_MASTER_KEY\n+ security_events scope"'}}%%
 flowchart TD
     OP[/"Operation Type"/]
 
@@ -599,6 +794,7 @@ flowchart TD
 ### 8.4 AAIS Score Impact of Token Health
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'XY Chart showing "All tokens healthy (target)", "MASTER_KEY expired", "App not installed", "security_events missing", 99.9, 97.5, 99.7, 99.7'}}%%
 xychart-beta
     title "AAIS Score by Token Health State"
     x-axis ["All tokens healthy (target)", "MASTER_KEY expired", "App not installed", "security_events missing"]
@@ -643,6 +839,7 @@ xychart-beta
 A single PAT value is referenced in up to **five independent systems** simultaneously:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "New PAT value\n(e.g. ghp_NEW...)", "① GitHub Actions Secret\n(settings/secrets/actions)"'}}%%
 flowchart TD
     PAT["New PAT value\n(e.g. ghp_NEW...)"]
     S["① GitHub Actions Secret\n(settings/secrets/actions)"]
@@ -717,6 +914,7 @@ These **repository variables** (not secrets) contain either derived token metada
 token-adjacent values that must be reviewed on every token rotation:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation", "COGNITIVE_BRAIN_ALLOWED_ACTORS\nValue: comma-separated logins\nAction: no change needed unless\nthe PAT owner login changes"'}}%%
 graph LR
     subgraph "Repo Variables — review on every token rotation"
         V1["COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation"]
@@ -759,7 +957,7 @@ alongside the secret rotation.
 
 ---
 
-### 9.4 Files in the Repo That Must Be Checked
+## 9.4 Files in the Repo That Must Be Checked
 
 Some files **in the repository itself** cache token-adjacent state and must be
 inspected after a rotation:
@@ -802,7 +1000,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 ---
 
-### 9.6 Post-Rotation Verification Script
+## 9.6 Post-Rotation Verification Script
 
 Run this end-to-end check after completing any token rotation to confirm all consumers are aligned:
 
@@ -878,9 +1076,10 @@ CODEX_MASTER_KEY=<new_token_value> ./scripts/ci/post_rotation_verify.sh
 
 ---
 
-### 9.7 Alignment State Diagram
+## 9.7 Alignment State Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> TokenValid : Initial state
 
@@ -925,6 +1124,8 @@ stateDiagram-v2
 When rotating **all tokens at once** (e.g., a security incident requiring full credential sweep), follow this order to avoid CI lockout:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>You: New BACKUP_KEY value
+  '}}%%
 sequenceDiagram
     participant You as 🧑 Admin
     participant GH as GitHub Settings
@@ -975,6 +1176,7 @@ Use this table when creating or regenerating PATs to ensure you select the right
 | GitHub App | App-level permissions (not scopes) | `pull_requests:write` · `contents:write` · `issues:write` · `discussions:write` | — |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "☑ repo\n(all sub-checkboxes)", "☑ workflow\n(update Actions workflows)"'}}%%
 graph LR
     subgraph "CODEX_MASTER_KEY — Required Checkbox Map"
         R1["☑ repo\n(all sub-checkboxes)"]
@@ -1051,6 +1253,7 @@ Use it to prioritise which rotation to complete first in an emergency.
 ### 10.1 Variable & Secret Taxonomy
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update", "🔐 Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"'}}%%
 graph TD
     subgraph "Scope Hierarchy (broadest → narrowest)"
         ORG["🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update"]
@@ -1112,7 +1315,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
 
 ---
 
-### 10.3 Repository Secrets — Full Inventory
+## 10.3 Repository Secrets — Full Inventory
 
 Stored at repo level, visible only to this repository.
 
@@ -1283,6 +1486,7 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 #### 10.7.1 Decision Tree — Where to Put a New Value
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "New value to add", "Org Variable\ngh variable set NAME VALUE --org Aries-Serpent"'}}%%
 flowchart TD
     A["New value to add"] --> B{"Is it sensitive?\n(token, key, password, credential)"}
     B -- No --> C{"Is it needed by\nmultiple repos?"}
@@ -1337,18 +1541,18 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 # 3. Reference it in a workflow:
 # jobs:
-#   my-job:
-#     env:
-#       MY_VAR: ${{ vars.MY_NEW_VARIABLE }}
+# my-job:
+# env:
+# MY_VAR: ${{ vars.MY_NEW_VARIABLE }}
 
 # 4. Update agent_context.json if the CB CLI needs to read it:
 # Add to .codex/agent_context.json:
-#   "MY_NEW_VARIABLE": "my_value"
+# "MY_NEW_VARIABLE": "my_value"
 # Then run:
 python scripts/ci/sync_tracked_files.py --fix
 ```
 
-#### 10.7.4 Adding a New Repository Secret
+## 10.7.4 Adding a New Repository Secret
 
 ```bash
 # 1. Add the secret (never echo raw value — use file or stdin)
@@ -1363,18 +1567,18 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 # 3. Reference it in a workflow:
 # jobs:
-#   my-job:
-#     steps:
-#       - name: Use secret
-#         env:
-#           MY_SECRET: ${{ secrets.MY_NEW_SECRET }}
-#         run: echo "Secret is set"  # never echo the value
+# my-job:
+# steps:
+# - name: Use secret
+# env:
+# MY_SECRET: ${{ secrets.MY_NEW_SECRET }}
+# run: echo "Secret is set"  # never echo the value
 
 # 4. Add to post_rotation_verify.sh scan list if token-like
 # 5. Document in §10.3 above
 ```
 
-#### 10.7.5 Promoting a Repo Secret to Org Secret
+## 10.7.5 Promoting a Repo Secret to Org Secret
 
 Org secrets are preferred for values shared across multiple repos. To promote:
 
@@ -1398,7 +1602,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 ---
 
-### 10.8 Auto-Managed Variables — Never Edit Manually
+## 10.8 Auto-Managed Variables — Never Edit Manually
 
 These variables are **written by CI workflows** and will be overwritten on the next run.
 Manual edits will be silently reverted.
@@ -1447,6 +1651,7 @@ Based on the current variable inventory, these improvements would increase secur
 #### 10.9.3 Security Hardening Recommendations
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)", "Runner tokens stored\nas long-lived secrets"'}}%%
 graph LR
     subgraph "Current State"
         C1["CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)"]
@@ -1559,6 +1764,7 @@ Cross-reference: for each token rotation scenario, which variables and secrets n
 ### 11.1 Workflow Overview Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR", "token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"'}}%%
 graph TB
     subgraph "🔍 Audit & Scan"
         W1["scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR"]
@@ -1758,7 +1964,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
 
 ---
 
-#### 11.2.8 `sync-env-vars.yml` — Environment Variable Sync
+## 11.2.8 `sync-env-vars.yml` — Environment Variable Sync
 
 | Field | Value |
 |-------|-------|
@@ -1787,7 +1993,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
 
 ---
 
-#### 11.2.9 `agent-var-writer.yml` — Provenance-Chain Autonomous Variable Writer
+## 11.2.9 `agent-var-writer.yml` — Provenance-Chain Autonomous Variable Writer
 
 | Field | Value |
 |-------|-------|
@@ -1819,7 +2025,7 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 
 ---
 
-#### 11.2.10 `process-variable-intents.yml` — Mailbox Variable Intent Worker
+## 11.2.10 `process-variable-intents.yml` — Mailbox Variable Intent Worker
 
 | Field | Value |
 |-------|-------|
@@ -1845,7 +2051,7 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 
 ---
 
-#### 11.2.11 `secrets-baseline-enforcer.yml` — Continuous Secrets Scanning
+### 11.2.11 `secrets-baseline-enforcer.yml` — Continuous Secrets Scanning
 
 | Field | Value |
 |-------|-------|
@@ -1924,6 +2130,7 @@ These workflow stubs exist as `.md` documentation files but need their `.yml` co
 ### 11.3 Recommended Workflow Execution Order for a Full Refresh
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Admin: MASTER_KEY ✅ BACKUP_K'}}%%
 sequenceDiagram
     participant Admin as 👤 Admin (mbaetiong)
     participant GH as 🐙 GitHub Actions
@@ -1981,6 +2188,7 @@ sequenceDiagram
 ### 12.1 Token Pools & Limits Reference
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows", "🔑 CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"'}}%%
 graph TB
     subgraph "Rate Limit Pools — Separate Counters"
         P1["🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows"]
@@ -2099,7 +2307,7 @@ Add before any step that makes ≥ 2 API calls:
   run: gh api ...
 ```
 
-#### Pattern B — Polite Sleep Between Batched Calls
+## Pattern B — Polite Sleep Between Batched Calls
 
 For workflows making 3+ sequential `gh api` calls in a single `run:` block:
 
@@ -2132,7 +2340,7 @@ For workflows making 3+ sequential `gh api` calls in a single `run:` block:
     gh api "repos/${REPO}/..." ; _rl_check
 ```
 
-#### Pattern C — Retry with Exponential Backoff (for PATCH/POST)
+### Pattern C — Retry with Exponential Backoff (for PATCH/POST)
 
 For `gh api --method POST/PATCH` calls where partial failure leaves state inconsistent:
 
@@ -2244,7 +2452,7 @@ env:
 
 ---
 
-#### 12.5.2 `auto-approve-workflows.yml` — Priority 1
+## 12.5.2 `auto-approve-workflows.yml` — Priority 1
 
 **Current gap:** 6 API calls, 1 guard. Runs every 5 minutes via cron. The `--paginate`
 on open PRs (line 186) + 5 API calls per PR × potentially many PRs = burst risk.
@@ -2266,7 +2474,7 @@ env:
 
 ---
 
-#### 12.5.3 `promote-integration-branch.yml` — Priority 1
+## 12.5.3 `promote-integration-branch.yml` — Priority 1
 
 **Current gap:** 5 sequential `gh api PATCH` ref update calls with no retry. A 429 on
 call #3 leaves refs in a split state (some updated, some not) with no recovery path.
@@ -2278,7 +2486,7 @@ call #3 leaves refs in a split state (some updated, some not) with no recovery p
 
 ---
 
-#### 12.5.4 `copilot-agent-session-done.yml` — Priority 1
+### 12.5.4 `copilot-agent-session-done.yml` — Priority 1
 
 **Current gap:** Multiple paginated GraphQL queries (`per_page:50–100`, looping up to
 5 pages per query) across 4 separate `github-script` steps. Zero rate-limit handling.
@@ -2377,6 +2585,7 @@ Add these variables to complement the §10.9.1 suggestions:
 ### 12.7 Implementation Order Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title Rate-Limit Awareness Improvements — Recommended Timeline
     dateFormat YYYY-MM-DD

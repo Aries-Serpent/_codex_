@@ -12,6 +12,7 @@
 ## 🔄 Session Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S889 Start<br/>Safe Pickle Hardening, Add safe_pickle module<br/>HMAC signing + allowlist'}}%%
 graph TD
     A[S889 Start<br/>Safe Pickle Hardening] --> B[Add safe_pickle module<br/>HMAC signing + allowlist]
     B --> C[EvaluationRunner Robustness<br/>torch.no_grad + callable fallback]

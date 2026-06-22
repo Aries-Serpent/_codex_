@@ -153,17 +153,17 @@ Example output:
 Reading this: Model B is significantly better on accuracy and F1, but
 **slower**.  Whether to promote it depends on your latency budget.
 
-### Structured report
+## Structured report
 
 ```python
 report = suite.report()
 # {
-#   "summary": {"total": 3, "significant": 3, "inconclusive": 0},
-#   "tests": {
-#     "accuracy":   {"winner": "treatment", "p_value": 0.0041, ...},
-#     "f1_score":   {"winner": "treatment", ...},
-#     "latency_ms": {"winner": "control",   ...},
-#   }
+# "summary": {"total": 3, "significant": 3, "inconclusive": 0},
+# "tests": {
+# "accuracy":   {"winner": "treatment", "p_value": 0.0041, ...},
+# "f1_score":   {"winner": "treatment", ...},
+# "latency_ms": {"winner": "control",   ...},
+# }
 # }
 ```
 

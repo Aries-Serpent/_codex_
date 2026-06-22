@@ -109,6 +109,7 @@ This equation is synthetic, but each term corresponds to real engineering patter
 | storage/degradation | $S_d$, $D_d$ | trust cache, entropy | reserve, drift, aging, hidden fragility |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CpT baseline, Shared adaptive-energy grammar'}}%%
 flowchart LR
     CpT[CpT baseline] --> Shared[Shared adaptive-energy grammar]
     Shared --> Capacity[C_d capacity]
@@ -145,6 +146,7 @@ The repository already uses physics-inspired control metaphors:
 ## 6. Adaptive Control Loop
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Sensors: grid, thermal, RF, user, threat, storage, State estimation'}}%%
 flowchart TD
     Sense[Sensors: grid, thermal, RF, user, threat, storage] --> Estimate[State estimation]
     Estimate --> Forecast[Forecast demand, risk, weather, load, context]

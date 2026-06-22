@@ -67,7 +67,7 @@ resources:
 # - 1GB = 1024 MiB (3x peak + overhead)
 ```
 
-#### Staging Environment
+## Staging Environment
 ```yaml
 resources:
   limits:
@@ -76,7 +76,7 @@ resources:
     memory: "128Mi"
 ```
 
-#### Development Environment
+### Development Environment
 ```yaml
 resources:
   limits:
@@ -204,9 +204,9 @@ jcmd <pid> GC.heap_dump /tmp/heap.dump
 # Analyze with Eclipse Memory Analyzer (MAT)
 # Open: /tmp/heap.dump
 # Reports:
-#   - Dominator tree (largest objects)
-#   - Leak suspects (cycles)
-#   - Top consumers
+# - Dominator tree (largest objects)
+# - Leak suspects (cycles)
+# - Top consumers
 ```
 
 ---
@@ -224,7 +224,7 @@ jcmd <pid> GC.heap_dump /tmp/heap.dump
 -XX:G1ReservePercent=10               # Reserve 10% for collection
 ```
 
-### 5.2 GC Tuning Goals
+## 5.2 GC Tuning Goals
 
 | Goal | Target | Rationale |
 |------|--------|-----------|
@@ -308,7 +308,7 @@ java -XX:+TraceClassLoading -XX:+LogVMOutput \
 grep "new\|allocation" vm.log | sort | uniq -c
 ```
 
-### 7.3 Common Memory Issues
+## 7.3 Common Memory Issues
 
 **Issue 1: Unbounded Caches**
 ```python
@@ -471,7 +471,7 @@ done
 # - All instances get fresh memory
 ```
 
-### 10.2 Memory Crisis Response
+## 10.2 Memory Crisis Response
 
 **If Memory > 95% and climbing:**
 

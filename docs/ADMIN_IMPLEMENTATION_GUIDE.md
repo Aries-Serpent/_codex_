@@ -1,5 +1,101 @@
 # _codex_ Repository: Complete Admin Implementation Guide
 
+## Table of Contents
+
+- [🎯 Executive Summary for Administrators](#-executive-summary-for-administrators)
+  - [Purpose](#purpose)
+  - [Your Role as Administrator](#your-role-as-administrator)
+  - [Systems Requiring Admin Action](#systems-requiring-admin-action)
+- [📊 Quick Status Dashboard](#-quick-status-dashboard)
+- [🔐 Section 1: GitHub Organization Settings](#-section-1-github-organization-settings)
+  - [1.1 Enable GitHub Copilot for Organization](#11-enable-github-copilot-for-organization)
+  - [1.2 Repository Permissions](#12-repository-permissions)
+- [🤖 Section 2: GitHub App Creation (PR Reviewer Bot)](#-section-2-github-app-creation-pr-reviewer-bot)
+  - [2.1 Create GitHub App](#21-create-github-app)
+    - [Step 1: Basic Information](#step-1-basic-information)
+    - [Step 2: Identifying and authorizing users](#step-2-identifying-and-authorizing-users)
+    - [Step 3: Post installation](#step-3-post-installation)
+    - [Step 4: Webhook Configuration](#step-4-webhook-configuration)
+- [Run this command to generate a secure webhook secret](#run-this-command-to-generate-a-secure-webhook-secret)
+- [Step 5: Repository Permissions (CRITICAL)](#step-5-repository-permissions-critical)
+  - [Step 6: Subscribe to Events](#step-6-subscribe-to-events)
+    - [Step 7: Where can this GitHub App be installed?](#step-7-where-can-this-github-app-be-installed)
+    - [Step 8: Create GitHub App](#step-8-create-github-app)
+  - [2.2 After App Creation - Collect Required Information](#22-after-app-creation---collect-required-information)
+  - [2.3 Install App on Repository](#23-install-app-on-repository)
+- [🔑 Section 3: Repository Secrets Configuration](#-section-3-repository-secrets-configuration)
+  - [3.1 Navigate to Secrets Settings](#31-navigate-to-secrets-settings)
+  - [3.2 Required Secrets (CRITICAL)](#32-required-secrets-critical)
+  - [3.3 Optional Secrets (Enhanced Features)](#33-optional-secrets-enhanced-features)
+  - [3.4 How to Add a Secret](#34-how-to-add-a-secret)
+  - [3.5 Personal Access Token (if needed)](#35-personal-access-token-if-needed)
+- [🚀 Section 4: Deployment Infrastructure](#-section-4-deployment-infrastructure)
+  - [4.1 Choose Deployment Method](#41-choose-deployment-method)
+    - [Option A: GitHub Actions Only (Simplest - RECOMMENDED for start)](#option-a-github-actions-only-simplest---recommended-for-start)
+    - [Option B: AWS Lambda (Recommended for Production)](#option-b-aws-lambda-recommended-for-production)
+    - [Option C: Azure Functions](#option-c-azure-functions)
+    - [Option D: Self-Hosted Runner](#option-d-self-hosted-runner)
+  - [4.2 GitHub Actions Runner Configuration](#42-github-actions-runner-configuration)
+- [On your server:](#on-your-server)
+- [Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)](#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner)
+- [Extract](#extract)
+- [Configure (token from GitHub Settings)](#configure-token-from-github-settings)
+- [Run](#run)
+- [🛡️ Section 5: Security & Compliance](#-section-5-security--compliance)
+  - [5.1 Security Settings Verification](#51-security-settings-verification)
+  - [5.2 Branch Protection Rules](#52-branch-protection-rules)
+  - [5.3 CODEOWNERS File](#53-codeowners-file)
+- [View current CODEOWNERS](#view-current-codeowners)
+- [Default owners for everything](#default-owners-for-everything)
+- [Workflow files require owner approval](#workflow-files-require-owner-approval)
+- [Security-sensitive files](#security-sensitive-files)
+- [📋 Section 6: Verification Checklist](#-section-6-verification-checklist)
+  - [Organization Level](#organization-level)
+  - [Repository Level](#repository-level)
+  - [GitHub App](#github-app)
+  - [Secrets](#secrets)
+  - [Infrastructure](#infrastructure)
+  - [Testing](#testing)
+- [🔄 Section 7: Information to Return to Copilot](#-section-7-information-to-return-to-copilot)
+- [==============================================================================](#)
+- [Admin Configuration Report for _codex_](#admin-configuration-report-for-_codex_)
+- [==============================================================================](#)
+- [Date: [TODAY'S DATE - e.g., 2025-12-21]](#date-todays-date---eg-2025-12-21)
+- [Administrator: [YOUR_NAME]](#administrator-your_name)
+- [==============================================================================](#)
+- [List any issues or blockers](#list-any-issues-or-blockers)
+- [Questions for Copilot Agent](#questions-for-copilot-agent)
+- [Additional notes](#additional-notes)
+- [📚 Section 8: Troubleshooting Guide](#-section-8-troubleshooting-guide)
+  - [Common Issues and Solutions](#common-issues-and-solutions)
+    - [Issue: "Copilot Agents not available"](#issue-copilot-agents-not-available)
+    - [Issue: "Workflows failing with permission errors"](#issue-workflows-failing-with-permission-errors)
+    - [Issue: "Cannot create GitHub App"](#issue-cannot-create-github-app)
+    - [Issue: "Webhook not receiving events"](#issue-webhook-not-receiving-events)
+    - [Issue: "Secret scanning blocking push"](#issue-secret-scanning-blocking-push)
+    - [Issue: "Required status checks not found"](#issue-required-status-checks-not-found)
+- [📞 Section 9: Support Resources](#-section-9-support-resources)
+  - [Documentation Links](#documentation-links)
+  - [Getting Help](#getting-help)
+  - [Repository-Specific Resources](#repository-specific-resources)
+- [✅ Section 10: Final Validation](#-section-10-final-validation)
+  - [Test 1: Verify Workflow Execution](#test-1-verify-workflow-execution)
+- [Using GitHub CLI](#using-github-cli)
+- [Trigger a workflow manually](#trigger-a-workflow-manually)
+- [Check recent runs](#check-recent-runs)
+- [Test 2: Create Test PR](#test-2-create-test-pr)
+- [Create test branch](#create-test-branch)
+- [Make a small change](#make-a-small-change)
+- [Commit and push](#commit-and-push)
+- [Test 3: Verify Security Scanning](#test-3-verify-security-scanning)
+  - [Test 4: Verify Branch Protection](#test-4-verify-branch-protection)
+  - [Cleanup Test PR](#cleanup-test-pr)
+- [Delete test branch](#delete-test-branch)
+- [📝 Notes Section](#-notes-section)
+  - [Admin Notes](#admin-notes)
+  - [Version History](#version-history)
+- [📊 Document Metadata](#-document-metadata)
+
 > **Version:** 1.0.0 | **Generated:** 2025-12-21 | **Status:** IMPLEMENTATION_REQUIRED
 
 ---
@@ -153,7 +249,7 @@ openssl rand -hex 32
 
 > 📋 **SAVE THIS VALUE SECURELY** - You will need it later for the `CODEX_WEBHOOK_SECRET` secret.
 
-#### Step 5: Repository Permissions (CRITICAL)
+## Step 5: Repository Permissions (CRITICAL)
 
 Set these permissions exactly as specified:
 
@@ -167,7 +263,7 @@ Set these permissions exactly as specified:
 | **Metadata** | Read-only (mandatory) |
 | **Pull requests** | Read and write |
 
-#### Step 6: Subscribe to Events
+### Step 6: Subscribe to Events
 
 Check these events:
 
@@ -777,7 +873,7 @@ Or via GitHub UI:
 3. Click **"Run workflow"**
 4. Verify it completes successfully
 
-### Test 2: Create Test PR
+## Test 2: Create Test PR
 
 ```bash
 # Create test branch
@@ -798,7 +894,7 @@ git push origin test/admin-config-validation
    - [ ] Status checks appear
    - [ ] If bot is configured, verify it responds
 
-### Test 3: Verify Security Scanning
+## Test 3: Verify Security Scanning
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/security`
 2. Verify:

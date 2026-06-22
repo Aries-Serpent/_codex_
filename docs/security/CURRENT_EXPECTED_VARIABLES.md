@@ -82,7 +82,7 @@ CODEX_GHP_TOKEN_AES_AUTH_DATA
 CODEX_GHP_TOKEN_SHA256       # One-way hash for validation
 ```
 
-### Decoder Module Priority Order
+## Decoder Module Priority Order
 
 From `scripts/security/copilot_token_decoder.py`:
 

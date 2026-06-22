@@ -187,7 +187,7 @@ conn.execute("INSERT INTO users_history ...")
 conn.commit()  # All-or-nothing
 ```
 
-### Transaction Boundaries
+## Transaction Boundaries
 
 | Operation | Transaction Scope |
 |-----------|-------------------|

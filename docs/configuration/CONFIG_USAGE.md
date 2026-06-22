@@ -23,7 +23,7 @@ cfg = load_config("base", config_dir="conf/model")
 print(cfg.model.name)  # or cfg["model"]["name"]
 ```
 
-### With Overrides
+## With Overrides
 
 ```python
 # Override specific values
@@ -80,7 +80,7 @@ cfg = load_config("legacy_config", config_dir="conf/model", allow_fallback=True)
 
 **Use Case:** During migration period when configs exist in both locations
 
-### Pattern 2: Hydra Interpolation
+## Pattern 2: Hydra Interpolation
 
 ```yaml
 # conf/training/base.yaml
@@ -94,7 +94,7 @@ epochs: ${training.epochs}
 
 **Use Case:** Maintain backward compatibility without duplication
 
-### Pattern 3: Nested Config Composition
+## Pattern 3: Nested Config Composition
 
 ```yaml
 # conf/experiment/my_experiment.yaml
@@ -110,7 +110,7 @@ training:
 
 **Use Case:** Compose experiments from reusable components
 
-### Pattern 4: Error Handling
+## Pattern 4: Error Handling
 
 ```python
 from codex.utils.config_loader import get_loader, MissingConfigException
@@ -157,7 +157,7 @@ train_cfg = load_config(
 )
 ```
 
-### Evaluation Pipeline
+## Evaluation Pipeline
 
 ```python
 from codex.utils.config_loader import load_config
@@ -176,7 +176,7 @@ eval_cfg = load_config(
 )
 ```
 
-### Experimentation
+## Experimentation
 
 ```python
 from codex.utils.config_loader import load_config
@@ -344,7 +344,7 @@ loader = ConfigLoader(repo_root=Path("/custom/path"))
 cfg = loader.load_config("base", config_dir="conf/model")
 ```
 
-### Programmatic Override Application
+## Programmatic Override Application
 
 ```python
 from codex.utils.config_loader import ConfigLoader
@@ -361,7 +361,7 @@ if debug_mode:
 cfg = loader.load_config("base", config_dir="conf/training", overrides=overrides)
 ```
 
-### Accessing Structured Errors
+## Accessing Structured Errors
 
 ```python
 from codex.utils.config_loader import get_loader

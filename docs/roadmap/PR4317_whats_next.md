@@ -11,6 +11,7 @@
 ## 1. 🔬 Full Merge-Readiness Assessment
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Local Checks — All Passing", "ruff check src/ tests/\n0 violations ✅"'}}%%
 flowchart TD
     subgraph LOCAL["✅ Local Checks — All Passing"]
         R["ruff check src/ tests/\n0 violations ✅"]
@@ -89,6 +90,7 @@ flowchart TD
 ## 2. 🔒 Security & CodeQL Follow-Up Roadmap
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Resolved in PR #4289 (inherited by #4317)", "CodeQL py/path-injection\n13385–13393 — 9 alerts\nragapi.py: intra-procedural fullmatch\ntaint-break + safe_vars + realpath"'}}%%
 flowchart TD
     subgraph RESOLVED["✅ Resolved in PR #4289 (inherited by #4317)"]
         R1["CodeQL py/path-injection\n13385–13393 — 9 alerts\nragapi.py: intra-procedural fullmatch\ntaint-break + safe_vars + realpath"]
@@ -131,6 +133,7 @@ flowchart TD
 ## 3. Gantt — Full Roadmap Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title _codex_ Roadmap — Post PR #4317
     dateFormat  YYYY-MM-DD
@@ -165,6 +168,7 @@ gantt
 ## 4. Priority 1 — Immediate Post-Merge Tasks
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🎯 Priority 1 — Post-PR #4317 Tasks", "trailing-whitespace source fix\nautonomous_rag_context.py lines 624/626/627\n✅ DONE — this commit"'}}%%
 flowchart TD
     P1(["🎯 Priority 1 — Post-PR #4317 Tasks"])
 
@@ -371,6 +375,7 @@ flowchart TD
 ## 1. Gantt — Full Roadmap Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title _codex_ Roadmap — Post PR #4317
     dateFormat  YYYY-MM-DD
@@ -407,6 +412,7 @@ gantt
 ## 2. Priority 1 — Immediate Post-Merge Tasks
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🎯 Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"'}}%%
 flowchart TD
     P1(["🎯 Priority 1 — Post-PR #4317 Tasks"])
 
@@ -425,6 +431,7 @@ flowchart TD
 ## 3. Priority 2 — Near-Term Quality Backlog
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map: cancel'}}%%
 mindmap
   root((Quality Backlog\nPost PR 4317))
     Security
@@ -465,6 +472,7 @@ mindmap
 ## 4. Priority 3 — Auto-Fix Pattern Expansion
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Current Suite\n18+ auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30", "P33 — BLE001 src/\nEnable ruff BLE001\nnarrow broad handlers\nin production modules"'}}%%
 flowchart LR
     CURRENT["Current Suite\n18+ auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30"]
 
@@ -482,6 +490,7 @@ flowchart LR
 ## 5. Priority 4 — Genesis Protocol State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> PreGenesis : PR 4317 merged
 
@@ -509,6 +518,7 @@ stateDiagram-v2
 ## 6. Dependency Chain — PR #4317 → Future Gates
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4317 merged\nDepBot PRs #4320 #4321 #4322\nconsolidated · mistune 3.2.1\nWQM added · docs maintained", "Rate-limit-aware\nCI pipeline\nworkflow_queue_manager.py"'}}%%
 flowchart TD
     MERGED(["PR #4317 merged\nDepBot PRs #4320 #4321 #4322\nconsolidated · mistune 3.2.1\nWQM added · docs maintained"])
 
@@ -583,6 +593,7 @@ Run:
 ## 1. Gantt — Full Roadmap Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title _codex_ Roadmap — Post PR #4317
     dateFormat  YYYY-MM-DD
@@ -619,6 +630,7 @@ gantt
 ## 2. Priority 1 — Immediate Post-Merge Tasks
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🎯 Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"'}}%%
 flowchart TD
     P1(["🎯 Priority 1 — Post-PR #4317 Tasks"])
 
@@ -636,6 +648,7 @@ flowchart TD
 ## 2. Priority 2 — Near-Term Quality Backlog
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Mind Map: cancel'}}%%
 mindmap
   root((Quality Backlog\nPost PR 4317))
     Security
@@ -677,6 +690,7 @@ mindmap
 ## 3. Priority 3 — Auto-Fix Pattern Expansion
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Current Suite\n18+ auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30", "P33 — BLE001 src/\nEnable ruff BLE001\nnarrow broad handlers\nin production modules"'}}%%
 flowchart LR
     CURRENT["Current Suite\n18+ auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30"]
 
@@ -694,6 +708,7 @@ flowchart LR
 ## 4. Priority 4 — Genesis Protocol State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> PreGenesis : PR 4317 merged
 
@@ -721,6 +736,7 @@ stateDiagram-v2
 ## 5. Dependency Chain — PR #4317 → Future Gates
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4317 merged\nDepBot PRs consolidated\nmistune 3.2.1\nWQM added", "Rate-limit-aware\nCI pipeline\nworkflow_queue_manager.py"'}}%%
 flowchart TD
     MERGED(["PR #4317 merged\nDepBot PRs consolidated\nmistune 3.2.1\nWQM added"])
 

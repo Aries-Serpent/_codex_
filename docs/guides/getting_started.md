@@ -81,7 +81,7 @@ trainer = YourTrainer(model)
 trainer.train()
 ```
 
-### 2. Health Monitoring
+## 2. Health Monitoring
 
 Set up health checks for production deployments:
 
@@ -99,7 +99,7 @@ app.include_router(get_health_router())
 # GET /readyz - Kubernetes readiness
 ```
 
-### 3. Experiment Tracking (Offline-First)
+## 3. Experiment Tracking (Offline-First)
 
 ```python
 from codex_ml.utils.wandb_logger import init_wandb
@@ -115,7 +115,7 @@ for epoch in range(10):
 logger.finish()
 ```
 
-### 4. Safe Prompt Handling
+## 4. Safe Prompt Handling
 
 ```python
 from codex_ml.safety.prompt_sanitizer import PromptSanitizer
@@ -172,7 +172,7 @@ if manifest.has_drift("data/train_manifest.json"):
     print("⚠️ Dataset has changed!")
 ```
 
-### Autonomy (Phase 3)
+## Autonomy (Phase 3)
 
 **Self-Healing Training:**
 ```python
@@ -225,7 +225,7 @@ trainer = Trainer(..., callbacks=callbacks)
 # Training will stop early if no improvement for 3 evaluations
 ```
 
-### Production Excellence (Phase 4)
+## Production Excellence (Phase 4)
 
 **Continuous Learning:**
 ```python
@@ -390,7 +390,7 @@ python cli/train_codex.py \
     --strict-resume
 ```
 
-### Prompt Sanitization
+## Prompt Sanitization
 
 ```bash
 # Safe prompt
@@ -405,14 +405,14 @@ python cli/inference.py --prompt "<script>alert('xss')</script>" --non-strict
 # Output: [REDACTED]...
 ```
 
-### SBOM Generation
+## SBOM Generation
 
 ```bash
 # Generate Software Bill of Materials
 python scripts/generate_sbom.py --output dist/sbom.json
 ```
 
-### Stub Analysis
+## Stub Analysis
 
 ```bash
 # Analyze code for stubs
@@ -447,7 +447,7 @@ export CODEX_LOG_DB_PATH=.codex/logs.db
 export CODEX_TEST_SEED=42
 ```
 
-### Configuration Files
+## Configuration Files
 
 Create a `config.yaml`:
 
@@ -496,7 +496,7 @@ pytest tests/ --cov=src --cov=training --cov-report=term-missing
 pytest tests/test_sanitize.py -v
 ```
 
-### Run Nox Sessions
+## Run Nox Sessions
 
 ```bash
 # Test session with coverage
@@ -506,7 +506,7 @@ nox -s tests
 nox
 ```
 
-### Security Scans
+## Security Scans
 
 ```bash
 # Python SAST

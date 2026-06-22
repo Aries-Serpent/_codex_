@@ -24,6 +24,7 @@ The cognitive brain has successfully completed a comprehensive security remediat
 ### Phase 1-7 Completion Matrix
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title Security Remediation & CI Stabilization Timeline
     dateFormat YYYY-MM-DD HH:mm
@@ -51,6 +52,7 @@ gantt
 ### Security Intelligence Flow (Enhanced)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Pre-commit Hooks, Semgrep Custom Rules'}}%%
 graph TB
     subgraph "Detection Layer"
         PRE[Pre-commit Hooks]
@@ -114,6 +116,7 @@ graph TB
 ### Before Remediation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> CodePush
     CodePush --> SecurityScan: ❌ Failing
@@ -142,6 +145,7 @@ stateDiagram-v2
 ### After Remediation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> CodePush
     CodePush --> SecurityScan: ✅ Passing
@@ -392,6 +396,7 @@ Hook → Scan → Block → Alert → Learn
 ### Proposed Custom Agents
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Bridge Security Monitor, Security Vuln Patcher'}}%%
 graph LR
     subgraph "Existing"
         BSM[Bridge Security Monitor]
@@ -436,6 +441,7 @@ graph LR
 
 ### Phase 8: Advanced Monitoring (Q1 2026)
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Phase 8: Advanced Monitoring Implementation
     dateFormat YYYY-MM-DD

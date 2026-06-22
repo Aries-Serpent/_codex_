@@ -113,7 +113,7 @@ docs/
 - `reports/codex_status_update_<date>.md` - Automated status issue body
 - `.codex/sessions/` - Session logs
 
-### Weekly  
+### Weekly
 - Audit pipeline run (S1-S7)
 - `audit_run_manifest.json` - Fresh integrity manifest
 - `reports/capability_matrix_<timestamp>.md` - Latest capability scores
@@ -259,7 +259,7 @@ find src -name "seed_manager.py" -path "*/reproducibility/*"
 find src -name "writers.py" -path "*/tracking/*"
 ```
 
-### Find Tests
+## Find Tests
 ```bash
 # Tokenizer tests
 find tests -name "test_base.py" -path "*/tokenization/*"
@@ -268,7 +268,7 @@ find tests -name "test_base.py" -path "*/tokenization/*"
 find tests -name "test_deprecation.py" -path "*/config/*"
 ```
 
-### Find Documentation
+## Find Documentation
 ```bash
 # Audit pipeline docs
 find docs -name "*TRAVERSAL*" -o -name "*AUDIT*"

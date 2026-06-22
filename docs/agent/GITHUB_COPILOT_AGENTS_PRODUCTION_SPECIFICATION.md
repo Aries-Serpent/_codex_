@@ -33,6 +33,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 ### System Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Pull Request, Issue'}}%%
 graph TB
     subgraph "GitHub Events"
         PR[Pull Request]
@@ -167,6 +168,7 @@ graph TB
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Cron: Monthly, Auth Manager'}}%%
 graph LR
     Schedule[Cron: Monthly] --> Agent[Auth Manager]
     Manual[Manual Trigger] --> Agent
@@ -234,7 +236,7 @@ python .github/agents/github-auth-manager/agent.py --action rotate-tokens
 
 ---
 
-### 2. GitHub Security Enforcer (Tier 1)
+## 2. GitHub Security Enforcer (Tier 1)
 
 **Purpose**: Enforce security policies across repositories
 
@@ -248,6 +250,7 @@ python .github/agents/github-auth-manager/agent.py --action rotate-tokens
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR/Push Event, Security Enforcer'}}%%
 graph TD
     Trigger[PR/Push Event] --> Agent[Security Enforcer]
     Schedule[Daily Scan] --> Agent
@@ -326,7 +329,7 @@ python .github/agents/github-security-enforcer/agent.py --auto-remediate
 
 ---
 
-### 3. GitHub Workflow Optimizer (Tier 1)
+## 3. GitHub Workflow Optimizer (Tier 1)
 
 **Purpose**: Optimize GitHub Actions workflows for performance
 
@@ -340,6 +343,7 @@ python .github/agents/github-security-enforcer/agent.py --auto-remediate
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Completion, Workflow Optimizer'}}%%
 graph TD
     Trigger[Workflow Completion] --> Agent[Workflow Optimizer]
     Schedule[Weekly Analysis] --> Agent
@@ -422,6 +426,7 @@ python .github/agents/github-workflow-optimizer/agent.py --optimize --create-pr
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Pull Request, Code Reviewer'}}%%
 graph TD
     PR[Pull Request] --> Agent[Code Reviewer]
     Agent --> Parse[Parse Code Changes]
@@ -497,6 +502,7 @@ outputs:
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Push/PR Event, Test Orchestrator'}}%%
 graph TD
     Push[Push/PR Event] --> Agent[Test Orchestrator]
     Agent --> Detect[Detect Changes]
@@ -581,6 +587,7 @@ outputs:
 **Architecture**:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Deployment Request, Deployment Gatekeeper'}}%%
 graph TD
     Deploy[Deployment Request] --> Agent[Deployment Gatekeeper]
     Agent --> Security[Security Gate]
@@ -740,7 +747,7 @@ def test_rotate_tokens():
     assert "backup_key" in result
 ```
 
-### Integration Testing
+## Integration Testing
 
 ```python
 # tests/agents/test_integration.py
@@ -764,7 +771,7 @@ def test_agent_end_to_end():
     assert len(list(issues)) > 0
 ```
 
-### Smoke Testing
+## Smoke Testing
 
 ```bash
 # scripts/test_agents.sh
@@ -810,7 +817,7 @@ cp .env.example .env
 python .github/agents/github-auth-manager/agent.py --dry-run
 ```
 
-### Staging Environment
+## Staging Environment
 
 ```bash
 # 1. Deploy to staging branch
@@ -828,7 +835,7 @@ gh workflow run auth-token-rotation.yml
 gh run list --workflow auth-token-rotation.yml
 ```
 
-### Production Environment
+## Production Environment
 
 ```bash
 # 1. Create production PR
@@ -898,7 +905,7 @@ jobs:
             });
 ```
 
-### Maintenance Schedule
+## Maintenance Schedule
 
 **Daily**:
 - Review agent execution logs

@@ -50,6 +50,7 @@
 ### 1a. Copilot Agent ↔ Runner ↔ Cognitive Brain
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Platform", "Copilot Coding Agent"'}}%%
 graph TB
     subgraph GitHub["GitHub Platform"]
         direction TB
@@ -89,6 +90,7 @@ graph TB
 ### 1b. Setup Phase Timeline — Before vs After
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing dev, dev'}}%%
 gantt
     title Setup Phase Wall-Clock (standard env, cold cache)
     dateFormat mm:ss
@@ -152,6 +154,9 @@ The Cognitive Brain sets this variable via the Variables API (using `CODEX_MASTE
 before dispatching sessions that need heavier resources:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>VM: 204 No Content
+
+    Note'}}%%
 sequenceDiagram
     actor Owner as @mbaetiong
     participant CB as Cognitive Brain
@@ -180,6 +185,7 @@ sequenceDiagram
 ### 4b. Runner Selection Decision Tree
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Cognitive Brain\ndetects new task, "set COPILOT_RUNNER_PROFILE\n= ubuntu-8-core\n(if provisioned)"'}}%%
 flowchart TD
     A[Cognitive Brain\ndetects new task] --> B{Branch / label\ncontains ml or rag?}
     B -->|Yes| C["set COPILOT_RUNNER_PROFILE\n= ubuntu-8-core\n(if provisioned)"]
@@ -249,6 +255,7 @@ reducing cold-start time to near zero.
 ### 5a. What Custom Image Generation Provides
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Today — Standard Boot", Runner starts\nclean Ubuntu 24.04'}}%%
 graph LR
     subgraph Today["Today — Standard Boot"]
         A1[Runner starts\nclean Ubuntu 24.04] --> A2[Checkout repo]
@@ -311,6 +318,7 @@ To build a custom image that pre-bakes the `_codex_` dependency stack:
 ## 7. Cognitive Brain Integration
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Cognitive Brain (Pre-flight)", Pre-flight\nPREFLIGHT_001'}}%%
 graph LR
     subgraph CB["Cognitive Brain (Pre-flight)"]
         PP[Pre-flight\nPREFLIGHT_001]
@@ -345,6 +353,7 @@ Token priority for variable updates (from `docs/agent/COPILOT_TOKEN_GUIDE.md`):
 ## 8. Recent Changes Context (W-119 → W-122)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title PR #3499 Change Timeline
     section W-119 (Documentation clarity)
@@ -366,6 +375,7 @@ timeline
 ```
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "W-119b ✅\nYAML parse fix\n(sessions unblocked)", "W-121 ✅\nAutonomous switch\nMermaid diagrams\nAAIS check step"'}}%%
 graph TD
     W119B["W-119b ✅\nYAML parse fix\n(sessions unblocked)"] --> W121
     W121["W-121 ✅\nAutonomous switch\nMermaid diagrams\nAAIS check step"] --> W122

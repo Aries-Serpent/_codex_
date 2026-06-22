@@ -18,7 +18,7 @@ python -c "import sqlite3; print('✅ SQLite ready')"
 DATABASE_URL="sqlite:///./codex.db"
 ```
 
-### Option 2: PostgreSQL (Production)
+## Option 2: PostgreSQL (Production)
 
 ```bash
 # Install PostgreSQL
@@ -39,7 +39,7 @@ createdb codex_production
 DATABASE_URL="******localhost:5432/codex_production"
 ```
 
-### Option 3: Docker (Any Database)
+## Option 3: Docker (Any Database)
 
 ```yaml
 # docker-compose.yml
@@ -80,7 +80,7 @@ alembic upgrade head
 psql -U codex_user -d codex_production < schema.sql
 ```
 
-### Run Migrations
+## Run Migrations
 
 ```bash
 # Create migration
@@ -110,7 +110,7 @@ psql -U codex_user codex_production < backup_2026-06-20.sql
 0 2 * * * pg_dump -U user codex > /backups/codex_$(date +\%Y-\%m-\%d).sql
 ```
 
-### Backup Verification
+## Backup Verification
 
 ```bash
 # Check backup integrity

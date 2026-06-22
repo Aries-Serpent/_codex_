@@ -245,7 +245,7 @@ phase_2:
 # ... continue tracking
 ```
 
-### Package Coverage Goals
+## Package Coverage Goals
 
 | Package | Current | Phase 4 | Phase 8 | Final Goal |
 |---------|---------|--------|--------|------------|
@@ -277,7 +277,7 @@ echo "Package: ${PACKAGE}"
 echo "Coverage threshold: 80%"
 ```
 
-### Pre-commit Hook
+## Pre-commit Hook
 
 ```yaml
 # .pre-commit-config.yaml addition

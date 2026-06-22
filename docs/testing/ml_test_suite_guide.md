@@ -61,7 +61,7 @@ pytest tests/integration/ -m "integration"
 pytest tests/ -m "not ml_comprehensive"
 ```
 
-### With Coverage
+## With Coverage
 ```bash
 pytest tests/ \
   --cov=src \

@@ -100,9 +100,9 @@ transfer_rate = 0.1 * (max_ch.pressure - min_ch.pressure)
 - **Complexity**: O(n) - optimized from O(n²)
 - **Implementation**: `FluidFlowScheduler.balance_pressure()`
 
-### 4. Electromagnetic Fields
+## 4. Electromagnetic Fields
 
-#### Poisson Potential
+### Poisson Potential
 ```python
 φ(r) = Σ q_i / |r - r_i|
 ```
@@ -130,9 +130,9 @@ if (val > neighbors).all():
 - **Critical fix**: Must exclude center point from comparison
 - **Implementation**: `EMFieldRouter.prioritize_regions()`
 
-### 5. Wave Propagation
+## 5. Wave Propagation
 
-#### Wave Equation
+### Wave Equation
 ```python
 ∂²u/∂t² = c²∇²u - γ∂u/∂t
 ```
@@ -213,7 +213,7 @@ if not NUMPY_AVAILABLE:
     raise ImportError("This feature requires numpy. Install with: pip install numpy")
 ```
 
-### Logging Pattern
+## Logging Pattern
 ```python
 try:
     from codex.logging.session_logger import log_message

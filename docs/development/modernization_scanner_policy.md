@@ -46,7 +46,7 @@ def process(items: list[str]) -> dict[str, int]:
 3. Run tests to verify
 4. Commit changes
 
-### 2. Optional Type Hint (SUGGESTION)
+## 2. Optional Type Hint (SUGGESTION)
 
 **Pattern**: `typing.Optional[T]`
 
@@ -74,7 +74,7 @@ def get_value(key: str) -> str | None:
 2. Apply gradually as code is modified
 3. Document preference in style guide
 
-### 3. Bare Except Clauses (WARNING)
+## 3. Bare Except Clauses (WARNING)
 
 **Pattern**: `except:` without exception type
 
@@ -111,7 +111,7 @@ except (ValueError, TypeError) as e:
 3. Add specific exception handling
 4. Test edge cases
 
-### 4. Dataclass Candidates (SUGGESTION)
+## 4. Dataclass Candidates (SUGGESTION)
 
 **Pattern**: Classes with only `__init__` and simple attribute assignments
 
@@ -144,7 +144,7 @@ class Config:
 3. Convert and test thoroughly
 4. may need to add `frozen=True` or other options
 
-### 5. String Format Methods (SUGGESTION)
+## 5. String Format Methods (SUGGESTION)
 
 **Pattern**: `str.format()` method calls
 
@@ -171,7 +171,7 @@ message = f"Count: {value}"
 3. Simpler cases first
 4. Complex formatting Phase 5 stay as .format()
 
-### 6. Walrus Operator Opportunities (SUGGESTION, opt-in)
+## 6. Walrus Operator Opportunities (SUGGESTION, opt-in)
 
 **Pattern**: Assignment followed by check
 
@@ -223,7 +223,7 @@ python tools/modernization_scanner_v2.py src/ --check-walrus
 python tools/modernization_scanner_v2.py src/ --fail-on-error
 ```text
 
-### CI Integration
+## CI Integration
 
 The scanner runs automatically in post-merge validation:
 
@@ -399,7 +399,7 @@ jq '.total_issues' .reports/modern_*.json
 
 **Goal**: Trending downward or stable
 
-### Dashboard (Future)
+## Dashboard (Future)
 
 Potential visualization:
 - Issue count over time (line chart)

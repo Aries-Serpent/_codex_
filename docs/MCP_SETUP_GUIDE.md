@@ -210,7 +210,7 @@ npm install -g @modelcontextprotocol/server-github
 npm install -g @playwright/mcp-server
 ```
 
-### Issue: "GitHub authentication failed"
+## Issue: "GitHub authentication failed"
 **Solution:**
 1. Verify token has correct scopes
 2. Check token hasn't expired

@@ -281,7 +281,7 @@ from src.workflow_refactor import refactor_workflows
 workflow_results = refactor_workflows(add_dispatch=True)
 ```
 
-### Advanced Usage
+## Advanced Usage
 ```python
 # Wrap legacy agent
 from agents.cognitive_adapter import wrap_legacy_agent

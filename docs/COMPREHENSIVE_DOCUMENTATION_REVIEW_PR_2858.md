@@ -239,6 +239,7 @@ Based on this session's learnings and the comprehensive documentation review, th
 **Implementation**: Phase 12, Week 1
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CI Failure Detected, Categorize Failure'}}%%
 graph TD
     A[CI Failure Detected] --> B{Analyze Logs}
     B --> C[Categorize Failure]
@@ -296,6 +297,7 @@ learning_mode: enabled
 **Implementation**: Phase 12, Week 1
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Scheduled Trigger, Scan Secrets'}}%%
 graph TD
     A[Scheduled Trigger] --> B[Scan Secrets]
     B --> C[Check Rotation Status]
@@ -349,6 +351,7 @@ compliance_standards: [SOC2, NIST_800-53]
 **Implementation**: Phase 12, Week 2
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Benchmark Complete, Load Results'}}%%
 graph TD
     A[Benchmark Complete] --> B[Load Results]
     B --> C[Compare vs Baseline]
@@ -433,6 +436,7 @@ baseline_window: 30_days
 ### Updated Agent Ecosystem Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing GitHub Auth Manager, Security Enforcer'}}%%
 graph TB
     subgraph "Phase 11 - Complete"
         Auth[GitHub Auth Manager]
@@ -482,6 +486,7 @@ graph TB
 ### Phase Progression Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 timeline
     title Codex Project Phases
     2026-01-05 : Phase 1 - Foundation
@@ -516,6 +521,7 @@ timeline
 ### System Architecture Update
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 C4Context
     title System Context - Codex with Phase 11 Complete
 

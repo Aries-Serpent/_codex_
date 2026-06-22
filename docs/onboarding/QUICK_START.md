@@ -90,7 +90,7 @@ pip install -e ".[ml,dev]"
 | `CUDA not available` (PyTorch warning) | Normal if no GPU; CPU-only is fine for development |
 | `Permission denied` on `/usr/local` | Use `python -m pip install --user -e ".[dev]"` |
 
-### Step 3: Verify Installation
+## Step 3: Verify Installation
 
 ```bash
 # Test Python imports
@@ -109,7 +109,7 @@ python -c "import codex_ml; import src.mcp; print('✅ All core modules loaded')
 ✅ All core modules loaded
 ```
 
-### Step 4: Run Quick Tests
+## Step 4: Run Quick Tests
 
 ```bash
 # Quick validation (1-2 minutes)
@@ -155,7 +155,7 @@ brew install docker docker-compose
 # OR use winget: winget install Docker.DockerDesktop
 ```
 
-### Step 2: Build & Run Docker Container
+## Step 2: Build & Run Docker Container
 
 ```bash
 # Clone and enter directory
@@ -271,7 +271,7 @@ mypy src/codex_ml/
 pytest tests/ -v
 ```
 
-### 4. Commit and Push
+## 4. Commit and Push
 
 ```bash
 git add .
@@ -317,7 +317,7 @@ print(guidance['suggested_approach'])
 memory.complete_task(success=True, summary="Fixed all issues")
 ```
 
-### Using Self-Healing
+## Using Self-Healing
 
 ```python
 from agents.self_healing import SelfHealingEngine

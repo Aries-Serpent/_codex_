@@ -214,7 +214,7 @@
 - ✅ Next steps guidance
 ```text
 
-### JSON Template Validation
+## JSON Template Validation
 ```bash
 # All JSON examples validated for syntax
 - ✅ triggers.sample.json (valid)

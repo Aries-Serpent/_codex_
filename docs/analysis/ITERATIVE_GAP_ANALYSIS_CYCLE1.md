@@ -52,7 +52,7 @@ Add to .gitignore:
 
 ---
 
-### Gap Category 3: No Automated Workflow Validation (MEDIUM-HIGH PRIORITY)
+## Gap Category 3: No Automated Workflow Validation (MEDIUM-HIGH PRIORITY)
 
 **Current State**:
 - New consolidated workflows created

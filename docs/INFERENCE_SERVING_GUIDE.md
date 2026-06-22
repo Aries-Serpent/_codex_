@@ -42,7 +42,7 @@ The bundled `SimpleInferenceModel` is deterministic and exercises both happy-pat
 - `/predict` echoes inputs with uppercase `prediction` fields and returns HTTP 500 for the sentinel input `"raise-error"`.
 - `/embed` returns lightweight one-hot embeddings (dimension 8) keyed by character sums and raises HTTP 500 for `"raise-error"`.
 
-### FastAPI Server
+## FastAPI Server
 
 To run a full FastAPI server:
 
@@ -208,7 +208,7 @@ for pred in predictions:
     print(f"Score: {pred['score']}")
 ```text
 
-### With Parameters
+## With Parameters
 
 Pass optional parameters to customize inference:
 
@@ -444,7 +444,7 @@ for inp, pred in zip(inputs, predictions):
     print(f"Score: {pred['score']:.2f}")
 ```text
 
-### Complete Example: Running FastAPI Server
+## Complete Example: Running FastAPI Server
 
 ```bash
 # 1. Install dependencies

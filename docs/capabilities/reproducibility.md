@@ -312,7 +312,7 @@ save_environment("experiments/env.json")
 model = train_model(config)
 ```
 
-### Example 2: Complete Reproducibility Context
+## Example 2: Complete Reproducibility Context
 
 ```python
 from contextlib import contextmanager
@@ -356,7 +356,7 @@ with reproducible_context(seed=42, output_dir="experiments/run1"):
     save_model(model, "experiments/run1/model.pt")
 ```
 
-### Example 3: Data Hashing
+## Example 3: Data Hashing
 
 ```python
 import hashlib
@@ -404,7 +404,7 @@ train_hash = hash_data(train_data)
 print(f"Training data hash: {train_hash}")
 ```
 
-### Example 4: Checkpoint with Full State
+## Example 4: Checkpoint with Full State
 
 ```python
 def save_reproducible_checkpoint(
@@ -592,7 +592,7 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 ```
 
-### Missing Dependencies
+## Missing Dependencies
 
 ```bash
 # Generate requirements

@@ -13,6 +13,7 @@
 ## 📊 Merge Readiness
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title Merge Readiness Gates (S899-final)
     "Passing" : 17
     "In-progress CI" : 1
@@ -125,6 +126,7 @@ pie title Merge Readiness Gates (S899-final)
 --- — Next Session Priorities
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing New Session Start, git fetch --unshallow\nresolve + 2-parent merge commit\nP-045: take branch .secrets.baseline'}}%%
 flowchart TD
     A[New Session Start] --> B{Any merge conflicts?}
     B -->|Yes| C[git fetch --unshallow\nresolve + 2-parent merge commit\nP-045: take branch .secrets.baseline]
@@ -149,6 +151,7 @@ flowchart TD
 ## 🚀 Post-Merge Next Steps (New Session)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Merge PR #4368, T-03: Add security_events scope\nto CODEX_MASTER_KEY'}}%%
 flowchart LR
     M[Merge PR #4368] --> T1[T-03: Add security_events scope\nto CODEX_MASTER_KEY]
     M --> T2[CB Phase 2:\nExpand PerceptionLayer sensors\nMore ActionExecutor targets\nMemoryLayer eviction policy]

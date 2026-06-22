@@ -72,7 +72,7 @@ embeddings_norm = pipeline.embed_texts(texts, normalize=True)
 # L2 norm = 1.0 for each embedding
 ```
 
-##### `embed_documents()`
+## `embed_documents()`
 
 Generate embeddings for documents from a file.
 
@@ -147,7 +147,7 @@ for i, chunk in enumerate(chunks):
     print(f"  Start: {chunk['start']}, End: {chunk['end']}")
 ```
 
-##### `chunk_documents()`
+## `chunk_documents()`
 
 Chunk documents from a file.
 
@@ -215,7 +215,7 @@ for i, result in enumerate(results, 1):
     print(f"   Similarity: {result['score']:.4f}")
 ```
 
-##### `retrieve_batch()`
+## `retrieve_batch()`
 
 Retrieve documents for multiple queries.
 
@@ -247,7 +247,7 @@ for query, query_results in zip(queries, results):
         print(f"  - {result['document'][:50]}... ({result['score']:.4f})")
 ```
 
-##### `build_index()`
+### `build_index()`
 
 Build FAISS index from documents.
 
@@ -343,7 +343,7 @@ response = openai.ChatCompletion.create(
 print(response.choices[0].message.content)
 ```
 
-### Local LLM Integration (Ollama)
+## Local LLM Integration (Ollama)
 
 ```python
 import requests
@@ -395,7 +395,7 @@ retriever_hnsw = RetrieverPipeline(
 )
 ```
 
-### 2. Batch Processing
+## 2. Batch Processing
 
 ```python
 # Process documents in batches
@@ -410,7 +410,7 @@ for i in range(0, len(documents), batch_size):
     store_embeddings(embeddings, batch)
 ```
 
-### 3. Caching
+## 3. Caching
 
 ```python
 from functools import lru_cache

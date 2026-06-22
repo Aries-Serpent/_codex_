@@ -98,7 +98,7 @@ bandit -r src/ -ll
 mkdocs build --strict
 ```
 
-### 2. Deployment
+## 2. Deployment
 
 ```bash
 # Tag release
@@ -109,7 +109,7 @@ git push origin v1.x.x
 # Triggered automatically on tag push
 ```
 
-### 3. Post-Deployment
+## 3. Post-Deployment
 
 ```bash
 # Verify deployment

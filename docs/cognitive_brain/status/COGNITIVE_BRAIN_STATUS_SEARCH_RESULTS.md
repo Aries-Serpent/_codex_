@@ -1,5 +1,95 @@
 # Cognitive Brain Architecture - Search Results & Status
 
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+  - [Key Findings:](#key-findings)
+- [1. Cognitive Brain Architecture Documentation](#1-cognitive-brain-architecture-documentation)
+  - [Primary Documentation Files](#primary-documentation-files)
+    - [1.1 **Cognitive Map** (`docs/system/CODEBASE_COGNITIVE_MAP.md`)](#11-cognitive-map-docssystemcodebase_cognitive_mapmd)
+    - [1.2 **Dashboard** (`docs/DOCUMENTATION_INDEX.md`)](#12-dashboard-docsdocumentation_indexmd)
+    - [1.3 **Cognitive Brain App Status** (`cognitive_app/COGNITIVE_BRAIN_STATUS_V2.md`)](#13-cognitive-brain-app-status-cognitive_appcognitive_brain_status_v2md)
+- [2. PDA Loop and AfterMath Tag Processes](#2-pda-loop-and-aftermath-tag-processes)
+  - [2.1 PDA Loop Implementation](#21-pda-loop-implementation)
+  - [2.2 AfterMath Tag System](#22-aftermath-tag-system)
+- [3. Custom Agent Implementations and Patterns](#3-custom-agent-implementations-and-patterns)
+  - [3.1 Agent Directory Structure](#31-agent-directory-structure)
+  - [3.2 Agent Implementation Patterns](#32-agent-implementation-patterns)
+  - [3.3 Agent Configuration Examples](#33-agent-configuration-examples)
+- [Agent: Semantic Search](#agent-semantic-search)
+- [Capabilities](#capabilities)
+- [Integration](#integration)
+- [Query Examples](#query-examples)
+- [4. Cache Set Configurations](#4-cache-set-configurations)
+  - [4.1 Cache Implementations](#41-cache-implementations)
+    - [**Actions Server Cache** (`tools/actions_server.py`)](#actions-server-cache-toolsactions_serverpy)
+    - [**GitHub Client Cache** (`src/codex_bridge/github_client.py`)](#github-client-cache-srccodex_bridgegithub_clientpy)
+    - [**Tokenization Cache** (`tests/tokenization/test_cache.py`)](#tokenization-cache-teststokenizationtest_cachepy)
+    - [**Training Data Cache** (`src/training/data_utils.py`)](#training-data-cache-srctrainingdata_utilspy)
+    - [**Context Cache** (`tests/context_management/test_enhanced_modules.py`)](#context-cache-testscontext_managementtest_enhanced_modulespy)
+    - [**File Cache** (`scripts/space_traversal/performance.py`)](#file-cache-scriptsspace_traversalperformancepy)
+  - [4.2 Cache Strategy (Phase 3C-Lite)](#42-cache-strategy-phase-3c-lite)
+- [5. Continuation Prompt Patterns and Examples](#5-continuation-prompt-patterns-and-examples)
+  - [5.1 Agent Continuation Protocol](#51-agent-continuation-protocol)
+    - [**Phase 1: Context Loading (First 2K tokens)**](#phase-1-context-loading-first-2k-tokens)
+    - [**Phase 2: Work Execution (Main session)**](#phase-2-work-execution-main-session)
+    - [**Phase 3: Session Closure (Last 5K tokens)**](#phase-3-session-closure-last-5k-tokens)
+  - [5.2 Self-Review Protocol (5 Passes)](#52-self-review-protocol-5-passes)
+    - [**Pass 1: Code Quality & Correctness**](#pass-1-code-quality--correctness)
+    - [**Pass 2: Testing & Validation**](#pass-2-testing--validation)
+    - [**Pass 3: Documentation & Communication**](#pass-3-documentation--communication)
+    - [**Pass 4: Security & Safety**](#pass-4-security--safety)
+    - [**Pass 5: Integration & Dependencies**](#pass-5-integration--dependencies)
+  - [5.3 Duration-Aware Planning](#53-duration-aware-planning)
+  - [5.4 Continuation Prompt Format](#54-continuation-prompt-format)
+- [✅ Session Summary](#-session-summary)
+- [🎯 Next Steps](#-next-steps)
+- [📚 Context References](#-context-references)
+  - [5.5 Example Continuation Prompts (Found in Repository)](#55-example-continuation-prompts-found-in-repository)
+    - [**Coverage Enhancement Prompt** (`docs/prompts/COVERAGE_CONTINUATION_PROMPT.md`)](#coverage-enhancement-prompt-docspromptscoverage_continuation_promptmd)
+- [✅ Session Summary](#-session-summary)
+- [🎯 Next Steps](#-next-steps)
+  - [**Agent Continuation Prompt** (`docs/plans/AGENT_CONTINUATION_PROMPT.md`)](#agent-continuation-prompt-docsplansagent_continuation_promptmd)
+- [Context](#context)
+- [Current State](#current-state)
+- [Next Tasks](#next-tasks)
+- [6. Knowledge Base & Cache Sets](#6-knowledge-base--cache-sets)
+  - [6.1 Active Cache Sets (from COGNITIVE_BRAIN_STATUS_V2.md)](#61-active-cache-sets-from-cognitive_brain_status_v2md)
+  - [6.2 Memory Management Patterns](#62-memory-management-patterns)
+- [7. Repository Navigation for AI Agents](#7-repository-navigation-for-ai-agents)
+  - [7.1 Entry Points](#71-entry-points)
+  - [7.2 Common Commands](#72-common-commands)
+- [Codex](#codex)
+- [MCP](#mcp)
+- [Testing](#testing)
+- [Quality](#quality)
+- [Agent](#agent)
+- [Cognitive Brain](#cognitive-brain)
+- [7.3 Quick Links](#73-quick-links)
+- [8. Emergent Patterns and Intelligence](#8-emergent-patterns-and-intelligence)
+  - [8.1 Agent Ecosystem Map](#81-agent-ecosystem-map)
+  - [8.2 Quantum Agent Framework](#82-quantum-agent-framework)
+  - [8.3 Physics-Inspired Orchestration](#83-physics-inspired-orchestration)
+- [9. Production Readiness Assessment](#9-production-readiness-assessment)
+  - [9.1 Current Maturity Levels](#91-current-maturity-levels)
+  - [9.2 Known Gaps and Mitigation](#92-known-gaps-and-mitigation)
+- [10. Next Steps and Recommendations](#10-next-steps-and-recommendations)
+  - [10.1 Immediate Actions (This Session)](#101-immediate-actions-this-session)
+  - [10.2 Short-term Priorities (Next 1-2 Sessions)](#102-short-term-priorities-next-1-2-sessions)
+  - [10.3 Medium-term Roadmap (3-5 Sessions)](#103-medium-term-roadmap-3-5-sessions)
+- [11. Conclusions](#11-conclusions)
+  - [11.1 Architecture Health: ✅ EXCELLENT](#111-architecture-health--excellent)
+  - [11.2 PDA Loop: ✅ FULLY IMPLEMENTED](#112-pda-loop--fully-implemented)
+  - [11.3 Agent Ecosystem: 🟡 MATURING](#113-agent-ecosystem--maturing)
+  - [11.4 Cache Infrastructure: ✅ ROBUST](#114-cache-infrastructure--robust)
+  - [11.5 Continuation Patterns: ✅ MATURE](#115-continuation-patterns--mature)
+  - [11.6 Overall Assessment: ✅ PRODUCTION READY (90.4%)](#116-overall-assessment--production-ready-904)
+- [12. References](#12-references)
+  - [12.1 Primary Documentation](#121-primary-documentation)
+  - [12.2 Core Implementations](#122-core-implementations)
+  - [12.3 Cache Implementations](#123-cache-implementations)
+  - [12.4 Related Documentation](#124-related-documentation)
+
 **Generated**: 2026-06-22  
 **Agent**: Semantic Search Agent  
 **Repository**: /home/runner/work/_codex_/_codex_
@@ -708,7 +798,7 @@ class FileCache:
 **Duration Estimate**: 2-3 sessions (~60K-90K tokens)
 ```
 
-#### **Agent Continuation Prompt** (`docs/plans/AGENT_CONTINUATION_PROMPT.md`)
+### **Agent Continuation Prompt** (`docs/plans/AGENT_CONTINUATION_PROMPT.md`)
 ```markdown
 @copilot Continue: Agent Implementation
 
@@ -815,7 +905,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 python scripts/cognitive/cognitive_brain_core.py
 ```
 
-### 7.3 Quick Links
+## 7.3 Quick Links
 
 **Documentation**:
 - Cognitive Map (documentation pending) - Architecture

@@ -31,6 +31,7 @@ acts as the canonical thread for a given commit. All other comment types append
 ## Section 2 — Unified SHA-Digest Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing New push — HEAD_SHA = sha12, post_rescue_comment.py: CREATE\n<!-- ci-rescue-sha:PR:sha12 -->'}}%%
 flowchart TD
     A[New push — HEAD_SHA = sha12] --> B{ci-rescue-sha comment exists?}
     B -- No --> C[post_rescue_comment.py: CREATE\n<!-- ci-rescue-sha:PR:sha12 -->]
@@ -137,6 +138,7 @@ anchor instead of spawning separate comments.
 - All RCA content appears inside the rescue-sha thread
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CI failure detected, post_rescue_comment.py runs'}}%%
 flowchart TD
     A[CI failure detected] --> B[post_rescue_comment.py runs]
     B --> C{rescue-sha anchor exists?}
@@ -182,6 +184,7 @@ drives the checkbox-triggered workflow lifecycle (trigger on check, cancel on un
 - In-progress opt-in workflow runs are cancelled within 60 seconds of being unchecked
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR body edited, detect-wec-changes job'}}%%
 flowchart TD
     A[PR body edited] --> B[detect-wec-changes job]
     B --> C{Any changes?}

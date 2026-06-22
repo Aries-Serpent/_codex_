@@ -77,6 +77,7 @@ H_sa^q = (C_aΘΦΩ_o)/(κ + Λ_q + Σ_s) − μF − Ξ_b(1 − Γ_r)
 ## 7. Mermaid — Quantum Measurement Process
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Access superposition, Policy measurement'}}%%
 flowchart TD
     Psi[Access superposition] --> Measure[Policy measurement]
     Measure --> Context[Context tensor]

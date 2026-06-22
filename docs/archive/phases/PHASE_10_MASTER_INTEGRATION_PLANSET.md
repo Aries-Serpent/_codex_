@@ -1,5 +1,153 @@
 # Phase 10+ Master Integration Planset
 
+## Table of Contents
+
+- [NotebookLM Live Sync & AI Architect Implementation](#notebooklm-live-sync--ai-architect-implementation)
+- [Executive Summary](#executive-summary)
+- [Strategic Alignment with Cognitive Brain](#strategic-alignment-with-cognitive-brain)
+  - [Cognitive Brain Objectives Mapping](#cognitive-brain-objectives-mapping)
+  - [Correlation Matrix](#correlation-matrix)
+- [Phase Structure & Timeline](#phase-structure--timeline)
+  - [Overall Timeline: 3 phases](#overall-timeline-3-phases)
+- [Task 1: Initialize Repository Transformation Configuration](#task-1-initialize-repository-transformation-configuration)
+  - [Objective](#objective)
+  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+  - [Prerequisites](#prerequisites)
+  - [Implementation Steps](#implementation-steps)
+    - [Step 1.1: Install Repomix (Local Testing)](#step-11-install-repomix-local-testing)
+- [Install repomix globally](#install-repomix-globally)
+- [Verify installation](#verify-installation)
+- [Step 1.2: Create Base Configuration](#step-12-create-base-configuration)
+  - [Step 1.3: Create Instruction File](#step-13-create-instruction-file)
+- [_codex_ Repository Architecture & Guidelines](#_codex_-repository-architecture--guidelines)
+- [Project Overview](#project-overview)
+- [Architecture Principles](#architecture-principles)
+  - [1. Modular Design](#1-modular-design)
+  - [2. Security First](#2-security-first)
+  - [3. Test-Driven Development](#3-test-driven-development)
+  - [4. Documentation Standards](#4-documentation-standards)
+- [Key Modules](#key-modules)
+  - [Auto-Remediation (`tools/auto_remediation/`)](#auto-remediation-toolsauto_remediation)
+  - [CI Diagnostic (`/github/agents/ci-diagnostic-agent/`)](#ci-diagnostic-githubagentsci-diagnostic-agent)
+  - [Monitoring (`monitoring/`)](#monitoring-monitoring)
+  - [Security Scanning (`semgrep_rules/`, `.github/workflows/security-*.yml`)](#security-scanning-semgrep_rules-githubworkflowssecurity-yml)
+- [Coding Conventions](#coding-conventions)
+  - [Python](#python)
+  - [Rust](#rust)
+  - [YAML (Workflows)](#yaml-workflows)
+- [Critical Paths to Analyze](#critical-paths-to-analyze)
+- [AI Architect Focus Areas](#ai-architect-focus-areas)
+  - [Step 1.4: Create Enhanced .repomixignore](#step-14-create-enhanced-repomixignore)
+- [Security Sensitive Files](#security-sensitive-files)
+- [Build Artifacts](#build-artifacts)
+- [Test Artifacts](#test-artifacts)
+- [Logs & Databases](#logs--databases)
+- [IDE & OS](#ide--os)
+- [Git](#git)
+- [Large Binary Files](#large-binary-files)
+- [Step 1.5: Test Local Consolidation](#step-15-test-local-consolidation)
+- [Run repomix with configuration](#run-repomix-with-configuration)
+- [Check output size](#check-output-size)
+- [Validate XML structure](#validate-xml-structure)
+- [Check for secrets (should be none)](#check-for-secrets-should-be-none)
+- [Step 1.6: Optimize Compression Settings](#step-16-optimize-compression-settings)
+  - [Deliverables Checklist](#deliverables-checklist)
+  - [Success Metrics](#success-metrics)
+  - [Rollback Plan](#rollback-plan)
+- [Task 2: Develop GitHub Action for Live Sync](#task-2-develop-github-action-for-live-sync)
+  - [Objective](#objective)
+  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+  - [Prerequisites](#prerequisites)
+  - [Implementation Steps](#implementation-steps)
+    - [Step 2.1: Google Cloud Setup](#step-21-google-cloud-setup)
+- [Install gcloud CLI if not present](#install-gcloud-cli-if-not-present)
+- [Create project](#create-project)
+- [Enable Drive API](#enable-drive-api)
+- [Create service account](#create-service-account)
+- [Get service account email](#get-service-account-email)
+- [Create and download key](#create-and-download-key)
+- [Display key (for GitHub Secrets)](#display-key-for-github-secrets)
+- [Create dedicated folder in Drive (manual step via web UI)](#create-dedicated-folder-in-drive-manual-step-via-web-ui)
+- [Note the Folder ID from URL: https://drive.google.com/drive/folders/[FOLDER_ID]](#note-the-folder-id-from-url-httpsdrivegooglecomdrivefoldersfolder_id)
+- [Share folder with service account (manual step via web UI)](#share-folder-with-service-account-manual-step-via-web-ui)
+- [Share with: [SA_EMAIL] with Editor permissions](#share-with-sa_email-with-editor-permissions)
+- [Step 2.2: Configure GitHub Secrets](#step-22-configure-github-secrets)
+  - [Step 2.3: Create Workflow File](#step-23-create-workflow-file)
+    - [Step 2.4: Test Workflow](#step-24-test-workflow)
+- [Trigger workflow manually](#trigger-workflow-manually)
+- [Watch workflow execution](#watch-workflow-execution)
+- [Check output](#check-output)
+- [Step 2.5: Optimize Workflow Performance](#step-25-optimize-workflow-performance)
+  - [Deliverables Checklist](#deliverables-checklist)
+  - [Success Metrics](#success-metrics)
+  - [Rollback Plan](#rollback-plan)
+- [Task 3: Configure Agentic Troubleshooting Skill](#task-3-configure-agentic-troubleshooting-skill)
+  - [Objective](#objective)
+  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+  - [Prerequisites](#prerequisites)
+  - [Implementation Steps](#implementation-steps)
+    - [Step 3.1: Install notebooklm-skill](#step-31-install-notebooklm-skill)
+- [Create skills directory if not exists](#create-skills-directory-if-not-exists)
+- [Clone the skill repository](#clone-the-skill-repository)
+- [Navigate to skill directory](#navigate-to-skill-directory)
+- [Install dependencies](#install-dependencies)
+- [Verify installation](#verify-installation)
+- [Step 3.2: Google Authentication Setup](#step-32-google-authentication-setup)
+- [Run authentication setup](#run-authentication-setup)
+- [Follow interactive prompts:](#follow-interactive-prompts)
+- [1. Opens browser for Google OAuth](#1-opens-browser-for-google-oauth)
+- [2. Select Google account](#2-select-google-account)
+- [3. Grant permissions to access Drive](#3-grant-permissions-to-access-drive)
+- [4. Returns to terminal with success message](#4-returns-to-terminal-with-success-message)
+- [Verify authentication](#verify-authentication)
+- [Step 3.3: Add _codex_ Notebook](#step-33-add-_codex_-notebook)
+- [Add notebook using URL](#add-notebook-using-url)
+- [Verify notebook added](#verify-notebook-added)
+- [Test query](#test-query)
+- [Step 3.4: Configure Smart Context Loading](#step-34-configure-smart-context-loading)
+- [Enable automatic context loading](#enable-automatic-context-loading)
+- [Set context window size](#set-context-window-size)
+- [Configure caching](#configure-caching)
+- [View all configuration](#view-all-configuration)
+- [Step 3.5: Test Claude Code Integration](#step-35-test-claude-code-integration)
+  - [Step 3.6: Create Custom Skill Commands](#step-36-create-custom-skill-commands)
+  - [Deliverables Checklist](#deliverables-checklist)
+  - [Success Metrics](#success-metrics)
+  - [Rollback Plan](#rollback-plan)
+- [Task 4: Implement Architect Role Logic](#task-4-implement-architect-role-logic)
+  - [Objective](#objective)
+  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+  - [Prerequisites](#prerequisites)
+  - [Implementation Steps](#implementation-steps)
+    - [Step 4.1: Create Base Architect Prompt](#step-41-create-base-architect-prompt)
+    - [Step 4.2: Configure NotebookLM Instructions](#step-42-configure-notebooklm-instructions)
+    - [Step 4.3: Create Health Check Protocol](#step-43-create-health-check-protocol)
+    - [Step 4.4: Create Health Check Script](#step-44-create-health-check-script)
+    - [Step 4.5: Create Report Generator](#step-45-create-report-generator)
+- [Summary](#summary)
+- [Category Scores](#category-scores)
+- [Critical Issues](#critical-issues)
+- [Recommendations](#recommendations)
+- [Dependency Analysis](#dependency-analysis)
+  - [Step 4.6: Test Complete Pipeline](#step-46-test-complete-pipeline)
+- [Run health check locally](#run-health-check-locally)
+- [Generate report](#generate-report)
+- [View report](#view-report)
+- [Deliverables Checklist](#deliverables-checklist)
+  - [Success Metrics](#success-metrics)
+  - [Rollback Plan](#rollback-plan)
+- [Phase Integration & Validation](#phase-integration--validation)
+  - [End-to-End Testing Checklist](#end-to-end-testing-checklist)
+  - [Performance Benchmarks](#performance-benchmarks)
+  - [Cognitive Brain Health Impact](#cognitive-brain-health-impact)
+- [Next Steps & Continuation](#next-steps--continuation)
+  - [Immediate Next Actions](#immediate-next-actions)
+  - [Future Enhancements (Phase 11+)](#future-enhancements-phase-11)
+- [Success Criteria Summary](#success-criteria-summary)
+  - [Must-Have (Critical)](#must-have-critical)
+  - [Should-Have (High Priority)](#should-have-high-priority)
+  - [Nice-to-Have (Medium Priority)](#nice-to-have-medium-priority)
+
 **Last Updated:** 2026-06-22
 # NotebookLM Live Sync & AI Architect Implementation
 
@@ -21,6 +169,7 @@ This planset provides a comprehensive, step-by-step implementation guide for int
 ### Cognitive Brain Objectives Mapping
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Self-Healing, Continuous Improvement'}}%%
 graph TB
     subgraph "Cognitive Brain Core Objectives"
         SELF[Self-Healing]
@@ -77,6 +226,7 @@ graph TB
 ### Overall Timeline: 3 phases
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram'}}%%
 gantt
     title Phase 10 Master Integration Implementation
     dateFormat YYYY-MM-DD
@@ -129,7 +279,7 @@ repomix --version
 
 **Validation**: Version output displays correctly
 
-#### Step 1.2: Create Base Configuration
+## Step 1.2: Create Base Configuration
 
 **File**: `repomix.config.json`
 
@@ -223,7 +373,7 @@ repomix --version
 
 **Validation**: JSON is valid (use `jq . repomix.config.json`)
 
-#### Step 1.3: Create Instruction File
+### Step 1.3: Create Instruction File
 
 **File**: `repomix-instruction.md`
 
@@ -355,7 +505,7 @@ When analyzing this codebase:
 
 **Validation**: File is readable and Markdown syntax is valid
 
-#### Step 1.4: Create Enhanced .repomixignore
+### Step 1.4: Create Enhanced .repomixignore
 
 **File**: `.repomixignore`
 
@@ -432,7 +582,7 @@ Thumbs.db
 
 **Validation**: File follows .gitignore syntax
 
-#### Step 1.5: Test Local Consolidation
+## Step 1.5: Test Local Consolidation
 
 ```bash
 # Run repomix with configuration
@@ -456,7 +606,7 @@ grep -i "api.key\|password\|secret" codex-architecture-sync.xml
 - ✅ All key modules included
 - ✅ Comments preserved for context
 
-#### Step 1.6: Optimize Compression Settings
+## Step 1.6: Optimize Compression Settings
 
 If file size > 5MB, adjust compression:
 
@@ -589,7 +739,7 @@ cat ~/notebooklm-sync-key.json
 
 **Validation**: Service account can write to Drive folder
 
-#### Step 2.2: Configure GitHub Secrets
+## Step 2.2: Configure GitHub Secrets
 
 Navigate to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 
@@ -609,7 +759,7 @@ Navigate to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 
 **Validation**: Secrets show as configured (values hidden)
 
-#### Step 2.3: Create Workflow File
+### Step 2.3: Create Workflow File
 
 **File**: `.github/workflows/notebooklm-sync.yml`
 
@@ -814,7 +964,7 @@ gh run view --log
 - ✅ Artifact uploaded to GitHub
 - ✅ Summary generated
 
-#### Step 2.5: Optimize Workflow Performance
+## Step 2.5: Optimize Workflow Performance
 
 **Caching Strategy:**
 
@@ -908,7 +1058,7 @@ python scripts/run.py --version
 
 **Validation**: Command outputs version number
 
-#### Step 3.2: Google Authentication Setup
+## Step 3.2: Google Authentication Setup
 
 ```bash
 # Run authentication setup
@@ -926,7 +1076,7 @@ python scripts/run.py auth_manager.py verify
 
 **Validation**: "✅ Authentication successful" message
 
-#### Step 3.3: Add _codex_ Notebook
+## Step 3.3: Add _codex_ Notebook
 
 **3.3.1: Create NotebookLM Notebook (Manual)**
 
@@ -957,7 +1107,7 @@ python scripts/run.py notebook_manager.py query \
 
 **Validation**: Query returns relevant architectural information
 
-#### Step 3.4: Configure Smart Context Loading
+## Step 3.4: Configure Smart Context Loading
 
 ```bash
 # Enable automatic context loading
@@ -976,7 +1126,7 @@ python scripts/run.py config.py show
 
 **Validation**: Configuration saved and displayed correctly
 
-#### Step 3.5: Test Claude Code Integration
+## Step 3.5: Test Claude Code Integration
 
 **In Claude Code (VS Code or Desktop):**
 
@@ -1000,7 +1150,7 @@ Test queries:
 
 **Validation**: All 5 test queries return accurate, detailed responses
 
-#### Step 3.6: Create Custom Skill Commands
+### Step 3.6: Create Custom Skill Commands
 
 **File**: `~/.claude/skills/notebooklm/custom_commands.json`
 
@@ -1397,7 +1547,7 @@ if __name__ == '__main__':
 
 **Validation**: Script generates valid markdown
 
-#### Step 4.6: Test Complete Pipeline
+### Step 4.6: Test Complete Pipeline
 
 ```bash
 # Run health check locally
@@ -1416,7 +1566,7 @@ cat HEALTH_REPORT.md
 
 **Validation**: Complete pipeline produces valid health report
 
-### Deliverables Checklist
+## Deliverables Checklist
 
 - [ ] Architect prompt created (`docs/ai-architect-prompt.md`)
 - [ ] NotebookLM instructions configured

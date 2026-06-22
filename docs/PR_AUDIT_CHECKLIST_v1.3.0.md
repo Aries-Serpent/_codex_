@@ -198,7 +198,7 @@ python scripts/space_traversal/audit_runner.py run
 # - audit_run_manifest.json
 ```
 
-### Individual Stages
+## Individual Stages
 
 ```bash
 # S1: Discovery - Scan capabilities and patterns
@@ -223,7 +223,7 @@ python scripts/space_traversal/audit_runner.py stage S6
 python scripts/space_traversal/audit_runner.py stage S7
 ```
 
-### Analysis Commands
+## Analysis Commands
 
 ```bash
 # Explain a capability's score breakdown
@@ -235,7 +235,7 @@ python scripts/space_traversal/audit_runner.py diff \
   --new audit_artifacts/capabilities_scored_run2.json
 ```
 
-### Determinism Validation
+## Determinism Validation
 
 ```bash
 # Run audit twice and compare for determinism
@@ -244,7 +244,7 @@ python scripts/space_traversal/verify_determinism.py --runs 2
 # Expected: Identical normalized outputs (excluding volatile fields)
 ```
 
-### Fast Path (Partial Run)
+## Fast Path (Partial Run)
 
 ```bash
 # Quick validation (S1-S4 only)

@@ -265,7 +265,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 **Expected**: 49.13% coverage, 373 tests pass
 
-### Detailed Execution
+## Detailed Execution
 
 See: `docs/plans/Test_Execution_Guide.md`
 

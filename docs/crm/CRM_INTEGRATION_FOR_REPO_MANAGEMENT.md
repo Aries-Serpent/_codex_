@@ -99,7 +99,7 @@ python -m codex.cli zendesk import issues.json --type tickets
 python -m codex.cli zendesk apply triggers configs/desired/zendesk/triggers.desired.json --env dev
 ```
 
-### Scenario 2: Track Technical Debt in Dynamics 365 (D365)
+## Scenario 2: Track Technical Debt in Dynamics 365 (D365)
 
 ```bash
 # 1. Set D365 environment
@@ -142,6 +142,7 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 ### Workflow 1: Bug Triage with Zendesk
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing GitHub Issue Created, Zendesk Ticket Created'}}%%
 graph LR
     A[GitHub Issue Created] --> B[Zendesk Ticket Created]
     B --> C{Severity?}
@@ -163,6 +164,7 @@ graph LR
 ### Workflow 2: Technical Debt Management with Dynamics 365 (D365)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CodeQL Scan, Generate Debt Report'}}%%
 graph TD
     A[CodeQL Scan] --> B[Generate Debt Report]
     B --> C[Create D365 Cases]
@@ -186,6 +188,7 @@ graph TD
 ### Workflow 3: Cross-Platform Sync (Zendesk ↔ Dynamics 365/D365)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Zendesk Ticket, Sync to D365'}}%%
 graph LR
     A[Zendesk Ticket] -->|High Priority| B[Sync to D365]
     B --> C[D365 Case Created]

@@ -102,7 +102,7 @@ openssl rand -hex 32
 
 ---
 
-### Step 0.3: Configure repository Variables
+## Step 0.3: Configure repository Variables
 
 **Navigation**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
 
@@ -258,7 +258,7 @@ echo ""
 echo "🎉 Genesis validation complete!"
 ```
 
-### Audit Trail Locations
+## Audit Trail Locations
 
 | Audit Type | Location | Retention |
 |------------|----------|-----------|

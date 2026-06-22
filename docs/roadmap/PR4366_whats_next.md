@@ -136,6 +136,7 @@
 ## 🧠 Cognitive Brain Objectives — Live Alignment Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CB Objective: CI Reliability Uplift, Current: Pattern 30 = 100/100'}}%%
 graph TD
   A[CB Objective: CI Reliability Uplift] --> A1[Current: Pattern 30 = 100/100]
   A --> A2[Current head: 8 success / 15 completed]
@@ -205,6 +206,7 @@ and per-iteration accountability/living-doc updates.
 ## 📊 CI Workflow Visualization
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Workflow Status Distribution
     "✅ Completed Successfully" : 9
     "⏳ In Progress" : 10
@@ -216,6 +218,7 @@ pie title CI Workflow Status Distribution
 ### Critical Gates Status Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4366, ✅ Deferral Language'}}%%
 graph LR
     A[PR #4366] --> B{Critical<br/>Gates}
 
@@ -282,6 +285,7 @@ graph LR
 ## 🗺️ Updated Remediation Mapping (S876)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR Review Thread, test_data_registry fix'}}%%
 graph TD
     A[PR Review Thread] --> B[test_data_registry fix]
     A --> C[evaluate_dataloader fake_torch fix]

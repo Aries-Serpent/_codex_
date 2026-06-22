@@ -131,7 +131,7 @@ _codex_/
 - Event system: OK
 - Health probes: OK
 
-### Task 2: Check Azure MLOps Capabilities
+## Task 2: Check Azure MLOps Capabilities
 
 ```bash
 # View assessment
@@ -143,7 +143,7 @@ cat .github/prompts/followup_execution_plan/COMPARISON_RATING.md | grep "Achieve
 
 **Expected Result:** 71/71 (100%) across all categories
 
-### Task 3: List Features
+## Task 3: List Features
 
 ```bash
 # Using CLI
@@ -157,7 +157,7 @@ print(store.list_features())
 EOF
 ```
 
-### Task 4: Check Kubernetes Status
+## Task 4: Check Kubernetes Status
 
 ```bash
 # Via maintenance script
@@ -167,7 +167,7 @@ EOF
 kubectl get pods -l app=codex-ml --all-namespaces
 ```
 
-### Task 5: Test Event System
+## Task 5: Test Event System
 
 ```bash
 # Via maintenance script
@@ -204,7 +204,7 @@ for name, module in components.items():
     print(f"{name}: {'✓' if exists else '✗'}")
 ```
 
-### Pattern 2: Verify Capability Coverage
+## Pattern 2: Verify Capability Coverage
 
 ```bash
 # Count implemented capabilities
@@ -213,7 +213,7 @@ grep -c "✅ Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY
 # Expected: 71
 ```
 
-### Pattern 3: List All Files
+## Pattern 3: List All Files
 
 ```bash
 # K8s manifests
@@ -243,7 +243,7 @@ pip install -e .
 pip install -e ".[ml,dev,cloud]"
 ```
 
-### Issue 2: Feature Store Not Found
+## Issue 2: Feature Store Not Found
 
 **Symptom:** Feature store directory missing
 
@@ -256,7 +256,7 @@ mkdir -p .codex/feature_store
 python3 -c "from src.codex_ml.features import FeatureStore; FeatureStore('.codex/feature_store')"
 ```
 
-### Issue 3: K8s Validation Fails
+## Issue 3: K8s Validation Fails
 
 **Symptom:** `kubectl apply --dry-run` fails
 
@@ -347,7 +347,7 @@ echo "71/71 (100%)"
 grep "Score:" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
 ```
 
-### File Counts
+## File Counts
 
 ```bash
 # Implementation files
@@ -356,7 +356,7 @@ echo "Features: $(find src/codex_ml/features -name '*.py' | wc -l) modules"
 echo "Events: $(find src/codex_ml/events -name '*.py' | wc -l) modules"
 ```
 
-### Test Coverage
+## Test Coverage
 
 ```bash
 # Run with coverage

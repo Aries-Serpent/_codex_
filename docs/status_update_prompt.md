@@ -154,7 +154,7 @@ Audit Scope
    3. ...
 
 4. **Atomic Diffs**
-### Atomic Diff 1 — {{title1}}
+## Atomic Diff 1 — {{title1}}
 - **Why:** {{why1}}
 - **Risk:** {{risk1}}
 - **Rollback:** {{rollback1}}

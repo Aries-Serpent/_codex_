@@ -175,7 +175,7 @@ pytest -m "integration and not slow"
 pytest -m "not slow"
 ```
 
-### Auto-Marking
+## Auto-Marking
 
 The `conftest.py` automatically marks tests as `slow` if they:
 - Have `@pytest.mark.slow` explicitly

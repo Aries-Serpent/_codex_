@@ -57,7 +57,7 @@ The resolver handles these automatically:
 | `.secrets.baseline` | `--ours` (branch) | P-045: always keep branch version |
 | All other files | ❌ Unresolvable | Requires manual intervention |
 
-### Step 2 — Load the checkpoint to understand session state
+## Step 2 — Load the checkpoint to understand session state
 
 ```bash
 python3 scripts/ci/rate_limit_handler.py --check

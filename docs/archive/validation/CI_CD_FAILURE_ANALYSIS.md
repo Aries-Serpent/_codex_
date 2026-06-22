@@ -105,7 +105,7 @@ assert metric.compute()["f1_score"] == 1.0
 
 ---
 
-### 3. Prometheus Metrics Duplicated Timeseries (P1) ❌
+## 3. Prometheus Metrics Duplicated Timeseries (P1) ❌
 
 **Tests Affected:** 10 tests in `tests/test_prometheus_metrics.py`
 
@@ -216,7 +216,7 @@ audit = AuditResult(
 
 ---
 
-### 5. EntanglementManager Signature Error (P1) ❌
+## 5. EntanglementManager Signature Error (P1) ❌
 
 **Tests Affected:**
 - `tests/cognitive_brain/test_integration.py::test_all_features_enabled`
@@ -411,7 +411,7 @@ vim tests/cognitive_brain/test_integration.py  # Lines 197-205
 python -m pytest tests/ -x --tb=short
 ```
 
-### Next Steps
+## Next Steps
 1. Investigate and fix Hydra config
 2. Add Prometheus registry fixture
 3. Fix EntanglementManager and train loop issues

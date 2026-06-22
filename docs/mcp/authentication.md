@@ -19,6 +19,7 @@ This repository ships an MCP authentication baseline to keep previews lightweigh
 ## Authentication Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Auth Validator: Valid/Invali'}}%%
 sequenceDiagram
     participant Client
     participant MCP Server
@@ -96,7 +97,7 @@ async def query_endpoint(
     return {"result": "success"}
 ```
 
-### Node.js/Cloudflare Workers Implementation
+## Node.js/Cloudflare Workers Implementation
 
 ```javascript
 // Cloudflare Workers authentication middleware
@@ -163,7 +164,7 @@ MCP_OFFLINE=false
 CODEX_ITA_API_KEY=your-ita-key-here
 ```
 
-### Production Configuration (Fly.io Secrets)
+## Production Configuration (Fly.io Secrets)
 
 ```bash
 # Set production secrets
@@ -174,7 +175,7 @@ fly secrets set CODEX_ITA_API_KEY=your-production-ita-key
 fly secrets list
 ```
 
-### Production Configuration (Cloudflare Workers)
+## Production Configuration (Cloudflare Workers)
 
 ```bash
 # Set secrets via wrangler
@@ -428,7 +429,7 @@ fly releases rollback <version>
 wrangler rollback --message "Auth issue - reverting"
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Compromised Key:**
 1. Immediately generate new key: `openssl rand -hex 32`

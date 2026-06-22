@@ -118,6 +118,7 @@ Total workflows checked: 84
 
 ### Agent Ecosystem Expansion
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow CI Fixer Agent, CI Testing Agent'}}%%
 graph TD
     A[Workflow CI Fixer Agent] --> B[CI Testing Agent]
     A --> C[Security Scan Agent]
@@ -449,7 +450,7 @@ for f in .github/workflows/*.yml; do
 done
 ```
 
-### Agent Locations
+## Agent Locations
 - CI Testing Agent: `.github/agents/ci-testing-agent.md`
 - Workflow CI Fixer: `.github/agents/workflow-ci-fixer.agent.md`
 - Security Scan Agent: `.github/agents/security-scan-agent/`

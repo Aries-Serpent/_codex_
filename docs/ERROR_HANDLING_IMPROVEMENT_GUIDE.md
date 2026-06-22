@@ -76,7 +76,7 @@ except PermissionError:
 # Other exceptions (e.g., OSError) propagate naturally
 ```
 
-### Pattern 4: Context Managers for Resources
+## Pattern 4: Context Managers for Resources
 
 Use context managers for automatic cleanup:
 
@@ -99,7 +99,7 @@ grep -rn "except:" --include="*.py" src/ agents/ scripts/
 grep -A 1 "except:" --include="*.py" src/ | grep -B 1 "pass"
 ```
 
-### Phase 2: Categorize by Criticality
+## Phase 2: Categorize by Criticality
 
 1. **Critical**: Security, data integrity, core functionality
 2. **Important**: Feature functionality, user-facing operations
@@ -169,7 +169,7 @@ except (FileNotFoundError, PermissionError) as e:
     logger.warning(f"File access error: {e}")
 ```
 
-### 2. Include Context in Log Messages
+## 2. Include Context in Log Messages
 
 ```python
 # ❌ Generic message
@@ -179,14 +179,14 @@ logger.error("Operation failed")
 logger.error(f"Failed to process file {file_path}: {e}", exc_info=True)
 ```
 
-### 3. Use exc_info for Stack Traces
+## 3. Use exc_info for Stack Traces
 
 ```python
 # ✅ Include full traceback for debugging
 logger.error("Operation failed", exc_info=True)
 ```
 
-### 4. Fail Fast for Unexpected Errors
+## 4. Fail Fast for Unexpected Errors
 
 ```python
 # ✅ Don't catch what you can't handle

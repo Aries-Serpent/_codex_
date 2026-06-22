@@ -29,6 +29,7 @@
 The diagram below shows all 32 commenting workflows grouped by purpose and connected by the events that flow between them.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing "External Triggers", /"push / pull_request"\'}}%%
 graph TB
     subgraph TRIGGERS["External Triggers"]
         T1[/"push / pull_request"\]
@@ -159,6 +160,7 @@ graph TB
 Triggered whenever a PR check fails on `0D_base_`. As shown in [Issue #3779](https://github.com/Aries-Serpent/_codex_/issues/3779), **7 workflows can fire simultaneously** on the same commit.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing 🔗 Run link, 🔗 Run link'}}%%
 sequenceDiagram
     participant DEV as Developer push
     participant GHA as GitHub Actions
@@ -200,6 +202,7 @@ sequenceDiagram
 ### 3.2 Agent Auth Delegation — Cognitive Pre-flight
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing pull_request opened / push, Post REQ-11 guard comment\nwith run link'}}%%
 flowchart TD
     A[pull_request opened / push] --> B{REQ-11: Is head an\nintegration branch?}
     B -- YES --> C[Post REQ-11 guard comment\nwith run link]
@@ -224,6 +227,7 @@ flowchart TD
 ### 3.3 Iterative Self-Healing Pipeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CI failure on main\nor PR branch, iterative-self-healing-ci\ntriage job'}}%%
 flowchart LR
     F[CI failure on main\nor PR branch] --> T[iterative-self-healing-ci\ntriage job]
     T --> P{Pattern\nidentified?}
@@ -245,6 +249,7 @@ flowchart LR
 ### 3.4 Session Lifecycle (watchdog → checkin → session-done)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, 🔗'}}%%
 stateDiagram-v2
     [*] --> Idle
 
@@ -274,6 +279,7 @@ stateDiagram-v2
 ### 3.5 Issue Triage & Telemetry
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing issues opened, copilot-issue-triage\nCopilot AI analysis'}}%%
 flowchart TD
     subgraph ON_ISSUE_OPEN
         I1[issues opened] --> IT[copilot-issue-triage\nCopilot AI analysis]
@@ -305,6 +311,7 @@ flowchart TD
 ### 3.6 Cost Gate & PR Status Dashboard
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Caller Workflows (via workflow_call)", pre-merge-validation'}}%%
 flowchart LR
     subgraph CALLERS["Caller Workflows (via workflow_call)"]
         W1[pre-merge-validation]

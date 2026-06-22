@@ -84,7 +84,7 @@ mkdocs build --strict
 # Result: SUCCESS - No warnings or errors
 ```
 
-### ✅ Link Categories
+## ✅ Link Categories
 - **Valid internal links**: 1,126 (within docs/)
 - **External links**: 1,290 (skipped - already correct)
 - **Fixed links**: 46 (outside docs/ → GitHub URLs)

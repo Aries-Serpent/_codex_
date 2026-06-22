@@ -194,7 +194,7 @@ docker run --rm --gpus all nvidia/cuda:12.2.2-base-ubuntu22.04 nvidia-smi
 docker run --rm --gpus all codex-gpu:cu121 python -c "import torch; print(torch.cuda.is_available())"
 ```text
 
-### Torch Import Errors
+## Torch Import Errors
 
 **Error**: `ImportError: cannot import name '_C' from 'torch'`
 
@@ -244,7 +244,7 @@ For specific torch configuration:
 --build-arg TORCH_WHEEL="torch==2.4.1+cu121 torchvision==0.19.1+cu121 --extra-index-url https://download.pytorch.org/whl/cu121"
 ```text
 
-### Multi-Architecture Builds
+## Multi-Architecture Builds
 
 ```bash
 docker buildx build \

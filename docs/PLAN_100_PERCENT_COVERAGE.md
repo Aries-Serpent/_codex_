@@ -87,7 +87,7 @@ def test_openai_not_installed():
             OpenAIEmbeddingProvider(api_key="test") <!-- pragma: allowlist secret -->
 ```
 
-#### 1.2 File I/O Edge Cases
+## 1.2 File I/O Edge Cases
 
 ```python
 def test_partial_file_read():
@@ -113,7 +113,7 @@ def test_disk_full_during_persist():
                 persist_index("test", embeddings, chunks, tenant_id="test", index_dir=tmpdir)
 ```
 
-#### 1.3 Network Error Scenarios
+### 1.3 Network Error Scenarios
 
 ```python
 @patch('codex.rag.embeddings.OpenAI')
@@ -580,7 +580,7 @@ def test_docs_example_multi_index():
         assert isinstance(results, list)
 ```
 
-#### 4.2 Final Gap Analysis
+## 4.2 Final Gap Analysis
 
 ```python
 def test_any_remaining_uncovered_lines():
@@ -620,7 +620,7 @@ pytest tests/test_rag_*.py \
 open htmlcov/index.html
 ```
 
-### Step 2: Identify Remaining Gaps
+## Step 2: Identify Remaining Gaps
 
 ```bash
 # Generate detailed coverage report
@@ -632,7 +632,7 @@ coverage report --show-missing
 # - Functions not called
 ```
 
-### Step 3: Add Targeted Tests
+## Step 3: Add Targeted Tests
 
 For each uncovered line/branch:
 1. Understand the code path

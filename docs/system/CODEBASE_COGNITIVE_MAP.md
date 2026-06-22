@@ -76,6 +76,7 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 **Unified entry points:**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing unified-coverage-agent, unified-doc-agent'}}%%
 graph LR
     subgraph "Unified Agents (canonical entry points)"
         UC[unified-coverage-agent]
@@ -194,6 +195,7 @@ Test Execution → Cache Management → Artifact Generation
 **Total**: 113 variables/secrets across 5 scopes
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing CODEX_MASTER_KEY, CODEX_BACKUP_KEY'}}%%
 graph TB
     subgraph "Org Secrets (13)"
         OM[CODEX_MASTER_KEY]
@@ -356,7 +358,7 @@ nox -s lint|type|format
 python -m scripts.space_traversal.audit_runner agent-interface
 ```
 
-### Entry Points
+## Entry Points
 
 | System | Entry | Type |
 |--------|-------|------|

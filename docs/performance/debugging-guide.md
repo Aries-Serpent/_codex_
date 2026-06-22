@@ -97,7 +97,7 @@ python -m cProfile -o profile.stats app.py
 python -m pstats profile.stats
 ```
 
-### 2. Line Profiler
+## 2. Line Profiler
 
 ```python
 # Install: pip install line_profiler
@@ -138,7 +138,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
      6         1         20.0     20.0      0.0      return total
 ```
 
-### 3. Flame Graphs
+## 3. Flame Graphs
 
 ```python
 # Install: pip install py-spy
@@ -171,7 +171,7 @@ py-spy record -o profile.svg -- python app.py
 # Opens profile.svg in browser showing call stack
 ```
 
-### 4. Memory Profiler
+## 4. Memory Profiler
 
 ```python
 # Install: pip install memory-profiler
@@ -256,7 +256,7 @@ print(f"Fast: {fast_result['mean']*1000:.3f}ms")
 print(f"Speedup: {slow_result['mean']/fast_result['mean']:.1f}x")
 ```
 
-### 2. Using pytest-benchmark
+## 2. Using pytest-benchmark
 
 ```python
 # Install: pip install pytest-benchmark
@@ -290,7 +290,7 @@ test_sort_list           1.52 ms ±    0.08 ms   [4 measurements]
 test_string_concat       2.34 ms ±    0.12 ms   [3 measurements]
 ```
 
-### 3. Comparing Algorithms
+## 3. Comparing Algorithms
 
 ```python
 def benchmark_comparison():
@@ -355,7 +355,7 @@ for i in range(10):
     result = cached_calculation(i % 3)
 ```
 
-### Pattern 2: Vectorization
+## Pattern 2: Vectorization
 
 ```python
 import numpy as np
@@ -378,7 +378,7 @@ def fast_distance(points1, points2):
 points = [(i, i*2) for i in range(10000)]
 ```
 
-### Pattern 3: Lazy Evaluation
+## Pattern 3: Lazy Evaluation
 
 ```python
 # ❌ EAGER: Process all data immediately
@@ -403,7 +403,7 @@ for result in process_data_lazy(range(1000000)):
         break
 ```
 
-### Pattern 4: Batch Processing
+## Pattern 4: Batch Processing
 
 ```python
 # ❌ SLOW: Process one at a time
@@ -534,7 +534,7 @@ for stat in top_stats[:10]:
 tracemalloc.stop()
 ```
 
-### Memory Leak Detection
+## Memory Leak Detection
 
 ```python
 import objgraph
@@ -598,7 +598,7 @@ def get_cached_data():
 
 **Improvement**: 5s → 50ms (100x faster)
 
-### Case 2: Memory Leak in Batch Processing
+## Case 2: Memory Leak in Batch Processing
 
 **Scenario**: Memory usage grows from 2GB to 8GB over time
 

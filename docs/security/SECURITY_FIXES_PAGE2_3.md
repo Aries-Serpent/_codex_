@@ -73,7 +73,7 @@ engine = QuantumInspiredGameEngine()  # ❌ Missing 4 required arguments
 sim = BlueRedTeamSimulator()  # ❌ Missing 4 required arguments
 ```
 
-### Fix Strategy
+## Fix Strategy
 
 Since these are test files checking that classes can be imported/initialized, and the actual implementation requires complex parameters, the tests should either:
 
@@ -140,7 +140,7 @@ env = Environment(
 )
 ```
 
-### Issues #12-13: Information Exposure
+## Issues #12-13: Information Exposure
 **Status:** ✅ FIXED
 - `src/codex_ml/monitoring/metrics.py:183` - removed exception details from response
 - `services/ita/app/main.py:138` - sanitized error responses

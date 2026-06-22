@@ -157,6 +157,7 @@ Systematic code quality refactoring **SUCCESSFULLY COMPLETED** with **ZERO F821 
 ## Mermaid Diagram: GAP-REF Progress Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #3318 Analysis, GAP-REF Task Created'}}%%
 graph TD
     A[PR #3318 Analysis] -->|Identified 2,734 errors| B[GAP-REF Task Created]
     B --> C[Phase 1: Analysis 45min]
@@ -201,6 +202,7 @@ graph TD
 ## Mermaid Diagram: Corruption Detection & Remediation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Automatic Fixes Applied, CORRUPTION DETECTED'}}%%
 flowchart TD
     A[Automatic Fixes Applied] --> B{Syntax Check}
     B -->|Pass| C{Duplicate Check}
@@ -249,6 +251,7 @@ flowchart TD
 ## Mermaid Diagram: Phase 4 F821 Fix Categories
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title "F821 Errors Fixed by Category (149 total)"
     "Typing Imports (Optional, Any, List)" : 73
     "Logger Definitions" : 40

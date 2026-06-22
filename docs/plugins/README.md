@@ -65,7 +65,7 @@ class MyPlugin(BasePlugin):
         pass
 ```
 
-### Plugin Types
+## Plugin Types
 
 - **Handlers**: React to system events
 - **Processors**: Transform data
@@ -101,7 +101,7 @@ plugins:
       option2: value2
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 PLUGIN_MY_PLUGIN_ENABLED=true

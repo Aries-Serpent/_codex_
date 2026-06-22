@@ -234,7 +234,7 @@ gh secret list --env ENVIRONMENT_NAME --repo OWNER/REPO
 gh secret delete SECRET_NAME --repo OWNER/REPO
 ```
 
-### 2b. Variables
+## 2b. Variables
 
 ```bash
 # repository variable
@@ -260,7 +260,7 @@ gh variable delete VAR_NAME --repo OWNER/REPO
 
 > ⚠️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
 
-### 2c. Patterns Used in This repository
+## 2c. Patterns Used in This repository
 
 ```bash
 # Read a repo variable (used in agent-auth-delegation.yml, copilot-agent-checkin.yml)

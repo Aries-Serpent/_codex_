@@ -99,7 +99,7 @@ The Codebase QA Walkthrough workflow is timing out after 60 minutes when analyzi
 
 ---
 
-### Priority 2: Caching Strategy with Metadata
+## Priority 2: Caching Strategy with Metadata
 
 **Implementation**: Store analysis results and reuse for unchanged files
 
@@ -138,7 +138,7 @@ cache = {
 
 ---
 
-### Priority 3: Parallel Tool Execution
+## Priority 3: Parallel Tool Execution
 
 **Implementation**: Run analysis tools concurrently
 
@@ -196,7 +196,7 @@ efficiency = information_gain / analysis_time
 
 ---
 
-### Priority 5: Selective Tool Execution by File Type
+## Priority 5: Selective Tool Execution by File Type
 
 **Implementation**: Route files to appropriate tools only
 
@@ -223,7 +223,7 @@ def select_tools(file_path: str) -> List[str]:
 
 ---
 
-### Priority 6: Configurable Timeout and Depth
+## Priority 6: Configurable Timeout and Depth
 
 **Implementation**: Add workflow configuration for different scenarios
 

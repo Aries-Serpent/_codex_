@@ -107,7 +107,7 @@ print(f"✅ Secret #{idx} configured")
 print(f"🔑 Generated 256-bit key successfully")
 ```
 
-### 3. Added Operational Visibility
+## 3. Added Operational Visibility
 
 While maintaining security, preserved operational utility:
 

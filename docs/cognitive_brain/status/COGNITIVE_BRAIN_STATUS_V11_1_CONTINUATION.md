@@ -118,6 +118,7 @@ Phase 11.1 continues the cognitive brain enhancement workflow, focusing on docum
 ## Cognitive Brain Architecture Update
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing MkDocs Build, Categorize'}}%%
 graph TB
     subgraph "Phase 11.1 - Documentation Quality"
         A[MkDocs Build] --> B{Warnings?}

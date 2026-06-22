@@ -68,7 +68,7 @@ grep "CODEX_MASTER_KEY" .codex/aftermath/secrets_audit.jsonl | \
   {timestamp, actor: .actor.id, action: .action.type, status: .result.status}'
 ```
 
-### 2.2 Analyze Access Patterns
+## 2.2 Analyze Access Patterns
 
 ```python
 #!/usr/bin/env python3
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     analyze_access_patterns()
 ```
 
-### 2.3 Incident Timeline Query
+## 2.3 Incident Timeline Query
 
 ```bash
 #!/bin/bash
@@ -212,7 +212,7 @@ grep 'CODEX_MASTER_KEY' .codex/aftermath/secrets_audit.jsonl | \
   jq '.timestamp'
 ```
 
-### 3.2 Escalation Pattern Detection
+## 3.2 Escalation Pattern Detection
 
 ```python
 #!/usr/bin/env python3

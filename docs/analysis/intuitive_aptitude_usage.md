@@ -91,7 +91,7 @@ if analyzer.ingest(code):
     print(f"Naming: {style['naming']}")
 ```
 
-### Using analyze_and_suggest Helper
+## Using analyze_and_suggest Helper
 
 ```python
 from analysis.intuitive_aptitude import analyze_and_suggest
@@ -212,7 +212,7 @@ for pattern in analyzer.patterns['iteration']:
     print(f"Loop at line {pattern['lineno']}: {pattern['kind']}")
 ```
 
-### Code Clone with Renaming
+## Code Clone with Renaming
 
 ```python
 analyzer = intuitive_aptitude()
@@ -231,10 +231,10 @@ new_code = analyzer.clone_structure({
 
 print(new_code)
 # Output: def new_function(new_arg):
-#             return new_arg * 2
+# return new_arg * 2
 ```
 
-### Analyzing Complexity
+## Analyzing Complexity
 
 ```python
 analyzer = intuitive_aptitude()

@@ -62,7 +62,7 @@ pytest -q tests/integration/test_distributed_init.py
 
 ---
 
-### S-15: Registry Stabilization (Deterministic ordering)
+## S-15: Registry Stabilization (Deterministic ordering)
 **Status**: Module exists (`codex_addons/registry.py`), needs name map + tests
 
 **Tasks Remaining**:
@@ -165,7 +165,7 @@ pytest -q tests/metrics/test_bleu_rouge.py
 
 ---
 
-### S-12: LoRA Minimal Tests (Environment-gated)
+## S-12: LoRA Minimal Tests (Environment-gated)
 **Status**: Module + test exist, need validation
 
 **Tasks Remaining**:

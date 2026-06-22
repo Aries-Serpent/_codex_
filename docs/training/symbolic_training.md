@@ -1,6 +1,6 @@
 # ChatGPT Codex — Symbolic Training Summary (Updated)
 
-### Stages (conceptual)
+## Stages (conceptual)
 
 1. **Pretraining**
    Large-scale next-token modeling on code + text → general coding fluency. ([OpenAI][1], [OpenAI][2])

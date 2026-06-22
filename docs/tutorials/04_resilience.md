@@ -74,7 +74,7 @@ def get_features(user_id: str) -> dict:
         return {"user_id": user_id, "segment": "default"}
 ```
 
-### Checking the state
+## Checking the state
 
 ```python
 from codex.resilience import CircuitState
@@ -171,7 +171,7 @@ def get_explanation(prediction_id: str) -> dict:
 explanation = get_explanation("pred_abc123")
 ```
 
-### Context manager pattern
+## Context manager pattern
 
 Use the context manager when the degraded block is more complex than a single
 function call:

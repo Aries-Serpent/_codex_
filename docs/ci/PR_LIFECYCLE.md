@@ -371,7 +371,7 @@ with a fresh `@mbaetiong` PAT with `repo` + `write:discussion` scope.
 > installation-scoped token that does not expire with the PAT rotation cycle.  
 > Affected workflows: `discussion-cleanup.yml` (S302), `post-accountability-to-discussion.yml` (S303).
 
-### 7.1.2 Rescue Comment Format — Collapsed Sections (S295)
+## 7.1.2 Rescue Comment Format — Collapsed Sections (S295)
 <!-- anchor: 7.1.2-rescue-comment-format-—-collapsed-sections-s295 -->
 
 All rescue and quality-findings comments use `<details>`/`<summary>` HTML to collapse
@@ -491,6 +491,7 @@ See `.codex/aftermath/failure_pattern_solutions.yaml` for full library.
 <!-- anchor: 8.-mermaid-lifecycle-diagram -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Developer pushes commit, Open PR'}}%%
 flowchart TD
     A[Developer pushes commit] --> B{PR Exists?}
     B -->|No| C[Open PR]
@@ -585,6 +586,7 @@ flowchart TD
 <!-- anchor: 9.-rescue-flow-diagram -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Healer: logged to pda_iterat'}}%%
 sequenceDiagram
     participant Dev as Developer / Copilot
     participant CI as GitHub Actions CI
@@ -723,6 +725,7 @@ These patterns appear repeatedly in CI triage reports. Each has a documented fix
 | Embedding Index Rebuild | `Commit updated index metadata` | Push permissions | `CODEX_MASTER_KEY` needed for push; falls back to `CODEX_BACKUP_KEY` |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "git push to 0D_base_", "Validation Pipeline\n(validate.yml)"'}}%%
 flowchart TD
     PUSH["git push to 0D_base_"] --> VAL["Validation Pipeline\n(validate.yml)"]
     VAL --> DS["detect-secrets hook"]
@@ -911,6 +914,7 @@ the GitHub-managed workflow AND our custom one fail on non-503 errors, a code fi
 <!-- anchor: 12.-pr-state-machine -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Draft: git push + gh pr create --draft
 
@@ -1046,7 +1050,7 @@ from the gate comment body and auto-generate a structured reply template.  See �
 
 ---
 
-#### RP-CHANGELOG-GATE (5 agent Token Delegation failures)
+## RP-CHANGELOG-GATE (5 agent Token Delegation failures)
 
 **Trigger:** `agent-auth-delegation.yml` — "🧠 Cognitive Pre-flight Check" fails at
 `Verify CHANGELOG.md updated in last commit` or `Verify Accountability Report updated`.
@@ -1054,7 +1058,7 @@ from the gate comment body and auto-generate a structured reply template.  See �
 **Fix:**
 ```bash
 # Add entry to CHANGELOG.md under ## [Unreleased]:
-### Fixed (SN)
+## Fixed (SN)
 <!-- anchor: fixed-sn -->
 - <description>
 
@@ -1067,7 +1071,7 @@ CHANGELOG staleness and offer a templated entry.
 
 ---
 
-#### RP-RUFF / RP-P22 / RP-P23 (11 Validation Pipeline + 3 Auto-Fix + 3 PR-Check)
+## RP-RUFF / RP-P22 / RP-P23 (11 Validation Pipeline + 3 Auto-Fix + 3 PR-Check)
 
 **Trigger:** `validate.yml / Fast Validation` fails at `detect-secrets`, `sync-tracked-files`,
 or `ruff check`.
@@ -1080,7 +1084,7 @@ git add -A && git commit -m "fix(ci): auto-fix ruff/P22/P23 issues"
 
 ---
 
-#### RP-ACTIONLINT (Workflow Compliance Audit failures) — ✅ Fixed S292
+### RP-ACTIONLINT (Workflow Compliance Audit failures) — ✅ Fixed S292
 
 **Trigger:** `actionlint-audit.yml` — `Run actionlint on all workflows` fails.
 
@@ -1289,7 +1293,7 @@ python scripts/ci/discussion_context_store.py \
 # 4. python scripts/ci/pda_failure_logger.py summarize   — grounded solutions
 ```
 
-#### During Session: Fix Verification
+## During Session: Fix Verification
 
 ```bash
 # After each code change, run the relevant check:
@@ -1300,7 +1304,7 @@ python scripts/ci/auto_fix_common_issues.py        # P1/P22/P23 auto-fixes
 pre-commit run detect-secrets --all-files          # secrets baseline
 ```
 
-#### End-of-Session Verification (in this order)
+## End-of-Session Verification (in this order)
 
 - [ ] **Reply to ALL BLOCKING comments** — use exact format:
   `"Fixed at <7-char SHA>" / "Addressed at <SHA>" / "Resolved at <SHA>"`  
@@ -1323,7 +1327,7 @@ pre-commit run detect-secrets --all-files          # secrets baseline
   If recent rescue comments appear as `github-actions[bot]` instead of `mbaetiong`,  
   the `CODEX_MASTER_KEY` secret has expired — escalate to admin for rotation.
 
-#### Session-End Reply Format Reference
+### Session-End Reply Format Reference
 
 ```
 # To satisfy the S221 guard, use ANY of these exact phrases in a @copilot reply:
@@ -1419,6 +1423,7 @@ self-healing cascade MUST automatically post a `ci-health-alert` GitHub issue ta
 `ci-health-alert` for investigation.  This threshold has been exceeded (13 failures in 24h).
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "RAG Module Tests fails", "Post ci-health-alert issue\n(label: ci-health-alert)"'}}%%
 flowchart TD
     RAG["RAG Module Tests fails"] --> COUNT{">= 3 failures\nin 24h?"}
     COUNT -->|Yes| ALERT["Post ci-health-alert issue\n(label: ci-health-alert)"]
@@ -1542,6 +1547,7 @@ Single push to 0D_base_ (CI fully failing):
 <!-- anchor: 16.5-@copilot-session-trigger-chain-annotated -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing git push to 0D_base_, push-triggered workflows\nactionlint · pre-flight · reference-integrity\nrust_swarm · validate'}}%%
 flowchart TD
     PUSH([git push to 0D_base_]) --> CHECKIN
     PUSH --> PUSH_WFLOWS[push-triggered workflows\nactionlint · pre-flight · reference-integrity\nrust_swarm · validate]
@@ -1686,7 +1692,7 @@ python scripts/ci/pda_failure_logger.py log-failure \
 
 ---
 
-### 17.5 Pattern ID Conventions
+## 17.5 Pattern ID Conventions
 <!-- anchor: 17.5-pattern-id-conventions -->
 
 | Prefix | Category | Examples |
@@ -1849,6 +1855,7 @@ See [§19](#19-fast-forward-workflow-promotion) for the full FF specification.
 <!-- anchor: 18.7-wec-selection-strategy-mermaid -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR opened / new commit, "Always-Required (auto-checked)"'}}%%
 flowchart TD
     START([PR opened / new commit]) --> ALWAYS
     subgraph ALWAYS ["Always-Required (auto-checked)"]
@@ -2018,6 +2025,7 @@ Files matching the **denylist** are **denied** (blocked, logged as security conc
 <!-- anchor: 19.5-ff-gate-flow -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick ⚡ Fast-Forward Approved", "workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"'}}%%
 flowchart TD
     PR_EDIT["Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick ⚡ Fast-Forward Approved"]
     PR_EDIT --> WEC["workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"]
@@ -2058,6 +2066,7 @@ flowchart TD
 <!-- anchor: 19.6-wec-parse-ff-parsing-map -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing x\'}}%%
 sequenceDiagram
     participant PB as PR Body (raw markdown)
     participant GH as gh pr view --json body
@@ -2190,7 +2199,7 @@ Check rescue comment health:
 
 ---
 
-### 21.2 CI Failure Response Protocol (on first failure)
+## 21.2 CI Failure Response Protocol (on first failure)
 <!-- anchor: 21.2-ci-failure-response-protocol-on-first-failure -->
 
 When ANY CI check fails, follow this exact sequence — do NOT skip steps:
@@ -2313,7 +2322,7 @@ grep -rn '\${{' .github/workflows/*.yml | grep -v '^\s*#' | \
 
 ---
 
-### 21.7 Workflow Compliance Quick Rules (actionlint)
+## 21.7 Workflow Compliance Quick Rules (actionlint)
 <!-- anchor: 21.7-workflow-compliance-quick-rules-actionlint -->
 
 | Rule | Bad | Good |
@@ -2343,7 +2352,7 @@ If anything fails, fix it before pushing. The session is NOT complete until this
 
 ---
 
-### 21.9 Rescue Comment Marker Reference
+## 21.9 Rescue Comment Marker Reference
 <!-- anchor: 21.9-rescue-comment-marker-reference -->
 
 Every rescue comment uses an HTML comment marker for deduplication. Knowing these lets you check if a rescue is already posted:
@@ -2410,6 +2419,7 @@ All comment operations route through:
 - **`GH_TOKEN` chain**: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing validate.yml, ci-rescue.yml'}}%%
 flowchart LR
     subgraph Workflows
         V[validate.yml]
@@ -2516,7 +2526,7 @@ Individual opt-in workflows call the gate at startup to check if they should run
     fi
 ```
 
-### 23.4 CB / MCP API Routing for Cancel / Dispatch
+## 23.4 CB / MCP API Routing for Cancel / Dispatch
 <!-- anchor: 23.4-cb---mcp-api-routing-for-cancel---dispatch -->
 
 All cancel and dispatch operations use the Cognitive Brain GitHub Connector as the primary token source:
@@ -2557,6 +2567,7 @@ Agents MUST ensure the WEC block is preserved on every `report_progress` call. T
 `cancel-unchecked` job now runs a `Protect owner-selected flags from bot resets` step immediately after cancellation:
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR body edited\n(pull_request: edited)", "detect-changes:\nnewly_unchecked = ['auto-approve-workflows''}}%%
 flowchart LR
     A["PR body edited\n(pull_request: edited)"] --> B["detect-changes:\nnewly_unchecked = ['auto-approve-workflows']"]
     B --> C{Sender login\nends with '[bot]'?}
@@ -2610,6 +2621,7 @@ To fully disable auto-approve:
 <!-- anchor: 24.2-workflow-trigger-map -->
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Triggers", "workflow_run\n(Copilot session completed)"'}}%%
 flowchart TD
     subgraph TRIGGERS ["Triggers"]
         T1["workflow_run\n(Copilot session completed)"]
@@ -2709,6 +2721,7 @@ cancel-in-progress: false  # never kill an in-progress approval sweep
 > the affected workflow(s), the fix applied, and the verification gate.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔴 RC-1: Branch<br/>'copilot/add-comment-for-sha1-acceptance'<br/>deleted/merged", "🔴 RC-2: .secrets.baseline<br/>hashed_secrets stale<br/>(CODEX_MANIFEST + agent_context.json)"'}}%%
 graph TD
     %% ── Root Causes ──────────────────────────────────────────────────────────
     RC1["🔴 RC-1: Branch<br/>'copilot/add-comment-for-sha1-acceptance'<br/>deleted/merged"]
@@ -2834,6 +2847,7 @@ graph TD
 > Shows how the three WEC sources must stay in sync.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "📄 PULL_REQUEST_TEMPLATE.md<br/>(master WEC template)", "🐍 session_wrapup_autofix.py<br/>_WEC_ITEMS list<br/>(40 items after S309)"'}}%%
 graph LR
     T["📄 PULL_REQUEST_TEMPLATE.md<br/>(master WEC template)"]
     S["🐍 session_wrapup_autofix.py<br/>_WEC_ITEMS list<br/>(40 items after S309)"]

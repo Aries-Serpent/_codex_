@@ -90,7 +90,7 @@ def build_custom_tokenizer(**kwargs):
     ...
 ```text
 
-### pyproject.toml
+## pyproject.toml
 
 ```toml
 [project.entry-points."codex_ml.metrics"]

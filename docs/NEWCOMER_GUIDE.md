@@ -166,7 +166,7 @@ _codex_ has an extensible plugin architecture:
 my_metric = "my_package.metrics:my_metric_function"
 ```text
 
-### 3. Logging and Sessions
+## 3. Logging and Sessions
 
 Session-based logging tracks all operations:
 
@@ -228,7 +228,7 @@ codex-train +reasoning=baseline \
   training.output_dir=artifacts/runs/reasoning
 ```text
 
-### Evaluating a Model
+## Evaluating a Model
 
 ```bash
 # Basic evaluation
@@ -243,7 +243,7 @@ codex evaluate \
   --run-id my-eval-run
 ```text
 
-### Managing Configurations
+## Managing Configurations
 
 ```bash
 # List available reasoning templates
@@ -256,7 +256,7 @@ codex reasoning-templates explain baseline
 codex-validate-config --config configs/training/base.yaml
 ```text
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -273,7 +273,7 @@ HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
   nox -s tests_offline
 ```text
 
-### Pre-commit Checks
+## Pre-commit Checks
 
 ```bash
 # Install pre-commit hooks
@@ -377,7 +377,7 @@ All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
 
 See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) for comprehensive testing instructions.
 
-### Code Quality Tools
+## Code Quality Tools
 
 | Tool | Purpose | Command |
 |------|---------|---------|

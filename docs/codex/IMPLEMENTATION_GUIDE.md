@@ -106,7 +106,7 @@ pytest tests/unit/test_session_utilities.py -v
 pytest tests/unit/test_validators.py -v
 ```text
 
-### Integration Tests
+## Integration Tests
 ```bash
 # Full pre-commit workflow
 pre-commit run --all-files
@@ -118,7 +118,7 @@ python scripts/generate_preflight.py --task "Test" --files "setup.py"
 bash scripts/manage_hooks.sh status
 ```text
 
-### Manual Validation
+## Manual Validation
 ```bash
 # Patch validation
 bash scripts/validate_patch.sh <patch-file>

@@ -43,7 +43,7 @@ model_state = safe_load('model.pth', weights_only=True)
 model.load_state_dict(model_state)
 ```
 
-#### ❌ UNSAFE Pattern
+## ❌ UNSAFE Pattern
 ```python
 # NEVER do this with untrusted models
 model = torch.load('untrusted.pth')  # RCE vulnerability!
@@ -53,9 +53,9 @@ model = torch.load('untrusted.pth')  # RCE vulnerability!
 
 ---
 
-### Pickle Deserialization
+## Pickle Deserialization
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 from utils.safe_pickle import safe_pickle_load
 
@@ -63,7 +63,7 @@ from utils.safe_pickle import safe_pickle_load
 data = safe_pickle_load('data.pkl', use_restricted_unpickler=True)
 ```
 
-#### ❌ UNSAFE Pattern
+## ❌ UNSAFE Pattern
 ```python
 # NEVER deserialize untrusted pickle data directly
 with open('untrusted.pkl', 'rb') as f:
@@ -87,9 +87,9 @@ state_dict = load_file('model.safetensors')
 
 ---
 
-### Subprocess Execution
+## Subprocess Execution
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 import subprocess
 import shlex
@@ -106,7 +106,7 @@ args = shlex.split(command)
 result = subprocess.run(args, capture_output=True, text=True)
 ```
 
-#### ❌ UNSAFE Pattern
+## ❌ UNSAFE Pattern
 ```python
 # NEVER use shell=True with user input
 user_input = request.args.get('file')
@@ -117,9 +117,9 @@ subprocess.run(f'cat {user_input}', shell=True)  # Command injection!
 
 ---
 
-### Cryptographic Hashing
+## Cryptographic Hashing
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 import hashlib
 
@@ -130,7 +130,7 @@ secure_hash = hashlib.sha256(data).hexdigest()
 cache_key = hashlib.md5(data, usedforsecurity=False).hexdigest()
 ```
 
-#### ❌ UNSAFE Pattern
+## ❌ UNSAFE Pattern
 ```python
 # Don't use MD5 for security without marking it
 hash_value = hashlib.md5(password)  # Security warning!
@@ -140,9 +140,9 @@ hash_value = hashlib.md5(password)  # Security warning!
 
 ---
 
-### Error Handling
+## Error Handling
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 import logging
 logger = logging.getLogger(__name__)
@@ -178,9 +178,9 @@ except Exception:  # Too broad
 
 ---
 
-### API Security
+## API Security
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 from fastapi import FastAPI, HTTPException
 from services.api.middleware.form_validator import SecureMultipartMiddleware
@@ -218,9 +218,9 @@ async def upload_file(file: UploadFile):
 
 ---
 
-### XML Parsing
+## XML Parsing
 
-#### ✅ SAFE Pattern
+### ✅ SAFE Pattern
 ```python
 from defusedxml.ElementTree import parse
 
@@ -228,7 +228,7 @@ from defusedxml.ElementTree import parse
 tree = parse('data.xml')
 ```
 
-#### ❌ UNSAFE Pattern
+## ❌ UNSAFE Pattern
 ```python
 from xml.etree.ElementTree import parse
 

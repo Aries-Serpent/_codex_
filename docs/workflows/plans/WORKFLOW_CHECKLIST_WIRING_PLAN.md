@@ -28,6 +28,7 @@ This plan defines an **explicit checklist-based workflow execution gate** that:
 ## 2. Architecture Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent Wraps Up, Workflow Execution Checklist'}}%%
 flowchart TD
     A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
     B -->|owner reviews| C{Owner Approval Gate}
@@ -373,7 +374,7 @@ gh workflow run workflow-execution-gate.yml \
   -f triggered_by=copilot
 ```
 
-### Wrap-Up Checklist (Hard-Coded)
+## Wrap-Up Checklist (Hard-Coded)
 
 ```markdown
 ## Copilot Wrap-Up Checklist
@@ -419,7 +420,7 @@ if [ "$EXISTING" -eq 0 ]; then
 fi
 ```
 
-### 8.4 Rate Limiting Between Self-Healing Iterations
+## 8.4 Rate Limiting Between Self-Healing Iterations
 
 Self-healing iterations MUST enforce a minimum 5-minute cooldown between successive
 escalation comments to prevent cascade flooding:
@@ -459,6 +460,7 @@ escalation comments to prevent cascade flooding:
 > Each iteration through the gate produces a measurable outcome. Tracked here.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Plan\nDefine checklist\nchoices for session, Do\nAgent checks boxes\n+ triggers gate'}}%%
 flowchart LR
     subgraph "PDA Iteration Loop"
         P[Plan\nDefine checklist\nchoices for session] --> D[Do\nAgent checks boxes\n+ triggers gate]

@@ -99,7 +99,7 @@ existing_state = swa._extract_wec_state(body)
 # Returns: {"pre-merge-validation.yml": True, "resilient_validation.yml": False, ...}
 ```
 
-### Step 3 — Rebuild canonical WEC preserving maintainer selections
+## Step 3 — Rebuild canonical WEC preserving maintainer selections
 ```python
 new_wec_block = swa._build_wec_block(existing_state=existing_state)
 ```
@@ -213,7 +213,7 @@ GH_TOKEN="${CODEX_MASTER_KEY}" \
   gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/approve"
 ```
 
-### Cancel a run
+## Cancel a run
 ```bash
 gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/cancel"
 ```
@@ -335,7 +335,7 @@ installation_token = resp.json()["token"]
 # installation_token has same scopes as App installation permissions
 ```
 
-### GitHub Actions — Generate App Token (reusable pattern)
+## GitHub Actions — Generate App Token (reusable pattern)
 ```yaml
 - name: Generate Cognitive Brain App token
   id: app-token
@@ -473,7 +473,7 @@ ctx = resp.json()
 # ctx["session_number"] — current COGNITIVE_BRAIN_SESSION_NUMBER
 ```
 
-### AfterMath / PDA Loop Close (call at session end)
+## AfterMath / PDA Loop Close (call at session end)
 ```python
 # POST /api/v1/session/complete — records outcome, updates LTM
 httpx.post(f"{base_url}/api/v1/session/complete", json={
@@ -486,7 +486,7 @@ httpx.post(f"{base_url}/api/v1/session/complete", json={
 })
 ```
 
-### Memory Read/Write (SQLiteMemory)
+## Memory Read/Write (SQLiteMemory)
 ```python
 # GET /api/v1/memory?query=WEC&tier=LTM&limit=5
 resp = httpx.get(f"{base_url}/api/v1/memory",
@@ -501,7 +501,7 @@ httpx.post(f"{base_url}/api/v1/memory", json={
 })
 ```
 
-### CI Pattern Feed
+## CI Pattern Feed
 ```python
 # POST /api/v1/patterns/record — add CI failure pattern
 httpx.post(f"{base_url}/api/v1/patterns/record", json={
@@ -527,7 +527,7 @@ find .github/workflows/ -name "*.yml" -exec \
   sed -i 's/resilient-validation-suite\.yml/resilient_validation.yml/g' {} +
 ```
 
-### Pattern: Atomic multi-file Python edit via AST
+## Pattern: Atomic multi-file Python edit via AST
 ```python
 import ast, pathlib
 
@@ -556,7 +556,7 @@ detect-secrets scan --baseline .secrets.baseline
 python scripts/ci/check_deferral_language.py --pr-body "$(gh pr view $PR --json body -q .body)"
 ```
 
-### Pattern: Push a commit as agent (report_progress)
+## Pattern: Push a commit as agent (report_progress)
 ```
 # ALWAYS use report_progress tool — never git push directly
 report_progress(
@@ -684,7 +684,7 @@ gh api POST /repositories/$REPO_ID/environments/production/variables \
   -f name='MY_VAR' -f value='my_value'
 ```
 
-### MCP Server Gap — Secrets/Variables
+## MCP Server Gap — Secrets/Variables
 
 The GitHub MCP Server (`/mcp/readonly` in this repo's agent sessions) does **not**  
 support secret or variable CRUD. All write operations must use REST API or `gh` CLI  

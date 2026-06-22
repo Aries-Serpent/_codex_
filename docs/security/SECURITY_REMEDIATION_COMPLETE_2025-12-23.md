@@ -249,7 +249,7 @@ state_dict = safe_load("checkpoint.pt", map_location="cpu")
 model.load_state_dict(state_dict)
 ```
 
-### 2. Log Sanitization
+## 2. Log Sanitization
 **File**: `src/codex/security/log_sanitizer.py`  
 **Purpose**: Prevent log injection and secret exposure
 
@@ -264,7 +264,7 @@ safe_msg = mask_sensitive("Token: sk_live_abc123xyz")
 # → "Token: ***REDACTED***"
 ```
 
-### 3. Encrypted Storage
+## 3. Encrypted Storage
 **File**: `src/codex/security/storage.py`  
 **Purpose**: Secure at-rest encryption
 

@@ -61,7 +61,7 @@ else:
 
 ---
 
-#### `parse_coverage_xml_to_map(xml_path, root=None)`
+## `parse_coverage_xml_to_map(xml_path, root=None)`
 
 Parse a coverage XML file to coverage map format.
 
@@ -107,7 +107,7 @@ if "src/example.py" in cov_map:
 
 ---
 
-#### `write_coverage_map(out_path, cov_map)`
+## `write_coverage_map(out_path, cov_map)`
 
 Write coverage map to JSON file.
 
@@ -206,7 +206,7 @@ ratio_lenient = duplication_ratio_token_similarity(
 
 ---
 
-#### `estimate(evidence_files, repo_root)`
+## `estimate(evidence_files, repo_root)`
 
 Simple estimate of duplication using path-based heuristic (fallback).
 
@@ -252,7 +252,7 @@ if cov_map and file in cov_map:
     test_score = max(baseline_score, coverage_percent)
 ```
 
-### Token-Similarity Integration
+## Token-Similarity Integration
 
 **audit_runner.py** uses `duplication_ratio_token_similarity` for consistency scoring:
 

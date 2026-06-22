@@ -256,7 +256,7 @@ for t in targets:
 # Target: All ≥ 0.70
 ```
 
-### Short-term (After Immediate)
+## Short-term (After Immediate)
 
 **Step 5-8: Batches 14-17**
 ```bash

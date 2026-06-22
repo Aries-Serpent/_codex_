@@ -256,6 +256,7 @@ const manifest = exportBundleManifest(bundle);
 
 ### Bundle Builder Architecture
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Requirements |R⟩, Generator'}}%%
 graph TB
     R[Requirements |R⟩] --> G[Generator]
     G --> B0[Initial Bundle |B₀⟩]
@@ -271,6 +272,7 @@ graph TB
 
 ### Energy Optimization Loop
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Bundle |B⟩, Compute Energy E(B)'}}%%
 graph LR
     B[Bundle |B⟩] --> E[Compute Energy E(B)]
     E --> Missing[L_missing]
@@ -291,6 +293,7 @@ graph LR
 
 ### Cognitive Brain Integration
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Quantum Agent, Energy Minimization'}}%%
 graph TB
     subgraph "Existing Framework"
         QA[Quantum Agent]

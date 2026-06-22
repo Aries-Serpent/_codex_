@@ -180,7 +180,7 @@ protection_rules:
       - "*"
 ```
 
-### 3.3 Preventing Cross-Environment Leakage
+## 3.3 Preventing Cross-Environment Leakage
 
 ```python
 #!/usr/bin/env python3
@@ -317,7 +317,7 @@ if not missing and not unexpected:
 PYTHON
 ```
 
-### 4.2 Compliance Report Generation
+## 4.2 Compliance Report Generation
 
 ```python
 #!/usr/bin/env python3

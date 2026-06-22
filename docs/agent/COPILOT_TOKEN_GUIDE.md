@@ -114,7 +114,7 @@ resp = brain.proxy_request("GET",
     "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
 ```
 
-### 2 — VariableManager (repo / env / org variables)
+## 2 — VariableManager (repo / env / org variables)
 
 ```python
 from scripts.tools.variable_manager import VariableManager
@@ -137,7 +137,7 @@ vm.create_org_var("Aries-Serpent", "COPILOT_ORG_VAR", "val", visibility="all")
 vm.run_live_test("Aries-Serpent", "_codex_")
 ```
 
-### 3 — CLI (bash tool / shell scripts)
+## 3 — CLI (bash tool / shell scripts)
 
 ```bash
 # List repo variables
@@ -165,7 +165,7 @@ python scripts/tools/variable_manager.py list env Aries-Serpent _codex_ producti
 python scripts/tools/variable_manager.py list org Aries-Serpent
 ```
 
-### 4 — Direct curl via CLI API Server
+## 4 — Direct curl via CLI API Server
 
 ```bash
 # Auto-injects CODEX_MASTER_KEY (or GITHUB_TOKEN fallback) from server env
@@ -178,7 +178,7 @@ curl -s -X POST http://localhost:8765/api/request \
   }'
 ```
 
-### 5 — Check which token is active
+## 5 — Check which token is active
 
 ```bash
 python3 -c "

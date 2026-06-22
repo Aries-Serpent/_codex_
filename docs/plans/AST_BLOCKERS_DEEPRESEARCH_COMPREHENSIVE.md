@@ -89,7 +89,7 @@ ast = [
 
 ---
 
-### Architecture Category (5 Blockers)
+## Architecture Category (5 Blockers)
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
@@ -170,7 +170,7 @@ class DependencyGraph:
 
 ---
 
-### Performance Category (3 Blockers)
+## Performance Category (3 Blockers)
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
@@ -490,7 +490,7 @@ pip check
 echo "✓ Dependency installation complete"
 ```text
 
-### 2. StandardizedASTNode + Parser
+## 2. StandardizedASTNode + Parser
 
 ```python
 # src/codex_ml/ast/nodes.py
@@ -544,7 +544,7 @@ class StandardizedASTNode:
         }
 ```text
 
-### 3. Tarjan's Cycle Detection Algorithm
+## 3. Tarjan's Cycle Detection Algorithm
 
 ```python
 # src/codex_ml/ast/graph.py
@@ -596,7 +596,7 @@ class DependencyGraph:
         return sccs
 ```text
 
-### 4. GitHub Actions Workflow
+## 4. GitHub Actions Workflow
 
 ```yaml
 # .github/workflows/ast_analysis.yml
@@ -638,7 +638,7 @@ jobs:
           path: audit_report.html
 ```text
 
-### 5. CLI Interface
+## 5. CLI Interface
 
 ```python
 # src/codex_ml/ast/cli.py

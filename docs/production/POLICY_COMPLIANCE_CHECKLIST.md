@@ -69,7 +69,7 @@ gh run view <RUN_ID> --log | grep -A 5 "FAILED"
 
 ---
 
-### Step 3: Load Required Documents ✓
+## Step 3: Load Required Documents ✓
 
 **Action:** Read the following files IN FULL (document mentions, not just skimming):
 
@@ -214,7 +214,7 @@ Examples:
 
 ---
 
-### Phase C: Code Quality & Improvement ✓
+## Phase C: Code Quality & Improvement ✓
 
 **MANDATE: Leave codebase better than you found it.**
 
@@ -414,7 +414,7 @@ pytest && pylint src/ && bandit -r src/ && semgrep --config p/security-audit
 python scripts/ci/generate_accountability_report.py --session-id $SESSION_ID
 ```
 
-### Escalation Contacts
+## Escalation Contacts
 
 | Category | Escalation |
 |----------|-----------|

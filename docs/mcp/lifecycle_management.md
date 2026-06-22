@@ -16,6 +16,7 @@ The MCP Server Lifecycle Management system provides comprehensive startup, shutd
 ## Lifecycle Phases
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Initializing: Server Start
     Initializing --> Starting: Resources Allocated
@@ -325,7 +326,7 @@ print(manager.healthz())
 await manager.shutdown()
 ```
 
-### FastAPI Integration
+## FastAPI Integration
 
 ```python
 from fastapi import FastAPI, Request, Response
@@ -427,7 +428,7 @@ async def rollback_initialize_db():
 manager.rollback_initialize_db = rollback_initialize_db
 ```
 
-### Timeout Management
+## Timeout Management
 
 ```python
 async def startup_with_timeout(manager: LifecycleManager, total_timeout: float = 60.0):
@@ -721,7 +722,7 @@ manager.register_startup_hook(
 )
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Startup Failure:**
 1. Review logs for failed hook: `grep "Startup hook failed" logs/app.log`

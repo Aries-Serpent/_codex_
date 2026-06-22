@@ -312,9 +312,9 @@ pip install -e .
 codex-skill --help
 ```
 
-### Commands
+## Commands
 
-#### List registered skills
+### List registered skills
 
 ```bash
 # List all discovered skills
@@ -327,7 +327,7 @@ codex-skill list --capability docs
 codex-skill list --risk-tier low
 ```
 
-#### Run a skill
+## Run a skill
 
 ```bash
 # Run doc retriever with inline payload
@@ -337,7 +337,7 @@ codex-skill run doc.retriever.core --payload '{"query": "AAIS scoring", "top_k":
 codex-skill run doc.refresh.agent --payload @refresh_input.json
 ```
 
-#### Score skill documentation (AAIS)
+## Score skill documentation (AAIS)
 
 ```bash
 # Score a specific skill's documentation quality
@@ -347,7 +347,7 @@ codex-skill score --skill doc.retriever.core
 codex-skill score --skill doc.retriever.core --emit dist/aais_score.json
 ```
 
-#### Compress and distribute
+## Compress and distribute
 
 ```bash
 # Package a skill as 7z archive
@@ -357,14 +357,14 @@ codex-skill compress --skill doc.retriever.core --format 7z --out dist/
 codex-skill install dist/doc-retriever-core-1.0.0.7z
 ```
 
-#### Telemetry
+## Telemetry
 
 ```bash
 # Push telemetry summary to file
 codex-skill telemetry push --from logs/skill_events.jsonl --to file --summary
 ```
 
-#### Doc refresh
+## Doc refresh
 
 ```bash
 # Scan docs and generate refresh plan
@@ -374,7 +374,7 @@ codex-skill refresh-docs --paths docs/agent docs/admin --style aais --prune-stal
 codex-skill refresh-docs --paths docs/ --style aais --emit-plan .codex/doc_refresh_plan.json
 ```
 
-### Nox Session
+## Nox Session
 
 Run the full skills test suite via nox:
 ```bash

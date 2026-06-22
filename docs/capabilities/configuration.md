@@ -40,7 +40,7 @@ monitoring:
   log_level: ${LOG_LEVEL:-INFO}
 ```
 
-### Environment Variables (`.env`)
+## Environment Variables (`.env`)
 
 ```bash
 # Core settings

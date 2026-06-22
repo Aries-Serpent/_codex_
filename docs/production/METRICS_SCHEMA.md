@@ -82,7 +82,7 @@ http_request_duration_seconds_count{method="GET",route="/api/users",status="200"
 
 ---
 
-### 2. Request Throughput
+## 2. Request Throughput
 
 **Metric Name**: `http_requests_total`
 
@@ -129,7 +129,7 @@ http_requests_total{method="GET",route="/api/users",status="200",service="user-s
 
 ---
 
-### 3. Error Rate
+## 3. Error Rate
 
 **Metric Name**: `http_requests_errors_total`
 
@@ -503,7 +503,7 @@ assert cardinality < MAX_CARDINALITY  # Prevents explosion
 assert (now - metric_timestamp) < 5 * scrape_interval
 ```
 
-### Sample Validation Query
+## Sample Validation Query
 
 ```promql
 # Check for metrics older than 2 scrape intervals

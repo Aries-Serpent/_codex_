@@ -236,7 +236,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=json
 python tools/coverage_physics_toolkit.py --mode velocity
 ```
 
-### Command Quick Reference
+## Command Quick Reference
 
 | Command | Purpose | Output |
 |---------|---------|--------|

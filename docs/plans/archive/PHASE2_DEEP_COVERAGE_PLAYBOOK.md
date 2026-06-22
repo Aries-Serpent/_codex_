@@ -33,7 +33,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 # Expected: 34%
 ```
 
-### Batch 2 Verification
+## Batch 2 Verification
 ```bash
 # Run batch 2 tests
 python -m pytest tests/agents/test_phase2_deep_coverage_batch2.py -v

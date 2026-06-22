@@ -1,5 +1,16 @@
 # Security Open Findings Matrix
 
+## Table of Contents
+
+- [Status definitions](#status-definitions)
+- [Consolidated delta against the original plans](#consolidated-delta-against-the-original-plans)
+- [Overlap map (do not reopen duplicates)](#overlap-map-do-not-reopen-duplicates)
+- [Already fixed](#already-fixed)
+- [Partially fixed](#partially-fixed)
+- [Still open](#still-open)
+- [False positive / accepted noise](#false-positive--accepted-noise)
+- [Residual backlog summary](#residual-backlog-summary)
+
 **Last Updated:** 2026-06-22
 
 - Canonical source set: `remediation_plan_codeql_python.md`, `remediation_plan_semgrep.md`, `remediation_plan_secrets.md`

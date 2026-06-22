@@ -56,6 +56,7 @@ The most recent sessions concentrated on:
 ## 3) Mermaid Mapping Outline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Session Start + Preload, Baseline checks: precommit + nox tests'}}%%
 flowchart TD
   A[Session Start + Preload] --> B[Baseline checks: precommit + nox tests]
   B --> C{Collection failures include stream_paths?}

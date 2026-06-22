@@ -71,14 +71,14 @@ python tools/coverage_physics_toolkit.py --mode validate
 python tools/coverage_physics_toolkit.py --mode velocity
 
 # 3. Apply Table 4 patterns:
-#    - Eq #1: Initialization tests (5-8 tests)
-#    - Eq #2: Enum validations (3-5 tests)
-#    - Eq #3: Property tests (3-5 tests)
+# - Eq #1: Initialization tests (5-8 tests)
+# - Eq #2: Enum validations (3-5 tests)
+# - Eq #3: Property tests (3-5 tests)
 ```
 
 **Expected**: +2.43% in 15-20 minutes
 
-### Phase 2: 30% → 50% Coverage
+## Phase 2: 30% → 50% Coverage
 
 **Time**: 8-10 hours  
 **Gap**: 20%  
@@ -197,7 +197,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=json -q
 python tools/coverage_physics_toolkit.py --mode velocity
 ```
 
-### per-phase Cycle
+## per-phase Cycle
 
 1. **Monday**: Plan week's coverage goals
 2. **Tuesday-Thursday**: Apply strategies, write tests

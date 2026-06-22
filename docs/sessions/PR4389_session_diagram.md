@@ -12,6 +12,7 @@
 ## 🔄 Session Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S920 — Initial Analysis<br/>CodeQL artifact download<br/>Runs 3476–3489 diagnosed, S921 — Security Fixes Round 1<br/>Merge conflict: CODEX_MANIFEST.json<br/>Two-parent merge commit 43c86951'}}%%
 graph TD
     A[S920 — Initial Analysis<br/>CodeQL artifact download<br/>Runs 3476–3489 diagnosed] --> B
 
@@ -40,6 +41,7 @@ graph TD
 ## 🔍 Root Cause Analysis — 10 Failed Agent Sessions
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4379 merged<br/>2026-05-10T02:31Z, PR #4389 created<br/>branch: add-full-path-to-init-tracing-docs'}}%%
 graph LR
     A[PR #4379 merged<br/>2026-05-10T02:31Z] --> B[PR #4389 created<br/>branch: add-full-path-to-init-tracing-docs]
     B --> C[Run #3476 — 23:53Z<br/>Session starts on add-logging branch]

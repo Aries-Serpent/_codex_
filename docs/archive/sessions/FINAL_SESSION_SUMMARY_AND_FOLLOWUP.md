@@ -126,7 +126,7 @@ safe_value = redact_sensitive_value("sk_live_abc123...")
 # "[REDACTED:19 chars]"
 ```
 
-### 2. Subprocess Security Pattern
+## 2. Subprocess Security Pattern
 **Purpose**: Command injection prevention  
 **Implementation**: All subprocess.run() calls  
 **Key Features**:
@@ -155,7 +155,7 @@ result = subprocess.run(
 )
 ```
 
-### 3. Test Assertion Pattern
+## 3. Test Assertion Pattern
 **Purpose**: Keep tests synchronized with implementation  
 **Implementation**: All test files  
 **Key Features**:
@@ -214,6 +214,8 @@ def test_redact_secret_name():
 **Usage**:
 ```markdown
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Auth: User Data
+    Auth'}}%%
 sequenceDiagram
     User->>Auth: Login Request
     Auth->>DB: Validate
@@ -250,7 +252,7 @@ def calculate_priority(file, temperature=1.0):
     return math.exp(-energy / temperature)
 ```
 
-### 9. Taint Flow Breaking Pattern (NEW)
+## 9. Taint Flow Breaking Pattern (NEW)
 **Purpose**: Prevent sensitive data from reaching logs  
 **Implementation**: `log_task()` method in agents  
 **Key Features**:

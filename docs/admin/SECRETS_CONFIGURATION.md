@@ -83,7 +83,7 @@ aws secretsmanager describe-secret \
 # Expected output shows ARN and creation date
 ```
 
-### Store App ID and Webhook Secret (Alternative Method)
+## Store App ID and Webhook Secret (Alternative Method)
 
 While we pass these as environment variables, you can also store in Secrets Manager:
 
@@ -119,7 +119,7 @@ echo "AWS Profile: ${AWS_PROFILE}"
 echo "AWS Region: ${AWS_REGION}"
 ```
 
-### Persist in Shell Profile (Optional)
+## Persist in Shell Profile (Optional)
 
 Add to `~/.bashrc` or `~/.zshrc`:
 
@@ -157,7 +157,7 @@ source .github/agents/.env
 set +a
 ```
 
-### Rotate Secrets Regularly
+## Rotate Secrets Regularly
 
 ```bash
 # Rotate webhook secret
@@ -178,7 +178,7 @@ cd .github/agents/deploy/scripts
 ./deploy.sh dev apply
 ```
 
-### Rotate Private Key
+## Rotate Private Key
 
 ```bash
 # In GitHub App settings:
@@ -239,7 +239,7 @@ fi
 VERIFY
 ```
 
-### Post-Deployment Verification
+## Post-Deployment Verification
 
 ```bash
 # Verify Lambda can access secrets
@@ -274,7 +274,7 @@ aws secretsmanager create-secret \
     --region us-east-1
 ```
 
-### Error: "Access denied"
+## Error: "Access denied"
 
 ```bash
 # Check IAM permissions
@@ -287,7 +287,7 @@ aws iam get-role-policy \
 # - secretsmanager:DescribeSecret
 ```
 
-### Error: "Invalid private key format"
+## Error: "Invalid private key format"
 
 ```bash
 # Verify PEM format
@@ -629,6 +629,7 @@ prompt: |
 ### Workflow Integration
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Trigger, Agent Activation'}}%%
 graph LR
     A[Trigger] --> B[Agent Activation]
     B --> C[Execution]
@@ -669,7 +670,7 @@ graph LR
 task agent_type="secrets-configuration-guide" description="<description>" prompt="<prompt>"
 ```
 
-### GitHub Actions Trigger
+## GitHub Actions Trigger
 
 ```yaml
 - name: Activate secrets-configuration-guide

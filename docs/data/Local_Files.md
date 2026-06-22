@@ -27,7 +27,7 @@ records = load_jsonl("data/train.jsonl")
 # Returns: [{"text": "...", "label": 0}, ...]
 ```text
 
-### load_json
+## load_json
 
 Load single JSON object or array:
 
@@ -43,7 +43,7 @@ data = load_json("data.json")
 # Returns: [{"id": 1}, {"id": 2}]
 ```text
 
-### load_csv
+## load_csv
 
 Load CSV as list of dictionaries:
 
@@ -88,7 +88,7 @@ save_json(config, "config.json")
 save_json(config, "config.json", indent=4)
 ```text
 
-### save_csv
+## save_csv
 
 Save records to CSV file:
 
@@ -132,7 +132,7 @@ processed_data = [
 save_jsonl(processed_data, "data/processed.jsonl")
 ```text
 
-### Format Conversion
+## Format Conversion
 
 ```python
 from codex_ml.data.local_files import load_csv, save_jsonl
@@ -142,7 +142,7 @@ records = load_csv("data/input.csv")
 save_jsonl(records, "data/output.jsonl")
 ```text
 
-### Configuration Management
+## Configuration Management
 
 ```python
 from codex_ml.data.local_files import load_json, save_json
@@ -185,7 +185,7 @@ for i, record in enumerate(records):
         raise ValueError(f"Record {i} missing required fields")
 ```text
 
-### 3. Use Type Conversion
+## 3. Use Type Conversion
 
 ```python
 from codex_ml.data.local_files import load_csv
@@ -203,7 +203,7 @@ processed = [
 ]
 ```text
 
-### 4. Create Parent Directories
+## 4. Create Parent Directories
 
 ```python
 from codex_ml.data.local_files import save_jsonl
@@ -233,7 +233,7 @@ from codex_ml.data.local_files import load_jsonl
 records = load_jsonl("cache/imdb_train.jsonl")
 ```text
 
-### With Pandas
+## With Pandas
 
 ```python
 import pandas as pd
@@ -250,7 +250,7 @@ df["text_length"] = df["text"].str.len()
 save_csv(df.to_dict("records"), "data_processed.csv")
 ```text
 
-### With Caching
+## With Caching
 
 ```python
 from pathlib import Path
@@ -306,7 +306,7 @@ for record in stream_jsonl("large_file.jsonl"):
 records = load_csv("data.csv", encoding='latin-1')
 ```text
 
-### JSONDecodeError
+## JSONDecodeError
 
 **Issue**: Invalid JSON in file
 

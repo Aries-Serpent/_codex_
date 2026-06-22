@@ -41,7 +41,7 @@ github-secrets-cli list --scope repo --repo Aries-Serpent/_codex_
 
 **Expected Output**: CODEX_MASTER_KEY listed with "Updated" timestamp
 
-### Task 3: Deploy Testing Orchestrator Agent (2 hours)
+## Task 3: Deploy Testing Orchestrator Agent (2 hours)
 **Reference**: `.github/agents/github-testing-orchestrator-agent/`
 
 **Implementation**:

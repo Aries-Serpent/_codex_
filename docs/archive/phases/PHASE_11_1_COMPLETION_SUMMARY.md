@@ -330,7 +330,7 @@ export TOKEN_SECRET_KEY="your_secure_random_key" <!-- pragma: allowlist secret -
 export CODEX_ENV="production"
 ```
 
-### Production Considerations
+## Production Considerations
 1. **Storage**: Replace in-memory stores with Redis/PostgreSQL
 2. **Secrets**: Use secure secret management (Vault, KMS)
 3. **Monitoring**: Enable logging and metrics

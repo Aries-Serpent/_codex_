@@ -303,7 +303,7 @@ pytest tests/**/test_*_phase9_1.py -v
 # Results: Majority passing, some conditional skips (expected)
 ```
 
-### Coverage Measurement:
+## Coverage Measurement:
 ```bash
 pytest tests/**/test_*_phase9_1.py \
   --cov=src/codex --cov=agents --cov=src/security --cov=src/services \

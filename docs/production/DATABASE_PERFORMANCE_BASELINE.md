@@ -396,7 +396,7 @@ query_cache_size: "128M"
 query_cache_type: ON
 ```
 
-### 6.2 Monitoring Queries
+## 6.2 Monitoring Queries
 
 ```sql
 -- Check current connections

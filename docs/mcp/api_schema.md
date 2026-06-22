@@ -69,6 +69,7 @@
 **Request Path**: Client → Auth → Validation → Processing → Response
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing HTTP Request, Health Check'}}%%
 graph LR
     A[HTTP Request] --> B{Endpoint Router}
     B -->|/health| C[Health Check]
@@ -164,7 +165,7 @@ graph LR
 # Re-deploy with hardened auth
 ```
 
-### Recovery Procedures
+## Recovery Procedures
 
 **Endpoint Failure**:
 ```bash
@@ -182,7 +183,7 @@ graph LR
 # Validate: Regression tests pass
 ```
 
-### Circuit Breakers
+## Circuit Breakers
 
 **VectorStore Timeout**:
 - If query takes >5s: Return 504 Gateway Timeout

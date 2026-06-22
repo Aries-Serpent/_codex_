@@ -26,6 +26,7 @@ automatically:
 ## 1. End-to-End Process Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 🔄 CI Workflow completes on main, Job: close-on-fix'}}%%
 flowchart TD
     A([🔄 CI Workflow completes on main]) --> B{conclusion?}
 
@@ -69,6 +70,7 @@ Only **one** `fix/ci-*` branch may exist at a time.
 Subsequent failures are queued until the active branch merges.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     direction LR
 
@@ -111,6 +113,7 @@ stateDiagram-v2
 ## 3. Severity Classification
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name, 🔴 Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
 flowchart LR
     WF([Workflow Name]) --> SC{Pattern match}
 
@@ -128,6 +131,7 @@ flowchart LR
 ## 4. Actor Interaction — Sequence Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >> DEV : issue opened, manual '}}%%
 sequenceDiagram
     actor CI   as CI Workflow (main)
     participant WR as workflow_run trigger
@@ -190,6 +194,7 @@ active PR.  No additional standalone comments are posted.
 ## 6. Single-Branch Queue Visualisation
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title  Single-Branch Rule — Failure Queue Timeline
     dateFormat HH:mm
@@ -216,6 +221,7 @@ gantt
 ## 7. Job Dependency Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing triage\n🔒 holds global lock, create-issue\nall non-skip failures'}}%%
 graph LR
     T[triage\n🔒 holds global lock]
 

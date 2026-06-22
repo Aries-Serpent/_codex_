@@ -112,7 +112,7 @@ curl -sf -X POST http://localhost:8765/api/ooda/process \
 
 ---
 
-### 2 · Calling GitHub as the App (JWT auth)
+## 2 · Calling GitHub as the App (JWT auth)
 
 ```python
 import os
@@ -147,7 +147,7 @@ result = brain.proxy_request(
 
 ---
 
-### 3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY → CODEX_BACKUP_KEY)
+## 3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY → CODEX_BACKUP_KEY)
 
 For endpoints that require PAT scope (e.g. Actions Variables API):
 
@@ -171,7 +171,7 @@ vars_resp = brain.proxy_request(
 
 ---
 
-### 4 · App Manifest (one-click installation)
+## 4 · App Manifest (one-click installation)
 
 ```python
 from codex.auth.github_app import build_app_manifest
@@ -205,7 +205,7 @@ print(json.dumps(manifest, indent=2))
 
 ---
 
-### 5 · CLI ↔ GitHub App — Session Quick-Start
+## 5 · CLI ↔ GitHub App — Session Quick-Start
 
 ```bash
 # 1. Verify CLI server is up

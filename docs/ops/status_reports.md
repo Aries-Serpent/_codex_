@@ -17,7 +17,7 @@ python tools/generate_status_update.py
 # Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
 ```text
 
-### What it includes
+## What it includes
 - **Metadata**: Git context, environment info, timestamps
 - **Snapshot**: Repository map, 8 capability checks, findings, test status
 - **Reproducibility**: 4 core controls (dependencies, lockfiles, seeds, provenance)

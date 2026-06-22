@@ -30,7 +30,7 @@ view(performance.py:107-115)
 # All executed in parallel
 ```
 
-### 2. Structured Review Comment Tracking
+## 2. Structured Review Comment Tracking
 **Component**: Manual but systematic approach  
 **Status**: ✅ All 10 comments addressed  
 **Process**:
@@ -94,7 +94,7 @@ reply_to_comment(
 mypy --install-types --non-interactive scripts/
 ```
 
-### 2. Subprocess Timeout Parameter
+## 2. Subprocess Timeout Parameter
 **Issue**: Used unsupported `timeout` parameter in Python 3.6  
 **Status**: ❌ Not caught by py_compile  
 **Manual Work Required**:
@@ -227,7 +227,7 @@ python scripts/dependency_analyzer.py --file docs/OLD_DOC.md --output report.md
       types: [python]
 ```
 
-#### 4. Redundant Code Detector
+## 4. Redundant Code Detector
 **Proposed**: AST-based linter plugin
 ```python
 # scripts/linters/redundant_code.py
@@ -236,7 +236,7 @@ def check_redundant_pass_after_logging(node):
     # Implementation using ast.NodeVisitor
 ```
 
-#### 5. Print to Logger Converter
+## 5. Print to Logger Converter
 **Proposed**: Automated refactoring tool
 ```bash
 python scripts/convert_print_to_logger.py --directory scripts/
@@ -308,7 +308,7 @@ Read comment -> Identify file/line -> Make fix -> Validate -> Reply with commit
 
 **Benefit**: AI can execute entire pattern with single high-level instruction
 
-#### 2. Error Handling Improvement Pattern
+## 2. Error Handling Improvement Pattern
 **Pattern Detected**:
 ```
 bare except -> specific exceptions + logging -> remove redundant pass
@@ -331,7 +331,7 @@ def improve_exception_handling(file_path, line_number):
     # Auto-applies pattern
 ```
 
-#### 3. Logging Consistency Pattern
+## 3. Logging Consistency Pattern
 **Pattern Detected**:
 ```
 Add logging import -> Replace print() -> Select appropriate log level

@@ -152,7 +152,7 @@ pip install pytest pytest-cov numpy
 pytest --version
 ```
 
-### Batch 13 Activation (EXECUTE FIRST)
+## Batch 13 Activation (EXECUTE FIRST)
 
 ```bash
 cd /home/runner/work/_codex_/_codex_
@@ -189,7 +189,7 @@ pytest tests/agents/ --cov=agents --cov-report=term --cov-report=xml
 # Verify: Coverage gain matches projection
 ```
 
-### Batch 14 Activation (EXECUTE SECOND)
+## Batch 14 Activation (EXECUTE SECOND)
 
 ```bash
 # Follow same pattern as Batch 13
@@ -200,7 +200,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch14_exception_handling.py -v -
 # Coverage target: 44-52%
 ```
 
-### Batch 15-17 Activation (EXECUTE SEQUENTIALLY)
+## Batch 15-17 Activation (EXECUTE SEQUENTIALLY)
 
 ```bash
 # Batch 15

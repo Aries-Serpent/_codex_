@@ -339,6 +339,7 @@ python scripts/train_model.py
 #### Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CI Workflows, Metrics Collector'}}%%
 flowchart LR
     A[CI Workflows] --> B[Metrics Collector]
     C[Security Scans] --> B

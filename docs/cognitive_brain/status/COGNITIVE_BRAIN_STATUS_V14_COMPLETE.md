@@ -165,6 +165,7 @@ Apply AI Agency Policy. Complete 5-pass self-review.
 ## Agent Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Orchestrator, Test Coverage Agent'}}%%
 graph TD
     subgraph "Cognitive Brain V14.4 - COMPLETE"
         CB[Orchestrator]

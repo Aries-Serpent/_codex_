@@ -107,7 +107,7 @@ pytest tests/ \
 
 ---
 
-### Step 2: Full Suite Execution (With Phase 4 Tests)
+## Step 2: Full Suite Execution (With Phase 4 Tests)
 
 **Purpose**: Execute all 560 tests including Phase 4 branch coverage tests.
 
@@ -149,7 +149,7 @@ pytest tests/ \
 
 ---
 
-### Step 3: Branch Coverage Specific Tests
+## Step 3: Branch Coverage Specific Tests
 
 **Purpose**: Verify Phase 4 branch coverage tests in isolation.
 
@@ -191,7 +191,7 @@ pytest tests/branch_coverage/ \
 
 ---
 
-### Step 4: Coverage Delta Analysis
+## Step 4: Coverage Delta Analysis
 
 **Purpose**: Calculate actual coverage improvement from Phase 4.
 
@@ -234,7 +234,7 @@ echo "Phase 4 Branch Coverage: ${PHASE4_BRANCH}%"
 
 ---
 
-### Step 5: Coverage Gap Identification
+## Step 5: Coverage Gap Identification
 
 **Purpose**: Identify modules/files with low coverage for Phase 4.2+ focus.
 
@@ -292,7 +292,7 @@ EOF
 
 ---
 
-### Step 6: Generate Comprehensive Report
+## Step 6: Generate Comprehensive Report
 
 **Purpose**: Create human-readable and machine-parseable coverage reports.
 

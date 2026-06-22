@@ -66,7 +66,7 @@ pip install ray[serve,gpu]
 pip install ray[complete]
 ```
 
-### 2. Basic Setup
+## 2. Basic Setup
 
 ```python
 # app.py
@@ -89,7 +89,7 @@ response = requests.get("http://localhost:8000/hello_world")
 print(response.json())
 ```
 
-### 3. Configuration File Setup
+## 3. Configuration File Setup
 
 ```yaml
 # serve_config.yaml
@@ -111,7 +111,7 @@ applications:
         max_concurrent_queries: 100
 ```
 
-### 4. Initialize with Custom Configuration
+## 4. Initialize with Custom Configuration
 
 ```python
 # main.py
@@ -171,7 +171,7 @@ ModelEndpoint.options(
 ).deploy(model_path="models/model_v1.pkl")
 ```
 
-### Pattern 2: Multi-Model Ensemble
+## Pattern 2: Multi-Model Ensemble
 
 ```python
 # ensemble_serving.py
@@ -224,7 +224,7 @@ ensemble = EnsembleModel.bind(model_a, model_b)
 serve.run(ensemble)
 ```
 
-### Pattern 3: Preprocessing Pipeline
+## Pattern 3: Preprocessing Pipeline
 
 ```python
 # preprocessing_pipeline.py
@@ -310,7 +310,7 @@ class AutoScalingModel:
 AutoScalingModel.deploy()
 ```
 
-### 2. Traffic Splitting (A/B Testing)
+## 2. Traffic Splitting (A/B Testing)
 
 ```python
 # ab_testing.py
@@ -345,7 +345,7 @@ ModelV2.deploy()
 Router.deploy()
 ```
 
-### 3. Load Balancer Configuration
+## 3. Load Balancer Configuration
 
 ```python
 # load_balancer.py
@@ -430,7 +430,7 @@ HealthyModel.deploy()
 health_endpoint.deploy(route_prefix="/health")
 ```
 
-### 2. Metrics Collection
+## 2. Metrics Collection
 
 ```python
 # metrics.py
@@ -493,7 +493,7 @@ class MetricsModel:
 MetricsModel.deploy()
 ```
 
-### 3. Logging Configuration
+## 3. Logging Configuration
 
 ```python
 # logging_config.py
@@ -579,7 +579,7 @@ services:
       retries: 3
 ```
 
-### 2. Kubernetes Deployment
+## 2. Kubernetes Deployment
 
 ```yaml
 # k8s_deployment.yaml
@@ -658,7 +658,7 @@ spec:
   type: LoadBalancer
 ```
 
-### 3. CI/CD Pipeline
+## 3. CI/CD Pipeline
 
 ```yaml
 # .github/workflows/deploy-ray-serve.yml
@@ -727,7 +727,7 @@ kill -9 <PID>
 serve.start(http_options={"host": "0.0.0.0", "port": 9000})
 ```
 
-### Issue: "Out of memory"
+## Issue: "Out of memory"
 
 ```python
 # Increase object store memory
@@ -739,7 +739,7 @@ class Model:
     pass
 ```
 
-### Issue: "Deployment unhealthy"
+## Issue: "Deployment unhealthy"
 
 ```bash
 # Check status

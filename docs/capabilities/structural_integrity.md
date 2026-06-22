@@ -62,7 +62,7 @@ KNOWN_SHADOW_RISKS = {
 evidence_limit = 10  # Configurable per detect() call
 ```
 
-### Excluded Directories
+## Excluded Directories
 
 Standard directories excluded from risk assessment:
 - `.git`, `.github`, `.copilot-space`
@@ -193,7 +193,7 @@ python scripts/space_traversal/audit_runner.py explain structural-integrity
 cat audit_artifacts/capabilities_raw.json | jq '.capabilities[] | select(.id=="structural-integrity")'
 ```
 
-### Programmatic Usage
+## Programmatic Usage
 
 ```python
 from scripts.space_traversal.detectors import structure_integrity
@@ -360,7 +360,7 @@ python -m rope.refactor.rename mymodule src.mymodule
 python scripts/space_traversal/trend_aggregator.py --lookback-days 30
 ```
 
-### CI/CD Integration
+## CI/CD Integration
 
 ```yaml
 # .github/workflows/quality-gate.yml

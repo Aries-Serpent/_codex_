@@ -14,6 +14,7 @@ This document describes the architecture of the inference serving system, includ
 ## System Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Web Client, API Client'}}%%
 graph TB
     subgraph "Client Layer"
         C1[Web Client]
@@ -84,6 +85,8 @@ graph TB
 ## Request Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Client: 401 Unauthorized
+   '}}%%
 sequenceDiagram
     participant Client
     participant Auth
@@ -145,6 +148,7 @@ sequenceDiagram
 ## Circuit Breaker State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 stateDiagram-v2
     [*] --> Closed
 
@@ -176,6 +180,7 @@ stateDiagram-v2
 ## Model Loading Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Request arrives, Cache Hit'}}%%
 flowchart TD
     Start([Request arrives]) --> CheckCache{Model in cache?}
 
@@ -211,6 +216,7 @@ flowchart TD
 ### Blue-Green Deployment
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Blue v1.0'}}%%
 graph LR
     subgraph "Initial State (All traffic to Blue)"
         LB1[Load Balancer] -.100%.-> Blue1[Blue v1.0]
@@ -243,6 +249,9 @@ graph LR
 ### Rollback Scenario
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Monitor: Error Rate: 8%
+
+   '}}%%
 sequenceDiagram
     participant Monitor as Health Monitor
     participant Splitter as Traffic Splitter
@@ -272,6 +281,7 @@ sequenceDiagram
 ## Monitoring Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Server 1, Prometheus'}}%%
 graph TB
     subgraph "Inference Servers"
         IS1[Server 1] -->|/metrics| PM[Prometheus]
@@ -429,6 +439,7 @@ else:
 ### Horizontal Scaling
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Server 1'}}%%
 graph LR
     LB[Load Balancer] --> S1[Server 1]
     LB --> S2[Server 2]
@@ -466,6 +477,7 @@ graph LR
 ## Security Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing TLS Termination, Authentication'}}%%
 graph TB
     subgraph "Security Layers"
         TLS[TLS Termination]

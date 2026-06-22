@@ -153,7 +153,7 @@ def reset_[class_name]() -> None:
     _default_instance = None
 ```
 
-### TEMPLATE-M002: Async Service Module
+## TEMPLATE-M002: Async Service Module
 
 ```python
 """[Service Name] - Async service implementation.
@@ -683,7 +683,7 @@ class Test[ClassName]Parametrized:
         assert result == expected
 ```
 
-### TEMPLATE-T002: Async Test Suite
+## TEMPLATE-T002: Async Test Suite
 
 ```python
 """Async tests for [service_name] service."""
@@ -890,7 +890,7 @@ environments:
       requests_per_minute: 120
 ```
 
-### TEMPLATE-C002: Python Config Loader
+## TEMPLATE-C002: Python Config Loader
 
 ```python
 """Configuration loader for [component].

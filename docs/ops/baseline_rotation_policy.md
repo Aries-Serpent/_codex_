@@ -36,7 +36,7 @@ git add audit_artifacts/baselines/
 git commit -m "chore: rotate old baselines to archive"
 ```text
 
-### Automated Rotation (Future)
+## Automated Rotation (Future)
 
 A rotation script will be added in a future PR to automate this process:
 

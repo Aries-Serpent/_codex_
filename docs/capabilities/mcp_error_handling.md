@@ -428,7 +428,7 @@ export MCP_RETRY_MAX_DELAY="60.0"
 export MCP_ERROR_REPORTING_ENABLED="true"
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML for error handling configuration:
 
@@ -532,7 +532,7 @@ raise ValidationError("Email format is invalid", errors=["email"])
 raise Exception("Validation failed")
 ```
 
-### 2. Include Context in Errors
+## 2. Include Context in Errors
 
 ```python
 raise MCPError(

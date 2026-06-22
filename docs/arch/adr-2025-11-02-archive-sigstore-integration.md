@@ -108,7 +108,7 @@ export CODEX_ENABLE_SIGNING=true
 export SIGSTORE_ID_TOKEN=$(gh auth token)
 ```text
 
-### GitHub Actions Integration
+## GitHub Actions Integration
 
 ```yaml
 permissions:

@@ -43,7 +43,7 @@ fetch_job_logs({
 - Automatic log correlation
 - Self-healing workflow debugging
 
-#### 2. CLI Interface (Human-Agent Collaboration)
+## 2. CLI Interface (Human-Agent Collaboration)
 **Command**: `codex github-logs`
 
 Enables human operators to retrieve logs that agents can then analyze:
@@ -57,7 +57,7 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344 -f json | \
 codex github-logs list-check-runs Aries-Serpent _codex_ main --status completed
 ```
 
-#### 3. API Interface (System Integration)
+## 3. API Interface (System Integration)
 **Endpoints**: `/github/check-runs/{id}/logs`, `/github/jobs/{id}/logs`
 
 Allows monitoring systems to programmatically retrieve logs:
@@ -72,9 +72,9 @@ async def monitor_workflow_health():
     return analyze_logs(response.json()["logs"])
 ```
 
-### Cognitive Brain Workflow Enhancement
+## Cognitive Brain Workflow Enhancement
 
-#### Before: Manual Log Retrieval
+### Before: Manual Log Retrieval
 1. Human notices workflow failure
 2. Human navigates to GitHub UI
 3. Human downloads logs

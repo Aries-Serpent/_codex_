@@ -1,5 +1,62 @@
 # Semgrep SAST: Iterative Gap Analysis & Remediation
 
+## Table of Contents
+
+- [Executive Summary](#executive-summary)
+- [Iteration 1: Initial Gap Analysis](#iteration-1-initial-gap-analysis)
+  - [Gaps Discovered](#gaps-discovered)
+    - [🔴 **CRITICAL (P0) - Blocking Issues**](#-critical-p0---blocking-issues)
+    - [🟠 **HIGH (P1) - Production Blockers**](#-high-p1---production-blockers)
+    - [🟡 **MEDIUM (P2) - Quality & Maintainability**](#-medium-p2---quality--maintainability)
+    - [🟢 **LOW (P3) - Nice-to-Have**](#-low-p3---nice-to-have)
+- [Prioritized Remediation Plan](#prioritized-remediation-plan)
+  - [Phase 1: Critical Fixes (P0) - **IMPLEMENT NOW**](#phase-1-critical-fixes-p0---implement-now)
+  - [Phase 2: Production Blockers (P1) - **IMPLEMENT NEXT**](#phase-2-production-blockers-p1---implement-next)
+  - [Phase 3: Quality Improvements (P2) - **IMPLEMENT AFTER P1**](#phase-3-quality-improvements-p2---implement-after-p1)
+  - [Phase 4: Optional Enhancements (P3) - **DEFER/DISCUSS**](#phase-4-optional-enhancements-p3---deferdiscuss)
+- [Implementation Status](#implementation-status)
+  - [✅ Completed](#-completed)
+  - [⏳ Deferred (Optional Enhancements)](#-deferred-optional-enhancements)
+- [Iteration 2: Implementation Complete ✅](#iteration-2-implementation-complete-)
+  - [Phase 3 Implementation (Completed 2025-12-20)](#phase-3-implementation-completed-2025-12-20)
+  - [Production Readiness Achieved](#production-readiness-achieved)
+  - [Metrics & Validation](#metrics--validation)
+- [Iteration 2: Final Gap Assessment](#iteration-2-final-gap-assessment)
+  - [Remaining Gaps (All P3 - Optional)](#remaining-gaps-all-p3---optional)
+  - [New Gaps Discovered: None](#new-gaps-discovered-none)
+- [Success Criteria: Met ✅](#success-criteria-met-)
+  - [Original Success Criteria](#original-success-criteria)
+  - [Additional Achievements](#additional-achievements)
+- [Final Recommendations](#final-recommendations)
+  - [Immediate Actions](#immediate-actions)
+  - [Short-term (1-2 phases)](#short-term-1-2-phases)
+  - [Long-term (1+ months)](#long-term-1-months)
+- [Change Log](#change-log)
+  - [2025-12-20 01:30 - Iteration 1: Initial Analysis](#2025-12-20-0130---iteration-1-initial-analysis)
+  - [2025-12-20 01:35 - Iteration 1: Phase 1 & 2 Complete](#2025-12-20-0135---iteration-1-phase-1--2-complete)
+  - [2025-12-20 01:40 - Iteration 2: Phase 3 Complete](#2025-12-20-0140---iteration-2-phase-3-complete)
+- [Conclusion](#conclusion)
+  - [Changes to Apply](#changes-to-apply)
+    - [File: `.github/workflows/semgrep_sarif.yml`](#file-githubworkflowssemgrep_sarifyml)
+- [Before:](#before)
+- [After (updated to current stable):](#after-updated-to-current-stable)
+- [File: `.gitignore`](#file-gitignore)
+- [Semgrep artifacts](#semgrep-artifacts)
+- [Risk Assessment](#risk-assessment)
+  - [Residual Risks After Phase 1](#residual-risks-after-phase-1)
+  - [New Risks Introduced](#new-risks-introduced)
+- [Metrics & Success Criteria](#metrics--success-criteria)
+  - [Key Performance Indicators](#key-performance-indicators)
+  - [Success Criteria for Iteration 1](#success-criteria-for-iteration-1)
+- [Next Steps](#next-steps)
+  - [Immediate Actions (This Iteration)](#immediate-actions-this-iteration)
+  - [Follow-up Actions (Next Iteration)](#follow-up-actions-next-iteration)
+- [Appendix: Related Workflows](#appendix-related-workflows)
+  - [Existing Security Workflows](#existing-security-workflows)
+  - [Alignment Considerations](#alignment-considerations)
+- [Change Log](#change-log)
+  - [2025-12-20 01:30 - Initial Analysis](#2025-12-20-0130---initial-analysis)
+
 **Generated:** 2025-12-20T01:30:00Z  
 **Iteration:** 1 of N  
 **Status:** 🔄 In Progress
@@ -415,7 +472,7 @@ concurrency:
   cancel-in-progress: true
 ```
 
-#### File: `.gitignore`
+## File: `.gitignore`
 
 **Add Semgrep Patterns (GAP-005)**
 ```

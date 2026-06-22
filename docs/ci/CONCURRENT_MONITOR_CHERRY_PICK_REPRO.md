@@ -9,6 +9,7 @@
 ## Architecture Diagram
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔔 Trigger Event", "@copilot continue\ncomment posted"'}}%%
 flowchart TD
     subgraph TRIGGER["🔔 Trigger Event"]
         T1["@copilot continue\ncomment posted"] --> T2[agent-auth-delegation.yml\nfires run]
@@ -205,7 +206,7 @@ gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
 | `completed    failure    <timestamp>` | ❌ Run failed | → Step 3 |
 | `completed    skipped    <timestamp>` | Run skipped (no matching trigger) | → Step 4 (no new commits expected) |
 
-### Poll loop (bash)
+## Poll loop (bash)
 
 ```bash
 RUN_ID=23220880384
@@ -264,7 +265,7 @@ git log --oneline HEAD..origin/${BRANCH}
 | `abc1234 fix: some change` | New substantive commits | → Step 4a (cherry-pick) |
 | `abc1234 chore(auth): write provenance session token [skip ci]` | Auth-only commit | → Inspect then skip or apply |
 
-### Step 4a — Cherry-pick new substantive commits
+## Step 4a — Cherry-pick new substantive commits
 
 ```bash
 # Repro: list files changed in new commits

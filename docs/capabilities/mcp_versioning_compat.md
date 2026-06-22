@@ -60,7 +60,7 @@ def get_supported_versions() -> List[str]:
     return MCP_VERSIONS["supported"]
 ```
 
-### Version Negotiation
+## Version Negotiation
 
 Implement version negotiation to establish compatible communication:
 
@@ -178,7 +178,7 @@ export MCP_MIN_VERSION="1.0.0"
 export MCP_STRICT_VERSIONS="true"
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML/JSON for more complex version policies:
 
@@ -330,7 +330,7 @@ def debug_version_compatibility(client_version, server_version):
         print(f"  Minimum required: {MCP_VERSIONS['minimum']}")
 ```
 
-### Deprecated Version Warnings
+## Deprecated Version Warnings
 
 **Problem**: Using deprecated MCP version
 

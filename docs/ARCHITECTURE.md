@@ -59,6 +59,7 @@ The Codex ML system provides a comprehensive framework for ML model training, ev
 
 <!-- METRICS_LAST_UPDATED: 2026-05-28 S1292 Phase 10 progress -->
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Data Scientist / ML Engineer<br/>Platform User, GitHub Copilot<br/>AI Coding agent'}}%%
 graph TB
     User[Data Scientist / ML Engineer<br/>Platform User]
     Copilot[GitHub Copilot<br/>AI Coding agent]
@@ -121,6 +122,7 @@ graph TB
 The system is organized into several logical containers (processes or deployable units). Version 0.1.0 introduces MCP system, Cognitive Brain, and autonomous agent orchestration.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point, Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training'}}%%
 graph TB
     subgraph "codex-ml v0.1.0 System"
         subgraph "Core ML Platform"
@@ -268,6 +270,7 @@ graph TB
 ### Core Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Trainer<br/>Main orchestrator, DataLoader<br/>Dataset preparation'}}%%
 graph TB
     subgraph "Training Engine"
         Trainer[Trainer<br/>Main orchestrator]
@@ -352,6 +355,8 @@ graph TB
 ### Training Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>CLI: Resolved configuration
+'}}%%
 sequenceDiagram
     participant User
     participant CLI
@@ -384,6 +389,8 @@ sequenceDiagram
 ### Evaluation Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>CLI: Resolved configuration
+'}}%%
 sequenceDiagram
     participant User
     participant CLI
@@ -415,6 +422,7 @@ sequenceDiagram
 ### Configuration Resolution Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Default Configs<br/>config/, User Overrides<br/>CLI args'}}%%
 flowchart LR
     Defaults[Default Configs<br/>config/]
     User[User Overrides<br/>CLI args]
@@ -457,6 +465,7 @@ flowchart LR
 ### Observability
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Codex ML, Session Logs<br/>SQLite'}}%%
 graph LR
     App[Codex ML]
 
@@ -627,6 +636,7 @@ The `tools/validate_fences.py` traverses Markdown inputs and surfaces fence issu
 - **Public entry points**: `validate_file` (Python API), `main` (CLI)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CLI or caller, _parse_args + _gather_targets'}}%%
 flowchart TD
     A[CLI or caller] -->|argv / path list| B[_parse_args + _gather_targets]
     B --> C{Targets?}
@@ -776,7 +786,7 @@ python scripts/remediation/list_shims.py \
   --output .github/SHIM_INVENTORY.yaml
 ```
 
-### Conflict Detection
+## Conflict Detection
 ```bash
 # Strict mode (CI gating)
 python scripts/remediation/verify_conflicts.py \
@@ -789,7 +799,7 @@ python scripts/remediation/verify_conflicts.py \
   --output audit_artifacts/conflicts.json
 ```
 
-### Equivalence Testing
+## Equivalence Testing
 ```bash
 # Run shim equivalence tests
 pytest -q tests/validation/test_shim_equivalence.py
@@ -798,7 +808,7 @@ pytest -q tests/validation/test_shim_equivalence.py
 SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
 ```
 
-### Nightly Audit
+## Nightly Audit
 - **workflow**: `.github/workflows/nightly-audit.yml`
 - **Schedule**: Daily at 02:00 UTC
 - **Outputs**: Inventory, conflicts, legacy usage report
@@ -1061,6 +1071,7 @@ tests/
 ### High-Level System Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "👥 Users", Developers'}}%%
 flowchart TB
     subgraph Users["👥 Users"]
         Dev[Developers]
@@ -1428,7 +1439,7 @@ navigator.execute('MENTAL_REVIEW')  # Review decisions
 navigator.execute('REPO_ORG')       # Organization
 ```
 
-#### 3. Physics-Inspired Orchestration
+## 3. Physics-Inspired Orchestration
 
 **Energy-Based Decision Making** (`agents/physics_orchestrator.py`):
 - Assigns "energy" costs to actions
@@ -1440,7 +1451,7 @@ navigator.execute('REPO_ORG')       # Organization
 - Learns from outcomes
 - Improves future decisions
 
-#### 4. agent Control Interface
+### 4. agent Control Interface
 
 **Generation**:
 ```bash
@@ -1551,7 +1562,7 @@ spec:
             nvidia.com/gpu: 1
 ```
 
-#### Pattern 2: Self-Hosted Runner
+## Pattern 2: Self-Hosted Runner
 
 **Requirements**:
 - Dedicated runner machine
@@ -1559,7 +1570,7 @@ spec:
 - Self-hosted label in workflows
 - Cost monitoring
 
-#### Pattern 3: Model Serving
+### Pattern 3: Model Serving
 
 **Service Stack** (`services/`):
 - FastAPI-based REST API
@@ -1607,9 +1618,9 @@ pytest tests/ -v
 python -m codex.cli --help
 ```
 
-### Common Tasks
+## Common Tasks
 
-#### task 1: Add New Feature
+### task 1: Add New Feature
 
 ```bash
 # 1. Create branch
@@ -1638,7 +1649,7 @@ git commit -m "feat: Add my feature"
 git push origin feature/my-feature
 ```
 
-#### task 2: Fix Bug
+## task 2: Fix Bug
 
 ```bash
 # 1. Reproduce bug
@@ -1658,7 +1669,7 @@ git add .
 git commit -m "fix: Fix specific bug"
 ```
 
-#### task 3: Run Audit
+## task 3: Run Audit
 
 ```bash
 # Full audit
@@ -1671,7 +1682,7 @@ python scripts/generate_audit_dashboard.py
 cat audit_artifacts/capabilities_scored.json | jq '.[] | select(.score < 0.85)'
 ```
 
-### AI agent Workflows
+## AI agent Workflows
 
 **Using workflow Navigator**:
 ```python
@@ -2102,6 +2113,7 @@ The _codex_ system is organized in the following layers:
 ## 🔄 Runtime Data Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
 flowchart LR
     A[Ingestion] --> B[Tokenizer]
     B --> C[Datasets]
@@ -2165,6 +2177,8 @@ _codex_/
 ### Core Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
+    TrainingEng'}}%%
 classDiagram
     class TrainingEngine {
       +run(cfg)
@@ -2239,7 +2253,7 @@ codex train config/training.yaml
 codex evaluate --model model.pth
 ```
 
-### Docker Deployment
+## Docker Deployment
 
 ```dockerfile
 FROM python:3.10
@@ -2281,7 +2295,7 @@ data:
   split: [0.8, 0.1, 0.1]
 ```
 
-### Configuration Hierarchy
+## Configuration Hierarchy
 
 1. **Base Configs**: defaults/
 2. **Overrides**: Command-line

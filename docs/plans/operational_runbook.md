@@ -116,7 +116,7 @@ python -m codex.cli transform 20251217-abc123 --tier A --auto --no-dry-run
 | B | Apply with Tests | ✅ With tests | Type hints, function extraction |
 | C | Suggest Only | ❌ No | Async conversion, API redesign |
 
-### Step 4: Verify
+## Step 4: Verify
 
 Compares baseline and patched behavior.
 

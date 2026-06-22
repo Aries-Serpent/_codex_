@@ -63,6 +63,7 @@ Capability is high when reserve, fast response, damping, observability, generali
 | $U_uncertainty$ | ambiguity | forecast error, adversarial uncertainty, sensor noise |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing R_reserve, F_cap'}}%%
 flowchart LR
     Reserve[R_reserve] --> Capability[F_cap]
     Response[V_response] --> Capability
@@ -158,6 +159,7 @@ flowchart LR
 ## 6. Mermaid — Fluctuation Capability Controller
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Disturbance or fluctuation, Detect amplitude, rate, source'}}%%
 flowchart TD
     Disturbance[Disturbance or fluctuation] --> Detect[Detect amplitude, rate, source]
     Detect --> Classify{Classify type}

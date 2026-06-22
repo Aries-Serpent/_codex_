@@ -253,7 +253,7 @@ grep -n "Archive" docs/ci/INDEX.md
 ```
 Expected: All links point to valid locations
 
-### 3. Verify Archive Locations
+## 3. Verify Archive Locations
 ```bash
 # Check archived PR analysis files exist
 ls -la .codex/archive/pr-resolutions/PR_3133*

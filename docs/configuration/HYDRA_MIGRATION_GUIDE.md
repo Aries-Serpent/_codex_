@@ -51,7 +51,7 @@ error = loader.get_error("config_errors", "missing_config")
 print(error.format())  # [CONFIG_001] Missing configuration file
 ```
 
-### For Existing Code
+## For Existing Code
 
 Existing imports from `config_legacy.errors` will continue to work but emit deprecation warnings:
 
@@ -82,7 +82,7 @@ defaults:
   fallback_enabled: true
 ```
 
-### Application Configuration
+## Application Configuration
 
 Place your configuration files in `conf/` directory:
 
@@ -118,7 +118,7 @@ cfg = loader.load_config(
 error = loader.get_error("config_errors", "missing_config")
 ```
 
-### Global Functions
+## Global Functions
 
 ```python
 from codex.utils.config_loader import load_config, load_error_config, get_loader

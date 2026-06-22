@@ -27,13 +27,13 @@ The original analyzer (v1.2.0) was flagging 29 `hydra` imports as "legacy" becau
 # Before (v1.2.0):
 LEGACY_MODULES = {"training", "tokenization", "models", "hydra"}
 
-# After (v1.2.1):  
+# After (v1.2.1):
 LEGACY_MODULES = {"training", "tokenization", "models"}
 ```
 
 **Rationale:** The `hydra` module refers to the hydra-core PyPI package, not a local module. Including it caused false positives.
 
-### 2. Test Import Cleanup
+## 2. Test Import Cleanup
 **File:** `tests/validation/test_shim_equivalence.py:73`
 
 ```python

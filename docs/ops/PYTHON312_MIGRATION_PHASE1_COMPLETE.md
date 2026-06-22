@@ -39,7 +39,7 @@ requires-python = ">=3.11,<3.13"
 requires-python = ">=3.12"
 ```
 
-### 3. Progressive Validation CI
+## 3. Progressive Validation CI
 
 The `progressive-validation.yml` workflow already tests on the Python version
 specified in the matrix. With `>=3.11,<3.13`, both 3.11 and 3.12 runners pass.

@@ -215,7 +215,7 @@ if loop.should_adapt():
         job = pipeline.trigger_retrain()
 ```
 
-### Full end-to-end loop
+## Full end-to-end loop
 
 ```python
 from codex_ml.monitoring.data_drift import DataDriftDetector

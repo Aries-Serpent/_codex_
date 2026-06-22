@@ -110,7 +110,7 @@ jq '.components[] | {name, version, license: .licenses[0].license.id}' dist/sbom
 jq '.components[] | select(.name == "pytest")' dist/sbom.json
 ```text
 
-### Continuous integration
+## Continuous integration
 
 The `.github/workflows/sbom.yml` workflow regenerates the SBOM on:
 
@@ -245,7 +245,7 @@ make -C config sbom
 # Output: dist/sbom.json
 ```text
 
-### Continuous integration
+## Continuous integration
 
 The `Generate SBOM` workflow runs on pushes to `main`/`develop`, pull requests targeting `main`, and release publications. It produces:
 

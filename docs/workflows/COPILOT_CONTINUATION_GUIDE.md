@@ -157,7 +157,7 @@ Posts Status Comment
 3. Copilot executes all tasks
 4. Marks complete, closes PR
 
-### Pattern 2: Multi-Phase Implementation
+## Pattern 2: Multi-Phase Implementation
 
 **Scenario**: Large feature across 3+ phases
 
@@ -182,7 +182,7 @@ python3 scripts/generate_pr_followup.py 2650 \
 4. Comment `@copilot continue with Phase 2 tasks`
 5. Repeat for each phase
 
-### Pattern 3: CI/CD Fix Sprint
+## Pattern 3: CI/CD Fix Sprint
 
 **Scenario**: Multiple failing workflows
 
@@ -313,7 +313,7 @@ gh run view {run_id} --log
 - Manually trigger workflow
 - Generate prompt locally and commit
 
-### Copilot Not Reading Prompt
+## Copilot Not Reading Prompt
 
 **Symptoms**: `@copilot continue` doesn't execute tasks
 
@@ -335,7 +335,7 @@ gh pr view {PR_NUMBER} --json body
 - Verify prompt file readable
 - Try commenting with full prompt text
 
-### Template Variables Not Replaced
+## Template Variables Not Replaced
 
 **Symptoms**: Prompt has `{variable}` placeholders
 
@@ -446,7 +446,7 @@ python3 scripts/generate_pr_followup.py 2701 \
   --phase-name "Database Schema Migration"
 ```
 
-### Example 3: CI Failure Sprint
+## Example 3: CI Failure Sprint
 
 ```markdown
 Failed Workflows:

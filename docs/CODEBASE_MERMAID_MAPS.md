@@ -34,6 +34,7 @@
 ## 1. Repository Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\nPython package, tests/\n2,130 test files'}}%%
 graph TD
     subgraph "Aries-Serpent/_codex_ — Repository Structure"
         SRC[src/codex/\nPython package]
@@ -63,6 +64,7 @@ graph TD
 ## 2. CI/CD Pipeline Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing git push to branch, PR review submitted'}}%%
 flowchart TD
     subgraph "PR Event Triggers"
         PUSH[git push to branch]
@@ -110,6 +112,7 @@ flowchart TD
 ## 3. PR Lifecycle
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing feature branch\ncopilot/XXX, PR #NNNN'}}%%
 flowchart LR
     subgraph "Branch Lifecycle"
         F[feature branch\ncopilot/XXX] -->|PR opened| PR[PR #NNNN]
@@ -137,6 +140,7 @@ flowchart LR
 > **Updated S873 (2026-05-08)** — Phase 9 Autonomous Ops, rate-limit orchestration, session handoff, and memory-sync agent added.
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing SQLiteMemory\nSTM → LTM\n80% capacity trigger, TopologyManager\nsemantic nav'}}%%
 graph TD
     subgraph "Cognitive Brain Core (.codex/)"
         SM[SQLiteMemory\nSTM → LTM\n80% capacity trigger]
@@ -198,6 +202,7 @@ graph TD
 ## 5. Agent Interaction Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*, Agents Variables\nCOPILOT_AGENT_*\nCOPILOT_WEC_*\nCOGNITIVE_BRAIN_*'}}%%
 graph LR
     subgraph "Configuration Surfaces"
         REPOV[Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*]
@@ -238,6 +243,7 @@ graph LR
 ## 6. Workflow Execution Gate
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing agent-auth-delegation.yml\ncognitive-preflight wrap-up, Inject Workflow Execution\nChecklist into PR body'}}%%
 flowchart TD
     subgraph "Copilot Wrap-Up"
         WU[agent-auth-delegation.yml\ncognitive-preflight wrap-up]
@@ -269,6 +275,7 @@ flowchart TD
 ## 7. Comment-Review Gate (REQ-13)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER, 🚨 BLOCKING\nmbaetiong + critical bots'}}%%
 flowchart TD
     subgraph "comment-review-gate.yml"
         SCAN[scripts/ci/check_pr_comments.py\n--pr PR_NUMBER]
@@ -306,6 +313,7 @@ flowchart TD
 ## 8. Self-Healing State Machine
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, skip ci'}}%%
 stateDiagram-v2
     [*] --> IDLE
     IDLE --> DETECT: workflow_run failure event
@@ -335,6 +343,7 @@ stateDiagram-v2
 ## 9. PDA Loop + Aftermath
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Define session\nobjectives, Select workflows\nto execute'}}%%
 flowchart LR
     subgraph "Plan"
         P1[Define session\nobjectives]
@@ -372,6 +381,7 @@ flowchart LR
 ## 10. P19 Shadow Import Module Map
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\n__init__.py\nconfig/\nservices/, src/codex/config/\nopenai_client.py ❌ MISSING'}}%%
 graph TD
     subgraph "src/ layout (editable install)"
         SRC_CODEX[src/codex/\n__init__.py\nconfig/\nservices/]
@@ -410,6 +420,7 @@ graph TD
 > **Updated S873 (2026-05-08)** — T-01 fix: `workflow-link-validation.yml` now uses canonical token chain. TTL read from `COPILOT_SESSION_TTL_SECONDS` repo variable (PR #4356).
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CODEX_MASTER_KEY\nfull repo access, CODEX_BACKUP_KEY\nrotation backup'}}%%
 flowchart TD
     subgraph "Token Sources"
         MK[CODEX_MASTER_KEY\nfull repo access]
@@ -481,6 +492,7 @@ flowchart TD
 ## 12. Source Layout
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing cli.py\nEntry point, capabilities/\nci_test, monitoring,\nusage_logger'}}%%
 graph TD
     subgraph "src/codex/ — Python Package"
         CLI2[cli.py\nEntry point]
@@ -527,6 +539,7 @@ graph TD
 > **Added S867 (PR #4356)** — Full reference: `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing WEC Checklist\nworkflow-execution-gate.yml\nArms workflows per checkbox, Agent Auth Delegation\nagent-auth-delegation.yml\nPre-authorises token write ops'}}%%
 graph TD
     subgraph "5 Autonomy Surfaces"
         WEC[WEC Checklist\nworkflow-execution-gate.yml\nArms workflows per checkbox]
@@ -568,6 +581,7 @@ graph TD
 > **Added S867 (PR #4356)** — Script: `scripts/ci/rate_limit_orchestrator.py`
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing cancel-superseded\ncancel all but latest run per workflow, check-rate-limit\nall tokens report'}}%%
 flowchart TD
     subgraph "CLI Entry Points"
         CLI_CAP[cancel-superseded\ncancel all but latest run per workflow]
@@ -619,6 +633,7 @@ flowchart TD
 > **Added S867 (PR #4356)** — Full doc: `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
 stateDiagram-v2
     [*] --> Idle
 
@@ -646,6 +661,7 @@ stateDiagram-v2
 > **Added S867–S873 (PR #4356) · Completed S1259 (2026-05-23)**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing 12 problem-statement diffs S867, T-01 token chain fix S867'}}%%
 graph LR
     subgraph "Phase 9 Completed"
         P9A[12 problem-statement diffs S867]
@@ -704,6 +720,7 @@ graph LR
 > **Added S1259 (2026-05-23) · Updated S1292 (2026-05-28)**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Overall statements: 17.57%, src/security/: 90.72% ✅'}}%%
 graph TD
     subgraph "Coverage Baseline (S1292 — 2026-05-28)"
         CB1[Overall statements: 17.57%]
@@ -785,6 +802,7 @@ graph TD
 > **Updated S1293 (2026-05-28)**
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Security module: src/security/\n90.72% coverage ✅, ITA service tests\ntests/services/ita/ ✅'}}%%
 graph LR
     subgraph "Completed in S1292"
         S1A[Security module: src/security/\n90.72% coverage ✅]

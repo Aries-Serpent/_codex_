@@ -252,7 +252,7 @@ def get_metrics():
     return generate_latest()
 ```
 
-### Distributed Tracing
+## Distributed Tracing
 
 Implement OpenTelemetry tracing:
 
@@ -392,7 +392,7 @@ class TracingMiddleware:
             span.finish()
 ```
 
-### Health Checks
+## Health Checks
 
 Implement health endpoints:
 
@@ -527,7 +527,7 @@ export MCP_HEALTH_CHECK_TIMEOUT="5"
 export MCP_HEALTH_CHECK_INTERVAL="30"
 ```
 
-### Configuration File
+## Configuration File
 
 Use YAML for observability configuration:
 
@@ -637,7 +637,7 @@ async def predict(request):
     return result
 ```
 
-### Example 3: Alerting Integration
+## Example 3: Alerting Integration
 
 ```python
 class AlertManager:
@@ -671,7 +671,7 @@ async def call_downstream(request_id: str):
     return await http_client.get(url, headers=headers)
 ```
 
-### 2. Define SLIs and SLOs
+## 2. Define SLIs and SLOs
 
 ```yaml
 # Define Service Level Indicators
@@ -685,7 +685,7 @@ slis:
     target: 500ms
 ```
 
-### 3. Implement Structured Logging Standards
+## 3. Implement Structured Logging Standards
 
 ```python
 # Standard log fields for all services

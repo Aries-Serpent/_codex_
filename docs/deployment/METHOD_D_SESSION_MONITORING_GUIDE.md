@@ -32,7 +32,7 @@ gh run view <RUN_ID> --log
 gh run download <RUN_ID> -D logs/
 ```
 
-### 3. Create a Monitoring Notes Document
+## 3. Create a Monitoring Notes Document
 
 Open a text editor to document observations:
 
@@ -337,7 +337,7 @@ cd session_logs/
 ls -la | grep copilot-setup-steps
 ```
 
-### Step 2: Extract Session Preload Section
+## Step 2: Extract Session Preload Section
 
 ```bash
 # Show all lines mentioning "preload" or groups
@@ -347,7 +347,7 @@ grep -i "session context pre-load\|::group::\|::endgroup::" copilot-setup-steps.
 grep -A50 "Session Context Pre-load" copilot-setup-steps.txt > preload_full.txt
 ```
 
-### Step 3: Verify Key Markers
+## Step 3: Verify Key Markers
 
 ```bash
 # Check marker presence
@@ -358,7 +358,7 @@ grep "SESSION_PRELOAD_STATUS" copilot-setup-steps.txt && echo "ℹ️ Fallback s
 grep "Session Access Probe" copilot-setup-steps.txt && echo "✅ Next step ran" || echo "❌ Next step didn't run"
 ```
 
-### Step 4: Check for Errors
+## Step 4: Check for Errors
 
 ```bash
 # Search for any errors in the preload section
@@ -366,7 +366,7 @@ sed -n '/Session Context Pre-load/,/::endgroup::/p' copilot-setup-steps.txt | \
   grep -i "error\|fail\|exception\|fatal" && echo "⚠️ Errors found in preload" || echo "✅ No errors in preload"
 ```
 
-### Step 5: Verify Agent Didn't Break It
+## Step 5: Verify Agent Didn't Break It
 
 ```bash
 # Download PR commits

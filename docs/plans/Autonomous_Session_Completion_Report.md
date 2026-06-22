@@ -238,7 +238,7 @@ python -m pytest tests/agents/test_phase2_mental_mapping.py -v
 
 **Expected**: 150+ tests pass, coverage increases to 50-60%
 
-#### Step 3: Measure Total Coverage (1 minute)
+## Step 3: Measure Total Coverage (1 minute)
 
 ```bash
 python -m pytest tests/agents/ --cov=agents --cov-report=json -q
@@ -247,7 +247,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 **Expected Output**: `Coverage: 52.00%` (or similar 50-60% range)
 
-#### Step 4: If Coverage Below Target
+### Step 4: If Coverage Below Target
 
 ```bash
 # Analyze remaining gaps

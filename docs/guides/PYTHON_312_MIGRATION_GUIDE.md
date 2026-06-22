@@ -57,7 +57,7 @@ python --version
 # If not, continue with installation steps below
 ```
 
-#### Step 2: Install Python 3.12
+## Step 2: Install Python 3.12
 
 **macOS (using Homebrew):**
 ```bash
@@ -108,7 +108,7 @@ pyenv global 3.12.10
 python --version  # Should show Python 3.12.10
 ```
 
-#### Step 3: Update Your Project
+## Step 3: Update Your Project
 
 ```bash
 # Navigate to your project directory
@@ -138,7 +138,7 @@ pip install -r requirements.txt
 python --version  # Should show Python 3.12.x
 ```
 
-#### Step 4: Test Your Installation
+## Step 4: Test Your Installation
 
 ```bash
 # Run a simple test
@@ -153,9 +153,9 @@ pytest tests/ -v
 
 ---
 
-### For Contributors
+## For Contributors
 
-#### Step 1: Install Python 3.12 (see above)
+### Step 1: Install Python 3.12 (see above)
 
 #### Step 2: Clone and Setup Repository
 
@@ -176,7 +176,7 @@ pip install --upgrade pip setuptools wheel
 pip install -e ".[dev,test]"
 ```
 
-#### Step 3: Configure Development Tools
+## Step 3: Configure Development Tools
 
 ```bash
 # Install pre-commit hooks
@@ -191,7 +191,7 @@ black --check .
 mypy src/
 ```
 
-#### Step 4: Verify Everything Works
+## Step 4: Verify Everything Works
 
 ```bash
 # Run tests
@@ -229,7 +229,7 @@ export PATH="/usr/local/opt/python@3.12/bin:$PATH"
 source ~/.bashrc  # or source ~/.zshrc
 ```
 
-### Issue: "No module named 'venv'"
+## Issue: "No module named 'venv'"
 
 **Solution:**
 ```bash
@@ -240,7 +240,7 @@ sudo apt install python3.12-venv
 python3.12 -m venv --help
 ```
 
-### Issue: pip install fails with "externally-managed-environment"
+## Issue: pip install fails with "externally-managed-environment"
 
 **Solution:**
 ```bash
@@ -253,7 +253,7 @@ python3.12 -m pip install --user pipx
 python3.12 -m pipx ensurepath
 ```
 
-### Issue: Tests fail after migration
+## Issue: Tests fail after migration
 
 **Solution:**
 ```bash
@@ -270,7 +270,7 @@ pip install --force-reinstall -e ".[dev,test]"
 pytest tests/ -vv --tb=short
 ```
 
-### Issue: Import errors after migration
+## Issue: Import errors after migration
 
 **Solution:**
 ```bash
@@ -331,7 +331,7 @@ pyenv local 3.11.9
 # Each project uses its own Python version
 ```
 
-### Q: Do I need to update my code syntax?
+## Q: Do I need to update my code syntax?
 
 **A:** Not required, but recommended for modern Python:
 

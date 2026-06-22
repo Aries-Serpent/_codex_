@@ -75,7 +75,7 @@ brew install python3.11 git postgresql
 brew services start postgresql
 ```
 
-#### Ubuntu/Debian
+## Ubuntu/Debian
 
 ```bash
 # Update package manager
@@ -91,7 +91,7 @@ sudo systemctl start postgresql
 sudo systemctl enable postgresql
 ```
 
-#### Windows
+## Windows
 
 ```powershell
 # Using Chocolatey (or download from official sites)
@@ -101,7 +101,7 @@ choco install python311 git postgresql
 Start-Service -Name postgresql-x64-15
 ```
 
-### Required Tools
+## Required Tools
 
 - **Git**: Version control
 - **Python 3.11+**: Programming language
@@ -126,7 +126,7 @@ git clone git@github.com:Aries-Serpent/_codex_.git
 cd _codex_
 ```
 
-### Step 2: Create Virtual Environment
+## Step 2: Create Virtual Environment
 
 ```bash
 # Using venv (built-in)
@@ -144,7 +144,7 @@ venv\Scripts\activate  # Windows PowerShell
 .\venv\Scripts\activate.bat  # Windows CMD
 ```
 
-### Step 3: Upgrade pip and Build Tools
+## Step 3: Upgrade pip and Build Tools
 
 ```bash
 # Upgrade pip, setuptools, wheel
@@ -154,7 +154,7 @@ pip install --upgrade pip setuptools wheel
 pip install uv
 ```
 
-### Step 4: Verify Python Installation
+## Step 4: Verify Python Installation
 
 ```bash
 # Check Python version
@@ -183,7 +183,7 @@ pip install -e ".[dev,test,docs]"
 uv pip install -e ".[dev,test,docs]"
 ```
 
-### Install Specific Requirements Files
+## Install Specific Requirements Files
 
 ```bash
 # Core requirements
@@ -201,7 +201,7 @@ pip install -r requirements-ml-cpu.txt  # CPU only
 pip install -r requirements-ml-lite.txt  # Minimal dependencies
 ```
 
-### Verify Installation
+## Verify Installation
 
 ```bash
 # Test core imports
@@ -218,7 +218,7 @@ pip install pipdeptree
 pipdeptree
 ```
 
-### Troubleshooting Installation Issues
+## Troubleshooting Installation Issues
 
 **Issue**: Module not found errors
 
@@ -262,7 +262,7 @@ brew services start postgresql
 pg_ctl -D /usr/local/var/postgres start
 ```
 
-#### Ubuntu
+## Ubuntu
 
 ```bash
 # PostgreSQL is managed by systemd
@@ -273,7 +273,7 @@ sudo systemctl enable postgresql
 sudo systemctl status postgresql
 ```
 
-#### Windows
+## Windows
 
 ```powershell
 # Start service (if not auto-starting)
@@ -283,7 +283,7 @@ Start-Service -Name postgresql-x64-15
 Get-Service postgresql-x64-15
 ```
 
-### Create Development Database
+## Create Development Database
 
 ```bash
 # Connect to PostgreSQL
@@ -298,7 +298,7 @@ GRANT ALL PRIVILEGES ON DATABASE codex_dev TO codex_user;
 \q
 ```
 
-### Configure Database Connection
+## Configure Database Connection
 
 Create `.env.local`:
 
@@ -318,7 +318,7 @@ LOG_LEVEL=DEBUG
 ENABLE_CACHE=false
 ```
 
-### Initialize Database Schema
+## Initialize Database Schema
 
 ```bash
 # Run migrations
@@ -348,7 +348,7 @@ python -m src.codex_ml.cli --mode dev --log-level DEBUG
 python -m src.codex_ml.cli --mode dev --port 9000
 ```
 
-### Using Flask/FastAPI Directly
+## Using Flask/FastAPI Directly
 
 ```bash
 # Flask development server (auto-reload on changes)
@@ -363,7 +363,7 @@ uvicorn src.codex_ml.api.app:app --reload --port 8000
 uvicorn src.codex_ml.api.app:app --reload --port 8000 --log-level debug
 ```
 
-### Using Docker Compose (Optional)
+## Using Docker Compose (Optional)
 
 ```bash
 # Start all services locally
@@ -379,7 +379,7 @@ docker-compose -f docker-compose.dev.yml logs -f codex
 docker-compose -f docker-compose.dev.yml down
 ```
 
-### Verify Server is Running
+## Verify Server is Running
 
 ```bash
 # Health check
@@ -508,7 +508,7 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-### Configuration File
+## Configuration File
 
 **`.pre-commit-config.yaml`** (already in repo):
 ```yaml
@@ -667,7 +667,7 @@ git commit -m "Add my feature"
 git push origin feature/my-feature
 ```
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -689,7 +689,7 @@ pytest -v -s
 ptw  # requires pytest-watch
 ```
 
-### Debugging
+## Debugging
 
 ```bash
 # Start debugger with breakpoint()
@@ -703,7 +703,7 @@ python -m pdb src/codex_ml/cli.py
 python -m pdb --pdbrc=.pdbrc script.py
 ```
 
-### Code Review Preparation
+## Code Review Preparation
 
 ```bash
 # Run full test suite

@@ -37,7 +37,7 @@ sqlite3 /var/data/codex_users.db "PRAGMA integrity_check;"
 sqlite3 .codex/session_logs.db "PRAGMA integrity_check;"
 ```
 
-### Critical Alert Thresholds
+## Critical Alert Thresholds
 | Condition | Action |
 |-----------|--------|
 | Integrity check FAILED | **STOP ALL TRAFFIC** - Escalate immediately |
@@ -108,7 +108,7 @@ systemctl restart codex-api
 - Implement query timeout (30 seconds for non-analytics queries)
 - Use connection pooling to limit concurrent connections
 
-### Scenario 2: "Disk I/O Error" on WAL
+## Scenario 2: "Disk I/O Error" on WAL
 
 **Symptoms**:
 - `sqlite3.OperationalError: disk I/O error`
@@ -140,7 +140,7 @@ sqlite3 /var/data/codex_session_logs.db "PRAGMA wal_checkpoint(TRUNCATE);"
 sqlite3 /var/data/codex_session_logs.db "PRAGMA integrity_check;"
 ```
 
-### Scenario 3: Corrupted Database File
+## Scenario 3: Corrupted Database File
 
 **Symptoms**:
 - `sqlite3.DatabaseError: database disk image is malformed`
@@ -183,7 +183,7 @@ sqlite3 /var/data/codex_users.db "SELECT COUNT(*) FROM users;"
 pytest tests/auth/test_sqlite_user_repository.py -v
 ```
 
-### Scenario 4: Connection Pool Exhaustion
+## Scenario 4: Connection Pool Exhaustion
 
 **Symptoms**:
 - "connection pool exhausted" errors
@@ -261,7 +261,7 @@ echo "✅ Backup completed at $TIMESTAMP"
 0 */6 * * * /usr/local/bin/backup_codex_dbs.sh >> /var/log/codex_backup.log 2>&1
 ```
 
-### Manual Backup
+## Manual Backup
 
 ```bash
 # Quick backup before maintenance
@@ -272,7 +272,7 @@ cp /var/data/codex_users.db /backups/manual_backup_$(date +%s).db
 sqlite3 /backups/manual_backup_*.db "PRAGMA integrity_check;"
 ```
 
-### Restore from Backup
+## Restore from Backup
 
 ```bash
 # Stop application
@@ -380,7 +380,7 @@ sqlite3 /var/data/codex_users.db "PRAGMA optimize;"
 sqlite3 /var/data/codex_users.db "REINDEX;"
 ```
 
-### Scenario: Database Size Growing Too Fast
+## Scenario: Database Size Growing Too Fast
 
 **Detection**:
 ```bash

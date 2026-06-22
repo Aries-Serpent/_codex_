@@ -965,7 +965,7 @@ for batch in dataloader:
     scaler.update()
 ```
 
-### Distributed Training
+## Distributed Training
 
 ```python
 # Multi-GPU training with DistributedDataParallel
@@ -977,7 +977,7 @@ model = model.to(rank)
 model = DistributedDataParallel(model)
 ```
 
-### Batch Size Guidelines
+## Batch Size Guidelines
 
 | GPU Memory | Recommended Batch Size |
 |------------|------------------------|

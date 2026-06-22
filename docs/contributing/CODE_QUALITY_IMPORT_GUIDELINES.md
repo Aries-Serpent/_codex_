@@ -50,7 +50,7 @@ from codex.core import BaseClass
 from codex.utils import helper_function
 ```
 
-### Import Grouping Order
+## Import Grouping Order
 
 1. **Future imports** - `from __future__ import annotations`
 2. **Standard library** - Built-in Python modules
@@ -96,7 +96,7 @@ from codex.core import heavy_initialization
 
 ---
 
-### Pattern 2: sys.path Modification (Local Imports)
+## Pattern 2: sys.path Modification (Local Imports)
 
 **Purpose:** Support local imports in agent tests and scripts.
 
@@ -130,7 +130,7 @@ from utils import helper_function
 
 ---
 
-### Pattern 3: Lazy Loading (Optional Dependencies)
+## Pattern 3: Lazy Loading (Optional Dependencies)
 
 **Purpose:** Defer expensive imports until needed, improve startup time.
 
@@ -316,7 +316,7 @@ ignore = ["E501"]  # Line too long
 "scripts/cognitive/*.py" = ["E402"]  # Complex initialization
 ```
 
-### Pre-commit Hooks
+## Pre-commit Hooks
 
 ```yaml
 # .pre-commit-config.yaml
@@ -354,7 +354,7 @@ logger = logging.getLogger(__name__)
 from codex.core import validate_config
 ```
 
-### Fixing Genuine E402 Issues
+## Fixing Genuine E402 Issues
 
 If import is **not** an acceptable pattern, reorganize:
 

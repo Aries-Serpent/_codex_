@@ -74,7 +74,7 @@ gh run download <run-id>
 
 ---
 
-### Task 4.3: Test Coverage Validation (PENDING)
+## Task 4.3: Test Coverage Validation (PENDING)
 
 **Coverage Targets:**
 - **Minimum:** 70%
@@ -102,7 +102,7 @@ python -m pytest tests/ --cov=src --cov-fail-under=70
 
 ---
 
-### Task 4.4: Security Scan Verification (PENDING)
+## Task 4.4: Security Scan Verification (PENDING)
 
 **Security Tools:**
 - CodeQL (GitHub Actions)

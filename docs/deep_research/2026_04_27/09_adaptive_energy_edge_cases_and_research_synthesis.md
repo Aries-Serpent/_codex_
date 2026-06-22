@@ -185,6 +185,7 @@ Useful adaptive energy is capacity times context-sensitive intensity, corrected 
 | `Blast radius` | risk penalty | $R_d$, $Ξ_b(1 − Γ_r)$ |
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Scenario input, Map observed variables'}}%%
 flowchart TD
     Scenario[Scenario input] --> Variables[Map observed variables]
     Variables --> Supply[P_in / P_incident]

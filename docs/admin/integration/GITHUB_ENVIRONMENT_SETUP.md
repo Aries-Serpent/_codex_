@@ -1,5 +1,52 @@
 # GitHub Environment Setup Guide for MCP Integration
 
+## Table of Contents
+
+- [📋 Table of Contents](#-table-of-contents)
+- [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+- [Required Environment Variables](#required-environment-variables)
+  - [Organization-Level Variables](#organization-level-variables)
+  - [Repository-Level Variables](#repository-level-variables)
+- [Required Secrets](#required-secrets)
+  - [Organization-Level Secrets](#organization-level-secrets)
+  - [Repository-Level Secrets](#repository-level-secrets)
+- [Configuration Instructions](#configuration-instructions)
+  - [Step 1: Generate Secrets Using Python Script](#step-1-generate-secrets-using-python-script)
+  - [Step 2: Configure Organization-Level Variables](#step-2-configure-organization-level-variables)
+  - [Step 3: Configure Organization-Level Secrets](#step-3-configure-organization-level-secrets)
+  - [Step 4: Configure Repository-Level Variables](#step-4-configure-repository-level-variables)
+  - [Step 5: Configure Repository-Level Secrets](#step-5-configure-repository-level-secrets)
+- [Python Helper Script](#python-helper-script)
+  - [Script: `generate_mcp_secrets.py`](#script-generate_mcp_secretspy)
+  - [Installation Instructions](#installation-instructions)
+- [Verification Steps](#verification-steps)
+  - [1. Verify Variables Are Set](#1-verify-variables-are-set)
+- [In a GitHub Actions workflow, add this step:](#in-a-github-actions-workflow-add-this-step)
+- [2. Verify Secrets Are Accessible](#2-verify-secrets-are-accessible)
+- [In a GitHub Actions workflow, add this step:](#in-a-github-actions-workflow-add-this-step)
+- [3. Test Token Decryption](#3-test-token-decryption)
+- [In a GitHub Actions workflow:](#in-a-github-actions-workflow)
+- [4. Test MCP Service Connection](#4-test-mcp-service-connection)
+- [In a workflow with MCP service container:](#in-a-workflow-with-mcp-service-container)
+- [Troubleshooting](#troubleshooting)
+  - [Issue: Secret Not Found in Workflow](#issue-secret-not-found-in-workflow)
+  - [Issue: Token Decryption Fails](#issue-token-decryption-fails)
+  - [Issue: MCP Service Won't Start](#issue-mcp-service-wont-start)
+  - [Issue: Rate Limit Errors](#issue-rate-limit-errors)
+- [Additional Resources](#additional-resources)
+- [🎯 Mission Overview](#-mission-overview)
+- [⚖️ Verification Checklist](#-verification-checklist)
+- [📈 Success Metrics](#-success-metrics)
+- [⚛️ Physics Alignment](#-physics-alignment)
+  - [Path 🛤️ (Shortest Setup Route)](#path--shortest-setup-route)
+  - [Fields 🔄 (Configuration Flow)](#fields--configuration-flow)
+  - [Patterns 👁️ (Configuration Recognition)](#patterns--configuration-recognition)
+  - [Redundancy 🔀 (Backup Mechanisms)](#redundancy--backup-mechanisms)
+  - [Balance ⚖️ (Security vs Usability)](#balance--security-vs-usability)
+- [⚡ Energy Distribution](#-energy-distribution)
+- [🧠 Redundancy Patterns](#-redundancy-patterns)
+
 > **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
 > **Audience**: Human Administrators with org/repo admin permissions
 > **Last Updated**: 2026-06-22
@@ -445,7 +492,7 @@ if __name__ == "__main__":
     echo "MCP_ENDPOINT: ${{ vars.MCP_ENDPOINT }}"
 ```
 
-### 2. Verify Secrets Are Accessible
+## 2. Verify Secrets Are Accessible
 
 ```bash
 # In a GitHub Actions workflow, add this step:
@@ -466,7 +513,7 @@ if __name__ == "__main__":
     fi
 ```
 
-### 3. Test Token Decryption
+## 3. Test Token Decryption
 
 ```bash
 # In a GitHub Actions workflow:
@@ -482,7 +529,7 @@ if __name__ == "__main__":
     "
 ```
 
-### 4. Test MCP Service Connection
+## 4. Test MCP Service Connection
 
 ```bash
 # In a workflow with MCP service container:

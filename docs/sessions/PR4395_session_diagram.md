@@ -3,6 +3,7 @@
 > **Status: MERGED** by @mbaetiong · Continuation work on `copilot/sync-docs-and-confirm-latest-state` (PR #4416)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S944<br/>Fix 10 listed unresolved review comments, S945<br/>Merge origin/main and resolve CODEX_MANIFEST conflict'}}%%
 graph TD
   A[S944<br/>Fix 10 listed unresolved review comments] --> B
   B[S945<br/>Merge origin/main and resolve CODEX_MANIFEST conflict] --> C
@@ -48,6 +49,7 @@ graph TD
 ## Next-Session Decision Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Re-scan latest pushed head, Patch exact remaining files and validate'}}%%
 flowchart TD
     A[Re-scan latest pushed head] --> B{Any unresolved PR comments remain?}
     B -->|Yes| C[Patch exact remaining files and validate]

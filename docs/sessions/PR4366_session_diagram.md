@@ -12,6 +12,7 @@
 ## 🔄 Session Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing S875 Start<br/>2026-05-08T15:38Z, Resume Previous Session'}}%%
 graph TD
     A[S875 Start<br/>2026-05-08T15:38Z] --> B[Resume Previous Session]
     B --> C[Previous Session Error:<br/>Merge Conflict]
@@ -89,6 +90,7 @@ graph TD
 ## 📊 Detailed Session Timeline
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Timeline'}}%%
 gantt
     title S875 Session Timeline
     dateFormat HH:mm
@@ -120,6 +122,7 @@ gantt
 ## 🔄 CI Workflow Status Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Maintainer Approves<br/>All Workflows, ✅ Critical Gates<br/>9+ Passing'}}%%
 graph LR
     A[Maintainer Approves<br/>All Workflows] --> B{Workflow<br/>Execution}
 
@@ -173,6 +176,7 @@ graph LR
 ## 📌 S876 Remediation Graph
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Issue #4365 CI Triage Report, Prioritize active failure patterns'}}%%
 flowchart LR
     A[Issue #4365 CI Triage Report] --> B[Prioritize active failure patterns]
     C[PR Review Thread] --> D[Apply actionable code/docs fixes]
@@ -340,6 +344,7 @@ flowchart LR
 ## 🧠 Cognitive Brain Objective Mapping (Session-State View)
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Objective: Reliability, Pattern 30 local: 100/100'}}%%
 flowchart LR
   O1[Objective: Reliability] --> R1[Pattern 30 local: 100/100]
   O1 --> R2[Official dashboard: 98/100]

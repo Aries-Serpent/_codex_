@@ -44,7 +44,7 @@ for result in results:
 store.save()
 ```text
 
-### Using with Inference Server Embeddings
+## Using with Inference Server Embeddings
 
 ```python
 from src.codex_ml.serving.inference_server import ModelServer, ModelConfig
@@ -128,7 +128,7 @@ ids = store.add(vectors)
 # Returns: ['uuid-1', 'uuid-2', ...]
 ```text
 
-#### Custom IDs
+## Custom IDs
 
 ```python
 vectors = np.random.randn(10, 128).astype(np.float32)
@@ -137,7 +137,7 @@ ids = store.add(vectors, ids=custom_ids)
 # Returns: ['doc-0', 'doc-1', ...]
 ```text
 
-#### With Metadata
+## With Metadata
 
 ```python
 vectors = np.random.randn(10, 128).astype(np.float32)
@@ -164,7 +164,7 @@ for result in results:
     print(result['distance'])     # Raw L2 distance
 ```text
 
-#### Search Parameters
+## Search Parameters
 
 - `query_vector`: Query embedding (1D or 2D numpy array)
 - `k`: Number of results to return (default: 5)
@@ -182,7 +182,7 @@ results = store.get(["doc-0", "doc-5", "doc-9"])
 # Returns list with 3 items
 ```text
 
-### Deleting Vectors
+## Deleting Vectors
 
 ```python
 # Delete single vector
@@ -196,9 +196,9 @@ deleted_count = store.delete(["doc-0", "doc-1", "doc-2"])
 
 **Note:** FAISS doesn't support efficient deletion. The store marks vectors as deleted and rebuilds the index when necessary.
 
-### Persistence
+## Persistence
 
-#### Saving
+### Saving
 
 ```python
 # Save to default location
@@ -213,7 +213,7 @@ Saves three files:
 - `{index_name}.docs.jsonl` - Documents and IDs
 - `{index_name}.meta.json` - Metadata and checksums
 
-#### Loading
+## Loading
 
 ```python
 # Load from default location
@@ -229,9 +229,9 @@ Validates:
 - Document count match
 - Checksums (if enabled)
 
-### Utility Methods
+## Utility Methods
 
-#### Count
+### Count
 
 ```python
 total = store.count()
@@ -250,12 +250,12 @@ store.clear()  # Removes all vectors and resets index
 health = store.health_check()
 print(health)
 # {
-#     "healthy": True,
-#     "index_loaded": True,
-#     "num_vectors": 100,
-#     "dimension": 384,
-#     "backend": "faiss",
-#     ...
+# "healthy": True,
+# "index_loaded": True,
+# "num_vectors": 100,
+# "dimension": 384,
+# "backend": "faiss",
+# ...
 # }
 ```text
 
@@ -279,7 +279,7 @@ embeddings = server.embed(texts)
 # Vectors are L2-normalized
 ```text
 
-### FastAPI /embed Endpoint
+## FastAPI /embed Endpoint
 
 ```bash
 # Start server
@@ -500,7 +500,7 @@ filters = {"category": "tech"}
 filters = {"category": {"$ne": "spam"}}
 ```text
 
-#### Range Operators
+## Range Operators
 ```python
 # Greater than
 filters = {"score": {"$gt": 0.7}}
@@ -518,7 +518,7 @@ filters = {"score": {"$lte": 0.9}}
 filters = {"score": {"$gte": 0.5, "$lte": 1.0}}
 ```text
 
-#### List Operators
+## List Operators
 ```python
 # In list
 filters = {"category": {"$in": ["tech", "news", "sports"]}}
@@ -527,7 +527,7 @@ filters = {"category": {"$in": ["tech", "news", "sports"]}}
 filters = {"category": {"$nin": ["spam", "ads"]}}
 ```text
 
-#### Field Existence
+## Field Existence
 ```python
 # Field exists
 filters = {"author": {"$exists": True}}
@@ -536,7 +536,7 @@ filters = {"author": {"$exists": True}}
 filters = {"optional_field": {"$exists": False}}
 ```text
 
-#### Logical Operators
+## Logical Operators
 ```python
 # AND (all conditions must match)
 filters = {
@@ -569,9 +569,9 @@ filters = {
 }
 ```text
 
-### Usage Examples
+## Usage Examples
 
-#### Basic Filtering
+### Basic Filtering
 ```python
 from src.codex.retrieval.stores.faiss_store import FAISSStore
 import numpy as np
@@ -604,7 +604,7 @@ results = store.search(
 print(f"Found {len(results)} tech articles")
 ```text
 
-#### Range Filtering
+## Range Filtering
 ```python
 # Find high-quality results
 results = store.search(
@@ -626,7 +626,7 @@ results = store.search(
 )
 ```text
 
-#### Multi-Criteria Filtering
+## Multi-Criteria Filtering
 ```python
 # Tech articles with high scores by specific authors
 results = store.search(
@@ -659,7 +659,7 @@ results = store.search(
 )
 ```text
 
-### Performance Considerations
+## Performance Considerations
 
 **Post-Filtering Strategy:**
 The current implementation uses post-filtering, which means:
@@ -691,7 +691,7 @@ results = store.search(
 3. For very selective filters, increase `top_k` to get more results
 4. Monitor the ratio of filtered to total results
 
-### Limitations
+## Limitations
 
 - **No Pre-Filtering**: FAISS doesn't natively support metadata filtering, so all filtering happens after similarity search
 - **Result Count**: may return fewer than `top_k` results if few vectors match the filter

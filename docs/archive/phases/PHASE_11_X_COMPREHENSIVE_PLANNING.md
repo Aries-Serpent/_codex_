@@ -29,6 +29,7 @@ Phase 11.x represents a significant expansion of the _codex_ platform with advan
 ## Architecture Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Advanced Authentication, Workflow Automation'}}%%
 graph TB
     subgraph "Phase 11.x Architecture"
         Auth[Advanced Authentication]
@@ -100,6 +101,7 @@ Implement enterprise-grade authentication with OAuth2, MFA, and HSM support for 
 ### System Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
 sequenceDiagram
     participant User
     participant App
@@ -188,6 +190,7 @@ Automate repository flattening, Google Drive uploads, and NotebookLM synchroniza
 ### System Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Trigger, Cron Schedule'}}%%
 flowchart TD
     Start[Workflow Trigger] --> Check{Trigger Type?}
     Check -->|Schedule| Schedule[Cron Schedule]
@@ -279,6 +282,7 @@ Comprehensive testing framework with E2E, performance, load, and chaos engineeri
 ### System Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Unit Tests<br/>Fast, Isolated, Integration Tests<br/>Component Interaction'}}%%
 graph LR
     subgraph "Testing Pyramid"
         Unit[Unit Tests<br/>Fast, Isolated]
@@ -370,6 +374,7 @@ Enterprise integrations for observability, alerting, and experiment tracking.
 ### System Design
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Codex Application, Event Bus'}}%%
 graph TB
     subgraph "Application Layer"
         App[Codex Application]

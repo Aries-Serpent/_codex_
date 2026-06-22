@@ -42,6 +42,7 @@ export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
 ## Flow at a glance
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing CLI, Trainer / Bench'}}%%
 flowchart LR
   subgraph Local
     U[CLI] --> T[Trainer / Bench]

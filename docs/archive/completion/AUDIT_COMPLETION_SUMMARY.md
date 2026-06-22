@@ -237,7 +237,7 @@ jobs:
         run: sphinx-apidoc -o docs/api src/
 ```
 
-### Pre-commit Hooks
+## Pre-commit Hooks
 
 ```yaml
 # .pre-commit-config.yaml additions

@@ -126,7 +126,7 @@ scoring:
     augment_tests_score: true
 ```
 
-### How It Works
+## How It Works
 1. Discover coverage XML files (Cobertura/coverage.py format)
 2. Parse to generate `coverage_map.json`
 3. Scoring: `test_score = max(baseline_heuristic, coverage_percent)`
@@ -346,26 +346,26 @@ pytest --cov=src --cov-report=xml
 
 # 2. Enable in workflow.yaml
 # scoring:
-#   coverage:
-#     enabled: true
+# coverage:
+# enabled: true
 
 # 3. Run audit
 make space-audit
 ```
 
-### With Token-Similarity
+## With Token-Similarity
 ```bash
 # 1. Enable in workflow.yaml
 # scoring:
-#   dup:
-#     heuristic: "token_similarity"
-#     threshold: 0.7
+# dup:
+# heuristic: "token_similarity"
+# threshold: 0.7
 
 # 2. Run audit
 make space-audit
 ```
 
-### Full v1.4.0 Experience
+## Full v1.4.0 Experience
 ```bash
 # Enable both features in workflow.yaml, then:
 pytest --cov=src --cov-report=xml

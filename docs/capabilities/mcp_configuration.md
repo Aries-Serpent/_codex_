@@ -164,7 +164,7 @@ MCP_ENABLE_CACHING=true
 MCP_ENABLE_METRICS=true
 ```
 
-### Python Settings Module
+## Python Settings Module
 
 ```python
 # settings.py
@@ -224,7 +224,7 @@ config = load_mcp_config()
 print(f"Server port: {config['server']['port']}")
 ```
 
-### Example 2: Environment Override
+## Example 2: Environment Override
 
 ```python
 import os
@@ -251,7 +251,7 @@ config = load_mcp_config()
 config = apply_env_overrides(config)
 ```
 
-### Example 3: Dynamic Configuration Reload
+## Example 3: Dynamic Configuration Reload
 
 ```python
 import time
@@ -284,7 +284,7 @@ def on_config_reload(new_config):
 observer = setup_config_watch("mcp.json", on_config_reload)
 ```
 
-### Example 4: Multi-Environment Configuration
+## Example 4: Multi-Environment Configuration
 
 ```python
 import os
@@ -333,7 +333,7 @@ python scripts/space_traversal/audit_runner.py explain mcp-configuration
 python scripts/space_traversal/audit_runner.py run
 ```
 
-### Programmatic Detection
+## Programmatic Detection
 
 ```python
 from scripts.space_traversal.detectors import mcp_configuration

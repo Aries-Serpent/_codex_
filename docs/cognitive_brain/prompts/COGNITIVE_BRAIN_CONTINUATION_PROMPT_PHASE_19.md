@@ -89,6 +89,7 @@ Copy and paste this prompt to begin Phase 20.0:
 ## Agent Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Orchestrator, Test Coverage Agent'}}%%
 graph TD
     subgraph "Cognitive Brain V18.4 - Production"
         CB[Orchestrator]

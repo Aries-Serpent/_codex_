@@ -64,7 +64,7 @@ count = memory.invalidate_stale_contexts(age_days=30)
 memory.complete_task(success=True, summary="Fixed vulnerability")
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -106,7 +106,7 @@ for issue in report.issues:
 results = engine.apply_fixes(dry_run=True)
 ```
 
-#### Methods
+## Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
@@ -193,7 +193,7 @@ if metadata.is_quarantine_expired(quarantine_duration=3600):
 
 ---
 
-### HARIntegration
+## HARIntegration
 
 **Module**: `src.codex_ml.integrations.har_integration`
 
@@ -226,7 +226,7 @@ for entry in replayer.entries:
 
 ---
 
-### Scalability Utilities
+## Scalability Utilities
 
 **Module**: `src.codex_ml.utils.scalability`
 

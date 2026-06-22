@@ -219,7 +219,7 @@ from codex.utils.config_loader import load_config
 config = load_config("base", config_dir="conf/model")
 ```
 
-### CLI Updates
+## CLI Updates
 
 ```python
 # OLD (hardcoded paths)

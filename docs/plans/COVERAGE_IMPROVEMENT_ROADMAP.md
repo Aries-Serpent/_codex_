@@ -220,7 +220,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
     fi
 ```
 
-### Coverage Tracking Dashboard
+## Coverage Tracking Dashboard
 - Real-time coverage metrics
 - Module-by-module breakdown
 - Trend analysis (per commit cycle)

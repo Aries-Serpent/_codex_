@@ -104,7 +104,7 @@ markdown_extensions:
   - pymdownx.tabbed
 ```
 
-### Sphinx Configuration
+## Sphinx Configuration
 
 ```python
 # conf.py
@@ -167,7 +167,7 @@ Code examples for configuration.
 # Code example
 ```
 
-### Example 2: Advanced Usage
+## Example 2: Advanced Usage
 ```python
 # Code example
 ```
@@ -242,7 +242,7 @@ mkdocs build
 ls -la site/
 ```
 
-### Example 2: Generate API Documentation
+## Example 2: Generate API Documentation
 
 ```bash
 # Generate API docs with pdoc
@@ -254,7 +254,7 @@ make html
 open _build/html/index.html
 ```
 
-### Example 3: Validate Documentation
+## Example 3: Validate Documentation
 
 ```python
 # scripts/validate_docs.py
@@ -306,7 +306,7 @@ if __name__ == "__main__":
     print("All links valid!")
 ```
 
-### Example 4: CI Documentation Check
+## Example 4: CI Documentation Check
 
 ```yaml
 # .github/workflows/docs.yml
@@ -343,7 +343,7 @@ jobs:
         run: mkdocs gh-deploy --force
 ```
 
-### Example 5: Auto-generate README Sections
+## Example 5: Auto-generate README Sections
 
 ```python
 # scripts/generate_readme.py
@@ -437,7 +437,7 @@ python -c "import yaml; yaml.safe_load(open('mkdocs.yml'))"
 mkdocs build --strict 2>&1 | grep "not found"
 ```
 
-### Missing API Documentation
+## Missing API Documentation
 
 ```bash
 # Verify docstrings exist
@@ -447,7 +447,7 @@ python -c "from codex import module; print(module.__doc__)"
 grep -A10 "mkdocstrings" mkdocs.yml
 ```
 
-### Search Not Working
+## Search Not Working
 
 ```bash
 # Rebuild search index

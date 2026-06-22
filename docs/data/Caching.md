@@ -26,7 +26,7 @@ key = derive_key("imdb", "train", "42")  # dataset, split, seed
 # Returns: '4f3d2e1a0b9c8d7e'  (16-char hex) <!-- pragma: allowlist secret -->
 ```text
 
-### cache_records
+## cache_records
 
 Cache preprocessed records to disk:
 
@@ -46,7 +46,7 @@ path = cache_records(
 # Returns: Path('artifacts/cache/4f3d2e1a0b9c8d7e.jsonl')
 ```text
 
-### load_cached_records
+## load_cached_records
 
 Load cached records if available:
 
@@ -157,7 +157,7 @@ key = derive_key(dataset, split, seed, tokenizer, max_length)
 key = derive_key(dataset, split)
 ```text
 
-### 2. Organize Cache by Purpose
+## 2. Organize Cache by Purpose
 
 ```python
 # Separate caches for different stages
@@ -168,7 +168,7 @@ eval_key = derive_key("eval", dataset, split, seed)
 cache_records(records, cache_dir="artifacts/cache/eval", key=eval_key)
 ```text
 
-### 3. Document Cache Keys
+## 3. Document Cache Keys
 
 ```python
 def derive_dataset_key(config):

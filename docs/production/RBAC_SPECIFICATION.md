@@ -187,7 +187,7 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
   run: ./scripts/deploy.sh
 ```
 
-#### 2. `codex-security-scan`
+## 2. `codex-security-scan`
 
 **Purpose**: Security scanning and compliance  
 **Permissions**:
@@ -199,7 +199,7 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 **Rotation**: Quarterly  
 **Scope**: Security scanning workflows only
 
-#### 3. `codex-monitoring`
+### 3. `codex-monitoring`
 
 **Purpose**: Observability and alerting  
 **Permissions**:

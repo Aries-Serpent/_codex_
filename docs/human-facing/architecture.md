@@ -7,6 +7,7 @@ This document describes the high-level architecture of the _codex_ system.
 ## System Components
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Agent Core, Tool Orchestrator'}}%%
 graph TB
     subgraph "Agent Layer"
         AC[Agent Core]

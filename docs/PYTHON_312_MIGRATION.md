@@ -68,7 +68,7 @@ python scripts/check_py312_deps.py
 # Report saved to: .codex/py312_deps_report.json
 ```
 
-### Current Environment Backup
+## Current Environment Backup
 
 ```bash
 # Backup current environment
@@ -98,7 +98,7 @@ python --version
 # Expected: Python 3.12.x
 ```
 
-### Step 2: Install Dependencies
+## Step 2: Install Dependencies
 
 ```bash
 # Install codex-ml with all dependencies
@@ -113,7 +113,7 @@ pip list | grep -E "(torch|transformers|pytest)"
 # pytest        >=7.4
 ```
 
-### Step 3: Run Compatibility Tests
+## Step 3: Run Compatibility Tests
 
 ```bash
 # Run Python 3.12-specific tests
@@ -123,7 +123,7 @@ pytest tests/ -v -m py312 --cov=src --cov-report=html
 # Coverage report: htmlcov/index.html
 ```
 
-### Step 4: Run Full Test Suite
+## Step 4: Run Full Test Suite
 
 ```bash
 # Run complete test suite
@@ -135,7 +135,7 @@ coverage report --fail-under=70
 # Expected: Coverage ≥70%
 ```
 
-### Step 5: Check for Deprecation Warnings
+## Step 5: Check for Deprecation Warnings
 
 ```bash
 # Run tests with deprecation warnings as errors
@@ -145,7 +145,7 @@ python3.12 -W error::DeprecationWarning -m pytest tests/
 # If warnings occur, address them before proceeding
 ```
 
-### Step 6: Verify CI Pipeline
+## Step 6: Verify CI Pipeline
 
 ```bash
 # Check GitHub Actions workflow
@@ -153,7 +153,7 @@ cat .github/workflows/test-comprehensive.yml | grep -A 2 "python-version"
 
 # Should include:
 # matrix:
-#   python-version: ['3.11', '3.12']
+# python-version: ['3.11', '3.12']
 ```
 
 The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
@@ -249,7 +249,7 @@ pytest tests/ -v --cov=src --cov-report=html
 pytest tests/integration/test_py312_e2e.py -v --slow
 ```
 
-### Coverage Measurement
+## Coverage Measurement
 
 ```bash
 # Generate coverage report
@@ -264,7 +264,7 @@ start htmlcov/index.html  # Windows
 coverage report --fail-under=70
 ```
 
-### CI Integration
+## CI Integration
 
 The GitHub Actions workflow already tests Python 3.12:
 
@@ -304,7 +304,7 @@ pip install -e ".[dev,test]"
 pytest tests/ -v
 ```
 
-### Planned Rollback (Controlled)
+## Planned Rollback (Controlled)
 
 If you need to roll back after updating `pyproject.toml`:
 
@@ -324,7 +324,7 @@ pip install -e ".[dev,test]"
 pytest tests/ -v
 ```
 
-### Report Issues
+## Report Issues
 
 If rollback is needed, please report the issue:
 
@@ -334,7 +334,7 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
   --body "### Issue Description
 [Describe the problem]
 
-### Steps to Reproduce
+## Steps to Reproduce
 [Steps that caused the issue]
 
 ### Environment
@@ -406,7 +406,7 @@ python --version
 pip install tomli  # Fallback for Python < 3.11
 ```
 
-#### Issue 2: Deprecation Warnings
+## Issue 2: Deprecation Warnings
 
 **Symptom:**
 ```
@@ -425,7 +425,7 @@ loop = asyncio.get_running_loop()  # Inside async context
 asyncio.run(async_function())  # From sync context
 ```
 
-#### Issue 3: Type Hint Errors
+## Issue 3: Type Hint Errors
 
 **Symptom:**
 ```
@@ -442,7 +442,7 @@ def func(data: dict[str, Any]) -> list[str]:
     pass
 ```
 
-#### Issue 4: Test Failures
+## Issue 4: Test Failures
 
 **Symptom:**
 ```
@@ -460,7 +460,7 @@ pytest tests/some_test.py -m "not py312" -v
 # If passes without py312 marker, review test for compatibility issues
 ```
 
-### Getting Help
+## Getting Help
 
 1. **Check documentation:**
    - Migration audit: `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`
@@ -503,7 +503,7 @@ def test_sort_property(lst):
     assert all(sorted_lst[i] <= sorted_lst[i+1] for i in range(len(sorted_lst)-1))
 ```
 
-#### Phase 7: Mutation Testing (Future)
+## Phase 7: Mutation Testing (Future)
 
 ```bash
 # Install mutmut for mutation testing
@@ -516,7 +516,7 @@ mutmut run --paths-to-mutate=src/codex_ml
 mutmut results
 ```
 
-#### Phase 8: Fuzz Testing (Future)
+## Phase 8: Fuzz Testing (Future)
 
 ```bash
 # Add fuzzing for parser/config code
@@ -525,14 +525,14 @@ pip install atheris  # For Python fuzzing
 # Example fuzz test for TOML parsing
 ```
 
-#### Phase 9: Error Path Coverage (Future)
+## Phase 9: Error Path Coverage (Future)
 
 Focus on testing all error handling branches:
 - Exception handling paths
 - Validation error cases
 - Edge cases and boundary conditions
 
-#### Phase 10: Edge Case Exhaustive Testing (Future)
+### Phase 10: Edge Case Exhaustive Testing (Future)
 
 Comprehensive testing of:
 - Null/None handling

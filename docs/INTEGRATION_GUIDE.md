@@ -26,7 +26,7 @@ codex_model = CodexMLModel(
 )
 ```
 
-### Pushing Models to Hub
+## Pushing Models to Hub
 
 ```python
 from transformers import AutoModel
@@ -46,7 +46,7 @@ model.push_to_hub(
 model = AutoModel.from_pretrained("my-org/my-model-name")
 ```
 
-### Loading Datasets from Hub
+## Loading Datasets from Hub
 
 ```python
 from datasets import load_dataset
@@ -109,7 +109,7 @@ with mlflow.start_run(run_name="bert-fine-tuning"):
 # Open MLflow UI: mlflow ui
 ```
 
-### Model Registry
+## Model Registry
 
 ```python
 import mlflow
@@ -171,7 +171,7 @@ ray_trainer = TorchTrainer(
 result = ray_trainer.fit()
 ```
 
-### Ray Serve (Model Serving)
+## Ray Serve (Model Serving)
 
 ```python
 from ray import serve
@@ -393,7 +393,7 @@ docker build -t codex-ml:latest .
 docker run --gpus all -v $(pwd)/data:/data codex-ml:latest
 ```
 
-### Docker Compose for Multi-Service Setup
+## Docker Compose for Multi-Service Setup
 
 ```yaml
 version: '3.8'

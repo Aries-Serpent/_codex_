@@ -213,7 +213,7 @@ pytest tests/rag/ --cov=src/codex/rag --cov-report=term-missing
 pytest tests/rag/test_*_comprehensive.py tests/rag/test_rag_integration.py --collect-only
 ```
 
-### Results
+## Results
 
 - ✅ 154 tests collected
 - ✅ 78+ tests passing (50%+)

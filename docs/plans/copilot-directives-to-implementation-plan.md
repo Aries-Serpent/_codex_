@@ -190,7 +190,7 @@ omegaconf>=2.3
 jsonschema>=4.23
 ```
 
-### Task A.1.2: Create Test Requirements
+## Task A.1.2: Create Test Requirements
 
 **File**: `requirements-test.txt`
 
@@ -207,7 +207,7 @@ ruff>=0.4
 mypy>=1.10
 ```
 
-### Task A. 1.3: Create Dev Requirements
+## Task A. 1.3: Create Dev Requirements
 
 **File**:  `requirements-dev.txt`
 
@@ -448,7 +448,7 @@ COPY .  .
 CMD ["python", "-m", "pytest", "tests/"]
 ```
 
-### Task A.4.2: Create Container Build Workflow
+## Task A.4.2: Create Container Build Workflow
 
 **File**:  `.github/workflows/build-container-cache.yml`
 
@@ -1913,7 +1913,7 @@ rule_categories:
     - performance
 ```
 
-### Task C.2.2: Create Risk Scoring Script
+## Task C.2.2: Create Risk Scoring Script
 
 **File**: `scripts/security/score_alerts.py`
 
@@ -2787,7 +2787,7 @@ def create_pull_request(fix_group: FixGroup, results: dict, branch_name: str, dr
 **Files Modified**: {results['files_processed']}
 **Total Changes**:  {results['changes_made']}
 
-### Changes Made
+## Changes Made
 
 | File | Changes |
 |------|---------|
@@ -2932,7 +2932,7 @@ paths:
     - "*. egg-info/**"
 ```
 
-### Task C. 5.2: Create Suppression Register
+## Task C. 5.2: Create Suppression Register
 
 **File**: `docs/security/suppressions-register.md`
 

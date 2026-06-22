@@ -140,7 +140,7 @@ pytest --cov=src --cov-report=xml
 pytest --cov=src --cov-report=json
 ```
 
-### CI Coverage Artifacts
+## CI Coverage Artifacts
 
 Coverage reports are automatically generated and uploaded in CI:
 

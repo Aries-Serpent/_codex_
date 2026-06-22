@@ -127,6 +127,7 @@ assumption.
 > [`docs/diagrams/runtime_logic_map.mmd`](../diagrams/runtime_logic_map.mmd).
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing "Entry Points", "codex_ml/__main__.py\n(repo-root shim)\nprepends src/ to sys.path"'}}%%
 flowchart TD
 
     %% ── Entry Points ──────────────────────────────────────────────────────────

@@ -95,7 +95,7 @@ kubectl get nodes
 kubectl api-versions | grep rbac
 ```
 
-### Required Tools
+## Required Tools
 
 ```bash
 # kubectl: Kubernetes CLI
@@ -111,7 +111,7 @@ docker version
 kustomize version
 ```
 
-### Cluster Resources
+## Cluster Resources
 
 ```bash
 # Check available resources
@@ -147,7 +147,7 @@ metadata:
 kubectl apply -f codex-namespace.yaml
 ```
 
-### ConfigMap: Application Configuration
+## ConfigMap: Application Configuration
 
 ```yaml
 # codex-configmap.yaml
@@ -186,7 +186,7 @@ data:
         max_length: 512
 ```
 
-### Secret: Sensitive Data
+## Secret: Sensitive Data
 
 ```yaml
 # codex-secret.yaml (encrypted in production)
@@ -217,7 +217,7 @@ kubectl create secret generic codex-secrets \
   -n codex-ml
 ```
 
-### Deployment: API Service
+## Deployment: API Service
 
 ```yaml
 # codex-deployment.yaml
@@ -380,7 +380,7 @@ spec:
         effect: "NoSchedule"
 ```
 
-### Service: Internal Networking
+## Service: Internal Networking
 
 ```yaml
 # codex-service.yaml
@@ -841,7 +841,7 @@ spec:
     path: /metrics
 ```
 
-### PrometheusRule for Alerts
+## PrometheusRule for Alerts
 
 ```yaml
 # codex-prometheusrule.yaml
@@ -918,7 +918,7 @@ spec:
       port: 5432
 ```
 
-### PodSecurityPolicy
+## PodSecurityPolicy
 
 ```yaml
 # codex-podsecpolicy.yaml
@@ -970,7 +970,7 @@ kubectl logs <pod-name> --previous -n codex-ml
 kubectl exec -it <pod-name> -- /bin/bash -n codex-ml
 ```
 
-### Service Unreachable
+## Service Unreachable
 
 ```bash
 # Check service endpoints
@@ -985,7 +985,7 @@ kubectl run -it --rm debug --image=nicolaka/netshoot -- bash
 curl codex-api:8000/health
 ```
 
-### Resource Constraints
+## Resource Constraints
 
 ```bash
 # Check node resources

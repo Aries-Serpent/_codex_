@@ -32,7 +32,7 @@ timestamp = windows_safe_timestamp(fmt="compact")
 filepath = Path(f"reports/status_{timestamp}.json")
 ```
 
-### For Existing Files
+## For Existing Files
 
 ```bash
 # Find problematic files
@@ -93,7 +93,7 @@ filepath = Path(f"reports/status_{timestamp}.json")
 # Result: reports/status_2026-01-21T14:30:45Z.json ⚠️ INVALID ON WINDOWS
 ```
 
-#### After (✅ Safe)
+## After (✅ Safe)
 ```python
 from codex.utils.path_utils import windows_safe_timestamp
 

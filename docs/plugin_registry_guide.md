@@ -32,7 +32,7 @@ discovered = discover_plugins(groups=["codex_ml.tokenizers", "codex_ml.models"])
 discovered = discover_plugins(auto_load=True)
 ```
 
-### Using the Registry
+## Using the Registry
 
 ```python
 from codex_ml.plugins.entry_points import EntryPointPluginRegistry
@@ -160,7 +160,7 @@ python scripts/manage_plugins.py list
 python scripts/manage_plugins.py list --group codex_ml.tokenizers
 ```
 
-### Discover Plugins
+## Discover Plugins
 
 ```bash
 # Discover all plugins
@@ -170,14 +170,14 @@ python scripts/manage_plugins.py discover
 python scripts/manage_plugins.py discover --auto-load
 ```
 
-### Validate Plugin
+## Validate Plugin
 
 ```bash
 # Validate a plugin
 python scripts/manage_plugins.py validate my_tokenizer --group codex_ml.tokenizers
 ```
 
-### Get Plugin Info
+## Get Plugin Info
 
 ```bash
 # Show plugin information
@@ -210,7 +210,7 @@ is_valid, error = validator.validate_plugin(plugin_info)
 # is_valid=True, error=None
 ```
 
-### Dependency Checking
+## Dependency Checking
 
 ```python
 plugin_info = PluginInfo(
@@ -408,7 +408,7 @@ pip uninstall my-codex-plugin
 pip install -e .
 ```
 
-### Issue: Plugin validation fails
+## Issue: Plugin validation fails
 
 **Solution**: Check version requirements:
 
@@ -420,7 +420,7 @@ python scripts/manage_plugins.py info my_plugin --group codex_ml.plugins
 python -c "import importlib.metadata; print(importlib.metadata.version('codex_ml'))"
 ```
 
-### Issue: Dependency errors
+## Issue: Dependency errors
 
 **Solution**: Install missing dependencies:
 
@@ -432,7 +432,7 @@ python scripts/manage_plugins.py info my_plugin --group codex_ml.plugins
 pip install numpy torch
 ```
 
-### Issue: Plugin loading fails
+## Issue: Plugin loading fails
 
 **Solution**: Check plugin class implementation:
 

@@ -54,7 +54,7 @@ pip install wandb tensorboard  # Install specific ones
 
 ---
 
-### 2. pdoc unavailable offline
+## 2. pdoc unavailable offline
 
 **Symptom**:
 ```json
@@ -80,7 +80,7 @@ python tools/build_api_docs.py
 
 ---
 
-### 3. Missing package on PYTHONPATH
+## 3. Missing package on PYTHONPATH
 
 **Symptom**:
 ```text
@@ -176,7 +176,7 @@ mv torch torch_local
 
 ---
 
-### 7. Deprecation warnings in docs
+## 7. Deprecation warnings in docs
 
 **Symptom**:
 ```text
@@ -207,7 +207,7 @@ python tools/build_api_docs.py --output-dir /tmp/api_docs
 
 ---
 
-### 9. Build succeeds but pages are blank
+## 9. Build succeeds but pages are blank
 
 **Symptom**: HTML files generated but have no content
 
@@ -261,7 +261,7 @@ PYTHONPATH=src python -c "import codex.cli; print('✓ codex.cli importable')"
 PYTHONPATH=src python -c "import codex_ml; print('✓ codex_ml importable')"
 ```text
 
-### List package modules
+## List package modules
 ```bash
 # See what modules are discovered
 python -c "
@@ -272,7 +272,7 @@ for mod in pkgutil.walk_packages(codex.cli.__path__, prefix='codex.cli.'):
 "
 ```text
 
-### Check pdoc installation
+## Check pdoc installation
 ```bash
 pdoc --version
 python -c "import pdoc; print(pdoc.__version__)"

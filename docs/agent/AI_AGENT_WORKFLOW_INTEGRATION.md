@@ -29,7 +29,7 @@ jobs:
       python-version: '3.12'
 ```
 
-### With Permissions
+## With Permissions
 
 ```yaml
 jobs:
@@ -428,7 +428,7 @@ jobs:
       test-scope: ${{ contains(github.event.pull_request.labels.*.name, 'rag') && 'rag' || 'core' }}
 ```
 
-### 3. Parallel When Possible
+## 3. Parallel When Possible
 
 Run independent operations in parallel:
 
@@ -446,7 +446,7 @@ jobs:
       scan-type: 'codeql'
 ```
 
-### 4. Handle Failures Gracefully
+## 4. Handle Failures Gracefully
 
 Always plan for failure scenarios:
 
@@ -508,7 +508,7 @@ uses: ./.github/workflows/test-suite.yml
 uses: test-suite.yml
 ```
 
-### Issue: Permission denied
+## Issue: Permission denied
 
 **Error:** `Resource not accessible by integration`
 

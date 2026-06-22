@@ -45,7 +45,7 @@ codex evaluate --model model.pth
 codex deploy --model model.pth
 ```
 
-### Command Structure
+## Command Structure
 
 All CLI commands follow the pattern:
 ```

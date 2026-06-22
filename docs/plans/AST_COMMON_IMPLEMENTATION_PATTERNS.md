@@ -64,7 +64,7 @@ class StandardizedASTNode:
 
 **Reuse From:** `AgentTask` in orchestrator.py (lines 23-35)
 
-### 1.2 Source Location Pattern
+## 1.2 Source Location Pattern
 
 **Existing Implementation:** `pattern_recognizer.py`
 

@@ -115,9 +115,9 @@ print(f"Duplicate groups: {result['duplicate_groups']}")
 print(f"Metrics: {result['metrics']}")
 ```
 
-### Configuration
+## Configuration
 
-#### Stem-Based (Default)
+### Stem-Based (Default)
 
 ```yaml
 # .copilot-space/workflow.yaml
@@ -126,7 +126,7 @@ scoring:
     heuristic: simple  # Default
 ```
 
-#### Token-Similarity
+## Token-Similarity
 
 ```yaml
 scoring:
@@ -265,7 +265,7 @@ The detector integrates with the audit pipeline through:
 consistency = 1.0 - duplication_ratio(evidence_files, file_cache, cfg)
 ```
 
-### Evidence Files
+## Evidence Files
 
 The detector uses all repository files as evidence:
 - Python files (`.py`)

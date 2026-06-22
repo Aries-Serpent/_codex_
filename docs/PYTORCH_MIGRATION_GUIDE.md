@@ -33,7 +33,7 @@ from utils.safe_torch_loader import safe_load
 model_dict = safe_load('model.pth')
 ```
 
-### Step 2: Handle map_location
+## Step 2: Handle map_location
 
 **Before:**
 ```python
@@ -109,7 +109,7 @@ with torch_resource_guard():
     model.load_state_dict(state)
 ```
 
-### DON'T ❌
+## DON'T ❌
 ```python
 # NEVER do this - RCE vulnerability!
 state = torch.load('model.pth')

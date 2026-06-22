@@ -340,7 +340,7 @@ pytest --cov=src --cov-report=json
 python -m json.tool coverage.json | jq '.files'
 ```
 
-### Test Execution
+## Test Execution
 ```bash
 # Run specific test file
 pytest tests/agents/test_coverage_boost.py -v
@@ -355,7 +355,7 @@ pytest -n auto --cov=src
 pytest tests/ --tb=short
 ```
 
-### Quality Checks
+## Quality Checks
 ```bash
 # Check for flaky tests
 pytest --flake-finder --flake-runs=10

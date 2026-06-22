@@ -81,7 +81,7 @@ tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
 pytest tests/data/test_cache_roundtrip.py::test_cache_roundtrip -v
 ```
 
-### 4. ✅ Plugin Registry - Add deduplication
+## 4. ✅ Plugin Registry - Add deduplication
 **File**: `src/codex_ml/plugins/programmatic.py`
 
 **Change**: Modified `PluginRegistry.register()` to log duplicates instead of raising
@@ -160,7 +160,7 @@ pytest \
   -v
 ```
 
-### Module-Level Validation
+## Module-Level Validation
 ```bash
 # Test entire modules to ensure no regressions
 pytest tests/tokenization/ -v
@@ -169,7 +169,7 @@ pytest tests/data/ -v
 pytest tests/status/ -v
 ```
 
-### Full Test Suite
+## Full Test Suite
 ```bash
 # Run complete test suite
 pytest tests/ --maxfail=5

@@ -139,7 +139,7 @@ pytest tests/training/test_training_config_coverage.py -v
 pytest tests/training/ --cov=src/codex_ml/train_loop --cov=src/codex_ml/training
 ```
 
-### Coverage Reporting
+## Coverage Reporting
 Will be automatically included in test-suite.yml workflow once merged.
 
 ## Next Steps

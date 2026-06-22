@@ -101,7 +101,7 @@ make space-validate
 # Run validation scripts from docs/validation/Gaps_Coverage_Checklist_And_Scripts.md
 ```text
 
-### CI Testing
+## CI Testing
 **First run:**
 - Diff step logs "No baseline found" (expected)
 - Validate passes unless current repo has low maturity or missing detectors

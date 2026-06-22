@@ -1,5 +1,23 @@
 # *codex*: Status Update (2025-09-17)
 
+## Table of Contents
+
+- [1. Repo Map](#1-repo-map)
+- [2. Capability Audit Table](#2-capability-audit-table)
+- [3. High‑Signal Findings](#3-highsignal-findings)
+- [4. Atomic Diffs](#4-atomic-diffs)
+  - [Diff 1 – Add `load_checkpoint` to `checkpointing.py`](#diff1--add-load_checkpoint-to-checkpointingpy)
+  - [Diff 2 – Remove duplicate `training.py01`](#diff2--remove-duplicate-trainingpy01)
+  - [Diff 3 – Harden optional dependency fallbacks](#diff3--harden-optional-dependency-fallbacks)
+  - [Diff 4 – Introduce `monitoring` with psutil](#diff4--introduce-monitoring-with-psutil)
+  - [Diff 5 – Add simple dataset manifest and deterministic shuffle](#diff5--add-simple-dataset-manifest-and-deterministic-shuffle)
+- [5. Local Tests & Gates](#5-local-tests--gates)
+- [file: configs/development/noxfile.py](#file-configsdevelopmentnoxfilepy)
+- [6. Reproducibility Checklist](#6-reproducibility-checklist)
+- [7. Deferred Items](#7-deferred-items)
+- [8. Error Capture Blocks](#8-error-capture-blocks)
+- [Attempt to import yaml; fallback to JSON if unavailable](#attempt-to-import-yaml-fallback-to-json-if-unavailable)
+
 **Last Updated:** 2026-06-22
 
 ## 1. Repo Map

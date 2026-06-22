@@ -73,7 +73,7 @@ kdf = PBKDF2(  # NameError when executed
 
 **Impact**: Script completely non-functional. Cannot be imported or executed. This is a **blocking bug** for all JWT rotation operations.
 
-#### 2. GitHub Secrets Sync (`scripts/github_secrets_sync.py` - 7.5 KB)
+## 2. GitHub Secrets Sync (`scripts/github_secrets_sync.py` - 7.5 KB)
 
 **Purpose**: Synchronize authentication tokens to GitHub Secrets
 
@@ -100,7 +100,7 @@ python scripts/github_secrets_sync.py --sync-downstream # Sync to dependent syst
 
 **Status**: ✅ No import issues found, imports successfully
 
-#### 3. Automated Secrets Manager (`scripts/phase10/automated_secrets_manager.py` - 20.6 KB)
+### 3. Automated Secrets Manager (`scripts/phase10/automated_secrets_manager.py` - 20.6 KB)
 
 **Purpose**: Programmatic secret injection for Copilot Agents
 
@@ -176,7 +176,7 @@ kdf = PBKDF2(
     ...
 )
 
-# ✅ AFTER  
+# ✅ AFTER
 kdf = PBKDF2HMAC(
     algorithm=hashes.SHA256(),
     ...
@@ -213,7 +213,7 @@ from nacl import encoding, public               ✅ OK
 import requests                                  ✅ OK
 ```
 
-### Dependency Verification ✅
+## Dependency Verification ✅
 
 | Dependency | Version | Status | Purpose |
 |------------|---------|--------|---------|
@@ -280,7 +280,7 @@ export CODEX_MASTER_KEY="test-master-key-do-not-use-in-production"
 export GITHUB_TOKEN="test-token-readonly"
 ```
 
-#### Test 1: JWT Secret Verification
+## Test 1: JWT Secret Verification
 ```bash
 # Verify script loads and shows help
 python3 scripts/rotate_jwt_secret.py --help
@@ -289,7 +289,7 @@ python3 scripts/rotate_jwt_secret.py --help
 # Status: ✅ PASS (after bug fix)
 ```
 
-#### Test 2: Secrets Sync Validation  
+## Test 2: Secrets Sync Validation
 ```bash
 # Validate secrets configuration
 python3 scripts/github_secrets_sync.py --validate
@@ -298,7 +298,7 @@ python3 scripts/github_secrets_sync.py --validate
 # Status: ⏸️ REQUIRES GITHUB_TOKEN with repo scope (deferred to production)
 ```
 
-#### Test 3: Automated Secrets Manager Verification
+## Test 3: Automated Secrets Manager Verification
 ```bash
 # Verify a secret exists (read-only test)
 python3 scripts/phase10/automated_secrets_manager.py \
@@ -309,11 +309,11 @@ python3 scripts/phase10/automated_secrets_manager.py \
 # Status: ⏸️ REQUIRES valid GITHUB_TOKEN (deferred to production)
 ```
 
-### Production Testing Workflow (WITH AUTHORIZATION)
+## Production Testing Workflow (WITH AUTHORIZATION)
 
 **⚠️ IMPORTANT**: Only execute with explicit human approval from mbaetiong
 
-#### Pre-Flight Checklist
+### Pre-Flight Checklist
 - [ ] Verify `CODEX_MASTER_KEY` is set and valid
 - [ ] Verify `GITHUB_TOKEN` has required scopes (repo, workflow)
 - [ ] Ensure backup directory exists: `.codex/secrets/backups/`
@@ -329,7 +329,7 @@ python3 scripts/github_secrets_sync.py --backup
 # Step 2: Verify backup created
 ls -la .codex/secrets/backups/
 
-# Step 3: Validate current configuration  
+# Step 3: Validate current configuration
 python3 scripts/github_secrets_sync.py --validate
 
 # Step 4: Test JWT verification (no rotation)
@@ -339,7 +339,7 @@ python3 scripts/rotate_jwt_secret.py --verify
 cat .codex/audit/phase10/*.log 2>/dev/null || echo "No audit logs yet"
 ```
 
-#### Emergency Rollback
+## Emergency Rollback
 ```bash
 # If rotation fails, rollback immediately
 python3 scripts/rotate_jwt_secret.py --rollback --backup-file <timestamp>.enc

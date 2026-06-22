@@ -62,7 +62,7 @@ pytest tests/ -n auto
 pytest tests/ --reruns 2 --reruns-delay 1
 ```
 
-### Full CI-equivalent Test Run
+## Full CI-equivalent Test Run
 
 To run tests with all CI flags locally:
 ```bash

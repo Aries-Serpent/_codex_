@@ -83,7 +83,7 @@ params = ToolParams(name="test", count=5)
 
 ---
 
-### Tool Registry (mcp-tooling-registry)
+## Tool Registry (mcp-tooling-registry)
 
 **Implementation**: In-memory registry with metadata tracking
 **Key Operations**:
@@ -171,7 +171,7 @@ version = negotiate_version(
 
 ---
 
-### Rate Limiting (mcp-rate-limiting)
+## Rate Limiting (mcp-rate-limiting)
 
 **Implementation**: Token bucket algorithm
 **Configurable Per**:
@@ -245,7 +245,7 @@ result = context.execute_tool("tool", {"param": "value"})
 
 ---
 
-### JSON-RPC Server (mcp-server)
+## JSON-RPC Server (mcp-server)
 
 **Implementation**: Async JSON-RPC 2.0 server with FastAPI
 **Key Features**:
@@ -279,7 +279,7 @@ See [QUICK_START.md](QUICK_START.md) for details.
 
 ---
 
-### CI/CD Pipelines
+## CI/CD Pipelines
 
 Automated packaging via GitHub Actions:
 - Workflow: `.github/workflows/build_chatgpt_package.yml`
@@ -300,6 +300,7 @@ MCP tools integrated into development:
 ## Deployment Architecture
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing Client, FastAPI Server'}}%%
 graph TB
     A[Client] -->|JSON-RPC| B[FastAPI Server]
     B --> C[MCPJSONRPCServer]

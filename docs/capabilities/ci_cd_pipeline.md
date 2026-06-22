@@ -115,7 +115,7 @@ jobs:
           echo "Deploying to production"
 ```
 
-### Example 2: Multi-Stage Pipeline
+## Example 2: Multi-Stage Pipeline
 
 ```yaml
 # .github/workflows/full-pipeline.yml
@@ -179,7 +179,7 @@ jobs:
           kubectl apply -f k8s/production/
 ```
 
-### Example 3: GitLab CI Configuration
+## Example 3: GitLab CI Configuration
 
 ```yaml
 # .gitlab-ci.yml
@@ -270,7 +270,7 @@ pipeline:
     store_coverage_reports: true
 ```
 
-### Environment Variables
+## Environment Variables
 
 ```bash
 # CI/CD environment configuration
@@ -351,7 +351,7 @@ fi
     detect-secrets scan --baseline .secrets.baseline
 ```
 
-### Debugging Pipelines
+## Debugging Pipelines
 
 1. **Local Testing**: Test pipeline steps locally before pushing
    ```bash

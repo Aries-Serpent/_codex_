@@ -182,7 +182,7 @@ pre-commit run --all-files
 pytest tests/unit/ -x
 ```
 
-### Pre-Release Validation
+## Pre-Release Validation
 
 ```bash
 # Full test suite
@@ -195,7 +195,7 @@ coverage report --fail-under=85
 bandit -r codex/
 ```
 
-### Post-Release Validation
+## Post-Release Validation
 
 - Smoke tests in production
 - Performance monitoring

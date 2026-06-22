@@ -123,7 +123,7 @@ cargo bench
 pytest tests/test_auth/ -v --benchmark-only
 ```
 
-### In CI
+## In CI
 
 Performance metrics are logged in test output:
 ```

@@ -134,7 +134,7 @@ curl http://localhost:6060/debug/pprof/heap > mem.prof
 go tool pprof mem.prof
 ```
 
-### 2.2 Database Bottlenecks
+## 2.2 Database Bottlenecks
 
 **Detection Procedure**:
 
@@ -185,7 +185,7 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
   -c "EXPLAIN (ANALYZE, BUFFERS) ${SLOW_QUERY}"
 ```
 
-### 2.3 Cache Bottlenecks
+## 2.3 Cache Bottlenecks
 
 **Detection Procedure**:
 
@@ -221,7 +221,7 @@ redis-cli -h $REDIS_ENDPOINT MSET \
   "leaderboard:top-100" '[...]'
 ```
 
-### 2.4 Network and Infrastructure Bottlenecks
+## 2.4 Network and Infrastructure Bottlenecks
 
 **Detection Procedure**:
 
@@ -316,7 +316,7 @@ batch_insert_sql = "INSERT INTO logs (user_id, ...) VALUES " + \
 db.execute(batch_insert_sql)
 ```
 
-### 3.2 Database Optimization
+## 3.2 Database Optimization
 
 **Optimization 1: Index Addition**
 
@@ -364,7 +364,7 @@ CREATE TABLE events_2024_01 PARTITION OF events
     FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
 ```
 
-### 3.3 Cache Strategy Adjustment
+## 3.3 Cache Strategy Adjustment
 
 **Strategy 1: Multi-Level Caching**
 
@@ -394,7 +394,7 @@ redis.set(f"user:{user_id}", data, ex=3600)  # 1 hour TTL
 # But still expires if no update occurs
 ```
 
-### 3.4 Infrastructure Scaling
+## 3.4 Infrastructure Scaling
 
 **Strategy 1: Horizontal Scaling**
 
@@ -460,7 +460,7 @@ Error rate: 0%
 Assessment: ✓ PASS - All metrics within SLA
 ```
 
-### 4.2 Stress Testing
+## 4.2 Stress Testing
 
 ```bash
 # Gradually increase load until failure

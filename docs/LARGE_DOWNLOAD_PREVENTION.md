@@ -65,7 +65,7 @@ sentencepiece>=0.1.99
 # Skip CUDA dependencies entirely
 ```text
 
-### Phase 3: Update Nox Sessions
+## Phase 3: Update Nox Sessions
 
 ```python
 # noxfile.py modifications
@@ -112,7 +112,7 @@ def tests_ml_full(session: nox.Session):
     session.run("pytest", "-m", "requires_torch")
 ```text
 
-### Phase 4: Pip Configuration
+## Phase 4: Pip Configuration
 
 Create `.pip.conf` or environment variable:
 ```ini

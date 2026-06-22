@@ -157,7 +157,7 @@ logger = logging.getLogger(__name__)
 # - Auto-reply when fixes complete
 ```
 
-#### 2. Archival Candidate Analyzer
+## 2. Archival Candidate Analyzer
 **Current**: Manual file analysis  
 **Proposed**:
 ```python
@@ -169,7 +169,7 @@ logger = logging.getLogger(__name__)
 # - Generate archival plan JSON
 ```
 
-#### 3. Dependency Verification Tool
+## 3. Dependency Verification Tool
 **Current**: Basic grep search  
 **Proposed**:
 ```python
@@ -181,9 +181,9 @@ logger = logging.getLogger(__name__)
 # - Report: safe/risky/unsafe
 ```
 
-### Medium Priority
+## Medium Priority
 
-#### 4. Auto-Linting on Review Feedback
+### 4. Auto-Linting on Review Feedback
 **Current**: Manual fixes based on reviewer comments  
 **Proposed**: GitHub Actions workflow that:
   - Runs on review submission

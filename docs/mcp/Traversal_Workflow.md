@@ -55,6 +55,7 @@
 **Traversal Path**: Init → State Load → Processing → State Update → Validation → Completion
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing Initialize Context, Load State'}}%%
 graph LR
     A[Initialize Context] --> B[Load State]
     B --> C[Begin Traversal]

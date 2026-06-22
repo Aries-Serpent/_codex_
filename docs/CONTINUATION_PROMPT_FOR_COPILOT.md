@@ -39,7 +39,7 @@ rm -rf ~/.cache/pip /tmp/* /var/tmp/*
 df -h  # Verify >10GB available
 ```
 
-### Step 2: Create Monitoring Tests
+## Step 2: Create Monitoring Tests
 **File**: `tests/test_rag_monitoring.py`  
 **Target**: 90%+ coverage of `src/codex/rag/monitoring.py`
 
@@ -173,7 +173,7 @@ class TestRAGMetrics:
 # - Edge cases (empty data, single data point, outliers)
 ```
 
-### Step 3: Expand Indexer Tests
+## Step 3: Expand Indexer Tests
 **File**: `tests/test_rag_indexer.py` (expand existing)  
 **Target**: 90%+ coverage of `src/codex/rag/indexer.py` lines 447-738
 
@@ -298,7 +298,7 @@ def test_chunk_boundary_edge_cases(tmp_path):
 # Add 10+ more tests for lines 447-738
 ```
 
-### Step 4: Run Tests & Verify Coverage
+## Step 4: Run Tests & Verify Coverage
 ```bash
 # Install dependencies (after disk cleanup)
 pip install -r requirements-test.txt --no-cache-dir
@@ -318,7 +318,7 @@ coverage html -d reports/coverage
 coverage report --show-missing > reports/coverage-summary.txt
 ```
 
-### Step 5: Commit & Report
+## Step 5: Commit & Report
 ```bash
 git add tests/test_rag_monitoring.py tests/test_rag_indexer.py
 git commit -m "Add comprehensive tests for monitoring and indexer modules

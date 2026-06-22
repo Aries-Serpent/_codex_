@@ -182,7 +182,7 @@ class TestIntegration:
     pass
 ```
 
-### Template for Low Coverage Files (25-50%)
+## Template for Low Coverage Files (25-50%)
 
 Focus on:
 1. Untested methods

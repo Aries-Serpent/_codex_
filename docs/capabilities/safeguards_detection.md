@@ -474,7 +474,7 @@ Safeguards detected: validation, bounded, deterministic, reproducible, seed, off
     "
 ```
 
-### Pre-commit Hook
+## Pre-commit Hook
 
 ```bash
 #!/bin/bash

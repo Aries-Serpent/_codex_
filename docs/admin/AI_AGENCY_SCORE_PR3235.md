@@ -230,6 +230,7 @@
 
 2. **Agent Dependency Graph**
    ```mermaid
+%%{init: {'accessibility': {'title': 'Flowchart showing GitHub Pages Manager, Link Validator'}}%%
    graph TD
        A[GitHub Pages Manager] --> B[Link Validator]
        A --> C[Doc Consolidator]

@@ -60,7 +60,7 @@ EOF
 chmod +x scripts/new_script.sh
 ```text
 
-### Scenario 2: Single-Line Change
+## Scenario 2: Single-Line Change
 
 ✅ **CORRECT**: Using `sed -i`
 ```bash
@@ -74,7 +74,7 @@ sed -i 's/old_value/new_value/g' config.yaml
 sed -i.bak 's/old_value/new_value/' config.yaml
 ```text
 
-### Scenario 3: Multi-Line File with Variables
+## Scenario 3: Multi-Line File with Variables
 
 ✅ **CORRECT**: Using `cat <<EOF` (unquoted for expansion)
 ```bash
@@ -106,7 +106,7 @@ mv "$temp_script" scripts/final_script.sh
 chmod +x scripts/final_script.sh
 ```text
 
-### Scenario 5: Patch Application
+## Scenario 5: Patch Application
 
 ✅ **CORRECT**: Validate before applying
 ```bash
@@ -154,7 +154,7 @@ sed -i 's/price/\$100/g' file.txt
 sed -i 's|price|$100|g' file.txt  # Use | as delimiter
 ```text
 
-### Mistake 3: Not validating complex patches
+## Mistake 3: Not validating complex patches
 
 ❌ **WRONG**: Applying patch without checking
 ```bash

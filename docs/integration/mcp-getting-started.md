@@ -81,7 +81,7 @@ pip install mcp
 npm install @modelcontextprotocol/sdk
 ```
 
-### 2. Simple Server (Python)
+## 2. Simple Server (Python)
 
 ```python
 # mcp_server.py
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     server.run()
 ```
 
-### 3. Connect Client
+## 3. Connect Client
 
 ```bash
 # Configure in GitHub Copilot or client
@@ -115,7 +115,7 @@ mcp_servers:
     command: python mcp_server.py
 ```
 
-### 4. Use in AI Chat
+## 4. Use in AI Chat
 
 ```
 User: "Can you fetch user info for user123?"
@@ -181,7 +181,7 @@ class MyMCPServer:
         stdio_server(self.server).run_in_thread()
 ```
 
-### 2. Client Configuration
+## 2. Client Configuration
 
 ```yaml
 # .copilot/mcp.yaml
@@ -207,7 +207,7 @@ server_options:
   retry_delay: 1
 ```
 
-### 3. Environment Variables
+## 3. Environment Variables
 
 ```bash
 # .env
@@ -518,7 +518,7 @@ MCP_DEBUG=true python mcp_server.py
 lsof -i :3000
 ```
 
-### Issue: Tool Not Found
+## Issue: Tool Not Found
 
 **Error**: `Tool 'my_tool' not found`
 
@@ -533,7 +533,7 @@ async def list_tools():
 
 **Solution**: Ensure tool is decorated with `@server.call_tool()`
 
-### Issue: Input Validation Failed
+## Issue: Input Validation Failed
 
 **Error**: `Invalid input: missing required field 'data'`
 
@@ -547,7 +547,7 @@ call_tool("my_tool", {"data": "value", "limit": 10})
 call_tool("my_tool", {"limit": 10})
 ```
 
-### Issue: Timeout
+## Issue: Timeout
 
 **Error**: `Tool execution timed out`
 

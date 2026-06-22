@@ -25,6 +25,7 @@ Phase 11.x Priority 1 delivers a production-ready authentication system focused 
 ## Architecture Overview
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Diagram showing User/Client, OAuth Manager'}}%%
 graph TB
     subgraph "Authentication Layer"
         User[User/Client]
@@ -117,7 +118,7 @@ print(f"Authenticated as: {user['login']}")
 
 ---
 
-### 2. MFA Provider (`mfa_provider.py`)
+## 2. MFA Provider (`mfa_provider.py`)
 
 **Purpose**: Implements Time-based One-Time Password (TOTP) authentication.
 
@@ -174,7 +175,7 @@ backup_valid = provider.verify_backup_code("user123", backup_codes[0])
 
 ---
 
-### 3. Token Manager (`token_manager.py`)
+## 3. Token Manager (`token_manager.py`)
 
 **Purpose**: Manages JWT-like tokens for authentication and session management.
 
@@ -245,6 +246,7 @@ count = manager.revoke_all_user_tokens("user123")
 ### Complete Authentication Flow
 
 ```mermaid
+%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
 sequenceDiagram
     participant User
     participant App
@@ -424,7 +426,7 @@ github_config = oauth_manager.create_github_config(
 # Your authentication endpoints would use these components
 ```
 
-### Production Considerations
+## Production Considerations
 
 1. **Storage Backend**
    - Replace in-memory stores with Redis/PostgreSQL

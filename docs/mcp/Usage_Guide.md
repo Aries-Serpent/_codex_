@@ -44,7 +44,7 @@ pip install -e .
 python3 -c "import mcp; print('✅ MCP ready')"
 ```
 
-### Quick Test
+## Quick Test
 
 ```python
 from mcp.registry import MCPToolRegistry
@@ -191,7 +191,7 @@ print(response)
 # Output: {"jsonrpc": "2.0", "id": 1, "result": 8}
 ```
 
-### Direct Registry Execution
+## Direct Registry Execution
 
 ```python
 # For internal use or testing
@@ -199,7 +199,7 @@ result = registry.execute_tool("add", {"a": 5, "b": 3})
 print(result)  # Output: 8
 ```
 
-### Async Tool Invocation
+## Async Tool Invocation
 
 ```python
 import asyncio
@@ -285,7 +285,7 @@ is_valid = auth.authenticate(api_key="secure-key-123")
 print(f"Authenticated: {is_valid}")
 ```
 
-### Password Authentication (Secure)
+## Password Authentication (Secure)
 
 ```python
 import bcrypt
@@ -303,7 +303,7 @@ hashed = hash_password("mypassword123")
 is_valid = verify_password("mypassword123", hashed)
 ```
 
-### Role-Based Authorization
+## Role-Based Authorization
 
 ```python
 from mcp.auth import check_permission
@@ -343,7 +343,7 @@ result2 = tenant2_context.execute_tool("add", {"a": 10, "b": 20})
 # Results are isolated per tenant
 ```
 
-### Tenant-Specific Configuration
+## Tenant-Specific Configuration
 
 ```python
 from mcp.config import MCPConfig
@@ -374,7 +374,7 @@ logging.basicConfig(
 # Now all MCP operations are logged
 ```
 
-### Structured Logging
+## Structured Logging
 
 ```python
 from mcp.observability import log_event
@@ -423,7 +423,7 @@ server = MCPJSONRPCServer(config, registry=registry)
 server.start()
 ```
 
-### Workflow 2: Secure Production Deployment
+## Workflow 2: Secure Production Deployment
 
 ```python
 # 1. Load production config
@@ -445,7 +445,7 @@ server = MCPJSONRPCServer(
 server.start(enable_metrics=True)
 ```
 
-### Workflow 3: Multi-Tenant SaaS
+## Workflow 3: Multi-Tenant SaaS
 
 ```python
 # 1. Initialize tenant manager
@@ -500,7 +500,7 @@ for i in range(max_retries):
         time.sleep(2 ** i)  # Exponential backoff
 ```
 
-### Issue: Authentication Failed
+## Issue: Authentication Failed
 
 **Diagnosis**: Verify API key
 ```python
@@ -512,7 +512,7 @@ print(f"Key valid: {is_valid}")
 new_key = auth.generate_api_key(roles=["admin"])
 ```
 
-### Issue: Version Negotiation Failed
+## Issue: Version Negotiation Failed
 
 **Solution**: Check supported versions
 ```python

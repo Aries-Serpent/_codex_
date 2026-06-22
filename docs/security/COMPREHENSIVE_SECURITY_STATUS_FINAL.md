@@ -50,7 +50,7 @@ sanitized = html.escape(text)
 
 ---
 
-### ✅ **3. Clear-text Storage/Logging (7 alerts) - FIXED**
+## ✅ **3. Clear-text Storage/Logging (7 alerts) - FIXED**
 
 | Alert | File | Line | Status | Resolution |
 |-------|------|------|--------|------------|
@@ -90,7 +90,7 @@ logger.info(f"User input: {sanitize_for_logging(user_data)}")
 
 ---
 
-### ✅ **5. File Permission Issues (4 alerts) - DOCUMENTED**
+## ✅ **5. File Permission Issues (4 alerts) - DOCUMENTED**
 
 | Alert | File | Line | Status | Resolution |
 |-------|------|------|--------|------------|

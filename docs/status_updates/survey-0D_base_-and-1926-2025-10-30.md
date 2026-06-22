@@ -7,9 +7,9 @@ deployment_preset: reasoning_pod
 generated_utc: 2025-10-30T03:51:18Z
 ```text
 
-## File Survey: Branch 0D_base_ / PR #1926
+# File Survey: Branch 0D_base_ / PR #1926
 
-### >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
+## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -218,7 +218,7 @@ def run_unified_training(
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/train_loop.py@0D_base_
+## >>> FILE: src/codex_ml/train_loop.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -226,18 +226,18 @@ def run_unified_training(
 # retention policy execution, & metadata enhancements.
 #
 # New params:
-#   deterministic_cudnn: bool = False
-#   run_config: dict | None  (persisted to config.snapshot.json if provided)
-#   retention_policy: dict | None  (e.g. {"keep_last":3, "keep_every":5})
+# deterministic_cudnn: bool = False
+# run_config: dict | None  (persisted to config.snapshot.json if provided)
+# retention_policy: dict | None  (e.g. {"keep_last":3, "keep_every":5})
 #
 # Metadata additions:
-#   - latest.json now includes "checkpoint_sha256"
-#   - metadata.json includes "checkpoint_sha256"
-#   - final result includes "checkpoint_sha256_last"
+# - latest.json now includes "checkpoint_sha256"
+# - metadata.json includes "checkpoint_sha256"
+# - final result includes "checkpoint_sha256_last"
 #
 # Behavior:
-#   - Config snapshot written once per run (overwrites existing file).
-#   - After saving an epoch checkpoint, optional retention pruning executes.
+# - Config snapshot written once per run (overwrites existing file).
+# - After saving an epoch checkpoint, optional retention pruning executes.
 
 from __future__ import annotations
 
@@ -489,7 +489,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/training/strategies.py@0D_base_
+## >>> FILE: src/codex_ml/training/strategies.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -718,7 +718,7 @@ class ContinualReplayStrategy:
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
+## >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -967,7 +967,7 @@ def attach_reasoning_adapters(
 [END CONTENT]
 ```text
 
-### >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
+## >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
 
 ```yaml
 [BEGIN CONTENT]
@@ -1042,7 +1042,7 @@ metadata:
 [END CONTENT]
 ```text
 
-### >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
+## >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
 
 ```yaml
 [BEGIN CONTENT]
@@ -1118,7 +1118,7 @@ hydra:
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
+## >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -1439,7 +1439,7 @@ def _coerce_bool(value: Any) -> bool | None:
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_cli/app.py@0D_base_
+## >>> FILE: src/codex_cli/app.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -1728,7 +1728,7 @@ else:  # pragma: no cover - click fallback
 [END CONTENT]
 ```text
 
-### >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
+## >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
 ```python
 [BEGIN CONTENT]
@@ -1977,7 +1977,7 @@ def status_report(run_metadata_dir: Path) -> None:
 [END CONTENT]
 ```text
 
-### >>> FILE: docs/README_ROOT.md@0D_base_
+## >>> FILE: docs/README_ROOT.md@0D_base_
 
 ````markdown
 [BEGIN CONTENT]
@@ -2154,8 +2154,8 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
 
 # Optional: if your train loop emits run metadata to a non-default path:
 # codex deploy --config configs/deploy/reasoning_pod.yaml \
-#   --run-metadata-dir runs/train_loop \
-#   --dry-run
+# --run-metadata-dir runs/train_loop \
+# --dry-run
 ```text
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,

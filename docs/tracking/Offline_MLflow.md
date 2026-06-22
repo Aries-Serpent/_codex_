@@ -47,7 +47,7 @@ export CONDA_DEFAULT_ENV=$(conda info --envs | grep '*' | awk '{print $1}')
 # Or if already in conda env, it's usually set automatically
 ```text
 
-### Step 3: Run Evaluation
+## Step 3: Run Evaluation
 
 ```bash
 python -m codex_ml.eval.runner \
@@ -192,7 +192,7 @@ ls -la artifacts/mlruns/0
 echo $MLFLOW_TRACKING_URI
 ```text
 
-### Parameters Not Logged
+## Parameters Not Logged
 
 **Possible Causes**:
 1. Environment variables not set
@@ -238,7 +238,7 @@ Keep evaluations in same location for easy comparison:
 export MLFLOW_TRACKING_URI=file:./mlruns
 ```text
 
-### 3. Clean Old Runs
+## 3. Clean Old Runs
 
 ```bash
 # Archive old experiments
@@ -248,7 +248,7 @@ mv mlruns mlruns_archive_$(date +%Y%m%d)
 rm -rf mlruns
 ```text
 
-### 4. Export Runs for Sharing
+## 4. Export Runs for Sharing
 
 ```bash
 # MLflow export (if needed for sharing)
@@ -264,7 +264,7 @@ mlflow experiments export --experiment-id 0 --output-file experiment.json
 python run.py ++mlflow.enabled=true
 ```text
 
-### With Jupyter
+## With Jupyter
 
 ```python
 import os
@@ -275,7 +275,7 @@ from codex_ml.eval.runner import run_evaluation
 # ... run evaluation ...
 ```text
 
-### With DVC
+## With DVC
 
 Track MLflow runs alongside DVC metrics:
 
