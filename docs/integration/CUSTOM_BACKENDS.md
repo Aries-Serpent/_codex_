@@ -19,15 +19,15 @@ class MyBackend(BaseBackend):
     def __init__(self, config: dict):
         self.config = config
         self.storage = {}
-    
+
     async def store(self, doc_id: str, embedding: List[float]) -> None:
         self.storage[doc_id] = embedding
-    
+
     async def retrieve(self, doc_id: str) -> Optional[dict]:
         if doc_id in self.storage:
             return {"doc_id": doc_id, "embedding": self.storage[doc_id]}
         return None
-    
+
     async def search(self, query: List[float], top_k: int = 5):
         results = []
         for doc_id, emb in self.storage.items():
@@ -35,11 +35,11 @@ class MyBackend(BaseBackend):
             sim = np.dot(query, emb) / (np.linalg.norm(query) * np.linalg.norm(emb) + 1e-10)
             results.append({"doc_id": doc_id, "similarity": float(sim)})
         return sorted(results, key=lambda x: x["similarity"], reverse=True)[:top_k]
-    
+
     async def delete(self, doc_id: str) -> None:
         if doc_id in self.storage:
             del self.storage[doc_id]
-    
+
     async def health_check(self) -> bool:
         return True
 ```
@@ -72,16 +72,16 @@ All custom backends must implement `BaseBackend`:
 class BaseBackend(ABC):
     @abstractmethod
     async def store(self, doc_id: str, embedding: List[float]) -> None: ...
-    
+
     @abstractmethod
     async def retrieve(self, doc_id: str) -> Optional[dict]: ...
-    
+
     @abstractmethod
     async def search(self, query: List[float], top_k: int = 5) -> List[dict]: ...
-    
+
     @abstractmethod
     async def delete(self, doc_id: str) -> None: ...
-    
+
     @abstractmethod
     async def health_check(self) -> bool: ...
 ```

@@ -11,7 +11,7 @@ generated_utc: 2025-10-30T03:51:18Z
 
 ## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 """Unified Training Orchestrator (Superseding preliminary patch)
 
@@ -220,7 +220,7 @@ def run_unified_training(
 
 ## >>> FILE: src/codex_ml/train_loop.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 # PATCH: Added CUDNN determinism helper, checkpoint SHA256 hashing, config snapshot,
 # retention policy execution, & metadata enhancements.
@@ -491,7 +491,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
 
 ## >>> FILE: src/codex_ml/training/strategies.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 """Backend strategy interfaces for the unified training orchestrator.
 
@@ -720,7 +720,7 @@ class ContinualReplayStrategy:
 
 ## >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 """Reasoning adapters and tool-use heads for Codex models."""
 
@@ -1120,7 +1120,7 @@ hydra:
 
 ## >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 from __future__ import annotations
 
@@ -1441,7 +1441,7 @@ def _coerce_bool(value: Any) -> bool | None:
 
 ## >>> FILE: src/codex_cli/app.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 
 from __future__ import annotations
@@ -1730,7 +1730,7 @@ else:  # pragma: no cover - click fallback
 
 ## >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
-```python
+```text
 [BEGIN CONTENT]
 from __future__ import annotations
 

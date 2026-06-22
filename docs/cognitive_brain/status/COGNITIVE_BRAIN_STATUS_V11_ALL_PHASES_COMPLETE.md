@@ -164,7 +164,7 @@
 ### Iteration 2: Implementation ✅
 
 **Bug Fix Applied**:
-```python
+```text
 # Line 74 - Fixed import
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC  # was: PBKDF2
 

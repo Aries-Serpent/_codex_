@@ -258,7 +258,7 @@ _codex_/
 - Tensorboard/MLflow logging
 
 **Key Classes**:
-```python
+```text
 class TrainingEngine:
     """Base training engine"""
     def train_epoch(train_loader, val_loader) -> Dict[str, float]
@@ -283,7 +283,7 @@ class HFTrainer(TrainingEngine):
 - Language modeling: Perplexity, Cross-entropy
 
 **Key Classes**:
-```python
+```text
 class Evaluator:
     def evaluate(eval_loader, metrics) -> Dict[str, float]
     def evaluate_on_file(file_path, format) -> Dict[str, float]

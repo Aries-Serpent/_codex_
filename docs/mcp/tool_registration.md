@@ -626,7 +626,7 @@ class DynamicToolRegistry(ToolRegistry):
 
 ### Unit Tests
 
-```python
+```text
 import pytest
 from mcp.server import ToolRegistry, Tool, ToolParameter
 
@@ -870,7 +870,7 @@ except Exception as e:
 ```
 
 **Disable Problematic Tool:**
-```python
+```text
 # Temporarily unregister failing tool
 registry.unregister("problematic_tool")
 

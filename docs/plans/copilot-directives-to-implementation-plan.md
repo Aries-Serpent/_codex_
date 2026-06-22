@@ -1377,7 +1377,7 @@ jobs:
 
 **File**: `src/agents/orchestrator.py`
 
-```python
+```text
 """
 Multi-Agent Orchestrator for _codex_
 Coordinates multiple autonomous agents with shared resources
@@ -1917,7 +1917,7 @@ rule_categories:
 
 **File**: `scripts/security/score_alerts.py`
 
-```python
+```text
 """
 Risk scoring system for Semgrep alerts.
 
@@ -2601,7 +2601,7 @@ if __name__ == "__main__":
 
 **File**: `scripts/security/run_codemods.py`
 
-```python
+```text
 """
 Batch codemod runner for security fixes.
 
@@ -2978,12 +2978,12 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 ## How to Add a Suppression
 
 1. **Create inline suppression** in code:
-   ```python
-   # nosemgrep:  rule-id
-   # SECURITY REVIEW: Explanation of why this is safe
-   # Reviewed by: @username on YYYY-MM-DD
-   code_here()
-   ```
+```python
+# nosemgrep:  rule-id
+# SECURITY REVIEW: Explanation of why this is safe
+# Reviewed by: @username on YYYY-MM-DD
+code_here()
+```
 
 2. **Document in this register** with:
    - Rule ID

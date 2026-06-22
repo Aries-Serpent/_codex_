@@ -231,10 +231,10 @@ overrides = [
 ### DO ✅
 
 1. **Use ConfigLoader for all config loading**
-   ```python
-   from codex.utils.config_loader import load_config
-   cfg = load_config("base", config_dir="conf/model")
-   ```
+```python
+from codex.utils.config_loader import load_config
+cfg = load_config("base", config_dir="conf/model")
+```
 
 2. **Leverage Hydra interpolation for DRY**
    ```yaml
@@ -251,29 +251,29 @@ overrides = [
    ```
 
 4. **Use overrides for run-specific changes**
-   ```python
-   cfg = load_config("base", overrides=["training.seed=42"])
-   ```
+```python
+cfg = load_config("base", overrides=["training.seed=42"])
+```
 
 5. **Handle errors gracefully**
-   ```python
-   try:
-       cfg = load_config("config", allow_fallback=False)
-   except MissingConfigException:
-       # Handle missing config
-   ```
+```text
+try:
+    cfg = load_config("config", allow_fallback=False)
+except MissingConfigException:
+    # Handle missing config
+```
 
 ### DON'T ❌
 
 1. **Don't hardcode config paths**
-   ```python
-   # Bad
-   with open("configs/training/base.yaml") as f:
-       cfg = yaml.safe_load(f)
+```python
+# Bad
+with open("configs/training/base.yaml") as f:
+    cfg = yaml.safe_load(f)
 
-   # Good
-   cfg = load_config("base", config_dir="conf/training")
-   ```
+# Good
+cfg = load_config("base", config_dir="conf/training")
+```
 
 2. **Don't duplicate config values**
    ```yaml
@@ -289,16 +289,16 @@ overrides = [
    ```
 
 3. **Don't skip error handling**
-   ```python
-   # Bad
-   cfg = load_config("config")  # May fail silently
+```python
+# Bad
+cfg = load_config("config")  # May fail silently
 
-   # Good
-   try:
-       cfg = load_config("config", allow_fallback=False)
-   except MissingConfigException as e:
-       logger.error(f"Config not found: {e.missing_cfg_file}")
-   ```
+# Good
+try:
+    cfg = load_config("config", allow_fallback=False)
+except MissingConfigException as e:
+    logger.error(f"Config not found: {e.missing_cfg_file}")
+```
 
 ---
 

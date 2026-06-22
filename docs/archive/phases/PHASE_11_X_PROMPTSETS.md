@@ -290,7 +290,7 @@ SPECIFICATIONS:
   7. Multiple users access same secret
 
 TEST STRUCTURE:
-```python
+```text
 @pytest.mark.e2e
 class TestSecretsWorkflow:
     def test_create_secret_flow(self, authenticated_user):
@@ -351,7 +351,7 @@ TEST SCENARIOS:
 5. Spike load (0→1000 users in 10s)
 
 IMPLEMENTATION:
-```python
+```text
 @pytest.mark.performance
 class TestPerformance:
     @pytest.mark.benchmark(group="create")

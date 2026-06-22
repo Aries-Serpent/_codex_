@@ -109,7 +109,7 @@ const response = await sparkClient.generateCode({
 #### Prompt 1: "Create a FastAPI endpoint for user authentication with JWT"
 
 **AI-Generated Output:**
-```python
+```text
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt

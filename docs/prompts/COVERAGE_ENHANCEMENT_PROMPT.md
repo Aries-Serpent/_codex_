@@ -43,7 +43,7 @@ For each uncovered file, apply these test creation patterns:
 ### A. Function-Level Coverage
 
 For each uncovered function:
-```python
+```text
 def test_{function_name}_basic():
     """Test {function_name} with typical inputs"""
     # Arrange
@@ -73,7 +73,7 @@ def test_{function_name}_error_handling():
 ### B. Branch Coverage
 
 For each uncovered branch:
-```python
+```text
 def test_{function_name}_branch_true():
     """Exercise the True branch of condition"""
     pass
@@ -86,7 +86,7 @@ def test_{function_name}_branch_false():
 ### C. Class Coverage
 
 For each class:
-```python
+```text
 class Test{ClassName}:
     """Complete coverage for {ClassName}"""
 
@@ -128,7 +128,7 @@ For each file below 99% coverage:
 
 ### Template for 0% Coverage Files (No Tests)
 
-```python
+```text
 """
 Comprehensive tests for {module_name}
 

@@ -32,7 +32,7 @@ Develop a **Physics-Inspired Relevance Scoring** capability that enhances the RA
 
 ### Mathematical Foundation
 
-```python
+```text
 # Quantum-inspired relevance score
 relevance_score = α * semantic_similarity + β * temporal_decay + γ * authority_weight
 

@@ -69,7 +69,7 @@ server = MCPServer(backend=MockBackend())
 async def demo():
     await server.store("doc_1", [0.1, 0.2, 0.3, 0.4])
     await server.store("doc_2", [0.2, 0.3, 0.4, 0.5])
-    
+
     # Retrieve embeddings
     result = await server.retrieve("doc_1")
     print(f"Retrieved: {result}")
@@ -276,11 +276,11 @@ import asyncio
 async def example():
     # Store embedding
     await backend.store("doc_1", [0.1, 0.2, ..., 0.9])
-    
+
     # Retrieve by ID
     result = await backend.retrieve("doc_1")
     print(f"Got: {result}")
-    
+
     # Search similar vectors
     query = [0.15, 0.25, ..., 0.95]
     results = await backend.search(query, top_k=5)
@@ -332,17 +332,17 @@ from typing import Any, List
 
 class MyCustomBackend(BaseBackend):
     """Your custom storage implementation."""
-    
+
     async def store(self, doc_id: str, embedding: List[float]) -> None:
         """Store embedding in your system."""
         # Your implementation here
         pass
-    
+
     async def retrieve(self, doc_id: str) -> Any:
         """Retrieve embedding by ID."""
         # Your implementation here
         pass
-    
+
     async def search(self, query: List[float], top_k: int = 5) -> List[dict]:
         """Search for similar embeddings."""
         # Your implementation here
@@ -366,23 +366,23 @@ class MCPServer:
         workers: int = 4,
         timeout: int = 30
     ) -> None: ...
-    
+
     async def store(self, doc_id: str, embedding: List[float]) -> None:
         """Store embedding with automatic deduplication."""
-    
+
     async def retrieve(self, doc_id: str) -> Optional[dict]:
         """Retrieve stored embedding by ID."""
-    
+
     async def search(
         self, 
         query: List[float], 
         top_k: int = 5
     ) -> List[dict]:
         """Find most similar embeddings."""
-    
+
     async def delete(self, doc_id: str) -> None:
         """Delete embedding by ID."""
-    
+
     async def health_check(self) -> bool:
         """Check backend connectivity."""
 ```
@@ -395,16 +395,16 @@ All backends implement:
 class BaseBackend(ABC):
     @abstractmethod
     async def store(self, doc_id: str, embedding: List[float]) -> None: ...
-    
+
     @abstractmethod
     async def retrieve(self, doc_id: str) -> Optional[dict]: ...
-    
+
     @abstractmethod
     async def search(self, query: List[float], top_k: int) -> List[dict]: ...
-    
+
     @abstractmethod
     async def delete(self, doc_id: str) -> None: ...
-    
+
     @abstractmethod
     async def health_check(self) -> bool: ...
 ```
@@ -454,24 +454,24 @@ async def store_documents():
     # Load model
     tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
     model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-    
+
     # Create server
     server = MCPServer(backend=MockBackend())
-    
+
     # Sample documents
     docs = [
         ("doc_1", "Python is a programming language"),
         ("doc_2", "JavaScript runs in browsers"),
         ("doc_3", "Rust provides memory safety"),
     ]
-    
+
     # Embed and store
     for doc_id, text in docs:
         inputs = tokenizer(text, return_tensors="pt")
         with torch.no_grad():
             outputs = model(**inputs)
         embedding = outputs.last_hidden_state[0][0].tolist()
-        
+
         await server.store(doc_id, embedding)
         print(f"✅ Stored {doc_id}")
 
@@ -483,14 +483,14 @@ asyncio.run(store_documents())
 ```python
 async def semantic_search():
     server = MCPServer(backend=MockBackend())
-    
+
     # Store embeddings (see Example 1)
     # ...
-    
+
     # Search for similar documents
     query_text = "What languages are there?"
     query_embedding = [0.5, 0.3, 0.2]  # Your embedding
-    
+
     results = await server.search(query_embedding, top_k=2)
     print(f"Top matches: {results}")
 
@@ -499,7 +499,7 @@ asyncio.run(semantic_search())
 
 ### Example 3: FastAPI Integration
 
-```python
+```text
 from fastapi import FastAPI
 from src.mcp import MCPServer
 from src.mcp.backends import PineconeBackend

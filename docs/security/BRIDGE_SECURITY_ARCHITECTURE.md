@@ -46,7 +46,7 @@ os.chmod(self.bridge_dir, 0o700)
 - Provides defense-in-depth beyond OS permissions
 
 **Code Reference:**
-```python
+```text
 # Direct constant-time comparison (no hashing to avoid timing variations)
 if not secrets.compare_digest(self.auth_token, message.auth_token):
     return False

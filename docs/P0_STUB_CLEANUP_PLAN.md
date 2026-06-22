@@ -303,12 +303,12 @@ bandit -r src/ training/ cli/ -ll
 6. Add comprehensive tests
 
 **Testing Strategy:**
-```python
+```
 # For each resolved stub
 1. Add unit tests
 2. Add integration tests if applicable
 3. Run full test suite
-4. Check coverage (must maintain ≥70%)
+4. Check coverage (must maintain >= 70%)
 5. Run security scans
 6. Validate in staging environment
 ```

@@ -86,22 +86,22 @@ mlflow.set_experiment("codex-ml-experiments")
 with mlflow.start_run(run_name="bert-fine-tuning"):
     # Load config
     config = OmegaConf.load("configs/training/bert.yaml")
-    
+
     # Log config
     mlflow.log_params(OmegaConf.to_container(config))
-    
+
     # Create trainer
     trainer = Trainer(config=config)
-    
+
     # Train (metrics logged automatically)
     trainer.train(
         train_data="data/train.jsonl",
         eval_data="data/eval.jsonl"
     )
-    
+
     # Log model
     mlflow.pytorch.log_model(trainer.model, "model")
-    
+
     # Log artifacts
     mlflow.log_artifacts("logs/")
 
@@ -184,15 +184,15 @@ class CodexModel:
     def __init__(self, model_path):
         # Load model
         self.model = load_model(model_path)
-    
+
     async def __call__(self, request):
         """Handle prediction requests."""
         data = await request.json()
         texts = data.get("texts", [])
-        
+
         # Batch predict
         predictions = self.model.predict(texts)
-        
+
         return {
             "predictions": predictions.tolist()
         }
@@ -287,17 +287,17 @@ with DAG('codex_ml_pipeline', default_args=default_args) as dag:
         task_id='ingest',  # pragma: allowlist secret
         python_callable=ingest_data
     )
-    
+
     t_embed = PythonOperator(
         task_id='embed',  # pragma: allowlist secret
         python_callable=generate_embeddings
     )
-    
+
     t_train = PythonOperator(
         task_id='train',  # pragma: allowlist secret
         python_callable=train_model
     )
-    
+
     # Dependencies
     t_ingest >> t_embed >> t_train
 ```
@@ -353,12 +353,12 @@ for epoch in range(num_epochs):
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         outputs = model(inputs)
         loss = criterion(outputs, targets)
-        
+
         # Log metrics
         global_step = epoch * len(train_loader) + batch_idx
         writer.add_scalar('Loss/train', loss.item(), global_step)
         writer.add_scalar('Accuracy/train', accuracy, global_step)
-        
+
         loss.backward()
         optimizer.step()
 

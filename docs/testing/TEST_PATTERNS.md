@@ -244,7 +244,7 @@ def deterministic_seed():
 
 Use these markers to categorize tests:
 
-```python
+```text
 @pytest.mark.smoke        # Quick validation tests
 @pytest.mark.integration  # Integration tests
 @pytest.mark.security     # Security tests

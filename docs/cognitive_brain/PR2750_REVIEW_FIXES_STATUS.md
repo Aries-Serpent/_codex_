@@ -56,7 +56,7 @@ self.last_updated = datetime.now(UTC).isoformat()
 **File Fixed:** `scripts/packaging/build_solution.py:83-84`
 
 **Solution:**
-```python
+```text
 # Before (duplicate elif block)
 elif name.endswith((".egg-info", ".dist-info")):
     ignored.add(name)
@@ -79,7 +79,7 @@ elif name.endswith((".egg-info", ".dist-info")):
 **Root Cause:** OpenAIEmbeddingProvider was refactored for security - API key no longer stored as instance attribute (lines 132-136 in embeddings.py)
 
 **Solution:**
-```python
+```text
 # Before (fails - api_key attribute removed)
 def test_initialization_from_env(self):
     with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}): <!-- pragma: allowlist secret -->
@@ -96,7 +96,7 @@ def test_initialization_from_env(self):
 
 ## Fix 2: `test_destructor_clears_key` (line 188)
 **Solution:**
-```python
+```text
 # Before
 def test_destructor_clears_key(self):
     with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}): <!-- pragma: allowlist secret -->
@@ -116,7 +116,7 @@ def test_destructor_clears_key(self):
 **Root Cause:** Incorrect patch path - should patch where imported, not where defined
 
 **Solution:**
-```python
+```text
 # Before (incorrect patch path)
 @patch("codex.rag.embeddings.OpenAI")
 def test_openai_provider_api_error(self, mock_openai):
@@ -197,7 +197,7 @@ dt = datetime.now(UTC)
 ## 2. Mock Patching Best Practices
 **Rule:** Patch where the object is imported FROM, not where it's USED
 
-```python
+```text
 # ❌ Wrong - patches in codex.rag.embeddings namespace
 @patch("codex.rag.embeddings.OpenAI")
 

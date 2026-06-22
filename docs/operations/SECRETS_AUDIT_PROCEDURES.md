@@ -80,38 +80,38 @@ from datetime import datetime, timedelta
 
 def analyze_access_patterns():
     """Analyze audit logs for suspicious patterns"""
-    
+
     access_by_actor = defaultdict(list)
     access_by_secret = defaultdict(list)  # pragma: allowlist secret
     failed_attempts = []
-    
+
     # Read audit log
     with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:  # pragma: allowlist secret
         for line in f:
             event = json.loads(line)
-            
+
             actor = event["actor"]["id"]
             secret = event["action"]["secret_name"]  # pragma: allowlist secret
             status = event["result"]["status"]
             timestamp = event["timestamp"]
-            
+
             access_by_actor[actor].append((secret, timestamp, status))  # pragma: allowlist secret
             access_by_secret[secret].append((actor, timestamp, status))  # pragma: allowlist secret
-            
+
             if status == "failure":
                 failed_attempts.append(event)
-    
+
     # Analyze patterns
     print("🔍 ACCESS PATTERN ANALYSIS")
     print("=" * 50)
-    
+
     # Check for excessive failed attempts
     if len(failed_attempts) > 10:
         print(f"⚠️  {len(failed_attempts)} failed access attempts")
         print("   Actors:")
         for event in failed_attempts[-5:]:
             print(f"   - {event['actor']['id']} at {event['timestamp']}")
-    
+
     # Check for unusual access times
     print("\nAccess by time of day:")
     for actor, accesses in access_by_actor.items():
@@ -120,7 +120,7 @@ def analyze_access_patterns():
             for _, ts, _ in accesses
         ]
         print(f"  {actor}: {set(hours)}")
-    
+
     # Check for privilege escalation patterns
     print("\nPrivilege escalation audit:")
     for secret, accesses in access_by_secret.items():  # pragma: allowlist secret
@@ -226,11 +226,11 @@ escalation_patterns = defaultdict(list)
 with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:  # pragma: allowlist secret
     for line in f:
         event = json.loads(line)
-        
+
         # Pattern: Multiple failed attempts followed by success
         actor = event["actor"]["id"]
         status = event["result"]["status"]
-        
+
         escalation_patterns[actor].append(status)
 
 # Analyze for suspicious patterns
@@ -241,7 +241,7 @@ for actor, statuses in escalation_patterns.items():
     # Pattern: 5+ failures then success = suspicious
     recent = statuses[-10:]
     failed_count = sum(1 for s in recent if s == "failure")
-    
+
     if failed_count >= 5 and recent[-1] == "success":
         print(f"⚠️  SUSPICIOUS: {actor}")
         print(f"   Failed attempts: {failed_count}")

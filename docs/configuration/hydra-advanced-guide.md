@@ -221,7 +221,7 @@ class DBConfig:
     port: int = 3306
     pool_size: int = 10
     ssl_enabled: bool = False
-    
+
     @property
     def connection_url(self) -> str:
         protocol = "mysql+pymysql" if self.driver == "mysql" else self.driver
@@ -562,7 +562,7 @@ from hydra.core.global_hydra import GlobalHydra
 def get_config(overrides=None):
     # Clear previous Hydra instance
     GlobalHydra.instance().clear()
-    
+
     with initialize_config_dir(config_dir=".../configs", version_base=None):
         cfg = compose(config_name="config", overrides=overrides or [])
     return cfg

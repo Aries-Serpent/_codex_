@@ -143,7 +143,7 @@ hash_value = hashlib.md5(password)  # Security warning!
 ## Error Handling
 
 ### ✅ SAFE Pattern
-```python
+```text
 import logging
 logger = logging.getLogger(__name__)
 

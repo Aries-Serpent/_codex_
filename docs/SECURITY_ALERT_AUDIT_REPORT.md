@@ -21,10 +21,10 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 - **Status**: ✅ **FIXED in commit f4e4e5e**
 - **Fix**: Added `usedforsecurity=False` parameter
 - **Current Code**:
-  ```python
-from typing import List
-import subprocess
-hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
+  ```
+  from typing import List
+  import subprocess
+  hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
   ```
 - **Verification**: Lines 119 and 150 both use the secure pattern
 
@@ -37,7 +37,7 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 - **Status**: ✅ **ALREADY SECURE**
 - **Finding**: File has proper security check via `_is_public_bind()` function
 - **Current Code**:
-  ```python
+  ```
   def _is_public_bind(host: str) -> bool:
       return host in {"0.0.0.0", "::"}
 
@@ -55,11 +55,11 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
   - `src/training/checkpointing.py:120`
   - `src/codex_ml/utils/checkpoint.py:83`
 - **Current Code**:
-  ```python
-  if _TORCH_SUPPORTS_WEIGHTS_ONLY:
-      # Security: Use weights_only=True to prevent arbitrary code execution
-      kwargs["weights_only"] = True
-  ```
+```python
+if _TORCH_SUPPORTS_WEIGHTS_ONLY:
+    # Security: Use weights_only=True to prevent arbitrary code execution
+    kwargs["weights_only"] = True
+```
 - **Verification**: All 3 _torch_load functions now use secure default
 
 ---
@@ -74,14 +74,14 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 - **Status**: ✅ **ALREADY SECURE**
 - **Finding**: All subprocess calls use list form, no `shell=True`
 - **Example from transformer.py:180**:
-  ```python
-  result = subprocess.run(
-      [tool_path, "--quiet", str(file_path)],  # ✅ List form
-      capture_output=True,
-      text=True,
-      timeout=30,
-  )
-  ```
+```python
+result = subprocess.run(
+    [tool_path, "--quiet", str(file_path)],  # ✅ List form
+    capture_output=True,
+    text=True,
+    timeout=30,
+)
+```
 - **Verification**: Checked all 6 locations - all use secure patterns
 
 #### Alert #1871: XML Parsing Vulnerability
@@ -89,10 +89,10 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 - **Status**: ✅ **ALREADY FIXED**
 - **Fix**: Already uses `defusedxml` (verified in commit 23d1216)
 - **Current Code**:
-  ```python
-  from defusedxml.ElementTree import tostring
-  from xml.etree.ElementTree import Element, SubElement  # Safe after defusedxml import
-  ```
+```python
+from defusedxml.ElementTree import tostring
+from xml.etree.ElementTree import Element, SubElement  # Safe after defusedxml import
+```
 - **Verification**: defusedxml >=0.7.1 in requirements.txt
 
 #### Alerts #1672, #1664-#1652: Error Handling (13 alerts)

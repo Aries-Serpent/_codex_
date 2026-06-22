@@ -797,7 +797,7 @@ groups:
 ### Rollback Strategies
 
 **Disable Rate Limiting (Emergency):**
-```python
+```text
 # Environment variable override
 MCP_RATE_LIMIT_ENABLED=false
 

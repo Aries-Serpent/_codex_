@@ -57,7 +57,7 @@ except SpecificError as e:
 ```
 
 **Null Checks:**
-```python
+```text
 if value is None:
     return default_value
 ```

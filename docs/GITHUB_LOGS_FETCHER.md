@@ -123,7 +123,7 @@ app.include_router(router)
 
 #### Python Integration
 
-```python
+```text
 from mcp.tools.github_logs import fetch_check_run_logs, list_check_runs
 
 # Fetch check run logs

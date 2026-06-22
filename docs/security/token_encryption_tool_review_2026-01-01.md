@@ -103,7 +103,7 @@ auth_data = b"_codex_ghp_token_v1_aries_serpent"
 - ✅ Cryptographically secure random generation via `secrets` module
 
 ### C. Token Validation
-```python
+```text
 # Lines 313-318: Validates GitHub token format
 if not token.startswith(('ghp_', 'gho_', 'ghs_', 'github_pat_')):
     # Warn and confirm

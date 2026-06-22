@@ -201,19 +201,19 @@ def quantum_vae_loss(x, z, Psi):
    - Quantum error correction if H < threshold
 
 3. **Consistency Check**:
-   ```python
-   def verify_mirror_consistency(mirror1, mirror2):
-       """Quantum-inspired consistency verification."""
-       state1 = encode_quantum_state(mirror1)
-       state2 = encode_quantum_state(mirror2)
+```python
+def verify_mirror_consistency(mirror1, mirror2):
+    """Quantum-inspired consistency verification."""
+    state1 = encode_quantum_state(mirror1)
+    state2 = encode_quantum_state(mirror2)
 
-       fidelity = abs(inner_product(state1, state2))**2
+    fidelity = abs(inner_product(state1, state2))**2
 
-       if fidelity < THRESHOLD:
-           trigger_resync()
+    if fidelity < THRESHOLD:
+        trigger_resync()
 
-       return fidelity
-   ```
+    return fidelity
+```
 
 ---
 

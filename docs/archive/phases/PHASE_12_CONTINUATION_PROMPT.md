@@ -130,7 +130,7 @@ PR #2858 review comments addressed:
 ### Week 1: External OAuth Integrations
 
 **Day 1-2: Google OAuth + Drive**
-```python
+```text
 # Tasks:
 - [ ] Implement Google OAuth provider
 - [ ] Add Google Drive API client
@@ -140,7 +140,7 @@ PR #2858 review comments addressed:
 ```
 
 **Day 3-4: Azure AD + Key Vault**
-```python
+```text
 # Tasks:
 - [ ] Implement Azure AD/Entra ID provider
 - [ ] Add Azure Key Vault client
@@ -150,7 +150,7 @@ PR #2858 review comments addressed:
 ```
 
 **Day 5: Okta SSO**
-```python
+```text
 # Tasks:
 - [ ] Implement Okta provider
 - [ ] Add SCIM provisioning
@@ -162,7 +162,7 @@ PR #2858 review comments addressed:
 ## Week 2: Cloud Security & Tier 2 Agents
 
 **Day 1-2: AWS CloudHSM + Azure Key Vault**
-```python
+```text
 # Tasks:
 - [ ] Implement AWS CloudHSM client
 - [ ] Add Azure Key Vault integration
@@ -172,7 +172,7 @@ PR #2858 review comments addressed:
 ```
 
 **Day 3-5: Code Reviewer Agent (Tier 2)**
-```python
+```text
 # Tasks:
 - [ ] Design Copilot API integration
 - [ ] Implement code analysis pipeline
@@ -185,7 +185,7 @@ PR #2858 review comments addressed:
 ## Week 3: Monitoring & Production Infrastructure
 
 **Day 1-2: Monitoring Integrations**
-```python
+```text
 # Tasks:
 - [ ] Implement Datadog client
 - [ ] Add PagerDuty integration
@@ -195,7 +195,7 @@ PR #2858 review comments addressed:
 ```
 
 **Day 3-5: Database Migration + Dashboards**
-```python
+```text
 # Tasks:
 - [ ] PostgreSQL schema design
 - [ ] Migration scripts

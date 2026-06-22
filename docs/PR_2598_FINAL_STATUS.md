@@ -56,7 +56,7 @@ tests/security/test_security_integration.py .................       [100%]
 ```
 
 ### Encryption: All Algorithms Verified ✅
-```python
+```text
 # Tested all 3 encryption algorithms
 ✅ Fernet (AES-128-CBC + HMAC-SHA256) - Working
 ✅ AES-256-GCM - Working

@@ -153,12 +153,12 @@ class ModelEndpoint:
     def __init__(self, model_path: str):
         # Load model once during initialization
         self.model = joblib.load(model_path)
-    
+
     async def __call__(self, data: Dict) -> Dict:
         # Async call for better concurrency
         features = data["features"]
         prediction = self.model.predict([features])[0]
-        
+
         return {
             "prediction": float(prediction),
             "confidence": float(self.model.predict_proba([features])[0].max())
@@ -183,7 +183,7 @@ import numpy as np
 class ModelA:
     def __init__(self):
         self.model = self._load_model("model_a.pkl")
-    
+
     async def __call__(self, features: Dict) -> float:
         return self.model.predict([features["data"]])[0]
 
@@ -191,7 +191,7 @@ class ModelA:
 class ModelB:
     def __init__(self):
         self.model = self._load_model("model_b.pkl")
-    
+
     async def __call__(self, features: Dict) -> float:
         return self.model.predict([features["data"]])[0]
 
@@ -200,15 +200,15 @@ class EnsembleModel:
     def __init__(self, model_a_handle, model_b_handle):
         self.model_a = model_a_handle
         self.model_b = model_b_handle
-    
+
     async def __call__(self, request: Dict) -> Dict:
         # Get predictions from both models
         pred_a = await self.model_a.remote(request)
         pred_b = await self.model_b.remote(request)
-        
+
         # Combine predictions
         ensemble_pred = (float(pred_a) + float(pred_b)) / 2
-        
+
         return {
             "model_a": float(pred_a),
             "model_b": float(pred_b),
@@ -238,7 +238,7 @@ class Preprocessor:
         # Normalize features
         features = np.array(data["raw_features"])
         normalized = (features - features.mean()) / (features.std() + 1e-8)
-        
+
         return {
             "features": normalized.tolist(),
             "original": data["raw_features"]
@@ -248,11 +248,11 @@ class Preprocessor:
 class InferenceModel:
     def __init__(self):
         self.model = self._load_model()
-    
+
     async def __call__(self, preprocessed: Dict) -> Dict:
         features = preprocessed["features"]
         prediction = self.model.predict([features])[0]
-        
+
         return {"prediction": float(prediction)}
 
 @serve.deployment
@@ -260,12 +260,12 @@ class Pipeline:
     def __init__(self, preprocessor_handle, model_handle):
         self.preprocessor = preprocessor_handle
         self.model = model_handle
-    
+
     async def __call__(self, request: Dict) -> Dict:
         # Process through pipeline
         preprocessed = await self.preprocessor.remote(request)
         result = await self.model.remote(preprocessed)
-        
+
         return {
             "input": request["raw_features"],
             "preprocessed": preprocessed["features"],
@@ -301,7 +301,7 @@ from ray import serve
 class AutoScalingModel:
     def __init__(self):
         self.model = self._load_model()
-    
+
     async def __call__(self, request):
         import time
         time.sleep(0.1)  # Simulate processing
@@ -366,7 +366,7 @@ class LoadBalancedModel:
         self.batch_size = config["batch_size"]
         self.timeout = config["timeout"]
         self.model = self._load_model()
-    
+
     async def __call__(self, request: Request) -> JSONResponse:
         # Process with backpressure
         try:
@@ -398,12 +398,12 @@ class HealthyModel:
     def __init__(self):
         self.model = self._load_model()
         self.is_healthy = True
-    
+
     def check_health(self):
         # Called by Ray Serve
         if not self.is_healthy:
             raise Exception("Model unhealthy")
-    
+
     async def __call__(self, request):
         try:
             result = self.model.predict(request["data"])
@@ -417,12 +417,12 @@ async def health_endpoint(request):
     """Health check endpoint"""
     import ray
     serve_info = serve.status()
-    
+
     all_healthy = all(
         deployment["status"] == "HEALTHY"
         for deployment in serve_info.deployments.values()
     )
-    
+
     status = 200 if all_healthy else 503
     return JSONResponse({"healthy": all_healthy}, status_code=status)
 
@@ -463,10 +463,10 @@ class MetricsModel:
     def __init__(self):
         self.model = self._load_model()
         self.deployment_name = self.__class__.__name__
-    
+
     async def __call__(self, request):
         active_requests.labels(deployment=self.deployment_name).inc()
-        
+
         start_time = time.time()
         try:
             result = self.model.predict(request["data"])
@@ -513,10 +513,10 @@ class LoggedModel:
     def __init__(self):
         logger.info("Initializing model")
         self.model = self._load_model()
-    
+
     async def __call__(self, request):
         logger.info(f"Received request: {request}")
-        
+
         try:
             result = self.model.predict(request["data"])
             logger.info(f"Prediction successful: {result}")

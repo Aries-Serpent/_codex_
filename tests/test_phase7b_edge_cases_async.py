@@ -70,7 +70,7 @@ class TestAsyncConcurrency:
             async def fetch_log(run_id):
                 try:
                     return await api.fetch_logs(repo='test/repo', run_id=run_id)
-                except Exception as _err:
+                except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
                     return None
 
             # Create 10 concurrent tasks
@@ -186,9 +186,9 @@ class TestResourceExhaustion:
                     try:
                         dal = ArchiveDAL(connection_string='dummy')
                         connections.append(dal)
-                    except Exception as e:
+                    except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
                         errors.append(str(e))
-            except Exception as e:
+            except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
                 errors.append(str(e))
 
             # Should either succeed or fail gracefully
@@ -408,7 +408,7 @@ class TestEndToEndWorkflows:
                     result1 = await api.query('query1')
                     result2 = await api.query('query2')
                     return result1, result2
-                except Exception as _err:
+                except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
                     return None, None
 
             result = await workflow()
@@ -452,7 +452,7 @@ class TestIntegrationErrorPropagation:
                 try:
                     result = tokenizer.encode(text)
                     results.append(result)
-                except Exception as _err:
+                except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
                     results.append(None)
 
             # Should have processed all items

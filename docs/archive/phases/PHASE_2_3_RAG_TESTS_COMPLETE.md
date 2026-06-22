@@ -151,7 +151,7 @@ with patch('faiss.IndexFlatL2', return_value=mock_index):
 
 ### Test Structure
 
-```python
+```text
 class TestModuleFeature:
     """Test suite for specific feature."""
 

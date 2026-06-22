@@ -23,11 +23,10 @@ This document describes the integration of six emerging physics paradigms into t
 - Hidden bug discovery through sensitivity
 
 **Key Equations**:
-```python
-# Logistic map
-x_{n+1} = r * x_n * (1 - x_n)
+```
+Logistic map: x_{n+1} = r * x_n * (1 - x_n)
 
-# Lyapunov exponent (measure of chaos)
+Lyapunov exponent (measure of chaos):
 λ = lim_{n→∞} (1/n) * Σ log|f'(x_i)|
 ```
 
@@ -60,7 +59,7 @@ perturbed = cnn.inject_chaos(base_value=0.5, chaos_strength=0.2)
 - Multi-scale code decomposition
 
 **Key Equations**:
-```python
+```
 # Box-counting dimension
 D = lim_{ε→0} log(N(ε)) / log(1/ε)
 
@@ -102,7 +101,7 @@ anomalies = analyzer.detect_anomalies(structures, threshold=2.0)
 - Turbulence-based adaptability
 
 **Key Equations**:
-```python
+```
 # Reynolds number (flow regime)
 Re = ρvL/μ
 # Re < 2300: Laminar (smooth)
@@ -143,7 +142,7 @@ result = scheduler.optimize_flow(iterations=10)
 - Influence propagation
 
 **Key Equations**:
-```python
+```
 # Potential field from charges
 φ(r) = Σ q_i / |r - r_i|
 
@@ -189,7 +188,7 @@ regions = router.prioritize_regions(num_regions=5)
 - Communication pattern analysis
 
 **Key Equations**:
-```python
+```
 # Wave equation
 ∂²u/∂t² = c²∇²u - γ∂u/∂t
 
@@ -230,7 +229,7 @@ if interference['constructive'] > 0:
 - Distributed coordination
 
 **Key Equations**:
-```python
+```
 # Lorentz factor
 γ = 1 / √(1 - v²/c²)
 

@@ -58,21 +58,21 @@ Each capability is scored on 5 components:
 ### When Adding New Capabilities
 
 1. **Create Detector** (`scripts/space_traversal/detectors/{capability}.py`):
-   ```python
-   def detect(file_index: dict) -> dict:
-       return {
-           "id": "capability-name",
-           "evidence_files": [...],
-           "found_patterns": [...],
-           "required_patterns": [...],  # Keep minimal and achievable
-           "docs_keywords": [...],
-           "safeguards": ["validation", "bounded", "deterministic", "offline", "reproducible", "cleanup"],
-           "meta": {
-               "category": "...",
-               "detector_version": "1.0"
-           }
-       }
-   ```
+```python
+def detect(file_index: dict) -> dict:
+    return {
+        "id": "capability-name",
+        "evidence_files": [...],
+        "found_patterns": [...],
+        "required_patterns": [...],  # Keep minimal and achievable
+        "docs_keywords": [...],
+        "safeguards": ["validation", "bounded", "deterministic", "offline", "reproducible", "cleanup"],
+        "meta": {
+            "category": "...",
+            "detector_version": "1.0"
+        }
+    }
+```
 
 2. **Create Documentation** (`docs/capabilities/{capability}.md`):
    - Include all docs_keywords naturally
@@ -110,7 +110,7 @@ Each capability is scored on 5 components:
 
 ### Issue: Low Safeguards Score
 **Solution**: Add more safeguard keywords to detector:
-```python
+```text
 "safeguards": ["validation", "bounded", "deterministic", "offline", "reproducible", "sanitize"]
 ```
 

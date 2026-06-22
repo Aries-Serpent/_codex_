@@ -273,12 +273,12 @@ src/codex/quantum_orchestrator/
 The implementation maintains physical accuracy:
 
 ### Energy-Momentum Relation
-```python
+```text
 E² ≈ p²c² + m²c⁴  # Verified in tests
 ```
 
 ### Lorentz Factor
-```python
+```text
 γ = 1/√(1 - v²/c²) ≥ 1  # Always satisfied
 ```
 
@@ -288,12 +288,12 @@ v < c  # Enforced via apply_force()
 ```
 
 ### Probability Conservation
-```python
+```text
 ∂ρ/∂t + ∇·j = 0  # Checked via ContinuityChecker
 ```
 
 ### Dirac Current Bound
-```python
+```text
 |j| ≤ c  # Always subluminal
 ```
 

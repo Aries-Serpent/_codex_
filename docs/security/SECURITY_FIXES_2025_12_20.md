@@ -104,7 +104,7 @@ The secret scan stub writes findings (which may contain sensitive snippets) to o
 ### Resolution
 **Fix:** Redact actual secret values in output, only show location and type.
 
-```python
+```text
 def _sanitize_snippet(snippet: str) -> str:
     """Redact potential secrets from snippets."""
     # Replace potential secrets with placeholder
@@ -133,7 +133,7 @@ Logging of tokens, credentials, or other sensitive data in plain text.
 **Fix:** Implement secure logging with automatic redaction.
 
 **codex_mint_tokens_per_run.py:395**
-```python
+```text
 # OLD:
 print(json.dumps({"token": token, "masked": masked, ...}, indent=2))
 

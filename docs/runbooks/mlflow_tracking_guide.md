@@ -161,10 +161,10 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
    ```
 
 3. Check tracking URI:
-   ```python
-   import mlflow
-   print(mlflow.get_tracking_uri())
-   ```
+```python
+import mlflow
+print(mlflow.get_tracking_uri())
+```
 
 ### Issue: Connection Error to MLflow Server
 
@@ -182,12 +182,12 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
    ```
 
 3. Fall back to local tracking:
-   ```python
-   tracker = MLflowTracker(
-        experiment_name="my_exp",
-        tracking_uri="file://./mlruns"  # Local fallback
-   )
-   ```
+```python
+tracker = MLflowTracker(
+     experiment_name="my_exp",
+     tracking_uri="file://./mlruns"  # Local fallback
+)
+```
 
 ### Issue: Performance Degradation
 
@@ -209,10 +209,10 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
    ```
 
 3. Reduce logging frequency:
-   ```python
-   if epoch % 10 == 0:  # Log every 10 epochs
-       tracker.log_metrics(metrics, step=epoch)
-   ```
+```python
+if epoch % 10 == 0:  # Log every 10 epochs
+    tracker.log_metrics(metrics, step=epoch)
+```
 
 ---
 
@@ -227,14 +227,14 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
   - Example: `baseline_lr0.001`
 
 - **Tags**: Use for categorization:
-  ```python
-  tags={
-      "model_family": "transformer",
-      "dataset": "squad",
-      "environment": "production",
-      "team": "ml_core"
-  }
-  ```
+```python
+tags={
+    "model_family": "transformer",
+    "dataset": "squad",
+    "environment": "production",
+    "team": "ml_core"
+}
+```
 
 ### 2. What to Log
 

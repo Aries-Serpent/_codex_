@@ -13,18 +13,18 @@ This document defines the coding standards for contributions to _codex_.
    - Use double quotes for strings
 
 2. **Use type hints** for all function signatures:
-   ```python
-   def process_data(items: list[str], limit: int = 10) -> dict[str, Any]:
-       ...
-   ```
+```python
+def process_data(items: list[str], limit: int = 10) -> dict[str, Any]:
+    ...
+```
 
 3. **Use dataclasses** for data containers:
-   ```python
-   @dataclass
-   class Result:
-       success: bool
-       value: str | None = None
-   ```
+```python
+@dataclass
+class Result:
+    success: bool
+    value: str | None = None
+```
 
 ### Naming Conventions
 

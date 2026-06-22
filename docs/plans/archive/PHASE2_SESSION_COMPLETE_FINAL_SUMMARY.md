@@ -333,20 +333,20 @@ Progress: 6.9% of journey to 95% complete (+4.93% / 71.79%)
    - **Tradeoff:** Must handle mutable defaults carefully
 
 2. **Parameter Aliasing Strategy**
-   ```python
-   # Pattern that works well:
-   def method(self, new_param=None, old_param=None):
-       if old_param and not new_param:
-           new_param = old_param
-       # Use new_param throughout
-   ```
+```python
+# Pattern that works well:
+def method(self, new_param=None, old_param=None):
+    if old_param and not new_param:
+        new_param = old_param
+    # Use new_param throughout
+```
 
 3. **Union Types for Flexibility**
-   ```python
-   # Enables polymorphic usage:
-   field: Union[str, Any] = ""
-   # Accepts both specific and general types
-   ```
+```python
+# Enables polymorphic usage:
+field: Union[str, Any] = ""
+# Accepts both specific and general types
+```
 
 ### Process Insights
 

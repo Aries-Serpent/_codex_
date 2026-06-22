@@ -110,7 +110,7 @@ fail_on: [error, critical]    # Block on these severities
 ```
 
 ## Export Formats
-```python
+```text
 # Priority order
 1. JSON    - Default (automation)
 2. HTML    - High-value (human reports)

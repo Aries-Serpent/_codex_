@@ -226,7 +226,7 @@ A minimal and robust PyTorch evaluation loop should focus on clarity, correctnes
 - Restore training mode after evaluation: Use model.train() for subsequent training phases[1](https://www.compilenrun.com/docs/library/pytorch/pytorch-training-loop/pytorch-validation-loop/)[[2]](https://www.slingacademy.com/article/how-to-write-a-pytorch-testing-loop/)[[3]](https://apxml.com/courses/getting-started-with-pytorch/chapter-6-implementing-training-loop/implementing-evaluation-loop)[[4]](https://www.slingacademy.com/article/analyzing-model-performance-with-pytorch-testing-loops/)[[5]](https://www.codegenes.net/blog/pytorch-validation-loop/).
 
 Sample Pattern:
-```python
+```text
 def evaluate(model, data_loader, criterion, device):
     model.eval()
     running_loss, correct, total = 0.0, 0, 0
@@ -255,12 +255,12 @@ This pattern can be extended to log additional metrics[5](https://www.codegenes.
 
 - Systematic Logging: Track key metrics like loss, accuracy, F1-score, etc., at epoch or batch level. Use Python's logging, TensorBoard, or tools like Weights & Biases for visualization and comparison[6](https://apxml.com/courses/getting-started-with-pytorch/chapter-8-monitoring-debugging-models/logging-metrics-training-evaluation)[[7]](https://www.geeksforgeeks.org/deep-learning/monitoring-model-training-in-pytorch-with-callbacks-and-logging/).
 - Avoid Redundant Boilerplate: Use dictionaries or objects to store metrics, making code more extensible and avoid metric-specific lists. For example:
-    ```python
-    metrics = {'loss': [], 'accuracy': [], 'f1': []}
-    # During loop
-    metrics['loss'].append(batch_loss)
-    # After epoch, compute mean and log
-    ```
+```python
+metrics = {'loss': [], 'accuracy': [], 'f1': []}
+# During loop
+metrics['loss'].append(batch_loss)
+# After epoch, compute mean and log
+```
 - Compute on GPU Where Possible: For large datasets or complicated metrics (e.g., confusion matrix, F1), do in-place aggregation with PyTorch tensors before moving results to CPU for final calculation. Directly use torch ops for metrics like accuracy to reduce CPU transfer overhead[8](https://stackoverflow.com/questions/56643503/efficient-metrics-evaluation-in-pytorch)[[9]](https://discuss.pytorch.org/t/best-practices-for-collecting-metrics/181881).
 
 - Use Established Libraries for Complex Metrics: Libraries like torchmetrics or frameworks like PyTorch Lightning abstract much metric handling and logging with callback systems, making it easy to extend and log dozens of metrics without boilerplate[9](https://discuss.pytorch.org/t/best-practices-for-collecting-metrics/181881).
@@ -317,7 +317,7 @@ To use pip-audit in a Nox session and fail the session if high or critical vulne
 
 Below is a practical example noxfile.py illustrating these steps:
 
-```python
+```text
 import nox
 import json
 
@@ -568,18 +568,18 @@ To validate TOML and JSON configuration files against a JSON Schema in Python, y
 ### 1. Load TOML and JSON Configurations into Python Dictionaries
 
 - TOML: Use the built-in tomllib (Python 3.12+) or tomli for earlier versions.
-    ```python
-    import tomllib  # Python 3.12+
-    with open("config.toml", "rb") as f:
-        toml_data = tomllib.load(f)
-    ```
+```python
+import tomllib  # Python 3.12+
+with open("config.toml", "rb") as f:
+    toml_data = tomllib.load(f)
+```
 
 - JSON: Use the standard json library.
-    ```python
-    import json
-    with open("config.json") as f:
-        json_data = json.load(f)
-    ```
+```python
+import json
+with open("config.json") as f:
+    json_data = json.load(f)
+```
 
 ---
 
@@ -596,21 +596,21 @@ with open("schema.json") as f:
 ### 3. Validate Configurations Using jsonschema
 
 - jsonschema: The most popular library for validation in Python.
-    ```python
-    from jsonschema import validate, ValidationError
+```python
+from jsonschema import validate, ValidationError
 
-    try:
-        validate(instance=json_data, schema=schema)
-        print("JSON config is valid!")
-    except ValidationError as e:
-        print("JSON config is invalid:", e)
+try:
+    validate(instance=json_data, schema=schema)
+    print("JSON config is valid!")
+except ValidationError as e:
+    print("JSON config is invalid:", e)
 
-    try:
-        validate(instance=toml_data, schema=schema)
-        print("TOML config is valid!")
-    except ValidationError as e:
-        print("TOML config is invalid:", e)
-    ```
+try:
+    validate(instance=toml_data, schema=schema)
+    print("TOML config is valid!")
+except ValidationError as e:
+    print("TOML config is invalid:", e)
+```
 - The schema's definitions must correspond to the resultant Python objects, e.g., TOML tables as JSON objects, arrays as lists, etc. There are a few caveats on how TOML types map to JSON types, but in general, it's a straightforward one-to-one mapping for core types, as discussed by the TOML community[1](https://github.com/toml-lang/toml/discussions/1038)[[2]](https://realpython.com/python-toml/)[[3]](https://json-schema-everywhere.github.io/toml).
 
 ---
@@ -668,19 +668,19 @@ To achieve deterministic machine learning (ML) experiments in Python and PyTorch
 
 ### 2. Control cuDNN Behavior (for GPU)
 - Set deterministic convolution algorithms:  
-  ```python
-  torch.backends.cudnn.deterministic = True
-  torch.backends.cudnn.benchmark = False
-  ```
+```python
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+```
   This disables the dynamic benchmarking of cuDNN algorithms, forcing PyTorch to select deterministic ones at a trade-off of speed for reproducibility[5](https://runebook.dev/en/articles/pytorch/backends/torch.backends.cudnn.deterministic)[[6]](https://www.codegenes.net/blog/different-result-with-deterministic-setting-in-pytorch/)[[7]](https://gist.github.com/Guitaricet/28fbb2a753b1bb888ef0b2731c03c031)[[8]](https://stackoverflow.com/questions/56354461/reproducibility-and-performance-in-pytorch).
 
 ### 3. Consistent Data Loading
 - When using DataLoader, pass a fixed seed to its generator argument for reproducible shuffling:
-  ```python
-  from torch.utils.data import DataLoader
-  generator = torch.Generator().manual_seed(SEED)
-  loader = DataLoader(dataset, shuffle=True, generator=generator)
-  ```
+```python
+from torch.utils.data import DataLoader
+generator = torch.Generator().manual_seed(SEED)
+loader = DataLoader(dataset, shuffle=True, generator=generator)
+```
   This prevents randomness in the order of mini-batches[1](https://www.codegenes.net/blog/how-to-train-a-model-deterministic-pytorch/)[[9]](https://www.geeksforgeeks.org/deep-learning/reproducibility-in-pytorch/).
 
 ### 4. Log All Hyperparameters and Initial States
@@ -702,7 +702,7 @@ To achieve deterministic machine learning (ML) experiments in Python and PyTorch
 
 #### Example Starter Script for Deterministic PyTorch Experiments
 
-```python
+```text
 import random
 import numpy as np
 import torch

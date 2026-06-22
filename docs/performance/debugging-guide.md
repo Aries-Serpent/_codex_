@@ -183,13 +183,13 @@ from memory_profiler import profile
 def memory_intensive():
     # Create large list
     large_list = [i for i in range(1000000)]
-    
+
     # Process it
     result = sum(large_list)
-    
+
     # Large dict
     large_dict = {i: i**2 for i in range(100000)}
-    
+
     return result, large_dict
 
 memory_intensive()
@@ -226,13 +226,13 @@ import statistics
 def benchmark_function(func, *args, iterations=100):
     """Benchmark a function"""
     times = []
-    
+
     for _ in range(iterations):
         start = timeit.default_timer()
         func(*args)
         elapsed = timeit.default_timer() - start
         times.append(elapsed)
-    
+
     return {
         "min": min(times),
         "max": max(times),
@@ -274,7 +274,7 @@ def test_string_concat(benchmark):
         for i in range(1000):
             s += str(i)
         return s
-    
+
     result = benchmark(concat_strings)
     assert len(result) > 0
 ```
@@ -295,24 +295,24 @@ test_string_concat       2.34 ms ±    0.12 ms   [3 measurements]
 ```python
 def benchmark_comparison():
     """Compare different implementations"""
-    
+
     # Method 1: List comprehension
     def method1(n):
         return [i for i in range(n) if i % 2 == 0]
-    
+
     # Method 2: Generator
     def method2(n):
         return list(i for i in range(n) if i % 2 == 0)
-    
+
     # Method 3: Filter
     def method3(n):
         return list(filter(lambda x: x % 2 == 0, range(n)))
-    
+
     # Method 4: NumPy
     import numpy as np
     def method4(n):
         return np.where(np.arange(n) % 2 == 0)[0]
-    
+
     n = 100000
     results = {
         "List comprehension": benchmark_function(method1, n),
@@ -320,7 +320,7 @@ def benchmark_comparison():
         "Filter": benchmark_function(method3, n),
         "NumPy": benchmark_function(method4, n),
     }
-    
+
     for method, metrics in results.items():
         print(f"{method:20} {metrics['mean']*1000:8.3f}ms")
 ```
@@ -445,18 +445,18 @@ import psutil
 def detect_cpu_bottleneck():
     process = psutil.Process(os.getpid())
     cpu_percent = process.cpu_percent(interval=1)
-    
+
     if cpu_percent > 80:
         print("CPU bottleneck detected!")
-        
+
         # Profile the CPU usage
         import cProfile
         profiler = cProfile.Profile()
         profiler.enable()
-        
+
         # Run your code
         expensive_function()
-        
+
         profiler.disable()
         profiler.print_stats(10)
 ```
@@ -479,7 +479,7 @@ def detect_io_bottleneck():
         capture_output=True,
         text=True
     )
-    
+
     # %util > 80 indicates I/O bottleneck
     print(result.stdout)
 ```
@@ -497,7 +497,7 @@ import psutil
 
 def detect_memory_bottleneck():
     memory = psutil.virtual_memory()
-    
+
     if memory.percent > 85:
         print("Memory bottleneck detected!")
         print(f"Available: {memory.available / 1e9:.2f} GB")
@@ -575,13 +575,13 @@ import pstats
 def get_data():
     profiler = cProfile.Profile()
     profiler.enable()
-    
+
     result = fetch_and_process_data()
-    
+
     profiler.disable()
     stats = pstats.Stats(profiler)
     stats.print_stats()
-    
+
     return result
 ```
 

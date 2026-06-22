@@ -443,7 +443,7 @@ Add `--estimate` flag to predict package size before creation, enabling users to
 
 **File**: `scripts/mcp/mcp-package` (enhance MCPPackager class)
 
-```python
+```text
 def estimate_size(self, topic: str = None, custom: str = None) -> Dict[str, Any]:
     """Estimate package size without creating it"""
     # 1. Use select_components.py to get file list

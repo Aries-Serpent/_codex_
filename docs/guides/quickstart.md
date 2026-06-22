@@ -99,7 +99,7 @@ if monitor.detect_forgetting("domain1", current_perf):
 
 ### Environment Adapters
 
-```python
+```text
 # GridWorld
 spec = TaskSpec(environment="gridworld", ...)
 

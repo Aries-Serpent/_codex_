@@ -181,7 +181,7 @@ class RequestContextLogger:
 
 Implement Prometheus metrics:
 
-```python
+```text
 from prometheus_client import Counter, Histogram, Gauge, generate_latest
 import time
 

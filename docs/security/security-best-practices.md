@@ -63,11 +63,11 @@ def require_permission(resource_type: str):
         def wrapper(request, *args, **kwargs):
             user = get_current_user(request)
             resource_id = kwargs.get("user_id")
-            
+
             # Check if user has permission
             if not user_has_permission(user, resource_type, resource_id):
                 raise PermissionError(f"Access denied to {resource_type}")
-            
+
             return func(request, *args, **kwargs)
         return wrapper
     return decorator
@@ -99,7 +99,7 @@ class RoleBasedAccessControl:
             Role.EDITOR: set(Role.EDITOR.value),
             Role.ADMIN: set(Role.ADMIN.value)
         }
-    
+
     def has_permission(self, user_role: Role, required_permission: Permission) -> bool:
         return required_permission in self.role_permissions[user_role]
 
@@ -108,10 +108,10 @@ class RoleBasedAccessControl:
 def update_user_settings(request, user_id: int, settings: dict):
     user = get_current_user(request)
     rbac = RoleBasedAccessControl()
-    
+
     if not rbac.has_permission(user.role, Permission.WRITE):
         raise PermissionError("Insufficient permissions")
-    
+
     return database.update_user(user_id, settings)
 ```
 
@@ -139,10 +139,10 @@ class EncryptionService:
             iterations=100000,
         )
         self.cipher = Fernet(self._key_to_fernet(master_key))
-    
+
     def encrypt(self, plaintext: str) -> str:
         return self.cipher.encrypt(plaintext.encode()).decode()
-    
+
     def decrypt(self, ciphertext: str) -> str:
         return self.cipher.decrypt(ciphertext.encode()).decode()
 
@@ -211,14 +211,14 @@ def send_email(template_name: str, user_data: dict):
 from jinja2 import Template, Markup
 def send_email(template_name: str, user_data: dict):
     template_path = f"templates/{template_name}.html"
-    
+
     # Validate template name
     if ".." in template_name or "/" in template_name:
         raise ValueError("Invalid template name")
-    
+
     with open(template_path) as f:
         template = Template(f.read())
-    
+
     # Jinja2 automatically escapes user data
     html = template.render(**user_data)
     return send_email_template(html)
@@ -238,11 +238,11 @@ class PaymentThreatModel:
     Threat: Attacker intercepts payment
     Mitigation: TLS encryption + tokenization
     """
-    
+
     def process_payment(self, card: str, amount: float):
         # Step 1: Tokenize card data (external service)
         token = self.tokenizer.tokenize(card)
-        
+
         # Step 2: Store token only (never store card)
         payment_record = {
             "token": token,
@@ -250,10 +250,10 @@ class PaymentThreatModel:
             "timestamp": datetime.now(),
             "encrypted": True
         }
-        
+
         # Step 3: Log for audit
         self.audit_log.record(payment_record)
-        
+
         return {"status": "success", "transaction_id": token}
 ```
 
@@ -274,7 +274,7 @@ def handle_error(request, exc):
 @app.exception_handler(Exception)
 def handle_error(request, exc):
     logger.error(f"Unexpected error: {exc}", exc_info=True)  # Log internally
-    
+
     return {
         "error": "Internal server error",
         "request_id": request.id
@@ -318,7 +318,7 @@ class PasswordValidator:
             .digits() \
             .symbols() \
             .no_spaces()
-    
+
     def validate(self, password: str) -> tuple[bool, str]:
         if not self.validator.validate(password):
             return False, "Password does not meet requirements"
@@ -332,7 +332,7 @@ class MFAService:
         secret = pyotp.random_base32()
         store_mfa_secret(user_id, secret)
         return secret
-    
+
     def verify_code(self, user_id: str, code: str) -> bool:
         secret = get_mfa_secret(user_id)
         totp = pyotp.TOTP(secret)
@@ -342,10 +342,10 @@ class MFAService:
 @app.post("/login")
 def login(credentials: dict):
     user = authenticate_user(credentials)
-    
+
     if not user:
         raise PermissionError("Invalid credentials")
-    
+
     # Create session with security options
     session = {
         "user_id": user.id,
@@ -353,9 +353,9 @@ def login(credentials: dict):
         "expires_at": datetime.now() + timedelta(hours=1),
         "ip_address": request.client.host
     }
-    
+
     response = JSONResponse({"status": "success"})
-    
+
     # Set secure cookie
     response.set_cookie(
         key="session_id",
@@ -365,7 +365,7 @@ def login(credentials: dict):
         httponly=True,  # No JS access
         samesite="Strict"  # CSRF protection
     )
-    
+
     return response
 ```
 
@@ -415,7 +415,7 @@ def login(request: Request, credentials: dict):
         # Log attempt but don't reveal if user exists
         logger.warning(f"Failed login attempt from {request.client.host}")
         raise PermissionError("Invalid credentials")
-    
+
     return create_session(user)
 ```
 
@@ -433,18 +433,18 @@ from urllib.parse import urlparse
 
 class URLValidator:
     BLOCKED_HOSTS = ["127.0.0.1", "localhost", "169.254.169.254"]
-    
+
     def is_safe(self, url: str) -> bool:
         parsed = urlparse(url)
-        
+
         # Check protocol
         if parsed.scheme not in ["http", "https"]:
             return False
-        
+
         # Check host
         if parsed.hostname in self.BLOCKED_HOSTS:
             return False
-        
+
         # Check for private IP ranges
         try:
             ip = socket.gethostbyname(parsed.hostname)
@@ -452,7 +452,7 @@ class URLValidator:
                 return False
         except socket.gaierror:
             return False
-        
+
         return True
 
 @app.post("/fetch")
@@ -460,7 +460,7 @@ def fetch_url(url: str):
     validator = URLValidator()
     if not validator.is_safe(url):
         raise ValueError("URL is not allowed")
-    
+
     response = requests.get(url, timeout=5)
     return response.text
 ```
@@ -488,39 +488,39 @@ class ValidationRule:
 class InputValidator:
     def __init__(self, rules: list[ValidationRule]):
         self.rules = rules
-    
+
     def validate(self, data: dict) -> tuple[bool, dict]:
         errors = {}
-        
+
         for rule in self.rules:
             value = data.get(rule.field)
-            
+
             # Check required
             if rule.required and value is None:
                 errors[rule.field] = "Required"
                 continue
-            
+
             # Check type
             if value is not None and not isinstance(value, rule.type):
                 errors[rule.field] = f"Must be {rule.type.__name__}"
                 continue
-            
+
             # Check length
             if isinstance(value, str):
                 if rule.min_length and len(value) < rule.min_length:
                     errors[rule.field] = f"Minimum {rule.min_length} characters"
                 if rule.max_length and len(value) > rule.max_length:
                     errors[rule.field] = f"Maximum {rule.max_length} characters"
-            
+
             # Check pattern
             if rule.pattern and isinstance(value, str):
                 if not re.match(rule.pattern, value):
                     errors[rule.field] = "Invalid format"
-            
+
             # Check allowed values
             if rule.allowed_values and value not in rule.allowed_values:
                 errors[rule.field] = "Not an allowed value"
-        
+
         return len(errors) == 0, errors
 
 # Usage
@@ -571,28 +571,28 @@ Elevation of Privilege: Attacker gains higher access
 class ThreatModel:
     """
     System: E-commerce payment processing
-    
+
     Assets:
     - Credit card data
     - User account credentials
     - Payment transactions
-    
+
     Threats:
     1. Spoofing: Attacker impersonates merchant
        Mitigation: SSL certificates, digital signatures
-    
+
     2. Tampering: Attacker modifies transaction amount
        Mitigation: Encryption, integrity checks
-    
+
     3. Repudiation: User denies payment
        Mitigation: Digital signatures, audit logs
-    
+
     4. Information Disclosure: Card data leaked
        Mitigation: Encryption at rest, PCI compliance
-    
+
     5. Denial of Service: Payment system overloaded
        Mitigation: Rate limiting, load balancing
-    
+
     6. Elevation of Privilege: Admin access gained
        Mitigation: MFA, RBAC, audit logging
     """
@@ -625,22 +625,22 @@ def process_sensitive_request(request):
     user = authenticate(request)
     if not user:
         raise AuthenticationError()
-    
+
     # Layer 2: Input validation
     data = validate_input(request.data)
     if not data:
         raise ValidationError()
-    
+
     # Layer 3: Authorization
     if not user_has_permission(user, "write_sensitive_data"):
         raise AuthorizationError()
-    
+
     # Layer 4: Encryption
     encrypted_data = encrypt_sensitive_data(data)
-    
+
     # Layer 5: Audit logging
     log_action(user, "sensitive_data_modified", data)
-    
+
     return encrypted_data
 ```
 

@@ -123,7 +123,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 
 The system automatically detects record versions:
 
-```python
+```text
 from codex.archive.evidence_schema import EvidenceSchemaValidator
 
 validator = EvidenceSchemaValidator()
@@ -415,13 +415,13 @@ Archive operations significantly slower after enabling standardization.
    ```
 
 3. Monitor with benchmarks:
-   ```python
-   import time
-   start = time.time()
-   # ... archive operation ...
-   elapsed = time.time() - start
-   print(f"Operation took {elapsed*1000:.2f}ms")
-   ```
+```python
+import time
+start = time.time()
+# ... archive operation ...
+elapsed = time.time() - start
+print(f"Operation took {elapsed*1000:.2f}ms")
+```
 
 ---
 

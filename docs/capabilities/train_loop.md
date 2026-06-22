@@ -269,13 +269,13 @@ def train_epoch(model, dataloader, optimizer, device):
 ## Best Practices
 
 1. **Error Handling**: Wrap training in try-except for graceful failures
-   ```python
-   try:
-       train_loop(model, train_loader, ...)
-   except KeyboardInterrupt:
-       print("Training interrupted, saving checkpoint...")
-       save_checkpoint(model, optimizer, epoch, "interrupted.pt")
-   ```
+```python
+try:
+    train_loop(model, train_loader, ...)
+except KeyboardInterrupt:
+    print("Training interrupted, saving checkpoint...")
+    save_checkpoint(model, optimizer, epoch, "interrupted.pt")
+```
 
 2. **Progress Tracking**: Use tqdm for visual progress bars and logging
    - Display current loss in progress bar
@@ -283,26 +283,26 @@ def train_epoch(model, dataloader, optimizer, device):
    - Save training curves for analysis
 
 3. **Gradient Clipping**: Prevent exploding gradients
-   ```python
-   import torch
+```python
+import torch
 
-   torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-   ```
+torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+```
 
 4. **Early Stopping**: Stop training when validation plateaus
-   ```python
-   if no_improvement_count >= patience:
-       print("Early stopping triggered")
-       break
-   ```
+```text
+if no_improvement_count >= patience:
+    print("Early stopping triggered")
+    break
+```
 
 5. **Deterministic Training**: Set seeds for reproducibility
-   ```python
-   import torch
+```python
+import torch
 
-   torch.manual_seed(42)
-   torch.cuda.manual_seed_all(42)
-   ```
+torch.manual_seed(42)
+torch.cuda.manual_seed_all(42)
+```
 
 ## Integration Points
 

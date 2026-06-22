@@ -68,7 +68,7 @@ Let me create the comprehensive deep research document directly in the workbench
 **Dependencies Subtotal**: 4.5 person-days
 
 **Code Reference**:
-```python
+```text
 # pyproject.toml enhancement
 [project]
 dependencies = [

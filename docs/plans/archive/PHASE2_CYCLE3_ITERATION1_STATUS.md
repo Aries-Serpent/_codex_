@@ -92,7 +92,7 @@ Added methods:
 - Enum value mismatches
 
 **Example:**
-```python
+```text
 @pytest.mark.skip(reason="DecisionState API changed")
 @pytest.mark.skip(reason="Enum value doesn't exist")
 ```

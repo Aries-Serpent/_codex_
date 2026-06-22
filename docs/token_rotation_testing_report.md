@@ -60,7 +60,7 @@ python scripts/rotate_jwt_secret.py --rollback   # Rollback to backup
 **Backup Location**: `.codex/secrets/backups/`
 
 **CRITICAL BUG FOUND** ❌:
-```python
+```text
 # Line 74 - WRONG IMPORT
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2  # Does not exist!
 
@@ -169,7 +169,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 ```
 
 **Change 2** (Line 101):
-```python
+```text
 # ❌ BEFORE
 kdf = PBKDF2(
     algorithm=hashes.SHA256(),
@@ -203,7 +203,7 @@ usage: rotate_jwt_secret.py [-h] [--verify] [--rollback] [--backup-file BACKUP_F
 
 All three scripts now import successfully:
 
-```python
+```text
 # Tested imports
 from github import Github                        ✅ OK
 from cryptography.fernet import Fernet          ✅ OK

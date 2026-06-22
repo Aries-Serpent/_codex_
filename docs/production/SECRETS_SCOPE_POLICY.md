@@ -220,16 +220,16 @@ def check_forbidden_secrets():  # pragma: allowlist secret
     if ENVIRONMENT not in ACCESSIBLE_SECRETS:  # pragma: allowlist secret
         print(f"❌ Unknown environment: {ENVIRONMENT}")
         sys.exit(1)
-    
+
     allowed = ACCESSIBLE_SECRETS[ENVIRONMENT]  # pragma: allowlist secret
-    
+
     # Check for forbidden patterns
     forbidden_patterns = {
         "production": ["_DEV", "_STAGING"],
         "staging": ["_PRODUCTION", "_DEV"],
         "development": ["_PRODUCTION", "_STAGING"]
     }
-    
+
     for pattern in forbidden_patterns[ENVIRONMENT]:
         for secret in os.environ:  # pragma: allowlist secret
             if pattern in secret:  # pragma: allowlist secret
@@ -237,7 +237,7 @@ def check_forbidden_secrets():  # pragma: allowlist secret
                 print(f"   Environment: {ENVIRONMENT}")
                 print(f"   Pattern: {pattern}")
                 sys.exit(1)
-    
+
     print(f"✅ No cross-environment secrets detected in {ENVIRONMENT}")  # pragma: allowlist secret
 
 if __name__ == "__main__":

@@ -146,11 +146,11 @@ print(f"Expires: {decoded['exp']}")
    - Max: 300 seconds
 
 3. Manual reset (if needed):
-   ```python
-   from src.codex_ml.serving.resilience import EnhancedCircuitBreaker
-   breaker = EnhancedCircuitBreaker.get_instance("model_name")
-   breaker.reset()
-   ```
+```python
+from src.codex_ml.serving.resilience import EnhancedCircuitBreaker
+breaker = EnhancedCircuitBreaker.get_instance("model_name")
+breaker.reset()
+```
 
 **If circuit breaker is flapping (open/closed rapidly):**
 - Increase failure threshold
@@ -343,11 +343,11 @@ def predict_with_retry(data, max_retries=3):
 
 **Rollback triggered:**
 1. Check error rate threshold:
-   ```python
-   # Default: 5% error rate
-   # Adjust if needed
-   deployment.config.error_threshold_percent = 10.0
-   ```
+```python
+# Default: 5% error rate
+# Adjust if needed
+deployment.config.error_threshold_percent = 10.0
+```
 
 2. Review logs for errors in green deployment
 3. Test green deployment directly before rollout
@@ -415,7 +415,7 @@ splitter.set_weights(blue=70, green=30)  # 70% blue, 30% green
 
 ### Latency Breakdown
 
-```python
+```text
 # Example latency breakdown
 total_latency = 500ms
 ├── Queue wait: 10ms (2%)

@@ -295,18 +295,18 @@ model = get_peft_model(base_model, lora_config)
    - Use 8-bit/4-bit base models with bitsandbytes
 
 4. **Merging Adapters**
-   ```python
-   # Merge LoRA weights into base model for inference
-   model = model.merge_and_unload()
-   ```
+```python
+# Merge LoRA weights into base model for inference
+model = model.merge_and_unload()
+```
 
 5. **Multi-Adapter Serving**
-   ```python
-   # Serve multiple adapters from single base model
-   base_model.load_adapter("adapter_task1", adapter_name="task1")
-   base_model.load_adapter("adapter_task2", adapter_name="task2")
-   base_model.set_adapter("task1")  # Switch active adapter
-   ```
+```python
+# Serve multiple adapters from single base model
+base_model.load_adapter("adapter_task1", adapter_name="task1")
+base_model.load_adapter("adapter_task2", adapter_name="task2")
+base_model.set_adapter("task1")  # Switch active adapter
+```
 
 ## Integration Points
 

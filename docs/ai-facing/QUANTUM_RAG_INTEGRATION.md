@@ -381,45 +381,45 @@ scorer = QuantumRelevanceScorer(
 **For Large Document Collections:**
 
 1. **Pre-compute embeddings:**
-   ```python
-   # Embed once, reuse many times
-   for chunk in chunks:
-       if "embedding" not in chunk.metadata:
-           emb = embedder.embed_text(chunk.content)
-           chunk.metadata["embedding"] = emb.embedding
-   ```
+```python
+# Embed once, reuse many times
+for chunk in chunks:
+    if "embedding" not in chunk.metadata:
+        emb = embedder.embed_text(chunk.content)
+        chunk.metadata["embedding"] = emb.embedding
+```
 
 2. **Batch processing:**
-   ```python
-   # Process chunks in batches
-   batch_size = 1000
-   all_results = []
+```python
+# Process chunks in batches
+batch_size = 1000
+all_results = []
 
-   for i in range(0, len(chunks), batch_size):
-       batch = chunks[i:i+batch_size]
-       results = retriever.retrieve_from_chunks(
-           query, batch, top_k=10
-       )
-       all_results.extend(results)
+for i in range(0, len(chunks), batch_size):
+    batch = chunks[i:i+batch_size]
+    results = retriever.retrieve_from_chunks(
+        query, batch, top_k=10
+    )
+    all_results.extend(results)
 
-   # Re-rank combined results
-   all_results.sort(key=lambda r: r.score, reverse=True)
-   final_results = all_results[:10]
-   ```
+# Re-rank combined results
+all_results.sort(key=lambda r: r.score, reverse=True)
+final_results = all_results[:10]
+```
 
 3. **Limit entropy optimization:**
-   ```python
-   # For very large top_k, entropy optimization can be slow
-   # Consider classical retrieval + quantum re-ranking
+```python
+# For very large top_k, entropy optimization can be slow
+# Consider classical retrieval + quantum re-ranking
 
-   # Classical: Fast, get 100 candidates
-   candidates = classical_retriever.retrieve(query, top_k=100)
+# Classical: Fast, get 100 candidates
+candidates = classical_retriever.retrieve(query, top_k=100)
 
-   # Quantum: Re-rank top 100 to top 10
-   quantum_results = retriever.retrieve_from_chunks(
-       query, candidates, top_k=10
-   )
-   ```
+# Quantum: Re-rank top 100 to top 10
+quantum_results = retriever.retrieve_from_chunks(
+    query, candidates, top_k=10
+)
+```
 
 ---
 

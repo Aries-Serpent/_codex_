@@ -392,7 +392,7 @@ registry.load_from_entry_points(
 
 ### 1. Use Descriptive Names
 
-```python
+```text
 # Good
 @registry.register("bert_large_sentiment")
 
@@ -402,7 +402,7 @@ registry.load_from_entry_points(
 
 ## 2. Provide Metadata
 
-```python
+```text
 @registry.register(
     "custom_metric",
     category="classification",

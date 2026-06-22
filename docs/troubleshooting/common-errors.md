@@ -248,7 +248,7 @@ from pydantic import BaseSettings
 class Config(BaseSettings):
     database_host: str = "localhost"
     database_port: int = 5432
-    
+
     class Config:
         env_file = ".env"
 
@@ -391,7 +391,7 @@ from requests.packages.urllib3.util.retry import Retry
 # ✅ CORRECT: Add timeout and retries
 def request_with_retry(url, timeout=10, retries=3):
     session = requests.Session()
-    
+
     # Add retry strategy
     retry_strategy = Retry(
         total=retries,
@@ -399,11 +399,11 @@ def request_with_retry(url, timeout=10, retries=3):
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["GET", "POST"]
     )
-    
+
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session.mount("http://", adapter)
     session.mount("https://", adapter)
-    
+
     try:
         response = session.get(url, timeout=timeout)
         return response
@@ -434,7 +434,7 @@ def timeout(duration):
     """Context manager for timeouts"""
     def handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {duration}s")
-    
+
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(duration)
     try:
@@ -454,18 +454,18 @@ import threading
 
 def run_with_timeout(func, timeout_sec=5):
     result = [None]
-    
+
     def wrapper():
         result[0] = func()
-    
+
     thread = threading.Thread(target=wrapper)
     thread.daemon = True
     thread.start()
     thread.join(timeout_sec)
-    
+
     if thread.is_alive():
         raise TimeoutError(f"Function did not complete within {timeout_sec}s")
-    
+
     return result[0]
 ```
 
@@ -665,26 +665,26 @@ except ImportError:
    - Full traceback
 
 2. **Gather information**
-   ```python
-   import sys
-   print(f"Python: {sys.version}")
-   import pkg; print(f"Package: {pkg.__version__}")
-   ```
+```python
+import sys
+print(f"Python: {sys.version}")
+import pkg; print(f"Package: {pkg.__version__}")
+```
 
 3. **Isolate the problem**
-   ```python
-   # Start with minimal reproduction
-   minimal_code = """
-   import x
-   y = x.something()
-   """
-   ```
+```python
+# Start with minimal reproduction
+minimal_code = """
+import x
+y = x.something()
+"""
+```
 
 4. **Test hypothesis**
-   ```python
-   # Try solution
-   # Verify it works
-   ```
+```python
+# Try solution
+# Verify it works
+```
 
 5. **Document and move on**
 

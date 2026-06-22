@@ -57,7 +57,7 @@ P(select) = |Ψ(doc)|² = relevance
 where φ is the phase determined by the energy state.
 
 **Implementation:**
-```python
+```text
 phase = energy / ℏ_effective
 amplitude = √relevance × (cos(phase) + i·sin(phase))
 collapse_probability = |amplitude|²

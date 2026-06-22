@@ -130,63 +130,63 @@ Manual test writing for achieving 100% coverage is time-intensive, requiring:
 
 **Pipeline**:
 1. **Coverage Analysis**
-   ```python
-   # Parse coverage.py JSON report
-   import coverage
-   cov = coverage.Coverage()
-   cov.load()
-   analysis = cov.analysis2('src/module.py')
-   uncovered_lines = analysis.missing
-   ```
+```python
+# Parse coverage.py JSON report
+import coverage
+cov = coverage.Coverage()
+cov.load()
+analysis = cov.analysis2('src/module.py')
+uncovered_lines = analysis.missing
+```
 
 2. **Code Context Extraction**
-   ```python
-   # Extract function/class containing uncovered lines
-   import ast
-   tree = ast.parse(source_code)
-   uncovered_nodes = extract_nodes_by_lines(tree, uncovered_lines)
-   ```
+```python
+# Extract function/class containing uncovered lines
+import ast
+tree = ast.parse(source_code)
+uncovered_nodes = extract_nodes_by_lines(tree, uncovered_lines)
+```
 
 3. **Prompt Construction**
-   ```python
-   prompt = f"""
-   Generate pytest tests for this Python function to achieve 100% coverage.
+```python
+prompt = f"""
+Generate pytest tests for this Python function to achieve 100% coverage.
 
-   Function to test:
-   {function_code}
+Function to test:
+{function_code}
 
-   Uncovered branches: {uncovered_lines}
+Uncovered branches: {uncovered_lines}
 
-   Existing test pattern example:
-   {similar_existing_test}
+Existing test pattern example:
+{similar_existing_test}
 
-   Requirements:
-   - Use pytest fixtures
-   - Mock external dependencies
-   - Cover all branches
-   - Include edge cases
-   """
-   ```
+Requirements:
+- Use pytest fixtures
+- Mock external dependencies
+- Cover all branches
+- Include edge cases
+"""
+```
 
 4. **Test Generation**
-   ```python
-   response = llm_client.generate(prompt)
-   generated_test = response.text
-   ```
+```python
+response = llm_client.generate(prompt)
+generated_test = response.text
+```
 
 5. **Validation & Refinement**
-   ```python
-   # Validate syntax
-   ast.parse(generated_test)
+```python
+# Validate syntax
+ast.parse(generated_test)
 
-   # Run test and check coverage
-   result = pytest.run(generated_test)
-   new_coverage = measure_coverage()
+# Run test and check coverage
+result = pytest.run(generated_test)
+new_coverage = measure_coverage()
 
-   # Iterate if coverage not improved
-   if new_coverage <= old_coverage:
-       refine_prompt_with_failure_context()
-   ```
+# Iterate if coverage not improved
+if new_coverage <= old_coverage:
+    refine_prompt_with_failure_context()
+```
 
 **Tools**:
 - OpenAI API / Anthropic Claude API for LLM
@@ -423,7 +423,7 @@ def test_happy_path_only():
    - `mutmut` (simple, good for CI)
 
 2. **Configure Mutation Operators**
-   ```python
+   ```text
    # mutpy configuration
    operators = [
        'AOR',  # Arithmetic Operator Replacement (+ → -)
@@ -443,39 +443,39 @@ def test_happy_path_only():
    ```
 
 4. **Analyze Results**
-   ```python
-   # Parse mutation report
-   killed_mutants = count_killed()
-   survived_mutants = count_survived()
-   mutation_score = killed_mutants / (killed_mutants + survived_mutants)
+```python
+# Parse mutation report
+killed_mutants = count_killed()
+survived_mutants = count_survived()
+mutation_score = killed_mutants / (killed_mutants + survived_mutants)
 
-   # Mutation score targets:
-   # 60-75%: Acceptable
-   # 75-90%: Good
-   # 90%+: Excellent
-   ```
+# Mutation score targets:
+# 60-75%: Acceptable
+# 75-90%: Good
+# 90%+: Excellent
+```
 
 5. **Fix Weak Tests**
-   ```python
-   # For each survived mutant:
-   # 1. Review the mutation
-   # 2. Determine if test is weak or mutation is equivalent
-   # 3. Add assertion to kill the mutant
+```python
+# For each survived mutant:
+# 1. Review the mutation
+# 2. Determine if test is weak or mutation is equivalent
+# 3. Add assertion to kill the mutant
 
-   # Example: Original test
-   def test_divide():
-       assert divide(10, 2) == 5
+# Example: Original test
+def test_divide():
+    assert divide(10, 2) == 5
 
-   # Mutant: operator / changed to *
-   def divide_mutant(a, b):
-       return a * b  # Mutation survives!
+# Mutant: operator / changed to *
+def divide_mutant(a, b):
+    return a * b  # Mutation survives!
 
-   # Fixed test (kills mutant):
-   def test_divide_fixed():
-       assert divide(10, 2) == 5
-       assert divide(6, 3) == 2   # New assertion
-       assert divide(1, 1) == 1   # Kills * mutation
-   ```
+# Fixed test (kills mutant):
+def test_divide_fixed():
+    assert divide(10, 2) == 5
+    assert divide(6, 3) == 2   # New assertion
+    assert divide(1, 1) == 1   # Kills * mutation
+```
 
 **Example Integration**:
 ```python
@@ -576,7 +576,7 @@ jobs:
 5. **Flakiness Rate**: % of tests that fail intermittently
 
 **Dashboard Mock**:
-```python
+```text
 # docs/testing/QUALITY_DASHBOARD.md
 
 ## Test Quality Dashboard
@@ -703,71 +703,71 @@ def test_reverse_string_properties(s):
 **Target Areas** (in priority order):
 
 1. **String Processing Functions** (HIGH)
-   ```python
-   # Functions to test:
-   # - Path manipulation (flatten, unflatten)
-   # - Text parsing (AST, config files)
-   # - Encoding/decoding (base64, JSON)
+```python
+# Functions to test:
+# - Path manipulation (flatten, unflatten)
+# - Text parsing (AST, config files)
+# - Encoding/decoding (base64, JSON)
 
-   from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st
 
-   @given(st.text(min_size=1, max_size=1000))
-   def test_path_flatten_unflatten_roundtrip(path):
-       """Flattening then unflattening returns original"""
-       flattened = flatten_path(path)
-       unflattened = unflatten_path(flattened)
-       assert unflattened == path
+@given(st.text(min_size=1, max_size=1000))
+def test_path_flatten_unflatten_roundtrip(path):
+    """Flattening then unflattening returns original"""
+    flattened = flatten_path(path)
+    unflattened = unflatten_path(flattened)
+    assert unflattened == path
 
-   @given(st.dictionaries(st.text(), st.integers()))
-   def test_json_roundtrip(data):
-       """JSON serialize/deserialize preserves data"""
-       json_str = json.dumps(data)
-       parsed = json.loads(json_str)
-       assert parsed == data
-   ```
+@given(st.dictionaries(st.text(), st.integers()))
+def test_json_roundtrip(data):
+    """JSON serialize/deserialize preserves data"""
+    json_str = json.dumps(data)
+    parsed = json.loads(json_str)
+    assert parsed == data
+```
 
 2. **Data Transformations** (HIGH)
-   ```python
-   @given(st.lists(st.integers(), min_size=0, max_size=100))
-   def test_sort_properties(lst):
-       """Test sorting properties"""
-       sorted_lst = sorted(lst)
+```python
+@given(st.lists(st.integers(), min_size=0, max_size=100))
+def test_sort_properties(lst):
+    """Test sorting properties"""
+    sorted_lst = sorted(lst)
 
-       # Property 1: Length preserved
-       assert len(sorted_lst) == len(lst)
+    # Property 1: Length preserved
+    assert len(sorted_lst) == len(lst)
 
-       # Property 2: All elements present
-       assert sorted(sorted_lst) == sorted(lst)
+    # Property 2: All elements present
+    assert sorted(sorted_lst) == sorted(lst)
 
-       # Property 3: Ordered
-       for i in range(len(sorted_lst) - 1):
-           assert sorted_lst[i] <= sorted_lst[i + 1]
-   ```
+    # Property 3: Ordered
+    for i in range(len(sorted_lst) - 1):
+        assert sorted_lst[i] <= sorted_lst[i + 1]
+```
 
 3. **Parsers & AST** (MEDIUM)
-   ```python
-   @given(st.text(alphabet=string.ascii_letters + string.digits + " \n"))
-   def test_python_parse_doesnt_crash(code):
-       """Parser should handle any input gracefully"""
-       try:
-           ast.parse(code)
-       except SyntaxError:
-           pass  # Expected for invalid Python
-       except Exception as e:
-           pytest.fail(f"Unexpected exception: {e}")
-   ```
+```python
+@given(st.text(alphabet=string.ascii_letters + string.digits + " \n"))
+def test_python_parse_doesnt_crash(code):
+    """Parser should handle any input gracefully"""
+    try:
+        ast.parse(code)
+    except SyntaxError:
+        pass  # Expected for invalid Python
+    except Exception as e:
+        pytest.fail(f"Unexpected exception: {e}")
+```
 
 4. **Configuration Handling** (MEDIUM)
-   ```python
-   @given(st.dictionaries(
-       keys=st.text(min_size=1),
-       values=st.one_of(st.integers(), st.text(), st.booleans())
-   ))
-   def test_config_validation(config):
-       """Config validation shouldn't crash on any dict"""
-       result = validate_config(config)
-       assert result in (True, False)  # Should return bool
-   ```
+```python
+@given(st.dictionaries(
+    keys=st.text(min_size=1),
+    values=st.one_of(st.integers(), st.text(), st.booleans())
+))
+def test_config_validation(config):
+    """Config validation shouldn't crash on any dict"""
+    result = validate_config(config)
+    assert result in (True, False)  # Should return bool
+```
 
 **Implementation Strategy**:
 ```python

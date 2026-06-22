@@ -85,7 +85,7 @@ Transparency Log Entry
 
 **Metadata Fields**:
 
-```python
+```text
 StandardizationMetadata(
     schema_version: str = "2.0",                      # v2 identifier
     slsa_level: str = "L3",                           # SLSA compliance

@@ -549,7 +549,7 @@ def my_tool(user_id: str, data: Dict[str, Any]) -> Dict[str, str]:
 
 ### 2. Include Comprehensive Metadata
 
-```python
+```text
 registry.register_tool(
     name="my_tool",
     handler=my_tool,

@@ -368,7 +368,7 @@ print(f"Config types: {result['meta']['config_types']}")
    ```
 
 2. **Use Environment Variables for Secrets**
-   ```python
+   ```text
    # Good
    api_key = os.getenv("MCP_API_KEY")
 
@@ -377,42 +377,42 @@ print(f"Config types: {result['meta']['config_types']}")
    ```
 
 3. **Encrypt Sensitive Configuration**
-   ```python
-   from cryptography.fernet import Fernet
+```python
+from cryptography.fernet import Fernet
 
-   def encrypt_config(config: dict, key: bytes) -> bytes:
-       f = Fernet(key)
-       return f.encrypt(json.dumps(config).encode())
-   ```
+def encrypt_config(config: dict, key: bytes) -> bytes:
+    f = Fernet(key)
+    return f.encrypt(json.dumps(config).encode())
+```
 
 ### Configuration Validation
 
 1. **Validate on Load**
-   ```python
-   from jsonschema import validate
+```python
+from jsonschema import validate
 
-   schema = {...}  # JSON schema
-   validate(instance=config, schema=schema)
-   ```
+schema = {...}  # JSON schema
+validate(instance=config, schema=schema)
+```
 
 2. **Type Checking**
-   ```python
-   from pydantic import BaseModel, ValidationError
+```python
+from pydantic import BaseModel, ValidationError
 
-   class Config(BaseModel):
-       port: int
-       host: str
+class Config(BaseModel):
+    port: int
+    host: str
 
-   try:
-       Config(**config)
-   except ValidationError as e:
-       print(f"Invalid config: {e}")
-   ```
+try:
+    Config(**config)
+except ValidationError as e:
+    print(f"Invalid config: {e}")
+```
 
 3. **Range Validation**
-   ```python
-   assert 1024 <= config["port"] <= 65535, "Invalid port range"
-   ```
+```python
+assert 1024 <= config["port"] <= 65535, "Invalid port range"
+```
 
 ### Configuration Documentation
 

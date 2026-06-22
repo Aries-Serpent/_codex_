@@ -553,26 +553,26 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 1. **Prepare CSV or JSON** with macro definitions
 
 2. **Convert to desired state format**:
-   ```python
-   import json
-   import csv
+```python
+import json
+import csv
 
-   macros = []
-   with open('macros.csv', 'r') as f:
-       reader = csv.DictReader(f)
-       for row in reader:
-           macros.append({
-               "title": row['title'],
-               "active": True,
-               "actions": [
-                   {"field": "status", "value": row['status']},
-                   {"field": "comment_value", "value": row['comment']}
-               ]
-           })
+macros = []
+with open('macros.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        macros.append({
+            "title": row['title'],
+            "active": True,
+            "actions": [
+                {"field": "status", "value": row['status']},
+                {"field": "comment_value", "value": row['comment']}
+            ]
+        })
 
-   with open('configs/desired/zendesk/macros.json', 'w') as f:
-       json.dump({"macros": macros}, f, indent=2)
-   ```
+with open('configs/desired/zendesk/macros.json', 'w') as f:
+    json.dump({"macros": macros}, f, indent=2)
+```
 
 3. **Apply standard workflow**:
    ```bash

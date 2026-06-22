@@ -215,37 +215,37 @@ F821 (undefined name) errors cause **runtime failures** and must be **zero toler
 ### Common F821 Issues
 
 1. **Missing typing imports:**
-   ```python
-   # ❌ WRONG: F821 undefined name 'Optional'
-   def process(config: Optional[Dict]) -> Any:
-       pass
+```python
+# ❌ WRONG: F821 undefined name 'Optional'
+def process(config: Optional[Dict]) -> Any:
+    pass
 
-   # ✅ CORRECT: Import typing
-   from typing import Any, Dict, Optional
-   def process(config: Optional[Dict]) -> Any:
-       pass
-   ```
+# ✅ CORRECT: Import typing
+from typing import Any, Dict, Optional
+def process(config: Optional[Dict]) -> Any:
+    pass
+```
 
 2. **Missing logger definitions:**
-   ```python
-   # ❌ WRONG: F821 undefined name 'logger'
-   logger.info("Starting...")
+```python
+# ❌ WRONG: F821 undefined name 'logger'
+logger.info("Starting...")
 
-   # ✅ CORRECT: Define logger
-   import logging
-   logger = logging.getLogger(__name__)
-   logger.info("Starting...")
-   ```
+# ✅ CORRECT: Define logger
+import logging
+logger = logging.getLogger(__name__)
+logger.info("Starting...")
+```
 
 3. **Missing stdlib imports:**
-   ```python
-   # ❌ WRONG: F821 undefined name 'Path'
-   path = Path("/tmp")
+```python
+# ❌ WRONG: F821 undefined name 'Path'
+path = Path("/tmp")
 
-   # ✅ CORRECT: Import from pathlib
-   from pathlib import Path
-   path = Path("/tmp")
-   ```
+# ✅ CORRECT: Import from pathlib
+from pathlib import Path
+path = Path("/tmp")
+```
 
 ### Pre-commit Enforcement
 

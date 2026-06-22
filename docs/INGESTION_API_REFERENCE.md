@@ -196,7 +196,7 @@ for batch in pipeline.stream_records('data/large_file.csv'):
 
 Comma-separated values with headers.
 
-```python
+```text
 # Input: data.csv
 id,text,label
 1,Sample text,0
@@ -326,57 +326,57 @@ except TimeoutError:
 ## Performance Considerations
 
 1. **Batch Size**: Larger batches = faster processing but higher memory
-   ```python
-   config = PipelineConfig(batch_size=5000)  # Larger batches
-   ```
+```python
+config = PipelineConfig(batch_size=5000)  # Larger batches
+```
 
 2. **Streaming**: Use `stream_records()` for large files to save memory
-   ```python
-   for batch in pipeline.stream_records('large_file.csv'):
-       process_batch(batch)
-   ```
+```python
+for batch in pipeline.stream_records('large_file.csv'):
+    process_batch(batch)
+```
 
 3. **Parallel Processing**: Process multiple files simultaneously
-   ```python
-   from concurrent.futures import ProcessPoolExecutor
-   
-   files = ['file1.csv', 'file2.csv', 'file3.csv']
-   with ProcessPoolExecutor(max_workers=4) as executor:
-       results = executor.map(pipeline.ingest_file, files)
-   ```
+```python
+from concurrent.futures import ProcessPoolExecutor
+
+files = ['file1.csv', 'file2.csv', 'file3.csv']
+with ProcessPoolExecutor(max_workers=4) as executor:
+    results = executor.map(pipeline.ingest_file, files)
+```
 
 4. **Encoding Detection**: Auto-detection is slower than specifying encoding
-   ```python
-   config = PipelineConfig(encoding='utf-8')  # Faster
-   ```
+```python
+config = PipelineConfig(encoding='utf-8')  # Faster
+```
 
 ## Best Practices
 
 1. **Always validate input files**
-   ```python
-   from pathlib import Path
-   input_file = Path('data.csv')
-   assert input_file.exists(), f"{input_file} not found"
-   ```
+```python
+from pathlib import Path
+input_file = Path('data.csv')
+assert input_file.exists(), f"{input_file} not found"
+```
 
 2. **Use deterministic shuffling for reproducibility**
-   ```python
-   config = PipelineConfig(shuffle=True, shuffle_seed=42)
-   ```
+```python
+config = PipelineConfig(shuffle=True, shuffle_seed=42)
+```
 
 3. **Log pipeline results**
-   ```python
-   result = pipeline.ingest_file('data.csv', 'output.jsonl')
-   logging.info(f"Processed: {result.records_processed}, "
-                f"Skipped: {result.records_skipped}")
-   ```
+```python
+result = pipeline.ingest_file('data.csv', 'output.jsonl')
+logging.info(f"Processed: {result.records_processed}, "
+             f"Skipped: {result.records_skipped}")
+```
 
 4. **Handle errors gracefully**
-   ```python
-   if not result.success:
-       logging.error(f"Pipeline errors: {result.errors}")
-       # Implement fallback or retry logic
-   ```
+```python
+if not result.success:
+    logging.error(f"Pipeline errors: {result.errors}")
+    # Implement fallback or retry logic
+```
 
 ## See Also
 

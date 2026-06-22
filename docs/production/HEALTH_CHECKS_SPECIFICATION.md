@@ -219,10 +219,10 @@ def check_database():
         start = time.time()
         result = db.execute("SELECT 1")  # Simple query
         latency = (time.time() - start) * 1000
-        
+
         pool_size = db.pool.qsize()
         pool_max = db.pool.maxsize
-        
+
         return {
             "status": "connected" if latency < 5000 else "slow",
             "latency_ms": latency,
@@ -254,10 +254,10 @@ def check_cache():
         value = cache.get(test_key)
         latency = (time.time() - start) * 1000
         cache.delete(test_key)
-        
+
         info = cache.info()
         hit_ratio = info.hits / (info.hits + info.misses) if (info.hits + info.misses) > 0 else 0
-        
+
         return {
             "status": "connected" if value == "ok" and latency < 2000 else "degraded",
             "latency_ms": latency,
@@ -285,16 +285,16 @@ def check_message_queue():
     try:
         start = time.time()
         test_id = str(uuid.uuid4())
-        
+
         # Publish test message
         producer.send("_health_check", 
                      {"test_id": test_id, "timestamp": time.time()})
-        
+
         latency = (time.time() - start) * 1000
-        
+
         # Check consumer lag
         lag = get_consumer_lag()
-        
+
         return {
             "status": "connected" if latency < 5000 and lag < 60 else "degraded",
             "latency_ms": latency,

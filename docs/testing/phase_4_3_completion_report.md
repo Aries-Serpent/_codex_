@@ -322,7 +322,7 @@ tests/branch_coverage/test_branch_coverage_utils.py
 5. **Documentation**: Comprehensive docstrings
 
 ### Naming Convention
-```python
+```text
 def test_<component>_<condition>_<branch_type>_branch(self) -> None:
     """Test <description of specific branch condition>."""
 ```

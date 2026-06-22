@@ -260,38 +260,38 @@ print(f"Evidence files: {result['evidence_files']}")
 ### Schema Design
 
 1. **Use Descriptive Field Names**
-   ```python
-   # Good
-   request_timestamp_ms: int
+```python
+# Good
+request_timestamp_ms: int
 
-   # Avoid
-   ts: int
-   ```
+# Avoid
+ts: int
+```
 
 2. **Add Field Descriptions**
-   ```python
-   timeout: int = Field(..., description="Request timeout in seconds", gt=0, le=300)
-   ```
+```python
+timeout: int = Field(..., description="Request timeout in seconds", gt=0, le=300)
+```
 
 3. **Validate Business Logic**
-   ```python
-   @validator('end_date')
-   def end_after_start(cls, v, values):
-       if 'start_date' in values and v < values['start_date']:
-           raise ValueError('end_date must be after start_date')
-       return v
-   ```
+```python
+@validator('end_date')
+def end_after_start(cls, v, values):
+    if 'start_date' in values and v < values['start_date']:
+        raise ValueError('end_date must be after start_date')
+    return v
+```
 
 4. **Use Enums for Fixed Values**
-   ```python
-   from enum import Enum
+```python
+from enum import Enum
 
-   class Status(str, Enum):
-       PENDING = "pending"
-       RUNNING = "running"
-       COMPLETED = "completed"
-       FAILED = "failed"
-   ```
+class Status(str, Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+```
 
 ### OpenAPI Best Practices
 

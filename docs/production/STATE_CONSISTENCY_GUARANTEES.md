@@ -453,7 +453,7 @@ Enforcement: Foreign key constraint + test coverage
 ```
 
 **Invariant 4**: No concurrent updates to users table
-```python
+```text
 class SQLiteUserRepository:
     def __init__(self):
         self._lock = threading.RLock()

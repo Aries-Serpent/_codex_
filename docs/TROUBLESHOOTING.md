@@ -374,7 +374,7 @@ python minimal_example.py
 
 ## Enabling Verbose Logging
 
-```python
+```text
 import logging
 
 # Set to DEBUG for detailed information

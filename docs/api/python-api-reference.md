@@ -64,14 +64,14 @@ Provides training pipelines and engine abstractions.
 class TrainingEngine:
     """
     Base training engine for model training workflows.
-    
+
     Attributes:
         model (torch.nn.Module): Neural network model
         optimizer (torch.optim.Optimizer): Optimization algorithm
         config (TrainingConfig): Training configuration
         device (str): Computation device ('cpu', 'cuda', 'mps')
     """
-    
+
     def __init__(
         self,
         model: torch.nn.Module,
@@ -80,12 +80,12 @@ class TrainingEngine:
     ) -> None:
         """
         Initialize training engine.
-        
+
         Args:
             model: PyTorch model to train
             config: Training configuration object
             device: Computation device (default: auto-detect)
-            
+
         Raises:
             ValueError: If device is not available
             TypeError: If model is not nn.Module
@@ -99,21 +99,21 @@ class TrainingEngine:
     ) -> Dict[str, float]:
         """
         Train for one epoch.
-        
+
         Args:
             train_loader: Training data loader
             val_loader: Optional validation data loader
-            
+
         Returns:
             Dictionary with metrics:
             - 'loss': Average training loss
             - 'val_loss': Average validation loss (if val_loader provided)
             - 'lr': Current learning rate
             - 'time_sec': Epoch duration in seconds
-            
+
         Raises:
             RuntimeError: If training fails
-            
+
         Example:
             >>> metrics = engine.train_epoch(train_loader, val_loader)
             >>> print(f"Loss: {metrics['loss']:.4f}")
@@ -127,16 +127,16 @@ class TrainingEngine:
     ) -> Dict[str, List[float]]:
         """
         Train for N steps instead of epochs.
-        
+
         Args:
             num_steps: Number of training steps
             train_loader: Training data loader
-            
+
         Returns:
             Dictionary with loss history:
             - 'losses': List of loss values per step
             - 'steps': List of step numbers
-            
+
         Yields during training:
             Progress information every 10 steps
         """
@@ -150,15 +150,15 @@ class TrainingEngine:
     ) -> None:
         """
         Save training checkpoint.
-        
+
         Args:
             path: Save path (e.g., 'checkpoints/epoch_5.pt')
             include_optimizer: Include optimizer state
             include_config: Include configuration
-            
+
         Raises:
             IOError: If path is not writable
-            
+
         Example:
             >>> engine.save_checkpoint('checkpoint.pt')
         """
@@ -172,12 +172,12 @@ class TrainingEngine:
     ) -> None:
         """
         Load training checkpoint.
-        
+
         Args:
             path: Checkpoint path to load
             load_optimizer: Load optimizer state
             strict: Strict model loading
-            
+
         Raises:
             FileNotFoundError: If checkpoint not found
             RuntimeError: If incompatible checkpoint format
@@ -191,10 +191,10 @@ class TrainingEngine:
 class HFTrainer(TrainingEngine):
     """
     Hugging Face Transformers trainer wrapper.
-    
+
     Extends TrainingEngine with Hugging Face specific features.
     """
-    
+
     def __init__(
         self,
         model: transformers.PreTrainedModel,
@@ -206,7 +206,7 @@ class HFTrainer(TrainingEngine):
     ) -> None:
         """
         Initialize Hugging Face Trainer.
-        
+
         Args:
             model: Pre-trained Hugging Face model
             args: Training arguments configuration
@@ -214,7 +214,7 @@ class HFTrainer(TrainingEngine):
             eval_dataset: Validation dataset
             data_collator: Custom data collator function
             callbacks: List of trainer callbacks
-            
+
         Example:
             >>> from transformers import AutoModelForCausalLM
             >>> model = AutoModelForCausalLM.from_pretrained('gpt2')
@@ -228,13 +228,13 @@ class HFTrainer(TrainingEngine):
     ) -> transformers.trainer_utils.TrainOutput:
         """
         Execute training loop.
-        
+
         Args:
             resume_from_checkpoint: Path to checkpoint to resume from
-            
+
         Returns:
             TrainOutput with training metrics
-            
+
         Raises:
             ValueError: If training arguments invalid
         """
@@ -246,10 +246,10 @@ class HFTrainer(TrainingEngine):
     ) -> Dict[str, float]:
         """
         Evaluate model on dataset.
-        
+
         Args:
             eval_dataset: Dataset to evaluate on (uses eval_dataset if None)
-            
+
         Returns:
             Dictionary of evaluation metrics
         """
@@ -267,23 +267,23 @@ def train(
 ) -> Dict[str, Any]:
     """
     Main training function.
-    
+
     Args:
         config: Path to config file or TrainingConfig object
         output_dir: Output directory for checkpoints and logs
         resume_from_checkpoint: Optional checkpoint path to resume from
         **kwargs: Additional arguments to override config
-        
+
     Returns:
         Dictionary containing:
         - 'model': Trained model
         - 'metrics': Final metrics
         - 'checkpoints': List of saved checkpoints
-        
+
     Raises:
         FileNotFoundError: If config file not found
         ValueError: If configuration invalid
-        
+
     Example:
         >>> results = train(
         ...     config='configs/training/base.yaml',
@@ -309,10 +309,10 @@ Provides evaluation metrics and assessment utilities.
 class Evaluator:
     """
     Model evaluation coordinator.
-    
+
     Supports multiple evaluation modes and metric computation.
     """
-    
+
     def __init__(
         self,
         model: torch.nn.Module,
@@ -321,7 +321,7 @@ class Evaluator:
     ) -> None:
         """
         Initialize evaluator.
-        
+
         Args:
             model: Model to evaluate
             device: Computation device
@@ -336,14 +336,14 @@ class Evaluator:
     ) -> Dict[str, float]:
         """
         Evaluate model on dataset.
-        
+
         Args:
             eval_loader: Evaluation data loader
             metrics: List of metrics to compute
-            
+
         Returns:
             Dictionary mapping metric names to values
-            
+
         Supported metrics:
         - 'loss': Classification/regression loss
         - 'accuracy': Accuracy (classification)
@@ -364,12 +364,12 @@ class Evaluator:
     ) -> Dict[str, float]:
         """
         Evaluate on data from file.
-        
+
         Args:
             file_path: Path to evaluation file
             file_format: Format of file ('json', 'csv', 'parquet')
             batch_size: Batch size for evaluation
-            
+
         Returns:
             Evaluation metrics dictionary
         """
@@ -383,12 +383,12 @@ class Evaluator:
     ) -> float:
         """
         Compute single metric.
-        
+
         Args:
             predictions: Model predictions
             references: Ground truth labels
             metric_name: Name of metric
-            
+
         Returns:
             Metric value
         """
@@ -406,16 +406,16 @@ def evaluate(
 ) -> Dict[str, float]:
     """
     Main evaluation function.
-    
+
     Args:
         model: Model to evaluate
         eval_path: Path to evaluation data
         config: Evaluation configuration
         **kwargs: Additional arguments
-        
+
     Returns:
         Dictionary of evaluation metrics
-        
+
     Example:
         >>> metrics = evaluate(
         ...     model=model,
@@ -440,14 +440,14 @@ Data loading, preprocessing, and pipeline utilities.
 class CodexData:
     """
     High-level data interface for loading and preprocessing.
-    
+
     Attributes:
         path (str): Data path
         split (str): Data split ('train', 'val', 'test')
         batch_size (int): Batch size
         num_workers (int): Number of data loading workers
     """
-    
+
     def __init__(
         self,
         path: str,
@@ -460,7 +460,7 @@ class CodexData:
     ) -> None:
         """
         Initialize data loader.
-        
+
         Args:
             path: Path to data file or directory
             split: Which split to load
@@ -469,7 +469,7 @@ class CodexData:
             tokenizer: Optional tokenizer for text data
             max_length: Maximum sequence length
             preprocessing_fn: Optional preprocessing function
-            
+
         Raises:
             FileNotFoundError: If path not found
             ValueError: If split invalid
@@ -492,7 +492,7 @@ class CodexData:
     def get_loader(self) -> torch.utils.data.DataLoader:
         """
         Get PyTorch DataLoader.
-        
+
         Returns:
             Configured DataLoader instance
         """
@@ -506,12 +506,12 @@ class CodexData:
     ) -> 'CodexData':
         """
         Apply preprocessing function.
-        
+
         Args:
             fn: Preprocessing function
             batched: Process in batches
             remove_columns: Columns to remove after preprocessing
-            
+
         Returns:
             Self for chaining
         """
@@ -538,24 +538,24 @@ def load_data(
 ) -> CodexData:
     """
     Load data with automatic format detection.
-    
+
     Args:
         path: Path to data (file or directory)
         split: Data split to load
         limit: Maximum examples to load
         cache_dir: Directory for caching
         **kwargs: Additional loader arguments
-        
+
     Returns:
         CodexData instance
-        
+
     Supported formats:
     - JSON/JSONL
     - CSV/TSV
     - Parquet
     - HuggingFace Datasets
     - Arrow/IPC
-    
+
     Example:
         >>> data = load_data('data/train.jsonl')
         >>> for batch in data:
@@ -578,20 +578,20 @@ Configuration management and schema validation.
 class CodexConfig:
     """
     Configuration container with type validation.
-    
+
     Supports loading from files, environment variables, and direct assignment.
     """
-    
+
     def __init__(
         self,
         **kwargs
     ) -> None:
         """
         Initialize configuration.
-        
+
         Args:
             **kwargs: Configuration parameters
-            
+
         Example:
             >>> config = CodexConfig(
             ...     model_name='gpt2',
@@ -605,13 +605,13 @@ class CodexConfig:
     def from_file(cls, path: str) -> 'CodexConfig':
         """
         Load configuration from file.
-        
+
         Args:
             path: Path to config file (YAML or JSON)
-            
+
         Returns:
             CodexConfig instance
-            
+
         Raises:
             FileNotFoundError: If file not found
         """
@@ -621,9 +621,9 @@ class CodexConfig:
     def from_env(cls) -> 'CodexConfig':
         """
         Load configuration from environment variables.
-        
+
         Environment variable pattern: CODEX_<PARAM_NAME>
-        
+
         Returns:
             CodexConfig instance
         """
@@ -648,10 +648,10 @@ class CodexConfig:
     def validate(self) -> bool:
         """
         Validate configuration against schema.
-        
+
         Returns:
             True if valid
-            
+
         Raises:
             ValueError: If validation fails
         """
@@ -678,17 +678,17 @@ def create_model(
 ) -> torch.nn.Module:
     """
     Create model by name.
-    
+
     Args:
         model_name: Model identifier (e.g., 'gpt2', 'bert-base')
         pretrained: Load pretrained weights
         num_labels: Number of output labels (for classification)
         config_overrides: Configuration overrides
         **kwargs: Additional model arguments
-        
+
     Returns:
         Initialized model
-        
+
     Supported models:
     - gpt2, gpt2-medium, gpt2-large
     - bert-base-uncased, bert-large-uncased
@@ -696,7 +696,7 @@ def create_model(
     - roberta-base, roberta-large
     - t5-small, t5-base, t5-large
     - custom local models
-    
+
     Example:
         >>> model = create_model('gpt2', pretrained=True)
         >>> model = create_model('bert-base-uncased', num_labels=2)
@@ -710,10 +710,10 @@ def create_model(
 class CodexModel(torch.nn.Module):
     """
     Base model wrapper with unified interface.
-    
+
     Provides training and inference utilities on top of base model.
     """
-    
+
     def __init__(
         self,
         model_name: str,
@@ -721,7 +721,7 @@ class CodexModel(torch.nn.Module):
     ) -> None:
         """
         Initialize model.
-        
+
         Args:
             model_name: Identifier or path to model
             device: Computation device
@@ -736,12 +736,12 @@ class CodexModel(torch.nn.Module):
     ) -> torch.Tensor:
         """
         Forward pass.
-        
+
         Args:
             input_ids: Token IDs [batch_size, seq_length]
             attention_mask: Attention mask [batch_size, seq_length]
             **kwargs: Additional model-specific arguments
-            
+
         Returns:
             Model output tensor
         """
@@ -759,7 +759,7 @@ class CodexModel(torch.nn.Module):
     ) -> torch.Tensor:
         """
         Generate text.
-        
+
         Args:
             input_ids: Input token IDs
             max_length: Maximum generation length
@@ -768,7 +768,7 @@ class CodexModel(torch.nn.Module):
             temperature: Sampling temperature
             num_return_sequences: Number of sequences to generate
             **kwargs: Additional generation arguments
-            
+
         Returns:
             Generated token IDs
         """
@@ -801,12 +801,12 @@ Helper functions for common tasks.
 def set_seed(seed: int) -> None:
     """
     Set random seed for reproducibility.
-    
+
     Sets seed for Python, NumPy, PyTorch, and CUDA.
-    
+
     Args:
         seed: Random seed value
-        
+
     Example:
         >>> set_seed(42)
     """
@@ -819,13 +819,13 @@ def set_seed(seed: int) -> None:
 def get_device(device: Optional[str] = None) -> torch.device:
     """
     Get computation device.
-    
+
     Args:
         device: Device specification ('cpu', 'cuda', 'mps', or None for auto)
-        
+
     Returns:
         torch.device instance
-        
+
     Example:
         >>> device = get_device()  # Auto-detect
         >>> device = get_device('cuda')
@@ -838,7 +838,7 @@ def get_device(device: Optional[str] = None) -> torch.device:
 ```python
 class Timer:
     """Context manager for timing code blocks."""
-    
+
     def __enter__(self) -> 'Timer':
         """Start timer."""
         ...
@@ -959,7 +959,7 @@ for batch in dataloader:
     with autocast():
         output = model(batch)
         loss = criterion(output, batch['labels'])
-    
+
     scaler.scale(loss).backward()
     scaler.step(optimizer)
     scaler.update()

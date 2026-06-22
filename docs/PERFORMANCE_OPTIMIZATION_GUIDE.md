@@ -347,7 +347,7 @@ result = retry_with_backoff(
 
 Gracefully degrade with fallback strategies:
 
-```python
+```text
 from codex_ml.serving.resilience import FallbackHandler
 
 def fallback_prediction():
@@ -370,7 +370,7 @@ result = handler.call_with_fallback(
 
 ## Combined Resilience
 
-```python
+```text
 # Combine patterns for maximum reliability
 def resilient_predict(input_data):
     # 1. Check cache first

@@ -266,7 +266,7 @@ class LifecycleManager:
 
 ### Basic Usage
 
-```python
+```text
 from src.services.mcp.lifecycle import LifecycleManager
 
 # Create manager

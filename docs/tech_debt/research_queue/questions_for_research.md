@@ -1227,11 +1227,11 @@ none is designated as the canonical entry point.
 1. Designate `src/codex_ml/utils/seeding.py::set_reproducible()` as the single
    canonical entry point.
 2. Replace the assert at line 443 with an auto-call:
-   ```python
-   if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
-       if not getattr(torch.backends.cudnn, "deterministic", False):
-           _set_reproducible_if_needed(cfg.seed)
-   ```
+```python
+if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
+    if not getattr(torch.backends.cudnn, "deterministic", False):
+        _set_reproducible_if_needed(cfg.seed)
+```
 3. Add MPS support: `if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available(): torch.mps.manual_seed(seed)`.
 
 **File**: `training/functional_training.py:443`

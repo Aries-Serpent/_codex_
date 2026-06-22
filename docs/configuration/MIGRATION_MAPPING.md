@@ -221,7 +221,7 @@ config = load_config("base", config_dir="conf/model")
 
 ## CLI Updates
 
-```python
+```text
 # OLD (hardcoded paths)
 @click.option("--config", type=click.Path(), default="configs/training/base.yaml")
 

@@ -18,7 +18,7 @@ This document provides best practices for device placement in RAG (Retrieval-Aug
 
 PyTorch 2.0+ introduced **meta tensors** for memory-efficient model initialization. Direct `.to(device)` calls on models with meta tensors raise:
 
-```python
+```text
 NotImplementedError: Cannot copy out of meta tensor; no data!
 ```
 

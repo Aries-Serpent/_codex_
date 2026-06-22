@@ -907,7 +907,7 @@ print(engine.get_healing_report())
 
 **Solution:  Resilient Pattern Extractor with Multi-Level Fallbacks**
 
-````python name=. github/copilot-evolution/pattern_extractor.py
+````text name=. github/copilot-evolution/pattern_extractor.py
 import os
 import glob
 import re

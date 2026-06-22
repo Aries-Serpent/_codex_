@@ -15,10 +15,10 @@ python -m codex.cli release verify dist/codex-knowledge.tar.gz
 - Domain/intent inferred from paths: `zendesk|d365|relocation|sla|ops` and `admin|consultant|runtime|devops`.
 - Deduplication: `build-kb` runs SimHash dedup by default; disable via `--no-dedup` when you need raw chunk parity for audits.
 - Typer guidance (Ruff B008): prefer `from typing import Annotated` and attach option metadata there, e.g.:
-  ```python
-  def cmd(
-      out: Annotated[Path, typer.Option("--out")] = Path("artifacts/kb.ndjsonl"),
-  ) -> None:
-      ...
-  ```
+```python
+def cmd(
+    out: Annotated[Path, typer.Option("--out")] = Path("artifacts/kb.ndjsonl"),
+) -> None:
+    ...
+```
 - SQL identifier safety: never format table names directly. Use parameter binding and fixed allow-lists; on Postgres rely on `psycopg.sql.Identifier` after validation.

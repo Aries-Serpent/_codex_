@@ -214,18 +214,18 @@ class OAuthTokenRotator:
     def __init__(self, service_name: str):
         self.service_name = service_name
         self.log_file = f"logs/oauth_rotation_{service_name}.log"
-        
+
     def log(self, message: str, level: str = "INFO"):
         timestamp = datetime.now().isoformat()
         log_entry = f"[{timestamp}] {level}: {message}"
         print(log_entry)
         with open(self.log_file, 'a') as f:
             f.write(log_entry + "\n")
-    
+
     def rotate_github_token(self, new_token: str) -> bool:
         """Rotate GitHub API token"""
         self.log("Starting GitHub token rotation...")
-        
+
         try:
             # Step 1: Verify new token
             self.log("Verifying new token...")
@@ -236,13 +236,13 @@ class OAuthTokenRotator:
                 text=True,
                 timeout=10
             )
-            
+
             if result.returncode != 0:
                 self.log(f"Token verification failed: {result.stderr}", "ERROR")
                 return False
-            
+
             self.log("✅ New token verified")
-            
+
             # Step 2: Update in secrets manager
             self.log("Updating GitHub token in secrets...")
             subprocess.run(
@@ -250,18 +250,18 @@ class OAuthTokenRotator:
                  "--body", new_token],
                 check=True
             )
-            
+
             # Step 3: Log old token for audit
             self.log("Recording rotation in audit log...")
             self._record_rotation_audit("GitHub", "token")
-            
+
             self.log("✅ GitHub token rotation complete", "SUCCESS")
             return True
-            
+
         except Exception as e:
             self.log(f"Rotation failed: {str(e)}", "ERROR")
             return False
-    
+
     def _record_rotation_audit(self, service: str, secret_type: str):
         """Record rotation in audit log"""
         audit_entry = {
@@ -271,7 +271,7 @@ class OAuthTokenRotator:
             "rotated_by": os.environ.get("USER", "unknown"),
             "status": "success"
         }
-        
+
         with open("logs/secret_rotations_audit.jsonl", 'a') as f:
             f.write(json.dumps(audit_entry) + "\n")
 
@@ -311,7 +311,7 @@ class AuditLogger:
         )
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-    
+
     def log_access(
         self,
         secret_name: str,
@@ -331,12 +331,12 @@ class AuditLogger:
             "success": success,
             "details": details or {}
         }
-        
+
         self.logger.info(json.dumps(audit_entry))
-        
+
         # Also log to metrics system
         self._send_to_metrics(audit_entry)
-    
+
     def _send_to_metrics(self, entry: dict):
         """Send audit entry to monitoring system"""
         # Implement metrics submission (CloudWatch, DataDog, etc.)
@@ -351,7 +351,7 @@ def get_api_key(secret_name: str) -> str:
     """Retrieve API key with audit logging"""
     try:
         key = os.environ.get(secret_name)
-        
+
         audit_logger.log_access(
             secret_name=secret_name,
             access_type=SecretAccessType.READ,
@@ -359,9 +359,9 @@ def get_api_key(secret_name: str) -> str:
             service="authentication",
             success=True
         )
-        
+
         return key
-        
+
     except Exception as e:
         audit_logger.log_access(
             secret_name=secret_name,
@@ -507,12 +507,12 @@ class DeploymentRecovery:
     def __init__(self, rollback_target: str = None):
         self.rollback_target = rollback_target or "last_stable"
         self.timestamp = datetime.now().isoformat()
-    
+
     def check_deployment_health(self) -> Dict[str, bool]:
         """Check health of all services"""
         services = ["api", "worker", "scheduler"]
         health = {}
-        
+
         for service in services:
             try:
                 result = subprocess.run(
@@ -524,29 +524,29 @@ class DeploymentRecovery:
             except Exception as e:
                 print(f"❌ {service} health check failed: {e}")
                 health[service] = False
-        
+
         return health
-    
+
     def identify_secret_mismatches(self) -> List[str]:
         """Identify services using wrong secrets"""
         mismatches = []
-        
+
         # Check for signature/auth failures in logs
         result = subprocess.run(
             ["grep", "-i", "authentication.*failed", "logs/app.log"],
             capture_output=True,
             text=True
         )
-        
+
         if result.returncode == 0:
             mismatches = result.stdout.strip().split('\n')
-        
+
         return mismatches
-    
+
     def rollback_secrets(self):
         """Rollback to last known good secrets"""
         print(f"🔄 Rolling back to: {self.rollback_target}")
-        
+
         try:
             # Retrieve last known good configuration
             result = subprocess.run(
@@ -555,60 +555,60 @@ class DeploymentRecovery:
                 capture_output=True,
                 text=True
             )
-            
+
             # Restore from backup
             subprocess.run(
                 ["aws", "secretsmanager", "restore-secret",
                  "--secret-id", "app-secrets"],
                 check=True
             )
-            
+
             print("✅ Secrets rolled back")
-            
+
         except subprocess.CalledProcessError as e:
             print(f"❌ Rollback failed: {e}")
             sys.exit(1)
-    
+
     def restart_services(self):
         """Restart services after recovery"""
         services = ["myapp-api", "myapp-worker", "myapp-scheduler"]
-        
+
         for service in services:
             print(f"Restarting {service}...")
             subprocess.run(
                 ["systemctl", "restart", service],
                 check=True
             )
-            
+
             # Wait for service to stabilize
             import time
             time.sleep(5)
-        
+
         print("✅ Services restarted")
-    
+
     def run_recovery(self):
         """Execute full recovery procedure"""
         print("🚨 Starting deployment recovery...")
-        
+
         # 1. Check health
         health = self.check_deployment_health()
         print(f"\n📊 Service Health: {health}")
-        
+
         # 2. Identify problems
         mismatches = self.identify_secret_mismatches()
         if mismatches:
             print(f"\n⚠️  Found {len(mismatches)} auth failures")
-        
+
         # 3. Rollback
         self.rollback_secrets()
-        
+
         # 4. Restart services
         self.restart_services()
-        
+
         # 5. Verify recovery
         print("\n🔍 Verifying recovery...")
         new_health = self.check_deployment_health()
-        
+
         if all(new_health.values()):
             print("✅ Recovery successful!")
             return True
@@ -723,10 +723,10 @@ jobs:
 ## Best Practices
 
 1. **Never log secrets**: Use masking in logs
-   ```python
-   logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
-   logger.info(f"Auth: {api_key}")  # ❌ Never
-   ```
+```python
+logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
+logger.info(f"Auth: {api_key}")  # ❌ Never
+```
 
 2. **Use environment variables**: Not config files
    ```bash

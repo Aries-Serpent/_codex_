@@ -141,7 +141,7 @@ class MyMCPServer:
         self.setup_tools()
         self.setup_resources()
         self.setup_prompts()
-    
+
     def setup_tools(self):
         """Register available tools"""
         @self.server.call_tool()
@@ -151,7 +151,7 @@ class MyMCPServer:
             return ToolResult(
                 content=[TextContent(type="text", text=result)]
             )
-    
+
     def setup_resources(self):
         """Register available resources"""
         @self.server.list_resources()
@@ -163,7 +163,7 @@ class MyMCPServer:
                     mimeType="text/yaml"
                 )
             ]
-    
+
     def setup_prompts(self):
         """Register available prompts"""
         @self.server.list_prompts()
@@ -175,7 +175,7 @@ class MyMCPServer:
                     arguments=[]
                 )
             ]
-    
+
     def run(self):
         """Start server"""
         stdio_server(self.server).run_in_thread()
@@ -230,13 +230,13 @@ MCP_SERVER_PORT=3000
 async def fetch_data(source: str, limit: int = 10) -> ToolResult:
     """
     Fetch data from source
-    
+
     Args:
         source: Data source name
         limit: Maximum records to fetch
     """
     data = await fetch_from_source(source, limit)
-    
+
     return ToolResult(
         content=[TextContent(type="text", text=json.dumps(data))]
     )
@@ -287,7 +287,7 @@ async def get_prompt(name: str, arguments: dict) -> GetPromptResult:
                     content=PromptContent(
                         type="text",
                         text="""Please review this code:
-                        
+
 {code}
 
 Focus on:
@@ -349,11 +349,11 @@ async def risky_operation(item_id: str) -> ToolResult:
                 )],
                 isError=True
             )
-        
+
         return ToolResult(
             content=[TextContent(type="text", text=str(result))]
         )
-    
+
     except Exception as e:
         return ToolResult(
             content=[TextContent(
@@ -375,7 +375,7 @@ async def parallel_processing(items: list) -> ToolResult:
     # Run operations in parallel
     tasks = [process_item(item) for item in items]
     results = await asyncio.gather(*tasks)
-    
+
     return ToolResult(
         content=[TextContent(type="text", text=json.dumps(results))]
     )
@@ -399,19 +399,19 @@ async def query_database(sql: str, params: list = None) -> ToolResult:
             content=[TextContent(type="text", text="Invalid query")],
             isError=True
         )
-    
+
     try:
         conn = sqlite3.connect("app.db")
         cursor = conn.cursor()
-        
+
         cursor.execute(sql, params or [])
         results = cursor.fetchall()
         conn.close()
-        
+
         return ToolResult(
             content=[TextContent(type="text", text=json.dumps(results))]
         )
-    
+
     except Exception as e:
         return ToolResult(
             content=[TextContent(type="text", text=f"Query error: {e}")],
@@ -434,7 +434,7 @@ async def read_file(path: str, encoding: str = "utf-8") -> ToolResult:
             content=[TextContent(type="text", text="Access denied")],
             isError=True
         )
-    
+
     try:
         content = safe_path.read_text(encoding=encoding)
         return ToolResult(
@@ -461,7 +461,7 @@ async def call_api(endpoint: str, method: str = "GET", data: dict = None) -> Too
             content=[TextContent(type="text", text="Endpoint not allowed")],
             isError=True
         )
-    
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.request(
@@ -471,14 +471,14 @@ async def call_api(endpoint: str, method: str = "GET", data: dict = None) -> Too
                 timeout=aiohttp.ClientTimeout(total=10)
             ) as response:
                 result = await response.json()
-                
+
                 return ToolResult(
                     content=[TextContent(
                         type="text",
                         text=json.dumps(result)
                     )]
                 )
-    
+
     except asyncio.TimeoutError:
         return ToolResult(
             content=[TextContent(type="text", text="API request timeout")],
@@ -569,7 +569,7 @@ server_options:
 async def my_tool(required_param: str, optional_param: str = "default") -> ToolResult:
     """
     Tool description
-    
+
     Args:
         required_param: Description
         optional_param: Description with default
@@ -610,11 +610,11 @@ async def get_prompt(name: str, arguments: dict) -> GetPromptResult:
         "review": "Please review this: {code}",
         "explain": "Explain this code: {code}",
     }
-    
+
     template = templates.get(name)
     if not template:
         raise ValueError(f"Unknown prompt: {name}")
-    
+
     return GetPromptResult(
         messages=[PromptMessage(role="user", content=template)]
     )

@@ -247,7 +247,7 @@ except Exception as e:  # Too broad
 ```text
 
 **New**:
-```python
+```text
 try:
     result = process()
 except ValueError as e:

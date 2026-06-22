@@ -224,7 +224,7 @@ This document provides **requirements, architecture, and standardization strateg
 #### **Component 1: Universal AST Parser**
 **File:** `src/codex_ml/ast/parser.py`
 
-```python
+```text
 # Pseudo-code architecture
 class UniversalParser:
     """Language-agnostic AST parser using libcst + custom wrappers."""
@@ -691,7 +691,7 @@ docs/
 
 **Use AST Analysis to Automatically Update Maturity Checklist:**
 
-```python
+```text
 # pseudo-code: auto-update_maturity_checklist.py
 
 def analyze_and_update_maturity():

@@ -11,7 +11,7 @@ This document describes the fixes applied to resolve 5 failing tests identified 
 **File**: `src/codex_ml/tokenization/sentencepiece_adapter.py`
 
 **Change**: Extended `encode()` method signature to support padding
-```python
+```text
 def encode(
     self,
     text: str,

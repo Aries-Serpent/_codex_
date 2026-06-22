@@ -52,7 +52,7 @@ async def execute_query(query: str, limit: int = 100):
 
 ### Client Example
 
-```python
+```text
 import httpx
 
 class MCPClient:

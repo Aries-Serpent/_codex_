@@ -811,7 +811,7 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 **1. Refactor `troubleshoot_training()` (Complexity 14 → ≤10)**
 
 Before:
-```python
+```text
 def troubleshoot_training(rank, world_size, model, optimizer):
     # 14 decision points - too complex
     if rank == 0:
@@ -1063,7 +1063,7 @@ def load_and_validate(path: Path):
 **File:** `tools/data_drift_check.py:145`
 **Issue:** Error messages may leak sensitive file paths
 
-```python
+```text
 # Current
 except Exception as e:
     print(f"Error loading {file_path}: {e}")

@@ -48,7 +48,7 @@
 **Impact**: Medium - Reduces debugging precision
 **Count**: ~50-100 instances across codebase
 **Example**:
-```python
+```text
 except Exception as e:  # Too broad
     logger.warning(...)
 ```

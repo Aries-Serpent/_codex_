@@ -104,14 +104,14 @@ Following **High Maturity Achievement Plan** pattern established with mcp-lifecy
 
 **Action Following High Maturity Pattern**:
 1. **Add Tests** (tests/training/test_functional_training.py):
-   ```python
-   # Create 12-15 tests covering:
-   - Reproducibility features (seed, rng, deterministic)
-   - Checkpointing and resumption
-   - Data loading determinism
-   - Configuration validation
-   - Error handling and safeguards
-   ```
+```text
+# Create 12-15 tests covering:
+- Reproducibility features (seed, rng, deterministic)
+- Checkpointing and resumption
+- Data loading determinism
+- Configuration validation
+- Error handling and safeguards
+```
 
 2. **Enhance Documentation** (already done, verify keywords):
    - training, functional, reproducible, deterministic
@@ -140,14 +140,14 @@ This is a **meta-capability** - it detects safeguards in OTHER code, not impleme
 **Action Following High Maturity Pattern**:
 
 1. **Create Comprehensive Test Suite** (tests/space_traversal/test_safeguards_keywords.py):
-   ```python
-   # 15-20 tests covering:
-   - Keyword detection accuracy (test each of 25 keywords)
-   - Context-aware pattern detection
-   - False positive filtering
-   - Safeguard density calculation
-   - Determinism and reproducibility
-   ```
+```text
+# 15-20 tests covering:
+- Keyword detection accuracy (test each of 25 keywords)
+- Context-aware pattern detection
+- False positive filtering
+- Safeguard density calculation
+- Determinism and reproducibility
+```
 
 2. **Add Implementation Safeguards** (detector_safeguards.py - already done):
    - Input validation (✅ done)

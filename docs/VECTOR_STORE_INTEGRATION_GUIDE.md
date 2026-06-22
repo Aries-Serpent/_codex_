@@ -711,7 +711,7 @@ Planned improvements for metadata filtering:
 
 ### VectorStore (Abstract Base Class)
 
-```python
+```text
 class VectorStore(ABC):
     def add(vectors: np.ndarray, metadata: Optional[List[Dict]] = None,
             ids: Optional[List[str]] = None) -> List[str]
@@ -730,7 +730,7 @@ class VectorStore(ABC):
 
 Inherits all methods from `VectorStore` plus:
 
-```python
+```text
 class FAISSStore(VectorStore):
     def __init__(index_dir: Optional[str] = None,
                  index_name: str = "default",

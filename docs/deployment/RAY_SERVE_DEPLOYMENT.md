@@ -299,11 +299,11 @@ class TextPredictor:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Initializing TextPredictor")
-    
+
     @app.post("/predict")
     async def predict(self, request: PredictionRequest):
         self.logger.info(f"Predicting for: {request.text[:50]}...")
-        
+
         # Your prediction logic here
         result = {
             "input": request.text,
@@ -344,11 +344,11 @@ app = FastAPI()
 class GPTModel:
     def __init__(self, model_name: str = "gpt2"):
         from transformers import AutoTokenizer, AutoModelForCausalLM
-        
+
         self.model_name = model_name
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
-    
+
     @app.post("/generate")
     async def generate(self, prompt: str, max_tokens: int = 50):
         inputs = self.tokenizer(prompt, return_tensors="pt")
@@ -363,10 +363,10 @@ class GPTModel:
 class EmbeddingModel:
     def __init__(self):
         from transformers import AutoTokenizer, AutoModel
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
         self.model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-    
+
     @app.post("/embed")
     async def embed(self, text: str):
         inputs = self.tokenizer(text, return_tensors="pt")
@@ -377,10 +377,10 @@ class EmbeddingModel:
 # Deploy both models
 if __name__ == "__main__":
     serve.start()
-    
+
     gpt_handle = serve.run(GPTModel.bind())
     embed_handle = serve.run(EmbeddingModel.bind())
-    
+
     print("✅ GPT Model deployed at /generate")
     print("✅ Embedding Model deployed at /embed")
     print("✅ Dashboard: http://localhost:8265")
@@ -408,7 +408,7 @@ class BatchPredictor:
                 "output": f"processed_{request['text']}"
             }
             results.append(result)
-        
+
         return results
 
 @app.post("/batch-predict")
@@ -465,7 +465,7 @@ logger.setLevel(logging.DEBUG)
 class MyModel:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-    
+
     async def __call__(self, request):
         self.logger.info(f"Processing request: {request}")
         return {"status": "ok"}
