@@ -73,13 +73,13 @@ markdownlint docs/my-doc.md
 
 ```bash
 # Check all links
-python3 .github/scripts/check-cross-references.py --repo-root="."
+python3 ../.github/scripts/check-cross-references.py --repo-root="."
 
 # Generate JSON report
-python3 .github/scripts/check-cross-references.py --repo-root="." --format=json
+python3 ../.github/scripts/check-cross-references.py --repo-root="." --format=json
 
 # GitHub Actions annotations
-python3 .github/scripts/check-cross-references.py --github-annotations --fail-on-errors
+python3 ../.github/scripts/check-cross-references.py --github-annotations --fail-on-errors
 ```
 
 ## Run Heading Validator
@@ -136,13 +136,13 @@ The workflow runs automatically on:
 - Pull requests to `main` or `0D_base_` branches
 - Changes to documentation files
 
-**Workflow file:** `.github/workflows/consistency-checks.yml`
+**Workflow file:** `../.github/workflows/consistency-checks.yml`
 
 ## Configuration
 
 ### Markdownlint Rules
 
-Configuration file: `.markdownlintrc`
+Configuration file: `../.markdownlintrc`
 
 Key rules enforced:
 - **MD003**: Consistent heading style (atx: `#`, not underlines)
@@ -319,7 +319,7 @@ For merging PRs:
 1. **Run locally first:**
    ```bash
    markdownlint --fix docs/**/*.md
-   python3 .github/scripts/check-cross-references.py
+   python3 ../.github/scripts/check-cross-references.py
    ```
 
 2. **Review changes:**
@@ -369,9 +369,9 @@ If you encounter problems:
 ## Further Reading
 
 - [Markdownlint Rules](https://github.com/DavidAnson/markdownlint/blob/main/README.md)
-- [Repository Markdown Standards](.markdownlintrc)
-- [Cross-Reference Validator Source](.github/scripts/check-cross-references.py)
-- [Workflow Configuration](.github/workflows/consistency-checks.yml)
+- [Repository Markdown Standards](../.markdownlintrc)
+- [Cross-Reference Validator Source](../.github/scripts/check-cross-references.py)
+- [Workflow Configuration](../.github/workflows/consistency-checks.yml)
 
 ## Support
 

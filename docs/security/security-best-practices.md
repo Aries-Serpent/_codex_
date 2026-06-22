@@ -703,7 +703,7 @@ zaproxy --cli -quick -self-contained -project-file scan.zapproj -url http://loca
 ## Cross-References
 
 - [Secret Management Documentation](./secret-management.md)
-- [Authentication Guide](../authentication/authentication-guide.md)
+- [Authentication Guide](../authentication/USER_GUIDE.md)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
 ---

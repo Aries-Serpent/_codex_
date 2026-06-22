@@ -773,7 +773,7 @@ gh secret set MY_SECRET --body "$(aws secretsmanager get-secret-value ...)" --en
 
 - [Security Best Practices Guide](./security-best-practices.md)
 - [GitHub Secrets Integration](../admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md)
-- [Audit Logging](../monitoring/AUDIT_LOGGING.md)
+- [Monitoring Guide](../monitoring/INDEX.md)
 
 ---
 
