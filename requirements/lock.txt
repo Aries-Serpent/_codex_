@@ -364,7 +364,7 @@ nodeenv==1.10.0
     # via pre-commit
 nox==2026.4.10
     # via codex-ml (pyproject.toml)
-numpy==2.4.6
+numpy==2.5.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
