@@ -54,7 +54,7 @@ chmod +x .git/hooks/pre-commit
 
 ## Usage
 
-**Note**: All executable commands in the **Usage** section below should be run from the **repository root** directory unless otherwise specified.
+**Note**: All executable commands in this **Usage** section should be run from the **repository root** directory unless otherwise specified.
 
 ### Local Validation
 
@@ -74,7 +74,7 @@ markdownlint docs/my-doc.md
 ## Run Cross-Reference Checker
 
 ```bash
-# Check all links (run from repository root)
+# Check all links
 python3 .github/scripts/check-cross-references.py --repo-root="."
 
 # Generate JSON report
