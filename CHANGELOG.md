@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5059)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5059 (SHA `1ab4858d`) at 2026-06-22T19:17Z [auto-generated]
+
 ### Fixed (PR #5058 CodeQL security alerts resolution)
 - Added workflow-level `permissions:` block to `.github/workflows/validate-code-examples.yml` with minimal required scopes (`contents: read`, `actions: read`, `checks: write`) to satisfy CodeQL security alert requirements.
 - Resolved 4 CodeQL security comments with explicit commit SHA `abb568569d1d745527b7bb460f828ca724e69438` across all jobs in the workflow.
