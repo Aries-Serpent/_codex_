@@ -6,7 +6,7 @@
 ## Contents
 
 - [INDEX](INDEX.md)
-- [config_patterns_and_conventions](config_patterns_and_conventions.md)
+- [config_patterns_and_conventions](config_patterns_and_conventions_config.md)
 
 ---
 

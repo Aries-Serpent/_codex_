@@ -6,7 +6,7 @@
 ## Contents
 
 - [INDEX](INDEX.md)
-- [OmegaConf_Schema](OmegaConf_Schema.md)
+- [OmegaConf_Schema](OmegaConf_Schema_configs.md)
 
 ---
 

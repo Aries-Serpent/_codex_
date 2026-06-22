@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5060 CI compliance and secrets false positive resolution)
+- Fixed detect-secrets false positive in `docs/security/secret-management.md` line 737 by adding `<!-- pragma: allowlist secret -->` pragma comment to example code.
+- Resolved REQ-4 and REQ-5 compliance requirements by updating accountability and changelog files in final commit to satisfy `session_wrapup_autofix.py` requirements.
+- All CI failures remediated and blocking governance compliance check addressed.
+
 ### Fixed (auto-update — PR #5059)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5059 (SHA `1ab4858d`) at 2026-06-22T19:17Z [auto-generated]
 

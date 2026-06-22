@@ -15,8 +15,8 @@
 ### Reference
 - **[CONFIG_USAGE.md](CONFIG_USAGE.md)** - How to use configurations
 - **[ENVIRONMENT_VARIABLES.md](ENVIRONMENT_VARIABLES.md)** - Environment setup
-- **[OmegaConf_Schema.md](OmegaConf_Schema.md)** - Schema reference
-- **[Config Patterns](config_patterns_and_conventions.md)** - Common patterns
+- **[OmegaConf_Schema.md](OmegaConf_Schema_configs.md)** - Schema reference
+- **[Config Patterns](config_patterns_and_conventions_config.md)** - Common patterns
 
 ### Migration & Troubleshooting
 - **[MIGRATION_MAPPING.md](MIGRATION_MAPPING.md)** - Migration from old config system
@@ -35,8 +35,8 @@ docs/configuration/
 ├── hydra_quickstart.md                  # Quick start
 ├── CONFIG_USAGE.md                      # Usage patterns
 ├── ENVIRONMENT_VARIABLES.md             # Environment setup
-├── OmegaConf_Schema.md                  # Schema reference
-├── config_patterns_and_conventions.md   # Best practices
+├── OmegaConf_Schema_configs.md            # Schema reference
+├── config_patterns_and_conventions_config.md   # Best practices
 ├── MIGRATION_MAPPING.md                 # Migration guide
 ├── HYDRA_MIGRATION_GUIDE.md             # Detailed migration
 └── TROUBLESHOOTING.md                   # FAQ & troubleshooting
@@ -109,8 +109,8 @@ This directory contains **all configuration-related documentation** for the Arie
 | hydra_quickstart.md | ~5 KB | ✅ Active | Quick start tutorial |
 | CONFIG_USAGE.md | ~8 KB | ✅ Active | Usage patterns |
 | ENVIRONMENT_VARIABLES.md | ~6 KB | ✅ Active | Environment setup |
-| OmegaConf_Schema.md | ~10 KB | ✅ Active | Schema reference |
-| config_patterns_and_conventions.md | ~4 KB | ✅ Active | Best practices |
+| OmegaConf_Schema_configs.md | ~10 KB | ✅ Active | Schema reference |
+| config_patterns_and_conventions_config.md | ~4 KB | ✅ Active | Best practices |
 | MIGRATION_MAPPING.md | ~6 KB | ✅ Active | Migration reference |
 | HYDRA_MIGRATION_GUIDE.md | ~12 KB | ✅ Active | Detailed migration |
 | TROUBLESHOOTING.md | ~8 KB | ✅ Active | FAQ & troubleshooting |

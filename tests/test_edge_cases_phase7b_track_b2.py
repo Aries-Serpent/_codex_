@@ -313,13 +313,11 @@ class TestCollectionBoundaries:
                 with pytest.raises((IndexError, KeyError)):
                     _ = col[0]
             else:
-                # Valid index
-                item = col[0]
-                assert item is not None or item is None  # Item can be anything
+                # Valid index - indexing should succeed and return an item (which may be None)
+                _ = col[0]
 
                 # Negative indexing
-                last = col[-1]
-                assert last is not None or last is None
+                _ = col[-1]
 
     def test_empty_collection_operations(self):
         """Test operations on empty collections"""
