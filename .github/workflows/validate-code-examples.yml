@@ -14,6 +14,11 @@ on:
       - 'guides/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
 jobs:
   validate-python:
     name: Validate Python Examples
