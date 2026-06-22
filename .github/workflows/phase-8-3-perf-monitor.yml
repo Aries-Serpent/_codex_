@@ -233,6 +233,7 @@ jobs:
     name: Send Notifications
     needs: [collect-metrics, analyze-metrics, enforce-sla]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     permissions:
       contents: read
@@ -269,6 +270,7 @@ jobs:
     name: Summary Report
     needs: [collect-metrics, analyze-metrics, enforce-sla]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     permissions:
       actions: read

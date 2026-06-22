@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: unified-governance-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   compliance-check:
     name: Run compliance check

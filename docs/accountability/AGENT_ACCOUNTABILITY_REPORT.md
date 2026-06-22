@@ -57867,3 +57867,28 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## PR #5056 Workflow Compliance Fix — 2026-06-22T12:46Z
+
+**Session Type:** CI Compliance Remediation
+**Lead Agent:** @copilot
+**Authority:** @mbaetiong
+**Status:** ✅ COMPLETE
+
+### Session Summary
+
+Addressed two blocking `github-actions[bot]` comments reporting workflow compliance violations on PR #5056.
+
+**Changes Made:**
+- Fixed 46 action version violations (checkout v4→v5, setup-python v4→v6, github-script v7→v8, upload/download-artifact v3/v4→v5) across 6 workflow files
+- Fixed YAML parse error in `phase-8-1-health-monitor.yml` (f-string content at column 0 broke YAML block scalar)
+- Added `concurrency:` blocks to `phase-8-1-health-monitor.yml`, `phase-8-2-issue-triage.yml`, `unified-governance-check.yml`, `validate-token-health.yml`
+- Added `timeout-minutes:` to jobs in `phase-8-2-issue-triage.yml` and `phase-8-3-perf-monitor.yml`
+- Updated workflow compliance matrix: all 6 target workflows now `✅ ✅ ✅`
+
+**Validation:**
+- `python3 scripts/ci/enforce_actions_versions.py` → 209 files checked, 0 violations
+- `python3 scripts/ci/workflow_compliance_scan.py` → all target workflows show ✅✅✅
+- All modified YAML files parse cleanly with `yaml.safe_load`

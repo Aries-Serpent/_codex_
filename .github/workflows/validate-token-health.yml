@@ -6,6 +6,10 @@ on:
     # Daily at 9 AM UTC
     - cron: '0 9 * * *'
 
+concurrency:
+  group: validate-token-health-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   CODEX_REPO_ID: '1040037790'
   GITHUB_REPOSITORY: 'Aries-Serpent/_codex_'

@@ -13,11 +13,16 @@ permissions:
   issues: write
   contents: read
 
+concurrency:
+  group: phase-8-2-issue-triage-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   classify-issue:
     if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     name: Classify Issue
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v5
@@ -89,6 +94,7 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     name: Update Triage Dashboard
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v5

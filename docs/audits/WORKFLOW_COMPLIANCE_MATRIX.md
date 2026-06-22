@@ -126,16 +126,9 @@
 | `pages-pre-merge-validation` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `pages-scheduled-validation` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `performance-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
-| `phase-8-1-health-monitor` | ❌ | ❌ | ✅ | N/A | SOFT | YAML parse error: while parsing a block mapping
-  in "<unicode string>", line 1, column 1:
-    name: Phase 8.1 - Health Monitor
-    ^
-expected <block end>, but found '-'
-  in "<unicode string>", line 180, column 1:
-    - **Overall Health:** {agg.get(' ... 
-    ^ |
-| `phase-8-2-issue-triage` | ❌ | ❌ | ✅ | N/A | SOFT | — |
-| `phase-8-3-perf-monitor` | ✅ | ❌ | ✅ | N/A | PARTIAL | — |
+| `phase-8-1-health-monitor` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `phase-8-2-issue-triage` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `phase-8-3-perf-monitor` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `post-accountability-to-discussion` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `post-ci-status-to-discussion` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `post-merge-validation-optimized` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -198,8 +191,8 @@ expected <block end>, but found '-'
 | `token-probe` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `trigger-on-approval` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `unified-deployment` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
-| `unified-governance-check` | ❌ | ✅ | ✅ | N/A | PARTIAL | — |
-| `validate-token-health` | ❌ | ✅ | ✅ | N/A | GROUNDED | — |
+| `unified-governance-check` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `validate-token-health` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `validate` | ✅ | ✅ | ✅ | N/A | SOFT | ⚠️ Cross-branch diff without explicit base-ref fetch |
 | `vars-guide-sync` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `workflow-analytics-unified` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -212,9 +205,9 @@ expected <block end>, but found '-'
 ## KPI Summary
 | KPI | Count |
 |-----|-------|
-| GROUNDED workflows     | 65 |
+| GROUNDED workflows     | 66 |
 | PARTIAL workflows      | 38 |
-| SOFT workflows         | 95 |
+| SOFT workflows         | 94 |
 | Cascade risk           | 0 |
-| Missing concurrency    | 10 |
-| Missing timeout        | 16 |
+| Missing concurrency    | 6 |
+| Missing timeout        | 13 |
