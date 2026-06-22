@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-22T15:19:57Z",
+  "generated_at": "2026-06-22T17:57:33Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1254,6 +1254,11 @@
       "has_concurrency": true
     },
     {
+      "name": "consistency-checks",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "consolidated-pr-status",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1400,7 +1405,7 @@
     },
     {
       "name": "doc-freshness-check",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1904,6 +1909,11 @@
       "has_concurrency": true
     },
     {
+      "name": "validate-code-examples",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "validate-token-health",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2320,5 +2330,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "ab0fc4c52532dd6e44b843758e6bcc81b7e3f7d74872bdfc0925a01706a987db"
+  "integrity_sha256": "e14278ec1d9c9ce35182a7cb87836ebe0ab0cd5c48aee1f0827eea85631ed85d"
 }

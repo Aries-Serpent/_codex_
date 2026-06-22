@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5058)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5058 (SHA `fb0f44a4`) at 2026-06-22T17:57Z [auto-generated]
+
 ### Fixed (PR #5057 CI rescue follow-up 2)
 - Updated `.github/workflows/workflow-compliance-gate.yml` to evaluate compliance on PR-changed workflow files (with fallback to full scan outside PR context), preventing unrelated legacy workflow files from failing this PR.
 - Added top-level workflow `permissions` in `.github/workflows/unified-governance-check.yml` to satisfy workflow compliance policy.
