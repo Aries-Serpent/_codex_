@@ -160,7 +160,7 @@ jobs:
           path: infrastructure/terraform/
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.5.0
 
