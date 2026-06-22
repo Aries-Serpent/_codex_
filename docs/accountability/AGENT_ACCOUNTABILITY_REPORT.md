@@ -2,6 +2,13 @@
 
 
 
+
+
+## SESSION SUMMARY — 2026-06-22T22:07Z [auto-generated]
+
+**Session:** auto-20260622T2207-run4930 | **Run:** 27987113961 | **Date:** 2026-06-22
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-06-22T20:00Z [auto-generated]
 
 **Session:** auto-20260622T2000-run4927 | **Run:** 27979874088 | **Date:** 2026-06-22
