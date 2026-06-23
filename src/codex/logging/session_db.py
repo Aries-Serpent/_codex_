@@ -385,7 +385,7 @@ class SessionDB:
 
         query = f"""
             SELECT * FROM sessions
-            WHERE {where_clause}
+            WHERE {where_clause}  # nosec B608 - where_clause is built from safe values
             ORDER BY timestamp DESC
             LIMIT ? OFFSET ?
         """

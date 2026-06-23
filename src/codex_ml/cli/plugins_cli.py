@@ -41,10 +41,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency: Typer preferred when available
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer missing
-    typer = None
+    typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub
     if not hasattr(typer, "Typer"):
-        typer = None
+        typer = None  # type: ignore[assignment]
 
 _GROUPS = {
     "tokenizers": registries.tokenizers,
@@ -163,14 +163,14 @@ else:
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
-    arg_list = list(argv) if argv is not None else sys.argv[1:]
+    arg_list = list(argv) if argv is not None else sys.argv[1:]  # type: ignore[arg-type]
 
     with capture_exceptions(logger):
         log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
         exit_code = 0
         if typer is not None:
             try:
-                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)  # type: ignore[attr-defined]
             except typer.Exit as exc:
                 exit_code = exc.exit_code
         else:

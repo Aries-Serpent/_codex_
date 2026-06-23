@@ -52,10 +52,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency: prefer Typer when available
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None
+    typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None
+        typer = None  # type: ignore[assignment]
 
 
 def _format_validation_error(exc: ValidationError | None) -> str:
@@ -192,7 +192,7 @@ def main(
         exit_code = 0
         if typer is not None:
             try:
-                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)  # type: ignore[attr-defined]
             except typer.Exit as exc:
                 exit_code = exc.exit_code
         else:

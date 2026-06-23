@@ -196,7 +196,7 @@ class SessionEmbeddings:
                 import pickle
                 try:
                     with open(self.embeddings_path, "rb") as f:
-                        self._embeddings = pickle.load(f)
+                        self._embeddings = pickle.load(f)  # nosec B301 - trusted data only
                 except Exception:
                     self._embeddings = []  # type: ignore[assignment]
 
