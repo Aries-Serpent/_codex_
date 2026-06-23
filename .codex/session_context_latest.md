@@ -1,39 +1,36 @@
-# Session Context — 2026-06-23T06:53:39Z
-**Branch:** `copilot/fix-enforce-secrets-baseline-job`  **PR:** #5069  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-23T15:35:34Z
+**Branch:** `copilot/fetch-security-scan-results`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4836` (✅)
+- REST remaining: `4564` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5069 — fix(ci): expand secrets baseline auto-fix regex for internal files and manifests
-State: `open`  Draft: `False`  Branch: `copilot/fix-enforce-secrets-baseline-job` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-06-23)
 
 ## 📝 Recent Commits
+- `21d186e8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
+- `6ffe3a04` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-23)
+- `b9c9058c` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
+- `5f6f9f18` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-06-23)
+- `aea037db` Merge pull request #5069 from Aries-Serpent/copilot/fix-enforce-secrets-baseline — Statix (2026-06-23)
+- `c6bc4087` fix: restrict secrets allowlist regex to safe file types only — copilot-swe-agent[bot] (2026-06-23)
 - `57a0a776` fix(ci): expand secrets baseline auto-fix regex to include .codex/aftermath, k8s — copilot-swe-agent[bot] (2026-06-23)
 - `1e98f9b7` WIP: Fix secrets baseline enforcer auto-fix regex — copilot-swe-agent[bot] (2026-06-23)
-- `e20a6d45` chore: update performance dashboard [skip ci] — mbaetiong (2026-06-23)
-- `0d686bba` Merge pull request #5068 from Aries-Serpent/copilot/fix-workflow-documentation-l — Statix (2026-06-23)
-- `d6ca04bb` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
-- `582c26e5` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
-- `b80235f8` fix(review): complete all PR #5068 review comment fixes with resolving commit SH — copilot-swe-agent[bot] (2026-06-23)
-- `2591f875` fix(review): remove unused Any import from peft_utils.py — copilot-swe-agent[bot] (2026-06-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1421`
-- `CODEX_CI_FAILURE_RATE` = `1.5:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `cd44a77429b6940b93da64247b0c98c37244e08f`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1428`
+- `CODEX_CI_FAILURE_RATE` = `3.3:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `aea037db099752bc609b6c2e962b6aea021b31d3`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
