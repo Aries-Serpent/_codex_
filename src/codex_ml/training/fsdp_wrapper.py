@@ -17,9 +17,32 @@ import logging
 from collections.abc import Callable
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from torch import nn
+    from torch.distributed.fsdp import (
+        BackwardPrefetch,
+        CPUOffload,
+        FullStateDictConfig,
+        MixedPrecision,
+        ShardedStateDictConfig,
+        ShardingStrategy,
+        StateDictType,
+    )
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+else:
+    nn = None
+    BackwardPrefetch = None
+    CPUOffload = None
+    FullStateDictConfig = None
+    MixedPrecision = None
+    ShardedStateDictConfig = None
+    ShardingStrategy = None
+    StateDictType = None
+    FSDP = None
 
 try:
     import torch.distributed.algorithms._checkpoint.checkpoint_wrapper as _ckpt_wrap
