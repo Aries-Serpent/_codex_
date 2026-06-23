@@ -40,8 +40,6 @@ concurrency:
 
 permissions:
   contents: write
-  pull-requests: write
-  checks: write
 
 env:
   PYTHON_VERSION: '3.12'
@@ -146,7 +144,7 @@ jobs:
                 -m "- Applied automated fixes for detected patterns" \
                 -m "- Patterns healed per orchestrator diagnostics" \
                 -m "- This commit resolves recurrent CI issues"
-              git push || echo "⚠️ Push failed — may have no changes"
+              git push
             fi
           fi
 

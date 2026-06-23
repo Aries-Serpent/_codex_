@@ -170,7 +170,7 @@ python .github/scripts/ci-autofix-orchestrator.py --dry-run
 | Patterns Detected | 9 |
 | Auto-Fixable | 4 |
 | Detect-Only | 5 |
-| Scheduled Runs | 730/month (2x daily) |
+| Scheduled Runs | ~60/month (2x daily) |
 | Expected Auto-Fix Rate | ~35% (4 of 9) |
 
 ---

@@ -313,18 +313,23 @@ jobs:
         if: always()
         uses: actions/github-script@v8
         env:
-          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json || '[]' }}
+          FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
         with:
           script: |
+            const fs = require('fs');
             const now = new Date().toISOString();
             const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+            const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';
             
-            // Parse failures from previous step or default to empty
+            // Read failures from file
             let failures = [];
             try {
-              failures = JSON.parse(process.env.FAILURES_JSON || '[]');
+              if (fs.existsSync(failuresPath)) {
+                const fileContent = fs.readFileSync(failuresPath, 'utf8');
+                failures = JSON.parse(fileContent);
+              }
             } catch (e) {
-              console.warn('Could not parse failures JSON:', e);
+              console.warn(`Could not read failures from ${failuresPath}:`, e);
             }
 
             // Group by pattern/severity

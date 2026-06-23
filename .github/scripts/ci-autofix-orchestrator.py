@@ -36,7 +36,6 @@ import subprocess
 import sys
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import List, Optional, Dict, Any
 
 
@@ -91,7 +90,16 @@ class CIAutoFixOrchestrator:
             if not self.check_only and not self.dry_run:
                 self._apply_fixes()
 
-            return 1 if self.issues else 0
+            # Return 1 if check-only/dry-run and issues exist, or if there are unfixed issues after fix attempt
+            if self.check_only or self.dry_run:
+                return 1 if self.issues else 0
+            else:
+                # In normal mode, return 1 if there are:
+                # - Manual (non-auto-fixable) issues, or
+                # - Failed fixes
+                has_manual_issues = any(not issue.auto_fix_available for issue in self.issues)
+                has_failed_fixes = any(not fix.fixed for fix in self.fixes)
+                return 1 if (has_manual_issues or has_failed_fixes) else 0
         except Exception as e:
             print(f"::error::Orchestrator error: {e}", file=sys.stderr)
             return 1
@@ -123,8 +131,20 @@ class CIAutoFixOrchestrator:
                                     suggested_fix="ruff check --fix . --select=F401",
                                 )
                             )
-                except json.JSONDecodeError:
-                    pass
+                except json.JSONDecodeError as e:
+                    self.issues.append(
+                        Issue(
+                            pattern=1,
+                            pattern_name="Unused Imports",
+                            issue_type="parse_error",
+                            severity="warning",
+                            file="*",
+                            line=None,
+                            message=f"Failed to parse ruff JSON output: {e}",
+                            auto_fix_available=False,
+                            suggested_fix="Manual review of ruff output needed",
+                        )
+                    )
         except subprocess.TimeoutExpired:
             self.issues.append(
                 Issue(
@@ -223,7 +243,8 @@ class CIAutoFixOrchestrator:
                                 )
                             )
         except subprocess.CalledProcessError:
-            pass
+            # git grep for CodeQL patterns may not find any matches; this is not fatal
+            return
 
     def _detect_pattern_9_pyyaml_dependencies(self) -> None:
         """Pattern 9: Detect missing PyYAML before setup-python-cached."""
@@ -255,7 +276,7 @@ class CIAutoFixOrchestrator:
                                             file=filepath,
                                             line=i + 1,
                                             message="setup-python-cached used without PyYAML pre-install",
-                                            auto_fix_available=True,
+                                            auto_fix_available=False,
                                             suggested_fix="Add: pip install pyyaml --quiet",
                                         )
                                     )
@@ -341,8 +362,12 @@ class CIAutoFixOrchestrator:
         try:
             with open(issue.file, "r") as f:
                 lines = f.readlines()
-            # Replace lgtm with codeql format
-            updated_lines = [line.replace("# lgtm", "# codeql[py/unknown]") for line in lines]
+            # Replace lgtm with codeql format, preserving the rule id
+            updated_lines = []
+            for line in lines:
+                # Pattern: # lgtm[py/rule-id] -> # codeql[py/rule-id]
+                updated_line = re.sub(r'#\s*lgtm\[(.*?)\]', r'# codeql[\1]', line)
+                updated_lines.append(updated_line)
             if updated_lines != lines and not self.dry_run:
                 with open(issue.file, "w") as f:
                     f.writelines(updated_lines)
@@ -369,7 +394,7 @@ class CIAutoFixOrchestrator:
     def get_report(self) -> Dict[str, Any]:
         """Generate structured report for agent consumption."""
         return {
-            "timestamp": self.start_time.isoformat() + "Z",
+            "timestamp": self.start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "status": "failed" if self.issues else "success",
             "total_issues": len(self.issues),
             "auto_fixable": sum(1 for issue in self.issues if issue.auto_fix_available),
