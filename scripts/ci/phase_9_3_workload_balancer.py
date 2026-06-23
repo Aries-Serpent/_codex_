@@ -314,7 +314,7 @@ class LoadBalancer:
     def make_balancing_decision(
         self,
         candidate_agents: List[str],
-        required_capacity: str = "small"  # small, medium, large
+        capacity_level: str = "small"  # small, medium, large
     ) -> LoadBalancingDecision:
         """Make load balancing decision for given agents."""
         start_time = time.time()

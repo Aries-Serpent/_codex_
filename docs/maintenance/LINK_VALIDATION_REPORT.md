@@ -73,9 +73,9 @@
 
 ### docs/ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md
 
-- `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)` → No suggestion
-- `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)` → No suggestion
-- `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)` → No suggestion
+- `!\[GitHub\` → No suggestion
+- `!\[GitHub\` → No suggestion
+- `!\[GitHub\` → No suggestion
 
 ### docs/capabilities/functional_training.md
 

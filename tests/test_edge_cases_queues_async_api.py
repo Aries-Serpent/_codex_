@@ -300,7 +300,7 @@ class TestAsyncIteratorEdgeCases:
         """Test empty async iterator"""
         async def empty_generator():
             return
-            yield  # Never reached
+            # yield removed - unreachable after return
 
         items = []
         async for item in empty_generator():
@@ -341,7 +341,7 @@ class TestAsyncIteratorEdgeCases:
             yield 1
             yield 2
             raise ValueError('error')
-            yield 3  # Never reached
+            # yield 3 removed - unreachable after raise
 
         items = []
         with pytest.raises(ValueError):

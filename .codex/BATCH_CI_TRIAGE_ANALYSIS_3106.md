@@ -181,7 +181,7 @@ Tests include:
 | [rust_swarm_ci.yml](../.github/workflows/rust_swarm_ci.yml) | CI workflow with validation |
 | [validate_cargo_features.py](../scripts/ci/validate_cargo_features.py) | Validation script |
 | [test_validate_cargo_features.py](../tests/ci/test_validate_cargo_features.py) | Test suite |
-| [PR_3095_FOLLOW_UP.md](./PR_3095_FOLLOW_UP.md) | Previous PR follow-up |
+| [PR_3095_FOLLOW_UP.md](./archive/pr-resolutions/PR_3095_FOLLOW_UP.md) | Previous PR follow-up |
 
 ---
 

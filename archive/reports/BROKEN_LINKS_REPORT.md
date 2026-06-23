@@ -66,11 +66,11 @@
 
 ### ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md
 
-- Line 188: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 188: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/ai-facing/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
-- Line 188: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 188: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/ai-facing/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
-- Line 188: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 188: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/ai-facing/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
 
 ### capabilities/functional_training.md
@@ -119,11 +119,11 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/""
 - Line 46: `[method](None)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/None
-- Line 50: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 50: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
-- Line 51: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 51: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
-- Line 52: `[!\[GitHub\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)`
+- Line 52: `!\[GitHub\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/blob:https:/chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1
 - Line 56: `["model"](state["inputs"])`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/state["inputs"]

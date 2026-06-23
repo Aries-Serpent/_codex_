@@ -764,7 +764,7 @@ class TestIteratorBoundaries:
         """Test generator function edge cases"""
         def empty_generator():
             return
-            yield  # Never reached
+            # yield removed - unreachable after return
 
         def single_yield_generator():
             yield 1
@@ -788,7 +788,7 @@ class TestIteratorBoundaries:
                 yield 1
                 yield 2
                 raise ValueError('stop')
-                yield 3
+                # yield 3 removed - unreachable after raise
             finally:
                 cleanup_called.append(True)
 
