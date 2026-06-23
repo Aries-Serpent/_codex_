@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-23T00:43:17Z",
+  "generated_at": "2026-06-23T03:11:00Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1169,6 +1169,11 @@
       "has_concurrency": true
     },
     {
+      "name": "ci-pattern-healer",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "ci-rescue",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -2229,6 +2234,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/PHASE_1_4_SESSION_INJECTOR_UPDATE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/PHILOSOPHICAL_FRAMEWORK.md",
       "type": "enforcement"
     },
@@ -2330,5 +2339,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1c117800c7978e934591cc8badf2a98dd1fc8f98f65d8923d02f8f02bfaba426"
+  "integrity_sha256": "d2b39a4726e422889b16de409dec3f1b434291146c76be20687cca644e0b1b9f"
 }
