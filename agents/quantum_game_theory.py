@@ -1152,7 +1152,11 @@ class BlueRedTeamSimulator:
         if not NUMPY_AVAILABLE:
             raise TypeError("BlueRedTeamSimulator requires numpy for hypothesis evaluation")
 
-        results = {
+        # After NUMPY_AVAILABLE check, engines are definitely not None
+        assert self.classical_engine is not None
+        assert self.quantum_engine is not None
+
+        results: dict[str, Any] = {
             "hypothesis": hypothesis,
             "mode": self.mode,
             "timestamp": None,  # Can be set by caller
@@ -1276,6 +1280,10 @@ class BlueRedTeamSimulator:
         """
         if not NUMPY_AVAILABLE:
             raise TypeError("BlueRedTeamSimulator requires numpy for simulation")
+
+        # After NUMPY_AVAILABLE check, engines are definitely not None
+        assert self.classical_engine is not None
+        assert self.quantum_engine is not None
 
         round_results = []
         theta_blue, theta_red = 0.0, 0.0

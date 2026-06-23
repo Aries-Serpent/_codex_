@@ -420,7 +420,7 @@ class PhysicsInspiredOrchestrator:
             print("⚠️  DECISION: WAIT AND REASSESS")
             print("   No optimal path found. Recommend gathering more information.")
 
-            result = {
+            result: dict[str, Any] = {
                 "action_taken": "wait",
                 "rationale": "No path met constraints",
                 "recommendation": "Gather more information or adjust constraints",
