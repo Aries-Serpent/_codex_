@@ -18,7 +18,7 @@ The consistency checks system includes:
 
 ```bash
 # From repository root
-bash ../.GitHub/scripts/install-consistency-hooks.sh
+bash ../.github/scripts/install-consistency-hooks.sh
 ```
 
 ## Option 2: Manual Setup
@@ -51,7 +51,7 @@ npm install -g markdownlint-CLI yamllint
 
 ```bash
 # Copy hook to .git/hooks/
-cp ../.GitHub/scripts/pre-commit-hook.sh .git/hooks/pre-commit
+cp ../.github/scripts/pre-commit-hook.sh .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
@@ -79,13 +79,13 @@ markdownlint docs/my-doc.md
 
 ```bash
 # Check all links
-python3 ../.GitHub/scripts/check-cross-references.py --repo-root="."
+python3 ../.github/scripts/check-cross-references.py --repo-root="."
 
 # Generate JSON report
-python3 ../.GitHub/scripts/check-cross-references.py --repo-root="." --format=JSON
+python3 ../.github/scripts/check-cross-references.py --repo-root="." --format=JSON
 
 # GitHub Actions annotations
-python3 ../.GitHub/scripts/check-cross-references.py --GitHub-annotations --fail-on-errors
+python3 ../.github/scripts/check-cross-references.py --GitHub-annotations --fail-on-errors
 ```
 
 ## Run Heading Validator
@@ -145,7 +145,7 @@ The workflow runs automatically on:
 - Pull requests to `main` or `0D_base_` branches
 - Changes to documentation files
 
-**Workflow file:** `../.GitHub/workflows/consistency-checks.yml`
+**Workflow file:** `../.github/workflows/consistency-checks.yml`
 
 ## Configuration
 
@@ -251,7 +251,7 @@ grep "## My Heading" docs/file.md
 The checker reports external links as warnings. To ignore them:
 
 ```bash
-python3 .GitHub/scripts/check-cross-references.py --format=text | grep "❌ BROKEN"
+python3 .github/scripts/check-cross-references.py --format=text | grep "❌ BROKEN"
 ```
 
 ## Common Errors & Fixes
@@ -284,7 +284,7 @@ python3 .GitHub/scripts/check-cross-references.py --format=text | grep "❌ BROK
 
 ### GitHub Actions
 
-The workflow file `.GitHub/workflows/consistency-checks.yml` includes:
+The workflow file `.github/workflows/consistency-checks.yml` includes:
 
 1. **Markdownlint Job** - Full repository scan
 2. **Cross-References Job** - Link validation
@@ -332,7 +332,7 @@ For merging PRs:
 3. **Verify internal links:**
 
    ```bash
-   python3 .GitHub/scripts/check-cross-references.py --fail-on-errors
+   python3 .github/scripts/check-cross-references.py --fail-on-errors
    ```
 
 4. **Keep line lengths reasonable:**
@@ -346,7 +346,7 @@ For merging PRs:
 
    ```bash
    markdownlint --fix docs/**/*.md
-   python3 ../.GitHub/scripts/check-cross-references.py
+   python3 ../.github/scripts/check-cross-references.py
    ```
 
 2. **Review changes:**
@@ -380,7 +380,7 @@ rm .git/hooks/pre-commit
 ## Disable GitHub Actions workflow
 
 ```yaml
-# In ../.GitHub/workflows/consistency-checks.yml
+# In ../.github/workflows/consistency-checks.yml
 on:
   push:
     branches: []  # No branches trigger it
