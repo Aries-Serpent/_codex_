@@ -15,7 +15,7 @@ This directory contains comprehensive audit reports and tools for documentation 
 
 ### Supporting Files
 
-- **[../admin_docs_audit.py](../admin_docs_audit.py)** - Reusable audit script (12K)
+- **`admin_docs_audit.py`** - Reusable audit script (12K)
 
 ---
 
