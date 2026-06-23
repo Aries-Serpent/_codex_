@@ -70,13 +70,13 @@ jobs:
             --type=python 2>/dev/null || true)
 
           unsafe_response_access=$(rg 'response\["[^"]+"\]\.replace\(' \
-            --glob="scripts/ci/**" \
-            --glob="src/scripts/ci/**" \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
             --type=python 2>/dev/null || true)
 
           unsafe_datetime_parse=$(rg 'datetime\.fromisoformat\([^)]*\[.*\]\.replace\(' \
-            --glob="scripts/ci/**" \
-            --glob="src/scripts/ci/**" \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
             --type=python 2>/dev/null || true)
 
           violations_found=false
