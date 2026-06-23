@@ -877,11 +877,7 @@ jobs:
               `> ✅ **Pre-authorized.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` — start immediately.`,
               `> ${blockingNote}`,
               ``,
-              `@copilot+claude-haiku-4.5 /plan
-
-The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).
-
-> **💡 Parallel execution:** Use the \`task\` tool to delegate independent subtasks to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`ci-testing-agent\`, \`unified-coverage-agent\`) to work in parallel.`,
+              `@copilot+claude-haiku-4.5 /plan\n\nThe rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).\n\n> **💡 Parallel execution:** Use the \`task\` tool to delegate independent subtasks to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`ci-testing-agent\`, \`unified-coverage-agent\`) to work in parallel.`,
               ``,
               ...(scanTable ? [
                 `<details><summary>🔍 Current workflow status (HEAD SHA scan)</summary>`,

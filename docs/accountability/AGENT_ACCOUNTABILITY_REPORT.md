@@ -416,3 +416,28 @@ and the CI gate requirement.
 - `copilot-swe-agent[bot]` (direct fixes)
 
 ---
+
+## Session: 2026-06-23T20:22Z — PR #5070 YAML Fix
+
+**Branch:** `copilot/fetch-security-scan-results`
+**Commit:** pending
+**Triggered by:** `@mbaetiong` approval dispatch + Workflow Compliance Gate failure
+
+**Problem Fixed:**
+- `copilot-agent-checkin.yml` YAML parse error at line 882 — multi-line template literal with content starting at column 1 caused YAML block scalar to terminate early, breaking the Workflow Compliance Gate
+
+**Root Cause:**
+- The `@copilot+claude-haiku-4.5 /plan\n\nThe rescue comment...` template literal spanned multiple lines with continuation lines at column 1. YAML block scalars close when indented content at column 1 is encountered.
+
+**Fix Applied:**
+- Converted multi-line template literal to single-line with `\n` escape sequences in `copilot-agent-checkin.yml`
+
+**Files Changed:**
+- `.github/workflows/copilot-agent-checkin.yml` — line 880-884: collapsed 5-line template literal to single line using `\n` escapes
+- `CHANGELOG.md` — new fix entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+**Agents Used:**
+- `copilot-swe-agent[bot]` (direct fixes)
+
+---

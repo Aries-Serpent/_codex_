@@ -8,6 +8,7 @@
 - fix(ci): shallow-clone REQ-4/REQ-5 failure in pre-merge-validation — `_last_commit_changed()` now falls back to `git show --name-only HEAD` when `git diff HEAD~1 HEAD` fails in a shallow checkout; added `fetch-depth: 2` to pre-merge-validation.yml; ruff violations fixed in 4 test files (I001, F841, W293) (2026-06-23T19:15Z)
 - fix(ci): actionlint — added `validate-api-null-handling`, `validate-mypy-baseline`, `validate-documentation-links` to `notify-results` needs in `ci-pattern-prevention-gate.yml` (2026-06-23T20:01Z)
 - feat(workflows): upgrade all Copilot Agent workflow triggers to `claude-haiku-4.5` with `/plan` + Custom Agents parallel delegation across 6 workflow files (2026-06-23T20:01Z)
+- fix(ci): `copilot-agent-checkin.yml` YAML parse error — multi-line template literal with column-1 content terminated block scalar early; converted to single-line with `\n` escapes (2026-06-23T20:22Z)
 
 ### Fixed
 - fix: CI metrics collector NoneType crash in phase_8_3_benchmark_collector.py (lines 209-218)
