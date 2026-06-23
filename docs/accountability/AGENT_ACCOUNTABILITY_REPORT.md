@@ -369,3 +369,23 @@ and the CI gate requirement.
 - Governance Compliance (REQ-4/REQ-5)
 
 ---
+## SESSION SUMMARY — 2026-06-23T19:15Z (CI Fix — PR #5070)
+
+**Session Type:** CI fix session — address failing CI checks on commit `44701b99`
+
+**Fixes Applied:**
+- `scripts/ci/session_wrapup_autofix.py` — `_last_commit_changed()` now handles shallow git clones (fetch-depth: 1) by falling back to `git show --name-only HEAD` when the diff base cannot be resolved; resolves REQ-4/REQ-5 false negatives in CI
+- `.github/workflows/pre-merge-validation.yml` — added `fetch-depth: 2` to main Checkout step so `HEAD~1` is available for the session wrapup diff check
+- `tests/unit/test_phase_9_1_decisions.py` — removed unused variable `logger` (F841); fixed import ordering (I001)
+- `tests/unit/test_token_broker_enhancements.py` — removed unused variable `old_backoff` (F841); fixed import ordering (I001)
+- `tests/unit/test_transformer_phase1a.py` — removed unused variable `result` (F841); fixed import ordering (I001)
+- `tests/unit/test_validators.py` — removed trailing whitespace from blank lines (W293)
+
+**CI Checks Addressed:**
+- Pre-Merge Validation (session_wrapup REQ-4/REQ-5 — shallow clone fix)
+- Ruff linting violations in test files (I001, F841, W293)
+
+**Agents Used:**
+- `copilot-swe-agent[bot]` (direct fixes)
+
+---

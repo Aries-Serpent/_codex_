@@ -20,16 +20,17 @@ Run tests:
   pytest tests/unit/test_phase_9_1_decisions.py -k "high_risk" -v
 """
 
-import pytest
 import sqlite3
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
+
+import pytest
 
 # Import the modules under test
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts/ci"))
-from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 from phase_9_1_confidence_scorer import ConfidenceScorer
+from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 
 
 class TestDecisionLogging:
@@ -259,7 +260,7 @@ class TestConfidenceScoring:
         """Create scorer with temporary database."""
         db_path = str(tmp_path / "test_decisions.db")
         # Create logger to initialize database
-        logger = DecisionLogger(db_path)
+        DecisionLogger(db_path)
         return ConfidenceScorer(db_path)
 
     def test_score_decision_simple(self, scorer):
