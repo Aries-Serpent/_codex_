@@ -23,7 +23,7 @@ try:
     from codex.utils.config_loader import MissingConfigException
 except ImportError:
     # Fallback to local definition for backward compatibility
-    class MissingConfigException(FileNotFoundError):
+    class MissingConfigException(FileNotFoundError):  # type: ignore[no-redef]
         """Exception raised when a requested Hydra config file cannot be located."""
 
         def __init__(

@@ -716,7 +716,7 @@ class AgentMemory:
         """Alias for get_memory_stats (backward compatibility)."""
         return self.get_memory_stats()
 
-    def search(self, query: str = None, **kwargs) -> list[MemoryEntry]:
+    def search(self, query: str | None = None, **kwargs) -> list[MemoryEntry]:
         """
         Search memories with text query (alias for search_memories).
 
@@ -734,7 +734,7 @@ class AgentMemory:
             return [m for m in memories if query_lower in m.content.lower()]
         return self.search_memories(**kwargs)
 
-    def filter(self, criteria: dict[str, Any] = None, **kwargs) -> list[MemoryEntry]:
+    def filter(self, criteria: dict[str, Any] | None = None, **kwargs) -> list[MemoryEntry]:
         """
         Filter memories by criteria dictionary.
 
@@ -788,7 +788,7 @@ class AgentMemorySystem:
     def __init__(
         self,
         agent_id: str = "default_agent",
-        db_path: Path = None,
+        db_path: Path | None = None,
     ):
         self.agent_id = agent_id
         self.memory = AgentMemory(db_path)
@@ -964,7 +964,7 @@ class AgentMemorySystem:
             limit=5,
         )
 
-        guidance = {
+        guidance: dict[str, Any] = {
             "patterns": [
                 {
                     "name": m["pattern"]["name"],
@@ -1048,7 +1048,7 @@ class AgentMemorySystem:
         task_id: str,
         decision: str,
         rationale: str,
-        context: dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ) -> str:
         """Store a decision with its rationale and context.
 
@@ -1165,7 +1165,7 @@ class AgentMemorySystem:
             )
 
         # Sort by relevance and return top results
-        scored_results.sort(key=lambda x: x["relevance_score"], reverse=True)
+        scored_results.sort(key=lambda x: (x.get("relevance_score", 0) or 0) if isinstance(x.get("relevance_score", 0), (int, float)) else 0, reverse=True)
         return scored_results[:limit]
 
     def get_pattern_library(self) -> list[dict[str, Any]]:

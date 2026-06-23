@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from typing import Any
 
 import typer
 
@@ -245,7 +246,7 @@ def sync_mermaid_map_cmd(
     )
     equation = "ψ = α·N + β·E + γ·V + δ·T"
 
-    payload = {
+    payload: dict[str, Any] = {
         "source": {
             "mermaid": mermaid.as_posix(),
             "mapping_doc": mapping_doc.as_posix(),

@@ -83,7 +83,9 @@ class Option:
         priority_scores: list[int] = []
         for idx, (_, keywords) in enumerate(OPTION_PRIORITY_KEYWORDS):
             priority_scores.append(1 if any(keyword in label_lower for keyword in keywords) else 0)
-        return (*priority_scores, self.label.lower())
+        if len(priority_scores) >= 4:
+            return (priority_scores[0], priority_scores[1], priority_scores[2], priority_scores[3], self.label.lower())
+        return (0, 0, 0, 0, self.label.lower())
 
     def has_preferred_status(self) -> bool:
         if not self.status:

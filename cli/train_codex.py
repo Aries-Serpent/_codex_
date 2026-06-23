@@ -223,18 +223,18 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
             print(f"✓ RNG state restored from {rng_path}")
         elif resume_hf or cfg.get("codex_resume_checkpoint"):
             # Non-strict mode: warn if RNG sidecar missing
-            rng_path = RNGState.path_for_checkpoint(
-                Path(cfg.get("codex_resume_checkpoint") or resume_hf)
-            )
-            if rng_path.exists():
-                rng_state = RNGState.load_from_file(rng_path)
-                rng_state.restore()
-                print(f"✓ RNG state restored from {rng_path}")
-            else:
-                print(f"⚠️ RNG sidecar not found: {rng_path}")
-                print("   Resume may not be fully deterministic.")
+            checkpoint_path: str | None = cfg.get("codex_resume_checkpoint") or resume_hf
+            if checkpoint_path:
+                rng_path = RNGState.path_for_checkpoint(Path(checkpoint_path))
+                if rng_path.exists():
+                    rng_state = RNGState.load_from_file(rng_path)
+                    rng_state.restore()
+                    print(f"✓ RNG state restored from {rng_path}")
+                else:
+                    print(f"⚠️ RNG sidecar not found: {rng_path}")
+                    print("   Resume may not be fully deterministic.")
 
-        checkpointing.load_training_checkpoint(
+        checkpointing.load_training_checkpoint(  # type: ignore[attr-defined]
             cfg["codex_resume_checkpoint"],
             model=model,
             optimizer=None,
@@ -246,11 +246,11 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
     trainer.save_model()
 
     checkpoint_path = output_dir / "checkpoint-final.pt"
-    checkpointing.save_checkpoint(
+    checkpointing.save_checkpoint(  # type: ignore[attr-defined]
         checkpoint_path,
-        model.state_dict(),
-        trainer.optimizer.state_dict() if trainer.optimizer else None,
-        trainer.lr_scheduler.state_dict() if trainer.lr_scheduler else None,
+        model.state_dict(),  # type: ignore
+        trainer.optimizer.state_dict() if trainer.optimizer else None,  # type: ignore
+        trainer.lr_scheduler.state_dict() if trainer.lr_scheduler else None,  # type: ignore
         epoch=int(cfg.get("num_train_epochs", 1)),
         dataset_paths=[train_file],
     )
