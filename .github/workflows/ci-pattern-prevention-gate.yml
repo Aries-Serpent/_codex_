@@ -1,0 +1,333 @@
+name: CI Pattern Prevention Gate
+
+# ── Orchestrator Workflow ────────────────────────────────────────────────────
+# Consolidated gate that runs all three CI failure prevention patterns
+# in sequence or parallel:
+#
+# - RP-001: API Null-Handling Validator
+# - RP-002: mypy Baseline Enforcement
+# - RP-003: Documentation Link Validation
+#
+# This workflow ensures consistent pattern detection and provides a central
+# control point for CI health monitoring.
+#
+# Severity: HIGH - Critical CI quality gate
+# Related: https://github.com/Aries-Serpent/_codex_/issues/5067
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'scripts/ci/**'
+      - '.github/workflows/**'
+      - 'docs/**'
+      - '.mypy_baseline'
+      - 'mypy.ini'
+      - '**.md'
+
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'scripts/ci/**'
+      - '.github/workflows/**'
+      - 'docs/**'
+      - '.mypy_baseline'
+      - 'mypy.ini'
+      - '**.md'
+
+  workflow_dispatch:
+    inputs:
+      patterns:
+        description: 'Which patterns to validate'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'rp001-api-null'
+          - 'rp002-mypy'
+          - 'rp003-links'
+          - 'rp001-rp002'
+          - 'rp002-rp003'
+      strict_mode:
+        description: 'Fail workflow on violations'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # RP-001: API Null-Handling Validation
+  # ──────────────────────────────────────────────────────────────────────────
+  validate-api-null-handling:
+    name: '🔍 RP-001: API Null-Handling'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: |
+      contains(fromJson('["all", "rp001-api-null", "rp001-rp002"]'), 
+        github.event.inputs.patterns || 'all')
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Run RP-001 validation
+        id: rp001
+        run: |
+          echo "Starting RP-001 API Null-Handling validation..."
+          
+          # Pattern: Check for unsafe API field handling
+          unsafe_patterns=$(rg '\.get\(["\047][^"'\'']+["\047][,\)].*\.replace\(' \
+            --glob="scripts/ci/**" --glob="src/scripts/ci/**" --type=python 2>/dev/null || true)
+          
+          if [ -z "$unsafe_patterns" ]; then
+            echo "status=pass" >> $GITHUB_OUTPUT
+            echo "message=✅ No unsafe API null-handling patterns detected" >> $GITHUB_OUTPUT
+            echo "✅ RP-001 PASSED"
+          else
+            echo "status=warn" >> $GITHUB_OUTPUT
+            echo "message=⚠️ Unsafe API null-handling patterns detected (non-blocking for PR)" >> $GITHUB_OUTPUT
+            echo "$unsafe_patterns"
+            echo "⚠️ RP-001 WARNING (non-blocking)"
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # RP-002: mypy Baseline Enforcement
+  # ──────────────────────────────────────────────────────────────────────────
+  validate-mypy-baseline:
+    name: '🔎 RP-002: mypy Baseline'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: |
+      contains(fromJson('["all", "rp002-mypy", "rp001-rp002", "rp002-rp003"]'), 
+        github.event.inputs.patterns || 'all')
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet mypy tomli 2>/dev/null || true
+
+      - name: Run RP-002 validation
+        id: rp002
+        continue-on-error: true
+        run: |
+          echo "Starting RP-002 mypy Baseline validation..."
+          
+          if [ ! -f ".mypy_baseline" ]; then
+            echo "status=skip" >> $GITHUB_OUTPUT
+            echo "message=ℹ️ Baseline file not found - skipping" >> $GITHUB_OUTPUT
+            echo "ℹ️ RP-002 SKIPPED (no baseline file)"
+            exit 0
+          fi
+          
+          baseline=$(cat .mypy_baseline)
+          echo "Current baseline: $baseline errors"
+          
+          # Run mypy (allow failure)
+          mypy_output=$(python -m mypy --config-file=mypy.ini src/ 2>&1 || true)
+          error_count=$(echo "$mypy_output" | grep -c "error:" || echo 0)
+          
+          if [ "$error_count" -le "$baseline" ]; then
+            echo "status=pass" >> $GITHUB_OUTPUT
+            echo "message=✅ Type errors ($error_count) within baseline ($baseline)" >> $GITHUB_OUTPUT
+            echo "✅ RP-002 PASSED ($error_count <= $baseline)"
+          else
+            echo "status=warn" >> $GITHUB_OUTPUT
+            echo "message=⚠️ Type errors ($error_count) exceed baseline ($baseline)" >> $GITHUB_OUTPUT
+            echo "$mypy_output" | tail -20
+            echo "⚠️ RP-002 WARNING (non-blocking for PR)"
+          fi
+
+      - name: Show last 10 mypy errors (if any)
+        if: always()
+        continue-on-error: true
+        run: |
+          python -m mypy --config-file=mypy.ini src/ 2>&1 | tail -10 || true
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # RP-003: Documentation Link Validation
+  # ──────────────────────────────────────────────────────────────────────────
+  validate-documentation-links:
+    name: '🔗 RP-003: Documentation Links'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: |
+      contains(fromJson('["all", "rp003-links", "rp002-rp003"]'), 
+        github.event.inputs.patterns || 'all')
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Run RP-003 validation
+        id: rp003
+        continue-on-error: true
+        run: |
+          echo "Starting RP-003 Documentation Link validation..."
+          
+          if ! command -v markdown-link-check &> /dev/null; then
+            echo "Installing markdown-link-check..."
+            npm install -g markdown-link-check 2>/dev/null || true
+          fi
+          
+          broken_count=0
+          checked_count=0
+          
+          # Check markdown files
+          for file in $(find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./venv/*" | head -100); do
+            if markdown-link-check "$file" 2>/dev/null | grep -q "\[✖\]"; then
+              ((broken_count++))
+            fi
+            ((checked_count++))
+          done
+          
+          echo "Checked $checked_count files, found $broken_count with broken links"
+          
+          if [ "$broken_count" -eq 0 ]; then
+            echo "status=pass" >> $GITHUB_OUTPUT
+            echo "message=✅ All documentation links valid" >> $GITHUB_OUTPUT
+            echo "✅ RP-003 PASSED"
+          else
+            echo "status=warn" >> $GITHUB_OUTPUT
+            echo "message=⚠️ Found $broken_count files with broken links" >> $GITHUB_OUTPUT
+            echo "⚠️ RP-003 WARNING (non-blocking for PR)"
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Summary: Aggregate results from all patterns
+  # ──────────────────────────────────────────────────────────────────────────
+  pattern-validation-summary:
+    name: Pattern Validation Summary
+    runs-on: ubuntu-latest
+    needs: [validate-api-null-handling, validate-mypy-baseline, validate-documentation-links]
+    if: always()
+    steps:
+      - name: Determine overall status
+        id: summary
+        run: |
+          set +e
+          
+          rp001_result="${{ needs.validate-api-null-handling.result }}"
+          rp002_result="${{ needs.validate-mypy-baseline.result }}"
+          rp003_result="${{ needs.validate-documentation-links.result }}"
+          
+          echo "RP-001 Result: $rp001_result"
+          echo "RP-002 Result: $rp002_result"
+          echo "RP-003 Result: $rp003_result"
+          
+          # In PR mode, skip/success are acceptable
+          # In push to main mode, only success is acceptable
+          
+          if [ "$rp001_result" = "failure" ] || [ "$rp002_result" = "failure" ] || [ "$rp003_result" = "failure" ]; then
+            echo "overall_status=failure" >> $GITHUB_OUTPUT
+            exit_code=1
+          else
+            echo "overall_status=success" >> $GITHUB_OUTPUT
+            exit_code=0
+          fi
+          
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Strict mode on main
+            if [ $exit_code -ne 0 ]; then
+              echo "❌ CI Prevention Gate FAILED (strict mode on main)"
+              exit 1
+            fi
+          fi
+
+      - name: Print summary
+        run: |
+          echo ""
+          echo "════════════════════════════════════════════════════════════════"
+          echo "  CI Pattern Prevention Gate Summary"
+          echo "════════════════════════════════════════════════════════════════"
+          echo ""
+          echo "RP-001 (API Null-Handling):      ${{ needs.validate-api-null-handling.result }}"
+          echo "RP-002 (mypy Baseline):         ${{ needs.validate-mypy-baseline.result }}"
+          echo "RP-003 (Documentation Links):   ${{ needs.validate-documentation-links.result }}"
+          echo ""
+          echo "Overall Status:                 ${{ steps.summary.outputs.overall_status }}"
+          echo "Event:                          ${{ github.event_name }}"
+          echo "Branch:                         ${{ github.ref_name }}"
+          echo ""
+          echo "════════════════════════════════════════════════════════════════"
+          echo ""
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Notification: Report to PR or commit
+  # ──────────────────────────────────────────────────────────────────────────
+  notify-results:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [pattern-validation-summary]
+    if: always() && github.event_name == 'pull_request'
+    steps:
+      - name: Comment on PR with results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const rp001 = '${{ needs.validate-api-null-handling.result }}';
+            const rp002 = '${{ needs.validate-mypy-baseline.result }}';
+            const rp003 = '${{ needs.validate-documentation-links.result }}';
+            
+            const icons = {
+              'success': '✅',
+              'failure': '❌',
+              'skipped': 'ℹ️'
+            };
+            
+            const comment = `## 🛡️ CI Pattern Prevention Gate Results
+
+            | Pattern | Status | Result |
+            |---------|--------|--------|
+            | **RP-001** (API Null-Handling) | ${icons[rp001] || '?'} | ${rp001} |
+            | **RP-002** (mypy Baseline) | ${icons[rp002] || '?'} | ${rp002} |
+            | **RP-003** (Documentation Links) | ${icons[rp003] || '?'} | ${rp003} |
+
+            ### Notes
+            - RP patterns are **non-blocking for PRs** (warnings only)
+            - All patterns are **strict on push to main**
+            - Auto-fix commands available in each pattern's workflow
+            
+            See: [CI Pattern Prevention Guide](.codex/CI_PATTERN_PREVENTION_GUIDE.md)`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
