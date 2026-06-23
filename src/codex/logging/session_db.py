@@ -385,10 +385,10 @@ class SessionDB:
 
         query = f"""
             SELECT * FROM sessions
-            WHERE {where_clause}  # nosec B608 - where_clause is built from safe values
+            WHERE {where_clause}
             ORDER BY timestamp DESC
             LIMIT ? OFFSET ?
-        """
+        """  # nosec B608 - where_clause is built from safe values
         params.extend([limit, offset])
 
         with self._lock:
