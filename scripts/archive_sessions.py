@@ -180,9 +180,14 @@ def build_archive_index():
                 file_size = parquet_file.stat().st_size
                 total_size += file_size
                 
+                try:
+                    location = str(parquet_file.relative_to(Path.cwd()))
+                except ValueError:
+                    location = str(parquet_file)
+                
                 archive_index["sessions"].append({
                     "session_id": session_id,
-                    "archive_location": str(parquet_file.relative_to(Path.cwd())),
+                    "archive_location": location,
                     "file_size_bytes": file_size,
                     "timestamp": str(session.get("timestamp", "")),
                     "created_at": str(parquet_file.stat().st_ctime)

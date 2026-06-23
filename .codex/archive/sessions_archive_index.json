@@ -1,0 +1,188 @@
+{
+  "version": "1.0",
+  "created": "2026-06-23T02:54:32.873755",
+  "sessions": [
+    {
+      "session_id": "36798482-75ed-4266-a0e1-22d33d979325",
+      "archive_location": ".codex/archive/sessions/2026/03/36798482-75ed-4266-a0e1-22d33d979325.parquet",
+      "file_size_bytes": 4967,
+      "timestamp": "2026-03-17T03:43:20.812518Z",
+      "created_at": "1782183272.8258204"
+    },
+    {
+      "session_id": "36f7ea47-3ceb-465d-8f06-5a62250207e1",
+      "archive_location": ".codex/archive/sessions/2026/03/36f7ea47-3ceb-465d-8f06-5a62250207e1.parquet",
+      "file_size_bytes": 5017,
+      "timestamp": "2026-03-17T03:47:00.105673Z",
+      "created_at": "1782183272.8279774"
+    },
+    {
+      "session_id": "372fa126-03e1-415b-bc23-2d0f3b0e98a5",
+      "archive_location": ".codex/archive/sessions/2026/03/372fa126-03e1-415b-bc23-2d0f3b0e98a5.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:08:51.671846Z",
+      "created_at": "1782183272.8299382"
+    },
+    {
+      "session_id": "965cdd96-80a5-400e-aac9-ed5ab7851251",
+      "archive_location": ".codex/archive/sessions/2026/03/965cdd96-80a5-400e-aac9-ed5ab7851251.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:07:50.618549Z",
+      "created_at": "1782183272.8320327"
+    },
+    {
+      "session_id": "b13655c1-4f8b-46a8-ab18-71ac6d382603",
+      "archive_location": ".codex/archive/sessions/2026/03/b13655c1-4f8b-46a8-ab18-71ac6d382603.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:06:48.476905Z",
+      "created_at": "1782183272.8340013"
+    },
+    {
+      "session_id": "b14de908-497c-4625-9814-0361ae53e2b7",
+      "archive_location": ".codex/archive/sessions/2026/03/b14de908-497c-4625-9814-0361ae53e2b7.parquet",
+      "file_size_bytes": 5489,
+      "timestamp": "2026-03-15T01:36:16.958994Z",
+      "created_at": "1782183272.8359425"
+    },
+    {
+      "session_id": "b40bc2bd-91ca-4e95-988c-20b918b18e73",
+      "archive_location": ".codex/archive/sessions/2026/03/b40bc2bd-91ca-4e95-988c-20b918b18e73.parquet",
+      "file_size_bytes": 5317,
+      "timestamp": "2026-03-05T03:06:28.872727Z",
+      "created_at": "1782183272.8378205"
+    },
+    {
+      "session_id": "b6f681a1-6604-4062-aa60-b9704d3ab470",
+      "archive_location": ".codex/archive/sessions/2026/03/b6f681a1-6604-4062-aa60-b9704d3ab470.parquet",
+      "file_size_bytes": 5489,
+      "timestamp": "2026-03-17T04:58:01.686792Z",
+      "created_at": "1782183272.8398206"
+    },
+    {
+      "session_id": "babae822-5703-4c54-95ef-7a94e9fda744",
+      "archive_location": ".codex/archive/sessions/2026/03/babae822-5703-4c54-95ef-7a94e9fda744.parquet",
+      "file_size_bytes": 5317,
+      "timestamp": "2026-03-05T03:09:07.361084Z",
+      "created_at": "1782183272.8418205"
+    },
+    {
+      "session_id": "c3b9628f-deea-4ee5-b199-2148dd37f1a2",
+      "archive_location": ".codex/archive/sessions/2026/03/c3b9628f-deea-4ee5-b199-2148dd37f1a2.parquet",
+      "file_size_bytes": 5489,
+      "timestamp": "2026-03-23T13:57:45.458826Z",
+      "created_at": "1782183272.8438206"
+    },
+    {
+      "session_id": "cb6a3fb7-89f8-44b7-aaf4-6876c9a9787d",
+      "archive_location": ".codex/archive/sessions/2026/03/cb6a3fb7-89f8-44b7-aaf4-6876c9a9787d.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:07:14.256302Z",
+      "created_at": "1782183272.8455653"
+    },
+    {
+      "session_id": "cc1f135c-ad61-410f-a43a-bc32efea2c63",
+      "archive_location": ".codex/archive/sessions/2026/03/cc1f135c-ad61-410f-a43a-bc32efea2c63.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T13:59:46.399974Z",
+      "created_at": "1782183272.8475246"
+    },
+    {
+      "session_id": "ce35d6bd-5d5a-4ea0-b883-4255a23fd8cf",
+      "archive_location": ".codex/archive/sessions/2026/03/ce35d6bd-5d5a-4ea0-b883-4255a23fd8cf.parquet",
+      "file_size_bytes": 4967,
+      "timestamp": "2026-03-13T16:09:44.526405Z",
+      "created_at": "1782183272.8494704"
+    },
+    {
+      "session_id": "d01d9090-95cf-4e04-ab8f-dbcd5e7830b8",
+      "archive_location": ".codex/archive/sessions/2026/03/d01d9090-95cf-4e04-ab8f-dbcd5e7830b8.parquet",
+      "file_size_bytes": 5317,
+      "timestamp": "2026-03-05T03:06:36.072166Z",
+      "created_at": "1782183272.8513682"
+    },
+    {
+      "session_id": "d24496cb-fcf3-4823-b9f4-03603e4dfc35",
+      "archive_location": ".codex/archive/sessions/2026/03/d24496cb-fcf3-4823-b9f4-03603e4dfc35.parquet",
+      "file_size_bytes": 5474,
+      "timestamp": "2026-03-13T16:10:34.011858Z",
+      "created_at": "1782183272.85325"
+    },
+    {
+      "session_id": "dd754e73-f7fb-4066-bded-c4767b05346a",
+      "archive_location": ".codex/archive/sessions/2026/03/dd754e73-f7fb-4066-bded-c4767b05346a.parquet",
+      "file_size_bytes": 5017,
+      "timestamp": "2026-03-12T19:10:27.077546Z",
+      "created_at": "1782183272.8551445"
+    },
+    {
+      "session_id": "e28499b7-44db-49bd-8745-c1f5635991a2",
+      "archive_location": ".codex/archive/sessions/2026/03/e28499b7-44db-49bd-8745-c1f5635991a2.parquet",
+      "file_size_bytes": 5017,
+      "timestamp": "2026-03-12T19:11:18.399571Z",
+      "created_at": "1782183272.8570018"
+    },
+    {
+      "session_id": "ee08e1ca-afb5-4bff-b87e-9fa7598dfb83",
+      "archive_location": ".codex/archive/sessions/2026/03/ee08e1ca-afb5-4bff-b87e-9fa7598dfb83.parquet",
+      "file_size_bytes": 6124,
+      "timestamp": "2026-03-12T22:26:28.948407Z",
+      "created_at": "1782183272.8588207"
+    },
+    {
+      "session_id": "ef77574f-7140-4896-9abc-2cd4ea2f230b",
+      "archive_location": ".codex/archive/sessions/2026/03/ef77574f-7140-4896-9abc-2cd4ea2f230b.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:05:45.109694Z",
+      "created_at": "1782183272.8608208"
+    },
+    {
+      "session_id": "efae40a4-10be-4228-bf75-8d229ecdff4a",
+      "archive_location": ".codex/archive/sessions/2026/03/efae40a4-10be-4228-bf75-8d229ecdff4a.parquet",
+      "file_size_bytes": 5474,
+      "timestamp": "2026-03-13T16:10:25.759906Z",
+      "created_at": "1782183272.8628209"
+    },
+    {
+      "session_id": "f072ac94-888e-4e79-b384-b87b34341220",
+      "archive_location": ".codex/archive/sessions/2026/03/f072ac94-888e-4e79-b384-b87b34341220.parquet",
+      "file_size_bytes": 5465,
+      "timestamp": "2026-03-13T16:10:13.068983Z",
+      "created_at": "1782183272.8648207"
+    },
+    {
+      "session_id": "f4e0e78c-ed98-4569-97c7-02edcc08fbac",
+      "archive_location": ".codex/archive/sessions/2026/03/f4e0e78c-ed98-4569-97c7-02edcc08fbac.parquet",
+      "file_size_bytes": 5489,
+      "timestamp": "2026-03-23T13:58:04.137319Z",
+      "created_at": "1782183272.866542"
+    },
+    {
+      "session_id": "f99732e2-6a2e-45e2-bf32-4a903ada1c78",
+      "archive_location": ".codex/archive/sessions/2026/03/f99732e2-6a2e-45e2-bf32-4a903ada1c78.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:38:26.760776Z",
+      "created_at": "1782183272.8684762"
+    },
+    {
+      "session_id": "fb0cba51-e131-4349-af8c-c7bc7869edb0",
+      "archive_location": ".codex/archive/sessions/2026/03/fb0cba51-e131-4349-af8c-c7bc7869edb0.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-11T03:38:05.407641Z",
+      "created_at": "1782183272.8704298"
+    },
+    {
+      "session_id": "fe6d49f3-4330-4ec7-a6e1-e0ec190dc423",
+      "archive_location": ".codex/archive/sessions/2026/03/fe6d49f3-4330-4ec7-a6e1-e0ec190dc423.parquet",
+      "file_size_bytes": 5196,
+      "timestamp": "2026-03-23T14:06:43.361674Z",
+      "created_at": "1782183272.8724267"
+    }
+  ],
+  "statistics": {
+    "total_sessions": 25,
+    "total_size_mb": 0.1260690689086914,
+    "retention_policy": "Delete archives >30 iterations old",
+    "archive_format": "Parquet (snappy compressed)",
+    "partitioning": "YYYY/MM/ by creation_date"
+  }
+}

@@ -12,6 +12,7 @@ import logging
 from pathlib import Path
 from datetime import datetime, timedelta
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from codex.session_db import SessionDB

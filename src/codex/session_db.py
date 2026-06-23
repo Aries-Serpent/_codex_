@@ -132,7 +132,11 @@ class SessionDB:
         df.to_parquet(str(archive_path), compression="snappy")
         
         # Update database
-        archive_location = str(archive_path.relative_to(Path.cwd()))
+        try:
+            archive_location = str(archive_path.relative_to(Path.cwd()))
+        except ValueError:
+            # If relative_to fails, use the path as-is
+            archive_location = str(archive_path)
         self._update_archive_status(session_id, archive_location)
         
         logger.info(f"Archived session {session_id} to {archive_location}")
