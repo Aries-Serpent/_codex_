@@ -284,3 +284,16 @@ and the CI gate requirement.
 - [ ] Phase 4: Rebase onto main
 - [ ] Phase 5: Governance & WEC compliance
 - [ ] Phase 6: Final validation & merge approval
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-06-23T04:30:31Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
