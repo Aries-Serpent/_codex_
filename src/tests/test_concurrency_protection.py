@@ -44,7 +44,7 @@ class TestReadWriteLock:
         max_concurrent = [0]
         lock_acquired_times = []
 
-        def reader(reader_id: int):
+        def reader(_reader_id: int):
             start = time.time()
             with lock.read_lock():
                 lock_acquired_times.append(time.time())

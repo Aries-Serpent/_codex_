@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 @click.option("--check-vulns", is_flag=True, help="Check for security vulnerabilities")
 @click.option("--format", type=click.Choice(["json", "yaml", "html"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file")
-def audit_main(check_dependencies: bool, _check_vulns: bool, format: str, output: str):
+def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, output: str):
     """Run security and quality audit.
 
     Examples:

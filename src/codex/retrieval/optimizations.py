@@ -294,7 +294,7 @@ class OptimizedVectorStore:
         return getattr(self.store, name)
 
 
-def enable_memory_mapped_index(index_path: Path, read_only: bool = True) -> bool:
+def enable_memory_mapped_index(index_path: Path, _read_only: bool = True) -> bool:
     """Enable memory-mapped file access for large indices
 
     Memory-mapped files allow the OS to manage loading index data,
@@ -302,7 +302,7 @@ def enable_memory_mapped_index(index_path: Path, read_only: bool = True) -> bool
 
     Args:
         index_path: Path to index file
-        read_only: Whether to open in read-only mode
+        _read_only: Whether to open in read-only mode
 
     Returns:
         True if memory mapping was enabled, False otherwise
