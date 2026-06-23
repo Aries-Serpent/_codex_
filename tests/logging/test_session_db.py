@@ -13,7 +13,7 @@ Tests cover:
 
 import sqlite3
 import tempfile
-import threading
+import threading # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
