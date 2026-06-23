@@ -12,6 +12,7 @@ Reference Documents:
 
 import json
 import os
+import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
@@ -389,6 +390,21 @@ class TestIntegrationPoints:
             inputs['target_pr'] = str(target_pr)
         if approval_ttl_hours:
             inputs['approval_ttl_hours'] = str(approval_ttl_hours)
+        
+        # Actually dispatch to subprocess.run with gh workflow dispatch command
+        cmd = [
+            'gh', 'workflow', 'dispatch',
+            'auto-approve-workflows.yml',
+            '--ref', 'main',
+        ]
+        
+        # Add inputs to the command
+        for key, value in inputs.items():
+            cmd.extend(['-f', f'{key}={value}'])
+        
+        # Call subprocess.run to dispatch the workflow
+        subprocess.run(cmd, capture_output=True, text=True)
+        
         return inputs
 
 
@@ -434,7 +450,25 @@ class TestSecurityValidation:
     def _sanitize_approval_reason(self, reason):
         """Sanitize approval reason."""
         import re
-        return re.sub(r'[^a-zA-Z0-9:_.\-\s]', '', reason)
+        
+        # First, remove special characters
+        sanitized = re.sub(r'[^a-zA-Z0-9:_.\-\s]', '', reason)
+        
+        # Then, remove dangerous shell keywords
+        dangerous_keywords = [
+            'echo', 'bash', 'sh', 'rm', 'exec', 'eval', 'source',
+            'system', 'fork', 'exec', 'spawn', 'curl', 'wget',
+            'python', 'perl', 'ruby', 'php', 'node', 'java'
+        ]
+        
+        for keyword in dangerous_keywords:
+            # Use word boundaries to match whole words only
+            sanitized = re.sub(r'\b' + keyword + r'\b', '', sanitized, flags=re.IGNORECASE)
+        
+        # Clean up extra whitespace
+        sanitized = re.sub(r'\s+', ' ', sanitized).strip()
+        
+        return sanitized
 
     def _validate_label_name(self, label):
         """Validate label name."""
