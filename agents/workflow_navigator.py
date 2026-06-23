@@ -145,7 +145,7 @@ class WorkflowNavigator(Planner):
     Provides deterministic, repeatable paths through common operations.
     """
 
-    def __init__(self, workspace_dir: Path = None):
+    def __init__(self, workspace_dir: Path | None = None):
         self.workspace_dir = workspace_dir or Path.cwd()
         self.workflows: dict[str, Workflow] = {}
         self.workflow_state_dir = self.workspace_dir / ".codex" / "workflows" / "state"
@@ -481,7 +481,7 @@ class WorkflowNavigator(Planner):
 
         return None
 
-    def navigate_to(self, step_index: int = None, step_id: str = None) -> bool:
+    def navigate_to(self, step_index: int | None = None, step_id: str | None = None) -> bool:
         """
         Navigate to a specific step by index or ID.
 
@@ -610,7 +610,7 @@ class WorkflowNavigator(Planner):
         return None
 
     def execute(
-        self, identifier: str, context: dict[str, Any] = None, dry_run: bool = False
+        self, identifier: str, context: dict[str, Any] | None = None, dry_run: bool = False
     ) -> dict[str, Any]:
         """
         Execute a workflow by ID, alias, or description
@@ -695,7 +695,7 @@ class WorkflowNavigator(Planner):
         return {"success": True, "workflow_id": workflow.workflow_id, "results": results}
 
     def execute_chain(
-        self, workflow_ids: list[str], context: dict[str, Any] = None
+        self, workflow_ids: list[str], context: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         """Execute multiple workflows in sequence"""
         print(f"\n{'#'*60}")
@@ -932,7 +932,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("FINDING WORKFLOW BY DESCRIPTION")
     print("=" * 60)
-    workflow = navigator.find_workflow("Run audit pipeline")
+    workflow: Workflow | None = navigator.find_workflow("Run audit pipeline")
     if workflow:
         print(f"Found: {workflow.name}")
         print(f"ID: {workflow.workflow_id}")
