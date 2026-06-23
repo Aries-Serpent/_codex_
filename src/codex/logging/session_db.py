@@ -508,8 +508,8 @@ class SessionDB:
             Session dictionary with nested details or None if not found.
         """
         session = self.get_session(session_id)
-        if not session is None:
-            return session
+        if session is None:
+            return None
 
         with self._get_connection() as conn:
             cursor = conn.cursor()
