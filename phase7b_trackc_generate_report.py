@@ -5,9 +5,7 @@ Generated from strategic analysis + Track B test integration
 Final Report for 82% → 90%+ score improvement
 """
 
-import json
 from datetime import datetime
-from typing import Dict, List
 
 
 class MutationHardeningReport:

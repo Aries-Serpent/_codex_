@@ -21,17 +21,14 @@ Run tests:
 """
 
 import pytest
-import json
 import sqlite3
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any
 import sys
 import time
 
 # Import the modules under test
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts/ci"))
-from phase_9_1_decision_logger import DecisionLogger, create_decision_record, DecisionRecord
+from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 from phase_9_1_confidence_scorer import ConfidenceScorer
 
 

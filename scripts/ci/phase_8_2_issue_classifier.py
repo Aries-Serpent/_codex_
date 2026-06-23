@@ -11,7 +11,7 @@ import sys
 from dataclasses import asdict, dataclass
 from typing import Optional
 
-from phase_8_2_severity_scorer import Category, SeverityScore, SeverityScorer
+from phase_8_2_severity_scorer import SeverityScore, SeverityScorer
 
 
 @dataclass

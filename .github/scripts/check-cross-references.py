@@ -9,7 +9,6 @@ Scans Markdown files for internal links and validates that:
 """
 
 import json
-import os
 import re
 import sys
 from pathlib import Path

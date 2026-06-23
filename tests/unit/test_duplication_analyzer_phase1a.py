@@ -17,7 +17,6 @@ Tests include basic functionality, edge cases, error paths, and integration scen
 
 import hashlib
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 

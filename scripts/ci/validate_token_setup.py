@@ -19,12 +19,10 @@ import json
 import os
 import sys
 import subprocess
-import re
 from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Optional, Dict, List, Any
 from pathlib import Path
-import base64
 import logging
 
 # Configure logging

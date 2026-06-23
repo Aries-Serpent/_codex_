@@ -5,13 +5,9 @@ Integrated with Track B's 169 edge case tests
 Goal: Increase mutation score from 82% → 90%+
 """
 
-import json
 import re
 import subprocess
-import sys
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 class MutationTestRunner:

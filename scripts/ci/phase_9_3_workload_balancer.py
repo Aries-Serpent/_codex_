@@ -21,7 +21,6 @@ Spillover logic:
 - If all agents at capacity, queue with backoff retry
 """
 
-import json
 import time
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, asdict, field

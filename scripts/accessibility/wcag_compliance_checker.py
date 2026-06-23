@@ -11,7 +11,7 @@ Identifies common accessibility violations:
 
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 class WCAGComplianceChecker:
     """Check WCAG AA compliance in markdown documentation."""

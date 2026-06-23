@@ -5,11 +5,9 @@ PHASE 7 LANE 1 coverage closure mission
 Generated: 2026-06-20
 Target: 80+ additional tests to reach 200+ total
 """
-import json
 import sys
 import time
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 

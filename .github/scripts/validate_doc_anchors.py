@@ -15,7 +15,7 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 
 # Heading pattern: # Heading Text -> generates ID like #heading-text
 HEADING_PATTERN = re.compile(r'^#+\s+(.+?)(?:\s*{#(.+?)})?$', re.MULTILINE)

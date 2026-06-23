@@ -11,10 +11,7 @@ from __future__ import annotations
 
 import argparse
 import logging
-import subprocess
 import sys
-from datetime import datetime, timezone
-from pathlib import Path
 
 from base import ComplianceResult, RequirementValidator
 
