@@ -1,21 +1,22 @@
-# Session Context — 2026-06-23T15:35:34Z
+# Session Context — 2026-06-23T15:41:51Z
 **Branch:** `copilot/fetch-security-scan-results`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4564` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4563` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-06-23)
 
 ## 📝 Recent Commits
+- `7f187c5f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-23)
 - `21d186e8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
 - `6ffe3a04` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-23)
 - `b9c9058c` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
@@ -23,7 +24,6 @@
 - `aea037db` Merge pull request #5069 from Aries-Serpent/copilot/fix-enforce-secrets-baseline — Statix (2026-06-23)
 - `c6bc4087` fix: restrict secrets allowlist regex to safe file types only — copilot-swe-agent[bot] (2026-06-23)
 - `57a0a776` fix(ci): expand secrets baseline auto-fix regex to include .codex/aftermath, k8s — copilot-swe-agent[bot] (2026-06-23)
-- `1e98f9b7` WIP: Fix secrets baseline enforcer auto-fix regex — copilot-swe-agent[bot] (2026-06-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
