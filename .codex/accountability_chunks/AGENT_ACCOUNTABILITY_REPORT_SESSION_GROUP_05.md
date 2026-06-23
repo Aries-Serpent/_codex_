@@ -1,0 +1,274 @@
+# Agent Accountability Report — Session Group 05
+
+**Group:** 5 of 32  
+**Sessions:** S323 to S327  
+**Date Range:** 2026-04-26 to 2026-04-27  
+**Total Sessions in Group:** 10  
+
+---
+
+## Navigation
+
+| Direction | Link |
+| --- | --- |
+| **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md) |
+| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md) |
+
+---
+
+## Sessions in This Group
+
+| # | Session ID | PR | Status | Timestamp | Summary |
+| --- | --- | --- | --- | --- | --- |
+| 1. S323 | None | pending | 2026-04-26T19:25:02Z |  |
+| 2. S323 | None | pending | 2026-04-26T19:25:02Z |  |
+| 3. S323 | None | pending | 2026-04-26T19:25:02Z |  |
+| 4. S324 | None | pending | 2026-04-26T23:46:00Z |  |
+| 5. S324b | None | pending | 2026-04-26T23:53:00Z |  |
+| 6. S325 | None | pending | 2026-04-27T00:44:00Z |  |
+| 7. S325b | None | pending | 2026-04-27T01:12:00Z |  |
+| 8. S325c | None | pending | 2026-04-27T01:20:00Z |  |
+| 9. S326 | None | pending | 2026-04-27T01:28:00Z |  |
+| 10. S327 | None | pending | 2026-04-27T05:24:00Z |  |
+
+---
+
+## Session Details
+
+
+### S323 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-26T19:25:02Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_41  
+
+---
+
+
+### S323 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-26T19:25:02Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_42  
+
+---
+
+
+### S323 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-26T19:25:02Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_43  
+
+---
+
+
+### S324 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-26T23:46:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_44  
+
+---
+
+
+### S324b — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-26T23:53:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_45  
+
+---
+
+
+### S325 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-27T00:44:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_46  
+
+---
+
+
+### S325b — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-27T01:12:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_47  
+
+---
+
+
+### S325c — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-27T01:20:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_48  
+
+---
+
+
+### S326 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-27T01:28:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_49  
+
+---
+
+
+### S327 — PR #None
+
+**Status:** pending  
+**Timestamp:** 2026-04-27T05:24:00Z  
+**Branch:** None  
+**Duration:** 0 min  
+
+**Summary:**
+```
+
+```
+
+**Tags:** None  
+**Patterns Fixed:** None  
+**CI Checks:** 0 ✅ / 0 ❌  
+
+**Source:** None  
+**Index Location:** .codex/aftermath/pda_iterations.jsonl:line_50  
+
+---
+
+---
+
+## Navigation
+
+| Direction | Link |
+| --- | --- |
+| **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md) |
+| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md) |
+
+---
+
+**Group:** 5 of 32  
+**Generated by:** `generate_accountability_chunks.py`  
+**Generated at:** 2026-06-23T02:36:22.005797Z  
+**Data Source:** `.codex/sessions_index.json`
