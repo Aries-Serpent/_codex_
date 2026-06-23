@@ -12,7 +12,7 @@
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | (First group) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md) |
 
 ---
@@ -263,7 +263,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | (First group) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md) |
 
 ---

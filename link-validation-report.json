@@ -1,0 +1,363 @@
+{
+  "checked": 2241,
+  "warnings_count": 0,
+  "errors_count": 71,
+  "warnings": [],
+  "errors": [
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": "../accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "message": "File not found: ../accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": "../accountability/README.md",
+      "message": "File not found: ../accountability/README.md"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": "../accountability/chunks/",
+      "message": "File not found: ../accountability/chunks/"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": ".codex/PHASE_2_CHUNKING_STRATEGY.md",
+      "message": "File not found: .codex/PHASE_2_CHUNKING_STRATEGY.md"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": ".codex/PHASE_2_ACCOUNTABILITY_CHUNKING_COMPLETE.md",
+      "message": "File not found: .codex/PHASE_2_ACCOUNTABILITY_CHUNKING_COMPLETE.md"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": ".codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak",
+      "message": "File not found: .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak"
+    },
+    {
+      "file": "docs/PHASE_2_3_MIGRATION_REPORT.md",
+      "link": "../accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "message": "File not found: ../accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_03.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_03.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_22.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_22.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_16.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_16.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_29.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_29.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_08.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_08.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_05.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_05.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_07.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_07.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_10.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_10.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_28.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_28.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_31.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_31.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_06.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_04.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_30.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_30.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_20.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_20.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_26.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_26.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_27.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_27.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_19.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_19.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_25.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_25.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_24.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_24.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_09.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_09.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_17.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_17.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_14.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_14.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_18.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_18.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_12.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_12.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_11.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    },
+    {
+      "file": "docs/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_11.md",
+      "link": "../AGENT_ACCOUNTABILITY_REPORT_INDEX.md",
+      "message": "File not found: ../AGENT_ACCOUNTABILITY_REPORT_INDEX.md"
+    }
+  ]
+}
