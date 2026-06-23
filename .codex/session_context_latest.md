@@ -1,21 +1,22 @@
-# Session Context — 2026-06-23T16:24:48Z
+# Session Context — 2026-06-23T16:34:43Z
 **Branch:** `copilot/fetch-security-scan-results`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4990` (✅)
-- GraphQL remaining: `4980` (✅)
+- REST remaining: `4989` (✅)
+- GraphQL remaining: `4975` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Running Copilot cloud agent** — `failure` on `copilot/fetch-security-scan-results` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-23)
 
 ## 📝 Recent Commits
+- `1649e2fd` Phase 8-9: Initialize campaign grade finalization (96.5 → 99-100%) with custom a — copilot-swe-agent[bot] (2026-06-23)
 - `e63b061f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-23)
 - `992849e4` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-23)
 - `5f1b0b25` Phase 1 Complete: Security consolidation + CI triage delivered. Dispatching Phas — copilot-swe-agent[bot] (2026-06-23)
@@ -23,7 +24,6 @@
 - `7f187c5f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-23)
 - `21d186e8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
 - `6ffe3a04` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-06-23)
-- `b9c9058c` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
