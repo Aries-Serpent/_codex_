@@ -46,7 +46,7 @@
 | CodeQL Analysis | Running | TBD |
 | Semgrep SAST | Running | TBD |
 | Documentation Links | ✅ PASS | SUCCESS |
-| Secrets Baseline | ✅ PASS | SUCCESS |
+| Secrets Baseline | ✅ PASS | SUCCESS | <!-- pragma: allowlist secret -->
 | Dependency Security | ✅ PASS | SUCCESS |
 | **Overall** | **UNSTABLE** | **0 FAILURES** |
 
@@ -62,7 +62,7 @@ f84682b Fix Phase A1 test failures in unified approval hub (S317)
 37316c6 Stage: Initiate end-to-end continuation plan execution with multi-agent coordination (Session S317) ← TARGET
 d25aef9 Apply remaining changes ← TARGET
 0a0365a fix(mypy): resolve 26 type errors, improve baseline 121→95 (-21.5%) ← TARGET
-7da4ac2 fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] (main base)
+7da4ac2 fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] (main base)  # pragma: allowlist secret
 ```
 
 ---
