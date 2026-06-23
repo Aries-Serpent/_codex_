@@ -12,7 +12,7 @@ Resolve blocking CI failures on PR #5060 including detect-secrets false positive
 
 1. **Fixed detect-secrets false positive**
    - File: `docs/security/secret-management.md` line 737
-   - Issue: Example code `API_KEY = "hardcoded_key_here"` flagged as potential secret
+   - Issue: Example code `API_KEY = "hardcoded_key_here"` flagged as potential secret <!-- pragma: allowlist secret -->
    - Fix: Added `<!-- pragma: allowlist secret -->` pragma comment
    - Commit: `d26380d`
 

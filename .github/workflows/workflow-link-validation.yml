@@ -63,11 +63,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install PyYAML (required by setup-python-cached)
+        run: pip install pyyaml --quiet
+
       - name: CacheManager health check
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow workflow-link-validation 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python
+
+      - name: Set up cached Python environment
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
