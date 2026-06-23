@@ -38,7 +38,7 @@ def _load_metrics(n: int = 10) -> list[dict]:
     type=click.Choice(["summary", "detail", "trend"]),
     default="summary",
 )
-def report_main(format: str, output: str, report_type: str):
+def report_main(format: str, output: str, _report_type: str):
     """Generate code quality reports.
 
     Examples:

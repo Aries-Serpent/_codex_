@@ -55,7 +55,7 @@ def run_in_sandbox(
     cwd: Optional[Path] = None,
     timeout: int = 10,
     mem_mb: int = 256,
-    no_network: bool = True,
+    _no_network: bool = True,
     enforce_limits: bool = False,
 ) -> subprocess.CompletedProcess:
     """Run *argv* in a restricted subprocess.

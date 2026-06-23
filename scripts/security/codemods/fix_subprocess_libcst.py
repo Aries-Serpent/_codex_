@@ -182,7 +182,7 @@ class AddSubprocessImport(cst.CSTTransformer):
         if node.module and node.module.value == "subprocess":
             self.has_subprocess_import = True
 
-    def leave_Module(self, original_node: cst.Module, updated_node: cst.Module) -> cst.Module:
+    def leave_Module(self, _original_node: cst.Module, updated_node: cst.Module) -> cst.Module:
         """Add subprocess import at module level if needed."""
         if not self.needs_import or self.has_subprocess_import:
             return updated_node

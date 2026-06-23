@@ -1769,7 +1769,7 @@ def generate_api_collection(
     output_path: Path,
     repo_name: str = "Repository",
     version: str = "1.5.4",
-    presets: Optional[list[dict]] = None,
+    _presets: Optional[list[dict]] = None,
 ) -> None:
     """
     Generate API collection HTML page with adjustable controls.

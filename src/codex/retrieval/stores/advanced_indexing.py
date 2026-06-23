@@ -514,7 +514,7 @@ def optimize_index_parameters(
     dataset_size: int,
     dimension: int,
     target_recall: float = 0.95,
-    memory_budget_gb: Optional[float] = None,
+    _memory_budget_gb: Optional[float] = None,
 ) -> dict[str, Any]:
     """Recommend optimal index parameters based on dataset characteristics.
 

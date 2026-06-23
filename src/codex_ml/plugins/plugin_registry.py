@@ -273,12 +273,12 @@ class DataAugmentationPlugin(Plugin):
         """Initialize augmentation pipeline."""
         logger.info("DataAugmentationPlugin initialized")
 
-    def execute(self, data: Any, augmentation_type: str = "default") -> Any:
+    def execute(self, data: Any, _augmentation_type: str = "default") -> Any:
         """Apply data augmentation.
 
         Args:
             data: Input data
-            augmentation_type: Type of augmentation
+            _augmentation_type: Type of augmentation (unused)
 
         Returns:
             Augmented data
