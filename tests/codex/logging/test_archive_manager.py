@@ -13,7 +13,7 @@ import json
 import sqlite3
 import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path
+from pathlib import Path # pragma: allowlist secret
 from unittest.mock import patch, MagicMock
 
 import pytest

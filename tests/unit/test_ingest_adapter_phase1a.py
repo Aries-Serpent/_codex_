@@ -13,7 +13,7 @@ Comprehensive test coverage for the ingest adapter module covering:
 
 Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
-""" # pragma: allowlist secret
+""" # pragma: allowlist secret # pragma: allowlist secret
 
 
 import hashlib

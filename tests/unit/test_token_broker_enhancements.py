@@ -13,7 +13,7 @@ import time
 
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry, ControlClass
 from codex.autonomy.token_broker import (
-    CircuitBreakerState, # pragma: allowlist secret
+    CircuitBreakerState, # pragma: allowlist secret # pragma: allowlist secret
     TokenBroker,
     TokenCircuitBreaker,
     TokenHealthChecker,
