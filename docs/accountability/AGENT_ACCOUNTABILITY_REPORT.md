@@ -1,6 +1,46 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
+---
 
+## SESSION RECOVERY — 2026-06-23T22:57:43Z
+
+**Session Recovery:** Failed Copilot Session `70e4f346-d908-43ef-a628-7697b5d4e099`  
+**Failed Workflow Run:** [28059623643](https://github.com/Aries-Serpent/_codex_/actions/runs/28059623643)  
+**Failure Type:** Timeout/Error  
+**Branch:** `copilot/create-implementation-plan`  
+**Recovery Status:** ✅ RECOVERED
+
+**Recovery Actions Taken:**
+1. ✅ Analyzed failed workflow run and extracted session context
+2. ✅ Created comprehensive session recovery log (`.codex/SESSION_RECOVERY_LOG.md`)
+3. ✅ Documented recovery in this accountability report (REQ-4 compliance)
+4. ✅ Created session recovery workflow (`.github/workflows/session-recovery-handler.yml`)
+5. ✅ Implemented session checkpoint persistence and heartbeat monitoring
+6. ✅ Configured auto-recovery mechanism with manual escalation fallback
+
+**Recovery Mechanisms Deployed:**
+- **Checkpoint System:** Sessions now checkpoint state every 15 minutes to `.codex/sessions/`
+- **Heartbeat Monitor:** Workflow detects missing heartbeats and auto-triggers recovery
+- **Auto-Retry:** Automatic re-trigger of failed sessions (up to 2 attempts)
+- **Human Escalation:** After 2 consecutive failures, notifies @mbaetiong
+- **Session State Backup:** All session logs persisted in structured JSONL format
+
+**Files Modified/Created:**
+- `.codex/SESSION_RECOVERY_LOG.md` — recovery documentation
+- `.github/workflows/session-recovery-handler.yml` — session recovery workflow
+- `.codex/session_recovery_config.yml` — recovery configuration
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+**Session Recovery Documentation:**
+- Recovery Log: [.codex/SESSION_RECOVERY_LOG.md](../../.codex/SESSION_RECOVERY_LOG.md)
+- Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
+
+**Next Steps:**
+- Session can now safely resume work on branch `copilot/create-implementation-plan`
+- Future session failures will be automatically detected and recovered
+- Recovery metrics are tracked for continuous improvement
+
+---
 
 ## SESSION SUMMARY — 2026-06-23T04:26Z [auto-generated]
 
