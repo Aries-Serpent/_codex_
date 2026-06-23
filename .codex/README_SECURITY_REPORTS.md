@@ -15,7 +15,7 @@
   "commit_sha": "21d186e8b97e96350d087d452bbb458537441aec",
   "run_id": 28036137900,
   "summary": { /* High-level metrics */ },
-  "findings": {
+  "findings": { # pragma: allowlist secret
     "codeql": { "python": {...}, "javascript": {...} },
     "semgrep": {...},
     "dependencies": {...}
