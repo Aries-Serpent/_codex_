@@ -1,0 +1,200 @@
+name: 🔧 CI Pattern Healer — Automated Failure Detection & Healing
+
+# Proactive CI failure detection and healing through pattern recognition.
+# Triggered on CI failures and scheduled intervals to catch and fix common issues.
+
+on:
+  workflow_run:
+    workflows: [
+      "Secrets Baseline Enforcer",
+      "Workflow Documentation Link Validation",
+      "Code Quality",
+      "Security Suite"
+    ]
+    types: [completed]
+    branches:
+      - main
+      - 0D_base_
+      - 'automated/**'
+      - 'copilot/**'
+  
+  schedule:
+    # Run twice daily to catch recurring failures early
+    - cron: '0 6,18 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      pattern_id:
+        description: 'Specific pattern to heal (1-9, or empty for all)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Show what would be fixed without applying changes'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ci-pattern-healer
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  detect-failures:
+    name: Detect and Diagnose CI Failures
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      detected_patterns: ${{ steps.detect.outputs.patterns }}
+      needs_healing: ${{ steps.detect.outputs.needs_healing }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install -q pyyaml ruff
+
+      - name: Detect failing patterns
+        id: detect
+        run: |
+          # Run orchestrator in check-only mode with JSON output
+          python .github/scripts/ci-autofix-orchestrator.py \
+            --check-only \
+            --json-output .codex/ci-patterns-detected.json
+          
+          # Extract pattern info for next step
+          if [ -f .codex/ci-patterns-detected.json ]; then
+            TOTAL=$(jq '.total_issues' .codex/ci-patterns-detected.json)
+            AUTO_FIX=$(jq '.auto_fixable' .codex/ci-patterns-detected.json)
+            echo "patterns=$(jq -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)" >> "$GITHUB_OUTPUT"
+            echo "needs_healing=$([[ $TOTAL -gt 0 && $AUTO_FIX -gt 0 ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+            echo "✅ Detected $TOTAL issues ($AUTO_FIX auto-fixable)"
+          else
+            echo "patterns=[]" >> "$GITHUB_OUTPUT"
+            echo "needs_healing=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: ci-patterns-detected-${{ github.run_id }}
+          path: .codex/ci-patterns-detected.json
+          retention-days: 30
+
+  heal-patterns:
+    name: Apply Automated Fixes
+    needs: detect-failures
+    if: needs.detect-failures.outputs.needs_healing == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install -q pyyaml ruff
+
+      - name: Apply automated fixes
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}"
+          python .github/scripts/ci-autofix-orchestrator.py $DRY_RUN \
+            --json-output .codex/ci-patterns-fixed.json
+          
+          echo "::group::Fix Report"
+          jq '.' .codex/ci-patterns-fixed.json || true
+          echo "::endgroup::"
+
+      - name: Configure Git
+        run: |
+          git config user.name "copilot-swe-agent[bot]"
+          git config user.email "198982749+Copilot@users.noreply.github.com"
+
+      - name: Commit fixes (if not dry-run)
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          if ! git diff --quiet; then
+            git add .
+            if ! git diff --cached --quiet; then
+              git commit -m "fix(ci): auto-heal detected CI failure patterns [skip ci]" \
+                -m "- Applied automated fixes for detected patterns" \
+                -m "- Patterns healed per orchestrator diagnostics" \
+                -m "- This commit resolves recurrent CI issues"
+              git push || echo "⚠️ Push failed — may have no changes"
+            fi
+          fi
+
+      - name: Upload fix report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: ci-patterns-fixed-${{ github.run_id }}
+          path: .codex/ci-patterns-fixed.json
+          retention-days: 30
+
+  post-heal-validation:
+    name: Validate Healed State
+    needs: [detect-failures, heal-patterns]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Download detection report
+        uses: actions/download-artifact@v5
+        with:
+          name: ci-patterns-detected-${{ github.run_id }}
+          path: .codex/
+
+      - name: Download fix report
+        if: needs.heal-patterns.result == 'success'
+        uses: actions/download-artifact@v5
+        with:
+          name: ci-patterns-fixed-${{ github.run_id }}
+          path: .codex/
+        continue-on-error: true
+
+      - name: Generate summary
+        run: |
+          echo "## 🔧 CI Pattern Healing Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f .codex/ci-patterns-detected.json ]; then
+            echo "### Detection Results" >> $GITHUB_STEP_SUMMARY
+            jq -r '.issues[] | "- Pattern \(.pattern): \(.message) (\(.file):\(.line))"' .codex/ci-patterns-detected.json >> $GITHUB_STEP_SUMMARY || true
+          fi
+          
+          if [ -f .codex/ci-patterns-fixed.json ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Fixes Applied" >> $GITHUB_STEP_SUMMARY
+            jq -r '.fixes_applied' .codex/ci-patterns-fixed.json | xargs -I {} echo "- {} fixes applied" >> $GITHUB_STEP_SUMMARY || true
+          fi

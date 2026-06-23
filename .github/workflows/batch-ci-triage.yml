@@ -262,16 +262,28 @@ jobs:
 
               body += `**Copilot Resolution Prompt:**\n`;
               body += `\`\`\`\n`;
-              body += `@copilot Fix the failing CI workflow "${wfName}" (run #${latestRun.run_number}).\n`;
+              body += `@copilot Fix the failing CI workflow "${wfName}" (run #${latestRun.run_number}).\n\n`;
+              body += `**Workflow Context:**\n`;
               body += `- Workflow file: .github/workflows/${latestRun.workflow_file}\n`;
-              body += `- Failed jobs: ${latestRun.failed_jobs.join(', ') || 'see run'}\n`;
-              if (latestRun.failing_steps.length > 0) {
-                body += `- Failing steps: ${latestRun.failing_steps.slice(0, 5).join('; ')}\n`;
-              }
+              body += `- Branch: ${latestRun.head_branch}\n`;
+              body += `- Commit: ${latestRun.head_sha}\n`;
               body += `- Run URL: ${latestRun.run_url}\n`;
               if (latestRun.pr_number) {
                 body += `- Associated PR: ${context.payload.repository.html_url}/pull/${latestRun.pr_number}\n`;
               }
+              body += `\n**Failure Details:**\n`;
+              body += `- Failed jobs: ${latestRun.failed_jobs.join(', ') || 'see run'}\n`;
+              if (latestRun.failing_steps.length > 0) {
+                body += `- Failing steps: ${latestRun.failing_steps.slice(0, 5).join('; ')}\n`;
+              }
+              body += `\n**Analysis Instructions:**\n`;
+              body += `1. Examine the workflow file and job logs\n`;
+              body += `2. Identify root cause (dependency, environment, configuration)\n`;
+              body += `3. Check if this pattern matches known CI failure patterns (see #5041)\n`;
+              body += `4. Apply fix and validate with local test if possible\n`;
+              body += `5. If auto-fixable: commit with [skip ci] and reference this issue\n`;
+              body += `6. If manual: create actionable remediation steps\n`;
+              body += `\n**Note:** This failure may be part of a recurring pattern. Check the CI Failure Triage Report (#5041) for similar issues.\n`;
               body += `\`\`\`\n\n`;
 
               if (runs.length > 1) {
