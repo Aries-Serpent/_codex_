@@ -122,7 +122,7 @@ class ThreadSafeSessionEmbeddings:
             if self._model is None:
                 self._model = SentenceTransformer(self.MODEL_NAME)
 
-            embedding = self._model.encode(text, convert_to_numpy=True)
+            embedding = self._model.encode(text, convert_to_numpy=True)  # type: ignore[attr-defined]
             return embedding.astype(np.float32)
 
         except Exception as e:

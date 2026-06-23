@@ -305,7 +305,7 @@ class ArchiveManager:
                     # Update SQLite
                     self._mark_session_deleted(session_id)
 
-                    report["deleted_sessions"].append(
+                    report["deleted_sessions"].append(  # type: ignore[attr-defined]
                         {
                             "session_id": session_id,
                             "archive_location": archive_location,
@@ -370,7 +370,7 @@ class ArchiveManager:
             index = {
                 "version": "1.0",
                 "created": datetime.now().isoformat(),
-                "sessions": sorted(sessions, key=lambda x: x["created_at"]),  # type: ignore[arg-type]
+                "sessions": sorted(sessions, key=lambda x: x["created_at"]),  # type: ignore[arg-type, return-value]
                 "statistics": {
                     "total_sessions": len(sessions),
                     "total_size_mb": total_size / (1024 * 1024),
@@ -523,9 +523,9 @@ class ArchiveManager:
                     retention_log = json.load(f)
 
             if "cleanups" not in retention_log:
-                retention_log["cleanups"] = []
+                retention_log["cleanups"] = []  # type: ignore[assignment]
 
-            retention_log["cleanups"].append(report)
+            retention_log["cleanups"].append(report)  # type: ignore[attr-defined]
 
             self.retention_log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.retention_log_path, "w") as f:
