@@ -493,7 +493,7 @@ class TestErrorHandling:
         exc = exception_type('test message')
 
         assert isinstance(exc, Exception)
-        assert str(exc) == 'test message'
+        assert exc.args[0] == 'test message'
 
         # Raising and catching
         with pytest.raises(exception_type):
