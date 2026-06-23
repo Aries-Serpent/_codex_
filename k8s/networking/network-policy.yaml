@@ -16,11 +16,11 @@ spec:
     matchLabels:
       app: codex
       component: api-server
-  
+
   policyTypes:
     - Ingress
     - Egress
-  
+
   # Ingress: Allow traffic from specific sources
   ingress:
     # Allow from ingress controller
@@ -34,7 +34,7 @@ spec:
       ports:
         - protocol: TCP
           port: 8000
-    
+
     # Allow from monitoring namespace
     - from:
         - namespaceSelector:
@@ -43,7 +43,7 @@ spec:
       ports:
         - protocol: TCP
           port: 9090
-    
+
     # Allow from API clients in same namespace
     - from:
         - podSelector:
@@ -52,7 +52,7 @@ spec:
       ports:
         - protocol: TCP
           port: 8000
-  
+
   # Egress: Allow outbound traffic to specific destinations
   egress:
     # Allow DNS
@@ -64,7 +64,7 @@ spec:
       ports:
         - protocol: UDP
           port: 53
-    
+
     # Allow database access
     - to:
         - namespaceSelector:
@@ -75,7 +75,7 @@ spec:
           port: 5432  # PostgreSQL
         - protocol: TCP
           port: 6379  # Redis
-    
+
     # Allow external HTTPS for API calls
     - to:
         - namespaceSelector: {}
@@ -87,7 +87,7 @@ spec:
           except:
             - "169.254.169.254/32"  # Block AWS metadata
             - "10.0.0.0/8"  # Internal networks handled by other rules
-    
+
     # Allow metrics scraping response
     - to:
         - namespaceSelector:
@@ -111,11 +111,11 @@ spec:
     matchLabels:
       app: codex
       component: worker
-  
+
   policyTypes:
     - Ingress
     - Egress
-  
+
   # Workers only accept traffic from API servers
   ingress:
     - from:
@@ -126,7 +126,7 @@ spec:
       ports:
         - protocol: TCP
           port: 5000
-  
+
   # Workers can access database and cache
   egress:
     - to:
@@ -169,12 +169,12 @@ metadata:
     nginx.ingress.kubernetes.io/timeout-send-headers: "30"
 spec:
   ingressClassName: nginx
-  
+
   tls:
     - hosts:
         - codex.example.com
       secretName: codex-tls-cert
-  
+
   rules:
     - host: codex.example.com
       http:

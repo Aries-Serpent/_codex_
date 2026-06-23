@@ -52,7 +52,7 @@ jobs:
         id: markdownlint
         run: |
           echo "## Markdownlint Report" >> $GITHUB_STEP_SUMMARY
-          
+
           if markdownlint docs/*.md ./*.md 2>&1 | tee /tmp/md-lint-output.txt; then
             echo "✅ All Markdown files pass linting" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
@@ -73,7 +73,7 @@ jobs:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync('/tmp/md-lint-output.txt', 'utf8');
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -139,43 +139,43 @@ jobs:
           python3 - << 'EOF'
           import re
           from pathlib import Path
-          
+
           def validate_heading_hierarchy(file_path):
               """Validate that headings follow proper hierarchy (no skips)."""
               issues = []
               last_level = 0
-              
+
               with open(file_path, 'r', encoding='utf-8') as f:
                   lines = f.readlines()
-              
+
               for line_num, line in enumerate(lines, 1):
                   match = re.match(r'^(#+)\s+(.+)$', line.strip())
                   if match:
                       level = len(match.group(1))
-                      
+
                       # Check if first heading is H1
                       if last_level == 0 and level != 1:
                           issues.append((line_num, level, f"First heading should be H1, got H{level}"))
-                      
+
                       # Check for hierarchy jumps (e.g., H1 to H3 without H2)
                       if last_level > 0 and level > last_level + 1:
                           issues.append((line_num, level, f"Hierarchy jump from H{last_level} to H{level}"))
-                      
+
                       last_level = level
-              
+
               return issues
-          
+
           all_issues = {}
           md_files = list(Path('docs').rglob('*.md')) + list(Path('.').glob('*.md'))
-          
+
           for md_file in sorted(set(md_files)):
               if any(skip in str(md_file) for skip in ['node_modules', '.git', '.venv']):
                   continue
-              
+
               issues = validate_heading_hierarchy(md_file)
               if issues:
                   all_issues[md_file] = issues
-          
+
           if all_issues:
               print("## ⚠️ Heading Hierarchy Issues Found\n")
               for file_path, issues in all_issues.items():
@@ -213,16 +213,16 @@ jobs:
         run: |
           cat << 'EOF' > /tmp/consistency-summary.md
           # 📊 Consistency Checks Summary
-          
+
           | Check | Status |
           |-------|--------|
           | Markdownlint | ${{ needs.markdownlint.result == 'success' && '✅' || '⚠️' }} |
           | Cross-References | ${{ needs.cross-references.result == 'success' && '✅' || '⚠️' }} |
           | Heading Hierarchy | ${{ needs.heading-hierarchy.result == 'success' && '✅' || '⚠️' }} |
-          
+
           **Overall Status**: ${{ (needs.markdownlint.result == 'success' && needs.cross-references.result == 'success' && needs.heading-hierarchy.result == 'success') && '✅ PASSED' || '⚠️ REVIEW NEEDED' }}
           EOF
-          
+
           cat /tmp/consistency-summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Fail if any check failed

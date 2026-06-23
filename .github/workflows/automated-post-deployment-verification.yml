@@ -38,19 +38,19 @@ jobs:
         run: |
           ENVIRONMENT="${{ github.event.inputs.environment }}"
           SERVICE_URL="${{ github.event.inputs.service_url }}"
-          
+
           # Validate environment
           if [[ ! "$ENVIRONMENT" =~ ^(development|staging|production)$ ]]; then
             echo "Invalid environment: $ENVIRONMENT"
             exit 1
           fi
-          
+
           # Validate URL format
           if ! [[ "$SERVICE_URL" =~ ^https?:// ]]; then
             echo "Invalid service URL format: $SERVICE_URL"
             exit 1
           fi
-          
+
           # Select checklist based on environment
           case $ENVIRONMENT in
             development)
@@ -63,7 +63,7 @@ jobs:
               CHECKLIST=".codex/verification-checklists/VERIFICATION_CHECKLIST_PRODUCTION.md"
               ;;
           esac
-          
+
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
           echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
           echo "checklist_file=$CHECKLIST" >> $GITHUB_OUTPUT
@@ -82,9 +82,9 @@ jobs:
           SERVICE_URL="${{ needs.setup.outputs.service_url }}"
           MAX_RETRIES=5
           RETRY_DELAY=10
-          
+
           echo "Checking service accessibility at $SERVICE_URL..."
-          
+
           for i in $(seq 1 $MAX_RETRIES); do
             if curl -s -o /dev/null -w "%{http_code}" "$SERVICE_URL" | grep -q "200\|301\|302"; then
               echo "✓ Service is accessible"
@@ -94,7 +94,7 @@ jobs:
             echo "Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s..."
             sleep $RETRY_DELAY
           done
-          
+
           echo "✗ Service is not accessible after $MAX_RETRIES attempts"
           echo "accessible=false" >> $GITHUB_OUTPUT
           exit 1
@@ -117,16 +117,16 @@ jobs:
         id: health
         run: |
           mkdir -p ${{ env.VERIFICATION_DIR }}
-          
+
           SERVICE_URL="${{ needs.setup.outputs.service_url }}"
           OUTPUT_DIR="${{ env.VERIFICATION_DIR }}"
-          
+
           # Run health check runner (mock implementation for now)
           python scripts/deployment/health_check_runner.py \
             --host $(echo $SERVICE_URL | cut -d/ -f3 | cut -d: -f1) \
             --port $(echo $SERVICE_URL | cut -d: -f3) \
             --output "$OUTPUT_DIR" || true
-          
+
           # Parse health results
           if [ -f "$OUTPUT_DIR/health_latest.json" ]; then
             OVERALL=$(python3 -c "import json; d=json.load(open('$OUTPUT_DIR/health_latest.json')); print(d.get('overall_status', 'unknown'))")
@@ -164,16 +164,16 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p ${{ env.VERIFICATION_DIR }}
-          
+
           # Install test dependencies if available
           pip install pytest pytest-json-report 2>/dev/null || true
-          
+
           # Run smoke tests (will use test framework if available)
           python -m pytest tests/e2e/smoke_tests.py \
             --json-report \
             --json-report-file=${{ env.VERIFICATION_DIR }}/smoke_tests_report.json \
             -v --tb=short 2>/dev/null || echo "Pytest not available, using direct invocation"
-          
+
           # Always generate a basic report
           echo "{\"status\": \"passed\", \"tests_count\": 15, \"passed\": 15, \"failed\": 0}" > ${{ env.VERIFICATION_DIR }}/smoke_summary.json
           echo "✓ Smoke tests completed"
@@ -206,11 +206,11 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p ${{ env.VERIFICATION_DIR }}
-          
+
           # Run critical path tests
           python -m pytest tests/e2e/critical_path_tests.py \
             -v --tb=short 2>/dev/null || echo "Pytest not available"
-          
+
           # Generate report
           echo "{\"status\": \"passed\", \"paths_tested\": 6, \"all_passed\": true}" > ${{ env.VERIFICATION_DIR }}/critical_paths_report.json
           echo "✓ Critical path tests completed"
@@ -240,33 +240,33 @@ jobs:
         id: report
         run: |
           mkdir -p ${{ env.VERIFICATION_DIR }}
-          
+
           REPORT_FILE="${{ env.VERIFICATION_DIR }}/verification_report.md"
-          
+
           cat > "$REPORT_FILE" <<'EOF'
           # Post-Deployment Verification Report
-          
+
           **Generated:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           **Environment:** ${{ needs.setup.outputs.environment }}
           **Service URL:** ${{ needs.setup.outputs.service_url }}
-          
+
           ## Summary
-          
+
           | Check | Status |
           |-------|--------|
           | Service Accessibility | ✅ |
           | Health Checks | ${{ needs.health-checks.outputs.health_status }} |
           | Smoke Tests | ${{ needs.smoke-tests.outputs.smoke_status }} |
           | Critical Paths | ${{ needs.critical-path-tests.outputs.critical_status }} |
-          
+
           ## Environment-Specific Checklist
-          
+
           - Verification checklist: ${{ needs.setup.outputs.checklist_file }}
-          
+
           ## Recommendations
-          
+
           EOF
-          
+
           # Add recommendations based on environment
           case "${{ needs.setup.outputs.environment }}" in
             development)
@@ -283,7 +283,7 @@ jobs:
               echo "- On-call team must be briefed" >> "$REPORT_FILE"
               ;;
           esac
-          
+
           echo "✓ Report generated: $REPORT_FILE"
           echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
 
@@ -301,7 +301,7 @@ jobs:
           script: |
             const fs = require('fs');
             const reportFile = '${{ steps.report.outputs.report_file }}';
-            
+
             if (fs.existsSync(reportFile)) {
               const report = fs.readFileSync(reportFile, 'utf8');
               github.rest.issues.createComment({
@@ -316,22 +316,22 @@ jobs:
         id: decision
         run: |
           DECISION="GO"
-          
+
           # Check all critical components
           if [[ "${{ needs.health-checks.outputs.health_status }}" != "healthy" ]]; then
             DECISION="NO-GO"
           fi
-          
+
           if [[ "${{ needs.smoke-tests.outputs.smoke_status }}" != "passed" ]]; then
             DECISION="NO-GO"
           fi
-          
+
           if [[ "${{ needs.critical-path-tests.outputs.critical_status }}" != "passed" ]]; then
             DECISION="NO-GO"
           fi
-          
+
           echo "decision=$DECISION" >> $GITHUB_OUTPUT
-          
+
           if [[ "$DECISION" == "GO" ]]; then
             echo "✅ DECISION: GO - All verifications passed"
           else

@@ -176,7 +176,7 @@ jobs:
         if: github.event.inputs.dry_run == 'false'
         run: |
           discussion_content=$(cat ".codex/release-announcements/github-discussions-${{ github.event.inputs.version }}.md")
-          
+
           # Create discussion via GitHub CLI
           gh discussion create \
             --repo Aries-Serpent/_codex_ \
@@ -192,26 +192,26 @@ jobs:
         run: |
           cat > release-summary.md << 'EOF'
           # Release ${{ github.event.inputs.version }} Summary
-          
+
           ## Release Status
           - **Version**: ${{ github.event.inputs.version }}
           - **Dry Run**: ${{ github.event.inputs.dry_run }}
           - **Created At**: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          
+
           ## Artifacts Generated
           - ✅ Release Notes: `.codex/release-notes.md`
           - ✅ SBOM: `${{ steps.generate-sbom.outputs.sbom_path }}`
           - ✅ Attestations: `${{ steps.generate-attestations.outputs.attestations_path }}`
           - ✅ Provenance: `${{ steps.generate-provenance.outputs.provenance_path }}`
           - ✅ Audit: `${{ steps.generate-audit.outputs.audit_path }}`
-          
+
           ## Announcements
           - ✅ GitHub Discussions: `.codex/release-announcements/github-discussions-${{ github.event.inputs.version }}.md`
           - ✅ Email (Plain): `.codex/release-announcements/email-plain-${{ github.event.inputs.version }}.txt`
           - ✅ Email (HTML): `.codex/release-announcements/email-html-${{ github.event.inputs.version }}.html`
           - ✅ Slack: `.codex/release-announcements/slack-${{ github.event.inputs.version }}.txt`
           - ✅ Twitter: `.codex/release-announcements/twitter-${{ github.event.inputs.version }}.txt`
-          
+
           ## Next Steps
           1. Review release notes: `.codex/release-notes.md`
           2. Verify SBOM completeness
@@ -219,7 +219,7 @@ jobs:
           4. If dry run successful, re-run with `dry_run=false` to publish
           5. Update announcement templates as needed
           EOF
-          
+
           cat release-summary.md
 
       - name: Upload artifacts

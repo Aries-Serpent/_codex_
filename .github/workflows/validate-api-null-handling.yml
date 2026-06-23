@@ -47,12 +47,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -61,48 +61,48 @@ jobs:
         id: safety-check
         run: |
           set +e
-          
+
           echo "Scanning for unsafe API null-handling patterns..."
-          
+
           unsafe_get_replace=$(rg '\.get\(["\047][^"'\'']+["\047][,\)].*\.replace\(' \
             --glob="scripts/ci/**" \
             --glob="src/scripts/ci/**" \
             --type=python 2>/dev/null || true)
-          
+
           unsafe_response_access=$(rg 'response\["[^"]+"\]\.replace\(' \
             --glob="scripts/ci/**" \
             --glob="src/scripts/ci/**" \
             --type=python 2>/dev/null || true)
-          
+
           unsafe_datetime_parse=$(rg 'datetime\.fromisoformat\([^)]*\[.*\]\.replace\(' \
             --glob="scripts/ci/**" \
             --glob="src/scripts/ci/**" \
             --type=python 2>/dev/null || true)
-          
+
           violations_found=false
           violation_count=0
-          
+
           if [ -n "$unsafe_get_replace" ]; then
             echo "Pattern 1: Unsafe .get().method() calls:"
             echo "$unsafe_get_replace"
             violations_found=true
             violation_count=$((violation_count + 1))
           fi
-          
+
           if [ -n "$unsafe_response_access" ]; then
             echo "Pattern 2: Unsafe dictionary access without null-check:"
             echo "$unsafe_response_access"
             violations_found=true
             violation_count=$((violation_count + 1))
           fi
-          
+
           if [ -n "$unsafe_datetime_parse" ]; then
             echo "Pattern 3: Unsafe datetime parsing:"
             echo "$unsafe_datetime_parse"
             violations_found=true
             violation_count=$((violation_count + 1))
           fi
-          
+
           if [ "$violations_found" = true ]; then
             echo "found-violations=true" >> $GITHUB_OUTPUT
             echo "violation-count=$violation_count" >> $GITHUB_OUTPUT
@@ -132,31 +132,31 @@ jobs:
           is_main_push="${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
           is_manual_strict="${{ github.event.inputs.strict_mode == 'true' }}"
           violations_found="${{ steps.safety-check.outputs.found-violations }}"
-          
+
           if [ "$is_main_push" = "true" ] || [ "$is_manual_strict" = "true" ]; then
             mode="strict"
           else
             mode="lenient"
           fi
-          
+
           echo "mode=$mode" >> $GITHUB_OUTPUT
           echo "is_main_push=$is_main_push" >> $GITHUB_OUTPUT
           echo "violations_found=$violations_found" >> $GITHUB_OUTPUT
 
       - name: Comment on PR with findings
         if: github.event_name == 'pull_request' && steps.safety-check.outputs.found-violations == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const violations = ${{ steps.safety-check.outputs.violation-count }};
             const comment = `## API Null-Handling Validation Report
-            
+
             Status: Warnings Found (Non-blocking for PRs)
-            
+
             Found ${violations} potential unsafe API null-handling pattern(s).
-            
+
             Use auto-fix: python scripts/ci/validate_api_null_handling.py --fix`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -175,7 +175,7 @@ jobs:
           mode="${{ steps.outcome.outputs.mode }}"
           violations="${{ steps.safety-check.outputs.found-violations }}"
           violation_count="${{ steps.safety-check.outputs.violation-count }}"
-          
+
           echo ""
           echo "======================================================"
           echo "  API Null-Handling Validation Summary"

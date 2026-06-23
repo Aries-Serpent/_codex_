@@ -510,8 +510,8 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except Exception:  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore[assignment]
-        OmegaConf = None  # type: ignore[assignment]
+        DictConfig = Any  # type: ignore[misc]
+        OmegaConf = None  # type: ignore[misc]
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error

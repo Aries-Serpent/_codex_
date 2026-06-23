@@ -62,24 +62,24 @@ data:
       external_labels:
         cluster: 'kubernetes'
         environment: 'production'
-    
+
     # Alertmanager configuration
     alerting:
       alertmanagers:
         - static_configs:
             - targets:
                 - alertmanager:9093
-    
+
     # Load rules once and periodically evaluate them
     rule_files:
       - '/etc/prometheus/alert-rules.yml'
-    
+
     scrape_configs:
       # Prometheus self-monitoring
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
-      
+
       # Kubernetes API server
       - job_name: 'kubernetes-apiservers'
         kubernetes_sd_configs:
@@ -92,7 +92,7 @@ data:
           - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
             action: keep
             regex: default;kubernetes;https
-      
+
       # Kubelet
       - job_name: 'kubernetes-nodes'
         scheme: https
@@ -110,7 +110,7 @@ data:
             regex: (.+)
             target_label: __metrics_path__
             replacement: /api/v1/nodes/${1}/proxy/metrics
-      
+
       # Kubernetes pod discovery
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:

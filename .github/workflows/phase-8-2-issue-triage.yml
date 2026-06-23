@@ -48,7 +48,7 @@ jobs:
             const issue = context.payload.issue;
             const body = (issue.title + ' ' + (issue.body || '')).toLowerCase();
             const labels = ['triage-automated'];
-            
+
             // Detect severity
             let severity = 'P4';
             if (body.includes('production outage') || body.includes('data loss') || body.includes('security breach') || body.includes('critical')) {
@@ -61,7 +61,7 @@ jobs:
               severity = 'P3';
             }
             labels.push(`severity-${severity}`);
-            
+
             // Detect category
             if (body.includes('bug') || body.includes('error') || body.includes('crash')) {
               labels.push('category-bug');
@@ -78,11 +78,11 @@ jobs:
             } else if (body.includes('test') || body.includes('pytest')) {
               labels.push('category-testing');
             }
-            
+
             // Apply unique labels
             const uniqueLabels = [...new Set(labels)];
             console.log(`Applying labels to issue #${context.issue.number}: ${uniqueLabels.join(', ')}`);
-            
+
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,

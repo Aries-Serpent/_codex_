@@ -63,7 +63,7 @@ jobs:
         id: validate
         run: |
           echo "Validating registry configuration against patterns..."
-          
+
           cat > /tmp/registry_config.json << 'EOF'
           {
             "registry_type": "${{ env.REGISTRY_TYPE }}",
@@ -73,17 +73,17 @@ jobs:
             "credentials_provided": true
           }
           EOF
-          
+
           python scripts/cognitive/validate_registry_config.py --config /tmp/registry_config.json > validation_output.json
-          
+
           CONFIDENCE=$(jq -r '.validation_results.confidence' validation_output.json)
           VALID=$(jq -r '.validation_results.valid' validation_output.json)
           ISSUES=$(jq -r '.validation_results.issues | length' validation_output.json)
-          
+
           echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
           echo "valid=$VALID" >> $GITHUB_OUTPUT
           echo "issues=$ISSUES" >> $GITHUB_OUTPUT
-          
+
           echo "Validation confidence: $CONFIDENCE"
           echo "Valid: $VALID"
           echo "Issues found: $ISSUES"
@@ -118,7 +118,7 @@ jobs:
         id: connectivity
         run: |
           echo "Testing registry connectivity..."
-          
+
           cat > /tmp/registry_test_config.json << 'EOF'
           {
             "registry_type": "${{ env.REGISTRY_TYPE }}",
@@ -128,15 +128,15 @@ jobs:
             "authentication_method": "${{ env.REGISTRY_TYPE == 'ghcr' && 'github_token' || env.REGISTRY_TYPE == 'dockerhub' && 'username_password' || 'default' }}"
           }
           EOF
-          
+
           python scripts/registry/test_connectivity.py > connectivity_output.json
-          
+
           STATUS=$(jq -r '.test_results.overall_status' connectivity_output.json)
           TESTS_PASSED=$(jq -r '.test_results.summary.passed' connectivity_output.json)
-          
+
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "tests_passed=$TESTS_PASSED" >> $GITHUB_OUTPUT
-          
+
           echo "Connectivity status: $STATUS"
           echo "Tests passed: $TESTS_PASSED"
 
@@ -193,13 +193,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Storing registry metadata in repository variables..."
-          
+
           gh variable set REGISTRY_TYPE --body "${{ env.REGISTRY_TYPE }}" || echo "Variable REGISTRY_TYPE set"
           gh variable set REGISTRY_ENDPOINT --body "${{ env.REGISTRY_ENDPOINT }}" || echo "Variable REGISTRY_ENDPOINT set"
           gh variable set REGISTRY_NAMESPACE --body "${{ env.REGISTRY_NAMESPACE }}" || echo "Variable REGISTRY_NAMESPACE set"
           gh variable set REGISTRY_VALIDATION_STATUS --body "valid" || echo "Variable REGISTRY_VALIDATION_STATUS set"
           gh variable set REGISTRY_LAST_VALIDATED --body "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Variable REGISTRY_LAST_VALIDATED set"
-          
+
           echo "Repository variables updated successfully"
 
   webhook_notification:
@@ -225,7 +225,7 @@ jobs:
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
           echo "Webhook notification prepared for Cognitive Brain"
-          
+
           cat > /tmp/webhook_payload.json << 'EOF'
           {
             "event": "registry_validation_complete",
@@ -239,7 +239,7 @@ jobs:
             "run_id": "${{ github.run_id }}"
           }
           EOF
-          
+
           echo "Webhook payload prepared"
 
   workflow_summary:

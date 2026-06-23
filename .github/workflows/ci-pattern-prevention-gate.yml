@@ -81,14 +81,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: |
-      contains(fromJson('["all", "rp001-api-null", "rp001-rp002"]'), 
+      contains(fromJson('["all", "rp001-api-null", "rp001-rp002"]'),
         github.event.inputs.patterns || 'all')
     continue-on-error: ${{ github.event_name == 'pull_request' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -97,11 +97,11 @@ jobs:
         id: rp001
         run: |
           echo "Starting RP-001 API Null-Handling validation..."
-          
+
           # Pattern: Check for unsafe API field handling
           unsafe_patterns=$(rg '\.get\(["\047][^"'\'']+["\047][,\)].*\.replace\(' \
             --glob="scripts/ci/**" --glob="src/scripts/ci/**" --type=python 2>/dev/null || true)
-          
+
           if [ -z "$unsafe_patterns" ]; then
             echo "status=pass" >> $GITHUB_OUTPUT
             echo "message=✅ No unsafe API null-handling patterns detected" >> $GITHUB_OUTPUT
@@ -121,14 +121,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: |
-      contains(fromJson('["all", "rp002-mypy", "rp001-rp002", "rp002-rp003"]'), 
+      contains(fromJson('["all", "rp002-mypy", "rp001-rp002", "rp002-rp003"]'),
         github.event.inputs.patterns || 'all')
     continue-on-error: ${{ github.event_name == 'pull_request' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -142,21 +142,21 @@ jobs:
         continue-on-error: true
         run: |
           echo "Starting RP-002 mypy Baseline validation..."
-          
+
           if [ ! -f ".mypy_baseline" ]; then
             echo "status=skip" >> $GITHUB_OUTPUT
             echo "message=ℹ️ Baseline file not found - skipping" >> $GITHUB_OUTPUT
             echo "ℹ️ RP-002 SKIPPED (no baseline file)"
             exit 0
           fi
-          
+
           baseline=$(cat .mypy_baseline)
           echo "Current baseline: $baseline errors"
-          
+
           # Run mypy (allow failure)
           mypy_output=$(python -m mypy --config-file=mypy.ini src/ 2>&1 || true)
           error_count=$(echo "$mypy_output" | grep -c "error:" || echo 0)
-          
+
           if [ "$error_count" -le "$baseline" ]; then
             echo "status=pass" >> $GITHUB_OUTPUT
             echo "message=✅ Type errors ($error_count) within baseline ($baseline)" >> $GITHUB_OUTPUT
@@ -182,14 +182,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: |
-      contains(fromJson('["all", "rp003-links", "rp002-rp003"]'), 
+      contains(fromJson('["all", "rp003-links", "rp002-rp003"]'),
         github.event.inputs.patterns || 'all')
     continue-on-error: ${{ github.event_name == 'pull_request' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -199,15 +199,15 @@ jobs:
         continue-on-error: true
         run: |
           echo "Starting RP-003 Documentation Link validation..."
-          
+
           if ! command -v markdown-link-check &> /dev/null; then
             echo "Installing markdown-link-check..."
             npm install -g markdown-link-check 2>/dev/null || true
           fi
-          
+
           broken_count=0
           checked_count=0
-          
+
           # Check markdown files
           for file in $(find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./venv/*" | head -100); do
             if markdown-link-check "$file" 2>/dev/null | grep -q "\[✖\]"; then
@@ -215,9 +215,9 @@ jobs:
             fi
             ((checked_count++))
           done
-          
+
           echo "Checked $checked_count files, found $broken_count with broken links"
-          
+
           if [ "$broken_count" -eq 0 ]; then
             echo "status=pass" >> $GITHUB_OUTPUT
             echo "message=✅ All documentation links valid" >> $GITHUB_OUTPUT
@@ -234,6 +234,7 @@ jobs:
   pattern-validation-summary:
     name: Pattern Validation Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [validate-api-null-handling, validate-mypy-baseline, validate-documentation-links]
     if: always()
     steps:
@@ -241,18 +242,18 @@ jobs:
         id: summary
         run: |
           set +e
-          
+
           rp001_result="${{ needs.validate-api-null-handling.result }}"
           rp002_result="${{ needs.validate-mypy-baseline.result }}"
           rp003_result="${{ needs.validate-documentation-links.result }}"
-          
+
           echo "RP-001 Result: $rp001_result"
           echo "RP-002 Result: $rp002_result"
           echo "RP-003 Result: $rp003_result"
-          
+
           # In PR mode, skip/success are acceptable
           # In push to main mode, only success is acceptable
-          
+
           if [ "$rp001_result" = "failure" ] || [ "$rp002_result" = "failure" ] || [ "$rp003_result" = "failure" ]; then
             echo "overall_status=failure" >> $GITHUB_OUTPUT
             exit_code=1
@@ -260,7 +261,7 @@ jobs:
             echo "overall_status=success" >> $GITHUB_OUTPUT
             exit_code=0
           fi
-          
+
           if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             # Strict mode on main
             if [ $exit_code -ne 0 ]; then
@@ -293,23 +294,24 @@ jobs:
   notify-results:
     name: Notify Results
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [pattern-validation-summary]
     if: always() && github.event_name == 'pull_request'
     steps:
       - name: Comment on PR with results
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const rp001 = '${{ needs.validate-api-null-handling.result }}';
             const rp002 = '${{ needs.validate-mypy-baseline.result }}';
             const rp003 = '${{ needs.validate-documentation-links.result }}';
-            
+
             const icons = {
               'success': '✅',
               'failure': '❌',
               'skipped': 'ℹ️'
             };
-            
+
             const comment = `## 🛡️ CI Pattern Prevention Gate Results
 
             | Pattern | Status | Result |
@@ -322,9 +324,9 @@ jobs:
             - RP patterns are **non-blocking for PRs** (warnings only)
             - All patterns are **strict on push to main**
             - Auto-fix commands available in each pattern's workflow
-            
+
             See: [CI Pattern Prevention Guide](.codex/CI_PATTERN_PREVENTION_GUIDE.md)`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

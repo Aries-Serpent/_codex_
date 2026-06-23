@@ -20,6 +20,7 @@ from __future__ import annotations
 import logging
 from contextlib import suppress
 from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +41,8 @@ except Exception:  # pragma: no cover
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover
-    LoraConfig = None
-    get_peft_model = None
+    LoraConfig = None  # type: ignore[assignment]
+    get_peft_model = None  # type: ignore[assignment]
 
 
 @dataclass

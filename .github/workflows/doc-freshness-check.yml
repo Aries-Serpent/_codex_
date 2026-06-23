@@ -123,7 +123,7 @@ jobs:
           script: |
             const P0_COUNT = parseInt("${{ steps.check_p0.outputs.stale_count || 0 }}");
             const P1_COUNT = parseInt("${{ steps.check_p1.outputs.stale_count || 0 }}");
-            
+
             let body = "## 📚 Documentation Freshness Alert\n\n";
             if (P0_COUNT > 0) {
               body += `⚠️ **${P0_COUNT} P0 doc(s) are stale** (not updated in 60 days)\n\n`;
@@ -133,7 +133,7 @@ jobs:
             }
             body += "### 🔧 Stale Documents\n";
             body += "```\n";
-            
+
             const fs = require('fs');
             if (fs.existsSync('/tmp/p0_stale.txt')) {
               body += fs.readFileSync('/tmp/p0_stale.txt', 'utf8');
@@ -145,7 +145,7 @@ jobs:
             body += "### 🔗 Related\n";
             body += "- Update script: `scripts/ci/update_doc_freshness.py`\n";
             body += "- [Documentation Freshness Policy](https://github.com/Aries-Serpent/_codex_/blob/main/docs/admin/)\n";
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

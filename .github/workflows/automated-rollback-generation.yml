@@ -13,7 +13,7 @@ on:
         description: 'Kubernetes namespace'
         required: false
         default: 'default'
-  
+
   # Automatic trigger on deployment failure
   repository_dispatch:
     types: [deployment-failed]
@@ -33,7 +33,7 @@ jobs:
       contents: write
       actions: read
       pull-requests: write
-    
+
     steps:
       # Step 1: Checkout repository
       - name: Checkout repository
@@ -63,13 +63,13 @@ jobs:
             --manifests-dir ${{ env.MANIFESTS_DIR }} \
             --output ${{ env.OUTPUT_DIR }} \
             --verbose
-          
+
           # Check if generation was successful
           if [ ! -f "${{ env.OUTPUT_DIR }}/rollback-procedures.md" ]; then
             echo "❌ Playbook generation failed"
             exit 1
           fi
-          
+
           echo "playbook_generated=true" >> $GITHUB_OUTPUT
           echo "✅ Rollback playbook generated"
 
@@ -81,13 +81,13 @@ jobs:
           python ${{ env.SCRIPTS_DIR }}/generate_incident_templates.py \
             --output ${{ env.OUTPUT_DIR }}/incident-templates \
             --verbose
-          
+
           # Check if generation was successful
           if [ ! -d "${{ env.OUTPUT_DIR }}/incident-templates" ]; then
             echo "❌ Template generation failed"
             exit 1
           fi
-          
+
           echo "templates_generated=true" >> $GITHUB_OUTPUT
           echo "✅ Incident templates generated"
 
@@ -96,28 +96,28 @@ jobs:
         id: validate
         run: |
           echo "Validating generated procedures..."
-          
+
           # Check markdown files exist
           if [ ! -f "${{ env.OUTPUT_DIR }}/rollback-procedures.md" ]; then
             echo "❌ rollback-procedures.md not found"
             exit 1
           fi
-          
+
           if [ ! -f "${{ env.OUTPUT_DIR }}/ROLLBACK_PLAYBOOK_PROCEDURES.txt" ]; then
             echo "❌ ROLLBACK_PLAYBOOK_PROCEDURES.txt not found"
             exit 1
           fi
-          
+
           if [ ! -f "${{ env.OUTPUT_DIR }}/ESCALATION_PROCEDURES.md" ]; then
             echo "❌ ESCALATION_PROCEDURES.md not found"
             exit 1
           fi
-          
+
           if [ ! -f "${{ env.OUTPUT_DIR }}/ROLLBACK_VALIDATION_CHECKLIST.md" ]; then
             echo "❌ ROLLBACK_VALIDATION_CHECKLIST.md not found"
             exit 1
           fi
-          
+
           # Check incident templates
           template_files=(
             "INCIDENT_REPORT_TEMPLATE.md"
@@ -125,14 +125,14 @@ jobs:
             "STAKEHOLDER_NOTIFICATION.txt"
             "POST_INCIDENT_REVIEW.md"
           )
-          
+
           for template in "${template_files[@]}"; do
             if [ ! -f "${{ env.OUTPUT_DIR }}/incident-templates/$template" ]; then
               echo "❌ $template not found"
               exit 1
             fi
           done
-          
+
           echo "validation_passed=true" >> $GITHUB_OUTPUT
           echo "✅ All procedures validated successfully"
 
@@ -142,18 +142,18 @@ jobs:
         run: |
           cat > ${{ env.OUTPUT_DIR }}/WORKFLOW_VALIDATION_REPORT.md << 'EOF'
           # Automated Rollback Generation - Validation Report
-          
+
           **Date:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          
+
           ## Generated Artifacts
-          
+
           ### Core Procedures
           - ✅ `rollback-procedures.md` - Comprehensive rollback playbook
           - ✅ `ROLLBACK_PLAYBOOK_PROCEDURES.txt` - Quick reference
           - ✅ `ROLLBACK_VALIDATION_CHECKLIST.md` - Validation procedures
           - ✅ `rollback-playbook-metadata.json` - Generation metadata
-          
+
           ### Escalation & Communication
           - ✅ `ESCALATION_PROCEDURES.md` - Escalation procedures
           - ✅ `ESCALATION_CONTACTS.md` - Contact information
@@ -163,37 +163,37 @@ jobs:
             - `STAKEHOLDER_NOTIFICATION.txt`
             - `POST_INCIDENT_REVIEW.md`
             - `README.md`
-          
+
           ## Validation Results
-          
+
           - ✅ Playbook generation: PASSED
           - ✅ Template generation: PASSED
           - ✅ Syntax validation: PASSED
           - ✅ File presence checks: PASSED
           - ✅ Markdown formatting: PASSED
-          
+
           ## Next Steps
-          
+
           1. **Review:** Check all generated procedures for accuracy
           2. **Test:** Run dry-run validation in test environment
           3. **Approve:** Get L2+ approval before production use
           4. **Document:** Add to runbook and team documentation
           5. **Train:** Conduct training session with on-call team
-          
+
           ## Important Notes
-          
+
           ⚠️  **Draft Status:** These procedures must be reviewed before production use
           ⚠️  **Testing Required:** All procedures must be tested in dry-run mode first
           ⚠️  **Approval Required:** Escalation procedures must be approved by VP Engineering
-          
+
           ## Metadata
-          
+
           - **Deployment:** ${{ inputs.deployment_name }}
           - **Namespace:** ${{ inputs.namespace }}
           - **Generated By:** GitHub Actions
           - **Workflow:** ${{ github.workflow }}
           EOF
-          
+
           echo "report_created=true" >> $GITHUB_OUTPUT
 
       # Step 8: Commit changes
@@ -203,14 +203,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # Check if there are changes
           if git diff --quiet; then
             echo "No changes to commit"
             echo "changes_committed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           # Stage changes
           git add ${{ env.OUTPUT_DIR }}/rollback-procedures.md
           git add ${{ env.OUTPUT_DIR }}/ROLLBACK_PLAYBOOK_PROCEDURES.txt
@@ -220,24 +220,24 @@ jobs:
           git add ${{ env.OUTPUT_DIR }}/ROLLBACK_VALIDATION_CHECKLIST.md
           git add ${{ env.OUTPUT_DIR }}/incident-templates/
           git add ${{ env.OUTPUT_DIR }}/WORKFLOW_VALIDATION_REPORT.md
-          
+
           # Create commit message file
           cat > /tmp/commit_msg.txt << 'COMMIT_MSG'
           chore: auto-generate rollback procedures
-          
+
           Generated rollback playbook, incident templates, and validation procedures.
           - Rollback playbook with quick reference and detailed procedures
           - Incident communication templates
           - Escalation procedures and contacts
           - Validation checklist for rollback verification
-          
+
           Status: DRAFT - requires review and approval before production use
-          
+
           Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           COMMIT_MSG
-          
+
           git commit -F /tmp/commit_msg.txt
-          
+
           echo "changes_committed=true" >> $GITHUB_OUTPUT
 
       # Step 9: Push changes
@@ -251,9 +251,9 @@ jobs:
         run: |
           cat >> $GITHUB_STEP_SUMMARY << 'EOF'
           # ✅ Automated Rollback Generation Complete
-          
+
           ## Generated Artifacts
-          
+
           | Artifact | Location | Status |
           |----------|----------|--------|
           | Rollback Playbook | `.codex/rollback-procedures.md` | ✅ Generated |
@@ -261,23 +261,23 @@ jobs:
           | Validation Checklist | `.codex/ROLLBACK_VALIDATION_CHECKLIST.md` | ✅ Generated |
           | Escalation Procedures | `.codex/ESCALATION_PROCEDURES.md` | ✅ Generated |
           | Incident Templates | `.codex/incident-templates/` | ✅ Generated |
-          
+
           ## Validation Results
-          
+
           - ✅ Playbook generation: PASSED
           - ✅ Template generation: PASSED
           - ✅ Syntax validation: PASSED
           - ✅ All files present and valid
-          
+
           ## Next Steps
-          
+
           1. Review generated procedures in `.codex/`
           2. Validate in test environment with dry-run mode
           3. Get L2+ approval for production use
           4. Schedule training for on-call team
-          
+
           **Important:** These are DRAFT procedures. Do not use in production until reviewed and approved.
-          
+
           [View Full Report](./.codex/WORKFLOW_VALIDATION_REPORT.md)
           EOF
 
@@ -285,7 +285,7 @@ jobs:
     name: Validate Procedures (Dry-Run)
     runs-on: ubuntu-latest
     needs: generate-rollback-procedures
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -316,7 +316,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: generate-rollback-procedures
     if: always()
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -330,22 +330,22 @@ jobs:
         run: |
           cat > notification.txt << 'EOF'
           Automated Rollback Generation Workflow Complete
-          
+
           Generated Artifacts:
           - Rollback playbook with procedures
           - Incident communication templates
           - Escalation procedures
           - Validation checklist
-          
+
           Location: .codex/
           Status: DRAFT - Requires Review
-          
+
           Next Steps:
           1. Review all generated procedures
           2. Test in staging environment
           3. Get L2+ approval for production use
           EOF
-          
+
           cat notification.txt
 
       - name: Post to Slack (if configured)

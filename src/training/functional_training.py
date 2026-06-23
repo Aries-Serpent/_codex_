@@ -24,7 +24,7 @@ import logging
 import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from collections.abc import Callable, Mapping, Sequence
 
 import numpy as np
@@ -46,7 +46,7 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 
 logger = logging.getLogger(__name__)
 
-clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
 DataLoader = torch.utils.data.DataLoader
 
 # ruff: noqa: I001
@@ -55,8 +55,8 @@ DataLoader = torch.utils.data.DataLoader
 try:  # pragma: no cover - optional config dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - omegaconf not installed
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    DictConfig = Any  # type: ignore[misc]
+    OmegaConf = None  # type: ignore[misc]
 
 try:  # pragma: no cover - optional logging dependency
     from codex_ml.monitoring.codex_logging import (
