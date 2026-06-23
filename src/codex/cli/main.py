@@ -337,7 +337,7 @@ else:
         print(f"Command: {args.command}")
         print("Note: Full CLI requires 'typer' package. Install with: pip install typer")
 
-    app = None
+    app = None  # type: ignore[assignment]
 
 
 if __name__ == "__main__":

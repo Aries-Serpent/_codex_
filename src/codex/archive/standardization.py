@@ -150,7 +150,7 @@ class StandardizationManager:
             sig_valid = self.sigstore_client.verify_signature(
                 record=record,
                 signature=metadata["signature"],
-                cert_chain=metadata.get("certificate_chain"),
+                cert_chain=metadata.get("certificate_chain"),  # type: ignore[call-arg]
             )
             result["verification_details"]["signature_valid"] = sig_valid
         else:
