@@ -6,6 +6,8 @@
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5070 (SHA `7fc9903d`) at 2026-06-23T16:55Z [auto-generated]
 - fix(ci): resolve 4 failing checks on commit `c01fbc47` — detect-secrets false positive, cross-references broken link, cross-references skip report files, REQ-4/REQ-5 compliance (2026-06-23T18:20Z) [auto-generated]
 - fix(ci): shallow-clone REQ-4/REQ-5 failure in pre-merge-validation — `_last_commit_changed()` now falls back to `git show --name-only HEAD` when `git diff HEAD~1 HEAD` fails in a shallow checkout; added `fetch-depth: 2` to pre-merge-validation.yml; ruff violations fixed in 4 test files (I001, F841, W293) (2026-06-23T19:15Z)
+- fix(ci): actionlint — added `validate-api-null-handling`, `validate-mypy-baseline`, `validate-documentation-links` to `notify-results` needs in `ci-pattern-prevention-gate.yml` (2026-06-23T20:01Z)
+- feat(workflows): upgrade all Copilot Agent workflow triggers to `claude-haiku-4.5` with `/plan` + Custom Agents parallel delegation across 6 workflow files (2026-06-23T20:01Z)
 
 ### Fixed
 - fix: CI metrics collector NoneType crash in phase_8_3_benchmark_collector.py (lines 209-218)

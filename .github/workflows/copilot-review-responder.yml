@@ -227,11 +227,14 @@ jobs:
               : `https://github.com/${owner}/${repo}/pull/${pr}`;
 
             const body = [
-              `@copilot+claude-sonnet-4.6 apply changes based on the comments in [this thread](${reviewUrl})`,
+              `@copilot+claude-haiku-4.5 /plan`,
+              ``,
+              `apply changes based on the comments in [this thread](${reviewUrl})`,
               ``,
               `> 🤖 **Auto-triggered** by \`${reviewer}\` review (${countStr} comment(s) generated).`,
               `> All bot review comments have been acknowledged with 👍.`,
               `> Please address all review comments and resolve any open threads.`,
+              `> **💡 Parallel execution:** Use the \`task\` tool to delegate independent fixes to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`test-alignment-fixer\`) to work in parallel.`,
               '',
               '---',
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,

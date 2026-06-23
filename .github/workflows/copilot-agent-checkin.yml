@@ -877,7 +877,11 @@ jobs:
               `> ✅ **Pre-authorized.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` — start immediately.`,
               `> ${blockingNote}`,
               ``,
-              `@copilot+claude-sonnet-4.6 The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).`,
+              `@copilot+claude-haiku-4.5 /plan
+
+The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).
+
+> **💡 Parallel execution:** Use the \`task\` tool to delegate independent subtasks to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`ci-testing-agent\`, \`unified-coverage-agent\`) to work in parallel.`,
               ``,
               ...(scanTable ? [
                 `<details><summary>🔍 Current workflow status (HEAD SHA scan)</summary>`,
@@ -1022,13 +1026,14 @@ jobs:
               '> ✅ **Pre-authorized — no human approval needed.** `COPILOT_AGENT_AUTH_ENABLED=true` · `💰 Cost Proposal Approved` are both active on this PR. This bot-posted request is pre-approved and must be queued for immediate action. Session must start without any additional approval gate and must NOT be cancelled.',
               '',
               '**Required action:**',
-              '@copilot+claude-sonnet-4.6 Please resume this session immediately:',
+              '@copilot+claude-haiku-4.5 /plan\n\nPlease resume this session immediately:',
               '',
               '1. Run the full **§ARLOOP PR Completion Sweep** (`.codex/CODEBASE_AGENCY_POLICY.md §ARLOOP`)',
               '2. Address any outstanding CI failures, review threads, and continuation tasks',
               '3. Post the **Session Completion Attestation** comment when the sweep is clean',
               '4. Declare: `✅ This PR is ready to be merged.`',
               '',
+              '> **💡 Parallel execution:** Use the `task` tool to delegate independent subtasks to Custom Agents (e.g. `ci-auto-healer-agent`, `unified-coverage-agent`, `ci-testing-agent`) to work in parallel.',
               '---',
               '*Auto-posted by `copilot-agent-checkin.yml` incomplete-session-guard · §ARLOOP Step 5 (S242)*',
               '',

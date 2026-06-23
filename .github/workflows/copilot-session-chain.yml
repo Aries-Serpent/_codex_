@@ -216,11 +216,13 @@ jobs:
             TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
           elif [ -n "${MERGED_PR}" ]; then
             cat > "${TRIGGER_FILE}" <<RETRIGGER_EOF
-          @copilot+claude-sonnet-4.6 continue
+          @copilot+claude-haiku-4.5 /plan
 
           Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
           You are now working on branch \`${EXISTING_BRANCH}\` — an open sub-PR already targeting
           the staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          > **💡 Parallel execution:** Delegate independent subtasks to Custom Agents (e.g. `ci-auto-healer-agent`, `unified-coverage-agent`, `ci-testing-agent`) using the `task` tool.
 
           **Architecture reminder:**
           \`\`\`
@@ -242,10 +244,12 @@ jobs:
             TRIGGER_COMMENT=$(cat "${TRIGGER_FILE}")
           else
             cat > "${TRIGGER_FILE}" <<RETRIGGER_EOF
-          @copilot+claude-sonnet-4.6 continue
+          @copilot+claude-haiku-4.5 /plan
 
           You are working on branch \`${EXISTING_BRANCH}\` — an open sub-PR targeting
           the staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          > **💡 Parallel execution:** Delegate independent subtasks to Custom Agents (e.g. `ci-auto-healer-agent`, `unified-coverage-agent`, `ci-testing-agent`) using the `task` tool.
 
           Begin by reviewing the current CI status of this PR and addressing any failures.
 
@@ -392,11 +396,13 @@ jobs:
             TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
           elif [ -n "${MERGED_PR}" ]; then
             TRIGGER_COMMENT=$(printf '%s\n' \
-              '@copilot+claude-sonnet-4.6 continue' \
+              '@copilot+claude-haiku-4.5 /plan' \
               '' \
               "Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`." \
               "You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
               "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '> **💡 Parallel execution:** Delegate independent subtasks to Custom Agents (e.g. `ci-auto-healer-agent`, `unified-coverage-agent`, `ci-testing-agent`) using the `task` tool.' \
               '' \
               '**Architecture reminder:**' \
               '```' \
@@ -413,10 +419,12 @@ jobs:
               "> \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR.")
           else
             TRIGGER_COMMENT=$(printf '%s\n' \
-              '@copilot+claude-sonnet-4.6 continue' \
+              '@copilot+claude-haiku-4.5 /plan' \
               '' \
               "You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
               "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '> **💡 Parallel execution:** Delegate independent subtasks to Custom Agents (e.g. `ci-auto-healer-agent`, `unified-coverage-agent`, `ci-testing-agent`) using the `task` tool.' \
               '' \
               '**Architecture reminder:**' \
               '```' \

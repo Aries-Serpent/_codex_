@@ -209,12 +209,12 @@ jobs:
           \u2500\u2500\u2500\u2500\n  // Post a targeted @copilot continue comment\
           \ that references the rescue\n  // comment so the new session picks it up\
           \ immediately.\n  const rescueUrl = `https://github.com/${owner}/${repo}/pull/${pr}#issuecomment-${pendingRescueComment.databaseId}`;\n\
-          \  const retriggerBody = [\n    `@copilot+claude-sonnet-4.6 continue`,\n\
+          \  const retriggerBody = [\n    `@copilot+claude-haiku-4.5 /plan`,\n\
           \    ``,\n    `<!-- session-done-retrigger -->`,\n    `A previous agent\
           \ session pushed new commits after the CI rescue comment below`,\n    `was\
           \ posted, which caused GitHub to silently drop the queued rescue session.`,\n\
           \    ``,\n    `**Please address the rescue comment immediately:**`,\n  \
-          \  `${rescueUrl}`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
+          \  `${rescueUrl}`,\n    ``,\n    `> **💡 Parallel execution:** Use the \\`task\\` tool to delegate independent subtasks to Custom Agents (e.g. \\`ci-auto-healer-agent\\`, \\`ci-testing-agent\\`, \\`unified-coverage-agent\\`) to work in parallel.`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
           ` (session-done retrigger path)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow\
           \ run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  ].join('\\n');\n\n  // Guard: don't re-post if we already re-triggered\
@@ -230,14 +230,14 @@ jobs:
           // \u2500\u2500 PATH B: No pending rescue \u2014 post \"@copilot review\"\
           \ as usual \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Guard 1:\
           \ do not post if the most recent comment is already a review trigger\nconst\
-          \ reviewTriggers = new Set([\n  '@copilot review',\n  '@copilot+claude-sonnet-4.6\
+          \ reviewTriggers = new Set([\n  '@copilot review',\n  '@copilot+claude-haiku-4.5 /plan',\n  '@copilot+claude-haiku-4.5\
           \ review',\n]);\nconst recentTriggerCount = allNodes.slice(-10).filter(c\
           \ => {\n  const body = (c.body || '').trim();\n  return reviewTriggers.has(body);\n\
           }).length;\n\n// Guard 2: review-loop detection \u2014 if 3+ of the last\
           \ 10 comments are\n// @copilot review triggers with no meaningful work in\
           \ between, break the\n// loop by posting a diagnostic comment instead of\
           \ another review trigger.\nif (recentTriggerCount >= 3) {\n  const loopBreaker\
-          \ = [\n    `@copilot+claude-sonnet-4.6 continue`,\n    ``,\n    `<!-- session-done-loop-break\
+          \ = [\n    `@copilot+claude-haiku-4.5 /plan`,\n    ``,\n    `<!-- session-done-loop-break\
           \ -->`,\n    `\u26A0\uFE0F **Review-loop detected**: ${recentTriggerCount}\
           \ consecutive \\`@copilot review\\` triggers`,\n    `were posted without\
           \ a resolved rescue or meaningful commit in between.`,\n    ``,\n    `**Possible\
@@ -258,7 +258,7 @@ jobs:
           \ avoid double-loop.`);\n  }\n  return;\n}\n\nconst alreadyPosted = allNodes.slice(-5).some(c\
           \ => {\n  const body = (c.body || '').trim();\n  // Only treat agent-posted\
           \ review triggers as \"already posted\".\n  // A human writing exactly \"\
-          @copilot+claude-sonnet-4.6 review\" would\n  // be intentional and should\
+          @copilot+claude-haiku-4.5 review\" would\n  // be intentional and should\
           \ NOT suppress a new trigger.\n  return reviewTriggers.has(body) && AGENT_LOGINS.has(c.author?.login\
           \ || '');\n});\nif (alreadyPosted) {\n  console.log('Most recent comment\
           \ is already a \"@copilot review\" \u2014 skipping to avoid loop.');\n \
@@ -278,8 +278,7 @@ jobs:
           \ = allNodes.some(c =>\n    (c.body || '').includes(SESSION_DONE_MARKER)\n\
           \  );\n  if (alreadyTriggeredForSha) {\n    console.log(`Session-done trigger\
           \ already posted for SHA ${sessionDoneSha} \u2014 skipping duplicate.`);\n\
-          \    return;\n  }\n}\n\nconst reviewBody = SESSION_DONE_MARKER\n  ? `@copilot+claude-sonnet-4.6\
-          \ review\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-sonnet-4.6 review';\n\
+          \    return;\n  }\n}\n\nconst reviewBody = SESSION_DONE_MARKER\n  ? `@copilot+claude-haiku-4.5 /plan\\n\\nreview\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-haiku-4.5 /plan';\n\
           \nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
           \ pr,\n  body: reviewBody,\n});\nconsole.log(`@copilot review posted to\
           \ PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);\n"

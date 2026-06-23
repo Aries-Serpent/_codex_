@@ -389,3 +389,30 @@ and the CI gate requirement.
 - `copilot-swe-agent[bot]` (direct fixes)
 
 ---
+
+## SESSION SUMMARY — 2026-06-23T20:01Z (CI Fix + Copilot Workflow Upgrade — PR #5070)
+
+**Session Type:** CI fix session — address 2 failing checks on commit `ad484d1f` + new requirement: upgrade all Copilot Agent workflows to Claude Haiku 4.5 with `/plan` + Custom Agents parallel processing
+
+**Fixes Applied:**
+- `.github/workflows/ci-pattern-prevention-gate.yml` — fixed actionlint error: added `validate-api-null-handling`, `validate-mypy-baseline`, `validate-documentation-links` to `notify-results` job `needs` list; `notify-results` was referencing `needs.validate-api-null-handling.result` but the job was not listed in its `needs`
+- `.github/workflows/copilot-agent-checkin.yml` — upgraded `@copilot+claude-sonnet-4.6` → `@copilot+claude-haiku-4.5 /plan` in rescue and incomplete-session triggers; added Custom Agents parallel delegation hint
+- `.github/workflows/copilot-agent-session-done.yml` — upgraded all 6 `claude-sonnet-4.6` references to `claude-haiku-4.5`; changed `continue`/`review` triggers to `/plan`; updated `reviewTriggers` Set; added custom agents delegation hint to retrigger body
+- `.github/workflows/copilot-review-responder.yml` — upgraded to `claude-haiku-4.5 /plan`; added Custom Agents parallel processing note
+- `.github/workflows/copilot-session-chain.yml` — upgraded all 4 trigger occurrences to `claude-haiku-4.5 /plan`; added Custom Agents parallel delegation hint to all trigger messages
+- `.github/workflows/agent-auth-delegation.yml` — upgraded 2 `claude-sonnet-4.6` references to `claude-haiku-4.5 /plan`; added custom agents parallel note to copy-paste prompt
+- `.github/workflows/discussion-response-bridge.yml` — upgraded to `claude-haiku-4.5 /plan`; added Custom Agents parallel delegation note
+
+**CI Checks Addressed:**
+- `actionlint — Workflow Compliance` — fixed `needs` reference in `notify-results` job
+- `Unified Governance Check` — REQ-4/REQ-5 compliance (this session's AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md update)
+
+**New Requirement:**
+- All Copilot Agent workflow triggers now default to `claude-haiku-4.5` model
+- All triggers include `/plan` command for planning mode
+- All triggers include Custom Agents delegation hints for parallel processing
+
+**Agents Used:**
+- `copilot-swe-agent[bot]` (direct fixes)
+
+---
