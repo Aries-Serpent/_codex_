@@ -6,20 +6,24 @@
 
 ## Executive Summary
 
-Three critical CI failures were identified, diagnosed, and resolved through autonomous agent intervention on 2026-06-23. Prevention patterns (RP-001, RP-002, RP-003) deployed to prevent future recurrence. All fixes verified and merged.
+Three critical CI failures were identified, diagnosed, and resolved through autonomous agent intervention on 2026-06-23. Prevention patterns (RP-001, RP-002, RP-003) deployed to prevent future recurrence. All fixes verified.
 
 ## Incidents Resolved
 
 ### 1. RP-001: API Null-Handling Pattern
-**Root Cause**: `phase_8_3_benchmark_collector.py` metric collector crashed on NoneType during API response processing.
+**Root Cause**: `phase_8_3_benchmark_collector.py` metric collector crashed when processing API response with missing `started_at` or `completed_at` timestamp fields.
 
-**Location**: `phase_8_3_benchmark_collector.py:209-218`  
-**Error**: `TypeError: cannot add NoneType to list`
+**Location**: `phase_8_3_benchmark_collector.py:209-217`  
+**Error**: `AttributeError: 'NoneType' object has no attribute 'replace'`
 
-**Fix Applied**: Added null-check validation before metric aggregation:
+**Fix Applied**: Added null-check validation before calling `.replace()` on timestamp fields:
 ```python
-if response_metrics is not None:
-    metrics_list.append(response_metrics)
+if not started_at or not completed_at:
+    job_duration_ms = 0
+else:
+    started = datetime.fromisoformat(started_at.replace("Z", "+00:00"))
+    completed = datetime.fromisoformat(completed_at.replace("Z", "+00:00"))
+    job_duration_ms = int((completed - started).total_seconds() * 1000)
 ```
 
 **Commit**: `37316c6`  

@@ -24,7 +24,7 @@ import logging
 import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 from collections.abc import Callable, Mapping, Sequence
 
 import numpy as np

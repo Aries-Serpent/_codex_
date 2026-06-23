@@ -52,4 +52,4 @@ GitHub API call to close issues failed with "Resource not accessible by integrat
 ---
 
 **Created By:** Copilot Agent (S317)  
-**Location:** `.codex/session_tracking/issue_consolidation_S317.md` (repository-tracked, not /tmp)
+**Location:** `.codex/issue_consolidation_S317.md` (repository-tracked, not /tmp)

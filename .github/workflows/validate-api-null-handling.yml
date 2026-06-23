@@ -65,8 +65,8 @@ jobs:
           echo "Scanning for unsafe API null-handling patterns..."
 
           unsafe_get_replace=$(rg '\.get\(["\047][^"'\'']+["\047][,\)].*\.replace\(' \
-            --glob="scripts/ci/**" \
-            --glob="src/scripts/ci/**" \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
             --type=python 2>/dev/null || true)
 
           unsafe_response_access=$(rg 'response\["[^"]+"\]\.replace\(' \

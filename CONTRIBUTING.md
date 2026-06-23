@@ -404,32 +404,31 @@ This repository uses automated prevention patterns to catch and fix common CI fa
 
 **RP-001: API Null-Handling Validation**
 - **Purpose**: Prevents NoneType crashes in API response processing
-- **Auto-fix command**: `python scripts/ci/validate_api_null_handling.py --fix`
 - **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-001
 
 **RP-002: mypy Type Safety Baseline**
 - **Purpose**: Enforces type annotation consistency and prevents type regressions
-- **Auto-fix command**: `python scripts/ci/mypy_baseline.py --auto-fix`
+- **Auto-update command**: `python scripts/ci/mypy_baseline.py --update`
 - **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-002
 
 **RP-003: Documentation Link Validation**
 - **Purpose**: Detects and fixes broken links in markdown documentation
-- **Auto-fix command**: `python scripts/ci/link_validator.py --validate --fix`
+- **Auto-fix command**: `python scripts/validate_docs_links.py --fix`
 - **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-003
 
 ### Quick Start
 
 **To validate patterns locally before committing:**
 ```bash
-# Validate all three patterns
-python scripts/ci/validate_api_null_handling.py --validate
-python scripts/ci/mypy_baseline.py --check
-python scripts/ci/link_validator.py --validate
+# Validate mypy baseline
+python scripts/ci/mypy_baseline.py
 
-# Auto-fix any issues found
-python scripts/ci/validate_api_null_handling.py --fix
-python scripts/ci/mypy_baseline.py --auto-fix
-python scripts/ci/link_validator.py --validate --fix
+# Validate and fix documentation links
+python scripts/validate_docs_links.py --validate-anchors
+python scripts/validate_docs_links.py --fix
+
+# Update baseline if needed
+python scripts/ci/mypy_baseline.py --update
 ```
 
 ### Autonomous Fixes
