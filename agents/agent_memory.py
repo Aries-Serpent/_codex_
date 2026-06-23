@@ -25,7 +25,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ class PatternLibrary:
     def match_patterns(
         self,
         situation: str,
-        tags: list[str] = None,
+        tags: list[str] | None = None,
         min_success_rate: float = 0.5,
     ) -> list[dict[str, Any]]:
         """Find patterns matching the current situation."""
@@ -215,7 +215,7 @@ class PatternLibrary:
                 )
 
         # Sort by match score
-        matches.sort(key=lambda x: x["match_score"], reverse=True)
+        matches.sort(key=lambda x: cast(float, x["match_score"]), reverse=True)
 
         return matches
 
@@ -258,7 +258,7 @@ class AgentMemory:
     - Cross-session context sharing
     """
 
-    def __init__(self, db_path: Path = None):
+    def __init__(self, db_path: Path | None = None):
         """Initialize agent memory with SQLite storage.
 
         Args:
@@ -453,7 +453,7 @@ class AgentMemory:
         return self.store_memory(entry=entry, **kwargs)
 
     def retrieve_memory(
-        self, memory_id: str = None, key: str = None
+        self, memory_id: str | None = None, key: str | None = None
     ) -> Optional[MemoryEntry | str]:
         """
         Retrieve a memory by ID or key.
@@ -556,14 +556,14 @@ class AgentMemory:
 
     def search_memories(
         self,
-        category: str = None,
-        tags: list[str] = None,
+        category: str | None = None,
+        tags: list[str] | None = None,
         min_confidence: float = 0.0,
         limit: int = 50,
     ) -> list[MemoryEntry]:
         """Search memories by criteria."""
         query = "SELECT * FROM memories WHERE 1=1"
-        params = []
+        params: list[Any] = []
 
         if category:
             query += " AND category = ?"

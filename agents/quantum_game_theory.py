@@ -179,6 +179,8 @@ class StrategyState:
 
     def normalize_wavefunction(self) -> None:
         """Ensure wavefunction is normalized"""
+        if self.wavefunction is None:
+            return
         if not NUMPY_AVAILABLE:
             # Simple normalization for list-based fallback
             norm = math.sqrt(sum(abs(x) ** 2 for x in self.wavefunction))
@@ -192,6 +194,8 @@ class StrategyState:
 
     def get_measurement_probabilities(self) -> Any:
         """Get probabilities from wavefunction (Born rule)"""
+        if self.wavefunction is None:
+            return []
         if not NUMPY_AVAILABLE:
             return [abs(x) ** 2 for x in self.wavefunction]
         return np.abs(self.wavefunction) ** 2
@@ -257,6 +261,8 @@ class StrategyState:
 
         # Use provided or default wavefunction/probabilities
         wf = wavefunction if wavefunction is not None else self.wavefunction
+        if wf is None:
+            return {"concepts": [], "labels": [], "confidence": 0.0, "probabilities": []}
         # Note: probabilities parameter kept for future use but not currently utilized
         # in the interpretation logic
 
@@ -399,6 +405,8 @@ class QuantumGameState:
         Args:
             strength: Entanglement strength 0.0 = no-op, 1.0 = full CNOT.
         """
+        if self.joint_wavefunction is None:
+            return
         angle = strength * np.pi / 2
         cos_a, sin_a = np.cos(angle), np.sin(angle)
         # Vectorised: pair each index i with its mirror partner (n-1-i)
@@ -425,6 +433,8 @@ class QuantumGameState:
 
     def measure(self, rng: Optional[np.random.Generator] = None) -> tuple[int, int]:
         """Measure joint state, returning (blue_strategy_idx, red_strategy_idx)"""
+        if self.joint_wavefunction is None:
+            return (0, 0)
         if rng is None:
             rng = np.random.default_rng()
 

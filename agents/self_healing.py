@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from cognitive_brain.base import (
     ActionResult,
@@ -604,7 +604,7 @@ class SelfHealingEngine(Planner):
 
         Wraps existing detect_issues() method
         """
-        log_output = input_data.get("log_output")
+        log_output = cast(str | None, input_data.get("log_output"))
         run_checks = input_data.get("run_checks", True)
         issues = self.detect_issues(log_output, run_checks)
 

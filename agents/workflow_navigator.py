@@ -918,8 +918,8 @@ if __name__ == "__main__":
 
     # list all workflows
     print("\nAvailable Workflows:")
-    for workflow in navigator.list_workflows():
-        print(f"  {workflow.workflow_id:15s} - {workflow.name} ({workflow.frequency.value})")
+    for wf in navigator.list_workflows():
+        print(f"  {wf.workflow_id:15s} - {wf.name} ({wf.frequency.value})")
 
     # Execute workflow in dry-run mode
     print("\n" + "=" * 60)
