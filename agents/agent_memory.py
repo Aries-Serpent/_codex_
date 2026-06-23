@@ -1165,7 +1165,13 @@ class AgentMemorySystem:
             )
 
         # Sort by relevance and return top results
-        scored_results.sort(key=lambda x: (x.get("relevance_score", 0) or 0) if isinstance(x.get("relevance_score", 0), (int, float)) else 0, reverse=True)
+        def get_relevance_score(item: dict[str, Any]) -> float:
+            score = item.get("relevance_score", 0)
+            if isinstance(score, (int, float)):
+                return float(score)
+            return 0.0
+         
+        scored_results.sort(key=get_relevance_score, reverse=True)
         return scored_results[:limit]
 
     def get_pattern_library(self) -> list[dict[str, Any]]:
