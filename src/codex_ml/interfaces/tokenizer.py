@@ -582,7 +582,7 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
-        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
+        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)  # type: ignore[return-value]
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""

@@ -24,7 +24,7 @@ try:
     import torch
     import torch.nn.functional as F
 
-    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
 except Exception:  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]
@@ -66,7 +66,7 @@ from codex_utils.repro import log_env_info  # noqa: E402
 # Import TrainCfg and run_custom_trainer from training module
 # These are used by tests in tests/space_traversal/test_peft_comprehensive/
 try:
-    from training.functional_training import TrainCfg, run_custom_trainer
+    from training.functional_training import TrainCfg, run_custom_trainer  # type: ignore
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

@@ -31,7 +31,7 @@ try:
     from codex_ml.utils.checkpointing import (
         build_payload_bytes,
         dump_rng_state,
-    )
+    )  # type: ignore
     _checkpoint_helpers_import_ok = True
 except (ImportError, ModuleNotFoundError):
     # fall back to existing local helper implementation below (if present)
