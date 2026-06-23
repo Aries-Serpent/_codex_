@@ -317,8 +317,6 @@ class LoadBalancer:
         _capacity_level: str = "small"  # small, medium, large (unused)
     ) -> LoadBalancingDecision:
         """Make load balancing decision for given agents."""
-        start_time = time.time()
-
         # Filter out unhealthy agents
         healthy_agents = [a for a in candidate_agents if a in self.metrics_collector.get_healthy_agents()]
         if not healthy_agents:
@@ -345,8 +343,6 @@ class LoadBalancer:
             primary, secondaries, final_scores = self.cost_aware_selection(available_agents)
         else:  # HYBRID
             primary, secondaries, final_scores = self.hybrid_selection(available_agents)
-
-        _latency_ms = (time.time() - start_time) * 1000  # computed for future metrics use
 
         decision = LoadBalancingDecision(
             primary_agent_id=primary,

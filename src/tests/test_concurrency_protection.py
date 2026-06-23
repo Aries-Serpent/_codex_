@@ -453,7 +453,6 @@ class TestDeadlockRecovery:
 
     def test_retry_with_backoff(self, tmp_path):
         """Test retry with exponential backoff."""
-        _db_path = str(tmp_path / "deadlock.db")
         attempt_count = [0]
 
         def func_with_retry():
