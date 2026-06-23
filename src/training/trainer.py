@@ -11,14 +11,14 @@ import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeAlias
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     import torch
+    from torch import nn
 
     _HAS_REAL_TORCH = True
-    nn = torch.nn
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
@@ -42,9 +42,8 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
             return None
 
     class _NoOpNoGrad(contextlib.AbstractContextManager[Any]):
-        def __exit__(self, exc_type, exc, tb) -> bool:
+        def __exit__(self, exc_type, exc, tb) -> None:
             _ = (exc_type, exc, tb)
-            return False
 
     class _TorchStub:
         class nn:
@@ -74,13 +73,13 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
     DataLoader = Any
 
 if hasattr(torch, "Tensor"):  # pragma: no cover - typing bridge
-    TensorType = torch.Tensor
-    OptimizerType = torch.optim.Optimizer
-    DataLoaderType = DataLoader
+    TensorType: TypeAlias = torch.Tensor
+    OptimizerType: TypeAlias = torch.optim.Optimizer
+    DataLoaderType: TypeAlias = type[DataLoader]
 else:  # pragma: no cover - fallback types
-    TensorType = Any  # type: ignore[misc]
-    OptimizerType = Any
-    DataLoaderType = Any
+    TensorType: TypeAlias = Any  # type: ignore[misc]
+    OptimizerType: TypeAlias = Any
+    DataLoaderType: TypeAlias = Any
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402

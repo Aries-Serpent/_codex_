@@ -176,7 +176,7 @@ class SQLiteConnectionPool:
         self.timeout = timeout
         self._lock = threading.RLock()
         self._connections: Dict[int, sqlite3.Connection] = {}
-        self._thread_ids = set()
+        self._thread_ids: set[int] = set()
         self.wal_mode = wal_mode
         self.metrics = LockMetrics()
 

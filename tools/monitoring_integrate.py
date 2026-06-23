@@ -334,7 +334,7 @@ class MonitoringSession:
                 "write & route metrics",
             )
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> None:
         try:
             if self.metrics_thread:
                 self.metrics_thread.stop()
@@ -356,7 +356,6 @@ class MonitoringSession:
                     _ = None  # suppressed: no action needed
         except Exception as e:
             q5("MonitoringSession:exit", f"{type(e).__name__}: {e}", "teardown")
-        return False
 
 
 # ---------------- Docs writer ----------------

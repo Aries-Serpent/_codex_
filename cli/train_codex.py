@@ -223,9 +223,9 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
             print(f"✓ RNG state restored from {rng_path}")
         elif resume_hf or cfg.get("codex_resume_checkpoint"):
             # Non-strict mode: warn if RNG sidecar missing
-            checkpoint_path: str | None = cfg.get("codex_resume_checkpoint") or resume_hf
-            if checkpoint_path:
-                rng_path = RNGState.path_for_checkpoint(Path(checkpoint_path))
+            checkpoint_to_resume: str | None = cfg.get("codex_resume_checkpoint") or resume_hf
+            if checkpoint_to_resume:
+                rng_path = RNGState.path_for_checkpoint(Path(checkpoint_to_resume))
                 if rng_path.exists():
                     rng_state = RNGState.load_from_file(rng_path)
                     rng_state.restore()

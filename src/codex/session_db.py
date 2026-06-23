@@ -36,7 +36,7 @@ class SessionDB:
         self.archive_dir = Path(archive_dir)
         self.archive_dir.mkdir(parents=True, exist_ok=True)
         self._init_db()
-        self._cache = {}  # LRU-like cache (simple dict)
+        self._cache: dict[str, Any] = {}  # LRU-like cache (simple dict)
         self.cache_max_size = 10 * 1024 * 1024  # 10 MB
         self.cache_current_size = 0
         
