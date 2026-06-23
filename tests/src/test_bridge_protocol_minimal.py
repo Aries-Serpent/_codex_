@@ -3,9 +3,6 @@ Bridge Protocol V2 Minimal Tests - Phase 9.4 Coverage Gap-Fill
 Comprehensive minimal tests for bridge protocol message handling.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-
 
 class TestBridgeProtocolValidation:
     """Bridge protocol validation and message handling tests."""

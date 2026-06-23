@@ -3,9 +3,6 @@ Minimal tests for Codex CLI App - Phase 9.4 Coverage Gap-Fill
 Targets critical Codex CLI app initialization and routing.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-
 
 class TestCodexCLIAppMinimal:
     """Minimal Codex CLI app tests targeting 76 critical lines."""
@@ -88,17 +85,12 @@ class TestCodexCLIIntegration:
 
     def test_codex_cli_request_response_cycle(self):
         """Test complete request-response cycle."""
-        request = {
-            'method': 'list',
-            'params': {}
-        }
-        
         # Should return response
         response = {
             'result': [],
             'error': None
         }
-        
+
         assert 'result' in response
         assert 'error' in response
 

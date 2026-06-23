@@ -6,11 +6,9 @@ Scans markdown and HTML files for broken internal and external links.
 
 import os
 import re
-import sys
+from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse, urljoin
 from collections import defaultdict
-import json
 from typing import Dict, List, Tuple, Set
 
 class LinkValidator:
@@ -92,6 +90,12 @@ class LinkValidator:
         # Resolve the file path
         source_dir = Path(source_file).parent if source_file else self.repo_root
         target_path = (source_dir / file_part).resolve() if file_part else Path(source_file)
+
+        # Guard against path traversal outside repo_root
+        try:
+            target_path.relative_to(self.repo_root.resolve())
+        except ValueError:
+            return False, f"Path traversal outside repo root: {file_part}"
         
         # Check if file exists
         if file_part and not target_path.exists():
@@ -127,7 +131,6 @@ class LinkValidator:
             
             # Extract links
             links = self.extract_links(content, str(file_path))
-            headings = self.extract_headings(content, str(file_path))
             
             for text, url in links:
                 is_valid, message = self.validate_link(url, str(file_path))
@@ -164,7 +167,6 @@ class LinkValidator:
         processed = 0
         
         # Process files in repo root and docs/ directory first (smaller subset)
-        priority_paths = []
         for file_str in sorted(self.all_files):
             if file_str.startswith(('docs/', '.codex/', '.github/', 'README.md', 'SECURITY.md')):
                 file_path = self.repo_root / file_str
@@ -182,7 +184,7 @@ class LinkValidator:
         """Generate comprehensive report"""
         report = []
         report.append("# Phase 9 Track 9.1: Dead Link Detection & Remediation Report\n")
-        report.append(f"Generated: {__import__('datetime').datetime.now().isoformat()}\n\n")
+        report.append(f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n\n")
         
         # Summary
         total_broken = sum(len(links) for links in self.broken_links.values())
@@ -211,16 +213,16 @@ class LinkValidator:
 
 
 def main():
-    repo_root = '/home/runner/work/_codex_/_codex_'
+    repo_root = os.environ.get('GITHUB_WORKSPACE', str(Path(__file__).resolve().parent))
     validator = LinkValidator(repo_root)
-    
+
     print("Starting comprehensive link validation...")
-    results = validator.validate_all()
-    
+    validator.validate_all()
+
     # Generate and print report
     report = validator.generate_report()
     print(report)
-    
+
     # Save report
     report_path = Path(repo_root) / '.codex' / 'PHASE_9_LINK_HEALTH_REPORT.md'
     report_path.parent.mkdir(parents=True, exist_ok=True)

@@ -3,9 +3,6 @@ Minimal tests for Agent Core - Phase 9.4 Coverage Gap-Fill
 Targets critical agent initialization and lifecycle paths.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-
 
 class TestAgentCoreMinimal:
     """Minimal agent core tests targeting 62 critical lines."""

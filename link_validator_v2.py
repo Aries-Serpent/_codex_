@@ -5,10 +5,10 @@ Enhanced link validator with categorization and remediation.
 
 import os
 import re
-import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from collections import defaultdict
-from typing import Dict, List, Tuple, Set
+from typing import Set
 
 class EnhancedLinkValidator:
     def __init__(self, repo_root: str):
@@ -79,7 +79,7 @@ class EnhancedLinkValidator:
                 else:
                     self.file_errors[file_path] += 1
                     
-        except Exception as e:
+        except Exception:
             pass
     
     def scan_all_files(self):
@@ -98,23 +98,19 @@ class EnhancedLinkValidator:
 
 def generate_comprehensive_report():
     """Generate detailed report on link health"""
-    repo_root = '/home/runner/work/_codex_/_codex_'
-    
+    repo_root = os.environ.get('GITHUB_WORKSPACE', str(Path(__file__).resolve().parent))
+
     print("\n=== PHASE 9 TRACK 9.1: COMPREHENSIVE LINK HEALTH ANALYSIS ===\n")
-    
+
     validator = EnhancedLinkValidator(repo_root)
     print("Scanning all documentation files...")
     validator.scan_all_files()
-    
+
     report = []
     report.append("# Phase 9 Track 9.1: Dead Link Detection & Remediation Report\n")
-    report.append(f"**Generated:** {__import__('datetime').datetime.now().isoformat()}\n\n")
-    
+    report.append(f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}\n\n")
+
     # Executive Summary
-    total_broken = sum(len(v) for v in validator.broken_links.values())
-    total_anchors = sum(validator.anchor_errors.values())
-    total_files = sum(validator.file_errors.values())
-    
     report.append("## Executive Summary\n\n")
     report.append("### Link Health Status\n")
     report.append("| Metric | Count |\n")
@@ -242,10 +238,10 @@ def generate_comprehensive_report():
 if __name__ == '__main__':
     report = generate_comprehensive_report()
     print(report)
-    
+
     # Save report
-    report_path = Path('/home/runner/work/_codex_/_codex_/.codex/PHASE_9_LINK_HEALTH_REPORT.md')
+    _repo_root = os.environ.get('GITHUB_WORKSPACE', str(Path(__file__).resolve().parent))
+    report_path = Path(_repo_root) / '.codex' / 'PHASE_9_LINK_HEALTH_REPORT.md'
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(report)
     print(f"\n✅ Report saved to: {report_path}")
-

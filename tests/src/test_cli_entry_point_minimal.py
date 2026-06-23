@@ -3,9 +3,7 @@ Minimal tests for CLI entry points - Phase 9.4 Coverage Gap-Fill
 Targets critical CLI initialization and argument parsing paths.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import sys
+from unittest.mock import patch
 
 
 class TestCLIEntryPointMinimal:
