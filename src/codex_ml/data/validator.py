@@ -16,7 +16,7 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover
     _HAS_JSONSCHEMA = False
 
-    class ValidationError(Exception):
+    class ValidationError(Exception):  # type: ignore[no-redef]
         """Fallback validation error when jsonschema is unavailable."""
 
     def validate(*_args: Any, **_kwargs: Any) -> None:

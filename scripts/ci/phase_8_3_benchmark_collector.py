@@ -206,12 +206,16 @@ class GitHubActionsMetricsCollector:
 
                 # Calculate job duration
                 try:
-                    started = datetime.fromisoformat(started_at.replace("Z", "+00:00"))
-                    completed = datetime.fromisoformat(
-                        completed_at.replace("Z", "+00:00")
-                    )
-                    job_duration_ms = int((completed - started).total_seconds() * 1000)
-                except (ValueError, TypeError):
+                    # Skip jobs that don't have both timestamps (e.g., still running)
+                    if not started_at or not completed_at:
+                        job_duration_ms = 0
+                    else:
+                        started = datetime.fromisoformat(started_at.replace("Z", "+00:00"))
+                        completed = datetime.fromisoformat(
+                            completed_at.replace("Z", "+00:00")
+                        )
+                        job_duration_ms = int((completed - started).total_seconds() * 1000)
+                except (ValueError, TypeError, AttributeError):
                     job_duration_ms = 0
 
                 job_durations_by_workflow[workflow_name].append(job_duration_ms)

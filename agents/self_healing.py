@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from cognitive_brain.base import (
     ActionResult,
@@ -200,7 +200,7 @@ class SelfHealingEngine(Planner):
     3. Suggest and optionally apply remediations
     """
 
-    def __init__(self, repo_root: Path = None):
+    def __init__(self, repo_root: Path | None = None):
         self.repo_root = repo_root or Path.cwd()
         self.issue_patterns: dict[IssueType, list[tuple[str, str]]] = {}
         self.remediation_handlers: dict[IssueType, Callable] = {}
@@ -259,7 +259,7 @@ class SelfHealingEngine(Planner):
         )
         self.remediation_handlers[IssueType.TEST_FAILURE] = self._remediate_test_failure
 
-    def diagnose(self, log_output: str = None, run_checks: bool = True) -> DiagnosticResult:
+    def diagnose(self, log_output: str | None = None, run_checks: bool = True) -> DiagnosticResult:
         """
         Run diagnostics on the codebase.
 
@@ -326,7 +326,7 @@ class SelfHealingEngine(Planner):
 
     def _check_syntax(self) -> list[DetectedIssue]:
         """Check Python files for syntax errors."""
-        issues = []
+        issues: list[DetectedIssue] = []
 
         for py_file in self.repo_root.rglob("*.py"):
             if "__pycache__" in str(py_file) or ".venv" in str(py_file):
@@ -353,7 +353,7 @@ class SelfHealingEngine(Planner):
 
     def _check_imports(self) -> list[DetectedIssue]:
         """Check for import issues in key modules."""
-        issues = []
+        issues: list[DetectedIssue] = []
         key_modules = [
             "src.codex_ml",
             "agents",
@@ -488,7 +488,7 @@ class SelfHealingEngine(Planner):
 
         return max(0.0, 1.0 - min(total_penalty, 1.0))
 
-    def detect_issues(self, log_output: str = None, run_checks: bool = True) -> list[DetectedIssue]:
+    def detect_issues(self, log_output: str | None = None, run_checks: bool = True) -> list[DetectedIssue]:
         """
         Detect issues in the codebase.
 
@@ -504,7 +504,7 @@ class SelfHealingEngine(Planner):
         result = self.diagnose(log_output=log_output, run_checks=run_checks)
         return result.issues
 
-    def detect(self, log_output: str = None) -> list[DetectedIssue]:
+    def detect(self, log_output: str | None = None) -> list[DetectedIssue]:
         """
         Detect issues (short alias for detect_issues).
 
@@ -516,7 +516,7 @@ class SelfHealingEngine(Planner):
         """
         return self.detect_issues(log_output=log_output, run_checks=False)
 
-    def analyze(self, log_output: str = None, run_checks: bool = True) -> DiagnosticResult:
+    def analyze(self, log_output: str | None = None, run_checks: bool = True) -> DiagnosticResult:
         """
         Analyze the codebase for issues (alias for diagnose).
 
@@ -604,7 +604,7 @@ class SelfHealingEngine(Planner):
 
         Wraps existing detect_issues() method
         """
-        log_output = input_data.get("log_output")
+        log_output = cast(str | None, input_data.get("log_output"))
         run_checks = input_data.get("run_checks", True)
         issues = self.detect_issues(log_output, run_checks)
 
@@ -626,7 +626,7 @@ class SelfHealingEngine(Planner):
         """
         issues_data = observation.data.get("issues", [])
 
-        classified_issues = {}
+        classified_issues: dict[str, list[Any]] = {}
         for issue in issues_data:
             category = issue.get("issue_type") or issue.get("type")
             if category not in classified_issues:
@@ -683,7 +683,7 @@ class SelfHealingEngine(Planner):
 
 
 # Convenience function for quick diagnostics
-def run_diagnostics(repo_root: Path = None) -> DiagnosticResult:
+def run_diagnostics(repo_root: Path | None = None) -> DiagnosticResult:
     """Run quick diagnostics on the codebase."""
     engine = SelfHealingEngine(repo_root)
     return engine.diagnose(run_checks=True)

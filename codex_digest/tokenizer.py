@@ -60,7 +60,8 @@ class DefaultTokenizer(Tokenizer):
 
 
 def detok(tokens: Iterable[Token]) -> str:
-    out, prev = [], None
+    out: list[str] = []
+    prev = None
     for t in tokens:
         if prev and t.kind in ("word", "number") and prev.kind in ("word", "number"):
             out.append(" ")

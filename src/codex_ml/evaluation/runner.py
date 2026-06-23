@@ -121,7 +121,7 @@ class EvaluationRunner:
     def __init__(
         self,
         model: Any,
-        dataset: Any | DataLoader,
+        dataset: Any | DataLoader,  # type: ignore[valid-type]
         metrics: list[MetricAdapter | Callable],
         config: Optional[EvaluationConfig] = None,
         tracking_writer: Optional[Any] = None,

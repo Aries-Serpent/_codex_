@@ -11,14 +11,14 @@ import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     import torch
+    from torch import nn
 
     _HAS_REAL_TORCH = True
-    nn = torch.nn
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
@@ -42,9 +42,8 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
             return None
 
     class _NoOpNoGrad(contextlib.AbstractContextManager[Any]):
-        def __exit__(self, exc_type, exc, tb) -> bool:
+        def __exit__(self, exc_type, exc, tb) -> None:
             _ = (exc_type, exc, tb)
-            return False
 
     class _TorchStub:
         class nn:
@@ -65,7 +64,7 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
             return _NoOpNoGrad()
 
     torch = _TorchStub()  # type: ignore[assignment]
-    nn = Any
+    nn = Any  # type: ignore[assignment]
     GradScaler = _NoOpScaler
 
     def autocast(*, enabled: bool = False):
@@ -73,14 +72,15 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
 
     DataLoader = Any
 
-if hasattr(torch, "Tensor"):  # pragma: no cover - typing bridge
-    TensorType = torch.Tensor
-    OptimizerType = torch.optim.Optimizer
-    DataLoaderType = DataLoader
-else:  # pragma: no cover - fallback types
-    TensorType = Any  # type: ignore[misc]
-    OptimizerType = Any
-    DataLoaderType = Any
+# Define type aliases
+if TYPE_CHECKING:  # pragma: no cover - typing bridge
+    TensorType: TypeAlias = Any
+    OptimizerType: TypeAlias = Any
+    DataLoaderType: TypeAlias = Any
+else:  # pragma: no cover - runtime fallback
+    TensorType: TypeAlias = Any  # type: ignore[misc]
+    OptimizerType: TypeAlias = Any  # type: ignore[misc]
+    DataLoaderType: TypeAlias = Any  # type: ignore[misc]
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402
@@ -690,7 +690,7 @@ class Trainer:
                 if should_step:
                     if cfg.max_grad_norm is not None:
                         self.scaler.unscale_(self.simple.optimizer)
-                        torch.nn.utils.clip_grad_norm_(
+                        torch.nn.utils.clip_grad_norm_(  # type: ignore[attr-defined]
                             self.simple.model.parameters(), cfg.max_grad_norm
                         )
                     self.scaler.step(self.simple.optimizer)

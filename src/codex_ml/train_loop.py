@@ -68,7 +68,7 @@ try:
     _ALERTING_AVAILABLE = True
 except Exception:  # pragma: no cover — optional dependency
     _ALERTING_AVAILABLE = False
-    _TrainingAlertManager = None  # type: ignore[assignment,misc]
+    _TrainingAlertManager = None
 
 if TYPE_CHECKING:
     from codex_ml.models.reasoning import ReasoningHarness
@@ -2290,10 +2290,10 @@ def run_training(
     if _ALERTING_AVAILABLE and _TrainingAlertManager is not None:
         try:
             _final_loss = result.get("learning_rate_history") and state.get("avg_loss")
-            _final_loss_val: float = float(_final_loss) if _final_loss is not None else 0.0
+            _final_loss_val: float = float(_final_loss) if _final_loss is not None else 0.0  # type: ignore[arg-type]
             _TrainingAlertManager.from_env().alert_training_complete(
                 run_id=_TRAIN_RUN_ID,
-                epochs=int(result.get("epochs", 0)),
+                epochs=int(result.get("epochs", 0)),  # type: ignore[arg-type]
                 final_loss=_final_loss_val,
                 wall_time_sec=result.get("wall_time_sec", 0),
             )

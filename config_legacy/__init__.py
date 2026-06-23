@@ -168,7 +168,8 @@ else:
     def initialize_config_dir(
         *, version_base: str | None = None, config_dir: str | os.PathLike[str]
     ) -> Iterator[None]:
-        requested = Path(config_dir).expanduser()
+        requested = Path(config_dir) if isinstance(config_dir, (str, Path)) else Path(str(config_dir))
+        requested = requested.expanduser()
         cwd = Path.cwd().resolve()
         cfg_dir = requested if requested.is_absolute() else (cwd / requested).resolve()
         if not cfg_dir.is_dir():
@@ -176,7 +177,7 @@ else:
             try:
                 relative = requested.relative_to(cwd)
             except ValueError:
-                relative = requested.name if requested.is_absolute() else requested
+                relative = Path(requested.name) if requested.is_absolute() else requested
             candidate = (repo_root / relative).resolve()
             if candidate.is_dir():
                 cfg_dir = candidate

@@ -8,7 +8,7 @@ supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL
 from __future__ import annotations
 
 import uuid
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 try:
     import sqlparse
@@ -17,14 +17,18 @@ try:
 
     Identifier = _sqlparse_sql.Identifier
     IdentifierList = _sqlparse_sql.IdentifierList
-    Statement = _sqlparse_sql.Statement
     Keyword = _sqlparse_tokens.Keyword
 
     _SQLPARSE_AVAILABLE = True
 except ImportError:  # pragma: no cover
     sqlparse = None
-    Identifier = IdentifierList = Statement = Keyword = None
+    Identifier = IdentifierList = Keyword = None
     _SQLPARSE_AVAILABLE = False
+
+if TYPE_CHECKING:
+    from sqlparse.sql import Statement
+else:
+    Statement = None
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 

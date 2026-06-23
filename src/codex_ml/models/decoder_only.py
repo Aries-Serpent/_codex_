@@ -7,9 +7,9 @@ from dataclasses import dataclass
 from typing import Optional
 
 import torch
-
-nn = torch.nn
-F = torch.nn.functional
+import torch.nn.init as init
+from torch import nn
+from torch.nn import functional as F
 
 
 @dataclass(frozen=True)
@@ -170,11 +170,11 @@ class DecoderOnlyLM(nn.Module):
 
     def _init_weights(self, module: nn.Module) -> None:  # pragma: no cover - simple init
         if isinstance(module, nn.Linear):
-            nn.init.normal_(module.weight, mean=0.0, std=self.cfg.init_std)
+            init.normal_(module.weight, mean=0.0, std=self.cfg.init_std)
             if module.bias is not None:
-                nn.init.zeros_(module.bias)
+                init.zeros_(module.bias)
         elif isinstance(module, nn.Embedding):
-            nn.init.normal_(module.weight, mean=0.0, std=self.cfg.init_std)
+            init.normal_(module.weight, mean=0.0, std=self.cfg.init_std)
 
     def enable_gradient_checkpointing(self, enable: bool = True) -> None:
         self.gradient_checkpointing = enable

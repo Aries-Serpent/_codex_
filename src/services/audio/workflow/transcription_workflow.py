@@ -439,7 +439,7 @@ class AudioTranscriptionWorkflow:
 
         try:
             pipeline = self._get_pyannote_pipeline(Pipeline, token)
-            annotation = pipeline(str(wav_path))
+            annotation = pipeline(str(wav_path))  # type: ignore[operator]
         except Exception as exc:
             raise RuntimeError(f"pyannote diarization failed: {exc}") from exc
 
@@ -580,7 +580,7 @@ class AudioTranscriptionWorkflow:
         from faster_whisper import WhisperModel
 
         model = self._get_whisper_model(WhisperModel)
-        decoded_segments, _ = model.transcribe(
+        decoded_segments, _ = model.transcribe(  # type: ignore[attr-defined]
             str(wav_path),
             vad_filter=True,
             beam_size=5,
@@ -658,14 +658,14 @@ class AudioTranscriptionWorkflow:
         cached = self._whisper_models.get(cache_key)
         if cached is not None:
             return cached
-        model = whisper_model_class(cache_key, device="cpu", compute_type="int8")
+        model = whisper_model_class(cache_key, device="cpu", compute_type="int8")  # type: ignore[operator]
         self._whisper_models[cache_key] = model
         return model
 
     def _get_pyannote_pipeline(self, pipeline_class: object, token: str) -> object:
         if self._pyannote_pipeline is not None and self._pyannote_pipeline_token == token:
             return self._pyannote_pipeline
-        pipeline = pipeline_class.from_pretrained(
+        pipeline = pipeline_class.from_pretrained(  # type: ignore[attr-defined]
             "pyannote/speaker-diarization-3.1",
             use_auth_token=token,
         )

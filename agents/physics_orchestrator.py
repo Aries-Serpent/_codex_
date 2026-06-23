@@ -24,7 +24,7 @@ from dataclasses import dataclass, field  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import Any, Callable, Optional  # noqa: E402
 
 
 class ActionType(Enum):
@@ -406,7 +406,7 @@ class PhysicsInspiredOrchestrator:
         print("\n⚠️  No path meets all constraints")
         return None
 
-    def act(self, optimal_path: Optional[ActionPath], state: DecisionState) -> dict:
+    def act(self, optimal_path: Optional[ActionPath], state: DecisionState) -> dict[str, Any]:
         """
         ACT: Execute the chosen path with full commitment
 
@@ -420,7 +420,7 @@ class PhysicsInspiredOrchestrator:
             print("⚠️  DECISION: WAIT AND REASSESS")
             print("   No optimal path found. Recommend gathering more information.")
 
-            result = {
+            result: dict[str, Any] = {
                 "action_taken": "wait",
                 "rationale": "No path met constraints",
                 "recommendation": "Gather more information or adjust constraints",
@@ -1211,7 +1211,7 @@ class EnergyState:
     entropy: float = 0.0
     temperature: float = 1.0
     state_id: str = ""
-    internal_energy: float = None  # Alias for energy
+    internal_energy: Optional[float] = None  # Alias for energy
 
     def __post_init__(self):
         """Handle internal_energy alias"""
@@ -1398,7 +1398,7 @@ class SwarmParticle:
 
     position: tuple[float, ...]
     velocity: tuple[float, ...]
-    personal_best_position: tuple[float, ...] = field(default=None)
+    personal_best_position: Optional[tuple[float, ...]] = field(default=None)
     personal_best_score: float = field(default=float("-inf"))
 
     def __post_init__(self):
@@ -1464,7 +1464,7 @@ class SwarmIntelligence:
             self.particles.append(particle)
 
     def evaluate_fitness(
-        self, position: tuple[float, ...], fitness_function: Optional[callable] = None
+        self, position: tuple[float, ...], fitness_function: Optional[Callable[..., Any]] = None
     ) -> float:
         """
         Evaluate fitness at a position.
@@ -1479,7 +1479,7 @@ class SwarmIntelligence:
 
     def update_swarm(
         self,
-        fitness_function: Optional[callable] = None,
+        fitness_function: Optional[Callable[..., Any]] = None,
         bounds: Optional[list[tuple[float, float]]] = None,
     ) -> dict[str, Any]:
         """
@@ -1487,7 +1487,7 @@ class SwarmIntelligence:
 
         Updates velocities and positions of all particles.
         """
-        iteration_result = {
+        iteration_result: dict[str, Any] = {
             "particles": [],
             "global_best_score": self.global_best_score,
             "global_best_position": self.global_best_position,
@@ -1512,6 +1512,9 @@ class SwarmIntelligence:
             new_velocity = []
             new_position = []
 
+            # Use personal_best_position if set, otherwise use current position
+            pbest = particle.personal_best_position if particle.personal_best_position is not None else particle.position
+
             for d in range(self.dimensions):
                 # Velocity update equation
                 r1, r2 = 0.5, 0.5  # Simplified random factors
@@ -1519,7 +1522,7 @@ class SwarmIntelligence:
                 cognitive_component = (
                     self.cognitive
                     * r1
-                    * (particle.personal_best_position[d] - particle.position[d])
+                    * (pbest[d] - particle.position[d])
                 )
                 social_component = (
                     self.social
@@ -1561,9 +1564,9 @@ class SwarmIntelligence:
 
     def run_optimization(
         self,
-        fitness_function: callable = None,
-        objective_function: callable = None,  # Alias for backward compatibility
-        bounds: list[tuple[float, float]] = None,
+        fitness_function: Optional[Callable[..., Any]] = None,
+        objective_function: Optional[Callable[..., Any]] = None,  # Alias for backward compatibility
+        bounds: Optional[list[tuple[float, float]]] = None,
         max_iterations: int = 50,
     ) -> dict[str, Any]:
         """
@@ -1803,7 +1806,7 @@ class TaskDecomposer:
         return self.execution_order
 
     def execute_batch(
-        self, batch: list[str], executor: Optional[callable] = None
+        self, batch: list[str], executor: Optional[Callable[..., Any]] = None
     ) -> dict[str, Any]:
         """Execute a batch of tasks in parallel using ThreadPoolExecutor (E-07).
 
@@ -1844,7 +1847,7 @@ class TaskDecomposer:
 
         return results
 
-    def run_orchestration(self, executor: Optional[callable] = None) -> dict[str, Any]:
+    def run_orchestration(self, executor: Optional[Callable[..., Any]] = None) -> dict[str, Any]:
         """
         Run full task orchestration.
         """
@@ -2235,7 +2238,7 @@ class QuantumWalkExplorer:
         Direction 0: Move left
         Direction 1: Move right
         """
-        new_state = {}
+        new_state: dict[tuple[int, int], complex] = {}
 
         for (pos, direction), amp in self.state.items():
             new_pos = max(0, pos - 1) if direction == 0 else min(self.num_positions - 1, pos + 1)
@@ -2253,7 +2256,7 @@ class QuantumWalkExplorer:
 
     def _record_position_distribution(self) -> None:
         """Record current probability distribution over positions"""
-        distribution = {}
+        distribution: dict[int, float] = {}
         for (pos, _), amp in self.state.items():
             prob = abs(amp) ** 2
             distribution[pos] = distribution.get(pos, 0) + prob
@@ -2269,7 +2272,7 @@ class QuantumWalkExplorer:
             self.step()
 
         # Calculate final distribution
-        final_distribution = {}
+        final_distribution: dict[int, float] = {}
         for (pos, _), amp in self.state.items():
             prob = abs(amp) ** 2
             final_distribution[pos] = final_distribution.get(pos, 0) + prob
@@ -2377,7 +2380,7 @@ class SuperpositionExplorer:
         # Calculate optimization scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         # Apply amplitude based on score
         new_amplitudes = {}
@@ -2425,7 +2428,7 @@ class SuperpositionExplorer:
             self.apply_interference()
 
             self.evaluation_history.append(
-                {"iteration": i, "probabilities": self.superposition_state.get_probabilities()}
+                {"iteration": i, "probabilities": self.superposition_state.get_probabilities()}  # type: ignore[union-attr]
             )
 
     def measure_optimal_path(self) -> tuple[ActionPath, float]:
@@ -2441,7 +2444,7 @@ class SuperpositionExplorer:
         probs = self.superposition_state.get_probabilities()
 
         # Find highest probability path
-        max_path_id = max(probs, key=probs.get)
+        max_path_id = max(probs, key=probs.get)  # type: ignore[arg-type]
         max_prob = probs[max_path_id]
 
         # Extract path index
@@ -2467,7 +2470,7 @@ class SuperpositionExplorer:
         # Calculate scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         # Optimal iterations ≈ π/4 * √N
         if grover_iterations == 0:
@@ -2535,7 +2538,7 @@ class PINNValidator:
             name="friction_bound", constraint_fn=self._friction_bound_residual, weight=0.5
         )
 
-    def add_constraint(self, name: str, constraint_fn: callable, weight: float = 1.0) -> None:
+    def add_constraint(self, name: str, constraint_fn: Callable, weight: float = 1.0) -> None:
         """Add a physics constraint"""
         self.constraints.append({"name": name, "fn": constraint_fn, "weight": weight})
 
@@ -2574,7 +2577,7 @@ class PINNValidator:
         """
         # Ensure path properties are calculated
         path.calculate_total_energy()
-        path.calculate_optimization_score(self._mlp_scorer)
+        path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         residuals = {}
         weighted_sum = 0.0
@@ -2609,7 +2612,7 @@ class PINNValidator:
             return "path_acceptable"
         if physics_score >= 0.5:
             # Find worst constraint
-            worst = max(residuals, key=residuals.get)
+            worst = max(residuals, key=residuals.get)  # type: ignore[arg-type]
             return f"improve_{worst}"
         return "path_infeasible"
 
@@ -2701,7 +2704,7 @@ class QuantumPhysicsOrchestrator:
 
         for path in paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
             state = EnergyState(
                 configuration={"action": path.action_type.value, "description": path.description},
@@ -2728,7 +2731,7 @@ class QuantumPhysicsOrchestrator:
 
         Combines all techniques for optimal decision making.
         """
-        results = {"workflow": "quantum_physics_orchestration"}
+        results: dict[str, Any] = {"workflow": "quantum_physics_orchestration"}
 
         # Phase 1: Quantum walk exploration
         if target_action and len(paths) > 0:
@@ -2981,7 +2984,7 @@ class ConservationLawChecker:
         return result
 
     def check_momentum_conservation(
-        self, momenta: list[tuple[float, float]], forces_applied: list[tuple[float, float]] = None
+        self, momenta: list[tuple[float, float]], forces_applied: Optional[list[tuple[float, float]]] = None
     ) -> dict[str, Any]:
         """
         Check momentum conservation: Σp = constant (if no external forces)
@@ -3113,7 +3116,7 @@ class PathIntegralCalculator:
         self.path_history: list[dict[str, Any]] = []
 
     def calculate_action(
-        self, path: list[dict[str, float]], lagrangian: Optional[callable] = None
+        self, path: list[dict[str, float]], lagrangian: Optional[Callable[..., Any]] = None
     ) -> float:
         """
         Calculate action along a path.
@@ -3328,7 +3331,7 @@ class HamiltonianEvolver:
         return kinetic + potential
 
     def evolve(
-        self, q0: float, p0: float, hamiltonian: callable = None, dt: float = 0.1, steps: int = 100
+        self, q0: float, p0: float, hamiltonian: Optional[Callable[..., Any]] = None, dt: float = 0.1, steps: int = 100
     ) -> list[tuple[float, float, float]]:
         """
         Evolve state using symplectic integrator (leapfrog).
@@ -3367,7 +3370,7 @@ class HamiltonianEvolver:
 
     def find_fixed_points(
         self,
-        hamiltonian: callable = None,
+        hamiltonian: Optional[Callable[..., Any]] = None,
         search_range: tuple[float, float] = (-2, 2),
         resolution: int = 20,
     ) -> list[dict[str, Any]]:
@@ -3379,7 +3382,7 @@ class HamiltonianEvolver:
         if hamiltonian is None:
             hamiltonian = self.harmonic_hamiltonian
 
-        fixed_points = []
+        fixed_points: list[dict[str, Any]] = []
         step = (search_range[1] - search_range[0]) / resolution
 
         for i in range(resolution):

@@ -90,13 +90,14 @@ except Exception:  # pragma: no cover
     DataLoader = None
     Dataset = object
 
+
 try:  # pragma: no cover - optional dependency
     import pandas as pd
 except Exception:  # pragma: no cover
     pd = None
 
 
-class ToyTextDataset(Dataset):
+class ToyTextDataset(Dataset):  # type: ignore
     def __init__(self, texts: list[str], tokenizer, max_length: int = 64):
         encodings, labels = tokenize_for_causal_lm(tokenizer, texts, max_length=max_length)
         self.encodings = encodings

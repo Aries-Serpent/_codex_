@@ -82,10 +82,10 @@ spec:
                       values:
                         - api-server
                 topologyKey: kubernetes.io/hostname
-      
+
       # Service account for RBAC
       serviceAccountName: codex-api
-      
+
       # Security context
       securityContext:
         runAsNonRoot: true
@@ -93,16 +93,16 @@ spec:
         fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-      
+
       # Image pull secrets for private registries
       imagePullSecrets:
         - name: dockercfg-secret
-      
+
       containers:
         - name: api-server
           image: codex:1.0.0
           imagePullPolicy: IfNotPresent
-          
+
           # Container security context
           securityContext:
             allowPrivilegeEscalation: false
@@ -110,7 +110,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-          
+
           # Ports
           ports:
             - name: http
@@ -119,12 +119,12 @@ spec:
             - name: metrics
               containerPort: 9090
               protocol: TCP
-          
+
           # Environment variables from ConfigMap
           envFrom:
             - configMapRef:
                 name: codex-app-config
-          
+
           # Additional environment variables
           env:
             - name: CODEX_API_KEY
@@ -154,7 +154,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          
+
           # Resource requests and limits (critical for scheduling and QoS)
           resources:
             requests:
@@ -163,7 +163,7 @@ spec:
             limits:
               cpu: "2000m"
               memory: "2Gi"
-          
+
           # Startup probe: allows time for app initialization
           startupProbe:
             httpGet:
@@ -175,7 +175,7 @@ spec:
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 30  # 30 * 10s = 5 minutes max startup time
-          
+
           # Liveness probe: restart if application hangs
           livenessProbe:
             httpGet:
@@ -187,7 +187,7 @@ spec:
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 3
-          
+
           # Readiness probe: prevent traffic if app is degraded
           readinessProbe:
             httpGet:
@@ -199,17 +199,17 @@ spec:
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 2
-          
+
           # Volumes for temp files
           volumeMounts:
             - name: tmp
               mountPath: /tmp
             - name: cache
               mountPath: /app/cache
-      
+
       # Pod termination grace period for graceful shutdown
       terminationGracePeriodSeconds: 30
-      
+
       # Volumes
       volumes:
         - name: tmp

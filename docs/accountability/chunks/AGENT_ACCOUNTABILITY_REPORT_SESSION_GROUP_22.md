@@ -12,7 +12,7 @@
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md) |
 
 ---
@@ -263,7 +263,7 @@
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_21.md) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_23.md) |
 
 ---

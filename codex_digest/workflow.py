@@ -33,5 +33,5 @@ def compose_workflow(actions) -> Plan:
     return Plan(steps=steps)
 
 
-def execute_step(step: PlanStep, env: dict[str, str]) -> dict[str, str]:
+def execute_step(step: PlanStep, env: dict[str, str]) -> dict[str, str | dict[str, str]]:
     return {"status": "ok", "step": step.name, "action": step.action_kind, "params": step.params}

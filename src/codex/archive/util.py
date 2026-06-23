@@ -19,7 +19,7 @@ from urllib.parse import urlsplit  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import zstandard as _zstd
 except Exception:  # pragma: no cover - best-effort fallback
-    _zstd = None
+    _zstd = None  # type: ignore[assignment]
 
 import zlib  # noqa: E402
 

@@ -12,7 +12,7 @@
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md) |
 
 ---
@@ -263,7 +263,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 | Direction | Link |
 | --- | --- |
 | **Previous Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md) |
-| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |
+| **Index** | [Full Index](../INDEX.md) |
 | **Next Group** | [AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md](AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md) |
 
 ---

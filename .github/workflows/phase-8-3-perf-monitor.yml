@@ -56,10 +56,10 @@ jobs:
             --repo _codex_ \
             --hours 24 \
             --export-json metrics-current.json
-          
+
           # Set outputs
           echo "metrics-file=metrics-current.json" >> $GITHUB_OUTPUT
-          
+
           # Extract summary
           python -c "
           import json
@@ -67,7 +67,7 @@ jobs:
               data = json.load(f)
               print(f\"Total runs: {data.get('total_runs_analyzed', 0)}\")
           " | tee summary.txt
-          
+
           echo "summary=$(cat summary.txt | tr '\n' ' ')" >> $GITHUB_OUTPUT
 
       - name: Upload metrics artifact
@@ -111,7 +111,7 @@ jobs:
             --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \
             --generate-report \
             --export-json analysis-results.json || true
-          
+
           cat analysis-results.json
 
       - name: Upload analysis results
@@ -156,7 +156,7 @@ jobs:
             --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \
             --check-sla \
             --export-json sla-violations.json || true
-          
+
           cat sla-violations.json
 
       - name: Comment on PR if regressions detected
@@ -166,7 +166,7 @@ jobs:
           script: |
             const fs = require('fs');
             const violations = JSON.parse(fs.readFileSync('sla-violations.json', 'utf8'));
-            
+
             if (violations.violations_count > 0) {
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -202,21 +202,21 @@ jobs:
         run: |
           cat > .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md << 'EOF'
           # Performance Monitoring Dashboard
-          
+
           **Last Updated:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
           **Status:** 🟢 Monitoring Active
-          
+
           ## Recent Metrics
-          
+
           - Performance metrics collected hourly
           - Analysis results available in artifacts
           - SLA enforcement active
-          
+
           For detailed metrics, see:
           - `performance-metrics/` — Raw metrics
           - `performance-analysis/` — Analysis results
           - `sla-violations/` — SLA violation reports
-          
+
           [View Full Reports](./)
           EOF
 

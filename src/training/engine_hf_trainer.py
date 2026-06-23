@@ -233,7 +233,7 @@ except Exception:  # pragma: no cover - torch missing or stubbed out by tests
         def manual_seed(self, *_args: Any, **_kwargs: Any) -> None:  # pragma: no cover
             return None
 
-    torch = types.SimpleNamespace(  # type: ignore[assignment]
+    torch = types.SimpleNamespace(  # type: ignore
         manual_seed=_noop,
         use_deterministic_algorithms=_noop,
         float16="float16",
@@ -278,7 +278,7 @@ from omegaconf import OmegaConf
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None
+    CheckpointManager = None  # type: ignore
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
@@ -1346,7 +1346,7 @@ def run_hf_trainer(
         if writer_choice == "csv":
             writer_obj = CSVMetricsWriter(str(path))
         else:
-            writer_obj = NDJSONMetricsWriter(str(path))  # type: ignore[assignment]
+            writer_obj = NDJSONMetricsWriter(str(path))  # type: ignore
         writer_obj.write(record)
         if hasattr(writer_obj, "close"):
             writer_obj.close()

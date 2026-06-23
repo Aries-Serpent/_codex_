@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 try:
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore
 
 try:
     import numpy as np
@@ -48,12 +48,12 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None
+    Version = None  # type: ignore
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
 except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[assignment]
+    _environment_summary = None  # type: ignore
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
@@ -62,9 +62,9 @@ from .safe_pickle import safe_pickle_load_bytes, trusted_pickle_dumps  # noqa: E
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
 except Exception:  # pragma: no cover - optional dependency issues tolerated
-    attach_integrity = None  # type: ignore[assignment]
+    attach_integrity = None  # type: ignore
 
-    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[misc]
+    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore
         return {}
 
 
@@ -72,10 +72,10 @@ try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
 except Exception:  # pragma: no cover - optional dependency
 
-    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[misc]
+    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore
         return {}
 
-    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[misc]
+    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore
         return None
 
 
@@ -208,7 +208,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 # Support both new dict format and legacy tuple format
                 if isinstance(numpy_state, dict):
                     # New format: convert back to tuple
-                    state_tuple = (  # type: ignore[assignment]
+                    state_tuple = (  # type: ignore
                         numpy_state["name"],
                         np.array(numpy_state["keys"], dtype=np.uint32),
                         numpy_state["pos"],
@@ -221,7 +221,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     # If it's a tuple/list from JSON, ensure array element is converted
                     if isinstance(numpy_state, (tuple, list)) and len(numpy_state) >= 5:
                         # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)  # noqa: E501
-                        state_tuple = (  # type: ignore[assignment]
+                        state_tuple = (  # type: ignore
                             numpy_state[0],
                             np.array(numpy_state[1], dtype=np.uint32)
                             if isinstance(numpy_state[1], list)

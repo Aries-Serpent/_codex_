@@ -673,7 +673,7 @@ data:
         annotations:
           summary: "High error rate detected"
           description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
-      
+
       # High Latency
       - alert: HighLatency
         expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 2
@@ -683,7 +683,7 @@ data:
         annotations:
           summary: "High latency detected"
           description: "p99 latency is {{ $value }}s for {{ $labels.service }}"
-      
+
       # Health Check Failed
       - alert: HealthCheckFailed
         expr: up{job="production"} == 0
@@ -693,7 +693,7 @@ data:
         annotations:
           summary: "Health check failed"
           description: "{{ $labels.instance }} has been down for 1 minute"
-      
+
       # Resource Exhaustion
       - alert: CPUHigh
         expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 0.95
@@ -703,7 +703,7 @@ data:
         annotations:
           summary: "High CPU utilization"
           description: "CPU is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
-      
+
       - alert: MemoryHigh
         expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.95
         for: 5m
@@ -712,7 +712,7 @@ data:
         annotations:
           summary: "High memory utilization"
           description: "Memory is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
-    
+
     - name: production_warning
       interval: 30s
       rules:
@@ -725,7 +725,7 @@ data:
         annotations:
           summary: "Elevated error rate"
           description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
-      
+
       # Elevated Latency
       - alert: ElevatedLatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
@@ -752,7 +752,7 @@ data:
       url: http://prometheus:9090
       isDefault: true
       editable: true
-    
+
     - name: Loki
       type: loki
       access: proxy

@@ -44,7 +44,7 @@ class OfflineTB(AbstractContextManager["OfflineTB"]):
         self, scalars: Iterable[tuple[str, float]] | dict[str, float], step: int
     ) -> None:
         if isinstance(scalars, dict):
-            items = scalars.items()
+            items: Iterable[tuple[str, float]] = scalars.items()
         else:
             items = scalars
         for tag, value in items:
@@ -61,9 +61,8 @@ class OfflineTB(AbstractContextManager["OfflineTB"]):
     def __enter__(self) -> "OfflineTB":
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> None:
         self.close()
-        return False
 
 
 def _fallback_process_payload() -> Optional[dict[str, float]]:

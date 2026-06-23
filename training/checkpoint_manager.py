@@ -28,7 +28,7 @@ if not getattr(_warnings, "_training_checkpoint_manager_legacy_warned", False):
     setattr(_warnings, "_training_checkpoint_manager_legacy_warned", True)
 _checkpoint_helpers_import_ok = False
 try:
-    from codex_ml.utils.checkpointing import (
+    from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
         build_payload_bytes,
         dump_rng_state,
     )

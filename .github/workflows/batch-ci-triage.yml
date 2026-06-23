@@ -320,7 +320,7 @@ jobs:
             const now = new Date().toISOString();
             const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;
             const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';
-            
+
             // Read failures from file
             let failures = [];
             try {
@@ -363,7 +363,7 @@ jobs:
             }
 
             // Auto-fix eligible patterns
-            const autoFixable = failures.filter(f => 
+            const autoFixable = failures.filter(f =>
               ['secrets-pragma', 'pyyaml-dependency', 'unused-imports', 'coverage-threshold'].includes(f.failure_pattern)
             );
             if (autoFixable.length > 0) {

@@ -21,7 +21,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 # =============================================================================
 # CLOCK ABSTRACTION
@@ -169,7 +169,7 @@ class MentalNode:
 
     # Learning
     was_correct: Optional[bool] = None  # Outcome validation
-    lessons_learned: list[str] = field(default_factory=list)
+    lessons_learned: list[dict[str, str]] = field(default_factory=list)
 
     # Connections
     connected_nodes: set[str] = field(default_factory=set)
@@ -184,8 +184,8 @@ class MentalNode:
         thought: str,
         reasoning_type: str,
         confidence: float,
-        alternatives: list[str] = None,
-        evidence: list[str] = None,
+        alternatives: list[str] | None = None,
+        evidence: list[str] | None = None,
     ) -> ReasoningStep:
         """Add a reasoning step to this node's chain"""
         step = ReasoningStep(
@@ -243,26 +243,26 @@ class MentalEdge:
     """An edge connecting two nodes in the mental map"""
 
     edge_id: str
-    source_id: str
-    target_id: str
-    edge_type: EdgeType
+    source_id: str | None
+    target_id: str | None
+    edge_type: EdgeType | None
     weight: float = 1.0  # Strength of relationship
 
     # Reasoning for this connection
     justification: str = ""
-    evidence: list[str] = field(default_factory=list)
+    evidence: list[str] | None = field(default_factory=list)
 
     # Validation
     validated: bool = False
     validation_date: Optional[str] = None
 
     @property
-    def source(self) -> str:
+    def source(self) -> str | None:
         """Alias for source_id for backward compatibility."""
         return self.source_id
 
     @property
-    def target(self) -> str:
+    def target(self) -> str | None:
         """Alias for target_id for backward compatibility."""
         return self.target_id
 
@@ -405,15 +405,15 @@ class MentalMappingModel:
 
     def connect_nodes(
         self,
-        source_id: str = None,
-        target_id: str = None,
-        source: str = None,  # Alias for source_id
-        target: str = None,  # Alias for target_id
-        edge_type: EdgeType = None,
-        properties: dict = None,
+        source_id: str | MentalNode | None = None,
+        target_id: str | MentalNode | None = None,
+        source: str | MentalNode | None = None,  # Alias for source_id
+        target: str | MentalNode | None = None,  # Alias for target_id
+        edge_type: EdgeType | None = None,
+        properties: dict | None = None,
         weight: float = 1.0,
         justification: str = "",
-        evidence: list[str] = None,
+        evidence: list[str] | None = None,
     ) -> MentalEdge:
         """
         Create a connection between two nodes.
@@ -430,9 +430,9 @@ class MentalMappingModel:
             evidence: Supporting evidence
         """
         # Handle MentalNode objects (extract node_id)
-        if hasattr(source_id, 'node_id'):
+        if isinstance(source_id, MentalNode):
             source_id = source_id.node_id
-        if hasattr(target_id, 'node_id'):
+        if isinstance(target_id, MentalNode):
             target_id = target_id.node_id
 
         # Handle parameter aliases
@@ -473,7 +473,7 @@ class MentalMappingModel:
         return edge
 
     def think_through_problem(
-        self, problem: str, context: dict = None
+        self, problem: str, context: dict | None = None
     ) -> tuple[MentalNode, list[ReasoningStep]]:
         """
         Think through a problem, storing the complete reasoning chain
@@ -635,7 +635,7 @@ class MentalMappingModel:
         outcome_content: str,
         success: bool,
         actual_impact: float,
-        learned_lessons: list[str] = None,
+        learned_lessons: list[str] | None = None,
     ) -> MentalNode:
         """
         Record the outcome of a decision for learning
@@ -655,7 +655,7 @@ class MentalMappingModel:
         print(f"Impact: {actual_impact:.2f}")
 
         # Create outcome node
-        outcome_context = {
+        outcome_context: dict[str, Any] = {
             "success": success,
             "actual_impact": actual_impact,
         }
@@ -678,9 +678,9 @@ class MentalMappingModel:
 
         # Connect to decision
         self.connect_nodes(
-            decision_node_id,
-            outcome_node.node_id,
-            EdgeType.LEADS_TO,
+            source_id=decision_node_id,
+            target_id=outcome_node.node_id,
+            edge_type=EdgeType.LEADS_TO,
             weight=1.0,
             justification="Outcome resulted from decision",
         )
@@ -779,9 +779,9 @@ class MentalMappingModel:
                 context={"lessons": lessons, "success": actual_success},
             )
             self.connect_nodes(
-                reflection_node.node_id,
-                learning_node.node_id,
-                EdgeType.LEADS_TO,
+                source_id=reflection_node.node_id,
+                target_id=learning_node.node_id,
+                edge_type=EdgeType.LEADS_TO,
                 weight=1.0,
                 justification="Reflection leads to learning",
             )
@@ -789,17 +789,17 @@ class MentalMappingModel:
 
         # Connect reflection to decision and outcome
         self.connect_nodes(
-            decision_node_id,
-            reflection_node.node_id,
-            EdgeType.REFINES,
+            source_id=decision_node_id,
+            target_id=reflection_node.node_id,
+            edge_type=EdgeType.REFINES,
             weight=1.0,
             justification="Reflection on decision outcome",
         )
 
         self.connect_nodes(
-            outcome_node_id,
-            reflection_node.node_id,
-            EdgeType.VALIDATES,
+            source_id=outcome_node_id,
+            target_id=reflection_node.node_id,
+            edge_type=EdgeType.VALIDATES,
             weight=1.0,
             justification="Reflection validates outcome",
         )
@@ -979,7 +979,8 @@ class MentalMappingModel:
                         None,
                     )
                     if edge:
-                        lines.append(f"{indent}  └─[{edge.edge_type.value}]→")
+                        edge_label = f"[{edge.edge_type.value}]" if edge.edge_type else "[unknown]"
+                        lines.append(f"{indent}  └─{edge_label}→")
                         lines.extend(traverse(connected_id, depth + 1))
 
             return lines
@@ -1026,7 +1027,7 @@ class MentalMappingModel:
 
         return clusters
 
-    def get_subgraph(self, node_ids: list[str] = None, nodes: list[str] = None) -> dict[str, Any]:
+    def get_subgraph(self, node_ids: list[str] | None = None, nodes: list[str] | None = None) -> dict[str, Any]:
         """
         Extract a subgraph containing only specified nodes.
 
@@ -1045,7 +1046,7 @@ class MentalMappingModel:
             node_ids = []
 
         node_id_set = set(node_ids)
-        subgraph = {"nodes": {}, "edges": {}}
+        subgraph: dict[str, dict[str, Any]] = {"nodes": {}, "edges": {}}
 
         # Add nodes
         for node_id in node_ids:
@@ -1061,10 +1062,10 @@ class MentalMappingModel:
 
     def shortest_path(
         self,
-        start_id: str = None,
-        end_id: str = None,
-        source: Union[str, "MentalNode"] = None,  # Alias for start_id, can be node or ID
-        target: Union[str, "MentalNode"] = None,  # Alias for end_id, can be node or ID
+        start_id: str | None = None,
+        end_id: str | None = None,
+        source: Union[str, "MentalNode"] | None = None,  # Alias for start_id, can be node or ID
+        target: Union[str, "MentalNode"] | None = None,  # Alias for end_id, can be node or ID
     ) -> Optional[list[Union[str, "MentalNode"]]]:
         """
         Find shortest path between two nodes using BFS.
@@ -1104,8 +1105,8 @@ class MentalMappingModel:
         # Special case: same node
         if start_id == end_id:
             if return_nodes:
-                return [self.nodes[start_id]]
-            return [start_id]
+                return cast(list[str | MentalNode], [self.nodes[start_id]])
+            return cast(list[str | MentalNode], [start_id])
 
         # BFS to find shortest path
         from collections import deque
@@ -1121,8 +1122,8 @@ class MentalMappingModel:
                 if neighbor_id == end_id:
                     final_path = path + [neighbor_id]
                     if return_nodes:
-                        return [self.nodes[nid] for nid in final_path]
-                    return final_path
+                        return cast(list[str | MentalNode], [self.nodes[nid] for nid in final_path])
+                    return cast(list[str | MentalNode], final_path)
 
                 if neighbor_id not in visited:
                     visited.add(neighbor_id)
@@ -1130,7 +1131,7 @@ class MentalMappingModel:
 
         return None  # No path found
 
-    def bfs(self, start_node: str = None, start_id: str = None) -> list[str]:
+    def bfs(self, start_node: str | None = None, start_id: str | None = None) -> list[str]:
         """
         Breadth-first search traversal from a starting node.
 
@@ -1166,7 +1167,7 @@ class MentalMappingModel:
 
         return result
 
-    def dfs(self, start_node: str = None, start_id: str = None) -> list[str]:
+    def dfs(self, start_node: str | None = None, start_id: str | None = None) -> list[str]:
         """
         Depth-first search traversal from a starting node.
 
@@ -1416,4 +1417,3 @@ MentalMap = MentalMappingModel
 
 # Additional alias for tests expecting 'MentalMapping' name
 MentalMapping = MentalMappingModel
-assert MentalMap and MentalMapping

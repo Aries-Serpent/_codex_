@@ -67,7 +67,7 @@ jobs:
         id: load
         run: |
           MANIFEST_PATH="${{ inputs.context_manifest || '.codex/session_context_manifest.json' }}"
-          
+
           if [ -f "$MANIFEST_PATH" ]; then
             echo "manifest=$(cat $MANIFEST_PATH | jq -c .)" >> $GITHUB_OUTPUT
             echo "✅ Loaded context from $MANIFEST_PATH"
@@ -80,28 +80,28 @@ jobs:
         id: parse
         run: |
           MANIFEST='${{ steps.load.outputs.manifest }}'
-          
+
           # Extract recommended agents from manifest
           AGENTS=$(echo "$MANIFEST" | jq -r '.delegation_recommendations[0].recommended_agents[]?' 2>/dev/null | tr '\n' ',' | sed 's/,$//')
-          
+
           if [ -z "$AGENTS" ]; then
             # Fallback: recommend based on phase state
             AGENTS="unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor"
           fi
-          
+
           AGENT_COUNT=$(echo "$AGENTS" | tr ',' '\n' | wc -l)
           MAX_AGENTS="${{ inputs.max_agents || 5 }}"
-          
+
           if [ "$AGENT_COUNT" -gt "$MAX_AGENTS" ]; then
             AGENTS=$(echo "$AGENTS" | tr ',' '\n' | head -n "$MAX_AGENTS" | tr '\n' ',')
           fi
-          
+
           echo "agents=$AGENTS" >> $GITHUB_OUTPUT
           echo "count=$AGENT_COUNT" >> $GITHUB_OUTPUT
-          
+
           HAS_CRITICAL=$(echo "$AGENTS" | grep -c "security\|auth\|critical" || echo "0")
           echo "has_critical=$HAS_CRITICAL" >> $GITHUB_OUTPUT
-          
+
           echo "📋 Delegating to agents: $AGENTS"
 
   delegate_agents:
@@ -124,11 +124,11 @@ jobs:
         run: |
           AGENT="${{ matrix.agent }}"
           DRY_RUN="${{ inputs.dry_run || false }}"
-          
+
           echo "🚀 Delegating to agent: $AGENT"
           echo "   Mode: ${{ inputs.delegation_mode }}"
           echo "   Dry run: $DRY_RUN"
-          
+
           echo "agent_name=$AGENT" >> $GITHUB_OUTPUT
 
       - name: Generate agent task manifest
@@ -151,7 +151,7 @@ jobs:
             ]
           }
           EOF
-          
+
           echo "task_manifest=$(cat /tmp/agent_task.json | jq -c .)" >> $GITHUB_OUTPUT
 
       - name: Execute agent delegation (non-blocking)
@@ -160,14 +160,14 @@ jobs:
         run: |
           AGENT="${{ steps.init.outputs.agent_name }}"
           TASK_ID=$(uuidgen | cut -c1-8)
-          
+
           echo "📤 Queuing agent: $AGENT (task_id: $TASK_ID)"
-          
+
           # Mark task as queued in rapid delegation engine
           # In production, this would call the rapid_delegation_engine API
           echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
           echo "status=queued" >> $GITHUB_OUTPUT
-          
+
           # Store task metadata for callback
           mkdir -p .codex/delegation_tasks
           cat > .codex/delegation_tasks/$TASK_ID.json << 'EOF'
@@ -210,7 +210,7 @@ jobs:
           import os
           from pathlib import Path
           from datetime import datetime, timezone
-          
+
           # Initialize result collection
           results = {
               "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -221,7 +221,7 @@ jobs:
               "merged_output": {},
               "next_actions": []
           }
-          
+
           # Collect task metadata
           tasks_dir = Path(".codex/delegation_tasks")
           if tasks_dir.exists():
@@ -232,14 +232,14 @@ jobs:
                       results["total_agents"] += 1
                   except Exception as e:
                       print(f"⚠️ Failed to load {task_file}: {e}")
-          
+
           # Save aggregated results
           output_file = Path(".codex/delegation_results.json")
           output_file.write_text(json.dumps(results, indent=2))
-          
+
           print(f"✅ Coalesced results from {results['total_agents']} agents")
           print(f"   Output saved to: {output_file}")
-          
+
           PYTHON_EOF
 
       - name: Generate delegation summary
@@ -250,12 +250,12 @@ jobs:
           echo "**Mode:** ${{ inputs.delegation_mode || 'parallel' }}" >> /tmp/delegation_summary.md
           echo "**Agents Delegated:** ${{ needs.load_context.outputs.delegation_count }}" >> /tmp/delegation_summary.md
           echo "" >> /tmp/delegation_summary.md
-          
+
           if [ -f ".codex/delegation_results.json" ]; then
             echo "**Results:** ✅ Coalesced" >> /tmp/delegation_summary.md
             cat .codex/delegation_results.json >> /tmp/delegation_summary.md
           fi
-          
+
           cat /tmp/delegation_summary.md
 
       - name: Generate dashboard

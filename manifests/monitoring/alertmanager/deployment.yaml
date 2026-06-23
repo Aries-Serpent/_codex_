@@ -18,11 +18,11 @@ data:
       resolve_timeout: 5m
       slack_api_url: '' # Set to Slack webhook URL
       pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
-    
+
     # Define templates for notifications
     templates:
       - '/etc/alertmanager/templates/*.tmpl'
-    
+
     # The root route with all parameters, which is used as a template for child routes that are not fully specified.
     route:
       receiver: 'default'
@@ -30,7 +30,7 @@ data:
       group_wait: 10s
       group_interval: 10s
       repeat_interval: 12h
-      
+
       routes:
         # Critical alerts - send to PagerDuty
         - match:
@@ -39,20 +39,20 @@ data:
           continue: true
           group_wait: 0s
           repeat_interval: 4h
-        
+
         # Warning alerts - send to Slack
         - match:
             severity: warning
           receiver: 'slack-warnings'
           group_wait: 30s
           repeat_interval: 24h
-        
+
         # Info alerts - send to default
         - match:
             severity: info
           receiver: 'default'
           repeat_interval: 7d
-    
+
     receivers:
       # Default receiver (email)
       - name: 'default'
@@ -62,14 +62,14 @@ data:
             smarthost: 'smtp.example.com:587'
             auth_username: 'alertmanager@example.com'
             auth_password: 'password'
-      
+
       # Slack receiver
       - name: 'slack-warnings'
         slack_configs:
           - channel: '#alerts-warning'
             title: 'Alert: {{ .GroupLabels.alertname }}'
             text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
-      
+
       # PagerDuty receiver
       - name: 'pagerduty'
         pagerduty_configs:
@@ -78,7 +78,7 @@ data:
             details:
               severity: '{{ .GroupLabels.severity }}'
               cluster: '{{ .GroupLabels.cluster }}'
-    
+
     # Inhibition rules
     inhibit_rules:
       # Inhibit info alerts when warning alerts are present
@@ -87,7 +87,7 @@ data:
         target_match:
           severity: 'info'
         equal: ['alertname', 'cluster', 'service']
-      
+
       # Inhibit warning alerts when critical alerts are present
       - source_match:
           severity: 'critical'

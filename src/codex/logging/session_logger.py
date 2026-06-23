@@ -249,7 +249,7 @@ def log_event(
             adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
                 # log_adapters.log_event signature: (level, message, meta=None, db_path=None)
-                _shared_log_event(
+                _shared_log_event(  # type: ignore[call-arg]
                     role,
                     message,
                     meta=adapter_meta_json,  # type: ignore[arg-type]

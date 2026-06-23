@@ -1,0 +1,188 @@
+name: Validate API Null-Handling
+
+on:
+  pull_request:
+    paths:
+      - 'src/scripts/ci/**'
+      - 'scripts/ci/**'
+      - '.github/workflows/validate-api-null-handling.yml'
+    branches:
+      - main
+      - develop
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/scripts/ci/**'
+      - 'scripts/ci/**'
+
+  workflow_dispatch:
+    inputs:
+      strict_mode:
+        description: 'Fail workflow on violations (default: true for main, false for PRs)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  validate-api-null-handling:
+    name: 'Validate API Null-Handling (RP-001)'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Check for unsafe API field handling patterns
+        id: safety-check
+        run: |
+          set +e
+
+          echo "Scanning for unsafe API null-handling patterns..."
+
+          unsafe_get_replace=$(rg '\.get\(["\047][^"'\'']+["\047][,\)].*\.replace\(' \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
+            --type=python 2>/dev/null || true)
+
+          unsafe_response_access=$(rg 'response\["[^"]+"\]\.replace\(' \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
+            --type=python 2>/dev/null || true)
+
+          unsafe_datetime_parse=$(rg 'datetime\.fromisoformat\([^)]*\[.*\]\.replace\(' \
+            --glob='scripts/ci/**' \
+            --glob='src/scripts/ci/**' \
+            --type=python 2>/dev/null || true)
+
+          violations_found=false
+          violation_count=0
+
+          if [ -n "$unsafe_get_replace" ]; then
+            echo "Pattern 1: Unsafe .get().method() calls:"
+            echo "$unsafe_get_replace"
+            violations_found=true
+            violation_count=$((violation_count + 1))
+          fi
+
+          if [ -n "$unsafe_response_access" ]; then
+            echo "Pattern 2: Unsafe dictionary access without null-check:"
+            echo "$unsafe_response_access"
+            violations_found=true
+            violation_count=$((violation_count + 1))
+          fi
+
+          if [ -n "$unsafe_datetime_parse" ]; then
+            echo "Pattern 3: Unsafe datetime parsing:"
+            echo "$unsafe_datetime_parse"
+            violations_found=true
+            violation_count=$((violation_count + 1))
+          fi
+
+          if [ "$violations_found" = true ]; then
+            echo "found-violations=true" >> $GITHUB_OUTPUT
+            echo "violation-count=$violation_count" >> $GITHUB_OUTPUT
+          else
+            echo "found-violations=false" >> $GITHUB_OUTPUT
+            echo "violation-count=0" >> $GITHUB_OUTPUT
+            echo "No violations detected"
+          fi
+
+      - name: Run automated validation script
+        id: auto-validator
+        continue-on-error: true
+        run: |
+          if [ -f "scripts/ci/validate_api_null_handling.py" ]; then
+            echo "Running automated API null-handling validator..."
+            python scripts/ci/validate_api_null_handling.py --report
+            validator_exit=$?
+            echo "validator-exit-code=$validator_exit" >> $GITHUB_OUTPUT
+          else
+            echo "Automated validator not yet configured"
+            echo "validator-exit-code=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Determine workflow outcome
+        id: outcome
+        run: |
+          is_main_push="${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
+          is_manual_strict="${{ github.event.inputs.strict_mode == 'true' }}"
+          violations_found="${{ steps.safety-check.outputs.found-violations }}"
+
+          if [ "$is_main_push" = "true" ] || [ "$is_manual_strict" = "true" ]; then
+            mode="strict"
+          else
+            mode="lenient"
+          fi
+
+          echo "mode=$mode" >> $GITHUB_OUTPUT
+          echo "is_main_push=$is_main_push" >> $GITHUB_OUTPUT
+          echo "violations_found=$violations_found" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR with findings
+        if: github.event_name == 'pull_request' && steps.safety-check.outputs.found-violations == 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const violations = ${{ steps.safety-check.outputs.violation-count }};
+            const comment = `## API Null-Handling Validation Report
+
+            Status: Warnings Found (Non-blocking for PRs)
+
+            Found ${violations} potential unsafe API null-handling pattern(s).
+
+            Use auto-fix: python scripts/ci/validate_api_null_handling.py --fix`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Fail workflow on strict mode violations
+        if: steps.outcome.outputs.mode == 'strict' && steps.safety-check.outputs.found-violations == 'true'
+        run: |
+          echo "API null-handling violations found in strict mode"
+          exit 1
+
+      - name: Print validation summary
+        run: |
+          mode="${{ steps.outcome.outputs.mode }}"
+          violations="${{ steps.safety-check.outputs.found-violations }}"
+          violation_count="${{ steps.safety-check.outputs.violation-count }}"
+
+          echo ""
+          echo "======================================================"
+          echo "  API Null-Handling Validation Summary"
+          echo "======================================================"
+          echo "Mode:              $mode"
+          echo "Violations Found:  $violations"
+          echo "Violation Count:   $violation_count"
+          echo "Event:             ${{ github.event_name }}"
+          echo "Branch:            ${{ github.ref_name }}"
+          echo "======================================================"

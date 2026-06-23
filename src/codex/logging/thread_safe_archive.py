@@ -16,7 +16,7 @@ import logging
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from .concurrency import ArchiveOperationLock, LockMetrics, log_error, save_metrics
 
@@ -113,7 +113,7 @@ class ThreadSafeArchive:
             "component": "archive_operations",
             "archive_lock": self._archive_lock.metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)
+        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
     def __enter__(self):
         """Context manager entry."""
@@ -140,7 +140,7 @@ class ArchiveSessionGuard:
     def archive_with_lock(
         self,
         session_id: str,
-        archive_func: callable,
+        archive_func: Callable,
         *args,
         **kwargs,
     ) -> Any:
@@ -161,7 +161,7 @@ class ArchiveSessionGuard:
     def retrieve_with_lock(
         self,
         session_id: str,
-        retrieve_func: callable,
+        retrieve_func: Callable,
         *args,
         **kwargs,
     ) -> Any:
@@ -182,7 +182,7 @@ class ArchiveSessionGuard:
     def parallel_archive(
         self,
         session_ids: list[str],
-        archive_func: callable,
+        archive_func: Callable,
         max_workers: int = 5,
     ) -> Dict[str, bool]:
         """Archive multiple sessions in parallel with per-session locks."""

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 try:
     import chardet as _chardet  # preferred if available
 except Exception:  # pragma: no cover - optional dependency
-    _chardet = None
+    _chardet = None  # type: ignore[assignment]
 
 # charset-normalizer provides multiple helpers depending on installed version
 try:

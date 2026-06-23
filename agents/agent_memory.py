@@ -25,7 +25,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ class PatternLibrary:
     def match_patterns(
         self,
         situation: str,
-        tags: list[str] = None,
+        tags: list[str] | None = None,
         min_success_rate: float = 0.5,
     ) -> list[dict[str, Any]]:
         """Find patterns matching the current situation."""
@@ -215,7 +215,7 @@ class PatternLibrary:
                 )
 
         # Sort by match score
-        matches.sort(key=lambda x: x["match_score"], reverse=True)
+        matches.sort(key=lambda x: cast(float, x["match_score"]), reverse=True)
 
         return matches
 
@@ -258,7 +258,7 @@ class AgentMemory:
     - Cross-session context sharing
     """
 
-    def __init__(self, db_path: Path = None):
+    def __init__(self, db_path: Path | None = None):
         """Initialize agent memory with SQLite storage.
 
         Args:
@@ -453,7 +453,7 @@ class AgentMemory:
         return self.store_memory(entry=entry, **kwargs)
 
     def retrieve_memory(
-        self, memory_id: str = None, key: str = None
+        self, memory_id: str | None = None, key: str | None = None
     ) -> Optional[MemoryEntry | str]:
         """
         Retrieve a memory by ID or key.
@@ -556,14 +556,14 @@ class AgentMemory:
 
     def search_memories(
         self,
-        category: str = None,
-        tags: list[str] = None,
+        category: str | None = None,
+        tags: list[str] | None = None,
         min_confidence: float = 0.0,
         limit: int = 50,
     ) -> list[MemoryEntry]:
         """Search memories by criteria."""
         query = "SELECT * FROM memories WHERE 1=1"
-        params = []
+        params: list[Any] = []
 
         if category:
             query += " AND category = ?"
@@ -716,7 +716,7 @@ class AgentMemory:
         """Alias for get_memory_stats (backward compatibility)."""
         return self.get_memory_stats()
 
-    def search(self, query: str = None, **kwargs) -> list[MemoryEntry]:
+    def search(self, query: str | None = None, **kwargs) -> list[MemoryEntry]:
         """
         Search memories with text query (alias for search_memories).
 
@@ -734,7 +734,7 @@ class AgentMemory:
             return [m for m in memories if query_lower in m.content.lower()]
         return self.search_memories(**kwargs)
 
-    def filter(self, criteria: dict[str, Any] = None, **kwargs) -> list[MemoryEntry]:
+    def filter(self, criteria: dict[str, Any] | None = None, **kwargs) -> list[MemoryEntry]:
         """
         Filter memories by criteria dictionary.
 
@@ -788,7 +788,7 @@ class AgentMemorySystem:
     def __init__(
         self,
         agent_id: str = "default_agent",
-        db_path: Path = None,
+        db_path: Path | None = None,
     ):
         self.agent_id = agent_id
         self.memory = AgentMemory(db_path)
@@ -964,7 +964,7 @@ class AgentMemorySystem:
             limit=5,
         )
 
-        guidance = {
+        guidance: dict[str, Any] = {
             "patterns": [
                 {
                     "name": m["pattern"]["name"],
@@ -1048,7 +1048,7 @@ class AgentMemorySystem:
         task_id: str,
         decision: str,
         rationale: str,
-        context: dict[str, Any] = None,
+        context: dict[str, Any] | None = None,
     ) -> str:
         """Store a decision with its rationale and context.
 
@@ -1165,7 +1165,13 @@ class AgentMemorySystem:
             )
 
         # Sort by relevance and return top results
-        scored_results.sort(key=lambda x: x["relevance_score"], reverse=True)
+        def get_relevance_score(item: dict[str, Any]) -> float:
+            score = item.get("relevance_score", 0)
+            if isinstance(score, (int, float)):
+                return float(score)
+            return 0.0
+         
+        scored_results.sort(key=get_relevance_score, reverse=True)
         return scored_results[:limit]
 
     def get_pattern_library(self) -> list[dict[str, Any]]:
