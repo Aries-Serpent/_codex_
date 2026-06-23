@@ -319,7 +319,7 @@ class ArchiveManager:
             self._log_retention_action(report)
 
             logger.info(
-                f"Purged {len(report['deleted_sessions'])} sessions, "
+                f"Purged {len(report['deleted_sessions'])} sessions, "  # type: ignore[arg-type]
                 f"freed {report['total_bytes_freed']} bytes"
             )
             return report
@@ -370,7 +370,7 @@ class ArchiveManager:
             index = {
                 "version": "1.0",
                 "created": datetime.now().isoformat(),
-                "sessions": sorted(sessions, key=lambda x: x["created_at"]),
+                "sessions": sorted(sessions, key=lambda x: x["created_at"]),  # type: ignore[arg-type]
                 "statistics": {
                     "total_sessions": len(sessions),
                     "total_size_mb": total_size / (1024 * 1024),

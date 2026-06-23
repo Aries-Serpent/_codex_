@@ -106,7 +106,7 @@ class GracefulDegradation:
             try:
                 return fn(*args, **kwargs)
             except self._exceptions as exc:
-                return self._handle_failure(exc, context=fn.__qualname__)
+                return self._handle_failure(exc, context=fn.__qualname__)  # type: ignore[arg-type]
 
         _wrapper.__name__ = getattr(fn, "__name__", "_wrapper")
         _wrapper.__qualname__ = getattr(fn, "__qualname__", "_wrapper")

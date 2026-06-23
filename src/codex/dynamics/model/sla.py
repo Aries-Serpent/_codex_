@@ -519,7 +519,7 @@ class SLAPolicyRegistry(BaseModel):
         import csv
         from pathlib import Path
 
-        registry = cls(
+        registry = cls(  # type: ignore[call-arg]
             policies=[],
             last_updated=datetime.now(UTC).isoformat(),
         )
@@ -546,7 +546,7 @@ class SLAPolicyRegistry(BaseModel):
                                 )
                             )
 
-                policy = SLAPolicy(
+                policy = SLAPolicy(  # type: ignore[call-arg]
                     name=row.get("name", ""),
                     metric=SLAMetric(row.get("metric", "first_response")),
                     target_minutes=int(row.get("target_minutes", "60")),

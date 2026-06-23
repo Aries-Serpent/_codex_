@@ -113,7 +113,7 @@ class ThreadSafeArchive:
             "component": "archive_operations",
             "archive_lock": self._archive_lock.metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)
+        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
     def __enter__(self):
         """Context manager entry."""
