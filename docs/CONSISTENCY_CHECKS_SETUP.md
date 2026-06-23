@@ -85,7 +85,7 @@ python3 ../.github/scripts/check-cross-references.py --repo-root="."
 python3 ../.github/scripts/check-cross-references.py --repo-root="." --format=JSON
 
 # GitHub Actions annotations
-python3 ../.github/scripts/check-cross-references.py --GitHub-annotations --fail-on-errors
+python3 ../.github/scripts/check-cross-references.py --github-annotations --fail-on-errors
 ```
 
 ## Run Heading Validator
