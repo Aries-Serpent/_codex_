@@ -48,12 +48,12 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None  # type: ignore[assignment]
+    Version = None  # type: ignore[misc]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
 except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[assignment]
+    _environment_summary = None  # type: ignore[misc]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402

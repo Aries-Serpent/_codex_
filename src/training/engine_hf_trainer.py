@@ -278,13 +278,13 @@ from omegaconf import OmegaConf
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None  # type: ignore[assignment]
+    CheckpointManager = None  # type: ignore[misc]
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
 except Exception:  # pragma: no cover - optional dep
-    SummaryWriter = None
+    SummaryWriter = None  # type: ignore[misc]
 
 
 try:  # Optional accelerate integration
