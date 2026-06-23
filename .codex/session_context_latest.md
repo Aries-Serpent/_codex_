@@ -1,35 +1,32 @@
-# Session Context — 2026-06-23T06:21:24Z
-**Branch:** `copilot/fix-workflow-documentation-link-validation`  **PR:** #5068  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-23T06:53:39Z
+**Branch:** `copilot/fix-enforce-secrets-baseline-job`  **PR:** #5069  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4864` (✅)
-- GraphQL remaining: `4983` (✅)
+- REST remaining: `4836` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5068 — fix(ci): resolve 9 PR blockers & deploy CI prevention patterns (RP-001/002/003)
-State: `open`  Draft: `False`  Branch: `copilot/fix-workflow-documentation-link-validation` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `Governance Compliance` (failure)
+## 📋 PR #5069 — fix(ci): expand secrets baseline auto-fix regex for internal files and manifests
+State: `open`  Draft: `False`  Branch: `copilot/fix-enforce-secrets-baseline-job` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/fix-workflow-documentation-link-validation` (2026-06-23)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `copilot/fix-workflow-documentation-link-validation` (2026-06-23)
-- **Unified Governance Check** — `failure` on `copilot/fix-workflow-documentation-link-validation` (2026-06-23)
-- **Workflow Compliance Gate** — `failure` on `copilot/fix-workflow-documentation-link-validation` (2026-06-23)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 
 ## 📝 Recent Commits
+- `57a0a776` fix(ci): expand secrets baseline auto-fix regex to include .codex/aftermath, k8s — copilot-swe-agent[bot] (2026-06-23)
+- `1e98f9b7` WIP: Fix secrets baseline enforcer auto-fix regex — copilot-swe-agent[bot] (2026-06-23)
+- `e20a6d45` chore: update performance dashboard [skip ci] — mbaetiong (2026-06-23)
+- `0d686bba` Merge pull request #5068 from Aries-Serpent/copilot/fix-workflow-documentation-l — Statix (2026-06-23)
+- `d6ca04bb` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
+- `582c26e5` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
 - `b80235f8` fix(review): complete all PR #5068 review comment fixes with resolving commit SH — copilot-swe-agent[bot] (2026-06-23)
 - `2591f875` fix(review): remove unused Any import from peft_utils.py — copilot-swe-agent[bot] (2026-06-23)
-- `1d541a9a` fix(review): address 9 PR comments - clean imports, fix workflows, update docs — copilot-swe-agent[bot] (2026-06-23)
-- `b3c72a32` fix(ci): add pragma allowlist to detect-secrets false positive in pda_iterations — copilot-swe-agent[bot] (2026-06-23)
-- `f5ad84ec` docs(consolidation): issue consolidation policy implementation (S317) — copilot-swe-agent[bot] (2026-06-23)
-- `8c26cfbb` Fix all remaining 18 mypy errors - achieve 100% type checking compliance — copilot-swe-agent[bot] (2026-06-23)
-- `5011f2b3` Fix 40 mypy errors with targeted type annotations and ignore comments — copilot-swe-agent[bot] (2026-06-23)
-- `66ca9606` Fix mypy errors: type aliases, Path types, and type ignores — copilot-swe-agent[bot] (2026-06-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
