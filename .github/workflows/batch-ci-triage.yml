@@ -307,6 +307,69 @@ jobs:
             core.setOutput('report_body', body);
             core.setOutput('has_failures', failures.length > 0 ? 'true' : 'false');
 
+      # ── Step 2b: Generate structured JSON for agent consumption ────────────────
+      - name: Generate structured JSON report
+        id: json-report
+        if: always()
+        uses: actions/github-script@v8
+        env:
+          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json || '[]' }}
+        with:
+          script: |
+            const now = new Date().toISOString();
+            const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+            
+            // Parse failures from previous step or default to empty
+            let failures = [];
+            try {
+              failures = JSON.parse(process.env.FAILURES_JSON || '[]');
+            } catch (e) {
+              console.warn('Could not parse failures JSON:', e);
+            }
+
+            // Group by pattern/severity
+            const byPattern = {};
+            for (const f of failures) {
+              const key = f.failure_pattern || 'unknown';
+              if (!byPattern[key]) byPattern[key] = [];
+              byPattern[key].push(f);
+            }
+
+            const report = {
+              timestamp: now,
+              repository: `${context.repo.owner}/${context.repo.repo}`,
+              total_failures: failures.length,
+              affected_workflows: new Set(failures.map(f => f.workflow_name)).size,
+              failures_by_pattern: byPattern,
+              triage_run_url: runUrl,
+              recommendations: {
+                immediate: [],
+                short_term: [],
+                long_term: []
+              }
+            };
+
+            // Add recommendations based on patterns
+            if (failures.length === 0) {
+              report.recommendations.immediate.push('No failures detected — CI health is good');
+            } else if (failures.length > 10) {
+              report.recommendations.immediate.push('High failure rate detected — escalate for investigation');
+              report.recommendations.short_term.push('Run ci-pattern-healer workflow to auto-fix common patterns');
+            }
+
+            // Auto-fix eligible patterns
+            const autoFixable = failures.filter(f => 
+              ['secrets-pragma', 'pyyaml-dependency', 'unused-imports', 'coverage-threshold'].includes(f.failure_pattern)
+            );
+            if (autoFixable.length > 0) {
+              report.recommendations.short_term.push(`${autoFixable.length} failures are auto-fixable — run orchestrator`);
+            }
+
+            // Write JSON report
+            require('fs').writeFileSync('ci-triage-report.json', JSON.stringify(report, null, 2));
+            core.setOutput('json_report', JSON.stringify(report));
+            console.log('Generated structured JSON report with', failures.length, 'failures');
+
       # ── Step 3: Upsert the triage issue (create or update, never duplicate) ──
       - name: Upsert triage issue
         id: upsert-issue
@@ -379,7 +442,9 @@ jobs:
         uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: ci-triage-report-${{ github.run_id }}
-          path: ci-triage-report.md
+          path: |
+            ci-triage-report.md
+            ci-triage-report.json
           retention-days: 30
 
       - name: Generate job summary
