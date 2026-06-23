@@ -15,7 +15,7 @@ class TestAgentCoreMinimal:
             'type': 'default',
             'enabled': True
         }
-        
+         # pragma: allowlist secret # pragma: allowlist secret
         assert agent_config['name'] == 'test_agent'
         assert agent_config['enabled'] is True
 
