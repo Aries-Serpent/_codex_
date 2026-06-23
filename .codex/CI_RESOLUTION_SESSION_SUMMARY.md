@@ -13,7 +13,7 @@
 1. ✅ Fix failing job "🔐 Enforce Secrets Baseline" (Job ID: 82842847952)
 2. ✅ Fix failing job "Validate Workflow Documentation Links" (Job ID: 82842847671)
 
-### Secondary Objectives  
+### Secondary Objectives   # pragma: allowlist secret
 3. ✅ Implement hardened automated solution for auto-fixing frequently failing checks
 4. ✅ Leverage issue #5041 findings for strategist pattern solution
 5. ✅ Update batch-ci-triage.yml with improved Copilot cloud agent prompts
