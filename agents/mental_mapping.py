@@ -184,8 +184,8 @@ class MentalNode:
         thought: str,
         reasoning_type: str,
         confidence: float,
-        alternatives: list[str] = None,
-        evidence: list[str] = None,
+        alternatives: list[str] | None = None,
+        evidence: list[str] | None = None,
     ) -> ReasoningStep:
         """Add a reasoning step to this node's chain"""
         step = ReasoningStep(
@@ -243,14 +243,14 @@ class MentalEdge:
     """An edge connecting two nodes in the mental map"""
 
     edge_id: str
-    source_id: str
-    target_id: str
-    edge_type: EdgeType
+    source_id: str | None
+    target_id: str | None
+    edge_type: EdgeType | None
     weight: float = 1.0  # Strength of relationship
 
     # Reasoning for this connection
     justification: str = ""
-    evidence: list[str] = field(default_factory=list)
+    evidence: list[str] | None = field(default_factory=list)
 
     # Validation
     validated: bool = False
@@ -405,15 +405,15 @@ class MentalMappingModel:
 
     def connect_nodes(
         self,
-        source_id: str = None,
-        target_id: str = None,
-        source: str = None,  # Alias for source_id
-        target: str = None,  # Alias for target_id
-        edge_type: EdgeType = None,
+        source_id: str | None = None,
+        target_id: str | None = None,
+        source: str | None = None,  # Alias for source_id
+        target: str | None = None,  # Alias for target_id
+        edge_type: EdgeType | None = None,
         properties: dict = None,
         weight: float = 1.0,
         justification: str = "",
-        evidence: list[str] = None,
+        evidence: list[str] | None = None,
     ) -> MentalEdge:
         """
         Create a connection between two nodes.
@@ -635,7 +635,7 @@ class MentalMappingModel:
         outcome_content: str,
         success: bool,
         actual_impact: float,
-        learned_lessons: list[str] = None,
+        learned_lessons: list[str] | None = None,
     ) -> MentalNode:
         """
         Record the outcome of a decision for learning
@@ -1026,7 +1026,7 @@ class MentalMappingModel:
 
         return clusters
 
-    def get_subgraph(self, node_ids: list[str] = None, nodes: list[str] = None) -> dict[str, Any]:
+    def get_subgraph(self, node_ids: list[str] | None = None, nodes: list[str] | None = None) -> dict[str, Any]:
         """
         Extract a subgraph containing only specified nodes.
 
@@ -1061,8 +1061,8 @@ class MentalMappingModel:
 
     def shortest_path(
         self,
-        start_id: str = None,
-        end_id: str = None,
+        start_id: str | None = None,
+        end_id: str | None = None,
         source: Union[str, "MentalNode"] = None,  # Alias for start_id, can be node or ID
         target: Union[str, "MentalNode"] = None,  # Alias for end_id, can be node or ID
     ) -> Optional[list[Union[str, "MentalNode"]]]:
@@ -1130,7 +1130,7 @@ class MentalMappingModel:
 
         return None  # No path found
 
-    def bfs(self, start_node: str = None, start_id: str = None) -> list[str]:
+    def bfs(self, start_node: str | None = None, start_id: str | None = None) -> list[str]:
         """
         Breadth-first search traversal from a starting node.
 
@@ -1166,7 +1166,7 @@ class MentalMappingModel:
 
         return result
 
-    def dfs(self, start_node: str = None, start_id: str = None) -> list[str]:
+    def dfs(self, start_node: str | None = None, start_id: str | None = None) -> list[str]:
         """
         Depth-first search traversal from a starting node.
 

@@ -24,7 +24,7 @@ from dataclasses import dataclass, field  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import Any, Callable, Optional  # noqa: E402
 
 
 class ActionType(Enum):
@@ -2535,7 +2535,7 @@ class PINNValidator:
             name="friction_bound", constraint_fn=self._friction_bound_residual, weight=0.5
         )
 
-    def add_constraint(self, name: str, constraint_fn: callable, weight: float = 1.0) -> None:
+    def add_constraint(self, name: str, constraint_fn: Callable, weight: float = 1.0) -> None:
         """Add a physics constraint"""
         self.constraints.append({"name": name, "fn": constraint_fn, "weight": weight})
 
