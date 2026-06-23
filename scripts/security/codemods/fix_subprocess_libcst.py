@@ -36,7 +36,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
         self.changes: list[str] = []
         self.needs_subprocess_import = False
 
-    def leave_Call(self, original_node: cst.Call, updated_node: cst.Call) -> cst.Call | cst.FlattenSentinel[cst.BaseSmallStatement]:
+    def leave_Call(self, _original_node: cst.Call, updated_node: cst.Call) -> cst.Call | cst.FlattenSentinel[cst.BaseSmallStatement]:
         """Transform subprocess.call and os.system calls."""
 
         # Match subprocess.call(..., shell=False)
