@@ -79,8 +79,8 @@ class EnhancedLinkValidator:
                 else:
                     self.file_errors[file_path] += 1
                     
-        except Exception:
-            pass
+        except Exception as exc:
+            self.file_errors[file_path] += 1
     
     def scan_all_files(self):
         """Scan all documentation files"""
