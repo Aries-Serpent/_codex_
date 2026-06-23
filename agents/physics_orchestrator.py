@@ -1211,7 +1211,7 @@ class EnergyState:
     entropy: float = 0.0
     temperature: float = 1.0
     state_id: str = ""
-    internal_energy: float = None  # Alias for energy
+    internal_energy: Optional[float] = None  # Alias for energy
 
     def __post_init__(self):
         """Handle internal_energy alias"""
@@ -1398,7 +1398,7 @@ class SwarmParticle:
 
     position: tuple[float, ...]
     velocity: tuple[float, ...]
-    personal_best_position: tuple[float, ...] = field(default=None)
+    personal_best_position: Optional[tuple[float, ...]] = field(default=None)
     personal_best_score: float = field(default=float("-inf"))
 
     def __post_init__(self):
@@ -1487,7 +1487,7 @@ class SwarmIntelligence:
 
         Updates velocities and positions of all particles.
         """
-        iteration_result = {
+        iteration_result: dict[str, Any] = {
             "particles": [],
             "global_best_score": self.global_best_score,
             "global_best_position": self.global_best_position,
