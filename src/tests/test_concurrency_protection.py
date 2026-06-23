@@ -110,7 +110,7 @@ class TestReadWriteLock:
         for f in reader_futures:
             try:
                 f.result(timeout=1.0)
-            except Exception:  # intentionally swallow future cleanup errors
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
                 pass
 
         assert not test_timeout, "Writer should not timeout"
@@ -391,7 +391,7 @@ class TestThreadSafeArchive:
 
             try:
                 blocker_future.result(timeout=1.0)
-            except Exception:  # intentionally swallow future cleanup errors
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
                 pass
 
 

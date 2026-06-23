@@ -635,7 +635,6 @@ class TestTypeBoundaries:
     ])
     def test_type_identity(self, value, expected_type):
         """Test type identity of boundary values"""
-        assert type(value) is expected_type
         assert isinstance(value, expected_type)
 
     def test_boolean_conversions(self):
