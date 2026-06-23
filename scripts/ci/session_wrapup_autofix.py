@@ -961,7 +961,12 @@ def _resolve_last_meaningful_base_ref(max_lookback: int = 10) -> str:
 
 
 def _last_commit_changed(path: Path) -> bool:
-    """Return True if *path* changed since the last meaningful (non-infra) commit."""
+    """Return True if *path* changed since the last meaningful (non-infra) commit.
+
+    Handles shallow git clones (e.g. fetch-depth: 1 in CI) by falling back to
+    checking the file list of the HEAD commit directly when the diff base cannot
+    be resolved.
+    """
     try:
         base_ref = _resolve_last_meaningful_base_ref()
         result = subprocess.run(
@@ -971,7 +976,16 @@ def _last_commit_changed(path: Path) -> bool:
             check=False,
         )
         if result.returncode != 0:
-            return False
+            # Shallow clone: base_ref parent objects may not be locally available.
+            # Fall back to listing the files touched by the HEAD commit itself.
+            result = subprocess.run(
+                ["git", "show", "--name-only", "--pretty=", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode != 0:
+                return False
         rel = str(path.relative_to(REPO_ROOT))
         return rel in result.stdout.splitlines()
     except OSError:

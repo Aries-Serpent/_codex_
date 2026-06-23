@@ -883,7 +883,7 @@ class AgentBrainInterface:
     # =========================================================================
 
     def diagnose(
-        self, symptoms: str | list[str], auto_apply_patterns: bool = False
+        self, symptoms: str | list[str], _auto_apply_patterns: bool = False
     ) -> BrainResponse:
         """
         Perform a full diagnosis based on symptoms.

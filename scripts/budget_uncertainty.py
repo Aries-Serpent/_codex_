@@ -70,7 +70,7 @@ def budget_cap(max_seconds: float = 10.0, label: str = ""):
                 and threading.current_thread() is threading.main_thread()
             )
             if timeout_supported:
-                def _handle_timeout(signum, frame):
+                def _handle_timeout(_signum, frame):
                     raise BudgetExceeded(
                         f"{label or func.__name__} exceeded {cap}s cap"
                     )

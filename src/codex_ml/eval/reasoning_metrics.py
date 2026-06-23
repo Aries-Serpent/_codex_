@@ -379,14 +379,14 @@ def calculate_explanation_depth(
 
 def calculate_consistency(
     responses: list[str],
-    reference_facts: Optional[list[dict[str, Any]]] = None,
+    _reference_facts: Optional[list[dict[str, Any]]] = None,
 ) -> float:
     """
     Calculate logical consistency of responses.
 
     Args:
         responses: list of response strings
-        reference_facts: Optional known facts to check against
+        _reference_facts: Optional known facts to check against (unused)
 
     Returns:
         Consistency score (0.0-1.0)

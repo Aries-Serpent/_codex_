@@ -145,14 +145,14 @@ class SignstoreClient:
         self,
         record: dict[str, Any],
         signature: str,
-        cert_chain: Optional[list[str]] = None,
+        _cert_chain: Optional[list[str]] = None,
     ) -> bool:
         """Verify Sigstore signature and certificate chain.
 
         Args:
             record: Original evidence record
             signature: Signature bundle (JSON string from sign_record)
-            cert_chain: Certificate chain (unused when sigstore SDK available)
+            _cert_chain: Certificate chain (unused when sigstore SDK available)
 
         Returns:
             True if signature valid and trusted

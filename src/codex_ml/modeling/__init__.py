@@ -51,7 +51,7 @@ def _load_base_model(name_or_path: str, *, dtype: str, device: str) -> Any:
 
 def load_model_and_tokenizer(
     model_name_or_path: str,
-    tokenizer_name_or_path: Optional[str] = None,
+    _tokenizer_name_or_path: Optional[str] = None,
     *,
     lora_settings: Optional[LoraSettings] = None,
     enable_lora: bool = False,

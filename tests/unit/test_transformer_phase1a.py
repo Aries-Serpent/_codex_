@@ -31,7 +31,6 @@ from src.codex.transform.transformer import (
     transform,
 )
 
-
 # =====================================================================
 # FIXTURES
 # =====================================================================
@@ -566,7 +565,7 @@ class TestIntegration:
     def test_transform_preserves_original_files(self, temp_source_files):
         """Test that transform doesn't modify files in dry-run."""
         original_content = (temp_source_files / "main.py").read_text()
-        result = transform(temp_source_files, "snap-001", dry_run=True)
+        transform(temp_source_files, "snap-001", dry_run=True)
         assert (temp_source_files / "main.py").read_text() == original_content
 
     def test_patch_workflow(self):

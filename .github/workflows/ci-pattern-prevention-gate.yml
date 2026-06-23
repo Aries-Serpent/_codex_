@@ -295,7 +295,7 @@ jobs:
     name: Notify Results
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [pattern-validation-summary]
+    needs: [pattern-validation-summary, validate-api-null-handling, validate-mypy-baseline, validate-documentation-links]
     if: always() && github.event_name == 'pull_request'
     steps:
       - name: Comment on PR with results

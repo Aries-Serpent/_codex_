@@ -317,7 +317,7 @@ def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> tuple
 def _run_batch(
     batch_index: int,
     files: list[str],       # serialisable strings
-    cfg_name: str,
+    _cfg_name: str,  # unused, kept for signature compatibility
     timeout: int,
     maxfail: int,
     junit_dir: str,

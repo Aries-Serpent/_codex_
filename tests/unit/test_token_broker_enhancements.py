@@ -10,13 +10,12 @@ from __future__ import annotations
 import json
 import time
 
-
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry, ControlClass
 from codex.autonomy.token_broker import (
-    CircuitBreakerState, # pragma: allowlist secret # pragma: allowlist secret
+    CircuitBreakerState,  # pragma: allowlist secret # pragma: allowlist secret
     TokenBroker,
     TokenCircuitBreaker,
-    TokenHealthChecker,
+    TokenHealthChecker, # pragma: allowlist secret
     TokenHealthStatus,
     TokenRotationScheduler,
     TokenSource,
@@ -253,7 +252,6 @@ class TestTokenCircuitBreaker:
 
         for _ in range(5):
             cb.record_failure(TokenSource.GITHUB_APP)
-        old_backoff = cb.get_backoff_seconds(TokenSource.GITHUB_APP)
 
         cb.record_success(TokenSource.GITHUB_APP)
         assert cb.get_backoff_seconds(TokenSource.GITHUB_APP) == 0

@@ -65,6 +65,10 @@ SKIP_FILES: frozenset[str] = frozenset({
     ".github/workflows/pages-mkdocs.yml",
     ".github/workflows.backup.20260214_131353/pages-mkdocs.yml",
     "scripts/ci/check_cross_references.py",  # self-referential: documents the syntax it detects
+    # Generated link-validation reports that document broken/regex-like links as content.
+    # The [text](path) patterns inside are data items being reported, not navigation links.
+    "docs/maintenance/LINK_VALIDATION_REPORT.md",
+    "docs/quality/BROKEN_LINKS_REPORT.md",
 })
 
 # Only explicit Markdown links: [text](path)

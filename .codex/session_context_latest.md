@@ -1,39 +1,39 @@
-# Session Context — 2026-06-23T06:53:39Z
-**Branch:** `copilot/fix-enforce-secrets-baseline-job`  **PR:** #5069  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-23T20:32:09Z
+**Branch:** `copilot/fetch-security-scan-results`  **PR:** #5070  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4836` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4800` (✅)
+- GraphQL remaining: `4972` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5069 — fix(ci): expand secrets baseline auto-fix regex for internal files and manifests
-State: `open`  Draft: `False`  Branch: `copilot/fix-enforce-secrets-baseline-job` → `main`
+## 📋 PR #5070 — Phase 9: Parallel track execution — link validation, dead code cleanup, coverage gap-fill, QA validation, and Copilot Agent workflow upgrade to Claude Haiku 4.5
+State: `open`  Draft: `False`  Branch: `copilot/fetch-security-scan-results` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-23)
+- **.github/workflows/copilot-agent-checkin.yml** — `failure` on `copilot/fetch-security-scan-results` (2026-06-23)
 
 ## 📝 Recent Commits
-- `57a0a776` fix(ci): expand secrets baseline auto-fix regex to include .codex/aftermath, k8s — copilot-swe-agent[bot] (2026-06-23)
-- `1e98f9b7` WIP: Fix secrets baseline enforcer auto-fix regex — copilot-swe-agent[bot] (2026-06-23)
-- `e20a6d45` chore: update performance dashboard [skip ci] — mbaetiong (2026-06-23)
-- `0d686bba` Merge pull request #5068 from Aries-Serpent/copilot/fix-workflow-documentation-l — Statix (2026-06-23)
-- `d6ca04bb` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
-- `582c26e5` fix(ci): standardize glob pattern quoting in validate-api-null-handling.yml — copilot-swe-agent[bot] (2026-06-23)
-- `b80235f8` fix(review): complete all PR #5068 review comment fixes with resolving commit SH — copilot-swe-agent[bot] (2026-06-23)
-- `2591f875` fix(review): remove unused Any import from peft_utils.py — copilot-swe-agent[bot] (2026-06-23)
+- `8d46dc95` fix: yamllint indentation errors in session-done workflow + .yamllint.yml indent — copilot-swe-agent[bot] (2026-06-23)
+- `283f188c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-23)
+- `80fbbebd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-23)
+- `4b1f460b` fix: resolve YAML parse error in copilot-agent-checkin.yml (Workflow Compliance  — copilot-swe-agent[bot] (2026-06-23)
+- `db6ea9e4` fix: actionlint needs list + upgrade all Copilot Agent workflows to claude-haiku — copilot-swe-agent[bot] (2026-06-23)
+- `ac31e9a1` chore: plan CI fixes and Copilot workflow upgrades — copilot-swe-agent[bot] (2026-06-23)
+- `ad484d1f` Merge branch 'main' into copilot/fetch-security-scan-results — Statix (2026-06-23)
+- `c109e55a` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-23)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1421`
-- `CODEX_CI_FAILURE_RATE` = `1.5:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `cd44a77429b6940b93da64247b0c98c37244e08f`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1428`
+- `CODEX_CI_FAILURE_RATE` = `3.3:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `aea037db099752bc609b6c2e962b6aea021b31d3`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations

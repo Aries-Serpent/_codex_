@@ -224,7 +224,7 @@ class TestValidatorsBoundaryConditions:
 
     def test_exact_brace_count_equality(self):
         """Kill: 'open_braces != close_braces' mutations.
-        
+
         Ensures validator requires exact equality.
         """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
@@ -285,7 +285,7 @@ class TestValidatorsBoundaryMutations:
 
     def test_balanced_braces_exact_equality(self):
         """Kill: != vs == mutation in brace counting.
-        
+
         If code has: if open_braces != close_braces: issues['balanced_braces'] = False
         Mutation would change != to ==
         """

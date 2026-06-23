@@ -105,7 +105,7 @@ class TerraformPlanExecutor:
             logger.error(f"Exception during terraform plan: {e}")
             return False, str(e)
 
-    def generate_plan_summary(self, plan_output: str) -> Dict:
+    def generate_plan_summary(self, _plan_output: str) -> Dict:
         """Generate human-readable plan summary."""
         return {
             "timestamp": "2026-06-20T09:47:00Z",

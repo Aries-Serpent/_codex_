@@ -154,8 +154,12 @@ jobs:
               `>`,
               `> ${preview.slice(0, 300)}${preview.length > 300 ? '…' : ''}`,
               ``,
-              `@copilot+claude-sonnet-4.6 A maintainer replied in the linked discussion. ` +
+              `@copilot+claude-haiku-4.5 /plan`,
+              ``,
+              `A maintainer replied in the linked discussion. ` +
               `Please review the response and act on it in your next session.`,
+              ``,
+              `> **💡 Parallel execution:** Use the \`task\` tool to delegate independent subtasks to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`unified-coverage-agent\`) to work in parallel.`,
               ``,
               `---`,
               `*Auto-bridged by \`discussion-response-bridge.yml\` (RC-3, S300) · ` +

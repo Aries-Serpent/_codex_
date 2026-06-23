@@ -221,12 +221,11 @@ class DelegationEngine:
         """Get all completed tasks."""
         return [t for t in self.tasks.values() if t.status in (TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.TIMEOUT)]
 
-    def collect_results(self, timeout_seconds: int = 300, wait_for_all: bool = False) -> AggregatedResult:
+    def collect_results(self, timeout_seconds: int = 300) -> AggregatedResult:
         """
         Collect results from parallel agents (non-blocking).
 
-        If wait_for_all=True, polls until all tasks complete or timeout.
-        If wait_for_all=False, returns immediately with current state.
+        Returns immediately with current state.
         """
         result = AggregatedResult(
             result_id=str(uuid.uuid4())[:8],

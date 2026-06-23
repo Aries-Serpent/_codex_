@@ -15,7 +15,7 @@ This directory contains comprehensive audit reports and tools for documentation 
 
 ### Supporting Files
 
-- **[../admin_docs_audit.py](../admin_docs_audit.py)** - Reusable audit script (12K)
+- **`admin_docs_audit.py`** - Reusable audit script (12K)
 
 ---
 
@@ -161,7 +161,7 @@ Edit `admin_docs_audit.py` to adjust:
 
 ## 🔗 Related Documentation
 
-- [Phase 12 Documentation Quality Planset](../docs/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md)
+- [Phase 12 Documentation Quality Planset](./plans/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md)
 - [MkDocs Fix Plan](../docs/mkdocs_fix_plan.md)
 - [MkDocs Warnings Analysis](../docs/mkdocs_warnings_analysis.md)
 
