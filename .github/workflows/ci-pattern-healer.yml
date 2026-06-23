@@ -70,6 +70,7 @@ jobs:
 
       - name: Detect failing patterns
         id: detect
+        continue-on-error: true
         run: |
           # Run orchestrator in check-only mode with JSON output
           python .github/scripts/ci-autofix-orchestrator.py \
@@ -80,7 +81,8 @@ jobs:
           if [ -f .codex/ci-patterns-detected.json ]; then
             TOTAL=$(jq '.total_issues' .codex/ci-patterns-detected.json)
             AUTO_FIX=$(jq '.auto_fixable' .codex/ci-patterns-detected.json)
-            echo "patterns=$(jq -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)" >> "$GITHUB_OUTPUT"
+            PATTERNS=$(jq -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)
+            echo "patterns=$PATTERNS" >> "$GITHUB_OUTPUT"
             echo "needs_healing=$([[ $TOTAL -gt 0 && $AUTO_FIX -gt 0 ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
             echo "✅ Detected $TOTAL issues ($AUTO_FIX auto-fixable)"
           else

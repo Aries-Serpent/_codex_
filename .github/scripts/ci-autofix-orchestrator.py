@@ -90,8 +90,12 @@ class CIAutoFixOrchestrator:
             if not self.check_only and not self.dry_run:
                 self._apply_fixes()
 
-            # Return 1 if check-only/dry-run and issues exist, or if there are unfixed issues after fix attempt
+            # Determine exit code based on mode:
+            # - check-only/dry-run: return 1 if issues exist (signal for CI to be aware)
+            # - normal mode: return 1 only if there are unfixed/manual issues
             if self.check_only or self.dry_run:
+                # In check-only mode, return 1 to signal issues were detected
+                # The workflow should use continue-on-error to handle this gracefully
                 return 1 if self.issues else 0
             else:
                 # In normal mode, return 1 if there are:
@@ -101,8 +105,10 @@ class CIAutoFixOrchestrator:
                 has_failed_fixes = any(not fix.fixed for fix in self.fixes)
                 return 1 if (has_manual_issues or has_failed_fixes) else 0
         except Exception as e:
+            # Return 2 for actual errors to distinguish from "issues detected"
             print(f"::error::Orchestrator error: {e}", file=sys.stderr)
-            return 1
+            print(f"Diagnostic report written to .codex/ci-patterns-detected.json (with error)")
+            return 2
 
     def _detect_pattern_1_unused_imports(self) -> None:
         """Pattern 1: Detect unused imports (ruff F401)."""
