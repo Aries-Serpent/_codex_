@@ -110,7 +110,7 @@ class RestrictedUnpickler(pickle.Unpickler):
 
 
 def safe_pickle_load(
-    file_path: str,
+    file_path: str | Path,
     verify_signature: bool = False,
     secret_key: Optional[bytes] = None,
     use_restricted_unpickler: bool = True,
@@ -255,7 +255,7 @@ def trusted_pickle_dumps(
 
 def safe_pickle_dump(
     obj: Any,
-    file_path: str,
+    file_path: str | Path,
     add_signature: bool = False,
     secret_key: Optional[bytes] = None,
     *,

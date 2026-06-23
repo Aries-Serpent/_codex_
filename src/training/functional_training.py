@@ -55,8 +55,8 @@ DataLoader = torch.utils.data.DataLoader
 try:  # pragma: no cover - optional config dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - omegaconf not installed
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
 
 try:  # pragma: no cover - optional logging dependency
     from codex_ml.monitoring.codex_logging import (
@@ -83,7 +83,7 @@ except Exception:  # pragma: no cover - metrics optional
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except Exception:  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None  # type: ignore[assignment]
+    manifest_for_paths = None  # type: ignore
 
 
 try:  # pragma: no cover - optional model registry
@@ -137,7 +137,7 @@ except Exception:  # pragma: no cover - hf trainer not available
     def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
         return {}
 
-    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:  # type: ignore[assignment]
+    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:  # type: ignore
         norm = os.fspath(identifier) if isinstance(identifier, os.PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")
