@@ -13,25 +13,19 @@ Tests for:
 from __future__ import annotations
 
 import concurrent.futures
-import json
 import sqlite3
 import threading
 import time
-from pathlib import Path
-from typing import List, Dict, Any
 
 import pytest
 
 from codex.logging.concurrency import (
+    DeadlockRecovery,
     ReadWriteLock,
     SQLiteConnectionPool,
-    ArchiveOperationLock,
-    DeadlockRecovery,
-    LockMetrics,
 )
+from codex.logging.thread_safe_archive import ThreadSafeArchive
 from codex.logging.thread_safe_session_db import ThreadSafeSessionDB
-from codex.logging.thread_safe_embeddings import ThreadSafeSessionEmbeddings
-from codex.logging.thread_safe_archive import ThreadSafeArchive, ArchiveSessionGuard
 
 
 class TestReadWriteLock:
@@ -116,7 +110,7 @@ class TestReadWriteLock:
         for f in reader_futures:
             try:
                 f.result(timeout=1.0)
-            except:
+            except Exception:  # intentionally swallow future cleanup errors
                 pass
 
         assert not test_timeout, "Writer should not timeout"
@@ -180,7 +174,7 @@ class TestSQLiteConnectionPool:
                 result = cursor.fetchone()[0]
                 results.append(result)
                 return True
-            except Exception as e:
+            except Exception:
                 results.append(None)
                 return False
 
@@ -341,7 +335,7 @@ class TestThreadSafeArchive:
                         operation_times[op_id]['end'] = time.time()
                         operation_order.append(op_id)
                 return True
-            except Exception as e:
+            except Exception:
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -397,7 +391,7 @@ class TestThreadSafeArchive:
 
             try:
                 blocker_future.result(timeout=1.0)
-            except:
+            except Exception:  # intentionally swallow future cleanup errors
                 pass
 
 
@@ -459,7 +453,7 @@ class TestDeadlockRecovery:
 
     def test_retry_with_backoff(self, tmp_path):
         """Test retry with exponential backoff."""
-        db_path = str(tmp_path / "deadlock.db")
+        _db_path = str(tmp_path / "deadlock.db")
         attempt_count = [0]
 
         def func_with_retry():

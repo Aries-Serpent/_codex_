@@ -635,7 +635,7 @@ class TestTypeBoundaries:
     ])
     def test_type_identity(self, value, expected_type):
         """Test type identity of boundary values"""
-        assert type(value) == expected_type
+        assert type(value) is expected_type
         assert isinstance(value, expected_type)
 
     def test_boolean_conversions(self):
@@ -763,8 +763,8 @@ class TestIteratorBoundaries:
     def test_generator_edge_cases(self):
         """Test generator function edge cases"""
         def empty_generator():
-            return
-            # yield removed - unreachable after return
+            if False:  # noqa: SIM210
+                yield  # pragma: no cover
 
         def single_yield_generator():
             yield 1

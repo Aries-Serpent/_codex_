@@ -299,8 +299,8 @@ class TestAsyncIteratorEdgeCases:
     async def test_empty_async_iterator(self):
         """Test empty async iterator"""
         async def empty_generator():
-            return
-            # yield removed - unreachable after return
+            if False:  # noqa: SIM210
+                yield  # pragma: no cover
 
         items = []
         async for item in empty_generator():
