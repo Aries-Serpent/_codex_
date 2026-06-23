@@ -396,6 +396,60 @@ Rollback Signal: `[PLACEHOLDER:rollback_signal]` crossing threshold
 
 For questions, mention `@maintainer` in the Architecture Review forum or open a discussion thread.
 
+## CI Pattern Prevention
+
+This repository uses automated prevention patterns to catch and fix common CI failures before they block merges. These patterns are deployed continuously and can be run manually for validation.
+
+### Deployed Prevention Patterns
+
+**RP-001: API Null-Handling Validation**
+- **Purpose**: Prevents NoneType crashes in API response processing
+- **Auto-fix command**: `python scripts/ci/validate_api_null_handling.py --fix`
+- **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-001
+
+**RP-002: mypy Type Safety Baseline**
+- **Purpose**: Enforces type annotation consistency and prevents type regressions
+- **Auto-fix command**: `python scripts/ci/mypy_baseline.py --auto-fix`
+- **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-002
+
+**RP-003: Documentation Link Validation**
+- **Purpose**: Detects and fixes broken links in markdown documentation
+- **Auto-fix command**: `python scripts/ci/link_validator.py --validate --fix`
+- **Reference**: `.codex/CI_PATTERN_PREVENTION_GUIDE.md` § RP-003
+
+### Quick Start
+
+**To validate patterns locally before committing:**
+```bash
+# Validate all three patterns
+python scripts/ci/validate_api_null_handling.py --validate
+python scripts/ci/mypy_baseline.py --check
+python scripts/ci/link_validator.py --validate
+
+# Auto-fix any issues found
+python scripts/ci/validate_api_null_handling.py --fix
+python scripts/ci/mypy_baseline.py --auto-fix
+python scripts/ci/link_validator.py --validate --fix
+```
+
+### Autonomous Fixes
+
+Prevention patterns are automatically triggered in CI when violations are detected:
+- **Detection**: Patterns monitored on every PR push
+- **Diagnosis**: Root cause identified by specialized agents
+- **Fix**: Auto-fix applied using pattern-specific commands
+- **Validation**: Results verified and reported in PR comments
+
+### Resources
+
+- **Comprehensive Guide**: [.codex/CI_PATTERN_PREVENTION_GUIDE.md](.codex/CI_PATTERN_PREVENTION_GUIDE.md)
+- **Incident Archive**: [.codex/archive/CI_INCIDENTS/2026-06-23_RESOLUTION.md](.codex/archive/CI_INCIDENTS/2026-06-23_RESOLUTION.md)
+- **Issue Tracking**: [GitHub Issue #5067](https://github.com/Aries-Serpent/_codex_/issues/5067)
+- **Implementation PR**: [GitHub PR #5068](https://github.com/Aries-Serpent/_codex_/pull/5068)
+- **Quarterly Review**: [Scheduled 2026-09-23](.codex/QUARTERLY_PATTERN_REVIEW_2026Q3.md)
+
+---
+
 ## Session Wrap-up Compliance Guide
 
 All development sessions must comply with our strict accountability and changelog standards before completion. This ensures that every autonomous or human-led action is properly documented for future reference and compliance tracking.

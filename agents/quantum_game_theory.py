@@ -939,6 +939,10 @@ class QuantumInspiredGameEngine:
 
         Uses parameter-shift rule (quantum gradient estimation).
         """
+        # Check if wavefunction is available
+        if self.game_state.joint_wavefunction is None:
+            return 0.0
+
         # Save current state
         psi_backup = self.game_state.joint_wavefunction.copy()
 
@@ -983,7 +987,7 @@ class QuantumInspiredGameEngine:
         theta_red: float = 0.1,
         apply_noise: bool = False,
         decoherence_gamma: float = 0.0,
-    ) -> dict[str, float]:
+    ) -> dict[str, Any]:
         """Play a single round of the quantum game.
 
         Args:
@@ -1069,6 +1073,9 @@ class BlueRedTeamSimulator:
     - Risk-sensitive decision making
     - Noise modeling via decoherence
     """
+
+    classical_engine: Optional[ClassicalGameEngine]
+    quantum_engine: Optional[QuantumInspiredGameEngine]
 
     def __init__(
         self,
