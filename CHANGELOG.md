@@ -9,6 +9,7 @@
 - fix(ci): actionlint — added `validate-api-null-handling`, `validate-mypy-baseline`, `validate-documentation-links` to `notify-results` needs in `ci-pattern-prevention-gate.yml` (2026-06-23T20:01Z)
 - feat(workflows): upgrade all Copilot Agent workflow triggers to `claude-haiku-4.5` with `/plan` + Custom Agents parallel delegation across 6 workflow files (2026-06-23T20:01Z)
 - fix(ci): `copilot-agent-checkin.yml` YAML parse error — multi-line template literal with column-1 content terminated block scalar early; converted to single-line with `\n` escapes (2026-06-23T20:22Z)
+- fix(ci): yamllint indentation failures in `copilot-agent-session-done.yml` — added `indent-sequences: whatever` to `.yamllint.yml` to allow both indented and non-indented sequence styles used across GitHub Actions workflows (2026-06-23T20:26Z)
 
 ### Fixed
 - fix: CI metrics collector NoneType crash in phase_8_3_benchmark_collector.py (lines 209-218)

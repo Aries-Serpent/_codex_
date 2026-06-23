@@ -12,3 +12,8 @@ rules:
   colons:
     max-spaces-after: -1
     max-spaces-before: 0
+  # Allow both indented and non-indented sequence styles (GitHub Actions uses both)
+  indentation:
+    spaces: 2
+    indent-sequences: whatever
+    check-multi-line-strings: false
