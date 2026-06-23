@@ -262,16 +262,28 @@ jobs:
 
               body += `**Copilot Resolution Prompt:**\n`;
               body += `\`\`\`\n`;
-              body += `@copilot Fix the failing CI workflow "${wfName}" (run #${latestRun.run_number}).\n`;
+              body += `@copilot Fix the failing CI workflow "${wfName}" (run #${latestRun.run_number}).\n\n`;
+              body += `**Workflow Context:**\n`;
               body += `- Workflow file: .github/workflows/${latestRun.workflow_file}\n`;
-              body += `- Failed jobs: ${latestRun.failed_jobs.join(', ') || 'see run'}\n`;
-              if (latestRun.failing_steps.length > 0) {
-                body += `- Failing steps: ${latestRun.failing_steps.slice(0, 5).join('; ')}\n`;
-              }
+              body += `- Branch: ${latestRun.head_branch}\n`;
+              body += `- Commit: ${latestRun.head_sha}\n`;
               body += `- Run URL: ${latestRun.run_url}\n`;
               if (latestRun.pr_number) {
                 body += `- Associated PR: ${context.payload.repository.html_url}/pull/${latestRun.pr_number}\n`;
               }
+              body += `\n**Failure Details:**\n`;
+              body += `- Failed jobs: ${latestRun.failed_jobs.join(', ') || 'see run'}\n`;
+              if (latestRun.failing_steps.length > 0) {
+                body += `- Failing steps: ${latestRun.failing_steps.slice(0, 5).join('; ')}\n`;
+              }
+              body += `\n**Analysis Instructions:**\n`;
+              body += `1. Examine the workflow file and job logs\n`;
+              body += `2. Identify root cause (dependency, environment, configuration)\n`;
+              body += `3. Check if this pattern matches known CI failure patterns (see #5041)\n`;
+              body += `4. Apply fix and validate with local test if possible\n`;
+              body += `5. If auto-fixable: commit with [skip ci] and reference this issue\n`;
+              body += `6. If manual: create actionable remediation steps\n`;
+              body += `\n**Note:** This failure may be part of a recurring pattern. Check the CI Failure Triage Report (#5041) for similar issues.\n`;
               body += `\`\`\`\n\n`;
 
               if (runs.length > 1) {
@@ -294,6 +306,74 @@ jobs:
 
             core.setOutput('report_body', body);
             core.setOutput('has_failures', failures.length > 0 ? 'true' : 'false');
+
+      # ── Step 2b: Generate structured JSON for agent consumption ────────────────
+      - name: Generate structured JSON report
+        id: json-report
+        if: always()
+        uses: actions/github-script@v8
+        env:
+          FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
+        with:
+          script: |
+            const fs = require('fs');
+            const now = new Date().toISOString();
+            const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+            const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';
+            
+            // Read failures from file
+            let failures = [];
+            try {
+              if (fs.existsSync(failuresPath)) {
+                const fileContent = fs.readFileSync(failuresPath, 'utf8');
+                failures = JSON.parse(fileContent);
+              }
+            } catch (e) {
+              console.warn(`Could not read failures from ${failuresPath}:`, e);
+            }
+
+            // Group by pattern/severity
+            const byPattern = {};
+            for (const f of failures) {
+              const key = f.failure_pattern || 'unknown';
+              if (!byPattern[key]) byPattern[key] = [];
+              byPattern[key].push(f);
+            }
+
+            const report = {
+              timestamp: now,
+              repository: `${context.repo.owner}/${context.repo.repo}`,
+              total_failures: failures.length,
+              affected_workflows: new Set(failures.map(f => f.workflow_name)).size,
+              failures_by_pattern: byPattern,
+              triage_run_url: runUrl,
+              recommendations: {
+                immediate: [],
+                short_term: [],
+                long_term: []
+              }
+            };
+
+            // Add recommendations based on patterns
+            if (failures.length === 0) {
+              report.recommendations.immediate.push('No failures detected — CI health is good');
+            } else if (failures.length > 10) {
+              report.recommendations.immediate.push('High failure rate detected — escalate for investigation');
+              report.recommendations.short_term.push('Run ci-pattern-healer workflow to auto-fix common patterns');
+            }
+
+            // Auto-fix eligible patterns
+            const autoFixable = failures.filter(f => 
+              ['secrets-pragma', 'pyyaml-dependency', 'unused-imports', 'coverage-threshold'].includes(f.failure_pattern)
+            );
+            if (autoFixable.length > 0) {
+              report.recommendations.short_term.push(`${autoFixable.length} failures are auto-fixable — run orchestrator`);
+            }
+
+            // Write JSON report
+            require('fs').writeFileSync('ci-triage-report.json', JSON.stringify(report, null, 2));
+            core.setOutput('json_report', JSON.stringify(report));
+            console.log('Generated structured JSON report with', failures.length, 'failures');
 
       # ── Step 3: Upsert the triage issue (create or update, never duplicate) ──
       - name: Upsert triage issue
@@ -367,7 +447,9 @@ jobs:
         uses: actions/upload-artifact@v5 # v7.0.1
         with:
           name: ci-triage-report-${{ github.run_id }}
-          path: ci-triage-report.md
+          path: |
+            ci-triage-report.md
+            ci-triage-report.json
           retention-days: 30
 
       - name: Generate job summary
