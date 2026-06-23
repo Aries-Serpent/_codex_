@@ -28,7 +28,7 @@ Phase 6 implements comprehensive thread-safety and concurrency protection for th
 
 **Implementation**: `src/codex/logging/concurrency.py` → `SQLiteConnectionPool`
 
-```python
+```text
 # Per-thread connection reuse
 pool = SQLiteConnectionPool(
     db_path=".codex/sessions.db",

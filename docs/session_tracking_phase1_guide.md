@@ -396,7 +396,7 @@ def select_agent_for_task(task):
 
 ### Issue: Import Error
 
-```python
+```text
 >>> from codex.logging.session_query import fetch_rows
 ModuleNotFoundError: No module named 'codex'
 ```
@@ -412,7 +412,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 
 ### Issue: Database Not Found
 
-```python
+```text
 >>> resolve_db_path(None)
 FileNotFoundError: No database found. Provide --db or set CODEX_DB_PATH
 ```
