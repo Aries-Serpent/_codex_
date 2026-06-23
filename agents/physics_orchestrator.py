@@ -1512,6 +1512,9 @@ class SwarmIntelligence:
             new_velocity = []
             new_position = []
 
+            # Use personal_best_position if set, otherwise use current position
+            pbest = particle.personal_best_position if particle.personal_best_position is not None else particle.position
+
             for d in range(self.dimensions):
                 # Velocity update equation
                 r1, r2 = 0.5, 0.5  # Simplified random factors
@@ -1519,7 +1522,7 @@ class SwarmIntelligence:
                 cognitive_component = (
                     self.cognitive
                     * r1
-                    * (particle.personal_best_position[d] - particle.position[d])
+                    * (pbest[d] - particle.position[d])
                 )
                 social_component = (
                     self.social
@@ -2377,7 +2380,7 @@ class SuperpositionExplorer:
         # Calculate optimization scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         # Apply amplitude based on score
         new_amplitudes = {}
@@ -2425,7 +2428,7 @@ class SuperpositionExplorer:
             self.apply_interference()
 
             self.evaluation_history.append(
-                {"iteration": i, "probabilities": self.superposition_state.get_probabilities()}
+                {"iteration": i, "probabilities": self.superposition_state.get_probabilities()}  # type: ignore[union-attr]
             )
 
     def measure_optimal_path(self) -> tuple[ActionPath, float]:
@@ -2441,7 +2444,7 @@ class SuperpositionExplorer:
         probs = self.superposition_state.get_probabilities()
 
         # Find highest probability path
-        max_path_id = max(probs, key=probs.get)
+        max_path_id = max(probs, key=probs.get)  # type: ignore[arg-type]
         max_prob = probs[max_path_id]
 
         # Extract path index
@@ -2467,7 +2470,7 @@ class SuperpositionExplorer:
         # Calculate scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         # Optimal iterations ≈ π/4 * √N
         if grover_iterations == 0:
@@ -2574,7 +2577,7 @@ class PINNValidator:
         """
         # Ensure path properties are calculated
         path.calculate_total_energy()
-        path.calculate_optimization_score(self._mlp_scorer)
+        path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         residuals = {}
         weighted_sum = 0.0
@@ -2609,7 +2612,7 @@ class PINNValidator:
             return "path_acceptable"
         if physics_score >= 0.5:
             # Find worst constraint
-            worst = max(residuals, key=residuals.get)
+            worst = max(residuals, key=residuals.get)  # type: ignore[arg-type]
             return f"improve_{worst}"
         return "path_infeasible"
 
@@ -2701,7 +2704,7 @@ class QuantumPhysicsOrchestrator:
 
         for path in paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score(self._mlp_scorer)
+            path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
             state = EnergyState(
                 configuration={"action": path.action_type.value, "description": path.description},
@@ -2728,7 +2731,7 @@ class QuantumPhysicsOrchestrator:
 
         Combines all techniques for optimal decision making.
         """
-        results = {"workflow": "quantum_physics_orchestration"}
+        results: dict[str, Any] = {"workflow": "quantum_physics_orchestration"}
 
         # Phase 1: Quantum walk exploration
         if target_action and len(paths) > 0:
@@ -2981,7 +2984,7 @@ class ConservationLawChecker:
         return result
 
     def check_momentum_conservation(
-        self, momenta: list[tuple[float, float]], forces_applied: list[tuple[float, float]] = None
+        self, momenta: list[tuple[float, float]], forces_applied: Optional[list[tuple[float, float]]] = None
     ) -> dict[str, Any]:
         """
         Check momentum conservation: Σp = constant (if no external forces)
@@ -3379,7 +3382,7 @@ class HamiltonianEvolver:
         if hamiltonian is None:
             hamiltonian = self.harmonic_hamiltonian
 
-        fixed_points = []
+        fixed_points: list[dict[str, Any]] = []
         step = (search_range[1] - search_range[0]) / resolution
 
         for i in range(resolution):
