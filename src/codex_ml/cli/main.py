@@ -510,14 +510,14 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except Exception:  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore[misc]
-        OmegaConf = None  # type: ignore[misc]
+        DictConfig = Any  # type: ignore[assignment]
+        OmegaConf = None  # type: ignore[assignment]
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
     except Exception:  # pragma: no cover
 
-        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[misc]
+        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[assignment]
             return None
 
     # Module-level variable to cache functional training main for testing/mocking
@@ -536,7 +536,7 @@ else:
                 _functional_training_main = _functional_training
         return _functional_training_main
 
-    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:  # type: ignore[misc]
+    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:  # type: ignore[assignment]
         main_fn = _load_functional_training_main()
         if main_fn is None:  # pragma: no cover - safety fallback
             raise RuntimeError("codex.training.main is unavailable")
@@ -640,7 +640,7 @@ else:
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore[misc]
+    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore[assignment]
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 

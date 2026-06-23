@@ -14,8 +14,8 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore[misc]
-    OmegaConf = None  # type: ignore[misc]
+    DictConfig = Any  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment]
 
 __all__ = [
     "ConfigError",
@@ -818,7 +818,7 @@ except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when
             "pydantic is required to generate evaluation schemas; install the optional dependencies"
         )
 
-    def get_settings():  # type: ignore[misc]
+    def get_settings():  # type: ignore[assignment]
         raise ModuleNotFoundError(
             "pydantic is required to load AppSettings; install the optional dependencies"
         )

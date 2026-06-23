@@ -48,12 +48,12 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None  # type: ignore[misc]
+    Version = None  # type: ignore[assignment]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
 except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[misc]
+    _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
@@ -64,7 +64,7 @@ try:
 except Exception:  # pragma: no cover - optional dependency issues tolerated
     attach_integrity = None  # type: ignore[assignment]
 
-    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[misc]
+    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[assignment]
         return {}
 
 
@@ -72,10 +72,10 @@ try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
 except Exception:  # pragma: no cover - optional dependency
 
-    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[misc]
+    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[assignment]
         return {}
 
-    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[misc]
+    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[assignment]
         return None
 
 

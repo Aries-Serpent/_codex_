@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - optional
-    DictConfig = object  # type: ignore[misc]
-    OmegaConf = None  # type: ignore[misc]
+    DictConfig = object  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment]
 
 DEFAULT_ENV_JSON = "environment.json"
 DEFAULT_ENV_NDJSON = "environment.ndjson"
