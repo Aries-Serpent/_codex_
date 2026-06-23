@@ -21,6 +21,10 @@ config/*.yaml
 # Allow completion summaries
 !*COMPLETE*.md
 !*_SUMMARY.md
+# Allow session schema SQL
+!session_schema.sql
+# Allow architecture documentation
+!*_ARCHITECTURE.md
 
 # ── Security: agent auth session files ───────────────────────────────────────
 # agent_auth_session.json is INTENTIONALLY tracked (whitelisted in root .gitignore

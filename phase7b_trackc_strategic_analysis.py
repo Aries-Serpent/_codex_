@@ -5,12 +5,8 @@ Focus: Weak modules identified in Track B's coverage analysis
 Approach: Targeted mutations on high-impact areas
 """
 
-import json
-import subprocess
-import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 
 class StrategicMutationAnalyzer:

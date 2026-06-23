@@ -11,12 +11,12 @@ import json
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import patch
 
 # Add validators to path
 sys.path.insert(0, str(Path(__file__).parents[0] / ".." / ".." / "scripts" / "ci" / "validators"))
 
-from base import ComplianceResult, RequirementValidator
+from base import ComplianceResult
 from req1_eligibility_validator import (
     REQ1EligibilityValidator,
     _check_branch_name,

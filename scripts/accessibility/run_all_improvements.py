@@ -6,7 +6,6 @@ Coordinates all accessibility checks and fixes across documentation.
 """
 
 import sys
-import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict

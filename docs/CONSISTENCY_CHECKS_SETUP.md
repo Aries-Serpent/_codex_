@@ -1,6 +1,6 @@
 # Consistency Checks Setup Guide
 
-This guide explains how to set up and use the CI/CD consistency checks for the _codex_ repository.
+This guide explains how to set up and use the CI/CD consistency checks for the *codex* repository.
 
 ## Overview
 
@@ -18,7 +18,7 @@ The consistency checks system includes:
 
 ```bash
 # From repository root
-bash .github/scripts/install-consistency-hooks.sh
+bash ../.github/scripts/install-consistency-hooks.sh
 ```
 
 ## Option 2: Manual Setup
@@ -26,35 +26,39 @@ bash .github/scripts/install-consistency-hooks.sh
 ### 1. Install Required Tools
 
 **macOS (using Homebrew):**
+
 ```bash
 brew install node
-npm install -g markdownlint-cli
+npm install -g markdownlint-CLI
 brew install yamllint
 ```
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt update
 sudo apt install nodejs npm yamllint
-npm install -g markdownlint-cli
+npm install -g markdownlint-CLI
 ```
 
 **General (npm):**
+
 ```bash
-npm install -g markdownlint-cli yamllint
+npm install -g markdownlint-CLI yamllint
 ```
 
 #### 2. Install Pre-commit Hook
 
 ```bash
 # Copy hook to .git/hooks/
-cp .github/scripts/pre-commit-hook.sh .git/hooks/pre-commit
+cp ../.github/scripts/pre-commit-hook.sh .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
 ## Usage
 
-**Note**: All executable commands in this **Usage** section should be run from the **repository root** directory unless otherwise specified.
+**Note**: All executable commands in this **Usage** section should be run from
+the **repository root** directory unless otherwise specified.
 
 ### Local Validation
 
@@ -75,13 +79,13 @@ markdownlint docs/my-doc.md
 
 ```bash
 # Check all links
-python3 .github/scripts/check-cross-references.py --repo-root="."
+python3 ../.github/scripts/check-cross-references.py --repo-root="."
 
 # Generate JSON report
-python3 .github/scripts/check-cross-references.py --repo-root="." --format=json
+python3 ../.github/scripts/check-cross-references.py --repo-root="." --format=JSON
 
 # GitHub Actions annotations
-python3 .github/scripts/check-cross-references.py --github-annotations --fail-on-errors
+python3 ../.github/scripts/check-cross-references.py --github-annotations --fail-on-errors
 ```
 
 ## Run Heading Validator
@@ -102,7 +106,8 @@ The pre-commit hook runs automatically before each commit and validates:
 5. **YAML Files** - Validates YAML syntax
 
 **Sample output:**
-```
+
+```text
 🔍 Running Pre-Commit Consistency Checks
 ════════════════════════════════════════════════════════════════════
 
@@ -127,6 +132,7 @@ The pre-commit hook runs automatically before each commit and validates:
 ```
 
 **To bypass the hook (not recommended):**
+
 ```bash
 git commit --no-verify
 ```
@@ -134,19 +140,21 @@ git commit --no-verify
 ### GitHub Actions Workflow
 
 The workflow runs automatically on:
+
 - Push to `main` or `0D_base_` branches
 - Pull requests to `main` or `0D_base_` branches
 - Changes to documentation files
 
-**Workflow file:** `.github/workflows/consistency-checks.yml`
+**Workflow file:** `../.github/workflows/consistency-checks.yml`
 
 ## Configuration
 
 ### Markdownlint Rules
 
-Configuration file: `.markdownlintrc`
+Configuration file: `../.markdownlintrc`
 
 Key rules enforced:
+
 - **MD003**: Consistent heading style (atx: `#`, not underlines)
 - **MD024**: Headings must not contain duplicate text (siblings only)
 - **MD025**: Single H1 per document
@@ -156,6 +164,7 @@ Key rules enforced:
 - **Alt text**: Images must have alt text
 
 **To disable a rule:**
+
 ```json
 {
   "MD025": false
@@ -165,24 +174,28 @@ Key rules enforced:
 ### Cross-Reference Patterns
 
 The checker validates:
+
 - Internal file links: `[text](path/to/file.md)`
 - Anchor references: `[text](file.md#anchor)`
 - Relative paths: `../docs/file.md`
 - Absolute repo paths: `/docs/file.md`
 
 **Supported:**
+
 - ✅ Relative paths
 - ✅ Absolute repo paths
 - ✅ Anchor references
 - ✅ External URLs (HTTP/HTTPS)
 
 **Skipped:**
+
 - 🔄 External URLs (not fully validated)
 - 🔄 Email links (mailto:)
 
 ### Heading Hierarchy Rules
 
 All documents must follow:
+
 1. ✅ First heading is H1 (`#`)
 2. ✅ No hierarchy jumps (H1 → H3 invalid, must use H2)
 3. ✅ Consistent nesting within documents
@@ -193,6 +206,7 @@ All documents must follow:
 ### Issue: Pre-commit hook not running
 
 **Solution:**
+
 ```bash
 # Verify hook is executable
 ls -la .git/hooks/pre-commit
@@ -204,22 +218,25 @@ chmod +x .git/hooks/pre-commit
 ## Issue: Markdownlint not found
 
 **Solution:**
+
 ```bash
-npm install -g markdownlint-cli
+npm install -g markdownlint-CLI
 
 # Or install locally
-npm install --save-dev markdownlint-cli
+npm install --save-dev markdownlint-CLI
 npx markdownlint docs/*.md
 ```
 
 ## Issue: Broken links reported but files exist
 
 **Possible causes:**
+
 - Symlinks not resolved correctly
 - Case sensitivity issues on case-insensitive filesystems
 - Special characters in filenames
 
 **Solution:**
+
 ```bash
 # Check exact file path
 ls -la path/to/file.md
@@ -232,6 +249,7 @@ grep "## My Heading" docs/file.md
 
 **Solution:**
 The checker reports external links as warnings. To ignore them:
+
 ```bash
 python3 .github/scripts/check-cross-references.py --format=text | grep "❌ BROKEN"
 ```
@@ -274,17 +292,20 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 4. **Summary Job** - Aggregates results
 
 **PR Annotations:**
+
 - Errors appear as ❌ annotations on PR
 - Warnings appear as ⚠️ (external links)
 - PR comments with detailed issues
 
 **Artifacts:**
+
 - Cross-reference reports (30-day retention)
 - Workflow logs for debugging
 
 ### Status Checks
 
 For merging PRs:
+
 - ✅ All consistency checks must pass
 - ⚠️ Warnings do not block merge
 - 🔄 External link warnings are informational
@@ -294,6 +315,7 @@ For merging PRs:
 ### Writing Documentation
 
 1. **Start with H1:**
+
    ```markdown
    # Document Title
    
@@ -301,12 +323,14 @@ For merging PRs:
    ```
 
 2. **Use consistent anchors:**
+
    ```markdown
    ## My Section
    [Link to section](#my-section)
    ```
 
 3. **Verify internal links:**
+
    ```bash
    python3 .github/scripts/check-cross-references.py --fail-on-errors
    ```
@@ -319,17 +343,20 @@ For merging PRs:
 ### Fixing Issues
 
 1. **Run locally first:**
+
    ```bash
    markdownlint --fix docs/**/*.md
-   python3 .github/scripts/check-cross-references.py
+   python3 ../.github/scripts/check-cross-references.py
    ```
 
 2. **Review changes:**
+
    ```bash
    git diff
    ```
 
 3. **Stage and commit:**
+
    ```bash
    git add docs/
    git commit -m "docs: fix consistency issues"
@@ -337,20 +364,23 @@ For merging PRs:
 
 ## Disabling Checks (Not Recommended)
 
-### Disable pre-commit hook for single commit:
+### Disable pre-commit hook for single commit
+
 ```bash
 git commit --no-verify
 ```
 
-### Disable pre-commit hook permanently:
+### Disable pre-commit hook permanently
+
 ```bash
 # Uninstall hook
 rm .git/hooks/pre-commit
 ```
 
-## Disable GitHub Actions workflow:
+## Disable GitHub Actions workflow
+
 ```yaml
-# In .github/workflows/consistency-checks.yml
+# In ../.github/workflows/consistency-checks.yml
 on:
   push:
     branches: []  # No branches trigger it
@@ -371,13 +401,14 @@ If you encounter problems:
 ## Further Reading
 
 - [Markdownlint Rules](https://github.com/DavidAnson/markdownlint/blob/main/README.md)
-- [Repository Markdown Standards](.markdownlintrc)
-- [Cross-Reference Validator Source](.github/scripts/check-cross-references.py)
-- [Workflow Configuration](.github/workflows/consistency-checks.yml)
+- [Repository Markdown Standards](../.markdownlintrc)
+- [Cross-Reference Validator Source](../.github/scripts/check-cross-references.py)
+- [Workflow Configuration](../.github/workflows/consistency-checks.yml)
 
 ## Support
 
 For questions or issues:
+
 - 📧 Contact: @mbaetiong
 - 📝 Issues: Create GitHub issue with label `documentation`
 - 🔍 Logs: Check GitHub Actions workflow runs for details

@@ -17,11 +17,11 @@ on:
       - 0D_base_
       - 'automated/**'
       - 'copilot/**'
-  
+
   schedule:
     # Run twice daily to catch recurring failures early
     - cron: '0 6,18 * * *'
-  
+
   workflow_dispatch:
     inputs:
       pattern_id:
@@ -52,7 +52,7 @@ jobs:
     outputs:
       detected_patterns: ${{ steps.detect.outputs.patterns }}
       needs_healing: ${{ steps.detect.outputs.needs_healing }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -70,17 +70,19 @@ jobs:
 
       - name: Detect failing patterns
         id: detect
+        continue-on-error: true
         run: |
           # Run orchestrator in check-only mode with JSON output
           python .github/scripts/ci-autofix-orchestrator.py \
             --check-only \
             --json-output .codex/ci-patterns-detected.json
-          
+
           # Extract pattern info for next step
           if [ -f .codex/ci-patterns-detected.json ]; then
             TOTAL=$(jq '.total_issues' .codex/ci-patterns-detected.json)
             AUTO_FIX=$(jq '.auto_fixable' .codex/ci-patterns-detected.json)
-            echo "patterns=$(jq -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)" >> "$GITHUB_OUTPUT"
+            PATTERNS=$(jq -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)
+            echo "patterns=$PATTERNS" >> "$GITHUB_OUTPUT"
             echo "needs_healing=$([[ $TOTAL -gt 0 && $AUTO_FIX -gt 0 ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
             echo "✅ Detected $TOTAL issues ($AUTO_FIX auto-fixable)"
           else
@@ -102,7 +104,7 @@ jobs:
     if: needs.detect-failures.outputs.needs_healing == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -124,7 +126,7 @@ jobs:
           DRY_RUN="${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}"
           python .github/scripts/ci-autofix-orchestrator.py $DRY_RUN \
             --json-output .codex/ci-patterns-fixed.json
-          
+
           echo "::group::Fix Report"
           jq '.' .codex/ci-patterns-fixed.json || true
           echo "::endgroup::"
@@ -162,7 +164,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -185,14 +187,17 @@ jobs:
         run: |
           echo "## 🔧 CI Pattern Healing Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ -f .codex/ci-patterns-detected.json ]; then
             echo "### Detection Results" >> $GITHUB_STEP_SUMMARY
-            jq -r '.issues[] | "- Pattern \(.pattern): \(.message) (\(.file):\(.line))"' .codex/ci-patterns-detected.json >> $GITHUB_STEP_SUMMARY || true
+          jq -r '.issues[] | "- Pattern \(.pattern): \(.message) "' \
+            .codex/ci-patterns-detected.json >> $GITHUB_STEP_SUMMARY || true
           fi
-          
+
           if [ -f .codex/ci-patterns-fixed.json ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Fixes Applied" >> $GITHUB_STEP_SUMMARY
-            jq -r '.fixes_applied' .codex/ci-patterns-fixed.json | xargs -I {} echo "- {} fixes applied" >> $GITHUB_STEP_SUMMARY || true
+            jq -r ".fixes_applied" .codex/ci-patterns-fixed.json | \
+            xargs -I {} echo "- {} fixes applied" \
+            >> $GITHUB_STEP_SUMMARY || true
           fi

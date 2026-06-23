@@ -9,7 +9,6 @@ Outputs Markdown formatted dashboard for hourly updates.
 import json
 import os
 from datetime import datetime, timedelta
-from typing import Optional
 
 
 class TriageDashboard:

@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "created": "2026-06-23T02:51:09Z",
+  "cleanups": [
+    {
+      "deleted_sessions": [
+        {
+          "session_id": "very-old-session",
+          "archive_location": "/tmp/tmpdwsmdkg1/archive/sessions/2026/01/very-old-session.parquet",
+          "file_size_bytes": 1000
+        }
+      ],
+      "total_bytes_freed": 0,
+      "timestamp": "2026-06-23T02:58:44.739294"
+    },
+    {
+      "deleted_sessions": [
+        {
+          "session_id": "very-old-session",
+          "archive_location": "/tmp/tmp0e00elde/archive/sessions/2026/01/very-old-session.parquet",
+          "file_size_bytes": 1000
+        }
+      ],
+      "total_bytes_freed": 0,
+      "timestamp": "2026-06-23T02:59:13.083794"
+    },
+    {
+      "deleted_sessions": [
+        {
+          "session_id": "very-old-session",
+          "archive_location": "/tmp/tmpwpwu3z8e/archive/sessions/2026/01/very-old-session.parquet",
+          "file_size_bytes": 1000
+        }
+      ],
+      "total_bytes_freed": 0,
+      "timestamp": "2026-06-23T02:59:41.203099"
+    },
+    {
+      "deleted_sessions": [
+        {
+          "session_id": "very-old-session",
+          "archive_location": "/tmp/tmp98m8uad1/archive/sessions/2023/09/very-old-session.parquet",
+          "file_size_bytes": 8501
+        }
+      ],
+      "total_bytes_freed": 8501,
+      "timestamp": "2026-06-23T03:00:01.610085"
+    }
+  ]
+}

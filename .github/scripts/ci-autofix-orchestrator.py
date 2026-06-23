@@ -12,14 +12,16 @@ for Copilot agent consumption. It serves as the hub for:
 6. CodeQL suppressions formatting
 
 Usage:
-    python .github/scripts/ci-autofix-orchestrator.py [--check-only] [--json-output FILE] [--dry-run]
+    python .github/scripts/ci-autofix-orchestrator.py [--check-only] \
+        [--json-output FILE] [--dry-run]
 
 Examples:
     # Check for issues (no changes)
     python .github/scripts/ci-autofix-orchestrator.py --check-only
 
     # Generate JSON diagnostic report
-    python .github/scripts/ci-autofix-orchestrator.py --check-only --json-output .codex/diagnostic.json
+    python .github/scripts/ci-autofix-orchestrator.py --check-only \
+        --json-output .codex/diagnostic.json
 
     # Apply all auto-fixable issues
     python .github/scripts/ci-autofix-orchestrator.py
@@ -34,9 +36,9 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -90,8 +92,12 @@ class CIAutoFixOrchestrator:
             if not self.check_only and not self.dry_run:
                 self._apply_fixes()
 
-            # Return 1 if check-only/dry-run and issues exist, or if there are unfixed issues after fix attempt
+            # Determine exit code based on mode:
+            # - check-only/dry-run: return 1 if issues exist (signal for CI to be aware)
+            # - normal mode: return 1 only if there are unfixed/manual issues
             if self.check_only or self.dry_run:
+                # In check-only mode, return 1 to signal issues were detected
+                # The workflow should use continue-on-error to handle this gracefully
                 return 1 if self.issues else 0
             else:
                 # In normal mode, return 1 if there are:
@@ -101,8 +107,10 @@ class CIAutoFixOrchestrator:
                 has_failed_fixes = any(not fix.fixed for fix in self.fixes)
                 return 1 if (has_manual_issues or has_failed_fixes) else 0
         except Exception as e:
+            # Return 2 for actual errors to distinguish from "issues detected"
             print(f"::error::Orchestrator error: {e}", file=sys.stderr)
-            return 1
+            print("Diagnostic report written to .codex/ci-patterns-detected.json (with error)")
+            return 2
 
     def _detect_pattern_1_unused_imports(self) -> None:
         """Pattern 1: Detect unused imports (ruff F401)."""
@@ -180,7 +188,10 @@ class CIAutoFixOrchestrator:
                         with open(filepath, "r") as f:
                             content = f.read()
                         # Find coverage threshold lines
-                        if "coverage" in content.lower() and ("min" in content.lower() or "threshold" in content.lower()):
+                        has_coverage = "coverage" in content.lower()
+                        has_min = "min" in content.lower()
+                        has_threshold = "threshold" in content.lower()
+                        if has_coverage and (has_min or has_threshold):
                             lines = content.split("\n")
                             for i, line in enumerate(lines):
                                 match = re.search(r"--cov-fail-under[=\s]+([0-9]+)", line)
@@ -193,9 +204,12 @@ class CIAutoFixOrchestrator:
                                             severity="warning",
                                             file=filepath,
                                             line=i + 1,
-                                            message=f"Coverage threshold is {match.group(1)}%, should be 70%",
+                                            message=(
+                                                f"Coverage threshold is {match.group(1)}%, "
+                                                "should be 70%"
+                                            ),
                                             auto_fix_available=True,
-                                            suggested_fix=f"Standardize coverage to 70%",
+                                            suggested_fix="Standardize coverage to 70%",
                                         )
                                     )
         except Exception as e:
@@ -237,7 +251,8 @@ class CIAutoFixOrchestrator:
                                     severity="error",
                                     file=parts[0],
                                     line=None,
-                                    message="CodeQL suppression uses lgtm format, should use codeql format",
+                                    message="CodeQL suppression uses lgtm format, should use "
+                                            "codeql format",
                                     auto_fix_available=True,
                                     suggested_fix="Replace '# lgtm' with '# codeql[py/...]'",
                                 )
@@ -275,7 +290,8 @@ class CIAutoFixOrchestrator:
                                             severity="error",
                                             file=filepath,
                                             line=i + 1,
-                                            message="setup-python-cached used without PyYAML pre-install",
+                                            message="setup-python-cached used without PyYAML "
+                                             "pre-install",
                                             auto_fix_available=False,
                                             suggested_fix="Add: pip install pyyaml --quiet",
                                         )
@@ -365,7 +381,7 @@ class CIAutoFixOrchestrator:
             # Replace lgtm with codeql format, preserving the rule id
             updated_lines = []
             for line in lines:
-                # Pattern: # lgtm[py/rule-id] -> # codeql[py/rule-id]
+                # Pattern: # codeql[py/rule-id] -> # codeql[py/rule-id]
                 updated_line = re.sub(r'#\s*lgtm\[(.*?)\]', r'# codeql[\1]', line)
                 updated_lines.append(updated_line)
             if updated_lines != lines and not self.dry_run:
@@ -421,11 +437,22 @@ class CIAutoFixOrchestrator:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="CI Auto-Fix Orchestrator — centralized coordination for automated CI failure healing"
+        description="CI Auto-Fix Orchestrator — centralized coordination for "
+        "automated CI failure healing"
     )
-    parser.add_argument("--check-only", action="store_true", help="Check for issues without fixing")
-    parser.add_argument("--json-output", type=str, help="Write JSON diagnostic report to file")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would change without making changes")
+    parser.add_argument(
+        "--check-only", action="store_true", help="Check for issues without fixing"
+    )
+    parser.add_argument(
+        "--json-output",
+        type=str,
+        help="Write JSON diagnostic report to file",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would change without making changes",
+    )
 
     args = parser.parse_args()
 

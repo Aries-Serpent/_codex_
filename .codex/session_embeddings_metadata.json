@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "dimension": 384,
+  "total_sessions": 10,
+  "index_type": "IVFFlat",
+  "sessions": {
+    "S001": {
+      "index": 0,
+      "summary": "Cache management optimization for database queries",
+      "patterns": [],
+      "tags": [
+        "cache-management-agent"
+      ]
+    },
+    "S002": {
+      "index": 1,
+      "summary": "CI failure resolution patterns",
+      "patterns": [],
+      "tags": [
+        "ci-auto-healer-agent"
+      ]
+    },
+    "S003": {
+      "index": 2,
+      "summary": "Coverage improvements for test suite",
+      "patterns": [],
+      "tags": [
+        "unified-coverage-agent"
+      ]
+    },
+    "S004": {
+      "index": 3,
+      "summary": "Query filtering and optimization",
+      "patterns": [],
+      "tags": [
+        "orchestrator-agent"
+      ]
+    },
+    "S005": {
+      "index": 4,
+      "summary": "Performance tuning for large datasets",
+      "patterns": [],
+      "tags": [
+        "performance-monitor-agent"
+      ]
+    },
+    "S006": {
+      "index": 5,
+      "summary": "Documentation consolidation and quality",
+      "patterns": [],
+      "tags": [
+        "unified-doc-agent"
+      ]
+    },
+    "S007": {
+      "index": 6,
+      "summary": "Security vulnerability scanning",
+      "patterns": [],
+      "tags": [
+        "unified-security-scanner"
+      ]
+    },
+    "S008": {
+      "index": 7,
+      "summary": "Test alignment after API changes",
+      "patterns": [],
+      "tags": [
+        "test-alignment-fixer"
+      ]
+    },
+    "S009": {
+      "index": 8,
+      "summary": "Dependency conflict resolution",
+      "patterns": [],
+      "tags": [
+        "dependency-conflict-agent"
+      ]
+    },
+    "S010": {
+      "index": 9,
+      "summary": "Code scanning remediation",
+      "patterns": [],
+      "tags": [
+        "code-scanning-remediation-agent"
+      ]
+    }
+  }
+}

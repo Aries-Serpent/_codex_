@@ -26,7 +26,7 @@ import sys
 import logging
 import subprocess
 from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Optional, Dict, List, Tuple
 from pathlib import Path
 from enum import Enum
