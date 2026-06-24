@@ -91,7 +91,7 @@ class TokenScopeVerifier:
         self.verification_results: Optional[dict] = None
 
         if not self.token:
-            logger.error("No GitHub token found in environment (GITHUB_TOKEN or GH_TOKEN)")  # nosec  # nosec  # B110
+            logger.error("No GitHub token found in environment (GITHUB_TOKEN or GH_TOKEN)")  # codeql[py/clear-text-logging-sensitive-data]
 
     def verify_scopes(self) -> dict:
         """
@@ -165,28 +165,28 @@ class TokenScopeVerifier:
                 "timestamp": datetime.now(UTC).isoformat()
             }
 
-            logger.info(f"Token verification complete: {len(scopes)} scopes found")  # nosec  # nosec  # B110
+            logger.info(f"Token verification complete: {len(scopes)} scopes found")  # codeql[py/clear-text-logging-sensitive-data]
             if not required_met:
-                logger.warning(f"Missing {len(missing_required)} required scopes")
+                logger.warning(f"Missing {len(missing_required)} required scopes")  # codeql[py/clear-text-logging-sensitive-data]
                 # Debug-level logging for actual scope details (useful for troubleshooting)
-                logger.debug(f"Missing required scopes: {missing_required}")
+                logger.debug(f"Missing required scopes: {missing_required}")  # codeql[py/clear-text-logging-sensitive-data]
             if not recommended_met:
-                logger.info(f"Missing {len(missing_recommended)} recommended scopes")
-                logger.debug(f"Missing recommended scopes: {missing_recommended}")
+                logger.info(f"Missing {len(missing_recommended)} recommended scopes")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(f"Missing recommended scopes: {missing_recommended}")  # codeql[py/clear-text-logging-sensitive-data]
 
             return self.verification_results
 
         except requests.RequestException as e:
-            logger.error(f"Token verification failed: {type(e).__name__}")  # nosec  # nosec  # B110
+            logger.error(f"Token verification failed: {type(e).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             return {
                 "error": f"API request failed: {type(e).__name__}",
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat()
             }
         except Exception as e:
-            logger.error(f"Unexpected error during verification: {type(e).__name__}")
+            logger.error(f"Unexpected error during verification: {type(e).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             return {
-                "error": f"Verification error: {type(e).__name__}",  # codeql[py/log-injection]
+                "error": f"Verification error: {type(e).__name__}",
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat()
             }

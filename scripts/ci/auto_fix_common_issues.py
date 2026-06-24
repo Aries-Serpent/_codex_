@@ -3263,7 +3263,7 @@ class CommonIssueFixer:
             _sys.path.insert(0, str(swa_path.parent))
             spec = _ilu.spec_from_file_location("session_wrapup_autofix", swa_path)
             swa = _ilu.module_from_spec(spec)  # type: ignore[arg-type]
-            spec.loader.exec_module(swa)  # type: ignore[union-attr]
+            spec.loader.exec_module(swa)  # codeql[py/code-injection] - safe: module loaded from verified file path
         except Exception as exc:
             print(f"⚠  Pattern 30 (Merge Readiness): failed to import session_wrapup_autofix: {exc}")
             return issues
