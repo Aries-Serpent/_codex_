@@ -70,15 +70,15 @@ ALERTS_TO_FIX = {
 
 SUPPRESSION_TEMPLATES = {
     "credential_masking": {
-        "comment": "
+        "comment": "",
         "description": "Masked credential output — no sensitive data logged"
     },
     "secrets_storage": {
-        "comment": "
+        "comment": "",
         "description": "Secrets encrypted/masked before storage"
     },
     "log_injection": {
-        "comment": "
+        "comment": "",
         "description": "User input sanitized/validated before logging"
     }
 }
