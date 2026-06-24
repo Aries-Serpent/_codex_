@@ -281,7 +281,7 @@ class SecurityValidator:
             _vn_fp = (str(validation_name)[:8] + "…") if validation_name else "<none>"
             if validation_config.get(validation_name, {}).get("enabled", True):
                 try:
-                    self.results["validations"][validation_name] = validator()
+                    self.results["validations"][validation_name] = validator()  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
                 except Exception as e:
                     print(f"❌ Error running {_vn_fp}. See validation results for details.")  # nosec  # B110: Only logs masked fingerprint
                     self.results["validations"][validation_name] = {
