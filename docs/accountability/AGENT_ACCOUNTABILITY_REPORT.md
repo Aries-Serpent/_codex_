@@ -2,6 +2,38 @@
 
 
 
+## SESSION SUMMARY — 2026-06-24T18:25Z [auto-generated]
+
+**Session:** Workflow Compliance & Actionlint Fixes | **Run:** PR #5071 | **Date:** 2026-06-24T18:25Z
+
+**Objective:** Fix actionlint workflow compliance violations and address failing CI checks
+
+**Authority:** Copilot Agent (@copilot)
+
+**Status:** ✅ WORKFLOW COMPLIANCE VIOLATIONS RESOLVED
+
+**Work Completed:**
+- ✅ **Workflow Compliance Fixes (8 files):**
+  - Commit: `83ac94c7` - fix(workflows): Remove invalid timeout-minutes from reusable workflow calls (actionlint compliance)
+  - Files fixed:
+    - `.github/workflows/build-preview-image.yml` (line 39)
+    - `.github/workflows/data-quality-suite.yml` (line 50)
+    - `.github/workflows/docker-build-push.yml` (line 47)
+    - `.github/workflows/embedding-index-rebuild.yml` (line 15)
+    - `.github/workflows/progressive-validation.yml` (line 23)
+    - `.github/workflows/release.yml` (line 44)
+    - `.github/workflows/rust_swarm_ci.yml` (line 35)
+    - `.github/workflows/scheduled-archival.yml` (line 23)
+  - Issue: Invalid `timeout-minutes` property on reusable workflow calls (GitHub Actions only allows timeout-minutes on jobs with `run` statements, not on reusable workflow calls with `uses`)
+  - Resolution: Removed all `timeout-minutes` from reusable workflow job definitions per GitHub Actions specification
+
+**Agents Used:**
+- [ ] `ci-testing-agent`
+- [ ] `unified-coverage-agent`
+- [ ] `ci-auto-healer-agent`
+- [ ] `general-purpose`
+- [x] `@copilot` (current session - workflow compliance, CI rescue response)
+
 ## SESSION SUMMARY — 2026-06-24T17:49Z [auto-generated]
 
 **Session:** CI Rescue Session: Governance Compliance & Validation Fixes | **Run:** CURRENT | **Date:** 2026-06-24T17:49Z

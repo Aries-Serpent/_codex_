@@ -2,6 +2,28 @@
 
 ## [Unreleased]
 
+### Fixed - Workflow Compliance & Actionlint Violations — 2026-06-24T18:25Z
+- **8 Workflow Compliance Issues Resolved:**
+  - Resolving Commit: `83ac94c7` - fix(workflows): Remove invalid timeout-minutes from reusable workflow calls (actionlint compliance)
+  - Issue: Invalid `timeout-minutes` property on reusable workflow calls
+  - Root Cause: GitHub Actions spec does not allow `timeout-minutes` on jobs with `uses` (reusable workflows); only on jobs with `run` statements
+  - Files Fixed:
+    - `.github/workflows/build-preview-image.yml` (line 39)
+    - `.github/workflows/data-quality-suite.yml` (line 50)
+    - `.github/workflows/docker-build-push.yml` (line 47)
+    - `.github/workflows/embedding-index-rebuild.yml` (line 15)
+    - `.github/workflows/progressive-validation.yml` (line 23)
+    - `.github/workflows/release.yml` (line 44)
+    - `.github/workflows/rust_swarm_ci.yml` (line 35)
+    - `.github/workflows/scheduled-archival.yml` (line 23)
+  - Resolution: Removed `timeout-minutes` from all reusable workflow job definitions
+  - Impact: Resolves actionlint workflow compliance audit failures (8 errors fixed)
+- **Governance Compliance Update:**
+  - REQ-4/REQ-5 compliance verified in current commit
+  - This entry and accountability report updated for latest session work
+- **Agents Used:** @copilot
+- **Impact:** Enables workflow compliance gate to pass and unblocks PR merge-readiness validation
+
 ### Fixed - CI Rescue Session: Governance Compliance & Validation Fixes — 2026-06-24T17:02Z
 - **Governance Compliance Verification:**
   - REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with current session entry (Pattern 25 auto-fix)
