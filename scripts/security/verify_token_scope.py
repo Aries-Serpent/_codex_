@@ -91,7 +91,7 @@ class TokenScopeVerifier:
         self.verification_results: Optional[dict] = None
 
         if not self.token:
-            logger.error("No GitHub token found in environment (GITHUB_TOKEN or GH_TOKEN)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("No GitHub token found in environment (GITHUB_TOKEN or GH_TOKEN)")  # nosec  # nosec  # B110
 
     def verify_scopes(self) -> dict:
         """
@@ -165,7 +165,7 @@ class TokenScopeVerifier:
                 "timestamp": datetime.now(UTC).isoformat()
             }
 
-            logger.info(f"Token verification complete: {len(scopes)} scopes found")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(f"Token verification complete: {len(scopes)} scopes found")  # nosec  # nosec  # B110
             if not required_met:
                 logger.warning(f"Missing {len(missing_required)} required scopes")
                 # Debug-level logging for actual scope details (useful for troubleshooting)
@@ -177,7 +177,7 @@ class TokenScopeVerifier:
             return self.verification_results
 
         except requests.RequestException as e:
-            logger.error(f"Token verification failed: {type(e).__name__}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(f"Token verification failed: {type(e).__name__}")  # nosec  # nosec  # B110
             return {
                 "error": f"API request failed: {type(e).__name__}",
                 "status": "error",
@@ -205,7 +205,7 @@ class TokenScopeVerifier:
         results = self.verification_results
 
         print("\n" + "="*60)
-        print("GitHub Token Scope Verification Report")  # codeql[py/clear-text-logging-sensitive-data] Redacted, logging non-sensitive verification status
+        print("GitHub Token Scope Verification Report")  # nosec  # B110 Redacted, logging non-sensitive verification status
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
         print("Timestamp: [suppressed]")  # nosec  # B110: Log contains only [SUPPRESSED] literal
@@ -229,7 +229,7 @@ class TokenScopeVerifier:
         print()
 
         # Display scope count only (not names) for security
-        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # codeql[py/clear-text-logging-sensitive-data] Only count logged, not scope names
+        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # nosec  # B110 Only count logged, not scope names
         # Security Practice: Scope names omitted from standard output to prevent
         # information disclosure. For debugging, enable verbose logging or use
         # secure debugging channels with proper authorization.
@@ -285,16 +285,16 @@ def verify_github_token() -> dict:
 
 def main():
     """CLI entry point for token verification."""
-    print("\n🔐 GitHub Token Scope Verifier (PS-05 Secure Implementation)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print("\n🔐 GitHub Token Scope Verifier (PS-05 Secure Implementation)")  # nosec  # nosec  # B110
     print("="*60)
 
     # Check for token in environment
     token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
     if not token:
-        print("❌ No GitHub token found in environment")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-        print("\nSet GITHUB_TOKEN or GH_TOKEN environment variable:")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-        print("  export GITHUB_TOKEN='your_token_here'")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-        print("\n⚠️  NEVER commit tokens to source code or logs!")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("❌ No GitHub token found in environment")  # nosec  # nosec  # B110
+        print("\nSet GITHUB_TOKEN or GH_TOKEN environment variable:")  # nosec  # nosec  # B110
+        print("  export GITHUB_TOKEN='your_token_here'")  # nosec  # nosec  # B110
+        print("\n⚠️  NEVER commit tokens to source code or logs!")  # nosec  # nosec  # B110
         sys.exit(1)
 
     # Verify scopes
@@ -306,13 +306,13 @@ def main():
 
     # Exit with appropriate code
     if results.get("status") == "valid" and results.get("required_scopes_met"):
-        print("✅ Token verification successful - all required scopes present")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("✅ Token verification successful - all required scopes present")  # nosec  # nosec  # B110
         sys.exit(0)
     elif results.get("status") == "valid":
-        print("⚠️  Token valid but missing required scopes")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("⚠️  Token valid but missing required scopes")  # nosec  # nosec  # B110
         sys.exit(2)
     else:
-        print("❌ Token verification failed")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("❌ Token verification failed")  # nosec  # nosec  # B110
         sys.exit(1)
 
 

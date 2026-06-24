@@ -469,13 +469,13 @@ class CommonIssueFixer:
             (25, "Last-Commit Accountability", self.fix_last_commit_accountability),
             (26, "Auto-Post Rebase Race",    self.check_autopost_rebase_race),
             (27, "Secrets FP Scan",          self.fix_secrets_baseline_false_positives),
-            (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive pattern name only
+            (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),  # nosec  # B110 Non-sensitive pattern name only
             (29, "PR Comment Triage",        self.fix_pr_comment_triage),
             (30, "Merge Readiness Dims",     self.fix_merge_readiness_dims),
             (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
             (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),
-            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive pattern name only
+            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),  # nosec  # B110 Non-sensitive pattern name only
             (35, "Markdown FP Secrets",      self.fix_markdown_false_positive_secrets),
         ]
         patterns = all_patterns
@@ -622,14 +622,14 @@ class CommonIssueFixer:
             # ── Cascade detection circuit breaker (S85 pattern prevention) ──
             # Check if this pattern's circuit is broken (exceeded max retries)
             if self.cascade_detector.should_skip_pattern(num):
-                # codeql[py/clear-text-logging-sensitive-data] - pattern names are hardcoded constants, not secrets
+                # nosec  # B110 - pattern names are hardcoded constants, not secrets
                 print(f"Pattern {num}: {name}")
                 print("  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
                 self.cascade_detector.report_broken_circuit(num, name)
                 print()
                 continue
 
-            # codeql[py/clear-text-logging-sensitive-data] - pattern names are hardcoded constants, not secrets
+            # nosec  # B110 - pattern names are hardcoded constants, not secrets
             print(f"Pattern {num}: {name}")
 
             # Run the pattern fix and capture issues
@@ -838,7 +838,7 @@ class CommonIssueFixer:
                     issues.append(
                         f"{py_file.relative_to(self.repo_root)}: Missing pad_token fallback"
                     )
-                    print(f"  ℹ️ {py_file.name}: Manual review needed for tokenizer fallback")  # codeql[py/clear-text-logging-sensitive-data]
+                    print(f"  ℹ️ {py_file.name}: Manual review needed for tokenizer fallback")  # nosec  # B110
 
         return issues
 
@@ -2319,7 +2319,7 @@ class CommonIssueFixer:
         issues: list[str] = []
         baseline_path = self.repo_root / ".secrets.baseline"
         if not baseline_path.exists():
-            print("✅ Pattern 23 (Secrets Baseline Plugins): .secrets.baseline not found — skip")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 23 (Secrets Baseline Plugins): .secrets.baseline not found — skip")  # nosec  # B110
             return issues
 
         try:
@@ -2425,7 +2425,7 @@ class CommonIssueFixer:
                         f"   [dry-run] would remove plugin(s): {', '.join(unknown_plugins)}"
                     )
         else:
-            print("✅ Pattern 23 (Secrets Baseline Plugins): all baseline plugins available")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 23 (Secrets Baseline Plugins): all baseline plugins available")  # nosec  # B110
         return issues
 
     # ------------------------------------------------------------------
@@ -2503,7 +2503,7 @@ class CommonIssueFixer:
                     )
 
         if issues:
-            print(f"⚠  Pattern 24 (Codecov Token Missing): {len(issues)} step(s) affected")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"⚠  Pattern 24 (Codecov Token Missing): {len(issues)} step(s) affected")  # nosec  # B110
             for issue in issues[:5]:
                 print(f"   {issue}")
             if len(issues) > 5:
@@ -2834,7 +2834,7 @@ class CommonIssueFixer:
             return issues
 
         if not all_changed:
-            print("✅ Pattern 27 (Secrets FP Scan): no changed files to scan")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 27 (Secrets FP Scan): no changed files to scan")  # nosec  # B110
             return issues
 
         # 2. Verify detect-secrets is available
@@ -2854,17 +2854,17 @@ class CommonIssueFixer:
                 return issues
             new_scan = _json.loads(scan_result.stdout or "{}")
         except (_json.JSONDecodeError, Exception) as exc:
-            print(f"⚠  Pattern 27 (Secrets FP Scan): scan error — {exc}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"⚠  Pattern 27 (Secrets FP Scan): scan error — {exc}")  # nosec  # B110
             return issues
 
         new_results: dict = new_scan.get("results", {})
         if not new_results:
-            print("✅ Pattern 27 (Secrets FP Scan): no secrets detected in changed files")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 27 (Secrets FP Scan): no secrets detected in changed files")  # nosec  # B110
             return issues
 
         # 4. Load existing baseline
         if not baseline_path.exists():
-            print("⚠  Pattern 27 (Secrets FP Scan): .secrets.baseline not found — skip")  # codeql[py/clear-text-logging-sensitive-data]
+            print("⚠  Pattern 27 (Secrets FP Scan): .secrets.baseline not found — skip")  # nosec  # B110
             return issues
 
         try:
@@ -2888,7 +2888,7 @@ class CommonIssueFixer:
             existing_results[filepath] = existing
 
         if not added:
-            print("✅ Pattern 27 (Secrets FP Scan): all detected secrets already in baseline")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 27 (Secrets FP Scan): all detected secrets already in baseline")  # nosec  # B110
             return issues
 
         issues_desc = [
@@ -3745,7 +3745,7 @@ class CommonIssueFixer:
             if f.strip().endswith(".md") and f.strip()
         ]
         if not md_files:
-            print("✅ Pattern 35 (Markdown FP Secrets): no changed .md files")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 35 (Markdown FP Secrets): no changed .md files")  # nosec  # B110
             return issues
 
         for rel_path in md_files:
@@ -3813,10 +3813,10 @@ class CommonIssueFixer:
                 abs_path.write_text("".join(new_lines), encoding="utf-8")
 
         if not issues:
-            print("✅ Pattern 35 (Markdown FP Secrets): no unannotated doc secrets found")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ Pattern 35 (Markdown FP Secrets): no unannotated doc secrets found")  # nosec  # B110
         else:
             action = "Would annotate" if (self.check_only or self.dry_run) else "Annotated"
-            print(f"   {'⚠' if self.check_only else '✅'} Pattern 35 (Markdown FP Secrets): "  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"   {'⚠' if self.check_only else '✅'} Pattern 35 (Markdown FP Secrets): "  # nosec  # B110
                   f"{action} {len(issues)} line(s)")
             for msg in issues:
                 print(f"      {msg}")

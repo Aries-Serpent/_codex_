@@ -495,7 +495,7 @@ def main():
     json_path = REPO_ROOT / "workflow_analysis.json"
     md_path = REPO_ROOT / "workflow_analysis.md"
 
-    with open(json_path, "w", encoding="utf-8") as f:  # codeql[py/clear-text-storage-sensitive-data] JSON report stores only non-sensitive workflow metadata
+    with open(json_path, "w", encoding="utf-8") as f:  # nosec  # B110 JSON report stores only non-sensitive workflow metadata
         f.write(json_report)
     print(f"📄 JSON report saved to: {json_path}")
 

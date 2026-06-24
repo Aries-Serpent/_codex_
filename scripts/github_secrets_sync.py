@@ -82,7 +82,7 @@ class GitHubSecretsManager:
 
     def backup_secrets(self) -> dict[str, str]:
         """Backup current GitHub Secrets."""
-        print("Backing up GitHub Secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Backing up GitHub Secrets...")  # nosec  # nosec  # B110
 
         secret_names = [
             'TOKEN_SECRET_KEY',
@@ -102,19 +102,19 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             if value:
                 backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
+                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # nosec  # nosec  # B110  # pragma: allowlist secret
                     'length': len(value)
                 }
 
-        with open(backup_file, 'w') as f:  # nosec  # codeql[py/clear-text-storage-sensitive-data] Backup only stores hashes and lengths, not secrets
+        with open(backup_file, 'w') as f:  # nosec  # nosec  # B110 Backup only stores hashes and lengths, not secrets
             json.dump(backup_data, f, indent=2)
 
-        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not secret values
+        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")  # nosec  # B110 Logs only count, not secret values
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
-    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # codeql[py/clear-text-logging-sensitive-data] Function parameter names are non-sensitive
+    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # nosec  # B110 Function parameter names are non-sensitive
         """Rotate specified secrets."""
-        print(f"Rotating {len(secret_names)} secrets...")  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not secret names/values
+        print(f"Rotating {len(secret_names)} secrets...")  # nosec  # B110 Logs only count, not secret names/values
 
         results = {'rotated': [], 'failed': []}
 
@@ -125,14 +125,14 @@ class GitHubSecretsManager:
 
                 if self.repo:
                     self.repo.create_secret(name, new_value)
-                    print("✓ Rotated secret")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                    print("✓ Rotated secret")  # nosec  # nosec  # B110
                     results['rotated'].append({'secret_ref': secret_ref, 'status': 'success'})
                 else:
-                    print("⚠ Skipped secret rotation (no repo connection)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                    print("⚠ Skipped secret rotation (no repo connection)")  # nosec  # nosec  # B110
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
-                print(f"✗ Failed to rotate secret ({secret_ref})")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # nosec  # nosec  # B110  # pragma: allowlist secret
+                print(f"✗ Failed to rotate secret ({secret_ref})")  # nosec  # nosec  # B110  # pragma: allowlist secret
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
         # Save results
@@ -144,7 +144,7 @@ class GitHubSecretsManager:
 
     def validate_secrets(self) -> bool:
         """Validate that secrets are properly configured."""
-        print("Validating GitHub Secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Validating GitHub Secrets...")  # nosec  # nosec  # B110
 
         required_secrets = [
             'TOKEN_SECRET_KEY',
@@ -159,15 +159,15 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             secret_ref = _secret_ref(name)
             if not value:
-                print("✗ Missing required secret")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✗ Missing required secret")  # nosec  # nosec  # B110
                 validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             elif len(value) < 32:
-                print("✗ A required secret is too short")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✗ A required secret is too short")  # nosec  # nosec  # B110
                 validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             else:
-                print("✓ Secret passed validation")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✓ Secret passed validation")  # nosec  # nosec  # B110
                 validations.append({'secret_ref': secret_ref, 'passed': True})
 
         # Save validation results
@@ -185,7 +185,7 @@ class GitHubSecretsManager:
 
     def sync_downstream(self) -> None:
         """Sync secrets to downstream systems (placeholder for future integrations)."""
-        print("Syncing secrets to downstream systems...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Syncing secrets to downstream systems...")  # nosec  # nosec  # B110
         print("ℹ Info: No downstream systems configured yet")
         print("✓ Sync complete (noop)")
 

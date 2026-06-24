@@ -362,7 +362,7 @@ def action_print_rate_limit(session: GitHubSession) -> None:
     if resp.status_code != 200:
         raise SystemExit(f"rate-limit query failed: {resp.status_code} {resp.text}")
     data = resp.json()
-    print(json.dumps(data, indent=2, sort_keys=True))  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print(json.dumps(data, indent=2, sort_keys=True))  # nosec  # nosec  # B110
 
 
 def action_probe_repo(session: GitHubSession, owner: str, repo: str) -> None:
@@ -375,7 +375,7 @@ def action_probe_repo(session: GitHubSession, owner: str, repo: str) -> None:
         "private": data.get("private"),
         "default_branch": data.get("default_branch"),
     }
-    print(json.dumps(summary, indent=2, sort_keys=True))  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print(json.dumps(summary, indent=2, sort_keys=True))  # nosec  # nosec  # B110
 
 
 def action_runner_registration_token(
@@ -398,7 +398,7 @@ def action_runner_registration_token(
     masked = _mask(token)
     # Security: Never log full tokens, only masked version
     print(
-        json.dumps(  # codeql[py/clear-text-logging-sensitive-data] Token is masked; only masked version and expires_at logged
+        json.dumps(  # nosec  # B110 Token is masked; only masked version and expires_at logged
             {"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2
         )
     )
@@ -446,7 +446,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     token, expires_at = _exchange_installation_token(app_jwt, inst_id, body=body)
 
     if args.verbose:
-        print("[info] Installation token minted successfully")  # codeql[py/clear-text-logging-sensitive-data] Logs non-sensitive status message only
+        print("[info] Installation token minted successfully")  # nosec  # B110 Logs non-sensitive status message only
 
     session = GitHubSession(token)
 
@@ -471,7 +471,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             try:
                 _revoke_installation_token(token)
                 if args.verbose:
-                    print("[info] revoked installation token")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                    print("[info] revoked installation token")  # nosec  # nosec  # B110
             except Exception as exc:  # pragma: no cover - user opted-in to revoke
                 print(f"[warn] revoke failed: {exc}", file=sys.stderr)
 

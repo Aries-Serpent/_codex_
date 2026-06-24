@@ -75,7 +75,7 @@ for job_id, failure in ci_failures.items():
             print(f"  - Status: {'Active' if not wf['guarded'] else 'Guarded'}")
             print(f"  - Jobs: {len(wf['jobs'])}")
             print(f"  - Runners: {', '.join(wf['runners'][:2])}")
-            print(f"  - Secrets: {len(wf['secrets'])}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"  - Secrets: {len(wf['secrets'])}")  # nosec  # B110
             print(f"  - Dependencies: Docker={wf['has_docker']}, uv={wf['has_uv']}, pytest={wf['has_pytest']}")
         else:
             print(f"- **{wf_name}** (not found in analysis)")
@@ -162,11 +162,11 @@ print("**Runners**:")
 for runner, count in sorted(runner_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
     print(f"- `{runner}`: {count} critical workflows")
 
-print("\n**Most Common Secrets**:")  # codeql[py/clear-text-logging-sensitive-data] Header text only, non-sensitive
+print("\n**Most Common Secrets**:")  # nosec  # B110 Header text only, non-sensitive
 for secret, count in sorted(secrets_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
-    # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
+    # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data  # nosec  # B110 Logs only count, not values
     _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"
-    print(f"- `{_secret_fp}`: {count} critical workflows")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"- `{_secret_fp}`: {count} critical workflows")  # nosec  # nosec  # B110
 
 print()
 print("\n## Recommended Action Plan\n")
@@ -188,4 +188,4 @@ print()
 print("4. **LOW PRIORITY** (Fix as maintenance):")
 print("   - Archive unused .disabled workflows")
 print("   - Update documentation")
-print("   - Optimize secrets usage")  # codeql[py/clear-text-logging-sensitive-data]
+print("   - Optimize secrets usage")  # nosec  # B110

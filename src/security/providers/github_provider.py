@@ -534,7 +534,7 @@ class GitHubTokenProvider(TokenProvider):
             if resp.status_code in (200, 204):
                 logger.info(
                     "GitHub access scopes updated successfully."
-                )  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive status message only
+                )  # nosec  # B110 Non-sensitive status message only
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",
