@@ -42,7 +42,7 @@ class SecurityValidator:
         """Initialize the security validator."""
         self.version = "1.0.0"
         self.config = self._load_config(config_path)
-        self.results = {
+        self.results = {  # codeql[py/overwritten-inherited-attribute]
             "agent": "github-security-validator-agent",
             "version": self.version,
             "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),

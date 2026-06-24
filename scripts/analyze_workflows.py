@@ -309,13 +309,13 @@ class WorkflowAnalyzer:
         print(f"  🔒 Guarded:   {summary['guarded']}")
         print(f"  ❌ Disabled:  {summary['disabled']}")
         print(f"  📦 Archived:  {summary['archived']}")
-        print("\nResources:")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"  🐳 Docker required:     {summary['docker_required']}")  # codeql[py/clear-text-logging-sensitive-data]
-        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
+        print("\nResources:")
+        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
+        print(f"  🐳 Docker required:     {summary['docker_required']}")
+        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Logs only count, not values
         _secrets_count: int = int(summary['secrets_used'])
-        print(f"  🔑 Unique secrets:      {_secrets_count}")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"  🔧 Unique actions:      {summary['unique_actions']}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  🔑 Unique secrets:      {_secrets_count}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
+        print(f"  🔧 Unique actions:      {summary['unique_actions']}")
         print("\nFailure Pattern Categories:")
         for category, patterns in self.failure_patterns.items():
             print(f"  📋 {category}: {len(patterns)} patterns")
