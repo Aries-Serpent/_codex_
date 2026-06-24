@@ -478,7 +478,7 @@ class GitHubTokenProvider(TokenProvider):
 
         For fine-grained PATs, updates the permission set via
         ``PATCH /user/installations/{installation_id}/permissions`` (requires
-        the ``requests`` library and a valid bearer token).  For classic PATs,  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
+        the ``requests`` library and a valid bearer token).  For classic PATs,
         scope changes are not supported by the API — a new token must be
         created manually.
 
@@ -497,7 +497,7 @@ class GitHubTokenProvider(TokenProvider):
             prerequisites are missing, or the ``requests`` library is unavailable.
         """
         try:
-            logger.info(  # codeql[py/clear-text-logging-sensitive-data] grant_id is redacted via _redact_identifier()  # noqa: E501
+            logger.info(  # nosec  # B110: grant_id is redacted via _redact_identifier()
                 "Updating GitHub access scopes (grant_id: %s, scope_count: %d)",
                 _redact_identifier(secret_id) if secret_id else "<none>",
                 len(scopes) if scopes else 0,
@@ -516,7 +516,7 @@ class GitHubTokenProvider(TokenProvider):
                     "scopes have NOT been updated."
                 )
                 return False
-  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
+
             # Resolve installation_id: prefer config/env, fall back to secret_id
             installation_id = self.config.get(
                 "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)

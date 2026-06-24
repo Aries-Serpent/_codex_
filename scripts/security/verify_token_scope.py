@@ -208,26 +208,24 @@ class TokenScopeVerifier:
         print("GitHub Token Scope Verification Report")  # codeql[py/clear-text-logging-sensitive-data] Redacted, logging non-sensitive verification status
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data] Log contains only [SUPPRESSED] literal
-        status = results.get("status", "unknown").upper()  # codeql[py/clear-text-logging-sensitive-data] Status is non-sensitive enum
+        print("Timestamp: [suppressed]")  # nosec  # B110: Log contains only [SUPPRESSED] literal
+        status = results.get("status", "unknown").upper()  # nosec  # B110: Status is non-sensitive enum
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
-        print()  # codeql[py/log-injection] No injection possible - status is enum
+        print()  # nosec  # B110: No injection possible - status is enum
 
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
-            # codeql[py/clear-text-logging-sensitive-data] Error message is redacted; see logs for full details
-            # codeql[py/log-injection] No injection possible - message is a static string literal
             print("❌ Error: Token verification failed (check logs for details)")
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
-                print(f"Debug details: {results.get('error')}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"Debug details: {results.get('error')}")  # nosec  # B110: Debug output only
             return
 
         # Direct inline access for non-sensitive metadata
         print("HTTP Status: [suppressed]")
-        print("Rate Limit Remaining: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data] HTTP metadata is non-sensitive
+        print("Rate Limit Remaining: [suppressed]")  # nosec  # B110: HTTP metadata is non-sensitive
         print()
 
         # Display scope count only (not names) for security
