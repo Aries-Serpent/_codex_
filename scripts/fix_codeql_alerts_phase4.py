@@ -70,15 +70,15 @@ ALERTS_TO_FIX = {
 
 SUPPRESSION_TEMPLATES = {
     "credential_masking": {
-        "comment": "  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret",
+        "comment": "  # codeql[py/clear-text-logging-sensitive-data]
         "description": "Masked credential output — no sensitive data logged"
     },
     "secrets_storage": {
-        "comment": "  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret",
+        "comment": "  # codeql[py/clear-text-storage-sensitive-data]
         "description": "Secrets encrypted/masked before storage"
     },
     "log_injection": {
-        "comment": "  # nosec  # codeql[py/log-injection]",
+        "comment": "  # codeql[py/log-injection]
         "description": "User input sanitized/validated before logging"
     }
 }

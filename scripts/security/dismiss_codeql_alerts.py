@@ -3,7 +3,7 @@
 Dismiss CodeQL alerts that are suppressed via code comments.
 
 Since GitHub CodeQL GHAS does not recognize Python comment-based suppressions
-(like # nosec  # codeql[py/rule-id]), we must dismiss these alerts via the
+(like # codeql[py/rule-id]
 GitHub API to prevent PR check failures.
 
 This script dismisses alerts matching known suppression patterns.

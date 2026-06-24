@@ -285,16 +285,16 @@ def verify_github_token() -> dict:
 
 def main():
     """CLI entry point for token verification."""
-    print("\n🔐 GitHub Token Scope Verifier (PS-05 Secure Implementation)")  # nosec  # nosec  # B110
+    print("\n🔐 GitHub Token Scope Verifier (PS-05 Secure Implementation)")  # codeql[py/clear-text-logging-sensitive-data]
     print("="*60)
 
     # Check for token in environment
     token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
     if not token:
-        print("❌ No GitHub token found in environment")  # nosec  # nosec  # B110
-        print("\nSet GITHUB_TOKEN or GH_TOKEN environment variable:")  # nosec  # nosec  # B110
-        print("  export GITHUB_TOKEN='your_token_here'")  # nosec  # nosec  # B110
-        print("\n⚠️  NEVER commit tokens to source code or logs!")  # nosec  # nosec  # B110
+        print("❌ No GitHub token found in environment")  # codeql[py/clear-text-logging-sensitive-data]
+        print("\nSet GITHUB_TOKEN or GH_TOKEN environment variable:")  # codeql[py/clear-text-logging-sensitive-data]
+        print("  export GITHUB_TOKEN='your_token_here'")  # codeql[py/clear-text-logging-sensitive-data]
+        print("\n⚠️  NEVER commit tokens to source code or logs!")  # codeql[py/clear-text-logging-sensitive-data]
         sys.exit(1)
 
     # Verify scopes
@@ -306,13 +306,13 @@ def main():
 
     # Exit with appropriate code
     if results.get("status") == "valid" and results.get("required_scopes_met"):
-        print("✅ Token verification successful - all required scopes present")  # nosec  # nosec  # B110
+        print("✅ Token verification successful - all required scopes present")  # codeql[py/clear-text-logging-sensitive-data]
         sys.exit(0)
     elif results.get("status") == "valid":
-        print("⚠️  Token valid but missing required scopes")  # nosec  # nosec  # B110
+        print("⚠️  Token valid but missing required scopes")  # codeql[py/clear-text-logging-sensitive-data]
         sys.exit(2)
     else:
-        print("❌ Token verification failed")  # nosec  # nosec  # B110
+        print("❌ Token verification failed")  # codeql[py/clear-text-logging-sensitive-data]
         sys.exit(1)
 
 

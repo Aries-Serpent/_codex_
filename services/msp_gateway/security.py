@@ -99,7 +99,7 @@ class PolicyEnforcer:
         """
         blocked_patterns = self.denylist.get("blocked_prompt_patterns", [])
         for pattern in blocked_patterns:
-            if pattern.lower() in text.lower():  # nosec  # codeql[py/log-injection]
+            if pattern.lower() in text.lower():  # codeql[py/log-injection]
                 return f"Blocked pattern detected: {pattern}"
         return None
 

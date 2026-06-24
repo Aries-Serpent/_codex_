@@ -76,13 +76,13 @@ def _write_markdown(path: Path, data: dict[str, object]) -> None:
     lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
     if not findings:
         lines.append("No findings.\n")
-        path.write_text("\n".join(lines), encoding="utf-8")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
+        path.write_text("\n".join(lines), encoding="utf-8")  # codeql[py/clear-text-storage-sensitive-data]
         return
     lines.append("| File | Pattern | Snippet |")
     lines.append("| ---- | ------- | ------- |")
     for f in findings:
         lines.append(f"| `{f.get('file')}` | <redacted> | <redacted> |")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")  # codeql[py/clear-text-storage-sensitive-data]
 
 
 def main(argv: list[str] | None = None) -> int:
