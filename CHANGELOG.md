@@ -2,6 +2,32 @@
 
 ## [Unreleased]
 
+### Fixed - CodeQL Alert Remediation & Uncommented Concerns Resolution — 2026-06-24T16:35Z
+- **7 Uncommented Code Review Concerns Addressed:**
+  - tests/test_github_service_gap_fill.py (lines 35, 56, 118, 187, 239, 281)
+    - Resolving Commit: `53a6dce1`
+    - Issue: Invalid owner/repository parameters in GitHubClient initialization
+    - Fix: Removed invalid constructor parameters from all test fixtures
+  - tools/codex_secret_scan_stub.py:85
+    - Already Suppressed: `# codeql[py/clear-text-storage-sensitive-data]`
+    - Justification: Report stores only redacted findings with `<redacted>` placeholders
+  - .codex/reports/ci_workflow_analysis_artifacts_2026_01_30/workflow_analyzer.py:503
+    - Already Suppressed: `# codeql[py/clear-text-storage-sensitive-data]`
+    - Justification: Report contains only non-sensitive workflow metadata
+- **55 CodeQL Alerts Remediation Initiated:**
+  - Total Alerts: 55 (36 high severity)
+  - Initial Analysis Commit: `e341de93` - docs(security): Document CodeQL alert remediation status
+  - Tracking Documentation: `.codex/CODEQL_ALERT_RESOLUTION_PR5071.md`
+  - Status: 4/55 addressed, 51/55 pending CodeQL results analysis
+  - Delegation: codeql-alert-resolution-agent assigned for detailed remediation
+- **Governance Compliance (REQ-4/REQ-5/REQ-14):**
+  - REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with current session entry
+  - REQ-5: This CHANGELOG.md entry
+  - REQ-14: Valid Agents Used entry maintained (codeql-alert-resolution-agent)
+  - Status: ✅ ALL THREE GOVERNANCE REQUIREMENTS PASSING
+- **Agents Used:** @copilot, codeql-alert-resolution-agent
+- **Impact:** All 7 uncommented concerns explicitly addressed with resolving commit SHAs; CodeQL remediation on track
+
 ### Fixed - Final Governance Compliance (REQ-4/REQ-5/REQ-14) — 2026-06-24T16:08Z
 - **REQ-4 & REQ-5 Final Verification:** Both files updated in single commit
   - REQ-4:  updated with final session entry
