@@ -93,7 +93,7 @@ def test_cli_encode_decode_presence():
         pytest.skip("encode/decode helpers not exposed; skipping round-trip test")
 
     sample = "hello codex"
-    token_ids = None
+    token_ids = []
     try:
         token_ids = encode_fn(sample, max_len=16, pad=True, trunc=True)
     except Exception as exc:
@@ -101,7 +101,7 @@ def test_cli_encode_decode_presence():
 
     assert isinstance(token_ids, (list, tuple)) and token_ids
 
-    decoded = None
+    decoded = ""
     try:
         decoded = decode_fn(token_ids)
     except Exception as exc:
