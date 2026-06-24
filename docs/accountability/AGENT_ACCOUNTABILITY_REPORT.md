@@ -7,6 +7,12 @@
 
 ## SESSION SUMMARY — 2026-06-24T16:07Z [auto-generated]
 
+## SESSION SUMMARY — 2026-06-24T16:08Z [auto-generated]
+
+**Session:** Pattern-25-REQ-compliance-final | **Run:** 318f3179 | **Date:** 2026-06-24
+
+Accountability report updated to satisfy REQ-4 requirement (must be in latest commit). CHANGELOG.md updated in commit 318f3179 to document Pattern 25 governance compliance fix. All previously-completed work from this session is captured in CHANGELOG.md and .codex/aftermath/pda_iterations.jsonl.
+
 **Session:** auto-20260624T1607-run5005 | **Run:** 28112106560 | **Date:** 2026-06-24
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
