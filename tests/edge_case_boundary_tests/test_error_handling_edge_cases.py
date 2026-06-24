@@ -36,7 +36,6 @@ class TestExceptionChaining:
     def test_exception_chain_depth(self):
         """Test deep exception chain handling."""
         # Arrange
-        max_chain_depth = 100
 
         # Act
         def create_deep_chain(depth):
@@ -136,9 +135,9 @@ class TestResourceCleanup:
         # Act
         try:
             # Simulate opening multiple resources
-            resource1 = MagicMock()
-            resource2 = MagicMock()
-            resource3 = MagicMock()
+            MagicMock()
+            MagicMock()
+            MagicMock()
             raise Exception("Failure")
         except Exception as _err:
             cleanup_order.append("resource3")
@@ -282,7 +281,6 @@ class TestErrorMessages:
     def test_user_friendly_error_messages(self):
         """Test user-friendly error message generation."""
         # Arrange
-        technical_error = "AttributeError: 'NoneType' object has no attribute 'foo'"
         user_friendly_message = "An unexpected error occurred. Please try again."
 
         # Act

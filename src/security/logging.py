@@ -305,7 +305,7 @@ SECURE LOGGING GUIDELINES:
    ```python
    import logging
    from security.logging import setup_secure_logging
-   
+
    logger = logging.getLogger(__name__)
    setup_secure_logging(logger)
    ```

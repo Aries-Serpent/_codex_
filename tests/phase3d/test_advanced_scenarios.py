@@ -86,7 +86,6 @@ class TestFileIOEdgeCases:
     def test_file_line_ending_handling(self):
         """Test handling of different line endings."""
         content_unix = "line1\nline2\nline3"
-        content_windows = "line1\r\nline2\r\nline3"
 
         # Test unix
         with tempfile.NamedTemporaryFile(mode="w", delete=False, newline="") as f:
@@ -616,7 +615,7 @@ class TestComparisonOperators:
         assert "" == ""
         assert [] == []
         assert {} == {}
-        assert None == None
+        assert None is None
 
     def test_inequality_operators(self):
         """Test inequality operators."""

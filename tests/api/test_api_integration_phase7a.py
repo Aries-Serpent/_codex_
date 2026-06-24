@@ -671,7 +671,7 @@ class TestAPIClientIntegration:
                 return False
 
         client = APIClient()
-        assert client.retry_request() == True
+        assert client.retry_request()
 
     def test_api_client_caching(self):
         """Test API client caching"""

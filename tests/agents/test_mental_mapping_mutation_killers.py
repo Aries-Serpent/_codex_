@@ -455,7 +455,7 @@ class TestMentalMappingEndToEnd:
             timestamp=get_timestamp(),
         )
 
-        step1 = node.add_reasoning_step(
+        node.add_reasoning_step(
             thought="Initial analysis",
             reasoning_type="deductive",
             confidence=0.8,

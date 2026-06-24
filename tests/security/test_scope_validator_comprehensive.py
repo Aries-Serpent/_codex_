@@ -366,7 +366,7 @@ class TestScopeCombinations:
     def test_scope_intersection(self, scope_validator):
         """Test scope intersection."""
         scope1 = TokenScope.READ_REPO | TokenScope.WRITE_REPO
-        scope2 = TokenScope.WRITE_REPO | TokenScope.ADMIN_REPO
+        TokenScope.WRITE_REPO | TokenScope.ADMIN_REPO
 
         # Both should have WRITE_REPO
         result = scope_validator.check_scope(scope1, TokenScope.WRITE_REPO)

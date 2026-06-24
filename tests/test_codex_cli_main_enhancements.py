@@ -174,7 +174,7 @@ class TestAnalyzeCommand:
     def test_analyze_with_options(self, cli_runner):
         """Test analyze with various options."""
         with patch("codex.analyze.analyze"):
-            result = cli_runner.invoke(app, ["analyze", "snap_123", "--full", "--format", "json"])
+            cli_runner.invoke(app, ["analyze", "snap_123", "--full", "--format", "json"])
             # Should accept options
 
     def test_analyze_invalid_snapshot(self, cli_runner):
@@ -216,13 +216,13 @@ class TestTransformCommand:
     def test_transform_with_mode(self, cli_runner):
         """Test transform with mode option."""
         with patch("codex.transform.transform"):
-            result = cli_runner.invoke(app, ["transform", "snap_123", "--mode", "apply"])
+            cli_runner.invoke(app, ["transform", "snap_123", "--mode", "apply"])
             # Should accept mode option
 
     def test_transform_with_filter(self, cli_runner):
         """Test transform with file filter."""
         with patch("codex.transform.transform"):
-            result = cli_runner.invoke(app, ["transform", "snap_123", "--filter", "*.py"])
+            cli_runner.invoke(app, ["transform", "snap_123", "--filter", "*.py"])
             # Should accept filter option
 
 
@@ -262,7 +262,7 @@ class TestVerifyCommand:
     def test_verify_with_format(self, cli_runner):
         """Test verify with output format."""
         with patch("codex.verify.verify_snapshot"):
-            result = cli_runner.invoke(app, ["verify", "snap_123", "--format", "json"])
+            cli_runner.invoke(app, ["verify", "snap_123", "--format", "json"])
             # Should accept format option
 
 
@@ -293,13 +293,13 @@ class TestListCommand:
     def test_list_with_filter(self, cli_runner):
         """Test list with filter."""
         with patch("codex.snapshot.list_snapshots"):
-            result = cli_runner.invoke(app, ["list", "--filter", "project"])
+            cli_runner.invoke(app, ["list", "--filter", "project"])
             # Should accept filter option
 
     def test_list_verbose(self, cli_runner):
         """Test list in verbose mode."""
         with patch("codex.snapshot.list_snapshots"):
-            result = cli_runner.invoke(app, ["list", "--verbose"])
+            cli_runner.invoke(app, ["list", "--verbose"])
             # Should show more details
 
 
@@ -337,7 +337,7 @@ class TestShowCommand:
     def test_show_with_format(self, cli_runner):
         """Test show with different output formats."""
         with patch("codex.snapshot.get_snapshot"):
-            result = cli_runner.invoke(app, ["show", "snap_123", "--format", "json"])
+            cli_runner.invoke(app, ["show", "snap_123", "--format", "json"])
             # Should handle format option
 
     def test_show_invalid_snapshot(self, cli_runner):
@@ -407,7 +407,7 @@ class TestOutputFormats:
         with patch("codex.analyze.analyze") as mock_analyze:
             mock_analyze.return_value = {"issues": [], "metrics": {"complexity": 5}}
 
-            result = cli_runner.invoke(app, ["analyze", "snap_123", "--format", "json"])
+            cli_runner.invoke(app, ["analyze", "snap_123", "--format", "json"])
             # Should output valid JSON
 
     def test_list_table_output(self, cli_runner):
@@ -454,11 +454,11 @@ class TestCLIIntegration:
             with patch("codex.transform.transform"):
                 with patch("codex.verify.verify_snapshot"):
                     # Ingest
-                    ingest = cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
+                    cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
                     # Transform
-                    transform = cli_runner.invoke(app, ["transform", "snap_123"])
+                    cli_runner.invoke(app, ["transform", "snap_123"])
                     # Verify
-                    verify = cli_runner.invoke(app, ["verify", "snap_base"])
+                    cli_runner.invoke(app, ["verify", "snap_base"])
 
 
 # ============================================================================
@@ -494,7 +494,7 @@ class TestEdgeCases:
         """Test with very long snapshot ID."""
         long_id = "snap_" + "a" * 1000
         with patch("codex.snapshot.get_snapshot"):
-            result = cli_runner.invoke(app, ["show", long_id])
+            cli_runner.invoke(app, ["show", long_id])
             # Should handle long IDs
 
     def test_special_characters_in_path(self, cli_runner, tmp_path):
@@ -504,7 +504,7 @@ class TestEdgeCases:
         (special_dir / "test.py").write_text("print('test')")
 
         with patch("codex.ingest.ingest"):
-            result = cli_runner.invoke(app, ["ingest", str(special_dir)])
+            cli_runner.invoke(app, ["ingest", str(special_dir)])
             # Should handle special characters
 
     def test_unicode_in_path(self, cli_runner, tmp_path):
@@ -514,7 +514,7 @@ class TestEdgeCases:
         (unicode_dir / "测试.py").write_text("# Test")
 
         with patch("codex.ingest.ingest"):
-            result = cli_runner.invoke(app, ["ingest", str(unicode_dir)])
+            cli_runner.invoke(app, ["ingest", str(unicode_dir)])
             # Should handle unicode paths
 
 

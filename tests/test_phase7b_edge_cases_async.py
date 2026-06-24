@@ -41,7 +41,7 @@ class TestAsyncInitialization:
 
         try:
             with pytest.raises((RuntimeError, ValueError)):
-                async with RAGAPI() as api:
+                async with RAGAPI():
                     raise RuntimeError("Test error")
             # Cleanup should occur even with exception
         except (NotImplementedError, TypeError, AttributeError):
@@ -130,7 +130,6 @@ class TestThreadSafety:
 
         try:
             orch = Orchestrator()
-            results = []
             errors = []
 
             def worker(worker_id):
@@ -212,7 +211,7 @@ class TestResourceExhaustion:
             texts = ["word " * 1000 for _ in range(1000)]
 
             try:
-                results = tokenizer.batch_encode(texts)
+                tokenizer.batch_encode(texts)
                 # Should complete or fail gracefully
             except MemoryError:
                 # Acceptable under resource exhaustion
@@ -245,7 +244,7 @@ class TestErrorRecovery:
 
             with patch.object(api, "query", side_effect=mock_call):
                 try:
-                    result = api.query("test")
+                    api.query("test")
                     # May succeed after retry
                 except ConnectionError:
                     pass
@@ -284,7 +283,7 @@ class TestGracefulDegradation:
             api = RAGAPI()
 
             with patch.object(api, "query", side_effect=RuntimeError("API down")):
-                result = api.query("test", fallback_result=None)
+                api.query("test", fallback_result=None)
                 # Should return fallback or raise
         except (NotImplementedError, AttributeError):
             pass
@@ -419,7 +418,7 @@ class TestEndToEndWorkflows:
                 except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
                     return None, None
 
-            result = await workflow()
+            await workflow()
             # Should complete or fail gracefully
         except (NotImplementedError, AttributeError):
             pass
@@ -440,7 +439,7 @@ class TestIntegrationErrorPropagation:
             # Simulate error in middle stage
             try:
                 data = ingestor.ingest("nonexistent_file.txt")
-                tokens = tokenizer.encode(data)
+                tokenizer.encode(data)
             except FileNotFoundError:
                 # Error should propagate
                 pass
@@ -482,7 +481,7 @@ class TestBoundaryConditions:
         from codex.archive.dal import ArchiveDAL
 
         try:
-            dal = ArchiveDAL(connection_string="dummy", timeout=0)
+            ArchiveDAL(connection_string="dummy", timeout=0)
             # Should either fail immediately or use default
         except (ValueError, TimeoutError, AttributeError):
             pass
@@ -493,7 +492,7 @@ class TestBoundaryConditions:
 
         try:
             with pytest.raises((ValueError, TypeError)):
-                dal = ArchiveDAL(connection_string="dummy", timeout=-1)
+                ArchiveDAL(connection_string="dummy", timeout=-1)
         except (AttributeError, NotImplementedError):
             pass
 
@@ -506,7 +505,7 @@ class TestBoundaryConditions:
             # Attempt batch with very large size
             # May raise or handle gracefully
             try:
-                result = tokenizer.batch_encode(["text"] * 1000000)
+                tokenizer.batch_encode(["text"] * 1000000)
             except (MemoryError, ValueError):
                 pass
         except (NotImplementedError, AttributeError):

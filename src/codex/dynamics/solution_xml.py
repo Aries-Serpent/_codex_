@@ -254,7 +254,7 @@ def build_solution_tree(config: SolutionManifestConfig) -> str:
 
 def emit_solution_xml(config: SolutionManifestConfig) -> str:
     """Serialize ``config`` to the Dynamics unmanaged solution XML string.
-    
+
     Security Guarantees:
     - Uses defusedxml.ElementTree for XXE attack prevention
     - Validates against DOCTYPE declarations

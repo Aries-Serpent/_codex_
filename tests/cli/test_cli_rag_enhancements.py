@@ -186,7 +186,7 @@ class TestCLIRAGArgumentValidation:
         docs_dir.mkdir()
         (docs_dir / "test.md").write_text("# Test")
 
-        result = runner.invoke(
+        runner.invoke(
             app,
             ["build", "--files", str(docs_dir / "*.md")],
         )
@@ -210,7 +210,7 @@ class TestCLIRAGArgumentValidation:
         (docs_dir / "test.md").write_text("# Test")
 
         with patch("codex.rag.build_index_from_files"):
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "build",
@@ -231,7 +231,7 @@ class TestCLIRAGArgumentValidation:
         (docs_dir / "test.md").write_text("# Test")
 
         with patch("codex.rag.build_index_from_files"):
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "build",
@@ -464,7 +464,7 @@ class TestCLIRAGBoundary:
         docs_dir.mkdir()
         (docs_dir / "single.md").write_text("# Single")
 
-        with patch("codex.rag.build_index_from_files") as mock_build:
+        with patch("codex.rag.build_index_from_files"):
             result = runner.invoke(
                 app,
                 [
@@ -484,8 +484,8 @@ class TestCLIRAGBoundary:
         for i in range(100):
             (docs_dir / f"doc_{i}.md").write_text(f"# Doc {i}")
 
-        with patch("codex.rag.build_index_from_files") as mock_build:
-            result = runner.invoke(
+        with patch("codex.rag.build_index_from_files"):
+            runner.invoke(
                 app,
                 [
                     "build",
@@ -505,7 +505,7 @@ class TestCLIRAGBoundary:
             mock_retriever.query.return_value = []
             mock_retriever_class.return_value = mock_retriever
 
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 ["query", "--query", long_query],
             )
@@ -514,7 +514,7 @@ class TestCLIRAGBoundary:
     def test_merge_single_source(self, runner):
         """Test merge with single source."""
         with patch("codex.rag.merge_indices"):
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "merge",
@@ -533,7 +533,7 @@ class TestCLIRAGBoundary:
         (docs_dir / "test.md").write_text("# Test")
 
         with patch("codex.rag.build_index_from_files"):
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "build",

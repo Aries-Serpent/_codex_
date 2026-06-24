@@ -31,7 +31,7 @@ class TestSystemConfiguration:
         base_config = {"debug": False, "workers": 4}
         env_config = {"debug": True}
         merged = {**base_config, **env_config}
-        assert merged["debug"] == True
+        assert merged["debug"]
         assert merged["workers"] == 4
 
     def test_configuration_validation(self):

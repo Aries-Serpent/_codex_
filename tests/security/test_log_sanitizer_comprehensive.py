@@ -300,7 +300,6 @@ class TestMaskSensitiveJwt:
 
     def test_jwt_in_bearer_pattern(self):
         """Test JWT in ******"""
-        jwt = "******"
         result = mask_sensitive("******")
         assert "***" in result
 

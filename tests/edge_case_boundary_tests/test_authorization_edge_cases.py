@@ -21,7 +21,6 @@ class TestRBACBoundary:
     def test_role_with_no_permissions(self):
         """Test role that grants no permissions."""
         # Arrange
-        role = "viewer"
         permissions = []
 
         # Act
@@ -185,7 +184,6 @@ class TestPermissionChecking:
     def test_allow_deny_conflict_resolution(self):
         """Test resolution of allow/deny conflicts."""
         # Arrange
-        default_deny = True  # Default deny policy
         allow_rules = ["read"]
         deny_rules = ["read"]
 
@@ -279,7 +277,6 @@ class TestScopeValidation:
         """Test wildcard scope expansion."""
         # Arrange
         wildcard_scope = "*"
-        specific_scopes = ["read", "write", "delete"]
 
         # Act
         includes_all = wildcard_scope == "*"
@@ -402,7 +399,7 @@ class TestDelegation:
         """Test timing of delegation revocation."""
         # Arrange
         delegation_active = True
-        revocation_time = datetime.now()
+        datetime.now()
 
         # Act
         delegation_active = False

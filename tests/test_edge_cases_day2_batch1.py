@@ -346,13 +346,13 @@ class TestPatternLibraryEdgeCases:
         """PatternLibrary min_success_rate=0.0"""
         lib = PatternLibrary()
         if hasattr(lib, "filter_by_success_rate"):
-            results = lib.filter_by_success_rate(0.0)
+            lib.filter_by_success_rate(0.0)
 
     def test_pattern_library_success_rate_boundary_one(self):
         """PatternLibrary min_success_rate=1.0"""
         lib = PatternLibrary()
         if hasattr(lib, "filter_by_success_rate"):
-            results = lib.filter_by_success_rate(1.0)
+            lib.filter_by_success_rate(1.0)
 
     def test_pattern_library_success_rate_invalid_negative(self):
         """PatternLibrary should reject negative success rate"""
@@ -433,7 +433,7 @@ class TestForceVectorBoundaryConditions:
         if hasattr(fv, "direction"):
             # Should handle gracefully (return None, 0, or raise)
             try:
-                d = fv.direction
+                pass
             except (ValueError, ZeroDivisionError):
                 pass
 
@@ -560,7 +560,7 @@ class TestClockAbstraction:
         reset_clock()
         import time
 
-        current = time.time()
+        time.time()
         # Clock should return something close to current time
 
     def test_clock_set_custom(self):
@@ -585,7 +585,6 @@ class TestClockAbstraction:
     def test_clock_concurrent_calls(self):
         """Multiple concurrent clock calls"""
         set_clock(lambda: 100.0)
-        results = []
         for _ in range(100):
             # Call clock multiple times
             pass

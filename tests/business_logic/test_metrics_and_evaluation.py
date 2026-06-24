@@ -327,7 +327,6 @@ class TestPerformanceTracking:
 
     def test_overfitting_detection(self):
         """Test detecting overfitting."""
-        train_loss = [0.5, 0.3, 0.1, 0.05]
         val_loss = [0.5, 0.35, 0.4, 0.6]  # Validation not improving
 
         overfitting = val_loss[-1] > val_loss[-2]

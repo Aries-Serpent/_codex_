@@ -98,7 +98,7 @@ class TestTimeoutHandling:
             attempt_count += 1
             try:
                 # Fast operation that succeeds
-                result = attempt * 2
+                attempt * 2
                 break
             except TimeoutError:
                 if attempt == max_attempts - 1:
@@ -237,7 +237,7 @@ class TestRecoveryPaths:
         def get_feature_level():
             try:
                 # Try to use advanced feature
-                advanced_feature = eval("complex_calculation()")
+                eval("complex_calculation()")
             except NameError:
                 # Fallback to basic feature
                 return "basic"

@@ -407,7 +407,7 @@ class TestFileStorage:
 
         # Check permissions: should be 0o600 (owner read/write only)
         file_stat = os.stat(filepath)
-        perms = stat.filemode(file_stat.st_mode)
+        stat.filemode(file_stat.st_mode)
         # Permission check: only owner should have read/write
         mode = stat.S_IMODE(file_stat.st_mode)
         assert mode == (stat.S_IRUSR | stat.S_IWUSR)  # 0o600

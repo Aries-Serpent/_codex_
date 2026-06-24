@@ -294,7 +294,7 @@ class TestSimilaritySearch:
 
             # Find similar to S001 (should not return S001 itself)
             similar = embeddings.find_similar("S001", k=2)
-            session_ids = [s[0] for s in similar]
+            [s[0] for s in similar]
             # S001 should not be in results
             # (though this depends on implementation; may vary)
 

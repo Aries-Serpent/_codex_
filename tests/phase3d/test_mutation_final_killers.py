@@ -591,7 +591,7 @@ class TestMutationKillerMocks:
 
         assert result == 42
         assert result != 0
-        assert result != None
+        assert result is not None
 
     def test_mock_side_effect_verification(self):
         """Test mutation: side effect"""

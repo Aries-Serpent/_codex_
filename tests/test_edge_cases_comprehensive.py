@@ -830,7 +830,7 @@ class TestTypeCoercion:
     def test_none_in_operations(self):
         """Test None in various operations."""
         # None comparisons
-        assert None == None
+        assert None is None
         assert None is None
         assert None is not True
         assert None is not False
@@ -868,7 +868,7 @@ class TestTypeCoercion:
 
     def test_none_vs_false_distinction(self):
         """Test distinction between None and False."""
-        assert None != False
+        assert None
         assert None is not False
         assert False == 0
         assert None != 0

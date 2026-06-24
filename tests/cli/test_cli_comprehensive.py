@@ -403,7 +403,7 @@ class TestErrorHandling:
                 raise click.BadParameter("Name cannot be empty")
             click.echo(f"Hello {name}!")
 
-        result = cli_runner.invoke(greet, [""])
+        cli_runner.invoke(greet, [""])
         # Result depends on implementation
 
     def test_exception_handling(self, cli_runner):
@@ -605,7 +605,7 @@ class TestConfigurationLoading:
         @click.argument("config", type=click.File("r"))
         def run(config):
             # Simplified YAML parsing
-            content = config.read()
+            config.read()
             click.echo("Configuration loaded")
 
         result = cli_runner.invoke(run, [config_file])

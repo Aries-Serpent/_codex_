@@ -91,7 +91,7 @@ class TestAdamOptimizer:
         beta_2 = 0.999
 
         m_hat = m / (1 - beta_1**t)
-        v_hat = v / (1 - beta_2**t)
+        v / (1 - beta_2**t)
 
         assert m_hat > m  # Should be larger after bias correction
 
@@ -231,7 +231,7 @@ class TestBatchProcessing:
         batch = [1.0, 2.0, 3.0, 4.0]
 
         mean = sum(batch) / len(batch)
-        variance = sum((x - mean) ** 2 for x in batch) / len(batch)
+        sum((x - mean) ** 2 for x in batch) / len(batch)
 
         assert mean == 2.5
 

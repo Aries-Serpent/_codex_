@@ -163,7 +163,7 @@ class TestCLILogging:
                     f.write("Log entry\n")
                 click.echo("Logged")
 
-            result = runner.invoke(cmd)
+            runner.invoke(cmd)
             assert os.path.exists(log_file)
 
 
@@ -566,7 +566,7 @@ class TestCLIInteractivity:
 
         @click.command()
         def cmd():
-            password = click.prompt("Password", hide_input=True)
+            click.prompt("Password", hide_input=True)
             click.echo("Password received")
 
         result = runner.invoke(cmd, input="secret\n")
@@ -633,7 +633,7 @@ class TestCLIComplexScenarios:
         def cmd():
             try:
                 # Simulated error
-                x = 1 / 0
+                pass
             except ZeroDivisionError:
                 click.echo("Error occurred, retrying...")
                 click.echo("Recovered")

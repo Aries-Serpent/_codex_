@@ -69,7 +69,7 @@ class TestConnectionPooling:
             if hasattr(dal, "close"):
                 dal.close()  # Should close gracefully
             elif hasattr(dal, "__exit__"):
-                with dal as d:
+                with dal:
                     pass  # Context manager cleanup
         except (NotImplementedError, AttributeError):
             pass
@@ -90,7 +90,7 @@ class TestMemoryManagement:
 
             # Process and should clean up
             try:
-                result = ingestor.process(large_data)
+                ingestor.process(large_data)
             except (AttributeError, TypeError):
                 pass
 
@@ -109,7 +109,7 @@ class TestMemoryManagement:
             recursive["a"]["b"] = recursive["a"]  # Circular reference
 
             try:
-                result = format_data(recursive)
+                format_data(recursive)
             except RecursionError:
                 # Expected for circular references
                 pass
@@ -141,7 +141,7 @@ class TestErrorRecoveryPatterns:
                 return "success"
 
             try:
-                result = policy.execute(failing_operation)
+                policy.execute(failing_operation)
                 # Check backoff timing (rough check)
                 if len(attempt_times) > 1:
                     # Time should increase with exponential backoff
@@ -207,16 +207,14 @@ class TestDestructorCleanup:
         from codex.archive.dal import ArchiveDAL
 
         try:
-            cleanup_count = {"value": 0}
 
             def create_dal():
                 dal = ArchiveDAL(connection_string="dummy")
                 # Create reference to track cleanup
-                original_del = dal.__del__ if hasattr(dal, "__del__") else None
+                dal.__del__ if hasattr(dal, "__del__") else None
                 return dal
 
-            dal = create_dal()
-            dal = None  # Trigger garbage collection
+            create_dal()
 
             # Object should be cleaned up
         except (NotImplementedError, AttributeError):
@@ -317,7 +315,7 @@ class TestCrossLayerErrorPropagation:
             from codex.rag.pipelines.embedding import EmbeddingGenerator
             from codex.tokenization.api import Tokenizer
 
-            ingestor = FileIngestor()
+            FileIngestor()
             tokenizer = Tokenizer()
             embedder = EmbeddingGenerator()
 
@@ -464,7 +462,7 @@ class TestPerformanceLimits:
             # Process 10000 items
             for i in range(10000):
                 try:
-                    tokens = tokenizer.encode(f"text_{i}")
+                    tokenizer.encode(f"text_{i}")
                 except (AttributeError, Exception):
                     pass
 
@@ -488,7 +486,7 @@ class TestPerformanceLimits:
             for depth in [10, 50, 100, 200]:
                 try:
                     nested = create_nested_dict(depth)
-                    result = format_data(nested)
+                    format_data(nested)
                 except (RecursionError, ValueError):
                     # Acceptable to fail at some depth
                     break
@@ -506,7 +504,7 @@ class TestPerformanceLimits:
             for length in [1000, 10000, 100000]:
                 try:
                     long_text = "word " * length
-                    tokens = tokenizer.encode(long_text)
+                    tokenizer.encode(long_text)
                 except (MemoryError, ValueError):
                     # Acceptable to fail at some length
                     break

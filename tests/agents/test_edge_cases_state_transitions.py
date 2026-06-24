@@ -591,7 +591,7 @@ class TestDatabaseStateConsistency:
     def test_database_schema_consistency(self, tmp_path: Path) -> None:
         """Test database schema remains consistent."""
         db_path = tmp_path / "schema_test.db"
-        memory = AgentMemory(db_path=db_path)
+        AgentMemory(db_path=db_path)
 
         # Verify schema exists
         with sqlite3.connect(db_path) as conn:

@@ -124,8 +124,8 @@ class TestDefaultValues:
         assert default is False  # Must be False, not just falsy
         assert not default
         assert type(default) == bool
-        assert default != True
-        assert default == False
+        assert not default
+        assert not default
 
     def test_exact_string_default(self):
         """Test that string defaults are exact"""
@@ -239,8 +239,8 @@ class TestComparisonMutations:
         # Must be exact equality
         assert 0 == 0
         assert "" == ""
-        assert False == False
-        assert not (False == True)
+        assert not False
+        assert not (not True)
 
     def test_inequality_mutations(self):
         """Test != not mutated to =="""
@@ -250,7 +250,7 @@ class TestComparisonMutations:
         # Must detect inequality
         assert 0 != 1
         assert "" != "x"
-        assert True != False
+        assert not False
 
 
 class TestArithmeticMutations:

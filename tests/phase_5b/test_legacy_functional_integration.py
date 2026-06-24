@@ -88,7 +88,7 @@ class TestLegacyAPIIntegration:
             mock_legacy_cls.return_value = mock_trainer
 
             # Create legacy trainer
-            trainer = mock_legacy_cls(legacy_config)
+            mock_legacy_cls(legacy_config)
 
             # Assert: Trainer created
             mock_legacy_cls.assert_called_once_with(legacy_config)

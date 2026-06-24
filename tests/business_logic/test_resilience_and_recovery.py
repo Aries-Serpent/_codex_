@@ -99,7 +99,6 @@ class TestRetryLogic:
         """Test retry with fixed backoff delay."""
         attempt = 0
         max_attempts = 3
-        backoff_delay = 1.0
 
         attempts = []
         while attempt < max_attempts:
@@ -249,7 +248,6 @@ class TestFailureRecovery:
     def test_recovery_with_state_restoration(self):
         """Test recovery restores previous state."""
         checkpoint = {"step": 100, "loss": 0.35}
-        failed_step = 105
 
         # Recovery
         current_state = checkpoint.copy()
@@ -352,7 +350,7 @@ class TestTimeoutHandling:
 
     def test_timeout_detection(self):
         """Test detecting operation timeout."""
-        start = time()
+        time()
         timeout = 1.0
 
         # Simulate timeout
@@ -363,7 +361,7 @@ class TestTimeoutHandling:
 
     def test_timeout_with_cancellation(self):
         """Test cancelling operation on timeout."""
-        start = time()
+        time()
         timeout = 1.0
         operation_result = None
         cancelled = False

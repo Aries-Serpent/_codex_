@@ -258,7 +258,7 @@ class TestDeterminismHelpers:
         device_cpu = _resolve_device("cpu")
         assert device_cpu is not None or device_cpu is None
 
-        device_cuda = _resolve_device("cuda")
+        _resolve_device("cuda")
         # Should return None if cuda unavailable
 
 

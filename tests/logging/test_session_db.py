@@ -29,7 +29,7 @@ class TestSessionDBInitialization:
         """Test that SessionDB creates database file."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = f"{tmpdir}/test.db"
-            db = SessionDB(db_path)
+            SessionDB(db_path)
             assert Path(db_path).exists()
 
     def test_schema_creates_tables(self):

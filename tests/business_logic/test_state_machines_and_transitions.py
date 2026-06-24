@@ -104,7 +104,6 @@ class TestStateTransitions:
 
     def test_transition_to_error_state(self):
         """Test transition to error/failed state."""
-        current = TrainingState.TRAINING
         error_occurred = True
 
         if error_occurred:
@@ -116,7 +115,6 @@ class TestStateTransitions:
 
     def test_transition_from_failed_state(self):
         """Test recovery from failed state."""
-        current = TrainingState.FAILED
 
         # Can retry or terminate
         recovery_options = [
@@ -286,11 +284,10 @@ class TestStateInvariants:
 
     def test_no_undefined_states(self):
         """Test no undefined states are used."""
-        machine_state = TrainingState.TRAINING
 
         try:
             # Attempt to create invalid state would raise error
-            invalid = TrainingState["INVALID"]
+            TrainingState["INVALID"]
             valid = False
         except KeyError:
             valid = True

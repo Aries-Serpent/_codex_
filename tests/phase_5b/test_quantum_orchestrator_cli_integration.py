@@ -123,7 +123,7 @@ class TestQuantumOrchestratorCLIIntegration:
     def test_run_with_output_file(self, tmp_path):
         """Test: CLI run command with output file integration."""
         # Arrange: Setup output file
-        output_file = tmp_path / "orchestrator_output.json"
+        tmp_path / "orchestrator_output.json"
 
         # Act & Assert: Mock the orchestrator execution
         with patch("codex.quantum_orchestrator.cli.create_observable_orchestrator") as mock_create:
@@ -149,7 +149,6 @@ class TestQuantumOrchestratorCLIIntegration:
     def test_benchmark_integration_workflow(self):
         """Test: Benchmark command workflow with metric collection."""
         # Arrange: Setup benchmark parameters
-        task_count = 3
         iterations = 2
 
         # Act & Assert: Mock benchmark execution
@@ -291,7 +290,7 @@ class TestQuantumOrchestratorCLIIntegration:
 
                 # Act: Execute with logging
                 logger.debug("Starting orchestration workflow")
-                result = mock_orchestrator.execute()
+                mock_orchestrator.execute()
                 logger.debug("Orchestration workflow completed")
 
                 # Assert: Log entries captured
@@ -403,7 +402,7 @@ class TestQuantumOrchestratorCLIEndToEnd:
     def test_metrics_command_integration(self, runner, tmp_path):
         """Test: Metrics command produces valid output."""
         # Arrange: Setup output directory
-        output_file = tmp_path / "metrics.txt"
+        tmp_path / "metrics.txt"
 
         # Act & Assert: Attempt metrics command
         # Note: Mocked execution since full orchestrator may not be available

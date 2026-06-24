@@ -27,11 +27,11 @@ class Base:
     def method1(self):
         # FIXME: bug here
         pass
-        
+
     def method2(self):
         # P0 TODO: critical fix
         pass
-        
+
     def method3(self):
         # P2 TODO: low priority
         pass
@@ -50,11 +50,11 @@ class AbstractBase(ABC):
 class Prot(Protocol):
     def proto_method(self):
         raise NotImplementedError
-        
+
 def standalone():
     # TODO: Add logic here
     pass
-    
+
 @abstractmethod
 def standalone_abstract():
     raise NotImplementedError
@@ -65,7 +65,7 @@ def standalone_abstract():
 class Invalid:
     def missing(self):
         raise NotImplementedError
-        
+
     def another(self):
         raise NotImplementedError()
     """)
@@ -165,7 +165,7 @@ class MyABC(abc.ABC):
 class MyProto(typing.Protocol):
     def proto_impl(self):
         raise NotImplementedError("abstract proto")
-        
+
 @abc.abstractmethod
 def standalone():
     raise NotImplementedError("standalone")

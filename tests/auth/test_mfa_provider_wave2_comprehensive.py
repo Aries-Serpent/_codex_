@@ -59,7 +59,7 @@ class TestMFAEnrollment:
 
     def test_enrolled_user_stored(self, mfa_provider, test_user_id):
         """Test that enrolled user is stored."""
-        secret = mfa_provider.enroll_user(test_user_id)
+        mfa_provider.enroll_user(test_user_id)
         # After enrollment, user should be enrolled
         assert mfa_provider.is_user_enrolled(test_user_id)
 
@@ -93,7 +93,7 @@ class TestMFAVerification:
 
     def test_verify_invalid_totp_code(self, mfa_provider, test_user_id):
         """Test verification of invalid TOTP code."""
-        secret = mfa_provider.enroll_user(test_user_id)
+        mfa_provider.enroll_user(test_user_id)
 
         # Invalid code should fail
         is_valid = mfa_provider.verify_totp(test_user_id, "000000")

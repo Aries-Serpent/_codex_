@@ -450,7 +450,7 @@ class TestWriteJsonlWithCrc:
         output_path = temp_dir / "output.jsonl"
         write_jsonl_with_crc(output_path, sample_records)
 
-        crc_path = output_path.with_suffix(".jsonl.crc32")
+        output_path.with_suffix(".jsonl.crc32")
         # Implementation may vary - file might not exist if crc32_file not mocked
 
     def test_write_empty_records(self, temp_dir):

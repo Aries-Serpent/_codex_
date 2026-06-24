@@ -195,7 +195,6 @@ class TestSubprocessCompletedProcess:
         result = run(["echo", "test"])
         rc = result.returncode
         out = result.stdout
-        err = result.stderr
         assert isinstance(rc, int)
         assert out is not None or out is None
 

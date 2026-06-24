@@ -323,7 +323,7 @@ class TestErrorRecovery:
             click.echo("Success")
 
         # In real use, would implement retry logic
-        result = runner.invoke(cmd)
+        runner.invoke(cmd)
         # Result depends on retry implementation
 
     def test_error_with_suggestion(self, runner):

@@ -281,14 +281,13 @@ class TestBlueGreenDeployment:
 
         Switch traffic after green validated.
         """
-        blue_env = Mock()
+        Mock()
         green_env = Mock()
         load_balancer = Mock()
         validator = Mock()
 
         # Setup: Blue (current) and Green (new) environments
         blue_state = {"version": "1.0.0", "traffic": 100}
-        green_state = {"version": "1.1.0", "traffic": 0}
 
         # Configure mocks
         load_balancer.get_traffic_split.return_value = blue_state
@@ -335,7 +334,7 @@ class TestCanaryDeployment:
         deployer = Mock()
         canary_controller = Mock()
         metrics = Mock()
-        traffic_manager = Mock()
+        Mock()
 
         # Setup: Canary stages
         # Stage 1: 5% traffic
@@ -437,11 +436,6 @@ class TestDeploymentWithMigration:
         traffic_handler = Mock()
 
         # Setup: Migration strategy
-        migration_plan = {
-            "schema_version": "v1 → v2",
-            "downtime_expected": 0,
-            "strategy": "background_migration",
-        }
 
         # Configure mocks
         traffic_handler.enable_write_buffering.return_value = True

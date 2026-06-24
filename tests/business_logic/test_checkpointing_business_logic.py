@@ -82,7 +82,6 @@ class TestCheckpointRetention:
 
     def test_keep_best_checkpoint(self):
         """Test keeping best checkpoint by metric."""
-        checkpoints = []
         metrics_list = [
             {"accuracy": 0.75, "epoch": 1},
             {"accuracy": 0.82, "epoch": 2},
@@ -307,11 +306,8 @@ class TestAtomicOperations:
 
     def test_atomic_write_structure(self):
         """Test atomic write uses temporary file."""
-        checkpoint = {"epoch": 5, "data": [1, 2, 3]}
 
         # Simulate atomic write
-        temp_path = "/tmp/checkpoint.tmp"
-        final_path = "/checkpoint/model.pt"
 
         # Write to temp first
         temp_written = True
@@ -359,7 +355,6 @@ class TestAtomicOperations:
 
     def test_write_then_verify(self):
         """Test write followed by verification."""
-        checkpoint = {"epoch": 5, "valid": True}
 
         # Write
         written = True
@@ -464,7 +459,7 @@ class TestCorruptionDetection:
         """Test detecting invalid checkpoint format."""
         try:
             data = "invalid_json_content"
-            loaded = json.loads(data)
+            json.loads(data)
             valid = True
         except json.JSONDecodeError:
             valid = False
@@ -481,7 +476,6 @@ class TestCorruptionDetection:
 
     def test_recover_from_corruption(self):
         """Test recovery strategy for corrupted checkpoint."""
-        corrupted_checkpoint = None
         backup_checkpoint = {"epoch": 4, "valid": True}
 
         recovered = backup_checkpoint
@@ -520,7 +514,6 @@ class TestCheckpointMetrics:
 
         start = time.time()
         # Simulate load
-        data = {"epoch": 5}
         end = time.time()
 
         duration = end - start

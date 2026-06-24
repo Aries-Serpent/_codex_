@@ -22,7 +22,7 @@ class TestAgentCommunicationPatterns:
     def test_shared_memory_backend_communication(self):
         """Test two agents sharing the same memory backend."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            backend_path = Path(tmpdir) / "shared_memory.jsonl"
+            Path(tmpdir) / "shared_memory.jsonl"
 
             # Agent 1 stores a message
             agent1 = MemoryManager(
@@ -86,12 +86,12 @@ class TestConfigurationMigration:
         ):
             old_manager = EnvironmentManager()
             old_log_dir = old_manager.get_log_dir()
-            old_db_path = old_manager.get_db_path()
+            old_manager.get_db_path()
 
             # Simulate new environment
             new_manager = EnvironmentManager()
             new_log_dir = new_manager.get_log_dir()
-            new_db_path = new_manager.get_db_path()
+            new_manager.get_db_path()
 
             # Both should work
             assert old_log_dir is not None

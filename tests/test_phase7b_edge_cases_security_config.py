@@ -186,7 +186,7 @@ class TestConfigurationValidation:
 
         try:
             with pytest.raises((TypeError, ValueError)):
-                config = ArchiveConfig(None)
+                ArchiveConfig(None)
         except (AttributeError, NotImplementedError):
             pass
 
@@ -195,7 +195,7 @@ class TestConfigurationValidation:
         from codex.archive.config import ArchiveConfig
 
         try:
-            config = ArchiveConfig(
+            ArchiveConfig(
                 {"timeout": "not_a_number", "retry_count": "invalid", "enable_cache": "yes"}
             )
             # Should either coerce or raise
@@ -208,7 +208,7 @@ class TestConfigurationValidation:
 
         try:
             # Create config without required fields
-            config = ArchiveConfig({"some_field": "value"})
+            ArchiveConfig({"some_field": "value"})
             # May raise if required fields missing
         except (KeyError, ValueError):
             pass
@@ -268,7 +268,7 @@ class TestDalConnectionManagement:
 
         try:
             with pytest.raises((ValueError, TypeError)):
-                dal = ArchiveDAL(connection_string="")
+                ArchiveDAL(connection_string="")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -278,7 +278,7 @@ class TestDalConnectionManagement:
 
         try:
             with pytest.raises((TypeError, ValueError)):
-                dal = ArchiveDAL(connection_string=None)
+                ArchiveDAL(connection_string=None)
         except (AttributeError, NotImplementedError):
             pass
 
@@ -287,7 +287,7 @@ class TestDalConnectionManagement:
         from codex.archive.dal import ArchiveDAL
 
         try:
-            dal = ArchiveDAL(connection_string="dummy", timeout=0.001)  # Very short timeout
+            ArchiveDAL(connection_string="dummy", timeout=0.001)  # Very short timeout
             # Should either fail or use default
         except (ValueError, TimeoutError, AttributeError):
             pass
@@ -313,7 +313,7 @@ class TestDalQueryExecution:
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
-            result = dal.execute("SELECT * FROM table WHERE id = ?", params=None)
+            dal.execute("SELECT * FROM table WHERE id = ?", params=None)
             # May raise or use empty params
         except (ValueError, TypeError, AttributeError):
             pass
@@ -326,7 +326,7 @@ class TestDalQueryExecution:
             dal = ArchiveDAL(connection_string="dummy")
             # Attempt SQL injection
             malicious_query = "'; DROP TABLE users; --"
-            result = dal.execute("SELECT * FROM table WHERE id = ?", params=[malicious_query])
+            dal.execute("SELECT * FROM table WHERE id = ?", params=[malicious_query])
             # Should be safe - params are parameterized
         except (ValueError, TypeError, AttributeError):
             pass
@@ -405,7 +405,7 @@ class TestArchiveStandardization:
 
         try:
             std = Standardizer()
-            result = std.standardize({"some_field": "value"})
+            std.standardize({"some_field": "value"})
             # May fill with defaults or raise
         except (ValueError, KeyError):
             pass

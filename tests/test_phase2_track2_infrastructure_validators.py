@@ -116,14 +116,12 @@ class TestSchemaCompliance:
 
     def test_schema_validation_pass(self):
         """Test schema validation success."""
-        schema = {"type": "object", "properties": {"name": {"type": "string"}}}
         data = {"name": "example"}
         # Validation passes
         assert "name" in data
 
     def test_schema_validation_fail_type_mismatch(self):
         """Test schema validation with type mismatch."""
-        schema = {"properties": {"port": {"type": "integer"}}}
         data = {"port": "invalid"}
         # Type check would fail
         assert not isinstance(data["port"], int)

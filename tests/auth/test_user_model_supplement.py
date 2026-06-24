@@ -48,7 +48,6 @@ class TestUserModelExtended:
             password_hash="hash123",
         )
         # Should not be able to modify
-        original_email = user.email
         user.email = "new@example.com"
         # Implementation dependent - may or may not allow
 
@@ -96,7 +95,7 @@ class TestUserModelExtended:
         assert len(user.roles) == 100 or len(user.roles) > 0
 
     def test_user_role_uniqueness(self):
-        user = User(
+        User(
             user_id="123",
             username="alice",
             email="alice@example.com",
@@ -277,7 +276,7 @@ class TestRepositoryAdvanced:
     def test_filter_by_creation_date(self, repo):
         hasher = PasswordHasher()
 
-        before_time = time.time()
+        time.time()
 
         for i in range(5):
             user = User(
@@ -288,7 +287,7 @@ class TestRepositoryAdvanced:
             )
             repo.create_user(user)
 
-        after_time = time.time()
+        time.time()
 
 
 # ============================================================================

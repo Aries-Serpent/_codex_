@@ -318,7 +318,7 @@ class TestDatabaseManager:
 
     def test_db_manager_creates_file(self, temp_db_file):
         """Test that database manager creates database file."""
-        manager = DatabaseManager(db_path=temp_db_file)
+        DatabaseManager(db_path=temp_db_file)
         # Database file should exist after creating manager
         assert Path(temp_db_file).exists() or not Path(temp_db_file).exists()  # Lazy init
 
@@ -598,7 +598,7 @@ class TestLoggingIntegration:
         manager1 = db_manager
 
         # Simulate data logging
-        event = Event(event_id="test", event_type="test")
+        Event(event_id="test", event_type="test")
 
         # Create second manager with same database
         # Note: removed redundant `import tempfile` (top-level import used)

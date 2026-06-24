@@ -340,7 +340,7 @@ class TestStreamProcessing:
             return False
 
         mock_stream = Mock()
-        result = close_stream(mock_stream)
+        close_stream(mock_stream)
         mock_stream.close.assert_called_once()
 
 

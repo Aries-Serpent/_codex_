@@ -61,7 +61,6 @@ class TestHealthEndpoints:
         """Verify health endpoint responds within acceptable time."""
         start_time = time.time()
         # Simulate health check response
-        response = {"status": "ok"}
         elapsed_ms = (time.time() - start_time) * 1000
         # In real scenario, this would be < 500ms
         assert elapsed_ms < 5000  # Relaxed for test environment
@@ -156,7 +155,6 @@ class TestAPIRequestProcessing:
         """Verify API responses complete within acceptable time."""
         start_time = time.time()
         # Simulate API response
-        result = {"status": "ok", "data": []}
         elapsed_ms = (time.time() - start_time) * 1000
         # In real scenario, this would be < 3000ms
         assert elapsed_ms < 10000  # Relaxed for test environment
@@ -167,7 +165,6 @@ class TestErrorHandling:
 
     def test_invalid_request_handling(self):
         """Verify invalid requests are handled gracefully."""
-        invalid_request = {"invalid": "format"}
         error_response = {
             "jsonrpc": "2.0",
             "error": {
@@ -238,10 +235,6 @@ class TestMetricsAndObservability:
     def test_request_id_propagation(self):
         """Verify request IDs are properly propagated."""
         request_id = "req_abc123def456"
-        request = {
-            "id": request_id,
-            "headers": {"X-Request-Id": request_id},
-        }
         response = {
             "headers": {"X-Request-Id": request_id},
             "body": {},
@@ -320,18 +313,11 @@ class TestIntegration:
     def test_error_recovery_cycle(self):
         """Test error recovery cycle."""
         # Simulate error and recovery
-        request = {"invalid": "request"}
         error_response = {
             "jsonrpc": "2.0",
             "error": {"code": -32600, "message": "Invalid Request"},
         }
         # Retry with valid request
-        valid_request = {
-            "jsonrpc": "2.0",
-            "method": "query",
-            "params": {},
-            "id": 1,
-        }
         retry_response = {
             "jsonrpc": "2.0",
             "result": {"success": True},

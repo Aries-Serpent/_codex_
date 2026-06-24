@@ -354,7 +354,7 @@ class TestAuditLog:
         def func(user_id):
             return "success"
 
-        with patch("security.decorators.log_audit_event") as mock_log:
+        with patch("security.decorators.log_audit_event"):
             result = func("user123")
             assert result == "success"
 
@@ -365,7 +365,7 @@ class TestAuditLog:
         def func():
             return "success_result"
 
-        with patch("security.decorators.log_audit_event") as mock_log:
+        with patch("security.decorators.log_audit_event"):
             result = func()
             assert result == "success_result"
 
@@ -376,7 +376,7 @@ class TestAuditLog:
         def func():
             raise ValueError("test error")
 
-        with patch("security.decorators.log_audit_event") as mock_log:
+        with patch("security.decorators.log_audit_event"):
             with pytest.raises(ValueError):
                 func()
             # Exception should be logged
@@ -399,7 +399,7 @@ class TestAuditLog:
         def func(user_id, action):
             return "success"
 
-        with patch("security.decorators.log_audit_event") as mock_log:
+        with patch("security.decorators.log_audit_event"):
             result = func("user123", "create")
             assert result == "success"
 

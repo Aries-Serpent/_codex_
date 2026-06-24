@@ -43,7 +43,7 @@ class TestMemoryExhaustion:
         """Test handling of large object allocation failure."""
         try:
             # Try to allocate huge object
-            huge_list = [0] * (10**9)
+            [0] * (10**9)
         except MemoryError:
             # Expected
             pass
@@ -140,8 +140,8 @@ class TestFileDescriptorExhaustion:
         import tempfile
 
         # Create and immediately close
-        with tempfile.NamedTemporaryFile(delete=True) as f:
-            temp_name = f.name
+        with tempfile.NamedTemporaryFile(delete=True):
+            pass
 
         # File should be closed
 
@@ -310,7 +310,7 @@ class TestCacheExhaustion:
         """Test cache respects size limits."""
         cache = {}
         max_items = 1000
-        max_memory_approx = max_items * 100  # bytes
+        max_items * 100  # bytes
 
         for i in range(max_items):
             cache[f"key_{i}"] = "x" * 50

@@ -174,7 +174,7 @@ class TestMentalNode:
 
         # Should be able to add relationships
         if hasattr(node, "add_reasoning_step"):
-            step = node.add_reasoning_step("reasoning", "deductive", 0.8)
+            node.add_reasoning_step("reasoning", "deductive", 0.8)
             # Should have reasoning chain
             if hasattr(node, "reasoning_chain"):
                 assert len(node.reasoning_chain) > 0
@@ -199,7 +199,7 @@ class TestMentalNode:
         node1 = MentalNode(
             node_id="n1", content="Concept 1", node_type=members[0], timestamp="2024-01-01T00:00:00"
         )
-        node2 = MentalNode(
+        MentalNode(
             node_id="n2", content="Concept 2", node_type=members[0], timestamp="2024-01-01T00:00:00"
         )
 

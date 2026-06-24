@@ -366,7 +366,7 @@ class TestPipelineWorkflows:
         drift_info = {"score": 0.35, "method": "psi"}
         if pipeline.should_retrain(drift_info):
             # Trigger retraining
-            job = pipeline.trigger_retrain({"epochs": 5})
+            pipeline.trigger_retrain({"epochs": 5})
 
             # Model fails eval gate
             metrics = {"accuracy": 0.75, "loss": 0.5}

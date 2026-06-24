@@ -26,7 +26,7 @@ class TestAdvancedAuthenticationScenarios:
     def test_different_auth_token_types(self, token_type):
         """Test different authentication token types"""
         app = FastAPI()
-        client = TestClient(app)
+        TestClient(app)
 
         @app.get("/protected")
         def protected_endpoint(authorization: Optional[str] = None):
@@ -70,7 +70,7 @@ class TestAdvancedAuthenticationScenarios:
     def test_role_based_access_control(self, privilege_level):
         """Test role-based access control"""
         app = FastAPI()
-        client = TestClient(app)
+        TestClient(app)
 
         @app.get("/admin")
         def admin_endpoint(role: str = "guest"):
@@ -121,7 +121,7 @@ class TestAdvancedAuthenticationScenarios:
 
     def test_permission_inheritance_chains(self):
         """Test permission inheritance in role hierarchies"""
-        app = FastAPI()
+        FastAPI()
 
         class RoleHierarchy:
             PERMISSIONS = {
@@ -225,7 +225,7 @@ class TestComplexRequestResponseScenarios:
 
     def test_polymorphic_response_handling(self):
         """Test polymorphic response types"""
-        app = FastAPI()
+        FastAPI()
 
         class SuccessResponse(BaseModel):
             status: str = "success"
@@ -520,7 +520,7 @@ class TestEdgeCasesAndCornerCases:
 
     def test_boundary_value_conditions(self):
         """Test boundary value conditions"""
-        app = FastAPI()
+        FastAPI()
 
         class BoundedModel(BaseModel):
             value: int  # typically 0 to 100
@@ -542,7 +542,7 @@ class TestEdgeCasesAndCornerCases:
 
     def test_precision_loss_in_numeric_operations(self):
         """Test precision loss in numeric operations"""
-        app = FastAPI()
+        FastAPI()
 
         class FloatModel(BaseModel):
             value: float
@@ -577,7 +577,7 @@ class TestEdgeCasesAndCornerCases:
 
     def test_array_bounds_and_empty_collections(self):
         """Test array bounds and empty collections"""
-        app = FastAPI()
+        FastAPI()
 
         class CollectionModel(BaseModel):
             items: List[str] = []

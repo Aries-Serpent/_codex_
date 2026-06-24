@@ -32,7 +32,6 @@ class TestConnectionManagement:
     def test_connection_reset_during_transfer(self):
         """Test handling of connection reset during data transfer."""
         # Arrange
-        data_transferred = 100
         data_remaining = 900
         connection_reset = True
 
@@ -204,7 +203,6 @@ class TestDNSAndNetwork:
     def test_dns_resolution_failure_handling(self):
         """Test handling of DNS resolution failure."""
         # Arrange
-        hostname = "example.invalid"
         resolution_result = None
 
         # Act
@@ -415,7 +413,6 @@ class TestProxyAndLoadBalancing:
     def test_session_stickiness_edge_case(self):
         """Test session stickiness with backend rotation."""
         # Arrange
-        session_id = "session_abc123"
         backend_assigned = "backend_1"
         same_backend_next = "backend_1"
 

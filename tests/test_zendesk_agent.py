@@ -83,7 +83,7 @@ class TestZendeskAgentCoreSyncTools:
         mock_registry.list_tools.return_value = []
         mock_get_registry.return_value = mock_registry
 
-        agent = ZendeskAgentCore()
+        ZendeskAgentCore()
         # Should not raise
 
     @patch("src.codex.zendesk.agent.AgentCore")
@@ -132,7 +132,8 @@ class TestZendeskAgentCoreRegisterTool:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        handler = lambda: "result"
+        def handler():
+            return "result"
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in registry
@@ -147,7 +148,8 @@ class TestZendeskAgentCoreRegisterTool:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        handler = lambda: "result"
+        def handler():
+            return "result"
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in core
@@ -162,7 +164,8 @@ class TestZendeskAgentCoreRegisterTool:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        handler = lambda: "result"
+        def handler():
+            return "result"
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in registry
@@ -178,7 +181,8 @@ class TestZendeskAgentCoreRegisterTool:
 
         agent = ZendeskAgentCore()
         for i in range(5):
-            handler = lambda x=i: f"result_{x}"
+            def handler(x=i):
+                return f"result_{x}"
             agent.register_tool(f"tool_{i}", handler)
 
         # All tools should be registered
@@ -307,7 +311,7 @@ class TestZendeskAgentCoreAgentCore:
         mock_get_registry.return_value = mock_registry
         mock_config = Mock()
 
-        agent = ZendeskAgentCore(config=mock_config)
+        ZendeskAgentCore(config=mock_config)
         mock_agent_core.assert_called_with(config=mock_config)
 
     @patch("src.codex.zendesk.agent.AgentCore")

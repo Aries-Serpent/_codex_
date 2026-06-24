@@ -97,7 +97,6 @@ class TestRestorePipelineLogic:
 
     def test_pipeline_parallel_execution(self):
         """Test parallel execution planning."""
-        n_workers = 4
         checkpoints = list(range(100))
         batch_size = 25
         batches = [checkpoints[i : i + batch_size] for i in range(0, len(checkpoints), batch_size)]
@@ -105,7 +104,6 @@ class TestRestorePipelineLogic:
 
     def test_pipeline_idempotency(self):
         """Test pipeline idempotency assurance."""
-        operation = "restore_checkpoint_5"
         first_result = {"status": "success", "timestamp": datetime.now()}
         second_result = {"status": "success", "timestamp": datetime.now()}
         assert first_result["status"] == second_result["status"]
@@ -140,7 +138,6 @@ class TestAudioServiceLogic:
 
     def test_noise_reduction_thresholds(self):
         """Test noise reduction threshold logic."""
-        threshold_db = -40  # dB
         signal_power = 10.0
         noise_power = 0.01
         snr = 10 * ((signal_power) / (noise_power))
@@ -195,7 +192,6 @@ class TestCognitiveBrainLogic:
         """Test confidence interval calculation."""
         mean = 0.85
         std_error = 0.02
-        confidence_level = 0.95
         margin_of_error = 1.96 * std_error  # 95% CI
         lower = mean - margin_of_error
         upper = mean + margin_of_error

@@ -116,7 +116,7 @@ class TestAPIPerformance:
         pool = ConnectionPool()
         conn = pool.get_connection()
         pool.return_connection(conn)
-        conn2 = pool.get_connection()
+        pool.get_connection()
 
         assert pool.reuse_count > 0
 

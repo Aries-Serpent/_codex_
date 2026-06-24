@@ -364,10 +364,6 @@ class TestDataMigrationRollback:
         # Setup: Pre-migration backup
         pre_migration_backup = {"version": "v1", "data": {"users": 100, "orders": 500}}
 
-        post_migration_state = {
-            "version": "v2",
-            "data": {"users": 100, "orders": 500, "audit_log": 1000},
-        }
 
         # Configure mocks
         backup_manager.create_backup.return_value = pre_migration_backup
@@ -381,7 +377,7 @@ class TestDataMigrationRollback:
         }
 
         # Action: Execute migration then rollback
-        backup = backup_manager.create_backup()
+        backup_manager.create_backup()
         forward_result = migration_manager.execute_forward()
         rollback_result = migration_manager.execute_rollback()
 

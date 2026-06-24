@@ -150,7 +150,7 @@ class TestForceVectorAdvanced:
 
     def test_force_vector_with_direction(self):
         """ForceVector with direction angle"""
-        fv = ForceVector(direction=45.0, x=1, y=1, z=0)
+        ForceVector(direction=45.0, x=1, y=1, z=0)
         # Direction is computed, not stored as-is
 
     def test_force_vector_with_priority(self):
@@ -166,7 +166,7 @@ class TestForceVectorAdvanced:
 
     def test_force_vector_pythagorean_triple(self):
         """ForceVector 3-4-5 triangle magnitude"""
-        fv = ForceVector(x=3, y=4, z=0)
+        ForceVector(x=3, y=4, z=0)
         # Actual magnitude may be calculated differently
 
     def test_force_vector_large_values(self):

@@ -152,8 +152,8 @@ class SessionDB:
         cursor.execute(
             """
             UPDATE sessions
-            SET archive_status = 'archived', 
-                archive_location = ?, 
+            SET archive_status = 'archived',
+                archive_location = ?,
                 archive_timestamp = ?
             WHERE session_id = ?
         """,
@@ -240,9 +240,9 @@ class SessionDB:
         cutoff_date = (datetime.utcnow() - timedelta(days=days)).isoformat()
         cursor.execute(
             """
-            SELECT session_id 
-            FROM sessions 
-            WHERE archive_status = 'active' 
+            SELECT session_id
+            FROM sessions
+            WHERE archive_status = 'active'
             AND created_at < ?
             ORDER BY created_at ASC
         """,

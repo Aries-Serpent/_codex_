@@ -341,7 +341,7 @@ class TestBoundaryConditions:
         pytest.importorskip("codex")
 
         with pytest.raises(ZeroDivisionError):
-            result = 10 / 0
+            pass
 
     def test_very_large_values(self):
         """Test handling of very large values."""

@@ -235,7 +235,7 @@ class TestBridgeManagerInit:
         """Test warning when required auth token is missing."""
         with patch.dict(os.environ, {}, clear=True):
             with caplog.at_level(logging.WARNING):
-                bridge = BridgeManager(
+                BridgeManager(
                     bridge_dir=temp_bridge_dir,
                     require_auth=True,
                 )
@@ -602,7 +602,7 @@ class TestBridgeManagerIntegration:
         # In real scenario, would need two processes
         bridge_manager_named_pipe.write_message(sample_message)
         # Mock read since we're testing in same process
-        result = bridge_manager_named_pipe.read_message(timeout=0.1)
+        bridge_manager_named_pipe.read_message(timeout=0.1)
         # Result depends on actual pipe implementation
 
     def test_multiple_messages_queued(self, bridge_manager_named_pipe):
@@ -718,7 +718,7 @@ class TestBridgeManagerEdgeCases:
     def test_negative_max_clients(self, temp_bridge_dir):
         """Test with invalid max_clients value."""
         # Should use default or raise error
-        bridge = BridgeManager(
+        BridgeManager(
             bridge_dir=temp_bridge_dir,
             max_clients=-1,
         )

@@ -51,7 +51,7 @@ class TestEvaluationIntegration:
             mock_eval_cls.return_value = mock_evaluator
 
             # Create evaluator
-            evaluator = mock_eval_cls(model=Mock(), eval_data=Mock())
+            mock_eval_cls(model=Mock(), eval_data=Mock())
 
             # Assert: Evaluator created
             mock_eval_cls.assert_called_once()
@@ -177,7 +177,7 @@ class TestMetricsCollectionIntegration:
             mock_collector_cls.return_value = mock_collector
 
             # Create collector
-            collector = mock_collector_cls()
+            mock_collector_cls()
 
             # Assert: Collector created
             mock_collector_cls.assert_called_once()
@@ -208,7 +208,6 @@ class TestMetricsCollectionIntegration:
     def test_aggregated_metrics_computation(self):
         """Test: Aggregated metrics computed from individual values."""
         # Arrange: Individual metric values
-        values = [0.5, 0.55, 0.6, 0.65, 0.7]
 
         # Act & Assert: Mock aggregation
         with patch("codex_ml.metrics.MetricsCollector") as mock_collector_cls:
@@ -438,7 +437,7 @@ class TestEvaluationMetricsEndToEnd:
 
                 # Track across epochs
                 evaluator = mock_eval_cls()
-                collector = mock_collector_cls()
+                mock_collector_cls()
                 history = []
 
                 for epoch in range(epochs):

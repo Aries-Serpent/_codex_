@@ -376,7 +376,7 @@ replicas: 3
 
                 # Access from different components
                 config = mock_load()
-                trainer = mock_trainer(config)
+                mock_trainer(config)
 
                 # Verify propagation
                 assert config["model"]["name"] == "test"
@@ -403,8 +403,8 @@ replicas: 3
                     # Execute chain
                     cfg = mock_load_cfg()
                     registry = mock_registry()
-                    model = registry.get(cfg["model"])
-                    trainer = mock_trainer(cfg)
+                    registry.get(cfg["model"])
+                    mock_trainer(cfg)
 
                     # Verify chain
                     assert cfg["model"] == "bert"

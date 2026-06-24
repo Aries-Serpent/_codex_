@@ -133,7 +133,7 @@ class TestUserRetrieval:
 
     def test_get_user_by_email(self, user_store):
         """Test retrieving user by email."""
-        created = user_store.create_user("eve", "eve@example.com", "Pass123!")
+        user_store.create_user("eve", "eve@example.com", "Pass123!")
         retrieved = user_store.get_user_by_email("eve@example.com")
 
         assert retrieved is not None
@@ -180,7 +180,7 @@ class TestPasswordVerification:
     def test_verify_correct_password(self, user_store):
         """Test verifying correct password."""
         password = "CorrectPassword123!"
-        user = user_store.create_user("alice", "alice@example.com", password)
+        user_store.create_user("alice", "alice@example.com", password)
 
         # Verify with user_store method
         verified_user = user_store.get_user_by_username("alice")

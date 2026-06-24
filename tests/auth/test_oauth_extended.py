@@ -287,8 +287,6 @@ class TestScopeManagement:
 
     def test_scope_upgrade_prevention(self, oauth):
         """Test preventing scope upgrade."""
-        current = ["read"]
-        requested = ["read", "write", "admin"]
 
         # Should not auto-approve higher scopes
         upgradeable = False
@@ -423,7 +421,6 @@ class TestCrossOriginOAuth:
 
     def test_subdomain_callback_handling(self):
         """Test subdomain in callback."""
-        allowed = "*.example.com"
         callback = "https://api.example.com/callback"
 
         # Wildcard domains

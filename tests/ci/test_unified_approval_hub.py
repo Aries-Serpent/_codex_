@@ -583,7 +583,6 @@ class TestIntegrationScenarios:
 
     def test_scenario_9_merged_pr_skip(self):
         """Scenario 9: Merged PR → skip approval."""
-        pr_state = "closed"
         pr_merged = True
         assert pr_merged is True
 

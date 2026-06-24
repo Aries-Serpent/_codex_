@@ -172,11 +172,11 @@ class TestTOTPGeneration:
             assert code.isdigit()
 
     def test_totp_code_changes_over_time(self, mfa_provider, mfa_secret):
-        code1 = mfa_provider.generate_totp_code(mfa_secret)
+        mfa_provider.generate_totp_code(mfa_secret)
         # Wait for time window to change (TOTP has 30-second window)
         with patch("time.time") as mock_time:
             mock_time.return_value = time.time() + 31
-            code2 = mfa_provider.generate_totp_code(mfa_secret)
+            mfa_provider.generate_totp_code(mfa_secret)
         # Codes should be different in different time windows
         # (Though not guaranteed, very likely)
 
@@ -216,7 +216,7 @@ class TestTOTPValidation:
             pass  # Either behavior acceptable
 
     def test_validate_code_with_leading_zeros(self, mfa_provider):
-        secret = MFASecret(
+        MFASecret(
             secret="JBSWY3DPEBLW64TMMQ======",
             user_id="user123",
         )
@@ -419,7 +419,7 @@ class TestCompleteMFAFlow:
     def test_mfa_reregistration_after_loss(self, mfa_provider):
         # First registration
         secret1 = mfa_provider.register_mfa("diana", "sha256")
-        codes1 = mfa_provider.generate_backup_codes(secret1.user_id)
+        mfa_provider.generate_backup_codes(secret1.user_id)
 
         # User wants to re-register (e.g., lost device)
         secret2 = mfa_provider.register_mfa("diana", "sha256")

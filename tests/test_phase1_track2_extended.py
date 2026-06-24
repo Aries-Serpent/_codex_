@@ -413,7 +413,6 @@ class TestMonitoringAndLogging:
         """Test alert threshold logic."""
         current_value = 45  # Below threshold triggers alert
         warning_threshold = 80
-        error_threshold = 50
         alert_triggered = current_value < warning_threshold
         assert alert_triggered
 

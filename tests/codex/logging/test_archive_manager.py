@@ -57,7 +57,7 @@ def test_db(temp_db_dir):
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
-        
+
         CREATE TABLE session_metadata (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
@@ -67,7 +67,7 @@ def test_db(temp_db_dir):
             FOREIGN KEY (session_id) REFERENCES sessions(session_id),
             UNIQUE(session_id, key)
         );
-        
+
         CREATE TABLE session_events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
@@ -76,7 +76,7 @@ def test_db(temp_db_dir):
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (session_id) REFERENCES sessions(session_id)
         );
-        
+
         CREATE TABLE session_outcomes (
             session_id TEXT PRIMARY KEY,
             ci_checks_green INTEGER DEFAULT 0,
@@ -86,7 +86,7 @@ def test_db(temp_db_dir):
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (session_id) REFERENCES sessions(session_id)
         );
-        
+
         CREATE INDEX idx_archive_status ON sessions(archive_status);
         CREATE INDEX idx_created_at ON sessions(created_at DESC);
     """)

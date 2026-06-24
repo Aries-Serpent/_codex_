@@ -486,7 +486,7 @@ class TestGithubUtilities:
         """Test github module has utility functions."""
         from codex import github
 
-        items = [n for n in dir(github) if not n.startswith("_")]
+        [n for n in dir(github) if not n.startswith("_")]
         # Module might be minimal, just check it's importable
         assert github is not None
 

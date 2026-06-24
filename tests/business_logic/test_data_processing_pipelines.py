@@ -532,7 +532,7 @@ class TestConcurrentProcessing:
 
         # Consumer
         while buffer:
-            item = buffer.pop(0)
+            buffer.pop(0)
             consumed += 1
 
         assert produced == consumed == 10

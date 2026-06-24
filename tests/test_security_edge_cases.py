@@ -376,10 +376,9 @@ class TestCryptographicEdgeCases:
     def test_encryption_decryption_roundtrip(self):
         """Test encryption/decryption roundtrip."""
         plaintext = "Secret data"
-        key = uuid4().hex[:32]  # 32-byte key
+        uuid4().hex[:32]  # 32-byte key
 
         # Simulate encryption/decryption
-        ciphertext = f"encrypted_{plaintext}_{key}"
         decrypted = plaintext  # In real impl, would decrypt
 
         assert decrypted == plaintext

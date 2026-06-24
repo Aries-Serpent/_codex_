@@ -93,7 +93,6 @@ class TestDatabaseOperations:
         """Test connection pool exhaustion."""
         pool_size = 10
         active = 10
-        waiting = 5
         can_connect = active < pool_size
         assert not can_connect
 
@@ -239,7 +238,6 @@ class TestWorkflowOrchestration:
             "task_2": {"depends": ["task_1"]},
             "task_3": {"depends": ["task_1", "task_2"]},
         }
-        execution_order = []
         available = [t for t, info in tasks.items() if not info["depends"]]
         assert "task_1" in available
 

@@ -88,7 +88,7 @@ class TestInvalidInputs:
     def test_wrong_type(self):
         """Test wrong type input."""
         try:
-            value = int("not_a_number")
+            int("not_a_number")
             valid = False
         except ValueError:
             valid = True
@@ -346,7 +346,6 @@ class TestStateInconsistencies:
 
     def test_invalid_state_transition(self):
         """Test invalid state transition."""
-        current = "training"
         next_state = "initialized"
 
         valid_next = next_state in ["validating", "failed"]

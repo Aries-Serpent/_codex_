@@ -158,7 +158,7 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                SELECT archive_location FROM sessions 
+                SELECT archive_location FROM sessions
                 WHERE session_id = ? AND archive_status = 'archived'
                 """,
                 (session_id,),
@@ -232,8 +232,8 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                SELECT session_id FROM sessions 
-                WHERE archive_status = 'active' 
+                SELECT session_id FROM sessions
+                WHERE archive_status = 'active'
                 AND created_at < ?
                 AND status != 'in-progress'
                 ORDER BY created_at DESC
@@ -444,8 +444,8 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                UPDATE sessions 
-                SET archive_status = 'archived', 
+                UPDATE sessions
+                SET archive_status = 'archived',
                     archive_location = ?,
                     archive_timestamp = ?
                 WHERE session_id = ?
@@ -466,7 +466,7 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                UPDATE sessions 
+                UPDATE sessions
                 SET archive_status = 'deleted', status = 'deleted'
                 WHERE session_id = ?
                 """,

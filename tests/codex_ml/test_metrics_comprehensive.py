@@ -537,7 +537,7 @@ class TestErrorHandling:
     def test_registry_compute_unknown_metric(self, metric_registry):
         """Test registry compute with unknown metric name."""
         # This should handle gracefully or raise
-        result = metric_registry.compute(["unknown"], labels=[1, 0], predictions=[1, 0])
+        metric_registry.compute(["unknown"], labels=[1, 0], predictions=[1, 0])
         # Implementation dependent - just test it doesn't crash
 
 

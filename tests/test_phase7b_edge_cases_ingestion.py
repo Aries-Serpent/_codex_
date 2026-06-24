@@ -97,7 +97,7 @@ class TestCSVIngestorEdgeCases:
             with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
                 f.write("")
                 f.flush()
-                result = ingestor.ingest(f.name)
+                ingestor.ingest(f.name)
                 # May return empty or raise
             os.unlink(f.name)
         except (ValueError, AttributeError):
@@ -129,7 +129,7 @@ class TestCSVIngestorEdgeCases:
                 f.write("1,2\n")  # Missing column
                 f.write("3,4,5,6\n")  # Extra column
                 f.flush()
-                result = ingestor.ingest(f.name)
+                ingestor.ingest(f.name)
                 # Should handle gracefully
             os.unlink(f.name)
         except (ValueError, AttributeError):
@@ -200,7 +200,7 @@ class TestJSONIngestorEdgeCases:
             with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
                 json.dump(nested, f)
                 f.flush()
-                result = ingestor.ingest(f.name)
+                ingestor.ingest(f.name)
                 # May succeed or hit recursion limit
             os.unlink(f.name)
         except (ValueError, AttributeError, RecursionError):
@@ -222,7 +222,7 @@ class TestTokenizerInitialization:
         try:
             loader = TokenizerLoader()
             with pytest.raises((ValueError, FileNotFoundError)):
-                tokenizer = loader.load(vocab_path="")
+                loader.load(vocab_path="")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -233,7 +233,7 @@ class TestTokenizerInitialization:
         try:
             loader = TokenizerLoader()
             with pytest.raises((TypeError, ValueError)):
-                tokenizer = loader.load(vocab_path=None)
+                loader.load(vocab_path=None)
         except (AttributeError, NotImplementedError):
             pass
 
@@ -247,7 +247,7 @@ class TestTokenizerInitialization:
                 f.write("invalid_vocab_format")
                 f.flush()
                 with pytest.raises((ValueError, KeyError)):
-                    tokenizer = loader.load(vocab_path=f.name)
+                    loader.load(vocab_path=f.name)
             os.unlink(f.name)
         except (AttributeError, NotImplementedError):
             pass
@@ -323,7 +323,7 @@ class TestTokenizationEdgeCases:
             tokenizer = Tokenizer()
             # Tokens outside vocab range
             with pytest.raises((ValueError, IndexError)):
-                text = tokenizer.decode([999999, -1])
+                tokenizer.decode([999999, -1])
         except (AttributeError, NotImplementedError):
             pass
 
@@ -343,7 +343,7 @@ class TestAPIAuthRoutes:
         try:
             router = AuthRouter()
             with pytest.raises((ValueError, TypeError)):
-                result = router.authenticate(username="", password="")
+                router.authenticate(username="", password="")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -354,7 +354,7 @@ class TestAPIAuthRoutes:
         try:
             router = AuthRouter()
             with pytest.raises((TypeError, ValueError)):
-                result = router.authenticate(username=None, password="test")
+                router.authenticate(username=None, password="test")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -364,8 +364,7 @@ class TestAPIAuthRoutes:
 
         try:
             router = AuthRouter()
-            long_password = "p" * 10000
-            result = router.authenticate(username="user", password="long")
+            router.authenticate(username="user", password="long")
             # Should reject or timeout, not crash
         except (ValueError, TimeoutError, AttributeError):
             pass
@@ -377,7 +376,7 @@ class TestAPIAuthRoutes:
         try:
             router = AuthRouter()
             malicious_user = "' OR '1'='1"
-            result = router.authenticate(username=malicious_user, password="pass")
+            router.authenticate(username=malicious_user, password="pass")
             # Should be safe
         except (ValueError, AttributeError):
             pass
@@ -393,7 +392,7 @@ class TestAPIRAGEndpoints:
         try:
             api = RAGAPI()
             with pytest.raises((ValueError, TypeError)):
-                result = api.query("")
+                api.query("")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -404,7 +403,7 @@ class TestAPIRAGEndpoints:
         try:
             api = RAGAPI()
             with pytest.raises((TypeError, ValueError)):
-                result = api.query(None)
+                api.query(None)
         except (AttributeError, NotImplementedError):
             pass
 
@@ -415,7 +414,7 @@ class TestAPIRAGEndpoints:
         try:
             api = RAGAPI()
             long_query = "word " * 100000  # Very long
-            result = api.query(long_query)
+            api.query(long_query)
             # Should handle or reject gracefully
         except (ValueError, TimeoutError, AttributeError):
             pass
@@ -438,7 +437,7 @@ class TestAPIRAGEndpoints:
         try:
             api = RAGAPI()
             with pytest.raises((TypeError, ValueError)):
-                result = api.index_documents(None)
+                api.index_documents(None)
         except (AttributeError, NotImplementedError):
             pass
 

@@ -266,7 +266,7 @@ class TestLegacyEndpointDeprecationHeaders:
         response = client.post("/api/v1/predict", json={"text": "test input"})
 
         assert response.status_code == 410
-        data = response.json()
+        response.json()
         assert "Deprecation" in response.headers
         assert "Sunset" in response.headers
 

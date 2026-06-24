@@ -155,14 +155,14 @@ class SearchCache:
 
     def _validate_path_arg(self, path_str: str, arg_name: str = "path") -> str:
         """Validate path argument to prevent command injection.
-        
+
         Parameters:
             path_str: Path to validate
             arg_name: Name of argument for error messages
-            
+
         Returns:
             Validated path string
-            
+
         Raises:
             ValueError: If path contains suspicious patterns
         """
@@ -176,13 +176,13 @@ class SearchCache:
 
     def _validate_pattern_arg(self, pattern: str) -> str:
         """Validate glob pattern argument to prevent command injection.
-        
+
         Parameters:
             pattern: Glob pattern to validate
-            
+
         Returns:
             Validated pattern string
-            
+
         Raises:
             ValueError: If pattern contains suspicious sequences
         """

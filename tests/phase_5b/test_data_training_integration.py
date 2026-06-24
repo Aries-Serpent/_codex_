@@ -189,7 +189,7 @@ class TestDataLoadersIntegration:
 
             # Test each strategy
             for strategy in strategies:
-                loader = mock_create([], batch_size=32, sampler=strategy)
+                mock_create([], batch_size=32, sampler=strategy)
                 assert mock_create.called
 
     def test_error_handling_corrupt_data(self, tmp_path):
@@ -245,7 +245,7 @@ class TestUnifiedTrainingIntegration:
             mock_trainer_cls.return_value = mock_trainer
 
             # Create trainer
-            trainer = mock_trainer_cls(config)
+            mock_trainer_cls(config)
 
             # Assert: Trainer created
             mock_trainer_cls.assert_called_once_with(config)
@@ -386,7 +386,7 @@ class TestDataLoaderTrainerIntegration:
                 mock_trainer_cls.return_value = mock_trainer
 
                 loader = mock_create_loader([], batch_size=batch_size)
-                trainer = mock_trainer_cls({"batch_size": batch_size})
+                mock_trainer_cls({"batch_size": batch_size})
 
                 # Assert: Batch size consistent
                 assert loader.batch_size == batch_size

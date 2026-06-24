@@ -78,11 +78,6 @@ class TestTrainLoopEntryPoints:
         """Test metrics recording entry point."""
 
         # Mock state object
-        mock_state = {
-            "epoch": 1,
-            "step": 100,
-            "loss": 0.5,
-        }
 
         metrics = {
             "eval_loss": 0.4,
@@ -471,7 +466,6 @@ class TestLossComputationAndGradients:
         """Test learning rate scheduling."""
         initial_lr = 5e-5
         warmup_steps = 1000
-        total_steps = 10000
 
         # At step 500 (warmup)
         step = 500
@@ -563,7 +557,7 @@ class TestResumeCapabilities:
         """Test checkpoint loading and state reconstruction."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            ckpt_path = Path(tmpdir) / "checkpoint.pt"
+            Path(tmpdir) / "checkpoint.pt"
 
             original_state = {
                 "epoch": 3,

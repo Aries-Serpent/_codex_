@@ -790,7 +790,7 @@ class TestCoverageCompletionCases:
             cache = TokenCache()
             for i in range(20):
                 cache.set(f"token_{i}", f"value_{i}")
-                value = cache.get(f"token_{(i-1) % 20}")
+                cache.get(f"token_{(i-1) % 20}")
             assert True
         except (AttributeError, OSError, RuntimeError):
             pass

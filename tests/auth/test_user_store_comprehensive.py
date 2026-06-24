@@ -139,7 +139,7 @@ class TestUserCreation:
 
     def test_duplicate_email_allowed(self, user_store):
         # Some systems allow duplicate emails, others don't
-        user1 = user_store.create_user("diana", "diana@example.com", "Str0ngPass!")
+        user_store.create_user("diana", "diana@example.com", "Str0ngPass!")
         try:
             user2 = user_store.create_user("diana2", "diana@example.com", "Str0ngPass!")
             assert user2.user_id
@@ -271,7 +271,7 @@ class TestUserUpdate:
     def test_update_password(self, user_store):
         user = user_store.create_user("tina", "tina@example.com", "Str0ngPass!")
         new_password = "NewPass123!"
-        updated_user = user_store.update_user(user.user_id, password=new_password)
+        user_store.update_user(user.user_id, password=new_password)
         # New password should work
         authenticated = user_store.authenticate("tina", new_password)
         assert authenticated.user_id == user.user_id

@@ -315,11 +315,6 @@ class TestAuditSearching:
 
     def test_audit_log_query(self):
         """Test audit log querying."""
-        query = {
-            "event_type": "resource_created",
-            "user_id": "user_123",
-            "date_range": ("2024-06-01", "2024-06-30"),
-        }
         results = [{"event_type": "resource_created", "user_id": "user_123", "date": "2024-06-15"}]
         assert len(results) > 0
 

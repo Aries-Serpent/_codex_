@@ -155,7 +155,7 @@ class StressTestRunner:
         complexities = ["low", "medium", "high"]
 
         for i in range(num_tasks):
-            task_type = random.choice(task_types)
+            random.choice(task_types)
             complexity = random.choice(complexities)
 
             # Base latency increases with complexity

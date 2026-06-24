@@ -133,7 +133,7 @@ class TestRequestAuthentication:
     """Request-level authentication."""
 
     def test_authenticate_request_with_valid_token(self, middleware, token_manager):
-        token = token_manager.create_token(
+        token_manager.create_token(
             subject="user123",
             token_type=TokenType.ACCESS,
         )
@@ -265,7 +265,7 @@ class TestRateLimiting:
 
         # Simulate multiple requests
         with patch.object(middleware, "get_request_count", return_value=1000):
-            is_limited = middleware.is_rate_limited(user_id, ip_address)
+            middleware.is_rate_limited(user_id, ip_address)
             # Depends on rate limit threshold
 
     def test_rate_limit_reset(self, middleware):
@@ -300,7 +300,7 @@ class TestTokenTypeValidation:
     """Token type specific validation."""
 
     def test_validate_access_token_type(self, middleware, token_manager):
-        token = token_manager.create_token(
+        token_manager.create_token(
             subject="user123",
             token_type=TokenType.ACCESS,
         )
@@ -312,7 +312,7 @@ class TestTokenTypeValidation:
         assert result
 
     def test_validate_refresh_token_as_access(self, middleware, token_manager):
-        token = token_manager.create_token(
+        token_manager.create_token(
             subject="user123",
             token_type=TokenType.REFRESH,
         )
@@ -324,7 +324,7 @@ class TestTokenTypeValidation:
             )
 
     def test_validate_session_token_type(self, middleware, token_manager):
-        token = token_manager.create_token(
+        token_manager.create_token(
             subject="user123",
             token_type=TokenType.SESSION,
         )
@@ -348,7 +348,7 @@ class TestSecurityHeaders:
         headers = middleware.get_security_headers()
         assert headers
         # Should include common security headers
-        header_keys = [k.lower() for k in headers.keys()]
+        [k.lower() for k in headers.keys()]
 
     def test_cors_origin_validation(self, middleware):
         allowed_origins = ["https://example.com", "https://app.example.com"]
@@ -396,8 +396,8 @@ class TestHeaderHandling:
         headers3 = {"AUTHORIZATION": "******"}
 
         token1 = middleware.extract_token(headers1)
-        token2 = middleware.extract_token(headers2)
-        token3 = middleware.extract_token(headers3)
+        middleware.extract_token(headers2)
+        middleware.extract_token(headers3)
 
         # All should work (implementation dependent)
         assert token1 is None or isinstance(token1, str)  # Valid return type (token or None)
@@ -459,14 +459,12 @@ class TestEdgeCases:
     """Edge cases and boundary conditions."""
 
     def test_very_long_token(self, middleware):
-        long_token = "x" * 10000
         headers = {"Authorization": "******"}
 
         token = middleware.extract_token(headers)
         assert token
 
     def test_token_with_special_characters(self, middleware):
-        special_token = "token._-~!@#$%"
         headers = {"Authorization": "******"}
 
         token = middleware.extract_token(headers)
@@ -476,13 +474,13 @@ class TestEdgeCases:
         # Some implementations might have multiple values
         headers = {"Authorization": "****** ******"}
 
-        token = middleware.extract_token(headers)
+        middleware.extract_token(headers)
         # Should extract first or raise error
 
     def test_bearer_with_extra_whitespace(self, middleware):
         headers = {"Authorization": "   ******   "}
 
-        token = middleware.extract_token(headers)
+        middleware.extract_token(headers)
         # Should handle gracefully
 
     def test_unicode_in_authorization_header(self, middleware):

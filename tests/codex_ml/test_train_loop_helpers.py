@@ -131,7 +131,7 @@ class TestApplyMetadataToState:
 
         state = {"loss": 0.5}
         metadata = {"rollout_ring": "test"}
-        result = _apply_metadata_to_state(state, metadata)
+        _apply_metadata_to_state(state, metadata)
         assert state["metadata"] == {"rollout_ring": "test"}
 
     def test_apply_metadata_to_state_none_metadata(self):
@@ -139,7 +139,7 @@ class TestApplyMetadataToState:
         from codex_ml.train_loop import _apply_metadata_to_state
 
         state = {"loss": 0.5}
-        result = _apply_metadata_to_state(state, None)
+        _apply_metadata_to_state(state, None)
         assert state["metadata"] == {}
 
     def test_apply_metadata_to_state_missing_rollout_ring(self):

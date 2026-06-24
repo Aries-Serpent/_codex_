@@ -99,7 +99,7 @@ class TestCrossServiceIntegration:
         3. Fall back to alternative
         4. Recover gracefully
         """
-        service_a = Mock()
+        Mock()
         service_b_primary = Mock()
         service_b_fallback = Mock()
 
@@ -127,7 +127,7 @@ class TestCrossServiceIntegration:
 
         Test partial transaction rollback and consistency.
         """
-        db_service = Mock()
+        Mock()
         transaction = Mock()
 
         # Setup: Simulate transaction
@@ -162,15 +162,15 @@ class TestCrossServiceIntegration:
         transaction.rollback.return_value = True
 
         # Action: Attempt transaction with failure
-        tx_started = transaction.begin()
-        op1_result = operation_1()
+        transaction.begin()
+        operation_1()
 
         try:
-            op2_result = operation_2()
-            op3_result = operation_3()
+            operation_2()
+            operation_3()
         except RuntimeError:
             # Rollback on failure
-            rolled_back = transaction.rollback()
+            transaction.rollback()
 
         # Assert: Rollback occurred
         assert transaction.begin.called
@@ -332,7 +332,7 @@ class TestEndToEndWorkflows:
         postprocessor.format.return_value = {"prediction": "class_1", "confidence": 0.9}
 
         # Action: Execute inference
-        loaded_model = model_loader.load()
+        model_loader.load()
         preprocessed_input = preprocessor.prepare({"input": "data"})
         raw_prediction = model.predict(preprocessed_input)
         final_output = postprocessor.format(raw_prediction)

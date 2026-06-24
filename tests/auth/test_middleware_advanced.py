@@ -93,7 +93,6 @@ class TestResponseHeaders:
 
     def test_security_headers_addition(self):
         """Security headers should be added."""
-        headers = {}
         # Should add:
         # - X-Content-Type-Options
         # - X-Frame-Options
@@ -111,7 +110,6 @@ class TestResponseHeaders:
 
     def test_cors_headers(self):
         """CORS headers should be set."""
-        headers = {}
         cors_headers = [
             "Access-Control-Allow-Origin",
             "Access-Control-Allow-Methods",
@@ -122,7 +120,6 @@ class TestResponseHeaders:
 
     def test_cache_control_headers(self):
         """Cache control headers."""
-        headers = {}
         cache_headers = ["Cache-Control", "Pragma", "Expires"]
         assert len(cache_headers) == 3
 
@@ -221,13 +218,11 @@ class TestRateLimiting:
 
     def test_per_user_rate_limiting(self):
         """Per-user rate limits."""
-        user_id = "user123"
         limit = 100
         assert limit > 0
 
     def test_per_endpoint_rate_limiting(self):
         """Per-endpoint rate limits."""
-        endpoint = "/api/users"
         limit = 50
         assert limit > 0
 

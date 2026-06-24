@@ -381,7 +381,7 @@ class TestEvalEdgeCases:
 
         outcomes = ["tie", "tie", "tie"]
         try:
-            win_rate = calculate_win_rate(outcomes)
+            calculate_win_rate(outcomes)
             # Implementation dependent
         except ValueError:
             # May not accept 'tie' as outcome
@@ -420,7 +420,7 @@ class TestEvalErrorHandling:
 
         # Should handle gracefully or raise appropriate error
         try:
-            ppl = perplexity(predictions, targets)
+            perplexity(predictions, targets)
         except (ValueError, RuntimeError):
             pass
 

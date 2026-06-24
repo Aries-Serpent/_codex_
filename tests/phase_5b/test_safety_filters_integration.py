@@ -162,7 +162,7 @@ class TestSafetyFiltersIntegration:
                 mock_create.return_value = mock_chain
 
                 # Create chain with tokenizer
-                chain = mock_create()
+                mock_create()
                 result = mock_filter.check_tokens([1, 2, 3, 4, 5])
 
                 # Assert: Integration successful
@@ -275,8 +275,8 @@ class TestSafetyFiltersIntegration:
 
                     # Create composition
                     chain = mock_chain_cls()
-                    content_filter = mock_content()
-                    token_filter = mock_token()
+                    mock_content()
+                    mock_token()
 
                     # Mock execution
                     mock_chain.apply_filters = Mock(

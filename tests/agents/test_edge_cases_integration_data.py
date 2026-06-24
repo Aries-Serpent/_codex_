@@ -112,7 +112,7 @@ class TestMemoryContextFrameIntegration:
             assert retrieved is not None
 
             # Simulate tracking in context frame
-            frame = ContextFrame(
+            ContextFrame(
                 frame_id=f"frame_{i}",
                 task_description="task",
                 start_time=datetime.now(UTC).isoformat(),

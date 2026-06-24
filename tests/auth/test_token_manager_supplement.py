@@ -91,7 +91,7 @@ class TestTokenClaims:
         assert claims_dict["scope"] == "read:user"
 
     def test_claims_from_dict(self, token_manager):
-        claims_dict = {
+        {
             "sub": "user456",
             "iat": time.time(),
             "exp": time.time() + 3600,

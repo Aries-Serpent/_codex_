@@ -19,19 +19,15 @@ class TestEndToEndTrainingWorkflow:
 
         # Stage 1: Data loading
         pipeline_state["stage"] = "loading_data"
-        data_size = 1000
 
         # Stage 2: Training
         pipeline_state["stage"] = "training"
-        epochs = 10
 
         # Stage 3: Validation
         pipeline_state["stage"] = "validating"
-        val_accuracy = 0.87
 
         # Stage 4: Checkpointing
         pipeline_state["stage"] = "checkpointing"
-        checkpoint_path = "/models/model.pt"
 
         assert pipeline_state["stage"] == "checkpointing"
 

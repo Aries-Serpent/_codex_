@@ -53,7 +53,6 @@ class TestInjectionPrevention:
 
     def test_command_injection_prevention(self, auth_system):
         """Prevent command injection."""
-        injection = "; rm -rf /"
 
         # Should safely handle
         user = auth_system.register("user2", "user2@example.com", "Str0ngPass!")

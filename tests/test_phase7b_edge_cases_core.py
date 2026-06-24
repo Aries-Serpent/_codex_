@@ -31,21 +31,21 @@ class TestBaseAdapterErrorHandling:
         from codex.agent.adapters.base_adapter import BaseAdapter
 
         with pytest.raises((TypeError, ValueError, AttributeError)):
-            adapter = BaseAdapter(config=None)
+            BaseAdapter(config=None)
 
     def test_adapter_init_with_invalid_config_type(self):
         """Should reject non-dict config"""
         from codex.agent.adapters.base_adapter import BaseAdapter
 
         with pytest.raises((TypeError, ValueError)):
-            adapter = BaseAdapter(config="not_a_dict")
+            BaseAdapter(config="not_a_dict")
 
     def test_adapter_with_missing_required_fields(self):
         """Should validate required config fields"""
         from codex.agent.adapters.base_adapter import BaseAdapter
 
         with pytest.raises((KeyError, ValueError)):
-            adapter = BaseAdapter(config={})  # Missing required fields
+            BaseAdapter(config={})  # Missing required fields
 
     def test_adapter_method_not_implemented(self):
         """Should raise NotImplementedError for abstract methods"""
@@ -225,7 +225,7 @@ class TestCLIArgumentParsing:
         from codex.cli import parse_arguments
 
         try:
-            args = parse_arguments(argv=["--invalid-flag-xyz"])
+            parse_arguments(argv=["--invalid-flag-xyz"])
             # May parse as unknown or raise
         except SystemExit:
             pass  # Expected for unrecognized args
@@ -253,7 +253,7 @@ class TestCLICommandExecution:
 
         try:
             long_arg = "x" * 10000
-            args = parse_arguments(argv=["--value", long_arg])
+            parse_arguments(argv=["--value", long_arg])
             # Should either accept or reject
         except (SystemExit, ValueError):
             pass
@@ -272,14 +272,14 @@ class TestGitHubLogsAPIErrors:
         from codex.api.github_logs import GitHubLogsAPI
 
         with pytest.raises((ValueError, AttributeError)):
-            api = GitHubLogsAPI(token="")
+            GitHubLogsAPI(token="")
 
     def test_github_logs_with_none_token(self):
         """Should reject None token"""
         from codex.api.github_logs import GitHubLogsAPI
 
         with pytest.raises((TypeError, ValueError)):
-            api = GitHubLogsAPI(token=None)
+            GitHubLogsAPI(token=None)
 
     @pytest.mark.asyncio
     async def test_github_logs_network_timeout(self):
@@ -305,7 +305,7 @@ class TestGitHubLogsBoundaryValues:
 
         try:
             api = GitHubLogsAPI(token="dummy_token")
-            result = api.get_logs(run_id=0)
+            api.get_logs(run_id=0)
             # May raise ValueError or return empty
         except (ValueError, AttributeError):
             pass
@@ -317,7 +317,7 @@ class TestGitHubLogsBoundaryValues:
         try:
             api = GitHubLogsAPI(token="dummy_token")
             with pytest.raises(ValueError):
-                result = api.get_logs(run_id=-1)
+                api.get_logs(run_id=-1)
         except AttributeError:
             pass
 
@@ -328,7 +328,7 @@ class TestGitHubLogsBoundaryValues:
         try:
             api = GitHubLogsAPI(token="dummy_token")
             with pytest.raises(ValueError):
-                result = api.fetch_logs(repo="")
+                api.fetch_logs(repo="")
         except (AttributeError, NotImplementedError):
             pass
 
@@ -346,7 +346,7 @@ class TestBridgeTypesValidation:
         from codex.bridge_types import BridgeType
 
         try:
-            bt = BridgeType(value="")
+            BridgeType(value="")
             # May raise or return None
         except ValueError:
             pass
@@ -356,14 +356,14 @@ class TestBridgeTypesValidation:
         from codex.bridge_types import BridgeType
 
         with pytest.raises((TypeError, ValueError)):
-            bt = BridgeType(value=None)
+            BridgeType(value=None)
 
     def test_bridge_type_with_invalid_type(self):
         """Should reject non-string types"""
         from codex.bridge_types import BridgeType
 
         try:
-            bt = BridgeType(value=12345)
+            BridgeType(value=12345)
             # May raise or coerce
         except (TypeError, ValueError):
             pass
@@ -378,7 +378,7 @@ class TestCLIPipelineExecution:
 
         try:
             pipeline = Pipeline(steps=[])
-            result = pipeline.execute()
+            pipeline.execute()
             # Should return empty result or error
         except (ValueError, TypeError):
             pass
@@ -388,14 +388,14 @@ class TestCLIPipelineExecution:
         from codex.cli.pipeline import Pipeline
 
         with pytest.raises((TypeError, ValueError)):
-            pipeline = Pipeline(steps=None)
+            Pipeline(steps=None)
 
     def test_pipeline_with_invalid_step_type(self):
         """Should validate step types"""
         from codex.cli.pipeline import Pipeline
 
         try:
-            pipeline = Pipeline(steps=["invalid_step_123"])
+            Pipeline(steps=["invalid_step_123"])
             # May raise or skip invalid steps
         except (ValueError, KeyError):
             pass
@@ -419,7 +419,7 @@ class TestConfigEnvironmentVariables:
 
         with patch.dict("os.environ", {"CONFIG_JSON": "{invalid json}"}):
             try:
-                config = load_env_config()
+                load_env_config()
                 # May raise or skip invalid
             except (ValueError, json.JSONDecodeError):
                 pass
@@ -430,7 +430,7 @@ class TestConfigEnvironmentVariables:
 
         with patch.dict("os.environ", {}, clear=True):
             try:
-                config = load_env_config()
+                load_env_config()
                 # May raise or use defaults
             except (KeyError, ValueError):
                 pass
@@ -454,7 +454,7 @@ class TestAsyncConcurrencyPatterns:
             tasks = [api.fetch_logs(repo="test/repo", run_id=i) for i in range(5)]
             # Should not crash with concurrent calls
             try:
-                results = await asyncio.gather(*tasks, return_exceptions=True)
+                await asyncio.gather(*tasks, return_exceptions=True)
                 # Some may fail, but should not crash
             except (AttributeError, NotImplementedError):
                 pass
@@ -499,7 +499,7 @@ class TestMultiModuleIntegration:
 
             from codex.config.env_vars import load_env_config
 
-            config = load_env_config()
+            load_env_config()
             orch = Orchestrator()
             # Should initialize without error
             assert orch is not None
@@ -561,7 +561,7 @@ class TestRegressionPrevention:
             config_copy = original_config.copy()
 
             try:
-                adapter = BaseAdapter(config=original_config)
+                BaseAdapter(config=original_config)
             except (NotImplementedError, TypeError):
                 pass
 

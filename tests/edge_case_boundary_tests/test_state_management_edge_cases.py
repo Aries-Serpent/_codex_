@@ -20,7 +20,6 @@ class TestStateTransitions:
     def test_invalid_state_transition(self):
         """Test detection of invalid state transition."""
         # Arrange
-        current_state = "idle"
         valid_next_states = ["running", "error"]
         invalid_next_state = "completed"
 
@@ -50,7 +49,6 @@ class TestStateTransitions:
         backup_state = initial_state
 
         # Act
-        current_state = "state_b"
         rolled_back = backup_state == initial_state
 
         # Assert
@@ -249,7 +247,6 @@ class TestConcurrencyEdgeCases:
     def test_race_condition_detection(self):
         """Test detection of race condition."""
         # Arrange
-        shared_counter = 0
         num_threads = 2
         increments_per_thread = 100
 
@@ -264,8 +261,7 @@ class TestConcurrencyEdgeCases:
         """Test detection of deadlock scenario."""
         # Arrange
         lock1 = threading.Lock()
-        lock2 = threading.Lock()
-        deadlock_detected = False
+        threading.Lock()
 
         # Simulate potential deadlock
         # Thread1: acquire lock1, wait for lock2
@@ -330,7 +326,7 @@ class TestConcurrencyEdgeCases:
 
         # Assert
         assert shared_value == 100
-        assert flag == True
+        assert flag
 
 
 class TestComplexStateScenarios:
@@ -339,7 +335,6 @@ class TestComplexStateScenarios:
     def test_state_machine_with_timeout(self):
         """Test state machine behavior with timeout."""
         # Arrange
-        state = "waiting"
         start_time = datetime.now()
         timeout = 1  # 1 second
 
@@ -366,7 +361,6 @@ class TestComplexStateScenarios:
         """Test propagation of cascading state changes."""
         # Arrange
         parent_state = "running"
-        child_states = ["idle", "idle"]
 
         # Act
         # If parent is running, children should respond
@@ -378,7 +372,6 @@ class TestComplexStateScenarios:
     def test_recovery_from_invalid_state(self):
         """Test recovery when system reaches invalid state."""
         # Arrange
-        current_state = "invalid"
         recovery_target = "error"  # Known invalid state handler
 
         # Act

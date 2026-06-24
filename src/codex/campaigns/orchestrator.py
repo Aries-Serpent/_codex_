@@ -315,7 +315,7 @@ class CampaignOrchestrator:
         self.execution.status = CampaignStatus.ESCALATED
         self.execution.error_messages.append(reason)
 
-        issue_body = self._generate_escalation_issue(reason)
+        self._generate_escalation_issue(reason)
 
         self._log_event(
             "campaign_escalated",
@@ -445,7 +445,7 @@ cc: @mbaetiong
 
     def _log_event(self, event_type: str, data: Dict[str, Any]) -> None:
         """Log campaign event for observability."""
-        event = {
+        {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "event_type": event_type,
             "campaign_id": self.campaign.campaign_id,

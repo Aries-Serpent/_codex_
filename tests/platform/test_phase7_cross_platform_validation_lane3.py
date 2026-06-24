@@ -123,7 +123,6 @@ class TestWindowsPathNormalization:
     def test_windows_relative_path_normalization(self):
         """Test Windows relative path normalization."""
         relative = r".\subfolder\file.txt"
-        absolute = r"C:\root\.\subfolder\file.txt"
 
         # Remove current dir reference
         relative_norm = relative.replace(".\\", "")

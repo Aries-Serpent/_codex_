@@ -78,7 +78,7 @@ class TestHFTrainerIntegration:
                 mock_model_cls.from_pretrained = Mock(return_value=mock_model)
 
                 # Load model
-                model = mock_model_cls.from_pretrained(training_config["model_name"])
+                mock_model_cls.from_pretrained(training_config["model_name"])
 
                 # Assert: Model loaded successfully
                 assert mock_model_cls.from_pretrained.called
@@ -192,7 +192,7 @@ class TestHFTrainerIntegration:
             )
 
             trainer = mock_trainer_cls()
-            result = trainer.train(resume_from_checkpoint=str(checkpoint_dir))
+            trainer.train(resume_from_checkpoint=str(checkpoint_dir))
 
             # Assert: Training resumed
             mock_trainer.train.assert_called()
@@ -223,13 +223,6 @@ class TestHFTrainerIntegration:
         """Test: Distributed training configuration."""
         # Arrange & Act: Mock distributed setup
         with patch("training.engine_hf_trainer.TrainingArguments") as mock_args_cls:
-            training_config = {
-                "num_train_epochs": 1,
-                "per_device_train_batch_size": 8,
-                "local_rank": 0,  # For distributed
-                "world_size": 4,
-                "ddp_find_unused_parameters": True,
-            }
 
             # Setup distributed arguments
             mock_args = Mock()
@@ -254,7 +247,7 @@ class TestHFTrainerIntegration:
 
                 # Execute pipeline
                 model = mock_model_cls.from_pretrained("bert-base")
-                trainer = mock_trainer_cls(model=model)
+                mock_trainer_cls(model=model)
 
                 # Assert: Pipeline successful
                 mock_model_cls.from_pretrained.assert_called_once()
@@ -455,7 +448,7 @@ class TestHFTrainerEndToEnd:
 
                     # Execute pipeline
                     model = mock_model_cls.from_pretrained("bert-base")
-                    loader = mock_loader_cls()
+                    mock_loader_cls()
                     trainer = mock_trainer_cls(model=model)
                     result = trainer.train()
                     trainer.save_model(str(tmp_path / "final_model"))
